@@ -1,3 +1,14 @@
+2001-08-06  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-thumbnails.c:
+	(pixel_matches_value): Simplify logic.
+	(pixbuf_is_framed): Do size and format reality checks on pixbuf
+	before reading the pixels.
+	(nautilus_thumbnail_load_framed_image): Handle case where the
+	pixbuf loading failed. Handle case where there's no frame. Handle
+	case where the frame offsets in the theme data is improperly
+	formatted.
+
 2001-08-02  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* libnautilus/nautilus-view-standard-main.c:
