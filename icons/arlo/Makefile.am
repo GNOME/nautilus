@@ -25,6 +25,7 @@ arlo_DATA =	\
 	i-directory-72.png	\
 	i-directory.xml		\
 	i-regular-12.png	\
+	i-regular-20.png        \
 	i-regular-24.png	\
 	i-regular-36.png	\
 	i-regular.png	\
@@ -32,6 +33,7 @@ arlo_DATA =	\
 	i-regular-96.png	\
 	i-regular-192.png	\
 	i-regular-12-aa.png	\
+        i-regular-20-aa.png     \
 	i-regular-24-aa.png	\
 	i-regular-36-aa.png	\
 	i-regular-aa.png	\
