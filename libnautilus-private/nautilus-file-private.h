@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.c: Nautilus directory model.
+   nautilus-file-private.h:
  
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
@@ -21,6 +21,9 @@
   
    Author: Darin Adler <darin@eazel.com>
 */
+
+#ifndef NAUTILUS_FILE_PRIVATE_H
+#define NAUTILUS_FILE_PRIVATE_H
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
@@ -147,3 +150,7 @@ void          nautilus_file_invalidate_attributes_internal (NautilusFile        
 GList *       nautilus_file_get_all_attributes             (void);
 
 gboolean      nautilus_file_is_self_owned                  (NautilusFile           *file);
+
+void          nautilus_file_invalidate_count_and_mime_list (NautilusFile              *file);
+
+#endif

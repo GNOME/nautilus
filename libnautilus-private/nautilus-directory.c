@@ -863,7 +863,9 @@ nautilus_directory_notify_files_added (GList *uris)
 	NautilusDirectory *directory;
 	GHashTable *parent_directories;
 	const char *uri;
+	const char *directory_uri;
 	GnomeVFSURI *vfs_uri;
+	NautilusFile *file;
 
 	/* Make a list of added files in each directory. */
 	added_lists = g_hash_table_new (NULL, NULL);
@@ -877,6 +879,19 @@ nautilus_directory_notify_files_added (GList *uris)
 		/* See if the directory is already known. */
 		directory = get_parent_directory_if_exists (uri);
 		if (directory == NULL) {
+			/* In case the directory is not being
+			 * monitored, but the corresponding file is,
+			 * we must invalidate it's item count.
+			 */
+			
+			directory_uri = uri_get_directory_part (uri);
+			file = nautilus_file_get_existing (directory_uri);
+
+			if (file != NULL) {
+				nautilus_file_invalidate_count_and_mime_list (file);
+				nautilus_file_unref (file);
+			}
+
 			continue;
 		}
 

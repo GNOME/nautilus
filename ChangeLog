@@ -1,3 +1,25 @@
+2001-07-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bugzilla.eazel.com bug 7015 (Item count not updated when
+	copying an empty folder to another).
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_file_invalidate_count_and_mime_list): New function to
+	invalidate a directory's item count and item mime list given it's
+	corresponding NautilusFile object.
+	(nautilus_directory_invalidate_count_and_mime_list): Reimplemented
+	in terms of the above.
+
+	* libnautilus-private/nautilus-file-private.h:
+	Prototype the new function.
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_notify_files_added): If the NautilusDirectory
+	for a directory into which files are being moved is not being
+	monitored but the NautilusFile is, make sure to invalidate it's
+	item count and mime list. This is the corner case that bug 7015
+	was tickling.
+
 2001-07-20  Andy Hertzfeld  <andy@differnet.com>
 
 	fixed problem that the reset property was not localizable, since
