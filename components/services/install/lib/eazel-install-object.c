@@ -1706,6 +1706,25 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 	num_packages = g_list_length (flat_packages);
 	g_list_free (flat_packages);
 
+#if 0
+	/* FIXME: ARGH ARGH ARGH, this circumvents ORBit's buffersize error */
+	if (num_packages > 50) {
+		GList *foo = NULL;
+
+		trilobite_debug ("hest hest hest");
+
+		foo = g_list_prepend (foo, packages->data);
+		gtk_signal_emit (GTK_OBJECT (service), 
+				 signals[PREFLIGHT_CHECK], 
+				 foo,
+				 size_packages,
+				 num_packages,
+				 &result);
+		return result;
+		
+	} 
+#endif
+
 	gtk_signal_emit (GTK_OBJECT (service), 
 			 signals[PREFLIGHT_CHECK], 
 			 packages,
@@ -1767,6 +1786,23 @@ eazel_install_emit_save_transaction (EazelInstall *service,
 	gboolean result;
 
 	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
+
+#if 0
+	/* FIXME: ARGH ARGH ARGH, this circumvents ORBit's buffersize error */
+	if (g_list_length (packages) > 50) {
+		GList *foo = NULL;
+
+		trilobite_debug ("hest hest hest");
+
+		foo = g_list_prepend (foo, packages->data);
+		gtk_signal_emit (GTK_OBJECT (service), 
+				 signals[SAVE_TRANSACTION], 
+				 foo,
+				 &result);
+		return result;
+		
+	} 
+#endif
 
 	gtk_signal_emit (GTK_OBJECT (service), 
 			 signals[SAVE_TRANSACTION], 

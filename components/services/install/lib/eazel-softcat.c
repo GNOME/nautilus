@@ -914,11 +914,18 @@ split_by_multiple (EazelSoftCat *softcat,
 		PackageData *p = PACKAGEDATA (iterator->data);
 		gboolean result = TRUE;
 
+		/* Is it the same architecture ? */
 		if (p->archtype && arch && strcmp (p->archtype, arch)) {
 			result = FALSE;
 		}
 
+		/* Same distribution ? */
 		if (trilobite_distribution_compare (p->distribution, distinfo) != 0) {
+			result = FALSE;
+		}
+
+		/* Does it have a version */
+		if (p->version) {
 			result = FALSE;
 		}
 

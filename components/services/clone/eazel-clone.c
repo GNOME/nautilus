@@ -57,6 +57,7 @@ char    *arg_server = NULL,
 static const struct poptOption options[] = {
 	{"cgi-path", '\0', POPT_ARG_STRING, &arg_cgi, 0, N_("Specify search cgi"), NULL},
 	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"downgrade", '\0', POPT_ARG_NONE, &arg_downgrade, 0 , N_("Allow downgrade"), NULL},
 	{"file",'\0', POPT_ARG_STRING, &arg_file, 0, N_("Inventory xml to clone from (if omitted, file will be read from standard in)"), NULL},
 	{"no-auth", '\0', POPT_ARG_NONE, &arg_no_auth, 0, N_("don't use eazel auth stuff"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
@@ -69,7 +70,7 @@ static const struct poptOption options[] = {
 
 #define check_ev(s)                                                \
 if (ev._major!=CORBA_NO_EXCEPTION) {                               \
-	fprintf (stderr, "*** %s: Caught exception %s",            \
+	fprintf (stderr, "*** %s: Caught exception %s\n",            \
                  s, CORBA_exception_id (&ev));                     \
 }
 
@@ -172,7 +173,7 @@ eazel_file_conflict_check_signal (EazelInstallCallback *service,
 				  gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (pack);
-	printf ("FILE CONFLICT CHECKING \"%s\"\n", tmp);
+	printf ("I: FILE CONFLICT CHECKING \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -183,7 +184,7 @@ eazel_file_uniqueness_check_signal (EazelInstallCallback *service,
 				    gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (pack);
-	fprintf (stdout, "FILE UNIQUENESS CHECKING \"%s\"\n", tmp);
+	fprintf (stdout, "I: FILE UNIQUENESS CHECKING \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -194,7 +195,7 @@ eazel_feature_consistency_check_signal (EazelInstallCallback *service,
 					gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (pack);
-	printf ("FEATURE CONSISTENCY CHECKING \"%s\"\n", tmp);
+	printf ("I: FEATURE CONSISTENCY CHECKING \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -207,7 +208,7 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 				gpointer unused) 
 {
 	char *tmp = packagedata_get_readable_name (pack);
-	printf ("DOWNLOADING \"%s\" %d %d", tmp, amount, total);
+	printf ("I: DOWNLOADING \"%s\" %d %d\n", tmp, amount, total);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -221,7 +222,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			       gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "INSTALLING \"%s\" %d %d %d %d %d %d",
+	fprintf (stdout, "I: INSTALLING \"%s\" %d %d %d %d %d %d\n",
 		 tmp,
 		 package_num, num_packages,
 		 amount, total,
@@ -239,7 +240,7 @@ eazel_uninstall_progress_signal (EazelInstallCallback *service,
 				 gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "UNINSTALLING \"%s\" %d %d %d %d %d %d",
+	fprintf (stdout, "I: UNINSTALLING \"%s\" %d %d %d %d %d %d\n",
 		 tmp,
 		 package_num, num_packages,
 		 amount, total,
@@ -253,7 +254,7 @@ static void download_failed (EazelInstallCallback *service,
 		 gpointer unused)
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "DOWNLOAD FAILED \"%s\"\n", tmp);
+	fprintf (stdout, "I: DOWNLOAD FAILED \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -267,7 +268,7 @@ install_failed (EazelInstallCallback *service,
 		EazelInstallProblem *problem)
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "INSTALL FAILED \"%s\"\n", tmp);
+	fprintf (stdout, "I: INSTALL FAILED \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);	
 }
@@ -278,7 +279,7 @@ uninstall_failed (EazelInstallCallback *service,
 		  EazelInstallProblem *problem)
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "UNINSTALL FAILED \"%s\"\n", tmp);
+	fprintf (stdout, "I: UNINSTALL FAILED \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -293,15 +294,15 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 {	
 	switch (op) {
 	case EazelInstallCallbackOperation_INSTALL:
-		fprintf (stdout, "PREPARING INSTALL %d %d\n", 
+		fprintf (stdout, "I: PREPARING INSTALL %d %d\n", 
 			 total_packages, total_bytes);
 		break;
 	case EazelInstallCallbackOperation_UNINSTALL:
-		fprintf (stdout, "PREPARING UNINSTALL %d %d\n", 
+		fprintf (stdout, "I: PREPARING UNINSTALL %d %d\n", 
 			 total_packages, total_bytes);
 		break;
 	case EazelInstallCallbackOperation_REVERT:
-		fprintf (stdout, "PREPARING REVERT %d %d\n", 
+		fprintf (stdout, "I: PREPARING REVERT %d %d\n", 
 			 total_packages, total_bytes);
 		break;
 	}
@@ -327,7 +328,7 @@ dep_check (EazelInstallCallback *service,
 	char *pack, *needs;
 	pack = packagedata_get_readable_name (package);
 	needs = packagedata_get_readable_name (needs_package);
-	fprintf (stdout, "DEPENDENCY : \"%s\" \"%s\"\n", pack, needs);
+	fprintf (stdout, "I: DEPENDENCY : \"%s\" \"%s\"\n", pack, needs);
 	fflush (stdout);
 	g_free (pack);
 	g_free (needs);
@@ -340,7 +341,7 @@ md5_check_failed (EazelInstallCallback *service,
 		  gpointer unused) 
 {
 	char *tmp = packagedata_get_readable_name (package);
-	fprintf (stdout, "MD5 FAILURE \"%s\"", tmp);
+	fprintf (stdout, "I: MD5 FAILURE \"%s\"\n", tmp);
 	fflush (stdout);
 	g_free (tmp);
 }
@@ -357,11 +358,13 @@ done (EazelInstallCallback *service,
       gboolean result,
       EazelInstallProblem *problem)
 {
-	if (result) {
-		fprintf (stdout, "DONE: OK");
+	if (result) {		
+		fprintf (stdout, "I: DONE: OK\n");
 	} else {
-		fprintf (stdout, "DONE: FAILED");
+		cli_result = 2;
+		fprintf (stdout, "I: DONE: FAILED\n");
 	}
+	trilobite_main_quit ();
 	fflush (stdout);
 }
 
@@ -370,7 +373,7 @@ get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *u
 {
 	char * passwd;
 
-	passwd = getpass ("ROOT PASSWORD: ");
+	passwd = getpass ("Q: ROOT PASSWORD: ");
 	return g_strdup (passwd);
 }
 
@@ -404,12 +407,9 @@ do_clone (EazelInstallCallback *cb,
 	GList *upgrade = NULL;
 	GList *downgrade = NULL;
 
-	fprintf (stderr, "D: do clone\n");
-
 	inventory = eazel_install_clone_load_inventory (arg_file);
-	fprintf (stderr, "D: do clone %d packages\n", g_list_length (inventory));
+
 	if (inventory == NULL) {
-		fprintf (stderr, "D: no inventory loaded");
 		cli_result = 1;
 	} else {
 		CategoryData *cat = categorydata_new ();
@@ -438,10 +438,12 @@ do_clone (EazelInstallCallback *cb,
 			fprintf (stderr, "D: upgrading %s\n", packagedata_get_readable_name (pack));
 			cat->packages = g_list_prepend (cat->packages, pack);
 		}
-		for (iterator = downgrade; iterator; iterator = g_list_next (iterator)) {
-			PackageData *pack = PACKAGEDATA (iterator->data);
-			fprintf (stderr, "D: downgrading %s\n", packagedata_get_readable_name (pack));
-			cat->packages = g_list_prepend (cat->packages, pack);
+		if (arg_downgrade) {
+			for (iterator = downgrade; iterator; iterator = g_list_next (iterator)) {
+				PackageData *pack = PACKAGEDATA (iterator->data);
+				fprintf (stderr, "D: downgrading %s\n", packagedata_get_readable_name (pack));
+				cat->packages = g_list_prepend (cat->packages, pack);
+			}
 		}
 		categories = g_list_prepend (categories, cat);
 

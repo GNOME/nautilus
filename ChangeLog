@@ -1,3 +1,30 @@
+2001-03-27  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	Clone now basically works. It will however almost always crash
+	since ORBit can't transfer big buffers.
+	
+	* components/services/clone/eazel-clone.c:
+	(eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal),
+	(eazel_download_progress_signal), (eazel_install_progress_signal),
+	(eazel_uninstall_progress_signal), (download_failed),
+	(install_failed), (uninstall_failed),
+	(eazel_preflight_check_signal), (dep_check), (md5_check_failed),
+	(done), (get_password_dude), (do_clone):
+	Added --downgrade.
+	Added "I: "'s and \n's to a lot of printfs.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_save_transaction):
+	Code to "circumvent" the ORBit buffersize bug.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(split_by_multiple):
+	Fixed bug that caused packages searched for by name but with
+	version to be slammed into one huge query.
+
 2001-03-27  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
