@@ -893,6 +893,20 @@ iti_selection_motion (Iti *iti, int idx)
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
+/* Ensure the item gets focused (both globally, and local to Gtk) */
+static void
+iti_ensure_focus (GnomeCanvasItem *item)
+{
+	GtkWidget *toplevel;
+
+	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (item));
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
+	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
+		nautilus_gdk_window_focus (toplevel->window);
+	}
+}
+
 /* Position insertion point based on arrow key event */
 static void
 iti_handle_arrow_key_event (NautilusIconTextItem *iti, GdkEvent *event)
@@ -1035,6 +1049,8 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!iti->editing) {
 			break;
 		}
+
+		iti_ensure_focus (item);
 
 		if (iti->editing && event->button.button == 1) {
 			gnome_canvas_w2c(item->canvas, event->button.x, event->button.y, &cx, &cy);			
@@ -1433,7 +1449,7 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 	}
 
 	iti->selected = TRUE; /* Ensure that we are selected */
-	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (iti));
+	iti_ensure_focus (GNOME_CANVAS_ITEM (iti));
 	iti_start_editing (iti);
 }
 

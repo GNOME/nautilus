@@ -1,3 +1,18 @@
+2001-01-04  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	When renaming an icon, manually focus the associated top-level
+	window. This fixes bug 5426 (can't rename icons in sloppy-focus
+	mode)
+
+	* libnautilus-extensions/nautilus-icon-text-item.c
+	(iti_ensure_focus): new function, ensures that both the canvas
+	item and the top-level window are focused
+	(iti_event): call iti_ensure_focus in the button-press case
+	(nautilus_icon_text_item_start_editing): call iti_ensure_focus
+	instead of gnome_canvas_item_grab_focus to focus the item
+
 2001-01-03  John Harper  <jsh@eazel.com>
 
 	Small fix to the `drag doesn't focus' stuff I did earlier to
