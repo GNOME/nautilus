@@ -321,10 +321,15 @@ sense_flags_to_softcat_flags (int sense)
 
 #ifdef EAZEL_INSTALL_SLIM
 /* wow, i had no idea all these chars were evil.  they must be stopped! */
-#define IS(x)		((c) == (x))
-#define EVILCHAR(c)	(IS('"') || IS('#') || IS('$') || IS('%') || IS('&') || IS('+') || IS(',') || IS('/') || \
-			 IS(':') || IS(';') || IS('<') || IS('=') || IS('>') || IS('?') || IS('@') || IS('[') || \
-			 IS('\\') || IS(']') || IS('^') || IS('`') || IS('{') || IS('|') || IS('}') || IS('\''))
+static char _bad[] = {
+        1,0,1,1,1,1,1,1,0,0,0,1,1,0,0,1,	/*  !"#$%&'()*+,-./ */
+        0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,	/* 0123456789:;<=>? */
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	/* @ABCDEFGHIJKLMNO */
+        0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,	/* PQRSTUVWXYZ[\]^_ */
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,	/* `abcdefghijklmno */
+        0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1		/* pqrstuvwxyz{|}~del */
+};
+#define EVILCHAR(c)	(((c) < 0x20) || ((c) > 0x7F) || (_bad[c]))
 
 static char *
 gnome_vfs_escape_string (const char *in)
@@ -334,7 +339,7 @@ gnome_vfs_escape_string (const char *in)
 	char *quoted, *q;
 
 	for (p = in; p && *p; p++) {
-		if (EVILCHAR (*p)) {
+		if (EVILCHAR ((unsigned char)*p)) {
 			needs_quoting++;
 		}
 	}
@@ -342,12 +347,12 @@ gnome_vfs_escape_string (const char *in)
 		return g_strdup (in);
 	}
 
-	q = quoted = g_malloc (strlen (val) + (needs_quoting * 2) + 1);
-	for (p = val; p && *p; p++) {
-		if (EVILCHAR (*p)) {
+	q = quoted = g_malloc (strlen (in) + (needs_quoting * 2) + 1);
+	for (p = in; p && *p; p++) {
+		if (EVILCHAR ((unsigned char)*p)) {
 			*q++ = '%';
-			*q++ = "0123456789ABCDEF"[*p / 16];
-			*q++ = "0123456789ABCDEF"[*p % 16];
+			*q++ = "0123456789ABCDEF"[(unsigned char)*p / 16];
+			*q++ = "0123456789ABCDEF"[(unsigned char)*p % 16];
 		} else {
 			*q++ = *p;
 		}

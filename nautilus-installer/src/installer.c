@@ -322,7 +322,7 @@ create_what_to_do_page (EazelInstaller *installer)
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
 	gtk_widget_ref (title);
-	gtk_object_set_data_full (GTK_OBJECT (installer->window), "spice-girls", title,
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), "humleridderne", title,
 				  (GtkDestroyNotify) gtk_widget_unref);
 
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -1367,7 +1367,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 
 	if (only_one_category) {
 		/* change the heading */
-		label = gtk_object_get_data (GTK_OBJECT (installer->window), "bøf med løg");
+		label = gtk_object_get_data (GTK_OBJECT (installer->window), "humleridderne");
 		gtk_label_set_text (GTK_LABEL (label), text_labels [WHAT_TO_INSTALL_LABEL_SINGLE]);
 		label = NULL;
 	}
@@ -2013,7 +2013,8 @@ add_singular_package (EazelInstaller *installer,
 }
 
 static void
-eazel_installer_initialize (EazelInstaller *object) {
+eazel_installer_initialize (EazelInstaller *object)
+{
 	EazelInstaller *installer;
 	GList *iterator;
 	char *tmpdir;
@@ -2252,4 +2253,3 @@ eazel_installer_new (void)
 	
 	return installer;
 }
-

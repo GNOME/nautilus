@@ -1,3 +1,27 @@
+2000-12-05  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+
+	Re-order softcat init so it's initialized before pieces of it are
+	set.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(gnome_vfs_escape_string):
+
+	Fix the stub escape_string (for the gnome-vfs-less bootstrap
+	installer) to actually compile and work.
+
+	* nautilus-installer/src/Makefile:
+
+	(innocent whistle)
+	
+	* nautilus-installer/src/installer.c: (create_what_to_do_page),
+	(eazel_installer_add_category), (eazel_installer_initialize),
+	(eazel_installer_new):
+
+	Fix label names to match (and avoid assertion).
+
 2000-12-05  Michael Engber  <engber@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_constructed),

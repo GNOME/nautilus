@@ -609,6 +609,7 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->revert = FALSE;
 	service->private->ssl_rename = FALSE;
 	service->private->ignore_file_conflicts = FALSE;
+	service->private->softcat = eazel_softcat_new ();
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
 
 	/* when running as part of trilobite, don't catch logs */
@@ -618,8 +619,6 @@ eazel_install_initialize (EazelInstall *service) {
 			   (GLogFunc)eazel_install_log, 
 			   service);
 #endif
-
-	service->private->softcat = eazel_softcat_new ();
 
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
 	trilobite_debug ("packsys.rpm.dbs = 0x%p", service->private->packsys.rpm.dbs);
