@@ -792,10 +792,16 @@ nautilus_window_destroy (GtkObject *object)
 
 	nautilus_window_manage_views_destroy (window);
 
+	window->sidebar = NULL;
 	eel_g_object_list_free (window->sidebar_panels);
 	window->sidebar_panels = NULL;
 
-	if (window->content_view != NULL) {
+	window->view_as_option_menu = NULL;
+	window->navigation_bar = NULL;
+	window->content_hbox = NULL;
+	window->zoom_control = NULL;
+
+	if (window->content_view) {
 		gtk_object_destroy (GTK_OBJECT (window->content_view));
 		window->content_view = NULL;
 	}

@@ -6,6 +6,36 @@
 	fix bogus use of the default root window.
 	(image_loading_done_callback): update.
 
+2002-07-25  Dave Camp  <dave@ximian.com>
+
+	* NEWS: Add news items.
+	* configure.in: Bump requirements, patch from Rodney Dawes.
+	Bump version to 2.0.2.
+
+2002-07-24  Dave Camp  <dave@ximian.com>
+
+	(nautilus_music_view_init): Use an EelBackgroundBox instead of a
+	GtkEventBox.
+	* components/music/nautilus-music-view.c:
+	* src/nautilus-sidebar.c: Derive from EelBackgroundBox instead of
+	GtkEventBox.
+	(nautilus_sidebar_style_set): Removed special case for
+	EelBackgroundStyle.
+
+2002-07-24  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window-manage-views.c
+	(update_title): only set the location bookmark if
+	it's non NULL. #87889
+
+2002-07-24  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c (nautilus_window_destroy):
+	NULL various elements, including the sidebar
+	here: #87414
+
+=== nautilus 2.0.1 ===
+
 2002-07-22  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
