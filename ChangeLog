@@ -1,5 +1,16 @@
 2003-06-08  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-properties-window.c:
+	(create_basic_page): 
+	(get_pixbuf_for_properties_window),
+	(update_properties_window_icon), (create_image_widget): If
+	all files have the same icon, show that icon.
+	(properties_window_update): Update the icon.
+	(remove_from_dialog): Fixed a problem removing from the 
+	target file list.
+
+2003-06-08  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
 	(nautilus_zoom_control_button_press_event), (zoom_out_clicked),
 	(zoom_in_clicked), (set_label_size), (label_style_set_callback),

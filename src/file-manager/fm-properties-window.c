@@ -92,6 +92,8 @@ struct FMPropertiesWindowDetails {
 	GtkTable *basic_table;
 	GtkTable *permissions_table;
 
+	GtkWidget *icon_image;
+
 	NautilusEntry *name_field;
 	char *pending_name;
 
@@ -323,18 +325,45 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
 }
 
 static GdkPixbuf *
-get_pixbuf_for_properties_window (NautilusFile *file)
+get_pixbuf_for_properties_window (FMPropertiesWindow *window)
 {
-	g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), NULL);
+	GdkPixbuf *pixbuf;
+	char *icon;
+	GList *l;
 	
-	if (file) {
-		return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD);
-	} else {
-		return nautilus_icon_factory_get_pixbuf_from_name ("gnome-fs-regular",
-								   NULL,
-								   NAUTILUS_ICON_SIZE_STANDARD, 
-								   NULL);
+	icon = NULL;
+	for (l = window->details->original_files; l != NULL; l = l->next) {
+		NautilusFile *file;
+		
+		file = NAUTILUS_FILE (l->data);
+		
+		if (!icon) {
+			icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+		} else {
+			char *new_icon;
+			new_icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+			if (!new_icon || strcmp (new_icon, icon)) {
+				g_free (icon);
+				g_free (new_icon);
+				icon = NULL;
+				break;
+			}
+			g_free (new_icon);
+		}
 	}
+
+	if (!icon) {
+		icon = g_strdup ("gnome-fs-regular");
+	}
+	
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, NULL,
+							    NAUTILUS_ICON_SIZE_STANDARD,
+							    NULL, NULL,
+							    TRUE, NULL);
+
+	g_free (icon);
+
+	return pixbuf;
 }
 
 
@@ -342,13 +371,11 @@ static void
 update_properties_window_icon (GtkImage *image)
 {
 	GdkPixbuf	*pixbuf;
-	NautilusFile	*file;
+	FMPropertiesWindow *window;
 
-	file = g_object_get_data (G_OBJECT (image), "nautilus_file");
-
-	g_assert (NAUTILUS_IS_FILE (file));
+	window = g_object_get_data (G_OBJECT (image), "properties_window");
 	
-	pixbuf = get_pixbuf_for_properties_window (file);
+	pixbuf = get_pixbuf_for_properties_window (window);
 
 	gtk_image_set_from_pixbuf (image, pixbuf);
 	
@@ -455,14 +482,15 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 }
 
 static GtkWidget *
-create_image_widget_for_file (NautilusFile *file)
+create_image_widget (FMPropertiesWindow *window)
 {
  	GtkWidget *image;
 	GdkPixbuf *pixbuf;
 	
-	pixbuf = get_pixbuf_for_properties_window (file);
+	pixbuf = get_pixbuf_for_properties_window (window);
 	
 	image = gtk_image_new ();
+	window->details->icon_image = image;
 
 	/* prepare the image to receive dropped objects to assign custom images */
 	gtk_drag_dest_set (GTK_WIDGET (image),
@@ -477,18 +505,8 @@ create_image_widget_for_file (NautilusFile *file)
 
 	g_object_unref (pixbuf);
 
-	if (file) {
-		nautilus_file_ref (file);
-		g_object_set_data_full (G_OBJECT (image), "nautilus_file",
-					file, (GDestroyNotify) nautilus_file_unref);
+	g_object_set_data (G_OBJECT (image), "properties_window", window);
 
-		/* Name changes can also change icon (since name is determined by MIME type) */
-		g_signal_connect_object (file, "changed",
-					 G_CALLBACK (update_properties_window_icon),
-					 image, G_CONNECT_SWAPPED);
-
-	}
-	
 	/* React to icon theme changes. */
 	g_signal_connect_object (nautilus_icon_factory_get (),
 				 "icons_changed",
@@ -941,7 +959,7 @@ remove_from_dialog (FMPropertiesWindow *window,
 	window->details->original_files = g_list_remove_link (window->details->original_files, original_link);
 	g_list_free (original_link);
 
-	window->details->target_files = g_list_remove_link (window->details->original_files, target_link);
+	window->details->target_files = g_list_remove_link (window->details->target_files, target_link);
 	g_list_free (target_link);
 
 	g_hash_table_remove (window->details->initial_emblems, original_file);
@@ -1013,6 +1031,7 @@ properties_window_update (FMPropertiesWindow *window,
 	    || g_list_find (window->details->original_files, changed_file)) {
 		
 		update_properties_window_title (window);
+		update_properties_window_icon (GTK_IMAGE (window->details->icon_image));
 
 		update_name_field (window);
 
@@ -2124,11 +2143,7 @@ create_basic_page (FMPropertiesWindow *window)
 			  0, 0,
 			  0, 0);
 
-	if (is_multi_file_window (window)) {
-		icon_pixmap_widget = create_image_widget_for_file (NULL);
-	} else {
-		icon_pixmap_widget = create_image_widget_for_file (get_original_file (window));
-	}
+	icon_pixmap_widget = create_image_widget (window);
 	gtk_widget_show (icon_pixmap_widget);
 	
 	icon_aligner = gtk_alignment_new (1, 0.5, 0, 0);
