@@ -140,6 +140,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	NautilusEntry *entry;
 	GtkEditable *editable;
 	int position;
+	gboolean had_selection;
 	gboolean result;
 	
 	entry = NAUTILUS_ENTRY (widget);
@@ -188,10 +189,15 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	
 	obscure_cursor (entry);
 
+	had_selection = editable->has_selection;
+
 	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 
-	if (result) {
+	/* Pressing a key usually changes the selection if there is a selection.
+	 * If there is not selection, we can save work by not emitting a signal.
+	 */
+	if (result && (had_selection || editable->has_selection)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
 	}
 
@@ -206,9 +212,12 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	guint old_start_pos, old_end_pos;
 	GdkCursor *cursor;
 	NautilusEntry *entry;
+	GtkEditable *editable;
+
+	entry = NAUTILUS_ENTRY (widget);
+	editable = GTK_EDITABLE (widget);
 
 	/* Reset cursor to I-Beam */
-	entry = NAUTILUS_ENTRY (widget);
 	if (entry->details->cursor_obscured) {
 		cursor = gdk_cursor_new (GDK_XTERM);
 		gdk_window_set_cursor (GTK_ENTRY (entry)->text_area, cursor);
@@ -216,13 +225,15 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 		entry->details->cursor_obscured = FALSE;
 	}
 
-	old_start_pos = GTK_EDITABLE (widget)->selection_start_pos;
-	old_end_pos = GTK_EDITABLE (widget)->selection_end_pos;
+	old_start_pos = editable->selection_start_pos;
+	old_end_pos = editable->selection_end_pos;
 
 	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 
-	if (result) {
+	/* Send a signal if dragging the mouse caused the selection to change. */
+	if (result && (old_start_pos != editable->selection_start_pos
+		       || old_end_pos != editable->selection_end_pos)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
 	}
 	
