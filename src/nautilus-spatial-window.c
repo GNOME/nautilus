@@ -166,8 +166,9 @@ static GnomeUIInfo file_menu_info[] = {
 	GNOMEUIINFO_END
 };
 
-// FIXME: These all need implementation, though we might end up doing that
-// separately for each content view (and merging with the insensitive items here)
+/* FIXME: These all need implementation, though we might end up doing that
+ * separately for each content view (and merging with the insensitive items here)
+ */
 static GnomeUIInfo edit_menu_info[] = {
 	GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
 	GNOMEUIINFO_SEPARATOR,
@@ -176,7 +177,7 @@ static GnomeUIInfo edit_menu_info[] = {
 	GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
 	GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
 	GNOMEUIINFO_SEPARATOR,
-	// Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator
+	/* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
 	{
 	    GNOME_APP_UI_ITEM,
 	    N_("Select All"), NULL,
@@ -187,7 +188,27 @@ static GnomeUIInfo edit_menu_info[] = {
 	GNOMEUIINFO_END
 };
 
-// FIXME: This needs implementation.
+/* FIXME: This needs implementation. */
+static GnomeUIInfo bookmarks_menu_info[] = {
+        {
+            GNOME_APP_UI_ITEM,
+            N_("Add Bookmark"), N_("Create a new bookmark for the current location"),
+            NULL, NULL, NULL,
+            GNOME_APP_PIXMAP_NONE, NULL,
+            0, 0, NULL
+        },
+        {
+            GNOME_APP_UI_ITEM,
+            N_("Edit Bookmarks..."), N_("Open the bookmark-editing window"),
+            NULL, NULL, NULL,
+            GNOME_APP_PIXMAP_NONE, NULL,
+            0, 0, NULL
+        },
+	GNOMEUIINFO_SEPARATOR,
+	GNOMEUIINFO_END
+};
+
+/* FIXME: This needs implementation. */
 static GnomeUIInfo help_menu_info[] = {
         {
             GNOME_APP_UI_ITEM,
@@ -202,6 +223,7 @@ static GnomeUIInfo help_menu_info[] = {
 static GnomeUIInfo main_menu[] = {
 	GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
 	GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
+	GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
 	GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
 	GNOMEUIINFO_END
 };
@@ -389,36 +411,40 @@ nautilus_window_constructed(NautilusWindow *window)
   
   app = GNOME_APP(window);
 
-  // set up menu bar
+  /* set up menu bar */
   gnome_app_create_menus_with_data(app, main_menu, window);
 
-  // desensitize the items that haven't yet been implemented
-  // FIXME: these all need to be implemented. I'm using hardwired numbers
-  // rather than enum symbols here just 'cuz the enums aren't needed (I think)
-  // once we've implemented things. If it turns out they are, we'll define 'em.
-  //  gtk_widget_set_sensitive(file_menu_info[0].widget, FALSE); // New Window
+  /* desensitize the items that haven't yet been implemented
+   * FIXME: these all need to be implemented. I'm using hardwired numbers
+   * rather than enum symbols here just 'cuz the enums aren't needed (I think)
+   * once we've implemented things. If it turns out they are, we'll define 'em.
+   */
 
-  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); // Undo
-  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); // Cut
-  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); // Copy
-  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); // Paste
-  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); // Clear
-  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); // Select All
+  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); /* Undo */
+  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); /* Cut */
+  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); /* Copy */
+  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); /* Paste */
+  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); /* Clear */
+  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); /* Select All */
 
-  gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); // About
+  gtk_widget_set_sensitive(bookmarks_menu_info[0].widget, FALSE); /* Add Bookmark */
+  gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
 
-  // set up toolbar
+  gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); /* About */
+
+  /* set up toolbar */
 
   gnome_app_create_toolbar_with_data(app, toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
 
-  // set up location bar
+  /* set up location bar */
 
   window->option_cvtype = gtk_option_menu_new();
   window->menu_cvtype = gtk_menu_new();
-  // FIXME: Add in placeholder item for now; rework this when we get the right views showing up.
-  // Since menu doesn't yet work, make it insensitive.
+  /* FIXME: Add in placeholder item for now; rework this when we get the right views showing up.
+   * Since menu doesn't yet work, make it insensitive.
+   */
   gtk_container_add(GTK_CONTAINER(window->menu_cvtype), 
   	gtk_menu_item_new_with_label(_("View as (placeholder)")));
   gtk_widget_set_sensitive(window->option_cvtype, FALSE);
@@ -441,9 +467,10 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_show(window->option_cvtype);
   gtk_widget_show_all(location_bar_box);
 
-  // For mysterious reasons, connecting these signals before laying out the menu
-  // and option menu ends up making the option menu not know how to size itself (i.e, 
-  // it is zero-width unless you turn on expand and fill). So we do it here afterwards.
+  /* For mysterious reasons, connecting these signals before laying out the menu
+   * and option menu ends up making the option menu not know how to size itself (i.e, 
+   * it is zero-width unless you turn on expand and fill). So we do it here afterwards.
+   */
   gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "add",
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
@@ -451,15 +478,19 @@ nautilus_window_constructed(NautilusWindow *window)
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
 
-  // set up status bar
+  /* set up status bar */
 
+  /* FIXME: The text in the statusbar is jammed up against the left edge of the frame.
+   * This looks ugly, but appears to be "standard appearance" in GTK.
+   * I haven't found a good workaround yet.
+   */
   gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
   window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
   gnome_app_install_menu_hints(app, main_menu); /* This has to go here
                                                    after the statusbar
                                                    creation */
 
-  // set up window contents and policy
+  /* set up window contents and policy */
 
   gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
   gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);

@@ -735,8 +735,9 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	// FIXME: This should be an assert, changed to a warning for now
-	// so we can continue developing other features until this is resolved.
+	/* FIXME: This should be an assert, changed to a warning for now
+	 * so we can continue developing other features until this is resolved.
+ 	 */
 	if (!view->directory_list || view->directory_list == list) {
 		g_warning("unexpected view->directory_list!");
 	}
