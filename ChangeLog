@@ -1,3 +1,10 @@
+2001-12-06  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): if we were
+	already registered - due to a beautifuly inefficient
+	activation server race - just quit.
+
 2001-12-07  Darin Adler  <darin@bentspoon.com>
 
 	* docs/design.txt:

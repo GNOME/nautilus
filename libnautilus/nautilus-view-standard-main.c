@@ -238,13 +238,15 @@ nautilus_view_standard_main_multi (const char *executable_name,
 #ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
 #endif
-	/* Loop until we have no more objects. */
-	do {
-		bonobo_main ();
-	} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
-
-	/* Let the factory go. */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
+	if (factory != NULL) {
+		/* Loop until we have no more objects. */
+		do {
+			bonobo_main ();
+		} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
+		
+		/* Let the factory go. */
+		bonobo_object_unref (BONOBO_OBJECT (factory));
+	}
 
 	gnome_vfs_shutdown ();
 
