@@ -554,18 +554,22 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 	/* We aren't really interested in progress, but we do need to see
 	 * when the transfer is done or fails.
 	 */
-
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
 		if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
-			/* Here's the case where we are done renaming and we succeed. */
-			rename_update_info_and_metafile (state);
-			file_operation_state_complete (state, GNOME_VFS_OK);
+			/* Here's the case where we are done renaming. */
+			if (info->vfs_status == GNOME_VFS_OK) {
+				rename_update_info_and_metafile (state);
+			}
+			file_operation_state_complete (state, info->vfs_status);
 		}
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		/* Here's the case where we are done renaming and we fail. */
-		file_operation_state_complete (state, info->vfs_status);
+		/* We have to handle this case because if you pass
+		 * GNOME_VFS_ERROR_MODE_ABORT, you never get the
+		 * error code for a failed rename.
+		 * FIXME: I think this represents a bug in GNOME VFS.
+		 */
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	default:
 		break;

@@ -1,3 +1,30 @@
+2000-05-12  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Get rid of obsolete requirement for "--without-bonobo"
+	for the gtkhtml module. The internal modules list at Eazel was
+	updated but someone forgot to update HACKING, as usual.
+	
+	* components/services/trilobite/sample/command-line/.cvsignore:
+	* components/services/trilobite/sample/nautilus-view/.cvsignore:
+	* components/services/trilobite/sample/nautilus-view/icons/.cvsignore:
+	* components/services/trilobite/sample/service/.cvsignore:
+	Lots of generated files that need to be ignored for CVS happiness.
+	
+	* libnautilus-extensions/nautilus-file.c: (rename_callback):
+	Fixed bug in handling error cases. I couldn't test this until Pavel
+	fixed the GNOME VFS bug that prevented any errors from being
+	reported, but he did and I am ready.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text): Fixed a bug where you'd have a big
+	black box behind the text you are renaming by checking for rename
+	mode before drawing the black background.
+	
+	* src/file-manager/fm-icon-view.c:
+	(set_sort_criterion), (get_sort_criterion_by_metadata_text),
+	(get_sort_criterion_by_menu_path), (fm_icon_view_begin_loading),
+	(sort_callback): Add code to save and load the "sort by" setting.
+
 2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* src/file-manager/Makefile.am (CLEANFILES): Fixed the CLEANFILES
@@ -9,7 +36,6 @@
 
 	* components/services/trilobite/lib/*
 	* components/services/install/command-line
-
 	More file gymnastics to isolate generic service code into libtrilobite.
 	Revived some dead files in eazel-install for now until I can do some
 	more work to clean the current functions up.
@@ -21,29 +47,32 @@
 2000-05-11  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
-	improved the look of the highlighting by adding more margins to the box, and tightened things
-	up vertically in the non-highlighted case.
+	improved the look of the highlighting by adding more margins to
+	the box, and tightened things up vertically in the non-highlighted
+	case.
 	
 2000-05-11  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
-	fixed bug #758, selected items difficult to see at a glance, by going back to drawing a
-	filled box around the text to indicate selection. I kept the emboldening, since it improves
-	readability. This time it doesn't use XOR and has a settable color, which I'll make a preference
-	for soon.
+	fixed bug #758, selected items difficult to see at a glance, by
+	going back to drawing a filled box around the text to indicate
+	selection. I kept the emboldening, since it improves
+	readability. This time it doesn't use XOR and has a settable
+	color, which I'll make a preference for soon.
 	
 2000-05-11  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list-column-title.c:
 	(truncate_string), (nautilus_list_column_title_paint):
-	Fix 376 - Truncate text in collumns. Clean up nautilus_list_column_title_paint
-	a little in the process.
+	Fix 376 - Truncate text in columns. Clean up
+	nautilus_list_column_title_paint a little in the process.
 	
 	* src/file-manager/fm-list-view.c: (create_list),
 	(fm_list_view_set_zoom_level):
-	Fix 315 - Icon columns are now fixed width. Fix a bug that this uncovered
-	where setting column width, column min width and column max width have to 
-	be done	in a predetermined order to not get messed up by a bug in GtkCList.
+	Fix 315 - Icon columns are now fixed width. Fix a bug that this
+	uncovered where setting column width, column min width and column
+	max width have to be done in a predetermined order to not get
+	messed up by a bug in GtkCList.
 
 2000-05-11  Darin Adler  <darin@eazel.com>
 

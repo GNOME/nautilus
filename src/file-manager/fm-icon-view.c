@@ -76,12 +76,16 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_V
 
 typedef struct {
 	NautilusFileSortType sort_type;
-	const char *metadata_name;
+	const char *metadata_text;
 	const char *menu_path;
 	const char *menu_label;
 	const char *menu_hint;
 } SortCriterion;
 
+/* Note that the first item in this list is the default sort,
+ * and that the items show up in the menu in the order they
+ * appear in this list.
+ */
 static const SortCriterion sort_criteria[] = {
 	{
 		NAUTILUS_FILE_SORT_BY_NAME,
@@ -130,7 +134,7 @@ struct FMIconViewDetails
 
 	const SortCriterion *sort;
 
-	/* Workaround for Bonobo bug. */
+	/* FIXME: Workaround for Bonobo bug. */
 	gboolean updating_bonobo_radio_menu_item;
 };
 
@@ -180,6 +184,12 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	g_assert (position != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	/* Doing parsing in the "C" locale instead of the one set
+	 * by the user ensures that data in the metafile is not in
+	 * a locale-specific format. It's only necessary for floating
+	 * point values since there aren't locale-specific formats for
+	 * integers in C stdio.
+	 */
 	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
@@ -470,7 +480,7 @@ update_layout_menus (FMIconView *view)
 		return;
 	}
 
-	/* Workaround for Bonobo bug. */
+	/* FIXME: Workaround for Bonobo bug. */
 	view->details->updating_bonobo_radio_menu_item = TRUE;
 	path = MENU_PATH_MANUAL_LAYOUT;
 	if (nautilus_icon_container_is_auto_layout (get_icon_container (view))) {
@@ -482,12 +492,65 @@ update_layout_menus (FMIconView *view)
 	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
+static gboolean
+set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
+{
+	if (sort == NULL) {
+		return FALSE;
+	}
+	if (icon_view->details->sort == sort) {
+		return FALSE;
+	}
+	icon_view->details->sort = sort;
+
+	/* Store the new sort setting in the metafile. */
+	nautilus_directory_set_metadata
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+		 sort_criteria[0].metadata_text,
+		 sort->metadata_text);
+
+	/* Update the layout menus to match the new sort setting. */
+	update_layout_menus (icon_view);
+
+	return TRUE;
+}
+
+static const SortCriterion *
+get_sort_criterion_by_metadata_text (const char *metadata_text)
+{
+	int i;
+
+	/* Figure out what the new sort setting should be. */
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+		if (strcmp (sort_criteria[i].metadata_text, metadata_text) == 0) {
+			return &sort_criteria[i];
+		}
+	}
+	return NULL;
+}
+
+static const SortCriterion *
+get_sort_criterion_by_menu_path (const char *path)
+{
+	int i;
+
+	/* Figure out what the new sort setting should be. */
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+		if (strcmp (sort_criteria[i].menu_path, path) == 0) {
+			return &sort_criteria[i];
+		}
+	}
+	return NULL;
+}
+
 static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
 	NautilusDirectory *directory;
 	int level;
+	char *sort_name;
 	gboolean auto_layout;
 
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
@@ -506,7 +569,22 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 		 icon_view->details->default_zoom_level);
 	fm_icon_view_set_zoom_level (icon_view, level);
 
-	/* Set the layout mode from the metadata. */
+	/* Set the sort mode from the metadata.
+	 * It's OK not to resort the icons because the
+	 * container doesn't have any icons at this point.
+	 */
+	sort_name = nautilus_directory_get_metadata
+		(directory,
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+		 sort_criteria[0].metadata_text);
+	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
+	g_free (sort_name);
+
+	/* Set the layout mode from the metadata.
+	 * We must do this after getting the sort mode,
+	 * because otherwise the layout_changed callback
+	 * might overwrite the sort mode.
+	 */
 	auto_layout = nautilus_directory_get_boolean_metadata
 		(directory,
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
@@ -674,23 +752,17 @@ static void
 sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 {
 	FMIconView *icon_view;
-	NautilusIconContainer *container;
-	int i;
 
 	icon_view = FM_ICON_VIEW (user_data);
 
-	/* Workaround for Bonobo bug. */
+	/* FIXME: Workaround for Bonobo bug. */
 	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
-	container = get_icon_container (FM_ICON_VIEW (user_data));
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
-		if (strcmp (sort_criteria[i].menu_path, path) == 0) {
-			icon_view->details->sort = &sort_criteria[i];
-		}
-	}
-	nautilus_icon_container_sort (container);
+	set_sort_criterion (icon_view, get_sort_criterion_by_menu_path (path));
+	nautilus_icon_container_sort (get_icon_container (icon_view));
+
 }
 
 static void
@@ -699,18 +771,17 @@ manual_layout_callback (BonoboUIHandler *handler,
 			const char *path)
 {
 	FMIconView *icon_view;
-	NautilusIconContainer *container;
 
 	icon_view = FM_ICON_VIEW (user_data);
 
-	/* Workaround for Bonobo bug. */
+	/* FIXME: Workaround for Bonobo bug. */
 	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
 
-	container = get_icon_container (FM_ICON_VIEW (user_data));
 	icon_view->details->sort = &sort_criteria[0];
-	nautilus_icon_container_set_auto_layout (container, FALSE);
+	nautilus_icon_container_set_auto_layout
+		(get_icon_container (icon_view), FALSE);
 }
 
 static void
@@ -725,6 +796,7 @@ layout_changed_callback (NautilusIconContainer *container,
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
 		 TRUE,
 		 nautilus_icon_container_is_auto_layout (container));
+
 	update_layout_menus (icon_view);
 }
 
@@ -974,6 +1046,12 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (NAUTILUS_IS_FILE (file));
 
+	/* Doing formatting in the "C" locale instead of the one set
+	 * by the user ensures that data in the metafile is not in
+	 * a locale-specific format. It's only necessary for floating
+	 * point values since there aren't locale-specific formats for
+	 * integers in C stdio.
+	 */
 	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Schedule updating menus for the next idle. Doing it directly here
