@@ -17,6 +17,7 @@ SUBDIRS = \
 	help \
 	history \
 	html \
+	loser \
 	music \
 	notes \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \

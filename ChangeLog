@@ -1,3 +1,35 @@
+2000-05-22  Maciej Stachowiak  <mjs@eazel.com>
+
+	Completed bugzilla task 763, Test component needed for failure
+	cases. Two new components called "Content Loser" and "Sidebar
+	Loser" will fail on startup based on environment variables or in
+	response to menu or toolbar items (Darin suggested using silly
+	names, though not these specific ones).
+	
+	* components/loser/README: Some docs on making the new components
+	fail.
+
+	* components/loser/content/main.c,
+	components/loser/content/nautilus-content-loser.c,
+	components/loser/content/nautilus-content-loser.h: New content
+	view which fails on demand.
+	* components/loser/content/nautilus-content-loser.oafinfo: oaf
+	activation record for it.
+
+	* components/loser/sidebar/main.c,
+	components/loser/sidebar/nautilus-sidebar-loser.c,
+	components/loser/sidebar/nautilus-sidebar-loser.h: New sidebar
+	panel that fails on demand.
+	* components/loser/sidebar/nautilus-sidebar-loser.oafinfo: oaf
+	activation record for it.
+
+	* components/Makefile.am, components/loser/Makefile.am,
+	components/loser/content/Makefile.am,
+	components/loser/sidebar/Makefile.am, configure.in: Added loser
+	components to build.
+
+	* nautilus-clean.sh: Added loser components to nautilus-clean.sh
+
 2000-05-22  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

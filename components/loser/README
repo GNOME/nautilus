@@ -1,0 +1,29 @@
+
+To make the content and sidebar "loser" components fail, you must set
+some environment variables. 
+
+To pick where the component will fail, set either
+NAUTILUS_CONTENT_LOSER_PLACE or NAUTILUS_SIDEBAR_LOSER_PLACE to one of
+the following values:
+
+pre-init
+post-init
+post-factory-init
+pre-make-object
+post-make-object
+pre-underway
+pre-load
+pre-done
+post-done
+pre-merge
+post-merge
+
+
+Also set either NAUTILUS_CONTENT_LOSER_MODE or
+NAUTILUS_SIDEBAR_LOSER_MODE to one of:
+
+hang
+exit
+error-exit
+
+
