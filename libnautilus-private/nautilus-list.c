@@ -2387,7 +2387,6 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 		     gint x, gint y, guint time)
 {
 	NautilusList *list;
-	GList *p;
 	
 	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
