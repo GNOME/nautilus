@@ -623,8 +623,6 @@ something_failed (EazelInstallCallback *service,
 			for (it = stuff; it; it = g_list_next (it)) {
 				/* I18N note: \xB7 is a dot */
 				fprintf (stdout, _("\t\xB7 Problem : %s\n"), (char*)(it->data));
-				/* I18N note: \xB7 is a dot */
-				fprintf (stdout, _("\t\xB7 Problem : %s\n"), (char*)(it->data));
 			}
 			eazel_install_problem_tree_to_case (problem, pd, uninstall, &extra_cases);
 			if (extra_cases) {

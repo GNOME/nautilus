@@ -1,3 +1,59 @@
+2001-02-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer <robey@eazel.com> sez "Looks
+	good... Wow, I wonder how long the softcat lookup-by-feature thing
+	was broken before? (doh!)"
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (something_failed):
+	Moved a duplicate fprintf that caused problems to be printed
+	twice.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added a string sequence of features. Need this so the clients can
+	print "package foo needs file libfoo.so" instead of "package foo
+	needs another package".
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_string_sequence_to_glist),
+	(g_list_to_corba_string_sequence),
+	(corba_packagedatastruct_fill_from_packagedata),
+	(corba_packagedatastruct_fill_deps),
+	(packagedata_tree_from_corba_packagedatastructlist):
+	Fill in and copy and convert and stuff the new features list.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), 
+	Don't set force when epochs are involved, but set a majick
+	datafield in the packsys object.
+	(check_tree_helper), 
+	After handling packagebreaks for package P, don't set P->status to
+	partly resolved unless all the breaks have been fixed.
+	(check_no_two_packages_has_same_file),
+	Don't let force disable file conflict check, only
+	ignore-file-conflicts.
+	(check_conflicts_against_already_installed_packages),
+	Removed the comments for bug 5720.
+	(check_feature_consistency):
+	Added package pointer and name to some debug output.
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list), 
+	Check the majick epoch flag, and add --force if set.	
+	(check_require_is_not_a_feature),
+	Wrote a function that checks to see if a package requirement is
+	also a provides of the same package.
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	Use forementioned function (solves problem for badly made rpms)
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_get_readable_name):
+	Changed to use ->features instead of ->provides
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(get_search_url_for_package):
+	When querying for a feature, use ->features instead of ->provides.
+
 2001-02-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-label-flavorful.c:

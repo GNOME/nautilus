@@ -146,6 +146,7 @@ module Trilobite {
 			sequence <PackageBreaksStruct> breaks;
 			sequence <string> modifies;	/* MD5 identifiers */
 			sequence <string> provides;	/* file list */
+			sequence <string> features;	/* feature list */
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 

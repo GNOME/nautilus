@@ -28,26 +28,26 @@
 #include <libtrilobite/trilobite-core-distribution.h>
 
 static GList*
-corba_string_sequence_to_glist (const CORBA_sequence_CORBA_string *provides)
+corba_string_sequence_to_glist (const CORBA_sequence_CORBA_string *string_list)
 {
 	GList *result = NULL;
 	guint iterator;
 
-	for (iterator = 0; iterator < provides->_length; iterator++) {
-		result = g_list_prepend (result, g_strdup (provides->_buffer[iterator]));
+	for (iterator = 0; iterator < string_list->_length; iterator++) {
+		result = g_list_prepend (result, g_strdup (string_list->_buffer[iterator]));
 	}
 	return result;
 }
 
 static void
-g_list_to_corba_string_sequence (CORBA_sequence_CORBA_string *sequence, GList *provides)
+g_list_to_corba_string_sequence (CORBA_sequence_CORBA_string *sequence, GList *string_list)
 {
 	GList *iterator;
 	int i = 0;
 
-	sequence->_length = g_list_length (provides);
+	sequence->_length = g_list_length (string_list);
 	sequence->_buffer = CORBA_sequence_CORBA_string_allocbuf (sequence->_length);
-	for (iterator = provides; iterator; iterator = g_list_next (iterator)) {
+	for (iterator = string_list; iterator; iterator = g_list_next (iterator)) {
 		sequence->_buffer[i] = CORBA_string_dup ((char*)iterator->data);
 		i++;
 	}
@@ -158,6 +158,8 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	corbapack->modifies._buffer = NULL;
 	corbapack->provides._length = 0;
 	corbapack->provides._buffer = NULL;
+	corbapack->features._length = 0;
+	corbapack->features._buffer = NULL;
 }
 
 GNOME_Trilobite_Eazel_PackageDataStruct *
@@ -314,6 +316,9 @@ corba_packagedatastruct_fill_deps (GNOME_Trilobite_Eazel_PackageDataStruct *corb
 
 	if (pack->provides != NULL) {
 		g_list_to_corba_string_sequence (&(corbapack->provides), pack->provides);
+	}
+	if (pack->features != NULL) {
+		g_list_to_corba_string_sequence (&(corbapack->features), pack->features);
 	}
 }
 
@@ -574,6 +579,7 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 		pack->modifies = g_list_reverse (pack->modifies);
 
 		pack->provides = corba_string_sequence_to_glist (&(corbapack->provides));
+		pack->features = corba_string_sequence_to_glist (&(corbapack->features));
 	}
 
 	/* now make a list of JUST the toplevel packages */

@@ -218,6 +218,14 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		}
 	}
 
+	/* If the magic epoch ignore is set (and we dont' already have the force flag),
+	   set force */
+	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (system), "ignore-epochs")) == 1) {
+		if (~flags & EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE) {
+			(*args) = g_list_prepend (*args, g_strdup ("--force"));
+		}
+	}
+
 	if (op == EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else  {
@@ -860,6 +868,27 @@ rpm_sense_to_softcat_sense (EazelPackageSystemRpm3 *system,
 	return result;
 }
 
+/* This is used for those freaky packages (Acrobat-3.01-2.i386.rpm)
+   that both provides libs and requires the same (libagm.so libpfs.so) */
+static gboolean
+check_require_is_not_a_feature (const char *requires_name, 
+				const char **provides_names, 
+				int provide_count)
+{
+	int i;
+
+	if (requires_name == NULL) {
+		return TRUE;
+	}
+
+	for (i = 0; i < provide_count; i++) {
+		if (provides_names[i] && strcmp (requires_name, provides_names[i])==0) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 void 
 eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *system,
 							PackageData *pack, 
@@ -992,11 +1021,15 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 
 
 	if (~detail_level & PACKAGE_FILL_NO_DEPENDENCIES) {		
-		const char **requires_name, **requires_version;
+		const char **requires_name, **requires_version, **provides_names;
 		int *requires_flag;
-		int count;
+		int count, provide_count;
 		int index;
 
+		headerGetEntry (hd,
+				RPMTAG_PROVIDENAME, NULL,
+				(void**)&provides_names,
+				&provide_count);
 		headerGetEntry (hd,
 				RPMTAG_REQUIRENAME, NULL,
 				(void**)&requires_name,
@@ -1019,8 +1052,12 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			if ((strncmp (requires_name[index], "lib", 3)==0 && 
 			     strstr (requires_name[index], ".so")) ||
 			    (*requires_name[index]=='/')) {
-				package->features = g_list_prepend (package->features, 
-								    g_strdup (requires_name[index]));
+				if (check_require_is_not_a_feature (requires_name[index], 
+								    provides_names, 
+								    provide_count) == TRUE) {
+					package->features = g_list_prepend (package->features, 
+									    g_strdup (requires_name[index]));
+				}
 			} else if ((strncmp (requires_name[index], "ld-linux.so", 11) == 0) ||
 				   (strncmp (requires_name[index], "rpmlib(", 7) == 0)) { 
 				/* foo */
@@ -1043,6 +1080,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 				gtk_object_unref (GTK_OBJECT (package));
 			}
 		}
+		free ((void*)provides_names);
 		free ((void*)requires_name);
 		free ((void*)requires_version);
 

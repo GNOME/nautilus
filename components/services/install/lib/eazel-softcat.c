@@ -502,7 +502,7 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 
 	/* bail out early if there's not enough info to go with */
 	if ((package->eazel_id == NULL) && (package->suite_id == NULL) && (package->name == NULL) &&
-	    (package->provides == NULL)) {
+	    (package->features == NULL)) {
 		trilobite_debug ("softcat: no search url for completely-empty package");
 		return NULL;
 	}
@@ -552,9 +552,9 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 		g_free (arch);
 	} else if (package->name == NULL) {
 		/* find by provides list! */
-		g_assert ((package->provides != NULL) && (g_list_length (package->provides) > 0));
+		g_assert ((package->features != NULL) && (g_list_length (package->features) > 0));
 		arch = trilobite_get_distribution_arch ();
-		add_to_url (url, "?provides=", (char *)(package->provides->data));
+		add_to_url (url, "?provides=", (char *)(package->features->data));
 		add_to_url (url, "&arch=", arch);
 		g_free (arch);
 	} else {

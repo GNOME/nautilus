@@ -714,8 +714,8 @@ packagedata_get_readable_name (const PackageData *pack)
 		result = g_strdup_printf ("Eazel Package #%s", pack->eazel_id);
 	} else if (pack->suite_id != NULL) {
 		result = g_strdup_printf ("Eazel Suite #%s", pack->suite_id);
-	} else if (pack->provides && pack->provides->data) {
-		result = g_strdup_printf ("file %s", (char*)(pack->provides->data));
+	} else if (pack->features && pack->features->data) {
+		result = g_strdup_printf ("file %s", (char*)(pack->features->data));
 	} else {
 		/* what the--?!  WHO ARE YOU! */
 		result = g_strdup ("another package");

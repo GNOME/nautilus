@@ -407,7 +407,8 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				g_warning ("modified package has epoch %d, new package has %d",
 					   survivor->epoch,
 					   pack->epoch);
-				eazel_install_set_force (service, TRUE);
+				gtk_object_set_data (GTK_OBJECT (service->private->package_system),
+						     "ignore-epochs", GINT_TO_POINTER (1));
 			}
 			
 			/* check against minor version */
@@ -1777,7 +1778,6 @@ check_tree_helper (EazelInstall *service,
 					pack_update->status = PACKAGE_PARTLY_RESOLVED;
 					remove = g_list_prepend (remove, breakage);
 					/* reset pack_broken to some sane values */
-					pack->status = PACKAGE_PARTLY_RESOLVED;
 					pack_update->toplevel = TRUE;
 				} else {
 #if EI2_DEBUG & 0x4
@@ -1804,6 +1804,7 @@ check_tree_helper (EazelInstall *service,
 
 		/* if no breaks were unrevived, null out the list */
 		if (g_list_length (pack->breaks)==0) {
+			pack->status = PACKAGE_PARTLY_RESOLVED;
 			g_list_free (pack->breaks);
 			pack->breaks = NULL;
 		}
@@ -1900,8 +1901,7 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 
 	flat_packages = flatten_packagedata_dependency_tree (packages);
 
-	if (eazel_install_get_force (service) ||
-	    eazel_install_get_ignore_file_conflicts (service) ||
+	if (eazel_install_get_ignore_file_conflicts (service) ||
 	    (g_list_length (flat_packages) == 1)) {
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("(not performing duplicate file check)");
@@ -2066,17 +2066,6 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 		pack->conflicts_checked = TRUE;
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
 			filename = (char *)(iter_file->data);
-
-			/* FIXME: bugzilla.eazel.com 5720
-			   this is a patch to circumvent unwanted behaviour.
-			   Softcat doens't strip directories when giving NO_DIRS_IN_PROVIDES as fillflag,
-			   till it does, I use this check */
-			/* but wait!  this is also needed to fix bug 5799 until softcat fixes
-			 * forseti bug XXXX [files and directories need to be indicated differently in the xml]
-			if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
-				continue;
-			}
-			*/
 
 			/* If the file isn't on the system, no need to check for conflicts */
 			if (g_file_test (filename, G_FILE_TEST_ISFILE) == 0) {
@@ -2251,7 +2240,8 @@ check_feature_consistency (EazelInstall *service,
 						
 						if (eazel_install_package_compare (pack_broken, pack_modified)==0) {
 #if EI2_DEBUG & 0x4
-							trilobite_debug ("It's my child");
+							trilobite_debug ("%p %s, it's my child",
+									 pack_broken, pack_broken->name);
 #endif
 							continue;
 							
@@ -2260,7 +2250,8 @@ check_feature_consistency (EazelInstall *service,
 						if (g_list_find_custom (pack->breaks, pack_broken,
 									(GCompareFunc)find_break_by_package_name)) {
 #if EI2_DEBUG & 0x4
-							trilobite_debug ("Already marked as borked");
+							trilobite_debug ("%p %s, already marked as borked",
+									 pack_broken, pack_broken->name);
 #endif
 							continue;
 
