@@ -350,6 +350,11 @@ nautilus_drag_window_register (GtkWindow *window)
 	NautilusDragWindowDetails *details;
 	guint signal_id;
 
+        /* FIXME: This is disabled until we come up with a better
+         * way to do this. Havoc had some ideas.
+         */
+        return;
+        
 	if (!initialized) {
 		/* Add emission hooks for the signals we need to monitor
 		 */

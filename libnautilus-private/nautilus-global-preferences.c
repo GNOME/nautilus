@@ -45,8 +45,8 @@
 #define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* Path for gnome-vfs preferences */
-static const char *EXTRA_MONITOR_PATHS[] = { "/system/gnome-vfs",
-					     "/desktop/gnome/file-views",
+static const char *EXTRA_MONITOR_PATHS[] = { "/system/gnome_vfs",
+					     "/desktop/gnome/file_views",
 					     NULL };
 
 /* Forward declarations */

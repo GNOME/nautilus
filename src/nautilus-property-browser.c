@@ -924,53 +924,56 @@ nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_brow
 static GtkWidget*
 nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 {
-	GtkWidget *widget, *entry;
+	GtkWidget *widget;
 	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
-	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem:"), NULL, GTK_DIALOG_MODAL,
-					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem:"),
+					      GTK_WINDOW (property_browser), GTK_DIALOG_MODAL,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
+
+	/* install the table in the dialog */	
+	gtk_widget_show (table);	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the keyword label and field */	
 	
-	widget = gtk_label_new(_("Keyword:"));
+	widget = gtk_label_new_with_mnemonic(_("_Keyword:"));
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
   	property_browser->details->keyword = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (property_browser->details->keyword), 24);
+	gtk_widget_grab_focus(property_browser->details->keyword);
 	gtk_widget_show(property_browser->details->keyword);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (widget),
+				       GTK_WIDGET (property_browser->details->keyword));
 
 	/* default image is the generic emblem */
 	g_free(property_browser->details->image_path);		
 	property_browser->details->image_path = g_build_filename (NAUTILUS_PIXMAPDIR, "emblems.png", NULL);
 	
 	/* set up a gnome icon entry to pick the image file */
-	widget = gtk_label_new(_("Image:"));
+	widget = gtk_label_new_with_mnemonic (_("_Image:"));
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
 	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an image file for the new emblem:"));
 	gnome_icon_entry_set_pixmap_subdir (GNOME_ICON_ENTRY(property_browser->details->file_entry),
 						DATADIR "/pixmaps");
-	gnome_icon_entry_set_icon (GNOME_ICON_ENTRY(property_browser->details->file_entry),
-					property_browser->details->image_path);
-	
+	gnome_icon_entry_set_filename (GNOME_ICON_ENTRY(property_browser->details->file_entry),
+				       property_browser->details->image_path);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (widget),
+				       GTK_WIDGET (property_browser->details->file_entry));
+
 	gtk_widget_show(property_browser->details->file_entry);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
-	entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY(property_browser->details->file_entry));
-	gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
-	
-	/* install the table in the dialog */	
-	gtk_widget_show (table);	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
-	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	gtk_window_set_wmclass(GTK_WINDOW(dialog), "emblem_dialog", "Nautilus");
-	
+	gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY(property_browser->details->file_entry));
+	gnome_icon_entry_set_filename (GNOME_ICON_ENTRY (property_browser->details->file_entry), property_browser->details->image_path);	
 	return dialog;
 }
 
@@ -997,7 +1000,6 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
   	property_browser->details->color_name = gtk_entry_new ();
 	gtk_widget_grab_focus (property_browser->details->color_name);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (widget), property_browser->details->color_name);
-	gtk_entry_set_max_length (GTK_ENTRY (property_browser->details->color_name), 24);
 	gtk_widget_show(property_browser->details->color_name);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
@@ -1245,12 +1247,14 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 static gboolean
 emblem_keyword_valid (const char *keyword)
 {
-	int index, keyword_length;
+	const char *p;
+	gunichar c;
+	
+	for (p = keyword; *p; p = g_utf8_next_char (p)) {
+		c = g_utf8_get_char (p);
 
-	keyword_length = strlen (keyword);
-	for (index = 0; index < keyword_length; index++) {
-		if (!g_ascii_isalnum (keyword[index])
-		    && !g_ascii_isspace (keyword[index])) {
+		if (!g_unichar_isalnum (c) &&
+		    !g_unichar_isspace (c)) {
 			return FALSE;
 		}
 	}
@@ -1395,7 +1399,7 @@ add_new_emblem (NautilusPropertyBrowser *property_browser)
 
 		eel_add_weak_pointer (&property_browser->details->dialog);
 
-		g_signal_connect_object (property_browser->details->dialog, "clicked",
+		g_signal_connect_object (property_browser->details->dialog, "response",
 					 G_CALLBACK (emblem_dialog_clicked), property_browser, 0);
 		gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
 		gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));

@@ -131,12 +131,14 @@ typedef struct {
 
 enum {
 	TARGET_URI_LIST,
-	TARGET_GNOME_URI_LIST
+	TARGET_GNOME_URI_LIST,
+	TARGET_RESET_BACKGROUND
 };
 
 static GtkTargetEntry target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
-	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
+	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
+	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
 
 #define ERASE_EMBLEM_FILENAME	"erase.png"
@@ -269,6 +271,19 @@ uri_is_local_image (const char *uri)
 	return TRUE;
 }
 
+static void
+reset_icon (FMPropertiesWindow *properties_window)
+{
+	NautilusFile *file;
+	
+	file = properties_window->details->original_file;
+	
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, NULL);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
+	
+	gtk_widget_set_sensitive (properties_window->details->remove_image_button, FALSE);
+}
+
 static void  
 fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 int x, int y,
@@ -280,11 +295,17 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 	GtkImage *image;
  	GtkWindow *window; 
 
-	uris = g_strsplit (selection_data->data, "\r\n", 0);
-	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
-
 	image = GTK_IMAGE (widget);
  	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
+
+	if (info == TARGET_RESET_BACKGROUND) {
+		reset_icon (FM_PROPERTIES_WINDOW (window));
+		
+		return;
+	}
+	
+	uris = g_strsplit (selection_data->data, "\r\n", 0);
+	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
 
 	if (!exactly_one) {
@@ -2432,7 +2453,8 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 
 		/* re-enable the property window's clear image button */ 
 		gtk_widget_set_sensitive (properties_window->details->remove_image_button, TRUE);
-	}	
+	} else {
+	}
 }
 
 
