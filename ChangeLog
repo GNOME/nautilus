@@ -1,3 +1,19 @@
+2000-12-06  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	* components/services/trilobite/libtrilobite/trilobite-inventory-ut
+	ils.c: (add_package_info), (read_proc_info), (add_info),
+	(add_io_info), (add_hardware_info),
+	(trilobite_synchronize_configuration_metafile),
+	(trilobite_update_configuration_metafile),
+	(trilobite_create_configuration_metafile):
+	* components/services/trilobite/libtrilobite/trilobite-inventory-ut
+	ils.h:
+
+	Adding basic inventory collection funtions to trilobite.  Still needs
+	the rpm abstraction in order to work on RH7.
+
 2000-12-06  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

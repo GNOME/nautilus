@@ -38,6 +38,7 @@
 #include "trilobite-core-network.h"
 #include "trilobite-root-helper.h"
 #include "trilobite-redirect.h"
+#include "trilobite-inventory-utils.h"
 #include "helixcode-utils.h"
 #include "trilobite-root-client-public.h"
 

@@ -57,6 +57,7 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
 	trilobite-redirect.h			\
+	trilobite-inventory-utils.h		\
 	helixcode-utils.h			\
 	$(NULL)
 
@@ -69,6 +70,7 @@ libtrilobite_la_SOURCES =			\
 	trilobite-root-helper.c			\
 	trilobite-root-client.c			\
 	trilobite-redirect.c			\
+	trilobite-inventory-utils.c		\
 	helixcode-utils.c			\
 	$(NULL)
 
