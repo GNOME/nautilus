@@ -402,17 +402,24 @@ nautilus_application_startup (NautilusApplication *application,
 			 * since neither of the above causes explain it.
 			 */
 			message = _("Nautilus can't be used now. "
-				    "Rebooting the computer or installing "
-				    "Nautilus again may fix the problem.");
+				    "Running the command \"nautilus-clean.sh -x\""
+				    " from the console may fix the problem. If not,"
+				    " you can try rebooting the computer or"
+				    " installing Nautilus again.");
 			/* FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
-					     "Rebooting the computer or installing "
-					     "Nautilus again may fix the problem.\n\n"
+					     "Running the command \"nautilus-clean.sh -x\""
+					     " from the console may fix the problem. If not,"
+					     " you can try rebooting the computer or"
+					     " installing Nautilus again.\n\n"
 					     "OAF couldn't locate the Nautilus_shell.oaf file. "
 					     "One cause of this seems to be an LD_LIBRARY_PATH "
 					     "that does not include the oaf library's directory. "
 					     "Another possible cause would be bad install "
 					     "with a missing Nautilus_Shell.oaf file.\n\n"
+					     "Running \"nautilus-clean.sh -x\" will kill all "
+					     "OAF and GConf processes, which may be needed by "
+					     "other applications.\n\n"
 					     "Sometimes killing oafd and gconfd fixes "
 					     "the problem, but we don't know why.\n\n"
 					     "We have also seen this error when a faulty "
