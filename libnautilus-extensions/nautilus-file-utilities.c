@@ -209,7 +209,9 @@ nautilus_get_user_main_directory (void)
 
 			/* install the default link set */
 			nautilus_link_set_install(user_main_directory, "apps");
+			/*
 			nautilus_link_set_install(user_main_directory, "search_engines");
+			*/
 		}
 	}
 
