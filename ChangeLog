@@ -3,6 +3,7 @@
 	* libnautilus-private/nautilus-bonobo-extensions.c (activation_handle_free): 
 	New function to free a handle and it's associated object.
 	(activation_idle_callback): Call activation_handle_free.
+	(activation_cancel): Likewise.
 
 	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_update_icon):
