@@ -107,15 +107,16 @@ instructions below.
 
 The following lists the packages and the versions they should report.
 
-    module             version            configure options      dist.
-    ------             ------             -----------------      -----
-    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
-    glib:              1.2.8                                     HC1.2
-    gtk+:              1.2.8                                     HC1.2
-    imlib:             1.9.8.1                                   HC1.2
-    gnome-xml:         1.8.1                                     HC1.2
-    ORBit:             0.5.3                                     HC1.2
-    gnome-libs:        1.2.4              --enable-prefer-db1    HC1.2
+    module             version            configure options       dist.
+    ------             ------             -----------------       -----
+    rpm                3.0.4              --enable-eazel-services RH6.2 
+    popt:              <1.5, but not from GNOME CVS, see below>   RH6.2
+    glib:              1.2.8                                      HC1.2
+    gtk+:              1.2.8                                      HC1.2
+    imlib:             1.9.8.1                                    HC1.2
+    gnome-xml:         1.8.1                                      HC1.2
+    ORBit:             0.5.3                                      HC1.2
+    gnome-libs:        1.2.4              --enable-prefer-db1     HC1.2
     gnome-http:        1.0.6
     oaf:               0.5.0
     gconf:             HEAD
@@ -128,7 +129,7 @@ The following lists the packages and the versions they should report.
     libunicode:        0.4
     eog:               0.3                --with-bonobo
     medusa:            0.2
-    nautilus:          0.1
+    nautilus:          0.1   
 
 RH6.2 == Version from Red Hat 6.2 OK
 HC1.2 == Version from Helix Code Gnome 1.2 OK

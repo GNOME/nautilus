@@ -39,7 +39,7 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-#define DEBUG_PACKAGE_ALLOCS 
+#undef DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int package_allocs = 0;
@@ -367,13 +367,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 		headerGetEntry (*hd,			
 				RPMTAG_BASENAMES, NULL,
 				(void**)&names, &count);
-#else /* RPMTAG_BASENAMES */
-		/* This will most like make eazel_install_chekc_for_file_conflicts break... */
-		headerGetEntry (*hd,			
-				RPMTAG_FILENAMES, NULL,
-				(void**)&names, &count);
-#endif /* RPMTAG_BASENAMES */
-		
+
 		/* Copy all paths and shave off last /.
 		   This is needed to remove the dir entries from 
 		   the packagedata's provides list. */
@@ -382,6 +376,13 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			paths_copy[index] = g_strdup (paths[index]);
 			paths_copy[index][strlen (paths_copy[index]) - 1] = 0;
 		}
+#else /* RPMTAG_BASENAMES */
+		/* This will most like make eazel_install_chekc_for_file_conflicts break... */
+		headerGetEntry (*hd,			
+				RPMTAG_FILENAMES, NULL,
+				(void**)&names, &count);
+#endif /* RPMTAG_BASENAMES */
+		
 
 		/* Now loop through all the basenames */
 		/* NOTE: This algorithm has sizeof (paths) * sizeof (names)
@@ -394,6 +395,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			} else {
 				fullname = g_strdup (names[index]);
 			}
+#ifdef RPMTAG_BASENAMES
 			/* Check it's not a dirname, by looping through all
 			   paths_copy and check that fullname does not occur there */
 			for (index2 = 0; index2 < num_paths; index2++) {
@@ -403,6 +405,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 					break;
 				}
 			}
+#endif /* RPMTAG_BASENAMES */
 			if (fullname) {
 				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
 				pack->provides = g_list_prepend (pack->provides, fullname);

@@ -1,3 +1,16 @@
+2000-10-23  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* README:
+	Added that we require rpm 3.0.4 if --enable-eazel-service
+
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Fix for older rpm's (although installation will probably still
+	be borked, should insert #error instead.
+
+	* nautilus.spec.in:
+	nautilus-trilobite requires rpm = 3.0.4
+
 2000-10-23  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
