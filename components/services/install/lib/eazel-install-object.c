@@ -610,9 +610,13 @@ eazel_install_initialize (EazelInstall *service) {
 		GList *list = NULL;
 		char *tmp = NULL;
 
+#ifndef EAZEL_INSTALL_SLIM
 		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());
 		list = g_list_prepend (list, g_strdup (g_get_home_dir ()));
 		list = g_list_prepend (list, tmp);
+#else
+		tmp = tmp;
+#endif
 
 		service->private->package_system = eazel_package_system_new (list);
 		eazel_package_system_set_debug (service->private->package_system, 

@@ -78,12 +78,20 @@ eazel_package_system_suggest_id ()
 	return result;		
 }
 
+#ifdef EAZEL_INSTALL_SLIM
+EazelPackageSystem *eazel_package_system_implementation (GList *roots);
+#endif
+
 static EazelPackageSystem*
 eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 {
 	EazelPackageSystem *result = NULL;
 	EazelPackageSystemConstructorFunc const_func = NULL;
 	GModule *module = NULL;
+
+#ifdef EAZEL_INSTALL_SLIM
+	return eazel_package_system_implementation (roots);
+#endif
 
 	switch (id) {
 	case EAZEL_PACKAGE_SYSTEM_RPM_3:
@@ -92,6 +100,11 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 	case EAZEL_PACKAGE_SYSTEM_RPM_4:
 		module = g_module_open ("libeazelpackagesystem-rpm4.so", G_MODULE_BIND_LAZY);
 		break;
+#if 0	/* someday */
+	case EAZEL_PACKAGE_SYSTEM_BUILTIN:
+		module = g_module_open (NULL /* myself */, G_MODULE_BIND_LAZY);
+		break;
+#endif
 	default:
 		g_assert_not_reached ();
 	};
