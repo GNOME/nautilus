@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2001-02-27 10:17+0100\n"
-"PO-Revision-Date: 2001-02-26 13:02+01:00\n"
+"POT-Creation-Date: 2001-03-01 12:57+0100\n"
+"PO-Revision-Date: 2001-03-01 19:06+01:00\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -24,30 +24,54 @@ msgstr "nautilus-launcher-applet létrehozása sikertelen!"
 msgid "Can't create nautilus-preferences-applet!"
 msgstr "nautilus-preferences-applet létrehozása sikertelen!"
 
+# data/linksets/desktop.xml.h:1
+# libnautilus-extensions/nautilus-global-preferences.c:548
+#: applets/preferences-applet/nautilus-preferences-applet.c:226
+msgid "Show Desktop"
+msgstr "Munkaasztal megjelenítése"
+
+# libnautilus-extensions/nautilus-global-preferences.c:527
+#: applets/preferences-applet/nautilus-preferences-applet.c:230
+msgid "Smooth Graphics"
+msgstr "Szebb grafika"
+
+# src/nautilus-application.c:629
+#: applets/preferences-applet/nautilus-preferences-applet.c:243
+#: src/nautilus-application.c:636
+msgid "Quit"
+msgstr "Kilépés"
+
+# libnautilus-extensions/nautilus-program-chooser.c:1189
+#: applets/preferences-applet/nautilus-preferences-applet.c:251
+msgid "Start"
+msgstr "Indítás"
+
+# components/music/mpg123.c:49
+#: applets/preferences-applet/nautilus-preferences-applet.c:259
+msgid "Restart"
+msgstr "Újraindítás"
+
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 msgid "Factory for Nautilus component adapter factories"
-msgstr ""
+msgstr "Factory a Nautilus komponensadapter factory-khoz"
 
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
 msgid "Factory for Nautilus component adapter factories "
-msgstr ""
+msgstr "Factory a Nautilus komponensadapter factory-khoz "
 
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
 msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
-msgstr ""
-"Factory ojan objektumok részére amelyek wrpperként szolgálnak a közönséges "
-"Bonobo Controlokhoz vagy az Embeddable-ökhöz, hogy ezek úgy nézzenek ki, "
-"mint a Nautilus nézetek."
+msgstr "Factory ojan objektumok részére amelyek wrapperként szolgálnak a közönséges Bonobo Controlokhoz vagy az Embeddable-ökhöz, hogy ezek úgy nézzenek ki, mint a Nautilus nézetek."
 
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr ""
+msgstr "Nautilus komponensadapter factory"
 
 # components/hardware/nautilus-hardware-view.c:230
 #: components/hardware/nautilus-hardware-view.c:230
@@ -91,6 +115,18 @@ msgstr "%lu MB"
 msgid "Hardware Overview"
 msgstr "Hardver áttekintés"
 
+#: components/hardware/nautilus-hardware-view.c:520
+msgid "This is a placeholder for the CPU page."
+msgstr "Ez távtartó a CPU oldahoz."
+
+#: components/hardware/nautilus-hardware-view.c:545
+msgid "This is a placeholder for the RAM page."
+msgstr "Ez távtartó a RAM oldalhoz."
+
+#: components/hardware/nautilus-hardware-view.c:570
+msgid "This is a placeholder for the IDE page."
+msgstr "Ez távtartó az IDE oldalhoz."
+
 # components/hardware/Nautilus_View_hardware.oaf.in.h:2
 # components/hardware/nautilus-hardware-view.c:631
 # data/static_bookmarks.xml.h:13
@@ -108,12 +144,12 @@ msgstr "Factory a hardver nézetekhez"
 # components/hardware/Nautilus_View_hardware.oaf.in.h:3
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:3
 msgid "Hardware Viewer"
-msgstr "Hardver nézet"
+msgstr "Hardvermegjelenítõ"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:3
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:4
 msgid "Hardware view"
-msgstr "Hardver nézet"
+msgstr "Hardvernézet"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:2
 # components/hardware/nautilus-hardware-view.c:631
@@ -125,7 +161,7 @@ msgstr "Nézet mint hardver"
 # components/hardware/Nautilus_View_hardware.oaf.in.h:4
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:6
 msgid "hardware view"
-msgstr "hardver nézet"
+msgstr "hardvernézet"
 
 # components/help/converters/gnome-db2html2/gdb3html.c:708
 # components/music/nautilus-music-view.c:1493
@@ -155,7 +191,7 @@ msgstr "Következõ"
 #: components/help/converters/gnome-db2html2/sect-elements.c:259
 #: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
-msgstr "Feljegyzések"
+msgstr "Jegyzetek"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:705
 #: components/help/converters/gnome-db2html2/sect-elements.c:709
@@ -299,68 +335,68 @@ msgstr "APPENDIX"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:503
-#: components/help/hyperbola-filefmt.c:505
-#: components/help/hyperbola-filefmt.c:509
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:504
+#: components/help/hyperbola-filefmt.c:506
+#: components/help/hyperbola-filefmt.c:510
+#: components/help/hyperbola-filefmt.c:512
+#: components/help/hyperbola-filefmt.c:516
 msgid "Manual"
 msgstr "Kézikönyv"
 
 # components/help/hyperbola-filefmt.c:505
-#: components/help/hyperbola-filefmt.c:505
+#: components/help/hyperbola-filefmt.c:506
 msgid "System"
 msgstr "Rendszer"
 
 # components/help/hyperbola-filefmt.c:505
-#: components/help/hyperbola-filefmt.c:505
+#: components/help/hyperbola-filefmt.c:506
 msgid "Configuration"
 msgstr "Beállítás"
 
 # components/help/hyperbola-filefmt.c:505
-#: components/help/hyperbola-filefmt.c:505
+#: components/help/hyperbola-filefmt.c:506
 msgid "Config files"
 msgstr "Konfigurációs fájlok"
 
 # components/help/hyperbola-filefmt.c:509
 # components/help/hyperbola-filefmt.c:833 data/linksets/apps.xml.h:1
-#: components/help/hyperbola-filefmt.c:509
-#: components/help/hyperbola-filefmt.c:833 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:510
+#: components/help/hyperbola-filefmt.c:834 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Alkalmazások"
 
 # components/help/hyperbola-filefmt.c:509
-#: components/help/hyperbola-filefmt.c:509
+#: components/help/hyperbola-filefmt.c:510
 msgid "Command Line"
 msgstr "Parancssor"
 
 # components/help/hyperbola-filefmt.c:511
 # components/help/hyperbola-filefmt.c:515
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:512
+#: components/help/hyperbola-filefmt.c:516
 msgid "Development"
 msgstr "Fejlesztés"
 
 # components/help/hyperbola-filefmt.c:511
 # components/help/hyperbola-filefmt.c:515
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:512
+#: components/help/hyperbola-filefmt.c:516
 msgid "APIs"
 msgstr "APIk"
 
 # components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:511
+#: components/help/hyperbola-filefmt.c:512
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
 # components/help/hyperbola-filefmt.c:515
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:516
 msgid "System Calls"
 msgstr "Redszerhívások"
 
 # components/help/hyperbola-filefmt.c:675
 # libnautilus-extensions/nautilus-stock-dialogs.c:509
-#: components/help/hyperbola-filefmt.c:675
+#: components/help/hyperbola-filefmt.c:676
 #: libnautilus-extensions/nautilus-stock-dialogs.c:510
 #: libnautilus-extensions/nautilus-stock-dialogs.c:548
 msgid "Info"
@@ -368,21 +404,21 @@ msgstr "GNU Infó"
 
 #: components/help/hyperbola-nav-tree.c:277
 msgid "Introductory Documents:"
-msgstr ""
+msgstr "Bevezetõk:"
 
 #: components/help/hyperbola-nav-tree.c:291
 msgid "Documents by Subject:"
-msgstr ""
+msgstr "Leírások tárgy alapján:"
 
 # components/help/hyperbola-nav-index.c:121
 #: components/help/hyperbola-nav-index.c:121
 msgid "see "
-msgstr "lásd"
+msgstr "lásd "
 
 # components/help/hyperbola-nav-index.c:125
 #: components/help/hyperbola-nav-index.c:125
 msgid "see also "
-msgstr "lásd még"
+msgstr "lásd még "
 
 # components/help/hyperbola-nav-index.c:212
 #: components/help/hyperbola-nav-index.c:212
@@ -445,7 +481,7 @@ msgstr "Csak belsõ használatra"
 # components/history/Nautilus_View_history.oaf.in.h:1
 #: components/history/Nautilus_View_history.oaf.in.h:1
 msgid "Factory for history views"
-msgstr "Factory az emlékezet nézetekhez"
+msgstr "Factory az emlékezetnézetekhez"
 
 # components/history/Nautilus_View_history.oaf.in.h:2
 #: components/history/Nautilus_View_history.oaf.in.h:2
@@ -476,7 +512,7 @@ msgstr "Általános képnézegetõ"
 # components/image-viewer/Nautilus_View_image.oaf.in.h:2
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:2
 msgid "Generic image control factory"
-msgstr ""
+msgstr "Általános \"image control\" factory"
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:3
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:3
@@ -486,17 +522,17 @@ msgstr "Kép"
 # components/image-viewer/Nautilus_View_image.oaf.in.h:1
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:4
 msgid "Image Viewer"
-msgstr "Képnézegetõ"
+msgstr "Képmegjelepítõ"
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:4
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:5
 msgid "Nautilus Image Viewer"
-msgstr "Nautilus képnézegetõ"
+msgstr "Nautilus képmegjelenítõ"
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:5
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:6
 msgid "Nautilus Image viewer factory"
-msgstr "Factory a Nautilus képnézõhöz"
+msgstr "Factory a Nautilus képmegjelenítõhöz"
 
 # libnautilus-extensions/nautilus-program-chooser.c:189
 # src/nautilus-window.c:903
@@ -563,7 +599,7 @@ msgstr "Nautilus Content Loser"
 # components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
 msgid "Nautilus content loser component's factory"
-msgstr ""
+msgstr "Factory a Nautilus Content Loserhez"
 
 # components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
@@ -578,7 +614,7 @@ msgstr "Ez egy Nautilus tartalom nézet. Annyit tud, hogy kérésre elpusztul."
 # components/loser/content/nautilus-content-loser-ui.xml.h:1
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
 msgid "View as Content Loser"
-msgstr "Nézet Content Loser"
+msgstr "Nézet mint Content Loser"
 
 # components/loser/sidebar/nautilus-sidebar-loser.c:143
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
@@ -1085,17 +1121,20 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:842
+#: components/mozilla/nautilus-mozilla-content-view.c:809
 msgid ""
-"A Javascript function (small software program) on this page tried to open a "
+"A JavaScript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
-"Javascript.\n"
+"JavaScript.\n"
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
 msgstr ""
+"Egy JavaScript függvény (ez a weblapba ágyazott program) megpróbált egy új ablakot nyitni, de a Nautilus nem támogatja új ablakok JavaScript-bõl való megnyitását.\n"
+"\n"
+"Próbáld a lapot egy másik böngészõvel megnyitni, ilyen a Mozilla vagy a Netscape."
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:4
-#: components/mozilla/nautilus-mozilla-content-view.c:843
+#: components/mozilla/nautilus-mozilla-content-view.c:810
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautilus Mozilla-nézet figyelmeztetés"
 
@@ -2082,15 +2121,26 @@ msgstr "Feljegyzés-oldalpanel"
 msgid "Notes sidebar panel for Nautilus"
 msgstr "A Nautilus feljegyzés-oldalpanele"
 
+#: components/rpmview/nautilus-rpm-verify-window.c:155
+msgid "Continue"
+msgstr "Folytatás"
+
+# src/file-manager/fm-directory-view.c:3494
+#: components/rpmview/nautilus-rpm-verify-window.c:160
+#: libnautilus-extensions/nautilus-drag.c:487
+#: src/file-manager/fm-directory-view.c:3503
+msgid "Cancel"
+msgstr "Mégse"
+
 # components/rpmview/nautilus-rpm-verify-window.c:183
 #. set up the window title
-#: components/rpmview/nautilus-rpm-verify-window.c:183
+#: components/rpmview/nautilus-rpm-verify-window.c:185
 #, c-format
 msgid "Verifying %s..."
 msgstr "%s ellenõrzése..."
 
 # components/rpmview/nautilus-rpm-verify-window.c:207
-#: components/rpmview/nautilus-rpm-verify-window.c:207
+#: components/rpmview/nautilus-rpm-verify-window.c:209
 #, c-format
 msgid "Failed on \"%s\""
 msgstr "Hiba a következõnél: \"%s\""
@@ -2098,34 +2148,34 @@ msgstr "Hiba a következõnél: \"%s\""
 # components/rpmview/nautilus-rpm-verify-window.c:211
 #. TRANSLATORS: this is printed while verifying files from packages,
 #. %s is the filename, %d/%d is filenumber of total-number-of-files
-#: components/rpmview/nautilus-rpm-verify-window.c:211
+#: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "\"%s\" ellenõrzése (%ld/%ld)"
 
 # components/rpmview/nautilus-rpm-view.c:124
-#: components/rpmview/nautilus-rpm-view.c:122
+#: components/rpmview/nautilus-rpm-view.c:118
 msgid "Package Contents"
 msgstr "Csomag tartalma"
 
 # components/rpmview/nautilus-rpm-view.c:171
 #. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:169
+#: components/rpmview/nautilus-rpm-view.c:165
 msgid "Package Title"
 msgstr "Csomag címe"
 
 # components/rpmview/nautilus-rpm-view.c:204
-#: components/rpmview/nautilus-rpm-view.c:190
+#: components/rpmview/nautilus-rpm-view.c:186
 msgid "Installed Size: "
 msgstr "Méret telepítés után: "
 
 # components/rpmview/nautilus-rpm-view.c:198
-#: components/rpmview/nautilus-rpm-view.c:196
+#: components/rpmview/nautilus-rpm-view.c:192
 msgid "<size>"
 msgstr "<méret>"
 
 # components/rpmview/nautilus-rpm-view.c:204
-#: components/rpmview/nautilus-rpm-view.c:202
+#: components/rpmview/nautilus-rpm-view.c:198
 msgid "Install Date: "
 msgstr "Telepítés dátuma:"
 
@@ -2134,38 +2184,38 @@ msgstr "Telepítés dátuma:"
 # components/rpmview/nautilus-rpm-view.c:234
 # components/rpmview/nautilus-rpm-view.c:246
 # components/rpmview/nautilus-rpm-view.c:258
-#: components/rpmview/nautilus-rpm-view.c:208
-#: components/rpmview/nautilus-rpm-view.c:220
-#: components/rpmview/nautilus-rpm-view.c:232
-#: components/rpmview/nautilus-rpm-view.c:244
-#: components/rpmview/nautilus-rpm-view.c:256
+#: components/rpmview/nautilus-rpm-view.c:204
+#: components/rpmview/nautilus-rpm-view.c:216
+#: components/rpmview/nautilus-rpm-view.c:228
+#: components/rpmview/nautilus-rpm-view.c:240
+#: components/rpmview/nautilus-rpm-view.c:252
 msgid "<unknown>"
 msgstr "<ismeretlen>"
 
 # components/rpmview/nautilus-rpm-view.c:216
-#: components/rpmview/nautilus-rpm-view.c:214
+#: components/rpmview/nautilus-rpm-view.c:210
 msgid "License: "
 msgstr "Licenc:"
 
 # components/rpmview/nautilus-rpm-view.c:228
-#: components/rpmview/nautilus-rpm-view.c:226
+#: components/rpmview/nautilus-rpm-view.c:222
 msgid "Build Date: "
 msgstr "Készítés dátuma:"
 
 # components/rpmview/nautilus-rpm-view.c:240
-#: components/rpmview/nautilus-rpm-view.c:238
+#: components/rpmview/nautilus-rpm-view.c:234
 msgid "Distribution: "
 msgstr "Disztribúció: "
 
 # components/rpmview/nautilus-rpm-view.c:252
-#: components/rpmview/nautilus-rpm-view.c:250
+#: components/rpmview/nautilus-rpm-view.c:246
 msgid "Vendor: "
 msgstr "Eladó:"
 
 # components/rpmview/nautilus-rpm-view.c:285
 # components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:1
 # components/services/install/server/Trilobite_Service_install.oaf.in.h:2
-#: components/rpmview/nautilus-rpm-view.c:283
+#: components/rpmview/nautilus-rpm-view.c:279
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
 #: components/services/summary/nautilus-summary-view.c:122
@@ -2173,36 +2223,46 @@ msgid "Install"
 msgstr "Telepítés"
 
 # components/rpmview/nautilus-rpm-view.c:301
-#: components/rpmview/nautilus-rpm-view.c:299
+#: components/rpmview/nautilus-rpm-view.c:295
 msgid "Update"
 msgstr "Frissítés"
 
 # components/rpmview/nautilus-rpm-view.c:310
-#: components/rpmview/nautilus-rpm-view.c:308
+#: components/rpmview/nautilus-rpm-view.c:304
 msgid "Uninstall"
 msgstr "Eltávolítás"
 
 # components/rpmview/nautilus-rpm-view.c:326
-#: components/rpmview/nautilus-rpm-view.c:324
+#: components/rpmview/nautilus-rpm-view.c:320
 msgid "Verify"
 msgstr "Ellenõrzés"
 
 # components/rpmview/nautilus-rpm-view.c:373
-#: components/rpmview/nautilus-rpm-view.c:375
+#: components/rpmview/nautilus-rpm-view.c:372
 msgid "Description"
 msgstr "Leírás"
 
 # components/rpmview/nautilus-rpm-view.c:492
-#: components/rpmview/nautilus-rpm-view.c:570
+#: components/rpmview/nautilus-rpm-view.c:567
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Csomag taralma: %d fájl"
 
 # components/rpmview/nautilus-rpm-view.c:499
-#: components/rpmview/nautilus-rpm-view.c:576
+#: components/rpmview/nautilus-rpm-view.c:573
 #, c-format
 msgid "Package \"%s\" "
 msgstr "\"%s\" csomag"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:910
+#: components/rpmview/nautilus-rpm-view.c:616
+msgid "This package is currently installed"
+msgstr "Ez a csomag jelenleg fel van telepítve"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:910
+#: components/rpmview/nautilus-rpm-view.c:619
+msgid "This package is currently not installed"
+msgstr "Ez a csomag jelenleg nincs feltelepítve"
 
 # components/rpmview/nautilus-rpm-view.c:675
 #: components/rpmview/nautilus-rpm-view.c:762
@@ -2241,7 +2301,7 @@ msgstr "%s körkörös függõségi problémákat okoz\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:140
 msgid "Cannot access the local package system\n"
-msgstr ""
+msgstr "A helyi csomagkezelõ-rendszer nem érhetõ el\n"
 
 # components/rpmview/nautilus-rpm-view-install.c:138
 #: components/rpmview/nautilus-rpm-view-install.c:156
@@ -2449,143 +2509,138 @@ msgstr "ei2 engedélyezése"
 msgid "RPM args are filename"
 msgstr "Az RPM argumentumok fájlnevek"
 
-# components/services/install/command-line/eazel-alt-install-corba.c:114
-#: components/services/install/command-line/eazel-alt-install-corba.c:115
-msgid "Force install"
-msgstr "Erõltetett telepítés"
-
 # components/services/install/command-line/eazel-alt-install-corba.c:115
-#: components/services/install/command-line/eazel-alt-install-corba.c:116
+#: components/services/install/command-line/eazel-alt-install-corba.c:115
 msgid "Use ftp"
 msgstr "FTP használata"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:116
-#: components/services/install/command-line/eazel-alt-install-corba.c:117
+#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use local"
 msgstr "Helyi készlet használata"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:117
-#: components/services/install/command-line/eazel-alt-install-corba.c:118
+#: components/services/install/command-line/eazel-alt-install-corba.c:117
 msgid "Use http"
 msgstr "http használata"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:118
-#: components/services/install/command-line/eazel-alt-install-corba.c:119
+#: components/services/install/command-line/eazel-alt-install-corba.c:118
 msgid "RPM args are Eazel Ids"
 msgstr "Az RPM argumentumai Eazel azonosítók"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:119
-#: components/services/install/command-line/eazel-alt-install-corba.c:120
+#: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "machine readable output"
 msgstr "gép által olvasható kimenet"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:120
-#: components/services/install/command-line/eazel-alt-install-corba.c:121
+#: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "Don't print fancy percent output"
 msgstr "Ne írj ki szép százalékos kimenetet"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:121
-#: components/services/install/command-line/eazel-alt-install-corba.c:122
+#: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "don't use eazel auth stuff"
 msgstr "ne hasnálj eazel auth cuccokat"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:122
-#: components/services/install/command-line/eazel-alt-install-corba.c:123
+#: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "Specify package file"
 msgstr "Add meg a csomagfájlt"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:123
-#: components/services/install/command-line/eazel-alt-install-corba.c:124
+#: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "RPM args are needed files"
 msgstr "Az RPM argumentumai szükséges fájlok"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:124
-#: components/services/install/command-line/eazel-alt-install-corba.c:125
+#: components/services/install/command-line/eazel-alt-install-corba.c:124
 msgid "Run Query"
 msgstr "Lekérdezés futtatása"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:125
-#: components/services/install/command-line/eazel-alt-install-corba.c:126
+#: components/services/install/command-line/eazel-alt-install-corba.c:125
 msgid "Revert"
 msgstr "Visszaállítás"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:126
-#: components/services/install/command-line/eazel-alt-install-corba.c:127
+#: components/services/install/command-line/eazel-alt-install-corba.c:126
 msgid "Set root"
 msgstr "Gyökér megadása"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:127
-#: components/services/install/command-line/eazel-alt-install-corba.c:128
+#: components/services/install/command-line/eazel-alt-install-corba.c:127
 msgid "Specify server"
 msgstr "Kiszolgáló megadása"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:128
-#: components/services/install/command-line/eazel-alt-install-corba.c:129
+#: components/services/install/command-line/eazel-alt-install-corba.c:128
 msgid "Dont print too much, just problems and download"
 msgstr "Ne írjon ki túl sokat, csak a hibákat és indítsa a letöltést"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:129
-#: components/services/install/command-line/eazel-alt-install-corba.c:130
+#: components/services/install/command-line/eazel-alt-install-corba.c:129
 msgid "Perform ssl renaming"
 msgstr "SSL átnevezés"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:130
-#: components/services/install/command-line/eazel-alt-install-corba.c:131
+#: components/services/install/command-line/eazel-alt-install-corba.c:130
 msgid "argument is a suite id"
 msgstr "az argumentum egy suite id"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:131
-#: components/services/install/command-line/eazel-alt-install-corba.c:132
+#: components/services/install/command-line/eazel-alt-install-corba.c:131
 msgid "Test run"
 msgstr "Teszt futtatás"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:132
-#: components/services/install/command-line/eazel-alt-install-corba.c:133
+#: components/services/install/command-line/eazel-alt-install-corba.c:132
 msgid "Allow username"
 msgstr "Felhasználónév engedélyezése"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:133
 # components/services/install/lib/eazel-install-problem.c:969
-#: components/services/install/command-line/eazel-alt-install-corba.c:134
+#: components/services/install/command-line/eazel-alt-install-corba.c:133
 #: components/services/install/lib/eazel-install-problem.c:1009
 msgid "Allow upgrades"
 msgstr "Frissítés engedélyezése"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:134
-#: components/services/install/command-line/eazel-alt-install-corba.c:135
+#: components/services/install/command-line/eazel-alt-install-corba.c:134
 msgid "Verbose output"
 msgstr "Bõbeszédû kimenet"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:136
+#: components/services/install/command-line/eazel-alt-install-corba.c:135
 msgid "Install a specific package version"
-msgstr ""
+msgstr "Adott változat telepítése"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:167
+#: components/services/install/command-line/eazel-alt-install-corba.c:158
 msgid "*** You cannot specify more then one protocol type.\n"
-msgstr ""
+msgstr "*** Nem adhatsz meg több mint egy protokoll-típust. \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:184
+#: components/services/install/command-line/eazel-alt-install-corba.c:175
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
 msgstr ""
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:293
+#: components/services/install/command-line/eazel-alt-install-corba.c:284
 #, c-format
 msgid "File conflict checking %s...\n"
-msgstr ""
+msgstr "Fájl ütközésre ellenõrzés: %s ...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:307
+#: components/services/install/command-line/eazel-alt-install-corba.c:298
 #, c-format
 msgid "File uniqueness checking %s...\n"
-msgstr ""
+msgstr "Fájlegyediségre ellenõrzés: %s ..."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:321
+#: components/services/install/command-line/eazel-alt-install-corba.c:312
 #, c-format
 msgid "Feature consistency checking %s...\n"
-msgstr ""
+msgstr "Konzisztenciaellenõrzés: %s ...\n"
 
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
-#: components/services/install/command-line/eazel-alt-install-corba.c:352
+#: components/services/install/command-line/eazel-alt-install-corba.c:343
 #: components/services/install/lib/eazel-install-protocols.c:110
 #: components/services/install/lib/eazel-install-protocols.c:248
 #, c-format
@@ -2594,135 +2649,134 @@ msgstr "%s letöltése folyamatban..."
 
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
-#: components/services/install/command-line/eazel-alt-install-corba.c:368
+#: components/services/install/command-line/eazel-alt-install-corba.c:359
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
 msgstr "%s letöltése folyamatban... (%d/%d) = %d%% %.1f KB/s"
 
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
-#: components/services/install/command-line/eazel-alt-install-corba.c:376
+#: components/services/install/command-line/eazel-alt-install-corba.c:367
 msgid "Downloading %s... (%d/%d) = %d%%"
 msgstr "%s letöltése folyamatban... (%d/%d) = %d%%"
 
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
-#: components/services/install/command-line/eazel-alt-install-corba.c:384
+#: components/services/install/command-line/eazel-alt-install-corba.c:375
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
 msgstr "%s letöltése folyamatban... (%d/%d) %.1f KB/s kész.      \n"
 
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
-#: components/services/install/command-line/eazel-alt-install-corba.c:389
+#: components/services/install/command-line/eazel-alt-install-corba.c:380
 #, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
 msgstr "%s letöltése folyamatban... %3.1f KB/s kész\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:417
+#: components/services/install/command-line/eazel-alt-install-corba.c:408
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "%s telepítése (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:425
+#: components/services/install/command-line/eazel-alt-install-corba.c:416
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "%s eltávolítása (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:447
+#: components/services/install/command-line/eazel-alt-install-corba.c:438
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "%s telepítése (%d/%d), (%d/%d)b - (%d/%d) = %d%% kész\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:454
-msgid "Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
+#: components/services/install/command-line/eazel-alt-install-corba.c:445
+msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "%s eltávolítása (%d/%d), (%d/%d)b - (%d/%d) = %d%% kész\n"
 
 # libnautilus-extensions/nautilus-program-chooser.c:1252
-#: components/services/install/command-line/eazel-alt-install-corba.c:462
+#: components/services/install/command-line/eazel-alt-install-corba.c:453
 msgid "Done\n"
 msgstr "Kész\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:482
+#: components/services/install/command-line/eazel-alt-install-corba.c:473
 #, c-format
 msgid "Download of %s FAILED\n"
 msgstr "%s letöltése sikertelen\n"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1314
-#: components/services/install/command-line/eazel-alt-install-corba.c:602
+#: components/services/install/command-line/eazel-alt-install-corba.c:495
 #, c-format
 msgid "Package %s failed to uninstall.\n"
 msgstr "%s csomag eltávolítása sikertelen.\n"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1314
-#: components/services/install/command-line/eazel-alt-install-corba.c:604
+#: components/services/install/command-line/eazel-alt-install-corba.c:497
 #, c-format
 msgid "Package %s failed to install.\n"
 msgstr "%s csomag telepítése sikertlen.\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:625
-#: components/services/install/command-line/eazel-alt-install-corba.c:627
+#: components/services/install/command-line/eazel-alt-install-corba.c:518
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr "\t· Probléma : %s\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:636
+#: components/services/install/command-line/eazel-alt-install-corba.c:527
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr "\t· Megoldás : %s\n"
 
 # components/services/vault/command-line/main.c:47
-#: components/services/install/command-line/eazel-alt-install-corba.c:679
+#: components/services/install/command-line/eazel-alt-install-corba.c:570
 msgid "Cancelling operation\n"
 msgstr "Mûvelet megszakítása\n"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:641
-#: components/services/install/command-line/eazel-alt-install-corba.c:690
+#: components/services/install/command-line/eazel-alt-install-corba.c:581
 #, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "Telepítésre kerül összesen %d csomag, %dKB\n"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:645
-#: components/services/install/command-line/eazel-alt-install-corba.c:694
+#: components/services/install/command-line/eazel-alt-install-corba.c:585
 #, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "Eltávolításra kerül összesen %d csomag, %dKB\n"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:649
-#: components/services/install/command-line/eazel-alt-install-corba.c:698
+#: components/services/install/command-line/eazel-alt-install-corba.c:589
 #, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "Visszaállításra kerül összesen %d csomag, %dKB\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:713
+#: components/services/install/command-line/eazel-alt-install-corba.c:606
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr "\t· %s és a függõségek\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:716
+#: components/services/install/command-line/eazel-alt-install-corba.c:609
 #, c-format
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:738
+#: components/services/install/command-line/eazel-alt-install-corba.c:631
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Függõség : %s igényli %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:649
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "%s csomag nem ment át az md5 ellenõrzésen!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:651
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· kiszolgáló MD5 azonosítója is %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:760
+#: components/services/install/command-line/eazel-alt-install-corba.c:653
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· az itteni MD5 azonosító %s\n"
@@ -2732,7 +2786,7 @@ msgstr "\t· az itteni MD5 azonosító %s\n"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:826
+#: components/services/install/command-line/eazel-alt-install-corba.c:719
 msgid "Continue? (y/n) "
 msgstr "Folytassam? (i/n) "
 
@@ -2740,8 +2794,8 @@ msgstr "Folytassam? (i/n) "
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
 #. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:837
-#: components/services/install/command-line/eazel-alt-install-corba.c:879
+#: components/services/install/command-line/eazel-alt-install-corba.c:730
+#: components/services/install/command-line/eazel-alt-install-corba.c:772
 msgid "y"
 msgstr "i"
 
@@ -2750,47 +2804,47 @@ msgstr "i"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:867
+#: components/services/install/command-line/eazel-alt-install-corba.c:760
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "Törölhetem az RPM fájlokat? (i/n) "
 
 # components/music/mpg123.c:51
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:792
 msgid "Operation ok\n"
 msgstr "A mûvelet rendben van\n"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1319
-#: components/services/install/command-line/eazel-alt-install-corba.c:901
+#: components/services/install/command-line/eazel-alt-install-corba.c:794
 msgid "Operation failed\n"
 msgstr "A mûvelet sikertelen\n"
 
 # components/rpmview/nautilus-rpm-view.c:285
 # components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:1
 # components/services/install/server/Trilobite_Service_install.oaf.in.h:2
-#: components/services/install/command-line/eazel-alt-install-corba.c:1018
+#: components/services/install/command-line/eazel-alt-install-corba.c:911
 msgid "Installing"
 msgstr "Telepítés"
 
 # components/rpmview/nautilus-rpm-view.c:310
-#: components/services/install/command-line/eazel-alt-install-corba.c:1027
+#: components/services/install/command-line/eazel-alt-install-corba.c:920
 msgid "Uninstalling"
 msgstr "Eltávolítás"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1042
+#: components/services/install/command-line/eazel-alt-install-corba.c:935
 msgid "Only one operation at a time please."
 msgstr "Egyszerre csak egy mûveletet adhatsz meg."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1047
-#: components/services/install/command-line/eazel-alt-install-corba.c:1055
-#: components/services/install/command-line/eazel-alt-install-corba.c:1099
-#: components/services/install/command-line/eazel-alt-install-corba.c:1106
+#: components/services/install/command-line/eazel-alt-install-corba.c:940
+#: components/services/install/command-line/eazel-alt-install-corba.c:948
+#: components/services/install/command-line/eazel-alt-install-corba.c:992
+#: components/services/install/command-line/eazel-alt-install-corba.c:999
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr ""
 "%s: --help rövid segítséghez\n"
 "\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:964
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Név         : %s\n"
@@ -2798,49 +2852,49 @@ msgstr "Név         : %s\n"
 # components/services/install/nautilus-view/nautilus-service-install-view.c:800
 # components/services/install/nautilus-view/nautilus-service-install-view.c:655
 # components/services/summary/nautilus-view/nautilus-summary-view.c:542
-#: components/services/install/command-line/eazel-alt-install-corba.c:1072
+#: components/services/install/command-line/eazel-alt-install-corba.c:965
 #, c-format
 msgid "Version      : %s\n"
 msgstr "Változat     : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:966
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Alváltozat      : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:968
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Méret        : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:969
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Architektúra : %s\n"
 
 # components/rpmview/nautilus-rpm-view.c:240
-#: components/services/install/command-line/eazel-alt-install-corba.c:1077
+#: components/services/install/command-line/eazel-alt-install-corba.c:970
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Disztribúció : %s\n"
 
 # components/rpmview/nautilus-rpm-view.c:373
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:971
 #, c-format
 msgid "Description  : %s\n"
 msgstr "Leírás       : %s\n"
 
 # components/services/install/lib/eazel-install-problem.c:882
-#: components/services/install/command-line/eazel-alt-install-corba.c:1080
+#: components/services/install/command-line/eazel-alt-install-corba.c:973
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Telepítés alapkönyvtára: %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1083
+#: components/services/install/command-line/eazel-alt-install-corba.c:976
 msgid "Provides     : \n"
 msgstr "Szolgáltat   : \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1125
+#: components/services/install/command-line/eazel-alt-install-corba.c:1018
 #, c-format
 msgid "exit code %d\n"
 msgstr "kilépési érték: %d\n"
@@ -2915,18 +2969,18 @@ msgid "Show detailed sub-package info"
 msgstr "Részletes alcsomag-információ"
 
 # components/services/install/lib/eazel-install-logic2.c:137
-#: components/services/install/lib/eazel-install-logic2.c:140
+#: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
 msgstr "A letöltött fájl zárolása sikertlen"
 
 # components/services/install/lib/eazel-install-logic2.c:154
-#: components/services/install/lib/eazel-install-logic2.c:157
+#: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5 eltérés, a %s csomag lehet, hogy hamis"
 
 # src/nautilus-theme-selector.c:709
-#: components/services/install/lib/eazel-install-logic2.c:173
+#: components/services/install/lib/eazel-install-logic2.c:132
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "Nincs MD5 a következõhöz: %s"
@@ -2934,20 +2988,20 @@ msgstr "Nincs MD5 a következõhöz: %s"
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1259
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:357
+#: components/services/install/lib/eazel-install-logic2.c:317
 #, c-format
 msgid "%s is ok"
 msgstr "%s rendben van?"
 
 # components/services/install/lib/eazel-install-logic2.c:408
-#: components/services/install/lib/eazel-install-logic2.c:462
+#: components/services/install/lib/eazel-install-logic2.c:423
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s %s-%s változat már telepítve van"
 
 # components/services/install/lib/eazel-install-logic.c:1508
 # components/services/install/lib/eazel-install-logic2.c:412
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:427
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s %s változata már telepítve van"
@@ -2956,53 +3010,53 @@ msgstr "%s %s változata már telepítve van"
 # components/services/install/lib/eazel-install-logic.c:1522
 # components/services/install/lib/eazel-install-logic2.c:421
 # components/services/install/lib/eazel-install-logic2.c:426
-#: components/services/install/lib/eazel-install-logic2.c:475
-#: components/services/install/lib/eazel-install-logic2.c:480
+#: components/services/install/lib/eazel-install-logic2.c:436
+#: components/services/install/lib/eazel-install-logic2.c:441
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr ""
 
 # components/services/install/lib/eazel-install-logic2.c:435
-#: components/services/install/lib/eazel-install-logic2.c:489
+#: components/services/install/lib/eazel-install-logic2.c:450
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr ""
 
 # components/services/install/lib/eazel-install-logic2.c:440
-#: components/services/install/lib/eazel-install-logic2.c:494
+#: components/services/install/lib/eazel-install-logic2.c:455
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr ""
 
 # components/services/install/lib/eazel-install-logic2.c:494
-#: components/services/install/lib/eazel-install-logic2.c:547
+#: components/services/install/lib/eazel-install-logic2.c:508
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s a következõ változatot telepíti: %s-%s"
 
 # components/services/install/lib/eazel-install-logic2.c:499
-#: components/services/install/lib/eazel-install-logic2.c:552
+#: components/services/install/lib/eazel-install-logic2.c:513
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s a következõ változatot telepíti: %s"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:809
-#: components/services/install/lib/eazel-install-logic2.c:624
+#: components/services/install/lib/eazel-install-logic2.c:663
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Csomaginformáció betöltése %s fájlból0..."
 
 # components/music/mpg123.c:33
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "ok"
 msgstr "rendben"
 
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "not ok"
 msgstr "nincs rendben"
 
-#: components/services/install/lib/eazel-install-logic2.c:1156
+#: components/services/install/lib/eazel-install-logic2.c:1137
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "%s függõségeinek ellenõrzése"
@@ -3012,103 +3066,103 @@ msgstr "%s függõségeinek ellenõrzése"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1715
+#: components/services/install/lib/eazel-install-logic2.c:1698
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s és %s összetertozik"
 
-#: components/services/install/lib/eazel-install-logic2.c:1769
+#: components/services/install/lib/eazel-install-logic2.c:1758
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "%s frissítése %s-%s változatra megoldja a problémát"
 
-#: components/services/install/lib/eazel-install-logic2.c:1786
+#: components/services/install/lib/eazel-install-logic2.c:1774
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "az elérhetõ frissítés (%s %s-%s) nem oldja meg a problémát"
 
 # components/services/install/lib/eazel-install-logic2.c:1239
-#: components/services/install/lib/eazel-install-logic2.c:1793
+#: components/services/install/lib/eazel-install-logic2.c:1781
 #, c-format
 msgid "could not revive %s"
 msgstr "%s ujraélesztése sikertelen"
 
-#: components/services/install/lib/eazel-install-logic2.c:1929
+#: components/services/install/lib/eazel-install-logic2.c:1917
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:1950
+#: components/services/install/lib/eazel-install-logic2.c:1938
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "A %s fájl több csomagban elõfordul: %s és %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1968
+#: components/services/install/lib/eazel-install-logic2.c:1956
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(még %d probléma van)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2063
+#: components/services/install/lib/eazel-install-logic2.c:2051
 #, c-format
 msgid "file conflict checking %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2111
+#: components/services/install/lib/eazel-install-logic2.c:2088
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2121
+#: components/services/install/lib/eazel-install-logic2.c:2098
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2211
+#: components/services/install/lib/eazel-install-logic2.c:2188
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2277
+#: components/services/install/lib/eazel-install-logic2.c:2256
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1614
-#: components/services/install/lib/eazel-install-logic2.c:2355
+#: components/services/install/lib/eazel-install-logic2.c:2334
 #, c-format
 msgid "downloading %d packages"
 msgstr "%d csomago letöltése"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:133
 # components/services/install/lib/eazel-install-problem.c:969
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2599
 #, c-format
 msgid "will upgrade %s"
 msgstr "frissíteni fogja a következõt: %s"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:110
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2602
 #, c-format
 msgid "will downgrade %s"
 msgstr "csökkenteni fogja %s verzióját"
 
-#: components/services/install/lib/eazel-install-logic2.c:2626
+#: components/services/install/lib/eazel-install-logic2.c:2605
 #, c-format
 msgid "will install %s"
 msgstr "telepíteni fogja a következõt: %s"
 
 # components/rpmview/nautilus-rpm-view.c:310
-#: components/services/install/lib/eazel-install-logic2.c:2629
+#: components/services/install/lib/eazel-install-logic2.c:2608
 #, c-format
 msgid "will uninstall %s"
 msgstr "el fogja távolítani a következõt: %s"
 
 # components/services/install/lib/eazel-install-problem.c:312
 # components/services/install/lib/eazel-install-problem.c:315
-#: components/services/install/lib/eazel-install-logic2.c:2712
+#: components/services/install/lib/eazel-install-logic2.c:2691
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
@@ -3116,7 +3170,7 @@ msgid "%s requires %s"
 msgstr "%s igényli a következõt: %s"
 
 # components/rpmview/nautilus-rpm-verify-window.c:207
-#: components/services/install/lib/eazel-install-logic2.c:2876
+#: components/services/install/lib/eazel-install-logic2.c:2855
 #, c-format
 msgid "failed %s"
 msgstr "sikertelen: %s"
@@ -3545,37 +3599,37 @@ msgid "*** Bailing from osd parse! ***\n"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:958
-#: components/services/install/lib/eazel-install-xml-package-list.c:976
+#: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Az XML értelmezése sikertelen (hossz %d)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:668
-#: components/services/install/lib/eazel-package-system-rpm3.c:755
+#: components/services/install/lib/eazel-package-system-rpm3.c:763
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Megnyitott csomagadatbázis helye: %s"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:673
-#: components/services/install/lib/eazel-package-system-rpm3.c:760
+#: components/services/install/lib/eazel-package-system-rpm3.c:768
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "A csomagadatbázis megynitása sikertelen (hely: %s)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:696
-#: components/services/install/lib/eazel-package-system-rpm3.c:793
+#: components/services/install/lib/eazel-package-system-rpm3.c:801
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr ""
 
 # components/services/install/lib/eazel-package-system-rpm3.c:701
-#: components/services/install/lib/eazel-package-system-rpm3.c:798
+#: components/services/install/lib/eazel-package-system-rpm3.c:806
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr ""
 
 # components/services/install/lib/eazel-package-system-rpm3.c:953
-#: components/services/install/lib/eazel-package-system-rpm3.c:1099
+#: components/services/install/lib/eazel-package-system-rpm3.c:1137
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s megnyitása sikertelen"
@@ -3995,8 +4049,8 @@ msgstr "Jelszó:"
 # components/services/summary/nautilus-view/nautilus-summary-dialogs.c:153
 #: components/services/summary/nautilus-summary-dialogs.c:146
 #: components/services/summary/nautilus-summary-dialogs.c:155
-msgid "Please log in to Eazel services"
-msgstr "Bejelentkezés az Eazel Szolgáltatásokhoz"
+msgid "Please log in to Eazel Services"
+msgstr "Jelentkezz be az Eazel Szolgáltatásokhoz!"
 
 # components/services/summary/nautilus-view/nautilus-summary-dialogs.c:148
 #: components/services/summary/nautilus-summary-dialogs.c:150
@@ -4090,13 +4144,13 @@ msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
 "Please contact support@eazel.com."
-msgstr ""
+msgstr "A szolgáltatásokra vonatkozó adatok letöltése nem járt sikerrel. Ennek oka lehet az, hogy a kiszolgáló pillanatnyilag nem elérhetõ, vagy az, hogy a gépeden rossz a hálózati beállítás. Vedd fel a kapcsolatot szakembereinkkel a support@eazel.com címen."
 
 #: components/services/summary/nautilus-summary-view.c:885
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
-msgstr ""
+msgstr "Probléma van az adatokkal az Eazel kiszolgálóján. Lépj kapcsolatba szakembereinkkel az support@eazel.com címen."
 
 #: components/services/summary/nautilus-summary-view.c:908
 msgid ""
@@ -4742,83 +4796,73 @@ msgstr "Rubin"
 msgid "Sea Foam"
 msgstr ""
 
-# data/browser.xml.h:68
-#: data/browser.xml.h:68
-msgid "Secret"
-msgstr "Titok"
-
 # data/browser.xml.h:69
-#: data/browser.xml.h:69
+#: data/browser.xml.h:68
 msgid "Shale"
 msgstr ""
 
-# data/browser.xml.h:70
-#: data/browser.xml.h:70
-msgid "Shared"
-msgstr "Megosztott"
-
 # data/browser.xml.h:71
-#: data/browser.xml.h:71
+#: data/browser.xml.h:69
 msgid "Silver"
 msgstr "Ezüst"
 
 # data/browser.xml.h:72
-#: data/browser.xml.h:72
+#: data/browser.xml.h:70
 msgid "Sky"
 msgstr "Égbolt"
 
 # data/browser.xml.h:73
-#: data/browser.xml.h:73
+#: data/browser.xml.h:71
 msgid "Sky Ridge"
 msgstr ""
 
 # data/browser.xml.h:74
-#: data/browser.xml.h:74
+#: data/browser.xml.h:72
 msgid "Snow Ridge"
 msgstr ""
 
 # data/browser.xml.h:75
-#: data/browser.xml.h:75
+#: data/browser.xml.h:73
 msgid "Special"
 msgstr "Speciális"
 
 # data/browser.xml.h:76
-#: data/browser.xml.h:76
+#: data/browser.xml.h:74
 msgid "Stucco"
 msgstr ""
 
 # data/browser.xml.h:77
-#: data/browser.xml.h:77
+#: data/browser.xml.h:75
 msgid "Tangerine"
 msgstr ""
 
 # data/browser.xml.h:78
-#: data/browser.xml.h:78
+#: data/browser.xml.h:76
 msgid "Terracotta"
 msgstr ""
 
 # data/browser.xml.h:79
-#: data/browser.xml.h:79
+#: data/browser.xml.h:77
 msgid "Urgent"
 msgstr "Fontos"
 
 # data/browser.xml.h:80
-#: data/browser.xml.h:80
+#: data/browser.xml.h:78
 msgid "Violet"
 msgstr "Lila"
 
 # data/browser.xml.h:81
-#: data/browser.xml.h:81
+#: data/browser.xml.h:79
 msgid "Wavy White"
 msgstr "Hullámzó fehér"
 
 # data/browser.xml.h:82
-#: data/browser.xml.h:82
+#: data/browser.xml.h:80
 msgid "White"
 msgstr "Fehér"
 
 # data/browser.xml.h:83
-#: data/browser.xml.h:83
+#: data/browser.xml.h:81
 msgid "White Ribs"
 msgstr ""
 
@@ -5006,92 +5050,96 @@ msgstr "LinuxNewbie.org"
 msgid "LinuxOrbit.com"
 msgstr "LinuxOrbit.com"
 
-# libnautilus-extensions/nautilus-global-preferences.c:995
 #: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr ""
+
+# libnautilus-extensions/nautilus-global-preferences.c:995
+#: data/static_bookmarks.xml.h:26
 msgid "Netraverse"
 msgstr "Netraverse"
 
 # data/static_bookmarks.xml.h:25
-#: data/static_bookmarks.xml.h:26
+#: data/static_bookmarks.xml.h:27
 msgid "News and Media"
 msgstr "Hírek és Média"
 
-#: data/static_bookmarks.xml.h:27
+#: data/static_bookmarks.xml.h:28
 msgid "O'Reilly"
 msgstr "O'Reilly"
 
 # data/static_bookmarks.xml.h:26
-#: data/static_bookmarks.xml.h:28
+#: data/static_bookmarks.xml.h:29
 msgid "OSDN"
 msgstr "OSDN"
 
-#: data/static_bookmarks.xml.h:29
+#: data/static_bookmarks.xml.h:30
 msgid "Open Source Asia"
 msgstr "Nyílt forráskód Ázsia"
 
 # data/static_bookmarks.xml.h:27
-#: data/static_bookmarks.xml.h:30
+#: data/static_bookmarks.xml.h:31
 msgid "OpenOffice"
 msgstr "OpenOffice"
 
-#: data/static_bookmarks.xml.h:31
+#: data/static_bookmarks.xml.h:32
 msgid "Penguin Computing"
 msgstr "Penguin Computing"
 
 # components/rpmview/Nautilus_View_rpm.oaf.in.h:2
-#: data/static_bookmarks.xml.h:32
+#: data/static_bookmarks.xml.h:33
 msgid "Rackspace"
 msgstr "Rackspace"
 
 # data/static_bookmarks.xml.h:28
-#: data/static_bookmarks.xml.h:33
+#: data/static_bookmarks.xml.h:34
 msgid "Red Hat"
 msgstr "Red Hat"
 
 # data/static_bookmarks.xml.h:28
-#: data/static_bookmarks.xml.h:34
+#: data/static_bookmarks.xml.h:35
 msgid "Red Hat Network"
 msgstr "Red Hat Network"
 
-#: data/static_bookmarks.xml.h:35
+#: data/static_bookmarks.xml.h:36
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
 
 # data/static_bookmarks.xml.h:30
-#: data/static_bookmarks.xml.h:36
+#: data/static_bookmarks.xml.h:37
 msgid "Software"
 msgstr "Szoftver"
 
 # data/static_bookmarks.xml.h:31
-#: data/static_bookmarks.xml.h:37
+#: data/static_bookmarks.xml.h:38
 msgid "SourceForge"
 msgstr "SourceForge"
 
 # data/static_bookmarks.xml.h:33
-#: data/static_bookmarks.xml.h:38
+#: data/static_bookmarks.xml.h:39
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
-#: data/static_bookmarks.xml.h:39
+#: data/static_bookmarks.xml.h:40
 msgid "Sun Wah Linux"
 msgstr "Sun Wah Linux"
 
 # data/static_bookmarks.xml.h:36
-#: data/static_bookmarks.xml.h:40
+#: data/static_bookmarks.xml.h:41
 msgid "Web Services"
 msgstr "Web Szolgáltatások"
 
 # data/static_bookmarks.xml.h:38
-#: data/static_bookmarks.xml.h:41
+#: data/static_bookmarks.xml.h:42
 msgid "ZDNet Linux Hardware Database"
 msgstr "ZDNet Linuxos hardver adatbázis"
 
 # data/static_bookmarks.xml.h:38
-#: data/static_bookmarks.xml.h:42
+#: data/static_bookmarks.xml.h:43
 msgid "ZDNet Linux Resource Center"
 msgstr "ZDNet Linux Resource Center"
 
-#: data/static_bookmarks.xml.h:43
+#: data/static_bookmarks.xml.h:44
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
@@ -5164,12 +5212,6 @@ msgstr "_Másolás ide"
 #: libnautilus-extensions/nautilus-drag.c:485
 msgid "_Link here"
 msgstr "_Kapcsolás ide"
-
-# src/file-manager/fm-directory-view.c:3494
-#: libnautilus-extensions/nautilus-drag.c:487
-#: src/file-manager/fm-directory-view.c:3503
-msgid "Cancel"
-msgstr "Mégsem"
 
 # libnautilus-extensions/nautilus-druid-page-eazel.c:352
 #. Note to localizers: this font is used for text items in Druid pages
@@ -6376,7 +6418,7 @@ msgstr "GConf hiba"
 #. * when no other font can be found. It must be guaranteed
 #. * to exist, * even in the most limited user environment
 #.
-#: libnautilus-extensions/nautilus-gdk-font-extensions.c:704
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:880
 msgid "fixed"
 msgstr "fixed"
 
@@ -6797,7 +6839,7 @@ msgstr "Soha"
 
 # libnautilus-extensions/nautilus-icon-canvas-item.c:68
 #. The list of characters that cause line breaks can be localized.
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:68
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:69
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
@@ -9381,7 +9423,6 @@ msgstr ""
 # src/nautilus-application.c:408
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:410
-#, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -9399,13 +9440,17 @@ msgid ""
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
-"A Nautilus most nem használható. A gép újraindítása vagy a Nautilus "
-"újratelepítés megoldhatja a problémát.\n"
+"A Nautilus most nem használható. Futtasd a \"nautilus-clean.sh -x\" "
+"parancsot, ez lehet, hogy orvosolja a problémát. Ha mégsem, a gép "
+"újraindítása vagy a Nautilus újratelepítése segíthet.\n"
 "\n"
 "Az OAF nem találta a Nautilus_shell.oaf fájlt. Ennek egyik oka lehet az, "
 "hogy az LD_LIBRARY_PATH változó nem tartalmazza az oaf programkönyvtárát "
 "tartalmazó könyvtárat. Egy másik ok lehet, ha hibás a Nautilus telepítése, "
 "és hiányzik a Nautilus_Shell.oaf fájl.\n"
+"\n"
+"A \"nautilus-clean.sh -x\" futtatása elpusztítja az összes OAF és GConf "
+"folyamatot, ez más ezeket használó programot is érinthet.\n"
 "\n"
 "Néha az oafd és a gconfd kilövése megoldja a problémát, de nem értjük, hogy "
 "miért.\n"
@@ -9435,6 +9480,8 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
 msgstr ""
+"A Nautilus most nem használható, az OAF egy váratlan hibája miatt (a hiba a "
+"\"file manager view server\" regisztrálása közben történt)."
 
 # src/nautilus-application.c:453
 #: src/nautilus-application.c:460
@@ -9443,6 +9490,9 @@ msgid ""
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
 "help fix the problem."
 msgstr ""
+"A Nautilus most nem használható (váratlan OAF hiba miatt, mely a factory "
+"keresése közben következett be). Az oafd kilövése és a Nautilus ujraindítása "
+"segíthet."
 
 # src/nautilus-application.c:460
 #: src/nautilus-application.c:467
@@ -9463,12 +9513,7 @@ msgstr ""
 "A Nautilus-t rendszergazdaként futtatod.\n"
 "\n"
 "Rendszergazdaként tönkreteheted a rendszeredet, ha nem vagy elég óvatos,\n"
-" a Nautilus nem fog ebben meggátolni."
-
-# src/nautilus-application.c:629
-#: src/nautilus-application.c:636
-msgid "Quit"
-msgstr "Kilépés"
+"a Nautilus nem fog ebben meggátolni."
 
 # src/nautilus-bookmarks-window.c:127
 #: src/nautilus-bookmarks-window.c:127
@@ -9481,7 +9526,7 @@ msgid "Location"
 msgstr "Hely"
 
 # src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:725
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:749
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:757
 msgid "Remove"
 msgstr "Törlés"
 
@@ -9510,8 +9555,8 @@ msgid ""
 "You can manually erase this file to present the wizard again.\n"
 "\n"
 msgstr ""
-"Ennek a fájlnak a létezése azt mutatja, hogy a Nautilus beállító varázsló "
-"már volt futtatva.\n"
+"Ennek a fájlnak a létezése azt mutatja, hogy a Nautilusbeállító-varázsló már "
+"volt futtatva.\n"
 "\n"
 "Töröld le ezt a fájl, ha újra akarod futtatni a varázslót.\n"
 
@@ -9577,6 +9622,14 @@ msgid ""
 "If you know your computer uses a proxy connection, click\n"
 "Verify and Nautilus will use it.\n"
 msgstr ""
+"Az internetkapcsolatod és a Nautilus frissítések ellenõrzése\n"
+"végett a Nautilus most csatlakozik az Eazel webkiszolgálójához.\n"
+"Ez másodpercekig tart, ha friss a feltelepített Nautilus,\n"
+"kicsit tovább (eltarhat néhány percig is, de annál nem tovább)\n"
+"ha frissítésre van szükséged.\n"
+"\n"
+"Ha proxy kiszolgálót használsz, kattints az\n"
+"\"Ellenõrzés\" gombra.\n"
 
 # src/nautilus-first-time-druid.c:567
 #: src/nautilus-first-time-druid.c:546
@@ -9603,7 +9656,7 @@ msgstr ""
 # src/nautilus-first-time-druid.c:647
 #: src/nautilus-first-time-druid.c:624
 msgid "No proxy server required."
-msgstr "Nem kell proxy kiszolgáló"
+msgstr "Nem kell proxy kiszolgáló."
 
 # src/nautilus-first-time-druid.c:648
 #: src/nautilus-first-time-druid.c:625
@@ -9657,6 +9710,11 @@ msgid ""
 "as well as filename, date, and other file properties. The indexing\n"
 "takes time but is performed only when your computer is idle.\n"
 msgstr ""
+"A gyorskeresés leindexeli az összes fájlt és könyvtárat a gépeden.\n"
+"Ez gyorsítja a keresést és lehetõvé teszi, hogy tartalomra,\n"
+"fájlnévre, dátumra vagy más tulajdonságokra keress. Az\n"
+"indexelés idõt vesz igénybe, de a gép csak üresjáratban\n"
+"fog ezzel foglalkozni.\n"
 
 #: src/nautilus-first-time-druid.c:934
 msgid "Enable fast search"
@@ -10021,72 +10079,72 @@ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Sajnálom, de a \"%s\" képet nem lehetett emblémaként telepíteni."
 
 # src/nautilus-property-browser.c:2012
-#: src/nautilus-property-browser.c:2012
+#: src/nautilus-property-browser.c:2014
 msgid "Select A Category:"
 msgstr "Válassz kategóriát:"
 
 # src/nautilus-property-browser.c:2020 src/nautilus-theme-selector.c:494
-#: src/nautilus-property-browser.c:2020 src/nautilus-theme-selector.c:494
+#: src/nautilus-property-browser.c:2022 src/nautilus-theme-selector.c:494
 msgid "Cancel Remove"
 msgstr "Mégsem távolítja el"
 
 # src/nautilus-property-browser.c:2024
-#: src/nautilus-property-browser.c:2024
+#: src/nautilus-property-browser.c:2026
 msgid "  Add a New Pattern  "
 msgstr "  Új minta hozzáadása  "
 
 # src/nautilus-property-browser.c:2027
-#: src/nautilus-property-browser.c:2027
+#: src/nautilus-property-browser.c:2029
 msgid "  Add a New Color  "
 msgstr "  Új szín hozzáadása  "
 
 # src/nautilus-property-browser.c:2030
-#: src/nautilus-property-browser.c:2030
+#: src/nautilus-property-browser.c:2032
 msgid "  Add a New Emblem  "
 msgstr "  Új embléma hozzáadása  "
 
 # src/nautilus-property-browser.c:2053
-#: src/nautilus-property-browser.c:2053
+#: src/nautilus-property-browser.c:2055
 msgid "Click on a pattern to remove it"
 msgstr "Kattints egy mintára annak eltávolításához"
 
 # src/nautilus-property-browser.c:2056
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2058
 msgid "Click on a color to remove it"
 msgstr "Kattints egy színre annak eltávolításához"
 
 # src/nautilus-property-browser.c:2059
-#: src/nautilus-property-browser.c:2059
+#: src/nautilus-property-browser.c:2061
 msgid "Click on an emblem to remove it"
 msgstr "Kattints egy emblémára annak eltávolításához"
 
 # src/nautilus-property-browser.c:2068
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2070
 msgid "Patterns:"
 msgstr "Minták:"
 
 # src/nautilus-property-browser.c:2071
-#: src/nautilus-property-browser.c:2071
+#: src/nautilus-property-browser.c:2073
 msgid "Colors:"
 msgstr "Színek:"
 
 # src/nautilus-property-browser.c:2074
-#: src/nautilus-property-browser.c:2074
+#: src/nautilus-property-browser.c:2076
 msgid "Emblems:"
 msgstr "Emblémák:"
 
 # src/nautilus-property-browser.c:2092
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2094
 msgid "  Remove a Pattern  "
 msgstr "  Minta eltávolítása  "
 
 # src/nautilus-property-browser.c:2095
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2097
 msgid "  Remove a Color  "
 msgstr "  Szín eltávolítása  "
 
 # src/nautilus-property-browser.c:2098
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "  Remove an Emblem  "
 msgstr "  Embléma eltávolítása  "
 
@@ -10613,22 +10671,22 @@ msgid "Go to the previous visited location"
 msgstr "Az elõzõ meglátogatott helyre ugrik"
 
 # src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:434
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:440
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
 msgid "Hide Location Bar"
 msgstr "Címsáv elrejtése"
 
 # src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:422
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:430
 msgid "Hide Sidebar"
 msgstr "Oldalsáv elrejtése"
 
 # src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:416
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:422
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:424
 msgid "Hide Status Bar"
 msgstr "Státuszsor elrejtése"
 
 # src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
-#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:434
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
 msgid "Hide Toolbar"
 msgstr "Eszközsor elrejtése"
 
@@ -10784,10 +10842,10 @@ msgstr "_Nagyítás"
 msgid "Zoom _Out"
 msgstr "_Kicsinyítés"
 
-# src/nautilus-about.c:139
+# src/nautilus-shell-ui.xml.h:67
 #: src/nautilus-shell-ui.xml.h:71
-msgid "_About Nautilus"
-msgstr "A Nautilus _névjegye"
+msgid "_About Nautilus..."
+msgstr "A Nautilus _névjegye..."
 
 # src/nautilus-shell-ui.xml.h:68
 #: src/nautilus-shell-ui.xml.h:72
@@ -10835,7 +10893,7 @@ msgid "_Feedback"
 msgstr "_Visszajelzés"
 
 # src/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1280
-#: src/nautilus-shell-ui.xml.h:83 src/nautilus-window-menus.c:1306
+#: src/nautilus-shell-ui.xml.h:83 src/nautilus-window-menus.c:1352
 msgid "_Find"
 msgstr "_Keresés"
 
@@ -11093,12 +11151,12 @@ msgstr "Nincs leírás a következõ témához: %s"
 
 # src/nautilus-window.c:1113
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1113
+#: src/nautilus-window.c:1243
 msgid "View as Other..."
 msgstr "Nézet másként..."
 
 # src/nautilus-window.c:1476
-#: src/nautilus-window.c:1476
+#: src/nautilus-window.c:1626
 msgid "Close"
 msgstr "Bezárás"
 
@@ -11119,7 +11177,7 @@ msgstr "%s elõnézet változat: %s"
 #. * Latin-1 encoding, but not for UTF-8, so we have
 #. * to change it when we upgrade to GTK 2.0.
 #.
-#: src/nautilus-window-manage-views.c:254 src/nautilus-window-menus.c:559
+#: src/nautilus-window-manage-views.c:254 src/nautilus-window-menus.c:563
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -11143,7 +11201,7 @@ msgid "The %s view encountered an error while starting up."
 msgstr "A(z) %s nézet hibát észlelt induláskor."
 
 # src/nautilus-window-manage-views.c:925
-#: src/nautilus-window-manage-views.c:975
+#: src/nautilus-window-manage-views.c:979
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -11152,7 +11210,7 @@ msgstr ""
 "állapítható meg, hogy melyik oldalpanelrõl van szó."
 
 # src/nautilus-window-manage-views.c:929
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:983
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -11162,19 +11220,19 @@ msgstr ""
 "is fennáll, kapcsold ki a kérdéses panelt."
 
 # src/nautilus-window-manage-views.c:934
-#: src/nautilus-window-manage-views.c:984
+#: src/nautilus-window-manage-views.c:988
 msgid "Sidebar Panel Failed"
 msgstr "Oladlpanel hibát észlelt"
 
 # src/nautilus-window-manage-views.c:1151
-#: src/nautilus-window-manage-views.c:1194
+#: src/nautilus-window-manage-views.c:1203
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\" nem található. Ellenõrzid, hogy nem gépelted el és próbáld újra."
 
 # src/nautilus-window-manage-views.c:1157
-#: src/nautilus-window-manage-views.c:1200
+#: src/nautilus-window-manage-views.c:1209
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -11182,7 +11240,7 @@ msgstr ""
 "\"%s\" nem érvényes hely. Ellenõrizd, hogy nem gépelted el és próbáld újra."
 
 # src/nautilus-window-manage-views.c:1171
-#: src/nautilus-window-manage-views.c:1214
+#: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -11190,7 +11248,7 @@ msgid ""
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1179
-#: src/nautilus-window-manage-views.c:1222
+#: src/nautilus-window-manage-views.c:1231
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
@@ -11199,25 +11257,25 @@ msgstr ""
 
 # src/nautilus-window-manage-views.c:1191
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1234
+#: src/nautilus-window-manage-views.c:1243
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1197
-#: src/nautilus-window-manage-views.c:1240
+#: src/nautilus-window-manage-views.c:1249
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "\"%s\" nem jeleníthetõ meg, mert a bejelentkezés sikertelen volt."
 
 # src/nautilus-window-manage-views.c:1202
-#: src/nautilus-window-manage-views.c:1245
+#: src/nautilus-window-manage-views.c:1254
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "\"%s\" nem jeleníthetõ meg, mert a hozzásférés le van tiltva."
 
 # src/nautilus-window-manage-views.c:1213
-#: src/nautilus-window-manage-views.c:1256
+#: src/nautilus-window-manage-views.c:1265
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -11227,7 +11285,7 @@ msgstr ""
 "Ellenõrizd, hogy jól írtál be mindent és hogy a proxy beállítások jók."
 
 # src/nautilus-window-manage-views.c:1221
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1273
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -11235,7 +11293,7 @@ msgid ""
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1233
-#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1285
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -11244,18 +11302,18 @@ msgid ""
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1237
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1289
 msgid "Searching Unavailable"
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1293
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1246
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1298
 msgid "Can't Display Location"
 msgstr ""
 
@@ -11288,27 +11346,27 @@ msgid "Forget"
 msgstr "Törlés"
 
 # src/nautilus-window-menus.c:417
-#: src/nautilus-window-menus.c:423
+#: src/nautilus-window-menus.c:425
 msgid "Show Status Bar"
 msgstr "Státuszsor mutatása"
 
 # src/nautilus-window-menus.c:423
-#: src/nautilus-window-menus.c:429
+#: src/nautilus-window-menus.c:431
 msgid "Show Sidebar"
 msgstr "Oldalsáv mutatása"
 
 # src/nautilus-window-menus.c:429
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:437
 msgid "Show Toolbar"
 msgstr "Eszközsor mutatása"
 
 # src/nautilus-window-menus.c:435
-#: src/nautilus-window-menus.c:441
+#: src/nautilus-window-menus.c:443
 msgid "Show Location Bar"
 msgstr "Címsáv mutatása"
 
 # src/nautilus-window-menus.c:484
-#: src/nautilus-window-menus.c:490
+#: src/nautilus-window-menus.c:494
 msgid "Preferences"
 msgstr "Beállítások"
 
@@ -11319,12 +11377,12 @@ msgstr "Beállítások"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:567
+#: src/nautilus-window-menus.c:571
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright Š 1999-2001 Eazel, Inc."
 
 # src/nautilus-window-menus.c:563
-#: src/nautilus-window-menus.c:569
+#: src/nautilus-window-menus.c:573
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -11343,12 +11401,12 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:578
+#: src/nautilus-window-menus.c:582
 msgid "Translator Credits"
 msgstr "Fordítók"
 
 # src/nautilus-window-menus.c:720
-#: src/nautilus-window-menus.c:744
+#: src/nautilus-window-menus.c:752
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -11358,38 +11416,38 @@ msgstr ""
 "amely ide mutat?"
 
 # src/nautilus-window-menus.c:724
-#: src/nautilus-window-menus.c:748
+#: src/nautilus-window-menus.c:756
 msgid "Bookmark for Nonexistent Location"
 msgstr "Nem létezõ helyre mutató könyvjelzõ"
 
 # src/nautilus-window-menus.c:738
-#: src/nautilus-window-menus.c:762
+#: src/nautilus-window-menus.c:770
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "A \"%s\" hely nem létezik tovább."
 
 # src/nautilus-window-menus.c:739
-#: src/nautilus-window-menus.c:763
+#: src/nautilus-window-menus.c:771
 msgid "Go to Nonexistent Location"
 msgstr "Nemlétezõ helyre ugrik"
 
 # src/nautilus-window-menus.c:806
-#: src/nautilus-window-menus.c:830
+#: src/nautilus-window-menus.c:840
 msgid "Go to the location specified by this bookmark"
 msgstr "Ugrás a könyvjelzõ által jelölt helyre"
 
 # src/nautilus-window-menus.c:1279
-#: src/nautilus-window-menus.c:1305
+#: src/nautilus-window-menus.c:1351
 msgid "_Browse"
 msgstr "_Böngészés"
 
 # src/nautilus-window-toolbars.c:381
-#: src/nautilus-window-toolbars.c:381
+#: src/nautilus-window-toolbars.c:395
 msgid "Back"
 msgstr "Vissza"
 
 # src/nautilus-window-toolbars.c:383
-#: src/nautilus-window-toolbars.c:383
+#: src/nautilus-window-toolbars.c:397
 msgid "Forward"
 msgstr "Elõre"
 
@@ -11406,6 +11464,22 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*-r-"
 #: src/nautilus-zoom-control.c:592
 msgid "%d%%"
 msgstr "%d%%"
+
+# components/services/install/command-line/eazel-alt-install-corba.c:114
+#~ msgid "Force install"
+#~ msgstr "Erõltetett telepítés"
+
+# data/browser.xml.h:68
+#~ msgid "Secret"
+#~ msgstr "Titok"
+
+# data/browser.xml.h:70
+#~ msgid "Shared"
+#~ msgstr "Megosztott"
+
+# src/nautilus-about.c:139
+#~ msgid "_About Nautilus"
+#~ msgstr "A Nautilus _névjegye"
 
 # components/rpmview/nautilus-rpm-view.c:192
 #~ msgid "Size: "
@@ -11499,14 +11573,6 @@ msgstr "%d%%"
 #~ "\n"
 #~ msgstr ""
 #~ "Ezeket a csomagokat tölti le és telepíti fel a telepítõ:\n"
-#~ "\n"
-
-# components/services/install/nautilus-view/nautilus-service-install-view.c:910
-#~ msgid ""
-#~ "These packages are about to be uninstalled:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Ezeket a csomagokat távolítja el a telepítõ:\n"
 #~ "\n"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:914
@@ -11892,7 +11958,3 @@ msgstr "%d%%"
 # src/nautilus-shell-ui.xml.h:37
 #~ msgid "Nautilus _License"
 #~ msgstr "A Nautilus licence"
-
-# src/nautilus-shell-ui.xml.h:67
-#~ msgid "_About Nautilus..."
-#~ msgstr "A Nautilus _névjegye..."
