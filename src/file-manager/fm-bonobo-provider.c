@@ -53,6 +53,7 @@
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-view-query.h>
 
 typedef struct {
 	char *id;
@@ -340,7 +341,7 @@ fm_bonobo_provider_get_file_items (NautilusMenuProvider *provider,
 	GList *items;
 	GList *l;
 	
-	components = nautilus_mime_get_popup_components_for_files (selection);
+	components = nautilus_view_query_get_popup_components_for_files (selection);
 
 	items = NULL;
 	for (l = components; l; l = l->next) {
@@ -511,7 +512,7 @@ fm_bonobo_provider_get_pages (NautilusPropertyPageProvider *provider,
 	GList *pages;
 
 	/* find all the property pages for this file */
-	all_components = nautilus_mime_get_property_components_for_files 
+	all_components = nautilus_view_query_get_property_components_for_files 
 		(files);
 	
 	/* filter out property pages that don't support multiple files */

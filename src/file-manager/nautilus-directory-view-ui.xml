@@ -37,7 +37,7 @@
          _label="_Open Scripts Folder"
 	 _tip="Show the folder containing the scripts that appear in this menu"/>
 	<cmd name="OtherApplication"
-         _label="Other _Application..."
+         _label="Open with Other _Application..."
 	 _tip="Choose another application with which to open the selected item"/>
 	<cmd name="Show Hidden Files"
          _label="Show _Hidden Files"
@@ -130,13 +130,19 @@
 			<menuitem name="OpenAlternate"
 				  accel="*Control**Shift*o"
 				  verb="OpenAlternate"/>
+			<placeholder name="Applications Placeholder" delimit="top"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
+				<separator/>
 				<menuitem name="OtherApplication"
 					  verb="OtherApplication"/>
 			</submenu>
+			<placeholder name="OtherApplicationPlaceholder">
+				<menuitem name="OtherApplication"
+					  verb="OtherApplication"/>
+			</placeholder>
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
@@ -267,13 +273,19 @@
 			 verb="Open"/>
 			<menuitem name="OpenAlternate" 
 			        verb="OpenAlternate"/>
+			<placeholder name="Applications Placeholder" delimit="top"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 tearoff="0"
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
+				<separator/>
 				<menuitem name="OtherApplication" verb="OtherApplication"/>
 			</submenu>
+			<placeholder name="OtherApplicationPlaceholder">
+			        <menuitem name="OtherApplication"
+					  verb="OtherApplication"/>
+			</placeholder>
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"

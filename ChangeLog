@@ -1,3 +1,124 @@
+2004-07-21  Dave Camp  <dave@novell.com>
+
+	* Merged the nautilus-new-mime branch.
+
+2004-07-21  Dave Camp  <dave@novell.com>
+
+	* src/file-manager/fm-properties-window.c: (should_show_open_with),
+	(create_open_with_page), (create_properties_window): Show
+	the Open With tab in the properties window.
+
+2004-07-19  Dave Camp  <dave@novell.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_application_for_file_internal):
+	* src/file-manager/fm-directory-view.c: (application_selected_cb),
+	(choose_program), (file_is_launchable): Use the new eel
+	open with dialog.
+
+Mon Jul 19 12:52:04 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* src/file-manager/fm-directory-view.c
+	(get_default_executable_text_file_action): default to ASK
+
+2004-07-12  Dave Camp  <dave@novell.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_actions_get_open_with_file_attributes),
+	(nautilus_mime_actions_check_if_open_with_attributes_ready),
+	(nautilus_mime_get_default_application_for_file_internal),
+	(get_open_with_mime_applications),
+	(nautilus_mime_get_open_with_applications_for_file):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_show_file):
+	* src/file-manager/fm-directory-view.c:
+	(add_application_to_bonobo_menu),
+	(get_default_executable_text_file_action),
+	(get_executable_text_file_action), (can_use_component_for_file),
+	(get_activation_action), (reset_bonobo_open_with_menu),
+	(real_update_menus), (fm_directory_view_notify_selection_changed),
+	(activate_callback):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+
+	MIME overhaul, part 2.
+
+	Show the application that will be executed in the Open menu
+	item.  If there are < 4 applications, show them in the main
+	context menu, otherwise show them in the Open With menu.
+
+2004-07-09  Dave Camp  <dave@novell.com>
+
+
+	* test/Makefile.am (noinst_PROGRAMS): 
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_applications_for_file),
+	(application_supports_uri_scheme_strcmp_style),
+	(nautilus_mime_has_any_applications_for_file),
+	(nautilus_mime_set_default_application_for_file),
+	(gnome_vfs_mime_application_has_id),
+	(gnome_vfs_mime_id_matches_application),
+	(gnome_vfs_mime_application_has_id_not_in_list):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* libnautilus-private/nautilus-program-choosing.c:
+	(application_cannot_open_location), (nautilus_launch_show_file),
+	(nautilus_launch_application):
+	* libnautilus-private/nautilus-program-choosing.h:
+	* libnautilus-private/nautilus-view-query.c: (is_known_mime_type),
+	(nautilus_view_query_check_if_minimum_attributes_ready),
+	(nautilus_view_query_check_if_full_attributes_ready),
+	(nautilus_view_query_get_popup_file_attributes),
+	(nautilus_view_query_check_if_popup_attributes_ready),
+	(nautilus_view_query_get_default_component_sort_conditions),
+	(nautilus_view_query_get_default_component_for_file_internal),
+	(nautilus_view_query_get_default_component_for_file),
+	(nautilus_view_query_get_fallback_component_for_file),
+	(nautilus_view_query_get_components_for_file_extended),
+	(nautilus_view_query_get_components_for_file),
+	(nautilus_view_query_has_any_components_for_file_extended),
+	(nautilus_view_query_has_any_components_for_file),
+	(mime_get_components_for_uri_scheme),
+	(nautilus_view_query_has_any_components_for_uri_scheme),
+	(nautilus_view_query_set_default_component_for_file),
+	(extract_prefix_add_suffix), (mime_type_get_supertype),
+	(get_explicit_content_view_iids_from_metafile),
+	(make_bonobo_activation_query_for_explicit_content_view_iids),
+	(make_bonobo_activation_query_with_known_mime_type),
+	(make_bonobo_activation_query_with_uri_scheme_only),
+	(mime_type_list_to_hash_table), (free_key),
+	(mime_type_hash_table_destroy), (server_has_content_requirements),
+	(server_matches_content_requirements),
+	(nautilus_do_component_query), (strv_length), (strv_concat),
+	(nautilus_view_query_get_popup_components_for_file),
+	(nautilus_view_query_get_property_components_for_file),
+	(has_server_info_in_list), (server_info_list_intersection),
+	(nautilus_view_query_get_property_components_for_files),
+	(nautilus_view_query_get_popup_components_for_files):
+	* libnautilus-private/nautilus-view-query.h:
+	* src/file-manager/fm-directory-view.c: (choose_program),
+	(open_with_other_program), (other_application_callback),
+	(can_use_component_for_file), (activate_callback):
+	* src/nautilus-applicable-views.c: (got_file_info_callback):
+	* src/nautilus-information-panel.c: (open_with_callback),
+	(nautilus_information_panel_update_buttons):
+	* src/nautilus-navigation-window.c: (load_view_as_menu):
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_content_view):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1):
+	* src/nautilus-window.c: (refresh_stored_viewers),
+	(nautilus_window_set_viewed_file):  MIME overhaul, part 1.
+	Separated gnome-vfs application mime mapping from view querying,
+	put them in different files.
+
+	Got rid of the short list/all application distinction.
+
+	Got rid of "View As...", all appropriate views are shown.
+
+	Only ever show folders in nautilus - everything else should be
+	opened in an app.
+
 2004-07-16  Alexander Larsson  <alexl@redhat.com>
 
 	* data/Makefile.am:

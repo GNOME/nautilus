@@ -65,6 +65,7 @@
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
 #include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/nautilus-view-query.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -1628,7 +1629,7 @@ nautilus_window_set_content_view (NautilusWindow *window,
         end_location_change (window);
 
 	file = nautilus_file_get (window->details->location);
-        nautilus_mime_set_default_component_for_file
+        nautilus_view_query_set_default_component_for_file
 		(file, id->iid);
         nautilus_file_unref (file);
         

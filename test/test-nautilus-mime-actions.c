@@ -76,48 +76,6 @@ print_application (GnomeVFSMimeApplication *application)
 	}
 }
 
-static void
-print_component (Bonobo_ServerInfo *component)
-{
-        if (component == NULL) {
-	        puts ("(none)");
-	} else {
-	        printf ("iid: %s\n", component->iid);
-	}
-}
-
-static void
-print_action (GnomeVFSMimeAction *action)
-{
-        if (action == NULL) {
-	        puts ("(none)");
-	} else {
-		if (action->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-			puts ("type: application");
-			print_application (action->action.application);
-		} else {
-			puts ("type: component");
-			print_component (action->action.component);
-		}
-	}
-}
-
-
-static void 
-print_component_list (GList *components)
-{
-	GList *p;
-	
-	if (components == NULL) {
-		puts ("(none)");
-	} else {
-		for (p = components; p != NULL; p = p->next) {
-			print_component (p->data);
-			puts ("------");
-		}
-	}
-}
-
 static void 
 print_application_list (GList *applications)
 {
@@ -145,12 +103,7 @@ main (int argc, char **argv)
 {
         const char *uri;  
 	GnomeVFSMimeApplication *default_application;
-	Bonobo_ServerInfo *default_component;
-	GnomeVFSMimeAction *default_action;
-	GList *all_components;
 	GList *all_applications;
-	GList *short_list_components;
-	GList *short_list_applications;
 	NautilusFile *file;
 	NautilusFileAttributes attributes;
 
@@ -172,39 +125,14 @@ main (int argc, char **argv)
 		gtk_main_iteration ();
 	}
 
-	default_action = nautilus_mime_get_default_action_for_file (file);
-	puts ("Default Action");
-	print_action (default_action);
-	puts ("");
-
 	default_application = nautilus_mime_get_default_application_for_file (file);
 	puts("Default Application");
 	print_application (default_application);
 	puts ("");
-		
-	default_component = nautilus_mime_get_default_component_for_file (file);
-	puts("Default Component");
-	print_component (default_component);
-	puts ("");
 
-	short_list_applications = nautilus_mime_get_short_list_applications_for_file (file); 
-	puts("Short List Applications");
-	print_application_list (short_list_applications);
-	puts ("");
-
-	short_list_components = nautilus_mime_get_short_list_components_for_file (file); 
-	puts("Short List Components");
-	print_component_list (short_list_components);
-	puts ("");
-
-	all_applications = nautilus_mime_get_all_applications_for_file (file); 
+	all_applications = nautilus_mime_get_applications_for_file (file); 
 	puts("All Applications");
 	print_application_list (all_applications);
-	puts ("");
-
-	all_components = nautilus_mime_get_all_components_for_file (file); 
-	puts("All Components");
-	print_component_list (all_components);
 	puts ("");
 
 	return 0;

@@ -831,6 +831,7 @@ metadata_button_callback (GtkWidget *button, const char *command_str)
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 }
 
+#if NEW_MIME_COMPLETE
 static void
 nautilus_information_panel_chose_application_callback (GnomeVFSMimeApplication *application,
 					     gpointer callback_data)
@@ -846,10 +847,12 @@ nautilus_information_panel_chose_application_callback (GnomeVFSMimeApplication *
 			 nautilus_information_panel_get_window (information_panel));
 	}
 }
+#endif
 
 static void
 open_with_callback (GtkWidget *button, gpointer ignored)
 {
+#if NEW_MIME_COMPLETE
 	NautilusInformationPanel *information_panel;
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
@@ -861,6 +864,7 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (information_panel))),
 		 nautilus_information_panel_chose_application_callback,
 		 information_panel);
+#endif
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -1069,7 +1073,7 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 
 	if (nautilus_mime_has_any_applications_for_file (information_panel->details->file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_file (information_panel->details->file);
+			nautilus_mime_get_applications_for_file (information_panel->details->file);
 		add_command_buttons (information_panel, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 	}

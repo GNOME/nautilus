@@ -619,41 +619,6 @@ create_view_as_menu_item (NautilusWindow *window,
 	return menu_item;
 }
 
-static GtkWidget *
-new_gtk_separator (void)
-{
-	GtkWidget *result;
-	
-	result = gtk_menu_item_new ();
-	gtk_widget_show (result);
-	gtk_widget_set_sensitive (result, FALSE);
-
-	return result;
-}
-
-static void
-view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        
-        g_assert (GTK_IS_MENU_ITEM (widget));
-        g_assert (NAUTILUS_IS_WINDOW (data));
-        
-        window = NAUTILUS_WINDOW (data);
-
-	/* Set the option menu back to its previous setting (Don't
-	 * leave it on this dialog-producing "View as..."
-	 * setting). If the menu choice causes a content view change,
-	 * this will be updated again later, in
-	 * nautilus_window_load_view_as_menus. Do this right away so
-	 * the user never sees the option menu set to "View as
-	 * Other...".
-	 */
-	load_view_as_menu (window);
-
-	nautilus_window_show_view_as_dialog (window);
-}
-
 static void
 load_view_as_menu (NautilusWindow *window)
 {
@@ -691,18 +656,6 @@ load_view_as_menu (NautilusWindow *window)
                 gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 		selected_index = index;
 	}
-
-        /* Add/Show separator before "View as..." if there are any other viewers in menu. */
-        if (window->details->short_list_viewers != NULL) {
-	        gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), new_gtk_separator ());
-        }
-
-	/* Add "View as..." extra bonus choice. */
-       	menu_item = gtk_menu_item_new_with_label (_("View as..."));
-        g_signal_connect_object (menu_item, "activate",
-				 G_CALLBACK (view_as_menu_choose_view_callback), window, 0);
-       	gtk_widget_show (menu_item);
-       	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 
         /* We create and attach a new menu here because adding/removing
          * items from existing menu screws up the size of the option menu.

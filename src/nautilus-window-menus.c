@@ -475,14 +475,6 @@ view_menu_zoom_normal_callback (BonoboUIComponent *component,
 }
 
 static void
-view_menu_view_as_callback (BonoboUIComponent *component, 
-			    gpointer user_data, 
-			    const char *verb) 
-{
-	nautilus_window_show_view_as_dialog (NAUTILUS_WINDOW (user_data));
-}
-
-static void
 preferences_respond_callback (GtkDialog *dialog,
 			      gint response_id)
 {
@@ -676,7 +668,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
 		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
 		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
-		BONOBO_UI_VERB ("View as", view_menu_view_as_callback),
 
 #ifdef ENABLE_PROFILER
 		BONOBO_UI_VERB ("Start Profiling", nautilus_profiler_bonobo_ui_start_callback),

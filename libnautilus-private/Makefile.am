@@ -153,8 +153,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-module.h \
 	nautilus-monitor.c \
 	nautilus-monitor.h \
-	nautilus-program-chooser.c \
-	nautilus-program-chooser.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
 	nautilus-recent.h \
@@ -189,6 +187,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-file.h \
 	nautilus-view-identifier.c \
 	nautilus-view-identifier.h \
+	nautilus-view-query.c \
+	nautilus-view-query.h \
 	$(NULL)
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)

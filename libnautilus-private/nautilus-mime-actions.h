@@ -32,57 +32,15 @@
 
 NautilusFileAttributes   nautilus_mime_actions_get_minimum_file_attributes         (void);
 NautilusFileAttributes   nautilus_mime_actions_get_full_file_attributes            (void);
-gboolean                 nautilus_mime_actions_file_needs_full_file_attributes     (NautilusFile           *file);
-GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_file            (NautilusFile           *file);
-GnomeVFSMimeAction *     nautilus_mime_get_default_action_for_file                 (NautilusFile           *file);
+
 GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file            (NautilusFile           *file);
-gboolean                 nautilus_mime_is_default_application_for_file_user_chosen (NautilusFile           *file);
-Bonobo_ServerInfo *      nautilus_mime_get_default_component_for_file              (NautilusFile           *file);
-Bonobo_ServerInfo *      nautilus_mime_get_default_fallback_component_for_file     (NautilusFile           *file);
-gboolean                 nautilus_mime_is_default_component_for_file_user_chosen   (NautilusFile           *file);
-GList *                  nautilus_mime_get_short_list_applications_for_file        (NautilusFile           *file);
 GList *                  nautilus_mime_get_open_with_applications_for_file         (NautilusFile           *file);
-GList *                  nautilus_mime_get_short_list_components_for_file          (NautilusFile           *file);
-GList *                  nautilus_mime_get_all_applications_for_file               (NautilusFile           *file);
-GList *                  nautilus_mime_get_all_components_for_file                 (NautilusFile           *file);
-GList *                  nautilus_mime_get_all_components_for_file_extended        (NautilusFile           *file, char *extra_requirements);
-GList *                  nautilus_mime_get_popup_components_for_file               (NautilusFile           *file);
-GList *                  nautilus_mime_get_popup_components_for_files              (GList                  *files);
-GList *                  nautilus_mime_get_property_components_for_file            (NautilusFile           *file);
-GList *                  nautilus_mime_get_property_components_for_files           (GList                  *files);
- gboolean                 nautilus_mime_has_any_components_for_file                 (NautilusFile           *file);
- gboolean                 nautilus_mime_has_any_components_for_file_extended        (NautilusFile           *file, char *extra_requirements);
+GList *                  nautilus_mime_get_applications_for_file               (NautilusFile           *file);
+
+
 gboolean                 nautilus_mime_has_any_applications_for_file               (NautilusFile           *file);
-gboolean                 nautilus_mime_has_any_applications_for_file_type          (NautilusFile           *file);
-GnomeVFSResult           nautilus_mime_set_default_action_type_for_file            (NautilusFile           *file,
-										    GnomeVFSMimeActionType  action_type);
+
 GnomeVFSResult           nautilus_mime_set_default_application_for_file            (NautilusFile           *file,
 										    const char             *application_id);
-GnomeVFSResult           nautilus_mime_set_default_component_for_file              (NautilusFile           *file,
-										    const char             *component_iid);
-/* Stored as delta to current user level */
-GnomeVFSResult           nautilus_mime_set_short_list_applications_for_file        (NautilusFile           *file,
-										    GList                  *components);
-GnomeVFSResult           nautilus_mime_add_application_to_short_list_for_file      (NautilusFile           *file,
-										    const char             *application_id);
-GnomeVFSResult           nautilus_mime_remove_application_from_short_list_for_file (NautilusFile           *file,
-										    const char             *application_id);
-GnomeVFSResult           nautilus_mime_set_short_list_components_for_file          (NautilusFile           *file,
-										    GList                  *components);
-GnomeVFSResult           nautilus_mime_add_component_to_short_list_for_file        (NautilusFile           *file,
-										    const char             *iid);
-GnomeVFSResult           nautilus_mime_remove_component_from_short_list_for_file   (NautilusFile           *file,
-										    const char             *iid);
-
-/* No way to override system list; can only add. */
-GnomeVFSResult           nautilus_mime_extend_all_applications_for_file            (NautilusFile           *file,
-										    GList                  *applications);
-/* Only "user" entries may be removed. */
-GnomeVFSResult           nautilus_mime_remove_from_all_applications_for_file       (NautilusFile           *file,
-										    GList                  *applications);
-gboolean                 nautilus_mime_has_any_components_for_uri_scheme           (const char             *uri_scheme);
-
-
-/* No way to add to all components; oafinfo database assumed trusted in this regard. */
 
 #endif /* NAUTILUS_MIME_ACTIONS_H */

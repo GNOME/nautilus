@@ -76,6 +76,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-view-query.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
@@ -997,54 +998,12 @@ nautilus_window_synch_view_as_menus (NautilusWindow *window)
 }
 
 static void
-chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (callback_data);
-	if (identifier != NULL) {
-		nautilus_window_set_content_view (window, identifier);
-	}
-	
-	/* FIXME bugzilla.gnome.org 41334: There should be some global
-	 * way to signal that the file type associations have changed,
-	 * so that the places that display these lists can react. For
-	 * now, hardwire this case, which is the most obvious one by
-	 * far.
-	 */
-	nautilus_window_load_view_as_menus (window);
-}
-
-static void
-cancel_chose_component_callback (NautilusWindow *window)
-{
-	if (window->details->viewed_file != NULL) {
-		nautilus_cancel_choose_component_for_file (window->details->viewed_file,
-							   chose_component_callback, 
-							   window);
-	}
-}
-
-void
-nautilus_window_show_view_as_dialog (NautilusWindow *window)
-{
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	/* Call back when the user chose the component. */
-	cancel_chose_component_callback (window);
-	nautilus_choose_component_for_file (window->details->viewed_file,
-					    GTK_WINDOW (window), 
-					    chose_component_callback, 
-					    window);
-}
-
-static void
 refresh_stored_viewers (NautilusWindow *window)
 {
 	GList *components, *node, *viewers;
 	NautilusViewIdentifier *identifier;
 
-        components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
+        components = nautilus_view_query_get_components_for_file (window->details->viewed_file);
 	viewers = NULL;
         for (node = components; node != NULL; node = node->next) {
         	identifier = nautilus_view_identifier_new_from_content_view (node->data);
@@ -1399,7 +1358,6 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	nautilus_file_ref (file);
 
 	cancel_view_as_callback (window);
-	cancel_chose_component_callback (window);
 
 	if (window->details->viewed_file != NULL) {
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {

@@ -33,6 +33,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-labeled-image.h>
+#include <eel/eel-mime-application-chooser.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -3264,6 +3265,33 @@ file_changed_callback (NautilusFile *file, gpointer user_data)
 	}
 }
 
+static gboolean
+should_show_open_with (FMPropertiesWindow *window)
+{
+	return !is_multi_file_window (window);
+}
+
+static void
+create_open_with_page (FMPropertiesWindow *window)
+{
+	GtkWidget *vbox;
+	char *uri;
+	char *mime_type;
+	
+	uri = nautilus_file_get_uri (get_target_file (window));
+	mime_type = nautilus_file_get_mime_type (get_target_file (window));
+	
+	vbox = eel_mime_application_chooser_new (uri, mime_type);
+	gtk_widget_show (vbox);
+	
+	g_free (uri);
+	g_free (mime_type);
+
+	gtk_notebook_append_page (window->details->notebook, 
+				  vbox, gtk_label_new (_("Open With")));
+}
+
+
 static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
@@ -3360,6 +3388,10 @@ create_properties_window (StartupData *startup_data)
 
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
+	}
+
+	if (should_show_open_with (window)) {
+		create_open_with_page (window);
 	}
 
 	/* append pages from available views */

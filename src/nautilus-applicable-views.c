@@ -35,6 +35,7 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-view-query.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 
 struct NautilusDetermineViewHandle {
@@ -111,9 +112,9 @@ got_file_info_callback (NautilusFile *file,
             || vfs_result_code == GNOME_VFS_ERROR_NOT_SUPPORTED
             || vfs_result_code == GNOME_VFS_ERROR_INVALID_URI) {
                 if (handle->fallback) {
-                        default_component = nautilus_mime_get_default_fallback_component_for_file (handle->file);
+                        default_component = nautilus_view_query_get_fallback_component_for_file (handle->file);
                 } else {
-                        default_component = nautilus_mime_get_default_component_for_file (handle->file);
+                        default_component = nautilus_view_query_get_default_component_for_file (handle->file);
                 }
                 if (default_component != NULL) {
                         default_id = nautilus_view_identifier_new_from_content_view (default_component);
@@ -126,7 +127,7 @@ got_file_info_callback (NautilusFile *file,
         
         if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
                 /* If the complete list is non-empty, the default shouldn't have been NULL */
-                g_assert (!nautilus_mime_has_any_components_for_file (handle->file));
+                g_assert (!nautilus_view_query_has_any_components_for_file (handle->file));
                 result_code = NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE;
         } else {
                 result_code = get_view_result_from_gnome_vfs_result (vfs_result_code);
