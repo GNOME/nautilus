@@ -1,3 +1,17 @@
+2000-09-05  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_direcotry_copy_move_metadata_key),
+	(nautilus_directory_copy_metadata_key),
+	(nautilus_directory_move_metadata_key),
+	(nautilus_directory_move_metadata),
+	(nautilus_directory_copy_metadata),
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move):
+	Work on metadata copying.
+	For now hardcode the metadata keys that get copied.
+	Metadata move does not remove old metadata in source location yet.
+
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
