@@ -1,6 +1,13 @@
+2004-02-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-container.c: 
+	(keyboard_move_to):
+	(handle_icon_button_press): Use select_one_unselect_others to
+	select an icon. Fixes bug #126339.
+
 2004-02-05  Padraig O'Briain  <padraig.obriain@sun.com>
 
-	* libnautilus-private/ nautilus-file-operations.c (confirm_empty_trash):
+	* libnautilus-private/nautilus-file-operations.c (confirm_empty_trash):
 	Set role of AtkObject to ATK_ROLE_ALERT. Fixes bug #132857.
 
 2004-02-05  Martin Wehner  <martin.wehner@epost.de>

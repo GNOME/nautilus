@@ -2558,8 +2558,7 @@ keyboard_move_to (NautilusIconContainer *container,
 			set_keyboard_rubberband_start (container, from);
 		} 
 
-		unselect_all (container);	
-		icon_set_selected (container, icon, TRUE);
+		select_one_unselect_others (container, icon);
 		set_keyboard_focus (container, icon);
 
 		if (icon && container->details->keyboard_rubberband_start && container->details->keyboard_rubberband_start != icon) {
@@ -4408,8 +4407,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		} else {
-			unselect_all (container);
-			icon_set_selected (container, icon, TRUE);
+			select_one_unselect_others (container, icon);
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
