@@ -1624,6 +1624,10 @@ eazel_installer_add_category (EazelInstaller *installer,
 		category->description = g_strdup ("");
 	}
 
+	if (category->default_choice) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+	}
+
 	vbox_desc = gtk_vbox_new (FALSE, 0);
 
 	/* convert blank lines into something nicer looking

@@ -79,6 +79,7 @@ categorydata_new (void)
 	result->packages = NULL;
 	result->depends = NULL;
 	result->exclusive = FALSE;
+	result->default_choice = FALSE;
 	return result;
 }
 

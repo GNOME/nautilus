@@ -139,6 +139,7 @@ struct _CategoryData {
 	GList* packages;
 	GList* depends;			/* used only for the GUI: GList<char *> -- other category names */
 	gboolean exclusive;		/* no other items can be clicked if this one is */
+	gboolean default_choice;	/* click this one by default */
 };
 CategoryData *categorydata_new (void);
 CategoryData *categorydata_copy (const CategoryData *cat);

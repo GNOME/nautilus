@@ -166,6 +166,8 @@ parse_category (xmlNode* cat) {
 			}
 		} else if (g_strcasecmp (pkg->name, "EXCLUSIVE") == 0) {
 			category->exclusive = TRUE;
+		} else if (g_strcasecmp (pkg->name, "DEFAULT") == 0) {
+			category->default_choice = TRUE;
 		} else if (g_strcasecmp (pkg->name, "DESCRIPTION") == 0) {
 			text = xmlNodeGetContent (pkg);
 			category->description = g_strdup (text);

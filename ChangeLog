@@ -1,3 +1,17 @@
+2000-10-25  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category):
+	* nautilus-installer/src/installer.c:
+	(eazel_installer_add_category):
+
+	Add <DEFAULT/> option to the package list XML file, and make all
+	default choices be pre-clicked when the user gets to the selection
+	page.
+
 2000-10-25  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-applicable-views.c: (nautilus_navigation_info_new),
