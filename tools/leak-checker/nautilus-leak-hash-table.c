@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-leak-hash-table.c - hash table for a leak checking library
    Virtual File System Library
 
@@ -329,6 +331,25 @@ nautilus_leak_hash_table_remove (NautilusLeakHashTable *table, unsigned long key
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void
+nautilus_leak_hash_table_filter (NautilusLeakHashTable *table,
+				 NautilusLeakHashTableFilterFunction function,
+				 gpointer callback_data)
+{
+	NautilusHashEntry *entry;
+	int i;
+
+	for (i = 0; i < table->element_vector.size; i++) {
+		/* traverse the hash table element vector */
+		entry = nautilus_leak_hash_element_vector_at (&table->element_vector, i);
+		if (entry->data.stack_crawl != NULL) {
+			if (!(* function) (&entry->data, callback_data)) {
+				entry->data.stack_crawl = NULL;
+			}
+		}
+	}
 }
 
 struct NautilusLeakTable {

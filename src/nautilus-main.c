@@ -232,9 +232,9 @@ main (int argc, char *argv[])
 			bonobo_main ();
 		}
 		bonobo_object_unref (BONOBO_OBJECT (application));
-		poptFreeContext(popt_context);
 	}
 
+	poptFreeContext(popt_context);
 	gnome_vfs_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when

@@ -21,20 +21,25 @@
    Author: Pavel Cisler <pavel@eazel.com>
 */
 
-#ifndef LEAK_HASH_TABLE__
-#define LEAK_HASH_TABLE__
+#ifndef NAUTILUS_LEAK_HASH_TABLE_H
+#define NAUTILUS_LEAK_HASH_TABLE_H
 
 typedef struct NautilusLeakHashTable NautilusLeakHashTable;
 typedef struct NautilusHashEntry NautilusHashEntry;
 
-NautilusLeakHashTable *nautilus_leak_hash_table_new 	(size_t 		initial_size);
-void 		  nautilus_leak_hash_table_free 	(NautilusLeakHashTable 	*hash_table);
-gboolean 	  nautilus_leak_hash_table_remove 	(NautilusLeakHashTable 	*table, 
-					 		 unsigned long 		key);
-NautilusHashEntry *nautilus_leak_hash_table_add 	(NautilusLeakHashTable 	*table, 
-							 unsigned long 		key);
-NautilusHashEntry *nautilus_leak_hash_table_find 	(NautilusLeakHashTable 	*table, 
-							 unsigned long 		key);
+typedef gboolean (* NautilusLeakHashTableFilterFunction) (const NautilusLeakAllocationRecord *record, gpointer callback_data);
+
+NautilusLeakHashTable *nautilus_leak_hash_table_new    (size_t                               initial_size);
+void                   nautilus_leak_hash_table_free   (NautilusLeakHashTable               *hash_table);
+gboolean               nautilus_leak_hash_table_remove (NautilusLeakHashTable               *table,
+							unsigned long                        key);
+NautilusHashEntry *    nautilus_leak_hash_table_add    (NautilusLeakHashTable               *table,
+							unsigned long                        key);
+NautilusHashEntry *    nautilus_leak_hash_table_find   (NautilusLeakHashTable               *table,
+							unsigned long                        key);
+void                   nautilus_leak_hash_table_filter (NautilusLeakHashTable               *table,
+							NautilusLeakHashTableFilterFunction  function,
+							gpointer                             callback_data);
 
 
 typedef struct {
@@ -46,12 +51,13 @@ typedef struct {
 typedef struct NautilusLeakTable NautilusLeakTable;
 typedef gboolean (* NautilusEachLeakTableFunction) (NautilusLeakTableEntry *entry, void *context);
 
-NautilusLeakTable *nautilus_leak_table_new		(NautilusLeakHashTable 	*hash_table, 
-							 int 			stack_grouping_depth);
-void		  nautilus_leak_table_free		(NautilusLeakTable 	*leak_table);
-void		  nautilus_leak_table_sort_by_count	(NautilusLeakTable 	*leak_table);
-void		  nautilus_leak_table_sort_by_size	(NautilusLeakTable 	*leak_table);
-void		  nautilus_leak_table_each_item		(NautilusLeakTable 	*leak_table,
-							 NautilusEachLeakTableFunction function, 
-							 void 			*context);
-#endif
+NautilusLeakTable *nautilus_leak_table_new           (NautilusLeakHashTable         *hash_table,
+						      int                            stack_grouping_depth);
+void               nautilus_leak_table_free          (NautilusLeakTable             *leak_table);
+void               nautilus_leak_table_sort_by_count (NautilusLeakTable             *leak_table);
+void               nautilus_leak_table_sort_by_size  (NautilusLeakTable             *leak_table);
+void               nautilus_leak_table_each_item     (NautilusLeakTable             *leak_table,
+						      NautilusEachLeakTableFunction  function,
+						      void                          *context);
+
+#endif /* NAUTILUS_LEAK_HASH_TABLE_H */

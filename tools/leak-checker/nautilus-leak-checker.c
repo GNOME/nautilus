@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-leak-checker.c - simple leak checking library
    Virtual File System Library
 
@@ -55,7 +57,43 @@ int  (* real_start_main) (int (*main) (int, char **, char **), int argc,
 			  char **argv, void (*init) (void), void (*fini) (void), 
 			  void (*rtld_fini) (void), void *stack_end);
 
-
+/* We clean up on exit, but not all libraries do so.
+ * For ones that don't, list tell-tale stack crawl function names.
+ */
+static const char * const known_leakers[] = {
+	"XSupportsLocale",
+	"__bindtextdomain",
+	"__pthread_initialize_manager",
+	"__textdomain",
+	"bonobo_init",
+	"client_parse_func",
+	"client_save_yourself_callback",
+	"g_get_any_init",
+	"g_hash_node_new",
+	"g_log_set_handler",
+	"g_quark_new",
+	"g_thread_init",
+	"gconf_postinit",
+	"gnome_add_gtk_arg_callback",
+	"gnome_client_init",
+	"gnome_init_cb",
+	"gnome_vfs_backend_loadinit",
+	"gnome_vfs_init",
+	"gtk_init",
+	"gtk_rc_init",
+	"gtk_rc_parse",
+	"gtk_type_class_init",
+	"gtk_type_init",
+	"gtk_type_register_enum",
+	"gtk_type_register_flags",
+	"gtk_type_unique",
+	"load_module",
+	"mbtowc",
+	"oaf_init",
+	"pthread_initialize",
+	"setlocale",
+	"tzset_internal",
+};
 
 static const char *app_path;
 
@@ -239,10 +277,7 @@ detect_reentry (void *parent_caller)
 }
 
 static pthread_mutex_t nautilus_leak_hash_table_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
-static NautilusLeakHashTable *hash_table;
-
-static int nautilus_leak_malloc_count;
-static size_t nautilus_leak_malloc_outstanding_size;
+static NautilusLeakHashTable *nautilus_leak_hash_table;
 
 static void
 nautilus_leak_record_malloc (void *ptr, size_t size)
@@ -255,23 +290,20 @@ nautilus_leak_record_malloc (void *ptr, size_t size)
 	if (!nautilus_leak_check_leaks)
 		return;
 
-	++nautilus_leak_malloc_count;
-	nautilus_leak_malloc_outstanding_size += size;
-
 	get_stack_trace (trace_array, TRACE_ARRAY_MAX);
 
 	pthread_mutex_lock (&nautilus_leak_hash_table_mutex);
 
-	if (hash_table == NULL) {
-		hash_table = nautilus_leak_hash_table_new (10 * 1024);
+	if (nautilus_leak_hash_table == NULL) {
+		nautilus_leak_hash_table = nautilus_leak_hash_table_new (10 * 1024);
 	}
-	if (nautilus_leak_hash_table_find (hash_table, (gulong)ptr) != NULL) {
+	if (nautilus_leak_hash_table_find (nautilus_leak_hash_table, (gulong)ptr) != NULL) {
 		printf("*** block %p appears to already be allocated "
 			"- someone must have sneaked a free past us\n", ptr);
-		nautilus_leak_hash_table_remove (hash_table, (gulong)ptr);
+		nautilus_leak_hash_table_remove (nautilus_leak_hash_table, (gulong)ptr);
 	}
 	/* insert a new item into the hash table, using the block address as the key */
-	element = nautilus_leak_hash_table_add (hash_table, (gulong)ptr);
+	element = nautilus_leak_hash_table_add (nautilus_leak_hash_table, (gulong)ptr);
 	
 	/* fill out the new allocated element */
 	nautilus_leak_allocation_record_init (&element->data, ptr, size, trace_array, TRACE_ARRAY_MAX);
@@ -295,27 +327,25 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 	pthread_mutex_lock (&nautilus_leak_hash_table_mutex);
 
 	/* must have hash table by now */
-	g_assert (hash_table != NULL);
+	g_assert (nautilus_leak_hash_table != NULL);
 	/* must have seen the block already */
-	element = nautilus_leak_hash_table_find (hash_table, (gulong)old_ptr);
+	element = nautilus_leak_hash_table_find (nautilus_leak_hash_table, (gulong)old_ptr);
 	if (element == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", old_ptr);
 	} else {
-		nautilus_leak_malloc_outstanding_size -= element->data.size;
-		nautilus_leak_hash_table_remove (hash_table, (gulong)old_ptr);
+		nautilus_leak_hash_table_remove (nautilus_leak_hash_table, (gulong)old_ptr);
 	}
 
 	/* shouldn't have this block yet */
-	if (nautilus_leak_hash_table_find (hash_table, (gulong)new_ptr) != NULL) {
+	if (nautilus_leak_hash_table_find (nautilus_leak_hash_table, (gulong)new_ptr) != NULL) {
 		printf("*** block %p appears to already be allocated "
 			"- someone must have sneaked a free past us\n", new_ptr);
-		nautilus_leak_hash_table_remove (hash_table, (gulong)new_ptr);
+		nautilus_leak_hash_table_remove (nautilus_leak_hash_table, (gulong)new_ptr);
 	}
 
 	/* insert a new item into the hash table, using the block address as the key */
-	element = nautilus_leak_hash_table_add (hash_table, (gulong)new_ptr);
-	nautilus_leak_malloc_outstanding_size += size;
+	element = nautilus_leak_hash_table_add (nautilus_leak_hash_table, (gulong)new_ptr);
 
 	/* Fill out the new allocated element.
 	 * This way the last call to relloc will be the stack crawl that shows up in the
@@ -335,20 +365,17 @@ nautilus_leak_record_free (void *ptr)
 	if (!nautilus_leak_check_leaks)
 		return;
 
-	--nautilus_leak_malloc_count;
-
 	pthread_mutex_lock (&nautilus_leak_hash_table_mutex);
 
 	/* must have hash table by now */
-	g_assert (hash_table != NULL);
+	g_assert (nautilus_leak_hash_table != NULL);
 	/* must have seen the block already */
-	element = nautilus_leak_hash_table_find (hash_table, (gulong)ptr);
+	element = nautilus_leak_hash_table_find (nautilus_leak_hash_table, (gulong)ptr);
 	if (element == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", ptr);
 	} else {
-		nautilus_leak_malloc_outstanding_size -= element->data.size;
-		nautilus_leak_hash_table_remove (hash_table, (gulong)ptr);
+		nautilus_leak_hash_table_remove (nautilus_leak_hash_table, (gulong)ptr);
 	}
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
 
@@ -523,18 +550,24 @@ __libc_start_main (int (*main) (int, char **, char **), int argc,
 		   char **argv, void (*init) (void), void (*fini) (void), 
 		   void (*rtld_fini) (void), void *stack_end)
 {
+	g_atexit (print_leaks_at_exit);
+
 	nautilus_leak_initialize_if_needed ();
 
 	nautilus_leak_checker_init (argv[0]);
 
-	g_atexit (print_leaks_at_exit);
-
-	return real_start_main (main, argc, argv, init, fini,  rtld_fini, stack_end);
+	return real_start_main (main, argc, argv, init, fini, rtld_fini, stack_end);
 }
 
 /* We try to keep a lot of code in between __libc_free and malloc to make
  * the reentry detection that depends on call address proximity work.
  */
+
+typedef struct {
+	int count;
+	unsigned long size;
+} LeakTotals;
+
 typedef struct {
 	int max_count;
 	int counter;
@@ -546,6 +579,54 @@ typedef struct {
  * because by now we have a snapshot of the leaks at the time of 
  * calling nautilus_leak_print_leaks
  */
+
+static gboolean
+total_one_leak (NautilusLeakTableEntry *entry, gpointer callback_data)
+{
+	LeakTotals *totals;
+
+	totals = (LeakTotals *) callback_data;
+
+	totals->count += entry->count;
+	totals->size += entry->total_size;
+	return TRUE;
+}
+
+static GHashTable *
+create_bad_names_hash_table (void)
+{
+	GHashTable *table;
+	int i;
+
+	table = g_hash_table_new (g_str_hash,
+				  g_str_equal);
+	for (i = 0; i < (sizeof (known_leakers) / sizeof (known_leakers[0])); i++) {
+		g_hash_table_insert (table,
+				     (char *) known_leakers[i],
+				     (char *) known_leakers[i]);
+	}
+	return table;
+}
+
+static gboolean
+is_stack_crawl_good (const NautilusLeakAllocationRecord *record, gpointer callback_data)
+{
+	int i;
+	char *name;
+	GHashTable *bad_names;
+
+	bad_names = (GHashTable *) callback_data;
+	for (i = 0; record->stack_crawl[i] != NULL; i++) {
+		name = nautilus_leak_get_function_name (app_path, record->stack_crawl[i]);
+		if (g_hash_table_lookup (bad_names, name) != NULL) {
+			g_free (name);
+			return FALSE;
+		}
+		g_free (name);
+	}
+	return TRUE;
+}
+
 static gboolean
 print_one_leak (NautilusLeakTableEntry *entry, void *context)
 {
@@ -562,7 +643,7 @@ print_one_leak (NautilusLeakTableEntry *entry, void *context)
 		 */
 		if (entry->sample_allocation->stack_crawl[index] == NULL)
 			break;
-		printf("  %c ", index >= params->stack_match_depth ? '?' : ' ');
+		printf("  %c ", (entry->count > 1 && index >= params->stack_match_depth) ? '?' : ' ');
 
 		nautilus_leak_print_symbol_address (app_path, 
 			entry->sample_allocation->stack_crawl[index]);
@@ -576,40 +657,59 @@ void
 nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth, 
 	int max_count, gboolean sort_by_count)
 {
-	NautilusLeakTable *temp_leak_table;
+	NautilusLeakHashTable *hash_table;
+	NautilusLeakTable *leak_table;
+	GHashTable *bad_names;
+	LeakTotals leak_totals;
 	PrintOneLeakParams each_context;
 
 	pthread_mutex_lock (&nautilus_leak_hash_table_mutex);
 	/* must have hash table by now */
-	g_assert (hash_table != NULL);
-
-	/* Build a leak table by grouping blocks with the same
-	 * stackcrawls (stack_grouping_depth levels considered)
-	 * from the allocated block hash table.
-	 */
-	temp_leak_table = nautilus_leak_table_new (hash_table, stack_grouping_depth);	
+	g_assert (nautilus_leak_hash_table != NULL);
+	hash_table = nautilus_leak_hash_table;
+	nautilus_leak_hash_table = NULL;
+	nautilus_leak_check_leaks = FALSE;
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
 
-	printf("%d outstanding allocations %d bytes total ============ \n", 
-		nautilus_leak_malloc_count, nautilus_leak_malloc_outstanding_size);
-	printf("stack trace match depth %d\n", stack_grouping_depth);
+	/* Filter out stack crawls that we want to ignore. */
+	bad_names = create_bad_names_hash_table ();
+	nautilus_leak_hash_table_filter (hash_table,
+					 is_stack_crawl_good,
+					 bad_names);
+	g_hash_table_destroy (bad_names);
+
+	/* Build a leak table by grouping blocks with the same
+	 * stack crawls (<stack_grouping_depth> levels considered)
+	 * from the allocated block hash table.
+	 */
+	leak_table = nautilus_leak_table_new (hash_table, stack_grouping_depth);
+	nautilus_leak_hash_table_free (hash_table);
 
 	/* sort the leak table */
 	if (sort_by_count) {
-		nautilus_leak_table_sort_by_count (temp_leak_table);
+		nautilus_leak_table_sort_by_count (leak_table);
 	} else {
-		nautilus_leak_table_sort_by_size (temp_leak_table);
+		nautilus_leak_table_sort_by_size (leak_table);
 	}
 
 	/* we have a sorted table of all the leakers, we can print it out. */
+
+	leak_totals.count = 0;
+	leak_totals.size = 0;
+	nautilus_leak_table_each_item (leak_table, total_one_leak, &leak_totals);
+
+	printf ("The leak checker found %d outstanding allocations for %lu bytes total at exit time.\n", 
+		leak_totals.count, leak_totals.size);
+	printf ("Here is a report with stack trace match depth %d:\n", stack_grouping_depth);
+
 	each_context.counter = 0;
 	each_context.max_count = max_count;
 	each_context.stack_print_depth = stack_print_depth;
 	each_context.stack_match_depth = stack_grouping_depth;
-	nautilus_leak_table_each_item (temp_leak_table, print_one_leak, &each_context);
+	nautilus_leak_table_each_item (leak_table, print_one_leak, &each_context);
 	
 	/* we are done with it, free the leak table */
-	nautilus_leak_table_free (temp_leak_table);
+	nautilus_leak_table_free (leak_table);
 	
 	/* we are done with it, clean up cached up data used by the symbol lookup */
 	nautilus_leak_print_symbol_cleanup ();
@@ -621,10 +721,8 @@ nautilus_leak_checker_init (const char *path)
 	/* we should get rid of this and find another way to find our
 	 * binary's name
 	 */
-	printf("setting up the leakchecker for %s\n", path);
+	printf ("Setting up the leak checker for %s\n", path);
 	app_path = path;
-
-	g_atexit (print_leaks_at_exit);
 }
 
 void *
@@ -655,6 +753,73 @@ void
 free (void *ptr)
 {
 	__libc_free (ptr);
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+GList *
+g_list_alloc (void)
+{
+	return g_new0 (GList, 1);
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+void
+g_list_free (GList *list)
+{
+	GList *node, *next;
+
+	node = list;
+	while (node != NULL) {
+		next = node->next;
+		g_free (node);
+		node = next;
+	}
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+void
+g_list_free_1 (GList *list)
+{
+	g_free (list);
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+GNode *
+g_node_new (gpointer data)
+{
+	GNode *node;
+
+	node = g_new0 (GNode, 1);
+	node->data = data;
+	return node;
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+static void
+g_nodes_free (GNode *root)
+{
+	GNode *node, *next;
+
+	node = root;
+	while (node != NULL) {
+		next = node->next;
+		g_nodes_free (node->children);
+		g_free (node);
+		node = next;
+	}
+}
+
+/* Version that uses normal allocation, not mem. chunks. */
+void
+g_node_destroy (GNode *root)
+{
+	g_return_if_fail (root != NULL);
+	
+	if (!G_NODE_IS_ROOT (root)) {
+		g_node_unlink (root);
+	}
+	
+	g_nodes_free (root);
 }
 
 #endif
@@ -709,8 +874,6 @@ main (int argc, char **argv)
 	void *non_leak;
 	void *leak;
 	int i;
-
-	nautilus_leak_checker_init (*argv);
 
 	non_leak = g_malloc(100);
 	leak = g_malloc(200);

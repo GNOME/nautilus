@@ -1,3 +1,45 @@
+2000-09-21  Darin Adler  <darin@eazel.com>
+
+	Fixes to leaks and the leak checker.
+	
+	* libnautilus-extensions/nautilus-preference.c:
+	(nautilus_self_check_preference): Unref an object that was
+	leaking.
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_self_check_string_list): Unref an object that was
+	leaking.
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_manager_destroy): Allow destroying.
+	(unref_user_level_manager): Unref the user level manager.
+	(user_level_manager_ensure_global_manager): Unref the user level
+	manager at exit time.
+	* src/nautilus-main.c: (main): Free the context even in the
+	self-check case.
+	* tools/leak-checker/nautilus-leak-checker.c:
+	(nautilus_leak_record_malloc), (nautilus_leak_record_realloc),
+	(nautilus_leak_record_free) : Don't gather stats on the blocks as
+	the leaks are recorded. Instead build them at print time.
+	(total_one_leak): Compute totals for printing.
+	(create_bad_names_hash_table): Make a hash table to use to check
+	if a name is one of the "allowed to leak" functions.
+	(is_stack_crawl_good): Reject stack crawls from things that are
+	allowed to leak. "good" here means "worth keeping".
+	(print_one_leak): Don't print any "?" if there's only a single
+	leak, since all levels of the stack crawl are valid then.
+	(nautilus_leak_print_leaks): Filter out expected leaks.
+	(g_list_alloc), (g_list_free), (g_list_free_1), (g_node_new),
+	(g_nodes_free), (g_node_destroy): Versions of these functions that
+	use malloc/free instead of mem. chunks so we can accurately gauge
+	leaks of these data types.
+	* tools/leak-checker/nautilus-leak-hash-table.h:
+	* tools/leak-checker/nautilus-leak-hash-table.c:
+	(nautilus_leak_hash_table_filter): Function for use by new
+	filtering code.
+	* tools/leak-checker/nautilus-leak-symbol-lookup.h:
+	* tools/leak-checker/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_get_function_name): Function for use by new
+	filtering code.
+
 2000-09-21  Arlo Rose  <arlo@eazel.com>
 
 	* data/browser.xml:

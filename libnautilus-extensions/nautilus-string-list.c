@@ -518,6 +518,7 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, cities_copy), TRUE);
 
 	nautilus_string_list_free (cities_copy);
+	nautilus_string_list_free (cities);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_new_from_string_list (NULL, TRUE) == NULL, TRUE);
 

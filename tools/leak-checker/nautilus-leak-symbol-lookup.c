@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-leak-symbol-lookup.c - symbol lookup for a leak checking library
    Virtual File System Library
 
@@ -271,5 +273,22 @@ nautilus_leak_print_symbol_address (const char *app_path, void *address)
 		g_free (source_file_name);
 	} else {
 		printf("%p (unknown function)\n", address);
+	}
+}
+
+char *
+nautilus_leak_get_function_name (const char *app_path, void *address)
+{
+	char *function_name;
+	char *source_file_name;
+	int line;
+
+	nautilus_leak_symbol_map_load_if_needed (app_path, true);
+
+	if (nautilus_leak_find_symbol_address (address, &function_name, &source_file_name, &line)) {
+		g_free (source_file_name);
+		return function_name;
+	} else {
+		return NULL;
 	}
 }

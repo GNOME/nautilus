@@ -206,9 +206,6 @@ user_level_manager_destroy (GtkObject *object)
 	
 	manager = NAUTILUS_USER_LEVEL_MANAGER (object);
 
-	/* Right now, the global manager is not destroyed on purpose */
-	g_assert_not_reached ();
-
 	/* Remove the gconf notification if its still lingering */
 	if (manager->user_level_changed_connection != 0) {
 		gconf_client_notify_remove (manager->gconf_client,
@@ -226,10 +223,17 @@ user_level_manager_destroy (GtkObject *object)
 }
 
 static void
+unref_user_level_manager (void)
+{
+	gtk_object_unref (GTK_OBJECT (global_manager));
+}
+
+static void
 user_level_manager_ensure_global_manager (void)
 {
         if (global_manager == NULL) {
                 global_manager = user_level_manager_new ();
+		g_atexit (unref_user_level_manager);
         }
 
 	g_assert (global_manager != NULL);

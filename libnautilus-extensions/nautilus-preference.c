@@ -901,6 +901,8 @@ nautilus_self_check_preference (void)
 			gtk_object_unref (GTK_OBJECT (sp));
 		}
 	}
+
+	gtk_object_unref (GTK_OBJECT (preference));
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

@@ -22,10 +22,13 @@
    based on MemProf by Owen Taylor, <otaylor@redhat.com>
 */
 
-#ifndef SYMBOL_LOOKUP_H
-#define SYMBOL_LOOKUP_
+#ifndef NAUTILUS_LEAK_SYMBOL_LOOKUP_H
+#define NAUTILUS_LEAK_SYMBOL_LOOKUP_H
 
-void nautilus_leak_print_symbol_address (const char *app_path, void *address);
-void nautilus_leak_print_symbol_cleanup (void);
+void  nautilus_leak_print_symbol_address (const char *app_path,
+					  void       *address);
+char *nautilus_leak_get_function_name    (const char *app_path,
+					  void       *address);
+void  nautilus_leak_print_symbol_cleanup (void);
 
-#endif
+#endif /* NAUTILUS_LEAK_SYMBOL_LOOKUP_H */
