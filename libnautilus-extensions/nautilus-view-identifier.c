@@ -55,31 +55,54 @@ nautilus_view_identifier_copy (NautilusViewIdentifier *identifier)
 	return nautilus_view_identifier_new (identifier->iid, identifier->name);
 }
 
-
+/* Returns a list of languages (with one element), containing
+   the LANG or LANGUAGE environment setting.
+   The elements in the returned list must be freed */
 static GSList *
 get_lang_list (void)
 {
         GSList *retval;
-        char *lang;
-        char * equal_char;
+        char *lang, *lang_with_locale, *tmp, *org_pointer;
+        char *equal_char;
 
         retval = NULL;
 
-        lang = g_getenv ("LANGUAGE");
+        tmp = g_getenv ("LANGUAGE");
 
-        if (!lang) {
-                lang = g_getenv ("LANG");
+        if (tmp == NULL) {
+                tmp = g_getenv ("LANG");
         }
 
+	lang = g_strdup (tmp);
+	org_pointer = lang;
 
-        if (lang) {
-                equal_char = strchr (lang, '=');
-                if (equal_char != NULL) {
-                        lang = equal_char + 1;
-                }
+	if (lang != NULL) {
+		/* envs can be in NAME=VALUE form */
+		equal_char = strchr (lang, '=');
+		if (equal_char != NULL) {
+			lang = equal_char + 1;
+		}
+		
+		/* lang may be in form LANG_LOCALE */
+		equal_char = strchr (lang, '_');
+		if (equal_char != NULL) {
+			lang_with_locale = g_strdup (lang);
+			*equal_char = 0;
+		} else {
+			lang_with_locale = NULL;
+		}
 
-                retval = g_slist_prepend (retval, lang);
+		/* Make sure we don't give oaf an empty
+		   lang string */
+		if (!nautilus_str_is_empty (lang_with_locale)) {
+			retval = g_slist_prepend (retval, 
+						  lang_with_locale);
+		}
+		if (!nautilus_str_is_empty (lang)) {
+			retval = g_slist_prepend (retval, g_strdup (lang));
+		}
         }
+	g_free (org_pointer);
         
         return retval;
 }
@@ -99,7 +122,8 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
         }
-       
+
+	g_slist_foreach (langs, (GFunc)g_free, NULL);
         g_slist_free (langs);
 
 	/* if the name is an OAFIID, clean it up for display */
