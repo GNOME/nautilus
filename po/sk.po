@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.4\n"
-"POT-Creation-Date: 2001-09-11 11:04+0200\n"
-"PO-Revision-Date: 2001-09-11 11:06CET\n"
+"POT-Creation-Date: 2001-09-21 12:51+0200\n"
+"PO-Revision-Date: 2001-09-21 12:53CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -153,7 +153,7 @@ msgstr "Sem patrí stránka pre pamä»."
 msgid "This is a placeholder for the IDE page."
 msgstr "Sem patrí stránka pre IDE."
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
+#: components/help/Nautilus_View_help.oaf.in.h:1 nautilus-help.desktop.in.h:2
 msgid "Help"
 msgstr "Pomocník"
 
@@ -2363,6 +2363,14 @@ msgstr "Biela"
 msgid "White Ribs"
 msgstr "Biele pruhy"
 
+#: data/favorites.desktop.in.h:1
+msgid "Favorite applications"
+msgstr "Obµúbené aplikácie"
+
+#: data/favorites.desktop.in.h:2
+msgid "Favorites"
+msgstr "Obµúbené"
+
 #: data/linksets/apps.xml.h:2
 msgid "Gnumeric"
 msgstr "Gnumeric"
@@ -2417,6 +2425,34 @@ msgstr "Google"
 #: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
 msgid "Search Engines"
 msgstr "Vyhµadávacie slu¾by"
+
+#: data/preferences.desktop.in.h:1
+msgid "Adjust your user environment"
+msgstr "Prispôsobte si svoje prostredie"
+
+#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:447
+msgid "Preferences"
+msgstr "Nastavenie"
+
+#: data/programs.desktop.in.h:1
+msgid "Browse available software"
+msgstr "Zoznam dostupného softvéru"
+
+#: data/programs.desktop.in.h:2
+msgid "Programs"
+msgstr "Programy"
+
+#: data/serverconfig.desktop.in.h:1
+msgid "Configure network services (web server, DNS server, etc.)"
+msgstr "Nastavenie sie»ových slu¾ieb (web server, DNS server, apod.)"
+
+#: data/serverconfig.desktop.in.h:2
+msgid "Server Configuration"
+msgstr "Nastavenie serveru"
+
+#: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+msgid "Start Here"
+msgstr "Zaèa» tu"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
@@ -2593,6 +2629,14 @@ msgstr "ZDNet Linux Resource Center"
 #: data/static_bookmarks.xml.h:45
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
+
+#: data/sysconfig.desktop.in.h:1
+msgid "Change systemwide settings (affects all users)"
+msgstr "Zmena systémového nastavenia (pre v¹etkých pou¾ívateµov)"
+
+#: data/sysconfig.desktop.in.h:2
+msgid "System Settings"
+msgstr "Systémové nastavenie"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
@@ -3632,7 +3676,7 @@ msgstr "bla bla (25. kópia).txt"
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "bla bla (100000000000000. kópia).txt"
 
-#. FIXME bugzilla.eazel.com 7701: These are wrong.
+#. FIXME bugzilla.gnome.org 47701: These are wrong.
 #: libnautilus-private/nautilus-file-operations.c:2293
 msgid "foo (10th copy)"
 msgstr "bla (10. kópia)"
@@ -4922,6 +4966,10 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Správca súborov a grafický shell Nautilus"
+
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentácia"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -6563,7 +6611,7 @@ msgstr ""
 "\"nautilus-clean.sh -x\". Ak to nepomô¾e, skúste re¹tart poèítaèa alebo novú "
 "in¹taláciu Nautilusu."
 
-#. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:539
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
@@ -6601,7 +6649,7 @@ msgstr ""
 #. * version of OAF). Show dialog and terminate the
 #. * program.
 #.
-#. FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
+#. FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
 #. * current OAF. I guess I read the code
 #. * wrong. Need to figure out when and make a
 #. * good message.
@@ -6814,7 +6862,7 @@ msgstr "Pou¾i» Nautilus pre kreslenie plochy."
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Prenies» existujúce ikony plochy na plochu Nautilusu."
 
-#. This option is currently disabled, per bugzilla.eazel.com 7557
+#. This option is currently disabled, per bugzilla.gnome.org 47557
 #: src/nautilus-first-time-druid.c:895
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Spú¹»a» Nautilus pri ¹tarte sedenia GNOME."
@@ -7231,7 +7279,7 @@ msgstr "Nevytvára» miniatúry pre súbory väè¹ie ako:"
 msgid "Preview Sound Files"
 msgstr "Uká¾ka zvukových súborov"
 
-#. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
+#. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
 #: src/nautilus-preferences-dialog.c:368
 msgid "Make Folder Appearance Details Public"
 msgstr "Detaily vzhµadu prieèinku sú verejné"
@@ -7295,10 +7343,6 @@ msgstr "Rýchlostné kompromisy"
 #: src/nautilus-preferences-dialog.c:420
 msgid "News Panel"
 msgstr "Panel noviniek"
-
-#: src/nautilus-preferences-dialog.c:447
-msgid "Preferences"
-msgstr "Nastavenie"
 
 #: src/nautilus-preferences-dialog.c:476
 #, c-format
@@ -8153,7 +8197,7 @@ msgstr "¥utujem, ale tému nie je mo¾né odstráni»!"
 msgid "Couldn't remove theme"
 msgstr "Nie je mo¾né odstráni» tému"
 
-#. FIXME bugzilla.eazel.com 5037: The text Preview
+#. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
 #. * time stamps really best described as "preview
 #. * release"?.
