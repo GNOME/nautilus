@@ -1,3 +1,27 @@
+2000-12-07  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 3926 (summary view uses non-standard anti-aliased
+	text in error dialogs)
+
+	Fixed unreported bug where closing the summary view error
+	dialog with close box would leave user at gray screen.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(get_window_from_summary_view): Split this out from set_dialog_parent
+	so I could also use it in a different context.
+	(set_dialog_parent): Now calls get_window_from_summary_view.
+	(generate_error_dialog): Now just calls nautilus_error_dialog instead
+	of doing a bunch of custom code to set up an anti-aliased text error
+	dialog. After we get the anti-aliased text preference to work on
+	NautilusLabel, we can consider changing nautilus_error_dialog and
+	friends to use it everywhere, but it doesn't make sense for error 
+	dialogs	only in this one place to look different from all others.
+	Also, connected error_dialog_cancel_cb to the "destroy" signal
+	instead of just to the OK button, so that closing the dialog with
+	the close box will have the same effect as the OK button.
+
 2000-12-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/text/nautilus-text-view.c:

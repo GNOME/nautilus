@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
 
@@ -1169,21 +1170,34 @@ error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
 	user_home = nautilus_get_user_main_directory ();	
 	nautilus_view_open_location (view->details->nautilus_view, user_home);
 	g_free (user_home);
+}
 
+static GtkWindow *
+get_window_from_summary_view (NautilusSummaryView *view)
+{
+	GtkWidget *parent_window;
+
+	g_assert (NAUTILUS_IS_SUMMARY_VIEW (view));
+
+	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
+	if (parent_window == NULL) {
+		return NULL;
+	}
+
+	return GTK_WINDOW (parent_window);
 }
 
 static void
 set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
 {
-	GtkWidget *parent_window;
+	GtkWindow *parent_window;
 
 	g_assert (NAUTILUS_IS_SUMMARY_VIEW (view));
 	g_assert (GNOME_IS_DIALOG (dialog));
 
-	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
-	/* this can sometimes be null */
+	parent_window = get_window_from_summary_view (view);
 	if (parent_window != NULL) {
-		gnome_dialog_set_parent (dialog, GTK_WINDOW (parent_window));
+		gnome_dialog_set_parent (dialog, parent_window);
 	}
 }
 
@@ -1191,46 +1205,14 @@ static void
 generate_error_dialog (NautilusSummaryView *view, const char *message)
 {
 	GnomeDialog	*dialog;
-	GtkWidget	*icon_container;
-	GtkWidget	*icon_widget;
-	GtkWidget	*hbox;
-	GtkWidget	*error_text;
 
-	dialog = GNOME_DIALOG (gnome_dialog_new (_("Service Error"), GNOME_STOCK_BUTTON_OK, NULL));
-
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
-	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
-
-	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox, FALSE, FALSE, 0);
-
-	icon_container = gtk_hbox_new (TRUE, 4);
-	icon_widget = create_image_widget ("gnome-warning.png", DEFAULT_SUMMARY_BACKGROUND_COLOR);
-	g_assert (icon_widget != NULL);
-	gtk_box_pack_start (GTK_BOX (icon_container), icon_widget, 0, 0, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), icon_container, FALSE, FALSE, 0);
-	gtk_widget_show (icon_widget);
-	gtk_widget_show (icon_container);
-
-	error_text = nautilus_label_new (message);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (error_text), 12);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (error_text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (error_text), TRUE);
-	/* FIXME: setting a fixed size here seems so hackish, but the results are so ugly otherwise. */
-	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (error_text), 300);
-	gtk_widget_show (error_text);
-	gtk_box_pack_start (GTK_BOX (hbox), error_text, FALSE, FALSE, 0);
-
-
-	gnome_dialog_set_close (dialog, TRUE);
-	set_dialog_parent (view, dialog);
-
-	gtk_widget_show (hbox);
-	gtk_widget_show (GTK_WIDGET (dialog));
-	gnome_dialog_button_connect (dialog, 0, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
-	gnome_dialog_run (dialog);
+	dialog = nautilus_error_dialog (message, 
+				        _("Service Error"), 
+				        get_window_from_summary_view (view));
+	gtk_signal_connect (GTK_OBJECT (dialog),
+			    "destroy",
+			    error_dialog_cancel_cb,
+			    view);
 }
 
 static void
