@@ -1,3 +1,41 @@
+2001-03-07  Darin Adler  <darin@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-07  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7494 (History sidebar component spews assertions when
+	closing nautilus window (and sometimes crashes)):
+
+	* components/history/nautilus-history-view.c: (update_history):
+	Don't try to update the history list widget if it's already
+	destroyed. Also handle the case where it's destroyed by an unref
+	call coming in through CORBA inside the nautilus_bookmark_new
+	function. This is a larger design problem, but this handles the
+	case that's actually occurring.
+	(nautilus_history_view_initialize): Ref the history list widget.
+	(nautilus_history_view_destroy): Set the "destroyed" boolean if
+	someone has connected one. Unref the history list widget.  Also,
+	don't bother clearing it since it is going to be destroyed anyway.
+
+	Fix bug 7514 (Intel/AMD branding on Hardware View CPU picture is
+	not something we're authorized to use):
+
+	* components/hardware/icons/cpu.png: Updated with new image from
+	Arlo.
+	
+	2001-03-07  George Lebl <jirka@5z.com>
+
+        Ramiro Estrugo <ramiro@eazel.com> said without this patch
+        life as we know it will cease to exist.
+
+        * libnautilus-extensions/nautilus-preferences-box.c
+          (category_list_select_row_callback):  When getting the
+          category name, get it out of the correct row.
+          Fixes #7482
+
 2001-03-07  Ian McKellar  <ian@eazel.com>
 
 	Merge from HEAD:

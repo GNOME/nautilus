@@ -271,7 +271,7 @@ category_list_select_row_callback (GtkCList *clist,
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (callback_data));
 
 	/* The cast here is needed because of the broken gtk_clist api */
-	if (gtk_clist_get_text (clist, row, column, (char **) &pane_name) != 1) {
+	if (gtk_clist_get_text (clist, row, CATEGORY_COLUMN, (char **) &pane_name) != 1) {
 		return;
 	}
 
