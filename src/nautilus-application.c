@@ -422,7 +422,7 @@ create_starthere_link_callback (gpointer data)
 
 	cmd = g_strconcat ("/bin/cp ",
 			   NAUTILUS_DATADIR,
-			   "/starthere.desktop ",
+			   "/starthere-link.desktop ",
 			   desktop_link_file,
 			   NULL);
 
