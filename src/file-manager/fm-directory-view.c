@@ -128,7 +128,7 @@ get_icon_container (FMDirectoryView *view)
 
 	g_return_val_if_fail (view_has_icon_container (view), NULL);
 
-	bin = GTK_BIN (view);
+	bin = GTK_BIN (view->scroll_frame);
 
 	if (bin->child == NULL)
 		return NULL;	/* Avoid GTK+ complaints.  */
@@ -273,7 +273,7 @@ create_icon_container (FMDirectoryView *view)
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
 			    view);
 
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (icon_container));
+	gtk_container_add (GTK_CONTAINER (view->scroll_frame), GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 	load_icon_container (view, icon_container);
@@ -292,9 +292,9 @@ setup_icon_container (FMDirectoryView *view,
 	if (! view_has_icon_container (view)) {
 		GtkWidget *child;
 
-		child = GTK_BIN (view)->child;
+		child = GTK_BIN (view->scroll_frame)->child;
 		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view)->child);
+			gtk_widget_destroy (GTK_BIN (view->scroll_frame)->child);
 		icon_container = create_icon_container (view);
 	} else {
 		icon_container = get_icon_container (view);
@@ -331,7 +331,7 @@ get_flist (FMDirectoryView *view)
 
 	g_return_val_if_fail (view_has_flist (view), NULL);
 
-	bin = GTK_BIN (view);
+	bin = GTK_BIN (view->scroll_frame);
 
 	if (bin->child == NULL)
 		return NULL;	/* Avoid GTK+ complaints.  */
@@ -432,7 +432,7 @@ create_flist (FMDirectoryView *view)
 			    GTK_SIGNAL_FUNC (flist_selection_changed_cb),
 			    view);
 
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (flist));
+	gtk_container_add (GTK_CONTAINER (view->scroll_frame), GTK_WIDGET (flist));
 
 	gtk_widget_show (GTK_WIDGET (flist));
 
@@ -477,9 +477,9 @@ setup_flist (FMDirectoryView *view,
 	if (! view_has_flist (view)) {
 		GtkWidget *child;
 
-		child = GTK_BIN (view)->child;
+		child = GTK_BIN (view->scroll_frame)->child;
 		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view)->child);
+			gtk_widget_destroy (GTK_BIN (view->scroll_frame)->child);
 		flist = create_flist (view);
 	}
 }
@@ -756,13 +756,13 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
 		view->current_position
-			= gnome_vfs_directory_list_get_first_position (list);
+			= gnome_vfs_directory_list_get_position (list);
 
 	view->entries_to_display += entries_read;
 
+	display_pending_entries (view);
+	display_icons_not_in_layout (view);
 	if (result == GNOME_VFS_ERROR_EOF) {
-		display_pending_entries (view);
-		display_icons_not_in_layout (view);
 		stop_load (view);
 		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {
