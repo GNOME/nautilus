@@ -807,7 +807,6 @@ eazel_install_delete_downloads (EazelInstall *service)
 
 	if (service->private->downloaded_files && eazel_install_emit_delete_files (service)) {
 		GList *iterator;
-		PackageData *top_pack, *sub_pack;
 		
 		trilobite_debug ("*** deleting the package files");
 		for (iterator = g_list_first (service->private->downloaded_files); iterator;
@@ -819,7 +818,7 @@ eazel_install_delete_downloads (EazelInstall *service)
 			}
 			
 		}
-		if (rmdir (eazel_install_get_tmp_dir (service))!=0) {
+		if (rmdir (eazel_install_get_tmp_dir (service)) != 0) {
 				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));
 		}
 	}
@@ -857,7 +856,7 @@ eazel_install_install_packages (EazelInstall *service,
 	} 
 
 	eazel_install_unlock_tmp_dir (service);
-	trilobite_debug ("service->private->downloaded_files = 0x%x", service->private->downloaded_files);
+	trilobite_debug ("service->private->downloaded_files = 0x%x", (unsigned int)service->private->downloaded_files);
 	eazel_install_delete_downloads (service);
 
 	g_free (service->private->cur_root);
@@ -1031,7 +1030,7 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 	unsigned long size_packages, num_packages;
 	gboolean result;
 
-	SANITY(service);	
+	SANITY_VAL(service, FALSE);
 
 	size_packages = eazel_install_get_total_size_of_packages (service, packages);
 	num_packages = g_list_length (packages);
@@ -1233,7 +1232,7 @@ eazel_install_emit_delete_files (EazelInstall *service)
 {
 	gboolean result;
 
-	SANITY(service);
+	SANITY_VAL(service, FALSE);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DELETE_FILES], &result);
 	return result;
 }
@@ -1285,7 +1284,6 @@ eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 
 void string_list_copy (GList **in, 
 		       const GList *strings) {
-	GList *result = NULL;
 	GList *iterator;
 	const GList *iterator_c;
 

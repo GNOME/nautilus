@@ -45,14 +45,14 @@ static GConfEngine *conf_engine = NULL;
 #define DEFAULT_CGI_PATH	"/catalog/find"
 
 
+#ifndef EAZEL_INSTALL_SLIM
 /* called by atexit so we can close the gconf connection */
 static void
 done_with_gconf (void)
 {
-#ifndef EAZEL_INSTALL_SLIM
 	gconf_engine_unref (conf_engine);
-#endif /* EAZEL_INSTALL_SLIM */
 }
+#endif /* EAZEL_INSTALL_SLIM */
 
 static void
 check_gconf_init (void)

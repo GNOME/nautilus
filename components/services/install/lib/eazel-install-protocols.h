@@ -47,4 +47,9 @@ gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
 					    const char *id,
 					    PackageData *package);
 
+void eazel_install_fetch_definitive_category_info (EazelInstall *service,
+						   CategoryData *category);
+
+void dump_packages (GList *packages);
+
 #endif /* EAZEL_INSTALL_PROTOCOLS_H */

@@ -25,6 +25,8 @@
 
 #include "eazel-install-md5.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #undef _MD5_STANDALONE
 

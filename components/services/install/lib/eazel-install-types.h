@@ -133,8 +133,9 @@ void installoptions_destroy (InstallOptions *iopts);
 
 struct _CategoryData {
 	char* name;
+	char* description;
 	GList* packages;
-	GList* depends;			/* used only for the GUI: GList<char *> */
+	GList* depends;			/* used only for the GUI: GList<char *> -- other category names */
 };
 CategoryData *categorydata_new ();
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
@@ -153,6 +154,7 @@ struct _PackageData {
 	GList* breaks; 	
 
 	char *filename;
+	char *remote_url;		/* url where we can get this rpm */
 	char *md5;
 	char *install_root;
 	

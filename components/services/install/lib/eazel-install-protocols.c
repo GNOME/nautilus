@@ -97,10 +97,10 @@ char* get_search_url_for_package (EazelInstall *service,
    eg. the url (->filename), the server md5 (->md5).
    It uses get_search_url_for_package, downloads the contents of the url and
    parses it and returns a url for the package itself */
-char* get_url_for_package (EazelInstall *service, 
-			   RpmSearchEntry, 
-			   const gpointer data, 
-			   PackageData *pack);
+static char* get_url_for_package (EazelInstall *service, 
+				  RpmSearchEntry, 
+				  const gpointer data, 
+				  PackageData *pack);
 
 #ifdef EAZEL_INSTALL_SLIM
 gboolean
@@ -517,7 +517,6 @@ eazel_install_fetch_package (EazelInstall *service,
 {
 	gboolean result;
 	char* url;
-	char *md5 = NULL;
 	char* targetname;
 
 	result = FALSE;
@@ -527,7 +526,11 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package, package);
+		if (package->remote_url) {
+			url = g_strdup (package->remote_url);
+		} else {
+			url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package, package);
+		}
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -681,7 +684,7 @@ add_to_url (char **url,
 	}
 }
 
-char*
+static char*
 get_url_for_package  (EazelInstall *service, 
 		      RpmSearchEntry entry,
 		      gpointer data,
@@ -720,9 +723,18 @@ get_url_for_package  (EazelInstall *service,
 			
 			g_assert (packages->data != NULL);
 			pack = (PackageData*)packages->data;
-			out_package->filename = g_strdup (pack->filename);
-			url = g_strdup (pack->filename);
+			out_package->remote_url = g_strdup (pack->remote_url);
+			url = g_strdup (pack->remote_url);
 			out_package->md5 = g_strdup (pack->md5);
+			if (! out_package->version) {
+				out_package->version = g_strdup (pack->version);
+			}
+			if (! out_package->description) {
+				out_package->description = g_strdup (pack->description);
+			}
+			if (out_package->bytesize == 0) {
+				out_package->bytesize = pack->bytesize;
+			}
 			
 			g_list_foreach (packages, 
 					(GFunc)packagedata_destroy, 
@@ -846,4 +858,79 @@ char* get_search_url_for_package (EazelInstall *service,
 	add_to_url (&url, "&protocol=", protocol_as_string (eazel_install_get_protocol (service)));
 
 	return url;
+}
+
+static void
+flatten_tree_func (PackageData *pack, GList **out)
+{
+	trilobite_debug ("    --- %s", pack->name);
+	*out = g_list_append (*out, pack);
+	g_list_foreach (pack->hard_depends, (GFunc)flatten_tree_func, out);
+	g_list_foreach (pack->soft_depends, (GFunc)flatten_tree_func, out);
+	g_list_free (pack->hard_depends);
+	g_list_free (pack->soft_depends);
+	pack->hard_depends = pack->soft_depends = NULL;
+}
+
+/* given a list of packages with incomplete info (for example, the initial bootstrap install list),
+ * go ask for real info and compile a new list of packages.
+ */
+static GList *
+eazel_install_fetch_definitive_package_info (EazelInstall *service, PackageData *pack)
+{
+	char *search_url = NULL;
+	char *body = NULL;
+	int length;
+	GList *treelist;
+	GList *out;
+
+	search_url = get_search_url_for_package (service, RPMSEARCH_ENTRY_NAME, pack);
+	if (search_url == NULL) {
+		trilobite_debug ("No search URL");
+		return NULL;
+	}
+
+	trilobite_debug ("Search URL: %s", search_url);
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
+
+	if (! trilobite_fetch_uri (search_url, &body, &length)) {
+		g_free (search_url);
+		trilobite_debug ("Couldn't fetch search URL");
+		return NULL;
+	}
+
+	trilobite_debug ("parse osd");
+	treelist = parse_osd_xml_from_memory (body, length);
+	g_free (search_url);
+	g_free (body);
+
+	/* the install lib will spaz if we give it the dependencies in their tree form. :( */
+	trilobite_debug (">>> package '%s' => %d packages", pack->name, g_list_length (treelist));
+	out = NULL;
+	g_list_foreach (treelist, (GFunc)flatten_tree_func, &out);
+
+dump_packages (out);
+	return out;
+}
+
+void
+eazel_install_fetch_definitive_category_info (EazelInstall *service, CategoryData *category)
+{
+	GList *iter;
+	GList *real_packages = NULL;
+	GList *packlist;
+
+	for (iter = g_list_first (category->packages); iter != NULL; iter = g_list_next (iter)) {
+		packlist = eazel_install_fetch_definitive_package_info (service, (PackageData *)(iter->data));
+		if (packlist != NULL) {
+			real_packages = g_list_concat (real_packages, packlist);
+			packagedata_destroy ((PackageData *)(iter->data), TRUE);
+		} else {
+			/* fetch of real URL failed, so just add the original package info */
+			real_packages = g_list_append (real_packages, (PackageData *)(iter->data));
+		}
+	}
+
+	g_list_free (category->packages);
+	category->packages = real_packages;
 }

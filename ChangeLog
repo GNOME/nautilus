@@ -1,3 +1,80 @@
+2000-09-28  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-md5.c:
+	* components/services/install/lib/eazel-install-metadata.c:
+	(done_with_gconf):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_delete_downloads), (eazel_install_install_packages),
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_delete_files), (string_list_copy):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package), (get_url_for_package),
+	(get_search_url_for_package), (flatten_tree_func),
+	(eazel_install_fetch_definitive_package_info),
+	(eazel_install_fetch_definitive_category_info):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_flatten_categories), (install_new_packages),
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_pre_install_packages),
+	(eazel_install_do_install_packages), (revert_transaction),
+	(eazel_install_do_transaction_save_report_helper),
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_start_transaction), (eazel_install_free_rpm_system),
+	(eazel_install_add_to_rpm_set), (dump_one_package),
+	(dump_packages), (print_package_list), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse):
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_destroy_foreach), (packagedata_new),
+	(packagedata_fill_from_rpm_header), (packagedata_destroy),
+	(packagedata_modstatus_enum_to_str):
+	* components/services/install/lib/eazel-install-types.h:
+
+	Make libeazelinstall compile with -Wall -Werror.  Separate the
+	concept of a package's remote url from its local filename (was
+	causing bugs).  Some initial attempts to do a one-pass
+	download/install phase (not finished, put off till post-PR2).  Add
+	dependencies to category lists.
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category), (parse_shared),
+	(parse_memory_xml_package_list), (parse_memory_transaction_file),
+	(parse_local_xml_package_list), (osd_parse_dependency),
+	(osd_parse_implementation), (osd_parse_shared),
+	(parse_osd_xml_from_memory):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Wrap package-list.xml and package-list-depends.xml into a single
+	file and add support for dependency lists and splash text for the
+	bootstrap installer.
+	
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(prep_finish):
+	* nautilus-installer/src/installer.c: (create_pixmap),
+	(gtk_label_new_with_font), (add_padding_to_box), (set_white_stuff),
+	(create_what_to_do_page), (create_install_page),
+	(create_finish_page_good), (create_finish_page_evil),
+	(create_window), (eazel_install_progress),
+	(eazel_download_progress), (get_detailed_errors), (install_failed),
+	(download_failed), (eazel_install_preflight),
+	(eazel_install_dep_check), (check_if_next_okay),
+	(toggle_button_toggled), (eazel_installer_add_category),
+	(create_info_druid_page), (check_system),
+	(eazel_install_get_depends), (eazel_installer_initialize):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main), (oaf_init), (bonobo_init):
+	* nautilus-installer/src/proxy.c:
+	* nautilus-installer/src/support.c:
+
+	Remove warnings from the bootstrap installer.  Arlo-ify the
+	bootstrap installer (over 50% done).
+	
 2000-09-28  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

@@ -88,6 +88,8 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 	g_return_if_fail (cd != NULL);
 	g_free (cd->name);
 	cd->name = NULL;
+	g_free (cd->description);
+	cd->description = NULL;
 	if (g_list_length (cd->packages)) {
 		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}
@@ -123,6 +125,7 @@ packagedata_new ()
 	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
 	pack->filename = NULL;
+	pack->remote_url = NULL;
 	pack->install_root = NULL;
 	pack->provides = NULL;
 	pack->soft_depends = NULL;
@@ -249,7 +252,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			} else {
 				fullname = g_strdup (names[index]);
 			}
-			/* trilobite_debug ("provides %s", fullname); */
+			/* trilobite_debug ("%s provides %s", pack->name, fullname); */
 			pack->provides = g_list_prepend (pack->provides, fullname);
 		}
 	}
@@ -314,6 +317,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->bytesize = 0;
 	g_free (pack->filename);
 	pack->filename = NULL;
+	g_free (pack->remote_url);
+	pack->remote_url = NULL;
 	g_free (pack->install_root);
 	pack->install_root = NULL;
 	g_free (pack->md5);
@@ -510,6 +515,8 @@ packagedata_modstatus_enum_to_str (PackageSystemStatus st)
 		break;
 	case PACKAGE_MOD_UNTOUCHED:
 		result = g_strdup ("UNTOUCHED");
+		break;
+	default:
 		break;
 	}
 	return result;

@@ -155,6 +155,7 @@ void eazel_install_emit_uninstall_failed          (EazelInstall *service,
 void eazel_install_emit_dependency_check          (EazelInstall *service, 
 						   const PackageData *package, 
 						   const PackageData *needed);
+gboolean eazel_install_emit_delete_files	  (EazelInstall *service);
 void eazel_install_emit_done                      (EazelInstall *service, 
 						   gboolean result);
 

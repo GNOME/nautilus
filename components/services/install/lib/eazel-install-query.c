@@ -80,7 +80,6 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 				GList **result)
 {
 	dbiIndexSet matches;
-	gboolean close_db;
 	rpmdb db;
 	int rc;
 	int i;
