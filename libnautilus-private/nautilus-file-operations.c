@@ -2569,6 +2569,8 @@ confirm_empty_trash (GtkWidget *parent_view)
 						    "you can also delete them "
 						    "separately."));
 
+	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
+	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
