@@ -177,11 +177,12 @@ nautilus_link_set_link_uri (const char *path, const char *link_uri)
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	file = nautilus_file_get (uri);
 	if (file != NULL) {
+		nautilus_file_forget_activation_uri (file);
 		nautilus_file_changed (file);
 		nautilus_file_unref (file);		
 	}
 	g_free (uri);
-		
+	
 	return TRUE;
 }
 

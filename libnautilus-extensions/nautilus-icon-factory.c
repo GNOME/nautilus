@@ -47,6 +47,7 @@
 #include <librsvg/rsvg.h>
 
 #include "nautilus-default-file-icon.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"

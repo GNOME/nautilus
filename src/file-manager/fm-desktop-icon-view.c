@@ -227,7 +227,6 @@ startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 static void
 event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_icon_view)
 {
-	//g_message ("event_callback: %d", event->type);
 }
 
 /* Update home link to point to new home uri */

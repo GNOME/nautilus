@@ -237,13 +237,6 @@ int                     nautilus_file_compare_name		(NautilusFile               
  */
 char *                  nautilus_file_get_activation_uri        (NautilusFile                  *file);
 
-/* Change notification hack.
- * This is called when code modifies the file and it needs to trigger
- * a notification. Eventually this should become private, but for now
- * it needs to be used for code like the thumbnail generation.
- */
-void                    nautilus_file_changed                   (NautilusFile                  *file);
-
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref. */
 GList *                 nautilus_file_list_ref                  (GList                         *file_list);
 void                    nautilus_file_list_unref                (GList                         *file_list);

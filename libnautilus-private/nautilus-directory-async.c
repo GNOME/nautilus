@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include "nautilus-directory-metafile.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"

@@ -23,6 +23,7 @@
 */
 
 #include <glib.h>
+#include <libnautilus-extensions/nautilus-file.h>
 
 typedef struct {
 	char *from_uri;
@@ -37,3 +38,12 @@ void nautilus_directory_schedule_metadata_copy	 (GList *uri_pairs);
 void nautilus_directory_schedule_metadata_move	 (GList *uri_pairs);
 void nautilus_directory_schedule_metadata_remove (GList *uris);
 
+
+/* Change notification hack.
+ * This is called when code modifies the file and it needs to trigger
+ * a notification. Eventually this should become private, but for now
+ * it needs to be used for code like the thumbnail generation.
+ */
+void nautilus_file_changed                   	 (NautilusFile *file);
+
+void nautilus_file_forget_activation_uri       	 (NautilusFile *file);

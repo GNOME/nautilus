@@ -26,6 +26,7 @@
 #include "nautilus-file-private.h"
 
 #include "nautilus-directory-metafile.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
@@ -3587,6 +3588,21 @@ nautilus_file_changed (NautilusFile *file)
 		nautilus_directory_emit_change_signals_deep
 			(file->details->directory, &fake_list);
 	}
+}
+
+/**
+ * nautilus_file_forget_activation_uri
+ * 
+ * Invalidate the activation URI and force a reload.
+ * @file: NautilusFile representing the file in question.
+ **/
+void
+nautilus_file_forget_activation_uri (NautilusFile *file)
+{
+	g_free (file->details->activation_uri);
+	file->details->activation_uri = NULL;
+
+	file->details->got_activation_uri = FALSE;
 }
 
 /**
