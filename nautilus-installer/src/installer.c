@@ -71,6 +71,7 @@ typedef struct {
 #define FONT_NORM_BOLD	_("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
 #define FONT_NORM	_("-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
 #define FONT_TITLE	_("-adobe-helvetica-medium-r-normal-*-24-*-*-*-p-*-*-*,*-r-*")
+#define FONT_LITTLE	_("-adobe-helvetica-medium-r-normal-*-10-*-*-*-p-*-*-*,*-r-*")
 
 #define CONTENT_X	64
 #define CONTENT_Y	63
@@ -491,13 +492,13 @@ strip_categories (GList **categories, char *name)
 	GList *iterator;
 	GList *remove = NULL;
 
-	g_message ("strip_categores \"%s\"", name);
+	LOG_DEBUG (("strip_categories \"%s\"", name));
 	
 	for (iterator = *categories; iterator; iterator = g_list_next (iterator)) {
 		CategoryData *cat = (CategoryData*)iterator->data;
-		g_message ("strip %s from %s ?", name, cat->name);
+		LOG_DEBUG (("strip %s from %s ?", name, cat->name));
 		if (strcmp (cat->name, name)==0) {
-			g_message ("yes");
+			LOG_DEBUG (("yes"));
 			remove = g_list_prepend (remove, iterator->data);
 			break;
 		}
@@ -519,7 +520,7 @@ start_over_make_category_func (int *key,
 	CategoryData *cat;
 	
 	cat = categorydata_new ();
-	g_message ("start_over_make_category_func key = %d", *key);
+	LOG_DEBUG (("start_over_make_category_func key = %d", *key));
 	switch (*key) {
 	case FORCE_BOTH:
 		cat->name = g_strdup ("Force install");
@@ -573,7 +574,7 @@ start_over (GnomeDruidPage *druid_page,
 
 	hashtable = g_hash_table_new (g_int_hash, g_int_equal);
 
-	printf ("JES-- start over\n");
+	LOG_DEBUG (("JES-- start over\n"));
 
 	category = categorydata_new ();
 	category->name = g_strdup ("Fake extra category");
@@ -585,7 +586,7 @@ start_over (GnomeDruidPage *druid_page,
 		case FORCE_BOTH: {
 			PackageData *pack;
 
-			g_message ("met a FORCE_BOTH");
+			LOG_DEBUG (("met a FORCE_BOTH"));
 
 			pack = rcase->u.force_both.pack_1;
 			pack->toplevel = TRUE;
@@ -598,7 +599,7 @@ start_over (GnomeDruidPage *druid_page,
 		case MUST_UPDATE: {
 			PackageData *pack = rcase->u.in_the_way.pack;
 
-			g_message ("met a MUST_UPDATE");
+			LOG_DEBUG (("met a MUST_UPDATE"));
 
 			pack->toplevel = TRUE;
 			a_list = g_list_prepend (a_list, pack);
@@ -607,7 +608,7 @@ start_over (GnomeDruidPage *druid_page,
 		case REMOVE: {
 			PackageData *pack = rcase->u.remove.pack;
 
-			g_message ("met a REMOVE");
+			LOG_DEBUG (("met a REMOVE"));
 
 			pack->toplevel = TRUE;
 			a_list = g_list_prepend (a_list, pack);
@@ -699,12 +700,12 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
-	g_message ("g_list_length (installer->additional_packages) = %d", 
-		   g_list_length (installer->additional_packages));
+	LOG_DEBUG (("g_list_length (installer->additional_packages) = %d", 
+		    g_list_length (installer->additional_packages)));
 	for (iter = g_list_first (installer->additional_packages); iter != NULL; iter = g_list_next (iter)) {
 		RepairCase *rcase = (RepairCase*)(iter->data);		
 		
-		g_message ("rcase->t = %d", rcase->t);
+		LOG_DEBUG (("rcase->t = %d", rcase->t));
 		switch (rcase->t) {
 		case MUST_UPDATE: {
 			char *required = get_required_name (rcase->u.in_the_way.pack);
@@ -731,7 +732,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		break;
 		};
 
-		g_message ("temp = \"%s\"", temp);
+		LOG_DEBUG (("temp = \"%s\"", temp));
 		label = gtk_label_new_with_font (temp, FONT_NORM_BOLD);
 		g_free (temp);
 		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -993,7 +994,7 @@ add_force_packages (EazelInstaller *installer,
 {
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 
-	g_message ("add_force_package");
+	LOG_DEBUG (("add_force_package"));
 
 	rcase->t = FORCE_BOTH;
 	rcase->u.force_both.pack_1 = packagedata_copy (pack_1, FALSE);
@@ -1009,7 +1010,7 @@ add_force_remove (EazelInstaller *installer,
 {
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 
-	g_message ("add_force_remove_package");
+	LOG_DEBUG (("add_force_remove_package"));
 
 	rcase->t = REMOVE;
 	rcase->u.remove.pack = packagedata_copy (pack, FALSE);
@@ -1026,7 +1027,7 @@ add_update_package (EazelInstaller *installer,
 	RepairCase *rcase = g_new0 (RepairCase, 1);
 	GList *already_tried;
 
-	g_message ("add_update_package");
+	LOG_DEBUG (("add_update_package"));
 
 	copy->name = g_strdup (pack->name);
 	copy->distribution  = pack->distribution;
@@ -1495,11 +1496,12 @@ eazel_installer_add_category (EazelInstaller *installer,
 	GtkWidget *label;
 	GtkWidget *button_name;
 	GtkWidget *hbox, *hbox2;
+	GtkWidget *vbox_desc;
 	char *temp;
+	char *section;
+	char *p, *lastp;
 
-	if (installer->debug) {
-		fprintf (stdout, "Read category \"%s\"\n", category->name);
-	}
+	LOG_DEBUG (("Read category \"%s\"\n", category->name));
 
 	vbox = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (installer->window), "vbox3"));
 
@@ -1525,17 +1527,40 @@ eazel_installer_add_category (EazelInstaller *installer,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	g_free (temp);
 
-	label = gtk_label_new (category->description ? category->description : "");
-	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	temp = g_strdup_printf ("%s/description", category->name);
-	gtk_object_set_data_full (GTK_OBJECT (installer->window), temp, label,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	g_free (temp);
+	if (category->description == NULL) {
+		category->description = g_strdup ("");
+	}
 
-	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, 0, 0, 40);
-	gtk_widget_show (label);
+	vbox_desc = gtk_vbox_new (FALSE, 0);
+
+	/* convert blank lines into something nicer looking
+	 * (gtk label makes the blank lines be huuuuge gaps)
+	 */
+	lastp = category->description;
+	while (lastp && *lastp) {
+		p = strstr (lastp, "\n\n");
+		if (p == NULL) {
+			p = category->description + strlen (category->description);
+		}
+		section = g_strndup (lastp, p - lastp);
+		label = gtk_label_new_with_font (section, FONT_LITTLE);
+		gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+		hbox2 = gtk_hbox_new (FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 40);
+		gtk_widget_show (label);
+		g_free (section);
+
+		gtk_widget_show (hbox2);
+		gtk_box_pack_start (GTK_BOX (vbox_desc), hbox2, FALSE, FALSE, 0);
+
+		if (*p) {
+			lastp = p+2;
+			add_padding_to_box (vbox_desc, 0, 10);
+		} else {
+			lastp = p;
+		}
+	}
 
 	if (g_list_find_custom (installer->must_have_categories, category->name, (GCompareFunc)g_strcasecmp)) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
@@ -1549,10 +1574,11 @@ eazel_installer_add_category (EazelInstaller *installer,
 	}
 	if (render) {
 		gtk_widget_show (hbox);
-		gtk_widget_show (hbox2);
+		gtk_widget_show (vbox_desc);
 		add_padding_to_box (vbox, 0, 10);
 		gtk_box_pack_start (GTK_BOX (vbox), hbox, 0, 0, 0);
-		gtk_box_pack_start (GTK_BOX (vbox), hbox2, 0, 0, 0);
+		add_padding_to_box (vbox, 0, 3);
+		gtk_box_pack_start (GTK_BOX (vbox), vbox_desc, 0, 0, 0);
 	}
 
 	/* We need to add this signal last, to avoid 
@@ -1674,15 +1700,15 @@ eazel_installer_do_install (EazelInstaller *installer,
 
 	for (iter = installer->install_categories; iter; iter=iter->next) {
 		CategoryData *cat = (CategoryData*)iter->data;
-		g_message ("HESTEOST %d", g_list_length (cat->packages));
+		LOG_DEBUG (("HESTEOST %d", g_list_length (cat->packages)));
 	}
 	
 	eazel_install_set_force (installer->service, force);
 	eazel_install_set_uninstall (installer->service, remove);
-	g_message ("eazel_installer_do_install (..., ..., force = %s, remove = %s)",
-		   force ? "TRUE" : "FALSE",
-		   remove ? "TRUE" : "FALSE");
-	if (remove) {		
+	LOG_DEBUG (("eazel_installer_do_install (..., ..., force = %s, remove = %s)",
+		    force ? "TRUE" : "FALSE",
+		    remove ? "TRUE" : "FALSE"));
+	if (remove) {
 		eazel_install_uninstall_packages (installer->service, categories_copy, NULL);
 	} else {
 		eazel_install_install_packages (installer->service, categories_copy, NULL);
@@ -1800,6 +1826,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 	char *finish_text = NULL;
 	int tries;
 	GtkWidget *start_page;
+	GtkWidget *vbox;
 
 	g_assert (object != NULL);
 	g_assert (IS_EAZEL_INSTALLER (object));
@@ -1940,6 +1967,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 		installer->categories = g_list_prepend (NULL, cat);
 	}
 
+	vbox = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (installer->window), "vbox3"));
 	for (iterator = installer->categories; iterator; iterator=iterator->next) {
 #if 0
 		/* eventually, it would be nice to go pre-fetch the list of required rpm's.  unfortunately
@@ -1948,6 +1976,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 		eazel_install_fetch_definitive_category_info (installer->service, (CategoryData *)(iterator->data));
 #endif
 		eazel_installer_add_category (installer, (CategoryData*)iterator->data);
+		add_padding_to_box (vbox, 0, 5);
 	}
 
 	g_free (package_destination);
@@ -1967,7 +1996,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			hbox1 = gtk_hbox_new (FALSE, 0);
 			gtk_box_pack_start (GTK_BOX (hbox1), title, FALSE, FALSE, 0);
 			gtk_widget_show (hbox1);
-			
+
 			label = gtk_label_new (splash_text);
 			gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 			gtk_widget_show (label);
@@ -1977,6 +2006,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 			vbox = gtk_vbox_new (FALSE, 0);
 			gtk_box_pack_start (GTK_BOX (vbox), hbox1, FALSE, FALSE, 0);
+			add_padding_to_box (vbox, 0, 10);
 			gtk_box_pack_start (GTK_BOX (vbox), hbox2, FALSE, FALSE, 0);
 			gtk_widget_set_uposition (vbox, CONTENT_X, CONTENT_Y);
 			gtk_widget_show (vbox);

@@ -1,3 +1,18 @@
+2000-10-23  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_local_xml_package_list):
+	* nautilus-installer/src/installer.c: (strip_categories),
+	(start_over_make_category_func), (start_over),
+	(jump_to_retry_page), (add_force_packages), (add_force_remove),
+	(add_update_package), (eazel_installer_add_category),
+	(eazel_installer_do_install), (eazel_installer_initialize):
+	* nautilus-installer/src/link.sh:
+	
+	Reduce category description text to 10pt and adjust the layout to
+	match Arlo specs.  Change g_message's to LOG_DEBUG just to annoy
+	Eskil (actually, so we can turn them on/off easily with --debug).
+
 2000-10-23  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

@@ -278,7 +278,7 @@ parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, cha
 	xmlNodePtr base, node;
 	GList *list;
 	CategoryData *catdat;
-	char *text;
+	char *text, *textp;
 
 	g_return_val_if_fail (pkg_list_file != NULL, NULL);
 
@@ -308,13 +308,25 @@ parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, cha
 		} else if (g_strcasecmp (node->name, "SPLASH-TEXT") == 0) {
 			if (splash_text != NULL) {
 				text = xmlNodeGetContent (node);
-				*splash_text = g_strdup (text);
+				/* remove leading and trailing linefeeds (xml artifact) */
+				while ((strlen (text) > 0) && (text[strlen (text) - 1] == '\n')) {
+					text[strlen (text) - 1] = '\0';
+				}
+				for (textp = text; (*textp == '\n'); textp++)
+					;
+				*splash_text = g_strdup (textp);
 				free (text);
 			}
 		} else if (g_strcasecmp (node->name, "FINISH-TEXT") == 0) {
 			if (finish_text != NULL) {
 				text = xmlNodeGetContent (node);
-				*finish_text = g_strdup (text);
+				/* remove leading and trailing linefeeds (xml artifact) */
+				while ((strlen (text) > 0) && (text[strlen (text) - 1] == '\n')) {
+					text[strlen (text) - 1] = '\0';
+				}
+				for (textp = text; (*textp == '\n'); textp++)
+					;
+				*finish_text = g_strdup (textp);
 				free (text);
 			}
 		} else {

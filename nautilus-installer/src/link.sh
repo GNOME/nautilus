@@ -61,8 +61,11 @@ if test "$1" = "push" -a $? = 0; then
     echo "Copying installer to /h/public/bin ..."
     if test "$USER" = "robey"; then
         cp eazel-installer.sh /h/public/bin/
+	# make it so anyone can write a new one in
+	chmod 777 /h/public/bin/eazel-installer.sh
     else
         echo "You are not Robey, therefore you are lame.  Enter your password."
+	chmod 777 ./eazel-installer.sh
         scp ./eazel-installer.sh odin.eazel.com:/h/public/bin/
     fi
 fi
