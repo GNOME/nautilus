@@ -122,6 +122,27 @@ dnl ====================================
 dnl = end mozilla hacks
 dnl ====================================
 
+dnl ====================================
+dnl = rpmview component support
+dnl ====================================
+
+rpm_libs=
+AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
+AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
+AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
+  [build_rpmview=false],-lz $rpm_libs -ldb)
+LDFLAGS="$save_LDFLAGS"
+if test "x$build_rpmview" = "xtrue" ; then
+  AC_DEFINE(HAVE_RPM)
+  RPM_LIBS="-lrpm -lz $rpm_libs -ldb"
+fi
+AC_SUBST(RPM_LIBS)
+AM_CONDITIONAL(BUILD_RPMVIEW_COMPONENT, test "x$build_rpmview" = "xtrue")
+
+dnl ====================================
+dnl = end rpmview checks
+dnl ====================================
+
 dnl Checks for libraries.
 AM_PATH_GLIB(1.2.0,,
 AC_MSG_ERROR([

@@ -32,7 +32,7 @@ nautilus_rpm_view_LDFLAGS =			\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(GCONF_LIBS) \
-	-lrpm						\
+	$(RPM_LIBS)					\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 

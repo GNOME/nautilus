@@ -8,13 +8,17 @@ if BUILD_MOZILLA_COMPONENT
 MOZILLA_COMPONENT_SUBDIRS = mozilla
 endif
 
+if BUILD_RPMVIEW_COMPONENT
+RPMVIEW_COMPONENT_SUBDIRS = rpmview
+endif
+
 SUBDIRS = \
 	help \
 	history \
 	html \
 	music \
 	notes \
-	rpmview \
+	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	sample \
 	websearch \
 	$(SERVICE_SUBDIRS) \
