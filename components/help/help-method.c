@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
+
 /*
  * Copyright (C) 2000 Red Hat Inc.
  * All rights reserved.
@@ -66,6 +68,10 @@ typedef struct {
 	HelpFileTypes type;
 } HelpURI;
 
+
+static gboolean file_in_info_path (const char *file);
+
+
 static HelpURI *
 help_uri_new ()
 {
@@ -86,12 +92,13 @@ help_uri_to_string (HelpURI *help_uri)
 #endif
 	switch (help_uri->type) {
 	case SGML_FILE:
-		if (help_uri->section)
+		if (help_uri->section) {
 			retval = g_strdup_printf ("pipe:gnome-db2html2 %s?%s",
 						  help_uri->file, help_uri->section);
-		else
+                } else {
 			retval = g_strdup_printf ("pipe:gnome-db2html2 %s",
 						  help_uri->file);
+                }
 		break;
 	case MAN_FILE:
 		retval = g_strdup_printf ("pipe:gnome-man2html2 %s",
@@ -102,10 +109,11 @@ help_uri_to_string (HelpURI *help_uri)
 					  help_uri->file);
 		break;
 	case HTML_FILE:
-		if (help_uri->section)
+		if (help_uri->section) {
 			retval = g_strdup_printf ("file://%s#%s", help_uri->file, help_uri->section);
-		else
+		} else {
 			retval = g_strdup_printf ("file://%s", help_uri->file);
+                }
 		break;
 	default:
 		g_assert_not_reached ();
@@ -159,14 +167,16 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 	g_print ("*** the file's mime_type is: %s\n",mime_type);
 #endif
 		
-	if (!strcmp (mime_type, "text/sgml") ||
-	    !strcmp (mime_type, "exported SGML document text"))
+	if (strcmp (mime_type, "text/sgml") == 0 ||
+	    strcmp (mime_type, "exported SGML document text") == 0) {
 		help_uri->type = SGML_FILE;
-	else if (!strcmp (mime_type, "text/html"))
+	} else if (!strcmp (mime_type, "text/html")) {
 		help_uri->type = HTML_FILE;
-	else if (!strncmp (mime_type, "application/x-troff-man", strlen ("application/x-troff-man")))
+	} else if (!strncmp (mime_type, "application/x-troff-man", strlen ("application/x-troff-man"))) {
 		help_uri->type = MAN_FILE;
-	/* FIXME bugzilla.eazel.com 695: test for info pages! */
+	} else if (file_in_info_path (file)) {
+  	        help_uri->type = INFO_FILE;
+	}
 
 	return TRUE;
 }	
@@ -197,7 +207,7 @@ transform_absolute_file (const gchar *file)
 		temp_file_base = g_strndup (file, p - file);
 	} else {
 		/* we do not want trailing spaces or it can screw things up */
-		temp_file_base = g_strdup (g_strchomp((gchar *)file));
+		temp_file_base = g_strdup (g_strchomp ((gchar *) file));
 	}
 #ifdef ALI_DEBUG
 	g_print ("*** temp_file_base is: %s\n",temp_file_base);
@@ -295,3 +305,39 @@ vfs_module_transform (const char *method_name, const char *args)
 #endif
 	return &transform;
 }
+
+
+static gboolean
+file_in_info_path (const char *file) 
+{
+        const char *info_path;
+        char **info_path_strv;
+        int i;
+
+        /* Check some hardcoded locations. */
+        if (strncmp (file, "/usr/info/", strlen ("/usr/info/")) == 0 ||
+            strncmp (file, "/usr/local/info/", strlen ("/usr/local/info/")) ||
+            strncmp (file, "/usr/local/info/", strlen ("/usr/gnome/info/"))) {
+                return TRUE;
+        }
+
+        /* Check the INFOPATH */
+        info_path = getenv ("INFOPATH");
+        if (info_path != NULL) {
+                info_path_strv = g_strsplit (info_path, ":", 0);
+
+                for (i = 0; info_path_strv [i] != NULL; i++) {
+                        if (strncmp (file, info_path_strv[i], strlen (info_path_strv[i])) == 0) {
+                                g_str_freev (info_path_strv);
+                                return TRUE;
+                        }
+                }
+
+                g_str_freev (info_path_strv);
+        }
+
+        return FALSE;
+}
+
+
+

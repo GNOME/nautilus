@@ -241,7 +241,12 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	GList *explicit_iids;
 	CORBA_Environment ev;
 	OAF_ServerInfo *server;
+	char *sort_conditions[5];
+	char *supertype;
 	gboolean used_user_chosen_info;
+	GList *short_list;
+	GList *p;
+	char *prev;
 
 	used_user_chosen_info = TRUE;
 
@@ -281,42 +286,69 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	 * - Syntactically invalid URI
 	 */
 
+	supertype = mime_type_get_supertype (mime_type);
+
+	/* prefer the exact right IID */
 	if (default_component_string == NULL) {
-		info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
-		used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored explicit_iids. */
+		sort_conditions[0] = g_strconcat ("iid == '", default_component_string, "'", NULL);
 	} else {
-		char *iid_condition;
-		char *sort_conditions[4];
-		char *supertype = mime_type_get_supertype (mime_type);
-
-		iid_condition = g_strconcat ("iid == '", default_component_string, "'", NULL);
-		
-		sort_conditions[0] = iid_condition;
-
-		/* Prefer something that matches the exact type to something
-		   that matches the supertype */
-		sort_conditions[1] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
-		/* Prefer something that matches the supertype to something that matches `*' */
-		sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
-
-		sort_conditions[3] = NULL;
-		
-		info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, sort_conditions, &ev);
-		
-		g_free (iid_condition);
-		g_free (sort_conditions[1]);
-		g_free (sort_conditions[2]);
-		g_free (supertype);
+		sort_conditions[0] = g_strdup ("true");
 	}
+
+	/* Prefer something from the short list */
+
+	short_list = nautilus_mime_get_short_list_components_for_uri (uri);
+
+	if (short_list != NULL) {
+		sort_conditions[1] = g_strdup ("has (['");
+
+		for (p = short_list; p != NULL; p = p->next) {
+			prev = sort_conditions[1];
+			
+			if (p->next != NULL) {
+				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+								  "','", NULL);
+			} else {
+				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+								  "'], iid)", NULL);
+			}
+			g_free (prev);
+		}
+	} else {
+		sort_conditions[1] = g_strdup ("true");
+	}
+	
+	gnome_vfs_mime_component_list_free (short_list);
+
+	/* Prefer something that matches the exact type to something
+	   that matches the supertype */
+	sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
+	/* Prefer something that matches the supertype to something that matches `*' */
+	sort_conditions[3] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
+	
+	sort_conditions[4] = NULL;
+	
+	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, 
+						 sort_conditions, &ev);
+	
 
 	if (ev._major == CORBA_NO_EXCEPTION  && info_list != NULL) {
 		server = OAF_ServerInfo__copy (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
+
+		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
+			used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored . */
+		}
 	} else {
 		g_assert (info_list == NULL);  /* or else we are leaking it */
 		server = NULL;
 	}
 
+	g_free (sort_conditions[0]);
+	g_free (sort_conditions[1]);
+	g_free (sort_conditions[2]);
+	g_free (sort_conditions[3]);
+	g_free (supertype);
 	g_free (uri_scheme);
 	g_free (mime_type);
 	g_free (default_component_string);

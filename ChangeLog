@@ -1,3 +1,15 @@
+2000-06-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/help/help-method.c: (help_uri_to_string,
+	convert_file_to_uri, transform_absolute_file, file_in_info_path):
+	Complete task 695 (Help component is missing a test for info
+	pages), also many general style fixes.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_mime_get_default_component_for_uri_internal): Complete
+	task 1145 (Add fallback code to choose one of short list
+	components)
+	
 2000-06-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug #306, right click menu in zoom control doesn't work.
