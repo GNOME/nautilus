@@ -3,12 +3,10 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.3
-  Last modified: April 26, 2001
-  This document is maintained by Eazel Inc.
+  Version: 1.0.4
+  Last modified: June 7, 2001
   Maintainers:
-               Eazel Inc.
-               Dan Mueth <dan@eazel.com>
+               Dan Mueth <d-mueth@uchicago.edu>
   Translators:
                (translators put your name and email here)
 -->
@@ -20,10 +18,10 @@
 <article id="index"> <!-- please do not change the id -->
 
   <artheader>
-    <title>Nautilus 1.0.3 Release Notes</title>
+    <title>Nautilus 1.0.4 Release Notes</title>
     <copyright>
       <year>2001</year>
-      <holder>Eazel Inc.</holder>
+      <holder>Eazel Inc. and Dan Mueth</holder>
     </copyright>
 
   <!-- translators: uncomment this:
@@ -69,8 +67,8 @@
   <title>Introduction</title>
 
   <para>
-   These release notes, last updated April 26, 2001, describe known
-   issues for Nautilus versions 1.0.3.
+   These release notes, last updated June 7, 2001, describe known
+   issues for Nautilus version 1.0.4.
   </para>
 
   <para>
@@ -79,11 +77,16 @@
    latest Mozilla release notes.
   </para>
 
+<!-- Commenting out on Jun 7, 2001 because this link is no longer
+     correct.
+
   <para>
    Solutions to some common problems with Nautilus can be found at the
    <ulink type="http" url="http://support.eazel.com">Eazel Support web
    site</ulink>.
   </para>
+
+-->
 
  </sect1>
 
@@ -302,6 +305,61 @@
 
   </sect1>
 
+ <sect1 id="new104">
+  <title>What's New in Nautilus 1.0.4</title>
+
+  <para>
+   Nautilus 1.0.4 has many small bug fixes and performance 
+   improvements.  There are also a few new features which have
+   been added since version 1.0.3.  Some of the more notable 
+   improvements are listed below.
+  </para>
+
+  <para>
+   Major new features and improvements:
+  <itemizedlist>
+
+   <listitem>
+    <para>
+     Improved internationalization.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Updated icons.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved keybindings using Bonobo.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Better support for XFS file system. 
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     New preference to have all thumbnails stored under home folder.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     And many other small bug fixes and performance improvements.
+    </para>
+   </listitem>
+
+   </itemizedlist>
+   </para>
+
+  </sect1>
+
   <sect1 id="require">
    <title>System Requirements</title>
 
@@ -310,7 +368,7 @@
     minimum of 32MB of RAM.</para>
 
    <para>
-    Red Hat Linux 7: The latest GNOME 1.2 libraries running on an
+    Red Hat Linux 7: The latest GNOME 1.2 or 1.4 libraries running on an
     IA-32-compatible system with a minimum of 32MB of RAM.
    </para>
 
@@ -535,6 +593,7 @@
    </para>
   </sect1>
 
+<!--
   <sect1 id="searching">
    <title>Searching</title>
 
@@ -544,6 +603,7 @@
     available in another release soon. 
    </para>
   </sect1>
+-->
 
   <sect1 id="medusa">
    <title>Building Nautilus and Medusa</title>
