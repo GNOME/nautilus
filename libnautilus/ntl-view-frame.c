@@ -293,7 +293,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 						   GTK_RUN_LAST,
 						   object_class->type,
 						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, stop_location_change),
-						   gtk_marshal_NONE__BOXED,
+						   gtk_marshal_NONE__NONE,
 						   GTK_TYPE_NONE, 0);
   gtk_object_class_add_signals (object_class, klass->view_frame_signals, i);
 }

@@ -1,5 +1,9 @@
 2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus/ntl-view-frame.c (nautilus_view_frame_class_init):
+	Fixed marshall type for "stop_location_change" signal. How could
+	this ever have worked?
+
 	* src/ntl-view.c (nautilus_view_load_client): Once an appropriate
 	component type is found, do not keep looping.
 
