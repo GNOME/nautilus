@@ -29,18 +29,24 @@ module Desktop {
                         HorizontalGradient
                 };
 
-                union BackgroundInfo switch (BackgroundType) {
-                case ImageBackground:
-                        string filename;
+                // Note that this is not a union; if you change types
+                // the settings for non-current types are not lost.
+                struct BackgroundInfo {
+                        BackgroundType type;
+
+                        // Image settings
                         ImageType imagetype;
-                case GradientBackground:
+                        string filename;
+
+                        // Gradient settings
                         GradientType gradienttype;
                         // colors are 24-bit RGB packed into an int
                         int northwest_color; // top or left color
                         int southeast_color; // bottom or right color
-                case SolidBackground:
+
+                        // Solid color settings
                         // 24-bit RGB packed into an int
-                        int color;
+                        int solid_color;
                 };
 
                 void get_background_info (out BackgroundInfo info);
