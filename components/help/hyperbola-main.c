@@ -7,6 +7,8 @@
 extern BonoboObject *hyperbola_navigation_tree_new(void);
 /* in hyperbola-nav-index.c */
 extern BonoboObject *hyperbola_navigation_index_new(void);
+/* in hyperbola-nav-search.c */
+extern BonoboObject *hyperbola_navigation_search_new(void);
 
 static int object_count = 0;
 
@@ -28,6 +30,8 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
     retval = hyperbola_navigation_tree_new();
   else if(!strcmp(goad_id, "hyperbola_navigation_index"))
     retval = hyperbola_navigation_index_new();
+  else if(!strcmp(goad_id, "hyperbola_navigation_search"))
+    retval = hyperbola_navigation_search_new();
 
   if(retval)
     {

@@ -72,7 +72,7 @@ nautilus_prefs_load(void)
     char **pieces;
     int i;
 
-    gnome_config_get_vector("/nautilus/prefs/global_meta_views=ntl_history_view ntl_websearch_view ntl_notes_view hyperbola_navigation_index", &npieces, &pieces);
+    gnome_config_get_vector("/nautilus/prefs/global_meta_views=ntl_history_view ntl_websearch_view ntl_notes_view hyperbola_navigation_search", &npieces, &pieces);
 
     for(i = 0; i < npieces; i++)
       nautilus_prefs.global_meta_views = g_slist_prepend(nautilus_prefs.global_meta_views, pieces[i]);
@@ -248,8 +248,9 @@ meta_prefs_create(GtkWidget *container)
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(swin), mpi->list_avail);
 
   meta_prefs_add_entry(mpi, "ntl_notes_view", "Annotations");
-  meta_prefs_add_entry(mpi, "hyperbola_navigation_tree", "Help tree");
+  meta_prefs_add_entry(mpi, "hyperbola_navigation_tree", "Help Contents");
   meta_prefs_add_entry(mpi, "hyperbola_navigation_index", "Help Index");
+  meta_prefs_add_entry(mpi, "hyperbola_navigation_search", "Help Search");
   meta_prefs_add_entry(mpi, "ntl_history_view", "History");
   meta_prefs_add_entry(mpi, "ntl_websearch_view", "Web Search");
 
