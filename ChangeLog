@@ -1,5 +1,17 @@
 2002-06-28  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-volume-monitor.c:
+	Don't eject when things are unmounted.
+	Eject when we're explicitly unmounting a volume.
+	
+	* libnautilus-private/nautilus-volume-monitor.h:
+	Add should_eject to nautilus_volume_monitor_mount_unmount_removable.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	Pass should_eject right.
+
+2002-06-28  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-desktop-icon-view.c (volume_ops_callback):
 	Quote rawdevice_path. Patch from rajeev.karale@wipro.com
 

@@ -631,57 +631,6 @@ volume_is_removable (const NautilusVolume *volume)
 
 #endif /* !SOLARIS_MNT */
 
-static gboolean 
-volume_is_automounted (const NautilusVolume *volume)
-{
-	FILE *file;
-	MountTableEntry *ent;
-	gboolean automounted;
-#ifdef HAVE_SYS_MNTTAB_H
- 	MountTableEntry ent_storage;
-#endif
-	
-	automounted = FALSE; 
- 
-#ifdef HAVE_SYS_MNTTAB_H
-	file = setmntent (MOUNT_TABLE_PATH, "r");
- 	if (file == NULL) {
- 		return FALSE;
- 	}
-
- 	 /* Search for our device in the fstab */
- 	ent = &ent_storage;
-	while (!getmntent (file, ent)) {
-		if ((strstr (ent->mnt_fstype, "autofs") != NULL) 
-		    && (strncmp (ent->mnt_mountp, volume->mount_path, strlen (ent->mnt_mountp)) == 0)) {
-			automounted = TRUE;
-			break;
-		}
- 	}
-	fclose (file);
-
-#elif defined (HAVE_MNTENT_H)
-	file = setmntent (_PATH_MOUNTED, "r");
-	if (file == NULL) {
-		return FALSE;
-	}
-		
-	/* Search for our device in the fstab */
-	while ((ent = getmntent (file)) != NULL) {
-		if ((strstr (ent->mnt_type, "autofs") != NULL) 
-		    && (strncmp (ent->mnt_dir, volume->mount_path, strlen (ent->mnt_dir)) == 0)) {
-			automounted = TRUE;
-			break;
-		}
-	}
-	
-	endmntent (file);
-#endif
-	
-	
-	return automounted;
-}
-
 char *
 nautilus_volume_get_name (const NautilusVolume *volume)
 {
@@ -872,44 +821,22 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 }
 
 
-static void *
-eject_device (void *arg)
+static void
+eject_device (char *path)
 {
-	char *command, *path;	
+	char *command;	
 	
-	path = arg;
-
-	if (path != NULL) {		
+	if (path != NULL) {
 		command = g_strdup_printf ("eject %s", path);	
 		eel_gnome_shell_execute (command);
 		g_free (command);
 		g_free (path);
 	}
-	
-	pthread_exit (NULL);
-
-	/* compilation on Solaris warns of no return 
-	   value on non-void function...so....*/
-	return (void *) 0;
 }
 
 static void
 mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
-	pthread_t eject_thread;
-
-	switch (volume->device_type) {
-	case NAUTILUS_DEVICE_CDROM_DRIVE:
-		/* Don't eject automounted device 
-		 * since this action is done by automount daemon, not user */
-		if (!volume_is_automounted (volume)) {
-			pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
-		}
-		break;
-	default:
-		break;
-	}
-
 	g_signal_emit (monitor,
 			 signals[VOLUME_UNMOUNTED], 0,
 			 volume);
@@ -1425,7 +1352,9 @@ open_error_pipe (void)
 typedef struct {
 	char *command;
 	char *mount_point;
+	char *device_path;
 	gboolean should_mount;
+	gboolean should_eject;
 } MountThreadInfo;
 
 typedef struct {
@@ -1576,6 +1505,10 @@ mount_unmount_callback (void *arg)
 		file = popen (info->command, "r");
 		close_error_pipe (info->should_mount, info->mount_point);
 		pclose (file);
+
+		if (info->should_eject) {
+			eject_device (info->device_path?info->device_path:info->mount_point);
+		}
 		
 		if (old_locale != NULL) {
 			eel_setenv ("LC_ALL", old_locale, TRUE);
@@ -1585,6 +1518,7 @@ mount_unmount_callback (void *arg)
 
 		g_free (info->command);
 		g_free (info->mount_point);
+		g_free (info->device_path);
 		g_free (info);
 	}
 	
@@ -1597,7 +1531,8 @@ mount_unmount_callback (void *arg)
 void
 nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 						 const char *mount_point,
-						 gboolean should_mount)
+						 gboolean should_mount,
+						 gboolean should_eject)
 {
 	const char *command;
 	GList *p;
@@ -1646,7 +1581,11 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	mount_info = g_new0 (MountThreadInfo, 1);
 	mount_info->command = g_strdup (command_string);	
 	mount_info->mount_point = g_strdup (mount_point);
+	if (volume) {
+		mount_info->device_path = g_strdup (volume->device_path);
+	}
 	mount_info->should_mount = should_mount;
+	mount_info->should_eject = should_eject;
 	
 	pthread_create (&mount_thread, NULL, mount_unmount_callback, mount_info);
 	

@@ -875,13 +875,13 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 		rawdevice_path = g_strdup (device_path);
 	}
 	
-	quoted_path = g_shell_quote (rawdevice_path);  
+	quoted_path = g_shell_quote (rawdevice_path);
 	g_free (rawdevice_path);
 	rawdevice_path = quoted_path;
 		
 	if (strcmp (verb, "Unmount Volume Conditional") == 0) {
 		nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (),
-								 mount_path, FALSE);
+								 mount_path, FALSE, TRUE);
 	} else {
 		command = NULL;
 		
@@ -1239,6 +1239,7 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	       			   gpointer user_data)
 {
 	MountParameters *parameters;
+	gboolean mount;
 
 	g_assert (BONOBO_IS_UI_COMPONENT (component));
 
@@ -1248,10 +1249,11 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	}
 
 	parameters = (MountParameters *) user_data;
+	mount = (strcmp (state, "1") == 0);
 	nautilus_volume_monitor_mount_unmount_removable 
 		(nautilus_volume_monitor_get (),
 		 parameters->mount_path,
-		 strcmp (state, "1") == 0);
+		 mount, !mount);
 	update_disks_menu (parameters->view);
 }	       
 

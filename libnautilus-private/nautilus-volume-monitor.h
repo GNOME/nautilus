@@ -78,7 +78,8 @@ GtkType                  nautilus_volume_monitor_get_type                   (voi
 NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        (void);
 void                     nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor      *monitor,
 									     const char                 *mount_point,
-									     gboolean                    should_mount);
+									     gboolean                    should_mount,
+									     gboolean                    should_eject);
 gboolean                 nautilus_volume_monitor_volume_is_mounted          (NautilusVolumeMonitor      *monitor,
 									     const NautilusVolume       *mount_point);
 void                     nautilus_volume_monitor_each_mounted_volume        (NautilusVolumeMonitor      *monitor,
