@@ -13,7 +13,7 @@ INCLUDES=\
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(COMPONENT_CFLAGS) \
+	$(COMPONENT_LIBS) \
 	$(NULL)
 
 nautilus_notes_SOURCES=nautilus-notes.c
