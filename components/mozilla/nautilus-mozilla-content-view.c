@@ -95,6 +95,9 @@ static void     mozilla_progress_callback                      (GtkMozEmbed     
 static  gint    mozilla_open_uri_callback                      (GtkMozEmbed                     *mozilla,
 								const char                      *uri,
 								gpointer                         user_data);
+static  gint    mozilla_dom_key_press_callback                 (GtkMozEmbed                     *mozilla,
+								gpointer                         dom_event,
+								gpointer                         user_data);
 static  gint    mozilla_dom_mouse_click_callback               (GtkMozEmbed                     *mozilla,
 								gpointer                         dom_event,
 								gpointer                         user_data);
@@ -215,6 +218,12 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"open_uri",
 					GTK_SIGNAL_FUNC (mozilla_open_uri_callback),
+					view,
+					GTK_OBJECT (view->details->mozilla));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
+					"dom_key_press",
+					GTK_SIGNAL_FUNC (mozilla_dom_key_press_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
 	
@@ -771,7 +780,7 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
 	if ( mozilla_events_is_url_in_iframe (mozilla, uri)) {
 #ifdef DEBUG_mfleming
-		g_print ("URI is in an iframe;ignoring '%s' ", uri);
+		g_print ("URI is in an iframe;ignoring '%s'\n", uri);
 #endif
 		return FALSE;
 	}
@@ -1040,6 +1049,28 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 }
 
 static gint
+mozilla_dom_key_press_callback (GtkMozEmbed                     *mozilla,
+				gpointer                         dom_event,
+				gpointer                         user_data)
+{
+	g_return_val_if_fail (dom_event != NULL, 0);
+
+#ifdef DEBUG_mfleming
+	g_print ("%s (%p)\n", __FUNCTION__, dom_event);
+#endif
+
+	/* If this keyboard event is going to trigger a URL navigation, we need
+	 * to fake it out like the mouse event below
+	 */
+
+	if (mozilla_events_is_key_return (dom_event)) {
+		return mozilla_dom_mouse_click_callback (mozilla, dom_event, user_data);
+	} else {
+		return 0;
+	}
+}
+
+static gint
 mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 				  gpointer	dom_event,
 				  gpointer	user_data)
@@ -1074,7 +1105,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		view->details->got_called_by_nautilus = TRUE;
 	} else {
 		
-		href = mozilla_events_get_href_for_mouse_event (dom_event);
+		href = mozilla_events_get_href_for_event (dom_event);
 
 		/* 
 		 * The return value over here needs to be psycho-analyzed some.

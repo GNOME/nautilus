@@ -37,6 +37,7 @@
 #include "nsILocalFile.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMMouseEvent.h"
+#include "nsIDOMKeyEvent.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMHTMLElement.h"
@@ -56,25 +57,48 @@
 #include "nsIDOMHTMLDocument.h"
 #include "nsIPresShell.h"
 
-
-extern "C" char *
-mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
+extern "C" gboolean
+mozilla_events_is_key_return (gpointer dom_event)
 {
-	g_return_val_if_fail (mouse_event != NULL, NULL);
+	g_return_val_if_fail (dom_event != NULL, FALSE);
 
 	// This is the evil part of the process thanks to the fact that 
 	// this thing cant be exposed in a straight C api.
-	nsIDOMEvent* aMouseEvent = (nsIDOMEvent*) mouse_event;
-	
-	nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface (aMouseEvent));
+	nsCOMPtr<nsIDOMKeyEvent> aKeyEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
 
-	if (!mouseEvent) {
-		return NULL;
+	if (!aKeyEvent) {
+		return FALSE;
 	}
-	
+
+
+	PRUint32 keyCode;
+
+	aKeyEvent->GetKeyCode (&keyCode);
+
+#ifdef DEBUG_mfleming
+	g_print ("key code is '%u' is return? %s\n", (unsigned) keyCode, 
+		(keyCode == nsIDOMKeyEvent::DOM_VK_RETURN || keyCode == nsIDOMKeyEvent::DOM_VK_ENTER) ? "YES" : "NO" );
+#endif
+
+	return keyCode == nsIDOMKeyEvent::DOM_VK_RETURN || keyCode == nsIDOMKeyEvent::DOM_VK_ENTER;
+}
+
+extern "C" char *
+mozilla_events_get_href_for_event (gpointer dom_event)
+{
+	g_return_val_if_fail (dom_event != NULL, NULL);
+
+	// This is the evil part of the process thanks to the fact that 
+	// this thing cant be exposed in a straight C api.
+	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
+
+	if (!aDOMEvent) {
+		return FALSE;
+	}
+		
 	nsCOMPtr<nsIDOMEventTarget> targetNode;
 	
-	aMouseEvent->GetTarget (getter_AddRefs (targetNode));
+	aDOMEvent->GetTarget (getter_AddRefs (targetNode));
 	
 	if (!targetNode) {
 		return NULL;
@@ -152,24 +176,20 @@ mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
 /*
  * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
  */
-/* FIXME bugzilla.eazel.com 4411: this doesn't handle form submissions
-   with a BUTTON or by hitting <return> */
 extern "C" gboolean
-mozilla_events_is_in_form_POST_submit (gpointer mouse_event)
+mozilla_events_is_in_form_POST_submit (gpointer dom_event)
 {
-	g_return_val_if_fail (mouse_event != NULL, FALSE);
+	g_return_val_if_fail (dom_event != NULL, FALSE);
 
-	nsIDOMEvent* aMouseEvent = (nsIDOMEvent*) mouse_event;
-	
-	nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface (aMouseEvent));
+	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
 
-	if (!mouseEvent) {
+	if (!aDOMEvent) {
 		return FALSE;
 	}
 	
 	nsCOMPtr<nsIDOMEventTarget> targetNode;
 	
-	aMouseEvent->GetTarget (getter_AddRefs (targetNode));
+	aDOMEvent->GetTarget (getter_AddRefs (targetNode));
 	
 	if (!targetNode) {
 		return FALSE;

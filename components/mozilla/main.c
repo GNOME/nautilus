@@ -50,7 +50,15 @@ mozilla_object_destroyed (GtkObject *obj)
 {
 	object_count--;
 
+#ifdef DEBUG_mfleming
+	g_print ("mozilla_object_destroyed\n");
+#endif
+
 	if (object_count <= 0) {
+#ifdef DEBUG_mfleming
+	g_print ("...final mozilla_object_destroyed, quiting\n");
+#endif
+
 		gtk_main_quit ();
 	}
 }
@@ -66,6 +74,10 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	if (strcmp (goad_id, "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1")) {
 		return NULL;
 	}
+
+#ifdef DEBUG_mfleming
+	g_print ("+mozilla_make_object\n");
+#endif
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NULL));
 
@@ -74,6 +86,10 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	nautilus_view = nautilus_mozilla_content_view_get_nautilus_view (view);
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", mozilla_object_destroyed, NULL);
+
+#ifdef DEBUG_mfleming
+	g_print ("-mozilla_make_object\n");
+#endif
 
 	return BONOBO_OBJECT (nautilus_view);
 }
@@ -99,6 +115,10 @@ main (int argc, char *argv[])
 	char *registration_id;
 	GError *error_gconf = NULL;
 	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
+
+#ifdef DEBUG_mfleming
+	g_print ("nautilus-mozilla-content-view: starting...\n");
+#endif
 
 	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
 		gboolean success;
@@ -138,7 +158,7 @@ main (int argc, char *argv[])
 #endif
 
 #ifdef DEBUG_mfleming
-	g_print ("OAF registration complete.\n");
+	g_print ("nautilus-mozilla-content-view: OAF registration complete.\n");
 #endif
 
 	do {

@@ -1,3 +1,20 @@
+2001-01-16  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <ramiro@eazel.com>
+
+	Bug 4411 -- implement keypress hook for Mozilla so that URL navigation
+	initiated by keypress are handled the same as mouse-initiated navigation
+	events (eg, correctly have their schemes translated if necessary)
+
+	* components/mozilla/main.c: (mozilla_object_destroyed),
+	(mozilla_make_object), (main):
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_open_uri_callback), (mozilla_dom_key_press_callback),
+	(mozilla_dom_mouse_click_callback):
+
 2001-01-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5677, Drag files w/names of Specials to desktop -> malloc crash
