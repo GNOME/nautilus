@@ -33,6 +33,7 @@
 
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtklabel.h>
 
 #include "nautilus-radio-button-group.h"
 #include "nautilus-string-picker.h"
@@ -399,6 +400,7 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 	g_assert (description != NULL);
 
 	item->details->child = gtk_check_button_new_with_label (description);
+	gtk_label_set_justify (GTK_LABEL (GTK_BIN (item->details->child)->child), GTK_JUSTIFY_LEFT);
 
 	g_free (description);
 
