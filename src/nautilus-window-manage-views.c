@@ -621,7 +621,10 @@ handle_unreadable_location (NautilusWindow *window, const char *location)
 	 */
 	file = nautilus_file_get (location);
 
-	unreadable = !nautilus_file_can_read (file);
+	/* If it's gone, it doesn't count as unreadable, and will be handled
+	 * by the normal missing-uri mechanism.
+	 */
+	unreadable = !nautilus_file_is_gone (file) && !nautilus_file_can_read (file);
 
 	if (unreadable) {
 		file_name = nautilus_file_get_name (file);

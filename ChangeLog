@@ -1,3 +1,20 @@
+2000-12-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: nobody, but Darin knew exactly what I was
+	doing for these two small changes so that sorta counts.
+
+	Fixed two problems found while investigating bug 4810
+	(typing "gzip:" in location bar crashes), though I
+	ended up fixing the bug entirely in gnome-vfs.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_info_callback): Don't call nautilus_directory_remove_file
+	on self-owned files.
+	
+	* src/nautilus-window-manage-views.c: (handle_unreadable_location):
+	Don't call a file "unreadable" if it doesn't exist. Let the rest
+	of the error machinery handle it instead.
+
 2000-12-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

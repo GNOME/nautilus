@@ -2885,7 +2885,9 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 			/* mark file as gone */
 
 			get_info_file->details->is_gone = TRUE;
-			nautilus_directory_remove_file (directory, get_info_file);
+			if (get_info_file != directory->details->as_file) {
+				nautilus_directory_remove_file (directory, get_info_file);
+			}
 		}
 	} else {
 		nautilus_file_update_info (get_info_file, result->file_info);
