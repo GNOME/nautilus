@@ -301,19 +301,30 @@ nautilus_view_destroy (GtkObject *object)
 static Nautilus_ViewFrame
 view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 {
+	Nautilus_ViewFrame *view_frame;
+
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
 	
-	/* FIXME bugzilla.eazel.com 2545: Do we have to handle failure in this query? */
 	CORBA_exception_init (ev);
-	return Bonobo_Unknown_query_interface 
+
+	view_frame = Bonobo_Unknown_query_interface 
 		(bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view)),
 		 "IDL:Nautilus/ViewFrame:1.0", ev);
+
+	if (ev->_major != CORBA_NO_EXCEPTION) {
+		view_frame = CORB_OBJECT_NIL;
+	}
+
+	return view_frame;
 }
 
 static void
 view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 {
-	bonobo_object_release_unref (frame, ev);
+	if (frame != CROBA_OBJECT_NIL) {
+		bonobo_object_release_unref (frame, ev);
+	}
+
 	CORBA_exception_free (ev);
 }
 
