@@ -1,3 +1,27 @@
+2001-03-05  Eskil Olsen  <set EMAIL_ADDRESS environment variable>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors), 
+	Flipped the meaning of the third argument.
+	(nautilus_rpm_view_install_failed),
+	s/TRUE/FALSE
+	(nautilus_rpm_view_uninstall_failed),
+	s/FALSE/TRUE
+	(nautilus_rpm_view_dependency_check):
+	use packagedata_get_readable_name instead of doing it myself.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper):
+	
+	Ugh, I did not traverse down down into ALREADY_INSTALLED packages,
+	and I had flipped the change of status for suite_ids. So I added
+	some enum logic so ALREADY_INSTALLED (hence also suite_id's) get
+	their dependencies pruned.
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_uninstall_messages_foreach):
+	I committed the sin of changing an i18n string..
+
 2001-03-05  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>

@@ -147,6 +147,11 @@ void prune_failed_packages (EazelInstall *service, GList **packages);
 void prune_failed_packages_helper (EazelInstall *service, PackageData *root, 
 				   PackageData *pack, GList *packages, GList **path, GList **result);
 
+typedef enum {
+	PRUNE_ACTION_NORMAL,
+	PRUNE_ACTION_ALLOW
+} PruneAction;
+
 void 
 prune_failed_packages_helper (EazelInstall *service, 
 			      PackageData *root, 
@@ -156,12 +161,18 @@ prune_failed_packages_helper (EazelInstall *service,
 			      GList **result)
 {
 	GList *iterator;
+	PruneAction action = PRUNE_ACTION_NORMAL;
 
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("entering subpruner %p %s %s", 
 			 pack, pack->name, 
 			 packagedata_status_enum_to_str (pack->status));
 #endif
+	/* If it's a suite and no dependencies, cancel it */
+	if (pack->suite_id && g_list_length (pack->depends)==0) {
+		pack->status = PACKAGE_ALREADY_INSTALLED;
+	}
+
 	/* If package is already installed, check if the service
 	   settings requires us to fail it */
 	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
@@ -171,13 +182,8 @@ prune_failed_packages_helper (EazelInstall *service,
 		trilobite_debug ("Package cancel status == %d", cancel_package);
 #endif
 		if (cancel_package == 0) {
-			return;
+			action = PRUNE_ACTION_ALLOW;
 		}
-	}
-
-	/* If it's a suite and no dependencies, cancel it */
-	if (pack->suite_id && g_list_length (pack->depends)==0) {
-		pack->status = PACKAGE_ALREADY_INSTALLED;
 	}
 
 	/* Recursion check */
@@ -188,7 +194,8 @@ prune_failed_packages_helper (EazelInstall *service,
 		return;
 	}
 	
-	if (pack->status != PACKAGE_PARTLY_RESOLVED) {
+	if ((action == PRUNE_ACTION_NORMAL && pack->status != PACKAGE_PARTLY_RESOLVED) ||
+	    action == PRUNE_ACTION_ALLOW) {
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("subpruner kill root %p %s because of %p %s", 
 				 root, root->name, pack, pack->name);

@@ -143,7 +143,7 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		if (top_pack == previous_pack) {
 			previous_pack = NULL;
 		}
-		required_by = packagedata_get_readable_name (previous_pack);
+		required_by = packagedata_get_readable_name (top_pack);
 		top_name = packagedata_get_readable_name (top_pack);
 	}
 	required = packagedata_get_readable_name (pack);
@@ -343,13 +343,15 @@ get_detailed_uninstall_messages_foreach (GtkObject *foo,
 	case PACKAGE_INVALID:
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		message = g_strdup_printf (_("%s is not installed"), 
+		message = g_strdup_printf (_("%s is not installed and could not be found on server"), 
 					   required_by);
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		message = g_strdup_printf (_("%s is already installed"), required);
+		if (pack->modifies == NULL) {
+			message = g_strdup_printf (_("%s is already installed"), required);
+		}
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		break;

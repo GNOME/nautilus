@@ -99,7 +99,7 @@ nautilus_rpm_view_download_failed (EazelInstallCallback *service,
 static char*
 get_detailed_errors (EazelInstallCallback *service,
 		     PackageData *pack, 
-		     gboolean installing)
+		     gboolean uninstalling)
 {
 	char *result;
 	GList *stuff;
@@ -107,14 +107,14 @@ get_detailed_errors (EazelInstallCallback *service,
 	EazelInstallProblem *problem;
 
 	message = g_string_new ("");
-	if (installing) {
+	if (uninstalling==FALSE) {
 		g_string_sprintfa (message, _("Installing %s failed because of the following issue(s):\n"), pack->name);
 	} else {
 		g_string_sprintfa (message, _("Uninstalling %s failed because of the following issue(s):\n"), pack->name);
 	}
 	
 	problem = EAZEL_INSTALL_PROBLEM (gtk_object_get_data (GTK_OBJECT (service), "problem-handler"));
-	stuff = eazel_install_problem_tree_to_string (problem, pack, installing);
+	stuff = eazel_install_problem_tree_to_string (problem, pack, uninstalling);
 	if (stuff) {
 		GList *iterator;
 		for (iterator = stuff; iterator; iterator = g_list_next (iterator)) {
@@ -134,7 +134,7 @@ nautilus_rpm_view_install_failed (EazelInstallCallback *service,
 {
 	char *detailed;
 
-	detailed = get_detailed_errors (service, pd, TRUE);
+	detailed = get_detailed_errors (service, pd, FALSE);
 	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
@@ -145,7 +145,7 @@ nautilus_rpm_view_uninstall_failed (EazelInstallCallback *service,
 {
 	char *detailed;
 
-	detailed = get_detailed_errors (service, pd, FALSE);
+	detailed = get_detailed_errors (service, pd, TRUE);
 	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
@@ -155,28 +155,13 @@ nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
 				    const PackageData *needs,
 				    NautilusRPMView *rpm_view) 
 {
-	if (needs->name && needs->version) {
-		g_message ("Doing dependency check for %s-%s - need %s-%s\n", 
-			 package->name, package->version,
-			 needs->name, needs->version);
-	} else if (needs->name) {
-		g_message ("Doing dependency check for %s-%s - need %s\n", 
-			 package->name, package->version,
-			 needs->name);
-	} else if (needs->provides) {
-		GList *iterator;
-		g_message ("Doing dependency check for %s-%s - need :", 
-			 package->name, package->version);
-		for (iterator = needs->provides; iterator; iterator = g_list_next (iterator)) {
-			g_message ("- %s", (char*)iterator->data);
-		}
-	} else {
-		g_message ("Doing dependency check for %s-%s - needs something, but I don't know what it was...\n", 
-			   package->name, package->version);
-	}
-#if 0
-	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
-#endif
+	char *a, *b;
+
+	a = packagedata_get_readable_name (package);
+	b = packagedata_get_readable_name (needs);
+	g_message ("Doing dependency check for %s - needs %s\n", a, b);
+	g_free (a);
+	g_free (b);
 }
 
 /* get rid of the installer and root client, and reactivate buttons */
