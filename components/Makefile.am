@@ -12,6 +12,11 @@ if BUILD_RPMVIEW_COMPONENT
 RPMVIEW_COMPONENT_SUBDIRS = rpmview
 endif
 
+# These components are broken:
+#
+#       websearch
+#
+
 SUBDIRS = \
 	hardware \
 	help \
@@ -22,7 +27,6 @@ SUBDIRS = \
 	notes \
 	sample \
 	tree \
-	websearch \
 	$(SERVICE_SUBDIRS) \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	$(MOZILLA_COMPONENT_SUBDIRS) \

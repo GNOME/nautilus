@@ -127,7 +127,7 @@ _mozilla_all_nspr_flags="$_mozilla_nspr_libs $_mozilla_plc_libs $_mozilla_plds_l
 dnl Now check for the evil c++ ones "by hand"
 CC="g++"
 
-LDFLAGS="$_save_cflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lxpcom"
+LDFLAGS="$_save_ldflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lxpcom"
 AC_MSG_CHECKING(for xpcom)
 AC_CACHE_VAL(have_xpcom,
  [AC_TRY_COMPILE([extern "C" int NS_RegistryGetFactory(void**);]

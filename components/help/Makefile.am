@@ -1,3 +1,5 @@
+NULL=
+
 SUBDIRS=converters
 
 bin_PROGRAMS=hyperbola
@@ -37,7 +39,17 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-search.c
 
 oafdir=$(datadir)/oaf
-oaf_DATA=hyperbola.oafinfo
+
+# These are broken:
+#
+#	help-search.oafinfo
+#	help-index.oafinfo
+#
+
+oaf_DATA=\
+	help-factory.oafinfo \
+	help-contents.oafinfo \
+	$(NULL)
 
 mapdatadir=$(datadir)/hyperbola/maps
 mapdata_DATA=pages.map
