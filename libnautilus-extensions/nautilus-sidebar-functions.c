@@ -32,7 +32,13 @@
 
 #include <liboaf/liboaf.h>
 
-#define PREFERENCES_SIDEBAR_PANELS_NAMESPACE "sidebar-panels"
+static char *
+sidebar_panel_make_preference_key (const char *panel_iid)
+{
+	g_return_val_if_fail (panel_iid != NULL, NULL);
+
+	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX, panel_iid);
+}
 
 static int
 compare_view_identifiers (gconstpointer a, gconstpointer b)
@@ -58,7 +64,7 @@ sidebar_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier)
 	g_return_val_if_fail (panel_identifier != NULL, FALSE);
 	g_return_val_if_fail (panel_identifier->iid != NULL, FALSE);
 	
-	key = nautilus_sidebar_panel_make_preference_key (panel_identifier->iid);
+	key = sidebar_panel_make_preference_key (panel_identifier->iid);
 	g_return_val_if_fail (key != NULL, FALSE);
         enabled = nautilus_preferences_get_boolean (key);
         g_free (key);
@@ -129,14 +135,6 @@ nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers (void)
         return enabled_view_identifiers;
 }
 
-char *
-nautilus_sidebar_panel_make_preference_key (const char *panel_iid)
-{
-	g_return_val_if_fail (panel_iid != NULL, NULL);
-
-	return g_strdup_printf ("%s/%s", PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
-}
-
 void
 nautilus_sidebar_for_each_panel (NautilusSidebarPanelCallback callback,
 				 gpointer callback_data)
@@ -154,7 +152,7 @@ nautilus_sidebar_for_each_panel (NautilusSidebarPanelCallback callback,
 		g_assert (node->data != NULL);
 		identifier = node->data;
 		
-		preference_key = nautilus_sidebar_panel_make_preference_key (identifier->iid);
+		preference_key = sidebar_panel_make_preference_key (identifier->iid);
 
 		(* callback) (identifier->name, identifier->iid, preference_key, callback_data);
 

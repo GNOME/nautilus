@@ -27,6 +27,8 @@
 
 #include <glib.h>
 
+#define NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "sidebar-panels"
+
 /*
  * A callback which can be invoked for each sidebar panel available.
  */
@@ -36,9 +38,8 @@ typedef void (*NautilusSidebarPanelCallback) (const char *name,
 					      gpointer callback_data);
 
 GList *nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers (void);
-char * nautilus_sidebar_panel_make_preference_key                  (const char                   *panel_iid);
-void   nautilus_sidebar_for_each_panel                             (NautilusSidebarPanelCallback  callback,
-								    gpointer                      callback_data);
+void   nautilus_sidebar_for_each_panel                             (NautilusSidebarPanelCallback callback,
+								    gpointer                     callback_data);
 
 #endif /* NAUTILUS_SIDEBAR_FUNCTIONS_H */
 

@@ -49,6 +49,18 @@
 static const char untranslated_global_preferences_dialog_title[] = N_("Nautilus Preferences");
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _(untranslated_global_preferences_dialog_title)
 
+/* Preference names for known sidebar panels.  These are used to install the default
+ * enabled state for the panel.  Unknown panels will have a default enabled state of FALSE.
+ */
+#define NOTES_PANEL_IID		"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
+#define HELP_PANEL_IID		"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
+#define HISTORY_PANEL_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
+#define TREE_PANEL_IID		"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d"
+#define NOTES_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NOTES_PANEL_IID
+#define HELP_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HELP_PANEL_IID
+#define HISTORY_PANEL_KEY	NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HISTORY_PANEL_IID
+#define TREE_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" TREE_PANEL_IID
+
 /* base path for NAUTILUS_PREFERENCES_HTTP_* */
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
@@ -56,18 +68,18 @@ static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 typedef struct PreferenceDialogItem PreferenceDialogItem;
 
 /* Forward declarations */
-static gboolean   global_preferences_close_dialog_callback          (GtkWidget                  *dialog,
-								     gpointer                    user_data);
-static void       global_preferences_install_sidebar_panel_defaults (void);
-static void       global_preferences_install_defaults               (void);
-static void       global_preferences_register_enumerations          (void);
-static void       global_preferences_install_home_location_defaults (void);
-static void       global_preferences_install_font_defaults          (void);
-static GtkWidget *global_preferences_create_dialog                  (void);
-static void       global_preferences_create_sidebar_panels_pane     (NautilusPreferencesBox     *preference_box);
-static GtkWidget *global_preferences_populate_pane                  (NautilusPreferencesBox     *preference_box,
-								     const char                 *pane_name,
-								     const PreferenceDialogItem *preference_dialog_item);
+static gboolean   global_preferences_close_dialog_callback      (GtkWidget                  *dialog,
+								 gpointer                    user_data);
+static void       global_preferences_install_defaults           (void);
+static void       global_preferences_register_enumerations      (void);
+static GtkWidget *global_preferences_create_dialog              (void);
+static void       global_preferences_create_sidebar_panels_pane (NautilusPreferencesBox     *preference_box);
+static GtkWidget *global_preferences_populate_pane              (NautilusPreferencesBox     *preference_box,
+								 const char                 *pane_name,
+								 const PreferenceDialogItem *preference_dialog_item);
+static gpointer   default_font_callback                         (int                         user_level);
+static gpointer   default_smooth_font_callback                  (int                         user_level);
+static gpointer   default_home_location_callback                (int                         user_level);
 
 static GtkWidget *global_prefs_dialog = NULL;
 static const char *default_smooth_font_auto_value;
@@ -196,11 +208,20 @@ static EelEnumerationInfo enumerations[] = {
 	{ NULL }
 };
 
+/*
+ * A callback which can be used to fetch dynamic default values.
+ * For example, values that are dependent on the environment (such as user name) 
+ * cannot be specified as constants.
+ */
+typedef gpointer (*PreferencesDefaultValueCallback) (int user_level);
+
 /* A structure that pairs a default value with a specific user level. */
 typedef struct
 {
 	int user_level;
 	const gpointer value;
+	PreferencesDefaultValueCallback callback;
+	GFreeFunc callback_result_free_function;
 } PreferenceUserLevelDefault;
 
 #define USER_LEVEL_NONE -1
@@ -494,7 +515,35 @@ static const PreferenceDefault preference_defaults[] = {
 	  { USER_LEVEL_NONE }
 	},
 
+	/* Home URI */
+	{ NAUTILUS_PREFERENCES_HOME_URI,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_home_location_callback, g_free },
+	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, NULL, default_home_location_callback, g_free },
+	},
 
+	/* Default fonts */
+	{ NAUTILUS_PREFERENCES_DEFAULT_FONT,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  { USER_LEVEL_NONE },
+	  "standard_font_size"
+	},
+	
 	/* View Preferences */
 	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 	  PREFERENCE_INTEGER,
@@ -505,6 +554,25 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* Icon View Default Preferences */
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  { USER_LEVEL_NONE },
+	  "standard_font_size"
+	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_NOVICE,
@@ -533,6 +601,19 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* List View Default Preferences */
+	{ NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
+	  PREFERENCE_STRING,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
+	  { USER_LEVEL_NONE },
+	  "standard_font_size"
+	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_NOVICE,
@@ -552,6 +633,32 @@ static const PreferenceDefault preference_defaults[] = {
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER) },
 	  { USER_LEVEL_NONE },
 	  "default_zoom_level"
+	},
+
+	/* Sidebar panel default */
+	{ NOTES_PANEL_KEY,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ HELP_PANEL_KEY,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ HISTORY_PANEL_KEY,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ TREE_PANEL_KEY,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { NAUTILUS_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
 	},
 
 	{ NULL }
@@ -584,6 +691,59 @@ global_preferences_register_enumerations (void)
 	}
 }
 
+static void
+global_preferences_install_one_default (const char *preference_name,
+					PreferenceType preference_type,
+					const PreferenceUserLevelDefault *user_level_default)
+{
+	gpointer value = NULL;
+
+	g_return_if_fail (preference_name != NULL);
+	g_return_if_fail (preference_type >= PREFERENCE_BOOLEAN);
+	g_return_if_fail (preference_type <= PREFERENCE_STRING);
+	g_return_if_fail (user_level_default != NULL);
+
+	if (user_level_default->user_level == USER_LEVEL_NONE) {
+		return;
+	}
+
+	/* If a callback is given, use that to fetch the default value */
+	if (user_level_default->callback != NULL) {
+		value = (* user_level_default->callback) (user_level_default->user_level);
+	} else {
+		value = user_level_default->value;
+	}
+
+	switch (preference_type) {
+	case PREFERENCE_BOOLEAN:
+		nautilus_preferences_default_set_boolean (preference_name,
+							  user_level_default->user_level,
+							  GPOINTER_TO_INT (value));
+		break;
+		
+	case PREFERENCE_INTEGER:
+		nautilus_preferences_default_set_integer (preference_name,
+							  user_level_default->user_level,
+							  GPOINTER_TO_INT (value));
+		break;
+		
+	case PREFERENCE_STRING:
+		nautilus_preferences_default_set_string (preference_name,
+							 user_level_default->user_level,
+							 value);
+		break;
+		
+	default:
+		g_assert_not_reached ();
+	}
+
+	/* Free the dynamic default value if needed */
+	if (user_level_default->callback != NULL
+	    && user_level_default->callback_result_free_function != NULL) {
+		(* user_level_default->callback_result_free_function) (value);
+	}
+}
+
 /**
  * global_preferences_install_defaults
  *
@@ -600,71 +760,20 @@ global_preferences_install_defaults (void)
 	guint i;
 
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
-		switch (preference_defaults[i].type) {
-		case PREFERENCE_BOOLEAN:
-			if (preference_defaults[i].default1.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_boolean (
-					preference_defaults[i].name,
-					preference_defaults[i].default1.user_level,
-					GPOINTER_TO_INT (preference_defaults[i].default1.value));
-			}
-			if (preference_defaults[i].default2.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_boolean (
-					preference_defaults[i].name,
-					preference_defaults[i].default2.user_level,
-					GPOINTER_TO_INT (preference_defaults[i].default2.value));
-			}
-			break;
-
-		case PREFERENCE_INTEGER:
-			if (preference_defaults[i].default1.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_integer (
-					preference_defaults[i].name,
-					preference_defaults[i].default1.user_level,
-					GPOINTER_TO_INT (preference_defaults[i].default1.value));
-			}
-			if (preference_defaults[i].default2.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_integer (
-					preference_defaults[i].name,
-					preference_defaults[i].default2.user_level,
-					GPOINTER_TO_INT (preference_defaults[i].default2.value));
-			}
-			break;
-
-		case PREFERENCE_STRING:
-			if (preference_defaults[i].default1.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_string (
-					preference_defaults[i].name,
-					preference_defaults[i].default1.user_level,
-					preference_defaults[i].default1.value);
-			}
-			if (preference_defaults[i].default2.user_level != USER_LEVEL_NONE) {
-				nautilus_preferences_default_set_string (
-					preference_defaults[i].name,
-					preference_defaults[i].default2.user_level,
-					preference_defaults[i].default2.value);
-			}
-			break;
-			
-		default:
-			g_assert_not_reached ();
-		}
-
+		global_preferences_install_one_default (preference_defaults[i].name,
+							preference_defaults[i].type,
+							&preference_defaults[i].default1);
+		
+		global_preferences_install_one_default (preference_defaults[i].name,
+							preference_defaults[i].type,
+							&preference_defaults[i].default2);
+		
 		nautilus_preferences_set_visible_user_level (preference_defaults[i].name,
 							     preference_defaults[i].visible_user_level);
 	}
 
 	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
 	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
-	
-	/* Sidebar panel defaults */
-	global_preferences_install_sidebar_panel_defaults ();
-
-	/* Home location */
-	global_preferences_install_home_location_defaults ();
-
-	/* Fonts */
-	global_preferences_install_font_defaults ();
 }
 
 /* A structure that describes a single preferences dialog ui item. */
@@ -1198,123 +1307,6 @@ global_preferences_get_dialog (void)
 	return global_prefs_dialog;
 }
 
-static struct 
-{
-	const char *name;
-	gboolean novice_default;
-	gboolean intermediate_default;
-	gboolean advanced_default;
-	int visible_user_level;
-} known_sidebar_panels[] =
-{
-	{ "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",       TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE},
-	{ "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234", TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
-	{ "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",     TRUE,  TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
-	{ "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d",        FALSE, TRUE,  TRUE,  NAUTILUS_USER_LEVEL_INTERMEDIATE },
-};
-
-static void
-global_preferences_install_sidebar_panel_defaults (void)
-{
-	char *preference_key;
-	guint i;
-	
-	/* Install the user level on/off defaults for known sidebar panels */
-	for (i = 0; i < EEL_N_ELEMENTS (known_sidebar_panels); i++) {
-		preference_key = nautilus_sidebar_panel_make_preference_key (known_sidebar_panels[i].name);
-		
-		nautilus_preferences_default_set_boolean (preference_key,
-							  NAUTILUS_USER_LEVEL_NOVICE,
-							  known_sidebar_panels[i].novice_default);
-		nautilus_preferences_default_set_boolean (preference_key,
-							  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-							  known_sidebar_panels[i].intermediate_default);
-		nautilus_preferences_default_set_boolean (preference_key,
-							  NAUTILUS_USER_LEVEL_ADVANCED,
-							  known_sidebar_panels[i].advanced_default);
-
-		nautilus_preferences_set_visible_user_level (preference_key,
-							     known_sidebar_panels[i].visible_user_level);
-		
-		g_free (preference_key);
-	}
-}
-
-static void
-global_preferences_install_home_location_defaults (void)
-{
-	char *default_novice_home_uri;
-	char *default_intermediate_home_uri;
-	char *user_main_directory;		
-	
-	user_main_directory = nautilus_get_user_main_directory ();
-	
-	default_novice_home_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
-	default_intermediate_home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_HOME_URI,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_novice_home_uri);
-	
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_HOME_URI,
-						 NAUTILUS_USER_LEVEL_INTERMEDIATE,
-						 default_intermediate_home_uri);
-	
-	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_HOME_URI,
-						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
-	g_free (user_main_directory);
-	g_free (default_novice_home_uri);
-	g_free (default_intermediate_home_uri);
-}
-
-static void
-global_preferences_install_font_defaults (void)
-{
-	char *default_smooth_font;
-	const char *default_font;
-
-	default_font = eel_dumb_down_for_multi_byte_locale_hack () ? "fixed" : "helvetica";
-	default_smooth_font = eel_font_manager_get_default_font ();
-
-	/* Icon view fonts */
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_font);
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_smooth_font);
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
- 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  12);
-	nautilus_preferences_set_enumeration_id (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						 "standard_font_size");
-
-	/* List view fonts */
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_font);
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
- 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  12);
-	nautilus_preferences_set_enumeration_id (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						 "standard_font_size");
-
-	/* Default fonts */
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_font);
-
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 default_smooth_font);
-
-	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  12);
-
-	g_free (default_smooth_font);
-}
-
 static gboolean
 global_preferences_close_dialog_callback (GtkWidget   *dialog,
 					  gpointer    user_data)
@@ -1387,6 +1379,47 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 	eel_string_list_free (group_names);
 
 	return pane;
+}
+
+static gpointer
+default_font_callback (int user_level)
+{
+	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+
+	if (eel_dumb_down_for_multi_byte_locale_hack ()) {
+		return g_strdup ("fixed");
+	}
+
+	return g_strdup ("helvetica");
+}
+
+static gpointer
+default_smooth_font_callback (int user_level)
+{
+	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+	return eel_font_manager_get_default_font ();
+}
+
+static gpointer
+default_home_location_callback (int user_level)
+{
+	char *default_home_location;
+	char *user_main_directory;		
+
+	g_return_val_if_fail (nautilus_preferences_user_level_is_valid (user_level), NULL);
+
+	if (user_level == NAUTILUS_USER_LEVEL_NOVICE) {
+		user_main_directory = nautilus_get_user_main_directory ();
+		default_home_location = gnome_vfs_get_uri_from_local_path (user_main_directory);
+		g_free (user_main_directory);
+		return default_home_location;
+	}
+
+	if (user_level == NAUTILUS_USER_LEVEL_INTERMEDIATE) {
+		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+	}
+	
+	return NULL;
 }
 
 /*

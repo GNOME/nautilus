@@ -125,7 +125,6 @@ static void         preferences_global_table_check_changes_function (gpointer   
 								     gpointer                  callback_data);
 static GHashTable  *preferences_global_table_get_global             (void);
 static void         preferences_callback_entry_free                 (PreferencesCallbackEntry *callback_entry);
-static int          preferences_user_level_check_range              (int                       user_level);
 static void         preferences_entry_update_auto_storage           (PreferencesEntry         *entry);
 
 static int user_level_changed_connection_id = -1;
@@ -238,7 +237,7 @@ preferences_key_make_for_default (const char *name,
 
 	g_return_val_if_fail (name != NULL, NULL);
 
-	user_level = preferences_user_level_check_range (user_level);
+	user_level = nautilus_preferences_user_level_clamp (user_level);
 
 	key = preferences_key_make (name);
 	defaults_path = preferences_get_defaults_path ();
@@ -264,7 +263,7 @@ preferences_key_make_for_default_getter (const char *name,
 
 	g_return_val_if_fail (name != NULL, NULL);
 
-	user_level = preferences_user_level_check_range (user_level);
+	user_level = nautilus_preferences_user_level_clamp (user_level);
 
 	done = FALSE;
 	while (!done) {
@@ -606,7 +605,7 @@ nautilus_preferences_set_user_level (int user_level)
 {
 	char *user_level_key;
 
-	user_level = preferences_user_level_check_range (user_level);
+	user_level = nautilus_preferences_user_level_clamp (user_level);
 
 	user_level_key = preferences_get_user_level_key ();
 	nautilus_gconf_set_string (user_level_key, user_level_names_for_storage[user_level]);
@@ -1573,7 +1572,7 @@ nautilus_preferences_get_enumeration_id (const char *name)
 char *
 nautilus_preferences_get_user_level_name_for_display (int user_level)
 {
-	user_level = preferences_user_level_check_range (user_level);
+	user_level = nautilus_preferences_user_level_clamp (user_level);
 	
 	return g_strdup (gettext (user_level_names_for_display[user_level]));
 }
@@ -1581,18 +1580,21 @@ nautilus_preferences_get_user_level_name_for_display (int user_level)
 char *
 nautilus_preferences_get_user_level_name_for_storage (int user_level)
 {
-	user_level = preferences_user_level_check_range (user_level);
+	user_level = nautilus_preferences_user_level_clamp (user_level);
 	
 	return g_strdup (user_level_names_for_storage[user_level]);
 }
 
-static int
-preferences_user_level_check_range (int user_level)
+int
+nautilus_preferences_user_level_clamp (int user_level)
 {
-	user_level = MAX (user_level, 0);
-	user_level = MIN (user_level, 2);
+	return CLAMP (user_level, NAUTILUS_USER_LEVEL_NOVICE, NAUTILUS_USER_LEVEL_ADVANCED);
+}
 
-	return user_level;
+gboolean
+nautilus_preferences_user_level_is_valid (int user_level)
+{
+	return user_level == nautilus_preferences_user_level_clamp (user_level);
 }
 
 gboolean

@@ -51,6 +51,8 @@ char *   nautilus_preferences_get_user_level_name_for_display (int              
 char *   nautilus_preferences_get_user_level_name_for_storage (int                           user_level);
 int      nautilus_preferences_get_user_level                  (void);
 void     nautilus_preferences_set_user_level                  (int                           user_level);
+int      nautilus_preferences_user_level_clamp                (int                           user_level);
+gboolean nautilus_preferences_user_level_is_valid             (int                           user_level);
 
 /* Preferences getters and setters */
 gboolean nautilus_preferences_get_boolean                     (const char                   *name);

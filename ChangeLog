@@ -1,3 +1,33 @@
+2001-04-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_one_default),
+	(global_preferences_install_defaults),
+	(global_preferences_populate_pane), (default_font_callback),
+	(default_smooth_font_callback), (default_home_location_callback):
+	Simplify the installation of default values.  Use the same
+	mechanism as we do for constant default values, but provide a 
+	callback for dynamic values.	
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_key_make_for_default),
+	(preferences_key_make_for_default_getter),
+	(nautilus_preferences_set_user_level),
+	(nautilus_preferences_get_user_level_name_for_display),
+	(nautilus_preferences_get_user_level_name_for_storage),
+	(nautilus_preferences_user_level_clamp): New function to clamp a
+	user level to the valid values.
+	(nautilus_preferences_user_level_is_valid): New function to test a
+	user level for validity.
+	
+	* libnautilus-extensions/nautilus-sidebar-functions.h:
+	Add public define for sidebar panel preferences name prefix.
+
+	* libnautilus-extensions/nautilus-sidebar-functions.c:
+	(sidebar_panel_make_preference_key): Make this function private as
+	its not used anymore.
+
 2001-04-11  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:
