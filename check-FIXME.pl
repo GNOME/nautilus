@@ -47,6 +47,44 @@ if (!@ARGV)
       );
   }
 
+#locate all of the open FIXMEs in the bug database
+my $pwd=`pwd`;
+chomp $pwd;
+
+my $repository_file = $pwd."/CVS/Repository";
+open FILE, " cat $repository_file | ";
+
+my $product = <FILE>;
+chomp $product;
+
+close FILE;
+
+print "Searching the bugzilla database's product $product for open fixme bugs\n";
+
+if (!grep /$product/, ( "nautilus", "gnome-vfs", "medusa", "oaf")) {
+    print "Can't find your product in the bugzilla.eazel.com database\n";
+}
+
+my $bugzilla_query_bug_url = "http://bugzilla.eazel.com/buglist.cgi?";
+
+my @cgi_options = ("bug_status=NEW",
+		   "bug_status=ASSIGNED",
+		   "bug_status=REOPENED",
+		   "long_desc=fixme",
+		   "long_desc_type=substring",
+		   "product=$product");
+
+my $open_fixmes_url = $bugzilla_query_bug_url.join "&", @cgi_options;
+
+`wget -q -O - "$open_fixmes_url"` =~ /<INPUT TYPE\=HIDDEN NAME\=buglist VALUE\=([0-9:]+)>/;
+my $buglist_text = $1;
+
+my %bugs_in_bugzilla;
+foreach my $bug (split /:/, $buglist_text) {
+    $bugs_in_bugzilla{$bug} = "UNFOUND";
+}
+
+print "Locating all of the FIXME's listed in source\n";
 # locate all of the target lines
 my $no_bug_lines = "";
 my %bug_lines;
@@ -70,6 +108,27 @@ foreach my $file (@ARGV)
       }
     close(FILE);
   }
+
+# list database bugs we can't find in nautilus
+printf "%d FIXMES in the database still in $product\n", keys %bug_lines;
+
+foreach my $bug_number (keys %bug_lines) {
+    $bugs_in_bugzilla{$bug_number} = "FOUND";
+}
+
+print "\n";
+foreach my $bug_number (keys %bugs_in_bugzilla) {
+    if ($bugs_in_bugzilla{$bug_number} eq "UNFOUND") {
+        # Also check that the 
+        my $bug_url = "http://bugzilla.eazel.com/show_bug.cgi?id=".$bug_number;
+        my $bug_page = `wget -q -O - $bug_url`;
+        if (!($bug_page =~ /This is not a FIXME bug/i)) {
+          $bug_page =~ /<A HREF=\"bug_status.html\#assigned_to\">Assigned To:<\/A><\/B><\/TD>\s+<TD>([^<]+)<\/TD>/s;
+          print "Bug $bug_number isn't in the source anymore.  Contact owner $1.\n";
+        }
+
+    }
+}
 
 # list the ones without bug numbers
 if ($no_bug_lines ne "")

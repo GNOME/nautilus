@@ -1,3 +1,21 @@
+2000-11-16  Rebecca Schulman  <rebecka@eazel.com>
+
+        reviewed by: Darin Adler <darin@eazel.com>
+	(Patch for check-FIXME.pl; later I added
+	additional check for "This is not a fixme bug")
+	
+	* check-FIXME.pl:
+	Add the functionality that it also checks for bugs marked
+	with "fixme" in the bugzilla database for a product, and
+	notifies you if the bug has no fixme comment in the source.
+	This is not a perfect operation, so you can explicitly
+	include the comment "This is not a fixme bug" and the 
+	script will ignore it.  
+	* libnautilus-extensions/nautilus-search-uri.c:
+	Fixed some wording so that the text is not hard to 
+	understand if we are creating an english equivalent for
+	several criteria.
+
 2000-11-16  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

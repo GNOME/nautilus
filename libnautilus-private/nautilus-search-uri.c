@@ -204,22 +204,22 @@ struct _value_criterion_item {
 
 static operand_criterion_item file_name2_table [] = {
         {"contains", 
-         N_("that have \"%s\" in the name"),
+         N_("with \"%s\" in the name"),
          NULL},
         {"starts_with",
-         N_("that start with \"%s\""),
+         N_("starting with \"%s\""),
          NULL},
         {"ends_with",
-         N_("that end with %s"),
+         N_("ending with %s"),
          NULL},
         {"does_not_contain",
-         N_("that don't contain \"%s\""),
+         N_("without \"%s\" in their name"),
          NULL},
         {"regexp_matches",
-         N_("that match the regular expression \"%s\""),
+         N_("matching the regular expression \"%s\""),
          NULL},
         {"matches",
-         N_("that match the file pattern \"%s\""),
+         N_("matching the file pattern \"%s\""),
          NULL},
         {NULL, NULL, NULL}
         
@@ -266,17 +266,17 @@ static operand_criterion_item file_type2_table [] = {
 */
 static operand_criterion_item owner2_table [] = {
         {"is_not",
-         N_("are not owned by \"%s\""),
+         N_("not owned by \"%s\""),
          NULL},
         {"is",
-         N_("are owned by \"%s\""),
+         N_("owned by \"%s\""),
          NULL},
         /* folowing ones are not supported by Nautilus UI */
         {"has_uid",
-         N_("have owner UID \"%s\""),
+         N_("with owner UID \"%s\""),
          NULL},
         {"does_not_have_uid",
-         N_("have owner UID other than \"%s\""),
+         N_("with owner UID other than \"%s\""),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -287,13 +287,13 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
-         N_("that are larger than %s bytes"),
+         N_("larger than %s bytes"),
          NULL},
         {"smaller_than",
-         N_("that are smaller than %s bytes"),
+         N_("smaller than %s bytes"),
          NULL},
         {"is",
-         N_("that are %s bytes"),
+         N_("%s bytes"),
          NULL},
         {NULL, NULL, NULL}
 };
