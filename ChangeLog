@@ -1,3 +1,17 @@
+2001-01-29  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Arik Devens  <arik@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_initialize),
+	(preferences_box_select_pane),
+	(preferences_box_category_list_recreate),
+	(category_list_select_row_callback),
+	(nautilus_preferences_box_update):
+	Fix bug 6119 - Preferences pane is blank after changing user
+	levels from advanced to beginner.  Whenever we recreate the
+	category list, we update the selection.
+		
 2001-01-29  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

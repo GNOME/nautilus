@@ -31,16 +31,9 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtknotebook.h>
 
-enum
-{
-	ACTIVATE,
-	LAST_SIGNAL
-};
-
 static const guint NUM_CATEGORY_COLUMNS = 1;
 static const guint CATEGORY_COLUMN = 0;
 static const guint SPACING_BETWEEN_CATEGORIES_AND_PANES = 4;
-static const guint SELECTED_PANE_UNKNOWN = -1;
 
 typedef struct
 {
@@ -53,7 +46,6 @@ struct _NautilusPreferencesBoxDetails
 	GtkWidget *category_list;
 	GtkWidget *pane_notebook;
 	GList *panes;
-	int selected_pane;
 };
 
 /* NautilusPreferencesBoxClass methods */
@@ -68,7 +60,6 @@ static void      nautilus_preferences_box_destroy          (GtkObject           
 /* Misc private stuff */
 static void      preferences_box_category_list_recreate    (NautilusPreferencesBox      *preferences_box);
 static void      preferences_box_select_pane               (NautilusPreferencesBox      *preferences_box,
-							    guint                        pane_row,
 							    const char                  *name);
 
 /* PaneInfo functions */
@@ -102,7 +93,6 @@ static void
 nautilus_preferences_box_initialize (NautilusPreferencesBox *preferences_box)
 {
 	preferences_box->details = g_new0 (NautilusPreferencesBoxDetails, 1);
-	preferences_box->details->selected_pane = SELECTED_PANE_UNKNOWN;
 }
 
 /*
@@ -144,24 +134,14 @@ nautilus_preferences_box_destroy (GtkObject *object)
  */
 static void
 preferences_box_select_pane (NautilusPreferencesBox *preferences_box,
-			     guint pane_row,
 			     const char *pane_name)
 {
-	GList *pane_node;
-	PaneInfo *pane_info;
 	GList *pane_iterator;
 	
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box));
 	g_return_if_fail (preferences_box->details != NULL);
 	g_return_if_fail (preferences_box->details->panes != NULL);
-	g_return_if_fail (pane_row < g_list_length (preferences_box->details->panes));
 	g_return_if_fail (pane_name != NULL);
-
-	pane_node = g_list_nth (preferences_box->details->panes, pane_row);
-
-	g_return_if_fail (pane_node != NULL);
-
-	pane_info = pane_node->data;
 
 	/* Show only the corresponding pane widget */
 	pane_iterator = preferences_box->details->panes;
@@ -202,8 +182,15 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 			
 			text_array[CATEGORY_COLUMN] = info->pane_name;
 			gtk_clist_append (GTK_CLIST (preferences_box->details->category_list), text_array);
+
 		}
 	}
+
+	category_list_select_row_callback (GTK_CLIST (preferences_box->details->category_list),
+					   0,
+					   0,
+					   NULL,
+					   preferences_box);
 }
 
 /*
@@ -252,8 +239,8 @@ category_list_select_row_callback (GtkCList *clist,
 	}
 
 	g_return_if_fail (pane_name != NULL);
-	
-	preferences_box_select_pane (NAUTILUS_PREFERENCES_BOX (callback_data), row, pane_name);
+
+	preferences_box_select_pane (NAUTILUS_PREFERENCES_BOX (callback_data), pane_name);
 }
 
 /*
@@ -340,15 +327,14 @@ nautilus_preferences_box_update (NautilusPreferencesBox	*preferences_box)
 	GList *iterator;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box));
-	
+
 	for (iterator = preferences_box->details->panes; iterator != NULL; iterator = iterator->next) {
 		PaneInfo *info = iterator->data;
 		
 		g_assert (NAUTILUS_IS_PREFERENCES_PANE (info->pane_widget));
-		
+
 		nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (info->pane_widget));
 	}
 
 	preferences_box_category_list_recreate (preferences_box);
-
 }
