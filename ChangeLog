@@ -1,3 +1,67 @@
+2001-07-26  Havoc Pennington  <hp@redhat.com>
+
+	* src/file-manager/fm-icon-view.c: handle .desktop file drops a
+	bit better
+
+	* src/file-manager/fm-directory-view.c (get_scripts_directory):
+	move scripts directory to .gnome/nautilus-scripts
+	(activate_callback): remove the hack for .desktop files, we now 
+	do them the same way as Nautilus link files
+
+	* src/nautilus-window-menus.c: change support URI to Red Hat
+	(FIXME before branch merge)
+
+	* src/nautilus-shell-ui.xml: Start Here menu item; remove menu
+	items about Eazel
+
+	* src/nautilus-first-time-druid.c (druid_finished): remove user
+	main directory handling,
+	s/druid_set_first_time_file_flag/nautilus_set_first_time_file_flag/
+
+	* src/nautilus-complex-search-bar.c
+	(load_find_them_pixmap_widget): fix broken != NULL check that used
+	uninitialized variable, and correct a memory leak
+
+	* src/nautilus-application.c (create_starthere_link_callback):
+	create the start here link on the desktop the first time we run
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file):
+	get icons for .desktop files and .directory files
+	
+	* libnautilus-private/nautilus-global-preferences.c
+	(default_home_location_callback): modify to never return the 
+	"user main directory"
+	
+	* libnautilus-private/nautilus-file.c
+	(get_automatic_emblems_as_integer): 
+	Change not to use unwriteable emblem. Needs fixing to instead use
+	the "differently writeable" rule.
+	(nautilus_file_get_name): handle .desktop files using the 
+	desktop loader that works on non-file: URIs
+
+	* libnautilus-private/nautilus-file-utilities.c
+	(nautilus_user_main_directory_exists)
+	(nautilus_get_user_main_directory):
+	Delete these; no more user main directory.
+
+	* libnautilus-private/nautilus-directory-metafile.c (get_factory):
+	modify this to print a decent error message if activation fails.
+	Passing NULL for errors/exceptions is BROKEN unless the failure is 
+	part of normal operation!	
+
+	* libnautilus-private/desktop-file-loader.h, 
+	libnautilus-private/desktop-file-loader.c: lame desktop file
+	parser to be used temporarily until George finishes the Ultimate 
+	Desktop File Loader.
+
+        This ChangeLog entry is for changes made by jrb, alexl, otaylor,
+	and myself on the Red Hat branch.
+	
+	* libnautilus-private/Makefile.am: Add files for link file
+	abstraction, intended to allow use of .desktop files in place of 
+	Nautilus link files.
+
 Tue Jul 24 19:58:15 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-monitor.c (fixup_local_path): fix
@@ -17,10 +81,6 @@ Tue Jul 24 19:58:15 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_clear):
 	Clear details->drop_target. This should fix a hard to trigger DnD segfault.
-
-Wed Jul 18 16:17:55 2001  Jonathan Blandford  <jrb@redhat.com>
-
-	* configure.in: Update version to 1.0.4.1-SNAP for internal use.
 
 2001-07-16  Darin Adler  <darin@bentspoon.com>
 

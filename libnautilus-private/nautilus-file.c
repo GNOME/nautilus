@@ -1518,7 +1518,9 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 static gboolean
 has_unwriteable_emblem (NautilusFile *file)
 {
-	/* FIXME - what should this do? */
+	/* FIXME this should return TRUE if the file is
+	 * "differently writeable" from its directory
+	 */
 	return FALSE;
 }
 
