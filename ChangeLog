@@ -1,3 +1,12 @@
+2001-02-22  John Harper  <jsh@eazel.com>
+
+	Fixed bug 6764 (Double-clicking a folder with an already-open
+	window on another virtual desktop seems to do nothing):
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c
+	(nautilus_gtk_window_present): ensure that the window is on the
+	current desktop
+
  2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
  	Fix bugzilla.eazel.com bug 6290, that loading
  	a large directory in the list view hangs nautilus.

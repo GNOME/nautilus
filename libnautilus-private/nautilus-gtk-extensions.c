@@ -38,6 +38,7 @@
 #include <gtk/gtkrc.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-geometry.h>
+#include <libgnomeui/gnome-winhints.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
 
@@ -317,9 +318,21 @@ void
 nautilus_gtk_window_present (GtkWindow *window)
 {
 	GdkWindow *gdk_window;
+	int current_workspace, window_workspace;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
+	/* Ensure that the window is on the current desktop */
+	if (GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
+		window_workspace = gnome_win_hints_get_workspace (GTK_WIDGET (window));
+		current_workspace = gnome_win_hints_get_current_workspace ();
+		if (window_workspace != current_workspace) {
+			gtk_widget_hide (GTK_WIDGET (window));
+			gnome_win_hints_set_workspace (GTK_WIDGET (window),
+						       current_workspace);
+		}
+	}
+		
 	/* If we have no gdk window, then it's OK to just show, since
 	 * the window is new and presumably will show up in front.
 	 */
