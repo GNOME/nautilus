@@ -26,9 +26,11 @@
 #ifndef FM_PROPERTIES_WINDOW_H
 #define FM_PROPERTIES_WINDOW_H
 
+#include "fm-directory-view.h"
+
 #include <gtk/gtkwindow.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
-GtkWindow *fm_properties_window_get_or_create (NautilusFile *file);
+void fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_view);
 
 #endif /* FM_PROPERTIES_WINDOW_H */

@@ -46,7 +46,6 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-undo.h>
 #include <libnautilus/nautilus-zoomable.h>
 
 #include <src/nautilus-application.h>
@@ -2053,17 +2052,10 @@ open_in_new_window_callback (GtkMenuItem *item, GList *files)
 static void
 open_one_properties_window (gpointer data, gpointer user_data)
 {
-	GtkWindow *window;
-	FMDirectoryView *directory_view;
-
 	g_assert (NAUTILUS_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	directory_view = FM_DIRECTORY_VIEW (user_data);
-	window = fm_properties_window_get_or_create (data);
-	nautilus_undo_share_undo_manager (GTK_OBJECT (window), GTK_OBJECT (directory_view));
-	
-	nautilus_gtk_window_present (window);
+	fm_properties_window_present (data, user_data);
 }
 
 static void

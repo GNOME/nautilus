@@ -1,5 +1,38 @@
 2000-08-14  John Sullivan  <sullivan@eazel.com>
 
+	Finished the remaining details of bug 2061 (Show Properties 
+	should show volume properties for desktop icons). I split 
+	the "Show Properties for Trash" bug off as a separate task 
+	(2146), since it has its own set of issues.
+
+	* src/file-manager/fm-properties-window.h:
+	Eliminated fm_properties_window_get_or_create, which
+	returned a GtkWindow, in favor of new
+	fm_properties_window_present, which doesn't. This was
+	required to do create the window asynchronously.
+
+	* src/file-manager/fm-directory-view.c:
+	(open_one_properties_window): Switch caller to use new
+	fm_properties_window_present. It had been wiring up an
+	Undo manager on the result window; this code got moved
+	into the asynchronous callback part of creating a
+	properties window.
+
+	* src/file-manager/fm-properties-window.c:
+	(create_pixmap_widget_for_file): ref file stored with pixmap
+	widget; this had been creating a ref/unref mismatch that we
+	had never noticed before probably due to extraneous refs elsewhere.
+	(name_field_focus_out),	(name_field_focus_in), (create_basic_page): 
+	Only do special	focus handling with the name field if it's sensitive.
+
+	(create_properties_window_callback): New function, asynchronous
+	callback to create the properties window.
+	(get_and_ref_file_to_display): initialize file_to_display to NULL.
+	This was crashing non-special-Desktop-case Properties windows.
+	(fm_properties_window_present):
+
+2000-08-14  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-shell.c: (display_caveat): Wrapped the
 	image in the caveat dialog in a GtkVBox such that the
 	frame & image will remain unstretched at the top of the

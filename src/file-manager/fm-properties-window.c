@@ -26,6 +26,7 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
+
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbox.h>
@@ -37,10 +38,14 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
+
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+
+#include <libnautilus/nautilus-undo.h>
+
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -52,6 +57,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+
 #include <string.h>
 
 static GHashTable *windows;
@@ -205,6 +211,7 @@ create_pixmap_widget_for_file (NautilusFile *file)
 	get_pixmap_and_mask_for_properties_window (file, &pixmap, &mask);
 	widget = gtk_pixmap_new (pixmap, mask);
 
+	nautilus_file_ref (file);
 	gtk_object_set_data_full (GTK_OBJECT (widget),
 				  "nautilus_file",
 				  file,
@@ -320,8 +327,10 @@ name_field_focus_out (NautilusEntry *name_field,
 		      GdkEventFocus *event,
 		      gpointer user_data)
 {
-	name_field_done_editing (name_field);
-	gtk_editable_select_region (GTK_EDITABLE (name_field), -1, -1);
+	if (GTK_WIDGET_SENSITIVE (name_field)) {
+		name_field_done_editing (name_field);
+		gtk_editable_select_region (GTK_EDITABLE (name_field), -1, -1);
+	}
 
 	return TRUE;
 }
@@ -331,7 +340,9 @@ name_field_focus_in (NautilusEntry *name_field,
 		      GdkEventFocus *event,
 		      gpointer user_data)
 {
-	nautilus_entry_select_all (name_field);
+	if (GTK_WIDGET_SENSITIVE (name_field)) {
+		nautilus_entry_select_all (name_field);
+	}
 	return TRUE;
 }
 
@@ -1080,8 +1091,10 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
       	              	    GTK_SIGNAL_FUNC (name_field_activate),
                             NULL);
 
-        /* Start with name field selected. */
-        gtk_widget_grab_focus (GTK_WIDGET (name_field));
+        /* Start with name field selected, if it's sensitive. */
+        if (GTK_WIDGET_SENSITIVE (name_field)) {
+	        gtk_widget_grab_focus (GTK_WIDGET (name_field));
+        }
                       			    
 	/* React to name changes from elsewhere. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
@@ -1716,6 +1729,7 @@ get_and_ref_file_to_display (NautilusFile *file)
 	char *type;
 	gboolean use_linked_file;
 
+	file_to_display = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* Note: This will only work on local files.
 		 * Non-local links will return NULL for type.
@@ -1730,6 +1744,10 @@ get_and_ref_file_to_display (NautilusFile *file)
 			    strcmp (type, NAUTILUS_LINK_HOME) == 0) {
 				use_linked_file = TRUE;
 			}
+			/* FIXME bugzilla.eazel.com 2146:
+			 * Should handle NAUTILUS_LINK_TRASH too, by getting
+			 * a NautilusFile object representing the Trash.
+			 */
 		}
 
 		if (use_linked_file) {
@@ -1752,11 +1770,34 @@ get_and_ref_file_to_display (NautilusFile *file)
 	return file;
 }
 
-GtkWindow *
-fm_properties_window_get_or_create (NautilusFile *file)
+static void
+create_properties_window_callback (NautilusFile *file, gpointer data)
 {
-	GtkWindow *window;
+	GtkWindow *new_window;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (data));
+
+	new_window = create_properties_window (file);
+	g_hash_table_insert (windows, file, new_window);
+
+	gtk_signal_connect (GTK_OBJECT (new_window),
+			    "destroy",
+			    forget_properties_window,
+			    file);
+
+	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window), GTK_OBJECT (data));
+	nautilus_gtk_window_present (new_window);
+}
+
+void
+fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_view)
+{
+	GtkWindow *existing_window;
 	NautilusFile *file_to_display;
+	GList attribute_list;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	/* Create the hash table first time through. */
 	if (windows == NULL) {
@@ -1766,19 +1807,18 @@ fm_properties_window_get_or_create (NautilusFile *file)
 	file_to_display = get_and_ref_file_to_display (file);
 
 	/* Look to see if object is already in the hash table. */
-	window = g_hash_table_lookup (windows, file_to_display);
-
-	if (window == NULL) {
-		window = create_properties_window (file_to_display);
-		g_hash_table_insert (windows, file_to_display, window);
-	
-		gtk_signal_connect (GTK_OBJECT (window),
-				    "destroy",
-				    forget_properties_window,
-				    file_to_display);
-	} else {
+	existing_window = g_hash_table_lookup (windows, file_to_display);
+	if (existing_window != NULL) {
 		nautilus_file_unref (file_to_display);
+		nautilus_gtk_window_present (existing_window);
+		return;
 	}
 
-	return window;
+	/* Wait until we can tell whether it's a directory before showing. */
+	attribute_list.data = NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY;
+	attribute_list.next = NULL;
+	attribute_list.prev = NULL;
+	nautilus_file_call_when_ready
+		(file_to_display, &attribute_list, FALSE, 
+		 create_properties_window_callback, directory_view);
 }
