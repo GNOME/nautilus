@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-09-03 15:33+0200\n"
-"PO-Revision-Date: 2000-09-03 20:45+02:00\n"
+"POT-Creation-Date: 2000-09-04 21:18+0200\n"
+"PO-Revision-Date: 2000-09-04 22:04+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -77,7 +77,7 @@ msgstr ""
 #: components/services/install/command-line/eazel-alt-install.c:84
 #: components/services/install/command-line/eazel-gen-xml.c:42
 msgid "Use specified file to generate a package list, requires --packagelist"
-msgstr ""
+msgstr "Bruk spesifisert fil til å generere en pakkeliste, trenger --packagelist"
 
 #: components/services/install/command-line/eazel-install.c:112
 msgid "*** Could not generate xml package list! ***\n"
@@ -244,6 +244,8 @@ msgid ""
 "Installation failed!\n"
 "(Probably a dependency issue.)"
 msgstr ""
+"Innstallasjonen feilet!\n"
+"(Sannsynligvis problemer med avhengigheter.)"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:745
 msgid "Incorrect password."
@@ -318,7 +320,7 @@ msgstr "Resultater"
 msgid ""
 "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
 "open it with %s, make a local copy first."
-msgstr ""
+msgstr "Beklager, %s kan kun åpne lokale filer, og \"%s\" er ekstern. Hvis du ønsker å åpne den med %s, må du lage en lokal kopi først."
 
 #: libnautilus-extensions/nautilus-program-choosing.c:249
 msgid "Can't open remote file"
@@ -374,11 +376,11 @@ msgstr "slutter med"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:68
 msgid "matches glob"
-msgstr ""
+msgstr "er lik glob"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:69
 msgid "matches regexp"
-msgstr ""
+msgstr "er lik regexp"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:74
 msgid "includes all of"
@@ -507,10 +509,12 @@ msgid ""
 "You have several choices for what you would like the installer to do.\n"
 "Please choose one and click on the \"Next\" button to begin install."
 msgstr ""
+"Du har flere aktive valg for hva du ønsker installasjonsprogrammet skal gjøre.\n"
+"Vennligst velg ett og klikk på \"Neste\"-knappen for å starte installasjonen."
 
 #: nautilus-installer/src/installer.c:207
 msgid "Currently downloading packages required to install Nautilus\n"
-msgstr ""
+msgstr "Henter nødvendige pakker for å installere Nautilus\n"
 
 #: nautilus-installer/src/installer.c:212
 msgid "Step three..."
@@ -533,10 +537,15 @@ msgid ""
 "\n"
 "May your life be a healthy and happy one."
 msgstr ""
+"Du kan finne nautilus ikonet i applikasjonsmenyen.\n"
+"\n"
+"Takk for at du tar deg tid til å prøve ut Nautilus.\n"
+"\n"
+"Må du leve et liv i sunnhet og lykke."
 
 #: nautilus-installer/src/installer.c:344
 msgid "Your machine is now possessed..."
-msgstr ""
+msgstr "Din maskin er nå besatt..."
 
 #: nautilus-installer/src/installer.c:377
 msgid "Nautilus install tool"
@@ -561,6 +570,18 @@ msgid ""
 "If you meet these requirements, hit the \"Next\" button to continue!\n"
 "\n"
 msgstr ""
+"Dette er det interne installasjonsprogrammet for Nautilus.\n"
+"\n"
+"Her kommer det mengder med tekst som skal forklare deg hva du\n"
+"må ha installert før du kan begynne å tenke på å bruke dette\n"
+"programmet. For eksempel:\n"
+"\n"
+"  * Saker\n"
+"  * Flere saker\n"
+"  * Andre saker\n"
+"\n"
+"Hvis du oppfyller disse kravene, trykk på \"Neste\"-knappen for å fortsette!\n"
+"\n"
 
 #: nautilus-installer/src/installer.c:658
 #, c-format
@@ -569,6 +590,9 @@ msgid ""
 "Starting the process takes some time, please be patient.\n"
 "In total, %d mb of software will be installed"
 msgstr ""
+"Nå starter installasjonsprosessen.\n"
+"Dette tar litt tid, vennligst vær tålmodig.\n"
+"Totalt vil %d mb med programvare installeres"
 
 #: components/services/install/lib/eazel-install-metadata.c:54
 #: components/services/install/lib/eazel-install-metadata.c:64
@@ -584,6 +608,9 @@ msgid ""
 "the installer for real, without \n"
 "the --test flag... Beware!"
 msgstr ""
+"Dette er en advarsel, du kjører\n"
+"installasjonsprogrammet på virkelig,\n"
+"uten --test flagget... Du er advart!"
 
 #: nautilus-installer/src/installer.c:939
 msgid ""
@@ -591,6 +618,10 @@ msgid ""
 "for RPM based systems. You will have\n"
 "to download the source yourself."
 msgstr ""
+"Denne forhåndsvisningen av\n"
+"installasjonsprogrammet virker kun\n"
+"for RPM-baserte systemer. Du vil måtte\n"
+"laste ned kildekoden selv."
 
 #: nautilus-installer/src/installer.c:951
 msgid ""
@@ -600,6 +631,11 @@ msgid ""
 "want to abort the installer and go to http://www.helixcode.com and\n"
 "download the full HelixCode Gnome installation"
 msgstr ""
+"Du har ikke Helix GNOME installert.\n"
+"\n"
+"Dette betyr at vi vil installere de nødvendige delene for deg, men du\n"
+"vil kanskje avbryte installasjonsprogrammet og gå til http://www.helixcode.com\n"
+"og laste ned hele Helix GNOME installasjonen"
 
 #: nautilus-installer/src/installer.c:1186
 msgid "Unable to retrieve dependency xml!\n"
@@ -672,12 +708,11 @@ msgstr "Indekseringsinformasjon..."
 
 #: src/file-manager/fm-search-list-view.c:440
 msgid "Show indexing info dialog"
-msgstr ""
+msgstr "Vis infodialog for indeksering"
 
 #: src/file-manager/fm-search-list-view.c:452
-#, fuzzy
 msgid "Reveal each selected item in its original folder"
-msgstr "Gjenopprett original størrelse for alle valgte ikoner"
+msgstr "Vis hver valgt oppføring i sin opprinnelige mappe"
 
 #: src/nautilus-first-time-druid.c:111
 msgid ""
@@ -687,6 +722,11 @@ msgid ""
 "You can manually erase this file to present the wizard again.\n"
 "\n"
 msgstr ""
+"Eksistensen av denne filen indikerer at Nautilus konfigurasjons-wizarden\n"
+"har vært kjørt tidligere.\n"
+"\n"
+"Du kan slette denne filen manuelt for å få denne frem igjen.\n"
+"\n"
 
 #: src/nautilus-first-time-druid.c:343
 msgid ""
@@ -694,16 +734,21 @@ msgid ""
 "your level of technical expertise.  Pick an initial level that you\n"
 "feel comfortable with; you can always change it later."
 msgstr ""
+"Brukernivåer gir deg en måte å tilpasse programvaren til\n"
+"ditt nivå av teknisk ekspertise. Velg et startnivå som du\n"
+"er komfortabel med; du kan alltid endre det igjen senere."
 
 #: src/nautilus-first-time-druid.c:353
 msgid "Beginner"
-msgstr ""
+msgstr "Begynner"
 
 #: src/nautilus-first-time-druid.c:354
 msgid ""
 "For beginner users that are not yet\n"
 "familiar with the working of GNOME and Linux."
 msgstr ""
+"For begynnende brukere som ikke ennå\n"
+"er kjent med GNOME og Linux."
 
 #: src/nautilus-first-time-druid.c:361
 msgid "Intermediate"
@@ -714,16 +759,20 @@ msgid ""
 "For non-technical users that are comfortable with\n"
 "their GNOME and Linux environment."
 msgstr ""
+"For ikke-tekniske brukere som er komfortabel med\n"
+"sine GNOME og Linux-miljøer."
 
 #: src/nautilus-first-time-druid.c:368
 msgid "Advanced"
-msgstr ""
+msgstr "Avansert"
 
 #: src/nautilus-first-time-druid.c:369
 msgid ""
 "For technical users that have the need to be exposed\n"
 "to every detail of their operating system."
 msgstr ""
+"For teknisk avanserte brukere som trenger tilgang til\n"
+"alle detaljer i sitt operativsystem."
 
 #. allocate a descriptive label
 #: src/nautilus-first-time-druid.c:404
@@ -733,6 +782,10 @@ msgid ""
 "your files across the network.  If you want to find out more \n"
 "about Eazel services, just press the 'Next' button. "
 msgstr ""
+"Eazel tilbyr et voksende antall tjenester for å\n"
+"hjelpe deg med å installere og vedlikeholder ny programvare\n"
+"og å håndtere dine filer over nettverket. Hvis du ønsker\n"
+"mer informasjon om Eazel-tjenester, trykk 'Neste'-knappen."
 
 #: src/nautilus-first-time-druid.c:408
 msgid "Eazel Services"
@@ -744,15 +797,15 @@ msgstr "Jeg ønsker å lære mer om Eazel-tjenester."
 
 #: src/nautilus-first-time-druid.c:417
 msgid "I want to sign up for Eazel services now."
-msgstr ""
+msgstr "Jeg vil registrere meg for Eazel-tjenester nå."
 
 #: src/nautilus-first-time-druid.c:418
 msgid "I've already signed up and want to login now."
-msgstr ""
+msgstr "Jeg har allerede registrert meg og vil logge inn nå."
 
 #: src/nautilus-first-time-druid.c:419
 msgid "I don't want to learn about Eazel services at this time."
-msgstr ""
+msgstr "Jeg vil ikke vite mer om Eazel-tjenester ennå."
 
 #. allocate a descriptive label
 #: src/nautilus-first-time-druid.c:446
@@ -761,6 +814,9 @@ msgid ""
 "web connection and download the latest updates.  \n"
 "Click the Next button to continue."
 msgstr ""
+"Nautilus vil nå kontakte Eazel-tjenester for å verifisere\n"
+"din web-tilgang og laste ned de siste oppdateringene.\n"
+"Klikk Neste-knappen for å fortsette."
 
 #: src/nautilus-first-time-druid.c:450
 msgid "Updating Nautilus"
@@ -768,11 +824,11 @@ msgstr "Oppdaterere Nautilus"
 
 #: src/nautilus-first-time-druid.c:458
 msgid "Yes, verify my web connection and update Nautilus now."
-msgstr ""
+msgstr "Ja, verifisér min web-tilgang og oppdatér Nautilus nå."
 
 #: src/nautilus-first-time-druid.c:459
 msgid "No, I do not wish to verify my web connect and update Nautilus now."
-msgstr ""
+msgstr "Nei, jeg vil ikke verifisere min web-tilgang og oppdatere Nautilus nå."
 
 #. allocate a descriptive label
 #: src/nautilus-first-time-druid.c:490
@@ -781,6 +837,10 @@ msgid ""
 "Sometimes, firewalls require you to specify a web proxy server.  \n"
 " Fill in the name of port of your proxy server, if any, below."
 msgstr ""
+"Vi har problemer med å opprette en ekstern web-forbindelse.\n"
+"Noen ganger er det nødvendig å spesifisere en proxy-tjener pga.\n"
+"brannvegger. Fyll ut navn, og port for din proxy-tjener, hvis\n"
+"du har en, under."
 
 #: src/nautilus-first-time-druid.c:494
 msgid "HTTP Proxy Configuration"
@@ -810,73 +870,89 @@ msgid ""
 "We are now contacting the Eazel service to test your \n"
 "web connection and update Nautilus."
 msgstr ""
+"Vi kontakter nå Eazel-tjenesten for å teste din web-forbindelse\n"
+"og oppdatere Nautilus."
 
 #: src/nautilus-first-time-druid.c:585
 msgid "Downloading Nautilus updates..."
 msgstr "Laster ned Nautilus-oppdateringer..."
 
 #: src/nautilus-first-time-druid.c:679
-#, fuzzy
 msgid "Nautilus: Initial Preferences"
-msgstr "Nautilus: egenskaper for %s"
+msgstr "Nautilus: Forhåndsdefinerte brukervalg"
 
-#: src/nautilus-first-time-druid.c:706
+#. set up the initial page
+#. The image is marked for translation because it is basically an
+#. * image of english text.  Other languages would probably want to
+#. * create another image and use that.  Theoretically in the future
+#. * gnome-canvas-text will support nice text drawing and this will
+#. * be a non-issue
+#: src/nautilus-first-time-druid.c:705
+msgid "druid_welcome.png"
+msgstr "druide_velkommen.png"
+
+#: src/nautilus-first-time-druid.c:711
 msgid "Welcome to Nautilus!"
 msgstr "Velkommen til Nautilus!"
 
-#: src/nautilus-first-time-druid.c:715
+#: src/nautilus-first-time-druid.c:720
 msgid ""
 "Since this is the first time that you've launched\n"
 "Nautilus, we'd like to ask you a few questions\n"
 "to help personalize it for your use."
 msgstr ""
+"Siden dette er den første gangen du har startet\n"
+"Nautilus, vil vi spørre deg noen spørsmål for å\n"
+"hjelpe deg med personlige innstillinger."
 
-#: src/nautilus-first-time-druid.c:720
+#: src/nautilus-first-time-druid.c:725
 msgid "Press the next button to continue."
 msgstr "Trykk neste for å fortsette."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:728
+#: src/nautilus-first-time-druid.c:733
 msgid "Finished"
 msgstr "Fullført"
 
-#: src/nautilus-first-time-druid.c:735
+#: src/nautilus-first-time-druid.c:740
 msgid ""
 "Click the finish button to launch Nautilus.\n"
 "We hope that you enjoy using it!"
 msgstr ""
+"Klikk Fullfør-knappen for å starte Nautilus.\n"
+"Vi håper du liker det du ser!"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:741
+#: src/nautilus-first-time-druid.c:746
 msgid "Select A User Level"
 msgstr "Velg et brukernivå"
 
 #. set up the service sign-up page
-#: src/nautilus-first-time-druid.c:745
+#: src/nautilus-first-time-druid.c:750
 msgid "Sign Up for Eazel Services"
 msgstr "Registrér deg for Eazel tjenester"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:749
+#: src/nautilus-first-time-druid.c:754
 msgid "Nautilus Update"
 msgstr "Nautilus oppdatering"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:757
+#: src/nautilus-first-time-druid.c:762
 msgid "Updating Nautilus..."
 msgstr "Oppdaterer Nautilus..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:765
+#: src/nautilus-first-time-druid.c:770
 msgid "Web Proxy Configuration"
 msgstr "Konfigurasjon av web-proxy"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:833
+#: src/nautilus-first-time-druid.c:838
 msgid "Decoding Update..."
 msgstr "Dekoder oppdatering..."
 
-#: src/nautilus-first-time-druid.c:842
+#: src/nautilus-first-time-druid.c:847
 msgid "Update Completed... Press Next to Continue."
 msgstr "Oppdatering fullført... Trykk neste for å fortsette."
 
@@ -896,6 +972,11 @@ msgid ""
 "\n"
 "For more information, visit http://nautilus.eazel.com."
 msgstr ""
+"Nautilus skallet er under utvikling; det er ikke klart for daglig bruk. Mange funksjoner, inkludert noen av de beste, er ikke fullført, er delvis ferdig eller ustabile. Dette programmet vil ikke se ut eller oppføre seg slik det vil i versjon 1.0.\n"
+"\n"
+"Hvis du bestemmer deg for å prøve ut denne versjonen av Nautilus, vær forsiktig. Programmet vil kunne gjøre uforutsette ting og vil tilogmed kunne slette eller overskrive filer på din datamaskin.\n"
+"\n"
+"For mer informasjon, se http://nautilus.eazel.com."
 
 #: src/nautilus-switchable-search-bar.c:100
 msgid "Search For:"
@@ -1357,7 +1438,7 @@ msgstr "Avinstalller"
 
 #: components/rpmview/nautilus-rpm-view.c:380
 msgid "Verify"
-msgstr ""
+msgstr "Verifisér"
 
 #: components/rpmview/nautilus-rpm-view.c:416
 msgid "Go to selected file"
@@ -1487,7 +1568,7 @@ msgstr "Tillat oppgraderinger"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:100
 msgid "Verbose output"
-msgstr ""
+msgstr "Utfyllende utskrift"
 
 #: components/services/install/lib/eazel-install-metadata.c:46
 msgid "Creating default configuration file ...\n"
@@ -1563,7 +1644,7 @@ msgid "Could not open target file %s"
 msgstr "Kunne ikke åpne målfil %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:134
-#: components/services/install/lib/eazel-install-protocols.c:636
+#: components/services/install/lib/eazel-install-protocols.c:635
 msgid "Could not create an http request !"
 msgstr "Kunne ikke lage en http forespørsel!"
 
@@ -1572,7 +1653,7 @@ msgid "Invalid uri !"
 msgstr "Ugyldig uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:146
-#: components/services/install/lib/eazel-install-protocols.c:647
+#: components/services/install/lib/eazel-install-protocols.c:646
 msgid "Could not prepare http request !"
 msgstr "Kunne ikke forberede http forespørsel!"
 
@@ -1604,30 +1685,30 @@ msgid "Failed to retreive %s!"
 msgstr "Kunne ikke hente %s!"
 
 #: components/services/install/lib/eazel-install-protocols.c:509
-#: components/services/install/lib/eazel-install-protocols.c:580
+#: components/services/install/lib/eazel-install-protocols.c:579
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Fant ikke en URL for %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:543
+#: components/services/install/lib/eazel-install-protocols.c:542
 msgid "File download failed"
 msgstr "Nedlasting av fil feilet"
 
-#: components/services/install/lib/eazel-install-protocols.c:574
+#: components/services/install/lib/eazel-install-protocols.c:573
 msgid "Using local protocol cannot resolve library dependencies"
 msgstr "Lokal protokoll kan ikke løse avhengigheter i biblioteker"
 
-#: components/services/install/lib/eazel-install-protocols.c:632
+#: components/services/install/lib/eazel-install-protocols.c:631
 #, c-format
 msgid "Search URL: %s"
 msgstr "Søk URL: %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:644
+#: components/services/install/lib/eazel-install-protocols.c:643
 msgid "Invalid uri"
 msgstr "Ugyldig uri"
 
-#: components/services/install/lib/eazel-install-protocols.c:658
-#: components/services/install/lib/eazel-install-protocols.c:662
+#: components/services/install/lib/eazel-install-protocols.c:657
+#: components/services/install/lib/eazel-install-protocols.c:661
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Kunne ikke hente en URL for %s"
@@ -1678,9 +1759,9 @@ msgid "Writing transaction to %s"
 msgstr "Skriver transaksjon til %s"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:857
-#, fuzzy, c-format
+#, c-format
 msgid "Preflight (%d bytes, %d packages)"
-msgstr "Kategori = %s, %d pakker"
+msgstr "Forhåndssendt (%d bytes, %d pakker)"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:892
 msgid "rpm running..."
@@ -1812,24 +1893,20 @@ msgid "*** Error reading package list! ***\n"
 msgstr "*** Feil under lesing av pakkelisten! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:558
-#, fuzzy
 msgid "*** The osd xml contains no data! ***\n"
-msgstr "*** Konfigurasjonfilen inneholder ikke data! ***\n"
+msgstr "*** Osd xml inneholder ikke data! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:563
-#, fuzzy
 msgid "*** Bailing from osd parse! ***\n"
-msgstr "*** Hopper ut av xmlparse! ***\n"
+msgstr "*** Hopper ut av osd tolking! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:604
-#, fuzzy
 msgid "Could not find <?xml tag in string"
-msgstr "Kunne ikke finne pixmapfil %s"
+msgstr "Kunne ikke finne <?xml-tag i streng"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:627
-#, fuzzy
 msgid "Could not parse the xml"
-msgstr "Kunne ikke forberede http forespørsel!"
+msgstr "Kunne ikke tolke xml"
 
 #: components/services/time/command-line/main.c:43
 msgid "display service name and such"
@@ -1849,17 +1926,17 @@ msgstr "spesifiser url for tid"
 
 #: components/services/time/service/trilobite-eazel-time-service.c:103
 msgid "Unable to get server time"
-msgstr ""
+msgstr "Kan ikke hente tid fra tjener"
 
 #: components/services/time/service/trilobite-eazel-time-service.c:105
 #, c-format
 msgid "Time off by %d, max allowed diff is %d"
-msgstr ""
+msgstr "Tiden er feil med %d, maks tillatt forskjell er %d"
 
 #: components/services/time/service/trilobite-eazel-time-service.c:282
-#, fuzzy, c-format
+#, c-format
 msgid "Could not read time-service config from %s"
-msgstr "Kunne ikke hente en URL for %s"
+msgstr "Kunne ikke lese konfigurasjon for tidstjenesten fra %s"
 
 #. today, use special word
 #: libnautilus-extensions/nautilus-file.c:1735
@@ -1954,15 +2031,15 @@ msgstr "Katalogvisninger"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:113
 msgid "Directory Views Settings"
-msgstr ""
+msgstr "Innstillinger for katalogvisninger"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:115
 msgid "Window Behavior"
-msgstr ""
+msgstr "Vindusoppførsel"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:122
 msgid "Click Behavior"
-msgstr ""
+msgstr "Klikk-oppførsel"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:129
 msgid "Display"
@@ -1974,11 +2051,11 @@ msgstr "Sidelinjepaneler"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:146
 msgid "Sidebar Panels Description"
-msgstr ""
+msgstr "Beskrivelse for sidepanel"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:149
 msgid "Choose which panels should appear in the sidebar"
-msgstr ""
+msgstr "Velg hvilke paneler som skal vises på sidelinjen"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:186
 msgid "Appearance"
@@ -2014,12 +2091,12 @@ msgstr "Vis tekst i ikoner"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:236
 msgid "Show Thumbnails for Image Files"
-msgstr ""
+msgstr "Vis miniatyrer for bildefiler"
 
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
 #: libnautilus-extensions/nautilus-global-preferences.c:244
 msgid "Make Directory Appearance Details Public"
-msgstr ""
+msgstr "Gjør detaljer om katalogutseende offentlig"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:257
 msgid "Search Settings"
@@ -2027,7 +2104,7 @@ msgstr "Innstillinger for søk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:259
 msgid "Search Complexity Options"
-msgstr ""
+msgstr "Alternativer for kompleksitet i søk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:265
 msgid "Search Tradeoffs"
@@ -2083,7 +2160,7 @@ msgstr "Åpne hver oppføring i et nytt vindu"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:639
 msgid "Click policy"
-msgstr ""
+msgstr "Klikk-regler"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:645
 msgid "single"
@@ -2099,7 +2176,7 @@ msgstr "dobbelt"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:651
 msgid "Activate items with a double click"
-msgstr ""
+msgstr "Aktivér oppføringer med dobbeltklikk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:656
 msgid "Display text in icons"
@@ -2107,11 +2184,11 @@ msgstr "Vis tekst i ikoner"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:662
 msgid "Show thumbnails for image files"
-msgstr ""
+msgstr "Vis miniatyrer for bildefiler"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:668
 msgid "Read and write metadata in each directory"
-msgstr ""
+msgstr "Les og skriv metadata i hver katalog"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:678
 msgid "Use smoother (but slower) graphics"
@@ -2119,7 +2196,7 @@ msgstr "Bruk jevnere (men tregere) grafikk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:684
 msgid "Font family used to display file names"
-msgstr ""
+msgstr "Skrifttypefamilie som brukes for å vise filnavn"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:691
 msgid "Display tool bar in new windows"
@@ -2139,7 +2216,7 @@ msgstr "Vis sidelinje i nye vinduer"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:717
 msgid "Always do slow, complete search"
-msgstr ""
+msgstr "Alltid bruk tregt, komplett søk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:724
 msgid "search type to do by default"
@@ -2151,7 +2228,7 @@ msgstr "søk etter tekst"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:731
 msgid "Search for files by text only"
-msgstr ""
+msgstr "Kun søk etter filer med tekst"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:735
 msgid "search by text and properties"
@@ -2159,7 +2236,7 @@ msgstr "søk etter tekst og egenskaper"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:736
 msgid "Search for files by text and by their properties"
-msgstr ""
+msgstr "Søk etter filer med tekstinnhold og egenskaper"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:741
 msgid "Search Web Location"
@@ -2170,14 +2247,12 @@ msgid "Show hidden files"
 msgstr "Vis skjulte filer"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:754
-#, fuzzy
 msgid "Show special flags in Properties window"
-msgstr "Velg alle oppføringer i dette vinduet"
+msgstr "Velg spesielle flagg i Egenskaper-vinduet"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:760
-#, fuzzy
 msgid "Can add Content"
-msgstr "Pakkeinnhold"
+msgstr "Kan legge til Innhold"
 
 #: libnautilus-extensions/nautilus-search-uri.c:203
 #, c-format
@@ -2202,12 +2277,12 @@ msgstr "som ikke inneholder \"%s\""
 #: libnautilus-extensions/nautilus-search-uri.c:215
 #, c-format
 msgid "that match the regular expression \"%s\""
-msgstr ""
+msgstr "som er likt det regulære uttrykket \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:218
 #, c-format
 msgid "that match the file pattern \"%s\""
-msgstr ""
+msgstr "som er likt filmønsteret \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:231
 msgid "regular files"
@@ -2338,13 +2413,13 @@ msgstr "Søkeresultater for oppføringer som inneholder \"stuff\"."
 
 #: libnautilus-extensions/nautilus-search-uri.c:702
 msgid "Search results for items that contain \"stuff\" and are regular files."
-msgstr ""
+msgstr "Søkeresultater for oppføringer som inneholder \"stuff\" og er vanlige filer."
 
 #: libnautilus-extensions/nautilus-search-uri.c:705
 msgid ""
 "Search results for items that contain \"stuff\", are regular files and that "
 "are smaller than 2000 kilobytes."
-msgstr ""
+msgstr "Søkeresultater for oppføringer som inneholder \"stuff, er vanlige filer og som er mindre enn 2000 kilobytes."
 
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:704
 msgid " -_,;.?/&"
@@ -2591,11 +2666,11 @@ msgstr "Gjenopprett redigeringen"
 
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:343
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-msgstr ""
+msgstr "-adobe-helvetica-fet-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:352
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-msgstr ""
+msgstr "-adobe-helvetica-fet-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
 #: libnautilus/nautilus-clipboard.c:121
 msgid "_Cut"
@@ -2738,23 +2813,23 @@ msgstr "%s (ny kopi)"
 #: libnautilus-extensions/nautilus-file-operations.c:496
 #, c-format
 msgid "%s (%dst copy)"
-msgstr ""
+msgstr "%s (%dste kopi)"
 
 #: libnautilus-extensions/nautilus-file-operations.c:498
 #, c-format
 msgid "%s (%dnd copy)"
-msgstr ""
+msgstr "%s (%dre kopi)"
 
 #: libnautilus-extensions/nautilus-file-operations.c:500
 #, c-format
 msgid "%s (%drd copy)"
-msgstr ""
+msgstr "%s (%ddje kopi)"
 
 #. The general case.
 #: libnautilus-extensions/nautilus-file-operations.c:504
 #, c-format
 msgid "%s (%dth copy)"
-msgstr ""
+msgstr "%s (%de kopi)"
 
 #: libnautilus-extensions/nautilus-file-operations.c:556
 #: libnautilus-extensions/nautilus-file-operations.c:862
@@ -2910,10 +2985,9 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1106
-#, fuzzy
 msgid ""
 "Are you sure you want to permanently delete all of the items in the trash?"
-msgstr "Er du sikker på at du vil fjerne oppføringen \"%s\" permanent?"
+msgstr "Er du sikker på at du vil slette alle oppføringer i søppelkurven permanent?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1108
 msgid "Nautilus: Delete trash contents?"
@@ -2984,21 +3058,21 @@ msgstr "%s%s, %s"
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
-msgstr ""
+msgstr "\"%s\" kan ikke flyttes til søppelkurven. Ønsker du å slette den med én gang?"
 
 #: src/file-manager/fm-directory-view.c:2008
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
 "them immediately?"
-msgstr ""
+msgstr "De %d valgte oppføringene kan ikke flyttes til søppelkurven. Vil du slette dem med én gang?"
 
 #: src/file-manager/fm-directory-view.c:2012
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
 "those %d items immediately?"
-msgstr ""
+msgstr "%d av de valgte oppføringene kan ikke flyttes til søppelkurven. Vil du slette ddisse %d oppføringene med én gang?"
 
 #: src/file-manager/fm-directory-view.c:2018
 msgid "Can't Move to Trash"
@@ -3043,7 +3117,7 @@ msgstr "Ny mappe"
 
 #: src/file-manager/fm-directory-view.c:2328
 msgid "Delete from _Trash"
-msgstr ""
+msgstr "Sle_tt fra søppelkurven"
 
 #: src/file-manager/fm-directory-view.c:2331
 msgid "Move to _Trash"
@@ -3164,12 +3238,12 @@ msgid "Remove the custom image from each selected icon"
 msgstr "Fjern det egendefinerte bildet fra hvert valgte ikon"
 
 #: src/file-manager/fm-error-reporting.c:50
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The name \"%s\" is already used in this folder.\n"
 "Please use a different name."
 msgstr ""
-"Navnet \"%s\" er allerede i bruk i denne katalogen.\n"
+"Navnet \"%s\" er allerede i bruk i denne mappen.\n"
 "Vennligst bruk et annet navn."
 
 #: src/file-manager/fm-error-reporting.c:55
@@ -3184,13 +3258,13 @@ msgstr "Beklager, kunne ikke endre navn for \"%s\" til \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:69
 msgid "Nautilus: Error renaming file"
-msgstr ""
+msgstr "Nautilus: Feil under omdøping av fil"
 
 #: src/file-manager/fm-error-reporting.c:85
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "You do not have the permissions necessary to change the group of \"%s\"."
-msgstr "Du har ikke nødvendige rettigheter til å vise \"%s\"."
+msgstr "Du har ikke nødvendige rettigheter til å endre gruppen for \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:93
 #, c-format
@@ -3199,7 +3273,7 @@ msgstr "Beklager, kunne ikke endre gruppe for \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:97
 msgid "Nautilus: Error setting group"
-msgstr ""
+msgstr "Nautilus: Feil under setting av gruppe"
 
 #: src/file-manager/fm-error-reporting.c:115
 #, c-format
@@ -3207,9 +3281,8 @@ msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "Beklager, kunne ikke endre eier for \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:119
-#, fuzzy
 msgid "Nautilus: Error setting owner"
-msgstr "Nautilus egenskapsvisning"
+msgstr "Nautilus: Feil under endring av eier"
 
 #: src/file-manager/fm-error-reporting.c:137
 #, c-format
@@ -3217,9 +3290,8 @@ msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "Beklager, kunne ikke endre rettigheter for \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:141
-#, fuzzy
 msgid "Nautilus: Error setting permissions"
-msgstr "Nautilus: Ikontekst"
+msgstr "Nautilus: Feil under setting av rettigheter"
 
 #: src/file-manager/fm-error-reporting.c:214
 #, c-format
@@ -3385,7 +3457,7 @@ msgstr "La ikoner bli hvor de slippes"
 
 #: src/file-manager/fm-icon-view.c:1279
 msgid "Toggle using a tighter layout scheme"
-msgstr ""
+msgstr "Slå av/på bruk av tettere plassering"
 
 #: src/file-manager/fm-icon-view.c:1286
 msgid "Re_versed Order"
@@ -3397,7 +3469,7 @@ msgstr "Vis ikoner i omvendt rekkefølge"
 
 #: src/file-manager/fm-icon-view.c:1295
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
+msgstr "Reposisjonér ikonene slik at de passer bedre til vinduene og unngår overlapping"
 
 #: src/file-manager/fm-icon-view.c:1304
 msgid "Rename selected item"
@@ -3601,7 +3673,6 @@ msgstr ""
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:355
-#, fuzzy
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -3615,13 +3686,11 @@ msgid ""
 "\n"
 "We need a much less confusing message here for Nautilus 1.0."
 msgstr ""
-"Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om "
-"datamaskinen eller installere Natutilus på nytt. OAF kunne ikke finne "
-"nautilus.oafinfo filen. En årsak til dette ser ut til å være en "
-"LD_LIBRARY_PATH som ikke inneholder oaf bibliotekets katalog. En annen mulig "
-"årsak kan være en dårlig installasjon som mangler nautilus.oafinfo filen. "
-"Noen ganger vil det være nok å drepe oafd og gconfd, men vi er ikke sikker "
-"på hvorfor. Vi må ha en mye tydeligere melding her før Nautilus 1.0."
+"Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om datamaskinen eller installere Natutilus på nytt. \n"
+"\n"
+"OAF kunne ikke finne nautilus.oafinfo filen. En årsak til dette ser ut til å være en LD_LIBRARY_PATH som ikke inneholder oaf bibliotekets katalog. En annen mulig årsak kan være en ugyldig installasjon som mangler nautilus.oafinfo filen. \n"
+"\n"
+"Noen ganger vil det være nok å drepe oafd og gconfd, men vi vet ikke hvorfor."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
@@ -3659,6 +3728,10 @@ msgid ""
 "As root, you can damage your system if you are not careful, and\n"
 "Nautilus will not stop you from doing it."
 msgstr ""
+"Du kjører Nautilus som root.\n"
+"\n"
+"Du kan, som root, ødelegge ditt system hvis du ikke er forsiktig, og\n"
+"Nautilus vil ikke hindre deg i å gjøre dette."
 
 #: src/nautilus-bookmarks-window.c:139
 msgid "Nautilus: Bookmarks"
@@ -3674,7 +3747,7 @@ msgstr "Fjern"
 
 #: src/nautilus-bookmarks-window.c:206
 msgid "Include built-in bookmarks in menu"
-msgstr ""
+msgstr "Inkludér innebygde bokmerker i menyen"
 
 #. set the window title
 #: src/nautilus-link-set-window.c:188
@@ -3820,17 +3893,17 @@ msgstr "Nulltill bakgrunn"
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
-msgstr ""
+msgstr "Du kan ikke tilegne mer enn ett egendefinert ikon om gangen! Vennligst dra kun ett bilde for å bestemme egendefinert ikon."
 
 #: src/nautilus-sidebar.c:604
 msgid "Nautilus: More than one image"
-msgstr ""
+msgstr "Nautilus: Mer enn ett bilde"
 
 #: src/nautilus-sidebar.c:626
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
-msgstr ""
+msgstr "Filen du slapp er ikke lokal. Du kan kun bruke lokale bilder som egendefinerte ikoner."
 
 #: src/nautilus-sidebar.c:628
 msgid "Nautilus: Local images only"
@@ -3840,7 +3913,7 @@ msgstr "Nautilus: Kun lokale bilder"
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
-msgstr ""
+msgstr "Filen du slapp er ikke et bilde. Du kan kun bruke lokale bilder som egendefinerte ikoner."
 
 #: src/nautilus-sidebar.c:635
 msgid "Nautilus: Images only"
@@ -3945,11 +4018,11 @@ msgstr "Kunne ikke vise \"%s\", fordi påloggingsforsøket feilet."
 msgid ""
 "Sorry, searching can't be used now. In the future this message will be more "
 "helpful."
-msgstr ""
+msgstr "Beklager, søk kan ikke brukes nå. I fremtiden vil denne meldingen være til større hjelp."
 
 #: src/nautilus-window-manage-views.c:1369
 msgid "Nautilus: Searching unavailable"
-msgstr ""
+msgstr "Nautilus: Søk ikke tilgjengelig"
 
 #: src/nautilus-window-manage-views.c:1373
 #, c-format
@@ -3967,12 +4040,12 @@ msgstr "Nautilus: Kan ikke vise lokasjon"
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
-msgstr ""
+msgstr "Er du sikker på at du ønsker å glemme historikken? Hvis det er tilfelle, vil du være dømt til å gjenta den."
 
 #: src/nautilus-window-menus.c:355
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
-msgstr ""
+msgstr "Er du sikker på at du ønsker at Nautilus skal glemme stedene du har besøkt?"
 
 #: src/nautilus-window-menus.c:360
 msgid "Nautilus: Forget history?"
@@ -4021,6 +4094,10 @@ msgid ""
 "easy to manage your files \n"
 "and the rest of your system."
 msgstr ""
+"Nautilus er et grafisk skall\n"
+"for GNOME som gjør det lett\n"
+"å håndtere dine filer\n"
+"og resten av ditt system."
 
 #: src/nautilus-window-menus.c:702
 #, c-format
@@ -4032,21 +4109,17 @@ msgstr ""
 "denne lokasjonen fra din liste?"
 
 #: src/nautilus-window-menus.c:706
-#, fuzzy
 msgid "Nautilus: Bookmark for nonexistent location"
-msgstr "Bokmerke for ugyldig lokasjon"
+msgstr "Nautilus: Bokmerke for ikke-eksisterende lokasjon"
 
 #: src/nautilus-window-menus.c:720
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" no longer exists."
-msgstr ""
-"Lokasjonen \"%s\" eksisterer ikke lengre. Den er sannsynligvis flyttet, "
-"slettet eller har fått nytt navn."
+msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
 #: src/nautilus-window-menus.c:721
-#, fuzzy
 msgid "Nautilus: Go to nonexistent location"
-msgstr "Gå til neste plassering"
+msgstr "Nautilus: Gå til ikke-eksisterende lokasjon"
 
 #: src/nautilus-window-menus.c:794
 msgid "Go to the specified location"
@@ -4168,31 +4241,31 @@ msgstr "En_dre utseende..."
 msgid ""
 "Displays a list of alternative appearances, to allow you to change the "
 "appearance"
-msgstr ""
+msgstr "Viser en liste med alternative utseender, for å la deg endre dette"
 
 #: src/nautilus-window-menus.c:1437
 msgid "_Refresh"
-msgstr ""
+msgstr "Oppf_risk"
 
 #. Title computed dynamically
 #: src/nautilus-window-menus.c:1451
 msgid "Change the visibility of this window's sidebar"
-msgstr ""
+msgstr "Endre synligheten for dette vinduets sidelinje"
 
 #. Title computed dynamically
 #: src/nautilus-window-menus.c:1462
 msgid "Change the visibility of this window's tool bar"
-msgstr ""
+msgstr "Endre synligheten for dette vinduets verktøylinje"
 
 #. Title computed dynamically
 #: src/nautilus-window-menus.c:1473
 msgid "Change the visibility of this window's location bar"
-msgstr ""
+msgstr "Endre synligheten for dette vinduets adresselinje"
 
 #. Title computed dynamically
 #: src/nautilus-window-menus.c:1484
 msgid "Change the visibility of this window's status bar"
-msgstr ""
+msgstr "Endre synligheten for dette vinduets statuslinje"
 
 #: src/nautilus-window-menus.c:1500
 msgid "Zoom _In"
