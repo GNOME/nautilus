@@ -106,24 +106,24 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
-	/* The 'append_selection_context_menu_items' signal is emitted 
+	/* The 'create_selection_context_menu_items' signal is emitted 
 	 * when creating a context menu for the selected items. @files is
 	 * the list of selected files; it isn't destroyed until the menu
 	 * is destroyed so it can be used in callbacks.
 	 * Subclasses might want to override this function to
 	 * modify the menu contents.
 	 */
-	void 	(* append_selection_context_menu_items) 	 
+	void 	(* create_selection_context_menu_items) 	 
 					 (FMDirectoryView *view,
 					  GtkMenu *menu,
 					  GList *files);
 
-	/* The 'append_background_context_menu_items' signal is emitted 
+	/* The 'create_background_context_menu_items' signal is emitted 
 	 * when creating a context menu, either an item-specific one or
 	 * a background one. Subclasses might want to override this to
 	 * modify the menu contents.
 	 */
-	void 	(* append_background_context_menu_items) 	 
+	void 	(* create_background_context_menu_items) 	 
 					 (FMDirectoryView *view,
 					  GtkMenu *menu);
 	 

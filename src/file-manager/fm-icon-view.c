@@ -316,27 +316,6 @@ compute_menu_item_info (FMIconView *view,
 }           
 
 static void
-append_one_context_menu_item (FMIconView *view,
-                              GtkMenu *menu,
-                              GList *selection,
-                              const char *menu_path,
-                              GtkSignalFunc callback)
-{
-	GtkWidget *menu_item;
-	char *label;
-	gboolean sensitive;
-        
-        compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive); 
-        menu_item = gtk_menu_item_new_with_label (label);
-        g_free (label);
-        gtk_widget_set_sensitive (menu_item, sensitive);
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
-	gtk_menu_append (menu, menu_item);
-}
-
-
-static void
 insert_one_context_menu_item (FMIconView *view,
                               GtkMenu *menu,
                               GList *selection,
@@ -358,7 +337,17 @@ insert_one_context_menu_item (FMIconView *view,
 }
 
 static void
-fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
+append_one_context_menu_item (FMIconView *view,
+                              GtkMenu *menu,
+                              GList *selection,
+                              const char *menu_path,
+                              GtkSignalFunc callback)
+{
+	insert_one_context_menu_item (view, menu, selection, menu_path, -1, callback);
+}
+
+static void
+fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 						  GtkMenu *menu,
 						  GList *selection)
 {
@@ -369,7 +358,7 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
-		 append_selection_context_menu_items,
+		 create_selection_context_menu_items,
 		 (view, menu, selection));
 
         append_one_context_menu_item
@@ -385,19 +374,11 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 	 * Duplicate item created by the FMDirectoryView.
 	 */
 	position = fm_directory_view_get_context_menu_index
-		(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
-	if (position == -1) {
-		append_one_context_menu_item
-			(FM_ICON_VIEW (view), menu, selection, 
-			 MENU_PATH_RENAME, 
-			 GTK_SIGNAL_FUNC (rename_icon_callback));
-	} else {
-		position++;
-     		insert_one_context_menu_item
-			(FM_ICON_VIEW (view), menu, selection, 
-			 MENU_PATH_RENAME, position,
-			 GTK_SIGNAL_FUNC (rename_icon_callback));
-	}
+		(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1;
+     	insert_one_context_menu_item
+		(FM_ICON_VIEW (view), menu, selection, 
+		 MENU_PATH_RENAME, position,
+		 GTK_SIGNAL_FUNC (rename_icon_callback));
 }
 
 /* Note that this is used both as a Bonobo menu callback and a signal callback.
@@ -410,7 +391,7 @@ customize_icon_text_callback (gpointer ignored1, gpointer ignored2)
 }
 
 static void
-fm_icon_view_append_background_context_menu_items (FMDirectoryView *view,
+fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 						   GtkMenu *menu)
 {
 	GtkWidget *menu_item;
@@ -420,7 +401,7 @@ fm_icon_view_append_background_context_menu_items (FMDirectoryView *view,
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
-		 append_background_context_menu_items, 
+		 create_background_context_menu_items, 
 		 (view, menu));
 
 	/* Put a separator before this item, since previous items are
@@ -821,7 +802,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
 	/* File menu. */
-	/* This menu item needs to go right after the Duplicate item that
+	/* Rename goes right after the Duplicate item that
 	 * fm-directory-view places in the File menu.
 	 */
 	position = bonobo_ui_handler_menu_get_pos
@@ -1206,10 +1187,10 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
-        fm_directory_view_class->append_background_context_menu_items =
-		fm_icon_view_append_background_context_menu_items;
-        fm_directory_view_class->append_selection_context_menu_items =
-		fm_icon_view_append_selection_context_menu_items;
+        fm_directory_view_class->create_background_context_menu_items =
+		fm_icon_view_create_background_context_menu_items;
+        fm_directory_view_class->create_selection_context_menu_items =
+		fm_icon_view_create_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
 }

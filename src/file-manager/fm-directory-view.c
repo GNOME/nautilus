@@ -64,8 +64,8 @@
 enum
 {
 	ADD_FILE,
-	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
-	APPEND_SELECTION_CONTEXT_MENU_ITEMS,
+	CREATE_BACKGROUND_CONTEXT_MENU_ITEMS,
+	CREATE_SELECTION_CONTEXT_MENU_ITEMS,
 	BEGIN_ADDING_FILES,
 	BEGIN_LOADING,
 	CLEAR,
@@ -126,12 +126,12 @@ static void           fm_directory_view_destroy                                 
 static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
 										   NautilusFile             *file,
 										   gboolean                  use_new_window);
-static void           fm_directory_view_append_background_context_menu_items      (FMDirectoryView          *view,
+static void           fm_directory_view_create_background_context_menu_items      (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
 static void           fm_directory_view_merge_menus                               (FMDirectoryView          *view);
-static void           fm_directory_view_real_append_background_context_menu_items (FMDirectoryView          *view,
+static void           fm_directory_view_real_create_background_context_menu_items (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
-static void           fm_directory_view_real_append_selection_context_menu_items  (FMDirectoryView          *view,
+static void           fm_directory_view_real_create_selection_context_menu_items  (FMDirectoryView          *view,
 										   GtkMenu                  *menu,
 										   GList                    *files);
 static void           fm_directory_view_real_merge_menus                          (FMDirectoryView          *view);
@@ -249,23 +249,23 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS] =
-		gtk_signal_new ("append_selection_context_menu_items",
+	signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS] =
+		gtk_signal_new ("create_selection_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_selection_context_menu_items),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, create_selection_context_menu_items),
 		    		nautilus_gtk_marshal_NONE__BOXED_BOXED,
 		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
-	signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
-		gtk_signal_new ("append_background_context_menu_items",
+	signals[CREATE_BACKGROUND_CONTEXT_MENU_ITEMS] =
+		gtk_signal_new ("create_background_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_background_context_menu_items),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, create_background_context_menu_items),
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 
-	klass->append_selection_context_menu_items = fm_directory_view_real_append_selection_context_menu_items;
-	klass->append_background_context_menu_items = fm_directory_view_real_append_background_context_menu_items;
+	klass->create_selection_context_menu_items = fm_directory_view_real_create_selection_context_menu_items;
+	klass->create_background_context_menu_items = fm_directory_view_real_create_background_context_menu_items;
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
@@ -1544,7 +1544,7 @@ add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
 }
 
 static void
-fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *view, 
+fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
 	add_menu_item (view, menu, _("Select All"), select_all_callback, TRUE);
@@ -1650,7 +1650,7 @@ append_selection_menu_item (FMDirectoryView *view,
 }
 
 static void
-fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *view,
+fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *view,
 							    GtkMenu *menu,
 						       	    GList *files)
 {
@@ -1874,7 +1874,7 @@ create_selection_context_menu (FMDirectoryView *view)
 					  (GtkDestroyNotify) nautilus_file_list_free);
 
 		gtk_signal_emit (GTK_OBJECT (view),
-				 signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS], 
+				 signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS], 
 				 menu, selected_files);
 		
 		/* Add separator between selection-specific 
@@ -1890,13 +1890,13 @@ create_selection_context_menu (FMDirectoryView *view)
 	 * be hard (especially in list view) to find a place to click
 	 * that's not on an item.
 	 */
-	fm_directory_view_append_background_context_menu_items (view, menu);
+	fm_directory_view_create_background_context_menu_items (view, menu);
 
 	return menu;
 }
 
 /**
- * fm_directory_view_append_background_context_menu_items:
+ * fm_directory_view_create_background_context_menu_items:
  *
  * Add background menu items (i.e., those not dependent on a particular file)
  * to a context menu.
@@ -1906,11 +1906,11 @@ create_selection_context_menu (FMDirectoryView *view)
  * 
  **/
 static void
-fm_directory_view_append_background_context_menu_items (FMDirectoryView *view,
+fm_directory_view_create_background_context_menu_items (FMDirectoryView *view,
 							GtkMenu *menu)
 {
 	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS], 
+			 signals[CREATE_BACKGROUND_CONTEXT_MENU_ITEMS], 
 			 menu);
 }
 
@@ -1921,7 +1921,7 @@ create_background_context_menu (FMDirectoryView *view)
 	GtkMenu *menu;
 
 	menu = GTK_MENU (gtk_menu_new ());
-	fm_directory_view_append_background_context_menu_items (view, menu);
+	fm_directory_view_create_background_context_menu_items (view, menu);
 	
 	return menu;
 }

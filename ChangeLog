@@ -1,5 +1,43 @@
 2000-05-11  John Sullivan  <sullivan@eazel.com>
 
+	Some cleanup in directory view menu-handling code.
+
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(fm_directory_view_real_create_background_context_menu_items),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(create_selection_context_menu),
+	(fm_directory_view_create_background_context_menu_items),
+	(create_background_context_menu): Renamed context-menu functions
+	and signals from using "append_" to using "create_" since they
+	don't necessarily append.
+	
+	* src/file-manager/fm-icon-view.c: (insert_one_context_menu_item),
+	(append_one_context_menu_item): Made append_ call insert_ with
+	-1 for the position to eliminate duplicated code.
+	(fm_icon_view_create_selection_context_menu_items): Removed code
+	that passed a different position depending on whether or not
+	the Duplicate item was present. This subclass can assume that it
+	will always be present (or we'll rewrite the code here if we
+	change that assumption).
+	(fm_icon_view_create_background_context_menu_items),
+	(fm_icon_view_merge_menus), (fm_icon_view_initialize_class):
+	Renamed functions and signals to use create_ as above.
+	
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_append_background_context_menu_items),
+	(fm_list_view_append_selection_context_menu_items),
+	(fm_list_view_merge_menus), (fm_list_view_update_menus),
+	(fm_list_view_compute_menu_item_info),
+	(append_one_context_menu_item),	(insert_one_context_menu_item),
+	(rename_list_item_callback): Removed these functions, which were
+	all used only for Rename (which we won't have in 1.0) and
+	Undo (which the list view never interacts with).
+	(fm_list_view_initialize_class): Removed function overrides.
+
+2000-05-11  John Sullivan  <sullivan@eazel.com>
+
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus):
 	Moved the Layout menu to between Settings and Help.
 
