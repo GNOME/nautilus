@@ -27,9 +27,8 @@
 #include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-debug.h>
-/*<=*/
+/*Include the GConf main header. */
 #include <gconf/gconf.h>
-/*=>*/
 
 typedef struct {
   NautilusView *nautilus_view;
@@ -215,7 +214,6 @@ static int netin_stream_flush (HTStream * me)
 
 static int netin_stream_free (HTStream * me)
 {
-  g_message("netin_stream_free");
   if(me->handle)
     gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_OK);
   g_free(me);
@@ -225,7 +223,6 @@ static int netin_stream_free (HTStream * me)
 
 static int netin_stream_abort (HTStream * me, HTList * e)
 {
-  g_message("netin_stream_abort");
   if(me->handle)
     gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_ERROR);
   g_free(me);
@@ -598,9 +595,7 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
-	/*<=*/
-	GConfError *error;
-	/*=>*/
+  GConfError *error;
 
   if (g_getenv("NAUTILUS_DEBUG") != NULL)
     nautilus_make_warnings_and_criticals_stop_in_debugger
@@ -614,17 +609,16 @@ int main(int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 	
-  gnome_init_with_popt_table("ntl-web-browser", VERSION, 
+  gnome_init_with_popt_table("ntl-web-browser", _VERSION, 
 			     argc, argv,
 			     oaf_popt_options, 0, NULL); 
   
   orb = oaf_init (argc, argv);
-	/*<=*/
-	gconf_init (argc, argv, &error);
-	/*=>*/
+  /* Init the GConf library.*/
+  gconf_init (argc, argv, &error);
   gnome_vfs_init();
   gdk_rgb_init();
-  glibwww_init("ntl-web-browser", VERSION);
+  glibwww_init("ntl-web-browser", _VERSION);
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 

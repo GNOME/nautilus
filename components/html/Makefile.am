@@ -13,7 +13,8 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)			\
 	$(GTKHTML_CFLAGS)			\
 	$(VFS_CFLAGS)				\
-	$(LIBWWW_CFLAGS)
+	$(LIBWWW_CFLAGS)			\
+	-D_VERSION=\"$(VERSION)\"
 
 oafdir = $(datadir)/oaf
 oaf_DATA =					\
