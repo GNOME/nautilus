@@ -10,13 +10,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-17 04:15+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-22 09:03+0800\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -239,13 +239,19 @@ msgid "Software"
 msgstr "البرنامج"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
+"<b>نوع الصورة:</b>·%s·(%s)\n"
+"<b>التحليل:</b>·%dx%d·بكسلات\n"
+"<b>نوع·الصورة:</b> %s (%s)\n"
+"<b>التحليل:</b> %dx%d بكسلات\n"
+msgstr[1] ""
 "<b>نوع الصورة:</b>·%s·(%s)\n"
 "<b>التحليل:</b>·%dx%d·بكسلات\n"
 "<b>نوع·الصورة:</b> %s (%s)\n"
@@ -1066,12 +1072,12 @@ msgid ""
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
 msgstr ""
-"قائمة للعناوين الفرعية تحت الأيقونات في مشهد الأيقونات و المكتب. "
-"عدد العناوين الفرعية المعروضة متوقّف على مستوى التكبير. القيم الممكنة "
-"هي: \"size\" (الحجم) و \"type\" (النوع) و \"date_modified\" (تاريخ التعديل) "
-"و \"date_changed\" (تاريخ التغيير) و \"date_accessed\" (تاريخ النفاذ) "
-"و \"owner\" (المالك) و \"group\" (المجموعة) و \"permissions\" (التصاريح) "
-"و \"octal_permissions\" (التصاريح الثمانية) و \"mime_type\" (نوع mime)."
+"قائمة للعناوين الفرعية تحت الأيقونات في مشهد الأيقونات و المكتب. عدد "
+"العناوين الفرعية المعروضة متوقّف على مستوى التكبير. القيم الممكنة هي: \"size"
+"\" (الحجم) و \"type\" (النوع) و \"date_modified\" (تاريخ التعديل) و "
+"\"date_changed\" (تاريخ التغيير) و \"date_accessed\" (تاريخ النفاذ) و \"owner"
+"\" (المالك) و \"group\" (المجموعة) و \"permissions\" (التصاريح) و "
+"\"octal_permissions\" (التصاريح الثمانية) و \"mime_type\" (نوع mime)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add Nautilus to session"
@@ -1096,10 +1102,9 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"معيار مطابقة الملفات التب يحث عنها في عمود البحث. إذا ضبط "
-"لـ \"search_by_text\"، فسيبحث نوتلس عن الملفات بحسب إسم "
-"الملف فقط. إذا ضبط لـ \"search_by_text_and_properties\"، فسيبحث "
-"نوتلس "
+"معيار مطابقة الملفات التب يحث عنها في عمود البحث. إذا ضبط لـ \"search_by_text"
+"\"، فسيبحث نوتلس عن الملفات بحسب إسم الملف فقط. إذا ضبط لـ "
+"\"search_by_text_and_properties\"، فسيبحث نوتلس "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Current Nautilus theme (deprecated)"
@@ -1211,9 +1216,9 @@ msgid ""
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
-"ستقسم المجلدات التي يفوت حجمها هذا الحجم. هدف هذا "
-"تجنب إنفجار الكدس و قتل نوتلس عند عرضه للمجلدات العظيمة. قيمة "
-"سلبية تعني عدم وجود حدود. الحد غير دقيق بسبب قسمة المجلدات."
+"ستقسم المجلدات التي يفوت حجمها هذا الحجم. هدف هذا تجنب إنفجار الكدس و قتل "
+"نوتلس عند عرضه للمجلدات العظيمة. قيمة سلبية تعني عدم وجود حدود. الحد غير "
+"دقيق بسبب قسمة المجلدات."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1253,8 +1258,8 @@ msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
-"إذا·ضبط·لـ·true،·فسيسمح تحرير يعض الخيارات الغريبة "
-"لملف في حوار تفضيلات الملفات."
+"إذا·ضبط·لـ·true،·فسيسمح تحرير يعض الخيارات الغريبة لملف في حوار تفضيلات "
+"الملفات."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -1312,8 +1317,8 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
-"إذا·ضبط·لـ·true،·فستكون جميع نوافذ نوتلس نوافذ تصفح. هكذا كان "
-"نوتلس يتصرّف قبل إصدارة 2.6، و بعض الناس يحبذون هذا السلوك."
+"إذا·ضبط·لـ·true،·فستكون جميع نوافذ نوتلس نوافذ تصفح. هكذا كان نوتلس يتصرّف "
+"قبل إصدارة 2.6، و بعض الناس يحبذون هذا السلوك."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1321,9 +1326,8 @@ msgid ""
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
-"إذا ضبط لـ true، فستعرض الملفات الوسيطة المنشأة من "
-"قبل Emacs. حاليا، تعتبر فقط الملفات التي تنتهي بتلدة (~) "
-"ملفات وسيطة."
+"إذا ضبط لـ true، فستعرض الملفات الوسيطة المنشأة من قبل Emacs. حاليا، تعتبر "
+"فقط الملفات التي تنتهي بتلدة (~) ملفات وسيطة."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -1365,10 +1369,9 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
-""
-"إذا·ضبط·لـ·true،·سترتب·الملفات·في·النوافذ·الجديدة·بالإتجاه·المعاكس.·مثلا،·"
-"عند·الترتيب·بحسب·الإسم·سترتب·الملفات·من·\"ي\"·إلى·\"أ\"·عوض·أن·ترتّب·من·"
-"\"أ\"·إلى·\"ي\"."
+"إذا·ضبط·لـ·true،·سترتب·الملفات·في·النوافذ·الجديدة·بالإتجاه·المعاكس."
+"·مثلا،·عند·الترتيب·بحسب·الإسم·سترتب·الملفات·من·\"ي\"·إلى·\"أ"
+"\"·عوض·أن·ترتّب·من·\"أ\"·إلى·\"ي\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1378,8 +1381,8 @@ msgid ""
 "incrementally they will be sorted decrementally."
 msgstr ""
 "إذا ضبط لـ true، سترتب الملفات في النوافذ الجديدة بالإتجاه المعاكس. مثلا، "
-"عند الترتيب بحسب الإسم سترتب الملفات من \"ي\" إلى \"أ\" عوض أن ترتّب من "
-"\"أ\" إلى \"ي\". إذا رتبت بحسب الحجم فسترتب تنازلا عوض أن ترتب تصاعدا."
+"عند الترتيب بحسب الإسم سترتب الملفات من \"ي\" إلى \"أ\" عوض أن ترتّب من \"أ\" "
+"إلى \"ي\". إذا رتبت بحسب الحجم فسترتب تنازلا عوض أن ترتب تصاعدا."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If true, icons will be laid out tighter by default in new windows."
@@ -1400,9 +1403,9 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"لن تعرض صور ذات حجم أكبر من هذا الحجم (بالبايت) مسبقا. "
-"هدف هذا التعيين تجنب إنشاء صور عرض مسبّق للصور الكبيرة مما "
-"قد يستغرق وقتا طويلا لتحميلها أو قد يتطلب مساحة كبير من الذاكرة."
+"لن تعرض صور ذات حجم أكبر من هذا الحجم (بالبايت) مسبقا. هدف هذا التعيين تجنب "
+"إنشاء صور عرض مسبّق للصور الكبيرة مما قد يستغرق وقتا طويلا لتحميلها أو قد "
+"يتطلب مساحة كبير من الذاكرة."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "List of possible captions on icons"
@@ -1441,8 +1444,8 @@ msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
-"القيم الممكنة هي \"single\"·لتشغيل ملفات بنقرة واحدة، "
-"أو \"double\" لتشغيلها بنقر ثنائي."
+"القيم الممكنة هي \"single\"·لتشغيل ملفات بنقرة واحدة، أو \"double\" لتشغيلها "
+"بنقر ثنائي."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "Put labels beside icons"
@@ -1484,9 +1487,9 @@ msgid ""
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
 "تبادل السرعة عند معاينة ملف صوتي عند مرور الفأرة فوق أيقونة الملف. إذا ضبط "
-"لـ \"always\" فسيعزف الصوت دائما حتى و إن كان المجلد عند نادل عن بعد. "
-"إذا ضبط لـ \"local_only\" فلن تعزف المعاينات إلا على·نظم الملفات المحلية "
-"أما إذا ضبط لـ \"never\" فلن يعزف الصوت أبدا."
+"لـ \"always\" فسيعزف الصوت دائما حتى و إن كان المجلد عند نادل عن بعد. إذا "
+"ضبط لـ \"local_only\" فلن تعزف المعاينات إلا على·نظم الملفات المحلية أما إذا "
+"ضبط لـ \"never\" فلن يعزف الصوت أبدا."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
@@ -1496,10 +1499,10 @@ msgid ""
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
-"تبادل السرعة عند معاينة محتويات ملف نصي في أيقونة الملف. إذا ضبط "
-"لـ \"always\" فستعرض دائما معاينات حتى و إن كان المجلد عند نادل عن"
-" بعد. إذا ضبط لـ \"local_only\" فلن تعرض معاينات إلا على·نظم الملفات "
-"المحلية أما إذا ضبط لـ \"never\" فلن تقرأ بيانات المعاينة."
+"تبادل السرعة عند معاينة محتويات ملف نصي في أيقونة الملف. إذا ضبط لـ \"always"
+"\" فستعرض دائما معاينات حتى و إن كان المجلد عند نادل عن بعد. إذا ضبط لـ "
+"\"local_only\" فلن تعرض معاينات إلا على·نظم الملفات المحلية أما إذا ضبط لـ "
+"\"never\" فلن تقرأ بيانات المعاينة."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -1509,11 +1512,11 @@ msgid ""
 "set to \"never\" then never bother to thumbnail images, just use a generic "
 "icon."
 msgstr ""
-"تبادل·السرعة·عند·عرض·صورة ملف كصورة عرض مسبّق.·إذا·ضبط·"
-"لـ·\"always\"·فستعرض·دائما·صورة عرض مسبّق·حتى·و·إن·كان·"
-"المجلد·عند·نادل·عن·بعد.·إذا·ضبط·لـ·\"local_only\"·فلن·تعرض·"
-"صور العرض المسبّق·إلا·على نظم·الملفات·المحلية·أما·إذا·ضبط·لـ·\"never\"·فلن·تعرض·"
-"صور العرض المسبّق·أبدا ستسخدم فقط أيقونة عامة."
+"تبادل·السرعة·عند·عرض·صورة ملف كصورة عرض مسبّق.·إذا·ضبط·لـ·\"always"
+"\"·فستعرض·دائما·صورة عرض مسبّق·حتى·و·إن·كان·المجلد·عند·نادل·عن·بعد."
+"·إذا·ضبط·لـ·\"local_only\"·فلن·تعرض·صور العرض المسبّق·إلا·على "
+"نظم·الملفات·المحلية·أما·إذا·ضبط·لـ·\"never\"·فلن·تعرض·صور العرض المسبّق·أبدا "
+"ستسخدم فقط أيقونة عامة."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
@@ -1522,10 +1525,9 @@ msgid ""
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"تبادل السرعة عند عرض عدد العناصر في مجلد. إذا ضبط "
-"لـ \"always\" فسيعرض دائما تعداد العناصر حتى و أن كان "
-"المجلد عند نادل عن بعد. إذا ضبط لـ \"local_only\" فلن يظهر "
-"التعداد إلا لنظم الملفات المحلية أما إذا ضبط لـ \"never\" فلن يحسب "
+"تبادل السرعة عند عرض عدد العناصر في مجلد. إذا ضبط لـ \"always\" فسيعرض دائما "
+"تعداد العناصر حتى و أن كان المجلد عند نادل عن بعد. إذا ضبط لـ \"local_only\" "
+"فلن يظهر التعداد إلا لنظم الملفات المحلية أما إذا ضبط لـ \"never\" فلن يحسب "
 "تعداد العناصر أبدا."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
@@ -1533,17 +1535,17 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
-"إتجاه الترتيب للعناصر في مشهد الأيقونات. القيم الممكنة هي "
-"\"name\" (الإسم) و \"size\" (الحجم) و \"type\" (النوع) و \"modification_date\" "
-"(تاريخ التعديل) و \"emblems\" (الشعارات)."
+"إتجاه الترتيب للعناصر في مشهد الأيقونات. القيم الممكنة هي \"name\" (الإسم) و "
+"\"size\" (الحجم) و \"type\" (النوع) و \"modification_date\" (تاريخ التعديل) "
+"و \"emblems\" (الشعارات)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
-"إتجاه الترتيب الإفتراضي للعناصر في مشهد القائمة. القيم "
-"الممكنة هي \"name\" (الإسم) و \"size\" (الحجم) و \"modification_date\" (تاريخ التعديل)."
+"إتجاه الترتيب الإفتراضي للعناصر في مشهد القائمة. القيم الممكنة هي \"name"
+"\" (الإسم) و \"size\" (الحجم) و \"modification_date\" (تاريخ التعديل)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "The default width of the side pane in new windows."
@@ -1608,9 +1610,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
-"سيستخدم هذا العارض عند زيارة مجلد إلا إذا كنت قد أنتقيت "
-"مشهدا آخر لذلك المجلد. القيم الممكنة هي \"list_view\" (مشهد قائمة) "
-"و \"icon_view\" (مشهد أيقونات)."
+"سيستخدم هذا العارض عند زيارة مجلد إلا إذا كنت قد أنتقيت مشهدا آخر لذلك "
+"المجلد. القيم الممكنة هي \"list_view\" (مشهد قائمة) و \"icon_view\" (مشهد "
+"أيقونات)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "When to show number of items in a folder"
@@ -2117,10 +2119,6 @@ msgid "Replace _All"
 msgstr "إستبدال الجميع"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4724
 #, c-format
@@ -2175,9 +2173,6 @@ msgid " (another copy)"
 msgstr " (نسخة أخرى)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2213,9 +2208,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (نسخة أخرى)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2656,19 +2648,25 @@ msgstr "%m/%d/%y"
 
 #: libnautilus-private/nautilus-file.c:4299
 #: src/file-manager/fm-directory-view.c:1818
-#, c-format
+#, fuzzy, c-format
 msgid "%u item"
-msgstr "عنصر %u"
+msgid_plural "%u items"
+msgstr[0] "عنصر %u"
+msgstr[1] "عنصر %u"
 
 #: libnautilus-private/nautilus-file.c:4300
-#, c-format
+#, fuzzy, c-format
 msgid "%u folder"
-msgstr "مجلد %u"
+msgid_plural "%u folders"
+msgstr[0] "مجلد %u"
+msgstr[1] "مجلد %u"
 
 #: libnautilus-private/nautilus-file.c:4301
-#, c-format
+#, fuzzy, c-format
 msgid "%u file"
-msgstr "ملف %u"
+msgid_plural "%u files"
+msgstr[0] "ملف %u"
+msgstr[1] "ملف %u"
 
 #. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4626
@@ -3644,18 +3642,22 @@ msgid "Empty Trash"
 msgstr "افراغ سلة المهملات"
 
 #: src/file-manager/fm-directory-view.c:544
-#, c-format
+#, fuzzy, c-format
 msgid "Open %d Window?"
-msgstr "هل تفتح النافذة %d؟"
+msgid_plural "Open %d Windows?"
+msgstr[0] "هل تفتح النافذة %d؟"
+msgstr[1] "هل تفتح النافذة %d؟"
 
 #: src/file-manager/fm-directory-view.c:545
 msgid "Are you sure you want to open all files?"
 msgstr "هل أنت متأكد من أنك تريد فتح كل الملفات؟"
 
 #: src/file-manager/fm-directory-view.c:546 src/nautilus-location-bar.c:158
-#, c-format
+#, fuzzy, c-format
 msgid "This will open %d separate window."
-msgstr "سيفتح هذا %d نوافذ مستقلة."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "سيفتح هذا %d نوافذ مستقلة."
+msgstr[1] "سيفتح هذا %d نوافذ مستقلة."
 
 #: src/file-manager/fm-directory-view.c:893
 #, c-format
@@ -3663,11 +3665,12 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "هل أنت متأكد من أنك تريد حذف \"%s\" نهائيا؟"
 
 #: src/file-manager/fm-directory-view.c:897
-#, c-format
+#, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "هل أنت متأكد من أنك تريد حذف العنصر المنتقى %d نهائيا؟"
-"هل·أنت·متأكد·من·أنك·تريد·حذف·العناصر المنتقات %d نهائيا؟"
+msgstr[0] "هل أنت متأكد من أنك تريد حذف \"%s\" نهائيا؟"
+msgstr[1] "هل أنت متأكد من أنك تريد حذف \"%s\" نهائيا؟"
 
 #: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
@@ -3691,20 +3694,26 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" منتقا"
 
 #: src/file-manager/fm-directory-view.c:1752
-#, c-format
+#, fuzzy, c-format
 msgid "%d folder selected"
-msgstr "%d مجلدات منتقات"
+msgid_plural "%d folders selected"
+msgstr[0] "%d مجلدات منتقات"
+msgstr[1] "%d مجلدات منتقات"
 
 #: src/file-manager/fm-directory-view.c:1762
-#, c-format
+#, fuzzy, c-format
 msgid " (containing %d item)"
-msgstr " (يحوي %d عنصر)"
+msgid_plural " (containing %d items)"
+msgstr[0] " (يحوي %d عنصر)"
+msgstr[1] " (يحوي %d عنصر)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1773
-#, c-format
+#, fuzzy, c-format
 msgid " (containing a total of %d item)"
-msgstr " (يحوي ما مجموعه %d عناصر)"
+msgid_plural " (containing a total of %d items)"
+msgstr[0] " (يحوي ما مجموعه %d عناصر)"
+msgstr[1] " (يحوي ما مجموعه %d عناصر)"
 
 #: src/file-manager/fm-directory-view.c:1789
 #, c-format
@@ -3712,15 +3721,19 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" منتقاة (%s)"
 
 #: src/file-manager/fm-directory-view.c:1793
-#, c-format
+#, fuzzy, c-format
 msgid "%d item selected (%s)"
-msgstr "%d عناصر منتقاة (%s)"
+msgid_plural "%d items selected (%s)"
+msgstr[0] "%d عناصر منتقاة (%s)"
+msgstr[1] "%d عناصر منتقاة (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1801
-#, c-format
+#, fuzzy, c-format
 msgid "%d other item selected (%s)"
-msgstr "%d عناصر أخرى منتقات (%s)"
+msgid_plural "%d other items selected (%s)"
+msgstr[0] "%d عناصر أخرى منتقات (%s)"
+msgstr[1] "%d عناصر أخرى منتقات (%s)"
 
 #: src/file-manager/fm-directory-view.c:1822
 #, c-format
@@ -3788,11 +3801,11 @@ msgstr "هل أنت متأكد من إنك تريد حذف \"%s\" نهائيا �
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
-"هل أنت متأكد من إنك تريد حذف العنصر المنتقى %s نهائيا من سلة المهملات؟"
-"هل·أنت·متأكد·من·إنك·تريد·حذف· العناصر المنتقات %s·نهائيا·من·سلة·المهملات؟"
+msgstr[0] "هل أنت متأكد من إنك تريد حذف \"%s\" نهائيا من سلة المهملات؟"
+msgstr[1] "هل أنت متأكد من إنك تريد حذف \"%s\" نهائيا من سلة المهملات؟"
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -3833,8 +3846,8 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
-"إسم الملف \"%s\" المؤشر إلى أن نوع هذا الملف \"%s\". محتويات الملف"
-" تؤشر إلى أن نوع الملف \"%s\".·قد يكون الملف خطر أمن لنظامك عند فتحه.\n"
+"إسم الملف \"%s\" المؤشر إلى أن نوع هذا الملف \"%s\". محتويات الملف تؤشر إلى "
+"أن نوع الملف \"%s\".·قد يكون الملف خطر أمن لنظامك عند فتحه.\n"
 "\n"
 "لا تفتح الملف إذا لم تكن متأكدا من أنك أنشأته بنفسك أو أنك تلقيت الملف من "
 "مصدر موثوق به. لفتح الملف، أعد تسميته للإمتداد الصحيح لـ \"%s\"، ثم إفتح "
@@ -3920,19 +3933,19 @@ msgstr "سينسخ \"%s\" إذا اخترت أمر الصق الملفات"
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
-"سينقل العنصر المنتقى %s إذا اخترت أمر لصق الملفات"
-"ستنقل العناصر المنتقات·%s·إذا·اخترت·أمر·لصق·الملفات"
+msgstr[0] "سينقل \"%s\" إذا اخترت أمر لصق الملفات"
+msgstr[1] "سينقل \"%s\" إذا اخترت أمر لصق الملفات"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
-"سينسخ العنصر المنتقى %s إذا اخترت أمر لصق الملفات"
-"ستنسخ·العناصر المنتقات %s·إذا·اخترت·أمر·لصق·الملفات"
+msgstr[0] "سينسخ \"%s\" إذا اخترت أمر الصق الملفات"
+msgstr[1] "سينسخ \"%s\" إذا اخترت أمر الصق الملفات"
 
 #: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
@@ -3964,9 +3977,11 @@ msgstr "إ_زالة تجهيز الحجم"
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:5508
 #: src/file-manager/fm-tree-view.c:960
-#, c-format
+#, fuzzy, c-format
 msgid "Open in New Window"
-msgstr "فتح في نافذة جديدة"
+msgid_plural "Open in %d New Windows"
+msgstr[0] "فتح في نافذة جديدة"
+msgstr[1] "فتح في نافذة جديدة"
 
 #: src/file-manager/fm-directory-view.c:5515
 msgid "Browse Folder"
@@ -4384,9 +4399,11 @@ msgid "unreadable"
 msgstr "غير قابل للقراءة"
 
 #: src/file-manager/fm-properties-window.c:1759
-#, c-format
+#, fuzzy, c-format
 msgid "%d item, with size %s"
-msgstr "عنصر %d، بالحجم %s"
+msgid_plural "%d items, totalling %s"
+msgstr[0] "عنصر %d، بالحجم %s"
+msgstr[1] "عنصر %d، بالحجم %s"
 
 #: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
@@ -5064,7 +5081,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:572 src/nautilus-application.c:590
 #: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5470,9 +5486,11 @@ msgid "Go To:"
 msgstr "اذهب إلى:"
 
 #: src/nautilus-location-bar.c:154
-#, c-format
+#, fuzzy, c-format
 msgid "Do you want to view %d location?"
-msgstr "هل تريد عرض الموقع %d؟"
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] "هل تريد عرض الموقع %d؟"
+msgstr[1] "هل تريد عرض الموقع %d؟"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -5531,27 +5549,22 @@ msgid "Nautilus"
 msgstr "نوتلس"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "نوتلس: لا يمكن استخدام --check مع العناوين.\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "نوتلس: لا يمكن استخدام --check مع خيارات أخرى.\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "نوتلس: لا يمكن استخدام --quit مع العناوين.\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "نوتلس: لا يمكن استخدام --restart مع العناوين.\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "نوتلس: لا يمكن استخدام --geometry مع أكثر من عنوان واحدة.\n"
 
@@ -6435,6 +6448,41 @@ msgstr "نوادل الشبكة"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "اعرض نوادل شبكتك في مدير الملفات نوتلس"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item?Are you "
+#~ "sure you want to permanently delete the %d selected items?"
+#~ msgstr ""
+#~ "هل أنت متأكد من أنك تريد حذف العنصر المنتقى %d "
+#~ "نهائيا؟هل·أنت·متأكد·من·أنك·تريد·حذف·العناصر المنتقات %d نهائيا؟"
+
+#, fuzzy
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item from the "
+#~ "trash?Are you sure you want to permanently delete the %d selected items "
+#~ "from the trash?"
+#~ msgstr ""
+#~ "هل أنت متأكد من إنك تريد حذف العنصر المنتقى %s نهائيا من سلة "
+#~ "المهملات؟هل·أنت·متأكد·من·إنك·تريد·حذف· العناصر المنتقات %"
+#~ "s·نهائيا·من·سلة·المهملات؟"
+
+#, fuzzy
+#~ msgid ""
+#~ "The %d selected item will be moved if you select the Paste Files "
+#~ "commandThe %d selected items will be moved if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "سينقل العنصر المنتقى %s إذا اخترت أمر لصق الملفاتستنقل العناصر المنتقات·%"
+#~ "s·إذا·اخترت·أمر·لصق·الملفات"
+
+#, fuzzy
+#~ msgid ""
+#~ "The %d selected item will be copied if you select the Paste Files "
+#~ "commandThe %d selected items will be copied if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "سينسخ العنصر المنتقى %s إذا اخترت أمر لصق الملفاتستنسخ·العناصر المنتقات %"
+#~ "s·إذا·اخترت·أمر·لصق·الملفات"
 
 #~ msgid ""
 #~ "If you would like to enable fast searches, you can edit the file %s as "

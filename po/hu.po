@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-03 04:21+0100\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-17 18:14+0100\n"
 "Last-Translator: Laszlo Dvornik <dvornikl@mailbox.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -51,7 +51,6 @@ msgstr "bonobo_ui_init() sikertelen."
 # data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2400
-#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Matricák"
 
@@ -76,7 +75,8 @@ msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
 msgstr ""
-"Ez talán azért lehet, mert a matrica állandó, és nem olyan, amit ön hozott létre."
+"Ez talán azért lehet, mert a matrica állandó, és nem olyan, amit ön hozott "
+"létre."
 
 # src/nautilus-theme-selector.c:606
 #: components/emblem/nautilus-emblem-view.c:205
@@ -95,7 +95,8 @@ msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
 msgstr ""
-"Ez talán azért lehet, mert a matrica állandó, és nem olyan, amit ön hozott létre."
+"Ez talán azért lehet, mert a matrica állandó, és nem olyan, amit ön hozott "
+"létre."
 
 # src/nautilus-property-browser.c:1325 src/nautilus-property-browser.c:1328
 # src/nautilus-property-browser.c:1332 src/nautilus-property-browser.c:1361
@@ -862,7 +863,8 @@ msgstr "Munkaasztal beállításai"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
-msgstr "Hálózati szolgáltatások beállítása (webkiszolgáló, DNS kiszolgáló, stb.)"
+msgstr ""
+"Hálózati szolgáltatások beállítása (webkiszolgáló, DNS kiszolgáló, stb.)"
 
 # libnautilus-private/nautilus-global-preferences.c:677
 #: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
@@ -1165,7 +1167,6 @@ msgstr "Ez a téma fotorealisztikus képeket használ."
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-list-view.c:1054
-#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Név"
 
@@ -1853,7 +1854,6 @@ msgstr "A fájl neve és ikonja."
 # src/file-manager/fm-list-view.c:1976
 # src/file-manager/fm-search-list-view.c:561
 #: libnautilus-private/nautilus-column-utilities.c:50
-#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "Méret"
 
@@ -1864,7 +1864,6 @@ msgstr "A fájl mérete."
 # src/file-manager/fm-list-view.c:1982
 # src/file-manager/fm-search-list-view.c:567
 #: libnautilus-private/nautilus-column-utilities.c:58
-#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "Típus"
 
@@ -1876,7 +1875,6 @@ msgstr "A fájl típusa."
 # src/file-manager/fm-list-view.c:1988
 # src/file-manager/fm-search-list-view.c:573
 #: libnautilus-private/nautilus-column-utilities.c:65
-#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "Módosítás dátuma"
 
@@ -2111,8 +2109,7 @@ msgstr "Hiba törléskor."
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
-msgstr ""
-"\"%s\" nem törölhető, mert nincs joga a szülőkönyvtárát módosítani."
+msgstr "\"%s\" nem törölhető, mert nincs joga a szülőkönyvtárát módosítani."
 
 # libnautilus-private/nautilus-file-operations.c:605
 #: libnautilus-private/nautilus-file-operations.c:569
@@ -2384,12 +2381,8 @@ msgstr "_Mindet cseréli"
 # libnautilus-private/nautilus-file-operations.c:1156
 # libnautilus-private/nautilus-file.c:3803
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4714
+#: libnautilus-private/nautilus-file.c:4724
 #, c-format
 msgid "link to %s"
 msgstr "link erre: %s"
@@ -2452,9 +2445,6 @@ msgstr " (még egy másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1218
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2496,9 +2486,6 @@ msgstr "%s (még egy másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1238
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2679,8 +2666,8 @@ msgstr "Nem másolhatja ezt a Kuka mappát."
 #: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
-"Egy Kuka mappa olyan elemeket tárolására használatos, amelyek át "
-"lettek helyezve a Kukába."
+"Egy Kuka mappa olyan elemeket tárolására használatos, amelyek át lettek "
+"helyezve a Kukába."
 
 # libnautilus-private/nautilus-file-operations.c:1905
 # libnautilus-private/nautilus-file-operations.c:2158
@@ -2842,7 +2829,7 @@ msgstr "Ü_rítés"
 # data/browser.xml.h:18
 #: libnautilus-private/nautilus-file-utilities.c:369
 #: libnautilus-private/nautilus-global-preferences.c:527
-#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "Számítógép"
 
@@ -2884,36 +2871,36 @@ msgstr "Windows hálózat"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2922
+#: libnautilus-private/nautilus-file.c:2932
 msgid "today at 00:00:00 PM"
 msgstr "ma, 00.00.00"
 
 # libnautilus-private/nautilus-file.c:2246
-#: libnautilus-private/nautilus-file.c:2923
+#: libnautilus-private/nautilus-file.c:2933
 msgid "today at %-I:%M:%S %p"
 msgstr "ma, %H.%M.%S"
 
 # libnautilus-private/nautilus-file.c:2246
-#: libnautilus-private/nautilus-file.c:2925
+#: libnautilus-private/nautilus-file.c:2935
 msgid "today at 00:00 PM"
 msgstr "ma, 00.00"
 
 # libnautilus-private/nautilus-file.c:2246
-#: libnautilus-private/nautilus-file.c:2926
+#: libnautilus-private/nautilus-file.c:2936
 msgid "today at %-I:%M %p"
 msgstr "ma, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2928
+#: libnautilus-private/nautilus-file.c:2938
 msgid "today, 00:00 PM"
 msgstr "ma, 00.00"
 
 # libnautilus-private/nautilus-file.c:2246
-#: libnautilus-private/nautilus-file.c:2929
+#: libnautilus-private/nautilus-file.c:2939
 msgid "today, %-I:%M %p"
 msgstr "ma, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2931
-#: libnautilus-private/nautilus-file.c:2932
+#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2942
 msgid "today"
 msgstr "ma"
 
@@ -2921,37 +2908,37 @@ msgstr "ma"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2951
 msgid "yesterday at 00:00:00 PM"
 msgstr "tegnap, 00.00.00"
 
 # libnautilus-private/nautilus-file.c:2251
-#: libnautilus-private/nautilus-file.c:2942
+#: libnautilus-private/nautilus-file.c:2952
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "tegnap, %H.%M.%S"
 
 # libnautilus-private/nautilus-file.c:2251
-#: libnautilus-private/nautilus-file.c:2944
+#: libnautilus-private/nautilus-file.c:2954
 msgid "yesterday at 00:00 PM"
 msgstr "tegnap, 00.00"
 
 # libnautilus-private/nautilus-file.c:2251
-#: libnautilus-private/nautilus-file.c:2945
+#: libnautilus-private/nautilus-file.c:2955
 msgid "yesterday at %-I:%M %p"
 msgstr "tegnap, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2947
+#: libnautilus-private/nautilus-file.c:2957
 msgid "yesterday, 00:00 PM"
 msgstr "tegnap, 00.00"
 
 # libnautilus-private/nautilus-file.c:2251
-#: libnautilus-private/nautilus-file.c:2948
+#: libnautilus-private/nautilus-file.c:2958
 msgid "yesterday, %-I:%M %p"
 msgstr "tegnap, %H.%M"
 
 # components/mozilla/nautilus-mozilla-embed-extensions.cpp:329
-#: libnautilus-private/nautilus-file.c:2950
-#: libnautilus-private/nautilus-file.c:2951
+#: libnautilus-private/nautilus-file.c:2960
+#: libnautilus-private/nautilus-file.c:2961
 msgid "yesterday"
 msgstr "tegnap"
 
@@ -2960,73 +2947,73 @@ msgstr "tegnap"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2962
+#: libnautilus-private/nautilus-file.c:2972
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000. szeptember 00., szerda, 00.00.00"
 
 # libnautilus-private/nautilus-file.c:2256
-#: libnautilus-private/nautilus-file.c:2963
+#: libnautilus-private/nautilus-file.c:2973
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y. %B %-d., %A, %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2975
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000. okt. 00., hétfő, 00.00.00"
 
 # libnautilus-private/nautilus-file.c:2256
-#: libnautilus-private/nautilus-file.c:2966
+#: libnautilus-private/nautilus-file.c:2976
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y. %b. %d., %a, %H.%M.%S"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2978
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000. okt. 00., hétfő, 00.00"
 
 # libnautilus-private/nautilus-file.c:2256
-#: libnautilus-private/nautilus-file.c:2969
+#: libnautilus-private/nautilus-file.c:2979
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y. %b. %d., %a, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2981
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000. okt. 00., 00.00"
 
 # libnautilus-private/nautilus-file.c:2261
-#: libnautilus-private/nautilus-file.c:2972
+#: libnautilus-private/nautilus-file.c:2982
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y. %b. %d., %H.%M"
 
 # libnautilus-private/nautilus-glib-extensions.c:1221
-#: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2984
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000. okt. 00., 00.00"
 
 # libnautilus-private/nautilus-file.c:2261
-#: libnautilus-private/nautilus-file.c:2975
+#: libnautilus-private/nautilus-file.c:2985
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y. %b. %-d., %H.%M"
 
 # libnautilus-private/nautilus-glib-extensions.c:1221
-#: libnautilus-private/nautilus-file.c:2977
+#: libnautilus-private/nautilus-file.c:2987
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00.00"
 
 # libnautilus-private/nautilus-file.c:2261
-#: libnautilus-private/nautilus-file.c:2978
+#: libnautilus-private/nautilus-file.c:2988
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%-d, %H.%M"
 
-#: libnautilus-private/nautilus-file.c:2980
+#: libnautilus-private/nautilus-file.c:2990
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2981
+#: libnautilus-private/nautilus-file.c:2991
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
 # libnautilus-private/nautilus-file.c:3401
-#: libnautilus-private/nautilus-file.c:4289
-#: src/file-manager/fm-directory-view.c:1814
+#: libnautilus-private/nautilus-file.c:4299
+#: src/file-manager/fm-directory-view.c:1818
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3034,7 +3021,7 @@ msgstr[0] "%u elem"
 msgstr[1] "%u elem"
 
 # libnautilus-private/nautilus-file.c:3401
-#: libnautilus-private/nautilus-file.c:4290
+#: libnautilus-private/nautilus-file.c:4300
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
@@ -3042,7 +3029,7 @@ msgstr[0] "%u mappa"
 msgstr[1] "%u mappa"
 
 # libnautilus-private/nautilus-file.c:3402
-#: libnautilus-private/nautilus-file.c:4291
+#: libnautilus-private/nautilus-file.c:4301
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -3052,24 +3039,24 @@ msgstr[1] "%u fájl"
 # libnautilus-private/nautilus-file.c:3705
 # libnautilus-private/nautilus-file.c:3720
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4616
-#: libnautilus-private/nautilus-file.c:4632
+#: libnautilus-private/nautilus-file.c:4626
+#: libnautilus-private/nautilus-file.c:4642
 msgid "? items"
 msgstr "? elem"
 
 # libnautilus-private/nautilus-file.c:3711
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4622
+#: libnautilus-private/nautilus-file.c:4632
 msgid "? bytes"
 msgstr "? bájt"
 
 # libnautilus-private/nautilus-file.c:3724
-#: libnautilus-private/nautilus-file.c:4637
+#: libnautilus-private/nautilus-file.c:4647
 msgid "unknown type"
 msgstr "ismeretlen típus"
 
 # libnautilus-private/nautilus-file.c:3726
-#: libnautilus-private/nautilus-file.c:4640
+#: libnautilus-private/nautilus-file.c:4650
 msgid "unknown MIME type"
 msgstr "ismeretlen MIME-típus"
 
@@ -3077,29 +3064,29 @@ msgstr "ismeretlen MIME-típus"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4646
+#: libnautilus-private/nautilus-file.c:4656
 #: src/file-manager/fm-properties-window.c:1147
 msgid "unknown"
 msgstr "ismeretlen"
 
 # libnautilus-private/nautilus-file.c:3767
-#: libnautilus-private/nautilus-file.c:4678
+#: libnautilus-private/nautilus-file.c:4688
 msgid "program"
 msgstr "program"
 
 # libnautilus-private/nautilus-file.c:3779
-#: libnautilus-private/nautilus-file.c:4690
+#: libnautilus-private/nautilus-file.c:4700
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
-"Még az \"x-directory/normal\"-hoz sem található leírás. Ez valószínűleg "
-"azt jelenti, hogy az ön gnome-vfs.keys fájlja rossz helyen van, vagy "
-"valamiért a Nautilus nem találja meg."
+"Még az \"x-directory/normal\"-hoz sem található leírás. Ez valószínűleg azt "
+"jelenti, hogy az ön gnome-vfs.keys fájlja rossz helyen van, vagy valamiért a "
+"Nautilus nem találja meg."
 
 # libnautilus-private/nautilus-file.c:3783
-#: libnautilus-private/nautilus-file.c:4694
+#: libnautilus-private/nautilus-file.c:4704
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3109,19 +3096,19 @@ msgstr ""
 "mindenképpen jelentse a gnome-vfs levelezési listán."
 
 # libnautilus-private/nautilus-file.c:3797
-#: libnautilus-private/nautilus-file.c:4708
+#: libnautilus-private/nautilus-file.c:4718
 msgid "link"
 msgstr "link"
 
 # libnautilus-private/nautilus-file.c:3817
-#: libnautilus-private/nautilus-file.c:4728
+#: libnautilus-private/nautilus-file.c:4738
 msgid "link (broken)"
 msgstr "link (törött)"
 
 # data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4751
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:65
-#: libnautilus-private/nautilus-file.c:6148
+#: libnautilus-private/nautilus-file.c:6165
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3458,8 +3445,8 @@ msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"Át akar váltani kézi elrendezésre, és otthagyni ezt az elemet, ahova letette? "
-"Ez felülírja a korábban elmentett kézi beállításokat."
+"Át akar váltani kézi elrendezésre, és otthagyni ezt az elemet, ahova "
+"letette? Ez felülírja a korábban elmentett kézi beállításokat."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3491,8 +3478,8 @@ msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
 msgstr ""
-"Át akar váltani kézi elrendezésre és otthagyni ezeket az elemeket, "
-"ahova letette őket?"
+"Át akar váltani kézi elrendezésre és otthagyni ezeket az elemeket, ahova "
+"letette őket?"
 
 # libnautilus-private/nautilus-icon-dnd.c:751
 #: libnautilus-private/nautilus-icon-dnd.c:751
@@ -3503,46 +3490,6 @@ msgstr "Átvált kézi elrendezésre?"
 #: libnautilus-private/nautilus-icon-dnd.c:752
 msgid "Switch"
 msgstr "Átváltás"
-
-#: libnautilus-private/nautilus-medusa-support.c:123
-#, c-format
-msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. "
-"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the "
-"following commands as root:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"Fast searches will not be available until an initial index of your files has "
-"been created.  This may take a long time."
-msgstr ""
-"Ha be szeretné kapcsolni a gyorskeresést, szerkessze a %s fájlt root "
-"felhasználóként. Az \"enabled\"-et \"yes\"-re kell állítani, ez bekapcsolja "
-"a medusa szolgáltatást.\n"
-"Az indexelő- és keresőszolgáltatások azonnali elindításához root "
-"felhasználóként adja ki a következő parancsokat:\n"
-"\n"
-"medusa-indexd\n"
-"medusa-searchd\n"
-"\n"
-"A gyorskeresés nem lesz elérhető, egészen addig, amíg az első indexfájl "
-"létre nem jön. Ez sokáig eltarthat."
-
-#: libnautilus-private/nautilus-medusa-support.c:138
-msgid ""
-"Medusa, the application that performs searches, cannot be found on your "
-"system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
-"at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not "
-"available.\n"
-msgstr ""
-"A Medusa, a keresést végző alkalmazás nem található a gépen. Ha saját maga "
-"fordította a Nautilust, telepítse a Medusát és fordítsa újra a Nautilust. (A "
-"Medusát megtalálhatja az ftp://ftp.gnome.org kiszolgálón)\n"
-"Ha előrecsomagolt Nautilust használ, a gyorskeresés nem elérhető.\n"
 
 # components/music/nautilus-music-view.c:1694
 #: libnautilus-private/nautilus-program-chooser.c:193
@@ -3871,8 +3818,8 @@ msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"Nem található másik alkalmazás, amellyel meg lehetne tekinteni a fájlt. "
-"Ha a fájlt lemásolja a számítógépére, lehet, hogy meg tudja majd nyitni."
+"Nem található másik alkalmazás, amellyel meg lehetne tekinteni a fájlt. Ha a "
+"fájlt lemásolja a számítógépére, lehet, hogy meg tudja majd nyitni."
 
 #: libnautilus-private/nautilus-program-choosing.c:608
 #, c-format
@@ -3888,8 +3835,8 @@ msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"Nem található másik művelet, amellyel meg lehetne tekinteni a fájlt. "
-"Ha a fájlt lemásolja a számítógépére, lehet, hogy meg tudja majd nyitni."
+"Nem található másik művelet, amellyel meg lehetne tekinteni a fájlt. Ha a "
+"fájlt lemásolja a számítógépére, lehet, hogy meg tudja majd nyitni."
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:791
 # src/file-manager/fm-directory-view.c:3672
@@ -3954,292 +3901,6 @@ msgid ""
 msgstr ""
 "A nem helyi fájlok megnyitásához másolja ezeket egy helyi mappába, majd "
 "próbálja onnan kihúzni. A helyi fájlokat az alkalmazás már megnyitotta."
-
-# libnautilus-private/nautilus-search-uri.c:212
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#. "%s" here is a pattern the file name
-#. matched, such as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:211
-#, c-format
-msgid "[Items ]containing \"%s\" in their names"
-msgstr "amelyek nevében \"%s\" található"
-
-# libnautilus-private/nautilus-search-uri.c:217
-#. "%s" here is a pattern the file name started with, such as
-#. "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:216
-#, c-format
-msgid "[Items ]starting with \"%s\""
-msgstr "amelyek ezzel kezdődnek: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:222
-#. "%s" here is a pattern the file name ended with, such as
-#. "mime"
-#: libnautilus-private/nautilus-search-uri.c:221
-#, c-format
-msgid "[Items ]ending with %s"
-msgstr "amelyek erre végződnek \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:227
-#. "%s" here is a pattern the file name did not match, such
-#. as "nautilus"
-#: libnautilus-private/nautilus-search-uri.c:226
-#, c-format
-msgid "[Items ]not containing \"%s\" in their names"
-msgstr "amelyek nem tartalmazzák ezt: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:231
-#. "%s" is a regular expression string, for example "[abc]"
-#: libnautilus-private/nautilus-search-uri.c:230
-#, c-format
-msgid "[Items ]matching the regular expression \"%s\""
-msgstr "melyekre illeszkedik a(z) \"%s\" reguláris kifejezés"
-
-# libnautilus-private/nautilus-search-uri.c:235
-#. "%s" is a file glob, for example "*.txt"
-#: libnautilus-private/nautilus-search-uri.c:234
-#, c-format
-msgid "[Items ]matching the file pattern \"%s\""
-msgstr "melyekre illeszkedik a(z) \"%s\" fájlminta"
-
-# libnautilus-private/nautilus-search-uri.c:248
-#: libnautilus-private/nautilus-search-uri.c:247
-msgid "[Items that are ]regular files"
-msgstr "rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:251
-#: libnautilus-private/nautilus-search-uri.c:250
-msgid "[Items that are ]text files"
-msgstr "szövegfájlok"
-
-# libnautilus-private/nautilus-search-uri.c:254
-#: libnautilus-private/nautilus-search-uri.c:253
-msgid "[Items that are ]applications"
-msgstr "alkalmazások"
-
-# libnautilus-private/nautilus-search-uri.c:257
-#: libnautilus-private/nautilus-search-uri.c:256
-msgid "[Items that are ]folders"
-msgstr "mappák"
-
-# libnautilus-private/nautilus-search-uri.c:260
-#: libnautilus-private/nautilus-search-uri.c:259
-msgid "[Items that are ]music"
-msgstr "zene"
-
-# libnautilus-private/nautilus-search-uri.c:268
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:267
-#, c-format
-msgid "[Items ]that are not %s"
-msgstr "amelyek nem %s"
-
-# libnautilus-private/nautilus-search-uri.c:273
-#. "%s" here is a word describing a file type, for example
-#. "folder"
-#: libnautilus-private/nautilus-search-uri.c:272
-#, c-format
-msgid "[Items ]that are %s"
-msgstr "amelyek %s"
-
-# libnautilus-private/nautilus-search-uri.c:287
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:286
-#, c-format
-msgid "[Items ]not owned by \"%s\""
-msgstr "melyeknek nem \"%s\" a tulajdonosa"
-
-# libnautilus-private/nautilus-search-uri.c:292
-#. "%s" here is the name of user on a Linux machine, such as
-#. "root"
-#: libnautilus-private/nautilus-search-uri.c:291
-#, c-format
-msgid "[Items ]owned by \"%s\""
-msgstr "melyeknek \"%s\" a tulajdonosa"
-
-# libnautilus-private/nautilus-search-uri.c:295
-#: libnautilus-private/nautilus-search-uri.c:294
-#, c-format
-msgid "[Items ]with owner UID \"%s\""
-msgstr "melyeknek a tulajdonos UID-je \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:298
-#: libnautilus-private/nautilus-search-uri.c:297
-#, c-format
-msgid "[Items ]with owner UID other than \"%s\""
-msgstr "melyeknek a tulajdonos UID-je nem \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:309
-#: libnautilus-private/nautilus-search-uri.c:308
-#, c-format
-msgid "[Items ]larger than %s bytes"
-msgstr "amelyek nagyobbak %s bájtnál"
-
-# libnautilus-private/nautilus-search-uri.c:312
-#: libnautilus-private/nautilus-search-uri.c:311
-#, c-format
-msgid "[Items ]smaller than %s bytes"
-msgstr "amelyek kisebbek %s bájtnál"
-
-# libnautilus-private/nautilus-search-uri.c:315
-#: libnautilus-private/nautilus-search-uri.c:314
-#, c-format
-msgid "[Items ]of %s bytes"
-msgstr "amelyek %s bájt hosszúak"
-
-# libnautilus-private/nautilus-search-uri.c:326
-#: libnautilus-private/nautilus-search-uri.c:325
-msgid "[Items ]modified today"
-msgstr "melyeket ma módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:329
-#: libnautilus-private/nautilus-search-uri.c:328
-msgid "[Items ]modified yesterday"
-msgstr "melyeket tegnap módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:332
-#: libnautilus-private/nautilus-search-uri.c:331
-#, c-format
-msgid "[Items ]modified on %s"
-msgstr "melyeket ekkor módosítottak: %s"
-
-# libnautilus-private/nautilus-search-uri.c:334
-#: libnautilus-private/nautilus-search-uri.c:333
-#, c-format
-msgid "[Items ]not modified on %s"
-msgstr "melyeket nem módosítottak ekkor: %s"
-
-# libnautilus-private/nautilus-search-uri.c:337
-#: libnautilus-private/nautilus-search-uri.c:336
-#, c-format
-msgid "[Items ]modified before %s"
-msgstr "melyeket %s előtt módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:340
-#: libnautilus-private/nautilus-search-uri.c:339
-#, c-format
-msgid "[Items ]modified after %s"
-msgstr "melyeket %s után módosítottak"
-
-# libnautilus-private/nautilus-search-uri.c:343
-#: libnautilus-private/nautilus-search-uri.c:342
-#, c-format
-msgid "[Items ]modified within a week of %s"
-msgstr " melyeket %s körül módosítottak (1 hét)"
-
-# libnautilus-private/nautilus-search-uri.c:346
-#: libnautilus-private/nautilus-search-uri.c:345
-#, c-format
-msgid "[Items ]modified within a month of %s"
-msgstr " melyeket %s körül módosítottak (1 hónap)"
-
-# libnautilus-private/nautilus-search-uri.c:359
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:358
-#, c-format
-msgid "[Items ]marked with \"%s\""
-msgstr "amelyek a(z) \"%s\" matricával vannak megjelölve"
-
-# libnautilus-private/nautilus-search-uri.c:363
-#. "%s" here is the name of an Emblem
-#: libnautilus-private/nautilus-search-uri.c:362
-#, c-format
-msgid "[Items ]not marked with \"%s\""
-msgstr "amelyek nincsenek a(z) \"%s\" matricával megjelölve"
-
-# libnautilus-private/nautilus-search-uri.c:379
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:378
-#, c-format
-msgid "[Items ]with all the words \"%s\""
-msgstr "amelyek ezeket a szavakat tartalmazzák: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:384
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:383
-#, c-format
-msgid "[Items ]containing one of the words \"%s\""
-msgstr "amelyek ezek közül legalább egy szót tartalmaznak: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:389
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:388
-#, c-format
-msgid "[Items ]without all the words \"%s\""
-msgstr "amelyek nem tartalmazzák ezeket a szavakat: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:394
-#. "%s" here is a word or words present in the file, for
-#. example "nautilus" or "apple orange"
-#: libnautilus-private/nautilus-search-uri.c:393
-#, c-format
-msgid "[Items ]without any of the words \"%s\""
-msgstr "amelyek nem tartalmaznak a megadott szavak közül egyet sem: \"%s\""
-
-# libnautilus-private/nautilus-search-uri.c:556
-#: libnautilus-private/nautilus-search-uri.c:555
-msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "és"
-
-# libnautilus-private/nautilus-search-uri.c:561
-#. Human readable description for a criterion in a search for
-#. files. Bracketed items are context, and are message
-#. strings elsewhere.  Translate only the words "and" here.
-#: libnautilus-private/nautilus-search-uri.c:560
-msgid ""
-"[Items larger than 400K], [owned by root and without all the words \"apple "
-"orange\"]"
-msgstr ", "
-
-# libnautilus-private/nautilus-search-uri.c:591
-#. The beginning of the description of a search that has just been
-#. performed.  The "%s" here is a description of a single criterion,
-#. which in english might be "that contain the word 'foo'"
-#: libnautilus-private/nautilus-search-uri.c:590
-#, c-format
-msgid "Items %s"
-msgstr "Elemek %s"
-
-# libnautilus-private/nautilus-search-uri.c:701
-#: libnautilus-private/nautilus-search-uri.c:700
-msgid "Items containing \"stuff\" in their names"
-msgstr "Elemek, amelyek neve tartalmazza a \"stuff\" szót"
-
-# libnautilus-private/nautilus-search-uri.c:703
-#: libnautilus-private/nautilus-search-uri.c:702
-msgid "Items that are regular files"
-msgstr "Elemek, amelyek rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:706
-#: libnautilus-private/nautilus-search-uri.c:705
-msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Elemek, amelyek neve tartalmazza a \"stuff\" szót és amelyek rendes fájlok"
-
-# libnautilus-private/nautilus-search-uri.c:710
-#: libnautilus-private/nautilus-search-uri.c:709
-msgid ""
-"Items containing \"stuff\" in their names, that are regular files and "
-"smaller than 2000 bytes"
-msgstr ""
-"Elemek, amelyek neve tartalmazza a \"stuff\" szót, amelyek rendes fájlok és "
-"amelyek kisebbek mint 2000 bájt"
-
-# libnautilus-private/nautilus-search-uri.c:714
-#: libnautilus-private/nautilus-search-uri.c:713
-msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr "Elemek, amelyek neve tartalmazza a \"medusa\" szót és amelyek mappák"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:175
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -4454,8 +4115,8 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
-"Nautilus shell-műveletek, amelyeket meg lehet oldani egymást követő parancssori "
-"utasításokkal"
+"Nautilus shell-műveletek, amelyeket meg lehet oldani egymást követő "
+"parancssori utasításokkal"
 
 # src/Nautilus_shell.oaf.in.h:16
 #: src/Nautilus_shell.server.in.h:20
@@ -4521,7 +4182,7 @@ msgid "Empty Trash"
 msgstr "Kuka ürítése"
 
 # src/file-manager/fm-directory-view.c:468
-#: src/file-manager/fm-directory-view.c:540
+#: src/file-manager/fm-directory-view.c:544
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
@@ -4529,12 +4190,12 @@ msgstr[0] "%d ablak megnyitása?"
 msgstr[1] "%d ablak megnyitása?"
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:541
+#: src/file-manager/fm-directory-view.c:545
 msgid "Are you sure you want to open all files?"
 msgstr "Biztosan meg akarja nyitni az összes fájlt?"
 
 # src/file-manager/fm-directory-view.c:466
-#: src/file-manager/fm-directory-view.c:542 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:546 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -4542,13 +4203,13 @@ msgstr[0] "Ez %d ablakot fog megnyitni."
 msgstr[1] "Ez %d ablakot fog megnyitni."
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:893
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Biztosan véglegesen törölni akarja a következőt: \"%s\"?"
 
 # src/file-manager/fm-directory-view.c:2641
-#: src/file-manager/fm-directory-view.c:893
+#: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4557,36 +4218,36 @@ msgstr[0] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet?"
 msgstr[1] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet?"
 
 # src/file-manager/fm-directory-view.c:3191
-#: src/file-manager/fm-directory-view.c:901
+#: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
 msgstr "Ha töröl egy elemet, akkor az véglegesen elveszik."
 
 # src/file-manager/fm-directory-view.c:2607
 # src/file-manager/fm-directory-view.c:2648
-#: src/file-manager/fm-directory-view.c:902
+#: src/file-manager/fm-directory-view.c:906
 msgid "Delete?"
 msgstr "Törlés?"
 
 # src/nautilus-property-browser.c:2012
-#: src/file-manager/fm-directory-view.c:1041
+#: src/file-manager/fm-directory-view.c:1045
 msgid "Select Pattern"
 msgstr "Minta kiválasztása"
 
 # src/nautilus-property-browser.c:2068
-#: src/file-manager/fm-directory-view.c:1057
+#: src/file-manager/fm-directory-view.c:1061
 msgid "_Pattern:"
 msgstr "_Minta:"
 
 # src/file-manager/fm-directory-view.c:1224
 # src/file-manager/fm-directory-view.c:1189
-#: src/file-manager/fm-directory-view.c:1746
+#: src/file-manager/fm-directory-view.c:1750
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" kijelölve"
 
 # src/file-manager/fm-directory-view.c:1229
 # src/file-manager/fm-directory-view.c:1194
-#: src/file-manager/fm-directory-view.c:1748
+#: src/file-manager/fm-directory-view.c:1752
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -4594,7 +4255,7 @@ msgstr[0] "%d mappa kijelölve"
 msgstr[1] "%d mappa kijelölve"
 
 # src/file-manager/fm-directory-view.c:1204
-#: src/file-manager/fm-directory-view.c:1758
+#: src/file-manager/fm-directory-view.c:1762
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4603,7 +4264,7 @@ msgstr[1] " (%d elemet tartalmaz)"
 
 # src/file-manager/fm-directory-view.c:1204
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1769
+#: src/file-manager/fm-directory-view.c:1773
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -4611,14 +4272,14 @@ msgstr[0] " (összesen %d elemet tartalmaz)"
 msgstr[1] " (összesen %d elemet tartalmaz)"
 
 # src/file-manager/fm-directory-view.c:1215
-#: src/file-manager/fm-directory-view.c:1785
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" kijelölt (%s)"
 
 # src/file-manager/fm-directory-view.c:1254
 # src/file-manager/fm-directory-view.c:1219
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1793
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4627,14 +4288,14 @@ msgstr[1] "%d elem kijelölve (%s)"
 
 # src/file-manager/fm-directory-view.c:1229
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1797
+#: src/file-manager/fm-directory-view.c:1801
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "még %d elem kijelölve (%s)"
 msgstr[1] "még %d elem kijelölve (%s)"
 
-#: src/file-manager/fm-directory-view.c:1818
+#: src/file-manager/fm-directory-view.c:1822
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Szabad hely: %s"
@@ -4647,7 +4308,7 @@ msgstr "%s, Szabad hely: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1843
+#: src/file-manager/fm-directory-view.c:1847
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4657,55 +4318,57 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1968
+#: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr "A mappában (\"%s\") több fájl van, mint amennyit a Nautilus kezelni tud."
+msgstr ""
+"A mappában (\"%s\") több fájl van, mint amennyit a Nautilus kezelni tud."
 
-#: src/file-manager/fm-directory-view.c:1974
+#: src/file-manager/fm-directory-view.c:1978
 msgid "Some files will not be displayed."
 msgstr "Nem jelenik meg minden fájl."
 
 # src/file-manager/fm-directory-view.c:1392
-#: src/file-manager/fm-directory-view.c:1975
+#: src/file-manager/fm-directory-view.c:1979
 msgid "Too Many Files"
 msgstr "Túl sok fájl"
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3247
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "A fájl nem helyezhető át a Kukába. Akarja most rögtön törölni?"
 
-#: src/file-manager/fm-directory-view.c:3244
+#: src/file-manager/fm-directory-view.c:3248
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "A(z) \"%s\" fájl nem helyezhető át a Kukába."
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3248
+#: src/file-manager/fm-directory-view.c:3252
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "Az elemeket nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
+msgstr ""
+"Az elemeket nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3251
+#: src/file-manager/fm-directory-view.c:3255
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Néhány elemet nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
 
 # src/file-manager/fm-directory-view.c:2606
-#: src/file-manager/fm-directory-view.c:3258
+#: src/file-manager/fm-directory-view.c:3262
 msgid "Delete Immediately?"
 msgstr "Törlés azonnal?"
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:3290
+#: src/file-manager/fm-directory-view.c:3294
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Biztosan véglegesen törölni akarja a következőt a Kukából: \"%s\"?"
 
 # src/file-manager/fm-directory-view.c:2641
-#: src/file-manager/fm-directory-view.c:3294
+#: src/file-manager/fm-directory-view.c:3298
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4713,43 +4376,45 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
-msgstr[1] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
+msgstr[0] ""
+"Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
+msgstr[1] ""
+"Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
 
-#: src/file-manager/fm-directory-view.c:3303
+#: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Ha töröl egy elemet, akkor az véglegesen el fog veszni."
 
 # src/file-manager/fm-directory-view.c:2647
-#: src/file-manager/fm-directory-view.c:3304
+#: src/file-manager/fm-directory-view.c:3308
 msgid "Delete From Trash?"
 msgstr "Törli a Kukából?"
 
 # src/file-manager/fm-directory-view.c:2920
 # src/file-manager/fm-directory-view.c:2961
-#: src/file-manager/fm-directory-view.c:3667
+#: src/file-manager/fm-directory-view.c:3671
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Használja a következőt a kijelölt elem megnyitásához: \"%s\""
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
-#: src/file-manager/fm-directory-view.c:3731
+#: src/file-manager/fm-directory-view.c:3735
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Más _alkalmazás..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
-#: src/file-manager/fm-directory-view.c:3731
+#: src/file-manager/fm-directory-view.c:3735
 msgid "An _Application..."
 msgstr "Egy _alkalmazás..."
 
 # libnautilus-private/nautilus-file-operations.c:1906
-#: src/file-manager/fm-directory-view.c:3915
+#: src/file-manager/fm-directory-view.c:3919
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nem lehet megnyitni a(z) %s-t"
 
-#: src/file-manager/fm-directory-view.c:3918
+#: src/file-manager/fm-directory-view.c:3922
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -4764,35 +4429,35 @@ msgstr ""
 
 # src/file-manager/fm-directory-view.c:2920
 # src/file-manager/fm-directory-view.c:2961
-#: src/file-manager/fm-directory-view.c:4289
+#: src/file-manager/fm-directory-view.c:4293
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" futtatása minden kijelölt elemre"
 
-#: src/file-manager/fm-directory-view.c:4523
+#: src/file-manager/fm-directory-view.c:4527
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Dokumentum létrehozása a(z) \"%s\" sablonból"
 
-#: src/file-manager/fm-directory-view.c:4707
+#: src/file-manager/fm-directory-view.c:4711
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Minden ebben a mappában található végrehajtható fájl megjelenik a Programok "
 "menüben."
 
-#: src/file-manager/fm-directory-view.c:4709
+#: src/file-manager/fm-directory-view.c:4713
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Ha kiválaszt egy parancsfájlt a menüből, lefuttathatja azt bármelyik kijelölt "
-"elemmel (a kijelölt elem lesz a parancsfájl bemenete)."
+"Ha kiválaszt egy parancsfájlt a menüből, lefuttathatja azt bármelyik "
+"kijelölt elemmel (a kijelölt elem lesz a parancsfájl bemenete)."
 
-#: src/file-manager/fm-directory-view.c:4711
+#: src/file-manager/fm-directory-view.c:4715
 msgid "About Scripts"
 msgstr "Parancsfájlok névjegye"
 
-#: src/file-manager/fm-directory-view.c:4712
+#: src/file-manager/fm-directory-view.c:4716
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4813,11 +4478,11 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Az ebben a könyvtárban található végrehajtható fájlok megjelennek a Parancsfájlok "
-"menüben. A Nautilus lefuttatja a kijelölt parancsfájlt.\n"
+"Az ebben a könyvtárban található végrehajtható fájlok megjelennek a "
+"Parancsfájlok menüben. A Nautilus lefuttatja a kijelölt parancsfájlt.\n"
 "\n"
-"Ha helyi mappából futtatja a parancsfájlt, az a kijelölt fájlokat kapja meg az "
-"argumentumán. Ha távoli mappából (pl. web vagy ftp mappa) futtatja a "
+"Ha helyi mappából futtatja a parancsfájlt, az a kijelölt fájlokat kapja meg "
+"az argumentumán. Ha távoli mappából (pl. web vagy ftp mappa) futtatja a "
 "parancsfájlt, nem kap argumentumot. \n"
 "\n"
 "Minden esetben, a Nautilus beállítja a következő környezeti változókat, a "
@@ -4833,7 +4498,7 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: a jelenlegi ablak helyzete és mérete"
 
-#: src/file-manager/fm-directory-view.c:4843
+#: src/file-manager/fm-directory-view.c:4847
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
@@ -4841,7 +4506,7 @@ msgstr ""
 "\"%s\" áthelyezésére akkor kerül sor, ha kiválasztja a Fájlok beillesztése "
 "parancsot"
 
-#: src/file-manager/fm-directory-view.c:4847
+#: src/file-manager/fm-directory-view.c:4851
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
@@ -4850,7 +4515,7 @@ msgstr ""
 "parancsot"
 
 # src/file-manager/fm-directory-view.c:2594
-#: src/file-manager/fm-directory-view.c:4854
+#: src/file-manager/fm-directory-view.c:4858
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4863,54 +4528,54 @@ msgstr[1] ""
 "A %d kijelölt elem akkor kerül áthelyezésre, ha kiválasztja a Fájlok "
 "beillesztése parancsot"
 
-#: src/file-manager/fm-directory-view.c:4861
+#: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr[0] ""
-"A %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Fájlok beillesztése "
-"parancsot"
+"A %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Fájlok "
+"beillesztése parancsot"
 msgstr[1] ""
-"A %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Fájlok beillesztése "
-"parancsot"
+"A %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Fájlok "
+"beillesztése parancsot"
 
-#: src/file-manager/fm-directory-view.c:4943
+#: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nincs semmi a vágólapon."
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
-#: src/file-manager/fm-directory-view.c:5046
-#: src/file-manager/fm-directory-view.c:6098
+#: src/file-manager/fm-directory-view.c:5050
+#: src/file-manager/fm-directory-view.c:6102
 msgid "Mount Error"
 msgstr "Beillesztés hiba"
 
 # libnautilus-private/nautilus-volume-monitor.c:1308
-#: src/file-manager/fm-directory-view.c:5108
+#: src/file-manager/fm-directory-view.c:5112
 msgid "Unmount Error"
 msgstr "Leválasztás hiba"
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
-#: src/file-manager/fm-directory-view.c:5111
+#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "Kiadás hiba"
 
 # src/file-manager/fm-properties-window.c:1966
-#: src/file-manager/fm-directory-view.c:5374
+#: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
 msgstr "_Kiadás"
 
 # src/file-manager/fm-desktop-icon-view.c:1042
-#: src/file-manager/fm-directory-view.c:5374
+#: src/file-manager/fm-directory-view.c:5378
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "Kötet _leválasztása"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:20
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5504
+#: src/file-manager/fm-directory-view.c:5508
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -4919,59 +4584,59 @@ msgstr[0] "Megnyitás új ablakban"
 msgstr[1] "Megnyitás %d új ablakban"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/file-manager/fm-directory-view.c:5511
+#: src/file-manager/fm-directory-view.c:5515
 msgid "Browse Folder"
 msgstr "Mappa tallózása"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/file-manager/fm-directory-view.c:5513
+#: src/file-manager/fm-directory-view.c:5517
 msgid "Browse Folders"
 msgstr "Mappák tallózása"
 
 # src/file-manager/fm-directory-view.c:3197
-#: src/file-manager/fm-directory-view.c:5536
+#: src/file-manager/fm-directory-view.c:5540
 msgid "_Delete from Trash"
 msgstr "Törlés a _Kukából"
 
 # src/file-manager/fm-directory-view.c:3191
-#: src/file-manager/fm-directory-view.c:5538
+#: src/file-manager/fm-directory-view.c:5542
 msgid "Delete all selected items permanently"
 msgstr "Minden kijelölt elem végleges törlése"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:13
-#: src/file-manager/fm-directory-view.c:5541
-#: src/file-manager/fm-directory-view.c:5879
+#: src/file-manager/fm-directory-view.c:5545
+#: src/file-manager/fm-directory-view.c:5883
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Át_helyezés a Kukába"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: src/file-manager/fm-directory-view.c:5543
+#: src/file-manager/fm-directory-view.c:5547
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Minden kijelölt elem áthelyezése a Kukába"
 
 # src/file-manager/fm-directory-view.c:2607
 # src/file-manager/fm-directory-view.c:2648
-#: src/file-manager/fm-directory-view.c:5567
+#: src/file-manager/fm-directory-view.c:5571
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Törlés"
 
 # src/file-manager/fm-directory-view.c:3235
-#: src/file-manager/fm-directory-view.c:5587
+#: src/file-manager/fm-directory-view.c:5591
 msgid "Ma_ke Links"
 msgstr "Lin_kek létrehozása"
 
 # src/file-manager/fm-directory-view.c:3429
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5592
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Lin_k létrehozása"
 
 # src/file-manager/fm-directory-view.c:3255
 # src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:5601
+#: src/file-manager/fm-directory-view.c:5605
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Kuka ürítése"
@@ -4980,7 +4645,7 @@ msgstr "_Kuka ürítése"
 # components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 # components/sample/nautilus-sample-content-view-ui.xml.h:4
 # src/nautilus-shell-ui.xml.h:77
-#: src/file-manager/fm-directory-view.c:5617
+#: src/file-manager/fm-directory-view.c:5621
 msgid "Cu_t File"
 msgstr "_Fájl kivágása"
 
@@ -4988,84 +4653,83 @@ msgstr "_Fájl kivágása"
 # components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 # components/sample/nautilus-sample-content-view-ui.xml.h:4
 # src/nautilus-shell-ui.xml.h:77
-#: src/file-manager/fm-directory-view.c:5618
+#: src/file-manager/fm-directory-view.c:5622
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "_Fájlok kivágása"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:73
-#: src/file-manager/fm-directory-view.c:5627
+#: src/file-manager/fm-directory-view.c:5631
 msgid "_Copy File"
 msgstr "Fájl _másolása"
 
 # libnautilus-private/nautilus-file-operations.c:1848
-#: src/file-manager/fm-directory-view.c:5628
+#: src/file-manager/fm-directory-view.c:5632
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "Fájlok _másolása"
 
 # src/file-manager/fm-directory-view.c:3420
-#: src/file-manager/fm-directory-view.c:5870
+#: src/file-manager/fm-directory-view.c:5874
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "A link törött, áthelyezi a Kukába?"
 
 # src/file-manager/fm-directory-view.c:3420
-#: src/file-manager/fm-directory-view.c:5872
+#: src/file-manager/fm-directory-view.c:5876
 msgid "This link can't be used, because it has no target."
 msgstr "Ez a link nem használható, mert nem mutat semmire."
 
 # src/file-manager/fm-directory-view.c:3423
-#: src/file-manager/fm-directory-view.c:5874
+#: src/file-manager/fm-directory-view.c:5878
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr ""
-"Ez a link nem használható, mert nem létezik, amire mutat (\"%s\")."
+msgstr "Ez a link nem használható, mert nem létezik, amire mutat (\"%s\")."
 
 # src/file-manager/fm-directory-view.c:3429
-#: src/file-manager/fm-directory-view.c:5879
+#: src/file-manager/fm-directory-view.c:5883
 msgid "Broken Link"
 msgstr "Törött link"
 
 # src/file-manager/fm-directory-view.c:3483
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5941
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Futtatja a(z) \"%s\"-t, vagy megjeleníti a tartalmát?"
 
-#: src/file-manager/fm-directory-view.c:5939
+#: src/file-manager/fm-directory-view.c:5943
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "A(z) \"%s\" egy végrehajtható szöveges fájl."
 
 # src/file-manager/fm-directory-view.c:3489
-#: src/file-manager/fm-directory-view.c:5945
+#: src/file-manager/fm-directory-view.c:5949
 msgid "Run or Display?"
 msgstr "Futtatás vagy megjelenítés?"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-#: src/file-manager/fm-directory-view.c:5946
+#: src/file-manager/fm-directory-view.c:5950
 msgid "Run in _Terminal"
 msgstr "_Futtatás terminálban"
 
 # src/file-manager/fm-directory-view.c:3491
-#: src/file-manager/fm-directory-view.c:5947
+#: src/file-manager/fm-directory-view.c:5951
 msgid "_Display"
 msgstr "_Megjelenítés"
 
 # src/file-manager/fm-directory-view.c:3490
-#: src/file-manager/fm-directory-view.c:5950
+#: src/file-manager/fm-directory-view.c:5954
 msgid "_Run"
 msgstr "_Futtatás"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:791
 # src/file-manager/fm-directory-view.c:3672
-#: src/file-manager/fm-directory-view.c:6232
+#: src/file-manager/fm-directory-view.c:6236
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" megnyitása."
 
 # src/file-manager/fm-directory-view.c:3678
-#: src/file-manager/fm-directory-view.c:6238
+#: src/file-manager/fm-directory-view.c:6243
 msgid "Cancel Open?"
 msgstr "Mégsem nyitja meg?"
 
@@ -5110,8 +4774,7 @@ msgstr ""
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr ""
-"Nincs \"%s\" ebben a mappában. Lehet, hogy áthelyezték vagy törölték?"
+msgstr "Nincs \"%s\" ebben a mappában. Lehet, hogy áthelyezték vagy törölték?"
 
 # src/file-manager/fm-error-reporting.c:99
 #: src/file-manager/fm-error-reporting.c:113
@@ -5126,8 +4789,8 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"A(z) \"%s\" név nem érvényes, mert tartalmazza a \"/\" karaktert. "
-"Használjon másik nevet."
+"A(z) \"%s\" név nem érvényes, mert tartalmazza a \"/\" karaktert. Használjon "
+"másik nevet."
 
 # src/file-manager/fm-error-reporting.c:108
 #: src/file-manager/fm-error-reporting.c:122
@@ -5218,8 +4881,8 @@ msgstr "Hiba a tulajdonos beállításakor"
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
-"A(z) \"%s\" jogosultságait nem lehet megváltoztatni, mert írásvédett "
-"lemezen van"
+"A(z) \"%s\" jogosultságait nem lehet megváltoztatni, mert írásvédett lemezen "
+"van"
 
 # src/file-manager/fm-error-reporting.c:225
 #: src/file-manager/fm-error-reporting.c:242
@@ -5685,296 +5348,6 @@ msgstr "Tulajdonságok létrehozása ablak."
 msgid "Select an icon"
 msgstr "Ikon kiválasztása"
 
-# src/file-manager/fm-search-list-view.c:143
-#: src/file-manager/fm-search-list-view.c:124
-#, c-format
-msgid ""
-"Search results may not include items modified after %s, when your drive was "
-"last indexed."
-msgstr ""
-"A keresés eredményeiben %s után módosított adatok nem szerepelnek, mert "
-"ekkor frissült utoljára a merevlemez indexe."
-
-# src/file-manager/fm-search-list-view.c:124
-#: src/file-manager/fm-search-list-view.c:144
-msgid "Search Results"
-msgstr "Keresés eredményei"
-
-# src/file-manager/nautilus-indexing-info.c:396
-#: src/file-manager/fm-search-list-view.c:166
-msgid "Sorry, but the Medusa search service is not available."
-msgstr "Sajnálom, de a Medusa keresés szolgáltatás nem elérhető."
-
-#: src/file-manager/fm-search-list-view.c:167
-msgid "Medusa is not installed."
-msgstr "A Medusa nincs telepítve."
-
-# src/file-manager/fm-search-list-view.c:160
-# src/file-manager/nautilus-indexing-info.c:397
-#: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
-msgid "Search Service Not Available"
-msgstr "Keresési szolgáltatás nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:342
-#: src/file-manager/fm-search-list-view.c:190
-msgid ""
-"The search you have selected is newer than the index on your system.  The "
-"search will return no results right now."
-msgstr ""
-"A kiválasztott keresés újabb a rendszeren található indexfájlnál. A keresés "
-"nem fog eredményt visszaadni."
-
-# src/file-manager/fm-search-list-view.c:342
-#: src/file-manager/fm-search-list-view.c:194
-#: src/file-manager/fm-search-list-view.c:213
-msgid ""
-"You can create a new index by running \"medusa-indexd\" as root on the "
-"command line."
-msgstr ""
-"Új indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
-"hozhat létre."
-
-# src/file-manager/fm-search-list-view.c:190
-#: src/file-manager/fm-search-list-view.c:197
-msgid "Search For Items That Are Too New"
-msgstr "Túlságosan új elemek keresése"
-
-# src/file-manager/fm-search-list-view.c:201
-#: src/file-manager/fm-search-list-view.c:201
-msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr "A számítógépén található minden fájl megfelel a keresési feltételeinek. "
-
-# src/file-manager/fm-search-list-view.c:201
-#: src/file-manager/fm-search-list-view.c:203
-msgid ""
-"You can check the spelling on your selections or add more criteria to narrow "
-"your results."
-msgstr ""
-"Ellenőrizze, hogy nem gépelt-e el valamit, vagy adjon a kereséshez további "
-"feltételeket, hogy kevesebb legyen a találat."
-
-# src/file-manager/fm-search-list-view.c:205
-# src/file-manager/fm-search-list-view.c:219
-#: src/file-manager/fm-search-list-view.c:205
-#: src/file-manager/fm-search-list-view.c:223
-msgid "Error During Search"
-msgstr "Hiba a keresés közben"
-
-# src/file-manager/fm-search-list-view.c:342
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:211
-msgid ""
-"Find cannot open your file system index.  Your index may be missing or "
-"corrupt."
-msgstr ""
-"A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy hiányzik "
-"vagy megsérült az index."
-
-# libnautilus-private/nautilus-file-operations.c:2005
-#: src/file-manager/fm-search-list-view.c:215
-msgid "Error Reading File Index"
-msgstr "Hiba a fájlindex beolvasása közben"
-
-# src/file-manager/fm-search-list-view.c:214
-#: src/file-manager/fm-search-list-view.c:221
-msgid "An error occurred while loading this search's contents."
-msgstr "Hiba történt a keresés tartalmának betöltése közben."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:240
-msgid ""
-"To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:242
-msgid ""
-"To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra."
-
-# src/file-manager/fm-search-list-view.c:242
-#: src/file-manager/fm-search-list-view.c:245
-msgid ""
-"Find can't access your index right now so a slower search will be performed "
-"that doesn't use the index."
-msgstr ""
-"A keresőprogram jelenleg nem fér hozzá az indexhez, így egy lassabb keresés "
-"fog történni, amely nem használja az indexet."
-
-#: src/file-manager/fm-search-list-view.c:248
-msgid "Find can't access your index right now."
-msgstr "A keresőprogram jelenleg nem fér hozzá az indexhez."
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:250
-msgid "Fast Searches Are Not Available"
-msgstr "A gyorskeresés nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:252
-# src/file-manager/fm-search-list-view.c:292
-# src/file-manager/fm-search-list-view.c:320
-# src/file-manager/fm-search-list-view.c:339
-#: src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:285
-#: src/file-manager/fm-search-list-view.c:312
-msgid "Content Searches Are Not Available"
-msgstr "A tartalomra keresés nem elérhető"
-
-# src/file-manager/fm-search-list-view.c:255
-#: src/file-manager/fm-search-list-view.c:255
-msgid ""
-"Your index files are available but the Medusa search daemon, which handles "
-"index requests, isn't running.  To start this program, log in as root and "
-"enter this command at the command line:\n"
-"\n"
-"medusa-searchd"
-msgstr ""
-"A indexfájlok léteznek, de nem fut a Medusa keresődémon, ami ezeket kezeli. "
-"A Medusa indításához lépjen be rendszergazdaként és írja be, a következőt:\n"
-"\n"
-"medusa-searchd"
-
-# src/file-manager/fm-search-list-view.c:307
-#: src/file-manager/fm-search-list-view.c:269
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
-"számítógépe éppen most állítja elő ezt a fájlt."
-
-# src/file-manager/fm-search-list-view.c:313
-#: src/file-manager/fm-search-list-view.c:273
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index."
-msgstr ""
-"A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra. "
-"A számítógépe éppen most állítja elő ezt a fájlt."
-
-#: src/file-manager/fm-search-list-view.c:278
-msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
-"Mivel a keresőprogram nem tudja használni az indexet, a megadott keresés "
-"több percig is eltarthat."
-
-#: src/file-manager/fm-search-list-view.c:281
-msgid "Content searches will be available when the index is complete."
-msgstr "A tartalomra keresések az index elkészülte után lesznek elérhetőek."
-
-# src/file-manager/fm-search-list-view.c:291
-# src/file-manager/fm-search-list-view.c:319
-# src/file-manager/fm-search-list-view.c:338
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:311
-msgid "Indexed Searches Are Not Available"
-msgstr "Az indexelt keresések nem elérhetők"
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:293
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. Jelenleg "
-"nincs elérhető index."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:296
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now."
-msgstr ""
-"A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra. "
-"Jelenleg nincs elérhető index."
-
-# src/file-manager/fm-search-list-view.c:327
-#: src/file-manager/fm-search-list-view.c:300
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, searches will take several "
-"minutes."
-msgstr ""
-"Indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
-"hozhat létre. Ameddig nincs teljes index, a keresések több percig is "
-"eltarthatnak."
-
-# src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:305
-msgid ""
-"You can create an index by running \"medusa-indexd\" as root on the command "
-"line.  Until a complete index is available, content searches cannot be "
-"performed."
-msgstr ""
-"Indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
-"hozhat létre. Ameddig nincs teljes index, a tartalomra keresések nem "
-"hajtódnak végre."
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:329
-msgid "Fast searches are not enabled on your computer."
-msgstr "A gyorskeresés nincs bekapcsolva a számítógépén."
-
-# src/file-manager/fm-search-list-view.c:247
-#: src/file-manager/fm-search-list-view.c:330
-msgid ""
-"To do a fast search, Find requires an index of the files on your system. "
-"Your system administrator has disabled fast search on your computer, so no "
-"index is available."
-msgstr ""
-"A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
-"rendszergazda nem engedélyezte a gyorskeresést a számítógépén, ezért "
-"nincs elérhető indexfájl."
-
-# src/file-manager/fm-search-list-view.c:251
-#: src/file-manager/fm-search-list-view.c:334
-msgid "Fast Searches Not Enabled"
-msgstr "A gyorskeresés nincs bekapcsolva"
-
-# src/file-manager/fm-search-list-view.c:555
-#: src/file-manager/fm-search-list-view.c:513
-msgid "Where"
-msgstr "Hol"
-
-# src/file-manager/fm-search-list-view.c:607
-# src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#. "Reveal in n New Windows" means open the parent folder for each
-#. * selected item in a separate new window, select each selected
-#. * item in its new window, and scroll as necessary to make those
-#. * items visible (this comment is to inform translators of this
-#. * tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, c-format
-msgid "_Reveal in New Window"
-msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Felfedés új ablakban"
-msgstr[1] "_Felfedés %d új ablakban"
-
-# src/file-manager/fm-search-list-view.c:727
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
-#: src/file-manager/fm-search-list-view.c:685
-msgid "Nautilus found more search results than it can display."
-msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
-
-# src/file-manager/fm-search-list-view.c:727
-#: src/file-manager/fm-search-list-view.c:686
-msgid "Some matching items will not be displayed. "
-msgstr "Néhány találat nem lesz megjelenítve."
-
-# src/file-manager/fm-search-list-view.c:729
-#: src/file-manager/fm-search-list-view.c:687
-msgid "Too Many Matches"
-msgstr "Túl sok találat"
-
 # libnautilus-private/nautilus-file-operations.c:2314
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
@@ -6423,80 +5796,6 @@ msgstr "_Rendezettség megtartása"
 msgid "_Manually"
 msgstr "_Kézzel"
 
-# src/file-manager/nautilus-indexing-info.c:85
-#: src/file-manager/nautilus-indexing-info.c:89
-#, c-format
-msgid "Indexing is %d%% complete."
-msgstr "Az indexelés %d%%-nál tart."
-
-# src/file-manager/nautilus-indexing-info.c:236
-#: src/file-manager/nautilus-indexing-info.c:165
-#, c-format
-msgid "Your files were last indexed at %s."
-msgstr "A fájljai utoljára ekkor voltak indexelve: %s"
-
-# src/file-manager/nautilus-indexing-info.c:224
-#: src/file-manager/nautilus-indexing-info.c:170
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. "
-msgstr ""
-"Naponta egyszer a fájljai és a szöveges tartalom leindexelődik, hogy a "
-"keresések gyorsabbak legyenek."
-
-# src/file-manager/nautilus-indexing-info.c:219
-# src/file-manager/nautilus-indexing-info.c:226
-# src/file-manager/nautilus-indexing-info.c:280
-#: src/file-manager/nautilus-indexing-info.c:172
-#: src/file-manager/nautilus-indexing-info.c:200
-msgid "Indexing Status"
-msgstr "Indexelés állapota"
-
-# src/file-manager/nautilus-indexing-info.c:236
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Your files are currently being indexed."
-msgstr "A fájljai jelenleg indexelés alatt vannak."
-
-# src/file-manager/nautilus-indexing-info.c:224
-#: src/file-manager/nautilus-indexing-info.c:198
-msgid ""
-"Once a day your files and text content are indexed so your searches are fast."
-msgstr ""
-"Naponta egyszer a fájljai és a szöveges tartalom leindexelődik, hogy a "
-"keresések gyorsabbak legyenek."
-
-#: src/file-manager/nautilus-indexing-info.c:257
-msgid "There is no index of your files right now."
-msgstr "Jelenleg nem létezik indexfájl."
-
-#: src/file-manager/nautilus-indexing-info.c:258
-msgid ""
-"When Fast Search is enabled, Find creates an index to speed up searches.  "
-"Fast searching is not enabled on your computer, so you do not have an index "
-"right now."
-msgstr ""
-"Amikor be van kapcsolva a gyorskeresés, a keresőprogram létrehoz egy "
-"indexet a keresések felgyorsításához. A gyorskeresés nincs bekapcsolva a "
-"számítógépén, ezért jelenleg nincs indexfájlja."
-
-#: src/file-manager/nautilus-indexing-info.c:262
-msgid "No Index of Files"
-msgstr "Nincs indexfájl"
-
-# src/file-manager/nautilus-indexing-info.c:396
-#: src/file-manager/nautilus-indexing-info.c:299
-msgid "Sorry, but the medusa search service is not available."
-msgstr "Sajnálom, de a Medusa keresés nem elérhető."
-
-#: src/file-manager/nautilus-indexing-info.c:300
-msgid "Please verify medusa has been setup correctly."
-msgstr "Ellenőrizze, hogy megfelelően lett-e telepítve a medusa."
-
-# src/file-manager/nautilus-indexing-info.c:418
-#: src/file-manager/nautilus-indexing-info.c:315
-msgid "%I:%M %p, %x"
-msgstr "%H:%M, %x"
-
 # src/file-manager/nautilus-directory-view-ui.xml.h:6
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
@@ -6506,43 +5805,18 @@ msgstr "Ebben a mappában látható oszlopok kiválasztása"
 msgid "Visible _Columns..."
 msgstr "Látható _oszlopok..."
 
-# src/file-manager/nautilus-search-list-view-ui.xml.h:1
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Minden kijelölt elem felfedése az eredeti mappájukban"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:2
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Felfedés új ablakban"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:3
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Indexelés állapotának mutatása"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:4
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "_Indexelés állapotának mutatása"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:5
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Indexelés állapotának mutatása kereséskor"
-
 # src/nautilus-application.c:274
-#: src/nautilus-application.c:264
+#: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
 msgstr "Nem lehet létrehozni a szükséges mappát"
 
 # src/nautilus-application.c:279
-#: src/nautilus-application.c:265
+#: src/nautilus-application.c:267
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "A Nautilus nem tudta létrehozni a(z) \"%s\" szükséges mappát."
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:269
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -6551,16 +5825,16 @@ msgstr ""
 "jogosultságokat úgy, hogy a Nautilus létre tudja hozni."
 
 # src/nautilus-application.c:279
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:272
 msgid "Couldn't Create Required Folders"
 msgstr "Nem lehet létrehozni a szükséges mappákat"
 
-#: src/nautilus-application.c:271
+#: src/nautilus-application.c:273
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "A Nautilus nem tudta létrehozni a következő szükséges mappákat: %s."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:275
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -6569,21 +5843,21 @@ msgstr ""
 "jogosultságokat úgy, hogy a Nautilus létre tudja hozni őket."
 
 # libnautilus-private/nautilus-trash-file.c:593
-#: src/nautilus-application.c:341
+#: src/nautilus-application.c:343
 msgid "Link To Old Desktop"
 msgstr "Hivatkozás a régi munkaasztalra"
 
-#: src/nautilus-application.c:357
+#: src/nautilus-application.c:359
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "A \"Hivatkozás a régi munkaasztalra\" link létrejött a munkaasztalon."
 
-#: src/nautilus-application.c:358
+#: src/nautilus-application.c:360
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:362
 msgid "Migrated Old Desktop"
 msgstr "Átköltöztetett régi munkaasztal"
 
@@ -6597,7 +5871,7 @@ msgstr "Átköltöztetett régi munkaasztal"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:534
+#: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6609,7 +5883,7 @@ msgstr ""
 
 # src/nautilus-application.c:408
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:540
+#: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6644,8 +5918,8 @@ msgstr ""
 "Néha a bonobo-activation-server és a gconfd kilövése megoldja a problémát, "
 "de nem értjük, hogy miért.\n"
 "\n"
-"Akkor is találkoztunk ezzel a hibával, ha hibás volt a telepített "
-"bonobo-activation változat."
+"Akkor is találkoztunk ezzel a hibával, ha hibás volt a telepített bonobo-"
+"activation változat."
 
 # src/nautilus-application.c:434 src/nautilus-application.c:452
 # src/nautilus-application.c:459
@@ -6657,14 +5931,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:570 src/nautilus-application.c:588
-#: src/nautilus-application.c:595
+#: src/nautilus-application.c:572 src/nautilus-application.c:590
+#: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "A Nautilus váratlan hiba miatt most nem használható."
 
 # src/nautilus-application.c:435
-#: src/nautilus-application.c:571
+#: src/nautilus-application.c:573
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6673,30 +5946,30 @@ msgstr ""
 "a \"file manager view server\" regisztrálása közben történt)."
 
 # src/nautilus-application.c:453
-#: src/nautilus-application.c:589
+#: src/nautilus-application.c:591
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"A Nautilus most nem használható (váratlan bonobo hiba miatt, amely a "
-"factory keresése közben következett be). A bonobo kilövése és a Nautilus "
+"A Nautilus most nem használható (váratlan bonobo hiba miatt, amely a factory "
+"keresése közben következett be). A bonobo kilövése és a Nautilus "
 "újraindítása segíthet."
 
 # src/nautilus-application.c:460
-#: src/nautilus-application.c:596
+#: src/nautilus-application.c:598
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"A Nautilus most nem használható, váratlan bonobo hiba miatt (shell "
-"object nem található). A bonobo-activation-server elpusztítása és a "
-"Nautilus újraindítása segíthet."
+"A Nautilus most nem használható, váratlan bonobo hiba miatt (shell object "
+"nem található). A bonobo-activation-server elpusztítása és a Nautilus "
+"újraindítása segíthet."
 
 # components/music/nautilus-music-view.c:1694
 #: src/nautilus-bookmarks-window.c:146
-#: src/nautilus-file-management-properties.c:231
+#: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
@@ -6729,22 +6002,6 @@ msgstr "<b>_Név</b>"
 msgid "Edit Bookmarks"
 msgstr "Könyvjelzők szerkesztése"
 
-# src/nautilus-complex-search-bar.c:233
-#: src/nautilus-complex-search-bar.c:200
-msgid "More Options"
-msgstr "Több beállítás"
-
-# src/nautilus-complex-search-bar.c:243
-#: src/nautilus-complex-search-bar.c:209
-msgid "Fewer Options"
-msgstr "Kevesebb beállítás"
-
-# src/nautilus-complex-search-bar.c:261 src/nautilus-simple-search-bar.c:129
-#. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
-msgid "Find Them!"
-msgstr "Keressen!"
-
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
 msgstr "Meg kell adnia egy nevet a kiszolgálónak."
@@ -6761,7 +6018,7 @@ msgstr "Nem lehet kapcsolódni a kiszolgálóhoz"
 
 # src/nautilus-property-browser.c:1040
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1310
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "A(z) \"%s\" nem érvényes hely."
@@ -6769,8 +6026,8 @@ msgstr "A(z) \"%s\" nem érvényes hely."
 # src/nautilus-window-manage-views.c:1151
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1261
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1313
 msgid "Please check the spelling and try again."
 msgstr "Ellenőrizze, hogy mindent jól írt-e be és próbálja meg újra."
 
@@ -6808,7 +6065,7 @@ msgid "Desktop"
 msgstr "Munkaasztal"
 
 # src/file-manager/fm-icon-text-window.c:87
-#: src/nautilus-file-management-properties.c:307
+#: src/nautilus-file-management-properties.c:295
 msgid "None"
 msgstr "Nincs"
 
@@ -6902,8 +6159,8 @@ msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Adja meg, hogy milyen sorrendben jelenjenek meg az adatok az ikon neve alatt. "
-"Egyre több adat jelenik meg, ahogyan kinagyítja a nézetet."
+"Adja meg, hogy milyen sorrendben jelenjenek meg az adatok az ikon neve "
+"alatt. Egyre több adat jelenik meg, ahogyan kinagyítja a nézetet."
 
 # src/file-manager/fm-icon-text-window.c:271
 #: src/nautilus-file-management-properties.glade.h:46
@@ -7217,38 +6474,33 @@ msgstr "Fájlkezelő"
 # data/static_bookmarks.xml.h:24 src/nautilus-window-manage-views.c:246
 # src/nautilus-window-menus.c:553
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:301
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
 
 # src/nautilus-main.c:208
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check nem használható URI-kel.\n"
 
 # src/nautilus-main.c:212
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nem használható más paraméterekkel.\n"
 
 # src/nautilus-main.c:216
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit nem használható URI-kel.\n"
 
 # src/nautilus-main.c:220
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart nem használható URI-kel.\n"
 
 # src/nautilus-main.c:224
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nem használható több mint egy URI-vel.\n"
 
@@ -7314,76 +6566,87 @@ msgstr "Könyvjelző hozzáadása a jelenlegi helyhez, ebbe a menübe"
 msgid "Back"
 msgstr "Vissza"
 
-# src/nautilus-shell-ui.xml.h:6
 #: src/nautilus-navigation-window-ui.xml.h:3
+#: src/nautilus-spatial-window-ui.xml.h:1
+msgid "CD _Creator"
+msgstr "_CD-készítő"
+
+# src/nautilus-shell-ui.xml.h:6
+#: src/nautilus-navigation-window-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
 msgstr "Megváltoztatja ezen ablak címsávjának láthatóságát"
 
 # src/nautilus-shell-ui.xml.h:7
-#: src/nautilus-navigation-window-ui.xml.h:4
+#: src/nautilus-navigation-window-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
 msgstr "Megváltoztatja ezen ablak oldalpanelének láthatóságát"
 
 # src/nautilus-shell-ui.xml.h:8
-#: src/nautilus-navigation-window-ui.xml.h:5
+#: src/nautilus-navigation-window-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
 msgstr "Megváltoztatja ezen ablak állapotsorának láthatóságát"
 
 # src/nautilus-shell-ui.xml.h:10
-#: src/nautilus-navigation-window-ui.xml.h:6
+#: src/nautilus-navigation-window-ui.xml.h:7
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Az Ugrás menü és a Vissza/Előre listák törlése"
 
 # src/nautilus-shell-ui.xml.h:11
-#: src/nautilus-navigation-window-ui.xml.h:7
+#: src/nautilus-navigation-window-ui.xml.h:8
 msgid "Close _All Windows"
 msgstr "Minde_n ablak bezárása"
 
 # src/nautilus-shell-ui.xml.h:12
-#: src/nautilus-navigation-window-ui.xml.h:8
+#: src/nautilus-navigation-window-ui.xml.h:9
 msgid "Close all Navigation windows"
 msgstr "Minden navigációs ablak bezárása"
 
-#: src/nautilus-navigation-window-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:11
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
 msgstr "Kapcsolódás _kiszolgálóhoz..."
 
 # src/nautilus-shell-ui.xml.h:17
-#: src/nautilus-navigation-window-ui.xml.h:11
+#: src/nautilus-navigation-window-ui.xml.h:12
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 "Megjelenít egy ablakot, amelyből szerkesztheti az ehhez a menühöz tartozó "
 "könyvjelzőket"
 
 # src/nautilus-shell-ui.xml.h:25
-#: src/nautilus-navigation-window-ui.xml.h:12 src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:13 src/nautilus-shell-ui.xml.h:10
 msgid "Find"
 msgstr "Keresés"
 
 # src/nautilus-window-toolbars.c:383
-#: src/nautilus-navigation-window-ui.xml.h:13
+#: src/nautilus-navigation-window-ui.xml.h:14
 msgid "Forward"
 msgstr "Előre"
 
 # libnautilus-private/nautilus-search-uri.c:257
-#: src/nautilus-navigation-window-ui.xml.h:14
+#: src/nautilus-navigation-window-ui.xml.h:15
 #: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Go to templates folder"
 msgstr "Ugrás a sablonok mappájához"
 
+# libnautilus-private/nautilus-search-uri.c:257
+#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:7
+msgid "Go to the CD Creator"
+msgstr "Ugrás a CD-készítőre"
+
 # src/nautilus-shell-ui.xml.h:30
-#: src/nautilus-navigation-window-ui.xml.h:15
+#: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
 msgstr "Ugrás a következő meglátogatott helyre"
 
 # src/nautilus-shell-ui.xml.h:31
-#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-navigation-window-ui.xml.h:18
 msgid "Go to the previous visited location"
 msgstr "Ugrás az előző meglátogatott helyre"
 
 # libnautilus-private/nautilus-search-uri.c:257
-#: src/nautilus-navigation-window-ui.xml.h:17
+#: src/nautilus-navigation-window-ui.xml.h:19
 #: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to the trash folder"
 msgstr "Ugrás a Kuka mappájához"
@@ -7391,27 +6654,27 @@ msgstr "Ugrás a Kuka mappájához"
 # components/help/converters/gnome-db2html2/gdb3html.c:717
 # libnautilus-private/nautilus-global-preferences.c:706
 # src/nautilus-shell-ui.xml.h:36
-#: src/nautilus-navigation-window-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:20
 msgid "Home"
 msgstr "Kezdőlap"
 
 # src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:434
-#: src/nautilus-navigation-window-ui.xml.h:19
+#: src/nautilus-navigation-window-ui.xml.h:21
 msgid "Location _Bar"
 msgstr "_Címsáv"
 
 # src/file-manager/fm-properties-window.c:1958
-#: src/nautilus-navigation-window-ui.xml.h:20
+#: src/nautilus-navigation-window-ui.xml.h:22
 msgid "Reload"
 msgstr "Frissítés"
 
 # src/nautilus-shell-ui.xml.h:48
-#: src/nautilus-navigation-window-ui.xml.h:21 src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:23 src/nautilus-shell-ui.xml.h:18
 msgid "Search this computer for files"
 msgstr "Fájlok keresése ezen a számítógépen"
 
 # src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:416
-#: src/nautilus-navigation-window-ui.xml.h:22
+#: src/nautilus-navigation-window-ui.xml.h:24
 msgid "St_atusbar"
 msgstr "Á_llapotsor"
 
@@ -7420,73 +6683,73 @@ msgstr "Á_llapotsor"
 # libnautilus-private/nautilus-file-operations.c:960
 # libnautilus-private/nautilus-file-operations.c:979
 # src/nautilus-shell-ui.xml.h:54
-#: src/nautilus-navigation-window-ui.xml.h:23
+#: src/nautilus-navigation-window-ui.xml.h:25
 msgid "Stop"
 msgstr "Leállítás"
 
 # src/nautilus-shell-ui.xml.h:58
-#: src/nautilus-navigation-window-ui.xml.h:24
+#: src/nautilus-navigation-window-ui.xml.h:26
 msgid "Up"
 msgstr "Fel"
 
 # src/nautilus-shell-ui.xml.h:68
-#: src/nautilus-navigation-window-ui.xml.h:25
+#: src/nautilus-navigation-window-ui.xml.h:27
 msgid "_Add Bookmark"
 msgstr "_Könyvjelző hozzáadása"
 
 # src/nautilus-shell-ui.xml.h:69
-#: src/nautilus-navigation-window-ui.xml.h:26
+#: src/nautilus-navigation-window-ui.xml.h:28
 msgid "_Back"
 msgstr "_Vissza"
 
 # src/nautilus-shell-ui.xml.h:71
-#: src/nautilus-navigation-window-ui.xml.h:27
+#: src/nautilus-navigation-window-ui.xml.h:29
 msgid "_Bookmarks"
 msgstr "_Könyvjelzők"
 
 # src/nautilus-shell-ui.xml.h:26
-#: src/nautilus-navigation-window-ui.xml.h:28
+#: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Clear History"
 msgstr "Előzmények _törlése"
 
 # data/browser.xml.h:18
-#: src/nautilus-navigation-window-ui.xml.h:29
+#: src/nautilus-navigation-window-ui.xml.h:31
 #: src/nautilus-spatial-window-ui.xml.h:12
 msgid "_Computer"
 msgstr "_Számítógép"
 
 # src/nautilus-shell-ui.xml.h:75
-#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Edit Bookmarks"
 msgstr "Köny_vjelzők szerkesztése"
 
 # src/nautilus-shell-ui.xml.h:79
-#: src/nautilus-navigation-window-ui.xml.h:31
+#: src/nautilus-navigation-window-ui.xml.h:33
 msgid "_Forward"
 msgstr "_Előre"
 
 # src/nautilus-shell-ui.xml.h:80
-#: src/nautilus-navigation-window-ui.xml.h:32
+#: src/nautilus-navigation-window-ui.xml.h:34
 msgid "_Go"
 msgstr "_Ugrás"
 
 # src/nautilus-shell-ui.xml.h:82
-#: src/nautilus-navigation-window-ui.xml.h:33
+#: src/nautilus-navigation-window-ui.xml.h:35
 #: src/nautilus-spatial-window-ui.xml.h:13
 msgid "_Home"
 msgstr "_Kezdőlap"
 
 # src/nautilus-bookmarks-window.c:177
-#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Location..."
 msgstr "_Hely..."
 
 # libnautilus-private/nautilus-global-preferences.c:628
-#: src/nautilus-navigation-window-ui.xml.h:35
+#: src/nautilus-navigation-window-ui.xml.h:37
 msgid "_Side Pane"
 msgstr "_Oldalpanel"
 
-#: src/nautilus-navigation-window-ui.xml.h:36
+#: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
 msgstr "_Sablonok"
@@ -7494,18 +6757,18 @@ msgstr "_Sablonok"
 # data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4751
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:65
-#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-navigation-window-ui.xml.h:39
 #: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Trash"
 msgstr "_Kuka"
 
 # src/nautilus-shell-ui.xml.h:58
-#: src/nautilus-navigation-window-ui.xml.h:38
+#: src/nautilus-navigation-window-ui.xml.h:40
 msgid "_Up"
 msgstr "_Fel"
 
 # src/nautilus-shell-ui.xml.h:97
-#: src/nautilus-navigation-window-ui.xml.h:39 src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-navigation-window-ui.xml.h:41 src/nautilus-shell-ui.xml.h:48
 msgid "_View"
 msgstr "_Nézet"
 
@@ -7805,198 +7068,6 @@ msgstr "Szín _eltávolítása..."
 msgid "_Remove an Emblem..."
 msgstr "Matrica _eltávolítása..."
 
-# src/nautilus-search-bar-criterion.c:74
-#. Menu item in the search bar.
-#. Bracketed items are context, and are message
-#. strings elsewhere.  You don't have to translate the whole
-#. string, and only the translation for "containing '%s' will
-#. be used.  If you do translate the whole string, leave the
-#. translations of the rest of the text in brackets, so it
-#. will not be used.
-#: src/nautilus-search-bar-criterion.c:73
-msgid "[Search for] Name [contains \"fish\"]"
-msgstr " A neve "
-
-# src/nautilus-search-bar-criterion.c:75
-#: src/nautilus-search-bar-criterion.c:74
-msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr " A tartalma "
-
-# src/nautilus-search-bar-criterion.c:76
-#: src/nautilus-search-bar-criterion.c:75
-msgid "[Search for] Type [is regular file]"
-msgstr " A típusa "
-
-# src/nautilus-search-bar-criterion.c:77
-#: src/nautilus-search-bar-criterion.c:76
-msgid "[Search for] Size [larger than 400K]"
-msgstr " A mérete "
-
-# src/nautilus-search-bar-criterion.c:78
-#: src/nautilus-search-bar-criterion.c:77
-msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr " A matricája kulcsszava "
-
-# src/nautilus-search-bar-criterion.c:79
-#: src/nautilus-search-bar-criterion.c:78
-msgid "[Search for] Last Modified [before yesterday]"
-msgstr " Az utolsó módosítás dátuma "
-
-# src/nautilus-search-bar-criterion.c:80
-#: src/nautilus-search-bar-criterion.c:79
-msgid "[Search for] Owner [is not root]"
-msgstr " A tulajdonosa "
-
-# src/nautilus-search-bar-criterion.c:86
-#: src/nautilus-search-bar-criterion.c:85
-msgid "[File name] contains [help]"
-msgstr " tartalmazza ezt: "
-
-# src/nautilus-search-bar-criterion.c:87
-#: src/nautilus-search-bar-criterion.c:86
-msgid "[File name] starts with [nautilus]"
-msgstr " ezzel kezdődik: "
-
-# src/nautilus-search-bar-criterion.c:88
-#: src/nautilus-search-bar-criterion.c:87
-msgid "[File name] ends with [.c]"
-msgstr " erre végződik: "
-
-# src/nautilus-search-bar-criterion.c:89
-#: src/nautilus-search-bar-criterion.c:88
-msgid "[File name] matches glob [*.c]"
-msgstr " illeszkedik erre: "
-
-# src/nautilus-search-bar-criterion.c:90
-#: src/nautilus-search-bar-criterion.c:89
-msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr " illeszkedik erre a reg. kifejezésre: "
-
-# src/nautilus-search-bar-criterion.c:95
-#: src/nautilus-search-bar-criterion.c:94
-msgid "[File content] includes all of [apple orange]"
-msgstr " tartalmazza mindezt: "
-
-# src/nautilus-search-bar-criterion.c:96
-#: src/nautilus-search-bar-criterion.c:95
-msgid "[File content] includes any of [apply orange]"
-msgstr " tartalmazza ezek közül valamelyiket: "
-
-# src/nautilus-search-bar-criterion.c:97
-#: src/nautilus-search-bar-criterion.c:96
-msgid "[File content] does not include all of [apple orange]"
-msgstr " nem tartalmazza mindezt: "
-
-# src/nautilus-search-bar-criterion.c:98
-#: src/nautilus-search-bar-criterion.c:97
-msgid "[File content] includes none of [apple orange]"
-msgstr " nem tartalmazza ezeket: "
-
-# src/nautilus-search-bar-criterion.c:104
-#: src/nautilus-search-bar-criterion.c:103
-msgid "[File type] is [folder]"
-msgstr " ez: "
-
-# src/nautilus-search-bar-criterion.c:105
-#: src/nautilus-search-bar-criterion.c:104
-msgid "[File type] is not [folder]"
-msgstr " nem ez: "
-
-# src/nautilus-search-bar-criterion.c:110
-#: src/nautilus-search-bar-criterion.c:109
-msgid "[File type is] regular file"
-msgstr " rendes fájl"
-
-# src/nautilus-search-bar-criterion.c:111
-#: src/nautilus-search-bar-criterion.c:110
-msgid "[File type is] text file"
-msgstr " szöveges fájl"
-
-# src/nautilus-search-bar-criterion.c:112
-#: src/nautilus-search-bar-criterion.c:111
-msgid "[File type is] application"
-msgstr " alkalmazás"
-
-# src/nautilus-search-bar-criterion.c:113
-#: src/nautilus-search-bar-criterion.c:112
-msgid "[File type is] folder"
-msgstr " mappa"
-
-# src/nautilus-search-bar-criterion.c:114
-#: src/nautilus-search-bar-criterion.c:113
-msgid "[File type is] music"
-msgstr " zene"
-
-# src/nautilus-search-bar-criterion.c:119
-#: src/nautilus-search-bar-criterion.c:118
-msgid "[File size is] larger than [400K]"
-msgstr " nagyobb mint "
-
-# src/nautilus-search-bar-criterion.c:120
-#: src/nautilus-search-bar-criterion.c:119
-msgid "[File size is] smaller than [300K]"
-msgstr " kisebb mint "
-
-# src/nautilus-search-bar-criterion.c:125
-#: src/nautilus-search-bar-criterion.c:124
-msgid "[With emblem] marked with [Important]"
-msgstr " legyen "
-
-# src/nautilus-search-bar-criterion.c:126
-#: src/nautilus-search-bar-criterion.c:125
-msgid "[With emblem] not marked with [Important]"
-msgstr " ne legyen "
-
-# src/nautilus-search-bar-criterion.c:131
-#: src/nautilus-search-bar-criterion.c:130
-msgid "[Last modified date] is [1/24/00]"
-msgstr " legyen "
-
-# src/nautilus-search-bar-criterion.c:132
-#: src/nautilus-search-bar-criterion.c:131
-msgid "[Last modified date] is not [1/24/00]"
-msgstr " ne ez legyen "
-
-# src/nautilus-search-bar-criterion.c:133
-#: src/nautilus-search-bar-criterion.c:132
-msgid "[Last modified date] is after [1/24/00]"
-msgstr " ez utáni "
-
-# src/nautilus-search-bar-criterion.c:134
-#: src/nautilus-search-bar-criterion.c:133
-msgid "[Last modified date] is before [1/24/00]"
-msgstr " ez előtti "
-
-# src/nautilus-search-bar-criterion.c:136
-#: src/nautilus-search-bar-criterion.c:135
-msgid "[Last modified date] is today"
-msgstr " a mai nap"
-
-# src/nautilus-search-bar-criterion.c:137
-#: src/nautilus-search-bar-criterion.c:136
-msgid "[Last modified date] is yesterday"
-msgstr " a tegnapi nap"
-
-# src/nautilus-search-bar-criterion.c:139
-#: src/nautilus-search-bar-criterion.c:138
-msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr " +- egy héten belül ehhez képest "
-
-# src/nautilus-search-bar-criterion.c:140
-#: src/nautilus-search-bar-criterion.c:139
-msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr " +- egy hónapon belül ehhez képest "
-
-# src/nautilus-search-bar-criterion.c:159
-#: src/nautilus-search-bar-criterion.c:158
-msgid "[File owner] is [root]"
-msgstr " a(z) "
-
-# src/nautilus-search-bar-criterion.c:160
-#: src/nautilus-search-bar-criterion.c:159
-msgid "[File owner] is not [root]"
-msgstr " nem "
-
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
@@ -8025,8 +7096,7 @@ msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
-"Minták, színek és matricák megjelenítése. Ezekkel teheti egyénivé a "
-"Nautilust"
+"Minták, színek és matricák megjelenítése. Ezekkel teheti egyénivé a Nautilust"
 
 # src/nautilus-shell-ui.xml.h:21
 #: src/nautilus-shell-ui.xml.h:8
@@ -8219,10 +7289,6 @@ msgstr "Oldalpanel bezárása"
 msgid "Show %s"
 msgstr "%s megjelenítése"
 
-#: src/nautilus-spatial-window-ui.xml.h:1
-msgid "CD _Creator"
-msgstr "_CD-készítő"
-
 # src/nautilus-shell-ui.xml.h:11
 #: src/nautilus-spatial-window-ui.xml.h:2
 msgid "Close P_arent Folders"
@@ -8237,11 +7303,6 @@ msgstr "A mappa szülőkönyvtárainak bezárása"
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
 msgstr "Ugrás a Számítógépre"
-
-# libnautilus-private/nautilus-search-uri.c:257
-#: src/nautilus-spatial-window-ui.xml.h:7
-msgid "Go to the CD Creator"
-msgstr "Ugrás a CD-készítőre"
 
 # src/nautilus-bookmarks-window.c:177
 #: src/nautilus-spatial-window-ui.xml.h:9
@@ -8263,11 +7324,6 @@ msgstr "Szülőmappa megnyitása"
 msgid "_Places"
 msgstr "_Helyek"
 
-# src/nautilus-switchable-search-bar.c:132
-#: src/nautilus-switchable-search-bar.c:129
-msgid "Find:"
-msgstr "Keresés:"
-
 # components/music/nautilus-music-view.c:238
 #: src/nautilus-view-frame.c:595
 msgid "a title"
@@ -8287,107 +7343,107 @@ msgid "the type of window the view is embedded in"
 msgstr ""
 
 # src/nautilus-window-manage-views.c:754
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:836
 msgid "View Failed"
 msgstr "Sikertelen megtekintés"
 
 # src/nautilus-window-manage-views.c:776
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:847
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "A(z) %s nézet hibát észlelt és nem tud tovább futni."
 
 # src/nautilus-window-manage-views.c:765
-#: src/nautilus-window-manage-views.c:845
+#: src/nautilus-window-manage-views.c:848
 msgid "You can choose another view or go to a different location."
 msgstr "Választhat másik nézetet vagy megnézhet egy másik helyet."
 
 # src/nautilus-window-manage-views.c:776
-#: src/nautilus-window-manage-views.c:855
+#: src/nautilus-window-manage-views.c:858
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "A(z) %s nézet hibát észlelt induláskor."
 
-#: src/nautilus-window-manage-views.c:856
+#: src/nautilus-window-manage-views.c:859
 msgid "The location cannot be displayed with this viewer."
 msgstr "A helyet nem lehet megjeleníteni ezzel a nézőkével."
 
 # components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
-#: src/nautilus-window-manage-views.c:1003
+#: src/nautilus-window-manage-views.c:1006
 msgid "Content View"
 msgstr "Tartalomnézet"
 
 # libnautilus-private/nautilus-search-uri.c:257
-#: src/nautilus-window-manage-views.c:1004
+#: src/nautilus-window-manage-views.c:1007
 msgid "View of the current file or folder"
 msgstr "Aktuális fájl vagy mappa nézete"
 
 # src/nautilus-theme-selector.c:398
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1302
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "A(z) \"%s\" nem található."
 
 # src/nautilus-window-manage-views.c:1241
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1282
-#: src/nautilus-window-manage-views.c:1292
-#: src/nautilus-window-manage-views.c:1306
-#: src/nautilus-window-manage-views.c:1314
-#: src/nautilus-window-manage-views.c:1320
-#: src/nautilus-window-manage-views.c:1340
+#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1358
+#: src/nautilus-window-manage-views.c:1364
+#: src/nautilus-window-manage-views.c:1384
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t."
 
 # src/nautilus-window-manage-views.c:1171
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1329
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "A Nautilus nem tudja meghatározni a fájl típusát."
 
 # src/nautilus-window-manage-views.c:1179
-#: src/nautilus-window-manage-views.c:1295
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
 "A Nautilusnak nincs olyan telepített nézőkéje, amellyel meg tudná jeleníteni "
 "a fájlt."
 
 # src/nautilus-window-manage-views.c:1191
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1352
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "A Nautilus nem tudja kezelni a(z) %s helyeket."
 
 # src/nautilus-window-manage-views.c:1197
-#: src/nautilus-window-manage-views.c:1316
+#: src/nautilus-window-manage-views.c:1360
 msgid "The attempt to log in failed."
 msgstr "A bejelentkezési kísérlet sikertelen volt."
 
-#: src/nautilus-window-manage-views.c:1322
+#: src/nautilus-window-manage-views.c:1366
 msgid "Access was denied."
 msgstr "Hozzáférés megtagadva."
 
 # src/nautilus-window-manage-views.c:1202
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr ""
 "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a(z) \"%s\" gép nem található."
 
 # src/nautilus-window-manage-views.c:1213
-#: src/nautilus-window-manage-views.c:1335
+#: src/nautilus-window-manage-views.c:1379
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
 "Ellenőrizze, hogy nem gépelt-e el valamit és hogy jók-e a proxy beállításai."
 
 # src/nautilus-window-manage-views.c:1221
-#: src/nautilus-window-manage-views.c:1342
+#: src/nautilus-window-manage-views.c:1386
 msgid "Check that your proxy settings are correct."
 msgstr "Ellenőrizze a proxy beállításait."
 
 # src/nautilus-window-manage-views.c:1191
-#: src/nautilus-window-manage-views.c:1347
+#: src/nautilus-window-manage-views.c:1391
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -8396,12 +7452,12 @@ msgstr ""
 "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a Nautilus nem tud kapcsolatba "
 "lépni az SMB mester böngészővel."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1394
 msgid "Check that an SMB server is running in the local network."
 msgstr "Ellenőrizze, hogy fut-e az SMB kiszolgáló a helyi hálózaton."
 
 # src/nautilus-window-manage-views.c:1233
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1404
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -8410,7 +7466,7 @@ msgstr ""
 "keresési szolgáltatás."
 
 # src/nautilus-window-manage-views.c:1233
-#: src/nautilus-window-manage-views.c:1363
+#: src/nautilus-window-manage-views.c:1407
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -8419,22 +7475,22 @@ msgstr ""
 "hogy ha nincs indexe, akkor fut a Medusa indexkészítő."
 
 # src/nautilus-window-manage-views.c:1237
-#: src/nautilus-window-manage-views.c:1365
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "A keresés nem elérhető"
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-manage-views.c:1370
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "A Nautilus nem tudja megjeleníteni a(z) \"%s\"-t."
 
-#: src/nautilus-window-manage-views.c:1372
+#: src/nautilus-window-manage-views.c:1416
 msgid "Please select another viewer and try again."
 msgstr "Válasszon ki egy másik nézőkét és próbálja meg újra."
 
 # src/nautilus-window-manage-views.c:1246
-#: src/nautilus-window-manage-views.c:1376
+#: src/nautilus-window-manage-views.c:1420
 msgid "Can't Display Location"
 msgstr "Nem lehet megjeleníteni a helyet"
 
@@ -8546,3 +7602,696 @@ msgstr "Hálózati kiszolgálók"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Hálózati kiszolgálók megtekintése a Nautilus fájlkezelőben"
+
+#~ msgid ""
+#~ "If you would like to enable fast searches, you can edit the file %s as "
+#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+#~ "To start indexing and search services right away, you should also run the "
+#~ "following commands as root:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "Fast searches will not be available until an initial index of your files "
+#~ "has been created.  This may take a long time."
+#~ msgstr ""
+#~ "Ha be szeretné kapcsolni a gyorskeresést, szerkessze a %s fájlt root "
+#~ "felhasználóként. Az \"enabled\"-et \"yes\"-re kell állítani, ez "
+#~ "bekapcsolja a medusa szolgáltatást.\n"
+#~ "Az indexelő- és keresőszolgáltatások azonnali elindításához root "
+#~ "felhasználóként adja ki a következő parancsokat:\n"
+#~ "\n"
+#~ "medusa-indexd\n"
+#~ "medusa-searchd\n"
+#~ "\n"
+#~ "A gyorskeresés nem lesz elérhető, egészen addig, amíg az első indexfájl "
+#~ "létre nem jön. Ez sokáig eltarthat."
+
+#~ msgid ""
+#~ "Medusa, the application that performs searches, cannot be found on your "
+#~ "system.  If you have compiled nautilus yourself, you will need to install "
+#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
+#~ "available at ftp://ftp.gnome.org)\n"
+#~ "If you are using a packaged version of Nautilus, fast searching is not "
+#~ "available.\n"
+#~ msgstr ""
+#~ "A Medusa, a keresést végző alkalmazás nem található a gépen. Ha saját "
+#~ "maga fordította a Nautilust, telepítse a Medusát és fordítsa újra a "
+#~ "Nautilust. (A Medusát megtalálhatja az ftp://ftp.gnome.org kiszolgálón)\n"
+#~ "Ha előrecsomagolt Nautilust használ, a gyorskeresés nem elérhető.\n"
+
+# libnautilus-private/nautilus-search-uri.c:212
+#~ msgid "[Items ]containing \"%s\" in their names"
+#~ msgstr "amelyek nevében \"%s\" található"
+
+# libnautilus-private/nautilus-search-uri.c:217
+#~ msgid "[Items ]starting with \"%s\""
+#~ msgstr "amelyek ezzel kezdődnek: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:222
+#~ msgid "[Items ]ending with %s"
+#~ msgstr "amelyek erre végződnek \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:227
+#~ msgid "[Items ]not containing \"%s\" in their names"
+#~ msgstr "amelyek nem tartalmazzák ezt: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:231
+#~ msgid "[Items ]matching the regular expression \"%s\""
+#~ msgstr "melyekre illeszkedik a(z) \"%s\" reguláris kifejezés"
+
+# libnautilus-private/nautilus-search-uri.c:235
+#~ msgid "[Items ]matching the file pattern \"%s\""
+#~ msgstr "melyekre illeszkedik a(z) \"%s\" fájlminta"
+
+# libnautilus-private/nautilus-search-uri.c:248
+#~ msgid "[Items that are ]regular files"
+#~ msgstr "rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:251
+#~ msgid "[Items that are ]text files"
+#~ msgstr "szövegfájlok"
+
+# libnautilus-private/nautilus-search-uri.c:254
+#~ msgid "[Items that are ]applications"
+#~ msgstr "alkalmazások"
+
+# libnautilus-private/nautilus-search-uri.c:257
+#~ msgid "[Items that are ]folders"
+#~ msgstr "mappák"
+
+# libnautilus-private/nautilus-search-uri.c:260
+#~ msgid "[Items that are ]music"
+#~ msgstr "zene"
+
+# libnautilus-private/nautilus-search-uri.c:268
+#~ msgid "[Items ]that are not %s"
+#~ msgstr "amelyek nem %s"
+
+# libnautilus-private/nautilus-search-uri.c:273
+#~ msgid "[Items ]that are %s"
+#~ msgstr "amelyek %s"
+
+# libnautilus-private/nautilus-search-uri.c:287
+#~ msgid "[Items ]not owned by \"%s\""
+#~ msgstr "melyeknek nem \"%s\" a tulajdonosa"
+
+# libnautilus-private/nautilus-search-uri.c:292
+#~ msgid "[Items ]owned by \"%s\""
+#~ msgstr "melyeknek \"%s\" a tulajdonosa"
+
+# libnautilus-private/nautilus-search-uri.c:295
+#~ msgid "[Items ]with owner UID \"%s\""
+#~ msgstr "melyeknek a tulajdonos UID-je \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:298
+#~ msgid "[Items ]with owner UID other than \"%s\""
+#~ msgstr "melyeknek a tulajdonos UID-je nem \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:309
+#~ msgid "[Items ]larger than %s bytes"
+#~ msgstr "amelyek nagyobbak %s bájtnál"
+
+# libnautilus-private/nautilus-search-uri.c:312
+#~ msgid "[Items ]smaller than %s bytes"
+#~ msgstr "amelyek kisebbek %s bájtnál"
+
+# libnautilus-private/nautilus-search-uri.c:315
+#~ msgid "[Items ]of %s bytes"
+#~ msgstr "amelyek %s bájt hosszúak"
+
+# libnautilus-private/nautilus-search-uri.c:326
+#~ msgid "[Items ]modified today"
+#~ msgstr "melyeket ma módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:329
+#~ msgid "[Items ]modified yesterday"
+#~ msgstr "melyeket tegnap módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:332
+#~ msgid "[Items ]modified on %s"
+#~ msgstr "melyeket ekkor módosítottak: %s"
+
+# libnautilus-private/nautilus-search-uri.c:334
+#~ msgid "[Items ]not modified on %s"
+#~ msgstr "melyeket nem módosítottak ekkor: %s"
+
+# libnautilus-private/nautilus-search-uri.c:337
+#~ msgid "[Items ]modified before %s"
+#~ msgstr "melyeket %s előtt módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:340
+#~ msgid "[Items ]modified after %s"
+#~ msgstr "melyeket %s után módosítottak"
+
+# libnautilus-private/nautilus-search-uri.c:343
+#~ msgid "[Items ]modified within a week of %s"
+#~ msgstr " melyeket %s körül módosítottak (1 hét)"
+
+# libnautilus-private/nautilus-search-uri.c:346
+#~ msgid "[Items ]modified within a month of %s"
+#~ msgstr " melyeket %s körül módosítottak (1 hónap)"
+
+# libnautilus-private/nautilus-search-uri.c:359
+#~ msgid "[Items ]marked with \"%s\""
+#~ msgstr "amelyek a(z) \"%s\" matricával vannak megjelölve"
+
+# libnautilus-private/nautilus-search-uri.c:363
+#~ msgid "[Items ]not marked with \"%s\""
+#~ msgstr "amelyek nincsenek a(z) \"%s\" matricával megjelölve"
+
+# libnautilus-private/nautilus-search-uri.c:379
+#~ msgid "[Items ]with all the words \"%s\""
+#~ msgstr "amelyek ezeket a szavakat tartalmazzák: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:384
+#~ msgid "[Items ]containing one of the words \"%s\""
+#~ msgstr "amelyek ezek közül legalább egy szót tartalmaznak: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:389
+#~ msgid "[Items ]without all the words \"%s\""
+#~ msgstr "amelyek nem tartalmazzák ezeket a szavakat: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:394
+#~ msgid "[Items ]without any of the words \"%s\""
+#~ msgstr "amelyek nem tartalmaznak a megadott szavak közül egyet sem: \"%s\""
+
+# libnautilus-private/nautilus-search-uri.c:556
+#~ msgid ""
+#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
+#~ msgstr "és"
+
+# libnautilus-private/nautilus-search-uri.c:561
+#~ msgid ""
+#~ "[Items larger than 400K], [owned by root and without all the words "
+#~ "\"apple orange\"]"
+#~ msgstr ", "
+
+# libnautilus-private/nautilus-search-uri.c:591
+#~ msgid "Items %s"
+#~ msgstr "Elemek %s"
+
+# libnautilus-private/nautilus-search-uri.c:701
+#~ msgid "Items containing \"stuff\" in their names"
+#~ msgstr "Elemek, amelyek neve tartalmazza a \"stuff\" szót"
+
+# libnautilus-private/nautilus-search-uri.c:703
+#~ msgid "Items that are regular files"
+#~ msgstr "Elemek, amelyek rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:706
+#~ msgid "Items containing \"stuff\" in their names and that are regular files"
+#~ msgstr ""
+#~ "Elemek, amelyek neve tartalmazza a \"stuff\" szót és amelyek rendes fájlok"
+
+# libnautilus-private/nautilus-search-uri.c:710
+#~ msgid ""
+#~ "Items containing \"stuff\" in their names, that are regular files and "
+#~ "smaller than 2000 bytes"
+#~ msgstr ""
+#~ "Elemek, amelyek neve tartalmazza a \"stuff\" szót, amelyek rendes fájlok "
+#~ "és amelyek kisebbek mint 2000 bájt"
+
+# libnautilus-private/nautilus-search-uri.c:714
+#~ msgid "Items containing \"medusa\" in their names and that are folders"
+#~ msgstr ""
+#~ "Elemek, amelyek neve tartalmazza a \"medusa\" szót és amelyek mappák"
+
+# src/file-manager/fm-search-list-view.c:143
+#~ msgid ""
+#~ "Search results may not include items modified after %s, when your drive "
+#~ "was last indexed."
+#~ msgstr ""
+#~ "A keresés eredményeiben %s után módosított adatok nem szerepelnek, mert "
+#~ "ekkor frissült utoljára a merevlemez indexe."
+
+# src/file-manager/fm-search-list-view.c:124
+#~ msgid "Search Results"
+#~ msgstr "Keresés eredményei"
+
+# src/file-manager/nautilus-indexing-info.c:396
+#~ msgid "Sorry, but the Medusa search service is not available."
+#~ msgstr "Sajnálom, de a Medusa keresés szolgáltatás nem elérhető."
+
+#~ msgid "Medusa is not installed."
+#~ msgstr "A Medusa nincs telepítve."
+
+# src/file-manager/fm-search-list-view.c:160
+# src/file-manager/nautilus-indexing-info.c:397
+#~ msgid "Search Service Not Available"
+#~ msgstr "Keresési szolgáltatás nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:342
+#~ msgid ""
+#~ "The search you have selected is newer than the index on your system.  The "
+#~ "search will return no results right now."
+#~ msgstr ""
+#~ "A kiválasztott keresés újabb a rendszeren található indexfájlnál. A "
+#~ "keresés nem fog eredményt visszaadni."
+
+# src/file-manager/fm-search-list-view.c:342
+#~ msgid ""
+#~ "You can create a new index by running \"medusa-indexd\" as root on the "
+#~ "command line."
+#~ msgstr ""
+#~ "Új indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
+#~ "hozhat létre."
+
+# src/file-manager/fm-search-list-view.c:190
+#~ msgid "Search For Items That Are Too New"
+#~ msgstr "Túlságosan új elemek keresése"
+
+# src/file-manager/fm-search-list-view.c:201
+#~ msgid ""
+#~ "Every indexed file on your computer matches the criteria you selected. "
+#~ msgstr ""
+#~ "A számítógépén található minden fájl megfelel a keresési feltételeinek. "
+
+# src/file-manager/fm-search-list-view.c:201
+#~ msgid ""
+#~ "You can check the spelling on your selections or add more criteria to "
+#~ "narrow your results."
+#~ msgstr ""
+#~ "Ellenőrizze, hogy nem gépelt-e el valamit, vagy adjon a kereséshez "
+#~ "további feltételeket, hogy kevesebb legyen a találat."
+
+# src/file-manager/fm-search-list-view.c:205
+# src/file-manager/fm-search-list-view.c:219
+#~ msgid "Error During Search"
+#~ msgstr "Hiba a keresés közben"
+
+# src/file-manager/fm-search-list-view.c:342
+#~ msgid ""
+#~ "Find cannot open your file system index.  Your index may be missing or "
+#~ "corrupt."
+#~ msgstr ""
+#~ "A \"find\" nem tudja megnyitni a fájlrendszer indexét. Lehet, hogy "
+#~ "hiányzik vagy megsérült az index."
+
+# libnautilus-private/nautilus-file-operations.c:2005
+#~ msgid "Error Reading File Index"
+#~ msgstr "Hiba a fájlindex beolvasása közben"
+
+# src/file-manager/fm-search-list-view.c:214
+#~ msgid "An error occurred while loading this search's contents."
+#~ msgstr "Hiba történt a keresés tartalmának betöltése közben."
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system."
+#~ msgstr "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra."
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the files on your "
+#~ "system."
+#~ msgstr ""
+#~ "A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra."
+
+# src/file-manager/fm-search-list-view.c:242
+#~ msgid ""
+#~ "Find can't access your index right now so a slower search will be "
+#~ "performed that doesn't use the index."
+#~ msgstr ""
+#~ "A keresőprogram jelenleg nem fér hozzá az indexhez, így egy lassabb "
+#~ "keresés fog történni, amely nem használja az indexet."
+
+#~ msgid "Find can't access your index right now."
+#~ msgstr "A keresőprogram jelenleg nem fér hozzá az indexhez."
+
+# src/file-manager/fm-search-list-view.c:251
+#~ msgid "Fast Searches Are Not Available"
+#~ msgstr "A gyorskeresés nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:252
+# src/file-manager/fm-search-list-view.c:292
+# src/file-manager/fm-search-list-view.c:320
+# src/file-manager/fm-search-list-view.c:339
+#~ msgid "Content Searches Are Not Available"
+#~ msgstr "A tartalomra keresés nem elérhető"
+
+# src/file-manager/fm-search-list-view.c:255
+#~ msgid ""
+#~ "Your index files are available but the Medusa search daemon, which "
+#~ "handles index requests, isn't running.  To start this program, log in as "
+#~ "root and enter this command at the command line:\n"
+#~ "\n"
+#~ "medusa-searchd"
+#~ msgstr ""
+#~ "A indexfájlok léteznek, de nem fut a Medusa keresődémon, ami ezeket "
+#~ "kezeli. A Medusa indításához lépjen be rendszergazdaként és írja be, a "
+#~ "következőt:\n"
+#~ "\n"
+#~ "medusa-searchd"
+
+# src/file-manager/fm-search-list-view.c:307
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "Your computer is currently creating that index."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
+#~ "számítógépe éppen most állítja elő ezt a fájlt."
+
+# src/file-manager/fm-search-list-view.c:313
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  Your computer is currently creating that index."
+#~ msgstr ""
+#~ "A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra. "
+#~ "A számítógépe éppen most állítja elő ezt a fájlt."
+
+#~ msgid ""
+#~ "Because Find cannot use an index, this search may take several minutes."
+#~ msgstr ""
+#~ "Mivel a keresőprogram nem tudja használni az indexet, a megadott keresés "
+#~ "több percig is eltarthat."
+
+#~ msgid "Content searches will be available when the index is complete."
+#~ msgstr "A tartalomra keresések az index elkészülte után lesznek elérhetőek."
+
+# src/file-manager/fm-search-list-view.c:291
+# src/file-manager/fm-search-list-view.c:319
+# src/file-manager/fm-search-list-view.c:338
+#~ msgid "Indexed Searches Are Not Available"
+#~ msgstr "Az indexelt keresések nem elérhetők"
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system.  "
+#~ "No index is available right now."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. "
+#~ "Jelenleg nincs elérhető index."
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a content search, Find requires an index of the content on your "
+#~ "system.  No index is available right now."
+#~ msgstr ""
+#~ "A tartalomra kereséshez a keresőprogramnak szüksége van egy indexfájlra. "
+#~ "Jelenleg nincs elérhető index."
+
+# src/file-manager/fm-search-list-view.c:327
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, searches will take "
+#~ "several minutes."
+#~ msgstr ""
+#~ "Indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
+#~ "hozhat létre. Ameddig nincs teljes index, a keresések több percig is "
+#~ "eltarthatnak."
+
+# src/file-manager/fm-search-list-view.c:284
+#~ msgid ""
+#~ "You can create an index by running \"medusa-indexd\" as root on the "
+#~ "command line.  Until a complete index is available, content searches "
+#~ "cannot be performed."
+#~ msgstr ""
+#~ "Indexet a \"medusa-indexd\" root felhasználóként történő futtatásával "
+#~ "hozhat létre. Ameddig nincs teljes index, a tartalomra keresések nem "
+#~ "hajtódnak végre."
+
+# src/file-manager/fm-search-list-view.c:251
+#~ msgid "Fast searches are not enabled on your computer."
+#~ msgstr "A gyorskeresés nincs bekapcsolva a számítógépén."
+
+# src/file-manager/fm-search-list-view.c:247
+#~ msgid ""
+#~ "To do a fast search, Find requires an index of the files on your system. "
+#~ "Your system administrator has disabled fast search on your computer, so "
+#~ "no index is available."
+#~ msgstr ""
+#~ "A gyorskereséshez a keresőprogramnak szüksége van egy indexfájlra. A "
+#~ "rendszergazda nem engedélyezte a gyorskeresést a számítógépén, ezért "
+#~ "nincs elérhető indexfájl."
+
+# src/file-manager/fm-search-list-view.c:251
+#~ msgid "Fast Searches Not Enabled"
+#~ msgstr "A gyorskeresés nincs bekapcsolva"
+
+# src/file-manager/fm-search-list-view.c:555
+#~ msgid "Where"
+#~ msgstr "Hol"
+
+# src/file-manager/fm-search-list-view.c:607
+# src/file-manager/nautilus-search-list-view-ui.xml.h:6
+#~ msgid "_Reveal in New Window"
+#~ msgid_plural "Reveal in %d _New Windows"
+#~ msgstr[0] "_Felfedés új ablakban"
+#~ msgstr[1] "_Felfedés %d új ablakban"
+
+# src/file-manager/fm-search-list-view.c:727
+#~ msgid "Nautilus found more search results than it can display."
+#~ msgstr "A Nautilus több egyezést talált, mint amennyit meg tud jeleníteni."
+
+# src/file-manager/fm-search-list-view.c:727
+#~ msgid "Some matching items will not be displayed. "
+#~ msgstr "Néhány találat nem lesz megjelenítve."
+
+# src/file-manager/fm-search-list-view.c:729
+#~ msgid "Too Many Matches"
+#~ msgstr "Túl sok találat"
+
+# src/file-manager/nautilus-indexing-info.c:85
+#~ msgid "Indexing is %d%% complete."
+#~ msgstr "Az indexelés %d%%-nál tart."
+
+# src/file-manager/nautilus-indexing-info.c:236
+#~ msgid "Your files were last indexed at %s."
+#~ msgstr "A fájljai utoljára ekkor voltak indexelve: %s"
+
+# src/file-manager/nautilus-indexing-info.c:224
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast. "
+#~ msgstr ""
+#~ "Naponta egyszer a fájljai és a szöveges tartalom leindexelődik, hogy a "
+#~ "keresések gyorsabbak legyenek."
+
+# src/file-manager/nautilus-indexing-info.c:219
+# src/file-manager/nautilus-indexing-info.c:226
+# src/file-manager/nautilus-indexing-info.c:280
+#~ msgid "Indexing Status"
+#~ msgstr "Indexelés állapota"
+
+# src/file-manager/nautilus-indexing-info.c:236
+#~ msgid "Your files are currently being indexed."
+#~ msgstr "A fájljai jelenleg indexelés alatt vannak."
+
+# src/file-manager/nautilus-indexing-info.c:224
+#~ msgid ""
+#~ "Once a day your files and text content are indexed so your searches are "
+#~ "fast."
+#~ msgstr ""
+#~ "Naponta egyszer a fájljai és a szöveges tartalom leindexelődik, hogy a "
+#~ "keresések gyorsabbak legyenek."
+
+#~ msgid "There is no index of your files right now."
+#~ msgstr "Jelenleg nem létezik indexfájl."
+
+#~ msgid ""
+#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
+#~ "Fast searching is not enabled on your computer, so you do not have an "
+#~ "index right now."
+#~ msgstr ""
+#~ "Amikor be van kapcsolva a gyorskeresés, a keresőprogram létrehoz egy "
+#~ "indexet a keresések felgyorsításához. A gyorskeresés nincs bekapcsolva a "
+#~ "számítógépén, ezért jelenleg nincs indexfájlja."
+
+#~ msgid "No Index of Files"
+#~ msgstr "Nincs indexfájl"
+
+# src/file-manager/nautilus-indexing-info.c:396
+#~ msgid "Sorry, but the medusa search service is not available."
+#~ msgstr "Sajnálom, de a Medusa keresés nem elérhető."
+
+#~ msgid "Please verify medusa has been setup correctly."
+#~ msgstr "Ellenőrizze, hogy megfelelően lett-e telepítve a medusa."
+
+# src/file-manager/nautilus-indexing-info.c:418
+#~ msgid "%I:%M %p, %x"
+#~ msgstr "%H:%M, %x"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:1
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Minden kijelölt elem felfedése az eredeti mappájukban"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:2
+#~ msgid "Reveal in New Window"
+#~ msgstr "Felfedés új ablakban"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:3
+#~ msgid "Show Indexing Status"
+#~ msgstr "Indexelés állapotának mutatása"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:4
+#~ msgid "Show _Indexing Status"
+#~ msgstr "_Indexelés állapotának mutatása"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:5
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Indexelés állapotának mutatása kereséskor"
+
+# src/nautilus-complex-search-bar.c:233
+#~ msgid "More Options"
+#~ msgstr "Több beállítás"
+
+# src/nautilus-complex-search-bar.c:243
+#~ msgid "Fewer Options"
+#~ msgstr "Kevesebb beállítás"
+
+# src/nautilus-complex-search-bar.c:261 src/nautilus-simple-search-bar.c:129
+#~ msgid "Find Them!"
+#~ msgstr "Keressen!"
+
+# src/nautilus-search-bar-criterion.c:74
+#~ msgid "[Search for] Name [contains \"fish\"]"
+#~ msgstr " A neve "
+
+# src/nautilus-search-bar-criterion.c:75
+#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
+#~ msgstr " A tartalma "
+
+# src/nautilus-search-bar-criterion.c:76
+#~ msgid "[Search for] Type [is regular file]"
+#~ msgstr " A típusa "
+
+# src/nautilus-search-bar-criterion.c:77
+#~ msgid "[Search for] Size [larger than 400K]"
+#~ msgstr " A mérete "
+
+# src/nautilus-search-bar-criterion.c:78
+#~ msgid "[Search for] With Emblem [includes \"Important\"]"
+#~ msgstr " A matricája kulcsszava "
+
+# src/nautilus-search-bar-criterion.c:79
+#~ msgid "[Search for] Last Modified [before yesterday]"
+#~ msgstr " Az utolsó módosítás dátuma "
+
+# src/nautilus-search-bar-criterion.c:80
+#~ msgid "[Search for] Owner [is not root]"
+#~ msgstr " A tulajdonosa "
+
+# src/nautilus-search-bar-criterion.c:86
+#~ msgid "[File name] contains [help]"
+#~ msgstr " tartalmazza ezt: "
+
+# src/nautilus-search-bar-criterion.c:87
+#~ msgid "[File name] starts with [nautilus]"
+#~ msgstr " ezzel kezdődik: "
+
+# src/nautilus-search-bar-criterion.c:88
+#~ msgid "[File name] ends with [.c]"
+#~ msgstr " erre végződik: "
+
+# src/nautilus-search-bar-criterion.c:89
+#~ msgid "[File name] matches glob [*.c]"
+#~ msgstr " illeszkedik erre: "
+
+# src/nautilus-search-bar-criterion.c:90
+#~ msgid "[File name] matches regexp [\"e??l.$\"]"
+#~ msgstr " illeszkedik erre a reg. kifejezésre: "
+
+# src/nautilus-search-bar-criterion.c:95
+#~ msgid "[File content] includes all of [apple orange]"
+#~ msgstr " tartalmazza mindezt: "
+
+# src/nautilus-search-bar-criterion.c:96
+#~ msgid "[File content] includes any of [apply orange]"
+#~ msgstr " tartalmazza ezek közül valamelyiket: "
+
+# src/nautilus-search-bar-criterion.c:97
+#~ msgid "[File content] does not include all of [apple orange]"
+#~ msgstr " nem tartalmazza mindezt: "
+
+# src/nautilus-search-bar-criterion.c:98
+#~ msgid "[File content] includes none of [apple orange]"
+#~ msgstr " nem tartalmazza ezeket: "
+
+# src/nautilus-search-bar-criterion.c:104
+#~ msgid "[File type] is [folder]"
+#~ msgstr " ez: "
+
+# src/nautilus-search-bar-criterion.c:105
+#~ msgid "[File type] is not [folder]"
+#~ msgstr " nem ez: "
+
+# src/nautilus-search-bar-criterion.c:110
+#~ msgid "[File type is] regular file"
+#~ msgstr " rendes fájl"
+
+# src/nautilus-search-bar-criterion.c:111
+#~ msgid "[File type is] text file"
+#~ msgstr " szöveges fájl"
+
+# src/nautilus-search-bar-criterion.c:112
+#~ msgid "[File type is] application"
+#~ msgstr " alkalmazás"
+
+# src/nautilus-search-bar-criterion.c:113
+#~ msgid "[File type is] folder"
+#~ msgstr " mappa"
+
+# src/nautilus-search-bar-criterion.c:114
+#~ msgid "[File type is] music"
+#~ msgstr " zene"
+
+# src/nautilus-search-bar-criterion.c:119
+#~ msgid "[File size is] larger than [400K]"
+#~ msgstr " nagyobb mint "
+
+# src/nautilus-search-bar-criterion.c:120
+#~ msgid "[File size is] smaller than [300K]"
+#~ msgstr " kisebb mint "
+
+# src/nautilus-search-bar-criterion.c:125
+#~ msgid "[With emblem] marked with [Important]"
+#~ msgstr " legyen "
+
+# src/nautilus-search-bar-criterion.c:126
+#~ msgid "[With emblem] not marked with [Important]"
+#~ msgstr " ne legyen "
+
+# src/nautilus-search-bar-criterion.c:131
+#~ msgid "[Last modified date] is [1/24/00]"
+#~ msgstr " legyen "
+
+# src/nautilus-search-bar-criterion.c:132
+#~ msgid "[Last modified date] is not [1/24/00]"
+#~ msgstr " ne ez legyen "
+
+# src/nautilus-search-bar-criterion.c:133
+#~ msgid "[Last modified date] is after [1/24/00]"
+#~ msgstr " ez utáni "
+
+# src/nautilus-search-bar-criterion.c:134
+#~ msgid "[Last modified date] is before [1/24/00]"
+#~ msgstr " ez előtti "
+
+# src/nautilus-search-bar-criterion.c:136
+#~ msgid "[Last modified date] is today"
+#~ msgstr " a mai nap"
+
+# src/nautilus-search-bar-criterion.c:137
+#~ msgid "[Last modified date] is yesterday"
+#~ msgstr " a tegnapi nap"
+
+# src/nautilus-search-bar-criterion.c:139
+#~ msgid "[Last modified date] is within a week of [1/24/00]"
+#~ msgstr " +- egy héten belül ehhez képest "
+
+# src/nautilus-search-bar-criterion.c:140
+#~ msgid "[Last modified date] is within a month of [1/24/00]"
+#~ msgstr " +- egy hónapon belül ehhez képest "
+
+# src/nautilus-search-bar-criterion.c:159
+#~ msgid "[File owner] is [root]"
+#~ msgstr " a(z) "
+
+# src/nautilus-search-bar-criterion.c:160
+#~ msgid "[File owner] is not [root]"
+#~ msgstr " nem "
+
+# src/nautilus-switchable-search-bar.c:132
+#~ msgid "Find:"
+#~ msgstr "Keresés:"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-21 23:47+0800\n"
+"POT-Creation-Date: 2004-03-15 15:19+0100\n"
 "PO-Revision-Date: 2004-03-22 18:59+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -1256,8 +1256,8 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"如選用本選項，Nautilus 會在圖示顯示模式及清單顯示模式中先顯示目錄，然後才"
-"顯示檔案。"
+"如選用本選項，Nautilus 會在圖示顯示模式及清單顯示模式中先顯示目錄，然後才顯示"
+"檔案。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -1295,8 +1295,8 @@ msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"如選用本選項，Nautilus 會以使用者的個人資料夾作為桌面，否則會使用 ~/Desktop 目"
-"錄作為桌面。"
+"如選用本選項，Nautilus 會以使用者的個人資料夾作為桌面，否則會使用 ~/Desktop "
+"目錄作為桌面。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -1860,6 +1860,7 @@ msgid "Error while moving."
 msgstr "移動時發生錯誤。"
 
 #: libnautilus-private/nautilus-file-operations.c:552
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "無法移動“%s”，因為它存放於唯讀的磁碟內。"
 
@@ -1869,6 +1870,7 @@ msgid "Error while deleting."
 msgstr "刪除時發生錯誤。"
 
 #: libnautilus-private/nautilus-file-operations.c:563
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
@@ -1880,6 +1882,7 @@ msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "無法刪除“%s”，因為它存放於唯讀的磁碟內。"
 
 #: libnautilus-private/nautilus-file-operations.c:600
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
@@ -2063,8 +2066,8 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"這個名稱已經被一個不可刪除或取代的特別項目使用了。如果您仍然要複製該"
-"項目，請將它重新命名並再試一次。"
+"這個名稱已經被一個不可刪除或取代的特別項目使用了。如果您仍然要複製該項目，請"
+"將它重新命名並再試一次。"
 
 #: libnautilus-private/nautilus-file-operations.c:1043
 msgid "Unable to Replace File"
@@ -2101,10 +2104,6 @@ msgid "Replace _All"
 msgstr "全部取代"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4724
 #, c-format
@@ -2159,9 +2158,6 @@ msgid " (another copy)"
 msgstr " (another copy)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2197,9 +2193,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (another copy)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -3025,7 +3018,8 @@ msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"是否決定自行排列圖示，不調整圖示拖放後的位置？這樣做會清除現有的自選排列方式。"
+"是否決定自行排列圖示，不調整圖示拖放後的位置？這樣做會清除現有的自選排列方"
+"式。"
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3039,7 +3033,8 @@ msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
-"是否決定自行排列圖示，不調整圖示拖放後的位置？這樣做會清除現有的自選排列方式。"
+"是否決定自行排列圖示，不調整圖示拖放後的位置？這樣做會清除現有的自選排列方"
+"式。"
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
@@ -3232,6 +3227,10 @@ msgstr "沒有任何和“%s”有關聯的處理程序。"
 msgid "No Action Associated"
 msgstr "沒有任何有關聯的處理程序"
 
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -3289,6 +3288,7 @@ msgid "Open Failed, would you like to choose another application?"
 msgstr "無法開啟，是否選擇其它應用程式？"
 
 #: libnautilus-private/nautilus-program-choosing.c:569
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
@@ -3304,7 +3304,8 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
-"預設的處理方式無法開啟“%s”，因為它無法存取“%s”中的檔案。是否使用其它處理方式？"
+"預設的處理方式無法開啟“%s”，因為它無法存取“%s”中的檔案。是否使用其它處理方"
+"式？"
 
 #: libnautilus-private/nautilus-program-choosing.c:582
 #: libnautilus-private/nautilus-program-choosing.c:615
@@ -3323,24 +3324,23 @@ msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"目前沒有其它應用程式可以用來顯示該檔案。如果您將該檔案複製至電腦中，"
-"也許可以開啟該檔案。"
+"目前沒有其它應用程式可以用來顯示該檔案。如果您將該檔案複製至電腦中，也許可以"
+"開啟該檔案。"
 
 #: libnautilus-private/nautilus-program-choosing.c:608
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
-msgstr ""
-"預設的處理方式無法開啟“%s”，因為它無法存取“%s”中的檔案。"
+msgstr "預設的處理方式無法開啟“%s”，因為它無法存取“%s”中的檔案。"
 
 #: libnautilus-private/nautilus-program-choosing.c:610
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"目前沒有其它處理方式可以用來顯示該檔案。如果您將該檔案複製至電腦中，"
-"也許可以開啟該檔案。"
+"目前沒有其它處理方式可以用來顯示該檔案。如果您將該檔案複製至電腦中，也許可以"
+"開啟該檔案。"
 
 #: libnautilus-private/nautilus-program-choosing.c:869
 #: libnautilus-private/nautilus-program-choosing.c:1086
@@ -3395,8 +3395,8 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"如果要開啟遠端的檔案，請先將檔案複製至本地的資料夾才進行拖曳的動作。目的"
-"地已經有一個相同名稱的檔案正在開啟。"
+"如果要開啟遠端的檔案，請先將檔案複製至本地的資料夾才進行拖曳的動作。目的地已"
+"經有一個相同名稱的檔案正在開啟。"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -3729,6 +3729,10 @@ msgstr "%s，可用空間：%s"
 msgid "%s%s, %s"
 msgstr "%s%s，%s"
 
+#. Note that the number of items actually displayed varies somewhat due
+#. * to the way files are collected in batches. So you can't assume that
+#. * no more than the constant limit are displayed.
+#.
 #: src/file-manager/fm-directory-view.c:1972
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -4956,8 +4960,8 @@ msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"執行 Nautilus 之前，請自行新增這個資料夾，或是設定正確的權限使 Nautilus "
-"可以新增這些資料夾。"
+"執行 Nautilus 之前，請自行新增這個資料夾，或是設定正確的權限使 Nautilus 可以"
+"新增這些資料夾。"
 
 #: src/nautilus-application.c:272
 msgid "Couldn't Create Required Folders"
@@ -4997,6 +5001,16 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "成功合併舊的桌面"
 
+#. Can't register myself due to trouble locating the
+#. * Nautilus_Shell.server file. This has happened when you
+#. * launch Nautilus with an LD_LIBRARY_PATH that
+#. * doesn't include the directory containing the oaf
+#. * library. It could also happen if the
+#. * Nautilus_Shell.server file was not present for some
+#. * reason. Sometimes killing oafd and gconfd fixes
+#. * this problem but we don't exactly understand why,
+#. * since neither of the above causes explain it.
+#.
 #: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5006,6 +5020,7 @@ msgstr ""
 "現在無法使用 Nautilus。在文本模式下執行“bonobo-slay”或許可以修正問題。否則，"
 "請重新啟動電腦或是重新安裝 Nautilus。"
 
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5048,7 +5063,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:572 src/nautilus-application.c:590
 #: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5517,27 +5531,22 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus：--check 不適用於 URI。\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus：--check 不可配合其它選項使用。\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus：--quit 不適用於 URI。\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus：--restart 不適用於 URI。\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus：--geometry 不適用於多於一個 URI。\n"
 
