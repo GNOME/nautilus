@@ -54,3 +54,10 @@ if test $UID -ne 0 -a "x$1" '!=' "x--version" -a "x$1" '!=' "x--build"; then
    exit
 fi
 
+USER_TEST=no
+echo "$*" | grep -- --user > /dev/null && USER_TEST=yes
+
+if [ "x$USER_TEST" != "xyes" ]; then
+	sh $0 "$@" --user $USER
+	exit
+fi
