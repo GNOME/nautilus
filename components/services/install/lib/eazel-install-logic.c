@@ -2013,7 +2013,8 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 							(*requirements) = g_list_prepend (*requirements, req);
 						}
 					}
-				} else {
+				}
+				if (breaks) {
 					GList *break_iterator;
 					gboolean fail_it = FALSE;
 					for (break_iterator = breaks; break_iterator; glist_step (break_iterator)) {
