@@ -388,19 +388,44 @@ menu_bar_no_resize_hack (NautilusWindow *window)
 	menu_bar->klass = menu_bar_no_resize_hack_class;
 }
 
-/* handle bonobo events from the throbber */
-static void 
-throbber_location_changed_callback (BonoboListener    *listener,
-		 char              *event_name, 
-		 CORBA_any         *arg,
-		 CORBA_Environment *ev,
-		 gpointer           user_data)
+static gboolean
+location_change_at_idle_callback (gpointer callback_data)
 {
-	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-	gchar    *location;
+	NautilusWindow *window;
+	char *location;
 
-	location = BONOBO_ARG_GET_STRING (arg);
+	window = NAUTILUS_WINDOW (callback_data);
+
+	location = window->details->location_to_change_to_at_idle;
+	window->details->location_to_change_to_at_idle = NULL;
+	window->details->location_change_at_idle_id = 0;
+
 	nautilus_window_goto_uri (window, location);
+	g_free (location);
+
+	return FALSE;
+}
+
+/* handle bonobo events from the throbber -- since they can come in at
+   any time right in the middle of things, defer until idle */
+static void 
+throbber_location_change_request_callback (BonoboListener *listener,
+					   char *event_name, 
+					   CORBA_any *arg,
+					   CORBA_Environment *ev,
+					   gpointer callback_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	g_free (window->details->location_to_change_to_at_idle);
+	window->details->location_to_change_to_at_idle = g_strdup (BONOBO_ARG_GET_STRING (arg));
+
+	if (window->details->location_change_at_idle_id == 0) {
+		window->details->location_change_at_idle_id =
+			gtk_idle_add (location_change_at_idle_callback, window);
+	}
 }
 
 static void
@@ -411,7 +436,9 @@ nautilus_window_constructed (NautilusWindow *window)
   	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
 	EPaned *panel;
-
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (window->details->ui_container,
@@ -551,15 +578,13 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* watch for throbber location changes, too */
 	if (window->throbber != NULL) {
-		CORBA_Environment ev;
-		Bonobo_PropertyBag property_bag;
-		
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-	
-		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
-			window->details->throbber_listener_id = bonobo_event_source_client_add_listener (property_bag, throbber_location_changed_callback, 
-	        		"Bonobo/Property:change:location", NULL, window); 
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			window->details->throbber_location_change_request_listener_id =
+				bonobo_event_source_client_add_listener
+				(property_bag, throbber_location_change_request_callback, 
+				 "Bonobo/Property:change:location", NULL, window); 
 			bonobo_object_release_unref (property_bag, &ev);	
 		}
 		CORBA_exception_free (&ev);
@@ -632,7 +657,9 @@ static void
 nautilus_window_destroy (GtkObject *object)
 {
 	NautilusWindow *window;
-
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	
 	window = NAUTILUS_WINDOW (object);
 
 	/* Handle the part of destroy that's private to the view
@@ -688,22 +715,24 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
 	}
 
-	/* get rid of the CORBA objects */
 	if (window->throbber != NULL) {
-		CORBA_Environment ev;
-		Bonobo_PropertyBag property_bag;
-		
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-	
-		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
-			bonobo_event_source_client_remove_listener (property_bag, window->details->throbber_listener_id, &ev);
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+			bonobo_event_source_client_remove_listener
+				(property_bag,
+				 window->details->throbber_location_change_request_listener_id,
+				 &ev);
 			bonobo_object_release_unref (property_bag, &ev);	
 		}
 
 		bonobo_object_release_unref (window->throbber, &ev);		
 		CORBA_exception_free (&ev);
 	}
+	if (window->details->location_change_at_idle_id != 0) {
+		gtk_idle_remove (window->details->location_change_at_idle_id);
+	}
+
 	g_free (window->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
@@ -1351,12 +1380,11 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	if (window->throbber != NULL) {
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-	
-		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
-			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);				
-			bonobo_object_release_unref (property_bag, &ev);	
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);
+			bonobo_object_release_unref (property_bag, &ev);
 		}
-		CORBA_exception_free (&ev);	
+		CORBA_exception_free (&ev);
 	}
 }
 

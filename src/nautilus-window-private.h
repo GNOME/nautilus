@@ -38,10 +38,8 @@ struct NautilusWindowDetails
         /* Bonobo. */
         BonoboUIContainer *ui_container;
         BonoboUIComponent *shell_ui;
-	Bonobo_EventSource_ListenerId throbber_listener_id;
-	
         gboolean updating_bonobo_state;
-        
+
         /* Menus. */
 	guint refresh_bookmarks_menu_idle_id;
 	guint refresh_go_menu_idle_id;
@@ -53,6 +51,13 @@ struct NautilusWindowDetails
         /* Current location. */
 	char *title;
 	NautilusFile *viewed_file;
+
+        /* Throbber. */
+	Bonobo_EventSource_ListenerId throbber_location_change_request_listener_id;
+
+        /* Deferred location change. */
+        char *location_to_change_to_at_idle;
+        guint location_change_at_idle_id;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
