@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-02-25 03:43+0100\n"
-"PO-Revision-Date: 2001-02-25 03:45+0100\n"
+"POT-Creation-Date: 2001-02-26 01:39+0100\n"
+"PO-Revision-Date: 2001-02-26 01:40+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -93,10 +93,18 @@ msgid "Factory for hardware view"
 msgstr "Fabrik för hårdvaruvy"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware Viewer"
+msgstr "Hårdvaruvisare"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
 msgid "Hardware view"
 msgstr "Hårdvaruvy"
 
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
+msgid "View as Hardware"
+msgstr "Visa som hårdvara"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
 msgid "hardware view"
 msgstr "hårdvaruvy"
 
@@ -386,12 +394,20 @@ msgid "Image"
 msgstr "Bild"
 
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:4
+msgid "Image Viewer"
+msgstr "Bildvisare"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
 msgid "Nautilus Image Viewer"
 msgstr "Nautilus bildvisare"
 
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
 msgid "Nautilus Image viewer factory"
 msgstr "Nautilus bildvisarfabrik"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
+msgid "View as Image"
+msgstr "Visa som bild"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -432,20 +448,28 @@ msgid "Content Loser"
 msgstr "Innehållsförlorare"
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+msgid "Content Loser Viewer"
+msgstr "Innehållsförlorarvisare"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
 msgid "Nautilus Content Loser"
 msgstr "Nautilus innehållsförlorare"
 
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
 msgid "Nautilus content loser component's factory"
 msgstr "Nautilus-fabriken för innehållsförlorarkomponenten"
 
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
 msgid "Nautilus content loser factory"
 msgstr "Nautilus innehållsförlorarfabrik"
 
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
 msgid "Nautilus content view that fails on command"
 msgstr "Nautilus-innehållsvy som misslyckas på begäran"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
+msgid "View as Content Loser"
+msgstr "Visa som innehållsförlorare"
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -892,8 +916,16 @@ msgid "Mozilla content view component's factory"
 msgstr "Fabrik för Mozilla-innehållsvykomponenten"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "View as Web Page"
+msgstr "Visa som webbsida"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
 msgid "Web Page"
 msgstr "Webbsida"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
+msgid "Web Page Viewer"
+msgstr "Webbsidevisare"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1620,12 +1652,20 @@ msgid "Music"
 msgstr "Musik"
 
 #: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music Viewer"
+msgstr "Musikvisare"
+
+#: components/music/Nautilus_View_music.oaf.in.h:4
 msgid "Music view"
 msgstr "Musikvy"
 
-#: components/music/Nautilus_View_music.oaf.in.h:4
+#: components/music/Nautilus_View_music.oaf.in.h:5
 msgid "Music view factory"
 msgstr "Musikvyfabrik"
+
+#: components/music/Nautilus_View_music.oaf.in.h:6
+msgid "View as Music"
+msgstr "Visa som musik"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -1705,6 +1745,7 @@ msgstr "Leverantör: "
 #: components/rpmview/nautilus-rpm-view.c:283
 #: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
+#: components/services/summary/nautilus-summary-view.c:122
 msgid "Install"
 msgstr "Installera"
 
@@ -1807,14 +1848,22 @@ msgid "Package"
 msgstr "Paket"
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:3
+msgid "Package Viewer"
+msgstr "Paketvisare"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
 msgid "RPM component"
 msgstr "RPM-komponent"
 
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:5
 msgid "RPM view factory"
 msgstr "RPM-vyfabrik"
 
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:5
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:6
+msgid "View as Package"
+msgstr "Visa som paket"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:7
 msgid "rpm view"
 msgstr "rpm-vy"
 
@@ -1871,12 +1920,20 @@ msgid "Nautilus Sample view factory"
 msgstr "Fabrik för Nautilus exempelvy"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample Viewer"
+msgstr "Exempelvisare"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
 msgid "Sample content view component"
 msgstr "Exempelinnehållsvykomponent"
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:5
+#: components/sample/Nautilus_View_sample.oaf.in.h:6
 msgid "Sample content view component's factory"
 msgstr "Fabrik för exempelinnehållsvykomponenten"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:7
+msgid "View as Sample"
+msgstr "Visa som exempel"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:107
 msgid "Set the default answer to continue, also default delete to Yes"
@@ -2009,7 +2066,7 @@ msgid "*** You cannot specify more then one protocol type.\n"
 msgstr "*** Du kan inte ange mer än en protokolltyp.\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:184
-msgid "*** Erase and revert ?  Somebody set us up the bomb!\n"
+msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
 msgstr "*** Ta bort och återställ? Någon inställa oss bomben!\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:293
@@ -2795,20 +2852,28 @@ msgid "Aborted"
 msgstr "Avbruten"
 
 #: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:2
+msgid "Install Viewer"
+msgstr "Installationsvisare"
+
+#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:3
 msgid "Nautilus Service Install View"
 msgstr "Nautilus tjänstinstallationsvy"
 
-#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:3
+#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:4
 msgid "Nautilus Service Install View Factory"
 msgstr "Nautilus-fabrik för tjänstinstallationsvy"
 
-#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:4
+#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:5
 msgid "Service Install View Component"
 msgstr "Tjänstinstallationsvykomponent"
 
-#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:5
+#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:6
 msgid "Service Install View Component's Factory"
 msgstr "Fabrik för tjänstinstallationsvykomponent"
+
+#: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:7
+msgid "View as Install"
+msgstr "Visa som installation"
 
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 msgid "Factory for the install service"
@@ -2836,27 +2901,35 @@ msgstr "Fabrik för inventarietjänsten"
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:2
 msgid "Inventory"
-msgstr "Resurser"
+msgstr "Inventarie"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:1
 msgid "Nautilus Inventory view"
-msgstr "Nautilus resursvy"
+msgstr "Nautilus invertarievy"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:2
 msgid "Nautilus Inventory view factory"
-msgstr "Nautilus resursvyfabrik"
+msgstr "Nautilus invertarievyfabrik"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:3
 msgid "Nautilus System Inventory component's component's factory"
-msgstr "Nautilus systemresurskomponentsfabrik"
+msgstr "Nautilus systeminventariekomponentfabrik"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:4
 msgid "System Inventory"
-msgstr "Systemresurser"
+msgstr "Systeminventarie"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:5
+msgid "System Inventory Viewer"
+msgstr "Systeminventarievisare"
+
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:6
 msgid "System inventory view component"
-msgstr "Systemresursvykomponent"
+msgstr "Systeminventarievykomponent"
+
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:7
+msgid "View as System Inventory"
+msgstr "Visa som systeminventarie"
 
 #. Setup the title
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:153
@@ -2966,20 +3039,28 @@ msgid "Change Password"
 msgstr "Byt lösenord"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:2
+msgid "Change Password Viewer"
+msgstr "Lösenordsbytesvisare"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
 msgid "Eazel Change Password View"
 msgstr "Eazel-vy för lösenordsbyte"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
-msgid "Eazel Change Password view component"
-msgstr "Eazel-komponent för lösenordsbyte"
-
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:4
+msgid "Eazel Change Password view component"
+msgstr "Eazel-komponent för lösenordsbytesvy"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:5
 msgid "Nautilus Service Login View Factory"
 msgstr "Nautilus-fabrik för tjänstinloggningsvyn"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:5
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:6
 msgid "Service Login View Component's Factory"
 msgstr "Fabrik för tjänstinloggningsvykomponenten"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:7
+msgid "View as Change Password"
+msgstr "Visa som byt lösenord"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:295
 msgid "Unknown Date"
@@ -3060,60 +3141,69 @@ msgstr ""
 "Ditt användarnamn eller lösenord var inte korrekt. Var vänlig och försök "
 "igen."
 
-#: components/services/summary/nautilus-summary-view.c:113
+#: components/services/summary/nautilus-summary-view.c:116
+#: libnautilus-extensions/nautilus-program-chooser.c:1337
+msgid "Go There"
+msgstr "Gå dit"
+
+#: components/services/summary/nautilus-summary-view.c:119
+msgid "More Info"
+msgstr "Mer information"
+
+#: components/services/summary/nautilus-summary-view.c:130
 msgid "Account Preferences"
 msgstr "Kontoinställningar"
 
-#: components/services/summary/nautilus-summary-view.c:114
+#: components/services/summary/nautilus-summary-view.c:131
 msgid "Logout"
 msgstr "Logga ut"
 
-#: components/services/summary/nautilus-summary-view.c:115
-#: components/services/summary/nautilus-summary-view.c:123
+#: components/services/summary/nautilus-summary-view.c:132
+#: components/services/summary/nautilus-summary-view.c:140
 msgid "Terms of Use"
 msgstr "Användningsvillkor"
 
-#: components/services/summary/nautilus-summary-view.c:116
-#: components/services/summary/nautilus-summary-view.c:124
+#: components/services/summary/nautilus-summary-view.c:133
+#: components/services/summary/nautilus-summary-view.c:141
 msgid "Privacy Statement"
 msgstr "Policy för persondataskydd"
 
-#: components/services/summary/nautilus-summary-view.c:121
+#: components/services/summary/nautilus-summary-view.c:138
 msgid "Register"
 msgstr "Anmäl"
 
-#: components/services/summary/nautilus-summary-view.c:122
+#: components/services/summary/nautilus-summary-view.c:139
 msgid "Login"
 msgstr "Logga in"
 
-#: components/services/summary/nautilus-summary-view.c:152
+#: components/services/summary/nautilus-summary-view.c:169
 #, c-format
 msgid "Welcome, %s!"
 msgstr "Välkommen, %s!"
 
-#: components/services/summary/nautilus-summary-view.c:157
+#: components/services/summary/nautilus-summary-view.c:174
 msgid "You are not logged in"
 msgstr "Du är inte inloggad"
 
-#: components/services/summary/nautilus-summary-view.c:164
+#: components/services/summary/nautilus-summary-view.c:181
 msgid "Connecting to Eazel Services..."
 msgstr "Ansluter till Eazel Services..."
 
-#: components/services/summary/nautilus-summary-view.c:604
+#: components/services/summary/nautilus-summary-view.c:643
 #, c-format
 msgid "Version: %s"
 msgstr "Version: %s"
 
-#: components/services/summary/nautilus-summary-view.c:698
+#: components/services/summary/nautilus-summary-view.c:737
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
 msgid "Services"
 msgstr "Tjänster"
 
-#: components/services/summary/nautilus-summary-view.c:709
+#: components/services/summary/nautilus-summary-view.c:748
 msgid "Featured Downloads"
-msgstr "Framhävda hämtningar"
+msgstr "Programtips"
 
-#: components/services/summary/nautilus-summary-view.c:837
+#: components/services/summary/nautilus-summary-view.c:875
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
@@ -3123,7 +3213,7 @@ msgstr ""
 "just nu eller så kan din dator vara felkonfigurerad. Var vänlig och kontakta "
 "support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:847
+#: components/services/summary/nautilus-summary-view.c:885
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3131,7 +3221,7 @@ msgstr ""
 "Hittade ett problem med tjänstedata på Eazels servrar. Var vänlig och "
 "kontakta support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:870
+#: components/services/summary/nautilus-summary-view.c:908
 msgid ""
 "Information is missing from the redirect data on Eazel servers. Please "
 "contact support@eazel.com."
@@ -3139,7 +3229,7 @@ msgstr ""
 "Information saknas från omdirigeringsdatan på Eazels servrar. Var vänlig och "
 "kontakta support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:912
+#: components/services/summary/nautilus-summary-view.c:950
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly. You could try again "
@@ -3148,7 +3238,7 @@ msgstr ""
 "Kan inte ansluta till Eazels server. Servern kan vara otillgänglig just nu "
 "eller så kan din dator vara felkonfigurerad. Du kan försöka igen senare."
 
-#: components/services/summary/nautilus-summary-view.c:922
+#: components/services/summary/nautilus-summary-view.c:960
 msgid ""
 "Found a problem with redirect data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3156,11 +3246,11 @@ msgstr ""
 "Hittade ett problem med omdirigeringsdata på Eazels servrar. Var vänlig och "
 "kontakta support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:939
+#: components/services/summary/nautilus-summary-view.c:977
 msgid "Failed to upload system inventory."
 msgstr "Misslyckades med att lämna uppgifter om system."
 
-#: components/services/summary/nautilus-summary-view.c:1002
+#: components/services/summary/nautilus-summary-view.c:1040
 #: src/nautilus-first-time-druid.c:250
 msgid "Eazel Services"
 msgstr "Eazel Services"
@@ -3197,6 +3287,34 @@ msgstr "_Logga ut från Eazel Services"
 msgid "_Register for Eazel Services"
 msgstr "_Anmäl dig till Eazel Services"
 
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:1
+msgid "Nautilus Service Summary View Factory"
+msgstr "Nautilus-fabrik för tjänstesammanfattningsvyn"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:2
+msgid "Nautilus Summary View"
+msgstr "Nautilus sammanfattningsvy"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:3
+msgid "Service Summary View Component's Factory"
+msgstr "Fabrik för tjänstesammanfattningsvykomponent"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:4
+msgid "Service Summary view component"
+msgstr "Tjänstesammanfattningsvykomponent"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:5
+msgid "Summary"
+msgstr "Sammanfattning"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:6
+msgid "Summary Viewer"
+msgstr "Sammanfattningsvisare"
+
+#: components/services/summary/Nautilus_View_services-summary.oaf.in.h:7
+msgid "View as Summary"
+msgstr "Visa som sammanfattning"
+
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
 #, c-format
 msgid "HTTP error %d \"%s\" on uri %s"
@@ -3224,10 +3342,18 @@ msgid "Service"
 msgstr "Tjänst"
 
 #: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:4
+msgid "Service Viewer"
+msgstr "Tjänstevisare"
+
+#: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:5
 msgid "Services startup view factory"
 msgstr "Fabrik för tjänstuppstartsvy"
 
-#: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:5
+#: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:6
+msgid "View as Service"
+msgstr "Visa som tjänst"
+
+#: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:7
 msgid "eazel sample service view"
 msgstr "eazel-exempeltjänstvy"
 
@@ -3319,12 +3445,20 @@ msgid "Text"
 msgstr "Text"
 
 #: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text Viewer"
+msgstr "Textvisare"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
 msgid "Text view"
 msgstr "Textvy"
 
-#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/Nautilus_View_text.oaf.in.h:5
 msgid "Text view factory"
 msgstr "Textvyfabrik"
+
+#: components/text/Nautilus_View_text.oaf.in.h:6
+msgid "View as Text"
+msgstr "Visa som text"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -3985,7 +4119,7 @@ msgid "_Link here"
 msgstr "_Länka hit"
 
 #: libnautilus-extensions/nautilus-drag.c:487
-#: src/file-manager/fm-directory-view.c:3504
+#: src/file-manager/fm-directory-view.c:3503
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -5465,157 +5599,147 @@ msgstr "Avancerad"
 msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:189
-#: src/nautilus-window.c:903
-#, c-format
-msgid "View as %s"
-msgstr "Visa som %s"
-
-#: libnautilus-extensions/nautilus-program-chooser.c:219
+#: libnautilus-extensions/nautilus-program-chooser.c:218
 msgid "not in menu"
 msgstr "inte i menyn"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:222
+#: libnautilus-extensions/nautilus-program-chooser.c:221
 msgid "in menu for this file"
 msgstr "i menyn för denna fil"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:225
-#: libnautilus-extensions/nautilus-program-chooser.c:228
+#: libnautilus-extensions/nautilus-program-chooser.c:224
+#: libnautilus-extensions/nautilus-program-chooser.c:227
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "i menyn för \"%s\""
 
-#: libnautilus-extensions/nautilus-program-chooser.c:231
+#: libnautilus-extensions/nautilus-program-chooser.c:230
 msgid "default for this file"
 msgstr "standard för denna fil"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:234
-#: libnautilus-extensions/nautilus-program-chooser.c:237
+#: libnautilus-extensions/nautilus-program-chooser.c:233
+#: libnautilus-extensions/nautilus-program-chooser.c:236
 #, c-format
 msgid "default for \"%s\""
 msgstr "standard för \"%s\""
 
-#: libnautilus-extensions/nautilus-program-chooser.c:266
+#: libnautilus-extensions/nautilus-program-chooser.c:265
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Är inte i menyn för \"%s\"-objekt."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:269
+#: libnautilus-extensions/nautilus-program-chooser.c:268
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "Är i menyn för \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:272
+#: libnautilus-extensions/nautilus-program-chooser.c:271
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "Är i menyn för \"%s\"-objekt."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:275
+#: libnautilus-extensions/nautilus-program-chooser.c:274
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "Är i menyn för alla \"%s\"-objekt."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:278
+#: libnautilus-extensions/nautilus-program-chooser.c:277
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "Är standard för \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:281
+#: libnautilus-extensions/nautilus-program-chooser.c:280
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "Är standard för \"%s\"-objekt."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:284
+#: libnautilus-extensions/nautilus-program-chooser.c:283
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "Är standard för alla \"%s\"-objekt."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:970
+#: libnautilus-extensions/nautilus-program-chooser.c:969
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Ändra \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:995
+#: libnautilus-extensions/nautilus-program-chooser.c:994
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Inkludera i menyn för \"%s\"-objekt"
 
 #. Radio button for setting default for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1002
+#: libnautilus-extensions/nautilus-program-chooser.c:1001
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Använd som standard för \"%s\"-objekt"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1009
+#: libnautilus-extensions/nautilus-program-chooser.c:1008
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Inkludera i menyn endast för \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1015
+#: libnautilus-extensions/nautilus-program-chooser.c:1014
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Använd som standard endast för \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1022
+#: libnautilus-extensions/nautilus-program-chooser.c:1021
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1186
+#: libnautilus-extensions/nautilus-program-chooser.c:1185
 #: src/file-manager/fm-list-view.c:2122
 #: src/file-manager/fm-search-list-view.c:545
 #: src/nautilus-bookmarks-window.c:164
 msgid "Name"
 msgstr "Namn"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1189
+#: libnautilus-extensions/nautilus-program-chooser.c:1188
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1237
+#: libnautilus-extensions/nautilus-program-chooser.c:1236
 msgid "Open with Other"
 msgstr "Öppna med annat"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1238
+#: libnautilus-extensions/nautilus-program-chooser.c:1237
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr "Välj ett program att öppna \"%s\" med."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1242
+#: libnautilus-extensions/nautilus-program-chooser.c:1241
 msgid "View as Other"
 msgstr "Visa som annat"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1243
+#: libnautilus-extensions/nautilus-program-chooser.c:1242
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr "Välj en vy för \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1250
+#: libnautilus-extensions/nautilus-program-chooser.c:1249
 msgid "Choose"
 msgstr "Välj"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1252
+#: libnautilus-extensions/nautilus-program-chooser.c:1251
 msgid "Done"
 msgstr "Klar"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1315
+#: libnautilus-extensions/nautilus-program-chooser.c:1314
 msgid "Modify..."
 msgstr "Ändra..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-extensions/nautilus-program-chooser.c:1326
+#: libnautilus-extensions/nautilus-program-chooser.c:1325
 msgid "File Types and Programs"
 msgstr "Filtyper och program"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1338
-msgid "Go There"
-msgstr "Gå dit"
-
-#: libnautilus-extensions/nautilus-program-chooser.c:1347
+#: libnautilus-extensions/nautilus-program-chooser.c:1346
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -6277,74 +6401,69 @@ msgid "Delete From Trash?"
 msgstr "Ta bort från papperskorgen?"
 
 #: src/file-manager/fm-directory-view.c:2930
-#: src/file-manager/fm-directory-view.c:2971
+#: src/file-manager/fm-directory-view.c:2970
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Använd \"%s\" för att öppna det markerade objektet"
 
-#: src/file-manager/fm-directory-view.c:2969
-#, c-format
-msgid "%s Viewer"
-msgstr "%svisare"
-
-#: src/file-manager/fm-directory-view.c:3173
+#: src/file-manager/fm-directory-view.c:3172
 msgid "Open in _New Window"
 msgstr "Öppna i _nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:3175
+#: src/file-manager/fm-directory-view.c:3174
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Öppna i %d _nya fönster"
 
-#: src/file-manager/fm-directory-view.c:3201
+#: src/file-manager/fm-directory-view.c:3200
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:3206
+#: src/file-manager/fm-directory-view.c:3205
 msgid "Delete from _Trash..."
 msgstr "Ta bort från _papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3207
+#: src/file-manager/fm-directory-view.c:3206
 msgid "Delete from _Trash"
 msgstr "Ta bort från _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3211
+#: src/file-manager/fm-directory-view.c:3210
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3215
+#: src/file-manager/fm-directory-view.c:3214
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Move to _Trash"
 msgstr "Flytta till _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3245
+#: src/file-manager/fm-directory-view.c:3244
 msgid "Create _Links"
 msgstr "Skapa _länkar"
 
-#: src/file-manager/fm-directory-view.c:3246
+#: src/file-manager/fm-directory-view.c:3245
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
-#: src/file-manager/fm-directory-view.c:3264
+#: src/file-manager/fm-directory-view.c:3263
 msgid "_Empty Trash..."
 msgstr "_Töm papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3265
+#: src/file-manager/fm-directory-view.c:3264
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3276
+#: src/file-manager/fm-directory-view.c:3275
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "R_emove Custom Images"
 msgstr "Ta bort _anpassade bilder"
 
-#: src/file-manager/fm-directory-view.c:3277
+#: src/file-manager/fm-directory-view.c:3276
 msgid "R_emove Custom Image"
 msgstr "Ta bort _anpassad bild"
 
-#: src/file-manager/fm-directory-view.c:3430
+#: src/file-manager/fm-directory-view.c:3429
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -6352,7 +6471,7 @@ msgstr ""
 "Denna länk kan inte användas eftersom den inte har något mål. Vill du flytta "
 "denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3433
+#: src/file-manager/fm-directory-view.c:3432
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -6361,15 +6480,15 @@ msgstr ""
 "Denna länk kan inte användas eftersom dess mål \"%s\" inte finns. Vill du "
 "flytta denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3439
+#: src/file-manager/fm-directory-view.c:3438
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3440
+#: src/file-manager/fm-directory-view.c:3439
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3493
+#: src/file-manager/fm-directory-view.c:3492
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -6377,19 +6496,19 @@ msgid ""
 msgstr ""
 "\"%s\" är en körbar textfil. Vill du köra den eller visa dess innehåll?"
 
-#: src/file-manager/fm-directory-view.c:3499
+#: src/file-manager/fm-directory-view.c:3498
 msgid "Run or Display?"
 msgstr "Kör eller visa?"
 
-#: src/file-manager/fm-directory-view.c:3500
+#: src/file-manager/fm-directory-view.c:3499
 msgid "Run"
 msgstr "Kör"
 
-#: src/file-manager/fm-directory-view.c:3501
+#: src/file-manager/fm-directory-view.c:3500
 msgid "Display"
 msgstr "Visa"
 
-#: src/file-manager/fm-directory-view.c:3555
+#: src/file-manager/fm-directory-view.c:3554
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -6397,16 +6516,16 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3557
+#: src/file-manager/fm-directory-view.c:3556
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
-#: src/file-manager/fm-directory-view.c:3691
+#: src/file-manager/fm-directory-view.c:3690
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öppnar \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3697
+#: src/file-manager/fm-directory-view.c:3696
 msgid "Cancel Open?"
 msgstr "Avbryt öppning?"
 
@@ -8431,58 +8550,66 @@ msgid "Icons"
 msgstr "Ikoner"
 
 #: src/Nautilus_shell.oaf.in.h:3
+msgid "Icons Viewer"
+msgstr "Ikonvisare"
+
+#: src/Nautilus_shell.oaf.in.h:4
 msgid "List"
 msgstr "Lista"
 
-#: src/Nautilus_shell.oaf.in.h:4
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "List Viewer"
+msgstr "Listvisare"
+
+#: src/Nautilus_shell.oaf.in.h:6
 msgid "Nautilus factory"
 msgstr "Nautilus-fabrik"
 
-#: src/Nautilus_shell.oaf.in.h:5
+#: src/Nautilus_shell.oaf.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
 msgstr "Nautilus-filhanterarkomponent som visar en rullningsbar lista"
 
-#: src/Nautilus_shell.oaf.in.h:6
+#: src/Nautilus_shell.oaf.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
 "Nautilus-filhanterarkomponent som visar en rullningsbar lista för sökresultat"
 
-#: src/Nautilus_shell.oaf.in.h:7
+#: src/Nautilus_shell.oaf.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
 "Nautilus-filhanterarkomponent som visar ett tvådimensionellt ikonutrymme"
 
-#: src/Nautilus_shell.oaf.in.h:8
+#: src/Nautilus_shell.oaf.in.h:10
 msgid "Nautilus file manager component that shows icons on the the desktop"
 msgstr "Nautilus-filhanterarkomponent som visar ikonerna på skrivbordet"
 
-#: src/Nautilus_shell.oaf.in.h:9
+#: src/Nautilus_shell.oaf.in.h:11
 msgid "Nautilus file manager desktop icon view"
 msgstr "Skrivbordsikonvy för Nautilus filhanterare"
 
-#: src/Nautilus_shell.oaf.in.h:10
+#: src/Nautilus_shell.oaf.in.h:12
 msgid "Nautilus file manager icon view"
 msgstr "Ikonvy för Nautilus filhanterare"
 
-#: src/Nautilus_shell.oaf.in.h:11
+#: src/Nautilus_shell.oaf.in.h:13
 msgid "Nautilus file manager list view"
 msgstr "Listvy för Nautilus filhanterare"
 
-#: src/Nautilus_shell.oaf.in.h:12
+#: src/Nautilus_shell.oaf.in.h:14
 msgid "Nautilus file manager search results list view"
 msgstr "Sökresultatslistvy för Nautilus filhanterare"
 
-#: src/Nautilus_shell.oaf.in.h:13
+#: src/Nautilus_shell.oaf.in.h:15
 msgid "Nautilus metafile factory"
 msgstr "Fabrik för Nautilus-metafil"
 
-#: src/Nautilus_shell.oaf.in.h:14
+#: src/Nautilus_shell.oaf.in.h:16
 msgid "Nautilus shell"
 msgstr "Nautilus-skal"
 
-#: src/Nautilus_shell.oaf.in.h:15
+#: src/Nautilus_shell.oaf.in.h:17
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
@@ -8490,13 +8617,21 @@ msgstr ""
 "Nautilus-skaloperationer som kan utföras genom upprepade "
 "kommandoradsanvändanden"
 
-#: src/Nautilus_shell.oaf.in.h:16
+#: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
 msgstr "Skapar metafil-objekt för att komma åt Nautilus-metadata"
 
-#: src/Nautilus_shell.oaf.in.h:17
+#: src/Nautilus_shell.oaf.in.h:19
 msgid "Search List"
 msgstr "Söklista"
+
+#: src/Nautilus_shell.oaf.in.h:20
+msgid "View as Icons"
+msgstr "Visa som ikoner"
+
+#: src/Nautilus_shell.oaf.in.h:21
+msgid "View as List"
+msgstr "Visa som lista"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid " Advanced"
@@ -9429,9 +9564,6 @@ msgstr "%d%%"
 #~ msgid "Ok"
 #~ msgstr "Ok"
 
-#~ msgid "File Info"
-#~ msgstr "Filinformation"
-
 #~ msgid "Couldn't write tag!"
 #~ msgstr "Kunde inte skriva tagg!"
 
@@ -9784,9 +9916,6 @@ msgstr "%d%%"
 #~ msgid "Package %s had version %s and not %s"
 #~ msgstr "Paketet %s hade versionsnumret %s och inte %s"
 
-#~ msgid "Easy Install"
-#~ msgstr "Lätt installation"
-
 #~ msgid "Messages"
 #~ msgstr "Meddelanden"
 
@@ -9951,23 +10080,11 @@ msgstr "%d%%"
 #~ msgid "There is no eazel news data !\n"
 #~ msgstr "Det finns ingen eazel-nyhetsinformation!\n"
 
-#~ msgid "Could not fetch summary configuration !"
-#~ msgstr "Kunde inte hitta någon sammanfattningskonfiguration!"
-
-#~ msgid "The summary configuration contains no data!\n"
-#~ msgstr "Konfigurationssammanfattningen innehåller inga data!\n"
-
 #~ msgid "Cannot find the SUMMARY_DATA xmlnode!\n"
 #~ msgstr "Kan inte hitta xmlnoden SUMMARY_DATA!\n"
 
 #~ msgid "Bailing from the SUMMARY_DATA parse!\n"
 #~ msgstr "Hoppar ur SUMMARY_DATA-tolkningen!\n"
-
-#~ msgid "Could not find any summary configuration data!\n"
-#~ msgstr "Kunde inte hitta någon sammanfattning över konfigurationsdata!\n"
-
-#~ msgid "Bailing from summary configuration parse!\n"
-#~ msgstr "Hoppar ur tolkningen av konfigurationssammanfattningen!\n"
 
 #~ msgid "Indexing is Blocked on Your Computer"
 #~ msgstr "Indexering är blockerat på din dator"
