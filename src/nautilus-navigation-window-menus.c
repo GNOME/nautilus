@@ -513,6 +513,14 @@ view_menu_zoom_normal_callback (BonoboUIComponent *component,
 }
 
 static void
+view_menu_view_as_callback (BonoboUIComponent *component, 
+			    gpointer user_data, 
+			    const char *verb) 
+{
+	nautilus_window_show_view_as_dialog (NAUTILUS_WINDOW (user_data));
+}
+
+static void
 bookmarks_menu_add_bookmark_callback (BonoboUIComponent *component, 
 			              gpointer user_data, 
 			              const char *verb)
@@ -1261,6 +1269,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
 		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
 		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
+		BONOBO_UI_VERB ("View as", view_menu_view_as_callback),
 		BONOBO_UI_VERB ("Add Bookmark", bookmarks_menu_add_bookmark_callback),
 		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
 
@@ -1307,6 +1316,12 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 						       GTK_OBJECT (window));
 	/* Update the user level menu items for the first time */
 	user_level_changed_callback (window);
+
+	/* Register to catch Bonobo UI events so we can notice View As changes */
+	gtk_signal_connect (GTK_OBJECT (window->details->shell_ui),
+			    "ui_event", 
+			    nautilus_window_handle_ui_event_callback, 
+			    window);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	

@@ -96,7 +96,14 @@
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 
+#define COMMAND_PREFIX                          "/commands/"
 #define NAUTILUS_COMMAND_TOGGLE_FIND_MODE	"/commands/Toggle Find Mode"
+#define NAUTILUS_COMMAND_VIEW_AS		"/commands/View as"
+
+#define NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER	"/menu/View/View Choices/Extra Viewer"
+#define NAUTILUS_MENU_PATH_BEFORE_SHORT_LIST_SEPARATOR  "/menu/View/View Choices/Before Short List"
+#define NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER  	"/menu/View/View Choices/Short List"
+#define NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR   "/menu/View/View Choices/Before Short List"
 
 enum {
 	ARG_0,
@@ -634,7 +641,7 @@ set_dummy_initial_view_as_menu (NautilusWindow *window)
 	GtkWidget *menu_item;
 
 	new_menu = gtk_menu_new ();
-	menu_item = gtk_menu_item_new_with_label (_("View as ..."));
+	menu_item = gtk_menu_item_new_with_label (_("View as..."));
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);
 
@@ -881,6 +888,17 @@ nautilus_window_get_arg (GtkObject *object,
 	}
 }
 
+static void
+free_stored_viewers (NautilusWindow *window)
+{
+	eel_g_list_free_deep_custom (window->details->short_list_viewers, 
+				     (GFunc) nautilus_view_identifier_free, 
+				     NULL);
+	window->details->short_list_viewers = NULL;
+	nautilus_view_identifier_free (window->details->extra_viewer);
+	window->details->extra_viewer = NULL;
+}
+
 static void 
 nautilus_window_destroy (GtkObject *object)
 {
@@ -918,6 +936,8 @@ nautilus_window_destroy (GtkObject *object)
 	g_list_free (window->sidebar_panels);
 
 	nautilus_view_identifier_free (window->content_view_id);
+
+	free_stored_viewers (window);
 	
 	g_free (window->details->location);
 	eel_g_list_free_deep (window->details->selection);
@@ -1083,23 +1103,80 @@ nautilus_window_size_request (GtkWidget		*widget,
  */
 
 static void
+activate_nth_short_list_item (NautilusWindow *window, guint index)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (index < g_list_length (window->details->short_list_viewers));
+
+	nautilus_window_set_content_view (window, 
+					  g_list_nth_data (window->details->short_list_viewers, index));
+}
+
+static void
+activate_extra_viewer (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (window->details->extra_viewer != NULL);
+	
+	nautilus_window_set_content_view (window, window->details->extra_viewer);	
+}
+
+static void
+handle_view_as_item_from_bonobo_menu (NautilusWindow *window, const char *id)
+{
+	char *container_path;
+
+	container_path = nautilus_bonobo_get_numbered_menu_item_container_path_from_command (id);
+
+	if (strcmp (container_path, NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER) == 0) {
+		activate_nth_short_list_item 
+			(window,
+			 nautilus_bonobo_get_numbered_menu_item_index_from_command (id));
+	} else if (strcmp (container_path, NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER) == 0) {
+		g_return_if_fail 
+			(nautilus_bonobo_get_numbered_menu_item_index_from_command (id) == 0);
+		activate_extra_viewer (window);
+	}
+
+	g_free (container_path);
+}
+
+void
+nautilus_window_handle_ui_event_callback (BonoboUIComponent *ui,
+		 		 	  const char *id,
+		 		 	  Bonobo_UIComponent_EventType type,
+		 		 	  const char *state,
+		 		 	  NautilusWindow *window)
+{
+	if (type == Bonobo_UIComponent_STATE_CHANGED
+	    && strcmp (state, "1") == 0) {
+	    	handle_view_as_item_from_bonobo_menu (window, id);
+	}
+}		 
+
+static void
 view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
-        NautilusViewIdentifier *identifier;
+        int viewer_index;
         
         g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
-        
-        window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-        identifier = (NautilusViewIdentifier *) gtk_object_get_data (GTK_OBJECT (widget), "identifier");
-        
-        nautilus_window_set_content_view (window, identifier);
+        g_return_if_fail (NAUTILUS_IS_WINDOW (data));
+
+        window = NAUTILUS_WINDOW (data);
+
+        if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "extra viewer")) == TRUE) {
+        	activate_extra_viewer (window);
+        } else {
+		viewer_index = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "viewer index"));
+		activate_nth_short_list_item (window, viewer_index);
+        }
 }
 
-/* Note: The identifier parameter ownership is handed off to the menu item. */
 static GtkWidget *
-create_view_as_menu_item (NautilusWindow *window, NautilusViewIdentifier *identifier)
+create_view_as_menu_item (NautilusWindow *window, 
+			  NautilusViewIdentifier *identifier,
+			  guint index)
 {
 	GtkWidget *menu_item;
         char *menu_label;
@@ -1111,16 +1188,12 @@ create_view_as_menu_item (NautilusWindow *window, NautilusViewIdentifier *identi
 	gtk_signal_connect (GTK_OBJECT (menu_item),
 			    "activate",
 			    view_as_menu_switch_views_callback, 
-			    NULL);
+			    window);
 
-	/* Store copy of iid in item; free when item destroyed. */
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "identifier",
-				  identifier,
-				  (GtkDestroyNotify) nautilus_view_identifier_free);
+	gtk_object_set_data (GTK_OBJECT (menu_item),
+			     "viewer index",
+			     GINT_TO_POINTER (index));
 
-	/* Store reference to window in item; no need to free this. */
-	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
 	gtk_widget_show (menu_item);
 
 	return menu_item;
@@ -1138,17 +1211,50 @@ new_gtk_separator (void)
 	return result;
 }
 
+static void
+add_view_as_bonobo_menu_item (NautilusWindow *window,
+			      const char *placeholder_path,
+			      NautilusViewIdentifier *identifier,
+			      int index)
+{
+	char *tip;
+	char *item_path;
+
+	nautilus_bonobo_add_numbered_radio_menu_item
+		(window->details->shell_ui,
+		 placeholder_path,
+		 index,
+		 identifier->view_as_label,
+		 "viewers group");
+
+	tip = g_strdup_printf (_("Display this location with the %s"), identifier->viewer_label);
+	item_path = nautilus_bonobo_get_numbered_menu_item_path
+		(window->details->shell_ui, 
+		 placeholder_path, 
+		 index);
+	nautilus_bonobo_set_tip (window->details->shell_ui, item_path, tip);
+	g_free (item_path);
+	g_free (tip);
+}
+
 /* Make a special first item in the "View as" option menu that represents
  * the current content view. This should only be called if the current
  * content view isn't already in the "View as" option menu.
  */
 static void
-replace_special_current_view_in_view_as_menu (NautilusWindow *window)
+replace_extra_viewer_in_view_as_menus (NautilusWindow *window)
 {
 	GtkWidget *menu;
 	GtkWidget *first_menu_item;
 	GtkWidget *new_menu_item;
-	
+	gboolean had_extra_viewer;
+
+	had_extra_viewer = window->details->extra_viewer != NULL;
+	nautilus_view_identifier_free (window->details->extra_viewer);
+	window->details->extra_viewer = nautilus_view_identifier_copy (window->content_view_id);
+	g_assert (window->details->extra_viewer != NULL);
+
+	/* Update the View As option menu */	
 	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (window->view_as_option_menu));
 
 	/* Remove menu before changing contents so it is resized properly
@@ -1157,73 +1263,103 @@ replace_special_current_view_in_view_as_menu (NautilusWindow *window)
 	gtk_widget_ref (menu);
 	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
 
-	first_menu_item = eel_gtk_container_get_first_child (GTK_CONTAINER (menu));
-	g_assert (first_menu_item != NULL);
-
-	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (first_menu_item), "current content view"))) {
+	if (had_extra_viewer) {
+		first_menu_item = eel_gtk_container_get_first_child (GTK_CONTAINER (menu));
+		g_assert (first_menu_item != NULL);
+		g_assert (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (first_menu_item), "extra viewer")) == TRUE);
 		gtk_container_remove (GTK_CONTAINER (menu), first_menu_item);
 	} else {
 		/* Prepend separator. */
 		gtk_menu_prepend (GTK_MENU (menu), new_gtk_separator ());
 	}
 
-	new_menu_item = create_view_as_menu_item (window, nautilus_view_identifier_copy (window->content_view_id));
-	gtk_object_set_data (GTK_OBJECT (new_menu_item), "current content view", GINT_TO_POINTER (TRUE));
+	new_menu_item = create_view_as_menu_item (window, window->details->extra_viewer, 0);
+	gtk_object_set_data (GTK_OBJECT (new_menu_item), "extra viewer", GINT_TO_POINTER (TRUE));
 	gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu), menu);
 	gtk_widget_unref (menu);
+
+	/* Also update the Bonobo View menu item */
+	add_view_as_bonobo_menu_item (window, 
+				      NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER, 
+				      window->details->extra_viewer, 
+				      0);
 }
 
 /**
- * nautilus_window_synch_view_as_menu:
+ * nautilus_window_synch_view_as_menus:
  * 
- * Set the visible item of the "View as" option menu to
+ * Set the visible item of the "View as" option menu and
+ * the marked "View as" item in the View menu to
  * match the current content view.
  * 
  * @window: The NautilusWindow whose "View as" option menu should be synched.
  */
 void
-nautilus_window_synch_view_as_menu (NautilusWindow *window)
+nautilus_window_synch_view_as_menus (NautilusWindow *window)
 {
-	GList *children, *child;
-	GtkWidget *menu;
-	const char *content_view_iid;
-	NautilusViewIdentifier *item_id;
-	int index, matching_index;
+	int index;
+	char *verb_name, *command_path;
+	GList *node;
+	int option_menu_index;
+	int numbered_menu_item_index;
+	const char *numbered_menu_item_container_path;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (window->view_as_option_menu));
-	if (menu == NULL) {
+	if (window->content_view == NULL) {
 		return;
 	}
+
+	option_menu_index = -1;
+	numbered_menu_item_index = -1;
+	numbered_menu_item_container_path = 0;
 	
-	children = gtk_container_children (GTK_CONTAINER (menu));
-	matching_index = -1;
-
-	if (window->content_view != NULL) {
-		content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
-
-		for (child = children, index = 0; child != NULL; child = child->next, ++index) {
-			item_id = (NautilusViewIdentifier *) gtk_object_get_data
-				(GTK_OBJECT (child->data), "identifier");
-			if (item_id != NULL && strcmp (content_view_iid, item_id->iid) == 0) {
-				matching_index = index;
+	if (window->details->extra_viewer != NULL &&
+	    nautilus_window_content_view_matches_iid (window, window->details->extra_viewer->iid)) {
+		option_menu_index = 0;
+		numbered_menu_item_index = 0;
+		numbered_menu_item_container_path = NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER;
+	} else {
+		for (node = window->details->short_list_viewers, index = 0;
+		     node != NULL;
+		     node = node->next, ++index) {
+			if (nautilus_window_content_view_matches_iid (window, ((NautilusViewIdentifier *)node->data)->iid)) {
+				option_menu_index = window->details->extra_viewer == NULL
+					? index
+					: index + 2;
+				numbered_menu_item_index = index;
+				numbered_menu_item_container_path = NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER;
 				break;
 			}
 		}
 	}
 
-	if (matching_index == -1) {
-		replace_special_current_view_in_view_as_menu (window);
-		matching_index = 0;
+	if (option_menu_index == -1) {
+		replace_extra_viewer_in_view_as_menus (window);
+		option_menu_index = 0;
+		numbered_menu_item_index = 0;
+		numbered_menu_item_container_path = NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER;
 	}
 
-	gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), 
-				     matching_index);
+	g_assert (option_menu_index >= 0);
+	g_assert (numbered_menu_item_index >= 0);
+	g_assert (numbered_menu_item_container_path != NULL);
 
-	g_list_free (children);
+	/* Make option menu show the right item */
+	gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), 
+				     option_menu_index);
+
+	/* Make View menu in menu bar mark the right item */
+	verb_name = nautilus_bonobo_get_numbered_menu_item_command
+		(window->details->shell_ui, 
+		 numbered_menu_item_container_path, 
+		 numbered_menu_item_index);
+	command_path = g_strconcat (COMMAND_PREFIX, verb_name, NULL);
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui, command_path, TRUE);
+	g_free (command_path);
+	g_free (verb_name);
 }
 
 static void
@@ -1242,7 +1378,10 @@ chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_
 	 * now, hardwire this case, which is the most obvious one by
 	 * far.
 	 */
-	nautilus_window_load_view_as_menu (window);
+	/* FIXME bugzilla.eazel.com 8000: It's possible to get the
+	 * same view listed twice in the menu due to this call.
+	 */
+	nautilus_window_load_view_as_menus (window);
 }
 
 static void
@@ -1255,25 +1394,10 @@ cancel_chose_component_callback (NautilusWindow *window)
 	}
 }
 
-static void
-view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
+void
+nautilus_window_show_view_as_dialog (NautilusWindow *window)
 {
-        NautilusWindow *window;
-        
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
-        
-        window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-
-	/* Set the option menu back to its previous setting (Don't
-	 * leave it on this dialog-producing "View as Other..."
-	 * setting). If the menu choice causes a content view change,
-	 * this will be updated again later, in
-	 * nautilus_window_load_view_as_menu. Do this right away so
-	 * the user never sees the option menu set to "View as
-	 * Other...".
-	 */
-	nautilus_window_synch_view_as_menu (window);
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	/* Call back when the user chose the component. */
 	cancel_chose_component_callback (window);
@@ -1284,42 +1408,104 @@ view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 }
 
 static void
-load_view_as_menu_callback (NautilusFile *file, 
+view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
+{
+        NautilusWindow *window;
+        
+        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
+        g_return_if_fail (NAUTILUS_IS_WINDOW (data));
+        
+        window = NAUTILUS_WINDOW (data);
+
+	/* Set the option menu back to its previous setting (Don't
+	 * leave it on this dialog-producing "View as..."
+	 * setting). If the menu choice causes a content view change,
+	 * this will be updated again later, in
+	 * nautilus_window_load_view_as_menus. Do this right away so
+	 * the user never sees the option menu set to "View as
+	 * Other...".
+	 */
+	nautilus_window_synch_view_as_menus (window);
+
+	nautilus_window_show_view_as_dialog (window);
+}
+
+static void
+refresh_stored_viewers (NautilusWindow *window)
+{
+	GList *components;
+        GList *node;
+	NautilusViewIdentifier *identifier;
+
+        free_stored_viewers (window);
+
+        components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
+        for (node = components; node != NULL; node = node->next) {
+        	identifier = nautilus_view_identifier_new_from_content_view (node->data);
+        	window->details->short_list_viewers = 
+        		g_list_append (window->details->short_list_viewers, identifier);
+        }
+	gnome_vfs_mime_component_list_free (components);
+}
+
+static void
+load_view_as_menus_callback (NautilusFile *file, 
 			    gpointer callback_data)
 {	
-	GList *components;
-        GList *p;
         GtkWidget *new_menu;
         GtkWidget *menu_item;
+        GList *node;
 	NautilusWindow *window;
+	int index;
 
 	window = NAUTILUS_WINDOW (callback_data);
 
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
-        
+
+        /* Clear out the menu items created last time. For the option menu, we need do
+         * nothing since we replace the entire menu. For the View menu, we have
+         * to do this explicitly.
+         */
+	nautilus_bonobo_remove_menu_items_and_commands
+		(window->details->shell_ui, NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_commands
+		(window->details->shell_ui, NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER);
+
+	refresh_stored_viewers (window);
+
         new_menu = gtk_menu_new ();
 	
         /* Add a menu item for each view in the preferred list for this location. */
-        components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
-        for (p = components; p != NULL; p = p->next) {
-                menu_item = create_view_as_menu_item 
-                	(window, nautilus_view_identifier_new_from_content_view (p->data));
+        for (node = window->details->short_list_viewers, index = 0; 
+             node != NULL; 
+             node = node->next, ++index) {
+        	/* Menu item in option menu. This doesn't use Bonobo, for various
+        	 * historical and technical reasons.
+        	 */
+                menu_item = create_view_as_menu_item (window, node->data, index);
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
-        }
-	gnome_vfs_mime_component_list_free (components);
 
-        /* Add separator before "Other" if there are any other viewers in menu. */
-        if (components != NULL) {
+		/* Menu item in View menu. */
+                add_view_as_bonobo_menu_item (window, 
+                			      NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER, 
+                			      node->data, 
+                			      index);
+        }
+
+        /* Add/Show separator before "View as..." if there are any other viewers in menu. */
+        if (window->details->short_list_viewers != NULL) {
 	        gtk_menu_append (GTK_MENU (new_menu), new_gtk_separator ());
         }
+        nautilus_bonobo_set_hidden (window->details->shell_ui,
+        			    NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR, 
+        			    window->details->short_list_viewers == NULL);
 
-	/* Add "View as Other..." extra bonus choice. */
-       	menu_item = gtk_menu_item_new_with_label (_("View as Other..."));
-        gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
+	/* Add "View as..." extra bonus choice. */
+       	menu_item = gtk_menu_item_new_with_label (_("View as..."));
         gtk_signal_connect (GTK_OBJECT (menu_item),
         		    "activate",
         		    view_as_menu_choose_view_callback,
-        		    NULL);
+        		    window);
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);
 
@@ -1329,19 +1515,19 @@ load_view_as_menu_callback (NautilusFile *file,
         gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
                                   new_menu);
 
-	nautilus_window_synch_view_as_menu (window);
+	nautilus_window_synch_view_as_menus (window);
 }
 
 static void
 cancel_view_as_callback (NautilusWindow *window)
 {
 	nautilus_file_cancel_call_when_ready (window->details->viewed_file, 
-					      load_view_as_menu_callback,
+					      load_view_as_menus_callback,
 					      window);
 }
 
 void
-nautilus_window_load_view_as_menu (NautilusWindow *window)
+nautilus_window_load_view_as_menus (NautilusWindow *window)
 {
 	GList *attributes;
 
@@ -1352,7 +1538,7 @@ nautilus_window_load_view_as_menu (NautilusWindow *window)
 	cancel_view_as_callback (window);
 	nautilus_file_call_when_ready (window->details->viewed_file,
 				       attributes, 
-				       load_view_as_menu_callback,
+				       load_view_as_menus_callback,
 				       window);
 
 	g_list_free (attributes);

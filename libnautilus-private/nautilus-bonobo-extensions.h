@@ -68,12 +68,21 @@ void                            nautilus_bonobo_add_numbered_toggle_menu_item   
 										     const char                       *container_path,
 										     guint                             index,
 										     const char                       *label);
+void                            nautilus_bonobo_add_numbered_radio_menu_item        (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     guint                             index,
+										     const char                       *label,
+										     const char			      *radio_group_name);
 char *                          nautilus_bonobo_get_numbered_menu_item_command      (BonoboUIComponent                *ui,
 										     const char                       *container_path,
 										     guint                             index);
 char *                          nautilus_bonobo_get_numbered_menu_item_path         (BonoboUIComponent                *ui,
 										     const char                       *container_path,
 										     guint                             index);
+guint			        nautilus_bonobo_get_numbered_menu_item_index_from_command
+										    (const char 		      *command);
+char *			        nautilus_bonobo_get_numbered_menu_item_container_path_from_command
+										    (const char 		      *command);
 void                            nautilus_bonobo_add_submenu                         (BonoboUIComponent                *ui,
 										     const char                       *container_path,
 										     const char                       *label);

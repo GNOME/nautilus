@@ -78,6 +78,10 @@ struct NautilusWindowDetails
         GList *pending_selection;
         NautilusDetermineViewHandle *determine_view_handle;
 
+        /* View As choices */
+        GList *short_list_viewers;
+        NautilusViewIdentifier *extra_viewer;
+
         /* Throbber. */
 	Bonobo_EventSource_ListenerId throbber_location_change_request_listener_id;
 
@@ -119,13 +123,20 @@ struct NautilusWindowDetails
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH			800
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
 
+gboolean	   nautilus_window_content_view_matches_iid 		 (NautilusWindow    *window, 
+					  				  const char 	    *iid);
 void               nautilus_window_set_status                            (NautilusWindow    *window,
                                                                           const char        *status);
-void               nautilus_window_load_view_as_menu                     (NautilusWindow    *window);
-void               nautilus_window_synch_view_as_menu                    (NautilusWindow    *window);
+void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
+void               nautilus_window_synch_view_as_menus                   (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
 void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
+void		   nautilus_window_handle_ui_event_callback		 (BonoboUIComponent *ui,
+									  const char	    *id,
+									  Bonobo_UIComponent_EventType type,
+									  const char	    *state,
+									  NautilusWindow    *window);
 void               nautilus_window_go_back                               (NautilusWindow    *window);
 void               nautilus_window_go_forward                            (NautilusWindow    *window);
 void               nautilus_window_go_up                                 (NautilusWindow    *window);
@@ -141,6 +152,7 @@ void               nautilus_window_zoom_out                              (Nautil
 void               nautilus_window_zoom_to_level                         (NautilusWindow    *window,
                                                                           double             level);
 void               nautilus_window_zoom_to_fit                           (NautilusWindow    *window);
+void		   nautilus_window_show_view_as_dialog			 (NautilusWindow    *window);
 void               nautilus_window_set_content_view_widget               (NautilusWindow    *window,
                                                                           NautilusViewFrame *content_view);
 void               nautilus_window_add_sidebar_panel                     (NautilusWindow    *window,

@@ -1,3 +1,80 @@
+2001-04-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3787 (If location bar is turned off, user cannot
+	change viewer)
+
+	Now the "View as" choices, including "View as...", appear
+	at the bottom of the View menu as well as in the location bar.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(add_numbered_menu_item_internal): Handle radio item case; change
+	signature to support this.
+	(nautilus_bonobo_add_numbered_menu_item),
+	(nautilus_bonobo_add_numbered_toggle_menu_item):
+	Updated for change to add_numbered_menu_item_internal.
+	(nautilus_bonobo_add_numbered_radio_menu_item): New function,
+	just like its fellows but creates a one-of-many menu item.
+	(nautilus_bonobo_get_numbered_menu_item_index_from_command),
+	(nautilus_bonobo_get_numbered_menu_item_container_path_from_command):
+	New functions that return info given one of the numbered-menu-item
+	generated commands. Useful for callbacks when all you have in hand
+	is the command itself.
+	
+	* src/nautilus-shell-ui.xml: Add "View as" command; add placeholders
+	and separators and "View as" menu item to View menu.
+	Also removed pixmap from Close Window menu item because it was
+	silly to have a pixmap on exactly one item in the File menu.
+	
+	* src/nautilus-window-manage-views.c: Took "static" off of
+	nautilus_window_content_matches_iid so I could make it public
+	and use it in nautilus-window.c.
+	
+	* src/nautilus-window-private.h: Added fields to Details struct
+	and prototypes for functions needed by View As stuff.
+
+	* src/nautilus-window-menus.c: 
+	(view_menu_view_as_callback): New callback function used by
+	"View as" verb.
+	(nautilus_window_initialize_menus_part_1): Wire up "View as"
+	verb; register for Bonobo UI events to catch radio items being
+	selected.
+	
+	* src/nautilus-window.c: 
+	(set_dummy_initial_view_as_menu): Changed "View as ..." to
+	"View as...", which matches the new name of "View as Other..."
+	(free_stored_viewers): New function, frees and nulls out the
+	view identifiers stored in the Details struct for the "View as"
+	menus.
+	(nautilus_window_destroy): Call free_stored_viewers.
+	(activate_nth_short_list_item): New function, switches viewers
+	by viewer index.
+	(activate_extra_viewer): New function, switches to sometimes-
+	present extra viewer (used when current viewer isn't in short list).
+	(handle_view_as_item_from_bonobo_menu): If item whose state has
+	changed is a "View as" item, dispatch accordingly.
+	(nautilus_window_handle_ui_event_callback): Call
+	handle_view_as_item_from_bonobo_menu if UI event was state
+	changing to TRUE.
+	(view_as_menu_switch_views_callback), 
+	(create_view_as_menu_item): Changed to store viewer index and
+	whether viewer is "extra viewer" rather than storing 
+	NautilusViewIdentifier. This is used for option menu in location
+	bar and now closely matches the mechanism used for the View menu.
+	(add_view_as_bonobo_menu_item): New function used by View menu
+	View As items.
+	(replace_extra_viewer_in_view_as_menus),
+	(nautilus_window_synch_view_as_menus): 
+	(load_view_as_menus_callback): Renamed and cleaned up to separate
+	information gathering from widget updating; now handle View As 
+	items in View menu also.
+	(chose_component_callback): Added FIXME for pre-existing bug 8000.
+	(nautilus_window_show_view_as_dialog): New function, extracted
+	from view_as_menu_choose_view_callback.
+	(view_as_menu_choose_view_callback): Now calls extracted function.
+	(refresh_stored_viewers): New function, updates the list of viewers
+	stored in the Details struct.
+
 2001-04-06  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bugzilla.eazel.com bug 7933, and the nautilus
 	half of bug 7934, by removing the search preferences

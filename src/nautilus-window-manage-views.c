@@ -598,7 +598,7 @@ update_for_new_location (NautilusWindow *window)
         update_up_button (window);
         
         /* Set up the content view menu for this new location. */
-        nautilus_window_load_view_as_menu (window);
+        nautilus_window_load_view_as_menus (window);
         
         /* Check if the back and forward buttons need enabling or disabling. */
         nautilus_window_allow_back (window, window->back_list != NULL);
@@ -661,7 +661,7 @@ location_has_really_changed (NautilusWindow *window)
          * views in the menu are for the old location).
          */
         if (window->details->pending_location == NULL) {
-                nautilus_window_synch_view_as_menu (window);
+                nautilus_window_synch_view_as_menus (window);
         }
 
         /* Tell the window we are finished. */
@@ -913,7 +913,7 @@ set_to_pending_location_and_selection (NautilusWindow *window)
         window->details->pending_selection = NULL;
 }
 
-static gboolean
+gboolean
 nautilus_window_content_view_matches_iid (NautilusWindow *window, 
 					  const char *iid)
 {
