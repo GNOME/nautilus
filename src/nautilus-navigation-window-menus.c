@@ -91,6 +91,12 @@
 #define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
 
 
+#define USER_MANUAL_URI		"help:nautilus"
+#define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
+#define RELEASE_NOTES_URI	"help:nautilus-release-notes"
+#define CUSTOMER_SUPPORT_URI	"http://support.eazel.com"
+#define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
+
 static GtkWindow *bookmarks_window = NULL;
 
 static void                  append_bookmark_to_menu                       (NautilusWindow   *window,
@@ -585,7 +591,7 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "help:nautilus");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), USER_MANUAL_URI);
 }
 
 static void
@@ -593,7 +599,15 @@ help_menu_nautilus_quick_reference_callback (BonoboUIComponent *component,
 			              	     gpointer user_data, 
 			              	     const char *verb)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "help:nautilus-quick-reference");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), QUICK_REFERENCE_URI);
+}
+
+static void
+help_menu_nautilus_release_notes_callback (BonoboUIComponent *component, 
+			              	     gpointer user_data, 
+			              	     const char *verb)
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), RELEASE_NOTES_URI);
 }
 
 static void
@@ -602,7 +616,7 @@ help_menu_support (BonoboUIComponent *component,
 		       const char *verb)
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
-			       "http://support.eazel.com");
+			       CUSTOMER_SUPPORT_URI);
 }
 
 static void
@@ -611,7 +625,7 @@ help_menu_nautilus_feedback_callback (BonoboUIComponent *component,
 			              const char *verb)
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       "http://www.eazel.com/feedback.html");
+			       CUSTOMER_FEEDBACK_URI);
 }
 
 /* utility routine to return an image corresponding to the passed-in user level */
@@ -1194,6 +1208,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
 		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
+		BONOBO_UI_VERB ("Nautilus Release Notes", help_menu_nautilus_release_notes_callback),
 		BONOBO_UI_VERB ("Support", help_menu_support),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 

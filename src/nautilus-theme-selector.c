@@ -273,7 +273,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
-	theme_selector->details->add_button_label = gtk_label_new (_("  Add new theme  "));
+	theme_selector->details->add_button_label = gtk_label_new (_("  Add New Theme  "));
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
 	gtk_box_pack_end (GTK_BOX (bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
@@ -282,7 +282,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
-	theme_selector->details->remove_button_label = gtk_label_new (_("  Remove theme  "));
+	theme_selector->details->remove_button_label = gtk_label_new (_("  Remove Theme  "));
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (bottom_box),

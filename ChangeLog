@@ -1,3 +1,35 @@
+2001-02-23  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	More work on the never-ending 1 hour bug 3321
+	(Finalize items in Help menu).
+
+	* src/nautilus-shell-ui.xml:
+	Changed underscore accelerator for Nautilus User
+	Manual from N to M, since the N is needed for
+	Nautilus Release Notes; add Nautilus Release Notes;
+	add separator before Customer Support; remove all
+	ellipses.
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback),
+	(help_menu_nautilus_quick_reference_callback),
+	(help_menu_nautilus_release_notes_callback), (help_menu_support),
+	(help_menu_nautilus_feedback_callback),
+	(nautilus_window_initialize_menus): Add callback
+	for Nautilus Release Notes item (which doesn't work yet;
+	that's Dan's job). Also add #defines for the various help 
+	menu URIs instead of hardcoding them in-line.
+
+	Other text tweaks:
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize): Use initial caps style
+	on Add & Remove buttons here, per Vera.
+
 2001-02-23  Arik Devens  <arik@eazel.com>
 
 	reviewed by: John Sullivan  <sullivan@eazel.com>

@@ -2021,13 +2021,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		} else {
 			switch (property_browser->details->category_type) {
 			case NAUTILUS_PROPERTY_PATTERN:
-				text = _("  Add a new pattern  ");
+				text = _("  Add a New Pattern  ");
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
-				text = _("  Add a new color  ");
+				text = _("  Add a New Color  ");
 				break;
 			case NAUTILUS_PROPERTY_EMBLEM:
-				text = _("  Add a new emblem  ");
+				text = _("  Add a New Emblem  ");
 				break;
 			default:
 				text = NULL;
@@ -2089,13 +2089,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* case out instead of substituting to provide flexibilty for other languages */
 		switch (property_browser->details->category_type) {
 		case NAUTILUS_PROPERTY_PATTERN:
-			text = _("  Remove a pattern  ");
+			text = _("  Remove a Pattern  ");
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
-			text = _("  Remove a color  ");
+			text = _("  Remove a Color  ");
 			break;
 		case NAUTILUS_PROPERTY_EMBLEM:
-			text = _("  Remove an emblem  ");
+			text = _("  Remove an Emblem  ");
 			break;
 		default:
 			text = NULL;
