@@ -840,6 +840,8 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 				  path,
 				  list_view->details->file_name_column,
 				  TRUE);
+
+	gtk_tree_path_free (path);
 }
 
 static void
