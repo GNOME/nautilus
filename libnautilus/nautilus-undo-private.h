@@ -26,7 +26,7 @@
 #define NAUTILUS_UNDO_PRIVATE_H
 
 #include <libnautilus/nautilus-distributed-undo.h>
-#include <gobject/gobject.h>
+#include <glib-object.h>
 
 Nautilus_Undo_Manager nautilus_undo_get_undo_manager    (GObject               *attached_object);
 void                  nautilus_undo_attach_undo_manager (GObject               *object,

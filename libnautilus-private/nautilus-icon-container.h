@@ -152,7 +152,7 @@ typedef struct {
 } NautilusIconContainerClass;
 
 /* GtkObject */
-guint             nautilus_icon_container_get_type                      (void);
+GType             nautilus_icon_container_get_type                      (void);
 GtkWidget *       nautilus_icon_container_new                           (void);
 
 

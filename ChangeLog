@@ -1,3 +1,14 @@
+Mon Nov 26 20:34:52 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c: 
+	* libnautilus-private/nautilus-icon-container.h 
+	  libnautilus-private/nautilus-file-operations-progress.h: Return
+	from get_type() functions is GType, not guint.
+
+	* components/sample/nautilus-sample-content-view.c
+	  libnautilus/nautilus-undo-private.h: Deal with
+	errant gobject/* includes. (George Karabin)
+
 2001-11-22  Michael Meeks  <michael@ximian.com>
 
 	* components/notes/nautilus-notes.c (make_notes_view):

@@ -36,7 +36,6 @@
 #include "nautilus-sample-content-view.h"
 
 #include <bonobo/bonobo-i18n.h>
-#include <gobject/gsignal.h>
 #include <gtk/gtklabel.h>
 #include <libgnome/gnome-macros.h>
 #include <string.h>

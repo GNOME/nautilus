@@ -228,7 +228,7 @@ static int cached_thumbnail_limit;
 
 /* forward declarations */
 
-static guint      nautilus_icon_factory_get_type         (void);
+static GType      nautilus_icon_factory_get_type         (void);
 static void       nautilus_icon_factory_class_init (NautilusIconFactoryClass *class);
 static void       nautilus_icon_factory_init       (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_destroy          (GtkObject                *object);

@@ -49,7 +49,7 @@ typedef struct {
 #define NAUTILUS_IS_FILE_OPERATIONS_PROGRESS(obj) \
   GTK_CHECK_TYPE (obj, nautilus_file_operations_progress_get_type ())
 
-guint                           nautilus_file_operations_progress_get_type             (void);
+GType                           nautilus_file_operations_progress_get_type             (void);
 NautilusFileOperationsProgress *nautilus_file_operations_progress_new                  (const char                     *title,
 											const char                     *operation_string,
 											const char                     *from_prefix,
