@@ -42,10 +42,10 @@ static void  nautilus_switchable_search_bar_set_location     (NautilusNavigation
 static char *nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
 static void  nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *class);
 static void  nautilus_switchable_search_bar_initialize       (NautilusSwitchableSearchBar      *bar);
-static void  search_activated_callback                       (GtkButton                        *button,
-							      NautilusSwitchableSearchBar      *bar);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar, nautilus_switchable_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
+				   nautilus_switchable_search_bar,
+				   NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
 nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *klass)
@@ -85,8 +85,9 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	find_them = gtk_button_new ();
 	find_them_label = gtk_label_new ("Find Them!");
 	gtk_container_add (GTK_CONTAINER (find_them), find_them_label);
-	gtk_signal_connect (GTK_OBJECT (find_them), "pressed",
-			    search_activated_callback, bar);
+	gtk_signal_connect_object (GTK_OBJECT (find_them), "pressed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
 
 	gtk_box_pack_start (GTK_BOX (hbox), find_them, FALSE, TRUE, 1);
 
@@ -97,8 +98,10 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	bar->search_button = GTK_BUTTON (find_them);
 
 	gtk_widget_show_all (hbox);
-	nautilus_switchable_search_bar_set_mode (bar,nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-										    NAUTILUS_SIMPLE_SEARCH_BAR));
+	nautilus_switchable_search_bar_set_mode
+		(bar,
+		 nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+						NAUTILUS_SIMPLE_SEARCH_BAR));
 }
 
 GtkWidget *
@@ -140,15 +143,6 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 		g_assert_not_reached();
 		break;
 	}
-}
-
-static void
-search_activated_callback (GtkButton *button,
-			   NautilusSwitchableSearchBar *bar)
-{
-	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (bar));
-
-	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (bar));
 }
 
 static char *

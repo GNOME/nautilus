@@ -27,8 +27,6 @@
 
 #include "nautilus-search-bar.h"
 #include <gtk/gtkhbox.h>
-#include "nautilus-location-bar.h"
-#include "nautilus-search-bar.h"
 
 #define NAUTILUS_TYPE_SWITCHABLE_SEARCH_BAR (nautilus_switchable_search_bar_get_type ())
 #define NAUTILUS_SWITCHABLE_SEARCH_BAR(obj) \
@@ -38,10 +36,8 @@
 #define NAUTILUS_IS_SWITCHABLE_SEARCH_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SWITCHABLE_SEARCH_BAR)
 
-
-
-typedef struct NautilusSwitchableSearchBar {
-	NautilusNavigationBar parent;
+typedef struct {
+	NautilusSearchBar parent_slot;
 
 	NautilusSearchBarMode mode;
 	GtkHBox *container;
@@ -51,18 +47,16 @@ typedef struct NautilusSwitchableSearchBar {
 	GtkWidget *simple_search_bar;
 } NautilusSwitchableSearchBar;
 
-
 typedef struct {
-	NautilusSearchBarClass parent_class;
+	NautilusSearchBarClass parent_slot;
 
-	void (*mode_changed) (NautilusSwitchableSearchBar *search_bar,
-			      NautilusSearchBarMode mode);
+	void (* mode_changed) (NautilusSwitchableSearchBar *search_bar,
+			       NautilusSearchBarMode        mode);
 } NautilusSwitchableSearchBarClass;
 
-GtkType    nautilus_switchable_search_bar_get_type     	(void);
-GtkWidget* nautilus_switchable_search_bar_new          	(void);
-void       nautilus_switchable_search_bar_set_mode      (NautilusSwitchableSearchBar     *search_bar,
-							 NautilusSearchBarMode mode);
+GtkType    nautilus_switchable_search_bar_get_type (void);
+GtkWidget *nautilus_switchable_search_bar_new      (void);
+void       nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *search_bar,
+						    NautilusSearchBarMode        mode);
 
 #endif /* NAUTILUS_SWITCHABLE_SEARCH_BAR_H */
-

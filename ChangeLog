@@ -1,3 +1,26 @@
+2000-07-28  Darin Adler  <darin@eazel.com>
+
+	After complaints from Rebecca, I tested my search changes and
+	fixed 3 bugs.
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_search_uri_to_simple_search_criteria):
+	Return g_strdup ("") instead of NULL.
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_initialize_class):
+	Fixed bad marshalling that was causing a crash.
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize_class),
+	(nautilus_switchable_navigation_bar_get_location):
+	Added a get_location here. I missed this subclass and that caused
+	an assert every time you search!
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize):
+	Remove an unneeded callback function here (somehow I missed this
+	case last time).
+	* src/nautilus-switchable-search-bar.h:
+	Fixed a wrong type and cleaned up formatting a bit.
+
 2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1824, Remove automounter callback
@@ -41,7 +64,6 @@
 	OK.  I made a booboo.  Went back to using NautilusFile.
 	I really do understand what is going on now.
 	
-	NautilusFIle
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(activation_uri_gmc_link_read_callback):
 	* libnautilus-extensions/nautilus-file.c:
@@ -73,7 +95,6 @@
 	(nautilus_desktop_window_new):
 	Removed some debugging cruft
 	
-
 2000-07-27  Pavel Cisler  <pavel@eazel.com>
 
 	Bug 1561: Font preferences have no effect on the list view.
@@ -111,7 +132,6 @@
 	Called it during list view initialization to make sure the list view
 	comes up with the right saved font.
 	
-
 2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:
@@ -174,7 +194,6 @@
 
 	* components/services/time/command-line/main.c: (get_password),
 	(main):
-
 	Make command-line time utility use TrilobiteRootClient.
 
 2000-07-27  Darin Adler  <darin@eazel.com>

@@ -33,8 +33,7 @@ char *
 nautilus_search_uri_to_simple_search_criteria (const char *uri)
 {
 	/* FIXME: Not yet implemented. */
-	return NULL;
-
+	return g_strdup ("");
 }
 
 char *

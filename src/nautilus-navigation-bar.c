@@ -55,8 +55,8 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
 						     location_changed),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+				  gtk_marshal_NONE__STRING,
+				  GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 

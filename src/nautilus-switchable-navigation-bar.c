@@ -44,22 +44,15 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 
-static void nautilus_switchable_navigation_bar_set_location     (NautilusNavigationBar *bar,
-								 const char            *location);
+static char *nautilus_switchable_navigation_bar_get_location     (NautilusNavigationBar                *bar);
+static void  nautilus_switchable_navigation_bar_set_location     (NautilusNavigationBar                *bar,
+								  const char                           *location);
+static void  nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *class);
+static void  nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
 
-
-static void nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *class);
-static void nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
-
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar, nautilus_switchable_navigation_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
-
-
-static void
-destroy (GtkObject *object)
-{
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
+				   nautilus_switchable_navigation_bar,
+				   NAUTILUS_TYPE_NAVIGATION_BAR)
 static void
 nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *klass)
 {
@@ -68,7 +61,6 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 	NautilusNavigationBarClass *navigation_bar_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
 
 	signals[MODE_CHANGED]
 		= gtk_signal_new ("mode_changed",
@@ -83,7 +75,7 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 	
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
 
-
+	navigation_bar_class->get_location = nautilus_switchable_navigation_bar_get_location;
 	navigation_bar_class->set_location = nautilus_switchable_navigation_bar_set_location;
 }
 
@@ -117,7 +109,6 @@ nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *
 	gtk_container_add   (GTK_CONTAINER (bar), hbox);
 }
 
-
 GtkWidget *
 nautilus_switchable_navigation_bar_new (void)
 {
@@ -145,6 +136,24 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 	}
 }
 
+static char *
+nautilus_switchable_navigation_bar_get_location (NautilusNavigationBar *navigation_bar)
+{
+	NautilusSwitchableNavigationBar *bar;
+
+	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
+
+	switch (bar->mode) {
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
+		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->location_bar));
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
+		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->search_bar));
+	default:
+		g_assert_not_reached ();
+		return NULL;
+	}
+}
+
 static void
 nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigation_bar,
 						 const char *location)
@@ -153,12 +162,11 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 
 	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
 
-	/* Set location for both bars so if we switch things will stil
-           look OK. */
-
+	/* Set location for both bars so if we switch things will
+	 * still look OK.
+	 */
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->location_bar),
 					      location);
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->search_bar),
 					      location);
 }
-
