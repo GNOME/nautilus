@@ -2,6 +2,7 @@
 #include <libnautilus/libnautilus.h>
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
+#include <libnautilus-extensions/nautilus-ctree.h>
 
 #include "hyperbola-nav.h"
 
@@ -65,34 +66,37 @@ ctree_populate(HyperbolaNavigationTree *view)
 BonoboObject *
 hyperbola_navigation_tree_new(void)
 {
-  static const char *titles[] = {"Document Tree"};
   GtkWidget *wtmp;
   HyperbolaNavigationTree *view;
   
-  view = g_new0(HyperbolaNavigationTree, 1);
+  view = g_new0 (HyperbolaNavigationTree, 1);
 
-  view->ctree = gtk_ctree_new_with_titles(1, 0, (gchar **)titles);
-  gtk_clist_freeze(GTK_CLIST(view->ctree));
-  gtk_clist_set_selection_mode(GTK_CLIST(view->ctree), GTK_SELECTION_BROWSE);
-  gtk_signal_connect(GTK_OBJECT(view->ctree), "tree_select_row", hyperbola_navigation_tree_select_row, view);
-  view->doc_tree = hyperbola_doc_tree_new();
-  hyperbola_doc_tree_populate(view->doc_tree);
+  view->ctree = gtk_ctree_new (1, 0);
 
-  ctree_populate(view);
+  gtk_ctree_set_line_style (GTK_CTREE (view->ctree), GTK_CTREE_LINES_NONE);
+  gtk_ctree_set_expander_style (GTK_CTREE (view->ctree), GTK_CTREE_EXPANDER_TRIANGLE);
 
-  wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(view->ctree)),
-				 gtk_clist_get_vadjustment(GTK_CLIST(view->ctree)));
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_clist_freeze (GTK_CLIST(view->ctree));
+  gtk_clist_set_selection_mode (GTK_CLIST(view->ctree), GTK_SELECTION_BROWSE);
+  gtk_signal_connect (GTK_OBJECT(view->ctree), "tree_select_row", hyperbola_navigation_tree_select_row, view);
+  view->doc_tree = hyperbola_doc_tree_new ();
+  hyperbola_doc_tree_populate (view->doc_tree);
+
+  ctree_populate (view);
+
+  wtmp = gtk_scrolled_window_new (gtk_clist_get_hadjustment (GTK_CLIST (view->ctree)),
+				  gtk_clist_get_vadjustment (GTK_CLIST (view->ctree)));
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 
-  gtk_container_add(GTK_CONTAINER(wtmp), view->ctree);
-  gtk_clist_columns_autosize(GTK_CLIST(view->ctree));
-  gtk_clist_thaw(GTK_CLIST(view->ctree));
-  gtk_widget_show(view->ctree);
-  gtk_widget_show(wtmp);
+  gtk_container_add (GTK_CONTAINER (wtmp), view->ctree);
+  gtk_clist_columns_autosize (GTK_CLIST (view->ctree));
+  gtk_clist_thaw (GTK_CLIST (view->ctree));
+  gtk_widget_show (view->ctree);
+  gtk_widget_show (wtmp);
 
   view->view_frame = nautilus_view_new (wtmp);
-  gtk_signal_connect (GTK_OBJECT(view->view_frame), "load_location", 
+  gtk_signal_connect (GTK_OBJECT (view->view_frame), "load_location", 
 		      hyperbola_navigation_tree_load_location,
 		      view);
 
