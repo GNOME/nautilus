@@ -76,8 +76,11 @@ main(int argc, char **argv)
 
 	    /* First, find the directory that the info file is in. */
 	    dirs[0] = "/usr/info";
+	    /* We now have at least one directory to look in. This is
+	     * necessary because we may not have an 'INFOPATH' set */
+	    ndirs = 1;
 	    if(infopath)
-	      for(ndirs = 0, ctmp = strtok((char *)args[0], ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
+	      for(ndirs = 1, ctmp = strtok((char *)args[0], ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
 		dirs[ndirs] = strdup(ctmp);
 
 	    for(i = 0; i < ndirs; i++)

@@ -1,3 +1,14 @@
+2000-05-19  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(main): Fixed a typo - This fixed BUG #930
+
+	* components/help/converters/gnome-info2html2/main.c:
+	(main): Fixed it to it looks in /usr/info always and then any
+	other fir found in the INFOPATH variable - Fixes bug #934 but
+	there is a suggestion in there I think should be implemented
+	(since I wrote it - DOH!).
+
 2000-05-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:

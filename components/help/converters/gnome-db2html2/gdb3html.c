@@ -377,7 +377,8 @@ main (int argc, char *argv[])
 	gchar *ptr2;
 
 	if (argc != 2) {
-		g_print ("Usage:  gnome-db2html2 FILE[#SECTIONID]\n\n");
+		/* It is '?SECTIONID' not '#SECTIONID' */
+		g_print ("Usage:  gnome-db2html2 FILE[?SECTIONID]\n\n");
 		return 0;
 	}
 
