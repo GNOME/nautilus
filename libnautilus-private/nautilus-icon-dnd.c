@@ -542,7 +542,15 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 
 	/* get the URI associated with the container */
 	container_uri_string = get_container_uri (container);
-	result = nautilus_drag_items_local (container_uri_string, items);
+	
+	if (nautilus_uri_is_trash (container_uri_string)) {
+		/* Special-case "trash:" because the nautilus_drag_items_local
+		 * would not work for it.
+		 */
+		result = nautilus_drag_items_in_trash (items);
+	} else {
+		result = nautilus_drag_items_local (container_uri_string, items);
+	}
 	g_free (container_uri_string);
 	
 	return result;

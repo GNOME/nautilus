@@ -188,6 +188,7 @@ gboolean
 nautilus_drag_items_local (const char *target_uri_string, const GList *selection_list)
 {
 	/* check if the first item on the list has target_uri_string as a parent
+	 * FIXME:
 	 * we should really test each item but that would be slow for large selections
 	 * and currently dropped items can only be from the same container
 	 */
@@ -210,6 +211,17 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 	gnome_vfs_uri_unref (target_uri);
 	
 	return result;
+}
+
+gboolean
+nautilus_drag_items_in_trash (const GList *selection_list)
+{
+	/* check if the first item on the list is in trash.
+	 * FIXME:
+	 * we should really test each item but that would be slow for large selections
+	 * and currently dropped items can only be from the same container
+	 */
+	return nautilus_uri_is_in_trash (((DragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean

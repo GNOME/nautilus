@@ -1,3 +1,38 @@
+2001-02-01  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fix 6152 (Dragging a file to the trash will bring up a replace
+		  dialog)
+	Fix 5387 (Dragging a file within Trash gives "already exists"
+		 error)
+
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	(nautilus_drag_items_local), (nautilus_drag_items_in_trash):
+	Add more convenience calls for Trash handling.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_uri_is_in_trash):
+	New convenience call for Trash handling.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_in_trash):
+	Use the new nautilus_uri_is_in_trash call.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	Handle the case where a file is dragged into a Trash window or
+	onto a Trash icon as if the "Move to Trash" command was issued -
+	if there is a name conflict with a pre-existing file in the Trash,
+	use a new unique name for the new file.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_selection_items_local):
+	Handle files in the Trash properly - doing a parent match with
+	the container URI fails for these, special case Trash handling.
+
 2001-02-01  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

@@ -4014,37 +4014,9 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_is_in_trash (NautilusFile *file)
 {
-	GnomeVFSURI *file_vfs_uri, *trash_vfs_uri;
-	gboolean result;
-
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	/* Use a check for the actual trash first so that the trash
-	 * itself will be "in trash". There are fancier ways to do
-	 * this, but lets start with this.
-	 */
-	if (nautilus_uri_is_trash (file->details->directory->details->uri)) {
-		return TRUE;
-	}
-
-        file_vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
-	if (file_vfs_uri == NULL) {
-		return FALSE;
-	}
-
-	result = gnome_vfs_find_directory
-		(file_vfs_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		 &trash_vfs_uri, FALSE, FALSE, 0777)
-		== GNOME_VFS_OK;
-        if (result) {
-		result = gnome_vfs_uri_equal (trash_vfs_uri, file_vfs_uri)
-			|| gnome_vfs_uri_is_parent (trash_vfs_uri, file_vfs_uri, TRUE);
-		gnome_vfs_uri_unref (trash_vfs_uri);
-        }
-
-        gnome_vfs_uri_unref (file_vfs_uri);
-
-	return result;
+	return nautilus_uri_is_in_trash (file->details->directory->details->uri);
 }
 
 GnomeVFSResult

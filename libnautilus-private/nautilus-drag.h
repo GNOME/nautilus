@@ -120,6 +120,7 @@ void 			nautilus_drag_destroy_selection_list 		(GList *selection_list);
 GList 			*nautilus_drag_build_selection_list 		(GtkSelectionData *data);
 gboolean		nautilus_drag_items_local	 		(const char *target_uri,
 								 	 const GList *selection_list);
+gboolean		nautilus_drag_items_in_trash			(const GList *selection_list);
 
 gboolean		nautilus_drag_can_accept_item 			(NautilusFile *drop_target_item,
 			       					 	 const char *item_uri);

@@ -1674,7 +1674,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	SyncTransferInfo *sync_transfer_info;
 	GnomeVFSResult result;
 	gboolean same_fs;
-	gboolean is_trash_move;
+	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
 	
@@ -1690,14 +1690,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = NULL;
 	target_uri_list = NULL;
 	same_fs = TRUE;
-	is_trash_move = FALSE;
+	target_is_trash = FALSE;
 	
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
 	if (target_dir != NULL) {
 		if (nautilus_uri_is_trash (target_dir)) {
-			is_trash_move = TRUE;
+			target_is_trash = TRUE;
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);
 		}
@@ -1721,7 +1721,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
 		if (target_dir != NULL) {
-			if (is_trash_move) {
+			if (target_is_trash) {
 				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 							  &target_dir_uri, FALSE, FALSE, 0777);				
 			}
@@ -1785,7 +1785,24 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
 	}
 	
-	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
+	if (target_is_trash && (move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
+		/* when moving to trash, handle name conflicts automatically */
+		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+		/* localizers: progress dialog title */
+		transfer_info->operation_title = _("Moving files to the Trash");
+		/* localizers: label prepended to the progress count */
+		transfer_info->action_label =_("Files thrown out:");
+		/* localizers: label prepended to the name of the current file moved */
+		transfer_info->progress_verb =_("Moving");
+		transfer_info->preparation_name =_("Preparing to Move to Trash...");
+
+		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
+		/* Do an arbitrary guess that an operation will take very little
+		 * time and the progress shouldn't be shown.
+		 */
+		transfer_info->show_progress_dialog = 
+			!same_fs || g_list_length ((GList *)item_uris) > 20;
+	} else if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files");
 		/* localizers: label prepended to the progress count */
