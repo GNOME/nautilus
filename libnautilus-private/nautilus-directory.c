@@ -1249,6 +1249,33 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 		 contains_file, (directory, file));
 }
 
+char *
+nautilus_directory_get_file_uri (NautilusDirectory *directory,
+				 const char *file_name)
+{
+	GnomeVFSURI *directory_uri, *file_uri;
+	char *result;
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (file_name != NULL, NULL);
+
+	result = NULL;
+
+	directory_uri = gnome_vfs_uri_new (directory->details->uri);
+
+	g_assert (directory_uri != NULL);
+
+	file_uri = gnome_vfs_uri_append_string (directory_uri, file_name);
+	gnome_vfs_uri_unref (directory_uri);
+
+	if (file_uri != NULL) {
+		result = gnome_vfs_uri_to_string (file_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (file_uri);
+	}
+
+	return result;
+}
+
 void
 nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    GList *file_attributes,

@@ -29,6 +29,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
+#include "nautilus-thumbnails.h"
 #include "nautilus-xml-extensions.h"
 #include <gnome-xml/xmlmemory.h>
 #include <stdlib.h>
@@ -641,6 +642,7 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	GHashTable *directory_table;
 	gboolean found;
 	gpointer key, value;
+	char *old_file_uri, *new_file_uri;
 
 	if (directory->details->metafile_read) {
 		/* Move data in XML document if present. */
@@ -661,6 +663,14 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 					     g_strdup (new_file_name), value);
 		}
 	}
+
+	/* rename the thumbnails for the file, if any */
+	old_file_uri = nautilus_directory_get_file_uri (directory, old_file_name);
+	new_file_uri = nautilus_directory_get_file_uri (directory, new_file_name);
+	nautilus_update_thumbnail_file_renamed (old_file_uri, new_file_uri);
+	g_free (old_file_uri);
+	g_free (new_file_uri);
+
 }
 
 typedef struct {
@@ -875,5 +885,14 @@ void
 nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 					 const char *file_name)
 {
+	char *file_uri;
+
+	file_uri = nautilus_directory_get_file_uri (directory, file_name);
+
 	/* FIXME bugzilla.eazel.com 2807: This is not implemented. */
+
+
+	/* delete the thumbnails for the file, if any */
+	nautilus_remove_thumbnail_for_file (file_uri);
+	g_free (file_uri);
 }

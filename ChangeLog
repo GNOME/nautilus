@@ -1,3 +1,39 @@
+2000-11-21  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fixed bugzilla 855 - Renaming a file with thumbnails does not affect the
+	thumbnails and 4654 - Old thumbnails cause problems with renaming.
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_remove_file_metadata):
+	Finish the metafile rename and metafile remove operation by
+	updating thumbnail files correspondingly, if they exist.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-directory.h:
+	(nautilus_directory_get_file_uri):
+	Added a convenience routine.
+
+	* libnautilus-extensions/nautilus-thumbnails.c: (vfs_file_exists):
+	Tweaked to use the right GnomeVFS call.
+	
+	* libnautilus-extensions/nautilus-thumbnails.h:
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(nautilus_update_thumbnail_file_renamed_one),
+	(nautilus_update_thumbnail_file_renamed),
+	(nautilus_remove_thumbnail_for_file_one),
+	(nautilus_remove_thumbnail_for_file):
+	Look for an existing thumbnail for a file, if present, rename or
+	remove it respectively to update it to the new state.
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(make_thumbnail_path), (nautilus_get_thumbnail_uri), 
+	(check_for_thumbnails), (make_thumbnails):
+	Added a create_parents_if_needed parameter used by the new thumbnail
+	updating calls.
+		
 2000-11-21  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/installer.c: (early_log_catcher),

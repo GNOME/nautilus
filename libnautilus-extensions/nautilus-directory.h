@@ -149,6 +149,10 @@ char *             nautilus_directory_get_uri                  (NautilusDirector
 gboolean           nautilus_directory_contains_file            (NautilusDirectory         *directory,
 								NautilusFile              *file);
 
+/* Get the uri of the file in the directory, NULL if not found */
+char *		   nautilus_directory_get_file_uri	       (NautilusDirectory	  *directory,
+								const char 		  *file_name);
+
 /* Get (and ref) a NautilusFile object for this directory. */
 NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
 							    

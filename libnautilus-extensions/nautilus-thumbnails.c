@@ -59,23 +59,27 @@ static int make_thumbnails (gpointer data);
 static gboolean
 vfs_file_exists (const char *file_uri)
 {
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *file_info;
-
-	file_info = gnome_vfs_file_info_new ();
+	gboolean result;
+	GnomeVFSURI *uri;
 	
-	/* FIXME bugzilla.eazel.com 3137: the synchronous I/O here means this call is
-           unsuitable for use on anything that might be remote. */
+	uri = gnome_vfs_uri_new (file_uri);
+	if (uri == NULL) {
+		return FALSE;
+	}	
 
-	result = gnome_vfs_get_file_info (file_uri, file_info, 0);
-	gnome_vfs_file_info_unref (file_info);
-	return result == GNOME_VFS_OK;
+	/* FIXME bugzilla.eazel.com 3137: the synchronous I/O here means this call is
+	    unsuitable for use on anything that might be remote. */	
+	result = gnome_vfs_uri_exists (uri);
+	gnome_vfs_uri_unref (uri);
+
+	return result;
 }
 
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
-make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory, gboolean anti_aliased)
+make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory,
+	gboolean anti_aliased, gboolean create_parents_if_needed)
 {
 	GnomeVFSURI  *vfs_uri;
 	char *thumbnail_uri, *thumbnail_path;
@@ -95,18 +99,24 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", directory_name);
 	} else  {
 		GnomeVFSResult result;
-		GnomeVFSURI  *thumbnail_directory_uri;
+		GnomeVFSURI *thumbnail_directory_uri;
 	        	
-	        char *escaped_uri = gnome_vfs_escape_slashes (directory_name);		
+		char *escaped_uri = gnome_vfs_escape_slashes (directory_name);		
 		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
 		thumbnail_uri = gnome_vfs_get_uri_from_local_path (thumbnail_path);
 		g_free (thumbnail_path);
 		g_free(escaped_uri);
 		
-		/* we must create the directory if it doesnt exist */
+		/* we must create the directory if it doesn't exist */
 			
 		thumbnail_directory_uri = gnome_vfs_uri_new (thumbnail_uri);
-
+		
+		if (!create_parents_if_needed) {
+			if (!gnome_vfs_uri_exists (thumbnail_directory_uri)) {
+				gnome_vfs_uri_unref (thumbnail_directory_uri);
+				return NULL;
+			}
+		}
 		/* FIXME bugzilla.eazel.com 3137: synchronous I/O - it
                    looks like the URI will be local-only, but best to
                    make sure. */
@@ -136,7 +146,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		
 		/* append an image suffix if the correct one isn't already present */
 		if (!nautilus_istr_has_suffix (image_uri, ".png")) {		
-			char* old_uri = thumbnail_uri;
+			char *old_uri = thumbnail_uri;
 			thumbnail_uri = g_strdup_printf ("%s.png", thumbnail_uri);
 			g_free(old_uri);			
 		}
@@ -231,7 +241,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	uri_is_local = gnome_vfs_uri_is_local (temp_uri);
 	gnome_vfs_uri_unref (temp_uri);
 	
-	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, uri_is_local, anti_aliased);
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, uri_is_local, anti_aliased, TRUE);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
@@ -257,7 +267,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	/* now try it globally */
 	if (!remake_thumbnail) {
 		g_free (thumbnail_uri);
-		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE, anti_aliased);
+		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE, anti_aliased, TRUE);
 		
 		/* if the thumbnail file already exists in the common area,  return that uri, */
 		/* the uri is guaranteed to be local */
@@ -282,7 +292,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
         /* make the thumbnail directory if necessary, at first try it locally */
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
-	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
+	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased, TRUE);
 				
 	/* FIXME bugzilla.eazel.com 3137: more potentially losing
 	   synch I/O - this could be remote */
@@ -301,7 +311,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	if (!can_write || (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS)) {	
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
-		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
+		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased, TRUE);
 		/* this is guaranteed to be local, so synch I/O can be tolerated here */
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
@@ -338,6 +348,70 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	return NULL;
 }
 
+static void 
+nautilus_update_thumbnail_file_renamed_one (const char *old_file_name, const char *new_file_name,
+	gboolean anti_aliased)
+{
+	GnomeVFSURI *uri;
+	gboolean is_local;
+	char *old_thumbnail_uri, *new_thumbnail_uri;
+	
+	uri = gnome_vfs_uri_new (old_file_name);
+	is_local = gnome_vfs_uri_is_local (uri);
+	gnome_vfs_uri_unref (uri);
+	
+	old_thumbnail_uri = make_thumbnail_path (old_file_name, FALSE, is_local, anti_aliased, FALSE);
+	if (old_thumbnail_uri != NULL && vfs_file_exists (old_thumbnail_uri)) {
+		new_thumbnail_uri = make_thumbnail_path (new_file_name, FALSE, is_local, anti_aliased, FALSE);
+
+		g_assert (new_thumbnail_uri != NULL);
+		g_assert (!vfs_file_exists (new_thumbnail_uri));
+
+		gnome_vfs_move (old_thumbnail_uri, new_thumbnail_uri, FALSE);
+
+		g_free (new_thumbnail_uri);
+	}
+
+	g_free (old_thumbnail_uri);
+}
+
+/* update the thumbnail after the thumbnailed file got renamed */
+void 
+nautilus_update_thumbnail_file_renamed (const char *old_file_name, const char *new_file_name)
+{
+	/* rename both the AA and non-AA thumbnails, if they exist */
+	nautilus_update_thumbnail_file_renamed_one (old_file_name, new_file_name, FALSE);
+	nautilus_update_thumbnail_file_renamed_one (old_file_name, new_file_name, TRUE);
+}
+
+static void 
+nautilus_remove_thumbnail_for_file_one (const char *old_file_name, gboolean anti_aliased)
+{
+	GnomeVFSURI *uri;
+	gboolean is_local;
+	char *thumbnail_uri;
+	
+	uri = gnome_vfs_uri_new (old_file_name);
+	is_local = gnome_vfs_uri_is_local (uri);
+	gnome_vfs_uri_unref (uri);
+	
+	thumbnail_uri = make_thumbnail_path (old_file_name, FALSE, is_local, anti_aliased, FALSE);
+	if (thumbnail_uri != NULL && vfs_file_exists (thumbnail_uri)) {
+		gnome_vfs_unlink (thumbnail_uri);
+	}
+
+	g_free (thumbnail_uri);
+}
+
+/* remove the thumbnail after the thumbnailed file got deleted */
+void 
+nautilus_remove_thumbnail_for_file (const char *old_file_name)
+{
+	/* remove both the AA and non-AA thumbnails, if they exist */
+	nautilus_remove_thumbnail_for_file_one (old_file_name, FALSE);
+	nautilus_remove_thumbnail_for_file_one (old_file_name, TRUE);
+}
+
 /* check_for_thumbnails is a utility that checks to see if the current thumbnail task has terminated.
    If it has, remove the thumbnail info from the queue and return TRUE; if it's still in progress, return FALSE.
 */
@@ -362,7 +436,8 @@ check_for_thumbnails (void)
 		/* the thumbnail task has completed, so update the current entry from the list */
 		file = nautilus_file_get (info->thumbnail_uri);
 
-		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
+		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local,
+			info->anti_aliased, TRUE);
 		
 		/* if a thumbnail wasn't successfully made, use the "broken image" icon */
 		need_update = TRUE;
@@ -450,7 +525,8 @@ make_thumbnails (gpointer data)
 			
 		/* First, compute the path name of the target thumbnail */
 		g_free (new_thumbnail_path);
-		new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
+		new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local,
+			info->anti_aliased, TRUE);
 		
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(info->thumbnail_task = fork())) {
