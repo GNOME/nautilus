@@ -1,3 +1,41 @@
+2000-04-25  John Sullivan  <sullivan@eazel.com>
+
+	Fixed part of bug 556 (nautilus_file_can_rename returns
+	TRUE for /root, but shouldn't). Only remaining issue is
+	the no-nautilus-file-for-/ problem, which is already written
+	up separately.
+	
+	Fixed bug 546 (Folders/files without read permissions should
+	not be viewable).
+	
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_denies_access_permission): New private
+	function that checks permissions, including checking
+	whether the current user is the owner or in the group
+	of the queried file. If permissions aren't valid, returns
+	FALSE.
+	(nautilus_file_can_read), (nautilus_file_can_write),
+	(nautilus_file_can_execute): New public functions that
+	use nautilus_file_denies_access_permission to determine
+	which access permissions the current user has. They return
+	TRUE if permissions aren't valid, so callers still have to
+	be prepared to handle failures.
+	(nautilus_file_can_rename): Now calls nautilus_file_can_write
+	on the parent directory. Formerly it was just checking the
+	permission flags directly, ignoring whether the current user
+	was the owner or not. This fixes part of bug 556.
+	
+	* src/ntl-window-msgs.c:
+	(handle_unreadable_location): New private function, puts up
+	an alert if the user tries to switch to an unreadable location.
+	(nautilus_window_request_location_change): Try 
+	handle_unreadable_location before starting up the state transition.
+	This fixes bug 546.
+	
+	* src/file-manager/fm-error-reporting.c: 
+	(fm_report_error_renaming_file): Add missing _()'s around messages.
+
 2000-04-25  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c

@@ -113,6 +113,10 @@ void             nautilus_file_set_keywords              (NautilusFile          
 GList *          nautilus_file_get_emblem_names          (NautilusFile           *file);
 
 /* Basic operations for file objects. */
+gboolean         nautilus_file_can_read                  (NautilusFile           *file);
+gboolean         nautilus_file_can_write                 (NautilusFile           *file);
+gboolean         nautilus_file_can_execute               (NautilusFile           *file);
+
 gboolean         nautilus_file_can_rename                (NautilusFile           *file);
 GnomeVFSResult   nautilus_file_rename                    (NautilusFile           *file,
 							  const char             *new_name);

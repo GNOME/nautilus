@@ -27,6 +27,7 @@
 
 #include <grp.h>
 #include <pwd.h>
+#include <unistd.h>
 
 #include <gtk/gtksignal.h>
 
@@ -280,6 +281,127 @@ get_file_for_parent_directory (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_denies_access_permission:
+ * 
+ * Check whether the current file does not have a given permission
+ * for the current user. The sense is negative because the function
+ * returns FALSE if permissions cannot be determined.
+ * 
+ * @file: The file to check.
+ * @owner_permission: The USER version of the permission (e.g. GNOME_VFS_PERM_USER_READ).
+ * @group_permission: The GROUP version of the permission (e.g. GNOME_VFS_PERM_GROUP_READ).
+ * @other_permission: The OTHER version of the permission (e.g. GNOME_VFS_PERM_OTHER_READ).
+ * 
+ * Return value: TRUE if the current user definitely does not have
+ * the specified permission. FALSE if the current user does have
+ * permission, or if the permissions themselves are not queryable.
+ */
+static gboolean
+nautilus_file_denies_access_permission (NautilusFile *file, 
+				        GnomeVFSFilePermissions owner_permission,
+				        GnomeVFSFilePermissions group_permission,
+				        GnomeVFSFilePermissions other_permission)
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0) {
+		/* 
+		 * File's permissions field is not valid.
+		 * Can't access specific permissions, so return FALSE.
+		 */
+		return FALSE;
+	}
+
+	/* Check whether anyone at all has permission. */
+	if (file->details->info->permissions & other_permission) {
+		return FALSE;
+	}
+	
+	/* Check whether user's ID matches file's. */
+	if ((file->details->info->permissions & owner_permission)
+	    && getuid() == file->details->info->uid) {
+		return FALSE;
+	}
+
+	/* Check whether user's group ID matches file's. */
+	if ((file->details->info->permissions & group_permission)
+	    && getpwuid (getuid())->pw_gid == file->details->info->gid) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/**
+ * nautilus_file_can_read:
+ * 
+ * Check whether the user is allowed to read the contents of this file.
+ * 
+ * @file: The file to check.
+ * 
+ * Return value: FALSE if the user is definitely not allowed to read
+ * the contents of the file. If the user has read permission, or
+ * the code can't tell whether the user has read permission,
+ * returns TRUE (so failures must always be handled).
+ */
+gboolean
+nautilus_file_can_read (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return !nautilus_file_denies_access_permission (file, 
+						        GNOME_VFS_PERM_USER_READ,
+						        GNOME_VFS_PERM_GROUP_READ,
+						        GNOME_VFS_PERM_OTHER_READ);
+}
+
+/**
+ * nautilus_file_can_write:
+ * 
+ * Check whether the user is allowed to write to this file.
+ * 
+ * @file: The file to check.
+ * 
+ * Return value: FALSE if the user is definitely not allowed to write
+ * to the file. If the user has write permission, or
+ * the code can't tell whether the user has write permission,
+ * returns TRUE (so failures must always be handled).
+ */
+gboolean
+nautilus_file_can_write (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return !nautilus_file_denies_access_permission (file, 
+						        GNOME_VFS_PERM_USER_WRITE,
+						        GNOME_VFS_PERM_GROUP_WRITE,
+						        GNOME_VFS_PERM_OTHER_WRITE);
+}
+
+/**
+ * nautilus_file_can_execute:
+ * 
+ * Check whether the user is allowed to execute this file.
+ * 
+ * @file: The file to check.
+ * 
+ * Return value: FALSE if the user is definitely not allowed to execute
+ * the file. If the user has execute permission, or
+ * the code can't tell whether the user has execute permission,
+ * returns TRUE (so failures must always be handled).
+ */
+gboolean
+nautilus_file_can_execute (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return !nautilus_file_denies_access_permission (file, 
+						        GNOME_VFS_PERM_USER_EXEC,
+						        GNOME_VFS_PERM_GROUP_EXEC,
+						        GNOME_VFS_PERM_OTHER_EXEC);
+}
+
+/**
  * nautilus_file_can_rename:
  * 
  * Check whether the user is allowed to change the name of the file.
@@ -295,29 +417,26 @@ gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
 	NautilusFile *parent;
+	gboolean result;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
+	/* User must have write permissions for the parent directory. */
 	parent = get_file_for_parent_directory (file);
 
+	/* 
+	 * No parent directory for some reason (at root level?).
+	 * Can't tell whether this file is renameable, so return TRUE.
+	 */
 	if (parent == NULL) {
-		/* 
-		 * No parent directory for some reason (at root level?).
-		 * Can't tell whether this file is renameable, so return TRUE.
-		 */
 		return TRUE;
 	}
 
-	if ((parent->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0){
-		/* 
-		 * Parent's permissions field is not valid.
-		 * Can't tell whether this file is renameable, so return TRUE.
-		 */
-		return TRUE;
-	}
+	result = nautilus_file_can_write (parent);
 
-	/* Trust the write permissions of the parent directory. */
-	return (file->details->info->permissions & GNOME_VFS_PERM_USER_WRITE) != 0;
+	nautilus_file_unref (parent);
+
+	return result;
 }
 
 GnomeVFSResult

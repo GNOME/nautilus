@@ -598,12 +598,47 @@ nautilus_window_load_meta_view(NautilusWindow *window,
         return meta_view;
 }
 
+static gboolean
+handle_unreadable_location (NautilusWindow *window, const char *uri) {
+	NautilusFile *file;
+	gboolean unreadable;
+	char *file_name;
+        char *message;
+
+	file = nautilus_file_get (uri);
+
+	/* Can't make file object; can't check permissions; can't determine
+	 * whether file is readable so return FALSE.
+	 */
+	if (file == NULL) {
+		return FALSE;
+	}
+
+	unreadable = !nautilus_file_can_read (file);
+	nautilus_file_unref (file);
+
+	if (unreadable) {
+		file_name = nautilus_file_get_name (file);
+        	message = g_strdup_printf (_("You do not have the right permissions to view \"%s.\""), file_name);
+                gtk_widget_show (gnome_error_dialog_parented (message, 
+              					              GTK_WINDOW (window)));
+                g_free (file_name);
+                g_free (message);
+	}
+
+	return unreadable;
+}
+
 void
 nautilus_window_request_location_change (NautilusWindow *window,
                                          Nautilus_NavigationRequestInfo *loc,
                                          NautilusView *requesting_view)
 {  
         NautilusWindow *new_window;
+
+        if (handle_unreadable_location (window, loc->requested_uri)) {
+		return;
+        }
         
         if (loc->new_window_requested) {
                 new_window = nautilus_app_create_window (NAUTILUS_APP(window->app));
