@@ -54,6 +54,10 @@ struct NautilusIndexPanel
 struct NautilusIndexPanelClass
 {
 	GtkEventBoxClass parent_class;
+	
+	void         (*location_changed) (NautilusIndexPanel *index_panel,
+					  const char *location);
+
 };
 
 GtkType             nautilus_index_panel_get_type         (void);

@@ -446,6 +446,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->index_panel = nautilus_index_panel_new();
 	gtk_widget_show (GTK_WIDGET (window->index_panel));
 	gtk_container_add(GTK_CONTAINER(temp_frame), GTK_WIDGET (window->index_panel));
+	gtk_signal_connect(GTK_OBJECT(window->index_panel), "location_changed",
+                     nautilus_window_goto_uri_callback, window);
 
 	gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
 

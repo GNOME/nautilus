@@ -64,6 +64,7 @@ struct NautilusIndexPanelDetails {
     int old_width;
 };
 
+
 static void     nautilus_index_panel_initialize_class   (GtkObjectClass     *object_klass);
 static void     nautilus_index_panel_initialize         (GtkObject          *object);
 static gboolean nautilus_index_panel_press_event        (GtkWidget          *widget,
@@ -94,6 +95,13 @@ static void     add_command_buttons                     (NautilusIndexPanel *ind
 #define INDEX_PANEL_WIDTH 136
 #define INDEX_PANEL_HEIGHT 400
 
+enum {
+	LOCATION_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 /* drag and drop definitions */
 
 enum {
@@ -120,6 +128,7 @@ typedef enum {
 	TABS_PART
 } IndexPanelPart;
 
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexPanel, nautilus_index_panel, GTK_TYPE_EVENT_BOX)
 
 /* initializing the class object by installing the operations we override */
@@ -127,6 +136,7 @@ static void
 nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 {
 	GtkWidgetClass *widget_class;
+	
 	NautilusIndexPanelClass *klass;
 
 	widget_class = GTK_WIDGET_CLASS (object_klass);
@@ -139,6 +149,18 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 	widget_class->leave_notify_event = nautilus_index_panel_leave_event;
 	widget_class->button_press_event  = nautilus_index_panel_press_event;
 	widget_class->size_allocate = nautilus_index_panel_size_allocate;
+
+	/* add the "location changed" signal */
+	signals[LOCATION_CHANGED]
+		= gtk_signal_new ("location_changed",
+			GTK_RUN_FIRST,
+			object_klass->type,
+			GTK_SIGNAL_OFFSET (NautilusIndexPanelClass,
+				location_changed),
+			gtk_marshal_NONE__STRING,
+			GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+
+	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -302,8 +324,6 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
 
-	/* FIXME bugzilla.eazel.com 604: handle files by setting the location to the file */
-	
 	switch (hit_test (index_panel, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
@@ -311,6 +331,11 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 			nautilus_background_set_tile_image_uri
 			(nautilus_get_widget_background (GTK_WIDGET (index_panel)),
 		 	uris[0]);
+		}
+		else if (exactly_one) {
+			gtk_signal_emit (GTK_OBJECT (index_panel),
+					 signals[LOCATION_CHANGED],
+			 		 uris[0]);	
 		}
 		break;
 	case TABS_PART:
@@ -320,7 +345,7 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 		/* handle images dropped on the logo specially */
 		/* FIXME bugzilla.eazel.com 605: 
 		 * Need feedback for cases where there is more than one URI 
-		 * and where the URI is not alocal image.
+		 * and where the URI is not a local image.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
 			file = nautilus_file_get (index_panel->details->uri);

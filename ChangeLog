@@ -1,4 +1,18 @@
-2000-05-28  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2000-05-28  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 604, handle dropped files in sidebar by setting location.  Followed
+	Maciej's suggestion of making sidebar work like the location bar, emitting the
+	"location_changed" signal and making the window attach to it.
+	
+	* src/nautilus-sidebar.c: (nautilus_index_panel_initialize_class),
+	(receive_dropped_uri_list):
+	added a location_changed signal, and emitted it when receiving a dropped uri
+	* src/nautilus-sidebar.h:
+	added slot for the location_changed signal
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	connect window to sidebar's location_changed signal
+	
+2000-05-28  Andy Hertzfeld  <andy@eazel.com>
 
 	added a preference for alternative toolbar icons, which defaults to the
 	standard Gnome icons.
