@@ -31,10 +31,18 @@ nautilus_SOURCES =\
 	nautilus-bookmark-list.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
+        nautilus-index-tabs.c		\
+        nautilus-index-tabs.h		\
+        nautilus-index-title.c		\
+        nautilus-index-title.h		\
 	nautilus-location-bar.c         \
 	nautilus-location-bar.h		\
+        nautilus-self-check-functions.c \
+        nautilus-self-check-functions.h \
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
+        nautilus-window-menus.c         \
+        nautilus-window-toolbars.c      \
 	nautilus-zoom-control.c		\
 	nautilus-zoom-control.h		\
 	nautilus-zoomable-frame-svr.c	\
@@ -66,13 +74,6 @@ nautilus_SOURCES =\
 	ntl-window-state.h		\
 	ntl-window.c			\
 	ntl-window.h			\
-        nautilus-index-tabs.c		\
-        nautilus-index-tabs.h		\
-        nautilus-index-title.c		\
-        nautilus-index-title.h		\
-        nautilus-self-check-functions.c \
-        nautilus-self-check-functions.h \
-        nautilus-window-menus.c         \
 	$(NULL)
 
 TESTS=check-nautilus

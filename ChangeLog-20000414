@@ -1,3 +1,15 @@
+2000-03-17  John Sullivan  <sullivan@eazel.com>
+
+	Separate out toolbar code as first step towards
+	bonobo-izing it.
+
+	* src/nautilus-window-toolbars.c: New file
+	* src/Makefile.am: put new file in build.
+	* src/ntl-window-private.h: prototype for
+	nautilus_window_initialize_toolbars
+	* src/ntl-window.c: Moved toolbar stuff out of here
+	and into new file.
+
 2000-03-17  Pavel Cisler  <pavel@eazel.com>
 
 	Fix some bugs that John kindly uncovered.
@@ -13,7 +25,7 @@
 
 	* libnautilus/nautilus-list-column-title.c
 	(nautilus_list_column_title_paint):
-	Make the resize indicator draw on the other side of the column title
+	Make the sort indicator draw on the other side of the column title
 	as it should.
 	Tweak an assert.
 

@@ -175,8 +175,6 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
 static void nautilus_window_destroy (NautilusWindow *window);
-static void nautilus_window_reload (GtkWidget *btn, NautilusWindow *window);
-static void nautilus_window_stop (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
@@ -195,43 +193,6 @@ static void zoom_out_cb (NautilusZoomControl *zoom_control,
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
-
-/* toolbar definitions */
-
-#define TOOLBAR_BACK_BUTTON_INDEX	0
-#define TOOLBAR_FORWARD_BUTTON_INDEX	1
-#define TOOLBAR_UP_BUTTON_INDEX		2
-#define TOOLBAR_RELOAD_BUTTON_INDEX	3
-/* separator */
-#define TOOLBAR_HOME_BUTTON_INDEX	5
-/* separator */
-#define TOOLBAR_STOP_BUTTON_INDEX	7
-static GnomeUIInfo toolbar_info[] = {
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Back"), N_("Go to the previously visited directory"),
-   nautilus_window_back_cb, GNOME_STOCK_PIXMAP_BACK),
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Forward"), N_("Go to the next directory"),
-   nautilus_window_forward_cb, GNOME_STOCK_PIXMAP_FORWARD),
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Up"), N_("Go up a level in the directory heirarchy"),
-   nautilus_window_up_cb, GNOME_STOCK_PIXMAP_UP),
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Reload"), N_("Reload this view"),
-   nautilus_window_reload, GNOME_STOCK_PIXMAP_REFRESH),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Home"), N_("Go to your home directory"),
-   nautilus_window_home_cb, GNOME_STOCK_PIXMAP_HOME),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_ITEM_STOCK
-  (N_("Stop"), N_("Interrupt loading"),
-   nautilus_window_stop, GNOME_STOCK_PIXMAP_STOP),
-  GNOMEUIINFO_END
-};
-
-
-
 	
 GtkType
 nautilus_window_get_type(void)
@@ -491,14 +452,8 @@ nautilus_window_constructed(NautilusWindow *window)
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame;
-  GtkWidget *toolbar;
   
   app = GNOME_APP(window);
-
-  /* set up toolbar */
-  toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);
-  gnome_app_fill_toolbar_with_data(GTK_TOOLBAR(toolbar), toolbar_info, app->accel_group, app);
-  gnome_app_set_toolbar(app, GTK_TOOLBAR(toolbar));
 
   /* set up location bar */
 
@@ -581,18 +536,11 @@ nautilus_window_constructed(NautilusWindow *window)
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
   window->uih = bonobo_ui_handler_new();
   bonobo_ui_handler_set_app(window->uih, app);
-  bonobo_ui_handler_set_toolbar(window->uih, "Main", toolbar);
   bonobo_ui_handler_set_statusbar(window->uih, statusbar);
 
-  /* Create menus */
+  /* Create menus and toolbars */
   nautilus_window_initialize_menus (window);
-
-  /* Remember some widgets now so their state can be changed later */
-  window->back_button = toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
-  window->forward_button = toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
-  window->up_button = toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
-  window->reload_button = toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
-  window->stop_button = toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;
+  nautilus_window_initialize_toolbars (window);
 
   gtk_signal_connect (GTK_OBJECT (window->back_button),
 		      "button_press_event",
@@ -912,27 +860,10 @@ nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window)
   g_free (parent_uri_string);
 }
 
-static void
-nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
-{
-  Nautilus_NavigationRequestInfo nri;
-
-  memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = (char *)nautilus_window_get_requested_uri(window);
-  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
-  nautilus_window_change_location(window, &nri, NULL, FALSE, TRUE);
-}
-
 void
 nautilus_window_home_cb (GtkWidget *widget, NautilusWindow *window)
 {
   nautilus_window_set_initial_state(window, NULL);
-}
-
-static void
-nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
-{
-  nautilus_window_set_state_info(window, RESET_TO_IDLE, 0);
 }
 
 
