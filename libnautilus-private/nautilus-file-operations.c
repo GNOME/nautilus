@@ -1695,6 +1695,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
+	gboolean target_is_mapping;
+	gboolean have_nonlocal_source;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1705,12 +1707,17 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	result = GNOME_VFS_OK;
 
 	target_is_trash = FALSE;
+	target_is_mapping = FALSE;
 	if (target_dir != NULL) {
 		if (eel_uri_is_trash (target_dir)) {
 			target_is_trash = TRUE;
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);
 		}
+		if (strncmp (target_dir, "burn:", 5) == 0) {
+			target_is_mapping = TRUE;
+		}
+			
 	}
 
 	/* Build the source and target URI lists and figure out if all
@@ -1718,6 +1725,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	source_uri_list = NULL;
 	target_uri_list = NULL;
+	have_nonlocal_source = FALSE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1734,6 +1742,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (source_uri == NULL) {
 			continue;
 		}
+		
+		if (strcmp (source_uri->method_string, "file") != 0) {
+			have_nonlocal_source = TRUE;
+		}
+			
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
 		if (target_dir != NULL) {
@@ -1794,8 +1807,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = g_list_reverse (source_uri_list);
 	target_uri_list = g_list_reverse (target_uri_list);
 
-
-	if (copy_action == GDK_ACTION_MOVE) {
+	if (target_is_mapping && !have_nonlocal_source && (copy_action == GDK_ACTION_COPY || copy_action == GDK_ACTION_MOVE)) {
+		copy_action = GDK_ACTION_LINK;
+	}
+	if (copy_action == GDK_ACTION_MOVE && !target_is_mapping) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	} else if (copy_action == GDK_ACTION_LINK) {
 		move_options |= GNOME_VFS_XFER_LINK_ITEMS;

@@ -1,3 +1,12 @@
+2002-11-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(image_loading_done_callback): Only set image of required size,
+	when now pixmap needed, kill old pixmap and set color.
+	(free_root_pixmap): New function to free root background image
+
+	Patch from Brian.Cameron@sun.com
+
 2002-11-20  Anders Carlsson  <andersca@gnu.org>
 
 	* components/Makefile.am:
