@@ -1,6 +1,13 @@
 2000-06-30  Andy Hertzfeld  <andy@eazel.com>
 
-	eliminated the separate toolbar icon theme; instead they are
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	use gnome_vfs_xfer instead of a 'cp' command to install the
+	novice home directory.  This fixes bug 1285.
+	
+2000-06-30  Andy Hertzfeld  <andy@eazel.com>
+
+	eliminated the separate toolbar icon theme; instead it's
 	incorporated into the general theming mechanism
 	
 	* libnautilus-extensions/nautilus-global-preferences.h:

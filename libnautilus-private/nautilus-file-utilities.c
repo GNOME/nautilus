@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-file-utilities.h"
+#include "nautilus-glib-extensions.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
@@ -38,6 +39,7 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-xfer.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -213,9 +215,11 @@ const char *
 nautilus_get_user_main_directory (void)
 {
 	static char *user_main_directory = NULL;
+	GnomeVFSResult result;
 	NautilusFile *file;
-	char *command, *file_uri, *image_uri, *temp_str;
-
+	char *file_uri, *image_uri, *temp_str;
+	char *source_directory_uri, *destination_directory_uri;
+	GList *source_name_list, *destination_name_list;
 	
 	if (user_main_directory == NULL)
 	{
@@ -223,24 +227,30 @@ nautilus_get_user_main_directory (void)
 							g_get_home_dir(),
 							NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
-		if (!g_file_exists (user_main_directory)) {
-			/* FIXME bugzilla.eazel.com 1285: 
-			 * Is it OK to use cp like this? What about quoting the parameters? 
-			 */
-			command = g_strdup_printf ("cp -R %s %s",
-						   NAUTILUS_DATADIR "/top",
-						   user_main_directory);
-
+		if (!g_file_exists (user_main_directory)) {			
+			source_directory_uri = nautilus_get_uri_from_local_path (NAUTILUS_DATADIR);
+			destination_directory_uri = nautilus_get_uri_from_local_path (g_get_home_dir());
+			source_name_list = g_list_prepend (NULL, "top");
+			destination_name_list = g_list_prepend (NULL, NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+			
+			result = gnome_vfs_xfer (source_directory_uri, source_name_list,
+						destination_directory_uri, destination_name_list,
+						GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
+						GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+						NULL, NULL);
+			
+			g_free (source_directory_uri);
+			g_free (destination_directory_uri);
+			g_list_free (source_name_list);
+			g_list_free (destination_name_list);
+							
 			/* FIXME bugzilla.eazel.com 1286: 
 			 * Is a g_warning good enough here? This seems like a big problem. 
 			 */
-			if (system (command) != 0) {
-				g_warning ("could not execute '%s'.  Make sure you typed 'make install'", 
-					   command);
+			if (result != GNOME_VFS_OK) {
+				g_warning ("could not install the novice home directory.  Make sure you typed 'make install'");
 			}
-			
-			g_free (command);
-		
+					
 			/* assign a custom image for the directory icon */
 			file_uri = nautilus_get_uri_from_local_path (user_main_directory);
 			temp_str = nautilus_pixmap_file ("nautilus-logo.png");
