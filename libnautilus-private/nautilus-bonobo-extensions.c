@@ -369,17 +369,25 @@ nautilus_bonobo_add_numbered_radio_menu_item (BonoboUIComponent *ui,
 void
 nautilus_bonobo_add_submenu (BonoboUIComponent *ui,
 			     const char *path,
-			     const char *label)
+			     const char *label,
+			     GdkPixbuf *pixbuf)
 {
-	char *xml_string, *name;
+	char *xml_string, *name, *pixbuf_data;
 
 	/* Labels may contain characters that are illegal in names. So
 	 * we create the name by URI-encoding the label.
 	 */
 	name = gnome_vfs_escape_string (label);
-	
-	xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\"/>\n", 
-				      name, label);
+
+	if (pixbuf != NULL) {
+		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);			
+		xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
+					      name, label, pixbuf_data);	
+		g_free (pixbuf_data);
+	} else {
+		xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\"/>\n", 
+					      name, label);
+	}
 	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
 	g_free (name);

@@ -85,7 +85,8 @@ char *			        nautilus_bonobo_get_numbered_menu_item_container_path_from_comm
 										    (const char 		      *command);
 void                            nautilus_bonobo_add_submenu                         (BonoboUIComponent                *ui,
 										     const char                       *container_path,
-										     const char                       *label);
+										     const char                       *label,
+										     GdkPixbuf *pixbuf);
 void                            nautilus_bonobo_add_menu_separator                  (BonoboUIComponent                *ui,
 										     const char                       *path);
 void                            nautilus_bonobo_remove_menu_items_and_commands      (BonoboUIComponent                *ui,

@@ -3267,16 +3267,15 @@ add_numbered_menu_item (BonoboUIComponent *ui,
 
 static void
 add_submenu (BonoboUIComponent *ui,
-	  const char *parent_path,
-	  const char *label,
-	  GdkPixbuf *pixbuf)
+	     const char *parent_path,
+	     const char *label,
+	     GdkPixbuf *pixbuf)
 {
 	char *escaped_label;
 
 	escaped_label = eel_str_double_underscores (label);
-	nautilus_bonobo_add_submenu (ui, parent_path, escaped_label);
+	nautilus_bonobo_add_submenu (ui, parent_path, escaped_label, pixbuf);
 	g_free (escaped_label);
-	/* FIXME: Set icon too. */
 }
 
 static void
