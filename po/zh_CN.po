@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-01 09:36+0200\n"
-"PO-Revision-Date: 2004-05-17 05:34+0800\n"
+"POT-Creation-Date: 2004-06-04 15:19+0200\n"
+"PO-Revision-Date: 2004-06-04 22:51+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -2081,6 +2081,10 @@ msgid "Replace _All"
 msgstr "全部替换(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2135,6 +2139,9 @@ msgid " (another copy)"
 msgstr " (另一个复件)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2170,6 +2177,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (另一个复件)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2792,7 +2802,7 @@ msgid "Display _files when they are clicked"
 msgstr "单击时显示文件(_F)"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Ask each time"
 msgstr "每次都询问(_A)"
 
@@ -2806,13 +2816,13 @@ msgstr "按文件名和文件属性查找文件"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
 #: src/file-manager/fm-icon-container.c:499
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "Icon View"
 msgstr "图标视图"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
 #: src/file-manager/fm-list-view.c:1120
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "List View"
 msgstr "列表视图"
 
@@ -2821,27 +2831,27 @@ msgid "Manually"
 msgstr "手动"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Name"
 msgstr "按名称"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid "By Size"
 msgstr "按大小"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:45
 msgid "By Type"
 msgstr "按类型"
 
 #: libnautilus-private/nautilus-global-preferences.c:189
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Modification Date"
 msgstr "按修改时间"
 
 #: libnautilus-private/nautilus-global-preferences.c:190
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Emblems"
 msgstr "按徽标"
 
@@ -3321,6 +3331,7 @@ msgstr "正在打开“%s”"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -3953,7 +3964,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "剪贴板中没有东西可以粘贴。"
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6128
+#: src/file-manager/fm-directory-view.c:6134
 msgid "Mount Error"
 msgstr "挂载错误"
 
@@ -4089,38 +4100,34 @@ msgstr "显示(_D)"
 msgid "_Run"
 msgstr "运行(_R)"
 
-#: src/file-manager/fm-directory-view.c:6264
+#: src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "打开“%s”。"
 
-#: src/file-manager/fm-directory-view.c:6271
+#: src/file-manager/fm-directory-view.c:6277
 msgid "Cancel Open?"
 msgstr "取消打开？"
 
 #: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
-#, fuzzy
 msgid "Comment"
-msgstr "Covalent"
+msgstr "注释"
 
 #: src/file-manager/fm-ditem-page.c:341
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/file-manager/fm-ditem-page.c:345
-#, fuzzy
 msgid "Link"
 msgstr "链接"
 
 #: src/file-manager/fm-ditem-page.c:352
-#, fuzzy
 msgid "Command"
-msgstr "Compaq"
+msgstr "命令"
 
 #: src/file-manager/fm-ditem-page.c:356
-#, fuzzy
 msgid "Launcher"
-msgstr "编辑启动器"
+msgstr "启动器"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -5098,6 +5105,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:583 src/nautilus-application.c:601
 #: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5131,7 +5139,7 @@ msgstr ""
 "题。"
 
 #: src/nautilus-bookmarks-window.c:150
-#: src/nautilus-file-management-properties.c:219
+#: src/nautilus-file-management-properties.c:220
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
@@ -5198,7 +5206,7 @@ msgstr "连接(_O)"
 msgid "Desktop"
 msgstr "桌面"
 
-#: src/nautilus-file-management-properties.c:297
+#: src/nautilus-file-management-properties.c:298
 msgid "None"
 msgstr "无"
 
@@ -5275,165 +5283,169 @@ msgid "Always"
 msgstr "总是"
 
 #: src/nautilus-file-management-properties.glade.h:38
+msgid "Always open in _browser windows"
+msgstr "总是在浏览器窗口中打开(_B)"
+
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "清空回收站或删除文件前询问(_E)"
 
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "Behavior"
 msgstr "行为"
 
-#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-file-management-properties.glade.h:46
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
 "为图标名字下要显示的信息选择顺序。随着放大倍数的增加，所出现的信息会增多。"
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "Choose the order of information to appear in the list view."
 msgstr "为列表视图下要显示的信息选择顺序。"
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Count _number of items:"
 msgstr "统计项目数量(_N)："
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Default _zoom level:"
 msgstr "默认缩放级别(_Z)："
 
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "File Management Preferences"
 msgstr "文件管理首选项"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "包含绕过回收站的删除命令(_N)"
 
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Icon Captions"
 msgstr "图标标题"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "List Columns"
 msgstr "列表列"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Local Files Only"
 msgstr "仅本地文件"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "MIME type"
 msgstr "MIME类型"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Never"
 msgstr "从不"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview"
 msgstr "预览"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Preview _sound files:"
 msgstr "预听声音文件(_S)："
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Show _only folders"
 msgstr "只显示文件夹(_O)"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Show _thumbnails:"
 msgstr "显示缩略图(_T)："
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Show hidden and _backup files"
 msgstr "显示隐藏和备份文件(_B)"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "Show te_xt in icons:"
 msgstr "图标中显示文字(_X)："
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "Sort _folders before files"
 msgstr "将文件夹放在文件前(_F)"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "View _new folders using:"
 msgstr "查看新建文件夹使用(_N)："
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "视图"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Arrange items:"
 msgstr "排列项目(_A)："
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Default zoom level:"
 msgstr "默认缩放级别(_D)："
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Double click to activate items"
 msgstr "双击时激活项目(_D)"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Only for files smaller than:"
 msgstr "仅显示小于指定大小的文件(_O)："
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Run executable text files when they are clicked"
 msgstr "单击时执行可执行文本文件(_R)"
 
-#: src/nautilus-file-management-properties.glade.h:73
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_Single click to activate items"
 msgstr "单击时激活项目(_S)"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_Text beside icons"
 msgstr "文字在图标旁(_T)"
 
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "_Use compact layout"
 msgstr "使用紧凑布局(_U)"
 
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "_View executable text files when they are clicked"
 msgstr "单击时查看可执行文本文件(_V)"
 
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "date accessed"
 msgstr "访问时间"
 
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "date modified"
 msgstr "修改时间"
 
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "group"
 msgstr "群组"
 
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "none"
 msgstr "无"
 
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "octal permissions"
 msgstr "八进制权限"
 
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "owner"
 msgstr "所有者"
 
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "permissions"
 msgstr "权限"
 
-#: src/nautilus-file-management-properties.glade.h:84
+#: src/nautilus-file-management-properties.glade.h:85
 msgid "size"
 msgstr "大小"
 
-#: src/nautilus-file-management-properties.glade.h:85
+#: src/nautilus-file-management-properties.glade.h:86
 msgid "type"
 msgstr "类型"
 
@@ -5551,22 +5563,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus：--check 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus：--check 无法和其它选项一起使用。\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus：--quit 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus：--restart 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus：--geometry 无法和多个URI 一起使用。\n"
 
@@ -5647,7 +5664,7 @@ msgstr "关闭全部窗口(_A)"
 
 #: src/nautilus-navigation-window-ui.xml.h:9
 msgid "Close all Navigation windows"
-msgstr "关闭全部打开导航窗口"
+msgstr "关闭打开的全部导航窗口"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
 #: src/nautilus-spatial-window-ui.xml.h:6
@@ -6198,18 +6215,16 @@ msgid "Show %s"
 msgstr "显示 %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "关闭父文件夹(_A)"
+msgstr "关闭全部文件夹(_E)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "关闭父文件夹(_A)"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "关闭全部打开导航窗口"
+msgstr "关闭全部文件夹窗口"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6379,9 +6394,9 @@ msgid "Display this location with \"%s\""
 msgstr "用“%s”显示该位置"
 
 #: src/nautilus-window.c:1157
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (复件)%s"
+msgstr "%2$s 上的 %1$s"
 
 #: src/nautilus-window.c:1598
 msgid "Application ID"
