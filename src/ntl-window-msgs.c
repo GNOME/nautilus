@@ -122,7 +122,8 @@ nautilus_window_request_progress_change(NautilusWindow *window,
 {
   NautilusWindowStateItem item;
   
-  if (requesting_view != window->new_content_view)
+  if (requesting_view != window->new_content_view
+      && requesting_view != window->content_view)
     return; /* Only pay attention to progress information from the upcoming content view, for now */
   
   /* If the progress indicates we are done, record that, otherwise
@@ -308,7 +309,11 @@ nautilus_window_has_really_changed(NautilusWindow *window)
   if(window->new_content_view)
     {
       if(!GTK_WIDGET(window->new_content_view)->parent)
-        nautilus_window_set_content_view(window, window->new_content_view);
+        {
+          if(window->content_view)
+            gtk_signal_disconnect_by_func(GTK_OBJECT(window->content_view), nautilus_window_view_destroyed, window);
+          nautilus_window_set_content_view(window, window->new_content_view);
+        }
       gtk_object_unref(GTK_OBJECT(window->new_content_view));
       window->new_content_view = NULL;
     }
@@ -344,6 +349,8 @@ nautilus_window_has_really_changed(NautilusWindow *window)
 static void
 nautilus_window_free_load_info(NautilusWindow *window)
 {
+  g_message("-> FREE_LOAD_INFO <-");
+
   if (window->pending_ni)
     nautilus_navinfo_free(window->pending_ni);
   window->pending_ni = NULL;
@@ -362,6 +369,7 @@ nautilus_window_free_load_info(NautilusWindow *window)
     window->cv_progress_initial =
     window->cv_progress_done =
     window->cv_progress_error = 
+    window->sent_update_view =
     window->reset_to_idle = FALSE;
 }
 
@@ -474,7 +482,14 @@ nautilus_window_update_state(gpointer data)
   window->made_changes = 0;
   window->making_changes++;
 
-  g_message(">>> nautilus_window_update_state");
+  g_message(">>> nautilus_window_update_state:");
+  g_print("made_changes %d, making_changes %d\n", window->made_changes, window->making_changes);
+  g_print("changes_pending %d, is_back %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
+          window->changes_pending, window->is_back, window->views_shown,
+          window->view_bombed_out, window->view_activation_complete);
+  g_print("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
+          window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
+          window->reset_to_idle);
 
   /* Now make any needed state changes based on available information */
   if(window->view_bombed_out && window->error_views)
@@ -591,7 +606,7 @@ nautilus_window_update_state(gpointer data)
         }
 
       if(window->view_activation_complete
-         && !window->cv_progress_initial)
+         && !window->sent_update_view)
         {
           Nautilus_NavigationInfo *ni;
           Nautilus_SelectionInfo *si;
@@ -607,6 +622,8 @@ nautilus_window_update_state(gpointer data)
               si = window->si;
             }
 
+          g_message("!!! Sending update_view");
+
           if(window->new_content_view)
             nautilus_window_update_view(window, window->new_content_view, ni, si,
                                         window->new_requesting_view, window->new_content_view);
@@ -617,6 +634,8 @@ nautilus_window_update_state(gpointer data)
             nautilus_window_update_view(window, cur->data, ni, si,
                                         window->new_requesting_view, window->new_content_view);
 
+          window->sent_update_view = TRUE;
+          window->made_changes++;
         }
 
       if(!window->cv_progress_error
@@ -634,6 +653,7 @@ nautilus_window_update_state(gpointer data)
         {
           window->made_changes++;
           window->reset_to_idle = TRUE;
+          g_message("cv_progress_(error|done) kicking in");
         }
     }
 
@@ -686,9 +706,9 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           window->changes_pending = TRUE;
           break;
         case VIEW_ERROR:
-          g_message("VIEW_ERROR");
           window->view_bombed_out = TRUE;
           new_view = va_arg(args, NautilusView*);
+          g_message("VIEW_ERROR on %p", new_view);
           gtk_object_ref(GTK_OBJECT(new_view)); /* Ya right */
           window->error_views = g_slist_prepend(window->error_views, new_view);
           break;
@@ -756,7 +776,7 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 
   if(!navi->default_content_iid)
     {
-      errmsg = _("The chosen page could not be retrieved.");
+      errmsg = _("There is no known method of displaying the chosen page.");
       goto errout;
     }
 

@@ -93,6 +93,7 @@ struct _NautilusWindow {
   gboolean views_shown : 1;
   gboolean view_bombed_out : 1;
   gboolean view_activation_complete : 1;
+  gboolean sent_update_view : 1;
   gboolean cv_progress_initial : 1;
   gboolean cv_progress_done : 1;
   gboolean cv_progress_error : 1;
