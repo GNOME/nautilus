@@ -9,13 +9,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-01-30 14:01+0100\n"
+"POT-Creation-Date: 2001-01-30 19:09+0100\n"
 "PO-Revision-Date: 2001-01-30 14:02+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:233
+#: src/nautilus-window-menus.c:553
+msgid "Nautilus"
+msgstr "Nautilus"
+
+#: nautilus.desktop.in.h:2
+msgid "Nautilus File Manager and Graphic Shell"
+msgstr "Filhanteraren och det grafiska skalet Nautilus"
 
 #: applets/launcher/nautilus-launcher-applet.c:272
 msgid "Can't create nautilus-launcher-applet!"
@@ -3380,6 +3393,10 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
+#: libnautilus-extensions/nautilus-file-operations-progress.c:330
+msgid "%ld of %ld"
+msgstr "%ld av %ld"
+
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-extensions/nautilus-file-operations.c:385
 msgid "From:"
@@ -6705,7 +6722,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
-#: src/nautilus-sidebar.c:482
+#: src/nautilus-sidebar.c:479
 msgid "Reset Background"
 msgstr "Återställ bakgrund"
 
@@ -8144,7 +8161,7 @@ msgstr ""
 "Var vänlig och besök http://www.eazel.com/feedback.html för att komma med "
 "kommentarer, förslag och annan feedback."
 
-#: src/nautilus-sidebar.c:655
+#: src/nautilus-sidebar.c:652
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -8152,11 +8169,11 @@ msgstr ""
 "Du kan inte tilldela mer än en anpassad ikon åt gången! Var vänlig och dra "
 "endast en bild för att ställa in en anpassad ikon."
 
-#: src/nautilus-sidebar.c:657
+#: src/nautilus-sidebar.c:654
 msgid "More Than One Image"
 msgstr "Fler än en bild"
 
-#: src/nautilus-sidebar.c:676
+#: src/nautilus-sidebar.c:673
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -8164,11 +8181,11 @@ msgstr ""
 "Filen som du släppte är inte lokal. Du kan endast använda lokala bilder som "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:678
+#: src/nautilus-sidebar.c:675
 msgid "Local Images Only"
 msgstr "Endast lokala bilder"
 
-#: src/nautilus-sidebar.c:683
+#: src/nautilus-sidebar.c:680
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -8176,17 +8193,17 @@ msgstr ""
 "Filen som du släppte är inte en bild. Du kan endast använda lokala bilder "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:685
+#: src/nautilus-sidebar.c:682
 msgid "Images Only"
 msgstr "Endast bilder"
 
-#: src/nautilus-sidebar.c:1237
+#: src/nautilus-sidebar.c:1222
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1271
+#: src/nautilus-sidebar.c:1256
 msgid "Open with..."
 msgstr "Öppna med..."
 
@@ -8285,14 +8302,6 @@ msgstr "Ingen beskrivning är tillgänglig för temat \"%s\""
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Förhandsversion %s: %s"
-
-#. The copyright character in here is correct for
-#. * Latin-1 encoding, but not for UTF-8, so we have
-#. * to change it when we upgrade to GTK 2.0.
-#.
-#: src/nautilus-window-manage-views.c:233 src/nautilus-window-menus.c:553
-msgid "Nautilus"
-msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:639
 #, c-format
