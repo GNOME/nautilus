@@ -989,7 +989,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				   editable_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0 + text_back_padding_y*2, gc);
+				   text_rect.y0 + text_back_padding_y, gc);
 	}
 
 	if (have_additional) {
@@ -1001,7 +1001,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				   additional_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0 + editable_height + LABEL_LINE_SPACING + text_back_padding_y*2, gc);
+				   text_rect.y0 + editable_height + LABEL_LINE_SPACING + text_back_padding_y, gc);
 	}
 
 	if (item->details->is_highlighted_as_keyboard_focus) {
