@@ -1,8 +1,10 @@
 NULL =
 
 CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"
+	-DPREFIX=\"$(prefix)\" 			\
+	-DG_LOG_DOMAIN=\"Nautilus-Services\"	\
+	-DSTANDALONE				\
+	$(NULL)
 
 INCLUDES = \
 	-I$(top_srcdir)						\
@@ -17,7 +19,7 @@ INCLUDES = \
 	$(WERROR)						\
 	$(NULL)
 
-noinst_LIBRARIES = libinstall.a
+noinst_LIBRARIES = libinstall.a libinstall_corba.a
 
 libinstall_a_SOURCES =		        	\
 	eazel-install-types.h	 		\
@@ -32,5 +34,32 @@ libinstall_a_SOURCES =		        	\
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.h	\
 	eazel-install-xml-package-list.c	\
+	eazel-install-object.c			\
 	$(NULL)
 
+## CORBA magic
+
+oafdir = $(datadir)/oaf
+oaf_DATA = trilobite-eazel-install-service.oafinfo
+
+CORBA_GENERATED =				\
+	trilobite-eazel-install-common.c	\
+	trilobite-eazel-install-skels.c		\
+	trilobite-eazel-install-stubs.c		\
+	$(NULL)
+
+$(CORBA_GENERATED): trilobite-eazel-install.h
+
+IDLDIR = $(top_srcdir)/components/services/install/idl
+IDL = $(IDLDIR)/trilobite-eazel-install.idl
+
+trilobite-eazel-install.h: $(IDL)
+	$(prefix)/bin/orbit-idl -I $(IDLDIR)  -I${datadir}/idl $(IDL)
+
+eazel-install-object.c : trilobite-eazel-install.h
+
+CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h
+
+libinstall_corba_a_SOURCES = 		\
+	$(CORBA_GENERATED)		\
+	$(NULL)

@@ -1,0 +1,16 @@
+#include <Bonobo.idl>
+
+module Trilobite {
+	module Eazel {
+
+		interface InstallCallback {
+			oneway void download_progress (in string file, in long amount, in long total);
+			oneway void install_progress (in string name, in long amount, in long total);
+			void done ();
+		};
+
+		interface Install : Bonobo::Unknown {			
+			oneway void new_packages (in InstallCallback cb);
+		};
+	};
+};

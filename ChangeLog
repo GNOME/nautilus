@@ -1,3 +1,37 @@
+2000-05-25  Eskil Heyn Olsen  <set EMAIL_ADDRESS environment variable>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-alt-install.c:
+	Small program to test the gtk+ version of the installer.
+	
+	(set_parameters_from_command_line), (main):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/Makefile.am:	
+	* components/services/install/lib/eazel-install-object.c:
+	(impl_Trilobite_Eazel_Install_new_packages),
+	(trilobite_eazel_install_get_epv),
+	(trilobite_eazel_install_destroy),
+	(trilobite_eazel_install_set_arg),
+	(trilobite_eazel_install_class_initialize),
+	(trilobite_eazel_install_create_corba_object),
+	(trilobite_eazel_install_initialize),
+	(trilobite_eazel_install_get_type), (trilobite_eazel_install_new),
+	(trilobite_eazel_install_new_with_config),
+	(create_temporary_directory), (fetch_remote_package_list),
+	(trilobite_eazel_install_new_packages):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-public.h:
+	Created a gtk+ object for the installer. Will be needed for the ui
+	object to do callbacks for the progress bars
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(xml_doc_sanity_checks), (init_default_install_configuration),
+	(init_default_transfer_configuration):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_local_xml_package_list):
+	Removed various g_errors and g_asserts and replaced them
+	with some sort of return code (boolean or NULL)
+	
 2000-05-25  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-app.c: (display_caveat): Added a missing space.

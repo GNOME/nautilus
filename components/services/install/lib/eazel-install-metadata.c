@@ -30,7 +30,7 @@
 
 static void create_default_metadata (const char* config_file);
 static gboolean create_default_configuration_metafile (const char* target_file);
-static void xml_doc_sanity_checks (xmlDocPtr doc);
+static gboolean xml_doc_sanity_checks (xmlDocPtr doc);
 static URLType get_urltype_from_string (char* tmpbuf);
 static gboolean get_boolean_value_from_string (char* tmpbuf);
 
@@ -92,28 +92,32 @@ create_default_configuration_metafile (const char* target_file) {
 
 } /* end create_default_configuration_metafile */
 
-static void
+static gboolean
 xml_doc_sanity_checks (xmlDocPtr doc) {
 
 	xmlNodePtr base;
 
 	if (doc == NULL) {
 		xmlFreeDoc (doc);
-		g_error (_("*** Unable to open config file! ***\n"));
+		g_warning (_("*** Unable to open config file! ***\n"));
+		return FALSE;
 	}
 
 	base = doc->root;
 	if (base == NULL) {
 		xmlFreeDoc (doc);
-		g_error (_("*** The config file contains no data! ***\n"));
+		g_warning (_("*** The config file contains no data! ***\n"));
+		return FALSE;
 	}
 	
 	if (g_strcasecmp (base->name, "EAZEL_INSTALLER")) {
 		g_print (_("*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"));
 		xmlFreeDoc (doc);
-		g_error (_("*** Bailing from xmlparse! ***\n"));
+		g_warning (_("*** Bailing from xmlparse! ***\n"));
+		return FALSE;
 	}
 
+	return TRUE;
 } /* end xml_doc_sanity_checks */
 
 static URLType
@@ -158,13 +162,17 @@ init_default_install_configuration (const char* config_file) {
 	xmlNodePtr base;
 	char* tmpbuf;
 
+	g_return_val_if_fail (config_file != NULL, NULL);
+
 	if (!g_file_exists (config_file)) {
 		create_default_metadata (config_file);
 	}
 
 	doc = xmlParseFile (config_file);
 
-	xml_doc_sanity_checks (doc);
+	if (xml_doc_sanity_checks (doc)==FALSE) {
+		return NULL;
+	}
 	
 	base = doc->root;
 
@@ -215,9 +223,13 @@ init_default_transfer_configuration (const char* config_file) {
 	xmlDocPtr doc;
 	xmlNodePtr base;
 
+	g_return_val_if_fail (config_file != NULL, NULL);
+
 	doc = xmlParseFile (config_file);
 
-	xml_doc_sanity_checks (doc);
+	if (xml_doc_sanity_checks (doc)==FALSE) {
+		return NULL;
+	}
 	
 	base = doc->root;
 

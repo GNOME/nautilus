@@ -116,28 +116,31 @@ parse_local_xml_package_list (const char* pkg_list_file) {
 	doc = xmlParseFile (pkg_list_file);
 	
 	if (doc == NULL) {
-		fprintf (stderr, "***Unable to open pkg list file!***\n");
+		fprintf (stderr, "***Unable to open pkg list file %s\n", pkg_list_file);
 		xmlFreeDoc (doc);
-		g_assert (doc != NULL);
+		return NULL;
 	}
 
 	base = doc->root;
 	if (base == NULL) {
 		xmlFreeDoc (doc);
-		g_error (_("*** The pkg list file contains no data! ***\n"));
+		g_warning (_("*** The pkg list file contains no data! ***\n"));
+		return NULL;
 	}
 	
 	if (g_strcasecmp (base->name, "CATEGORIES")) {
 		g_print (_("*** Cannot find the CATEGORIES xmlnode! ***\n"));
 		xmlFreeDoc (doc);
-		g_error (_("*** Bailing from categories parse! ***\n"));
+		g_warning (_("*** Bailing from categories parse! ***\n"));
+		return NULL;
 	}
 	
 	category = doc->root->childs;
 	if(category == NULL) {
 		g_print (_("*** No Categories! ***\n"));
 		xmlFreeDoc (doc);
-		g_error (_("*** Bailing from category parse! ***\n"));
+		g_warning (_("*** Bailing from category parse! ***\n"));
+		return NULL;
 	}
 	
 	while (category) {
