@@ -1,3 +1,21 @@
+2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4145, Music view fails if sound device in use
+	Fixed bug, 4903, slider state bleeds between music views
+	
+	Changed the way that the view stects availability of sound
+	hardware.  We now use a more just in time approach. If the
+	sound hardware is unavailable, a dialog is displayed with
+	a warning and some info about the problem. The downside
+	to this is that the controls always appear active.  I think
+	this is a good tradeoff. It avoids having the controls inactive
+	when the sound hardware is available, as in the case of bug
+	4145.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (get_song_text),
+	(play_current_file), (add_play_controls):
+
 2000-12-12  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

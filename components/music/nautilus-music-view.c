@@ -85,7 +85,6 @@ struct _NautilusMusicViewDetails {
 	int current_duration;
 		
 	gboolean slider_dragging;
-	gboolean sound_enabled;
 	
 	GtkVBox   *album_container;
 	GtkWidget *album_title;
@@ -247,8 +246,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 			    music_view_background_appearance_changed_callback, 
 			    music_view);
 
-	music_view->details->sound_enabled = nautilus_sound_can_play_sound ();
-	
 	/* allocate a vbox to contain all of the views */	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 8));
 	gtk_container_set_border_width (GTK_CONTAINER (music_view->details->album_container), 4);
@@ -389,7 +386,6 @@ get_song_text (NautilusMusicView *music_view, int row)
 	} else {
 		/* Ignore year if string is NULL or empty */
 		if (year != NULL && strlen (year) > 0) {
-			g_message ("%s %d", year, strlen (year));
                         song_text = g_strdup_printf ("%s (%s)", song_name, year);
                 } else {
                         song_text = g_strdup (song_name);
@@ -1049,7 +1045,13 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         GnomeVFSFileInfo file_info;
 	int length;
 
-	if (!music_view->details->sound_enabled) {
+	if (!nautilus_sound_can_play_sound ()) {
+		nautilus_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
+					 "Either another program is using or blocking the soundcard "
+					 "or your soundcard is not configured properly. "),
+				         _("Unable to Play File"),
+					GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->parent))));
+		
 		return;	
 	}
        
@@ -1328,7 +1330,7 @@ add_play_controls (NautilusMusicView *music_view)
 	GtkWidget *table;
 	GtkWidget *box; 
 	GtkWidget *vbox, *hbox2;
-	GtkWidget *button, *label;
+	GtkWidget *button;
 	GtkTooltips *tooltips;
 	
 	tooltips = gtk_tooltips_new ();
@@ -1407,7 +1409,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Previous"), NULL);
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
-	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	gtk_widget_set_sensitive (button, TRUE);
 	
 	gtk_table_attach (GTK_TABLE (table), button, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
@@ -1422,7 +1424,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Play"), NULL);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	gtk_widget_set_sensitive (button, TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE (table), button, 1, 2, 1, 2, 0, 0, 0, 0);
@@ -1437,7 +1439,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Pause"), NULL);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	gtk_widget_set_sensitive (button, TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC(pause_button_callback), music_view);
@@ -1451,7 +1453,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Stop"), NULL);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	gtk_widget_set_sensitive (button, TRUE);
 
 	gtk_signal_connect(GTK_OBJECT (button), "clicked",
                            GTK_SIGNAL_FUNC (stop_button_callback), music_view);
@@ -1465,7 +1467,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Next"), NULL);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	gtk_widget_set_sensitive (button, TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
@@ -1473,7 +1475,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (button);
 
 	/* display the "cant play message if necessary */
-	
+#if 0	
 	if (!music_view->details->sound_enabled) {
 		label = nautilus_label_new (_("Sound hardware missing or busy!"));
                 /* FIXME: Hard-coded font size. */
@@ -1482,7 +1484,7 @@ add_play_controls (NautilusMusicView *music_view)
 		gtk_widget_show (label);
 		gtk_table_attach (GTK_TABLE(table), label, 0, 5, 3, 4, 0, 0, 0, 0);
 	}
-	
+#endif	
 	gtk_widget_show (table);
 }
 
