@@ -98,6 +98,31 @@ static void       maintenance_button_cb                (GtkWidget               
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusChangePasswordView, nautilus_change_password_view, GTK_TYPE_EVENT_BOX)
 
+
+static char *
+user_logged_in (NautilusChangePasswordView *view)
+{
+	CORBA_Environment ev;
+	EazelProxy_User *user;
+	char *username;
+
+	if (view->details->user_control == CORBA_OBJECT_NIL) {
+		return NULL;
+	}
+
+	CORBA_exception_init (&ev);
+	user = EazelProxy_UserControl_get_default_user (view->details->user_control, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		username = NULL;
+	} else {
+		username = g_strdup (user->user_name);
+		CORBA_free (user);
+	}
+	CORBA_exception_free (&ev);
+
+	return username;
+}
+
 static void
 generate_change_password_form (NautilusChangePasswordView	*view) 
 {
@@ -108,6 +133,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	GtkWidget	*maintenance_button;
 	GtkWidget	*maintenance_label;
 	GtkWidget	*title;
+	char		*username;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -115,7 +141,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* Setup the title */
-	title = create_services_title_widget ("Please Sign in!");
+	title = create_services_title_widget (_("Change your Eazel password..."));
 
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
@@ -129,7 +155,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
 
 	/* username */
-	temp_widget = nautilus_label_new ("User Name: ");
+	temp_widget = nautilus_label_new (_("User Name: "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 
 	gtk_table_attach (table, temp_widget, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 2, 2);
@@ -139,8 +165,16 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_table_attach (table, view->details->account_name, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
 	gtk_widget_show (view->details->account_name);
 
+	username = user_logged_in (view);
+	if (username != NULL) {
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_name), username);
+		gtk_entry_set_editable (GTK_ENTRY (view->details->account_name), FALSE);
+		gtk_widget_set_sensitive (view->details->account_name, FALSE);
+		g_free (username);
+	}
+
 	/* old password */
-	temp_widget = nautilus_label_new ("Current password: ");
+	temp_widget = nautilus_label_new (_("Current password: "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
@@ -151,7 +185,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->account_old_password);
 
 	/* new password */
-	temp_widget = nautilus_label_new ("New password: ");
+	temp_widget = nautilus_label_new (_("New password: "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 4, 5, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
@@ -162,7 +196,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->account_new_password);
 
 	/* repeat password */
-	temp_widget = nautilus_label_new ("New password (again): ");
+	temp_widget = nautilus_label_new (_("New password (again): "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 6, 7, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
@@ -185,7 +219,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	/* allocate the command buttons - first the change_password button */
 
 	view->details->change_password_button = gtk_button_new ();
-	change_password_label = nautilus_label_new (" Change my password! ");
+	change_password_label = nautilus_label_new (_(" Change my password! "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (change_password_label), 12);
 	gtk_widget_show (change_password_label);
 	gtk_container_add (GTK_CONTAINER (view->details->change_password_button), change_password_label);
@@ -204,7 +238,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
         /* now allocate the account maintenance button */
 
         maintenance_button = gtk_button_new ();
-        maintenance_label = nautilus_label_new ("  I need some help!  ");
+        maintenance_label = nautilus_label_new (_("  I need some help!  "));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (maintenance_label), 12);
         gtk_widget_show (maintenance_label);
         gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);

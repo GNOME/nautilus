@@ -1,3 +1,15 @@
+2000-10-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (user_logged_in), (generate_change_password_form):
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.oafinfo:
+
+	Fill in the username automatically if you're already logged in.
+	Make the prompts more i18n'able.  Change title from "Log in" to
+	"Change password".  Fix oafinfo typo that caused the change-pw
+	view to never get displayed.
+	
 2000-10-18  Darin Adler  <darin@eazel.com>
 
 	Some Music View fixes. Andy asked me to work on this.
