@@ -668,18 +668,17 @@ global_preferences_register_speed_tradeoff_with_defaults (const char		     *name
 
 /* These three callbacks should go away in the future when we can handle system wide prefs */
 static void
-use_proxy_changed (gpointer user_data)
-{
-	gboolean use_proxy;
-	
-	use_proxy = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, FALSE);
-}
-
-static void
 proxy_changed (gpointer user_data)
 {
 	char *proxy, *port, *new_proxy;
-	
+	gboolean use_proxy;
+
+	/* Don't write to the system preference if use_proxy is FALSE */
+	use_proxy = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, FALSE);
+	if (!use_proxy) {
+		return;
+	}
+
 	proxy = nautilus_preferences_get (NAUTILUS_PREFERENCES_HTTP_PROXY, "");
 	port = nautilus_preferences_get (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT, "");
 
@@ -693,12 +692,34 @@ proxy_changed (gpointer user_data)
 }
 
 static void
+use_proxy_changed (gpointer user_data)
+{
+	gboolean use_proxy;
+	GConfClient *gconf_client;
+
+	use_proxy = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, FALSE);
+	gconf_client = gconf_client_get_default ();
+
+	if (gconf_client != NULL) {
+		use_proxy = gconf_client_set_bool (gconf_client, USE_PROXY_KEY, use_proxy, NULL);
+	}
+
+	if (use_proxy) {
+		proxy_changed (NULL);
+	} else {
+		/* Unset the system key */		
+		if (gconf_client != NULL) {			
+			gconf_client_unset (gconf_client, PROXY_KEY, NULL);
+		}
+	}
+}
+
+static void
 register_proxy_preferences (void)
 {
 	gboolean use_proxy;
 	char *proxy_string, *port, *proxy;
 	GConfClient *gconf_client;
-  	GError *error;
 	
 	use_proxy = FALSE;
 	proxy = NULL;
@@ -708,9 +729,8 @@ register_proxy_preferences (void)
 	gconf_client = gconf_client_get_default ();
 	if (gconf_client != NULL) {
 		/* Get system level proxy values from gconf */
-		error = NULL;
-		use_proxy = gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error);
-		proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
+		use_proxy = gconf_client_get_bool (gconf_client, USE_PROXY_KEY, NULL);
+		proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, NULL);
 		if (proxy_string != NULL) {			
 			port = strchr (proxy_string, ':');
 			if (port != NULL) {
@@ -727,7 +747,7 @@ register_proxy_preferences (void)
 		proxy = g_strdup ("");
 	}
 	if (port == NULL) {
-		port = "";
+		port = "8080";
 	}
 
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, use_proxy);

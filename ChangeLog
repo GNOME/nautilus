@@ -1,3 +1,13 @@
+2000-10-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3489, HTTP proxy field gets set, ignore "Use" checkbox
+	Fixed bug 3490, HTTP proxy should default to 8080
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(proxy_changed), (use_proxy_changed), (register_proxy_preferences):
+	Use better logic to set/unset variables.
+	Add a default proxy port of 8080
+
 2000-10-06  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
