@@ -347,7 +347,7 @@ gloss_term_append (Context *context,
 
 		if (temp_list != NULL) {
 			temp_glossentry = g_strdup_printf ("%s", (char *)temp_list->data);
-		}
+		} else { return; }
 		
 		/* check to see if glossary_data hash exists - if not create it */
 		if (context->glossary_data == NULL) {
