@@ -236,6 +236,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget		*temp_hbox;
 	GtkWidget		*temp_vbox;
 	GtkWidget		*temp_label;
+	GtkWidget		*separator;
 
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
@@ -301,6 +302,11 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->news_icon_name = eazel_news_node->icon;
 		view->details->news_date = eazel_news_node->date;
 		view->details->news_description_body = g_strdup_printf ("- %s", eazel_news_node->message);
+		if (view->details->current_news_row > 1) {
+			separator = gtk_hseparator_new ();
+			gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 4);
+			gtk_widget_show (separator);
+		}
 		generate_eazel_news_entry_row (view, view->details->current_news_row);
 
 		g_free (eazel_news_node);
@@ -366,6 +372,11 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->services_goto_label = g_strdup (_(GOTO_BUTTON_LABEL));
 		view->details->services_button_enabled = service_node->enabled;
 		view->details->services_redirects[view->details->current_service_row - 1] = service_node->uri;
+		if (view->details->current_service_row > 1) {
+			separator = gtk_hseparator_new ();
+			gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 4);
+			gtk_widget_show (separator);
+		}
 		generate_service_entry_row (view, view->details->current_service_row);
 
 		g_free (service_node);
@@ -473,6 +484,11 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->update_softcat_goto_label = g_strdup (_(SOFTCAT_GOTO_BUTTON_LABEL));
 		view->details->update_redirects[view->details->current_update_row - 1] = update_news_node->uri;
 		view->details->update_softcat_redirects[view->details->current_update_row - 1] = update_news_node->softcat_uri;
+		if (view->details->current_update_row > 1) {
+			separator = gtk_hseparator_new ();
+			gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 4);
+			gtk_widget_show (separator);
+		}
 		generate_update_news_entry_row (view, view->details->current_update_row);
 
 		g_free (update_news_node);
@@ -506,7 +522,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 
 	cbdata = g_new0 (ServicesButtonCallbackData, 1);
 
-	/* Generate first column with service icon */
+	/* Generate first box with service icon */
 	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->services_icon_container);
 	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
@@ -515,7 +531,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_icon_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->services_row), view->details->services_icon_container, FALSE, FALSE, 2);
 
-	/* Generate second Column with service title and summary */
+	/* Generate second box with service title and summary */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (temp_vbox);
 	/* Header */
@@ -547,12 +563,16 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (view->details->services_row), temp_vbox, FALSE, FALSE, 0);
 
-	/* Add the redirect button to the third column */
+	/* Add the redirect button to the third box */
+
+	temp_vbox = gtk_vbox_new (TRUE, 0);
+	gtk_widget_show (temp_vbox);
+
 	view->details->services_button_container = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (view->details->services_button_container);
 	view->details->services_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->services_goto_button);
-	gtk_widget_set_usize (view->details->services_goto_button, 80, 15);
+	gtk_widget_set_usize (view->details->services_goto_button, 80, -1);
 	view->details->services_goto_label_widget = gtk_label_new (view->details->services_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->services_goto_label_widget, font);
@@ -566,8 +586,9 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
-
-	gtk_box_pack_end (GTK_BOX (view->details->services_row), view->details->services_button_container, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->services_button_container, FALSE, FALSE, 2);
+	
+	gtk_box_pack_end (GTK_BOX (view->details->services_row), temp_vbox, FALSE, FALSE, 2);
 
 }
 
@@ -575,7 +596,7 @@ static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
 
-	/* Generate first bos with icon */
+	/* Generate first box with icon */
 	view->details->news_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->news_icon_container);
 	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
@@ -613,8 +634,10 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	GtkWidget			*temp_hbox;
 	GdkFont				*font;
 	ServicesButtonCallbackData	*cbdata;
+	ServicesButtonCallbackData	*cbdata_2;
 
 	cbdata = g_new0 (ServicesButtonCallbackData, 1);
+	cbdata_2 = g_new0 (ServicesButtonCallbackData, 1);
 
 	/* Generate first box with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
@@ -674,12 +697,35 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 
 	gtk_box_pack_start (GTK_BOX (view->details->updates_row), temp_vbox, FALSE, FALSE, 0);
 
-	/* Add the redirect button to the third column */
+	/* Add the redirect button and softcat button to the third box */
+	temp_vbox = gtk_vbox_new (TRUE, 0);
+	gtk_widget_show (temp_vbox);
+
+	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
+	gtk_widget_show (view->details->update_button_container);
+	view->details->update_softcat_goto_button = gtk_button_new ();
+	gtk_widget_show (view->details->update_softcat_goto_button);
+	gtk_widget_set_usize (view->details->update_softcat_goto_button, 80, -1);
+	view->details->update_softcat_goto_label_widget = gtk_label_new (view->details->update_softcat_goto_label);
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (view->details->update_softcat_goto_label_widget, font);
+	gdk_font_unref (font);
+	gtk_widget_show (view->details->update_softcat_goto_label_widget);
+	g_free (view->details->update_softcat_goto_label);
+	view->details->update_softcat_goto_label = NULL;
+
+	gtk_container_add (GTK_CONTAINER (view->details->update_softcat_goto_button), view->details->update_softcat_goto_label_widget);
+	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_softcat_goto_button, FALSE, FALSE, 13);
+	cbdata->nautilus_view = view->details->nautilus_view;
+	cbdata->uri = view->details->update_softcat_redirects[view->details->current_update_row - 1];
+	gtk_signal_connect (GTK_OBJECT (view->details->update_softcat_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->update_button_container, FALSE, FALSE, 0);
+
 	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (view->details->update_button_container);
 	view->details->update_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->update_goto_button);
-	gtk_widget_set_usize (view->details->update_goto_button, 80, 15);
+	gtk_widget_set_usize (view->details->update_goto_button, 80, -1);
 	view->details->update_goto_label_widget = gtk_label_new (view->details->update_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->update_goto_label_widget, font);
@@ -690,10 +736,12 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	
 	gtk_container_add (GTK_CONTAINER (view->details->update_goto_button), view->details->update_goto_label_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_goto_button, FALSE, FALSE, 13);
-	cbdata->nautilus_view = view->details->nautilus_view;
-	cbdata->uri = view->details->update_redirects[view->details->current_update_row - 1];
-	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
-	gtk_box_pack_end (GTK_BOX (view->details->updates_row), view->details->update_button_container, FALSE, FALSE, 0);
+	cbdata_2->nautilus_view = view->details->nautilus_view;
+	cbdata_2->uri = view->details->update_redirects[view->details->current_update_row - 1];
+	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata_2);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->update_button_container, FALSE, FALSE, 0);
+
+	gtk_box_pack_end (GTK_BOX (view->details->updates_row), temp_vbox, FALSE, FALSE, 0);
 
 }
 
