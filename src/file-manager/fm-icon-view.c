@@ -60,6 +60,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
@@ -1817,18 +1818,30 @@ icon_container_preview_callback (NautilusIconContainer *container,
 {
 	int result;
 	char *mime_type, *file_name, *message;
-
+	static int sound_available = 0;
+	
 	result = 0;
 
-	/* preview files based on the mime_type. */
-	/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
-	mime_type = nautilus_file_get_mime_type(file);
-	if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
-		result = 1;
-		preview_sound (file, start_flag);
-	}	
-	g_free (mime_type);
-
+	/* perform one-time check to see if sound is available.  If not, don't try to preview */
+	if (sound_available == 0) {
+		sound_available = open ("/dev/dsp", O_WRONLY, 0644);
+		if (sound_available > 0) {
+			close (sound_available);
+		}
+	}
+	
+	if (sound_available > 0) {
+	
+		/* preview files based on the mime_type. */
+		/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
+		mime_type = nautilus_file_get_mime_type(file);
+		if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
+			result = 1;
+			preview_sound (file, start_flag);
+		}	
+		g_free (mime_type);
+	}
+	
 	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
 		if (start_flag) {

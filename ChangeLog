@@ -1,5 +1,12 @@
 2000-09-29  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+	finished off bug 3271, by disabling sound previewing if we can't
+	open the sound device.
+	
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/music/nautilus-music-view.c: (play_current_file),
 	(add_play_controls):
 	fixed bug 3271, music view doesn't check if sound hardware is
