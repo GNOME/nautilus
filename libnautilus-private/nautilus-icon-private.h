@@ -190,6 +190,6 @@ char *        nautilus_icon_container_get_icon_uri                (NautilusIconC
 								   NautilusIcon          *icon);
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
+void          nautilus_icon_container_flush_typeselect_state      (NautilusIconContainer *container);
 
-void	      nautilus_icon_container_flush_typeselect_state	  (NautilusIconContainer *container);
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

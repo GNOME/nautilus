@@ -29,7 +29,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <gtk/gtkobject.h>
-#include <libart_lgpl/art_rect.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -94,9 +93,10 @@ guint                 nautilus_get_icon_size_for_zoom_level              (Nautil
 /* Choose the appropriate icon, but don't render it yet. */
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
 									  const char		*modifier);
-NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
-NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name,
+									  const char            *embedded_text);
+NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -109,16 +109,7 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 									  guint                  nominal_size_in_pixels_x,
 									  guint                  nominal_size_in_pixels_y,
 									  guint                  maximum_size_in_pixels_x,
-									  guint                  maximum_size_in_pixels_y,
-									  ArtIRect              *embedded_text_rectangle);
-
-/* Superimposing embedded text on an icon. */
-GdkPixbuf *           nautilus_icon_factory_embed_text                   (GdkPixbuf             *pixbuf_without_text,
-									  const ArtIRect        *embedded_text_rectangle,
-									  const char            *text);
-GdkPixbuf *           nautilus_icon_factory_embed_file_text              (GdkPixbuf             *pixbuf_without_text,
-									  const ArtIRect        *embedded_text_rectangle,
-									  NautilusFile          *file);
+									  guint                  maximum_size_in_pixels_y);
 
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.

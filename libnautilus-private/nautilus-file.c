@@ -1752,12 +1752,44 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 gboolean
 nautilus_file_is_directory (NautilusFile *file)
 {
-	if (file == NULL)
+	if (file == NULL) {
 		return FALSE;
+	}
 		
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_DIRECTORY;
+}
+
+/**
+ * nautilus_file_contains_text
+ * 
+ * Check if this file contains text.
+ * This is private and is used to decide whether or not to read the top left text.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: TRUE if @file has a text MIME type or is a regular file with unknown MIME type.
+ * 
+ **/
+gboolean
+nautilus_file_contains_text (NautilusFile *file)
+{
+	char *mime_type;
+	gboolean contains_text;
+
+	if (file == NULL) {
+		return FALSE;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	mime_type = nautilus_file_get_mime_type (file);
+	contains_text = nautilus_str_has_prefix (mime_type, "text/")
+		|| (mime_type == NULL && nautilus_file_get_file_type (file)
+		    == GNOME_VFS_FILE_TYPE_REGULAR);
+	g_free (mime_type);
+
+	return contains_text;
 }
 
 /**
@@ -1802,10 +1834,16 @@ nautilus_file_get_top_left_text (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	/* Show "--" in the file until we read the contents in. */
-	return file->details->got_top_left_text
-		? g_strdup (file->details->top_left_text)
-		: g_strdup (_(" --"));
+	/* Show " --" in the file until we read the contents in. */
+	if (!file->details->got_top_left_text) {
+		if (nautilus_file_contains_text (file)) {
+			return g_strdup (_(" --"));
+		}
+		return NULL;
+	}
+
+	/* Show what we read in. */
+	return g_strdup (file->details->top_left_text);
 }
 
 /**

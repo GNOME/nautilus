@@ -610,7 +610,8 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 }
 
 static GtkWidget *
-create_image_widget_for_emblem (const char *emblem_name) {
+create_image_widget_for_emblem (const char *emblem_name)
+{
 	NautilusScalableIcon *icon;
 	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap;
@@ -618,12 +619,12 @@ create_image_widget_for_emblem (const char *emblem_name) {
 	GtkWidget *image_widget;
 
 	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
-							    NAUTILUS_ICON_SIZE_STANDARD,
-							    NAUTILUS_ICON_SIZE_STANDARD,
-							    NAUTILUS_ICON_SIZE_STANDARD,
-							    NAUTILUS_ICON_SIZE_STANDARD,
-							    NULL);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+		(icon,
+		 NAUTILUS_ICON_SIZE_STANDARD,
+		 NAUTILUS_ICON_SIZE_STANDARD,
+		 NAUTILUS_ICON_SIZE_STANDARD,
+		 NAUTILUS_ICON_SIZE_STANDARD);
 	nautilus_scalable_icon_unref (icon);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	gdk_pixbuf_unref (pixbuf);

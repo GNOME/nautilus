@@ -717,21 +717,104 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 }
 
 static void
+handle_local_move (NautilusIconContainer *container,
+		   double world_x, double world_y)
+{
+	GList *moved_icons, *p;
+	DndSelectionItem *item;
+	NautilusIcon *icon;
+
+	if (container->details->auto_layout) {
+		g_message ("time to do that auto_layout thing");
+	}
+
+	/* handle the simple case -- just change item locations */
+	moved_icons = NULL;
+	for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
+		item = p->data;
+		
+		icon = nautilus_icon_container_get_icon_by_uri
+			(container, item->uri);
+		if (item->got_icon_position) {
+			nautilus_icon_container_move_icon
+				(container, icon,
+				 world_x + item->icon_x, world_y + item->icon_y,
+				 icon->scale_x, icon->scale_y,
+				 TRUE);
+		}
+		moved_icons = g_list_prepend (moved_icons, icon);
+	}		
+	nautilus_icon_container_select_list_unselect_others
+		(container, moved_icons);
+	g_list_free (moved_icons);
+}
+
+static void
+handle_nonlocal_move (NautilusIconContainer *container,
+		      GdkDragContext *context,
+		      int x, int y,
+		      NautilusIcon *drop_target_icon)
+{
+	GList *source_uris, *p;
+	char *target_uri;
+	GdkPoint *source_item_locations;
+	int i;
+
+	if (container->details->dnd_info->selection_list == NULL) {
+		return;
+	}
+	
+	source_uris = NULL;
+	for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
+		/* do a shallow copy of all the uri strings of the copied files */
+		source_uris = g_list_prepend (source_uris, ((DndSelectionItem *)p->data)->uri);
+	}
+	source_uris = g_list_reverse (source_uris);
+	
+	source_item_locations = NULL;
+	if (drop_target_icon != NULL) {
+		/* Drop onto a container. Pass along the item points to allow placing
+		 * the items in their same relative positions in the new container.
+		 */
+		source_item_locations = g_new (GdkPoint, g_list_length (source_uris));
+		for (i = 0, p = container->details->dnd_info->selection_list;
+		     p != NULL; i++, p = p->next) {
+			/* FIXME bugzilla.eazel.com 626:
+			 * subtract the original click coordinates from each point here
+			 */
+			source_item_locations[i].x = ((DndSelectionItem *)p->data)->icon_x;
+			source_item_locations[i].y = ((DndSelectionItem *)p->data)->icon_y;
+		}
+	}
+	
+	/* get the URI of either the item or the container we hit */
+	if (drop_target_icon != NULL) {
+		target_uri = nautilus_icon_container_get_icon_uri
+			(container, drop_target_icon);
+	} else {
+		target_uri = get_container_uri (container);
+	}
+	
+	/* start the copy */
+	gtk_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
+				 source_uris,
+				 source_item_locations,
+				 target_uri,
+				 context->action,
+				 x, y);
+	g_list_free (source_uris);
+	g_free (source_item_locations);
+	g_free (target_uri);
+}
+
+static void
 nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
 					       int x, int y)
 {
-	GList *p;
 	NautilusIcon *drop_target_icon;
 	gboolean local_move_only;
-	DndSelectionItem *item;
-	NautilusIcon *icon;
-	GList *source_uris;
-	char *target_uri;
 	double world_x, world_y;
-	GdkPoint *source_item_locations;
-	int index;
-	int count;
 	
 	if (container->details->dnd_info->selection_list == NULL) {
 		return;
@@ -740,7 +823,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
 
-	/* find the item we hit with our drop, if any */
+	/* Find the item we hit with our drop, if any */
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
 	if (drop_target_icon != NULL && !nautilus_icon_canvas_item_can_accept_items 
 		(container, drop_target_icon, container->details->dnd_info->selection_list)) {
@@ -760,81 +843,9 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (local_move_only) {
-		GList *icons_to_select;
-
-		icons_to_select = NULL;
-
-		/* handle the simple case -- just change item locations */
-		for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
-			item = p->data;
-			icon = nautilus_icon_container_get_icon_by_uri
-				(container, item->uri);
-
-			if (item->got_icon_position) {
-
-				nautilus_icon_container_move_icon
-					(container, icon,
-					 world_x + item->icon_x, world_y + item->icon_y,
-					 icon->scale_x, icon->scale_y,
-					 TRUE);   
-
-			}
-			icons_to_select = g_list_prepend (icons_to_select, icon);
-		}		
-		if (icons_to_select != NULL) {
-			nautilus_icon_container_select_list_unselect_others (container, 
-									     icons_to_select);
-			g_list_free (icons_to_select);
-		}
-	} else {		
-		source_uris = NULL;
-		target_uri = NULL;
-		source_item_locations = NULL;
-
-		/* get the URI of either the item or the container we hit */
-		if (drop_target_icon != NULL) {
-			target_uri = nautilus_icon_container_get_icon_uri
-				(container, drop_target_icon);
-		} else {
-			target_uri = get_container_uri (container);
-
-		}
-
-		count = 0;
-		for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
-			/* do a shallow copy of all the uri strings of the copied files */
-			source_uris = g_list_append (source_uris, ((DndSelectionItem *)p->data)->uri);
-			/* count the number of items as we go */
-			count++;
-		}
-
-		if (drop_target_icon != NULL) {
-			/* drop onto a container, pass allong the item points to allow placing
-			 * the items in their same relative positions in the new container
-			 */
-			source_item_locations = g_new (GdkPoint, count);
-			for (index = 0, p = container->details->dnd_info->selection_list; p != NULL; 
-			     index++, p = p->next) {
-				/* FIXME bugzilla.eazel.com 626:
-				 * subtract the original click coordinates from each point here
-				 */
-				source_item_locations[index].x = ((DndSelectionItem *)p->data)->icon_x;
-				source_item_locations[index].y = ((DndSelectionItem *)p->data)->icon_y;
-			}
-		}
-		
-		if (source_uris != NULL) {
-			/* start the copy */
-			gtk_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
-						 source_uris,
-						 source_item_locations,
-						 target_uri,
-						 context->action,
-						 x, y);
-			g_list_free (source_uris);
-			g_free (source_item_locations);
-		}
-		g_free (target_uri);
+		handle_local_move (container, world_x, world_y);
+	} else {
+		handle_nonlocal_move (container, context, x, y, drop_target_icon);
 	}
 
 	destroy_selection_list (container->details->dnd_info->selection_list);

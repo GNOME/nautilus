@@ -884,7 +884,6 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	}
 
 	/* Add the new callback to the list. */
-	nautilus_file_ref (file);
 	directory->details->call_when_ready_list = g_list_prepend
 		(directory->details->call_when_ready_list,
 		 g_memdup (&callback,
@@ -945,7 +944,6 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 				&callback,
 				ready_callback_key_compare);
 	if (p != NULL) {
-		nautilus_file_unref (file);
 		remove_callback_link (directory, p);
 		state_changed (directory);
 	}
@@ -959,11 +957,13 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  gpointer callback_data)
 {
 	NautilusDirectory *directory;
-	NautilusFile *count_file_copy;
+	NautilusFile *count_file;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	g_assert (directory->details->count_in_progress == handle);
+	count_file = directory->details->count_file;
+	g_assert (NAUTILUS_IS_FILE (count_file));
 
 	if (result == GNOME_VFS_OK) {
 		return;
@@ -976,19 +976,13 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 		directory->details->count_file->details->directory_count = entries_read;
 		directory->details->count_file->details->got_directory_count = TRUE;
 	}
-
-
-	count_file_copy = directory->details->count_file;
 	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
 
 	/* Send file-changed even if count failed, so interested parties can
 	 * distinguish between unknowable and not-yet-known cases.
 	 */
-	nautilus_file_changed (count_file_copy);
-
-	/* Let go of this request. */
-	nautilus_file_unref (directory->details->count_file);
+	nautilus_file_changed (count_file);
 
 	/* Start up the next one. */
 	state_changed (directory);
@@ -1041,41 +1035,58 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 void
 nautilus_async_destroying_file (NautilusFile *file)
 {
+	NautilusDirectory *directory;
 	gboolean changed;
 	GList *p, *next;
 	ReadyCallback *callback;
 	Monitor *monitor;
 
+	directory = file->details->directory;
 	changed = FALSE;
 
 	/* Check for callbacks. */
-	for (p = file->details->directory->details->call_when_ready_list; p != NULL; p = next) {
+	for (p = directory->details->call_when_ready_list; p != NULL; p = next) {
 		next = p->next;
 		callback = p->data;
 
 		if (callback->file == file) {
 			/* Client should have cancelled callback. */
 			g_warning ("destroyed file has call_when_ready pending");
-			remove_callback_link (file->details->directory, p);
+			remove_callback_link (directory, p);
 			changed = TRUE;
 		}
 	}
 
 	/* Check for monitors. */
-	for (p = file->details->directory->details->monitor_list; p != NULL; p = next) {
+	for (p = directory->details->monitor_list; p != NULL; p = next) {
 		next = p->next;
 		monitor = p->data;
 
 		if (monitor->file == file) {
 			/* Client should have removed monitor earlier. */
 			g_warning ("destroyed file still being monitored");
-			remove_monitor_link (file->details->directory, p);
+			remove_monitor_link (directory, p);
 			changed = TRUE;
 		}
 	}
 
+	/* Check if it's the file that's currently being worked on for
+	 * counts or for get_file_info. If so, make that NULL so it gets
+	 * canceled right away.
+	 */
+	if (directory->details->count_file == file) {
+		directory->details->count_file = NULL;
+		changed = TRUE;
+	}
+	if (directory->details->top_left_read_state != NULL
+	    && directory->details->top_left_read_state->file == file) {
+		directory->details->top_left_read_state->file = NULL;
+		changed = TRUE;
+	}
+
+	/* Let the directory take care of the rest. */
 	if (changed) {
-		state_changed (file->details->directory);
+		state_changed (directory);
 	}
 }
 
@@ -1096,7 +1107,7 @@ wants_directory_count (const Request *request)
 static gboolean
 lacks_top_left (NautilusFile *file)
 {
-	return !nautilus_file_is_directory (file)
+	return nautilus_file_contains_text (file)
 		&& !file->details->got_top_left_text;
 }
 
@@ -1373,16 +1384,17 @@ start_getting_directory_counts (NautilusDirectory *directory)
 	 * it's still wanted.
 	 */
 	if (directory->details->count_in_progress != NULL) {
-		g_assert (NAUTILUS_IS_FILE (directory->details->count_file));
-		g_assert (directory->details->count_file->details->directory == directory);
-		if (is_wanted (directory->details->count_file,
-			       wants_directory_count)) {
-			return;
+		if (directory->details->count_file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (directory->details->count_file));
+			g_assert (directory->details->count_file->details->directory == directory);
+			if (is_wanted (directory->details->count_file,
+				       wants_directory_count)) {
+				return;
+			}
 		}
 
 		/* The count is not wanted, so stop it. */
 		gnome_vfs_async_cancel (directory->details->count_in_progress);
-		nautilus_file_unref (directory->details->count_file);
 		directory->details->count_file = NULL;
 		directory->details->count_in_progress = NULL;
 	}
@@ -1396,7 +1408,6 @@ start_getting_directory_counts (NautilusDirectory *directory)
 	}
 
 	/* Start counting. */
-	nautilus_file_ref (file);
 	directory->details->count_file = file;
 	uri = nautilus_file_get_uri (file);
 	gnome_vfs_async_load_directory
@@ -1434,7 +1445,6 @@ top_left_read_done (NautilusDirectory *directory)
 	g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
 
 	directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
-	nautilus_file_unref (directory->details->top_left_read_state->file);
 
 	g_free (directory->details->top_left_read_state->buffer);
 	g_free (directory->details->top_left_read_state);
@@ -1563,18 +1573,19 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	 * it's still wanted.
 	 */
 	if (directory->details->top_left_read_state != NULL) {
-		g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
-		g_assert (directory->details->top_left_read_state->file->details->directory == directory);
-		if (is_wanted (directory->details->top_left_read_state->file,
-			       wants_top_left)) {
-			return;
+		if (directory->details->top_left_read_state->file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
+			g_assert (directory->details->top_left_read_state->file->details->directory == directory);
+			if (is_wanted (directory->details->top_left_read_state->file,
+				       wants_top_left)) {
+				return;
+			}
 		}
 
 		/* The top left is not wanted, so stop it. */
 		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
 		top_left_read_close (directory);
 		g_free (directory->details->top_left_read_state->buffer);
-		nautilus_file_unref (directory->details->top_left_read_state->file);
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
 	}
@@ -1588,7 +1599,6 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	}
 
 	/* Start reading. */
-	nautilus_file_ref (file);
 	uri = nautilus_file_get_uri (file);
 	directory->details->top_left_read_state = g_new0 (TopLeftTextReadState, 1);
 	directory->details->top_left_read_state->file = file;

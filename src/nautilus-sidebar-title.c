@@ -312,10 +312,12 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 		/* loop through the list of emblems, installing them in the box */
 		for (current_emblem = emblem_icons; current_emblem != NULL; current_emblem = current_emblem->next) {
 			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-				(current_emblem->data, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD, NULL);
+				(current_emblem->data,
+				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
+				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD);
 			if (emblem_pixbuf != NULL) {
-				nautilus_index_title_add_pixbuf(index_title, emblem_pixbuf);
-				gdk_pixbuf_unref(emblem_pixbuf);
+				nautilus_index_title_add_pixbuf (index_title, emblem_pixbuf);
+				gdk_pixbuf_unref (emblem_pixbuf);
 			}
 		}
 		

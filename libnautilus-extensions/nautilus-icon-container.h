@@ -41,10 +41,6 @@ typedef struct NautilusIconData NautilusIconData;
 #define NAUTILUS_IS_ICON_CONTAINER(obj) \
 	GTK_CHECK_TYPE (obj, nautilus_icon_container_get_type ())
 
-/* Maximum size (pixels) allowed for icons. */
-#define NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE 1000
-#define NAUTILUS_ICON_MAXIMUM_EMBLEM_SIZE 100
-
 #define NAUTILUS_ICON_CONTAINER_ICON_DATA(pointer) \
 	((NautilusIconData *) (pointer))
 
@@ -66,10 +62,11 @@ struct NautilusIconContainerClass {
 	
 	void         (* selection_changed) 	  (NautilusIconContainer *container);
 
-	void         (* icon_changed)             (NautilusIconContainer *container,
+	void         (* icon_position_changed)    (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   int x, int y,
-						   double scale_x, double scale_y);
+						   double scale_x,
+						   double scale_y);
 	
 	void         (* icon_text_changed)        (NautilusIconContainer *container,
 						   NautilusIconData *data,
@@ -85,12 +82,18 @@ struct NautilusIconContainerClass {
 	/* Connect to these signals to supply information about icons.
 	 * They are called as needed after the icons are inserted.
 	 */
-	GdkPixbuf  * (* get_icon_images)          (NautilusIconContainer *container,
+	void         (* get_stored_icon_position) (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   int icon_size_x,
-						   int icon_size_y,
+						   gboolean *position_stored,
+						   int *x,
+						   int *y,
+						   double *scale_x,
+						   double *scale_y);
+	NautilusScalableIcon *
+	             (* get_icon_images)          (NautilusIconContainer *container,
+						   NautilusIconData *data,
 						   const char *modifier,
-						   GList **emblem_images);
+						   GList **emblem_icons);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,
@@ -102,12 +105,12 @@ struct NautilusIconContainerClass {
 						   NautilusIconData *icon_b);
 	
 	void	     (* move_copy_items)	  (NautilusIconContainer *container,
-						   const GList 		 *item_uris,
-						   const GdkPoint 	 *relative_item_points,
-						   const char 	   	 *target_uri,
-						   int 			  copy_action,
-						   int 			  x,
-						   int 			  y);
+						   const GList *item_uris,
+						   const GdkPoint *relative_item_points,
+						   const char *target_uri,
+						   int copy_action,
+						   int x,
+						   int y);
 };
 
 /* GtkObject */
@@ -117,12 +120,6 @@ GtkWidget *nautilus_icon_container_new                     (void);
 /* adding, removing, and managing icons */
 void       nautilus_icon_container_clear                   (NautilusIconContainer *view);
 void       nautilus_icon_container_add                     (NautilusIconContainer *view,
-							    NautilusIconData      *data,
-							    int                    x,
-							    int                    y,
-							    double                 scale_x,
-							    double                 scale_y);
-void       nautilus_icon_container_add_auto                (NautilusIconContainer *view,
 							    NautilusIconData      *data);
 gboolean   nautilus_icon_container_remove                  (NautilusIconContainer *view,
 							    NautilusIconData      *data);
@@ -134,6 +131,7 @@ void       nautilus_icon_container_request_update_all      (NautilusIconContaine
 gboolean   nautilus_icon_container_is_auto_layout          (NautilusIconContainer *container);
 void       nautilus_icon_container_set_auto_layout         (NautilusIconContainer *container,
 							    gboolean               auto_layout);
+void       nautilus_icon_container_freeze_icon_positions   (NautilusIconContainer *container);
 
 /* operations on all icons */
 void       nautilus_icon_container_unselect_all            (NautilusIconContainer *view);

@@ -49,3 +49,4 @@ void          nautilus_file_emit_changed     (NautilusFile      *file);
 void          nautilus_file_mark_gone        (NautilusFile      *file);
 char *        nautilus_extract_top_left_text (const char        *text,
 					      int                length);
+gboolean      nautilus_file_contains_text    (NautilusFile      *file);

@@ -1,4 +1,107 @@
-2000-05-09  Ramiro Estrugo  <set EMAIL_ADDRESS environment variable>
+2000-05-09  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_call_when_ready_internal),
+	(nautilus_directory_cancel_callback_internal),
+	(directory_count_callback), (nautilus_async_destroying_file),
+	(start_getting_directory_counts), (top_left_read_done),
+	(start_getting_top_lefts):
+	Eliminated code that ref's files when they are the target of the
+	call_when_ready list or the current file being read for top left
+	text or the current directory being counted. Instead, cancel the
+	I/O when the file is destroyed (we already had the hook).
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(lacks_top_left), 
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text), (nautilus_file_get_top_left_text):
+	Change top left text reading to only read text files and other
+	regular files with unknown type.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	Needed a new marshal function.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(resort_and_clear), (auto_position_icon), (relayout):
+	Changed around to share more code.
+	(reload_icon_positions): Call to reload icon positions when you
+	switch from auto to manual layout.
+	(idle_handler): Get rid of relayout on idle.
+	(nautilus_icon_container_move_icon): Renamed icon_changed to
+	icon_position_changed.
+	(rubberband_select): Fixed bug where rubberband would never deselect.
+	(nautilus_icon_container_initialize_class): Add a new signal called
+	get_stored_icon_position and also renamed the icon_changed signal to
+	icon_position_changed.
+	(nautilus_icon_container_update_icon): Changed back the
+	get_icon_images interface to return NautilusScaledIcon objects
+	instead of actual pixbufs. This is made possible by the change to
+	include the embedded text as one of the parameters when creating
+	a NautilusScaledIcon.
+	(nautilus_icon_container_add): Merged the two flavors of add and
+	removed the extra parameters. Now the icon position and scale comes
+	from a callback (via signal).
+	(nautilus_icon_container_set_selection): Use a hash table (fixes
+	Bugzilla bug 613).
+	(nautilus_icon_container_select_list_unselect_others): Use a hash
+	table.
+	(nautilus_icon_container_set_auto_layout): Reload the previous
+	icon positions and "freeze" them (store them) when switching from
+	automatic layout to manual.
+	(nautilus_icon_container_freeze_icon_positions): Public function
+	to store all the icon psoitions. For use later with the dialog that
+	you get when you drag an icon.
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback): Support new interface for
+	getting the icon position. Also used setlocale so metadata always
+	uses a locale-independent format for floating point numbers.
+	(fm_icon_view_add_file), (fm_icon_view_done_adding_files):
+	New simplified interface for adding icons.
+	(auto_layout_callback), (manual_layout_callback): Fixed a bug where
+	we'd always switch to auto layout on startup. It's actually a bug
+	in Bonobo where new radio menu items get callbacks right away.
+	(icon_position_changed_callback): Used setlocale so metadata always
+	uses a locale-independent format for floating point numbers.
+	(get_icon_images_callback): Changed for new simpler embedded text
+	API. Moved the actual pixbuf stuff back into NautilusIconContainer.
+	(create_icon_container): New get_stored_icon_position callback and
+	renamed icon_position_changed callback.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move),
+	(handle_nonlocal_move),
+	(nautilus_icon_container_receive_dropped_icons):
+	Restructured the drag code a little bit to make it easy to add the
+	dialog that you get when you drag an icon within an auto-layed-out
+	window (that I will add soon).
+	
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_scalable_icon_get), (nautilus_scalable_icon_unref),
+	(nautilus_scalable_icon_hash), (nautilus_scalable_icon_equal),
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_get_emblem_icon_by_name),
+	(nautilus_icon_factory_get_emblem_icons_for_file),
+	(get_image_from_cache),
+	(nautilus_icon_factory_get_pixbuf_for_icon),
+	(nautilus_icon_factory_get_pixbuf_for_file), (embed_text),
+	(load_image_with_embedded_text):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	* src/file-manager/fm-properties-window.c:
+	(create_image_widget_for_emblem):
+	* src/nautilus-index-title.c: (nautilus_index_title_update_info):
+	Even though John talked me out of it, I talked myself back into it.
+	Redid the embedded text so it's done entirely inside the icon
+	factory. This keeps the interface simple.
+	
+	* libnautilus-extensions/nautilus-icon-private.h: Add a missing
+	newline.
+	
+2000-05-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(nautilus_mozilla_content_view_load_uri),

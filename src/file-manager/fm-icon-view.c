@@ -31,6 +31,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
+#include <locale.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -113,59 +114,56 @@ get_icon_container (FMIconView *icon_view)
 }
 
 static void
-add_icon_if_already_positioned (FMIconView *icon_view,
-				NautilusFile *file)
+get_stored_icon_position_callback (NautilusIconContainer *container,
+				   NautilusFile *file,
+				   gboolean *position_stored,
+				   int *x,
+				   int *y,
+				   double *scale_x,
+				   double *scale_y,
+				   FMIconView *icon_view)
 {
 	NautilusDirectory *directory;
 	char *position_string, *scale_string;
-	gboolean position_good, scale_good;
-	int x, y;
-	double scale_x, scale_y;
+	gboolean scale_good;
+	char *locale;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (position_stored != NULL);
+	g_assert (x != NULL);
+	g_assert (y != NULL);
+	g_assert (scale_x != NULL);
+	g_assert (scale_y != NULL);
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+
+	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = nautilus_file_get_metadata (file, 
 						      NAUTILUS_METADATA_KEY_ICON_POSITION, 
 						      "");
-	position_good = sscanf (position_string, " %d , %d %*s", &x, &y) == 2;
+	*position_stored = sscanf (position_string, " %d , %d %*s", x, y) == 2;
 	g_free (position_string);
 
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata (file,
 						   NAUTILUS_METADATA_KEY_ICON_SCALE,
 						   "1");
-	scale_good = sscanf (scale_string, " %lf %*s", &scale_x) == 1;
+	scale_good = sscanf (scale_string, " %lf %*s", scale_x) == 1;
 	if (scale_good) {
-		scale_y = scale_x;
+		*scale_y = *scale_x;
 	} else {
-		scale_good = sscanf (scale_string, " %lf %lf %*s", &scale_x, &scale_y) == 2;
+		scale_good = sscanf (scale_string, " %lf %lf %*s", scale_x, scale_y) == 2;
 		if (!scale_good) {
-			scale_x = 1.0;
-			scale_y = 1.0;
+			*scale_x = 1.0;
+			*scale_y = 1.0;
 		}
 	}
 	g_free (scale_string);
 
-	if (!position_good) {
-		nautilus_file_ref (file);
-		icon_view->details->icons_not_positioned =
-			g_list_prepend (icon_view->details->icons_not_positioned, file);
-		return;
-	}
-
-	nautilus_file_ref (file);
-	nautilus_icon_container_add (get_icon_container (icon_view),
-				     NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
-				     x, y, scale_x, scale_y);
-}
-
-static void
-add_icon_at_free_position (FMIconView *icon_view,
-			   NautilusFile *file)
-{
-	nautilus_file_ref (file);
-	nautilus_icon_container_add_auto (get_icon_container (icon_view),
-					  NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	setlocale (LC_NUMERIC, locale);
 }
 
 /**
@@ -380,22 +378,6 @@ fm_icon_view_append_background_context_menu_items (FMDirectoryView *view,
 }
 
 static void
-display_icons_not_already_positioned (FMIconView *view)
-{
-	GList *p;
-
-	/* FIXME bugzilla.eazel.com 665: 
-	 * This will block if there are many files.  
-	 */
-	for (p = view->details->icons_not_positioned; p != NULL; p = p->next) {
-		add_icon_at_free_position (view, p->data);
-	}
-
-	nautilus_file_list_free (view->details->icons_not_positioned);
-	view->details->icons_not_positioned = NULL;
-}
-
-static void
 fm_icon_view_clear (FMDirectoryView *view)
 {
 	NautilusIconContainer *icon_container;
@@ -411,7 +393,11 @@ fm_icon_view_clear (FMDirectoryView *view)
 static void
 fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
-	add_icon_if_already_positioned (FM_ICON_VIEW (view), file);
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_ref (file);
+	nautilus_icon_container_add (get_icon_container (FM_ICON_VIEW (view)),
+				     NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 }
 
 static void
@@ -432,7 +418,6 @@ fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 static void
 fm_icon_view_done_adding_files (FMDirectoryView *view)
 {
-	display_icons_not_already_positioned (FM_ICON_VIEW (view));
 }
 
 static void
@@ -645,6 +630,10 @@ auto_layout_callback (BonoboUIHandler *handler, gpointer user_data, const char *
 {
 	NautilusIconContainer *container;
 
+	if (!FM_ICON_VIEW (user_data)->details->menus_ready) {
+		return;
+	}
+
 	container = get_icon_container (FM_ICON_VIEW (user_data));
 	nautilus_icon_container_set_auto_layout (container, TRUE);
 	nautilus_directory_set_boolean_metadata
@@ -658,6 +647,10 @@ static void
 manual_layout_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 {
 	NautilusIconContainer *container;
+
+	if (!FM_ICON_VIEW (user_data)->details->menus_ready) {
+		return;
+	}
 
 	container = get_icon_container (FM_ICON_VIEW (user_data));
 	nautilus_icon_container_set_auto_layout (container, FALSE);
@@ -875,18 +868,21 @@ fm_icon_view_react_to_icon_change_idle_callback (gpointer data)
 }
 
 static void
-fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
-				    NautilusFile *file,
-				    int x, int y, double scale_x, double scale_y,
-				    FMIconView *icon_view)
+icon_position_changed_callback (NautilusIconContainer *container,
+				NautilusFile *file,
+				int x, int y, double scale_x, double scale_y,
+				FMIconView *icon_view)
 {
 	NautilusDirectory *directory;
 	char *position_string;
 	char *scale_string, *scale_string_x, *scale_string_y;
+	char *locale;
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Schedule updating menus for the next idle. Doing it directly here
 	 * noticeably slows down icon stretching.  The other work here to
@@ -932,6 +928,8 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 
 	g_free (position_string);
 	g_free (scale_string);
+
+	setlocale (LC_NUMERIC, locale);
 }
 
 
@@ -969,65 +967,21 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	g_free (original_name);
 }
 
-static GdkPixbuf *
+static NautilusScalableIcon *
 get_icon_images_callback (NautilusIconContainer *container,
 			  NautilusFile *file,
-			  int icon_size_x,
-			  int icon_size_y,
 			  const char *modifier,
-			  GList **emblem_pixbufs,
+			  GList **emblem_icons,
 			  FMIconView *icon_view)
 {
-	GList *emblem_icons, *p;
-	NautilusScalableIcon *scalable_icon;
-	GdkPixbuf *emblem_pixbuf, *pixbuf_without_text, *pixbuf_with_text;
-	ArtIRect text_rect;
-
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (emblem_pixbufs != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	/* Get the appropriate images for the file. */
-	if (emblem_pixbufs != NULL) {
-		emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
-		*emblem_pixbufs = NULL;
-		for (p = emblem_icons; p != NULL; p = p->next) {
-			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-				(p->data,
-				 icon_size_x, icon_size_y,
-				 NAUTILUS_ICON_MAXIMUM_EMBLEM_SIZE,
-				 NAUTILUS_ICON_MAXIMUM_EMBLEM_SIZE,
-				 NULL);
-			if (emblem_pixbuf != NULL) {
-				*emblem_pixbufs = g_list_prepend
-					(*emblem_pixbufs, emblem_pixbuf);
-			}
-		}
-		*emblem_pixbufs = g_list_reverse (*emblem_pixbufs);
-		nautilus_scalable_icon_list_free (emblem_icons);
+	if (emblem_icons != NULL) {
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
 	}
-
-	/* Get the icon for the file with embedded text. */
-	scalable_icon = nautilus_icon_factory_get_icon_for_file (file, modifier);
-	pixbuf_without_text = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon,
-		 icon_size_x, icon_size_y,
-		 NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE,
-		 NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE,
-		 &text_rect);
-	nautilus_scalable_icon_unref (scalable_icon);
-
-	/* Get the text to embed; this will bail out early if
-	 * the rect is too small.
-	 */
-	pixbuf_with_text = nautilus_icon_factory_embed_file_text
-		(pixbuf_without_text,
-		 &text_rect,
-		 file);
-	gdk_pixbuf_unref (pixbuf_without_text);
-
-	return pixbuf_with_text;
+	return nautilus_icon_factory_get_icon_for_file (file, modifier);
 }
 
 static char *
@@ -1191,8 +1145,8 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (icon_container_context_click_background_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "icon_changed",
-			    GTK_SIGNAL_FUNC (fm_icon_view_icon_changed_callback),
+			    "icon_position_changed",
+			    GTK_SIGNAL_FUNC (icon_position_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "icon_text_changed",
@@ -1225,6 +1179,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "can_accept_item",
 			    GTK_SIGNAL_FUNC (fm_directory_view_can_accept_item),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_stored_icon_position",
+			    GTK_SIGNAL_FUNC (get_stored_icon_position_callback),
 			    directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));

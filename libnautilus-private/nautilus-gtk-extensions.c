@@ -393,6 +393,24 @@ nautilus_gtk_marshal_POINTER__POINTER_INT_INT_POINTER_POINTER (GtkObject *object
 		 func_data);
 }
 
+void
+nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER (GtkObject *object,
+									    GtkSignalFunc func,
+									    gpointer func_data,
+									    GtkArg *args)
+{
+	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer,
+		     gpointer, gpointer, gpointer, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_POINTER (args[1]),
+		 GTK_VALUE_POINTER (args[2]),
+		 GTK_VALUE_POINTER (args[3]),
+		 GTK_VALUE_POINTER (args[4]),
+		 GTK_VALUE_POINTER (args[5]),
+		 func_data);
+}
+
 gboolean
 nautilus_point_in_allocation (const GtkAllocation *allocation,
 			      int x, int y)

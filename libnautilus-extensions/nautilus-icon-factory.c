@@ -167,6 +167,7 @@ struct NautilusScalableIcon {
 	char *uri;
 	char *name;
 	char *modifier;
+	char *embedded_text;
 };
 
 /* A request for an icon of a particular size. */
@@ -207,22 +208,25 @@ static NautilusIconFactory * nautilus_icon_factory_new               (const char
 static void                  nautilus_icon_factory_set_theme         (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
 								      const char               *name,
-								      const char	       *modifier);
+								      const char               *modifier,
+								      const char               *embedded_text);
 static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
 static gboolean              nautilus_scalable_icon_equal            (gconstpointer             a,
 								      gconstpointer             b);
-static void                  icon_cache_key_destroy         (IconCacheKey     *key);
-static guint                 icon_cache_key_hash            (gconstpointer             p);
-static gboolean              icon_cache_key_equal           (gconstpointer             a,
+static void                  icon_cache_key_destroy                  (IconCacheKey             *key);
+static guint                 icon_cache_key_hash                     (gconstpointer             p);
+static gboolean              icon_cache_key_equal                    (gconstpointer             a,
 								      gconstpointer             b);
 static gboolean              vfs_file_exists                         (const char               *file_name);
 static GdkPixbuf *           get_image_from_cache                    (NautilusScalableIcon     *scalable_icon,
-								      const IconSizeRequest *size,
+								      const IconSizeRequest    *size,
 								      gboolean                  picky,
 								      gboolean                  custom,
 								      ArtIRect                 *text_rect);
 static gboolean              check_for_thumbnails                    (NautilusIconFactory      *factory);
 static int                   nautilus_icon_factory_make_thumbnails   (gpointer                  data);
+static GdkPixbuf *           load_image_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
+								      const IconSizeRequest    *size);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory, nautilus_icon_factory, GTK_TYPE_OBJECT)
 
@@ -652,10 +656,25 @@ icon_theme_changed_callback (gpointer user_data)
 static NautilusScalableIcon *
 nautilus_scalable_icon_get (const char *uri,
 			    const char *name,
-			    const char *modifier)
+			    const char *modifier,
+			    const char *embedded_text)
 {
 	GHashTable *hash_table;
 	NautilusScalableIcon icon_key, *icon;
+
+	/* Make empty strings canonical. */
+	if (uri != NULL && uri[0] == '\0') {
+		uri = NULL;
+	}
+	if (name != NULL && name[0] == '\0') {
+		name = NULL;
+	}
+	if (modifier != NULL && modifier[0] == '\0') {
+		modifier = NULL;
+	}
+	if (embedded_text != NULL && embedded_text[0] == '\0') {
+		embedded_text = NULL;
+	}
 
 	/* Get at the hash table. */
 	hash_table = nautilus_get_current_icon_factory ()->scalable_icons;
@@ -664,6 +683,7 @@ nautilus_scalable_icon_get (const char *uri,
 	icon_key.uri = (char *) uri;
 	icon_key.name = (char *) name;
 	icon_key.modifier = (char *) modifier;
+	icon_key.embedded_text = (char *) embedded_text;
 	icon = g_hash_table_lookup (hash_table, &icon_key);
 	if (icon == NULL) {
 		/* Not in the table, so create it and put it in. */
@@ -671,6 +691,7 @@ nautilus_scalable_icon_get (const char *uri,
 		icon->uri = g_strdup (uri);
 		icon->name = g_strdup (name);
 		icon->modifier = g_strdup (modifier);
+		icon->embedded_text = g_strdup (embedded_text);
 		g_hash_table_insert (hash_table, icon, icon);
 	}
 
@@ -704,8 +725,8 @@ nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 	
 	g_free (icon->uri);
 	g_free (icon->name);
-	if (icon->modifier)
-		g_free(icon->modifier);
+	g_free (icon->modifier);
+	g_free (icon->embedded_text);
 	g_free (icon);
 }
 
@@ -732,6 +753,11 @@ nautilus_scalable_icon_hash (gconstpointer p)
 		hash ^= g_str_hash (icon->modifier);
 	}
 
+	hash <<= 4;
+	if (icon->embedded_text != NULL) {
+		hash ^= g_str_hash (icon->embedded_text);
+	}
+
 	return hash;
 }
 
@@ -746,7 +772,8 @@ nautilus_scalable_icon_equal (gconstpointer a,
 
 	return nautilus_strcmp (icon_a->uri, icon_b->uri) == 0
 		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0 
-		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0; 
+		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0
+		&& nautilus_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0;
 }
 
 NautilusScalableIcon *
@@ -801,7 +828,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	}
 	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = nautilus_scalable_icon_get (uri, icon_name, modifier);
+	scalable_icon = nautilus_scalable_icon_get (uri, icon_name, modifier,
+						    nautilus_file_get_top_left_text (file));
 	g_free (uri);
 	g_free (icon_name);
 	
@@ -815,34 +843,25 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
-	scalable_icon = nautilus_scalable_icon_get (NULL, name_with_prefix, NULL);
+	scalable_icon = nautilus_scalable_icon_get (NULL, name_with_prefix, NULL, NULL);
 	g_free (name_with_prefix);	
 
 	return scalable_icon;
-}
-
-static void
-add_emblem (GList **icons, const char *name)
-{
-	char *name_with_prefix;
-
-	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, name, NULL);
-	*icons = g_list_prepend (*icons, nautilus_icon_factory_get_emblem_icon_by_name (name));
-	g_free (name_with_prefix);
 }
 
 GList *
 nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
 {
 	GList *icons, *emblem_names, *p;
+	NautilusScalableIcon *icon;
 
 	icons = NULL;
 
 	emblem_names = nautilus_file_get_emblem_names (file);
 	for (p = emblem_names; p != NULL; p = p->next) {
-		add_emblem (&icons, p->data);
+		icon = nautilus_icon_factory_get_emblem_icon_by_name (p->data);
+		icons = g_list_prepend (icons, icon);
 	}
-
 	nautilus_g_list_free_deep (emblem_names);
 
 	return g_list_reverse (icons);
@@ -1492,6 +1511,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		 * nominal size is available.
 		 */
 		if (picky) {
+			g_assert (scalable_icon->embedded_text == NULL);
+
 			/* Actual icons have nominal sizes that are square! */
 			if (size->nominal_width
 			    != size->nominal_height) {
@@ -1516,13 +1537,27 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 			got_scaled_image = FALSE;
 			got_custom_image = custom;
 		} else {
-			image = load_image_scale_if_necessary (scalable_icon,
-							       size,
-							       &got_scaled_image,
-							       &got_custom_image,
-							       &key_text_rect);
+			if (scalable_icon->embedded_text != NULL) {
+				image = load_image_with_embedded_text (scalable_icon, size);
+
+				/* None of these matters for an icon with text already embedded.
+				 * So we fill in with arbitrary values.
+				 */
+				got_scaled_image = FALSE;
+				got_custom_image = FALSE;
+				memset (&key_text_rect, 0, sizeof (key_text_rect));
+			} else {
+				image = load_image_scale_if_necessary
+					(scalable_icon,
+					 size,
+					 &got_scaled_image,
+					 &got_custom_image,
+					 &key_text_rect);
+			}
 			g_assert (image != NULL);
 		}
+
+		/* Add the embedded text. */
 
 		/* Create the key for the table. */
 		key = g_new0 (IconCacheKey, 1);
@@ -1558,15 +1593,16 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 					   guint nominal_width,
 					   guint nominal_height,
 					   guint maximum_width,
-					   guint maximum_height,
-					   ArtIRect *text_rect)
+					   guint maximum_height)
 {
 	IconSizeRequest size;
+
 	size.nominal_width = nominal_width;
 	size.nominal_height = nominal_width;
 	size.maximum_width = maximum_width;
 	size.maximum_height = maximum_width;
-	return get_image_from_cache (scalable_icon, &size, FALSE, FALSE, text_rect);
+	return get_image_from_cache (scalable_icon, &size,
+				     FALSE, FALSE, NULL);
 }
 
 static void
@@ -1641,27 +1677,19 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 					   guint size_in_pixels)
 {
 	NautilusScalableIcon *icon;
-	GdkPixbuf *pixbuf_without_text, *pixbuf_with_text;
-	ArtIRect embedded_text_rect;
+	GdkPixbuf *pixbuf;
 
 	g_return_val_if_fail (file != NULL, NULL);
 
 	/* Get the pixbuf for this file. */
 	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
-	pixbuf_without_text = nautilus_icon_factory_get_pixbuf_for_icon
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 size_in_pixels, size_in_pixels,
-		 size_in_pixels, size_in_pixels,
-		 &embedded_text_rect);
+		 size_in_pixels, size_in_pixels);
 	nautilus_scalable_icon_unref (icon);
 
-	pixbuf_with_text = nautilus_icon_factory_embed_file_text
-		(pixbuf_without_text,
-		 &embedded_text_rect,
-		 file);
-	gdk_pixbuf_unref (pixbuf_without_text);
-
-	return pixbuf_with_text;
+	return pixbuf;
 }
 
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file,
@@ -1706,10 +1734,10 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 	return TRUE;
 }
 
-GdkPixbuf *
-nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
-				  const ArtIRect *embedded_text_rect,
-				  const char *text)
+static GdkPixbuf *
+embed_text (GdkPixbuf *pixbuf_without_text,
+	    const ArtIRect *embedded_text_rect,
+	    const char *text)
 {
 	static GdkFont *font;
 
@@ -1823,29 +1851,32 @@ nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
 	return pixbuf_with_text;
 }
 
-GdkPixbuf *
-nautilus_icon_factory_embed_file_text (GdkPixbuf *pixbuf_without_text,
-				       const ArtIRect *embedded_text_rect,
-				       NautilusFile *file)
+static GdkPixbuf *
+load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
+			       const IconSizeRequest *size)
 {
-	char *text;
-	GdkPixbuf *pixbuf_with_text;
+	NautilusScalableIcon *scalable_icon_without_text;
+	GdkPixbuf *pixbuf_without_text, *pixbuf;
+	ArtIRect text_rect;
 
-	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
-	g_return_val_if_fail (embedded_text_rect != NULL, NULL);
-	g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), NULL);
+	g_assert (scalable_icon->embedded_text != NULL);
 
-	/* Quick out to save us getting the file's text. */
-	if (!embedded_text_rect_usable (embedded_text_rect) && file == NULL) {
-		return gdk_pixbuf_ref (pixbuf_without_text);
-	}
+	scalable_icon_without_text = nautilus_scalable_icon_get
+		(scalable_icon->uri,
+		 scalable_icon->name,
+		 scalable_icon->modifier,
+		 NULL);
+	pixbuf_without_text = get_image_from_cache
+		(scalable_icon_without_text, size,
+		 FALSE, FALSE, &text_rect);
+	nautilus_scalable_icon_unref (scalable_icon_without_text);
 
-	/* Embed the text. */
-	text = nautilus_file_get_top_left_text (file);
-	pixbuf_with_text = nautilus_icon_factory_embed_text
-		(pixbuf_without_text, embedded_text_rect, text);
-	g_free (text);
-	return pixbuf_with_text;
+	pixbuf = embed_text (pixbuf_without_text,
+			     &text_rect,
+			     scalable_icon->embedded_text);
+	gdk_pixbuf_unref (pixbuf_without_text);
+
+	return pixbuf;
 }
 
 /* Convenience function for unrefing and then freeing an entire list. */
