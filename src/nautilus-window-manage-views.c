@@ -696,11 +696,6 @@ load_content_view (NautilusWindow *window,
         	iid = id->iid;
         }
         
-        /* Assume new content is not zoomable. When/if it sends a zoom_level_changed
-         * the zoom_control will get shown.
-         */
-	gtk_widget_hide (window->zoom_control);
-
         bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_IN,
@@ -1012,6 +1007,7 @@ change_state (NautilusWindow *window,
                 
         case NEW_CONTENT_VIEW_READY:
                 g_return_if_fail (window->new_content_view == NULL);
+
                 /* Don't ref here, reference is held by widget hierarchy. */
                 window->new_content_view = new_view;
                 /* We only come here in cases where the location does not change,
@@ -1493,8 +1489,6 @@ zoom_level_changed_callback (NautilusViewFrame *view,
 		nautilus_zoom_control_set_preferred_zoom_levels
 			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
 			 nautilus_view_frame_get_preferred_zoom_levels (view));
-			 
-		gtk_widget_show (window->zoom_control);
 	}
 
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,

@@ -1438,6 +1438,14 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 		}
 	}
 
+	/* Display or hide zoom control */
+	if (nautilus_view_frame_is_zoomable (new_view)) {
+		gtk_widget_show (window->zoom_control);
+	} else {
+		gtk_widget_hide (window->zoom_control);
+	}
+
+
 	window->content_view = new_view;
 }
 

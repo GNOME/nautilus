@@ -1,3 +1,28 @@
+2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	Increased chunk-size to 32k in an unsuccesful attempt to improve
+	the situation with regards to fix bug 3256 (attempt to view huge
+	text file is very slow). It did not help which leads me to believe
+	the problem is with the way the text control handles progressive
+	updates.
+
+	Fix bug 2180 (switching from icon view to list view, the zoom
+	control disappears and then reappears).
+	
+	* src/nautilus-window-manage-views.c (load_content_view,
+	zoom_level_changed_callback): Don't show and hide the zoom control
+	at various times. Instead, let
+	`nautilus_window_set_content_view_widget' establish the right
+	visibility state when we finally enable the widget. This way, the
+	zoom control won't ever disappear and reappear when switching
+	between two different zoomable views.
+	* src/nautilus-window.c (nautilus_window_set_content_view_widget):
+	Set the zoom control to the right visibility state when setting
+	the new widget.
+
 2000-11-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-theme-selector.c: (exit_remove_mode):
@@ -1673,7 +1698,7 @@
 	If no arguments are given, then open a window pointed to the
 	user's home directory.
 	
-2000-11-01  Pavel Cisler <pavel@eazel.com>
+2000-11-01  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:
 	(nautilus_make_uri_canonical),
