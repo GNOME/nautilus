@@ -1,6 +1,16 @@
 2001-04-24  John Sullivan  <sullivan@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	Fixed bug 8418 (two more underline-accelerator conflicts)
+
+	* src/file-manager/nautilus-directory-view-ui.xml: Changed
+	"Make _Link" to "_Make Link" to avoid conflict with sometimes-
+	present "De_lete"
+	
+	* src/file-manager/nautilus-icon-view-ui.xml: Changed
+	"_Tighter Layout" to "Tighter _Layout" to avoid conflict
+	with "By _Type".
+
+2001-04-24  John Sullivan  <sullivan@eazel.com>
 
 	Fixed part of bug 7649 (sidebar font doesn't update when font
 	changed in non-smooth mode) and various other small problems
