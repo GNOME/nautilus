@@ -205,6 +205,10 @@ icon_set_position (NautilusIcon *icon,
 
 	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon->item)->canvas);
 
+	if (icon == get_icon_being_renamed (container)) {
+		end_renaming_mode (container, TRUE);
+	}
+
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		/* Clip the position of the icon within our desktop bounds */
 
@@ -2322,6 +2326,7 @@ button_press_event (GtkWidget *widget,
 
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		end_renaming_mode (container, TRUE);
 		gtk_signal_emit (GTK_OBJECT (widget), signals[CONTEXT_CLICK_BACKGROUND]);
 		return TRUE;
 	}
