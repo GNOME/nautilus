@@ -86,8 +86,8 @@ trilobite_root_helper_destroy (GtkObject *object)
 
 	/* anything that needs to be freed? */
 	for (iter = g_list_first (root_helper->old_fd_list); iter; iter = g_list_next (iter)) {
-		trilobite_debug ("roothelper: tossing old fd %d", (int)(iter->data));
-		close ((int)(iter->data));
+		trilobite_debug ("roothelper: tossing old fd %d", GPOINTER_TO_INT (iter->data));
+		close (GPOINTER_TO_INT (iter->data));
 	}
 	g_list_free (root_helper->old_fd_list);
 
@@ -447,7 +447,7 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 				 */
 				close (root_helper->pipe_stdout);
 				root_helper->old_fd_list = g_list_append(root_helper->old_fd_list,
-									 (void *)root_helper->pipe_stdin);
+									 GINT_TO_POINTER (root_helper->pipe_stdin));
 				root_helper->pipe_stdin = root_helper->pipe_stdout = -1;
 			}
 			break;

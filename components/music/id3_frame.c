@@ -257,7 +257,7 @@ int id3_read_frame(id3_t *id3)
 	 */
 	frame->fr_size_z = frame->fr_size;
 	frame->fr_size   = g_ntohl( *((guint32 *) frame->fr_data) );
-	frame->fr_data_z = (void *) ((int) frame->fr_data + 4);
+	frame->fr_data_z = GINT_TO_POINTER ((GPOINTER_TO_INT (frame->fr_data) + 4));
 	frame->fr_data   = NULL;
     } else {
 	/*

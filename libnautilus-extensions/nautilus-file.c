@@ -1886,8 +1886,8 @@ nautilus_file_list_filter_hidden_and_backup (GList    *files,
 	filtered_files = nautilus_file_list_copy (files);
 	filtered_files = nautilus_g_list_partition (filtered_files, 
 						    filter_hidden_and_backup_partition_callback,
-						    (gpointer) ((show_hidden ? SHOW_HIDDEN : 0) |
-								(show_backup ? SHOW_BACKUP : 0)),
+						    GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0) |
+								     (show_backup ? SHOW_BACKUP : 0)),
 						    &removed_files);
 	nautilus_file_list_free (removed_files);
 

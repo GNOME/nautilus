@@ -64,7 +64,7 @@ char *id3_get_url(id3_frame_t *frame)
 	}
 	case ID3_ENCODING_UNICODE:
 	{
-	    gint16 *text16 = (gint16 *) ((int) frame->fr_data + 1);
+	    gint16 *text16 = GINT_TO_POINTER ((GPOINTER_TO_INT (frame->fr_data) + 1));
 
 	    while ( *text16 != 0 )
 		text16++;
