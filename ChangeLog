@@ -1,5 +1,16 @@
 2004-12-15  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in:
+	Require glib 2.6.0
+	
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_uri_shortname_for_display):
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_display_name_nocopy):
+	Use g_filename_display_basename() for display names
+
+2004-12-15  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
 	(fm_list_view_start_renaming_file):
 	* src/file-manager/fm-properties-window.c:

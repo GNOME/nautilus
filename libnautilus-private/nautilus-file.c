@@ -60,6 +60,7 @@
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libgnomevfs/gnome-vfs-drive.h>
+#include <glib/gfileutils.h>
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libxml/parser.h>
 #include <pwd.h>
@@ -2679,8 +2680,7 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 	gboolean validated;
 	GnomeVFSURI *vfs_uri;
 	const char *method;
-	gboolean utf8_filenames;
-	const char *filename_charset;
+	char *uri, *local_file;
 
 	if (file == NULL) {
 		return NULL;
@@ -2711,32 +2711,12 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 			 */
 			/* Keep in sync with nautilus_get_uri_shortname_for_display */
 			if (has_local_path (file)) {
-				utf8_filenames = eel_get_filename_charset (&filename_charset);
-				if (utf8_filenames) {
-					/* If not valid utf8, and filenames are utf8, test if converting
-					   from the locale works */
-					if (!g_utf8_validate (name, -1, NULL)) {
-						utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
-						if (utf8_name != NULL) {
-							g_free (name);
-							name = utf8_name;
-							/* Guaranteed to be correct utf8 here */
-							validated = TRUE;
-						}
-					} else {
-						/* name was valid, no need to re-validate */
-						validated = TRUE;
-					}
-				} else {
-					/* Try to convert from filename charset to utf8 */
-					utf8_name = g_convert (name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
-					if (utf8_name != NULL) {
-						g_free (name);
-						name = utf8_name;
-						/* Guaranteed to be correct utf8 here */
-						validated = TRUE;
-					}
-				}
+				uri = nautilus_file_get_uri (file);
+				local_file = gnome_vfs_get_local_path_from_uri (uri);
+				name = g_filename_display_basename (local_file);
+				g_free (local_file);
+				g_free (uri);
+				validated = TRUE;
 			} else if (strcmp (name, "/") == 0) {
 				/* Special-case the display name for roots that are not local files */
 				g_free (name);
