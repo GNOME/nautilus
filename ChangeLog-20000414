@@ -1,3 +1,20 @@
+2000-01-17  John Sullivan  <sullivan@eazel.com>
+	First steps towards making the list view non-degenerate.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(nautilus_file_date_as_string): New function, returns string suitable
+	for displaying in a list view column.
+	(nautilus_file_size_as_string): New function, calls newly-publicized
+	gnome_vfs_file_size_to_string.
+	(display_selection_info): Now calls gnome_vfs_file_size_to_string
+	instead of redoing the string-creation code here.
+
+	* src/file-manager/fm-directory-view-list.c
+	(create_flist): Creates new columns for icon, size, and mod date.
+	(add_to_flist): Fills columns for size & mod date. Icon column
+	is empty for the moment. Columns do not yet sort.
+
 2000-01-17      Andy Hertzfeld <andy@eazel.com>
 
         *libnautilus/gnome-icon-container-dnd.c:

@@ -30,6 +30,7 @@
 #include "fm-public-api.h"
 
 #include <gnome.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 
@@ -258,37 +259,7 @@ display_selection_info (FMDirectoryView *view)
 		return;
 	}
 
-	/* FIXME: The following should probably go into a separate module, as
-           we might have to do the same thing in other places as well.  Also,
-	   I am not sure this will be OK for all the languages.  */
-
-	/* FIXME: gnome-vfs has an internal routine that also does this
-	   (gnome_vfs_size_to_string())
-	*/
-	
-	if (size < (GnomeVFSFileSize) 1e3) {
-		if (size == 1)
-			size_string = g_strdup (_("1 byte"));
-		else
-			size_string = g_strdup_printf (_("%u bytes"),
-						       (guint) size);
-	} else {
-		gdouble displayed_size;
-
-		if (size < (GnomeVFSFileSize) 1e6) {
-			displayed_size = (gdouble) size / 1.0e3;
-			size_string = g_strdup_printf (_("%.1fK"),
-						       displayed_size);
-		} else if (size < (GnomeVFSFileSize) 1e9) {
-			displayed_size = (gdouble) size / 1.0e6;
-			size_string = g_strdup_printf (_("%.1fM"),
-						       displayed_size);
-		} else {
-			displayed_size = (gdouble) size / 1.0e9;
-			size_string = g_strdup_printf (_("%.1fG"),
-						       displayed_size);
-		}
-	}
+	size_string = gnome_vfs_file_size_to_string (size);
 
 	msg = g_strdup_printf (_("%d %s selected -- %s"),
 		    count, (count==1)?_("file"):_("files"), size_string);
@@ -832,4 +803,39 @@ fm_directory_view_sort (FMDirectoryView *view,
 	fm_directory_view_populate (view);
 
 #undef ALLOC_RULES
+}
+
+/**
+ * nautilus_file_date_as_string:
+ * 
+ * Get a user-displayable string representing a file date. The caller
+ * is responsible for g_free-ing this string.
+ * @bytes: The date of the file.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_date_as_string (time_t date)
+{
+	/* Note that ctime is a funky function that returns a
+	 * string that you're not supposed to free.
+	 */
+	return g_strdup (ctime (&date));
+}
+
+/**
+ * nautilus_file_size_as_string:
+ * 
+ * Get a user-displayable string representing a file size. The caller
+ * is responsible for g_free-ing this string.
+ * @bytes: The size of the file in bytes.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_size_as_string (GnomeVFSFileSize bytes)
+{
+	return gnome_vfs_file_size_to_string (bytes);
 }

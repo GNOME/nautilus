@@ -39,7 +39,7 @@ static FMDirectoryViewClass *parent_class = NULL;
 
 
 /* forward declarations */
-void add_to_flist 				    (FMIconCache *icon_manager,
+static void add_to_flist 			    (FMIconCache *icon_manager,
 		   		 		     GtkFList *flist,
 		   		 		     GnomeVFSFileInfo *info);
 static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
@@ -102,6 +102,15 @@ fm_directory_view_list_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
+
+
+#define LIST_VIEW_COLUMN_ICON		0
+#define LIST_VIEW_COLUMN_NAME		1
+#define LIST_VIEW_COLUMN_SIZE		2
+#define LIST_VIEW_COLUMN_DATE_MODIFIED	3
+#define LIST_VIEW_COLUMN_COUNT		4
+
 GtkWidget *
 fm_directory_view_list_new (void)
 {
@@ -114,14 +123,32 @@ create_flist (FMDirectoryViewList *list_view)
 {
 	GtkFList *flist;
 	gchar *titles[] = {
-		"Name",
-		NULL
+		NULL,
+		_("Name"),
+		_("Size"),
+		_("Date Modified"),
 	};
+	uint widths[] = {
+		 20,	/* Icon */
+		150,	/* Name */
+		 75,	/* Size */
+		100,	/* Modified */
+	};
+	int i;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view), NULL);
 
-	flist = GTK_FLIST (gtk_flist_new_with_titles (2, titles));
-	gtk_clist_set_column_width (GTK_CLIST (flist), 0, 150); /* FIXME */
+	flist = GTK_FLIST (gtk_flist_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
+
+	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i)
+	{
+		gtk_clist_set_column_width (GTK_CLIST (flist), i, widths[i]);
+	}
+
+	gtk_clist_set_column_justification (GTK_CLIST (flist), 
+					    LIST_VIEW_COLUMN_SIZE, 
+					    GTK_JUSTIFY_RIGHT);
+	
 	GTK_WIDGET_SET_FLAGS (flist, GTK_CAN_FOCUS);
 
 	gtk_signal_connect (GTK_OBJECT (flist),
@@ -163,20 +190,47 @@ flist_selection_changed_cb (GtkFList *flist,
 	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
 }
 
-void
+static void
 add_to_flist (FMIconCache *icon_manager,
 	      GtkFList *flist,
 	      GnomeVFSFileInfo *info)
 {
 	GtkCList *clist;
-	gchar *text[2];
+	gchar *text[LIST_VIEW_COLUMN_COUNT];
+	gchar *size_string = NULL;
+	gchar *modified_string = NULL;
 
-	text[0] = info->name;
-	text[1] = NULL;
+	/* FIXME: Icon column needs a pixmap */
+	text[LIST_VIEW_COLUMN_ICON] = NULL;
+	
+	text[LIST_VIEW_COLUMN_NAME] = info->name;
+
+	if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	{
+		text[LIST_VIEW_COLUMN_SIZE] = "--";
+	}
+	else
+	{
+		size_string = nautilus_file_size_as_string (info->size);
+		text[LIST_VIEW_COLUMN_SIZE] = size_string;
+	}
+
+	/* Note: There's also accessed time and changed time.
+	 * Accessed time doesn't seem worth showing to the user.
+	 * Changed time is only subtly different from modified time
+	 * (changed time includes "metadata" changes like file permissions).
+	 * We should not display both, but we might change our minds as to
+	 * which one is better.
+	 */
+	modified_string = nautilus_file_date_as_string (info->mtime);
+	text[LIST_VIEW_COLUMN_DATE_MODIFIED] = modified_string;
 
 	clist = GTK_CLIST (flist);
 	gtk_clist_append (clist, text);
 	gtk_clist_set_row_data (clist, clist->rows - 1, info);
+
+	g_free (size_string);
+	g_free (modified_string);
 }
 
 static GtkFList *

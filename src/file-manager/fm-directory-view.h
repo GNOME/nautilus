@@ -134,4 +134,11 @@ void	     fm_directory_view_activate_entry 		(FMDirectoryView *view,
 void	     fm_directory_view_notify_selection_changed (FMDirectoryView *view);
 void	     fm_directory_view_populate 		(FMDirectoryView *view);
 
+/* Utility functions for formatting file-related information.
+ * FIXME: Probably these should be moved to some appropriate place in libnautilus.
+ */
+gchar 	    *nautilus_file_date_as_string 		(time_t date);
+gchar 	    *nautilus_file_size_as_string 		(GnomeVFSFileSize bytes);
+
+
 #endif /* __FM_DIRECTORY_VIEW_H__ */
