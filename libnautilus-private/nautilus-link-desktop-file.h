@@ -41,6 +41,7 @@ char *           nautilus_link_desktop_file_local_get_text                    (c
 char *           nautilus_link_desktop_file_local_get_additional_text         (const char       *uri);
 NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char       *uri);
 char *           nautilus_link_desktop_file_local_get_link_uri                (const char       *uri);
+gboolean         nautilus_link_desktop_file_local_is_utf8                     (const char       *uri);
 char *           nautilus_link_desktop_file_get_link_uri_given_file_contents  (const char       *uri,
 									       const char       *link_file_contents,
 									       int               link_file_size);

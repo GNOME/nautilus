@@ -1557,7 +1557,8 @@ update_desktop_directory (UpdateType type)
 
 		if (type & UPDATE_HOME_LINK &&
 		    nautilus_link_local_is_home_link (link_path, info)) {
-			if (!found_home_link) {
+			if (!found_home_link &&
+			    nautilus_link_local_is_utf8 (link_path, info)) {
 				nautilus_link_local_set_link_uri (link_path, home_uri);
 				found_home_link = TRUE;
 			} else {
@@ -1568,6 +1569,7 @@ update_desktop_directory (UpdateType type)
 		if (type & UPDATE_TRASH_LINK &&
 		    nautilus_link_local_is_trash_link (link_path, info)) {
 			if (!found_trash_link &&
+			    nautilus_link_local_is_utf8 (link_path, info) &&
 			    !strcmp (TRASH_LINK_NAME, info->name)) {
 				nautilus_link_local_set_link_uri (link_path, EEL_TRASH_URI);
 				found_trash_link = TRUE;

@@ -39,6 +39,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -264,6 +265,32 @@ nautilus_link_desktop_file_local_get_link_type (const char *path)
 	g_free (type);
 	return retval;
 }
+
+gboolean
+nautilus_link_desktop_file_local_is_utf8 (const char       *uri)
+{
+	char *contents;
+	int file_size;
+	gboolean retval;
+
+	if (eel_read_entire_file (uri,
+				  &file_size,
+				  &contents) != GNOME_VFS_OK) {
+		return FALSE;
+	}
+	
+	if (g_strstr_len (contents, file_size, "Encoding=UTF-8\n") != NULL) {
+		retval = TRUE;
+	} else {
+		retval = FALSE;
+	}
+
+	g_free (contents);
+	
+	return retval;
+}
+
+
 
 static char *
 nautilus_link_desktop_file_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
