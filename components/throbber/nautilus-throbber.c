@@ -30,23 +30,15 @@
 
 #include "nautilus-throbber.h"
 
-#include <bonobo/bonobo-ui-toolbar-item.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
-#include <libnautilus/nautilus-view-standard-main.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
-#include <libnautilus-private/nautilus-theme.h>
+#include <libgnomeui/gnome-icon-theme.h>
 
 #define THROBBER_DEFAULT_TIMEOUT 100	/* Milliseconds Per Frame */
 
@@ -54,6 +46,7 @@ struct NautilusThrobberDetails {
 	BonoboObject *control;
 	BonoboPropertyBag *property_bag;
 	GList	*image_list;
+	GnomeIconTheme *icon_theme;
 
 	GdkPixbuf *quiescent_pixbuf;
 	
@@ -69,7 +62,8 @@ struct NautilusThrobberDetails {
 
 static void nautilus_throbber_load_images            (NautilusThrobber *throbber);
 static void nautilus_throbber_unload_images          (NautilusThrobber *throbber);
-static void nautilus_throbber_theme_changed          (gpointer          user_data);
+static void nautilus_throbber_theme_changed          (GnomeIconTheme   *icon_theme,
+						      NautilusThrobber *throbber);
 static void nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 static AtkObject *nautilus_throbber_get_accessible   (GtkWidget *widget);
 
@@ -164,17 +158,22 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 {
 	int current_width, current_height;
 	int pixbuf_width, pixbuf_height;
-	GList *current_entry;
+	GList *image_list;
 	GdkPixbuf *pixbuf;
 	
-	/* start with the quiescent image */
-	current_width = gdk_pixbuf_get_width (throbber->details->quiescent_pixbuf);
-	current_height = gdk_pixbuf_get_height (throbber->details->quiescent_pixbuf);
+	current_width = 0;
+	current_height = 0;
 
-	/* loop through all the installed images, taking the union */
-	current_entry = throbber->details->image_list;
-	while (current_entry != NULL) {	
-		pixbuf = GDK_PIXBUF (current_entry->data);
+	if (throbber->details->quiescent_pixbuf != NULL) {
+		/* start with the quiescent image */
+		current_width = gdk_pixbuf_get_width (throbber->details->quiescent_pixbuf);
+		current_height = gdk_pixbuf_get_height (throbber->details->quiescent_pixbuf);
+	}
+
+	/* union with the animation image */
+	image_list = throbber->details->image_list;
+	if (image_list != NULL) {
+		pixbuf = GDK_PIXBUF (image_list->data);
 		pixbuf_width = gdk_pixbuf_get_width (pixbuf);
 		pixbuf_height = gdk_pixbuf_get_height (pixbuf);
 		
@@ -185,8 +184,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 		if (pixbuf_height > current_height) {
 			current_height = pixbuf_height;
 		}
-		
-		current_entry = current_entry->next;
 	}
 		
 	/* return the result */
@@ -197,7 +194,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 static void
 nautilus_throbber_instance_init (NautilusThrobber *throbber)
 {
-	char *delay_str;
 	GtkWidget *widget = GTK_WIDGET (throbber);
 	
 	
@@ -210,16 +206,14 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	
 	throbber->details = g_new0 (NautilusThrobberDetails, 1);
 	
-	/* set up the delay from the theme */
-	delay_str = nautilus_theme_get_theme_data ("throbber", "delay");
+	throbber->details->delay = THROBBER_DEFAULT_TIMEOUT;
 	
-	if (delay_str) {
-		throbber->details->delay = atoi (delay_str);
-		g_free (delay_str);
-	} else {
-		throbber->details->delay = THROBBER_DEFAULT_TIMEOUT;		
-	}
-	
+	throbber->details->icon_theme = gnome_icon_theme_new ();
+	g_signal_connect (throbber->details->icon_theme,
+			  "changed",
+			  G_CALLBACK (nautilus_throbber_theme_changed),
+			  throbber);
+
 	/* make the bonobo control */
 	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
 	eel_add_weak_pointer (&throbber->details->control);
@@ -236,20 +230,12 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 				 Bonobo_PROPERTY_WRITEABLE);
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (widget);
-
-	/* add a callback for when the theme changes */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-				      nautilus_throbber_theme_changed,
-				      throbber);
 }
 
 /* handler for handling theme changes */
 static void
-nautilus_throbber_theme_changed (gpointer user_data)
+nautilus_throbber_theme_changed (GnomeIconTheme *icon_theme, NautilusThrobber *throbber)
 {
-	NautilusThrobber *throbber;
-
-	throbber = NAUTILUS_THROBBER (user_data);
 	gtk_widget_hide (GTK_WIDGET (throbber));
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (GTK_WIDGET (throbber));	
@@ -264,7 +250,11 @@ select_throbber_image (NautilusThrobber *throbber)
 	GList *element;
 
 	if (throbber->details->timer_task == 0) {
-		return g_object_ref (throbber->details->quiescent_pixbuf);
+		if (throbber->details->quiescent_pixbuf == NULL) {
+			return NULL;
+		} else {
+			return g_object_ref (throbber->details->quiescent_pixbuf);
+		}
 	}
 	
 	if (throbber->details->image_list == NULL) {
@@ -426,83 +416,104 @@ nautilus_throbber_unload_images (NautilusThrobber *throbber)
 	throbber->details->image_list = NULL;
 }
 
-static GdkPixbuf*
-load_themed_image (const char *file_name, const char *image_theme, gboolean small_mode)
+static GdkPixbuf *
+scale_to_real_size (NautilusThrobber *throbber, GdkPixbuf *pixbuf)
 {
-	GdkPixbuf *pixbuf, *temp_pixbuf;
-	char *image_path;
-	
-	if (image_theme == NULL) {
-		image_path = nautilus_theme_get_image_path (file_name);
+	GdkPixbuf *result;
+	int size;
+
+	size = gdk_pixbuf_get_height (pixbuf);
+
+	if (throbber->details->small_mode) {
+		result = gdk_pixbuf_scale_simple (pixbuf,
+						  size * 2 / 3,
+						  size * 2 / 3,
+						  GDK_INTERP_BILINEAR);
 	} else {
-		image_path = nautilus_theme_get_image_path_from_theme (file_name, image_theme);	
+		result = g_object_ref (pixbuf);
 	}
-	
-	if (image_path) {
-		pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
-		
-		if (small_mode && pixbuf) {
-			temp_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-							       gdk_pixbuf_get_width (pixbuf) * 2 / 3,
-							       gdk_pixbuf_get_height (pixbuf) * 2 / 3,
-							       GDK_INTERP_BILINEAR);
-			g_object_unref (pixbuf);
-			pixbuf = temp_pixbuf;
-		}
-		
-		g_free (image_path);
-		return pixbuf;
-	}
-	return NULL;
+
+	return result;
 }
 
-/* utility to make the throbber frame name from the index */
-
-static char *
-make_throbber_frame_name (int index)
+static GdkPixbuf *
+extract_frame (NautilusThrobber *throbber, GdkPixbuf *grid_pixbuf, int x, int y, int size)
 {
-	return g_strdup_printf ("throbber/%03d.png", index);
+	GdkPixbuf *pixbuf, *result;
+
+	if (x + size > gdk_pixbuf_get_width (grid_pixbuf) ||
+	    y + size > gdk_pixbuf_get_height (grid_pixbuf)) {
+		return NULL;
+	}
+
+	pixbuf = gdk_pixbuf_new_subpixbuf (grid_pixbuf,
+					   x, y,
+					   size, size);
+	g_return_val_if_fail (pixbuf != NULL, NULL);
+
+	result = scale_to_real_size (throbber, pixbuf);
+	g_object_unref (pixbuf);
+
+	return result;
 }
 
 /* load all of the images of the throbber sequentially */
 static void
 nautilus_throbber_load_images (NautilusThrobber *throbber)
 {
-	int index;
-	char *throbber_frame_name, *image_theme, *frames;
-	GdkPixbuf *pixbuf;
+	int grid_width, grid_height, x, y, size;
+	char *icon;
+	GdkPixbuf *icon_pixbuf, *pixbuf;
 	GList *image_list;
-	
+
 	nautilus_throbber_unload_images (throbber);
 
-	image_theme = nautilus_theme_get_theme_data ("throbber", "image_theme");
-	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", image_theme, throbber->details->small_mode);
-
-	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list */
-
-	frames = nautilus_theme_get_theme_data ("throbber", "frame_count");
-	if (frames != NULL) {
-		throbber->details->max_frame = atoi (frames);
-		g_free (frames);
-	} else {
-		throbber->details->max_frame = 16;
+	/* Load the animation */
+	icon = gnome_icon_theme_lookup_icon (throbber->details->icon_theme,
+					     "gnome-spinner", -1, NULL, &size);
+	if (icon == NULL) {
+		g_warning ("Throbber animation not found");
+		return;
 	}
+
+	icon_pixbuf = gdk_pixbuf_new_from_file (icon, NULL);
+	grid_width = gdk_pixbuf_get_width (icon_pixbuf);
+	grid_height = gdk_pixbuf_get_height (icon_pixbuf);
 
 	image_list = NULL;
-	for (index = 1; index <= throbber->details->max_frame; index++) {
-		throbber_frame_name = make_throbber_frame_name (index);
-		pixbuf = load_themed_image (throbber_frame_name, image_theme, throbber->details->small_mode);
+	for (y = 0; y < grid_height; y += size) {
+		for (x = 0; x < grid_width ; x += size) {
+			pixbuf = extract_frame (throbber, icon_pixbuf, x, y, size);
 
-		g_free (throbber_frame_name);
-		if (pixbuf == NULL) {
-			throbber->details->max_frame = index - 1;
-			break;
+			if (pixbuf)
+			{
+				image_list = g_list_prepend (image_list, pixbuf);
+			}
+			else
+			{
+				g_warning ("Cannot extract frame from the grid");
+			}
 		}
-		image_list = g_list_prepend (image_list, pixbuf);
 	}
 	throbber->details->image_list = g_list_reverse (image_list);
+	throbber->details->max_frame = g_list_length (throbber->details->image_list);
 
-	g_free (image_theme);
+	g_free (icon);
+	g_object_unref (icon_pixbuf);
+
+	/* Load the rest icon */
+	icon = gnome_icon_theme_lookup_icon (throbber->details->icon_theme,
+					     "gnome-spinner-rest", -1, NULL, &size);
+	if (icon == NULL) {
+		g_warning ("Throbber rest icon not found");
+		return;
+	}
+
+	icon_pixbuf = gdk_pixbuf_new_from_file (icon, NULL);
+	throbber->details->quiescent_pixbuf = scale_to_real_size (throbber, icon_pixbuf);
+
+	g_object_unref (icon_pixbuf);
+	g_free (icon);
 }
 
 void
@@ -541,12 +552,11 @@ nautilus_throbber_finalize (GObject *object)
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 	
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_throbber_theme_changed, object);
-	
 	bonobo_object_unref (throbber->details->property_bag);
 	
 	eel_remove_weak_pointer (&throbber->details->control);
+
+	g_object_unref (throbber->details->icon_theme);
 
 	g_free (throbber->details);
 

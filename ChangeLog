@@ -1,3 +1,17 @@
+2003-05-30  Marco Pesenti Gritti  <marco@it.gnome.org>
+
+	* components/throbber/nautilus-throbber.c:
+	(get_throbber_dimensions), (nautilus_throbber_instance_init),
+	(nautilus_throbber_theme_changed), (select_throbber_image),
+	(scale_to_real_size), (extract_frame),
+	(nautilus_throbber_load_images), (nautilus_throbber_finalize):
+
+	Use gnome-spinner icons from gnome-icon-theme. Extract
+	the images from a grid instead of using an icon for
+	each frame.
+	It's necessary to install a recent gnome icon theme cvs
+	to have throbber working.	
+
 2003-05-30  Stephen Browne <stephen.browne@sun.com>
 
 	* src/Nautilus_shell.server.in: added x-directory/smb-share to
