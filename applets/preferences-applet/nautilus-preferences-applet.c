@@ -28,7 +28,9 @@
 #include <applet-widget.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
 #include <gtk/gtktogglebutton.h>
 
 /* UTTER HACK */
@@ -126,13 +128,25 @@ boolean_toggle_button_new (const char *preference_name,
 	return button;
 }
 
+static void
+quit_button_clicked_callback (GtkWidget *button,
+			      gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	
+	nautilus_gnome_shell_execute ("nautilus --quit");
+}
+
 int
 main (int argc, char **argv)
 {
 	GtkWidget *applet;
-	GtkWidget *vbox;
+	GtkWidget *main_hbox;
+	GtkWidget *preference_vbox;
+	GtkWidget *command_hbox;
 	GtkWidget *show_desktop_button;
 	GtkWidget *smooth_graphics_button;
+	GtkWidget *quit_button;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -159,19 +173,30 @@ main (int argc, char **argv)
 
 	nautilus_global_preferences_initialize ();
 
-	vbox = gtk_vbox_new (FALSE, 1);
+	main_hbox = gtk_hbox_new (FALSE, 1);
+
+	preference_vbox = gtk_vbox_new (FALSE, 1);
+	gtk_box_pack_start (GTK_BOX (main_hbox), preference_vbox, TRUE, TRUE, 1);
+
+	command_hbox = gtk_hbox_new (FALSE, 1);
+	gtk_box_pack_start (GTK_BOX (main_hbox), command_hbox, TRUE, TRUE, 1);
 	
 	show_desktop_button = boolean_toggle_button_new (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							 "Show Desktop");
-
-	gtk_box_pack_start (GTK_BOX (vbox), show_desktop_button, TRUE, TRUE, 1);
+	gtk_box_pack_start (GTK_BOX (preference_vbox), show_desktop_button, TRUE, TRUE, 1);
 
 	smooth_graphics_button = boolean_toggle_button_new (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							    "Smooth Graphics");
-	
-	gtk_box_pack_start (GTK_BOX (vbox), smooth_graphics_button, TRUE, TRUE, 1);
+	gtk_box_pack_start (GTK_BOX (preference_vbox), smooth_graphics_button, TRUE, TRUE, 1);
 
-	gtk_container_add (GTK_CONTAINER (applet), vbox);
+	quit_button = gtk_button_new_with_label ("Quit");
+	gtk_box_pack_start (GTK_BOX (command_hbox), quit_button, TRUE, TRUE, 1);
+	gtk_signal_connect (GTK_OBJECT (quit_button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (quit_button_clicked_callback),
+			    NULL);
+
+	gtk_container_add (GTK_CONTAINER (applet), main_hbox);
 
 	gtk_widget_show_all (applet);
 
