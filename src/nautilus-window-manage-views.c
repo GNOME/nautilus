@@ -211,12 +211,20 @@ compute_default_title (const char *text_uri)
 static char *
 nautilus_window_get_current_location_title (NautilusWindow *window)
 {
-        return window->requested_title != NULL
-                ? g_strdup (window->requested_title)
-                : g_strdup (window->default_title);
+        char *title;
+
+        if (window->new_content_view != NULL) {
+                title = nautilus_view_frame_get_title (window->new_content_view);
+        } else if (window->content_view != NULL) {
+                title = nautilus_view_frame_get_title (window->content_view);
+        }
+        if (title == NULL) {
+                title = compute_default_title (window->location);
+        }
+        return title;
 }
 
-/* nautilus_window_update_title_internal:
+/* nautilus_window_update_title:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
@@ -225,11 +233,14 @@ nautilus_window_get_current_location_title (NautilusWindow *window)
  * 
  */
 static void
-nautilus_window_update_title_internal (NautilusWindow *window, const char *title)
+nautilus_window_update_title (NautilusWindow *window)
 {
+        char *title;
         char *window_title;
         char *truncated_title;
-        
+
+        title = nautilus_window_get_current_location_title (window);
+
         if (strcmp (title, _("Nautilus")) == 0) {
                 gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
         } else {
@@ -249,7 +260,7 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
         nautilus_send_history_list_changed ();
 }
 
-/* nautilus_window_reset_title_internal:
+/* nautilus_window_set_displayed_location:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
@@ -257,15 +268,10 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
  * @title: The new user-displayable title.
  */
 static void
-nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
+nautilus_window_set_displayed_location (NautilusWindow *window, const char *uri)
 {
         char *bookmark_uri;
         gboolean recreate;
-
-        g_free (window->requested_title);
-        window->requested_title = NULL;
-        g_free (window->default_title);
-        window->default_title = compute_default_title (uri);
 
         if (window->current_location_bookmark == NULL) {
                 recreate = TRUE;
@@ -284,27 +290,20 @@ nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
                 window->current_location_bookmark = nautilus_bookmark_new (uri, uri);
         }
         
-        nautilus_window_update_title_internal (window, window->default_title);
+        nautilus_window_update_title (window);
 }
 
 void
-nautilus_window_set_title (NautilusWindow *window,
-                           const char *new_title,
-                           NautilusViewFrame *view)
+nautilus_window_title_changed (NautilusWindow *window,
+                               NautilusViewFrame *view)
 {
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-        g_return_if_fail (new_title != NULL);
         g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
         /* Only the content view can change the window title. */
-        if (view != window->content_view) {
-                return;
+        if (view == window->content_view || view == window->new_content_view) {
+                nautilus_window_update_title (window);
         }
-        
-        g_free (window->requested_title);
-        window->requested_title = g_strdup (new_title);
-        
-        nautilus_window_update_title_internal (window, new_title);
 }
 
 /* The bulk of this file - location changing */
@@ -390,7 +389,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                                 
         if (window->location != NULL) {
                 /* If we're returning to the same uri somehow, don't put this uri on back list. 
-                 * This also avoids a problem where nautilus_window_reset_title_internal
+                 * This also avoids a problem where nautilus_window_set_displayed_location
                  * didn't update last_location_bookmark since the uri didn't change.
                  */
                 if (strcmp (window->location, location) != 0) {
@@ -510,7 +509,7 @@ nautilus_window_view_failed (NautilusWindow *window, NautilusViewFrame *view)
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
-nautilus_window_has_really_changed(NautilusWindow *window)
+nautilus_window_has_really_changed (NautilusWindow *window)
 {
         GList *discard_views;
         GList *p;
@@ -519,12 +518,12 @@ nautilus_window_has_really_changed(NautilusWindow *window)
         new_sidebar_panels = window->new_sidebar_panels;
         window->new_sidebar_panels = NULL;
         
-        if (window->new_content_view) {
-                if (!GTK_WIDGET (window->new_content_view)->parent) {
+        if (window->new_content_view != NULL) {
+                if (GTK_WIDGET (window->new_content_view)->parent == NULL) {
                 	nautilus_window_disconnect_view (window, window->content_view);
-                        nautilus_window_set_content_view(window, window->new_content_view);
+                        nautilus_window_set_content_view (window, window->new_content_view);
                 }
-                gtk_object_unref(GTK_OBJECT(window->new_content_view));
+                gtk_object_unref (GTK_OBJECT (window->new_content_view));
                 window->new_content_view = NULL;
 
 		/* Update displayed view in menu. Only do this if we're not switching
@@ -537,27 +536,25 @@ nautilus_window_has_really_changed(NautilusWindow *window)
                 }
         }
         
-        if (new_sidebar_panels) {
-                /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
-                for (p = new_sidebar_panels; p != NULL; p = p->next) {
-                        if (!GTK_OBJECT_DESTROYED (p->data) && !GTK_WIDGET (p->data)->parent)
-                                nautilus_window_add_sidebar_panel (window, p->data);
-                        gtk_object_unref (p->data);
-                }
-                
-                discard_views = NULL;
-                for (p = window->sidebar_panels; p != NULL; p = p->next) {
-                        if (!g_list_find (new_sidebar_panels, p->data)) {
-                                discard_views = g_list_prepend(discard_views, p->data);
-                        }
-                }
-                g_list_free (new_sidebar_panels);
-                
-                for (p = discard_views; p != NULL; p = p->next) {
-                        nautilus_window_remove_sidebar_panel (window, p->data);
-                }
-                g_list_free (discard_views);
+        /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
+        for (p = new_sidebar_panels; p != NULL; p = p->next) {
+                if (!GTK_OBJECT_DESTROYED (p->data) && !GTK_WIDGET (p->data)->parent)
+                        nautilus_window_add_sidebar_panel (window, p->data);
+                gtk_object_unref (p->data);
         }
+        
+        discard_views = NULL;
+        for (p = window->sidebar_panels; p != NULL; p = p->next) {
+                if (!g_list_find (new_sidebar_panels, p->data)) {
+                        discard_views = g_list_prepend(discard_views, p->data);
+                }
+        }
+        g_list_free (new_sidebar_panels);
+        
+        for (p = discard_views; p != NULL; p = p->next) {
+                nautilus_window_remove_sidebar_panel (window, p->data);
+        }
+        g_list_free (discard_views);
         
         if (window->pending_ni != NULL) {
                 nautilus_window_update_internals (window);
@@ -567,6 +564,8 @@ nautilus_window_has_really_changed(NautilusWindow *window)
                 }
                 window->pending_ni = NULL;
         }
+
+        nautilus_window_update_title (window);
 }
 
 /* This is called when we are done loading to get rid of the load_info structure. */
@@ -941,7 +940,7 @@ nautilus_window_update_state (gpointer data)
                 }
                 
                 if (window->pending_ni != NULL) {
-                        nautilus_window_reset_title_internal
+                        nautilus_window_set_displayed_location
                                 (window, window->location == NULL ? "" : window->location);
                         
                         /* Tell previously-notified views to go back to the old page */
@@ -961,10 +960,9 @@ nautilus_window_update_state (gpointer data)
                         }
                 }
                 
-                if (window->new_content_view) {
+                if (window->new_content_view != NULL) {
                         gtk_widget_unref (GTK_WIDGET (window->new_content_view));
                 }
-                
                 for (p = window->new_sidebar_panels; p != NULL; p = p->next) {
                         gtk_widget_unref (GTK_WIDGET (p->data));
                 }
@@ -1026,7 +1024,7 @@ nautilus_window_update_state (gpointer data)
                                 selection = window->selection;
                         }
                         
-                        nautilus_window_reset_title_internal (window, location);
+                        nautilus_window_set_displayed_location (window, location);
                         
                         x_message (("!!! Sending update_view"));
                         

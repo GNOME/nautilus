@@ -53,8 +53,7 @@ void               nautilus_window_report_load_complete        (NautilusWindow  
                                                                 NautilusViewFrame       *view);
 void               nautilus_window_report_load_failed          (NautilusWindow          *window,
                                                                 NautilusViewFrame       *view);
-void               nautilus_window_set_title                   (NautilusWindow          *window,
-                                                                const char              *new_title,
+void               nautilus_window_title_changed               (NautilusWindow          *window,
                                                                 NautilusViewFrame       *view);
 NautilusViewFrame *nautilus_window_load_content_view           (NautilusWindow          *window,
                                                                 NautilusViewIdentifier  *id,

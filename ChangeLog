@@ -1,3 +1,59 @@
+2000-08-11  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1891 (calling set_title before report_load_underway has
+	no effect).
+
+	* libnautilus-extensions/nautilus-file.c: (destroy):
+	Fix a leak in the symbolic link target hash table.
+	
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(nautilus_application_create_desktop_window),
+	(nautilus_application_open_desktop),
+	(nautilus_application_close_desktop),
+	(nautilus_application_destroyed_window),
+	(nautilus_application_create_window):
+	Simplified the logic for creating and destroying the desktop
+	window a little bit and made it actually unref the desktop
+	window instead of just destroying it.
+	
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize),
+	(nautilus_switchable_navigation_bar_set_mode),
+	(nautilus_switchable_navigation_bar_set_location):
+	Added missing code to send out the mode_changed signal and
+	took out a gratuitous FIXME.
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_initialize), (nautilus_view_frame_destroy),
+	(set_up_for_new_location), (nautilus_view_frame_load_location),
+	(nautilus_view_frame_report_location_change),
+	(nautilus_view_frame_set_title), (nautilus_view_frame_get_title):
+	Changed it so the view frame keeps around the title as passed by
+	the view. It now emits a "title_changed" signal instead of a
+	"set_title" signal and you can get the title with a call to
+	nautilus_view_frame_get_title.
+	
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_title_changed_callback),
+	(nautilus_window_connect_view):
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_get_current_location_title),
+	(nautilus_window_update_title),
+	(nautilus_window_set_displayed_location),
+	(nautilus_window_title_changed), (handle_go_elsewhere),
+	(nautilus_window_has_really_changed),
+	(nautilus_window_update_state):
+	Manage the title in a simpler way now that the view frame keeps
+	the title around.
+	
+	* src/nautilus-window-toolbars.c: (set_up_button): Fixed error
+	that would result in a call to gnome_stock_set_icon with NULL.
+
+	* RPMs-README: Fixed a typo.
+
 2000-08-11  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1743 (Deleting a file in search results should cause
@@ -1730,7 +1786,7 @@ Mon Aug 07 14:47:28 2000  George Lebl <jirka@5z.com>
 
 Mon Aug 07 05:00:55 2000  George Lebl <jirka@5z.com>
 
-	* libnautilus-extentions/nautilus-list.c (nautilus_list_draw):
+	* libnautilus-extensions/nautilus-list.c (nautilus_list_draw):
 	  Call gtk_widget_draw on the title widget.  This fixes the problem
 	  where the widget is not drawn when the list view is first selected.
 

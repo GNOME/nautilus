@@ -36,20 +36,18 @@
 #include <libnautilus/nautilus-view-component.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define NAUTILUS_TYPE_VIEW_FRAME            (nautilus_view_frame_get_type ())
 #define NAUTILUS_VIEW_FRAME(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrame))
 #define NAUTILUS_VIEW_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrameClass))
 #define NAUTILUS_IS_VIEW_FRAME(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
 #define NAUTILUS_IS_VIEW_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VIEW_FRAME))
 
+typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
 typedef struct NautilusViewComponentType NautilusViewComponentType;
 
 typedef struct {
         NautilusGenerousBin parent;
+        NautilusViewFrameDetails *details;
 
         BonoboUIHandler *ui_handler;
         NautilusUndoManager *undo_manager;
@@ -96,8 +94,12 @@ typedef struct {
                                               double fraction_done);
         void (* report_load_complete)        (NautilusViewFrame *view);
         void (* report_load_failed)          (NautilusViewFrame *view);
-        void (* set_title)                   (NautilusViewFrame *view,
-                                              const char *title);
+
+        /* These are higher-level signals. We are moving more work into
+         * this class, so we no longer have one signal for each CORBA
+         * signal.
+         */
+        void (* title_changed)               (NautilusViewFrame *view);
 
         /* Part of Nautilus::ZoomableFrame CORBA interface. */
         void (* zoom_level_changed)         (NautilusViewFrame *view,
@@ -121,6 +123,7 @@ const char *       nautilus_view_frame_get_iid            (NautilusViewFrame   *
 CORBA_Object       nautilus_view_frame_get_client_objref  (NautilusViewFrame   *view);
 BonoboObject *     nautilus_view_frame_get_control_frame  (NautilusViewFrame   *view);
 CORBA_Object       nautilus_view_frame_get_objref         (NautilusViewFrame   *view);
+char *             nautilus_view_frame_get_title          (NautilusViewFrame   *view);
 
 /* These functions correspond to methods of the Nautilus:View CORBAinterface. */
 void               nautilus_view_frame_load_location      (NautilusViewFrame   *view,
@@ -137,8 +140,8 @@ void               nautilus_view_frame_set_zoom_level     (NautilusViewFrame   *
 gdouble            nautilus_view_frame_get_min_zoom_level (NautilusViewFrame   *view);
 gdouble            nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
-GList *		   	nautilus_view_frame_get_preferred_zoom_levels
-(NautilusViewFrame  *view);
+GList *		   nautilus_view_frame_get_preferred_zoom_levels
+                                                          (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
@@ -151,9 +154,5 @@ void               nautilus_view_frame_set_label          (NautilusViewFrame   *
                                                            const char          *label);
 void               nautilus_view_frame_activate           (NautilusViewFrame   *view);
 Nautilus_History * nautilus_view_frame_get_history_list   (NautilusViewFrame   *view);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

@@ -89,8 +89,6 @@ struct NautilusWindow {
   /* Information about current location/selection */
   char *location;
   GList *selection;
-  char *requested_title;
-  char *default_title;
   
   /* Back/Forward chain, and history list. 
    * The data in these lists are NautilusBookmark pointers. 

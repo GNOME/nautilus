@@ -109,11 +109,9 @@ nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *
 	gtk_box_pack_start  (GTK_BOX (hbox), bar->search_bar, TRUE, TRUE,
 			     0);
 
-	nautilus_switchable_navigation_bar_set_mode (bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
-
+	gtk_widget_show (GTK_WIDGET (bar->location_bar));
 	gtk_widget_show (GTK_WIDGET (hbox));
-
-	gtk_container_add   (GTK_CONTAINER (bar), hbox);
+	gtk_container_add (GTK_CONTAINER (bar), hbox);
 }
 
 GtkWidget *
@@ -122,25 +120,29 @@ nautilus_switchable_navigation_bar_new (void)
 	return gtk_widget_new (NAUTILUS_TYPE_SWITCHABLE_NAVIGATION_BAR, NULL);
 }
 
-
 void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)
 {
+	if (bar->mode == mode) {
+		return;
+	}
+
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
 		gtk_widget_show (bar->location_bar);
 		gtk_widget_hide (bar->search_bar);
-		bar->mode = mode;
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
 		gtk_widget_show (bar->search_bar);
 		gtk_widget_hide (bar->location_bar);
-		bar->mode = mode;
 		break;
 	default:
 		g_return_if_fail (mode && 0);
 	}
+
+	bar->mode = mode;
+	gtk_signal_emit (GTK_OBJECT (bar), signals[MODE_CHANGED], mode);
 }
 
 static char *
@@ -179,16 +181,14 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 					      location);
 	
 	/* Toggle the search button on and off appropriately */
-
-	/* FIXME: doing this may be a bit much */
 	directory = nautilus_directory_get (location);
 	if (nautilus_directory_is_search_directory (directory)) {
-		nautilus_switchable_navigation_bar_set_mode (bar,
-							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
+		nautilus_switchable_navigation_bar_set_mode
+			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 	}
 	else {
-		nautilus_switchable_navigation_bar_set_mode (bar,
-							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
+		nautilus_switchable_navigation_bar_set_mode
+			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
 	}
 
 	nautilus_directory_unref (directory);

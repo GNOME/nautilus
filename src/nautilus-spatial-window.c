@@ -206,8 +206,8 @@ goto_uri_callback (GtkWidget *widget,
 
 static void
 navigation_bar_mode_changed_callback (GtkWidget *widget,
-						      NautilusSwitchableNavigationBarMode mode,
-						      GtkWidget *window)
+				      NautilusSwitchableNavigationBarMode mode,
+				      GtkWidget *window)
 {
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
@@ -217,6 +217,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), TRUE);
 		break;
 	default:
+		g_assert_not_reached ();
 	}
 }
 
@@ -410,7 +411,7 @@ nautilus_window_set_arg (GtkObject *object,
 		window->application = NAUTILUS_APPLICATION (GTK_VALUE_OBJECT (*arg));
 		break;
 	case ARG_CONTENT_VIEW:
-		nautilus_window_real_set_content_view (window, (NautilusViewFrame *)GTK_VALUE_OBJECT(*arg));
+		nautilus_window_real_set_content_view (window, (NautilusViewFrame *) GTK_VALUE_OBJECT(*arg));
 		break;
 	}
 }
@@ -424,13 +425,13 @@ nautilus_window_get_arg (GtkObject *object,
 	
 	switch(arg_id) {
 	case ARG_APP_ID:
-		GTK_VALUE_STRING(*arg) = app->name;
+		GTK_VALUE_STRING (*arg) = app->name;
 		break;
 	case ARG_APP:
-		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(NAUTILUS_WINDOW(object)->application);
+		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->application);
 		break;
 	case ARG_CONTENT_VIEW:
-		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(((NautilusWindow *)object)->content_view);
+		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->content_view);
 		break;
 	}
 }
@@ -992,15 +993,13 @@ nautilus_window_go_up (NautilusWindow *window)
 
 void
 nautilus_window_set_search_mode (NautilusWindow *window,
-				 gboolean        search_mode)
+				 gboolean search_mode)
 {
-	if (search_mode) {
-		nautilus_switchable_navigation_bar_set_mode (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
-							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-	} else {
-		nautilus_switchable_navigation_bar_set_mode (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
-							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
-	}
+	nautilus_switchable_navigation_bar_set_mode
+		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
+		 search_mode
+		 ? NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH
+		 : NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
 }
 
 void
@@ -1192,11 +1191,10 @@ nautilus_window_report_load_failed_callback (NautilusViewFrame *view,
 }
 
 static void
-nautilus_window_set_title_callback (NautilusViewFrame *view, 
-				    const char *title,
-				    NautilusWindow *window)
+nautilus_window_title_changed_callback (NautilusViewFrame *view, 
+					NautilusWindow *window)
 {
-	nautilus_window_set_title (window, title, view);
+	nautilus_window_title_changed (window, view);
 }
 
 static void
@@ -1209,10 +1207,16 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	/* We rely on the initial zoom_level_change signal to inform us that the
 	* view-frame is showing a new zoomable.
 	*/
-	if (!GTK_WIDGET_VISIBLE(window->zoom_control)) {
-		nautilus_zoom_control_set_min_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_min_zoom_level (view));
-		nautilus_zoom_control_set_max_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_max_zoom_level (view));
-		nautilus_zoom_control_set_preferred_zoom_levels (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_preferred_zoom_levels (view));
+	if (!GTK_WIDGET_VISIBLE (window->zoom_control)) {
+		nautilus_zoom_control_set_min_zoom_level
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_min_zoom_level (view));
+		nautilus_zoom_control_set_max_zoom_level
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_max_zoom_level (view));
+		nautilus_zoom_control_set_preferred_zoom_levels
+			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+			 nautilus_view_frame_get_preferred_zoom_levels (view));
 		gtk_widget_show (window->zoom_control);
 	}
 }
@@ -1277,7 +1281,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_progress);
 	CONNECT (report_load_complete);
 	CONNECT (report_load_failed);
-	CONNECT (set_title);
+	CONNECT (title_changed);
 	CONNECT (zoom_level_changed);
 	CONNECT (get_history_list);
 

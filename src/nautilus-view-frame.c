@@ -51,11 +51,15 @@ enum {
 	REPORT_LOAD_PROGRESS,
 	REPORT_LOAD_COMPLETE,
 	REPORT_LOAD_FAILED,
-	SET_TITLE,
+	TITLE_CHANGED,
 	ZOOM_LEVEL_CHANGED,
 	CLIENT_GONE,
 	GET_HISTORY_LIST,
 	LAST_SIGNAL
+};
+
+struct NautilusViewFrameDetails {
+	char *title;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
@@ -146,14 +150,14 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 						   report_load_failed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	signals[SET_TITLE] =
-		gtk_signal_new ("set_title",
+	signals[TITLE_CHANGED] =
+		gtk_signal_new ("title_changed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-						   set_title),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+						   title_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 	
 	signals[ZOOM_LEVEL_CHANGED] =
 		gtk_signal_new ("zoom_level_changed",
@@ -189,6 +193,8 @@ static void
 nautilus_view_frame_initialize (NautilusViewFrame *view)
 {
 	GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);
+
+	view->details = g_new0 (NautilusViewFrameDetails, 1);
 }
 
 static void
@@ -243,6 +249,9 @@ nautilus_view_frame_destroy (GtkObject *object)
 	}
 	
 	nautilus_view_frame_destroy_client (frame);
+
+	g_free (frame->details->title);
+	g_free (frame->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -381,6 +390,13 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	return TRUE;
 }
 
+static void
+set_up_for_new_location (NautilusViewFrame *view)
+{
+	g_free (view->details->title);
+	view->details->title = NULL;
+}
+
 void
 nautilus_view_frame_load_location (NautilusViewFrame *view,
                                    const char *location)
@@ -389,6 +405,8 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	g_return_if_fail (view->component_class != NULL);
+
+	set_up_for_new_location (view);
 	
 	if (view->component_class->load_location == NULL) {
 		return;
@@ -659,7 +677,11 @@ nautilus_view_frame_report_location_change (NautilusViewFrame *view,
                                             const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOCATION_CHANGE], location);
+
+	set_up_for_new_location (view);
+
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[REPORT_LOCATION_CHANGE], location);
 }
 
 void
@@ -712,7 +734,23 @@ nautilus_view_frame_set_title (NautilusViewFrame *view,
                                const char *title)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[SET_TITLE], title);
+	g_return_if_fail (title != NULL);
+
+	/* Only do work if the title actually changed. */
+	if (view->details->title != NULL
+	    && strcmp (view->details->title, title) == 0) {
+		return;
+	}
+
+	g_free (view->details->title);
+	view->details->title = g_strdup (title);
+	gtk_signal_emit (GTK_OBJECT (view), signals[TITLE_CHANGED]);
+}
+
+char *
+nautilus_view_frame_get_title (NautilusViewFrame *view)
+{
+	return g_strdup (view->details->title);
 }
 
 void

@@ -141,7 +141,7 @@ create_factory (PortableServer_POA poa,
 }
 
 /* Keeps track of the one and only desktop window. */
-static NautilusDesktopWindow *nautilus_application_desktop;
+static NautilusDesktopWindow *nautilus_application_desktop_window;
 
 /* Keeps track of all the nautilus windows. */
 static GSList *nautilus_application_window_list;
@@ -435,7 +435,7 @@ nautilus_application_startup (NautilusApplication *application,
 	CORBA_Object_release (shell, &ev);
 
 	need_main_loop = nautilus_application_window_list != NULL
-		|| nautilus_application_desktop != NULL;
+		|| nautilus_application_desktop_window != NULL;
 
  out:
 	CORBA_exception_free (&ev);
@@ -443,45 +443,29 @@ nautilus_application_startup (NautilusApplication *application,
 }
 
 static void
-nautilus_application_destroy_desktop_window (GtkObject *obj, NautilusApplication *application)
-{
-	nautilus_application_desktop = NULL;
-}
-
-static NautilusDesktopWindow *
 nautilus_application_create_desktop_window (NautilusApplication *application)
 {
-	NautilusDesktopWindow *window;
-	
-	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
+	g_return_if_fail (nautilus_application_desktop_window == NULL);
+	g_return_if_fail (NAUTILUS_IS_APPLICATION (application));
 
-	window = nautilus_desktop_window_new (application);
-
-	gtk_signal_connect (GTK_OBJECT (window),
-			    "destroy", nautilus_application_destroy_desktop_window,
-			    application);
-
-	nautilus_application_desktop = window;
-
-	return window;
+	nautilus_application_desktop_window = nautilus_desktop_window_new (application);
+	gtk_widget_show (GTK_WIDGET (nautilus_application_desktop_window));
 }
 
 void
 nautilus_application_open_desktop (NautilusApplication *application)
 {
-	NautilusDesktopWindow *desktop_window;
-
-	if (nautilus_application_desktop == NULL) {
-		desktop_window = nautilus_application_create_desktop_window (application);
+	if (nautilus_application_desktop_window == NULL) {
+		nautilus_application_create_desktop_window (application);
 	}
-	gtk_widget_show (GTK_WIDGET (desktop_window));
 }
 
 void
 nautilus_application_close_desktop (void)
 {
-	if (nautilus_application_desktop != NULL) {
-		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop));
+	if (nautilus_application_desktop_window != NULL) {
+		gtk_widget_unref (GTK_WIDGET (nautilus_application_desktop_window));
+		nautilus_application_desktop_window = NULL;
 	}
 	
 	if (nautilus_application_window_list == NULL && gtk_main_level () > 0) {
@@ -497,12 +481,11 @@ nautilus_application_close_all_windows (void)
 	}
 }
 
-
 static void
-nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
+nautilus_application_destroyed_window (GtkObject *object, NautilusApplication *application)
 {
-	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, obj);
-	if (nautilus_application_window_list == NULL && nautilus_application_desktop == NULL) {
+	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, object);
+	if (nautilus_application_window_list == NULL && nautilus_application_desktop_window == NULL) {
 		gtk_main_quit ();
 	}
 }
@@ -518,7 +501,7 @@ nautilus_application_create_window (NautilusApplication *application)
 						  "app", GTK_OBJECT (application),
 						  "app_id", "nautilus", NULL));
 	gtk_signal_connect (GTK_OBJECT (window),
-			    "destroy", nautilus_application_destroy_window,
+			    "destroy", nautilus_application_destroyed_window,
 			    application);
 
 	nautilus_application_window_list = g_slist_prepend (nautilus_application_window_list, window);

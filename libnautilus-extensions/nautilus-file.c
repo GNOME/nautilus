@@ -343,6 +343,8 @@ destroy (GtkObject *object)
 
 	nautilus_async_destroying_file (file);
 	
+	remove_from_link_hash_table (file);
+
 	directory = file->details->directory;
 	
 	if (directory->details->as_file == file) {
