@@ -298,7 +298,7 @@ get_drag_pixbuf (FMListView *view, int *offset_x, int *offset_y)
 		*offset_x = view->details->drag_x - cell_area.x;
 		*offset_y = view->details->drag_y - cell_area.y;
 
-		gtk_tree_path-free (path);
+		gtk_tree_path_free (path);
 	}
 
 	return ret;
