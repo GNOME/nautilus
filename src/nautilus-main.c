@@ -177,6 +177,8 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+	/* disable bug-buddy */
+	putenv("GNOME_DISABLE_CRASH_DIALOG=1");
 
 	/* Get parameters. */
 	kill_shell = FALSE;
