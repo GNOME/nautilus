@@ -16,13 +16,15 @@ glib:		   glib-1-2
 gtk+:		   gtk-1-2
 gnome-xml:	   LIB_XML_1_X
 ORBit:		   orbit-stable-0-5
+oaf:               HEAD
+gconf:             HEAD
 gnome-libs:	   gnome-libs-1-0
 gdk-pixbuf:	   HEAD (with --enable-canvas-pixbuf)
 gnome-print:	   HEAD
-bonobo:		   HEAD
-gnome-vfs:	   HEAD
+bonobo:		   HEAD (with --enable-oaf=yes)
+gnome-vfs:	   HEAD (with --enable-oaf=yes)
 libglade:	   HEAD
-gtkhtml:	   HEAD
+gtkhtml:	   HEAD (with --without-bonobo)
 eog:               HEAD
 
 ORBit requires you to install popt-1.5, which can be fetched from:
