@@ -1,3 +1,9 @@
+2000-09-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/browser.xml:
+	fixed bug 3169, emblems should come last in property browser,
+	by changing the order in the xml definition file.
+	
 2000-09-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
@@ -8,7 +14,7 @@
 	unfortunately, that broke nautilus_gdk_pixbuf_load_async, which was
 	reading until it got an EOF but not returning the pixbuf if it got
 	an error of any kind.  Fixed by checking for EOF and allowing it; a
-	better fix might be to read the file size and only reading the
+	better fix might be to read the file size and only read the
 	proper amount, which we might consider doing later.
 	
 2000-09-20  Robey Pointer  <robey@eazel.com>
