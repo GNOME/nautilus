@@ -39,6 +39,8 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <libnautilus/nautilus-view.h>
+
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
@@ -55,7 +57,11 @@ struct _NautilusRSSControlDetails {
 	BonoboObject *control;
 	NautilusScalableFont *font;	
 
+	int items_v_offset;
+	
 	char* title;
+	char* main_uri;
+	
 	GdkPixbuf *logo;
 	GdkPixbuf *bullet;
 	GList *items;
@@ -167,15 +173,16 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 	bullet_path = nautilus_pixmap_file ("bullet.png");
 	rss_control->details->bullet = gdk_pixbuf_new_from_file (bullet_path);
 	g_free (bullet_path);
-		
-	/* make the bonobo control */
+
+	/* embed it into a frame */		
 	frame = gtk_frame_new (NULL);
   	gtk_frame_set_shadow_type(GTK_FRAME (frame), GTK_SHADOW_OUT);
   	gtk_widget_show (frame);
 	gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (rss_control));
 	
+	/* make the bonobo control */
 	rss_control->details->control = (BonoboObject*) bonobo_control_new (GTK_WIDGET (frame));
-
+	
 	/* attach a property bag with the configure property */
 	property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, rss_control);
 	bonobo_control_set_properties (BONOBO_CONTROL(rss_control->details->control), property_bag);
@@ -210,6 +217,7 @@ nautilus_rss_control_destroy (GtkObject *object)
 	rss_control = NAUTILUS_RSS_CONTROL (object);
 	g_free (rss_control->details->rss_uri);
 	g_free (rss_control->details->title);
+	g_free (rss_control->details->main_uri);
 	
 	if (rss_control->details->logo != NULL) {
 		gdk_pixbuf_unref (rss_control->details->logo);
@@ -288,8 +296,8 @@ rss_read_done_callback (GnomeVFSResult result,
 {
 	xmlDocPtr rss_document;
 	xmlNodePtr image_node, channel_node;
-	xmlNodePtr  current_node, title_node, uri_node;
-	char *image_uri, *title;
+	xmlNodePtr  current_node, title_node, temp_node, uri_node;
+	char *image_uri, *title, *temp_str;
 	NautilusRSSControl *rss_control;
 	NautilusPixbufLoadHandle *load_image_handle;
 	
@@ -312,14 +320,25 @@ rss_read_done_callback (GnomeVFSResult result,
 	/* extract the title and set it */
 	channel_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (rss_document), "channel");
 	if (channel_node != NULL) {		
-			title_node = nautilus_xml_get_child_by_name (channel_node, "title");
-			if (title_node != NULL) {
-				title = xmlNodeGetContent (title_node);				
+			temp_node = nautilus_xml_get_child_by_name (channel_node, "title");
+			if (temp_node != NULL) {
+				title = xmlNodeGetContent (temp_node);				
 				if (title != NULL) {
 					nautilus_rss_control_set_title (rss_control, title);
 					xmlFree (title);	
 				}
 			}
+			
+			temp_node = nautilus_xml_get_child_by_name (channel_node, "link");
+			if (temp_node != NULL) {
+				temp_str = xmlNodeGetContent (temp_node);				
+				if (temp_str != NULL) {
+					g_free (rss_control->details->main_uri);
+					rss_control->details->main_uri = g_strdup (temp_str);
+					xmlFree (temp_str);	
+				}
+			}
+		
 	}
 		
 	/* extract the image uri and, if found, load it asynchronously */
@@ -552,6 +571,8 @@ nautilus_rss_control_draw (GtkWidget *widget, GdkRectangle *box)
 
 	v_offset = draw_rss_logo_image (control, temp_pixbuf, 2);
 	v_offset = draw_rss_title (control, temp_pixbuf, v_offset);
+	control->details->items_v_offset = v_offset;
+	
 	v_offset += 6;
 	v_offset = draw_rss_items (control, temp_pixbuf, v_offset);
 
@@ -588,7 +609,18 @@ nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *event)
 static gboolean
 nautilus_rss_control_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-	g_message ("button press");
+	NautilusRSSControl *rss_control;
+	char *command;
+	int result;
+	
+	rss_control = NAUTILUS_RSS_CONTROL (widget);
+	
+	if (event->x < (widget->allocation.x + rss_control->details->items_v_offset)) {
+		command = g_strdup_printf ("nautilus %s", rss_control->details->main_uri);
+		result = system (command);
+		g_free (command);
+	}
+	
 	return FALSE;
 }
 

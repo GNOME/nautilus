@@ -1,3 +1,13 @@
+2001-01-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
+	(rss_read_done_callback), (nautilus_rss_control_draw),
+	(nautilus_rss_control_button_press_event):
+	captured the channel link from the xml file, added title and logo
+	hit-testing, and made it launch a new window pointed at the
+	channel link when the user clicks on the logo or title.
+	
 2001-01-02  Andy Hertzfeld  <andy@eazel.com>
 
 	first check-in to post-1_0 branch.
