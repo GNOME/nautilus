@@ -86,7 +86,10 @@ typedef enum ElementIndex {
 	PARAMDEF, /* 76 */
 	VOID,
 	GUISUBMENU,
-	UNDEFINED /* 79 */
+	INTERFACE,
+	LINK, /* 80 */
+	MENUCHOICE, 
+	UNDEFINED /* 82 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

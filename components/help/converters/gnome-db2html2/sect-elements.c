@@ -61,7 +61,7 @@ ElementInfo sect_elements[] = {
 	{ GUIBUTTON, "guibutton", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUIICON, "guiicon", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUILABEL, "guilabel", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
-	{ GUIMENU, "guimenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_arrow_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIMENU, "guimenu", (startElementSAXFunc) sect_menu_start_element, (endElementSAXFunc) sect_menu_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUIMENUITEM, "guimenuitem", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ HARDWARE, "hardware", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ KEYCAP, "keycap", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
@@ -83,7 +83,10 @@ ElementInfo sect_elements[] = {
 	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (endElementSAXFunc) sect_funcparams_end_element, (charactersSAXFunc) sect_write_characters},
 	{ PARAMDEF, "paramdef", (startElementSAXFunc) sect_paramdef_start_element, NULL, (charactersSAXFunc) sect_write_characters},
 	{ VOID, "void", (startElementSAXFunc) sect_void_start_element, NULL, NULL },
-	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_arrow_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_menu_start_element, (endElementSAXFunc) sect_menu_end_element, (charactersSAXFunc) sect_write_characters},
+	{ INTERFACE, "interface", (startElementSAXFunc) sect_interface_start_element, (endElementSAXFunc) sect_interface_end_element, (charactersSAXFunc) sect_write_characters},
+	{ LINK, "link", (startElementSAXFunc) sect_link_start_element, (endElementSAXFunc) sect_link_end_element, (charactersSAXFunc) sect_write_characters},
+	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -655,11 +658,11 @@ sect_title_characters (Context *context,
 		sect_print (context, "<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 		if (stack_el == NULL)
-			sect_print (context, "<A href=\"ghelp:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
+			sect_print (context, "<A href=\"help:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
 				 context->base_file);
 #if 0
 		else
-			sect_print (context, "<A href=\"ghelp:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
+			sect_print (context, "<A href=\"help:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
 				 context->base_file,
 				 sect_context->topid,
 				 sect_context->top);
@@ -736,6 +739,37 @@ sect_ulink_end_element (Context *context, const gchar *name)
 }
 
 void
+sect_link_start_element (Context *context,
+			 const char *name,
+			 const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<A HREF=\"help:%s", context->base_file);
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (g_strcasecmp (*atrs_ptr, "linkend") == 0) {
+			atrs_ptr++;
+			sect_print (context, "?%s", *atrs_ptr);
+			break;
+		}
+	}
+	sect_print (context, "\">");
+}
+
+void
+sect_link_end_element (Context *context, const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context, "</A>");
+}
+
+void
 sect_xref_start_element (Context *context,
 			const gchar *name,
 			const xmlChar **atrs)
@@ -746,7 +780,7 @@ sect_xref_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<A HREF=\"ghelp:%s", context->base_file);
+	sect_print (context, "<A HREF=\"help:%s", context->base_file);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "linkend")) {
@@ -887,6 +921,27 @@ sect_graphic_start_element (Context *context,
 }
 
 void
+sect_interface_start_element (Context *context,
+				   const char *name,
+				   const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<SPAN CLASS=\"INTERFACE\">");
+}
+
+void 
+sect_interface_end_element (Context *context,
+				 const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</SPAN>");
+}
+
+void
 sect_em_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -927,6 +982,63 @@ sect_tt_end_element (Context *context,
 
 	sect_print (context, "</TT>");
 }
+
+void 
+sect_menu_start_element (Context *context,
+			 const char *name,
+			 const xmlChar **atrs)
+{
+	GSList *element_list = NULL;
+	ElementIndex index;
+	
+	if (!IS_IN_SECT (context))
+		return;
+	
+/*	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA)); */
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (MENUCHOICE));
+
+	index = find_first_parent (context, element_list);
+	g_slist_free (element_list);
+	
+	switch (index) {
+		case MENUCHOICE:
+			sect_print (context, "<B>");
+			break;
+		default:
+			return;
+	};
+}
+
+void
+sect_menu_end_element (Context *context,
+                         const char *name)
+{
+        GSList *element_list = NULL;
+        ElementIndex index;
+
+        if (!IS_IN_SECT (context))
+                return;
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (MENUCHOICE));
+        index = find_first_parent (context, element_list);
+	g_slist_free (element_list);
+
+        switch (index) {
+                case MENUCHOICE:
+                        sect_print (context, "-&gt;</B>");
+                        break;
+                default:
+                        return;
+        };
+}
+
 
 void
 sect_b_start_element (Context *context,
