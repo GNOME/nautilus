@@ -277,7 +277,7 @@ generate_xml_package_list (const char* pkg_template_file,
 	char** entry_array;
 	char** package_array;
 	char *tags[] = {"NAME", "VERSION", "MINOR", "ARCH", "BYTESIZE", "SUMMARY", NULL};
-	int num_tags = 6;
+	int num_tags = 5;
 	int lines;
 	
 	doc = xmlNewDoc ("1.0");
@@ -313,11 +313,11 @@ generate_xml_package_list (const char* pkg_template_file,
 
 			package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
 			
-			for (i = 1; i <= num_tags; i++) {
-				if (package_array[i]) {
-					data = xmlNewChild (package, NULL, tags[i], package_array[i]);
+			for (i = 0; i <= num_tags; i++) {
+				if (package_array[i+1]) {
+					data = xmlNewChild (package, NULL, tags[i], package_array[i+1]);
 				} else {
-					g_error ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+					g_warning ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
 				}
 			}
 			g_strfreev (package_array);

@@ -70,28 +70,30 @@ int     arg_dry_run,
 	arg_query;
 char    *arg_server,
 	*arg_config_file,
+	*arg_package_list,
 	*arg_tmp_dir;
 
 CORBA_ORB orb;
 CORBA_Environment ev;
 
 static const struct poptOption options[] = {
+	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},	
 	{"debug", '0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
-	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
-	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
-	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
-	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
-	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
-	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
-	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
-	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
-	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
+	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
+	{"file",'\0', POPT_ARG_NONE, &arg_file, 0, N_("RPM args are filename"), NULL},
+	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
-	{"file",'\0', POPT_ARG_NONE, &arg_file, 0, N_("RPM args are filename"), NULL},
-	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},
+	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
+	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
+	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
+	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
+	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
+	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
+	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
+	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -149,6 +151,10 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	}
 	if (arg_force) {
 		Trilobite_Eazel_Install__set_force (service, TRUE, &ev);
+	}
+	if (arg_package_list) {
+		Trilobite_Eazel_Install__set_package_list (service, arg_package_list, &ev);
+		check_ev ("packagelist");
 	}
 /*
 

@@ -232,7 +232,11 @@ filename_from_url (char *url)
 	while ((ptr != url) && (*ptr != '/')) { 
 		ptr--; 
 	}
-	filename = g_strdup (ptr + 1);
+	if (ptr == url) {
+		filename = g_strdup (ptr);
+	} else {
+		filename = g_strdup (ptr + 1);
+	}
 	
 	return filename;
 }

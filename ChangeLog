@@ -1,3 +1,28 @@
+2000-08-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(set_parameters_from_command_line):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_category_list_from_categorydata_list):
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_package_list),
+	(impl_Eazel_Install__get_package_list), (eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(filename_from_url):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_rpm_transaction_process_pipe),
+	(do_rpm_transaction):
+	The cli tool can now read from a local xml file and if the rpm's
+	are present (this depends on all fields in the xml being filled)
+	it will use those.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list):
+	* nautilus-installer/src/installer.c: (installer):
+	* nautilus-installer/src/main.c:
+	Some patches for reading local files (bug#2021)
+
 2000-08-07  set J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/inventory/Makefile.am:

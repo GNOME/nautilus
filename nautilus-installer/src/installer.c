@@ -20,7 +20,6 @@
 
 #define HOSTNAME "testmachine.eazel.com"
 #define PORT_NUMBER 80
-#define PROTOCOL PROTOCOL_HTTP
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
@@ -36,7 +35,7 @@ static char *package_list[LAST] = {
 char *failure_info;
 int installer_debug;
 int installer_test;
-
+int installer_local;
 
 static void 
 eazel_install_progress (EazelInstall *service, 
@@ -337,7 +336,7 @@ void installer (GtkWidget *window,
 						 "update", TRUE,
 						 "uninstall", method==UNINSTALL ? TRUE : FALSE,
 						 "downgrade", TRUE,
-						 "protocol", PROTOCOL,
+						 "protocol", installer_local ? PROTOCOL_LOCAL: PROTOCOL_HTTP,
 						 "tmp_dir", TMP_DIR,
 						 "rpmrc_file", RPMRC,
 						 "server", HOSTNAME,
@@ -347,13 +346,6 @@ void installer (GtkWidget *window,
 						 NULL));
 	g_assert (service != NULL);
 
-	eazel_install_set_server (service, HOSTNAME);
-	eazel_install_set_rpmrc_file (service, RPMRC);
-	eazel_install_set_package_list_storage_path (service, "/package-list.xml");
-	eazel_install_set_rpm_storage_path (service, REMOTE_RPM_DIR);
-	eazel_install_set_tmp_dir (service, TMP_DIR);
-	eazel_install_set_server_port (service, PORT_NUMBER);
-	eazel_install_set_protocol (service, PROTOCOL);	
 	if (!installer_debug) {
 		eazel_install_open_log (service, "/tmp/nautilus-install.log");
 	}

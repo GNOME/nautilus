@@ -192,8 +192,6 @@ corba_category_list_from_categorydata_list (GList *categories)
 	GList *iterator;
 	int i;
 
-	g_return_val_if_fail (categories != NULL, NULL);
-
 	corbacats = Trilobite_Eazel_CategoryStructList__alloc ();
 	corbacats->_length = g_list_length (categories);
 	corbacats->_buffer = CORBA_sequence_Trilobite_Eazel_CategoryStruct_allocbuf (corbacats->_length);

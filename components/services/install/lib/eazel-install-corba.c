@@ -287,6 +287,23 @@ impl_Eazel_Install__get_log_file (impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static void
+impl_Eazel_Install__set_package_list (impl_POA_Trilobite_Eazel_Install *servant,
+				 const CORBA_char *value,
+				 CORBA_Environment *ev)
+{
+	eazel_install_set_package_list (servant->object, value);
+}
+
+
+static CORBA_char*
+impl_Eazel_Install__get_package_list (impl_POA_Trilobite_Eazel_Install *servant,
+				 const CORBA_char *value,
+				 CORBA_Environment *ev)
+{
+	return eazel_install_get_package_list (servant->object); 
+}
+
+static void
 impl_Eazel_Install__set_protocol (impl_POA_Trilobite_Eazel_Install *servant,
 				  const Trilobite_Eazel_ProtocolEnum value,
 				  CORBA_Environment *ev)
@@ -380,6 +397,9 @@ eazel_install_get_epv ()
 
 	epv->_set_log_file = (gpointer)&impl_Eazel_Install__set_log_file;
 	epv->_get_log_file = (gpointer)&impl_Eazel_Install__get_log_file;
+
+	epv->_set_package_list = (gpointer)&impl_Eazel_Install__set_package_list;
+	epv->_get_package_list = (gpointer)&impl_Eazel_Install__get_package_list;
 
 	epv->_set_tmp_dir = (gpointer)&impl_Eazel_Install__set_tmp_dir;
 	epv->_get_tmp_dir = (gpointer)&impl_Eazel_Install__get_tmp_dir;

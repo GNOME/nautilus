@@ -551,6 +551,7 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 	
 	/* while something there... */
 	while (!feof (pipe)) {
+		fflush (pipe);
 		fgets (tmp, 1023, pipe);
 		if (feof (pipe)) {
 			break;
@@ -614,11 +615,7 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 									     service->private->packsys.rpm.total_size);
 				}
 			}
-		} else {
-			if (fflush (pipe)==0) {
-				g_warning ("cannot flush");
-			}
-		}
+		} 
 	}
 
 	fclose (pipe);
@@ -752,6 +749,7 @@ do_rpm_transaction (EazelInstall *service,
 		char **argv;
 		int i;
 		int flags;
+		int useless_stderr;
 		GList *iterator;
 		 
 		/* Create argv list */
@@ -769,7 +767,7 @@ do_rpm_transaction (EazelInstall *service,
 			res = service->private->packsys.rpm.num_packages;
 		} 
 		/* start /bin/rpm... */
-		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, NULL)!=0) {
+		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr)!=0) {
 			g_warning ("Could not start rpm");
 			res = service->private->packsys.rpm.num_packages;
 		} else {
