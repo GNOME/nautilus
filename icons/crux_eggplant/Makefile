@@ -16,7 +16,7 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ../..
-prefix = /gnome
+prefix = /gnome/PR3_BRANCH
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -122,7 +122,7 @@ INTLOBJS =
 LIBPNG = -lpng -lz
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
-MAINT = 
+MAINT = #
 MAKEINFO = makeinfo
 MEDUSA_CFLAGS = -I/gnome/include -I/gnome/lib/vfs/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -D_REENTRANT -Wsign-promo -Wno-sign-compare
 MEDUSA_LIBS = -rdynamic -L/gnome/lib -lmedusa -lgnomevfs -lgmodule -lgthread -lglib -lpthread -ldl
@@ -142,16 +142,16 @@ ORBIT_CONFIG = /gnome/bin/orbit-config
 ORBIT_IDL = /gnome/bin/orbit-idl
 ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
-PACKAGESYSTEM = libeazelpackagesystem-rpm3.la
+PACKAGESYSTEM = libeazelpackagesystem-rpm4.la
 PAM_LIBS = -ldl -lpam -lpam_misc
 POFILES =  ca.po da.po de.po en_GB.po es.po fi.po fr.po ga.po gl.po hu.po it.po ja.po ko.po nl.po no.po pl.po pt_BR.po ru.po sk.po sv.po ta.po tr.po uk.po zh_TW.Big5.po
 POSUB = po
 RANLIB = ranlib
-RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb1
-RPM_VERSION = 3.0.5
+RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb2 -lrpmio
+RPM_VERSION = 4.0
 USE_INCLUDED_LIBINTL = no
 USE_NLS = yes
-VERSION = 0.5.0
+VERSION = 0.8
 VFS_CFLAGS = -I/gnome/include -I/gnome/lib/vfs/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -D_REENTRANT -Wsign-promo -Wno-sign-compare
 VFS_LIBS = -rdynamic -L/gnome/lib -lgnomevfs -lgmodule -lgthread -lglib -lpthread -ldl
 XML_CFLAGS = -I/gnome/include/gnome-xml
@@ -187,7 +187,7 @@ TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
-$(srcdir)/Makefile.in:  Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/Makefile.in: # Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu icons/crux_eggplant/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)

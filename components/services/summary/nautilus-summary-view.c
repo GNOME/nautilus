@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 
 #include <gnome.h>
 #include <libgnomeui/gnome-stock.h>
@@ -197,7 +198,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		
 		temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 		gtk_widget_show (temp_scrolled_window);
-		viewport = gtk_viewport_new (NULL, NULL);
+		viewport = nautilus_viewport_new (NULL, NULL);
 		widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 		gtk_widget_show (viewport);
 		gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
@@ -277,7 +278,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* create the services scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (temp_scrolled_window);
-	viewport = gtk_viewport_new (NULL, NULL);
+	viewport = nautilus_viewport_new (NULL, NULL);
 	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
@@ -337,7 +338,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* create the services scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (temp_scrolled_window);
-	viewport = gtk_viewport_new (NULL, NULL);
+	viewport = nautilus_viewport_new (NULL, NULL);
 	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
@@ -400,7 +401,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (temp_scrolled_window);
 	
-	viewport = gtk_viewport_new (NULL, NULL);
+	viewport = nautilus_viewport_new (NULL, NULL);
 	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
