@@ -50,11 +50,6 @@ typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj,
 						       const char *file_to_report,
 						       const char *target_file);
 
-/* This string defines the url for the rpmsearch cgi script.
-   It should contain a %s for the server name, and later 
-   a %d for the portnumber. In this order, no other
-   order */
-#define CGI_BASE "http://%s:%d/catalog/find" 
 
 #ifdef EAZEL_INSTALL_SLIM	       
 
@@ -142,6 +137,13 @@ http_fetch_remote_file (EazelInstall *service,
                 get_failed = 1;
         }
 
+	/* bootstrap installer does it this way */
+	if (g_getenv ("http_proxy") != NULL) {
+		if (ghttp_set_proxy (request, g_getenv ("http_proxy")) != 0) {
+			g_warning (_("Proxy: Invalid uri !"));
+			get_failed = 1;
+		}
+	}
         if (ghttp_set_uri (request, url) != 0) {
                 g_warning (_("Invalid uri !"));
                 get_failed = 1;
@@ -203,8 +205,7 @@ http_fetch_remote_file (EazelInstall *service,
 
         if (get_failed != 0) {
 		return FALSE;
-        }
-	else {
+        } else {
 		return TRUE;
 	}
 } /* end http_fetch_remote_file */
@@ -687,25 +688,7 @@ get_url_for_package  (EazelInstall *service,
 	search_url = get_search_url_for_package (service, entry, data);
 	trilobite_debug ("Search URL: %s", search_url);
 
-#if 0
-	{
-		/* NOTE: uses snprintf, as this memory ends up somewhere in libc */
-		char *tmp;
-		int len;
-
-		len = 28+strlen (trilobite_get_useragent_string (FALSE, NULL));
-		tmp = (char*)malloc (len);
-		snprintf (tmp, len-1, "GNOME_VFS_HTTP_USER_AGENT=%s", 
-			  trilobite_get_useragent_string (FALSE, NULL));
-		putenv (tmp);
-		/* NOTE: tmp is now owned by env, wonder if it's leaked everytime
-		   I set it...
-		   FIXME: bugzilla.eazel.com  */
-	}
-#else
-	/* i think this is a better way... */
-	setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), 1);
-#endif
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
 
 	if (trilobite_fetch_uri (search_url, &body, &length)) {
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
@@ -769,9 +752,11 @@ char* get_search_url_for_package (EazelInstall *service,
 {
 	char *url;
 	DistributionInfo dist;
-	url = g_strdup_printf (CGI_BASE,
+
+	url = g_strdup_printf ("http://%s:%d%s",
 			       eazel_install_get_server (service),
-			       eazel_install_get_server_port (service));
+			       eazel_install_get_server_port (service),
+			       eazel_install_get_cgi_path (service));
 
 	dist = trilobite_get_distribution ();
 

@@ -111,6 +111,7 @@ struct _TransferOptions {
 	char* pkg_list_storage_path;       /* Remote path to package-list.xml */
 	char* tmp_dir;                     /* Local directory to store incoming RPMs */
 	char* rpmrc_file;                  /* Location of the rpm resource file */
+	char* cgi_path;			   /* Path to CGI on remote server */
 };
 void transferoptions_destroy (TransferOptions *topts);
 

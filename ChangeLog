@@ -1,3 +1,26 @@
+2000-09-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_transfer_configuration):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_new_with_config):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (eazel_install_fetch_file),
+	(eazel_install_fetch_package), (get_url_for_package),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/trilobite/doc/gconf.txt:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_setenv):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+
+	Un-hardcoded the CGI path (for the RPM database server) and made
+	it a gconf setting.  Use trilobite_setenv to set the user agent
+	string.
+	
 2000-09-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 558 (Rubber-band selection of files in icon

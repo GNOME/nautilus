@@ -42,7 +42,7 @@ static GConfEngine *conf_engine = NULL;
 /* these are NOT reasonable defaults. */
 #define DEFAULT_SERVER		"services.eazel.com"
 #define DEFAULT_PORT		8888
-
+#define DEFAULT_CGI_PATH	"/catalog/find"
 
 
 /* called by atexit so we can close the gconf connection */
@@ -210,14 +210,21 @@ TransferOptions *
 init_default_transfer_configuration (void)
 {
 	TransferOptions *rv;
+	char *p;
 
 	check_gconf_init ();
 	rv = g_new0 (TransferOptions, 1);
 
 	rv->port_number = get_conf_int ("server/port", DEFAULT_PORT);
 	rv->hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
+	if ((p = strchr (rv->hostname, ':')) != NULL) {
+		/* make "server/port" optional -- could just be in "server/hostname" */
+		*p = 0;
+		rv->port_number = atoi (p+1);
+	}
 	rv->tmp_dir = get_conf_string ("server/temp-dir", "/tmp/eazel-install");
 	rv->rpmrc_file = get_conf_string ("server/rpmrc", "/usr/lib/rpm/rpmrc");
+	rv->cgi_path = get_conf_string ("server/cgi-path", DEFAULT_CGI_PATH);
 
 	return rv;
 }

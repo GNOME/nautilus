@@ -3,7 +3,7 @@ the happy table of gconf settings used by trilobite!
 (i) int value
 (b) boolean value
 brackets surround the [default value] that you should use if the gconf
-setting doesn't exist.
+    setting doesn't exist.
 
 /apps/eazel-trilobite/
 	default-services-uri
@@ -26,8 +26,10 @@ setting doesn't exist.
 		allow-downgrade (b)
 		server/
 			port (i)
-			hostname
+			hostname (if "hostname:port", overrides above port)
 			temp-dir
 			rpmrc
+			cgi-path
+
 
 
