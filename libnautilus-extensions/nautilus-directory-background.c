@@ -182,11 +182,11 @@ nautilus_file_background_get_default_settings (const char* theme_source,
 }
 
 static gboolean
-nautilus_gnome_config_string_match_no_case (const char *path, const char *test_value)
+nautilus_gnome_config_string_match_no_case_with_default (const char *path, const char *test_value, gboolean *was_default)
 {
 	char *value;
 	gboolean result;
-	value = gnome_config_get_string (path);
+	value = gnome_config_get_string_with_default (path, was_default);
 	result = !nautilus_strcasecmp (value, test_value);
 	g_free (value);
 	return result;
@@ -209,8 +209,9 @@ nautilus_file_background_read_desktop_settings (char **color,
 {
 	int	 image_alignment;
 	char*	 image_local_path;
-	char*	 default_image_file;
-	gboolean no_alignment;
+	char*	 default_image_uri;
+	gboolean no_alignment_set;
+	gboolean no_image_set;
 	NautilusBackgroundImagePlacement default_placement;
 	
 	char	*end_color;
@@ -218,25 +219,30 @@ nautilus_file_background_read_desktop_settings (char **color,
 	char	*default_color;
 	gboolean use_gradient;
 	gboolean is_horizontal;
-	gboolean no_start_color;
-	gboolean no_end_color;
+	gboolean no_start_color_set;
+	gboolean no_end_color_set;
+	gboolean no_gradient_set;
+	gboolean no_gradient_orientation_set;
 
-	nautilus_file_background_get_default_settings (desktop_theme_source, &default_color, &default_image_file, &default_placement, combine);
+	nautilus_file_background_get_default_settings (desktop_theme_source, &default_color, &default_image_uri, &default_placement, combine);
 	/* note - value of combine comes from the theme, not currently setable in gnome_config */
 
-	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper=none");
-	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment);
+	image_local_path = gnome_config_get_string_with_default ("/Background/Default/wallpaper", &no_image_set);
 
-	if (nautilus_strcasecmp (image_local_path, "none") != 0) {
+	if (no_image_set) {
+		*image = g_strdup (default_image_uri);
+	} else if (nautilus_strcasecmp (image_local_path, "none") != 0) {
 		*image = gnome_vfs_get_uri_from_local_path (image_local_path);
 	} else {
 		*image = NULL;
 	}
 	
 	g_free(image_local_path);
-	g_free(default_image_file);	
+	g_free(default_image_uri);
 
-	if (no_alignment) {
+	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment_set);
+
+	if (no_alignment_set) {
 		*placement = default_placement;
 	} else {
 		 switch (image_alignment) {
@@ -261,19 +267,21 @@ nautilus_file_background_read_desktop_settings (char **color,
 		 }
 	}
 
-	end_color     = gnome_config_get_string_with_default ("/Background/Default/color2", &no_end_color);
-	start_color   = gnome_config_get_string_with_default ("/Background/Default/color1", &no_start_color);
-	use_gradient  = !nautilus_gnome_config_string_match_no_case ("/Background/Default/simple=solid", "solid");
-	is_horizontal = !nautilus_gnome_config_string_match_no_case ("/Background/Default/gradient=vertical", "vertical");
+	end_color     = gnome_config_get_string_with_default ("/Background/Default/color2", &no_end_color_set);
+	start_color   = gnome_config_get_string_with_default ("/Background/Default/color1", &no_start_color_set);
+	use_gradient  = !nautilus_gnome_config_string_match_no_case_with_default ("/Background/Default/simple", "solid", &no_gradient_set);
+	is_horizontal = !nautilus_gnome_config_string_match_no_case_with_default ("/Background/Default/gradient", "vertical", &no_gradient_orientation_set);
 
-	if (use_gradient) {
-		if (no_start_color || no_end_color) {
+	if (no_gradient_set || no_gradient_orientation_set || no_start_color_set) {
+		*color = g_strdup (default_color);
+	} else if (use_gradient) {
+		if (no_end_color_set) {
 			*color = g_strdup (default_color);
 		} else {
 			*color = nautilus_gradient_new (start_color, end_color , is_horizontal);
 		}
 	} else {
-		*color = g_strdup (no_start_color ? default_color : start_color);
+		*color = g_strdup (start_color);
 	}
 
 	g_free(start_color);
