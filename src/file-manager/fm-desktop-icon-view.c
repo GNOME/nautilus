@@ -762,8 +762,14 @@ update_trash_link_and_delete_copies (void)
 				    "trash-empty.png", 
 				    NAUTILUS_TRASH_URI,
 				    NULL,
-				    NAUTILUS_LINK_TRASH);
+				    NAUTILUS_LINK_TRASH);				    				    
 	g_free (desktop_path);
+	
+	/* Make sure link represents current trash state */
+	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
+						   	   nautilus_trash_monitor_is_empty (),
+						   	   NULL);
+
 }
 
 static void

@@ -1,3 +1,13 @@
+2001-02-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6653, throwing away something with the desktop not on will
+	bring up an empty trash if the desktop is later turned on
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_trash_link_and_delete_copies):
+	Preflight state of trash icon when we are doing all of the other
+	icon state validity checks.
+
 2001-02-14  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
