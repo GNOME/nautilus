@@ -24,6 +24,14 @@
 
 #include "nautilus.h"
 #include "nautilus-bookmark.h"
+#include <libnautilus/nautilus-icon-factory.h>
+
+struct _NautilusBookmarkDetails
+{
+	gchar 	  *name;
+	gchar     *uri;
+};
+
 
 
 static GtkObjectClass *parent_class = NULL;
@@ -38,8 +46,10 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (object));
 
 	bookmark = NAUTILUS_BOOKMARK(object);
-	g_free(bookmark->name);
-	g_free(bookmark->uri);
+
+	g_free (bookmark->details->name);
+	g_free (bookmark->details->uri);
+	g_free (bookmark->details);
 
 	/* Chain up */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
@@ -72,8 +82,7 @@ class_init (NautilusBookmarkClass *class)
 static void
 init (NautilusBookmark *bookmark)
 {
-	g_assert(bookmark->name == NULL);
-	g_assert(bookmark->uri == NULL);
+	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }
 
 
@@ -153,7 +162,40 @@ nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->name;
+	return bookmark->details->name;
+}
+
+gboolean	    
+nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
+				       guint icon_size,
+				       GdkPixmap **pixmap_return,
+				       GdkBitmap **mask_return)
+{
+	GdkPixbuf *pixbuf;
+	NautilusFile *file;
+
+
+	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
+
+	/* FIXME: This might be a bookmark that points to nothing, or
+	 * maybe its uri cannot be converted to a NautilusFile for some
+	 * other reason. It should get some sort of generic icon, but for
+	 * now it gets none.
+	 */
+	if (file == NULL)
+		return FALSE;
+
+	pixbuf = nautilus_icon_factory_get_icon_for_file (
+		nautilus_get_current_icon_factory(),
+		file,
+		icon_size);
+		
+	nautilus_file_unref (file);
+
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 100);
+	gdk_pixbuf_unref (pixbuf);
+
+	return TRUE;
 }
 
 const gchar *
@@ -161,7 +203,7 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->uri;
+	return bookmark->details->uri;
 }
 
 NautilusBookmark *
@@ -171,8 +213,8 @@ nautilus_bookmark_new (const gchar *name, const gchar *uri)
 
 	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
 
-	new_bookmark->name = g_strdup(name);
-	new_bookmark->uri = g_strdup(uri);
+	new_bookmark->details->name = g_strdup(name);
+	new_bookmark->details->uri = g_strdup(uri);
 
 	return new_bookmark;
 }

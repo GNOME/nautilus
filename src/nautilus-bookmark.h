@@ -40,10 +40,11 @@ typedef struct _NautilusBookmark NautilusBookmark;
 #define NAUTILUS_IS_BOOKMARK_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK))
 
+typedef struct _NautilusBookmarkDetails NautilusBookmarkDetails;
+
 struct _NautilusBookmark {
 	GtkObject object;
-	gchar 	 *name;
-	gchar    *uri;
+	NautilusBookmarkDetails *details;	
 };
 
 struct _NautilusBookmarkClass {
@@ -59,6 +60,13 @@ NautilusBookmark   *nautilus_bookmark_new	   (const gchar *name,
 NautilusBookmark   *nautilus_bookmark_copy	   (const NautilusBookmark *bookmark);
 const gchar	   *nautilus_bookmark_get_name	   (const NautilusBookmark *bookmark);
 const gchar	   *nautilus_bookmark_get_uri	   (const NautilusBookmark *bookmark);
+
+gboolean	    nautilus_bookmark_get_pixmap_and_mask
+						   (const NautilusBookmark *bookmark,
+						    guint icon_size,
+						    GdkPixmap **pixmap_return,
+						    GdkBitmap **mask_return);
+						    
 
 gint		    nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b);
 

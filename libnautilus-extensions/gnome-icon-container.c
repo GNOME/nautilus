@@ -2351,19 +2351,22 @@ void
 gnome_icon_container_set_zoom_level(GnomeIconContainer *container, gint new_level)
 {
         gint pinned_level = new_level;
-	double zoom_levels[7] = { 0.25, 0.50, 0.75, 1.0, 1.5, 2.0, 4.0 };
 
         if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST)
-            pinned_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
+		pinned_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
         else if (pinned_level > NAUTILUS_ZOOM_LEVEL_LARGEST)
-            pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
+        	pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
  
         if (pinned_level != container->details->zoom_level)
-          {
-            container->details->zoom_level = pinned_level;
-	    gnome_canvas_set_pixels_per_unit(GNOME_CANVAS(container), zoom_levels[pinned_level]);
-
-          }       
+        {
+		double pixels_per_unit;
+          
+        	container->details->zoom_level = pinned_level;
+            
+        	pixels_per_unit = (float)(nautilus_icon_size_for_zoom_level (pinned_level)) / 
+        			  NAUTILUS_ICON_SIZE_STANDARD;
+		gnome_canvas_set_pixels_per_unit(GNOME_CANVAS(container), pixels_per_unit);
+        }       
 }
 
 

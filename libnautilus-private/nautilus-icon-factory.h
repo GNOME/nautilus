@@ -29,6 +29,19 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-directory.h>
 
+/* NautilusIconFactory is a class that knows how to hand out icons to be
+ * used for representing files and some other objects. It was designed
+ * specifically to be useful for the Nautilus file browser, but could be
+ * used by any program that wants to display the standard icon for a
+ * file.
+ * 
+ * The most common usage is to get a NautilusIconFactory object with
+ * nautilus_get_current_icon_factory, then ask for an icon for a specific
+ * file with nautilus_icon_factory_get_icon_for_file. The caller can ask
+ * for any size icon, but normally will use one of the defined 
+ * NAUTILUS_ICON_SIZE macros.
+ */
+
 /* Names for Nautilus's different zoom levels, from tiniest items to largest items */
 typedef enum {
 	NAUTILUS_ZOOM_LEVEL_SMALLEST,
@@ -46,13 +59,13 @@ typedef enum {
  * be square. Since individual icons can be stretched,
  * each icon is not constrained to this nominal size.
  */
-#define NAUTILUS_ICON_SIZE_SMALLEST	16
+#define NAUTILUS_ICON_SIZE_SMALLEST	12
 #define NAUTILUS_ICON_SIZE_SMALLER	24
-#define NAUTILUS_ICON_SIZE_SMALL	32
+#define NAUTILUS_ICON_SIZE_SMALL	36
 #define NAUTILUS_ICON_SIZE_STANDARD	48
-#define NAUTILUS_ICON_SIZE_LARGE	64
+#define NAUTILUS_ICON_SIZE_LARGE	72
 #define NAUTILUS_ICON_SIZE_LARGER	96
-#define NAUTILUS_ICON_SIZE_LARGEST     144
+#define NAUTILUS_ICON_SIZE_LARGEST     192
 
 typedef struct _NautilusIconFactory NautilusIconFactory;
 

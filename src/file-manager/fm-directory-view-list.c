@@ -187,6 +187,9 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 static void
 fm_directory_view_list_destroy (GtkObject *object)
 {
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (object));
+
+	g_free (FM_DIRECTORY_VIEW_LIST (object)->details);
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 

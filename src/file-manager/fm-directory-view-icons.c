@@ -140,7 +140,7 @@ fm_directory_view_icons_destroy (GtkObject *object)
 	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
 
 	g_list_free (icon_view->details->icons_not_positioned);
-	icon_view->details->icons_not_positioned = NULL;
+	g_free (icon_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }

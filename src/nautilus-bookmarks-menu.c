@@ -28,6 +28,7 @@
 #include "nautilus-bookmarklist.h"
 #include "nautilus-bookmarks-window.h"
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-icon-factory.h>
 
 /* object data strings */
 #define LAST_STATIC_ITEM	"last static item"
@@ -38,6 +39,8 @@
 
 static void add_bookmark_cb				(GtkMenuItem *, gpointer);
 static void bookmark_activated_cb			(GtkMenuItem *, gpointer);
+GtkWidget * bookmark_menu_item_new 			(const NautilusBookmark *bookmark);
+static GtkWidget *create_pixmap_widget_for_bookmark 	(const NautilusBookmark *bookmark);
 static void edit_bookmarks_cb				(GtkMenuItem *, gpointer);
 static void list_changed_cb				(NautilusBookmarklist *, 
 						 	 gpointer);
@@ -135,6 +138,61 @@ bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 	nautilus_window_goto_uri(menu->window, 
 				 nautilus_bookmark_get_uri(
 				 	nautilus_bookmarklist_item_at(bookmarks, item_index)));
+}
+
+static GtkWidget *
+create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
+{
+	GdkPixmap *gdk_pixmap;
+	GdkBitmap *mask;
+
+	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
+						    NAUTILUS_ICON_SIZE_SMALLER,
+					  	    &gdk_pixmap, 
+					  	    &mask))
+	{
+		return NULL;
+	}
+
+	return gtk_pixmap_new (gdk_pixmap, mask);
+}
+
+/**
+ * bookmark_menu_item_new:
+ * 
+ * Return a menu item representing a bookmark.
+ * @bookmark: The bookmark the menu item represents.
+ * Return value: A newly-created bookmark.
+ **/ 
+GtkWidget *
+bookmark_menu_item_new (const NautilusBookmark *bookmark)
+{
+	GtkWidget *menu_item;
+	GtkWidget *pixmap_widget;
+	GtkWidget *accel_label;
+
+	/* Could check gnome_preferences_get_menus_have_icons here, but these
+	 * are more important than stock menu icons, since they're connected to
+	 * user data. For now let's not let them be turn-offable and see if
+	 * anyone objects strenuously.
+	 */
+	menu_item = gtk_pixmap_menu_item_new ();
+
+	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
+	if (pixmap_widget != NULL)
+	{
+		gtk_widget_show (pixmap_widget);
+		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
+	}
+	
+	accel_label = gtk_accel_label_new (nautilus_bookmark_get_name (bookmark));
+	gtk_misc_set_alignment (GTK_MISC (accel_label), 0.0, 0.5);
+
+	gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
+	gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);
+	gtk_widget_show (accel_label);
+
+	return menu_item;
 }
 
 static void
@@ -355,10 +413,9 @@ nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 	for (index = 0; index < bookmark_count; ++index)
 	{
 		GtkWidget *item;
+		
+		item = bookmark_menu_item_new (nautilus_bookmarklist_item_at(bookmarks, index));
 
-		item = gtk_menu_item_new_with_label(
-			nautilus_bookmark_get_name(
-				nautilus_bookmarklist_item_at(bookmarks, index)));
 
 		/* The signal will need to know both the menu that this item is
 		 * attached to (to get at the window), and the bookmark

@@ -219,6 +219,8 @@ fm_directory_view_destroy (GtkObject *object)
 	if (view->details->background_context_menu != NULL)
 		gtk_object_unref(GTK_OBJECT(view->details->background_context_menu));
 
+	g_free (view->details);
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 

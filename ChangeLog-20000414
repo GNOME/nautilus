@@ -1,3 +1,56 @@
+2000-01-28  John Sullivan  <sullivan@eazel.com>
+
+	A little zoom cleanup:
+
+	* libnautilus/gnome-icon-container-private.h: #include
+	nautilus-icon-factory.h and remove copy of NautilusZoomLevel enum.
+	* libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_set_zoom_level): Now uses ratios of standard
+	NAUTILUS_ICON_SIZEs to compute canvas pixels/unit instead of locally
+	storing ratios.
+	* libnautilus/nautilus-icon-factory.h:
+	Changed pixel sizes of some NAUTILUS_ICON_SIZE #defines to match
+	the ratios formerly used in gnome-icon-container.c
+
+	Added icons to bookmarks menu and window:
+
+	* libnautilus/nautilus-directory.c: (nautilus_file_get): Changed
+	options passed to gnome_vfs_get_file_info to match those used in
+	directory view; this causes the mime type to be read so the custom
+	image icon can appear.
+	* src/nautilus-bookmark.c:
+	* src/nautilus-bookmark.h:
+	Now uses details structure to hold implementation details.
+	(nautilus_bookmark_get_pixmap_and_mask): New utility function to
+	get image suitable for use in a GtkMenuItem or GtkCList
+	(nautilus_bookmark_destroy): Free details structure
+	(init): Alloc details structure
+	* src/nautilus-bookmarks-menu.c:
+	(create_pixmap_widget_for_bookmark): New utility function to create
+	the kind of pixmap widget that a menu item likes.
+	(bookmark_menu_item_new): New utility function that returns a menu
+	item with bookmark's icon & name installed.
+	(nautilus_bookmarks_menu_repopulate): Uses bookmark_menu_item_new.
+	* src/nautilus-bookmarks-window.c:
+	Now uses #defines for the list columns (icon & name)
+	(create_bookmarks_window): Create one more column to hold icon;
+	set column width & row height taking new icon column into account.
+	(install_bookmark_icon): New function, installs pixmap & mask for
+	bookmark into GtkCList cell.
+	(repopulate): Fill in icon column as well as name column.
+	
+	Fixed storage leaks:
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_destroy): free details structure
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_destroy): free details structure
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_icons_destroy): free details structure; also,
+	don't bother setting details->icons_not_positioned to NULL since
+	details is about to be freed.
+
+
 2000-01-28  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus_icons_view_icon_item.c,h:
@@ -18,7 +71,7 @@
 	* src/file-manager/fm-default-file-icon.h: Removed file
 	* src/file-manager/fm-icon-cache.c: Removed file
 	* src/file-manager/fm-icon-cache.h: Removed file
-	* src/file-manager/Makefile.am: Took out mentions of remove files.
+	* src/file-manager/Makefile.am: Took out mentions of removed files.
 
 	* libnautilus/nautilus-default-file-icon.c: New file
 	* libnautilus/nautilus-default-file-icon.h: New file

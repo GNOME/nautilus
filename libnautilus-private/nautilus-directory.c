@@ -795,7 +795,9 @@ nautilus_file_get (const char *uri)
 	/* Get info on the file. */
 	file_info = gnome_vfs_file_info_new ();
 	result = gnome_vfs_get_file_info (uri, file_info,
-					  GNOME_VFS_FILE_INFO_FASTMIMETYPE, NULL);
+					  GNOME_VFS_FILE_INFO_GETMIMETYPE
+					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
 	if (result != GNOME_VFS_OK)
 		return NULL;
 

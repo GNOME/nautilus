@@ -23,7 +23,7 @@
 */
 
 #include "nautilus-bookmarks-window.h"
-
+#include <libnautilus/nautilus-icon-factory.h>
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or
@@ -70,6 +70,11 @@ static void	repopulate		      (void);
 
 
 
+
+#define BOOKMARK_LIST_COLUMN_ICON		0
+#define BOOKMARK_LIST_COLUMN_NAME		1
+#define BOOKMARK_LIST_COLUMN_COUNT		2
+
 /* layout constants */
 
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
@@ -130,11 +135,16 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	bookmark_list_widget = gtk_clist_new (1);
+	bookmark_list_widget = gtk_clist_new (BOOKMARK_LIST_COLUMN_COUNT);
 	gtk_widget_ref (bookmark_list_widget);
 	gtk_widget_show (bookmark_list_widget);
 	gtk_container_add (GTK_CONTAINER (list_scroller), bookmark_list_widget);
 	gtk_clist_column_titles_hide (GTK_CLIST (bookmark_list_widget));
+	gtk_clist_set_column_width (GTK_CLIST (bookmark_list_widget),
+				    BOOKMARK_LIST_COLUMN_ICON,
+				    NAUTILUS_ICON_SIZE_SMALLER);
+	gtk_clist_set_row_height (GTK_CLIST (bookmark_list_widget),
+				  NAUTILUS_ICON_SIZE_SMALLER);
 	gtk_clist_set_reorderable(GTK_CLIST (bookmark_list_widget), TRUE);
 	gtk_clist_set_use_drag_icons(GTK_CLIST (bookmark_list_widget), FALSE);
 
@@ -262,6 +272,27 @@ get_selection_exists ()
 }
 
 static void
+install_bookmark_icon (const NautilusBookmark *bookmark, gint row)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *bitmap;
+
+	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
+		  				    NAUTILUS_ICON_SIZE_SMALLER,
+						    &pixmap,
+						    &bitmap))
+	{
+		return;
+	}
+
+	gtk_clist_set_pixmap (GTK_CLIST (bookmark_list_widget),	
+			      row,
+			      BOOKMARK_LIST_COLUMN_ICON,
+			      pixmap,
+			      bitmap);
+}
+
+static void
 nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 {
 	const gchar *window_geometry;
@@ -354,7 +385,7 @@ on_name_field_changed (GtkEditable *editable,
 	 * user has changed text so we update real bookmark later. 
 	 */
 	gtk_clist_set_text(GTK_CLIST(bookmark_list_widget), 
-			   get_selected_row(), 0, 
+			   get_selected_row(), BOOKMARK_LIST_COLUMN_NAME, 
 			   gtk_entry_get_text(GTK_ENTRY(name_field)));
 	text_changed = TRUE;
 }
@@ -511,11 +542,16 @@ repopulate ()
 	/* Fill the list in with the bookmark names. */
 	for (index = 0; index < nautilus_bookmarklist_length(bookmarks); ++index)
 	{
-		gchar *text[1];
+		gchar *text[BOOKMARK_LIST_COLUMN_COUNT];
+		const NautilusBookmark *bookmark;
+		gint new_row;
 
-		text[0] = (gchar *)nautilus_bookmark_get_name(
-			nautilus_bookmarklist_item_at(bookmarks, index));
-		gtk_clist_append(clist, text);
+		bookmark = nautilus_bookmarklist_item_at(bookmarks, index);
+		text[BOOKMARK_LIST_COLUMN_ICON] = NULL;
+		text[BOOKMARK_LIST_COLUMN_NAME] = 
+			(gchar *)nautilus_bookmark_get_name(bookmark);
+		new_row = gtk_clist_append(clist, text);
+		install_bookmark_icon (bookmark, new_row);
 	}
 	    
 	/* Set the sensitivity of widgets that require a selection */

@@ -27,6 +27,7 @@
 
 #include "gnome-icon-container.h"
 #include "gnome-icon-container-dnd.h"
+#include "nautilus-icon-factory.h"
 #include <libgnomeui/gnome-icon-item.h>
 
 /* An Icon.  */
@@ -168,19 +169,6 @@ struct _GnomeIconContainerDetails {
         GdkFont *label_font;
 };
 
-/* Names for Nautilus's different zoom levels, from tiniest items to largest items */
-/* FIXME:  These are also defined in fm-icon-cache.h and shouldn't be in both places */
-
-typedef enum {
-	NAUTILUS_ZOOM_LEVEL_SMALLEST,
-	NAUTILUS_ZOOM_LEVEL_SMALLER,
-	NAUTILUS_ZOOM_LEVEL_SMALL,
-	NAUTILUS_ZOOM_LEVEL_STANDARD,
-	NAUTILUS_ZOOM_LEVEL_LARGE,
-	NAUTILUS_ZOOM_LEVEL_LARGER,
-	NAUTILUS_ZOOM_LEVEL_LARGEST
-} NautilusZoomLevel;
-
 /* Layout and icon size constants.
    These will change based on the zoom level eventually, so they
    should probably become function calls instead of macros.
@@ -191,8 +179,8 @@ typedef enum {
 
 #define GNOME_ICON_CONTAINER_CELL_SPACING(container)    4
 
-#define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     48
-#define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    48
+#define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     NAUTILUS_ICON_LEVEL_STANDARD
+#define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    NAUTILUS_ICON_LEVEL_STANDARD
 
 GnomeIconContainerIcon *gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
 							      const char *uri);
