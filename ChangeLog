@@ -1,3 +1,16 @@
+2001-01-29  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5974 (menu item to change Nautilus theme
+	should mention "theme" in its name)
+
+	* src/nautilus-shell-ui.xml: After bugzilla discussion
+	with Vera, renamed "Change Appearance..." -> "Nautilus Themes..."
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	Reduced timed-wait initial timeout from 5 seconds to
+	3 after playing around with the gnome-vfs test-method.
+	
+
 2001-01-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
