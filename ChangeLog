@@ -1,3 +1,116 @@
+2000-10-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_removed,
+	nautilus_directory_notify_files_moved): Use
+	`nautilus_file_get_existing', not `nautilus_file_get', to check if
+	a file is already known. `nautilus_file_get' would have created
+	new NautilusFiles and NautilusDirectories only to do redundant
+	notification later in the function. Also, the old code was a bit
+	silly because `nautilus_file_get' only returns NULL for a NULL
+	URI.
+
+	Work towards bug 3362, eliminate directory metadata.
+	
+	* libnautilus-extensions/nautilus-file-attributes.h: Added
+	NAUTILUS_FILE_ATTRIBUTE_METADATA attribute.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(set_up_request_by_file_attributes):
+
+	* libnautilus-extensions/nautilus-wait-until-ready.h,
+	libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-directory.c,
+	libnautilus-extensions/nautilus-file.c
+	(nautilus_directory_call_when_ready,
+	nautilus_directory_wait_until_ready,
+	nautilus_directory_file_monitor_add,
+	nautilus_self_check_directory, nautilus_file_monitor_add,
+	nautilus_file_call_when_ready, nautilus_file_wait_until_ready):
+	Remove monitor_metadata or wait_for_metadata attribtues from these
+	calls; the new way to do it is to monitor or wait for the METADATA
+	file attribute.
+	
+	* libnautilus-extensions/nautilus-directory-private.h
+	libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal,
+	nautilus_directory_call_when_ready_internal,
+	nautilus_directory_check_if_ready_internal): Eliminate
+	monitor_metadata, wait_for_metadata, etc arguments.
+
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_callback_connect_directory), (merged_call_when_ready),
+	(merged_file_monitor_add), (monitor_add_directory):
+
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(vfs_call_when_ready), (vfs_file_monitor_add):
+
+	* libnautilus-extensions/nautilus-directory-background.c
+	(nautilus_connect_background_to_directory_metadata): Monitor
+	metadata the new approved way.
+
+	* libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_directory_wait_for_metadata,
+	nautilus_mime_get_default_component_for_uri_internal,
+	nautilus_mime_get_short_list_components_for_uri,
+	nautilus_mime_get_all_components_for_uri,
+	get_mime_type_from_file): Wait for metadata the new approved way.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_activate_file, fm_directory_view_load_uri,
+	finish_loading_uri, metadata_ready_callback):
+	Monitor/call_when_ready using the new API.
+
+	* src/file-manager/fm-properties-window.c:
+	(create_properties_window, fm_properties_window_present):
+	Monitor/call_when_ready using the new API.
+
+	* src/file-manager/fm-search-list-view.c (real_adding_file):
+	Monitor/call_when_ready using the new API.
+
+	* src/file-manager/nautilus-trash-monitor.c
+	(nautilus_trash_monitor_initialize): Monitor/call_when_ready using
+	the new API.
+
+	* src/nautilus-applicable-views.c (nautilus_navigation_info_new):
+	Monitor/call_when_ready using the new API.
+
+	* components/notes/nautilus-notes.c (notes_load_metainfo):
+	Monitor/call_when_ready using the new API.
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_add,
+	nautilus_tree_model_monitor_node): Monitor/call_when_ready using the new API.
+
+	* src/nautilus-sidebar-title.c, src/nautilus-sidebar-title.h
+	(nautilus_sidebar_title_set_uri): Monitor/call_when_ready using
+	the new API, and use file metadata instead of directory metadata.
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_destroy,
+	nautilus_sidebar_add_panel_items,
+	nautilus_sidebar_background_is_default, receive_dropped_uri_list,
+	receive_dropped_color, receive_dropped_keyword,
+	(background_settings_changed_callback,
+	background_appearance_changed_callback, background_reset_callback,
+	open_with_callback, nautilus_sidebar_update_buttons,
+	nautilus_sidebar_update_appearance, nautilus_sidebar_set_uri):
+	Monitor/call_when_ready using the new API, and use file metadata
+	instead of directory metadata. Keep around a NautilusFile
+	representing the current sidebar location, simplifying bunches of
+	code and hopefully eliminating potential redundant I/O.
+
+	* src/nautilus-window-manage-views.c
+	(viewed_file_changed_callback, position_and_show_window_callback,
+	nautilus_window_end_location_change_callback):
+	Monitor/call_when_ready using the new API, and use file metadata
+	instead of directory metadata. Keep around a NautilusFile
+	representing the current sidebar location, simplifying bunches of
+	code and hopefully eliminating potential redundant I/O.
+
+	* src/nautilus-window.c (nautilus_window_save_geometry): Use file
+	metadata instead of directory metadata.
+
 2000-10-11  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/installer.c:
@@ -67,6 +180,7 @@
 	* nautilus-installer/src/main.c:
 	Check for eazel-hacking presence.
 
+>>>>>>> 1.2325
 2000-10-11  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c: (get_container_uri),
@@ -86,6 +200,7 @@
 	Fix some white space.
 	
 2000-10-11  Rebecca Schulman  <rebecka@eazel.com>
+
 	First part of the bug fix for 3514.
 	We still need to add a local clipboard interface,
 	and set up the clipboard to work with the location bar.

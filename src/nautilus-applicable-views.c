@@ -215,10 +215,11 @@ nautilus_navigation_info_new (const char *location,
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
         
         nautilus_directory_call_when_ready
                 (info->directory,
-                 attributes, TRUE,
+                 attributes,
                  got_metadata_callback, info);
         
         g_list_free (attributes);

@@ -30,6 +30,7 @@
 #define NAUTILUS_SIDEBAR_TITLE_H
 
 #include <gtk/gtkvbox.h>
+#include <libnautilus-extensions/nautilus-file.h>
 
 #define NAUTILUS_TYPE_SIDEBAR_TITLE	       (nautilus_sidebar_title_get_type ())
 #define NAUTILUS_SIDEBAR_TITLE(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR_TITLE, NautilusSidebarTitle))
@@ -52,8 +53,8 @@ typedef struct
 
 GtkType    nautilus_sidebar_title_get_type          (void);
 GtkWidget *nautilus_sidebar_title_new               (void);
-void       nautilus_sidebar_title_set_uri           (NautilusSidebarTitle *sidebar_title,
-						     const char           *new_uri,
+void       nautilus_sidebar_title_set_file          (NautilusSidebarTitle *sidebar_title,
+						     NautilusFile         *file,
 						     const char           *initial_text);
 void       nautilus_sidebar_title_set_text          (NautilusSidebarTitle *sidebar_title,
 						     const char           *new_title);

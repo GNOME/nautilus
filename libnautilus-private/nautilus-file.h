@@ -94,8 +94,7 @@ void                    nautilus_file_unref                     (NautilusFile   
 /* Monitor the file. */
 void                    nautilus_file_monitor_add               (NautilusFile                  *file,
 								 gconstpointer                  client,
-								 GList                         *attributes,
-								 gboolean                       monitor_metadata);
+								 GList                         *attributes);
 void                    nautilus_file_monitor_remove            (NautilusFile                  *file,
 								 gconstpointer                  client);
 
@@ -105,7 +104,6 @@ void                    nautilus_file_monitor_remove            (NautilusFile   
  */
 void                    nautilus_file_call_when_ready           (NautilusFile                  *file,
 								 GList                         *attributes,
-								 gboolean                       wait_for_metadata,
 								 NautilusFileCallback           callback,
 								 gpointer                       callback_data);
 void                    nautilus_file_cancel_call_when_ready    (NautilusFile                  *file,

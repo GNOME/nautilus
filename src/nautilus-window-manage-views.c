@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -457,6 +458,9 @@ static void
 viewed_file_changed_callback (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+        /* FIXME: is the below really the right thing to do for all
+           cases? */
 
 	/* Close window if the file it's viewing has been deleted. */
 	if (nautilus_file_is_gone (window->details->viewed_file)) {
@@ -1127,19 +1131,18 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 }
 
 static void
-position_and_show_window_callback (NautilusDirectory *directory,
-                       		   GList *files,
+position_and_show_window_callback (NautilusFile *file,
                        		   gpointer callback_data)
 {
 	NautilusWindow *window;
 	char *geometry_string;
-
+        
 	window = NAUTILUS_WINDOW (callback_data);
 
 	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					      FALSE)) {
-		geometry_string = nautilus_directory_get_metadata 
-			(directory, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
+		geometry_string = nautilus_file_get_metadata 
+			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
 		if (geometry_string != NULL) {
 			nautilus_gtk_window_set_initial_geometry_from_string 
 				(GTK_WINDOW (window), 
@@ -1153,7 +1156,7 @@ position_and_show_window_callback (NautilusDirectory *directory,
 	gtk_widget_show (GTK_WIDGET (window));
 	
 	/* This directory object was reffed for this callback */
-	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 }                       			     
 
 static void
@@ -1163,7 +1166,6 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 {
         NautilusWindow *window;
         NautilusFile *file;
-        NautilusDirectory *directory;
         const char *requested_uri;
         char *full_uri_for_display;
         char *uri_for_display;
@@ -1172,6 +1174,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         char *type_string;
         char *dialog_title;
  	GnomeDialog *dialog;
+        GList *attributes;
        
         g_assert (navi != NULL);
         
@@ -1187,12 +1190,14 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 		 * metadata (since position info is stored there).
 		 */
                 if (!GTK_WIDGET_VISIBLE (window)) {
-	                directory = nautilus_directory_get (navi->location);
-			nautilus_directory_call_when_ready (directory,
-							    NULL,
-							    TRUE,
-							    position_and_show_window_callback,
-							    window);
+	                file = nautilus_file_get (navi->location);
+
+                        attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+			nautilus_file_call_when_ready (file,
+                                                       attributes,
+                                                       position_and_show_window_callback,
+                                                       window);
+                        g_list_free (attributes);
                 }
 						
                 nautilus_window_set_state_info
@@ -1234,6 +1239,8 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * a stat first.
                  */
         	file = nautilus_file_get (requested_uri);
+                /* FIXME: nautilus_file_get never returns NULL, what
+                   is the code below trying to do? */
         	if (file == NULL) {
                         type_string = NULL;
                 } else {

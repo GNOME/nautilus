@@ -1674,8 +1674,7 @@ nautilus_file_get_name (NautilusFile *file)
 void             
 nautilus_file_monitor_add (NautilusFile *file,
 			   gconstpointer client,
-			   GList *attributes,
-			   gboolean monitor_metadata)
+			   GList *attributes)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
@@ -1683,7 +1682,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
 		 client,
-		 attributes, monitor_metadata);
+		 attributes);
 }   
 			   
 void
@@ -3871,7 +3870,6 @@ nautilus_file_check_if_ready (NautilusFile *file,
 void
 nautilus_file_call_when_ready (NautilusFile *file,
 			       GList *file_attributes,
-			       gboolean wait_for_metadata,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 
@@ -3887,8 +3885,7 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	nautilus_directory_call_when_ready_internal
 		(file->details->directory, file,
-		 file_attributes, wait_for_metadata,
-		 NULL, callback, callback_data);
+		 file_attributes, NULL, callback, callback_data);
 }
 
 void
@@ -4106,15 +4103,14 @@ file_wait_until_ready_callback (NautilusFile *file,
 
 void
 nautilus_file_wait_until_ready (NautilusFile *file,
-				GList *file_attributes,
-				gboolean wait_for_metadata)
+				GList *file_attributes)
 {
 	gboolean callback_done;
 
 	callback_done = FALSE;
 
 	nautilus_file_call_when_ready
-		(file, file_attributes, wait_for_metadata,
+		(file, file_attributes,
 		 file_wait_until_ready_callback, &callback_done);
 	while (!callback_done) {
 		gtk_main_iteration ();

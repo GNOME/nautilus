@@ -915,7 +915,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 		uri = (const char *) p->data;
 
 		/* Find the file. */
-		file = nautilus_file_get (uri);
+		file = nautilus_file_get_existing (uri);
 		if (file == NULL) {
 			continue;
 		}
@@ -968,7 +968,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 		pair = p->data;
 
 		/* Move an existing file. */
-		file = nautilus_file_get (pair->from_uri);
+		file = nautilus_file_get_existing (pair->from_uri);
 		if (file == NULL) {
 			/* Handle this as if it was a new file. */
 			new_files_list = g_list_prepend (new_files_list,
@@ -1172,17 +1172,15 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 void
 nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    GList *file_attributes,
-				    gboolean wait_for_metadata,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (wait_for_metadata == FALSE || wait_for_metadata == TRUE);
 	g_return_if_fail (callback != NULL);
 
 	NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 call_when_ready, (directory, file_attributes, wait_for_metadata,
+		 call_when_ready, (directory, file_attributes,
 				   callback, callback_data));
 }
 
@@ -1205,8 +1203,7 @@ wait_until_ready_callback (NautilusDirectory *directory,
 
 GList *
 nautilus_directory_wait_until_ready (NautilusDirectory *directory,
-				     GList *file_attributes,
-				     gboolean wait_for_metadata)
+				     GList *file_attributes)
 {
 	WaitUntilReadyCallbackData data;
 
@@ -1214,7 +1211,7 @@ nautilus_directory_wait_until_ready (NautilusDirectory *directory,
 	data.files_return = NULL;
 
 	nautilus_directory_call_when_ready
-		(directory, file_attributes, wait_for_metadata,
+		(directory, file_attributes,
 		 wait_until_ready_callback, &data);
 	while (!data.done) {
 		gtk_main_iteration ();
@@ -1240,7 +1237,6 @@ void
 nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     GList *file_attributes,
-				     gboolean monitor_metadata,
 				     gboolean force_reload)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
@@ -1249,7 +1245,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
-				    file_attributes, monitor_metadata,
+				    file_attributes,
 				    force_reload));
 }
 
@@ -1323,11 +1319,14 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
-		 NULL, FALSE, FALSE);
+		 NULL, FALSE);
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, NULL, TRUE,
+
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	nautilus_directory_call_when_ready (directory, attributes,
 					    got_metadata_callback, &data_dummy);
+	g_list_free (attributes);
 
 	while (!got_metadata_flag) {
 		gtk_main_iteration ();
@@ -1373,8 +1372,10 @@ nautilus_self_check_directory (void)
 	directory = nautilus_directory_get ("file:///etc");
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, NULL, TRUE,
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	nautilus_directory_call_when_ready (directory, attributes,
 					    got_metadata_callback, &data_dummy);
+	g_list_free (attributes);
 
 	while (!got_metadata_flag) {
 		gtk_main_iteration ();
@@ -1386,7 +1387,7 @@ nautilus_self_check_directory (void)
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
-	nautilus_directory_call_when_ready (directory, attributes, FALSE,
+	nautilus_directory_call_when_ready (directory, attributes,
 					    got_files_callback, &data_dummy);
 	g_list_free (attributes);
 

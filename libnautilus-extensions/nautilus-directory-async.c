@@ -38,6 +38,7 @@
 #include <parser.h>
 #include <stdlib.h>
 #include <xmlmemory.h>
+#include <stdio.h>
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
 			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
@@ -757,6 +758,14 @@ set_up_request_by_file_attributes (Request *request,
 		request->activation_uri = TRUE;
 	}
 
+	
+	if (!request->metafile) {
+		request->metafile = g_list_find_custom
+			(file_attributes,
+			 NAUTILUS_FILE_ATTRIBUTE_METADATA,
+			 nautilus_str_compare) != NULL;
+	}
+
 	/* FIXME bugzilla.eazel.com 2435:
 	 * Some file attributes are really pieces of metadata.
 	 * This is a confusing/broken design, since other metadata
@@ -780,8 +789,7 @@ void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
 					 gconstpointer client,
-					 GList *file_attributes,
-					 gboolean monitor_metadata)
+					 GList *file_attributes)
 {
 	Monitor *monitor;
 
@@ -795,7 +803,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	monitor->file = file;
 	monitor->client = client;
 	set_up_request_by_file_attributes (&monitor->request, file_attributes);
-	monitor->request.metafile = monitor_metadata;
+
 	monitor->request.file_list = file == NULL;
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
@@ -1125,7 +1133,6 @@ void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     NautilusFile *file,
 					     GList *file_attributes,
-					     gboolean wait_for_metadata,
 					     NautilusDirectoryCallback directory_callback,
 					     NautilusFileCallback file_callback,
 					     gpointer callback_data)
@@ -1146,7 +1153,6 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	}
 	callback.callback_data = callback_data;
 	set_up_request_by_file_attributes (&callback.request, file_attributes);
-	callback.request.metafile = wait_for_metadata;
 	callback.request.file_list = file == NULL && file_attributes != NULL;
 	
 	/* Handle the NULL case. */
@@ -1176,7 +1182,7 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 					    NautilusFile *file,
 					    GList *file_attributes)
 {
-	Request request;
+	Request request = {};
 
 	g_assert (directory != NULL);
 

@@ -27,6 +27,7 @@
 #include "nautilus-trash-monitor.h"
 
 #include "libnautilus-extensions/nautilus-directory.h"
+#include "libnautilus-extensions/nautilus-file-attributes.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 #include "libnautilus-extensions/nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
@@ -105,6 +106,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 {
 	NautilusDirectory *trash_directory;
 	NautilusTrashMonitor *trash_monitor;
+	GList *attributes;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
@@ -116,9 +118,14 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 	trash_monitor->details->trash_directory = trash_directory;
 	trash_monitor->details->empty = TRUE;
 
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+
 	/* Make sure we get notified about changes */
 	nautilus_directory_file_monitor_add
-		(trash_directory, trash_monitor, NULL, TRUE, FALSE);
+		(trash_directory, trash_monitor, attributes, FALSE);
+
+	g_list_free (attributes);
+
     	gtk_signal_connect_while_alive
 		(GTK_OBJECT (trash_directory),
 		 "files_added",

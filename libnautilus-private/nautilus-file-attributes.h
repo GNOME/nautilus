@@ -38,6 +38,8 @@
 #define NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT        "top left text"
 #define NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY         "is directory"
 #define NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE	     "file type"
+#define NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_CHILD_MIME_TYPES "directory child mime types"
+#define NAUTILUS_FILE_ATTRIBUTE_METADATA             "metadata"
 
 #endif /* NAUTILUS_FILE_ATTRIBUTES_H */
 

@@ -45,7 +45,6 @@ typedef struct {
 	gpointer callback_data;
 
 	GList *wait_for_attributes;
-	gboolean wait_for_metadata;
 
 	GList *non_ready_directories;
 	GList *merged_file_list;
@@ -55,7 +54,6 @@ typedef struct {
 	NautilusMergedDirectory *merged;
 
 	GList *monitor_attributes;
-	gboolean monitor_metadata;
 	gboolean force_reload;
 } MergedMonitor;
 
@@ -223,14 +221,12 @@ merged_callback_connect_directory (MergedCallback *merged_callback,
 	nautilus_directory_call_when_ready
 		(real_merged,
 		 merged_callback->wait_for_attributes,
-		 merged_callback->wait_for_metadata,
 		 directory_ready_callback, merged_callback);
 }
 
 static void
 merged_call_when_ready (NautilusDirectory *directory,
 			GList *file_attributes,
-			gboolean wait_for_metadata,
 			NautilusDirectoryCallback callback,
 			gpointer callback_data)
 {
@@ -254,7 +250,6 @@ merged_call_when_ready (NautilusDirectory *directory,
 	merged_callback->callback = callback;
 	merged_callback->callback_data = callback_data;
 	merged_callback->wait_for_attributes = nautilus_g_str_list_copy (file_attributes);
-	merged_callback->wait_for_metadata = wait_for_metadata;
 	for (p = merged->details->directories; p != NULL; p = p->next) {
 		merged_callback->non_ready_directories = g_list_prepend
 			(merged_callback->non_ready_directories, p->data);
@@ -311,7 +306,6 @@ static void
 merged_file_monitor_add (NautilusDirectory *directory,
 			 gconstpointer client,
 			 GList *file_attributes,
-			 gboolean monitor_metadata,
 			 gboolean force_reload)
 {
 	NautilusMergedDirectory *merged;
@@ -334,14 +328,13 @@ merged_file_monitor_add (NautilusDirectory *directory,
 				     (gpointer) client, monitor);
 	}
 	monitor->monitor_attributes = nautilus_g_str_list_copy (file_attributes);
-	monitor->monitor_metadata = monitor_metadata;
 	monitor->force_reload = force_reload;
 	
 	/* Call through to the real directory add calls. */
 	for (p = merged->details->directories; p != NULL; p = p->next) {
 		nautilus_directory_file_monitor_add
 			(p->data, monitor,
-			 file_attributes, monitor_metadata, force_reload);
+			 file_attributes, force_reload);
 	}
 }
 
@@ -454,7 +447,6 @@ monitor_add_directory (gpointer key,
 	nautilus_directory_file_monitor_add
 		(NAUTILUS_DIRECTORY (callback_data), monitor,
 		 monitor->monitor_attributes,
-		 monitor->monitor_metadata,
 		 monitor->force_reload);
 }
 

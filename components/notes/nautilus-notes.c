@@ -35,6 +35,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <libnautilus/libnautilus.h>
@@ -88,6 +89,8 @@ done_with_file (Notes *notes)
 static void
 notes_load_metainfo (Notes *notes)
 {
+        GList *attributes;
+
         gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
         
         done_with_file (notes);
@@ -95,7 +98,12 @@ notes_load_metainfo (Notes *notes)
         if (notes->file == NULL) {
                 return;
         }
-        nautilus_file_call_when_ready (notes->file, NULL, TRUE, finish_loading_note, notes);
+
+        /* FIXME: should monitor file metadata, not just call_when_ready */
+
+        attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+        nautilus_file_call_when_ready (notes->file, attributes, finish_loading_note, notes);
+        g_list_free (attributes);
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */

@@ -70,7 +70,6 @@ vfs_contains_file (NautilusDirectory *directory,
 static void
 vfs_call_when_ready (NautilusDirectory *directory,
 		     GList *file_attributes,
-		     gboolean wait_for_metadata,
 		     NautilusDirectoryCallback callback,
 		     gpointer callback_data)
 {
@@ -80,7 +79,6 @@ vfs_call_when_ready (NautilusDirectory *directory,
 		(directory,
 		 NULL,
 		 file_attributes,
-		 wait_for_metadata,
 		 callback,
 		 NULL,
 		 callback_data);
@@ -105,7 +103,6 @@ static void
 vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
 		      GList *file_attributes,
-		      gboolean monitor_metadata,
 		      gboolean force_reload)
 {
 	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
@@ -118,7 +115,7 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 	nautilus_directory_monitor_add_internal
 		(directory, NULL,
 		 client,
-		 file_attributes, monitor_metadata);
+		 file_attributes);
 }
 
 static void

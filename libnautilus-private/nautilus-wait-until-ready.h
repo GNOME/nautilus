@@ -29,10 +29,8 @@
  */
 
 GList *            nautilus_directory_wait_until_ready     (NautilusDirectory         *directory,
-							    GList                     *file_attributes,
-							    gboolean                   wait_for_metadata);
+							    GList                     *file_attributes);
 
 
 void               nautilus_file_wait_until_ready          (NautilusFile                  *file,
-							    GList                         *attributes,
-							    gboolean                       wait_for_metadata);
+							    GList                         *attributes);

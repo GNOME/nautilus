@@ -112,7 +112,6 @@ typedef struct
 					  NautilusFile              *file);
 	void     (* call_when_ready)     (NautilusDirectory         *directory,
 					  GList                     *file_attributes,
-					  gboolean                   wait_for_metadata,
 					  NautilusDirectoryCallback  callback,
 					  gpointer                   callback_data);
 	void     (* cancel_callback)     (NautilusDirectory         *directory,
@@ -121,7 +120,6 @@ typedef struct
 	void     (* file_monitor_add)    (NautilusDirectory          *directory,
 					  gconstpointer              client,
 					  GList                     *monitor_attributes,
-					  gboolean                   monitor_metadata,
 					  gboolean                   force_reload);
 	void     (* file_monitor_remove) (NautilusDirectory         *directory,
 					  gconstpointer              client);
@@ -165,7 +163,6 @@ NautilusFile	  *nautilus_directory_get_corresponding_file (NautilusDirectory	   
  */
 void               nautilus_directory_call_when_ready      (NautilusDirectory         *directory,
 							    GList                     *file_attributes,
-							    gboolean                   wait_for_metadata,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
@@ -208,7 +205,6 @@ void               nautilus_directory_set_integer_metadata (NautilusDirectory   
 void               nautilus_directory_file_monitor_add     (NautilusDirectory         *directory,
 							    gconstpointer              client,
 							    GList                     *monitor_attributes,
-							    gboolean                   monitor_metadata,
 							    gboolean                   force_reload);
 void               nautilus_directory_file_monitor_remove  (NautilusDirectory         *directory,
 							    gconstpointer              client);

@@ -31,6 +31,7 @@
 #include "nautilus-background.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-file-attributes.h"
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include <X11/Xatom.h>
@@ -747,6 +748,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 {
 	NautilusBackground *background;
 	gpointer old_directory;
+        GList *attributes;
 
 	/* Get at the background object we'll be connecting. */
 	background = nautilus_get_widget_background (widget);
@@ -815,10 +817,13 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                  * list.  This may require a change to the
                  * NautilusDirectory API.
                  */
+
+                attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 		nautilus_directory_file_monitor_add (directory,
 						     background,
-						     NULL, TRUE, FALSE);					     
-		
+						     attributes, FALSE);					     
+		g_list_free (attributes);
+
 		/* arrange for notification when the theme changes */
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
                                                    nautilus_directory_background_theme_changed, background);	

@@ -305,8 +305,7 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 
 		nautilus_file_monitor_add (nautilus_tree_node_get_file (model->details->root_node),
 					   model,
-					   monitor_attributes,
-					   FALSE);
+					   monitor_attributes);
 
 		g_list_free (monitor_attributes);
 	}
@@ -410,7 +409,6 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 	nautilus_directory_file_monitor_add (directory,
 					     model,
 					     monitor_attributes,
-					     FALSE,
 					     TRUE);
 	
 	g_list_free (monitor_attributes);

@@ -102,13 +102,17 @@ static void
 nautilus_directory_wait_for_metadata (NautilusDirectory *directory)
 {
 	GList *file_list;
+	GList *attributes;
 
 	/* When nautilus_directory_wait_until_ready is called this way, it
 	 * currently returns NULL. So theoretically we don't have to free
 	 * the result. But there's no guarantee that this behavior won't
 	 * change, so it's safer to free the result.
 	 */
-	file_list = nautilus_directory_wait_until_ready (directory, NULL, TRUE);
+
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	file_list = nautilus_directory_wait_until_ready (directory, attributes);
+	g_list_free (attributes);
 	nautilus_file_list_free (file_list);
 }
 
@@ -277,8 +281,9 @@ nautilus_mime_get_default_component_for_uri_internal (NautilusDirectory *directo
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
-	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
+	files = nautilus_directory_wait_until_ready (directory, attributes);
 	default_component_string = nautilus_directory_get_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
@@ -505,8 +510,9 @@ nautilus_mime_get_short_list_components_for_uri (NautilusDirectory *directory,
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
-	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
+	files = nautilus_directory_wait_until_ready (directory, attributes);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 
@@ -666,8 +672,9 @@ nautilus_mime_get_all_components_for_uri (NautilusDirectory *directory,
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
-	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
+	files = nautilus_directory_wait_until_ready (directory, attributes);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 
@@ -1504,8 +1511,7 @@ get_mime_type_from_file (NautilusFile *file)
 		file_attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE);
 		
 		nautilus_file_wait_until_ready (file,
-						file_attributes,
-						FALSE);
+						file_attributes);
 		
 		g_list_free (file_attributes);
 		

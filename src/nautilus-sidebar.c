@@ -80,7 +80,7 @@ struct NautilusSidebarDetails {
 	char *default_background_color;
 	char *default_background_image;
 	int selected_index;
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	gboolean background_connected;
 	int old_width;
 };
@@ -285,7 +285,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (sidebar->details->notebook));
 
-	nautilus_directory_unref (sidebar->details->directory);
+	nautilus_file_unref (sidebar->details->file);
 
 	g_free (sidebar->details->uri);
 	g_free (sidebar->details->default_background_color);
@@ -360,7 +360,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 
 	CORBA_exception_init (&ev);
 
-	/* ask OAF for all of the sidebars panel */
+	/* ask OAF for all of the sidebars panels */
 	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
 	oaf_result = oaf_query (query, NULL, &ev);
 	
@@ -406,12 +406,12 @@ nautilus_sidebar_background_is_default (NautilusSidebar *sidebar)
 	char *background_color, *background_image;
 	gboolean is_default;
 	
-	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							    NULL);
-	background_image = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-								    NULL);
+	background_color = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+						       NULL);
+	background_image = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+						       NULL);
 	
 	is_default = background_color == NULL && background_image == NULL;
 	g_free (background_color);
@@ -577,7 +577,6 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 {
 	char **uris;
 	gboolean exactly_one;
-	NautilusFile *file;
 	GtkWindow *window;
 	
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
@@ -616,18 +615,15 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 		}
 		
 		if (uri_is_local_image (uris[0])) {
-			file = nautilus_file_get (sidebar->details->uri);
-						
-			if (file != NULL) {
-				nautilus_file_set_metadata (file,
+			if (sidebar->details->file != NULL) {
+				nautilus_file_set_metadata (sidebar->details->file,
 							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 							    NULL,
 							    uris[0]);
-				nautilus_file_set_metadata (file,
+				nautilus_file_set_metadata (sidebar->details->file,
 							    NAUTILUS_METADATA_KEY_ICON_SCALE,
 							    NULL,
 							    NULL);
-				nautilus_file_unref (file);
 			}
 		} else {	
 			if (nautilus_is_remote_uri (uris[0])) {
@@ -677,8 +673,8 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			(sidebar->details->sidebar_tabs,
 			 x, y, selection_data);
 		
-		nautilus_directory_set_metadata
-			(sidebar->details->directory,
+		nautilus_file_set_metadata
+			(sidebar->details->file,
 			 NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 			 DEFAULT_TAB_COLOR,
 			 color_spec);
@@ -690,8 +686,8 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			(sidebar->details->title_tab,
 			 x, y, selection_data);
 		
-		nautilus_directory_set_metadata
-			(sidebar->details->directory,
+		nautilus_file_set_metadata
+			(sidebar->details->file,
 			 NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
 			 DEFAULT_TAB_COLOR,
 			 color_spec);
@@ -718,11 +714,11 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 			 int x, int y,
 			 GtkSelectionData *selection_data)
 {
-	NautilusFile *file;
-
-	file = nautilus_file_get (sidebar->details->uri);
-	nautilus_drag_file_receive_dropped_keyword (file, selection_data->data);
-	nautilus_file_unref (file);
+	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
+	 * keywords list instantly here. We might need to read the
+	 * metafile first.
+	 */
+	nautilus_drag_file_receive_dropped_keyword (sidebar->details->file, selection_data->data);
 	
 	/* regenerate the display */
 	nautilus_sidebar_update_appearance (sidebar);  	
@@ -995,22 +991,22 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 	g_assert (NAUTILUS_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
 
-	if (sidebar->details->directory == NULL) {
+	if (sidebar->details->file == NULL) {
 		return;
 	}
 	
 	color_spec = nautilus_background_get_color (background);
-	nautilus_directory_set_metadata (sidebar->details->directory,
-					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-					 sidebar->details->default_background_color,
-					 color_spec);
+	nautilus_file_set_metadata (sidebar->details->file,
+				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+				    sidebar->details->default_background_color,
+				    color_spec);
 	g_free (color_spec);
 
 	image = nautilus_background_get_image_uri (background);
-	nautilus_directory_set_metadata (sidebar->details->directory,
-					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-					 sidebar->details->default_background_image,
-					 image);	
+	nautilus_file_set_metadata (sidebar->details->file,
+				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+				    sidebar->details->default_background_image,
+				    image);	
 	g_free (image);
 }
 
@@ -1022,13 +1018,13 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 	gboolean is_default_color, is_default_image;
 	char *background_image, *background_color;
 
-	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							    sidebar->details->default_background_color);
+	background_color = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+						       sidebar->details->default_background_color);
 
-	background_image = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-							    sidebar->details->default_background_image);
+	background_image = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+						       sidebar->details->default_background_image);
 	
 	nautilus_sidebar_title_select_text_color (sidebar->details->title);
 	
@@ -1049,12 +1045,12 @@ background_reset_callback (NautilusBackground *background, NautilusSidebar *side
 {
 	char *combine_mode;
 	
-	if (sidebar->details->directory == NULL) {
+	if (sidebar->details->file == NULL) {
 		return;
 	}
 	
 	/* set up the defaults, but don't write the metdata */
-	gtk_signal_handler_block_by_func (GTK_OBJECT(background),
+	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
 					  background_settings_changed_callback,
 					  sidebar);
 	nautilus_background_set_color (background, sidebar->details->default_background_color);	
@@ -1069,14 +1065,14 @@ background_reset_callback (NautilusBackground *background, NautilusSidebar *side
 					    sidebar);
 					   
 	/* reset the metadata */
-	nautilus_directory_set_metadata (sidebar->details->directory,
-					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-					 sidebar->details->default_background_color,
-					 NULL);
-	nautilus_directory_set_metadata (sidebar->details->directory,
-					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-					 sidebar->details->default_background_image,
-					 NULL);
+	nautilus_file_set_metadata (sidebar->details->file,
+				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+				    sidebar->details->default_background_color,
+				    NULL);
+	nautilus_file_set_metadata (sidebar->details->file,
+				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+				    sidebar->details->default_background_image,
+				    NULL);
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (background),
 				      "reset");
@@ -1137,7 +1133,6 @@ static void
 open_with_callback (GtkWidget *button, gpointer ignored)
 {
 	NautilusSidebar *sidebar;
-	NautilusFile *file;
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
 	
@@ -1145,16 +1140,13 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 	 * window up instantly. We might need to read the metafile
 	 * first.
 	 */
-	file = nautilus_file_get (sidebar->details->uri);
-	g_return_if_fail (file != NULL);
+	g_return_if_fail (sidebar->details->file != NULL);
 
 	nautilus_choose_application_for_file
-		(file,
+		(sidebar->details->file,
 		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))),
 		 nautilus_sidebar_chose_application_callback,
 		 sidebar);
-
-	nautilus_file_unref (file);
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -1271,7 +1263,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	char *button_data;
 	GList *short_application_list;
 	NautilusDirectory *directory;
-	NautilusFile *file;
 	
 	/* dispose of any existing buttons */
 	if (sidebar->details->has_buttons) {
@@ -1280,25 +1271,25 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		make_button_box (sidebar);
 	}
 
-	/* create buttons from directory metadata if necessary */
+	/* create buttons from file metadata if necessary */
 	
-	button_data = nautilus_directory_get_metadata (sidebar->details->directory,
-				NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS,
-				NULL);
+	button_data = nautilus_file_get_metadata (sidebar->details->file,
+						  NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS,
+						  NULL);
 	if (button_data) {
 		add_buttons_from_metadata(sidebar, button_data);
 		g_free(button_data);
 	}
 
-	directory = nautilus_directory_get (sidebar->details->uri);
-	file = nautilus_file_get (sidebar->details->uri);
-	
 	/* Make buttons for each item in short list + "Open with..." catchall,
 	 * unless there aren't any applications at all in complete list. 
 	 */
-	if (nautilus_mime_has_any_applications_for_uri (directory, file)) {
+
+	directory = nautilus_directory_get (sidebar->details->uri);
+
+	if (nautilus_mime_has_any_applications_for_uri (directory, sidebar->details->file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_uri (directory, file);
+			nautilus_mime_get_short_list_applications_for_uri (directory, sidebar->details->file);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 
@@ -1312,7 +1303,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 
 	nautilus_directory_unref (directory);
-	nautilus_file_unref (file);
 }
 
 void
@@ -1344,14 +1334,14 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	
 	/* Set up the background color and image from the metadata. */
 	background_image = NULL;
-	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							    NULL);
+	background_color = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+						       NULL);
 	if (background_color == NULL) {
 		background_color = g_strdup (sidebar->details->default_background_color);
-		background_image = nautilus_directory_get_metadata (sidebar->details->directory,
-							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-							    sidebar->details->default_background_image);
+		background_image = nautilus_file_get_metadata (sidebar->details->file,
+							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+							       sidebar->details->default_background_image);
 	}	
 		
 	/* disable the settings_changed callback, so the background doesn't get
@@ -1371,15 +1361,15 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	g_free (combine_mode);
 	
 	/* set up the color for the tabs */
-	color_spec = nautilus_directory_get_metadata (sidebar->details->directory,
-						      NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
-						      DEFAULT_TAB_COLOR);
+	color_spec = nautilus_file_get_metadata (sidebar->details->file,
+						 NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
+						 DEFAULT_TAB_COLOR);
 	nautilus_sidebar_tabs_set_color(sidebar->details->sidebar_tabs, color_spec);
 	g_free (color_spec);
 
-	color_spec = nautilus_directory_get_metadata (sidebar->details->directory,
-						      NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
-						      DEFAULT_TAB_COLOR);
+	color_spec = nautilus_file_get_metadata (sidebar->details->file,
+						 NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
+						 DEFAULT_TAB_COLOR);
 	nautilus_sidebar_tabs_set_color(sidebar->details->title_tab, color_spec);
 	g_free (color_spec);
 
@@ -1393,10 +1383,10 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 
 void
 nautilus_sidebar_set_uri (NautilusSidebar *sidebar, 
-			      const char* new_uri,
-			      const char* initial_title)
+			  const char* new_uri,
+			  const char* initial_title)
 {       
-	NautilusDirectory *directory;
+	NautilusFile *file;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	g_return_if_fail (new_uri != NULL);
@@ -1410,16 +1400,19 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	g_free (sidebar->details->uri);
 	sidebar->details->uri = g_strdup (new_uri);
 		
-	directory = nautilus_directory_get (sidebar->details->uri);
-	nautilus_directory_unref (sidebar->details->directory);
-	sidebar->details->directory = directory;
+	/* FIXME: we should monitor this file's metadata, and avoid
+           doing any metadata getting until it's ready. */
+
+	file = nautilus_file_get (sidebar->details->uri);
+	nautilus_file_unref (sidebar->details->file);
+	sidebar->details->file = file;
 		
 	nautilus_sidebar_update_appearance (sidebar);
 
 	/* tell the title widget about it */
-	nautilus_sidebar_title_set_uri (sidebar->details->title,
-					sidebar->details->uri,
-					initial_title);
+	nautilus_sidebar_title_set_file (sidebar->details->title,
+					 sidebar->details->file,
+					 initial_title);
 	
 	/* set up the command buttons */
 	nautilus_sidebar_update_buttons (sidebar);

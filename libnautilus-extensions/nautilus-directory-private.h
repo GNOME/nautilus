@@ -102,7 +102,6 @@ void               nautilus_directory_async_state_changed            (NautilusDi
 void               nautilus_directory_call_when_ready_internal       (NautilusDirectory         *directory,
 								      NautilusFile              *file,
 								      GList                     *file_attributes,
-								      gboolean                   monitor_metadata,
 								      NautilusDirectoryCallback  directory_callback,
 								      NautilusFileCallback       file_callback,
 								      gpointer                   callback_data);
@@ -117,8 +116,7 @@ void               nautilus_directory_cancel_callback_internal       (NautilusDi
 void               nautilus_directory_monitor_add_internal           (NautilusDirectory         *directory,
 								      NautilusFile              *file,
 								      gconstpointer              client,
-								      GList                     *attributes,
-								      gboolean                   monitor_metadata);
+								      GList                     *attributes);
 void               nautilus_directory_monitor_remove_internal        (NautilusDirectory         *directory,
 								      NautilusFile              *file,
 								      gconstpointer              client);

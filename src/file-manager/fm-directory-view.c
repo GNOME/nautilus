@@ -113,6 +113,7 @@ struct FMDirectoryViewDetails
 	NautilusZoomable *zoomable;
 
 	NautilusDirectory *model;
+	NautilusFile      *directory_as_file;
 	BonoboUIComponent *ui;
 	
 	guint display_selection_idle_id;
@@ -3645,7 +3646,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->file = file;
 	parameters->use_new_window = use_new_window;
 	nautilus_file_call_when_ready
-		(file, attributes, FALSE, activate_callback, parameters);
+		(file, attributes, activate_callback, parameters);
 
 	/* FIXME bugzilla.eazel.com 2392: Need a timed wait here too. */
 
@@ -3705,6 +3706,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
 	NautilusDirectory *old_model;
+	GList *attributes;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (uri != NULL);
@@ -3724,10 +3726,14 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	view->details->model = nautilus_directory_get (uri);
 	nautilus_directory_unref (old_model);
 
+	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+
 	nautilus_directory_call_when_ready
 		(view->details->model,
-		 NULL, TRUE,
+		 attributes,
 		 metadata_ready_callback, view);
+
+	g_list_free (attributes);
 }
 
 static void
@@ -3751,7 +3757,7 @@ finish_loading_uri (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 	nautilus_directory_file_monitor_add (view->details->model, view,
-					     attributes, FALSE, TRUE);
+					     attributes, TRUE);
 	g_list_free (attributes);
 
 	/* Attach a handler to get any further files that show up as we
@@ -3781,7 +3787,6 @@ metadata_ready_callback (NautilusDirectory *directory,
 	view = callback_data;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (files == NULL);
 	g_assert (view->details->model == directory);
 
 	finish_loading_uri (view);

@@ -587,20 +587,17 @@ nautilus_window_destroy (GtkObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
-	NautilusDirectory *directory;
 	char *geometry_string;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (GTK_WIDGET_VISIBLE (window));
 
-        directory = nautilus_directory_get (window->location);
         geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);
-	nautilus_directory_set_metadata (directory,
-					 NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
-					 NULL,
-					 geometry_string);
+	nautilus_file_set_metadata (window->details->viewed_file,
+				    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
+				    NULL,
+				    geometry_string);
 	g_free (geometry_string);
-	nautilus_directory_unref (directory);
 }
 
 void

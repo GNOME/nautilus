@@ -45,7 +45,6 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
@@ -519,24 +518,16 @@ update_all (NautilusSidebarTitle *sidebar_title)
 }
 
 void
-nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
-				const char *new_uri,
-				const char *initial_text)
+nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
+				 NautilusFile *file,
+				 const char *initial_text)
 {
 	GList *attributes;
-	NautilusFile *file;
 
-	if (new_uri == NULL) {
-		file = NULL;
-	} else {
-		file = nautilus_file_get (new_uri);
-	}
-
-	if (file == sidebar_title->details->file) {
-		nautilus_file_unref (file);
-	} else {
+	if (file != sidebar_title->details->file) {
 		release_file (sidebar_title);
 		sidebar_title->details->file = file;
+		nautilus_file_ref (sidebar_title->details->file);
 	
 		/* attach file */
 		if (file != NULL) {
@@ -553,8 +544,11 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 			attributes = nautilus_icon_factory_get_required_file_attributes ();		
 			attributes = g_list_prepend (attributes,
 						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+			attributes = g_list_prepend (attributes,
+						     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+
 			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
-						   attributes, TRUE);
+						   attributes);
 			g_list_free (attributes);
 		}
 	}

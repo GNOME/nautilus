@@ -1724,7 +1724,9 @@ create_properties_window (NautilusFile *file)
 		attributes = g_list_prepend (attributes,
 					     NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
 	}
-	nautilus_file_monitor_add (file, window, attributes, TRUE);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	nautilus_file_monitor_add (file, window, attributes);
 	g_list_free (attributes);
 
 	/* React to future property changes and file deletions. */
@@ -1857,6 +1859,6 @@ fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 	attribute_list.next = NULL;
 	attribute_list.prev = NULL;
 	nautilus_file_call_when_ready
-		(file_to_display, &attribute_list, FALSE, 
+		(file_to_display, &attribute_list,
 		 create_properties_window_callback, directory_view);
 }
