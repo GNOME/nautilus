@@ -1,3 +1,11 @@
+2001-04-23  Darin Adler  <darin@eazel.com>
+
+	Fix bug 8027 (Viewer preferences are not respected).
+	
+	* src/nautilus-window.c:
+	(nautilus_window_handle_ui_event_callback): Check
+	updating_bonobo_state and ignore any callbacks while it's true.
+
 2001-04-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-preferences-display.c: (main):

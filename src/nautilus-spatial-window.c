@@ -1147,7 +1147,8 @@ nautilus_window_handle_ui_event_callback (BonoboUIComponent *ui,
 		 		 	  const char *state,
 		 		 	  NautilusWindow *window)
 {
-	if (type == Bonobo_UIComponent_STATE_CHANGED
+	if (!window->details->updating_bonobo_state
+	    && type == Bonobo_UIComponent_STATE_CHANGED
 	    && strcmp (state, "1") == 0) {
 	    	handle_view_as_item_from_bonobo_menu (window, id);
 	}
