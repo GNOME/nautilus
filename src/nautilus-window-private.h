@@ -14,7 +14,7 @@ typedef enum {
   RESET_TO_IDLE, /* Not a real item - a command */
   NAVINFO_RECEIVED,
   NEW_CONTENT_VIEW_ACTIVATED,
-  NEW_META_VIEW_ACTIVATED,
+  NEW_SIDEBAR_PANEL_ACTIVATED,
   SYNC_STATE /* Not a real item - a flag */
 } NautilusWindowStateItem;
 

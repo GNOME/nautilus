@@ -59,7 +59,6 @@ nautilus_SOURCES =\
 	nautilus-zoom-control.c			\
 	nautilus-zoom-control.h			\
 	nautilus-zoomable-frame-corba.c		\
-	nautilus.h				\
 	nautilus-application.c			\
 	nautilus-application.h			\
 	nautilus-sidebar.c			\
@@ -78,7 +77,7 @@ nautilus_SOURCES =\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
 	nautilus-window-state.c			\
-	nautlus-window-state.h			\
+	nautilus-window-state.h			\
 	nautilus-window.c			\
 	nautilus-window.h			\
 	$(NULL)

@@ -34,6 +34,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-file-private.h"
 #include "nautilus-directory-metafile.h"
+#include "nautilus-file-utilities.h"
 
 enum {
 	FILES_ADDED,
@@ -48,7 +49,6 @@ static guint signals[LAST_SIGNAL];
 #define METAFILE_NAME ".nautilus-metafile.xml"
 
 /* Specifications for parallel-directory metafile. */
-#define NAUTILUS_DIRECTORY_NAME ".nautilus"
 #define METAFILES_DIRECTORY_NAME "metafiles"
 #define METAFILE_SUFFIX ".xml"
 #define METAFILES_DIRECTORY_PERMISSIONS \
@@ -346,16 +346,16 @@ static GnomeVFSURI *
 construct_alternate_metafile_uri (GnomeVFSURI *uri)
 {
 	GnomeVFSResult result;
-	GnomeVFSURI *home_uri, *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
+	GnomeVFSURI *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
 	char *uri_as_string, *escaped_uri, *file_name;
 
 	/* Ensure that the metafiles directory exists. */
-	home_uri = gnome_vfs_uri_new (g_get_home_dir ());
-	nautilus_directory_uri = gnome_vfs_uri_append_path (home_uri, NAUTILUS_DIRECTORY_NAME);
-	gnome_vfs_uri_unref (home_uri);
-	metafiles_directory_uri = gnome_vfs_uri_append_path (nautilus_directory_uri, METAFILES_DIRECTORY_NAME);
+	nautilus_directory_uri = gnome_vfs_uri_new (nautilus_get_user_directory ());
+	metafiles_directory_uri = gnome_vfs_uri_append_path (nautilus_directory_uri,
+							     METAFILES_DIRECTORY_NAME);
 	gnome_vfs_uri_unref (nautilus_directory_uri);
-	result = nautilus_make_directory_and_parents (metafiles_directory_uri, METAFILES_DIRECTORY_PERMISSIONS);
+	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
+						      METAFILES_DIRECTORY_PERMISSIONS);
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
 		gnome_vfs_uri_unref (metafiles_directory_uri);
 		return NULL;

@@ -341,7 +341,7 @@ nautilus_app_startup (NautilusApp *app,
 	/* Show the "not ready for prime time" dialog after this
 	 * window appears, so it's on top.
 	 */
-	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
+	if (g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
 	  	gtk_signal_connect (GTK_OBJECT (window), "show",
 	  			    display_caveat, window);
   	}

@@ -26,7 +26,7 @@
 #ifndef TRILOBITE_EAZEL_TIME_VIEW_H
 #define TRILOBITE_EAZEL_TIME_VIEW_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtkeventbox.h>
 
 #define OAFIID_TRILOBITE_EAZEL_TIME_VIEW "OAFIID:trilobite_eazel_time_view:de32d812-af19-4359-9902-42318e0089b3"

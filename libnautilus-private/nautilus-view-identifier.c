@@ -55,10 +55,10 @@ get_lang_list (void)
 
         retval = NULL;
 
-        lang = getenv ("LANGUAGE");
+        lang = g_getenv ("LANGUAGE");
 
         if (!lang) {
-                lang = getenv ("LANG");
+                lang = g_getenv ("LANG");
         }
 
 
@@ -139,12 +139,16 @@ nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
 static void
 nautilus_view_identifier_free_callback (NautilusViewIdentifier *identifier, gpointer ignore)
 {
+	g_assert (ignore == NULL);
 	nautilus_view_identifier_free (identifier);
 }
 
 void
-nautilus_view_identifier_free_list (GList *identifiers)
+nautilus_view_identifier_list_free (GList *identifiers)
 {
-	nautilus_g_list_free_deep_custom (identifiers, (GFunc) nautilus_view_identifier_free_callback, NULL);
+	nautilus_g_list_free_deep_custom
+		(identifiers,
+		 (GFunc) nautilus_view_identifier_free_callback,
+		 NULL);
 }
 

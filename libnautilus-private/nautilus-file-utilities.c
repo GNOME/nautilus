@@ -33,9 +33,13 @@
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
 
-const char* const nautilus_user_directory_name = ".nautilus";
-const char* const nautilus_user_main_directory_name = "Nautilus";
-const unsigned default_nautilus_directory_mode = 0755;
+#define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
+#define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
+
+#define DESKTOP_DIRECTORY_NAME "desktop"
+#define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
+
+#define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
 
 
 
@@ -78,24 +82,21 @@ nautilus_make_path(const char *path, const char* name)
  * Return value: the directory path.
  **/
 const char *
-nautilus_user_directory()
+nautilus_get_user_directory (void)
 {
 	static char *user_directory;
 
-	if (user_directory == NULL)
-	{
-		user_directory = nautilus_make_path (g_get_home_dir(),
-						     nautilus_user_directory_name);
+	if (user_directory == NULL) {
+		user_directory = nautilus_make_path (g_get_home_dir (),
+						     NAUTILUS_USER_DIRECTORY_NAME);
 
-		if (!g_file_exists (user_directory))
-		{
-			mkdir (user_directory, default_nautilus_directory_mode);
+		if (!g_file_exists (user_directory)) {
+			mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		}
 
 	}
 
-	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR))
-	{
+	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
 		/* Bad news, directory still isn't there.
 		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
 		 */
@@ -103,6 +104,37 @@ nautilus_user_directory()
 	}
 
 	return user_directory;
+}
+
+/**
+ * nautilus_desktop_directory:
+ * 
+ * Get the path for the directory containing files on the desktop.
+ *
+ * Return value: the directory path.
+ **/
+const char *
+nautilus_get_desktop_directory (void)
+{
+	static char *desktop_directory;
+
+	if (desktop_directory == NULL) {
+		desktop_directory = nautilus_make_path (nautilus_get_user_directory (),
+							DESKTOP_DIRECTORY_NAME);
+		if (!g_file_exists (desktop_directory)) {
+			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
+		}
+
+	}
+
+	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
+		/* Bad news, directory still isn't there.
+		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
+		 */
+		g_assert_not_reached();
+	}
+
+	return desktop_directory;
 }
 
 /**
@@ -114,35 +146,29 @@ nautilus_user_directory()
  * Return value: the directory path.
  **/
 const char *
-nautilus_user_main_directory (void)
+nautilus_get_user_main_directory (void)
 {
 	static char *user_main_directory;
 	NautilusFile *file;
 	
 	if (user_main_directory == NULL)
 	{
-		const char * user_directory;
-		
-		user_directory = nautilus_user_directory ();
-
-		g_assert (user_directory != NULL);
-
 		user_main_directory = g_strdup_printf ("%s/%s",
 							g_get_home_dir(),
-							nautilus_user_main_directory_name);
+							NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
-		if (!g_file_exists (user_main_directory))
-		{
+		if (!g_file_exists (user_main_directory)) {
 			char	   *src;
 			char	   *command;
 			char	   *file_uri, *image_uri, *temp_str;
 
 			src = gnome_datadir_file ("nautilus/top");
 
+			/* FIXME: Is it OK to use cp like this? What about quoting the parameters? */
 			command = g_strdup_printf ("cp -R %s %s", src, user_main_directory);
 
-			if (system (command) != 0)
-			{
+			/* FIXME: Is a g_warning good enough here? This seems like a big problem. */
+			if (system (command) != 0) {
 				g_warning ("could not execute '%s'.  Make sure you typed 'make install'", 
 					   command);
 			}
@@ -164,7 +190,7 @@ nautilus_user_main_directory (void)
 							    image_uri);
 				nautilus_file_unref (file);
 			}
-			g_free(file_uri);
+			g_free (file_uri);
 
 			/* now do the same for the about file */
 			file_uri = g_strdup_printf("file://%s/About.html", user_main_directory);
@@ -177,8 +203,8 @@ nautilus_user_main_directory (void)
 							    image_uri);
 				nautilus_file_unref (file);
 			}
-			g_free(file_uri);
-			g_free(image_uri);
+			g_free (file_uri);
+			g_free (image_uri);
 
 		}
 	}

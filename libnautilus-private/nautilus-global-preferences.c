@@ -136,7 +136,7 @@ global_preferences_create_dialog (void)
 
 		}
 	
-		nautilus_view_identifier_free_list (view_identifiers);
+		nautilus_view_identifier_list_free (view_identifiers);
 	}
 
 
@@ -229,7 +229,7 @@ nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void)
                                                       NULL,
                                                       &disabled_view_identifiers);
 	
-        nautilus_view_identifier_free_list (disabled_view_identifiers);
+        nautilus_view_identifier_list_free (disabled_view_identifiers);
 
         return enabled_view_identifiers;
 }
@@ -247,7 +247,7 @@ nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
 							      NULL,
 							      &disabled_view_identifiers);
 	
-        nautilus_view_identifier_free_list (enabled_view_identifiers);
+        nautilus_view_identifier_list_free (enabled_view_identifiers);
 	
         return disabled_view_identifiers;
 }
@@ -293,7 +293,7 @@ global_preferences_register_sidebar_panels_preferences_for_ui (void)
 		g_free (preference_key);
 	}
 
-	nautilus_view_identifier_free_list (view_identifiers);
+	nautilus_view_identifier_list_free (view_identifiers);
 }
 
 static char *
@@ -453,7 +453,7 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 					  can_add_content);
 	
 	/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
-	user_main_directory = nautilus_user_main_directory ();
+	user_main_directory = nautilus_get_user_main_directory ();
 	
 	if (use_real_home)
 		home_uri_string = g_strdup_printf ("file://%s", g_get_home_dir());

@@ -345,7 +345,7 @@ nautilus_view_frame_handle_client_destroy_2(GtkObject *object, CORBA_Object cobj
   NautilusWindow *window;
 
   window = NAUTILUS_WINDOW (view->main_window);
-  nautilus_window_remove_meta_view (window, view);
+  nautilus_window_remove_sidebar_panel (window, view);
   if (view == window->content_view)
     nautilus_window_set_content_view (window, NULL);
 }

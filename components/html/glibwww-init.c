@@ -220,19 +220,19 @@ glibwww_parse_proxy_env(void)
 
 	for (prot = protocollist; *prot != NULL; prot++) {
 		gchar *var = g_strconcat(*prot, "_proxy", NULL);
-		gchar *proxy = getenv(var);
+		gchar *proxy = g_getenv(var);
 
 		if (proxy && proxy[0])
 			glibwww_add_proxy(*prot, proxy);
 		else {
 			gchar *up = var;
 			while ((*up = TOUPPER(*up))) up++;
-			if ((proxy = getenv(var)) != NULL && proxy[0])
+			if ((proxy = g_getenv(var)) != NULL && proxy[0])
 				glibwww_add_proxy(*prot, proxy);
 		}
 		g_free(var);
 	}
-	nop = getenv("no_proxy");
+	nop = g_getenv("no_proxy");
 	if (nop && nop[0]) {
 		char *str = g_strdup(nop);
 		char *ptr = str;

@@ -200,7 +200,7 @@ nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks)
 
 	static char *file_path = NULL;
 	if (file_path == NULL) {
-		file_path = nautilus_make_path (nautilus_user_directory(),
+		file_path = nautilus_make_path (nautilus_get_user_directory(),
 						"bookmarks.xml");
 	}
 

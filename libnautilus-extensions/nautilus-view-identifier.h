@@ -40,6 +40,6 @@ NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view    (OAF_S
 NautilusViewIdentifier *nautilus_view_identifier_new_from_sidebar_panel   (OAF_ServerInfo         *server);
 
 void                    nautilus_view_identifier_free                     (NautilusViewIdentifier *identifier);
-void                    nautilus_view_identifier_free_list                (GList                  *identifiers);
+void                    nautilus_view_identifier_list_free                (GList                  *identifiers);
 
 #endif

@@ -347,12 +347,12 @@ static void
 ensure_fail_env (void)
 {
 	if (!env_checked) {
-		failure_mode = getenv ("NAUTILUS_SIDEBAR_LOSER_MODE");
+		failure_mode = g_getenv ("NAUTILUS_SIDEBAR_LOSER_MODE");
 		if (failure_mode == NULL) {
 			failure_mode = "";
 		}
 		
-		failure_point = getenv ("NAUTILUS_SIDEBAR_LOSER_PLACE");
+		failure_point = g_getenv ("NAUTILUS_SIDEBAR_LOSER_PLACE");
 		if (failure_point == NULL) {
 			failure_point = "";
 		}

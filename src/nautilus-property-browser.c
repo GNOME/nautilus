@@ -369,7 +369,9 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 	
 		if (!g_file_exists(image_file_name)) {
 			g_free(image_file_name);
-			image_file_name = g_strdup_printf("%s/%s/%s", nautilus_user_directory(), property_browser->details->category, 
+			image_file_name = g_strdup_printf("%s/%s/%s",
+							  nautilus_get_user_directory (),
+							  property_browser->details->category, 
 							  property_browser->details->dragged_file);	
 		}
 
@@ -428,8 +430,10 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	
 	if (!g_file_exists (image_file_name)) {
 		g_free (image_file_name);
-		image_file_name = g_strdup_printf ("%s/%s/%s", nautilus_user_directory(),
-						   property_browser->details->category, file_name);	
+		image_file_name = g_strdup_printf ("%s/%s/%s",
+						   nautilus_get_user_directory (),
+						   property_browser->details->category,
+						   file_name);	
 	}
 	
 	pixbuf = nautilus_gdk_pixbuf_scale_to_fit(gdk_pixbuf_new_from_file(image_file_name),
@@ -533,7 +537,8 @@ remove_color(NautilusPropertyBrowser *property_browser, const char* color_value)
 
 	/* write the document back out to the file in the user's home directory */
 	
-	xml_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->path);
+	xml_path = nautilus_make_path (nautilus_get_user_directory (),
+				       property_browser->details->path);
 	xmlSaveFile(xml_path, document);
 	xmlFreeDoc(document);
 	g_free(xml_path);
@@ -544,15 +549,20 @@ remove_color(NautilusPropertyBrowser *property_browser, const char* color_value)
 static void
 remove_background(NautilusPropertyBrowser *property_browser, const char* background_name)
 {
+	char *background_uri;
+
 	/* build the pathname of the background */
-	char *background_uri = g_strdup_printf("file://%s/backgrounds/%s", nautilus_user_directory(), background_name);
-		
+	background_uri = g_strdup_printf ("file://%s/backgrounds/%s",
+					  nautilus_get_user_directory (),
+					  background_name);
+	
 	/* delete the background from the background directory */
-	if (gnome_vfs_unlink(background_uri) != GNOME_VFS_OK) {
-		g_warning("couldnt delete background %s", background_uri);
+	if (gnome_vfs_unlink (background_uri) != GNOME_VFS_OK) {
+		/* FIXME: Is a g_warning a reasonable way to report this to the user? */
+		g_warning ("couldnt delete background %s", background_uri);
 	}
 	
-	g_free(background_uri);
+	g_free (background_uri);
 }
 
 /* remove the emblem matching the passed in name */
@@ -561,14 +571,19 @@ static void
 remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name)
 {
 	/* build the pathname of the emblem */
-	char *emblem_uri = g_strdup_printf("file://%s/emblems/%s",nautilus_user_directory(), emblem_name);
+	char *emblem_uri;
+
+	emblem_uri = g_strdup_printf ("file://%s/emblems/%s",
+				      nautilus_get_user_directory (),
+				      emblem_name);
 		
 	/* delete the emblem from the emblem directory */
-	if (gnome_vfs_unlink(emblem_uri) != GNOME_VFS_OK) {
-		g_warning("couldnt delete emblem %s", emblem_uri);
+	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
+		/* FIXME: Is a g_warning a reasonable way to report this to the user? */
+		g_warning ("couldnt delete emblem %s", emblem_uri);
 	}
 	
-	g_free(emblem_uri);
+	g_free (emblem_uri);
 }
 
 /* handle removing the passed in element */
@@ -606,7 +621,7 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 	/* first try the user's home directory */
 	char *xml_path;
 
-	xml_path = nautilus_make_path (nautilus_user_directory(),
+	xml_path = nautilus_make_path (nautilus_get_user_directory(),
 				       property_browser->details->path);
 	if (g_file_exists (xml_path)) {
 		return xml_path;
@@ -754,10 +769,10 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 
 	/* copy the image file to the backgrounds directory */
 	/* FIXME: do we need to do this with gnome-vfs? */
-	directory_path = nautilus_make_path (nautilus_user_directory(),
+	directory_path = nautilus_make_path (nautilus_get_user_directory (),
 					     property_browser->details->category);
-	source_file_name = strrchr(path_name, '/');
-	destination_name = nautilus_make_path(directory_path, source_file_name + 1);
+	source_file_name = strrchr (path_name, '/');
+	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
 	
 	/* make the directory if it doesn't exist */
 	if (!g_file_exists(directory_path)) {
@@ -850,7 +865,8 @@ add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_s
 	}
 	
 	/* write the document back out to the file in the user's home directory */
-	xml_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->path);
+	xml_path = nautilus_make_path (nautilus_get_user_directory(),
+				       property_browser->details->path);
 	xmlSaveFile(xml_path, document);
 	xmlFreeDoc(document);
 	g_free(xml_path);
@@ -924,7 +940,8 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		char* new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));
 
 		/* get the path for emblems in the user's home directory */
-		char *directory_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->category);
+		char *directory_path = nautilus_make_path (nautilus_get_user_directory(),
+							   property_browser->details->category);
 	
 		/* make the directory if it doesn't exist */
 		if (!g_file_exists(directory_path)) {
@@ -1235,7 +1252,9 @@ make_properties_from_directory(NautilusPropertyBrowser *property_browser, const 
 	}
 	
 	/* next, make them from the local space, if it exists */
-	directory_uri = g_strdup_printf("file://%s/%s", nautilus_user_directory(), property_browser->details->category);
+	directory_uri = g_strdup_printf("file://%s/%s",
+					nautilus_get_user_directory(),
+					property_browser->details->category);
 	new_index = make_properties_from_directory_path(property_browser, directory_uri,index);
 	g_free(directory_uri);	
 

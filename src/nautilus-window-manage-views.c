@@ -135,7 +135,7 @@ nautilus_window_request_selection_change(NautilusWindow *window,
         
         nautilus_window_notify_selection_change(window, window->content_view, &selinfo, requesting_view);
         
-        for (p = window->meta_views; p != NULL; p = p->next) {
+        for (p = window->sidebar_panels; p != NULL; p = p->next) {
                 nautilus_window_notify_selection_change(window, p->data, &selinfo, requesting_view);
         }
 }
@@ -249,7 +249,7 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
                 g_free (window_title);
         }
         
-        nautilus_index_panel_set_title (window->index_panel, title);
+        nautilus_sidebar_set_title (window->sidebar, title);
         nautilus_bookmark_set_name (window->current_location_bookmark, title);
 
         /* Name of item in history list may have changed, tell listeners. */
@@ -443,13 +443,13 @@ nautilus_window_update_internals (NautilusWindow *window, NautilusNavigationInfo
         nautilus_location_bar_set_location(NAUTILUS_LOCATION_BAR(window->ent_uri),
                                            window->ni->requested_uri);
         
-        /* Notify the index panel of the location change. */
+        /* Notify the sidebar of the location change. */
         /* FIXME bugzilla.eazel.com 211: 
          * Eventually, this will not be necessary when we restructure the 
-         * index panel to be a NautilusViewFrame.
+         * sidebar itself to be a NautilusViewFrame.
          */
         current_title = nautilus_window_get_current_location_title (window);
-        nautilus_index_panel_set_uri (window->index_panel, window->ni->requested_uri, current_title);
+        nautilus_sidebar_set_uri (window->sidebar, window->ni->requested_uri, current_title);
         g_free (current_title);
 }
 
@@ -494,10 +494,10 @@ nautilus_window_has_really_changed(NautilusWindow *window)
 {
         GList *discard_views;
         GList *p;
-        GList *new_meta_views;
+        GList *new_sidebar_panels;
         
-        new_meta_views = window->new_meta_views;
-        window->new_meta_views = NULL;
+        new_sidebar_panels = window->new_sidebar_panels;
+        window->new_sidebar_panels = NULL;
         
         if (window->new_content_view) {
                 if (!GTK_WIDGET (window->new_content_view)->parent) {
@@ -509,24 +509,24 @@ nautilus_window_has_really_changed(NautilusWindow *window)
                 window->new_content_view = NULL;
         }
         
-        if (new_meta_views) {
+        if (new_sidebar_panels) {
                 /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
-                for (p = new_meta_views; p != NULL; p = p->next) {
+                for (p = new_sidebar_panels; p != NULL; p = p->next) {
                         if (!GTK_OBJECT_DESTROYED (p->data) && !GTK_WIDGET (p->data)->parent)
-                                nautilus_window_add_meta_view (window, p->data);
+                                nautilus_window_add_sidebar_panel (window, p->data);
                         gtk_object_unref (p->data);
                 }
                 
                 discard_views = NULL;
-                for (p = window->meta_views; p != NULL; p = p->next) {
-                        if (!g_list_find (new_meta_views, p->data)) {
+                for (p = window->sidebar_panels; p != NULL; p = p->next) {
+                        if (!g_list_find (new_sidebar_panels, p->data)) {
                                 discard_views = g_list_prepend(discard_views, p->data);
                         }
                 }
-                g_list_free (new_meta_views);
+                g_list_free (new_sidebar_panels);
                 
                 for (p = discard_views; p != NULL; p = p->next) {
-                        nautilus_window_remove_meta_view (window, p->data);
+                        nautilus_window_remove_sidebar_panel (window, p->data);
                 }
                 g_list_free (discard_views);
         }
@@ -553,7 +553,7 @@ nautilus_window_free_load_info (NautilusWindow *window)
         }
 
         window->error_views = NULL;
-        window->new_meta_views = NULL;
+        window->new_sidebar_panels = NULL;
         window->new_content_view = NULL;
         window->cancel_tag = NULL;
         window->action_tag = 0;
@@ -572,36 +572,36 @@ nautilus_window_free_load_info (NautilusWindow *window)
 
 /* Meta view handling */
 static NautilusViewFrame *
-nautilus_window_load_meta_view (NautilusWindow *window,
+nautilus_window_load_sidebar_panel (NautilusWindow *window,
                                 const char *iid,
                                 NautilusViewFrame *requesting_view)
 {
-        NautilusViewFrame *meta_view;
+        NautilusViewFrame *sidebar_panel;
         GList *p;
         
-        meta_view = NULL;
-        for (p = window->meta_views; p != NULL; p = p->next) {
-                meta_view = NAUTILUS_VIEW_FRAME (p->data);
-                if (!strcmp (nautilus_view_frame_get_iid (meta_view), iid))
+        sidebar_panel = NULL;
+        for (p = window->sidebar_panels; p != NULL; p = p->next) {
+                sidebar_panel = NAUTILUS_VIEW_FRAME (p->data);
+                if (!strcmp (nautilus_view_frame_get_iid (sidebar_panel), iid))
                         break;
         }
         
         if (p == NULL) {
-                meta_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(),
+                sidebar_panel = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(),
                                                                  "main_window", window, NULL));
-                nautilus_window_connect_view (window, meta_view);
-                if (!nautilus_view_frame_load_client (meta_view, iid)) {
-                        gtk_widget_unref (GTK_WIDGET (meta_view));
-                        meta_view = NULL;
+                nautilus_window_connect_view (window, sidebar_panel);
+                if (!nautilus_view_frame_load_client (sidebar_panel, iid)) {
+                        gtk_widget_unref (GTK_WIDGET (sidebar_panel));
+                        sidebar_panel = NULL;
                 }
         }
         
-        if (meta_view != NULL) {
-                gtk_object_ref (GTK_OBJECT (meta_view));
-                nautilus_view_frame_set_active_errors (meta_view, TRUE);
+        if (sidebar_panel != NULL) {
+                gtk_object_ref (GTK_OBJECT (sidebar_panel));
+                nautilus_view_frame_set_active_errors (sidebar_panel, TRUE);
         }
         
-        return meta_view;
+        return sidebar_panel;
 }
 
 static gboolean
@@ -768,12 +768,12 @@ nautilus_window_update_state (gpointer data)
                                 window->cv_progress_error = TRUE;
                         }
 
-                        if (g_list_find (window->new_meta_views, error_view) != NULL) {
-                                window->new_meta_views = g_list_remove (window->new_meta_views, error_view);
+                        if (g_list_find (window->new_sidebar_panels, error_view) != NULL) {
+                                window->new_sidebar_panels = g_list_remove (window->new_sidebar_panels, error_view);
                                 gtk_widget_unref (GTK_WIDGET (error_view));
                         }
 
-                        nautilus_window_remove_meta_view (window, error_view);
+                        nautilus_window_remove_sidebar_panel (window, error_view);
 
                         gtk_widget_unref (GTK_WIDGET (error_view));
                 }
@@ -800,8 +800,8 @@ nautilus_window_update_state (gpointer data)
                                 (window, window->ni == NULL ? "" : window->ni->requested_uri);
                         
                         /* Tell previously-notified views to go back to the old page */
-                        for (p = window->meta_views; p != NULL; p = p->next) {
-                                if (g_list_find (window->new_meta_views, p->data) != NULL) {
+                        for (p = window->sidebar_panels; p != NULL; p = p->next) {
+                                if (g_list_find (window->new_sidebar_panels, p->data) != NULL) {
                                         nautilus_window_update_view (window, p->data, window->ni, window->si,
                                                                      NULL, window->content_view);
                                 }
@@ -819,10 +819,10 @@ nautilus_window_update_state (gpointer data)
                         gtk_widget_unref (GTK_WIDGET (window->new_content_view));
                 }
                 
-                for (p = window->new_meta_views; p != NULL; p = p->next) {
+                for (p = window->new_sidebar_panels; p != NULL; p = p->next) {
                         gtk_widget_unref (GTK_WIDGET (p->data));
                 }
-                g_list_free (window->new_meta_views);
+                g_list_free (window->new_sidebar_panels);
                 
                 nautilus_window_free_load_info (window);
                 
@@ -848,20 +848,20 @@ nautilus_window_update_state (gpointer data)
 
                         if (sidebar_panel_identifiers != NULL) {
 				for (p = sidebar_panel_identifiers; p != NULL; p = p->next) {
-					NautilusViewFrame *meta_view;
+					NautilusViewFrame *sidebar_panel;
 					NautilusViewIdentifier *identifier;
 					
 					identifier = (NautilusViewIdentifier *) p->data;
 					
-					meta_view = nautilus_window_load_meta_view
+					sidebar_panel = nautilus_window_load_sidebar_panel
 						(window, identifier->iid, window->new_requesting_view);
-					if (meta_view != NULL) {
-						nautilus_view_frame_set_label (meta_view, identifier->name);
-						window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
+					if (sidebar_panel != NULL) {
+						nautilus_view_frame_set_label (sidebar_panel, identifier->name);
+						window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, sidebar_panel);
 					}
 				}
 
-				nautilus_view_identifier_free_list (sidebar_panel_identifiers);
+				nautilus_view_identifier_list_free (sidebar_panel_identifiers);
 			}
                         
                         window->view_activation_complete = TRUE;
@@ -893,7 +893,7 @@ nautilus_window_update_state (gpointer data)
                                 window->cv_progress_error = TRUE;
                         }
                         
-                        for (p = window->new_meta_views; p != NULL; p = p->next) {
+                        for (p = window->new_sidebar_panels; p != NULL; p = p->next) {
                                 nautilus_window_update_view (window, p->data, ni, si,
                                                              window->new_requesting_view,
                                                              window->new_content_view);
@@ -997,11 +997,11 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         window->views_shown = FALSE;
                         break;
 
-                case NEW_META_VIEW_ACTIVATED:
-                        x_message (("NEW_META_VIEW_ACTIVATED"));
+                case NEW_SIDEBAR_PANEL_ACTIVATED:
+                        x_message (("NEW_SIDEBAR_PANEL_ACTIVATED"));
                         new_view = va_arg (args, NautilusViewFrame*);
                         /* Don't ref here, reference is held by widget hierarchy. */
-                        window->new_meta_views = g_list_prepend (window->new_meta_views, new_view);
+                        window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, new_view);
                         window->changes_pending = TRUE;
                         window->views_shown = FALSE;
                         break;

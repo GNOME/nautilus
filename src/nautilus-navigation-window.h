@@ -61,7 +61,7 @@ struct _NautilusWindow {
   GnomeApp parent_object;
 
   /** UI stuff **/
-  NautilusIndexPanel *index_panel;
+  NautilusSidebar *sidebar;
   GtkWidget *content_hbox;
   GtkWidget *view_as_option_menu, *ent_uri;
 
@@ -93,7 +93,7 @@ struct _NautilusWindow {
 
   /* Current views stuff */
   NautilusViewFrame *content_view;
-  GList *meta_views;
+  GList *sidebar_panels;
 
   /* Widgets to keep track of (for state changes, etc) */
   GtkWidget *back_button;
@@ -108,7 +108,7 @@ struct _NautilusWindow {
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
   NautilusViewFrame *new_content_view, *new_requesting_view;
-  GList *new_meta_views;
+  GList *new_sidebar_panels;
   GList *error_views;
 
   enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
@@ -131,30 +131,30 @@ struct _NautilusWindow {
   nautilus_boolean_bit reset_to_idle : 1;
 };
 
-GtkType          nautilus_window_get_type          (void);
-void             nautilus_window_close             (NautilusWindow    *window);
-void             nautilus_window_set_content_view  (NautilusWindow    *window,
-						    NautilusViewFrame *content_view);
-void             nautilus_window_add_meta_view     (NautilusWindow    *window,
-						    NautilusViewFrame *meta_view);
-void             nautilus_window_remove_meta_view  (NautilusWindow    *window,
-						    NautilusViewFrame *meta_view);
-void             nautilus_window_goto_uri          (NautilusWindow    *window,
-						    const char        *uri);
-void             nautilus_window_display_error     (NautilusWindow    *window,
-						    const char        *error_msg);
-const char *     nautilus_window_get_requested_uri (NautilusWindow    *window);
-BonoboUIHandler *nautilus_window_get_uih           (NautilusWindow    *window);
-void             nautilus_window_allow_back        (NautilusWindow    *window,
-						    gboolean           allow);
-void             nautilus_window_allow_forward     (NautilusWindow    *window,
-						    gboolean           allow);
-void             nautilus_window_allow_up          (NautilusWindow    *window,
-						    gboolean           allow);
-void             nautilus_window_allow_reload      (NautilusWindow    *window,
-						    gboolean           allow);
-void             nautilus_window_allow_stop        (NautilusWindow    *window,
-						    gboolean           allow);
-void             nautilus_bookmarks_exiting        (void);
+GtkType          nautilus_window_get_type             (void);
+void             nautilus_window_close                (NautilusWindow    *window);
+void             nautilus_window_set_content_view     (NautilusWindow    *window,
+                                                       NautilusViewFrame *content_view);
+void             nautilus_window_add_sidebar_panel    (NautilusWindow    *window,
+                                                       NautilusViewFrame *sidebar_panel);
+void             nautilus_window_remove_sidebar_panel (NautilusWindow    *window,
+                                                       NautilusViewFrame *sidebar_panel);
+void             nautilus_window_goto_uri             (NautilusWindow    *window,
+                                                       const char        *uri);
+void             nautilus_window_display_error        (NautilusWindow    *window,
+                                                       const char        *error_msg);
+const char *     nautilus_window_get_requested_uri    (NautilusWindow    *window);
+BonoboUIHandler *nautilus_window_get_uih              (NautilusWindow    *window);
+void             nautilus_window_allow_back           (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_window_allow_forward        (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_window_allow_up             (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_window_allow_reload         (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_window_allow_stop           (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_bookmarks_exiting           (void);
 
 #endif

@@ -25,11 +25,10 @@
 #ifndef NAUTILUS_FILE_UTILITIES_H
 #define NAUTILUS_FILE_UTILITIES_H
 
-#include <glib.h>
-
-char *      nautilus_make_path          (const char *path,
-					 const char *name);
-const char *nautilus_user_directory     (void);
-const char *nautilus_user_main_directory (void);
+char *      nautilus_make_path               (const char *path,
+					      const char *name);
+const char *nautilus_get_user_directory      (void);
+const char *nautilus_get_user_main_directory (void);
+const char *nautilus_get_desktop_directory   (void);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

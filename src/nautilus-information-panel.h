@@ -29,47 +29,41 @@
 #include <gtk/gtkeventbox.h>
 #include "nautilus-view-frame.h"
 
-typedef struct NautilusIndexPanel NautilusIndexPanel;
-typedef struct NautilusIndexPanelClass  NautilusIndexPanelClass;
+#define NAUTILUS_TYPE_SIDEBAR \
+	(nautilus_sidebar_get_type ())
+#define NAUTILUS_SIDEBAR(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR, NautilusSidebar))
+#define NAUTILUS_SIDEBAR_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR, NautilusSidebarClass))
+#define NAUTILUS_IS_SIDEBAR(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR))
+#define NAUTILUS_IS_SIDEBAR_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR))
 
-#define NAUTILUS_TYPE_INDEX_PANEL \
-	(nautilus_index_panel_get_type ())
-#define NAUTILUS_INDEX_PANEL(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_PANEL, NautilusIndexPanel))
-#define NAUTILUS_INDEX_PANEL_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_PANEL, NautilusIndexPanelClass))
-#define NAUTILUS_IS_INDEX_PANEL(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_PANEL))
-#define NAUTILUS_IS_INDEX_PANEL_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_PANEL))
+typedef struct NautilusSidebarDetails NautilusSidebarDetails;
 
-typedef struct NautilusIndexPanelDetails NautilusIndexPanelDetails;
+typedef struct {
+	GtkEventBox parent_slot;
+	NautilusSidebarDetails *details;
+} NautilusSidebar;
 
-struct NautilusIndexPanel
-{
-	GtkEventBox event_box;
-	NautilusIndexPanelDetails *details;
-};
-
-struct NautilusIndexPanelClass
-{
-	GtkEventBoxClass parent_class;
+typedef struct {
+	GtkEventBoxClass parent_slot;
 	
-	void         (*location_changed) (NautilusIndexPanel *index_panel,
-					  const char *location);
+	void (*location_changed) (NautilusSidebar *sidebar,
+				  const char *location);
+} NautilusSidebarClass;
 
-};
-
-GtkType             nautilus_index_panel_get_type         (void);
-NautilusIndexPanel *nautilus_index_panel_new              (void);
-void                nautilus_index_panel_add_meta_view    (NautilusIndexPanel *panel,
-							   NautilusViewFrame  *meta_view);
-void                nautilus_index_panel_remove_meta_view (NautilusIndexPanel *panel,
-							   NautilusViewFrame  *meta_view);
-void                nautilus_index_panel_set_uri          (NautilusIndexPanel *panel,
-							   const char         *new_uri,
-							   const char         *initial_title);
-void                nautilus_index_panel_set_title        (NautilusIndexPanel *panel,
-							   const char         *new_title);
+GtkType          nautilus_sidebar_get_type     (void);
+NautilusSidebar *nautilus_sidebar_new          (void);
+void             nautilus_sidebar_add_panel    (NautilusSidebar   *sidebar,
+						NautilusViewFrame *panel);
+void             nautilus_sidebar_remove_panel (NautilusSidebar   *sidebar,
+						NautilusViewFrame *panel);
+void             nautilus_sidebar_set_uri      (NautilusSidebar   *sidebar,
+						const char        *new_uri,
+						const char        *initial_title);
+void             nautilus_sidebar_set_title    (NautilusSidebar   *sidebar,
+						const char        *new_title);
 
 #endif /* NAUTILUS_SIDEBAR_H */

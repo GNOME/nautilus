@@ -710,7 +710,7 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
-        nautilus_view_identifier_free_list (info->content_identifiers);
+        nautilus_view_identifier_list_free (info->content_identifiers);
         nautilus_g_list_free_deep (info->explicit_iids);
 
         g_free (info->referring_iid);

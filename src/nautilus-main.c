@@ -66,7 +66,7 @@ main(int argc, char *argv[])
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
-	if (getenv ("NAUTILUS_DEBUG") != NULL) {
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		nautilus_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
