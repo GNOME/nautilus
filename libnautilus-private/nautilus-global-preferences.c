@@ -51,9 +51,9 @@ static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 /* Forward declarations */
 static void     global_preferences_install_defaults      (void);
 static void     global_preferences_register_enumerations (void);
-static gpointer default_font_callback                    (int  user_level);
-static gpointer default_home_location_callback           (int  user_level);
-static gpointer default_default_folder_viewer_callback	 (int  user_level);
+static gpointer default_font_callback                    (void);
+static gpointer default_home_location_callback           (void);
+static gpointer default_default_folder_viewer_callback	 (void);
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -215,31 +215,20 @@ static EelEnumerationInfo enumerations[] = {
 };
 
 /*
- * A callback which can be used to fetch dynamic default values.
+ * A callback which can be used to fetch dynamic fallback values.
  * For example, values that are dependent on the environment (such as user name) 
  * cannot be specified as constants.
  */
-typedef gpointer (*PreferencesDefaultValueCallback) (int user_level);
-
-/* A structure that pairs a default value with a specific user level. */
-typedef struct
-{
-	int user_level;
-	const gpointer value;
-	PreferencesDefaultValueCallback callback;
-	GFreeFunc callback_result_free_function;
-} PreferenceUserLevelDefault;
-
-#define USER_LEVEL_NONE -1
+typedef gpointer (*PreferencesDefaultValueCallback) (void);
 
 /* A structure that describes a single preference including defaults and visibility. */
 typedef struct
 {
 	const char *name;
 	PreferenceType type;
-	int visible_user_level;
-	const PreferenceUserLevelDefault default1;
-	const PreferenceUserLevelDefault default2;
+	const gpointer fallback_value;
+	PreferencesDefaultValueCallback fallback_callback;
+	GFreeFunc fallback_callback_result_free_function;
 	const char *enumeration_id;
 } PreferenceDefault;
 
@@ -263,42 +252,14 @@ typedef struct
  *	PREFERENCE_STRING
  *	PREFERENCE_STRING_LIST
  * 
- * 3. visible_user_level
- *    The visible user level is the first user level at which the
- *    preference is visible.  By default all preferences have a visibility of 0.
+ * 3. fallback_value
+ *    Emergency fallback value if our gconf schemas are hosed somehow.
  * 
- *    A preference with a visible_user_level greater than 0, will be "visible"
- *    only at that level or higher.  Any getters that ask for that preference at
- *    lower user levels will always receive the default value.  Also, if the
- *    preference has an entry in the preferences dialog, it will not be shown
- *    unless the current user level is greater than or equal to the preference's
- *    visible user level.
+ * 4. fallback_callback
+ *    callback to get dynamic fallback
  *
- * 4. default1
- *    A pair of a user_level and a value (PreferenceUserLevelDefault).  For the
- *    left hand side user_level, the preference will have the right hand side
- *    default value.
- * 
- *    This pair does not need to be given.  It can be { USER_LEVEL_NONE }, in 
- *    which case the preference defaults to 0 at all user levels.
- * 
- * 5. default2
- *    A pair of a user_level and a value (PreferenceUserLevelDefault).  For the
- *    left hand side user_level, the preference will have the right hand side
- *    default value.
- * 
- *    This pair does not need to be given.  It can be { USER_LEVEL_NONE }, in 
- *    which case the preference defaults to 0 at all user levels.
- *
- *    Notes:
- *
- *    Define defaults only for preferences that need something other than 0 (integer)
- *    FALSE (boolean) or "" (string) as their defaults.
- *
- *    Its possible to have different defaults for different user levels  Its not 
- *    required to have defaults for EACH user level.  If there is no default
- *    installed for a high user level, the next lowest user level with a valid
- *    default is used.
+ * 5. fallback_callback_result_free_function
+ *    free result of fallback_callback
  *
  * 6. enumeration_id
  *    An an enumeration id is a unique string that identifies an enumeration.
@@ -306,396 +267,304 @@ typedef struct
  *    The preferences dialog widgetry will use this enumeration id to find out
  *    what choices and descriptions of choices to present to the user.
  */
+
+/* NOTE THAT THE FALLBACKS HERE ARE NOT SUPPOSED TO BE USED -
+ * YOU SHOULD EDIT THE SCHEMAS FILE TO CHANGE DEFAULTS.
+ */
 static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_ENABLE_DELETE,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  NULL, NULL,
 	  "speed_tradeoff"
 	},
-	/* Don't show remote directory item counts for Beginner users because computing them
-	 * can be annoyingly slow, especially for FTP. If we make this fast enough for FTP in
-	 * particular, we should change this default to ALWAYS.
+	/* Don't show remote directory item counts by default
+	 * because computing them can be annoyingly slow, especially
+	 * for FTP. If we make this fast enough for FTP in particular,
+	 * we should change this default to ALWAYS.
 	 */
 	{ NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_ALWAYS) },
+	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_CLICK_POLICY,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_CLICK_POLICY_DOUBLE),
+	  NULL, NULL,
 	  "click_policy"
 	},
 	{ NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK),
+	  NULL, NULL,
 	  "executable_text_activation"
 	},
 	{ NAUTILUS_PREFERENCES_THEME,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, "default" },
-	  { USER_LEVEL_NONE }
+	  "default"
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (3145728) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (3145728),
+	  NULL, NULL,
 	  "file_size"
 	},
 	{ NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) }, 
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { EEL_USER_LEVEL_ADVANCED, GINT_TO_POINTER (TRUE) }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR) },
-	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (NAUTILUS_COMPLEX_SEARCH_BAR) },
+	  GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR),
+	  NULL, NULL,
 	  "search_bar_type"
 	},
 	{ NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  PREFERENCE_STRING_LIST,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, "size,date_modified,type", },
-	  { USER_LEVEL_NONE },
+	  "size,date_modified,type",
+	  NULL, NULL,
 	  "icon_captions"
 	},
 	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_ADVANCED,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
 	{ NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (148) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (148)
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, "http://www.google.com" },
-	  { USER_LEVEL_NONE }
+	  "http://www.google.com"
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 
 	/* Proxy defaults */
 	{ NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (8080) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (8080)
 	},
 	{ NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 
 	/* Home URI */
 	{ NAUTILUS_PREFERENCES_HOME_URI,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_home_location_callback, g_free },
-	  { EEL_USER_LEVEL_INTERMEDIATE, NULL, default_home_location_callback, g_free },
+	  NULL, default_home_location_callback, g_free
 	},
 
 	/* Default fonts */
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
-	  { USER_LEVEL_NONE }
+	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (12),
+	  NULL, NULL,
 	  "standard_font_size"
 	},
 	
 	/* View Preferences */
 	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_default_folder_viewer_callback, NULL },
-	  { USER_LEVEL_NONE },
+	  NULL, default_default_folder_viewer_callback, NULL,
 	  "default_folder_viewer"
 	},
 
 	/* Icon View Default Preferences */
+
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
-	  { USER_LEVEL_NONE }
+	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (12),
+	  NULL, NULL,
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  NULL, NULL,
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  NULL, NULL,
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD),
+	  NULL, NULL,
 	  "default_zoom_level"
 	},
 
 	/* List View Default Preferences */
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
 	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
-	  { USER_LEVEL_NONE }
+	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (12) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (12),
+	  NULL, NULL,
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  NULL, NULL,
 	  "default_list_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER) },
-	  { USER_LEVEL_NONE },
+	  GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER),
+	  NULL, NULL,
 	  "default_zoom_level"
 	},
 
 	/* Sidebar panel default */
 	{ nautilus_sidebar_news_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ nautilus_sidebar_notes_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ nautilus_sidebar_history_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 	{ nautilus_sidebar_tree_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
-	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
+	  GINT_TO_POINTER (FALSE)
 	},
 
 	/* news panel preferences */
 	{ NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (6) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (6)
 	},
 	{ NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
 	  PREFERENCE_INTEGER,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (5) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (5)
 	},
 
 	/* non-visible preferences */
 	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
 	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
+	  GINT_TO_POINTER (TRUE)
 	},
 
 	{ NULL }
@@ -732,53 +601,46 @@ global_preferences_register_enumerations (void)
 static void
 global_preferences_install_one_default (const char *preference_name,
 					PreferenceType preference_type,
-					const PreferenceUserLevelDefault *user_level_default)
+					const PreferenceDefault *preference_default)
 {
 	gpointer value = NULL;
 	EelStringList *string_list_value;
-
+	
 	g_return_if_fail (preference_name != NULL);
 	g_return_if_fail (preference_type >= PREFERENCE_BOOLEAN);
 	g_return_if_fail (preference_type <= PREFERENCE_STRING_LIST);
-	g_return_if_fail (user_level_default != NULL);
-
-	if (user_level_default->user_level == USER_LEVEL_NONE) {
-		return;
-	}
+	g_return_if_fail (preference_default != NULL);
 
 	/* If a callback is given, use that to fetch the default value */
-	if (user_level_default->callback != NULL) {
-		value = (* user_level_default->callback) (user_level_default->user_level);
+	if (preference_default->fallback_callback != NULL) {
+		value = (* preference_default->fallback_callback) ();
 	} else {
-		value = user_level_default->value;
+		value = preference_default->fallback_value;
 	}
 
 	switch (preference_type) {
 	case PREFERENCE_BOOLEAN:
-		eel_preferences_default_set_boolean (preference_name,
-						     user_level_default->user_level,
-						     GPOINTER_TO_INT (value));
+		eel_preferences_set_emergency_fallback_boolean (preference_name,
+								GPOINTER_TO_INT (value));
 		break;
 		
 	case PREFERENCE_INTEGER:
-		eel_preferences_default_set_integer (preference_name,
-						     user_level_default->user_level,
-						     GPOINTER_TO_INT (value));
+		eel_preferences_set_emergency_fallback_integer (preference_name,
+								
+								GPOINTER_TO_INT (value));
 		break;
 		
 	case PREFERENCE_STRING:
-		eel_preferences_default_set_string (preference_name,
-						    user_level_default->user_level,
-						    value);
+		eel_preferences_set_emergency_fallback_string (preference_name,
+							       value);
 		break;
 		
 	case PREFERENCE_STRING_LIST:
 		string_list_value = eel_string_list_new_from_tokens (value,
 								     STRING_LIST_DEFAULT_TOKENS_DELIMETER,
 								     TRUE);
-		eel_preferences_default_set_string_list (preference_name,
-							 user_level_default->user_level,
-							 string_list_value);
+		eel_preferences_set_emergency_fallback_string_list (preference_name,
+								    string_list_value);
 		eel_string_list_free (string_list_value);
 		break;
 		
@@ -787,9 +649,9 @@ global_preferences_install_one_default (const char *preference_name,
 	}
 
 	/* Free the dynamic default value if needed */
-	if (user_level_default->callback != NULL
-	    && user_level_default->callback_result_free_function != NULL) {
-		(* user_level_default->callback_result_free_function) (value);
+	if (preference_default->fallback_callback != NULL
+	    && preference_default->fallback_callback_result_free_function != NULL) {
+		(* preference_default->fallback_callback_result_free_function) (value);
 	}
 }
 
@@ -811,22 +673,13 @@ global_preferences_install_defaults (void)
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
 		global_preferences_install_one_default (preference_defaults[i].name,
 							preference_defaults[i].type,
-							&preference_defaults[i].default1);
-		
-		global_preferences_install_one_default (preference_defaults[i].name,
-							preference_defaults[i].type,
-							&preference_defaults[i].default2);
-		
-		eel_preferences_set_visible_user_level (preference_defaults[i].name,
-							preference_defaults[i].visible_user_level);
+							&preference_defaults[i]);
 	}
 }
 
 static gpointer
-default_font_callback (int user_level)
+default_font_callback (void)
 {
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
-
 	if (eel_dumb_down_for_multi_byte_locale_hack ()) {
 		return g_strdup ("fixed");
 	}
@@ -849,7 +702,7 @@ get_default_folder_viewer_preference_from_iid (const char *iid)
 }
 
 static gpointer
-default_default_folder_viewer_callback (int user_level)
+default_default_folder_viewer_callback (void)
 {
 	Bonobo_ServerInfo *bonobo_activation_info;
 	int result;
@@ -869,9 +722,8 @@ default_default_folder_viewer_callback (int user_level)
 }
 
 static gpointer
-default_home_location_callback (int user_level)
+default_home_location_callback (void)
 {
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
 	return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 }
 
@@ -985,8 +837,8 @@ nautilus_global_preferences_init (void)
 	/* Install defaults */
 	global_preferences_install_defaults ();
 
-	global_preferences_register_enumerations ();
-
+	global_preferences_register_enumerations ();	
+	
 	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
 	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
@@ -1007,4 +859,9 @@ nautilus_global_preferences_init (void)
 	 * widget machinery.
 	 */
 	smooth_graphics_mode_changed_callback (NULL);
+
+	/* Preload everything in a big batch */
+	eel_gconf_preload_cache ("/apps/nautilus/preferences",
+				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 }
+

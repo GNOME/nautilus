@@ -119,13 +119,6 @@ static void                  schedule_refresh_bookmarks_menu               (Naut
 static void                  edit_bookmarks                                (NautilusWindow   *window);
 static void                  add_bookmark_for_current_location             (NautilusWindow   *window);
 
-/* User level things */
-static guint                 convert_verb_to_user_level                    (const char       *verb);
-static const char *          convert_user_level_to_path                    (guint             user_level);
-static void                  switch_to_user_level                          (NautilusWindow   *window,
-									    int               new_user_level);
-
-
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
 #define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
 #define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
@@ -694,89 +687,6 @@ help_menu_nautilus_feedback_callback (BonoboUIComponent *component,
 			       CUSTOMER_FEEDBACK_URI);
 }
 
-/* utility routine to return an image corresponding to the passed-in user level */
-
-static char *
-get_user_level_icon_name (int user_level, gboolean is_selected)
-{
-	const char *image_name;
-	char *full_image_name;
-	
-	switch (user_level) {
-	case EEL_USER_LEVEL_NOVICE:
-		image_name = "novice";
-		break;
-	case EEL_USER_LEVEL_ADVANCED:
-		image_name = "expert";
-		break;
-	case EEL_USER_LEVEL_INTERMEDIATE:
-	default:
-		image_name = "intermediate";
-		break;
-	}
-	
-	if (is_selected) {
-		full_image_name = g_strdup_printf ("nautilus/%s-selected.png", image_name);
-	} else {
-		full_image_name = g_strdup_printf ("nautilus/%s.png", image_name);	
-	}
-	
-	return full_image_name;
-}
-
-/* handle user level changes */
-static void
-switch_to_user_level (NautilusWindow *window, int new_user_level)
-{
-	char *old_user_level_icon_name;
-	int old_user_level;
-	char *new_user_level_icon_name_selected;
-
-	if (window->details->shell_ui == NULL) {
-		return;
-	}
-
-	old_user_level = eel_preferences_get_user_level ();
-	if (new_user_level == old_user_level) {
-		return;
-	}
-
-	eel_preferences_set_user_level (new_user_level);
-	
-	nautilus_window_ui_freeze (window);
-
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-
-	/* change the item icons to reflect the new user level */
-	old_user_level_icon_name = get_user_level_icon_name (old_user_level, FALSE);
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  convert_user_level_to_path (old_user_level),
-				  old_user_level_icon_name);
-	g_free (old_user_level_icon_name);
-	
-	new_user_level_icon_name_selected = get_user_level_icon_name (new_user_level, TRUE);
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  convert_user_level_to_path (new_user_level),
-				  new_user_level_icon_name_selected);
-	g_free (new_user_level_icon_name_selected);
-	
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-
-	nautilus_window_ui_thaw (window);
-} 
- 
-static void
-user_level_menu_item_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-		
-	switch_to_user_level (window, convert_verb_to_user_level (verb));
-}
-
 static void
 remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 {
@@ -1203,54 +1113,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 					       GTK_OBJECT (window));
 }
 
-static void
-update_user_level_menu_item (NautilusWindow *window, 
-			     const char *menu_path, 
-			     guint item_user_level)
-{
-	
-        guint current_user_level;
-        char *icon_name;
-	
-	if (window->details->shell_ui == NULL) {
-		return;
-	}
-	
-	current_user_level = eel_preferences_get_user_level ();
-
-	icon_name = get_user_level_icon_name (item_user_level, current_user_level == item_user_level);
-
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  menu_path,
-				  icon_name);
-
-	g_free (icon_name);
-
-	nautilus_window_ui_thaw (window);
-}
-
-static void
-user_level_changed_callback (gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	update_user_level_menu_item (window,
-				     NAUTILUS_MENU_PATH_NOVICE_ITEM, 
-				     EEL_USER_LEVEL_NOVICE);
-	update_user_level_menu_item (window,
-				     NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
-				     EEL_USER_LEVEL_INTERMEDIATE);
-	update_user_level_menu_item (window,
-				     NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				     EEL_USER_LEVEL_ADVANCED);
-}
-
 /**
  * nautilus_window_initialize_menus
  * 
@@ -1302,12 +1164,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
 		BONOBO_UI_VERB ("Nautilus Release Notes", help_menu_nautilus_release_notes_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
-
-		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),
-		BONOBO_UI_VERB ("Switch to Intermediate Level", user_level_menu_item_callback),
-		BONOBO_UI_VERB ("Switch to Advanced Level", user_level_menu_item_callback),
 		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
-
 		BONOBO_UI_VERB ("Stop", stop_button_callback),
 
 		BONOBO_UI_VERB_END
@@ -1320,14 +1177,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
 
         nautilus_window_update_show_hide_menu_items (window);
-
-	/* Keep track of user level changes to update the user level menu item icons */
-	eel_preferences_add_callback_while_alive ("user_level",
-						  user_level_changed_callback,
-						  window,
-						  G_OBJECT (window));
-	/* Update the user level menu items for the first time */
-	user_level_changed_callback (window);
 
 	/* Register to catch Bonobo UI events so we can notice View As changes */
 	g_signal_connect (window->details->shell_ui, "ui_event", 
@@ -1520,35 +1369,3 @@ schedule_refresh_go_menu (NautilusWindow *window)
 }
 
 
-static guint
-convert_verb_to_user_level (const char *verb)
-{
-        g_assert (verb != NULL);
-	
-	if (strcmp (verb, SWITCH_TO_BEGINNER_VERB) == 0) {
-		return EEL_USER_LEVEL_NOVICE;
-	} else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
-		return EEL_USER_LEVEL_INTERMEDIATE;
-	} else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
-		return EEL_USER_LEVEL_ADVANCED;
-	}
-
-	g_assert_not_reached ();
-	return EEL_USER_LEVEL_NOVICE;
-}
-
-static const char *
-convert_user_level_to_path (guint user_level)
-{
-	switch (user_level) {
-	case EEL_USER_LEVEL_NOVICE:
-		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
-	case EEL_USER_LEVEL_INTERMEDIATE:
-		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
-	case EEL_USER_LEVEL_ADVANCED:
-		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
-	}
-
-	g_assert_not_reached ();
-	return NAUTILUS_MENU_PATH_NOVICE_ITEM;
-}

@@ -1,0 +1,242 @@
+<gconfschemafile>
+  <schemalist>
+
+    <!-- Keep the defaults in sync with the emergency fallbacks 
+         in nautilus-global-preferences.c -->
+ 
+    <!-- General preferences -->        
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/show_hidden_files</key>
+      <applyto>/apps/nautilus/preferences/show_hidden_files</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Whether to show dotfiles</short>
+         <long>
+          If set to true, then hidden files (dotfiles) are shown in 
+          the file manager.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/show_backup_files</key>
+      <applyto>/apps/nautilus/preferences/show_backup_files</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Whether to show backup files</short>
+         <long>
+          If set to true, then backup files such as those created
+          by Emacs are displayed. Currently, only files ending in 
+          a tilde (~) are considered backup files.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/confirm_trash</key>
+      <applyto>/apps/nautilus/preferences/confirm_trash</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to ask for confirmation when moving files to trash</short>
+         <long>
+           If set to true, then Nautilus will ask for confirmation when 
+           you attempt to put files in the trash.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/enable_delete</key>
+      <applyto>/apps/nautilus/preferences/enable_delete</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Whether to enable immediate deletion</short>
+         <long>
+           If set to true, then Nautilus will have a feature allowing
+           you to delete a file immediately and in-place, instead of moving it 
+           to the trash. This feature can be dangerous, so use caution.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/show_icon_text</key>
+      <applyto>/apps/nautilus/preferences/show_icon_text</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>local_only</default>
+      <locale name="C">
+         <short>When to show preview text in icons</short>
+         <long>
+           Speed tradeoff for when to show a preview of text file contents
+           in the file's icon.
+           If set to "always" then always show previews, 
+           even if the directory is on a remote server.
+           If set to "local_only" then only show previews for local filesystems.
+           If set to "never" then never bother to read preview data.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/show_directory_item_counts</key>
+      <applyto>/apps/nautilus/preferences/show_directory_item_counts</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>local_only</default>
+      <locale name="C">
+         <short>When to show number of items in a directory</short>
+         <long>
+           Speed tradeoff for when to show the number of items in a 
+           directory. If set to "always" then always show item counts, 
+           even if the directory is on a remote server. 
+           If set to "local_only" then only show counts for local filesystems.
+           If set to "never" then never bother to compute item counts.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/click_policy</key>
+      <applyto>/apps/nautilus/preferences/click_policy</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>double</default>
+      <locale name="C">
+         <short>Type of click used to launch/open files</short>
+         <long>
+           Possible values are "single" to launch files on a single click, 
+           or "double" to launch them on a double click.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/executable_text_activation</key>
+      <applyto>/apps/nautilus/preferences/executable_text_activation</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>ask</default>
+      <locale name="C">
+         <short>What to do with executable text files when activated</short>
+         <long>
+        What to do with executable text files when they are activated
+        (single or double clicked).
+        Possible values are "launch" to launch them as programs,
+        "ask" to ask what to do via a dialog, and "display" to display
+        them as text files.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/theme</key>
+      <applyto>/apps/nautilus/preferences/theme</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>default</default>
+      <locale name="C">
+         <short>Current Nautilus theme</short>
+         <long>
+          Name of the Nautilus theme to use.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/show_image_thumbnails</key>
+      <applyto>/apps/nautilus/preferences/show_image_thumbnails</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>local_only</default>
+      <locale name="C">
+         <short>When to show thumbnails of image files</short>
+         <long>
+           Speed tradeoff for when to show a image files as a thumbnail.
+           If set to "always" then always thumbnail, 
+           even if the directory is on a remote server.
+           If set to "local_only" then only show thumbnails for local filesystems.
+           If set to "never" then never bother to thumbnail images,
+           just use a generic icon.
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/thumbnail_limit</key>
+      <applyto>/apps/nautilus/preferences/thumbnail_limit</applyto>
+      <owner>nautilus</owner>
+      <type>int</type>
+      <default>3145728</default>
+      <locale name="C">
+         <short>Maximum image size for thumbnailing</short>
+         <long>
+          Images over this size (in bytes) won't be 
+          thumbnailed. The purpose of this setting is to 
+          avoid thumbnailing large images that may 
+          take a long time to load or use lots of memory.
+         </long>
+      </locale>
+    </schema>
+
+    
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/use_public_metadata</key>
+      <applyto>/apps/nautilus/preferences/use_public_metadata</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>local_only</default>
+      <locale name="C">
+         <short>Whether to store metadata in each directory, or in a single global location</short>
+         <long>
+          Nautilus records information about each directory you visit, such 
+          as its background color, emblems, zoom level, and so on. 
+          This information can be stored in one location in your home
+          directory, or it can be stored in each directory in hidden files.
+          The advantages of storing per-directory are that it's more robust 
+          (can't be deleted in one go) and that for folders used by 
+          multiple users, the metadata will be shared. So for example 
+          all users can see emblems applied to files.
+
+          If this setting is "local_only", for local filesystems metadata 
+          will be stored per-directory, and for remote connections 
+          it will be stored in the user's home directory. If it's "never" 
+          then all metadata will go in the user's home directory; if it's 
+          "always" then all metadata will go in the directory being described. 
+          (However, for read-only directories, metadata always goes in the
+          user's home directory.)
+         </long>
+      </locale>
+    </schema>
+
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/smooth_graphics_mode</key>
+      <applyto>/apps/nautilus/preferences/smooth_graphics_mode</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to use smooth (antialiased) graphics</short>
+         <long>
+           If toggled on, smooth out jagged graphics, possibly 
+           using more resources.
+         </long>
+      </locale>
+    </schema>
+
+
+  </schemalist>  
+</gconfschemafile>
+
+
+
+

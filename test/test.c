@@ -46,11 +46,10 @@ test_window_new (const char *title, guint border_width)
 	}
 
 	g_signal_connect (window,
-			    "delete_event",
-			    G_CALLBACK (test_delete_event),
-			    NULL);
+                          "delete_event",
+                          G_CALLBACK (test_delete_event),
+                          NULL);
 	
-	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), border_width);
 	
 	return window;

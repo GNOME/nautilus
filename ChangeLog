@@ -1,3 +1,30 @@
+2002-01-04  Havoc Pennington  <hp@pobox.com>
+
+	* libnautilus-private/nautilus-global-preferences.c
+	(nautilus_global_preferences_init): add preload of the gconf
+	cache, to hopefully avoid a zillion round trips to gconfd on
+	startup.
+
+	* test/test.c (test_window_new): remove weird gtk_window_set_policy
+
+	* test/test-nautilus-preferences-display.c: remove user level
+	stuff
+
+	* test/test-nautilus-preferences-change.c: remove user level stuff
+
+	* libnautilus-private/nautilus-global-preferences.c: the default 
+	click policy was SPEED_TRADEOFF_LOCAL_ONLY, fix
+
+	* libnautilus-private/nautilus.schemas: add schemas file, 
+	incomplete, needs to be finished and installed
+
+	* libnautilus-private/nautilus-global-preferences.c: strip out
+	user levels
+
+	* src/nautilus-shell-ui.xml: strip out user level menu
+
+	* src/nautilus-window-menus.c: strip out user level menu
+
 2002-01-04  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
