@@ -99,8 +99,7 @@ static void	nautilus_sidebar_read_theme	    (NautilusSidebar *sidebar);
 static void     nautilus_sidebar_size_allocate      (GtkWidget        *widget,
 						     GtkAllocation    *allocation);
 static void	nautilus_sidebar_theme_changed	    (gpointer user_data);
-static void     nautilus_sidebar_update_info        (NautilusSidebar  *sidebar,
-						     const char       *title);
+static void     nautilus_sidebar_update_appearance  (NautilusSidebar  *sidebar);
 static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
 static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
@@ -501,10 +500,10 @@ nautilus_sidebar_theme_changed (gpointer user_data)
 {
 	NautilusSidebar *sidebar;
 	
-	sidebar = NAUTILUS_SIDEBAR(user_data);
-	nautilus_sidebar_read_theme(sidebar);
-	nautilus_sidebar_update_info(sidebar, NULL);
-	gtk_widget_queue_draw(GTK_WIDGET(sidebar)) ;	
+	sidebar = NAUTILUS_SIDEBAR (user_data);
+	nautilus_sidebar_read_theme (sidebar);
+	nautilus_sidebar_update_appearance (sidebar);
+	gtk_widget_queue_draw (GTK_WIDGET (sidebar)) ;	
 }
 
 /* hit testing */
@@ -617,7 +616,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		       GtkSelectionData *selection_data)
 {
 	guint16 *channels;
-	char *color_spec, *title;
+	char *color_spec;
 
 	if (selection_data->length != 8 || selection_data->format != 16) {
 		g_warning ("received invalid color data");
@@ -664,9 +663,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			 GTK_WIDGET (sidebar), x, y, selection_data);
 		
 		/* regenerate the display */
-		title = nautilus_sidebar_title_get_text (sidebar->details->title);
-		nautilus_sidebar_update_info (sidebar, title);  	
-		g_free(title);
+		nautilus_sidebar_update_appearance (sidebar);  	
 		
 		break;
 	}
@@ -682,7 +679,6 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 {
 	NautilusFile *file;
 	GList *keywords, *word;
-	char *title;
 
 	/* FIXME: This is a cut and paste copy of code that's in the icon dnd code. */
 			
@@ -711,9 +707,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	nautilus_file_unref (file);
 	
 	/* regenerate the display */
-	title = nautilus_sidebar_title_get_text (sidebar->details->title);
-	nautilus_sidebar_update_info (sidebar, title);  	
-	g_free(title);
+	nautilus_sidebar_update_appearance (sidebar);  	
 }
 
 static void  
@@ -1001,7 +995,7 @@ static void
 background_appearance_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
 	gboolean is_default_color, is_default_image;
-	char *title, *background_image, *background_color;
+	char *background_image, *background_color;
 
 	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
@@ -1017,9 +1011,7 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 	is_default_image = !nautilus_strcmp(background_image, sidebar->details->default_background_image);
 	
 	if (is_default_color && is_default_image) {
-		title = nautilus_sidebar_title_get_text (sidebar->details->title);
-		nautilus_sidebar_update_info (sidebar, title);  	
-		g_free(title);
+		nautilus_sidebar_update_appearance (sidebar);  	
 	}
 	g_free (background_color);
 	g_free (background_image);
@@ -1282,20 +1274,14 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 }
 
-/* this routine populates the sidebar with the per-uri information */
-
 void
-nautilus_sidebar_update_info (NautilusSidebar *sidebar,
-				  const char* initial_title)
+nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 {
-	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *background_color, *color_spec;
 	char *background_image, *combine_mode;
 
-	directory = nautilus_directory_get (sidebar->details->uri);
-	nautilus_directory_unref (sidebar->details->directory);
-	sidebar->details->directory = directory;
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
@@ -1317,12 +1303,12 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	/* Set up the background color and image from the metadata. */
 	background_image = NULL;
-	background_color = nautilus_directory_get_metadata (directory,
+	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 							    NULL);
 	if (background_color == NULL) {
 		background_color = g_strdup (sidebar->details->default_background_color);
-		background_image = nautilus_directory_get_metadata (directory,
+		background_image = nautilus_directory_get_metadata (sidebar->details->directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    sidebar->details->default_background_image);
 	}	
@@ -1344,13 +1330,13 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	g_free (combine_mode);
 	
 	/* set up the color for the tabs */
-	color_spec = nautilus_directory_get_metadata (directory,
+	color_spec = nautilus_directory_get_metadata (sidebar->details->directory,
 						      NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 						      DEFAULT_TAB_COLOR);
 	nautilus_sidebar_tabs_set_color(sidebar->details->sidebar_tabs, color_spec);
 	g_free (color_spec);
 
-	color_spec = nautilus_directory_get_metadata (directory,
+	color_spec = nautilus_directory_get_metadata (sidebar->details->directory,
 						      NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
 						      DEFAULT_TAB_COLOR);
 	nautilus_sidebar_tabs_set_color(sidebar->details->title_tab, color_spec);
@@ -1360,14 +1346,6 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
 					    background_settings_changed_callback,
 					    sidebar);
-	
-	/* tell the title widget about it */
-	nautilus_sidebar_title_set_uri (sidebar->details->title,
-					sidebar->details->uri,
-					initial_title);
-	
-	/* set up the command buttons */
-	nautilus_sidebar_update_buttons (sidebar);
 }
 
 /* here is the key routine that populates the sidebar with the appropriate information when the uri changes */
@@ -1377,6 +1355,12 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 			      const char* new_uri,
 			      const char* initial_title)
 {       
+	NautilusDirectory *directory;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
+	g_return_if_fail (new_uri != NULL);
+	g_return_if_fail (initial_title != NULL);
+
 	/* there's nothing to do if the uri is the same as the current one */ 
 	if (nautilus_strcmp (sidebar->details->uri, new_uri) == 0) {
 		return;
@@ -1385,8 +1369,19 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	g_free (sidebar->details->uri);
 	sidebar->details->uri = g_strdup (new_uri);
 		
-	/* populate the per-uri box with the info */
-	nautilus_sidebar_update_info (sidebar, initial_title);  	
+	directory = nautilus_directory_get (sidebar->details->uri);
+	nautilus_directory_unref (sidebar->details->directory);
+	sidebar->details->directory = directory;
+		
+	nautilus_sidebar_update_appearance (sidebar);
+
+	/* tell the title widget about it */
+	nautilus_sidebar_title_set_uri (sidebar->details->title,
+					sidebar->details->uri,
+					initial_title);
+	
+	/* set up the command buttons */
+	nautilus_sidebar_update_buttons (sidebar);
 }
 
 void

@@ -1,3 +1,23 @@
+2000-08-04  John Sullivan  <sullivan@eazel.com>
+
+	Fixed demo bug 1908: Title in sidebar vanishes on theme change.
+
+	* src/nautilus-sidebar.c: 
+	(nautilus_sidebar_set_uri), (nautilus_sidebar_update_info): 
+	Separated update_info into the parts that were about changing 
+	URI-based information and the parts that were about changing 
+	appearance only. The appearance-only parts are now called
+	nautilus_sidebar_update_appearance. The	other parts were put 
+	back into nautilus_sidebar_set_uri.
+	(nautilus_sidebar_theme_changed),
+	(receive_dropped_color), (receive_dropped_keyword),
+	(background_appearance_changed_callback): Made these callers
+	use nautilus_sidebar_set_appearance. The bug was that
+	theme_changed was passing NULL for the initial title text,
+	but passing NULL wipes it out rather than doing nothing as
+	was intended. The other callers were getting the current title
+	text and then passing it back in; now they just leave it alone.
+
 2000-08-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_font):
