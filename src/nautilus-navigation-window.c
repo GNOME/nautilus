@@ -635,6 +635,7 @@ nautilus_window_tear_down_sidebar (NautilusWindow *window)
 	nautilus_window_set_sidebar_panels (window, NULL);
 	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
 	window->sidebar = NULL;
+	window->information_panel = NULL;
 }
 
 static void
