@@ -608,7 +608,7 @@ nautilus_window_destroy (GtkObject *object)
 	cancel_view_as_callback (window);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					      sidebar_panels_changed_callback,
-					      NULL);
+					      window);
 	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback (window);

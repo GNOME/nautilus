@@ -1,3 +1,10 @@
+2000-12-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	fixed bug 4921, crash when changing sidebar panels preferences
+	after opening new window, by fixing the call to remove the
+	preferences callback to have the right callback data.
+	
 2000-12-01 John Fleck <jfleck@inkstain.net>
 
 	* nautilus/components/help/converters/gnome-db2html2/gdb3html.h,
