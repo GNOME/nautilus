@@ -65,6 +65,7 @@ libungif        libungif-devel-4.1.0-4      libungif3g-dev (3.0-3)          3.0 
 Xlib            XFree86-devel-3.3.6-20      xlib6g-dev (3.3.6-7)            3.3.6
 zlib            zlib-devel-1.1.3-6          zlib1g-dev (1.1.3-5)            1.1.3
 freetype2       freetype2-devel-1.0beta8    ?                               1.0beta8
+scrollkeeper    scrollkeeper-0.1.0-1        ?                               0.1.0
 
 Other modules for Red Hat users:
 
@@ -78,6 +79,10 @@ Other modules for Red Hat users:
 
         http://developer.eazel.com/eazel-hacking/updates/redhat62/freetype2/freetype-2.0.1-4.i386.rpm
         http://developer.eazel.com/eazel-hacking/updates/redhat62/freetype2/freetype-devel-2.0.1-4.i386.rpm
+
+	- ScrollKeeper source and packages are available here:
+
+	http://sourceforge.net/project/showfiles.php?group_id=11543
 
 Replace "redhat62" with "redhat70" if you are using RedHat Linux 7.0.
 
@@ -327,3 +332,27 @@ To remove the old rpms,
    <password>
 2) rpm -e --nodeps freetype2 freetype2-devel
 3) Install the new Freetype-2 rpms: rpm -Uvh freetype*2.0.1*.rpm
+
+=======================
+8: Scrollkeeper support
+=======================
+
+Scrollkeeper is the documentation cataloging system based on document metadata.
+It works with Nautilus to manage the documentation of installed packages
+on your system.
+
+Nautilus documentation is set up with metadata needed by Scrollkeeper. In order 
+to get the docs fully installed by Scrollkeeper the latest Scrollkeeper has to be 
+installed from here:
+
+http://sourceforge.net/project/showfiles.php?group_id=11543
+
+This is needed for building and for installing Nautilus.
+
+The RPM installs below /usr. Scrollkeeper does a pre-install during build. Here it
+doesnt matter where Scrollkeeper is installed.
+
+At Nautilus install time Scrollkeeper installs the docs only if the metadata 
+is in $prefix/share/omf. This will be correct only if Nautilus and Scrollkeeper 
+are installed below the same prefix. If the Nautilus docs are not in the Nautilus 
+help sidebar then this did not happen.
