@@ -868,7 +868,6 @@ nautilus_file_get_name (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	g_assert (file->ref_count != 0);
 	g_assert (file->directory == NULL || NAUTILUS_IS_DIRECTORY (file->directory));
 	g_assert (file->info->name != NULL);
 	g_assert (file->info->name[0] != '\0');
