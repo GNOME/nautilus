@@ -1938,6 +1938,11 @@ fm_list_view_dispose (GObject *object)
 		g_object_unref (list_view->details->drag_dest);
 		list_view->details->drag_dest = NULL;
 	}
+
+	if (list_view->details->ui != NULL) {
+		bonobo_ui_component_unset_container (list_view->details->ui, NULL);
+		bonobo_object_unref (list_view->details->ui);
+	}
 	
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -1954,11 +1959,6 @@ fm_list_view_finalize (GObject *object)
 	}	
 	if (list_view->details->double_click_path[1]) {
 		gtk_tree_path_free (list_view->details->double_click_path[1]);
-	}	
-
-	if (list_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (list_view->details->ui, NULL);
-		bonobo_object_unref (list_view->details->ui);
 	}
 
 	gtk_target_list_unref (list_view->details->source_target_list);

@@ -227,7 +227,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 }
 
 static void
-fm_desktop_icon_view_finalize (GObject *object)
+fm_desktop_icon_view_destroy (GtkObject *object)
 {
 	FMDesktopIconView *icon_view;
 
@@ -236,6 +236,7 @@ fm_desktop_icon_view_finalize (GObject *object)
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
 		g_source_remove (icon_view->details->reload_desktop_timeout);
+		icon_view->details->reload_desktop_timeout = 0;
 	}
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
@@ -248,6 +249,16 @@ fm_desktop_icon_view_finalize (GObject *object)
 		bonobo_object_unref (icon_view->details->ui);
 		icon_view->details->ui = NULL;
 	}
+
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+}
+
+static void
+fm_desktop_icon_view_finalize (GObject *object)
+{
+	FMDesktopIconView *icon_view;
+
+	icon_view = FM_DESKTOP_ICON_VIEW (object);
 	
 	g_free (icon_view->details);
 
@@ -258,6 +269,8 @@ static void
 fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = fm_desktop_icon_view_finalize;
+
+	GTK_OBJECT_CLASS (class)->destroy = fm_desktop_icon_view_destroy;
 
 	FM_DIRECTORY_VIEW_CLASS (class)->merge_menus = real_merge_menus;
 	FM_DIRECTORY_VIEW_CLASS (class)->update_menus = real_update_menus;

@@ -1604,6 +1604,7 @@ static void
 fm_directory_view_destroy (GtkObject *object)
 {
 	FMDirectoryView *view;
+	GList *node, *next;
 
 	view = FM_DIRECTORY_VIEW (object);
 
@@ -1622,17 +1623,6 @@ fm_directory_view_destroy (GtkObject *object)
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
-fm_directory_view_finalize (GObject *object)
-{
-	FMDirectoryView *view;
-	GList *node, *next;
-
-	view = FM_DIRECTORY_VIEW (object);
-
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
 		next = node->next;
 		remove_directory_from_scripts_directory_list (view, node->data);
@@ -1643,19 +1633,13 @@ fm_directory_view_finalize (GObject *object)
 		remove_directory_from_templates_directory_list (view, node->data);
 	}
 
-	
-	nautilus_directory_unref (view->details->model);
-	view->details->model = NULL;
-	nautilus_file_unref (view->details->directory_as_file);
-
-	if (view->details->display_selection_idle_id != 0) {
-		g_source_remove (view->details->display_selection_idle_id);
-	}
-
 	remove_update_menus_timeout_callback (view);
 	remove_update_status_idle_callback (view);
 
-	fm_directory_view_ignore_hidden_file_preferences (view);
+	if (view->details->display_selection_idle_id != 0) {
+		g_source_remove (view->details->display_selection_idle_id);
+		view->details->display_selection_idle_id = 0;
+	}
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					 filtering_changed_callback, view);
@@ -1674,9 +1658,31 @@ fm_directory_view_finalize (GObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					 sort_directories_first_changed_callback, view);
 
-	g_hash_table_destroy (view->details->non_ready_files);
+	if (view->details->model) {
+		nautilus_directory_unref (view->details->model);
+		view->details->model = NULL;
+	}
+	
+	if (view->details->directory_as_file) {
+		nautilus_file_unref (view->details->directory_as_file);
+		view->details->directory_as_file = NULL;
+	}
+
+	fm_directory_view_ignore_hidden_file_preferences (view);
 
 	eel_remove_weak_pointer (&view->details->ui);
+
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+fm_directory_view_finalize (GObject *object)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (object);
+
+	g_hash_table_destroy (view->details->non_ready_files);
 
 	g_free (view->details);
 

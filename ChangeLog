@@ -1,3 +1,18 @@
+2004-06-08  Dave Camp  <dave@novell.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_finalize),
+	(fm_desktop_icon_view_class_init):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (fm_directory_view_finalize):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(fm_icon_view_finalize), (fm_icon_view_class_init):
+	* src/file-manager/fm-list-model.c: (fm_list_model_dispose),
+	(fm_list_model_finalize), (fm_list_model_class_init):
+	* src/file-manager/fm-list-view.c: (fm_list_view_dispose),
+	(fm_list_view_finalize): Fixed up dispose/destroy/finalize
+	usage in src/file-manager.
+
 2004-06-07  Anders Carlsson  <andersca@gnome.org>
 
 	* libnautilus-private/nautilus-file-operations-progress.c:

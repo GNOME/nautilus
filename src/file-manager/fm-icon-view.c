@@ -219,7 +219,7 @@ GNOME_CLASS_BOILERPLATE (FMIconView, fm_icon_view,
 			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
 
 static void
-fm_icon_view_finalize (GObject *object)
+fm_icon_view_destroy (GtkObject *object)
 {
 	FMIconView *icon_view;
 
@@ -231,16 +231,32 @@ fm_icon_view_finalize (GObject *object)
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
 		bonobo_object_unref (icon_view->details->ui);
+		icon_view->details->ui = NULL;
 	}
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 g_source_remove (icon_view->details->react_to_icon_change_idle_id);
+		icon_view->details->react_to_icon_change_idle_id = 0;
         }
 
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 
-	nautilus_file_list_free (icon_view->details->icons_not_positioned);
+	if (icon_view->details->icons_not_positioned) {
+		nautilus_file_list_free (icon_view->details->icons_not_positioned);
+		icon_view->details->icons_not_positioned = NULL;
+	}
+
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+
+static void
+fm_icon_view_finalize (GObject *object)
+{
+	FMIconView *icon_view;
+
+	icon_view = FM_ICON_VIEW (object);
 
 	g_free (icon_view->details);
 
@@ -2789,6 +2805,8 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
 	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
+
+	GTK_OBJECT_CLASS (klass)->destroy = fm_icon_view_destroy;
 	
 	GTK_WIDGET_CLASS (klass)->screen_changed = fm_icon_view_screen_changed;
 	

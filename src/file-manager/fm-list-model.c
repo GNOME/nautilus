@@ -966,20 +966,41 @@ fm_list_model_get_column_number (FMListModel *model,
 }
 
 static void
-fm_list_model_finalize (GObject *object)
+fm_list_model_dispose (GObject *object)
 {
 	FMListModel *model;
 	int i;
 
 	model = FM_LIST_MODEL (object);
 
-	for (i = 0; i < model->details->columns->len; i++) {
-		g_object_unref (model->details->columns->pdata[i]);
+	if (model->details->columns) {
+		for (i = 0; i < model->details->columns->len; i++) {
+			g_object_unref (model->details->columns->pdata[i]);
+		}
+		g_ptr_array_free (model->details->columns, TRUE);
+		model->details->columns = NULL;
 	}
-	g_ptr_array_free (model->details->columns, TRUE);
 
-	g_sequence_free (model->details->files);
-	g_hash_table_destroy (model->details->reverse_map);
+	if (model->details->files) {
+		g_sequence_free (model->details->files);
+		model->details->files = NULL;
+	}
+	
+	if (model->details->reverse_map) {
+		g_hash_table_destroy (model->details->reverse_map);
+		model->details->reverse_map = NULL;
+	}
+	
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+}
+
+static void
+fm_list_model_finalize (GObject *object)
+{
+	FMListModel *model;
+
+	model = FM_LIST_MODEL (object);
+
 	g_free (model->details->sort_attribute);
 	g_free (model->details);
 	
@@ -1006,6 +1027,7 @@ fm_list_model_class_init (FMListModelClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = fm_list_model_finalize;
+	object_class->dispose = fm_list_model_dispose;
 }
 
 static void
