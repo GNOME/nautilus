@@ -1,3 +1,18 @@
+2000-07-17  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (selected_column_index),
+	(get_column_background), (get_cell_style),
+	(nautilus_list_clear_from_row), (draw_rows), (nautilus_list_draw),
+	(nautilus_list_expose):
+	Rework more of NautilusList drawing.
+	Added nautilus_list_draw and nautilus_list_expose.
+	Cleaned up draw_rows and made it so that only the NautilusList
+	version gets called.
+	Improved drawing performance of long lists.
+	Added code to draw the list area unpopulated with rows properly
+	(still needs some work).
+
 2000-07-15  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/help/help-contents.oafinfo:

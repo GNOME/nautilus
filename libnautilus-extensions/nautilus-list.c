@@ -241,6 +241,10 @@ static void     schedule_keyboard_row_reveal            (NautilusList         *l
 static void     unschedule_keyboard_row_reveal          (NautilusList         *list);
 static void     emit_selection_changed                  (NautilusList         *clist);
 static void     nautilus_list_clear                     (GtkCList             *clist);
+static void	nautilus_list_draw 			(GtkWidget 	      *widget, 
+							 GdkRectangle 	      *area);
+static int	nautilus_list_expose			(GtkWidget            *widget,
+							 GdkEventExpose       *event);
 static void     draw_row                                (GtkCList             *list,
 							 GdkRectangle         *area,
 							 int                   row_index,
@@ -436,6 +440,8 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->drag_motion = nautilus_list_drag_motion;
 	widget_class->drag_drop = nautilus_list_drag_drop;
 	widget_class->drag_data_received = nautilus_list_drag_data_received;
+	widget_class->draw = nautilus_list_draw;
+	widget_class->expose_event = nautilus_list_expose;
 	widget_class->draw_focus = nautilus_list_draw_focus;
 	widget_class->key_press_event = nautilus_list_key_press;
 	widget_class->realize = nautilus_list_realize;
@@ -1729,6 +1735,20 @@ nautilus_list_draw_focus (GtkWidget *widget)
   	gdk_gc_set_fill (clist->xor_gc, saved_values.fill);
 }
 
+static int
+selected_column_index (NautilusList *list)
+{
+	/* FIXME - this has to be based on selected column, not hardcoded */
+	return 2;
+}
+
+static void
+get_column_background (NautilusList *list, GdkGC **selected, GdkGC **plain)
+{
+	*plain = list->details->cell_lighter_background;
+	*selected = list->details->cell_selected_lighter_background;
+}
+
 static void
 get_cell_style (NautilusList *list, GtkCListRow *row,
 		int state, int row_index, int column_index, GtkStyle **style,
@@ -1743,7 +1763,7 @@ get_cell_style (NautilusList *list, GtkCListRow *row,
 			*fg_gc = GTK_WIDGET (list)->style->fg_gc[state];
 		}
 		if (bg_gc != NULL) {
-			if (column_index == 2) {
+			if (column_index == selected_column_index (list)) {
 				*bg_gc = list->details->selection_medium_color;
 			} else  {
 				*bg_gc = list->details->selection_light_color;
@@ -1758,8 +1778,7 @@ get_cell_style (NautilusList *list, GtkCListRow *row,
 	}
 
 	if (bg_gc != NULL) {
-		/* FIXME - this has to be based on selected column, not hardcoded */
-		if (column_index == 2) {
+		if (column_index == selected_column_index (list)) {
 			if ((row_index % 2) != 0) {
 				*bg_gc = list->details->cell_selected_lighter_background;
 			} else {
@@ -2188,15 +2207,102 @@ draw_row (GtkCList *clist, GdkRectangle *area, int row_index, GtkCListRow *row)
 }
 
 static void
+nautilus_list_clear_from_row (NautilusList *list, int row_index,
+	GdkRectangle *area)
+{
+	GtkCList *clist;
+	GdkRectangle first_column_plain_rectangle;
+	GdkRectangle selected_column_rectangle;
+	GdkRectangle second_column_plain_rectangle;
+	GdkGC *selected_column_gc;
+	GdkGC *plain_column_gc;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	g_assert (area);
+
+	clist = GTK_CLIST (list);
+
+	first_column_plain_rectangle = *area;
+	first_column_plain_rectangle.y = ROW_TOP_YPIXEL (clist, row_index);
+	if (first_column_plain_rectangle.y >= area->y + area->height) {
+		/* nothing visible to erase */
+		return;
+	}
+	
+	first_column_plain_rectangle.height = area->height 
+		- (first_column_plain_rectangle.y - area->y); 
+	g_assert (first_column_plain_rectangle.height > 0);
+
+	second_column_plain_rectangle = first_column_plain_rectangle;
+	
+	/* get the rectangle for the selected column */
+	get_cell_rectangle (clist, 0, selected_column_index (list), &selected_column_rectangle);
+	get_cell_greater_rectangle (&selected_column_rectangle, &selected_column_rectangle, 
+		selected_column_index (list) == last_column_index (clist));
+	selected_column_rectangle.y = first_column_plain_rectangle.y;
+	selected_column_rectangle.height = first_column_plain_rectangle.height;
+
+	/* start out using the first_column_plain_rectangle holding the entire
+	 * area that we need to erase
+	 */
+	if (selected_column_rectangle.x + selected_column_rectangle.width
+		> first_column_plain_rectangle.x + first_column_plain_rectangle.width) {
+		/* trim invisible part */
+		selected_column_rectangle.width = 
+			(first_column_plain_rectangle.x + first_column_plain_rectangle.width)
+			- selected_column_rectangle.x + 1;
+
+		/* won't be needing this */
+		second_column_plain_rectangle.width = 0;
+	} else {
+
+		/* set up the second rectangle width */
+		second_column_plain_rectangle.x = selected_column_rectangle.y 
+			+ selected_column_rectangle.width + 1;
+		second_column_plain_rectangle.width = 
+			(first_column_plain_rectangle.x + first_column_plain_rectangle.width)
+			- second_column_plain_rectangle.x;
+	}
+
+	if (selected_column_rectangle.width > 0) {
+		/* finally trim the first rectangle to right width */
+		first_column_plain_rectangle.width = selected_column_rectangle.y 
+			- first_column_plain_rectangle.y - 1;
+	}
+
+	get_column_background (list, &selected_column_gc, &plain_column_gc);
+	/* draw the first column if non-empty */
+	if (first_column_plain_rectangle.width > 0) {
+		gdk_draw_rectangle (clist->clist_window, plain_column_gc, TRUE,
+			  first_column_plain_rectangle.x, first_column_plain_rectangle.y, 
+			  first_column_plain_rectangle.width, first_column_plain_rectangle.height);
+	}
+	g_assert (selected_column_rectangle.width > 0);
+	/* draw the selected column if non-empty */
+	if (first_column_plain_rectangle.width > 0) {
+		gdk_draw_rectangle (clist->clist_window, selected_column_gc, TRUE,
+			  selected_column_rectangle.x, selected_column_rectangle.y, 
+			  selected_column_rectangle.width, selected_column_rectangle.height);
+	}
+	/* draw the last column if non-empty */
+	if (second_column_plain_rectangle.width > 0) {
+		gdk_draw_rectangle (clist->clist_window, plain_column_gc, TRUE,
+			  second_column_plain_rectangle.x, second_column_plain_rectangle.y, 
+			  second_column_plain_rectangle.width, second_column_plain_rectangle.height);
+	}
+}
+
+static void
 draw_rows (GtkCList *clist, GdkRectangle *area)
 {
 	GList *list;
-	int i;
+	int row_index;
 	int first_row;
 	int last_row;
 
-	if (clist->row_height == 0 || !GTK_WIDGET_DRAWABLE (clist))
+	if (clist->row_height == 0 || !GTK_WIDGET_DRAWABLE (clist)) {
 		return;
+	}
 
 	first_row = ROW_FROM_YPIXEL (clist, area->y);
 	last_row = ROW_FROM_YPIXEL (clist, area->y + area->height);
@@ -2205,18 +2311,80 @@ draw_rows (GtkCList *clist, GdkRectangle *area)
 	 * on the last row -- it might go away if I change the wall the cell
 	 * spacings are drawn
 	 */
-	if (clist->rows == first_row)
+	if (clist->rows == first_row) {
 		first_row--;
+	}
 
 	list = ROW_ELEMENT (clist, first_row);
-	for (i = first_row; i <= last_row ; i++) {
-		if (list == NULL)
+	for (row_index = first_row; row_index <= last_row ; row_index++) {
+		if (list == NULL) {
 			break;
+		}
 
-		GTK_CLIST_CLASS ((GTK_OBJECT (clist))->klass)->draw_row (clist, area, i, 
-									   list->data);
+		GTK_CLIST_CLASS ((GTK_OBJECT (clist))->klass)->draw_row 
+			(clist, area, row_index, list->data);
 		list = list->next;
 	}
+
+	nautilus_list_clear_from_row (NAUTILUS_LIST (clist), 
+		row_index, area);
+}
+
+static void
+nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
+{
+	GtkCList *clist;
+	
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (area != NULL);
+
+	clist = GTK_CLIST (widget);
+
+	if (GTK_WIDGET_DRAWABLE (widget)) {
+		int border_width;
+		border_width = GTK_CONTAINER (widget)->border_width;
+		gdk_window_clear_area (widget->window,
+				area->x - border_width, 
+				area->y - border_width,
+				area->width, area->height);
+
+		gtk_draw_shadow (widget->style, widget->window,
+				GTK_STATE_NORMAL, clist->shadow_type,
+				0, 0, 
+				clist->clist_window_width +
+					(2 * widget->style->klass->xthickness),
+				clist->clist_window_height +
+					(2 * widget->style->klass->ythickness) +
+				clist->column_title_area.height);
+
+		draw_rows (clist, area);
+	}
+}
+
+static int
+nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+	GtkCList *clist;
+	
+	g_assert (NAUTILUS_IS_LIST (widget));
+
+	clist = GTK_CLIST (widget);
+
+	if (GTK_WIDGET_DRAWABLE (widget)) {
+
+		gtk_draw_shadow (widget->style, widget->window,
+				GTK_STATE_NORMAL, clist->shadow_type,
+				0, 0, 
+				clist->clist_window_width +
+					(2 * widget->style->klass->xthickness),
+				clist->clist_window_height +
+					(2 * widget->style->klass->ythickness) +
+				clist->column_title_area.height);
+
+		draw_rows (clist, &event->area);
+	}
+
+	return FALSE;
 }
 
 static void 
