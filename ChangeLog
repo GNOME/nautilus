@@ -1,3 +1,68 @@
+2001-03-06  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com> 
+
+	Updating data file which determines which documents appear
+	in the "Introductory Documents" section of the help sidebar.
+	It now includes all locales of each doc.
+	Bug#: 7267
+
+	* components/help/topleveldocs.xml:
+
+	Fixing font problem for titles.
+	Bug#: 7210
+
+	* help/nautilus-quick-reference/es/index.html:
+	* help/nautilus-quick-reference/no/index.html:
+
+	Fixing screenshots in Swedish version of Nautilus
+	Quick Reference.  Now the links aren't broken at least.
+	They still aren't localized though.
+	Bug#: 7422
+
+	* help/nautilus-quick-reference/sv/Makefile.am:
+	* help/nautilus-quick-reference/sv/figures/colors_small.png:
+	* help/nautilus-quick-reference/sv/figures/emblems.png:
+	* help/nautilus-quick-reference/sv/figures/emblems_small.png:
+	* help/nautilus-quick-reference/sv/figures/ff_small.png:
+	* help/nautilus-quick-reference/sv/figures/find.png:
+	* help/nautilus-quick-reference/sv/figures/find_small.png:
+	* help/nautilus-quick-reference/sv/figures/full.png:
+	* help/nautilus-quick-reference/sv/figures/full_small.png:
+	* help/nautilus-quick-reference/sv/figures/locbar.png:
+	* help/nautilus-quick-reference/sv/figures/locbar_small.png:
+	* help/nautilus-quick-reference/sv/figures/menubar.png:
+	* help/nautilus-quick-reference/sv/figures/menubar_small.png:
+	* help/nautilus-quick-reference/sv/figures/music.png:
+	* help/nautilus-quick-reference/sv/figures/music_small.png:
+	* help/nautilus-quick-reference/sv/figures/navbar.png:
+	* help/nautilus-quick-reference/sv/figures/navbar_small.png:
+	* help/nautilus-quick-reference/sv/figures/patterns.png:
+	* help/nautilus-quick-reference/sv/figures/sidebar.png:
+	* help/nautilus-quick-reference/sv/figures/sidebar_small.png:
+	* help/nautilus-quick-reference/sv/figures/themes.png:
+	* help/nautilus-quick-reference/sv/figures/themes_small.png:
+	* help/nautilus-quick-reference/sv/figures/viewmenu.png:
+
+        --- end of what mjs reviewed
+
+	Fixing these screenshots so they render correctly in some
+	browsers.  Replacing a screenshot in a doc with another can't break
+	Nautilus :)
+	Bug#: 7434
+
+	* help/nautilus-quick-reference/C/figures/music.png:
+	* help/nautilus-quick-reference/C/figures/navbar.png:
+	* help/nautilus-quick-reference/C/figures/softcat.png:
+	* help/nautilus-quick-reference/C/figures/storage.png:
+
+	Change one line of a doc to make it more correct.  Again,
+	there is no way this can break anything, so I'm taking responsibility
+	for this.
+
+	* help/nautilus-quick-reference/sv/index.html:
+
+
 2001-03-06  Darin Adler  <darin@eazel.com>
 
 	* nautilus.spec.in: RPM view also has to be removed from the RPM
