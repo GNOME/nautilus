@@ -1,9 +1,16 @@
+2001-02-13  Robey Pointer  <robey@eazel.com>
+
+	* Makefile.am:
+
+	Add nautilus-installer to EXTRA_DIST to fix tinderbox breakage.
+	
 2001-02-13  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Seth Nickell <seth@eazel.com>
+
 	Fix bugzilla.eazel.com bug 6416, that the indexing
 	information dialog should not be shown if indexing is
 	disabled or blocked.
-
-	reviewed by: Seth Nickell <seth@eazel.com>
 
 	* src/file-manager/nautilus-indexing-info.c: (dialog_close_cover),
 	(show_index_progress_dialog), (show_reindex_request_dialog),

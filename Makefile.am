@@ -48,6 +48,7 @@ EXTRA_DIST=					\
 	Makefile.shared				\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\
+	nautilus-installer			\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
