@@ -130,7 +130,8 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								      geometry,
 								      APPLICATION_WINDOW_MIN_WIDTH,
-								      APPLICATION_WINDOW_MIN_HEIGHT);
+								      APPLICATION_WINDOW_MIN_HEIGHT,
+								      FALSE);
 	}
 
 	if (uri == NULL) {

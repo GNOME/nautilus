@@ -1,3 +1,27 @@
+2002-07-17  Frank Worsley  <fworsley@shaw.ca>
+
+	* src/nautilus-application.c: (save_window_geometry_timeout),
+	(nautilus_window_configure_event_callback),
+	(nautilus_window_unrealize_event_callback):
+	improve saving of geometry. only save it if we really resize
+	a window, not when a window is first shown or viewport change
+
+	* src/nautilus-shell.c: (open_window):
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_restore_geometry):
+	update for changed eel function
+	
+
+	* src/nautilus-window-manage-views.c:
+	(pending_location_already_showing): added new
+	(position_and_show_window_callback):
+	ignore saved window position if same window already showing
+	
+	* src/nautilus-window.c: (nautilus_window_instance_init),
+	(nautilus_window_save_geometry):
+	* src/nautilus-window.h:
+	updated for new eel function and changes described above
+
 2002-07-17  jacob berkman  <jacob@ximian.com>
 
 	* components/adapter/Makefile.am (EXTRA_DIST): fixup

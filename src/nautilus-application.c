@@ -45,6 +45,7 @@
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
@@ -643,15 +644,15 @@ nautilus_window_delete_event_callback (GtkWidget *widget,
 }				       
 
 static gboolean
-save_window_geometry_idle (gpointer callback_data)
+save_window_geometry_timeout (gpointer callback_data)
 {
 	NautilusWindow *window;
 	
 	window = NAUTILUS_WINDOW (callback_data);
 	
 	nautilus_window_save_geometry (window);
-	
-	window->save_geometry_idle_id = 0;
+
+	window->save_geometry_timeout_id = 0;
 	return FALSE;
 }
  
@@ -661,15 +662,40 @@ nautilus_window_configure_event_callback (GtkWidget *widget,
 						gpointer callback_data)
 {
 	NautilusWindow *window;
+	char *geometry_string;
 	
 	window = NAUTILUS_WINDOW (widget);
 	
-	/* Only save the geometry when we are idle, 
-	 * since we receive configure events all the time.
+	/* Only save the geometry if the user hasn't resized the window
+	 * for half a second. Otherwise delay the callback another half second.
 	 */
-	if (window->save_geometry_idle_id == 0) {
-		window->save_geometry_idle_id = 
-				g_idle_add (save_window_geometry_idle, window);
+	if (window->save_geometry_timeout_id != 0) {
+		g_source_remove (window->save_geometry_timeout_id);	
+	}
+	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (window)) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		
+		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+	
+		/* If the last geometry is NULL the window must have just
+		 * been shown. No need to save geometry to disk since it
+		 * must be the same.
+		 */
+		if (window->last_geometry == NULL) {
+			window->last_geometry = geometry_string;
+			return FALSE;
+		}
+	
+		/* Don't save geometry if it's the same as before. */
+		if (!strcmp (window->last_geometry, geometry_string)) {
+			g_free (geometry_string);
+			return FALSE;
+		}
+
+		g_free (window->last_geometry);
+		window->last_geometry = geometry_string;
+
+		window->save_geometry_timeout_id = 
+				g_timeout_add (500, save_window_geometry_timeout, window);
 	}
 
 	return FALSE;
@@ -684,9 +710,9 @@ nautilus_window_unrealize_event_callback (GtkWidget *widget,
 	
 	window = NAUTILUS_WINDOW (widget);
 
-	if (window->save_geometry_idle_id != 0) {
-		g_source_remove (window->save_geometry_idle_id);
-		window->save_geometry_idle_id = 0;
+	if (window->save_geometry_timeout_id != 0) {
+		g_source_remove (window->save_geometry_timeout_id);
+		window->save_geometry_timeout_id = 0;
 		nautilus_window_save_geometry (window);
 	}
 
