@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-28 13:16+0200\n"
-"PO-Revision-Date: 2003-06-28 15:57+0200\n"
+"POT-Creation-Date: 2003-06-29 13:04+0200\n"
+"PO-Revision-Date: 2003-06-29 13:56+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -392,6 +392,18 @@ msgstr "(Prázdné)"
 #: components/tree/nautilus-tree-model.c:1135
 msgid "Loading..."
 msgstr "Načítám..."
+
+#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Domovský adresář"
+
+#: components/tree/nautilus-tree-view.c:507
+msgid "Filesystem"
+msgstr "Systém souborů"
+
+#: components/tree/nautilus-tree-view.c:509
+msgid "Network Neighbourhood"
+msgstr "Okolní počítače"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -1264,7 +1276,9 @@ msgstr ""
 msgid ""
 "If set to true, then nautilus will use the user's home directory as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "Je-li nastaveno na true, bude Nautilus používat jako pracovní plochu domovský adresář. Je-li false, bude jako pracovní plochu používat ~/Desktop."
+msgstr ""
+"Je-li nastaveno na true, bude Nautilus používat jako pracovní plochu "
+"domovský adresář. Je-li false, bude jako pracovní plochu používat ~/Desktop."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
@@ -4241,10 +4255,6 @@ msgstr "Změnit, jak jsou spravovány soubory"
 msgid "File Management"
 msgstr "Správa souborů"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Domovský adresář"
-
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Zobrazit váš domovský adresář ve správci souborů Nautilus"
@@ -5625,7 +5635,9 @@ msgstr ""
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
-msgstr "Přesunout nebo zkopírovat soubory dříve vybrané příkazem Vyjmout soubory nebo Kopírovat soubory do vybraného adresáře"
+msgstr ""
+"Přesunout nebo zkopírovat soubory dříve vybrané příkazem Vyjmout soubory "
+"nebo Kopírovat soubory do vybraného adresáře"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open Wit_h"
@@ -7376,11 +7388,11 @@ msgstr "Změnit velikost podle okna"
 msgid "Try to fit in window"
 msgstr "Zkusit se vejít do okna"
 
-#: src/nautilus-zoom-control.c:794
+#: src/nautilus-zoom-control.c:796
 msgid "Zoom"
 msgstr "Zvětšení"
 
-#: src/nautilus-zoom-control.c:800
+#: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
 msgstr "Nastavit úroveň zvětšení aktuálního pohledu"
 
