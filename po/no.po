@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-03-05 12:37-0800\n"
-"PO-Revision-Date: 2002-03-03 10:56+0100\n"
+"POT-Creation-Date: 2002-03-06 22:07+0100\n"
+"PO-Revision-Date: 2002-03-06 22:11+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1096,7 +1096,7 @@ msgstr "Bryt ved"
 
 #: components/news/nautilus-cell-renderer-news.c:145
 msgid "Width the cell should wrap to."
-msgstr ""
+msgstr "Bredde før teksten i cellen brytes."
 
 #: components/news/nautilus-cell-renderer-news.c:154
 msgid "Markup"
@@ -1116,11 +1116,11 @@ msgstr "Kulepunkt som skal vises"
 
 #: components/news/nautilus-cell-renderer-news.c:168
 msgid "Prelight Bullet"
-msgstr ""
+msgstr "Lys opp kulepunkt"
 
 #: components/news/nautilus-cell-renderer-news.c:169
 msgid "Bullet to display when prelit"
-msgstr ""
+msgstr "Kulepunkt som skal vises ved opplysing"
 
 #: components/news/Nautilus_View_news.server.in.h:1
 msgid "Factory for news view"
@@ -3482,17 +3482,9 @@ msgstr "Vis filer når de klikkes"
 msgid "Ask each time"
 msgstr "Spør hver gang"
 
-#: libnautilus-private/nautilus-global-preferences.c:164
-msgid "search by text"
-msgstr "søk etter tekst"
-
 #: libnautilus-private/nautilus-global-preferences.c:165
 msgid "Search for files by file name only"
 msgstr "Kun søk etter filer på navn"
-
-#: libnautilus-private/nautilus-global-preferences.c:168
-msgid "search by text and properties"
-msgstr "søk etter tekst og egenskaper"
 
 #: libnautilus-private/nautilus-global-preferences.c:169
 msgid "Search for files by file name and file properties"
@@ -4975,47 +4967,47 @@ msgstr "etter _emblemer"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Behold ikoner sortert etter emblemer i rader"
 
-#: src/file-manager/fm-icon-view.c:1397
+#: src/file-manager/fm-icon-view.c:1403
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1398
+#: src/file-manager/fm-icon-view.c:1404
 msgid "_Restore Icon's Original Size"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1746
+#: src/file-manager/fm-icon-view.c:1752
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2558
+#: src/file-manager/fm-icon-view.c:2563
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Dra-og-slipp er kun støttet for lokale filsystemer."
 
-#: src/file-manager/fm-icon-view.c:2559 src/file-manager/fm-icon-view.c:2578
+#: src/file-manager/fm-icon-view.c:2564 src/file-manager/fm-icon-view.c:2583
 msgid "Drag and Drop error"
 msgstr "Feil ved dra-og-slipp"
 
-#: src/file-manager/fm-icon-view.c:2577
+#: src/file-manager/fm-icon-view.c:2582
 msgid "An invalid drag type was used."
 msgstr "En ugyldig type ble brukt for draoperasjon."
 
-#: src/file-manager/fm-list-view.c:132
+#: src/file-manager/fm-list-view.c:185
 msgid "File name"
 msgstr "Filnavn"
 
-#: src/file-manager/fm-list-view.c:151
+#: src/file-manager/fm-list-view.c:204
 #: src/file-manager/fm-search-list-view.c:514
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:160
+#: src/file-manager/fm-list-view.c:213
 #: src/file-manager/fm-search-list-view.c:520
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:169
+#: src/file-manager/fm-list-view.c:222
 #: src/file-manager/fm-search-list-view.c:526
 msgid "Date Modified"
 msgstr "Dato endret"
@@ -7321,7 +7313,7 @@ msgstr "Applikasjon"
 
 #: src/nautilus-window.c:2238
 msgid "The NautilusApplication associated with this window."
-msgstr ""
+msgstr "NautilusApplication assosiert med dette vinduet."
 
 #. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
@@ -7585,70 +7577,3 @@ msgstr "Fremover"
 #, c-format
 msgid "%d%%"
 msgstr "%d%%"
-
-#~ msgid "Search Engines"
-#~ msgstr "Søkemotorer"
-
-#~ msgid "Search Engine Location"
-#~ msgstr "Adresse til søkemotor"
-
-#~ msgid "I could not initialize Bonobo"
-#~ msgstr "Kunne ikke initiere Bonobo"
-
-#~ msgid "Generic Image Viewer"
-#~ msgstr "Vanlig bildevisning"
-
-#~ msgid "Generic image control factory"
-#~ msgstr "Vanlig factory for bildekontroll"
-
-#~ msgid "Image"
-#~ msgstr "Bilde"
-
-#~ msgid "Image Viewer"
-#~ msgstr "Bildevisning"
-
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Nautilus bildevisning"
-
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Nautilus factory for bildevisning"
-
-#~ msgid "View as Image"
-#~ msgstr "Vis som bilde"
-
-#~ msgid ""
-#~ "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
-#~ "for preview"
-#~ msgstr ""
-#~ "Type bg_applier: BG_APPLIER_ROOT for rotvinduet eller BG_APPLIER_PREVIEW "
-#~ "for forhåndsvisning"
-
-#~ msgid "Could not load pixbuf \"%s\"; disabling wallpaper."
-#~ msgstr "Kunne ikke laste pixbuf «%s»; deaktiverer bakgrunn."
-
-#~ msgid "Disabled"
-#~ msgstr "Deaktivert"
-
-#~ msgid " -_,;.?/&"
-#~ msgstr "-_,;.?/&"
-
-#~ msgid "Undo Typing"
-#~ msgstr "Angre inntasting"
-
-#~ msgid "Restore the old name"
-#~ msgstr "Gjenopprett det gamle navnet"
-
-#~ msgid "Redo Typing"
-#~ msgstr "Gjenopprett inntasting"
-
-#~ msgid "Restore the changed name"
-#~ msgstr "Gjenopprett det endrede navnet"
-
-#~ msgid "About Nautilus"
-#~ msgstr "Om Nautilus"
-
-#~ msgid "Authors"
-#~ msgstr "Forfattere"
-
-#~ msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-#~ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
