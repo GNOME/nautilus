@@ -127,7 +127,6 @@ static void           fm_directory_view_create_links_for_files 			  (FMDirectory
 										   GList		    *files);
 static void           fm_directory_view_trash_or_delete_selection                 (FMDirectoryView          *view,
 										   GList                    *files);
-static void	      fm_directory_view_new_folder				  (FMDirectoryView          *view);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file	                          (FMDirectoryView          *view,
 										   NautilusFile             *file,
@@ -383,7 +382,7 @@ bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer callback_data, 
          * one item is selected.
          */
         g_assert (nautilus_g_list_exactly_one_item (selection));
-
+        
 	fm_directory_view_activate_file (view, 
 	                                 NAUTILUS_FILE (selection->data), 
 	                                 FALSE);        
@@ -1943,7 +1942,9 @@ fm_directory_trash_link_in_selection (FMDirectoryView *view)
 	gboolean result;
 
 	selection = fm_directory_view_get_selection (view);
-	result = (selection == NULL) ? FALSE : trash_link_is_in_files (selection);
+
+	result = trash_link_is_in_files (selection);
+	
 	nautilus_file_list_free (selection);
 
 	return result;
@@ -2160,7 +2161,7 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	gtk_timeout_add (100, new_folder_rename_later, parameters);
 }
 
-static void
+void
 fm_directory_view_new_folder (FMDirectoryView *directory_view)
 {
 	char *parent_uri;
@@ -2446,6 +2447,13 @@ static void
 real_create_background_context_menu_zoom_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
+	GtkWidget *menu_item;
+	
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	
 	fm_directory_view_add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
 		       fm_directory_view_can_zoom_in (view));
 	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
@@ -2476,13 +2484,6 @@ real_create_background_context_menu_background_items (FMDirectoryView *view,
 }
 
 static void
-create_background_context_menu_background_items (FMDirectoryView *view, 
-							     GtkMenu *menu)
-{
-	NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view, create_background_context_menu_background_items, (view, menu));
-}
-
-static void
 fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 
@@ -2491,11 +2492,8 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 		       TRUE);
 	append_gtk_menu_item_with_view (view, menu, NULL, 
 	               NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, select_all_callback, NULL);
-	/* FIXME bugzilla.eazel.com 1794: 
-	 * Implement Arlo's design for which items should appear.
-	 */	
+
 	create_background_context_menu_zoom_items (view, menu);
-	create_background_context_menu_background_items (view, menu);
 }
 
 static void
@@ -2715,7 +2713,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	/* Don't add item if Trash icon is in selection */
+	/* Don't add item if Trash link is in selection */
 	if (!fm_directory_trash_link_in_selection (view)) {
 		/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
 		if (!fm_directory_all_selected_items_in_trash (view)) {
@@ -3161,7 +3159,6 @@ static GtkMenu *
 create_selection_context_menu (FMDirectoryView *view) 
 {
 	GtkMenu *menu;
-	GtkWidget *menu_item;
 	GList *selected_files;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
@@ -3179,23 +3176,9 @@ create_selection_context_menu (FMDirectoryView *view)
 
 		gtk_signal_emit (GTK_OBJECT (view),
 				 signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS], 
-				 menu, selected_files);
-		
-		/* Add separator between selection-specific 
-		 * and view-general menu items.
-		 */		
-		menu_item = gtk_menu_item_new ();
-		gtk_widget_show (menu_item);
-		gtk_menu_append (menu, menu_item);
-
+				 menu, selected_files);		
 	}
-
-	/* Show commands not specific to this item also, since it might
-	 * be hard (especially in list view) to find a place to click
-	 * that's not on an item.
-	 */
-	fm_directory_view_create_background_context_menu_items (view, menu);
-
+	
 	return menu;
 }
 

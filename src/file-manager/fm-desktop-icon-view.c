@@ -27,6 +27,7 @@
 #include "fm-desktop-icon-view.h"
 
 #include "nautilus-trash-monitor.h"
+
 #include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
@@ -38,7 +39,9 @@
 #include <libnautilus-extensions/nautilus-directory-notify.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -59,6 +62,9 @@ static void     fm_desktop_icon_view_initialize                           (FMDes
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView        *view,
 									   GtkMenu                *menu);
+static void	fm_desktop_icon_view_create_selection_context_menu_items  (FMDirectoryView 	  *view, 
+									   GtkMenu 		  *menu, 
+									   GList 		  *files);
 static void     fm_desktop_icon_view_create_background_context_menu_zoom_items
                                                                           (FMDirectoryView        *view,
 									   GtkMenu                *menu);
@@ -153,6 +159,7 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
 	fm_directory_view_class->create_background_context_menu_background_items = fm_desktop_icon_view_create_background_context_menu_background_items;
 	fm_directory_view_class->create_background_context_menu_zoom_items = fm_desktop_icon_view_create_background_context_menu_zoom_items;
+	fm_directory_view_class->create_selection_context_menu_items = fm_desktop_icon_view_create_selection_context_menu_items;
 	fm_directory_view_class->bump_zoom_level = bump_zoom_level;
 	fm_directory_view_class->zoom_to_level = zoom_to_level;
 	fm_directory_view_class->restore_default_zoom_level = restore_default_zoom_level;
@@ -327,6 +334,13 @@ new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 }
 
 static void
+new_folder_menu_item_callback (GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	fm_directory_view_new_folder (directory_view);
+}
+
+static void
 reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_background_reset (fm_directory_view_get_background (view));
@@ -365,20 +379,89 @@ fm_desktop_icon_view_create_background_context_menu_background_items (FMDirector
 	gtk_menu_append (menu, menu_item);
 }
 
+static void 
+empty_trash_callback (gpointer ignored, gpointer view)
+{
+        g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (view)));
+}
+
+static gboolean
+trash_link_is_selection (FMDirectoryView *view)
+{
+	GList *selection;
+	gboolean result;
+	char *uri;
+
+	result = FALSE;
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (!nautilus_g_list_exactly_one_item (selection)) {
+		nautilus_file_list_free (selection);
+		return result;
+	}
+
+	if (nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
+		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+		if (nautilus_link_is_trash_link (uri)) {				
+			result = TRUE;
+		}
+		g_free (uri);
+	}
+	
+	nautilus_file_list_free (selection);
+
+	return result;
+}
+
+static void
+fm_desktop_icon_view_create_selection_context_menu_items (FMDirectoryView *view, GtkMenu *menu, GList *files)
+{
+	GtkWidget *menu_item;
+	
+	g_assert (FM_IS_ICON_VIEW (view));
+	g_assert (GTK_IS_MENU (menu));
+
+	NAUTILUS_CALL_PARENT_CLASS
+		(FM_DIRECTORY_VIEW_CLASS, 
+		 create_selection_context_menu_items,
+		 (view, menu, files));
+		 
+	/* Add Empty Trash item if only the trash link is the selection */
+	if (trash_link_is_selection (view))  {
+		/* add a separator for more clarity */
+		menu_item = gtk_menu_item_new ();
+		gtk_widget_show (menu_item);
+		gtk_menu_append (menu, menu_item);
+
+		menu_item = gtk_menu_item_new_with_label (_("Empty Trash"));
+		gtk_widget_show (menu_item);
+		gtk_menu_append (menu, menu_item);
+                gtk_signal_connect (GTK_OBJECT (menu_item),
+                                    "activate",
+                                    empty_trash_callback,
+                                    view);
+		gtk_widget_set_sensitive (menu_item, !nautilus_trash_monitor_is_empty ());
+	}
+}
+
 static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
 {
 	GtkWidget *menu_item;
-
+	
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
+	/* We are not calling the parent class because we don't want the zoom menu items here.
+	 * Is there a better way to do this? */
+	fm_directory_view_add_menu_item (view, menu, _("New Folder"), new_folder_menu_item_callback,
+		       			 TRUE);
+
 	fm_directory_view_add_menu_item (view, menu, _("New Terminal"), new_terminal_menu_item_callback,
 					 TRUE);
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_background_context_menu_items, 
-		 (view, menu));
 
 	/* Add Disks item to show state of removable volumes */
 	menu_item = gtk_menu_item_new ();
@@ -434,6 +517,15 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		}
 		g_list_free (disk_list);
 	}
+	
+	/* Add seperator */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	/* Desktop background items */
+	fm_desktop_icon_view_create_background_context_menu_background_items (view, menu);
+
 }
 
 static char *

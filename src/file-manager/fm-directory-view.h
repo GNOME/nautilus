@@ -49,6 +49,7 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_FILE_ITEMS		"/File/Separator Before File Items"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/File/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/File/Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/File/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/File/Duplicate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/File/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH        "/File/Separator Before Empty Trash"
@@ -296,7 +297,7 @@ void               fm_directory_view_begin_loading                  (FMDirectory
  * FMDirectoryView and its subclasses 
  */
 void               fm_directory_view_activate_files                 (FMDirectoryView       *view,
-								     GList          	   *files);
+								     GList          	   *files);								     
 void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
@@ -312,5 +313,6 @@ void		   fm_directory_view_add_menu_item		    (FMDirectoryView 	   *view,
 								     const char 	   *label,
 								     void 		  (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
 								     gboolean 		   sensitive);
+void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

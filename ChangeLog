@@ -1,3 +1,29 @@
+2000-08-29  Gene Z. Ragan  <gzr@eazel.com>
+	
+	Refactored function and fixed a bug.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_can_accept_item):
+	
+	Fixed bug 1950, Trash icon on desktop should have
+	"Empty Trash" in its right click menu
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class),
+	(new_folder_menu_item_callback), (empty_trash_callback),
+	(trash_link_is_selection),
+	(fm_desktop_icon_view_create_selection_context_menu_items),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_open_callback),
+	(fm_directory_trash_link_in_selection),
+	(real_create_background_context_menu_zoom_items),
+	(fm_directory_view_real_create_background_context_menu_items),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(create_selection_context_menu):
+	* src/file-manager/fm-directory-view.h:
+
 2000-08-29  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c: (parse_uri),
