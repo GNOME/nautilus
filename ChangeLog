@@ -1,3 +1,73 @@
+2000-07-19  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	Added the uninstall stuff.
+	
+	(set_parameters_from_command_line), (eazel_preflight_check_signal),
+	(eazel_install_progress_signal), (install_failed), (main):
+	* components/services/install/command-line/eazel-package-query.c:
+	(main):
+	Small too to do cli package queries.
+
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(categorydata_list_from_corba_categorystructlist):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	Removed the packagedata to xml conversion to eazel-install-xml-package-list.c
+	* components/services/install/lib/eazel-install-object.c:
+	(xml_from_packagedata), (eazel_install_destroy),
+	(eazel_install_initialize):
+	Moved the packagedata corba_char* xml conv here.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Added a GList*, which holds the current transaction.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query), (eazel_install_simple_query):
+	* components/services/install/lib/eazel-install-query.h:
+	Implemented the simple query mechanisms. They are simple, since
+	they're eg. of the format MATCHES "gmc", REQUIRES "glib" and such.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (install_all_packages),
+	(uninstall_all_packages), (uninstall_packages),
+	(rpm_show_progress), (eazel_install_do_rpm_transaction_fill_hash),
+	(eazel_install_do_rpm_transaction_get_total_size),
+	(eazel_install_do_rpm_transaction_make_argument_list),
+	(eazel_install_do_rpm_transaction_process_pipe),
+	(do_rpm_transaction), (do_rpm_uninstall),
+	(eazel_install_prepare_rpm_system), (eazel_install_add_to_rpm_set),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse), (eazel_uninstall_globber):
+	A lot of the old progress code has been ripped out and replaced
+	with the trilobite-root-helper code. Some refactoring was done
+	(more needed) and most parts of 1586 is done.
+	The uninstall stuff is also reimplemented (1700)
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(rpmname_from_packagedata), (packagedata_status_str_to_enum),
+	(packagedata_modstatus_enum_to_str),
+	(packagedata_modstatus_str_to_enum):
+	* components/services/install/lib/eazel-install-types.h:
+	Added fields to PackageData, so I can store transactions (eg. that
+	installing package bla upgrades blech from x.y to v.w).
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml),
+	(eazel_install_packagelist_to_xml),
+	(eazel_install_categorydata_to_xml):
+	*
+	components/services/install/lib/eazel-install-xml-package-list.h:
+	Functions to convert packagedata lists to xml.
+	
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (trilobite_passwordquery_get_password):
+	Destroy the password query dialog.
+
 2000-07-19  Raph Levien  <raph@acm.org>
 
 	I have added tentative support for building rsvg with

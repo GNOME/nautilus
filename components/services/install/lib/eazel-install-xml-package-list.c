@@ -49,6 +49,9 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
+	rv->status = packagedata_status_str_to_enum (xml_get_value (package, "STATUS"));
+	rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
+
 	{
 		char *tmp;
 		tmp = xml_get_value (package, "BYTESIZE");
@@ -68,6 +71,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->soft_depends = NULL;
 	rv->hard_depends = NULL;
 	rv->breaks = NULL;
+	rv->modifies = NULL;
 
 	dep = package->childs;
 	while (dep) {
@@ -87,7 +91,12 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 			depend = parse_package (dep, FALSE);
 			rv->breaks = g_list_append (rv->breaks, depend);
-		}
+		} /* else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
+			PackageData* depend;
+
+			depend = parse_package (dep, FALSE);
+			rv->modifies = g_list_append (rv->modifies, depend);
+			} */
 
 		dep = dep->next;
 
@@ -324,4 +333,94 @@ parse_pkg_template (const char* pkg_template_file, char **result) {
 
 	return lines_read;
 } /* end parse_pkg_template */
+
+/* Creates and returns an xmlnode for a packagedata struct.
+   If given a droot and a title, uses that so create a subnode
+   (primarily used for the recursiveness of PackageData objects.
+   If not, creates a node with the name "PACKAGE" */
+xmlNodePtr
+eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodePtr droot)
+{
+	xmlNodePtr root, node;
+	char *tmp;
+	GList *iterator;
+
+	if (droot) {
+		g_assert (title != NULL);
+		root = xmlNewChild (droot, NULL, title, NULL);
+	} else {
+		root = xmlNewNode (NULL, "PACKAGE");
+	}
+	node = xmlNewChild (root, NULL, "NAME", pack->name);
+	node = xmlNewChild (root, NULL, "VERSION", pack->version);
+	node = xmlNewChild (root, NULL, "MINOR", pack->minor);
+	node = xmlNewChild (root, NULL, "ARCH", pack->archtype);
+	node = xmlNewChild (root, NULL, "SUMMARY", pack->summary);
+	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
+	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->status));
+
+	tmp = trilobite_get_distribution_name(pack->distribution, FALSE);
+	node = xmlNewChild (root, NULL, "DISTRIBUTION", tmp);
+	g_free (tmp);
+	if (pack->distribution.version_major!=-1) {
+		tmp = g_strdup_printf ("%d", pack->distribution.version_major);
+		xmlSetProp (node, "major", tmp);
+		g_free (tmp);
+	}
+	if (pack->distribution.version_minor!=-1) {
+		tmp = g_strdup_printf ("%d", pack->distribution.version_minor);
+		xmlSetProp (node, "minor", tmp);
+		g_free (tmp);
+	}
+
+	tmp = g_strdup_printf ("%d", pack->bytesize);
+	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
+	g_free (tmp);
+
+	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "SOFT_DEPEND", root);
+	}
+	for (iterator = pack->hard_depends; iterator; iterator = iterator->next) {
+		node = xmlNewChild (root, NULL, "HARD_DEPEND", NULL);
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "HARD_DEPEND", root);
+	}
+	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "BREAKS", root);
+	}
+	for (iterator = pack->modifies; iterator; iterator = iterator->next) {
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "MODIFIES", root);
+	}
+
+	return root;
+}
+
+xmlNodePtr
+eazel_install_packagelist_to_xml (GList *packages) {
+	xmlNodePtr node;
+	GList *iterator;
+
+	node = xmlNewNode (NULL, "PACKAGES");
+	for (iterator = packages; iterator; iterator = iterator->next) {
+		xmlAddChild (node, 
+			     eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+							       NULL, NULL));
+	}
+
+	return node;	
+};
+
+xmlNodePtr
+eazel_install_categorydata_to_xml (const CategoryData *category)
+{
+	xmlNodePtr node;
+
+	node = xmlNewNode (NULL, "CATEGORY");
+	xmlSetProp (node, "name", category->name);
+	xmlAddChild (node, eazel_install_packagelist_to_xml (category->packages));
+
+	return node;
+}
+
+
+
 

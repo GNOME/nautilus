@@ -246,7 +246,7 @@ rpmname_from_packagedata (const PackageData *pack)
 					pack->name,
 					pack->version);
 	} else {
-		name = g_strconcat (pack->name, NULL); 
+		name = g_strdup (pack->name); 
 	}
 
 	return name;
@@ -313,6 +313,42 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
+
+	return result;
+}
+
+const char*
+packagedata_modstatus_enum_to_str (PackageSystemStatus st)
+{
+	static char *result=NULL;
+	g_free (result);
+
+	switch (st) {
+	case PACKAGE_MOD_UPGRADED:
+		result = g_strdup ("UPGRADED");
+		break;
+	case PACKAGE_MOD_DOWNGRADED:
+		result = g_strdup ("DOWNGRADED");
+		break;
+	case PACKAGE_MOD_INSTALLED:
+		result = g_strdup ("INSTALLED");
+		break;
+	case PACKAGE_MOD_UNINSTALLED:
+		result = g_strdup ("UNINSTALLED");
+		break;
+	}
+	return result;
+}
+
+PackageSystemStatus
+packagedata_modstatus_str_to_enum (const char *st)
+{
+	PackageSystemStatus result;
+	
+	if (strcmp (st, "INSTALLED")==0) { result = PACKAGE_MOD_INSTALLED; } 
+	else if (strcmp (st, "UNINSTALLED")==0) { result = PACKAGE_MOD_UNINSTALLED; } 
+	else if (strcmp (st, "UPGRADED")==0) { result = PACKAGE_MOD_UPGRADED; } 
+	else if (strcmp (st, "DOWNGRADED")==0) { result = PACKAGE_MOD_DOWNGRADED; } 
 
 	return result;
 }

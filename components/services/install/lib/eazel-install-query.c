@@ -23,7 +23,14 @@
  */
 
 #include <eazel-install-query.h>
+#include <eazel-install-public.h>
+#include <eazel-install-private.h>
 #include <ctype.h>
+#include <stdarg.h>
+
+extern gboolean eazel_install_prepare_package_system (EazelInstall *service);
+extern gboolean eazel_install_free_package_system (EazelInstall *service);
+extern int eazel_install_package_name_compare (PackageData *pack, char *name);
 
 /*****************************************************************************/
 /* Query mechanisms                                                          */
@@ -79,22 +86,141 @@ eazel_install_query_package_system (EazelInstall *service,
 	return NULL;
 }
 
-GList* 
-eazel_install_simple_query (EazelInstall *service, char *input, 
-			    SimpleQueryEnum flag, 
-			    int neglists, 
-			    GList *neglist,...)
+static GList *
+eazel_install_simple_rpm_query (EazelInstall *service, 
+				char *input, 
+				EazelInstallSimpleQueryEnum flag)
 {
 	dbiIndexSet matches;
 	rpmdb db;
+	GList *result;
+	gboolean close_db;
 	int rc;
 	int i;
 
-	/* db = service->private->packsys.rpm.db; */
-	
-	switch (flag) {
-	case EI_SIMPLE_QUERY_PROVIDES:
-	case EI_SIMPLE_QUERY_REQUIRES:
-	case EI_SIMPLE_QUERY_MATCHES:
+	db = service->private->packsys.rpm.db;       
+	close_db = FALSE;
+	/* If db is not open, this will be false, therefore, 
+	   open and close at the end. That way, this
+	   func can be used in both various enviroments */
+	if (db == NULL) {
+		eazel_install_prepare_package_system (service);
+		db = service->private->packsys.rpm.db;       
+		close_db = TRUE;
+		g_assert (db != NULL);
 	}
+	rc = -1;
+	result = NULL;
+
+	switch (flag) {
+	case EI_SIMPLE_QUERY_OWNS:		
+		rc = rpmdbFindByFile (db, input, &matches);
+		break;
+	case EI_SIMPLE_QUERY_PROVIDES:		
+		rc = rpmdbFindByProvides (db, input, &matches);
+		break;
+	case EI_SIMPLE_QUERY_REQUIRES:
+		rc = rpmdbFindByRequiredBy (db, input, &matches);
+		break;
+	case EI_SIMPLE_QUERY_MATCHES:
+		rc = rpmdbFindPackage (db, input, &matches);
+		break;
+	default:
+		g_warning ("Unknown query");
+	}
+
+	if (rc != 0) {
+		return NULL;
+	}
+
+	for (i = 0; i < dbiIndexSetCount (matches); i++) {
+		unsigned int offset;
+		Header *hd;
+		PackageData *pack;
+		
+		offset = dbiIndexRecordOffset (matches, i);
+		hd = g_new0 (Header,1);
+		(*hd) = rpmdbGetRecord (db, offset);
+		pack = packagedata_new_from_rpm_header (hd);
+		if (g_list_find_custom (result, pack->name, (GCompareFunc)eazel_install_package_name_compare)!=NULL) {
+			packagedata_destroy (pack);
+		} else {
+			result = g_list_prepend (result, pack);
+		}
+	}
+	
+	if (close_db) {
+		eazel_install_free_package_system (service);
+	}
+
+	return result;
+}
+
+
+GList* 
+eazel_install_simple_query (EazelInstall *service, char *input, 
+			    EazelInstallSimpleQueryEnum flag, 
+			    int neglist_count, 
+			    GList *neglists,...)
+{
+	GList *result;
+	GList *remove;
+	GList *iterator;
+	GHashTable *names_to_ignore;
+
+	if (neglist_count) {
+		int i;
+		va_list va;
+
+		va_start (va, neglists);
+		names_to_ignore = g_hash_table_new (g_str_hash, g_str_equal);
+
+		/* for all neglists, collect the package->names */
+		for (i = 0; i<neglist_count; i++) {
+			GList *neglist;
+			neglist = va_arg (va, GList*);
+			for (iterator = neglist; iterator; iterator = iterator->next) {
+				PackageData *pack;
+				pack = (PackageData*)iterator->data;
+				g_hash_table_insert (names_to_ignore, pack->name, pack);
+			}
+		}
+	}
+
+	/* Do the query depending on package system */
+	switch (eazel_install_get_package_system (service)) {
+	case EAZEL_INSTALL_USE_RPM:
+		result = eazel_install_simple_rpm_query (service, input, flag);
+		break;
+	}
+
+	/* Now strip the packages to ignore */
+	if (neglist_count) {
+		remove = NULL;
+
+		/* Collect the packages in "remove" */
+		for (iterator = result; iterator; iterator = iterator->next) {
+			PackageData *pack1, *pack2;
+			pack1 = (PackageData*)iterator->data;
+			pack2 = g_hash_table_lookup (names_to_ignore, pack1->name);
+			if (pack2) {
+				remove = g_list_prepend (remove, pack1);
+			}
+		}
+
+		/* Strip them from "result" */
+		if (remove) {
+			for (iterator = remove; iterator; iterator = iterator->next) {
+				PackageData *pack;
+				pack = (PackageData*)iterator->data;
+				g_list_remove (result, pack);
+				packagedata_destroy (pack);
+			}
+			g_list_free (remove);
+		}
+
+		g_hash_table_destroy (names_to_ignore);
+	}
+		
+	return result;
 }

@@ -41,4 +41,8 @@ void free_categories (GList* categories);
 gboolean generate_xml_package_list (const char* pkg_template_file,
                                     const char* target_file);
 
+xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodePtr droot);
+xmlNodePtr eazel_install_packagelist_to_xml (GList *packages);
+xmlNodePtr eazel_install_categorydata_to_xml (const CategoryData *category);
+
 #endif /* EAZEL_INSTALL_XML_PACKAGE_LIST_H */

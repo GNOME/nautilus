@@ -30,9 +30,10 @@
 #include <eazel-install-types.h>
 #include <eazel-install-corba-types.h>
 #include <eazel-install-corba-callback.h>
-#include <trilobite-eazel-install.h>
 
 #include <libtrilobite/libtrilobite.h>
+#include <trilobite-eazel-install.h>
+
 
 #define PACKAGE_FILE_NAME "package-list.xml"
 #define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
@@ -61,7 +62,9 @@ int     arg_dry_run,
 	arg_port,
 	arg_delay,
 	arg_file,
-	arg_force;
+	arg_force,
+	arg_upgrade,
+	arg_erase;
 char    *arg_server,
 	*arg_config_file,
 	*arg_tmp_dir;
@@ -70,11 +73,13 @@ CORBA_ORB orb;
 CORBA_Environment ev;
 
 static const struct poptOption options[] = {
-	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"debug", 'd', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"port", '\0', POPT_ARG_NONE, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
+	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
 	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
+	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
@@ -113,6 +118,14 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
+	if (arg_upgrade + arg_erase > 1) {
+			fprintf (stderr, "*** Upgrade and erase ? Yeah rite....\n");
+			exit (1);
+	}
+	if (arg_upgrade) {
+		Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
+		check_ev ("update");
+	}
 	if (arg_server == NULL) {
 		arg_server = g_strdup (DEFAULT_HOSTNAME);
 	}
@@ -147,8 +160,10 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 			      int total_bytes,
 			      int total_packages,
 			      gpointer unused) 
-{
-	fprintf (stdout, "About to install a total of %d packages, %dKb\n", total_packages, total_bytes/1024);
+{	
+	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
+		 arg_erase ? "uninstall" : "install",
+		 total_packages, total_bytes/1024);
 }
 
 static void 
@@ -174,14 +189,14 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 
 static void 
 eazel_install_progress_signal (EazelInstallCallback *service, 
-				const PackageData *pack,
+			       const PackageData *pack,
 			       int package_num, int num_packages, 
 			       int amount, int total,
 			       int total_size_completed, int total_size, 
 			       char *title)
 {
 	if (amount==0) {
-		fprintf (stdout, "Installing %s: \"%20.20s\"...\n", pack->name, pack->summary);
+		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->summary);
 	} else if (amount != total ) {
 		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
 			 package_num, num_packages,
@@ -238,7 +253,7 @@ install_failed (EazelInstallCallback *service,
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |- requires " : " \\- requires " , NULL);
+		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |- " : " +- " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -246,7 +261,7 @@ install_failed (EazelInstallCallback *service,
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |- breaks " : " \\- breaks " , NULL);
+		indent2 = g_strconcat (indent, iterator->next ? " |- " : " +- " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -360,13 +375,19 @@ int main(int argc, char *argv[]) {
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", eazel_preflight_check_signal, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Install progress");
+	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Installing");
 	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", eazel_install_progress_signal, "Uninstalling");
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
-	
-	eazel_install_callback_install_packages (cb, categories, &ev);
+
+	if (arg_erase) {
+		eazel_install_callback_uninstall_packages (cb, categories, &ev);
+	} else {
+		eazel_install_callback_install_packages (cb, categories, &ev);
+	}
 	
 	fprintf (stdout, "\nEntering main loop...\n");
 	bonobo_main ();

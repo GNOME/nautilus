@@ -26,14 +26,16 @@
 #include "eazel-install-types.h"
 #include "eazel-install-public.h"
 
-GList* eazel_install_query_package_system (EazelInstall *service, const char *query, int flags);
-
 typedef enum {
+	EI_SIMPLE_QUERY_OWNS,
 	EI_SIMPLE_QUERY_PROVIDES,
 	EI_SIMPLE_QUERY_REQUIRES,
 	EI_SIMPLE_QUERY_MATCHES
-} SimpleQueryEnum;
+} EazelInstallSimpleQueryEnum;
 
-GList* eazel_install_simple_query (EazelInstall *service, char *input, SimpleQueryEnum flag, int neglists, GList *neglist,...);
+GList* eazel_install_simple_query (EazelInstall *service, 
+				   char *input, 
+				   EazelInstallSimpleQueryEnum flag, 
+				   int neglists, GList *neglist,...);
 
 #endif /* EAZEL_INSTALL_QUERY_H */

@@ -40,7 +40,4 @@ PackageData* packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_Pac
 
 GList* categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories);
 
-CORBA_char*
-xml_from_packagedata (const PackageData *pack);
-
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

@@ -329,6 +329,8 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 		
 		rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
 		tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		gtk_main_iteration ();
 		return tmp;
 	} else {
 		CORBA_Environment ev;

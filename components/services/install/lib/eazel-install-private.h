@@ -58,6 +58,12 @@ struct _EazelInstallPrivate {
 	   package */
 	GHashTable *name_to_package_hash;
 
+	/* This holds the toplevel packages requested for 
+	   install/upgrade/uninstall.
+	   Entries are added in eazel-install-rpm-glue.c, as
+	   stuff is done */
+	GList *transaction;
+
 	FILE *logfile;
 	char *logfilename;
 };

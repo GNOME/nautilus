@@ -26,6 +26,7 @@
 
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
+#include "eazel-install-xml-package-list.h"
 
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include <liboaf/liboaf.h>
@@ -119,6 +120,23 @@ void eazel_install_emit_done_default (EazelInstall *service);
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
+static CORBA_char*
+xml_from_packagedata (const PackageData *pack) {
+	xmlDocPtr doc;
+	xmlChar *mem;
+	CORBA_char *result;
+	int size;
+
+	doc = xmlNewDoc ("1.0");
+	xmlDocSetRootElement (doc, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+	xmlDocDumpMemory (doc, &mem, &size);
+	result = CORBA_string_dup (mem);
+	free (mem);
+	xmlFreeDoc (doc);
+
+	return result;
+}
+
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 /*****************************************
@@ -133,8 +151,6 @@ eazel_install_destroy (GtkObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL (object));
 
-	g_message ("in eazel_install_destroy");
-	
 	service = EAZEL_INSTALL (object);
 
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -157,8 +173,6 @@ eazel_install_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
 	}
-
-	g_message ("out eazel_install_destroy");
 }
 
 static void
@@ -426,6 +440,10 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->logfilename = NULL;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
 								   (GCompareFunc)g_str_equal);
+	service->private->transaction = NULL;
+
+	eazel_install_set_root_dir (service, "/");
+	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
 }
 
 GtkType

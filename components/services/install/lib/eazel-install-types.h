@@ -65,6 +65,18 @@ enum _PackageSystemStatus {
 PackageSystemStatus packagedata_status_str_to_enum (const char *st);
 const char* packagedata_status_enum_to_str (PackageSystemStatus st);
 
+enum _PackageModification {
+	PACKAGE_MOD_UPGRADED,
+	PACKAGE_MOD_DOWNGRADED,
+	PACKAGE_MOD_INSTALLED,
+	PACKAGE_MOD_UNINSTALLED
+};
+typedef enum _PackageModification PackageModification;
+/* Methods to convert enum to/from char* val. The returned
+   char* must not be freed */
+PackageSystemStatus packagedata_modstatus_str_to_enum (const char *st);
+const char* packagedata_modstatus_enum_to_str (PackageModification st);
+
 struct _HTTPError {
 	int code;
 	char *reason;
@@ -115,11 +127,6 @@ struct _CategoryData {
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 
-/* FIXME: bugzilla.eazel.com 1586
-   for each package, I'll also need to remember the which packages
-   it replaces/upgrades. This mean yet another field in this struct.
-   This field prolly doesn't need to get transferred over corba, but
-   doing so, would let the view display upgrades */
 struct _PackageData {
 	char* name;
 	char* version;
@@ -150,6 +157,16 @@ struct _PackageData {
 	  Pointer to keep a structure for the package system
 	 */
 	gpointer *packsys_struc;
+
+	/* List of packages that this package modifies */
+	GList *modifies;
+	/* how was the package modified 
+	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "soft/hard_depends."
+	   if "modifies" has elements, these have the following meaning ;
+ 	     DOWNGRADED means that the package was replaced with an older version
+	     UPGRADED means that the package was replaced with a never version
+	 */
+	PackageModification modify_status;	
 };
 
 PackageData* packagedata_new (void);
