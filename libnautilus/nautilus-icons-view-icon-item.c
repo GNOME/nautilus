@@ -60,12 +60,15 @@ typedef struct {
 	/* height in pixels of the label */
 	double text_height;
 	
-        /* boolean to indicate selection state */
-        guint is_selected : 1;
+   	/* boolean to indicate selection state */
+   	guint is_selected : 1;
         
-        /* boolean to indicate hilite state */
-        guint is_hilited : 1;
-        
+	/* boolean to indicate keyboard select state */
+	guint is_alt_selected: 1;
+
+   	/* boolean to indicate hilite state (for swallow) */
+   	guint is_hilited : 1;
+      	
 	/* Whether the pixbuf has changed */
 	guint need_pixbuf_update : 1;
 
@@ -84,6 +87,7 @@ enum {
 	ARG_X,
 	ARG_Y,
     	ARG_SELECTED,
+    	ARG_ALT_SELECTED,
     	ARG_HILITED
 };
 
@@ -170,6 +174,8 @@ nautilus_icons_view_icon_item_class_init (NautilusIconsViewIconItemClass *class)
 				 GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_Y);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::selected",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_SELECTED);
+	gtk_object_add_arg_type ("NautilusIconsViewIconItem::alt_selected",
+				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_ALT_SELECTED);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::hilited",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HILITED);
 
@@ -197,6 +203,16 @@ nautilus_icons_view_icon_item_init (NautilusIconsViewIconItem *icon_view_item)
 	priv->height = 0.0;
 	priv->x = 0.0;
 	priv->y = 0.0;
+
+	priv->text_width = 0.0;
+	priv->text_height = 0.0;
+	
+	priv->is_selected = FALSE;
+	priv->is_alt_selected = FALSE;
+	priv->is_hilited = FALSE;
+	
+	priv->need_pixbuf_update = FALSE;	
+	priv->need_xform_update = FALSE;	
 }
 
 /* Destroy handler for the icon canvas item */
@@ -309,7 +325,12 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 		priv->is_selected = GTK_VALUE_BOOL (*arg);
 		gnome_canvas_item_request_update (item);
 		break;
-        
+         
+         case ARG_ALT_SELECTED:
+		priv->is_alt_selected = GTK_VALUE_BOOL (*arg);
+		gnome_canvas_item_request_update (item);
+		break;
+       
         case ARG_HILITED:
 		priv->is_hilited = GTK_VALUE_BOOL (*arg);
 		gnome_canvas_item_request_update (item);
@@ -359,6 +380,10 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
 	
         case ARG_SELECTED:
                 GTK_VALUE_BOOL(*arg) = priv->is_selected;
+                break;
+         
+        case ARG_ALT_SELECTED:
+                GTK_VALUE_BOOL(*arg) = priv->is_alt_selected;
                 break;
          
         case ARG_HILITED:
@@ -648,14 +673,14 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 	else
 	  {	
 	    box_left = icon_left;
-            icon_text_info = gnome_icon_layout_text(title_font, label, " -_,;:?/&", MAX_LABEL_WIDTH, TRUE);
+            icon_text_info = gnome_icon_layout_text(title_font, label, " -_,;.:?/&", MAX_LABEL_WIDTH, TRUE);
 	    if (real_draw)
                 gnome_icon_paint_text(icon_text_info, drawable, temp_gc, box_left, icon_bottom, GTK_JUSTIFY_CENTER);
 	    line_width = icon_text_info->width;
             line_height = icon_text_info->height;
  	    gnome_icon_text_info_free(icon_text_info);
          }
-	         
+			         
         /* invert to indicate selection if necessary */
         if (is_selected && real_draw)
 	  {
@@ -695,8 +720,9 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
           {
 	    gint box_width = floor(item->x2 - item->x1);
             gint center_offset = (box_width - priv->pixbuf->art_pixbuf->width) >> 1;
-            center_offset = 0; /* disabled for now, as it was causing glitches */
             
+            center_offset = 0;  /* FIXME:  disabled for now, as it was causing glitches */
+
             gnome_canvas_item_i2c_affine (item, i2c);
 	    compute_render_affine (icon_view_item, render_affine, i2c);
 
@@ -717,7 +743,8 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 		    return;
 
 	    /* Create a temporary buffer and transform the pixbuf there */
-
+	    /* FIXME: only do this if a transform is in effect */
+	    
 	    w = d_rect.x1 - d_rect.x0;
 	    h = d_rect.y1 - d_rect.y0;
 
