@@ -1,3 +1,15 @@
+2000-08-24  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2119 (Alt-key navigation for menus doesn't work).
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(key_press_event):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_key_press):
+	Made the type-select mechanism for list and icon views not
+	eat alt-key combinations, so they can be used for pulling
+	down menus.
+
 2000-08-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fix for 1528. "Where's the money, Lebowski?"

@@ -1380,10 +1380,10 @@ nautilus_list_key_press (GtkWidget *widget,
 		}
 		break;
 	default:
-		/* Don't use control keys for type-selecting, because they
+		/* Don't use Control or Alt keys for type-selecting, because they
 		 * might be used for menus.
 		 */
-		if ((event->state & GDK_CONTROL_MASK) == 0 &&
+		if ((event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
 		     nautilus_list_handle_typeahead (list, event->string)) {
 			return TRUE;
 		}
