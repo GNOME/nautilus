@@ -3226,9 +3226,10 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
-				  gtk_marshal_NONE__POINTER_INT_INT,
-				  GTK_TYPE_NONE, 3,
+				  eel_gtk_marshal_NONE__POINTER_INT_INT_INT,
+				  GTK_TYPE_NONE, 4,
 				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
 

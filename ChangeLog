@@ -1,3 +1,19 @@
+Mon Aug  6 15:04:14 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(nautilus_link_impl_desktop_local_create): write nautilus files
+	using gnome-vfs instead of FILE.
+
+	* libnautilus-private/nautilus-icon-container.c: Change signature
+	of the "handle_uri_list" callback to include the drag action.
+
+	* src/file-manager/fm-icon-view.c (icon_view_handle_uri_list):
+	Handle uri's more gracefully.
+
+	* src/file-manager/fm-directory-icon-view
+	(icon_view_handle_uri_list): Comment out.  Now handled in the
+	parent class.
+
 2001-08-03  Havoc Pennington  <hp@redhat.com>
 
 	* src/nautilus-desktop-window.c (set_gdk_window_background): only

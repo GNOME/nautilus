@@ -111,11 +111,6 @@ static void     volume_mounted_callback                           (NautilusVolum
 static void     volume_unmounted_callback                         (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
-static void     icon_view_handle_uri_list                   	  (NautilusIconContainer  *container,
-								   const char             *item_uris,
-								   int                     x,
-								   int                     y,
-								   FMDirectoryView        *view);
 static int      desktop_icons_compare_callback                    (NautilusIconContainer  *container,
 								   NautilusFile           *file_a,
 								   NautilusFile           *file_b,
@@ -636,11 +631,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 					desktop_icon_view,
 					GTK_OBJECT (desktop_icon_view));
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "handle_uri_list",
-			    GTK_SIGNAL_FUNC (icon_view_handle_uri_list),
-			    desktop_icon_view);
-
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					   home_uri_changed,
 				  	   desktop_icon_view);
@@ -849,9 +839,10 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	g_free (link_path);
 }
 
+#if 0
 static void
 icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
-			   int x, int y, FMDirectoryView *view)
+			   GdkDragAction action, int x, int y, FMDirectoryView *view)
 {
 	GList *uri_list, *node;
 	GnomeDesktopEntry *entry;
@@ -912,7 +903,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	
 	gnome_uri_list_free_strings (uri_list);
 }
-
+#endif
 /* update_link_and_delete_copies
  * 
  * Look for a particular type of link on the desktop. If the right

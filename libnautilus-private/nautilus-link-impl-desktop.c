@@ -218,11 +218,11 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 					 const GdkPoint    *point,
 					 NautilusLinkType   type)
 {
-	FILE *desktop_file;
 	gchar *path;
 	char *uri;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
+	GnomeVFSHandle *handle;
 
 	g_return_val_if_fail (directory_path != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -230,23 +230,24 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
 	path = nautilus_make_path (directory_path, name);
-	desktop_file = fopen (path, "w");
-	if (desktop_file == NULL) {
+	handle = NULL;
+
+	if (gnome_vfs_open (&handle, path, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
 		g_free (path);
 		return FALSE;
 	}
 
-	fwrite ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName=", 1, strlen ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName="), desktop_file);
-	fwrite (name, 1, strlen (name), desktop_file);
-	fwrite ("\nType=", 1, strlen ("\nType="), desktop_file);
-	fwrite (get_tag (type), 1, strlen (get_tag (type)), desktop_file);
-	fwrite ("\nX-Nautilus-Icon=", 1, strlen ("\nX-Nautilus-Icon="), desktop_file);
-	fwrite (image, 1, strlen (image), desktop_file);
-	fwrite ("\nURL=", 1, strlen ("\nURL="), desktop_file);
-	fwrite (target_uri, 1, strlen (target_uri), desktop_file);
-	fwrite ("\n", 1, 1, desktop_file);
+	gnome_vfs_write (handle, "[Desktop Entry]\nEncoding=Legacy-Mixed\nName=", strlen ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName="), NULL);
+	gnome_vfs_write (handle, name, strlen (name), NULL);
+	gnome_vfs_write (handle, "\nType=", strlen ("\nType="), NULL);
+	gnome_vfs_write (handle, get_tag (type), strlen (get_tag (type)), NULL);
+	gnome_vfs_write (handle, "\nX-Nautilus-Icon=", strlen ("\nX-Nautilus-Icon="), NULL);
+	gnome_vfs_write (handle, image, strlen (image), NULL);
+	gnome_vfs_write (handle, "\nURL=", strlen ("\nURL="), NULL);
+	gnome_vfs_write (handle, target_uri, strlen (target_uri), NULL);
+	gnome_vfs_write (handle, "\n", 1, NULL);
 	/* ... */
-	fclose (desktop_file);
+	gnome_vfs_close (handle);
 
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	dummy_list.data = uri;

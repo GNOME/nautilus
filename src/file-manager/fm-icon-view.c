@@ -33,6 +33,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-dnd.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <errno.h>
@@ -162,6 +164,7 @@ static void                 font_changed_callback                              (
 static void                 smooth_font_changed_callback                       (gpointer               callback_data);
 static void                 icon_view_handle_uri_list                          (NautilusIconContainer *container,
 										const char            *item_uris,
+ 										GdkDragAction          action,
 										int                    x,
 										int                    y,
 										FMIconView            *view);
@@ -2672,73 +2675,128 @@ create_icon_container (FMIconView *icon_view)
 
 static void
 icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
-			   int x, int y, FMIconView *view)
+			   GdkDragAction action, int x, int y, FMIconView *view)
 {
 
-	GList *uri_list, *node;
+	GList *uri_list, *node, *real_uri_list = NULL;
+	GnomeVFSURI *container_uri;
 	GnomeDesktopEntry *entry;
 	GdkPoint point;
-	char *uri, *local_path;
+	char *local_path;
 	char *stripped_uri;
+	char *container_uri_string;
 	const char *last_slash, *link_name;
-	char *container_uri;
-	char *container_path;
-	
+	gboolean all_local;
+
 	if (item_uris == NULL) {
 		return;
 	}
+
+	container_uri_string = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
+	container_uri = gnome_vfs_uri_new (container_uri_string);
+	g_return_if_fail (container_uri != NULL);
+
+	if (gnome_vfs_uri_is_local (container_uri) == FALSE) {
+		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
+					 _("Drag and Drop error"),
+					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
+		gnome_vfs_uri_unref (container_uri);
+		g_free (container_uri_string);
+		return;
+	}
+
+	if (action == GDK_ACTION_ASK) {
+		action = eel_drag_drop_action_ask 
+			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+	}
 	
-	container_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
-	container_path = gnome_vfs_get_local_path_from_uri (container_uri);
+	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
+	 * and we don't support combinations either. */
+	if ((action != GDK_ACTION_DEFAULT) &&
+	    (action != GDK_ACTION_COPY) &&
+	    (action != GDK_ACTION_MOVE) &&
+	    (action != GDK_ACTION_LINK)) {
+		eel_show_warning_dialog (_("An invalid drag type was used."),
+					 _("Drag and Drop error"),
+					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
+		g_free (container_uri);
+		gnome_vfs_uri_unref (container_uri);
+		return;
+	}
 
 	point.x = x;
 	point.y = y;
 		
+	/* Most of what comes in here is not really URIs, but rather paths that
+	 * have a file: prefix in them.  We try to sanitize the uri list as a
+	 * result.  Additionally, if they are all local files, then we can copy
+	 * them.  Otherwise, we just make links.
+	 */
+	all_local = TRUE;
 	uri_list = gnome_uri_list_extract_uris (item_uris);
-
 	for (node = uri_list; node != NULL; node = node->next) {
-		/* Most of what comes in here is not really URIs, but
-		 * rather paths that have a file: prefix in them.
-		 */
-		uri = eel_make_uri_from_half_baked_uri (node->data);
+		gchar *sanitized_uri;
 
-		/* Make a link using the desktop file contents? */
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		if (local_path != NULL) {
-			entry = gnome_desktop_entry_load (local_path);		
-			if (entry != NULL) {
+		sanitized_uri = eel_make_uri_from_half_baked_uri (node->data);
+		if (sanitized_uri == NULL)
+			continue;
+		real_uri_list = g_list_append (real_uri_list, sanitized_uri);
+		if (strncmp (sanitized_uri, "file", 4) != 0)
+			all_local = FALSE;
+	}
+	gnome_uri_list_free_strings (uri_list);
 
+	if (all_local == TRUE &&
+	    (action == GDK_ACTION_COPY ||
+	     action == GDK_ACTION_MOVE)) {
+		/* Copying files */
+		fm_directory_view_move_copy_items (real_uri_list, NULL,
+						   container_uri_string,
+						   action, 0, 0, FM_DIRECTORY_VIEW (view));
+	} else {
+		for (node = real_uri_list; node != NULL; node = node->next) {
+			/* Make a link using the desktop file contents? */
+			local_path = gnome_vfs_get_local_path_from_uri (node->data);
+			if (local_path != NULL) {
+				entry = gnome_desktop_entry_load (local_path);
+				if (entry != NULL) {
+					
+					/* FIXME: Handle name conflicts? */
+					nautilus_link_local_create_from_gnome_entry (entry, container_uri_string, &point);
+					gnome_desktop_entry_free (entry);
+				}
+				g_free (local_path);
+				if (entry != NULL) {
+					continue;
+				}
+			}
+
+			/* Make a link from the URI alone. Generate the file
+			 * name by extracting the basename of the URI.
+			 */
+			/* FIXME: This should be using eel_uri_get_basename
+			 * instead of a "roll our own" solution.
+			 */
+			stripped_uri = eel_str_strip_trailing_chr ((char *)node->data, '/');
+			g_print ("local_path:%s\nstripped_uri:%s\n", (char *)node->data, stripped_uri);
+			last_slash = strrchr (stripped_uri, '/');
+			link_name = last_slash == NULL ? NULL : last_slash + 1;
+			
+			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
-				gnome_desktop_entry_free (entry);
+				nautilus_link_local_create (container_uri_string, link_name,
+							    "gnome-http-url", local_path,
+							    &point, NAUTILUS_LINK_GENERIC);
 			}
-			g_free (local_path);
-			if (entry != NULL) {
-				continue;
-			}
+			
+			g_free (stripped_uri);
+
+			break;
 		}
-		
-		/* Make a link from the URI alone. Generate the file
-		 * name by extracting the basename of the URI.
-		 */
-		/* FIXME: This should be using eel_uri_get_basename
-		 * instead of a "roll our own" solution.
-		 */
-		stripped_uri = eel_str_strip_trailing_chr (uri, '/');
-		last_slash = strrchr (stripped_uri, '/');
-		link_name = last_slash == NULL ? NULL : last_slash + 1;
-		
-		if (!eel_str_is_empty (link_name)) {
-			/* FIXME: Handle name conflicts? */
-			nautilus_link_local_create (container_path, link_name,
-						    "gnome-http-url", uri,
-						    &point, NAUTILUS_LINK_GENERIC);
-		}
-		
-		g_free (stripped_uri);
 	}
 	
-	g_free (container_path);
-	g_free (container_uri);
-	gnome_uri_list_free_strings (uri_list);
+	gnome_uri_list_free_strings (real_uri_list);
+	gnome_vfs_uri_unref (container_uri);
+	g_free (container_uri_string);
+	
 }
