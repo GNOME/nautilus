@@ -1,3 +1,22 @@
+2000-11-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3057, Icon renaming state can get broken by clicking 
+	in location bar.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(handle_focus_out_event): 
+	Signal handler that ends renaming mode when focus changes.
+	(nautilus_icon_container_initialize):
+	Connect "focus_out_event" to new signal handler above.
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c: (layout_text),
+	(iti_start_editing), (iti_draw), (iti_event),
+	(nautilus_icon_text_item_select),
+	(nautilus_icon_text_item_get_text),
+	(nautilus_icon_text_item_start_editing),
+	(nautilus_icon_text_item_stop_editing):
+	Code style cleanups.
+
 2000-11-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

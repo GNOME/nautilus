@@ -3081,6 +3081,13 @@ editing_stopped (NautilusIconTextItem *text_item, gpointer data)
 }
 
 static void
+handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	/* End renaming and commit change. */
+	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
+}
+
+static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
@@ -3129,6 +3136,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 "appearance_changed",
 		 update_label_color,
 		 GTK_OBJECT (container));	
+
+
+	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event", handle_focus_out_event, NULL);	
+
 
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
@@ -3768,7 +3779,7 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 	
 	details = container->details;
 
-	end_renaming_mode(container, TRUE);
+	end_renaming_mode (container, TRUE);
 		
 	pinned_level = new_level;
         if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST) {

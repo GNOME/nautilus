@@ -148,10 +148,11 @@ layout_text (Iti *iti)
 	}
 
 	/* Change the text layout */
-	if (iti->editing)
+	if (iti->editing) {
 		text = gtk_entry_get_text (GTK_ENTRY(priv->entry));
-	else
+	} else {
 		text = iti->text;
+	}
 
 	iti->ti = gnome_icon_layout_text (priv->font,
 					  text,
@@ -219,8 +220,9 @@ iti_start_editing (Iti *iti)
 
 	priv = iti->priv;
 
-	if (iti->editing)
+	if (iti->editing) {
 		return;
+	}
 
 	/* Trick: The actual edition of the entry takes place in a NautilusEntry
 	 * which is placed offscreen.  That way we get all of the advantages
@@ -599,6 +601,7 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 		
 		iti_paint_text (iti, drawable, xofs + MARGIN_X, yofs + MARGIN_Y);
 	} else {
+		g_message ("Drawing, but not editing!!!!");
 		if (iti->selected) {
 			gdk_draw_rectangle (drawable,
 				    style->bg_gc[GTK_STATE_SELECTED],
@@ -961,8 +964,9 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
-		if (!iti->editing)
+		if (!iti->editing) {
 			break;
+		}
 		
 		switch(event->key.keyval) {
 		
@@ -1003,8 +1007,9 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		return TRUE;
 
 	case GDK_BUTTON_PRESS:
-		if (!iti->editing)
+		if (!iti->editing) {
 			break;
+		}
 
 		if (iti->editing && event->button.button == 1) {
 			gnome_canvas_w2c(item->canvas, event->button.x, event->button.y, &cx, &cy);			
@@ -1034,14 +1039,13 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			break;
 
 		return TRUE;
-
+#if 0
 	case GDK_FOCUS_CHANGE:
 		if (iti->editing && !event->focus_change.in) {
 			iti_edition_accept (iti);
 		}
-
 		return TRUE;
-
+#endif
 	default:
 		break;
 	}
@@ -1320,8 +1324,9 @@ nautilus_icon_text_item_select (NautilusIconTextItem *iti, int sel)
 
 	iti->selected = sel ? TRUE : FALSE;
 
-	if (!iti->selected && iti->editing)
+	if (!iti->selected && iti->editing) {
 		iti_edition_accept (iti);
+	}
 
 	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
@@ -1370,10 +1375,11 @@ nautilus_icon_text_item_get_text (NautilusIconTextItem *iti)
 
 	priv = iti->priv;
 
-	if (iti->editing)
+	if (iti->editing) {
 		return gtk_entry_get_text (GTK_ENTRY(priv->entry));
-	else
+	} else {
 		return iti->text;
+	}
 }
 
 
@@ -1393,8 +1399,9 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 
 	priv = iti->priv;
 
-	if (iti->editing)
+	if (iti->editing) {
 		return;
+	}
 
 	iti->selected = TRUE; /* Ensure that we are selected */
 	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (iti));
@@ -1421,8 +1428,9 @@ nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 	
 	priv = iti->priv;
 
-	if (!iti->editing)
+	if (!iti->editing) {
 		return;
+	}
 
 	if (accept) {
 		iti_edition_accept (iti);
