@@ -200,39 +200,6 @@ nautilus_directory_destroy (GtkObject *object)
 }
 
 
-#ifndef G_DISABLE_ASSERT
-
-static gboolean
-is_canonical_uri (const char *uri)
-{
-	const char *p;
-
-	if (uri == NULL) {
-		return FALSE;
-	}
-	if (nautilus_str_has_suffix (uri, "/")) {
-		if (nautilus_str_has_suffix (uri, ":///")) {
-			return TRUE;
-		}
-		return FALSE;
-	}
-	if (strchr (uri, ':') == NULL) {
-		return FALSE;
-	}
-	for (p = uri; *p != ':'; p++) {
-		if (isupper (*p)) {
-			return FALSE;
-		}
-	}
-	if (nautilus_str_has_prefix (uri, "file:/")
-	    && !nautilus_str_has_prefix (uri, "file:///")) {
-		return FALSE;
-	}
-	return TRUE;
-}
-
-#endif /* !G_DISABLE_ASSERT */
-
 /**
  * nautilus_directory_get:
  * @uri: URI of directory to get.
@@ -262,7 +229,7 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 
 	/* If the object is already in the hash table, look it up. */
 
-	g_assert (is_canonical_uri (canonical_uri));
+	g_assert (nautilus_uri_is_canonical_uri (canonical_uri));
 	directory = g_hash_table_lookup (directories,
 					 canonical_uri);
 	if (directory != NULL) {

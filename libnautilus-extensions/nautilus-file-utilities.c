@@ -162,11 +162,96 @@ nautilus_uri_is_trash (const char *uri)
 		|| nautilus_istr_has_prefix (uri, "gnome-trash:");
 }
 
+static gboolean
+nautilus_uri_is_local_scheme (const char *uri)
+{
+	gboolean is_local_scheme;
+	char *temp_scheme;
+	int i;
+	char *local_schemes[] = {"file", "help", "ghelp", 
+				 "trash", "man", "info", 
+				 "hardware", "search", "pipe",
+				 "gnome-trash", NULL};
+
+	is_local_scheme = FALSE;
+	for (temp_scheme = *local_schemes, i = 0; temp_scheme != NULL; i++, temp_scheme = local_schemes[i]) {
+		is_local_scheme = nautilus_istr_has_prefix (uri, temp_scheme);
+		if (is_local_scheme == TRUE) {
+			break;
+		}
+	}
+	
+
+	return is_local_scheme;
+}
+
+static char *
+nautilus_handle_trailing_slashes (const char *uri)
+{
+	char *temp, *uri_copy;
+	gboolean previous_char_is_column, previous_chars_are_slashes_without_column;
+	gboolean previous_chars_are_slashes_with_column;
+	gboolean is_local_scheme;
+
+	uri_copy = g_strdup (uri);
+	if (strlen (uri_copy) <= 2) {
+		return uri_copy;
+	}
+
+	is_local_scheme = nautilus_uri_is_local_scheme (uri);
+
+	previous_char_is_column = FALSE;
+	previous_chars_are_slashes_without_column = FALSE;
+	previous_chars_are_slashes_with_column = FALSE;
+
+	/* remove multiple trailing slashes */
+	for (temp = uri_copy; *temp != '\0'; temp++) {
+		if (*temp == '/' && previous_char_is_column == FALSE) {
+			previous_chars_are_slashes_without_column = TRUE;
+		} else if (*temp == '/' && previous_char_is_column == TRUE) {
+			previous_chars_are_slashes_without_column = FALSE;
+			previous_char_is_column = TRUE;
+			previous_chars_are_slashes_with_column = TRUE;
+		} else {
+			previous_chars_are_slashes_without_column = FALSE;
+			previous_char_is_column = FALSE;
+			previous_chars_are_slashes_with_column = FALSE;
+		}
+
+		if (*temp == ':') {
+			previous_char_is_column = TRUE;
+		}
+	}
+
+	if (*temp == '\0' && previous_chars_are_slashes_without_column == TRUE) {
+		if (is_local_scheme == TRUE) {
+			/* go back till you remove them all. */
+			for (temp--; *(temp) == '/'; temp--) {
+				*temp = '\0';
+			}
+		} else {
+			/* go back till you remove them all but one. */
+			for (temp--; *(temp - 1) == '/'; temp--) {
+				*temp = '\0';
+			}			
+		}
+	}
+
+	if (*temp == '\0' && previous_chars_are_slashes_with_column == TRUE) {
+		/* go back till you remove them all but three. */
+		for (temp--; *(temp - 3) != ':' && *(temp - 2) != ':' && *(temp - 1) != ':'; temp--) {
+			*temp = '\0';
+		}
+	}
+
+
+	return uri_copy;
+}
+
 char *
 nautilus_make_uri_canonical (const char *uri)
 {
-	size_t length;
-	char *canonical_uri, *old_uri, *with_slashes, *p;
+	char *canonical_uri, *old_uri, *p;
 
 	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
 	 * "trash:".
@@ -181,6 +266,10 @@ nautilus_make_uri_canonical (const char *uri)
 	 * file:/ and file:///, and "lack of file:".
 	 */
 
+	canonical_uri = nautilus_handle_trailing_slashes (uri);
+#if 0
+	char *with_slashes;
+	size_t length;
 	/* Strip the trailing "/" characters. */
 	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
 	if (strcmp (canonical_uri, uri) != 0) {
@@ -196,7 +285,7 @@ nautilus_make_uri_canonical (const char *uri)
 			canonical_uri = with_slashes;
 		}
 	}
-
+#endif
 	/* Add file: if there is no scheme. */
 	if (strchr (canonical_uri, ':') == NULL) {
 		old_uri = canonical_uri;
@@ -761,6 +850,31 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	return result;
 }
 
+gboolean
+nautilus_uri_is_canonical_uri (const char *uri)
+{
+	const char *p;
+
+	if (uri == NULL) {
+		return FALSE;
+	}
+
+	if (strchr (uri, ':') == NULL) {
+		return FALSE;
+	}
+	for (p = uri; *p != ':'; p++) {
+		if (isupper (*p)) {
+			return FALSE;
+		}
+	}
+	if (nautilus_str_has_prefix (uri, "file:/")
+	     && !nautilus_str_has_prefix (uri, "file:///")) {
+		return FALSE;
+	} 
+
+	return TRUE;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
@@ -780,6 +894,18 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
 
+
+	/* nautilus_handle_trailing_slashes */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo"), "file://foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://"), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:/"), "file:/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org"), "http://le-hacker.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/dir//////"), "http://le-hacker.org/dir/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/////"), "http://le-hacker.org/");
+
+
 	/* nautilus_make_uri_canonical */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
@@ -788,6 +914,15 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), "trash:");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file://]file_name contains stuff");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

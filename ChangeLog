@@ -1,3 +1,19 @@
+2000-09-21  Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(bookmark_file_changed_callback): replace strcmp by
+	nautilus_uri_matchs: this took me a lot of time to find 
+	out.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_internal): remove is_canonical_uri
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_uri_is_local_scheme), (nautilus_handle_trailing_slashes),
+	(nautilus_make_uri_canonical), (nautilus_uri_is_canonical_uri),
+	(nautilus_self_check_file_utilities): make nautilus know the difference
+	between foo and foo/ so that we do not cache too aggressively.
+	* libnautilus-extensions/nautilus-file-utilities.h: add prototype for
+	nautilus_uri_is_canonical.
+
 2000-09-21  Rebecca Schulman  <rebecka@eazel.com>
 	Cut and pasted the gtkclist widget into
 	nautilus.  Fixed bugzilla.eazel.com 481,
