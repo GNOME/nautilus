@@ -34,8 +34,12 @@ icons/gnome/gnome.xml
 icons/sierra/sierra.xml
 icons/tahoe/tahoe.xml
 libbackground/preview-file-selection.c
+libnautilus-extension/nautilus-column.c
+libnautilus-extension/nautilus-menu-item.c
+libnautilus-extension/nautilus-property-page.c
 libnautilus-private/apps_nautilus_preferences.schemas.in
 libnautilus-private/filesystem-attributes.xml
+libnautilus-private/nautilus-column-utilities.c
 libnautilus-private/nautilus-customization-data.c
 libnautilus-private/nautilus-desktop-directory-file.c
 libnautilus-private/nautilus-desktop-icon-file.c
@@ -70,6 +74,7 @@ nautilus-file-management-properties.desktop.in
 nautilus-home.desktop.in
 nautilus.desktop.in
 src/Nautilus_shell.server.in
+src/file-manager/fm-bonobo-provider.c
 src/file-manager/fm-desktop-icon-view.c
 src/file-manager/fm-directory-view.c
 src/file-manager/fm-error-reporting.c
@@ -84,6 +89,7 @@ src/file-manager/nautilus-desktop-icon-view-ui.xml
 src/file-manager/nautilus-directory-view-ui.xml
 src/file-manager/nautilus-icon-view-ui.xml
 src/file-manager/nautilus-indexing-info.c
+src/file-manager/nautilus-list-view-ui.xml
 src/file-manager/nautilus-search-list-view-ui.xml
 src/nautilus-application.c
 src/nautilus-bookmarks-window.c
