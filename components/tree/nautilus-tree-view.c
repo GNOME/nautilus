@@ -462,7 +462,10 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						   FALSE);
 
 		gdk_pixmap_unref (pixmap);
-		gdk_bitmap_unref (mask);
+		if (mask != NULL) {
+			gdk_bitmap_unref (mask);
+		}
+
 		
 		
 		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
@@ -580,7 +583,9 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 					    mask);
 
 		gdk_pixmap_unref (pixmap);
-		gdk_bitmap_unref (mask);
+		if (mask != NULL) {
+			gdk_bitmap_unref (mask);
+		}
 
 		g_free (name);
 		

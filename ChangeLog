@@ -1,3 +1,12 @@
+2000-09-25  John Sullivan  <sullivan@eazel.com>
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node),
+	(nautilus_tree_view_update_model_node): Check for NULL
+	before calling gdk_bitmap_unref (mask); it was hitting
+	a return_if_fail NULL check a zillion times on startup
+	in the tree view.
+
 2000-09-25  Pavel Cisler  <pavel@eazel.com>
 
 	* src/nautilus-component-adapter-factory.c:
