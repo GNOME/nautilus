@@ -229,6 +229,7 @@ nautilus_rpm_verify_window_set_progress (NautilusRPMVerifyWindow *window,
 	window->details->current_file = g_strdup (file);
 	window->details->amount = amount;
 	window->details->total = total;
+	nautilus_rpm_verify_window_update_message (window);
 }
 
 void

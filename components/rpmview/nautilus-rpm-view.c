@@ -128,7 +128,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
 	rpm_view->details->package_system = eazel_package_system_new (NULL);
-        eazel_package_system_set_debug (rpm_view->details->package_system, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+        eazel_package_system_set_debug (rpm_view->details->package_system, EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
         rpm_view->details->package = NULL;
 
 	rpm_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (rpm_view));
@@ -602,12 +602,10 @@ static gboolean
 verify_failed_signal (EazelPackageSystem *system,
                       EazelPackageSystemOperation op, 
                       const PackageData *package,
-                      GtkWidget *verify_window)
+                      NautilusRPMView *rpm_view)
 {
-        g_assert (verify_window);
-        g_assert (NAUTILUS_RPM_VERIFY_WINDOW (verify_window));
-
-        nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (verify_window), TRUE);
+        nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), TRUE);
+        rpm_view->details->verify_success = FALSE;
 
         return FALSE;
 }
@@ -652,12 +650,13 @@ nautilus_rpm_view_verify_files (GtkWidget *widget,
         failsignal = gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_system),
                                          "failed",
                                          (GtkSignalFunc)verify_failed_signal,
-                                         rpm_view->details->verify_window);
+                                         rpm_view);
         progresssignal = gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_system),
                                              "progress",
                                              (GtkSignalFunc)verify_progress_signal,
                                              rpm_view->details->verify_window);
 
+        rpm_view->details->verify_success = TRUE;
         eazel_package_system_verify (rpm_view->details->package_system,
                                      NULL, 
                                      packages);
@@ -666,10 +665,11 @@ nautilus_rpm_view_verify_files (GtkWidget *widget,
         gtk_signal_disconnect (GTK_OBJECT (rpm_view->details->package_system), progresssignal);                               
         g_list_free (packages);
 		
-/*
-	nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
-	nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), _("Verification completed."));
-*/
+        if (rpm_view->details->verify_success) {
+                nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
+                nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), _("Verification completed, package ok."));
+        } else {
+        }
 }
 
 /* callback to handle the verify command */

@@ -73,6 +73,8 @@ struct NautilusRPMViewDetails {
 	int last_file_index;
 	int selected_file;	
 
+	gboolean verify_success;
+
 #ifdef EAZEL_SERVICES
         /* for installing an rpm */
 	EazelInstallCallback *installer;
