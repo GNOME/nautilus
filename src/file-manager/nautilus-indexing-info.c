@@ -37,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 #ifdef HAVE_MEDUSA
@@ -44,6 +45,7 @@
 #include <libmedusa/medusa-index-service.h>
 #include <libmedusa/medusa-index-progress.h>
 #include <libmedusa/medusa-indexed-search.h>
+#include <libmedusa/medusa-system-state.h>
 
 #define PROGRESS_UPDATE_INTERVAL 5000
 
@@ -104,10 +106,24 @@ update_progress_display (gpointer callback_data)
 }
 
 static void
+dialog_close_cover (gpointer dialog_data)
+{
+        g_assert (GNOME_IS_DIALOG (dialog_data));
+
+        gnome_dialog_close (dialog_data);
+}
+
+
+static void
 show_index_progress_dialog (void)
 {
+        int callback_id;
+        
         gnome_dialog_close (dialogs->last_index_time_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
+        callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
+                                                                     dialog_close_cover,
+                                                                     dialogs->index_in_progress_dialog);
 }
 
 
@@ -115,8 +131,13 @@ show_index_progress_dialog (void)
 static void
 show_reindex_request_dialog (void)
 {
+        int callback_id;
+
         gnome_dialog_close (dialogs->index_in_progress_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
+        callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
+                                                                     dialog_close_cover,
+                                                                     dialogs->last_index_time_dialog);
 }
 
 static void
@@ -300,12 +321,40 @@ destroy_indexing_info_dialogs_on_exit (void)
         g_free (dialogs);
 }
 
+
 static void
 show_indexing_info_dialog (void)
 {
+        GnomeDialog *dialog_shown;
+        int callback_id;
         
-	if (dialogs == NULL) {
+        if (medusa_system_services_are_blocked ()) {
+                dialog_shown = nautilus_show_info_dialog (_("An index of your files is not available because "
+                                                            "creating a nightly index of files has been disabled "
+                                                            "by your system administrator."),
+                                                          _("No index of your system is available"),
+                                                                  NULL);
+                callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_DISABLED,
+                                                                             dialog_close_cover,
+                                                                             dialog_shown);
+                return;
+
+        }
+
+        if (!medusa_system_services_are_enabled ()) {
+                dialog_shown = nautilus_show_info_dialog (_("An index of your files is not available, because you "
+                                                            "have elected to turn the indexing feature off.  You can "
+                                                            "set your computer up to index your files nightly by changing "
+                                                            "your search preferences."),
+                                                          _("No index of your system is available"),
+                                                          NULL);
                 
+                callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
+                                                                             dialog_close_cover,
+                                                                             dialog_shown);
+                return;
+        }
+	if (dialogs == NULL) {
                 dialogs = g_new0 (IndexingInfoDialogs, 1);
                 g_atexit (destroy_indexing_info_dialogs_on_exit);
                 
