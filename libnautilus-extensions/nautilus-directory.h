@@ -155,9 +155,8 @@ void               nautilus_file_set_metadata             (NautilusFile         
 							   const char               *metadata);
 
 /* Attributes for file objects as user-displayable strings. */
-char *             nautilus_file_get_date_as_string       (NautilusFile             *file);
-char *             nautilus_file_get_size_as_string       (NautilusFile             *file);
-char *             nautilus_file_get_type_as_string       (NautilusFile             *file);
+char *		   nautilus_file_get_string_attribute	  (NautilusFile		    *file,
+							   const char		    *attribute_name);
 
 /* Comparing two file objects for sorting */
 int		   nautilus_file_compare_for_sort	  (NautilusFile		    *file_1,

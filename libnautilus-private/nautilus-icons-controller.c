@@ -34,14 +34,14 @@ static void nautilus_icons_controller_initialize (NautilusIconsController *contr
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsController, nautilus_icons_controller, GTK_TYPE_OBJECT)
 
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_image)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_name)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_text)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_uri)
 
 static void
 nautilus_icons_controller_initialize_class (NautilusIconsControllerClass *klass)
 {
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_image);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_name);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_text);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_uri);
 }
 
@@ -59,10 +59,10 @@ nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
 }
 
 char *
-nautilus_icons_controller_get_icon_name  (NautilusIconsController *controller,
+nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
 					  NautilusControllerIcon *icon)
 {
-	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_name)
+	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_text)
 		(controller, icon);
 }
 

@@ -1,3 +1,39 @@
+2000-02-04  John Sullivan <sullivan@eazel.com>
+
+	Some renaming and reorganization heading towards supporting
+	icons with more info in label at higher zoom levels.
+
+	* libnautilus/nautilus-icons-controller.c:
+	* libnautilus/nautilus-icons-controller.h:
+	(nautilus_icons_controller_get_icon_name): Renamed to
+	nautilus_icons_controller_get_icon_text since it won't always
+	just be the name.
+	* src/file-manager/fm-icons-controller.c:
+	(fm_icons_controller_get_icon_name): Renamed to
+	fm_icons_controller_get_icon_text to match.
+	* libnautilus/gnome-icon-container.c:
+	(icon_new): Updated for name change.
+	
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	(nautilus_file_get_string_attribute): New function, consolidates
+	nautilus_file_get_date_as_string, nautilus_file_get_size_as_string,
+	and nautilus_file_get_type_as_string (and more to come). These old
+	functions are now private.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	Changed column-identifying strings stored in metadata to be attribute
+	names recognized by nautilus_file_get_string_attribute. Added
+	LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE.
+	(get_column_from_metadata_value): Renamed to get_column_from_attribute
+	(get_metadata_value_from_column): Renamed to get_attribute_from_column
+	(get_sort_column_from_attribute): New function, handles unknown attributes
+	by using LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE.
+	(add_to_flist): Rewrote to use column attributes and nautilus_file_
+	get_string_attribute.
+	(fm_directory_view_list_begin_loading): Now calls get_sort_column_
+	from_attribute to handle the case where saved sorting attribute is unknown.
+
 2000-02-04  Ettore Perazzoli  <ettore@helixcode.com>
 
 	* components/html/Makefile.am: Use `GTKHTML_LIBS' and

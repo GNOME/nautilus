@@ -62,13 +62,15 @@ struct _FMDirectoryViewListDetails
 #define UP_INDICATOR_VALUE		1
 #define DOWN_INDICATOR_VALUE		2
 
-/* special values for metadata */
+/* file attributes associated with columns */
 
-#define LIST_VIEW_COLUMN_ICON_METADATA_VALUE		"icon_column"
-#define LIST_VIEW_COLUMN_NAME_METADATA_VALUE		"name_column"
-#define LIST_VIEW_COLUMN_SIZE_METADATA_VALUE		"size_column"
-#define LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE	"type_column"
-#define LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE	"date_modified_column"
+#define LIST_VIEW_ICON_ATTRIBUTE		"icon"
+#define LIST_VIEW_NAME_ATTRIBUTE		"name"
+#define LIST_VIEW_SIZE_ATTRIBUTE		"size"
+#define LIST_VIEW_MIME_TYPE_ATTRIBUTE		"type"
+#define LIST_VIEW_DATE_MODIFIED_ATTRIBUTE	"date_modified"
+
+#define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE	LIST_VIEW_NAME_ATTRIBUTE
 
 
 /* forward declarations */
@@ -119,9 +121,10 @@ static void fm_directory_view_list_set_zoom_level   (FMDirectoryViewList *list_v
 static void fm_directory_view_list_sort_items 	    (FMDirectoryViewList *list_view, 
 				   		     int column, 
 				   		     gboolean reversed);
-int get_column_from_metadata_value 		    (const char *value);
+const char *get_attribute_from_column 	    	    (int column);
+int get_column_from_attribute	 		    (const char *value);
+int get_sort_column_from_attribute 		    (const char *value);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
-const char *get_metadata_value_from_column 	    (int column);
 static GtkWidget *get_sort_indicator 		    (GtkFList *flist, 
 						     gint column, 
 						     gboolean reverse);
@@ -449,29 +452,26 @@ static void
 add_to_flist (FMDirectoryViewList *list_view, NautilusFile *file)
 {
 	GtkCList *clist;
-	gchar *text[LIST_VIEW_COLUMN_COUNT];
-	gchar *name;
-	gchar *size_string;
-	gchar *modified_string;
-	gchar *type_string;
+	gchar **text;
 	int new_row;
+	int column;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (list_view));
 	g_return_if_fail (file != NULL);
 
-	text[LIST_VIEW_COLUMN_ICON] = NULL;
-	
-	name = nautilus_file_get_name (file);
-	text[LIST_VIEW_COLUMN_NAME] = name;
+	/* One extra slot so it's NULL-terminated */
+	text = g_new0 (gchar *, LIST_VIEW_COLUMN_COUNT+1);
 
-	size_string = nautilus_file_get_size_as_string (file);
-	text[LIST_VIEW_COLUMN_SIZE] = size_string;
-
-	modified_string = nautilus_file_get_date_as_string (file);
-	text[LIST_VIEW_COLUMN_DATE_MODIFIED] = modified_string;
-
-	type_string = nautilus_file_get_type_as_string (file);
-	text[LIST_VIEW_COLUMN_MIME_TYPE] = type_string;
+	for (column = 0; column < LIST_VIEW_COLUMN_COUNT; ++column)
+	{
+		/* No text in icon column */
+		if (column != LIST_VIEW_COLUMN_ICON)
+		{
+			text[column] = 
+				nautilus_file_get_string_attribute (file, 
+								    get_attribute_from_column (column));
+		}
+	}
 	
 	clist = GTK_CLIST (get_flist(list_view));
 
@@ -486,10 +486,7 @@ add_to_flist (FMDirectoryViewList *list_view, NautilusFile *file)
 
 	install_icon (list_view, new_row);
 
-	g_free (name);
-	g_free (size_string);
-	g_free (modified_string);
-	g_free (type_string);
+	g_strfreev (text);
 }
 
 static GtkFList *
@@ -595,11 +592,11 @@ fm_directory_view_list_begin_loading (FMDirectoryView *view)
 
 	fm_directory_view_list_sort_items (
 		list_view,
-		get_column_from_metadata_value (
+		get_sort_column_from_attribute (
 			nautilus_directory_get_metadata (
 				directory,
 				LIST_VIEW_SORT_COLUMN_METADATA_KEY,
-				LIST_VIEW_COLUMN_NAME_METADATA_VALUE)),
+				LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE)),
 		nautilus_directory_get_boolean_metadata (
 			directory,
 			LIST_VIEW_SORT_REVERSED_METADATA_KEY,
@@ -721,8 +718,8 @@ fm_directory_view_list_sort_items (FMDirectoryViewList *list_view,
 	nautilus_directory_set_metadata (
 		directory,
 		LIST_VIEW_SORT_COLUMN_METADATA_KEY,
-		LIST_VIEW_COLUMN_NAME_METADATA_VALUE,
-		get_metadata_value_from_column (column));
+		LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE,
+		get_attribute_from_column (column));
 	nautilus_directory_set_boolean_metadata (
 		directory,
 		LIST_VIEW_SORT_REVERSED_METADATA_KEY,
@@ -772,7 +769,8 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 }
 
 /**
- * Get the string value representing the column, to store in the metadata.
+ * Get the attribute name associated with the column. These are stored in
+ * the metadata and also used to look up the text to display.
  * Note that these are not localized on purpose, so that the metadata files
  * can be shared.
  * @column: The column index.
@@ -780,20 +778,20 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
  * Return value: The string to be saved in the metadata.
  */
 const char *
-get_metadata_value_from_column (int column)
+get_attribute_from_column (int column)
 {
 	switch (column)
 	{
 		case LIST_VIEW_COLUMN_ICON:
-			return LIST_VIEW_COLUMN_ICON_METADATA_VALUE;
+			return LIST_VIEW_ICON_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_NAME:
-			return LIST_VIEW_COLUMN_NAME_METADATA_VALUE;
+			return LIST_VIEW_NAME_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_SIZE:
-			return LIST_VIEW_COLUMN_SIZE_METADATA_VALUE;
+			return LIST_VIEW_SIZE_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_MIME_TYPE:
-			return LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE;
+			return LIST_VIEW_MIME_TYPE_ATTRIBUTE;
 		case LIST_VIEW_COLUMN_DATE_MODIFIED:
-			return LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE;
+			return LIST_VIEW_DATE_MODIFIED_ATTRIBUTE;
 		default:
 			g_assert_not_reached ();
 			return NULL;
@@ -801,33 +799,54 @@ get_metadata_value_from_column (int column)
 }
 
 /**
- * Get the column number given the metadata representation of the column.
+ * Get the column number given the attribute name associated with the column.
  * Some day the columns might move around, forcing this function to get
  * more complicated.
- * @value: The string read from the metadata representing the saved sort column.
+ * @value: The attribute name associated with this column.
  * 
- * Return value: The column index.
+ * Return value: The column index, or LIST_VIEW_COLUMN_NONE if attribute
+ * name does not match any column.
  */
 int
-get_column_from_metadata_value (const char *value)
+get_column_from_attribute (const char *value)
 {
-	if (strcmp (LIST_VIEW_COLUMN_ICON_METADATA_VALUE, value) == 0)
+	if (strcmp (LIST_VIEW_ICON_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_ICON;
 
-	if (strcmp (LIST_VIEW_COLUMN_NAME_METADATA_VALUE, value) == 0)
+	if (strcmp (LIST_VIEW_NAME_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_NAME;
 
-	if (strcmp (LIST_VIEW_COLUMN_SIZE_METADATA_VALUE, value) == 0)
+	if (strcmp (LIST_VIEW_SIZE_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_SIZE;
 
-	if (strcmp (LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE, value) == 0)
+	if (strcmp (LIST_VIEW_MIME_TYPE_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_MIME_TYPE;
 
-	if (strcmp (LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE, value) == 0)
+	if (strcmp (LIST_VIEW_DATE_MODIFIED_ATTRIBUTE, value) == 0)
 		return LIST_VIEW_COLUMN_DATE_MODIFIED;
 
-	g_assert_not_reached ();
 	return LIST_VIEW_COLUMN_NONE;
+}
+
+/**
+ * Get the column number to use for sorting given an attribute name.
+ * This returns the same result as get_column_for_attribute, except
+ * that it chooses a default column for unknown attributes.
+ * @value: An attribute name, typically one supported by 
+ * nautilus_file_get_string_attribute.
+ * 
+ * Return value: The column index to use for sorting.
+ */
+int
+get_sort_column_from_attribute (const char *value)
+{
+	int result;
+
+	result = get_column_from_attribute (value);
+	if (result == LIST_VIEW_COLUMN_NONE)
+		result = get_column_from_attribute (LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE);
+
+	return result;
 }
 
 

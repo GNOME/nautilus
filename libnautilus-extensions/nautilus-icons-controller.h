@@ -59,7 +59,7 @@ GtkType    nautilus_icons_controller_get_type       (void);
 /* Icon operations. */
 GdkPixbuf *nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
 						     NautilusControllerIcon  *icon);
-char *     nautilus_icons_controller_get_icon_name  (NautilusIconsController *controller,
+char *     nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
 						     NautilusControllerIcon  *icon);
 char *     nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
 						     NautilusControllerIcon  *icon);
@@ -75,7 +75,7 @@ struct _NautilusIconsControllerClass
 
 	GdkPixbuf * (*get_icon_image) (NautilusIconsController *controller,
 				       NautilusControllerIcon  *icon);
-	char *      (* get_icon_name) (NautilusIconsController *controller,
+	char *      (* get_icon_text) (NautilusIconsController *controller,
 				       NautilusControllerIcon  *icon);
 	char *       (* get_icon_uri) (NautilusIconsController *controller,
 				       NautilusControllerIcon  *icon);

@@ -90,6 +90,9 @@ static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 	     NautilusFileSortType sort_type,
 					 	     gboolean reversed);
 
+static char * nautilus_file_get_date_as_string (NautilusFile *file);
+static char * nautilus_file_get_size_as_string (NautilusFile *file);
+static char * nautilus_file_get_type_as_string (NautilusFile *file);
 static void nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
 					GnomeVFSResult result,
 					GnomeVFSDirectoryList *list,
@@ -1328,7 +1331,7 @@ nautilus_file_get_uri (NautilusFile *file)
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
-gchar *
+static char *
 nautilus_file_get_date_as_string (NautilusFile *file)
 {
 	/* Note: This uses modified time. There's also accessed time and 
@@ -1417,7 +1420,7 @@ nautilus_file_get_size (NautilusFile *file)
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
-gchar *
+static char *
 nautilus_file_get_size_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
@@ -1426,6 +1429,38 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		return g_strdup (_("--"));
 
 	return gnome_vfs_file_size_to_string (file->info->size);
+}
+
+/**
+ * nautilus_file_get_string_attribute:
+ * 
+ * Get a user-displayable string from a named attribute. Use g_free to
+ * free this string.
+ * 
+ * @file: NautilusFile representing the file in question.
+ * @attribute_name: The name of the desired attribute. The currently supported
+ * set includes "name", "type", "size", and "date modified".
+ * 
+ * Returns: Newly allocated string ready to display to the user, or NULL
+ * if @attribute_name is not supported.
+ * 
+ **/
+char *
+nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
+{
+	if (strcmp (attribute_name, "name") == 0)
+		return nautilus_file_get_name (file);
+
+	if (strcmp (attribute_name, "type") == 0)
+		return nautilus_file_get_type_as_string (file);
+
+	if (strcmp (attribute_name, "size") == 0)
+		return nautilus_file_get_size_as_string (file);
+
+	if (strcmp (attribute_name, "date_modified") == 0)
+		return nautilus_file_get_date_as_string (file);
+
+	return NULL;
 }
 
 /**
@@ -1438,7 +1473,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
-gchar *
+static char *
 nautilus_file_get_type_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);

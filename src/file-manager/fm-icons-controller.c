@@ -33,7 +33,7 @@ static void       fm_icons_controller_initialize_class (FMIconsControllerClass  
 static void       fm_icons_controller_initialize       (FMIconsController       *controller);
 static GdkPixbuf *fm_icons_controller_get_icon_image   (NautilusIconsController *controller,
 							NautilusControllerIcon  *icon);
-static char *     fm_icons_controller_get_icon_name    (NautilusIconsController *controller,
+static char *     fm_icons_controller_get_icon_text    (NautilusIconsController *controller,
 							NautilusControllerIcon  *icon);
 static char *     fm_icons_controller_get_icon_uri     (NautilusIconsController *controller,
 							NautilusControllerIcon  *icon);
@@ -48,7 +48,7 @@ fm_icons_controller_initialize_class (FMIconsControllerClass *klass)
 	abstract_class = NAUTILUS_ICONS_CONTROLLER_CLASS (klass);
 
 	abstract_class->get_icon_image = fm_icons_controller_get_icon_image;
-	abstract_class->get_icon_name = fm_icons_controller_get_icon_name;
+	abstract_class->get_icon_text = fm_icons_controller_get_icon_text;
 	abstract_class->get_icon_uri = fm_icons_controller_get_icon_uri;
 }
 
@@ -92,7 +92,7 @@ fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 }
 
 static char *
-fm_icons_controller_get_icon_name (NautilusIconsController *controller,
+fm_icons_controller_get_icon_text (NautilusIconsController *controller,
 				   NautilusControllerIcon *icon)
 {
 	return nautilus_file_get_name (NAUTILUS_FILE (icon));

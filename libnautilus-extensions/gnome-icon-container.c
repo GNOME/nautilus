@@ -105,7 +105,7 @@ icon_new (GnomeIconContainer *container,
 	  NautilusControllerIcon *data)
 {
 	GnomeIconContainerDetails *details;
-	char *name;
+	char *label;
 	GnomeIconContainerIcon *new;
 	GdkPixbuf *image;
         GnomeCanvas* canvas;
@@ -120,16 +120,16 @@ icon_new (GnomeIconContainer *container,
 	new->data = data;
 	
 	image = nautilus_icons_controller_get_icon_image (details->controller, data);
-	name = nautilus_icons_controller_get_icon_name (details->controller, data);
+	label = nautilus_icons_controller_get_icon_text (details->controller, data);
         
         new->item = gnome_canvas_item_new
 		(GNOME_CANVAS_GROUP (canvas->root),
 		 nautilus_icons_view_icon_item_get_type (),
 		 "pixbuf", image,    
-		 "label", name,
+		 "label", label,
 		 NULL);
 	
-	g_free (name);
+	g_free (label);
         
 	return new;
 }
