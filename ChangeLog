@@ -1,3 +1,14 @@
+2002-06-14  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-preferences-dialog.c (preferences_show_help): new
+	function to show the help file.
+	(dialog_button_response_callback): handle the Help button and show
+	the appropriate help file.
+	(preferences_dialog_create): add a Help button.
+	Based on patch from Satyajit Kanungo  <satyajit.kanungo@wipro.com>.
+
+	Fixes bug #83511.
+
 2002-06-13  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-file.c:

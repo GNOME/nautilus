@@ -33,8 +33,12 @@
 #include <eel/eel-preferences-box.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-help.h>
+#include <eel/eel-string.h>
 
 /* 
  * This file contains the description of the preferences dialog in
@@ -341,11 +345,74 @@ dialog_delete_event_callback (GtkWidget   *widget,
 }
 
 static void
+preferences_show_help (GtkWindow *parent,
+		       char const *helpfile,
+		       char const *sect_id)
+{
+	GError *error = NULL;
+	GtkWidget *dialog;
+
+	g_return_if_fail (helpfile != NULL);
+	g_return_if_fail (sect_id != NULL);
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    helpfile, sect_id, &error);
+
+	if (error) {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_CLOSE,
+						 _("There was an error displaying help: %s"),
+						 error->message);
+
+		g_signal_connect (G_OBJECT (dialog),
+				  "response", G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
+}
+
+
+
+static void
 dialog_button_response_callback (GtkDialog *dialog,
 				 int response_id,
 				 gpointer callback_data)
 {
-	gtk_widget_hide (GTK_WIDGET (dialog));
+	EelPreferencesBox *preferences_box;
+	char *active_pane;
+
+	if (response_id == GTK_RESPONSE_HELP) {
+		preferences_box = eel_preferences_dialog_get_box (GTK_WINDOW (dialog));
+		active_pane = eel_preferences_box_get_active_pane (preferences_box);
+
+		if  (eel_str_is_equal (active_pane, "View Defaults"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-438");
+		else if (eel_str_is_equal (active_pane, "Appearance"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-54");
+		else if (eel_str_is_equal (active_pane, "Windows"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-55");
+		else if (eel_str_is_equal (active_pane, "Desktop & Trash"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-448");
+		else if (eel_str_is_equal (active_pane, "Icon & List Views"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-56");
+		else if (eel_str_is_equal (active_pane, "Icon Captions"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-439");
+		else if (eel_str_is_equal (active_pane, "Sidebar Panels"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-57");
+		else if (eel_str_is_equal (active_pane,"Navigation"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-59");
+		else if (eel_str_is_equal (active_pane, "Speed Tradeoffs"))
+			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-60");
+
+		g_free (active_pane);
+	} else {
+		gtk_widget_hide (GTK_WIDGET (dialog));
+	}
 }
 
 static GtkWidget *
@@ -357,6 +424,9 @@ preferences_dialog_create (void)
 	g_assert (GTK_IS_DIALOG (dialog));
 
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_HELP,
+			       GTK_RESPONSE_HELP);
 
 	g_signal_connect (dialog, "delete_event",
 			  G_CALLBACK (dialog_delete_event_callback), dialog);
