@@ -1,3 +1,13 @@
+2004-04-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-container.c 
+	(nautilus_icon_container_get_n_children): Count rename widget if
+	it exists.
+	(nautilus_icon_container_accessible_ref_child): Return rename widget
+	as last child, if it exists.
+
+	Fixes bug #140233.
+	
 2004-04-19  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -6966,6 +6966,7 @@ nautilus_icon_container_accessible_get_n_children (AtkObject *accessible)
 {
 	NautilusIconContainer *container;
 	GtkWidget *widget;
+	gint i;
 	
 	widget = GTK_ACCESSIBLE (accessible)->widget;
 	if (!widget) {
@@ -6974,7 +6975,11 @@ nautilus_icon_container_accessible_get_n_children (AtkObject *accessible)
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
-	return g_hash_table_size (container->details->icon_set);
+	i = g_hash_table_size (container->details->icon_set);
+	if (container->details->rename_widget) {
+		i++;
+	}
+	return i;
 }
 
 static AtkObject* 
@@ -7003,6 +7008,14 @@ nautilus_icon_container_accessible_ref_child (AtkObject *accessible, int i)
                 
                 return atk_object;
         } else {
+		if (i == g_list_length (container->details->icons)) {
+			if (container->details->rename_widget) {
+				atk_object = gtk_widget_get_accessible (container->details->rename_widget);
+				g_object_ref (atk_object);
+
+                		return atk_object;
+			}
+		}
                 return NULL;
         }
 }
