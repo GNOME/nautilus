@@ -45,11 +45,10 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 		
 		user_level = nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
 							    NAUTILUS_PREFERENCES_USER_LEVEL);
-		
+
 		switch (user_level)
 		{
 		case NAUTILUS_USER_LEVEL_NOVICE:
-		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 			
 			user_top_directory = nautilus_user_top_directory ();
 			
@@ -57,6 +56,7 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 
 			break;
 
+		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		case NAUTILUS_USER_LEVEL_HACKER:
 		case NAUTILUS_USER_LEVEL_ETTORE:
 			g_string_append (path_name, g_get_home_dir ());
