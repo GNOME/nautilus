@@ -1,6 +1,6 @@
 # Korean translation of Nautilus.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Young-ho, Cha <ganadist@dacome.co.kr>, 2000.
+# Young-ho, Cha <ganadist@dacome.co.kr>, 2000, 2001.
 #
 #. Part of a window title for search results: Optional
 #. preposition that precedes the clause describing the file
@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-29 08:53+0900\n"
-"PO-Revision-Date: 2000-12-12 15:35+0900\n"
+"POT-Creation-Date: 2001-01-06 15:50+0900\n"
+"PO-Revision-Date: 2001-01-06 15:52+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,8 +28,44 @@ msgstr ""
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "노틸러스 실행 애플릿을 만들수 없습니다!"
 
+#: components/hardware/nautilus-hardware-view.c:235
+#, c-format
+msgid ""
+"%s CPU\n"
+"%s MHz\n"
+"%s cache size"
+msgstr ""
+"%s CPU\n"
+"%s MHz\n"
+"%s cache 크기"
+
+#: components/hardware/nautilus-hardware-view.c:269
+#, c-format
+msgid "%lu GB RAM"
+msgstr "%lu GB 램"
+
+#: components/hardware/nautilus-hardware-view.c:271
+#, c-format
+msgid "%lu MB RAM"
+msgstr "%lu MB 램"
+
+#: components/hardware/nautilus-hardware-view.c:329
+#, c-format
+msgid "%lu GB"
+msgstr ""
+
+#: components/hardware/nautilus-hardware-view.c:331
+#, c-format
+msgid "%lu MB"
+msgstr ""
+
+#. set up the title
+#: components/hardware/nautilus-hardware-view.c:412
+msgid "Hardware Overview"
+msgstr "하드웨어 대략보기"
+
 #: components/help/converters/gnome-db2html2/gdb3html.c:708
-#: components/music/nautilus-music-view.c:1563
+#: components/music/nautilus-music-view.c:1562
 msgid "Previous"
 msgstr "이전"
 
@@ -39,89 +75,89 @@ msgid "Home"
 msgstr "홈"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:726
-#: components/music/nautilus-music-view.c:1621
+#: components/music/nautilus-music-view.c:1620
 msgid "Next"
 msgstr "다음"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:252
+#: components/help/converters/gnome-db2html2/sect-elements.c:254
 msgid "Notes"
 msgstr "주의"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:700
+#: components/help/converters/gnome-db2html2/sect-elements.c:704
 #, c-format
 msgid "Table %d."
 msgstr "표 %d"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:847
+#: components/help/converters/gnome-db2html2/sect-elements.c:859
 msgid "Up to Table of Contents"
 msgstr "차례로 가기"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:995
+#: components/help/converters/gnome-db2html2/sect-elements.c:1007
 #, c-format
 msgid "Figure %s"
 msgstr "그림 %s"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1015
+#: components/help/converters/gnome-db2html2/sect-elements.c:1027
 msgid "the section here"
 msgstr ""
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1017
+#: components/help/converters/gnome-db2html2/sect-elements.c:1029
 msgid "the section"
 msgstr ""
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1073
+#: components/help/converters/gnome-db2html2/sect-elements.c:1085
 #, c-format
 msgid "Figure %d"
 msgstr "그림 %d"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1085
+#: components/help/converters/gnome-db2html2/sect-elements.c:1097
 msgid "IMAGE"
 msgstr "그림"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2050
-#: components/help/converters/gnome-db2html2/sect-elements.c:2052
+#: components/help/converters/gnome-db2html2/sect-elements.c:2063
+#: components/help/converters/gnome-db2html2/sect-elements.c:2065
 msgid "Legal Notice"
 msgstr ""
 
 #. This 'Q' is short for 'Question:'
-#: components/help/converters/gnome-db2html2/sect-elements.c:2098
+#: components/help/converters/gnome-db2html2/sect-elements.c:2111
 msgid "Q"
 msgstr ""
 
 #. This 'A' is short for 'Answer'
-#: components/help/converters/gnome-db2html2/sect-elements.c:2110
+#: components/help/converters/gnome-db2html2/sect-elements.c:2123
 msgid "A"
 msgstr ""
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2133
+#: components/help/converters/gnome-db2html2/sect-elements.c:2146
 msgid "See"
 msgstr "참조"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2160
+#: components/help/converters/gnome-db2html2/sect-elements.c:2173
 msgid "See also"
 msgstr "참조"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:305
+#: components/help/converters/gnome-db2html2/toc-elements.c:315
 msgid "GNOME Documentation"
 msgstr "그놈 문서"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:336
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
 msgid "Copyright"
 msgstr "저작권"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:336
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
 msgid "by"
 msgstr ""
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:337
+#: components/help/converters/gnome-db2html2/toc-elements.c:348
 msgid "Table of Contents"
 msgstr "차례"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:499
+#: components/help/converters/gnome-db2html2/toc-elements.c:513
 msgid "PREFACE"
 msgstr "머리말"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:508
+#: components/help/converters/gnome-db2html2/toc-elements.c:522
 msgid "APPENDIX"
 msgstr "부록"
 
@@ -233,7 +269,7 @@ msgstr " (참조 \""
 msgid " (see also \""
 msgstr " (참조 \""
 
-#: components/image-viewer/nautilus-image-view.c:825
+#: components/image-viewer/nautilus-image-view.c:829
 msgid "I could not initialize Bonobo"
 msgstr "Bonobo를 초기화 할수 없습니다"
 
@@ -927,99 +963,100 @@ msgstr ""
 msgid "Synthpop"
 msgstr ""
 
-#. FIXME: I think this is not portable. It works in gcc, but not other C compilers.
-#: components/music/nautilus-music-view.c:236
-msgid "Track "
+#: components/music/nautilus-music-view.c:235
+msgid "Track"
 msgstr "트랙"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Title"
 msgstr "제목"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Artist"
 msgstr "가수"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Year"
 msgstr "년도"
 
-#: components/music/nautilus-music-view.c:236
-msgid "Bitrate "
-msgstr "비트율 "
+#: components/music/nautilus-music-view.c:235
+msgid "Bit Rate"
+msgstr "비트율"
 
-#: components/music/nautilus-music-view.c:236
-msgid "Time "
-msgstr "시간 "
+#: components/music/nautilus-music-view.c:235
+msgid "Time"
+msgstr "시간"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Album"
 msgstr "앨범"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Comment"
 msgstr "설명"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Channels"
 msgstr "채널"
 
-#: components/music/nautilus-music-view.c:236
+#: components/music/nautilus-music-view.c:235
 msgid "Sample Rate"
 msgstr "샘플 비율"
 
-#: components/music/nautilus-music-view.c:348
+#: components/music/nautilus-music-view.c:347
 msgid "Set Cover Image"
 msgstr "겉 표지 그림 설정"
 
-#: components/music/nautilus-music-view.c:701
-#, c-format
+#: components/music/nautilus-music-view.c:700
 msgid "Sorry, but '%s' is not a usable image file."
-msgstr "'%s' 는 사용할 수 그림 파일이 아닙니다!"
+msgstr "'%s' 는 사용할 수 그림 파일이 아닙니다."
 
-#: components/music/nautilus-music-view.c:703
+#: components/music/nautilus-music-view.c:702
 #: src/file-manager/fm-properties-window.c:2174
-#: src/nautilus-property-browser.c:998 src/nautilus-property-browser.c:1135
-#: src/nautilus-property-browser.c:1403
+#: src/nautilus-property-browser.c:997 src/nautilus-property-browser.c:1134
+#: src/nautilus-property-browser.c:1402
 msgid "Not an Image"
 msgstr "그림이 아님"
 
-#: components/music/nautilus-music-view.c:751
+#: components/music/nautilus-music-view.c:750
 msgid "Select an image file for the album cover:"
 msgstr "앨범 겉 표지로 사용할 그림 파일 선택:"
 
-#: components/music/nautilus-music-view.c:1205
+#: components/music/nautilus-music-view.c:1204
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the soundcard or your soundcard is not "
 "configured properly. "
 msgstr ""
+"음악 보기가 지금 음악을 연주할수 없습니다. 다른 프로그램이 사운드 "
+"카드를사용하거나 사용하는것을 방해하는것 같습니다. 또는 사운드카드가 "
+"올바르게 설정되지 않은것 같습니다. "
 
-#: components/music/nautilus-music-view.c:1208
+#: components/music/nautilus-music-view.c:1207
 msgid "Unable to Play File"
-msgstr ""
+msgstr "파일 연주 불가"
 
-#: components/music/nautilus-music-view.c:1229
+#: components/music/nautilus-music-view.c:1228
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "음악 보기는 아직 로컬 파일이 아닌것은 연주를 할수 없습니다! "
 
-#: components/music/nautilus-music-view.c:1230
+#: components/music/nautilus-music-view.c:1229
 msgid "Can't Play Remote Files"
 msgstr "원격 파일은 연주할수 없음"
 
-#: components/music/nautilus-music-view.c:1541
+#: components/music/nautilus-music-view.c:1540
 msgid "Drag to seek within track"
 msgstr "트랙에서 찾기위해 끌어놓음"
 
-#: components/music/nautilus-music-view.c:1578
+#: components/music/nautilus-music-view.c:1577
 msgid "Play"
 msgstr "연주"
 
-#: components/music/nautilus-music-view.c:1593
+#: components/music/nautilus-music-view.c:1592
 msgid "Pause"
 msgstr "중지"
 
-#: components/music/nautilus-music-view.c:1607
+#: components/music/nautilus-music-view.c:1606
 #: libnautilus-extensions/nautilus-file-operations.c:863
 #: libnautilus-extensions/nautilus-file-operations.c:878
 #: libnautilus-extensions/nautilus-file-operations.c:897
@@ -1027,28 +1064,28 @@ msgstr "중지"
 msgid "Stop"
 msgstr "중지"
 
-#: components/music/nautilus-music-view.c:1634
+#: components/music/nautilus-music-view.c:1633
 msgid "Sound hardware missing or busy!"
 msgstr "음악 하드웨어가 없거나 동작중입니다!"
 
-#: components/music/nautilus-music-view.c:1738
+#: components/music/nautilus-music-view.c:1737
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "%s 읽기 오류가 있습니다."
 
-#: components/music/nautilus-music-view.c:1739
+#: components/music/nautilus-music-view.c:1738
 msgid "Can't Read Folder"
 msgstr "폴더를 읽을수 없습니다"
 
-#: components/music/nautilus-music-view.c:1810
+#: components/music/nautilus-music-view.c:1809
 msgid "Stereo"
 msgstr "스테레오"
 
-#: components/music/nautilus-music-view.c:1810
+#: components/music/nautilus-music-view.c:1809
 msgid "Mono"
 msgstr "모노"
 
-#: components/music/nautilus-music-view.c:1852
+#: components/music/nautilus-music-view.c:1851
 #, c-format
 msgid "%s by %s"
 msgstr ""
@@ -1069,7 +1106,7 @@ msgstr "\"%s\"에서 실패"
 #: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
-msgstr ""
+msgstr "\"%s\" 검사중 (%ld/%ld)"
 
 #: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
@@ -1123,7 +1160,7 @@ msgid "Install Failed"
 msgstr "설치 실패"
 
 #: components/rpmview/nautilus-rpm-view-install.c:297
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1095
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1093
 msgid "Incorrect password."
 msgstr "잘못된 암호."
 
@@ -1209,7 +1246,7 @@ msgstr "\"%s\" 꾸러미 "
 
 #: components/rpmview/nautilus-rpm-view.c:671
 msgid "Verification completed, package ok."
-msgstr ""
+msgstr "확인 완료. 꾸러미 정상."
 
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:1
 msgid "Sample"
@@ -1397,66 +1434,66 @@ msgstr "*** 트랜잭션 디렉토리(%s) 가 생성되지 않음! ***\n"
 msgid "Writing transaction to %s"
 msgstr "%s로 트랜잭션 쓰는중"
 
-#: components/services/install/lib/eazel-install-logic.c:805
+#: components/services/install/lib/eazel-install-logic.c:807
 msgid "Failed to lock the downloaded file"
 msgstr "내려받는 파일 고정 실패"
 
-#: components/services/install/lib/eazel-install-logic.c:820
+#: components/services/install/lib/eazel-install-logic.c:822
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5가 일치하지 않음, 꾸러미 %s는 손상입었을 것입니다"
 
 # , c-format
-#: components/services/install/lib/eazel-install-logic.c:1065
+#: components/services/install/lib/eazel-install-logic.c:1067
 #, c-format
 msgid "Removing package %s (0x%p) %s"
 msgstr "꾸러미 %s 제거중 (0x%p) %s"
 
 # , c-format
-#: components/services/install/lib/eazel-install-logic.c:1264
+#: components/services/install/lib/eazel-install-logic.c:1266
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s 버젼 %s-%s가 이미 설치되어있습니다"
 
-#: components/services/install/lib/eazel-install-logic.c:1268
+#: components/services/install/lib/eazel-install-logic.c:1270
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s 버젼 %s가 이미 설치되어있습니다"
 
 # , c-format
-#: components/services/install/lib/eazel-install-logic.c:1277
-#: components/services/install/lib/eazel-install-logic.c:1282
+#: components/services/install/lib/eazel-install-logic.c:1279
+#: components/services/install/lib/eazel-install-logic.c:1284
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s를 %s-%s에서 %s-%s로 업그레이드합니다"
 
 # , c-format
-#: components/services/install/lib/eazel-install-logic.c:1291
+#: components/services/install/lib/eazel-install-logic.c:1293
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s를 %s-%s에서 %s-%s로 다운그레이드합니다"
 
-#: components/services/install/lib/eazel-install-logic.c:1296
+#: components/services/install/lib/eazel-install-logic.c:1298
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s를 %s에서 %s로 다운그레이드합니다"
 
 # , c-format
-#: components/services/install/lib/eazel-install-logic.c:1321
+#: components/services/install/lib/eazel-install-logic.c:1323
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s의 버젼 %s-%s를 설치합니다"
 
-#: components/services/install/lib/eazel-install-logic.c:1326
+#: components/services/install/lib/eazel-install-logic.c:1328
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s의 버젼 %s를 설치합니다"
 
-#: components/services/install/lib/eazel-install-logic.c:1931
+#: components/services/install/lib/eazel-install-logic.c:1933
 msgid "Dependencies appear ok"
 msgstr "의존성 확인"
 
-#: components/services/install/lib/eazel-install-logic.c:1934
+#: components/services/install/lib/eazel-install-logic.c:1936
 msgid "But there are file conflicts"
 msgstr "파일 충돌이 있습니다"
 
@@ -1464,33 +1501,33 @@ msgstr "파일 충돌이 있습니다"
 msgid "Could not set URLType from config file!"
 msgstr "설정파일에서 URL형식을 설정할수 없습니다!"
 
-#: components/services/install/lib/eazel-install-object.c:595
+#: components/services/install/lib/eazel-install-object.c:597
 msgid "Transactions are not stored, could not find home dir"
 msgstr "트랜잭션이 저장되지 않았습니다, 홈디렉토리을 찾을수 없습니다"
 
-#: components/services/install/lib/eazel-install-object.c:622
+#: components/services/install/lib/eazel-install-object.c:624
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "트랜잭션이 %s에 저장되었습니다"
 
-#: components/services/install/lib/eazel-install-object.c:802
+#: components/services/install/lib/eazel-install-object.c:878
 msgid "Getting package list from remote server ...\n"
 msgstr "원격 서버에서 꾸러미 목록을 받습니다 ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:822
+#: components/services/install/lib/eazel-install-object.c:898
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "package-list.xml 을 받을수 없습니다!\n"
 
-#: components/services/install/lib/eazel-install-object.c:895
+#: components/services/install/lib/eazel-install-object.c:971
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "%s 파일을 쓸수 없습니다, 기본 로그 핸들러를 사용합니다"
 
-#: components/services/install/lib/eazel-install-object.c:1026
+#: components/services/install/lib/eazel-install-object.c:1103
 msgid "Install failed"
 msgstr "설치 실패"
 
-#: components/services/install/lib/eazel-install-object.c:1072
+#: components/services/install/lib/eazel-install-object.c:1149
 msgid "Uninstall failed"
 msgstr "제거 실패"
 
@@ -1862,7 +1899,7 @@ msgstr "%s 꾸러미를 내려받는중..."
 
 #. done!  turn progress bar into a label
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:597
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:810
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:808
 msgid "Complete!"
 msgstr "완료!"
 
@@ -1907,67 +1944,67 @@ msgstr "%s 꾸러미 내려받기 실패!"
 msgid "Installing package %d of %d"
 msgstr "%d 중 %d 꾸러미 설치중"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:781
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:779
 #, c-format
 msgid "Installing package %s ..."
 msgstr "%s 설치중 ..."
 
 #. first package is the main one.  update top info, now that we know it
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:789
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:787
 #, c-format
 msgid "Installing \"%s\""
 msgstr "\"%s\" 설치중 "
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:798
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:796
 #, c-format
 msgid "Version: %s"
 msgstr "버젼: %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:830
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:828
 #, c-format
 msgid " � %s is in the KDE menu.\n"
 msgstr "   %s는 KDE메뉴안에 있습니다.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:841
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:839
 #, c-format
 msgid " � %s is in the Gnome menu under %s.\n"
 msgstr "   %s는 %s아래있는 그놈메뉴에 있습니다.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:845
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:843
 #, c-format
 msgid " � %s is in the Gnome menu.\n"
 msgstr "   %s는 그놈메뉴안에 있습니다.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:881
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:879
 msgid "I ran into problems while installing."
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:882
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:880
 msgid "I'd like to try the following :"
 msgstr "다음을 준비중입니다 :"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:891
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:889
 msgid "Is this ok ?"
 msgstr "좋습니까?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:932
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:930
 msgid "Installation complete!"
 msgstr "설치 완료!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:934
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:932
 msgid "Installation aborted."
 msgstr "설치 중단."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:936
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1052
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:934
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1050
 msgid "This package has already been installed."
 msgstr "이 꾸러미는 이미 설치되어 있습니다."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:938
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:936
 msgid "Installation failed!"
 msgstr "설치 실패!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:953
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:951
 #, c-format
 msgid ""
 "%s\n"
@@ -1978,7 +2015,7 @@ msgstr ""
 "%s\n"
 "남아있는 RPM파일을 지울까요?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:957
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:955
 #, c-format
 msgid ""
 "%s\n"
@@ -1987,7 +2024,7 @@ msgstr ""
 "%s\n"
 "남아있는 RPM파일을 지울까요?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:977
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:975
 msgid ""
 "A core package of Nautilus has been\n"
 "updated.  You should restart Nautilus.\n"
@@ -2000,33 +2037,33 @@ msgstr ""
 "지금 다시 시작할까요?"
 
 # , c-format
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1068
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1066
 #, c-format
 msgid "Installation failed on %s"
 msgstr "%s에서 설치 실패"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1213
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1211
 msgid "Downloading remote package"
 msgstr "원격 꾸러미 내려받는중"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1215
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1213
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "\"%s\"를 내려받는중..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1217
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1215
 msgid "Downloading some package"
 msgstr "몇몇 꾸러미 내려받는중"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1261
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1259
 msgid "Contacting install server ..."
 msgstr "설치 서버 연결중 ..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1313
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1311
 msgid "Package download aborted."
 msgstr "파일 내려받기 중단"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1315
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1313
 msgid "Aborted."
 msgstr "중단되었습니다."
 
@@ -2244,7 +2281,7 @@ msgstr "현재 업데이트"
 msgid "Version %s"
 msgstr "버젼 %s"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:891
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:890
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
@@ -2253,7 +2290,7 @@ msgstr ""
 "Eazel 서버에 연결할수 없습니다. 서버를 즉시 사용할수 없거나 여러분의 컴퓨 "
 "터의 설정이 잘못되어 있을수 있습니다. 나중에 다시 시도 하십시오."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:909
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:908
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -2290,11 +2327,11 @@ msgstr ""
 msgid "Could not read time-service config from %s"
 msgstr "%s에서 시간서비스 설정을 읽을수 없습니다"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:192
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:195
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo를 초기화 할수 없습니다"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:207
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:210
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr "%s 로그 파일을 쓸수 없습니다, 기본 로그 핸들러를 사용합니다"
@@ -2359,7 +2396,7 @@ msgstr "콘크리트"
 
 #: po/tmp/browser.xml.h:8
 msgid "Danube"
-msgstr ""
+msgstr "흑해"
 
 #: po/tmp/browser.xml.h:9
 msgid "Dark Cork"
@@ -2367,7 +2404,7 @@ msgstr ""
 
 #: po/tmp/browser.xml.h:10
 msgid "Deep Teal"
-msgstr ""
+msgstr "진암청색"
 
 #: po/tmp/browser.xml.h:11
 msgid "Drag a color to an object to change it to that color"
@@ -2395,7 +2432,7 @@ msgstr "질투"
 
 #: po/tmp/browser.xml.h:17
 msgid "Fire Engine"
-msgstr ""
+msgstr "불타는 엔진"
 
 #: po/tmp/browser.xml.h:18
 msgid "Granite"
@@ -2439,7 +2476,7 @@ msgstr "옅은 파랑"
 
 #: po/tmp/browser.xml.h:28
 msgid "Patterns"
-msgstr ""
+msgstr "무늬"
 
 #: po/tmp/browser.xml.h:29
 msgid "Ruby"
@@ -2490,8 +2527,8 @@ msgstr "김프"
 msgid "Desktop"
 msgstr "바탕화면"
 
-#: libnautilus-extensions/nautilus-file.c:4666
-#: libnautilus-extensions/nautilus-trash-directory.c:261
+#: libnautilus-extensions/nautilus-file.c:4700
+#: libnautilus-extensions/nautilus-trash-directory.c:260
 #: po/tmp/desktop.xml.h:2 src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
 msgstr "휴지통"
@@ -2616,8 +2653,12 @@ msgstr ""
 msgid "Myplay"
 msgstr ""
 
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
 #: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
-#: src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:618
 msgid "Nautilus"
 msgstr "노틸러스"
 
@@ -2675,23 +2716,23 @@ msgstr ""
 
 #: po/tmp/ardmore.xml.h:1
 msgid "This theme uses photo-realistic folders."
-msgstr ""
+msgstr "이 테마는 현실감 있는 사진 폴더를 사용합니다."
 
 #: po/tmp/arlo.xml.h:1
 msgid "This theme is based on the teal in the Eazel logo."
-msgstr ""
+msgstr "이 테마는 Eazel로고에 암청색을 기본으로 합니다."
 
 #: po/tmp/default.xml.h:1
 msgid "This simple theme uses the standard GNOME icons."
-msgstr ""
+msgstr "이 간단한 테마는 기본 그놈 아이콘을 사용합니다."
 
 #: po/tmp/gnome.xml.h:1
 msgid "This theme uses the classic GNOME icons."
-msgstr ""
+msgstr "이 테마는 고전 그놈 아이콘을 사용합니다."
 
 #: po/tmp/vector.xml.h:1
 msgid "This experimental theme uses vector-based icons."
-msgstr ""
+msgstr "이 실험적인 테마는 벡터기반 아이콘을 사용합니다."
 
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:343
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
@@ -3024,7 +3065,7 @@ msgstr "모두 바꾸기"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1016
-#: libnautilus-extensions/nautilus-file.c:3718
+#: libnautilus-extensions/nautilus-file.c:3750
 #, c-format
 msgid "link to %s"
 msgstr "%s 로 링크"
@@ -3550,100 +3591,100 @@ msgstr ""
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2229
+#: libnautilus-extensions/nautilus-file.c:2261
 msgid "today at %-I:%M %p"
 msgstr "오늘 %p %-I:%M "
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2234
+#: libnautilus-extensions/nautilus-file.c:2266
 msgid "yesterday at %-I:%M %p"
 msgstr "어제 %p %-I:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2239
+#: libnautilus-extensions/nautilus-file.c:2271
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%y/%-m/%-d %A %p %-I:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2244
+#: libnautilus-extensions/nautilus-file.c:2276
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%y/%-m/%-d %p %-I:%M"
 
-#: libnautilus-extensions/nautilus-file.c:3313
+#: libnautilus-extensions/nautilus-file.c:3345
 msgid "0 items"
 msgstr "0 항목"
 
-#: libnautilus-extensions/nautilus-file.c:3313
+#: libnautilus-extensions/nautilus-file.c:3345
 msgid "0 folders"
 msgstr "0 폴더"
 
-#: libnautilus-extensions/nautilus-file.c:3314
+#: libnautilus-extensions/nautilus-file.c:3346
 msgid "0 files"
 msgstr "0 파일"
 
-#: libnautilus-extensions/nautilus-file.c:3318
+#: libnautilus-extensions/nautilus-file.c:3350
 msgid "1 item"
 msgstr "1 항목"
 
-#: libnautilus-extensions/nautilus-file.c:3318
+#: libnautilus-extensions/nautilus-file.c:3350
 msgid "1 folder"
 msgstr "1 폴더"
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3351
 msgid "1 file"
 msgstr "1 파일"
 
-#: libnautilus-extensions/nautilus-file.c:3322
+#: libnautilus-extensions/nautilus-file.c:3354
 #, c-format
 msgid "%u items"
 msgstr "%u 항목"
 
-#: libnautilus-extensions/nautilus-file.c:3322
+#: libnautilus-extensions/nautilus-file.c:3354
 #, c-format
 msgid "%u folders"
 msgstr "%u 폴더"
 
-#: libnautilus-extensions/nautilus-file.c:3323
+#: libnautilus-extensions/nautilus-file.c:3355
 #, c-format
 msgid "%u files"
 msgstr "%u 파일"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3623
-#: libnautilus-extensions/nautilus-file.c:3637
+#: libnautilus-extensions/nautilus-file.c:3655
+#: libnautilus-extensions/nautilus-file.c:3669
 msgid "? items"
 msgstr "? 항목"
 
-#: libnautilus-extensions/nautilus-file.c:3641
+#: libnautilus-extensions/nautilus-file.c:3673
 msgid "unknown type"
 msgstr "알수없는 형태"
 
-#: libnautilus-extensions/nautilus-file.c:3643
+#: libnautilus-extensions/nautilus-file.c:3675
 msgid "unknown MIME type"
 msgstr "알수없는 MIME 형태"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3648
+#: libnautilus-extensions/nautilus-file.c:3680
 msgid "unknown"
 msgstr "알수없음"
 
-#: libnautilus-extensions/nautilus-file.c:3683
+#: libnautilus-extensions/nautilus-file.c:3715
 msgid "program"
 msgstr "프로그램"
 
-#: libnautilus-extensions/nautilus-file.c:3712
+#: libnautilus-extensions/nautilus-file.c:3744
 msgid "link"
 msgstr "링크"
 
-#: libnautilus-extensions/nautilus-file.c:3732
+#: libnautilus-extensions/nautilus-file.c:3764
 msgid "link (broken)"
 msgstr "링크 (깨어짐)"
 
@@ -3654,6 +3695,23 @@ msgstr "fixed,-*-r-*"
 #: libnautilus-extensions/nautilus-font-picker.c:131
 msgid "Font"
 msgstr "글꼴"
+
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields -- usually just omitting the AM part is all that's
+#. * needed.
+#.
+#: libnautilus-extensions/nautilus-glib-extensions.c:1176
+msgid "01/01/00, 01:00 AM"
+msgstr "00/01/01, 오전 01:00"
+
+#: libnautilus-extensions/nautilus-glib-extensions.c:1177
+msgid "1/1/00, 1:00 AM"
+msgstr "00/1/1, 오전 1:00"
+
+#: libnautilus-extensions/nautilus-glib-extensions.c:1178
+msgid " 1/ 1/00,  1:00 AM"
+msgstr "00/ 1/ 1, 오전  1:00"
 
 #. Constants
 #: libnautilus-extensions/nautilus-global-preferences.c:44
@@ -3936,7 +3994,7 @@ msgstr "설정 창의 특수표시 보기"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:1012
 msgid "Show only folders in tree sidebar panel"
-msgstr ""
+msgstr "트리 가장자리 패널에 폴더만 보이기"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:1018
 msgid "Can add Content"
@@ -3947,7 +4005,7 @@ msgid "Don't include the built-in bookmarks"
 msgstr "메뉴의 내장 책갈피에 포함하지 않음"
 
 #. The list of characters that cause line breaks can be localized.
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:66
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:67
 #: libnautilus-extensions/nautilus-label.c:180
 msgid " -_,;.?/&"
 msgstr ""
@@ -3991,7 +4049,7 @@ msgid "Switch to Manual Layout?"
 msgstr "수동 배치로 전환 하시겠습니까?"
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:739
-#: src/nautilus-window-menus.c:533
+#: src/nautilus-window-menus.c:536
 msgid "Switch"
 msgstr "전환"
 
@@ -4006,24 +4064,24 @@ msgstr ""
 msgid "medium"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1550
+#: libnautilus-extensions/nautilus-icon-text-item.c:1566
 #: po/tmp/nautilus-icon-view-ui.xml.h:14
 msgid "Rename"
 msgstr "이름 바꿈"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1551
+#: libnautilus-extensions/nautilus-icon-text-item.c:1567
 msgid "Undo Typing"
 msgstr "입력 취소"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1552
+#: libnautilus-extensions/nautilus-icon-text-item.c:1568
 msgid "Restore the old name"
 msgstr "이전 이름 저장"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1553
+#: libnautilus-extensions/nautilus-icon-text-item.c:1569
 msgid "Redo Typing"
 msgstr "입력 되돌림"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1554
+#: libnautilus-extensions/nautilus-icon-text-item.c:1570
 msgid "Restore the changed name"
 msgstr "변경한 이름 저장"
 
@@ -4032,7 +4090,7 @@ msgid "Prefs Box"
 msgstr "설정 상자"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:865 src/nautilus-window.c:1101
+#: src/nautilus-window.c:820 src/nautilus-window.c:1056
 #, c-format
 msgid "View as %s"
 msgstr "%s 로 보기"
@@ -4166,7 +4224,7 @@ msgid "Choose"
 msgstr "선택"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1231
-#: src/nautilus-property-browser.c:366
+#: src/nautilus-property-browser.c:367
 msgid "Done"
 msgstr "완료"
 
@@ -4290,7 +4348,7 @@ msgstr "음악"
 #. music]"
 #: libnautilus-extensions/nautilus-search-uri.c:283
 #: libnautilus-extensions/nautilus-search-uri.c:290
-#, fuzzy, c-format
+#, c-format
 msgid "that are %s"
 msgstr "%s 인"
 
@@ -4492,9 +4550,8 @@ msgid "Items %s %s"
 msgstr "항목 %s %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:825
-#, fuzzy
 msgid "Items containing \"stuff\" in their names"
-msgstr " (0 항목 포함)"
+msgstr ""
 
 #: libnautilus-extensions/nautilus-search-uri.c:828
 msgid "Items containing \"stuff\" in their names and that are regular files"
@@ -4684,78 +4741,84 @@ msgstr "자르기(_C)"
 msgid "_Paste Text"
 msgstr "붙이기(_P)"
 
-#: src/file-manager/fm-desktop-icon-view.c:618
-#: src/file-manager/fm-desktop-icon-view.c:623
-msgid "Link to"
-msgstr "링크"
+#: src/file-manager/fm-desktop-icon-view.c:612
+#: src/file-manager/fm-desktop-icon-view.c:617
+#, c-format
+msgid "Link to %s"
+msgstr "%s 로 링크"
 
-#: src/file-manager/fm-desktop-icon-view.c:620
+#: src/file-manager/fm-desktop-icon-view.c:614
 msgid "Link to Unknown"
 msgstr "알수없는곳으로 링크"
 
-#: src/file-manager/fm-desktop-icon-view.c:1111
+#: src/file-manager/fm-desktop-icon-view.c:713
+#, c-format
+msgid "%s's Home"
+msgstr "%s의 홈"
+
+#: src/file-manager/fm-desktop-icon-view.c:1001
 msgid "Empty Trash..."
 msgstr "휴지통 비우기..."
 
 #: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
 #: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1113
+#: src/file-manager/fm-desktop-icon-view.c:1003
 msgid "Empty Trash"
 msgstr "휴지통 비우기"
 
-#: src/file-manager/fm-directory-view.c:440
+#: src/file-manager/fm-directory-view.c:441
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "이것은 %d개의 나뉘어진 창에서 열릴것입니다. 정말로 이것을 열겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:442
+#: src/file-manager/fm-directory-view.c:443
 #, c-format
 msgid "Open %d Windows?"
 msgstr "%d개의 창을 열기"
 
-#: src/file-manager/fm-directory-view.c:1213
+#: src/file-manager/fm-directory-view.c:1199
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1215
+#: src/file-manager/fm-directory-view.c:1201
 msgid "1 folder selected"
 msgstr "1 폴더 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1218
+#: src/file-manager/fm-directory-view.c:1204
 #, c-format
 msgid "%d folders selected"
 msgstr "%d 폴더 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1224
+#: src/file-manager/fm-directory-view.c:1210
 msgid " (containing 0 items)"
 msgstr " (0 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1226
+#: src/file-manager/fm-directory-view.c:1212
 msgid " (containing 1 item)"
 msgstr " (1 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1228
+#: src/file-manager/fm-directory-view.c:1214
 #, c-format
 msgid " (containing %d items)"
 msgstr " (%d 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1239
+#: src/file-manager/fm-directory-view.c:1225
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1243
+#: src/file-manager/fm-directory-view.c:1229
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d 항목 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1250
+#: src/file-manager/fm-directory-view.c:1236
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 다른 항목 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1253
+#: src/file-manager/fm-directory-view.c:1239
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d 다른 항목 선택됨 (%s)"
@@ -4767,36 +4830,29 @@ msgstr "%d 다른 항목 선택됨 (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1282
+#: src/file-manager/fm-directory-view.c:1268
 #, c-format
 msgid "%s%s, %s"
 msgstr ""
 
-#. FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing.
-#: src/file-manager/fm-directory-view.c:1394
+#: src/file-manager/fm-directory-view.c:1385
+#, c-format
 msgid ""
-"We're sorry, but the folder you're viewing has more files than we're able to "
-"display. As a result, we are only able to show you the first 4000 files it "
-"contains.\n"
-"This is a temporary limitation in this Preview Release of Nautilus, and will "
-"not be present in the final version."
+"The folder \"%s\" contains more files than Nautilus can handle. Only the "
+"first %d files will be displayed."
 msgstr ""
-"여러분이 볼려는 디렉토리가 표시할수 있는 것보다 많은 파일을 가지고 "
-"있습니다.4000개의 파일까지만 볼수 있습니다.\n"
-"이것은 노틸러스의 미리보기 배포판의 임시적인 제한입니다. 그리고 마지막 "
-"정식판에서는 나타나지 않을것입니다."
 
-#: src/file-manager/fm-directory-view.c:1400
-msgid "Too many Files"
+#: src/file-manager/fm-directory-view.c:1393
+msgid "Too Many Files"
 msgstr "파일이 너무 많음"
 
-#: src/file-manager/fm-directory-view.c:2567
+#: src/file-manager/fm-directory-view.c:2552
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr "\"%s\" 는 휴지통으로 이동할수 없습니다. 지금 바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:2572
+#: src/file-manager/fm-directory-view.c:2557
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -4804,7 +4860,7 @@ msgid ""
 msgstr ""
 "%d개의 선택된 항목은 휴지통으로 이동할수 없습니다. 지금 바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:2576
+#: src/file-manager/fm-directory-view.c:2561
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -4813,100 +4869,100 @@ msgstr ""
 "%d개의 선택된 항목은 휴지통으로 이동할수 없습니다. 지금 바로 그 %d개의 "
 "항목을지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:2584
+#: src/file-manager/fm-directory-view.c:2569
 msgid "Delete Immediately?"
 msgstr "즉시 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:2585
-#: src/file-manager/fm-directory-view.c:2626
+#: src/file-manager/fm-directory-view.c:2570
+#: src/file-manager/fm-directory-view.c:2611
 msgid "Delete"
 msgstr "지움"
 
-#: src/file-manager/fm-directory-view.c:2615
+#: src/file-manager/fm-directory-view.c:2600
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "휴지통에서 \"%s\"를 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:2619
+#: src/file-manager/fm-directory-view.c:2604
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr "휴지통에서 %d의 선택한 항목을 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:2625
+#: src/file-manager/fm-directory-view.c:2610
 msgid "Delete From Trash?"
 msgstr "휴지통에서 지우겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:2898
-#: src/file-manager/fm-directory-view.c:2939
+#: src/file-manager/fm-directory-view.c:2883
+#: src/file-manager/fm-directory-view.c:2924
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "선택한 항목을 열기 위해 \"%s\" 사용"
 
-#: src/file-manager/fm-directory-view.c:2937
+#: src/file-manager/fm-directory-view.c:2922
 #, c-format
 msgid "%s Viewer"
 msgstr "%s 보기 프로그램"
 
-#: src/file-manager/fm-directory-view.c:3125
+#: src/file-manager/fm-directory-view.c:3110
 msgid "Open in _New Window"
 msgstr "새창으로 열기(_N)"
 
-#: src/file-manager/fm-directory-view.c:3127
+#: src/file-manager/fm-directory-view.c:3112
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "%d개의 항목을 새창으로 열기"
 
-#: src/file-manager/fm-directory-view.c:3153
+#: src/file-manager/fm-directory-view.c:3138
 msgid "Delete all selected items permanently"
 msgstr "선택한 항목을 모두 지웁니다"
 
-#: src/file-manager/fm-directory-view.c:3158
+#: src/file-manager/fm-directory-view.c:3143
 msgid "Delete from _Trash..."
 msgstr "휴지통에서 지우기(_T)..."
 
-#: src/file-manager/fm-directory-view.c:3159
+#: src/file-manager/fm-directory-view.c:3144
 msgid "Delete from _Trash"
 msgstr "휴지통에서 지우기(_T)"
 
-#: src/file-manager/fm-directory-view.c:3163
+#: src/file-manager/fm-directory-view.c:3148
 msgid "Move all selected items to the Trash"
 msgstr "선택한 항목을 모두 휴지통으로 이동합니다"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:14
-#: src/file-manager/fm-directory-view.c:3167
+#: src/file-manager/fm-directory-view.c:3152
 msgid "Move to _Trash"
 msgstr "휴지통으로 이동(_T)"
 
-#: src/file-manager/fm-directory-view.c:3196
+#: src/file-manager/fm-directory-view.c:3181
 msgid "Create _Links"
 msgstr "링크 생성"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:5
-#: src/file-manager/fm-directory-view.c:3197
+#: src/file-manager/fm-directory-view.c:3182
 msgid "Create _Link"
 msgstr "링크 생성"
 
-#: src/file-manager/fm-directory-view.c:3215
+#: src/file-manager/fm-directory-view.c:3200
 msgid "_Empty Trash..."
 msgstr "휴지통 비우기(_E)..."
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:3216
+#: src/file-manager/fm-directory-view.c:3201
 msgid "_Empty Trash"
 msgstr "휴지통 비우기(_E)"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:26
-#: src/file-manager/fm-directory-view.c:3227
+#: src/file-manager/fm-directory-view.c:3212
 msgid "R_emove Custom Images"
 msgstr "설정한 이미지 제거(_e)"
 
-#: src/file-manager/fm-directory-view.c:3228
+#: src/file-manager/fm-directory-view.c:3213
 msgid "R_emove Custom Image"
 msgstr "설정한 이미지 제거(_e)"
 
-#: src/file-manager/fm-directory-view.c:3367
+#: src/file-manager/fm-directory-view.c:3352
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -4914,7 +4970,7 @@ msgstr ""
 "이 링크는 가르키는 파일이 없기 때문에 사용할수 없습니다. 이 링크를 휴지통에 "
 "버리겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3370
+#: src/file-manager/fm-directory-view.c:3355
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4923,30 +4979,30 @@ msgstr ""
 "이 링크는 가르키는 파일 \"%s\"이 없기 때문에 사용할수 없습니다. 이 링크를 "
 "휴지통에 버리겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3376
+#: src/file-manager/fm-directory-view.c:3361
 msgid "Broken Link"
 msgstr "깨진 링크"
 
-#: src/file-manager/fm-directory-view.c:3377
+#: src/file-manager/fm-directory-view.c:3362
 msgid "Throw Away"
 msgstr "버림"
 
-#: src/file-manager/fm-directory-view.c:3433
+#: src/file-manager/fm-directory-view.c:3418
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr "보안문제 때문에 원격사이트에서 명령을 실행할수 없습니다"
 
-#: src/file-manager/fm-directory-view.c:3434
+#: src/file-manager/fm-directory-view.c:3419
 msgid "Can't execute remote links"
 msgstr "원격 파일 %s 실행할수 없음"
 
-#: src/file-manager/fm-directory-view.c:3554
+#: src/file-manager/fm-directory-view.c:3539
 #, c-format
 msgid "Opening \"%s\""
 msgstr "\"%s\"를 여는중"
 
-#: src/file-manager/fm-directory-view.c:3560
+#: src/file-manager/fm-directory-view.c:3545
 msgid "Cancel Open?"
 msgstr "열기를 취소할까요?"
 
@@ -5139,7 +5195,7 @@ msgstr "원래 크기의 아이콘으로 저장(_R)"
 msgid "_Restore Icon's Original Size"
 msgstr "원래 크기의 아이콘으로 저장(_R)"
 
-#: src/file-manager/fm-icon-view.c:1422
+#: src/file-manager/fm-icon-view.c:1426
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\"을 가르킴"
@@ -5333,8 +5389,8 @@ msgid "Creating Properties window"
 msgstr "속성창 생성"
 
 #: src/file-manager/fm-properties-window.c:2173
-#: src/nautilus-property-browser.c:996 src/nautilus-property-browser.c:1134
-#: src/nautilus-property-browser.c:1402
+#: src/nautilus-property-browser.c:995 src/nautilus-property-browser.c:1133
+#: src/nautilus-property-browser.c:1401
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s' 는 사용할수 있는 그림 파일이 아닙니다!"
@@ -5884,7 +5940,7 @@ msgstr "책갈피"
 msgid "Location"
 msgstr "위치"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:780
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:787
 msgid "Remove"
 msgstr "지우기"
 
@@ -6055,7 +6111,7 @@ msgstr "노틸러스 업데이트를 받는중..."
 
 #: src/nautilus-first-time-druid.c:765
 msgid "Nautilus First Time Setup"
-msgstr "노틸러스 초기 시간 설정"
+msgstr "노틸러스 처음 설정"
 
 #. make the title label
 #: src/nautilus-first-time-druid.c:795
@@ -6068,9 +6124,9 @@ msgid ""
 "Nautilus, we'd like to ask you a few questions\n"
 "to help personalize it for your use."
 msgstr ""
-"노틸러스를 처음 실행시켰다면 이화면을 볼수 있을것\n"
-"입니다, 여러분이 사용하기 편하게하기 위해 몇가지\n"
-"질문을 할것 입니다."
+"노틸러스를 처음 실행시켰다면 이화면을 볼수\n"
+"있을것입니다, 여러분이 사용하기 편하게하기\n"
+"위해 몇가지 질문을 할것 입니다."
 
 #: src/nautilus-first-time-druid.c:808
 msgid "Press the next button to continue."
@@ -6151,28 +6207,28 @@ msgid "View in Multiple Windows?"
 msgstr "다중 창으로 보기?"
 
 #: src/nautilus-main.c:141
-msgid "Perform high-speed self-check tests."
+msgid "Perform a quick set of self-check tests."
 msgstr "고속 자기 검사 수행"
 
 #: src/nautilus-main.c:143
-msgid "Quit Nautilus."
-msgstr "노틸러스 종료."
-
-#: src/nautilus-main.c:144
-msgid "Restart Nautilus."
-msgstr "노틸러스 재시작."
-
-#: src/nautilus-main.c:145
-msgid "Only create Nautilus windows for explicity specified URIs."
-msgstr "정확하게 지정된 URI에 대해서만 노틸러스 창을 만듭니다."
-
-#: src/nautilus-main.c:146
 msgid "Create the initial window with the given geometry."
 msgstr "초기화 창을 주어진 위치에서 만듭니다."
 
-#: src/nautilus-main.c:146
+#: src/nautilus-main.c:143
 msgid "GEOMETRY"
 msgstr "위치"
+
+#: src/nautilus-main.c:144
+msgid "Only create Nautilus windows for explicitly specified URIs."
+msgstr "정확하게 지정된 URI에 대해서만 노틸러스 창을 만듭니다."
+
+#: src/nautilus-main.c:145
+msgid "Quit Nautilus."
+msgstr "노틸러스 종료."
+
+#: src/nautilus-main.c:146
+msgid "Restart Nautilus."
+msgstr "노틸러스 재시작."
 
 #: src/nautilus-main.c:197
 msgid "nautilus: --check cannot be used with URIs.\n"
@@ -6195,104 +6251,104 @@ msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "노틸러스: --geometry는 하나이상의  URI와 같이 사용할수 없습니다.\n"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:258
+#: src/nautilus-property-browser.c:259
 msgid "Backgrounds and Emblems"
 msgstr "배경과 꼬리표"
 
 #. add the title label
-#: src/nautilus-property-browser.c:329 src/nautilus-property-browser.c:2145
+#: src/nautilus-property-browser.c:330 src/nautilus-property-browser.c:2148
 msgid "Select A Category:"
 msgstr "카테고리 선택:"
 
-#: src/nautilus-property-browser.c:376
+#: src/nautilus-property-browser.c:377
 msgid "Add new..."
 msgstr "추가..."
 
-#: src/nautilus-property-browser.c:390
+#: src/nautilus-property-browser.c:391
 msgid "Remove..."
 msgstr "지우기..."
 
-#: src/nautilus-property-browser.c:893
+#: src/nautilus-property-browser.c:897
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "반복 무뉘 %s는 지울수 없습니다."
 
-#: src/nautilus-property-browser.c:894 src/nautilus-property-browser.c:923
+#: src/nautilus-property-browser.c:898 src/nautilus-property-browser.c:927
 msgid "Couldn't delete pattern"
 msgstr "반복무늬를 지울수 없습니다"
 
-#: src/nautilus-property-browser.c:922
+#: src/nautilus-property-browser.c:926
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "꼬리표 %s를 지울수 없습니다."
 
-#: src/nautilus-property-browser.c:1023
+#: src/nautilus-property-browser.c:1022
 msgid "Create a New Emblem:"
 msgstr "새 표시를 만듭니다"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:1028
+#: src/nautilus-property-browser.c:1027
 msgid "Keyword:"
 msgstr "키워드:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1044
 msgid "Select an image file for the new emblem:"
 msgstr "새 꼬리표로 사용할 그림 파일 선택:"
 
-#: src/nautilus-property-browser.c:1073
+#: src/nautilus-property-browser.c:1072
 msgid "Create a New Color:"
 msgstr "새 색상을 만듭니다"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1078
+#: src/nautilus-property-browser.c:1077
 msgid "Color name:"
 msgstr "색상 이름:"
 
-#: src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1088
 msgid "Color value:"
 msgstr "색상 값:"
 
-#: src/nautilus-property-browser.c:1163
+#: src/nautilus-property-browser.c:1162
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "반복무늬 %s는 설치할수 없습니다."
 
-#: src/nautilus-property-browser.c:1164
+#: src/nautilus-property-browser.c:1163
 msgid "Couldn't install pattern"
 msgstr "반복무늬를 설치할수 없습니다"
 
-#: src/nautilus-property-browser.c:1189
+#: src/nautilus-property-browser.c:1188
 msgid "Select an image file to add as a pattern:"
 msgstr "무늬로 사용할 그림파일 선택:"
 
-#: src/nautilus-property-browser.c:1261
+#: src/nautilus-property-browser.c:1260
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "새 색상에 대해이름을 지정하여야 합니다."
 
-#: src/nautilus-property-browser.c:1262
+#: src/nautilus-property-browser.c:1261
 msgid "Couldn't install color"
 msgstr "색상를 설치할수 없습니다"
 
-#: src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1318
 msgid "Select a color to add:"
 msgstr "추가할 색상 선택:"
 
-#: src/nautilus-property-browser.c:1420
+#: src/nautilus-property-browser.c:1419
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "꼬리표에 사용될 키워드를 지정하여야 합니다."
 
-#: src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
-#: src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
+#: src/nautilus-property-browser.c:1420 src/nautilus-property-browser.c:1423
+#: src/nautilus-property-browser.c:1427 src/nautilus-property-browser.c:1456
 msgid "Couldn't install emblem"
 msgstr "꼬리표를 설치할수 없습니다"
 
-#: src/nautilus-property-browser.c:1423
+#: src/nautilus-property-browser.c:1422
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr "꼬리표 키워드는 문자와 공백, 숫자만 포함할수 있습니다."
 
-#: src/nautilus-property-browser.c:1426
+#: src/nautilus-property-browser.c:1425
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6300,60 +6356,60 @@ msgid ""
 msgstr ""
 "\"%s\"라는 이름은 이미 사용되고 있는 키워드 입니다.다른 이름을 사용하십시오."
 
-#: src/nautilus-property-browser.c:1456
+#: src/nautilus-property-browser.c:1455
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "%s 그림은 꼬리표로 설치할수 없습니다."
 
-#: src/nautilus-property-browser.c:2153 src/nautilus-theme-selector.c:482
+#: src/nautilus-property-browser.c:2156 src/nautilus-theme-selector.c:482
 msgid "Cancel Remove"
 msgstr "지우기 취소"
 
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2160
 msgid "Add a new pattern"
 msgstr "새 무늬 추가"
 
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2163
 msgid "Add a new color"
 msgstr "새 색상 추가"
 
-#: src/nautilus-property-browser.c:2163
+#: src/nautilus-property-browser.c:2166
 msgid "Add a new emblem"
 msgstr "새 꼬리표 추가"
 
-#: src/nautilus-property-browser.c:2186
+#: src/nautilus-property-browser.c:2189
 msgid "Click on a pattern to remove it"
 msgstr "무늬를 지울려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2189
+#: src/nautilus-property-browser.c:2192
 msgid "Click on a color to remove it"
 msgstr "그것을 지울려면 색상을 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2192
+#: src/nautilus-property-browser.c:2195
 msgid "Click on an emblem to remove it"
 msgstr "꼬리표를 지울려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2201
+#: src/nautilus-property-browser.c:2204
 msgid "Patterns:"
 msgstr "무늬:"
 
-#: src/nautilus-property-browser.c:2204
+#: src/nautilus-property-browser.c:2207
 msgid "Colors:"
 msgstr "색상:"
 
-#: src/nautilus-property-browser.c:2207
+#: src/nautilus-property-browser.c:2210
 msgid "Emblems:"
 msgstr "꼬리표:"
 
-#: src/nautilus-property-browser.c:2225
+#: src/nautilus-property-browser.c:2228
 msgid "Remove a pattern"
 msgstr "무늬 제거"
 
-#: src/nautilus-property-browser.c:2228
+#: src/nautilus-property-browser.c:2231
 msgid "Remove a color"
 msgstr "색상 제거"
 
-#: src/nautilus-property-browser.c:2231
+#: src/nautilus-property-browser.c:2234
 msgid "Remove an emblem"
 msgstr "꼬리표 지우기"
 
@@ -6618,7 +6674,7 @@ msgstr "노틸러스의 온라인 도움말을 표시합니다"
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr ""
+msgstr "겉모양을 꾸밀수 있는 무늬 및 생상, 그리고 꼬리표등을 표시합니다"
 
 #: po/tmp/nautilus-shell-ui.xml.h:22
 msgid "Display the latest contents of the current location"
@@ -6668,19 +6724,19 @@ msgstr "다음 방문한 위치로 갑니다"
 msgid "Go to the previous visited location"
 msgstr "이전에 방문한 위치로 갑니다"
 
-#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:434
+#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:437
 msgid "Hide Location Bar"
 msgstr "위치막대 숨김"
 
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:422
+#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:425
 msgid "Hide Sidebar"
 msgstr "가장자리막대 숨김"
 
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:416
+#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:419
 msgid "Hide Status Bar"
 msgstr "상태막대 숨김"
 
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:428
+#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:431
 msgid "Hide Tool Bar"
 msgstr "도구막대 숨김"
 
@@ -6809,7 +6865,7 @@ msgstr "뒤로(_B)"
 
 #: po/tmp/nautilus-shell-ui.xml.h:71
 msgid "_Backgrounds and Emblems..."
-msgstr ""
+msgstr "배경과 꼬리표(_B)..."
 
 #: po/tmp/nautilus-shell-ui.xml.h:72
 msgid "_Bookmarks"
@@ -6831,7 +6887,7 @@ msgstr "책갈피 편집"
 msgid "_Feedback..."
 msgstr "피드백(_F)..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1312
+#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1318
 msgid "_Find"
 msgstr "찾기(_F)"
 
@@ -7208,38 +7264,38 @@ msgstr "위치를 표시할수 없습니다"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:307
+#: src/nautilus-window-menus.c:310
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
 msgstr "방문 기록을 지우시겠습니까? 그렇다면 되풀이 하지 않기를 빕니다"
 
-#: src/nautilus-window-menus.c:310
+#: src/nautilus-window-menus.c:313
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr "정말로 노틸러스로 방문하였던 위치들을 지우시겠습니까?"
 
-#: src/nautilus-window-menus.c:315
+#: src/nautilus-window-menus.c:318
 msgid "Forget History?"
 msgstr "기록을 지울까요?"
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:319
 msgid "Forget"
 msgstr "지움"
 
-#: src/nautilus-window-menus.c:417
+#: src/nautilus-window-menus.c:420
 msgid "Show Status Bar"
 msgstr "상태막대 보임"
 
-#: src/nautilus-window-menus.c:423
+#: src/nautilus-window-menus.c:426
 msgid "Show Sidebar"
 msgstr "가장자리막대 보임"
 
-#: src/nautilus-window-menus.c:429
+#: src/nautilus-window-menus.c:432
 msgid "Show Tool Bar"
 msgstr "도구막대 보임"
 
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:438
 msgid "Show Location Bar"
 msgstr "위치막대 보임"
 
@@ -7248,7 +7304,7 @@ msgstr "위치막대 보임"
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:518
+#: src/nautilus-window-menus.c:521
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -7261,7 +7317,7 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:530
+#: src/nautilus-window-menus.c:533
 #, c-format
 msgid "Switch to %s Level?"
 msgstr "%s 수준으로 전환하시겠습니까?"
@@ -7272,11 +7328,11 @@ msgstr "%s 수준으로 전환하시겠습니까?"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:619
-msgid "(C) 1999, 2000 Eazel, Inc."
+#: src/nautilus-window-menus.c:626
+msgid "Copyright � 1999-2001 Eazel, Inc."
 msgstr ""
 
-#: src/nautilus-window-menus.c:621
+#: src/nautilus-window-menus.c:628
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -7288,7 +7344,7 @@ msgstr ""
 "관리하게 해주는 그놈의 \n"
 "그래픽 쉘입니다."
 
-#: src/nautilus-window-menus.c:775
+#: src/nautilus-window-menus.c:782
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7297,24 +7353,24 @@ msgstr ""
 "\"%s\"위치가 존재하지 않습니다. 목록에서 이 위치를 가진 책갈피를 "
 "제거하시겠습니까?"
 
-#: src/nautilus-window-menus.c:779
+#: src/nautilus-window-menus.c:786
 msgid "Bookmark for Nonexistent Location"
 msgstr "존재하지 않는 위치의 책갈피"
 
-#: src/nautilus-window-menus.c:793
+#: src/nautilus-window-menus.c:800
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "\"%s\"위치가 더이상 존재하지 않습니다."
 
-#: src/nautilus-window-menus.c:794
+#: src/nautilus-window-menus.c:801
 msgid "Go to Nonexistent Location"
 msgstr "존재하지 않는 위치로 가기"
 
-#: src/nautilus-window-menus.c:861
+#: src/nautilus-window-menus.c:868
 msgid "Go to the location specified by this bookmark"
 msgstr "이 책갈피에 지정된 위치로 이동합니다"
 
-#: src/nautilus-window-menus.c:1311
+#: src/nautilus-window-menus.c:1317
 msgid "_Browse"
 msgstr "찾아보기(_B)"
 
@@ -7322,7 +7378,7 @@ msgstr "찾아보기(_B)"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1503
+#: src/nautilus-window-menus.c:1509
 #, c-format
 msgid "Edit %s Settings"
 msgstr "%s 설정 편집"
@@ -7332,7 +7388,7 @@ msgstr "%s 설정 편집"
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1525
+#: src/nautilus-window-menus.c:1531
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "%s 설정 편집..."
@@ -7346,11 +7402,11 @@ msgid "Forward"
 msgstr "앞으로"
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1123
+#: src/nautilus-window.c:1078
 msgid "View as Other..."
 msgstr "다른 프로그램으로 보기"
 
-#: src/nautilus-window.c:1483
+#: src/nautilus-window.c:1438
 msgid "Close"
 msgstr "닫기"
 
