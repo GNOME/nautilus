@@ -332,7 +332,7 @@ nautilus_about_draw_info (
 	int xpos, ypos, total_height;
 	int index;
 
-	/* FIXME: Hard-coded font OK here? */
+	/* FIXME bugzilla.eazel.com 5056: Hard-coded font OK here? */
 	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
 	bold_font  = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
 

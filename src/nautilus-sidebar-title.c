@@ -268,7 +268,7 @@ nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title)
 		g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NULL);
 		return background;
 	} else {
-		/* FIXME 
+		/* FIXME bugzilla.eazel.com 5042
 		 * It would be preferable to assert widget != NULL and not have
 		 * this else case. Doing this would require us to be carful when
 		 * nautilus_sidebar_title_select_text_color is called - which would
@@ -361,7 +361,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	GdkPixbuf *pixbuf;
 	char *uri, *icon_path;
 	
-	/* FIXME: currently, components can't specify their own sidebar icon.  This
+	/* FIXME bugzilla.eazel.com 5043: currently, components can't specify their own sidebar icon.  This
 	  needs to be added to the framework, but for now we special-case some
 	  important ones here */
 	

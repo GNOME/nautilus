@@ -178,7 +178,7 @@ window_set_title_with_timestamp (NautilusWindow *window, const char *title)
 	timestamp = nautilus_get_build_timestamp ();
 	
 	if (timestamp != NULL) {
-		/* FIXME: The text Preview Release is hardcoded here.
+		/* FIXME bugzilla.eazel.com 5037: The text Preview Release is hardcoded here.
 		 * Are all builds with timestamps really best described
 		 * as "preview release"?.
 		 */
@@ -433,7 +433,7 @@ viewed_file_changed_callback (NautilusFile *file,
                  */
                 cancel_location_change (window);
 
-                /* FIXME: Is closing the window really the right thing to do
+                /* FIXME bugzilla.eazel.com 5038: Is closing the window really the right thing to do
                  * for all cases?
                  */
 		nautilus_window_close (window);
@@ -728,7 +728,7 @@ load_content_view (NautilusWindow *window,
                 connect_view (window, new_view);
 
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
-                        /* FIXME: We need a way to report the specific
+                        /* FIXME bugzilla.eazel.com 5039: We need a way to report the specific
                            error that happens in this case - adapter
                            factory not found, component failed to
                            load, etc. */
@@ -1023,7 +1023,7 @@ change_state (NautilusWindow *window,
                 g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
                 window->view_bombed_out = TRUE;
                 /* Get label now, since view frame may be destroyed later. */
-                /* FIXME: We're only saving the name of the first error_view
+                /* FIXME bugzilla.eazel.com 5040: We're only saving the name of the first error_view
                  * here. The rest of this code is structured to handle multiple
                  * error_views. I didn't go to the extra effort of saving a 
                  * name with teach error_view since (A) we only see one at a

@@ -315,7 +315,7 @@ set_up_throbber_frame_type (NautilusWindow *window)
 	
 	g_free (frame_type);	
 	
-	/* FIXME: for now, force no shadow until bonobo toolbar problems get resolved */
+	/* FIXME bugzilla.eazel.com 5034: for now, force no shadow until bonobo toolbar problems get resolved */
 	shadow_type = GTK_SHADOW_NONE;
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), shadow_type);
 	

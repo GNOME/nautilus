@@ -130,7 +130,7 @@ druid_cancel (GtkWidget *druid)
 {
 	gtk_widget_destroy (gtk_widget_get_toplevel (druid));
 
-	/* FIXME: Why _exit instead of a plain exit? It might be OK
+	/* FIXME bugzilla.eazel.com 5050: Why _exit instead of a plain exit? It might be OK
 	 * to do nothing here now that Nautilus knows to quit when
 	 * windows go away.
 	 */
@@ -191,7 +191,7 @@ druid_finished (GtkWidget *druid_page)
 	 * we don't want Nautilus to hang indefinitely trying to resolve
 	 * an HTTP address.
 	 */
-	/* FIXME: Perhaps we can fix the underlying problem instead of
+	/* FIXME bugzilla.eazel.com 5051: Perhaps we can fix the underlying problem instead of
 	 * having this hack here to guess whether the network is broken.
 	 */
 	if (Untested == network_status
@@ -287,7 +287,7 @@ make_anti_aliased_label (const char *text)
 	
 	label = nautilus_label_new (text);
 
-	/* FIXME: Hardcoded font and size. */
+	/* FIXME bugzilla.eazel.com 5052: Hardcoded font and size. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
@@ -361,7 +361,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	label = make_anti_aliased_label (user_level_name);
 	g_free (user_level_name);
 
-	/* FIXME: Hardcoded font. */
+	/* FIXME bugzilla.eazel.com 5052: Hardcoded font. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 
 	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
@@ -409,7 +409,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\n"
 					   "level of technical expertise. Pick an initial level that you\n"
 					   "feel comfortable with; you can always change it later."));
-	/* FIXME: Hardcoded font size. */
+	/* FIXME bugzilla.eazel.com 5052: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	gtk_widget_show (label);
@@ -671,7 +671,7 @@ next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	if (last_update_choice == 0) {
 		/* initiate the file transfer and launch a timer task to track feedback */
-		/* FIXME: There's no timer task! */
+		/* FIXME bugzilla.eazel.com 5053: There's no timer task! */
 		initiate_file_download (druid);
 		
 		/* return FALSE to display the feedback page */
@@ -981,7 +981,7 @@ initiate_file_download (GnomeDruid *druid)
 	/* Cancel any download already in progress. */
 	gtk_object_remove_data (GTK_OBJECT (druid), READ_FILE_HANDLE_TAG);
 			
-	/* FIXME We might hang here for a while; if we do, we don't want
+	/* FIXME bugzilla.eazel.com 5054: We might hang here for a while; if we do, we don't want
 	 * the user to get forced through the druid again
 	 */
 	druid_set_first_time_file_flag ();
@@ -1062,7 +1062,7 @@ set_http_proxy (const char *proxy_url)
  * reads newline (or CR) or EOF terminated line from stream, allocating the return
  * buffer as appropriate
  **/
-/* FIXME: Belongs in a library, not here. */
+/* FIXME bugzilla.eazel.com 5055: Belongs in a library, not here. */
 static char * 
 getline_dup (FILE* stream)
 {

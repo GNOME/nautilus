@@ -31,7 +31,7 @@
 
 /* Danger! Many Gremlins live here. */
 
-/* FIXME: Need to account for word endianess in these macros */
+/* FIXME bugzilla.eazel.com 5031: Need to account for word endianess in these macros */
 #define ART_OPACITY_NONE 255
 #define ART_OPACITY_FULL 0
 

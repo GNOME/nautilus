@@ -704,7 +704,7 @@ duplicate_callback (BonoboUIComponent *component, gpointer callback_data, const 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 5061:
 		 * should change things here so that we use a get_icon_locations (view, selection).
 		 * Not a problem in this case but in other places the selection may change by
 		 * the time we go and retrieve the icon positions, relying on the selection
@@ -1356,7 +1356,7 @@ check_for_directory_hard_limit (FMDirectoryView *view)
 
 	directory = view->details->model;
 	if (nautilus_directory_file_list_length_reached (directory)) {
-		/* FIXME: This says Preview Release explicitly. Must remove for real thing. */
+		/* FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing. */
 		dialog = nautilus_warning_dialog (_("We're sorry, but the folder you're viewing has more files than "
 						    "we're able to display. As a result, we are only able to show you the "
 						    "first 4000 files it contains."
@@ -3523,7 +3523,7 @@ load_directory (FMDirectoryView *view,
 
 	view->details->force_reload = force_reload;
 
-	/* FIXME: In theory, we also need to monitor metadata here (as
+	/* FIXME bugzilla.eazel.com 5062: In theory, we also need to monitor metadata here (as
          * well as doing a call when ready), in case external forces
          * change the directory's file metadata.
 	 */

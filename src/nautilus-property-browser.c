@@ -319,7 +319,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  	
 	/* add the title label */
 	property_browser->details->title_label = nautilus_label_new (_("Select A Category:"));
-	/* FIXME: Hardcoded font size. */
+	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->title_label), 18);
 
   	gtk_widget_show(property_browser->details->title_label);
@@ -327,7 +327,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  
  	/* add the help label */
 	property_browser->details->help_label = nautilus_label_new  ("");
-	/* FIXME: Hardcoded font size. */
+	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->help_label), 12);
   	
 	gtk_widget_show(property_browser->details->help_label);
@@ -1785,7 +1785,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 
 	/* make the label from the name */
 	label = nautilus_label_new ("");
-	/* FIXME: Hardcoded font size. */
+	/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	new_property = make_property_tile (property_browser, image_widget, label, RESET_IMAGE_NAME);
@@ -1838,7 +1838,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			
 			/* make the label from the name */
 			label = nautilus_label_new (name);
-			/* FIXME: Hardcoded font size. */
+			/* FIXME bugzilla.eazel.com 5044: Hardcoded font size. */
 			nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 			
 			/* make the tile from the pixmap and name */
@@ -2109,7 +2109,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 			char *temp_category = g_strdup (property_browser->details->category);
 
-			/* FIXME: Not appropriate to assume the last
+			/* FIXME bugzilla.eazel.com 5045: Not appropriate to assume the last
 			 * character is 's' for all languages. A potential
 			 * translation problem.
 			 */
@@ -2133,7 +2133,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		} else {	
 			label_text = g_strdup_printf ("%s:", property_browser->details->category);
 
-			/* FIXME: Not appropriate to upper-case the
+			/* FIXME bugzilla.eazel.com 5046: Not appropriate to upper-case the
 			 * first letter of the emblem names for all
 			 * languages. A potential translation
 			 * nightmare.

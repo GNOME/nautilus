@@ -49,7 +49,7 @@ goto_online_storage (BonoboUIComponent *component,
 	char			*url;
 	char			*user_name;
 
-	/* FIXME ideally, the ammonite_init should happen once per process */
+	/* FIXME bugzilla.eazel.com 5035: ideally, the ammonite_init should happen once per process */
 	if ( ammonite_init (bonobo_poa())) {
 		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
 		ammonite_shutdown();
@@ -59,7 +59,7 @@ goto_online_storage (BonoboUIComponent *component,
 
 	if (user_name == NULL) {
 		url = g_strdup ("eazel:");
-		/* FIXME: user feedback needs to be displayed in this case */
+		/* FIXME bugzilla.eazel.com 5036: user feedback needs to be displayed in this case */
 		/* Something better than just going to the summary page */
 
 	} else {
@@ -81,7 +81,7 @@ goto_software_catalog (BonoboUIComponent *component,
 	gboolean		logged_in;
 	char 			*user_name;
 
-	/* FIXME ideally, the ammonite_init should happen once per process */
+	/* FIXME bugzilla.eazel.com 5035: ideally, the ammonite_init should happen once per process */
 	if (ammonite_init (bonobo_poa())) {
 		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
 

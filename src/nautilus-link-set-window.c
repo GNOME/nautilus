@@ -151,7 +151,7 @@ get_link_set_names (void)
 		return NULL;
 	}
 
-	/* FIXME: The names should really come from the names inside the files. */
+	/* FIXME bugzilla.eazel.com 5049: The names should really come from the names inside the files. */
 	/* build the list by iterating through the directory info */	
 	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
 	     current_file_info = gnome_vfs_directory_list_next(list)) {

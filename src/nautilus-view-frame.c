@@ -658,7 +658,7 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	/* Start with a view frame interface. */
 	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Cleanup needed here. */
+		/* FIXME bugzilla.eazel.com 5041: Cleanup needed here. */
 		return FALSE;
 	}
 
@@ -680,7 +680,7 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	/* Add a history frame interface. */
 	view->history_frame = impl_Nautilus_HistoryFrame__create (view, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Cleanup needed here. */
+		/* FIXME bugzilla.eazel.com 5041: Cleanup needed here. */
 		return FALSE;
 	}
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 

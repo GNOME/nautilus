@@ -115,7 +115,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 	g_free (status_string);
 }
 
-/* FIXME: GnomeVFSResults may not be the
+/* FIXME bugzilla.eazel.com 5057: GnomeVFSResults may not be the
    best way to communicate an error code to
    a view */
 static void
@@ -129,7 +129,7 @@ load_error_callback (FMDirectoryView *nautilus_view,
 
 	switch (result) {
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
-		/* FIXME: Shoudl be two messages, one for each of whether
+		/* FIXME bugzilla.eazel.com 5058: Should be two messages, one for each of whether
 		   "slow complete search" turned on or not */
 		load_error_dialog = nautilus_yes_no_dialog (_("The search you have selected "
 							      "is newer than the index on your "
@@ -452,7 +452,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, adding_file, (view, file));
 
-	/* FIXME: this implies that positioning, custom icon, icon
+	/* FIXME bugzilla.eazel.com 5059: this implies that positioning, custom icon, icon
 	 * stretching, etc, will be based on the real directory the file is in,
 	 * and won't be specific to the search directory. Is that OK? 
 	 */

@@ -695,7 +695,7 @@ nautilus_window_close (NautilusWindow *window)
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
-/* FIXME: Why is this filter turned off? */
+/* FIXME bugzilla.eazel.com 5030: Why is this filter turned off? */
 #if 0
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
@@ -762,14 +762,14 @@ nautilus_window_realize (GtkWidget *widget)
 
 	/* Set window manager hints so click-drag from window to window works */
 	
-	/* FIXME: need to coordinate with sawfish or this line results in
+	/* FIXME bugzilla.eazel.com 5032: need to coordinate with sawfish or this line results in
 	   nautilus windows being unfocusable */
 #if 0
 	nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
 #endif
 
 	/* Add custom message filter to handle WM_TAKE_FOCUS */
-	/* FIXME: Why is this filter turned off? */
+	/* FIXME bugzilla.eazel.com 5033: Why is this filter turned off? */
 #if 0
 	gdk_add_client_message_filter (gdk_wm_protocols, nautilus_window_filter, widget);
 #endif

@@ -1,3 +1,38 @@
+2000-12-07  Rebecca Schulman  <rebecka@eazel.com>
+	Added bug numbers to FIXMEs for the src 
+	subdirectory.  If I can stomach it,
+	I'll try and do a few more today.
+
+	* src/file-manager/fm-directory-view.c: (duplicate_callback),
+	(check_for_directory_hard_limit), (load_directory):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	* src/file-manager/fm-search-list-view.c: (load_error_callback),
+	(real_adding_file):
+	* src/nautilus-about.c: (nautilus_about_draw_info):
+	* src/nautilus-first-time-druid.c: (druid_cancel),
+	(druid_finished), (make_anti_aliased_label),
+	(make_hbox_user_level_radio_button), (set_up_user_level_page),
+	(next_update_page_callback), (initiate_file_download):
+	* src/nautilus-link-set-window.c: (get_link_set_names):
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_update_label):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (add_reset_property),
+	(make_properties_from_xml_node),
+	(nautilus_property_browser_update_contents):
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_background), (update_icon):
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_set_to_component):
+	* src/nautilus-window-manage-views.c:
+	(window_set_title_with_timestamp), (viewed_file_changed_callback),
+	(load_content_view), (change_state):
+	* src/nautilus-window-service-ui.c: (goto_online_storage),
+	(goto_software_catalog):
+	* src/nautilus-window-toolbars.c: (set_up_throbber_frame_type):
+	* src/nautilus-window.c: (nautilus_window_realize):
+	* test/test-nautilus-font.c:
+
 2000-12-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* nautilus.spec.in:

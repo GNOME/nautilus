@@ -815,7 +815,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* kill any sound preview process that is ongoing */
 	preview_sound (NULL, FALSE);
 	
-	/* FIXME: this should be done with a virtual function, not
+	/* FIXME bugzilla.eazel.com 5060: this should be done with a virtual function, not
            hardcoding knowledge about a subclass into the parent class. */
 
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {

@@ -584,7 +584,7 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	if (nautilus_uris_match (bar->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
 	} else {		 
-		/* FIXME: Use of spaces here to line up Go To with
+		/* FIXME bugzilla.eazel.com 5047: Use of spaces here to line up Go To with
 		 * Location is fragile and hard to translate.
 		 */
 		gtk_label_set_text (GTK_LABEL (bar->label), _("   Go To:"));
