@@ -1817,7 +1817,7 @@ static void
 add_site_from_fields (GtkWidget *widget, News *news)
 {
 	char *site_name, *site_location;
-	char *temp_str, *buffer;
+	char *site_uri, *buffer;
 	RSSChannelData *channel_data;
 	GnomeVFSResult result;
 	int channel_count, byte_count;
@@ -1827,33 +1827,36 @@ add_site_from_fields (GtkWidget *widget, News *news)
 	site_location = gtk_entry_get_text (GTK_ENTRY (news->item_location_field));
 
 	/* make sure there's something in the fields */
-	if (site_name == NULL || strlen(site_name) == 0) {
+	if (site_name == NULL || strlen (site_name) == 0) {
 		eel_show_error_dialog (_("Sorry, but you have not specified a name for the site!"), _("Missing Site Name Error"), NULL);
 		return;
 	}
-	if (site_location == NULL || strlen(site_location) == 0) {
+	if (site_location == NULL || strlen (site_location) == 0) {
 		eel_show_error_dialog (_("Sorry, but you have not specified a URL for the site!"), _("Missing URL Error"), NULL);
 		return;
 	}
 	
 	/* if there isn't a protocol specified for the location, use http */
 	if (strchr (site_location, ':') == NULL) {
-		temp_str = g_strconcat ("http://", site_location, NULL);
-		g_free (site_location);
-		site_location = temp_str;
+		site_uri = g_strconcat ("http://", site_location, NULL);
+	} else {
+		site_uri = g_strdup (site_location);
 	}
 
 	/* verify that we can read the specified location and that it's an xml file */
-	result = eel_read_entire_file (site_location, &byte_count, &buffer);
+	result = eel_read_entire_file (site_uri, &byte_count, &buffer);
 	got_xml_file = (result == GNOME_VFS_OK) && eel_istr_has_prefix (buffer, "<?xml");
 	g_free (buffer);
 	if (!got_xml_file) {
+		g_free (site_uri);
 		eel_show_error_dialog (_("Sorry, but the specified url doesn't seem to be a valid RSS file!"), _("Invalid RSS URL"), NULL);
 		return;
 	}
 	
 	/* make the new channel */		
-	channel_data = nautilus_news_make_new_channel (news, site_name, site_location, TRUE, TRUE);
+	channel_data = nautilus_news_make_new_channel (news, site_name, site_uri, TRUE, TRUE);
+	g_free (site_uri);
+	
 	if (channel_data != NULL) {
 		news->channel_list = g_list_insert_sorted (news->channel_list,
 							   channel_data,
