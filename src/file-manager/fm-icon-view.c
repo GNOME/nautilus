@@ -1566,6 +1566,22 @@ fm_icon_view_text_attribute_names_changed (FMDirectoryView *directory_view)
 }
 
 static void
+fm_icon_view_embedded_text_policy_changed (FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_ICON_VIEW (directory_view));
+
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+}
+
+static void
+fm_icon_view_image_display_policy_changed (FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_ICON_VIEW (directory_view));
+
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+}
+
+static void
 fm_icon_view_font_family_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
@@ -1623,6 +1639,8 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
+        fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
+        fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->font_family_changed = fm_icon_view_font_family_changed;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->anti_aliased_mode_changed = fm_icon_view_anti_aliased_mode_changed;

@@ -1,3 +1,88 @@
+2000-08-01  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1552 (Need "never" option for display-embedded-text
+			    preference)
+	Finished task 1553 (Need always/local-only/never preference for
+			    creating image thumbnails)
+
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	Added "horizontal" field in Details struct.
+	(nautilus_radio_button_group_initialize): Initialize
+	"horizontal" to FALSE (the default; what you get when
+	calling plain "nautilus_radio_button_group_new").
+	(nautilus_radio_button_group_new_horizontal): New function,
+	used when radio buttons should be laid out in one row; sets
+	details->horizontal to TRUE.
+	(nautilus_radio_button_group_insert): Lay out the items
+	differently depending on value of details->horizontal.
+	(nautilus_radio_button_group_set_entry_pixbuf),
+	(nautilus_radio_button_group_set_entry_description_text):
+	Added g_return_if_fails if details->horizontal is true
+	(because the horizontal layout doesn't have a place to
+	put an icon or longer description; we could change that
+	later if we needed to)
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	Added new NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM type for
+	preferences dialog, to be used when the choices are small
+	enough to fit in one row.
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_short_enum): New function, just like
+	preferences_item_create_enum but uses horizontal radio button
+	group.
+	(preferences_item_construct): Call create_short_enum when
+	type is NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Took the "REMOTE" out of the name of
+	NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS; added
+	NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS; added
+	NautilusSpeedTradeoffValue enum.
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog): Added thumbnails preference
+	to Speed Tradeoffs pane.
+	(global_preferences_register_speed_tradeoff_with_defaults):
+	New convenience function for registering always/local-only/never
+	preferences.
+	(global_preferences_register_for_ui): Register the embedded text
+	and thumbnail-creation speed-tradeoff preferences.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_should_get_top_left_text): Respect all three
+	states of the embedded-text preference.
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(should_display_image_file_as_itself): New function, respects the
+	three states of the create-thumbnails preference.
+	(nautilus_icon_factory_get_icon_for_file): Check preference
+	before creating thumbnails (including image-as-itself case).
+	
+	* src/file-manager/fm-directory-view.h:
+	New handlers for subclasses to fill in for when embedded-text 
+	and thumbnail preferences change.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Start monitoring embedded-text
+	and thumbnail preferences.
+	(fm_directory_view_destroy): Stop monitoring preferences.
+	(embedded_text_policy_changed_callback),
+	(image_display_policy_changed_callback): React when preferences
+	change by executing subclass's handler, if any. I also put a
+	hideous hack in here for kick-starting the embedded-text-reading
+	code that otherwise wasn't working in some cases (will fix with
+	Darin).
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_initialize_class): Install handlers for embedded-text
+	and thumbnail preference changes.
+	(fm_icon_view_embedded_text_policy_changed),
+	(fm_icon_view_image_display_policy_changed): New functions; these
+	are said handlers.
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_initialize_class): Install handlers for embedded-text
+	and thumbnail preference changes.
+	(fm_list_view_embedded_text_policy_changed),
+	(fm_list_view_image_display_policy_changed): New functions; these
+	are said handlers.
+
 2000-08-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-mounting.c:

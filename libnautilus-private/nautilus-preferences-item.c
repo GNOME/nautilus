@@ -81,13 +81,15 @@ static void preferences_item_construct                 (NautilusPreferencesItem 
 							const gchar                  *preference_name,
 							NautilusPreferencesItemType   item_type);
 static void preferences_item_create_enum               (NautilusPreferencesItem      *item,
-							const NautilusPreference     *prefrence);
+							const NautilusPreference     *preference);
+static void preferences_item_create_short_enum         (NautilusPreferencesItem      *item,
+							const NautilusPreference     *preference);
 static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
-							const NautilusPreference     *prefrence);
+							const NautilusPreference     *preference);
 static void preferences_item_create_editable_string    (NautilusPreferencesItem      *item,
-							const NautilusPreference     *prefrence);
+							const NautilusPreference     *preference);
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
-							const NautilusPreference     *prefrence);
+							const NautilusPreference     *preference);
 static void preferences_item_create_theme	       (NautilusPreferencesItem      *item,
 							const NautilusPreference     *preference);
 static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
@@ -273,6 +275,10 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		preferences_item_create_enum (item, preference);
 		break;
 
+	case NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM:
+		preferences_item_create_short_enum (item, preference);
+		break;
+
 	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
 		preferences_item_create_font_family (item, preference);
 		break;
@@ -311,6 +317,50 @@ preferences_item_create_enum (NautilusPreferencesItem	*item,
 	g_assert (item->details->preference_name != NULL);
 
 	item->details->child = nautilus_radio_button_group_new ();
+		
+ 	value = nautilus_preferences_get_enum (item->details->preference_name, 0);
+	
+	for (i = 0; i < nautilus_preference_enum_get_num_entries (preference); i++) {
+		char *description;
+		
+		description = nautilus_preference_enum_get_nth_entry_description (preference, i);
+
+		g_assert (description != NULL);
+
+		nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child),
+						    description);
+
+		g_free (description);
+		
+		if (value == nautilus_preference_enum_get_nth_entry_value (preference, i)) {
+			
+			nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child), i);
+		}
+	}
+	
+	gtk_signal_connect (GTK_OBJECT (item->details->child),
+			    "changed",
+			    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
+			    (gpointer) item);
+}
+
+/* This is just like preferences_item_create_enum except the choices
+ * are laid out horizontally instead of vertically (hence it works decently
+ * only with short text for the choices).
+ */
+static void
+preferences_item_create_short_enum (NautilusPreferencesItem	*item,
+			      	    const NautilusPreference	*preference)
+{
+	guint	i;
+	gint	value;
+
+	g_assert (item != NULL);
+	g_assert (preference != NULL);
+
+	g_assert (item->details->preference_name != NULL);
+
+	item->details->child = nautilus_radio_button_group_new_horizontal ();
 		
  	value = nautilus_preferences_get_enum (item->details->preference_name, 0);
 	

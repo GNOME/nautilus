@@ -710,6 +710,39 @@ text_attribute_names_changed_callback (gpointer user_data)
 	}
 }
 
+/* FIXME: 
+ * This #include and the call to nautilus_directory_async_state_changed
+ * are a hack to get the embedded text to appear if the preference started
+ * out off but gets turned on. This is obviously not the right API, but
+ * I wanted to check in and Darin was at lunch...
+ */
+#include <libnautilus-extensions/nautilus-directory-private.h>
+static void
+embedded_text_policy_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->embedded_text_policy_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->embedded_text_policy_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+
+	
+	nautilus_directory_async_state_changed (fm_directory_view_get_model (FM_DIRECTORY_VIEW (user_data)));
+
+}
+
+static void
+image_display_policy_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->image_display_policy_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->image_display_policy_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+}
+
 static void
 directory_view_font_family_changed_callback (gpointer user_data)
 {
@@ -825,6 +858,16 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 					   text_attribute_names_changed_callback,
 					   directory_view);
 
+	/* Keep track of changes in embedded text policy */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+					   embedded_text_policy_changed_callback,
+					   directory_view);
+
+	/* Keep track of changes in image display policy */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					   image_display_policy_changed_callback,
+					   directory_view);
+
 	/* Keep track of changes in the font family */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 					   directory_view_font_family_changed_callback, 
@@ -854,6 +897,14 @@ fm_directory_view_destroy (GtkObject *object)
 	
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      text_attribute_names_changed_callback,
+					      view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+					      embedded_text_policy_changed_callback,
+					      view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					      image_display_policy_changed_callback,
 					      view);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,

@@ -927,6 +927,27 @@ nautilus_scalable_icon_equal (gconstpointer a,
 }
 
 
+static gboolean
+should_display_image_file_as_itself (NautilusFile *file)
+{
+	NautilusSpeedTradeoffValue preference_value;
+	
+	preference_value = nautilus_preferences_get_enum
+		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS, 
+		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+
+	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	return nautilus_file_is_local (file);
+}
+
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
@@ -949,7 +970,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
 		mime_type = nautilus_file_get_mime_type (file);
-		if (nautilus_istr_has_prefix (mime_type, "image/")) {
+		if (nautilus_istr_has_prefix (mime_type, "image/") && should_display_image_file_as_itself (file)) {
 			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_file_get_uri (file);				
 			} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
@@ -961,17 +982,18 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	
 	/* Handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
-	if (uri == NULL) {
-		uri = g_strdup (file_uri);
-	}	
 	if (nautilus_link_is_link_file (file)) {
 		/* FIXME: This does sync. I/O. */
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
 			/* FIXME: Lame hack. We only support file:// URIs? */
-			if (nautilus_istr_has_prefix (image_uri, "file://"))
-				uri = image_uri;
-			else {
+			if (nautilus_istr_has_prefix (image_uri, "file://")) {
+				if (uri == NULL) {
+					uri = image_uri;
+				} else {
+					g_free (image_uri);
+				}
+			} else {
 				icon_name = image_uri;
 			}
 		}

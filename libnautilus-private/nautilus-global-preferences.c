@@ -246,12 +246,19 @@ global_preferences_create_dialog (void)
 							    "Speed Tradeoffs",
 							    "Speed Tradeoffs Settings");
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Remote Views");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Show Text in Icons");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 0,
-							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Show Thumbnails for Image Files");
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
 	/*
 	 * Search Settings 
@@ -523,6 +530,37 @@ global_preferences_register_enum_with_defaults (const char	*name,
 }
 
 static void
+global_preferences_register_speed_tradeoff_with_defaults (const char		     *name,
+							  const char		     *description,
+							  NautilusSpeedTradeoffValue  novice_default,
+							  NautilusSpeedTradeoffValue  intermediate_default,
+							  NautilusSpeedTradeoffValue  hacker_default)
+{							  
+	global_preferences_register_with_defaults (name,
+						   description,
+						   NAUTILUS_PREFERENCE_ENUM,
+						   (gconstpointer) GINT_TO_POINTER (novice_default),
+						   (gconstpointer) GINT_TO_POINTER (intermediate_default),
+						   (gconstpointer) GINT_TO_POINTER (hacker_default));
+	
+	nautilus_preference_enum_add_entry_by_name (name,
+						    "always",
+						    "Always",
+						    NAUTILUS_SPEED_TRADEOFF_ALWAYS);
+	
+	nautilus_preference_enum_add_entry_by_name (name,
+						    "local only",
+						    "Local Files Only",
+						    NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	
+	nautilus_preference_enum_add_entry_by_name (name,
+						    "never",
+						    "Never",
+						    NAUTILUS_SPEED_TRADEOFF_NEVER);
+	
+}							  
+
+static void
 global_preferences_register_for_ui (void)
 {
 	static gboolean preference_for_ui_registered = FALSE;
@@ -562,12 +600,18 @@ global_preferences_register_for_ui (void)
 						    "Activate items with a double click",
 						    NAUTILUS_CLICK_POLICY_DOUBLE);
 	
-	/* Remote views */
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
-							   "Display text in icons even for remote text files",
-							   FALSE,
-							   FALSE,
-							   FALSE);
+	/* Speed tradeoffs */
+	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+							   	  "Display text in icons",
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	
+	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+							   	  "Show thumbnails for image files",
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
+							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	
 	/* Sidebar panels */
 	global_preferences_register_sidebar_panels_preferences_for_ui ();

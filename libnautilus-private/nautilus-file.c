@@ -812,11 +812,24 @@ nautilus_file_is_local (NautilusFile *file)
 gboolean
 nautilus_file_should_get_top_left_text (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	NautilusSpeedTradeoffValue preference_value;
 	
-	return nautilus_file_is_local (file)
-		|| nautilus_preferences_get_boolean
-		(NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	preference_value = nautilus_preferences_get_enum
+		(NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS, 
+		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+
+	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	return nautilus_file_is_local (file);
 }
 
 gboolean

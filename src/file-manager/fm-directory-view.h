@@ -210,6 +210,8 @@ struct FMDirectoryViewClass {
 	 * values and forcing an update if appropriate.
 	 */
 	void	(* text_attribute_names_changed)(FMDirectoryView *view);
+	void	(* embedded_text_policy_changed)(FMDirectoryView *view);
+	void	(* image_display_policy_changed)(FMDirectoryView *view);
 	void	(* font_family_changed)		(FMDirectoryView *view);
 	void	(* click_policy_changed)	(FMDirectoryView *view);
 	void	(* anti_aliased_mode_changed)	(FMDirectoryView *view);

@@ -86,11 +86,20 @@ enum
 
 typedef enum
 {
+	NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
+	NAUTILUS_SPEED_TRADEOFF_NEVER
+} NautilusSpeedTradeoffValue;
+
+#define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS		"preferences/show_icon_text"
+#define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
+
+typedef enum
+{
 	NAUTILUS_COMPLEX_SEARCH_BAR,
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-#define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS		"preferences/remote_icon_text"
 
 void   nautilus_global_preferences_shutdown                                    (void);
 void   nautilus_global_preferences_show_dialog                                 (void);

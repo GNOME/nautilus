@@ -46,7 +46,8 @@ struct _NautilusRadioButtonGroupDetails
 {
 	GList		*rows;
 	GSList		*group;
-	guint		num_rows;
+	guint		num_items;
+	gboolean	horizontal;
 };
 
 typedef struct
@@ -120,7 +121,8 @@ nautilus_radio_button_group_initialize (NautilusRadioButtonGroup *button_group)
 
 	button_group->details->rows = NULL;
 	button_group->details->group = NULL;
-	button_group->details->num_rows = 0;
+	button_group->details->num_items = 0;
+	button_group->details->horizontal = 0;
 }
 
 /*
@@ -204,6 +206,17 @@ nautilus_radio_button_group_new (void)
 	return GTK_WIDGET (button_group);
 }
  
+GtkWidget*
+nautilus_radio_button_group_new_horizontal (void)
+{
+	NautilusRadioButtonGroup *button_group;
+
+	button_group = gtk_type_new (nautilus_radio_button_group_get_type ());
+	button_group->details->horizontal = TRUE;
+	
+	return GTK_WIDGET (button_group);
+}
+ 
 /**
  * nautilus_radio_button_group_insert:
  * @button_group: The button group
@@ -243,21 +256,38 @@ nautilus_radio_button_group_insert (NautilusRadioButtonGroup	*button_group,
 			    GTK_SIGNAL_FUNC (button_toggled),
 			    (gpointer) button_group);
 
-	button_group->details->num_rows++;
-	
-	gtk_table_resize (table, button_group->details->num_rows, 3);
+	button_group->details->num_items++;
 
-	/* Place the radio button in column 2 */
-	gtk_table_attach (table, 
-			  row->button,				/* child */
-			  1,					/* left_attatch */
-			  2,					/* right_attatch */
-			  button_group->details->num_rows - 1,	/* top_attatch */
-			  button_group->details->num_rows,	/* bottom_attatch */
-			  (GTK_FILL|GTK_EXPAND),		/* xoptions */
-			  (GTK_FILL|GTK_EXPAND),		/* yoptions */
-			  0,					/* xpadding */
-			  0);					/* ypadding */
+	if (button_group->details->horizontal) {
+		/* Resize the table to fit all items in one row. */
+		gtk_table_resize (table, 1, button_group->details->num_items);
+		/* Place the radio button in the last (so far) column of the only row */
+		gtk_table_attach (table, 
+				  row->button,				/* child */
+				  button_group->details->num_items - 1, /* left_attach */
+				  button_group->details->num_items,	/* right_attach */
+				  0,					/* top_attach */
+				  1,					/* bottom_attach */
+				  (GTK_FILL|GTK_EXPAND),		/* xoptions */
+				  (GTK_FILL|GTK_EXPAND),		/* yoptions */
+				  0,					/* xpadding */
+				  0);					/* ypadding */
+	} else {
+		/* Resize the table to put each item on separate row. */
+		gtk_table_resize (table, button_group->details->num_items, 3);
+		/* Place the radio button in column 2 of the last (so far) row */
+		gtk_table_attach (table, 
+				  row->button,				/* child */
+				  1,					/* left_attach */
+				  2,					/* right_attach */
+				  button_group->details->num_items - 1,	/* top_attach */
+				  button_group->details->num_items,	/* bottom_attach */
+				  (GTK_FILL|GTK_EXPAND),		/* xoptions */
+				  (GTK_FILL|GTK_EXPAND),		/* yoptions */
+				  0,					/* xpadding */
+				  0);					/* ypadding */
+	}
+
 
 	gtk_widget_show (row->button);
 	
@@ -336,6 +366,7 @@ nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_g
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
 	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
+	g_return_if_fail (button_group->details->horizontal);
 
 	table = GTK_TABLE (button_group);
 
@@ -347,10 +378,10 @@ nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_g
 		
 		gtk_table_attach (table,
 				  row->image,			/* child */
-				  0,				/* left_attatch */
-				  1,				/* right_attatch */
-				  entry_index,			/* top_attatch */
-				  entry_index + 1,		/* bottom_attatch */
+				  0,				/* left_attach */
+				  1,				/* right_attach */
+				  entry_index,			/* top_attach */
+				  entry_index + 1,		/* bottom_attach */
 				  GTK_FILL,			/* xoptions */
 				  (GTK_FILL|GTK_EXPAND),	/* yoptions */
 				  0,				/* xpadding */
@@ -376,6 +407,7 @@ nautilus_radio_button_group_set_entry_description_text (NautilusRadioButtonGroup
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
 	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
+	g_return_if_fail (button_group->details->horizontal);
 
 	table = GTK_TABLE (button_group);
 
@@ -389,10 +421,10 @@ nautilus_radio_button_group_set_entry_description_text (NautilusRadioButtonGroup
 		
 		gtk_table_attach (table,
 				  row->description,		/* child */
-				  2,				/* left_attatch */
-				  3,				/* right_attatch */
-				  entry_index,			/* top_attatch */
-				  entry_index + 1,		/* bottom_attatch */
+				  2,				/* left_attach */
+				  3,				/* right_attach */
+				  entry_index,			/* top_attach */
+				  entry_index + 1,		/* bottom_attach */
 				  (GTK_FILL|GTK_EXPAND),	/* xoptions */
 				  (GTK_FILL|GTK_EXPAND),	/* yoptions */
 				  0,				/* xpadding */
