@@ -27,6 +27,7 @@
 
 #include <glib.h>
 
+extern const char nautilus_sidebar_news_enabled_preference_name[];
 extern const char nautilus_sidebar_notes_enabled_preference_name[];
 extern const char nautilus_sidebar_help_enabled_preference_name[];
 extern const char nautilus_sidebar_history_enabled_preference_name[];

@@ -643,7 +643,7 @@ nautilus_news_update_display (News *news_data, gboolean measure_only)
 	channel_item = news_data->channel_list;
 	while (channel_item != NULL) {	
 		channel_data = (RSSChannelData*) channel_item->data;
-		if (!channel_data->update_in_progress && channel_data->is_showing) {
+		if (channel_data->is_showing) {
 		
 			v_offset = nautilus_news_draw_channel (news_data, 
 						       channel_data,

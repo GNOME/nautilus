@@ -408,7 +408,7 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 	{ NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
 	  PREFERENCE_BOOLEAN,
-	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  NAUTILUS_USER_LEVEL_ADVANCED,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
@@ -635,6 +635,12 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* Sidebar panel default */
+	{ nautilus_sidebar_news_enabled_preference_name,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
+	  { USER_LEVEL_NONE }
+	},
 	{ nautilus_sidebar_notes_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,

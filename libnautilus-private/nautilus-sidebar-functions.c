@@ -34,11 +34,13 @@
 
 #define PREFERENCES_SIDEBAR_PANEL_PREFIX "sidebar-panels"
 
+#define NEWS_PANEL_IID		"OAFIID:nautilus_news_view:041601"
 #define NOTES_PANEL_IID		"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
 #define HELP_PANEL_IID		"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
 #define HISTORY_PANEL_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
 #define TREE_PANEL_IID		"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d"
 
+const char nautilus_sidebar_news_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NEWS_PANEL_IID;
 const char nautilus_sidebar_notes_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NOTES_PANEL_IID;
 const char nautilus_sidebar_help_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HELP_PANEL_IID;
 const char nautilus_sidebar_history_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HISTORY_PANEL_IID;

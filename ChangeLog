@@ -1,5 +1,19 @@
 2001-04-25  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/news/nautilus-news.c: (nautilus_news_update_display):
+	reversed decision about not drawing while the channel was loading
+	since it's important to give feedback right away when a channel is
+	enabled, and they sometimes takes a long time to load.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-sidebar-functions.c:
+	* libnautilus-extensions/nautilus-sidebar-functions.h:
+	enabled the news panel by default.  Also, while I was in here, I
+	made the "home as desktop" feature only available at the advanced
+	user level like Bud suggested.
+	
+2001-04-25  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/news/nautilus-news.c: (draw_rss_items),
 	(nautilus_news_draw_channel), (nautilus_news_size_allocate):
 	fixed measuring bug caused by the size of the scroll bar
