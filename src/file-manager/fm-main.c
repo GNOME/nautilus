@@ -23,9 +23,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "fm-directory-view-icons.h"
 #include "fm-directory-view-list.h"

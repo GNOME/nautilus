@@ -22,10 +22,7 @@
    Authors: Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "gdk-extensions.h"
 
 #include "nautilus-lib-self-check-functions.h"

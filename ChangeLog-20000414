@@ -1,3 +1,60 @@
+2000-01-31  Darin Adler  <darin@eazel.com>
+
+	* nautilus-icons-view-icon-item.c:
+	(nautilus_icons_view_draw_text_box):
+	Changed it to not attempt to create a GC just to measure the text.
+	This makes it work when the widget is not realized.
+
+	* nautilus-icons-view-icon-item.h:
+	nautilus-icons-view-icon-item.c:
+	gnome-icon-container-dnd.c:
+	(nautilus_icons_view_icon_item_center_offset):
+	Changed the parameter type to NautilusIconsViewIconItem.
+
+	* fm-directory-view.c:
+	(stop_load):
+	(fm_directory_view_load_uri):
+	Fixed code so that if you stop loading more than once, or
+	stop before you even start, it won't send extra progress
+	requests to the Nautilus shell or call stop_monitoring
+	extra times on the NautilusDirectory object.
+
+	* nautilus-icons-view-icon-item.h:
+	nautilus-icons-view-icon-item.c:
+	gnome-icon-container-dnd.c:
+	Quick cleanup of the new NautilusIconsViewIconItem class.
+
+	* libnautilus/gdk-extensions.c:
+	libnautilus/gnome-icon-container-dnd.c:
+	libnautilus/gnome-icon-container.c:
+	libnautilus/gtkflist.c:
+	libnautilus/nautilus-background-canvas-group.c:
+	libnautilus/nautilus-background.c:
+	libnautilus/nautilus-debug.c:
+	libnautilus/nautilus-default-file-icon.c:
+	libnautilus/nautilus-directory.c:
+	libnautilus/nautilus-icon-factory.c:
+	libnautilus/nautilus-icons-controller.c:
+	libnautilus/nautilus-icons-view-icon-item.c:
+	libnautilus/nautilus-lib-self-check-functions.c:
+	libnautilus/nautilus-self-checks.c:
+	libnautilus/nautilus-string.c:
+	src/explorer-location-bar.c:
+	src/file-manager/dfos-corba.c:
+	src/file-manager/dfos-xfer-progress-dialog.c:
+	src/file-manager/dfos-xfer.c:
+	src/file-manager/dfos.c:
+	src/file-manager/fm-directory-view-icons.c:
+	src/file-manager/fm-directory-view-list.c:
+	src/file-manager/fm-directory-view.c:
+	src/file-manager/fm-icons-controller.c:
+	src/file-manager/fm-main.c:
+	src/nautilus-self-check-functions.c:
+	src/ntl-index-panel.c:
+	Got rid of #ifdef HAVE_CONFIG_H. Elliot says that we must always
+	include <config.h>, but there's no reason to include that ifdef
+	since we don't plan on building without a <config.h> ever.
+
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/gnome-icon-container-dnd.c:

@@ -22,13 +22,12 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 #include "nautilus-self-checks.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -22,10 +22,7 @@
    Authors: Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "nautilus-string.h"
 
 #include <ctype.h>

@@ -21,13 +21,10 @@
 
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "dfos-xfer-progress-dialog.h"
 
 #include <gnome.h>
-
-#include "dfos-xfer-progress-dialog.h"
 
 
 #define DIALOG_WIDTH 350	/* FIXME? */

@@ -23,13 +23,11 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
+#include <config.h>
+#include "nautilus-icon-factory.h"
+
 #include <string.h>
 #include <stdio.h>
-#include <config.h>
-#endif
-
-#include "nautilus-icon-factory.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-mime-info.h>

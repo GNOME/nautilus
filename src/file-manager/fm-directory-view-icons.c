@@ -22,10 +22,7 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include <config.h>
 #include "fm-directory-view-icons.h"
 
 #include "fm-icons-controller.h"

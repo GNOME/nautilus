@@ -22,10 +22,7 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "nautilus-default-file-icon.h"
 
 const int nautilus_default_file_icon_width = 48;

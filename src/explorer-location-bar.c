@@ -22,10 +22,7 @@
    DnD code added by Michael Meeks <michael@nuclecu.unam.mx>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "explorer-location-bar.h"
 
 #include <gnome.h>

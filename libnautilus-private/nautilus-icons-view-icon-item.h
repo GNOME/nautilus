@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* GNOME libraries - Icon Item class for Icon View
  *
  * Copyright (C) 2000 Eazel, Inc.
@@ -28,32 +30,33 @@
 
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM            (nautilus_icons_view_icon_item_get_type ())
-#define NAUTILUS_ICONS_VIEW_ICON_ITEM(obj)            (GTK_CHECK_CAST ((obj),		\
-					     NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM, NautilusIconsViewIconItem))
-#define NAUTILUS_ICONS_VIEW_ICON_ITEM_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass),	\
-					     NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM, NautilusIconsViewIconItemClass))
-#define NAUTILUS_IS_ICONS_VIEW_ICON_ITEM(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
-#define NAUTILUS_IS_ICONS_VIEW_ICON_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass),	\
-					     NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
+#define NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM \
+	(nautilus_icons_view_icon_item_get_type ())
+#define NAUTILUS_ICONS_VIEW_ICON_ITEM(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM, NautilusIconsViewIconItem))
+#define NAUTILUS_ICONS_VIEW_ICON_ITEM_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM, NautilusIconsViewIconItemClass))
+#define NAUTILUS_IS_ICONS_VIEW_ICON_ITEM(obj) \
+        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
+#define NAUTILUS_IS_ICONS_VIEW_ICON_ITEM_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
 
 
 typedef struct _NautilusIconsViewIconItem NautilusIconsViewIconItem;
 typedef struct _NautilusIconsViewIconItemClass NautilusIconsViewIconItemClass;
+typedef struct _NautilusIconsViewIconItemDetails NautilusIconsViewIconItemDetails;
 
 struct _NautilusIconsViewIconItem {
 	GnomeCanvasItem item;
-
-	/* Private data */
-	gpointer priv;
+	NautilusIconsViewIconItemDetails *details;
 };
 
 struct _NautilusIconsViewIconItemClass {
 	GnomeCanvasItemClass parent_class;
 };
 
-GtkType nautilus_icons_view_icon_item_get_type (void);
-gint nautilus_icons_view_icon_item_center_offset(GnomeCanvasItem *item);
+GtkType nautilus_icons_view_icon_item_get_type      (void);
+int     nautilus_icons_view_icon_item_center_offset (NautilusIconsViewIconItem *item);
 
 END_GNOME_DECLS
 

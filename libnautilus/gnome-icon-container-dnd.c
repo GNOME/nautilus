@@ -23,14 +23,11 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "gnome-icon-container-dnd.h"
-#include "nautilus-icons-view-icon-item.h"
 
 #include "gnome-icon-container-private.h"
+#include "nautilus-icons-view-icon-item.h"
 #include "nautilus-background.h"
 #include "nautilus-gtk-extensions.h"
 
@@ -217,8 +214,8 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		
-		center_offset = nautilus_icons_view_icon_item_center_offset(icon->item);
+		center_offset = nautilus_icons_view_icon_item_center_offset
+			(NAUTILUS_ICONS_VIEW_ICON_ITEM (icon->item));
 		
 		/* Corner of the icon relative to the cursor. */
 		icon_x = icon->x - details->dnd_info->start_x + floor(center_offset / canvas->pixels_per_unit);
@@ -579,7 +576,8 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 			if (item->got_icon_position) {
 				int icon_x, icon_y;
                                 double scale = icon->item->canvas->pixels_per_unit;
-                                int center_offset = nautilus_icons_view_icon_item_center_offset(icon->item);
+                                int center_offset = nautilus_icons_view_icon_item_center_offset
+					(NAUTILUS_ICONS_VIEW_ICON_ITEM (icon->item));
 
 				icon_x = (int) world_x + item->icon_x - (center_offset / scale);
 				icon_y = (int) world_y + item->icon_y;
@@ -768,14 +766,11 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	dnd_info->start_y = event->y;
 	
 	/* start the drag */
-	
 	context = gtk_drag_begin (GTK_WIDGET (container),
 				  dnd_info->target_list,
 				  actions,
 				  button,
 				  (GdkEvent *) event);
-	
-	
 	  
         /* create a pixmap and mask to drag with */
         pixbuf_item = GNOME_CANVAS_ITEM (container->details->drag_icon->item);
@@ -784,40 +779,40 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         temp_pixbuf = (GdkPixbuf *) GTK_VALUE_OBJECT (pixbuf_args[0]);
         
         /* compute the image's offset */
-	canvas = GNOME_CANVAS(container);
+	canvas = GNOME_CANVAS (container);
 
-        x_offset = floor(event->x -  pixbuf_item->x1 + .5);
-        y_offset = floor(event->y -  pixbuf_item->y1 + .5);
+        x_offset = floor (event->x -  pixbuf_item->x1 + .5);
+        y_offset = floor (event->y -  pixbuf_item->y1 + .5);
         
-        center_offset = nautilus_icons_view_icon_item_center_offset(container->details->drag_icon->item);
+        center_offset = nautilus_icons_view_icon_item_center_offset
+		(NAUTILUS_ICONS_VIEW_ICON_ITEM (container->details->drag_icon->item));
         x_offset -= center_offset;
         
         /* if the scale factor isn't 1.0, we have to scale the pixmap */
 	/* FIXME: eventually need to get the size, if any, from the metadata here */
 	
 	scaled_pixbuf = NULL;
-	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_STANDARD)
-	  {
-	    gint old_width, old_height;
-	    gint new_width, new_height;
-	   
-            x_offset = floor(event->x * canvas->pixels_per_unit - center_offset - pixbuf_item->x1 + .5);
-            y_offset = floor(event->y * canvas->pixels_per_unit -  pixbuf_item->y1 + .5);
-	    	    
-	    old_width = gdk_pixbuf_get_width (temp_pixbuf);
-	    old_height = gdk_pixbuf_get_height (temp_pixbuf);
-
-	    new_width =  floor((old_width * canvas->pixels_per_unit) + .5);
-	    new_height = floor((old_height * canvas->pixels_per_unit) + .5);
-	    
-	    scaled_pixbuf = gdk_pixbuf_scale_simple (temp_pixbuf, new_width, new_height, ART_FILTER_NEAREST);	
-	    temp_pixbuf = scaled_pixbuf;
-	  }
-
+	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_STANDARD) {
+		gint old_width, old_height;
+		gint new_width, new_height;
+		
+		x_offset = floor (event->x * canvas->pixels_per_unit - center_offset - pixbuf_item->x1 + .5);
+		y_offset = floor (event->y * canvas->pixels_per_unit -  pixbuf_item->y1 + .5);
+		
+		old_width = gdk_pixbuf_get_width (temp_pixbuf);
+		old_height = gdk_pixbuf_get_height (temp_pixbuf);
+		
+		new_width =  floor ((old_width * canvas->pixels_per_unit) + .5);
+		new_height = floor ((old_height * canvas->pixels_per_unit) + .5);
+		
+		scaled_pixbuf = gdk_pixbuf_scale_simple (temp_pixbuf, new_width, new_height, ART_FILTER_NEAREST);	
+		temp_pixbuf = scaled_pixbuf;
+	}
+	
         gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128);
 	if (scaled_pixbuf)
-	  gdk_pixbuf_unref(scaled_pixbuf);
-		
+		gdk_pixbuf_unref(scaled_pixbuf);
+	
         /* set the pixmap and mask for dragging */
         gtk_drag_set_icon_pixmap (context, gtk_widget_get_colormap (GTK_WIDGET (container)),
 				  pixmap_for_dragged_file, mask_for_dragged_file,

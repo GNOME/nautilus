@@ -12,10 +12,7 @@
    native List widget that uses a simple API similiar to the GnomeIconContainer
    one.  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "gtkflist.h"
 
 #include <gtk/gtkdnd.h>

@@ -22,10 +22,7 @@
  * Author: Ettore Perazzoli
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include <config.h>
 #include "fm-directory-view.h"
 
 #include <gtk/gtksignal.h>
@@ -68,6 +65,8 @@ struct _FMDirectoryViewDetails
 	guint add_files_handler_id;
 	
 	NautilusFileList *pending_list;
+
+	gboolean loading;
 };
 
 /* forward declarations */
@@ -333,8 +332,12 @@ stop_load (FMDirectoryView *view, gboolean error)
 {
 	Nautilus_ProgressRequestInfo progress;
 	
-	if (view->details->model != NULL)
-		nautilus_directory_stop_monitoring (view->details->model);
+	if (!view->details->loading) {
+		g_assert (!error);
+		return;
+	}
+
+	nautilus_directory_stop_monitoring (view->details->model);
 	
 	memset(&progress, 0, sizeof(progress));
 	progress.amount = 100.0;
@@ -936,9 +939,15 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
 
 	schedule_timeout_display_of_pending_files (view);
+	view->details->loading = TRUE;
 	nautilus_directory_start_monitoring (view->details->model,
 					     add_files_cb, view);
 
+	/* Attach a handler to get any further files that show up as we
+	 * load and sychronize. We won't miss any files because this
+	 * signal is emitted from an idle routine and so we will be
+	 * connected before the next time it is emitted.
+	 */
 	view->details->add_files_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_added",

@@ -24,10 +24,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "ntl-index-panel.h"
 
 #include "ntl-meta-view.h"

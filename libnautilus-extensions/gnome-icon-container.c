@@ -22,10 +22,7 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "gnome-icon-container.h"
 
 #include <string.h>

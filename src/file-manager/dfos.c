@@ -21,15 +21,12 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "dfos.h"
 
 #include <gnome.h>
 #include <libgnorba/gnorba.h>
 #include <orb/orbit.h>
-
-#include "dfos.h"
 
 
 struct _DFOS {

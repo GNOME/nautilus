@@ -22,10 +22,7 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include "nautilus-background-canvas-group.h"
 
 #include <libgnomeui/gnome-canvas.h>

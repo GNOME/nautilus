@@ -20,16 +20,11 @@
    
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "dfos.h"
 
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-
-#include "dfos.h"
-
-#include "dfos-xfer.h"
 
 
 struct _XferInfo {
