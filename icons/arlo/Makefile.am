@@ -28,6 +28,10 @@ arlo_DATA =	\
 	i-regular-96-aa.png	\
 	i-regular-192-aa.png	\
 	i-regular-aa.png	\
+	i-regular-72.png	\
+	i-regular-96.png	\
+	i-regular-192.png	\
+	i-regular.png	\
 	i-regular.xml		\
 	increment.png		\
 	increment-i.png		\
