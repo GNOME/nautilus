@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-02-28 11:35+0100\n"
-"PO-Revision-Date: 2003-02-28 11:36+0100\n"
+"POT-Creation-Date: 2003-03-08 14:55+0100\n"
+"PO-Revision-Date: 2003-03-08 14:56+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -156,6 +156,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "Den dragna filen verkar inte vara en giltig bild."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+#: src/nautilus-property-browser.c:1728
 msgid "Erase"
 msgstr "Ta bort"
 
@@ -316,7 +317,6 @@ msgid "Text Viewer"
 msgstr "Textvisare"
 
 #: components/text/Nautilus_View_text.server.in.in.h:4
-#: components/text/nautilus-text-view-ui.xml.h:4
 msgid "Text view"
 msgstr "Textvy"
 
@@ -329,60 +329,12 @@ msgid "View as Text"
 msgstr "Visa som text"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "T_ypsnitt"
+msgid "Copy Text"
+msgstr "Kopiera text"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Lucida"
-msgstr "Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:3
-msgid "Services"
-msgstr "Tjänster"
-
-#: components/text/nautilus-text-view-ui.xml.h:5
-msgid "Use the Courier Font"
-msgstr "Använd typsnittet Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:6
-msgid "Use the Fixed Font"
-msgstr "Använd typsnittet Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:7
-msgid "Use the GTK System Font"
-msgstr "Använd GTK:s systemtypsnitt"
-
-#: components/text/nautilus-text-view-ui.xml.h:8
-msgid "Use the Helvetica Font"
-msgstr "Använd typsnittet Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:9
-msgid "Use the Lucida Font"
-msgstr "Använd typsnittet Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:10
-msgid "Use the Times Font"
-msgstr "Använd typsnittet Times"
-
-#: components/text/nautilus-text-view-ui.xml.h:11
-msgid "_Courier"
-msgstr "_Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:12
-msgid "_Fixed"
-msgstr "_Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:13
-msgid "_GTK System Font"
-msgstr "_GTK:s systemtypsnitt"
-
-#: components/text/nautilus-text-view-ui.xml.h:14
-msgid "_Helvetica"
-msgstr "_Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:15
-msgid "_Times"
-msgstr "_Times"
+msgid "Copy selected text to the clipboard"
+msgstr "Kopiera den markerade texten till urklipp"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -405,7 +357,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animation som visar pågåenda aktivitet"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:579
+#: components/throbber/nautilus-throbber.c:576
 msgid "throbber"
 msgstr "snurra"
 
@@ -417,7 +369,7 @@ msgstr "snurrfabrik"
 msgid "throbber object factory"
 msgstr "snurrobjektsfabrik"
 
-#: components/throbber/nautilus-throbber.c:580
+#: components/throbber/nautilus-throbber.c:577
 msgid "provides visual status"
 msgstr "tillhandahåller synlig status"
 
@@ -1997,7 +1949,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
 #: libnautilus-private/nautilus-file-operations.c:2265
-#: src/file-manager/fm-desktop-icon-view.c:1275
+#: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
@@ -2507,7 +2459,7 @@ msgstr "länk"
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
-#: libnautilus-private/nautilus-file.c:5406
+#: libnautilus-private/nautilus-file.c:5414
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2763,103 +2715,103 @@ msgstr "MIME-typ"
 msgid "none"
 msgstr "inget"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1884
+#: libnautilus-private/nautilus-icon-canvas-item.c:1968
 msgid "file icon"
 msgstr "filikon"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2031
+#: libnautilus-private/nautilus-icon-canvas-item.c:2341
 msgid "editable text"
 msgstr "redigerbar text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2032
+#: libnautilus-private/nautilus-icon-canvas-item.c:2342
 msgid "the editable label"
 msgstr "den redigerbara etiketten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2039
+#: libnautilus-private/nautilus-icon-canvas-item.c:2349
 msgid "additional text"
 msgstr "ytterligare text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2040
+#: libnautilus-private/nautilus-icon-canvas-item.c:2350
 msgid "some more text"
 msgstr "mer text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2047
+#: libnautilus-private/nautilus-icon-canvas-item.c:2357
 msgid "highlighted for selection"
 msgstr "färgmarkerad för markering"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2048
+#: libnautilus-private/nautilus-icon-canvas-item.c:2358
 msgid "whether we are highlighted for a selection"
 msgstr "huruvida vi är färgmarkerade för en markering"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2055
+#: libnautilus-private/nautilus-icon-canvas-item.c:2365
 msgid "highlighted as keyboard focus"
 msgstr "färgmarkerad som tangentbordsfokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2056
+#: libnautilus-private/nautilus-icon-canvas-item.c:2366
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "huruvida vi är färgmarkerade för att rendera fokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2064
+#: libnautilus-private/nautilus-icon-canvas-item.c:2374
 msgid "highlighted for drop"
 msgstr "färgmarkerad för släpp"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2065
+#: libnautilus-private/nautilus-icon-canvas-item.c:2375
 msgid "whether we are highlighted for a D&D drop"
 msgstr "huruvida vi är färgmarkerade för ett drag-och-släpp"
 
-#: libnautilus-private/nautilus-icon-container.c:1711
+#: libnautilus-private/nautilus-icon-container.c:1722
 msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
-#: libnautilus-private/nautilus-icon-container.c:3503
+#: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Frame Text"
 msgstr "Rama in text"
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Draw a frame around unselected text"
 msgstr "Rita en ram runt omarkerad text"
 
-#: libnautilus-private/nautilus-icon-container.c:3510
+#: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Selection Box Color"
 msgstr "Färg på markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:3511
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color of the selection box"
 msgstr "Färg på markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:3516
+#: libnautilus-private/nautilus-icon-container.c:3533
 msgid "Selection Box Alpha"
 msgstr "Alfa för markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3534
 msgid "Opacity of the selection box"
 msgstr "Opacitet för markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:3524
+#: libnautilus-private/nautilus-icon-container.c:3541
 msgid "Highlight Alpha"
 msgstr "Färgmarkeringsalfa"
 
-#: libnautilus-private/nautilus-icon-container.c:3525
+#: libnautilus-private/nautilus-icon-container.c:3542
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitet för färgmarkeringen för markerade ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:3531
+#: libnautilus-private/nautilus-icon-container.c:3548
 msgid "Light Info Color"
 msgstr "Ljus informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:3532
+#: libnautilus-private/nautilus-icon-container.c:3549
 msgid "Color used for information text against a dark background"
 msgstr "Färg som används för informationstext mot en mörk bakgrund"
 
-#: libnautilus-private/nautilus-icon-container.c:3537
+#: libnautilus-private/nautilus-icon-container.c:3554
 msgid "Dark Info Color"
 msgstr "Mörk informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:3538
+#: libnautilus-private/nautilus-icon-container.c:3555
 msgid "Color used for information text against a light background"
 msgstr "Färg som används för informationstext mot en ljus bakgrund"
 
-#: libnautilus-private/nautilus-icon-dnd.c:727
+#: libnautilus-private/nautilus-icon-dnd.c:728
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -2869,7 +2821,7 @@ msgstr ""
 "lämna objektet där du släppte det? Detta kommer att skriva över den lagrade "
 "manuella layouten."
 
-#: libnautilus-private/nautilus-icon-dnd.c:731
+#: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -2879,7 +2831,7 @@ msgstr ""
 "lämna dessa objekt där du släppte dem? Detta kommer att skriva över den "
 "lagrade manuella layouten."
 
-#: libnautilus-private/nautilus-icon-dnd.c:737
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -2887,7 +2839,7 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna detta objekt där du släppte det?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:740
+#: libnautilus-private/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -2895,11 +2847,11 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna dessa objekt där du släppte dem?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:745
+#: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:746
+#: libnautilus-private/nautilus-icon-dnd.c:747
 msgid "Switch"
 msgstr "Byt"
 
@@ -3753,20 +3705,20 @@ msgstr "Visa som _ikoner"
 msgid "View as _List"
 msgstr "Visa som _lista"
 
-#: src/file-manager/fm-desktop-icon-view.c:785
+#: src/file-manager/fm-desktop-icon-view.c:778
 msgid "Background"
 msgstr "Bakgrund"
 
-#: src/file-manager/fm-desktop-icon-view.c:962
+#: src/file-manager/fm-desktop-icon-view.c:955
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Fel vid körning av verktygsprogrammet \"%s\": %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1293
+#: src/file-manager/fm-desktop-icon-view.c:1286
 msgid "E_ject"
 msgstr "_Mata ut"
 
-#: src/file-manager/fm-desktop-icon-view.c:1393
+#: src/file-manager/fm-desktop-icon-view.c:1386
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Avmontera volym"
@@ -3779,7 +3731,7 @@ msgstr "_Avmontera volym"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1517
+#: src/file-manager/fm-desktop-icon-view.c:1510
 #, c-format
 msgid "%s's Home"
 msgstr "%.0sHem"
@@ -4365,47 +4317,47 @@ msgstr "efter _emblem"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:1453
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Återställ ikonernas originalstorlekar"
 
-#: src/file-manager/fm-icon-view.c:1440
+#: src/file-manager/fm-icon-view.c:1454
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Återställ ikonens originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1775
+#: src/file-manager/fm-icon-view.c:1789
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2303
+#: src/file-manager/fm-icon-view.c:2317
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2323
+#: src/file-manager/fm-icon-view.c:2318 src/file-manager/fm-icon-view.c:2337
 msgid "Drag and Drop error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2322
+#: src/file-manager/fm-icon-view.c:2336
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:408
+#: src/file-manager/fm-list-view.c:409
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/file-manager/fm-list-view.c:432
+#: src/file-manager/fm-list-view.c:433
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:443
+#: src/file-manager/fm-list-view.c:444
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:454
+#: src/file-manager/fm-list-view.c:455
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -4630,7 +4582,7 @@ msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 #: src/file-manager/fm-properties-window.c:2357
 #: src/nautilus-bookmarks-window.c:138
 #: src/nautilus-file-management-properties.c:238
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:714
+#: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:714
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5712,102 +5664,102 @@ msgstr "_Ta bort..."
 msgid "_Add new..."
 msgstr "_Lägg till ny..."
 
-#: src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
+#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
 msgstr "Kunde inte ta bort mönster"
 
-#: src/nautilus-property-browser.c:936
+#: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:975
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
 msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:994
 msgid "_Keyword:"
 msgstr "_Nyckelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1006
+#: src/nautilus-property-browser.c:1012
 msgid "_Image:"
 msgstr "_Bild:"
 
-#: src/nautilus-property-browser.c:1010
+#: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:1034
+#: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 # SUN CHANGED MESSAGE
 #. make the name label and field
-#: src/nautilus-property-browser.c:1048
+#: src/nautilus-property-browser.c:1054
 msgid "Color _name:"
 msgstr "Färg_namn:"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:1064
+#: src/nautilus-property-browser.c:1070
 msgid "Color _value:"
 msgstr "Färg_värde:"
 
-#: src/nautilus-property-browser.c:1095
+#: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Tyvärr, \"%s\" är inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1097
+#: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Tyvärr, du angav inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
+#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1110
+#: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1335
 msgid "Not an Image"
 msgstr "Inte en bild"
 
-#: src/nautilus-property-browser.c:1141
+#: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1161
+#: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
 msgstr "Välj en bildfil att lägga till som mönster"
 
-#: src/nautilus-property-browser.c:1222
+#: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
-#: src/nautilus-property-browser.c:1223
+#: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1275
+#: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
 msgstr "Välj en färg att lägga till"
 
-#: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2037
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
@@ -5817,61 +5769,61 @@ msgstr "Välj en kategori:"
 # Jag vill ha "A_vbryt borttagning"
 # men jag går med på ändringen.
 #
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
 msgstr "A_vbryt ta bort"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:2052
 msgid "_Add a New Pattern..."
 msgstr "_Lägg till ett nytt mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2053
+#: src/nautilus-property-browser.c:2055
 msgid "_Add a New Color..."
 msgstr "_Lägg till en ny färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2058
 msgid "_Add a New Emblem..."
 msgstr "_Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2081
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2084
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2087
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2096
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2099
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2102
 msgid "Emblems:"
 msgstr "Emblem:"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2120
+#: src/nautilus-property-browser.c:2122
 msgid "_Remove a Pattern..."
 msgstr "_Ta bort ett mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2123
+#: src/nautilus-property-browser.c:2125
 msgid "_Remove a Color..."
 msgstr "_Ta bort en färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2126
+#: src/nautilus-property-browser.c:2128
 msgid "_Remove an Emblem..."
 msgstr "_Ta bort ett emblem..."
 
@@ -6255,7 +6207,7 @@ msgstr "Upp"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
-#: src/nautilus-window.c:1467
+#: src/nautilus-window.c:1489
 msgid "View as..."
 msgstr "Visa som..."
 
@@ -6651,36 +6603,36 @@ msgstr "Gå till ickeexisterande plats"
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#: src/nautilus-window-toolbars.c:422
+#: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
 msgstr "Gå bakåt några sidor"
 
-#: src/nautilus-window-toolbars.c:425
+#: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
 msgstr "Gå framåt ett antal sidor"
 
-#: src/nautilus-window.c:661
+#: src/nautilus-window.c:668
 msgid "Information"
 msgstr "Information"
 
-#: src/nautilus-window.c:1173
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Visa denna plats med \"%s\""
 
-#: src/nautilus-window.c:2200
+#: src/nautilus-window.c:2237
 msgid "Application ID"
 msgstr "Program-id"
 
-#: src/nautilus-window.c:2201
+#: src/nautilus-window.c:2238
 msgid "The application ID of the window."
 msgstr "Program-id för fönstret."
 
-#: src/nautilus-window.c:2207
+#: src/nautilus-window.c:2244
 msgid "Application"
 msgstr "Program"
 
-#: src/nautilus-window.c:2208
+#: src/nautilus-window.c:2245
 msgid "The NautilusApplication associated with this window."
 msgstr "Den NautilusApplication som är associerad med detta fönster."
 
@@ -6716,6 +6668,48 @@ msgstr "Nätverksservrar"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
+#~ msgid "F_onts"
+#~ msgstr "T_ypsnitt"
+
+#~ msgid "Lucida"
+#~ msgstr "Lucida"
+
+#~ msgid "Services"
+#~ msgstr "Tjänster"
+
+#~ msgid "Use the Courier Font"
+#~ msgstr "Använd typsnittet Courier"
+
+#~ msgid "Use the Fixed Font"
+#~ msgstr "Använd typsnittet Fixed"
+
+#~ msgid "Use the GTK System Font"
+#~ msgstr "Använd GTK:s systemtypsnitt"
+
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "Använd typsnittet Helvetica"
+
+#~ msgid "Use the Lucida Font"
+#~ msgstr "Använd typsnittet Lucida"
+
+#~ msgid "Use the Times Font"
+#~ msgstr "Använd typsnittet Times"
+
+#~ msgid "_Courier"
+#~ msgstr "_Courier"
+
+#~ msgid "_Fixed"
+#~ msgstr "_Fixed"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "_GTK:s systemtypsnitt"
+
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetica"
+
+#~ msgid "_Times"
+#~ msgstr "_Times"
+
 #~ msgid "Nodes side pane for Nautilus"
 #~ msgstr "Anteckningssidopanel för Nautilus"
 
@@ -6748,9 +6742,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
 #~ msgid "Clear Text"
 #~ msgstr "Töm text"
-
-#~ msgid "Copy Text"
-#~ msgstr "Kopiera text"
 
 #~ msgid "Paste Text"
 #~ msgstr "Klistra in text"
