@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-03-12 19:11+0100\n"
-"PO-Revision-Date: 2002-03-12 19:11+0100\n"
+"POT-Creation-Date: 2002-03-14 21:03+0100\n"
+"PO-Revision-Date: 2002-03-14 21:04+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Nautilus component adapter factory"
 msgstr "Nautilus komponent-adapter factory"
 
-#: components/adapter/main.c:99
+#: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() feilet."
 
@@ -1074,53 +1074,51 @@ msgid "Invalid RSS URL"
 msgstr "Ugyldig RSS-URL"
 
 #: components/news/nautilus-news.c:1870
-#: libnautilus-private/nautilus-undo-signal-handlers.c:174
-msgid "Edit"
-msgstr "Rediger"
+msgid "Edi_t"
+msgstr "Re_diger"
 
 #: components/news/nautilus-news.c:2142
 msgid "Site Name"
 msgstr "Navn på nettsted"
 
 #: components/news/nautilus-news.c:2168
-msgid "Remove Site"
-msgstr "Fjern nettsted"
+msgid "_Remove Site"
+msgstr "Fje_rn nettsted"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2194
-msgid "Site Name:"
-msgstr "Navn på nettsted:"
+msgid "Site _Name:"
+msgstr "_Navn på nettsted:"
 
-#: components/news/nautilus-news.c:2209
-msgid "Site RSS URL:"
-msgstr "RSS URL for nettsted:"
+#: components/news/nautilus-news.c:2212
+msgid "Site _RSS URL:"
+msgstr "_RSS-URL for nettsted:"
 
-#: components/news/nautilus-news.c:2227
-msgid "Add New Site"
-msgstr "Legg til nytt nettsted"
+#: components/news/nautilus-news.c:2232
+msgid "_Add New Site"
+msgstr "_Legg til nytt nettsted"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2257
+#: components/news/nautilus-news.c:2262
 msgid "Add a New Site:"
 msgstr "Legg til et nytt nettsted:"
 
-#: components/news/nautilus-news.c:2268
-msgid "Remove a Site:"
-msgstr "Fjern et nettsted:"
+#: components/news/nautilus-news.c:2273
+msgid "Remove a _Site:"
+msgstr "Fjern et nett_sted:"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2300
-msgid "Select Sites:"
-msgstr "Velg nettsteder:"
+#: components/news/nautilus-news.c:2323
+msgid "_Select Sites:"
+msgstr "_Velg nettsteder:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2323
-#: libnautilus-private/nautilus-program-chooser.c:1289
-msgid "Done"
-msgstr "Ferdig"
+#: components/news/nautilus-news.c:2353
+msgid "_Done"
+msgstr "_Ferdig"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2394
+#: components/news/nautilus-news.c:2424
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1129,11 +1127,11 @@ msgstr ""
 "Klikk 'Velg nettsteder' knappen for å velge nettsteder som skal vises."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2415
-msgid "Select Sites"
-msgstr "Velg nettsteder"
+#: components/news/nautilus-news.c:2445
+msgid "_Select Sites"
+msgstr "_Velg nettsteder"
 
-#: components/news/nautilus-news.c:2486
+#: components/news/nautilus-news.c:2516
 msgid "image indicating that the news has changed"
 msgstr "bilde som indikerer at nyhetene er endret"
 
@@ -2478,7 +2476,7 @@ msgstr "Erstatt alle"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1114
-#: libnautilus-private/nautilus-file.c:4176
+#: libnautilus-private/nautilus-file.c:4239
 #, c-format
 msgid "link to %s"
 msgstr "lenke til %s"
@@ -3088,7 +3086,7 @@ msgstr "foo (124de kopi)"
 msgid "foo (124th copy).txt"
 msgstr "foo (124de kopi).txt"
 
-#: libnautilus-private/nautilus-file.c:2205
+#: libnautilus-private/nautilus-file.c:2212
 msgid " (invalid Unicode)"
 msgstr " (ugyldig Unicode)"
 
@@ -3107,64 +3105,64 @@ msgstr " (ugyldig Unicode)"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2427
+#: libnautilus-private/nautilus-file.c:2490
 msgid "today at 00:00:00 PM"
 msgstr "i dag kl. 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2428
+#: libnautilus-private/nautilus-file.c:2491
 msgid "today at %-I:%M:%S %p"
 msgstr "i dag, %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2430
+#: libnautilus-private/nautilus-file.c:2493
 msgid "today at 00:00 PM"
 msgstr "i dag, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2431
+#: libnautilus-private/nautilus-file.c:2494
 msgid "today at %-I:%M %p"
 msgstr "i dag, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2433
+#: libnautilus-private/nautilus-file.c:2496
 msgid "today, 00:00 PM"
 msgstr "i dag, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2434
+#: libnautilus-private/nautilus-file.c:2497
 msgid "today, %-I:%M %p"
 msgstr "i dag, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2436
-#: libnautilus-private/nautilus-file.c:2437
+#: libnautilus-private/nautilus-file.c:2499
+#: libnautilus-private/nautilus-file.c:2500
 msgid "today"
 msgstr "i dag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2446
+#: libnautilus-private/nautilus-file.c:2509
 msgid "yesterday at 00:00:00 PM"
 msgstr "i går, 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2447
+#: libnautilus-private/nautilus-file.c:2510
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "i går, %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2449
+#: libnautilus-private/nautilus-file.c:2512
 msgid "yesterday at 00:00 PM"
 msgstr "i går, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2450
+#: libnautilus-private/nautilus-file.c:2513
 msgid "yesterday at %-I:%M %p"
 msgstr "i går, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2515
 msgid "yesterday, 00:00 PM"
 msgstr "i går, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2453
+#: libnautilus-private/nautilus-file.c:2516
 msgid "yesterday, %-I:%M %p"
 msgstr "i går, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2455
-#: libnautilus-private/nautilus-file.c:2456
+#: libnautilus-private/nautilus-file.c:2518
+#: libnautilus-private/nautilus-file.c:2519
 msgid "yesterday"
 msgstr "i går"
 
@@ -3173,132 +3171,132 @@ msgstr "i går"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2467
+#: libnautilus-private/nautilus-file.c:2530
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Onsdag, september 00 0000 kl. 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2468
+#: libnautilus-private/nautilus-file.c:2531
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y, %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2470
+#: libnautilus-private/nautilus-file.c:2533
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Man, 00 Okt 0000 kl. 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2534
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y, %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2536
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Man, okt 00 0000 kl. 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2474
+#: libnautilus-private/nautilus-file.c:2537
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2539
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Okt 00 0000 kl. 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2477
+#: libnautilus-private/nautilus-file.c:2540
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2479
+#: libnautilus-private/nautilus-file.c:2542
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2480
+#: libnautilus-private/nautilus-file.c:2543
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2482
+#: libnautilus-private/nautilus-file.c:2545
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2483
+#: libnautilus-private/nautilus-file.c:2546
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2485
+#: libnautilus-private/nautilus-file.c:2548
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2486
+#: libnautilus-private/nautilus-file.c:2549
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:3761
+#: libnautilus-private/nautilus-file.c:3824
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-private/nautilus-file.c:3761
+#: libnautilus-private/nautilus-file.c:3824
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3825
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-private/nautilus-file.c:3766
+#: libnautilus-private/nautilus-file.c:3829
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-private/nautilus-file.c:3766
+#: libnautilus-private/nautilus-file.c:3829
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3830
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-private/nautilus-file.c:3770
+#: libnautilus-private/nautilus-file.c:3833
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-private/nautilus-file.c:3770
+#: libnautilus-private/nautilus-file.c:3833
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3834
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4078
-#: libnautilus-private/nautilus-file.c:4094
+#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4157
 msgid "? items"
 msgstr "? oppføringer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4084
+#: libnautilus-private/nautilus-file.c:4147
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4099
+#: libnautilus-private/nautilus-file.c:4162
 msgid "unknown type"
 msgstr "ukjent type"
 
-#: libnautilus-private/nautilus-file.c:4102
+#: libnautilus-private/nautilus-file.c:4165
 msgid "unknown MIME type"
 msgstr "ukjent MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4108
+#: libnautilus-private/nautilus-file.c:4171
 msgid "unknown"
 msgstr "ukjent"
 
-#: libnautilus-private/nautilus-file.c:4140
+#: libnautilus-private/nautilus-file.c:4203
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4152
+#: libnautilus-private/nautilus-file.c:4215
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3308,7 +3306,7 @@ msgstr ""
 "sannsynligvis at din gnome-vfs.keys fil er på feilt sted eller ikke kan "
 "finnes av en eller annen grunn."
 
-#: libnautilus-private/nautilus-file.c:4156
+#: libnautilus-private/nautilus-file.c:4219
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3317,15 +3315,15 @@ msgstr ""
 "Ingen beskrivelse funnet for MIME-type \"%s\" (fil \"%s\"), si i fra til "
 "gnome-vfs e-post listen."
 
-#: libnautilus-private/nautilus-file.c:4170
+#: libnautilus-private/nautilus-file.c:4233
 msgid "link"
 msgstr "lenke"
 
-#: libnautilus-private/nautilus-file.c:4190
+#: libnautilus-private/nautilus-file.c:4253
 msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
-#: libnautilus-private/nautilus-file.c:5197
+#: libnautilus-private/nautilus-file.c:5260
 #: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:68
 msgid "Trash"
@@ -3789,6 +3787,10 @@ msgstr "Status"
 msgid "Choose"
 msgstr "Velg"
 
+#: libnautilus-private/nautilus-program-chooser.c:1289
+msgid "Done"
+msgstr "Ferdig"
+
 #: libnautilus-private/nautilus-program-chooser.c:1359
 msgid "_Modify..."
 msgstr "_Endre..."
@@ -4151,6 +4153,10 @@ msgstr "Nautilus søker etter søppelmapper på dine disker."
 #: libnautilus-private/nautilus-trash-file.c:718
 msgid "on the desktop"
 msgstr "på skrivebordet"
+
+#: libnautilus-private/nautilus-undo-signal-handlers.c:174
+msgid "Edit"
+msgstr "Rediger"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo Edit"
@@ -6888,7 +6894,7 @@ msgid "Change the visibility of this window's sidebar"
 msgstr "Endre synligheten for dette vinduets sidelinje"
 
 #: src/nautilus-shell-ui.xml.h:5
-msgid "Change the visibility of this window's status bar"
+msgid "Change the visibility of this window's statusbar"
 msgstr "Endre synligheten for dette vinduets statuslinje"
 
 #: src/nautilus-shell-ui.xml.h:6
@@ -6983,8 +6989,8 @@ msgstr "Gå til lokasjonen som inneholder den viste lokasjonen"
 msgid "Hide Location _Bar"
 msgstr "Skjul a_dresselinje"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:449
-msgid "Hide St_atus Bar"
+#: src/nautilus-shell-ui.xml.h:29
+msgid "Hide St_atusbar"
 msgstr "Skjul st_atuslinje"
 
 #: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:455
@@ -7454,6 +7460,10 @@ msgstr "Glem historikk?"
 msgid "Forget"
 msgstr "Glem"
 
+#: src/nautilus-window-menus.c:449
+msgid "Hide St_atus Bar"
+msgstr "Skjul st_atuslinje"
+
 #: src/nautilus-window-menus.c:450
 msgid "Show St_atus Bar"
 msgstr "Vis st_atuslinje"
@@ -7497,7 +7507,7 @@ msgstr ""
 "Nautilus er et grafisk skall for GNOME som gjør det lett å håndtere dine "
 "filer og resten av ditt system."
 
-#: src/nautilus-window-menus.c:698
+#: src/nautilus-window-menus.c:699
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7506,24 +7516,24 @@ msgstr ""
 "Lokasjonen \"%s\" eksisterer ikke. Ønsker du å fjerne alle bokmerker med "
 "denne lokasjonen fra din liste?"
 
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:703
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:703
+#: src/nautilus-window-menus.c:704
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/nautilus-window-menus.c:714
+#: src/nautilus-window-menus.c:715
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
-#: src/nautilus-window-menus.c:715
+#: src/nautilus-window-menus.c:716
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:784
+#: src/nautilus-window-menus.c:785
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til lokasjonen spesifisert i dette bokmerket"
 
