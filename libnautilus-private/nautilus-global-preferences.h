@@ -37,9 +37,6 @@ BEGIN_GNOME_DECLS
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
-/* Keep track of the sound playing process */
-#define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
-
 /* Text fields */
 #define NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS                "preferences/use_emacs_shortcuts"
 

@@ -39,6 +39,7 @@
 #include <libgnomeui/gnome-dialog-util.h>
 
 #define DEFAULT_USER_LEVEL	NAUTILUS_USER_LEVEL_INTERMEDIATE
+#define USER_LEVEL_KEY		"/apps/nautilus/user_level"
 
 /* An enumeration used for updating auto-storage variables in a type-specific way. 
  * FIXME: there is another enumeration like this in nautilus-global-preferences.c,
@@ -81,7 +82,6 @@ typedef struct {
 	gpointer callback_data;
 } PreferencesCallbackEntry;
 
-
 static const char *user_level_names_for_display[] =
 {
 	N_("Beginner"),
@@ -96,12 +96,9 @@ static const char *user_level_names_for_storage[] =
 	"advanced"
 };
 
-static char *       preferences_get_path                            (void);
-static char *       preferences_get_defaults_path                   (void);
-static char *       preferences_get_visibility_path                 (void);
-static char *       preferences_get_user_level_key                  (void);
-static GConfClient *preferences_global_client_get                   (void);
-static void         preferences_global_client_remove_notification   (void);
+static const char * preferences_peek_storage_path                   (void);
+static const char * preferences_peek_defaults_path                  (void);
+static const char * preferences_peek_visibility_path                (void);
 static gboolean     preferences_preference_is_internal              (const char               *name);
 static gboolean     preferences_preference_is_user_level            (const char               *name);
 static gboolean     preferences_preference_is_default               (const char               *name);
@@ -126,52 +123,78 @@ static void         preferences_global_table_check_changes_function (gpointer   
 static GHashTable  *preferences_global_table_get_global             (void);
 static void         preferences_callback_entry_free                 (PreferencesCallbackEntry *callback_entry);
 static void         preferences_entry_update_auto_storage           (PreferencesEntry         *entry);
+static void         preferences_global_table_free                   (void);
+static const char * preferences_peek_user_level_name_for_storage    (int                       user_level);
 
-static int user_level_changed_connection_id = -1;
+static guint user_level_changed_connection_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
 static GHashTable *global_table = NULL;
+static char *storage_path = NULL;
+static char *defaults_path = NULL;
+static char *visiblity_path = NULL;
+static gboolean initialized = FALSE;
 
-static char *
-preferences_get_path (void)
+static const char *
+preferences_peek_storage_path (void)
 {
-	return g_strdup ("/apps/nautilus");
+	g_return_val_if_fail (storage_path != NULL, NULL);
+
+	return storage_path;
 }
 
-static char *
-preferences_get_defaults_path (void)
+static void
+preferences_set_storage_path (const char *new_storage_path)
 {
-	char *defaults_path;
-	char *path;
-	
-	path = preferences_get_path ();
-	defaults_path = g_strdup_printf ("%s/defaults", path);
-	g_free (path);
+	g_return_if_fail (eel_strlen (new_storage_path) > 0);
+
+	/* Make sure the path is indeed different */
+	if (eel_str_is_equal (new_storage_path, storage_path)) {
+		return;
+	}
+
+	/* Free the preference hash table */
+	preferences_global_table_free ();
+
+	/* Stop monitoring the old path */
+	nautilus_gconf_monitor_remove (storage_path);
+
+	storage_path = g_strdup (new_storage_path);
+
+	/* Start monitoring the new path */
+	nautilus_gconf_monitor_add (storage_path);
+}
+
+static gboolean
+preferences_is_initialized (void)
+{
+	return initialized;
+}
+
+static const char *
+preferences_peek_defaults_path (void)
+{
+	if (defaults_path == NULL) {
+		defaults_path = g_strdup_printf ("%s/defaults", preferences_peek_storage_path ());
+	}
+
 	return defaults_path;
 }
 
-static char *
-preferences_get_visibility_path (void)
+static const char *
+preferences_peek_visibility_path (void)
 {
-	char *visibility_path;
-	char *path;
-	
-	path = preferences_get_path ();
-	visibility_path = g_strdup_printf ("%s/visibility", path);
-	g_free (path);
+	if (visiblity_path == NULL) {
+		visiblity_path = g_strdup_printf ("%s/visibility", preferences_peek_storage_path ());
+	}
 
-	return visibility_path;
+	return visiblity_path;
 }
 
-static char *
-preferences_get_user_level_key (void)
+static const char *
+preferences_peek_user_level_name_for_storage (int user_level)
 {
-	char *user_level_key;
-	char *path;
-
-	path = preferences_get_path ();
-	user_level_key = g_strdup_printf ("%s/user_level", path);
-	g_free (path);
-
-	return user_level_key;
+	user_level = nautilus_preferences_user_level_clamp (user_level);
+	
+	return user_level_names_for_storage[user_level];
 }
 
 /* If the preference name begind with a "/", we interpret 
@@ -191,27 +214,15 @@ preferences_preference_is_internal (const char *name)
 static gboolean
 preferences_preference_is_user_level (const char *name)
 {
-	gboolean result;
-	char *user_level_key;
-
 	g_return_val_if_fail (name != NULL, FALSE);
-
-	user_level_key = preferences_get_user_level_key ();
-
-	result = eel_str_is_equal (name, user_level_key)
+	
+	return eel_str_is_equal (name, USER_LEVEL_KEY)
 		|| eel_str_is_equal (name, "user_level");
-
-	g_free (user_level_key);
-
-	return result;
 }
 
 static char *
 preferences_key_make (const char *name)
 {
-	char *key;
-	char *path;
-
 	g_return_val_if_fail (name != NULL, NULL);
 	
 	if (!preferences_preference_is_internal (name)) {
@@ -219,11 +230,7 @@ preferences_key_make (const char *name)
 	}
 
 	/* Otherwise, we prefix it with the path */
-	path = preferences_get_path ();
-	key = g_strdup_printf ("%s/%s", path, name);
-	g_free (path);
-
-	return key;
+	return g_strdup_printf ("%s/%s", preferences_peek_storage_path (), name);
 }
 
 static char *
@@ -232,24 +239,16 @@ preferences_key_make_for_default (const char *name,
 {
 	char *key;
 	char *default_key = NULL;
-	char *defaults_path;
-	char *storage_name;
 
 	g_return_val_if_fail (name != NULL, NULL);
 
 	user_level = nautilus_preferences_user_level_clamp (user_level);
-
 	key = preferences_key_make (name);
-	defaults_path = preferences_get_defaults_path ();
-
-	storage_name = nautilus_preferences_get_user_level_name_for_storage (user_level);
 	default_key = g_strdup_printf ("%s/%s%s",
-				       defaults_path,
-				       storage_name,
+				       preferences_peek_defaults_path (),
+				       preferences_peek_user_level_name_for_storage (user_level),
 				       key);
-	g_free (storage_name);
 	g_free (key);
-	g_free (defaults_path);
 	
 	return default_key;
 }
@@ -285,71 +284,14 @@ preferences_key_make_for_visibility (const char *name)
 {
 	char *default_key;
 	char *key;
-	char *visibility_path;
 
 	g_return_val_if_fail (name != NULL, NULL);
 
 	key = preferences_key_make (name);
-
-	visibility_path = preferences_get_visibility_path ();
-	default_key = g_strdup_printf ("%s%s", visibility_path, key);
+	default_key = g_strdup_printf ("%s%s", preferences_peek_visibility_path (), key);
 	g_free (key);
-	g_free (visibility_path);
 	
 	return default_key;
-}
-
-static void
-preferences_global_client_remove_notification (void)
-{
-	GConfClient *client;
-
-	client = preferences_global_client_get ();
-
-	g_return_if_fail (client != NULL);
-
-	gconf_client_notify_remove (client, user_level_changed_connection_id);
-	user_level_changed_connection_id = -1;
-}
-
-static GConfClient *
-preferences_global_client_get (void)
-{
-	static GConfClient *global_gconf_client = NULL;
-	GError *error = NULL;
-	char *path;
-	char *user_level_key;
-	
-	if (global_gconf_client != NULL) {
-		return global_gconf_client;
-	}
-
-	global_gconf_client = nautilus_gconf_client_get_global ();
-	
-	g_return_val_if_fail (global_gconf_client != NULL, NULL);
-	
-	user_level_key = preferences_get_user_level_key ();
-	error = NULL;
-	user_level_changed_connection_id = gconf_client_notify_add (global_gconf_client,
-								    user_level_key,
-								    preferences_user_level_changed_notice,
-								    NULL,
-								    NULL,
-								    &error);
-	g_free (user_level_key);
-
-	if (nautilus_gconf_handle_error (&error)) {
-		global_gconf_client = NULL;
-		return NULL;
-	}
-
-	path = preferences_get_path ();
-	nautilus_gconf_monitor_directory (path);
-	g_free (path);
-	
-	g_atexit (preferences_global_client_remove_notification);
-
-	return global_gconf_client;
 }
 
 static gboolean
@@ -391,6 +333,7 @@ nautilus_preferences_get_visible_user_level (const char *name)
 	char *visible_key;
 	
 	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
 	
 	visible_key = preferences_key_make_for_visibility (name);
 	result = nautilus_gconf_get_integer (visible_key);
@@ -406,6 +349,7 @@ nautilus_preferences_set_visible_user_level (const char *name,
 	char *visible_key;
 	
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	visible_key = preferences_key_make_for_visibility (name);
 	nautilus_gconf_set_integer (visible_key, visible_user_level);
@@ -419,6 +363,7 @@ nautilus_preferences_set_boolean (const char *name,
 	char *key;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	key = preferences_key_make (name);
 	nautilus_gconf_set_boolean (key, boolean_value);
@@ -433,6 +378,7 @@ preferences_key_make_for_getter (const char *name)
 	char *key;
 
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
 	if (preferences_preference_is_default (name) || !nautilus_preferences_is_visible (name)) {
 		key = preferences_key_make_for_default_getter (name, nautilus_preferences_get_user_level ());
@@ -450,6 +396,7 @@ nautilus_preferences_get_boolean (const char *name)
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
 
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_boolean (key);
@@ -466,13 +413,13 @@ nautilus_preferences_set_integer (const char *name,
 	int old_value;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	key = preferences_key_make (name);
 	old_value = nautilus_preferences_get_integer (name);
-
+	
 	if (int_value != old_value) {
 		nautilus_gconf_set_integer (key, int_value);
-
 		nautilus_gconf_suggest_sync ();
 	}
 	g_free (key);
@@ -485,10 +432,10 @@ nautilus_preferences_get_integer (const char *name)
 	char *key;
 
 	g_return_val_if_fail (name != NULL, 0);
+	g_return_val_if_fail (preferences_is_initialized (), 0);
 
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_integer (key);
-
 	g_free (key);
 
 	return result;
@@ -502,6 +449,7 @@ nautilus_preferences_set (const char *name,
 	char *old_value;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	key = preferences_key_make (name);
 	old_value = nautilus_preferences_get (name);
@@ -521,6 +469,7 @@ nautilus_preferences_get (const char *name)
 	char *key;
 
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_string (key);
@@ -540,6 +489,7 @@ nautilus_preferences_set_string_list (const char *name,
 	char *key;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	key = preferences_key_make (name);
 	nautilus_gconf_set_string_list (key, string_list_value);
@@ -555,6 +505,7 @@ nautilus_preferences_get_string_list (const char *name)
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 	
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_string_list (key);
@@ -566,25 +517,12 @@ nautilus_preferences_get_string_list (const char *name)
 int
 nautilus_preferences_get_user_level (void)
 {
-	char *key;
 	char *user_level;
 	int result;
 
-	/* This is a little silly, but it is technically possible
-	 * to have different user_level defaults in each user level.
-	 *
-	 * This is a consequence of using gconf to store the user
-	 * level itself.  So, we special case the "user_level" setting
-	 * to always return the default for the first user level.
-	 */
-	if (preferences_preference_is_default ("user_level")) {
-		key = preferences_key_make_for_default ("user_level", 0);
-	} else {
-		key = preferences_key_make ("user_level");
-	}
+	g_return_val_if_fail (preferences_is_initialized (), 0);
 
-	user_level = nautilus_gconf_get_string (key);
-	g_free (key);
+	user_level = nautilus_gconf_get_string (USER_LEVEL_KEY);
 
 	if (eel_str_is_equal (user_level, "advanced")) {
 		result = NAUTILUS_USER_LEVEL_ADVANCED;
@@ -603,13 +541,12 @@ nautilus_preferences_get_user_level (void)
 void
 nautilus_preferences_set_user_level (int user_level)
 {
-	char *user_level_key;
-
+	g_return_if_fail (preferences_is_initialized ());
+	g_return_if_fail (nautilus_preferences_user_level_is_valid (user_level));
+	
 	user_level = nautilus_preferences_user_level_clamp (user_level);
 
-	user_level_key = preferences_get_user_level_key ();
-	nautilus_gconf_set_string (user_level_key, user_level_names_for_storage[user_level]);
-	g_free (user_level_key);
+	nautilus_gconf_set_string (USER_LEVEL_KEY, user_level_names_for_storage[user_level]);
 
 	nautilus_gconf_suggest_sync ();
 }
@@ -622,6 +559,7 @@ nautilus_preferences_default_set_integer (const char *name,
 	char *default_key;
 
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	nautilus_gconf_set_integer (default_key, int_value);
@@ -636,6 +574,7 @@ nautilus_preferences_default_get_integer (const char *name,
 	char *default_key;
 
 	g_return_val_if_fail (name != NULL, 0);
+	g_return_val_if_fail (preferences_is_initialized (), 0);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	result = nautilus_gconf_get_integer (default_key);
@@ -652,6 +591,7 @@ nautilus_preferences_default_set_boolean (const char *name,
 	char *default_key;
 	
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	nautilus_gconf_set_boolean (default_key, boolean_value);
@@ -666,6 +606,7 @@ nautilus_preferences_default_get_boolean (const char *name,
 	char *default_key;
 
 	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	result = nautilus_gconf_get_boolean (default_key);
@@ -682,6 +623,7 @@ nautilus_preferences_default_set_string (const char *name,
 	char *default_key;
 	
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	nautilus_gconf_set_string (default_key, string_value);
@@ -696,6 +638,7 @@ nautilus_preferences_default_get_string (const char *name,
 	char *default_key;
 
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	result = nautilus_gconf_get_string (default_key);
@@ -712,6 +655,7 @@ nautilus_preferences_default_set_string_list (const char *name,
 	char *default_key;
 	
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	nautilus_gconf_set_string_list (default_key, string_list_value);
@@ -726,6 +670,7 @@ nautilus_preferences_default_get_string_list (const char *name,
 	char *default_key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
 	result = nautilus_gconf_get_string_list (default_key);
@@ -928,8 +873,6 @@ preferences_user_level_changed_notice (GConfClient *client,
 static void
 preferences_entry_ensure_gconf_connection (PreferencesEntry *entry)
 {
-	GError *error;
-	GConfClient *client;
 	char *key;
 	
 	/*
@@ -937,30 +880,20 @@ preferences_entry_ensure_gconf_connection (PreferencesEntry *entry)
 	 * Otherwise, we would invoke the installed callbacks more than once
 	 * per registered callback.
 	 */
-	if (entry->gconf_connection_id != 0) {
+	if (entry->gconf_connection_id != NAUTILUS_GCONF_UNDEFINED_CONNECTION) {
 		return;
 	}
 		
 	g_return_if_fail (entry->name != NULL);
 
-	client = preferences_global_client_get ();
-
-	g_return_if_fail (client != NULL);
-
 	key = preferences_key_make (entry->name);
 
-	error = NULL;
-	entry->gconf_connection_id = gconf_client_notify_add (client,
-							      key,
-							      preferences_something_changed_notice,
-							      entry,
-							      NULL,
-							      &error);
-	if (nautilus_gconf_handle_error (&error)) {
-		entry->gconf_connection_id = 0;
-	}
-
+	entry->gconf_connection_id = nautilus_gconf_notification_add (key,
+								      preferences_something_changed_notice,
+								      entry);
 	g_free (key);
+
+	g_return_if_fail (entry->gconf_connection_id != NAUTILUS_GCONF_UNDEFINED_CONNECTION);
 
 	/* Update the cached value.
 	 * From now onwards the cached value will be updated 
@@ -1032,8 +965,6 @@ preferences_entry_add_auto_storage (PreferencesEntry *entry,
 static void
 preferences_entry_check_remove_connection (PreferencesEntry *entry)
 {
-	GConfClient *client;
-
 	/*
 	 * If there are no callbacks or auto-storage variables left in the entry, 
 	 * remove the gconf notification.
@@ -1042,13 +973,8 @@ preferences_entry_check_remove_connection (PreferencesEntry *entry)
 		return;
 	}
 
-	client = preferences_global_client_get ();
-	
-	if (entry->gconf_connection_id != 0) {
-		gconf_client_notify_remove (client, entry->gconf_connection_id);
-	}
-	
-	entry->gconf_connection_id = 0;
+	nautilus_gconf_notification_remove (entry->gconf_connection_id);
+	entry->gconf_connection_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
 }
 
 /**
@@ -1187,20 +1113,13 @@ preferences_entry_free (PreferencesEntry *entry)
 {
 	g_return_if_fail (entry != NULL);
 
-	if (entry->gconf_connection_id != 0) {
-		GConfClient *client;
-
-		client = preferences_global_client_get ();
-		g_assert (client != NULL);
-
-		gconf_client_notify_remove (client, entry->gconf_connection_id);
-		entry->gconf_connection_id = 0;
-	}
+	nautilus_gconf_notification_remove (entry->gconf_connection_id);
+	entry->gconf_connection_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
 
 	g_list_free (entry->auto_storage_list);
 	eel_g_list_free_deep_custom (entry->callback_list,
-					  preferences_callback_entry_free_func,
-					  NULL);
+				     preferences_callback_entry_free_func,
+				     NULL);
 	
 	entry->auto_storage_list = NULL;
 	entry->callback_list = NULL;
@@ -1225,8 +1144,8 @@ preferences_entry_free (PreferencesEntry *entry)
  **/
 static void
 preferences_entry_free_func (gpointer key,
-		      gpointer value,
-		      gpointer callback_data)
+			     gpointer value,
+			     gpointer callback_data)
 {
 	g_assert (value != NULL);
 
@@ -1243,14 +1162,27 @@ preferences_global_table_free (void)
 	g_hash_table_foreach (global_table, preferences_entry_free_func, NULL);
 	g_hash_table_destroy (global_table);
 	global_table = NULL;
+
+	g_free (storage_path);
+	storage_path = NULL;
+	g_free (defaults_path);
+	defaults_path = NULL;
+	g_free (visiblity_path);
+	visiblity_path = NULL;
 }
 
 static GHashTable *
 preferences_global_table_get_global (void)
 {
+	static gboolean at_exit_handler_added = FALSE;
+
 	if (global_table == NULL) {
 		global_table = g_hash_table_new (g_str_hash, g_str_equal);
-		g_atexit (preferences_global_table_free);
+
+		if (!at_exit_handler_added) {
+			at_exit_handler_added = TRUE;
+			g_atexit (preferences_global_table_free);
+		}
 	}
 	
 	return global_table;
@@ -1324,6 +1256,7 @@ nautilus_preferences_add_callback (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (callback != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1340,6 +1273,7 @@ nautilus_preferences_add_auto_string (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1360,6 +1294,7 @@ nautilus_preferences_add_auto_integer (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1379,6 +1314,7 @@ nautilus_preferences_add_auto_boolean (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1397,6 +1333,7 @@ nautilus_preferences_remove_auto_string (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup (name);
 	if (entry == NULL) {
@@ -1415,6 +1352,7 @@ nautilus_preferences_remove_auto_integer (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup (name);
 	if (entry == NULL) {
@@ -1433,6 +1371,7 @@ nautilus_preferences_remove_auto_boolean (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup (name);
 	if (entry == NULL) {
@@ -1479,6 +1418,7 @@ nautilus_preferences_add_callback_while_alive (const char *name,
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (GTK_IS_OBJECT (alive_object));
+	g_return_if_fail (preferences_is_initialized ());
 
 	data = g_new (WhileAliveData, 1);
 	data->name = g_strdup (name);
@@ -1502,6 +1442,7 @@ nautilus_preferences_remove_callback (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (callback != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup (name);
 
@@ -1521,6 +1462,7 @@ nautilus_preferences_set_description (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (description != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1535,6 +1477,7 @@ nautilus_preferences_get_description (const char *name)
 	PreferencesEntry *entry;
 
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
 	entry = preferences_global_table_lookup_or_insert (name);
 
@@ -1549,6 +1492,7 @@ nautilus_preferences_set_enumeration_id (const char *name,
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (enumeration_id != NULL);
+	g_return_if_fail (preferences_is_initialized ());
 
 	entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (entry != NULL);
@@ -1563,6 +1507,7 @@ nautilus_preferences_get_enumeration_id (const char *name)
 	PreferencesEntry *entry;
 
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
 	entry = preferences_global_table_lookup_or_insert (name);
 
@@ -1572,6 +1517,8 @@ nautilus_preferences_get_enumeration_id (const char *name)
 char *
 nautilus_preferences_get_user_level_name_for_display (int user_level)
 {
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
+
 	user_level = nautilus_preferences_user_level_clamp (user_level);
 	
 	return g_strdup (gettext (user_level_names_for_display[user_level]));
@@ -1580,27 +1527,33 @@ nautilus_preferences_get_user_level_name_for_display (int user_level)
 char *
 nautilus_preferences_get_user_level_name_for_storage (int user_level)
 {
-	user_level = nautilus_preferences_user_level_clamp (user_level);
-	
-	return g_strdup (user_level_names_for_storage[user_level]);
+	g_return_val_if_fail (preferences_is_initialized (), NULL);
+
+	return g_strdup (preferences_peek_user_level_name_for_storage (user_level));
 }
 
 int
 nautilus_preferences_user_level_clamp (int user_level)
 {
+	g_return_val_if_fail (preferences_is_initialized (), 0);
+
 	return CLAMP (user_level, NAUTILUS_USER_LEVEL_NOVICE, NAUTILUS_USER_LEVEL_ADVANCED);
 }
 
 gboolean
 nautilus_preferences_user_level_is_valid (int user_level)
 {
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
+
 	return user_level == nautilus_preferences_user_level_clamp (user_level);
 }
 
 gboolean
 nautilus_preferences_monitor_directory (const char *directory)
 {
-	return nautilus_gconf_monitor_directory (directory);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
+
+	return nautilus_gconf_monitor_add (directory);
 }
 
 gboolean
@@ -1610,6 +1563,7 @@ nautilus_preferences_is_visible (const char *name)
 	int visible_user_level;
 
 	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
 
 	user_level = nautilus_preferences_get_user_level ();
 	visible_user_level = nautilus_preferences_get_visible_user_level (name);
@@ -1617,9 +1571,74 @@ nautilus_preferences_is_visible (const char *name)
 	return visible_user_level <= user_level;
 }
 
+static void
+preferences_remove_user_level_notice (void)
+{
+	nautilus_gconf_notification_remove (user_level_changed_connection_id);
+	user_level_changed_connection_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
+}
+
+void
+nautilus_preferences_initialize (const char *path)
+{
+	g_return_if_fail (eel_strlen (path) > 0);
+	
+	if (initialized) {
+		return;
+	}
+
+	initialized = TRUE;
+
+	user_level_changed_connection_id = nautilus_gconf_notification_add (USER_LEVEL_KEY,
+									    preferences_user_level_changed_notice,
+									    NULL);
+
+	g_atexit (preferences_remove_user_level_notice);
+
+	preferences_set_storage_path (path);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+#define CONSTANT_STORAGE_PATH "/apps/self-check-nautilus"
+
+#define CHECK_BOOLEAN(name__, value__)								\
+G_STMT_START {											\
+	nautilus_preferences_set_boolean ((name__), (value__));					\
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_preferences_get_boolean (name__), (value__));	\
+} G_STMT_END
+
+#define CHECK_INTEGER(name__, value__)								\
+G_STMT_START {											\
+	nautilus_preferences_set_integer ((name__), (value__));					\
+	EEL_CHECK_INTEGER_RESULT (nautilus_preferences_get_integer (name__), (value__));	\
+} G_STMT_END
+
+#define CHECK_STRING(name__, value__)							\
+G_STMT_START {										\
+	nautilus_preferences_set ((name__), (value__));					\
+	EEL_CHECK_STRING_RESULT (nautilus_preferences_get (name__), (value__));	\
+} G_STMT_END
+
 void
 nautilus_self_check_preferences (void)
 {
+	int original_user_level;
+
+	original_user_level = nautilus_preferences_get_user_level ();
+
+ 	EEL_CHECK_INTEGER_RESULT (nautilus_preferences_get_integer ("self-check/neverset/i"), 0);
+ 	EEL_CHECK_STRING_RESULT (nautilus_preferences_get ("self-check/neverset/s"), "");
+ 	EEL_CHECK_BOOLEAN_RESULT (nautilus_preferences_get_boolean ("self-check/neverset/b"), FALSE);
+
+	nautilus_preferences_set_user_level (0);
+
+	CHECK_INTEGER ("self-check/i", 666);
+	CHECK_BOOLEAN ("self-check/b", TRUE);
+	CHECK_STRING ("self-check/s", "foo");
+
+	/* Restore the original user level */
+	nautilus_preferences_set_user_level (original_user_level);
 }
+
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

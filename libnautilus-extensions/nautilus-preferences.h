@@ -127,6 +127,7 @@ void     nautilus_preferences_set_enumeration_id              (const char       
 							       const char                   *enumeration_id);
 gboolean nautilus_preferences_monitor_directory               (const char                   *directory);
 gboolean nautilus_preferences_is_visible                      (const char                   *name);
+void     nautilus_preferences_initialize                      (const char                   *storage_path);
 
 END_GNOME_DECLS
 

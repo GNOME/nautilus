@@ -292,26 +292,6 @@ add_preferences_callbacks (void)
 					   NULL);
 }
 
-static void
-remove_preferences_callbacks (void)
-{
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					      filtering_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					      filtering_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-					      async_data_preference_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-					      async_data_preference_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					      async_data_preference_changed_callback,
-					      NULL);
-}
-
 char *
 nautilus_directory_make_uri_canonical (const char *uri)
 {
@@ -375,8 +355,6 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 			(g_str_hash, g_str_equal, "nautilus-directory.c: directories");
 
 		add_preferences_callbacks ();
-		g_atexit (remove_preferences_callbacks);
-		
 	}
 
 	/* If the object is already in the hash table, look it up. */

@@ -2,7 +2,7 @@
 
 /* nautilus-gconf-extensions.c - Stuff to make GConf easier to use in Nautilus.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -52,7 +52,7 @@ nautilus_gconf_client_get_global (void)
 {
 	/* Initialize gconf if needed */
 	if (!gconf_is_initialized ()) {
-		char *argv[] = { "nautilus", NULL };
+		char *argv[] = { "nautilus-preferences", NULL };
 		GError *error = NULL;
 		
 		if (!gconf_init (1, argv, &error)) {
@@ -147,7 +147,7 @@ nautilus_gconf_set_integer (const char *key,
 
 	client = nautilus_gconf_client_get_global ();
 	g_return_if_fail (client != NULL);
-	
+
 	gconf_client_set_int (client, key, int_value, &error);
 	nautilus_gconf_handle_error (&error);
 }
@@ -169,7 +169,7 @@ nautilus_gconf_get_integer (const char *key)
 	if (nautilus_gconf_handle_error (&error)) {
 		result = 0;
 	}
-	
+
 	return result;
 }
 
@@ -280,12 +280,13 @@ nautilus_gconf_is_default (const char *key)
 	if (value != NULL) {
 		gconf_value_free (value);
 	}
+
 	
 	return result;
 }
 
 gboolean
-nautilus_gconf_monitor_directory (const char *directory)
+nautilus_gconf_monitor_add (const char *directory)
 {
 	GError *error = NULL;
 	GConfClient *client;
@@ -293,7 +294,6 @@ nautilus_gconf_monitor_directory (const char *directory)
 	g_return_val_if_fail (directory != NULL, FALSE);
 
 	client = gconf_client_get_default ();
-
 	g_return_val_if_fail (client != NULL, FALSE);
 
 	gconf_client_add_dir (client,
@@ -305,6 +305,30 @@ nautilus_gconf_monitor_directory (const char *directory)
 		return FALSE;
 	}
 
+	return TRUE;
+}
+
+gboolean
+nautilus_gconf_monitor_remove (const char *directory)
+{
+	GError *error = NULL;
+	GConfClient *client;
+
+	if (directory == NULL) {
+		return FALSE;
+	}
+
+	client = gconf_client_get_default ();
+	g_return_val_if_fail (client != NULL, FALSE);
+	
+	gconf_client_remove_dir (client,
+				 directory,
+				 &error);
+	
+	if (nautilus_gconf_handle_error (&error)) {
+		return FALSE;
+	}
+	
 	return TRUE;
 }
 
@@ -397,4 +421,51 @@ nautilus_gconf_value_free (GConfValue *value)
 	}
 	
 	gconf_value_free (value);
+}
+
+guint
+nautilus_gconf_notification_add (const char *key,
+				 GConfClientNotifyFunc notification_callback,
+				 gpointer callback_data)
+{
+	guint notification_id;
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, NAUTILUS_GCONF_UNDEFINED_CONNECTION);
+	g_return_val_if_fail (notification_callback != NULL, NAUTILUS_GCONF_UNDEFINED_CONNECTION);
+
+	client = nautilus_gconf_client_get_global ();
+	g_return_val_if_fail (client != NULL, NAUTILUS_GCONF_UNDEFINED_CONNECTION);
+	
+	notification_id = gconf_client_notify_add (client,
+						   key,
+						   notification_callback,
+						   callback_data,
+						   NULL,
+						   &error);
+	
+	if (nautilus_gconf_handle_error (&error)) {
+		if (notification_id != NAUTILUS_GCONF_UNDEFINED_CONNECTION) {
+			gconf_client_notify_remove (client, notification_id);
+			notification_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
+		}
+	}
+	
+	return notification_id;
+}
+
+void
+nautilus_gconf_notification_remove (guint notification_id)
+{
+	GConfClient *client;
+
+	if (notification_id == NAUTILUS_GCONF_UNDEFINED_CONNECTION) {
+		return;
+	}
+	
+	client = nautilus_gconf_client_get_global ();
+	g_return_if_fail (client != NULL);
+
+	gconf_client_notify_remove (client, notification_id);
 }

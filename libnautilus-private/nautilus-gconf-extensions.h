@@ -2,7 +2,7 @@
 
 /* nautilus-gconf-extensions.h - Stuff to make GConf easier to use in Nautilus.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -31,6 +31,8 @@
 
 BEGIN_GNOME_DECLS
 
+#define NAUTILUS_GCONF_UNDEFINED_CONNECTION 0
+
 GConfClient *nautilus_gconf_client_get_global   (void);
 gboolean     nautilus_gconf_handle_error        (GError                **error);
 void         nautilus_gconf_set_boolean         (const char             *key,
@@ -46,12 +48,17 @@ GList *      nautilus_gconf_get_string_list     (const char             *key);
 void         nautilus_gconf_set_string_list     (const char             *key,
 						 GList                  *string_list_value);
 gboolean     nautilus_gconf_is_default          (const char             *key);
-gboolean     nautilus_gconf_monitor_directory   (const char             *directory);
+gboolean     nautilus_gconf_monitor_add         (const char             *directory);
+gboolean     nautilus_gconf_monitor_remove      (const char             *directory);
 void         nautilus_gconf_suggest_sync        (void);
 GConfValue*  nautilus_gconf_get_value           (const char             *key);
 gboolean     nautilus_gconf_value_is_equal      (const GConfValue       *a,
 						 const GConfValue       *b);
 void         nautilus_gconf_value_free          (GConfValue             *value);
+guint        nautilus_gconf_notification_add    (const char             *key,
+						 GConfClientNotifyFunc   notification_callback,
+						 gpointer                callback_data);
+void         nautilus_gconf_notification_remove (guint                   notification_id);
 
 END_GNOME_DECLS
 

@@ -232,8 +232,8 @@ typedef struct
 	const char *name;
 	PreferenceType type;
 	int visible_user_level;
-	PreferenceUserLevelDefault default1;
-	PreferenceUserLevelDefault default2;
+	const PreferenceUserLevelDefault default1;
+	const PreferenceUserLevelDefault default2;
 	const char *enumeration_id;
 } PreferenceDefault;
 
@@ -1545,6 +1545,8 @@ nautilus_global_preferences_initialize (void)
 	}
 
 	initialized = TRUE;
+
+	nautilus_preferences_initialize ("/apps/nautilus");
 
 	/* Install defaults */
 	global_preferences_install_defaults ();

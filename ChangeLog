@@ -1,5 +1,57 @@
 2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-preferences-private.h:
+	Remove unused header.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_internal):
+	Remove unnecessary removal of preferences callbacks at exit time.
+	This happens automatically.
+
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(nautilus_gconf_client_get_global), (nautilus_gconf_set_integer),
+	(nautilus_gconf_get_integer), (nautilus_gconf_is_default),
+	(nautilus_gconf_monitor_add), (nautilus_gconf_monitor_remove),
+	(nautilus_gconf_value_free), (nautilus_gconf_notification_add),
+	(nautilus_gconf_notification_remove):
+	New functions for easier addition and removal of notifications.
+	New funtions for easier addition and removal of directory
+	monitoring.
+	Add a #define for a undefined connection.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove SOUND_STATE hack.
+
+	* libnautilus-extensions/nautilus-sound.c:
+	(kill_sound_if_necessary), (nautilus_sound_initialize),
+	(nautilus_sound_kill_sound), (nautilus_sound_register_sound),
+	(nautilus_sound_can_play_sound):
+	Use gconf directly for the sound state hack, since nautilus
+	preferences arent really useful for this specific use because of
+	initialization, and default value issues.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_initialize): 
+	Pass in the storage prefix when initializing preferences.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	We now need to pass in the storage prefix when initializing.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	Change the way preferences are initialized a little bit.  We now
+	feed the initialize function a storage prefix to use for gconf.
+	Add assertions for any public function that was used before
+	initialization.  Make the key allocations a little faster by
+	caching the prefixes that hardly ever change.  Simplify the
+	addition and removal of gconf notifications by using the new gconf
+	extensions to do so.
+	Add a little bit of self checks.  I need to figure out a gconf
+	problem before adding more checks, these are very minimal for now.
+
+2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-main.c:
 	(main): Dont include eel library self checks header since its now
 	private.  Also dont run the eel library self checks anymore.

@@ -186,7 +186,6 @@ noinst_HEADERS = \
 	nautilus-preferences-group.h \
 	nautilus-preferences-item.h \
 	nautilus-preferences-pane.h \
-	nautilus-preferences-private.h \
 	nautilus-preferences.h \
 	nautilus-program-chooser.h \
 	nautilus-program-choosing.h \

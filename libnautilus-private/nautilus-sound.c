@@ -29,9 +29,11 @@
 #include <wait.h>
 #include <esd.h>
 
-#include "nautilus-global-preferences.h"
-#include "nautilus-preferences.h"
+#include "nautilus-gconf-extensions.h"
 #include "nautilus-sound.h"
+
+/* Keep track of the sound playing process */
+#define CURRENT_SOUND_STATE_KEY "/apps/nautilus/sound_state"
 
 static void
 kill_sound_if_necessary (void)
@@ -41,7 +43,7 @@ kill_sound_if_necessary (void)
 	pid_t sound_process;
 	
 	/* fetch the sound state */
-	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
+	sound_process = nautilus_gconf_get_integer (CURRENT_SOUND_STATE_KEY);
 	
 	/* if there was a sound playing, kill it */
 	if (sound_process > 0) {
@@ -55,7 +57,8 @@ kill_sound_if_necessary (void)
 void
 nautilus_sound_initialize (void)
 { 	
- 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0); 	
+	nautilus_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
+	nautilus_gconf_suggest_sync ();
 }
 
 /* if there is a sound registered, kill it, and register the empty sound */
@@ -66,7 +69,8 @@ nautilus_sound_kill_sound (void)
 	kill_sound_if_necessary ();
 		
 	/* set the process state to quiescent */
- 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+	nautilus_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
+	nautilus_gconf_suggest_sync ();
 }
 
 /* register a new sound process, including kill any old one if necessary */
@@ -77,7 +81,8 @@ nautilus_sound_register_sound (pid_t sound_process)
 	kill_sound_if_necessary ();
 	
 	/* record the new sound process ID */
-	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, sound_process);
+	nautilus_gconf_set_integer (CURRENT_SOUND_STATE_KEY, sound_process);
+	nautilus_gconf_suggest_sync ();
 }
 
 /* This function does two things. First it checks to see a sound is currently playing.  If it is,
@@ -91,7 +96,7 @@ nautilus_sound_can_play_sound (void)
 	int sound_process, open_result;
 	
 	/* first see if there's already one in progress; if so, return true */
-	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
+	sound_process = nautilus_gconf_get_integer (CURRENT_SOUND_STATE_KEY);
 	if (sound_process > 0) {
 		return TRUE;
 	}
