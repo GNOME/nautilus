@@ -1220,6 +1220,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local
 			    && nautilus_gdk_pixbuf_supported (mime_type))
 				uri = nautilus_file_get_uri (file);
+
+			if (uri == NULL && /* handle SVG files */
+			    !strcmp (mime_type, "image/svg")) {
+				uri = g_strdup (file_uri);
+			}
+
 			if (uri == NULL && strstr (file_uri, "/.thumbnails/") == NULL
 			    && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file);
@@ -1228,12 +1234,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				}
 			}
 		}
-	}
-
-	/* handle SVG files */
-	if (uri == NULL && icon_name == NULL
-	    && nautilus_file_is_mime_type (file, "image/svg")) {
-		uri = g_strdup (file_uri);
 	}
 	
 	/* Get the generic icon set for this file. */
