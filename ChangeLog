@@ -1,3 +1,15 @@
+Sun Feb 25 17:58:57 2001  George Lebl <jirka@5z.com>
+
+	bored by this patch: Mike Fleming  <mfleming@eazel.com>
+
+	Fixes #6973
+
+	* components/help/converters/gnome-db2html2/Makefile.am: define
+	  GNOMELOCALEDIR
+
+	* components/help/converters/gnome-db2html2/gdb3html.c (main):
+	  do the gettext dance as jfleck so rightly pointed out
+
 2001-02-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

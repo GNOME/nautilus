@@ -860,6 +860,11 @@ main (int argc, char *argv[])
 	gchar *ptr;
 	gchar *ptr2;
 
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	if (argc != 2) {
 		g_print ("Usage:  gnome-db2html2 FILE[?SECTIONID]\n\n");
 		return 0;

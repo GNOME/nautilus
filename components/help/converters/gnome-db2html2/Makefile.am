@@ -1,9 +1,11 @@
 ## Process this file with automake to produce Makefile.in.
 
-INCLUDES = 			\
-	-I$(includedir)		\
+INCLUDES = 						\
+	-I$(includedir)					\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	$(GNOME_CFLAGS) $(XML_CFLAGS)
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(GNOME_CFLAGS)					\
+	$(XML_CFLAGS)
 
 LDADD = \
 	$(GNOME_LIBS) $(XML_LIBS)
