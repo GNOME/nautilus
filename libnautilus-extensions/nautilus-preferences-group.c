@@ -269,28 +269,13 @@ void
 nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 {
 	GList *iterator;
-	NautilusPreferencesItem *preferences_item;
-	gboolean shown;
-	char *name = NULL;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 	
 	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
-		preferences_item = NAUTILUS_PREFERENCES_ITEM (iterator->data);
-
-		name = nautilus_preferences_item_get_name (preferences_item);
-
-		nautilus_preferences_item_update_displayed_value (preferences_item);
-
-		if (nautilus_preferences_is_visible (name)) {
-			shown = nautilus_preferences_item_get_control_showing (preferences_item);
-		} else {
-			shown = FALSE;
-		}
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (iterator->data));
 		
-		nautilus_gtk_widget_set_shown (GTK_WIDGET (iterator->data), shown);
-		
-		g_free (name);
+		nautilus_preferences_item_update_showing (NAUTILUS_PREFERENCES_ITEM (iterator->data));
 	}
 
 	preferences_group_align_captions (group);

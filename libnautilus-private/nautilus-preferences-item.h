@@ -83,7 +83,6 @@ GtkType    nautilus_preferences_item_get_type                       (void);
 GtkWidget* nautilus_preferences_item_new                            (const char                           *preference_name,
 								     NautilusPreferencesItemType           item_type);
 char *     nautilus_preferences_item_get_name                       (const NautilusPreferencesItem        *preferences_item);
-void       nautilus_preferences_item_update_displayed_value         (NautilusPreferencesItem              *preferences_item);
 void       nautilus_preferences_item_set_control_preference         (NautilusPreferencesItem              *preferences_item,
 								     const char                           *control_preference_name);
 void       nautilus_preferences_item_set_control_action             (NautilusPreferencesItem              *preferences_item,
@@ -96,6 +95,7 @@ gboolean   nautilus_preferences_item_child_is_caption               (const Nauti
 int        nautilus_preferences_item_get_caption_title_label_width  (const NautilusPreferencesItem        *item);
 void       nautilus_preferences_item_set_caption_spacing            (NautilusPreferencesItem              *item,
 								     int                                   spacing);
+void       nautilus_preferences_item_update_showing                 (NautilusPreferencesItem              *item);
 
 END_GNOME_DECLS
 

@@ -1,3 +1,27 @@
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_update_showing): New function to update
+	the showing state of the item depending on preferences visibility.
+	(preferences_item_construct),
+	(preferences_item_value_changed_callback),
+	(preferences_item_create_enum),
+	(preferences_item_update_displayed_value): Make
+	update_displayed_value private.  It no longer needs to be called
+	by the parent container.  Since preference items now get updated
+	by value changed callbacks.
+
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_update): No need to update the showing
+	state of the items over here.  Simpy call the new preferences item
+	function to do this.
+
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_initialize),
+	(nautilus_preferences_dialog_destroy):
+	Have the callback automatically removed.  Small style tweaking.
+
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>

@@ -107,13 +107,14 @@ nautilus_preferences_dialog_initialize_class (NautilusPreferencesDialogClass * k
 }
 
 static void
-nautilus_preferences_dialog_initialize (NautilusPreferencesDialog * prefs_dialog)
+nautilus_preferences_dialog_initialize (NautilusPreferencesDialog *prefs_dialog)
 {
-	prefs_dialog->details = g_new (NautilusPreferencesDialogDetails, 1);
-
-	prefs_dialog->details->prefs_box = NULL;
-
-	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, prefs_dialog);
+	prefs_dialog->details = g_new0 (NautilusPreferencesDialogDetails, 1);
+	
+	nautilus_preferences_add_callback_while_alive ("user_level",
+						       user_level_changed_callback,
+						       prefs_dialog,
+						       GTK_OBJECT (prefs_dialog));
 }
 
 static void
@@ -236,13 +237,10 @@ nautilus_preferences_dialog_destroy(GtkObject* object)
 	
 	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG(object);
 
-	nautilus_preferences_remove_callback ("user_level", user_level_changed_callback, prefs_dialog);
-
 	g_free (prefs_dialog->details);
 
-	/* Chain */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	/* Chain destroy */
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget*

@@ -24,28 +24,31 @@
 
 #include <config.h>
 #include "nautilus-preferences-item.h"
-#include "nautilus-preferences.h"
+
+#include "nautilus-enumeration.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-font-picker.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-preferences.h"
+#include "nautilus-radio-button-group.h"
+#include "nautilus-string-picker.h"
 #include "nautilus-string.h"
+#include "nautilus-text-caption.h"
+
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <ctype.h>
 
 #include <libgnome/gnome-i18n.h>
+
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 
-#include "nautilus-radio-button-group.h"
-#include "nautilus-string-picker.h"
-#include "nautilus-font-picker.h"
-#include "nautilus-text-caption.h"
-#include "nautilus-enumeration.h"
-
-#include "nautilus-global-preferences.h"
 
 static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
 static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
@@ -89,6 +92,7 @@ static void preferences_item_create_font                              (NautilusP
 								       const char                   *preference_name);
 static void preferences_item_create_smooth_font                       (NautilusPreferencesItem      *item,
 								       const char                   *preference_name);
+static void preferences_item_update_displayed_value                   (NautilusPreferencesItem      *preferences_item);
 static void preferences_item_update_text_settings_at_idle             (NautilusPreferencesItem      *preferences_item);
 static void preferences_item_update_editable_integer_settings_at_idle (NautilusPreferencesItem      *preferences_item);
 static void enum_radio_group_changed_callback                         (GtkWidget                    *button_group,
@@ -208,7 +212,7 @@ preferences_item_construct (NautilusPreferencesItem *item,
 	g_assert (item->details->child != NULL);
 	g_assert (item->details->change_signal_ID != 0);
 
-	nautilus_preferences_item_update_displayed_value (item);
+	preferences_item_update_displayed_value (item);
 
 	gtk_box_pack_start (GTK_BOX (item),
 			    item->details->child,
@@ -247,7 +251,7 @@ preferences_item_value_changed_callback (gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (callback_data));
 	
-	nautilus_preferences_item_update_displayed_value (NAUTILUS_PREFERENCES_ITEM (callback_data));
+	preferences_item_update_displayed_value (NAUTILUS_PREFERENCES_ITEM (callback_data));
 }
 
 static void
@@ -272,7 +276,7 @@ preferences_item_create_enum (NautilusPreferencesItem *item,
 		
 		nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child),
 						    description);
-
+		
 		g_free (description);
 	}
 	
@@ -838,8 +842,8 @@ nautilus_preferences_item_get_name (const NautilusPreferencesItem *preferences_i
 	return g_strdup (preferences_item->details->preference_name);
 }
 
-void
-nautilus_preferences_item_update_displayed_value (NautilusPreferencesItem *item)
+static void
+preferences_item_update_displayed_value (NautilusPreferencesItem *item)
 {
 	NautilusPreferencesItemType item_type;
 	
@@ -1081,4 +1085,18 @@ nautilus_preferences_item_set_caption_spacing (NautilusPreferencesItem *item,
 	}
 
 	return nautilus_caption_set_spacing (NAUTILUS_CAPTION (item->details->child), spacing);
+}
+
+void
+nautilus_preferences_item_update_showing (NautilusPreferencesItem *item)
+{
+	gboolean shown = FALSE;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+
+	if (nautilus_preferences_is_visible (item->details->preference_name)) {
+		shown = nautilus_preferences_item_get_control_showing (item);
+	}
+
+	nautilus_gtk_widget_set_shown (GTK_WIDGET (item), shown);
 }
