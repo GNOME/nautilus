@@ -377,7 +377,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	
 	file_uri = nautilus_file_get_uri (file);
 		
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), anti_aliased, TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, TRUE, anti_aliased, TRUE);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
