@@ -1,3 +1,11 @@
+2002-07-17  Bastien Nocera  <hadess@hadess.net>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_look_for_dot_directory_file): fix function not to run
+	eel_str_has_prefix against NULL, either we use a NULL terminator to
+	the array, or G_N_ELEMENTS. Makes rio500: work, and should speed up
+	most network methods. (Closes: #78951)
+
 2002-07-11  Michael Meeks  <michael@ximian.com>
 
 	* components/*/.server.in -> *.server.in.in
