@@ -98,8 +98,14 @@ hyperbola_doc_tree_new (void)
 	HyperbolaDocTree *retval = g_new0 (HyperbolaDocTree, 1);
 
 	retval->global_by_uri = g_hash_table_new (g_str_hash, g_str_equal);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	/* The all_index_files hash table stores the index file names (incl.
+	 * absolute path). The key to the hash table is the uri for the
+	 * corresponding  document.
+	 */ 
+	retval->all_index_files = g_hash_table_new (g_str_hash, g_str_equal);
+#endif
 	retval->children = g_tree_new (tree_key_compare);
-
 	return retval;
 }
 
@@ -107,6 +113,9 @@ void
 hyperbola_doc_tree_destroy (HyperbolaDocTree * tree)
 {
 	g_hash_table_destroy (tree->global_by_uri);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	g_hash_table_destroy (tree->all_index_files);
+#endif
 	g_tree_traverse (tree->children, tree_node_destroy, G_IN_ORDER, NULL);
 	g_tree_destroy (tree->children);
 }
@@ -1051,8 +1060,8 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
 	xmlDocPtr toc_doc;
 	xmlNodePtr next_child;
 	errorSAXFunc xml_error_handler;
-    	warningSAXFunc xml_warning_handler;
-    	fatalErrorSAXFunc xml_fatal_error_handler;
+ 	warningSAXFunc xml_warning_handler;
+   	fatalErrorSAXFunc xml_fatal_error_handler;
 
 	int pos;
 
@@ -1066,8 +1075,8 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
 	xmlDefaultSAXHandler.fatalError = NULL;
 	toc_doc = xmlParseFile (toc_file);
 	xmlDefaultSAXHandler.error = xml_error_handler;
-    	xmlDefaultSAXHandler.warning = xml_warning_handler;
-    	xmlDefaultSAXHandler.fatalError = xml_fatal_error_handler;
+   	xmlDefaultSAXHandler.warning = xml_warning_handler;
+   	xmlDefaultSAXHandler.fatalError = xml_fatal_error_handler;
 
 	if (!toc_doc) {
 		/*
@@ -1107,6 +1116,12 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
  * it is processing.  If it can, it calls fmt_scrollkeeper_parse_doc_toc to
  * process that Table of Contents file.
  *
+ * It also attempts to locate an index for the particular document it is 
+ * processing.  If the index exists it is entered into the all_index_files
+ * hashtable (member of the HyperbolaDocTree). The uri of the document is
+ * the key to the hashtable, and the index file name (incl. path) is the
+ * value.
+ *
  * 	ancestors:	The textual path in the tree at which to root changes
  *
  * 	node:		The XML node representing the document to be processed.
@@ -1120,15 +1135,12 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 
 	FILE *pipe;
 	int i;
-
-	char *toc_location;
 	int bytes_read;
+
 
 	char *doc_uri;
 	char *doc_data[3] = { NULL };
 
-
-	toc_location = g_new0 (char, 1024);
 
 	next_child = node->children;
 
@@ -1163,7 +1175,6 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 	} else {
 		/* If not a type we deal with then don't do anything else */
 		g_free (section);
-		g_free (toc_location);
 		xmlFree (doc_data[0]);
 		xmlFree (doc_data[1]);
 		xmlFree (doc_data[2]);
@@ -1174,27 +1185,57 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
 				(const char **) ancestors, doc_data[0],
 				doc_uri);
+	/*
+	 *  Only do the following if creating the contents tree,
+	 *  for the contents page, ie get TOCs and a list
+	 *  of index files
+	 */
+	if(tree->contents_tree_type){
 
-	/* Get the TOC, if there is one, for the document */
-	g_snprintf (toc_location, 1024,
-		    "scrollkeeper-get-toc-from-docpath %s", doc_data[1]);
+                char *toc_location;
+                toc_location = g_new0 (char, 1024);
+                /* Get the TOC, if there is one, for the document */
+                g_snprintf (toc_location, 1024,
+                            "scrollkeeper-get-toc-from-docpath %s", doc_data[1]);
 
-	pipe = popen (toc_location, "r");
-	bytes_read = fread ((void *) toc_location, sizeof (char), 1024, pipe);
+                pipe = popen (toc_location, "r");
+                bytes_read = fread ((void *) toc_location, sizeof (char), 1024, pipe);
 
-	if (bytes_read > 0) {
-		toc_location[bytes_read - 1] = '\0';
+                if (bytes_read > 0) {
+                        toc_location[bytes_read - 1] = '\0';
 
 
-		/* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
-		if (!pclose (pipe)) {
-			fmt_scrollkeeper_parse_doc_toc (tree, section,
-							toc_location,
-							doc_uri);
+                        /* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
+                        if (!pclose (pipe)) {
+                                fmt_scrollkeeper_parse_doc_toc (tree, section,
+                                                                toc_location,
+                                                                doc_uri);
+                        }
+                }
+
+                g_free (toc_location);
+        }else{
+		char *index_location;
+		index_location = g_new0 (char, 1024);
+		/* Get the index file, if it exists, for the document */
+		g_snprintf (index_location, 1024,
+			    "scrollkeeper-get-index-from-docpath %s", doc_data[1]);
+		pipe = popen (index_location, "r");
+		bytes_read = fread ((void *) index_location, sizeof (char), 1024, pipe);
+
+		if (bytes_read > 0) {
+			index_location[bytes_read - 1] = '\0';
+			/* Exit code of 0 indicates ScrollKeeper returned an index file */
+			if (!pclose (pipe)) {
+				char *key, *index;
+				key = g_strdup(doc_uri);
+				index = g_strdup(index_location);
+				g_hash_table_insert(tree->all_index_files, key,
+							index);
+			}
 		}
+		g_free (index_location);
 	}
-
-	g_free (toc_location);
 	g_free (doc_uri);
 	g_free (section);
 	xmlFree (doc_data[0]);
@@ -1433,6 +1474,8 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	}
 }
 
+
+
 static char *
 remove_leading_and_trailing_white_spaces (char * str)
 {
@@ -1501,7 +1544,7 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     
     	if (uri != NULL && title != NULL) {
 	
-        	char toc_location[1024];
+       	char toc_location[1024];
 		FILE *pipe;
 		int bytes_read, i;
 		char **section;
@@ -1509,25 +1552,26 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
 	
 		tree_path[0] = NULL;
     
-        	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
+       	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
 	             	        	(const char **)tree_path, title, uri);
 				
 		section = fmt_scrollkeeper_expand_ancestor_list(tree_path, &i);
 		section[i] = title;
 				
 		/* Get the TOC, if there is one, for the document */ 
-        	g_snprintf (toc_location, 1024, "scrollkeeper-get-toc-from-docpath %s", 
+       	g_snprintf (toc_location, 1024, "scrollkeeper-get-toc-from-docpath %s", 
 		  		doc_path);
 
 	  	pipe = popen (toc_location, "r");
   		bytes_read = fread ((void *)toc_location, sizeof(char), 1024, pipe);
 
 	  	if (bytes_read > 0) {
-    		    	toc_location[bytes_read - 1] = '\0';
+	    	toc_location[bytes_read - 1] = '\0';
  
-	    		/* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
-    	    		if(!pclose(pipe))
-       	    			fmt_scrollkeeper_parse_doc_toc (tree, section, toc_location, uri);
+    		/* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
+   	    		if(!pclose(pipe))
+  	    			fmt_scrollkeeper_parse_doc_toc (tree, section, toc_location, uri);
+			
     		}
 
 		g_free(uri);
