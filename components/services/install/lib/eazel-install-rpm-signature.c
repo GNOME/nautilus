@@ -31,9 +31,170 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <rpm/rpmlib.h>
 #include <glib.h>
 #include "eazel-install-rpm-signature.h"
+
+
+/* some older versions of librpm are COMPLETELY INCOMPATIBLE with newer versions,
+ * even though they have the same library version number!
+ * so, parsing the RPM file headers must be done by hand. :( :( :(
+ */
+
+#define RPM_MAGIC_1	0xED
+#define RPM_MAGIC_2	0xAB
+#define RPM_MAGIC_3	0xEE
+#define RPM_MAGIC_4	0xDB
+
+#define RPM_GPG_BLOCK	0x3ED
+
+typedef struct {
+	gint32 magic;
+	gint32 reserved;
+	gint32 entries;
+	gint32 data_size;
+} RPMHeader;
+
+typedef struct {
+	gint32 tag;
+	gint32 type;
+	gint32 offset;
+	gint32 count;
+} RPMEntry;
+
+
+/* returns 0 on success,
+ *        -1 if this isn't an RPM, or is incompatible somehow
+ */
+static int
+read_rpm_lead (int fd)
+{
+	unsigned char buffer[96];
+	int bytes = 0;
+	int n;
+
+	while (bytes < sizeof (buffer)) {
+		n = read (fd, buffer + bytes, sizeof (buffer) - bytes);
+		if (n <= 0) {
+			return -1;
+		}
+		bytes += n;
+	}
+
+	if ((buffer[0] != RPM_MAGIC_1) || (buffer[1] != RPM_MAGIC_2) ||
+	    (buffer[2] != RPM_MAGIC_3) || (buffer[3] != RPM_MAGIC_4)) {
+		return -1;
+	}
+	/* version number >= 2.0 */
+	if (buffer[4] < 2) {
+		return -1;
+	}
+	/* type = 0 */
+	if ((buffer[6] != 0) || (buffer[7] != 0)) {
+		return -1;
+	}
+	/* header signature (5) */
+	if ((buffer[78] != 0) || (buffer[79] != 5)) {
+		return -1;
+	}
+
+	return 0;
+}
+
+/* returns -1 if there is no GPG signature, 0 on success */
+/* on success, you must g_free the signature when done */
+static int
+read_rpm_signature (int fd, void **signature, int *signature_len)
+{
+	RPMHeader header;
+	RPMEntry *entry = NULL;
+	int n, i, bytes;
+	int offset;
+	char buffer[256];
+
+	*signature = NULL;
+
+	for (bytes = 0; bytes < sizeof (header); ) {
+		n = read (fd, &header + bytes, sizeof (header) - bytes);
+		if (n <= 0) {
+			return -1;
+		}
+		bytes += n;
+	}
+
+	header.entries = ntohl (header.entries);
+	header.data_size = ntohl (header.data_size);
+	entry = g_new0 (RPMEntry, header.entries);
+
+	for (bytes = 0; bytes < (header.entries * sizeof (RPMEntry)); ) {
+		n = read (fd, entry + bytes, (header.entries * sizeof (RPMEntry)) - bytes);
+		if (n <= 0) {
+			goto bail;
+		}
+		bytes += n;
+	}
+
+	offset = -1;
+	for (i = 0; i < header.entries; i++) {
+		entry[i].tag = ntohl (entry[i].tag);
+		entry[i].offset = ntohl (entry[i].offset);
+		entry[i].count = ntohl (entry[i].count);
+
+		if (entry[i].tag == RPM_GPG_BLOCK) {
+			/* found a gpg block! */
+			offset = entry[i].offset;
+			*signature_len = entry[i].count;
+		}
+	}
+
+	if (offset < 0) {
+		/* didn't find any gpg block */
+		goto bail;
+	}
+
+	for (bytes = 0; bytes < offset; ) {
+		n = read (fd, buffer, MIN (offset - bytes, sizeof (buffer)));
+		if (n <= 0) {
+			goto bail;
+		}
+		bytes += n;
+	}
+
+	*signature = g_malloc (*signature_len);
+	for (bytes = 0; bytes < *signature_len; ) {
+		n = read (fd, *signature + bytes, *signature_len - bytes);
+		if (n <= 0) {
+			goto bail;
+		}
+		bytes += n;
+	}
+
+	/* now we must move the file pointer past all this meta-data */
+	/* round header data size up to a 4-byte boundary */
+	if (header.data_size % 4) {
+		header.data_size += 4 - (header.data_size % 4);
+	}
+	offset = header.data_size - (*signature_len + offset);
+	for (bytes = 0; bytes < offset; ) {
+		n = read (fd, buffer, MIN (offset - bytes, sizeof (buffer)));
+		if (n <= 0) {
+			goto bail;
+		}
+		bytes += n;
+	}
+
+	g_free (entry);
+	return 0;
+
+bail:
+	if (*signature != NULL) {
+		g_free (*signature);
+		*signature = NULL;
+	}
+	if (entry) {
+		g_free (entry);
+	}
+	return -1;
+}
 
 
 /* there ought to be a general-purpose function for this in glib (grumble) */
@@ -65,55 +226,6 @@ trilobite_make_temp_file (int *fd)
 }
 
 
-/* pull the signature out of an RPM file.
- * returns 0 on success, and fills in 'fdt' with an RPM FD_t whose file pointer is aimed
- *	to the beginning of the signed contents.
- */
-static int
-trilobite_get_rpm_signature (const char *filename, void **signature, int *signature_len, FD_t *fdt)
-{
-	struct rpmlead lead;
-	Header sigs;
-	FD_t rpm_fdt;
-	int_32 size;
-
-	*fdt = NULL;
-
-	/* 1. librpm documentation is incomplete, and in this case, also wrong.
-	 * 2. librpm requires us to use their i/o functions like "Fopen"
-	 */
-	rpm_fdt = Fopen (filename, "r.ufdio");
-	if (rpm_fdt == NULL) {
-		goto bail;
-	}
-	if (readLead (rpm_fdt, &lead) != 0) {
-		goto bail;
-	}
-	if (rpmReadSignature (rpm_fdt, &sigs, lead.signature_type) != 0) {
-		goto bail;
-	}
-
-	/* at this point, the rpm_fdt file pointer is at a special point in the file.
-	 * everything from here to the end of the file is the "content" that was signed.
-	 * therefore we must be careful to preserve and return this FD_t for the caller.
-	 */
-
-	if (! headerGetEntry (sigs, RPMSIGTAG_GPG, NULL, signature, &size)) {
-		goto bail;
-	}
-	*signature_len = (int)size;
-	*fdt = rpm_fdt;
-	return 0;
-
-bail:
-	if (rpm_fdt != NULL) {
-		Fclose (rpm_fdt);
-	}
-	return -1;
-}
-
-
-
 /* verify the signature on an RPM file, given a keyring to use, and the filename of the RPM.
  *
  * returns 0 if the signature is ok,
@@ -125,10 +237,11 @@ int
 trilobite_check_rpm_signature (const char *filename, const char *keyring_filename, char **signer_name)
 {
 	int key_fd = -1;
+	int rpm_fd = -1;
 	int stdin_fd, stdout_fd, stderr_fd;
 	char *temp_filename;
 	char *p;
-	void *signature;
+	void *signature = NULL;
 	int err;
 	int i;
 	int status;
@@ -141,14 +254,22 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 	char buffer[1024];
 	char line[128];
 	FILE *gnupg_file;
-	FD_t rpm_fdt = NULL;
 
 	*signer_name = NULL;
 
-	/* must write the signature into a temporary file for gpg */
-	if (trilobite_get_rpm_signature (filename, &signature, &bytes, &rpm_fdt) != 0) {
+	/* read the signature out of the RPM */
+	rpm_fd = open (filename, O_RDONLY);
+	if (rpm_fd < 0) {
+		goto bail;
+	}
+	if (read_rpm_lead (rpm_fd) != 0) {
+		goto bail;
+	}
+	if (read_rpm_signature (rpm_fd, &signature, &bytes) != 0) {
 		goto bail_nosig;
 	}
+
+	/* must write the signature into a temporary file for gpg */
 	temp_filename = trilobite_make_temp_file (&key_fd);
 	if (temp_filename == NULL) {
 		goto bail;
@@ -183,7 +304,7 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 
 	/* write all of the rpm file into stdin */
 	while (1) {
-		bytes = Fread (buffer, 1, sizeof(buffer), rpm_fdt);
+		bytes = read (rpm_fd, buffer, sizeof (buffer));
 		if (bytes <= 0) {
 			break;
 		}
@@ -191,8 +312,8 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 			break;
 		}
 	}
-	Fclose (rpm_fdt);
-	rpm_fdt = NULL;
+	close (rpm_fd);
+	rpm_fd = -1;
 	close (stdin_fd);
 	wait (&status);
 
@@ -252,17 +373,23 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 	return err;
 
 bail_nosig:
+	if (signature != NULL) {
+		g_free (signature);
+	}
 	return 2;
 
 bail:
-	if (rpm_fdt != NULL) {
-		Fclose (rpm_fdt);
+	if (rpm_fd >= 0) {
+		close (rpm_fd);
 	}
 	if (key_fd >= 0) {
 		close (key_fd);
 	}
 	if (temp_filename != NULL) {
 		unlink (temp_filename);
+	}
+	if (signature != NULL) {
+		g_free (signature);
 	}
 	return -1;
 }
