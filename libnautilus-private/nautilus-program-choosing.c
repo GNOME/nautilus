@@ -583,6 +583,12 @@ void nautilus_launch_show_file (NautilusFile *file,
 					(action_type, file, parent_window);
 		break;
 #endif
+		error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+						 uri_for_display);
+		/* TODO: This really needs to be something saying "no app
+		 * handling this file type", but there is a string freeze. */
+		detail_message = g_strdup ("");
+		break;
 		
 	case GNOME_VFS_ERROR_LAUNCH:
 		/* TODO: These strings suck pretty badly, but we're in string-freeze,
