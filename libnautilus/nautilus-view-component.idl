@@ -39,11 +39,6 @@
 
 #include <Bonobo.idl>
 
-/* FIXME bugzilla.eazel.com 2974: Use of doubles causes alignment
- * problems in Solaris due to an ORBit bug; we use floats throughout
- * this file as a workaround.
- */
-
 module Nautilus {
 
 	/* URIs are just plain strings, but we use a typedef to make

@@ -1,3 +1,120 @@
+2001-01-18  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 2147 (NautilusFile for trash needs non-empty values for
+	more properties), bug 5652 (MIME type field appears but shouldn't
+	in properties window for Trash), and bug 4620 (trash sidebar
+	should show number of items).
+
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_relative_uri): Create trash file subclass
+	when appropriate.
+	(nautilus_file_info_missing): Rename so it can be used in other
+	source files.
+	(nautilus_file_get_date): New method that returns numeric dates.
+	(nautilus_file_get_date_as_string): Change to call
+	nautilus_file_get_date to get the numeric date.
+	(nautilus_file_get_file_type): Turn into a method.
+
+	* libnautilus-extensions/nautilus-merged-directory.h:
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_call_when_ready): Rolled in the old
+	merged_callback_connect_directory function.
+	(merged_contains_file): Moved down to a more appropriate part of
+	the source file.
+	(nautilus_merged_directory_get_real_directories): New public
+	function for use by trash.
+	
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(trash_callback_hash), (trash_callback_equal),
+	(trash_callback_destroy), (trash_callback_check_done),
+	(trash_callback_remove_file), (ready_callback),
+	(real_file_changed_callback), (monitor_add_file), (add_real_file),
+	(trash_callback_remove_file_cover), (monitor_remove_file),
+	(remove_real_file), (add_real_file_given_directory),
+	(add_directory_callback), (remove_directory_callback),
+	(trash_file_call_when_ready), (trash_file_cancel_call_when_ready),
+	(trash_file_check_if_ready), (trash_file_monitor_add),
+	(trash_file_monitor_remove), (trash_file_get_file_type),
+	(trash_file_get_item_count), (trash_file_get_deep_counts),
+	(trash_file_get_date), (remove_all_real_files),
+	(nautilus_trash_file_initialize), (trash_destroy),
+	(nautilus_trash_file_initialize_class):
+	New code. First implementation of getting some attributes for the
+	merged trash. Gets list of directories from the
+	NautilusTrashDirectory object. The code in here is similar to the
+	NautilusMergedDirectory class and at some point perhaps we can
+	make the two share more.
+	
+	* libnautilus-extensions/nautilus-vfs-file.c:
+	(vfs_file_get_file_type), (vfs_file_get_date),
+	(nautilus_vfs_file_initialize_class): Implement the two new
+	methods for the standard vfs case.
+	
+	Fixed various things that affect the properties window for the
+	trash that showed up while I was testing the above work:
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file),
+	(nautilus_icon_factory_get_icon_name_for_file): Move trash special
+	case out so it doesn't matter what type the trash seems to be. The
+	old code relied on trash not being a directory.
+	
+	* src/file-manager/fm-properties-window.c:
+	(create_properties_window), (create_properties_window_callback),
+	(cancel_create_properties_window_callback),
+	(directory_view_destroyed_callback), (remove_pending_file): Rework
+	code to fix problems where the timed wait or the signal handler
+	wasn't properly cleaned up.
+
+	Fixed remaining bit of bug 5631 (Tear-offs of right-click menus
+	don't work.):
+	
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml: Mark Disks
+	right-click submenu so it won't get a tear-off item.
+
+	Fixed bug 5650 (nautilus --quit fails to return to prompt
+	sometimes):
+	
+	* src/nautilus-application.c: (nautilus_application_startup): Add
+	special case so "nautilus --quit" doesn't hang waiting for a
+	response from the (now quit) "server" instance of Nautilus.
+	* src/nautilus-shell-interface.idl: Had to make the quit call no
+	longer be "oneway" to get it to work right, otherwise the quit
+	message could be lost when the sending application exited too
+	fast.
+
+	Fix bug 5675 (Nitpicks in new "could not be moved to new special
+	location" dialog):
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_overwrite): Updated message wording as Eli (and
+	Vera) suggest.
+
+	Other changes:
+	
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(get_lang_list): Fix comment and a small storage leak in the case
+	where lang_with_locale is non-NULL but empty.
+	
+	* po/POTFILES.ignore: Obsolete file, no longer used.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies): Update comment to help
+	translators understand better.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_callback): Added a new assertion that could help
+	in future gnome-vfs debugging.
+	
+	* libnautilus/nautilus-view-component.idl: Removed long-ago-fixed
+	FIXME comment.
+
+	* src/nautilus-window-manage-views.c: Tweak spacing.
+
 2001-01-18  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -585,7 +702,6 @@
 	(nautilus_list_get_drop_action):
 	Tiny tweak.
 	
->>>>>>> 1.3384
 2001-01-16  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:

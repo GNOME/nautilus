@@ -1414,6 +1414,7 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	g_assert (directory->details->directory_load_in_progress != NULL);
 	g_assert (directory->details->directory_load_in_progress == handle);
 
 	/* Move items from the list onto our pending queue.

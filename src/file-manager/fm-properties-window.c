@@ -99,21 +99,25 @@ enum {
 #define ERASE_EMBLEM_FILENAME	"erase.png"
 #define EMBLEM_COLUMN_COUNT 2
 
-static void	  real_destroy 		     		     (GtkObject 	      *object);
-static void	  real_finalize		     		     (GtkObject 	      *object);
-static void	  real_shutdown	     		     	     (GtkObject 	      *object);
-static void       fm_properties_window_initialize_class      (FMPropertiesWindowClass *class);
-static void       fm_properties_window_initialize            (FMPropertiesWindow      *window);
-static void	  create_properties_window_callback 	     (NautilusFile 	      *file, 
-							      gpointer 		       data);
-static void 	  cancel_group_change_callback 		     (gpointer 		       callback_data);
-static void 	  cancel_owner_change_callback 		     (gpointer 		       callback_data);
-static void	  directory_view_destroyed_callback 	     (FMDirectoryView 	      *view, 
-							      gpointer 		       callback_data);
-static void	  select_image_button_callback		     (GtkWidget 	      *widget,
-							      NautilusFile 	      *file);
-static void	  remove_image_button_callback		     (GtkWidget 	      *widget,
-							      NautilusFile 	      *file);
+static void real_destroy                          (GtkObject               *object);
+static void real_finalize                         (GtkObject               *object);
+static void real_shutdown                         (GtkObject               *object);
+static void fm_properties_window_initialize_class (FMPropertiesWindowClass *class);
+static void fm_properties_window_initialize       (FMPropertiesWindow      *window);
+static void create_properties_window_callback     (NautilusFile            *file,
+						   gpointer                 data);
+static void cancel_group_change_callback          (gpointer                 callback_data);
+static void cancel_owner_change_callback          (gpointer                 callback_data);
+static void directory_view_destroyed_callback     (FMDirectoryView         *view,
+						   gpointer                 callback_data);
+static void select_image_button_callback          (GtkWidget               *widget,
+						   NautilusFile            *file);
+static void remove_image_button_callback          (GtkWidget               *widget,
+						   NautilusFile            *file);
+static void remove_pending_file                   (NautilusFile            *file,
+						   gboolean                 cancel_call_when_ready,
+						   gboolean                 cancel_timed_wait,
+						   gboolean                 cancel_destroy_handler);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
 
@@ -1831,10 +1835,8 @@ create_properties_window (NautilusFile *file)
 	GList *attributes;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
-	/* Note that we've already reffed file in get_and_ref_file_for_display,
-	 * both for our use here and for the windows hash table. It gets unreffed
-	 * in real_destroy.
-	 */
+
+	nautilus_file_ref (file);
 	window->details->file = file;
 	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
@@ -1928,68 +1930,63 @@ get_and_ref_file_to_display (NautilusFile *file)
 }
 
 static void
-cancel_create_properties_window_callback (gpointer callback_data)
-{
-	NautilusFile *file;
-	FMDirectoryView *view;
-
-	file = NAUTILUS_FILE (callback_data);
-	view = g_hash_table_lookup (pending_files, file);
-	g_assert (view != NULL);
-	
-	nautilus_file_cancel_call_when_ready (file, create_properties_window_callback, view);
-	g_hash_table_remove (pending_files, file);
-	nautilus_file_unref (file);
-}
-
-static void
-remove_pending_file (NautilusFile *file)
-{
-	g_hash_table_remove (pending_files, file);
-	nautilus_timed_wait_stop (cancel_create_properties_window_callback, file);
-}
-
-static void
-pending_file_succeeded (NautilusFile *file)
-{
-	FMDirectoryView *view;
-
-	view = g_hash_table_lookup (pending_files, file);
-	gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-				       directory_view_destroyed_callback,
-				       file);
-	remove_pending_file (file);
-				       
-}
-
-static void
-create_properties_window_callback (NautilusFile *file, gpointer data)
+create_properties_window_callback (NautilusFile *file, gpointer callback_data)
 {
 	FMPropertiesWindow *new_window;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (data));
-
-	pending_file_succeeded (file);
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	new_window = create_properties_window (file);
+
+	remove_pending_file (file, FALSE, TRUE, TRUE);
+
 	g_hash_table_insert (windows, file, new_window);
 
 /* FIXME bugzilla.eazel.com 2151:
  * See comment elsewhere in this file about bug 2151.
  */
 #ifdef UNDO_ENABLED
-	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window), GTK_OBJECT (data));
+	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window),
+					  GTK_OBJECT (callback_data));
 #endif	
 	nautilus_gtk_window_present (GTK_WINDOW (new_window));
 }
 
 static void
+cancel_create_properties_window_callback (gpointer callback_data)
+{
+	remove_pending_file (NAUTILUS_FILE (callback_data), TRUE, FALSE, TRUE);
+}
+
+static void
 directory_view_destroyed_callback (FMDirectoryView *view, gpointer callback_data)
 {
-	NautilusFile *file;
+	remove_pending_file (NAUTILUS_FILE (callback_data), TRUE, TRUE, FALSE);
+}
 
-	file = NAUTILUS_FILE (callback_data);
-	remove_pending_file (file);
+static void
+remove_pending_file (NautilusFile *file,
+		     gboolean cancel_call_when_ready,
+		     gboolean cancel_timed_wait,
+		     gboolean cancel_destroy_handler)
+{
+	FMDirectoryView *view;
+
+	view = g_hash_table_lookup (pending_files, file);
+	g_return_if_fail (view != NULL);
+
+	if (cancel_call_when_ready) {
+		nautilus_file_cancel_call_when_ready (file, create_properties_window_callback, view);
+	}
+	if (cancel_timed_wait) {
+		nautilus_timed_wait_stop (cancel_create_properties_window_callback, file);
+	}
+	if (cancel_destroy_handler) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (view),
+					       directory_view_destroyed_callback,
+					       file);
+	}
+	g_hash_table_remove (pending_files, file);
 	nautilus_file_unref (file);
 }
 

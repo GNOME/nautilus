@@ -139,24 +139,6 @@ merged_callback_equal (gconstpointer merged_callback_as_pointer,
 		&& merged_callback->callback_data == merged_callback_2->callback_data;
 }
 
-/* Return true if any directory in the list does. */
-static gboolean
-merged_contains_file (NautilusDirectory *directory,
-		      NautilusFile *file)
-{
-	NautilusMergedDirectory *merged;
-	GList *p;
-
-	merged = NAUTILUS_MERGED_DIRECTORY (directory);
-
-	for (p = merged->details->directories; p != NULL; p = p->next) {
-		if (nautilus_directory_contains_file (p->data, file)) {
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
 static void
 merged_callback_destroy (MergedCallback *merged_callback)
 {
@@ -196,8 +178,6 @@ merged_callback_remove_directory (MergedCallback *merged_callback,
 	merged_callback->non_ready_directories = g_list_remove
 		(merged_callback->non_ready_directories,
 		 directory);
-
-	/* Check if we are ready. */
 	merged_callback_check_done (merged_callback);
 }
 
@@ -220,18 +200,7 @@ directory_ready_callback (NautilusDirectory *directory,
 		 nautilus_file_list_copy (files));
 
 	/* Check if we are ready. */
-	merged_callback_remove_directory (merged_callback,
-					  directory);
-}
-
-static void
-merged_callback_connect_directory (MergedCallback *merged_callback,
-				   NautilusDirectory *real_merged)
-{
-	nautilus_directory_call_when_ready
-		(real_merged,
-		 merged_callback->wait_for_attributes,
-		 directory_ready_callback, merged_callback);
+	merged_callback_remove_directory (merged_callback, directory);
 }
 
 static void
@@ -242,7 +211,7 @@ merged_call_when_ready (NautilusDirectory *directory,
 {
 	NautilusMergedDirectory *merged;
 	MergedCallback search_key, *merged_callback;
-	GList *p;
+	GList *node;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
@@ -260,9 +229,9 @@ merged_call_when_ready (NautilusDirectory *directory,
 	merged_callback->callback = callback;
 	merged_callback->callback_data = callback_data;
 	merged_callback->wait_for_attributes = nautilus_g_str_list_copy (file_attributes);
-	for (p = merged->details->directories; p != NULL; p = p->next) {
+	for (node = merged->details->directories; node != NULL; node = node->next) {
 		merged_callback->non_ready_directories = g_list_prepend
-			(merged_callback->non_ready_directories, p->data);
+			(merged_callback->non_ready_directories, node->data);
 	}
 
 	/* Put it in the hash table. */
@@ -275,8 +244,11 @@ merged_call_when_ready (NautilusDirectory *directory,
 	}
 
 	/* Now tell all the directories about it. */
-	for (p = merged->details->directories; p != NULL; p = p->next) {
-		merged_callback_connect_directory (merged_callback, p->data);
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		nautilus_directory_call_when_ready
+			(node->data,
+			 merged_callback->wait_for_attributes,
+			 directory_ready_callback, merged_callback);
 	}
 }
 
@@ -287,7 +259,7 @@ merged_cancel_callback (NautilusDirectory *directory,
 {
 	NautilusMergedDirectory *merged;
 	MergedCallback search_key, *merged_callback;
-	GList *p;
+	GList *node;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
@@ -303,9 +275,9 @@ merged_cancel_callback (NautilusDirectory *directory,
 	g_hash_table_remove (merged_callback->merged->details->callbacks, merged_callback);
 
 	/* Tell all the directories to cancel the call. */
-	for (p = merged_callback->non_ready_directories; p != NULL; p = p->next) {
+	for (node = merged_callback->non_ready_directories; node != NULL; node = node->next) {
 		nautilus_directory_cancel_callback
-			(p->data,
+			(node->data,
 			 directory_ready_callback, merged_callback);
 	}
 	merged_callback_destroy (merged_callback);
@@ -322,7 +294,7 @@ merged_file_monitor_add (NautilusDirectory *directory,
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
-	GList *p;
+	GList *node;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
@@ -345,9 +317,9 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	monitor->force_reload = force_reload;
 	
 	/* Call through to the real directory add calls. */
-	for (p = merged->details->directories; p != NULL; p = p->next) {
+	for (node = merged->details->directories; node != NULL; node = node->next) {
 		nautilus_directory_file_monitor_add
-			(p->data, monitor,
+			(node->data, monitor,
 			 monitor_hidden_files, monitor_backup_files,
 			 file_attributes, force_reload);
 	}
@@ -360,7 +332,7 @@ merged_file_monitor_remove (NautilusDirectory *directory,
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
-	GList *p;
+	GList *node;
 	
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 	
@@ -372,13 +344,31 @@ merged_file_monitor_remove (NautilusDirectory *directory,
 	g_hash_table_remove (merged->details->monitors, client);
 
 	/* Call through to the real directory remove calls. */
-	for (p = merged->details->directories; p != NULL; p = p->next) {
+	for (node = merged->details->directories; node != NULL; node = node->next) {
 		nautilus_directory_file_monitor_remove
-			(p->data, monitor);
+			(node->data, monitor);
 	}
 
 	nautilus_g_list_free_deep (monitor->monitor_attributes);
 	g_free (monitor);
+}
+
+/* Return true if any directory in the list does. */
+static gboolean
+merged_contains_file (NautilusDirectory *directory,
+		      NautilusFile *file)
+{
+	NautilusMergedDirectory *merged;
+	GList *node;
+
+	merged = NAUTILUS_MERGED_DIRECTORY (directory);
+
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		if (nautilus_directory_contains_file (node->data, file)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /* Return true only if all directories in the list do. */
@@ -386,12 +376,12 @@ static gboolean
 merged_are_all_files_seen (NautilusDirectory *directory)
 {
 	NautilusMergedDirectory *merged;
-	GList *p;
+	GList *node;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
-	for (p = merged->details->directories; p != NULL; p = p->next) {
-		if (!nautilus_directory_are_all_files_seen (p->data)) {
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		if (!nautilus_directory_are_all_files_seen (node->data)) {
 			return FALSE;
 		}
 	}
@@ -403,12 +393,12 @@ static gboolean
 merged_is_not_empty (NautilusDirectory *directory)
 {
 	NautilusMergedDirectory *merged;
-	GList *p;
+	GList *node;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
-	for (p = merged->details->directories; p != NULL; p = p->next) {
-		if (nautilus_directory_is_not_empty (p->data)) {
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		if (nautilus_directory_is_not_empty (node->data)) {
 			return TRUE;
 		}
 	}
@@ -515,6 +505,12 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 	gtk_signal_emit (GTK_OBJECT (merged),
 			 signals[ADD_REAL_DIRECTORY],
 			 real_directory);
+}
+
+GList *
+nautilus_merged_directory_get_real_directories (NautilusMergedDirectory *merged)
+{
+	return g_list_copy (merged->details->directories);
 }
 
 static void

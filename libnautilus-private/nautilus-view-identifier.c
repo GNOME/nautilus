@@ -55,8 +55,8 @@ nautilus_view_identifier_copy (NautilusViewIdentifier *identifier)
 	return nautilus_view_identifier_new (identifier->iid, identifier->name);
 }
 
-/* Returns a list of languages (with one element), containing
-   the LANG or LANGUAGE environment setting.
+/* Returns a list of languages, containing
+   the LANG or LANGUAGE environment setting (with and without region code).
    The elements in the returned list must be freed */
 static GSList *
 get_lang_list (void)
@@ -96,8 +96,9 @@ get_lang_list (void)
 		   lang string */
 		if (!nautilus_str_is_empty (lang_with_locale)) {
 			retval = g_slist_prepend (retval, 
-						  lang_with_locale);
+						  g_strdup (lang_with_locale));
 		}
+		g_free (lang_with_locale);
 		if (!nautilus_str_is_empty (lang)) {
 			retval = g_slist_prepend (retval, g_strdup (lang));
 		}

@@ -578,7 +578,6 @@ ref_now_unref_at_idle_time (GtkObject *object)
         g_idle_add (unref_callback, object);
 }
 
-
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
 location_has_really_changed (NautilusWindow *window)

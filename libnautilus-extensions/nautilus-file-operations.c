@@ -1000,22 +1000,22 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	
 	/* Handle special case files such as Trash, mount links and home directory */	
 	if (is_special_link (progress_info->target_name)) {
-		formatted_name = extract_and_ellipsize_file_name_for_dialog (progress_info->target_name);
+		formatted_name = extract_and_ellipsize_file_name_for_dialog
+			(progress_info->target_name);
 		
 		if (transfer_info->kind == TRANSFER_MOVE) {
 			text = g_strdup_printf (_("\"%s\" could not be moved to the new location, "
-						  "because the name is already used for a special item that "
-						  "cannot be removed or replaced. "
+						  "because its name is already used for a special item that "
+						  "cannot be removed or replaced.\n\n"
 						  "If you still want to move \"%s\", rename it and try again."),
 						formatted_name, formatted_name);
 		} else {
 			text = g_strdup_printf (_("\"%s\" could not be copied to the new location, "
-						  "because the name is already used for a special item that "
-						  "cannot be removed or replaced. "
+						  "because its name is already used for a special item that "
+						  "cannot be removed or replaced.\n\n"
 						  "If you still want to copy \"%s\", rename it and try again."),
 						formatted_name, formatted_name);
-			
-		};
+		}
 		
 		nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
 					_("Unable to replace file."), _("OK"), NULL, NULL);

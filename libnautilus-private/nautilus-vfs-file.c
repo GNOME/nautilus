@@ -94,6 +94,13 @@ vfs_file_check_if_ready (NautilusFile *file,
 		 file_attributes);
 }
 
+static GnomeVFSFileType
+vfs_file_get_file_type (NautilusFile *file)
+{
+	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_TYPE)
+		? GNOME_VFS_FILE_TYPE_UNKNOWN : file->details->info->type;
+}
+
 static gboolean
 vfs_file_get_item_count (NautilusFile *file, 
 			 guint *count,
@@ -103,10 +110,14 @@ vfs_file_get_item_count (NautilusFile *file,
 		*count_unreadable = file->details->directory_count_failed;
 	}
 	if (!file->details->got_directory_count) {
-		*count = 0;
+		if (count != NULL) {
+			*count = 0;
+		}
 		return FALSE;
 	}
-	*count = file->details->directory_count;
+	if (count != NULL) {
+		*count = file->details->directory_count;
+	}
 	return TRUE;
 }
 
@@ -163,6 +174,61 @@ vfs_file_get_deep_counts (NautilusFile *file,
 	return NAUTILUS_REQUEST_DONE;
 }
 
+static gboolean
+vfs_file_get_date (NautilusFile *file,
+		   NautilusDateType date_type,
+		   time_t *date)
+{
+	switch (date_type) {
+	case NAUTILUS_DATE_TYPE_CHANGED:
+		/* Before we have info on a file, the date is unknown. */
+		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+			return FALSE;
+		}
+		if (date != NULL) {
+			*date = file->details->info->ctime;
+		}
+		return TRUE;
+	case NAUTILUS_DATE_TYPE_ACCESSED:
+		/* Before we have info on a file, the date is unknown. */
+		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ATIME)) {
+			return FALSE;
+		}
+		if (date != NULL) {
+			*date = file->details->info->atime;
+		}
+		return TRUE;
+	case NAUTILUS_DATE_TYPE_MODIFIED:
+		/* Before we have info on a file, the date is unknown. */
+		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME)) {
+			return FALSE;
+		}
+		if (date != NULL) {
+			*date = file->details->info->mtime;
+		}
+		return TRUE;
+	case NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED:
+		/* Before we have info on a file, the date is unknown. */
+		if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME) ||
+		    nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+			return FALSE;
+		}
+		/* mtime is when the contents changed; ctime is when the
+		 * contents or the permissions (inc. owner/group) changed.
+		 * So we can only know when the permissions changed if mtime
+		 * and ctime are different.
+		 */
+		if (file->details->info->mtime == file->details->info->ctime) {
+			return FALSE;
+		}
+		if (date != NULL) {
+			*date = file->details->info->ctime;
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
 static void
 nautilus_vfs_file_initialize (gpointer object, gpointer klass)
 {
@@ -195,6 +261,8 @@ nautilus_vfs_file_initialize_class (gpointer klass)
 	file_class->call_when_ready = vfs_file_call_when_ready;
 	file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
 	file_class->check_if_ready = vfs_file_check_if_ready;
+	file_class->get_file_type = vfs_file_get_file_type;
 	file_class->get_item_count = vfs_file_get_item_count;
 	file_class->get_deep_counts = vfs_file_get_deep_counts;
+	file_class->get_date = vfs_file_get_date;
 }

@@ -61,5 +61,6 @@ void    nautilus_merged_directory_add_real_directory    (NautilusMergedDirectory
 							 NautilusDirectory       *real_directory);
 void    nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged_directory,
 							 NautilusDirectory       *real_directory);
+GList * nautilus_merged_directory_get_real_directories  (NautilusMergedDirectory *merged_directory);
 
 #endif /* NAUTILUS_MERGED_DIRECTORY_H */

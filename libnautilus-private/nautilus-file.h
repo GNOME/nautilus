@@ -288,6 +288,16 @@ struct NautilusFile {
 	NautilusFileDetails *details;
 };
 
+/* This is actually a "protected" type, but it must be here so we can
+ * compile the get_date function pointer declaration below.
+ */
+typedef enum {
+	NAUTILUS_DATE_TYPE_MODIFIED,
+	NAUTILUS_DATE_TYPE_CHANGED,
+	NAUTILUS_DATE_TYPE_ACCESSED,
+	NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED
+} NautilusDateType;
+
 typedef struct {
 	GtkObjectClass parent_slot;
 	
@@ -309,6 +319,7 @@ typedef struct {
 							  gpointer              callback_data);
 	gboolean              (* check_if_ready)         (NautilusFile         *file,
 							  GList                *attributes);
+	GnomeVFSFileType      (* get_file_type)          (NautilusFile         *file);
 	gboolean              (* get_item_count)         (NautilusFile         *file,
 							  guint                *count,
 							  gboolean             *count_unreadable);
@@ -317,6 +328,9 @@ typedef struct {
 							  guint                *file_count,
 							  guint                *unreadable_directory_count,
 							  GnomeVFSFileSize     *total_size);
+	gboolean              (* get_date)               (NautilusFile         *file,
+							  NautilusDateType      type,
+							  time_t               *date);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

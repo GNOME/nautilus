@@ -478,7 +478,14 @@ nautilus_application_startup (NautilusApplication *application,
 	}
 
 	/* We're done with the shell now, so let it go. */
-	bonobo_object_release_unref (shell, &ev);
+	/* HACK: Don't bother releasing the shell in the case where we
+	 * just told it to quit -- that just leads to hangs and does
+	 * no good. We could probably fix this in some fancier way if
+	 * we could figure out a better lifetime rule.
+	 */
+	if (!kill_shell) {
+		bonobo_object_release_unref (shell, &ev);
+	}
 
  out:
 	CORBA_exception_free (&ev);

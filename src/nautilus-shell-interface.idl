@@ -9,12 +9,12 @@
 module Nautilus {
 
 	interface Shell : ::Bonobo::Unknown {
-		oneway void open_windows (in URIList uris, in string geometry);
-		oneway void open_default_window (in string geometry);
-		oneway void start_desktop ();
-		oneway void stop_desktop ();
-		oneway void quit ();
-		oneway void restart ();
+		void open_windows (in URIList uris, in string geometry);
+		void open_default_window (in string geometry);
+		void start_desktop ();
+		void stop_desktop ();
+		void quit ();
+		void restart ();
 	};
 
 };

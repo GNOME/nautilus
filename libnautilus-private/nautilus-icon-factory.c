@@ -766,9 +766,6 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 		icon_name = ICON_NAME_WEB;
 	} else if (nautilus_istr_has_prefix (uri, "eazel-install:")) {
 		icon_name = ICON_NAME_INSTALL;
-	} else if (strcmp (uri, NAUTILUS_TRASH_URI) == 0) {
-		icon_name = nautilus_trash_monitor_is_empty ()
-			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
 	} else {
 		if (nautilus_file_is_executable (file)
 		    && nautilus_strcasecmp (mime_type, "text/plain") != 0) {
@@ -798,7 +795,7 @@ nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
 	} else {
 		icon_name = ICON_NAME_DIRECTORY;
 	}
-
+	
 	g_free (mime_type);
 
 	return icon_name;
@@ -809,6 +806,16 @@ nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
 static const char *
 nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 {	
+	char *uri;
+	
+	uri = nautilus_file_get_uri (file);
+	if (strcmp (uri, NAUTILUS_TRASH_URI) == 0) {
+		g_free (uri);
+		return nautilus_trash_monitor_is_empty ()
+			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
+	}
+	g_free (uri);
+
 	/* Get an icon name based on the file's type. */
         switch (nautilus_file_get_file_type (file)) {
         case GNOME_VFS_FILE_TYPE_DIRECTORY:

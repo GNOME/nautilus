@@ -99,36 +99,41 @@ struct NautilusFileDetails
 	nautilus_boolean_bit activation_uri_is_up_to_date  : 1;
 };
 
-NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory *directory,
-							    GnomeVFSFileInfo  *info);
-NautilusFile *nautilus_file_get_existing                   (const char        *uri);
-void          nautilus_file_emit_changed                   (NautilusFile      *file);
-void          nautilus_file_mark_gone                      (NautilusFile      *file);
-char *        nautilus_extract_top_left_text               (const char        *text,
-							    int                length);
-gboolean      nautilus_file_contains_text                  (NautilusFile      *file);
-void          nautilus_file_set_directory                  (NautilusFile      *file,
-							    NautilusDirectory *directory);
+NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
+							    GnomeVFSFileInfo       *info);
+NautilusFile *nautilus_file_get_existing                   (const char             *uri);
+void          nautilus_file_emit_changed                   (NautilusFile           *file);
+void          nautilus_file_mark_gone                      (NautilusFile           *file);
+gboolean      nautilus_file_info_missing                   (NautilusFile           *file,
+							    GnomeVFSFileInfoFields  needed_mask);
+char *        nautilus_extract_top_left_text               (const char             *text,
+							    int                     length);
+gboolean      nautilus_file_contains_text                  (NautilusFile           *file);
+void          nautilus_file_set_directory                  (NautilusFile           *file,
+							    NautilusDirectory      *directory);
+gboolean      nautilus_file_get_date                       (NautilusFile           *file,
+							    NautilusDateType        date_type,
+							    time_t                 *date);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
  * new state.  */
-gboolean      nautilus_file_update_info                    (NautilusFile      *file,
-							    GnomeVFSFileInfo  *info);
-gboolean      nautilus_file_update_name                    (NautilusFile      *file,
-							    const char        *name);
+gboolean      nautilus_file_update_info                    (NautilusFile           *file,
+							    GnomeVFSFileInfo       *info);
+gboolean      nautilus_file_update_name                    (NautilusFile           *file,
+							    const char             *name);
 
 /* Return true if the top lefts of files in this directory should be
  * fetched, according to the preference settings.
  */
-gboolean      nautilus_file_should_get_top_left_text       (NautilusFile      *file);
+gboolean      nautilus_file_should_get_top_left_text       (NautilusFile           *file);
 
 /* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void          nautilus_file_invalidate_attributes_internal (NautilusFile      *file,
-							    GList             *file_attributes);
+void          nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
+							    GList                  *file_attributes);
 
 /* Recognizing special file names. */
-gboolean      nautilus_file_name_matches_hidden_pattern    (const char        *name_or_relative_uri);
-gboolean      nautilus_file_name_matches_backup_pattern    (const char        *name_or_relative_uri);
+gboolean      nautilus_file_name_matches_hidden_pattern    (const char             *name_or_relative_uri);
+gboolean      nautilus_file_name_matches_backup_pattern    (const char             *name_or_relative_uri);

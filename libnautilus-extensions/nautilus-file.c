@@ -37,6 +37,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
 #include "nautilus-string.h"
+#include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
 #include <ctype.h>
@@ -68,13 +69,6 @@ extern void eazel_dump_stack_trace	(const char    *print_prefix,
 
 /* Name to use to tag metadata for the directory itself. */
 #define FILE_NAME_FOR_DIRECTORY_METADATA "."
-
-typedef enum {
-	NAUTILUS_DATE_TYPE_MODIFIED,
-	NAUTILUS_DATE_TYPE_CHANGED,
-	NAUTILUS_DATE_TYPE_ACCESSED,
-	NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED
-} NautilusDateType;
 
 typedef struct {
 	NautilusFile *file;
@@ -133,7 +127,8 @@ nautilus_file_initialize (NautilusFile *file)
 
 static NautilusFile *
 nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
-				     const char *relative_uri)
+				     const char *relative_uri,
+				     gboolean self_owned)
 {
 	NautilusFile *file;
 
@@ -141,7 +136,11 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	g_return_val_if_fail (relative_uri != NULL, NULL);
 	g_return_val_if_fail (relative_uri[0] != '\0', NULL);
 
-	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	if (self_owned && NAUTILUS_IS_TRASH_DIRECTORY (directory)) {
+		file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_TRASH_FILE, NULL));
+	} else {
+		file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	}
 	gtk_object_ref (GTK_OBJECT (file));
 	gtk_object_sink (GTK_OBJECT (file));
 
@@ -158,8 +157,8 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	return file;
 }
 
-static gboolean
-info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
+gboolean
+nautilus_file_info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
 {
 	GnomeVFSFileInfo *info;
 
@@ -185,7 +184,7 @@ modify_link_hash_table (NautilusFile *file,
 	GList *list;
 
 	/* Check if there is a symlink name. If none, we are OK. */
-	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)) {
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)) {
 		return;
 	}
 	symlink_name = file->details->info->symlink_name;
@@ -356,7 +355,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	if (file != NULL) {
 		nautilus_file_ref (file);
 	} else if (create) {
-		file = nautilus_file_new_from_relative_uri (directory, relative_uri);
+		file = nautilus_file_new_from_relative_uri (directory, relative_uri, self_owned);
 		if (self_owned) {
 			g_assert (directory->details->as_file == NULL);
 			directory->details->as_file = file;
@@ -1077,7 +1076,7 @@ update_link (NautilusFile *link_file, NautilusFile *target_file)
 {
 	g_assert (NAUTILUS_IS_FILE (link_file));
 	g_assert (NAUTILUS_IS_FILE (target_file));
-	g_assert (!info_missing (link_file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME));
+	g_assert (!nautilus_file_info_missing (link_file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME));
 
 	/* FIXME bugzilla.eazel.com 2044: If we don't put any code
 	 * here then the hash table is a waste of time.
@@ -2159,7 +2158,29 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 			  colon - file->details->directory->details->uri);
 }
 
+gboolean
+nautilus_file_get_date (NautilusFile *file,
+			NautilusDateType date_type,
+			time_t *date)
+{
+	if (date != NULL) {
+		*date = 0;
+	}
 
+	g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_CHANGED
+			      || date_type == NAUTILUS_DATE_TYPE_ACCESSED
+			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED
+			      || date_type == NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED, FALSE);
+
+	if (file == NULL) {
+		return FALSE;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file,
+				      get_date, (file, date_type, date));
+}
 
 /**
  * nautilus_file_get_date_as_string:
@@ -2173,61 +2194,19 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
  **/
 static char *
 nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type)
-{	 
-	struct tm *file_time = NULL;
+{
+	time_t file_time_raw;
+	struct tm *file_time;
 	const char *format;
 	GDate *today;
 	GDate *file_date;
 	guint32 file_date_age;
 
-	g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_CHANGED
-			      || date_type == NAUTILUS_DATE_TYPE_ACCESSED
-			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED
-			      || date_type == NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED, NULL);
-
-	switch (date_type) {
-	case NAUTILUS_DATE_TYPE_CHANGED:
-		/* Before we have info on a file, the date is unknown. */
-		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
-			return NULL;
-		}
-		file_time = localtime (&file->details->info->ctime);
-		break;
-	case NAUTILUS_DATE_TYPE_ACCESSED:
-		/* Before we have info on a file, the date is unknown. */
-		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ATIME)) {
-			return NULL;
-		}
-		file_time = localtime (&file->details->info->atime);
-		break;
-	case NAUTILUS_DATE_TYPE_MODIFIED:
-		/* Before we have info on a file, the date is unknown. */
-		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME)) {
-			return NULL;
-		}
-		file_time = localtime (&file->details->info->mtime);
-		break;
-	case NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED:
-		/* Before we have info on a file, the date is unknown. */
-		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME) ||
-		    info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
-			return NULL;
-		}
-		/* mtime is when the contents changed; ctime is when the
-		 * contents or the permissions (inc. owner/group) changed.
-		 * So we can only know when the permissions changed if mtime
-		 * and ctime are different.
-		 */
-		if (file->details->info->mtime == file->details->info->ctime) {
-			return NULL;
-		}
-		
-		file_time = localtime (&file->details->info->ctime);
-		break;
-	default:
-		g_assert_not_reached ();
+	if (!nautilus_file_get_date (file, date_type, &file_time_raw)) {
+		return NULL;
 	}
 
+	file_time = localtime (&file_time_raw);
 	file_date = nautilus_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
@@ -2298,13 +2277,12 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 					guint *count,
 					gboolean *count_unreadable)
 {
-	if (count_unreadable != NULL) {
-		*count_unreadable = 0;
+	if (count != NULL) {
+		*count = 0;
 	}
-
-	g_return_val_if_fail (count != NULL, FALSE);
-
-	*count = 0;
+	if (count_unreadable != NULL) {
+		*count_unreadable = FALSE;
+	}
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
@@ -2414,7 +2392,7 @@ GnomeVFSFileSize
 nautilus_file_get_size (NautilusFile *file)
 {
 	/* Before we have info on the file, we don't know the size. */
-	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)
+	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)
 		? 0 : file->details->info->size;
 }
 
@@ -2431,7 +2409,7 @@ nautilus_file_get_size (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
-	return !info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
+	return !nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
 }
 
 /**
@@ -2720,7 +2698,7 @@ nautilus_file_can_get_owner (NautilusFile *file)
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
+	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
 }
 
 /**
@@ -2935,7 +2913,7 @@ nautilus_file_can_get_group (NautilusFile *file)
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
+	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
 }
 
 /**
@@ -2955,7 +2933,7 @@ nautilus_file_get_group_name (NautilusFile *file)
 	struct group *group_info;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
 		return NULL;
 	}
 
@@ -3284,7 +3262,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
+	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
 		return NULL;
 	}
 
@@ -3357,7 +3335,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		return format_item_count_for_display (item_count, TRUE, TRUE);
 	}
 	
-	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
 		return NULL;
 	}
 	return gnome_vfs_format_file_size_for_display (file->details->info->size);
@@ -3750,8 +3728,10 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 GnomeVFSFileType
 nautilus_file_get_file_type (NautilusFile *file)
 {
-	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_TYPE)
-		? GNOME_VFS_FILE_TYPE_UNKNOWN : file->details->info->type;
+	if (file == NULL) {
+		return GNOME_VFS_FILE_TYPE_UNKNOWN;
+	}
+	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file, get_file_type, (file));
 }
 
 /**
@@ -3908,7 +3888,7 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 gboolean
 nautilus_file_is_symbolic_link (NautilusFile *file)
 {
-	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_FLAGS)
+	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_FLAGS)
 		? FALSE : (file->details->info->flags & GNOME_VFS_FILE_FLAGS_SYMLINK);
 }
 
@@ -3948,7 +3928,7 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 {
 	g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
 
-	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)
+	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)
 		? NULL
 		: g_strdup (file->details->info->symlink_name);
 }
@@ -3980,12 +3960,6 @@ nautilus_file_is_nautilus_link (NautilusFile *file)
 gboolean
 nautilus_file_is_directory (NautilusFile *file)
 {
-	if (file == NULL) {
-		return FALSE;
-	}
-		
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_DIRECTORY;
 }
 
