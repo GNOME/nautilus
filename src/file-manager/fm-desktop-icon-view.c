@@ -779,9 +779,9 @@ my_g_check_permissions (gchar *filename, int mode)
 static gboolean
 mount_device_floppy_add (DeviceInfo *device)
 {
-	//if (my_g_check_permissions (device->fsname, R_OK)) {
-	//	return FALSE;
-	//}
+	if (my_g_check_permissions (device->fsname, R_OK)) {
+		return FALSE;
+	}
 
 	device->type = DEVICE_FLOPPY;
 
