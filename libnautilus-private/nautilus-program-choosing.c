@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-stock-dialogs.h"
@@ -233,18 +234,24 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 {
 	GnomeDialog *dialog;
 	char *command_string;
-	char *uri_or_path;
+	char *parameter;
 	char *prompt;
 
-	/* Always use local path if we can get one, even for apps that can
-	 * deal with uris. This is done only for convenience.
+	/* If the program can open URIs, always use a URI. This
+	 * prevents any possible ambiguity for cases where a path
+	 * would looks like a URI.
 	 */
-	uri_or_path = gnome_vfs_get_local_path_from_uri (uri);
-	if (uri_or_path == NULL) {
-		if (!application->can_open_uris) {
-			/* This application can't deal with this uri, because it
-			 * can only handle local files. Tell user. Some day we could offer
-			 * to copy it locally for the user, if we knew where to put it.
+	if (application->can_open_uris) {
+		parameter = g_strdup (uri);
+	} else {
+		parameter = gnome_vfs_get_local_path_from_uri (uri);
+		if (parameter == NULL) {
+			/* This application can't deal with this URI,
+			 * because it can only handle local
+			 * files. Tell user. Some day we could offer
+			 * to copy it locally for the user, if we knew
+			 * where to put it, and who would delete it
+			 * when done.
 			 */
 			prompt = g_strdup_printf (_("Sorry, %s can only open local files, and "
 						    "\"%s\" is remote. If you want to open it "
@@ -254,8 +261,6 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 			g_free (prompt);
 			return;
 		}
-		
-		uri_or_path = g_strdup (uri);
 	}
 	
 	if (application->requires_terminal) {
@@ -263,10 +268,10 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 	} else {
 		command_string = g_strdup (application->command);
 	}
-
-	nautilus_launch_application_from_command (command_string, uri_or_path);
-
-	g_free (uri_or_path);
+	
+	nautilus_launch_application_from_command (command_string, parameter);
+	
+	g_free (parameter);
 	g_free (command_string);
 }
 
@@ -285,7 +290,6 @@ nautilus_launch_application (GnomeVFSMimeApplication *application, const char *u
 	nautilus_launch_application_parented (application, uri, NULL);
 }
 
-
 /**
  * nautilus_launch_application_from_command:
  * 
@@ -294,15 +298,17 @@ nautilus_launch_application (GnomeVFSMimeApplication *application, const char *u
  * 
  * @command_string: The application to be launched, with any desired
  * command-line options.
- * @uri: Passed as a parameter to the application as is.
+ * @parameter: Passed as a parameter to the application as is.
  */
 void
-nautilus_launch_application_from_command (const char *command_string, const char *uri)
+nautilus_launch_application_from_command (const char *command_string, const char *parameter)
 {
-	char *full_command;
+	char *full_command, *quoted_parameter;
 
-	if (uri != NULL) {
-		full_command = g_strconcat (command_string, " ", uri, " &", NULL);
+	if (parameter != NULL) {
+		quoted_parameter = nautilus_shell_quote (parameter);
+		full_command = g_strconcat (command_string, " ", parameter, " &", NULL);
+		g_free (quoted_parameter);
 	} else {
 		full_command = g_strconcat (command_string, " &", NULL);
 	}
@@ -311,4 +317,3 @@ nautilus_launch_application_from_command (const char *command_string, const char
 
 	g_free (full_command);
 }
-

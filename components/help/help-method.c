@@ -29,10 +29,9 @@
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <stdio.h>
 #include <string.h>
-
-#define ALI_DEBUG
 
 static gboolean already_initialized = FALSE;
 G_LOCK_DEFINE_STATIC (already_initialized);
@@ -69,17 +68,6 @@ help_uri_new (void)
 	retval->type = UNKNOWN_FILE;
 
 	return retval;
-}
-
-static char *
-escape_for_shell (const char *item)
-{
-        /* FIXME bugzilla.eazel.com 2404: 
-         * This should add single quotes around items that need
-         * it and handle single quotes themselves right. For now, just
-         * put a placeholder that does nothing.
-         */
-        return g_strdup (item);
 }
 
 static char *
@@ -128,7 +116,7 @@ help_uri_to_string (HelpURI *help_uri)
 	}
         
         /* Build a command line. */
-        escaped = escape_for_shell (parameter);
+        escaped = nautilus_shell_quote (parameter);
         g_free (parameter);
         command_line = g_strconcat (command, " ", escaped, ";mime-type=text/html", NULL);
         g_free (escaped);

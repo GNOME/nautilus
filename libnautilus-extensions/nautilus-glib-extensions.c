@@ -909,6 +909,46 @@ nautilus_g_string_append_len (GString *string,
 	}
 }
 
+/* By strange parallel evolution there is actually going to be a
+ * function to do this in GNOME 2.0.
+ */
+char *
+nautilus_shell_quote (const char *string)
+{
+	const char *p;
+	GString *quoted_string;
+	char *quoted_str;
+
+	/* All kinds of ways to do this fancier.
+	 * - Detect when quotes aren't needed at all.
+	 * - Use double quotes when they would look nicer.
+	 * - Avoid sequences of quote/unquote in a row (like when you quote "'''").
+	 * - Do it higher speed with strchr.
+	 * - Allocate the GString with g_string_sized_new.
+	 */
+
+	g_return_val_if_fail (string != NULL, NULL);
+
+	quoted_string = g_string_new ("'");
+
+	for (p = string; *p != '\0'; p++) {
+		if (*p == '\'') {
+			/* Get out of quotes, do a quote, then back in. */
+			g_string_append (quoted_string, "'\\''");
+		} else {
+			g_string_append_c (quoted_string, *p);
+		}
+	}
+
+	g_string_append_c (quoted_string, '\'');
+
+	/* Let go of the GString. */
+	quoted_str = quoted_string->str;
+	g_string_free (quoted_string, FALSE);
+
+	return quoted_str;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 
@@ -1086,6 +1126,14 @@ nautilus_self_check_glib_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%_m/%_d/%y, %_I:%M %p", 2000, 1, 1, 1, 0, 0), " 1/ 1/00,  1:00 AM");
 
 	g_free (huge_string);
+
+	/* nautilus_shell_quote */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote (""), "''");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("a"), "'a'");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("'"), "''\\'''");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("'a"), "''\\''a'");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("a'"), "'a'\\'''");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("a'a"), "'a'\\''a'");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

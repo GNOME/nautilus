@@ -127,6 +127,6 @@ int         nautilus_g_strv_find                      (char                     
 gint64      nautilus_get_system_time                  (void);
 
 /* shell */
-char *      nautilus_escape_string_for_shell          (const char                       *string);
+char *      nautilus_shell_quote                      (const char                       *string);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

@@ -1,3 +1,25 @@
+2000-09-13  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1462 (File names containing spaces don't launch right)
+	and bug 2404 (Help uri needs to be escaped properly) by adding a
+	function to quote for strings for shell. I chose a name an an
+	implementation that matches the function that will be added to
+	glib 2.0 for this purpose.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_shell_quote), (nautilus_self_check_glib_extensions):
+	Add a shell_quote function and tests for it.
+
+	* components/help/help-method.c: (help_uri_to_string): Call the
+	new nautilus_shell_quote function.
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_parented): Use a URI by default, and
+	a path only for applications that can't use URIs.
+	(nautilus_launch_application_from_command): Quote the parameter
+	for the shell with the new nautilus_shell_quote function.
+
 2000-09-13  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

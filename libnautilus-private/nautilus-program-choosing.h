@@ -36,24 +36,20 @@ typedef void (*NautilusComponentChoiceCallback)   (NautilusViewIdentifier 	 *ide
 						   gpointer		 	  callback_data);
 typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
 						   gpointer			  callback_data);						 
-
-void nautilus_choose_application_for_file (NautilusFile 		     *file,
-					   GtkWindow			     *parent_window,
-					   NautilusApplicationChoiceCallback  callback,
-					   gpointer			      callback_data);
-
-void nautilus_choose_component_for_file (NautilusFile 			     *file,
-					 GtkWindow			     *parent_window,
-					 NautilusComponentChoiceCallback      callback,
-					 gpointer			      callback_data);
-
-void nautilus_launch_application		(GnomeVFSMimeApplication	     *application,
-					 	 const char			     *uri);
-void nautilus_launch_application_parented	(GnomeVFSMimeApplication	     *application,
-					 	 const char			     *uri,
-					 	 GtkWindow			     *parent);
-void nautilus_launch_application_from_command (const char                    *command_string, 
-					       const char                    *uri);
-
+void nautilus_choose_application_for_file     (NautilusFile                      *file,
+					       GtkWindow                         *parent_window,
+					       NautilusApplicationChoiceCallback  callback,
+					       gpointer                           callback_data);
+void nautilus_choose_component_for_file       (NautilusFile                      *file,
+					       GtkWindow                         *parent_window,
+					       NautilusComponentChoiceCallback    callback,
+					       gpointer                           callback_data);
+void nautilus_launch_application              (GnomeVFSMimeApplication           *application,
+					       const char                        *uri);
+void nautilus_launch_application_parented     (GnomeVFSMimeApplication           *application,
+					       const char                        *uri,
+					       GtkWindow                         *parent);
+void nautilus_launch_application_from_command (const char                        *command_string,
+					       const char                        *parameter);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */
