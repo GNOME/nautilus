@@ -1697,12 +1697,14 @@ should_look_for_dot_directory_file (NautilusFile *file)
 
 	const char *schemes [] = {
 		"preferences:",
+		"preferences-all-users:",
 		"all-preferences:",
 		"system-settings:",
 		"server-settings:",
 		"favorites:",
 		"start-here:",
 		"applications:",
+		"applications-all-users:",
 		"all-applications:"
 	};
 
