@@ -58,6 +58,26 @@
 	which is used if a custom icon wasn't found.
 	(set_up_toolbar_images): Define proper stock item replacements.
 
+2002-02-20  Jody Goldberg <jody@gnome.org>
+
+	* components/adapter/Makefile.am : add DISABLE_DEPRECATED_CFLAGS.
+	* components/adapter/nautilus-adapter-load-strategy.c
+	(nautilus_adapter_load_strategy_get) : ProgressiveDataSink is gone in
+	  gnome2.
+	* components/adapter/nautilus-adapter-embed-strategy.c
+	(nautilus_adapter_embed_strategy_class_init) : use g_cclosure_marshal_*
+	  which are not deprecated.
+	(nautilus_adapter_embed_strategy_get) : try ControlFactory in place of
+	  Embeddable.
+	* components/adapter/nautilus-adapter-control-factory-embed-strategy.c :
+	* components/adapter/nautilus-adapter-control-factory-embed-strategy.c :
+	  Renamed from nautilus-adapter-embeddable-embed-strategy.c
+	  Convert to ControlFactory.
+	* components/adapter/nautilus-adapter-control-factory-embed-strategy.h :
+	  Convert to G_* casts.
+	* components/adapter/nautilus-adapter.c :
+	  s/gtk_signal_disconnect/g_signal_handler_disconnect/
+
 2002-02-20  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/file-manager/fm-directory-view.c:

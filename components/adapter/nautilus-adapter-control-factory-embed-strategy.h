@@ -21,39 +21,40 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter-embeddable-embed-strategy.h
+/* nautilus-adapter-control_factory-embed-strategy.h
  */
 
-#ifndef NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_H
-#define NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_H
+#ifndef NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY_H
+#define NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY_H
 
 #include "nautilus-adapter-embed-strategy.h"
 
-#define NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY	      (nautilus_adapter_embeddable_embed_strategy_get_type ())
-#define NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY, NautilusAdapterEmbeddableEmbedStrategy))
-#define NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY, NautilusAdapterEmbeddableEmbedStrategyClass))
-#define NAUTILUS_IS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY))
-#define NAUTILUS_IS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY))
+#define NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY		\
+	(nautilus_adapter_control_factory_embed_strategy_get_type ())
+#define NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY(obj)		\
+	(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY, NautilusAdapterControlFactoryEmbedStrategy))
+#define NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY_CLASS(klass)	\
+	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY, NautilusAdapterControlFactoryEmbedStrategyClass))
+#define NAUTILUS_IS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY(obj)		\
+	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY))
+#define NAUTILUS_IS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY_CLASS(klass)	\
+	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY))
 
-typedef struct NautilusAdapterEmbeddableEmbedStrategyDetails NautilusAdapterEmbeddableEmbedStrategyDetails;
+typedef struct NautilusAdapterControlFactoryEmbedStrategyDetails NautilusAdapterControlFactoryEmbedStrategyDetails;
 
 typedef struct {
 	NautilusAdapterEmbedStrategy parent;
-	NautilusAdapterEmbeddableEmbedStrategyDetails *details;
-} NautilusAdapterEmbeddableEmbedStrategy;
+	NautilusAdapterControlFactoryEmbedStrategyDetails *details;
+} NautilusAdapterControlFactoryEmbedStrategy;
 
 typedef struct {
 	NautilusAdapterEmbedStrategyClass parent;
-} NautilusAdapterEmbeddableEmbedStrategyClass;
+} NautilusAdapterControlFactoryEmbedStrategyClass;
 
-/* GtkObject support */
-GtkType                             nautilus_adapter_embeddable_embed_strategy_get_type (void);
+/* GObject support */
+GType                          nautilus_adapter_control_factory_embed_strategy_get_type (void);
 
-NautilusAdapterEmbedStrategy       *nautilus_adapter_embeddable_embed_strategy_new      (Bonobo_Embeddable  embeddable,
+NautilusAdapterEmbedStrategy  *nautilus_adapter_control_factory_embed_strategy_new      (Bonobo_ControlFactory  control_factory,
 											 Bonobo_UIContainer ui_container);
 
-
-#endif /* NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY_H */
-
-
-
+#endif /* NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY_H */

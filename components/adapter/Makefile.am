@@ -4,6 +4,7 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir) \
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
@@ -21,8 +22,8 @@ nautilus_adapter_SOURCES =				\
 	nautilus-adapter-embed-strategy-private.h	\
 	nautilus-adapter-embed-strategy.c		\
 	nautilus-adapter-embed-strategy.h		\
-	nautilus-adapter-embeddable-embed-strategy.c	\
-	nautilus-adapter-embeddable-embed-strategy.h	\
+	nautilus-adapter-control-factory-embed-strategy.c	\
+	nautilus-adapter-control-factory-embed-strategy.h	\
 	nautilus-adapter-factory-server.c		\
 	nautilus-adapter-factory-server.h		\
 	nautilus-adapter-file-load-strategy.c		\

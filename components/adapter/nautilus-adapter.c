@@ -21,7 +21,7 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter.c - Class for adapting bonobo controls/embeddables
+/* nautilus-adapter.c - Class for adapting bonobo Control/ControlFactory
  * to look like Nautilus views.
  */
 
@@ -104,14 +104,14 @@ nautilus_adapter_destroy (GtkObject *object)
 	
 	adapter = NAUTILUS_ADAPTER (object);
 
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_underway_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_progress_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_complete_id);
-	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
-			       adapter->details->report_load_failed_id);
+	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+		adapter->details->report_load_underway_id);
+	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+		adapter->details->report_load_progress_id);
+	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+		adapter->details->report_load_complete_id);
+	g_signal_handler_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+		adapter->details->report_load_failed_id);
 
 	if (adapter->details->embed_strategy != NULL) {
 		nautilus_adapter_embed_strategy_deactivate (adapter->details->embed_strategy);

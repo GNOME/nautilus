@@ -33,7 +33,8 @@
 
 #include "nautilus-adapter-control-embed-strategy.h"
 #include "nautilus-adapter-embed-strategy-private.h"
-#include "nautilus-adapter-embeddable-embed-strategy.h"
+#include "nautilus-adapter-control-factory-embed-strategy.h"
+
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
@@ -71,7 +72,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
 		              NULL, NULL,
-		              gtk_marshal_VOID__POINTER,
+		              g_cclosure_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DEACTIVATE] =
 		g_signal_new ("deactivate",
@@ -79,7 +80,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[OPEN_LOCATION] =
 		g_signal_new ("open_location",
@@ -102,12 +103,10 @@ nautilus_adapter_embed_strategy_init (NautilusAdapterEmbedStrategy *strategy)
 NautilusAdapterEmbedStrategy *
 nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 {
-	Bonobo_Control    control;
-#if GNOME2_CONVERSION_COMPLETE
-	Bonobo_Embeddable embeddable;
-#endif
-	CORBA_Environment ev;
 	NautilusAdapterEmbedStrategy *strategy;
+	Bonobo_ControlFactory	control_factory;
+	Bonobo_Control		control;
+	CORBA_Environment	ev;
 
 	CORBA_exception_init (&ev);
 
@@ -121,17 +120,15 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 		bonobo_object_release_unref (control, NULL);
 	}
 	
-#if GNOME2_CONVERSION_COMPLETE
 	if (strategy != NULL) {
-		embeddable = Bonobo_Unknown_queryInterface
-			(component, "IDL:Bonobo/Embeddable:1.0", &ev);
-		if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
-			strategy = nautilus_adapter_embeddable_embed_strategy_new
-				(embeddable, CORBA_OBJECT_NIL);
-			bonobo_object_release_unref (embeddable, NULL);
+		control_factory = Bonobo_Unknown_queryInterface
+			(component, "IDL:Bonobo/ControlFactory:1.0", &ev);
+		if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control_factory, &ev)) {
+			strategy = nautilus_adapter_control_factory_embed_strategy_new
+				(control_factory, CORBA_OBJECT_NIL);
+			bonobo_object_release_unref (control_factory, NULL);
 		}
 	}
-#endif
 
 	CORBA_exception_free (&ev);
 
