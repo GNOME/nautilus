@@ -384,8 +384,10 @@ start_element(Context *context,
 	if (!g_strcasecmp (name, "xref")) {
 		context->stack = remove_head (context->stack);
 	} else if (!g_strcasecmp (name, "void")) {
-		context->stack = remove_head (context->stack);
-	}
+			context->stack = remove_head (context->stack);
+	       } else if (!g_strcasecmp (name, "anchor")) {
+                        context->stack = remove_head (context->stack);
+                      }
 }
 
 static void
