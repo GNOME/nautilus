@@ -175,6 +175,9 @@ struct NautilusIconContainerDetails {
 	/* Mode settings. */
 	gboolean single_click_mode;
 	gboolean auto_layout;
+
+	/* Layout mode */
+	NautilusIconCanvasLayoutMode layout_mode;
 };
 
 /* Private functions shared by mutiple files. */

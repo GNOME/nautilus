@@ -199,6 +199,11 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    fm_desktop_icon_view_trash_state_changed_callback,
 			    desktop_icon_view);
 
+	/* The desktop uses a vertical layout mode */
+	nautilus_icon_container_set_layout_mode (NAUTILUS_ICON_CONTAINER (desktop_icon_view),
+					 	 NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED);
+
+
 	/* Check for mountable devices */
 	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
 }

@@ -57,6 +57,11 @@ typedef struct {
 	double scale_y;
 } NautilusIconPosition;
 
+typedef enum {
+	NAUTILUS_ICON_CANVAS_LAYOUT_HORIZONTAL,
+	NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED
+} NautilusIconCanvasLayoutMode;
+
 struct NautilusIconContainerClass {
 	GnomeCanvasClass parent_class;
 
@@ -144,6 +149,8 @@ void       nautilus_icon_container_request_update_all            (NautilusIconCo
 gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconContainer *container);
 void       nautilus_icon_container_set_auto_layout               (NautilusIconContainer *container,
 								  gboolean               auto_layout);
+void       nautilus_icon_container_set_layout_mode               (NautilusIconContainer *container,
+								  NautilusIconCanvasLayoutMode mode);
 void       nautilus_icon_container_sort                          (NautilusIconContainer *container);
 void       nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer *container);
 

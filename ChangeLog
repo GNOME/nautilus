@@ -1,3 +1,26 @@
+2000-08-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font):
+	Fixed crasher.  Was always assuming that gdk_font_load would
+	return a valid font.  This is not the case.  The code will
+	now properly traverse the array to look for the requested
+	size. 
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(get_icon_space_height), (lay_down_one_line_vertical),
+	(lay_down_icons_horizontal), (lay_down_icons_vertical),
+	(lay_down_icons), (relayout), (reload_icon_positions),
+	(nautilus_icon_container_initialize), (finish_adding_new_icons),
+	(nautilus_icon_container_set_layout_mode):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Work on making the icon layout code more flexible so that
+	we can have differing layout schemes.  This is specifically
+	for the desktop layout requirements.
+	
 2000-08-08  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1749 (Show Properties should be disabled in 

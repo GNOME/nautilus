@@ -545,7 +545,7 @@ nautilus_get_largest_fitting_font (const char *text_to_format, int width, const 
 {
 	int font_index, this_width;
 	char *font_name;
-//	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
+	/*const int font_sizes[5] = { 28, 24, 18, 14, 12 };*/
 	const int font_sizes[4] = { 20, 18, 14, 12 };
 	GdkFont *candidate_font;
 	char *alt_text_to_format = NULL;
@@ -568,16 +568,18 @@ nautilus_get_largest_fitting_font (const char *text_to_format, int width, const 
 		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
 		candidate_font = gdk_font_load (font_name);
 		g_free (font_name);
-		
-		this_width = gdk_string_width (candidate_font, temp_str);
-		if (alt_text_to_format != NULL) {
-			int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
-			if (this_width <= width && alt_width <= width) {
-				break;
-			}
-		} else {
-			if (this_width <= width) {
-				break;
+
+		if (candidate_font != NULL) {
+			this_width = gdk_string_width (candidate_font, temp_str);
+			if (alt_text_to_format != NULL) {
+				int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
+				if (this_width <= width && alt_width <= width) {
+					break;
+				}
+			} else {
+				if (this_width <= width) {
+					break;
+				}
 			}
 		}
 	}
