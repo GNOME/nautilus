@@ -8,6 +8,8 @@
 
 Name:		%name
 Summary:	Nautilus is a free file manager and graphical shell.
+Vendor:		GNOME
+Distribution:	CVS
 Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
@@ -48,7 +50,7 @@ Requires:	%name = %{PACKAGE_VERSION}
 Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	mozilla >= 0.7
+Requires:	mozilla = 0.7
 
 %package trilobite
 Summary:        Nautilus component framework for services
