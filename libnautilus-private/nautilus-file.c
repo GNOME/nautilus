@@ -2314,7 +2314,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 
 	permissions = file->details->info->permissions;
 	is_directory = nautilus_file_is_directory (file);
-	is_link = GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
+	is_link = (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK);
 
 	/* We use ls conventions for displaying these three obscure flags */
 	suid = permissions & GNOME_VFS_PERM_SUID;
@@ -3000,7 +3000,7 @@ gboolean
 nautilus_file_is_symbolic_link (NautilusFile *file)
 {
 	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_FLAGS)
-		? FALSE : GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
+		? FALSE : (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK);
 }
 
 /**

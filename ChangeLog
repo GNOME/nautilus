@@ -1,3 +1,16 @@
+2000-07-03  Seth Nickell  <seth@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_permissions_as_string),
+	(nautilus_file_is_symbolic_link):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_file):
+	Necessary to make Nautilus compile after changing 
+	GNOME_VFS_FILE_TYPE_BROKEN_SYMLINK to GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK
+	and removing the existing flag. See bug 1547 for more information on
+	breakages in the way Nautilus handles symbolic links (caused by the
+	GnomeVFS changes) such as detecting them in the first place.
+
 2000-07-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:
