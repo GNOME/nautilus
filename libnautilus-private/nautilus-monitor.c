@@ -56,7 +56,6 @@ get_fam_connection (void)
 	/* Only try once. */
         if (!tried_connection) {
 		if (FAMOpen2 (&connection, "Nautilus") != 0) {
-			g_warning ("Nautilus failed to establish a link to FAM");
 			got_connection = FALSE;
 		} else {
 			/* Register our callback into the gtk loop. */
@@ -126,7 +125,7 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 
         while (FAMPending (connection)) {
                 if (FAMNextEvent (connection, &event) != 1) {
-                        g_warning ("Nautilus's link to FAM died");
+                        g_warning ("connection to FAM died");
                         gdk_input_remove (fd);
                         FAMClose (connection);
                         got_connection = FALSE;

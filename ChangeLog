@@ -1,5 +1,13 @@
 2001-04-16  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-monitor.c: (get_fam_connection):
+	Don't give a warning if there's no FAM daemon to connect to, just
+	silently don't use FAM.
+	(process_fam_notifications): Improve wording of the warning you
+	get when FAM goes away.
+
+2001-04-16  Darin Adler  <darin@eazel.com>
+
 	Changes to use FAM if it's there. Now the hard part is getting FAM
 	installed on people's systems.
 
