@@ -1,3 +1,13 @@
+2000-11-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_find_drop_target),
+	(nautilus_icon_container_get_drop_action):
+	fixed bug 3215 and 3723, bad feedback during emblem dropping,
+	by rejecting the drop if we're not over an icon.  Also, made it
+	reject the drop for colors and backgrounds if we're not over
+	the background.  I also fixed a memory leak in get_drop_action.
+	
 2000-11-08  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* configure.in:

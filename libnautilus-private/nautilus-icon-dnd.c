@@ -853,13 +853,14 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	NautilusFile *file;
 	char *icon_uri;
 
+	*icon_hit = FALSE;
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return NULL;
 	}
 
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
-
+	
 	/* FIXME bugzilla.eazel.com 2485: 
 	 * These "can_accept_items" tests need to be done by
 	 * the icon view, not here. This file is not supposed to know
@@ -892,7 +893,6 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	}
 	
 	*icon_hit = TRUE;
-
 	return nautilus_icon_container_get_icon_drop_target_uri (container, drop_target_icon);
 }
 
@@ -990,12 +990,22 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 {
 	char *drop_target;
 	gboolean icon_hit;
-
+	NautilusIcon *icon;
+	double world_x, world_y;
+	
+	icon_hit = FALSE;
 	if (!container->details->dnd_info->drag_info.got_drop_data_type) {
 		/* drag_data_received_callback didn't get called yet */
 		return;
 	}
 
+	/* find out if we're over an icon */
+  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+				      x, y, &world_x, &world_y);
+	
+	icon = nautilus_icon_container_item_at (container, world_x, world_y);
+
+	/* case out on the type of object being dragged */
 	switch (container->details->dnd_info->drag_info.data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		if (container->details->dnd_info->drag_info.selection_list == NULL) {
@@ -1013,11 +1023,34 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
 			container->details->dnd_info->drag_info.selection_list, 
 			default_action, non_default_action);
+		g_free (drop_target);
 		break;
 
+	/* handle emblems by setting the action if we're over an object */
+	case NAUTILUS_ICON_DND_KEYWORD:
+		if (icon == NULL) {
+			*default_action = 0;
+			*non_default_action = 0;
+		} else {
+			*default_action = context->suggested_action;
+			*non_default_action = context->suggested_action;
+		}
+		
+		break;
+	
+	/* handle colors and backgrounds by setting the action if we're over the background */		
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
-	case NAUTILUS_ICON_DND_KEYWORD:
+		if (icon == NULL) {
+			*default_action = context->suggested_action;
+			*non_default_action = context->suggested_action;
+		} else {
+			*default_action = 0;
+			*non_default_action = 0;
+		}
+	
+		break;
+	
 	case NAUTILUS_ICON_DND_URI_LIST:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
