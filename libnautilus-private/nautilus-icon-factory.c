@@ -795,6 +795,13 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		}
 	}
 	
+	/* handle .svg files */
+	/* FIXME: we should be checking the mime-type but for now we use the suffix, as the mime-type
+	   isn't defined in standard setups */
+	if (uri == NULL && nautilus_str_has_suffix(file_uri,".svg")) {
+		uri = g_strdup(file_uri);
+	}
+	
 	/* Get the generic icon set for this file. */
         g_free(file_uri);
         name = nautilus_icon_factory_get_icon_name_for_file (file);
@@ -1065,12 +1072,17 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 * no convenience function for loading an image with gnome-vfs
 		 * and gdk-pixbuf.
 		 */
+		/* FIXME: should use MIME-type instead of suffix */
+		if (nautilus_str_has_suffix(scalable_icon->uri, ".svg")) {
+			memset (text_rect, 0, sizeof (*text_rect));
+			return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);
+		}
+		
 		if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD
 		    && nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
 			memset (text_rect, 0, sizeof (*text_rect));
 			return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
 		}
-
 		return NULL;
 	} else {
 		/* Standard icon. */
