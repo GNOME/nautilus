@@ -23,10 +23,6 @@
  * Author: Andy Hertzfeld <andy@eazel.com>
  */
 
-/* nautilus-first-time-druid.c:
- */
-
-
 #include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -49,12 +45,20 @@
 
 #include "nautilus-first-time-druid.h"
 
+#define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
+
+static void
+initiate_file_download (NautilusDruid *druid);
+
+/* globals */
 static NautilusApplication *save_application;
 static gboolean save_manage_desktop;
 
 static GtkWidget *start_page;
 static GtkWidget *finish_page;
 static GtkWidget *pages[4];
+
+static GtkWidget *download_progress;
 
 static int last_signup_choice = 0;
 static int last_update_choice = 0;
@@ -354,6 +358,7 @@ set_up_update_feedback_page (NautilusDruidPageStandard *page)
 {
 	GtkWidget *frame, *label;
 	GtkWidget *container, *main_box;
+	GtkWidget *progress_box, *temp_box;
 	
 	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
 
@@ -372,10 +377,26 @@ set_up_update_feedback_page (NautilusDruidPageStandard *page)
 	frame = gtk_frame_new (_("Nautilus Update Progress"));
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
+
+	progress_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (progress_box);
 	
-	label = gtk_label_new (_("This is a placeholder - the real thing is coming soon"));
+	download_progress = gtk_progress_bar_new ();
+	gtk_progress_set_show_text (GTK_PROGRESS (download_progress), TRUE);		  
+	
+	/* put it in an hbox to restrict it's size */
+	temp_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (temp_box);
+	gtk_box_pack_start (GTK_BOX(temp_box), download_progress, FALSE, FALSE, 168);
+		
+	gtk_widget_show (download_progress);
+	gtk_box_pack_start (GTK_BOX (progress_box), temp_box, FALSE, FALSE, 2);
+	
+	label = gtk_label_new (_("Downloading Nautilus updates..."));
 	gtk_widget_show (label);
-	gtk_container_add (GTK_CONTAINER (frame), label);
+	gtk_box_pack_start (GTK_BOX (progress_box), label, FALSE, FALSE, 2);
+
+	gtk_container_add (GTK_CONTAINER (frame), progress_box);
 	
 	/* allocate update progess widgets */
 	
@@ -388,6 +409,8 @@ next_update_page_callback (GtkWidget *button, NautilusDruid *druid)
 {
 	if (last_update_choice == 0) {
 		/* initiate the file transfer and launch a timer task to track feedback */
+		initiate_file_download (druid);
+		
 		/* return FALSE to display the feedback page */
 		return FALSE;
 	}
@@ -508,5 +531,62 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	return druid;
+}
+
+/* download_callback is invokes when the file is completely downloaded, to write it out and expand it */
+
+/* callback to handle the asynchronous reading of icons */
+static void
+download_callback (GnomeVFSResult result,
+			 GnomeVFSFileSize file_size,
+			 char *file_contents,
+			 gpointer callback_data)
+{
+	char *command_str, *user_directory_path;
+	int size, write_result, expand_result;
+	FILE* outfile;
+	NautilusDruid *druid;
+	
+	druid = NAUTILUS_DRUID (callback_data);
+	
+	/* check for errors */
+	if (result == GNOME_VFS_OK) {
+		/* there was no error, so write out the file into the /tmp directory */
+		size = file_size;
+		outfile = fopen (SERVICE_UPDATE_ARCHIVE_PATH, "wb");	 	
+		write_result = fwrite (file_contents, size, 1, outfile);
+		fclose (outfile);
+		g_free (file_contents);
+		
+		/* expand the directory into the proper place */
+		/* first, formulate the command string */
+		user_directory_path = nautilus_get_user_directory ();
+		command_str = g_strdup_printf ("cd %s; tar xvfz %s", user_directory_path, SERVICE_UPDATE_ARCHIVE_PATH);
+		
+		/* execute the command to make the updates folder */
+		expand_result = system (command_str);
+		
+		g_free (user_directory_path);
+		g_free (command_str);	
+	
+		/* advance to the next page */
+		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));	
+	}
+}
+
+/* initiate downloading of the welcome package from the service */
+
+static void
+initiate_file_download (NautilusDruid *druid)
+{
+	NautilusReadFileHandle *file_handle;
+	/* for testing */
+	const char *file_uri = "http://dellbert.differnet.com/eazel-services/updates.tgz";
+	
+	 /* initiate the file transfer */
+	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
+	
+	/* launch a timer task to provide feedback */
+
 }
 

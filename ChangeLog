@@ -1,3 +1,12 @@
+2000-08-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (set_up_update_feedback_page),
+	(next_update_page_callback), (nautilus_first_time_druid_show),
+	(download_callback), (initiate_file_download):
+	work on required task 1826; made the first time druid load the nautilus update file
+	asynchronously, and then expand it into a directory at ~/.nautilus.  There's still
+	a lot of refinement left to do, but the basic functionality is there now.
+	
 Sat Aug 19 23:43:23 2000  George Lebl <jirka@5z.com>
 
 	* librsvg/rsvg.c (rsvg_ctx_free_helper) (rsvg_entity_decl):
