@@ -37,6 +37,7 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-service-public.h		\
 	trilobite-service-private.h		\
 	trilobite-core-messaging.h		\
+	trilobite-core-distribution.h		\
 	trilobite-core-metadata-manager.h	\
 	trilobite-core-network.h		\
 	trilobite-core-package-manager.h	\
@@ -52,6 +53,7 @@ libtrilobite_la_SOURCES =			\
 	trilobite-service-skels.c		\
 	trilobite-service.c			\
 	trilobite-core-messaging.c		\
+	trilobite-core-distribution.c		\
 	trilobite-core-metadata-manager.c	\
 	trilobite-core-network.c		\
 	trilobite-core-package-manager.c	\

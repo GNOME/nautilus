@@ -100,15 +100,18 @@ http_fetch_remote_file (EazelInstall *service,
                          ghttp_reason_phrase (request));
                 get_failed = 1;
         }
-        length = ghttp_get_body_len (request);
-        body = ghttp_get_body (request);
-        if (body != NULL) {
-                fwrite (body, length, 1, file);
-        }
-        else {
-                g_warning (_("Could not get request body!"));
-                get_failed = 1;
-        }
+	if (ghttp_status_code (request) != 404) {
+		length = ghttp_get_body_len (request);
+		body = ghttp_get_body (request);
+		if (body != NULL) {
+			fwrite (body, length, 1, file);
+		} else {
+			g_warning (_("Could not get request body!"));
+			get_failed = 1;
+		}
+	} else {
+		get_failed = 1;
+	}
 
         if (request) {
                 ghttp_request_destroy (request);
@@ -201,9 +204,9 @@ eazel_install_fetch_package (EazelInstall *service,
                                        eazel_install_get_hostname (service),
                                        eazel_install_get_rpm_storage_path (service),
                                        rpmfilename_from_packagedata (package));
-
-
-
+		/*
+		url = get_url_for_package (service, package);
+		*/
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -211,11 +214,116 @@ eazel_install_fetch_package (EazelInstall *service,
 		break;
 	};
 
-	result = eazel_install_fetch_file (service, url, targetname);
-
-	g_free (url);
+	if (url == NULL) {
+		g_warning (_("Could not get a URL for %s"), rpmfilename_from_packagedata (package));
+	} else {
+		result = eazel_install_fetch_file (service, url, targetname);
+		g_free (url);
+	}
+	
 	g_free (targetname);
 
 	return result;
 }
 
+static void
+add_to_url (char **url,
+	    char *cgi_string,
+	    char *val)
+{
+	char *tmp;
+
+	g_assert (url != NULL);
+	g_assert ((*url) != NULL);
+	g_assert (cgi_string != NULL);
+
+	if (val) {
+		tmp = g_strconcat (*url, cgi_string, val, NULL);
+		g_free (*url);
+		(*url) = tmp;
+	}
+}
+
+char*
+get_url_for_package  (EazelInstall *service, 
+				  PackageData *package)
+{
+	char *search_url;
+	char *url;
+        ghttp_status status;
+        ghttp_request* request;
+
+	url = NULL;
+	search_url = get_search_url_for_package (service, package);
+	g_message ("Search URL: %s", search_url);
+
+        request = ghttp_request_new();
+        if (request == NULL) {
+                g_warning (_("Could not create an http request !"));
+        } else {
+	
+		if (ghttp_set_uri (request, search_url) != 0) {
+			g_warning (_("Invalid uri"));
+		} else {
+			ghttp_set_header (request, http_hdr_Connection, "close");
+			ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
+			ghttp_set_type (request, ghttp_type_get);
+			if (ghttp_prepare (request) != 0) {
+				g_warning (_("Could not prepare http request !"));
+			} else {
+		
+				status = ghttp_process (request);
+				
+				switch (status) {
+				case ghttp_error:					
+				case ghttp_not_done:
+					g_warning (_("Could not retrieve a URL for %s"), rpmfilename_from_packagedata (package));
+				case ghttp_done:
+					if (ghttp_status_code (request) != 404) {
+						url = g_strdup (ghttp_get_body (request));
+					} else {
+						url = NULL;
+					}
+					break;
+				}
+			}
+		}
+		
+                ghttp_request_destroy (request);
+        }
+	
+	g_free (search_url);
+	return url;
+}
+
+
+char* get_search_url_for_package (EazelInstall *service, 
+				  PackageData *pack)
+{
+	char *url;
+	url = g_strdup_printf ("http://%s/rpmsearch.cgi",
+			       eazel_install_get_hostname (service));
+	add_to_url (&url, "?name=", pack->name);
+	add_to_url (&url, "&arch=", pack->archtype);
+	add_to_url (&url, "&version>=", pack->version);
+
+	switch (eazel_install_get_protocol (service)) {
+	case PROTOCOL_HTTP:
+		add_to_url (&url, "&protocol=", "http");
+		break;
+	case PROTOCOL_FTP:
+		add_to_url (&url, "&protocol=", "ftp");
+		break;
+	default:
+		break;
+	}
+
+	if (pack->name != DISTRO_UNKNOWN) {
+		char *distro;
+		distro = g_strconcat ("\"", trilobite_get_distribution_name (pack->distribution, TRUE), "\"", NULL);
+		add_to_url (&url, "&distro=", distro);
+		g_free (distro);
+	}
+
+	return url;
+}

@@ -191,7 +191,7 @@ create_package (char *name)
 		pack->archtype = g_strdup ("i386");
 	}
 #endif
-	pack->distribution = determine_distribution_type ();
+	pack->distribution = trilobite_get_distribution ();
 	pack->toplevel = TRUE;
 	return pack;
 }

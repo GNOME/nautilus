@@ -65,7 +65,10 @@ categorydata_destroy (CategoryData *cd)
 PackageData*
 packagedata_new ()
 {
-	return g_new0 (PackageData, 1);
+	PackageData *pack;
+	pack = g_new0 (PackageData, 1);
+	pack->distribution = trilobite_get_distribution ();
+	return pack;
 }
 
 PackageData*

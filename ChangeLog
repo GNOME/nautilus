@@ -1,3 +1,48 @@
+2000-06-09  Eskil Heyn Olsen  <eskil@eazel.com>
+	
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.c: (determine_turbolinux_version),
+	(determine_mandrake_version), (determine_suse_version),
+	(determine_debian_version), (determine_redhat_version),
+	(trilobite_get_distribution), (trilobite_get_distribution_name):
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.h:
+	As bug 908 said, the helixcode installers way of indentifying
+	distro sucked (Red Hat 6.099999 ?!), so I revamped it and moved
+	the code into trilobite-core-distribution. Only wrote the redhat
+	version check, not the other ones (see bug 908). Instead of only
+	using a enum for the distro, it's now a struct, containing an enum
+	identifying the distroname and two ints for the version.
+	
+	* components/services/install/command-line/eazel-alt-install.c:
+	(create_package):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (eazel_install_fetch_package),
+	(add_to_url), (get_url_for_package), (get_search_url_for_package):	
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages), (install_all_packages):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package):
+	
+	Updated to use the new get_distribution call. Also worked on the
+	rpmsearch stuff. It generates url's like
+	http://vorlon.eazel.com/rpmsearch.cgi?name=jade&arch=i386&version>=1.2.1&protocol=http&distro="Red Hat Linux 6.1"
+	Hat Linux 6.1" and should get a url pointing to an appropriate rpm
+	returned, which should then be fetched. 
+
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	Updated so it still links.
+	
 2000-06-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c

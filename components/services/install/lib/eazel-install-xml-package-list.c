@@ -43,6 +43,7 @@ parse_package (xmlNode* package) {
 
 	rv = packagedata_new ();
 
+	rv->distribution = trilobite_get_distribution ();
 	rv->name = g_strdup (xml_get_value (package, "NAME"));
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));

@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <rpm/rpmlib.h>
-#include <libtrilobite/helixcode-utils.h>
+#include <libtrilobite/trilobite-core-distribution.h>
 
 typedef enum _URLType URLType;
 typedef enum _PackageType PackageType;
@@ -109,7 +109,7 @@ struct _PackageData {
 	char* version;
 	char* minor;
 	char* archtype;
-	DistributionType distribution;
+	DistributionInfo distribution;
 	int bytesize;
 	char* summary;
 	GList* soft_depends;

@@ -30,8 +30,9 @@ nautilus_installer_SOURCES = \
 nautilus_installer_LDFLAGS = -static
 
 nautilus_installer_LDADD = 	\
-        $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
-	$(top_builddir)/components/services/install/lib/libinstall.a			\
+        $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			\
+        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
+	$(top_builddir)/components/services/install/lib/libinstall.a					\
 	-L/gnome/lib \
 	-lgnomeui \
 	-lgnome \

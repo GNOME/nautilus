@@ -160,12 +160,14 @@ download_all_packages (EazelInstall *service,
                        GList* categories) 
 {
 	gboolean result;
-	
+
 	result = TRUE;
 	while (categories) {
 		CategoryData* cat;
 		GList* pkgs;
-
+		GList *remove, *iterator;
+	
+		remove = NULL;
 		cat = categories->data;
 		pkgs = cat->packages;
 
@@ -178,11 +180,16 @@ download_all_packages (EazelInstall *service,
 			if (eazel_install_fetch_package (service, package) == FALSE) {
 				g_warning ("*** Failed to retreive %s! ***", package->name);
 				eazel_install_emit_download_failed (service, package->name, NULL);
-				result = FALSE;
+				remove = g_list_prepend (remove, package); 
 			}
 
 			pkgs = pkgs->next;
 		}
+		
+		for (iterator = remove; iterator; iterator = iterator->next) {
+			cat->packages = g_list_remove (cat->packages, iterator->data);
+		}
+
 		categories = categories->next;
 	}
 
@@ -206,9 +213,13 @@ install_all_packages (EazelInstall *service,
 		
 		newfiles = NULL;
 		failedfiles = NULL;
-		eazel_install_ensure_deps (service, &pkgs, &failedfiles);
+		if (pkgs) {
+			eazel_install_ensure_deps (service, &pkgs, &failedfiles);
+		}
 
-		g_message ("Category = %s", cat->name);
+		g_message ("Category = %s, %d packages", cat->name, g_list_length (pkgs));
+		if (pkgs == NULL) {
+		}
 		while (pkgs) {
 			PackageData* pack;
 			char* pkg; 

@@ -34,6 +34,9 @@
 
 #define USER_AGENT_STRING "eazel-install/"
 
+char* get_search_url_for_package (EazelInstall *service, PackageData *pack);
+char* get_url_for_package (EazelInstall *service, PackageData *pack);
+
 gboolean eazel_install_fetch_file (EazelInstall *service,
 				   char* url, 
 				   const char* target_file);
