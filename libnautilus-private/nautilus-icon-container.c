@@ -2166,6 +2166,8 @@ keyboard_space (NautilusIconContainer *container,
 	    (event->state & GDK_CONTROL_MASK) != 0) {
 		icon_toggle_selected (container, container->details->keyboard_focus);
 		g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+	} else {
+		activate_selected_items (container);
 	}
 }
 

@@ -225,6 +225,7 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	switch (event->keyval) {
+	case GDK_space:
 	case GDK_Return:
 	case GDK_KP_Enter:
 		file_list = fm_list_view_get_selection (view);
