@@ -28,6 +28,7 @@
 #include "ntl-index-panel.h"
 
 #include "ntl-meta-view.h"
+#include "nautilus-index-tabs.h"
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
@@ -41,6 +42,7 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
 	GtkWidget *per_uri_container;
 	GtkWidget *meta_tabs;
+	GtkWidget *index_tabs;
 	char *uri;
 	NautilusDirectory *directory;
 	int background_connection;
@@ -63,6 +65,7 @@ static void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, c
 static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
+#define USE_NEW_TABS 0
 
 /* drag and drop definitions */
 
@@ -130,6 +133,15 @@ nautilus_index_panel_initialize (GtkObject *object)
 	/* allocate and install the vbox to hold the per-uri information */ 
 	make_per_uri_container (index_panel);
 
+	/* first, install the index tabs */
+	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new());
+
+	if (USE_NEW_TABS)
+	  {
+	    gtk_widget_show (index_panel->details->index_tabs);
+	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->index_tabs, FALSE, FALSE, 0);
+	  }
+	  
 	/* allocate and install the meta-tabs (for now it's a notebook) */
   
 	index_panel->details->meta_tabs = gtk_notebook_new ();
@@ -233,8 +245,13 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	                     GTK_SIGNAL_FUNC(nautilus_window_send_show_properties), meta_view);
 	*/
   
+     /* FIXME: this is temporary for testing only */
+    /* tell the index tabs about it */
+    nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), description, GTK_WIDGET(meta_view));
+    
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view), label);
 	gtk_widget_show (GTK_WIDGET (meta_view));
+
 }
 
 /* remove the passed-in meta-view from the index panel */

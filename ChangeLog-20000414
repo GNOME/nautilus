@@ -1,3 +1,16 @@
+2000-02-08  Andy Hertzfeld <andy@eazel.com>
+
+	more work on the index tabs; they're drawing properly now but they're
+	still not ready to be left hooked up
+	
+	* src/nautilus-index-tabs.c:
+	made the index tabs draw properly
+	* src/nautilus-index-panel.c:
+	install the new index tabs if the USE_NEW_TABS define is set; it's
+	not by default
+	* icons/tableft.png, icons/tabright.png:
+	added alpha channel to edge pixmaps so they can draw non-rectangular
+	
 2000-02-08  John Sullivan <sullivan@eazel.com>
 
 	Tweaked the appearance of the icon-text choosing window.
