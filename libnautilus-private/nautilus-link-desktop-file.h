@@ -28,12 +28,13 @@
 #include <libnautilus-private/nautilus-link.h>
 
 gboolean         nautilus_link_desktop_file_local_create                      (const char        *directory_uri,
-									       const char        *file_name,
+									       const char        *base_name,
 									       const char        *display_name,
 									       const char        *image,
 									       const char        *target_uri,
 									       const GdkPoint    *point,
-									       int                screen);
+									       int                screen,
+									       gboolean           unique_filename);
 gboolean         nautilus_link_desktop_file_local_set_text                    (const char        *uri,
 									       const char        *text);
 char *           nautilus_link_desktop_file_local_get_text                    (const char        *uri);

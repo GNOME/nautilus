@@ -1,3 +1,18 @@
+2005-01-14  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	New function nautilus_ensure_unique_file_name
+
+	* libnautilus-private/nautilus-link.[ch]:
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	Uniquify name for nautilus_link_local_create if requested.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_handle_url_drop):
+	Uniquify desktop link name
+
+	Patch from Jorn Baayen <jbaayen@gnome.org>
+
 2005-01-13  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.[ch]:

@@ -79,12 +79,13 @@ slurp_key_string (const char *uri,
 
 gboolean
 nautilus_link_desktop_file_local_create (const char        *directory_uri,
-					 const char        *file_name,
+					 const char        *base_name,
 					 const char        *display_name,
 					 const char        *image,
 					 const char        *target_uri,
 					 const GdkPoint    *point,
-					 int                screen)
+					 int                screen,
+					 gboolean           unique_filename)
 {
 	char *uri, *contents, *escaped_name;
 	GnomeDesktopItem *desktop_item;
@@ -92,13 +93,18 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	NautilusFileChangesQueuePosition item;
 
 	g_return_val_if_fail (directory_uri != NULL, FALSE);
-	g_return_val_if_fail (file_name != NULL, FALSE);
+	g_return_val_if_fail (base_name != NULL, FALSE);
 	g_return_val_if_fail (display_name != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
-	escaped_name = gnome_vfs_escape_string (file_name);
-	uri = g_strdup_printf ("%s/%s", directory_uri, escaped_name);
-	g_free (escaped_name);
+	if (unique_filename) {
+		uri = nautilus_ensure_unique_file_name (directory_uri,
+							base_name, ".desktop");
+	} else {
+		escaped_name = gnome_vfs_escape_string (base_name);
+		uri = g_strdup_printf ("%s/%s.desktop", directory_uri, escaped_name);
+		g_free (escaped_name);
+	}
 
 	contents = g_strdup_printf ("[Desktop Entry]\n"
 				    "Encoding=UTF-8\n"

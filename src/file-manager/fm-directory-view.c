@@ -7818,7 +7818,7 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 	GdkScreen *screen;
 	int screen_num;
 	char *url, *title;
-	char *link_name, *link_file_name, *link_display_name;
+	char *link_name, *link_display_name;
 	char *container_uri;
 	GArray *points;
 	char **bits;
@@ -7889,11 +7889,9 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 		if (!eel_str_is_empty (link_name)) {
 			link_display_name = g_strdup_printf (_("link to %s"), link_name);
 
-			/* FIXME: Handle name conflicts? */
-			link_file_name = g_strconcat (link_name, ".desktop", NULL);
 			/* The filename can't contain slashes, strip em.
 			   (the basename of http://foo/ is http://foo/) */
-			revert_slashes (link_file_name);
+			revert_slashes (link_name);
 
 			point.x = x;
 			point.y = y;
@@ -7902,14 +7900,14 @@ fm_directory_view_handle_url_drop (FMDirectoryView  *view,
 			screen_num = gdk_screen_get_number (screen);
 
 			nautilus_link_local_create (container_uri,
-						    link_file_name,
+						    link_name,
 						    link_display_name,
 						    "gnome-fs-bookmark",
 						    url,
 						    &point,
-						    screen_num);
+						    screen_num,
+						    TRUE);
 
-			g_free (link_file_name);
 			g_free (link_display_name);
 		}
 		g_free (link_name);

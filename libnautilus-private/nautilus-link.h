@@ -39,7 +39,8 @@ gboolean         nautilus_link_local_create                      (const char    
 								  const char       *image,
 								  const char       *target_uri,
 								  const GdkPoint   *point,
-								  int               screen);
+								  int               screen,
+								  gboolean          unique_filename);
 
 /* Returns additional text to display under the name, NULL if
  * none. Despite the fact that it takes a URI parameter, works only if

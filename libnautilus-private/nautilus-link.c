@@ -110,13 +110,15 @@ nautilus_link_local_create (const char *directory_uri,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
-			    int screen)
+			    int screen,
+			    gboolean unique_filename)
 {
 	return nautilus_link_desktop_file_local_create (directory_uri,
 							file_name,
 							display_name, image,
 							target_uri, 
-							point, screen);
+							point, screen,
+							unique_filename);
 }
 
 /* returns additional text to display under the name, NULL if none */
