@@ -3,6 +3,8 @@ if test x$DISPLAY = x; then
    exit
 fi
 params="DISPLAY=$DISPLAY"
+
+# Check proxy settings
 if test x$http_proxy = x; then
    params="$params"
 else
@@ -49,15 +51,6 @@ if test $UID -ne 0 -a "x$1" '!=' "x--version" -a "x$1" '!=' "x--build"; then
          mv -f $HOME/.gconf/apps/nautilus/ $HOME/.nautilus.pr2.backup/ >& /dev/null
          mv -f $HOME/.gconf/apps/eazel-trilobite/ $HOME/.nautilus.pr2.backup/ >& /dev/null
       fi
-   fi
-
-   # Start the nautilus launcher if needed
-   ps ax | grep -vw grep | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
-   rv=$?
-   if [ $rv -ne 0 ]; then
-      if [ -f /usr/bin/nautilus-launcher-applet ]; then
-           nautilus-launcher-applet &
-       fi
    fi
 
    exit
