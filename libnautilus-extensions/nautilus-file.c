@@ -3430,6 +3430,14 @@ nautilus_file_is_in_trash (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
+	/* Use a check for the actual trash first so that the trash
+	 * itself will be "in trash". There are fancier ways to do
+	 * this, but lets start with this.
+	 */
+	if (nautilus_uri_is_trash (file->details->directory->details->uri)) {
+		return TRUE;
+	}
+
         file_vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
 	if (file_vfs_uri == NULL) {
 		return FALSE;

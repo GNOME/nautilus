@@ -1,5 +1,13 @@
 2000-09-13  Darin Adler  <darin@eazel.com>
 
+	Fixed bug 2916 "Shouldn't be able to create new items in trash."
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_in_trash): Made this return TRUE for the trash
+	itself.
+
+2000-09-13  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-file.c:
 	(nautilus_file_get_string_attribute_with_default),
 	(nautilus_file_get_top_left_text): Unmark strings that are
