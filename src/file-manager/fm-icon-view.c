@@ -2309,6 +2309,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	int n_uris;
 	gboolean all_local;
 	GArray *points;
+	GdkScreen *screen;
+	int screen_num;
 
 	if (item_uris == NULL) {
 		return;
@@ -2347,6 +2349,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	point.x = x;
 	point.y = y;
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (view));
+	screen_num = gdk_screen_get_number (screen);
 		
 	/* Most of what comes in here is not really URIs, but rather paths that
 	 * have a file: prefix in them.  We try to sanitize the uri list as a
@@ -2416,7 +2421,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 			if (entry != NULL) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_uri, &point);
+				nautilus_link_local_create_from_gnome_entry (entry, container_uri, &point, screen_num);
 
 				gnome_desktop_item_unref (entry);
 				continue;
@@ -2436,7 +2441,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create (container_uri, link_name,
 							    NULL, uri,
-							    &point, NAUTILUS_LINK_GENERIC);
+							    &point, screen_num,
+							    NAUTILUS_LINK_GENERIC);
 			}
 			
 			g_free (stripped_uri);

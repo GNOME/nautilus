@@ -478,7 +478,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 	volume_name = create_unique_volume_name (volume);
 
 	/* Create link */
-	nautilus_link_local_create (desktop_directory, volume_name, icon_name, target_uri, NULL, NAUTILUS_LINK_MOUNT);
+	nautilus_link_local_create (desktop_directory, volume_name, icon_name, target_uri, NULL, 0, NAUTILUS_LINK_MOUNT);
 
 	g_free (target_uri);
 	g_free (volume_name);
@@ -1582,6 +1582,7 @@ update_desktop_directory (UpdateType type)
 					    "gnome-fs-home", 
 					    home_uri,
 					    NULL,
+					    0,
 					    NAUTILUS_LINK_HOME);
 	}
 	       
@@ -1592,6 +1593,7 @@ update_desktop_directory (UpdateType type)
 						    "gnome-fs-trash-empty", 
 						    EEL_TRASH_URI,
 						    NULL,
+						    0,
 						    NAUTILUS_LINK_TRASH);
 		}
 

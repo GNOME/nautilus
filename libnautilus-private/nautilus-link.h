@@ -46,6 +46,7 @@ gboolean         nautilus_link_local_create                      (const char    
 								  const char       *image,
 								  const char       *target_uri,
 								  const GdkPoint   *point,
+								  int               screen,
 								  NautilusLinkType  type);
 
 /* Change the icon of an existing link file. Takes a path, works
@@ -131,6 +132,7 @@ char *           nautilus_link_get_link_icon_given_file_contents (const char    
 								  int               link_file_size);
 void             nautilus_link_local_create_from_gnome_entry     (GnomeDesktopItem *item,
 								  const char       *dest_uri,
-								  const GdkPoint   *position);
+								  const GdkPoint   *position,
+								  int               screen);
 
 #endif /* NAUTILUS_LINK_H */

@@ -112,11 +112,13 @@ nautilus_link_local_create (const char *directory_uri,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
+			    int screen,
 			    NautilusLinkType type)
 {
 	return nautilus_link_desktop_file_local_create (directory_uri,
 							name, image,
-							target_uri, point,
+							target_uri, 
+							point, screen,
 							type);
 }
 
@@ -330,7 +332,8 @@ nautilus_link_local_is_special_link (const char *uri)
 void
 nautilus_link_local_create_from_gnome_entry (GnomeDesktopItem *item,
 					     const char *dest_uri,
-					     const GdkPoint *position)
+					     const GdkPoint *position,
+					     int screen)
 {
-	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_uri, position);
+	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_uri, position, screen);
 }

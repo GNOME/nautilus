@@ -101,6 +101,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 					 const char        *image,
 					 const char        *target_uri,
 					 const GdkPoint    *point,
+					 int                screen,
 					 NautilusLinkType   type)
 {
 	char *uri, *contents, *escaped_name;
@@ -157,7 +158,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 		item.set = TRUE;
 		item.point.x = point->x;
 		item.point.y = point->y;
-		
+		item.screen = screen;
 		dummy_list.data = &item;
 		dummy_list.next = NULL;
 		dummy_list.prev = NULL;
@@ -436,7 +437,8 @@ nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *uri,
 void
 nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopItem  *entry,
 							  const char        *dest_uri,
-							  const GdkPoint    *position)
+							  const GdkPoint    *position,
+							  int                screen)
 {
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
@@ -461,6 +463,7 @@ nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopItem  *ent
 		item.set = TRUE;
 		item.point.x = position->x;
 		item.point.y = position->y;
+		item.screen = screen;
 		
 		dummy_list.data = &item;
 		dummy_list.next = NULL;
