@@ -1,3 +1,12 @@
+2000-09-06  Raph Levien  <raph@acm.org>
+
+	* librsvg/test-ft-gtk.c (test_ft_quit): Invoke rsvg_ft_ctx_done()
+	to facilitate testing of cleanup and for checking for mem leaks.
+
+	* librsvg/rsvg-ft.c: Actually evict glyphs when glyph cache
+	becomes full. Fixed some mem leaks in rsvg_ft_ctx_done - it
+	wasn't freeing everything in the context.
+
 2000-09-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2816, Home icon doesn't link to changed home directory.

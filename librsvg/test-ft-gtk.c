@@ -300,6 +300,13 @@ start_scrolling (GtkWidget *widget, TestCtx *ctx)
 	gtk_label_set_text (GTK_LABEL (ctx->status), "Scrolling...");
 }
 
+static void
+test_ft_quit (GtkWidget *widget, TestCtx *ctx)
+{
+	rsvg_ft_ctx_done (ctx->ctx);
+	gtk_main_quit ();
+}
+
 static TestCtx *new_test_window (const char *fn, int width, int height)
 {
 	GtkWidget *topwin;
@@ -313,7 +320,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 
 	topwin = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_signal_connect (GTK_OBJECT (topwin), "destroy",
-			    (GtkSignalFunc) gtk_main_quit, NULL);
+			    (GtkSignalFunc) test_ft_quit, ctx);
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (topwin), vbox);

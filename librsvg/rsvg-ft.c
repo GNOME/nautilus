@@ -50,6 +50,8 @@ typedef struct _RsvgFTFontCacheEntry RsvgFTFontCacheEntry;
 typedef struct _RsvgFTGlyphDesc RsvgFTGlyphDesc;
 typedef struct _RsvgFTGlyphCacheEntry RsvgFTGlyphCacheEntry;
 
+#define SUBPIXEL_FRACTION 4
+
 struct _RsvgFTCtx {
 	FT_Library ftlib;
 
@@ -97,6 +99,7 @@ struct _RsvgFTGlyphCacheEntry {
 	RsvgFTGlyphCacheEntry *prev, *next; /* for lru list */
 	int x0, y0; /* relative to affine */
 	RsvgFTGlyph *glyph;
+	RsvgFTGlyphDesc *desc;
 };
 
 /* Glyph cache fun stuff */
@@ -163,6 +166,63 @@ rsvg_ft_glyph_lookup (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 }
 
 /**
+ * rsvg_ft_glyph_bytes: Determine the number of bytes in a glyph.
+ * @glyph: Glyph.
+ *
+ * Determines the number of bytes used by @glyph, for the purposes of
+ * caching. Note: I'm not counting malloc overhead. Maybe I should.
+ *
+ * Return value: Number of bytes used by glyph.
+ **/
+static int
+rsvg_ft_glyph_bytes (RsvgFTGlyph *glyph)
+{
+	return glyph->rowstride * glyph->height + sizeof (RsvgFTGlyph);
+}
+
+/**
+ * rsvg_gt_glyph_evict: Evict lru glyph from glyph cache.
+ * @ctx: The RsvgFT context.
+ *
+ * Chooses the least recently used glyph that without a refcount, and
+ * evicts it.
+ *
+ * Return value: true if a glyph was successfully evicted.
+ **/
+static gboolean
+rsvg_ft_glyph_evict (RsvgFTCtx *ctx)
+{
+	RsvgFTGlyphCacheEntry *victim;
+	RsvgFTGlyph *glyph;
+
+	for (victim = ctx->glyph_last; victim != NULL; victim = victim->prev)
+		if (victim->glyph->refcnt == 1)
+			break;
+
+	if (victim == NULL)
+		return FALSE;
+
+	if (victim->prev != NULL)
+		victim->prev->next = victim->next;
+	else
+		ctx->glyph_first = victim->next;
+	if (victim->next != NULL)
+		victim->next->prev = victim->prev;
+	else
+		ctx->glyph_last = victim->prev;
+
+	glyph = victim->glyph;
+	ctx->glyph_bytes -= rsvg_ft_glyph_bytes (glyph);
+	rsvg_ft_glyph_unref (glyph);
+
+	g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
+	g_free (victim->desc);
+	g_free (victim);
+
+	return TRUE;
+}
+
+/**
  * rsvg_ft_glyph_insert: Insert a glyph into the glyph cache.
  * @ctx: The RsvgFT context.
  * @desc: Glyph descriptor.
@@ -181,7 +241,16 @@ rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 	RsvgFTGlyphDesc *new_desc;
 	RsvgFTGlyphCacheEntry *entry;
 
-	/* todo: check for full cache and evict if so */
+	ctx->glyph_bytes += rsvg_ft_glyph_bytes (glyph);
+
+	/* check for full cache and evict if so */
+	while (ctx->glyph_bytes > ctx->glyph_bytes_max) {
+		if (!rsvg_ft_glyph_evict (ctx)) {
+			g_warning ("rsvg_ft_glyph_insert: unable to free any glyph cache entry, suggesting resource leak.");
+			break;
+		}
+	}
+
 	new_desc = g_new (RsvgFTGlyphDesc, 1);
 	memcpy (new_desc, desc, sizeof (RsvgFTGlyphDesc));
 	entry = g_new (RsvgFTGlyphCacheEntry, 1);
@@ -194,6 +263,7 @@ rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 	}
 	ctx->glyph_first = entry;
 	entry->glyph = glyph;
+	entry->desc = new_desc;
 	entry->x0 = x0;
 	entry->y0 = y0;
 	g_hash_table_insert (ctx->glyph_hash_table, new_desc, entry);
@@ -231,7 +301,9 @@ rsvg_ft_ctx_new (void) {
 void
 rsvg_ft_ctx_done (RsvgFTCtx *ctx) {
 	int i;
+	RsvgFTGlyphCacheEntry *glyph_ce, *next;
 
+	g_hash_table_destroy (ctx->font_hash_table);
 	for (i = 0; i < ctx->n_font_list; i++) {
 		RsvgFTFontCacheEntry *entry = ctx->font_list[i];
 		RsvgFTFont *font = entry->font;
@@ -243,6 +315,17 @@ rsvg_ft_ctx_done (RsvgFTCtx *ctx) {
 		}
 	}
 	g_free (ctx->font_list);
+
+	/* Free glyph cache. */
+	g_hash_table_destroy (ctx->glyph_hash_table);
+	for (glyph_ce = ctx->glyph_first; glyph_ce != NULL; glyph_ce = next) {
+		free (glyph_ce->desc);
+		free (glyph_ce->glyph->buf);
+		free (glyph_ce->glyph);
+		next = glyph_ce->next;
+		free (glyph_ce);
+	}
+
 	FT_Done_FreeType (ctx->ftlib);
 	g_free (ctx);
 }
@@ -581,7 +664,7 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	desc.char_width = floor (sx * 64 + 0.5);
 	desc.char_height = floor (sy * 64 + 0.5);
 	desc.glyph_index = glyph_ix;
-	x_sp = floor (4 * (affine[4] - floor (affine[4])));
+	x_sp = floor (SUBPIXEL_FRACTION * (affine[4] - floor (affine[4])));
 	desc.x_subpixel = x_sp;
 	desc.y_subpixel = 0;
 #ifdef VERBOSE
@@ -591,8 +674,13 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	result = rsvg_ft_glyph_lookup (ctx, &desc, xy);
 	if (result == NULL) {
 		int x0, y0;
+		double my_affine[6];
+
+		memcpy (my_affine, affine, sizeof(my_affine));
+		my_affine[4] = floor (affine[4]) +
+			(1.0 / SUBPIXEL_FRACTION) * x_sp;
 		font = rsvg_ft_font_resolve (ctx, fh);
-		result = rsvg_ft_get_glyph (font, glyph_ix, sx, sy, affine, xy);
+		result = rsvg_ft_get_glyph (font, glyph_ix, sx, sy, my_affine, xy);
 		if (result == NULL)
 			return NULL;
 		x0 = xy[0] - floor (affine[4]);
