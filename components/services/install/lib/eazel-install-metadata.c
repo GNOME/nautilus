@@ -182,9 +182,8 @@ init_default_install_configuration (void)
 	rv->mode_test = get_conf_boolean ("dry-run", FALSE);
 	rv->mode_force = get_conf_boolean ("force", FALSE);
 	rv->mode_depend = get_conf_boolean ("depend", FALSE);
-	rv->mode_update = get_conf_boolean ("update", TRUE);
-	rv->mode_uninstall = get_conf_boolean ("uninstall", FALSE);
-	rv->mode_downgrade = get_conf_boolean ("downgrade", FALSE);
+	rv->mode_update = get_conf_boolean ("allow-update", TRUE);
+	rv->mode_downgrade = get_conf_boolean ("allow-downgrade", FALSE);
 
 	return rv;
 }
@@ -199,7 +198,6 @@ init_default_transfer_configuration (void)
 
 	rv->port_number = get_conf_int ("server/port", DEFAULT_PORT);
 	rv->hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
-	rv->pkg_list_storage_path = get_conf_string ("server/package-list-storage-path", "/package-list.xml");
 	rv->tmp_dir = get_conf_string ("server/temp-dir", "/tmp/eazel-install");
 	rv->rpmrc_file = get_conf_string ("server/rpmrc", "/usr/lib/rpm/rpmrc");
 

@@ -1,3 +1,13 @@
+2000-09-08  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_install_configuration),
+	(init_default_transfer_configuration):
+
+	Removed "uninstall" and "package-list-storage-path" settings, and
+	clarified update/downgrade to "allow-update", "allow-downgrade" in
+	the gconf tree.
+
 2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:
