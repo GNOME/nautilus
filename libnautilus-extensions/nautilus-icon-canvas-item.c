@@ -1545,10 +1545,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
 
-		/* FIXME bugzilla.eazel.com 2877: Need to implement the keyboard
-		 * selection framing for the smooth case.
-		 */
-		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
+		/* Indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
 			draw_focus_rect (destination_pixbuf, box_left, icon_bottom - 2, width_so_far, 2 + height_so_far);
 		}
