@@ -1,3 +1,17 @@
+2000-04-14 Rebecca Schulman <rebecka@eazel.com>
+        Bookmarks with '_' characters display
+	correctly now on menus
+	
+	* libnautilus-extensions/nautilus-string.c
+	New function to escape '_' characters in strings
+	for menu display
+	* libnautilus-extensions/nautilus-bookmark.c
+	New function to take bookmarks and return
+	'_' escaped names
+	* src/nautilus-window-menus.c
+	Calls function to escape bookmark names
+
+
 2000-04-14  Darin Adler  <darin@eazel.com>
 
 	Finished task 174 (Use deferred calculation to compute directory
