@@ -64,7 +64,6 @@
 
 #define MORE_INFO_FONT_SIZE 	 12
 #define MIN_TITLE_FONT_SIZE 	 12
-#define MAX_TITLE_FONT_SIZE 	 18
 #define TITLE_PADDING		  4
 
 static void                nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *klass);
@@ -132,7 +131,9 @@ style_set (GtkWidget *widget,
 	/* Update the fixed-size "more info" font */
 	style = gtk_widget_get_style (widget);
 	font_desc = pango_font_description_copy (style->font_desc);
-	pango_font_description_set_size (font_desc, MORE_INFO_FONT_SIZE * PANGO_SCALE);
+	if (pango_font_description_get_size (font_desc) < MORE_INFO_FONT_SIZE * PANGO_SCALE) {
+		pango_font_description_set_size (font_desc, MORE_INFO_FONT_SIZE * PANGO_SCALE);
+	}
 	
 	gtk_widget_modify_font (sidebar_title->details->more_info_label,
 				font_desc);
@@ -399,6 +400,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	int available_width;
 	PangoFontDescription *title_font;
 	int largest_fitting_font_size;
+	int max_style_font_size;
 	GtkStyle *style;
 
 	/* Make sure theres work to do */
@@ -415,14 +417,21 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 
 	style = gtk_widget_get_style (GTK_WIDGET (sidebar_title));
 	title_font = pango_font_description_copy (style->font_desc);
+
+	max_style_font_size = pango_font_description_get_size (title_font) * 1.8 / PANGO_SCALE;
+	if (max_style_font_size < MIN_TITLE_FONT_SIZE) {
+		max_style_font_size = MIN_TITLE_FONT_SIZE + 1;
+	}
+
 	largest_fitting_font_size = eel_pango_font_description_get_largest_fitting_font_size (
 		title_font,
 		gtk_widget_get_pango_context (sidebar_title->details->title_label),
 		sidebar_title->details->title_text,
 		available_width,
 		MIN_TITLE_FONT_SIZE,
-		MAX_TITLE_FONT_SIZE);
-	pango_font_description_set_size (title_font, largest_fitting_font_size * PANGO_SCALE);
+		max_style_font_size);
+	pango_font_description_set_size (title_font, largest_fitting_font_size * PANGO_SCALE); 
+
 	pango_font_description_set_weight (title_font, PANGO_WEIGHT_BOLD);
 	
 	gtk_widget_modify_font (sidebar_title->details->title_label,
