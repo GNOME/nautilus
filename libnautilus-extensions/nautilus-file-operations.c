@@ -157,12 +157,12 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 }
 
 static void
-progress_dialog_set_files_remaining_text ( NautilusFileOperationsProgress *dialog, 
+progress_dialog_set_files_done_text ( NautilusFileOperationsProgress *dialog, 
 	const char *action_verb)
 {
 	char *text;
 
-	text = g_strdup_printf ("Files remaining to be %s:", action_verb);
+	text = g_strdup_printf ("Files %s:", action_verb);
 	nautilus_file_operations_progress_set_operation_string (dialog, text);
 	g_free (text);
 }
@@ -252,7 +252,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
 		if (xfer_info->progress_dialog != NULL) {
-			progress_dialog_set_files_remaining_text (
+			progress_dialog_set_files_done_text (
 				NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
 					 xfer_info->action_verb);
 			nautilus_file_operations_progress_set_total

@@ -1,3 +1,14 @@
+2000-10-30  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 4176, that files remaining to be
+	copied goes up instead of down.  The short
+	fix for this was just to change the wording to
+	reflect what was actually being counted.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(progress_dialog_set_files_done_text), (handle_xfer_ok):
+	changed "Files remaining to be [copied, moved,...]" to
+	"Files [copied, moved,...]"
+
 2000-10-30  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 4057 (clicking the back button while opening a huge
