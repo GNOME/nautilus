@@ -1,3 +1,9 @@
+2002-10-20  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-location-bar.c (try_to_expand_path): Don't complete
+	the filename if there is a trailing slash.  Patch from Manuel Clos
+	<llanero@jazzfree.com>.  Fixes #90652.
+	
 2002-10-19  Dave Camp  <dave@ximian.com>
 
 	* configure.in: Take out -DBONOBO_DISABLE_DEPRECATED until the 

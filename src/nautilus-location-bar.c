@@ -398,6 +398,13 @@ try_to_expand_path (gpointer callback_data)
 		return FALSE;
 	}
 
+	/* We already completed if we have a trailing '/' */
+	if (current_path[strlen (current_path) - 1] == GNOME_VFS_URI_PATH_CHR) {
+		g_free (user_location);
+		g_free (current_path);
+		return FALSE;
+	}
+
 	user_location_length = g_utf8_strlen (user_location, -1);
 
 	g_free (user_location);
