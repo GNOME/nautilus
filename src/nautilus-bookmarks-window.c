@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-window.h"
 #include <libnautilus/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
@@ -53,12 +54,13 @@ static int                   selection_changed_id = 0;
 static GtkWidget	    *name_field = NULL;
 static int		     name_field_changed_signal_id;
 static GtkWidget	    *remove_button = NULL;
+static GtkWidget            *jump_button = NULL;
 static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
 static int		     uri_field_changed_signal_id;
 static int		     row_changed_signal_id;
 static int		     row_deleted_signal_id;
-
+static int                   row_activated_signal_id;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -71,12 +73,18 @@ static void     on_name_field_changed                       (GtkEditable        
 							     gpointer              user_data);
 static void     on_remove_button_clicked                    (GtkButton            *button,
 							     gpointer              user_data);
+static void     on_jump_button_clicked                      (GtkButton            *button,
+							     gpointer              user_data);
 static void	on_row_changed				    (GtkListStore	  *store,
 							     GtkTreePath	  *path,
 							     GtkTreeIter	  *iter,
 							     gpointer		   user_data);
 static void	on_row_deleted				    (GtkListStore	  *store,
 							     GtkTreePath	  *path,
+							     gpointer		   user_data);
+static void	on_row_activated			    (GtkTreeView	  *view,
+							     GtkTreePath	  *path,
+                                                             GtkTreeViewColumn    *column,
 							     gpointer		   user_data);
 static void     on_selection_changed                        (GtkTreeSelection     *treeselection,
 							     gpointer              user_data);
@@ -145,8 +153,9 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 			gtk_widget_show (err_dialog);
 			g_error_free (error);
 		}
-	} else
+	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		gtk_widget_hide (GTK_WIDGET (dialog));
+        }
 }
 
 static GtkListStore *
@@ -221,6 +230,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 				  "bookmarks_dialog", &window,
 				  "bookmark_tree_view", &bookmark_list_widget,
 				  "bookmark_delete_button", &remove_button,
+                                  "bookmark_jump_button", &jump_button,
 				  NULL);
 	if (!gui) {
 		return NULL;
@@ -293,7 +303,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	row_deleted_signal_id =
 		g_signal_connect (bookmark_list_store, "row_deleted",
 				  G_CALLBACK (on_row_deleted), NULL);
-
+        row_activated_signal_id =
+                g_signal_connect (bookmark_list_widget, "row_activated",
+                                  G_CALLBACK (on_row_activated), undo_manager_source);
 	selection_changed_id =
 		g_signal_connect (bookmark_selection, "changed",
 				  G_CALLBACK (on_selection_changed), NULL);	
@@ -326,6 +338,8 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
 	g_signal_connect (remove_button, "clicked",
 			  G_CALLBACK (on_remove_button_clicked), NULL);
+	g_signal_connect (jump_button, "clicked",
+			  G_CALLBACK (on_jump_button_clicked), undo_manager_source);
 
 	/* Register to find out about icon theme changes */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
@@ -466,6 +480,27 @@ on_name_field_changed (GtkEditable *editable,
 	text_changed = TRUE;
 }
 
+static void
+go_to_selected_bookmark (NautilusWindow *window)
+{
+        NautilusBookmark *selected;
+        char *uri = NULL;
+
+        selected = get_selected_bookmark ();
+
+        if (selected) {
+                uri = nautilus_bookmark_get_uri (selected);
+                nautilus_window_go_to (window, uri);
+                g_free (uri);
+        }
+}
+
+static void
+on_jump_button_clicked (GtkButton *button,
+                        gpointer   user_data)
+{
+        go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
+}
 
 static void
 on_remove_button_clicked (GtkButton *button,
@@ -554,6 +589,15 @@ on_row_changed (GtkListStore *store,
 }
 
 static void
+on_row_activated (GtkTreeView       *view,
+                  GtkTreePath       *path,
+                  GtkTreeViewColumn *column,
+                  gpointer           user_data)
+{
+        go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
+}
+
+static void
 on_row_deleted (GtkListStore *store,
 		GtkTreePath *path,
 		gpointer user_data)
@@ -587,6 +631,7 @@ on_selection_changed (GtkTreeSelection *treeselection,
 	
 	/* Set the sensitivity of widgets that require a selection */
 	gtk_widget_set_sensitive (remove_button, selected != NULL);
+        gtk_widget_set_sensitive (jump_button, selected != NULL);
 	gtk_widget_set_sensitive (name_field, selected != NULL);
 	gtk_widget_set_sensitive (uri_field, selected != NULL);
 
@@ -738,9 +783,13 @@ repopulate (void)
 				selection_changed_id);
 	g_signal_handler_block (bookmark_list_store,
 				row_deleted_signal_id);
-	
+        g_signal_handler_block (bookmark_list_store,
+                                row_activated_signal_id);
+
 	gtk_list_store_clear (store);
 	
+	g_signal_handler_unblock (bookmark_selection,
+				  row_activated_signal_id);
 	g_signal_handler_unblock (bookmark_list_store,
 				  row_deleted_signal_id);
 	g_signal_handler_unblock (bookmark_selection,
