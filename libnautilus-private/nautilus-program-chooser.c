@@ -3,7 +3,7 @@
 /* nautilus-program-chooser.c - implementation for window that lets user choose 
                                 a program from a list
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -926,7 +926,7 @@ launch_mime_capplet (GtkWidget *button, gpointer callback_data)
 	
 	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
 		
-	nautilus_launch_application_from_command (command, NULL, FALSE);
+	nautilus_launch_application_from_command (FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
 	
 	g_free (command);
 }

@@ -573,7 +573,8 @@ change_background_callback (BonoboUIComponent *component,
 			    const char *verb)
 {
 	nautilus_launch_application_from_command 
-		("background-properties-capplet", NULL, FALSE);
+		(_("Background"),
+		 "background-properties-capplet", NULL, FALSE);
 }
 
 static void

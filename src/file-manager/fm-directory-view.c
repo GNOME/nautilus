@@ -3429,7 +3429,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	char *local_file_path;
 	char *quoted_path;
 	char *old_working_dir;
-	char *parameters, *command;
+	char *parameters, *command, *name;
 	
 	launch_parameters = (ScriptLaunchParameters *) callback_data;
 
@@ -3462,8 +3462,10 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 		command = g_strdup (quoted_path);
 	}
 
+	name = nautilus_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
-	nautilus_launch_application_from_command (command, NULL, FALSE);
+	nautilus_launch_application_from_command (name, command, NULL, FALSE);
+	g_free (name);
 	g_free (command);
 
 	nautilus_file_list_free (selected_files);
@@ -4389,7 +4391,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *command, *executable_path, *quoted_path;
+	char *uri, *command, *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
 	gboolean need_to_continue_monitoring_file_for_activation;
@@ -4463,11 +4465,15 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 		if (action == ACTIVATION_ACTION_LAUNCH) {
 			quoted_path = eel_shell_quote (executable_path);
+			name = nautilus_file_get_name (file);
 			/* FIXME bugzilla.eazel.com 1773: This is a
 			 * lame way to run command-line tools, since
-			 * there's no terminal for the output.
+			 * there's no terminal for the output. But if
+			 * we always had a terminal, that would be
+			 * just as bad.
 			 */
-			nautilus_launch_application_from_command (quoted_path, NULL, FALSE);
+			nautilus_launch_application_from_command (name, quoted_path, NULL, FALSE);
+			g_free (name);
 			g_free (quoted_path);
 		}
 		

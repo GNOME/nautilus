@@ -584,11 +584,19 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	}
 	g_free (uri_scheme);
 
-	nautilus_launch_application_from_command (application->command,
+	nautilus_launch_application_from_command (application->name,
+						  application->command,
 						  parameter, 
 						  application->requires_terminal);
 
 	g_free (parameter);
+}
+
+static char *
+get_xalf_prefix (const char *name)
+{
+	/* FIXME bugzilla.eazel.com 7830: Add xalf support. */
+	return g_strdup ("");
 }
 
 /**
@@ -602,20 +610,16 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
  * @parameter: Passed as a parameter to the application as is.
  */
 void
-nautilus_launch_application_from_command (const char *command_string, 
+nautilus_launch_application_from_command (const char *name,
+					  const char *command_string, 
 					  const char *parameter, 
-					  gboolean    use_terminal)
+					  gboolean use_terminal)
 {
 	char *full_command;
 	char *quoted_parameter; 
 	char *quoted_full_command;
 	char *final_command;
-
-	/* FIXME bugzilla.eazel.com 7830: This needs to support things
-	 * like the "xalf" hack. Perhaps the best way to do that is
-	 * to use gnome_desktop_entry_launch_with_args instead of
-	 * calling system or eel_gnome_open_terminal.
-	 */
+	char *xalf_prefix;
 
 	if (parameter != NULL) {
 		quoted_parameter = eel_shell_quote (parameter);
@@ -625,16 +629,20 @@ nautilus_launch_application_from_command (const char *command_string,
 		full_command = g_strdup (command_string);
 	}
 
+	xalf_prefix = get_xalf_prefix (name);
+
 	if (use_terminal) {
 		quoted_full_command = eel_shell_quote (full_command);
-		final_command = g_strconcat ("/bin/sh -c ", quoted_full_command, NULL);
+		final_command = g_strconcat (xalf_prefix, "/bin/sh -c ",
+					     quoted_full_command, NULL);
 		eel_gnome_open_terminal (final_command);
 		g_free (quoted_full_command);
 	} else {
-		final_command = g_strconcat (full_command, " &", NULL);
+		final_command = g_strconcat (xalf_prefix, full_command, " &", NULL);
 		system (final_command);
 	}
 
 	g_free (final_command);
 	g_free (full_command);
+	g_free (xalf_prefix);
 }

@@ -1,5 +1,33 @@
 2001-04-23  Darin Adler  <darin@eazel.com>
 
+	Prep for xalf feature. Add name of program to all code that
+	uses the launch_application_from_command function.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(launch_mime_capplet): Pass the file name of the files and
+	programs capplet when starting it up. (Is there a better name to
+	use for this case?)
+	* src/file-manager/fm-desktop-icon-view.c:
+	(change_background_callback): Pass "Background" as the name when
+	starting the Background capplet.
+	* src/file-manager/fm-directory-view.c: (run_script_callback):
+	Pass the file name of the script as the name when starting a
+	script.
+	(activate_callback): Pass the file name of an executable file when
+	starting an executable file by opening it.
+	
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application): Pass the application name from the
+	gnome-vfs MIME database when starting an application.
+	(get_xalf_prefix): Placeholder for code to figure out the right
+	set of parameters to pass to xalf.
+	(nautilus_launch_application_from_command): Change to take a name
+	for the application. It's ignored when xalf is not used, but used
+	as the title when xalf is used.
+
+2001-04-23  Darin Adler  <darin@eazel.com>
+
 	Fix bug 8027 (Viewer preferences are not respected).
 	
 	* src/nautilus-window.c:
