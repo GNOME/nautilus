@@ -1,3 +1,11 @@
+1999-12-28  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-view.c: (nautilus_view_load_client): cast
+	  a const CORBA_char * to a CORBA_char * in call to
+	  GNOME_Unknown_query_interface to fix the build.
+	  Darin thinks this is a mistake in the API and is
+	  investigating fixing the API.
+
 1999-12-22  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-uri-map.[ch]: Add initialization function. Implement scheme mapping.
