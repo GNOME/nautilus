@@ -2145,6 +2145,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	GnomeDesktopItem *entry;
 	GdkPoint point;
 	char *uri;
+	char *path;
 	char *stripped_uri;
 	char *container_uri_string;
 	const char *last_slash, *link_name;
@@ -2235,7 +2236,17 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
 			uri = node->data;
-			entry = gnome_desktop_item_new_from_uri (uri, 0, NULL);
+			path = gnome_vfs_get_local_path_from_uri (uri);
+			
+			if (path != NULL) {
+				entry = gnome_desktop_item_new_from_file (path,
+									  GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+									  NULL);
+				g_free (path);
+			} else {
+				entry = NULL;
+			}
+
 			if (entry != NULL) {
 				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create_from_gnome_entry (entry, container_uri_string, &point);
@@ -2257,7 +2268,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create (container_uri_string, link_name,
-							    "gnome-http-url", uri,
+							    NULL, uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
 			
