@@ -27,12 +27,12 @@
 #include <config.h>
 #include "nautilus-entry.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <eel/eel-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <orb/orbit.h>
@@ -54,7 +54,7 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_entry_initialize       (NautilusEntry      *entry);
 static void nautilus_entry_initialize_class (NautilusEntryClass *class);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusEntry,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusEntry,
 				   nautilus_entry,
 				   GTK_TYPE_ENTRY)
 
@@ -120,7 +120,7 @@ nautilus_entry_destroy (GtkObject *object)
 
 	g_free (entry->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -131,7 +131,7 @@ obscure_cursor (NautilusEntry *entry)
 	}
 	
 	entry->details->cursor_obscured = TRUE;	
-	nautilus_gdk_window_set_invisible_cursor (GTK_ENTRY (entry)->text_area);
+	eel_gdk_window_set_invisible_cursor (GTK_ENTRY (entry)->text_area);
 }
 
 static gboolean
@@ -188,7 +188,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	
 	obscure_cursor (entry);
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 
 	if (result) {
@@ -219,7 +219,7 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	old_start_pos = GTK_EDITABLE (widget)->selection_start_pos;
 	old_end_pos = GTK_EDITABLE (widget)->selection_end_pos;
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 
 	if (result) {
@@ -310,7 +310,7 @@ nautilus_entry_set_selection (GtkEditable *editable,
 			      int start_pos,
 			      int end_pos)
 {
-	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection,
+	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection,
 			      (editable, start_pos, end_pos));
 
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
@@ -322,7 +322,7 @@ nautilus_entry_button_press (GtkWidget *widget,
 {
 	gboolean result;
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	if (result) {
@@ -338,7 +338,7 @@ nautilus_entry_button_release (GtkWidget *widget,
 {
 	gboolean result;
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	if (result) {
@@ -361,7 +361,7 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 
-	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
+	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
 			      (editable, text, length, position));
 
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
@@ -379,7 +379,7 @@ nautilus_entry_delete_text (GtkEditable *editable, int start_pos, int end_pos)
 		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 	
-	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
+	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
 			      (editable, start_pos, end_pos));
 
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
@@ -403,7 +403,7 @@ nautilus_entry_selection_clear (GtkWidget *widget,
 		return FALSE;
 	}
 	
-	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, selection_clear_event, (widget, event));
 }
 

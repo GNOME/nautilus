@@ -26,7 +26,7 @@
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
 #include "nautilus-entry.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-icon-container.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-icon-factory.h"
@@ -49,10 +49,10 @@ typedef struct {
 	double scale_x, scale_y;
 
 	/* Whether this item is selected. */
-	nautilus_boolean_bit is_selected : 1;
+	eel_boolean_bit is_selected : 1;
 
 	/* Whether this item was selected before rubberbanding. */
-	nautilus_boolean_bit was_selected_before_rubberband : 1;
+	eel_boolean_bit was_selected_before_rubberband : 1;
 } NautilusIcon;
 
 
@@ -176,7 +176,7 @@ struct NautilusIconContainerDetails {
 	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* font used to draw labels in smooth mode */
-	NautilusScalableFont *smooth_label_font;
+	EelScalableFont *smooth_label_font;
 	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* pixbuf and color for label highlighting */

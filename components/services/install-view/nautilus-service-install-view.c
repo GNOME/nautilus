@@ -36,19 +36,19 @@
 
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-password-dialog.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
+#include <eel/eel-string.h>
+#include <eel/eel-label.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-password-dialog.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-viewport.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-clickable-image.h>
+#include <eel/eel-clickable-image.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -68,7 +68,7 @@ static void       service_install_load_location_callback         (NautilusView		
 static void	  service_install_stop_loading_callback		 (NautilusView				*nautilus_view,
 								  NautilusServiceInstallView		*view);
     
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
 
 static gboolean
@@ -105,7 +105,7 @@ nautilus_service_install_view_destroy (GtkObject *object)
 		eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
 	}
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -125,7 +125,7 @@ nautilus_service_install_view_finalize (GtkObject *object)
 	g_free (view->details->username);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -148,7 +148,7 @@ static void
 nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 {
 
-	NautilusBackground *background;
+	EelBackground *background;
 
 	view->details = g_new0 (NautilusServiceInstallViewDetails, 1);
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
@@ -161,8 +161,8 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 			    GTK_SIGNAL_FUNC (service_install_stop_loading_callback),
 			    view);
 
-	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (view));
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	view->details->core_package = FALSE;
 	view->details->deps = g_hash_table_new (g_str_hash, g_str_equal);
@@ -529,7 +529,7 @@ make_dragable_icon_well (NautilusServiceInstallView *view,
 	GdkBitmap *drag_mask;
 	int width, height;
 	GdkPixbuf *scaledicon;
-	NautilusBackground *background;
+	EelBackground *background;
 	static GtkTargetEntry target_table[] = {
 		{ "text/uri-list", 0, 0 }
 	};
@@ -552,8 +552,8 @@ make_dragable_icon_well (NautilusServiceInstallView *view,
 	/* set up the "well" aspect frame */
 	aspectframe = gtk_aspect_frame_new (NULL, 0.5, 0.0, 1, TRUE);
 	gtk_frame_set_shadow_type (GTK_FRAME (aspectframe), GTK_SHADOW_IN);
-	background = nautilus_get_widget_background (GTK_WIDGET (aspectframe));
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (aspectframe));
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	/* scale icon to fit in an ICON_SIZExICON_SIZE box */
 	width = gdk_pixbuf_get_width (icon);
@@ -571,13 +571,13 @@ make_dragable_icon_well (NautilusServiceInstallView *view,
 	scaledicon = gdk_pixbuf_scale_simple (icon, 
 			width, height, GDK_INTERP_BILINEAR);
 
-	image = nautilus_clickable_image_new (NULL, scaledicon);
-	nautilus_clickable_image_set_prelight (NAUTILUS_CLICKABLE_IMAGE (image),
+	image = eel_clickable_image_new (NULL, scaledicon);
+	eel_clickable_image_set_prelight (EEL_CLICKABLE_IMAGE (image),
 			TRUE);
 
 	eventbox = gtk_event_box_new ();
-	background = nautilus_get_widget_background (GTK_WIDGET (eventbox));
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (eventbox));
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 	gtk_widget_show (eventbox);
 	box = gtk_hbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 3);
@@ -642,7 +642,7 @@ nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, G
 
 	s = gnome_unconditional_pixmap_file("gnome-info.png");
 	if (s != NULL) {
-		info_icon = nautilus_image_new (s);
+		info_icon = eel_image_new (s);
 		g_free (s);
 		gtk_widget_show (info_icon);
 		gtk_table_attach (GTK_TABLE (table), info_icon,
@@ -652,10 +652,10 @@ nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, G
 				0, 0);
 	}
 
-	label = nautilus_label_new (_("Installation Complete"));
-	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (label), FALSE);
-	nautilus_label_make_bold (NAUTILUS_LABEL (label));
+	label = eel_label_new (_("Installation Complete"));
+	eel_label_set_is_smooth (EEL_LABEL (label), FALSE);
+	eel_label_set_wrap (EEL_LABEL (label), FALSE);
+	eel_label_make_bold (EEL_LABEL (label));
 	gtk_widget_show (label);
 	alignment = gtk_alignment_new (0.0, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), label);
@@ -720,12 +720,12 @@ nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, G
 					menu_description, dentry->name);
 		}
 		g_free (menu_description);
-		label = nautilus_label_new (label_text);
+		label = eel_label_new (label_text);
 		gtk_widget_set_usize (label, 400, -1);
-		nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
-		nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
-		nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-		nautilus_label_set_adjust_wrap_on_resize (NAUTILUS_LABEL (label), TRUE);
+		eel_label_set_is_smooth (EEL_LABEL (label), FALSE);
+		eel_label_set_wrap (EEL_LABEL (label), TRUE);
+		eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
+		eel_label_set_adjust_wrap_on_resize (EEL_LABEL (label), TRUE);
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
 		gtk_widget_show (label);
 		g_free (label_text);
@@ -775,8 +775,8 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 		message = g_strdup (PASSWORD_PROMPT);
 	}
 
-	dialog = nautilus_password_dialog_new (_("Authenticate as root"), message, prompt, "", TRUE);
-	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+	dialog = eel_password_dialog_new (_("Authenticate as root"), message, prompt, "", TRUE);
+	okay = eel_password_dialog_run_and_block (EEL_PASSWORD_DIALOG (dialog));
 
 	if (! okay) {
 		/* cancel */
@@ -784,8 +784,8 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 		view->details->cancelled = TRUE;
 		out = g_strdup ("");
 	} else {
-		out = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
-		if (nautilus_password_dialog_get_remember (NAUTILUS_PASSWORD_DIALOG (dialog))) {
+		out = eel_password_dialog_get_password (EEL_PASSWORD_DIALOG (dialog));
+		if (eel_password_dialog_get_remember (EEL_PASSWORD_DIALOG (dialog))) {
 			view->details->remembered_password = g_strdup (out);
 		}
 	}
@@ -900,7 +900,7 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 	} else {
 		out = g_strdup_printf (_("Installing some package"));
 	}
-	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+	eel_label_set_text (EEL_LABEL (view->details->package_name), out);
 	g_free (out);
 
 	CORBA_exception_init (&ev);

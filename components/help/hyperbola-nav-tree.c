@@ -6,7 +6,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-ctree.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
 
 #include "hyperbola-nav.h"
 

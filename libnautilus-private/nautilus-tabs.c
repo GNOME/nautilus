@@ -30,14 +30,14 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-scalable-font.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <math.h>
 #include <stdio.h>
@@ -80,7 +80,7 @@ struct NautilusTabsDetails {
 	int total_height;
 	
 	GdkRectangle title_rect;
-	NautilusScalableFont *tab_font;	
+	EelScalableFont *tab_font;	
 	int font_size;
 	int selected_tab;
 	
@@ -128,7 +128,7 @@ static void     draw_all_tabs		        (NautilusTabs *tabs);
 static TabItem* tab_item_find_by_name		(NautilusTabs	*tabs,
 						 const char		*name);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTabs, nautilus_tabs, GTK_TYPE_DRAWING_AREA)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTabs, nautilus_tabs, GTK_TYPE_DRAWING_AREA)
 
 static void
 nautilus_tabs_initialize_class (NautilusTabsClass *class)
@@ -181,7 +181,7 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	/* FIXME bugzilla.eazel.com 5456: 
 	 * Hard coded font size.
 	 */
-	tabs->details->tab_font = nautilus_scalable_font_get_default_bold_font ();
+	tabs->details->tab_font = eel_scalable_font_get_default_bold_font ();
 	tabs->details->font_size = 14;
 	
 	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");
@@ -228,12 +228,12 @@ nautilus_tabs_destroy (GtkObject *object)
 	}
 	
 	/* release the tab list, if any */
-	nautilus_g_list_free_deep_custom (tabs->details->tab_items,
+	eel_g_list_free_deep_custom (tabs->details->tab_items,
 					  tab_item_destroy_cover,
 					  NULL);
 	g_free (tabs->details);
   	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* unload the tab piece images, if any */
@@ -481,7 +481,7 @@ allocate_cleared_pixbuf (int width, int height)
 static int
 measure_tab_name (NautilusTabs *tabs, const char *tab_name)
 {
-	return nautilus_scalable_font_text_width (tabs->details->tab_font,
+	return eel_scalable_font_text_width (tabs->details->tab_font,
 						  tabs->details->font_size,
 						  tab_name,
 						  strlen (tab_name));
@@ -499,32 +499,32 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	
 	/* make sure we can draw at least some of it */
 	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
-		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
+		eel_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
 					  tabs->details->font_size,
 					  label, strlen (label),
-					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
+					  EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
 		text_x -= 1;
 		text_y -= 1;
 
 		if (is_active) {
-			text_color = NAUTILUS_RGB_COLOR_WHITE;
+			text_color = EEL_RGB_COLOR_WHITE;
 		} else {
 			if (is_prelit) {
-				text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
+				text_color = EEL_RGBA_COLOR_PACK (241, 241, 241, 255);		
 			} else {
-				text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+				text_color = EEL_RGBA_COLOR_PACK (223, 223, 223, 255);		
 			}
 		}
 	
-		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
+		eel_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
 					  text_x, text_y,
 					  NULL,
 					  tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
-					  NAUTILUS_OPACITY_FULLY_OPAQUE);
+					  EEL_OPACITY_FULLY_OPAQUE);
 	}
 }
 

@@ -27,9 +27,9 @@
 /* Must be included before other libgnome headers. */
 #include <libgnome/gnome-defs.h>
 
-#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-string.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
@@ -85,7 +85,7 @@ free_tokenized_uri (GList *list)
         GList *node;
 
         for (node = list; node != NULL; node = node->next) {
-                nautilus_g_list_free_deep (node->data);
+                eel_g_list_free_deep (node->data);
         }
         g_list_free (list);
 }
@@ -503,7 +503,7 @@ get_translated_criterion (GList *criterion)
                    we output a concat of the translation and the 
                    last part of the uri.
                 */
-                context_stripped_operand = nautilus_str_remove_bracketed_text (_(operand_table[item_number].translation));
+                context_stripped_operand = eel_str_remove_bracketed_text (_(operand_table[item_number].translation));
                 ret_val = g_strdup_printf (context_stripped_operand,
 					   (char *) criterion->data);
                 g_free (context_stripped_operand);
@@ -519,11 +519,11 @@ get_translated_criterion (GList *criterion)
 
                 if (operand_table[item_number].translation == NULL) {
                         /* if we had no translation in operand criterion table */
-                        ret_val = nautilus_str_remove_bracketed_text (_(value_table[value_item_number].translation));
+                        ret_val = eel_str_remove_bracketed_text (_(value_table[value_item_number].translation));
                 } else {
                         /* if we have both some translation in level 2 and level 3 */
-                        context_stripped_operand = nautilus_str_remove_bracketed_text (_(operand_table[item_number].translation));
-                        context_stripped_value = nautilus_str_remove_bracketed_text (_(value_table[value_item_number].translation));
+                        context_stripped_operand = eel_str_remove_bracketed_text (_(operand_table[item_number].translation));
+                        context_stripped_value = eel_str_remove_bracketed_text (_(value_table[value_item_number].translation));
                         ret_val = g_strdup_printf (context_stripped_operand, context_stripped_value);
                         g_free (context_stripped_operand);
                         g_free (context_stripped_value);
@@ -553,12 +553,12 @@ get_nth_criterion_prefix (GList *criterion)
             strings elsewhere.  Translate only the words "and" here. */
         if (criterion->next == NULL) {
                 
-                return nautilus_str_remove_bracketed_text (_("[Items larger than 400K] and [without all the words \"apple orange\"]"));
+                return eel_str_remove_bracketed_text (_("[Items larger than 400K] and [without all the words \"apple orange\"]"));
         }
         /* Human readable description for a criterion in a search for
            files. Bracketed items are context, and are message
            strings elsewhere.  Translate only the words "and" here. */
-        return nautilus_str_remove_bracketed_text (_("[Items larger than 400K], [owned by root and without all the words \"apple orange\"]"));
+        return eel_str_remove_bracketed_text (_("[Items larger than 400K], [owned by root and without all the words \"apple orange\"]"));
 }
 
 /**
@@ -650,8 +650,8 @@ nautilus_is_search_uri (const char *uri)
 {
         g_return_val_if_fail (uri != NULL, FALSE);
 
-        return nautilus_istr_has_prefix (uri, "search:")
-                || nautilus_istr_has_prefix (uri, "gnome-search:");
+        return eel_istr_has_prefix (uri, "search:")
+                || eel_istr_has_prefix (uri, "gnome-search:");
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -662,66 +662,66 @@ nautilus_self_check_search_uri (void)
 	/* search_uri_to_human */
 
         /* make sure that it does not accept non-supported uris.*/
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), ""); 
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("s"), "s");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" "), " ");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("  "), "  ");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s"), " s");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s "), " s ");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]"), "search:[][]");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]fi"), "search:[][]fi");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), ""); 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("s"), "s");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" "), " ");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("  "), "  ");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s"), " s");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s "), " s ");
+	EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]"), "search:[][]");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]fi"), "search:[][]fi");
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name"), 
                                       "search:[][]file_name");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name cont"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name cont"), 
                                       "search:[][]file_name cont");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains"), 
                                       "search:[][]file_name contains");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name c stuff"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name c stuff"), 
                                       "search:[][]file_name c stuff");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]&"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]&"), 
                                       "search:[][]&");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]f & s"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]f & s"), 
                                       "search:[][]f & s");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & f"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & f"), 
                                       "search:[][]file_name contains stuff & f");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type i"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type i"), 
                                       "search:[][]file_name contains stuff & file_type i");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is f"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is f"), 
                                       "search:[][]file_name contains stuff & file_type is f");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu)ff & file_type is file"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu)ff & file_type is file"), 
                                       "search:[][]file_name contains stu)ff & file_type is file");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu(ff & file_type is file"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu(ff & file_type is file"), 
                                       "search:[][]file_name contains stu(ff & file_type is file");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu|ff & file_type is file"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu|ff & file_type is file"), 
                                       "search:[][]file_name contains stu|ff & file_type is file");
 
         /* make sure all the code paths work */
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
                                       _("Items containing \"stuff\" in their names"));
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_type is file"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_type is file"), 
                                       _("Items that are regular files"));
         /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
                                       _("Items containing \"stuff\" in their names and that are regular files"));
         /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
                                       _("Items containing \"stuff\" in their names, that are regular files and "
                                         "smaller than 2000 bytes"));
         /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
+        EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
                                       _("Items containing \"medusa\" in their names and that are "
                                         "folders"));
         
         /* is_search_uri */
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:xxx"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:xxx"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:xxx"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:xxx"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:xxx"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:xxx"), FALSE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

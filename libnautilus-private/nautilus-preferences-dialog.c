@@ -25,8 +25,8 @@
 #include <config.h>
 #include "nautilus-preferences-dialog.h"
 
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -84,7 +84,7 @@ static void nautilus_preferences_dialog_construct        (NautilusPreferencesDia
 static void user_level_changed_callback (gpointer callback_data);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesDialog, 
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesDialog, 
 				   nautilus_preferences_dialog, 
 				   gnome_dialog_get_type ())
 
@@ -180,7 +180,7 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 	gnome_dialog_set_default (GNOME_DIALOG(prefs_dialog), 
 				  DEFAULT_BUTTON);
 
-	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (prefs_dialog));
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (prefs_dialog));
 
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "clicked",
@@ -240,7 +240,7 @@ nautilus_preferences_dialog_destroy(GtkObject* object)
 	g_free (prefs_dialog->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget*

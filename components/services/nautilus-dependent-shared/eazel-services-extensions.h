@@ -26,16 +26,16 @@
 #define EAZEL_SERVICES_EXTENSIONS_H
 
 #include <libgnome/gnome-defs.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 
 #define EAZEL_SERVICES_BACKGROUND_COLOR_SPEC		"white"
-#define EAZEL_SERVICES_BACKGROUND_COLOR_RGB		NAUTILUS_RGB_COLOR_WHITE
-#define EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB		NAUTILUS_RGB_COLOR_BLACK
-#define EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB		NAUTILUS_RGB_COLOR_WHITE
-#define EAZEL_SERVICES_BODY_TEXT_COLOR_RGB		NAUTILUS_RGB_COLOR_BLACK
+#define EAZEL_SERVICES_BACKGROUND_COLOR_RGB		EEL_RGB_COLOR_WHITE
+#define EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB		EEL_RGB_COLOR_BLACK
+#define EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB		EEL_RGB_COLOR_WHITE
+#define EAZEL_SERVICES_BODY_TEXT_COLOR_RGB		EEL_RGB_COLOR_BLACK
 
 #define EAZEL_SERVICES_HEADER_TITLE_FILL_ICON		"eazel-logo-left-side-repeat.png"
 #define EAZEL_SERVICES_HEADER_TITLE_LOGO_ICON		"eazel-logo-right-side-logo.png"

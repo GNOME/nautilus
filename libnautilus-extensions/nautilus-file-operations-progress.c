@@ -29,11 +29,11 @@
 #include <config.h>
 #include "nautilus-file-operations-progress.h"
 
-#include "nautilus-ellipsizing-label.h"
-#include "nautilus-gdk-font-extensions.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-ellipsizing-label.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
@@ -56,7 +56,7 @@
 static void nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass);
 static void nautilus_file_operations_progress_initialize       (NautilusFileOperationsProgress      *dialog);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
 				   nautilus_file_operations_progress,
 				   GNOME_TYPE_DIALOG);
 
@@ -103,17 +103,17 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 }
 
 static void
-set_text_unescaped_trimmed (NautilusEllipsizingLabel *label, const char *text)
+set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 {
 	char *unescaped_text;
 	
 	if (text == NULL || text[0] == '\0') {
-		nautilus_ellipsizing_label_set_text (label, "");
+		eel_ellipsizing_label_set_text (label, "");
 		return;
 	}
 	
 	unescaped_text = gnome_vfs_unescape_string_for_display (text);
-	nautilus_ellipsizing_label_set_text (label, unescaped_text);
+	eel_ellipsizing_label_set_text (label, unescaped_text);
 	g_free (unescaped_text);
 }
 
@@ -141,7 +141,7 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 
 	g_free (progress->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Initialization.  */
@@ -150,7 +150,7 @@ static void
 create_titled_label (GtkTable *table, int row, GtkWidget **title_widget, GtkWidget **label_text_widget)
 {
 	*title_widget = gtk_label_new ("");
-	nautilus_gtk_label_make_bold (GTK_LABEL (*title_widget));
+	eel_gtk_label_make_bold (GTK_LABEL (*title_widget));
 	gtk_misc_set_alignment (GTK_MISC (*title_widget), 1, 0);
 	gtk_table_attach (table, *title_widget,
 			  0, 1,
@@ -159,7 +159,7 @@ create_titled_label (GtkTable *table, int row, GtkWidget **title_widget, GtkWidg
 			  0, 0);
 	gtk_widget_show (*title_widget);
 
-	*label_text_widget = nautilus_ellipsizing_label_new ("");
+	*label_text_widget = eel_ellipsizing_label_new ("");
 	gtk_table_attach (table, *label_text_widget,
 			  1, 2,
 			  row, row + 1,
@@ -176,9 +176,9 @@ map_callback (GtkWidget *widget)
 
 	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 
-	progress->details->start_time = nautilus_get_system_time ();
+	progress->details->start_time = eel_get_system_time ();
 }
 
 static gboolean
@@ -215,7 +215,7 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *pr
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_title_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (hbox), progress->details->progress_title_label, FALSE, FALSE, 0);
 	gtk_widget_show (progress->details->progress_title_label);
-	nautilus_gtk_label_make_bold (GTK_LABEL (progress->details->progress_title_label));
+	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_title_label));
 
 
 	/* label -- */
@@ -224,7 +224,7 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *pr
 	gtk_label_set_justify (GTK_LABEL (progress->details->progress_count_label), GTK_JUSTIFY_RIGHT);
 	gtk_box_pack_end (GTK_BOX (hbox), progress->details->progress_count_label, FALSE, FALSE, 0);
 	gtk_widget_show (progress->details->progress_count_label);
-	nautilus_gtk_label_make_bold (GTK_LABEL (progress->details->progress_count_label));
+	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_count_label));
 
 	/* progress bar */
 	progress->details->progress_bar = gtk_progress_bar_new ();
@@ -356,7 +356,7 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 		gtk_label_set_text (GTK_LABEL (progress->details->operation_name_label),
 				    progress_verb);
 		set_text_unescaped_trimmed 
-			(NAUTILUS_ELLIPSIZING_LABEL (progress->details->item_name),
+			(EEL_ELLIPSIZING_LABEL (progress->details->item_name),
 			 item_name);
 
 		progress_count = g_strdup_printf (_("%ld of %ld"), file_index + 1, 
@@ -366,12 +366,12 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 
 		gtk_label_set_text (GTK_LABEL (progress->details->from_label), from_prefix);
 		set_text_unescaped_trimmed 
-			(NAUTILUS_ELLIPSIZING_LABEL (progress->details->from_path_label), from_path);
+			(EEL_ELLIPSIZING_LABEL (progress->details->from_path_label), from_path);
 	
 		if (progress->details->to_prefix != NULL && progress->details->to_path_label != NULL) {
 			gtk_label_set_text (GTK_LABEL (progress->details->to_label), to_prefix);
 			set_text_unescaped_trimmed 
-				(NAUTILUS_ELLIPSIZING_LABEL (progress->details->to_path_label), to_path);
+				(EEL_ELLIPSIZING_LABEL (progress->details->to_path_label), to_path);
 		}
 	}
 
@@ -428,7 +428,7 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 	g_assert (progress->details->start_time != 0);
 
 	/* compute time up in milliseconds */
-	time_up = (nautilus_get_system_time () - progress->details->start_time) / 1000;
+	time_up = (eel_get_system_time () - progress->details->start_time) / 1000;
 	if (time_up >= MINIMUM_TIME_UP) {
 		gtk_object_destroy (GTK_OBJECT (progress));
 		return;

@@ -24,7 +24,7 @@
 
 #include "eazel-inventory-upload-callback.h"
 #include "eazel-inventory-service-interface.h"
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-object-client.h>
 
 #define EAZEL_INVENTORY_IID "OAFIID:trilobite_inventory_service:eaae1152-1551-43d5-a764-52274131a9d5"
@@ -39,7 +39,7 @@ static void eazel_inventory_initialize       (EazelInventory      *factory);
 static void eazel_inventory_destroy          (GtkObject                            *object);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (EazelInventory, eazel_inventory, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (EazelInventory, eazel_inventory, GTK_TYPE_OBJECT)
 
 static void
 eazel_inventory_initialize_class  (EazelInventoryClass *klass)

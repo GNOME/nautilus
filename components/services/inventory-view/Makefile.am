@@ -10,6 +10,8 @@ INCLUDES =						\
 	-I$(top_srcdir)/components/services/inventory	\
 	-I$(top_builddir)/components/services/inventory	\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared   \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)				\
 	$(BONOBO_CFLAGS)				\
 	$(OAF_CFLAGS)
@@ -38,6 +40,8 @@ nautilus_inventory_view_LDADD =								\
 	$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la	\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la 		\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(GNOMEUI_LIBS)									\
 	$(BONOBO_LIBS)									\
 	$(GCONF_LIBS)									\

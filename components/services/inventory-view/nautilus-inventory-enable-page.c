@@ -33,11 +33,11 @@
 
 #include <gnome.h>
 #include <gtk/gtkprogressbar.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
 #include <libnautilus/nautilus-view.h>
 #include <eazel-inventory.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 
 
 #undef DEBUG_MESSAGES
@@ -61,7 +61,7 @@ static void     nautilus_inventory_enable_page_initialize_class    (NautilusInve
 static void     nautilus_inventory_enable_page_initialize          (NautilusInventoryEnablePage      *file);
 static void     nautilus_inventory_enable_page_destroy             (GtkObject                        *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusInventoryEnablePage, nautilus_inventory_enable_page, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusInventoryEnablePage, nautilus_inventory_enable_page, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_inventory_enable_page_initialize_class (NautilusInventoryEnablePageClass *klass)
@@ -110,7 +110,7 @@ nautilus_inventory_enable_page_initialize (NautilusInventoryEnablePage *enable_p
 
 	gtk_container_add (GTK_CONTAINER (enable_page), vbox_top);
 	
-        nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (enable_page)), 
+        eel_background_set_color (eel_get_widget_background (GTK_WIDGET (enable_page)), 
         	EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	header = eazel_services_header_title_new (_("Uploading your System Inventory..."));
@@ -130,8 +130,8 @@ nautilus_inventory_enable_page_initialize (NautilusInventoryEnablePage *enable_p
 					       0.5,
 					       0,
 					       0,
-					       NAUTILUS_RGB_COLOR_BLACK,
-					       NAUTILUS_RGB_COLOR_WHITE,
+					       EEL_RGB_COLOR_BLACK,
+					       EEL_RGB_COLOR_WHITE,
 					       NULL,
 					       4,		/*relative size*/
 					       TRUE);
@@ -203,10 +203,10 @@ callback_eazel_inventory (EazelInventory *inventory,
 		nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (enable_page->details->view),
 						    enable_page->details->view->details->next_uri);
 	} else {
-		nautilus_label_set_wrap (NAUTILUS_LABEL (enable_page->details->label), TRUE);
-		nautilus_label_set_justify (NAUTILUS_LABEL (enable_page->details->label), GTK_JUSTIFY_CENTER);
+		eel_label_set_wrap (EEL_LABEL (enable_page->details->label), TRUE);
+		eel_label_set_justify (EEL_LABEL (enable_page->details->label), GTK_JUSTIFY_CENTER);
 
-		nautilus_label_set_text (NAUTILUS_LABEL (enable_page->details->label), _("I'm sorry, an error prevented your System Inventory from being uploaded\n"));
+		eel_label_set_text (EEL_LABEL (enable_page->details->label), _("I'm sorry, an error prevented your System Inventory from being uploaded\n"));
 		/* Pause for impact */
 		/* This ref is released in the callback function */
 		gtk_object_ref (GTK_OBJECT (enable_page));
@@ -260,6 +260,6 @@ nautilus_inventory_enable_page_destroy (GtkObject *object)
 	}
 	g_free (enable_page->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 

@@ -36,8 +36,8 @@
 #include "nautilus-adapter-progressive-load-strategy.h"
 
 #include <gtk/gtkobject.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
 
 
 
@@ -57,10 +57,10 @@ static void nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoad
 static void nautilus_adapter_load_strategy_initialize       (NautilusAdapterLoadStrategy      *strategy);
 static void nautilus_adapter_load_strategy_destroy          (GtkObject                        *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterLoadStrategy, nautilus_adapter_load_strategy, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterLoadStrategy, nautilus_adapter_load_strategy, GTK_TYPE_OBJECT)
 
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, load_location)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, stop_loading)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, load_location)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, stop_loading)
 
 static void
 nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClass *klass)
@@ -71,8 +71,8 @@ nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClas
 
 	object_class->destroy = nautilus_adapter_load_strategy_destroy;
 
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, load_location);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, stop_loading);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, load_location);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, stop_loading);
 
 
 	signals[REPORT_LOAD_UNDERWAY] =
@@ -87,7 +87,7 @@ nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClas
 			       GTK_RUN_LAST,
 			       object_class->type,
 			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
-			       nautilus_gtk_marshal_NONE__DOUBLE,
+			       eel_gtk_marshal_NONE__DOUBLE,
 			       GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
 	signals[REPORT_LOAD_COMPLETE] =
 		gtk_signal_new ("report_load_complete",
@@ -120,7 +120,7 @@ nautilus_adapter_load_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_LOAD_STRATEGY (object);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -178,7 +178,7 @@ nautilus_adapter_load_strategy_load_location (NautilusAdapterLoadStrategy *strat
 {
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_LOAD_STRATEGY (strategy));
 
-	NAUTILUS_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
+	EEL_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
 			      load_location, (strategy, uri));
 }
 
@@ -188,7 +188,7 @@ nautilus_adapter_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strat
 
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_LOAD_STRATEGY (strategy));
 
-	NAUTILUS_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
+	EEL_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
 			      stop_loading, (strategy));
 }
 

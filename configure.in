@@ -28,6 +28,8 @@ ESOUND_REQUIRED=0.2
 LIBGHTTP_REQUIRED=1.0.9
 SCROLLKEEPER_REQUIRED=0.1.4
 AMMONITE_REQUIRED=0.8.7
+LIBRSVG_REQUIRED=0.0.1
+EEL_REQUIRED=0.0.1
 
 AC_SUBST(IMLIB_REQUIRED)
 AC_SUBST(LIBXML_REQUIRED)
@@ -39,6 +41,8 @@ AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(ESOUND_REQUIRED)
 AC_SUBST(LIBGHTTP_REQUIRED)
 AC_SUBST(SCROLLKEEPER_REQUIRED)
+AC_SUBST(LIBRSVG_REQUIRED)
+AC_SUBST(EEL_REQUIRED)
 
 dnl ===========================================================================
 
@@ -649,7 +653,7 @@ AC_MSG_ERROR([
 
 AC_SUBST(GTK_REQUIRED)
 
-AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl librsvg eel)
 
 AC_SUBST(GNOME_REQUIRED)
 
@@ -682,6 +686,10 @@ AC_SUBST(BONOBO_PRINT_CFLAGS)
 AC_SUBST(BONOBO_PRINT_LIBS)
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
+AC_SUBST(LIBRSVG_LIBS)
+AC_SUBST(LIBRSVG_INCLUDEDIR)
+AC_SUBST(EEL_LIBS)
+AC_SUBST(EEL_INCLUDEDIR)
 
 dnl   Bug 7315: Rediscover CFLAGS for GTK, because gnome-config won't know
 dnl   all the necessary flags if GTK has been upgraded more recently than
@@ -1030,14 +1038,11 @@ data/Makefile
 data/patterns/Makefile
 data/emblems/Makefile
 data/linksets/Makefile
-data/fonts/Makefile
-data/fonts/urw/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/e-paned/Makefile
 cut-n-paste-code/widgets/nautilusclist/Makefile
 cut-n-paste-code/widgets/gimphwrapbox/Makefile
-librsvg/Makefile
 libnautilus/Makefile
 libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile

@@ -26,10 +26,10 @@
 
 #include <config.h>
 #include <applet-widget.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <eel/eel-image.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktogglebutton.h>
@@ -102,7 +102,7 @@ boolean_toggle_button_new (const char *preference_name,
 
 	
 	button = gtk_toggle_button_new_with_label (button_label);
-	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (button)->child), 4);
+	eel_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (button)->child), 4);
 
 	foo = g_new (Foo, 1);
 	foo->preference_name = g_strdup (preference_name);
@@ -136,7 +136,7 @@ quit_nautilus_button_clicked_callback (GtkWidget *button,
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	
-	nautilus_gnome_shell_execute ("nautilus --quit");
+	eel_gnome_shell_execute ("nautilus --quit");
 }
 
 static void
@@ -145,7 +145,7 @@ start_nautilus_button_clicked_callback (GtkWidget *button,
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	
-	nautilus_gnome_shell_execute ("nautilus");
+	eel_gnome_shell_execute ("nautilus");
 }
 
 static void
@@ -154,7 +154,7 @@ restart_nautilus_button_clicked_callback (GtkWidget *button,
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	
-	nautilus_gnome_shell_execute ("nautilus --restart");
+	eel_gnome_shell_execute ("nautilus --restart");
 }
 
 static void
@@ -241,7 +241,7 @@ main (int argc, char **argv)
 	user_level_changed_callback (smooth_graphics_button);
 
 	quit_button = gtk_button_new_with_label (_("Quit"));
-	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (quit_button)->child), 4);
+	eel_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (quit_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), quit_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (quit_button),
 			    "clicked",
@@ -249,7 +249,7 @@ main (int argc, char **argv)
 			    NULL);
 
 	start_button = gtk_button_new_with_label (_("Start"));
-	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (start_button)->child), 4);
+	eel_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (start_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), start_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (start_button),
 			    "clicked",
@@ -257,7 +257,7 @@ main (int argc, char **argv)
 			    NULL);
 
 	restart_button = gtk_button_new_with_label (_("Restart"));
-	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (restart_button)->child), 4);
+	eel_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (restart_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), restart_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (restart_button),
 			    "clicked",
@@ -265,7 +265,7 @@ main (int argc, char **argv)
 			    NULL);
 
 	exit_button = gtk_button_new_with_label ("[x]");
-	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (exit_button)->child), 4);
+	eel_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (exit_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), exit_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (exit_button),
 			    "clicked",

@@ -29,7 +29,7 @@
 #include <libgnomeui/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-icon-factory.h"
-#include "nautilus-scalable-font.h"
+#include <eel/eel-scalable-font.h>
 
 BEGIN_GNOME_DECLS
 
@@ -91,7 +91,7 @@ void        nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanv
 								ArtDRect                   *world_rectangle);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem     *item);
 void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem     *item,
-								NautilusScalableFont       *font);
+								EelScalableFont       *font);
 void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem     *item,
 								int                         font_size);
 

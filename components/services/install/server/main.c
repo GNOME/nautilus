@@ -37,7 +37,7 @@
 	$(top_builddir)/libnautilus-extensions/nautilus-debug.o				 	\
 to the ldadd line in Makefile.am
 */
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #endif
 
 #include <trilobite-eazel-install.h>
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 	}
 
 #ifdef STOP_IN_DEBUG
-	nautilus_make_warnings_and_criticals_stop_in_debugger ("GLib", NULL);
+	eel_make_warnings_and_criticals_stop_in_debugger ("GLib", NULL);
 #endif
 
 	do {

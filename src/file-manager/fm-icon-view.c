@@ -44,22 +44,22 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libnautilus-extensions/nautilus-audio-player.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-sound.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <locale.h>
@@ -152,7 +152,7 @@ static void standard_font_size_changed_callback (gpointer callback_data);
 
 static int preview_sound_auto_value;
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView,
+EEL_DEFINE_CLASS_BOILERPLATE (FMIconView,
 				   fm_icon_view,
 				   FM_TYPE_DIRECTORY_VIEW)
 
@@ -244,7 +244,7 @@ fm_icon_view_destroy (GtkObject *object)
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static NautilusIconContainer *
@@ -355,7 +355,7 @@ unstretch_icons_callback (BonoboUIComponent *component, gpointer callback_data, 
 static void
 fm_icon_view_clean_up (FMIconView *icon_view)
 {
-	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view, clean_up, (icon_view));
+	EEL_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view, clean_up, (icon_view));
 }
 
 static void
@@ -458,7 +458,7 @@ handle_radio_item (FMIconView *view,
 static void
 customize_icon_text_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-	nautilus_gtk_window_present (fm_icon_text_window_get_or_create ());
+	eel_gtk_window_present (fm_icon_text_window_get_or_create ());
 }
 
 static void
@@ -574,7 +574,7 @@ fm_icon_view_get_directory_sort_by (FMIconView *icon_view,
 		return g_strdup ("name");
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_sort_by, (icon_view, file));
 }
@@ -597,7 +597,7 @@ fm_icon_view_set_directory_sort_by (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
+	EEL_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_sort_by, (icon_view, file, sort_by));
 }
 
@@ -620,7 +620,7 @@ fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_sort_reversed, (icon_view, file));
 }
@@ -642,7 +642,7 @@ fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
+	EEL_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_sort_reversed,
 			       (icon_view, file, sort_reversed));
 }
@@ -667,7 +667,7 @@ fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_auto_layout, (icon_view, file));
 }
@@ -689,7 +689,7 @@ fm_icon_view_set_directory_auto_layout (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
+	EEL_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_auto_layout, (icon_view, file, auto_layout));
 }
 
@@ -708,7 +708,7 @@ static gboolean
 fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view,
 					   NautilusFile *file)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, icon_view,
 		 get_directory_tighter_layout, (icon_view, file));
 }
@@ -726,7 +726,7 @@ fm_icon_view_set_directory_tighter_layout (FMIconView *icon_view,
 					   NautilusFile *file,
 					   gboolean tighter_layout)
 {
-	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
+	EEL_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_tighter_layout, (icon_view, file, tighter_layout));
 }
 
@@ -745,7 +745,7 @@ fm_icon_view_supports_auto_layout (FMIconView *view)
 {
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, view,
 		 supports_auto_layout, (view));
 }
@@ -781,7 +781,7 @@ get_sort_criterion_by_metadata_text (const char *metadata_text)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].metadata_text, metadata_text) == 0) {
 			return &sort_criteria[i];
 		}
@@ -795,7 +795,7 @@ get_sort_criterion_by_id (const char *id)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].id, id) == 0) {
 			return &sort_criteria[i];
 		}
@@ -1135,7 +1135,7 @@ static void
 fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
 {
 	/* call parent class to make sure the right icon is selected */
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
 	/* start renaming */
 	nautilus_icon_container_start_renaming_selected_item
 		(get_icon_container (FM_ICON_VIEW (view)));
@@ -1169,7 +1169,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	
         g_assert (FM_IS_ICON_VIEW (view));
 
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	icon_view = FM_ICON_VIEW (view);
 
@@ -1219,7 +1219,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 		return;
 	}
 	
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
         selection = fm_directory_view_get_selection (view);
         selection_count = g_list_length (selection);
@@ -1237,7 +1237,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 		(icon_view->details->ui,
 		 MENU_PATH_UNSTRETCH_ICONS,
 		 COMMAND_UNSTRETCH_ICONS,
-		 nautilus_g_list_more_than_one_item (selection)
+		 eel_g_list_more_than_one_item (selection)
 		 	? _("_Restore Icons' Original Sizes")
 		 	: _("_Restore Icon's Original Size"));
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
@@ -1353,7 +1353,7 @@ play_file (gpointer callback_data)
 	file_uri = nautilus_file_get_uri (file);
 	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (file);
-	is_mp3 = nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0;
+	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
 			
 	if (file_path != NULL) {
 		mp3_pid = fork ();
@@ -1390,7 +1390,7 @@ play_file (gpointer callback_data)
 	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (icon_view->details->audio_preview_file);
 
-	is_mp3 = nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0;
+	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
 
 	if (file_path != NULL && !is_mp3) {
 		icon_view->details->audio_player_data = nautilus_audio_player_play (file_path);
@@ -1472,8 +1472,8 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* at first, we just handle sounds */
 	if (should_preview_sound (file)) {
 		mime_type = nautilus_file_get_mime_type (file);
-		if (nautilus_istr_has_prefix (mime_type, "audio/") &&
-				nautilus_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
+		if (eel_istr_has_prefix (mime_type, "audio/") &&
+				eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
 			if (nautilus_sound_can_play_sound ()) {
 				result = 1;
 				preview_audio (icon_view, file, start_flag);
@@ -1701,7 +1701,7 @@ get_icon_images_callback (NautilusIconContainer *container,
 			  FMIconView *icon_view)
 {
 	gboolean smooth_graphics;
-	NautilusStringList *emblems_to_ignore;
+	EelStringList *emblems_to_ignore;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1712,7 +1712,7 @@ get_icon_images_callback (NautilusIconContainer *container,
 		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
 		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, smooth_graphics, emblems_to_ignore);
-		nautilus_string_list_free (emblems_to_ignore);
+		eel_string_list_free (emblems_to_ignore);
 	}
 	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
 }
@@ -1810,7 +1810,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	/* Get the attributes. */
 	for (i = 0; text_array[i] != NULL; i++)	{
 		/* if the attribute is "none", delete the array slot */
-		while (nautilus_strcmp (text_array[i], "none") == 0) {
+		while (eel_strcmp (text_array[i], "none") == 0) {
 			g_free (text_array[i]);
 			text_array[i] = NULL;
 			slot_index = i + 1;			
@@ -2083,13 +2083,13 @@ static void
 fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
-	NautilusScalableFont *scalable_font;
+	EelScalableFont *scalable_font;
 
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 	
 	scalable_font = nautilus_global_preferences_get_icon_view_smooth_font ();
-	g_assert (NAUTILUS_IS_SCALABLE_FONT (scalable_font));
+	g_assert (EEL_IS_SCALABLE_FONT (scalable_font));
 
 	nautilus_icon_container_set_smooth_label_font (icon_container,
 						       scalable_font);

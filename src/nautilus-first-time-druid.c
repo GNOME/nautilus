@@ -31,23 +31,23 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-druid-page-eazel.h>
 #include <libnautilus-extensions/nautilus-druid.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-image.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-medusa-support.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-radio-button-group.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-radio-button-group.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <eel/eel-stock-dialogs.h>
 #include <nautilus-main.h>
 #include <netdb.h>
 #include <signal.h>
@@ -58,7 +58,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define SIZE_BODY_LABEL(l)  nautilus_label_make_smaller (NAUTILUS_LABEL (l), 1)
+#define SIZE_BODY_LABEL(l)  eel_label_make_smaller (EEL_LABEL (l), 1)
 
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
 #define WELCOME_PACKAGE_URI "http://services.eazel.com/downloads/eazel/updates.tgz"
@@ -273,12 +273,12 @@ static GtkWidget *
 set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 {
 	GtkWidget *event_box;
-	NautilusBackground *background;
+	EelBackground *background;
 	
 	event_box = gtk_event_box_new ();
 	
-	background = nautilus_get_widget_background (event_box);
-	nautilus_background_set_color (background, background_color);
+	background = eel_get_widget_background (event_box);
+	eel_background_set_color (background, background_color);
 	
 	gtk_widget_show (event_box);
 
@@ -312,13 +312,13 @@ user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 static void
 update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-	last_update_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
+	last_update_choice = eel_radio_button_group_get_active_index (EEL_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
 static void
 proxy_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-	last_proxy_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
+	last_proxy_choice = eel_radio_button_group_get_active_index (EEL_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
 
@@ -330,9 +330,9 @@ label_new_left_justified (const char *text)
 {
 	GtkWidget *label;
 	
-	label = nautilus_label_new (text);
-	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
+	label = eel_label_new (text);
+	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
+	eel_label_set_is_smooth (EEL_LABEL (label), FALSE);
 
 	return label;
 }
@@ -341,11 +341,11 @@ static GtkWidget *
 new_title_label (const char *text)
 {
 	GtkWidget *label;
-	NautilusScalableFont *font;
+	EelScalableFont *font;
 
 	label = label_new_left_justified (text);
 
-	font = nautilus_scalable_font_get_default_font ();
+	font = eel_scalable_font_get_default_font ();
 
 	/* Force the label into smooth mode only if our locale is not
 	 * multibyte.  The problem is that for multibyte locales it is
@@ -354,14 +354,14 @@ new_title_label (const char *text)
 	 * multi bytes locales, we make the first time druid work in more
 	 * systems.
 	 */
-	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), 
-				      !nautilus_dumb_down_for_multi_byte_locale_hack ());
+	eel_label_set_is_smooth (EEL_LABEL (label), 
+				      !eel_dumb_down_for_multi_byte_locale_hack ());
 
-	nautilus_label_set_smooth_font (NAUTILUS_LABEL (label), font);
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);
-	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
-	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label),
-						     NAUTILUS_RGBA_COLOR_PACK
+	eel_label_set_smooth_font (EEL_LABEL (label), font);
+	eel_label_make_larger (EEL_LABEL (label), 10);
+	eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (label), 2);
+	eel_label_set_smooth_drop_shadow_color (EEL_LABEL (label),
+						     EEL_RGBA_COLOR_PACK
 						     (191, 191, 191, 255));
 	return label;
 }
@@ -429,13 +429,13 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	label_box = gtk_hbox_new (FALSE, 5);
 
 	icon_pixbuf = create_named_pixbuf (icon_name);
-	icon = nautilus_image_new (NULL);
+	icon = eel_image_new (NULL);
 	if (icon_pixbuf != NULL) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
+		eel_image_set_pixbuf (EEL_IMAGE (icon), icon_pixbuf);
 	}
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
 	label = new_body_label (user_level_name);
-	nautilus_gtk_label_make_bold (GTK_LABEL (label));
+	eel_gtk_label_make_bold (GTK_LABEL (label));
 	g_free (user_level_name);
 
 	/* extra vbox to help with alignment */
@@ -556,11 +556,11 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	
-	radio_buttons = nautilus_radio_button_group_new (FALSE);
+	radio_buttons = eel_radio_button_group_new (FALSE);
 	gtk_box_pack_start (GTK_BOX (main_box), radio_buttons, FALSE, FALSE, 0);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Verify my connection and check for updates"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Don't verify my connection or check for updates"));	
+	eel_radio_button_group_insert (EEL_RADIO_BUTTON_GROUP (radio_buttons), _("Verify my connection and check for updates"));
+	eel_radio_button_group_insert (EEL_RADIO_BUTTON_GROUP (radio_buttons), _("Don't verify my connection or check for updates"));	
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
@@ -635,12 +635,12 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
 
-	radio_buttons = nautilus_radio_button_group_new (FALSE);
+	radio_buttons = eel_radio_button_group_new (FALSE);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No proxy server required."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Use this proxy server:"));	
+	eel_radio_button_group_insert (EEL_RADIO_BUTTON_GROUP (radio_buttons), _("No proxy server required."));
+	eel_radio_button_group_insert (EEL_RADIO_BUTTON_GROUP (radio_buttons), _("Use this proxy server:"));	
 	
-	nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1);
+	eel_radio_button_group_set_active_index (EEL_RADIO_BUTTON_GROUP (radio_buttons), 1);
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
@@ -663,7 +663,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
 	
 	/* allocate the proxy label, followed by the entry */
-	label = nautilus_label_new (_("Proxy address:"));
+	label = eel_label_new (_("Proxy address:"));
 	gtk_widget_show (label);
 	SIZE_BODY_LABEL (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
@@ -680,7 +680,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_widget_set_usize (alignment, 8, -1);
 	
 	/* allocate the proxy label, followed by the entry */
-	label = nautilus_label_new (_("Port:"));
+	label = eel_label_new (_("Port:"));
 	SIZE_BODY_LABEL (label);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
@@ -796,7 +796,7 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	port_text = gtk_entry_get_text (GTK_ENTRY (port_number_entry));
 
 	/* Update the http proxy only if there is some user input */
-	if (nautilus_strlen (proxy_text) > 0 && nautilus_strlen (port_text) > 0) {
+	if (eel_strlen (proxy_text) > 0 && eel_strlen (port_text) > 0) {
 		proxy_url = g_strdup_printf ("http://%s:%s", proxy_text, port_text);
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);
@@ -1100,11 +1100,11 @@ make_title_page_icon_box (void)
 	for (i = 0; i < 4; i++) {
 		filename = nautilus_pixmap_file (names[i]);
 		if (filename != NULL) {
-			image = nautilus_image_new (filename);
+			image = eel_image_new (filename);
 			g_free (filename);
 			if (image != NULL) {
-				nautilus_image_set_is_smooth (NAUTILUS_IMAGE (image), TRUE);
-				nautilus_image_set_pixbuf_opacity (NAUTILUS_IMAGE (image), 128);
+				eel_image_set_is_smooth (EEL_IMAGE (image), TRUE);
+				eel_image_set_pixbuf_opacity (EEL_IMAGE (image), 128);
 				gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);
 			}
 		}
@@ -1466,7 +1466,7 @@ set_http_proxy (const char *proxy_url)
 	}
 
 	/* set the "http_proxy" environment variable */
-	nautilus_setenv ("http_proxy", proxy_url, TRUE);
+	eel_setenv ("http_proxy", proxy_url, TRUE);
 
 	/* The variable is expected to be in the form host:port */
 	if (0 != strncmp (proxy_url, "http://", strlen ("http://"))) {

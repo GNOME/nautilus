@@ -50,12 +50,12 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-sound.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <libnautilus-extensions/nautilus-metafile-factory.h>
@@ -88,7 +88,7 @@ static void          volume_unmounted_callback             (NautilusVolumeMonito
 							    NautilusApplication      *application);
 static void	     init_session 			    (void);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
 static POA_GNOME_ObjectFactory__epv factory_epv = {
 	NULL,
@@ -227,7 +227,7 @@ nautilus_application_destroy (GtkObject *object)
 	
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -236,7 +236,7 @@ check_required_directories (NautilusApplication *application)
 	char			*user_directory;
 	char			*user_main_directory;
 	char			*desktop_directory;
-	NautilusStringList	*dir_list;
+	EelStringList	*dir_list;
 	char 			*dir_list_concatenated;
 	char 			*error_string;
 	char 			*dialog_title;
@@ -249,27 +249,27 @@ check_required_directories (NautilusApplication *application)
 	user_main_directory = nautilus_get_user_main_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
-	dir_list = nautilus_string_list_new (TRUE);
+	dir_list = eel_string_list_new (TRUE);
 	
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, user_directory);
+		eel_string_list_insert (dir_list, user_directory);
 	}
 	g_free (user_directory);
 	    
 	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, user_main_directory);
+		eel_string_list_insert (dir_list, user_main_directory);
 	}
 	g_free (user_main_directory);
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, desktop_directory);
+		eel_string_list_insert (dir_list, desktop_directory);
 	}
 	g_free (desktop_directory);
 
-	failed_count = nautilus_string_list_get_length (dir_list);
+	failed_count = eel_string_list_get_length (dir_list);
 
 	if (failed_count != 0) {
-		dir_list_concatenated = nautilus_string_list_as_concatenated_string (dir_list, "\n");
+		dir_list_concatenated = eel_string_list_as_concatenated_string (dir_list, "\n");
 
 		if (failed_count == 1) {
 			dialog_title = g_strdup (_("Couldn't Create Required Folder"));
@@ -286,7 +286,7 @@ check_required_directories (NautilusApplication *application)
 							dir_list_concatenated);
 		}
 		
-		dialog = nautilus_show_error_dialog (error_string, dialog_title, NULL);
+		dialog = eel_show_error_dialog (error_string, dialog_title, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
@@ -295,7 +295,7 @@ check_required_directories (NautilusApplication *application)
 		g_free (dialog_title);
 	}
 
-	nautilus_string_list_free (dir_list);
+	eel_string_list_free (dir_list);
 
 	return failed_count == 0;
 }
@@ -476,7 +476,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = nautilus_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
+			dialog = eel_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;
@@ -767,7 +767,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 		if (window != NULL && window_can_be_closed (window)) {
 			uri = nautilus_window_get_location (window);
 			path = gnome_vfs_get_local_path_from_uri (uri);
-			if (nautilus_str_has_prefix (path, volume->mount_path)) {
+			if (eel_str_has_prefix (path, volume->mount_path)) {
 				close_list = g_list_prepend (close_list, window);
 			}
 			g_free (path);

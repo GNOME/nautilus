@@ -29,6 +29,11 @@
 
 #include "nautilus-file-operations-progress.h"
 #include "nautilus-lib-self-check-functions.h"
+
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-stock-dialogs.h>
 #include <gnome.h>
 #include <gtk/gtklabel.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -39,12 +44,8 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 
 typedef enum {
@@ -85,7 +86,7 @@ transfer_info_new (GtkWidget *parent_view)
 	result = g_new0 (TransferInfo, 1);
 	result->parent_view = parent_view;
 	
-	nautilus_nullify_when_destroyed (&result->parent_view);
+	eel_nullify_when_destroyed (&result->parent_view);
 	
 	return result;
 }
@@ -93,14 +94,14 @@ transfer_info_new (GtkWidget *parent_view)
 static void
 transfer_info_destroy (TransferInfo *transfer_info)
 {
-	nautilus_nullify_cancel (&transfer_info->parent_view);
+	eel_nullify_cancel (&transfer_info->parent_view);
 	
 	if (transfer_info->progress_dialog != NULL) {
 		nautilus_file_operations_progress_done (transfer_info->progress_dialog);
 	}
 	
 	if (transfer_info->debuting_uris != NULL) {
-		nautilus_g_hash_table_destroy_deep (transfer_info->debuting_uris);
+		eel_g_hash_table_destroy_deep (transfer_info->debuting_uris);
 	}
 	
 	g_free (transfer_info);
@@ -133,7 +134,7 @@ icon_position_iterator_new (GArray *icon_positions, const GList *uris)
 	}
 	result->last_icon_position_index = 0;
 
-	result->uris = nautilus_g_str_list_copy ((GList *)uris);
+	result->uris = eel_g_str_list_copy ((GList *)uris);
 	result->last_uri = result->uris;
 
 	return result;
@@ -147,7 +148,7 @@ icon_position_iterator_free (IconPositionIterator *position_iterator)
 	}
 	
 	g_free (position_iterator->icon_positions);
-	nautilus_g_list_free_deep (position_iterator->uris);
+	eel_g_list_free_deep (position_iterator->uris);
 	g_free (position_iterator);
 }
 
@@ -235,7 +236,7 @@ ellipsize_string_for_dialog (const char *str)
 	/* FIXME: John Sullivan says we should ellipsize both URIs and
 	 * file names in the middle, not the start.
 	 */
-	result = nautilus_string_ellipsize_start (str, font, maximum_width);
+	result = eel_string_ellipsize_start (str, font, maximum_width);
 	gdk_font_unref (font);
 
 	return result;
@@ -974,7 +975,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		if (error_location == ERROR_LOCATION_TARGET) {
 			/* We can't continue, just tell the user. */
-			nautilus_run_simple_dialog (parent_for_error_dialog (transfer_info),
+			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
 				TRUE, text, dialog_title, _("Stop"), NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
@@ -987,7 +988,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			 * in the moved/copied/deleted hierarchy, we can probably
 			 * continue. Allow the user to skip.
 			 */
-			error_dialog_button_pressed = nautilus_run_simple_dialog
+			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				dialog_title,
 				 _("Skip"), _("Stop"), NULL);
@@ -1006,7 +1007,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 								
 		} else {
 			/* Generic error, offer to retry and skip. */
-			error_dialog_button_pressed = nautilus_run_simple_dialog
+			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				 dialog_title,
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
@@ -1097,7 +1098,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 						formatted_name, formatted_name);
 		}
 		
-		nautilus_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
+		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
 					_("Unable to replace file."), _("OK"), NULL, NULL);
 
 		g_free (text);
@@ -1117,7 +1118,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		/* we are going to only get one duplicate alert, don't offer
 		 * Replace All
 		 */
-		result = nautilus_run_simple_dialog
+		result = eel_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
@@ -1131,7 +1132,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		}
 	} else {
-		result = nautilus_run_simple_dialog
+		result = eel_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
@@ -1884,7 +1885,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
 		/* don't allow copying into Trash */
 		if (check_target_directory_is_or_in_trash (trash_dir_uri, target_dir_uri)) {
-			nautilus_run_simple_dialog
+			eel_run_simple_dialog
 				(parent_view, 
 				 FALSE,
 				 _("You cannot copy items into the Trash."), 
@@ -1910,7 +1911,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				 */
 			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 
-				nautilus_run_simple_dialog
+				eel_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
@@ -1941,7 +1942,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0
 				&& (gnome_vfs_uri_equal (uri, target_dir_uri)
 					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
-				nautilus_run_simple_dialog
+				eel_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
@@ -1958,7 +1959,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0
 			        && (move_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0
 				&& gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
-				nautilus_run_simple_dialog
+				eel_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 					 _("You cannot copy a file over itself."), 
@@ -2023,7 +2024,7 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 						gnome_vfs_result_to_string(progress_info->vfs_status));
 	}
 	
-	nautilus_show_error_dialog (error_string, _("Error creating new folder"),
+	eel_show_error_dialog (error_string, _("Error creating new folder"),
 				    GTK_WINDOW (state->parent_view));
 	
 	g_free (error_string_to_free);
@@ -2044,7 +2045,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 	switch (progress_info->phase) {
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
-		nautilus_nullify_cancel (&state->parent_view);
+		eel_nullify_cancel (&state->parent_view);
 		g_free (state);
 		return 0;
 
@@ -2105,7 +2106,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	state->done_callback = done_callback;
 	state->data = data;
 	state->parent_view = parent_view;
-	nautilus_nullify_when_destroyed (&state->parent_view);
+	eel_nullify_when_destroyed (&state->parent_view);
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
@@ -2213,7 +2214,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
-	dialog = nautilus_show_yes_no_dialog (
+	dialog = eel_show_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
 		  "all of the items in the Trash?"),
 		_("Delete Trash Contents?"),
@@ -2254,43 +2255,43 @@ void
 nautilus_self_check_file_operations (void)
 {
 	/* test the next duplicate name generator */
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(" (copy)"), 1), _(" (another copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo"), 1), _("foo (copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(".bashrc"), 1), _(".bashrc (copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(".foo.txt"), 1), _(".foo (copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo"), 1), _("foo foo (copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo.txt"), 1), _("foo (copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt"), 1), _("foo foo (copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt txt"), 1), _("foo foo (copy).txt txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo...txt"), 1), _("foo.. (copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo..."), 1), _("foo... (copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo. (copy)"), 1), _("foo. (another copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy)"), 1), _("foo (another copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy).txt"), 1), _("foo (another copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy)"), 1), _("foo (3rd copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy).txt"), 1), _("foo (3rd copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (another copy).txt"), 1), _("foo foo (3rd copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy)"), 1), _("foo (14th copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy).txt"), 1), _("foo (14th copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy)"), 1), _("foo (22nd copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy).txt"), 1), _("foo (22nd copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy)"), 1), _("foo (23rd copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy).txt"), 1), _("foo (23rd copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy)"), 1), _("foo (24th copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy).txt"), 1), _("foo (24th copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy)"), 1), _("foo (25th copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy).txt"), 1), _("foo (25th copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(" (copy)"), 1), _(" (another copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo"), 1), _("foo (copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(".bashrc"), 1), _(".bashrc (copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(".foo.txt"), 1), _(".foo (copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo"), 1), _("foo foo (copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo.txt"), 1), _("foo (copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt"), 1), _("foo foo (copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt txt"), 1), _("foo foo (copy).txt txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo...txt"), 1), _("foo.. (copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo..."), 1), _("foo... (copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo. (copy)"), 1), _("foo. (another copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy)"), 1), _("foo (another copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy).txt"), 1), _("foo (another copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy)"), 1), _("foo (3rd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy).txt"), 1), _("foo (3rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (another copy).txt"), 1), _("foo foo (3rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy)"), 1), _("foo (14th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy).txt"), 1), _("foo (14th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy)"), 1), _("foo (22nd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy).txt"), 1), _("foo (22nd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy)"), 1), _("foo (23rd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy).txt"), 1), _("foo (23rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy)"), 1), _("foo (24th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy).txt"), 1), _("foo (24th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy)"), 1), _("foo (25th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy).txt"), 1), _("foo (25th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
 
 	/* FIXME bugzilla.eazel.com 7701: These are wrong. */
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11st copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11st copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12nd copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12nd copy).txt"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13rd copy)"));
-	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13rd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11st copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11st copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12nd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12nd copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13rd copy)"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13rd copy).txt"));
 }
 
 #endif

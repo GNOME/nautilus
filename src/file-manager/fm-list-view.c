@@ -32,20 +32,20 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-art-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-art-extensions.h>
+#include <eel/eel-art-gtk-extensions.h>
+#include <eel/eel-art-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-list.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 
 struct FMListViewDetails {
 	int sort_column;
@@ -189,7 +189,7 @@ static void                 real_start_renaming_item                  (FMDirecto
 								       const char         *uri);
 static void                 font_or_font_size_changed_callback        (gpointer            callback_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView,
+EEL_DEFINE_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
 				   FM_TYPE_DIRECTORY_VIEW)
 
@@ -294,7 +294,7 @@ static void
 fm_list_view_destroy (GtkObject *object)
 {
 	g_free (FM_LIST_VIEW (object)->details);
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void 
@@ -318,7 +318,7 @@ column_clicked_callback (NautilusCList *clist, int column, gpointer user_data)
 	fm_list_view_sort_items (list_view, column, reversed);
 }
 
-/* NautilusCompareFunction-style compare function */
+/* EelCompareFunction-style compare function */
 static int
 list_view_compare_files_for_sort (gconstpointer a, gconstpointer b, gpointer callback_data)
 {
@@ -454,10 +454,10 @@ make_sorted_row_array (GtkWidget *widget)
 		return NULL;
 		
 	/* build an array of rows */
-	array = nautilus_g_ptr_array_new_from_list (NAUTILUS_CLIST (widget)->row_list);
+	array = eel_g_ptr_array_new_from_list (NAUTILUS_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
-	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+	eel_g_ptr_array_sort (array, compare_rows_by_name, NULL);
 
 	return array;
 }
@@ -502,7 +502,7 @@ select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListVie
 	/* Find the row that matches our search pattern or one after the
 	 * closest match if the pattern does not match exactly.
 	 */
-	array_row_index = nautilus_g_ptr_array_search (array, match_row_name, 
+	array_row_index = eel_g_ptr_array_search (array, match_row_name, 
 						       (char *) pattern, FALSE);
 
 	g_assert (array_row_index >= 0);
@@ -529,7 +529,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 		return;
 
 	/* sort the array by the names of the NautilusFile objects */
-	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+	eel_g_ptr_array_sort (array, compare_rows_by_name, NULL);
 
 	/* find the index of the first and the last selected row */
 	first_selected_row = -1;
@@ -863,17 +863,17 @@ row_get_data_binder (NautilusCListRow *row, int row_index, gpointer data)
 	nautilus_list_get_initial_drag_offset (context->list, &drag_offset_x, &drag_offset_y);
 
 	/* adjust the icons to be vertically relative to the initial mouse click position */
-	icon_rect = nautilus_art_irect_offset_by (nautilus_gdk_rectangle_to_art_irect (&cell_rectangle),
+	icon_rect = eel_art_irect_offset_by (eel_gdk_rectangle_to_art_irect (&cell_rectangle),
 		0, -drag_offset_y);
 
 	/* horizontally just center the outline rectangles -- this will make the outlines align with
 	 * the drag icon
 	 */
-	icon_rect = nautilus_art_irect_offset_to (icon_rect,
+	icon_rect = eel_art_irect_offset_to (icon_rect,
 		- (icon_rect.x1 - icon_rect.x0) / 2, icon_rect.y0);
 	
 	/* add some extra spacing in between the icon outline rects */
-	icon_rect = nautilus_art_irect_inset (icon_rect, 2, 2);
+	icon_rect = eel_art_irect_inset (icon_rect, 2, 2);
 
 	/* pass the uri */
 	(* context->iteratee) (uri,
@@ -1054,7 +1054,7 @@ fm_list_view_update_font (FMListView *list_view)
 
 	font = nautilus_font_factory_get_font_by_family (font_name, font_size);
 	g_assert (font != NULL);
-	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (list_view)), font);
+	eel_gtk_widget_set_font (GTK_WIDGET (get_list (list_view)), font);
 	gdk_font_unref (font);
 	g_free (font_name);
 }
@@ -1468,7 +1468,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_adding_file (FMListView *view, NautilusFile *file)
 {
-	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
+	EEL_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
 			       adding_file, (view, file));
 }
 
@@ -1481,14 +1481,14 @@ real_removing_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_removing_file (FMListView *view, NautilusFile *file)
 {
-	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
+	EEL_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
 			      removing_file, (view, file));
 }
 
 static gboolean
 fm_list_view_file_still_belongs (FMListView *view, NautilusFile *file)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_LIST_VIEW_CLASS, view,
 		 file_still_belongs, (view, file));
 }
@@ -1571,7 +1571,7 @@ real_start_renaming_item  (FMDirectoryView *view, const char *uri)
 	NautilusFile *file;
 
 	/* call parent class to make sure the right icon is selected */
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
 	/* Show properties window since we don't do in-place renaming here */
 	file = nautilus_file_get (uri);
 	fm_properties_window_present (file, view);
@@ -1753,8 +1753,8 @@ fm_list_view_display_pending_files (FMDirectoryView *view,
 
 	/* Sort the added items before displaying them, so that they'll be added in order,
 	   and items won't move around.  */
-	*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
-							    (NautilusCompareFunction) list_view_compare_files_for_sort,
+	*pending_files_added = eel_g_list_sort_custom (*pending_files_added,
+							    (EelCompareFunction) list_view_compare_files_for_sort,
 							    FM_LIST_VIEW (view));
 
 	files_added = g_list_split_off_first_n (pending_files_added,
@@ -1787,7 +1787,7 @@ fm_list_view_display_pending_files (FMDirectoryView *view,
 
 		if (files_changed != NULL) {
 			selection = fm_directory_view_get_selection (view);
-			send_selection_change = nautilus_g_lists_sort_and_check_for_intersection
+			send_selection_change = eel_g_lists_sort_and_check_for_intersection
 				(&files_changed, &selection);
 			nautilus_file_list_free (selection);
 		}
@@ -1927,7 +1927,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	GList *emblem_icons, *emblem_pixbufs, *p;
 	GdkPixbuf *emblem_pixbuf;
 	int emblem_size;
-	NautilusStringList *emblems_to_ignore;
+	EelStringList *emblems_to_ignore;
 	gboolean anti_aliased;
 
 	anti_aliased = nautilus_list_is_anti_aliased (get_list (list_view));
@@ -1935,7 +1935,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
 		(FM_DIRECTORY_VIEW (list_view));
 	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased, emblems_to_ignore);
-	nautilus_string_list_free (emblems_to_ignore);
+	eel_string_list_free (emblems_to_ignore);
 	
 	emblem_pixbufs = NULL;
 	emblem_size = MAX (LIST_VIEW_MINIMUM_EMBLEM_SIZE, 
@@ -1953,7 +1953,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 
-	nautilus_scalable_icon_list_free (emblem_icons);
+	eel_scalable_icon_list_free (emblem_icons);
 
 	return emblem_pixbufs;
 }
@@ -2035,7 +2035,7 @@ fm_list_view_image_display_policy_changed (FMDirectoryView *view)
 static int
 get_number_of_columns (FMListView *list_view)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_LIST_VIEW_CLASS, list_view,
 		 get_number_of_columns, (list_view));
 }
@@ -2043,7 +2043,7 @@ get_number_of_columns (FMListView *list_view)
 static int
 get_link_column (FMListView *list_view)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_LIST_VIEW_CLASS, list_view,
 		 get_link_column, (list_view));
 }
@@ -2051,7 +2051,7 @@ get_link_column (FMListView *list_view)
 static char *
 get_default_sort_attribute (FMListView *list_view)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_LIST_VIEW_CLASS, list_view,
 		 get_default_sort_attribute, (list_view));
 }
@@ -2063,7 +2063,7 @@ get_column_specification (FMListView *list_view,
 {
 	guint icon_size;
 
-	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, list_view,
+	EEL_CALL_METHOD (FM_LIST_VIEW_CLASS, list_view,
 			      get_column_specification,
 			      (list_view, column_number, specification));
 	

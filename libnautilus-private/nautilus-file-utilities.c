@@ -26,21 +26,21 @@
 #include "nautilus-file-utilities.h"
 
 #include "nautilus-file.h"
-#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
-#include "nautilus-string.h"
 #include <ctype.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <pthread.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -538,8 +538,8 @@ nautilus_uri_make_full_from_relative (const char *base_uri, const char *relative
 gboolean
 nautilus_uri_is_trash (const char *uri)
 {
-	return nautilus_istr_has_prefix (uri, "trash:")
-		|| nautilus_istr_has_prefix (uri, "gnome-trash:");
+	return eel_istr_has_prefix (uri, "trash:")
+		|| eel_istr_has_prefix (uri, "gnome-trash:");
 }
 
 gboolean
@@ -624,7 +624,7 @@ nautilus_uri_is_local_scheme (const char *uri)
 
 	is_local_scheme = FALSE;
 	for (temp_scheme = *local_schemes, i = 0; temp_scheme != NULL; i++, temp_scheme = local_schemes[i]) {
-		is_local_scheme = nautilus_istr_has_prefix (uri, temp_scheme);
+		is_local_scheme = eel_istr_has_prefix (uri, temp_scheme);
 		if (is_local_scheme) {
 			break;
 		}
@@ -783,8 +783,8 @@ nautilus_make_uri_canonical (const char *uri)
 	 * typing "foo" into location bar does not crash and returns an error
 	 * rather than displaying the contents of /
 	 */
-	if (nautilus_str_has_prefix (canonical_uri, "file://")
-	    && !nautilus_str_has_prefix (canonical_uri, "file:///")) {
+	if (eel_str_has_prefix (canonical_uri, "file://")
+	    && !eel_str_has_prefix (canonical_uri, "file:///")) {
 		old_uri = canonical_uri;
 		canonical_uri = g_strconcat ("file:/", old_uri + 5, NULL);
 		g_free (old_uri);
@@ -824,7 +824,7 @@ uris_match (const char *uri_1, const char *uri_2, gboolean ignore_fragments)
 		canonical_2 = nautilus_make_uri_canonical (uri_2);
 	}
 
-	result = nautilus_str_is_equal (canonical_1, canonical_2);
+	result = eel_str_is_equal (canonical_1, canonical_2);
 
 	g_free (canonical_1);
 	g_free (canonical_2);
@@ -857,7 +857,7 @@ nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
 {
 	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
 
-	return nautilus_str_has_suffix (name_or_relative_uri, "~");
+	return eel_str_has_suffix (name_or_relative_uri, "~");
 }
 
 gboolean
@@ -865,7 +865,7 @@ nautilus_file_name_matches_metafile_pattern (const char *name_or_relative_uri)
 {
 	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
 
-	return nautilus_str_has_suffix (name_or_relative_uri, NAUTILUS_METAFILE_NAME_SUFFIX);
+	return eel_str_has_suffix (name_or_relative_uri, NAUTILUS_METAFILE_NAME_SUFFIX);
 }
 
 /**
@@ -1693,186 +1693,186 @@ nautilus_get_build_message (void)
 void
 nautilus_self_check_file_utilities (void)
 {
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" "), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" / "), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /home\n\n"), "file:///home");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" \n\t"), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("!"), "http://!");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("#"), "http://#");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/ "), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/!"), "file:///!");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/#"), "file:///%23");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%20"), "file:///%2520");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%25"), "file:///%2525");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/:"), "file:///%3A");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home"), "file:///home");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home/darin"), "file:///home/darin");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":"), "http://:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("::"), "http://::");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":://:://:::::::::::::::::"), "http://:://:://:::::::::::::::::");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:"), "file:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%20"), "file:///%20");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%3F"), "file:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///:"), "file:///:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///?"), "file:///?");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("home"), "http://home");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (""), "");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" "), "");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" / "), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /home\n\n"), "file:///home");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" \n\t"), "");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("!"), "http://!");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("#"), "http://#");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/ "), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/!"), "file:///!");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/#"), "file:///%23");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%20"), "file:///%2520");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%25"), "file:///%2525");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/:"), "file:///%3A");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home"), "file:///home");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home/darin"), "file:///home/darin");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":"), "http://:");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("::"), "http://::");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":://:://:::::::::::::::::"), "http://:://:://:::::::::::::::::");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:"), "file:");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%20"), "file:///%20");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%3F"), "file:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///:"), "file:///:");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///?"), "file:///?");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some file");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some file");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("home"), "http://home");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
+        EEL_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp"), "file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme (""), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp::"), "file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("man:ls"), "man");
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("file:///var/tmp"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("http://www.yahoo.com"), FALSE);
+	EEL_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp"), "file");
+	EEL_CHECK_STRING_RESULT (nautilus_uri_get_scheme (""), NULL);
+	EEL_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp::"), "file");
+	EEL_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("man:ls"), "man");
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("file:///var/tmp"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("http://www.yahoo.com"), FALSE);
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo"), "file://foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://"), "file://");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:/"), "file:/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org"), "http://le-hacker.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/dir//////"), "http://le-hacker.org/dir/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/////"), "http://le-hacker.org/");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo"), "file://foo");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://"), "file://");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:/"), "file:/");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org"), "http://le-hacker.org");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/dir//////"), "http://le-hacker.org/dir/");
+	EEL_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/////"), "http://le-hacker.org/");
 
 	/* nautilus_make_uri_canonical */
 
 	/* FIXME bugzilla.eazel.com 5072: this is a bizarre result from an empty string */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:///");
 	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir/");
 
 	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
 #ifdef EAZEL_SERVICES
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
 #endif
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.//."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.///."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a"), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a///"), "file:///a/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a"), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("../a"), "file:///../a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("..//a"), "file:///../a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a//.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./a/b/.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/./b/.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/./.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/../."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/../.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("././a/b/../.."), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../.."), "file:///a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../../d"), "file:///a/d");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../../d"), "file:///d");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/../../d"), "file:///../d");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.././.././c"), "file:///c");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.././.././b/c"), "file:///../b/c");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.//."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.///."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a"), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a///"), "file:///a/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a"), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("../a"), "file:///../a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("..//a"), "file:///../a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a//.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./a/b/.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/./b/.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/./.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/../."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/../.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("././a/b/../.."), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../.."), "file:///a");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../../d"), "file:///a/d");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../../d"), "file:///d");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/../../d"), "file:///../d");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.././.././c"), "file:///c");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.././.././b/c"), "file:///../b/c");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com"), "http://www.eazel.com");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/"), "http://www.eazel.com/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir"), "http://www.eazel.com/dir");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir/"), "http://www.eazel.com/dir/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://yakk:womble@www.eazel.com:42/blah/"), "http://yakk:womble@www.eazel.com:42/blah/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com"), "http://www.eazel.com");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/"), "http://www.eazel.com/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir"), "http://www.eazel.com/dir");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir/"), "http://www.eazel.com/dir/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://yakk:womble@www.eazel.com:42/blah/"), "http://yakk:womble@www.eazel.com:42/blah/");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("FILE:///"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("FILE:///"), "file:///");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///trash"), "file:///trash");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///Users/mikef"), "file:///Users/mikef");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/trash"), "file:///trash");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///trash"), "file:///trash");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///Users/mikef"), "file:///Users/mikef");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/trash"), "file:///trash");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("root"), "file:///root");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/root"), "file:///root");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//root"), "file:///root");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("///root"), "file:///root");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("////root"), "file:///root");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("root"), "file:///root");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/root"), "file:///root");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//root"), "file:///root");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("///root"), "file:///root");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("////root"), "file:///root");
 
 	/* Test cases related to escaping. */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%3F"), "file:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%78"), "file:///x");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///?"), "file:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///x"), "file:///x");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%3F"), "glorb:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%78"), "glorb:///x");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///?"), "glorb:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///x"), "glorb:///x");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%3F"), "http:///%3F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%78"), "http:///x");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%3F"), "file:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%78"), "file:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///?"), "file:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///x"), "file:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%3F"), "glorb:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%78"), "glorb:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///?"), "glorb:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///x"), "glorb:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%3F"), "http:///%3F");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%78"), "http:///x");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.eazel.com");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com/xXx"), "http://www.eazel.com/xXx");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com/xXx"), "ftp://Darin@www.eazel.com/xXx");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.eazel.com:80/xXx");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.eazel.com:80/xXx");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.eazel.com");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com/xXx"), "http://www.eazel.com/xXx");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com/xXx"), "ftp://Darin@www.eazel.com/xXx");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.eazel.com:80/xXx");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.eazel.com:80/xXx");
 
 	/* FIXME bugzilla.eazel.com 4101: Why append a slash in this case, but not in the http://www.eazel.com case? */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
 
 	/* Note: these cases behave differently here than in
 	 * gnome-vfs. In some cases because of bugs in gnome-vfs, but
 	 * in other cases because we just want them handled
 	 * differently.
 	 */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:trash"), "file:trash");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//trash"), "file:///trash");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:"), "file:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file:///trash");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorp:"), "glorp:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:trash"), "file:trash");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//trash"), "file:///trash");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:"), "file:");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file:///trash");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorp:"), "glorp:");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
+	EEL_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, NULL), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative ("http://a/b/c/d;p?q", NULL), "http://a/b/c/d;p?q");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, "http://a/b/c/d;p?q"), "http://a/b/c/d;p?q");
+	EEL_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, NULL), NULL);
+	EEL_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative ("http://a/b/c/d;p?q", NULL), "http://a/b/c/d;p?q");
+	EEL_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, "http://a/b/c/d;p?q"), "http://a/b/c/d;p?q");
 
 	/* These test cases are from RFC 2396. */
 #define TEST_PARTIAL(partial, result) \
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative \
+	EEL_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative \
 		("http://a/b/c/d;p?q", partial), result)
 
 	TEST_PARTIAL ("g", "http://a/b/c/g");
@@ -1907,48 +1907,48 @@ nautilus_self_check_file_utilities (void)
 
 #undef TEST_PARTIAL
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user"), "/h/user");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com"), "http://www.eazel.com");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com/jobs#Engineering"), "http://www.eazel.com/jobs#Engineering");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file"), "/file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///#"), "file:///#");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///"), "/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23"), "/ #");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "/");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user"), "/h/user");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com"), "http://www.eazel.com");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com/jobs#Engineering"), "http://www.eazel.com/jobs#Engineering");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file"), "/file");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///#"), "file:///#");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///"), "/");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23"), "/ #");
+	EEL_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match (":", ":"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match (":", ":"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("", ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments (":", ":"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("", ""), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments (":", ":"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user", "file:///h/user"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user/"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user%23frag"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "file:///h/user"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http:///h/user"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http://www.eazel.com"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file.html.gz#gunzip:///#fragment", "file:///h/user/file.html.gz"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/#frag", "file:///h/user/"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user", "file:///h/user"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user/"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user%23frag"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "file:///h/user"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http:///h/user"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "http://www.eazel.com"), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file.html.gz#gunzip:///#fragment", "file:///h/user/file.html.gz"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/#frag", "file:///h/user/"), TRUE);
 
 	/* Since it's illegal to have a # in a scheme name, it doesn't really matter what these cases do */
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

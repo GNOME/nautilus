@@ -39,7 +39,7 @@
  * Nautilus. If not, you can't rely on the nautilus-gtk-macros.h header.
  */
 #if 0
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #endif
 
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -77,7 +77,7 @@ static void sample_merge_bonobo_items_callback            (BonoboControl        
 
 #if 0
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView,
 				   nautilus_sample_content_view,
 				   NAUTILUS_TYPE_VIEW)
 #else
@@ -166,7 +166,7 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 
 	/* CHANGE: Pick one. */
 #if 0 /* nautilus-specific */	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 #else /* non-nautilus-specific */
 	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 #endif

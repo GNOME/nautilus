@@ -36,7 +36,7 @@
 #include "nautilus-adapter-embeddable-embed-strategy.h"
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <stdio.h>
 
 enum {
@@ -51,12 +51,12 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass);
 static void nautilus_adapter_embed_strategy_initialize       (NautilusAdapterEmbedStrategy      *strategy);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
 				   nautilus_adapter_embed_strategy,
 				   GTK_TYPE_OBJECT)
 
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
 
 static void
 nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass)
@@ -89,8 +89,8 @@ nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyCl
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 	
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
 }
 
 static void
@@ -136,7 +136,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 GtkWidget *
 nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
 		 get_widget, (strategy));
 }
@@ -144,7 +144,7 @@ nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strate
 BonoboObject *
 nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy)
 {
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
 		 get_zoomable, (strategy));
 }

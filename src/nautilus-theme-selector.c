@@ -47,25 +47,25 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-scalable-font.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <math.h>
 
 struct NautilusThemeSelectorDetails {
@@ -126,7 +126,7 @@ static void  set_help_label				(NautilusThemeSelector *theme_selector,
 
 static NautilusThemeSelector *main_theme_selector = NULL;
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_WINDOW)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_WINDOW)
 
 /* initializing the class object by installing the operations we override */
 static void
@@ -169,7 +169,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	/* set the title and standard close accelerator */
 	gtk_window_set_title (GTK_WINDOW (widget), _("Nautilus Theme Selector"));
 	gtk_window_set_wmclass(GTK_WINDOW(widget), "theme_selector", "Nautilus");
-	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* create the container box */  
   	theme_selector->details->container =  gtk_vbox_new (FALSE, 0);
@@ -196,18 +196,18 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	theme_selector->details->title_label = nautilus_label_new (_("Nautilus Theme:"));
-	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->title_label), 2);
-	nautilus_label_make_bold (NAUTILUS_LABEL (theme_selector->details->title_label));
+	theme_selector->details->title_label = eel_label_new (_("Nautilus Theme:"));
+	eel_label_make_larger (EEL_LABEL (theme_selector->details->title_label), 2);
+	eel_label_make_bold (EEL_LABEL (theme_selector->details->title_label));
 
   	gtk_widget_show(theme_selector->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), theme_selector->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	theme_selector->details->help_label = nautilus_label_new ("");
+	theme_selector->details->help_label = eel_label_new ("");
 	set_help_label (theme_selector, FALSE);
-	nautilus_label_make_smaller (NAUTILUS_LABEL (theme_selector->details->help_label), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (theme_selector->details->help_label), GTK_JUSTIFY_RIGHT);
+	eel_label_make_smaller (EEL_LABEL (theme_selector->details->help_label), 2);
+	eel_label_set_justify (EEL_LABEL (theme_selector->details->help_label), GTK_JUSTIFY_RIGHT);
   	
 	gtk_widget_show(theme_selector->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), theme_selector->details->help_label, FALSE, FALSE, 8);
@@ -319,7 +319,7 @@ nautilus_theme_selector_destroy (GtkObject *object)
 
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 		
-	nautilus_nullify_cancel (&theme_selector->details->dialog);
+	eel_nullify_cancel (&theme_selector->details->dialog);
 
 	g_free (theme_selector->details);
 
@@ -330,7 +330,7 @@ nautilus_theme_selector_destroy (GtkObject *object)
 	if (object == GTK_OBJECT (main_theme_selector))
 		main_theme_selector = NULL;
 		
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 }
 
@@ -356,7 +356,7 @@ nautilus_theme_selector_show (void)
 	if (main_theme_selector == NULL) {
 		main_theme_selector = nautilus_theme_selector_new ();
 	} else {
-		nautilus_gtk_window_present (GTK_WINDOW (main_theme_selector));
+		eel_gtk_window_present (GTK_WINDOW (main_theme_selector));
 	}	
 	gtk_clist_moveto (GTK_CLIST(main_theme_selector->details->theme_list), main_theme_selector ->details->selected_row, 0, 0.0, 0.0);		
 }
@@ -398,7 +398,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	
 	if (!g_file_exists (xml_path)) {
 		char *message = g_strdup_printf (_("Sorry, but \"%s\" is not a valid theme folder."), theme_path);
-		nautilus_show_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
+		eel_show_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
 		g_free (message);
 	} else {
 		/* copy the theme directory into ~/.nautilus/themes.  First, create the themes directory if it doesn't exist */
@@ -427,7 +427,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		
 		if (result != GNOME_VFS_OK) {
 			char *message = g_strdup_printf (_("Sorry, but the \"%s\" theme couldn't be installed."), theme_path);
-			nautilus_show_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
+			eel_show_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
 			g_free (message);
 		
 		} else {	
@@ -463,7 +463,7 @@ add_new_theme_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_s
 			(_("Select a theme folder to add as a new theme:"));
 		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
 		
-		nautilus_nullify_when_destroyed (&theme_selector->details->dialog);
+		eel_nullify_when_destroyed (&theme_selector->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
 				    "clicked",
@@ -491,7 +491,7 @@ remove_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_selector
 	
 	theme_selector->details->remove_mode = TRUE;
 
-	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
+	eel_label_set_text (EEL_LABEL (theme_selector->details->help_label),
 				 _("Click on a theme to remove it."));
 	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label),
 				 _("Cancel Remove"));
@@ -511,7 +511,7 @@ nautilus_theme_selector_highlight_by_name (NautilusThemeSelector *theme_selector
 	list = GTK_CLIST (theme_selector->details->theme_list);
 	for (index = 0; index < list->rows; index++) {
 		row_theme = gtk_clist_get_row_data (list, index);	
-		if (!nautilus_strcmp (row_theme, theme_name)) {			
+		if (!eel_strcmp (row_theme, theme_name)) {			
 			gtk_clist_select_row (list, index, 0);
 			theme_selector->details->selected_row = index ;
 			return;
@@ -538,10 +538,10 @@ static void
 set_help_label (NautilusThemeSelector *theme_selector, gboolean remove_mode)
 {
 	if (remove_mode) {
-		nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
+		eel_label_set_text (EEL_LABEL (theme_selector->details->help_label),
 					_("Click on a theme to remove it."));	
 	} else {
-		nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
+		eel_label_set_text (EEL_LABEL (theme_selector->details->help_label),
 					_("Click on a theme to change the\n"
 					  "appearance of Nautilus."));	
 
@@ -579,10 +579,10 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		/* don't allow the current theme to be deleted */
 		current_theme = nautilus_theme_get_theme();	
 		
-		if (nautilus_strcmp (theme_name, current_theme) == 0) {
+		if (eel_strcmp (theme_name, current_theme) == 0) {
 			g_free (current_theme);
 			exit_remove_mode (theme_selector);
-			nautilus_show_error_dialog (_("Sorry, but you can't remove the current theme. "
+			eel_show_error_dialog (_("Sorry, but you can't remove the current theme. "
 						      "Please change to another theme before removing this one."),
 				                    _("Can't delete current theme"),
 				                    GTK_WINDOW (theme_selector));
@@ -605,7 +605,7 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		gnome_vfs_uri_list_free (uri_list);
 				   
 		if (result != GNOME_VFS_OK) {
-			nautilus_show_error_dialog (_("Sorry, but that theme could not be removed!"), 
+			eel_show_error_dialog (_("Sorry, but that theme could not be removed!"), 
 					            _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
 		
 		}
@@ -694,12 +694,12 @@ get_theme_description_and_display_name (const char *theme_name, const char *them
 		
 		if (theme_document != NULL) {
 			/* fetch the description, if any */		
-			temp_str = nautilus_xml_get_property_translated (xmlDocGetRootElement (theme_document), "description");
+			temp_str = eel_xml_get_property_translated (xmlDocGetRootElement (theme_document), "description");
 			description_result = g_strdup (temp_str);
 			xmlFree (temp_str);
 			
 			if (theme_display_name) {
-				temp_str = nautilus_xml_get_property_translated (xmlDocGetRootElement (theme_document), "name");
+				temp_str = eel_xml_get_property_translated (xmlDocGetRootElement (theme_document), "name");
 				*theme_display_name = g_strdup (temp_str);
 				xmlFree (temp_str);
 			}
@@ -745,8 +745,8 @@ render_theme_name_and_description (GtkWidget *widget, const char *theme_name, co
 	/* allocate the fonts and measure the text so we know how big a pixmap to allocate */
 	gtk_widget_realize (widget);
 	style = widget->style;
-	big_font = nautilus_gdk_font_get_larger (style->font, 6);
-	small_font = nautilus_gdk_font_get_smaller (style->font, 3);
+	big_font = eel_gdk_font_get_larger (style->font, 6);
+	small_font = eel_gdk_font_get_smaller (style->font, 3);
 	big_height = gdk_text_height (big_font, theme_name, strlen (theme_name));	
 	small_height = gdk_text_height (small_font, theme_description, strlen (theme_description));	
 	description_height = big_height + small_height + 20;
@@ -755,7 +755,7 @@ render_theme_name_and_description (GtkWidget *widget, const char *theme_name, co
 	pixmap = gdk_pixmap_new (NULL, DESCRIPTION_WIDTH, description_height, visual->depth);	
 	
 	gc = gdk_gc_new (pixmap);
-	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_WHITE);
+	gdk_rgb_gc_set_foreground (gc, EEL_RGB_COLOR_WHITE);
 	
 	gdk_draw_rectangle (pixmap, gc, TRUE,
 			    0, 0,
@@ -794,7 +794,7 @@ add_pixbuf_to_theme_list (GtkCList *list, int row, int column, GdkPixbuf *pixbuf
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
 	gtk_clist_set_pixmap (list, row, column, pixmap ,mask);
 		
 	gdk_pixmap_unref (pixmap);
@@ -823,7 +823,7 @@ add_theme (NautilusThemeSelector *theme_selector,
 	
 	/* add a pixbuf to represent the theme graphically */
 	theme_pixbuf = nautilus_theme_make_selector (theme_name);
-	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (theme_pixbuf, 70, 48);
+	scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (theme_pixbuf, 70, 48);
 	gdk_pixbuf_unref (theme_pixbuf);
 	add_pixbuf_to_theme_list (GTK_CLIST (theme_selector->details->theme_list), theme_index, 0, scaled_pixbuf);
 	gdk_pixbuf_unref (scaled_pixbuf);			
@@ -874,7 +874,7 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 		current_file_info = element->data;
 		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) && (current_file_info->name[0] != '.')) {
 			if (has_image_file (directory_uri, current_file_info->name, "i-directory" )) {
-				if (!nautilus_strcmp (current_theme, current_file_info->name)) {
+				if (!eel_strcmp (current_theme, current_file_info->name)) {
 					selected_index = *index;
 				}
 				theme_uri = nautilus_make_path (directory_uri, current_file_info->name);

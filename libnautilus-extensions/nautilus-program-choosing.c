@@ -26,12 +26,12 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gnome-extensions.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-string.h"
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -250,7 +250,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 
 	/* Put pending entry into choose hash table. */
 	if (choose_component_hash_table == NULL) {
-		choose_component_hash_table = nautilus_g_hash_table_new_free_at_exit
+		choose_component_hash_table = eel_g_hash_table_new_free_at_exit
 			(choose_component_hash,
 			 choose_component_equal,
 			 "choose component");
@@ -390,7 +390,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 
 	/* Put pending entry into choose hash table. */
 	if (choose_application_hash_table == NULL) {
-		choose_application_hash_table = nautilus_g_hash_table_new_free_at_exit
+		choose_application_hash_table = eel_g_hash_table_new_free_at_exit
 			(choose_application_hash,
 			 choose_application_equal,
 			 "choose application");
@@ -493,7 +493,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 					     "locations.  Would you like to choose another application?"),
 					   application->name, file_name, 
 					   application->name, uri_scheme);
-		message_dialog = nautilus_show_yes_no_dialog (message, 
+		message_dialog = eel_show_yes_no_dialog (message, 
 							       _("Can't Open Location"), 
 							       GNOME_STOCK_BUTTON_OK, 
 							       GNOME_STOCK_BUTTON_CANCEL,
@@ -515,7 +515,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 					     "If you copy this file onto your computer, you may be able to open "
 					     "it."), application->name, file_name, 
 					   application->name, uri_scheme);
-		nautilus_show_info_dialog (message, _("Can't Open Location"), parent_window);
+		eel_show_info_dialog (message, _("Can't Open Location"), parent_window);
 	}
 
 	g_free (file_name);
@@ -548,11 +548,11 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	 */
 	if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ||
 	    ((application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES) &&
-	     nautilus_strcasecmp (uri_scheme, "file") != 0)) {
+	     eel_strcasecmp (uri_scheme, "file") != 0)) {
 		/* Check to be sure that the application also supports this particular URI scheme */
 		if (g_list_find_custom (application->supported_uri_schemes,
 					uri_scheme,
-					nautilus_strcmp_compare_func) == NULL) {
+					eel_strcmp_compare_func) == NULL) {
 			application_cannot_open_location (application,
 							  file,
 							  uri_scheme,
@@ -584,7 +584,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	}
 	g_free (uri_scheme);
 
-	nautilus_launch_application_from_command (application->command,
+	eel_launch_application_from_command (application->command,
 						  parameter, 
 						  application->requires_terminal);
 
@@ -592,7 +592,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 }
 
 /**
- * nautilus_launch_application_from_command:
+ * eel_launch_application_from_command:
  * 
  * Fork off a process to launch an application with a given uri as
  * a parameter.
@@ -602,7 +602,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
  * @parameter: Passed as a parameter to the application as is.
  */
 void
-nautilus_launch_application_from_command (const char *command_string, 
+eel_launch_application_from_command (const char *command_string, 
 					  const char *parameter, 
 					  gboolean    use_terminal)
 {
@@ -614,11 +614,11 @@ nautilus_launch_application_from_command (const char *command_string,
 	/* FIXME bugzilla.eazel.com 7830: This needs to support things
 	 * like the "xalf" hack. Perhaps the best way to do that is
 	 * to use gnome_desktop_entry_launch_with_args instead of
-	 * calling system or nautilus_gnome_open_terminal.
+	 * calling system or eel_gnome_open_terminal.
 	 */
 
 	if (parameter != NULL) {
-		quoted_parameter = nautilus_shell_quote (parameter);
+		quoted_parameter = eel_shell_quote (parameter);
 		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
 		g_free (quoted_parameter);
 	} else {
@@ -626,9 +626,9 @@ nautilus_launch_application_from_command (const char *command_string,
 	}
 
 	if (use_terminal) {
-		quoted_full_command = nautilus_shell_quote (full_command);
+		quoted_full_command = eel_shell_quote (full_command);
 		final_command = g_strconcat ("/bin/sh -c ", quoted_full_command, NULL);
-		nautilus_gnome_open_terminal (final_command);
+		eel_gnome_open_terminal (final_command);
 		g_free (quoted_full_command);
 	} else {
 		final_command = g_strconcat (full_command, " &", NULL);

@@ -30,7 +30,7 @@
 #include "nautilus-undo-private.h"
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 #define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
@@ -59,7 +59,7 @@ static void                    impl_Nautilus_Undo_Transaction__undo             
 static void                    undo_atom_list_free                                (GList                        *list);
 static void                    undo_atom_list_undo_and_free                       (GList                        *list);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
 
 static POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
 {
@@ -254,7 +254,7 @@ nautilus_undo_transaction_destroy (GtkObject *object)
 	CORBA_Object_release (transaction->owner, &ev);
 	CORBA_exception_free (&ev);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

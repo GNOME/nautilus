@@ -25,8 +25,8 @@
    them to an idle handler. */
 
 #include "nautilus-tree-change-queue.h"
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 
 struct NautilusTreeChangeQueueDetails {
 	GSList *head;
@@ -39,7 +39,7 @@ static void nautilus_tree_change_queue_initialize       (gpointer     object,
 							 gpointer     klass);
 static void nautilus_tree_change_queue_initialize_class (gpointer     klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeChangeQueue, nautilus_tree_change_queue, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeChangeQueue, nautilus_tree_change_queue, GTK_TYPE_OBJECT)
 
 
 static NautilusTreeChange *nautilus_tree_change_new     (NautilusTreeChangeType  change_type,
@@ -76,12 +76,12 @@ nautilus_tree_change_queue_destroy (GtkObject *object)
 	NautilusTreeChangeQueue *queue;
 	
 	queue = (NautilusTreeChangeQueue *) object;
-        nautilus_g_slist_free_deep_custom (queue->details->head,
+        eel_g_slist_free_deep_custom (queue->details->head,
 					   (GFunc) nautilus_tree_change_free,
 					   NULL);
 	g_free (queue->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

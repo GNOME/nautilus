@@ -34,7 +34,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -49,7 +49,7 @@ static void nautilus_sidebar_loser_initialize_class (NautilusSidebarLoserClass *
 static void nautilus_sidebar_loser_initialize       (NautilusSidebarLoser      *view);
 static void nautilus_sidebar_loser_destroy          (GtkObject                      *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
      
 static void loser_load_location_callback      (NautilusView         *nautilus_view,
 					       const char           *location,
@@ -107,7 +107,7 @@ nautilus_sidebar_loser_destroy (GtkObject *object)
 	g_free (view->details->uri);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /**

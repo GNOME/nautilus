@@ -25,20 +25,20 @@
 #include <config.h>
 #include "nautilus-directory-private.h"
 
-#include "nautilus-metafile.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
-#include "nautilus-string.h"
+#include "nautilus-metafile.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-vfs-directory.h"
 #include <ctype.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
@@ -71,7 +71,7 @@ static char *             real_get_name_for_self_as_new_file  (NautilusDirectory
 static void               set_directory_uri                   (NautilusDirectory      *directory,
 							       const char             *new_uri);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
 				   nautilus_directory,
 				   GTK_TYPE_OBJECT)
 
@@ -167,7 +167,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
-		nautilus_g_list_free_deep (directory->details->monitor_list);
+		eel_g_list_free_deep (directory->details->monitor_list);
 	}
 
 	if (directory->details->metafile_monitor != NULL) {
@@ -198,7 +198,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_free (directory->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -231,7 +231,7 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 {
 	GList *files;
 
-	files = nautilus_g_list_copy (directory->details->file_list);
+	files = eel_g_list_copy (directory->details->file_list);
 	if (directory->details->as_file != NULL) {
 		files = g_list_prepend (files, directory->details->as_file);
 	}
@@ -323,7 +323,7 @@ nautilus_directory_make_uri_canonical (const char *uri)
 	 * NautilusDirectories for the same location from being
 	 * created. (See bugzilla.eazel.com 3322 for an example.)
 	 */
-	canonical = nautilus_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
+	canonical = eel_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
 	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0) {
 		/* If some trailing '/' were stripped, there's the possibility,
 		 * that we stripped away all the '/' from a uri that has only
@@ -367,7 +367,7 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 
 	/* Create the hash table first time through. */
 	if (directories == NULL) {
-		directories = nautilus_g_hash_table_new_free_at_exit
+		directories = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, "nautilus-directory.c: directories");
 
 		add_preferences_callbacks ();
@@ -456,7 +456,7 @@ nautilus_directory_get_name_for_self_as_new_file (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 get_name_for_self_as_new_file, (directory));
 }
@@ -524,7 +524,7 @@ nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 are_all_files_seen, (directory));
 }
@@ -672,7 +672,7 @@ nautilus_directory_find_file_by_internal_uri (NautilusDirectory *directory,
 {
 	NautilusFile *result;
 
-	if (nautilus_strcmp (relative_uri, ".") == 0) {
+	if (eel_strcmp (relative_uri, ".") == 0) {
 		result = nautilus_directory_get_existing_corresponding_file (directory);
 		if (result != NULL) {
 			nautilus_file_unref (result);
@@ -1033,7 +1033,7 @@ collect_directories_by_prefix (gpointer key, gpointer value, gpointer callback_d
 	directory = NAUTILUS_DIRECTORY (value);
 	collect_data = (CollectData *) callback_data;
 	
-	if (nautilus_str_has_prefix (uri, collect_data->uri_prefix)) {
+	if (eel_str_has_prefix (uri, collect_data->uri_prefix)) {
 		uri_suffix = &uri[strlen (collect_data->uri_prefix)];
 		switch (uri_suffix[0]) {
 		case '\0':
@@ -1054,7 +1054,7 @@ str_replace_prefix (const char *str,
 {
 	const char *old_suffix;
 
-	g_return_val_if_fail (nautilus_str_has_prefix (str, old_prefix),
+	g_return_val_if_fail (eel_str_has_prefix (str, old_prefix),
 			      g_strdup (str));
 
 	old_suffix = &str [strlen (old_prefix)];
@@ -1365,7 +1365,7 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 contains_file, (directory, file));
 }
@@ -1406,7 +1406,7 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 call_when_ready, (directory, file_attributes,
 				   callback, callback_data));
@@ -1421,7 +1421,7 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 cancel_callback, (directory, callback, callback_data));
 }
@@ -1436,7 +1436,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
 				    monitor_hidden_files,
@@ -1451,7 +1451,7 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_remove, (directory, client));
 }
@@ -1461,7 +1461,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 force_reload, (directory));
 }
@@ -1471,14 +1471,14 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 is_not_empty, (directory));
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
-#include "nautilus-debug.h"
+#include <eel/eel-debug.h>
 #include "nautilus-file-attributes.h"
 
 static int data_dummy;
@@ -1521,7 +1521,7 @@ nautilus_self_check_directory (void)
 	directory = nautilus_directory_get ("file:///etc");
 	file = nautilus_file_get ("file:///etc/passwd");
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
+	EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
@@ -1539,30 +1539,30 @@ nautilus_self_check_directory (void)
 	}
 
 	nautilus_file_set_metadata (file, "test", "default", "value");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
 
 	nautilus_file_set_boolean_metadata (file, "test_boolean", TRUE, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), TRUE);
 	nautilus_file_set_boolean_metadata (file, "test_boolean", TRUE, FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), FALSE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
 
 	nautilus_file_set_integer_metadata (file, "test_integer", 0, 17);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), 17);
+	EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), 17);
 	nautilus_file_set_integer_metadata (file, "test_integer", 0, -1);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), -1);
+	EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), -1);
 	nautilus_file_set_integer_metadata (file, "test_integer", 42, 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "test_integer", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "nonexistent_key", 42), 42);
+	EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 42), 42);
+	EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "test_integer", 42), 42);
+	EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "nonexistent_key", 42), 42);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc") == directory, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc") == directory, TRUE);
 	nautilus_directory_unref (directory);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc/") == directory, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc/") == directory, TRUE);
 	nautilus_directory_unref (directory);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
 	nautilus_directory_unref (directory);
 
 	nautilus_file_unref (file);
@@ -1575,7 +1575,7 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
+	EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
 	directory = nautilus_directory_get ("file:///etc");
 
@@ -1589,7 +1589,7 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_is_metadata_read (directory), TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_is_metadata_read (directory), TRUE);
 
 	got_files_flag = FALSE;
 
@@ -1603,51 +1603,51 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
+	EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
 	file = nautilus_file_get ("file:///etc/passwd");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
 	
 	nautilus_file_unref (file);
 
 	nautilus_directory_unref (directory);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
+	EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
 	/* escape_slashes: code is now in gnome-vfs, but lets keep the tests here for now */
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a"), "a");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("/"), "%2F");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%"), "%25");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a/a"), "a%2Fa");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a%a"), "a%25a");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%25"), "%2525");
-	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%2F"), "%252F");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes (""), "");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a"), "a");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("/"), "%2F");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%"), "%25");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a/a"), "a%2Fa");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a%a"), "a%25a");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%25"), "%2525");
+	EEL_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%2F"), "%252F");
 
 	/* nautilus_directory_make_uri_canonical */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
 	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
 #ifdef EAZEL_SERVICES
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
 #endif	
 }
 

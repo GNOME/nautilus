@@ -29,7 +29,7 @@ void	nautilus_summary_show_login_failure_dialog (NautilusSummaryView *view,
 void	nautilus_summary_show_error_dialog         (NautilusSummaryView	*view,
 						    const char		*message);
 void	nautilus_summary_show_login_dialog         (NautilusSummaryView	*view);
-void	widget_set_nautilus_background_color	   (GtkWidget		*widget,
+void	widget_set_eel_background_color	   (GtkWidget		*widget,
 						    const char		*color);
 
 #endif /* NAUTILUS_SUMMARY_DIALOGS_H */

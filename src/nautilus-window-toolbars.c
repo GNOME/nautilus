@@ -43,9 +43,9 @@
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 static void
@@ -139,11 +139,11 @@ back_or_forward_button_pressed_callback (GtkWidget *widget,
 	g_assert (back || widget == get_forward_button (window));
 
 	if (event->button == 3) {
-		nautilus_pop_up_context_menu (
+		eel_pop_up_context_menu (
 			create_back_or_forward_menu (NAUTILUS_WINDOW (user_data),
 						     back),
-                        NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-                        NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+                        EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
+                        EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
                         event);
 
 		return TRUE;
@@ -187,7 +187,7 @@ get_file_name_from_icon_name (const char *icon_name, gboolean is_custom)
 		/* special case the "standard" theme which indicates using the stock gnome icons,
 		 * except for the custom ones, that are not present in stock
 		 */
-		if (!is_custom && nautilus_strcmp (icon_theme, "standard") == 0) {
+		if (!is_custom && eel_strcmp (icon_theme, "standard") == 0) {
 			g_free (icon_theme);
 			return NULL;
 		}

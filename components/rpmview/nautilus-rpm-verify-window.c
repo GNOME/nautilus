@@ -37,11 +37,11 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
@@ -67,7 +67,7 @@ static void     nautilus_rpm_verify_window_initialize_class	(NautilusRPMVerifyWi
 static void     nautilus_rpm_verify_window_initialize		(NautilusRPMVerifyWindow *rpm_verify_window);
 static void	nautilus_rpm_verify_window_destroy		(GtkObject *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMVerifyWindow, nautilus_rpm_verify_window, GNOME_TYPE_DIALOG)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusRPMVerifyWindow, nautilus_rpm_verify_window, GNOME_TYPE_DIALOG)
 
 static void
 nautilus_rpm_verify_window_initialize_class (NautilusRPMVerifyWindowClass *rpm_verify_window_class)
@@ -97,7 +97,7 @@ nautilus_rpm_verify_window_destroy (GtkObject *object)
 		
 	g_free (NAUTILUS_RPM_VERIFY_WINDOW (object)->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* handle the continue button  */
@@ -133,17 +133,17 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	gtk_widget_show (window_contents);
 	
 	/* allocate the package title label */
-        label = nautilus_label_new ("");
+        label = eel_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
+	eel_label_make_larger (EEL_LABEL (label), 2);
+	eel_label_set_justify (EEL_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->package_name = label;
 	
 	/* allocate the message label */
-        label = nautilus_label_new ("");
+        label = eel_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_set_justify (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
+	eel_label_set_justify (EEL_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->file_message = label;
 	
@@ -186,7 +186,7 @@ nautilus_rpm_verify_window_new (const char *package_name)
 	gtk_window_set_title (GTK_WINDOW (rpm_verify_window), title_string);
 	
 	/* set up the package name */
-	nautilus_label_set_text (NAUTILUS_LABEL (rpm_verify_window->details->package_name), title_string);
+	eel_label_set_text (EEL_LABEL (rpm_verify_window->details->package_name), title_string);
 	g_free (title_string);
 	
 	return GTK_WIDGET (rpm_verify_window);
@@ -195,7 +195,7 @@ nautilus_rpm_verify_window_new (const char *package_name)
 void
 nautilus_rpm_verify_window_set_message (NautilusRPMVerifyWindow *window, const char *message)
 {
-	nautilus_label_set_text (NAUTILUS_LABEL (window->details->file_message), message);
+	eel_label_set_text (EEL_LABEL (window->details->file_message), message);
         while (gtk_events_pending ()) {
                 gtk_main_iteration ();
         }

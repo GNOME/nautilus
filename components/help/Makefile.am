@@ -9,6 +9,8 @@ noinst_PROGRAMS=test-help-method
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -19,11 +21,12 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\" \
 	-DENABLE_SCROLLKEEPER_SUPPORT
-	
 
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \

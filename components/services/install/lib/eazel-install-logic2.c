@@ -28,7 +28,7 @@
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-md5-tools.h>
 
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include <libtrilobite/libtrilobite.h>

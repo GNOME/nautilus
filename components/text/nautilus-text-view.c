@@ -34,19 +34,19 @@
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-xml-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #include <gnome.h>
@@ -118,7 +118,7 @@ static void nautilus_text_view_load_uri         (NautilusTextView      *view,
 						 const char            *uri);
 static void font_changed_callback               (gpointer               callback_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
                                    nautilus_text_view,
                                    NAUTILUS_TYPE_VIEW)
 
@@ -174,7 +174,7 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	bonobo_zoomable_set_parameters_full (text_view->details->zoomable,
 					     1.0, .25, 4.0, TRUE, TRUE, FALSE,
 					     text_view_preferred_zoom_levels, NULL,
-					     NAUTILUS_N_ELEMENTS (text_view_preferred_zoom_levels));
+					     EEL_N_ELEMENTS (text_view_preferred_zoom_levels));
 	
 	bonobo_object_add_interface (BONOBO_OBJECT (text_view),
 				     BONOBO_OBJECT (text_view->details->zoomable));
@@ -261,7 +261,7 @@ nautilus_text_view_destroy (GtkObject *object)
 
 	g_free (text_view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* here's a callback for the async close, which does nothing */
@@ -334,7 +334,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
                         message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."),
                                                    name);
                         
-			nautilus_show_error_dialog (message, _("File too large"), NULL);
+			eel_show_error_dialog (message, _("File too large"), NULL);
                         
 			g_free (name);
 			g_free (message);
@@ -443,7 +443,7 @@ nautilus_text_view_update_font (NautilusTextView *text_view)
 
 	g_return_if_fail (font != NULL);
 	
-	nautilus_gtk_widget_set_font (text_view->details->text_display, font);
+	eel_gtk_widget_set_font (text_view->details->text_display, font);
 	gdk_font_unref (font);
 
 	gtk_editable_changed (GTK_EDITABLE (text_view->details->text_display));
@@ -458,7 +458,7 @@ handle_ui_event (BonoboUIComponent *ui,
 		 NautilusTextView *view)
 {
 	if (type == Bonobo_UIComponent_STATE_CHANGED
-            && nautilus_str_is_equal (state, "1")) {
+            && eel_str_is_equal (state, "1")) {
                 nautilus_preferences_set (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT, id);
 	}
 }
@@ -485,7 +485,7 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 	parameters = (ServiceMenuItemParameters *) user_data;
 	
 	/* determine if we should operate on the whole document or just the selection */
-	if (nautilus_strcmp (parameters->source_mode, "document") == 0) {
+	if (eel_strcmp (parameters->source_mode, "document") == 0) {
 		selected_text = gtk_editable_get_chars (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);
 		if (selected_text && strlen (selected_text) > 0) {
 			/* formulate the url */
@@ -576,18 +576,18 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		service_node = xmlDocGetRootElement (service_definition);
 	
 		/* extract the label and template */
-		label = nautilus_xml_get_property_translated (service_node, "label");	
-		tooltip = nautilus_xml_get_property_translated (service_node, "tooltip");	
+		label = eel_xml_get_property_translated (service_node, "label");	
+		tooltip = eel_xml_get_property_translated (service_node, "tooltip");	
 		template = xmlGetProp (service_node, "template");
 		source_mode = xmlGetProp (service_node, "source");
 		
 		if (label != NULL && template != NULL) {
 			/* allocate a structure containing the text_view and template to pass in as the user data */
-			escaped_label = nautilus_str_double_underscores (label);
+			escaped_label = eel_str_double_underscores (label);
 			parameters = service_menu_item_parameters_new (text_view, template, source_mode);
 		
 			text_view->details->service_item_uses_selection[*index] = 
-				nautilus_strcmp (source_mode, "document") != 0;
+				eel_strcmp (source_mode, "document") != 0;
 			
 			/* use bonobo to add the menu item */
 			nautilus_bonobo_add_numbered_menu_item 
@@ -615,7 +615,7 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 			
 			/* initially disable the item unless it's document-based; it will be enabled if there's a selection */
 			verb_path = g_strdup_printf ("/commands/%s", verb_name);
-			if (nautilus_strcmp (source_mode, "document") != 0) {
+			if (eel_strcmp (source_mode, "document") != 0) {
 				nautilus_bonobo_set_sensitive (ui, verb_path, FALSE);
 			}
 			g_free (verb_name);	
@@ -664,7 +664,7 @@ add_services_to_menu (NautilusTextView *text_view,
 			break;
 		}
 		
-		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {		
+		if (eel_istr_has_suffix (current_file_info->name, ".xml")) {		
 			if (g_list_find_custom (added_services, current_file_info->name,
 						(GCompareFunc) strcmp) == NULL) {
 				service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
@@ -712,7 +712,7 @@ nautilus_text_view_build_service_menu (NautilusTextView *text_view, BonoboContro
 	g_free (user_directory);
 	
 	text_view->details->service_item_count = index;	
-	nautilus_g_list_free_deep (added_services);
+	eel_g_list_free_deep (added_services);
 }
 
 /* handle updating the service menu items according to the selection state of the text display */

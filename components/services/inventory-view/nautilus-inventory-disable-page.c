@@ -36,9 +36,9 @@
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtk.h>
 #include <gnome.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
+#include <eel/eel-background.h>
 #include <libnautilus/nautilus-view.h>
 #include <eazel-inventory.h>
 
@@ -51,7 +51,7 @@ static void     nautilus_inventory_disable_page_initialize_class    (NautilusInv
 static void     nautilus_inventory_disable_page_initialize          (NautilusInventoryDisablePage      *file);
 static void     nautilus_inventory_disable_page_destroy             (GtkObject                        *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusInventoryDisablePage, nautilus_inventory_disable_page, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusInventoryDisablePage, nautilus_inventory_disable_page, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_inventory_disable_page_initialize_class (NautilusInventoryDisablePageClass *klass)
@@ -84,7 +84,7 @@ disable_inventory_callback (gpointer data)
 static void
 nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disable_page)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 	GtkWidget *header;
 	GtkWidget *vbox;
 	GtkWidget *label;
@@ -93,8 +93,8 @@ nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disabl
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (disable_page), vbox);
 
-	background = nautilus_get_widget_background (GTK_WIDGET (disable_page));
-        nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (disable_page));
+        eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	disable_page->details = g_new0 (NautilusInventoryDisablePageDetails, 1);
 
@@ -110,8 +110,8 @@ nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disabl
 					       0.5,
 					       0,
 					       0,
-					       NAUTILUS_RGB_COLOR_BLACK,
-					       NAUTILUS_RGB_COLOR_WHITE,
+					       EEL_RGB_COLOR_BLACK,
+					       EEL_RGB_COLOR_WHITE,
 					       NULL,
 					       4,		/*relative size*/
 					       TRUE);
@@ -147,7 +147,7 @@ nautilus_inventory_disable_page_destroy (GtkObject *object)
 	}
 	g_free (page->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 void

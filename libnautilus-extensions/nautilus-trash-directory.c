@@ -28,9 +28,9 @@
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
@@ -55,7 +55,7 @@ static void     nautilus_trash_directory_initialize_class (gpointer             
 static void	add_volume				  (NautilusTrashDirectory *trash,
 							   NautilusVolume	  *volume);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
 
@@ -67,7 +67,7 @@ static void
 find_directory_start (void)
 {
 	if (pending_find_directory_count == 0) {
-		nautilus_timed_wait_start_with_duration (TRASH_SEARCH_TIMED_WAIT_DELAY,
+		eel_timed_wait_start_with_duration (TRASH_SEARCH_TIMED_WAIT_DELAY,
 							 NULL,
 							 add_volume,
 							 _("Searching Disks"),
@@ -84,7 +84,7 @@ find_directory_end (void)
 	--pending_find_directory_count;
 
 	if (pending_find_directory_count == 0) {
-		nautilus_timed_wait_stop (NULL, add_volume);
+		eel_timed_wait_stop (NULL, add_volume);
 	}
 }
 
@@ -100,7 +100,7 @@ find_directory_callback (GnomeVFSAsyncHandle *handle,
 
 	trash_volume = callback_data;
 
-	g_assert (nautilus_g_list_exactly_one_item (results));
+	g_assert (eel_g_list_exactly_one_item (results));
 	g_assert (trash_volume != NULL);
 	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_volume->trash));
 	g_assert (trash_volume->real_directory == NULL);
@@ -284,14 +284,14 @@ trash_destroy (GtkObject *object)
 	gtk_signal_disconnect_by_data
 		(GTK_OBJECT (nautilus_volume_monitor_get ()), trash);
 
-	nautilus_g_hash_table_safe_for_each
+	eel_g_hash_table_safe_for_each
 		(trash->details->volumes,
 		 remove_trash_volume_cover,
 		 NULL);
 	g_hash_table_destroy (trash->details->volumes);
 	g_free (trash->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static char *

@@ -39,10 +39,10 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <libnautilus-extensions/nautilus-graphic-effects.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-graphic-effects.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -115,7 +115,7 @@ void            draw_number		                 (GtkWidget *widget,
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_class)
@@ -157,7 +157,7 @@ nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_c
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_level),
-				nautilus_gtk_marshal_NONE__DOUBLE,
+				eel_gtk_marshal_NONE__DOUBLE,
 				GTK_TYPE_NONE,
 				1,
 				GTK_TYPE_DOUBLE);
@@ -177,7 +177,7 @@ nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_c
 static void 
 nautilus_zoom_control_destroy (GtkObject *object)
 {
-	nautilus_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
+	eel_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
 	NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels = NULL;
 
 	/* deallocate pixbufs */
@@ -189,7 +189,7 @@ nautilus_zoom_control_destroy (GtkObject *object)
 
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -312,7 +312,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 		
 		number_pixbuf = zoom_control->details->number_strip;
 		if (zoom_control->details->prelight_mode == PRELIGHT_CENTER) {
-			number_pixbuf = nautilus_create_spotlight_pixbuf (number_pixbuf);
+			number_pixbuf = eel_create_spotlight_pixbuf (number_pixbuf);
 		}
 		
 		while (*cur_char) {
@@ -358,7 +358,7 @@ draw_pixbuf_with_prelight (NautilusZoomControl *zoom_control, GdkPixbuf *pixbuf,
 	GdkPixbuf *temp_pixbuf;
 	temp_pixbuf = pixbuf;
 	if (zoom_control->details->prelight_mode == mode) {
-		temp_pixbuf = nautilus_create_spotlight_pixbuf (temp_pixbuf);
+		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
 	}
 	draw_pixbuf (temp_pixbuf, GTK_WIDGET (zoom_control)->window, x_pos, y_pos + zoom_control->details->y_offset);
 	if (pixbuf != temp_pixbuf) {
@@ -647,9 +647,9 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	
 	/* check for the context menu button and handle by creating and showing the menu */  
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		nautilus_pop_up_context_menu (create_zoom_menu (widget), 
-					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
-					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
+		eel_pop_up_context_menu (create_zoom_menu (widget), 
+					      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT, 
+					      EEL_DEFAULT_POPUP_MENU_DISPLACEMENT, 
 					      event);
 		return TRUE;	  
  	}
@@ -721,7 +721,7 @@ nautilus_zoom_control_size_allocate (GtkWidget *widget, GtkAllocation *allocatio
 {
 	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	widget->allocation.width = get_zoom_width (zoom_control);
    	widget->allocation.height = allocation->height;
@@ -748,7 +748,7 @@ nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
 	zoom_control->details->has_min_zoom_level = has_min_zoom_level;
 	zoom_control->details->has_max_zoom_level = has_max_zoom_level;
 
-	nautilus_g_list_free_deep (zoom_control->details->preferred_zoom_levels);
+	eel_g_list_free_deep (zoom_control->details->preferred_zoom_levels);
 	zoom_control->details->preferred_zoom_levels = zoom_levels;
 
 	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));

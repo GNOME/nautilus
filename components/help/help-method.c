@@ -57,7 +57,7 @@ typedef struct {
 
 static gboolean file_in_info_path (const char *file);
 
-/* This is a copy of nautilus_shell_quote. The best thing to do is to
+/* This is a copy of eel_shell_quote. The best thing to do is to
  * use the one on GNOME for GNOME 2.0, but we could also move this
  * into gnome-vfs or some other library so we could share it.
  */

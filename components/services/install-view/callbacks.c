@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <libeazelinstall.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #define MAX_DESCRIBE_MENUS      3
@@ -240,7 +240,7 @@ nautilus_service_install_download_progress (EazelInstallCallback *cb, const Pack
 		im = view->details->current_im = install_message_new (view, pack->name);
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		out = g_strdup_printf (_("0K of %dK"), total/1024);
-		nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
+		eel_label_set_text (EEL_LABEL (im->progress_label), out);
 		g_free (out);
 		view->details->last_k = 0;
 
@@ -251,7 +251,7 @@ nautilus_service_install_download_progress (EazelInstallCallback *cb, const Pack
 		} else {
 			out = g_strdup_printf (_("Attempting to download package \"%s\"."), pack->name);
 		}
-		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
+		eel_label_set_text (EEL_LABEL (im->label), out);
 		g_free (out);
 	} else if (amount == total) {
 		/* done! */
@@ -268,7 +268,7 @@ nautilus_service_install_download_progress (EazelInstallCallback *cb, const Pack
 		} else {
 			out = g_strdup_printf (_("The package \"%s\" has been successfully downloaded."), pack->name);
 		}
-		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
+		eel_label_set_text (EEL_LABEL (im->label), out);
 		g_free (out);
 		g_free (view->details->current_rpm);
 		view->details->current_rpm = NULL;
@@ -285,7 +285,7 @@ nautilus_service_install_download_progress (EazelInstallCallback *cb, const Pack
 						     (float) amount / (float) total);
 			if ((amount/1024) >= view->details->last_k + 10) {
 				out = g_strdup_printf (_("%dK of %dK"), amount/1024, total/1024);
-				nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
+				eel_label_set_text (EEL_LABEL (im->progress_label), out);
 				g_free (out);
 				view->details->last_k = (amount/1024);
 			}
@@ -316,7 +316,7 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const Packag
 	out = g_strdup_printf (_("Download of package \"%s\" failed!"), tmp);
 	g_free (tmp);
 	if (view->details->current_im != NULL) {
-		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_im->label), out);
+		eel_label_set_text (EEL_LABEL (view->details->current_im->label), out);
 	}
 	g_free (out);
 }
@@ -340,7 +340,7 @@ previous_install_finished (NautilusServiceInstallView *view)
 		} else {
 			out = g_strdup_printf (_("\"%s\" has been successfully downloaded and installed."), view->details->current_rpm);
 		}
-		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
+		eel_label_set_text (EEL_LABEL (im->label), out);
 		g_free (out);
 	}
 	g_free (view->details->current_rpm);
@@ -398,7 +398,7 @@ nautilus_service_install_progress (EazelInstallCallback *cb, const PackageData *
 		} else {
 			out = g_strdup_printf (_("Now installing package \"%s\"."), pack->name);
 		}
-		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
+		eel_label_set_text (EEL_LABEL (im->label), out);
 		g_free (out);
 
 		view->details->current_package = current_package;
@@ -413,7 +413,7 @@ nautilus_service_install_progress (EazelInstallCallback *cb, const PackageData *
 	gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), complete);
 	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), overall_complete);
 	out = g_strdup_printf (_("%d%%"), (int)(complete*100.0));
-	nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
+	eel_label_set_text (EEL_LABEL (im->progress_label), out);
 	g_free (out);
 
 	if ((package_progress == package_total) && (package_total > 0)) {

@@ -25,7 +25,7 @@
 #include <config.h>
 #include "nautilus-horizontal-splitter.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 #include <stdlib.h>
 
@@ -60,7 +60,7 @@ static void     nautilus_horizontal_splitter_destroy          (GtkObject        
 static void     nautilus_horizontal_splitter_draw             (GtkWidget                       *widget,
 							       GdkRectangle                    *area);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
 				   nautilus_horizontal_splitter,
 				   E_TYPE_HPANED)
 
@@ -103,7 +103,7 @@ nautilus_horizontal_splitter_destroy (GtkObject *object)
 	g_free (horizontal_splitter->details);
 	
 	/* Chain */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -340,7 +340,7 @@ nautilus_horizontal_splitter_button_press (GtkWidget *widget, GdkEventButton *ev
 		splitter->details->down_time = event->time;
 	}
 
-	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 }
 

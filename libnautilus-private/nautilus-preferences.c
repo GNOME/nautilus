@@ -26,19 +26,20 @@
 #include "nautilus-preferences.h"
 
 #include "nautilus-gconf-extensions.h"
-#include "nautilus-string-list.h"
-#include "nautilus-string.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-enumeration.h"
 #include "nautilus-lib-self-check-functions.h"
 
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
+#include <eel/eel-enumeration.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string-list.h>
+#include <eel/eel-string.h>
 
+#include <gconf/gconf-client.h>
+#include <gconf/gconf.h>
 #include <gtk/gtksignal.h>
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
@@ -69,7 +70,7 @@ typedef struct {
 	GList *callback_list;
 	GList *auto_storage_list;
 	int gconf_connection_id;
-	NautilusEnumeration *enumeration;
+	EelEnumeration *enumeration;
 	GConfValue *cached_value;
 } PreferencesEntry;
 
@@ -186,7 +187,7 @@ preferences_preference_is_internal (const char *name)
 {
 	g_return_val_if_fail (name != NULL, FALSE);
 	
-	if (nautilus_str_has_prefix (name, "/")) {
+	if (eel_str_has_prefix (name, "/")) {
 		return FALSE;
 	}
 	
@@ -203,8 +204,8 @@ preferences_preference_is_user_level (const char *name)
 
 	user_level_key = preferences_get_user_level_key ();
 
-	result = nautilus_str_is_equal (name, user_level_key)
-		|| nautilus_str_is_equal (name, "user_level");
+	result = eel_str_is_equal (name, user_level_key)
+		|| eel_str_is_equal (name, "user_level");
 
 	g_free (user_level_key);
 
@@ -591,11 +592,11 @@ nautilus_preferences_get_user_level (void)
 	user_level = nautilus_gconf_get_string (key);
 	g_free (key);
 
-	if (nautilus_str_is_equal (user_level, "advanced")) {
+	if (eel_str_is_equal (user_level, "advanced")) {
 		result = NAUTILUS_USER_LEVEL_ADVANCED;
-	} else if (nautilus_str_is_equal (user_level, "intermediate")) {
+	} else if (eel_str_is_equal (user_level, "intermediate")) {
 		result = NAUTILUS_USER_LEVEL_INTERMEDIATE;
-	} else if (nautilus_str_is_equal (user_level, "novice")) {
+	} else if (eel_str_is_equal (user_level, "novice")) {
 		result = NAUTILUS_USER_LEVEL_NOVICE;
 	} else {
 		result = DEFAULT_USER_LEVEL;
@@ -923,7 +924,7 @@ preferences_user_level_changed_notice (GConfClient *client,
 {
 	g_return_if_fail (gconf_entry != NULL);
 	g_return_if_fail (gconf_entry->key != NULL);
-	g_return_if_fail (nautilus_str_has_suffix (gconf_entry->key, "user_level"));
+	g_return_if_fail (eel_str_has_suffix (gconf_entry->key, "user_level"));
 	
 	g_hash_table_foreach (preferences_global_table_get_global (),
 			      preferences_global_table_check_changes_function,
@@ -1203,7 +1204,7 @@ preferences_entry_free (PreferencesEntry *entry)
 	}
 
 	g_list_free (entry->auto_storage_list);
-	nautilus_g_list_free_deep_custom (entry->callback_list,
+	eel_g_list_free_deep_custom (entry->callback_list,
 					  preferences_callback_entry_free_func,
 					  NULL);
 	
@@ -1214,7 +1215,7 @@ preferences_entry_free (PreferencesEntry *entry)
 	g_free (entry->description);
 
 	nautilus_gconf_value_free (entry->cached_value);
-	nautilus_enumeration_free (entry->enumeration);
+	eel_enumeration_free (entry->enumeration);
 
 	g_free (entry);
 }
@@ -1533,10 +1534,10 @@ nautilus_preferences_enumeration_insert (const char *name,
 	g_assert (preferences_entry != NULL);
 
 	if (preferences_entry->enumeration == NULL) {
-		preferences_entry->enumeration = nautilus_enumeration_new ();
+		preferences_entry->enumeration = eel_enumeration_new ();
 	}
 
-	nautilus_enumeration_insert (preferences_entry->enumeration, entry, description, value);
+	eel_enumeration_insert (preferences_entry->enumeration, entry, description, value);
 }
 
 char *
@@ -1550,7 +1551,7 @@ nautilus_preferences_enumeration_get_nth_entry (const char *name,
 	preferences_entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (preferences_entry != NULL);
 
-	return nautilus_enumeration_get_nth_entry (preferences_entry->enumeration, n);
+	return eel_enumeration_get_nth_entry (preferences_entry->enumeration, n);
 }
 
 char *
@@ -1564,7 +1565,7 @@ nautilus_preferences_enumeration_get_nth_description (const char *name,
 	preferences_entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (preferences_entry != NULL);
 
-	return nautilus_enumeration_get_nth_description (preferences_entry->enumeration, n);
+	return eel_enumeration_get_nth_description (preferences_entry->enumeration, n);
 }
 
 int
@@ -1578,7 +1579,7 @@ nautilus_preferences_enumeration_get_nth_value (const char *name,
 	preferences_entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (preferences_entry != NULL);
 
-	return nautilus_enumeration_get_nth_value (preferences_entry->enumeration, n);
+	return eel_enumeration_get_nth_value (preferences_entry->enumeration, n);
 }
 
 guint
@@ -1591,7 +1592,7 @@ nautilus_preferences_enumeration_get_num_entries (const char *name)
 	preferences_entry = preferences_global_table_lookup_or_insert (name);
 	g_assert (preferences_entry != NULL);
 
-	return nautilus_enumeration_get_num_entries (preferences_entry->enumeration);
+	return eel_enumeration_get_num_entries (preferences_entry->enumeration);
 }
 
 void

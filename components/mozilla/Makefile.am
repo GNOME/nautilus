@@ -9,6 +9,8 @@ INCLUDES = \
 	$(MOZILLA_PROFILES_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
@@ -45,6 +47,8 @@ noinst_HEADERS =\
 nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \

@@ -36,7 +36,7 @@ static void nautilus_druid_size_request (GtkWidget               *widget,
 static void nautilus_druid_size_allocate(GtkWidget               *widget,
 					 GtkAllocation           *allocation);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDruid, nautilus_druid, GNOME_TYPE_DRUID)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusDruid, nautilus_druid, GNOME_TYPE_DRUID)
 
 static void
 nautilus_druid_initialize_class (NautilusDruidClass *klass)

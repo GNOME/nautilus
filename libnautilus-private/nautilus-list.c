@@ -38,15 +38,15 @@
 #include <gtk/gtkenums.h>
 #include <gtk/gtkmain.h>
 #include <glib.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-graphic-effects.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-background.h>
+#include <eel/eel-graphic-effects.h>
 #include <libnautilus-extensions/nautilus-drag.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-list-column-title.h>
 
 /* Timeout for making the row currently selected for keyboard operation visible.
@@ -314,7 +314,7 @@ static void     nautilus_list_stop_auto_scroll          (NautilusList         *l
 static void	unref_gcs				(NautilusList *list);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, NAUTILUS_TYPE_CLIST)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, NAUTILUS_TYPE_CLIST)
 
 static guint list_signals[LAST_SIGNAL];
 
@@ -399,7 +399,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dragged_items),
-				nautilus_gtk_marshal_BOOL__INT_POINTER_INT_INT_UINT,
+				eel_gtk_marshal_BOOL__INT_POINTER_INT_INT_UINT,
 				GTK_TYPE_BOOL, 
 				5,
 				GTK_TYPE_INT,
@@ -412,7 +412,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_items),
-				nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT,
+				eel_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT,
 				GTK_TYPE_NONE, 5,
 				GTK_TYPE_INT,
 				GTK_TYPE_POINTER,
@@ -424,7 +424,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, get_default_action),
-				nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_INT_INT_UINT,
+				eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_INT_INT_UINT,
 				GTK_TYPE_NONE, 7,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_POINTER,
@@ -438,7 +438,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, get_drag_pixbuf),
-				nautilus_gtk_marshal_POINTER__INT,
+				eel_gtk_marshal_POINTER__INT,
 				GTK_TYPE_POINTER, 1,
 				GTK_TYPE_INT);
 	list_signals[GET_SORT_COLUMN_INDEX] =
@@ -446,7 +446,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, get_sort_column_index),
-				nautilus_gtk_marshal_INT__NONE,
+				eel_gtk_marshal_INT__NONE,
 				GTK_TYPE_INT, 0);
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
@@ -553,7 +553,7 @@ nautilus_list_initialize_dnd (NautilusList *list)
 	list->details->drag_info = g_new0 (NautilusDragInfo, 1);
 
 	nautilus_drag_init (list->details->drag_info, drag_types,
-			    NAUTILUS_N_ELEMENTS (drag_types), NULL);
+			    EEL_N_ELEMENTS (drag_types), NULL);
 	
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_end", 
@@ -585,7 +585,7 @@ nautilus_list_initialize_dnd (NautilusList *list)
 	gtk_drag_dest_set (GTK_WIDGET (list),
 			   0,
 			   nautilus_list_dnd_target_table,
-			   NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table),
+			   EEL_N_ELEMENTS (nautilus_list_dnd_target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
 			   | GDK_ACTION_ASK);
 
@@ -638,7 +638,7 @@ nautilus_list_destroy (GtkObject *object)
 
 	unschedule_keyboard_row_reveal (list);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 	unref_gcs (list);
 
@@ -951,7 +951,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	nautilus_list_flush_typeselect_state (list);
 
 	if (event->window != clist->clist_window)
-		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		return EEL_CALL_PARENT_WITH_RETURN_VALUE
 			(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
@@ -1061,7 +1061,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	retval = FALSE;
 
 	if (event->window != clist->clist_window)
-		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		return EEL_CALL_PARENT_WITH_RETURN_VALUE
 			(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
@@ -1450,7 +1450,7 @@ nautilus_list_handle_typeahead (NautilusList *list, const char *key_string)
 	}
 
 	/* find out how long since last character was typed */
-	now = nautilus_get_system_time();
+	now = eel_get_system_time();
 	time_delta = now - list->details->last_typeselect_time;
 	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
 		/* the typeselect state is too old, start with a fresh one */
@@ -1525,7 +1525,7 @@ nautilus_list_key_press (GtkWidget *widget,
 			return TRUE;
 		}
 
-		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		return EEL_CALL_PARENT_WITH_RETURN_VALUE
 			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
@@ -1533,18 +1533,18 @@ nautilus_list_key_press (GtkWidget *widget,
 }
 
 static guint32
-nautilus_gdk_set_shifted_foreground_gc_color (GdkGC *gc, guint32 color, float shift_by)
+eel_gdk_set_shifted_foreground_gc_color (GdkGC *gc, guint32 color, float shift_by)
 {
 	guint32 shifted_color;
 
-	shifted_color = nautilus_rgb_shift_color (color, shift_by);
+	shifted_color = eel_rgb_shift_color (color, shift_by);
 	gdk_rgb_gc_set_foreground (gc, shifted_color);
 
 	return shifted_color;
 }
 
 static GdkGC *
-nautilus_gdk_gc_copy (GdkGC *source, GdkWindow *window)
+eel_gdk_gc_copy (GdkGC *source, GdkWindow *window)
 {
 	GdkGC *result;
 
@@ -1569,56 +1569,56 @@ nautilus_list_setup_style_colors (NautilusList *list)
 
 	gdk_rgb_init();
 
-	style_background_color = nautilus_gdk_color_to_rgb
+	style_background_color = eel_gdk_color_to_rgb
 		(G_STRUCT_MEMBER_P (GTK_WIDGET (list)->style,
 				    list->details->background_color_offset));
-	selection_background_color = nautilus_gdk_color_to_rgb
+	selection_background_color = eel_gdk_color_to_rgb
 		(G_STRUCT_MEMBER_P (GTK_WIDGET (list)->style,
 				    list->details->selection_color_offset));
 
 	list->details->cell_lighter_background_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
 							    style_background_color, 1);
 
 	list->details->cell_darker_background_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
 							    style_background_color, 1.03);
 
 	list->details->cell_selected_lighter_background_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
 							    style_background_color, 1.04);
 
 	list->details->cell_selected_darker_background_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
 							    style_background_color, 1.06);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
+	eel_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
 						      style_background_color, 0.8);
 
 	list->details->selection_main_color_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
 							    selection_background_color, 1);
 		
 	list->details->selection_medium_color_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_medium_color, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->selection_medium_color, 
 							    selection_background_color, 0.7);
 
 	list->details->selection_light_color_rgb
-	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
+	    = eel_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
 							    selection_background_color, 0.5);
 
 	text_color = GTK_WIDGET (list)->style->fg[GTK_STATE_NORMAL];
-	nautilus_gdk_gc_choose_foreground_color (list->details->text_color, &text_color,
+	eel_gdk_gc_choose_foreground_color (list->details->text_color, &text_color,
 						 &GTK_WIDGET (list)->style->bg[GTK_STATE_NORMAL]);
 
 	text_color = GTK_WIDGET (list)->style->fg[GTK_STATE_SELECTED];
-	nautilus_gdk_gc_choose_foreground_color (list->details->selected_text_color, &text_color,
+	eel_gdk_gc_choose_foreground_color (list->details->selected_text_color, &text_color,
 						 &GTK_WIDGET (list)->style->bg[GTK_STATE_SELECTED]);
 
 	text_color.red = 0;
 	text_color.green = 0;
 	text_color.blue = 65535;
-	nautilus_gdk_gc_choose_foreground_color (list->details->link_text_color, &text_color,
+	eel_gdk_gc_choose_foreground_color (list->details->link_text_color, &text_color,
 						 &GTK_WIDGET (list)->style->bg[GTK_STATE_NORMAL]);
 }
 
@@ -1663,28 +1663,28 @@ make_gcs_and_colors (NautilusList *list)
 	unref_gcs (list);
 
 	/* now setup new ones */
-	list->details->cell_lighter_background = nautilus_gdk_gc_copy (
+	list->details->cell_lighter_background = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_darker_background = nautilus_gdk_gc_copy (
+	list->details->cell_darker_background = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_selected_lighter_background = nautilus_gdk_gc_copy (
+	list->details->cell_selected_lighter_background = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_selected_darker_background = nautilus_gdk_gc_copy (
+	list->details->cell_selected_darker_background = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_divider_color = nautilus_gdk_gc_copy (
+	list->details->cell_divider_color = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->selection_light_color = nautilus_gdk_gc_copy (
+	list->details->selection_light_color = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
-	list->details->selection_medium_color = nautilus_gdk_gc_copy (
+	list->details->selection_medium_color = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
-	list->details->selection_main_color = nautilus_gdk_gc_copy (
+	list->details->selection_main_color = eel_gdk_gc_copy (
 		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
 
-	list->details->text_color = nautilus_gdk_gc_copy (
+	list->details->text_color = eel_gdk_gc_copy (
 		widget->style->fg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->selected_text_color = nautilus_gdk_gc_copy (
+	list->details->selected_text_color = eel_gdk_gc_copy (
 		widget->style->fg_gc[GTK_STATE_SELECTED], widget->window);
-	list->details->link_text_color = nautilus_gdk_gc_copy (
+	list->details->link_text_color = eel_gdk_gc_copy (
 		widget->style->fg_gc[GTK_STATE_NORMAL], widget->window);
 
 	nautilus_list_setup_style_colors (list);
@@ -1699,7 +1699,7 @@ nautilus_list_style_set (GtkWidget *widget, GtkStyle *previous_style)
 
 	list = NAUTILUS_LIST (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
 
 	if (GTK_WIDGET_REALIZED (widget)) {
 		make_gcs_and_colors (list);
@@ -1720,7 +1720,7 @@ nautilus_list_realize (GtkWidget *widget)
 
 	clist->column[0].button = list->details->title;
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	make_gcs_and_colors (list);
 
@@ -1746,7 +1746,7 @@ nautilus_list_unrealize (GtkWidget *widget)
 	/* unref all the gcs we've created */
 	unref_gcs (NAUTILUS_LIST (widget));
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 /* this is here just temporarily */
@@ -1969,7 +1969,7 @@ nautilus_list_draw_focus (GtkWidget *widget)
 
   	gdk_gc_get_values (clist->xor_gc, &saved_values);
 
-  	gdk_gc_set_stipple (clist->xor_gc, nautilus_stipple_bitmap ());
+  	gdk_gc_set_stipple (clist->xor_gc, eel_stipple_bitmap ());
   	gdk_gc_set_fill (clist->xor_gc, GDK_STIPPLED);
 
     	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
@@ -2148,7 +2148,7 @@ nautilus_list_draw_cell_pixbuf (NautilusList *list, GdkWindow *window,
 						     intersect_rectangle.width,
 						     intersect_rectangle.height,
 						     GDK_PIXBUF_ALPHA_BILEVEL,
-						     NAUTILUS_STANDARD_ALPHA_THRESHHOLD,
+						     EEL_STANDARD_ALPHA_THRESHHOLD,
 						     GDK_RGB_DITHER_MAX, 0, 0);
 	}
 
@@ -2317,7 +2317,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 			
 			if (src_pixbuf != NULL) {
 				/* Create darkened pixbuf */
-				dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
+				dark_pixbuf = eel_create_darkened_pixbuf (src_pixbuf,
 									       0.8 * 255,
 									       0.8 * 255);
 				if (dark_pixbuf != NULL) {
@@ -2641,7 +2641,7 @@ draw_rows (NautilusCList *clist, GdkRectangle *area)
 			break;
 		}
 
-		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, 
+		EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, 
 				      draw_row, (clist, area, row_index, list->data));
 		list = list->next;
 	}
@@ -2658,7 +2658,7 @@ draw_all (NautilusCList *clist)
 	area.y = 0;
 	area.width = clist->clist_window_width;
 	area.height = clist->clist_window_height;
-	NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
+	EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
 }
 
 static void
@@ -2692,7 +2692,7 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, area));
+		EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, area));
 
 		/* Draw the title if it exists */
 		if (list->details->title) {
@@ -2728,7 +2728,7 @@ nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, 
+		EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, 
 				      (clist, &event->area));
 	}
 
@@ -2745,7 +2745,7 @@ nautilus_list_resize_column (NautilusCList *clist, int column_index, int width)
 
 	gtk_widget_queue_draw (list->details->title);
 		
-	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, resize_column, (clist, column_index, width));
+	EEL_CALL_PARENT (NAUTILUS_CLIST_CLASS, resize_column, (clist, column_index, width));
 }
 
 
@@ -2807,10 +2807,10 @@ nautilus_list_set_cell_contents (NautilusCList    *clist,
 
 	/* Clean up old data, which parent class doesn't know about. */
 	if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXBUF_LIST) {
-		nautilus_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs);
+		eel_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs);
 	}
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(NAUTILUS_CLIST_CLASS, set_cell_contents,
 		 (clist, row, column_index, type, text, spacing, pixbuf));
 
@@ -2852,13 +2852,13 @@ set_list_cell (NautilusList *list,
 	 * expected parameter type, we have to sneak it in by casting it into
 	 * one of the expected parameters.
 	 */
-	if (NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	if (EEL_CALL_METHOD_WITH_RETURN_VALUE
 	    (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
 	     (clist, row, column_index, type, NULL, 0, data))) {
 		/* redraw the list if it's not frozen */
 		if (CLIST_UNFROZEN (clist) 
 		    && nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
-			NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_row, 
+			EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_row, 
 					      (clist, NULL, row_index, row));
 		}
 	}
@@ -2984,7 +2984,7 @@ nautilus_list_track_new_column_width (NautilusCList *clist, int column_index, in
 		area.x = clist->column[column_index].area.x;
 		area.height += clist->clist_window_height;
 
-		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
+		EEL_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
 	}
 }
 
@@ -3022,7 +3022,7 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 
 	if (pixbuf != NULL) {
 		/* FIXME: We can do better than 10,10. */
-		nautilus_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
+		eel_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
 		
 		gdk_pixbuf_unref (pixbuf);
 	}
@@ -3044,7 +3044,7 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	clist = NAUTILUS_CLIST (widget);
 
 	if (event->window != clist->clist_window) {
-		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		return EEL_CALL_PARENT_WITH_RETURN_VALUE
 			(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 	}
 	
@@ -3121,7 +3121,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	if (nautilus_list_dnd_target_list == NULL)
 		nautilus_list_dnd_target_list = gtk_target_list_new (nautilus_list_dnd_target_table,
-								     NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table));
+								     EEL_N_ELEMENTS (nautilus_list_dnd_target_table));
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;
@@ -3231,8 +3231,8 @@ nautilus_list_real_scroll (NautilusList *list, float delta_x, float delta_y)
 	hadj = nautilus_clist_get_hadjustment (NAUTILUS_CLIST (list));
 	vadj = nautilus_clist_get_vadjustment (NAUTILUS_CLIST (list));
 
-	nautilus_gtk_adjustment_set_value (hadj, hadj->value + (int)delta_x);
-	nautilus_gtk_adjustment_set_value (vadj, vadj->value + (int)delta_y);
+	eel_gtk_adjustment_set_value (hadj, hadj->value + (int)delta_x);
+	eel_gtk_adjustment_set_value (vadj, vadj->value + (int)delta_y);
 
 }
 
@@ -3250,7 +3250,7 @@ auto_scroll_timeout_callback (gpointer data)
 	drag_info = list->details->drag_info;
 
 	if (drag_info->waiting_to_autoscroll
-	    && drag_info->start_auto_scroll_in > nautilus_get_system_time()) {
+	    && drag_info->start_auto_scroll_in > eel_get_system_time()) {
 		/* not yet */
 		return TRUE;
 	}
@@ -3444,15 +3444,15 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
-			nautilus_background_receive_dropped_color
-				(nautilus_get_widget_background (widget),
+			eel_background_receive_dropped_color
+				(eel_get_widget_background (widget),
 				 widget, x, y, data);
 			nautilus_list_setup_style_colors (NAUTILUS_LIST (list));
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_BGIMAGE:
-			nautilus_background_receive_dropped_background_image
-				(nautilus_get_widget_background (widget),
+			eel_background_receive_dropped_background_image
+				(eel_get_widget_background (widget),
 				 (char *)data->data);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
@@ -3488,7 +3488,7 @@ nautilus_list_clear (NautilusCList *clist)
 	list = NAUTILUS_LIST (clist);
 	list->details->anchor_row = -1;
 
-	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, clear, (clist));
+	EEL_CALL_PARENT (NAUTILUS_CLIST_CLASS, clear, (clist));
 }
 
 
@@ -3676,7 +3676,7 @@ insert_row (NautilusCList *list, int row_index, char *text[])
 
 	had_focus = list->focus_row != -1;
 
-	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(NAUTILUS_CLIST_CLASS, insert_row, (list, row_index, text));
 
 	if (!had_focus) {

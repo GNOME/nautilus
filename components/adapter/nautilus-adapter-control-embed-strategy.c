@@ -36,7 +36,7 @@
 
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
 
 
@@ -58,7 +58,7 @@ static GtkWidget *nautilus_adapter_control_embed_strategy_get_widget (NautilusAd
 static BonoboObject *nautilus_adapter_control_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void
@@ -98,7 +98,7 @@ nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void 

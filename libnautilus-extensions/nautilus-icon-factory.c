@@ -31,33 +31,33 @@
 #include "nautilus-default-file-icon.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gdk-pixbuf-extensions.h"
-#include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk-macros.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
-#include "nautilus-scalable-font.h"
-#include "nautilus-smooth-text-layout.h"
-#include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-monitor.h"
-#include "nautilus-xml-extensions.h"
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-scalable-font.h>
+#include <eel/eel-smooth-text-layout.h>
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
 #include <libgnomevfs/gnome-vfs-types.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <librsvg/rsvg.h>
 #include <stdio.h>
 #include <string.h>
@@ -257,8 +257,8 @@ static void       icon_theme_changed_callback            (gpointer              
 static void       thumbnail_limit_changed_callback       (gpointer                  user_data);
 static void       mime_type_data_changed_callback        (GnomeVFSMIMEMonitor	   *monitor,
 							  gpointer                  user_data);
-static guint      nautilus_scalable_icon_hash            (gconstpointer             p);
-static gboolean   nautilus_scalable_icon_equal           (gconstpointer             a,
+static guint      eel_scalable_icon_hash            (gconstpointer             p);
+static gboolean   eel_scalable_icon_equal           (gconstpointer             a,
 							  gconstpointer             b);
 static guint      cache_key_hash                         (gconstpointer             p);
 static gboolean   cache_key_equal                        (gconstpointer             a,
@@ -270,7 +270,7 @@ static CacheIcon *get_icon_from_cache                    (NautilusScalableIcon  
 static CacheIcon *load_icon_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
 							  const IconSizeRequest    *size);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory,
 				   nautilus_icon_factory,
 				   GTK_TYPE_OBJECT)
 
@@ -358,8 +358,8 @@ check_recently_used_list (void)
 static void
 nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 {
-	factory->scalable_icons = g_hash_table_new (nautilus_scalable_icon_hash,
-						    nautilus_scalable_icon_equal);
+	factory->scalable_icons = g_hash_table_new (eel_scalable_icon_hash,
+						    eel_scalable_icon_equal);
 	factory->cache_icons = g_hash_table_new (NULL, NULL);
         factory->icon_cache = g_hash_table_new (cache_key_hash,
 						cache_key_equal);
@@ -392,7 +392,7 @@ nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class)
 static void
 cache_key_destroy (CacheKey *key)
 {
-	nautilus_scalable_icon_unref (key->scalable_icon);
+	eel_scalable_icon_unref (key->scalable_icon);
 	g_free (key);
 }
 
@@ -583,7 +583,7 @@ nautilus_icon_factory_destroy (GtkObject *object)
         g_free (factory->theme_name);
         g_free (factory->default_theme_name);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -715,7 +715,7 @@ set_theme (const char *theme_name)
 
 	factory = get_icon_factory ();
 
-	if (nautilus_strcmp (theme_name, factory->theme_name) == 0) {
+	if (eel_strcmp (theme_name, factory->theme_name) == 0) {
 		return;
 	}
 
@@ -759,14 +759,14 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	 * should generalize this or at least have a way for others to
 	 * extend it.
 	 */
-	if (nautilus_istr_has_prefix (uri, "http:")
-	    && nautilus_strcmp (mime_type, "text/html") == 0) {
+	if (eel_istr_has_prefix (uri, "http:")
+	    && eel_strcmp (mime_type, "text/html") == 0) {
 		icon_name = ICON_NAME_WEB;
-	} else if (nautilus_istr_has_prefix (uri, "eazel-install:")) {
+	} else if (eel_istr_has_prefix (uri, "eazel-install:")) {
 		icon_name = ICON_NAME_INSTALL;
 	} else {
 		if (nautilus_file_is_executable (file)
-		    && nautilus_strcasecmp (mime_type, "text/plain") != 0) {
+		    && eel_strcasecmp (mime_type, "text/plain") != 0) {
 			icon_name = ICON_NAME_EXECUTABLE;
 		} else {
 			icon_name = ICON_NAME_REGULAR;
@@ -788,7 +788,7 @@ nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
 
 	mime_type = nautilus_file_get_mime_type (file);
 	
-	if (nautilus_strcasecmp (mime_type, "x-directory/search") == 0) {
+	if (eel_strcasecmp (mime_type, "x-directory/search") == 0) {
 		icon_name = ICON_NAME_SEARCH_RESULTS;
 	} else {
 		icon_name = ICON_NAME_DIRECTORY;
@@ -927,7 +927,7 @@ get_themed_icon_file_path (const char *theme_name,
 	factory = get_icon_factory ();
 	
 	/* Try each suffix. */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		if (include_size && strcasecmp(icon_file_name_suffixes[i], ".svg")) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
@@ -979,7 +979,7 @@ get_themed_icon_file_path (const char *theme_name,
 		g_free (xml_path);
 		
 		size_as_string = g_strdup_printf ("%u", icon_size);
-		node = nautilus_xml_get_root_child_by_name_and_property
+		node = eel_xml_get_root_child_by_name_and_property
 			(doc, "icon", "size", size_as_string);
 		g_free (size_as_string);
 		
@@ -1024,8 +1024,8 @@ get_themed_icon_file_path (const char *theme_name,
 	 */
 	if (path == NULL
 	    && icon_size == NAUTILUS_ICON_SIZE_STANDARD
-	    && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
-		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	    && eel_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
+		for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
 			user_directory = nautilus_get_user_directory ();
 			path = g_strdup_printf ("%s/emblems/%s%s", 
 						user_directory,
@@ -1176,7 +1176,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 
 /* Decompose a scalable icon into its text pieces. */
 void
-nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
+eel_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 				 	char **uri_return,
 				 	char **name_return,
 				 	char **modifier_return,
@@ -1200,7 +1200,7 @@ nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 
 /* Get or create a scalable icon from text pieces. */
 NautilusScalableIcon *
-nautilus_scalable_icon_new_from_text_pieces (const char *uri,
+eel_scalable_icon_new_from_text_pieces (const char *uri,
 			    	      	     const char *name,
 			    	      	     const char *modifier,
 			    	      	     const char *embedded_text,
@@ -1248,12 +1248,12 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 	}
 
 	/* Grab a reference and return it. */
-	nautilus_scalable_icon_ref (icon);
+	eel_scalable_icon_ref (icon);
 	return icon;
 }
 
 void
-nautilus_scalable_icon_ref (NautilusScalableIcon *icon)
+eel_scalable_icon_ref (NautilusScalableIcon *icon)
 {
 	g_return_if_fail (icon != NULL);
 
@@ -1261,7 +1261,7 @@ nautilus_scalable_icon_ref (NautilusScalableIcon *icon)
 }
 
 void
-nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
+eel_scalable_icon_unref (NautilusScalableIcon *icon)
 {
 	GHashTable *hash_table;
 
@@ -1283,7 +1283,7 @@ nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 }
 
 static guint
-nautilus_scalable_icon_hash (gconstpointer p)
+eel_scalable_icon_hash (gconstpointer p)
 {
 	const NautilusScalableIcon *icon;
 	guint hash;
@@ -1318,7 +1318,7 @@ nautilus_scalable_icon_hash (gconstpointer p)
 }
 
 static gboolean
-nautilus_scalable_icon_equal (gconstpointer a,
+eel_scalable_icon_equal (gconstpointer a,
 			      gconstpointer b)
 {
 	const NautilusScalableIcon *icon_a, *icon_b;
@@ -1326,10 +1326,10 @@ nautilus_scalable_icon_equal (gconstpointer a,
 	icon_a = a;
 	icon_b = b;
 
-	return nautilus_strcmp (icon_a->uri, icon_b->uri) == 0
-		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0 
-		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0
-		&& nautilus_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0
+	return eel_strcmp (icon_a->uri, icon_b->uri) == 0
+		&& eel_strcmp (icon_a->name, icon_b->name) == 0 
+		&& eel_strcmp (icon_a->modifier, icon_b->modifier) == 0
+		&& eel_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0
 		&& icon_a->aa_mode == icon_b->aa_mode;
 }
 
@@ -1376,7 +1376,7 @@ static gboolean
 is_supported_mime_type (const char *mime_type)
 {
 	/* exclude xfig images, since we can't handle them */
-	if (nautilus_strcmp (mime_type, "image/x-xfig") == 0) {
+	if (eel_strcmp (mime_type, "image/x-xfig") == 0) {
 		return FALSE;
 	}	
 	return TRUE;
@@ -1410,7 +1410,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		mime_type = nautilus_file_get_mime_type (file);
 		file_size = nautilus_file_get_size (file);
 		
-		if (nautilus_istr_has_prefix (mime_type, "image/")
+		if (eel_istr_has_prefix (mime_type, "image/")
 		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file, anti_aliased)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
@@ -1439,7 +1439,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			image_uri = nautilus_link_local_get_image_uri (file_path);
 			if (image_uri != NULL) {
 				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
-				if (nautilus_istr_has_prefix (image_uri, "file://")) {
+				if (eel_istr_has_prefix (image_uri, "file://")) {
 					if (uri == NULL) {
 						uri = image_uri;
 					} else {
@@ -1467,7 +1467,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	top_left_text = nautilus_file_get_top_left_text (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
+	scalable_icon = eel_scalable_icon_new_from_text_pieces 
 		(uri, icon_name, modifier, top_left_text, anti_aliased);
 
 	g_free (uri);
@@ -1525,7 +1525,7 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name, gboolean
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
-	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
+	scalable_icon = eel_scalable_icon_new_from_text_pieces 
 		(NULL, name_with_prefix, NULL, NULL, anti_aliased);
 	g_free (name_with_prefix);	
 
@@ -1535,7 +1535,7 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name, gboolean
 GList *
 nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
 						 gboolean anti_aliased,
-						 NautilusStringList *exclude)
+						 EelStringList *exclude)
 {
 	GList *icons, *emblem_names, *node;
 	char *uri, *name;
@@ -1558,13 +1558,13 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
 		if (file_is_trash && strcmp (name, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
 			continue;
 		}
-		if (nautilus_string_list_contains (exclude, name)) {
+		if (eel_string_list_contains (exclude, name)) {
 			continue;
 		}
 		icon = nautilus_icon_factory_get_emblem_icon_by_name (name, anti_aliased);
 		icons = g_list_prepend (icons, icon);
 	}
-	nautilus_g_list_free_deep (emblem_names);
+	eel_g_list_free_deep (emblem_names);
 
 	return g_list_reverse (icons);
 }
@@ -1671,7 +1671,7 @@ load_pixbuf_svg (const char *path, const char *name, guint size_in_pixels)
 	 * down here if the file is an emblem.  This code should be removed
 	 * eventually when we scale all the emblems properly.
 	 */
-	if (nautilus_str_has_prefix (name, EMBLEM_NAME_PREFIX)) {
+	if (eel_str_has_prefix (name, EMBLEM_NAME_PREFIX)) {
 		actual_size_in_pixels = size_in_pixels * EMBLEM_SCALE_FACTOR;
 	} else {
 		actual_size_in_pixels = size_in_pixels;
@@ -1699,7 +1699,7 @@ path_represents_svg_image (const char *path)
 	file_info = gnome_vfs_file_info_new ();
 	gnome_vfs_get_file_info (uri, file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	g_free (uri);
-	is_svg = nautilus_strcmp (file_info->mime_type, "image/svg") == 0;
+	is_svg = eel_strcmp (file_info->mime_type, "image/svg") == 0;
 	gnome_vfs_file_info_unref (file_info);
 
 	return is_svg;
@@ -2178,7 +2178,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 
 		/* Create the key and icon for the hash table. */
 		key = g_new (CacheKey, 1);
-		nautilus_scalable_icon_ref (scalable_icon);
+		eel_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
 		key->size = *size;
 		
@@ -2322,7 +2322,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 		 size_in_pixels, size_in_pixels,
 		 size_in_pixels, size_in_pixels,
 		 NULL, TRUE);
-	nautilus_scalable_icon_unref (icon);
+	eel_scalable_icon_unref (icon);
 
 	return pixbuf;
 }
@@ -2350,7 +2350,7 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	if (pixbuf == NULL) {
 		return;
 	}
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, EEL_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 }
 
@@ -2364,10 +2364,10 @@ GdkPixbuf * nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 	GdkPixbuf *pixbuf;
 	NautilusScalableIcon *icon;
 	
-	icon = nautilus_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL, anti_aliased);
+	icon = eel_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL, anti_aliased);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels, size_in_pixels,
 							    size_in_pixels, size_in_pixels, NULL, TRUE); 	
-	nautilus_scalable_icon_unref (icon);	
+	eel_scalable_icon_unref (icon);	
 	return pixbuf;
 }
 									  
@@ -2390,7 +2390,7 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 }
 
 static gboolean embedded_text_preferences_callbacks_added = FALSE;
-static NautilusScalableFont *embedded_text_font = NULL;
+static EelScalableFont *embedded_text_font = NULL;
 
 static void
 embedded_text_font_changed_callback (gpointer callback_data)
@@ -2420,7 +2420,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,
 	    const char *text)
 {
-	NautilusSmoothTextLayout *smooth_text_layout;
+	EelSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
@@ -2429,7 +2429,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	/* Quick out for the case where there's no place to embed the
 	 * text or the place is too small or there's no text.
 	 */
-	if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
+	if (!embedded_text_rect_usable (embedded_text_rect) || eel_strlen (text) == 0) {
 		return NULL;
 	}
 
@@ -2445,28 +2445,28 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		g_atexit (embedded_text_font_free);
 	}
 
-	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (embedded_text_font), NULL);
+	g_return_val_if_fail (EEL_IS_SCALABLE_FONT (embedded_text_font), NULL);
 	
-	smooth_text_layout = nautilus_smooth_text_layout_new (text,
-							      nautilus_strlen (text),
+	smooth_text_layout = eel_smooth_text_layout_new (text,
+							      eel_strlen (text),
 							      embedded_text_font,
 							      EMBEDDED_TEXT_FONT_SIZE,
 							      FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
-	nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
-	nautilus_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
+	g_return_val_if_fail (EEL_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
+	eel_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
+	eel_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
 	
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 	
-	nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+	eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
 						    pixbuf_with_text,
 						    0,
 						    0,
 						    embedded_text_rect,
 						    GTK_JUSTIFY_LEFT,
 						    FALSE,
-						    NAUTILUS_RGB_COLOR_BLACK,
-						    NAUTILUS_OPACITY_FULLY_OPAQUE);
+						    EEL_RGB_COLOR_BLACK,
+						    EEL_OPACITY_FULLY_OPAQUE);
 	
 	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 
@@ -2485,7 +2485,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	g_assert (scalable_icon->embedded_text != NULL);
 	
 	/* Get the icon without text. */
-	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
+	scalable_icon_without_text = eel_scalable_icon_new_from_text_pieces
 		(scalable_icon->uri,
 		 scalable_icon->name,
 		 scalable_icon->modifier,
@@ -2494,7 +2494,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	icon_without_text = get_icon_from_cache
 		(scalable_icon_without_text, size,
 		 FALSE, FALSE);
-	nautilus_scalable_icon_unref (scalable_icon_without_text);
+	eel_scalable_icon_unref (scalable_icon_without_text);
 	
 	/* Create a pixbuf with the text in it. */
 	pixbuf_with_text = embed_text (icon_without_text->pixbuf,
@@ -2520,10 +2520,10 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 
 /* Convenience function for unrefing and then freeing an entire list. */
 void
-nautilus_scalable_icon_list_free (GList *icon_list)
+eel_scalable_icon_list_free (GList *icon_list)
 {
-	nautilus_g_list_free_deep_custom
-		(icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
+	eel_g_list_free_deep_custom
+		(icon_list, (GFunc) eel_scalable_icon_unref, NULL);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -2540,93 +2540,93 @@ self_test_next_icon_size_to_try (guint start_size, guint current_size)
 void
 nautilus_self_check_icon_factory (void)
 {
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (0), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (1), 24);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (2), 36);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (3), 48);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (4), 72);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (5), 96);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (6), 192);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (0), 12);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (1), 24);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (2), 36);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (3), 48);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (4), 72);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (5), 96);
+	EEL_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (6), 192);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (0), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (1), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (11), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (12), 20);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (19), 20);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (20), 24);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (23), 24);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (24), 36);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (35), 36);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (36), 48);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (47), 48);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (48), 72);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (71), 72);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (72), 96);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (95), 96);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (96), 192);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (191), 192);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (192), 192);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (0xFFFFFFFF), 192);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (0), 12);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (1), 12);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (11), 12);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (12), 20);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (19), 20);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (20), 24);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (23), 24);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (24), 36);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (35), 36);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (36), 48);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (47), 48);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (48), 72);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (71), 72);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (72), 96);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (95), 96);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (96), 192);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (191), 192);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (192), 192);
+	EEL_CHECK_INTEGER_RESULT (get_larger_icon_size (0xFFFFFFFF), 192);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (0), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (1), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (11), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (12), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (20), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (21), 20);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (24), 20);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (25), 24);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (36), 24);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (37), 36);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (48), 36);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (49), 48);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (72), 48);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (73), 72);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (96), 72);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (97), 96);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (192), 96);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (193), 192);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (0xFFFFFFFF), 192);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (0), 12);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (1), 12);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (11), 12);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (12), 12);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (20), 12);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (21), 20);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (24), 20);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (25), 24);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (36), 24);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (37), 36);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (48), 36);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (49), 48);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (72), 48);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (73), 72);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (96), 72);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (97), 96);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (192), 96);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (193), 192);
+	EEL_CHECK_INTEGER_RESULT (get_smaller_icon_size (0xFFFFFFFF), 192);
 
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 0), "TRUE,12");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 12), "TRUE,20");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 20), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 24), "TRUE,36");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 36), "TRUE,48");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 48), "TRUE,72");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 72), "TRUE,96");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 96), "TRUE,192");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 192), "FALSE,192");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 0), "TRUE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 12), "TRUE,20");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 20), "TRUE,24");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 24), "TRUE,36");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 36), "TRUE,48");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 48), "TRUE,72");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 72), "TRUE,96");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 96), "TRUE,192");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 192), "FALSE,192");
 
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 0), "TRUE,36");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 36), "TRUE,48");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 48), "TRUE,72");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 72), "TRUE,96");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 96), "TRUE,192");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 192), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 24), "TRUE,20");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 20), "TRUE,12");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 12), "FALSE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 0), "TRUE,36");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 36), "TRUE,48");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 48), "TRUE,72");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 72), "TRUE,96");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 96), "TRUE,192");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 192), "TRUE,24");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 24), "TRUE,20");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 20), "TRUE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 12), "FALSE,12");
 
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 0), "TRUE,48");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 48), "TRUE,72");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 72), "TRUE,96");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 96), "TRUE,192");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 192), "TRUE,36");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 36), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 24), "TRUE,20");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 20), "TRUE,12");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 12), "FALSE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 0), "TRUE,48");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 48), "TRUE,72");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 72), "TRUE,96");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 96), "TRUE,192");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 192), "TRUE,36");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 36), "TRUE,24");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 24), "TRUE,20");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 20), "TRUE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 12), "FALSE,12");
 
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 0), "TRUE,192");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 192), "TRUE,96");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 96), "TRUE,72");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 72), "TRUE,48");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 48), "TRUE,36");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 36), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,20");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 20), "TRUE,12");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 12), "FALSE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 0), "TRUE,192");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 192), "TRUE,96");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 96), "TRUE,72");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 72), "TRUE,48");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 48), "TRUE,36");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 36), "TRUE,24");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,20");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 20), "TRUE,12");
+	EEL_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 12), "FALSE,12");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

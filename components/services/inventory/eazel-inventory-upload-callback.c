@@ -30,7 +30,7 @@
 
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 struct EazelInventoryUploadCallbackDetails {
 	EazelInventory *inventory;
@@ -82,7 +82,7 @@ static void eazel_inventory_upload_callback_initialize       (EazelInventoryUplo
 static void eazel_inventory_upload_callback_destroy          (GtkObject                      *object);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (EazelInventoryUploadCallback,
+EEL_DEFINE_CLASS_BOILERPLATE (EazelInventoryUploadCallback,
 				   eazel_inventory_upload_callback,
 				   BONOBO_OBJECT_TYPE)
 
@@ -122,7 +122,7 @@ eazel_inventory_upload_callback_destroy (GtkObject *object)
 	callback = EAZEL_INVENTORY_UPLOAD_CALLBACK (object);
 	g_free (callback->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

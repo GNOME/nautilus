@@ -27,9 +27,9 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 #include <gtk/gtksignal.h>
@@ -46,7 +46,7 @@ static void eazel_services_header_initialize_class (EazelServicesHeaderClass *kl
 static void eazel_services_header_initialize       (EazelServicesHeader      *header);
 static void header_destroy                         (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (EazelServicesHeader, eazel_services_header, GTK_TYPE_HBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (EazelServicesHeader, eazel_services_header, GTK_TYPE_HBOX)
 
 /* EazelServicesHeaderClass methods */
 static void
@@ -79,7 +79,7 @@ header_destroy (GtkObject *object)
 	g_free (header->details);
 	
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* EazelServicesHeader public methods */
@@ -145,8 +145,8 @@ eazel_services_header_middle_new (const char *left_text,
 					  0,
 					  TRUE);
 
-	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->left_text),
-					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+	eel_label_set_tile_height (EEL_LABEL (header->details->left_text),
+					EEL_SMOOTH_TILE_EXTENT_ONE_STEP);
 
 	gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->left_text);
@@ -154,8 +154,8 @@ eazel_services_header_middle_new (const char *left_text,
 	fill = eazel_services_image_new (NULL,
 					 EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
 					 EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
-	nautilus_image_set_tile_height (NAUTILUS_IMAGE (fill),
-					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+	eel_image_set_tile_height (EEL_IMAGE (fill),
+					EEL_SMOOTH_TILE_EXTENT_ONE_STEP);
 
 	gtk_box_pack_start (GTK_BOX (header), fill, TRUE, TRUE, 0);
 	gtk_widget_show (fill);
@@ -173,8 +173,8 @@ eazel_services_header_middle_new (const char *left_text,
 					  -2,
 					  TRUE);
 
-	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->right_text),
-					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
+	eel_label_set_tile_height (EEL_LABEL (header->details->right_text),
+					EEL_SMOOTH_TILE_EXTENT_ONE_STEP);
 
 	gtk_box_pack_start (GTK_BOX (header), header->details->right_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->right_text);
@@ -188,9 +188,9 @@ eazel_services_header_set_left_text (EazelServicesHeader *header,
 {
 	g_return_if_fail (EAZEL_SERVICES_IS_HEADER (header));
 	g_return_if_fail (text != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (header->details->left_text));
+	g_return_if_fail (EEL_IS_LABEL (header->details->left_text));
 	
-	nautilus_label_set_text (NAUTILUS_LABEL (header->details->left_text), text);
+	eel_label_set_text (EEL_LABEL (header->details->left_text), text);
 }
 
 void
@@ -199,7 +199,7 @@ eazel_services_header_set_right_text (EazelServicesHeader *header,
 {
 	g_return_if_fail (EAZEL_SERVICES_IS_HEADER (header));
 	g_return_if_fail (text != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (header->details->right_text));
+	g_return_if_fail (EEL_IS_LABEL (header->details->right_text));
 	
-	nautilus_label_set_text (NAUTILUS_LABEL (header->details->right_text), text);
+	eel_label_set_text (EEL_LABEL (header->details->right_text), text);
 }

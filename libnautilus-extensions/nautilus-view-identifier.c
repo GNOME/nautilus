@@ -29,8 +29,8 @@
 #include <libgnome/gnome-i18n.h>
 
 
-#include "nautilus-glib-extensions.h"
-#include "nautilus-string.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <glib.h>
 #include <stdlib.h>
 
@@ -118,12 +118,12 @@ get_lang_list (void)
 
 		/* Make sure we don't give oaf an empty
 		   lang string */
-		if (!nautilus_str_is_empty (lang_with_locale)) {
+		if (!eel_str_is_empty (lang_with_locale)) {
 			retval = g_slist_prepend (retval, 
 						  g_strdup (lang_with_locale));
 		}
 		g_free (lang_with_locale);
-		if (!nautilus_str_is_empty (lang)) {
+		if (!eel_str_is_empty (lang)) {
 			retval = g_slist_prepend (retval, g_strdup (lang));
 		}
         }
@@ -153,10 +153,10 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
                 view_as_name = server->iid;
         }
 
-	nautilus_g_slist_free_deep (langs);
+	eel_g_slist_free_deep (langs);
 
 	/* if the name is an OAFIID, clean it up for display */
-	if (nautilus_str_has_prefix (view_as_name, "OAFIID:")) {
+	if (eel_str_has_prefix (view_as_name, "OAFIID:")) {
 		char *display_name, *colon_ptr;
 		NautilusViewIdentifier *new_identifier;
 		
@@ -225,7 +225,7 @@ nautilus_view_identifier_free_callback (gpointer identifier, gpointer ignore)
 void
 nautilus_view_identifier_list_free (GList *list)
 {
-	nautilus_g_list_free_deep_custom
+	eel_g_list_free_deep_custom
 		(list, nautilus_view_identifier_free_callback, NULL);
 }
 

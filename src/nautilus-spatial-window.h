@@ -30,7 +30,7 @@
 #define NAUTILUS_WINDOW_H
 
 #include <bonobo/bonobo-win.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include "nautilus-applicable-views.h"

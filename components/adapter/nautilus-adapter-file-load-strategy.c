@@ -33,7 +33,7 @@
 #include "nautilus-adapter-file-load-strategy.h"
 
 #include <gtk/gtkobject.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus/nautilus-view.h>
 
@@ -53,7 +53,7 @@ static void nautilus_adapter_file_load_strategy_load_location (NautilusAdapterLo
 static void nautilus_adapter_file_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFileLoadStrategy, nautilus_adapter_file_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFileLoadStrategy, nautilus_adapter_file_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
 
 
 static void
@@ -94,7 +94,7 @@ nautilus_adapter_file_load_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

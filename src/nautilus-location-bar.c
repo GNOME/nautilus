@@ -48,10 +48,10 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -103,7 +103,7 @@ static void  nautilus_location_bar_initialize_class (NautilusLocationBarClass *c
 static void  nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
 static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
 				   nautilus_location_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
@@ -153,7 +153,7 @@ drag_data_received_callback (GtkWidget *widget,
 		prompt = g_strdup_printf (_("Do you want to view these %d locations "
 					  "in separate windows?"), 
 					  name_count);
-		new_windows_for_extras = nautilus_run_simple_dialog 
+		new_windows_for_extras = eel_run_simple_dialog 
 			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
 			 TRUE,
 			 prompt,
@@ -210,7 +210,7 @@ drag_data_get_callback (GtkWidget *widget,
 		gtk_selection_data_set (selection_data,
 					selection_data->target,
 					8, (guchar *) entry_text,
-					nautilus_strlen (entry_text));
+					eel_strlen (entry_text));
 		break;
 	default:
 		g_assert_not_reached ();
@@ -249,7 +249,7 @@ accumulate_name(char *full_name, char *candidate_name)
 		result_name = g_strdup (candidate_name);
 	else {
 		result_name = full_name;
-		if (!nautilus_str_has_prefix (full_name, candidate_name)) {
+		if (!eel_str_has_prefix (full_name, candidate_name)) {
 			str1 = full_name;
 			str2 = candidate_name;
 			while ((*str1++ == *str2++)) { }
@@ -265,7 +265,7 @@ static void
 get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
 {
 	GnomeVFSResult result;
-	if (nautilus_strcmp (bar->details->current_directory, dir_name) != 0) {
+	if (eel_strcmp (bar->details->current_directory, dir_name) != 0) {
 		g_free (bar->details->current_directory);
 		if (bar->details->file_info_list) {
 			gnome_vfs_file_info_list_free (bar->details->file_info_list);	
@@ -316,14 +316,14 @@ try_to_expand_path (gpointer callback_data)
 	bar->details->idle_id = 0;
 	
 	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
-	if (nautilus_strcmp (user_location, "~") == 0
-	    || nautilus_strcmp (user_location, "~/") == 0) {
+	if (eel_strcmp (user_location, "~") == 0
+	    || eel_strcmp (user_location, "~/") == 0) {
 		g_free (user_location);
 		return FALSE;
 	}
 	current_path = nautilus_make_uri_from_input (user_location);
 
-	if (!nautilus_istr_has_prefix (current_path, "file://")) {
+	if (!eel_istr_has_prefix (current_path, "file://")) {
 		g_free (user_location);
 		g_free (current_path);
 		return FALSE;
@@ -368,7 +368,7 @@ try_to_expand_path (gpointer callback_data)
 	expand_text = NULL;
 	for (element = bar->details->file_info_list; element != NULL; element = element->next) {
 		current_file_info = element->data;
-		if (nautilus_str_has_prefix (current_file_info->name, base_name)) {
+		if (eel_str_has_prefix (current_file_info->name, base_name)) {
 			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 				expand_name = g_strconcat (current_file_info->name, "/", NULL);
 			} else {
@@ -381,7 +381,7 @@ try_to_expand_path (gpointer callback_data)
 	
 	/* if we've got something, add it to the entry */	
 	if (expand_text != NULL
-	    && !nautilus_str_has_suffix (current_path, expand_text)
+	    && !eel_str_has_suffix (current_path, expand_text)
 	    && base_length < strlen (expand_text)) {
 		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
 		gtk_entry_select_region (GTK_ENTRY (editable),
@@ -595,7 +595,7 @@ destroy (GtkObject *object)
 	g_free (bar->details->last_location);
 	g_free (bar->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -662,7 +662,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
-			     drag_types, NAUTILUS_N_ELEMENTS (drag_types),
+			     drag_types, EEL_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
 	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
 			     GTK_SIGNAL_FUNC (drag_data_get_callback),
@@ -671,7 +671,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	/* Drag dest. */
 	gtk_drag_dest_set  (GTK_WIDGET (bar),
 			    GTK_DEST_DEFAULT_ALL,
-			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
+			    drop_types, EEL_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	gtk_signal_connect (GTK_OBJECT (bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_callback),

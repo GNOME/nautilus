@@ -37,6 +37,8 @@ Requires:	libghttp >= @LIBGHTTP_REQUIRED@
 Requires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 Requires:	libpng
 Requires:	control-center >= @CONTROL_CENTER_REQUIRED@
+Requires:	librsvg >= @LIBRSVG_REQUIRED@
+Requires:	eel >= @EEL_REQUIRED@
 
 %description
 Nautilus integrates access to files, applications, media, Internet-based
@@ -212,10 +214,6 @@ scrollkeeper-update
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/emblems/*.png
-%{prefix}/share/nautilus/fonts/urw/*.dir
-%{prefix}/share/nautilus/fonts/urw/*.pfb
-%{prefix}/share/nautilus/fonts/urw/*.afm
-%{prefix}/share/nautilus/fonts/urw/*.pfm
 %{prefix}/share/nautilus/linksets/*.xml
 %{prefix}/share/nautilus/patterns/*.jpg
 %{prefix}/share/nautilus/patterns/*.png

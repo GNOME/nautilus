@@ -42,21 +42,21 @@
 #include "../inventory/eazel-inventory.h"
 #endif
 
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-clickable-image.h>
+#include <eel/eel-clickable-image.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
+#include <eel/eel-viewport.h>
 
 #include <liboaf/liboaf.h>
 #include <libtrilobite/trilobite-redirect.h>
@@ -111,7 +111,7 @@ static void     summary_view_button_callback           (GtkWidget               
 static void     cancel_load_in_progress                (NautilusSummaryView *view);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
 
 static const char goto_button_label[] = N_("Go There");
@@ -190,10 +190,10 @@ update_footer (NautilusSummaryView *view)
 	int size;
 
 	if (view->details->logged_in) {	
-		size = NAUTILUS_N_ELEMENTS (footer_online_items);
+		size = EEL_N_ELEMENTS (footer_online_items);
 		localized_items = localize_items (footer_online_items, size);
 	} else {
-		size = NAUTILUS_N_ELEMENTS (footer_offline_items);
+		size = EEL_N_ELEMENTS (footer_offline_items);
 		localized_items = localize_items (footer_offline_items, size);
 	}
 	
@@ -229,9 +229,9 @@ summary_view_button_callback (GtkWidget                  *button,
 {
 	const char *command;
 
-	if (nautilus_istr_has_prefix (cbdata->uri, NAUTILUS_COMMAND_SPECIFIER)) {
+	if (eel_istr_has_prefix (cbdata->uri, NAUTILUS_COMMAND_SPECIFIER)) {
 		command = cbdata->uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_gnome_shell_execute (command);
+		eel_gnome_shell_execute (command);
 	} else {
 		nautilus_view_open_location_in_this_window (cbdata->view, cbdata->uri);
 	}
@@ -286,7 +286,7 @@ summary_view_link_image_new (NautilusSummaryView *view,
 							     NULL,
 							     DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 							     MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
-	nautilus_clickable_image_set_prelight (NAUTILUS_CLICKABLE_IMAGE (image), TRUE);
+	eel_clickable_image_set_prelight (EEL_CLICKABLE_IMAGE (image), TRUE);
 
 	goto_uri_on_clicked (image, view->details->nautilus_view, click_uri);
 	
@@ -308,10 +308,10 @@ summary_view_item_label_new (char *label_text,
 					  NULL,
 					  relative_font_size,
 					  bold);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+	eel_label_set_wrap (EEL_LABEL (label), TRUE);
+	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
-	nautilus_label_set_adjust_wrap_on_resize (NAUTILUS_LABEL (label), TRUE);
+	eel_label_set_adjust_wrap_on_resize (EEL_LABEL (label), TRUE);
 
 	return label;
 }
@@ -453,9 +453,9 @@ summary_view_create_pane (NautilusSummaryView *view,
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane),
 			                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	
-	viewport = nautilus_viewport_new (NULL, NULL);
-	nautilus_viewport_set_constrain_width (NAUTILUS_VIEWPORT (viewport), TRUE);
-	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
+	viewport = eel_viewport_new (NULL, NULL);
+	eel_viewport_set_constrain_width (EEL_VIEWPORT (viewport), TRUE);
+	widget_set_eel_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_widget_show (viewport);
@@ -493,7 +493,7 @@ create_news_pane (NautilusSummaryView *view)
 static gboolean
 program_uri_for_nonexistent_program (const char *uri)
 {
-	return nautilus_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER) &&
+	return eel_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER) &&
 		!gnome_is_program_in_path (uri + strlen (NAUTILUS_COMMAND_SPECIFIER));
 }
 
@@ -855,7 +855,7 @@ nautilus_summary_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 	CORBA_exception_free (&ev);
 

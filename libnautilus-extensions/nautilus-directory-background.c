@@ -27,12 +27,12 @@
 #include <config.h>
 #include "nautilus-directory-background.h"
 
-#include "libnautilus-extensions/nautilus-gdk-extensions.h"
-#include "nautilus-background.h"
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-background.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include "nautilus-theme.h"
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -42,31 +42,31 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-static void background_changed_callback     (NautilusBackground *background, 
+static void background_changed_callback     (EelBackground *background, 
                                              NautilusFile       *file);
-static void background_reset_callback       (NautilusBackground *background, 
+static void background_reset_callback       (EelBackground *background, 
                                              NautilusFile       *file);
 
 static void saved_settings_changed_callback (NautilusFile       *file, 
-                                             NautilusBackground *background);
+                                             EelBackground *background);
                                          
-static void nautilus_file_background_receive_root_window_changes (NautilusBackground *background);
+static void nautilus_file_background_receive_root_window_changes (EelBackground *background);
 
-static void nautilus_file_update_desktop_pixmaps (NautilusBackground *background);
+static void nautilus_file_update_desktop_pixmaps (EelBackground *background);
 
 static void nautilus_file_background_write_desktop_settings (char *color,
 							     char *image,
-							     NautilusBackgroundImagePlacement placement);
+							     EelBackgroundImagePlacement placement);
 
 static gboolean nautilus_file_background_matches_default_settings (
 			const char* color, const char* default_color,
 			const char* image, const char* default_image,
-			NautilusBackgroundImagePlacement placement, NautilusBackgroundImagePlacement default_placement);
+			EelBackgroundImagePlacement placement, EelBackgroundImagePlacement default_placement);
 
 static void
 desktop_background_realized (NautilusIconContainer *icon_container, void *disconnect_signal)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 
         if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (icon_container),
@@ -74,7 +74,7 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 					       disconnect_signal);
 	}
 
-	background = nautilus_get_widget_background (GTK_WIDGET (icon_container));
+	background = eel_get_widget_background (GTK_WIDGET (icon_container));
 
 	gtk_object_set_data (GTK_OBJECT (background), "icon_container", (gpointer) icon_container);
 
@@ -88,9 +88,9 @@ void
 nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
                                                       NautilusFile *file)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 
-	background = nautilus_get_widget_background (GTK_WIDGET (icon_container));
+	background = eel_get_widget_background (GTK_WIDGET (icon_container));
 
 	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source);
 
@@ -114,14 +114,14 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 }
 
 static gboolean
-nautilus_background_is_desktop (NautilusBackground *background)
+eel_background_is_desktop (EelBackground *background)
 {
 	/* == works because we're carful to always use the same string.
 	 */
 	return gtk_object_get_data (GTK_OBJECT (background), "theme_source") == desktop_theme_source;
 }
 
-static const char *nautilus_file_background_peek_theme_source (NautilusBackground *background)
+static const char *nautilus_file_background_peek_theme_source (EelBackground *background)
 {
 	char *theme_source;
 
@@ -131,7 +131,7 @@ static const char *nautilus_file_background_peek_theme_source (NautilusBackgroun
 }
 
 static GdkWindow *
-nautilus_background_get_desktop_background_window (NautilusBackground *background)
+eel_background_get_desktop_background_window (EelBackground *background)
 {
 	gpointer layout;
 
@@ -146,9 +146,9 @@ theme_image_path_to_uri (char *image_file, const char *theme_name)
 	char *image_path;
 	char *image_uri;
 
-	if (image_file != NULL && !nautilus_istr_has_prefix (image_file, "file://")) {
+	if (image_file != NULL && !eel_istr_has_prefix (image_file, "file://")) {
 		
-		if (nautilus_str_has_prefix (image_file, "./")) {
+		if (eel_str_has_prefix (image_file, "./")) {
 			image_path = nautilus_theme_get_image_path_from_theme (image_file + 2, theme_name);
 		} else {
 			image_path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_file);
@@ -173,12 +173,12 @@ nautilus_file_background_get_default_settings_for_theme (const char* theme_name,
 							  const char* theme_source,
 							  char **color,
 							  char **image,
-							  NautilusBackgroundImagePlacement *placement)
+							  EelBackgroundImagePlacement *placement)
 {
 	char *image_local_path;
 
 	if (placement != NULL) {
-		*placement = NAUTILUS_BACKGROUND_TILED;
+		*placement = EEL_BACKGROUND_TILED;
 	}
 
 	if (color != NULL) {
@@ -196,7 +196,7 @@ static void
 nautilus_file_background_get_default_settings (const char* theme_source,
                                                char **color,
                                                char **image,
-                                               NautilusBackgroundImagePlacement *placement)
+                                               EelBackgroundImagePlacement *placement)
 {
 	char *theme_name;
 	theme_name = nautilus_theme_get_theme ();
@@ -206,12 +206,12 @@ nautilus_file_background_get_default_settings (const char* theme_source,
 }
 
 static gboolean
-nautilus_gnome_config_string_match_no_case_with_default (const char *path, const char *test_value, gboolean *was_default)
+eel_gnome_config_string_match_no_case_with_default (const char *path, const char *test_value, gboolean *was_default)
 {
 	char *value;
 	gboolean result;
 	value = gnome_config_get_string_with_default (path, was_default);
-	result = !nautilus_strcasecmp (value, test_value);
+	result = !eel_strcasecmp (value, test_value);
 	g_free (value);
 	return result;
 }
@@ -228,14 +228,14 @@ enum {
 static void
 nautilus_file_background_read_desktop_settings (char **color,
                                                 char **image,
-                                                NautilusBackgroundImagePlacement *placement)
+                                                EelBackgroundImagePlacement *placement)
 {
 	int	 image_alignment;
 	char*	 image_local_path;
 	char*	 default_image_uri;
 	gboolean no_alignment_set;
 	gboolean no_image_set;
-	NautilusBackgroundImagePlacement default_placement;
+	EelBackgroundImagePlacement default_placement;
 	
 	char	*end_color;
 	char	*start_color;
@@ -266,7 +266,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 
 	if (no_image_set) {
 		*image = g_strdup (default_image_uri);
-	} else if (nautilus_strcasecmp (image_local_path, "none") != 0) {
+	} else if (eel_strcasecmp (image_local_path, "none") != 0) {
 		*image = gnome_vfs_get_uri_from_local_path (image_local_path);
 	} else {
 		*image = NULL;
@@ -287,24 +287,24 @@ nautilus_file_background_read_desktop_settings (char **color,
 				 * Just treat it as centered - ugh.
 				 */
 			case WALLPAPER_CENTERED:
-				*placement = NAUTILUS_BACKGROUND_CENTERED;
+				*placement = EEL_BACKGROUND_CENTERED;
 				break;
 			case WALLPAPER_TILED:
-				*placement = NAUTILUS_BACKGROUND_TILED;
+				*placement = EEL_BACKGROUND_TILED;
 				break;
 			case WALLPAPER_SCALED:
-				*placement = NAUTILUS_BACKGROUND_SCALED;
+				*placement = EEL_BACKGROUND_SCALED;
 				break;
 			case WALLPAPER_SCALED_KEEP:
-				*placement = NAUTILUS_BACKGROUND_SCALED_ASPECT;
+				*placement = EEL_BACKGROUND_SCALED_ASPECT;
 				break;
 		 }
 	}
 
 	end_color     = gnome_config_get_string_with_default ("/Background/Default/color2", &no_end_color_set);
 	start_color   = gnome_config_get_string_with_default ("/Background/Default/color1", &no_start_color_set);
-	use_gradient  = !nautilus_gnome_config_string_match_no_case_with_default ("/Background/Default/simple", "solid", &no_gradient_set);
-	is_horizontal = !nautilus_gnome_config_string_match_no_case_with_default ("/Background/Default/gradient", "vertical", &no_gradient_orientation_set);
+	use_gradient  = !eel_gnome_config_string_match_no_case_with_default ("/Background/Default/simple", "solid", &no_gradient_set);
+	is_horizontal = !eel_gnome_config_string_match_no_case_with_default ("/Background/Default/gradient", "vertical", &no_gradient_orientation_set);
 
 	if (no_gradient_set || no_gradient_orientation_set || no_start_color_set) {
 		*color = g_strdup (default_color);
@@ -312,7 +312,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 		if (no_end_color_set) {
 			*color = g_strdup (default_color);
 		} else {
-			*color = nautilus_gradient_new (start_color, end_color , is_horizontal);
+			*color = eel_gradient_new (start_color, end_color , is_horizontal);
 		}
 	} else {
 		*color = g_strdup (start_color);
@@ -337,7 +337,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 	cur_theme_name = nautilus_theme_get_theme ();
 
 	switch_to_cur_theme_default = !no_theme_name_set &&
-				      (nautilus_strcmp (theme_name, cur_theme_name) != 0) &&
+				      (eel_strcmp (theme_name, cur_theme_name) != 0) &&
 				      nautilus_file_background_matches_default_settings
 					(*color, default_color,
 					 *image, default_image_uri,
@@ -363,7 +363,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 }
 
 static void
-nautilus_file_background_write_desktop_settings (char *color, char *image, NautilusBackgroundImagePlacement placement)
+nautilus_file_background_write_desktop_settings (char *color, char *image, EelBackgroundImagePlacement placement)
 {
 	char *end_color;
 	char *start_color;
@@ -379,20 +379,20 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 	gboolean found_wallpaper;
 
 	if (color != NULL) {
-		start_color = nautilus_gradient_get_start_color_spec (color);
+		start_color = eel_gradient_get_start_color_spec (color);
 		gnome_config_set_string ("/Background/Default/color1", start_color);		
 		g_free (start_color);
 
 		/* if color is not a gradient, this ends up writing same as start_color */
-		end_color = nautilus_gradient_get_end_color_spec (color);
+		end_color = eel_gradient_get_end_color_spec (color);
 		gnome_config_set_string ("/Background/Default/color2", end_color);		
 		g_free (end_color);
 
-		gnome_config_set_string ("/Background/Default/simple", nautilus_gradient_is_gradient (color) ? "gradient" : "solid");
-		gnome_config_set_string ("/Background/Default/gradient", nautilus_gradient_is_horizontal (color) ? "horizontal" : "vertical");
+		gnome_config_set_string ("/Background/Default/simple", eel_gradient_is_gradient (color) ? "gradient" : "solid");
+		gnome_config_set_string ("/Background/Default/gradient", eel_gradient_is_horizontal (color) ? "horizontal" : "vertical");
 	} else {
 		/* We set it to white here because that's how backgrounds with a NULL color
-		 * are drawn by Nautilus - due to usage of nautilus_gdk_color_parse_with_white_default.
+		 * are drawn by Nautilus - due to usage of eel_gdk_color_parse_with_white_default.
 		 */
 		gnome_config_set_string ("/Background/Default/color1", "rgb:FFFF/FFFF/FFFF");		
 		gnome_config_set_string ("/Background/Default/color2", "rgb:FFFF/FFFF/FFFF");		
@@ -404,16 +404,16 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 		image_local_path = gnome_vfs_get_local_path_from_uri (image);
 		gnome_config_set_string ("/Background/Default/wallpaper", image_local_path);
 		switch (placement) {
-			case NAUTILUS_BACKGROUND_TILED:
+			case EEL_BACKGROUND_TILED:
 				wallpaper_align = WALLPAPER_TILED;
 				break;	
-			case NAUTILUS_BACKGROUND_CENTERED:
+			case EEL_BACKGROUND_CENTERED:
 				wallpaper_align = WALLPAPER_CENTERED;
 				break;	
-			case NAUTILUS_BACKGROUND_SCALED:
+			case EEL_BACKGROUND_SCALED:
 				wallpaper_align = WALLPAPER_SCALED;
 				break;	
-			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+			case EEL_BACKGROUND_SCALED_ASPECT:
 				wallpaper_align = WALLPAPER_SCALED_KEEP;
 				break;
 			default:
@@ -430,7 +430,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 			wallpaper_config_path_i = g_strdup_printf ("/Background/Default/wallpaper%d", i);
 			wallpaper_path_i = gnome_config_get_string (wallpaper_config_path_i);
 			g_free (wallpaper_config_path_i);
-			if (nautilus_strcmp (wallpaper_path_i, image_local_path) == 0) {
+			if (eel_strcmp (wallpaper_path_i, image_local_path) == 0) {
 				found_wallpaper = TRUE;
 			}
 			
@@ -462,16 +462,16 @@ nautilus_file_background_write_desktop_default_settings ()
 {
 	char *color;
 	char *image;
-	NautilusBackgroundImagePlacement placement;
+	EelBackgroundImagePlacement placement;
 	nautilus_file_background_get_default_settings (desktop_theme_source, &color, &image, &placement);
 	nautilus_file_background_write_desktop_settings (color, image, placement);
 }
 
 static int
-call_settings_changed (NautilusBackground *background)
+call_settings_changed (EelBackground *background)
 {
 	NautilusFile *file;
-	file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	file = gtk_object_get_data (GTK_OBJECT (background), "eel_background_file");
 	if (file) {
 		saved_settings_changed_callback (file, background);
 	}
@@ -489,7 +489,7 @@ static GdkFilterReturn
 nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
 	XEvent *xevent;
-	NautilusBackground *background;
+	EelBackground *background;
 
 	xevent = (XEvent *) gdk_xevent;
 
@@ -502,7 +502,7 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 			return GDK_FILTER_CONTINUE;
 		}
 		
-	    	background = NAUTILUS_BACKGROUND (data);
+	    	background = EEL_BACKGROUND (data);
 	    	/* FIXME bugzilla.eazel.com 2220:
 	    	 * We'd like to call saved_settings_changed_callback right here, directly.
 	    	 * However, the current version of the property-background capplet saves
@@ -517,13 +517,13 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 }
 
 static void
-desktop_background_destroyed_callback (NautilusBackground *background, void *georgeWBush)
+desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
 {
 	gdk_window_remove_filter (GDK_ROOT_PARENT(), nautilus_file_background_event_filter, background);
 }
 
 static void
-nautilus_file_background_receive_root_window_changes (NautilusBackground *background)
+nautilus_file_background_receive_root_window_changes (EelBackground *background)
 {
 	XWindowAttributes attribs = { 0 };
 
@@ -648,7 +648,7 @@ set_root_pixmap (GdkPixmap *pixmap)
 }
 	
 static void
-image_loading_done_callback (NautilusBackground *background, gboolean successful_load, void *disconnect_signal)
+image_loading_done_callback (EelBackground *background, gboolean successful_load, void *disconnect_signal)
 {
 	int	      width;
 	int	      height;
@@ -667,12 +667,12 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 
 	pixmap = make_root_pixmap (width, height);
 	gc = gdk_gc_new (pixmap);
-	nautilus_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
+	eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
 	gdk_gc_unref (gc);
 
 	set_root_pixmap (pixmap);
 
-	background_window = nautilus_background_get_desktop_background_window (background);
+	background_window = eel_background_get_desktop_background_window (background);
 	if (background_window != NULL) {
 		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
 	}
@@ -688,9 +688,9 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 }
 
 static void
-nautilus_file_update_desktop_pixmaps (NautilusBackground *background)
+nautilus_file_update_desktop_pixmaps (EelBackground *background)
 {	
-	if (nautilus_background_is_loaded (background)) {
+	if (eel_background_is_loaded (background)) {
 		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
 	} else {
 		gtk_signal_connect (GTK_OBJECT (background),
@@ -704,7 +704,7 @@ static gboolean
 nautilus_file_background_matches_default_settings (
 			const char* color, const char* default_color,
 			const char* image, const char* default_image,
-			NautilusBackgroundImagePlacement placement, NautilusBackgroundImagePlacement default_placement)
+			EelBackgroundImagePlacement placement, EelBackgroundImagePlacement default_placement)
 {
 	gboolean match_color;
 	gboolean match_image;
@@ -712,16 +712,16 @@ nautilus_file_background_matches_default_settings (
 	/* A NULL default color or image is not considered when determining a match.
 	 */
 	
-	match_color = (default_color == NULL) || nautilus_strcmp (color, default_color) == 0;
+	match_color = (default_color == NULL) || eel_strcmp (color, default_color) == 0;
 	
 	match_image = (default_image == NULL) ||
-		      ((nautilus_strcmp (image, default_image) == 0) && (placement == default_placement));
+		      ((eel_strcmp (image, default_image) == 0) && (placement == default_placement));
 	return match_color && match_image;
 }
 
 /* return true if the background is not in the default state */
 gboolean
-nautilus_file_background_is_set (NautilusBackground *background)
+nautilus_file_background_is_set (EelBackground *background)
 {
 	char *color;
 	char *image;
@@ -730,12 +730,12 @@ nautilus_file_background_is_set (NautilusBackground *background)
 	
 	gboolean matches;
 	
-	NautilusBackgroundImagePlacement placement;
-	NautilusBackgroundImagePlacement default_placement;
+	EelBackgroundImagePlacement placement;
+	EelBackgroundImagePlacement default_placement;
 
-	color = nautilus_background_get_color (background);
-	image = nautilus_background_get_image_uri (background);
-	placement = nautilus_background_get_image_placement (background);
+	color = eel_background_get_color (background);
+	image = eel_background_get_image_uri (background);
+	placement = eel_background_get_image_placement (background);
 	
 	nautilus_file_background_get_default_settings (
 		nautilus_file_background_peek_theme_source (background),
@@ -755,22 +755,22 @@ nautilus_file_background_is_set (NautilusBackground *background)
 
 /* handle the background changed signal */
 static void
-background_changed_callback (NautilusBackground *background,
+background_changed_callback (EelBackground *background,
                              NautilusFile       *file)
 {
   	char *color;
   	char *image;
         
-        g_assert (NAUTILUS_IS_BACKGROUND (background));
+        g_assert (EEL_IS_BACKGROUND (background));
         g_assert (NAUTILUS_IS_FILE (file));
-        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file") == file);
+        g_assert (gtk_object_get_data (GTK_OBJECT (background), "eel_background_file") == file);
         
 
-	color = nautilus_background_get_color (background);
-	image = nautilus_background_get_image_uri (background);
+	color = eel_background_get_color (background);
+	image = eel_background_get_image_uri (background);
 
-	if (nautilus_background_is_desktop (background)) {
-		nautilus_file_background_write_desktop_settings (color, image, nautilus_background_get_image_placement (background));
+	if (eel_background_is_desktop (background)) {
+		nautilus_file_background_write_desktop_settings (color, image, eel_background_get_image_placement (background));
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
@@ -798,25 +798,25 @@ background_changed_callback (NautilusBackground *background,
 	g_free (color);
 	g_free (image);
 	
-	if (nautilus_background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_update_desktop_pixmaps (background);
 	}
 }
 
 static void
 initialize_background_from_settings (NautilusFile *file,
-				     NautilusBackground *background)
+				     EelBackground *background)
 {
         char *color;
         char *image;
-	NautilusBackgroundImagePlacement placement;
+	EelBackgroundImagePlacement placement;
 	
         g_assert (NAUTILUS_IS_FILE (file));
-        g_assert (NAUTILUS_IS_BACKGROUND (background));
-        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file")
+        g_assert (EEL_IS_BACKGROUND (background));
+        g_assert (gtk_object_get_data (GTK_OBJECT (background), "eel_background_file")
                   == file);
 
-	if (nautilus_background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 	} else {
 		color = nautilus_file_get_metadata (file,
@@ -825,7 +825,7 @@ initialize_background_from_settings (NautilusFile *file,
 		image = nautilus_file_get_metadata (file,
                                                     NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
                                                     NULL);
-	        placement = NAUTILUS_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
+	        placement = EEL_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
 
 		/* if there's none, read the default from the theme */
 		if (color == NULL && image == NULL) {
@@ -842,9 +842,9 @@ initialize_background_from_settings (NautilusFile *file,
                                           background_changed_callback,
                                           file);
 
-	nautilus_background_set_color (background, color);     
-	nautilus_background_set_image_uri (background, image);
-        nautilus_background_set_image_placement (background, placement);
+	eel_background_set_color (background, color);     
+	eel_background_set_image_uri (background, image);
+        eel_background_set_image_placement (background, placement);
 	
 	/* Unblock the handler. */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
@@ -858,11 +858,11 @@ initialize_background_from_settings (NautilusFile *file,
 /* handle the file changed signal */
 static void
 saved_settings_changed_callback (NautilusFile *file,
-                                 NautilusBackground *background)
+                                 EelBackground *background)
 {
 	initialize_background_from_settings (file, background);
 	
-	if (nautilus_background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_update_desktop_pixmaps (background);
 	}
 }
@@ -872,10 +872,10 @@ static void
 nautilus_file_background_theme_changed (gpointer user_data)
 {
 	NautilusFile *file;
-	NautilusBackground *background;
+	EelBackground *background;
 
-	background = NAUTILUS_BACKGROUND (user_data);
-	file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	background = EEL_BACKGROUND (user_data);
+	file = gtk_object_get_data (GTK_OBJECT (background), "eel_background_file");
 	if (file) {
 		saved_settings_changed_callback (file, background);
 	}
@@ -883,10 +883,10 @@ nautilus_file_background_theme_changed (gpointer user_data)
 
 /* handle the background reset signal by setting values from the current theme */
 static void
-background_reset_callback (NautilusBackground *background,
+background_reset_callback (EelBackground *background,
                            NautilusFile       *file)
 {
-	if (nautilus_background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_default_settings ();
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
@@ -917,7 +917,7 @@ background_reset_callback (NautilusBackground *background,
 
 /* handle the background destroyed signal */
 static void
-background_destroyed_callback (NautilusBackground *background,
+background_destroyed_callback (EelBackground *background,
                                NautilusFile       *file)
 {
         gtk_signal_disconnect_by_func (GTK_OBJECT (file),
@@ -934,15 +934,15 @@ void
 nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                                               NautilusFile *file)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 	gpointer old_file;
         GList *attributes;
 
 	/* Get at the background object we'll be connecting. */
-	background = nautilus_get_widget_background (widget);
+	background = eel_get_widget_background (widget);
 
 	/* Check if it is already connected. */
-	old_file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	old_file = gtk_object_get_data (GTK_OBJECT (background), "eel_background_file");
 	if (old_file == file) {
 		return;
 	}
@@ -972,7 +972,7 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
         /* Attach the new directory. */
         nautilus_file_ref (file);
         gtk_object_set_data_full (GTK_OBJECT (background),
-                                  "nautilus_background_file",
+                                  "eel_background_file",
                                   file,
                                   (GtkDestroyNotify) nautilus_file_unref);
 

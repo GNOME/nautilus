@@ -27,7 +27,7 @@
 
 #include <gtk/gtkobject.h>
 #include <libgnome/gnome-defs.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
+#include <eel/eel-string-list.h>
 
 BEGIN_GNOME_DECLS
 

@@ -34,10 +34,10 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-entry.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <stdio.h>
 
@@ -58,7 +58,7 @@ static void  nautilus_simple_search_bar_initialize_class         (NautilusSimple
 static void  nautilus_simple_search_bar_initialize               (NautilusSimpleSearchBar      *bar);
 static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
 				   nautilus_simple_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -79,7 +79,7 @@ search_text_is_invalid (NautilusSimpleSearchBar *bar)
 	gboolean is_empty;
 
 	user_text = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	is_empty = nautilus_str_is_empty (user_text);
+	is_empty = eel_str_is_empty (user_text);
 	g_free (user_text);
 
 	return is_empty;
@@ -110,7 +110,7 @@ nautilus_simple_search_bar_destroy (GtkObject *object)
 
 	g_free (bar->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -137,7 +137,7 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   nautilus_gtk_button_auto_click, 
+				   eel_gtk_button_auto_click, 
 				   GTK_OBJECT (bar->details->find_button));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
 				   update_simple_find_button_state, GTK_OBJECT (bar));

@@ -28,4 +28,4 @@
 #include <time.h>
 #include <libgnomeui/gnome-dateedit.h>
 
-char *      nautilus_gnome_date_edit_get_date_as_string        (GnomeDateEdit *dateedit);
+char *      eel_gnome_date_edit_get_date_as_string        (GnomeDateEdit *dateedit);

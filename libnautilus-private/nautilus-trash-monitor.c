@@ -30,7 +30,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
@@ -55,7 +55,7 @@ static void nautilus_trash_monitor_initialize       (gpointer                   
 						     gpointer                   klass);
 static void destroy                                 (GtkObject                 *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
 
 static void
 nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)

@@ -27,27 +27,27 @@
 #include <config.h>
 #include "nautilus-icon-container.h"
 
-#include "nautilus-background.h"
 #include "nautilus-font-factory.h"
-#include "nautilus-gdk-pixbuf-extensions.h"
-#include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gnome-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include <ctype.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtklayout.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtklayout.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <math.h>
 #include <stdio.h>
@@ -136,7 +136,7 @@ static void          end_renaming_mode                        (NautilusIconConta
 							       gboolean                    commit);
 static NautilusIcon *get_icon_being_renamed 		      (NautilusIconContainer 	  *container);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
-static void          update_label_color                       (NautilusBackground         *background,
+static void          update_label_color                       (EelBackground         *background,
 							       NautilusIconContainer      *icon_container);
 static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
 							       int 			  *x1_return, 
@@ -149,7 +149,7 @@ static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *
 
 static int click_policy_auto_value;
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
 				   GNOME_TYPE_CANVAS)
 
@@ -405,8 +405,8 @@ nautilus_icon_container_scroll (NautilusIconContainer *container,
 	old_h_value = hadj->value;
 	old_v_value = vadj->value;
 	
-	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
-	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
+	eel_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
+	eel_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 
 	/* return TRUE if we did scroll */
 	return hadj->value != old_h_value || vadj->value != old_v_value;
@@ -476,20 +476,20 @@ reveal_icon (NautilusIconContainer *container,
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
-	nautilus_gnome_canvas_item_get_canvas_bounds
+	eel_gnome_canvas_item_get_canvas_bounds
 		(GNOME_CANVAS_ITEM (icon->item), &bounds);
 
 	if (bounds.y0 < vadj->value) {
-		nautilus_gtk_adjustment_set_value (vadj, bounds.y0);
+		eel_gtk_adjustment_set_value (vadj, bounds.y0);
 	} else if (bounds.y1 > vadj->value + allocation->height) {
-		nautilus_gtk_adjustment_set_value
+		eel_gtk_adjustment_set_value
 			(vadj, bounds.y1 - allocation->height);
 	}
 
 	if (bounds.x0 < hadj->value) {
-		nautilus_gtk_adjustment_set_value (hadj, bounds.x0);
+		eel_gtk_adjustment_set_value (hadj, bounds.x0);
 	} else if (bounds.x1 > hadj->value + allocation->width) {
-		nautilus_gtk_adjustment_set_value
+		eel_gtk_adjustment_set_value
 			(hadj, bounds.x1 - allocation->width);
 	}
 }
@@ -627,7 +627,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		/* Set the scroll region to the size of the container allocation */
 		allocation = &GTK_WIDGET (container)->allocation;			
-		nautilus_gnome_canvas_set_scroll_region_left_justify
+		eel_gnome_canvas_set_scroll_region_left_justify
 			(GNOME_CANVAS (container),
 			 (double) - container->details->left_margin,
 			 (double) - container->details->top_margin,
@@ -656,14 +656,14 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	}
 
 	if (reset_scroll_region) {
-		nautilus_gnome_canvas_set_scroll_region_left_justify
+		eel_gnome_canvas_set_scroll_region_left_justify
 			(GNOME_CANVAS (container),
 			 x1 - CONTAINER_PAD_LEFT,
 			 y1 - CONTAINER_PAD_TOP,
 			 x2 + CONTAINER_PAD_RIGHT,
 			 y2 + CONTAINER_PAD_BOTTOM);
 	} else {
-		nautilus_gnome_canvas_set_scroll_region_include_visible_area
+		eel_gnome_canvas_set_scroll_region_include_visible_area
 			(GNOME_CANVAS (container),
 			 x1 - CONTAINER_PAD_LEFT,
 			 y1 - CONTAINER_PAD_TOP,
@@ -689,8 +689,8 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	/* Now that we have a new scroll region, clamp the
          * adjustments so we are within the valid scroll area.
 	 */
-	nautilus_gtk_adjustment_clamp_value (hadj);
-	nautilus_gtk_adjustment_clamp_value (vadj);
+	eel_gtk_adjustment_clamp_value (hadj);
+	eel_gtk_adjustment_clamp_value (vadj);
 }
 
 static NautilusIconContainer *sort_hack_container;
@@ -795,7 +795,7 @@ lay_down_one_line (NautilusIconContainer *container,
 	for (p = line_start; p != line_end; p = p->next) {
 		icon = p->data;
 
-		nautilus_gnome_canvas_item_get_world_bounds
+		eel_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);
 		height_above = icon_bounds.y1 - bounds.y0;
@@ -817,7 +817,7 @@ lay_down_one_line (NautilusIconContainer *container,
 	for (p = line_start; p != line_end; p = p->next) {
 		icon = p->data;
 
-		nautilus_gnome_canvas_item_get_world_bounds
+		eel_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);		
 		width = get_icon_space_width (container, &bounds);
@@ -857,7 +857,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		icon = p->data;
 
 		/* Get the width of the icon. */
-		nautilus_gnome_canvas_item_get_world_bounds
+		eel_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		space_width = get_icon_space_width (container, &bounds);
 		
@@ -1249,7 +1249,7 @@ reload_icon_positions (NautilusIconContainer *container)
 				 &have_stored_position);
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
-			nautilus_gnome_canvas_item_get_world_bounds
+			eel_gnome_canvas_item_get_world_bounds
 				(GNOME_CANVAS_ITEM (icon->item), &bounds);
 			if (bounds.y1 > bottom) {
 				bottom = bounds.y1;
@@ -1395,7 +1395,7 @@ rubberband_select (NautilusIconContainer *container,
 			/* Only do this calculation once, since all the canvas items
 			 * we are interating are in the same coordinate space
 			 */
-			nautilus_gnome_canvas_world_to_canvas_rectangle
+			eel_gnome_canvas_world_to_canvas_rectangle
 				(GNOME_CANVAS_ITEM (icon->item)->canvas, current_rect, &canvas_rect);
 			canvas_rect_calculated = TRUE;
 		}
@@ -1784,7 +1784,7 @@ compare_with_start_row (NautilusIconContainer *container,
 {
 	ArtIRect bounds;
 
-	nautilus_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
+	eel_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
 							      &bounds);
 	if (container->details->arrow_key_start < bounds.y0) {
 		return -1;
@@ -1801,7 +1801,7 @@ compare_with_start_column (NautilusIconContainer *container,
 {
 	ArtIRect bounds;
 	
-	nautilus_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
+	eel_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
 							      &bounds);
 	if (container->details->arrow_key_start < bounds.x0) {
 		return -1;
@@ -2237,7 +2237,7 @@ build_icon_list_sorted_by_name (NautilusIconContainer *container)
 		return NULL;
 	}
 
-	result = nautilus_g_list_copy (container->details->icons);
+	result = eel_g_list_copy (container->details->icons);
 	sort_icons_by_name (container, &result);
 
 	return result;
@@ -2316,7 +2316,7 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->stretch_idle_id);
 	}
        
-        for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
+        for (i = 0; i < EEL_N_ELEMENTS (container->details->label_font); i++) {
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
 	}
@@ -2344,7 +2344,7 @@ destroy (GtkObject *object)
 	
 	g_free (container->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* GtkWidget methods.  */
@@ -2382,7 +2382,7 @@ size_allocate (GtkWidget *widget,
 		need_layout_redone = TRUE;
 	}
 	
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	container->details->has_been_allocated = TRUE;
 
@@ -2397,7 +2397,7 @@ realize (GtkWidget *widget)
 	GtkStyle *style;
 	GtkWindow *window;
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	style = gtk_style_copy (gtk_widget_get_style (widget));
 	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
@@ -2425,7 +2425,7 @@ unrealize (GtkWidget *widget)
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 static gboolean
@@ -2441,7 +2441,7 @@ button_press_event (GtkWidget *widget,
 	static gint click_count = 0;
 	
 	/* Determine click count */
-	current_time = nautilus_get_system_time ();
+	current_time = eel_get_system_time ();
 	if (current_time - last_click_time < DOUBLE_CLICK_TIME) {
 		click_count++;
 	} else {
@@ -2469,7 +2469,7 @@ button_press_event (GtkWidget *widget,
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	clicked_on_icon = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	clicked_on_icon = EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 	
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
@@ -2623,7 +2623,7 @@ start_stretching (NautilusIconContainer *container)
 	/* Ensure the window itself is focused.. */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
 	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
-		nautilus_gdk_window_focus (toplevel->window, GDK_CURRENT_TIME);
+		eel_gdk_window_focus (toplevel->window, GDK_CURRENT_TIME);
 	}
 
 	return TRUE;
@@ -2794,7 +2794,7 @@ button_release_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 }
 
@@ -2860,7 +2860,7 @@ motion_notify_event (GtkWidget *widget,
 		}
 	}
 
-	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE
 		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 }
 
@@ -2908,7 +2908,7 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	}
 
 	/* find out how long since last character was typed */
-	now = nautilus_get_system_time ();
+	now = eel_get_system_time ();
 	time_delta = now - container->details->type_select_state->last_typeselect_time;
 	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
 		/* the typeselect state is too old, start with a fresh one */
@@ -3021,7 +3021,7 @@ key_press_event (GtkWidget *widget,
 	}
 
 	if (!handled) {
-		handled = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		handled = EEL_CALL_PARENT_WITH_RETURN_VALUE
 			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
@@ -3153,7 +3153,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_images),
-				  nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER,
+				  eel_gtk_marshal_POINTER__POINTER_STRING_POINTER,
 				  GTK_TYPE_POINTER, 3,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING,
@@ -3164,7 +3164,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_text),
-				  nautilus_gtk_marshal_NONE__POINTER_STRING_STRING,
+				  eel_gtk_marshal_NONE__POINTER_STRING_STRING,
 				  GTK_TYPE_NONE, 3,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING,
@@ -3175,7 +3175,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_uri),
-				  nautilus_gtk_marshal_STRING__POINTER,
+				  eel_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
 	signals[GET_ICON_DROP_TARGET_URI]
@@ -3184,7 +3184,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_drop_target_uri),
-				  nautilus_gtk_marshal_STRING__POINTER,
+				  eel_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
 	signals[COMPARE_ICONS]
@@ -3193,7 +3193,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     compare_icons),
-				  nautilus_gtk_marshal_INT__POINTER_POINTER,
+				  eel_gtk_marshal_INT__POINTER_POINTER,
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
@@ -3203,7 +3203,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     compare_icons_by_name),
-				  nautilus_gtk_marshal_INT__POINTER_POINTER,
+				  eel_gtk_marshal_INT__POINTER_POINTER,
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
@@ -3213,7 +3213,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
 						     move_copy_items),
-				  nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
+				  eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
 				  GTK_TYPE_NONE, 6,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER,
@@ -3239,7 +3239,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
 						     get_container_uri),
-				  nautilus_gtk_marshal_STRING__NONE,
+				  eel_gtk_marshal_STRING__NONE,
 				  GTK_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
 		= gtk_signal_new ("can_accept_item",
@@ -3247,7 +3247,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
 						     can_accept_item),
-				  nautilus_gtk_marshal_INT__POINTER_STRING,
+				  eel_gtk_marshal_INT__POINTER_STRING,
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING);
@@ -3257,7 +3257,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_stored_icon_position),
-				  nautilus_gtk_marshal_BOOL__POINTER_POINTER,
+				  eel_gtk_marshal_BOOL__POINTER_POINTER,
 				  GTK_TYPE_BOOL, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
@@ -3275,7 +3275,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     preview),
-				  nautilus_gtk_marshal_INT__POINTER_INT,
+				  eel_gtk_marshal_INT__POINTER_INT,
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_BOOL);
@@ -3329,7 +3329,7 @@ static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
-	NautilusBackground *background;
+	EelBackground *background;
 	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -3347,7 +3347,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 
-        details->smooth_label_font = nautilus_scalable_font_get_default_font ();
+        details->smooth_label_font = eel_scalable_font_get_default_font ();
 	
 	/* These are the default font sizes.  The font sizes are configurable via
 	 * nautilus_icon_container_set_font_size_table() 
@@ -3373,7 +3373,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 GTK_OBJECT (container));	
 
 	/* when the background changes, we must set up the label text color */
-	background = nautilus_get_widget_background (GTK_WIDGET (container));
+	background = eel_get_widget_background (GTK_WIDGET (container));
 	
 	gtk_signal_connect
 		(GTK_OBJECT(background),
@@ -3752,7 +3752,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 &attach_points,
 		 TRUE);
 	
-	nautilus_scalable_icon_unref (scalable_icon);
+	eel_scalable_icon_unref (scalable_icon);
 
 	/*  in the rare case an image is too small, scale it up */
 	
@@ -3792,7 +3792,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		}
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
-	nautilus_scalable_icon_list_free (emblem_scalable_icons);
+	eel_scalable_icon_list_free (emblem_scalable_icons);
 
 	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
@@ -3807,7 +3807,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	 * happened to be typing at that moment.
 	 */
 	if (icon == get_icon_being_renamed (container) &&
-	    nautilus_strcmp (editable_text, 
+	    eel_strcmp (editable_text, 
 	    		     nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
 		end_renaming_mode (container, FALSE);
 	}
@@ -3831,7 +3831,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	/* Let the pixbufs go. */
 	gdk_pixbuf_unref (pixbuf);
-	nautilus_gdk_pixbuf_list_free (emblem_pixbufs);
+	eel_gdk_pixbuf_list_free (emblem_pixbufs);
 
 	g_free (editable_text);
 	g_free (additional_text);
@@ -4997,10 +4997,10 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 
 void
 nautilus_icon_container_set_smooth_label_font (NautilusIconContainer *container,
-					       NautilusScalableFont *font)
+					       EelScalableFont *font)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
+	g_return_if_fail (EEL_IS_SCALABLE_FONT (font));
 
 	gtk_object_ref (GTK_OBJECT (font));
 	gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
@@ -5035,13 +5035,13 @@ nautilus_icon_container_get_label_color (NautilusIconContainer *container,
 }
 
 static void
-update_label_color (NautilusBackground *background,
+update_label_color (EelBackground *background,
 		    NautilusIconContainer *container)
 {
 	char *light_info_color, *dark_info_color;
 	uint light_info_value, dark_info_value;
 	
-	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (EEL_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
@@ -5064,7 +5064,7 @@ update_label_color (NautilusBackground *background,
 		g_free (dark_info_color);
 	}
 	
-	if (nautilus_background_is_dark (background)) {
+	if (eel_background_is_dark (background)) {
 		container->details->label_color = 0xEFEFEF;
 		container->details->label_info_color = light_info_value;
 	} else {
@@ -5137,7 +5137,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
 	
 	if (highlight_color_str == NULL) {
-			container->details->highlight_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 102);
+			container->details->highlight_color = EEL_RGBA_COLOR_PACK (0, 0, 0, 102);
 		} else {
 			container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
 			g_free (highlight_color_str);
@@ -5186,10 +5186,10 @@ check_compute_stretch (int icon_x, int icon_y, int icon_size,
 void
 nautilus_self_check_icon_container (void)
 {
-	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
-	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
-	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
-	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
+	EEL_CHECK_STRING_RESULT (check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

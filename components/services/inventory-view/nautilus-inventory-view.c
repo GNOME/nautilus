@@ -32,9 +32,9 @@
 
 #include "eazel-services-extensions.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-background.h>
+#include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <bonobo/bonobo-control.h>
@@ -60,7 +60,7 @@ static void inventory_load_location_callback         (NautilusView              
 						      gpointer                    user_data);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusInventoryView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusInventoryView,
 				   nautilus_inventory_view,
 				   NAUTILUS_TYPE_VIEW)
 
@@ -118,7 +118,7 @@ nautilus_inventory_view_destroy (GtkObject *object)
 	
 	g_free (view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -160,7 +160,7 @@ inventory_load_location_callback (NautilusView *nautilus_view,
 
 	DEBUG_MSG (("%s: load_location '%s'\n", __FUNCTION__, location));
 
-	if (nautilus_istr_has_prefix (location, "eazel-inventory:enable")) {
+	if (eel_istr_has_prefix (location, "eazel-inventory:enable")) {
 		view->details->next_uri = get_finish_uri (location, "eazel:");
 
 		DEBUG_MSG (("%s: enabling, next_uri is '%s'\n", __FUNCTION__, view->details->next_uri));
@@ -169,7 +169,7 @@ inventory_load_location_callback (NautilusView *nautilus_view,
 		nautilus_view_report_load_complete (nautilus_view);
 		nautilus_inventory_enable_page_run (
 			NAUTILUS_INVENTORY_ENABLE_PAGE (view->details->enable_page));
-	} else if (nautilus_istr_has_prefix (location, "eazel-inventory:disable")) {
+	} else if (eel_istr_has_prefix (location, "eazel-inventory:disable")) {
 		view->details->next_uri = get_finish_uri (location, "eazel:");
 
 		DEBUG_MSG (("%s: disabling, next_uri is '%s'\n", __FUNCTION__, view->details->next_uri));

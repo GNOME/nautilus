@@ -7,6 +7,8 @@ INCLUDES =					\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GCONF_CFLAGS) 			\
 	$(OAF_CFLAGS)				\
 	$(BONOBO_CFLAGS)			\
@@ -26,6 +28,8 @@ nautilus_sidebar_loser_SOURCES =		\
 nautilus_sidebar_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(GNOMEUI_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS) \

@@ -39,16 +39,16 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-scalable-font.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 struct NautilusAboutDetails {
@@ -89,7 +89,7 @@ static int      update_authors_if_necessary     (gpointer             callback_d
 #define UPDATE_TIME_INTERVAL 8
 
 /* gtk class definition boilerplate */
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
 
 static void
 nautilus_about_initialize_class (NautilusAboutClass *about_class)
@@ -119,7 +119,7 @@ nautilus_about_destroy (GtkObject *object)
 	
 	g_free (about->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -140,7 +140,7 @@ nautilus_about_initialize (NautilusAbout *about)
 	/* set the window title and standard close key accelerator */
 	gtk_window_set_title (GTK_WINDOW (about), _("About Nautilus"));
 	gtk_window_set_wmclass (GTK_WINDOW (about), "about", "Nautilus");
-	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (about));
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (about));
 	
 	/* allocate a frame to hold the drawing area */
 	frame = gtk_frame_new (NULL);
@@ -231,7 +231,7 @@ nautilus_about_repaint (GtkWidget *widget,
 
 /* utility routine to draw a string at a position */
 static void
-draw_aa_string (NautilusScalableFont *font,
+draw_aa_string (EelScalableFont *font,
 		GdkPixbuf *pixbuf,
 		int font_size,
 		int x_pos,
@@ -242,17 +242,17 @@ draw_aa_string (NautilusScalableFont *font,
 		int shadow_offset)
 {
 	if (shadow_offset != 0) {
-		nautilus_scalable_font_draw_text (font, pixbuf,
+		eel_scalable_font_draw_text (font, pixbuf,
 						  x_pos + shadow_offset, y_pos + shadow_offset,
 						  NULL,
 						  font_size,
 						  text, strlen (text),
-						  shadow_color, NAUTILUS_OPACITY_FULLY_OPAQUE);	
+						  shadow_color, EEL_OPACITY_FULLY_OPAQUE);	
 	}
 	
-	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
+	eel_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
 					  font_size,
-					  text, strlen (text), color, NAUTILUS_OPACITY_FULLY_OPAQUE);
+					  text, strlen (text), color, EEL_OPACITY_FULLY_OPAQUE);
 }
 
 /* randomize_authors randomizes the order array so different names get displayed in different positions each time */
@@ -290,7 +290,7 @@ randomize_authors (NautilusAbout *about)
 static void
 draw_author_list (NautilusAbout *about,
 		  GdkPixbuf *pixbuf,
-		  NautilusScalableFont *plain_font)
+		  EelScalableFont *plain_font)
 {
 	int index, column_count;
 	int xpos, ypos;
@@ -302,7 +302,7 @@ draw_author_list (NautilusAbout *about,
 	xpos = AUTHOR_LEFT_POS; ypos = AUTHOR_TOP_POS;
 	while (about->details->authors[about->details->order_array[index]] != NULL) {
 		draw_aa_string (plain_font, pixbuf, 12, xpos, ypos,
-				NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_RGB_COLOR_BLACK,
+				EEL_RGB_COLOR_BLACK, EEL_RGB_COLOR_BLACK,
 				about->details->authors[about->details->order_array[index]],
 				0);
 		ypos += AUTHOR_LINE_HEIGHT;
@@ -333,21 +333,21 @@ nautilus_about_draw_info (NautilusAbout	*about,
 {
 	char *display_str, *temp_str;
 	char **comment_array;
-	NautilusScalableFont *plain_font, *bold_font;
+	EelScalableFont *plain_font, *bold_font;
 	GdkPixbuf *pixbuf;
 	uint	black, white, grey;
 	int xpos, ypos, total_height;
 	int index;
 
-	plain_font = nautilus_scalable_font_get_default_font ();
-	bold_font  = nautilus_scalable_font_make_bold (plain_font);
+	plain_font = eel_scalable_font_get_default_font ();
+	bold_font  = eel_scalable_font_make_bold (plain_font);
 
 	pixbuf = about->details->background_pixbuf;
 	total_height = gdk_pixbuf_get_height (pixbuf);
 	
-	black = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
-	white = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
-	grey = NAUTILUS_RGBA_COLOR_PACK (153, 153, 153, 255);
+	black = EEL_RGBA_COLOR_PACK (0, 0, 0, 255);
+	white = EEL_RGBA_COLOR_PACK (255, 255, 255, 255);
+	grey = EEL_RGBA_COLOR_PACK (153, 153, 153, 255);
 	
 	/* draw the name and version */
 	display_str = g_strdup_printf ("%s %s", title, version);
@@ -364,7 +364,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, time_stamp, 0);
 
 	/* draw the translator's credit, if necessary */
-	if (nautilus_strcmp (translators, "Translator Credits") != 0) {
+	if (eel_strcmp (translators, "Translator Credits") != 0) {
 		comment_array = g_strsplit (translators, "\n", 10);
 		index = 0;
 		while (comment_array[index] != NULL) {
@@ -416,25 +416,25 @@ void
 nautilus_about_update_authors (NautilusAbout *about)
 {
 	ArtIRect author_area;
-	NautilusScalableFont *plain_font;
+	EelScalableFont *plain_font;
 	
 	/* clear the author area */
-	nautilus_art_irect_assign (&author_area,
+	eel_art_irect_assign (&author_area,
 				   AUTHOR_LEFT_POS - 24,
 				   AUTHOR_TOP_POS,
 				   2 * AUTHOR_COLUMN_WIDTH,
 				   AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN);
 	
-	nautilus_gdk_pixbuf_fill_rectangle_with_color
+	eel_gdk_pixbuf_fill_rectangle_with_color
 		(about->details->background_pixbuf,
 		 &author_area,
-		 NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255));
+		 EEL_RGBA_COLOR_PACK (255, 255, 255, 255));
 
 	/* randomize the author array */
 	randomize_authors (about);
 	
 	/* redraw the authors */
-	plain_font = nautilus_scalable_font_get_default_font ();
+	plain_font = eel_scalable_font_get_default_font ();
 	draw_author_list (about, about->details->background_pixbuf, plain_font);
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	

@@ -31,12 +31,12 @@
 #include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gnome-extensions.h"
+#include <eel/eel-gnome-extensions.h>
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-string.h"
-#include "nautilus-xml-extensions.h"
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
@@ -507,7 +507,7 @@ nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const cha
 		return;
 	}
 	
-	terminal_path = nautilus_gnome_get_terminal_path ();
+	terminal_path = eel_gnome_get_terminal_path ();
 	if (terminal_path == NULL) {
 		return;
 	}

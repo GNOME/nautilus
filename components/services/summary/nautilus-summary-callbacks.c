@@ -31,7 +31,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
 
-#include <libnautilus-extensions/nautilus-caption-table.h>
+#include <eel/eel-caption-table.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
 #include <libtrilobite/trilobite-redirect.h>
@@ -163,8 +163,8 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
 		view->details->authn_callback = ammonite_auth_callback_wrapper_new (bonobo_poa(), &cb_funcs, view);
 
-		user_name = nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (view->details->caption_table), 0);
-		password = nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (view->details->caption_table), 1);
+		user_name = eel_caption_table_get_entry_text (EEL_CAPTION_TABLE (view->details->caption_table), 0);
+		password = eel_caption_table_get_entry_text (EEL_CAPTION_TABLE (view->details->caption_table), 1);
 
 		authinfo = EazelProxy_AuthnInfo__alloc ();
 		authinfo->username = CORBA_string_dup (user_name);

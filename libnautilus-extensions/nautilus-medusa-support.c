@@ -27,8 +27,8 @@
 #include <config.h>
 #include "nautilus-medusa-support.h"
 
-#include "nautilus-glib-extensions.h"
-#include "nautilus-string.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -104,7 +104,7 @@ nautilus_medusa_check_cron_is_enabled (void)
 
 	while ((file = readdir (proc_directory)) != NULL) {
 		/* Process files have numbers */
-		if (!nautilus_str_to_int (file->d_name, &process_number)) {
+		if (!eel_str_to_int (file->d_name, &process_number)) {
 			continue;
 		}
 
@@ -127,8 +127,8 @@ nautilus_medusa_check_cron_is_enabled (void)
 		
 		stat_file_process_name = strchr (stat_file_data, ' ');
 		
-		if (nautilus_str_has_prefix (stat_file_process_name, " (crond)") ||
-		    nautilus_str_has_prefix (stat_file_process_name, " (cron)")) {
+		if (eel_str_has_prefix (stat_file_process_name, " (crond)") ||
+		    eel_str_has_prefix (stat_file_process_name, " (cron)")) {
 			status = NAUTILUS_CRON_STATUS_ON;
 			break;
 		}

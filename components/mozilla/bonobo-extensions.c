@@ -395,7 +395,7 @@ nautilus_bonobo_remove_menu_items_and_commands (BonoboUIComponent *ui,
 }
 
 static char *
-nautilus_str_strip_chr (const char *source, char remove_this)
+eel_str_strip_chr (const char *source, char remove_this)
 {
 	char *result, *out;
 	const char *in;
@@ -429,7 +429,7 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 {
 	char *label_no_underscore;
 
-	label_no_underscore = nautilus_str_strip_chr (label_with_underscore, '_');
+	label_no_underscore = eel_str_strip_chr (label_with_underscore, '_');
 	nautilus_bonobo_set_label (ui,
 				   menu_item_path,
 				   label_with_underscore);

@@ -18,6 +18,8 @@ nautilus_authenticate_SOURCES =\
 
 nautilus_authenticate_LDADD =	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(GNOMEUI_LIBS)	\
 	$(GCONF_LIBS) \
 	$(PAM_LIBS) \

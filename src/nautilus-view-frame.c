@@ -40,8 +40,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-idle-queue.h>
@@ -112,7 +112,7 @@ static void send_history                         (NautilusViewFrame      *view);
 
 static guint signals[LAST_SIGNAL];
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
 				   nautilus_view_frame,
 				   NAUTILUS_TYPE_GENEROUS_BIN)
 
@@ -183,7 +183,7 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 				    get_history_list),
-		 nautilus_gtk_marshal_POINTER__NONE,
+		 eel_gtk_marshal_POINTER__NONE,
 		 GTK_TYPE_POINTER, 0);
 	signals[GO_BACK] = gtk_signal_new
 		("go_back",
@@ -223,7 +223,7 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 				    open_location_force_new_window),
-		 nautilus_gtk_marshal_NONE__STRING_POINTER,
+		 eel_gtk_marshal_NONE__STRING_POINTER,
 		 GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_POINTER);
 	signals[OPEN_LOCATION_IN_THIS_WINDOW] = gtk_signal_new
 		("open_location_in_this_window",
@@ -247,7 +247,7 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 				    report_location_change),
-		 nautilus_gtk_marshal_NONE__STRING_POINTER_STRING,
+		 eel_gtk_marshal_NONE__STRING_POINTER_STRING,
 		 GTK_TYPE_NONE, 3, GTK_TYPE_STRING, GTK_TYPE_POINTER, GTK_TYPE_STRING);
 	signals[REPORT_REDIRECT] = gtk_signal_new
 		("report_redirect",
@@ -255,7 +255,7 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 		 object_class->type,
 		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 				    report_redirect),
-		 nautilus_gtk_marshal_NONE__STRING_STRING_POINTER_STRING,
+		 eel_gtk_marshal_NONE__STRING_STRING_POINTER_STRING,
 		 GTK_TYPE_NONE, 4, GTK_TYPE_STRING, GTK_TYPE_STRING, GTK_TYPE_POINTER, GTK_TYPE_STRING);
 	signals[TITLE_CHANGED] = gtk_signal_new
 		("title_changed",
@@ -373,7 +373,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 	 */
 	view->details->state = VIEW_FRAME_FAILED;
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -390,7 +390,7 @@ nautilus_view_frame_finalize (GtkObject *object)
 	g_free (view->details->label);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -1355,7 +1355,7 @@ nautilus_view_frame_map (GtkWidget *view_as_widget)
 
 	view = NAUTILUS_VIEW_FRAME (view_as_widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (view_as_widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (view_as_widget));
 
 	if (view->details->control_frame != NULL) {
 		bonobo_control_frame_control_activate (view->details->control_frame);

@@ -39,10 +39,10 @@
 #include <string.h>
 #include <gtk/gtkmain.h>
 
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-link.h"
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 
@@ -328,7 +328,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		*non_default_action = GDK_ACTION_MOVE;
 		return;
 
-	} else if (nautilus_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)) {
+	} else if (eel_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)) {
 		*default_action = GDK_ACTION_MOVE;
 		*non_default_action = GDK_ACTION_MOVE;
 		return;
@@ -635,7 +635,7 @@ nautilus_drag_autoscroll_start (NautilusDragInfo *drag_info,
 	if (nautilus_drag_autoscroll_in_scroll_region (widget)) {
 		if (drag_info->auto_scroll_timeout_id == 0) {
 			drag_info->waiting_to_autoscroll = TRUE;
-			drag_info->start_auto_scroll_in = nautilus_get_system_time() 
+			drag_info->start_auto_scroll_in = eel_get_system_time() 
 				+ AUTOSCROLL_INITIAL_DELAY;
 			
 			drag_info->auto_scroll_timeout_id = gtk_timeout_add
@@ -685,5 +685,5 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 	}
 	
 	nautilus_file_set_keywords (file, keywords);
-	nautilus_g_list_free_deep (keywords);
+	eel_g_list_free_deep (keywords);
 }

@@ -40,13 +40,13 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
@@ -85,7 +85,7 @@ static void     corba_restart                   (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static gboolean restore_window_states           (NautilusShell          *shell);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusShell,
 				   nautilus_shell,
 				   BONOBO_OBJECT_TYPE)
 
@@ -159,7 +159,7 @@ destroy (GtkObject *object)
 	shell = NAUTILUS_SHELL (object);
 	g_free (shell->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusShell *
@@ -221,7 +221,7 @@ display_caveat (GtkWindow *parent_window)
 		}
 	}
 
-  	text = nautilus_label_new
+  	text = eel_label_new
 		(_("Thank you for your interest in Nautilus.\n "
 		   "\n"
 		   "As with any software under development, you should exercise caution when "
@@ -231,9 +231,9 @@ display_caveat (GtkWindow *parent_window)
 		   "\n"
 		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
 		   "comments, and suggestions."));
-	nautilus_label_make_larger (NAUTILUS_LABEL (text), 1);
-	nautilus_label_set_justify (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (text), TRUE);
+	eel_label_make_larger (EEL_LABEL (text), 1);
+	eel_label_set_justify (EEL_LABEL (text), GTK_JUSTIFY_LEFT);
+	eel_label_set_wrap (EEL_LABEL (text), TRUE);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
 
@@ -274,7 +274,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	window = nautilus_application_create_window (shell->details->application);
 
 	if (geometry != NULL) {
-		nautilus_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
+		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								      geometry,
 								      APPLICATION_WINDOW_MIN_WIDTH,
 								      APPLICATION_WINDOW_MIN_HEIGHT);
@@ -386,7 +386,7 @@ save_window_states (void)
 		   at some point. This ensures that when eazel-install:nautilus
 		   restarts nautilus, it doesn't go to eazel-install:nautilus but
 		   to eazel: instead */
-		if (nautilus_istr_has_prefix (location, "eazel-install:")) {
+		if (eel_istr_has_prefix (location, "eazel-install:")) {
 			g_free (location);
 			location = g_strdup ("eazel:");
 		}
@@ -402,7 +402,7 @@ save_window_states (void)
 	}
 
 	nautilus_preferences_set_string_list (START_STATE_CONFIG, out);
-	nautilus_g_list_free_deep (out);
+	eel_g_list_free_deep (out);
 }
 
 /* returns TRUE if there was state info which has been used to create new windows */
@@ -453,7 +453,7 @@ restore_window_states (NautilusShell *shell)
 		gtk_widget_set_usize (GTK_WIDGET (window), width, height);
 		display_caveat_first_time (shell, window);
 	}
-	nautilus_g_list_free_deep (start_state);
+	eel_g_list_free_deep (start_state);
 	nautilus_preferences_set_string_list (START_STATE_CONFIG, NULL);
 	return TRUE;
 }
@@ -465,5 +465,5 @@ corba_restart (PortableServer_Servant servant,
 	save_window_states ();
 
 	nautilus_main_event_loop_quit ();
-	nautilus_setenv ("_NAUTILUS_RESTART", "yes", 1);
+	eel_setenv ("_NAUTILUS_RESTART", "yes", 1);
 }

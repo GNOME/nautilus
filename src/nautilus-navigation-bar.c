@@ -34,7 +34,7 @@
 #include "nautilus-navigation-bar.h"
 
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 enum {
 	ACTIVATE,
@@ -46,10 +46,10 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *class);
 static void nautilus_navigation_bar_initialize       (NautilusNavigationBar      *bar);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, NAUTILUS_TYPE_GENEROUS_BIN)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, NAUTILUS_TYPE_GENEROUS_BIN)
 
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, get_location)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, get_location)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)
 
 static void
 nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
@@ -80,8 +80,8 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 
 	klass->activate = NULL;
 
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);
 }
 
 static void
@@ -117,7 +117,7 @@ nautilus_navigation_bar_get_location (NautilusNavigationBar *bar)
 {
 	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar), NULL);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_NAVIGATION_BAR_CLASS, bar,
 		 get_location, (bar));
 }
@@ -136,7 +136,7 @@ nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	NAUTILUS_CALL_METHOD (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
+	EEL_CALL_METHOD (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
 			      set_location, (bar, location));
 }
 

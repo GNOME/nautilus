@@ -33,8 +33,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 #define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
@@ -64,7 +64,7 @@ static void    nautilus_history_view_initialize_class (NautilusHistoryViewClass 
 static void    nautilus_history_view_initialize       (NautilusHistoryView      *view);
 static void    nautilus_history_view_destroy          (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
 				   nautilus_history_view,
 				   NAUTILUS_TYPE_VIEW)
 
@@ -89,7 +89,7 @@ install_icon (GtkCList *list, int row, GdkPixbuf *pixbuf)
 
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 
-						   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+						   EEL_STANDARD_ALPHA_THRESHHOLD);
 	} else {
 		bookmark = get_bookmark_from_row (list, row);
 		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER,
@@ -325,7 +325,7 @@ nautilus_history_view_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (view->list));
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 int

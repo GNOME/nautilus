@@ -15,6 +15,8 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GCONF_CFLAGS) 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)                       \
@@ -64,6 +66,8 @@ nautilus_music_view_SOURCES =		        \
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(GCONF_LIBS) \

@@ -30,7 +30,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
-#include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <eel/eel-password-dialog.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
 	if (!command)
 		command = g_strdup("");
 	
-	password_dialog = nautilus_password_dialog_new (_("Privileged Command Execution"),
+	password_dialog = eel_password_dialog_new (_("Privileged Command Execution"),
 							NULL,
 							"root",
 							"",
@@ -77,12 +77,12 @@ int main (int argc, char *argv[])
 	
 	g_free (command);
 	
-	if (nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (password_dialog))) {
+	if (eel_password_dialog_run_and_block (EEL_PASSWORD_DIALOG (password_dialog))) {
 		char *username;
 		char *password;
 		
-		username = nautilus_password_dialog_get_username (NAUTILUS_PASSWORD_DIALOG (password_dialog));
-		password = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (password_dialog));
+		username = eel_password_dialog_get_username (EEL_PASSWORD_DIALOG (password_dialog));
+		password = eel_password_dialog_get_password (EEL_PASSWORD_DIALOG (password_dialog));
 		
 		if (nautilus_authenticate_authenticate (username, password)) {
 			/* Free the password right away to blow it away from memory. */

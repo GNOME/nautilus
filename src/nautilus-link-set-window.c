@@ -43,14 +43,14 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-link-set.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <stdlib.h>
 
 /* global to hold the currently allocated link set window, if any */
@@ -228,7 +228,7 @@ nautilus_link_set_configure_window (const char *directory_path, GtkWindow *windo
 						index++, temp_str, window_to_update);	
 	}
 		
-	nautilus_g_list_free_deep (link_set_names);
+	eel_g_list_free_deep (link_set_names);
 
 	/* show the window */
 	gtk_window_set_position(window, GTK_WIN_POS_CENTER);

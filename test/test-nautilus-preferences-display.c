@@ -1,15 +1,15 @@
 #include "test.h"
 
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-image-with-background.h>
-#include <libnautilus-extensions/nautilus-text-caption.h>
+#include <eel/eel-image.h>
+#include <eel/eel-image-with-background.h>
+#include <eel/eel-text-caption.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 
 static void
-text_caption_update (NautilusTextCaption *text_caption,
+text_caption_update (EelTextCaption *text_caption,
 		     const char *name)
 {
-	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
 	g_return_if_fail (name != NULL);
 	
 	g_print ("'%s' changed from '%d' to '%d'\n",
@@ -21,14 +21,14 @@ text_caption_update (NautilusTextCaption *text_caption,
 }
 
 static void
-user_level_caption_update (NautilusTextCaption *text_caption)
+user_level_caption_update (EelTextCaption *text_caption)
 {
 	char *old_text;
 	char *new_text;
 
-	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+	g_return_if_fail (EEL_IS_TEXT_CAPTION (text_caption));
 	
-	old_text = nautilus_text_caption_get_text (text_caption);
+	old_text = eel_text_caption_get_text (text_caption);
 	new_text = nautilus_preferences_get ("user_level");
 	
 	g_print ("'%s' changed from '%s' to '%s'\n",
@@ -44,43 +44,43 @@ user_level_caption_update (NautilusTextCaption *text_caption)
 static void
 user_level_changed_callback (gpointer callback_data)
 {
-	user_level_caption_update (NAUTILUS_TEXT_CAPTION (callback_data));
+	user_level_caption_update (EEL_TEXT_CAPTION (callback_data));
 }
 
 static void
 green_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "green");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "green");
 }
 
 static void
 yellow_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "yellow");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "yellow");
 }
 
 static void
 red_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "red");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "red");
 }
 
 static void
 apple_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "fruits/apple");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "fruits/apple");
 }
 
 static void
 orange_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "fruits/orange");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "fruits/orange");
 }
 
 static void
 pear_changed_callback (gpointer callback_data)
 {
-	text_caption_update (NAUTILUS_TEXT_CAPTION (callback_data), "fruits/pear");
+	text_caption_update (EEL_TEXT_CAPTION (callback_data), "fruits/pear");
 }
 
 static GtkWidget *
@@ -96,13 +96,13 @@ entry_new (const char *name,
 
 	hbox = gtk_hbox_new (TRUE, 2);
 
-	*caption_out = nautilus_text_caption_new ();
-	nautilus_text_caption_set_editable (NAUTILUS_TEXT_CAPTION (*caption_out), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (*caption_out), name);
+	*caption_out = eel_text_caption_new ();
+	eel_text_caption_set_editable (EEL_TEXT_CAPTION (*caption_out), FALSE);
+	eel_caption_set_title_label (EEL_CAPTION (*caption_out), name);
 
-	*default_caption_out = nautilus_text_caption_new ();
-	nautilus_text_caption_set_editable (NAUTILUS_TEXT_CAPTION (*default_caption_out), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (*default_caption_out), "default:");
+	*default_caption_out = eel_text_caption_new ();
+	eel_text_caption_set_editable (EEL_TEXT_CAPTION (*default_caption_out), FALSE);
+	eel_caption_set_title_label (EEL_CAPTION (*default_caption_out), "default:");
 	
 	gtk_box_pack_start (GTK_BOX (hbox), *caption_out, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), *default_caption_out, FALSE, FALSE, 0);
@@ -124,8 +124,8 @@ user_level_frame_new (void)
 	frame = gtk_frame_new ("user_level");
 	
 	user_level_hbox = entry_new ("user_level", &user_level_caption, &user_level_default_caption);
-	test_text_caption_set_text_for_string_preferences (NAUTILUS_TEXT_CAPTION (user_level_caption), "user_level");
-	test_text_caption_set_text_for_default_string_preferences (NAUTILUS_TEXT_CAPTION (user_level_default_caption), "user_level");
+	test_text_caption_set_text_for_string_preferences (EEL_TEXT_CAPTION (user_level_caption), "user_level");
+	test_text_caption_set_text_for_default_string_preferences (EEL_TEXT_CAPTION (user_level_default_caption), "user_level");
 	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, user_level_caption);
 
 	gtk_container_add (GTK_CONTAINER (frame), user_level_hbox);
@@ -162,13 +162,13 @@ colors_frame_new (void)
 	yellow_hbox = entry_new ("yellow", &yellow_caption, &yellow_default_caption);
 	red_hbox = entry_new ("red", &red_caption, &red_default_caption);
 
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (green_caption), "green");
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (yellow_caption), "yellow");
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (red_caption), "red");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (green_caption), "green");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (yellow_caption), "yellow");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (red_caption), "red");
 
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (green_default_caption), "green");
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (yellow_default_caption), "yellow");
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (red_default_caption), "red");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (green_default_caption), "green");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (yellow_default_caption), "yellow");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (red_default_caption), "red");
 	
 	nautilus_preferences_add_callback ("green", green_changed_callback, green_caption);
 	nautilus_preferences_add_callback ("yellow", yellow_changed_callback, yellow_caption);
@@ -210,13 +210,13 @@ fruits_frame_new (void)
 	orange_hbox = entry_new ("fruits/orange", &orange_caption, &orange_default_caption);
 	pear_hbox = entry_new ("fruits/pear", &pear_caption, &pear_default_caption);
 
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (apple_caption), "fruits/apple");
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (orange_caption), "fruits/orange");
-	test_text_caption_set_text_for_int_preferences (NAUTILUS_TEXT_CAPTION (pear_caption), "fruits/pear");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (apple_caption), "fruits/apple");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (orange_caption), "fruits/orange");
+	test_text_caption_set_text_for_int_preferences (EEL_TEXT_CAPTION (pear_caption), "fruits/pear");
 
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (apple_default_caption), "fruits/apple");
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (orange_default_caption), "fruits/orange");
-	test_text_caption_set_text_for_default_int_preferences (NAUTILUS_TEXT_CAPTION (pear_default_caption), "fruits/pear");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (apple_default_caption), "fruits/apple");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (orange_default_caption), "fruits/orange");
+	test_text_caption_set_text_for_default_int_preferences (EEL_TEXT_CAPTION (pear_default_caption), "fruits/pear");
 	
 	nautilus_preferences_add_callback ("fruits/apple", apple_changed_callback, apple_caption);
 	nautilus_preferences_add_callback ("fruits/orange", orange_changed_callback, orange_caption);

@@ -44,12 +44,12 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 
 /* FIXME bugzilla.eazel.com 2815: This code uses part of the
  * NautilusSearchBarCriterion class, which is really for complex
@@ -88,7 +88,7 @@ static char *   real_get_default_sort_attribute      	 (FMListView       *view);
 static void 	real_get_column_specification        	 (FMListView       *list_view,
 						      	  int               column_number,
 						      	  FMListViewColumn *specification);
-static NautilusStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
+static EelStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
 static void	real_file_limit_reached 		 (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
 static gboolean real_supports_creating_files		 (FMDirectoryView  *view);
@@ -107,7 +107,7 @@ static void	reveal_selected_items_callback 		 (BonoboUIComponent *component,
 							  const char 	   *verb);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
+EEL_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
 
@@ -155,7 +155,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 		}
 	}
 #else
-	nautilus_show_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
+	eel_show_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
 			            _("Search Service Not Available"),
 			            NULL);
 #endif
@@ -181,7 +181,7 @@ real_load_error (FMDirectoryView *nautilus_view,
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
 		/* FIXME bugzilla.eazel.com 5058: Should be two messages, one for each of whether
 		   "slow complete search" turned on or not */
-		load_error_dialog = nautilus_show_yes_no_dialog (_("The search you have selected "
+		load_error_dialog = eel_show_yes_no_dialog (_("The search you have selected "
 							           "is newer than the index on your "
 							           "system.  The search will return "
 							           "no results right now.  Would you like "
@@ -190,14 +190,14 @@ real_load_error (FMDirectoryView *nautilus_view,
 							         _("Create a new index"),
 							         _("Don't create index"),
 							         NULL);
-		gtk_signal_connect (GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
+		gtk_signal_connect (GTK_OBJECT (eel_gnome_dialog_get_button_by_index
 						(load_error_dialog, GNOME_OK)),
 				    "clicked",
 				    nautilus_indexing_info_request_reindex,
 				    NULL);
 		break;
 	case GNOME_VFS_ERROR_TOO_BIG:
-		nautilus_show_error_dialog (_("Every indexed file on your computer "
+		eel_show_error_dialog (_("Every indexed file on your computer "
 					      "matches the criteria you selected. "
 					      "You can check the spelling on your selections "
 					      "or add more criteria to narrow your results."),
@@ -214,7 +214,7 @@ real_load_error (FMDirectoryView *nautilus_view,
 							  "this search's contents: "
 							  "%s"),
 							gnome_vfs_result_to_string (result));
-		nautilus_show_error_dialog (error_string,
+		eel_show_error_dialog (error_string,
 				            _("Error during search"),
 				            NULL);
 		g_free (error_string);
@@ -249,7 +249,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 		title_string = backup_search_is_available 
 			?  N_("Fast searches are not available")
 			:  N_("Content searches are not available");
-		nautilus_show_error_dialog_with_details (error_string,
+		eel_show_error_dialog_with_details (error_string,
 						         title_string,
 						         _("Your index files are available "
 						           "but the Medusa search daemon, which handles "
@@ -289,12 +289,12 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			index_problem_dialog = nautilus_show_yes_no_dialog (error_string,
+			index_problem_dialog = eel_show_yes_no_dialog (error_string,
 								            title_string,
 								            _("Create an Index"),
 								            _("Don't Create an Index Now"),
 								            NULL);
-			create_index_button = nautilus_gnome_dialog_get_button_by_index (index_problem_dialog,
+			create_index_button = eel_gnome_dialog_get_button_by_index (index_problem_dialog,
 											  GNOME_OK);
 			gtk_signal_connect (GTK_OBJECT (create_index_button),
 					    "clicked",
@@ -317,7 +317,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			nautilus_show_error_dialog (error_string,
+			eel_show_error_dialog (error_string,
 					            title_string,
 					            NULL);
 			break;
@@ -336,7 +336,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			nautilus_show_error_dialog_with_details (error_string,
+			eel_show_error_dialog_with_details (error_string,
 							         title_string,
 							         _("The program that creates an index "
 							           "is not set up correctly.  You can "
@@ -357,7 +357,7 @@ display_system_services_are_blocked_dialog (gboolean unindexed_search_is_availab
 
 	/* It is not necessary to translate this text just yet; it has not been
 	   edited yet, and will be replaced by a final copy in a few days. */
-	dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires an index of "
+	dialog_shown = eel_show_info_dialog (_("To do a fast search, Find requires an index of "
 						    "the files on your system. Your system administrator "
 						    "has disabled fast search on your computer, so no index "
 						    "is available."),
@@ -370,7 +370,7 @@ display_system_services_are_blocked_dialog (gboolean unindexed_search_is_availab
 static void     
 display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
 {
-	nautilus_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
+	eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
 						  "the files on your system. Fast search is disabled "
 						  "in your Search preferences, so no index is available."),
 						_("Fast searches are not available on your computer."),
@@ -456,7 +456,7 @@ real_destroy (GtkObject *object)
 	}
 	g_free (search_view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -507,7 +507,7 @@ real_get_default_sort_attribute (FMListView *view)
 	return sort_attribute;
 }
 
-static NautilusStringList *
+static EelStringList *
 real_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
@@ -614,7 +614,7 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 	*return_sensitivity = selected_files != NULL;
 	
         if (return_name_no_underscore != NULL) {
-        	*return_name_no_underscore = nautilus_str_strip_chr (name_with_underscore, '_');
+        	*return_name_no_underscore = eel_str_strip_chr (name_with_underscore, '_');
         }
 
         if (return_name_with_underscore != NULL) {
@@ -648,7 +648,7 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 		/* Tell the normal list-view code to add this file. It will add
 		 * and ref it only if it's not already in the list.
 		 */ 
-		NAUTILUS_CALL_PARENT 
+		EEL_CALL_PARENT 
 			(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
 	}
 
@@ -665,7 +665,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_PARENT (FM_LIST_VIEW_CLASS, adding_file, (view, file));
+	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, adding_file, (view, file));
 
 	/* FIXME bugzilla.eazel.com 5059: this implies that positioning, custom icon, icon
 	 * stretching, etc, will be based on the real directory the file is in,
@@ -699,7 +699,7 @@ real_removing_file (FMListView *view, NautilusFile *file)
 	nautilus_file_monitor_remove (file, view);
 	gtk_signal_disconnect_by_func 
 		(GTK_OBJECT (file), fm_directory_view_queue_file_change, view);
-	NAUTILUS_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
+	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
 
 static gboolean
@@ -720,7 +720,7 @@ real_file_limit_reached (FMDirectoryView *view)
 	 * to the way files are collected in batches. So you can't assume that
 	 * no more than the constant limit are displayed.
 	 */
-	nautilus_show_warning_dialog (_("Nautilus found more search results than it can display. "
+	eel_show_warning_dialog (_("Nautilus found more search results than it can display. "
 				        "Some matching items will not be displayed. "), 
 				      _("Too Many Matches"),
 				      fm_directory_view_get_containing_window (view));
@@ -762,7 +762,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	search_view = FM_SEARCH_LIST_VIEW (view);
 
@@ -811,7 +811,7 @@ real_update_menus (FMDirectoryView *view)
 {
 	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
 
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	update_reveal_item (FM_SEARCH_LIST_VIEW (view));
 }
@@ -842,7 +842,7 @@ reveal_selected_items_callback (BonoboUIComponent *component, gpointer user_data
 					(fm_directory_view_get_nautilus_view (directory_view), 
 					 parent_uri,
 					 file_as_list);
-				nautilus_g_list_free_deep (file_as_list);
+				eel_g_list_free_deep (file_as_list);
 			}
 			g_free (parent_uri);
 		}

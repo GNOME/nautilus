@@ -19,6 +19,8 @@ INCLUDES =								\
 	-I$(top_builddir)/components/services/trilobite/libtrilobite	\
 	-I$(top_builddir)/libnautilus-extensions	 		\
 	-I$(top_srcdir)/libnautilus-extensions	 			\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GCONF_CFLAGS) 						\
 	$(GNOME_CFLAGS) 						\
 	$(GNOME_INCLUDEDIR) 						\
@@ -49,6 +51,8 @@ trilobite_inventory_service_LDADD =								\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la			\
 	$(top_builddir)/libnautilus/libnautilus.la						\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)										\
 	$(AMMONITE_LIBS)									\
 	$(GHTTP_LIBS)										\

@@ -31,7 +31,7 @@
 
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 
 
@@ -48,7 +48,7 @@ static void nautilus_component_adapter_factory_initialize       (NautilusCompone
 static void nautilus_component_adapter_factory_destroy          (GtkObject                            *object);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComponentAdapterFactory, nautilus_component_adapter_factory, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusComponentAdapterFactory, nautilus_component_adapter_factory, GTK_TYPE_OBJECT)
 
 static void
 nautilus_component_adapter_factory_initialize_class  (NautilusComponentAdapterFactoryClass *klass)

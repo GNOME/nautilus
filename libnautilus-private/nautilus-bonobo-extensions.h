@@ -97,10 +97,10 @@ void                            nautilus_bonobo_activate_cancel                 
 
 /* This macro is a copy of BONOBO_X_TYPE_FUNC_FULL (from bonobo-xobject.h)
  * with the addition of support for the parent_class which is defined by
- * NAUTILUS_DEFINE_CLASS_BOILERPLATE and used by NAUTILUS_CALL_PARENT.
+ * EEL_DEFINE_CLASS_BOILERPLATE and used by EEL_CALL_PARENT.
  * 
  * Note: the argument order matches BONOBO_X_TYPE_FUNC_FULL which is different
- * than NAUTILUS_DEFINE_CLASS_BOILERPLATE.
+ * than EEL_DEFINE_CLASS_BOILERPLATE.
  */
 #define NAUTILUS_BONOBO_X_BOILERPLATE(class_name, corba_name, parent, prefix) \
 static gpointer parent_class;                          /* Nautilus change */  \

@@ -26,7 +26,7 @@
 #include <config.h>
 #include "nautilus-undo-context.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
@@ -45,7 +45,7 @@ static void                  destroy                                      (GtkOb
 static Nautilus_Undo_Manager impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant    servant,
 									   CORBA_Environment        *ev);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoContext, nautilus_undo_context, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusUndoContext, nautilus_undo_context, BONOBO_OBJECT_TYPE)
 
 POA_Nautilus_Undo_Context__epv libnautilus_Nautilus_Undo_Context_epv =
 {
@@ -153,7 +153,7 @@ destroy (GtkObject *object)
 	
  	CORBA_exception_free (&ev);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

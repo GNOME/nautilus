@@ -28,12 +28,12 @@
 #include "eazel-services-extensions.h"
 
 #include <gnome.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-label.h>
+#include <eel/eel-image.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -78,15 +78,15 @@ static GtkWidget *
 vertical_line_new (int width)
 {
 	GtkWidget *line;
-	NautilusBackground *background;
+	EelBackground *background;
 
 	line = gtk_drawing_area_new ();
 	gtk_drawing_area_size (GTK_DRAWING_AREA (line), 1, 10);
 	gtk_signal_connect (GTK_OBJECT (line), "expose_event", GTK_SIGNAL_FUNC (line_expose), NULL);
 	gtk_widget_set_usize (line, width, -2);
 
-	background = nautilus_get_widget_background (line);
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (line);
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	return line;
 }
@@ -109,14 +109,14 @@ make_empty_viewport (void)
 static void
 gtk_widget_set_colors (GtkWidget *widget, int foreground, int background)
 {
-	NautilusBackground *bground;
+	EelBackground *bground;
 	GtkStyle *style;
 	GdkColor *color;
 	char *spec;
 
-	bground = nautilus_get_widget_background (widget);
+	bground = eel_get_widget_background (widget);
 	spec = g_strdup_printf ("#%06X", background);
-	nautilus_background_set_color (bground, spec);
+	eel_background_set_color (bground, spec);
 	g_free (spec);
 
 	/* foreground is much harder */
@@ -182,9 +182,9 @@ change_bubble_shell_colors (GtkWidget *table, int foreground, int background)
 
 	for (iter = gtk_container_children (GTK_CONTAINER (table)); iter != NULL; iter = iter->next) {
 		widget = (GtkWidget *)(iter->data);
-		if (NAUTILUS_IS_IMAGE (widget)) {
+		if (EEL_IS_IMAGE (widget)) {
 			/* images are the little rounded corners arlo drew */
-			nautilus_image_set_solid_background_color (NAUTILUS_IMAGE (widget), background);
+			eel_image_set_solid_background_color (EEL_IMAGE (widget), background);
 		} else {
 			gtk_widget_set_colors (widget, foreground, background);
 		}
@@ -198,18 +198,18 @@ password_box_set_colors (PasswordBox *box, int foreground, int background)
 
         /* if we don't hide/show during the color change, some widgets won't draw correctly [gtk rulez] */
         gtk_widget_hide (box->table);
-	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (box->label), background);
-	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (box->label_right), background);
-	nautilus_label_set_text_color (NAUTILUS_LABEL (box->label), foreground);
-	nautilus_label_set_text_color (NAUTILUS_LABEL (box->label_right), foreground);
-	nautilus_image_set_solid_background_color (NAUTILUS_IMAGE (box->bong), background);
+	eel_label_set_solid_background_color (EEL_LABEL (box->label), background);
+	eel_label_set_solid_background_color (EEL_LABEL (box->label_right), background);
+	eel_label_set_text_color (EEL_LABEL (box->label), foreground);
+	eel_label_set_text_color (EEL_LABEL (box->label_right), foreground);
+	eel_image_set_solid_background_color (EEL_IMAGE (box->bong), background);
 
         /* you DON'T want to know.
          * ... doing this pokes the label enough that it'll wake up and notice its new colors.
          */
-        text = g_strdup (nautilus_label_get_text (NAUTILUS_LABEL (box->label)));
-        nautilus_label_set_text (NAUTILUS_LABEL (box->label), "-");
-        nautilus_label_set_text (NAUTILUS_LABEL (box->label), text);
+        text = g_strdup (eel_label_get_text (EEL_LABEL (box->label)));
+        eel_label_set_text (EEL_LABEL (box->label), "-");
+        eel_label_set_text (EEL_LABEL (box->label), text);
         g_free (text);
 
 	gtk_widget_set_colors (box->line, foreground, background);
@@ -227,7 +227,7 @@ password_box_get_entry (PasswordBox *box)
 void
 password_box_set_error_text (PasswordBox *box, const char *message)
 {
-	nautilus_label_set_text (NAUTILUS_LABEL (box->label_right), message);
+	eel_label_set_text (EEL_LABEL (box->label_right), message);
 }
 
 void
@@ -254,7 +254,7 @@ password_box_new (const char *title)
 					       BUBBLE_FOREGROUND_RGB,
 					       BUBBLE_BACKGROUND_RGB,
 					       NULL, 0, TRUE);
-	nautilus_label_set_text (NAUTILUS_LABEL (box->label), title);
+	eel_label_set_text (EEL_LABEL (box->label), title);
 	gtk_widget_show (box->label);
 
 	/* text entry, offset to the right a bit */
@@ -291,8 +291,8 @@ password_box_new (const char *title)
 						     BUBBLE_FOREGROUND_RGB,
 						     BUBBLE_BACKGROUND_RGB,
 						     NULL, -2, FALSE);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (box->label_right), TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (box->label_right), GTK_JUSTIFY_LEFT);
+	eel_label_set_wrap (EEL_LABEL (box->label_right), TRUE);
+	eel_label_set_justify (EEL_LABEL (box->label_right), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (box->label_right);
 
 	/* hbox for all the right-side alert messages */

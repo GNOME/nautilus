@@ -14,7 +14,6 @@ SUBDIRS =			\
 	icons 			\
 	intl 			\
 	cut-n-paste-code 	\
-	librsvg 		\
 	libnautilus 		\
 	libnautilus-adapter	\
 	libnautilus-extensions 	\

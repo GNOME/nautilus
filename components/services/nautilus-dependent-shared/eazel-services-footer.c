@@ -27,11 +27,11 @@
 #include "eazel-services-footer.h"
 #include "eazel-services-extensions.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-clickable-image.h>
+#include <eel/eel-clickable-image.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkeventbox.h>
@@ -64,7 +64,7 @@ static void eazel_services_footer_initialize_class (EazelServicesFooterClass *kl
 static void eazel_services_footer_initialize       (EazelServicesFooter      *footer);
 static void footer_destroy                         (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (EazelServicesFooter, eazel_services_footer, GTK_TYPE_HBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (EazelServicesFooter, eazel_services_footer, GTK_TYPE_HBOX)
 
 /* EazelServicesFooterClass methods */
 static void
@@ -113,24 +113,24 @@ footer_destroy (GtkObject *object)
 	
 	footer = EAZEL_SERVICES_FOOTER (object);
 	
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->item_tile);
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->item_prelight_tile);
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->left_bumper_tile_pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->left_bumper_tile_prelight_pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->right_bumper_tile_pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (footer->details->right_bumper_prelight_tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->item_tile);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->item_prelight_tile);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->left_bumper_tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->left_bumper_tile_prelight_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->right_bumper_tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (footer->details->right_bumper_prelight_tile_pixbuf);
 
 	g_free (footer->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
 footer_item_clicked_callback (GtkWidget *widget,
 			      gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (widget));
+	g_return_if_fail (EEL_IS_CLICKABLE_IMAGE (widget));
 	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (callback_data));
 
 	gtk_signal_emit (GTK_OBJECT (callback_data),
@@ -143,25 +143,25 @@ footer_item_enter_callback (GtkWidget *widget,
 			     gpointer callback_data)
 {
 	EazelServicesFooter *footer;
-	NautilusLabeledImage *label;
-	NautilusLabeledImage *left_bumper;
-	NautilusLabeledImage *right_bumper;
+	EelLabeledImage *label;
+	EelLabeledImage *left_bumper;
+	EelLabeledImage *right_bumper;
 
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (widget));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (widget));
 	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (callback_data));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper")));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (widget));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper")));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper")));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (widget));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper")));
 
 	footer = EAZEL_SERVICES_FOOTER (callback_data);
 
-	left_bumper = NAUTILUS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper"));
-	label = NAUTILUS_LABELED_IMAGE (widget);
-	right_bumper = NAUTILUS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper"));
+	left_bumper = EEL_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper"));
+	label = EEL_LABELED_IMAGE (widget);
+	right_bumper = EEL_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper"));
 
-	nautilus_labeled_image_set_tile_pixbuf (label, footer->details->item_prelight_tile);
-	nautilus_labeled_image_set_pixbuf (left_bumper, footer->details->left_bumper_tile_prelight_pixbuf);
-	nautilus_labeled_image_set_pixbuf (right_bumper, footer->details->right_bumper_prelight_tile_pixbuf);
+	eel_labeled_image_set_tile_pixbuf (label, footer->details->item_prelight_tile);
+	eel_labeled_image_set_pixbuf (left_bumper, footer->details->left_bumper_tile_prelight_pixbuf);
+	eel_labeled_image_set_pixbuf (right_bumper, footer->details->right_bumper_prelight_tile_pixbuf);
 }
 
 static void
@@ -169,25 +169,25 @@ footer_item_leave_callback (GtkWidget *widget,
 			     gpointer callback_data)
 {
 	EazelServicesFooter *footer;
-	NautilusLabeledImage *label;
-	NautilusLabeledImage *left_bumper;
-	NautilusLabeledImage *right_bumper;
+	EelLabeledImage *label;
+	EelLabeledImage *left_bumper;
+	EelLabeledImage *right_bumper;
 
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (widget));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (widget));
 	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (callback_data));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper")));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (widget));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper")));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper")));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (widget));
+	g_return_if_fail (EEL_IS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper")));
 
 	footer = EAZEL_SERVICES_FOOTER (callback_data);
 
-	left_bumper = NAUTILUS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper"));
-	label = NAUTILUS_LABELED_IMAGE (widget);
-	right_bumper = NAUTILUS_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper"));
+	left_bumper = EEL_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "left-bumper"));
+	label = EEL_LABELED_IMAGE (widget);
+	right_bumper = EEL_LABELED_IMAGE (gtk_object_get_data (GTK_OBJECT (widget), "right-bumper"));
 
-	nautilus_labeled_image_set_tile_pixbuf (label, footer->details->item_tile);
-	nautilus_labeled_image_set_pixbuf (left_bumper, footer->details->left_bumper_tile_pixbuf);
-	nautilus_labeled_image_set_pixbuf (right_bumper, footer->details->right_bumper_tile_pixbuf);
+	eel_labeled_image_set_tile_pixbuf (label, footer->details->item_tile);
+	eel_labeled_image_set_pixbuf (left_bumper, footer->details->left_bumper_tile_pixbuf);
+	eel_labeled_image_set_pixbuf (right_bumper, footer->details->right_bumper_tile_pixbuf);
 }
 
 static GtkWidget *
@@ -213,11 +213,11 @@ footer_item_new (EazelServicesFooter *footer,
 
 	if (has_left_bumper) {
 		left = eazel_services_image_new_clickable (NULL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
-		nautilus_labeled_image_set_fill (NAUTILUS_LABELED_IMAGE (left), TRUE);
+		eel_labeled_image_set_fill (EEL_LABELED_IMAGE (left), TRUE);
 	}
 	else {
 		left = eazel_services_image_new_clickable (NULL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
-		nautilus_labeled_image_set_fill (NAUTILUS_LABELED_IMAGE (left), TRUE);
+		eel_labeled_image_set_fill (EEL_LABELED_IMAGE (left), TRUE);
 	}
 	
 	label = eazel_services_label_new_clickable (text,
@@ -232,15 +232,15 @@ footer_item_new (EazelServicesFooter *footer,
 						    FOOTER_TEXT_SIZE,
 						    TRUE);
 	
-	nautilus_labeled_image_set_fill (NAUTILUS_LABELED_IMAGE (label), TRUE);
+	eel_labeled_image_set_fill (EEL_LABELED_IMAGE (label), TRUE);
 	
 	if (has_right_bumper) {
 		right = eazel_services_image_new_clickable (NULL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
-		nautilus_labeled_image_set_fill (NAUTILUS_LABELED_IMAGE (right), TRUE);
+		eel_labeled_image_set_fill (EEL_LABELED_IMAGE (right), TRUE);
 	}
 	else {
 		right = eazel_services_image_new_clickable (NULL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGB);
-		nautilus_labeled_image_set_fill (NAUTILUS_LABELED_IMAGE (right), TRUE);
+		eel_labeled_image_set_fill (EEL_LABELED_IMAGE (right), TRUE);
 	}
 	
 
@@ -365,7 +365,7 @@ eazel_services_footer_set_date (EazelServicesFooter *footer,
 	g_return_if_fail (date != NULL);
 	g_return_if_fail (date[0] != '\0');
 
-	g_return_if_fail (NAUTILUS_IS_LABEL (footer->details->date));
+	g_return_if_fail (EEL_IS_LABEL (footer->details->date));
 
-	nautilus_label_set_text (NAUTILUS_LABEL (footer->details->date), date);
+	eel_label_set_text (EEL_LABEL (footer->details->date), date);
 }

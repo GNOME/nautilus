@@ -30,17 +30,17 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
-#include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
-#include "nautilus-string.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
 #include <ctype.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gnome-xml/parser.h>
 #include <grp.h>
 #include <gtk/gtksignal.h>
@@ -102,7 +102,7 @@ static char *   nautilus_file_get_type_as_string  (NautilusFile      *file);
 static gboolean update_info_and_name              (NautilusFile      *file,
 						   GnomeVFSFileInfo  *info);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
 
 static void
 nautilus_file_initialize_class (NautilusFileClass *klass)
@@ -207,7 +207,7 @@ modify_link_hash_table (NautilusFile *file,
 
 	/* Creat the hash table first time through. */
 	if (symbolic_links == NULL) {
-		symbolic_links = nautilus_g_hash_table_new_free_at_exit
+		symbolic_links = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, "nautilus-file.c: symbolic_links");
 	}
 
@@ -314,7 +314,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 		 * so we'll treat it like the case where gnome_vfs_uri couldn't
 		 * even create a URI.
 		 */
-		if (nautilus_str_is_empty (relative_uri)) {
+		if (eel_str_is_empty (relative_uri)) {
 			gnome_vfs_uri_unref (vfs_uri);
 			vfs_uri = NULL;
 			g_free (relative_uri);
@@ -435,11 +435,11 @@ destroy (GtkObject *object)
 	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
 	
-	nautilus_g_list_free_deep (file->details->mime_list);
+	eel_g_list_free_deep (file->details->mime_list);
 
 	g_free (file->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -1445,7 +1445,7 @@ compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 	} else if (!sort_last_1 && sort_last_2) {
 		compare = -1;
 	} else {
-		compare = nautilus_strcoll (name_1, name_2);
+		compare = eel_strcoll (name_1, name_2);
 	}
 
 	g_free (name_1);
@@ -1467,7 +1467,7 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 	directory_1 = nautilus_file_get_parent_uri_for_display (file_1);
 	directory_2 = nautilus_file_get_parent_uri_for_display (file_2);
 
-	compare = nautilus_strcoll (directory_1, directory_2);
+	compare = eel_strcoll (directory_1, directory_2);
 
 	g_free (directory_1);
 	g_free (directory_2);
@@ -1553,7 +1553,7 @@ fill_emblem_cache_if_needed (NautilusFile *file)
 	/* Zero-terminate so we can tell where the list ends. */
 	*scanner = 0;
 
-	nautilus_g_list_free_deep (keywords);
+	eel_g_list_free_deep (keywords);
 
 	/* Chache the values of the automatic emblems. */
 	file->details->compare_by_emblem_cache->automatic_emblems_as_integer
@@ -1585,7 +1585,7 @@ compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 	keyword_cache_1 = file_1->details->compare_by_emblem_cache->emblem_keywords;
 	keyword_cache_2 = file_2->details->compare_by_emblem_cache->emblem_keywords;
 	for (; *keyword_cache_1 != '\0' && *keyword_cache_2 != '\0';) {
-		compare_result = nautilus_strcoll (keyword_cache_1, keyword_cache_2);
+		compare_result = eel_strcoll (keyword_cache_1, keyword_cache_2);
 		if (compare_result != 0) {
 			return compare_result;
 		}
@@ -1639,7 +1639,7 @@ compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 
 	if (file_1->details->info != NULL
 	    && file_2->details->info != NULL
-	    && nautilus_strcmp (file_1->details->info->mime_type,
+	    && eel_strcmp (file_1->details->info->mime_type,
 				file_2->details->info->mime_type) == 0) {
 		return 0;
 	}
@@ -1647,7 +1647,7 @@ compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	type_string_1 = nautilus_file_get_type_as_string (file_1);
 	type_string_2 = nautilus_file_get_type_as_string (file_2);
 
-	result = nautilus_strcoll (type_string_1, type_string_2);
+	result = eel_strcoll (type_string_1, type_string_2);
 
 	g_free (type_string_1);
 	g_free (type_string_2);
@@ -1823,7 +1823,7 @@ nautilus_file_compare_name (NautilusFile *file,
 	g_return_val_if_fail (pattern != NULL, -1);
 
 	name = nautilus_file_get_name (file);
-	result = nautilus_strcoll (name, pattern);
+	result = eel_strcoll (name, pattern);
 	g_free (name);
 	return result;
 }
@@ -1891,7 +1891,7 @@ nautilus_file_list_filter_hidden_and_backup (GList    *files,
 	 */
 
 	filtered_files = nautilus_file_list_copy (files);
-	filtered_files = nautilus_g_list_partition (filtered_files, 
+	filtered_files = eel_g_list_partition (filtered_files, 
 						    filter_hidden_and_backup_partition_callback,
 						    GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0) |
 								     (show_backup ? SHOW_BACKUP : 0)),
@@ -2103,7 +2103,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_add, (file, client, attributes));
 }   
@@ -2115,7 +2115,7 @@ nautilus_file_monitor_remove (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_remove, (file, client));
 }			      
@@ -2198,7 +2198,7 @@ nautilus_file_get_date (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_date, (file, date_type, date));
 }
@@ -2212,7 +2212,7 @@ nautilus_file_get_where_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_where_string, (file));
 }
@@ -2242,7 +2242,7 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	}
 
 	file_time = localtime (&file_time_raw);
-	file_date = nautilus_g_date_new_tm (file_time);
+	file_date = eel_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
 	g_date_set_time (today, time (NULL));
@@ -2292,7 +2292,7 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 		format = _("%-m/%-d/%y at %-I:%M %p");
 	}
 
-	return nautilus_strdup_strftime (format, file_time);
+	return eel_strdup_strftime (format, file_time);
 }
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
@@ -2411,7 +2411,7 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_item_count, (file, count, count_unreadable));
 }
@@ -2460,7 +2460,7 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 		return file->details->deep_counts_status;
 	}
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_deep_counts, (file,
 				   directory_count,
@@ -2504,7 +2504,7 @@ nautilus_file_get_directory_item_mime_types (NautilusFile *file,
 		return FALSE;
 	}
 
-	*mime_list = nautilus_g_str_list_copy (file->details->mime_list);
+	*mime_list = eel_g_str_list_copy (file->details->mime_list);
 	return TRUE;
 }
 
@@ -2688,22 +2688,22 @@ get_real_name (struct passwd *user)
 		return NULL;
 	}
 
-	part_before_comma = nautilus_str_strip_substring_and_after (user->pw_gecos, ",");
+	part_before_comma = eel_str_strip_substring_and_after (user->pw_gecos, ",");
 
-	capitalized_login_name = nautilus_str_capitalize (user->pw_name);
+	capitalized_login_name = eel_str_capitalize (user->pw_name);
 
 	if (capitalized_login_name == NULL) {
 		real_name = part_before_comma;
 	} else {
-		real_name = nautilus_str_replace_substring
+		real_name = eel_str_replace_substring
 			(part_before_comma, "&", capitalized_login_name);
 		g_free (part_before_comma);
 	}
 
 
-	if (nautilus_str_is_empty (real_name)
-	    || nautilus_strcmp (user->pw_name, real_name) == 0
-	    || nautilus_strcmp (capitalized_login_name, real_name) == 0) {
+	if (eel_str_is_empty (real_name)
+	    || eel_strcmp (user->pw_name, real_name) == 0
+	    || eel_strcmp (capitalized_login_name, real_name) == 0) {
 		g_free (real_name);
 		real_name = NULL;
 	}
@@ -3021,7 +3021,7 @@ nautilus_get_user_names (void)
 
 	endpwent ();
 
-	return nautilus_g_str_list_alphabetize (list);
+	return eel_g_str_list_alphabetize (list);
 }
 
 /**
@@ -3176,7 +3176,7 @@ nautilus_get_group_names_including (const char *username)
 
 	endgrent ();
 
-	return nautilus_g_str_list_alphabetize (list);
+	return eel_g_str_list_alphabetize (list);
 }
 
 /**
@@ -3793,7 +3793,7 @@ get_description (NautilusFile *file)
 	}
 	
 	mime_type = file->details->info->mime_type;
-	if (nautilus_str_is_empty (mime_type)) {
+	if (eel_str_is_empty (mime_type)) {
 		return NULL;
 	}
 
@@ -3803,7 +3803,7 @@ get_description (NautilusFile *file)
 	}
 
 	description = gnome_vfs_mime_get_description (mime_type);
-	if (!nautilus_str_is_empty (description)) {
+	if (!eel_str_is_empty (description)) {
 		return description;
 	}
 
@@ -3870,7 +3870,7 @@ nautilus_file_get_file_type (NautilusFile *file)
 	if (file == NULL) {
 		return GNOME_VFS_FILE_TYPE_UNKNOWN;
 	}
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file, get_file_type, (file));
 }
 
@@ -3916,7 +3916,7 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 	if (file->details->info == NULL) {
 		return FALSE;
 	}
-	return nautilus_strcasecmp (file->details->info->mime_type,
+	return eel_strcasecmp (file->details->info->mime_type,
 				    mime_type) == 0;
 }
 
@@ -3950,14 +3950,14 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 	GList *duplicate_link;
 	
 	if (keywords != NULL) {
-		keywords = nautilus_g_str_list_alphabetize (keywords);
+		keywords = eel_g_str_list_alphabetize (keywords);
 
 		p = keywords;
 		while (p->next != NULL) {
 			if (strcmp ((const char *) p->data, (const char *) p->next->data) == 0) {
 				duplicate_link = p->next;
 				keywords = g_list_remove_link (keywords, duplicate_link);
-				nautilus_g_list_free_deep (duplicate_link);
+				eel_g_list_free_deep (duplicate_link);
 			} else {
 				p = p->next;
 			}
@@ -4157,7 +4157,7 @@ nautilus_file_contains_text (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	
 	mime_type = nautilus_file_get_mime_type (file);
-	contains_text = nautilus_istr_has_prefix (mime_type, "text/");
+	contains_text = eel_istr_has_prefix (mime_type, "text/");
 	g_free (mime_type);
 	
 	return contains_text;
@@ -4393,7 +4393,7 @@ nautilus_file_check_if_ready (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 check_if_ready, (file, file_attributes));
 }			      
@@ -4414,7 +4414,7 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 call_when_ready, (file, file_attributes, 
 				   callback, callback_data));
@@ -4433,7 +4433,7 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_METHOD
+	EEL_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 cancel_call_when_ready, (file, callback, callback_data));
 }
@@ -4650,7 +4650,7 @@ nautilus_file_list_ref (GList *list)
 void
 nautilus_file_list_unref (GList *list)
 {
-	nautilus_g_list_safe_for_each (list, (GFunc) nautilus_file_unref, NULL);
+	eel_g_list_safe_for_each (list, (GFunc) nautilus_file_unref, NULL);
 }
 
 /**
@@ -4771,17 +4771,17 @@ nautilus_self_check_file (void)
 
         /* refcount checks */
 
-        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+        EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
 
 	file_1 = nautilus_file_get ("file:///home/");
 
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1->details->directory)->ref_count, 1);
-        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1->details->directory)->ref_count, 1);
+        EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
 
 	nautilus_file_unref (file_1);
 
-        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+        EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
 	
 	file_1 = nautilus_file_get ("file:///etc");
 	file_2 = nautilus_file_get ("file:///usr");
@@ -4792,61 +4792,61 @@ nautilus_self_check_file (void)
 
         nautilus_file_list_ref (list);
         
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 2);
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 2);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 2);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 2);
 
 	nautilus_file_list_unref (list);
         
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
 
 	nautilus_file_list_free (list);
 
-        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+        EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
 	
 
         /* name checks */
 	file_1 = nautilus_file_get ("file:///home/");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home/") == file_1, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home/") == file_1, TRUE);
 	nautilus_file_unref (file_1);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
 	nautilus_file_unref (file_1);
 
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get ("file:///home");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get (":");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), ":");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), ":");
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get ("eazel:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get (NAUTILUS_TRASH_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
 	nautilus_file_unref (file_1);
 
 	/* sorting */
 	file_1 = nautilus_file_get ("file:///etc");
 	file_2 = nautilus_file_get ("file:///usr");
 
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) > 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) == 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, FALSE) == 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) == 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, TRUE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) < 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) > 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, FALSE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, TRUE) == 0, TRUE);
 
 	nautilus_file_unref (file_1);
 	nautilus_file_unref (file_2);

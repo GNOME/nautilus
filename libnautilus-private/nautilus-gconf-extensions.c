@@ -25,9 +25,9 @@
 #include <config.h>
 #include "nautilus-gconf-extensions.h"
 
-#include "nautilus-glib-extensions.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-string.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 
 #include <gconf/gconf-client.h>
 #include <gconf/gconf.h>
@@ -87,7 +87,7 @@ nautilus_gconf_handle_error (GError **error)
 						     "All further errors shown "
 						     "only on terminal"),
 						   (*error)->message);
-			nautilus_show_error_dialog (message, _("GConf Error"), NULL);
+			eel_show_error_dialog (message, _("GConf Error"), NULL);
 			g_free (message);
 		}
 		g_error_free (*error);
@@ -223,7 +223,7 @@ nautilus_gconf_set_string_list (const char *key,
 	client = nautilus_gconf_client_get_global ();
 	g_return_if_fail (client != NULL);
 
-	slist = nautilus_g_slist_from_g_list (string_list_value);
+	slist = eel_g_slist_from_g_list (string_list_value);
 
 	error = NULL;
 	gconf_client_set_list (client, key, GCONF_VALUE_STRING, slist, &error);
@@ -251,7 +251,7 @@ nautilus_gconf_get_string_list (const char *key)
 		slist = NULL;
 	}
 
-	result = nautilus_g_list_from_g_slist (slist);
+	result = eel_g_list_from_g_slist (slist);
 	g_slist_free (slist);
 	
 	return result;
@@ -363,7 +363,7 @@ nautilus_gconf_value_is_equal (const GConfValue *a,
 
 	switch (a->type) {
 	case GCONF_VALUE_STRING:
-		return nautilus_str_is_equal (a->d.string_data, b->d.string_data);
+		return eel_str_is_equal (a->d.string_data, b->d.string_data);
 		break;
 
 	case GCONF_VALUE_INT:

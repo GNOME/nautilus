@@ -28,17 +28,17 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <string.h>
 #include "nautilus-file-utilities.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-theme.h"
 #include <stdio.h>
-#include "nautilus-gdk-pixbuf-extensions.h"
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <librsvg/rsvg.h>
-#include "nautilus-graphic-effects.h"
+#include <eel/eel-graphic-effects.h>
 
 /* permissions for thumbnail directory */
 #define THUMBNAIL_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL \
@@ -153,7 +153,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 		}
 		
 		/* append an image suffix if the correct one isn't already present */
-		if (!nautilus_istr_has_suffix (image_uri, ".png")) {		
+		if (!eel_istr_has_suffix (image_uri, ".png")) {		
 			char *old_uri = thumbnail_uri;
 			thumbnail_uri = g_strdup_printf ("%s.png", thumbnail_uri);
 			g_free(old_uri);			
@@ -595,7 +595,7 @@ make_thumbnails (gpointer data)
 				}
 			} else {
 				if (info->thumbnail_uri != NULL)
-					full_size_image = nautilus_gdk_pixbuf_load (info->thumbnail_uri);						
+					full_size_image = eel_gdk_pixbuf_load (info->thumbnail_uri);						
 			}
 			nautilus_file_unref (file);
 			
@@ -603,7 +603,7 @@ make_thumbnails (gpointer data)
 				thumbnail_image_frame = load_thumbnail_frame (info->anti_aliased);
 									
 				/* scale the content image as necessary */	
-				scaled_image = nautilus_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
+				scaled_image = eel_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
 				gdk_pixbuf_unref (full_size_image);
 				
 				/* embed the content image in the frame, if necessary  */
@@ -618,7 +618,7 @@ make_thumbnails (gpointer data)
 						right_offset = 6; bottom_offset = 6;
 					}
 				
-					framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame,
+					framed_image = eel_embed_image_in_frame (scaled_image, thumbnail_image_frame,
 									      left_offset, top_offset, right_offset, bottom_offset);
 					g_free (frame_offset_str);
 				
@@ -630,7 +630,7 @@ make_thumbnails (gpointer data)
 				
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (new_thumbnail_uri);
 				if (thumbnail_path == NULL
-				    || !nautilus_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {
+				    || !eel_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {
 					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
 				g_free (thumbnail_path);

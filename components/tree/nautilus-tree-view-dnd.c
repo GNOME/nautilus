@@ -33,12 +33,12 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 
 /* This constant is zero because right now it does not seem we need
    extra delay on horizontal-only auto-scroll. However, it's left in
@@ -168,7 +168,7 @@ tree_view_realize_callback (GtkWidget *widget, gpointer user_data)
         gtk_style_ref (new_style);
 
 	/* calculate a new prelighting color */
-	nautilus_gtk_style_shade (&style->bg[GTK_STATE_SELECTED], 
+	eel_gtk_style_shade (&style->bg[GTK_STATE_SELECTED], 
 				  &new_prelight_color, 
 				  1.35);
 	/* set the new color to our special prelighting Style. */
@@ -197,14 +197,14 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 	view->details->dnd->drag_info = g_new0 (NautilusDragInfo, 1);
 	nautilus_drag_init (view->details->dnd->drag_info,
 			    nautilus_tree_view_dnd_target_table,
-			    NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			    EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
 			    NULL);
 
 
 	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
 			   0,
 			   nautilus_tree_view_dnd_target_table,
-			   NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			   EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
 			   GDK_ACTION_COPY 
 			   | GDK_ACTION_MOVE 
 			   | GDK_ACTION_LINK 
@@ -396,7 +396,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	if (nautilus_tree_view_dnd_target_list == NULL)
 		nautilus_tree_view_dnd_target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table,
-									  NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
+									  EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;
@@ -801,7 +801,7 @@ nautilus_tree_view_set_dnd_icon (NautilusTreeView *tree_view, GdkDragContext *co
 				      &expanded);
 
 	/* FIXME: We can do better than 10,10 for the hot spot. */
-	nautilus_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
+	eel_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
 }
 
 
@@ -1031,8 +1031,8 @@ static gboolean
 ready_to_start_scrolling (NautilusDragInfo *drag_info,
 			  int y_scroll_delta)
 {
-	return (y_scroll_delta != 0 && drag_info->start_auto_scroll_in < nautilus_get_system_time ()) ||
-		drag_info->start_auto_scroll_in +  AUTOSCROLL_X_ONLY_EXTRA_DELAY < nautilus_get_system_time ();
+	return (y_scroll_delta != 0 && drag_info->start_auto_scroll_in < eel_get_system_time ()) ||
+		drag_info->start_auto_scroll_in +  AUTOSCROLL_X_ONLY_EXTRA_DELAY < eel_get_system_time ();
 }
 
 static int
@@ -1091,8 +1091,8 @@ nautilus_tree_view_real_scroll (NautilusTreeView *tree_view, float delta_x, floa
 	hadj = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (tree_view->details->scrolled_window));
 	vadj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (tree_view->details->scrolled_window));
 
-	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
-	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
+	eel_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
+	eel_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 }
 
 
@@ -1268,7 +1268,7 @@ nautilus_tree_view_drag_destroy_real (NautilusTreeView *tree_view)
 	drag_info->drop_occured = FALSE;
 
 	if (drag_info->selection_data != NULL) {
-		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
+		eel_gtk_selection_data_free_deep (drag_info->selection_data);
 		drag_info->selection_data = NULL;
 	}
 }

@@ -1,8 +1,8 @@
 #include "test.h"
 
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-image-with-background.h>
-#include <libnautilus-extensions/nautilus-string-picker.h>
+#include <eel/eel-image.h>
+#include <eel/eel-image-with-background.h>
+#include <eel/eel-string-picker.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
@@ -15,10 +15,10 @@ user_level_changed_callback (gpointer callback_data)
 	int user_level;
 	int visible_user_level;
 
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (callback_data));
+	g_return_if_fail (EEL_IS_STRING_PICKER (callback_data));
 
 
-	name = nautilus_caption_get_title_label (NAUTILUS_CAPTION (callback_data));
+	name = eel_caption_get_title_label (EEL_CAPTION (callback_data));
 
 	user_level = nautilus_preferences_get_user_level ();
 	visible_user_level = nautilus_preferences_get_visible_user_level (name);
@@ -48,18 +48,18 @@ fruits_changed_callback (gpointer callback_data)
 }
 
 static void
-int_picker_changed_callback (NautilusStringPicker *string_picker,
+int_picker_changed_callback (EelStringPicker *string_picker,
 			     gpointer callback_data)
 {
 	char *selected_string;
 	int new_value;
 
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (EEL_IS_STRING_PICKER (string_picker));
 	g_return_if_fail (callback_data != NULL);
 
-	selected_string = nautilus_string_picker_get_selected_string (string_picker);
+	selected_string = eel_string_picker_get_selected_string (string_picker);
 	
-	new_value = nautilus_string_picker_get_index_for_string (string_picker, selected_string);
+	new_value = eel_string_picker_get_index_for_string (string_picker, selected_string);
 
 	nautilus_preferences_set_integer ((const char *) callback_data, new_value);
 
@@ -67,18 +67,18 @@ int_picker_changed_callback (NautilusStringPicker *string_picker,
 }
 
 static void
-user_level_picker_changed_callback (NautilusStringPicker *string_picker,
+user_level_picker_changed_callback (EelStringPicker *string_picker,
 				    gpointer callback_data)
 {
 	char *selected_string;
 	int new_user_level;
 
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (EEL_IS_STRING_PICKER (string_picker));
 	g_return_if_fail (callback_data != NULL);
 
-	selected_string = nautilus_string_picker_get_selected_string (string_picker);
+	selected_string = eel_string_picker_get_selected_string (string_picker);
 	
-	new_user_level = nautilus_string_picker_get_index_for_string (string_picker, selected_string);
+	new_user_level = eel_string_picker_get_index_for_string (string_picker, selected_string);
 
 	nautilus_preferences_set_user_level (new_user_level);
 
@@ -87,20 +87,20 @@ user_level_picker_changed_callback (NautilusStringPicker *string_picker,
 
 static GtkWidget *
 picker_new (const char *name,
-	    const NautilusStringList *entries)
+	    const EelStringList *entries)
 {
 	GtkWidget *string_picker;
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (entries != NULL, NULL);
 	
-	string_picker = nautilus_string_picker_new ();
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (string_picker), name);
+	string_picker = eel_string_picker_new ();
+	eel_caption_set_title_label (EEL_CAPTION (string_picker), name);
 	gtk_signal_connect (GTK_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (int_picker_changed_callback),
 			    (gpointer) name);
 	
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (string_picker), entries);
-	nautilus_string_picker_set_selected_string_index (NAUTILUS_STRING_PICKER (string_picker), 
+	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
+	eel_string_picker_set_selected_string_index (EEL_STRING_PICKER (string_picker), 
 							  nautilus_preferences_get_integer (name));
 	
 	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
@@ -111,20 +111,20 @@ picker_new (const char *name,
 
 static GtkWidget *
 user_level_picker_new (const char *name,
-		       const NautilusStringList *entries)
+		       const EelStringList *entries)
 {
 	GtkWidget *string_picker;
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (entries != NULL, NULL);
 	
-	string_picker = nautilus_string_picker_new ();
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (string_picker), name);
+	string_picker = eel_string_picker_new ();
+	eel_caption_set_title_label (EEL_CAPTION (string_picker), name);
 	gtk_signal_connect (GTK_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (user_level_picker_changed_callback),
 			    (gpointer) name);
 	
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (string_picker), entries);
-	nautilus_string_picker_set_selected_string_index (NAUTILUS_STRING_PICKER (string_picker), 
+	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
+	eel_string_picker_set_selected_string_index (EEL_STRING_PICKER (string_picker), 
 							  nautilus_preferences_get_user_level ());
 	
 	nautilus_preferences_add_callback ("user_level", user_level_changed_callback, string_picker);
@@ -148,17 +148,17 @@ main (int argc, char *argv[])
 
 	GtkWidget *vbox;
 
-	NautilusStringList *user_level_entries;
-	NautilusStringList *color_entries;
-	NautilusStringList *fruits_entries;
+	EelStringList *user_level_entries;
+	EelStringList *color_entries;
+	EelStringList *fruits_entries;
 
 	test_init (&argc, &argv);
 
 	nautilus_global_preferences_initialize ();
 
-	user_level_entries = nautilus_string_list_new_from_tokens ("Beginner,Intermediate,Advanced", ",", TRUE);
-	color_entries = nautilus_string_list_new_from_tokens ("0,1,2,3,4,5,6,7,8,9,10", ",", TRUE);
-	fruits_entries = nautilus_string_list_new_from_tokens ("0,1,2,3", ",", TRUE);
+	user_level_entries = eel_string_list_new_from_tokens ("Beginner,Intermediate,Advanced", ",", TRUE);
+	color_entries = eel_string_list_new_from_tokens ("0,1,2,3,4,5,6,7,8,9,10", ",", TRUE);
+	fruits_entries = eel_string_list_new_from_tokens ("0,1,2,3", ",", TRUE);
 
 	nautilus_preferences_default_set_string ("user_level",
 						 NAUTILUS_USER_LEVEL_NOVICE,
@@ -214,9 +214,9 @@ main (int argc, char *argv[])
 	gtk_box_pack_start (GTK_BOX (vbox), fruits_orange_picker, FALSE, FALSE, 20);
 	gtk_box_pack_start (GTK_BOX (vbox), fruits_pear_picker, FALSE, FALSE, 20);
 
-	nautilus_string_list_free (user_level_entries);
-	nautilus_string_list_free (color_entries);
-	nautilus_string_list_free (fruits_entries);
+	eel_string_list_free (user_level_entries);
+	eel_string_list_free (color_entries);
+	eel_string_list_free (fruits_entries);
 
 	nautilus_preferences_add_callback ("fruits", fruits_changed_callback, NULL);
 

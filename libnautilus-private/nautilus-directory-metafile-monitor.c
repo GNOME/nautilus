@@ -26,8 +26,8 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
@@ -72,7 +72,7 @@ destroy (GtkObject *object)
 	monitor = NAUTILUS_METAFILE_MONITOR (object);
 	g_free (monitor->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusMetafileMonitor *

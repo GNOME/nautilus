@@ -28,7 +28,7 @@
 #include <bonobo.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
 
@@ -77,7 +77,7 @@ main (int argc, char *argv[])
 	 * explicitly for each domain.
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		nautilus_make_warnings_and_criticals_stop_in_debugger
+		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib,
 			 "Bonobo",
 			 "Gdk",

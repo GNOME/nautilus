@@ -38,8 +38,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-password-dialog.h>
 
 #include <libtrilobite/libtrilobite.h>
 
@@ -81,7 +81,7 @@ static void load_location_callback                     (NautilusView            
 							TrilobiteEazelTimeView      *view);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (TrilobiteEazelTimeView, trilobite_eazel_time_view, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (TrilobiteEazelTimeView, trilobite_eazel_time_view, GTK_TYPE_EVENT_BOX)
    
 static void
 set_status_text (TrilobiteEazelTimeView *view, const char *status_str)
@@ -250,15 +250,15 @@ trilobite_eazel_time_view_get_password (GtkObject *object, const char *prompt, v
 		message = "Incorrect password.";
 	}
 
-	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
-	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+	dialog = eel_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
+	okay = eel_password_dialog_run_and_block (EEL_PASSWORD_DIALOG (dialog));
 
 	if (! okay) {
 		view->details->password_attempts = 0;
 		tmp = g_strdup ("");
 	} else {
-		tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
-		if (nautilus_password_dialog_get_remember (NAUTILUS_PASSWORD_DIALOG (dialog))) {
+		tmp =  eel_password_dialog_get_password (EEL_PASSWORD_DIALOG (dialog));
+		if (eel_password_dialog_get_remember (EEL_PASSWORD_DIALOG (dialog))) {
 			view->details->remembered_password = g_strdup (tmp);
 		}
 	}
@@ -438,7 +438,7 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 	CORBA_exception_free (&ev);
 

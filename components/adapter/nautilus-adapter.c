@@ -40,7 +40,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
@@ -81,7 +81,7 @@ static void nautilus_adapter_initialize       (NautilusAdapter      *server);
 static void nautilus_adapter_destroy          (GtkObject                      *object);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
 				   nautilus_adapter,
 				   GTK_TYPE_OBJECT)
 
@@ -143,7 +143,7 @@ nautilus_adapter_destroy (GtkObject *object)
 
 	g_free (adapter->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusAdapter *

@@ -26,20 +26,20 @@
 #include "nautilus-global-preferences.h"
 
 #include "nautilus-file-utilities.h"
-#include "nautilus-font-manager.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-extensions.h"
+#include <eel/eel-font-manager.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include "nautilus-medusa-support.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
-#include "nautilus-scalable-font.h"
-#include "nautilus-string.h"
+#include <eel/eel-scalable-font.h>
+#include <eel/eel-string.h>
 #include "nautilus-medusa-support.h"
-#include "nautilus-stock-dialogs.h"
+#include <eel/eel-stock-dialogs.h>
 #include "nautilus-view-identifier.h"
 #include "nautilus-sidebar-functions.h"
-#include "nautilus-smooth-widget.h"
+#include <eel/eel-smooth-widget.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <libgnome/gnome-i18n.h>
@@ -1156,7 +1156,7 @@ global_preferences_install_sidebar_panel_defaults (void)
 	guint i;
 	
 	/* Install the user level on/off defaults for known sidebar panels */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (known_sidebar_panels); i++) {
+	for (i = 0; i < EEL_N_ELEMENTS (known_sidebar_panels); i++) {
 		preference_key = nautilus_sidebar_panel_make_preference_key (known_sidebar_panels[i].name);
 		
 		nautilus_preferences_default_set_boolean (preference_key,
@@ -1209,8 +1209,8 @@ global_preferences_install_font_defaults (void)
 	char *default_smooth_font;
 	const char *default_font;
 
-	default_font = nautilus_dumb_down_for_multi_byte_locale_hack () ? "fixed" : "helvetica";
-	default_smooth_font = nautilus_font_manager_get_default_font ();
+	default_font = eel_dumb_down_for_multi_byte_locale_hack () ? "fixed" : "helvetica";
+	default_smooth_font = eel_font_manager_get_default_font ();
 
 	/* Icon view fonts */
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
@@ -1263,7 +1263,7 @@ global_preferences_use_fast_search_changed_callback (gpointer callback_data)
 			cron_status = nautilus_medusa_check_cron_is_enabled ();
 			switch (cron_status) {
 			case NAUTILUS_CRON_STATUS_OFF:
-				nautilus_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
+				eel_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
 									  "fast search feature. However, indexing "
 									  "currently can't be performed because "
 									  "the program crond, which does "
@@ -1280,7 +1280,7 @@ global_preferences_use_fast_search_changed_callback (gpointer callback_data)
 				
 				break;
 			case NAUTILUS_CRON_STATUS_UNKNOWN:
-				nautilus_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
+				eel_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
 									  "fast search feature. However, indexing "
 									  "may not be performed because the "
 									  "program crond, which does nightly "
@@ -1360,7 +1360,7 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 {
 	GtkWidget *pane;
 	GtkWidget *item;
-	NautilusStringList *group_names;
+	EelStringList *group_names;
 	guint i;
 	int group_index;
 	guint start_group_index;
@@ -1376,13 +1376,13 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 		pane = nautilus_preferences_box_add_pane (preference_box, pane_name);
 	}
 
-	group_names = nautilus_string_list_new (TRUE);
+	group_names = eel_string_list_new (TRUE);
 
 	start_group_index = nautilus_preferences_pane_get_num_groups (NAUTILUS_PREFERENCES_PANE (pane));
 
 	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
-		if (!nautilus_string_list_contains (group_names, preference_dialog_item[i].group_name)) {
-			nautilus_string_list_insert (group_names, preference_dialog_item[i].group_name);
+		if (!eel_string_list_contains (group_names, preference_dialog_item[i].group_name)) {
+			eel_string_list_insert (group_names, preference_dialog_item[i].group_name);
 			nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (pane),
 							     _(preference_dialog_item[i].group_name));
 		}
@@ -1390,8 +1390,7 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 
 	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
 		group_index = start_group_index + 
-			nautilus_string_list_get_index_for_string (group_names,
-								   preference_dialog_item[i].group_name);
+			eel_string_list_get_index_for_string (group_names, preference_dialog_item[i].group_name);
 
 		nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
 						      _(preference_dialog_item[i].preference_description));
@@ -1411,8 +1410,8 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 									preference_dialog_item[i].item_type);
 
 		if (preference_dialog_item[i].item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER) {
-			g_assert (nautilus_strlen (preference_dialog_item[i].constrained_integer_values) > 0);
-			g_assert (nautilus_strlen (preference_dialog_item[i].constrained_integer_labels) > 0);
+			g_assert (eel_strlen (preference_dialog_item[i].constrained_integer_values) > 0);
+			g_assert (eel_strlen (preference_dialog_item[i].constrained_integer_labels) > 0);
 			nautilus_preferences_item_set_constrained_integer_values (
 				NAUTILUS_PREFERENCES_ITEM (item),
 				preference_dialog_item[i].constrained_integer_values,
@@ -1430,7 +1429,7 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 		}
 	}
 
-	nautilus_string_list_free (group_names);
+	eel_string_list_free (group_names);
 
 	return pane;
 }
@@ -1443,7 +1442,7 @@ nautilus_global_preferences_show_dialog (void)
 {
 	GtkWidget *dialog = global_preferences_get_dialog ();
 
-	nautilus_gtk_window_present (GTK_WINDOW (dialog));
+	eel_gtk_window_present (GTK_WINDOW (dialog));
 }
 
 void
@@ -1465,29 +1464,29 @@ nautilus_global_preferences_set_dialog_title (const char *title)
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
 }
 
-static NautilusScalableFont *
+static EelScalableFont *
 global_preferences_get_smooth_font (const char *smooth_font_file_name)
 {
-	NautilusScalableFont *smooth_font;
+	EelScalableFont *smooth_font;
 
 	smooth_font = (smooth_font_file_name != NULL && g_file_exists (smooth_font_file_name)) ?
-		nautilus_scalable_font_new (smooth_font_file_name) :
-		nautilus_scalable_font_get_default_font ();
+		eel_scalable_font_new (smooth_font_file_name) :
+		eel_scalable_font_get_default_font ();
 	
-	g_assert (NAUTILUS_IS_SCALABLE_FONT (smooth_font));
+	g_assert (EEL_IS_SCALABLE_FONT (smooth_font));
 	return smooth_font;
 }
 
-static NautilusScalableFont *
+static EelScalableFont *
 global_preferences_get_smooth_bold_font (const char *file_name)
 {
-	NautilusScalableFont *plain_font;
-	NautilusScalableFont *bold_font;
+	EelScalableFont *plain_font;
+	EelScalableFont *bold_font;
 
 	plain_font = global_preferences_get_smooth_font (file_name);
-	g_assert (NAUTILUS_IS_SCALABLE_FONT (plain_font));
+	g_assert (EEL_IS_SCALABLE_FONT (plain_font));
 
-	bold_font = nautilus_scalable_font_make_bold (plain_font);
+	bold_font = eel_scalable_font_make_bold (plain_font);
 
 	if (bold_font == NULL) {
 		bold_font = plain_font;
@@ -1495,7 +1494,7 @@ global_preferences_get_smooth_bold_font (const char *file_name)
 		gtk_object_unref (GTK_OBJECT (plain_font));
 	}
 
-	g_assert (NAUTILUS_IS_SCALABLE_FONT (bold_font));
+	g_assert (EEL_IS_SCALABLE_FONT (bold_font));
 	return bold_font;
 }
 
@@ -1505,7 +1504,7 @@ global_preferences_get_smooth_bold_font (const char *file_name)
  * Return value: The user's smooth font for icon file names.  Need to 
  *               unref the returned GtkObject when done with it.
  */
-NautilusScalableFont *
+EelScalableFont *
 nautilus_global_preferences_get_icon_view_smooth_font (void)
 {
 	return global_preferences_get_smooth_font (icon_view_smooth_font_auto_value);
@@ -1517,7 +1516,7 @@ nautilus_global_preferences_get_icon_view_smooth_font (void)
  * Return value: The user's smooth font for default text.
  *               Need to unref the returned GtkObject when done with it.
  */
-NautilusScalableFont *
+EelScalableFont *
 nautilus_global_preferences_get_default_smooth_font (void)
 {
 	return global_preferences_get_smooth_font (default_smooth_font_auto_value);
@@ -1531,7 +1530,7 @@ nautilus_global_preferences_get_default_smooth_font (void)
  *               used. Need to unref the returned GtkObject when done
  *               with it.
  */
-NautilusScalableFont *
+EelScalableFont *
 nautilus_global_preferences_get_default_smooth_bold_font (void)
 {
 	return global_preferences_get_smooth_bold_font (default_smooth_font_auto_value);
@@ -1545,7 +1544,7 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 
 	is_smooth = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	
-	nautilus_smooth_widget_global_set_is_smooth (is_smooth);
+	eel_smooth_widget_global_set_is_smooth (is_smooth);
 }
 
 void

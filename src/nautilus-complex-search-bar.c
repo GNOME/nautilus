@@ -41,11 +41,11 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <widgets/gimphwrapbox/gtkhwrapbox.h>
 
@@ -90,7 +90,7 @@ static void	   update_dynamic_buttons_state 	  (NautilusComplexSearchBar *bar);
 static void        update_criteria_choices                (gpointer list_item,
 							   gpointer data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
 /* called by the criterion when the user chooses
    a new criterion type */
@@ -291,7 +291,7 @@ static void
 nautilus_complex_search_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_COMPLEX_SEARCH_BAR (object)->details);
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static GtkWidget *
@@ -350,7 +350,7 @@ nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 		criteria_text = temp_criterion;
 	}
 
-	trimmed_fragment = nautilus_str_strip_trailing_str (criteria_text, " & ");
+	trimmed_fragment = eel_str_strip_trailing_str (criteria_text, " & ");
 	g_free (criteria_text);
 
 	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
@@ -428,7 +428,7 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
 					   "activate",
-					   nautilus_gtk_button_auto_click, 
+					   eel_gtk_button_auto_click, 
 					   GTK_OBJECT (bar->details->find_them));
 	}
 	nautilus_complex_search_bar_queue_resize (bar);
@@ -457,7 +457,7 @@ load_find_them_pixmap_widget (void)
 	
 	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
 	if (pixmap != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (pixbuf);
 		return gtk_pixmap_new (pixmap, mask);
 	} else {
@@ -604,9 +604,9 @@ criteria_invalid (NautilusComplexSearchBar *bar)
 			text = gtk_editable_get_chars 
 				(GTK_EDITABLE (criterion->details->value_entry),
 				0, -1);
-			text_is_empty = nautilus_str_is_empty (text);
+			text_is_empty = eel_str_is_empty (text);
 			if (criterion->details->type == NAUTILUS_SIZE_SEARCH_CRITERION) {
-				if (!nautilus_str_to_int (text, &size)) {
+				if (!eel_str_to_int (text, &size)) {
 					g_free (text);
 					return TRUE;
 				}

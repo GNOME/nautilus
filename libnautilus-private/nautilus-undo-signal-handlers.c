@@ -30,7 +30,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-undo.h>
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 #include "nautilus-undo-signal-handlers.h"
 

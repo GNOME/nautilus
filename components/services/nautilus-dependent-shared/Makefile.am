@@ -12,6 +12,8 @@ INCLUDES = \
         -I$(top_builddir)/components/services/trilobite		\
         -I$(top_srcdir)/components/services/trilobite/lib	\
         -I$(top_builddir)/components/services/trilobite/lib	\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
@@ -35,6 +37,8 @@ test_footer_header_LDADD = \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
 	$(GCONF_LIBS) \

@@ -25,9 +25,9 @@
 #include <config.h>
 #include "nautilus-sidebar-functions.h"
 
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-preferences.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include "nautilus-view-identifier.h"
 
 #include <liboaf/liboaf.h>
@@ -46,7 +46,7 @@ compare_view_identifiers (gconstpointer a, gconstpointer b)
  	idenfifier_a = (NautilusViewIdentifier*) a;
  	idenfifier_b = (NautilusViewIdentifier*) b;
 	
-	return nautilus_strcmp (idenfifier_a->name, idenfifier_b->name);
+	return eel_strcmp (idenfifier_a->name, idenfifier_b->name);
 }
 
 static gboolean
@@ -119,7 +119,7 @@ nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers (void)
         
 	enabled_view_identifiers = sidebar_get_sidebar_panel_view_identifiers ();
 
-	enabled_view_identifiers = nautilus_g_list_partition (enabled_view_identifiers,
+	enabled_view_identifiers = eel_g_list_partition (enabled_view_identifiers,
 							      sidebar_is_sidebar_panel_enabled_cover,
 							      NULL,
 							      &disabled_view_identifiers);

@@ -32,7 +32,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkcheckbutton.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
 #include <eazel-inventory-service-interface.h>
 
@@ -49,7 +49,7 @@ static void     nautilus_inventory_config_page_initialize_class    (NautilusInve
 static void     nautilus_inventory_config_page_initialize          (NautilusInventoryConfigPage      *file);
 static void     nautilus_inventory_config_page_destroy             (GtkObject                        *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusInventoryConfigPage, nautilus_inventory_config_page, GTK_TYPE_VBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusInventoryConfigPage, nautilus_inventory_config_page, GTK_TYPE_VBOX)
 
 static void
 nautilus_inventory_config_page_initialize_class (NautilusInventoryConfigPageClass *klass)
@@ -186,5 +186,5 @@ nautilus_inventory_config_page_destroy (GtkObject *object)
 	
 	g_free (page->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

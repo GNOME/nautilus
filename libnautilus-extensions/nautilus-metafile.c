@@ -23,7 +23,7 @@
 #include <config.h>
 #include "nautilus-metafile.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
@@ -32,11 +32,11 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include "nautilus-metadata.h"
 #include "nautilus-thumbnails.h"
-#include "nautilus-xml-extensions.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-xml-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-file-private.h"
@@ -251,7 +251,7 @@ destroy (GtkObject *object)
 
 	g_free (metafile->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static GnomeVFSURI *
@@ -295,7 +295,7 @@ nautilus_metafile_set_directory_uri (NautilusMetafile *metafile, const char *dir
 {
 	GnomeVFSURI *new_vfs_uri;
 
-	if (nautilus_strcmp (metafile->details->directory_uri, directory_uri) == 0) {
+	if (eel_strcmp (metafile->details->directory_uri, directory_uri) == 0) {
 		return;
 	}
 
@@ -344,7 +344,7 @@ nautilus_metafile_get (const char *directory_uri)
 	g_return_val_if_fail (directory_uri != NULL, NULL);
 	
 	if (metafiles == NULL) {
-		metafiles = nautilus_g_hash_table_new_free_at_exit
+		metafiles = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, __FILE__ ": metafiles");
 	}
 	
@@ -522,7 +522,7 @@ corba_get_list (PortableServer_Servant  servant,
 		++buf_pos;
 	}
 
-	nautilus_g_list_free_deep (metadata_list);
+	eel_g_list_free_deep (metadata_list);
 
 	return result;
 }
@@ -537,10 +537,10 @@ corba_set (PortableServer_Servant  servant,
 {
 	NautilusMetafile  *metafile;
 
-	if (nautilus_str_is_empty (default_value)) {
+	if (eel_str_is_empty (default_value)) {
 		default_value = NULL;
 	}
-	if (nautilus_str_is_empty (metadata)) {
+	if (eel_str_is_empty (metadata)) {
 		metadata = NULL;
 	}
 
@@ -820,7 +820,7 @@ get_metadata_list_from_node (xmlNode *node,
 			     const char *list_key,
 			     const char *list_subkey)
 {
-	return nautilus_xml_get_property_for_children
+	return eel_xml_get_property_for_children
 		(node, list_key, list_subkey);
 }
 
@@ -909,7 +909,7 @@ set_metadata_string_in_metafile (NautilusMetafile *metafile,
 	old_metadata = get_file_metadata
 		(metafile, file_name, key, default_metadata);
 
-	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
+	old_metadata_matches = eel_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
 	if (old_metadata_matches) {
 		return FALSE;
@@ -918,7 +918,7 @@ set_metadata_string_in_metafile (NautilusMetafile *metafile,
 	/* Data that matches the default is represented in the tree by
 	 * the lack of an attribute.
 	 */
-	if (nautilus_strcmp (default_metadata, metadata) == 0) {
+	if (eel_strcmp (default_metadata, metadata) == 0) {
 		value = NULL;
 	} else {
 		value = metadata;
@@ -963,7 +963,7 @@ set_metadata_list_in_metafile (NautilusMetafile *metafile,
 		p = list;
 
 		/* Remove any nodes except the ones we expect. */
-		for (child = nautilus_xml_get_children (node);
+		for (child = eel_xml_get_children (node);
 		     child != NULL;
 		     child = next) {
 
@@ -1019,7 +1019,7 @@ metadata_value_new_list (GList *metadata)
 	value = g_new0 (MetadataValue, 1);
 
 	value->is_list = TRUE;
-	value->value.string_list = nautilus_g_str_list_copy (metadata);
+	value->value.string_list = eel_g_str_list_copy (metadata);
 
 	return value;
 }
@@ -1034,7 +1034,7 @@ metadata_value_destroy (MetadataValue *value)
 	if (!value->is_list) {
 		g_free (value->value.string);
 	} else {
-		nautilus_g_list_free_deep (value->value.string_list);
+		eel_g_list_free_deep (value->value.string_list);
 	}
 	g_free (value->default_value);
 	g_free (value);
@@ -1049,15 +1049,15 @@ metadata_value_equal (const MetadataValue *value_a,
 	}
 
 	if (!value_a->is_list) {
-		return nautilus_strcmp (value_a->value.string,
+		return eel_strcmp (value_a->value.string,
 					value_b->value.string) == 0
-			&& nautilus_strcmp (value_a->default_value,
+			&& eel_strcmp (value_a->default_value,
 					    value_b->default_value) == 0;
 	} else {
 		g_assert (value_a->default_value == NULL);
 		g_assert (value_b->default_value == NULL);
 
-		return nautilus_g_str_list_equal
+		return eel_g_str_list_equal
 			(value_a->value.string_list,
 			 value_b->value.string_list);
 	}
@@ -1109,7 +1109,7 @@ get_metadata_string_from_table (NautilusMetafile *metafile,
 	
 	/* Convert it to a string. */
 	g_assert (!value->is_list);
-	if (nautilus_strcmp (value->value.string, value->default_value) == 0) {
+	if (eel_strcmp (value->value.string, value->default_value) == 0) {
 		return g_strdup (default_metadata);
 	}
 	return g_strdup (value->value.string);
@@ -1141,7 +1141,7 @@ get_metadata_list_from_table (NautilusMetafile *metafile,
 
 	/* Copy the list and return it. */
 	g_assert (value->is_list);
-	return nautilus_g_str_list_copy (value->value.string_list);
+	return eel_g_str_list_copy (value->value.string_list);
 }
 
 static guint
@@ -1279,8 +1279,8 @@ get_file_metadata (NautilusMetafile *metafile,
 		   const char *default_metadata)
 {
 	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (key), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (key), NULL);
 
 	if (metafile->details->is_read) {
 		return get_metadata_string_from_metafile
@@ -1298,9 +1298,9 @@ get_file_metadata_list (NautilusMetafile *metafile,
 			const char *list_subkey)
 {
 	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_key), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_subkey), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (list_key), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (list_subkey), NULL);
 
 	if (metafile->details->is_read) {
 		return get_metadata_list_from_metafile
@@ -1321,8 +1321,8 @@ set_file_metadata (NautilusMetafile *metafile,
 	MetadataValue *value;
 
 	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), FALSE);
-	g_return_val_if_fail (!nautilus_str_is_empty (key), FALSE);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), FALSE);
+	g_return_val_if_fail (!eel_str_is_empty (key), FALSE);
 
 	if (metafile->details->is_read) {
 		return set_metadata_string_in_metafile (metafile, file_name, key,
@@ -1344,9 +1344,9 @@ set_file_metadata_list (NautilusMetafile *metafile,
 	MetadataValue *value;
 
 	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), FALSE);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_key), FALSE);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_subkey), FALSE);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), FALSE);
+	g_return_val_if_fail (!eel_str_is_empty (list_key), FALSE);
+	g_return_val_if_fail (!eel_str_is_empty (list_subkey), FALSE);
 
 	if (metafile->details->is_read) {
 		return set_metadata_list_in_metafile (metafile, file_name,
@@ -1591,7 +1591,7 @@ remove_file_metadata (NautilusMetafile *metafile,
 			g_hash_table_remove (hash,
 					     file_name);
 			xmlFree (key);
-			nautilus_xml_remove_node (file_node);
+			eel_xml_remove_node (file_node);
 			xmlFreeNode (file_node);
 			directory_request_write_metafile (metafile);
 		}
@@ -1638,7 +1638,7 @@ nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
 	
 	/* Populate the node hash table. */
 	hash = metafile->details->node_hash;
-	for (node = nautilus_xml_get_root_children (metafile_contents);
+	for (node = eel_xml_get_root_children (metafile_contents);
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "file") == 0) {
 			name = xmlGetProp (node, "name");
@@ -1736,7 +1736,7 @@ metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
 	metafile = NAUTILUS_METAFILE (callback_data);
 
 	g_assert (metafile->details->read_state->get_file_info_handle == handle);
-	g_assert (nautilus_g_list_exactly_one_item (results));
+	g_assert (eel_g_list_exactly_one_item (results));
 
 	metafile->details->read_state->get_file_info_handle = NULL;
 
@@ -1899,12 +1899,12 @@ allow_metafile (NautilusMetafile *metafile)
 	 */
 	uri = metafile->details->directory_uri;
 	if (nautilus_is_search_uri (uri)
-	    || nautilus_istr_has_prefix (uri, "ghelp:")
-	    || nautilus_istr_has_prefix (uri, "gnome-help:")
-	    || nautilus_istr_has_prefix (uri, "help:")
-	    || nautilus_istr_has_prefix (uri, "info:")
-	    || nautilus_istr_has_prefix (uri, "man:")
-	    || nautilus_istr_has_prefix (uri, "pipe:")
+	    || eel_istr_has_prefix (uri, "ghelp:")
+	    || eel_istr_has_prefix (uri, "gnome-help:")
+	    || eel_istr_has_prefix (uri, "help:")
+	    || eel_istr_has_prefix (uri, "info:")
+	    || eel_istr_has_prefix (uri, "man:")
+	    || eel_istr_has_prefix (uri, "pipe:")
 	    ) {
 		return FALSE;
 	}

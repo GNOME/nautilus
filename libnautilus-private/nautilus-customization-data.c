@@ -39,14 +39,14 @@
 #include <libgnome/gnome-defs.h>
 
 #include "nautilus-customization-data.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gdk-pixbuf-extensions.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-file-utilities.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-xml-extensions.h"
-#include "nautilus-string.h"
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-xml-extensions.h>
+#include <eel/eel-string.h>
 
 typedef enum {
 	READ_PUBLIC_CUSTOMIZATIONS,
@@ -190,8 +190,8 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	g_assert (current_file_info != NULL);
 
-	if (!nautilus_istr_has_prefix (current_file_info->mime_type, "image/") ||
-	    nautilus_istr_has_prefix (current_file_info->name, ".")) {
+	if (!eel_istr_has_prefix (current_file_info->mime_type, "image/") ||
+	    eel_istr_has_prefix (current_file_info->name, ".")) {
 		
 		return nautilus_customization_data_get_next_element_for_display (data,
 										 emblem_name,
@@ -209,7 +209,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	if (!strcmp(data->customization_name, "patterns")) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE);
 	} else {
-		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
+		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
 								data->maximum_icon_width, 
 								data->maximum_icon_height);
 		gdk_pixbuf_unref (orig_pixbuf);
@@ -223,7 +223,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	   label because anti-aliased text doesn't look right
 	   in menus */
 	if (data->data_is_for_a_menu) {
-		*label_out = nautilus_truncate_text_for_menu_item (filtered_name);
+		*label_out = eel_truncate_text_for_menu_item (filtered_name);
 	}
 	else {
 		*label_out = g_strdup (filtered_name);
@@ -257,7 +257,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 	gnome_vfs_file_info_list_free (data->private_file_list);
 
 	if (data->name_map_hash != NULL) {
-		nautilus_g_hash_table_destroy_deep (data->name_map_hash);	
+		eel_g_hash_table_destroy_deep (data->name_map_hash);	
 	}
 	
 	g_free (data->customization_name);
@@ -373,7 +373,7 @@ format_name_for_display (NautilusCustomizationData *data, const char* name)
 
 	/* don't display a name for the "reset" property, since its name is
 	   contained in its image and also to help distinguish it */  
-	if (!nautilus_strcmp(name, RESET_IMAGE_NAME)) {
+	if (!eel_strcmp(name, RESET_IMAGE_NAME)) {
 		return g_strdup("");
 	}
 
@@ -414,12 +414,12 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 
 		if (browser_data) {
 			/* get the category node */
-			category_node = nautilus_xml_get_root_child_by_name_and_property (browser_data, "category", "name", data->customization_name);
+			category_node = eel_xml_get_root_child_by_name_and_property (browser_data, "category", "name", data->customization_name);
 			current_node = category_node->childs;	
 			
 			/* loop through the entries, adding a mapping to the hash table */
 			while (current_node != NULL) {
-				display_name = nautilus_xml_get_property_translated (current_node, "display_name");
+				display_name = eel_xml_get_property_translated (current_node, "display_name");
 				filename = xmlGetProp (current_node, "filename");
 				if (display_name && filename) {
 					g_hash_table_insert (data->name_map_hash, g_strdup (filename), g_strdup (display_name));

@@ -32,14 +32,14 @@
 #include <ctype.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-background.h>
+#include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-string.h>
 
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
@@ -164,7 +164,7 @@ load_note_text_from_metadata (NautilusFile *file,
 	/* This fn is called for any change signal on the file, so make sure that the
 	 * metadata has actually changed.
 	 */
-        if (nautilus_strcmp (saved_text, notes->previous_saved_text) != 0) {
+        if (eel_strcmp (saved_text, notes->previous_saved_text) != 0) {
 		notify_listeners_if_changed (notes, saved_text);
 		
 		g_free (notes->previous_saved_text);
@@ -240,7 +240,7 @@ notify_listeners_if_changed (Notes *notes, char *new_notes)
 	char *tab_image;
 	BonoboArg *tab_image_arg;
 
-	if (nautilus_strcmp (notes->previous_saved_text, new_notes) != 0) {
+	if (eel_strcmp (notes->previous_saved_text, new_notes) != 0) {
 		/* notify listeners that the notes text has changed */	
 		tab_image = notes_get_indicator_image (new_notes);	
 		
@@ -365,7 +365,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closur
 {
         GtkWidget *vbox;
         Notes *notes;
-        NautilusBackground *background;
+        EelBackground *background;
         GdkFont *font;
          
         g_return_val_if_fail (strcmp (iid, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
@@ -380,13 +380,13 @@ make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closur
         notes->note_text_field = gtk_text_new (NULL, NULL);
         
         font = nautilus_font_factory_get_font_from_preferences (14);
-        nautilus_gtk_widget_set_font (notes->note_text_field, font);
+        eel_gtk_widget_set_font (notes->note_text_field, font);
         gdk_font_unref (font);
 
         gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
-        background = nautilus_get_widget_background (notes->note_text_field);
-        nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
+        background = eel_get_widget_background (notes->note_text_field);
+        eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
@@ -441,7 +441,7 @@ main(int argc, char *argv[])
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
 	if (g_getenv("NAUTILUS_DEBUG") != NULL) {
-		nautilus_make_warnings_and_criticals_stop_in_debugger
+		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
 	

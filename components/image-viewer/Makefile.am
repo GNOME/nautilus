@@ -16,6 +16,8 @@ INCLUDES =	\
 	-I$(top_builddir)	\
 	-I$(top_builddir)/libnautilus	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)	\
 	$(GCONF_CFLAGS)		\
 	$(BONOBO_CFLAGS)	\
@@ -24,6 +26,8 @@ INCLUDES =	\
 nautilus_image_view_LDADD = 			\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)

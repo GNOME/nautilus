@@ -60,7 +60,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <eel/eel-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
 #ifdef EAZEL_SERVICES
@@ -806,7 +806,7 @@ mozilla_new_window_callback (GtkMozEmbed *mozilla)
 	g_warning ("Nautilus does not support JavaScript spawning of new windows!\n");
 #endif
 
-	dialog = nautilus_show_warning_dialog (_("A JavaScript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by JavaScript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
+	dialog = eel_show_warning_dialog (_("A JavaScript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by JavaScript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
 					     _("Nautilus Mozilla View Warning"),
 					     mozilla_get_containing_window (mozilla));
 

@@ -29,7 +29,7 @@
 #include "nautilus-tree-node-private.h"
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 
 static void               nautilus_tree_node_destroy          (GtkObject   *object);
@@ -39,7 +39,7 @@ static void               nautilus_tree_node_initialize_class (gpointer     klas
 
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
 
 
 static void
@@ -80,7 +80,7 @@ nautilus_tree_node_destroy (GtkObject *object)
 	g_free (node->details->uri);
 	g_free (node->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusTreeNode *

@@ -1,3 +1,439 @@
+2001-04-03  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	Remove librsvg.
+
+	* librsvg/.cvsignore:
+	* librsvg/Makefile.am:
+	* librsvg/art_render.c:
+	* librsvg/art_render.h:
+	* librsvg/art_render_gradient.c:
+	* librsvg/art_render_gradient.h:
+	* librsvg/art_render_mask.c:
+	* librsvg/art_render_mask.h:
+	* librsvg/art_render_svp.c:
+	* librsvg/art_render_svp.h:
+	* librsvg/art_rgba.c:
+	* librsvg/art_rgba.h:
+	* librsvg/example-nested-transform.svg:
+	* librsvg/makefile-simple:
+	* librsvg/opacity.svg:
+	* librsvg/rsvg-bpath-util.c:
+	* librsvg/rsvg-bpath-util.h:
+	* librsvg/rsvg-css.c:
+	* librsvg/rsvg-css.h:
+	* librsvg/rsvg-defs.c:
+	* librsvg/rsvg-defs.h:
+	* librsvg/rsvg-ft.c:
+	* librsvg/rsvg-ft.h:
+	* librsvg/rsvg-paint-server.c:
+	* librsvg/rsvg-paint-server.h:
+	* librsvg/rsvg-path.c:
+	* librsvg/rsvg-path.h:
+	* librsvg/rsvg.c:
+	* librsvg/rsvg.h:
+	* librsvg/subpixel-text-test:
+	* librsvg/test-ft-gtk.c:
+	* librsvg/test-ft.c:
+	* librsvg/test-rsvg.c:
+	* librsvg/test.svg:
+	Move librsvg to its own top level GNOME CVS module.
+
+	* configure.in:
+	Add librsvg and eel dependencies.
+	Remove librsvg and font entries.
+
+	* nautilus.spec.in:
+	Remove font entries.  Add librsvg and eel requirements.
+	
+	* data/Makefile.am:
+	* data/fonts/.cvsignore:
+	* data/fonts/Makefile.am:
+	* data/fonts/urw/.cvsignore:
+	* data/fonts/urw/Makefile.am:
+	* data/fonts/urw/README:
+	* data/fonts/urw/fonts.dir:
+	* data/fonts/urw/n019003l.afm:
+	* data/fonts/urw/n019003l.pfb:
+	* data/fonts/urw/n019003l.pfm:
+	* data/fonts/urw/n019004l.afm:
+	* data/fonts/urw/n019004l.pfb:
+	* data/fonts/urw/n019004l.pfm:
+	* data/fonts/urw/n019023l.afm:
+	* data/fonts/urw/n019023l.pfb:
+	* data/fonts/urw/n019023l.pfm:
+	* data/fonts/urw/n019024l.afm:
+	* data/fonts/urw/n019024l.pfb:
+	* data/fonts/urw/n019024l.pfm:
+	Retire default fonts.  These now live in eel.
+
+	* libnautilus/nautilus-undo-transaction.c:
+	(nautilus_undo_transaction_destroy):
+	* libnautilus/nautilus-view.c: (nautilus_view_destroy):
+	Update for eel changes.  Use eel-gtk-macros.
+	
+	* nautilus-installer/src/nautilus-druid-page-eazel.c:
+	(nautilus_druid_page_eazel_destroy),
+	(nautilus_druid_page_eazel_finalize),
+	(nautilus_druid_page_eazel_size_allocate),
+	(nautilus_druid_page_eazel_size_request):
+	Update for eel changes.  Use eel-gtk-macros.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bookmark.c:
+	* libnautilus-extensions/nautilus-ctree.c:
+	* libnautilus-extensions/nautilus-customization-data.c:
+	* libnautilus-extensions/nautilus-dateedit-extensions.c:
+	* libnautilus-extensions/nautilus-dateedit-extensions.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	* libnautilus-extensions/nautilus-directory-background.h:
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.c:
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-drag-window.c:
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-druid-page-eazel.c:
+	* libnautilus-extensions/nautilus-druid.c:
+	* libnautilus-extensions/nautilus-entry.c:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-font-factory.c:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	* libnautilus-extensions/nautilus-generous-bin.c:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	* libnautilus-extensions/nautilus-keep-last-vertical-box.c:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.c:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	* libnautilus-extensions/nautilus-link-set.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	* libnautilus-extensions/nautilus-metafile-factory.c:
+	* libnautilus-extensions/nautilus-metafile.c:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	* libnautilus-extensions/nautilus-preferences.c:
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	* libnautilus-extensions/nautilus-search-uri.c:
+	* libnautilus-extensions/nautilus-sidebar-functions.c:
+	* libnautilus-extensions/nautilus-tabs.c:
+	* libnautilus-extensions/nautilus-theme.c:
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	* libnautilus-extensions/nautilus-trash-file.c:
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	* libnautilus-extensions/nautilus-undo-context.c:
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	* libnautilus-extensions/nautilus-vfs-file.c:
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	Use new eel library.
+
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	* libnautilus-extensions/nautilus-background-canvas-group.h:
+	* libnautilus-extensions/nautilus-background.c:
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-caption-table.c:
+	* libnautilus-extensions/nautilus-caption-table.h:
+	* libnautilus-extensions/nautilus-caption.c:
+	* libnautilus-extensions/nautilus-caption.h:
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	* libnautilus-extensions/nautilus-clickable-image.h:
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	* libnautilus-extensions/nautilus-debug-drawing.h:
+	* libnautilus-extensions/nautilus-debug.c:
+	* libnautilus-extensions/nautilus-debug.h:
+	* libnautilus-extensions/nautilus-ellipsizing-label.c:
+	* libnautilus-extensions/nautilus-ellipsizing-label.h:
+	* libnautilus-extensions/nautilus-enumeration.c:
+	* libnautilus-extensions/nautilus-enumeration.h:
+	* libnautilus-extensions/nautilus-font-manager.c:
+	* libnautilus-extensions/nautilus-font-manager.h:
+	* libnautilus-extensions/nautilus-font-picker.c:
+	* libnautilus-extensions/nautilus-font-picker.h:
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-font-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glyph.c:
+	* libnautilus-extensions/nautilus-glyph.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-graphic-effects.c:
+	* libnautilus-extensions/nautilus-graphic-effects.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-macros.h:
+	* libnautilus-extensions/nautilus-image-table.c:
+	* libnautilus-extensions/nautilus-image-table.h:
+	* libnautilus-extensions/nautilus-image-with-background.c:
+	* libnautilus-extensions/nautilus-image-with-background.h:
+	* libnautilus-extensions/nautilus-image.c:
+	* libnautilus-extensions/nautilus-image.h:
+	* libnautilus-extensions/nautilus-label-with-background.c:
+	* libnautilus-extensions/nautilus-label-with-background.h:
+	* libnautilus-extensions/nautilus-label.c:
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.c:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	* libnautilus-extensions/nautilus-password-dialog.h:
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	* libnautilus-extensions/nautilus-region.c:
+	* libnautilus-extensions/nautilus-region.h:
+	* libnautilus-extensions/nautilus-scalable-font-private.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-self-checks.c:
+	* libnautilus-extensions/nautilus-self-checks.h:
+	* libnautilus-extensions/nautilus-smooth-text-layout-cache.c:
+	* libnautilus-extensions/nautilus-smooth-text-layout-cache.h:
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	* libnautilus-extensions/nautilus-smooth-text-layout.h:
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	* libnautilus-extensions/nautilus-smooth-widget.h:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* libnautilus-extensions/nautilus-string-list.c:
+	* libnautilus-extensions/nautilus-string-list.h:
+	* libnautilus-extensions/nautilus-string-map.c:
+	* libnautilus-extensions/nautilus-string-map.h:
+	* libnautilus-extensions/nautilus-string-picker.c:
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* libnautilus-extensions/nautilus-string.c:
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-text-caption.c:
+	* libnautilus-extensions/nautilus-text-caption.h:
+	* libnautilus-extensions/nautilus-viewport.c:
+	* libnautilus-extensions/nautilus-viewport.h:
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	* libnautilus-extensions/nautilus-wrap-table.h:
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	* libnautilus-extensions/nautilus-xml-extensions.h:
+	Remove these files.  These are all part of eel now.
+	
+	* applets/launcher/nautilus-launcher-applet.c:
+	* applets/preferences-applet/nautilus-preferences-applet.c:
+	* components/adapter/Makefile.am:
+	* components/adapter/main.c:
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	* components/adapter/nautilus-adapter-factory-server.c:
+	* components/adapter/nautilus-adapter-file-load-strategy.c:
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	* components/adapter/nautilus-adapter-stream-load-strategy.c:
+	* components/adapter/nautilus-adapter.c:
+	* components/hardware/Makefile.am:
+	* components/hardware/nautilus-hardware-view.c:
+	* components/help/Makefile.am:
+	* components/help/help-method.c:
+	* components/help/hyperbola-filefmt.c:
+	* components/help/hyperbola-nav-tree.c:
+	* components/history/Makefile.am:
+	* components/history/nautilus-history-view.c:
+	* components/image-viewer/Makefile.am:
+	* components/image-viewer/nautilus-image-view.c:
+	* components/loser/content/Makefile.am:
+	* components/loser/content/nautilus-content-loser.c:
+	* components/loser/sidebar/Makefile.am:
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	* components/mozilla/Makefile.am:
+	* components/mozilla/bonobo-extensions.c:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* components/music/Makefile.am:
+	* components/music/nautilus-music-view.c:
+	* components/notes/Makefile.am:
+	* components/notes/nautilus-notes.c:
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	* components/rpmview/nautilus-rpm-view-install.c:
+	* components/rpmview/nautilus-rpm-view.c:
+	* components/sample/nautilus-sample-content-view.c:
+	* components/services/install-view/Makefile.am:
+	* components/services/install-view/callbacks.c:
+	* components/services/install-view/forms.c:
+	* components/services/install-view/nautilus-service-install-view.c:
+	* components/services/install/lib/eazel-install-logic2.c:
+	* components/services/install/server/main.c:
+	* components/services/inventory-view/Makefile.am:
+	* components/services/inventory-view/nautilus-inventory-config-page
+	.c:
+	* components/services/inventory-view/nautilus-inventory-disable-pag
+	* components/services/inventory-view/nautilus-inventory-enable-page
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	* components/services/inventory/Makefile.am:
+	* components/services/inventory/eazel-inventory-upload-callback.c:
+	* components/services/inventory/eazel-inventory.c:
+	* components/services/inventory/main.c:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c:
+	* components/services/login/nautilus-view/password-box.c:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.c:
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.h:
+	* components/services/nautilus-dependent-shared/eazel-services-foot
+	er.c:
+	* components/services/nautilus-dependent-shared/eazel-services-head
+	er.c:
+	* components/services/nautilus-dependent-shared/test-footer-header.
+	c:
+	* components/services/summary/Makefile.am:
+	* components/services/summary/nautilus-summary-callbacks.c:
+	* components/services/summary/nautilus-summary-dialogs.c:
+	* components/services/summary/nautilus-summary-dialogs.h:
+	* components/services/summary/nautilus-summary-footer.c:
+	* components/services/summary/nautilus-summary-menu-items.c:
+	* components/services/summary/nautilus-summary-view-private.h:
+	* components/services/summary/nautilus-summary-view.c:
+	* components/services/time/nautilus-view/main.c:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.
+	c:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/text/Makefile.am:
+	* components/text/nautilus-text-view.c:
+	* components/throbber/Makefile.am:
+	* components/throbber/main.c:
+	* components/throbber/nautilus-throbber.c:
+	* components/tree/Makefile.am:
+	* components/tree/nautilus-tree-change-queue.c:
+	* components/tree/nautilus-tree-expansion-state.c:
+	* components/tree/nautilus-tree-model.c:
+	* components/tree/nautilus-tree-node.c:
+	* components/tree/nautilus-tree-view-dnd.c:
+	* components/tree/nautilus-tree-view.c:
+	* helper-utilities/authenticate/Makefile.am:
+	* helper-utilities/authenticate/nautilus-authenticate.c:
+	* nautilus-installer/src/nautilus-druid.c:
+	* src/Makefile.am:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-error-reporting.c:
+	* src/file-manager/fm-icon-text-window.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-search-list-view.c:
+	* src/file-manager/nautilus-indexing-info.c:
+	* src/nautilus-about.c:
+	* src/nautilus-application.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmark-parsing.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-component-adapter-factory.c:
+	* src/nautilus-desktop-window.c:
+	* src/nautilus-first-time-druid.c:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-main.c:
+	* src/nautilus-navigation-bar.c:
+	* src/nautilus-profiler.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-search-bar.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-sidebar-tabs.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-signaller.c:
+	* src/nautilus-simple-search-bar.c:
+	* src/nautilus-switchable-navigation-bar.c:
+	* src/nautilus-switchable-search-bar.c:
+	* src/nautilus-theme-selector.c:
+	* src/nautilus-view-frame-corba.c:
+	* src/nautilus-view-frame.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-toolbars.c:
+	* src/nautilus-window.c:
+	* src/nautilus-window.h:
+	* src/nautilus-zoom-control.c:
+	Update for new eel library usage.
+
+	* test/test-nautilus-background.c:
+	* test/test-nautilus-clickable-image.c:
+	* test/test-nautilus-font-manager.c:
+	* test/test-nautilus-font-picker.c:
+	* test/test-nautilus-font-simple.c:
+	* test/test-nautilus-font.c:
+	* test/test-nautilus-glyph-simple.c:
+	* test/test-nautilus-glyph.c:
+	* test/test-nautilus-image-background.c:
+	* test/test-nautilus-image-scrolled.c:
+	* test/test-nautilus-image-simple.c:
+	* test/test-nautilus-image-table.c:
+	* test/test-nautilus-image-tile.c:
+	* test/test-nautilus-image.c:
+	* test/test-nautilus-label-background.c:
+	* test/test-nautilus-label-flavorful.c:
+	* test/test-nautilus-label-offset.c:
+	* test/test-nautilus-label-scrolled.c:
+	* test/test-nautilus-label-simple.c:
+	* test/test-nautilus-label-wrapped.c:
+	* test/test-nautilus-label.c:
+	* test/test-nautilus-labeled-image.c:
+	* test/test-nautilus-password-dialog.c:
+	* test/test-nautilus-pixbuf-tile.c:
+	* test/test-nautilus-smooth-text-layout.c:
+	* test/test-nautilus-viewport-constraint.c:
+	* test/test-nautilus-widgets.c:
+	Remove these.  They live in eel now.
+
+	* test/vsignore:
+	* test/kefile.am:
+	* test/st-nautilus-preferences-change.c:
+	* test/st-nautilus-preferences-display.c:
+	* test/st-nautilus-wrap-table.c:
+	* test/st.c:
+	* test/st.h:
+	Update for new eel library usage.
+
 2001-04-03  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Harper <jsh@eazel.com>

@@ -36,7 +36,7 @@
 #include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-view.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 
 typedef struct {
 	char *from_location;
@@ -122,7 +122,7 @@ impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 	
 	CORBA_exception_init (&ev);
 
-	nautilus_nullify_cancel (&servant->view);
+	eel_nullify_cancel (&servant->view);
 	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
 	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
 	CORBA_free (object_id);
@@ -152,7 +152,7 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
 			    GTK_SIGNAL_FUNC (impl_Nautilus_ViewFrame__destroy), servant);
 
-	nautilus_nullify_when_destroyed (&servant->view);
+	eel_nullify_when_destroyed (&servant->view);
   
 	return bonobo_object;
 }
@@ -160,7 +160,7 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 static void
 list_free_deep_callback (gpointer callback_data)
 {
-	nautilus_g_list_free_deep (callback_data);
+	eel_g_list_free_deep (callback_data);
 }
 
 static void
@@ -171,7 +171,7 @@ free_location_plus_callback (gpointer callback_data)
 	location_plus = callback_data;
 	g_free (location_plus->from_location);
 	g_free (location_plus->location);
-	nautilus_g_list_free_deep (location_plus->selection);
+	eel_g_list_free_deep (location_plus->selection);
 	g_free (location_plus->title);
 	g_free (location_plus);
 }

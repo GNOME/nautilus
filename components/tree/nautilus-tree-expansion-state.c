@@ -26,8 +26,8 @@
 #include <config.h>
 #include "nautilus-tree-expansion-state.h"
 
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 
 
@@ -44,7 +44,7 @@ static void               nautilus_tree_expansion_state_initialize       (gpoint
 									  gpointer     klass);
 static void               nautilus_tree_expansion_state_initialize_class (gpointer     klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
 
 
 static gboolean	          expansion_table_hash_remove_func               (gpointer key,
@@ -87,7 +87,7 @@ nautilus_tree_expansion_state_load_table_from_gconf (NautilusTreeExpansionState 
 
 	uris = nautilus_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
 	g_list_foreach (uris, expansion_state_load_callback, expansion_state);
-	nautilus_g_list_free_deep (uris);
+	eel_g_list_free_deep (uris);
 }
 
 
@@ -120,7 +120,7 @@ nautilus_tree_expansion_state_save_table_to_gconf (NautilusTreeExpansionState *e
 	GList *uris;
 
 	uris = hash_table_get_keys (expansion_state->details->table);
-	uris = nautilus_g_str_list_alphabetize (uris);
+	uris = eel_g_str_list_alphabetize (uris);
 	nautilus_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
 	g_list_free (uris);
 }
@@ -160,7 +160,7 @@ nautilus_tree_expansion_state_destroy (GtkObject *object)
 
 	g_free (expansion_state->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

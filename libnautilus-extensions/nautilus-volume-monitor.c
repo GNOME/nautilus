@@ -28,13 +28,13 @@
 #include "nautilus-cdrom-extensions.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gnome-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-iso9660.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-string.h"
-#include "nautilus-string-list.h"
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-string-list.h>
 #include "nautilus-volume-monitor.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -182,7 +182,7 @@ static int              get_cdrom_type_solaris                          (const c
 									 int                            *fd);
 #endif
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
 				   nautilus_volume_monitor,
 				   GTK_TYPE_OBJECT)
 
@@ -264,7 +264,7 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 
 	global_volume_monitor = NULL;
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -338,7 +338,7 @@ has_removable_mntent_options (MountTableEntry *ent)
 	}
 
 #ifdef SOLARIS_MNT
-	if (nautilus_str_has_prefix (ent->mnt_special, "/vol/")) {
+	if (eel_str_has_prefix (ent->mnt_special, "/vol/")) {
 		return TRUE;
 	}
 #endif
@@ -375,7 +375,7 @@ get_removable_volumes (void)
         ent = &ent_storage;
 	while (! getmntent (file, ent)) {
 		/* On Solaris look for /vol/ for determining a removable volume */
-		if (nautilus_str_has_prefix (ent->mnt_special, noauto_string)) {
+		if (eel_str_has_prefix (ent->mnt_special, noauto_string)) {
 			volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);
 			volume->is_removable = TRUE;
 			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
@@ -426,7 +426,7 @@ volume_is_removable (const NautilusVolume *volume)
 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
   			/* On Solaris look for /vol/ for determining
 			a removable volume */
-   		 	if (nautilus_str_has_prefix (ent->mnt_special, noauto_string)) {
+   		 	if (eel_str_has_prefix (ent->mnt_special, noauto_string)) {
 				fclose (file);
 				return TRUE;
 			}
@@ -850,7 +850,7 @@ eject_device (void *arg)
 
 	if (path != NULL) {		
 		command = g_strdup_printf ("eject %s", path);	
-		nautilus_gnome_shell_execute (command);
+		eel_gnome_shell_execute (command);
 		g_free (command);
 		g_free (path);
 	}
@@ -956,7 +956,7 @@ get_current_mount_list (void)
 #else
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
-	NautilusStringList *list;
+	EelStringList *list;
 	char *device_path, *mount_path, *filesystem;
 	const char *separator;
 
@@ -973,22 +973,22 @@ get_current_mount_list (void)
 
 	while (fgets (line, sizeof(line), fh)) {
 		if (sscanf (line, "%s", device_name) == 1) {
-			list = nautilus_string_list_new_from_tokens (line, separator, FALSE);
+			list = eel_string_list_new_from_tokens (line, separator, FALSE);
 			if (list != NULL) {
 				/* The string list needs to have at least 3 items per line.
 				 * We need to find at least device path, mount path and file system type.
 				 */
-				if (nautilus_string_list_get_length (list) >= 3) {
-					device_path = nautilus_string_list_nth (list, 0);
-					mount_path = nautilus_string_list_nth (list, 1);
-					filesystem = nautilus_string_list_nth (list, 2);
+				if (eel_string_list_get_length (list) >= 3) {
+					device_path = eel_string_list_nth (list, 0);
+					mount_path = eel_string_list_nth (list, 1);
+					filesystem = eel_string_list_nth (list, 2);
 					volume = create_volume (device_path, mount_path, filesystem);
 					g_free (device_path);
 					g_free (mount_path);
 					g_free (filesystem);
 					current_mounts = mount_volume_add_filesystem (volume, current_mounts);
 				}				
-				nautilus_string_list_free (list);
+				eel_string_list_free (list);
 			}			
 		}
   	}
@@ -1463,7 +1463,7 @@ display_mount_status (gpointer callback_data)
 {
 	MountStatusInfo *info = callback_data;
 		
-	nautilus_show_error_dialog_with_details 
+	eel_show_error_dialog_with_details 
 		(info->message, info->title, info->detailed_message, NULL);
 
 	g_free (info->message);
@@ -1830,7 +1830,7 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
 	gboolean mounted = FALSE;
 			
-	if (nautilus_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
+	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
 		mounted = mount_volume_affs_add (volume);

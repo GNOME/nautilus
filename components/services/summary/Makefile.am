@@ -16,6 +16,8 @@ INCLUDES =								\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_srcdir)/components/services/trilobite			\
 	-I$(top_builddir)						\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)                       			\
 	$(GCONF_CFLAGS) 						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"			\
@@ -52,6 +54,8 @@ nautilus_summary_view_LDADD =									\
 	$(INVENTORY_LIBS)									\
 	$(top_builddir)/libnautilus/libnautilus.la						\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la			\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)										\
 	$(GNOMEUI_LIBS)										\
 	$(GCONF_LIBS)										\

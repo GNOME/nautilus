@@ -30,7 +30,7 @@
 #include "nautilus-signaller.h"
 
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 typedef GtkObject NautilusSignaller;
 typedef GtkObjectClass NautilusSignallerClass;
@@ -50,7 +50,7 @@ static void    nautilus_signaller_initialize_class (gpointer klass);
 static void    nautilus_signaller_initialize       (gpointer object,
 						    gpointer klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSignaller,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSignaller,
 				   nautilus_signaller,
 				   GTK_TYPE_OBJECT)
 

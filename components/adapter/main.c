@@ -35,7 +35,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <liboaf/liboaf.h>
 #include <stdlib.h>
 
@@ -93,7 +93,7 @@ main (int argc, char *argv[])
 	char *registration_id;
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		nautilus_make_warnings_and_criticals_stop_in_debugger
+		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", "ORBit", NULL);
 	}
 	

@@ -37,7 +37,7 @@
 #include <bonobo/bonobo-client-site.h>
 #include <bonobo/bonobo-item-container.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
 
 struct NautilusAdapterEmbeddableEmbedStrategyDetails {
@@ -61,7 +61,7 @@ static GtkWidget *nautilus_adapter_embeddable_embed_strategy_get_widget (Nautilu
 static BonoboObject *nautilus_adapter_embeddable_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_adapter_embeddable_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_adapter_embeddable_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void
@@ -107,7 +107,7 @@ nautilus_adapter_embeddable_embed_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

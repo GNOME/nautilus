@@ -33,8 +33,8 @@
 #include <libgnomeui/gnome-winhints.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <X11/Xatom.h>
@@ -50,7 +50,7 @@ static void destroy                                  (GtkObject                 
 static void realize                                  (GtkWidget                  *widget);
 static void real_add_current_location_to_history_list (NautilusWindow		 *window);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
 static void
 nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
@@ -153,10 +153,10 @@ destroy (GtkObject *object)
 
 	gdk_property_delete (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
 
-	nautilus_gtk_object_list_free (window->details->unref_list);
+	eel_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -171,7 +171,7 @@ realize (GtkWidget *widget)
 			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
 			      
 	/* Do the work of realizing. */
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	/* FIXME bugzilla.eazel.com 1253: 
 	 * Looking at the gnome_win_hints implementation,

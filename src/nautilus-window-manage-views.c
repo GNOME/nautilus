@@ -43,19 +43,19 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -116,14 +116,14 @@ change_selection (NautilusWindow *window,
         /* Sort list into canonical order and check if it's the same as
          * the selection we already have.
          */
-        sorted = nautilus_g_str_list_alphabetize (nautilus_g_str_list_copy (selection));
-        if (nautilus_g_str_list_equal (sorted, window->details->selection)) {
-                nautilus_g_list_free_deep (sorted);
+        sorted = eel_g_str_list_alphabetize (eel_g_str_list_copy (selection));
+        if (eel_g_str_list_equal (sorted, window->details->selection)) {
+                eel_g_list_free_deep (sorted);
                 return;
         }
 
         /* Store the new selection. */
-        nautilus_g_list_free_deep (window->details->selection);
+        eel_g_list_free_deep (window->details->selection);
         window->details->selection = sorted;
 
         /* Tell all the view frames about it, except the one that changed it. */
@@ -253,7 +253,7 @@ update_title (NautilusWindow *window)
         if (title[0] == '\0') {
 		window_set_title_with_time_stamp (window, _("Nautilus"));
         } else {
-                window_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
+                window_title = eel_str_middle_truncate (title, MAX_TITLE_LENGTH);
 		window_set_title_with_time_stamp (window, window_title);
                 g_free (window_title);
         }
@@ -680,7 +680,7 @@ get_topmost_nautilus_window (void)
         GList *window_list, *node;
         NautilusWindow *result;
 
-        window_list = nautilus_get_window_list_ordered_front_to_back ();
+        window_list = eel_get_window_list_ordered_front_to_back ();
 
         result = NULL;
         for (node = window_list; node != NULL; node = node->next) {
@@ -723,7 +723,7 @@ open_location (NautilusWindow *window,
                 if (target_window == window) {
                         create_new_window = TRUE;
                 } else {
-                        nautilus_gtk_window_present (GTK_WINDOW (target_window));
+                        eel_gtk_window_present (GTK_WINDOW (target_window));
                 }
         }
 
@@ -731,8 +731,8 @@ open_location (NautilusWindow *window,
                 target_window = nautilus_application_create_window (window->application);
         }
 
-	nautilus_g_list_free_deep (target_window->details->pending_selection);
-        target_window->details->pending_selection = nautilus_g_str_list_copy (new_selection);
+	eel_g_list_free_deep (target_window->details->pending_selection);
+        target_window->details->pending_selection = eel_g_str_list_copy (new_selection);
 
         begin_location_change (target_window, location,
                                NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
@@ -817,7 +817,7 @@ report_content_view_failure_to_user_internal (NautilusWindow *window,
 
 	label = view_frame_get_label (view_frame);
 	message = g_strdup_printf (message, label);
-	nautilus_show_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
+	eel_show_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
 	g_free (label);
 }
 
@@ -908,7 +908,7 @@ set_to_pending_location_and_selection (NautilusWindow *window)
                                         window->details->pending_selection,
                                         NULL);
         
-        nautilus_g_list_free_deep (window->details->pending_selection);
+        eel_g_list_free_deep (window->details->pending_selection);
         window->details->pending_selection = NULL;
 }
 
@@ -1007,7 +1007,7 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
                          label);
         }
 
-	nautilus_show_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
+	eel_show_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
 
 	g_free (label);
 	g_free (message);
@@ -1135,7 +1135,7 @@ position_and_show_window_callback (NautilusFile *file,
 		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
 		if (geometry_string != NULL) {
-			nautilus_gtk_window_set_initial_geometry_from_string 
+			eel_gtk_window_set_initial_geometry_from_string 
 				(GTK_WINDOW (window), 
 				 geometry_string,
 				 NAUTILUS_WINDOW_MIN_WIDTH, 
@@ -1154,7 +1154,7 @@ position_and_show_window_callback (NautilusFile *file,
 static gboolean
 just_one_window (void)
 {
-	return !nautilus_g_list_more_than_one_item
+	return !eel_g_list_more_than_one_item
                 (nautilus_application_get_window_list ());
 }
 
@@ -1212,7 +1212,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 	 * though the dialog uses wrapped text, if the URI doesn't contain
 	 * white space then the text-wrapping code is too stupid to wrap it.
 	 */
-        uri_for_display = nautilus_str_middle_truncate
+        uri_for_display = eel_str_middle_truncate
                 (full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
 	g_free (full_uri_for_display);
 
@@ -1260,7 +1260,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                 /* Can't create a vfs_uri and get the method from that, because 
                  * gnome_vfs_uri_new might return NULL.
                  */
-                scheme_string = nautilus_str_get_prefix (location, ":");
+                scheme_string = eel_str_get_prefix (location, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
                 error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle %s: locations."),
                                                  uri_for_display, scheme_string);
@@ -1325,7 +1325,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                  * happens when a new window cannot display its initial URI. 
                  */
 
-                dialog = nautilus_show_error_dialog (error_message, dialog_title, NULL);
+                dialog = eel_show_error_dialog (error_message, dialog_title, NULL);
                 
 		/* if this is the only window, we don't want to quit, so we redirect it to home */
 		if (just_one_window ()) {
@@ -1348,7 +1348,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
-                nautilus_show_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
+                eel_show_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
 
                 /* Leave the location bar showing the bad location that the user
                  * typed (or maybe achieved by dragging or something). Many times
@@ -1801,7 +1801,7 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
                         existing_location = existing_window->details->location;
                 }
                 if (nautilus_uris_match (existing_location, location)) {
-                        nautilus_gtk_window_present (GTK_WINDOW (existing_window));
+                        eel_gtk_window_present (GTK_WINDOW (existing_window));
                         return;
                 }
         }

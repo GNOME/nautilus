@@ -28,8 +28,8 @@
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <gtk/gtksignal.h>
 
 struct NautilusMergedDirectoryDetails {
@@ -75,7 +75,7 @@ static guint    merged_callback_hash                       (gconstpointer       
 static gboolean merged_callback_equal                      (gconstpointer            merged_callback,
 							    gconstpointer            merged_callback_2);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMergedDirectory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusMergedDirectory,
 				   nautilus_merged_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
 
@@ -112,7 +112,7 @@ merged_destroy (GtkObject *object)
 	g_hash_table_destroy (merged->details->monitors);
 	g_free (merged->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static guint
@@ -144,7 +144,7 @@ merged_callback_destroy (MergedCallback *merged_callback)
 	g_assert (merged_callback != NULL);
 	g_assert (NAUTILUS_IS_MERGED_DIRECTORY (merged_callback->merged));
 
-	nautilus_g_list_free_deep (merged_callback->wait_for_attributes);
+	eel_g_list_free_deep (merged_callback->wait_for_attributes);
 	g_list_free (merged_callback->non_ready_directories);
 	nautilus_file_list_free (merged_callback->merged_file_list);
 	g_free (merged_callback);
@@ -227,7 +227,7 @@ merged_call_when_ready (NautilusDirectory *directory,
 	merged_callback->merged = merged;
 	merged_callback->callback = callback;
 	merged_callback->callback_data = callback_data;
-	merged_callback->wait_for_attributes = nautilus_g_str_list_copy (file_attributes);
+	merged_callback->wait_for_attributes = eel_g_str_list_copy (file_attributes);
 	for (node = merged->details->directories; node != NULL; node = node->next) {
 		merged_callback->non_ready_directories = g_list_prepend
 			(merged_callback->non_ready_directories, node->data);
@@ -302,7 +302,7 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	monitor = g_hash_table_lookup (merged->details->monitors, client);
 	if (monitor != NULL) {
 		g_assert (monitor->merged == merged);
-		nautilus_g_list_free_deep (monitor->monitor_attributes);
+		eel_g_list_free_deep (monitor->monitor_attributes);
 	} else {
 		monitor = g_new0 (MergedMonitor, 1);
 		monitor->merged = merged;
@@ -311,7 +311,7 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	}
 	monitor->monitor_hidden_files = monitor_hidden_files;
 	monitor->monitor_backup_files = monitor_backup_files;
-	monitor->monitor_attributes = nautilus_g_str_list_copy (file_attributes);
+	monitor->monitor_attributes = eel_g_str_list_copy (file_attributes);
 	
 	/* Call through to the real directory add calls. */
 	for (node = merged->details->directories; node != NULL; node = node->next) {
@@ -346,7 +346,7 @@ merged_file_monitor_remove (NautilusDirectory *directory,
 			(node->data, monitor);
 	}
 
-	nautilus_g_list_free_deep (monitor->monitor_attributes);
+	eel_g_list_free_deep (monitor->monitor_attributes);
 	g_free (monitor);
 }
 
@@ -550,7 +550,7 @@ merged_remove_real_directory (NautilusMergedDirectory *merged,
 	g_return_if_fail (g_list_find (merged->details->directories, real_directory) != NULL);
 
 	/* Remove this directory from callbacks and monitors. */
-	nautilus_g_hash_table_safe_for_each
+	eel_g_hash_table_safe_for_each
 		(merged->details->callbacks,
 		 merged_callback_remove_directory_cover,
 		 real_directory);

@@ -24,7 +24,7 @@
 #include "nautilus-metafile-factory.h"
 #include "nautilus-metafile.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
@@ -64,7 +64,7 @@ destroy (GtkObject *object)
 	factory = NAUTILUS_METAFILE_FACTORY (object);
 	g_free (factory->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static NautilusMetafileFactory *

@@ -34,18 +34,18 @@
 #include <gnome.h>
 #include <gtk/gtklabel.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-ctree.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
+#include <eel/eel-viewport.h>
 #include <libnautilus/libnautilus.h>
 #include <limits.h>
 #include <stdio.h>
@@ -85,7 +85,7 @@ static void nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 static void file_activation_callback (NautilusCTree *ctree, NautilusCTreeNode *node, int column,
                                       NautilusRPMView *rpm_view);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_rpm_view_initialize_class (NautilusRPMViewClass *klass)
@@ -105,7 +105,7 @@ nautilus_rpm_view_initialize_class (NautilusRPMViewClass *klass)
 static void
 nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 {
-  	NautilusBackground *background;
+  	EelBackground *background;
 	GtkWidget *temp_box, *temp_widget;
 	GtkWidget *icon_title_box, *title_box;
 	GtkTable *table;
@@ -132,8 +132,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	rpm_view->details->selected_file = NULL;
 	
 	/* set up the default background color */
-  	background = nautilus_get_widget_background (GTK_WIDGET (rpm_view));
-  	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
+  	background = eel_get_widget_background (GTK_WIDGET (rpm_view));
+  	eel_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
 	 
 	/* allocate a vbox to contain all of the views */
 	
@@ -148,7 +148,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* allocate a nautilus_image to hold the icon */
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-	rpm_view->details->package_image = nautilus_image_new (default_icon_path);
+	rpm_view->details->package_image = eel_image_new (default_icon_path);
 	g_free (default_icon_path);
 	gtk_widget_show (rpm_view->details->package_image);
 	gtk_box_pack_start (GTK_BOX (icon_title_box), rpm_view->details->package_image, FALSE, FALSE, 8);	
@@ -160,7 +160,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	/* allocate the name field */
 	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
-        nautilus_gtk_label_make_larger (GTK_LABEL (rpm_view->details->package_title), 4);
+        eel_gtk_label_make_larger (GTK_LABEL (rpm_view->details->package_title), 4);
 	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_title, FALSE, FALSE, 1);	
 	gtk_widget_show (rpm_view->details->package_title);
 		
@@ -357,11 +357,11 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
         temp_widget = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_widget),
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-        viewport = nautilus_viewport_new (NULL, NULL);
+        viewport = eel_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
         gtk_container_add (GTK_CONTAINER (temp_widget), viewport);
-	background = nautilus_get_widget_background (viewport);
-	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
+	background = eel_get_widget_background (viewport);
+	eel_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
         gtk_widget_show (viewport);
         gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, TRUE, TRUE, 8);
         gtk_widget_show (temp_widget);
@@ -375,7 +375,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	gtk_drag_dest_set (GTK_WIDGET (rpm_view),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   rpm_dnd_target_table, NAUTILUS_N_ELEMENTS (rpm_dnd_target_table), GDK_ACTION_COPY);
+			   rpm_dnd_target_table, EEL_N_ELEMENTS (rpm_dnd_target_table), GDK_ACTION_COPY);
 
 	/* finally, show the view itself */	
 	gtk_widget_show (GTK_WIDGET (rpm_view));
@@ -416,7 +416,7 @@ nautilus_rpm_view_destroy (GtkObject *object)
 	g_free (rpm_view->details->package_name);
 	g_free (rpm_view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Component embedding support */
@@ -536,7 +536,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		
 	/* load the standard icon as the default */
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-    	nautilus_image_set_pixbuf_from_file_name (NAUTILUS_IMAGE (rpm_view->details->package_image), default_icon_path);
+    	eel_image_set_pixbuf_from_file_name (EEL_IMAGE (rpm_view->details->package_image), default_icon_path);
         g_free (default_icon_path);
 
 #ifdef EAZEL_SERVICES	       
@@ -733,7 +733,7 @@ nautilus_rpm_view_verify_files (GtkWidget *widget,
 	
 	}
 	
-	nautilus_gtk_window_present (GTK_WINDOW (rpm_view->details->verify_window));
+	eel_gtk_window_present (GTK_WINDOW (rpm_view->details->verify_window));
 
         failsignal = gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_system),
                                          "failed",
@@ -781,7 +781,7 @@ nautilus_rpm_view_drag_data_received (GtkWidget *widget, GdkDragContext *context
         switch (info) {
         case TARGET_COLOR:
                 /* Let the background change based on the dropped color. */
-                nautilus_background_receive_dropped_color (nautilus_get_widget_background (widget),
+                eel_background_receive_dropped_color (eel_get_widget_background (widget),
                                                            widget, x, y, selection_data);
                 break;
                 

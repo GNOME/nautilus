@@ -44,13 +44,13 @@
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-dateedit-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
-#include <libnautilus-extensions/nautilus-labeled-image.h>
+#include <eel/eel-labeled-image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -207,7 +207,7 @@ static NautilusSearchBarCriterionType      get_next_criterion_type              
 										   GSList *displayed_criteria);
 static void                                nautilus_search_bar_criterion_destroy  (GtkObject *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
 
      static void
 nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass)
@@ -245,7 +245,7 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	*/
 	g_free (criterion->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -318,7 +318,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	for (i = 0; criteria_titles[i] != NULL; i++) {
 		GtkWidget *item;
-		context_stripped_criteria_title = nautilus_str_remove_bracketed_text (_(criteria_titles[i]));
+		context_stripped_criteria_title = eel_str_remove_bracketed_text (_(criteria_titles[i]));
 		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
 		g_free (context_stripped_criteria_title);
 
@@ -346,12 +346,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	relation_menu = gtk_menu_new ();
 	for (i = 0; relation_options[i] != NULL; i++) {
 		GtkWidget *item;
-		if (nautilus_str_is_empty (relation_options[i])) {
+		if (eel_str_is_empty (relation_options[i])) {
 			/* Empty text; make unselectable separator */
 			item = gtk_menu_item_new ();
 			gtk_widget_set_sensitive (item, FALSE);
 		} else {
-			context_stripped_relation = nautilus_str_remove_bracketed_text (_(relation_options[i]));
+			context_stripped_relation = eel_str_remove_bracketed_text (_(relation_options[i]));
 			item = gtk_menu_item_new_with_label (context_stripped_relation);
 			g_free (context_stripped_relation);
 		}
@@ -407,7 +407,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
 			GtkWidget *item;
-			context_stripped_value = nautilus_str_remove_bracketed_text (_(value_options[i]));
+			context_stripped_value = eel_str_remove_bracketed_text (_(value_options[i]));
 			item = gtk_menu_item_new_with_label (context_stripped_value);
 			g_free (context_stripped_value);
 			gtk_widget_show (item);
@@ -617,7 +617,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	} else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
 	} else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		value_text = nautilus_gnome_date_edit_get_date_as_string (criterion->details->date);
+		value_text = eel_gnome_date_edit_get_date_as_string (criterion->details->date);
 	}
 
 	switch (name_number) {
@@ -725,7 +725,7 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 	/* We remove the whole menu and put in a new one. */
 	new_menu = gtk_menu_new ();
 	for (i = 0; criteria_titles[i] != NULL; i++) {
-		context_stripped_criteria_title = nautilus_str_remove_bracketed_text (_(criteria_titles[i]));
+		context_stripped_criteria_title = eel_str_remove_bracketed_text (_(criteria_titles[i]));
 		item = gtk_menu_item_new_with_label (context_stripped_criteria_title);
 		g_free (context_stripped_criteria_title);
 		
@@ -890,7 +890,7 @@ get_size_location_for (int relation_number,
 	g_assert (relation_number == 0 || relation_number == 1);
 	/* We put a 'K' after the size, so multiply what the user
 	   entered by 1000 */
-	int_conversion_success = nautilus_str_to_int (size_text, 
+	int_conversion_success = eel_str_to_int (size_text, 
 						      &entered_size);
 	
 	if (int_conversion_success) {
@@ -1022,10 +1022,10 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 					  g_strdup (emblem_name), (GtkDestroyNotify) g_free);
 
 		
-		image = nautilus_labeled_image_new (label, pixbuf);
-		nautilus_labeled_image_set_label_position (NAUTILUS_LABELED_IMAGE (image), GTK_POS_RIGHT);
-		nautilus_labeled_image_set_x_alignment (NAUTILUS_LABELED_IMAGE (image), 0.0);
-		nautilus_labeled_image_set_spacing (NAUTILUS_LABELED_IMAGE (image), 4);
+		image = eel_labeled_image_new (label, pixbuf);
+		eel_labeled_image_set_label_position (EEL_LABELED_IMAGE (image), GTK_POS_RIGHT);
+		eel_labeled_image_set_x_alignment (EEL_LABELED_IMAGE (image), 0.0);
+		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (image), 4);
 
 		gtk_container_add (GTK_CONTAINER (menu_item), image);
 		gtk_widget_show_all (menu_item);

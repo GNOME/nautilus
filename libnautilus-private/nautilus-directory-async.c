@@ -30,11 +30,11 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-search-uri.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include <ctype.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
@@ -173,7 +173,7 @@ istr_set_get_as_list (GHashTable *table)
 static void
 istr_set_destroy (GHashTable *table)
 {
-	nautilus_g_hash_table_destroy_deep (table);
+	eel_g_hash_table_destroy_deep (table);
 }
 
 /* Start a job. This is really just a way of limiting the number of
@@ -197,7 +197,7 @@ async_job_start (NautilusDirectory *directory,
 
 	if (async_job_count >= MAX_ASYNC_JOBS) {
 		if (waiting_directories == NULL) {
-			waiting_directories = nautilus_g_hash_table_new_free_at_exit
+			waiting_directories = eel_g_hash_table_new_free_at_exit
 				(NULL, NULL,
 				 "nautilus-directory-async.c: waiting_directories");
 		}
@@ -211,7 +211,7 @@ async_job_start (NautilusDirectory *directory,
 
 #ifdef DEBUG_ASYNC_JOBS
 	if (async_jobs == NULL) {
-		async_jobs = nautilus_g_hash_table_new_free_at_exit
+		async_jobs = eel_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal,
 			 "nautilus-directory-async.c: async_jobs");
 	}
@@ -339,7 +339,7 @@ deep_count_cancel (NautilusDirectory *directory)
 		directory->details->deep_count_in_progress = NULL;
 		g_free (directory->details->deep_count_uri);
 		directory->details->deep_count_uri = NULL;
-		nautilus_g_list_free_deep (directory->details->deep_count_subdirectories);
+		eel_g_list_free_deep (directory->details->deep_count_subdirectories);
 		directory->details->deep_count_subdirectories = NULL;
 
 		async_job_end (directory, "deep count");
@@ -476,42 +476,42 @@ nautilus_directory_set_up_request (Request *request,
 	request->directory_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->deep_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->mime_list = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->file_info = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 	
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
-				nautilus_strcmp_compare_func) != NULL) {
+				eel_strcmp_compare_func) != NULL) {
 		request->top_left_text = TRUE;
 		request->file_info = TRUE;
 	}
 	
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
-				nautilus_strcmp_compare_func) != NULL) {
+				eel_strcmp_compare_func) != NULL) {
 		request->file_info = TRUE;
 		request->activation_uri = TRUE;
 	}
@@ -519,7 +519,7 @@ nautilus_directory_set_up_request (Request *request,
 	request->metafile |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_METADATA,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 
 	/* FIXME bugzilla.eazel.com 2435:
 	 * Some file attributes are really pieces of metadata.
@@ -535,7 +535,7 @@ nautilus_directory_set_up_request (Request *request,
 	request->metafile |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
-		 nautilus_strcmp_compare_func) != NULL;
+		 eel_strcmp_compare_func) != NULL;
 }
 
 static gboolean
@@ -554,7 +554,7 @@ get_non_tentative_file_list (NautilusDirectory *directory)
 {
 	GList *tentative_files, *non_tentative_files;
 
-	tentative_files = nautilus_g_list_partition
+	tentative_files = eel_g_list_partition
 		(g_list_copy (directory->details->file_list),
 		 is_tentative, NULL, &non_tentative_files);
 	g_list_free (tentative_files);
@@ -2255,7 +2255,7 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 	file->details->mime_list_is_up_to_date = TRUE;
 
 	/* Record either a failure or success. */
-	nautilus_g_list_free_deep (file->details->mime_list);
+	eel_g_list_free_deep (file->details->mime_list);
 	if (result != GNOME_VFS_ERROR_EOF) {
 		file->details->mime_list_failed = TRUE;
 		file->details->mime_list = NULL;
@@ -2486,7 +2486,7 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (handle == NULL || handle == directory->details->get_info_in_progress);
-	g_assert (nautilus_g_list_exactly_one_item (results));
+	g_assert (eel_g_list_exactly_one_item (results));
 	get_info_file = directory->details->get_info_file;
 	g_assert (NAUTILUS_IS_FILE (get_info_file));
 
@@ -2670,7 +2670,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	nautilus_directory_ref (directory);
 
 	/* Handle the case where we read the GMC link. */
-	if (result != GNOME_VFS_OK || !nautilus_str_has_prefix (file_contents, "URL: ")) {
+	if (result != GNOME_VFS_OK || !eel_str_has_prefix (file_contents, "URL: ")) {
 		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
 		uri = NULL;
 	} else {
@@ -2739,7 +2739,7 @@ activation_uri_start (NautilusDirectory *directory)
 
 	/* Figure out if it is a link. */
 	mime_type = nautilus_file_get_mime_type (file);
-	gmc_style_link = nautilus_strcasecmp (mime_type, "application/x-gmc-link") == 0;
+	gmc_style_link = eel_strcasecmp (mime_type, "application/x-gmc-link") == 0;
 	g_free (mime_type);
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
 	

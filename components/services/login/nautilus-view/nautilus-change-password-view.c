@@ -34,17 +34,17 @@
 #include <gnome.h>
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
+#include <eel/eel-string.h>
+#include <eel/eel-label.h>
+#include <eel/eel-image.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-viewport.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <libtrilobite/eazelproxy.h>
@@ -96,7 +96,7 @@ static void       change_password_button_cb                      (GtkWidget     
 static void       maintenance_button_cb                (GtkWidget                  *button,
 							NautilusChangePasswordView          *view);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusChangePasswordView, nautilus_change_password_view, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusChangePasswordView, nautilus_change_password_view, GTK_TYPE_EVENT_BOX)
 
 
 static char *
@@ -142,7 +142,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	GtkWidget	*pane;
 	GtkWidget	*subform;
 	char		*username;
-	NautilusBackground *background;
+	EelBackground *background;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -157,14 +157,14 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	/* make an opportunistic scrollbar panel for it all */
         pane = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	view->details->viewport = nautilus_viewport_new (NULL, NULL);
+	view->details->viewport = eel_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (view->details->viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (pane), view->details->viewport);
 	gtk_widget_show (view->details->viewport);
 	gtk_container_add (GTK_CONTAINER (view->details->form), pane);
         gtk_widget_show (pane);
-	background = nautilus_get_widget_background (GTK_WIDGET (view->details->viewport));
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (view->details->viewport));
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	subform = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view->details->viewport), subform);
@@ -509,7 +509,7 @@ nautilus_change_password_view_initialize_class (NautilusChangePasswordViewClass 
 static void
 nautilus_change_password_view_initialize (NautilusChangePasswordView *view)
 {
-	NautilusBackground *background;
+	EelBackground *background;
 	CORBA_Environment ev;
 
 	view->details = g_new0 (NautilusChangePasswordViewDetails, 1);
@@ -520,8 +520,8 @@ nautilus_change_password_view_initialize (NautilusChangePasswordView *view)
 			    GTK_SIGNAL_FUNC (change_password_load_location_callback), 
 			    view);
 
-	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (GTK_WIDGET (view));
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	CORBA_exception_init (&ev);
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
@@ -556,7 +556,7 @@ nautilus_change_password_view_destroy (GtkObject *object)
 
 	CORBA_exception_free (&ev);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusView *

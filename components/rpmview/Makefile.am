@@ -18,6 +18,8 @@ INCLUDES = 							\
 	-I$(top_builddir)/components/services/trilobite 	\
 	-I$(top_builddir) 					\
 	-I/usr/include/rpm 					\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GCONF_CFLAGS) 					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
 	$(GNOMEUI_CFLAGS) 					\
@@ -51,6 +53,8 @@ nautilus_rpm_view_SOURCES =		        \
 nautilus_rpm_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(INVENTORY_LIBS)			\
 	$(extra_libs)				\
 	$(BONOBO_LIBS) 				\

@@ -48,17 +48,17 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 #ifdef ENABLE_PROFILER
@@ -358,7 +358,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 				     "which locations you have visited?"));
 	}
 					   
-	dialog = nautilus_show_yes_no_dialog (prompt,
+	dialog = eel_show_yes_no_dialog (prompt,
 					      _("Forget History?"),
 					      _("Forget"),
 					      GNOME_STOCK_BUTTON_CANCEL,
@@ -366,7 +366,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 	g_free (prompt);					 
 
 	gtk_signal_connect
-		(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
+		(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
 			     (dialog, GNOME_OK)),
 		 "clicked",
 		 nautilus_forget_history,
@@ -634,7 +634,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}
 	
-	nautilus_gtk_window_present (GTK_WINDOW (about));
+	eel_gtk_window_present (GTK_WINDOW (about));
 }
 
 static void
@@ -789,14 +789,14 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri_for_display);
-		dialog = nautilus_show_yes_no_dialog (prompt,
+		dialog = eel_show_yes_no_dialog (prompt,
 						      _("Bookmark for Nonexistent Location"),
 						      _("Remove"),
 						      GNOME_STOCK_BUTTON_CANCEL,
 						      GTK_WINDOW (holder->window));
 
-		nautilus_gtk_signal_connect_free_data
-			(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
+		eel_gtk_signal_connect_free_data
+			(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
 				     (dialog, GNOME_OK)),
 			 "clicked",
 			 remove_bookmarks_for_uri,
@@ -805,7 +805,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
-		dialog = nautilus_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
+		dialog = eel_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
 	}
 
 	g_free (uri);
@@ -855,8 +855,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 	 * instead of a string utility. (Like maybe escaping control characters.)
 	 */
 	raw_name = nautilus_bookmark_get_name (bookmark);
-	truncated_name = nautilus_truncate_text_for_menu_item (raw_name);
-	display_name = nautilus_str_double_underscores (truncated_name);
+	truncated_name = eel_truncate_text_for_menu_item (raw_name);
+	display_name = eel_str_double_underscores (truncated_name);
 	g_free (raw_name);
 	g_free (truncated_name);
 
@@ -984,7 +984,7 @@ create_menu_item_from_node (NautilusWindow *window,
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
 	} else if (strcmp (node->name, "folder") == 0) {
-		xml_folder_name = nautilus_xml_get_property_translated (node, "name");
+		xml_folder_name = eel_xml_get_property_translated (node, "name");
 		nautilus_bonobo_add_submenu (window->details->shell_ui, menu_path, xml_folder_name);
 
 		/* Construct path and make sure it is escaped properly */
@@ -992,7 +992,7 @@ create_menu_item_from_node (NautilusWindow *window,
 		sub_menu_path = g_strdup_printf ("%s/%s", menu_path, escaped_name);
 		g_free (escaped_name);
 				
-		for (node = nautilus_xml_get_children (node), sub_index = 0;
+		for (node = eel_xml_get_children (node), sub_index = 0;
 		     node != NULL;
 		     node = node->next, ++sub_index) {
 			create_menu_item_from_node (window, node, sub_menu_path, sub_index);
@@ -1024,7 +1024,7 @@ append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 	doc = xmlParseFile (file_path);
 	g_free (file_path);
 
-	node = nautilus_xml_get_root_children (doc);
+	node = eel_xml_get_root_children (doc);
 	index = 0;
 
 	for (index = 0; node != NULL; node = node->next, ++index) {
@@ -1093,7 +1093,7 @@ add_bookmark_for_current_location (NautilusWindow *window)
 static void
 edit_bookmarks (NautilusWindow *window)
 {
-        nautilus_gtk_window_present
+        eel_gtk_window_present
 		(get_or_create_bookmarks_window (GTK_OBJECT (window)));
 }
 

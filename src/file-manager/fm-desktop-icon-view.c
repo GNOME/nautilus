@@ -44,16 +44,16 @@
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <limits.h>
@@ -116,7 +116,7 @@ static void     free_volume_black_list                            (FMDesktopIcon
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
+EEL_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
 				   FM_TYPE_ICON_VIEW)
 
@@ -233,7 +233,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	
 	g_free (icon_view->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -298,7 +298,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 static void
 free_volume_black_list (FMDesktopIconView *icon_view)
 {
-	nautilus_g_list_free_deep (icon_view->details->mount_black_list);
+	eel_g_list_free_deep (icon_view->details->mount_black_list);
 	icon_view->details->mount_black_list = NULL;
 }
 
@@ -465,8 +465,8 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	hadj = GTK_LAYOUT (icon_container)->hadjustment;
 	vadj = GTK_LAYOUT (icon_container)->vadjustment;
 
-	nautilus_gtk_adjustment_set_value (hadj, 0);
-	nautilus_gtk_adjustment_set_value (vadj, 0);
+	eel_gtk_adjustment_set_value (hadj, 0);
+	eel_gtk_adjustment_set_value (vadj, 0);
 
 	fm_directory_view_ignore_hidden_file_preferences
 		(FM_DIRECTORY_VIEW (desktop_icon_view));
@@ -539,7 +539,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 static void
 new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
-	nautilus_gnome_open_terminal (NULL);
+	eel_gnome_open_terminal (NULL);
 }
 
 static void
@@ -547,7 +547,7 @@ change_background_callback (BonoboUIComponent *component,
 	  		    gpointer data, 
 			    const char *verb)
 {
-	nautilus_launch_application_from_command 
+	eel_launch_application_from_command 
 		("background-properties-capplet", NULL, FALSE);
 }
 
@@ -566,7 +566,7 @@ reset_background_callback (BonoboUIComponent *component,
 			   gpointer data, 
 			   const char *verb)
 {
-	nautilus_background_reset 
+	eel_background_reset 
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
 
@@ -618,7 +618,7 @@ trash_link_is_selection (FMDirectoryView *view)
 	
 	selection = fm_directory_view_get_selection (view);
 
-	if (nautilus_g_list_exactly_one_item (selection)
+	if (eel_g_list_exactly_one_item (selection)
 	    && nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 		/* It's probably OK that this only works for local
@@ -648,7 +648,7 @@ volume_link_is_selection (FMDirectoryView *view)
 	
 	selection = fm_directory_view_get_selection (view);
 
-	if (nautilus_g_list_exactly_one_item (selection)
+	if (eel_g_list_exactly_one_item (selection)
 	    && nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 		/* It's probably OK that this only works for local
@@ -770,9 +770,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		stripped_uri = NULL;
 		made_entry_link = FALSE;
 			
-		if (nautilus_istr_has_prefix (uri, "file://")) {
-			local_path = nautilus_str_get_after_prefix (uri, "file://");
-		} else if (nautilus_istr_has_prefix (uri, "file:")) {
+		if (eel_istr_has_prefix (uri, "file://")) {
+			local_path = eel_str_get_after_prefix (uri, "file://");
+		} else if (eel_istr_has_prefix (uri, "file:")) {
 			local_path = g_strdup (uri += strlen ("file:"));
 		}
 		
@@ -791,8 +791,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			/* We have some type of URI. Create a Nautilus link for it.
 			 * Generate the file name by extracting the basename of the URI.
 			 */							
-			if (nautilus_str_has_suffix (uri, "/")) {
-				stripped_uri = nautilus_str_strip_trailing_chr (uri, '/');
+			if (eel_str_has_suffix (uri, "/")) {
+				stripped_uri = eel_str_strip_trailing_chr (uri, '/');
 				linkname = strrchr (stripped_uri, '/');
 			} else {
 				linkname = strrchr (uri, '/');
@@ -1032,7 +1032,7 @@ mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
 	MountParameters *new_parameters;
 
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
-	g_assert (!nautilus_str_is_empty (mount_path)); 
+	g_assert (!eel_str_is_empty (mount_path)); 
 
 	new_parameters = g_new (MountParameters, 1);
 	gtk_object_ref (GTK_OBJECT (view));
@@ -1148,7 +1148,7 @@ real_update_menus (FMDirectoryView *view)
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
@@ -1221,7 +1221,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 

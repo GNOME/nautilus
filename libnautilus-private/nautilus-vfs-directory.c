@@ -27,7 +27,7 @@
 #include "nautilus-vfs-directory.h"
 
 #include "nautilus-directory-private.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-file-private.h"
 
 struct NautilusVFSDirectoryDetails {
@@ -37,7 +37,7 @@ static void nautilus_vfs_directory_initialize       (gpointer   object,
 						     gpointer   klass);
 static void nautilus_vfs_directory_initialize_class (gpointer   klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
 				   nautilus_vfs_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
 
@@ -54,7 +54,7 @@ nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
 static void
 vfs_destroy (GtkObject *object)
 {
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean

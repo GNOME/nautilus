@@ -26,14 +26,14 @@
 #include <config.h>
 #include "nautilus-keep-last-vertical-box.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 static void     nautilus_keep_last_vertical_box_initialize_class  (NautilusKeepLastVerticalBoxClass *class);
 static void     nautilus_keep_last_vertical_box_initialize        (NautilusKeepLastVerticalBox      *box);
 static void	nautilus_keep_last_vertical_box_size_allocate 	  (GtkWidget 			    *widget, 
 								   GtkAllocation 		    *allocation);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
 
 /* Standard class initialization function */
 static void
@@ -96,7 +96,7 @@ nautilus_keep_last_vertical_box_size_allocate (GtkWidget *widget,
 	g_return_if_fail (NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX (widget));
 	g_return_if_fail (allocation != NULL);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	box = GTK_BOX (widget);
 	children = g_list_last (box->children);

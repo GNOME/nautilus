@@ -28,7 +28,7 @@
 #include <config.h>
 #include "nautilus-drag-window.h"
 
-#include "nautilus-gdk-extensions.h"
+#include <eel/eel-gdk-extensions.h>
 #include <gtk/gtk.h>
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -103,7 +103,7 @@ execute_pending_requests (GtkWindow *window,
 {
 	if (GTK_WIDGET_REALIZED (window)) {
 		if (details->pending_focus) {
-			nautilus_gdk_window_focus (GTK_WIDGET (window)->window,
+			eel_gdk_window_focus (GTK_WIDGET (window)->window,
 						   details->focus_timestamp);
 			details->pending_focus = FALSE;
 		}
@@ -331,7 +331,7 @@ nautilus_drag_window_realize (GtkWidget *widget, gpointer data)
 	GdkAtom protocols[3];
 
 	/* Tell the window manager _not_ to focus this window by itself */
-	nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
+	eel_gdk_window_set_wm_hints_input (widget->window, FALSE);
 
 	/* Set WM_PROTOCOLS to the usual two atoms plus something that tells
 	 * sawfish to send messages telling us when we might want to raise
@@ -341,7 +341,7 @@ nautilus_drag_window_realize (GtkWidget *widget, gpointer data)
 	protocols[0] = gdk_wm_delete_window;
 	protocols[1] = gdk_wm_take_focus;
 	protocols[2] = sawfish_wm_raise_window;
-	nautilus_gdk_window_set_wm_protocols (widget->window, protocols, 3);
+	eel_gdk_window_set_wm_protocols (widget->window, protocols, 3);
 }
 
 

@@ -39,9 +39,9 @@
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-graphic-effects.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-graphic-effects.h>
+#include <eel/eel-gtk-extensions.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -1933,7 +1933,7 @@ draw_row (NautilusCList     *clist,
 		      
 		      if (src_pixbuf != NULL) {
 			      /* Create darkened pixbuf */			
-			      dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
+			      dark_pixbuf = eel_create_darkened_pixbuf (src_pixbuf,
 									     0.8 * 255,
 									     0.8 * 255);
 			      if (dark_pixbuf != NULL) {
@@ -5939,7 +5939,7 @@ nautilus_ctree_drag_begin (GtkWidget	     *widget,
 		  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf;
 	  if (pixbuf)
 	    {
-	      nautilus_drag_set_icon_pixbuf (context, pixbuf, -2, -2);
+	      eel_drag_set_icon_pixbuf (context, pixbuf, -2, -2);
 	      return;
 	    }
 	}

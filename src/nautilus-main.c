@@ -42,11 +42,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <libnautilus-extensions/nautilus-debug.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
-#include <libnautilus-extensions/nautilus-self-checks.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <eel/eel-lib-self-check-functions.h>
+#include <eel/eel-self-checks.h>
 #include <libnautilus-extensions/nautilus-directory-metafile.h>
 #include <liboaf/liboaf.h>
 #include <popt.h>
@@ -82,7 +83,7 @@ quit_if_in_main_loop (gpointer callback_data)
 }
 
 static void
-nautilus_gtk_main_quit_all (void)
+eel_gtk_main_quit_all (void)
 {
 	/* Calling gtk_main_quit directly only kills the current/top event loop.
 	 * This idler will be run by the current event loop, killing it, and then
@@ -97,7 +98,7 @@ event_loop_unregister (GtkObject* object)
 	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
 	if (!is_event_loop_needed ()) {
-		nautilus_gtk_main_quit_all ();
+		eel_gtk_main_quit_all ();
 	}
 }
 
@@ -159,7 +160,7 @@ main (int argc, char *argv[])
 	 * explicitly for each domain.
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		nautilus_make_warnings_and_criticals_stop_in_debugger
+		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib,
 			 "Bonobo",
 			 "Gdk",
@@ -184,7 +185,7 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	/* Disable bug-buddy for now. */
-	nautilus_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
+	eel_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
 
 	/* Get parameters. */
 	geometry = NULL;
@@ -248,14 +249,24 @@ main (int argc, char *argv[])
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks for nautilus and libnautilus (each twice). */
+		/* Run the checks (each twice) for:
+		 *
+		 * nautilus
+		 * eel
+		 * libnautilus-extensions
+		 *
+		 */
 		nautilus_directory_use_self_contained_metafile_factory ();
+
 		nautilus_run_self_checks ();
+		eel_run_lib_self_checks ();
 		nautilus_run_lib_self_checks ();
-		nautilus_exit_if_self_checks_failed ();
+		eel_exit_if_self_checks_failed ();
+
 		nautilus_run_self_checks ();
+		eel_run_lib_self_checks ();
 		nautilus_run_lib_self_checks ();
-		nautilus_exit_if_self_checks_failed ();
+		eel_exit_if_self_checks_failed ();
 #endif
 	} else {
 		/* Run the nautilus application. */
@@ -281,7 +292,7 @@ main (int argc, char *argv[])
 	 */
 
 	if (g_getenv ("_NAUTILUS_RESTART") != NULL) {
-		nautilus_unsetenv ("_NAUTILUS_RESTART");
+		eel_unsetenv ("_NAUTILUS_RESTART");
 		
 		/* Might eventually want to copy all the parameters
 		 * from argv into the new exec. For now, though, that

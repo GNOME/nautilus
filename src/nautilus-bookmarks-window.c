@@ -29,7 +29,7 @@
 #include "nautilus-bookmarks-window.h"
 #include <libnautilus/nautilus-undo.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
@@ -188,7 +188,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
 
 	remove_button = gtk_button_new_with_label (_("Remove"));
-	nautilus_gtk_button_set_standard_padding (GTK_BUTTON (remove_button));
+	eel_gtk_button_set_standard_padding (GTK_BUTTON (remove_button));
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 
@@ -321,7 +321,7 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 
 	if (window_geometry != NULL) 
 	{	
-		nautilus_gtk_window_set_initial_geometry_from_string 
+		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), window_geometry, 
 			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT);
 
@@ -647,7 +647,7 @@ handle_close_accelerator (GtkWindow *window,
 	g_assert (event != NULL);
 	g_assert (user_data == NULL);
 
-	if (nautilus_gtk_window_event_is_close_accelerator (window, event)) {		
+	if (eel_gtk_window_event_is_close_accelerator (window, event)) {		
 		save_geometry_and_hide (window);
 		gtk_signal_emit_stop_by_name 
 			(GTK_OBJECT (window), "key_press_event");
@@ -660,7 +660,7 @@ handle_close_accelerator (GtkWindow *window,
 static void
 set_up_close_accelerator (GtkWidget *window)
 {
-	/* Note that we don't call nautilus_gtk_window_set_up_close_accelerator
+	/* Note that we don't call eel_gtk_window_set_up_close_accelerator
 	 * here because we have to handle saving geometry before hiding the
 	 * window.
 	 */

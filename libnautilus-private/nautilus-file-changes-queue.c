@@ -24,7 +24,7 @@
 #include "nautilus-file-changes-queue.h"
 
 #include "nautilus-directory-notify.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 
 #ifdef G_THREADS_ENABLED
 #define MUTEX_LOCK(a)	if ((a) != NULL) g_mutex_lock (a)
@@ -302,7 +302,7 @@ pairs_list_free (GList *pairs)
 	}
 
 	/* delete the list and the now empty pair structs */
-	nautilus_g_list_free_deep (pairs);
+	eel_g_list_free_deep (pairs);
 }
 
 static void
@@ -316,7 +316,7 @@ position_set_list_free (GList *list)
 		g_free (item->uri);
 	}
 	/* delete the list and the now empty structs */
-	nautilus_g_list_free_deep (list);
+	eel_g_list_free_deep (list);
 }
 
 /* go through changes in the change queue, send ones with the same kind
@@ -412,7 +412,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
-				nautilus_g_list_free_deep (deletions);
+				eel_g_list_free_deep (deletions);
 				deletions = NULL;
 			}
 			if (moves != NULL) {
@@ -422,7 +422,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			}
 			if (additions != NULL) {
 				nautilus_directory_notify_files_added (additions);
-				nautilus_g_list_free_deep (additions);
+				eel_g_list_free_deep (additions);
 				additions = NULL;
 			}
 			if (metadata_copy_requests != NULL) {
@@ -437,7 +437,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			}
 			if (metadata_remove_requests != NULL) {
 				nautilus_directory_schedule_metadata_remove (metadata_remove_requests);
-				nautilus_g_list_free_deep (metadata_remove_requests);
+				eel_g_list_free_deep (metadata_remove_requests);
 				metadata_remove_requests = NULL;
 			}
 			if (position_set_requests != NULL) {

@@ -41,7 +41,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 enum {
 	HISTORY_CHANGED,
@@ -93,7 +93,7 @@ static void nautilus_view_initialize             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_initialize_class       (NautilusViewClass      *klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
 
 static POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
@@ -492,7 +492,7 @@ nautilus_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static Nautilus_ViewFrame

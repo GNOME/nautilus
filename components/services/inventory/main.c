@@ -28,7 +28,7 @@
 #include <libgnomeui/gnome-init.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 

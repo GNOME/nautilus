@@ -36,10 +36,10 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
@@ -82,7 +82,7 @@ static void	nautilus_throbber_size_allocate		 (GtkWidget *widget, GtkAllocation 
 static void	nautilus_throbber_size_request		 (GtkWidget *widget, GtkRequisition *requisition);
 static void     nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
@@ -201,7 +201,7 @@ nautilus_throbber_destroy (GtkObject *object)
 	
 	g_free (throbber->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 BonoboObject*
@@ -430,7 +430,7 @@ nautilus_throbber_map (GtkWidget *widget)
 	
 	throbber = NAUTILUS_THROBBER (widget);
 	
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 	throbber->details->ready = TRUE;
 }
 
@@ -638,7 +638,7 @@ nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	int throbber_width, throbber_height;
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	

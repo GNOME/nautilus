@@ -24,12 +24,12 @@
 
 #include <config.h>
 #include "nautilus-preferences-group.h"
-#include "nautilus-gtk-extensions.h"
+#include <eel/eel-gtk-extensions.h>
 
 #include <gnome.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtksignal.h>
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 /* Signals */
 typedef enum
@@ -69,7 +69,7 @@ static void preferences_group_construct                 (NautilusPreferencesGrou
 							 const gchar                   *title);
 static void preferences_group_align_captions            (NautilusPreferencesGroup      *group);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesGroup,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesGroup,
 				   nautilus_preferences_group,
 				   GTK_TYPE_FRAME);
 

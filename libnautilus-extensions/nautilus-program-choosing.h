@@ -53,7 +53,7 @@ void nautilus_cancel_choose_component_for_file   (NautilusFile                  
 void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
 						  NautilusFile                      *file,
 						  GtkWindow                         *parent_window);
-void nautilus_launch_application_from_command    (const char                        *command_string,
+void eel_launch_application_from_command    (const char                        *command_string,
 						  const char                        *parameter,
 						  gboolean                           use_terminal);
 

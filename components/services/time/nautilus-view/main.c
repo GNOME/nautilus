@@ -30,7 +30,7 @@
 
 #include <gnome.h>
 #include <liboaf/liboaf.h>
-#include <libnautilus-extensions/nautilus-debug.h>
+#include <eel/eel-debug.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
            Unfortunately, this has to be done explicitly for each domain.
         */
         if (getenv("NAUTILUS_DEBUG") != NULL)
-        	nautilus_make_warnings_and_criticals_stop_in_debugger
+        	eel_make_warnings_and_criticals_stop_in_debugger
         		(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", NULL);
 
 

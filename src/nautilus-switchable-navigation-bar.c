@@ -38,9 +38,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <stdio.h>
 
 struct NautilusSwitchableNavigationBarDetails {
@@ -64,7 +64,7 @@ static void  nautilus_switchable_navigation_bar_initialize_class (NautilusSwitch
 static void  nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
 static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   nautilus_switchable_navigation_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
@@ -110,7 +110,7 @@ static void
 nautilus_switchable_navigation_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (object)->details);
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *

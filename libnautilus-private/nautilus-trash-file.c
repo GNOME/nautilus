@@ -31,8 +31,8 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-trash-directory.h"
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
@@ -81,7 +81,7 @@ static void nautilus_trash_file_initialize       (gpointer   object,
 						  gpointer   klass);
 static void nautilus_trash_file_initialize_class (gpointer   klass);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
 				   nautilus_trash_file,
 				   NAUTILUS_TYPE_FILE)
 
@@ -92,7 +92,7 @@ is_delegated_attribute (const char *attribute)
 
 	g_return_val_if_fail (attribute != NULL, FALSE);
 
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (delegated_attributes); i++) {
+	for (i = 0; i < EEL_N_ELEMENTS (delegated_attributes); i++) {
 		if (strcmp (attribute, delegated_attributes[i]) == 0) {
 			return TRUE;
 		}
@@ -112,7 +112,7 @@ partition_attributes (GList *attributes,
 		      GList **delegated_attributes,
 		      GList **non_delegated_attributes)
 {
-	*delegated_attributes = nautilus_g_list_partition
+	*delegated_attributes = eel_g_list_partition
 		(attributes,
 		 is_delegated_attribute_predicate,
 		 NULL,
@@ -198,8 +198,8 @@ trash_callback_destroy (TrashCallback *trash_callback)
 	g_assert (NAUTILUS_IS_TRASH_FILE (trash_callback->trash));
 
 	nautilus_file_unref (NAUTILUS_FILE (trash_callback->trash));
-	nautilus_g_list_free_deep (trash_callback->delegated_attributes);
-	nautilus_g_list_free_deep (trash_callback->non_delegated_attributes);
+	eel_g_list_free_deep (trash_callback->delegated_attributes);
+	eel_g_list_free_deep (trash_callback->non_delegated_attributes);
 	g_list_free (trash_callback->non_ready_files);
 	g_free (trash_callback);
 }
@@ -322,7 +322,7 @@ remove_real_file (NautilusTrashFile *trash,
 	g_return_if_fail (NAUTILUS_IS_FILE (real_file));
 	g_return_if_fail (g_list_find (trash->details->files, real_file) != NULL);
 
-	nautilus_g_hash_table_safe_for_each
+	eel_g_hash_table_safe_for_each
 		(trash->details->callbacks,
 		 trash_callback_remove_file_cover,
 		 real_file);
@@ -416,7 +416,7 @@ trash_file_call_when_ready (NautilusFile *file,
 	trash_callback->callback_data = callback_data;
 	trash_callback->initializing = TRUE;
 
-	partition_attributes (nautilus_g_str_list_copy (attributes),
+	partition_attributes (eel_g_str_list_copy (attributes),
 			      &trash_callback->delegated_attributes,
 			      &trash_callback->non_delegated_attributes);
 
@@ -531,8 +531,8 @@ trash_file_monitor_add (NautilusFile *file,
 	monitor = g_hash_table_lookup (trash->details->monitors, client);
 	if (monitor != NULL) {
 		g_assert (monitor->trash == trash);
-		nautilus_g_list_free_deep (monitor->delegated_attributes);
-		nautilus_g_list_free_deep (monitor->non_delegated_attributes);
+		eel_g_list_free_deep (monitor->delegated_attributes);
+		eel_g_list_free_deep (monitor->non_delegated_attributes);
 	} else {
 		monitor = g_new0 (TrashMonitor, 1);
 		monitor->trash = trash;
@@ -540,7 +540,7 @@ trash_file_monitor_add (NautilusFile *file,
 				     (gpointer) client, monitor);
 	}
 
-	partition_attributes (nautilus_g_str_list_copy (attributes),
+	partition_attributes (eel_g_str_list_copy (attributes),
 			      &monitor->delegated_attributes,
 			      &monitor->non_delegated_attributes);
 
@@ -575,8 +575,8 @@ trash_file_monitor_remove (NautilusFile *file,
 		nautilus_file_monitor_remove (node->data, monitor);
 	}
 
-	nautilus_g_list_free_deep (monitor->delegated_attributes);
-	nautilus_g_list_free_deep (monitor->non_delegated_attributes);
+	eel_g_list_free_deep (monitor->delegated_attributes);
+	eel_g_list_free_deep (monitor->non_delegated_attributes);
 	g_free (monitor);
 }
 
@@ -801,7 +801,7 @@ trash_destroy (GtkObject *object)
 
 	nautilus_directory_unref (NAUTILUS_DIRECTORY (trash_directory));
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

@@ -25,10 +25,10 @@
 
 #include <config.h>
 #include "nautilus-preferences-pane.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-string.h"
-#include "nautilus-string-list.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-string-list.h>
 
 #include <gtk/gtkhbox.h>
 
@@ -39,7 +39,7 @@ struct _NautilusPreferencesPaneDetails
 {
 	GtkWidget *groups_box;
 	GList *groups;
-	NautilusStringList *control_preference_list;
+	EelStringList *control_preference_list;
 };
 
 /* NautilusPreferencesPaneClass methods */
@@ -49,7 +49,7 @@ static void nautilus_preferences_pane_initialize       (NautilusPreferencesPane 
 /* GtkObjectClass methods */
 static void nautilus_preferences_pane_destroy          (GtkObject                    *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesPane, nautilus_preferences_pane, GTK_TYPE_VBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesPane, nautilus_preferences_pane, GTK_TYPE_VBOX)
 
 /*
  * NautilusPreferencesPaneClass methods
@@ -84,11 +84,11 @@ nautilus_preferences_pane_destroy (GtkObject* object)
 	preferences_pane = NAUTILUS_PREFERENCES_PANE (object);
 
 	g_list_free (preferences_pane->details->groups);
-	nautilus_string_list_free (preferences_pane->details->control_preference_list);
+	eel_string_list_free (preferences_pane->details->control_preference_list);
 	g_free (preferences_pane->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*
@@ -187,7 +187,7 @@ nautilus_preferences_pane_update (NautilusPreferencesPane *preferences_pane)
 	for (iterator = preferences_pane->details->groups; iterator != NULL; iterator = iterator->next) {
 		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (iterator->data);
 		nautilus_preferences_group_update (group);
-		nautilus_gtk_widget_set_shown (GTK_WIDGET (group),
+		eel_gtk_widget_set_shown (GTK_WIDGET (group),
 					       nautilus_preferences_group_get_num_visible_items (group) > 0);
 	}
 }
@@ -232,7 +232,7 @@ nautilus_preferences_pane_find_group (const NautilusPreferencesPane *pane,
 		g_assert (NAUTILUS_IS_PREFERENCES_GROUP (node->data));
 
 		title = nautilus_preferences_group_get_title_label (NAUTILUS_PREFERENCES_GROUP (node->data));
-		if (nautilus_str_is_equal (title, group_title)) {
+		if (eel_str_is_equal (title, group_title)) {
 			g_free (title);
 			return node->data;
 		}
@@ -260,16 +260,16 @@ nautilus_preferences_pane_add_control_preference (NautilusPreferencesPane *pane,
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (pane));
 	g_return_if_fail (control_preference_name != NULL);
 
-	if (nautilus_string_list_contains (pane->details->control_preference_list,
+	if (eel_string_list_contains (pane->details->control_preference_list,
 					   control_preference_name)) {
 		return;
 	}
 
 	if (pane->details->control_preference_list == NULL) {
-		pane->details->control_preference_list = nautilus_string_list_new (TRUE);
+		pane->details->control_preference_list = eel_string_list_new (TRUE);
 	}
 
-	nautilus_string_list_insert (pane->details->control_preference_list,
+	eel_string_list_insert (pane->details->control_preference_list,
 				     control_preference_name);
 
  	nautilus_preferences_add_callback_while_alive (control_preference_name,

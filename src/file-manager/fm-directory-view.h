@@ -32,12 +32,12 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwindow.h>
-#include <libnautilus-extensions/nautilus-background.h>
+#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 #include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
+#include <eel/eel-string-list.h>
 #include <libnautilus/nautilus-view.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
@@ -172,7 +172,7 @@ struct FMDirectoryViewClass {
         void     (* reveal_selection)	 	(FMDirectoryView *view);
 
         /* get_background is a function pointer that subclasses must
-         * override to return the NautilusBackground for this view.
+         * override to return the EelBackground for this view.
          */
         GtkWidget * (* get_background_widget)	(FMDirectoryView *view);
 
@@ -203,7 +203,7 @@ struct FMDirectoryViewClass {
 	 * be displayed with each file. By default, all emblems returned by
 	 * NautilusFile are displayed.
 	 */
-	NautilusStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
+	EelStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
 	/* file_limit_reached is a function pointer that subclasses may
 	 * override to control what happens when a directory is loaded
@@ -337,11 +337,11 @@ void                fm_directory_view_queue_file_change                (FMDirect
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirectoryView  *view);
 BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
-NautilusStringList *fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
+EelStringList *fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
-NautilusBackground *fm_directory_view_get_background                   (FMDirectoryView  *view);
+EelBackground *fm_directory_view_get_background                   (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,

@@ -33,12 +33,12 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-label.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <eel/eel-stock-dialogs.h>
 
 #ifdef HAVE_MEDUSA
 
@@ -50,7 +50,7 @@
 #define PROGRESS_UPDATE_INTERVAL 5000
 
 typedef struct {
-        NautilusLabel *progress_label;
+        EelLabel *progress_label;
         GtkProgress *progress_bar;
 } ProgressChangeData;
 
@@ -89,15 +89,15 @@ get_text_for_progress_label (void)
 static gboolean
 update_progress_display (gpointer callback_data)
 {
-        NautilusLabel *progress_label;
+        EelLabel *progress_label;
         ProgressChangeData *progress_change_data;
         char *progress_string;
 
         progress_change_data = (ProgressChangeData *) callback_data;
 
-        progress_label = NAUTILUS_LABEL (progress_change_data->progress_label);
+        progress_label = EEL_LABEL (progress_change_data->progress_label);
         progress_string = get_text_for_progress_label ();
-        nautilus_label_set_text (progress_label, progress_string);
+        eel_label_set_text (progress_label, progress_string);
         g_free (progress_string);
         gtk_progress_set_value (progress_change_data->progress_bar, get_index_percentage_complete ());
 
@@ -190,7 +190,7 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 	}
         if (error) {
                 /* FIXME: Maybe we should include details here? */
-                nautilus_show_error_dialog (error,
+                eel_show_error_dialog (error,
                                             _("Reindexing Failed"),
                                             NULL);
         }
@@ -213,7 +213,7 @@ last_index_time_and_reindex_button_dialog_new (void)
                 /* Fall through, we won't be showing this in the above case, anyways. */
         case MEDUSA_INDEXER_READY_TO_INDEX:
                 
-                dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+                dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
                                                         "your searches are fast. If you need to update your index "
                                                         "now, click on the \"Update Now\" button."),
                                                       _("Indexing Status"),
@@ -221,7 +221,7 @@ last_index_time_and_reindex_button_dialog_new (void)
                 break;
         case MEDUSA_INDEXER_NOT_AVAILABLE:
                 /* FIXME: Do we want to talk about the index not being available? */
-                dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+                dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
                                                         "your searches are fast. "),
                                                       _("Indexing Status"),
                                                       NULL);
@@ -237,10 +237,10 @@ last_index_time_and_reindex_button_dialog_new (void)
                                      time_str);
         g_free (time_str);
         
-        label = nautilus_label_new (label_str);
-        nautilus_label_set_never_smooth (NAUTILUS_LABEL (label), TRUE);
-        nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-        nautilus_label_make_bold (NAUTILUS_LABEL (label));
+        label = eel_label_new (label_str);
+        eel_label_set_never_smooth (EEL_LABEL (label), TRUE);
+        eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
+        eel_label_make_bold (EEL_LABEL (label));
         gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
                             FALSE, FALSE, 0);
 
@@ -276,7 +276,7 @@ index_progress_dialog_new (void)
         ProgressChangeData *progress_data;
         guint timeout_id;
                 
-        dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+        dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
                                                 "your searches are fast.  Your files are currently being indexed."),
                                               _("Indexing Status"), NULL);
         initialize_dialog (dialog);        
@@ -291,10 +291,10 @@ index_progress_dialog_new (void)
         gtk_box_pack_start (GTK_BOX (embedded_vbox), indexing_progress_bar, FALSE, FALSE, 0);
 
         progress_string = get_text_for_progress_label ();
-        progress_label = nautilus_label_new (progress_string);
-        nautilus_label_set_never_smooth (NAUTILUS_LABEL (progress_label), TRUE);
+        progress_label = eel_label_new (progress_string);
+        eel_label_set_never_smooth (EEL_LABEL (progress_label), TRUE);
         g_free (progress_string);
-        nautilus_label_set_justify (NAUTILUS_LABEL (progress_label), GTK_JUSTIFY_LEFT);
+        eel_label_set_justify (EEL_LABEL (progress_label), GTK_JUSTIFY_LEFT);
         gtk_box_pack_start (GTK_BOX (embedded_vbox), progress_label, FALSE, FALSE, 0);
 
         progress_bar_hbox = gtk_hbox_new (FALSE, 0);
@@ -306,7 +306,7 @@ index_progress_dialog_new (void)
 
         /* Keep the dialog current with actual indexing progress */
         progress_data = g_new (ProgressChangeData, 1);
-        progress_data->progress_label = NAUTILUS_LABEL (progress_label);
+        progress_data->progress_label = EEL_LABEL (progress_label);
         progress_data->progress_bar = GTK_PROGRESS (indexing_progress_bar);
         timeout_id = gtk_timeout_add_full (PROGRESS_UPDATE_INTERVAL,
                                            update_progress_display,
@@ -339,7 +339,7 @@ show_indexing_info_dialog (void)
         int callback_id;
         
         if (medusa_system_services_are_blocked ()) {
-                dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires "
+                dialog_shown = eel_show_info_dialog (_("To do a fast search, Find requires "
                                                             "an index of the files on your system. "
                                                             "Your system administrator has disabled "
                                                             "fast search on your computer, so no "
@@ -358,7 +358,7 @@ show_indexing_info_dialog (void)
         }
 
         if (!medusa_system_services_are_enabled ()) {
-                dialog_shown = nautilus_show_info_dialog_with_details (_("To do a fast search, Find requires an index "
+                dialog_shown = eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index "
                                                                          "of the files on your system. Fast search is "
                                                                          "disabled in your Search preferences, so no "
                                                                          "index is available."),
@@ -403,7 +403,7 @@ show_indexing_info_dialog (void)
 static void
 show_search_service_not_available_dialog (void)
 {
-        nautilus_show_error_dialog (_("Sorry, but the medusa search service is not available."),
+        eel_show_error_dialog (_("Sorry, but the medusa search service is not available."),
                                     _("Search Service Not Available"),
                                     NULL);
 }
@@ -425,7 +425,7 @@ nautilus_indexing_info_get_last_index_time (void)
         
 	update_time = medusa_index_service_get_last_index_update_time ();
         if (update_time) {
-                return nautilus_strdup_strftime (_("%I:%M %p, %x"),
+                return eel_strdup_strftime (_("%I:%M %p, %x"),
                                                  localtime (&update_time));
         } else {
                 return NULL;

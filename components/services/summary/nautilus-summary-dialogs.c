@@ -23,13 +23,13 @@
 
 #include <config.h>
 
-#include <libnautilus-extensions/nautilus-caption-table.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <eel/eel-caption-table.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-background.h>
+#include <eel/eel-string.h>
+#include <eel/eel-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-image.h>
+#include <eel/eel-image.h>
 
 #include <libgnomeui/gnome-stock.h>
 #include <stdio.h>
@@ -65,7 +65,7 @@ void
 nautilus_summary_show_login_failure_dialog (NautilusSummaryView *view, 
 					    const char *message)
 {
-	nautilus_show_error_dialog (message, 
+	eel_show_error_dialog (message, 
 			            _("Eazel Service Login Error"), 
 				    get_window_from_summary_view (view));
 }
@@ -76,7 +76,7 @@ nautilus_summary_show_error_dialog (NautilusSummaryView *view,
 {
 	GnomeDialog	*dialog;
 
-	dialog = nautilus_show_error_dialog (message, 
+	dialog = eel_show_error_dialog (message, 
 				             _("Service Error"), 
 				             get_window_from_summary_view (view));
 	gtk_signal_connect (GTK_OBJECT (dialog),
@@ -123,17 +123,17 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
 	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
 
-	view->details->caption_table = nautilus_caption_table_new (LOGIN_DIALOG_ROW_COUNT);
+	view->details->caption_table = eel_caption_table_new (LOGIN_DIALOG_ROW_COUNT);
 	gtk_widget_show (view->details->caption_table);
 
-	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
+	eel_caption_table_set_row_info (EEL_CAPTION_TABLE (view->details->caption_table),
 					     LOGIN_DIALOG_NAME_ROW,
 					     _("Username:"),
 					     "",
 					     TRUE,
 					     FALSE);
 
-	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
+	eel_caption_table_set_row_info (EEL_CAPTION_TABLE (view->details->caption_table),
 					     LOGIN_DIALOG_PASSWORD_ROW,
 					     _("Password:"),
 					     "",
@@ -157,7 +157,7 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	}
 
 	image = eazel_services_image_new (image_name, NULL, 0);
-	nautilus_image_set_background_mode (NAUTILUS_IMAGE (image), NAUTILUS_SMOOTH_BACKGROUND_GTK);
+	eel_image_set_background_mode (EEL_IMAGE (image), EEL_SMOOTH_BACKGROUND_GTK);
 
 	hbox = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox);
@@ -172,7 +172,7 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	message = gtk_label_new (message_text);
 	gtk_label_set_justify (GTK_LABEL (message), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (message), TRUE);
-	nautilus_gtk_label_make_bold (GTK_LABEL (message));
+	eel_gtk_label_make_bold (GTK_LABEL (message));
 	gtk_widget_show (message);
 
 	/* right justify the caption table box */
@@ -194,8 +194,8 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	gnome_dialog_set_default (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX);
 	gtk_signal_connect (GTK_OBJECT (view->details->caption_table), "activate",
 			    name_or_password_field_activated, 
-			    nautilus_gnome_dialog_get_button_by_index (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX));
-	nautilus_caption_table_entry_grab_focus	(NAUTILUS_CAPTION_TABLE (view->details->caption_table), LOGIN_DIALOG_NAME_ROW);
+			    eel_gnome_dialog_get_button_by_index (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX));
+	eel_caption_table_entry_grab_focus	(EEL_CAPTION_TABLE (view->details->caption_table), LOGIN_DIALOG_NAME_ROW);
 
 	if (view->details->attempt_number == 0) {
 		gnome_dialog_button_connect (dialog, LOGIN_DIALOG_REGISTER_BUTTON_INDEX, GTK_SIGNAL_FUNC (register_button_cb), view);
@@ -210,17 +210,17 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 }
 
 void
-widget_set_nautilus_background_color (GtkWidget *widget, const char *color)
+widget_set_eel_background_color (GtkWidget *widget, const char *color)
 {
-	NautilusBackground      *background;
+	EelBackground      *background;
 
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (color != NULL);
 
-	background = nautilus_get_widget_background (widget);
+	background = eel_get_widget_background (widget);
 
-	nautilus_background_reset (background);
-	nautilus_background_set_color (background, color);
+	eel_background_reset (background);
+	eel_background_set_color (background, color);
 
 }
 
@@ -290,12 +290,12 @@ set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
 static void
 name_or_password_field_activated (GtkWidget *caption_table, int active_entry, gpointer user_data)
 {
-	g_assert (NAUTILUS_IS_CAPTION_TABLE (caption_table));
+	g_assert (EEL_IS_CAPTION_TABLE (caption_table));
 	g_assert (GTK_IS_BUTTON (user_data));
 
 	/* auto-click "OK" button when password activated (via Enter key) */
 	if (active_entry == LOGIN_DIALOG_OK_BUTTON_INDEX) {
-		nautilus_gtk_button_auto_click (GTK_BUTTON (user_data));
+		eel_gtk_button_auto_click (GTK_BUTTON (user_data));
 	}
 }
 

@@ -7,26 +7,26 @@
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 
-#include <libnautilus-extensions/nautilus-art-extensions.h>
-#include <libnautilus-extensions/nautilus-art-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-debug-drawing.h>
-#include <libnautilus-extensions/nautilus-debug.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-image-with-background.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-label-with-background.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-art-extensions.h>
+#include <eel/eel-art-gtk-extensions.h>
+#include <eel/eel-background.h>
+#include <eel/eel-debug-drawing.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-image-with-background.h>
+#include <eel/eel-image.h>
+#include <eel/eel-label-with-background.h>
+#include <eel/eel-label.h>
+#include <eel/eel-string-list.h>
+#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
-#include <libnautilus-extensions/nautilus-text-caption.h>
-#include <libnautilus-extensions/nautilus-string-picker.h>
+#include <eel/eel-text-caption.h>
+#include <eel/eel-string-picker.h>
 
 void       test_init                            (int                         *argc,
 						 char                      ***argv);
@@ -59,16 +59,16 @@ void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf                   *pi
 						 int                          opacity);
 void       test_window_set_title_with_pid       (GtkWindow                   *window,
 						 const char                  *title);
-int        test_text_caption_get_text_as_int    (const NautilusTextCaption   *text_caption);
+int        test_text_caption_get_text_as_int    (const EelTextCaption   *text_caption);
 
 /* Preferences hacks */
-void test_text_caption_set_text_for_int_preferences            (NautilusTextCaption       *text_caption,
+void test_text_caption_set_text_for_int_preferences            (EelTextCaption       *text_caption,
 								const char                *name);
-void test_text_caption_set_text_for_string_preferences         (NautilusTextCaption       *text_caption,
+void test_text_caption_set_text_for_string_preferences         (EelTextCaption       *text_caption,
 								const char                *name);
-void test_text_caption_set_text_for_default_int_preferences    (NautilusTextCaption       *text_caption,
+void test_text_caption_set_text_for_default_int_preferences    (EelTextCaption       *text_caption,
 								const char                *name);
-void test_text_caption_set_text_for_default_string_preferences (NautilusTextCaption       *text_caption,
+void test_text_caption_set_text_for_default_string_preferences (EelTextCaption       *text_caption,
 								const char                *name);
 
 #endif /* TEST_H */

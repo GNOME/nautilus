@@ -30,8 +30,8 @@
 #include <libgnome/gnome-i18n.h>
 
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-clickable-image.h>
+#include <eel/eel-string.h>
+#include <eel/eel-clickable-image.h>
 
 #include <time.h>
 
@@ -70,10 +70,10 @@ eazel_services_image_new (const char *icon_name,
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
 
-	image = nautilus_image_new_solid (pixbuf, 0.5, 0.5, 0, 0, background_color, tile_pixbuf);
+	image = eel_image_new_solid (pixbuf, 0.5, 0.5, 0, 0, background_color, tile_pixbuf);
 
-	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
 	return image;
 }
@@ -95,7 +95,7 @@ eazel_services_image_new_clickable (const char *icon_name,
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
 
-	image = nautilus_clickable_image_new_solid (NULL,
+	image = eel_clickable_image_new_solid (NULL,
 						    pixbuf,
 						    0,
 						    0,
@@ -107,8 +107,8 @@ eazel_services_image_new_clickable (const char *icon_name,
 						    background_color,
 						    tile_pixbuf);
 
-	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
 	return image;
 }
@@ -127,11 +127,11 @@ eazel_services_image_new_from_uri (const char *uri,
 	g_return_val_if_fail (uri != NULL, NULL);
 
 	/* load the image - synchronously, at least at first */
-	pixbuf = nautilus_gdk_pixbuf_load (uri);
+	pixbuf = eel_gdk_pixbuf_load (uri);
 	
 	/* pin the image to the specified dimensions if necessary */
 	if (pixbuf && max_width > 0 && max_height > 0) {
-		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
+		scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
 		gdk_pixbuf_unref (pixbuf);
 		pixbuf = scaled_pixbuf;
 	}
@@ -140,10 +140,10 @@ eazel_services_image_new_from_uri (const char *uri,
 	image = eazel_services_image_new (NULL, tile_name, background_color);
 
 	if (pixbuf != NULL) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
+		eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
 	}
 
-	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (pixbuf);
 
 	return image;
 }
@@ -164,11 +164,11 @@ eazel_services_clickable_image_new_from_uri (const char *uri,
 	g_return_val_if_fail (uri != NULL, NULL);
 
 	/* load the image - synchronously, at least at first */
-	pixbuf = nautilus_gdk_pixbuf_load (uri);
+	pixbuf = eel_gdk_pixbuf_load (uri);
 	
 	/* pin the image to the specified dimensions if necessary */
 	if (pixbuf && max_width > 0 && max_height > 0) {
-		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
+		scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
 		gdk_pixbuf_unref (pixbuf);
 		pixbuf = scaled_pixbuf;
 	}
@@ -177,11 +177,11 @@ eazel_services_clickable_image_new_from_uri (const char *uri,
 	image = eazel_services_image_new_clickable (NULL, tile_name, background_color);
 
 	if (pixbuf != NULL) {
-		nautilus_labeled_image_set_pixbuf (NAUTILUS_LABELED_IMAGE (image), 
+		eel_labeled_image_set_pixbuf (EEL_LABELED_IMAGE (image), 
 						   pixbuf);
 	}
 
-	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (pixbuf);
 
 	return image;
 }
@@ -209,7 +209,7 @@ eazel_services_label_new (const char *text,
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
 
-	label = nautilus_label_new_solid (text,
+	label = eel_label_new_solid (text,
 					  drop_shadow_offset,
 					  EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB,
 					  text_color,
@@ -222,16 +222,16 @@ eazel_services_label_new (const char *text,
 
 
 	if (num_larger_sizes < 0) {
-		nautilus_label_make_smaller (NAUTILUS_LABEL (label), ABS (num_larger_sizes));
+		eel_label_make_smaller (EEL_LABEL (label), ABS (num_larger_sizes));
 	} else if (num_larger_sizes > 0) {
-		nautilus_label_make_larger (NAUTILUS_LABEL (label), num_larger_sizes);
+		eel_label_make_larger (EEL_LABEL (label), num_larger_sizes);
 	}
 
 	if (bold) {
-		nautilus_label_make_bold (NAUTILUS_LABEL (label));
+		eel_label_make_bold (EEL_LABEL (label));
 	}
 	
-	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
 	return label;
 }
@@ -256,7 +256,7 @@ eazel_services_label_new_clickable (const char *text,
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
 
-	label = nautilus_clickable_image_new_solid (text,
+	label = eel_clickable_image_new_solid (text,
 						    NULL,
 						    drop_shadow_offset,
 						    EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB,
@@ -269,16 +269,16 @@ eazel_services_label_new_clickable (const char *text,
 						    tile_pixbuf);
 
 	if (num_larger_sizes < 0) {
-		nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (label), ABS (num_larger_sizes));
+		eel_labeled_image_make_smaller (EEL_LABELED_IMAGE (label), ABS (num_larger_sizes));
 	} else if (num_larger_sizes > 0) {
-		nautilus_labeled_image_make_larger (NAUTILUS_LABELED_IMAGE (label), num_larger_sizes);
+		eel_labeled_image_make_larger (EEL_LABELED_IMAGE (label), num_larger_sizes);
 	}
 
 	if (bold) {
-		nautilus_labeled_image_make_bold (NAUTILUS_LABELED_IMAGE (label));
+		eel_labeled_image_make_bold (EEL_LABELED_IMAGE (label));
 	}
 	
-	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+	eel_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
 	return label;
 }
@@ -297,5 +297,5 @@ eazel_services_get_current_date_string (void)
 
 	my_localtime = localtime (&my_time);
 
-        return nautilus_strdup_strftime (_("%A, %B %d"), my_localtime);
+        return eel_strdup_strftime (_("%A, %B %d"), my_localtime);
 }

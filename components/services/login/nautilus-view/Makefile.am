@@ -11,6 +11,8 @@ INCLUDES =								\
         -I$(top_builddir)/components/services/trilobite/libtrilobite 	\
 	-I$(top_srcdir)/components/services/login/lib			\
 	-I$(top_builddir)						\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)                       			\
 	$(GCONF_CFLAGS) 						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"			\
@@ -34,6 +36,8 @@ nautilus_change_password_view_LDADD =						\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)							\
 	$(GNOMEUI_LIBS)							\
 	$(GCONF_LIBS)							\

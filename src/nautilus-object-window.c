@@ -60,19 +60,19 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-drag-window.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-horizontal-splitter.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-sidebar-functions.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
@@ -127,7 +127,7 @@ static void nautilus_window_show                   (GtkWidget           *widget)
 static void cancel_view_as_callback                (NautilusWindow      *window);
 static void real_add_current_location_to_history_list (NautilusWindow   *window);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
 				   BONOBO_TYPE_WINDOW)
 
@@ -178,7 +178,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
                 if (pixbuf != NULL) {
                         gdk_pixbuf_render_pixmap_and_mask
 				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
-				 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+				 EEL_STANDARD_ALPHA_THRESHHOLD);
 			gdk_pixbuf_unref (pixbuf);
 			g_atexit (unref_mini_icon);
 		}
@@ -561,7 +561,7 @@ menu_bar_no_resize_hack (NautilusWindow *window)
 	
 	menu_bar = NULL;
 	
-	nautilus_gtk_container_foreach_deep (GTK_CONTAINER (window),
+	eel_gtk_container_foreach_deep (GTK_CONTAINER (window),
 					     menu_bar_no_resize_hack_menu_bar_finder,
 					     &menu_bar);
 
@@ -920,8 +920,8 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_view_identifier_free (window->content_view_id);
 	
 	g_free (window->details->location);
-	nautilus_g_list_free_deep (window->details->selection);
-	nautilus_g_list_free_deep (window->details->pending_selection);
+	eel_g_list_free_deep (window->details->selection);
+	eel_g_list_free_deep (window->details->pending_selection);
 
 	nautilus_window_clear_back_list (window);
 	nautilus_window_clear_forward_list (window);
@@ -961,7 +961,7 @@ nautilus_window_destroy (GtkObject *object)
 
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 }
 
 static void
@@ -1021,11 +1021,11 @@ nautilus_window_realize (GtkWidget *widget)
 	char *filename;
 
         /* Create our GdkWindow */
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
         /* Set the mini icon */
 	if (mini_icon_pixmap != NULL) {
-		nautilus_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
+		eel_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
 	}
 
 	/* Set the maxi icon */
@@ -1050,7 +1050,7 @@ nautilus_window_size_request (GtkWidget		*widget,
 	g_return_if_fail (NAUTILUS_IS_WINDOW (widget));
 	g_return_if_fail (requisition != NULL);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
 
 	/* Limit the requisition to be within 90% of the available screen 
 	 * real state.
@@ -1157,7 +1157,7 @@ replace_special_current_view_in_view_as_menu (NautilusWindow *window)
 	gtk_widget_ref (menu);
 	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
 
-	first_menu_item = nautilus_gtk_container_get_first_child (GTK_CONTAINER (menu));
+	first_menu_item = eel_gtk_container_get_first_child (GTK_CONTAINER (menu));
 	g_assert (first_menu_item != NULL);
 
 	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (first_menu_item), "current content view"))) {
@@ -1428,7 +1428,7 @@ nautilus_window_go_up (NautilusWindow *window)
 	nautilus_window_open_location_with_selection (window, parent_uri_string, selection);
 	
 	g_free (parent_uri_string);
-	nautilus_g_list_free_deep (selection);
+	eel_g_list_free_deep (selection);
 }
 
 void
@@ -1574,7 +1574,7 @@ nautilus_send_history_list_changed (void)
 static void
 free_history_list (void)
 {
-	nautilus_gtk_object_list_free (history_list);
+	eel_gtk_object_list_free (history_list);
 	history_list = NULL;
 }
 
@@ -1660,21 +1660,21 @@ nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	NAUTILUS_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
 			      add_current_location_to_history_list, (window));
 }
 
 void
 nautilus_window_clear_forward_list (NautilusWindow *window)
 {
-	nautilus_gtk_object_list_free (window->forward_list);
+	eel_gtk_object_list_free (window->forward_list);
 	window->forward_list = NULL;
 }
 
 void
 nautilus_window_clear_back_list (NautilusWindow *window)
 {
-	nautilus_gtk_object_list_free (window->back_list);
+	eel_gtk_object_list_free (window->back_list);
 	window->back_list = NULL;
 }
 
@@ -1996,7 +1996,7 @@ nautilus_window_show (GtkWidget *widget)
 
 	window = NAUTILUS_WINDOW (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, show, (widget));
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, show, (widget));
 	
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 

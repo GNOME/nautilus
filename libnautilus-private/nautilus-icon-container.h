@@ -28,7 +28,7 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include "nautilus-icon-factory.h"
-#include "nautilus-scalable-font.h"
+#include <eel/eel-scalable-font.h>
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
@@ -216,7 +216,7 @@ void              nautilus_icon_container_set_label_font_for_zoom_level (Nautilu
 									 int                     zoom_level,
 									 GdkFont                *font);
 void              nautilus_icon_container_set_smooth_label_font         (NautilusIconContainer  *container,
-									 NautilusScalableFont   *font);
+									 EelScalableFont   *font);
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);

@@ -35,11 +35,11 @@
 #include <gtk/gtksignal.h>
 
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
@@ -95,7 +95,7 @@ nautilus_bookmark_list_initialize (NautilusBookmarkList *bookmarks)
 	nautilus_bookmark_list_load_file (bookmarks);
 }
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
 
 static void
 stop_monitoring_one (gpointer data, gpointer user_data)
@@ -111,7 +111,7 @@ static void
 clear (NautilusBookmarkList *bookmarks)
 {
 	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	nautilus_gtk_object_list_free (bookmarks->list);
+	eel_gtk_object_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 }
 
@@ -155,10 +155,10 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	icon = nautilus_bookmark_get_icon (bookmark);
 	if (icon != NULL) {
 		/* Don't bother storing modifier or embedded text for bookmarks. */
-		nautilus_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
+		eel_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
 		xmlSetProp (bookmark_node, "icon_uri", icon_uri);
 		xmlSetProp (bookmark_node, "icon_name", icon_name);
-		nautilus_scalable_icon_unref (icon);
+		eel_scalable_icon_unref (icon);
 		g_free (icon_uri);
 		g_free (icon_name);
 	}
@@ -315,7 +315,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 		next = node->next;
 
 		bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
-		if (nautilus_strcmp (bookmark_uri, uri) == 0) {
+		if (eel_strcmp (bookmark_uri, uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
 			gtk_object_unref (GTK_OBJECT (node->data));
@@ -439,7 +439,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 
 	/* Read new list from file */
 	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
-	for (node = nautilus_xml_get_root_children (doc);
+	for (node = eel_xml_get_root_children (doc);
 	     node != NULL;
 	     node = node->next) {
 

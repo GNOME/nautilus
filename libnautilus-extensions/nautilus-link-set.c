@@ -27,13 +27,13 @@
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
-#include "nautilus-string.h"
-#include "nautilus-xml-extensions.h"
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtktogglebutton.h>
@@ -112,10 +112,10 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 	}
 	
 	/* loop through the entries, generating link files */
-	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	for (node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
-			link_name = nautilus_xml_get_property_translated (node, "name");
+			link_name = eel_xml_get_property_translated (node, "name");
 			image_name = xmlGetProp (node, "image");
 			uri = xmlGetProp (node, "uri");
 
@@ -159,10 +159,10 @@ nautilus_link_set_is_installed (const char *directory_path, const char *link_set
 	}
 	
 	/* loop through the entries, testing to see if any are present */
-	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	for (node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
-			link_name = nautilus_xml_get_property_translated (node, "name");
+			link_name = eel_xml_get_property_translated (node, "name");
 			file_name = nautilus_make_path (directory_path, link_name);
 			xmlFree (link_name);
 
@@ -195,11 +195,11 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 	
 	/* loop through the entries in the xml file, formulating the names of the link files and
 	   deleting them or decrementing their reference count */
-	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	for (node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
 			/* formulate the link file path name */
-			link_name = nautilus_xml_get_property_translated (node, "name");
+			link_name = eel_xml_get_property_translated (node, "name");
 			file_name = nautilus_make_path (directory_path, link_name);
 			xmlFree (link_name);
 			

@@ -28,7 +28,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnome/gnome-i18n.h>
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 static void nautilus_druid_initialize	(NautilusDruid		 *druid);
 static void nautilus_druid_initialize_class(NautilusDruidClass	 *klass);
@@ -37,7 +37,7 @@ static void nautilus_druid_size_request (GtkWidget               *widget,
 static void nautilus_druid_size_allocate(GtkWidget               *widget,
 					 GtkAllocation           *allocation);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDruid, nautilus_druid, GNOME_TYPE_DRUID)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusDruid, nautilus_druid, GNOME_TYPE_DRUID)
 
 static void
 nautilus_druid_initialize_class (NautilusDruidClass *klass)

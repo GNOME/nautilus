@@ -25,8 +25,8 @@
 #include <config.h>
 #include "nautilus-undo-manager.h"
 
-#include "nautilus-gtk-macros.h"
-#include "nautilus-gtk-extensions.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
@@ -82,7 +82,7 @@ static void corba_forget                           (PortableServer_Servant     s
 static void corba_undo                             (PortableServer_Servant     servant,
 						    CORBA_Environment         *ev);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
 
 static PortableServer_ServantBase__epv base_epv;
 static POA_Nautilus_Undo_Manager__epv epv = {
@@ -320,7 +320,7 @@ destroy (GtkObject *object)
 
 	release_transaction (manager);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 void
@@ -434,7 +434,7 @@ nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *m
 	update_undo_menu_item (manager, connection);
 
 	/* Update it again whenever the changed signal is emitted. */
-	nautilus_gtk_signal_connect_full_while_alive
+	eel_gtk_signal_connect_full_while_alive
 		(GTK_OBJECT (manager), "changed",
 		 GTK_SIGNAL_FUNC (update_undo_menu_item), NULL,
 		 connection, undo_menu_handler_connection_free_cover,

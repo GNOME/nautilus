@@ -31,7 +31,7 @@
 #include "nautilus-dateedit-extensions.h"
 
 char *
-nautilus_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit)
+eel_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit)
 {
 	struct tm *time_struct;
 	time_t selected_time;

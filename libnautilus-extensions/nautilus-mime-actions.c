@@ -27,10 +27,10 @@
 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-lib-self-check-functions.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-lib-self-check-functions.h>
 #include "nautilus-metadata.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
@@ -423,7 +423,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 		server = NULL;		
 	}
 	
-	nautilus_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (item_mime_types);
 	g_strfreev (sort_conditions);
 
 	g_free (uri_scheme);
@@ -491,7 +491,7 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	/* First remove applications that cannot support this location */
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 	g_assert (uri_scheme != NULL);
-	result = nautilus_g_list_partition (result, application_supports_uri_scheme,
+	result = eel_g_list_partition (result, application_supports_uri_scheme,
 					    uri_scheme, &removed);
 	gnome_vfs_mime_application_list_free (removed);
 
@@ -507,7 +507,7 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
 
-	result = nautilus_g_list_partition (result, (NautilusPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
+	result = eel_g_list_partition (result, (EelPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
 					    metadata_application_remove_ids, &removed);
 	
 	gnome_vfs_mime_application_list_free (removed);
@@ -585,8 +585,8 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		iids = g_list_prepend (iids, component->iid);
 	}
 
-	iids = nautilus_g_list_partition
-		(iids, (NautilusPredicateFunction) string_not_in_list, 
+	iids = eel_g_list_partition
+		(iids, (EelPredicateFunction) string_not_in_list, 
 		 metadata_component_remove_ids, &removed);
 
 	g_list_free (removed);
@@ -626,7 +626,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		g_free (extra_requirements);
 	}
 
-	nautilus_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (item_mime_types);
 	gnome_vfs_mime_component_list_free (servers);
 	g_list_free (iids);
 	g_free (uri_scheme);
@@ -754,7 +754,7 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	}
 	
 	gnome_vfs_mime_component_list_free (info_list);
-	nautilus_g_list_free_deep (explicit_iids);
+	eel_g_list_free_deep (explicit_iids);
 	g_free (uri_scheme);
 	g_free (mime_type);
 	CORBA_exception_free (&ev);
@@ -792,8 +792,8 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
 						 explicit_iids, NULL, NULL, &ev);
 	
-	nautilus_g_list_free_deep (explicit_iids);
-	nautilus_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (explicit_iids);
+	eel_g_list_free_deep (item_mime_types);
 
 	g_free (uri_scheme);
 	g_free (mime_type);
@@ -990,7 +990,7 @@ nautilus_mime_add_application_to_short_list_for_file (NautilusFile      *file,
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_application_list (old_list), 
 					  g_strdup (application_id));
 		result = nautilus_mime_set_short_list_applications_for_file (file, new_list);
-		nautilus_g_list_free_deep (new_list);
+		eel_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_application_list_free (old_list);
@@ -1018,7 +1018,7 @@ nautilus_mime_remove_application_from_short_list_for_file (NautilusFile      *fi
 	} else {
 		new_list = gnome_vfs_mime_id_list_from_application_list (old_list);
 		result = nautilus_mime_set_short_list_applications_for_file (file, new_list);
-		nautilus_g_list_free_deep (new_list);
+		eel_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_application_list_free (old_list);
@@ -1044,7 +1044,7 @@ nautilus_mime_add_component_to_short_list_for_file (NautilusFile      *file,
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_component_list (old_list), 
 					  g_strdup (iid));
 		result = nautilus_mime_set_short_list_components_for_file (file, new_list);
-		nautilus_g_list_free_deep (new_list);
+		eel_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_component_list_free (old_list);
@@ -1072,7 +1072,7 @@ nautilus_mime_remove_component_from_short_list_for_file (NautilusFile *file,
 	} else {
 		new_list = gnome_vfs_mime_id_list_from_component_list (old_list);
 		result = nautilus_mime_set_short_list_components_for_file (file, new_list);
-		nautilus_g_list_free_deep (new_list);
+		eel_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_component_list_free (old_list);
@@ -1677,5 +1677,5 @@ application_supports_uri_scheme (gpointer data,
 	}
 	return g_list_find_custom (application->supported_uri_schemes,
 				   uri_scheme,
-				   nautilus_strcasecmp_compare_func) != NULL;
+				   eel_strcasecmp_compare_func) != NULL;
 }

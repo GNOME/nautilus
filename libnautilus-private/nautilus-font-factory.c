@@ -26,10 +26,10 @@
 #include "nautilus-font-factory.h"
 
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-string.h"
-#include "nautilus-gdk-font-extensions.h"
-#include "nautilus-gtk-extensions.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <pthread.h>
 #include <unistd.h>
 
@@ -70,7 +70,7 @@ static void    nautilus_font_factory_initialize_class (NautilusFontFactoryClass 
 static void    nautilus_font_factory_initialize       (NautilusFontFactory      *factory);
 static void    destroy                                (GtkObject                *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory,
 				   nautilus_font_factory,
 				   GTK_TYPE_OBJECT)
 
@@ -165,7 +165,7 @@ destroy (GtkObject *object)
 	g_hash_table_foreach (factory->fonts, free_one_hash_node, NULL);
 	g_hash_table_destroy (factory->fonts);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static FontHashNode *
@@ -222,8 +222,8 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	/* FIXME bugzilla.eazel.com 7907: 
 	 * The "GTK System Font" string is hard coded in many places.
 	 */
-	if (nautilus_str_is_equal (family, "GTK System Font")) {
-		return nautilus_gtk_get_system_font ();
+	if (eel_str_is_equal (family, "GTK System Font")) {
+		return eel_gtk_get_system_font ();
 	}
 
 	fontset = g_strsplit (family, ",", 5);
@@ -235,8 +235,8 @@ nautilus_font_factory_get_font_by_family (const char *family,
 		 * Its a hack that we check for "-" prefixes in font names.
 		 * We do this in order not to break transalted font families.
 		 */
-		if (!nautilus_str_has_prefix (*iter, "-")) {
-			font_name = nautilus_gdk_font_xlfd_string_new ("*", 
+		if (!eel_str_has_prefix (*iter, "-")) {
+			font_name = eel_gdk_font_xlfd_string_new ("*", 
 								       *iter,
 								       "medium",
 								       "r",
@@ -262,7 +262,7 @@ nautilus_font_factory_get_font_by_family (const char *family,
 		font = node->font;
 		gdk_font_ref (font);
 	} else {
-		font = nautilus_gdk_font_get_fixed ();
+		font = eel_gdk_font_get_fixed ();
 	}
 
 	g_free (font_name);

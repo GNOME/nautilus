@@ -38,21 +38,21 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
 #include "nautilus-icon-private.h"
-#include "nautilus-string.h"
-#include "nautilus-art-extensions.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gdk-font-extensions.h"
-#include "nautilus-gdk-pixbuf-extensions.h"
+#include <eel/eel-string.h>
+#include <eel/eel-art-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-gnome-extensions.h"
-#include "nautilus-graphic-effects.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-graphic-effects.h>
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
-#include "nautilus-smooth-text-layout.h"
-#include "nautilus-smooth-text-layout-cache.h"
+#include <eel/eel-smooth-text-layout.h>
+#include <eel/eel-smooth-text-layout-cache.h>
 
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
@@ -98,7 +98,7 @@ struct NautilusIconCanvasItemDetails {
 
 	/* Font stuff whilst in smooth mode */
 	int smooth_font_size;
-	NautilusScalableFont *smooth_font;
+	EelScalableFont *smooth_font;
 	
 	/* Cached rectangle in canvas coordinates */
 	ArtIRect canvas_rect;
@@ -143,9 +143,9 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static	guint32 highlight_background_color = NAUTILUS_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 0xFF);
-static	guint32 highlight_text_color	   = NAUTILUS_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
-static  guint32 highlight_text_info_color  = NAUTILUS_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
+static	guint32 highlight_background_color = EEL_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 0xFF);
+static	guint32 highlight_text_color	   = EEL_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
+static  guint32 highlight_text_info_color  = EEL_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
 
 static int click_policy_auto_value;
 
@@ -223,9 +223,9 @@ static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCa
 
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
 
-static NautilusSmoothTextLayoutCache *layout_cache;
+static EelSmoothTextLayoutCache *layout_cache;
 
 static void
 free_layout_cache (void)
@@ -241,7 +241,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	GnomeCanvasItemClass *item_class;
 
 	if (layout_cache == NULL) {
-		layout_cache = nautilus_smooth_text_layout_cache_new ();
+		layout_cache = eel_smooth_text_layout_cache_new ();
 		g_atexit (free_layout_cache);
 	}
 
@@ -308,7 +308,7 @@ nautilus_icon_canvas_item_initialize (NautilusIconCanvasItem *icon_item)
 	
 	/* set up the default font and size */
 	icon_item->details->smooth_font_size = 12;
-	icon_item->details->smooth_font = nautilus_scalable_font_get_default_font ();
+	icon_item->details->smooth_font = eel_scalable_font_get_default_font ();
 }
 
 /* Destroy handler for the icon canvas item. */
@@ -330,7 +330,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	if (details->pixbuf != NULL) {
 		gdk_pixbuf_unref (details->pixbuf);
 	}
-	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
+	eel_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->editable_text);
 	g_free (details->additional_text);
 	g_free (details->attach_points);
@@ -344,7 +344,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	
 	g_free (details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
  
 /* Currently we require pixbufs in this format (for hit testing).
@@ -384,7 +384,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	switch (arg_id) {
 
 	case ARG_EDITABLE_TEXT:
-		if (nautilus_strcmp (details->editable_text, GTK_VALUE_STRING (*arg)) == 0) {
+		if (eel_strcmp (details->editable_text, GTK_VALUE_STRING (*arg)) == 0) {
 			return;
 		}
 
@@ -395,7 +395,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
 
 	case ARG_ADDITIONAL_TEXT:
-		if (nautilus_strcmp (details->additional_text, GTK_VALUE_STRING (*arg)) == 0) {
+		if (eel_strcmp (details->additional_text, GTK_VALUE_STRING (*arg)) == 0) {
 			return;
 		}
 
@@ -407,7 +407,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 	case ARG_FONT:
 		font = GTK_VALUE_BOXED (*arg);
-		if (nautilus_gdk_font_equal (font, details->font)) {
+		if (eel_gdk_font_equal (font, details->font)) {
 			return;
 		}
 
@@ -445,7 +445,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
         case ARG_SMOOTH_FONT:
 		nautilus_icon_canvas_item_set_smooth_font (NAUTILUS_ICON_CANVAS_ITEM (object),
-							   NAUTILUS_SCALABLE_FONT (GTK_VALUE_OBJECT (*arg)));
+							   EEL_SCALABLE_FONT (GTK_VALUE_OBJECT (*arg)));
 		nautilus_icon_canvas_item_invalidate_label_size (item);				
 		break;
 
@@ -562,7 +562,7 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 	/* The case where the emblems are identical is fairly common,
 	 * so lets take the time to check for it.
 	 */
-	if (nautilus_g_list_equal (item->details->emblem_pixbufs, emblem_pixbufs)) {
+	if (eel_g_list_equal (item->details->emblem_pixbufs, emblem_pixbufs)) {
 		return;
 	}
 
@@ -572,8 +572,8 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 	}
 	
 	/* Take in the new list of emblems. */
-	nautilus_gdk_pixbuf_list_ref (emblem_pixbufs);
-	nautilus_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
+	eel_gdk_pixbuf_list_ref (emblem_pixbufs);
+	eel_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
 	item->details->emblem_pixbufs = g_list_copy (emblem_pixbufs);
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
@@ -644,14 +644,14 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	GdkPixbuf *emblem_pixbuf;
 		
 	/* Compute new bounds. */
-	nautilus_gnome_canvas_item_get_current_canvas_bounds
+	eel_gnome_canvas_item_get_current_canvas_bounds
 		(GNOME_CANVAS_ITEM (item), &before);
 	recompute_bounding_box (item);
-	nautilus_gnome_canvas_item_get_current_canvas_bounds
+	eel_gnome_canvas_item_get_current_canvas_bounds
 		(GNOME_CANVAS_ITEM (item), &after);
 
 	/* If the bounds didn't change, we are done. */
-	if (nautilus_art_irect_equal (&before, &after)) {
+	if (eel_art_irect_equal (&before, &after)) {
 		return;
 	}
 	
@@ -670,11 +670,11 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	}
 
 	/* Send out the bounds_changed signal and queue a redraw. */
-	nautilus_gnome_canvas_request_redraw_rectangle
+	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, &before);
 	gtk_signal_emit (GTK_OBJECT (item),
 			 signals[BOUNDS_CHANGED]);
-	nautilus_gnome_canvas_item_request_redraw
+	eel_gnome_canvas_item_request_redraw
 		(GNOME_CANVAS_ITEM (item));
 }
 
@@ -686,8 +686,8 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 				      int flags)
 {
 	nautilus_icon_canvas_item_update_bounds (NAUTILUS_ICON_CANVAS_ITEM (item));
-	nautilus_gnome_canvas_item_request_redraw (item);
-	NAUTILUS_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update,
+	eel_gnome_canvas_item_request_redraw (item);
+	EEL_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update,
 			      (item, affine, clip_path, flags));
 }
 
@@ -910,7 +910,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		
 		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
-			gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
+			gdk_gc_set_stipple (gc, eel_stipple_bitmap ());
 			gdk_gc_set_fill (gc, GDK_STIPPLED);
 			gdk_draw_rectangle
 				(drawable, gc, FALSE,
@@ -975,7 +975,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 	
 	/* first draw the box */		
-	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
+	gdk_gc_set_stipple (gc, eel_stipple_bitmap ());
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle
 		(drawable, gc, FALSE,
@@ -1080,13 +1080,13 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	/* draw a box to connect the dots */
 	draw_outline_rectangle_aa (buf, rect->x0 + 1, rect->y0 + 1,
 				   rect->x1 - 1, rect->y1 - 1,
-				   NAUTILUS_RGBA_COLOR_PACK (153, 153, 153, 127));	
+				   EEL_RGBA_COLOR_PACK (153, 153, 153, 127));	
 
 	/* now draw the stretch handles themselves  */
-	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y0);
-	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y1 - knob_height);
-	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y0);
-	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y1 - knob_height);
+	eel_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y0);
+	eel_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y1 - knob_height);
+	eel_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y0);
+	eel_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y1 - knob_height);
 			
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
@@ -1263,7 +1263,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	canvas = GNOME_CANVAS_ITEM(icon_item)->canvas;
 	
 	if (icon_item->details->is_prelit) {
-		temp_pixbuf = nautilus_create_spotlight_pixbuf (icon_item->details->pixbuf);
+		temp_pixbuf = eel_create_spotlight_pixbuf (icon_item->details->pixbuf);
 		
 		/* FIXME bugzilla.eazel.com 2471: This hard-wired image is inappropriate to
 		 * this level of code, which shouldn't know that the
@@ -1305,7 +1305,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	if (icon_item->details->is_highlighted_for_selection
 	    || icon_item->details->is_highlighted_for_drop) {
 		old_pixbuf = temp_pixbuf;
-		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
+		temp_pixbuf = eel_create_darkened_pixbuf (temp_pixbuf,
 							       0.8 * 255,
 							       0.8 * 255);
 		if (old_pixbuf != icon_item->details->pixbuf) {
@@ -1375,7 +1375,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
-	const NautilusSmoothTextLayout *smooth_text_layout;
+	const EelSmoothTextLayout *smooth_text_layout;
 	char **pieces;
 	const char *text_piece;
 	int i;
@@ -1467,7 +1467,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 
-		smooth_text_layout = nautilus_smooth_text_layout_cache_render (layout_cache,
+		smooth_text_layout = eel_smooth_text_layout_cache_render (layout_cache,
 									       text_piece,
 									       strlen (text_piece),
 									       details->smooth_font,
@@ -1480,7 +1480,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			gboolean underlined;
 			ArtIRect destination_area;
 
-			text_left = icon_left + (icon_width - nautilus_smooth_text_layout_get_width (smooth_text_layout)) / 2;
+			text_left = icon_left + (icon_width - eel_smooth_text_layout_get_width (smooth_text_layout)) / 2;
 			
 			/* if it's prelit, and we're in click-to-activate mode, underline the text */
 			underlined = (details->is_prelit && in_single_click_mode ());
@@ -1492,24 +1492,24 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 				
 				destination_area.x0 = text_left + 2;
 				destination_area.y0 = icon_bottom + height_so_far + 1;
-				destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
-				destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
-				nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+				destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
+				destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
+				eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
 									    destination_pixbuf,
 									    0,
 									    0,
 									    &destination_area,
 									    GTK_JUSTIFY_CENTER,
 									    underlined,
-									    NAUTILUS_RGB_COLOR_BLACK,
+									    EEL_RGB_COLOR_BLACK,
 									    0xff);
 			}
 			
 			destination_area.x0 = text_left;
 			destination_area.y0 = icon_bottom + height_so_far;
-			destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
-			destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
-			nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+			destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
+			destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
+			eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
 								    destination_pixbuf,
 								    0,
 								    0,
@@ -1523,9 +1523,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			if (needs_highlight) {
 				destination_area.x0 = text_left + 1;
 				destination_area.y0 = icon_bottom + height_so_far;
-				destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
-				destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
-				nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+				destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
+				destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
+				eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
 									    destination_pixbuf,
 									    0,
 									    0,
@@ -1538,8 +1538,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 		}
 		
-		width_so_far = MAX (width_so_far, (guint) nautilus_smooth_text_layout_get_width (smooth_text_layout));
-		height_so_far += nautilus_smooth_text_layout_get_height (smooth_text_layout) + LABEL_LINE_SPACING;
+		width_so_far = MAX (width_so_far, (guint) eel_smooth_text_layout_get_width (smooth_text_layout));
+		height_so_far += eel_smooth_text_layout_get_height (smooth_text_layout) + LABEL_LINE_SPACING;
 		
 		gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 	}
@@ -1659,20 +1659,20 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int 
  				      icon_item->details->text_height);
 	if (needs_highlight) {
 		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);	
-		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
 							       container->details->highlight_color);
 		clear_rounded_corners (text_pixbuf, container->details->highlight_frame, 5);
 		
 	} else {
-		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
-							       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
+		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+							       EEL_RGBA_COLOR_PACK (0, 0, 0, 0));
 	}
 
 	draw_or_measure_label_text_aa (icon_item, text_pixbuf, x_delta, 0);
 	
 	/* Draw the pixbuf containing the label. */
 
-	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, x - x_delta, y + LABEL_OFFSET);
+	eel_gnome_canvas_draw_pixbuf (buf, text_pixbuf, x - x_delta, y + LABEL_OFFSET);
 
 	gdk_pixbuf_unref (text_pixbuf);	
 
@@ -1681,7 +1681,7 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int 
 		draw_outline_rectangle_aa (buf, x - x_delta + 1, y + 1,
 					   x - x_delta + icon_item->details->text_width,
 					   y + icon_item->details->text_height,
-					   NAUTILUS_RGBA_COLOR_PACK (153, 153, 153, 127));
+					   EEL_RGBA_COLOR_PACK (153, 153, 153, 127));
 	}
 }
 
@@ -1708,7 +1708,7 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	}
 
 	/* draw the icon */
-	nautilus_gnome_canvas_draw_pixbuf (buf, temp_pixbuf, icon_rect.x0, icon_rect.y0);
+	eel_gnome_canvas_draw_pixbuf (buf, temp_pixbuf, icon_rect.x0, icon_rect.y0);
 
 	if (temp_pixbuf != icon_item->details->pixbuf) {
 		gdk_pixbuf_unref (temp_pixbuf);
@@ -1717,7 +1717,7 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	/* draw the emblems */	
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		nautilus_gnome_canvas_draw_pixbuf (buf, emblem_pixbuf, emblem_rect.x0, emblem_rect.y0);
+		eel_gnome_canvas_draw_pixbuf (buf, emblem_pixbuf, emblem_rect.x0, emblem_rect.y0);
 	}
 
 	/* draw the stretch handles */
@@ -1849,9 +1849,9 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	details = icon_item->details;
 	
 	/* Quick check to see if the rect hits the icon, text or emblems at all. */
-	if (!nautilus_art_irect_hits_irect (&icon_item->details->canvas_rect, canvas_rect)
-	    && (!nautilus_art_irect_hits_irect (&details->text_rect, canvas_rect))
-	    && (!nautilus_art_irect_hits_irect (&details->emblem_rect, canvas_rect))) {
+	if (!eel_art_irect_hits_irect (&icon_item->details->canvas_rect, canvas_rect)
+	    && (!eel_art_irect_hits_irect (&details->text_rect, canvas_rect))
+	    && (!eel_art_irect_hits_irect (&details->emblem_rect, canvas_rect))) {
 		return FALSE;
 	}
 
@@ -1862,7 +1862,7 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	
 	/* Check for hit in the icon. If we're highlighted for dropping, anywhere in the rect is OK */
 	if (icon_item->details->is_highlighted_for_drop) {
-		if (nautilus_art_irect_hits_irect (&icon_item->details->canvas_rect, canvas_rect)) {
+		if (eel_art_irect_hits_irect (&icon_item->details->canvas_rect, canvas_rect)) {
 			return TRUE;
 		}
 	} else {
@@ -1872,7 +1872,7 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	}
 
 	/* Check for hit in the text. */
-	if (nautilus_art_irect_hits_irect (&details->text_rect, canvas_rect)
+	if (eel_art_irect_hits_irect (&details->text_rect, canvas_rect)
 	    && !icon_item->details->is_renaming) {
 		return TRUE;
 	}
@@ -2064,7 +2064,7 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 
 	/* Quick check to see if the rect hits the icon at all. */
 	icon_rect = item->details->canvas_rect;
-	if (!nautilus_art_irect_hits_irect (probe_canvas_rect, &icon_rect)) {
+	if (!eel_art_irect_hits_irect (probe_canvas_rect, &icon_rect)) {
 		return FALSE;
 	}
 
@@ -2154,10 +2154,10 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 
 void
 nautilus_icon_canvas_item_set_smooth_font (NautilusIconCanvasItem	*icon_item,
-					   NautilusScalableFont		*font)
+					   EelScalableFont		*font)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
+	g_return_if_fail (EEL_IS_SCALABLE_FONT (font));
 
 	gtk_object_unref (GTK_OBJECT (icon_item->details->smooth_font));
 

@@ -1,8 +1,8 @@
 #include "test.h"
 
-#include <libnautilus-extensions/nautilus-wrap-table.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
-#include <libnautilus-extensions/nautilus-labeled-image.h>
+#include <eel/eel-wrap-table.h>
+#include <eel/eel-viewport.h>
+#include <eel/eel-labeled-image.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 
@@ -23,7 +23,7 @@ main (int argc, char* argv[])
 	gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
 
 	/* The emblems wrapped table */
-	emblems_table = nautilus_wrap_table_new (TRUE);
+	emblems_table = eel_wrap_table_new (TRUE);
 
 	gtk_widget_show (emblems_table);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
@@ -74,7 +74,7 @@ main (int argc, char* argv[])
 			continue;
 		}
 		
-		button = nautilus_labeled_image_check_button_new (label, pixbuf);
+		button = eel_labeled_image_check_button_new (label, pixbuf);
 		g_free (label);
 		gdk_pixbuf_unref (pixbuf);
 

@@ -30,8 +30,8 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -92,7 +92,7 @@ static void nautilus_tree_model_directory_done_loading_callback  (NautilusDirect
 								  NautilusTreeModel *model);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_OBJECT)
 
 /* infrastructure stuff */
 
@@ -159,7 +159,7 @@ destroy_file_hash (GHashTable *hash)
 	if (hash == NULL) {
 		return;
 	}
-	nautilus_g_hash_table_destroy_deep_custom
+	eel_g_hash_table_destroy_deep_custom
 		(hash,
 		 (GFunc) nautilus_file_unref, NULL,
 		 NULL, NULL);
@@ -189,7 +189,7 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	g_free (model->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

@@ -30,8 +30,8 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
-#include "nautilus-string.h"
-#include "nautilus-xml-extensions.h"
+#include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
@@ -84,7 +84,7 @@ nautilus_theme_set_theme (const char *new_theme)
 	char *old_theme;
 	
 	old_theme = nautilus_theme_get_theme ();
-	if (nautilus_strcmp (old_theme, new_theme)) {
+	if (eel_strcmp (old_theme, new_theme)) {
 		nautilus_preferences_set (NAUTILUS_PREFERENCES_THEME, new_theme);
 	}
 	g_free (old_theme);
@@ -165,7 +165,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	/* fetch the current theme name */
 	theme_data = NULL;
 	
-	if (nautilus_strcmp (theme_name, last_theme_name) == 0) {
+	if (eel_strcmp (theme_name, last_theme_name) == 0) {
 		theme_document = last_theme_document;
 	} else {
 		/* release the old saved data, since the theme changed */
@@ -182,7 +182,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
-		resource_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
+		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
 		if (resource_node) {		
 			temp_str = xmlGetProp(resource_node, property_name);
 			if (temp_str) {
@@ -199,7 +199,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 			g_atexit (free_default_theme);
 		}
 
-		resource_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (default_theme_document), resource_name);
+		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (default_theme_document), resource_name);
 		if (resource_node) {		
 			temp_str = xmlGetProp (resource_node, property_name);
 			if (temp_str) {
@@ -259,7 +259,7 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 {
 	char *image_path, *png_string, *temp_str;
 	
-	if (nautilus_strcmp (theme_name, "default") != 0) {
+	if (eel_strcmp (theme_name, "default") != 0) {
 		temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
 		image_path = nautilus_pixmap_file_may_be_local (temp_str);
 		
@@ -270,7 +270,7 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 		}
 		
 		/* try if with a .png extension if it doesn't already have one */
-		if (!nautilus_istr_has_suffix (image_name, ".png")) {
+		if (!eel_istr_has_suffix (image_name, ".png")) {
 			png_string = g_strconcat (temp_str, ".png", NULL);
 			image_path = nautilus_pixmap_file_may_be_local (png_string);
 			g_free (png_string);
@@ -291,7 +291,7 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 	}
 	
 	/* if it doesn't have a .png extension, try it with that */
-	if (!nautilus_istr_has_suffix (image_name, ".png")) {
+	if (!eel_istr_has_suffix (image_name, ".png")) {
 		png_string = g_strconcat (image_name, ".png", NULL);
 		image_path = nautilus_pixmap_file (png_string);
 		g_free (png_string);
@@ -329,7 +329,7 @@ nautilus_theme_make_selector (const char *theme_name)
 	GdkPixbuf *pixbuf;
 	
 	/* first, see if we can find an explicit preview */
-	if (!nautilus_strcmp (theme_name, "default")) {
+	if (!eel_strcmp (theme_name, "default")) {
 		theme_preview_name = g_strdup ("theme_preview.png");
 	} else {
 		theme_preview_name = g_strdup_printf ("%s/%s", theme_name, "theme_preview.png");
@@ -402,7 +402,7 @@ nautilus_theme_make_selector (const char *theme_name)
 	pixbuf = NULL;
 	
 	/* load the icon that we found and return it */
-	if (nautilus_istr_has_suffix (pixbuf_file, ".svg")) {
+	if (eel_istr_has_suffix (pixbuf_file, ".svg")) {
 		FILE *f = fopen (pixbuf_file, "rb");
 		if (f != NULL) {
 			pixbuf = rsvg_render_file (f, 1.0);

@@ -25,8 +25,8 @@
 
 #include <config.h>
 #include <applet-widget.h>
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-graphic-effects.h>
+#include <eel/eel-image.h>
+#include <eel/eel-graphic-effects.h>
 #include <libgnome/gnome-exec.h>
 #include <gtk/gtkobject.h>
 #include <gtk/gtkeventbox.h>
@@ -68,7 +68,7 @@ create_pixbufs ()
 		
 		g_assert (icon_pixbuf != NULL);
 
-		icon_prelight_pixbuf = nautilus_create_spotlight_pixbuf (icon_pixbuf);
+		icon_prelight_pixbuf = eel_create_spotlight_pixbuf (icon_pixbuf);
 	}
 }
 
@@ -84,10 +84,10 @@ image_enter_event (GtkWidget *event_box,
 		   gpointer client_data)
 {
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (client_data), TRUE);
+	g_return_val_if_fail (EEL_IS_IMAGE (client_data), TRUE);
 
 	if (!get_is_launching ()) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (client_data), icon_prelight_pixbuf);
+		eel_image_set_pixbuf (EEL_IMAGE (client_data), icon_prelight_pixbuf);
 	}
 
 	return TRUE;
@@ -99,9 +99,9 @@ image_leave_event (GtkWidget *event_box,
 		   gpointer client_data)
 {
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (client_data), TRUE);
+	g_return_val_if_fail (EEL_IS_IMAGE (client_data), TRUE);
 	
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (client_data), icon_pixbuf);
+	eel_image_set_pixbuf (EEL_IMAGE (client_data), icon_pixbuf);
 	gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", FALSE);
 
 	return TRUE;
@@ -139,7 +139,7 @@ set_is_launching (gboolean state)
 	window_set_cursor_for_state (get_root_window (), is_launching);
 	window_set_cursor_for_state (GTK_WIDGET (icon_event_box)->window, is_launching);	
 
-	nautilus_image_set_pixbuf_opacity (NAUTILUS_IMAGE (icon_image), is_launching ? 128 : 255);
+	eel_image_set_pixbuf_opacity (EEL_IMAGE (icon_image), is_launching ? 128 : 255);
 }
 
 static gboolean
@@ -156,7 +156,7 @@ image_button_press_event (GtkWidget *event_box,
 	GtkWidget *icon = GTK_WIDGET (client_data);
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (icon), TRUE);
+	g_return_val_if_fail (EEL_IS_IMAGE (icon), TRUE);
 
 	if (!get_is_launching ()) {
 		gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", GINT_TO_POINTER (TRUE));
@@ -173,7 +173,7 @@ image_button_release_event (GtkWidget *event_box,
 	GtkWidget *icon = GTK_WIDGET (client_data);
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (icon), TRUE);
+	g_return_val_if_fail (EEL_IS_IMAGE (icon), TRUE);
 
 	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (event_box), "was-pressed"))) {
 		gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", FALSE);
@@ -278,7 +278,7 @@ main (int argc, char **argv)
 	icon_event_box = gtk_event_box_new ();
 	gtk_object_set_data (GTK_OBJECT (icon_event_box), "was-pressed", FALSE);
 
-	icon_image = nautilus_image_new (NULL);
+	icon_image = eel_image_new (NULL);
 	gtk_misc_set_padding (GTK_MISC (icon_image), 2, 2);
 
 	gtk_signal_connect (GTK_OBJECT (icon_event_box), "enter_notify_event", GTK_SIGNAL_FUNC (image_enter_event), icon_image);
@@ -286,7 +286,7 @@ main (int argc, char **argv)
 	gtk_signal_connect (GTK_OBJECT (icon_event_box), "button_press_event", GTK_SIGNAL_FUNC (image_button_press_event), icon_image);
 	gtk_signal_connect (GTK_OBJECT (icon_event_box), "button_release_event", GTK_SIGNAL_FUNC (image_button_release_event), icon_image);
 
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon_image), icon_pixbuf);
+	eel_image_set_pixbuf (EEL_IMAGE (icon_image), icon_pixbuf);
 
 	gtk_container_add (GTK_CONTAINER (icon_event_box), icon_image);
 	gtk_object_set_data (GTK_OBJECT (applet), "widget", icon_event_box);

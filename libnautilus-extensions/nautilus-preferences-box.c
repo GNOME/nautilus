@@ -25,8 +25,8 @@
 
 #include <config.h>
 #include "nautilus-preferences-box.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-string.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 
 #include <gtk/gtkclist.h>
 #include <gtk/gtknotebook.h>
@@ -79,7 +79,7 @@ static void      category_list_select_row_callback         (GtkCList            
 int              preferences_box_find_row                  (GtkCList                    *clist,
 							    char                        *pane_name);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesBox, nautilus_preferences_box, GTK_TYPE_HBOX)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesBox, nautilus_preferences_box, GTK_TYPE_HBOX)
 
 /*
  * NautilusPreferencesBoxClass methods
@@ -133,7 +133,7 @@ nautilus_preferences_box_destroy (GtkObject *object)
 	g_free (preferences_box->details);
 	
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*
@@ -158,7 +158,7 @@ preferences_box_select_pane (NautilusPreferencesBox *preferences_box,
 
 		g_assert (info != NULL);
 		
-		if (nautilus_str_is_equal (pane_name, info->pane_name)) {
+		if (eel_str_is_equal (pane_name, info->pane_name)) {
  			gtk_widget_show (info->pane_widget);
  			gtk_notebook_set_page (GTK_NOTEBOOK (preferences_box->details->pane_notebook), 
  					       g_list_position (preferences_box->details->panes, pane_iterator));
@@ -183,7 +183,7 @@ preferences_box_find_row (GtkCList *clist, char *pane_name)
 	for (i=0; i < GTK_CLIST (clist)->rows; i++) {
 		gtk_clist_get_text (GTK_CLIST (clist), i, 0, &pane);
 		
-		if (nautilus_str_is_equal (pane, pane_name)) {
+		if (eel_str_is_equal (pane, pane_name)) {
 			return i;
 		}
 	}
@@ -221,7 +221,7 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 			text_array[CATEGORY_COLUMN] = info->pane_name;
 			gtk_clist_append (GTK_CLIST (preferences_box->details->category_list), text_array);
 
-			if (nautilus_str_is_equal (info->pane_name, preferences_box->details->selected_pane)) {
+			if (eel_str_is_equal (info->pane_name, preferences_box->details->selected_pane)) {
 				row = preferences_box_find_row (GTK_CLIST (preferences_box->details->category_list),
 								info->pane_name);
 				
@@ -402,7 +402,7 @@ nautilus_preferences_box_find_pane (const NautilusPreferencesBox *preferences_bo
 	for (node = preferences_box->details->panes; node != NULL; node = node->next) {
 		g_assert (node->data != NULL);
 		info = node->data;
-		if (nautilus_str_is_equal (info->pane_name, pane_name)) {
+		if (eel_str_is_equal (info->pane_name, pane_name)) {
 			return info->pane_widget;
 		}
 	}

@@ -25,7 +25,7 @@
 
 #include "hyperbola-filefmt.h"
 
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 
 #include <zlib.h>
 #include <dirent.h>
@@ -895,7 +895,7 @@ fmt_help_populate_tree (HyperbolaDocTree * tree)
 		fmt_help_populate_tree_from_subdir (tree, node->data, app_path);
 	}
 
-	nautilus_g_list_free_deep (help_directories);
+	eel_g_list_free_deep (help_directories);
 }
 #endif
 

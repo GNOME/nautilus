@@ -10,6 +10,8 @@ INCLUDES =					\
 	-I$(top_builddir)			\
 	-I$(top_builddir)/libnautilus		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)                       \
 	$(GCONF_CFLAGS) 			\
 	$(OAF_CFLAGS)				\
@@ -27,6 +29,8 @@ nautilus_throbber_SOURCES =		        \
 nautilus_throbber_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(GCONF_LIBS) 					\

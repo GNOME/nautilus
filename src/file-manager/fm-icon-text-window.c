@@ -40,10 +40,10 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-string.h>
 
 static void     ensure_unique_attributes                  (int        menu_index);
 static gboolean fm_icon_text_window_delete_event_callback (GtkWidget *widget,
@@ -112,13 +112,13 @@ attribute_names_string_is_good (const char *string)
 		}
 
 		/* Check for unknown attributes. */
-		string_index = nautilus_g_strv_find (attribute_names, text_array[i]);
+		string_index = eel_g_strv_find (attribute_names, text_array[i]);
 		if (string_index < 0) {
 			break;
 		}
 
 		/* Check for repeated attributes (except for none, which is allowed to repeat. */
-		if (nautilus_strcmp (text_array[i], "none")) {
+		if (eel_strcmp (text_array[i], "none")) {
 			for (j = 0; j < i; j++) {
 				if (index_array[j] == string_index) {
 					goto bad;
@@ -150,7 +150,7 @@ synch_menus_with_preference (gpointer user_data)
 	
 	for (i = 0; i < MENU_COUNT; ++i) {
 		g_assert (text_array[i] != NULL);
-		string_index = nautilus_g_strv_find (attribute_names, text_array[i]);
+		string_index = eel_g_strv_find (attribute_names, text_array[i]);
 		g_assert (string_index >= 0);
 		gtk_option_menu_set_history (option_menus[i], string_index);
 	}
@@ -258,7 +258,7 @@ create_icon_text_window (void)
   	int index;
 
   	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
   	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
   	gtk_window_set_title (GTK_WINDOW (window), _("Icon Captions"));
 	gtk_window_set_wmclass (GTK_WINDOW (window), "icon_captions", "Nautilus");
@@ -333,7 +333,7 @@ ensure_unique_attributes (int chosen_menu)
 	chosen_value = get_attribute_index_from_option_menu (option_menus[chosen_menu]);
 	
 	/* allow the "none" value to be chosen multiple times */
-	if (!nautilus_strcmp (attribute_names[chosen_value], "none")) {
+	if (!eel_strcmp (attribute_names[chosen_value], "none")) {
 		return;
 	}	
 	

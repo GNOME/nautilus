@@ -9,6 +9,9 @@ INCLUDES =\
 	-I$(top_builddir) \
 	-I$(top_srcdir)/cut-n-paste-code \
 	-I$(top_builddir)/cut-n-paste-code \
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
+	$(OAF_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -32,6 +35,8 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
 	$(GCONF_LIBS) \

@@ -33,7 +33,7 @@
 #include "nautilus-adapter-progressive-load-strategy.h"
 
 #include <gtk/gtkobject.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <bonobo/Bonobo.h>
 
@@ -64,7 +64,7 @@ static void nautilus_adapter_progressive_load_strategy_load_location (NautilusAd
 static void nautilus_adapter_progressive_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterProgressiveLoadStrategy, nautilus_adapter_progressive_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterProgressiveLoadStrategy, nautilus_adapter_progressive_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
 
 
 static void
@@ -107,7 +107,7 @@ nautilus_adapter_progressive_load_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusAdapterLoadStrategy *

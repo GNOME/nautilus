@@ -162,9 +162,9 @@ void                         nautilus_global_preferences_hide_dialog            
 void                         nautilus_global_preferences_set_dialog_title                           (const char *title);
 
 /* Sidebar */
-struct NautilusScalableFont *nautilus_global_preferences_get_icon_view_smooth_font                  (void);
-struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_font                    (void);
-struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_bold_font               (void);
+struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font                  (void);
+struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font                    (void);
+struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font               (void);
 
 END_GNOME_DECLS
 

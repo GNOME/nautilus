@@ -26,8 +26,8 @@
 #include <config.h>
 #include "nautilus-list-column-title.h"
 
-#include "nautilus-gtk-macros.h"
-#include "nautilus-gdk-extensions.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-gdk-extensions.h>
 
 #include "nautilus-list.h"
 
@@ -37,7 +37,7 @@
 
 #include <libgnomeui/gnome-pixmap.h>
 
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
 
 #include <string.h>
 
@@ -128,7 +128,7 @@ static gboolean nautilus_list_column_title_button_press	(GtkWidget *widget, GdkE
 static gboolean nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *event);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusListColumnTitle, nautilus_list_column_title, GTK_TYPE_BIN)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusListColumnTitle, nautilus_list_column_title, GTK_TYPE_BIN)
 /* generates nautilus_list_column_title_get_type */
 
 static void
@@ -259,7 +259,7 @@ nautilus_list_column_title_finalize (GtkObject *object)
 
 	g_free (column_title->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -330,7 +330,7 @@ load_up_indicator (const char **xpm_data,
 		return;
 	}
 
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, indicator_pixmap, indicator_mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, indicator_pixmap, indicator_mask, EEL_STANDARD_ALPHA_THRESHHOLD);
 
 	gdk_pixbuf_unref (pixbuf);
 }
@@ -549,7 +549,7 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			 */
 			temporary = cell_rectangle;
 			/* Eeeek: magic numbers */
-			nautilus_rectangle_inset (&temporary, 2, 2);
+			eel_rectangle_inset (&temporary, 2, 2);
 			gdk_rectangle_intersect (&cell_redraw_area, &temporary, &cell_redraw_area);
 
 			truncated_label = truncate_string (cell_label, widget->style->font, 
@@ -708,10 +708,10 @@ in_column_rect (GtkWidget *widget, int x, int y)
 		 * to be considered inside the rect
 		 * nautilus_list_column_title_leave depends on this 
 		 */
-		nautilus_rectangle_inset (&cell_rectangle, 1, 0);
+		eel_rectangle_inset (&cell_rectangle, 1, 0);
 
 		
-		if (nautilus_rectangle_contains (&cell_rectangle, x, y))
+		if (eel_rectangle_contains (&cell_rectangle, x, y))
 			return index;
 	}
 
@@ -734,12 +734,12 @@ in_resize_rect (GtkWidget *widget, int x, int y)
 		
 		get_column_frame_at (widget, index, &resize_rectangle);
 
-		nautilus_rectangle_inset (&resize_rectangle, 1, 0);
+		eel_rectangle_inset (&resize_rectangle, 1, 0);
 
 		resize_rectangle.x = resize_rectangle.x + resize_rectangle.width - DRAG_WIDTH / 2;
 		resize_rectangle.width = DRAG_WIDTH;
 
-		if (nautilus_rectangle_contains (&resize_rectangle, x, y))
+		if (eel_rectangle_contains (&resize_rectangle, x, y))
 			return index;
 	}
 
@@ -825,7 +825,7 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 		if (column_title->details->last_tracking_x != mouse_x) {
 			/* mouse did move horizontally since last time */
 			column_title->details->last_tracking_x = mouse_x;
-			NAUTILUS_INVOKE_METHOD
+			EEL_INVOKE_METHOD
 				(NAUTILUS_LIST_CLASS, parent_list,
 				 column_resize_track,
 				 (parent_list, column_title->details->tracking_column_resize));
@@ -927,7 +927,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 			gtk_widget_set_state (widget, GTK_STATE_NORMAL);
 
 			/* start column resize tracking */
-			NAUTILUS_INVOKE_METHOD
+			EEL_INVOKE_METHOD
 				(NAUTILUS_LIST_CLASS, parent_list,
 				 column_resize_track_start,
 				 (parent_list, resized_column));
@@ -984,7 +984,7 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 	if (column_title->details->tracking_column_resize != -1) {
 			
 		/* end column resize tracking */
-		NAUTILUS_INVOKE_METHOD
+		EEL_INVOKE_METHOD
 			(NAUTILUS_LIST_CLASS, parent_list,
 			 column_resize_track_end,
 			 (parent_list, column_title->details->tracking_column_resize));

@@ -26,7 +26,7 @@
 #include <config.h>
 #include "nautilus-generous-bin.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 
 static void nautilus_generous_bin_initialize_class (NautilusGenerousBinClass *class);
 static void nautilus_generous_bin_initialize       (NautilusGenerousBin      *box);
@@ -35,7 +35,7 @@ static void nautilus_generous_bin_size_request     (GtkWidget                *wi
 static void nautilus_generous_bin_size_allocate    (GtkWidget                *widget,
 						    GtkAllocation            *allocation);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusGenerousBin, nautilus_generous_bin, GTK_TYPE_BIN)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusGenerousBin, nautilus_generous_bin, GTK_TYPE_BIN)
 
 static void
 nautilus_generous_bin_initialize_class (NautilusGenerousBinClass *klass)

@@ -24,7 +24,7 @@
 
 #include "nautilus-file.h"
 #include "nautilus-directory.h"
-#include "nautilus-glib-extensions.h"
+#include <eel/eel-glib-extensions.h>
 
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
@@ -81,31 +81,31 @@ struct NautilusFileDetails
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
-	nautilus_boolean_bit unconfirmed                   : 1;
-	nautilus_boolean_bit is_gone                       : 1;
-	nautilus_boolean_bit loading_directory             : 1;
+	eel_boolean_bit unconfirmed                   : 1;
+	eel_boolean_bit is_gone                       : 1;
+	eel_boolean_bit loading_directory             : 1;
 	/* got_info known from info field being non-NULL */
-	nautilus_boolean_bit get_info_failed               : 1;
-	nautilus_boolean_bit file_info_is_up_to_date       : 1;
+	eel_boolean_bit get_info_failed               : 1;
+	eel_boolean_bit file_info_is_up_to_date       : 1;
 
-	nautilus_boolean_bit got_directory_count           : 1;
-	nautilus_boolean_bit directory_count_failed        : 1;
-	nautilus_boolean_bit directory_count_is_up_to_date : 1;
+	eel_boolean_bit got_directory_count           : 1;
+	eel_boolean_bit directory_count_failed        : 1;
+	eel_boolean_bit directory_count_is_up_to_date : 1;
 
 	NautilusRequestStatus deep_counts_status           : 2;
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */
 
-	nautilus_boolean_bit got_mime_list                 : 1;
-	nautilus_boolean_bit mime_list_failed              : 1;
-	nautilus_boolean_bit mime_list_is_up_to_date       : 1;
+	eel_boolean_bit got_mime_list                 : 1;
+	eel_boolean_bit mime_list_failed              : 1;
+	eel_boolean_bit mime_list_is_up_to_date       : 1;
 
-	nautilus_boolean_bit got_top_left_text             : 1;
-	nautilus_boolean_bit top_left_text_is_up_to_date   : 1;
+	eel_boolean_bit got_top_left_text             : 1;
+	eel_boolean_bit top_left_text_is_up_to_date   : 1;
 
-	nautilus_boolean_bit got_activation_uri            : 1;
-	nautilus_boolean_bit activation_uri_is_up_to_date  : 1;
+	eel_boolean_bit got_activation_uri            : 1;
+	eel_boolean_bit activation_uri_is_up_to_date  : 1;
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,

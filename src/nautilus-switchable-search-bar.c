@@ -40,7 +40,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-macros.h>
 
 static void		     real_activate				     (NautilusNavigationBar	       *bar);
 static void                  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
@@ -55,7 +55,7 @@ static NautilusSearchBarMode nautilus_search_uri_to_search_bar_mode          (co
 static gboolean              nautilus_search_uri_is_displayable_by_mode      (const char *uri,
 									      NautilusSearchBarMode mode);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 				   nautilus_switchable_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -107,7 +107,7 @@ nautilus_switchable_search_bar_destroy (GtkObject *object)
 					      search_bar_preference_changed_callback,
 					      bar);
 
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *

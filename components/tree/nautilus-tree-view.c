@@ -39,12 +39,12 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <stdio.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
@@ -93,7 +93,7 @@ static void     insert_unparented_nodes              (NautilusTreeView      *vie
 static void     expand_uri_sequence_and_select_end   (NautilusTreeView      *view);
 static gboolean is_anti_aliased			     (NautilusTreeView	    *view);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView,
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeView,
 				   nautilus_tree_view,
 				   NAUTILUS_TYPE_VIEW)
 
@@ -161,7 +161,7 @@ nautilus_tree_view_would_include_uri (NautilusTreeView *view,
 
 	/* The tree view currently only ever shows `file:' URIs */
 
-	if (!nautilus_str_has_prefix (uri, "file:")) {
+	if (!eel_str_has_prefix (uri, "file:")) {
 		return FALSE;
 	}
 
@@ -573,7 +573,7 @@ notify_node_seen (NautilusTreeView *view,
 
 	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
 	
-	if (nautilus_strcmp (uri, view->details->wait_uri) == 0) {
+	if (eel_strcmp (uri, view->details->wait_uri) == 0) {
 		awaited_node_or_uri_found (view);
 	}
 	
@@ -1149,14 +1149,14 @@ nautilus_tree_view_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
 	}
 
-	nautilus_gtk_object_list_free (view->details->unparented_tree_nodes);
+	eel_gtk_object_list_free (view->details->unparented_tree_nodes);
 	
 	g_free (view->details->current_main_view_uri);
 	g_free (view->details->selected_uri);
 
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static NautilusCTreeNode *
@@ -1259,7 +1259,7 @@ call_when_uri_loaded_or_parent_done_loading (NautilusTreeView *view,
 static void
 cancel_selection_in_progress (NautilusTreeView *view)
 {
-	nautilus_g_list_free_deep (view->details->in_progress_select_uris);
+	eel_g_list_free_deep (view->details->in_progress_select_uris);
 	view->details->in_progress_select_uris = NULL;
 
 	g_free (view->details->wait_uri);
@@ -1348,7 +1348,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	
 	p->prev->next = NULL;
 	p->prev = NULL;
-	nautilus_g_list_free_deep (old_sequence);
+	eel_g_list_free_deep (old_sequence);
 }
 
 static void
@@ -1360,7 +1360,7 @@ select_current_location (NautilusTreeView *view)
 	 * nautilus_uris_match or nautilus_uris_match_ignore_fragments
 	 * should be used here.
 	 */
-	if (nautilus_strcmp (view->details->current_main_view_uri,
+	if (eel_strcmp (view->details->current_main_view_uri,
 			     view->details->selected_uri) == 0) {
 		return;
 	}

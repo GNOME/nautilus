@@ -30,7 +30,7 @@
 
 #include <gnome-xml/xmlmemory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <eel/eel-xml-extensions.h>
 
 NautilusBookmark *
 nautilus_bookmark_new_from_node (xmlNodePtr node)
@@ -43,7 +43,7 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	NautilusBookmark *new_bookmark;
 
 	/* Maybe should only accept bookmarks with both a name and uri? */
-	name = nautilus_xml_get_property_translated (node, "name");
+	name = eel_xml_get_property_translated (node, "name");
 	uri = xmlGetProp (node, "uri");
 	icon_uri = xmlGetProp (node, "icon_uri");
 	icon_name = xmlGetProp (node, "icon_name");
@@ -51,12 +51,12 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	if (icon_uri == NULL && icon_name == NULL) {
 		icon = NULL;
 	} else {
-		icon = nautilus_scalable_icon_new_from_text_pieces
+		icon = eel_scalable_icon_new_from_text_pieces
 			(icon_uri, icon_name, NULL, NULL, FALSE);
 	}
 	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon);
 	if (icon != NULL) {
-		nautilus_scalable_icon_unref (icon);
+		eel_scalable_icon_unref (icon);
 	}
 
 	xmlFree (name);

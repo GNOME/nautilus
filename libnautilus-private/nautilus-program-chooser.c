@@ -26,12 +26,12 @@
 #include <config.h>
 #include "nautilus-program-chooser.h"
 
-#include "nautilus-gnome-extensions.h"
-#include "nautilus-gtk-extensions.h"
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
-#include "nautilus-stock-dialogs.h"
-#include "nautilus-string.h"
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include "nautilus-view-identifier.h"
 #include <gtk/gtkclist.h>
 #include <gtk/gtkframe.h>
@@ -260,7 +260,7 @@ get_file_name_for_display (NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	full_name = nautilus_file_get_name (file);
-	truncated_name = nautilus_str_middle_truncate
+	truncated_name = eel_str_middle_truncate
 		(full_name, MAX_DISPLAYED_FILE_NAME_LENGTH);
 	g_free (full_name);
 
@@ -418,9 +418,9 @@ nautilus_program_chooser_set_is_cancellable (GnomeDialog *chooser, gboolean canc
 {
 	GtkButton *done_button, *cancel_button;
 
-	cancel_button = nautilus_gnome_dialog_get_button_by_index 
+	cancel_button = eel_gnome_dialog_get_button_by_index 
 		(chooser, GNOME_CANCEL);
-	done_button = nautilus_gnome_dialog_get_button_by_index 
+	done_button = eel_gnome_dialog_get_button_by_index 
 		(chooser, GNOME_CANCEL+1);
 
 	if (cancellable) {
@@ -702,7 +702,7 @@ get_selected_program_file_pair (GnomeDialog *dialog)
 	int selected_row;
 
 	clist = nautilus_program_chooser_get_clist (dialog);
-	selected_row = nautilus_gtk_clist_get_first_selected_row (clist);
+	selected_row = eel_gtk_clist_get_first_selected_row (clist);
 	
 	if (selected_row < 0) {
 		return NULL;
@@ -926,7 +926,7 @@ launch_mime_capplet (GtkWidget *button, gpointer callback_data)
 	
 	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
 		
-	nautilus_launch_application_from_command (command, NULL, FALSE);
+	eel_launch_application_from_command (command, NULL, FALSE);
 	
 	g_free (command);
 }
@@ -1308,9 +1308,9 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	clist = create_program_clist ();
 
 	gtk_container_add (GTK_CONTAINER (list_scroller), clist);	  
-	nautilus_gtk_clist_set_double_click_button 
+	eel_gtk_clist_set_double_click_button 
 		(GTK_CLIST (clist), 
-		 nautilus_gnome_dialog_get_button_by_index 
+		 eel_gnome_dialog_get_button_by_index 
 			(GNOME_DIALOG (window), GNOME_OK));
 	gtk_object_set_data (GTK_OBJECT (window), "list", clist);
 
@@ -1336,7 +1336,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
   	gtk_box_pack_end (GTK_BOX (framed_hbox), change_button_holder, FALSE, FALSE, 0);
 
   	change_button = gtk_button_new_with_label(_("Modify..."));
-	nautilus_gtk_button_set_standard_padding (GTK_BUTTON (change_button));
+	eel_gtk_button_set_standard_padding (GTK_BUTTON (change_button));
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
 
@@ -1359,7 +1359,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	gtk_widget_show (capplet_button_vbox);
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button_vbox, FALSE, FALSE, 0);
 	capplet_button = gtk_button_new_with_label (_("Go There"));	 
-	nautilus_gtk_button_set_standard_padding (GTK_BUTTON (capplet_button));
+	eel_gtk_button_set_standard_padding (GTK_BUTTON (capplet_button));
 	gtk_signal_connect (GTK_OBJECT (capplet_button),
 			    "clicked",
 			    launch_mime_capplet_and_close_dialog,
@@ -1500,7 +1500,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 				    "Programs\" part of the GNOME Control Center. Do "
 				    "you want to go there now?"),
 				  unavailable_message);
-	dialog = nautilus_show_yes_no_dialog 
+	dialog = eel_show_yes_no_dialog 
 		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 
 	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, nautilus_file_get_mime_type (file));

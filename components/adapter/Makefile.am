@@ -5,6 +5,8 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir) -I$(top_builddir) -I.	\
+	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_INCLUDEDIR) \
 	$(GNOMEUI_CFLAGS)			\
 	$(BONOBOX_CFLAGS)			\
 	$(OAF_CFLAGS)				\
@@ -58,6 +60,8 @@ nautilus_adapter_LDADD =							\
 	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la		\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(EEL_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(GNOMEUI_LIBS)								\
 	$(OAF_LIBS)								\
 	$(BONOBO_PRINT_LIBS)							\

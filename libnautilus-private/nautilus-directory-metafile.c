@@ -30,7 +30,7 @@
 #include <libnautilus-extensions/nautilus-metafile-factory.h>
 #include <libnautilus-extensions/nautilus-directory-metafile-monitor.h>
 #include <libnautilus-extensions/nautilus-metafile-server.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <eel/eel-string.h>
 #include <liboaf/liboaf.h>
 #include <stdio.h>
 
@@ -128,8 +128,8 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	CORBA_char *corba_value;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (key), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (key), NULL);
 	
 	/* We can't pass NULL as a CORBA_string - pass "" instead. */
 	non_null_default = default_metadata != NULL ? default_metadata : "";
@@ -143,7 +143,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
-	if (nautilus_str_is_empty (corba_value)) {
+	if (eel_str_is_empty (corba_value)) {
 		/* Even though in all other respects we treat "" as NULL, we want to
 		 * make sure the caller gets back the same default that was passed in.
 		 */
@@ -171,9 +171,9 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 	CORBA_unsigned_long    buf_pos;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_key), NULL);
-	g_return_val_if_fail (!nautilus_str_is_empty (list_subkey), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (file_name), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (list_key), NULL);
+	g_return_val_if_fail (!eel_str_is_empty (list_subkey), NULL);
 	
 	metafile = get_metafile (directory);
 	CORBA_exception_init (&ev);
@@ -205,8 +205,8 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	Nautilus_Metafile metafile;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (!nautilus_str_is_empty (file_name));
-	g_return_if_fail (!nautilus_str_is_empty (key));
+	g_return_if_fail (!eel_str_is_empty (file_name));
+	g_return_if_fail (!eel_str_is_empty (key));
 	
 	/* We can't pass NULL as a CORBA_string - pass "" instead.
 	 */
@@ -243,9 +243,9 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 	GList   *list_ptr;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (!nautilus_str_is_empty (file_name));
-	g_return_if_fail (!nautilus_str_is_empty (list_key));
-	g_return_if_fail (!nautilus_str_is_empty (list_subkey));
+	g_return_if_fail (!eel_str_is_empty (file_name));
+	g_return_if_fail (!eel_str_is_empty (list_key));
+	g_return_if_fail (!eel_str_is_empty (list_subkey));
 	
 	len = g_list_length (list);
 	

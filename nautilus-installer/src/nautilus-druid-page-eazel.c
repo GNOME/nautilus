@@ -71,7 +71,7 @@ static void nautilus_druid_page_eazel_prepare       (GnomeDruidPage *page,
 #define DRUID_PAGE_MIN_WIDTH 516
 #define DRUID_PAGE_BORDER 24
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDruidPageEazel, nautilus_druid_page_eazel, GNOME_TYPE_DRUID_PAGE)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusDruidPageEazel, nautilus_druid_page_eazel, GNOME_TYPE_DRUID_PAGE)
 
 static void
 nautilus_druid_page_eazel_initialize_class (NautilusDruidPageEazelClass *klass)
@@ -130,7 +130,7 @@ nautilus_druid_page_eazel_destroy(GtkObject *object)
 	druid_page_eazel->details->widget = NULL;
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -143,7 +143,7 @@ nautilus_druid_page_eazel_finalize (GtkObject *object)
 	druid_page_eazel->details = NULL;
 
 	/* Chain finalize */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -272,7 +272,7 @@ static void
 nautilus_druid_page_eazel_size_allocate (GtkWidget               *widget,
 					 GtkAllocation           *allocation)
 {
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
 			      (widget, allocation));
 }
 
@@ -284,7 +284,7 @@ nautilus_druid_page_eazel_size_request(GtkWidget           *widget,
 
 	druid_page_eazel = NAUTILUS_DRUID_PAGE_EAZEL (widget);
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request,
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_request,
 			      (widget, requisition));
 
 	if (druid_page_eazel->details->widget) {

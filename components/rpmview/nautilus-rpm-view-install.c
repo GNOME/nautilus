@@ -23,8 +23,8 @@
 #include "nautilus-rpm-view-install.h"
 #include "libtrilobite/libtrilobite.h"
 #include "libeazelinstall.h"
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-password-dialog.h>
 #include "libtrilobite/libtrilobite.h"
 #include "nautilus-rpm-view-private.h"
 #ifdef EAZEL_SERVICES
@@ -231,7 +231,7 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 		window = gtk_widget_get_toplevel (GTK_WIDGET (rpm_view));
 		g_assert (window);
 		g_assert (GTK_IS_WINDOW (window));
-		d = nautilus_show_error_dialog_with_details (terse, 
+		d = eel_show_error_dialog_with_details (terse, 
 							     dialog_title,
 							     detailed,
 							     GTK_WINDOW (window));
@@ -291,16 +291,16 @@ nautilus_service_need_password (GtkObject *object, const char *prompt,
 		message = _("Incorrect password.");
 	}
 
-	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
-	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+	dialog = eel_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
+	okay = eel_password_dialog_run_and_block (EEL_PASSWORD_DIALOG (dialog));
 
 	if (! okay) {
 		/* cancel */
 		view->details->password_attempts = 0;
 		out = g_strdup ("");
 	} else {
-		out = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
-		if (nautilus_password_dialog_get_remember (NAUTILUS_PASSWORD_DIALOG (dialog))) {
+		out = eel_password_dialog_get_password (EEL_PASSWORD_DIALOG (dialog));
+		if (eel_password_dialog_get_remember (EEL_PASSWORD_DIALOG (dialog))) {
 			view->details->remembered_password = g_strdup (out);
 		}
 	}

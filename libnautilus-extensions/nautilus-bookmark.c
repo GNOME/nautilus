@@ -25,9 +25,9 @@
 #include <config.h>
 #include "nautilus-bookmark.h"
 
-#include "nautilus-gtk-macros.h"
+#include <eel/eel-gtk-macros.h>
 #include "nautilus-icon-factory.h"
-#include "nautilus-string.h"
+#include <eel/eel-string.h>
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
@@ -37,8 +37,8 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 
 enum {
 	APPEARANCE_CHANGED,
@@ -65,7 +65,7 @@ static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass
 static void       nautilus_bookmark_initialize            (NautilusBookmark      *bookmark);
 static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
 /* GtkObject methods.  */
 
@@ -85,7 +85,7 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_free (bookmark->details);
 
 	/* Chain up */
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Initialization.  */
@@ -218,7 +218,7 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 		return FALSE;
 	}
 
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, EEL_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 
 	return TRUE;
@@ -240,7 +240,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon, icon_size, icon_size, icon_size, icon_size, NULL, TRUE);
-	nautilus_scalable_icon_unref (icon);
+	eel_scalable_icon_unref (icon);
 	
 	return result;
 }
@@ -254,7 +254,7 @@ nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 	nautilus_bookmark_connect_file (bookmark);
 
 	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_ref (bookmark->details->icon);
+		eel_scalable_icon_ref (bookmark->details->icon);
 	}
 	return bookmark->details->icon;
 }
@@ -311,18 +311,18 @@ nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 	g_assert (new_icon != NULL);
 
 	/* Bookmarks only care about the uri and name. */
-	nautilus_scalable_icon_get_text_pieces 
+	eel_scalable_icon_get_text_pieces 
 		(new_icon, &new_uri, &new_name, NULL, NULL);
 
 	if (bookmark->details->icon == NULL) {
-		result = !nautilus_str_is_empty (new_uri)
-			|| !nautilus_str_is_empty (new_name);
+		result = !eel_str_is_empty (new_uri)
+			|| !eel_str_is_empty (new_name);
 	} else {
-		nautilus_scalable_icon_get_text_pieces 
+		eel_scalable_icon_get_text_pieces 
 			(bookmark->details->icon, &old_uri, &old_name, NULL, NULL);
 
-		result = nautilus_strcmp (old_uri, new_uri) != 0
-			|| nautilus_strcmp (old_name, new_name) != 0;
+		result = eel_strcmp (old_uri, new_uri) != 0
+			|| eel_strcmp (old_name, new_name) != 0;
 
 		g_free (old_uri);
 		g_free (old_name);
@@ -354,12 +354,12 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 								    NULL, FALSE);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
 			if (bookmark->details->icon != NULL) {
-				nautilus_scalable_icon_unref (bookmark->details->icon);
+				eel_scalable_icon_unref (bookmark->details->icon);
 			}
 			bookmark->details->icon = new_icon;
 			return TRUE;
 		}
-		nautilus_scalable_icon_unref (new_icon);
+		eel_scalable_icon_unref (new_icon);
 	}
 
 	return FALSE;
@@ -426,7 +426,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 	const char *icon_name;
 
 	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_unref (bookmark->details->icon);
+		eel_scalable_icon_unref (bookmark->details->icon);
 	}
 
 	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
@@ -434,7 +434,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 	} else {
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
-	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
+	bookmark->details->icon = eel_scalable_icon_new_from_text_pieces 
 		(NULL, icon_name, NULL, NULL, FALSE);
 }
 
@@ -472,7 +472,7 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	}
 
 	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_unref (bookmark->details->icon);
+		eel_scalable_icon_unref (bookmark->details->icon);
 		bookmark->details->icon = NULL;
 	}
 }
@@ -520,7 +520,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	new_bookmark->details->uri = g_strdup (uri);
 
 	if (icon != NULL) {
-		nautilus_scalable_icon_ref (icon);
+		eel_scalable_icon_ref (icon);
 	}
 	new_bookmark->details->icon = icon;
 
@@ -572,7 +572,7 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 		gtk_widget_show (pixmap_widget);
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
 	}
-	display_name = nautilus_truncate_text_for_menu_item (bookmark->details->name);
+	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
 	label = gtk_label_new (display_name);
 	g_free (display_name);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

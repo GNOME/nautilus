@@ -30,9 +30,9 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 #include <stdio.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-viewport.h>
+#include <eel/eel-background.h>
+#include <eel/eel-label.h>
+#include <eel/eel-viewport.h>
 
 
 /* gtk rulez */
@@ -65,15 +65,15 @@ static GtkWidget *
 horizontal_line_new (int height)
 {
 	GtkWidget *line;
-	NautilusBackground *background;
+	EelBackground *background;
 
 	line = gtk_drawing_area_new ();
 	gtk_drawing_area_size (GTK_DRAWING_AREA (line), 100, 1);
 	gtk_signal_connect (GTK_OBJECT (line), "expose_event", GTK_SIGNAL_FUNC (line_expose), NULL);
 	gtk_widget_set_usize (line, -2, height);
 
-	background = nautilus_get_widget_background (line);
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (line);
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 
 	return line;
 }
@@ -120,7 +120,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 					      EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 					      EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 					      NULL, -2, FALSE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (im->label), GTK_JUSTIFY_LEFT);
+	eel_label_set_justify (EEL_LABEL (im->label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (im->label);
 	im->progress_bar = gtk_progress_bar_new ();
 	gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (im->progress_bar), GTK_PROGRESS_CONTINUOUS);
@@ -133,7 +133,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						       NULL, -2, TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (im->progress_label), GTK_JUSTIFY_LEFT);
+	eel_label_set_justify (EEL_LABEL (im->progress_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (im->progress_label);
 
 	bogus_label = gtk_label_new ("");
@@ -191,7 +191,7 @@ generate_install_form (NautilusServiceInstallView *view)
 	GtkWidget	*title;
 	GtkWidget	*viewport;
 	GtkWidget	*filler;
-	NautilusBackground *background;
+	EelBackground *background;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -214,7 +214,7 @@ generate_install_form (NautilusServiceInstallView *view)
 								EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 								NULL, 4, TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
+	eel_label_set_justify (EEL_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_name, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_name);
 
@@ -226,7 +226,7 @@ generate_install_form (NautilusServiceInstallView *view)
 								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 								   NULL, -2, TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
+	eel_label_set_justify (EEL_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_version, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_version);
 
@@ -251,8 +251,8 @@ generate_install_form (NautilusServiceInstallView *view)
 									 EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 									 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 									 NULL, -2, FALSE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_text (NAUTILUS_LABEL (view->details->overall_feedback_text), " ");
+	eel_label_set_justify (EEL_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
+	eel_label_set_text (EEL_LABEL (view->details->overall_feedback_text), " ");
 	gtk_widget_show (view->details->overall_feedback_text);
 	add_padding_to_box (temp_box, 30, 0);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, TRUE, TRUE, 0);
@@ -268,8 +268,8 @@ generate_install_form (NautilusServiceInstallView *view)
 								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 								   NULL, -2, FALSE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+	eel_label_set_justify (EEL_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
+	eel_label_set_wrap (EEL_LABEL (view->details->package_details), TRUE);
 
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_details);
@@ -278,12 +278,12 @@ generate_install_form (NautilusServiceInstallView *view)
 	view->details->query_pane = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->query_pane),
 					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	viewport = nautilus_viewport_new (NULL, NULL);
+	viewport = eel_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (view->details->query_pane), viewport);
 	gtk_widget_show (viewport);
-	background = nautilus_get_widget_background (viewport);
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (viewport);
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 	gtk_widget_hide (view->details->query_pane);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->query_pane, TRUE, TRUE, 0);
 
@@ -307,14 +307,14 @@ generate_install_form (NautilusServiceInstallView *view)
 	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane),
 					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	viewport = nautilus_viewport_new (NULL, NULL);
+	viewport = eel_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
 	gtk_widget_show (viewport);
 	gtk_container_add (GTK_CONTAINER (viewport), view->details->message_box);
 	gtk_widget_show (view->details->message_box);
-	background = nautilus_get_widget_background (viewport);
-	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	background = eel_get_widget_background (viewport);
+	eel_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
 	gtk_widget_set_usize (view->details->pane, -2, MESSAGE_BOX_HEIGHT);
 	gtk_widget_show (view->details->pane);
 	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->pane, FALSE, FALSE, 2);
@@ -335,7 +335,7 @@ generate_install_form (NautilusServiceInstallView *view)
 void
 show_overall_feedback (NautilusServiceInstallView *view, char *progress_message)
 {
-	nautilus_label_set_text (NAUTILUS_LABEL (view->details->overall_feedback_text), progress_message);
+	eel_label_set_text (EEL_LABEL (view->details->overall_feedback_text), progress_message);
 	gtk_widget_show (view->details->overall_feedback_text);
 }
 
@@ -345,18 +345,18 @@ update_package_info_display (NautilusServiceInstallView *view, const PackageData
 	char *out;
 
        out = g_strdup_printf (format, pack->name);
-       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+       eel_label_set_text (EEL_LABEL (view->details->package_name), out);
        g_free (out);
 
        if ((pack->description != NULL) && 
            (strchr (pack->description, '\n') != NULL)) {
-               nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
+               eel_label_set_wrap (EEL_LABEL (view->details->package_details), FALSE);
        } else {
-               nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+               eel_label_set_wrap (EEL_LABEL (view->details->package_details), TRUE);
        }
-       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
+       eel_label_set_text (EEL_LABEL (view->details->package_details), pack->description);
        out = g_strdup_printf (_("Version: %s"), pack->version);
-       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
+       eel_label_set_text (EEL_LABEL (view->details->package_version), out);
        g_free (out);
 }
 
@@ -366,7 +366,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 {
 	/* can't figure out a decent way to do this yet... :( */
 	if (view->details->current_im != NULL) {
-		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_im->progress_label), text);
+		eel_label_set_text (EEL_LABEL (view->details->current_im->progress_label), text);
 		gtk_widget_queue_resize (view->details->message_box);
 	}
 }
@@ -423,16 +423,16 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
 					      EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 					      EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 					      NULL, -1, FALSE);
-        nautilus_label_set_text (NAUTILUS_LABEL (top_label), text);
-	nautilus_label_set_justify (NAUTILUS_LABEL (top_label), GTK_JUSTIFY_LEFT);
+        eel_label_set_text (EEL_LABEL (top_label), text);
+	eel_label_set_justify (EEL_LABEL (top_label), GTK_JUSTIFY_LEFT);
         gtk_widget_show (top_label);
 
 	bottom_label_2 = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 						   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						   NULL, -1, FALSE);
-	nautilus_label_set_text (NAUTILUS_LABEL (bottom_label_2), text2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (bottom_label_2), GTK_JUSTIFY_LEFT);
+	eel_label_set_text (EEL_LABEL (bottom_label_2), text2);
+	eel_label_set_justify (EEL_LABEL (bottom_label_2), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (bottom_label_2);
 
         /* build up vbox list of packages */
@@ -444,8 +444,8 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
                                                        EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
                                                        EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
                                                        NULL, -1, TRUE);
-                nautilus_label_set_text (NAUTILUS_LABEL (list_label), text);
-                nautilus_label_set_justify (NAUTILUS_LABEL (list_label), GTK_JUSTIFY_LEFT);
+                eel_label_set_text (EEL_LABEL (list_label), text);
+                eel_label_set_justify (EEL_LABEL (list_label), GTK_JUSTIFY_LEFT);
                 gtk_widget_show (list_label);
                 gtk_box_pack_start (GTK_BOX (vbox_list), list_label, FALSE, FALSE, 0);
                 g_free (text);
@@ -469,8 +469,8 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
                                                  EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
                                                  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
                                                  NULL, -1, FALSE);
-        nautilus_label_set_text (NAUTILUS_LABEL (bottom_label), text);
-	nautilus_label_set_justify (NAUTILUS_LABEL (bottom_label), GTK_JUSTIFY_LEFT);
+        eel_label_set_text (EEL_LABEL (bottom_label), text);
+	eel_label_set_justify (EEL_LABEL (bottom_label), GTK_JUSTIFY_LEFT);
         gtk_widget_show (bottom_label);
         g_free (text);
 
