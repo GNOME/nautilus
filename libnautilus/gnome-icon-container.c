@@ -78,9 +78,13 @@ static void  update_icon                                  (GnomeIconContainer   
 							   GnomeIconContainerIcon  *icon);
 static void  compute_stretch                              (StretchState            *start,
 							   StretchState            *current);
+static GnomeIconContainerIcon *get_first_selected_icon    (GnomeIconContainer      *container);
 static guint icon_get_actual_size                         (GnomeIconContainerIcon  *icon);
 static void  remove_icon_from_container                   (GnomeIconContainer      *container,
 							   GnomeIconContainerIcon  *icon);
+static void  set_kbd_current 				  (GnomeIconContainer      *container,
+		 					   GnomeIconContainerIcon  *icon,
+		 					   gboolean 		    schedule_visibility);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -250,6 +254,13 @@ icon_toggle_selected (GnomeIconContainer *container,
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "highlighted_for_selection", (gboolean) icon->is_selected,
 			       NULL);
+
+	/* If this is the selected-for-keyboard icon, reset it, so
+	 * it resets whether to draw the gray box or not.
+	 */
+	if (container->details->kbd_current == icon) {
+		set_kbd_current (container, icon, FALSE);
+	}
 
 	/* If the icon is deselected, then get rid of the stretch handles.
 	 * No harm in doing the same if the item is newly selected.
@@ -897,9 +908,16 @@ set_kbd_current (GnomeIconContainer *container,
 	details->kbd_current = icon;
 	
 	if (icon != NULL) {
-		gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
-				       "highlighted_for_keyboard_selection", 1,
-				       NULL);
+		/* Only show the item highlighted for keyboard selection
+		 * if it is not highlighted for regular selection but
+		 * at least one other icon is highlighted for regular selection
+		 */
+		if (!icon->is_selected && get_first_selected_icon (container) != NULL) {
+			gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
+					       "highlighted_for_keyboard_selection", 1,
+					       NULL);
+		}
+		 
 		icon_raise (icon);
 	}
 	
@@ -1667,9 +1685,8 @@ kbd_space (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
 	if (container->details->kbd_current != NULL) {
-		if (icon_set_selected (container, container->details->kbd_current, TRUE))
-			gtk_signal_emit (GTK_OBJECT (container),
-					 signals[SELECTION_CHANGED]);
+		icon_toggle_selected (container, container->details->kbd_current);
+		gtk_signal_emit (GTK_OBJECT (container), signals[SELECTION_CHANGED]);
 	}
 }
 

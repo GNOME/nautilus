@@ -1,3 +1,24 @@
+2000-03-07  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	(nautilus_icons_view_icon_item_bounds): Fixed typo that was
+	causing bottom coordinate of icon bounds to be uninitialized.
+	This caused wacky results when keyboard navigating and probably
+	elsewhere.
+	
+	* libnautilus/gnome-icon-container.c:
+	(icon_toggle_selected): Reset keyboard-selected icon if it's
+	this one so it updates whether or not to draw stippled outline.
+	(set_kbd_current): Only tell the icon to draw stippled outline
+	if it isn't selected the "normal" way and some other icon is.
+	(In other words, only display the keyboard-selected icon when
+	it diverges from the regular selection, and don't display it
+	when there is no regular selection.)
+	(kbd_space): Toggle the "normal" selection state of the
+	keyboard-selected icon. It had been forcing it to true, making
+	it impossible to keyboard-unselect a single item while leaving
+	the rest of the selection unchanged.
+
 2000-03-07  Darin Adler  <darin@eazel.com>
 
 	* components/music/nautilus-music-view.c,
