@@ -1,3 +1,8 @@
+2002-04-24  Murray Cumming  <murrayc@usa.net>
+
+	* Added the necessary bonobo_object_ref() to my previous commit,
+	to prevent crashing during the unref when the window closes.
+
 2002-04-23  Murray Cumming  <murrayc@usa.net>
 
 	* src/nautilus-window.c (nautilus_window_instance_init):

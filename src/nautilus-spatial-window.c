@@ -174,6 +174,7 @@ nautilus_window_instance_init (NautilusWindow *window)
 
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_window_get_ui_container (BONOBO_WINDOW (window));
+	bonobo_object_ref (window->details->ui_container);
 
 	window->details->tooltips = gtk_tooltips_new ();
 	g_object_ref (G_OBJECT (window->details->tooltips));
@@ -191,7 +192,7 @@ nautilus_window_instance_init (NautilusWindow *window)
 	/* Create a separate component so when we remove the status
 	 * we don't loose the status bar
 	 */
-      	window->details->status_ui = bonobo_ui_component_new ("Status Component");
+      	window->details->status_ui = bonobo_ui_component_new ("Status Component");  
 	bonobo_ui_component_set_container
 		(window->details->status_ui,
 		 nautilus_window_get_ui_container (window),
