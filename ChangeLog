@@ -1,3 +1,10 @@
+2000-06-06  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_test_predicate), (nautilus_self_check_glib_extensions):
+	Un #if-0'd out, and replaced the free that was killing things with
+	a comment explaining why it is not necessary.
+
 2000-06-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c:
