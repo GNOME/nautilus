@@ -1,3 +1,22 @@
+2000-09-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2875 (update set of built-in bookmarks)
+
+	* data/static_bookmarks.xml:
+
+	Fixed bug 2872 (Complaint about bookmark location mismatch 
+	when visiting new folder)
+
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_uris_match): New function, compares two uris
+	after canonicalizing each.
+	
+	* src/nautilus-window-manage-views.c:
+	(check_last_bookmark_location_matches_window):
+	Use nautilus_uris_match to compare bookmark's uri with
+	window's uri.
+
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Turn on smooth fonts in the icon view.  This is controlled by the

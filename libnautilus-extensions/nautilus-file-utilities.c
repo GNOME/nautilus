@@ -205,6 +205,24 @@ nautilus_make_uri_canonical (const char *uri)
 	return canonical_uri;
 }
 
+gboolean
+nautilus_uris_match (const char *uri_1, const char *uri_2)
+{
+	char *canonical_1;
+	char *canonical_2;
+	gboolean result;
+
+	canonical_1 = nautilus_make_uri_canonical (uri_1);
+	canonical_2 = nautilus_make_uri_canonical (uri_2);
+
+	result = nautilus_str_is_equal (canonical_1, canonical_2);
+
+	g_free (canonical_1);
+	g_free (canonical_2);
+	
+	return result;
+}
+
 
 /**
  * nautilus_make_path:

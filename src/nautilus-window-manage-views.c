@@ -340,14 +340,14 @@ check_last_bookmark_location_matches_window (NautilusWindow *window)
 	gboolean result;
 
 	uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
-	result = strcmp (uri, window->location) == 0;
+	result = nautilus_uris_match (uri, window->location);
 	if (!result) {
-        	/* FIXME bugzilla.eazel.com 2872: This is always a bug, and there might be multiple bugs here.
+        	/* FIXME bugzilla.eazel.com 2707: This is always a bug, and there might be multiple bugs here.
                  * Right now one of them is so common that I'm changing this from an
-                 * assert to a message to stop blocking other work. The common case is the
-                 * two locations differing by the trailing slash.
+                 * assert to a warning to stop blocking other work. When known bugs here are fixed,
+                 * we should change this back to g_error.
                  */
-		 g_message ("last_location_bookmark is %s, but should match %s", uri, window->location);
+		 g_warning ("last_location_bookmark is %s, but should match %s", uri, window->location);
 	}
 	g_free (uri);
 
