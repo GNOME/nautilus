@@ -1,0 +1,67 @@
+// module Net is for IDL "standardized" among multiple projects
+
+module Net {
+// module Desktop contains interfaces for the desktop environment itself - not
+// desktop applications
+        
+module Desktop {
+
+        // This is a simple-to-implement least-common-denominator that
+        // we might expect any desktop environment to implement.
+        // Specific environments may provide more powerful interfaces.
+        
+        interface Desktop {
+                enum BackgroundType {
+                        ImageBackground,
+                        GradientBackground,
+                        SolidBackground
+                };
+
+                enum ImageType {
+                        TiledImage,
+                        CenteredImage,
+                        ScaledAspectImage,
+                        ScaledImage
+                };
+
+                enum GradientType {
+                        VerticalGradient,
+                        HorizontalGradient
+                };
+
+                union BackgroundInfo switch (BackgroundType) {
+                case ImageBackground:
+                        string filename;
+                        ImageType imagetype;
+                case GradientBackground:
+                        GradientType gradienttype;
+                        // colors are 24-bit RGB packed into an int
+                        int northwest_color; // top or left color
+                        int southeast_color; // bottom or right color
+                case SolidBackground:
+                        // 24-bit RGB packed into an int
+                        int color;
+                };
+
+                void get_background_info (out BackgroundInfo info);
+
+                void set_background_info (in BackgroundInfo info);
+        };
+};
+};
+
+module GNOME {
+module Desktop {
+
+        // We subclass Net::Desktop and add our GNOME-specific features
+        
+        interface Desktop : Net::Desktop {
+                // Add an icon on the desktop for this URI
+                // The URI can be anything gnome-vfs understands
+                void add_link (in string uri);
+
+                
+        };
+  
+};
+};
