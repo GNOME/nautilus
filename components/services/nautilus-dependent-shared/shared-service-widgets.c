@@ -92,7 +92,6 @@ create_image_widget (const char *icon_name, const char *tile_icon_name)
 		char *icon_path;
 		
 		icon_path = nautilus_theme_get_image_path (icon_name);
-		
 		if (icon_path != NULL) {
 			pixbuf = gdk_pixbuf_new_from_file (icon_path);
 			g_free (icon_path);
@@ -125,7 +124,7 @@ create_image_widget_from_uri (const char *uri, const char *tile_icon_name,
 	/* as an optimization, it can be a local file.  If it doesn't start with http://,
 	   just pass it on to create_image_widget */
 	if (!nautilus_istr_has_prefix (uri, "http://")) {
-		create_image_widget (uri, tile_icon_name);
+		return create_image_widget (uri, tile_icon_name);
 	}
 	
 	/* load the image - synchronously, at least at first */
