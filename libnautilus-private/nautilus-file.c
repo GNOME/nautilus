@@ -3630,14 +3630,16 @@ get_description (NautilusFile *file)
 		mime_type = file->details->info->mime_type;
 	}
 
-	/* FIXME: When this code was originally written, unknown types
+	/* FIXME bugzilla.eazel.com 5073: When this code was originally written, 
+	 *  unknown types
 	 * were represented by NULL, but now they are represented by
 	 * "application/octet-string". Perhaps we want to check for
 	 * that here, so "program" will appear more often.
 	 */
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No MIME type, anything else interesting we can say about this? */
-		/* FIXME: Maybe we should always return NULL when the
+		/* FIXME bugzilla.eazel.com 5074: Maybe we should always return NULL 
+		 * when the
 		 * MIME type is unknown.
 		 */
 		/* If it's a directory, call it "folder" before
@@ -4358,7 +4360,7 @@ nautilus_file_forget_attributes_internal (NautilusFile *file,
 		forget_activation_uri (file);
 	}
 
-	/* FIXME: implement forgetting metadata */
+	/* FIXME bugzilla.eazel.com 5075: implement forgetting metadata */
 }
 
 

@@ -677,15 +677,15 @@ nautilus_self_check_search_uri (void)
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
                                       _("Items with \"stuff\" in the name"));
-        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
                                       _("Items with \"stuff\" in the name and are regular files"));
-        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
                                       _("Items with \"stuff\" in the name, are regular files and "
                                         "smaller than 2000 bytes"));
-        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
                                       _("Items with \"medusa\" in the name and are "
                                         "folders"));

@@ -591,7 +591,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 static void
 receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int x, int y)
 {
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 5080:
 	 * this needs a better name - it's link/desktop specific 
 	 */
 	GList *li, *files;

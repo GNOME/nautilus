@@ -324,7 +324,8 @@ nautilus_make_uri_canonical (const char *uri)
 		old_uri = canonical_uri;
 
 		if (old_uri[0] != '/') {
-			/* FIXME: bandaid alert. Is this really the right thing to do?
+			/* FIXME bugzilla.eazel.com 5069: 
+			 *  bandaid alert. Is this really the right thing to do?
 			 * 
 			 * We got what really is a relative path. We do a little bit of
 			 * a stretch here and assume it was meant to be a cryptic absolute path,
@@ -984,7 +985,7 @@ pthread_nautilus_read_file_thread_entry (void *cast_to_data)
 			}
 
 			buffer = g_realloc (buffer, total_bytes_read + READ_CHUNK_SIZE);
-			/* FIXME:
+			/* FIXME bugzilla.eazel.com 5070:
 			 * For a better cancellation granularity we should use gnome_vfs_read_cancellable
 			 * here, adding a GnomeVFSContext to NautilusAsyncReadFileData.
 			 */
@@ -1066,7 +1067,7 @@ pthread_nautilus_read_file_async(const char *uri, NautilusReadFileCallback callb
 	pthread_attr_init (&thread_attr);
 	pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
 	if (pthread_create (&thread, &thread_attr, pthread_nautilus_read_file_thread_entry, data) != 0) {
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 5071:
 		 * Would be cleaner to call through an idle callback here.
 		 */
 		(*callback) (GNOME_VFS_ERROR_INTERNAL, 0, NULL, NULL);
@@ -1141,6 +1142,7 @@ nautilus_read_file_cancel (NautilusReadFileHandle *handle)
 	g_free (handle->buffer);
 	g_free (handle);
 #else
+
 	pthread_nautilus_read_file_async_cancel (handle);
 #endif
 }
@@ -1267,7 +1269,7 @@ nautilus_self_check_file_utilities (void)
 
 	/* nautilus_make_uri_canonical */
 
-	/* FIXME: this is a bizarre result from an empty string */
+	/* FIXME bugzilla.eazel.com 5072: this is a bizarre result from an empty string */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:///");
 	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
@@ -1281,7 +1283,7 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir/");
 
-	/* FIXME: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
+	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
 #ifdef EAZEL_SERVICES	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");

@@ -4662,7 +4662,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		 editable_text,	        /* text */
 		 TRUE);		        /* allocate local copy */
 
-	/* FIXME:  These callbacks don't have any side effects.
+	/* FIXME bugzilla.eazel.com 5078:  These callbacks don't have any side effects.
 	   They should be removed */
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
@@ -4712,7 +4712,8 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	hide_rename_widget (container, icon);
 }
 
-/* FIXME: We're not exactly hiding this widget, we're destroying it!
+/* FIXME bugzilla.eazel.com 5079: We're not exactly hiding this widget, 
+   we're destroying it!
    Perhaps hide_rename_widget isn't the right name */
 static void
 hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)

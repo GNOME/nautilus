@@ -107,7 +107,7 @@ static const char *icon_file_name_suffixes[] =
 /* Images are used themselves as thumbnails when they are below this
  * threshold size.
  */
-/* FIXME: Later we might have to have a more complex rule about when
+/* FIXME bugzilla.eazel.com 5081: Later we might have to have a more complex rule about when
  * to use an image for itself.
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
@@ -115,7 +115,8 @@ static const char *icon_file_name_suffixes[] =
 /* Extremely large images can eat up hundreds of megabytes of memory, so we
  * shouldn't automatically thumbnail when larges are too large.
  */
-/* FIXME: Eventually, we want this threshold to be user-settable, but
+/* FIXME bugzilla.eazel.com 5082: Eventually, we want this 
+ * threshold to be user-settable, but
  * for now it's hard-wired.
  */
 #define INHIBIT_THUMBNAIL_SIZE_THRESHOLD (1024 * 1024)

@@ -1,4 +1,44 @@
 2000-12-07  Rebecca Schulman  <rebecka@eazel.com>
+        Bug numbers for the FIXMEs in libnautilus-extensions.
+	
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(format_name_for_display):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback), (cancel_loading_attributes),
+	(nautilus_directory_cancel_loading_file_attributes):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_handle_directory_moved),
+	(nautilus_directory_notify_files_moved),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical),
+	(pthread_nautilus_read_file_thread_entry),
+	(pthread_nautilus_read_file_async), (nautilus_read_file_cancel),
+	(nautilus_self_check_file_utilities):
+	* libnautilus-extensions/nautilus-file.c: (get_description),
+	(nautilus_file_forget_attributes_internal):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_uri_list):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_allocate), (label_recompute_line_geometries):
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(nautilus_merged_directory_add_real_directory):
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_application_for_file_internal):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_text_layout_paint):
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_self_check_search_uri):
+	* libnautilus-extensions/nautilus-string.c:
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(editable_key_press_event), (nautilus_undo_editable_set_undo_key):
+
+2000-12-07  Rebecca Schulman  <rebecka@eazel.com>
 	Added bug numbers to FIXMEs for the src 
 	subdirectory.  If I can stomach it,
 	I'll try and do a few more today.

@@ -376,7 +376,7 @@ format_name_for_display (const char* name)
 		
 	formatted_str = strip_extension (name);
 	
-	/* FIXME: Not appropriate to upper-case the letter of the name
+	/* FIXME bugzilla.eazel.com 5046: Not appropriate to upper-case the letter of the name
 	 * after a space for all languages. A potential translation
 	 * nightmare.
 	 */

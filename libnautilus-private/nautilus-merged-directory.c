@@ -496,7 +496,7 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 			    done_loading_callback,
 			    merged);
 
-	/* FIXME: The done_loading part won't work for the case where
+	/* FIXME bugzilla.eazel.com 5084: The done_loading part won't work for the case where
          * we have no directories in our list.
 	 */
 

@@ -976,7 +976,7 @@ nautilus_directory_handle_directory_moved (NautilusDirectory *directory,
 
 	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (to_uri);
 
-	/* FIXME: we also need to rename the private metafile, if it
+	/* FIXME bugzilla.eazel.com 5065: we also need to rename the private metafile, if it
            exists, don't we. */
 
 	if (directory->details->vfs_uri != NULL) {
@@ -998,7 +998,7 @@ nautilus_directory_handle_directory_moved (NautilusDirectory *directory,
 			     directory->details->uri,
 			     directory);
 
-	/* FIXME: need to handle updating child directories as well */
+	/* FIXME bugzilla.eazel.com 5066: need to handle updating child directories as well */
 }
 
 void
@@ -1085,7 +1085,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				 * it from the get_parent_directory
 				 * function so we don't have to ref.
 				 */
-				/* FIXME: Doesn't update the link hash table. */
+				/* FIXME bugzilla.eazel.com 5067: Doesn't update the link hash table. */
 				file->details->directory = new_directory;
 
 				/* Add to new directory. */
@@ -1510,7 +1510,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
-	/* FIXME: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
+	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
 #ifdef EAZEL_SERVICES
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");

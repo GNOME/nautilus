@@ -269,7 +269,8 @@ nautilus_gradient_parse_one_color_spec (const char *spec, int *percent, const ch
 	return result;
 }
 
-/* FIXME anyone using nautilus_gradient_get_start_color_spec or
+/* FIXME bugzilla.eazel.com 5076:
+ * anyone using nautilus_gradient_get_start_color_spec or
  * nautilus_gradient_get_end_color_spec is assuming the gradient
  * is 2 colors which is questionable.
  * 

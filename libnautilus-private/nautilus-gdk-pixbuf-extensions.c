@@ -265,7 +265,7 @@ nautilus_cancel_gdk_pixbuf_load (NautilusPixbufLoadHandle *handle)
 	free_pixbuf_load_handle (handle);
 }
 
-/* FIXME
+/* FIXME bugzilla.eazel.com 5077:
  * This fn is only used by some test code, it should probably be removed
  */
 void

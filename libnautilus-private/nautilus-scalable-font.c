@@ -1656,7 +1656,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 	g_return_if_fail (destination_pixbuf != NULL);
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
 	
-	/* FIXME: Make sure the color we are fed is opaque.  The real solution is 
+	/* FIXME bugzilla.eazel.com 5087: Make sure the color we are fed is opaque.  The real solution is 
 	 * to fix the callers.
 	 */
 	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),

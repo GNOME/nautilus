@@ -213,7 +213,8 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	default_application_string = nautilus_file_get_metadata 
 		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
 
-	/* FIXME: should fall back to normal default if user-specified default is bogus */
+	/* FIXME bugzilla.eazel.com 5085: should fall back to normal default 
+	   if user-specified default is bogus */
 
 	if (default_application_string == NULL) {
 		mime_type = nautilus_file_get_mime_type (file);
@@ -623,7 +624,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 	return result;
 }
 
-/* FIXME: we should disable this for 1.0 I think */
+/* FIXME bugzilla.eazel.com 5086: we should disable this for 1.0 I think */
 
 char *
 nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)

@@ -464,7 +464,7 @@ nautilus_str_capitalize (const char *string)
 /* Note: nautilus_string_ellipsize_* that use a length in pixels
  * rather than characters can be found in nautilus_gdk_extensions.h
  * 
- * FIXME: 
+ * FIXME bugzilla.eazel.com 5089: 
  * we should coordinate the names of nautilus_string_ellipsize_*
  * and nautilus_str_*_truncate so that they match better and reflect
  * their different behavior.

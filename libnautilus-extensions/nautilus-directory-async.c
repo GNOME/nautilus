@@ -1218,7 +1218,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		file_info = node->data;
 
 		/* Update the file count. */
-		/* FIXME: This could count a file twice if we get it
+		/* FIXME bugzilla.eazel.com 5063: This could count a file twice if we get it
 		 * from both load_directory and from
 		 * new_files_callback. Not too hard to fix by moving
 		 * this into the actual callback instead of waiting
@@ -3214,7 +3214,7 @@ cancel_loading_attributes (NautilusDirectory *directory,
 		file_info_cancel (directory);
 	}
 	
-	/* FIXME: implement cancelling metadata when we
+	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement forgetting metadata */
 }
 
@@ -3247,6 +3247,6 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 		cancel_activation_uri_for_file (directory, file);
 	}
 
-	/* FIXME: implement cancelling metadata when we
+	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement forgetting metadata */
 }

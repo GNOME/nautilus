@@ -291,7 +291,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
 /* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 
-/* FIXME: This needs a return value of gboolean. */
+/* FIXME bugzilla.eazel.com 5090: This needs a return value of gboolean. */
 static void
 editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer user_data)
 {	
@@ -300,7 +300,8 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 	case 'z':
 		if ((event->state & GDK_CONTROL_MASK) != 0) {
 			nautilus_undo (GTK_OBJECT (editable));
-			/* FIXME: Need to stop the signal to prevent
+			/* FIXME bugzilla.eazel.com 5091: Need to stop the 
+			   signal to prevent
 			 * re-handling the same event.
 			 */
 			return;
@@ -332,7 +333,8 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 				    GTK_SIGNAL_FUNC (editable_key_press_event),
 				    NULL);
 	} else {
-		/* FIXME: This warns if the handler is already connected. */
+		/* FIXME bugzilla.eazel.com 5092: This warns if 
+		   the handler is already connected. */
 		gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
 					       GTK_SIGNAL_FUNC (editable_key_press_event),		    
 					       NULL);
