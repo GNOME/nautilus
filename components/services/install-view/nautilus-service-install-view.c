@@ -1438,6 +1438,9 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	g_free (out);
 
 	CORBA_exception_init (&ev);
+	if (view->details->installer) {
+		eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
+	}
 	view->details->installer = eazel_install_callback_new ();
 	if (view->details->installer == NULL) {
 		GtkWidget *toplevel, *dialog;

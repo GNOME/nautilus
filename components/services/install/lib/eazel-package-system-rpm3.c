@@ -488,6 +488,28 @@ eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system)
  Load Package implemementation
 *************************************************************/
 
+static EazelSoftCatSense
+rpm_sense_to_softcat_sense (EazelPackageSystemRpm3 *system,
+			    int rpm_sense) 
+{
+	EazelSoftCatSense result = 0;
+
+	if (rpm_sense & RPMSENSE_ANY) {
+		result |= EAZEL_SOFTCAT_SENSE_ANY;
+	} else {
+		if (rpm_sense & RPMSENSE_EQUAL) {
+			result |= EAZEL_SOFTCAT_SENSE_EQ;
+		}
+		if (rpm_sense & RPMSENSE_GREATER) {
+			result |= EAZEL_SOFTCAT_SENSE_GT;
+		}
+		if (rpm_sense & RPMSENSE_LESS) {
+			result |= EAZEL_SOFTCAT_SENSE_LT;
+		}
+	}
+
+	return result;
+}
 
 void 
 eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *system,
@@ -524,12 +546,14 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		int count = 0;
 		int index = 0;
 		int num_paths = 0;
+		uint_16 *file_modes;
 
 		g_list_foreach (pack->provides, (GFunc)g_free, NULL);
 		g_list_free (pack->provides);
 		pack->provides = NULL;
 
-                /* RPM v.3.0.4 and above has RPMTAG_BASENAMES */
+                /* RPM v.3.0.4 and above has RPMTAG_BASENAMES, this will not work
+		   with any version below 3.0.4 */
 
 		headerGetEntry (hd,			
 				RPMTAG_DIRINDEXES, NULL,
@@ -540,6 +564,9 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		headerGetEntry (hd,			
 				RPMTAG_BASENAMES, NULL,
 				(void**)&names, &count);
+		headerGetEntry (hd,			
+				RPMTAG_FILEMODES, NULL,
+				(void**)&file_modes, NULL);
 
 		/* Copy all paths and shave off last /.
 		   This is needed to remove the dir entries from 
@@ -551,27 +578,23 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		}
 
 		/* Now loop through all the basenames */
-		/* NOTE: This algorithm has sizeof (paths) * sizeof (names)
-		   complexity, aka O(n²) */
 		for (index=0; index<count; index++) {
 			char *fullname = NULL;
-			int index2 = 0;
-
 			if (paths) {
 				fullname = g_strdup_printf ("%s/%s", paths_copy[indexes[index]], names[index]);
 			} else {
 				fullname = g_strdup (names[index]);
 			}
 			if (detail_level & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
-				/* Check it's not a dirname, by looping through all
-				   paths_copy and check that fullname does not occur there */
-				for (index2 = 0; index2 < num_paths; index2++) {
-					if (strcmp (paths_copy[index2], fullname)==0) {
-						g_free (fullname);
-						fullname = NULL;
-						break;
-					}
+				if (file_modes[index] & 040000) {
+					g_free (fullname);
+					fullname = NULL;
 				}
+#if 0
+				fprintf (stderr, "file_modes[%s] = 0%o %s\n", 
+					 fullname, file_modes[index],
+					 (file_modes[index] & 040000) ? "DIR" : "file" );
+#endif
 			}
 			if (fullname) {
 				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
@@ -587,11 +610,61 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		free ((void*)names);
 	}
 
-	/* FIXME: bugzill.eaze.com 5262
-	   Without this, libeazelinstall --ei2 cannot install starting with
-	   a rpm file
-	 */
+
 	if (~detail_level & PACKAGE_FILL_NO_DEPENDENCIES) {		
+		const char **requires_name, **requires_version;
+		int *requires_flag;
+		int count;
+		int index;
+		
+		headerGetEntry (hd,
+				RPMTAG_REQUIRENAME, NULL,
+				(void**)&requires_name,
+				&count);
+		headerGetEntry (hd,
+				RPMTAG_REQUIREVERSION, NULL,
+				(void**)&requires_version,
+				NULL);
+		headerGetEntry (hd,
+				RPMTAG_REQUIREFLAGS, NULL,
+				(void**)&requires_flag,
+				NULL);
+
+		for (index = 0; index < count; index++) {
+			PackageData *package = packagedata_new ();
+			PackageDependency *pack_dep = packagedependency_new ();
+			
+			/* If it's a lib*.so* or a /yadayada, add to provides */
+			if ((strncmp (requires_name[index], "lib", 3)==0 && 
+			     strstr (requires_name[index], ".so")) ||
+			    *requires_name[index]=='/') {
+				/* Unless it has a ( in the name */
+				if (strchr (requires_name[index], '(')==NULL) {
+					package->provides = g_list_prepend (package->provides, 
+									    g_strdup (requires_name[index]));
+				}
+			} else {
+				/* Otherwise, add as a package name */
+				package->name = g_strdup (requires_name[index]);
+				/* and set the version if not empty */
+				pack_dep->version = *requires_version[index]=='\0' ? 
+					NULL : g_strdup (requires_version[index]);
+			}
+			/* If anything set, add dep */
+			if (package->name || package->provides) {
+				pack_dep->sense = rpm_sense_to_softcat_sense (system,
+									      requires_flag[index]);
+				package->archtype = trilobite_get_distribution_arch ();
+				pack_dep->package = package;
+				pack->depends = g_list_prepend (pack->depends, pack_dep);
+			} else {
+				packagedependency_destroy (pack_dep);
+				gtk_object_unref (GTK_OBJECT (package));
+			}
+		}
+		free ((void*)requires_name);
+		free ((void*)requires_version);
+
 	}
 }
 

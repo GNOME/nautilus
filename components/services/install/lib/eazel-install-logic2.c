@@ -78,11 +78,11 @@ dump_tree_helper (GList *packages, char *indent, GList *path)
 				 indent, 
 				 pack, 
 				 name, 
-				 pack->fillflag & MUST_HAVE ? "not_filled":"filled",
+				 pack->fillflag & MUST_HAVE ? "filled":"not_filled",
 				 pack->status == PACKAGE_CANNOT_OPEN ? " but failed" : "");
 		tmp = g_strdup_printf ("%s  ", indent);
 		if (g_list_find_custom (path, name, (GCompareFunc)strcmp)) {
-			trilobite_debug ("%s ... recurses ...", indent);
+			trilobite_debug ("%s ... recurses ...", indent);			
 		} else {
 			path = g_list_prepend (path, name);
 			dump_tree_helper (pack->depends, tmp, path);
@@ -254,8 +254,9 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			trilobite_debug ("(which is dangerous by the way....)");
 			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
 			trilobite_debug ("Or wait for the author to fix bug 3511");
-			/* FIXME bugzilla.eazel.com 3511 */
-			g_assert_not_reached ();
+			/* FIXME bugzilla.eazel.com 3511
+			   g_assert_not_reached ();
+			*/
 		}
 		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
 			PackageData *existing_package = (PackageData*)iterator->data;
@@ -1345,6 +1346,21 @@ clean_up_dep_ok_hash (char *key, gpointer unused)
 	return TRUE;
 }
 
+unsigned long
+eazel_install_get_total_size_of_packages (EazelInstall *service,
+					  const GList *packages)
+{
+	const GList *iterator;
+	unsigned long result = 0;
+	for (iterator = packages; iterator; glist_step (iterator)) {
+		PackageData *pack;
+
+		pack = (PackageData*)iterator->data;
+		result += pack->bytesize;
+	}
+	return result;
+}
+
 static void
 execute (EazelInstall *service,
 	 GList *packages,
@@ -1363,6 +1379,14 @@ execute (EazelInstall *service,
 	if (eazel_install_get_test (service)) {
 		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_TEST;
 	}
+
+	/* Init the hack var to emit the old style progress signals */
+	service->private->infoblock [0] = 0;
+	service->private->infoblock [1] = 0;
+	service->private->infoblock [2] = 0;
+	service->private->infoblock [3] = g_list_length (flat_packages);
+	service->private->infoblock [4] = 0;
+	service->private->infoblock [5] = eazel_install_get_total_size_of_packages (service, flat_packages);
 
 	switch (op) {
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:

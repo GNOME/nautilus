@@ -33,6 +33,8 @@
 gboolean check_md5_on_files (EazelInstall *service, GList *packages);
 EazelInstallStatus eazel_install_check_existing_packages (EazelInstall *service, 
 							  PackageData *pack);
+unsigned long eazel_install_get_total_size_of_packages (EazelInstall *service,
+							const GList *packages);
 
 EazelInstallOperationStatus install_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus uninstall_packages (EazelInstall *service, GList *categories);

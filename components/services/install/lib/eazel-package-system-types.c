@@ -337,6 +337,8 @@ packagedependency_new (void)
 	PackageDependency *dep;
 
 	dep = g_new0 (PackageDependency, 1);
+	dep->package = NULL;
+	dep->version = NULL;
 	return dep;
 }
 
@@ -357,7 +359,9 @@ packagedependency_copy (const PackageDependency *dep, gboolean deep)
 void
 packagedependency_destroy (PackageDependency *dep)
 {
-	gtk_object_unref (GTK_OBJECT (dep->package));
+	if (dep->package) {
+		gtk_object_unref (GTK_OBJECT (dep->package));
+	}
 	dep->package = NULL;
 	g_free (dep->version);
 	dep->version = NULL;
@@ -537,13 +541,13 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 		package->features = g_list_reverse (package->features);
 	}
 	if (! (fill_flags & PACKAGE_FILL_NO_DEPENDENCIES)) {
-		/* FIXME: if the dependencies are already filled in, should we deep-free them or just
-		 * throw that list away?  for now, let's assert that there's never any list to begin
-		 * with, and if that breaks, then figure out what to do.
-		 */
-		g_assert (package->soft_depends == NULL);
-		g_assert (package->hard_depends == NULL);
-		g_assert (package->depends == NULL);
+		g_list_foreach (package->soft_depends, (GFunc)gtk_object_unref, NULL);
+		g_list_foreach (package->hard_depends, (GFunc)gtk_object_unref, NULL);
+		g_list_foreach (package->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
+		package->soft_depends = NULL;
+		package->hard_depends = NULL;
+		package->depends = NULL;
+
 		package->soft_depends = packagedata_list_copy (full_package->soft_depends, TRUE);
 		package->hard_depends = packagedata_list_copy (full_package->hard_depends, TRUE);
 		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
@@ -1362,6 +1366,28 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, "Description:\n%s\n", package->description);
 	}
 
+	if (package->features != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Features: ");
+		for (iter = g_list_first (package->features); iter != NULL; iter = g_list_next (iter)) {
+			if (iter == package->features) {
+				g_string_sprintfa (out, "%s", (char *)(iter->data));
+			} else {
+				g_string_sprintfa (out, "; %s", (char *)(iter->data));
+			}
+		}
+		g_string_sprintfa (out, "\n");
+	}
+
+	if (deep && package->provides != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Provides:\n");
+		for (iter = g_list_first (package->provides); iter != NULL; iter = g_list_next (iter)) {
+			g_string_sprintfa (out, "\t\t%s\n", (char *)(iter->data));
+		}
+		g_string_sprintfa (out, "\n");
+	}
+
 	if (package->soft_depends != NULL) {
 		gstr_indent (out, indent);
 		g_string_sprintfa (out, "Soft depends: ");
@@ -1390,28 +1416,6 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		gstr_indent (out, indent);
 		g_string_sprintfa (out, "Breaks: ");
 		dump_package_list (out, package->breaks, deep, indent);
-		g_string_sprintfa (out, "\n");
-	}
-
-	if (package->features != NULL) {
-		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Features: ");
-		for (iter = g_list_first (package->features); iter != NULL; iter = g_list_next (iter)) {
-			if (iter == package->features) {
-				g_string_sprintfa (out, "%s", (char *)(iter->data));
-			} else {
-				g_string_sprintfa (out, "; %s", (char *)(iter->data));
-			}
-		}
-		g_string_sprintfa (out, "\n");
-	}
-
-	if (deep && package->provides != NULL) {
-		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Provides:\n");
-		for (iter = g_list_first (package->provides); iter != NULL; iter = g_list_next (iter)) {
-			g_string_sprintfa (out, "\t\t%s\n", (char *)(iter->data));
-		}
 		g_string_sprintfa (out, "\n");
 	}
 

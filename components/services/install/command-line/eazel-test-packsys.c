@@ -49,11 +49,13 @@ test_package_load (EazelPackageSystem *packsys,
 {
 	PackageData *p;
 	int flag;
+	unsigned int provides_count = 0;
 
 	flag = PACKAGE_FILL_EVERYTHING;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description && p->summary && p->provides) {
+	if (p->description && p->summary && p->provides && p->depends) {
 		g_message ("load_package test 1 ok");
+		provides_count = g_list_length (p->provides);
 	} else {
 		g_message ("load_package test 1 FAIL");
 	}
@@ -70,12 +72,17 @@ test_package_load (EazelPackageSystem *packsys,
 	packagedata_destroy (p, TRUE);
 
 
-	flag = PACKAGE_FILL_NO_PROVIDES;
+	flag = PACKAGE_FILL_NO_DIRS_IN_PROVIDES;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description && p->summary && p->provides==NULL) {
-		g_message ("load_package test 4 ok");
+	if (p->description && p->summary && p->provides) {
+		if (provides_count > g_list_length (p->provides)) {
+			g_message ("load_package test 3 ok");
+		} else {
+			g_message ("load_package test 3 FAIL (%d in provides, should have less then %d)", 
+				g_list_length (p->provides), provides_count);
+		}
 	} else {
-		g_message ("load_package test 4 FAIL");
+		g_message ("load_package test 3 FAIL");
 	}
 	packagedata_destroy (p, TRUE);
 }

@@ -634,7 +634,7 @@ eazel_install_fetch_package (EazelInstall *service,
 			package = eazel_package_system_load_package (service->private->package_system,
 								     package, 
 								     targetname,
-								     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
+								     PACKAGE_FILL_NO_DIRS_IN_PROVIDES|PACKAGE_FILL_NO_DEPENDENCIES);
 							   
 			if (name) {
 				if (strcmp (name, package->name)) {

@@ -575,20 +575,6 @@ ei_revert_transaction (EazelInstall *service,
 	return result;
 }
 
-unsigned long
-eazel_install_get_total_size_of_packages (EazelInstall *service,
-					  const GList *packages)
-{
-	const GList *iterator;
-	unsigned long result = 0;
-	for (iterator = packages; iterator; glist_step (iterator)) {
-		PackageData *pack;
-
-		pack = (PackageData*)iterator->data;
-		result += pack->bytesize;
-	}
-	return result;
-}
 
 void
 eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
