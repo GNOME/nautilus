@@ -409,10 +409,10 @@ desktop_finalize (GObject *object)
 	desktop = NAUTILUS_DESKTOP_DIRECTORY (object);
 
 	nautilus_directory_unref (desktop->details->real_directory);
-	g_free (desktop->details);
 
 	g_hash_table_destroy (desktop->details->callbacks);
 	g_hash_table_destroy (desktop->details->monitors);
+	g_free (desktop->details);
 	
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

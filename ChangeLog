@@ -1,5 +1,11 @@
 2003-08-04  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-desktop-directory.c
+	(desktop_finalize): Free the details after its members.  Patch
+	from Joe Marcus Clarke <marcus@freeBSD.org>
+
+2003-08-04  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(handle_new_folder_vfs_error): Use the parent_view's 
 	toplevel for the dialog rather than the view itself.
