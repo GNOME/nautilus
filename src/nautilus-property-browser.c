@@ -1738,13 +1738,15 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 {
 	char *reset_image_file_name;
 	GtkWidget *reset_image;
-	GdkPixbuf *reset_pixbuf;
+	GdkPixbuf *reset_pixbuf, *reset_chit;
 
 	reset_image_file_name = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
 	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name);
+	reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE);
+	
 	g_free (reset_image_file_name);
 
-	reset_image = labeled_image_new (NULL, reset_pixbuf, RESET_IMAGE_NAME, 0);
+	reset_image = labeled_image_new (NULL, reset_chit, RESET_IMAGE_NAME, 0);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
 	nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,

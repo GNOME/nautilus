@@ -1,3 +1,9 @@
+2001-02-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (add_reset_property):
+	fixed bug 7021, reset in colors pane messed up, by adding a call
+	to turn the raw pixbuf into a property chit.
+	
 2001-02-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* .cvsignore:
