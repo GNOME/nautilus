@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_ZOOMABLE_H
 #define NAUTILUS_ZOOMABLE_H
 
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtkwidget.h>
 

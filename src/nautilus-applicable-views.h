@@ -30,7 +30,7 @@
 
 #include <glib.h>
 #include <libgnomevfs/gnome-vfs-types.h>
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 #include <libnautilus/nautilus-directory.h>
 
 typedef struct NautilusNavigationInfo NautilusNavigationInfo;

@@ -30,7 +30,7 @@
 #define LIBNAUTILUS_H
 
 #include <bonobo.h>
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 #include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/ntl-view-frame.h>

@@ -30,7 +30,7 @@
 #ifndef NTL_VIEW_FRAME_H
 #define NTL_VIEW_FRAME_H
 
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtkwidget.h>
 

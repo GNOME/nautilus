@@ -34,7 +34,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkbin.h>
 #include <bonobo.h>
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 
 #ifdef __cplusplus
 extern "C" {
