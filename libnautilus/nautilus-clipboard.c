@@ -23,13 +23,13 @@
  *
  * Author: Rebecca Schulman <rebecka@eazel.com>
  */
-#include<config.h>
-#include<gtk/gtksignal.h>
-#include<gtk/gtkwidget.h>
-#include<gtk/gtkeditable.h>
-#include<gtk/gtkscrolledwindow.h>
-#include<gnome.h>
-#include<bonobo/bonobo-control.h>
+#include <config.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkwidget.h>
+#include <gtk/gtkeditable.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gnome.h>
+#include <bonobo/bonobo-control.h>
 
 #include "nautilus-clipboard.h"
 

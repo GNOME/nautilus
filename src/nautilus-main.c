@@ -69,6 +69,10 @@ main(int argc, char *argv[])
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
 	
+	/* Initialize gettext support */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+	
 	/* Initialize the services that we use. */
 	CORBA_exception_init (&ev);
 

@@ -70,6 +70,10 @@ int main(int argc, char *argv[])
 	CORBA_ORB orb;
 	CORBA_Environment ev;
 	
+	/* Initialize gettext support */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+	
 	CORBA_exception_init(&ev);
 	
         gnome_init_with_popt_table("nautilus-hardware-view", VERSION, 

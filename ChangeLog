@@ -1,3 +1,14 @@
+2000-05-01  Kjartan Maraas  <kmaraas@gnu.org>
+
+	* libnautilus/nautilus-clipboard.c: Cosmetic change.
+	* src/Makefile.am: Added -DGNOMELOCALEDIR to $INCLUDES.
+	* src/ntl-main.c: Added calls to bindtextdomain() and 
+	textdomain() to make the translations work.
+	* components/help/hyperbola-main.c: Same here.
+	* components/help/Makefile.am: Here as well. This should be
+	done for any main() function in any module containing text
+	to be translated.
+		
 2000-05-01  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-changes-queue.c:

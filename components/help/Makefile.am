@@ -8,6 +8,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(XML_CFLAGS) \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\"
 
 LDADD =\
