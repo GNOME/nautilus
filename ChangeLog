@@ -1,3 +1,11 @@
+2002-08-15  Dave Camp  <dave@ximian.com>
+
+	* libnautilus/nautilus-clipboard.c (select_all_callback): Save the 
+	source so the idle callback can cancel the weak ref.
+	(select_all_idle_callback): Cancel the weak ref so the source
+	isn't destroyed twice.
+	This should fix #74403.
+
 2002-08-15  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (icon_set_position):
@@ -93,6 +101,18 @@
 	  of stuff for anything that is monitoring file information.
 	(nautilus_directory_monitor_add_internal) : add a mime-db monitor if
 	  necessary.
+
+2002-08-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(draw_label_layout): Don't draw a drop shadow on selected text.
+	* libnautilus-private/nautilus-icon-container.c: (style_set): Call
+	setup_label_gcs().
+	(setup_label_gcs): Use the text color from the gtk theme as a
+	fallback for the selection text color.
+	(nautilus_icon_container_theme_changed): Make the
+	highlight_color_rgba a little bit transparent when falling back to
+	the gtk theme.
 
 2002-08-09  Dave Camp  <dave@ximian.com>
 

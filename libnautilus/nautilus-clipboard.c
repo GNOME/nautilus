@@ -96,23 +96,35 @@ select_all (GtkEditable *editable)
 	gtk_editable_select_region (editable, 0, -1);
 }
 
-static gboolean
-select_all_idle_callback (gpointer callback_data)
-{
-	GtkEditable *editable;
-
-	editable = GTK_EDITABLE (callback_data);
-
-	select_all (editable);
-
-	return FALSE;
-}
-
 static void
 idle_source_destroy_callback (gpointer data,
 			      GObject *where_the_object_was)
 {
 	g_source_destroy (data);
+}
+
+static gboolean
+select_all_idle_callback (gpointer callback_data)
+{
+	GtkEditable *editable;
+	GSource *source;
+
+	editable = GTK_EDITABLE (callback_data);
+
+	source = g_object_get_data (G_OBJECT (editable), 
+				    "clipboard-select-all-source");
+
+	g_object_weak_unref (G_OBJECT (editable), 
+			     idle_source_destroy_callback,
+			     source);
+	
+	g_object_set_data (G_OBJECT (editable), 
+			   "clipboard-select-all-source",
+			   NULL);
+
+	select_all (editable);
+
+	return FALSE;
 }
 
 static void
@@ -128,6 +140,11 @@ select_all_callback (BonoboUIComponent *ui,
 
 	editable = GTK_EDITABLE (callback_data);
 
+	if (g_object_get_data (G_OBJECT (editable), 
+			       "clipboard-select-all-source")) {
+		return;
+	}
+
 	source = g_idle_source_new ();
 	g_source_set_callback (source, select_all_idle_callback, editable, NULL);
 	g_object_weak_ref (G_OBJECT (editable),
@@ -135,6 +152,10 @@ select_all_callback (BonoboUIComponent *ui,
 			   source);
 	g_source_attach (source, NULL);
 	g_source_unref (source);
+
+	g_object_set_data (G_OBJECT (editable),
+			   "clipboard-select-all-source", 
+			   source);
 }
 
 static void
