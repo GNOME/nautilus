@@ -26,7 +26,6 @@
 #include <config.h>
 #include <applet-widget.h>
 #include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-buffered-widget.h>
 #include <libnautilus-extensions/nautilus-graphic-effects.h>
 #include <libgnome/gnome-exec.h>
 #include <gtk/gtkobject.h>
@@ -104,8 +103,6 @@ image_leave_event (GtkWidget *event_box,
 	
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (client_data), icon_pixbuf);
 	gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", FALSE);
-	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (client_data), 0);
-	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (client_data), 0);
 
 	return TRUE;
 }
@@ -142,7 +139,7 @@ set_is_launching (gboolean state)
 	window_set_cursor_for_state (get_root_window (), is_launching);
 	window_set_cursor_for_state (GTK_WIDGET (icon_event_box)->window, is_launching);	
 
-	nautilus_image_set_overall_alpha (NAUTILUS_IMAGE (icon_image), is_launching ? 128 : 255);
+	nautilus_image_set_pixbuf_opacity (NAUTILUS_IMAGE (icon_image), is_launching ? 128 : 255);
 }
 
 static gboolean
@@ -163,8 +160,6 @@ image_button_press_event (GtkWidget *event_box,
 
 	if (!get_is_launching ()) {
 		gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", GINT_TO_POINTER (TRUE));
-		nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (icon), VERTICAL_OFFSET);
-		nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (icon), HORIZONTAL_OFFSET);
 	}
 		
 	return TRUE;
@@ -182,8 +177,6 @@ image_button_release_event (GtkWidget *event_box,
 
 	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (event_box), "was-pressed"))) {
 		gtk_object_set_data (GTK_OBJECT (event_box), "was-pressed", FALSE);
-		nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (icon), 0);
-		nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (icon), 0);
 
 		if (!get_is_launching ())
 		{
@@ -285,11 +278,8 @@ main (int argc, char **argv)
 	icon_event_box = gtk_event_box_new ();
 	gtk_object_set_data (GTK_OBJECT (icon_event_box), "was-pressed", FALSE);
 
-	icon_image = nautilus_image_new ();
+	icon_image = nautilus_image_new (NULL);
 	gtk_misc_set_padding (GTK_MISC (icon_image), 2, 2);
-	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (icon_image), 0);
-	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (icon_image), 0);
-
 
 	gtk_signal_connect (GTK_OBJECT (icon_event_box), "enter_notify_event", GTK_SIGNAL_FUNC (image_enter_event), icon_image);
 	gtk_signal_connect (GTK_OBJECT (icon_event_box), "leave_notify_event", GTK_SIGNAL_FUNC (image_leave_event), icon_image);
