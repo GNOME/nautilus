@@ -1374,6 +1374,14 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     	xmlDocPtr doc;
     	xmlNodePtr node;
     	char *uri, *title, *str, *doc_path, prefix[4];
+	
+	uri = NULL;
+    	title = NULL;
+    	prefix[0] = '\1';
+    	prefix[1] = '.';
+    	prefix[2] = ' ';
+    	prefix[3] = '\0';
+	doc_path = NULL;
         
     	doc = xmlParseFile(omf_name);
     	if (doc == NULL)
@@ -1384,14 +1392,7 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
         	xmlFreeDoc(doc);
 		return;
     	}
-    
-    	uri = NULL;
-    	title == NULL;
-    	prefix[0] = '\1';
-    	prefix[1] = '.';
-    	prefix[2] = ' ';
-    	prefix[3] = '\0';
-    
+        
     	for(node = doc->root->childs->childs; node != NULL;
             node = node->next) {
         	if (!strcmp(node->name, "identifier")) {
