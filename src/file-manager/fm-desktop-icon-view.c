@@ -394,14 +394,6 @@ reset_background_callback (BonoboUIComponent *component,
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
 
-static void
-quit_desktop_callback (BonoboUIComponent *component, 
-		       gpointer data, 
-		       const char *verb)
-{
-	nautilus_application_close_desktop ();
-}
-
 static gboolean
 trash_link_is_selection (FMDirectoryView *view)
 {
@@ -1114,7 +1106,6 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
-		BONOBO_UI_VERB ("Quit Desktop", quit_desktop_callback),
 		BONOBO_UI_VERB_END
 	};
 

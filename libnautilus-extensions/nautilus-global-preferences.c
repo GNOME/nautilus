@@ -953,9 +953,9 @@ global_preferences_register (void)
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							   _("Use Nautilus to draw the desktop"),
-							   FALSE,
-							   FALSE,
-							   FALSE);
+							   TRUE,
+							   TRUE,
+							   TRUE);
 								  
 	/* search tradeoffs */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_METHOD,

@@ -126,8 +126,8 @@ main (int argc, char *argv[])
 {
 	gboolean kill_shell;
 	gboolean restart_shell;
-	gboolean stop_desktop;
 	gboolean start_desktop;
+	gboolean no_default_window;
 	gboolean perform_self_check;
 	poptContext popt_context;
 	const char **args;
@@ -141,8 +141,7 @@ main (int argc, char *argv[])
 #endif
 		{ "quit", '\0', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE, &restart_shell, 0, N_("Restart Nautilus."), NULL },
-		{ "stop-desktop", '\0', POPT_ARG_NONE, &stop_desktop, 0, N_("Don't draw background and icons on desktop."), NULL },
-		{ "start-desktop", '\0', POPT_ARG_NONE, &start_desktop, 0, N_("Draw background and icons on desktop."), NULL },
+		{ "no-default-window", '\0', POPT_ARG_NONE, &no_default_window, 0, N_("Only create Nautilus windows for explicity specified URIs."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -183,8 +182,8 @@ main (int argc, char *argv[])
 	/* Get parameters. */
 	kill_shell = FALSE;
 	restart_shell = FALSE;
-	stop_desktop = FALSE;
 	start_desktop = FALSE;
+	no_default_window = FALSE;
 	perform_self_check = FALSE;
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
@@ -196,7 +195,7 @@ main (int argc, char *argv[])
 		fprintf (stderr, _("nautilus: --check cannot be used with URIs.\n"));
 		return EXIT_FAILURE;
 	}
-	if (perform_self_check && (kill_shell || restart_shell || stop_desktop || start_desktop)) {
+	if (perform_self_check && (kill_shell || restart_shell || start_desktop || no_default_window)) {
 		fprintf (stderr, _("nautilus: --check cannot be used with other options.\n"));
 		return EXIT_FAILURE;
 	}
@@ -206,18 +205,6 @@ main (int argc, char *argv[])
 	}
 	if (restart_shell && args != NULL) {
 		fprintf (stderr, _("nautilus: --restart cannot be used with URIs.\n"));
-		return EXIT_FAILURE;
-	}
-	if (kill_shell && start_desktop) {
-		fprintf (stderr, _("nautilus: --quit and --start-desktop cannot be used together.\n"));
-		return EXIT_FAILURE;
-	}
-	if (restart_shell && start_desktop) {
-		fprintf (stderr, _("nautilus: --restart and --start-desktop cannot be used together.\n"));
-		return EXIT_FAILURE;
-	}
-	if (stop_desktop && start_desktop) {
-		fprintf (stderr, _("nautilus: --stop-desktop and --start-desktop cannot be used together.\n"));
 		return EXIT_FAILURE;
 	}
 
@@ -239,10 +226,7 @@ main (int argc, char *argv[])
 	 */
 	nautilus_global_preferences_initialize ();
 
-	/* if desktop flags are not explicitly specified, get it from preferences */
-	if (!start_desktop && !stop_desktop) {
-		start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, FALSE);
-	}
+	start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
 		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
@@ -260,8 +244,7 @@ main (int argc, char *argv[])
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell,
-			 stop_desktop, start_desktop,
+			 kill_shell, restart_shell, start_desktop, no_default_window,
 			 args);
 		if (is_event_loop_needed ()) {
 			bonobo_main ();

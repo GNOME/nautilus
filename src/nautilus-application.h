@@ -57,8 +57,8 @@ NautilusApplication *nautilus_application_new           (void);
 void                 nautilus_application_startup       (NautilusApplication *application,
 							 gboolean             kill_shell,
 							 gboolean	      restart_shell,
-							 gboolean             stop_desktop,
 							 gboolean             start_desktop,
+							 gboolean             no_default_window,
 							 const char          *urls[]);
 						 
 GSList		*nautilus_application_windows (void);

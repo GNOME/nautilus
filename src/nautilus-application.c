@@ -298,8 +298,8 @@ void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
 			      gboolean restart_shell,
-			      gboolean stop_desktop,
 			      gboolean start_desktop,
+			      gboolean no_default_window,
 			      const char *urls[])
 {
 	CORBA_Environment ev;
@@ -425,16 +425,12 @@ nautilus_application_startup (NautilusApplication *application,
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
 
-		if (stop_desktop) {
-			Nautilus_Shell_stop_desktop (shell, &ev);
-		}
-
 	  	/* Create the other windows. */
 		if (urls != NULL) {
 			url_list = nautilus_make_uri_list_from_strv (urls);
 			Nautilus_Shell_open_windows (shell, url_list, &ev);
 			CORBA_free (url_list);
-		} else if (!stop_desktop) {
+		} else if (!no_default_window) {
 			Nautilus_Shell_open_default_window (shell, &ev);
 		}
 	}
@@ -567,7 +563,7 @@ desktop_changed_callback (gpointer user_data)
 	NautilusApplication *application;
 	
 	application = NAUTILUS_APPLICATION (user_data);
-	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, FALSE)) {
+	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE)) {
 		nautilus_application_open_desktop (application);
 	} else {
 		nautilus_application_close_desktop ();
