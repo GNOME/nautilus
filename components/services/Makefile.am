@@ -1,2 +1,2 @@
-SUBDIRS = startup install
+SUBDIRS = trilobite startup install
 

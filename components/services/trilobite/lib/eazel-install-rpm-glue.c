@@ -26,6 +26,10 @@
  */
 
 #include <config.h>
+#include <rpm/rpmlib.h>
+#include <rpm/rpmurl.h>
+#include "helixcode-install-utils.h"
+#include "eazel-install-xml-package-list.h"
 #include "eazel-install-rpm-glue.h"
 
 gboolean

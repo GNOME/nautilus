@@ -29,10 +29,6 @@
 #define __EAZEL_SERVICES__RPM_GLUE_H__
 
 #include "eazel-install-types.h"
-#include "helixcode-install-utils.h"
-#include "eazel-install-xml-package-list.h"
-#include <rpm/rpmlib.h>
-#include <rpm/rpmurl.h>
 
 gboolean install_new_packages (InstallOptions* iopts);
 gboolean uninstall_packages (InstallOptions* iopts);
