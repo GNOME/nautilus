@@ -1,3 +1,11 @@
+2000-09-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-location-bar.c: (accumulate_name),
+	(try_to_expand_path):
+	fixed bug where it couldn't expand uris containing blanks or other
+	escaped characters, by calling gnome_vfs_unescape_string on the
+	basename before using it for comparison.
+	
 2000-09-13  Mathieu Lacage  <mathieu@eazel.com>
 
 	* src/file-manager/Makefile.am: fix build for strange prefix.

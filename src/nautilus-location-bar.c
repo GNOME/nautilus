@@ -211,6 +211,7 @@ accumulate_name(char *full_name, char *candidate_name)
 			*--str1 = '\0';
 		}
 	}
+	
 	return result_name;
 }
 
@@ -228,7 +229,8 @@ try_to_expand_path(GtkEditable *editable)
 	int base_length;
 	int current_path_length;
 	int offset;
-	const char *base_name;
+	const char *base_name_ptr;
+	char *base_name;
 	char *user_location;
 	char *current_path;
 	char *dir_name;
@@ -249,10 +251,11 @@ try_to_expand_path(GtkEditable *editable)
 
 	uri = gnome_vfs_uri_new (current_path);
 	
-	base_name = gnome_vfs_uri_get_basename (uri);
-	if (base_name)
+	base_name_ptr = gnome_vfs_uri_get_basename (uri);
+	if (base_name_ptr) {
+		base_name = gnome_vfs_unescape_string (base_name_ptr, NULL);
 		base_length = strlen (base_name);
-	else {
+	} else {
 		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
 		return;	
@@ -265,7 +268,8 @@ try_to_expand_path(GtkEditable *editable)
 	result = gnome_vfs_directory_list_load (&list, dir_name,
 					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
 	if (result != GNOME_VFS_OK) {
-		g_free(dir_name);
+		g_free (dir_name);
+		g_free (base_name);
 		gnome_vfs_uri_unref(uri);
 		g_free(current_path);
 		return;
@@ -297,10 +301,11 @@ try_to_expand_path(GtkEditable *editable)
 		g_free (expand_text);
 	}
 	
-	g_free(dir_name);
-	g_free(current_path);
-	g_free(user_location);
-	gnome_vfs_directory_list_destroy(list);
+	g_free (dir_name);
+	g_free (base_name);
+	g_free( current_path);
+	g_free (user_location);
+	gnome_vfs_directory_list_destroy (list);
 }
 
 /* Until we have a more elegant solution, this is how we figure out if
