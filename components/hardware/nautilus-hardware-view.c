@@ -438,7 +438,7 @@ setup_form_title (NautilusHardwareView *view,
 	if (image_name != NULL) {
  		file_name = gnome_program_locate_file (
                         NULL, GNOME_FILE_DOMAIN_PIXMAP, image_name, TRUE, NULL);
-
+		
 		if (file_name != NULL) {
 			temp_widget = gtk_image_new_from_file (file_name);
 			gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
@@ -448,7 +448,7 @@ setup_form_title (NautilusHardwareView *view,
 	}
 	
  	temp_widget = gtk_label_new (title_text);
-	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_X_LARGE);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_XX_LARGE);
 
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	
 	gtk_widget_show (temp_widget);
@@ -531,6 +531,7 @@ setup_overview_form (NautilusHardwareView *view)
 		
 		temp_widget = gtk_label_new (temp_text);
 		eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
+		gtk_label_set_justify (GTK_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
 		g_free(temp_text);
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
 		gtk_widget_show (temp_widget);
@@ -574,15 +575,12 @@ setup_overview_form (NautilusHardwareView *view)
                                 
                                 /* Set the icon depending on the type of device */
                                 if (strcmp (ide_media, "disk\n") == 0) {
-                                        file_name = gnome_program_locate_file (NULL,
-						GNOME_FILE_DOMAIN_PIXMAP,
-						"document-icons/i-harddisk.png",
-						TRUE, NULL);
+                                        file_name = nautilus_pixmap_file ("HD_drive.png");
                                 } else if (strcmp (ide_media, "cdrom\n") == 0) {
                                         file_name = nautilus_pixmap_file ("CD_drive.png");
                                 } else {
                                         /* some other device ... still set an icon */
-                                        file_name = nautilus_pixmap_file ("i-harddisk.png");
+                                        file_name = nautilus_pixmap_file ("HD_drive.png");
                                 }
                                 
 				pixmap_widget = gtk_image_new_from_file (file_name);
