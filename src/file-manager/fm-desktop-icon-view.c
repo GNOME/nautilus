@@ -219,7 +219,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 }
 
 static void
-fm_desktop_icon_view_destroy (GtkObject *object)
+fm_desktop_icon_view_finalize (GObject *object)
 {
 	FMDesktopIconView *icon_view;
 
@@ -249,8 +249,8 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	delete_all_mount_links ();
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
-					      home_uri_changed,
-					      icon_view);
+					 home_uri_changed,
+					 icon_view);
 
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
@@ -263,27 +263,19 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	
 	g_free (icon_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
-fm_desktop_icon_view_class_init (FMDesktopIconViewClass *klass)
+fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 {
-	GtkObjectClass		*object_class;
-	FMDirectoryViewClass	*fm_directory_view_class;
-	FMIconViewClass		*fm_icon_view_class;
+	G_OBJECT_CLASS (class)->finalize = fm_desktop_icon_view_finalize;
 
-	object_class		= GTK_OBJECT_CLASS (klass);
-	fm_directory_view_class	= FM_DIRECTORY_VIEW_CLASS (klass);
-	fm_icon_view_class	= FM_ICON_VIEW_CLASS (klass);
+	FM_DIRECTORY_VIEW_CLASS (class)->merge_menus = real_merge_menus;
+	FM_DIRECTORY_VIEW_CLASS (class)->update_menus = real_update_menus;
+	FM_DIRECTORY_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
 
-	object_class->destroy = fm_desktop_icon_view_destroy;
-
-	fm_directory_view_class->merge_menus = real_merge_menus;
-	fm_directory_view_class->update_menus = real_update_menus;
-	fm_directory_view_class->supports_zooming = real_supports_zooming;
-
-	fm_icon_view_class->supports_auto_layout = real_supports_auto_layout;
+	FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
 }
 
 static void

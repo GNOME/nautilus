@@ -1,3 +1,20 @@
+2002-02-27  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	Change file-types-capplet to gnome2-file-types-properties.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_finalize), (fm_desktop_icon_view_class_init):
+	Use finalize instead of destroy.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_update_icon_container_fonts): Get rid of unneeded
+	nautilus_icon_container_request_update_all call.
+
+	* src/Makefile.am:
+	* src/nautilus-about.c: Remove.
+	* src/nautilus-about.h: Remove.
+
 2002-02-27  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* libnautilus-private/nautilus-bookmarks.c: add missing include

@@ -50,6 +50,7 @@
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 
@@ -112,7 +113,7 @@ struct NautilusProgramChooserDetails {
 #define NAME_COLUMN_INITIAL_WIDTH	 200
 
 /* Program name of the mime type capplet */
-#define FILE_TYPES_CAPPLET_NAME 	"file-types-capplet"
+#define FILE_TYPES_CAPPLET_NAME 	"gnome2-file-types-properties"
 
 /* This number controls a maximum character count for a file name that is
  * displayed as part of a dialog (beyond this it will be truncated). 
@@ -131,10 +132,8 @@ static gboolean program_file_pair_is_in_short_list_for_file 	 (ProgramFilePair *
 
 static GType program_file_pair_get_type (void);
 
-static void     nautilus_program_chooser_class_init              (NautilusProgramChooserClass *klass);
-static void     nautilus_program_chooser_init                    (NautilusProgramChooser      *program_chooser);
-
-EEL_CLASS_BOILERPLATE (NautilusProgramChooser, nautilus_program_chooser, GTK_TYPE_DIALOG);
+GNOME_CLASS_BOILERPLATE (NautilusProgramChooser, nautilus_program_chooser,
+			 GtkDialog, GTK_TYPE_DIALOG);
 
 static gboolean
 program_file_pair_compute_status (ProgramFilePair *pair)
@@ -1273,7 +1272,7 @@ nautilus_program_chooser_class_init (NautilusProgramChooserClass *klass)
 }
 
 static void
-nautilus_program_chooser_init (NautilusProgramChooser *program_chooser)
+nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 {
 	GtkWidget *dialog_vbox, *scrolled_window;
 	GtkWidget *framed_hbox;

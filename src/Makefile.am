@@ -40,7 +40,6 @@ nautilus_shell_interface_idl_sources =		\
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
-	nautilus-about.c			\
 	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
@@ -75,7 +74,6 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
-	nautilus-about.h			\
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
 	nautilus-bookmark-list.h		\

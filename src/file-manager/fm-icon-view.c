@@ -2336,8 +2336,6 @@ fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 	nautilus_icon_container_set_font_name (icon_container, font_name);
 
 	g_free (font_name);
-	
-	nautilus_icon_container_request_update_all (icon_container);
 }
 
 static int default_zoom_level_font_size = 12;
