@@ -424,7 +424,7 @@ nautilus_file_is_self_owned (NautilusFile *file)
 }
 
 /**
- * nautilus_file_get_parent_uri_as_string:
+ * nautilus_file_get_parent_uri:
  * 
  * Get the uri for the parent directory.
  * 
@@ -432,9 +432,9 @@ nautilus_file_is_self_owned (NautilusFile *file)
  * 
  * Return value: A string representing the parent's location.
  * If the parent is NULL, returns the empty string.
- */
-static char *
-nautilus_file_get_parent_uri_as_string (NautilusFile *file) 
+ */ 
+char *
+nautilus_file_get_parent_uri (NautilusFile *file) 
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
@@ -2986,7 +2986,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 
 	if (strcmp (attribute_name, "parent_uri") == 0) {
-		return nautilus_file_get_parent_uri_as_string (file);
+		return nautilus_file_get_parent_uri (file);
 	}
 
 	if (strcmp (attribute_name, "directory") == 0) {

@@ -1,3 +1,60 @@
+2000-08-16  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2169 ("Move to Trash" menu item needs refinement)
+	Fixed bug 1742 ("Move to Trash" in search view should work)
+	Fixed bug 1745 ("Delete from Trash" in search view should work)
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_parent_uri),
+	(nautilus_file_get_string_attribute):
+	made nautilus_file_get_parent_uri, and changed its name
+	(was nautilus_file_get_parent_uri_as_string)
+	
+	* src/file-manager/fm-directory-view.h:
+	(contents_share_parent): New function pointer for subclasses 
+	to optionally override. Subclasses should override to return
+	FALSE if their contents might be from different directories.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): Wire up 
+	contents_share_parent function pointer
+	(get_nautilus_file_from_directory): New helper function to
+	get a NautilusFile from a NautilusDirectory
+	(fm_directory_is_trash): Reimplemented to call existing
+	function nautilus_file_is_in_trash and avoid duplicating code.
+	(fm_directory_view_contents_share_parent): New function, calls
+	the virtual function
+	(real_contents_share_parent): New function, default implementation
+	that returns TRUE since normal directory views' contents are all
+	in the same parent directory.
+	(all_files_in_trash): New function, checks if every file in a
+	list is in the trash
+	(fm_directory_all_selected_items_in_trash): New function, calls
+	all_files_in_trash on selection or uses shortcut if
+	fm_directory_view_contents_share_parent is true.
+	(fm_directory_view_can_move_file_to_trash): Renamed from
+	fm_directory_can_move_to_trash, and now takes a file parameter
+	since the answer might vary on a file-by-file basis.
+	(fm_directory_view_confirm_deletion): Spruced up wording, and
+	now takes a list of uris instead of a list of files, and now
+	separately handles the case where only some of the selected files
+	had to be deleted immediately.
+	(fm_directory_view_trash_or_delete_selection): Rewrote to handle
+	three types of files separately: files that can be moved to the
+	trash, files already in the trash, and files that have to be
+	deleted in place.
+	(compute_menu_item_info): Changed "Delete..." to "Delete from Trash".
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(reset_bonobo_trash_delete_menu):
+	use "Delete from Trash" only if all selected items in trash.
+	(fm_directory_view_real_update_menus): Update "Delete from Trash"
+	menu item also. Its sensitivity wasn't updating properly due to
+	this missing line.
+	* src/file-manager/fm-search-list-view.c:
+	(real_contents_share_parent): Overridden to return FALSE.
+	(fm_search_list_view_initialize_class): wire up function pointer
+	for contents_share_parent
+
 2000-08-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

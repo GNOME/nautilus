@@ -59,6 +59,7 @@ static void	real_removing_file 			 (FMListView 	   *view,
 							  NautilusFile 	   *file);
 static gboolean real_file_still_belongs 		 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
+static gboolean	real_contents_share_parent 		 (FMDirectoryView  *view);
 static int  	real_get_number_of_columns           	 (FMListView       *list_view);
 static int  	real_get_link_column                 	 (FMListView       *list_view);
 static char *   real_get_default_sort_attribute      	 (FMListView       *view);
@@ -104,6 +105,8 @@ fm_search_list_view_initialize_class (gpointer klass)
   	fm_directory_view_class->update_menus =	real_update_menus;
 	fm_directory_view_class->supports_properties = 
 		real_supports_properties;
+	fm_directory_view_class->contents_share_parent = 
+		real_contents_share_parent;
 	fm_directory_view_class->create_selection_context_menu_items = 
 		real_create_selection_context_menu_items;
 	fm_directory_view_class->get_emblem_names_to_exclude = 
@@ -311,6 +314,13 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	g_free (fake_file_name);
 	g_free (real_file_uri);
 	nautilus_file_unref (real_file);
+}
+
+static gboolean
+real_contents_share_parent (FMDirectoryView *view)
+{
+	/* Search view can contain items from multiple directories. */
+	return FALSE;
 }
 
 static void

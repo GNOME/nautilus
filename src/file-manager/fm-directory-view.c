@@ -188,6 +188,8 @@ static void           metadata_ready_callback                                   
 static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
 										   gboolean 		     state,
 										   gpointer		     callback_data);
+static gboolean	      fm_directory_view_contents_share_parent 			  (FMDirectoryView 	    *view);
+static gboolean	      real_contents_share_parent 			  	  (FMDirectoryView 	    *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -277,6 +279,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
 	klass->supports_properties = fm_directory_view_real_supports_properties;
+	klass->contents_share_parent = real_contents_share_parent;
 
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -1830,46 +1833,93 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 	nautilus_g_list_free_deep (uris);
 }
 
+static NautilusFile *
+get_nautilus_file_from_directory (NautilusDirectory *directory)
+{
+	char *uri;
+	NautilusFile *result;
+
+	uri = nautilus_directory_get_uri (directory);
+	result = nautilus_file_get (uri);
+	g_free (uri);
+	return result;
+}
+
 static gboolean
 fm_directory_is_trash (FMDirectoryView *view)
 {
-	/* Return TRUE if directory view is Trash or inside Trash */
-	char *directory;
-	GnomeVFSURI *directory_uri;
-	GnomeVFSURI *trash_dir_uri;
+	NautilusFile *directory_as_file;
 	gboolean result;
 
-	trash_dir_uri = NULL;
-	directory = fm_directory_view_get_uri (view);
-	directory_uri = gnome_vfs_uri_new (directory);
-
-	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
-
-	if (result) {
-		result = (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
-			|| gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE));
-	}
-
-	if (trash_dir_uri) {
-		gnome_vfs_uri_unref (trash_dir_uri);
-	}
-	gnome_vfs_uri_unref (directory_uri);
-	g_free (directory);
+	directory_as_file = get_nautilus_file_from_directory 
+		(fm_directory_view_get_model (view));
+	result = nautilus_file_is_in_trash (directory_as_file);
+	nautilus_file_unref (directory_as_file);
 
 	return result;
 }
 
 static gboolean
-fm_directory_can_move_to_trash (FMDirectoryView *view)
+fm_directory_view_contents_share_parent (FMDirectoryView *view)
 {
-	/* Return TRUE if we can get a trash directory on the same volume */
+	return NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view,
+				      contents_share_parent, (view));
+}
+
+static gboolean
+real_contents_share_parent (FMDirectoryView *view)
+{
+	return TRUE;
+}
+
+static gboolean
+all_files_in_trash (GList *files)
+{
+	GList *node;
+
+	/* Result is ambiguous if called on NULL, so disallow. */
+	g_return_val_if_fail (files != NULL, FALSE);
+
+	for (node = files; node != NULL; node = node->next) {
+		if (!nautilus_file_is_in_trash (NAUTILUS_FILE (node->data))) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
+fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
+{
+	GList *selection;
+	gboolean result;
+
+	/* If the contents share a parent directory, we need only
+	 * check that parent directory. Otherwise we have to inspect
+	 * each selected item.
+	 */
+	if (fm_directory_view_contents_share_parent (view)) {
+		result = fm_directory_is_trash (view);
+	} else {
+		selection = fm_directory_view_get_selection (view);
+		result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
+		nautilus_file_list_free (selection);
+	}
+
+	return result;
+}
+
+static gboolean
+fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *file)
+{
+	/* Return TRUE if we can get a trash directory on the same volume as this file. */
 	char *directory;
 	GnomeVFSURI *directory_uri;
 	GnomeVFSURI *trash_dir_uri;
 	gboolean result;
 
-	directory = fm_directory_view_get_uri (view);
+	directory = nautilus_file_get_parent_uri (file);
 	if (directory == NULL) {
 		return FALSE;
 	}
@@ -1896,37 +1946,40 @@ fm_directory_can_move_to_trash (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *files)
+fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean all)
 {
 	char *prompt;
-	int file_count;
-	GnomeVFSURI *uri;
-	char *text_uri;
-	char *short_name;
+	int uri_count;
+	NautilusFile *file;
+	char *file_name;
 	gboolean result;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	file_count = g_list_length (files);
-	g_assert (file_count > 0);
+	uri_count = g_list_length (uris);
+	g_assert (uri_count > 0);
 	
-	if (file_count == 1) {
+	if (uri_count == 1) {
+		file = nautilus_file_get ( (char *)uris->data);
+		file_name = nautilus_file_get_name (file);
+		nautilus_file_unref (file);
 
-		text_uri = nautilus_file_get_name (NAUTILUS_FILE (files->data));
-		uri = gnome_vfs_uri_new (text_uri);
-		g_free (text_uri);
-
-		short_name = gnome_vfs_uri_extract_short_name (uri);
-		prompt = g_strdup_printf (_("Are you sure you want to permanently "
-					    "remove item \"%s\"?"), short_name);
-		g_free (short_name);
-		gnome_vfs_uri_unref (uri);
+		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the trash. Do "
+					    "you want to delete it immediately?"), file_name);
+		g_free (file_name);
 	} else {
-		prompt = g_strdup_printf (_("Are you sure you want to permanently "
-					    "remove the %d selected items?"), file_count);
+		if (all) {
+			prompt = g_strdup_printf (_("The %d selected items cannot be moved "
+						    "to the trash. Do you want to delete them "
+						    "immediately?"), uri_count);
+		} else {
+			prompt = g_strdup_printf (_("%d of the selected items cannot be moved "
+						    "to the trash. Do you want to delete those "
+						    "%d items immediately?"), uri_count, uri_count);
+		}
 	}
 
-	result = nautilus_simple_dialog (GTK_WIDGET (view), prompt, _("Deleting items"),
+	result = nautilus_simple_dialog (GTK_WIDGET (view), prompt, _("Can't Move to Trash"),
 					 _("Delete"), _("Cancel"), NULL) == 0;
 
 	g_free (prompt);
@@ -1936,25 +1989,61 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *files)
 static void
 fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files)
 {
-	GList *uris;
+	GList *file_node;
+	NautilusFile *file;
+	char *file_uri;
+	GList *moveable_uris;
+	GList *unmoveable_uris;
+	GList *in_trash_uris;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (files != NULL);
 
-	/* create a list of URIs */
-	uris = NULL;
-	g_list_foreach (files, append_uri_one, &uris);    
+	/* Collect three lists: (1) items that can be moved to trash,
+	 * (2) items that can only be deleted in place, and (3) items that
+	 * are already in trash. 
+	 * 
+	 * Always move (1) to trash if non-empty.
+	 * Delete (3) only if (1) and (2) are non-empty, otherwise ignore (3).
+	 * Ask before deleting (2) if non-empty.
+	 */
+	moveable_uris = NULL;
+	unmoveable_uris = NULL;
+	in_trash_uris = NULL;
+	
+	for (file_node = files; file_node != NULL; file_node = file_node->next) {
+		file = NAUTILUS_FILE (file_node->data);
+		file_uri = nautilus_file_get_uri (file);
+		
+		if (fm_directory_view_can_move_file_to_trash (view, file)) {
+			moveable_uris = g_list_prepend (moveable_uris, file_uri);
+		} else if (nautilus_file_is_in_trash (file)) {
+			in_trash_uris = g_list_prepend (in_trash_uris, file_uri);
+		} else {
+			unmoveable_uris = g_list_prepend (unmoveable_uris, file_uri);
+		}
+	}
 
-	g_assert (g_list_length (uris) == g_list_length (files));
+	if (moveable_uris != NULL) {
+		fs_move_to_trash (moveable_uris, GTK_WIDGET (view));
+	}
 
-	if (fm_directory_can_move_to_trash (view)) {
-		fs_move_to_trash (uris, GTK_WIDGET (view));
-	} else if (fm_directory_is_trash (view)
-		|| fm_directory_view_confirm_deletion (view, files)) {
-		fs_delete (uris, GTK_WIDGET (view));
+	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
+		/* FIXME: Confirm here? */
+		fs_delete (in_trash_uris, GTK_WIDGET (view));
+	}
+
+	if (unmoveable_uris != NULL) {
+		if (fm_directory_view_confirm_deletion (view, 
+							unmoveable_uris,
+							moveable_uris == NULL)) {
+			fs_delete (unmoveable_uris, GTK_WIDGET (view));
+		}
 	}
 	
-	nautilus_g_list_free_deep (uris);
+	nautilus_g_list_free_deep (moveable_uris);
+	nautilus_g_list_free_deep (unmoveable_uris);
+	nautilus_g_list_free_deep (in_trash_uris);
 }
 
 static void
@@ -2200,10 +2289,10 @@ compute_menu_item_info (FMDirectoryView *directory_view,
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
 		name = g_strdup (_("New Folder"));
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
-		name = g_strdup (_("_Delete..."));
+		name = g_strdup (_("Delete from _Trash"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
-		name = g_strdup (_("_Move to Trash"));
+		name = g_strdup (_("Move to _Trash"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
@@ -2550,7 +2639,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
 
 	/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
-	if (fm_directory_can_move_to_trash (view)) {
+	if (!fm_directory_all_selected_items_in_trash (view)) {
 		append_gtk_menu_item_with_view (view, menu, files,
 					    	FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
 					    	trash_callback, files);
@@ -2722,7 +2811,7 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	g_free (label);
 }
 
-/* Put up either the "Move to Trash" or the "Delete selection" menu item. Can't
+/* Put up either the "Move to Trash" or the "Delete from Trash" menu item. Can't
  * use the menu-item-updating mechanism used for other dynamic menus here because
  * the hint and control key both change, which the menu-item-updating mechanism
  * doesn't currently handle. Could rewrite it. Also, maybe they should use the
@@ -2736,7 +2825,7 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 	bonobo_ui_handler_menu_remove (ui_handler, 
 		 FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
 
-	if (fm_directory_can_move_to_trash (view)) {
+	if (!fm_directory_all_selected_items_in_trash (view)) {
 		insert_bonobo_menu_item 
 			(view,
 			 ui_handler, selection,
@@ -2750,7 +2839,7 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 			(view,
 			 ui_handler, selection,
 			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-			 _("Delete all selected items"),
+			 _("Delete all selected items permanently"),
 			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 3,
 			 0, 0,
 			 bonobo_menu_move_to_trash_callback, view);
@@ -2953,6 +3042,8 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	reset_bonobo_open_with_menu (view, handler, selection);
 	reset_bonobo_trash_delete_menu (view, handler, selection);
 
+	update_one_menu_item (view, handler, selection,
+			      FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
 	update_one_menu_item (view, handler, selection,

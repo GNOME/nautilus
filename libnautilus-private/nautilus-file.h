@@ -114,6 +114,7 @@ gboolean		nautilus_file_check_if_ready		(NautilusFile		       *file,
 /* Basic attributes for file objects. */
 char *                  nautilus_file_get_name                  (NautilusFile                  *file);
 char *                  nautilus_file_get_uri                   (NautilusFile                  *file);
+char *                  nautilus_file_get_parent_uri            (NautilusFile                  *file);
 GnomeVFSFileSize        nautilus_file_get_size                  (NautilusFile                  *file);
 GnomeVFSFileType        nautilus_file_get_file_type             (NautilusFile                  *file);
 char *                  nautilus_file_get_mime_type             (NautilusFile                  *file);
