@@ -236,7 +236,7 @@ nautilus_druid_page_start_construct (NautilusDruidPageStart *druid_page_start)
 	druid_page_start->_priv->logo_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_start->_priv->canvas)),
 				       gnome_canvas_pixbuf_get_type (),
-				       "x_set", TRUE, "y_set", TRUE,
+				       "x_in_pixels", TRUE, "y_in_pixels", TRUE,
 				       NULL);
 
 	if (druid_page_start->logo_image != NULL)
@@ -246,7 +246,7 @@ nautilus_druid_page_start_construct (NautilusDruidPageStart *druid_page_start)
 	druid_page_start->_priv->watermark_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_start->_priv->canvas)),
 				       gnome_canvas_pixbuf_get_type (),
-				       "x_set", TRUE, "y_set", TRUE,
+				       "x_in_pixels", TRUE, "y_in_pixels", TRUE,
 				       NULL);
 
 	if (druid_page_start->watermark_image != NULL)

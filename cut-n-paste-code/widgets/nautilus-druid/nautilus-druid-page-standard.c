@@ -225,7 +225,7 @@ nautilus_druid_page_standard_construct (NautilusDruidPageStandard *druid_page_st
 	druid_page_standard->_priv->logo_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_standard->_priv->canvas)),
 				       gnome_canvas_pixbuf_get_type (),
-				       "x_set", TRUE, "y_set", TRUE,
+				       "x_in_pixels", TRUE, "y_in_pixels", TRUE,
 				       NULL);
 
 	if (druid_page_standard->logo_image != NULL) {

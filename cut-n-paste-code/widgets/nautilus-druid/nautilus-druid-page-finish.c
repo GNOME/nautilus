@@ -184,13 +184,11 @@ nautilus_druid_page_finish_configure_size (NautilusDruidPageFinish *druid_page_f
 	gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
 			       "x", (gfloat) width - GNOME_PAD - LOGO_WIDTH,
 			       "y", (gfloat) GNOME_PAD,
-			       "anchor", GTK_ANCHOR_NORTH_WEST,
 			       "width", (gfloat) LOGO_WIDTH,
 			       "height", (gfloat) LOGO_WIDTH, NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->watermark_item,
 			       "x", 0.0,
 			       "y", watermark_ypos,
-			       "anchor", GTK_ANCHOR_NORTH_WEST,
 			       "width", watermark_width,
 			       "height", watermark_height,
 			       NULL);
@@ -221,14 +219,24 @@ nautilus_druid_page_finish_construct (NautilusDruidPageFinish *druid_page_finish
 				       gnome_canvas_rect_get_type (), NULL);
 	druid_page_finish->_priv->logo_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_finish->_priv->canvas)),
-				       gnome_canvas_image_get_type (), NULL);
+				       gnome_canvas_pixbuf_get_type (),
+				       "x_in_pixels", TRUE, "y_in_pixels", TRUE,
+				       NULL);
+
 	if (druid_page_finish->logo_image != NULL)
 		gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
-				       "image", druid_page_finish->logo_image, NULL);
+				       "pixbuf", druid_page_finish->logo_image, NULL);
+
 	druid_page_finish->_priv->watermark_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_finish->_priv->canvas)),
-				       gnome_canvas_image_get_type (),
-				       "image", druid_page_finish->watermark_image, NULL);
+				       gnome_canvas_pixbuf_get_type (),
+				       "x_in_pixels", TRUE, "y_in_pixels", TRUE,
+				       NULL);
+
+	if (druid_page_finish->watermark_image != NULL)
+		gnome_canvas_item_set (druid_page_finish->_priv->watermark_item,
+				       "pixbuf", druid_page_finish->watermark_image, NULL);
+
 	druid_page_finish->_priv->title_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_finish->_priv->canvas)),
 				       gnome_canvas_text_get_type (), 
@@ -486,9 +494,13 @@ nautilus_druid_page_finish_set_logo          (NautilusDruidPageFinish *druid_pag
 	g_return_if_fail (druid_page_finish != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
+	if (druid_page_finish->logo_image)
+		gdk_pixbuf_unref (druid_page_finish->logo_image);
+
 	druid_page_finish->logo_image = logo_image;
+	gdk_pixbuf_ref (logo_image);
 	gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
-			       "image", druid_page_finish->logo_image, NULL);
+			       "pixbuf", druid_page_finish->logo_image, NULL);
 }
 void
 nautilus_druid_page_finish_set_watermark     (NautilusDruidPageFinish *druid_page_finish,
@@ -497,7 +509,11 @@ nautilus_druid_page_finish_set_watermark     (NautilusDruidPageFinish *druid_pag
 	g_return_if_fail (druid_page_finish != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
+	if (druid_page_finish->watermark_image)
+		gdk_pixbuf_unref (druid_page_finish->watermark_image);
+
 	druid_page_finish->watermark_image = watermark;
+	gdk_pixbuf_ref (watermark);
 	gnome_canvas_item_set (druid_page_finish->_priv->watermark_item,
-			       "image", druid_page_finish->watermark_image, NULL);
+			       "pixbuf", druid_page_finish->watermark_image, NULL);
 }
