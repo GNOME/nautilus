@@ -1,3 +1,16 @@
+2001-04-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 7986 ("Paste Files" disabled in trash:)
+
+	* src/file-manager/fm-directory-view.c: 
+	(real_update_menus): Made "Paste Files" sensitivity depend
+	on is_read_only rather than can_create_files.
+
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class), (real_is_read_only):
+	Made search list view override is_read_only instead of
+	supports_creating_files.
+
 2001-04-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

@@ -3922,6 +3922,7 @@ real_update_menus (FMDirectoryView *view)
 	const char *tip, *accelerator, *label;
 	char *label_with_underscore;
 	gboolean selection_contains_special_link;
+	gboolean is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
 	gboolean can_copy_files;
@@ -3934,9 +3935,10 @@ real_update_menus (FMDirectoryView *view)
 	selection_count = g_list_length (selection);
 
 	selection_contains_special_link = special_link_in_selection (view);
+	is_read_only = fm_directory_view_is_read_only (view);
 
 	can_create_files = fm_directory_view_supports_creating_files (view);
-	can_delete_files = !fm_directory_view_is_read_only (view)
+	can_delete_files = !is_read_only
 		&& selection_count != 0
 		&& !selection_contains_special_link;
 	can_copy_files = selection_count != 0
@@ -4108,7 +4110,7 @@ real_update_menus (FMDirectoryView *view)
 	 */
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-				       can_create_files);
+				       !is_read_only);
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 
