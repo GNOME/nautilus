@@ -1,3 +1,24 @@
+2000-07-25  John Sullivan  <sullivan@eazel.com>
+
+	Note: this requires the latest gnome-vfs changes to compile.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(set_owner_and_group): Pass GNOME_VFS_FILE_INFO_DEFAULT
+	for get_file_info options.
+	(set_owner_and_group_callback): Added new_info parameter to
+	match GnomeVFS API change; use this parameter to update
+	permissions when owner/group changes, since in some cases
+	chown affects permissions.
+	(nautilus_file_set_permissions): Pass GNOME_VFS_FILE_INFO_DEFAULT
+	for get_file_info options.
+	(set_permissions_callback): Added new_info parameter to match
+	GnomeVFS API change; use this parameter to update ctime when
+	permissions change (fixes bug 1453 -- changing permissions
+	doesn't update permissions-changed date)
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_file): Improved a comment to mention
+	an existing bug number.
+
 2000-07-25  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.c:

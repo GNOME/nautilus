@@ -2920,8 +2920,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	uri = nautilus_file_get_mapped_uri (file);
 
 	if (file_is_launchable (file)) {
-		/* Launch executables to activate them. Maybe this needs to
-		 * handle script-type text tools differently?
+		/* Launch executables to activate them. */
+		/* FIXME: bugzilla.eazel.com 1773: This is a lame way to
+		 * run command-line tools.
 		 */
 		executable_path = nautilus_get_local_path_from_uri (uri);
 		nautilus_launch_application_from_command (executable_path, NULL);
