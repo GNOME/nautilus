@@ -1346,7 +1346,7 @@ get_property_names (void)
 	property_list = get_property_names_from_uri (directory_uri, property_list);
 	g_free (directory_uri);
 
-	return nautilus_g_str_list_sort (property_list);
+	return nautilus_g_str_list_alphabetize (property_list);
 }
 
 static void

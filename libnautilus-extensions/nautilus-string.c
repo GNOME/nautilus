@@ -47,6 +47,11 @@ nautilus_strchr (const char *haystack, char needle)
 int
 nautilus_strcmp (const char *string_a, const char *string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return strcmp (string_a == NULL ? "" : string_a,
 		       string_b == NULL ? "" : string_b);
 }
@@ -54,6 +59,11 @@ nautilus_strcmp (const char *string_a, const char *string_b)
 int
 nautilus_strcasecmp (const char *string_a, const char *string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return g_strcasecmp (string_a == NULL ? "" : string_a,
 		             string_b == NULL ? "" : string_b);
 }
@@ -63,6 +73,11 @@ nautilus_strcmp_case_breaks_ties (const char *string_a, const char *string_b)
 {
 	int casecmp_result;
 
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	casecmp_result = nautilus_strcasecmp (string_a, string_b);
 	if (casecmp_result != 0) {
 		return casecmp_result;
@@ -74,16 +89,27 @@ int
 nautilus_strcoll (const char *string_a, const char *string_b)
 {
 	const char *locale;
+	int result;
 	
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
+
 	locale = setlocale (LC_COLLATE, NULL);
 	
-	if (nautilus_strcmp (locale, "C") == 0 || nautilus_strcmp (locale, "POSIX") == 0) {
-		/* If locale is default "C" or "POSIX" use nautilus sorting */
+	if (locale == NULL || strcmp (locale, "C") == 0 || strcmp (locale, "POSIX") == 0) {
+		/* If locale is NULL or default "C" or "POSIX" use nautilus sorting */
 		return nautilus_strcmp_case_breaks_ties (string_a, string_b);
 	} else {
-		/* Use locale specific collated sorting */
-		return strcoll (string_a == NULL ? "" : string_a,
-		       string_b == NULL ? "" : string_b);
+		/* Use locale-specific collated sorting */
+		result = strcoll (string_a == NULL ? "" : string_a,
+				  string_b == NULL ? "" : string_b);
+		if (result != 0) {
+			return result;
+		}
+		return nautilus_strcmp (string_a, string_b);
 	}
 }
 
@@ -96,25 +122,57 @@ nautilus_str_is_empty (const char *string_or_null)
 gboolean
 nautilus_str_is_equal (const char *string_a, const char *string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL != ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return nautilus_strcmp (string_a, string_b) == 0;
 }
 
 gboolean
 nautilus_istr_is_equal (const char *string_a, const char *string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL != ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return nautilus_strcasecmp (string_a, string_b) == 0;
 }
 
 int
-nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
+nautilus_strcmp_compare_func (gconstpointer string_a, gconstpointer string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return nautilus_strcmp ((const char *) string_a,
 				(const char *) string_b);
 }
 
 int
-nautilus_istr_compare (gconstpointer string_a, gconstpointer string_b)
+nautilus_strcoll_compare_func (gconstpointer string_a, gconstpointer string_b)
 {
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
+	return nautilus_strcoll ((const char *) string_a,
+				 (const char *) string_b);
+}
+
+int
+nautilus_strcasecmp_compare_func (gconstpointer string_a, gconstpointer string_b)
+{
+	/* FIXME: Maybe we need to make this treat 'NULL < ""', or
+	 * have a flavor that does that. If we didn't have code that
+	 * already relies on 'NULL == ""', I would change it right
+	 * now.
+	 */
 	return nautilus_strcasecmp ((const char *) string_a,
 				    (const char *) string_b);
 }

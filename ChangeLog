@@ -1,3 +1,85 @@
+2000-12-12  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 650 (moving a large number of files is extremely slow)
+	by using a hash table to find metafile nodes given a file name.
+	Fixed bug 3410 (sorting not locale-sensitive) by making
+	nautilus_strcoll suitable for wider use and using it a lot more.
+
+	* libnautilus-extensions/nautilus-directory-private.h: Add a
+	new hash table for locating metafile nodes by file name.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.h: Add
+	nautilus_directory_set_metafile_contents call so the metafile
+	code will have a crack at the metafile contents right when
+	they are first read in.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_file_node): Locate the file node using the hash table,
+	and create a hash table entry when making a new file node.
+	(destroy_xml_string_key), (nautilus_directory_metafile_destroy):
+	Destroy the hash table when the directory is destroyed.
+	(nautilus_directory_rename_file_metadata): Remove the old hash
+	table entry and make a new one when the node's name is changed.
+	(nautilus_directory_set_metafile_contents): Create the hash
+	table and populate it when the metafile is read in.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c: (nautilus_strcoll):
+	Treat a locale that can't be fetched by setlocale the same as
+	locale "C" and "POSIX", fall back on strcmp if strcoll says two
+	strings are equal, so that only identical strings get a 0.
+	(nautilus_strcmp_compare_func): New name for nautilus_str_compare.
+	(nautilus_strcoll_compare_func): New function.
+	(nautilus_strcasecmp_compare_func): New name for nautilus_istr_compare.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_str_list_copy): Removed an unnecessary check for NULL.
+	(nautilus_g_str_list_alphabetize): Replaced the old sort calls
+	with this single call. It sorts in a locale-sensitive way, using
+	nautilus_strcoll.
+	
+	* libnautilus-extensions/nautilus-file.c: (compare_by_name),
+	(compare_by_directory_name), (compare_by_emblems),
+	(compare_by_type), (nautilus_file_compare_name): Use
+	nautilus_strcoll instead of nautilus_strcmp_case_breaks_ties so we
+	use local sorting conventions in locales other than "C" and
+	"POSIX".
+	(nautilus_get_user_names), (nautilus_get_group_names_including):
+	(sort_keyword_list_and_remove_duplicates): Use the new
+	nautilus_g_str_list_alphabetize to sort by locale-specific
+	conventions.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(compare_icons_by_name): Use nautilus_strcoll instead of
+	nautilus_strcmp_case_breaks_ties so we use local sorting
+	conventions in locales other than "C" and "POSIX".
+	
+	* src/file-manager/fm-properties-window.c: (get_property_names):
+	Use the new nautilus_g_str_list_alphabetize
+	* src/nautilus-window-manage-views.c: (change_selection): Use the
+	new nautilus_g_str_list_alphabetize
+	* src/nautilus-window.c: (load_view_as_menu_callback): Use the new
+	nautilus_g_str_list_alphabetize
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_done_callback),
+	(nautilus_directory_set_up_request): Use nautilus_str_compare
+	under its new name, nautilus_strcmp_compare_func.
+	
+	* components/services/install/command-line/.cvsignore: Added
+	eazel-test-types, a new generated file.
+	
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new): Use nautilus_str_compare and
+	nautilus_istr_compare under their new names,
+	nautilus_strcmp_compare_func and nautilus_strcasecmp_compare_func.
+
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	(nautilus_xml_get_child_by_name): Fixed indenting.
+	
 2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4901, Music view displays "()" when MP3 lacks

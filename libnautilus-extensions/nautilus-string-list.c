@@ -58,7 +58,12 @@ nautilus_string_list_new (gboolean case_sensitive)
 	string_list = g_new (NautilusStringList, 1);
 
 	string_list->strings = NULL;
-	string_list->compare_function = case_sensitive ? nautilus_str_compare : nautilus_istr_compare;
+	string_list->compare_function = case_sensitive
+		? nautilus_strcmp_compare_func
+		: nautilus_strcasecmp_compare_func;
+	/* FIXME: If these lists are seen by users, we want to use
+	 * strcoll, not strcasecmp.
+	 */
 
 	return string_list;
 }
@@ -218,7 +223,8 @@ nautilus_string_list_contains (const NautilusStringList	*string_list,
 
 	g_return_val_if_fail (string != NULL, FALSE);
 
-	find = g_list_find_custom (string_list->strings, (gpointer) string, string_list->compare_function);
+	find = g_list_find_custom (string_list->strings, (gpointer) string,
+				   string_list->compare_function);
 
 	return find == NULL ? FALSE : TRUE;
 }
@@ -253,7 +259,8 @@ nautilus_string_list_equals (const NautilusStringList *a,
 	for (a_iterator = a->strings, b_iterator = b->strings; 
 	     a_iterator != NULL && b_iterator != NULL;
 	     a_iterator = a_iterator->next, b_iterator = b_iterator->next) {
-		if (!str_is_equal ((const char *) a_iterator->data, (const char *) b_iterator->data, a->compare_function == b->compare_function)) {
+		if (!str_is_equal ((const char *) a_iterator->data, (const char *) b_iterator->data,
+				   a->compare_function == b->compare_function)) {
 			return FALSE;
 		}
 	}
@@ -304,7 +311,8 @@ nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list
 	g_return_val_if_fail (string != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
-		if (str_is_equal ((const char *) iterator->data, string, string_list->compare_function == nautilus_str_compare)) {
+		if (str_is_equal ((const char *) iterator->data, string,
+				  string_list->compare_function == nautilus_strcmp_compare_func)) {
 			return n;
 		}
 		

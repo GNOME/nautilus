@@ -87,7 +87,7 @@ nautilus_xml_get_child_by_name (xmlNodePtr parent,
 	}
 	for (child = nautilus_xml_get_children (parent); child != NULL; child = child->next) {
 		if (strcmp (child->name, child_name) == 0) {
-				return child;
+			return child;
 		}
 	}
 	return NULL;

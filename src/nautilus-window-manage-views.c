@@ -97,7 +97,7 @@ change_selection (NautilusWindow *window,
         /* Sort list into canonical order and check if it's the same as
          * the selection we already have.
          */
-        sorted = nautilus_g_str_list_sort (nautilus_g_str_list_copy (selection));
+        sorted = nautilus_g_str_list_alphabetize (nautilus_g_str_list_copy (selection));
         if (nautilus_g_str_list_equal (sorted, window->selection)) {
                 nautilus_g_list_free_deep (sorted);
                 return;

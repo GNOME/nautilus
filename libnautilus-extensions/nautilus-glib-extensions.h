@@ -93,8 +93,7 @@ void        nautilus_g_slist_free_deep                (GSList                   
 gboolean    nautilus_g_str_list_equal                 (GList                      *str_list_a,
 						       GList                      *str_list_b);
 GList *     nautilus_g_str_list_copy                  (GList                      *str_list);
-GList *     nautilus_g_str_list_sort                  (GList                      *str_list);
-GList *     nautilus_g_str_list_sort_case_insensitive (GList                      *str_list);
+GList *     nautilus_g_str_list_alphabetize           (GList                      *str_list);
 
 /* GString functions */
 void        nautilus_g_string_append_len              (GString                    *string,

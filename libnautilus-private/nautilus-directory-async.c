@@ -604,7 +604,8 @@ metafile_read_done_callback (GnomeVFSResult result,
 	/* The gnome-xml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, size + 1);
 	buffer[size] = '\0';
-	directory->details->metafile = xmlParseMemory (buffer, size);
+	nautilus_directory_set_metafile_contents (directory,
+						  xmlParseMemory (buffer, size));
 	g_free (buffer);
 
 	metafile_read_done (directory);
@@ -990,42 +991,42 @@ nautilus_directory_set_up_request (Request *request,
 	request->directory_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->deep_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->mime_list = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->file_info = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 	
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
-				nautilus_str_compare) != NULL) {
+				nautilus_strcmp_compare_func) != NULL) {
 		request->top_left_text = TRUE;
 		request->file_info = TRUE;
 	}
 	
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
-				nautilus_str_compare) != NULL) {
+				nautilus_strcmp_compare_func) != NULL) {
 		request->file_info = TRUE;
 		request->activation_uri = TRUE;
 	}
@@ -1033,7 +1034,7 @@ nautilus_directory_set_up_request (Request *request,
 	request->metafile |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_METADATA,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 
 	/* FIXME bugzilla.eazel.com 2435:
 	 * Some file attributes are really pieces of metadata.
@@ -1049,7 +1050,7 @@ nautilus_directory_set_up_request (Request *request,
 	request->metafile |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
-		 nautilus_str_compare) != NULL;
+		 nautilus_strcmp_compare_func) != NULL;
 }
 
 static gboolean

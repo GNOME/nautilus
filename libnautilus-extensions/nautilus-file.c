@@ -1414,7 +1414,7 @@ compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 	} else if (!sort_last_1 && sort_last_2) {
 		compare = -1;
 	} else {
-		compare = nautilus_strcmp_case_breaks_ties (name_1, name_2);
+		compare = nautilus_strcoll (name_1, name_2);
 	}
 
 	g_free (name_1);
@@ -1436,7 +1436,7 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 	directory_1 = nautilus_file_get_parent_uri_for_display (file_1);
 	directory_2 = nautilus_file_get_parent_uri_for_display (file_2);
 
-	compare = nautilus_strcmp_case_breaks_ties (directory_1, directory_2);
+	compare = nautilus_strcoll (directory_1, directory_2);
 
 	g_free (directory_1);
 	g_free (directory_2);
@@ -1513,7 +1513,7 @@ compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 	     node_1 != NULL && node_2 != NULL;
 	     node_1 = node_1->next, node_2 = node_2->next) {
 		
-		compare_result = nautilus_strcmp_case_breaks_ties (node_1->data, node_2->data);
+		compare_result = nautilus_strcoll (node_1->data, node_2->data);
 		if (compare_result != 0) {
 			break;
 		}
@@ -1573,7 +1573,7 @@ compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	type_string_1 = nautilus_file_get_type_as_string (file_1);
 	type_string_2 = nautilus_file_get_type_as_string (file_2);
 
-	result = nautilus_strcmp_case_breaks_ties (type_string_1, type_string_2);
+	result = nautilus_strcoll (type_string_1, type_string_2);
 
 	g_free (type_string_1);
 	g_free (type_string_2);
@@ -1740,7 +1740,7 @@ nautilus_file_compare_name (NautilusFile *file,
 	g_return_val_if_fail (pattern != NULL, -1);
 
 	name = nautilus_file_get_name (file);
-	result = nautilus_strcmp_case_breaks_ties (name, pattern);
+	result = nautilus_strcoll (name, pattern);
 	g_free (name);
 	return result;
 }
@@ -2868,7 +2868,7 @@ nautilus_get_user_names (void)
 
 	endpwent ();
 
-	return nautilus_g_str_list_sort (list);
+	return nautilus_g_str_list_alphabetize (list);
 }
 
 /**
@@ -3023,7 +3023,7 @@ nautilus_get_group_names_including (const char *username)
 
 	endgrent ();
 
-	return nautilus_g_str_list_sort (list);
+	return nautilus_g_str_list_alphabetize (list);
 }
 
 /**
@@ -3783,9 +3783,9 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 	GList *p;
 	GList *duplicate_link;
 	
-	keywords = g_list_sort (keywords, (GCompareFunc) nautilus_strcmp_case_breaks_ties);
-
 	if (keywords != NULL) {
+		keywords = nautilus_g_str_list_alphabetize (keywords);
+
 		p = keywords;
 		while (p->next != NULL) {
 			if (strcmp (p->data, p->next->data) == 0) {

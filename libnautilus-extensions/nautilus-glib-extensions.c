@@ -367,57 +367,29 @@ nautilus_g_str_list_equal (GList *list_a, GList *list_b)
 GList *
 nautilus_g_str_list_copy (GList *list)
 {
-	GList *p, *result;
+	GList *node, *result;
 
 	result = NULL;
 	
-	if (list == NULL) {
-		return NULL;
-	}
-
-	for (p = g_list_last (list); p != NULL; p = p->prev) {
-		result = g_list_prepend (result, g_strdup (p->data));
+	for (node = g_list_last (list); node != NULL; node = node->prev) {
+		result = g_list_prepend (result, g_strdup (node->data));
 	}
 	return result;
 }
 
-
 /**
- * nautilus_g_str_list_sort
+ * nautilus_g_str_list_alphabetize
  *
- * Sort a list of strings using strcmp.
+ * Sort a list of strings using locale-sensitive rules.
  *
  * @list: List of strings and/or NULLs.
  * 
  * Return value: @list, sorted.
  **/
 GList *
-nautilus_g_str_list_sort (GList *list)
+nautilus_g_str_list_alphabetize (GList *list)
 {
-	return g_list_sort (list, nautilus_str_compare);
-}
-
-/**
- * nautilus_g_str_list_sort_case_insensitive
- *
- * Sort a list of strings using g_strcasecmp.
- *
- * @list: List of strings and/or NULLs.
- * 
- * Return value: @list, sorted.
- **/
-
-static int
-compare_strings_case_breaks_ties (gconstpointer str_a,
-				  gconstpointer str_b)
-{
-	return nautilus_strcmp_case_breaks_ties (str_a, str_b);
-}
-
-GList *
-nautilus_g_str_list_sort_case_insensitive (GList *list)
-{
-	return g_list_sort (list, compare_strings_case_breaks_ties);
+	return g_list_sort (list, (GCompareFunc) nautilus_strcoll);
 }
 
 /**
@@ -936,8 +908,8 @@ destroy_deep_helper (gpointer key, gpointer value, gpointer data)
 
 void
 nautilus_g_hash_table_destroy_deep_custom (GHashTable *hash_table,
-					GFunc key_free_func, gpointer key_free_data,
-					GFunc value_free_func, gpointer value_free_data)
+					   GFunc key_free_func, gpointer key_free_data,
+					   GFunc value_free_func, gpointer value_free_data)
 {
 	HashTableFreeFuncs free_funcs;
 	

@@ -54,6 +54,7 @@ struct NautilusDirectoryDetails
 	/* The metadata. */
 	gboolean metafile_read;
 	xmlDoc *metafile;
+	GHashTable *metafile_node_hash;
 	GHashTable *metadata_changes;
 
 	/* State for reading and writing metadata. */

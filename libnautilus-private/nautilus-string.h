@@ -35,23 +35,27 @@
 
 /* NULL is allowed for all the str parameters to these functions. */
 
-/* Versions of basic string functions that allow NULL. */
+/* Versions of basic string functions that allow NULL, and handle
+ * cases that the standard ones get a bit wrong for our purposes.
+ */
 size_t   nautilus_strlen                  (const char    *str);
 char *   nautilus_strchr                  (const char    *haystack,
 					   char           needle);
 int      nautilus_strcmp                  (const char    *str_a,
 					   const char    *str_b);
+int      nautilus_strcoll                 (const char    *str_a,
+					   const char    *str_b);
 int      nautilus_strcasecmp              (const char    *str_a,
 					   const char    *str_b);
 int      nautilus_strcmp_case_breaks_ties (const char    *str_a,
 					   const char    *str_b);
-int	 nautilus_strcoll 		  (const char 	*string_a,
-					   const char 	*string_b);
 
-/* GCompareFunc version. */
-int      nautilus_str_compare             (gconstpointer  str_a,
+/* GCompareFunc versions. */
+int      nautilus_strcmp_compare_func     (gconstpointer  str_a,
 					   gconstpointer  str_b);
-int      nautilus_istr_compare            (gconstpointer  str_a,
+int      nautilus_strcoll_compare_func    (gconstpointer  str_a,
+					   gconstpointer  str_b);
+int      nautilus_strcasecmp_compare_func (gconstpointer  str_a,
 					   gconstpointer  str_b);
 
 /* Other basic string operations. */
@@ -110,7 +114,7 @@ char *   nautilus_str_middle_truncate     (const char    *str,
 
 
 /* Count the number of 'c' characters that occur in 'string'. */
-guint    nautilus_str_count_characters   (const char    *str,
-					  char           c);
+guint    nautilus_str_count_characters    (const char    *str,
+					   char           c);
 
 #endif /* NAUTILUS_STRING_H */

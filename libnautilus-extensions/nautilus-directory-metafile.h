@@ -25,6 +25,9 @@
 #include "nautilus-directory.h"
 #include <gnome-xml/tree.h>
 
+void     nautilus_directory_set_metafile_contents          (NautilusDirectory *directory,
+							    xmlDocPtr          metafile_contents);
+
 /* Interface for file metadata. */
 char *   nautilus_directory_get_file_metadata              (NautilusDirectory *directory,
 							    const char        *file_name,

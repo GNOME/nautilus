@@ -102,25 +102,19 @@ get_file_node (NautilusDirectory *directory,
 	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	
-	/* The root itself represents the directory.
-	 * The children represent the files.
-	 * FIXME bugzilla.eazel.com 650: 
-	 * This linear search may not be fast enough.
-	 * Eventually, we could have a pointer from the NautilusFile right to
-	 * the corresponding XML node, or maybe we won't have the XML tree
-	 * in memory at all.
-	 */
-	child = nautilus_xml_get_root_child_by_name_and_property
-		(directory->details->metafile, "FILE", "NAME", file_name);
+	child = g_hash_table_lookup (directory->details->metafile_node_hash,
+				     file_name);
 	if (child != NULL) {
 		return child;
  	}
 	
-	/* Create if necessary. */
 	if (create) {
 		root = create_metafile_root (directory);
 		child = xmlNewChild (root, NULL, "FILE", NULL);
 		xmlSetProp (child, "NAME", file_name);
+		g_hash_table_insert (directory->details->metafile_node_hash,
+				     xmlMemStrdup (file_name),
+				     child);
 		return child;
 	}
 	
@@ -510,9 +504,24 @@ destroy_metadata_changes_hash_table (GHashTable *directory_table)
 	g_hash_table_destroy (directory_table);
 }
 
+static void
+destroy_xml_string_key (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (key != NULL);
+	g_assert (user_data == NULL);
+	g_assert (value != NULL);
+
+	xmlFree (key);
+}
+
 void
 nautilus_directory_metafile_destroy (NautilusDirectory *directory)
 {
+	if (directory->details->metafile_node_hash != NULL) {
+		g_hash_table_foreach (directory->details->metafile_node_hash,
+				      destroy_xml_string_key, NULL);
+		g_hash_table_destroy (directory->details->metafile_node_hash);
+	}
 	xmlFreeDoc (directory->details->metafile);
 	destroy_metadata_changes_hash_table (directory->details->metadata_changes);
 }
@@ -633,6 +642,16 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 		file_node = get_file_node (directory, old_file_name, FALSE);
 		if (file_node != NULL) {
 			xmlSetProp (file_node, "NAME", new_file_name);
+			found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
+							      old_file_name, &key, &value);
+			g_assert (found);
+			g_assert (strcmp (key, old_file_name) == 0);
+			g_assert (value == file_node);
+			g_hash_table_remove (directory->details->metafile_node_hash,
+					     old_file_name);
+			xmlFree (key);
+			g_hash_table_insert (directory->details->metafile_node_hash,
+					     xmlMemStrdup (new_file_name), value);
 			nautilus_directory_request_write_metafile (directory);
 		}
 	} else {
@@ -654,7 +673,6 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	nautilus_update_thumbnail_file_renamed (old_file_uri, new_file_uri);
 	g_free (old_file_uri);
 	g_free (new_file_uri);
-
 }
 
 typedef struct {
@@ -875,8 +893,40 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 
 	/* FIXME bugzilla.eazel.com 2807: This is not implemented. */
 
-
 	/* delete the thumbnails for the file, if any */
 	nautilus_remove_thumbnail_for_file (file_uri);
 	g_free (file_uri);
+}
+
+void
+nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
+					  xmlDocPtr metafile_contents)
+{
+	GHashTable *hash;
+	xmlNodePtr node;
+	xmlChar *name;
+
+	g_assert (directory->details->metafile == NULL);
+	g_assert (directory->details->metafile_node_hash == NULL);
+
+	if (metafile_contents == NULL) {
+		return;
+	}
+	directory->details->metafile = metafile_contents;
+
+	/* Create and populate the node hash table. */
+	hash = g_hash_table_new (g_str_hash, g_str_equal);
+	for (node = nautilus_xml_get_root_children (metafile_contents);
+	     node != NULL; node = node->next) {
+		if (strcmp (node->name, "FILE") == 0) {
+			name = xmlGetProp (node, "NAME");
+			if (g_hash_table_lookup (hash, name) != NULL) {
+				xmlFree (name);
+				/* FIXME: Should we delete these duplicate nodes? */
+			} else {
+				g_hash_table_insert (hash, name, node);
+			}
+		}
+	}
+	directory->details->metafile_node_hash = hash;
 }

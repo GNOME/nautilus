@@ -1082,6 +1082,9 @@ load_view_as_menu_callback (NautilusFile *file,
         }
 	gnome_vfs_mime_component_list_free (components);
 
+	/* FIXME bugzilla.eazel.com 5086: This feature has not been
+	 * thoroughly tested and we need to finish it or delete it.
+	 */
 	/* Add a menu item for each special GNOME-VFS method for this
 	 * URI. This is a questionable user interface, since it's a
 	 * one way trip if you choose one of these view menu items, but
@@ -1093,7 +1096,7 @@ load_view_as_menu_callback (NautilusFile *file,
 	 */
 	method = nautilus_mime_get_short_list_methods_for_file (window->details->viewed_file);
 	if (method != NULL) {
-		label = g_strdup_printf (_("View as %s..."), method);
+		label = g_strdup_printf (_("View as %s"), method);
 		menu_item = gtk_menu_item_new_with_label (label);
 		g_free (label);
 
