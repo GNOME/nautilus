@@ -79,12 +79,28 @@ mozilla_check_environment (void)
 	return g_getenv ("MOZILLA_FIVE_HOME") != NULL;
 }
 
+extern gboolean test_make_full_uri_from_relative (void);
+
+static gboolean
+run_test_cases (void)
+{
+	return test_make_full_uri_from_relative ();
+}
+
 int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	char *registration_id;
+
+	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
+		gboolean success;
+
+		success = run_test_cases();
+
+		exit (success ? 0 : -1);
+	}
 
 
 	if (!mozilla_check_environment ()) {

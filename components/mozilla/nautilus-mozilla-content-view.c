@@ -886,53 +886,123 @@ is_uri_partial (const char *uri)
 {
 	const char *current;
 
+	/* RFC 2396 section 3.1 */
 	for (current = uri ; 
 		*current
 		&& 	((*current >= 'a' && *current <= 'z')
 			 || (*current >= 'A' && *current <= 'Z')
 			 || (*current >= '0' && *current <= '9')
-			 || ('-' == *current)) ;
+			 || ('-' == *current)
+			 || ('+' == *current)
+			 || ('.' == *current)) ;
 	     current++);
 
 	return  !(':' == *current);
 }
 
 
+/* Note: I believe this function is only needed for gnome-vfs URI schemes's
+ * (such as help:).  For http:, I believe Mozilla returns
+ * full URL's
+ */
 static char *
-make_full_uri_from_partial (const char *base_uri, const char *uri)
+make_full_uri_from_relative (const char *base_uri, const char *uri)
 {
 	char *result = NULL;
 
+	/* See section 5.2 in RFC 2396 */
+
+	/* FIXME This function does not take into account a BASE tag
+	 * in an HTML document, so its functionality differs
+	 * from what Mozilla itself would do.
+	 */
+
 	if (is_uri_partial (uri)) {
 		char *mutable_base_uri;
+
 		const char *uri_current;
 		size_t base_uri_length;
+		char *separator;
 
 		mutable_base_uri = g_strdup (base_uri);
 		uri_current = uri;
 
-		/* Handle the ".." convention for relative uri's */
+		/* Chew off Fragment and Query from the base_url */
 
-		/* trim trailing '/' */
-		base_uri_length = strlen (mutable_base_uri);
-		if ('/' == mutable_base_uri[base_uri_length-1]) {
-			mutable_base_uri[base_uri_length-1] = 0;
+		separator = strrchr (mutable_base_uri, '#'); 
+
+		if (separator) {
+			*separator = '\0';
 		}
 
-		while (0 == strncmp ("../", uri_current, 3)) {
-			char *seperator;
+		separator = strrchr (mutable_base_uri, '?');
 
-			uri_current += 3;
-			seperator = strrchr (mutable_base_uri, '/');
-			if (seperator) {
-				*seperator = '\0';
-			} else {
-				/* <shrug> */
-				break;
+		if (separator) {
+			*separator = '\0';
+		}
+
+		/* Relative URI's beginning with '/' absolute-path based
+		 * at the root of the base uri
+		 */
+		if ('/' == uri_current[0]) {
+			separator = strchr (mutable_base_uri, ':');
+
+			/* g_assert (separator), really */
+			if (separator) {
+				/* If we start with //, skip past the authority section */
+				if ('/' == separator[1] && '/' == separator[2]) {
+					separator = strchr (separator + 3, '/');
+					if (separator) {
+						separator[0] = '\0';
+					}
+				} else {
+				/* If there's no //, just assume the scheme is the root */
+					separator[1] = '\0';
+				}
 			}
-		} 
-		result = g_strconcat (mutable_base_uri, "/", uri_current, NULL);
+		} else if ('#' != uri_current[0]) {
+			/* Handle the ".." convention for relative uri's */
+
+			/* If there's a trailing '/' on base_url, treat base_url
+			 * as a directory path.
+			 * Otherwise, treat it as a file path, and chop off the filename
+			 */
+
+			base_uri_length = strlen (mutable_base_uri);
+			if ('/' == mutable_base_uri[base_uri_length-1]) {
+				/* Trim off '/' for the operation below */
+				mutable_base_uri[base_uri_length-1] = 0;
+			} else {
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
+			/* (the following are all rarely seen cases */
+			/* FIXME remove './' segments */
+			/* FIXME Remove . at the end of a URL (that is, if the URL ends in /. */   
+			/* FIXME Remove "../" inside the uri current */
+
+			while (0 == strncmp ("../", uri_current, 3)) {
+				uri_current += 3;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				} else {
+					/* <shrug> */
+					break;
+				}
+			}
+
+			/* Re-append the '/' */
+			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
+			mutable_base_uri [strlen(mutable_base_uri)] = '/';
+		}
+
+		result = g_strconcat (mutable_base_uri, uri_current, NULL);
 		g_free (mutable_base_uri); 
+
 #ifdef DEBUG_mfleming
 		g_print ("Relative URI converted base '%s' uri '%s' to '%s'", base_uri, uri, result);
 #endif
@@ -991,7 +1061,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		if (href) {
 			char * href_full = NULL;
 
-			href_full = make_full_uri_from_partial (view->details->uri, href);
+			href_full = make_full_uri_from_relative (view->details->uri, href);
 
 			g_free (href);
 			href = href_full;
@@ -1286,3 +1356,53 @@ error:
 #endif /* EAZEL_SERVICES_MOZILLA_MODAL_LOGIN */
 
 #endif /* EAZEL_SERVICES */
+
+#define TEST_PARTIAL(partial, expected) \
+	tmp = make_full_uri_from_relative (base_uri, partial);					\
+	if ( 0 != strcmp (tmp, expected) ) {							\
+		g_message ("Test failed: partial '%s' expected '%s' got '%s'", partial, expected, tmp);	\
+		success = FALSE;								\
+		g_free (tmp);									\
+	}
+
+gboolean test_make_full_uri_from_relative (void);
+
+gboolean
+test_make_full_uri_from_relative (void)
+{
+	const char * base_uri = "http://a/b/c/d;p?q";
+	char *tmp;
+	gboolean success = TRUE;
+
+	/* Commented out cases do no t work and should; they are marked above
+	 * as fixmes
+	 */
+
+	TEST_PARTIAL ("g", "http://a/b/c/g");
+	TEST_PARTIAL ("./g", "http://a/b/c/g");		/* FAILS */
+	TEST_PARTIAL ("g/", "http://a/b/c/g/");
+	TEST_PARTIAL ("/g", "http://a/g");
+
+	TEST_PARTIAL ("//g", "http://g");		/* FAILS */
+	
+	TEST_PARTIAL ("?y", "http://a/b/c/?y");
+	TEST_PARTIAL ("g?y", "http://a/b/c/g?y");
+	TEST_PARTIAL ("#s", "http://a/b/c/d;p#s");
+	TEST_PARTIAL ("g#s", "http://a/b/c/g#s");
+	TEST_PARTIAL ("g?y#s", "http://a/b/c/g?y#s");
+	TEST_PARTIAL (";x", "http://a/b/c/;x");
+	TEST_PARTIAL ("g;x", "http://a/b/c/g;x");
+	TEST_PARTIAL ("g;x?y#s", "http://a/b/c/g;x?y#s");
+
+	TEST_PARTIAL (".", "http://a/b/c/");  		/* FAILS */
+	TEST_PARTIAL ("./", "http://a/b/c/");  		/* FAILS */
+
+	TEST_PARTIAL ("..", "http://a/b/");		/* FAILS */
+	TEST_PARTIAL ("../g", "http://a/b/g");
+	TEST_PARTIAL ("../..", "http://a/");		/* FAILS */
+	TEST_PARTIAL ("../../", "http://a/");
+	TEST_PARTIAL ("../../g", "http://a/g");
+
+	return success;
+}
+

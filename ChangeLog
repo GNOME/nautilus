@@ -1,3 +1,17 @@
+2000-10-25  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/main.c: (run_test_cases), (main):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(is_uri_partial), (make_full_uri_from_relative),
+	(mozilla_dom_mouse_click_callback),
+	(test_make_full_uri_from_relative):
+
+	Fix bugzilla.eazel.com 3949.  Better (but still not perfect) 
+	support for relative URI's.  The cases that aren't handled are rarely
+	encountered in my experiance.  I'd make it perfect, but I just
+	don't have time right now.
+	Also added self-test.
+
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
