@@ -51,10 +51,10 @@
  * These are in microseconds.
  */
 #define AUTOSCROLL_TIMEOUT_INTERVAL 100
-#define AUTOSCROLL_INITIAL_DELAY 750000
+#define AUTOSCROLL_INITIAL_DELAY 100000
 
 /* drag this close to the view edge to start auto scroll*/
-#define AUTO_SCROLL_MARGIN 20
+#define AUTO_SCROLL_MARGIN 30
 
 /* the smallest amount of auto scroll used when we just enter the autoscroll
  * margin
