@@ -45,6 +45,8 @@ typedef struct {
   NautilusView parent_object;
 } NautilusContentView;
 
-GtkType nautilus_content_view_get_type(void);
+GtkType nautilus_content_view_get_type   (void);
+
+void    nautilus_content_view_set_active (NautilusContentView *view); 
 
 #endif

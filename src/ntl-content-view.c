@@ -4,6 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 2000 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -88,4 +89,12 @@ nautilus_content_view_class_init (NautilusContentViewClass *klass)
 static void
 nautilus_content_view_init (NautilusContentView *view)
 {
+}
+
+void 
+nautilus_content_view_set_active (NautilusContentView *view)
+{
+  bonobo_control_frame_control_activate 
+    (BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
+                           (NAUTILUS_VIEW (view)->view_frame, "IDL:Bonobo/ControlFrame:1.0")));
 }

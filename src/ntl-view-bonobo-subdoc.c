@@ -84,19 +84,24 @@ bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
   view->component_data = bsi = g_new0(BonoboSubdocInfo, 1);
 
   bsi->container = BONOBO_OBJECT(bonobo_container_new());
-  bonobo_object_add_interface(BONOBO_OBJECT(bsi->container), view->view_frame);
       
   bsi->client_site =
     BONOBO_OBJECT(bonobo_client_site_new(BONOBO_CONTAINER(bsi->container)));
   bonobo_client_site_bind_embeddable(BONOBO_CLIENT_SITE(bsi->client_site), view->client_object);
   bonobo_container_add(BONOBO_CONTAINER(bsi->container), bsi->client_site);
 
-  bsi->view_frame = BONOBO_OBJECT(bonobo_client_site_new_view(BONOBO_CLIENT_SITE(bsi->client_site), uih));
+  bsi->view_frame = BONOBO_OBJECT (bonobo_client_site_new_view (BONOBO_CLIENT_SITE (bsi->client_site), uih));
 
   g_assert(bsi->view_frame);
+
+  bonobo_object_add_interface(BONOBO_OBJECT(bsi->view_frame), view->view_frame);
       
   view->client_widget = bonobo_view_frame_get_wrapper(BONOBO_VIEW_FRAME(bsi->view_frame));
       
+  bonobo_wrapper_set_visibility (BONOBO_WRAPPER (view->client_widget), FALSE);
+
+  bonobo_view_frame_set_covered (BONOBO_VIEW_FRAME (bsi->view_frame), FALSE); 
+
   return TRUE;
 }
 
@@ -112,3 +117,4 @@ NautilusViewComponentType bonobo_subdoc_component_type = {
   NULL, /* stop_location_change */
   NULL, /* get_label */
 };
+

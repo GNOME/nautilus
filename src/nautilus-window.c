@@ -1079,6 +1079,10 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
   if (new_view != NULL)
     {
       gtk_widget_show (GTK_WIDGET (new_view));
+
+
+      nautilus_content_view_set_active (NAUTILUS_CONTENT_VIEW (new_view)); 
+
 #ifdef CONTENTS_AS_HBOX
       gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET (new_view), TRUE, TRUE, 0);
 #else
