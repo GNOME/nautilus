@@ -300,7 +300,7 @@ throbber_set_throbbing (NautilusWindow *window,
 	val._value = &b;
 	b = throbbing;
 
-	eel_bonobo_pbclient_set_value_async (
+	bonobo_pbclient_set_value_async (
 		window->details->throbber_property_bag,
 		"throbbing", &val, NULL);
 }

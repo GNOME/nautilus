@@ -1,3 +1,11 @@
+2002-11-04  Diego González  <diego@pemas.net>
+
+	* src/nautilus-window-toolbars.c: (throbber_set_throbbing):
+	Use bonobo_pbclient_set_value_async instead of 
+	eel_bonobo_pbclient_set_value_async.
+
+	* configure.in: require latest libbonobo
+
 2002-11-04  Alexander Larsson  <alexl@redhat.com>
 
 	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
