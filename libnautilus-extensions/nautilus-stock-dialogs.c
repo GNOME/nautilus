@@ -455,8 +455,11 @@ create_message_box (const char *message,
 	 * for the label with this message so we can mark it.
 	 */
 	find_message_label (box, message);
-	message_label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (box), "message label"));
-	gtk_label_set_line_wrap (message_label, TRUE);
+	message_label = gtk_object_get_data (GTK_OBJECT (box), "message label");
+	
+	if (message_label != NULL && GTK_IS_LABEL (message_label)) {
+		gtk_label_set_line_wrap (message_label, TRUE);
+	}
 
 	if (parent != NULL && !GTK_OBJECT_DESTROYED (parent)) {
 		gnome_dialog_set_parent (GNOME_DIALOG (box), parent);
