@@ -1,3 +1,22 @@
+2002-03-06  Alexander Larsson  <alla@lysator.liu.se>
+
+	* nautilus-icon-private.h: (NautilusIconContainerDetails):
+	widget_x/y ->o world_x/y
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	Fix all the coordinate system problems. Now stretching should
+	work correctly again. There are a multitude of issues when
+	handling this:
+	1) When doing rubberbanding we want to use widget-relative
+	   coordinates so that we can auto-scroll.
+	2) The widget events (button_press_event, button_release_event
+	   and motion_notify_event) report coordintes relative to
+	   GTK_LAYOUT(container)->bin_window, aka canvas "window
+	   coordinates"
+	3) The canvas item events (item_event_callback,
+	   handle_icon_button_press) report coordinates in canvas
+	   world coordinates (a change since gnome 1 i believe)
+
 2002-03-05  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/nautilus-shell-ui.xml: applied patch by Andrew Burr to add mini

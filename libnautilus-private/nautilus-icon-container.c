@@ -1527,7 +1527,6 @@ start_rubberbanding (NautilusIconContainer *container,
 	uint fill_color, outline_color;
 	char *fill_color_str;
 	GList *p;
-	int x, y;
 	NautilusIcon *icon;
 
 	details = container->details;
@@ -1541,9 +1540,8 @@ start_rubberbanding (NautilusIconContainer *container,
 		icon->was_selected_before_rubberband = icon->is_selected;
 	}
 
-	eel_gtk_widget_get_button_event_location (GTK_WIDGET (container), event, &x, &y);
-	eel_gnome_canvas_widget_to_world
-		(GNOME_CANVAS (container), x, y,
+	gnome_canvas_window_to_world
+		(GNOME_CANVAS (container), event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
@@ -1573,8 +1571,8 @@ start_rubberbanding (NautilusIconContainer *container,
 		 "width_pixels", 1,
 		 NULL);
 
-	band_info->prev_x = x;
-	band_info->prev_y = y;
+	band_info->prev_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
+	band_info->prev_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
 
 	band_info->active = TRUE;
 
@@ -2621,11 +2619,8 @@ update_stretch_at_idle (NautilusIconContainer *container)
 		return FALSE;
 	}
 
-	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-					  details->widget_x, details->widget_y,
-					  &world_x, &world_y);
 	gnome_canvas_w2c (GNOME_CANVAS (container),
-			  world_x, world_y,
+			  details->world_x, details->world_y,
 			  &stretch_state.pointer_x, &stretch_state.pointer_y);
 
 	compute_stretch (&details->stretch_start,
@@ -2645,13 +2640,13 @@ update_stretch_at_idle (NautilusIconContainer *container)
 
 static void
 continue_stretching (NautilusIconContainer *container,
-		     int widget_x, int widget_y)
+		     double world_x, double world_y)
 {
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	container->details->widget_x = widget_x;
-	container->details->widget_y = widget_y;
+	container->details->world_x = world_x;
+	container->details->world_y = world_y;
 
 	if (container->details->stretch_idle_id == 0) {		
 		container->details->stretch_idle_id = gtk_idle_add ((GtkFunction) update_stretch_at_idle, container);
@@ -2667,12 +2662,12 @@ ungrab_stretch_icon (NautilusIconContainer *container)
 
 static void
 end_stretching (NautilusIconContainer *container,
-		int widget_x, int widget_y)
+		double world_x, double world_y)
 {
 	NautilusIconPosition position;
 	NautilusIcon *icon;
 	
-	continue_stretching (container, widget_x, widget_y);
+	continue_stretching (container, world_x, world_y);
 	ungrab_stretch_icon (container);
 
 	/* now that we're done stretching, update the icon's position */
@@ -2726,8 +2721,8 @@ button_release_event (GtkWidget *widget,
 {
 	NautilusIconContainer *container;
 	NautilusIconContainerDetails *details;
-	int x, y;
-
+	double world_x, world_y;
+	
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
 
@@ -2761,8 +2756,9 @@ button_release_event (GtkWidget *widget,
 			}
 			break;
 		case DRAG_STATE_STRETCH:
-			eel_gtk_widget_get_button_event_location (widget, event, &x, &y);
-			end_stretching (container, x, y);
+			gnome_canvas_window_to_world
+				(GNOME_CANVAS (container), event->x, event->y, &world_x, &world_y);
+			end_stretching (container, world_x, world_y);
 			break;
 		default:
 			break;
@@ -2783,7 +2779,6 @@ motion_notify_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	NautilusIconContainerDetails *details;
 	double world_x, world_y;
-	int x, y;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
@@ -2798,9 +2793,8 @@ motion_notify_event (GtkWidget *widget,
 				break;
 			}
 
-			eel_gtk_widget_get_motion_event_location (widget, event, &x, &y);
-			eel_gnome_canvas_widget_to_world
-				(GNOME_CANVAS (container), x, y, &world_x, &world_y);
+			gnome_canvas_window_to_world
+				(GNOME_CANVAS (container), event->x, event->y, &world_x, &world_y);
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
 			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
@@ -2821,8 +2815,9 @@ motion_notify_event (GtkWidget *widget,
 			}
 			break;
 		case DRAG_STATE_STRETCH:
-			eel_gtk_widget_get_motion_event_location (widget, event, &x, &y);
-			continue_stretching (container, x, y);
+			gnome_canvas_window_to_world
+				(GNOME_CANVAS (container), event->x, event->y, &world_x, &world_y);
+			continue_stretching (container, world_x, world_y);
 			break;
 		default:
 			break;
@@ -3434,7 +3429,6 @@ handle_icon_button_press (NautilusIconContainer *container,
 			  GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
-	int x, y;
 	
 	if (event->button != DRAG_BUTTON
 	    && event->button != CONTEXTUAL_MENU_BUTTON) {
@@ -3445,13 +3439,10 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	if (event->button == DRAG_BUTTON
 	    || event->button == CONTEXTUAL_MENU_BUTTON) {
-
-		eel_gtk_widget_get_button_event_location (GTK_WIDGET (container), event, &x, &y);
-
 		details->drag_button = event->button;
 		details->drag_icon = icon;
-		details->drag_x = x;
-		details->drag_y = y;
+		details->drag_x = event->x;
+		details->drag_y = event->y;
 		details->drag_state = event->button == DRAG_BUTTON
 			? DRAG_STATE_MOVE_OR_COPY : DRAG_STATE_MOVE_COPY_OR_MENU;
 		details->drag_started = FALSE;
