@@ -55,8 +55,7 @@ struct _GnomeIconContainerClass {
 	void (* activate)	  	  (GnomeIconContainer *container,
 					   NautilusControllerIcon *icon);
 
-	void (* context_click_icon)	  (GnomeIconContainer *container,
-					   NautilusControllerIcon *icon);
+	void (* context_click_selection)  (GnomeIconContainer *container);
 
 	void (* context_click_background) (GnomeIconContainer *container);
 

@@ -1,3 +1,68 @@
+2000-02-21  John Sullivan  <sullivan@eazel.com>
+
+	Refined right-click context-menu behavior in file manager.
+	Now right-click affects the selection exactly as a left-click
+	would, including modifying the selection with modifier keys.
+	The first section of the context menu applies to all the
+	selected items. Menu items that can only apply to a single
+	item are insensitive if there's more than one item selected.
+
+	* libnautilus/gnome-icon-container.h:
+	(context_click_selection): Renamed this signal from context_click_icon
+	and removed the file parameter.
+	* libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_initialize_class), (handle_icon_button_press): 
+	Renamed signal context_click_icon to context_click_selection and
+	removed the file parameter.
+	(handle_icon_button_press): Reorder so that all selection changes
+	happen before the drag/activate/context-menu decision-making.
+	
+	* libnautilus/gtkflist.h:
+	(context_click_selection): Renamed this signal from context_click_row
+	and removed the row parameter.
+	* libnautilus/gtkflist.c:
+	(gtk_flist_initialize_class), (gtk_flist_button_press):
+	Renamed signal context_click_row to context_click_selection and
+	removed the row parameter.
+	(gtk_flist_button_press):
+	For context clicks, call select_row the normal way to get the
+	normal selection modification behavior, instead of forcing only
+	the clicked row to be selected.
+
+	* src/file-manager/fm-directory-view.h:
+	(append_selection_context_menu_items): Renamed from
+	append_item_context_menu_items and changed NautilusFile parameter
+	to a NautilusFileList.
+	(fm_directory_view_pop_up_selection_context_menu): Renamed from
+	fm_directory_view_popup_item_context_menu.
+	(fm_directory_view_pop_up_background_context_menu): Renamed from
+	fm_directory_view_popup_background_context_menu
+	* src/file-manager/fm-directory-view.c:
+	Renamed all functions with "item_context_menu" in their names
+	to include "selection_context_menu" instead; Changed verb "popup"
+	to "pop up" in function names.
+	(open_one_in_new_window): New GFunc-type function, calls
+	fm_directory_view_activate_entry on a single NautilusFile.
+	(open_in_new_window_cb): Now takes a NautilusFileList* instead of
+	a NautilusFile* and iterates with open_one_in_new_window.
+	(fm_directory_view_real_append_selection_context_menu_items):
+	Desensitize "Open" if more than one selected item, since more than
+	one can't open into the same window; pass selected file list to
+	open_in_new_window_cb
+	(create_selection_context_menu): Skip the selection-specific part 
+	of the menu if there are no selected items (but still put up the 
+	menu with the background items);
+
+	* src/file-manager/fm-directory-view-icons.c:
+	Various changes to match renamings and parameter changes listed
+	above. Also,
+	(fm_directory_view_icons_append_selection_context_menu_items): 
+	Only enable "Stretch Icon" if exactly one item is selected, since
+	the UI is only designed to work with a single icon.
+	* src/file-manager/fm-directory-view-list.c:
+	Various changes to match renamings and parameter changes listed
+	above.
+
 2000-02-21  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus/ntl-view-frame.h: Don't include <gtk/gtkbin.h>; do

@@ -81,15 +81,17 @@ struct _FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
-	/* The 'append_item_context_menu_items' signal is emitted 
-	 * when creating a context menu, either an item-specific one or
-	 * a background one. Subclasses might want to override this to
+	/* The 'append_selection_context_menu_items' signal is emitted 
+	 * when creating a context menu for the selected items. @files is
+	 * the list of selected files; it isn't destroyed until the menu
+	 * is destroyed so it can be used in callbacks.
+	 * Subclasses might want to override this function to
 	 * modify the menu contents.
 	 */
-	void 	(* append_item_context_menu_items) 	 
+	void 	(* append_selection_context_menu_items) 	 
 					 (FMDirectoryView *view,
 					  GtkMenu *menu,
-					  NautilusFile *file);
+					  NautilusFileList *files);
 
 	/* The 'append_background_context_menu_items' signal is emitted 
 	 * when creating a context menu, either an item-specific one or
@@ -168,8 +170,7 @@ void                      fm_directory_view_activate_entry                (FMDir
 									   gboolean         request_new_window);
 void                      fm_directory_view_notify_selection_changed      (FMDirectoryView *view);
 NautilusDirectory *       fm_directory_view_get_model                     (FMDirectoryView *view);
-void                      fm_directory_view_popup_background_context_menu (FMDirectoryView *view);
-void                      fm_directory_view_popup_item_context_menu       (FMDirectoryView *view,
-									   NautilusFile    *file); 
+void                      fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view);
+void                      fm_directory_view_pop_up_selection_context_menu (FMDirectoryView *view); 
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -50,7 +50,7 @@ enum
 	CLEAR,
 	DONE_ADDING_ENTRIES,
 	BEGIN_LOADING,
-	APPEND_ITEM_CONTEXT_MENU_ITEMS,
+	APPEND_SELECTION_CONTEXT_MENU_ITEMS,
 	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
 	LAST_SIGNAL
 };
@@ -86,12 +86,11 @@ static void fm_directory_view_append_background_context_menu_items
 static void fm_directory_view_real_append_background_context_menu_items 		
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
-static void fm_directory_view_real_append_item_context_menu_items 		
+static void fm_directory_view_real_append_selection_context_menu_items 		
 						(FMDirectoryView *view,
 						 GtkMenu *menu,
-						 NautilusFile *file);
-static GtkMenu *create_item_context_menu        (FMDirectoryView *view,
-						 NautilusFile *file);
+						 NautilusFileList *files);
+static GtkMenu *create_selection_context_menu   (FMDirectoryView *view);
 static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
 static void stop_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 FMDirectoryView *directory_view);
@@ -99,7 +98,7 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
 static void open_cb 				(GtkMenuItem *item, NautilusFile *file);
-static void open_in_new_window_cb 		(GtkMenuItem *item, NautilusFile *file);
+static void open_in_new_window_cb 		(GtkMenuItem *item, NautilusFileList *files);
 static void select_all_cb                       (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
@@ -165,11 +164,11 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	fm_directory_view_signals[APPEND_ITEM_CONTEXT_MENU_ITEMS] =
-		gtk_signal_new ("append_item_context_menu_items",
+	fm_directory_view_signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS] =
+		gtk_signal_new ("append_selection_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_item_context_menu_items),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_selection_context_menu_items),
 		    		gtk_marshal_NONE__BOXED_BOXED,
 		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
 	fm_directory_view_signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
@@ -180,7 +179,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 
-	klass->append_item_context_menu_items = fm_directory_view_real_append_item_context_menu_items;
+	klass->append_selection_context_menu_items = fm_directory_view_real_append_selection_context_menu_items;
 	klass->append_background_context_menu_items = fm_directory_view_real_append_background_context_menu_items;
 
 	/* Function pointers that subclasses must override */
@@ -791,13 +790,22 @@ open_cb (GtkMenuItem *item, NautilusFile *file)
 }
 
 static void
-open_in_new_window_cb (GtkMenuItem *item, NautilusFile *file)
+open_one_in_new_window (gpointer data, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_FILE (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
+}
+
+static void
+open_in_new_window_cb (GtkMenuItem *item, NautilusFileList *files)
 {
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	fm_directory_view_activate_entry (directory_view, file, TRUE);
+	g_list_foreach (files, open_one_in_new_window, directory_view);
 }
 
 static void
@@ -857,19 +865,32 @@ fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *vi
 }
 
 static void
-fm_directory_view_real_append_item_context_menu_items (FMDirectoryView *view,
-						       GtkMenu *menu,
-						       NautilusFile *file)
+fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *view,
+							    GtkMenu *menu,
+						       	    NautilusFileList *files)
 {
 	GtkWidget *menu_item;
+	gboolean exactly_one_item_selected;
+
+	g_assert (g_list_length (files) >= 1);
+
+	exactly_one_item_selected = g_list_length (files) == 1;
 
 	menu_item = gtk_menu_item_new_with_label ("Open");
-	/* Store directory view in menu item so callback can access it. */
-	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
-				  view, (GtkDestroyNotify) gtk_object_unref);
-	gtk_object_ref (GTK_OBJECT (view));
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (open_cb), file);
+	if (!exactly_one_item_selected)
+	{
+		/* Can only open a single item in the same window */
+		gtk_widget_set_sensitive (menu_item, FALSE);
+	}
+	else
+	{
+		/* Store directory view in menu item so callback can access it. */
+		gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
+					  view, (GtkDestroyNotify) gtk_object_unref);
+		gtk_object_ref (GTK_OBJECT (view));
+		gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+			           GTK_SIGNAL_FUNC (open_cb), files->data);
+	}
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
@@ -879,7 +900,7 @@ fm_directory_view_real_append_item_context_menu_items (FMDirectoryView *view,
 				  view, (GtkDestroyNotify) gtk_object_unref);
 	gtk_object_ref (GTK_OBJECT (view));
 	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (open_in_new_window_cb), file);
+		           GTK_SIGNAL_FUNC (open_in_new_window_cb), files);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
@@ -892,25 +913,38 @@ fm_directory_view_real_append_item_context_menu_items (FMDirectoryView *view,
 /* FIXME - need better architecture for setting these. */
 
 static GtkMenu *
-create_item_context_menu (FMDirectoryView *view,
-			  NautilusFile *file) 
+create_selection_context_menu (FMDirectoryView *view) 
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
+	NautilusFileList *selected_files;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
 	
 	menu = GTK_MENU (gtk_menu_new ());
+	selected_files = fm_directory_view_get_selection (view);
+	if (selected_files != NULL)
+	{
+		/* Attach selection to menu, and free it when menu is freed.
+		 * This lets menu item callbacks use the files parameter.
+		 */
+		gtk_object_set_data_full (GTK_OBJECT (menu),
+					  "selected_items",
+					  selected_files,
+					  (GtkDestroyNotify)g_list_free);
 
-	gtk_signal_emit (GTK_OBJECT (view),
-			 fm_directory_view_signals[APPEND_ITEM_CONTEXT_MENU_ITEMS], 
-			 menu, file);
-	
-	/* separator between item-specific and view-general menu items */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+		gtk_signal_emit (GTK_OBJECT (view),
+				 fm_directory_view_signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS], 
+				 menu, selected_files);
+		
+		/* Add separator between selection-specific 
+		 * and view-general menu items.
+		 */		
+		menu_item = gtk_menu_item_new ();
+		gtk_widget_show (menu_item);
+		gtk_menu_append (menu, menu_item);
+
+	}
 
 	/* Show commands not specific to this item also, since it might
 	 * be hard (especially in list view) to find a place to click
@@ -955,9 +989,9 @@ create_background_context_menu (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_popup_item_context_menu
+ * fm_directory_view_pop_up_selection_context_menu
  *
- * Pop up a context menu appropriate to a specific view item at the last right click location.
+ * Pop up a context menu appropriate to the selected items at the last right click location.
  * @view: FMDirectoryView of interest.
  * @file: The model object for which a menu should be popped up.
  * 
@@ -965,19 +999,17 @@ create_background_context_menu (FMDirectoryView *view)
  * 
  **/
 void 
-fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
-					    NautilusFile *file)
+fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
 	
-	nautilus_pop_up_context_menu (create_item_context_menu (view, file),
+	nautilus_pop_up_context_menu (create_selection_context_menu (view),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
 }
 
 /**
- * fm_directory_view_popup_background_context_menu
+ * fm_directory_view_pop_up_background_context_menu
  *
  * Pop up a context menu appropriate to the view globally at the last right click location.
  * @view: FMDirectoryView of interest.
@@ -986,7 +1018,7 @@ fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
  * 
  **/
 void 
-fm_directory_view_popup_background_context_menu  (FMDirectoryView *view)
+fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	

@@ -63,10 +63,10 @@ static void fm_directory_view_icons_add_entry    (FMDirectoryView *view,
 static void fm_directory_view_icons_append_background_context_menu_items 
 						 (FMDirectoryView *view,
 			    			  GtkMenu *menu);
-static void fm_directory_view_icons_append_item_context_menu_items 
+static void fm_directory_view_icons_append_selection_context_menu_items 
 						 (FMDirectoryView *view,
 			    			  GtkMenu *menu,
-						  NautilusFile *file);
+						  NautilusFileList *files);
 static void fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
@@ -97,8 +97,7 @@ static void icon_container_activate_cb 		 (GnomeIconContainer *container,
 static void icon_container_selection_changed_cb  (GnomeIconContainer *container,
 						  FMDirectoryViewIcons *icon_view);
 
-static void icon_container_context_click_icon_cb (GnomeIconContainer *container,
-						  NautilusFile *icon_data,
+static void icon_container_context_click_selection_cb (GnomeIconContainer *container,
 						  FMDirectoryViewIcons *icon_view);
 static void icon_container_context_click_background_cb (GnomeIconContainer *container,
 							FMDirectoryViewIcons *icon_view);
@@ -148,8 +147,8 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_can_zoom_out;
         fm_directory_view_class->select_all
                 = fm_directory_view_icons_select_all;
-        fm_directory_view_class->append_item_context_menu_items
-        	= fm_directory_view_icons_append_item_context_menu_items;
+        fm_directory_view_class->append_selection_context_menu_items
+        	= fm_directory_view_icons_append_selection_context_menu_items;
         fm_directory_view_class->append_background_context_menu_items
         	= fm_directory_view_icons_append_background_context_menu_items;
 
@@ -208,8 +207,8 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 			    icon_view);
 
 	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "context_click_icon",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_icon_cb),
+			    "context_click_selection",
+			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_cb),
 			    icon_view);
 
 	gtk_signal_connect (GTK_OBJECT (icon_container),
@@ -304,25 +303,29 @@ unstretch_item_cb (GtkMenuItem *menu_item, gpointer view)
 }
 
 static void
-fm_directory_view_icons_append_item_context_menu_items (FMDirectoryView *view,
-							GtkMenu *menu,
-							NautilusFile *file)
+fm_directory_view_icons_append_selection_context_menu_items (FMDirectoryView *view,
+							     GtkMenu *menu,
+							     NautilusFileList *files)
 {
 	GnomeIconContainer *icon_container;
 	GtkWidget *menu_item;
+	gboolean exactly_one_item_selected;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
-	g_assert (file != NULL);
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
-				    append_item_context_menu_items, 
-				    (view, menu, file));
+				    append_selection_context_menu_items, 
+				    (view, menu, files));
 
 	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
+	/* Current stretching UI only works on one item at a time, so we'll
+	 * desensitize the menu item if that's not the case.
+	 */
+	exactly_one_item_selected = g_list_length (files) == 1;
 
 	menu_item = gtk_menu_item_new_with_label (_("Stretch Icon"));
-	if (gnome_icon_container_has_stretch_handles (icon_container))
+	if (!exactly_one_item_selected || gnome_icon_container_has_stretch_handles (icon_container))
 		gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
@@ -693,15 +696,13 @@ icon_text_changed_cb (FMSignaller *signaller,
 }
 
 static void
-icon_container_context_click_icon_cb (GnomeIconContainer *container,
-				      NautilusFile *file,
-				      FMDirectoryViewIcons *icon_view)
+icon_container_context_click_selection_cb (GnomeIconContainer *container,
+				           FMDirectoryViewIcons *icon_view)
 {
 	g_assert (GNOME_IS_ICON_CONTAINER (container));
-	/* g_assert (NAUTILUS_IS_FILE (file)); */
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	fm_directory_view_popup_item_context_menu (FM_DIRECTORY_VIEW (icon_view), file);
+	fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (icon_view));
 }
 
 static void
@@ -711,7 +712,7 @@ icon_container_context_click_background_cb (GnomeIconContainer *container,
 	g_assert (GNOME_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	fm_directory_view_popup_background_context_menu (FM_DIRECTORY_VIEW (icon_view));
+	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (icon_view));
 }
 
 static void

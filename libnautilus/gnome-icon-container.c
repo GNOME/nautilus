@@ -82,7 +82,7 @@ enum {
 	SELECTION_CHANGED,
 	BUTTON_PRESS,
 	ACTIVATE,
-	CONTEXT_CLICK_ICON,
+	CONTEXT_CLICK_SELECTION,
 	CONTEXT_CLICK_BACKGROUND,
 	ICON_MOVED,
 	LAST_SIGNAL
@@ -2010,15 +2010,14 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  gtk_marshal_NONE__POINTER,
 				  GTK_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
-	signals[CONTEXT_CLICK_ICON]
-		= gtk_signal_new ("context_click_icon",
+	signals[CONTEXT_CLICK_SELECTION]
+		= gtk_signal_new ("context_click_selection",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
-						     context_click_icon),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+						     context_click_selection),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= gtk_signal_new ("context_click_background",
 				  GTK_RUN_LAST,
@@ -2150,49 +2149,35 @@ handle_icon_button_press (GnomeIconContainer *container,
 {
 	GnomeIconContainerDetails *details;
 
-	details = container->details;
-
-	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		/* FIXME this means you cannot drag with right click.
-		 * If we decide we want right drags, we will have to
-		 * set up a timeout and emit this signal if the
-                 *  timeout expires without movement.
-		 */
-
-		details->drag_button = 0;
-
-		/* Context menu applies to single item (at least
-		 * for now). Select item first to make this obvious.
-		 */
-		select_one_unselect_others (container, icon);
-
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[CONTEXT_CLICK_ICON],
-				 icon->data);
-
+	if (event->button != DRAG_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON)
+	{
 		return TRUE;
 	}
 
-	if (event->button != DRAG_BUTTON)
-		return FALSE;
+	details = container->details;
 
-	details->drag_button = event->button;
-	details->drag_icon = icon;
-	details->drag_x = event->x;
-	details->drag_y = event->y;
-	details->drag_action = DRAG_ACTION_MOVE_OR_COPY;
-	details->drag_started = FALSE;
+	if (event->button == DRAG_BUTTON)
+	{
+		details->drag_button = event->button;
+		details->drag_icon = icon;
+		details->drag_x = event->x;
+		details->drag_y = event->y;
+		details->drag_action = DRAG_ACTION_MOVE_OR_COPY;
+		details->drag_started = FALSE;
 
-	/* Check to see if this is a click on the stretch handles.
-	 * If so, it won't modify the selection.
-	 */
-	if (icon == container->details->stretch_icon) {
-		if (start_stretching (container)) {
-			return TRUE;
+		/* Check to see if this is a click on the stretch handles.
+		 * If so, it won't modify the selection.
+		 */
+		if (icon == container->details->stretch_icon) {
+			if (start_stretching (container)) {
+				return TRUE;
+			}
 		}
 	}
-
-	/* Select or deselect the icon */
+	
+	/* Modify the selection as appropriate. Selection is modified
+	 * the same way for contextual menu as it would be without. 
+	 */
 	if (button_event_modifies_selection (event)) {
 		icon_toggle_selected (container, icon);
 		gtk_signal_emit (GTK_OBJECT (container),
@@ -2204,8 +2189,25 @@ handle_icon_button_press (GnomeIconContainer *container,
 				 signals[SELECTION_CHANGED]);
 	}
 
-	/* Double clicking does not trigger a D&D action. */
-	if (event->type == GDK_2BUTTON_PRESS) {
+	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		/* FIXME this means you cannot drag with right click.
+		 * If we decide we want right drags, we will have to
+		 * set up a timeout and emit this signal if the
+                 *  timeout expires without movement.
+		 */
+
+		details->drag_button = 0;
+
+		/* Context menu applies to all selected items. The only
+		 * odd case is if this click deselected the icon under
+		 * the mouse, but at least the behavior is consistent.
+		 */
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[CONTEXT_CLICK_SELECTION]);
+
+		return TRUE;
+	} else if (event->type == GDK_2BUTTON_PRESS) {
+		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 
 		/* FIXME: This should activate all selected icons, not just one */

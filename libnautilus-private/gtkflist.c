@@ -44,7 +44,7 @@ struct _GtkFListDetails
 #define MAX_CLICK_TIME 1500
 
 enum {
-	CONTEXT_CLICK_ROW,
+	CONTEXT_CLICK_SELECTION,
 	CONTEXT_CLICK_BACKGROUND,
 	ACTIVATE,
 	START_DRAG,
@@ -100,14 +100,13 @@ gtk_flist_initialize_class (GtkFListClass *class)
 	widget_class = (GtkWidgetClass *) class;
 	clist_class = (GtkCListClass *) class;
 
-	flist_signals[CONTEXT_CLICK_ROW] =
-		gtk_signal_new ("context_click_row",
+	flist_signals[CONTEXT_CLICK_SELECTION] =
+		gtk_signal_new ("context_click_selection",
 				GTK_RUN_FIRST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkFListClass, context_click_row),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_INT);
+				GTK_SIGNAL_OFFSET (GtkFListClass, context_click_selection),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 	flist_signals[CONTEXT_CLICK_BACKGROUND] =
 		gtk_signal_new ("context_click_background",
 				GTK_RUN_FIRST,
@@ -328,14 +327,13 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 			retval = TRUE;
 		} else if (event->button == 3) {
 			if (on_row) {
-				/* Context menu applies to single item (at least
-				 * for now). Select item first to make this obvious.
+				/* Context menu applies to all selected items. First use click
+				 * to modify selection as appropriate, then emit signal that
+				 * will bring up menu.
 				 */
-				gtk_clist_unselect_all (clist);
-				gtk_clist_select_row (clist, row, 0);
+				select_row (flist, row, event->state);
 				gtk_signal_emit (GTK_OBJECT (flist),
-						 flist_signals[CONTEXT_CLICK_ROW],
-						 row);
+						 flist_signals[CONTEXT_CLICK_SELECTION]);
 			} else
 				gtk_signal_emit (GTK_OBJECT (flist),
 						 flist_signals[CONTEXT_CLICK_BACKGROUND]);

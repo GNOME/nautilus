@@ -83,8 +83,7 @@ static void column_clicked_cb 			    (GtkCList *clist,
 static int compare_rows 			    (GtkCList *clist,
 	      					     gconstpointer  ptr1,
 	      					     gconstpointer  ptr2);
-static void context_click_row_cb		    (GtkCList *clist,
-						     int row,
+static void context_click_selection_cb		    (GtkCList *clist,
 						     FMDirectoryViewList *list_view);
 static void context_click_background_cb		    (GtkCList *clist,
 						     FMDirectoryViewList *list_view);
@@ -280,16 +279,12 @@ compare_rows (GtkCList *clist,
 }
 
 static void 
-context_click_row_cb (GtkCList *clist, int row, FMDirectoryViewList *list_view)
+context_click_selection_cb (GtkCList *clist, FMDirectoryViewList *list_view)
 {
-	NautilusFile * file;
-
 	g_assert (GTK_IS_CLIST (clist));
 	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 
-	file = NAUTILUS_FILE(gtk_clist_get_row_data (clist, row));
-
-	fm_directory_view_popup_item_context_menu (FM_DIRECTORY_VIEW (list_view), file);
+	fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (list_view));
 }
 
 
@@ -298,7 +293,7 @@ context_click_background_cb (GtkCList *clist, FMDirectoryViewList *list_view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 
-	fm_directory_view_popup_background_context_menu (FM_DIRECTORY_VIEW (list_view));
+	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (list_view));
 }
 
 
@@ -402,8 +397,8 @@ create_flist (FMDirectoryViewList *list_view)
 			    column_clicked_cb,
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (flist),
-			    "context_click_row",
-			    context_click_row_cb,
+			    "context_click_selection",
+			    context_click_selection_cb,
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (flist),
 			    "context_click_background",

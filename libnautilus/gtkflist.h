@@ -35,8 +35,8 @@ struct _GtkFList {
 struct _GtkFListClass {
 	GtkCListClass parent_class;
 
-	/* Signal: invoke the popup menu for rows */
-	void (* context_click_row) (GtkFList *flist, gint row);
+	/* Signal: invoke the popup menu for selected items */
+	void (* context_click_selection) (GtkFList *flist, gint row);
 
 	/* Signal: invoke the popup menu for empty areas */
 	void (* context_click_background) (GtkFList *flist);
