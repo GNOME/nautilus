@@ -161,7 +161,6 @@ void write_node_link_html( FILE *f, char *nodefile, char *refname, char *ref )
 }
 
 /* write out top of a new html file */
-#if 0
 void write_html_header( FILE *f, char *filename, char *nodename)
 {
   fprintf(f,"<!DOCTYPE HTML PUBLIC \"-//W3C/DTD HTML 3.2//EN\">\n");
@@ -172,7 +171,6 @@ void write_html_header( FILE *f, char *filename, char *nodename)
   fprintf(f,"</HEAD>\n");
   fprintf(f,"<!-- conversion of file \"%s\", node \"%s\" -->\n",work_filename, work_node);
 }
-#endif
 
 /* start of everything after html header */
 void start_html_content( FILE *f )
