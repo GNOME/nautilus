@@ -1,3 +1,9 @@
+2000-09-07  Rebecca Schulman  <rebecka@eazel.com>
+
+	* components/tree/nautilus-tree-view.c:
+	Fixed a "gtk_entry_list_unref" that should
+	have been a "gtk_target_list_unref"
+	
 2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
 
 	Moves the tree view to the new standard way of dnd.

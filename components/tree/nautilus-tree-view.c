@@ -984,7 +984,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 		gtk_style_unref(view->details->dnd->highlight_style);
 	}
 	nautilus_drag_finalize (view->details->dnd->drag_info);
-	gtk_entry_list_unref (view->details->dnd->target_list);
+	gtk_target_list_unref (view->details->dnd->target_list);
 	g_free (view->details->dnd);
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
