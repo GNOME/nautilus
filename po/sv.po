@@ -15,7 +15,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-14 10:30+0100\n"
+"POT-Creation-Date: 2000-12-14 22:09+0100\n"
 "PO-Revision-Date: 2000-12-13 23:14+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1277,86 +1277,86 @@ msgstr ""
 msgid "Reading the install package list %s"
 msgstr "Läser installationspaketlistan %s"
 
-#: components/services/install/lib/eazel-install-logic.c:259
+#: components/services/install/lib/eazel-install-logic.c:260
 #, c-format
 msgid "Will download %s"
 msgstr "Kommer att hämta %s"
 
-#: components/services/install/lib/eazel-install-logic.c:274
+#: components/services/install/lib/eazel-install-logic.c:275
 #, c-format
 msgid "%s already installed"
 msgstr "%s är redan installerat"
 
-#: components/services/install/lib/eazel-install-logic.c:466
+#: components/services/install/lib/eazel-install-logic.c:467
 #, c-format
 msgid "Category = %s"
 msgstr "Kategori = %s"
 
-#: components/services/install/lib/eazel-install-logic.c:676
+#: components/services/install/lib/eazel-install-logic.c:677
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "Kunde inte skapa transaktionskatalogen (%s)! ***\n"
 
-#: components/services/install/lib/eazel-install-logic.c:699
+#: components/services/install/lib/eazel-install-logic.c:700
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Skriver transaktion till %s"
 
-#: components/services/install/lib/eazel-install-logic.c:821
+#: components/services/install/lib/eazel-install-logic.c:823
 msgid "Failed to lock the downloaded file"
 msgstr "Misslyckades med att låsa den hämtade filen"
 
-#: components/services/install/lib/eazel-install-logic.c:836
+#: components/services/install/lib/eazel-install-logic.c:838
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-summan stämmer inte, paketet %s kan ha manipulerats med"
 
-#: components/services/install/lib/eazel-install-logic.c:1081
+#: components/services/install/lib/eazel-install-logic.c:1083
 #, c-format
 msgid "Removing package %s (0x%p) %s"
 msgstr "Tar bort paketet %s (0x%p) %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1280
+#: components/services/install/lib/eazel-install-logic.c:1282
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s version %s-%s är redan installerat"
 
-#: components/services/install/lib/eazel-install-logic.c:1284
+#: components/services/install/lib/eazel-install-logic.c:1286
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s version %s är redan installerat"
 
-#: components/services/install/lib/eazel-install-logic.c:1293
-#: components/services/install/lib/eazel-install-logic.c:1298
+#: components/services/install/lib/eazel-install-logic.c:1295
+#: components/services/install/lib/eazel-install-logic.c:1300
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s uppgraderar från version %s-%s till %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1307
+#: components/services/install/lib/eazel-install-logic.c:1309
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nergraderar från version %s-%s till %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1312
+#: components/services/install/lib/eazel-install-logic.c:1314
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nergraderar från version %s till %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1337
+#: components/services/install/lib/eazel-install-logic.c:1339
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerar version %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1342
+#: components/services/install/lib/eazel-install-logic.c:1344
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerar version %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1947
+#: components/services/install/lib/eazel-install-logic.c:1949
 msgid "Dependencies appear ok"
 msgstr "Beroendena verkar vara okej"
 
-#: components/services/install/lib/eazel-install-logic.c:1950
+#: components/services/install/lib/eazel-install-logic.c:1952
 msgid "But there are file conflicts"
 msgstr "Men det det finns filkonflikter"
 
@@ -5483,6 +5483,19 @@ msgstr "Plats"
 msgid "Remove"
 msgstr "Ta bort"
 
+#: src/nautilus-complex-search-bar.c:236
+msgid "More Options"
+msgstr "Fler alternativ"
+
+#: src/nautilus-complex-search-bar.c:246
+msgid "Fewer Options"
+msgstr "Färre alternativ"
+
+#. Create button first so we can use it for auto_click
+#: src/nautilus-complex-search-bar.c:264 src/nautilus-simple-search-bar.c:129
+msgid "Find Them!"
+msgstr "Hitta dem!"
+
 #: src/nautilus-first-time-druid.c:158
 msgid ""
 "Existence of this file indicates that the Nautilus configuration wizard\n"
@@ -6518,11 +6531,6 @@ msgstr "Öppna med %s"
 #: src/nautilus-sidebar.c:1214
 msgid "Open with..."
 msgstr "Öppna med..."
-
-#. Create button first so we can use it for auto_click
-#: src/nautilus-simple-search-bar.c:129
-msgid "Find Them!"
-msgstr "Hitta dem!"
 
 #: src/nautilus-switchable-search-bar.c:132
 msgid "Search For:"
