@@ -28,8 +28,6 @@ app-dist-hook: index.html
 	-$(mkinstalldirs) $(distdir)/figures
 	-cp $(srcdir)/$(docname)/*.html $(distdir)/$(docname)
 	-cp $(srcdir)/$(docname)/*.css $(distdir)/$(docname)
-	-cp $(srcdir)/$(docname)/stylesheet-images/*.png \
-		$(distdir)/$(docname)/stylesheet-images
 	-cp $(srcdir)/$(docname)/stylesheet-images/*.gif \
 		$(distdir)/$(docname)/stylesheet-images
 	-cp $(srcdir)/figures/*.png \
@@ -39,17 +37,13 @@ install-data-am: index.html omf
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/stylesheet-images
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/figures
 	-cp $(srcdir)/$(docname).sgml $(DESTDIR)$(helpdir)
-	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css $(srcdir)/*.png; do \
+	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/$$basefile; \
 	done
 	-for file in $(srcdir)/figures/*.png; do \
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/figures/$$basefile; \
-	done
-	-for file in $(srcdir)/$(docname)/stylesheet-images/*.png; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/stylesheet-images/$$basefile; \
 	done
 	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
