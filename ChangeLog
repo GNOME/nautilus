@@ -1,3 +1,27 @@
+2000-07-11  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-application.h:
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-main.c: (main):
+	Fixed a bug I introduced at application startup time where it
+	would quit right away instead of running the first time druid.
+	(Calling it a druid is so lame, who are we kidding?)
+
+	* RENAMING: Some renaming ideas. In particular, we can deprecate
+	"null-tolerance" a little bit by including it in the names of the
+	functions.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_set_mini_icon):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-mini-icon.c: [removed]
+	* libnautilus-extensions/nautilus-mini-icon.h: [removed]
+	* src/nautilus-window.c:
+	Moved the single function from its own file into the gdk
+	extensions file instead and changed the single place that uses it
+	to get it from there.
+
 2000-07-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (make_drag_image),
@@ -78,7 +102,7 @@
 	
 2000-07-11  Robin * Slomkowski <rslomkow@eazel.com>
 
-	* components/hardware/Makefile.am: chaned to LDADD
+	* components/hardware/Makefile.am: changed to LDADD
 
 2000-07-11  Darin Adler  <darin@eazel.com>
 

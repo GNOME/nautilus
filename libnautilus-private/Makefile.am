@@ -70,7 +70,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-mime-actions.c			\
-	nautilus-mini-icon.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preference.c			\
 	nautilus-preferences-box.c		\
@@ -147,7 +146,6 @@ noinst_HEADERS =				\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
 	nautilus-mime-actions.h			\
-	nautilus-mini-icon.h			\
 	nautilus-password-dialog.h		\
 	nautilus-preference.h			\
 	nautilus-preferences-box.h		\

@@ -148,10 +148,9 @@ main (int argc, char *argv[])
 	} else {
 		/* Run the nautilus application. */
 		application = nautilus_application_new ();
-		nautilus_application_startup (application,
-					      manage_desktop,
-					      poptGetArgs (popt_context));
-		if (application->windows != NULL) {
+		if (nautilus_application_startup (application,
+						  manage_desktop,
+						  poptGetArgs (popt_context))) {
 			bonobo_main ();
 		}
 		bonobo_object_unref (BONOBO_OBJECT (application));

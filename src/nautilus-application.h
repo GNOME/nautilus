@@ -57,7 +57,7 @@ typedef struct {
 
 GtkType              nautilus_application_get_type      (void);
 NautilusApplication *nautilus_application_new           (void);
-void                 nautilus_application_startup       (NautilusApplication *application,
+gboolean             nautilus_application_startup       (NautilusApplication *application,
 							 gboolean             manage_desktop,
 							 const char          *urls[]);
 NautilusWindow *     nautilus_application_create_window (NautilusApplication *application);

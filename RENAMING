@@ -36,14 +36,15 @@ header file guard #defines, *NTL* -> *NAUTILUS*
 ----------------------------
 classes and other data types
 ----------------------------
-NavigationRequestInfo -> NavigationRequest
-NautilusApp -> NautilusApplication
-NavigationInfo -> Location
-SelectionInfo -> Selection
-SelectionRequestInfo -> SelectionRequest
-StatusRequestInfo -> Status (or StatusRequest)
+NautilusNavigationInfo -> ?
 
 --------------
 function names
 --------------
 zoom_level_changed -> report_zoom_level_change
+nautilus_strlen -> nautilus_null_tolerant_strlen
+nautilus_strchr -> nautilus_null_tolerant_strchr
+nautilus_strcmp -> nautilus_null_tolerant_strcmp
+nautilus_strcasecmp -> nautilus_null_tolerant_strcasecmp
+nautilus_str_compare -> nautilus_str_compare_null_tolerant
+nautilus_eat_strcmp -> <kill it>

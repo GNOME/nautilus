@@ -264,7 +264,7 @@ nautilus_make_uri_list_from_strv (const char * const *strv)
 	return uri_list;
 }
 
-void
+gboolean
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean manage_desktop,
 			      const char *urls[])
@@ -283,7 +283,7 @@ nautilus_application_startup (NautilusApplication *application,
 	/* FIXME: You will get multiple druids if you invoke nautilus again. */
 	if (!nautilus_user_main_directory_exists ()) {
 		nautilus_first_time_druid_show (application, manage_desktop, urls);
-		return;
+		return TRUE;
 	}
 
 	/* Check the user's ~/.nautilus directories and post warnings
@@ -405,6 +405,7 @@ nautilus_application_startup (NautilusApplication *application,
 
  out:
 	CORBA_exception_free (&ev);
+	return application->windows != NULL;
 }
 
 static void

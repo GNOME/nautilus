@@ -560,6 +560,29 @@ nautilus_gdk_window_bring_to_front (GdkWindow *window)
 	gdk_error_trap_pop ();
 }
 
+void
+nautilus_set_mini_icon (GdkWindow *window,
+			GdkPixmap *pixmap,
+			GdkBitmap *mask)
+{
+        GdkAtom icon_atom;
+        long data[2];
+ 
+        g_return_if_fail (window != NULL);
+        g_return_if_fail (pixmap != NULL);
+
+        data[0] = GDK_WINDOW_XWINDOW (pixmap);
+        if (mask) {
+                data[1] = GDK_WINDOW_XWINDOW (mask);
+        } else {
+                data[1] = 0;
+	}
+
+        icon_atom = gdk_atom_intern ("KWM_WIN_ICON", FALSE);
+        gdk_property_change (window, icon_atom, icon_atom, 
+                             32, GDK_PROP_MODE_REPLACE,
+                             (guchar *) data, 2);
+}
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
