@@ -1,3 +1,10 @@
+2001-02-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),
+	(draw_or_layout_all_tabs):
+	fixed bug where the left edge of a sidebar tab wasn't
+	prelighting correctly when the one before it was active.
+	
 2001-02-16  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>

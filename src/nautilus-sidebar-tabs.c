@@ -668,7 +668,6 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 							       sidebar_tabs->details->font_size,
 							       tab_name,
 							       strlen (tab_name));
-	
 	/* draw the left edge piece */
 	current_pos = x - widget->allocation.x;
 	if (first_flag) {
@@ -852,6 +851,7 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	GList		*next_tab;
 	GtkWidget	*widget;  
 	int		x_pos, y_pos;
+	int		highlight_offset;
 	int		last_x_pos, last_y_pos;
 	int		cur_x_pos, extra_width;
 	int		y_top, fill_height;
@@ -1011,9 +1011,14 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 					tab_select = TAB_NORMAL_NEXT;		
 				}
 			}	
-			if (!prev_item->visible)
-				tab_select = (!changed_rows && this_item) ? TAB_NORMAL_LEFT : -1;
-			
+			if (!prev_item->visible) {
+				if (this_item && this_item->prelit) {
+					highlight_offset = TAB_PRELIGHT_LEFT;
+				} else {
+					highlight_offset = 0;
+				}
+				tab_select = (!changed_rows && this_item) ? TAB_NORMAL_LEFT + highlight_offset : -1;
+			}
 			piece_width = 0;
 			if (tab_select >= 0) {	
 				GdkPixbuf *temp_pixbuf = sidebar_tabs->details->tab_piece_images[tab_select];
