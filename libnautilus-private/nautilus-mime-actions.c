@@ -68,6 +68,9 @@ static GList *str_list_difference   (GList *a,
 static char *get_mime_type_from_uri (const char 
 				     *text_uri);
 
+static int strv_length (char **a);
+static char **strv_concat (char **a, char **b);
+
 
 /* FIXME bugzilla.eazel.com 1262: free the mallocs everywhere */
 
@@ -248,24 +251,27 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored explicit_iids. */
 	} else {
 		char *iid_condition;
-		char *sort_conditions[2];
+		char *sort_conditions[4];
+		char *supertype = mime_type_get_supertype (mime_type);
 
 		iid_condition = g_strconcat ("iid == '", default_component_string, "'", NULL);
 		
 		sort_conditions[0] = iid_condition;
-		sort_conditions[1] = NULL;
 
-#if 0 /* FIXME bugzilla.eazel.com 1265 */
 		/* Prefer something that matches the exact type to something
 		   that matches the supertype */
-		sort[1] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
+		sort_conditions[1] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
 		/* Prefer something that matches the supertype to something that matches `*' */
-		sort[2] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
-#endif
+		sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
+
+		sort_conditions[3] = NULL;
 		
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, sort_conditions, &ev);
 		
 		g_free (iid_condition);
+		g_free (sort_conditions[1]);
+		g_free (sort_conditions[2]);
+		g_free (supertype);
 	}
 
 	if (ev._major == CORBA_NO_EXCEPTION  && info_list != NULL) {
@@ -914,6 +920,7 @@ OAF_ServerInfo__copy (OAF_ServerInfo *orig)
 		
 		}
 	}
+	retval->attrs._release = FALSE;
 
 	return retval;
 }
@@ -1216,7 +1223,7 @@ server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_ta
 }
 
 
-static char * const nautilus_sort_criteria[] = {
+static char *nautilus_sort_criteria[] = {
         /* Prefer anything else over the loser view. */
         "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
         /* Prefer anything else over the sample view. */
@@ -1235,16 +1242,6 @@ static char * const nautilus_sort_criteria[] = {
 #endif;
 
 
-static char *extra_nautilus_sort_criteria[] = {
-	NULL,
-        /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
-        /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
-	/* Sort alphabetically */
-	"name",
-        NULL};
-
 
 
 static GList *
@@ -1258,7 +1255,8 @@ nautilus_do_component_query (const char *mime_type,
 	OAF_ServerInfoList *oaf_result;
 	char *query;
 	GList *retval;
-	
+	char **all_sort_criteria;
+
         oaf_result = NULL;
         query = NULL;
 
@@ -1273,13 +1271,11 @@ nautilus_do_component_query (const char *mime_type,
         printf ("query: \"%s\"\n", query);
 #endif
 
-	/* FIXME bugzilla.eazel.com 1270: add sort criteria properly */
-	if (extra_sort_criteria != NULL) {
-		extra_nautilus_sort_criteria[0] = extra_sort_criteria[0];
-		oaf_result = oaf_query (query, extra_nautilus_sort_criteria, ev);
-	} else {
-		oaf_result = oaf_query (query, nautilus_sort_criteria, ev);		
-	}
+	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);;
+
+	oaf_result = oaf_query (query, all_sort_criteria, ev);
+		
+	g_free (all_sort_criteria);
 	g_free (query);
 
 	retval = NULL;
@@ -1373,3 +1369,45 @@ get_mime_type_from_uri (const char *text_uri)
 	return type;
 }
 
+static int
+strv_length (char **a)
+{
+	int i;
+
+	for (i = 0; a != NULL && a[i] != NULL; i++) {
+	}
+
+	return i;
+}
+
+static char **
+strv_concat (char **a, char **b)
+{
+	int a_length;
+	int b_length;
+	int i;
+	int j;
+	
+	char **result;
+
+	a_length = strv_length (a);
+	b_length = strv_length (b);
+
+	result = g_new0 (char *, a_length + b_length + 1);
+	
+	j = 0;
+
+	for (i = 0; a != NULL && a[i] != NULL; i++) {
+		result[j] = a[i];
+		j++;
+	}
+
+	for (i = 0; b != NULL && b[i] != NULL; i++) {
+		result[j] = b[i];
+		j++;
+	}
+
+	result[j] = NULL;
+
+	return result;
+}
