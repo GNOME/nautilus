@@ -57,7 +57,8 @@
 #ifdef EAZEL_SERVICES
 #include <libeazelinstall.h>
 #include "nautilus-rpm-view-install.h"
-#endif
+#endif /* EAZEL_SERVICES */        
+
 
 #define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
@@ -67,6 +68,11 @@ enum {
         TARGET_GNOME_URI_LIST
 };
 
+/* FIXME: bugzilla.eazel.com 2674
+   Once nautilus label has beeen fixed, remove this define.
+   Don't forgot to fix the places its used, so
+   the description and summary are in gtk_label_new */
+#define LONG_FIELDS_IN_GTK_LABEL
 
 struct NautilusRPMViewDetails {
         char *current_uri;
@@ -212,15 +218,17 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gdk_font_unref (title_font);
 	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_title, FALSE, FALSE, 1);	
 	gtk_widget_show (rpm_view->details->package_title);
-	
+		
 	/* allocate the release-version field */	
 	rpm_view->details->package_release = gtk_label_new ("1.0-1");
 	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_release, FALSE, FALSE, 1);	
+
 	gtk_widget_show (rpm_view->details->package_release);
 	
 	/* allocate the summary field */	
 	rpm_view->details->package_summary = gtk_label_new ("");	
 	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_summary, FALSE, FALSE, 2);		
+
 	gtk_widget_show (rpm_view->details->package_summary);
 		
 	/* allocate a table to hold the fields of information */
@@ -332,7 +340,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
                             "clicked", 
                             GTK_SIGNAL_FUNC (nautilus_rpm_view_install_package_callback), 
                             rpm_view);
-#endif
+#endif /* EAZEL_SERVICES */        
 	
 	/* update button */
 	rpm_view->details->package_update_button = gtk_button_new();		    
@@ -357,7 +365,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
                             "clicked", 
                             GTK_SIGNAL_FUNC (nautilus_rpm_view_uninstall_package_callback), 
                             rpm_view);
-#endif
+#endif /* EAZEL_SERVICES */        
 
 	/* verify button */
 	rpm_view->details->package_verify_button = gtk_button_new();		    
@@ -427,6 +435,16 @@ static void
 nautilus_rpm_view_destroy (GtkObject *object)
 {
 	NautilusRPMView *rpm_view = NAUTILUS_RPM_VIEW (object);
+#ifdef EAZEL_SERVICES
+        PackageData *pack;
+#endif /* EAZEL_SERVICES */        
+
+#ifdef EAZEL_SERVICES
+        pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+        if (pack) {
+                packagedata_destroy (pack);
+        }
+#endif /* EAZEL_SERVICES */        
 
 	g_free (rpm_view->details->current_uri);
 	g_free (rpm_view->details);
@@ -513,10 +531,11 @@ check_installed (NautilusRPMView *rpm_view, gchar *package_name, gchar *package_
 	dbiFreeIndexRecord(matches);
 	rpmdbClose(rpm_db);
 
-	if (result == 1)
+	if (result == 1) {
 		return 1;
-	else
+	} else {
 		return -1;
+        }
 }
 
 /* here's where we do most of the real work of populating the view with info from the package */
@@ -539,25 +558,22 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         char *summary;
         char *description;
 	char *default_icon_path;
-	
-#ifdef EAZEL_SERVICES
-        PackageData *pack;
-#endif
+
 	char **path = NULL;
 	char **links = NULL;	
 	char *temp_version = NULL;
 	char *temp_release = NULL;
 	char *package_name = NULL;
-	
+
 	const char *path_name = uri + 7;
 	
 	/* load the standard icon as the default */
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-    	gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), default_icon_path);   				
-	g_free (default_icon_path);
+    	gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), default_icon_path);
+        g_free (default_icon_path);
 		
 	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);
-	 
+        
 	if (file_descriptor != NULL) {
                 
 		/* read out the appropriate fields, and set them up in the view */
@@ -643,106 +659,130 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			g_free (temp_str);
 		}
 		
-		headerFreeIterator (iterator);
+                headerFreeIterator (iterator);
 
 		/* close the package */
-		fdClose (file_descriptor);
-	}
+                fdClose (file_descriptor);
+        }
 	
 	/* determine if the package is installed */
 	is_installed = check_installed(rpm_view, package_name, temp_version, temp_release);
 	rpm_view->details->package_installed = is_installed != 0;
 			
 	/* set up the install message and buttons */
-	if (is_installed)
+	if (is_installed) {
 		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
-	else 
+	} else {
 		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently not installed");
+        }
 	
-	if (is_installed == 0)
+	if (is_installed == 0) {
 		gtk_widget_show(rpm_view->details->package_install_button);
-	else
+	} else {
 		gtk_widget_hide(rpm_view->details->package_install_button);
-	
-	if (is_installed == 255)
+	}
+	if (is_installed == 255) {
 		gtk_widget_show(rpm_view->details->package_update_button);
-	else
+	} else {
 		gtk_widget_hide(rpm_view->details->package_update_button);
-	
+	}
 	if (is_installed != 0) {
 		gtk_widget_show (rpm_view->details->package_uninstall_button);
-		gtk_widget_show (rpm_view->details->package_verify_button);
-	
-	} else {
-		gtk_widget_hide (rpm_view->details->package_uninstall_button);
-		gtk_widget_hide (rpm_view->details->package_verify_button);
-	}	
-	
-	/* add the files in the package to the list */
+        } else {
+                gtk_widget_hide (rpm_view->details->package_uninstall_button);
+                gtk_widget_hide (rpm_view->details->package_verify_button);
+        }	
 
-  	gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
-  	gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));
+/* add the files in the package to the list */
+
+        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
+        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));
 
 #ifndef RPMTAG_FILENAMES
 #define RPMTAG_FILENAMES RPMTAG_OLDFILENAMES  	
 #endif
 
-	headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&path, &file_count);
-  	headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
-	rpm_view->details->file_count = file_count;
+        headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&path, &file_count);
+        headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
+        rpm_view->details->file_count = file_count;
 	
-  	for (index = 0; index < file_count; index++) {
+        for (index = 0; index < file_count; index++) {
   
-    		if (*(links[index]) == '\0')
-      			temp_str = path[index];
-    		else {
-      			g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
-      			temp_str = buffer;
-    		}
-    		gtk_clist_append(GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
- 	}
+                if (*(links[index]) == '\0') {
+                        temp_str = path[index];
+                } else {
+                        g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
+                        temp_str = buffer;
+                }
+                gtk_clist_append(GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
+        }
   	
 
-	temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
-	gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
-	g_free(temp_str);
+        temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
+        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
+        g_free(temp_str);
 	
-	g_free(path);
-  	g_free(links);
-  	gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
+        g_free(path);
+        g_free(links);
+        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
         
 #ifdef EAZEL_SERVICES
-        /* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */
-        pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-        if (pack != NULL) {
-                /* Destroy the old */
-                packagedata_destroy (pack);
-        } 
-        pack = packagedata_new ();
-        pack->name = g_strdup (package_name);
-        pack->version = g_strdup (temp_version);
-        pack->minor = g_strdup (temp_release);
-        gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", pack);
-#endif      
+/* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */
+        { 
+                PackageData *pack;        
+                char *ptr;
+
+                pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+                if (pack != NULL) {
+/* Destroy the old */
+                        packagedata_destroy (pack);
+                } 
+                pack = packagedata_new ();
+                pack->toplevel = TRUE;
+                pack->name = g_strdup (package_name);
+                pack->version = g_strdup (temp_version);
+                pack->minor = g_strdup (temp_release);
+                
+                /* Find the "://" of the url and skip to after it */
+                ptr = strstr (nautilus_rpm_view_get_uri (rpm_view), "file://");
+                ptr += strlen ("file://");
+                
+/* make a package and add to it to a categorylist */
+                pack->filename = g_strdup (ptr);
+                gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", pack);
+        }
+#endif /* EAZEL_SERVICES */              
         
-	g_free(package_name);
-	g_free(temp_version);
-	g_free(temp_release);
+        g_free(package_name);
+        g_free(temp_version);
+        g_free(temp_release);
 	
 }
 
 char*
 nautilus_rpm_view_get_uri (NautilusRPMView *view)
 {
-	return view->details->current_uri;
+        return view->details->current_uri;
+}
+
+gboolean 
+nautilus_rpm_view_get_installed (NautilusRPMView *view)
+{
+        return view->details->package_installed;
+}
+
+NautilusView* 
+nautilus_rpm_view_get_view (NautilusRPMView *view)
+{
+        return view->details->nautilus_view;
 }
 
 void
 nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 {
-	g_free(rpm_view->details->current_uri);
-	rpm_view->details->current_uri = g_strdup (uri);	
-	nautilus_rpm_view_update_from_uri(rpm_view, uri);
+        g_free(rpm_view->details->current_uri);
+        rpm_view->details->current_uri = g_strdup (uri);	
+        nautilus_rpm_view_update_from_uri(rpm_view, uri);
 }
 
 static void
@@ -750,28 +790,28 @@ rpm_view_load_location_callback (NautilusView *view,
                                  const char *location,
                                  NautilusRPMView *rpm_view)
 {
-	nautilus_view_report_load_underway (rpm_view->details->nautilus_view);
-	nautilus_rpm_view_load_uri (rpm_view, location);
-	nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
+        nautilus_view_report_load_underway (rpm_view->details->nautilus_view);
+        nautilus_rpm_view_load_uri (rpm_view, location);
+        nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
 }
 
 /* callback to handle the verify command */
 static void 
 nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
-				   NautilusRPMView *rpm_view)
+                                           NautilusRPMView *rpm_view)
 {
-	g_message ("verify package");
+        g_message ("verify package");
 }
 
 /* handle drag and drop */
 static void  
 nautilus_rpm_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					 int x, int y,
-					 GtkSelectionData *selection_data, guint info, guint time)
+                                      int x, int y,
+                                      GtkSelectionData *selection_data, guint info, guint time)
 {
-	g_return_if_fail (NAUTILUS_IS_RPM_VIEW (widget));
+        g_return_if_fail (NAUTILUS_IS_RPM_VIEW (widget));
 
-	switch (info) {
+        switch (info) {
         case TARGET_GNOME_URI_LIST:
         case TARGET_URI_LIST: 	
                 g_message ("dropped data on rpm_view: %s", selection_data->data); 			

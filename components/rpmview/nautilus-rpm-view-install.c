@@ -21,8 +21,10 @@
  */
 
 #include "nautilus-rpm-view-install.h"
-#include <libtrilobite/helixcode-utils.h>
+#include <libtrilobite/libtrilobite.h>
 #include <libeazelinstall.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-password-dialog.h>
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
@@ -32,8 +34,8 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 					    int amount, 
 					    int total,
 					    NautilusRPMView *rpm_view) 
-{
-	fprintf (stdout, "Download progress - %s %% %f\r",  name,
+{	
+	fprintf (stdout, "DEBUG: Download progress - %s %% %f\r",  name,
 		 (total ? ((float)
 			   ((((float) amount) / total) * 100))
 		  : 100.0));
@@ -41,6 +43,7 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
 	}
+	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 }
 
 static void 
@@ -51,7 +54,9 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 					   int total_size_completed, int total_size, 
 					   NautilusRPMView *rpm_view) 
 {
-	fprintf (stdout, "Install progress - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
+	double progress;
+
+	fprintf (stdout, "DEBUG: Install progress - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
 		 pack->name, 
 		 package_num, num_packages,
 		 total_size_completed, total_size,
@@ -60,9 +65,14 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 			   ((((float) amount) / total) * 100))
 		  : 100.0));
 	fflush (stdout);
+
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
 	}
+	
+	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
+	progress = total==amount ? 1.0 : (double)(((double)amount)/total);
+	/* nautilus_view_report_load_progress (nautilus_rpm_view_get_view (rpm_view), progress); */
 }
 
 static void
@@ -70,56 +80,62 @@ nautilus_rpm_view_download_failed (EazelInstallCallback *service,
 				   const char *name,
 				   NautilusRPMView *rpm_view)
 {
-	fprintf (stdout, "Download of %s FAILED\n", name);
+	fprintf (stdout, "DEBUG: Download of %s FAILED\n", name);
 }
 
-/*
-  This dumps the entire tree for the failed package.
- */
 static void
-nautilus_rpm_view_install_failed_helper (EazelInstallCallback *service,
-					 const PackageData *pd,
-					 gchar *indent,
-					 NautilusRPMView *rpm_view)
+get_detailed_errors_foreach (const PackageData *pack, char **result)
 {
-	GList *iterator;
-
-	if (pd->toplevel) {
-		fprintf (stdout, "\n***The package %s failed. Here's the dep tree\n", pd->name);
-	}
-	switch (pd->status) {
-	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s-%s FAILED\n", indent, rpmfilename_from_packagedata (pd));
+	char *tmp = *result;;
+	switch (pack->status) {
+	case PACKAGE_UNKNOWN_STATUS:
 		break;
-	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s-%s NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
-		break;		
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		fprintf (stdout, "%s-%s is a source package\n", indent, rpmfilename_from_packagedata (pd));
+		break;
+	case PACKAGE_DEPENDENCY_FAIL:
+		tmp = g_strdup_printf ("%s\n%s %s",
+				       *result, 
+				       pack->name, 
+				       _("would not work anymore"));
+		g_free (*result);
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		fprintf (stdout, "%s-%s breaks\n", indent, rpmfilename_from_packagedata (pd));
 		break;
-	default:
-		fprintf (stdout, "%s-%s\n", indent, rpmfilename_from_packagedata (pd));
+	case PACKAGE_INVALID:
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		tmp = g_strdup_printf ("%s\n%s %s",
+				       *result, 
+				       pack->name, 
+				       _("is needed, but could not be found"));
+		g_free (*result);
+		break;
+	case PACKAGE_PARTLY_RESOLVED:
+		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		 tmp = g_strdup_printf ("%s\n%s %s",
+					*result, 
+					pack->name, 
+					_("was already installed"));
+		g_free (*result);
+		break;
+	case PACKAGE_RESOLVED:
 		break;
 	}
-	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
-		pack = (PackageData*)iterator->data;
-		nautilus_rpm_view_install_failed_helper (service, pack, indent2, rpm_view);
-		g_free (indent2);
-	}
-	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
-		pack = (PackageData*)iterator->data;
-		nautilus_rpm_view_install_failed_helper (service, pack, indent2, rpm_view);
-		g_free (indent2);
-	}
+	(*result) = tmp;
+}
+
+static char*
+get_detailed_errors (const PackageData *pack)
+{
+	char *result;
+
+	result = g_strdup_printf (_("%s failed because of the following issue(s):"), pack->name);
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, &result);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, &result);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, &result);
+
+	return result;
 }
 
 static void
@@ -127,7 +143,10 @@ nautilus_rpm_view_install_failed (EazelInstallCallback *service,
 				  const PackageData *pd,
 				  NautilusRPMView *rpm_view)
 {
-	nautilus_rpm_view_install_failed_helper (service, pd, "", rpm_view);
+	char *detailed;
+
+	detailed = get_detailed_errors (pd);		
+	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
 
@@ -137,51 +156,153 @@ nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
 				    const PackageData *needs,
 				    NautilusRPMView *rpm_view) 
 {
-	g_message ("Doing dependency check for %s - need %s\n", package->name, needs->name);
+	g_message ("DEBUG: Doing dependency check for %s - need %s\n", package->name, needs->name);
+	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 }
 
 static void
 nautilus_rpm_view_install_done (EazelInstallCallback *service,
+				gboolean result,
 				NautilusRPMView *rpm_view)
 {
-	char *tmp;
+	char *tmp;	
+
 	eazel_install_callback_unref (GTK_OBJECT (service));
+
+	if (!result) {
+		char *title;
+		char *detailed;
+
+		GnomeDialog *d;
+		GtkWidget *window;
+		PackageData *pack;
+
+		pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+		g_assert (pack);
+		detailed = (char*)gtk_object_get_data (GTK_OBJECT (rpm_view), "details");
+	
+		if (nautilus_rpm_view_get_installed (rpm_view)) {
+			title = g_strdup (_("Uninstall failed..."));
+		} else {
+			title = g_strdup (_("Install failed..."));
+		}
+
+		window = gtk_widget_get_toplevel (GTK_WIDGET (rpm_view));
+		g_assert (window);
+		g_assert (GTK_IS_WINDOW (window));
+		d = nautilus_error_dialog_with_details (title, 
+							detailed,
+							GTK_WINDOW (window));
+							
+		/* gnome_dialog_run_and_close (d); */
+		g_free (title);
+		g_free (detailed);
+		nautilus_view_report_load_failed (nautilus_rpm_view_get_view (rpm_view));
+	} else {
+		nautilus_view_report_load_complete (nautilus_rpm_view_get_view (rpm_view));
+	}
+
 	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
+
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);
+}
+
+/* BEGIN code chunk from nautilus-install-view.c */
+
+/* signal callback -- ask the user for the root password (for installs) */
+static char *
+nautilus_service_need_password (GtkObject *object, const char *prompt, 
+				NautilusRPMView *view)
+{
+	char *message = NULL;
+	GtkWidget *dialog;
+	gboolean okay;
+	char *out;
+
+
+	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
+	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+
+	if (! okay) {
+		/* cancel */
+		out = g_strdup ("");
+	} else {
+		out = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+	}
+
+	gtk_widget_destroy (dialog);
+	gtk_main_iteration ();
+
+	return out;
+}
+
+/* bad password -- let em try again? */
+static gboolean
+nautilus_service_try_again (GtkObject *object, 
+			    NautilusRPMView*view)
+{
+	return TRUE;
+}
+
+static TrilobiteRootClient *
+set_root_client (BonoboObjectClient *service, 
+		 NautilusRPMView *view)
+{
+	TrilobiteRootClient *root_client = NULL;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
+		root_client = trilobite_root_client_new ();
+		if (! trilobite_root_client_attach (root_client, service)) {
+			g_warning ("unable to attach root client to Trilobite/PasswordQuery!");
+		}
+
+		gtk_signal_connect (GTK_OBJECT (root_client), "need_password",
+				    GTK_SIGNAL_FUNC (nautilus_service_need_password),
+				    view);
+		gtk_signal_connect (GTK_OBJECT (root_client), "try_again",
+				    GTK_SIGNAL_FUNC (nautilus_service_try_again),
+				    view);
+	} else {
+		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
+	}
+
+	CORBA_exception_free (&ev);
+	return root_client;
+}
+
+/* END code chunk from nautilus-install-view.c */
+
+static gboolean
+delete_files (EazelInstallCallback *service,
+	      gpointer unused)
+{
+	return FALSE;
 }
 
 void 
 nautilus_rpm_view_install_package_callback (GtkWidget *widget,
                                             NautilusRPMView *rpm_view)
 {
-	GList *packages;
 	GList *categories;
+	PackageData *pack;
+	CategoryData *category;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;		
 
 	CORBA_exception_init (&ev);
 
-	packages = NULL;
 	categories = NULL;
 
-	{
-		char *ptr;
-		CategoryData *category;
-		PackageData *pack;
+	pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+	g_assert (pack);
 
-		/* Find the :// of the url and skip to after it */
-		ptr = strstr (nautilus_rpm_view_get_uri (rpm_view), "file://");
-		ptr += strlen ("file://");
-
-		/* make a package and add to it to a categorylist */
-		pack = packagedata_new ();
-		pack->filename = g_strdup (ptr);
-		
-		category = g_new0 (CategoryData, 1);
-		category->packages = g_list_prepend (NULL, pack);
-		categories = g_list_prepend (NULL, category);
-	}
+	category = categorydata_new ();
+	category->packages = g_list_prepend (NULL, pack);
+	categories = g_list_prepend (NULL, category);
 
 	/* Check that we're on a redhat system */
 	if (check_for_redhat () == FALSE) {
@@ -189,17 +310,12 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	}
 
 	cb = eazel_install_callback_new ();
+	set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	if (check_for_root_user() == FALSE) {
-		fprintf (stderr, "*** This tool requires root access, switching to test mode\n");
-		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), TRUE, &ev); 
-	} else {
-		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), FALSE, &ev); 
-	}
-	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
 	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), "testmachine.eazel.com", &ev);
 	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), 80, &ev);
+	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp", &ev);
 
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
@@ -207,8 +323,12 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", nautilus_rpm_view_download_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
 	
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
+
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", NULL);
 	
 	CORBA_exception_free (&ev);               
 }
@@ -217,25 +337,21 @@ void
 nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 					      NautilusRPMView *rpm_view)
 {
-	GList *packages;
+	CategoryData *category;
 	GList *categories;
+	PackageData *pack;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;		
 
 	CORBA_exception_init (&ev);
 
-	packages = NULL;
 	categories = NULL;
 
-	{
-		CategoryData *category;
-		PackageData *pack;
-		pack = gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-		
-		category = g_new0 (CategoryData, 1);
-		category->packages = g_list_prepend (NULL, pack);
-		categories = g_list_prepend (NULL, category);
-	}
+	pack = gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+	g_assert (pack);
+	category = categorydata_new ();
+	category->packages = g_list_prepend (NULL, pack);
+	categories = g_list_prepend (NULL, category);
 
 	/* Check that we're on a redhat system */
 	if (check_for_redhat () == FALSE) {
@@ -243,25 +359,21 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	}
 
 	cb = eazel_install_callback_new ();
+	set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	if (check_for_root_user() == FALSE) {
-		fprintf (stderr, "*** This tool requires root access, switching to test mode\n");
-		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), TRUE, &ev); 
-	} else {
-		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), FALSE, &ev); 
-	}
 	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
-	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), "testmachine.eazel.com", &ev);
-	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), 80, &ev);
-
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_install_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
 	
 	eazel_install_callback_uninstall_packages (cb, categories, NULL, &ev);
+
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", NULL);
 	
 	CORBA_exception_free (&ev);               
 }

@@ -25,6 +25,10 @@
 #ifndef NAUTILUS_RPM_VIEW_H
 #define NAUTILUS_RPM_VIEW_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <libnautilus/nautilus-view.h>
 #include <gnome.h>
 
@@ -58,5 +62,7 @@ NautilusView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
 char*	      nautilus_rpm_view_get_uri		  (NautilusRPMView *view);
 void          nautilus_rpm_view_load_uri          (NautilusRPMView *view,
 						   const char      *uri);
+gboolean      nautilus_rpm_view_get_installed     (NautilusRPMView *view);
+NautilusView* nautilus_rpm_view_get_view          (NautilusRPMView *view);
 
 #endif /* NAUTILUS_RPM_VIEW_H */

@@ -1,3 +1,71 @@
+2000-09-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_download_progress_signal),
+	(nautilus_rpm_view_install_progress_signal),
+	(nautilus_rpm_view_download_failed), 
+	Emits load_underway signals, although they do not seem to start
+	the spinner.
+	(get_detailed_errors_foreach),
+	(get_detailed_errors), 
+	(nautilus_rpm_view_install_failed),
+	Generates contents for the dialog box showed when the operation
+	failed.
+	(nautilus_rpm_view_dependency_check),
+	(nautilus_rpm_view_install_done), 
+	If failed, show a box to the user
+	(nautilus_service_need_password),
+	(nautilus_service_try_again), 
+	(set_root_client), 
+	Added Robeys password dialog stuff
+	(delete_files),
+	emits a FALSE when asked to delete files.	
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	Still defaults to testmachine.eazel.com (bad, but landa.eazel.com
+	seems to be down). Sets up the password query thing.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), 
+	(nautilus_rpm_view_destroy),
+	(check_installed):
+	Fixed the nautilus_label problem by ifdeffing it to use gtk_label
+	for the strings that will most likely contain \n\n
+	
+	* components/rpmview/nautilus-rpm-view.h:
+	Added some calls to get div fields from details.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line):
+	Fixed the --root handling of dirs.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	Now set to use the old CGI stuff while landa doesn't serve me my
+	rpm's..
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_prune_packages_helper),
+	Added some debug output
+	(eazel_install_package_name_compare):
+	Removed some debug output
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_destroy_foreach), (packagedata_destroy),
+	free the pack structure itself
+	(packagedata_remove_soft_dep):
+	paranoia check
+	
+	* components/services/trilobite/libtrilobite/trilobite-root-client-
+	public.h:
+	Changed the include to use "'s instead of <'s. 
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (create_pixmap),
+	(create_what_to_do_page), (create_install_page),
+	(create_finish_page_good), (create_finish_page_evil),
+	(create_window), (create_info_druid_page):
+	Better image loading for the static installer.
+
 2000-09-01  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/nautilus-dependent-shared/icons/Makefile.am:

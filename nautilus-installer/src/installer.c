@@ -53,6 +53,7 @@
 #include "Step_One_Top.xpm"
 #include "Final_Top.xpm"
 #include "evil.xpm"
+#include "druid-sidebar.xpm"
 
 #define EAZEL_SERVICES_DIR_HOME "/var/eazel"
 #define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
@@ -78,14 +79,21 @@ static GtkObjectClass *eazel_installer_parent_class;
 
 static GdkPixbuf*
 create_pixmap (GtkWidget *widget,
-	       char **xpmdata,
-	       int x, int y)
+	       char **xpmdata)
 {
 	GtkWidget *pixmap;                                                            
 	GdkColormap *colormap;                                                        
 	GdkPixmap *gdkpixmap;                                                         
 	GdkBitmap *mask;	
 	GdkPixbuf *pixbuf;
+	int x, y;
+
+	{ 
+		char *ptr;
+		ptr = strchr (xpmdata[0], ' ');
+		x = atoi (xpmdata[0]);
+		y = atoi (ptr);
+	}
 
 	colormap = gtk_widget_get_colormap (widget);
 	
@@ -140,7 +148,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 								   _("You have several choices for what you would like the installer to do.\n"
 								     "Please choose one and click on the \"Next\" button to begin install."),
 								   NULL,
-								   NULL,
+								   create_pixmap (GTK_WIDGET (window),druid_sidebar_xpm),
 								   NULL);
 
 
@@ -204,7 +212,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 								_("Step three..."),
 								NULL,
 								NULL,
-								NULL,
+								create_pixmap (GTK_WIDGET (window),druid_sidebar_xpm),
 								NULL);
 	gtk_widget_set_name (install_page, "install_page");
 	gtk_widget_ref (install_page);
@@ -301,18 +309,15 @@ create_finish_page_good (GtkWidget *druid,
 	GdkColor finish_page_textbox_color = { 0, 65535, 65535, 65535 };
 	GdkColor finish_page_logo_bg_color = { 0, 3341, 23130, 26214 };
 	GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
-	GdkPixbuf *top = create_pixmap (window, (char**)step_three_top, 51, 51);
-	GdkPixbuf *left = create_pixmap (window, (char**)banner_left, 101, 255);
-	GdkPixbuf *background = NULL;
 
 	finish_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
 							       _("Finished..."),
 							       _("You can find the nautilus icon in the applications menu.\n\n"
 								 "Thanks for taking the time to try out Nautilus.\n\n"
 								 "May your life be a healthy and happy one."),
-							       top,
-							       left, 
-							       background);
+							       NULL,
+							       create_pixmap (GTK_WIDGET (window),druid_sidebar_xpm),
+							       NULL);
 							       
 	gtk_widget_set_name (finish_page, "finish_page");
 	gtk_widget_ref (finish_page);
@@ -333,16 +338,14 @@ create_finish_page_evil (GtkWidget *druid,
 	GdkColor finish_page_textbox_color = { 0, 65535, 65535, 65535 };
 	GdkColor finish_page_logo_bg_color = { 0, 3341, 23130, 26214 };
 	GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
-	GdkPixbuf *top = create_pixmap (window, (char**)evil_xpm, 48, 48);
-	GdkPixbuf *left = create_pixmap (window, (char**)banner_left, 101, 255);
-	GdkPixbuf *background = NULL;
 
 	finish_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
 							       _("Finished..."),
 							       _("Your machine is now possessed..."),
-							       top,
-							       left, 
-							       background);
+							       NULL,
+							       create_pixmap (GTK_WIDGET (window),
+									      druid_sidebar_xpm),
+							       NULL);
 							       
 	gtk_widget_set_name (finish_page, "finish_page");
 	gtk_widget_ref (finish_page);
@@ -368,11 +371,6 @@ create_window (EazelInstaller *installer)
 	GtkWidget *install_page;
 	GtkWidget *finish_page;
 
-	GdkPixbuf 
-		*top = NULL,
-		*left = NULL,
-		*background = NULL;
-
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_widget_set_name (window, "window");
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
@@ -387,9 +385,6 @@ create_window (EazelInstaller *installer)
 	gtk_container_add (GTK_CONTAINER (window), druid);
 	installer->druid = GNOME_DRUID (druid);
 
-	top = create_pixmap (window, (char**)step_one_top, 51, 51);
-	left = create_pixmap (window, (char**)banner_left, 101, 255);
-	
 	start_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_START,
 							      _("Step one..."),
 							      _("This is the internal Nautilus installer.\n\n"
@@ -402,9 +397,9 @@ create_window (EazelInstaller *installer)
 								"  * Other stuff\n"
 								"\n"
 								"If you meet these requirements, hit the \"Next\" button to continue!\n\n"),
-							      top,
-							      left,
-							      background);
+							      NULL,
+							      create_pixmap (GTK_WIDGET (window),druid_sidebar_xpm),
+							      NULL);
 
 							      
 	installer->back_page = GNOME_DRUID_PAGE (start_page);
@@ -853,9 +848,13 @@ create_info_druid_page (EazelInstaller *installer,
 	GtkWidget *canvas;
 	GnomeCanvasItem *text_canvas;
 
-	page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_OTHER);
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (page), title);
-	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL (page), text);
+	page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER,
+							title,
+							text,
+							NULL,
+							create_pixmap (GTK_WIDGET (installer->window),
+								       druid_sidebar_xpm),
+							NULL);
 
 	//set_white_stuff (GTK_WIDGET (page));
 

@@ -270,6 +270,7 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
+	pack->modifies = NULL;
 
 	if (pack->packsys_struc) {
 		/* FIXME bugzilla.eazel.com 1532:
@@ -278,6 +279,15 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 		   headerFree (*pack->packsys_struc); */
 		g_free (pack->packsys_struc);
 	}
+
+	g_free (pack);
+}
+
+void 
+packagedata_destroy (PackageData *pack)
+{
+	if (!pack) return;
+	packagedata_destroy_foreach (pack, NULL);
 }
 
 void 
@@ -290,12 +300,6 @@ packagedata_remove_soft_dep (PackageData *remove,
 	g_message ("removing %s from %s's deps", remove->name, from->name);
 	from->soft_depends = g_list_remove (from->soft_depends, remove);
 	packagedata_destroy (remove);
-}
-
-void 
-packagedata_destroy (PackageData *pack)
-{
-	packagedata_destroy_foreach (pack, NULL);
 }
 
 const char*

@@ -172,6 +172,24 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	check_ev ("set_server");
 	Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
 	check_ev ("set_server_port");
+
+	if (arg_root) {
+		if (arg_root[0]=='~') {
+			char *tmp = g_strdup_printf ("%s/%s", g_get_home_dir (), 
+						     arg_root+1);
+			free (arg_root);
+			arg_root = strdup (tmp);
+			g_free (tmp);
+		} else if (arg_root[0]!='/' || arg_root[0]=='.') {
+			char *tmp = g_strdup_printf ("%s%s%s", g_get_current_dir (), 
+						     arg_root[0]=='.' ? "" : "/",
+						     arg_root+1);
+			free (arg_root);
+			arg_root = strdup (tmp);
+			g_free (tmp);
+		}
+		g_message ("DB root = %s", arg_root);
+	}
 }
 
 static void 

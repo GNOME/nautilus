@@ -946,7 +946,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	g_message (_("Removing package %s"), pack->name);
+	g_message (_("Removing package %s %s"), pack->name, pack->toplevel ? "(emit fail)" :"()");
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
@@ -1326,9 +1326,6 @@ int
 eazel_install_package_name_compare (PackageData *pack,
 				    char *name)
 {
-	g_message ("eazel_install_package_conflict_compare (%s, %s)", 
-		   pack->name,
-		   name);
 	return strcmp (pack->name, name);
 }
 

@@ -50,6 +50,7 @@ typedef struct {
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
+#define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 
 #ifdef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 #define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
