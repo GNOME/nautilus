@@ -10,6 +10,9 @@ icon_DATA =					\
 	i-device.png				\
 	i-dirclosed.png				\
 	i-directory.png				\
+	i-directory-192.png			\
+	i-directory-72.png			\
+	i-directory-96.png			\
 	i-executable.png			\
 	i-fifo.png				\
 	i-floppy.png				\

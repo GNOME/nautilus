@@ -43,10 +43,10 @@ typedef struct {
 /* FIXME:  this should be kept in a file somewhere, possibly using GConf or OAF */
 
 static MimeTypeItem mime_type_table [] = {
-	{ "text", "*",  "Edit with gEdit", "gedit" },
+	{ "text", "plain",  "Edit with gEdit", "gedit" },
 	{ "text", "html", "View with Netscape", "netscape" },
 	{ "image", "*", "Edit with GIMP",  "gimp" },
-	{ "text", "plain",  "Edit with gnotepad", "gnp" }
+	{ "text", "*",  "Edit with gnotepad", "gnp" }
 };
 
 /* release the storage contained in the passed-in command list */
@@ -76,7 +76,7 @@ GList* nautilus_mime_type_get_commands (const gchar *mime_type)
   gchar *target_base_type, *target_sub_type;
   NautilusCommandInfo *new_command_item;
   GList *command_list = NULL;
-
+  
   /* parse the mime type into a base type and a sub type */
   
   temp_str = strdup(mime_type);

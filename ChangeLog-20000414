@@ -1,19 +1,26 @@
+2000-02-22  Andy Hertzfeld <andy@eazel.com>
+
+	* icons/i-folder-192,96,72.png
+	hi-res versions of the standard gnome folder icon, contributed by Kenneth Christiansen
+	* icons/Makefile.am
+	include Kenneth's icons
+
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
-    * icons/i-regular-192,96,72.png
-    hi-res versions of the standard gnome generic document icon, contributed by Kenneth Christiansen
-    * icons/Makefile.am
-    include Kenneth's icons
-    * libnautilus/nautilus-icons-controller.c,.h:
-    added a new method to get string properties
-    * libnautilus/nautilus-icons-view-icon-item.c:
-    draw the contents of a text file into the icon itself in a small font, if the
-    text_source property is set
-    * src/file-manager/fm-icons-controller.c:
-    routine to determine whether to draw into icons.  Since our mime-type detection is
-    inadequate now, we throw caution to the winds and assume an unknown type is a text file
-    it only enables this for eazel themes now, we have to figure out a better way to tell if
-    the icon can contain it
+	* icons/i-regular-192,96,72.png
+	hi-res versions of the standard gnome generic document icon, contributed by Kenneth Christiansen
+	* icons/Makefile.am
+	include Kenneth's icons
+	* libnautilus/nautilus-icons-controller.c,.h:
+	added a new method to get string properties
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	draw the contents of a text file into the icon itself in a small font, if the
+	text_source property is set
+	* src/file-manager/fm-icons-controller.c:
+	routine to determine whether to draw into icons.  Since our mime-type detection is
+	inadequate now, we throw caution to the winds and assume an unknown type is a text file
+	it only enables this for eazel themes now, we have to figure out a better way to tell if
+	the icon can contain it
     
 2000-02-21  Maciej Stachowiak  <mjs@eazel.com>
 
