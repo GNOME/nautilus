@@ -30,6 +30,7 @@
 #define NAUTILUS_SIMPLE_SEARCH_BAR_H
 
 #include "nautilus-search-bar.h"
+#include "nautilus-window.h"
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
@@ -55,6 +56,6 @@ typedef struct {
 } NautilusSimpleSearchBarClass;
 
 GtkType    nautilus_simple_search_bar_get_type     (void);
-GtkWidget* nautilus_simple_search_bar_new          (void);
+GtkWidget* nautilus_simple_search_bar_new          (NautilusWindow *window);
 
 #endif /* NAUTILUS_SIMPLE_SEARCH_BAR_H */

@@ -52,6 +52,9 @@ struct NautilusComplexSearchBarDetails {
 	GtkWidget *more_options;
 	GtkWidget *fewer_options;
 	GtkWidget *find_them;
+	
+	/* For use in setting up clipboard */
+	NautilusWindow *window;
 
 	GSList *search_criteria;
 };
@@ -473,9 +476,16 @@ load_find_them_pixmap_widget (void)
 				  
 
 GtkWidget *
-nautilus_complex_search_bar_new (void)
+nautilus_complex_search_bar_new (NautilusWindow *window)
 {
-	return gtk_widget_new (NAUTILUS_TYPE_COMPLEX_SEARCH_BAR, NULL);
+	GtkWidget *bar;
+
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	bar = gtk_widget_new (NAUTILUS_TYPE_COMPLEX_SEARCH_BAR, NULL);
+	gtk_object_set_data (GTK_OBJECT (bar), "associated_window", window);
+
+	return bar;
 }
 
 

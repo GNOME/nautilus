@@ -92,11 +92,36 @@ search_bar_preference_changed_callback (gpointer user_data)
 static void
 nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 {
-	
+
+}	
+
+
+static void
+nautilus_switchable_search_bar_destroy (GtkObject *object)
+{
+	NautilusSwitchableSearchBar *bar;
+
+	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (object);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+					      search_bar_preference_changed_callback,
+					      bar);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+GtkWidget *
+nautilus_switchable_search_bar_new (NautilusWindow *window)
+{
 	GtkWidget *label;
 	GtkWidget *event_box;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+	GtkWidget *switchable_search_bar;
+	NautilusSwitchableSearchBar *bar;
+
+	switchable_search_bar = gtk_widget_new (nautilus_switchable_search_bar_get_type (), NULL);
+	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (switchable_search_bar);
 	
 	hbox = gtk_hbox_new (0, FALSE);
 	event_box = gtk_event_box_new ();
@@ -108,8 +133,8 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	gtk_container_add (GTK_CONTAINER (event_box), label);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE, GNOME_PAD_SMALL);	
-	bar->complex_search_bar = nautilus_complex_search_bar_new ();
-	bar->simple_search_bar = nautilus_simple_search_bar_new ();
+	bar->complex_search_bar = nautilus_complex_search_bar_new (window);
+	bar->simple_search_bar = nautilus_simple_search_bar_new (window);
 
 	gtk_signal_connect_object (GTK_OBJECT (bar->complex_search_bar),
 				   "location_changed",
@@ -138,26 +163,9 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					   search_bar_preference_changed_callback,
 					   bar);
-}
 
-static void
-nautilus_switchable_search_bar_destroy (GtkObject *object)
-{
-	NautilusSwitchableSearchBar *bar;
+	return switchable_search_bar;
 
-	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (object);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-					      search_bar_preference_changed_callback,
-					      bar);
-
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-GtkWidget *
-nautilus_switchable_search_bar_new (void)
-{
-	return gtk_widget_new (nautilus_switchable_search_bar_get_type (), NULL);
 }
 
 static void

@@ -1,3 +1,56 @@
+2000-10-13  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus/nautilus-clipboard-ui.xml:
+	Fixed the names of these files to match the menu items in shell-ui
+	* libnautilus/nautilus-clipboard.h:
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback),
+	(container_copy_free), (ui_component_remove_container_and_unref),
+	(finish_setting_up_editable),
+	(finish_setting_up_editable_from_bonobo_control_callback),
+	(nautilus_clipboard_set_up_editable_from_bonobo_control),
+	(nautilus_clipboard_set_up_editable_from_bonobo_ui_container):
+	Added the from_ui_container function for local editable widgets
+	to use, and changed the function sequence around so that the two
+	clipboard set up functions share an api except for the initial calling
+	functions
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_show), (nautilus_window_get_bonobo_ui_container),
+	(nautilus_window_get_bonobo_ui_component):
+	added the new nautilus-window_get_bonobo_ui_component function for local  
+	editables to use, and changed the construction order so that menu items
+	would get merged correctly (set up the main window menus before setting
+	up the location bar)
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_new):
+	* src/nautilus-complex-search-bar.h:
+	* src/nautilus-location-bar.c: (nautilus_location_bar_get_window),
+	(nautilus_location_bar_initialize), (nautilus_location_bar_new),
+	(nautilus_location_bar_set_location):
+	* src/nautilus-location-bar.h:
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize),
+	(nautilus_simple_search_bar_destroy),
+	(nautilus_simple_search_bar_new):
+	* src/nautilus-simple-search-bar.h:
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize),
+	(nautilus_switchable_navigation_bar_destroy),
+	(nautilus_switchable_navigation_bar_new):
+	* src/nautilus-switchable-navigation-bar.h:
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize),
+	(nautilus_switchable_search_bar_destroy),
+	(nautilus_switchable_search_bar_new):
+	* src/nautilus-switchable-search-bar.h:
+	Changed the location bar and switchable 
+	search bar to take windows in the constructor funciton.
+	These are used to get the local ui component when
+	setting up the clipboard
+	
+
 2000-10-13  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:

@@ -29,8 +29,10 @@
 #include "nautilus-simple-search-bar.h"
 
 #include "nautilus-search-bar-criterion.h"
+#include "nautilus-window-private.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -93,36 +95,7 @@ update_simple_find_button_state (NautilusSimpleSearchBar *bar)
 static void
 nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 {
-	GtkWidget *hbox;
-	
 	bar->details = g_new0 (NautilusSimpleSearchBarDetails, 1);
-
-	hbox = gtk_hbox_new (0, FALSE);
-	
-	/* Create button first so we can use it for auto_click */
-	bar->details->find_button = gtk_button_new_with_label (_("Find Them!"));
-
-	bar->details->entry = NAUTILUS_ENTRY (nautilus_entry_new ());
-	nautilus_undo_set_up_nautilus_entry_for_undo (bar->details->entry);
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
-	
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   nautilus_gtk_button_auto_click, 
-				   GTK_OBJECT (bar->details->find_button));
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
-				   update_simple_find_button_state, GTK_OBJECT (bar));
-
-	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
-
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
-				   nautilus_navigation_bar_location_changed,
-				   GTK_OBJECT (bar));
-	gtk_box_pack_start (GTK_BOX (hbox), bar->details->find_button, FALSE, TRUE, 1);
-	update_simple_find_button_state (bar);
-	
-	gtk_container_add (GTK_CONTAINER (bar), hbox);
-
-	gtk_widget_show_all (hbox);
 }
 
 static void
@@ -141,9 +114,45 @@ nautilus_simple_search_bar_destroy (GtkObject *object)
 }
 
 GtkWidget *
-nautilus_simple_search_bar_new (void)
+nautilus_simple_search_bar_new (NautilusWindow *window)
 {
-	return gtk_widget_new (NAUTILUS_TYPE_SIMPLE_SEARCH_BAR, NULL);
+	GtkWidget *simple_search_bar;
+	NautilusSimpleSearchBar *bar;
+	
+	GtkWidget *hbox;
+
+	simple_search_bar =  gtk_widget_new (NAUTILUS_TYPE_SIMPLE_SEARCH_BAR, NULL);
+	bar = NAUTILUS_SIMPLE_SEARCH_BAR (simple_search_bar);
+	hbox = gtk_hbox_new (0, FALSE);
+	
+	/* Create button first so we can use it for auto_click */
+	bar->details->find_button = gtk_button_new_with_label (_("Find Them!"));
+
+	bar->details->entry = NAUTILUS_ENTRY (nautilus_entry_new ());
+	nautilus_undo_set_up_nautilus_entry_for_undo (bar->details->entry);
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
+	nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GTK_EDITABLE (bar->details->entry),
+								     nautilus_window_get_bonobo_ui_container (window));
+	
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
+				   nautilus_gtk_button_auto_click, 
+				   GTK_OBJECT (bar->details->find_button));
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
+				   update_simple_find_button_state, GTK_OBJECT (bar));
+
+	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
+
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
+	gtk_box_pack_start (GTK_BOX (hbox), bar->details->find_button, FALSE, TRUE, 1);
+	update_simple_find_button_state (bar);
+	
+	gtk_container_add (GTK_CONTAINER (bar), hbox);
+
+	gtk_widget_show_all (hbox);	
+
+	return simple_search_bar;
 }
 
 static void

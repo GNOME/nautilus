@@ -33,6 +33,7 @@
 #include "nautilus-location-bar.h"
 
 #include "nautilus-window.h"
+#include "nautilus-window-private.h"
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
@@ -42,6 +43,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -87,9 +89,10 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static NautilusWindow *
-nautilus_location_bar_get_window (GtkWidget *widget)
+nautilus_location_bar_get_window (GtkWidget *bar)
 {
-	return NAUTILUS_WINDOW (gtk_widget_get_toplevel (widget));
+
+	return NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (bar), "associated_window"));
 }
 
 static void
@@ -469,6 +472,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
 
+
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
@@ -491,13 +495,25 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	bar->label = GTK_LABEL (label);
 	bar->entry = GTK_ENTRY (entry);	
+
+
 }
 
 
 GtkWidget *
-nautilus_location_bar_new (void)
+nautilus_location_bar_new (NautilusWindow *window)
 {
-	return gtk_widget_new (NAUTILUS_TYPE_LOCATION_BAR, NULL);
+	GtkWidget *bar;
+	NautilusLocationBar *location_bar;
+
+	bar = gtk_widget_new (NAUTILUS_TYPE_LOCATION_BAR, NULL);
+	location_bar = NAUTILUS_LOCATION_BAR (bar);
+
+	/* Clipboard */
+	nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GTK_EDITABLE (location_bar->entry),
+								     nautilus_window_get_bonobo_ui_container (window));
+
+	return bar;
 }
 
 static void
@@ -506,6 +522,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 {
 	NautilusLocationBar *bar;
 	char *formatted_location;
+
 
 	g_assert (location != NULL);
 	

@@ -30,12 +30,13 @@
 #include <bonobo/bonobo-control.h>
 
 /* Components should use this, which includes menu merging. */
-void nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable     *target,
-							     BonoboControl   *control);
+void nautilus_clipboard_set_up_editable_from_bonobo_control         (GtkEditable     *target,
+								     BonoboControl   *control);
 
-/* Containing application should use this. It could be moved out of libnautilus. */
-#ifdef UIH
-void nautilus_clipboard_set_up_host_ui_handler              (BonoboUIHandler *ui_handler);
-#endif
+/* Local editable widgets should set up clipboard capabilities using this function.
+   They can obtain their local ui container using the function
+   nautilus_window_get_bonobo_ui_container */
+void nautilus_clipboard_set_up_editable_from_bonobo_ui_container   (GtkEditable     *target,
+								    Bonobo_UIContainer container);
 
 #endif /* NAUTILUS_CLIPBOARD_H */

@@ -329,11 +329,29 @@ nautilus_window_constructed (NautilusWindow *window)
   	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
 
+	/* CORBA and Bonobo setup, which must be done before the location bar setup */
+	window->details->ui_container = bonobo_ui_container_new ();
+	bonobo_ui_container_set_win (window->details->ui_container,
+				     BONOBO_WIN (window));
+
+	/* Load the user interface from the XML file. */
+	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
+	bonobo_ui_component_set_container
+		(window->details->shell_ui,
+		 bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container)));
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
+	bonobo_ui_util_set_ui (window->details->shell_ui,
+			       DATADIR,
+			       "nautilus-shell-ui.xml",
+			       "nautilus");
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
 	gtk_container_set_border_width (GTK_CONTAINER (location_bar_box), GNOME_PAD_SMALL);
 	
-	window->navigation_bar = nautilus_switchable_navigation_bar_new ();
+	window->navigation_bar = nautilus_switchable_navigation_bar_new (window);
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
@@ -404,24 +422,10 @@ nautilus_window_constructed (NautilusWindow *window)
 		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
 	}
 	
-	/* CORBA and Bonobo setup */
-	window->details->ui_container = bonobo_ui_container_new ();
-	bonobo_ui_container_set_win (window->details->ui_container,
-				     BONOBO_WIN (window));
 
-
-	/* Load the user interface from the XML file. */
-	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
-	bonobo_ui_component_set_container
-		(window->details->shell_ui,
-		 bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container)));
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	bonobo_ui_util_set_ui (window->details->shell_ui,
-			       DATADIR,
-			       "nautilus-shell-ui.xml",
-			       "nautilus");
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    LOCATION_BAR_PATH, TRUE);
@@ -1780,3 +1784,13 @@ nautilus_window_show (GtkWidget *widget)
 		nautilus_window_hide_sidebar (window);
 	}	
 }
+
+Bonobo_UIContainer 
+nautilus_window_get_bonobo_ui_container (NautilusWindow *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	/* FIXME: Do we have to ref the container here? */
+	return bonobo_ui_component_get_container (window->details->shell_ui);
+}
+

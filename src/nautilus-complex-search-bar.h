@@ -30,6 +30,7 @@
 #define NAUTILUS_COMPLEX_SEARCH_BAR_H
 
 #include "nautilus-search-bar.h"
+#include "nautilus-window.h"
 
 #define NAUTILUS_TYPE_COMPLEX_SEARCH_BAR (nautilus_complex_search_bar_get_type ())
 #define NAUTILUS_COMPLEX_SEARCH_BAR(obj) \
@@ -51,7 +52,7 @@ typedef struct {
 } NautilusComplexSearchBarClass;
 
 GtkType    nautilus_complex_search_bar_get_type (void);
-GtkWidget *nautilus_complex_search_bar_new      (void);
+GtkWidget *nautilus_complex_search_bar_new      (NautilusWindow *window);
 
 GSList *   nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar);
 

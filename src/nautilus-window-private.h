@@ -133,5 +133,15 @@ void                 nautilus_window_add_sidebar_panel                 (Nautilus
                                                                         NautilusViewFrame          *sidebar_panel);
 void                 nautilus_window_remove_sidebar_panel              (NautilusWindow             *window,
                                                                         NautilusViewFrame          *sidebar_panel);
-
+Bonobo_UIContainer   nautilus_window_get_bonobo_ui_container           (NautilusWindow *window);
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */
+
+
+
+
+
+
+
+
+
+
