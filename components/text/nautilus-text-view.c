@@ -63,6 +63,7 @@ struct _NautilusTextViewDetails {
 	
 	char *font_name;
 	GdkFont *current_font;
+	int service_item_count;
 };
 
 /* structure for handling service menu item execution */
@@ -74,6 +75,7 @@ typedef struct {
 } ServiceMenuItemParameters;
 
 #define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
+#define ADDITIONAL_SERVICES_COMMAND_PATH "/commands/Services Placeholder/Services/Service Items"
 
 static void nautilus_text_view_initialize_class			(NautilusTextViewClass *klass);
 static void nautilus_text_view_initialize			(NautilusTextView      *view);
@@ -88,6 +90,10 @@ static void  merge_bonobo_menu_items				(BonoboControl *control,
 								 gpointer user_data);
 
 static void nautilus_text_view_update_font			(NautilusTextView *text_view);
+
+static int  update_service_menu_items 				(GtkWidget *widget,
+								 GdkEventButton *event,
+								 gpointer *user_data);
 
 static void zoomable_set_zoom_level_callback			(BonoboZoomable       *zoomable,
 								 float                 level,
@@ -174,6 +180,16 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
 	gtk_widget_show (text_view->details->text_display);
 	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), TRUE);
+
+	/* add signal handlers to the text field to enable/disable the service menu items */
+	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
+			    "button_release_event",
+			    GTK_SIGNAL_FUNC (update_service_menu_items), 
+			    text_view);
+	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
+			    "key_press_event",
+			    GTK_SIGNAL_FUNC (update_service_menu_items), 
+			    text_view);
 
 	/* set the font of the text object */
 	nautilus_text_view_update_font (text_view);
@@ -456,8 +472,7 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 			/* set the tooltip if one was present */
 			if (tooltip) {
 				item_path = nautilus_bonobo_get_numbered_menu_item_path
-					(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);
-			
+						(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
 				nautilus_bonobo_set_tip (ui, item_path, tooltip);
 				g_free (item_path);
 			}
@@ -469,6 +484,12 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 							   parameters,
 							  (GDestroyNotify) service_menu_item_parameters_free);	   
 			g_free (verb_name);	
+			
+			/* initially disable the item; it will be enabled if there's a selection */
+			item_path = nautilus_bonobo_get_numbered_menu_item_path
+					(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
+			nautilus_bonobo_set_sensitive (ui, item_path, FALSE);
+			g_free (item_path);
 			
 			*index += 1;
 
@@ -539,9 +560,45 @@ nautilus_text_view_build_service_menu (NautilusTextView *text_view, BonoboContro
 	user_directory = nautilus_get_user_directory ();
 	services_directory = nautilus_make_path (user_directory, "services/text");
 	add_services_to_menu (text_view, control, services_directory, &index);
-	
+
+	text_view->details->service_item_count = index;	
 	g_free (services_directory);
 	g_free (user_directory);
+}
+
+/* handle updating the service menu items according to the selection state of the text display */
+static int
+update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *user_data)
+{
+	NautilusTextView *text_view;
+	BonoboUIComponent *ui;
+	BonoboControl *control;
+	GtkEditable *text_widget;
+	gboolean has_selection;
+	char *command_path;
+	int index;
+	
+	text_view = NAUTILUS_TEXT_VIEW (user_data);
+	control = nautilus_view_get_bonobo_control (text_view->details->nautilus_view);	
+	ui = bonobo_control_get_ui_component (control);
+	
+	/* determine if there is a selection */
+	text_widget = GTK_EDITABLE (text_view->details->text_display);
+	has_selection = text_widget->has_selection && text_widget->selection_start_pos != text_widget->selection_end_pos;
+	
+	/* iterate through the menu items, handling the selection state */
+	
+	for (index = 0; index < text_view->details->service_item_count; index++) {
+		command_path = nautilus_bonobo_get_numbered_menu_item_path
+					(ui, ADDITIONAL_SERVICES_MENU_PATH, index);
+	
+		nautilus_bonobo_set_sensitive (ui, 
+				       command_path,
+				       has_selection);
+		g_free (command_path);
+	}
+	
+	return FALSE;
 }
 
 /* this routine is invoked when the view is activated to merge in our menu items */

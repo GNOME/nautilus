@@ -1,3 +1,13 @@
+2000-11-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize), (add_one_service),
+	(nautilus_text_view_build_service_menu),
+	(update_service_menu_items):
+	made the service menu items be enabled and disabled appropriately
+	based on whether there's a selection or not, by attaching to the
+	button_release_event and key_press_event of the text object
+	
 2000-11-29  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:
