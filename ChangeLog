@@ -1,5 +1,25 @@
 2000-06-05  John Sullivan  <sullivan@eazel.com>
 
+	Used newly-publicized functions from gnome-vfs-mime-handlers.c
+	to avoid replicating a bunch of code.
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(gnome_vfs_mime_application_matches_id),
+	(gnome_vfs_mime_component_matches_id),
+	(gnome_vfs_mime_id_in_application_list),
+	(gnome_vfs_mime_id_in_component_list),
+	(id_list_from_application_list),
+	(id_list_from_component_list):
+	Removed these functions.
+	
+	(nautilus_mime_add_application_to_short_list_for_uri),
+	(nautilus_mime_remove_application_from_short_list_for_uri),
+	(nautilus_mime_add_component_to_short_list_for_uri),
+	(nautilus_mime_remove_component_from_short_list_for_uri):
+	Rewrote to call newly-publicized gnome-vfs-mime functions.
+
+2000-06-05  John Sullivan  <sullivan@eazel.com>
+
 	Cleaned up the directory view code that launches applications 
 	or switches to viewers so that when bugs 1053 and 1072 are
 	fixed it will be trivial to finish this code.
