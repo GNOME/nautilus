@@ -1,57 +1,46 @@
-# Note that this is NOT a relocatable package
-%define name		nautilus
-%define ver		@VERSION@
-%define RELEASE		0_cvs_0
-%define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
+%define __spec_install_post /usr/lib/rpm/brp-compress
+Name:             nautilus
+Summary:          Nautilus is a network user environment
+Version:          @VERSION@
+Release:          1
+License:          GPL
+Group:            User Interface/Desktop
+Source:           ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
+Source2:          fixed-ltmain.sh
+URL:              http://nautilus.eazel.com/
+BuildRoot:        %{_tmppath}/%{name}-%{version}-root
+BuildRequires:    pkgconfig >= 0.8
+Requires:         esound >= @ESOUND_REQUIRED@
+Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
+Requires:         eel2 >= @EEL_REQUIRED@
+Requires:         glib2 >= @GLIB_REQUIRED@
+Requires:         gnome-vfs2 >= @GNOME_VFS_REQUIRED@
+Requires:         gtk2 >= @GTK_REQUIRED@
+Requires:         libart_lgpl >= @ART_REQUIRED@
+Requires:         libbonobo >= @BONOBO_REQUIRED@
+Requires:         libbonoboui >= @BONOBO_UI_REQUIRED@
+Requires:         libgnome >= @GNOME_REQUIRED@
+Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
+Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
+Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
+Requires:         librsvg2 >= @RSVG_REQUIRED@
+Requires:         libxml2 >= @XML_REQUIRED@
+BuildRequires:    esound-devel >= @ESOUND_REQUIRED@
+BuildRequires:    bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
+BuildRequires:    eel2-devel >= @EEL_REQUIRED@
+BuildRequires:    glib2-devel >= @GLIB_REQUIRED@
+BuildRequires:    gnome-vfs2-devel >= @GNOME_VFS_REQUIRED@
+BuildRequires:    gtk2-devel >= @GTK_REQUIRED@
+BuildRequires:    libart_lgpl-devel >= @ART_REQUIRED@
+BuildRequires:    libbonobo-devel >= @BONOBO_REQUIRED@
+BuildRequires:    libbonoboui-devel >= @BONOBO_UI_REQUIRED@
+BuildRequires:    libgnome-devel >= @GNOME_REQUIRED@
+BuildRequires:    gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
+BuildRequires:    libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
+BuildRequires:    libgnomeui-devel >= @GNOME_UI_REQUIRED@
+BuildRequires:    librsvg2-devel >= @RSVG_REQUIRED@
+BuildRequires:    libxml2-devel >= @XML_REQUIRED@
 
-Name:		%name
-Vendor:		GNOME
-Distribution:	CVS
-Summary:	Nautilus is a network user environment
-Version: 	%ver
-Release: 	%rel
-Copyright: 	GPL
-Group:		User Interface/Desktop
-Source: 	ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}-%{ver}.tar.gz
-URL: 		http://nautilus.eazel.com/
-BuildRoot:	/var/tmp/%{name}-%{ver}-root
-
-Requires:	GConf >= @GCONF_REQUIRED@
-Requires:	ORBit >= @ORBIT_REQUIRED@
-Requires:	bonobo >= @BONOBO_REQUIRED@
-Requires:	bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:	eel >= @EEL_REQUIRED@
-Requires:	esound >= @ESOUND_REQUIRED@
-Requires:	gdk-pixbuf >= @GDK_PIXBUF_REQUIRED@
-Requires:	glib >= @GLIB_REQUIRED@
-Requires:	gnome-libs >= @GNOME_LIBS_REQUIRED@
-Requires:	gnome-vfs >= @GNOME_VFS_REQUIRED@
-Requires:	gtk+ >= @GTK_REQUIRED@
-Requires:	imlib >= @IMLIB_REQUIRED@
-Requires:	libpng
-Requires:	librsvg >= @LIBRSVG_REQUIRED@
-Requires:	libxml >= @LIBXML_REQUIRED@
-Requires:	medusa >= @MEDUSA_REQUIRED@
-Requires:	popt >= @POPT_REQUIRED@
-
-BuildRequires:	GConf-devel >= @GCONF_REQUIRED@
-BuildRequires:	ORBit-devel >= @ORBIT_REQUIRED@
-BuildRequires:	bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-BuildRequires:	bonobo-devel >= @BONOBO_REQUIRED@
-BuildRequires:	eel-devel >= @EEL_REQUIRED@
-BuildRequires:	esound-devel >= @ESOUND_REQUIRED@
-BuildRequires:	gdk-pixbuf-devel >= @GDK_PIXBUF_REQUIRED@
-BuildRequires:	glib-devel >= @GLIB_REQUIRED@
-BuildRequires:	gnome-libs-devel >= @GNOME_LIBS_REQUIRED@
-BuildRequires:	gnome-vfs-devel >= @GNOME_VFS_REQUIRED@
-BuildRequires:	gtk+-devel >= @GTK_REQUIRED@
-BuildRequires:	imlib-devel >= @IMLIB_REQUIRED@
-BuildRequires:	libpng-devel
-BuildRequires:	librsvg-devel >= @LIBRSVG_REQUIRED@
-BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
-BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
-BuildRequires:	popt >= @POPT_REQUIRED@
-BuildRequires:	xpdf >= 0.90
 
 %description
 Nautilus integrates access to files, applications, media, Internet-based
@@ -61,199 +50,134 @@ GNU General Public License and is a core component of the GNOME desktop
 project.
 
 %package devel
-Summary:	Libraries and include files for developing Nautilus components
-Group:		Development/Libraries
-Requires:	%name = %{PACKAGE_VERSION}
+Summary:          Libraries and include files for developing Nautilus components
+Group:            Development/Libraries
+Requires:         %name = %{version}
+Requires:         pkgconfig >= 0.8
+Requires:         esound >= @ESOUND_REQUIRED@
+Requires:         esound-devel >= @ESOUND_REQUIRED@
+Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
+Requires:         bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
+Requires:         eel2 >= @EEL_REQUIRED@
+Requires:         eel2-devel >= @EEL_REQUIRED@
+Requires:         glib2 >= @GLIB_REQUIRED@
+Requires:         glib2-devel >= @GLIB_REQUIRED@
+Requires:         gnome-vfs2 >= @GNOME_VFS_REQUIRED@
+Requires:         gnome-vfs2-devel >= @GNOME_VFS_REQUIRED@
+Requires:         gtk2 >= @GTK_REQUIRED@
+Requires:         gtk2-devel >= @GTK_REQUIRED@
+Requires:         libart_lgpl >= @ART_REQUIRED@
+Requires:         libart_lgpl-devel >= @ART_REQUIRED@
+Requires:         libbonobo >= @BONOBO_REQUIRED@
+Requires:         libbonobo-devel >= @BONOBO_REQUIRED@
+Requires:         libbonoboui >= @BONOBO_UI_REQUIRED@
+Requires:         libbonoboui-devel >= @BONOBO_UI_REQUIRED@
+Requires:         libgnome >= @GNOME_REQUIRED@
+Requires:         libgnome-devel >= @GNOME_REQUIRED@
+Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
+Requires:         gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
+Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
+Requires:         libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
+Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
+Requires:         libgnomeui-devel >= @GNOME_UI_REQUIRED@
+Requires:         librsvg2 >= @RSVG_REQUIRED@
+Requires:         librsvg2-devel >= @RSVG_REQUIRED@
+Requires:         libxml2 >= @XML_REQUIRED@
+Requires:         libxml2-devel >= @XML_REQUIRED@
+
 
 %description devel
 This package provides the necessary development libraries and include
 files to allow you to develop Nautilus components.
 
-%package extras
-Summary:	Extra goodies to use with Nautilus
-Group:          User Interface/Desktop
-Requires:	xpdf >= 0.90
-
-%description extras
-This is a meta-package that requires useful add-ons for Nautilus.
-
-%package suggested
-Summary:	Nautilus and a suggested set of components
-Group:          User Interface/Desktop
-Requires:       %name = %{PACKAGE_VERSION}
-Requires:	%name-extras = %{PACKAGE_VERSION}
-
-%description suggested
-This is a meta-package that requires packages useful for running
-Nautilus, and getting multimedia to work, such as eog and mpg123.
-
 %prep
-%setup
+%setup -q
+mv ltmain.sh ltmain.sh.orig
+sed s/relink=yes/relink=no/ ltmain.sh.orig > ltmain.sh
 
 %build
-%ifarch alpha
-	MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
-
-LC_ALL=""
-LINGUAS=""
-LANG=""
-export LC_ALL LINGUAS LANG
-
-## Warning!  Make sure there are no spaces or tabs after the \ 
-## continuation character, or else the rpm demons will eat you.
-CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure \
-    $MYARCH_FLAGS --enable-more-warnings \
-    --prefix=%{_prefix} --datadir=%{_datadir} \
-    --sysconfdir=%{_sysconfdir} --includedir=%{_includedir} \
-    --libdir=%{_libdir} --bindir=%{_bindir}
-
-make -k
-make check
+%configure
+rm ltmain.sh && cp %{SOURCE2} ltmain.sh
+make %{?_smp_mflags}
 
 %install
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+%makeinstall
 
-make -k prefix=$RPM_BUILD_ROOT/%{_prefix} \
-    sysconfdir=$RPM_BUILD_ROOT/%{_sysconfdir} \
-    datadir=$RPM_BUILD_ROOT/%{_datadir} \
-    includedir=$RPM_BUILD_ROOT/%{_includedir} \
-    libdir=$RPM_BUILD_ROOT/%{_libdir} \
-    bindir=$RPM_BUILD_ROOT/%{_bindir} install
+%find_lang %name
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-if ! grep %{_libdir} /etc/ld.so.conf > /dev/null ; then
-	echo "%{_libdir}" >> /etc/ld.so.conf
-fi
+
+%postun
 /sbin/ldconfig
-scrollkeeper-update
+/usr/bin/scrollkeeper-update
 
-%postun -p /sbin/ldconfig
-scrollkeeper-update
-
-%files
-
-%defattr(0555, bin, bin)
-%doc AUTHORS COPYING COPYING-DOCS COPYING.LIB TRADEMARK_NOTICE ChangeLog NEWS README
-%{_bindir}/nautilus
-%{_bindir}/nautilus-adapter
-%{_bindir}/nautilus-error-dialog
-%{_bindir}/nautilus-hardware-view
-%{_bindir}/nautilus-history-view
-%{_bindir}/nautilus-image-view
-# %{_bindir}/nautilus-mpg123
-%{_bindir}/nautilus-music-view
-%{_bindir}/nautilus-news
-%{_bindir}/nautilus-notes
-%{_bindir}/nautilus-restore-settings-to-default.sh
-%{_bindir}/nautilus-sample-content-view
-%{_bindir}/nautilus-text-view
-%{_bindir}/nautilus-throbber
-%{_bindir}/nautilus-verify-rpm.sh
-%{_libdir}/libnautilus-adapter.so
-%{_libdir}/libnautilus-adapter.so.0
-%{_libdir}/libnautilus-adapter.so.0.0.0
-%{_libdir}/libnautilus-private.so
-%{_libdir}/libnautilus-private.so.0
-%{_libdir}/libnautilus-private.so.0.0.0
+%files -f %name.lang
+%defattr(-, root, root)
+%doc AUTHORS COPYING COPYING-DOCS COPYING.LIB ChangeLog INSTALL
+%doc MAINTAINERS NEWS README THANKS TODO
+%doc %{_datadir}/gnome/help/*
+%{_sysconfdir}/X11/serverconfig/.directory
+%{_sysconfdir}/X11/starthere/*
+%{_sysconfdir}/X11/starthere/.directory
+%{_sysconfdir}/X11/sysconfig/.directory
+%{_bindir}/*
+%{_libdir}/*.so*
 %{_libdir}/libnautilus-tree-view.so
-%{_libdir}/libnautilus-tree-view.so.0
-%{_libdir}/libnautilus-tree-view.so.0.0.0
-%{_libdir}/libnautilus.so
-%{_libdir}/libnautilus.so.0
-%{_libdir}/libnautilus.so.0.0.0
-%{_libdir}/vfs/modules/*.so
+%{_libdir}/bonobo/servers/*
+%{_datadir}/applications/*
+%{_datadir}/gnome-2.0/ui/*
+%{_datadir}/idl/*
+%{_datadir}/nautilus
+%doc %{_datadir}/omf/nautilus/*
+%{_datadir}/pixmaps/*
 
-
-%defattr (0444, bin, bin)
-%config %{_sysconfdir}/vfs/modules/*.conf
-%{_datadir}/gnome-2.0/ui/*.xml
-%{_datadir}/gnome/apps/Applications/*.desktop
-%{_datadir}/locale/*/LC_MESSAGES/*.mo
-%{_datadir}/nautilus/*.xml
-%{_datadir}/nautilus/emblems/*.png
-%{_datadir}/nautilus/linksets/*.xml
-%{_datadir}/nautilus/patterns/*.jpg
-%{_datadir}/nautilus/patterns/*.png
-%{_datadir}/nautilus/patterns/.*.png
-%{_datadir}/nautilus/services/text/*.xml
-%{_datadir}/pixmaps/*.png
-%{_datadir}/pixmaps/nautilus/*.gif
-%{_datadir}/pixmaps/nautilus/*.png
-%{_datadir}/pixmaps/nautilus/*.svg
-%{_datadir}/pixmaps/nautilus/*.xml
-%{_datadir}/pixmaps/nautilus/crux_eggplant/*.png
-%{_datadir}/pixmaps/nautilus/crux_eggplant/*.xml
-%{_datadir}/pixmaps/nautilus/crux_eggplant/backgrounds/*.png
-%{_datadir}/pixmaps/nautilus/crux_eggplant/sidebar_tab_pieces/*.png
-%{_datadir}/pixmaps/nautilus/crux_eggplant/throbber/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/*.xml
-%{_datadir}/pixmaps/nautilus/crux_teal/backgrounds/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/sidebar_tab_pieces/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/throbber/*.png
-%{_datadir}/pixmaps/nautilus/gnome/*.png
-%{_datadir}/pixmaps/nautilus/gnome/*.xml
-%{_datadir}/pixmaps/nautilus/gnome/throbber/*.png
-%{_datadir}/pixmaps/nautilus/sidebar_tab_pieces/*.png
-%{_datadir}/pixmaps/nautilus/sierra/*.png
-%{_datadir}/pixmaps/nautilus/sierra/*.xml
-%{_datadir}/pixmaps/nautilus/tahoe/*.png
-%{_datadir}/pixmaps/nautilus/tahoe/*.xml
-%{_datadir}/pixmaps/nautilus/throbber/*.png
-%{_libdir}/bonobo/servers/Nautilus_ComponentAdapterFactory_std.server
-%{_libdir}/bonobo/servers/Nautilus_Control_throbber.server
-%{_libdir}/bonobo/servers/Nautilus_View_hardware.server
-%{_libdir}/bonobo/servers/Nautilus_View_history.server
-%{_libdir}/bonobo/servers/Nautilus_View_image.server
-%{_libdir}/bonobo/servers/Nautilus_View_music.server
-%{_libdir}/bonobo/servers/Nautilus_View_news.server
-%{_libdir}/bonobo/servers/Nautilus_View_notes.server
-%{_libdir}/bonobo/servers/Nautilus_View_sample.server
-%{_libdir}/bonobo/servers/Nautilus_View_text.server
-%{_libdir}/bonobo/servers/Nautilus_View_tree.server
-%{_libdir}/bonobo/servers/Nautilus_shell.server
-
-# We put the idl files in the main package, not the devel package
-# because the perl corba bindings can use the .idl files at run time.
-%{_datadir}/idl/nautilus-view-component.idl
-%{_datadir}/idl/nautilus-distributed-undo.idl
-
-%defattr (-, root, root)
-%{_datadir}/gnome/help
-%{_datadir}/omf/nautilus
 
 %files devel
+%defattr(-, root, root)
+%{_includedir}/*
+%{_libdir}/*.so
+%{_libdir}/*a
+%{_libdir}/pkgconfig/*
 
-%defattr(0555, bin, bin)
-%{_libdir}/*.la
-%{_libdir}/*.sh
-%{_libdir}/vfs/modules/*.la
-
-%defattr(0444, bin, bin)
-%{_includedir}/libnautilus/*.h
-
-%files extras
-
-%defattr(0444, bin, bin)
-%{_datadir}/nautilus/nautilus-extras.placeholder
-
-%files suggested
-
-%defattr(0444, bin, bin)
-%{_datadir}/nautilus/nautilus-suggested.placeholder
 
 %changelog
+* Tue Mar 05 2002 Chris Chabot <chabotc@reviewboard.com>
+- Fixed file list
+- ltmain.sh fix
+- fixed last format issues
+- converted to .spec.in
+
+* Mon Feb 04 2002 Roy-Magne Mo  <rmo@sunnmore.net>
+- Fixed lang
+
+* Sun Feb 03 2002 Roy-Magne Mo  <rmo@sunnmore.net>
+- Added buildrequires
+
+* Sat Jan 19 2002 Chris Chabot <chabotc@reviewboard.com>
+- Minor changes & restored macro's
+- Major cleanups
+- Moved versions to defines
+- Since entry below hints at removing sugested, extras, remove their headers
+
+* Fri Jan 18 2002  <builder@localhost.localdomain>
+- removed some unnecessary %defines
+- got rid of suggested and extras packages, to make life easier
+- re-write %files section from scratch
+- made setup quiet
+- fixed %post and %postun scripts
+- removed -k from make lines (it's silly for RPMs)
+
 * Tue Apr 17 2001 Gregory Leblanc <gleblanc@grego1.cu-portland.edu>
 - Added BuildRequires lines
 - Changed Source to point to ftp.gnome.org instead of just the tarball name
 - Moved %description sections closer to their %package sections
 - Moved %changelog to the end, where so that it's not in the way
 - Changed configure and make install options to allow moving of
-  libraries, includes, binaries more easily
+libraries, includes, binaries more easily
 - Removed hard-coded paths (don't define %prefix or %docdir)
 - replace %{prefix}/bin with %{_bindir}
 - replace %{prefix}/share with %{_datadir}
