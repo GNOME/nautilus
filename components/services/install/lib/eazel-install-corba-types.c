@@ -51,14 +51,14 @@ g_list_to_corba_string_sequence (GList *provides) {
 	return result;
 }
 
-Trilobite_Eazel_PackageDataStructList
+GNOME_Trilobite_Eazel_PackageDataStructList
 corba_packagedatastructlist_from_packagedata_list (GList *packages)
 {
-	Trilobite_Eazel_PackageDataStructList packagelist;
+	GNOME_Trilobite_Eazel_PackageDataStructList packagelist;
 	guint i;
 
 	packagelist._length = g_list_length (packages);
-	packagelist._buffer = CORBA_sequence_Trilobite_Eazel_PackageDataStruct_allocbuf (packagelist._length);
+	packagelist._buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_allocbuf (packagelist._length);
 	for (i = 0; i < packagelist._length; i++) {
 		PackageData *pack;
 		pack = (PackageData*)(g_list_nth (packages,i)->data);
@@ -68,12 +68,12 @@ corba_packagedatastructlist_from_packagedata_list (GList *packages)
 	return packagelist;
 }
 
-Trilobite_Eazel_PackageDataStruct*
+GNOME_Trilobite_Eazel_PackageDataStruct*
 corba_packagedatastruct_from_packagedata (const PackageData *pack)
 {
-	Trilobite_Eazel_PackageDataStruct *corbapack;
+	GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
 
-	corbapack = Trilobite_Eazel_PackageDataStruct__alloc ();
+	corbapack = GNOME_Trilobite_Eazel_PackageDataStruct__alloc ();
 	corbapack->name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
 	corbapack->eazel_id = pack->eazel_id ? CORBA_string_dup (pack->eazel_id) : CORBA_string_dup ("");
 	corbapack->version = pack->version ? CORBA_string_dup (pack->version) : CORBA_string_dup ("");
@@ -103,37 +103,37 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
-		corbapack->status = Trilobite_Eazel_UNKNOWN_STATUS;
+		corbapack->status = GNOME_Trilobite_Eazel_UNKNOWN_STATUS;
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		corbapack->status = Trilobite_Eazel_SOURCE_NOT_SUPPORTED;
+		corbapack->status = GNOME_Trilobite_Eazel_SOURCE_NOT_SUPPORTED;
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		corbapack->status = Trilobite_Eazel_DEPENDENCY_FAIL;
+		corbapack->status = GNOME_Trilobite_Eazel_DEPENDENCY_FAIL;
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		corbapack->status = Trilobite_Eazel_FILE_CONFLICT;
+		corbapack->status = GNOME_Trilobite_Eazel_FILE_CONFLICT;
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		corbapack->status = Trilobite_Eazel_BREAKS_DEPENDENCY;
+		corbapack->status = GNOME_Trilobite_Eazel_BREAKS_DEPENDENCY;
 		break;
 	case PACKAGE_INVALID:
-		corbapack->status = Trilobite_Eazel_INVALID;
+		corbapack->status = GNOME_Trilobite_Eazel_INVALID;
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		corbapack->status = Trilobite_Eazel_CANNOT_OPEN;
+		corbapack->status = GNOME_Trilobite_Eazel_CANNOT_OPEN;
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
-		corbapack->status = Trilobite_Eazel_PARTLY_RESOLVED;
+		corbapack->status = GNOME_Trilobite_Eazel_PARTLY_RESOLVED;
 		break;
 	case PACKAGE_RESOLVED:
-		corbapack->status = Trilobite_Eazel_RESOLVED;
+		corbapack->status = GNOME_Trilobite_Eazel_RESOLVED;
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		corbapack->status = Trilobite_Eazel_ALREADY_INSTALLED;
+		corbapack->status = GNOME_Trilobite_Eazel_ALREADY_INSTALLED;
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY:
-		corbapack->status = Trilobite_Eazel_CIRCULAR_DEPENDENCY;
+		corbapack->status = GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY;
 		break;
 	}
 
@@ -165,7 +165,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 }
 
 GList*
-packagedata_list_from_corba_packagedatastructlist (const Trilobite_Eazel_PackageDataStructList corbapack)
+packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList corbapack)
 {
 	GList *result;
 	guint i;
@@ -182,7 +182,7 @@ packagedata_list_from_corba_packagedatastructlist (const Trilobite_Eazel_Package
 }
 
 PackageData*
-packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruct corbapack)
+packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDataStruct corbapack)
 {
 	PackageData *pack;
 	
@@ -212,37 +212,37 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	}
 	
 	switch (corbapack.status) {
-	case Trilobite_Eazel_UNKNOWN_STATUS:
+	case GNOME_Trilobite_Eazel_UNKNOWN_STATUS:
 		pack->status = PACKAGE_UNKNOWN_STATUS;
 		break;
-	case Trilobite_Eazel_SOURCE_NOT_SUPPORTED:
+	case GNOME_Trilobite_Eazel_SOURCE_NOT_SUPPORTED:
 		pack->status = PACKAGE_SOURCE_NOT_SUPPORTED;
 		break;
-	case Trilobite_Eazel_DEPENDENCY_FAIL:
+	case GNOME_Trilobite_Eazel_DEPENDENCY_FAIL:
 		pack->status = PACKAGE_DEPENDENCY_FAIL;
 		break;
-	case Trilobite_Eazel_FILE_CONFLICT:
+	case GNOME_Trilobite_Eazel_FILE_CONFLICT:
 		pack->status = PACKAGE_FILE_CONFLICT;
 		break;
-	case Trilobite_Eazel_BREAKS_DEPENDENCY:
+	case GNOME_Trilobite_Eazel_BREAKS_DEPENDENCY:
 		pack->status = PACKAGE_BREAKS_DEPENDENCY;
 		break;
-	case Trilobite_Eazel_INVALID:
+	case GNOME_Trilobite_Eazel_INVALID:
 		pack->status = PACKAGE_INVALID;
 		break;
-	case Trilobite_Eazel_CANNOT_OPEN:
+	case GNOME_Trilobite_Eazel_CANNOT_OPEN:
 		pack->status = PACKAGE_CANNOT_OPEN;
 		break;
-	case Trilobite_Eazel_PARTLY_RESOLVED:
+	case GNOME_Trilobite_Eazel_PARTLY_RESOLVED:
 		pack->status = PACKAGE_PARTLY_RESOLVED;
 		break;
-	case Trilobite_Eazel_ALREADY_INSTALLED:
+	case GNOME_Trilobite_Eazel_ALREADY_INSTALLED:
 		pack->status = PACKAGE_ALREADY_INSTALLED;
 		break;
-	case Trilobite_Eazel_CIRCULAR_DEPENDENCY:
+	case GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY:
 		pack->status = PACKAGE_CIRCULAR_DEPENDENCY;
 		break;
-	case Trilobite_Eazel_RESOLVED:
+	case GNOME_Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;
 		break;
 	}
@@ -255,22 +255,22 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	return pack;
 }
 
-Trilobite_Eazel_CategoryStructList* 
+GNOME_Trilobite_Eazel_CategoryStructList* 
 corba_category_list_from_categorydata_list (GList *categories)
 {
-	Trilobite_Eazel_CategoryStructList *corbacats;
+	GNOME_Trilobite_Eazel_CategoryStructList *corbacats;
 	GList *iterator;
 	int i;
 
-	corbacats = Trilobite_Eazel_CategoryStructList__alloc ();
+	corbacats = GNOME_Trilobite_Eazel_CategoryStructList__alloc ();
 	corbacats->_length = g_list_length (categories);
-	corbacats->_buffer = CORBA_sequence_Trilobite_Eazel_CategoryStruct_allocbuf (corbacats->_length);
+	corbacats->_buffer = CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_allocbuf (corbacats->_length);
 	
 	i = 0;
 	for (iterator = categories; iterator; iterator = iterator->next) {
 		CategoryData *cat;
-		Trilobite_Eazel_CategoryStruct corbacat;
-		Trilobite_Eazel_PackageDataStructList corbapacklist;
+		GNOME_Trilobite_Eazel_CategoryStruct corbacat;
+		GNOME_Trilobite_Eazel_PackageDataStructList corbapacklist;
 
 		cat = (CategoryData*)iterator->data;
 		corbacat.name = cat->name ? CORBA_string_dup (cat->name) : CORBA_string_dup ("");
@@ -284,7 +284,7 @@ corba_category_list_from_categorydata_list (GList *categories)
 }
 
 GList*
-categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories)
+categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList corbacategories)
 {
 	GList *categories;
 	guint i,j;
@@ -294,8 +294,8 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 	for (i = 0; i < corbacategories._length; i++) {
 		CategoryData *category;
 		GList *packages;
-		Trilobite_Eazel_CategoryStruct corbacategory;
-		Trilobite_Eazel_PackageDataStructList packagelist;
+		GNOME_Trilobite_Eazel_CategoryStruct corbacategory;
+		GNOME_Trilobite_Eazel_PackageDataStructList packagelist;
 
 		packages = NULL;
 		corbacategory = corbacategories._buffer [i];
@@ -303,7 +303,7 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 
 		for (j = 0; j < packagelist._length; j++) {
 			PackageData *pack;
-			Trilobite_Eazel_PackageDataStruct corbapack;
+			GNOME_Trilobite_Eazel_PackageDataStruct corbapack;
 			
 			corbapack = packagelist._buffer [j];
 			pack = packagedata_from_corba_packagedatastruct (corbapack);

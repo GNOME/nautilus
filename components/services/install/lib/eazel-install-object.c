@@ -371,10 +371,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	eazel_install_parent_class = gtk_type_class (gtk_object_get_type ());
 #else
 	eazel_install_parent_class = gtk_type_class (bonobo_object_get_type ());
-	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_Install__vepv,1);
-	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
-	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Trilobite_Eazel_Install_epv = eazel_install_get_epv ();
+	klass->servant_vepv = g_new0 (POA_GNOME_Trilobite_Eazel_Install__vepv,1);
+	((POA_GNOME_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
+	((POA_GNOME_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	((POA_GNOME_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->GNOME_Trilobite_Eazel_Install_epv = eazel_install_get_epv ();
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	signals[DOWNLOAD_PROGRESS] = 
@@ -554,7 +554,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 static void
 eazel_install_initialize (EazelInstall *service) {
 #ifndef EAZEL_INSTALL_NO_CORBA
-	Trilobite_Eazel_Install corba_service;
+	GNOME_Trilobite_Eazel_Install corba_service;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	g_assert (service != NULL);
@@ -1140,9 +1140,9 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageDataStruct *package;
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
 		package = corba_packagedatastruct_from_packagedata (pack);
-		Trilobite_Eazel_InstallCallback_install_progress (service->callback, 
+		GNOME_Trilobite_Eazel_InstallCallback_install_progress (service->callback, 
 								  package, 
 								  package_num, num_packages,
 								  package_size_completed, package_size_total,
@@ -1175,7 +1175,7 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
+		GNOME_Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			/* user has aborted us and gone home -- tell VFS to STOP! */
 			service->private->cancel_download = TRUE;
@@ -1235,7 +1235,7 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 		CORBA_char *corbapackages;
 		corbapackages = xml_from_packagedata_list (packages);
 
-		result = Trilobite_Eazel_InstallCallback_preflight_check (service->callback, 
+		result = GNOME_Trilobite_Eazel_InstallCallback_preflight_check (service->callback, 
 									  corbapackages,
 									  total_bytes,
 									  total_packages, 
@@ -1270,7 +1270,7 @@ eazel_install_emit_download_failed_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_InstallCallback_download_failed (service->callback, name, &ev);	
+		GNOME_Trilobite_Eazel_InstallCallback_download_failed (service->callback, name, &ev);	
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -1295,11 +1295,11 @@ eazel_install_emit_md5_check_failed_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageDataStruct *corbapack;
+		GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
 
 		corbapack = corba_packagedatastruct_from_packagedata (pack);
 		
-		Trilobite_Eazel_InstallCallback_md5_check_failed (service->callback, 
+		GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed (service->callback, 
 								  corbapack, 
 								  actual_md5, 
 								  &ev);	
@@ -1328,7 +1328,7 @@ eazel_install_emit_install_failed_default (EazelInstall *service,
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *package;
 		package = xml_from_packagedata (pack);
-		Trilobite_Eazel_InstallCallback_install_failed (service->callback, package, &ev);	
+		GNOME_Trilobite_Eazel_InstallCallback_install_failed (service->callback, package, &ev);	
 		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
@@ -1354,7 +1354,7 @@ eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *package;
 		package = xml_from_packagedata (pack);
-		Trilobite_Eazel_InstallCallback_uninstall_failed (service->callback, package, &ev);	
+		GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed (service->callback, package, &ev);	
 		/* CORBA_free (package); */
 	} 
 	CORBA_exception_free (&ev);
@@ -1380,8 +1380,8 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_PackageDataStruct *corbapack;
-		Trilobite_Eazel_PackageDataStruct *corbaneeds;
+		GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
+		GNOME_Trilobite_Eazel_PackageDataStruct *corbaneeds;
 
 		corbapack = corba_packagedatastruct_from_packagedata (pack);
 		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
@@ -1394,7 +1394,7 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 		}
 		*/
 
-		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, 
+		GNOME_Trilobite_Eazel_InstallCallback_dependency_check (service->callback, 
 								  corbapack, 
 								  corbaneeds, &ev);	
 		CORBA_free (corbapack);
@@ -1421,7 +1421,7 @@ eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_InstallCallback_done (service->callback, result, &ev);	
+		GNOME_Trilobite_Eazel_InstallCallback_done (service->callback, result, &ev);	
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

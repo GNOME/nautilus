@@ -264,14 +264,14 @@ static void
 nautilus_service_install_view_destroy (GtkObject *object)
 {
 	NautilusServiceInstallView *view;
-	Trilobite_Eazel_Install	service;
+	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment ev;
 
 	view = NAUTILUS_SERVICE_INSTALL_VIEW (object);
 
 	CORBA_exception_init (&ev);
 	service = eazel_install_callback_corba_objref (view->details->installer);
-	Trilobite_Eazel_Install_stop (service, &ev);
+	GNOME_Trilobite_Eazel_Install_stop (service, &ev);
 	CORBA_exception_free (&ev);
 
 	g_free (view->details->uri);
@@ -995,9 +995,9 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		}
 		
 		if (view->details->core_package) {
-			message = _("\nA core package of Nautilus has been\n"
-				    "updated, you should restart Nautilus.\n\n"
-				    "Do you wish to do that now ?\n");
+			message = _("A core package of Nautilus has been\n"
+				    "updated.  You should restart Nautilus.\n\n"
+				    "Do you wish to do that now?");
 			if (GTK_IS_WINDOW (toplevel)) {
 				dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
 									 &answer, GTK_WINDOW (toplevel));
@@ -1008,7 +1008,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 			
 			if (answer) {
-				if (execlp ("nautilus", "nautilus", "--restart", NULL)==-1) {
+				if (execlp ("nautilus", "nautilus", "--restart", NULL) < 0) {
 					g_message ("Exec error %s", strerror (errno));
 				}
 			}
@@ -1197,7 +1197,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	char			*host;
 	int			port;
 	char			*username;
-	Trilobite_Eazel_Install	service;
+	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out, *p;
 
@@ -1244,13 +1244,13 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	view->details->problem = eazel_install_problem_new ();
 	view->details->root_client = set_root_client (eazel_install_callback_bonobo (view->details->installer), view);
 	service = eazel_install_callback_corba_objref (view->details->installer);
-	Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	Trilobite_Eazel_Install__set_server (service, host, &ev);
-	Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+	GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+	GNOME_Trilobite_Eazel_Install__set_server (service, host, &ev);
+	GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
 	if (username != NULL) {
-		Trilobite_Eazel_Install__set_username (service, username, &ev);
+		GNOME_Trilobite_Eazel_Install__set_username (service, username, &ev);
 	}
-	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
+	GNOME_Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
 	/* attempt to create a directory we can use */
 
@@ -1320,14 +1320,14 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 static void
 service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServiceInstallView *view)
 {
-	Trilobite_Eazel_Install	service;
+	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment ev;
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 
 	CORBA_exception_init (&ev);
 	service = eazel_install_callback_corba_objref (view->details->installer);
-	Trilobite_Eazel_Install_stop (service, &ev);
+	GNOME_Trilobite_Eazel_Install_stop (service, &ev);
 	CORBA_exception_free (&ev);
 
 	show_overall_feedback (view, _("Package download aborted."));

@@ -63,12 +63,12 @@ static BonoboObjectClass *eazel_install_callback_parent_class;
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 typedef struct {
-	POA_Trilobite_Eazel_InstallCallback poa;
+	POA_GNOME_Trilobite_Eazel_InstallCallback poa;
 	EazelInstallCallback *object;
-} impl_POA_Trilobite_Eazel_InstallCallback;
+} impl_POA_GNOME_Trilobite_Eazel_InstallCallback;
 
 static void
-impl_download_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 			const char *name,
 			const CORBA_long amount,
 			const CORBA_long total,
@@ -78,7 +78,7 @@ impl_download_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static CORBA_boolean
-impl_preflight_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		      const CORBA_char *xmlcorbapacks,
 		      const CORBA_long total_bytes,
 		      const CORBA_long total_packages,
@@ -111,7 +111,7 @@ impl_preflight_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void
-impl_download_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_download_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		      const char *name,
 		      CORBA_Environment * ev)
 {
@@ -119,9 +119,9 @@ impl_download_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_dep_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		const Trilobite_Eazel_PackageDataStruct *corbapack,
-		const Trilobite_Eazel_PackageDataStruct *corbaneeds, 
+impl_dep_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+		const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+		const GNOME_Trilobite_Eazel_PackageDataStruct *corbaneeds, 
 		CORBA_Environment * ev)
 {
 	PackageData *pack, *needs;
@@ -133,8 +133,8 @@ impl_dep_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_install_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		       const Trilobite_Eazel_PackageDataStruct *corbapack,
+impl_install_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+		       const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 		       const CORBA_long package_num, const CORBA_long num_packages, 
 		       const CORBA_long package_size_completed, const CORBA_long package_size_total,
 		       const CORBA_long total_size_completed, const CORBA_long total_size,
@@ -151,8 +151,8 @@ impl_install_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_uninstall_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-			 const Trilobite_Eazel_PackageDataStruct *corbapack,
+impl_uninstall_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+			 const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 			 const CORBA_long amount,
 			 const CORBA_long total,
 			 CORBA_Environment * ev)
@@ -164,8 +164,8 @@ impl_uninstall_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_md5_check_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
-		       const Trilobite_Eazel_PackageDataStruct *corbapack,
+impl_md5_check_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+		       const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
 		       const CORBA_char *actual_md5,
 		       CORBA_Environment * ev)
 {
@@ -177,7 +177,7 @@ impl_md5_check_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_install_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		     const CORBA_char *xmlcorbapack,
 		     CORBA_Environment * ev)
 {
@@ -203,7 +203,7 @@ impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_uninstall_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       const CORBA_char *xmlcorbapack,
 		       CORBA_Environment * ev)
 {
@@ -229,7 +229,7 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static CORBA_boolean
-impl_delete_files (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+impl_delete_files (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		   CORBA_Environment *ev)
 {
 	gboolean result;
@@ -239,19 +239,19 @@ impl_delete_files (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 }
 
 static void 
-impl_done (impl_POA_Trilobite_Eazel_InstallCallback *servant, 
+impl_done (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant, 
 	   CORBA_boolean result,
 	   CORBA_Environment * ev)
 {
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DONE], result);
 }
 
-POA_Trilobite_Eazel_InstallCallback__epv* 
+POA_GNOME_Trilobite_Eazel_InstallCallback__epv* 
 eazel_install_callback_get_epv () 
 {
-	POA_Trilobite_Eazel_InstallCallback__epv *epv;
+	POA_GNOME_Trilobite_Eazel_InstallCallback__epv *epv;
 
-	epv = g_new0 (POA_Trilobite_Eazel_InstallCallback__epv, 1);
+	epv = g_new0 (POA_GNOME_Trilobite_Eazel_InstallCallback__epv, 1);
 	epv->download_progress   = (gpointer)&impl_download_progress;
 	epv->preflight_check     = (gpointer)&impl_preflight_check;
 	epv->dependency_check    = (gpointer)&impl_dep_check;
@@ -267,9 +267,9 @@ eazel_install_callback_get_epv ()
 	return epv;
 };
 
-Trilobite_Eazel_InstallCallback
+GNOME_Trilobite_Eazel_InstallCallback
 eazel_install_callback_create_corba_object (BonoboObject *service) {
-	impl_POA_Trilobite_Eazel_InstallCallback *servant;
+	impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant;
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
@@ -277,13 +277,13 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 	
 	CORBA_exception_init (&ev);
 	
-	servant = g_new0 (impl_POA_Trilobite_Eazel_InstallCallback,1);
+	servant = g_new0 (impl_POA_GNOME_Trilobite_Eazel_InstallCallback,1);
 	servant->object = EAZEL_INSTALL_CALLBACK (service);
 
-	((POA_Trilobite_Eazel_InstallCallback*) servant)->vepv = 
+	((POA_GNOME_Trilobite_Eazel_InstallCallback*) servant)->vepv = 
 		EAZEL_INSTALL_CALLBACK_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
-	POA_Trilobite_Eazel_InstallCallback__init (servant, &ev);
-	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_InstallCallback*)servant)->_private)->object = NULL;
+	POA_GNOME_Trilobite_Eazel_InstallCallback__init (servant, &ev);
+	ORBIT_OBJECT_KEY (((POA_GNOME_Trilobite_Eazel_InstallCallback*)servant)->_private)->object = NULL;
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("Cannot instantiate Eazel_InstallCallback corba object");
@@ -295,7 +295,7 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 	CORBA_exception_free (&ev);		
 
 	/* Return the bonobo activation of the servant */
-	return (Trilobite_Eazel_InstallCallback) bonobo_object_activate_servant (service, servant);
+	return (GNOME_Trilobite_Eazel_InstallCallback) bonobo_object_activate_servant (service, servant);
 }
 
 
@@ -348,10 +348,10 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 	object_class->finalize = eazel_install_callback_finalize;
 
 	eazel_install_callback_parent_class = gtk_type_class (bonobo_object_get_type ());
-	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_InstallCallback__vepv,1);
-	((POA_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
-	((POA_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	((POA_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->Trilobite_Eazel_InstallCallback_epv = 
+	klass->servant_vepv = g_new0 (POA_GNOME_Trilobite_Eazel_InstallCallback__vepv,1);
+	((POA_GNOME_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
+	((POA_GNOME_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	((POA_GNOME_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->GNOME_Trilobite_Eazel_InstallCallback_epv = 
 		eazel_install_callback_get_epv ();
 
 	signals[DOWNLOAD_PROGRESS] = 
@@ -503,7 +503,7 @@ eazel_install_callback_new (void)
 	return service;
 }
 
-Trilobite_Eazel_Install 
+GNOME_Trilobite_Eazel_Install 
 eazel_install_callback_corba_objref (EazelInstallCallback *service)
 {
 	return service->installservice_corba;
@@ -521,9 +521,9 @@ eazel_install_callback_install_packages (EazelInstallCallback *service,
 					 const char *root,
 					 CORBA_Environment *ev)
 {
-	Trilobite_Eazel_CategoryStructList *corbacats;
+	GNOME_Trilobite_Eazel_CategoryStructList *corbacats;
 	corbacats = corba_category_list_from_categorydata_list (categories);
-	Trilobite_Eazel_Install_install_packages (service->installservice_corba, 
+	GNOME_Trilobite_Eazel_Install_install_packages (service->installservice_corba, 
 						  corbacats, 
 						  root ? root : "",
 						  service->cb, 
@@ -536,9 +536,9 @@ eazel_install_callback_uninstall_packages (EazelInstallCallback *service,
 					   const char *root,
 					   CORBA_Environment *ev)
 {
-	Trilobite_Eazel_CategoryStructList *corbacats;
+	GNOME_Trilobite_Eazel_CategoryStructList *corbacats;
 	corbacats = corba_category_list_from_categorydata_list (categories);
-	Trilobite_Eazel_Install_uninstall_packages (service->installservice_corba, 
+	GNOME_Trilobite_Eazel_Install_uninstall_packages (service->installservice_corba, 
 						    corbacats, 
 						    root ? root : "",
 						    service->cb, 
@@ -552,9 +552,9 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 				     CORBA_Environment *ev)
 {
 	GList *result;
-	Trilobite_Eazel_PackageDataStructList *corbares;
+	GNOME_Trilobite_Eazel_PackageDataStructList *corbares;
 
-	corbares = Trilobite_Eazel_Install_simple_query (service->installservice_corba,
+	corbares = GNOME_Trilobite_Eazel_Install_simple_query (service->installservice_corba,
 							 query,
 							 root ? root : "",
 							 ev);
@@ -578,7 +578,7 @@ eazel_install_callback_revert_transaction (EazelInstallCallback *service,
 	doc = xmlParseFile (xmlfile);
 	xmlDocDumpMemory (doc, &mem, &size);
 	arg = CORBA_string_dup (mem);
-	Trilobite_Eazel_Install_revert_transaction (service->installservice_corba, 
+	GNOME_Trilobite_Eazel_Install_revert_transaction (service->installservice_corba, 
 						    arg,
 						    root ? root : "",
 						    service->cb,
@@ -592,5 +592,5 @@ void
 eazel_install_callback_delete_files (EazelInstallCallback *service,
 				     CORBA_Environment *ev)
 {
-	Trilobite_Eazel_Install_delete_files (service->installservice_corba, ev);
+	GNOME_Trilobite_Eazel_Install_delete_files (service->installservice_corba, ev);
 }

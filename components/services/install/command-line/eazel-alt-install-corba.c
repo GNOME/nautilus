@@ -126,10 +126,10 @@ static void tree_helper (EazelInstallCallback *service,
 #define check_ev(s) if (ev._major!=CORBA_NO_EXCEPTION) { g_warning ("%s: Caught exception %s", s, CORBA_exception_id (&ev)); }
 
 static void
-set_parameters_from_command_line (Trilobite_Eazel_Install service)
+set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 {
 	if (!arg_debug) {
-		Trilobite_Eazel_Install__set_log_file (service, DEFAULT_LOG_FILE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_log_file (service, DEFAULT_LOG_FILE, &ev);
 		check_ev ("set_log_file");
 	}
 
@@ -139,16 +139,16 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 			exit (1);
 	}
 	if (arg_http) {
-		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+		GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	} else if (arg_ftp) {
-		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_FTP, &ev);
+		GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_FTP, &ev);
 		check_ev ("set_protocol");
 	} else if (arg_local) {
-		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_LOCAL, &ev);
+		GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_LOCAL, &ev);
 		check_ev ("set_protocol");
 	} else {
-		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+		GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
 	if (arg_downgrade + arg_upgrade + arg_erase +arg_revert > 1) {
@@ -156,24 +156,24 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 			exit (1);
 	}
 	if (arg_upgrade) {
-		Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
 		check_ev ("update");
 	}
 	if (arg_downgrade) {
-		Trilobite_Eazel_Install__set_downgrade (service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_downgrade (service, TRUE, &ev);
 		check_ev ("downgrade");
 	}
 	if (arg_server) {
-		Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
+		GNOME_Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
 		check_ev ("set_server");
 	}
 	if (arg_username) {
-		Trilobite_Eazel_Install__set_username (service, arg_username, &ev);
+		GNOME_Trilobite_Eazel_Install__set_username (service, arg_username, &ev);
 		check_ev ("set_username");
 	}
 
 	if (arg_ssl_rename) {
-		Trilobite_Eazel_Install__set_ssl_rename (service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_ssl_rename (service, TRUE, &ev);
 		check_ev ("set_ssl_rename");
 	}
 
@@ -192,21 +192,21 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		}
 	}
 /*
-	Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
+	GNOME_Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
 	check_ev ("set_tmp_dir");
 */
 	if (arg_port) {
-		Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
+		GNOME_Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
 		check_ev ("set_server_port");
 	}
 	if (arg_dry_run) {
-		Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
 	}
 	if (arg_force) {
-		Trilobite_Eazel_Install__set_force (service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_force (service, TRUE, &ev);
 	}
 	if (arg_package_list) {
-		Trilobite_Eazel_Install__set_package_list (service, arg_package_list, &ev);
+		GNOME_Trilobite_Eazel_Install__set_package_list (service, arg_package_list, &ev);
 		check_ev ("packagelist");
 	}
 

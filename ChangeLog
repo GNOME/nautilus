@@ -1,3 +1,40 @@
+2000-11-20  Robey Pointer  <robey@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(lots)
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(lots)
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(lots)
+	* components/services/install/lib/eazel-install-object.c:
+	(lots)
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(nautilus_service_install_done),
+	(nautilus_service_install_view_update_from_uri),
+	(service_install_stop_loading_callback):
+	
+	The great renaming: moved Trilobite/Eazel/Install stuff into
+	GNOME/Trilobite/Eazel/(etc).
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(eazel_install_problem_handle_cases):
+
+	Renaming, and initialize some vars to avoid warnings.
+	
+	* nautilus-installer/src/main.c: (check_disk_space), (main):
+
+	Add a command-line option for ignoring the disk-space check.
+
 2000-11-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed bug 2893 (changing the selection in a view does not make the

@@ -96,10 +96,10 @@ struct _EazelInstallCallbackClass
 struct _EazelInstallCallback
 {
 	BonoboObject parent;
-	Trilobite_Eazel_InstallCallback cb;
+	GNOME_Trilobite_Eazel_InstallCallback cb;
 
 	BonoboObjectClient *installservice_bonobo;
-	Trilobite_Eazel_Install installservice_corba;
+	GNOME_Trilobite_Eazel_Install installservice_corba;
 };
 
 /* Create a new eazel-install-callback object */
@@ -137,9 +137,9 @@ void eazel_install_callback_delete_files (EazelInstallCallback *service,
 
 /* Stuff */
 GtkType                                   eazel_install_callback_get_type   (void);
-POA_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);
-Trilobite_Eazel_InstallCallback           eazel_install_callback_create_corba_object (BonoboObject *service);
-Trilobite_Eazel_Install                   eazel_install_callback_corba_objref (EazelInstallCallback *service);
+POA_GNOME_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);
+GNOME_Trilobite_Eazel_InstallCallback           eazel_install_callback_create_corba_object (BonoboObject *service);
+GNOME_Trilobite_Eazel_Install                   eazel_install_callback_corba_objref (EazelInstallCallback *service);
 BonoboObjectClient                       *eazel_install_callback_bonobo (EazelInstallCallback *service);
 
 #ifdef __cplusplus

@@ -425,9 +425,9 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
-	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_HOST, &ev);
-	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_PORT, &ev);
+	GNOME_Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+	GNOME_Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_HOST, &ev);
+	GNOME_Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_PORT, &ev);
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
@@ -480,8 +480,8 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
-	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
+	GNOME_Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+	GNOME_Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_uninstall_failed, rpm_view);

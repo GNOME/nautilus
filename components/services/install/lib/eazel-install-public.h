@@ -105,7 +105,7 @@ struct _EazelInstall
 	GtkObject parent;
 #else 
 	BonoboObject parent;
-	Trilobite_Eazel_InstallCallback callback;
+	GNOME_Trilobite_Eazel_InstallCallback callback;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	EazelInstallPrivate *private;
 };
@@ -116,8 +116,8 @@ GtkType                        eazel_install_get_type   (void);
 void                           eazel_install_unref       (GtkObject *object);
 
 #ifndef EAZEL_INSTALL_NO_CORBA
-POA_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
-Trilobite_Eazel_Install eazel_install_create_corba_object (BonoboObject *service);
+POA_GNOME_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
+GNOME_Trilobite_Eazel_Install eazel_install_create_corba_object (BonoboObject *service);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 void eazel_install_set_log			  (EazelInstall *service,

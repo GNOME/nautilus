@@ -1333,11 +1333,11 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	EazelInstallProblemEnum dominant_problem_type;
 	GList *dominant_problems;
 	gboolean service_force, service_update, service_downgrade, service_uninstall;
-	gboolean force, update, downgrade;
+	gboolean force = FALSE, update = FALSE, downgrade = FALSE;
 	GList *categories, *final_categories = NULL;
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
-	Trilobite_Eazel_Install corba_service = eazel_install_callback_corba_objref (service);
+	GNOME_Trilobite_Eazel_Install corba_service = eazel_install_callback_corba_objref (service);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	if (problems==NULL) { return; }
@@ -1385,9 +1385,9 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	service_update = eazel_install_get_update (service);
 	service_downgrade = eazel_install_get_downgrade (service);
 #else /* EAZEL_INSTALL_NO_CORBA */
-	service_force = Trilobite_Eazel_Install__get_force (corba_service, &ev);
-	service_update = Trilobite_Eazel_Install__get_update (corba_service, &ev);
-	service_downgrade = Trilobite_Eazel_Install__get_downgrade (corba_service, &ev);
+	service_force = GNOME_Trilobite_Eazel_Install__get_force (corba_service, &ev);
+	service_update = GNOME_Trilobite_Eazel_Install__get_update (corba_service, &ev);
+	service_downgrade = GNOME_Trilobite_Eazel_Install__get_downgrade (corba_service, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* now determine the new parameters */
@@ -1404,7 +1404,7 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 #ifdef EAZEL_INSTALL_NO_CORBA		
 		eazel_install_set_ignore_file_conflicts (service, TRUE);
 #else /* EAZEL_INSTALL_NO_CORBA */
-		Trilobite_Eazel_Install__set_ignore_file_conflicts (corba_service, TRUE, &ev);
+		GNOME_Trilobite_Eazel_Install__set_ignore_file_conflicts (corba_service, TRUE, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		force = TRUE;
@@ -1436,9 +1436,9 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	eazel_install_set_update (service, update);
 	eazel_install_set_downgrade (service, downgrade);
 #else /* EAZEL_INSTALL_NO_CORBA */
-	Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
-	Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
-	Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
+	GNOME_Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
+	GNOME_Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
+	GNOME_Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* do we add any of the usergiven cateogries ? */
@@ -1559,9 +1559,9 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	eazel_install_set_update (service, service_update);
 	eazel_install_set_downgrade (service, service_downgrade);
 #else /* EAZEL_INSTALL_NO_CORBA */
-	Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
-	Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
-	Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
+	GNOME_Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
+	GNOME_Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
+	GNOME_Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 #ifndef EAZEL_INSTALL_NO_CORBA

@@ -53,9 +53,10 @@ extern char* installer_homedir;
 
 static int installer_show_build = 0;
 static char *installer_user = NULL;
+static int installer_ignore_disk_space = 0;
 
 #define TMPFS_SPACE    	75	/* MB */
-#define ROOTFS_SPACE	75	/* MB */
+#define USRFS_SPACE	50	/* MB */
 
 
 static const struct poptOption options[] = {
@@ -72,22 +73,23 @@ static const struct poptOption options[] = {
 	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path for Eazel installation server"), NULL},
 	{"build", 'B', POPT_ARG_NONE, &installer_show_build, 0, N_("Display installer version"), NULL},
 	{"batch", '\0', POPT_ARG_NONE, &installer_dont_ask_questions, 0, N_("Solve installation issues without interaction"), NULL},
+	{"ignore-disk-space", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &installer_ignore_disk_space, 0, "", NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
 static void
 check_disk_space (void)
 {
-	struct statfs tmp_fs, root_fs;
-	unsigned long tmp_space, root_space;
+	struct statfs tmp_fs, usr_fs;
+	unsigned long tmp_space, usr_space;
 
-	if ((statfs (installer_tmpdir, &tmp_fs) != 0) || (statfs ("/", &root_fs) != 0)) {
-		g_warning ("Can't get free space on /tmp or / !");
+	if ((statfs (installer_tmpdir, &tmp_fs) != 0) || (statfs ("/usr", &usr_fs) != 0)) {
+		g_warning ("Can't get free space on /tmp or /usr !");
 		return;
 	}
 
 	tmp_space = tmp_fs.f_bfree / ((1024*1024) / tmp_fs.f_bsize);
-	root_space = root_fs.f_bfree / ((1024*1024) / root_fs.f_bsize);
+	usr_space = usr_fs.f_bfree / ((1024*1024) / usr_fs.f_bsize);
 
 	if (tmp_space < TMPFS_SPACE) {
 		printf ("\nThere isn't enough free space in %s to try this install.\n", installer_tmpdir);
@@ -95,11 +97,15 @@ check_disk_space (void)
 		printf ("You can use the '-T <directory>' command-line option to specify an alternate\n");
 		printf ("temporary directory, if you wish.\n");
 		printf ("\n");
+		printf ("If you scoff at disk space limitations, you can use '--ignore-disk-space'.\n");
+		printf ("\n");
 		exit (1);
 	}
-	if (root_space < ROOTFS_SPACE) {
-		printf ("\nThere isn't enough free space in your root partition to try this install.\n");
-		printf ("It is recommended that you have at least %d MB free.\n", ROOTFS_SPACE);
+	if (usr_space < USRFS_SPACE) {
+		printf ("\nThere isn't enough free space in your /usr directory to try this install.\n");
+		printf ("It is recommended that you have at least %d MB free.\n", USRFS_SPACE);
+		printf ("\n");
+		printf ("If you scoff at disk space limitations, you can use '--ignore-disk-space'.\n");
 		printf ("\n");
 		exit (1);
 	}
@@ -155,7 +161,9 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 
-	check_disk_space ();
+	if (! installer_ignore_disk_space) {
+		check_disk_space ();
+	}
 
 	installer = eazel_installer_new ();
 
