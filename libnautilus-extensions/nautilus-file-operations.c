@@ -763,12 +763,17 @@ static char *
 get_next_duplicate_name (char *name, int count_increment)
 {
 	char *unescaped_name;
+	char *unescaped_result;
 	char *result;
 
 	unescaped_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
-	result = get_duplicate_name (unescaped_name, count_increment);
+
+	unescaped_result = get_duplicate_name (unescaped_name, count_increment);
 	g_free (unescaped_name);
+
+	result = gnome_vfs_escape_path_string (unescaped_result);
+	g_free (unescaped_result);
 	
 	return result;
 }

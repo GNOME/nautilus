@@ -1,3 +1,12 @@
+2000-10-17  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_next_duplicate_name):
+	Part of fix to but 2840 - URI parsing works wrong for URIs with 
+	# characters. I noticed duplicating and creating links to files 
+	with funny characters like # was broken and added proper escaping
+	code to fix it.
+
 2000-10-17  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:
