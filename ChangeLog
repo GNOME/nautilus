@@ -1,5 +1,21 @@
 2001-02-27  Ramiro Estrugo  <ramiro@eazel.com>
 
+	reviewed by: Seth Nickell  <snickell@stanford.edu>
+
+	Fix bug 7012 - Space underneath some text lines shrunk.  This was
+	an unfortunate regression due to smooth text rendering
+	optimizations.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text_aa): Restore the 2 pixel line spacing
+	in icon text.
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize): Add a 2 pixel line spacing
+	offset between label widgets in the sidebar title.
+	
+2001-02-27  Ramiro Estrugo  <ramiro@eazel.com>
+
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
 
 	Fix bug 7001 - CRITICAL received when dragging icons to sidebar

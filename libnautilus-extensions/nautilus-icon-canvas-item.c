@@ -60,6 +60,7 @@
 
 /* gap between bottom of icon and start of text box */
 #define LABEL_OFFSET 1
+#define LABEL_LINE_SPACING 2
 
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
@@ -1453,8 +1454,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 								      details->smooth_font,
 								      details->smooth_font_size,
 								      TRUE);
-		nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, 2);
-		nautilus_smooth_text_layout_set_empty_line_height (smooth_text_layout, 20);
+		nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, LABEL_LINE_SPACING);
 		nautilus_smooth_text_layout_set_line_wrap_width (smooth_text_layout, max_text_width);
 		
 		/* Draw text if we are not in user rename mode */
@@ -1521,7 +1521,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		}
 		
 		width_so_far = MAX (width_so_far, (guint) nautilus_smooth_text_layout_get_width (smooth_text_layout));
-		height_so_far += nautilus_smooth_text_layout_get_height (smooth_text_layout);
+		height_so_far += nautilus_smooth_text_layout_get_height (smooth_text_layout) + LABEL_LINE_SPACING;
 		
 		gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 	}
