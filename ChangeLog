@@ -1,3 +1,35 @@
+2000-10-05  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line):
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_transfer_configuration):
+	* components/services/install/lib/eazel-install-object.c:
+	(create_temporary_directory), (eazel_install_alter_mode_on_temp),
+	(eazel_install_delete_downloads), (eazel_install_install_packages),
+	(eazel_install_revert_transaction_from_xmlstring):
+	Fixed the tmpdir schema (fixes bug 2927).
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_search_url_for_package):
+	Added flag=8 for version find. This opens bug 3482.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Made a better comparision to avoid dupes in the result list.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_package_compare),
+	The better comparision for eazel-install-query.
+	(install_new_packages), 
+	Removed obsolete tmpdir creation.
+	(eazel_install_check_existing_packages):
+	g_assert when rpmdb appears to be screwed, this opens bug 3511.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_open_uri):
+	Formatting.
+	
 2000-10-06  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/adapter/Makefile.am: add VFS_CFLAGS.

@@ -92,7 +92,7 @@ static const struct poptOption options[] = {
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
-	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
+	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp)"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Verbose output"), NULL},
 	{NULL, '\0', 0, NULL, 0}
@@ -149,10 +149,25 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
 		check_ev ("set_server");
 	}
-	if (arg_tmp_dir) {
-		Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
-		check_ev ("set_tmp_dir");
+
+#define RANDCHAR ('A' + (rand () % 23))
+	if (arg_tmp_dir == NULL) {
+		int tries;
+		srand (time (NULL));
+		for (tries = 0; tries < 50; tries++) {
+			arg_tmp_dir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
+						  RANDCHAR, RANDCHAR, (rand () % 1000));
+			if (g_file_test (arg_tmp_dir, G_FILE_TEST_ISDIR)==0) {
+				break;
+			}
+			g_free (arg_tmp_dir);
+		}
 	}
+/*
+	Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
+	check_ev ("set_tmp_dir");
+*/
 	if (arg_port) {
 		Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
 		check_ev ("set_server_port");

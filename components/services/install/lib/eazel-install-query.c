@@ -28,9 +28,12 @@
 #include <ctype.h>
 #include <stdarg.h>
 
+#include <libtrilobite/trilobite-core-utils.h>
+
 extern gboolean eazel_install_prepare_package_system (EazelInstall *service);
 extern gboolean eazel_install_free_package_system (EazelInstall *service);
 extern int eazel_install_package_name_compare (PackageData *pack, char *name);
+extern int eazel_install_package_compare (PackageData *pack, char *name);
 
 /*****************************************************************************/
 /* Query mechanisms                                                          */
@@ -110,7 +113,6 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	if (rc != 0) {
 		return;
 	} 
-	
 	for (i = 0; i < dbiIndexSetCount (matches); i++) {
 		unsigned int offset;
 		Header *hd;
@@ -122,8 +124,8 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		pack = packagedata_new_from_rpm_header (hd);
 		pack->install_root = g_strdup (root);
 		if (g_list_find_custom (*result, 
-					pack->name, 
-					(GCompareFunc)eazel_install_package_name_compare)!=NULL) {
+					pack, 
+					(GCompareFunc)eazel_install_package_compare)!=NULL) {
 			packagedata_destroy (pack, TRUE);
 		} else {
 			(*result) = g_list_prepend (*result, pack);

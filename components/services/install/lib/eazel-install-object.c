@@ -49,6 +49,9 @@
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-types.h"
 
+#include <sys/stat.h>
+#include <unistd.h>
+
 #define DEFAULT_RPM_DB_ROOT "/var/lib/rpm"
 
 enum {
@@ -674,19 +677,57 @@ eazel_install_new_with_config (void)
 	return service;
 }
 
-static void
-create_temporary_directory (const char* tmpdir) 
+static int
+create_temporary_directory (EazelInstall *service) 
 {
-	int retval;
+	int result = 0;
+	char *tmpdir = g_strdup (eazel_install_get_tmp_dir (service));
 
-	g_print (_("Creating temporary download directory ...\n"));
-
-	retval = mkdir (tmpdir, 0700);
-	if (retval < 0) {
-		if (errno != EEXIST) {
-			g_error (_("Could not create temporary directory!\n"));
+#define RANDCHAR ('A' + (rand () % 23))
+	if (tmpdir == NULL) {		
+		int tries;
+		trilobite_debug ("No tmpdir set, creating...");
+		srand (time (NULL));
+		for (tries = 0; tries < 50; tries++) {
+			tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
+						  RANDCHAR, RANDCHAR, (rand () % 1000));
+			if (g_file_test (tmpdir, G_FILE_TEST_ISDIR)==0) {
+				break;
+			}
+			g_free (tmpdir);
+			tmpdir = NULL;
+		}
+		if (tries<50) {
+			eazel_install_set_tmp_dir (service, tmpdir);
 		}
 	}
+
+	if (g_file_test (tmpdir, G_FILE_TEST_ISDIR)) {
+		struct stat sbuf;
+		stat (tmpdir, &sbuf);
+		if (sbuf.st_uid == getuid ()) {
+			if (chmod (tmpdir, 0700)==0) {
+				result = 1;
+			} else {
+				trilobite_debug ("Cannot chmod %s to 0700", tmpdir);
+			}
+		} else {
+			trilobite_debug ("Temporary directory \"%s\" is owned by someone else", 
+					 tmpdir);
+		}    
+	} else if (tmpdir!=NULL) {
+		if (mkdir (tmpdir, 0700) == 0) {
+			trilobite_debug ("Created temporary directory \"%s\"", tmpdir);
+			result = 1;
+		} else {
+			trilobite_debug ("Could not create tmp dir \"%s\", error \"%s\"", 
+					 tmpdir, strerror (errno));
+		}
+	}
+
+	g_free (tmpdir);
+	return result;
 } /* end create_temporary_directory */
 
 gboolean
@@ -779,7 +820,8 @@ eazel_install_alter_mode_on_temp (EazelInstall *service,
 
 	/* First set mode 400 on all files */
 	if (chmod (eazel_install_get_tmp_dir (service), mode + 0100) != 0) {
-		trilobite_debug ("cannot change %s to 0%o", eazel_install_get_tmp_dir (service), mode + 0100);
+		trilobite_debug ("cannot change %s to 0%o", eazel_install_get_tmp_dir (service), 
+				 mode + 0100);
 		result = FALSE;
 	}
 
@@ -829,7 +871,8 @@ eazel_install_delete_downloads (EazelInstall *service)
 			
 		}
 		if (rmdir (eazel_install_get_tmp_dir (service)) != 0) {
-				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));
+				g_warning ("unable to delete directory %s !", 
+					   eazel_install_get_tmp_dir (service));
 		}
 	}
 }
@@ -842,34 +885,36 @@ eazel_install_install_packages (EazelInstall *service,
 	EazelInstallStatus result;
 	SANITY (service);
 
-	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
-		create_temporary_directory (eazel_install_get_tmp_dir (service));
+	if (create_temporary_directory (service)) {
+		if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
+			char *tmp;
+			tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
+			eazel_install_set_package_list (service, tmp);
+			g_free (tmp);
+			
+			eazel_install_fetch_remote_package_list (service);
+		}
+		
+		g_free (service->private->cur_root);
+		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
+		
+		eazel_install_prepare_package_system (service);
+		result = install_new_packages (service, categories);
+		
+		if (result == EAZEL_INSTALL_NOTHING) {
+			g_warning (_("Install failed"));
+		} 
+		
+		eazel_install_unlock_tmp_dir (service);
+		trilobite_debug ("service->private->downloaded_files = 0x%x", 
+				 (unsigned int)service->private->downloaded_files);
+		eazel_install_delete_downloads (service);
+		
+		g_free (service->private->cur_root);
+	} else {
+		result = EAZEL_INSTALL_NOTHING;
 	}
 
-	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
-		char *tmp;
-		tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
-		eazel_install_set_package_list (service, tmp);
-		g_free (tmp);
-
-		eazel_install_fetch_remote_package_list (service);
-	}
-
-	g_free (service->private->cur_root);
-	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
-
-	eazel_install_prepare_package_system (service);
-	result = install_new_packages (service, categories);
-
-	if (result == EAZEL_INSTALL_NOTHING) {
-		g_warning (_("Install failed"));
-	} 
-
-	eazel_install_unlock_tmp_dir (service);
-	trilobite_debug ("service->private->downloaded_files = 0x%x", (unsigned int)service->private->downloaded_files);
-	eazel_install_delete_downloads (service);
-
-	g_free (service->private->cur_root);
 
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
 }
@@ -912,11 +957,15 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 
 	packages = parse_memory_transaction_file (xml, size);
 
-	eazel_install_prepare_package_system (service);
-	result = revert_transaction (service, packages);
-
-	eazel_install_unlock_tmp_dir (service);
-	eazel_install_delete_downloads (service);
+	if (create_temporary_directory (service)) {
+		eazel_install_prepare_package_system (service);
+		result = revert_transaction (service, packages);
+		
+		eazel_install_unlock_tmp_dir (service);
+		eazel_install_delete_downloads (service);
+	} else {
+		result = EAZEL_INSTALL_NOTHING;
+	} 
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_REVERSION_OK);
 }
 

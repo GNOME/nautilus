@@ -82,6 +82,9 @@ static gboolean eazel_install_ensure_deps (EazelInstall *service,
 int eazel_install_package_name_compare (PackageData *pack, 
 					char *name);
 
+int eazel_install_package_compare (PackageData *pack, 
+				   PackageData *other);
+
 int eazel_install_requirement_dep_compare (PackageRequirement *req,
 					   PackageData *pack);
 
@@ -224,17 +227,6 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	eazel_install_set_interface_flags (service, interface_flags);
 	eazel_install_set_problem_filters (service, problem_filters);
 	
-	if (! g_file_test (eazel_install_get_tmp_dir (service), G_FILE_TEST_ISDIR)) {
-		int retval;
-		retval = mkdir (eazel_install_get_tmp_dir (service), 0755);		       
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				g_error (_("*** Could not create tmp directory (%s)! ***\n"), 
-					 eazel_install_get_tmp_dir (service));
-			}
-		}
-	}
-
 	if (categories == NULL) {
 		trilobite_debug (_("Reading the install package list %s"), eazel_install_get_package_list (service));
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL, NULL);
@@ -1498,6 +1490,41 @@ eazel_install_package_name_compare (PackageData *pack,
 	return strcmp (pack->name, name);
 }
 
+/* This does a slow and painfull comparison of all the fields */
+int eazel_install_package_compare (PackageData *pack, 
+				   PackageData *other)
+{
+	int result = 0;
+	/* For the field sets, if they both exists, compare them,
+	   if one has it and the other doesn't, not equal */
+	if (pack->name && other->name) {
+		int tmp_result = strcmp (pack->name, other->name);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->name || other->name) {
+		result = 1;
+	}
+	if (pack->version && other->version) {
+		int tmp_result = strcmp (pack->version, other->version);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->version || other->version) {
+		result = 1;
+	}
+	if (pack->minor && other->minor) {
+		int tmp_result = strcmp (pack->minor, other->minor);
+		if (tmp_result) {
+			result = tmp_result;
+		}
+	} else if (pack->minor || other->minor) {
+		result = 1;
+	}
+	
+	return result;
+}
+
 /* Compare function used while creating the PackageRequirements in 
    eazel_install_do_dependency_check.
    It checks for equality on the package names, if one doens't have a name,
@@ -1601,11 +1628,18 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
+		if (g_list_length (existing_packages)>1) {
+			trilobite_debug ("there are %d existing packages called %s",
+					 g_list_length (existing_packages),
+					 pack->name);
+			trilobite_debug ("This is a bad bad case, see bug 3511");
+			/* FIXME bugzilla.eazel.com: 3511 */
+			g_assert_not_reached ();
+		}
 		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
+			PackageData *existing_package = (PackageData*)iterator->data;
 			int res;
-			PackageData *existing_package;
 
-			existing_package = (PackageData*)iterator->data;			
 			if (g_list_find_custom (pack->modifies, 
 						existing_package->name,
 						(GCompareFunc)eazel_install_package_name_compare)) {

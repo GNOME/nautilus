@@ -814,6 +814,11 @@ char* get_search_url_for_package (EazelInstall *service,
 		add_to_url (&url, "?name=", pack->name);
 		add_to_url (&url, "&arch=", arch);
 		add_to_url (&url, "&version=", pack->version);
+		/* FIXME bugzilla.eazel.com 3482
+		   support other flags then 8 */
+		if (pack->version) {
+			add_to_url (&url, "&flag=", "8");
+		}
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
 		}
