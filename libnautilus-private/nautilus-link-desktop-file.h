@@ -35,6 +35,8 @@ gboolean         nautilus_link_desktop_file_local_create                      (c
 									       NautilusLinkType  type);
 gboolean         nautilus_link_desktop_file_local_set_icon                    (const char       *path,
 									       const char       *icon_name);
+gboolean	 nautilus_link_desktop_file_local_set_text		      (const char	*path,
+									       const char	*text);
 char *           nautilus_link_desktop_file_local_get_text                    (const char       *path);
 char *           nautilus_link_desktop_file_local_get_additional_text         (const char       *path);
 NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char       *path);

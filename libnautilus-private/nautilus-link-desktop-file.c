@@ -178,6 +178,25 @@ nautilus_link_desktop_file_local_set_icon (const char *path,
 	return success;
 }
 
+gboolean
+nautilus_link_desktop_file_local_set_text (const char *path,
+					   const char *text)
+{
+	GnomeDesktopItem *desktop_file;
+	gboolean success;
+
+	desktop_file = gnome_desktop_item_new_from_file (path, 0, NULL);
+	if (desktop_file == NULL) {
+		return FALSE;
+	}
+
+	gnome_desktop_item_set_localestring (desktop_file, "Name", text);
+	success = gnome_desktop_item_save (desktop_file, NULL, FALSE, NULL);
+	gnome_desktop_item_unref (desktop_file);
+	
+	return success;
+}
+
 char *
 nautilus_link_desktop_file_local_get_text (const char *path)
 {

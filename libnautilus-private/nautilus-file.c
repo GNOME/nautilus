@@ -34,6 +34,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
+#include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
@@ -754,7 +755,8 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
-	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")
+	    && !nautilus_file_is_local (file)) {
 		return FALSE;
 	}
 	
@@ -971,6 +973,9 @@ rename_guts (NautilusFile *file,
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
 	GnomeVFSURI *vfs_uri;
+	char *uri;
+	char *path;
+	gboolean success;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
@@ -1018,6 +1023,37 @@ rename_guts (NautilusFile *file,
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
 		return;
+	}
+	
+	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+		
+		if (!nautilus_file_is_local (file)) {
+			/* don't want to rename non-local desktop files */
+			(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+			return;
+		}
+		
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		g_free (uri);           
+               
+		if (path != NULL) {
+			success = nautilus_link_desktop_file_local_set_text (path, new_name);
+			g_free (path);
+
+			if (success) {
+				nautilus_file_changed (file);
+				(* callback) (file, GNOME_VFS_OK, callback_data);
+				return;
+			} else {
+				(* callback) (file, GNOME_VFS_ERROR_GENERIC, callback_data);
+				return;
+			}
+		} else {
+			/* null path must mean there's no local path */
+			(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+			return;
+		}
 	}
 
 	/* Set up a renaming operation. */
