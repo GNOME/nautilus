@@ -1,3 +1,17 @@
+2000-05-31  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 991, large dimension, small size images not scaled properly.  It was
+	passing a max size of 1000; fixed by using 96 * zoom_factor
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	pass the icon factory a reasonable max size based on the zoom factor
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_image_for_scaling),
+	(nautilus_icon_factory_get_pixbuf_for_icon):
+	set up a reasonable max size, plus fixed a typo where maximum_width was used
+	twice instead of maximum_height.
+	
 2000-05-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.h,

@@ -113,6 +113,9 @@ struct NautilusCircularList {
 	NautilusCircularList *prev;
 };
 
+/* maximum size for either dimension at the standard zoom level */
+#define MAXIMUM_ICON_SIZE 96
+
 /* permissions for thumbnail directory */
 
 #define THUMBNAIL_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_ALL)
@@ -1277,8 +1280,8 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	IconSizeRequest size_request;
 	static GdkPixbuf *fallback_image;
 
-	size_request.maximum_width = G_MAXINT;
-	size_request.maximum_height = G_MAXINT;
+	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ZOOM_LEVEL_STANDARD;
+	size_request.maximum_height = size_request.maximum_width;
 
 	/* First check for a custom image. */
 	actual_size = 0;
@@ -1635,7 +1638,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	size.nominal_width = nominal_width;
 	size.nominal_height = nominal_width;
 	size.maximum_width = maximum_width;
-	size.maximum_height = maximum_width;
+	size.maximum_height = maximum_height;
 	return get_image_from_cache (scalable_icon, &size,
 				     FALSE, FALSE, NULL);
 }

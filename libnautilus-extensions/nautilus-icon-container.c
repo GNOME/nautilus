@@ -71,9 +71,9 @@
 #define RUBBERBAND_BUTTON 1
 #define CONTEXTUAL_MENU_BUTTON 3
 
-/* Maximum size (pixels) allowed for icons. */
-#define MAXIMUM_IMAGE_SIZE 1000
-#define MAXIMUM_EMBLEM_SIZE 100
+/* Maximum size (pixels) allowed for icons at the standard zoom level. */
+#define MAXIMUM_IMAGE_SIZE 96
+#define MAXIMUM_EMBLEM_SIZE 48
 
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
@@ -2750,7 +2750,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
-	guint icon_size_x, icon_size_y;
+	guint icon_size_x, icon_size_y, max_image_size;
 	NautilusScalableIcon *scalable_icon;
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
@@ -2780,12 +2780,15 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 &emblem_scalable_icons,
 			 &scalable_icon);
 
+	/* compute the maximum size based on the scale factor */
+	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS(container)->pixels_per_unit;
+	
 	/* Get the appropriate images for the file. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(scalable_icon,
 		 icon_size_x, icon_size_y,
-		 MAXIMUM_IMAGE_SIZE, MAXIMUM_IMAGE_SIZE);
+		 max_image_size, max_image_size);
 	nautilus_scalable_icon_unref (scalable_icon);
 	emblem_pixbufs = NULL;
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
