@@ -67,12 +67,12 @@
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
-#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <libgnomeui/gnome-icon-entry.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -1444,7 +1444,7 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	egg_help_display_desktop_on_screen (
+	gnome_help_display_desktop_on_screen (
 		NULL, "user-guide", "user-guide.xml", "gosnautilus-50",
 		gtk_window_get_screen (GTK_WINDOW (property_browser)), &error);
 

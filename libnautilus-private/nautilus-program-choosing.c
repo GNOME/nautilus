@@ -30,7 +30,6 @@
 #include "nautilus-program-chooser.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory.h"
-#include <libegg/egg-screen-exec.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -71,6 +70,46 @@ typedef struct {
 } ChooseComponentCallbackData;
 
 static GHashTable *choose_application_hash_table, *choose_component_hash_table;
+
+extern char **environ;
+
+/* Cut and paste from gdkspawn-x11.c */
+static gchar **
+my_gdk_spawn_make_environment_for_screen (GdkScreen  *screen,
+					  gchar     **envp)
+{
+  gchar **retval = NULL;
+  gchar  *display_name;
+  gint    display_index = -1;
+  gint    i, env_len;
+
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  if (envp == NULL)
+    envp = environ;
+
+  for (env_len = 0; envp[env_len]; env_len++)
+    if (strncmp (envp[env_len], "DISPLAY", strlen ("DISPLAY")) == 0)
+      display_index = env_len;
+
+  retval = g_new (char *, env_len + 1);
+  retval[env_len] = NULL;
+
+  display_name = gdk_screen_make_display_name (screen);
+
+  for (i = 0; i < env_len; i++)
+    if (i == display_index)
+      retval[i] = g_strconcat ("DISPLAY=", display_name, NULL);
+    else
+      retval[i] = g_strdup (envp[i]);
+
+  g_assert (i == env_len);
+
+  g_free (display_name);
+
+  return retval;
+}
+
 
 static guint
 choose_application_hash (gconstpointer p)
@@ -798,7 +837,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 		                 GNOME_VFS_MIME_ACTION_TYPE_NONE;
 	
 	screen = gtk_window_get_screen (parent_window);
-	envp = egg_screen_exec_environment (screen);	
+	envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
 	
 #ifdef HAVE_STARTUP_NOTIFICATION
 	sn_display = sn_display_new (gdk_display,
@@ -955,7 +994,7 @@ void nautilus_launch_action (GnomeVFSMimeAction *action,
 		uris.data = uri;
 		
 		screen = gtk_window_get_screen (parent_window);
-		envp = egg_screen_exec_environment (screen);	
+		envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
 		
 		result = gnome_vfs_mime_action_launch_with_env (action, &uris, envp);
 		
@@ -1019,7 +1058,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	uris.data = uri;
 	
 	screen = gtk_window_get_screen (parent_window);
-	envp = egg_screen_exec_environment (screen);
+	envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
 	
 #ifdef HAVE_STARTUP_NOTIFICATION
 	sn_display = sn_display_new (gdk_display,
@@ -1253,7 +1292,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		}		
 	}
 
-	envp = egg_screen_exec_environment (screen);
+	envp = my_gdk_spawn_make_environment_for_screen (screen, NULL);
 	
 	/* we append local paths only if all parameters are local */
 	if (count == total) {

@@ -1,5 +1,30 @@
 2004-02-11  Alexander Larsson  <alexl@redhat.com>
 
+	* cut-n-paste-code/libegg/Makefile.am:
+	* cut-n-paste-code/libegg/egg-screen-exec.c:
+	* cut-n-paste-code/libegg/egg-screen-exec.h:
+	* cut-n-paste-code/libegg/egg-screen-help.c:
+	* cut-n-paste-code/libegg/egg-screen-help.h:
+	* cut-n-paste-code/libegg/egg-screen-url.c:
+	* cut-n-paste-code/libegg/egg-screen-url.h:
+	* libnautilus-private/nautilus-program-chooser.c: (help_cb):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(my_gdk_spawn_make_environment_for_screen),
+	(nautilus_launch_show_file), (nautilus_launch_action),
+	(nautilus_launch_application), (nautilus_launch_desktop_file):
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-properties-window.c: (help_button_callback):
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_response_callback):
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-property-browser.c: (help_button_callback):
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback):
+	replace egg_screen with new gdk/libgnomeui functions.
+
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-view-identifier.c (get_lang_list):
 	Pass LC_MESSAGES. Fixes #48358.
 	Patch from Nuno Ferreira.

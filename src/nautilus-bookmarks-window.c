@@ -32,11 +32,11 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <libegg/egg-screen-help.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gtk/gtkhbbox.h>
 #include <gnome.h>
+#include <libgnomeui/gnome-help.h>
 #include <glade/glade.h>
 
 
@@ -133,7 +133,7 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 	if (response_id == GTK_RESPONSE_HELP) {
 		GError *error = NULL;
 
-		egg_help_display_desktop_on_screen (
+		gnome_help_display_desktop_on_screen (
 			NULL, "user-guide", "user-guide.xml", "gosnautilus-36",
 			gtk_window_get_screen (GTK_WINDOW (dialog)), &error);
 

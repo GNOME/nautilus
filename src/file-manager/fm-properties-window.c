@@ -56,10 +56,10 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
-#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
@@ -3178,8 +3178,8 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 {
 	GError *error = NULL;
 
-	egg_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
-					    gtk_window_get_screen (GTK_WINDOW (property_window)),
+	gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
+					      gtk_window_get_screen (GTK_WINDOW (property_window)),
 &error);
 
 	if (error) {

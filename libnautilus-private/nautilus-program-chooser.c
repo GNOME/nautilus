@@ -32,7 +32,6 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
-#include <libegg/egg-screen-help.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -53,6 +52,7 @@
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
+#include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <gtk/gtkmessagedialog.h>
@@ -181,7 +181,7 @@ help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
 		break;
 	}
 
-	egg_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", section,
+	gnome_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", section,
 					    gtk_window_get_screen (GTK_WINDOW (program_chooser)), &error);
 
 	if (error) {
