@@ -1,4 +1,11 @@
-2002-07-01  Damon Chaplin  <damon@ximian.com>
+2002-07-02  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-file.c (rename_guts): for .desktop files
+	invalidate the file's NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME attribute
+	rather than calling nautilus_file_changed(), since otherwise it will
+	just use the old display name. Fixes bug #85966.
+
+2002-07-02  Damon Chaplin  <damon@ximian.com>
 
 	* src/file-manager/fm-list-view.c (create_and_set_up_tree_view): set
 	the initial pixbuf column to match the initial zoom level, 25%.

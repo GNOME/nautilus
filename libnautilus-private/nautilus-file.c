@@ -1032,7 +1032,9 @@ rename_guts (NautilusFile *file,
 		g_free (uri);
 
 		if (success) {
-			nautilus_file_changed (file);
+			GList attributes = { 0 };
+			attributes.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+			nautilus_file_invalidate_attributes (file, &attributes);
 			(* callback) (file, GNOME_VFS_OK, callback_data);
 			return;
 		} else {
