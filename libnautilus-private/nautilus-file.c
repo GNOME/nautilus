@@ -1719,6 +1719,13 @@ compare_directories_by_count (NautilusFile *file_1, NautilusFile *file_2)
 		return +1;
 	}
 
+	/* count_known_1 and count_known_2 are equal now. Check if count
+	 * details are UNKNOWABLE or UNKNOWN.
+	 */ 
+	if (count_known_1 == UNKNOWABLE || count_known_1 == UNKNOWN) {
+		return 0;
+	}
+
 	if (count_1 > count_2) {
 		return -1;
 	}
@@ -1750,6 +1757,13 @@ compare_files_by_size (NautilusFile *file_1, NautilusFile *file_2)
 	}
 	if (size_known_1 > size_known_2) {
 		return +1;
+	}
+
+	/* size_known_1 and size_known_2 are equal now. Check if size 
+	 * details are UNKNOWABLE or UNKNOWN 
+	 */ 
+	if (size_known_1 == UNKNOWABLE || size_known_1 == UNKNOWN) {
+		return 0;
 	}
 
 	if (size_1 > size_2) {

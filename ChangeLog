@@ -1,3 +1,10 @@
+2004-08-27  Narayana Pattipati  <narayana.pattipati@wipro.com>
+
+	* libnautilus-private/nautilus-file.c
+	(compare_directories_by_count), (compare_files_by_size):
+	Fix nautilus crash when sort is done by Size in computer view.
+	Fixes bugzilla bug#151228
+
 2004-08-30  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c:
