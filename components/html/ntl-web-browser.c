@@ -27,6 +27,9 @@
 #include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-debug.h>
+/*<=*/
+#include <gconf/gconf.h>
+/*=>*/
 
 typedef struct {
   NautilusView *nautilus_view;
@@ -595,6 +598,9 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
+	/*<=*/
+	GConfError *error;
+	/*=>*/
 
   if (g_getenv("NAUTILUS_DEBUG") != NULL)
     nautilus_make_warnings_and_criticals_stop_in_debugger
@@ -613,7 +619,9 @@ int main(int argc, char *argv[])
 			     oaf_popt_options, 0, NULL); 
   
   orb = oaf_init (argc, argv);
-
+	/*<=*/
+	gconf_init (argc, argv, &error);
+	/*=>*/
   gnome_vfs_init();
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", VERSION);

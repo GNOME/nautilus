@@ -1,3 +1,12 @@
+2000-07-08  Fatih Demir	<kabalak@gmx.net>
+	
+	* components/html/ntl-web-browser.c:
+ 	   Made the GtkHTML view work again.
+	    +Include gconf/gconf.h for the GConf routines.
+	    +Init the GConf library before doing the other
+	      stuff.
+	    +Use a GConfError for the init function.
+
 2000-07-08  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/inventory/nautilus-view/Makefile.am:
