@@ -2,6 +2,29 @@
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
+        Fixed bug 4344 (assertion if you view a directory without a
+	metafile).
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_initialize), (nautilus_directory_destroy):
+	Create and destroy the metafile hash table when the directory
+	is created and destroyed instead of waiting until the metafile
+	is read.
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_file_node): Get rid of code to handle NULL for hash table.
+	(nautilus_directory_metafile_destroy): Just destroy the contents
+	of the hash table (hash table itself is destroyed elsewhere now).
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_remove_file_metadata): Get rid of code to
+	handle NULL for the hash table.
+	(nautilus_directory_set_metafile_contents): Don't create the
+	hash table any more, just populate it.
+
+2001-01-02  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
 	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
 	Added the year 2001 to the user-visible copyright notice and made it
 	use the standard format with the word Copyright.

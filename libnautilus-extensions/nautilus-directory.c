@@ -129,6 +129,7 @@ nautilus_directory_initialize (gpointer object, gpointer klass)
 
 	directory->details = g_new0 (NautilusDirectoryDetails, 1);
 	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	directory->details->metafile_node_hash = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 void
@@ -179,19 +180,21 @@ nautilus_directory_destroy (GtkObject *object)
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
  
+	nautilus_directory_metafile_destroy (directory);
+
 	g_free (directory->details->uri);
-	if (directory->details->private_metafile_vfs_uri != NULL) {
-		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
-	}
 	if (directory->details->vfs_uri != NULL) {
-	    gnome_vfs_uri_unref (directory->details->vfs_uri);
+		gnome_vfs_uri_unref (directory->details->vfs_uri);
 	}
 	if (directory->details->public_metafile_vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->public_metafile_vfs_uri);
 	}
+	if (directory->details->private_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	}
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);
-	nautilus_directory_metafile_destroy (directory);
+	g_hash_table_destroy (directory->details->metafile_node_hash);
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);

@@ -104,11 +104,9 @@ get_file_node (NautilusDirectory *directory,
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	hash = directory->details->metafile_node_hash;
-	if (hash != NULL) {
-		node = g_hash_table_lookup (hash, file_name);
-		if (node != NULL) {
-			return node;
-	 	}
+	node = g_hash_table_lookup (hash, file_name);
+	if (node != NULL) {
+		return node;
 	}
 	
 	if (create) {
@@ -518,15 +516,10 @@ destroy_xml_string_key (gpointer key, gpointer value, gpointer user_data)
 void
 nautilus_directory_metafile_destroy (NautilusDirectory *directory)
 {
-	GHashTable *hash;
-
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	hash = directory->details->metafile_node_hash;
-	if (hash != NULL) {
-		g_hash_table_foreach (hash, destroy_xml_string_key, NULL);
-		g_hash_table_destroy (hash);
-	}
+	g_hash_table_foreach (directory->details->metafile_node_hash,
+			      destroy_xml_string_key, NULL);
 	xmlFreeDoc (directory->details->metafile);
 	destroy_metadata_changes_hash_table (directory->details->metadata_changes);
 }
@@ -647,7 +640,7 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	if (directory->details->metafile_read) {
 		/* Move data in XML document if present. */
 		hash = directory->details->metafile_node_hash;
-		found = hash != NULL && g_hash_table_lookup_extended
+		found = g_hash_table_lookup_extended
 			(hash, old_file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, old_file_name) == 0);
@@ -922,7 +915,7 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 	if (directory->details->metafile_read) {
 		/* Remove data in XML document if present. */
 		hash = directory->details->metafile_node_hash;
-		found = hash != NULL && g_hash_table_lookup_extended
+		found = g_hash_table_lookup_extended
 			(hash, file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, file_name) == 0);
@@ -966,27 +959,25 @@ nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (directory->details->metafile == NULL);
-	g_return_if_fail (directory->details->metafile_node_hash == NULL);
 
-	hash = g_hash_table_new (g_str_hash, g_str_equal);
+	if (metafile_contents == NULL) {
+		return;
+	}
 
-	if (metafile_contents != NULL) {
-		directory->details->metafile = metafile_contents;
-		
-		/* Create and populate the node hash table. */
-		for (node = nautilus_xml_get_root_children (metafile_contents);
-		     node != NULL; node = node->next) {
-			if (strcmp (node->name, "FILE") == 0) {
-				name = xmlGetProp (node, "NAME");
-				if (g_hash_table_lookup (hash, name) != NULL) {
-					xmlFree (name);
-					/* FIXME: Should we delete duplicate nodes as we discover them? */
-				} else {
-					g_hash_table_insert (hash, name, node);
-				}
+	directory->details->metafile = metafile_contents;
+	
+	/* Populate the node hash table. */
+	hash = directory->details->metafile_node_hash;
+	for (node = nautilus_xml_get_root_children (metafile_contents);
+	     node != NULL; node = node->next) {
+		if (strcmp (node->name, "FILE") == 0) {
+			name = xmlGetProp (node, "NAME");
+			if (g_hash_table_lookup (hash, name) != NULL) {
+				xmlFree (name);
+				/* FIXME: Should we delete duplicate nodes as we discover them? */
+			} else {
+				g_hash_table_insert (hash, name, node);
 			}
 		}
 	}
-
-	directory->details->metafile_node_hash = hash;
 }
