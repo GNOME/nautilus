@@ -598,47 +598,31 @@ parse_osd_xml_from_memory (const char *mem,
 		return result;
 	}
 
-	docptr = g_strndup (mem, size);
+	docptr = g_malloc (size+1);
+	memcpy (docptr, mem, size);
 	docptr [size] = 0;
 
-	ptr = strstr (docptr, "<?xml");
-	if (ptr == NULL) {
-		g_warning (_("Could not find <?xml tag in string"));
-		trilobite_debug ("XML is %sEND", docptr);
-		g_free (docptr);
-		return result;
+	/* libxml is very intolerant of whitespace */
+	ptr = docptr;
+	while ((size > 0) && (*ptr <= ' ')) {
+		ptr++, size--;
 	}
-/* 
-   FIXME: bugzilla.eazel.com 2862
-   This compensates for the server code
-   not returned the correct xml when
-   useragent set to Trilobite 
-*/
-	end = strstr (ptr, "</PACKAGES");
-	if (end) {
-		end = strchr (end, '\n');
-		if (end) {
-			*end = 0;
-			size = strlen (ptr);
-		}
+	end = ptr + size - 1;
+	while ((size > 0) && (*end <= ' ')) {
+		*end-- = '\0', size--;
 	}
-
 
 	doc = xmlParseMemory (ptr, size);
-
 	if (doc == NULL) {
 		trilobite_debug ("XML =\"%s\"", ptr);
-		g_warning (_("Could not parse the xml (lenght %d)"), size);
+		g_warning (_("Could not parse the xml (length %d)"), size);
 		g_free (docptr);
 		return result;
 	}
-	
-	result = osd_parse_shared (doc);	
-        /* FIXME: bugzilla.eazel.com 2975
-	   this coredumps within libc_malloc stuff. Looks like
-	   the stack got corrupted ? */
-	/* xmlFreeDoc (doc); */
 
+	result = osd_parse_shared (doc);	
+
+	xmlFreeDoc (doc);
 	g_free (docptr);
 	return result;
 }

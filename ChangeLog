@@ -1,3 +1,12 @@
+2000-09-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_osd_xml_from_memory):
+
+	Fix bugs 2862 & 2975 by fixing an off-by-one in the memory
+	allocation and trimming whitespace from before and after the XML
+	file (which makes libxml puke).
+	
 2000-09-18  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/lib/eazel-summary-shared.c:
