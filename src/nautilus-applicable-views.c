@@ -135,29 +135,6 @@ got_file_info_callback (NautilusFile *file,
         nautilus_determine_initial_view_cancel (handle);
 }
 
-static void
-got_minimum_file_info_callback (NautilusFile *file,
-                                gpointer callback_data)
-{
-        NautilusDetermineViewHandle *handle;
-        GList *attributes;
-        
-        handle = (NautilusDetermineViewHandle *) callback_data;
-
-        g_assert (handle->file == file);
-
-        if (nautilus_mime_actions_file_needs_full_file_attributes (file)
-            && nautilus_file_get_file_info_result (file) == GNOME_VFS_OK) {
-                attributes = nautilus_mime_actions_get_full_file_attributes ();
-                nautilus_file_call_when_ready (file, attributes,
-                                               got_file_info_callback,
-                                               handle);
-                g_list_free (attributes);
-        } else {
-                got_file_info_callback (file, handle);
-        }
-}
-
 NautilusDetermineViewHandle *
 nautilus_determine_initial_view (const char *location,
                                  NautilusDetermineViewCallback callback,
@@ -180,7 +157,7 @@ nautilus_determine_initial_view (const char *location,
 
         attributes = nautilus_mime_actions_get_minimum_file_attributes ();
         nautilus_file_call_when_ready (handle->file, attributes,
-                                       got_minimum_file_info_callback, handle);
+                                       got_file_info_callback, handle);
         g_list_free (attributes);
 
         if (handle != NULL) {
@@ -202,8 +179,6 @@ nautilus_determine_initial_view_cancel (NautilusDetermineViewHandle *handle)
                 *handle->early_completion_hook = NULL;
         }
 
-        nautilus_file_cancel_call_when_ready
-                (handle->file, got_minimum_file_info_callback, handle);
         nautilus_file_cancel_call_when_ready
                 (handle->file, got_file_info_callback, handle);
 

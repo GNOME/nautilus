@@ -114,6 +114,7 @@ typedef struct
 					  NautilusFile              *file);
 	void     (* call_when_ready)     (NautilusDirectory         *directory,
 					  GList                     *file_attributes,
+					  gboolean                   wait_for_file_list,
 					  NautilusDirectoryCallback  callback,
 					  gpointer                   callback_data);
 	void     (* cancel_callback)     (NautilusDirectory         *directory,
@@ -162,15 +163,13 @@ char *		   nautilus_directory_get_file_uri	       (NautilusDirectory	  *director
 
 /* Get (and ref) a NautilusFile object for this directory. */
 NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
-							    
 
 /* Waiting for data that's read asynchronously.
  * The file attribute and metadata keys are for files in the directory.
- * If any file attributes or metadata keys are passed, it won't call
- * until all the files are seen.
  */
 void               nautilus_directory_call_when_ready          (NautilusDirectory         *directory,
 								GList                     *file_attributes,
+								gboolean                   wait_for_all_files,
 								NautilusDirectoryCallback  callback,
 								gpointer                   callback_data);
 void               nautilus_directory_cancel_callback          (NautilusDirectory         *directory,

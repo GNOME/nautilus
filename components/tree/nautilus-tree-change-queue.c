@@ -108,7 +108,7 @@ nautilus_tree_change_queue_enqueue (NautilusTreeChangeQueue *queue,
 	change = nautilus_tree_change_new (change_type, node);
 
 	if (queue->details->head == NULL) {
-		queue->details->head = g_slist_append (NULL, change);
+		queue->details->head = g_slist_prepend (NULL, change);
 		queue->details->tail = queue->details->head;
 	} else {
 		g_slist_append (queue->details->tail, change);

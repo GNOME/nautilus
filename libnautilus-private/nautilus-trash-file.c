@@ -146,7 +146,7 @@ real_call_when_ready (NautilusFile *file,
 {
 	nautilus_directory_call_when_ready_internal
 		(file->details->directory, file,
-		 attributes, NULL, callback, callback_data);
+		 attributes, FALSE, NULL, callback, callback_data);
 }
 
 static void

@@ -71,6 +71,7 @@ vfs_contains_file (NautilusDirectory *directory,
 static void
 vfs_call_when_ready (NautilusDirectory *directory,
 		     GList *file_attributes,
+		     gboolean wait_for_file_list,
 		     NautilusDirectoryCallback callback,
 		     gpointer callback_data)
 {
@@ -80,6 +81,7 @@ vfs_call_when_ready (NautilusDirectory *directory,
 		(directory,
 		 NULL,
 		 file_attributes,
+		 wait_for_file_list,
 		 callback,
 		 NULL,
 		 callback_data);

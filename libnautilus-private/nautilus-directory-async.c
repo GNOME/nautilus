@@ -1204,6 +1204,7 @@ void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     NautilusFile *file,
 					     GList *file_attributes,
+					     gboolean wait_for_file_list,
 					     NautilusDirectoryCallback directory_callback,
 					     NautilusFileCallback file_callback,
 					     gpointer callback_data)
@@ -1224,7 +1225,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	}
 	callback.callback_data = callback_data;
 	nautilus_directory_set_up_request (&callback.request, file_attributes);
-	callback.request.file_list = file == NULL && file_attributes != NULL;
+	callback.request.file_list = wait_for_file_list;
 	
 	/* Handle the NULL case. */
 	if (directory == NULL) {
@@ -1267,7 +1268,7 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 
 	nautilus_directory_set_up_request (&request, file_attributes);
 	return request_is_satisfied (directory, file, &request);
-}					    
+}
 
 static void
 remove_callback_link_keep_data (NautilusDirectory *directory,

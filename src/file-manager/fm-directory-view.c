@@ -3639,6 +3639,7 @@ call_when_ready_on_scripts_directory (FMDirectoryView *view,
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
 	nautilus_directory_call_when_ready (view->details->scripts_directory,
 					    attributes,
+					    TRUE,
 					    scripts_directory_callback,
 					    view);
 	g_list_free (attributes);
@@ -4715,6 +4716,7 @@ load_directory (FMDirectoryView *view,
 	nautilus_directory_call_when_ready
 		(view->details->model,
 		 attributes,
+		 FALSE,
 		 metadata_for_files_in_directory_ready_callback, view);
 	g_list_free (attributes);
 

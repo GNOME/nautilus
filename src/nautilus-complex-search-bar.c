@@ -210,8 +210,8 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 			    "criterion_type_changed",
 			    search_bar_criterion_type_changed_callback,
 			    (gpointer) bar);
-	bar->details->search_criteria = g_slist_append (NULL,
-							file_name_criterion);
+	bar->details->search_criteria = g_slist_prepend (NULL,
+							 file_name_criterion);
 
 	nautilus_search_bar_criterion_show (file_name_criterion);
 	attach_criterion_to_search_bar (bar, file_name_criterion, 1);

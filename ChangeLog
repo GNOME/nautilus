@@ -1,3 +1,62 @@
+2001-05-11  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Yoann Vandoorselaere <yoann@mandrakesoft.com>
+
+	Yoann Vandoorselaere <yoann@mandrakesoft.com> discovered that the
+	code to load a directory was accidentally waiting for all the
+	files to be read in before displaying anything. This fixes the two
+	problems that caused that, but there are remaining loose ends
+	(it's not entirely clear why View As Music is still showing
+	properly in the View menu).
+
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_call_when_ready_internal): Take a parameter to
+	say whether to wait for all the files in the file list, instead of
+	deducing it from other parameters.
+	
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_call_when_ready): Take a parameter to say
+	whether to wait for all the files in the file list, instead of
+	deducing it from other parameters.
+	(nautilus_self_check_directory): Pass TRUE so we wait for the file
+	list.
+	
+	* libnautilus-private/nautilus-merged-directory.c:
+	(merged_call_when_ready): Pass through the new boolean.
+	* libnautilus-private/nautilus-trash-file.c:
+	(real_call_when_ready): Pass FALSE since there is no file list for
+	a single file.
+	* libnautilus-private/nautilus-vfs-directory.c:
+	(vfs_call_when_ready): Pass through the new boolean.
+	* libnautilus-private/nautilus-vfs-file.c:
+	(vfs_file_call_when_ready): Pass FALSE since there is no file list
+	for a single file.
+	
+	* src/nautilus-applicable-views.c:
+	(nautilus_determine_initial_view),
+	(nautilus_determine_initial_view_cancel): Removed the code to get
+	full file attributes after getting the minimum required if
+	nautilus_mime_actions_file_needs_full_file_attributes return
+	TRUE. We want to make the choice fast, and it's OK if we choose
+	poorly as a result. The question is whether this will cause any
+	real end-user problems.
+
+	* src/file-manager/fm-directory-view.c:
+	(call_when_ready_on_scripts_directory): Pass TRUE so we read the
+	entire scripts directory.
+	(load_directory): Pass FALSE so we don't wait for all the files to
+	be loaded before starting to display them. This is the core of the
+	fix.
+	
+	* components/tree/nautilus-tree-change-queue.c:
+	(nautilus_tree_change_queue_enqueue): A place where we can use
+	g_slist_prepend instead of g_slist_append.
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize): A place where we can use
+	g_slist_prepend instead of g_slist_append.
+	
 2001-05-10  John Sullivan  <sullivan@eazel.com>
 
 	Made the thumbnail mechanism respect the "PUBLIC_METADATA"

@@ -27,6 +27,7 @@
 
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
+#include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -1412,6 +1413,7 @@ nautilus_directory_get_file_uri (NautilusDirectory *directory,
 void
 nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    GList *file_attributes,
+				    gboolean wait_for_all_files,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
@@ -1420,10 +1422,9 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 
 	EEL_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
-		 call_when_ready, (directory, file_attributes,
+		 call_when_ready, (directory, file_attributes, wait_for_all_files,
 				   callback, callback_data));
 }
-
 
 void
 nautilus_directory_cancel_callback (NautilusDirectory *directory,
@@ -1542,7 +1543,7 @@ nautilus_self_check_directory (void)
 	got_metadata_flag = FALSE;
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	nautilus_directory_call_when_ready (directory, attributes,
+	nautilus_directory_call_when_ready (directory, attributes, TRUE,
 					    got_metadata_callback, &data_dummy);
 	g_list_free (attributes);
 
@@ -1593,7 +1594,7 @@ nautilus_self_check_directory (void)
 
 	got_metadata_flag = FALSE;
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	nautilus_directory_call_when_ready (directory, attributes,
+	nautilus_directory_call_when_ready (directory, attributes, TRUE,
 					    got_metadata_callback, &data_dummy);
 	g_list_free (attributes);
 
@@ -1607,7 +1608,7 @@ nautilus_self_check_directory (void)
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
-	nautilus_directory_call_when_ready (directory, attributes,
+	nautilus_directory_call_when_ready (directory, attributes, TRUE,
 					    got_files_callback, &data_dummy);
 	g_list_free (attributes);
 

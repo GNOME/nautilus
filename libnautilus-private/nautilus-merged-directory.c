@@ -46,6 +46,7 @@ typedef struct {
 	gpointer callback_data;
 
 	GList *wait_for_attributes;
+	gboolean wait_for_file_list;
 
 	GList *non_ready_directories;
 	GList *merged_file_list;
@@ -205,6 +206,7 @@ directory_ready_callback (NautilusDirectory *directory,
 static void
 merged_call_when_ready (NautilusDirectory *directory,
 			GList *file_attributes,
+			gboolean wait_for_file_list,
 			NautilusDirectoryCallback callback,
 			gpointer callback_data)
 {
@@ -228,6 +230,7 @@ merged_call_when_ready (NautilusDirectory *directory,
 	merged_callback->callback = callback;
 	merged_callback->callback_data = callback_data;
 	merged_callback->wait_for_attributes = eel_g_str_list_copy (file_attributes);
+	merged_callback->wait_for_file_list = wait_for_file_list;
 	for (node = merged->details->directories; node != NULL; node = node->next) {
 		merged_callback->non_ready_directories = g_list_prepend
 			(merged_callback->non_ready_directories, node->data);
@@ -247,6 +250,7 @@ merged_call_when_ready (NautilusDirectory *directory,
 		nautilus_directory_call_when_ready
 			(node->data,
 			 merged_callback->wait_for_attributes,
+			 merged_callback->wait_for_file_list,
 			 directory_ready_callback, merged_callback);
 	}
 }
