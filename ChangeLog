@@ -1,5 +1,13 @@
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-window.c: 
+	(install_status_bar): removed this old code now that we
+	have the status bar working correctly again.
+	(nautilus_window_set_content_view_widget): Added FIXME
+	with bug number to #ifdeffed notice-leaking-Bonobo-UI code.
+
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-window.c: (nautilus_window_clear_status):
 	Fixed bug where the clear-status timeout wasn't working.
 	Pass " " instead of "" to bonobo_ui_component_set_status

@@ -268,35 +268,6 @@ nautilus_window_zoom_to_fit (NautilusWindow *window)
 	}
 }
 
-#ifdef UIH
-
-/* This is our replacement for gnome_app_set_statusbar.
- * It uses nautilus_any_width_bin to make text changes in the
- * status bar not affect the width of the window.
- */
-static void
-install_status_bar (GnomeApp *app,
-		    GtkWidget *status_bar)
-{
-	GtkWidget *bin;
-
-	g_assert (GNOME_IS_APP (app));
-	g_assert (GTK_IS_WIDGET (status_bar));
-	g_assert (app->statusbar == NULL);
-
-	app->statusbar = status_bar;
-	gtk_widget_show (status_bar);
-
-	bin = nautilus_any_width_bin_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (bin), 0);
-	gtk_widget_show (bin);
-
-	gtk_container_add (GTK_CONTAINER (bin), status_bar);
-	gtk_box_pack_start (GTK_BOX (app->vbox), bin, FALSE, FALSE, 0);
-}
-
-#endif
-
 /* Code should never force the window taller than this size.
  * (The user can still stretch the window taller if desired).
  */
@@ -1553,6 +1524,9 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	/* Here's an explicit check for a problem that happens all too often. */
+	/* FIXME bugzilla.eazel.com 3598:
+	 * We should update this debugging code for the new Bonobo UI mechanism.
+	 */
 #ifdef UIH
 	if (bonobo_ui_handler_menu_path_exists (window->ui_handler, "/File/Open")) {
 		g_warning ("There's a lingering Open menu item. This usually means a new Bonobo bug.");
