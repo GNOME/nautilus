@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.x\n"
 "POT-Creation-Date: 2002-12-09 13:55+0100\n"
-"PO-Revision-Date: 2002-11-13 14:05+0100\n"
+"PO-Revision-Date: 2002-12-12 15:13+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian < gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -45,14 +45,12 @@ msgid "Emblems"
 msgstr "Simbole"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Emblem side pane"
-msgstr "Paneli anësor \"Pemë\" për Nautilus"
+msgstr "Paneli anësor i simboleve të Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Emblem view"
-msgstr "Pamje Për Shembull për Nautilus"
+msgstr "Paraqitje sipas simboleve të Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -60,11 +58,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Nuk mund të heq simbolin me emrin '%s'. Shkaku mund të jetë që simboli "
+"është i përhershëm, pra jo i krijuar nga ju."
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy
 msgid "Couldn't remove emblem"
-msgstr "E pamundur heqja e temës"
+msgstr "I pamundur heqja e simbolit"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -72,82 +71,85 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Nuk mund ti jap emrin '%s' simbolit.  Shkaku mund të jetë që simboli "
+"është i përhershëm, pra jo i krijuar nga ju."
 
 #: components/emblem/nautilus-emblem-view.c:238
-#, fuzzy
 msgid "Couldn't rename emblem"
-msgstr "I pamundur instalimi i simbolit"
+msgstr "I pamundur riemërtimi i simbolit"
 
 #: components/emblem/nautilus-emblem-view.c:257
-#, fuzzy
 msgid "Rename Emblem"
-msgstr "_Hiq një simbol..."
+msgstr "Riemërto simbolin"
 
 #: components/emblem/nautilus-emblem-view.c:276
-#, fuzzy
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Zgjidh një figurë për simbolin e ri:"
+msgstr "Shkruaj emrin e ri për simbolin e shfaqur:"
 
 #: components/emblem/nautilus-emblem-view.c:330
-#, fuzzy
 msgid "Rename"
-msgstr "_Riemërto..."
+msgstr "Riemërto"
 
 #: components/emblem/nautilus-emblem-view.c:497
-#, fuzzy
 msgid "Add Emblems..."
-msgstr "_Shto një simbol të ri..."
+msgstr "Shto simbole..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Shkruaj një emër tjetër përshkrues për simbolin. Ky emër do të përdoret "
+"në pozicione të tjera për të identifikuar simbolin."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Shkruaj një emër tjetër përshkrues për simbolin. Ky emër do të përdoret "
+"në pozicione të tjera për të identifikuar simbolin."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Disa nga filet nuk do të shtohen si emblema pasi mesa duket nuk janë "
+"figura të vlefshme."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
-#, fuzzy
 msgid "Couldn't add emblems"
-msgstr "I pamundur shtimi i temës"
+msgstr "I pamundur shtimi i emblemave"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
+"Asnjë nga filet nuk do të shtohen si emblema pasi mesa duket nuk janë "
+"figura të vlefshme."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "Teksti i afruar nuk ka një pozicion të vlefshëm file."
 
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
-#, fuzzy
 msgid "Couldn't add emblem"
-msgstr "I pamundur shtimi i temës"
+msgstr "I pamundur shtimi i emblemës"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "File '%s' nuk është figurë e vlefshme."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Files e tërhequr nuk janë figura të vlefshme."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
 msgid "Erase"
@@ -253,24 +255,20 @@ msgid "History side pane for Nautilus"
 msgstr "Paneli anësor Kronollogjia për Nautilus"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
-#, fuzzy
 msgid "Image"
-msgstr "F_igura:"
+msgstr "Figurë"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Komponent i shikuesit të përmbajtjes për shembull"
+msgstr "Komponent i shikuesit të pronësive të figurave"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Pamja e degëzuar e Nautilus"
+msgstr "Shikuesi i pronësive të figurave të Nautilus"
 
 #: components/image_properties/nautilus-image-properties-view.c:90
-#, fuzzy
 msgid "Failed to load image information"
-msgstr "Ndrysho informacionet e ikonës së nisjes"
+msgstr "Leximi i informacioneve mbi figurën dështoi"
 
 #: components/image_properties/nautilus-image-properties-view.c:142
 #, c-format
@@ -278,15 +276,16 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Lloji i Figurës:</b> %s (%s)\n"
+"<b>Qartësia:</b> %dx%d pixels\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:239
-#, fuzzy
 msgid "loading..."
-msgstr "Në lexim e sipër..."
+msgstr "duke lexuar..."
 
 #: components/image_properties/nautilus-image-properties-view.c:252
 msgid "URI currently displayed"
-msgstr ""
+msgstr "URI e hapur për momentin"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Nodes side pane for Nautilus"
@@ -564,8 +563,7 @@ msgstr "Kopje"
 
 #: data/browser.xml.h:30
 msgid "Drag a color to an object to change it to that color"
-msgstr ""
-"Zvarrit një ngjyrë tek një objekt për t'i dhënë këtij të fundit atë ngjyrë "
+msgstr "Zvarrit një ngjyrë tek një objekt për t'i dhënë këtij të fundit atë ngjyrë "
 
 #: data/browser.xml.h:31
 msgid "Drag a pattern tile to an object to change it"
@@ -1066,8 +1064,7 @@ msgstr "Kjo temë përdor kartela foto-reale."
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
-"Nuk arrij të gjej një hbox, është në përdorim një zgjedhje normale e file"
+msgstr "Nuk arrij të gjej një hbox, është në përdorim një zgjedhje normale e file"
 
 #: libbackground/preview-file-selection.c:212
 #: src/nautilus-file-management-properties.glade.h:56
@@ -1244,17 +1241,15 @@ msgstr "Anulloje"
 
 #: libnautilus-private/nautilus-dnd.c:628
 msgid "Set as background for _all directories"
-msgstr ""
+msgstr "Zgjidhe si sfond për të _gjitha direktoritë"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this directory"
-msgstr "Përdor sfondin e prezgjedhur për këtë pozicion"
+msgstr "Zgjidhe si sfond për _këtë direktori"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"Më vjen keq, duhet të specifikoni një fjalëkyç jo bosh për simbolin e ri."
+msgstr "Më vjen keq, duhet të specifikoni një fjalëkyç jo bosh për simbolin e ri."
 
 #: libnautilus-private/nautilus-emblem-utils.c:195
 #: libnautilus-private/nautilus-emblem-utils.c:199
@@ -1265,8 +1260,7 @@ msgid "Couldn't install emblem"
 msgstr "I pamundur instalimi i simbolit"
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Më vjen keq, por fjalëkyçi i simbolit mund të përmbajë vetëm gërma, hapsira "
 "dhe numra."
@@ -1276,19 +1270,19 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:206
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
-msgstr "Më vjen keq, por \"%s\" ekziston. Ju lutem zgjidh një emër tjetër."
+msgstr "Më vjen keq, por një simbol me emrin \"%s\" ekziston. Ju lutem zgjidh një emër tjetër."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
-msgstr ""
+msgstr "Më vjen keq, i pamundur shpëtimi i simbolit të krijuar."
 
 #: libnautilus-private/nautilus-emblem-utils.c:244
 msgid "Sorry, unable to save custom emblem name."
-msgstr ""
+msgstr "Më vjen keq, i pamundur shpëtimi i emrit të simbolit të krijuar."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -1998,8 +1992,7 @@ msgid "Empty Trash"
 msgstr "Zbraz Koshin"
 
 #: libnautilus-private/nautilus-file-operations.c:2240
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "Jeni i sigurt që dëshironi të eleminoni përgjithmonë të gjithë elementët që "
 "ndodhen në Kosh?"
@@ -2821,49 +2814,44 @@ msgid "Draw a frame around unselected text"
 msgstr "Vizato një përmbajtës rreth tekstit të pa seleksionuar"
 
 #: libnautilus-private/nautilus-icon-container.c:3499
-#, fuzzy
 msgid "Selection Box Color"
-msgstr "Zgjidh një ngjyrë për ta shtuar"
+msgstr "Kutia e zgjedhjes së ngjyrave"
 
 #: libnautilus-private/nautilus-icon-container.c:3500
-#, fuzzy
 msgid "Color of the selection box"
-msgstr "Shko tek pozicioni \"Home\""
+msgstr "Color of the selection box"
 
 #: libnautilus-private/nautilus-icon-container.c:3505
-#, fuzzy
 msgid "Selection Box Alpha"
-msgstr "Zgjidhe të gjithë"
+msgstr "Selection Box Alpha"
 
 #: libnautilus-private/nautilus-icon-container.c:3506
 msgid "Opacity of the selection box"
-msgstr ""
+msgstr "Opacity of the selection box"
 
 #: libnautilus-private/nautilus-icon-container.c:3513
 msgid "Highlight Alpha"
-msgstr ""
+msgstr "Highlight Alpha"
 
 #: libnautilus-private/nautilus-icon-container.c:3514
-#, fuzzy
 msgid "Opacity of the highlight for selected icons"
-msgstr "vëre në dukje për t'a zgjedhur"
+msgstr "Opacity of the highlight for selected icons"
 
 #: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Light Info Color"
-msgstr ""
+msgstr "Light Info Color"
 
 #: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Color used for information text against a dark background"
-msgstr ""
+msgstr "Color used for information text against a dark background"
 
 #: libnautilus-private/nautilus-icon-container.c:3526
-#, fuzzy
 msgid "Dark Info Color"
-msgstr "Dark Cork"
+msgstr "Dark Info Color"
 
 #: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Color used for information text against a light background"
 
 #: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
@@ -3427,8 +3415,7 @@ msgstr "[Objekte ]pa asnjë nga fjalët \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall\"]"
+msgstr "[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall\"]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -3459,8 +3446,7 @@ msgstr "Objekte që janë files të rregullt"
 
 #: libnautilus-private/nautilus-search-uri.c:705
 msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të rregullt"
+msgstr "Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të rregullt"
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
@@ -3656,12 +3642,11 @@ msgstr "Shfaqe kartelën home të përdoruesit tek file manager Nautilus"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr ""
+msgstr "Ndrysho mënyrën e manazhimit të files"
 
 #: nautilus-file-management-properties.desktop.in.h:2
-#, fuzzy
 msgid "File Management"
-msgstr "Emri i file"
+msgstr "Manzhimi i file"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -3750,14 +3735,12 @@ msgid "Search List"
 msgstr "Lista e kërkimit"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as _Icons"
-msgstr "Shikoje si ikona"
+msgstr "Shikoje si _Ikona"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as _List"
-msgstr "Shikoje si listë"
+msgstr "Shikoje si _Listë"
 
 #: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
@@ -3808,8 +3791,7 @@ msgstr "Të eleminoj përgjithmonë \"%s\"?"
 #: src/file-manager/fm-directory-view.c:844
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
-"Jeni i sigurt që dëshironi të eleminoni përgjithmonë %d objektet e zgjedhur?"
+msgstr "Jeni i sigurt që dëshironi të eleminoni përgjithmonë %d objektet e zgjedhur?"
 
 #: src/file-manager/fm-directory-view.c:850
 msgid "Delete?"
@@ -3906,8 +3888,7 @@ msgstr "Tepër files"
 
 #: src/file-manager/fm-directory-view.c:3018
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" nuk mund të çohet në Kosh. Dëshironi t'a eleminoni menjëherë?"
 
 #: src/file-manager/fm-directory-view.c:3023
@@ -3977,11 +3958,11 @@ msgstr "Një _Vizualizues..."
 #: src/file-manager/fm-directory-view.c:3560
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr ""
+msgstr "I pamundur plotësimi i aksionit të specifikuar:  %s"
 
 #: src/file-manager/fm-directory-view.c:3583
 msgid "Could not complete specified action."
-msgstr ""
+msgstr "I pamundur plotësimi i aksionit të specifikuar."
 
 #: src/file-manager/fm-directory-view.c:4028
 #, c-format
@@ -4056,16 +4037,14 @@ msgstr "\"%s\" do të kopjohet nëqoftëse zgjidhni komandën \"Ngjit files\""
 
 #: src/file-manager/fm-directory-view.c:4366
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "%d objekte të zgjedhur do të lëvizen nëqoftëse zgjidhni komandën \"Ngjit "
 "files\""
 
 #: src/file-manager/fm-directory-view.c:4370
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 " %d objekte të zgjedhur do të kopjohen nëqoftëse zgjidhni komandën \"Ngjit "
 "files\""
@@ -4147,21 +4126,20 @@ msgid "_Copy Files"
 msgstr "_Kopjo Files"
 
 #: src/file-manager/fm-directory-view.c:4928
-#, fuzzy
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
 msgstr ""
-"Kjo lidhje nuk mund të përdoret pasi nuk ka një target. Dëshironi të hedhësh "
+"Kjo lidhje nuk mund të përdoret, pasi nuk ka një target. Dëshironi të hedhësh "
 "këtë lidhje në Kosh?"
 
 #: src/file-manager/fm-directory-view.c:4931
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
 msgstr ""
-"Kjo lidhje nuk mund të përdoret pasi target i saj \"%s\" nuk ekziston. "
+"Kjo lidhje nuk mund të përdoret, pasi target i saj \"%s\" nuk ekziston. "
 "Dëshironi të hedhësh këtë lidhje në Kosh?"
 
 #: src/file-manager/fm-directory-view.c:4937
@@ -4204,8 +4182,7 @@ msgstr "Anulloj hapjen?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Ju nuk keni të drejtat e duhura për të shikuar përmbajtjen e \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4224,16 +4201,14 @@ msgstr "Gabim gjatë shfaqjes së kartelës"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "Emri \"%s\" eshtë përdorur njëherë në këtë kartelë. Ju lutem përdorni një "
 "emër tjetër."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "Nuk ka \"%s\" në këtë kartelë. Mos e keni lëvizuar apo eleminuar?"
 
 #: src/file-manager/fm-error-reporting.c:112
@@ -4258,8 +4233,7 @@ msgstr "Emri \"%s\" nuk është i vlefshëm. Ju lutem përdorni një emër tjet�
 #: src/file-manager/fm-error-reporting.c:127
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr ""
-"Nuk arrij të ndryshoj emrin e \"%s\" sepse ndodhet në një disk në vetëm lexim"
+msgstr "Nuk arrij të ndryshoj emrin e \"%s\" sepse ndodhet në një disk në vetëm lexim"
 
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
@@ -4272,8 +4246,7 @@ msgstr "Gabim gjatë ndryshimit të emrit"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Nuk keni të drejta të mjaftueshme për të ndryshuar grupin e \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -4310,8 +4283,7 @@ msgstr "Gabim gjatë vendosjes së pronarit"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nuk arrij të ndryshoj të drejtat e \"%s\" pasi ndodhet në një disk në vetëm "
 "lexim"
@@ -4654,9 +4626,8 @@ msgstr ""
 "%s"
 
 #: src/file-manager/fm-properties-window.c:2359
-#, fuzzy
 msgid "Couldn't show help"
-msgstr "E pamundur heqja e temës"
+msgstr "E pamundur shfaqja e ndihmës"
 
 #: src/file-manager/fm-properties-window.c:2623
 msgid "Cancel Showing Properties Window?"
@@ -4744,8 +4715,7 @@ msgstr "Gabim gjatë leximit të treguesit"
 #: src/file-manager/fm-search-list-view.c:220
 #, c-format
 msgid "An error occurred while loading this search's contents: %s"
-msgstr ""
-"U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi: %s"
+msgstr "U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi: %s"
 
 #: src/file-manager/fm-search-list-view.c:244
 msgid ""
@@ -4949,8 +4919,7 @@ msgid "Protect the selected volume"
 msgstr "Mbro volumin e zgjedhur"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Hap një dritare që ju mundëson rregullimin e ngjyrës apo motivit për sfondin "
 "e desktop"
@@ -5019,8 +4988,7 @@ msgid "Edit the launcher information"
 msgstr "Ndrysho informacionet e ikonës së nisjes"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Lëviz apo kopjo files e zgjedhur më parë me anë të komandës \"Prit files\" "
 "apo \"Kopjo files\""
@@ -5229,8 +5197,7 @@ msgstr "Aktualisht këtu nuk ka një tregues."
 
 #: src/file-manager/nautilus-indexing-info.c:302
 msgid "Sorry, but the medusa search service is not available."
-msgstr ""
-"Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
+msgstr "Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
 
 #: src/file-manager/nautilus-indexing-info.c:317
 msgid "%I:%M %p, %x"
@@ -5363,8 +5330,7 @@ msgstr ""
 #: src/nautilus-application.c:479 src/nautilus-application.c:497
 #: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr ""
-"Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
+msgstr "Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
 
 #: src/nautilus-application.c:480
 msgid ""
@@ -5426,168 +5392,149 @@ msgstr "Gjeje!"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Behaviour</span>"
 
 #: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Default View</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Paraqitja e përcaktuar</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "File teksti të zbatueshëm"
+msgstr "<span weight=\"bold\">File teksti të zbatueshëm</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Kartelat</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Icon Captions</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Paraqitja e përcaktuar e ikonave</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Files figura</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">List View Defaults</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Files audio</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Files teksti</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Koshi</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Tree View Defaults</span>"
 
 #: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
 msgid "Always"
-msgstr "_Gjithmonë"
+msgstr "Gjithmonë"
 
 #: src/nautilus-file-management-properties.glade.h:38
-#, fuzzy
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "P_yet para se të zbrazësh Koshin apo të eleminosh files"
+msgstr "Pyet para se të _zbrazësh Koshin apo të eleminosh files"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Zgjidh rradhën e shfaqjes së informacione nën emrat e ikonave.\n"
-"Më shumë informacione tregohen me rritjen e nivelit të zoom"
+"Zgjidh rradhën e shfaqjes së informacione nën emrat e ikonave. "
+"Më shumë informacione tregohen me rritjen e nivelit të zoom."
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "_Niveli i zoom i prezgjedhur:"
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "E_xecute scripts when they are clicked"
 msgstr "E_kzekuto files kur klikohen"
 
 #: src/nautilus-file-management-properties.glade.h:47
-#, fuzzy
 msgid "File Management Preferences"
-msgstr "Preferimet e Desktop"
+msgstr "Preferimet e Manazhuesit të File"
 
 #: src/nautilus-file-management-properties.glade.h:48
-#, fuzzy
 msgid "Files and Folders"
-msgstr "Lloje files dhe programesh"
+msgstr "Files dhe kartela"
 
 #: src/nautilus-file-management-properties.glade.h:49
-#, fuzzy
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "Pë_rfshi komandën elemino që kapërcen Koshin"
+msgstr "Përfshi koma_ndën elemino direkt pa kaluar nëpër Kosh"
 
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon Captions"
 msgstr "Ikonat"
 
 #: src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
 msgid "Local Files Only"
-msgstr "Vetëm filet _lokalë"
+msgstr "Vetëm filet lokalë"
 
 #: src/nautilus-file-management-properties.glade.h:55
-#, fuzzy
 msgid "Never"
-msgstr "_Kurrë"
+msgstr "Kurrë"
 
 #: src/nautilus-file-management-properties.glade.h:57
-#, fuzzy
 msgid "Preview _sound files:"
-msgstr "Pamja e parë e files audio"
+msgstr "Pamja e parë e file_s audio:"
 
 #: src/nautilus-file-management-properties.glade.h:58
-#, fuzzy
 msgid "Show _number of items:"
-msgstr "Shfaq numrin e elementëve në kartela"
+msgstr "Shfaq _numrin e elementëve:"
 
 #: src/nautilus-file-management-properties.glade.h:59
-#, fuzzy
 msgid "Show _only folders"
-msgstr "_shfaq vetëm kartelat"
+msgstr "Shfaq _vetëm kartelat"
 
 #: src/nautilus-file-management-properties.glade.h:60
-#, fuzzy
 msgid "Show _thumbnails:"
-msgstr "Showtunes"
+msgstr "Show _thumbnails:"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Show hidden and _backup files"
-msgstr ""
+msgstr "Trego files e fshehur dhe të _backup"
 
 #: src/nautilus-file-management-properties.glade.h:62
-#, fuzzy
 msgid "Show te_xt in icons:"
-msgstr "Shfaq tekstin e ikonës"
+msgstr "Trego te_kstin e ikonës:"
 
 #: src/nautilus-file-management-properties.glade.h:63
-#, fuzzy
 msgid "Sort _folders before files"
-msgstr "Rreshto gjithmonë karte_lat përpara files"
+msgstr "Rreshto _kartelat përpara files"
 
 #: src/nautilus-file-management-properties.glade.h:64
 msgid "Sort in _reverse"
 msgstr "_Rreshtoi nga ana e kundërt"
 
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
 msgid "Use _manual layout"
-msgstr "Përdor paraqitje të n_gjeshur"
+msgstr "Përdor paraqitjen _manuale"
 
 #: src/nautilus-file-management-properties.glade.h:66
-#, fuzzy
 msgid "View _new folders using:"
-msgstr "_Përdor për kartelat e reja:"
+msgstr "Shiko kartelat e _reja duke përdorur:"
 
 #: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "Shikime"
 
 #: src/nautilus-file-management-properties.glade.h:68
-#, fuzzy
 msgid "_Arrange Items:"
 msgstr "_Vendosi elementët:"
 
@@ -5596,23 +5543,20 @@ msgid "_Default zoom level:"
 msgstr "_Niveli i zoom i prezgjedhur:"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Only for files smaller than:"
-msgstr "_Mos krijo miniatura për files më të mëdhenj se: "
+msgstr "_Vetëm për files më të mëdhenj se: "
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Open each file or folder in a new window"
 msgstr "_Hap çdo file apo kartelë në një dritare të re"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Use compact layout"
-msgstr "Përdor paraqitje të n_gjeshur"
+msgstr "_Përdor paraqitje kompakte"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View scripts when they are clicked"
-msgstr "E_kzekuto files kur klikohen"
+msgstr "_Shiko scripts kur klikohen"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -6042,6 +5986,8 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"I pamundur ekzekutimi i nautilus\n"
+"Sigurohuni që nautilus ndodhet tek path juaj dhe është i instaluar korrektsisht"
 
 #: src/nautilus-server-connect.c:387
 #, c-format
@@ -6050,26 +5996,30 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"Nuk arrij të hap URI %s\n"
+"Sigurohu që adresa është e saktë dhe përndryshe, shkruaje këtë adresë "
+"direkt tek manazhuesi i file"
 
 #: src/nautilus-server-connect.c:452
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"Glade file for the connect to server program is missing.\n"
+"Please check your installation of nautilus"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "Shto një server të ri tek Rrjeti i server-ve tuaj dhe lidhu me të"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
-#, fuzzy
 msgid "New Server"
-msgstr "New Wave"
+msgstr "Server i Ri"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6392,14 +6342,13 @@ msgid "_View as..."
 msgstr "S_hiko si..."
 
 #: src/nautilus-side-pane.c:395
-#, fuzzy
 msgid "Close the side pane"
-msgstr "Paneli anësor Shënime"
+msgstr "Mbylle panelin anësor"
 
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "Shfaq opcionet"
+msgstr "Shfaq %s"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -6478,8 +6427,7 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1310
 #, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" nuk është një pozicion i vlefshëm. Kontrolloje nëse e ke shkruar si "
 "duhet dhe provo përsëri."
@@ -6589,8 +6537,7 @@ msgstr "Jeni sigurt që dëshiron të harrosh të kaluarën? Historia përsërit
 
 #: src/nautilus-window-menus.c:365
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr ""
-"Jeni i sigurt që dëshironi të pastroni listën e pozicioneve që keni vizituar?"
+msgstr "Jeni i sigurt që dëshironi të pastroni listën e pozicioneve që keni vizituar?"
 
 #: src/nautilus-window-menus.c:370
 msgid "Clear History"
@@ -6659,9 +6606,8 @@ msgid "Go forward a number of pages"
 msgstr "Shko përpara një numër faqesh"
 
 #: src/nautilus-window.c:670
-#, fuzzy
 msgid "Information"
-msgstr "Internacionale"
+msgstr "Informacion"
 
 #: src/nautilus-window.c:1184
 #, c-format
@@ -6709,14 +6655,12 @@ msgid "Set the zoom level of the current view"
 msgstr "Rregullo shkallën e zmadhimit për pamjen aktuale"
 
 #: src/network-scheme.desktop.in.h:1
-#, fuzzy
 msgid "Network Servers"
-msgstr "Netraverse"
+msgstr "Rrjeti i Server-ve"
 
 #: src/network-scheme.desktop.in.h:2
-#, fuzzy
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Shfaqe kartelën home të përdoruesit tek file manager Nautilus"
+msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
 
 #~ msgid "Content Loser"
 #~ msgstr "Content Loser"
@@ -7583,3 +7527,4 @@ msgstr "Shfaqe kartelën home të përdoruesit tek file manager Nautilus"
 
 #~ msgid "Cancel _Remove"
 #~ msgstr "Anullo _Hiq"
+
