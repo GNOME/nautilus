@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-02-03 14:40+0100\n"
-"PO-Revision-Date: 2001-02-03 14:46+0100\n"
+"POT-Creation-Date: 2001-02-05 01:35+0100\n"
+"PO-Revision-Date: 2001-02-05 01:42+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -238,63 +238,63 @@ msgstr "APPENDIX"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:479
-#: components/help/hyperbola-filefmt.c:480
-#: components/help/hyperbola-filefmt.c:481
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:495
+#: components/help/hyperbola-filefmt.c:497
+#: components/help/hyperbola-filefmt.c:501
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "Manual"
 msgstr "Manual"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "System"
 msgstr "System"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "Config files"
 msgstr "Konfigurationsfiler"
 
-#: components/help/hyperbola-filefmt.c:481
-#: components/help/hyperbola-filefmt.c:772 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:501
+#: components/help/hyperbola-filefmt.c:809 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Program"
 
-#: components/help/hyperbola-filefmt.c:481
+#: components/help/hyperbola-filefmt.c:501
 msgid "Command Line"
 msgstr "Kommandorad"
 
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "Development"
 msgstr "Utveckling"
 
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "APIs"
 msgstr "Programmeringsgränssnitt"
 
-#: components/help/hyperbola-filefmt.c:482
+#: components/help/hyperbola-filefmt.c:503
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:507
 msgid "System Calls"
 msgstr "Systemanrop"
 
-#: components/help/hyperbola-filefmt.c:641
+#: components/help/hyperbola-filefmt.c:668
 #: libnautilus-extensions/nautilus-stock-dialogs.c:473
 msgid "Info"
 msgstr "Info"
 
-#: components/help/hyperbola-nav-index.c:124
+#: components/help/hyperbola-nav-index.c:121
 msgid "see "
 msgstr "se "
 
-#: components/help/hyperbola-nav-index.c:128
+#: components/help/hyperbola-nav-index.c:125
 msgid "see also "
 msgstr "se även "
 
@@ -302,11 +302,11 @@ msgstr "se även "
 msgid "No matches."
 msgstr "Inga träffar."
 
-#: components/help/hyperbola-nav-index.c:479
+#: components/help/hyperbola-nav-index.c:476
 msgid " (see \""
 msgstr " (se \""
 
-#: components/help/hyperbola-nav-index.c:484
+#: components/help/hyperbola-nav-index.c:479
 msgid " (see also \""
 msgstr " (se även \""
 
@@ -4726,8 +4726,8 @@ msgid "Ask before deleting items from the trash"
 msgstr "Fråga innan objekt i papperskorgen tas bort"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:100
-msgid "Click policy"
-msgstr "Klickpolicy"
+msgid "Click behavior"
+msgstr "Klickbeteende"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:103
 msgid "single"
@@ -4869,8 +4869,8 @@ msgid "Show special flags in Properties window"
 msgstr "Visa specialflaggor i fönstret Egenskaper"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:206
-msgid "Show only folders in tree sidebar panel"
-msgstr "Visa endast mappar i trädsidoradspanelen"
+msgid "Show only folders (no files) in Tree sidebar panel"
+msgstr "Visa endast mappar (inga filer) i trädsidoradspanelen"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:209
 msgid "Can add Content"
@@ -4939,9 +4939,8 @@ msgid "Trash Behavior"
 msgstr "Papperskorgsbeteende"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:602
-#: src/file-manager/fm-directory-view.c:3450
-msgid "Display"
-msgstr "Utseende"
+msgid "Show/Hide Options"
+msgstr "Visa/Göm alternativ"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:635
 msgid "Search"
@@ -6024,6 +6023,10 @@ msgstr "Kör eller visa?"
 #: src/file-manager/fm-directory-view.c:3449
 msgid "Run"
 msgstr "Kör"
+
+#: src/file-manager/fm-directory-view.c:3450
+msgid "Display"
+msgstr "Utseende"
 
 #: src/file-manager/fm-directory-view.c:3453
 msgid "Cancel"
@@ -8799,6 +8802,9 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f %%"
+
+#~ msgid "Click policy"
+#~ msgstr "Klickpolicy"
 
 #~ msgid "Nautilus File Manager and Graphic Shell"
 #~ msgstr "Filhanteraren och det grafiska skalet Nautilus"
