@@ -1,3 +1,26 @@
+2000-11-10  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	I think 3320 is fixed (I definitely can't reproduce it) but this
+	change should eliminate a few remaining possible causes.
+	
+	* components/tree/nautilus-tree-model.h,
+	components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_get_node_from_file): New function that gets
+	the node corresponding to a NautilusFile (to avoid possible
+	problems with multiple NautilusFile objects for one URI).
+	
+	(nautilus_tree_model_get_node, report_node_changed,
+	report_node_removed_internal,
+	nautilus_tree_model_directory_files_changed_callback,
+	nautilus_tree_model_directory_done_loading_callback): Use where
+	possible.
+
+	* components/tree/nautilus-tree-view.c: (reload_node_for_file,
+	nautilus_tree_view_find_parent_node): Use
+	`nautilus_tree_model_get_node_from_file'.
+
 2000-11-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

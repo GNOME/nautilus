@@ -95,11 +95,15 @@ nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
 
 
 NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
-								 const char *uri);
+								 const char        *uri);
+
+
+NautilusTreeNode  *nautilus_tree_model_get_node_from_file       (NautilusTreeModel *model,
+								 NautilusFile      *file);
 
 #if 0
 NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
-								 const char *uri);
+								 NautilusFile      *file);
 
 
 NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);

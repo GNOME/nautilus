@@ -1349,11 +1349,8 @@ reload_node_for_file (NautilusTreeView *view,
 {
 	GList *p;
 	NautilusTreeNode *node;
-	char *uri;
 
-	uri = nautilus_file_get_uri (file);
-
-	node = nautilus_tree_model_get_node (view->details->model, uri);
+	node = nautilus_tree_model_get_node_from_file (view->details->model, file);
 	g_return_if_fail (node != NULL);
 
 	nautilus_tree_model_monitor_node (view->details->model, node, view);
@@ -1361,8 +1358,6 @@ reload_node_for_file (NautilusTreeView *view,
 	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
 		nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
 	}
-
-	g_free (uri);
 }
 
 static void
@@ -1453,19 +1448,14 @@ nautilus_tree_view_find_parent_node (NautilusTreeView *view,
 				     NautilusFile     *file)
 {
 	NautilusTreeNode *node;
-	char *uri;
 
-	uri = nautilus_file_get_uri (file);
-
-	node = nautilus_tree_model_get_node (view->details->model, 
-					     nautilus_file_get_uri (file));
-
-	g_free (uri);
+	node = nautilus_tree_model_get_node_from_file (view->details->model, 
+						       file);
 
 	if (node == NULL) {
 		g_print ("You've run into an intermittent tree view bug.\n");
 		g_print ("Running Nautilus again will probably not hit this bug.\n");
-		g_print ("The tree view didn't have a node for %s\n", uri);
+		g_print ("The tree view didn't have a node for %s\n", nautilus_file_get_uri (file));
 		g_print ("The tree view had the following nodes:\n\n");
 		nautilus_tree_model_dump_files (view->details->model);
 

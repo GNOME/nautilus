@@ -482,8 +482,18 @@ nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
 
 
 NautilusTreeNode *
+nautilus_tree_model_get_node_from_file (NautilusTreeModel *model,
+					NautilusFile      *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	
+	return g_hash_table_lookup (model->details->file_to_node_map, file);
+}
+
+NautilusTreeNode *
 nautilus_tree_model_get_node (NautilusTreeModel *model,
-			      const char *uri)
+			      const char        *uri)
 {
 	NautilusFile *file;
 	NautilusTreeNode *node;
@@ -494,7 +504,7 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 		return NULL;
 	}
 
-	node = g_hash_table_lookup (model->details->file_to_node_map, file);
+	node = nautilus_tree_model_get_node_from_file (model, file);
 	nautilus_file_unref (file);
 
 	return node;
@@ -591,8 +601,8 @@ report_node_changed (NautilusTreeModel *model,
 #endif
 	}
 
-	if (g_hash_table_lookup (model->details->file_to_node_map, 
-				 nautilus_tree_node_get_file (node)) == NULL) {
+	if (nautilus_tree_model_get_node_from_file (model,
+						    nautilus_tree_node_get_file (node)) == NULL) {
 		/* Actually added, go figure */
 		
 		parent_uri = uri_get_parent_text (node_uri);
@@ -668,8 +678,8 @@ report_node_removed_internal (NautilusTreeModel *model,
 		return;
 	}
 
-	if (g_hash_table_lookup (model->details->file_to_node_map, 
-				 nautilus_tree_node_get_file (node)) != NULL) {
+	if (nautilus_tree_model_get_node_from_file 
+	    (model,nautilus_tree_node_get_file (node)) != NULL) {
 
 		parent_node = nautilus_tree_node_get_parent (node);
 			
@@ -738,7 +748,7 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 	for (p = changed_files; p != NULL; p = p->next) {
 		file = NAUTILUS_FILE (p->data);
 		
-		node = (NautilusTreeNode *) g_hash_table_lookup (model->details->file_to_node_map, file);
+		node = nautilus_tree_model_get_node_from_file (model, file);
 
 		if (node == NULL) {
 			/* Do we need to add this node? */
@@ -779,12 +789,16 @@ static void
 nautilus_tree_model_directory_done_loading_callback (NautilusDirectory        *directory,
 						     NautilusTreeModel        *model)
 {
-	char *uri;
+	NautilusFile *file;
 	NautilusTreeNode *node;
 
-	uri = nautilus_directory_get_uri (directory);
-	node = nautilus_tree_model_get_node (model, uri);
-	g_free (uri);
+	file = nautilus_directory_get_corresponding_file (directory);
+	node = nautilus_tree_model_get_node_from_file (model, file);
+	nautilus_file_unref (file);
 
-	report_done_loading (model, node);
+	if (node != NULL) {
+		report_done_loading (model, node);
+	} else {
+		g_warning ("Got done loading notification for nonexistent node %s", nautilus_directory_get_uri (directory));
+	}
 }
