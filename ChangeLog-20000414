@@ -1,6 +1,12 @@
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gtkscrollframe.c (gtk_scroll_frame_size_allocate):
+        Rolled out my change. I was confused. Elliot had this fixed
+        already but I forgot to "make install".
+
+1999-12-15  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/gtkscrollframe.c (gtk_scroll_frame_size_allocate):
         Fixed overflow problem caused by gint16 local variable.
 
 1999-12-15  Darin Adler  <darin@eazel.com>
