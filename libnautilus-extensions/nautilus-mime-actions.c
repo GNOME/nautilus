@@ -2,7 +2,7 @@
 
 /* nautilus-mime-actions.h - uri-specific versions of mime action functions
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -674,25 +674,13 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 }
 
 static int
-application_can_handle_uri (gconstpointer application_data,
-			    gconstpointer uri_scheme)
+application_supports_uri_scheme_strcmp_style (gconstpointer application_data,
+					      gconstpointer uri_scheme)
 {
-	GnomeVFSMimeApplication *application;
-
-	g_assert (application_data != NULL);
-
-	application = (GnomeVFSMimeApplication *) application_data;
-
-	if (g_list_find_custom (application->supported_uri_schemes,
-				(gpointer) uri_scheme,
-				nautilus_strcmp_compare_func) != NULL) {
-		return 0;
-	}
-	else {
-		return 1;
-	}
+	return application_supports_uri_scheme
+		((gpointer) application_data,
+		 (gpointer) uri_scheme) ? 0 : 1;
 }
-
 
 gboolean
 nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
@@ -704,9 +692,10 @@ nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
 	all_applications_for_mime_type = nautilus_mime_get_all_applications_for_file (file);
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
-	application_that_can_access_uri = g_list_find_custom (all_applications_for_mime_type,
-							      uri_scheme,
-							      application_can_handle_uri);
+	application_that_can_access_uri = g_list_find_custom
+		(all_applications_for_mime_type,
+		 uri_scheme,
+		 application_supports_uri_scheme_strcmp_style);
 	g_free (uri_scheme);
 
 	result = application_that_can_access_uri != NULL;
@@ -1682,13 +1671,11 @@ application_supports_uri_scheme (gpointer data,
 	application = (GnomeVFSMimeApplication *) data;
 
 	/* The default supported uri scheme is "file" */
-	if (application->supported_uri_schemes == NULL &&
-	    strcmp ((const char *)uri_scheme, "file") == 0) {
+	if (application->supported_uri_schemes == NULL
+	    && strcasecmp ((const char *) uri_scheme, "file") == 0) {
 		return TRUE;
 	}
-	return (g_list_find_custom (application->supported_uri_schemes,
-				    uri_scheme,
-				    (GCompareFunc) strcmp) != NULL);
-
-	
+	return g_list_find_custom (application->supported_uri_schemes,
+				   uri_scheme,
+				   nautilus_strcasecmp_compare_func) != NULL;
 }
