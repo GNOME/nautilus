@@ -1339,8 +1339,6 @@ display_pending_files (FMDirectoryView *view)
 		done_loading (view);
 	}
 
-	/* FIXME bugzilla.eazel.com 658: fix memory management here */
-
 	files_added = view->details->pending_files_added;
 	files_changed = view->details->pending_files_changed;
 	uris_selected = view->details->pending_uris_selected;
