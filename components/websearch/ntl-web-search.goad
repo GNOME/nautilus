@@ -1,0 +1,11 @@
+[ntl_websearch_view_factory]
+type=exe
+repo_id=IDL:GNOME/GenericFactory:1.0
+description=Factory for history views
+location_info=ntl-web-search
+
+[ntl_websearch_view]
+type=factory
+repo_id=IDL:GNOME/Control:1.0 IDL:Nautilus/MetaView:1.0 IDL:Nautilus/View:1.0
+description=Web Search
+location_info=ntl_websearch_view_factory

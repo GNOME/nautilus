@@ -18,6 +18,9 @@
 #endif
 
 #include "glibwww.h"
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 #include <gnome.h>
 #include <libnautilus/libnautilus.h>
 #include <gtkhtml/gtkhtml.h>
@@ -29,116 +32,121 @@ typedef struct {
   NautilusViewClient *vc;
   GtkWidget *htmlw;
   char *base_url, *base_target_url;
+
+  int prevsel;
+
+  HTMethod method;
+  char *post_data;
 } BrowserInfo;
 
 static char *
 canonicalize_url (const char *in_url, const char *base_url)
 {
-	char *ctmp, *ctmp2, *retval, *removebegin, *removeend, *curpos;
+  char *ctmp, *ctmp2, *retval, *removebegin, *removeend, *curpos;
 
-	g_return_val_if_fail(in_url, NULL);
+  g_return_val_if_fail(in_url, NULL);
 
-	ctmp = strstr(in_url, "://");
-	if(ctmp)
+  ctmp = strstr(in_url, "://");
+  if(ctmp)
+    {
+      retval = g_strdup(in_url);
+      goto out;
+    }
+  else if(*in_url == '/')
+    {
+      ctmp = base_url?strstr(base_url, "://"):NULL;
+      if(!ctmp)
 	{
-		retval = g_strdup(in_url);
-		goto out;
-	}
-	else if(*in_url == '/')
-	{
-		ctmp = base_url?strstr(base_url, "://"):NULL;
-		if(!ctmp)
-		{
-			retval = g_strconcat("file://", in_url, NULL);
-			goto out;
-		}
-
-		ctmp2 = strchr(ctmp + 3, '/');
-
-		retval = g_strconcat(base_url, in_url, NULL);
-		goto out;
+	  retval = g_strconcat("file://", in_url, NULL);
+	  goto out;
 	}
 
-	/* XXX TODO - We should really do processing of .. and . in URLs */
+      ctmp2 = strchr(ctmp + 3, '/');
 
-	ctmp = base_url?strstr(base_url, "://"):NULL;
-	if(!ctmp)
-	{
-		char *cwd;
+      retval = g_strconcat(base_url, in_url, NULL);
+      goto out;
+    }
 
-		cwd = g_get_current_dir();
-		ctmp = g_strconcat("file://", cwd, "/", in_url, NULL);
-		g_free(cwd);
+  /* XXX TODO - We should really do processing of .. and . in URLs */
 
-		retval = ctmp;
-		goto out;
-	}
+  ctmp = base_url?strstr(base_url, "://"):NULL;
+  if(!ctmp)
+    {
+      char *cwd;
 
-	retval = g_strconcat(base_url, "/", in_url, NULL);
+      cwd = g_get_current_dir();
+      ctmp = g_strconcat("file://", cwd, "/", in_url, NULL);
+      g_free(cwd);
+
+      retval = ctmp;
+      goto out;
+    }
+
+  retval = g_strconcat(base_url, "/", in_url, NULL);
 
  out:
-	/* Now fix up the /. and /.. pieces */
+  /* Now fix up the /. and /.. pieces */
 
-	ctmp = strstr(retval, "://");
-	g_assert(ctmp);
-	ctmp += 3;
-	ctmp = strchr(ctmp, '/');
-	if(!ctmp) {
-		ctmp = retval;
-		retval = g_strconcat(retval, "/", NULL);
-		g_free(ctmp);
-		return retval;
-	}
+  ctmp = strstr(retval, "://");
+  g_assert(ctmp);
+  ctmp += 3;
+  ctmp = strchr(ctmp, '/');
+  if(!ctmp) {
+    ctmp = retval;
+    retval = g_strconcat(retval, "/", NULL);
+    g_free(ctmp);
+    return retval;
+  }
 
+  removebegin = removeend = NULL;
+  do {
+    if(removebegin && removeend)
+      {
+	memmove(removebegin, removeend, strlen(removeend) + 1);
 	removebegin = removeend = NULL;
-	do {
-		if(removebegin && removeend)
-		{
-			memmove(removebegin, removeend, strlen(removeend) + 1);
-			removebegin = removeend = NULL;
-		}
-		curpos = ctmp;
+      }
+    curpos = ctmp;
 
-	redo:
-		ctmp2 = strstr(curpos, "/.");
-		if(!ctmp2)
-			break;
+  redo:
+    ctmp2 = strstr(curpos, "/.");
+    if(!ctmp2)
+      break;
 
-		if(*(ctmp2 + 2) == '.') /* We have to skip over stuff like /...blahblah or /.foo */
-		{
-			if(*(ctmp2 + 3) != '/'
-			   && *(ctmp2 + 3) != '\0')
-			{
-				curpos = ctmp2 + 3;
-				goto redo;
-			}
-		}
-		else if(*(ctmp2 + 2) != '/' && *(ctmp2 + 2) != '\0')
-		{
-			curpos = ctmp2 + 2;
-			goto redo;
-		}
+    if(*(ctmp2 + 2) == '.') /* We have to skip over stuff like /...blahblah or /.foo */
+      {
+	if(*(ctmp2 + 3) != '/'
+	   && *(ctmp2 + 3) != '\0')
+	  {
+	    curpos = ctmp2 + 3;
+	    goto redo;
+	  }
+      }
+    else if(*(ctmp2 + 2) != '/' && *(ctmp2 + 2) != '\0')
+      {
+	curpos = ctmp2 + 2;
+	goto redo;
+      }
 
-		switch(*(ctmp2+2))
-		{
-		case '/':
-		case '\0':
-			removebegin = ctmp2;
-			removeend = ctmp2 + 2;
-			break;
-		case '.':
-			removeend = ctmp2 + 3;
-			ctmp2--;
-			while((ctmp2 >= ctmp) && *ctmp2 != '/')
-				ctmp2--;
-			if(*ctmp2 == '/')
-				removebegin = ctmp2;
-			break;
-		}
+    switch(*(ctmp2+2))
+      {
+      case '/':
+      case '\0':
+	removebegin = ctmp2;
+	removeend = ctmp2 + 2;
+	break;
+      case '.':
+	removeend = ctmp2 + 3;
+	ctmp2--;
+	while((ctmp2 >= ctmp) && *ctmp2 != '/')
+	  ctmp2--;
+	if(*ctmp2 == '/')
+	  removebegin = ctmp2;
+	break;
+      }
 
-	} while(removebegin);
+  } while(removebegin);
 
-	return retval;
+  return retval;
 }
 
 static void
@@ -236,15 +244,45 @@ do_request_delete(gpointer req)
 }
 
 static int
-request_terminator (HTRequest * request, HTResponse * response, void * param, int status) {
+request_terminator (HTRequest * request, HTResponse * response, void * param, int status)
+{
+  gpointer d;
+
   if (status != HT_LOADED) 
     g_print("Load couldn't be completed successfully (%p)\n", request);
 
+  d = HTRequest_context(request);
+  g_return_val_if_fail(d, HT_OK);
+
+  HTRequest_setContext(request, NULL);
   g_idle_add(do_request_delete, request);
 
   return HT_OK;
 }
 
+static int
+browser_do_post(HTRequest *request, HTStream *stream)
+{
+  BrowserInfo *bi = HTRequest_context(request);
+  int status;
+
+  g_assert(bi);
+
+  status = (*stream->isa->put_block)(stream, bi->post_data, strlen(bi->post_data));
+
+  g_message("browser_do_post got status %d", status);
+
+  switch(status)
+    {
+    case HT_LOADED:
+    case HT_OK:
+      g_free(bi->post_data); bi->post_data = NULL;
+      (*stream->isa->flush)(stream);
+    default:
+      return status;
+      break;
+    }
+}
 
 static void
 browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle handle, BrowserInfo *bi)
@@ -257,10 +295,14 @@ browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle han
 
   request = HTRequest_new();
   writer = netin_stream_new(bi, handle);
-  HTRequest_setContext(request, writer);
+  HTRequest_setContext(request, bi);
   HTRequest_setOutputFormat(request, WWW_SOURCE);
   HTRequest_setOutputStream(request, writer);
+  if(bi->method == METHOD_POST)
+    HTRequest_setPostCallback(request, browser_do_post);
   HTRequest_setAnchor(request, HTAnchor_findAddress(real_url));
+  HTRequest_setMethod(request, bi->method);
+  bi->method = METHOD_GET;
 
   if(HTLoad(request, NO) == NO)
     {
@@ -327,6 +369,59 @@ browser_goto_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 }
 
 static void
+browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
+{
+  Nautilus_SelectionRequestInfo si;
+  char *real_url = NULL;
+
+  memset(&si, 0, sizeof(si));
+  if(url && !bi->prevsel)
+    {
+      si.selected_uris._length = 1;
+      real_url = canonicalize_url(url, bi->base_target_url);
+      si.selected_uris._buffer = &real_url;
+    }
+  else if(!url && bi->prevsel)
+    {
+      si.selected_uris._length = 0;
+    }
+
+  nautilus_view_client_request_selection_change(bi->vc, &si);
+  g_free(real_url);
+  bi->prevsel = url?1:0;
+}
+
+static void
+browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char *encoding, BrowserInfo *bi)
+{
+  g_free(bi->post_data); bi->post_data = NULL;
+
+  if(!strcasecmp(method, "POST"))
+    {
+      char **pieces = g_strsplit(encoding, "&", -1);
+
+      if(pieces)
+	{
+	  char *ctmp;
+	  ctmp = g_strjoinv("\r\n", pieces);
+	  bi->post_data = g_strconcat(ctmp, "\r\n", NULL);
+	  g_free(ctmp);
+	  g_strfreev(pieces);
+	  bi->method = METHOD_POST;
+	}
+
+      browser_goto_url(htmlw, url, bi);
+    }
+  else
+    {
+      char tmp_url[4096];
+
+      g_snprintf(tmp_url, sizeof(tmp_url), "%s?%s", url, encoding);
+      browser_goto_url(htmlw, tmp_url, bi);
+    }
+}
+
+static void
 browser_notify_location_change(NautilusViewClient *vc, Nautilus_NavigationInfo *ni, BrowserInfo *bi)
 {
   if(ni->self_originated)
@@ -368,6 +463,8 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "set_base", browser_set_base, bi);
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "set_base_target", browser_set_base_target, bi);
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "url_requested", browser_url_requested, bi);
+  gtk_signal_connect(GTK_OBJECT(bi->htmlw), "on_url", browser_select_url, bi);
+  gtk_signal_connect(GTK_OBJECT(bi->htmlw), "submit", browser_submit, bi);
 
   wtmp = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);

@@ -141,7 +141,7 @@ file_menu_close_cb (GtkWidget *widget,
 
 static void
 file_menu_new_window_cb (GtkWidget *widget,
-	       gpointer data)
+                         gpointer data)
 {
   NautilusWindow *current_mainwin;
   NautilusWindow *new_mainwin;
@@ -165,6 +165,13 @@ file_menu_exit_cb (GtkWidget *widget,
   gtk_main_quit();
 }
 
+static void
+file_menu_prefs_cb(GtkWidget *widget,
+                   GtkWindow *mainwin)
+{
+  nautilus_prefs_ui_show(mainwin);
+}
+
 static GnomeUIInfo file_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
@@ -173,9 +180,11 @@ static GnomeUIInfo file_menu_info[] = {
     GNOME_APP_PIXMAP_NONE, NULL,
     'N', GDK_CONTROL_MASK, NULL
   },
-  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb,NULL),
+  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb, NULL),
   GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb,NULL),
+  GNOMEUIINFO_MENU_PREFERENCES_ITEM(file_menu_prefs_cb, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb, NULL),
   GNOMEUIINFO_END
 };
 

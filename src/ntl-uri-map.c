@@ -218,16 +218,25 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
   if(!navinfo->navinfo.content_type) /* May have already been filed in by nautilus_navinfo_map() */
     {
       GnomeVFSFileInfo *vfs_fileinfo;
+      GnomeVFSResult res;
 
       vfs_fileinfo = gnome_vfs_file_info_new();
-      gnome_vfs_get_file_info(navinfo->navinfo.actual_uri,
-                              vfs_fileinfo,
-                              GNOME_VFS_FILE_INFO_GETMIMETYPE
-                              |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
-                              meta_keys);
+      res = gnome_vfs_get_file_info(navinfo->navinfo.actual_uri,
+                                    vfs_fileinfo,
+                                    GNOME_VFS_FILE_INFO_GETMIMETYPE
+                                    |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
+                                    meta_keys);
+      if(res != GNOME_VFS_OK)
+        {
+          gnome_vfs_file_info_destroy(vfs_fileinfo);
+          nautilus_navinfo_free(navinfo);
+          return NULL;
+        }
+
       navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
       gnome_vfs_file_info_destroy(vfs_fileinfo);
     }
+
 
   /* Given a content type and a URI, what do we do? Basically the "expert system" below
      tries to answer that question
@@ -274,6 +283,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
     }
 
   navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_history_view"));
+  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_websearch_view"));
 
   return navinfo;
 }

@@ -8,6 +8,7 @@
 #include <bonobo/gnome-bonobo.h>
 
 #include "ntl-types.h"
+#include "ntl-prefs.h"
 #include "ntl-window.h"
 #include "ntl-window-state.h"
 #include "ntl-window-msgs.h"

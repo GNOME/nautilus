@@ -34,6 +34,7 @@ nautilus_app_init(const char *initial_url)
   NautilusWindow *mainwin;
 
   nautilus_navinfo_init();
+  nautilus_prefs_load();
 
   /* Create our CORBA objects */
   gnome_generic_factory_new_multi("nautilus_factory", nautilus_make_object, NULL);
@@ -50,7 +51,10 @@ nautilus_app_destroy_window(GtkObject *obj)
   window_count--;
 
   if(window_count <= 0)
-    gtk_main_quit();
+    {
+      gtk_main_quit();
+      nautilus_prefs_save();
+    }
 }
 
 NautilusWindow *

@@ -1,3 +1,11 @@
+2000-01-03  Elliot Lee  <sopwith@redhat.com>
+
+	* components/websearch, configure.in: The ten minute version of kwebsearch.
+	* components/html/ntl-web-browser.c: Handle forms (POST is untested and probably buggy).
+	* src/ntl-uri-map.c: Check result of file_info retrieval. Load web search by default.
+	* src/ntl-prefs.[ch]: First (lame) attempt at implementing application preferences.
+	* src/ntl-app.c: Load prefs at startup
+
 2000-01-03  John Sullivan  <sullivan@eazel.com>
 
 	Added underline-accelerators to Add Bookmark and
