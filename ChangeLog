@@ -1,5 +1,14 @@
 2001-02-26  Eric Fischer <eric@eazel.com>
 
+	reviewed by: Robin Slomkoswki <rslomkow@eazel.com>
+
+	* nautilus.spec.in:
+	Remove nautilus-xml-migrate.1 from list of files to include
+	in RPM, because it's breaking the build and I'm too brain-dead
+	right now to figure out what I did wrong.
+
+2001-02-26  Eric Fischer <eric@eazel.com>
+
 	reviewed by: Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/installer.c: (eazel_install_progress),
