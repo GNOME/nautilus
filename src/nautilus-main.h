@@ -29,9 +29,9 @@
 
 #include <gtk/gtktypeutils.h>
 
-void nautilus_main_event_loop_register (GtkObject* object);
-gboolean nautilus_main_is_event_loop_mainstay (GtkObject* object);
-void nautilus_main_event_loop_quit (void);
+void     nautilus_main_event_loop_register    (GtkObject *object);
+gboolean nautilus_main_is_event_loop_mainstay (GtkObject *object);
+void     nautilus_main_event_loop_quit        (void);
 
 #endif /* NAUTILUS_MAIN_H */
 

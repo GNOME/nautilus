@@ -2404,7 +2404,7 @@ realize (GtkWidget *widget)
 
 	gdk_window_set_background
 		(GTK_LAYOUT (widget)->bin_window,
-		 &widget->style->bg[GTK_STATE_NORMAL]);
+		&widget->style->bg[GTK_STATE_NORMAL]);
 
 	/* reduce flicker when scrolling by setting the back pixmap to NULL */
 	gdk_window_set_back_pixmap (GTK_LAYOUT (widget)->bin_window,

@@ -33,6 +33,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-property-bag.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-ui-util.h>
@@ -224,8 +225,6 @@ set_up_standard_bonobo_button (NautilusWindow *window,
 
 	file_name = get_file_name_from_icon_name (icon_name, is_custom);
 		
-	nautilus_window_ui_freeze (window);
-
 	/* set up the toolbar component with the new image */
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
@@ -239,35 +238,16 @@ set_up_standard_bonobo_button (NautilusWindow *window,
 			      	      NULL);
 
 	g_free (file_name);
-
-	nautilus_window_ui_thaw (window);
-}
-
-static GdkPixbuf *
-get_pixbuf_for_xml_node (NautilusWindow *window, const char *node_path)
-{
-	BonoboUINode *node;
-	GdkPixbuf *pixbuf;
-
-	node = bonobo_ui_component_get_tree (window->details->shell_ui, node_path, FALSE, NULL);
-#if GNOME2_CONVERSION_COMPLETE
-	pixbuf = bonobo_ui_util_xml_get_icon_pixbuf (node, FALSE);
-#else
-	pixbuf = NULL;
-#endif
-	bonobo_ui_node_free (node);
-
-	return pixbuf;
 }
 
 /* Use only for toolbar buttons that had to be explicitly created so they
  * could have behaviors not present in standard Bonobo toolbar buttons.
  */
 static void
-set_up_special_bonobo_button (NautilusWindow *window,
+set_up_special_bonobo_button (NautilusWindow            *window,
 			      BonoboUIToolbarButtonItem *item,
-			      const char *control_path,
-			      const char *icon_name)
+			      const char                *control_path,
+			      const char                *icon_name)
 {
 	char *icon_file_name;
 	GdkPixbuf *pixbuf;	
@@ -275,15 +255,13 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	icon_file_name = get_file_name_from_icon_name (icon_name, FALSE);
 
 	if (icon_file_name == NULL) {
-		pixbuf = get_pixbuf_for_xml_node (window, control_path);
-	} else {
-		pixbuf = gdk_pixbuf_new_from_file (icon_file_name, NULL);
-		g_free (icon_file_name);
+		return;
 	}
-	
-	nautilus_window_ui_freeze (window);
 
-	bonobo_ui_toolbar_button_item_set_image (item, gtk_image_new_from_pixbuf (pixbuf));
+	pixbuf = gdk_pixbuf_new_from_file (icon_file_name, NULL);
+	g_free (icon_file_name);
+	
+	bonobo_ui_toolbar_button_item_set_image (item, pixbuf);
 	g_object_unref (pixbuf);
 
 #if GNOME2_CONVERSION_COMPLETE
@@ -299,8 +277,6 @@ set_up_special_bonobo_button (NautilusWindow *window,
 		 	? BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL
 		 	: BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_ONLY);
 #endif
-
-	nautilus_window_ui_thaw (window);
 }			      
 
 
@@ -345,26 +321,32 @@ theme_changed_callback (gpointer callback_data)
 }
 
 static void
-set_widget_for_bonobo_control (NautilusWindow *window,
-			       GtkWidget *widget,
-			       const char *control_path)
+back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
+					      const BonoboArg   *arg,
+					      guint              arg_id,
+					      CORBA_Environment *ev,
+					      gpointer           user_data)
 {
-	BonoboControl *wrapper;
+	BonoboControl *control;
+	BonoboUIToolbarItem *item;
+	BonoboUIToolbarItemStyle style;
 
-	wrapper = bonobo_control_new (widget);
-	bonobo_ui_component_object_set (window->details->shell_ui,
-					control_path,
-					bonobo_object_corba_objref (BONOBO_OBJECT (wrapper)),
-					NULL);
-	bonobo_object_unref (BONOBO_OBJECT (wrapper));
+	control = BONOBO_CONTROL (user_data);
+	item = BONOBO_UI_TOOLBAR_ITEM (
+		bonobo_control_get_widget (control));
+	style = BONOBO_ARG_GET_INT (arg);
+	
+	bonobo_ui_toolbar_item_set_style (item, style);
 }
 
 static BonoboUIToolbarButtonItem *
-set_up_back_or_forward_toolbar_item (NautilusWindow *window, 
-				      const char *label, 
-				      const char *control_path)
+create_back_or_forward_toolbar_item (NautilusWindow *window, 
+				     const char     *label, 
+				     const char     *control_path)
 {
 	BonoboUIToolbarButtonItem *item;
+	BonoboPropertyBag *pb;
+	BonoboControl *wrapper;
 	GtkButton *button;
 
 	item = BONOBO_UI_TOOLBAR_BUTTON_ITEM 
@@ -373,18 +355,33 @@ set_up_back_or_forward_toolbar_item (NautilusWindow *window,
 
 	button = bonobo_ui_toolbar_button_item_get_button_widget (item);
 	g_signal_connect (button,
-			    "button_press_event",
-			    G_CALLBACK (back_or_forward_button_pressed_callback),
-			    window);
+			  "button_press_event",
+			  G_CALLBACK (back_or_forward_button_pressed_callback),
+			  window);
 	g_signal_connect (button,
-			    "clicked",
-			    G_CALLBACK (back_or_forward_button_clicked_callback),
-			    window);
-	set_widget_for_bonobo_control (window, GTK_WIDGET (item), control_path);
+			  "clicked",
+			  G_CALLBACK (back_or_forward_button_clicked_callback),
+			  window);
+
+	wrapper = bonobo_control_new (GTK_WIDGET (item));
+	pb = bonobo_property_bag_new (
+		NULL, back_or_forward_toolbar_item_property_set_cb, wrapper);
+	bonobo_property_bag_add (pb, "style", 0,
+				 BONOBO_ARG_INT, NULL,
+				 _("Toolbar item style"),
+				 Bonobo_PROPERTY_WRITEABLE);
+	bonobo_control_set_properties (wrapper, BONOBO_OBJREF (pb), NULL);
+	bonobo_object_unref (BONOBO_OBJECT (pb));
+
+	bonobo_ui_component_object_set (window->details->shell_ui,
+					control_path,
+					BONOBO_OBJREF (wrapper),
+					NULL);
+
+	bonobo_object_unref (BONOBO_OBJECT (wrapper));
 
 	return item;
 }
-			       
 
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
@@ -424,9 +421,9 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 					&ev);
 	CORBA_exception_free (&ev);
 	
-	window->details->back_button_item = set_up_back_or_forward_toolbar_item 
+	window->details->back_button_item = create_back_or_forward_toolbar_item 
 		(window, _("Back"), "/Toolbar/BackWrapper");
-	window->details->forward_button_item = set_up_back_or_forward_toolbar_item 
+	window->details->forward_button_item = create_back_or_forward_toolbar_item 
 		(window, _("Forward"), "/Toolbar/ForwardWrapper");
 
 	set_up_toolbar_images (window);

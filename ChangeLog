@@ -1,3 +1,25 @@
+2002-01-18  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(image_loading_done_callback): don't set the background, it
+	causes a strange segv later.
+
+	* src/nautilus-window-toolbars.c
+	(set_widget_for_bonobo_control): fold into
+	(set_up_back_or_forward_toolbar_item): here.
+	(set_up_standard_bonobo_button): kill redundant
+	freeze / thaws.
+	(set_up_special_bonobo_button): don't do nasty
+	pixbuf roundtrips on a NULL icon_file_name
+	(get_pixbuf_for_xml_node): kill - somewhat inefficient.
+	(set_up_special_bonobo_button): set a straight pixbuf
+	on the button item for more speed, and kill bogus
+	in-proc freeze/thaw.
+	(set_up_back_or_forward_toolbar_item): rename to
+	(create_back_or_forward_toolbar_item): this to better
+	reflect function, aggregate a property bag.
+	(back_or_forward_tooblar_item_property_set_cb): impl.
+
 2002-01-18  Ian McKellar  <yakk@yakk.net>
 
 	* configure.in:

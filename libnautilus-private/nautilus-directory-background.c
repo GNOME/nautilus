@@ -657,7 +657,9 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 
 	background_window = background_get_desktop_background_window (background);
 	if (background_window != NULL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
+#endif
 	}
 
         gdk_pixmap_unref (pixmap);
