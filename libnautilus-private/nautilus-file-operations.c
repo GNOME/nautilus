@@ -618,8 +618,10 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 	int *count)
 {
 	const char *tag;
+
+	g_assert (name[0] != '\0');
 	
-	*suffix = strrchr (name, '.');
+	*suffix = strrchr (name + 1, '.');
 	if (*suffix == NULL || (*suffix)[1] == '\0') {
 		/* no suffix */
 		*suffix = "";
@@ -1634,6 +1636,8 @@ nautilus_self_check_file_operations (void)
 	/* test the next duplicate name generator */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(" (copy)"), _(" (another copy)")), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo"), _("foo (copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(".bashrc"), _(".bashrc (copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(".foo.txt"), _(".foo (copy).txt")), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo"), _("foo foo (copy)")), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo.txt"), _("foo (copy).txt")), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo.txt"), _("foo foo (copy).txt")), TRUE);

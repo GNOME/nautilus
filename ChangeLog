@@ -1,3 +1,14 @@
+2000-10-23  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(parse_previous_duplicate_name),
+	(nautilus_self_check_file_operations):
+	Fix 3971 - "duplicate" from context-click menu adds space to
+	beginning of the name.
+	This was a case of misinterpretting files such as ".bashrc" as
+	an extension.
+	Added tests that catch this problem and fixed it. 
+
 2000-10-24  Josh Barrow  <josh@eazel.com>
 
 	* nautilus.spec.in:
