@@ -879,8 +879,12 @@ add_view_as_bonobo_menu_item (NautilusWindow *window,
 		 identifier->view_as_label_with_mnemonic,
 		 "viewers group");
 
-	tip = g_strdup_printf (_("Display this location with \"%s\""),
-			       identifier->viewer_label);
+	tip = NULL;
+	if (identifier->viewer_label != NULL) {
+		tip = g_strdup_printf (_("Display this location with \"%s\""),
+				       identifier->viewer_label);
+	}
+
 	item_path = nautilus_bonobo_get_numbered_menu_item_path
 		(window->details->shell_ui, 
 		 placeholder_path, 
