@@ -1,3 +1,16 @@
+2001-02-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+	
+	Fixed bug 6465, Music view buttons stretch for songs
+	with very long titles.
+	
+	* components/music/nautilus-music-view.c: (add_play_controls),
+	(nautilus_music_view_set_album_image):
+	Change the way that the play controls are added to the pack box
+	so that they do not expand in strange ways or change their position
+	when a custom image is added.
+		
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com>

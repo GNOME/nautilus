@@ -65,6 +65,8 @@
 #include <fcntl.h>
 #include <limits.h>
 
+#define SCALED_IMAGE_WIDTH	108
+#define SCALED_IMAGE_HEIGHT 	108
 
 typedef enum {
 	PLAYER_STOPPED,
@@ -115,7 +117,6 @@ struct NautilusMusicViewDetails {
 
 
 /* structure for holding song info */
-
 typedef struct {
 	int track_number;
 	int bitrate;
@@ -149,7 +150,6 @@ enum {
 };
 
 /* button commands */
-
 enum {
 	PREVIOUS_BUTTON,
 	PLAY_BUTTON,
@@ -1461,16 +1461,48 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (vbox);
 	music_view->details->play_control_box = vbox;
 
-	/* Song title label */
-	music_view->details->song_label = nautilus_label_new ("");
-	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
-	gtk_widget_show (music_view->details->song_label);
-        
-        /* Buttons */
+	
+	/* Pack the items into the box in reverse order so that the controls are always
+	 * at the bottom regardless of the size of the album image.
+	 */
+	 
+	 /* hbox to hold slider and song progress time */
+	hbox = gtk_hbox_new (0, 0);
+	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 7);
+	gtk_widget_show (hbox);
+
+	/* progress bar */
+	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
+	music_view->details->playtime_bar = gtk_hscale_new (GTK_ADJUSTMENT (music_view->details->playtime_adjustment));
+	
+	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_press_event",
+                            GTK_SIGNAL_FUNC (slider_press_callback), music_view);
+	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_release_event",
+                            GTK_SIGNAL_FUNC (slider_release_callback), music_view);
+ 	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "motion_notify_event",
+                            GTK_SIGNAL_FUNC (slider_moved_callback), music_view);
+   
+   	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->playtime_bar,
+                              _("Drag to seek within track"), NULL);
+	gtk_scale_set_draw_value (GTK_SCALE (music_view->details->playtime_bar), 0);
+	gtk_widget_show (music_view->details->playtime_bar);
+	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
+	gtk_widget_set_usize (music_view->details->playtime_bar, 150, -1);
+	gtk_widget_show (music_view->details->playtime_bar);
+
+	/* playtime label */
+	music_view->details->playtime = nautilus_label_new ("--:--");
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
+	gtk_widget_show (music_view->details->playtime);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime, FALSE, FALSE, 0);
+	gtk_widget_set_usize (music_view->details->playtime, 40, -1);
+	 
+	/* Buttons */
         hbox = gtk_hbox_new (0, 0);
-        gtk_box_pack_start_defaults (GTK_BOX (vbox), hbox);	
+	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 
 	/* previous track button */	
@@ -1542,47 +1574,13 @@ add_play_controls (NautilusMusicView *music_view)
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
-		
-	/* hbox to hold slider and song progress time */
-	hbox = gtk_hbox_new (0, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 7);
-	gtk_widget_show (hbox);
 
-	/* progress bar */
-	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
-	music_view->details->playtime_bar = gtk_hscale_new (GTK_ADJUSTMENT (music_view->details->playtime_adjustment));
-	
-	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_press_event",
-                            GTK_SIGNAL_FUNC (slider_press_callback), music_view);
-	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_release_event",
-                            GTK_SIGNAL_FUNC (slider_release_callback), music_view);
- 	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "motion_notify_event",
-                            GTK_SIGNAL_FUNC (slider_moved_callback), music_view);
-   
-   	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->playtime_bar,
-                              _("Drag to seek within track"), NULL);
-	gtk_scale_set_draw_value (GTK_SCALE (music_view->details->playtime_bar), 0);
-	gtk_widget_show (music_view->details->playtime_bar);
-	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
-	gtk_widget_set_usize (music_view->details->playtime_bar, 150, -1);
-	gtk_widget_show (music_view->details->playtime_bar);
-
-	/* playtime label */
-	music_view->details->playtime = nautilus_label_new ("--:--");
-	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
-	gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
-	gtk_widget_show (music_view->details->playtime);
-	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime, FALSE, FALSE, 0);
-
- 	/* FIXME
-	 * Fixing the widget size is bad, but it is done because the label resizes, as it
-	 * changes to reflect the current time, and can cause the widgets to its right
-	 * to move. This does keep the other widgets from moving, but if you watch closely, the
-	 * left edge of the playtime moves.
-	 */
-	gtk_widget_set_usize (music_view->details->playtime, 40, -1);		
+	/* Song title label */
+	music_view->details->song_label = nautilus_label_new ("");
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_end (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
+	gtk_widget_show (music_view->details->song_label);	
 }
 
 /* set the album image, or hide it if none */
@@ -1600,7 +1598,7 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
   		pixbuf = gdk_pixbuf_new_from_file (image_path);
 		
 		if (pixbuf != NULL) {
-			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, 108, 108);
+			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, SCALED_IMAGE_WIDTH, SCALED_IMAGE_HEIGHT);
 			gdk_pixbuf_unref (pixbuf);
 
        			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
