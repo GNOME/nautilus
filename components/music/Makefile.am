@@ -16,7 +16,7 @@ INCLUDES =					\
 	$(MUSIC_COMPONENT_CFLAGS)		\
 	$(NULL)
 
-bin_PROGRAMS =nautilus-music-view
+libexec_PROGRAMS=nautilus-music-view
 
 nautilus_music_view_SOURCES =			\
 	common.c				\
@@ -59,12 +59,15 @@ nautilus_music_view_LDADD =			\
 	$(MUSIC_COMPONENT_LIBS)			\
 	$(NULL)
 
+server_in_files = Nautilus_View_music.server.in.in
+
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_music.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST=$(server_DATA) $(server_in_files) $(platform_source) \
+EXTRA_DIST=$(server_in_files) $(platform_source) \
 	configure.c				\
 	fileinfo.c				\
 	getbits.c				\

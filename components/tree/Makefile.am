@@ -16,8 +16,8 @@ TREE_VIEW_COMMON_SOURCES =			\
 	nautilus-tree-view-iids.h		\
 	$(NULL)
 
-lib_LTLIBRARIES =				\
-	libnautilus-tree-view.la
+bonobodir = $(libdir)/bonobo
+bonobo_LTLIBRARIES = libnautilus-tree-view.la
 
 libnautilus_tree_view_la_SOURCES = $(TREE_VIEW_COMMON_SOURCES) libmain.c 
 
@@ -29,9 +29,12 @@ libnautilus_tree_view_la_LIBADD =               \
 	$(COMPONENT_LIBS)
 	$(NULL)
 
+server_in_files = Nautilus_View_tree.server.in.in
+
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_tree.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@BONOBODIR\@|$(bonobodir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(server_DATA)
+EXTRA_DIST = $(server_in_files)

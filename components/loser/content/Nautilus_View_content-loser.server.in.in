@@ -1,6 +1,7 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:Nautilus_Content_Loser_Factory" type="exe" location="nautilus-content-loser">
+<oaf_server iid="OAFIID:Nautilus_Content_Loser_Factory"
+	type="exe" location="@LIBEXECDIR@/nautilus-content-loser">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
@@ -8,7 +9,7 @@
 	<oaf_attribute name="description" type="string" _value="Nautilus content loser component's factory"/>
 </oaf_server>
 
-	<oaf_server iid="OAFIID:Nautilus_Content_Loser" type="factory" location="OAFIID:Nautilus_Content_Loser_Factory">
+<oaf_server iid="OAFIID:Nautilus_Content_Loser" type="factory" location="OAFIID:Nautilus_Content_Loser_Factory">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

@@ -12,7 +12,7 @@ INCLUDES =					\
 	-DGTK_ENABLE_BROKEN			\
 	$(NULL)
 
-bin_PROGRAMS = nautilus-text-view
+libexec_PROGRAMS=nautilus-text-view
 
 nautilus_text_view_SOURCES =		        \
 	nautilus-text-view.c
@@ -25,9 +25,12 @@ nautilus_text_view_LDADD =			\
 #uidir = $(datadir)/gnome-2.0/ui
 #ui_DATA = nautilus-text-view-ui.xml
 
+server_in_files = Nautilus_View_text.server.in.in
+
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_text.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES) # $(server_DATA) #$(ui_data)
+EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)

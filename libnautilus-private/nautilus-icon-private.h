@@ -97,6 +97,14 @@ typedef struct {
 	guint64 last_typeselect_time;
 } TypeSelectState;
 
+enum {
+	LABEL_COLOR,
+	LABEL_COLOR_HIGHLIGHT,
+	LABEL_INFO_COLOR,
+	LABEL_INFO_COLOR_HIGHLIGHT,
+	LAST_LABEL_COLOR
+};
+
 struct NautilusIconContainerDetails {
 	/* List of icons. */
 	GList *icons;
@@ -177,11 +185,9 @@ struct NautilusIconContainerDetails {
 	GdkColor   highlight_color;
 	guint32    highlight_color_rgba;
 	
-	/* color for text labels */
-	GdkColor label_color;
-	GdkColor label_color_highlight;
-	GdkColor label_info_color;
-	GdkColor label_info_color_highlight;
+	/* colors for text labels */
+	GdkGC   *label_gcs    [LAST_LABEL_COLOR];
+	GdkColor label_colors [LAST_LABEL_COLOR];
 	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 * Keeps track of last axis arrow key was used on.
@@ -250,7 +256,8 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
 
 /* label color for items */
-GdkColor     *nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
+GdkGC        *nautilus_icon_container_get_label_color_and_gc      (NautilusIconContainer *container,
+								   GdkColor             **color,
 								   gboolean               first_line,
 								   gboolean               needs_highlight);
 

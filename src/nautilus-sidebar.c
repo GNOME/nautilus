@@ -86,11 +86,15 @@ struct NautilusSidebarDetails {
 	char *uri;
 	NautilusFile *file;
 	guint file_changed_connection;
-	char *default_background_color;
-	char *default_background_image;
 	int selected_index;
 	gboolean background_connected;
 	int old_width;
+
+	char *default_background_color;
+	char *default_background_image;
+	char *current_background_color;
+	char *current_background_image;
+	gboolean is_default_background;
 };
 
 /* button assignments */
@@ -258,7 +262,7 @@ nautilus_sidebar_init (GtkObject *object)
 	sidebar->details->old_width = sidebar_width_auto_value;
 
 	/* load the default background from the current theme */
-	nautilus_sidebar_read_theme(sidebar);
+	nautilus_sidebar_read_theme (sidebar);
 
 	/* enable mouse tracking */
 	gtk_widget_add_events (GTK_WIDGET (sidebar), GDK_POINTER_MOTION_MASK);
@@ -350,6 +354,8 @@ nautilus_sidebar_finalize (GObject *object)
 	g_free (sidebar->details->uri);
 	g_free (sidebar->details->default_background_color);
 	g_free (sidebar->details->default_background_image);
+	g_free (sidebar->details->current_background_color);
+	g_free (sidebar->details->current_background_image);
 	g_free (sidebar->details);
 		
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
@@ -530,27 +536,6 @@ sidebar_add_panel_context_menu_items (NautilusSidebar *sidebar,
 	nautilus_sidebar_for_each_panel (sidebar_for_each_sidebar_panel, &data);
 }
 
-/* check to see if the background matches the default */
-static gboolean
-nautilus_sidebar_background_is_default (NautilusSidebar *sidebar)
-{
-	char *background_color, *background_image;
-	gboolean is_default;
-	
-	background_color = nautilus_file_get_metadata (sidebar->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-						       NULL);
-	background_image = nautilus_file_get_metadata (sidebar->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-						       NULL);
-	
-	is_default = background_color == NULL && background_image == NULL;
-	g_free (background_color);
-	g_free (background_image);
-	
-	return is_default;
-}
-
 /* create the context menu */
 GtkWidget *
 nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
@@ -560,26 +545,27 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	gboolean has_background;
 
 	background = eel_get_widget_background (GTK_WIDGET(sidebar));
-	has_background = background && !nautilus_sidebar_background_is_default (sidebar);
-	
+	has_background = background && !sidebar->details->is_default_background;
+
 	menu = gtk_menu_new ();
 	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (GTK_WIDGET (sidebar)));
 	
+	/* add the sidebar panels */
+	sidebar_add_panel_context_menu_items (sidebar, menu);
+
+	/* add a separator */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
 	/* add the reset background item, possibly disabled */
-	menu_item = gtk_menu_item_new_with_label (_("Reset Background"));
+	menu_item = gtk_menu_item_new_with_mnemonic (_("Use _Default Background"));
  	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
         gtk_widget_set_sensitive (menu_item, has_background);
 	g_signal_connect_object (menu_item, "activate",
 				 G_CALLBACK (reset_background_callback), sidebar, 0);
 
-	/* add a separator */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	
-	/* add the sidebar panels */
-	sidebar_add_panel_context_menu_items (sidebar, menu);
 	return menu;
 }
 
@@ -619,20 +605,20 @@ nautilus_sidebar_read_theme (NautilusSidebar *sidebar)
 	background_color = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR);
 	background_image = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE);
 	
-	g_free(sidebar->details->default_background_color);
+	g_free (sidebar->details->default_background_color);
 	sidebar->details->default_background_color = NULL;
-	g_free(sidebar->details->default_background_image);
+	g_free (sidebar->details->default_background_image);
 	sidebar->details->default_background_image = NULL;
 			
 	if (background_color && strlen (background_color)) {
-		sidebar->details->default_background_color = g_strdup(background_color);
+		sidebar->details->default_background_color = g_strdup (background_color);
 	}
 			
 	/* set up the default background image */
 	
 	background_image = map_local_data_file (background_image);
 	if (background_image && strlen (background_image)) {
-		sidebar->details->default_background_image = g_strdup(background_image);
+		sidebar->details->default_background_image = g_strdup (background_image);
 	}
 
 	g_free (background_color);
@@ -1536,6 +1522,18 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 }
 
+static gboolean
+value_different (const char *a, const char *b)
+{
+	if (!a && !b)
+		return FALSE;
+
+	if (!a || !b)
+		return TRUE;
+
+	return strcmp (a, b);
+}
+
 static void
 nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 {
@@ -1557,17 +1555,19 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	}
 	
 	/* Set up the background color and image from the metadata. */
+	background_color = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+						       NULL);
+	background_image = nautilus_file_get_metadata (sidebar->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+						       NULL);
 
-	if (nautilus_sidebar_background_is_default (sidebar)) {
+	if (background_color == NULL && background_image == NULL) {
 		background_color = g_strdup (sidebar->details->default_background_color);
 		background_image = g_strdup (sidebar->details->default_background_image);
+		sidebar->details->is_default_background = TRUE;
 	} else {
-		background_color = nautilus_file_get_metadata (sidebar->details->file,
-							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							       NULL);
-		background_image = nautilus_file_get_metadata (sidebar->details->file,
-							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-							       NULL);
+		sidebar->details->is_default_background = FALSE;
 	}
 		
 	/* Block so we don't write these settings out in response to our set calls below */
@@ -1575,8 +1575,21 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 					 G_CALLBACK (background_settings_changed_callback),
 					 sidebar);
 
-	eel_background_set_image_uri (background, background_image);
-	eel_background_set_color (background, background_color);
+	if (value_different (sidebar->details->current_background_color, background_color) ||
+	    value_different (sidebar->details->current_background_image, background_image)) {
+		
+		g_free (sidebar->details->current_background_color);
+		sidebar->details->current_background_color = g_strdup (background_color);
+		g_free (sidebar->details->current_background_image);
+		sidebar->details->current_background_image = g_strdup (background_image);
+
+		eel_background_set_image_uri (background, background_image);
+		eel_background_set_color (background, background_color);
+
+		nautilus_sidebar_title_select_text_color
+			(sidebar->details->title, background,
+			 sidebar->details->is_default_background);
+	}
 
 	g_free (background_color);
 	g_free (background_image);

@@ -113,7 +113,6 @@
 #define FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER				"/commands/New Launcher"
 #define FM_DIRECTORY_VIEW_COMMAND_EDIT_LAUNCHER				"/commands/Edit Launcher"
 #define FM_DIRECTORY_VIEW_COMMAND_DELETE                    		"/commands/Delete"
-#define FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH                    	"/commands/Show Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_TRASH                    		"/commands/Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   	"/commands/Empty Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                		"/commands/Duplicate"
@@ -129,10 +128,10 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE        		"/menu/File/Open Placeholder/OpenAlternate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS				"/menu/File/Open Placeholder/Scripts"
-#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/Dangerous File Items Placeholder/Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/File/Dangerous File Items Placeholder/Delete"
+#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/Edit/Dangerous File Items Placeholder/Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/Edit/Dangerous File Items Placeholder/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
+#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/Edit/File Items Placeholder/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION		    	"/menu/File/Open Placeholder/Open With/OtherApplication"
@@ -942,18 +941,6 @@ reset_to_defaults_callback (BonoboUIComponent *component,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_reset_to_defaults (callback_data);
-}
-
-static void
-show_trash_callback (BonoboUIComponent *component, 
-		     gpointer callback_data, 
-		     const char *verb)
-{      
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);          
-
-	open_location (view, EEL_TRASH_URI, RESPECT_PREFERENCE);
 }
 
 static void
@@ -3003,9 +2990,13 @@ can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 		return FALSE;
 	}
 
-	/* Create a new trash if needed but don't go looking for an old Trash. */
+	/*
+	 * Create a new trash if needed but don't go looking for an old Trash.
+	 * Passing 0 permissions as gnome-vfs would override the permissions 
+	 * passed with 700 while creating .Trash directory
+	 */
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
+					   &trash_dir_uri, TRUE, FALSE, 0) == GNOME_VFS_OK;
 	if (result) {
 		gnome_vfs_uri_unref (trash_dir_uri);
 	}
@@ -4261,7 +4252,6 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
 		BONOBO_UI_VERB ("Properties", open_properties_window_callback),
-		BONOBO_UI_VERB ("Show Trash", show_trash_callback),
 		BONOBO_UI_VERB ("Trash", trash_callback),
 		BONOBO_UI_VERB_END
 	};
@@ -4402,12 +4392,12 @@ real_update_menus (FMDirectoryView *view)
 	reset_bonobo_open_with_menu (view, selection);
 
 	if (all_selected_items_in_trash (view)) {
-		label = confirm_trash_auto_value ? _("Delete from _Trash...") : _("Delete from _Trash");
+		label = confirm_trash_auto_value ? _("_Delete from Trash...") : _("_Delete from Trash");
 		accelerator = "";
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
 	} else {
-		label = _("Move to _Trash");
+		label = _("Mo_ve to Trash");
 		accelerator = "*Control*t";
 		tip = _("Move each selected item to the Trash");
 		show_separate_delete_command = show_delete_command_auto_value;
@@ -4434,7 +4424,7 @@ real_update_menus (FMDirectoryView *view)
 		nautilus_bonobo_set_label
 			(view->details->ui,
 			 FM_DIRECTORY_VIEW_COMMAND_DELETE,
-			 confirm_trash_auto_value ? _("De_lete...") : _("De_lete"));
+			 confirm_trash_auto_value ? _("_Delete...") : _("_Delete"));
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_DELETE,
 					       can_delete_files);
@@ -4454,8 +4444,8 @@ real_update_menus (FMDirectoryView *view)
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 		 selection_count > 1
-			? _("_Make Links")
-			: _("_Make Link"));
+			? _("Ma_ke Links")
+			: _("Ma_ke Link"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 				       can_link_files);
@@ -4480,8 +4470,8 @@ real_update_menus (FMDirectoryView *view)
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 		 selection_count > 1
-			? _("R_emove Custom Icons")
-			: _("R_emove Custom Icon"));
+			? _("Re_move Custom Icons")
+			: _("Re_move Custom Icon"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 				       files_have_any_custom_images (selection));
@@ -4522,10 +4512,6 @@ real_update_menus (FMDirectoryView *view)
 						clipboard_targets_received,
 						view);
 	}
-
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH,
-				       !NAUTILUS_IS_TRASH_DIRECTORY (fm_directory_view_get_model (view)));
 
 	nautilus_bonobo_set_hidden (view->details->ui, 
 				    FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER,

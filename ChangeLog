@@ -1,3 +1,384 @@
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* components/*/.server.in -> *.server.in.in
+	* components/*/Makefile.am: move stuff into $(libexec)
+	and $(libdir)/bonobo - a very, very boring ( and likely to
+	be buggy ) patch, watch the tinderbox...
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_class_init): upd.
+	(expose_event): add for debugging, looks like most icons
+	areas get 3 expose events each on startup.
+
+2002-07-16  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-window-manage-views.c (load_content_view): Use
+	"folder" instead of "directory" in the accessible description.
+
+2002-07-15  Federico Mena Quintero  <federico@ximian.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(image_loading_done_callback): Fix window/background_window typo.
+
+2002-07-15  Rohit R  <rohit.raveendran@wipro.com>
+            Laavanya K R  <laavanya.gopalan@wipro.com>
+ 
+	* src/file-manager/fm-directory-view.c: (can_move_uri_to_trash)
+	* libnautilus-private/nautilus-dnd.c
+        (nautilus_drag_default_drop_action_for_icons): Changed the file
+	permission from 0777 to 0 for the .Trash while calling
+	gnome_vfs_find_directory, since gnome-vfs now ignores the
+	permissions parameter when creating trash.
+
+2002-07-15  jacob berkman  <jacob@ximian.com>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(image_loading_done_callback): check that our window and the
+	pixmap have the same depth
+
+2002-07-12  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-program-chooser.c
+	(nautilus_program_chooser_instance_init): add a Help button.
+	(help_cb): show the help page corresponding to the current dialog mode.
+	Fixes bug #85804.
+
+2002-07-12  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c (confirm_empty_trash):
+	ui-review fixes to add an icon to the 'Empty' button, add a mnemonic,
+	make 'Empty' the default button, and change the title.
+	Fixes bug #85666. (Though I didn't make it non-modal as that is a bit
+	awkward.)
+
+2002-07-11  Damon Chaplin  <damon@ximian.com>
+
+	* src/file-manager/fm-properties-window.c: ui-review changes.
+	added '_Name:' label for filename, added mnemonics, and used standard
+	capitalization. On the permissions page I added _Read/_Write/E_xecute
+	labels to the checkbuttons, since it improves keynav. Currently
+	GtkCheckButton doesn't show a focus indicator if there is no label.
+	Even if that were fixed (there is a patch on bug #74830) mnemonic
+	accelerators work better with labels for all the checkbuttons.
+	Fixes bug #85658.
+	
+2002-07-11  jacob berkman  <jacob@ximian.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (entry_is_supermounted_volume): 
+	(has_removable_mntent_options): use a macro to portably access the
+	fs type (fixes bug #87889)
+	(entry_is_supermounted_volume): #ifdef HAVE_HASMNTOPT around the
+	body of this
+	(get_removable_volumes): fix typos etc. when HAVE_GETMNTINFO is
+	defined
+
+	* configure.in: add checks for getmntinfo and sys/mount.h so that
+	bsd mount code paths actually get built / run
+
+2002-07-11  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_notify_files_moved): Cancel loading of
+	attributes in the old directory before moving to the new directory.
+
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(setup_gc_with_fg, setup_label_gcs, update_label_color):
+	impl, split, upd.
+	(nautilus_icon_container_get_label_color): don't
+	fetch the style for no good reason, get the colored
+	gc from an array instead. rename to
+	(nautilus_icon_container_get_label_color_and_gc): this
+	(realize, unrealize): setup / free the gcs.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text): use cached gc(s) from
+	the container, instead of thrashing them.
+	(antialias_selection_rectangle): upper case, and #define
+	since it's always true.
+
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_update): move the render out of
+	update_bounds so we request_redraw if the bounds don't change,
+	odd that we need to do that.
+
+2002-07-11  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-location-bar.c: (nautilus_location_bar_init): Added
+	a relation between the label and entry.
+	* src/nautilus-preferences-dialog.c: Changed "file names" to
+	"filenames" on request of the ui-review.
+	* src/nautilus-window-manage-views.c: (load_content_view),
+	(nautilus_window_set_sidebar_panels): Added some a11y names and
+	descriptions.
+
+2002-07-11  Dave Camp  <dave@ximian.com>
+
+	* components/history/nautilus-history-view.c: (update_history):
+	Don't block the selection_changed signal.
+	(row_activated_callback): Moved here from
+	selection_changed_callback.
+	(update_click_policy), (click_policy_changed_callback): New
+	functions.
+	(nautilus_history_view_instance_init): Connect to row_activated,
+	set up a preferences callback for the click policy, and call
+	update_click_policy().
+	(nautilus_history_view_finalize): Remove the preferences callback.
+
+2002-07-10  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-program-choosing.c
+	(nautilus_launch_desktop_file): don't pass
+	GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS to 
+	gnome_desktop_item_new_from_uri(), as it returns NULL if the executable
+	isn't found and we crash. Nautilus will find out that it doesn't exist
+	when it tries to run it, and it will show an error dialog.
+	Fixes bug #87286.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_set_renaming): make is_renaming
+	a bit-field to save ~4+ bytes per canvas item.
+	(nautilus_icon_canvas_item_update): don't request another
+	re-draw on the item immediately after returning, save some uta
+	thrash.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_update_appearance):
+	update the title color only if the background has changed;
+	(nautilus_sidebar_finalize):
+	keep the current background colour/image on the sidebar as well
+	as the defaults.
+	(value_different, nautilus_sidebar_update_appearance): update
+	only when the values are different, pass the background in.
+	(nautilus_sidebar_create_context_menu): use stored boolean.
+	(nautilus_sidebar_background_is_default): do this
+	(nautilus_sidebar_update_appearance): inline, once here.
+
+	* src/nautilus-sidebar-title.c
+	(nautilus_sidebar_title_background_is_default): kill this method
+	cut and paste coded from nautilus-sidebar.c
+	(realize_callback, appearance_changed_callback): remove contorted
+	'wizard'ry ( and redundant pixbuf colouring logic )
+	(nautilus_sidebar_title_theme_changed): don't do title changed,
+	nautilus-sidebar.c will do it for us.
+	(update_all): don't update the title colour, every time we move
+	directory a file ( with pixbuf darkness test, etc. etc. )
+	(nautilus_sidebar_title_select_text_color): bin
+	background == NULL mess, it never happens now.
+	(nautilus_sidebar_title_background): more applied spaghetti hurling
+	gone.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-application.c (is_kdesktop_present): disable
+	the look_for_kdesktop_recursive code, since this takes ~1 second
+	at startup on my Ultra 2.
+	(look_for_kdesktop_recursive, has_wm_state, get_self_typed_prop):
+	don't compile these either.
+
+2002-07-09  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-preferences-dialog.c (dialog_button_response_callback): 
+	updated pane names so help for "Side Panes" and "Performance" pages
+	works again.
+
+2002-07-09  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-window-menus.c (refresh_bookmarks_menu): if
+	WEB_NAVIGATION_ENABLED is not defined don't ever append the static
+	(system default) bookmarks. Since nautilus isn't a good web browser
+	at present these make little sense.
+	(append_static_bookmarks): 
+	(get_static_bookmarks_file_path): ifdeffed out unused functions.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_home_link_and_delete_copies): 
+	* src/nautilus-window.c (nautilus_window_go_home): 
+	* src/nautilus-window-manage-views.c
+	(determined_initial_view_callback): use #ifdef WEB_NAVIGATION_ENABLED
+	to determine whether we use the NAUTILUS_PREFERENCES_HOME_URI
+	preference or just use the user's $HOME. WEB_NAVIGATION_ENABLED isn't
+	defined for now.
+
+	* src/nautilus-preferences-dialog.c: Lots of string changes.
+	Hid the 'Navigation' pane.
+	(global_preferences_populate_sidebar_panels_callback): just use the
+	side pane name as the preference name, rather than 'Display %s tab in
+	side pane'.
+	(preferences_dialog_populate_themes_group): set the theme selector
+	height to 300 so it fills its page a bit better. (Would be nicer if
+	we could set an 'expand' option but that is more complicated.)
+
+	* libnautilus-private/nautilus-global-preferences.c: change
+	'Local Files Only' to 'Local File Only'.
+
+	Fixes most of bug #85673.
+
+2002-07-09  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-property-browser.c
+	(property_browser_category_button_new): build
+	radio button & set mode.
+	(category_clicked_callback): cut most of it out.
+	(make_category_link): upd.
+	(build_radio_accessibility_relations): kill - uses
+	real radio buttons now.
+
+2002-07-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies):
+	* src/nautilus-location-bar.c: (nautilus_location_bar_init):
+	* src/nautilus-preferences-dialog.c:
+	(global_preferences_populate_sidebar_panels_callback),
+	(preferences_dialog_populate_themes_group):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_instance_init):
+	* src/nautilus-window-manage-views.c: (load_content_view),
+	(determined_initial_view_callback),
+	(nautilus_window_set_sidebar_panels):
+	* src/nautilus-window-menus.c: (refresh_bookmarks_menu):
+	* src/nautilus-window.c: (nautilus_window_go_home):
+
+2002-07-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(select_previous_or_next_icon): Moved here from
+	select_previous_or_next_name(), select the next item in the sort
+	order instead of the next alphabetically.
+	(key_press_event): Use select_previous_or_next_icon().
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(update_label_color): short circuit via use_drop_shadows
+	doing a horribly expensive eel_background_is_dark on the
+	(potentially huge) desktop background.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-zoom-control.c
+	(nautilus_zoom_control_set_parameters): add pre-condition.
+
+	* src/nautilus-location-bar.c
+	(editable_event_after_callback): if shift or control are
+	down, don't pop to the end of the field to help
+	auto-completers.
+
+2002-07-08  Alexander Larsson  <alexl@redhat.com>
+
+	* icons/default/desktop-home.png:
+	Use the normal gnome home icon by tigert.
+	
+2002-07-08  Gregory Merchan  <merchan@phys.lsu.edu>
+
+	* components/music/nautilus-music-view.c
+	* components/news/nautilus-news.c
+	* libnautilus-private/nautilus-customization-data.c
+	* libnautilus-private/nautilus-directory-async.c
+	* libnautilus-private/nautilus-file-utilities.c
+	* libnautilus-private/nautilus-file-utilities.h
+	* libnautilus-private/nautilus-find-icon-image.c
+	* libnautilus-private/nautilus-icon-factory.c
+	* libnautilus-private/nautilus-link-historical.c
+	* libnautilus-private/nautilus-theme.c
+	* src/nautilus-application.c
+	* src/nautilus-bookmark-list.c
+	* src/nautilus-first-time-druid.c
+	* src/nautilus-property-browser.c
+	* src/nautilus-window-menus.c
+	* src/file-manager/fm-desktop-icon-view.c
+	Replace nautilus_make_path (dir, file) with
+	 g_build_filename (dir, path, NULL).
+	Remove nautilus_make_path ().
+	Fixes bug #42424.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(key_press_event): handle [C/S]-F10 for popup a11y.
+	(handle_popups): impl.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): re-instate label
+	boldness for Alex.
+	(make_category_link): return the button widget.
+	(nautilus_property_browser_update_contents): keep track
+	of the buttons & call relation setup in
+	(build_radio_accessibility_relations): here.
+
+2002-07-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libnautilus-private/filesystem-attributes.xml:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(has_removable_mntent_options), (get_removable_volumes),
+	(entry_is_supermounted_volume), (volume_is_removable),
+	(mount_volume_make_cdrom_name), (get_mount_list),
+	(mount_unmount_callback),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(finish_creating_volume):
+	Add support for supermount.
+	
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(eject_device):
+	Fix crash when eject media.
+
+2002-07-05  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_create_context_menu):
+	Changed "Reset Background" to "Use Default Background" and put it
+	at the end of the menu for consistency with the icon view.
+
+2002-07-05  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-directory-view.c: (real_merge_menus),
+	(real_update_menus): Update menu paths and mnemonics.
+	* src/file-manager/nautilus-directory-view-ui.xml: Moved Duplicate,
+	Make Link, Rename, Move to Trash, and Delete from the File menu to
+	the Edit menu.  Removed the gtk-new pixmap from New Folder (it is
+	confusing).  Removed Go to Trash, this was put in the shell.
+	* src/file-manager/nautilus-icon-view-ui.xml: Changed mnemonics.
+	* src/nautilus-shell-ui.xml: Moved "Dangerous File Items"
+	placeholder from File to Edit, added a "File Items Placeholder" in
+	Edit, added a Stop button to the view menu, changed the 
+	Show/Hide menuitems to toggle buttons, and added a Go To Trash 
+	menu item.
+	* src/nautilus-window-menus.c: (go_menu_go_to_trash_callback),
+	(view_menu_show_hide_sidebar_state_changed_callback),
+	(view_menu_show_hide_toolbar_state_changed_callback),
+	(view_menu_show_hide_location_bar_state_changed_callback),
+	(view_menu_show_hide_statusbar_state_changed_callback): New
+	functions.
+	(nautilus_window_update_show_hide_menu_items): Change toggle state
+	instead of menu item text.
+	(nautilus_window_initialize_menus_part_1): Connect bonobo
+	listeners to the toggle menu items.
+
+2002-07-05  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window-manage-views.c:
+	Don't use window geometry metadata to place the desktop window.
+
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Add a GnomeIconLoader to NautilusIconFactory.
+	This is just initial code for handling icon themes in desktop
+	file icons.
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	Use GnomeIconLoader to load desktop file icons.
+
+	* configure.in:
+	Add gnome-desktop to COMPONENT_MODULES.
+
 2002-07-03  Mark McLoughlin  <mark@skynet.ie>
 
 	* libnautilus-private/nautilus-icon-dnd.c:
@@ -237,6 +618,13 @@
 	src/nautilus-property-browser.c: Added line break to help error
 	message.
 
+2002-06-28  Alexander Larsson  <alexl@redhat.com>
+
+       * src/file-manager/fm-directory-view.c
+       Fixed mneumonic collision between "Make Link" and "Delete"
+
+       Patch by David Bordoley <bordoley@msu.edu>
+	
 2002-06-28  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c (nautilus_icon_canvas_item_bounds):

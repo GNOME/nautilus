@@ -56,7 +56,7 @@ static void preferences_dialog_populate_themes_group       (EelPreferencesGroup 
 static GtkWidget *preferences_dialog;
 
 static EelPreferencesItemDescription appearance_items[] = {
-	{ N_("Nautilus Themes"),
+	{ N_("Themes"),
 	  NULL,
 	  NULL,
 	  0,
@@ -69,29 +69,29 @@ static EelPreferencesItemDescription appearance_items[] = {
 };
 
 static EelPreferencesItemDescription windows_items[] = {
-	{ N_("Opening New Windows"),
+	{ N_("New Window Behavior"),
 	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-	  N_("_Open each file or folder in a separate window"),
+	  N_("_Open each file or folder in a new window"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Opening New Windows"),
+	{ N_("New Window Display"),
 	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  N_("Display _side pane in new windows"),
+	  N_("Display _side pane"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Opening New Windows"),
+	{ N_("New Window Display"),
 	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
-	  N_("Display _toolbar in new windows"),
+	  N_("Display _toolbar"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Opening New Windows"),
+	{ N_("New Window Display"),
 	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-	  N_("Display location _bar in new windows"),
+	  N_("Display location _bar"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Opening New Windows"),
+	{ N_("New Window Display"),
 	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-	  N_("Display st_atus bar in new windows"),
+	  N_("Display st_atusbar"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -132,24 +132,24 @@ static EelPreferencesItemDescription directory_views_items[] = {
 	  N_("Executable Text Files"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-	  N_("Show _hidden files (file names start with \".\")"),
+	  N_("_Hidden files (filenames starting with \".\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-	  N_("Show _backup files (file names end with \"~\")"),
+	  N_("_Backup files (filenames ending with \"~\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Show/Hide Options"),
+	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-	  N_("Show special flags in _Properties window"),
+	  N_("Special flags in _Properties dialog"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	{ N_("Sorting Order"),
+	{ N_("Sort"),
 	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-	  N_("Always _list folders before files"),
+	  N_("Fo_lders before files"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -180,12 +180,12 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	/* Icon View Defaults */
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  N_("_Arrange Items:"),
+	  N_("_Arrange items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("_Sort in reversed order"),
+	  N_("_Sort in reverse"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Icon View Defaults"),
@@ -196,7 +196,7 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-	  N_("Use _tighter layout"),
+	  N_("Use co_mpact layout"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN,
 	  NULL, 0, 1
 	},
@@ -204,12 +204,12 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	/* List View Defaults */
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Arrange _Items:"),
+	  N_("Arrange _items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in _reversed order"),
+	  N_("Sort in _reverse"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("List View Defaults"),
@@ -238,6 +238,7 @@ static EelPreferencesItemDescription search_items[] = {
 };
 #endif
 
+#ifdef WEB_NAVIGATION_ENABLED
 static EelPreferencesItemDescription navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
@@ -251,6 +252,7 @@ static EelPreferencesItemDescription navigation_items[] = {
 	},
 	{ NULL }
 };
+#endif
 
 static EelPreferencesItemDescription tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
@@ -258,7 +260,7 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
-	{ N_("Show Count of Items in Folders"),
+	{ N_("Show Number of Items in Folders"),
 	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
@@ -270,7 +272,7 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  N_("_Don't make thumbnails for files larger than:"),
+	  N_("_Do not make thumbnails for files larger than:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER
 	},
 	{ N_("Preview Sound Files"),
@@ -293,7 +295,7 @@ static EelPreferencesItemDescription sidebar_items[] = {
 	},
 	{ N_("Tree"),
 	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-	  N_("_Show only folders (no files) in the tree"),
+	  N_("_Show folders only"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -318,7 +320,7 @@ static EelPreferencesItemDescription news_panel_items[] = {
 
 
 static EelPreferencesPaneDescription panes[] = {
-	{ N_("View Defaults"),  	  view_preferences_items },
+	{ N_("Views"),			  view_preferences_items },
 	{ N_("Appearance"),		  appearance_items },
 	{ N_("Windows"),	  	  windows_items },
 	{ N_("Desktop & Trash"),	  desktop_and_trash_items },
@@ -328,8 +330,10 @@ static EelPreferencesPaneDescription panes[] = {
 #ifdef HAVE_MEDUSA
 	{ N_("Search"),			  search_items },
 #endif
+#ifdef WEB_NAVIGATION_ENABLED
 	{ N_("Navigation"),		  navigation_items },
-	{ N_("Speed Tradeoffs"),	  tradeoffs_items },
+#endif
+	{ N_("Performance"),		  tradeoffs_items },
 #ifdef NEWS_SIDEBAR_ENABLED
 	{ N_("News Panel"),		  news_panel_items },
 #endif
@@ -391,7 +395,7 @@ dialog_button_response_callback (GtkDialog *dialog,
 		preferences_box = eel_preferences_dialog_get_box (GTK_WINDOW (dialog));
 		active_pane = eel_preferences_box_get_active_pane (preferences_box);
 
-		if  (eel_str_is_equal (active_pane, "View Defaults"))
+		if  (eel_str_is_equal (active_pane, "Views"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-438");
 		else if (eel_str_is_equal (active_pane, "Appearance"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-54");
@@ -403,11 +407,11 @@ dialog_button_response_callback (GtkDialog *dialog,
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-56");
 		else if (eel_str_is_equal (active_pane, "Icon Captions"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-439");
-		else if (eel_str_is_equal (active_pane, "Side pane"))
+		else if (eel_str_is_equal (active_pane, "Side Panes"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-57");
 		else if (eel_str_is_equal (active_pane,"Navigation"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-59");
-		else if (eel_str_is_equal (active_pane, "Speed Tradeoffs"))
+		else if (eel_str_is_equal (active_pane, "Performance"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-60");
 
 		g_free (active_pane);
@@ -443,23 +447,17 @@ global_preferences_populate_sidebar_panels_callback (const char *name,
 						     const char *preference_key,
 						     gpointer callback_data) 
 {
-	char *description;
-
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (iid != NULL);
 	g_return_if_fail (preference_key != NULL);
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (callback_data));
 	
-	description = g_strdup_printf (_("Display %s tab in side pane"), name);
-	
-	eel_preferences_set_description (preference_key, description);
+	eel_preferences_set_description (preference_key, name);
 
 	eel_preferences_group_add_item (EEL_PREFERENCES_GROUP (callback_data),
 					preference_key,
 					EEL_PREFERENCE_ITEM_BOOLEAN,
 					0);
-
-	g_free (description);
 }
 
 static void
@@ -521,6 +519,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (group));
 
 	child = nautilus_theme_selector_new ();
+	gtk_widget_set_size_request (child, -1, 300);
 
 	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (group), GTK_TYPE_WINDOW);
 

@@ -2195,7 +2195,7 @@ deep_count_one (NautilusDirectory *directory,
 
 		/* Record the fact that we have to descend into this directory. */
 		escaped_name = gnome_vfs_escape_string (info->name);
-		uri = nautilus_make_path (directory->details->deep_count_uri, escaped_name);
+		uri = g_build_filename (directory->details->deep_count_uri, escaped_name, NULL);
 		g_free (escaped_name);
 		directory->details->deep_count_subdirectories = g_list_prepend
 			(directory->details->deep_count_subdirectories, uri);

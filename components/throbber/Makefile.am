@@ -9,7 +9,7 @@ INCLUDES =						\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
-bin_PROGRAMS = nautilus-throbber
+libexec_PROGRAMS=nautilus-throbber
 
 nautilus_throbber_SOURCES =		        \
 	nautilus-throbber.c			\
@@ -22,9 +22,12 @@ nautilus_throbber_LDADD =			\
 	$(COMPONENT_LIBS)
 	$(NULL)
 
+server_in_files = Nautilus_Control_throbber.server.in.in
+
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_Control_throbber.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(server_DATA)
+EXTRA_DIST = $(server_in_files)

@@ -542,20 +542,20 @@ nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
 
 	gtk_box_pack_end (GTK_BOX (alignment_box), button_box, FALSE, FALSE, 2);
 
-	theme_selector->details->install_theme_button = create_button_with_stock_image (_("Add New Theme..."),
+	theme_selector->details->install_theme_button = create_button_with_stock_image (_("_Add Theme..."),
 											GTK_STOCK_ADD);
 	
 	g_signal_connect_object (theme_selector->details->install_theme_button, "clicked",
 				 G_CALLBACK (install_theme_button_clicked_callback),
 				 theme_selector, 0);
 
-	theme_selector->details->remove_theme_button = create_button_with_stock_image (_("Remove Theme..."),
+	theme_selector->details->remove_theme_button = create_button_with_stock_image (_("_Remove Theme..."),
 										       GTK_STOCK_REMOVE);
 	g_signal_connect_object (theme_selector->details->remove_theme_button, "clicked",
 				 G_CALLBACK (remove_theme_button_clicked_callback),
 				 theme_selector, 0);
 
-	theme_selector->details->cancel_remove_button = create_button_with_stock_image (_("Cancel Remove"),
+	theme_selector->details->cancel_remove_button = create_button_with_stock_image (_("Cancel _Remove"),
 											GTK_STOCK_CANCEL);
 	g_signal_connect_object (theme_selector->details->cancel_remove_button, "clicked",
 				 G_CALLBACK (cancel_remove_button_clicked_callback),

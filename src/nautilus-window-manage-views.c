@@ -35,6 +35,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -976,6 +977,10 @@ load_content_view (NautilusWindow *window,
                 /* create a new content view */
                 view = nautilus_view_frame_new (window->details->ui_container,
                                                 window->application->undo_manager);
+
+                eel_accessibility_set_name (view, _("Content View"));
+                eel_accessibility_set_description (view, _("View of the current file or folder"));
+                
                 window->new_content_view = view;
                 g_object_ref (view);
                 gtk_object_sink (GTK_OBJECT (view));
@@ -1120,17 +1125,19 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	/* load the saved window geometry */
-	geometry_string = nautilus_file_get_metadata 
+        if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+                /* load the saved window geometry */
+                geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
-	if (geometry_string != NULL) {
-		eel_gtk_window_set_initial_geometry_from_string 
-			(GTK_WINDOW (window), 
-			 geometry_string,
-			 NAUTILUS_WINDOW_MIN_WIDTH, 
-			 NAUTILUS_WINDOW_MIN_HEIGHT);
-	}
-	g_free (geometry_string);
+                if (geometry_string != NULL) {
+                        eel_gtk_window_set_initial_geometry_from_string 
+                                (GTK_WINDOW (window), 
+                                 geometry_string,
+                                 NAUTILUS_WINDOW_MIN_WIDTH, 
+                                 NAUTILUS_WINDOW_MIN_HEIGHT);
+                }
+                g_free (geometry_string);
+        }
 
         /* If we finished constructing the window by now we need
          * to show the window here.
@@ -1340,7 +1347,11 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 			   better test for that */
 
                         if (!eel_uris_match (location, "file:///")) {
+#ifdef WEB_NAVIGATION_ENABLED
                                 home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+                                home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
                                 if (!eel_uris_match (home_uri, location)) {	
                                         nautilus_window_go_home (NAUTILUS_WINDOW (window));
                                 } else {
@@ -1557,6 +1568,12 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
                 /* Create and load the panel. */
 		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
                                                          window->application->undo_manager);
+                
+                eel_accessibility_set_name (sidebar_panel, _("Side Pane"));
+                eel_accessibility_set_description
+                        (sidebar_panel, _("Contains a side pane view"));
+                
+
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 		set_view_frame_info (sidebar_panel, TRUE, identifier);
 		connect_view (window, sidebar_panel);

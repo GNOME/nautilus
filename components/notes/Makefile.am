@@ -8,7 +8,8 @@ INCLUDES=\
 	$(NULL)	\
 	-DGTK_ENABLE_BROKEN
 
-lib_LTLIBRARIES = libnautilus-notes-view.la
+bonobodir = $(libdir)/bonobo
+bonobo_LTLIBRARIES = libnautilus-notes-view.la
 
 libnautilus_notes_view_la_SOURCES = nautilus-notes.c
 
@@ -20,13 +21,12 @@ libnautilus_notes_view_la_LIBADD =               \
 
 libnautilus_notes_view_la_LDFLAGS = -module -avoid-version
 
+server_in_files = Nautilus_View_notes.server.in.in
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_notes.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@BONOBODIR\@|$(bonobodir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST= \
-	$(server_DATA)\
-	$(server_in_files) \
-	$(NULL)
+EXTRA_DIST= $(server_in_files)

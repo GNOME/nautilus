@@ -11,9 +11,13 @@ INCLUDES =					\
 serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_ComponentAdapterFactory_std.server.in
 server_DATA = $(server_in_files:.server.in=.server)
+
+$(server_in_files): $(server_in_files).in
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+
 @INTLTOOL_SERVER_RULE@
 
-bin_PROGRAMS = nautilus-adapter $(NULL)
+libexec_PROGRAMS=nautilus-adapter
 
 nautilus_adapter_SOURCES =				\
 	main.c						\
@@ -45,4 +49,4 @@ nautilus_adapter_LDADD =				\
 	$(COMPONENT_LIBS)				\
 	$(NULL)
 
-EXTRA_DIST = $(server_in_files) $(server_DATA)
+EXTRA_DIST = $(server_in_files)

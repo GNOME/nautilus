@@ -99,8 +99,8 @@ AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 dnl ==========================================================================
 
-AC_CHECK_FUNCS(setmntent endmntent hasmntopt)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
+AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h)
 
 dnl ==========================================================================
 
@@ -276,7 +276,7 @@ CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-in
 AC_SUBST(CORE_IDL_INCLUDES)
 
 dnl typical components
-COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0"
+COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0 gnome-desktop-2.0"
 COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_CFLAGS)
 COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"

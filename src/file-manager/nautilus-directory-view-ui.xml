@@ -4,13 +4,13 @@
          _label="_Rename"
 	 _tip="Rename selected item"/>
 	<cmd name="Create Link"
-         _label="_Make Link"
+         _label="Ma_ke Link"
 	 _tip="Create a symbolic link for each selected item"/>
 	<cmd name="Delete"
-         _label="De_lete"
+         _label="_Delete"
 	 _tip="Delete each selected item, without moving to the Trash"/>
 	<cmd name="Duplicate"
-         _label="_Duplicate"
+         _label="D_uplicate"
 	 _tip="Duplicate each selected item"/>
 	<cmd name="Empty Trash"
          _label="_Empty Trash"
@@ -40,7 +40,7 @@
          _label="Other _Viewer..."
 	 _tip="Choose another viewer with which to view the selected item"/>
 	<cmd name="Remove Custom Icons"
-         _label="R_emove Custom Icons"
+         _label="Re_move Custom Icons"
 	 _tip="Remove any custom images from selected icons"/>
 	<cmd name="Reset to Defaults"
          _label="Reset View to _Defaults"
@@ -63,11 +63,8 @@
 	<cmd name="Properties"
          _label="_Properties"
 	 _tip="View or modify the properties of each selected item"/>
-	<cmd name="Show Trash"
-         _label="_Show Trash"
-	 _tip="Show the contents of the Trash"/>
 	<cmd name="Trash"
-         _label="Move to _Trash"
+         _label="Mo_ve to Trash"
 	 _tip="Move each selected item to the Trash"/>
 </commands>
 <keybindings>
@@ -84,7 +81,6 @@
 		<placeholder name="New Items Placeholder">
 			<menuitem name="New Folder"
 			  	  accel="*Shift**Control*n"
-				  pixtype="stock" pixname="gtk-new"
 				  verb="New Folder"/>
 			<menuitem name="New Launcher"
 				  pixtype="stock" pixname="gtk-new"
@@ -112,7 +108,7 @@
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
-				 _label="Scripts"
+				 _label="_Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
 				 <separator name="After Scripts"/>
@@ -125,27 +121,8 @@
 			<menuitem name="Properties"
 				  accel="*Control*i"
 				  verb="Properties"/>
-			<menuitem name="Duplicate"
-				  verb="Duplicate"/>
-			<menuitem name="Create Link"
-				  accel="*Control*m"
-				  verb="Create Link"/>
-			<menuitem name="Rename"
-				  accel="F2"
-				  verb="Rename"/>
 		</placeholder>
-		<placeholder name="Dangerous File Items Placeholder">
-			<menuitem name="Trash"
-				  accel="*Control*t"
-				  pixtype="stock" pixname="gtk-delete"
-				  verb="Trash"/>
-			<menuitem name="Delete"
-				  verb="Delete"/>
-		</placeholder>
-
 		<placeholder name="Global File Items Placeholder">
-			<menuitem name="Show Trash"
-				  verb="Show Trash"/>
 			<menuitem name="Empty Trash"
 				  verb="Empty Trash"/>
 		</placeholder>
@@ -167,7 +144,27 @@
 		<menuitem name="Select All"
 			  accel="*Control*a"
 			  verb="Select All"/>
-		
+
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Duplicate"
+				  verb="Duplicate"/>
+			<menuitem name="Create Link"
+				  accel="*Control*m"
+				  verb="Create Link"/>
+			<menuitem name="Rename"
+				  accel="F2"
+				  verb="Rename"/>
+		</placeholder>
+
+		<placeholder name="Dangerous File Items Placeholder">
+			<menuitem name="Trash"
+				  accel="*Control*t"
+				  pixtype="stock" pixname="gtk-delete"
+				  verb="Trash"/>
+			<menuitem name="Delete"
+				  verb="Delete"/>
+		</placeholder>
+
 		<placeholder name="Edit Items Placeholder">
 			<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>
 		</placeholder>
@@ -186,14 +183,13 @@
 		<placeholder name="Before Zoom Items">
 			<placeholder name="New Items">
 				<menuitem name="New Folder" 
-				  pixtype="stock" pixname="gtk-new"
 				 verb="New Folder"/>
 				<menuitem name="New Launcher"
 				 pixtype="stock" pixname="gtk-new"
 				 verb="New Launcher"/>
 			</placeholder>
                         <submenu name="Scripts"
-				 _label="Scripts"
+				 _label="_Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
 				 tearoff="0">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
@@ -240,7 +236,7 @@
 			<menuitem name="Edit Launcher"
 				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
-				 _label="Scripts"
+				 _label="_Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
 				 tearoff="0">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
@@ -248,18 +244,6 @@
 				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
 			</submenu>
 
-		</placeholder>
-		<placeholder name="File Actions" delimit="top">
-			<menuitem name="Properties" verb="Properties"/>
-			<menuitem name="Duplicate" verb="Duplicate"/>
-			<menuitem name="Create Link" verb="Create Link"/>
-			<menuitem name="Rename" verb="Rename"/>
-		</placeholder>
-		<placeholder name="Dangerous File Actions" delimit="top">
-			<menuitem name="Trash" 
-			 pixtype="stock" pixname="gtk-delete"
-			 verb="Trash"/>
-			<menuitem name="Delete" verb="Delete"/>
 		</placeholder>
 		<placeholder name="File Clipboard Actions" delimit="top">
 			<menuitem name="Cut Files" 
@@ -272,9 +256,22 @@
 			 pixtype="stock" pixname="gtk-paste"
 			 verb="Paste Files"/>
 		</placeholder>
+		<placeholder name="File Actions" delimit="top">
+			<menuitem name="Duplicate" verb="Duplicate"/>
+			<menuitem name="Create Link" verb="Create Link"/>
+			<menuitem name="Rename" verb="Rename"/>
+		</placeholder>
+		<placeholder name="Dangerous File Actions" delimit="top">
+			<menuitem name="Trash" 
+			 pixtype="stock" pixname="gtk-delete"
+			 verb="Trash"/>
+			<menuitem name="Delete" verb="Delete"/>
+		</placeholder>
 		<placeholder name="Icon Appearance Items" delimit="top">
 			<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>
 		</placeholder>
+                <separator/>
+                <menuitem name="Properties" verb="Properties"/>
 	</popup>
 </popups>
 </Root>

@@ -268,10 +268,14 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		return;
 	}
 	
-	/* Check for trash URI.  We do a find_directory for any Trash directory. */
+	/*
+	 * Check for trash URI.  We do a find_directory for any Trash directory.
+	 * Passing 0 permissions as gnome-vfs would override the permissions
+	 * passed with 700 while creating .Trash directory
+	 */
 	if (eel_uri_is_trash (target_uri_string)) {
 		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-						   &target_uri, TRUE, FALSE, 0777);
+						   &target_uri, TRUE, FALSE, 0);
 		if (result != GNOME_VFS_OK) {
 			*action = 0;
 			return;

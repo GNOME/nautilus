@@ -556,9 +556,9 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	set_root_pixmap (pixmap, screen_num);
 
 	background_window = background_get_desktop_background_window (background);
-	if (background_window != NULL) {
+	if (background_window != NULL &&
+            gdk_drawable_get_depth (background_window) == gdk_drawable_get_depth (pixmap))
 		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
-	}
 
         g_object_unref (pixmap);
 }

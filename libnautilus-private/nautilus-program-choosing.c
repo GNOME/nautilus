@@ -675,8 +675,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	}
 	
 	error = NULL;
-	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri,
-						GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri, 0,
 						&error);	
 	if (error != NULL) {
 		message = g_strconcat (_("There was an error launching the application.\n\n"

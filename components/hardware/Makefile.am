@@ -10,16 +10,17 @@ INCLUDES =						\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
-serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_View_hardware.server.in
-server_output = $(server_in_files:.server.in=.server)
+
+serverdir = $(libdir)/bonobo/servers
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
 if ENABLE_HARDWARE_VIEW
-bin_PROGRAMS=nautilus-hardware-view
-server_DATA = $(server_output)
+libexec_PROGRAMS=nautilus-hardware-view
+server_DATA = $(server_in_files:.server.in.in=.server)
 endif
-
-@INTLTOOL_SERVER_RULE@
 
 nautilus_hardware_view_SOURCES =		        \
 	nautilus-hardware-view.c			\
@@ -32,5 +33,5 @@ nautilus_hardware_view_LDADD =				\
 	$(COMPONENT_LIBS) 				\
 	$(NULL)
 
-EXTRA_DIST = $(server_output) $(server_in_files) $(nautilus_hardware_view_SOURCES)
+EXTRA_DIST = $(server_in_files) $(nautilus_hardware_view_SOURCES)
 

@@ -137,7 +137,7 @@ nautilus_link_historical_local_create (const char       *directory_uri,
 		return FALSE;
 	}
 
-	path = nautilus_make_path (directory_path, name);
+	path = g_build_filename (directory_path, name, NULL);
 	g_free (directory_path);
 
 	result = xmlSaveFile (path, output_document);

@@ -6,7 +6,8 @@ INCLUDES=\
 	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
-lib_LTLIBRARIES = libnautilus-history-view.la
+bonobodir = $(libdir)/bonobo
+bonobo_LTLIBRARIES = libnautilus-history-view.la
 
 libnautilus_history_view_la_SOURCES = \
 	libmain.c		\
@@ -22,9 +23,12 @@ libnautilus_history_view_la_LIBADD =               \
 	$(COMPONENT_LIBS)
 	$(NULL)
 
+server_in_files = Nautilus_View_history.server.in.in
+
 serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_history.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@BONOBODIR\@|$(bonobodir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST=$(server_DATA) $(server_in_files)
+EXTRA_DIST=$(server_in_files)

@@ -34,7 +34,6 @@
 #include "nautilus-application.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
-#include <X11/Xlib.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-main.h>

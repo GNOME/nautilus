@@ -2205,9 +2205,10 @@ do_empty_trash (GtkWidget *parent_view)
 static gboolean
 confirm_empty_trash (GtkWidget *parent_view)
 {
-	GtkDialog *dialog;
+	GtkWidget *dialog;
 	GtkWindow *parent_window;
 	int response;
+	GtkWidget *hbox, *image, *label, *button;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
@@ -2216,17 +2217,45 @@ confirm_empty_trash (GtkWidget *parent_view)
 	
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
-	dialog = eel_show_yes_no_dialog (
-		_("Are you sure you want to permanently delete "
-		  "all of the items in the Trash?"),
-		_("Empty Trash?"),
-		_("Empty"),
-		GTK_STOCK_CANCEL,
-		parent_window);
+	dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Empty Trash"));
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
+				"Nautilus");
+	gtk_window_set_transient_for (GTK_WINDOW (dialog),
+				      GTK_WINDOW (parent_window));
 
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+			    FALSE, FALSE, 0);
 
-	response = gtk_dialog_run (dialog);
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_QUESTION,
+					  GTK_ICON_SIZE_DIALOG);
+	gtk_widget_show (image);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Are you sure you want to permanently delete "
+				 "all of the items in the Trash?"));
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label,
+			    TRUE, TRUE, 0);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL,
+			       GTK_RESPONSE_CANCEL);
+
+	button = eel_gtk_button_new_with_stock_icon (_("_Empty"),
+						     GTK_STOCK_DELETE);
+	gtk_widget_show (button);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button,
+				      GTK_RESPONSE_YES);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+					 GTK_RESPONSE_YES);
+
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
 
 	gtk_object_destroy (GTK_OBJECT (dialog));
 

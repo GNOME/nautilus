@@ -64,6 +64,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtktogglebutton.h>
+#include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
 #include <libgnome/gnome-i18n.h>
@@ -84,6 +85,7 @@
 #include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <math.h>
+#include <atk/atkrelationset.h>
 
 /* property types */
 
@@ -103,7 +105,6 @@ struct NautilusPropertyBrowserDetails {
 	
 	GtkWidget *category_container;
 	GtkWidget *category_box;
-	GtkWidget *selected_button;
 	
 	GtkWidget *title_box;
 	GtkWidget *title_label;
@@ -146,7 +147,6 @@ struct NautilusPropertyBrowserDetails {
 	gboolean remove_mode;
 	gboolean keep_around;
 	gboolean has_local;
-	gboolean toggle_button_flag;
 };
 
 static void     nautilus_property_browser_class_init      (GtkObjectClass                *object_klass);
@@ -340,7 +340,7 @@ nautilus_property_browser_init (GtkObject *object)
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new ("");
 	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->title_label), PANGO_SCALE_X_LARGE);
-/*	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label)); */
+	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label));
  	
 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
@@ -783,30 +783,15 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 static void
 category_clicked_callback (GtkWidget *widget, char *category_name)
 {
-	gboolean save_flag;
 	NautilusPropertyBrowser *property_browser;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (g_object_get_data (G_OBJECT (widget), "user_data"));
-	
-	/* special case the user clicking on the already selected button, since we don't want that to toggle */
-	if (widget == GTK_WIDGET(property_browser->details->selected_button)) {
-		if (!property_browser->details->toggle_button_flag)
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), TRUE);		
-		return;
-	}	
 
 	/* exit remove mode when the user switches categories, since there might be nothing to remove
 	   in the new category */
 	property_browser->details->remove_mode = FALSE;
 		
-	save_flag = property_browser->details->toggle_button_flag;
-	property_browser->details->toggle_button_flag = TRUE;	
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), FALSE);
-	property_browser->details->toggle_button_flag = save_flag;	
-	
 	nautilus_property_browser_set_category (property_browser, category_name);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
-	property_browser->details->selected_button = widget;
 }
 
 static xmlDocPtr
@@ -831,7 +816,7 @@ write_browser_xml (NautilusPropertyBrowser *property_browser,
 	char *user_directory, *path;
 
 	user_directory = nautilus_get_user_directory ();	
-	path = nautilus_make_path (user_directory, property_browser->details->path);
+	path = g_build_filename (user_directory, property_browser->details->path, NULL);
 	g_free (user_directory);
 	xmlSaveFile (path, document);
 	g_free (path);
@@ -1128,10 +1113,10 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	user_directory = nautilus_get_user_directory ();
 		
 	/* copy the image file to the patterns directory */
-	directory_path = nautilus_make_path (user_directory, "patterns");
+	directory_path = g_build_filename (user_directory, "patterns", NULL);
 	g_free (user_directory);
 	source_file_name = strrchr (path_name, '/');
-	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
+	destination_name = g_build_filename (directory_path, source_file_name + 1, NULL);
 
 	/* make the directory if it doesn't exist */
 	if (!g_file_test(directory_path, G_FILE_TEST_EXISTS)) {
@@ -1395,8 +1380,9 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			user_directory = nautilus_get_user_directory ();
 
 			/* get the path for emblems in the user's home directory */
-			directory_path = nautilus_make_path (user_directory,
-							     "emblems");
+			directory_path = g_build_filename (user_directory,
+							   "emblems",
+							   NULL);
 			g_free (user_directory);
 
 			/* make the directory if it doesn't exist */
@@ -1917,7 +1903,9 @@ property_browser_category_button_new (const char *display_name,
 	file_name = nautilus_pixmap_file (image); 
 	g_return_val_if_fail (file_name != NULL, NULL);
 
-	button = eel_labeled_image_toggle_button_new_from_file_name (display_name, file_name);
+	button = eel_labeled_image_radio_button_new_from_file_name (display_name, file_name);
+
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
 
 	/* We also want all of the buttons to be the same height */
 	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_BUTTON_IMAGE_HEIGHT);
@@ -1932,24 +1920,30 @@ static void
 make_category_link (NautilusPropertyBrowser *property_browser,
 		    const char *name,
 		    const char *display_name,
-		    const char *image)
+		    const char *image,
+		    GtkRadioButton **group)
 {
 	GtkWidget *button;
 
-	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
 	g_return_if_fail (name != NULL);
-	g_return_if_fail (display_name != NULL);
 	g_return_if_fail (image != NULL);
+	g_return_if_fail (display_name != NULL);
+	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
 
 	button = property_browser_category_button_new (display_name, image);
 	gtk_widget_show (button);
+
+	if (*group) {
+		gtk_radio_button_set_group (GTK_RADIO_BUTTON (button),
+					    gtk_radio_button_get_group (*group));
+	} else {
+		*group = GTK_RADIO_BUTTON (button);
+	}
 	
 	/* if the button represents the current category, highlight it */	
 	if (property_browser->details->category &&
-	    strcmp (property_browser->details->category, name) == 0) {
+	    strcmp (property_browser->details->category, name) == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
-		property_browser->details->selected_button = button;		
-	}
 
 	/* Place it in the category box */
 	gtk_box_pack_start (GTK_BOX (property_browser->details->category_box),
@@ -1973,6 +1967,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
  	xmlDocPtr document;
  	EelBackground *background;
 	GtkWidget *viewport;
+	GtkRadioButton *group;
 	gboolean got_categories;
 	char *name, *image, *type, *description, *display_name, *path, *mode;
 	const char *text;
@@ -2020,7 +2015,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	if (!got_categories) {
 		property_browser->details->category_position = 0;
 	}
-	
+
+	group = NULL;
 	for (cur_node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     cur_node != NULL;
 	     cur_node = cur_node->next) {
@@ -2059,7 +2055,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 				make_category_link (property_browser,
 						    name,
 						    display_name,
-						    image);
+						    image,
+						    &group);
 				
 				xmlFree (display_name);
 				xmlFree (image);

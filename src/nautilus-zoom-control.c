@@ -752,6 +752,8 @@ nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
 				      gboolean has_max_zoom_level,
 				      GList *zoom_levels)
 {
+	g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (zoom_control));
+	
 	zoom_control->details->min_zoom_level = min_zoom_level;
 	zoom_control->details->max_zoom_level = max_zoom_level;
 	zoom_control->details->has_min_zoom_level = has_min_zoom_level;

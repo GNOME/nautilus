@@ -1433,8 +1433,9 @@ get_xml_path (const char *file_name, gboolean force_local)
 	user_directory = nautilus_get_user_directory ();
 
 	/* first try the user's home directory */
-	xml_path = nautilus_make_path (user_directory,
-				       file_name);
+	xml_path = g_build_filename (user_directory,
+                                     file_name,
+                                     NULL);
 	g_free (user_directory);
 	if (force_local || g_file_test (xml_path, G_FILE_TEST_EXISTS)) {
 		return xml_path;
@@ -1442,8 +1443,9 @@ get_xml_path (const char *file_name, gboolean force_local)
 	g_free (xml_path);
 	
 	/* next try the shared directory */
-	xml_path = nautilus_make_path (NAUTILUS_DATADIR,
-				       file_name);
+	xml_path = g_build_filename (NAUTILUS_DATADIR,
+                                     file_name,
+                                     NULL);
 	if (g_file_test (xml_path, G_FILE_TEST_EXISTS)) {
 		return xml_path;
 	}

@@ -238,4 +238,5 @@ void              nautilus_icon_container_set_margins                   (Nautilu
 									 int                     bottom_margin);
 void              nautilus_icon_container_set_use_drop_shadows          (NautilusIconContainer  *container,
 									 gboolean                use_drop_shadows);
+
 #endif /* NAUTILUS_ICON_CONTAINER_H */

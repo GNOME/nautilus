@@ -30,6 +30,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-icon-factory.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
 #include "nautilus-program-choosing.h"
@@ -308,9 +309,9 @@ nautilus_link_desktop_file_get_link_name_from_desktop (GnomeDesktopItem *desktop
 static char *
 nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 {
+	GnomeIconLoader *icon_loader;
 	char *icon_uri;
 	char *absolute;
-	char *icon_name;
 
 	icon_uri = g_strdup (gnome_desktop_item_get_string (desktop_file, "X-Nautilus-Icon"));
 	if (icon_uri != NULL) {
@@ -318,19 +319,11 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop
 	}
 
 	/* Fall back to a standard icon. */
-	icon_name = g_strdup (gnome_desktop_item_get_string (desktop_file, "Icon"));
-	if (icon_name == NULL) {
-		return NULL;
-	}
+	icon_loader = nautilus_icon_factory_get_icon_loader ();
+	absolute = gnome_desktop_item_get_icon (desktop_file, icon_loader);
 	
-	if (icon_name[0] == '/') {
-		absolute = icon_name;
-	} else {
-		absolute = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
-		g_free (icon_name);
-		if (absolute == NULL) {
-			return NULL;
-		}
+	if (absolute == NULL) {
+		return NULL;
 	}
 
 	icon_uri = gnome_vfs_get_uri_from_local_path (absolute);
