@@ -25,7 +25,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/gnome-desktop-item.h>
 
-#undef DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define D(x...) g_message (x)
 #else
@@ -228,9 +228,7 @@ create_desktop (char *uri)
 		/* i == 0 on the first time it's called */
 		i++;
 
-		path = g_strdup_printf ("%s%s%s.%d.desktop",
-				g_get_home_dir (), NETWORK_USER_DIR,
-				prefix, i);
+		path = g_strdup_printf ("network:///%s.%d.desktop", prefix, i);
 		D ("create_desktop: trying %s", path);
 		if (g_file_test (path, G_FILE_TEST_EXISTS) == TRUE)
 		{
@@ -257,8 +255,6 @@ create_desktop (char *uri)
 		gnome_desktop_item_set_string (di, GNOME_DESKTOP_ITEM_TYPE,
 				"Link");
 		gnome_desktop_item_set_string (di, GNOME_DESKTOP_ITEM_ICON,
-				icon_name);
-		gnome_desktop_item_set_string (di, "X-Nautilus-Icon",
 				naut_icon);
 
 		created = gnome_desktop_item_save (di, path, TRUE, NULL);
@@ -316,23 +312,23 @@ update_icon (GtkEntry *entry, gpointer user_data)
 	if (uri == NULL || strcmp (uri, "") == 0)
 	{
 		gtk_widget_set_sensitive (button, FALSE);
-		icon_name = "document-icons/i-network.png";
-		naut_icon = "i-network";
+		icon_name = "gnome-fs-network.png";
+		naut_icon = "gnome-fs-network";
 	} else {
 		gtk_widget_set_sensitive (button, TRUE);
 		if ((strncmp (uri, "smb:", strlen("smb:")) == 0)
 				|| (g_strrstr (uri, ":") == NULL)) {
-			icon_name = "document-icons/i-smb.png";
-			naut_icon = "i-smb";
+			icon_name = "gnome-fs-smb.png";
+			naut_icon = "gnome-fs-smb";
 		} else if (strncmp (uri, "ftp:", strlen("ftp:")) == 0) {
-			icon_name = "document-icons/i-ftp.png";
-			naut_icon = "i-ftp";
+			icon_name = "gnome-fs-ftp.png";
+			naut_icon = "gnome-fs-ftp";
 		} else if (strncmp (uri, "http:", strlen("http:")) == 0) {
-			icon_name = "document-icons/i-web.png";
-			naut_icon = "i-web";
+			icon_name = "gnome-fs-web.png";
+			naut_icon = "gnome-fs-web";
 		} else {
-			icon_name = "document-icons/i-network.png";
-			naut_icon = "i-network";
+			icon_name = "gnome-fs-network.png";
+			naut_icon = "gnome-fs-network";
 		}
 	}
 
@@ -470,8 +466,8 @@ main (int argc, char *argv[])
 
 	window_icon = gnome_program_locate_file (NULL,
 			GNOME_FILE_DOMAIN_PIXMAP, 
-			"nautilus-server-connect.png", FALSE, NULL);
-	g_message ("window_icon: %s", window_icon);
+			"nautilus/nautilus-server-connect.png", FALSE, NULL);
+
 	if (window_icon) {
 		gnome_window_icon_set_from_file (GTK_WINDOW (toplevel),
 				window_icon);

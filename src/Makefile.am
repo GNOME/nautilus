@@ -40,8 +40,13 @@ LDADD =\
 
 nautilus_server_connect_SOURCES = nautilus-server-connect.c
 
-DESKTOP_IN_FILES=nautilus-server-connect.desktop.in
-DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
+desktop_in_files=nautilus-server-connect.desktop.in network-scheme.desktop.in
+desktop_files=$(desktop_in_files:.desktop.in=.desktop)
+desktopdir = $(datadir)/gnome/network/
+desktop_DATA = nautilus-server-connect.desktop
+
+schemedir = $(datadir)/applications
+scheme_DATA = network-scheme.desktop
 
 nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface-stubs.c	\
@@ -169,7 +174,7 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
-	$(DESKTOP_IN_FILES) $(DESKTOP_FILES)	\
+	$(desktop_in_files) $(desktop_files)	\
 	$(NULL)
 
 BUILT_SOURCES = \
