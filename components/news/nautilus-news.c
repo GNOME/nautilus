@@ -577,9 +577,10 @@ draw_rss_items (RSSChannelData *channel_data,
 			font = channel_data->owner->font;
 		}
 		
-		smooth_text_layout = eel_smooth_text_layout_new (
-				item_data->item_title, strlen(item_data->item_title),
-				font, font_size, TRUE);
+		smooth_text_layout = eel_smooth_text_layout_new
+                        (item_data->item_title,
+                         eel_strlen (item_data->item_title),
+                         font, font_size, TRUE);
 
 		if (channel_data->owner->line_width > RIGHT_ITEM_MARGIN) {
 			eel_smooth_text_layout_set_line_wrap_width (smooth_text_layout, channel_data->owner->line_width - RIGHT_ITEM_MARGIN);

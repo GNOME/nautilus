@@ -1,5 +1,18 @@
 2001-05-02  Darin Adler  <darin@eazel.com>
 
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 8200 (News Sidebar panel crash on startup):
+
+	* components/news/nautilus-news.c: (draw_rss_items): Use
+	eel_strlen so it works with NULL titles.
+	
+	* configure.in:
+	* nautilus.spec.in:
+	Removed dependency on ghttp. Trilobite needs it, but not Nautilus.
+
+2001-05-02  Darin Adler  <darin@eazel.com>
+
 	Fix bug where most files weren't getting their MIME type icons.
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
