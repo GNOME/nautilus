@@ -562,7 +562,8 @@ eazel_install_fetch_package (EazelInstall *service,
 				if (rpmvercmp (package->version, version)<0) {
 					g_warning (_("Downloaded package does not have the correct version"));
 					g_warning (_("Package %s had version %s and not %s"), 
-						   package->name, package->version, version);					result = FALSE;
+						   package->name, package->version, version);
+					result = FALSE;
 				}
 			}
 		} 

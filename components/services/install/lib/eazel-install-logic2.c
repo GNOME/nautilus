@@ -258,10 +258,19 @@ is_satisfied (EazelInstall *service,
 	g_assert (EAZEL_IS_INSTALL (service));
 
 #if EI2_DEBUG & 0x4
-	trilobite_debug ("is_satisfied %p %s", dep->package, dep->package->name);
+	if (dep->version != NULL) {
+		char *sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
+		trilobite_debug ("is_satisfied? %p %s %s %s", dep->package, dep->package->name, sense_str, dep->version);
+		g_free (sense_str);
+	} else {
+		trilobite_debug ("is_satisfied? %p %s", dep->package, dep->package->name);
+	}
 #endif
 
 	if (g_hash_table_lookup (service->private->dep_ok_hash, dep->package->eazel_id)) {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\t--> dep hash ok");
+#endif
 		return TRUE;
 	} else {
 		gboolean result = FALSE;
@@ -273,10 +282,16 @@ is_satisfied (EazelInstall *service,
 							       dep->version,
 							       NULL,
 							       dep->sense)) {
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("\t--> installed");
+#endif
 				result = TRUE;
 			}
 		} else {
 			if (is_satisfied_features (service, dep->package->features)) {
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("\t--> feature satisfied");
+#endif
 				result = TRUE;
 			}
 		}
@@ -287,6 +302,9 @@ is_satisfied (EazelInstall *service,
 			return TRUE;
 		}
 	}
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("\t--> AHR");
+#endif
 	return FALSE;
 }
 
@@ -400,12 +418,27 @@ void no_two_packages_with_same_file (EazelInstall *service, GList *packages);
 void feature_consistency_check (EazelInstall *service, GList *packages);
 void check_conflicts_with_other (EazelInstall *service, GList *packages);
 
-void 
-no_two_packages_with_same_file (EazelInstall *service, 
-				GList *packages)
+static gboolean
+is_filename_probably_a_directory (const char *filename, const GList *provides)
 {
-	/* FIXME: bugzilla.eazel.com 5275
-	   add code to check that no two packages provides the same file 
+	const GList *iter;
+	gboolean is_dir = FALSE;
+
+	for (iter = g_list_first ((GList *)provides); iter != NULL; iter = g_list_next (iter)) {
+		const char *filename2 = (const char *)(iter->data);
+		if ((strlen (filename2) > strlen (filename)) &&
+		    (strncmp (filename, filename2, strlen (filename)) == 0)) {
+			is_dir = TRUE;
+			break;
+		}
+	}
+	return is_dir;
+}
+
+/* make sure none of the packages we're installing will share files
+
+   FIXME: bugzilla.eazel.com 5275
+   add code to check that no two packages provides the same file 
 
 	hash<char*, PackageData> Hfile;
 
@@ -414,28 +447,112 @@ no_two_packages_with_same_file (EazelInstall *service,
 			if p'=Hfile[f] {	
 				# f is provided by p'
 				whine (about p' conflicting with p over file f)
+				set: p breaks p'
 			} else {
 				Hfile[f] = p;
 			}
 		}
 	}
-	*/
 
+   (rough draft by robey:)
+*/
+void 
+no_two_packages_with_same_file (EazelInstall *service, 
+				GList *packages)
+{
+	GHashTable *file_table;		/* filename(char *) -> package(PackageData *) */
+	GList *broken_packages;		/* (PackageData *) packages known to have conflicts already */
+	GList *iter, *iter_file;
+	PackageData *pack, *pack_other;
+	char *filename;
+
+	if (eazel_install_get_force (service) ||
+	    eazel_install_get_ignore_file_conflicts (service) ||
+	    (g_list_length (packages) == 1)) {
+		trilobite_debug ("(not performing duplicate file check)");
+		return;
+	}
+
+	file_table = g_hash_table_new (g_str_hash, g_str_equal);
+	broken_packages = NULL;
+	for (iter = g_list_first (packages); iter != NULL; iter = g_list_next (iter)) {
+		gboolean reported_yet = FALSE;
+		int other_conflicts = 0;
+
+		pack = PACKAGEDATA (iter->data);
+		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
+			filename = (char *)(iter_file->data);
+			pack_other = g_hash_table_lookup (file_table, filename);
+			if ((pack_other != NULL) && 
+			    (!pack->provides_has_dirs || !is_filename_probably_a_directory (filename, pack->provides))) {
+				/* Dang, this file is provided by both 'pack' and 'pack_other' */
+				/* Only report it once in the debug log or we'll spam to eternity on some
+				 * large broken packages... */
+				if (! reported_yet) {
+					trilobite_debug ("file conflict: %s from package %s is also in %s",
+							 filename, pack->name, pack_other->name);
+					reported_yet = TRUE;
+				} else {
+					other_conflicts++;
+				}
+
+				/* 'pack' broke 'pack_other', but only if 'pack_other' isn't already broken */
+				if (! g_list_find (broken_packages, pack_other)) {
+					broken_packages = g_list_prepend (broken_packages, pack_other);
+					packagedata_add_pack_to_breaks (pack, pack_other);
+					pack->status = PACKAGE_FILE_CONFLICT;
+					pack_other->status = PACKAGE_FILE_CONFLICT;
+				}
+			} else {
+				/* file is okay */
+				g_hash_table_insert (file_table, filename, pack);
+			}
+		}
+		if (other_conflicts) {
+			trilobite_debug ("(there were %d other conflicts)", other_conflicts);
+		}
+	}
+
+	/* let's free all this crap, unlike last time (cough cough) :) */
+	g_list_free (broken_packages);
+	g_hash_table_destroy (file_table);
 }
 
-void 
-check_conflicts_with_other (EazelInstall *service, 
-			    GList *packages)
+/* determine if package 'pack' is being upgraded in the 'packages' list,
+ * and that upgrade no longer needs 'filename'
+ */
+static gboolean
+package_is_upgrading_and_doesnt_need_file (PackageData *pack, GList *packages, const char *filename)
 {
-	/* FIXME: bugzilla.eazel.com 5276
-	   Add code to do conflict checking against already installed packages.
+	PackageData *pack_upgrade;
+	GList *item, *item2;
+
+	item = g_list_find_custom (packages, pack->name,
+				   (GCompareFunc)eazel_install_package_name_compare);
+	if (item != NULL) {
+		pack_upgrade = PACKAGEDATA (item->data);
+		item2 = g_list_find_custom (pack_upgrade->provides, (char *)filename, (GCompareFunc)strcmp);
+		if (item2 == NULL) {
+			/* package IS in the package list, and does NOT provide this file anymore */
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/* check if any of our packages contain files that would conflict with packages already installed.
+
+   FIXME: bugzilla.eazel.com 5276
+   Add code to do conflict checking against already installed packages.
 
 	for each p in packages {
 		for each f in p->provides {
 			L = query (PROVIDES, f)
+			L -= p->modifies	# dont care about packages we're modifying
 			if L.size > 0 {
 				# someone else might own f
 				foreach p' in L {
+					next if p'->name == p->name
 					if p' in packages (name compare && p->provides[f]==null) {
 						# we're upgrading p' to p'' which doesn't have f, 
 						# so all is well 
@@ -447,8 +564,74 @@ check_conflicts_with_other (EazelInstall *service,
 				# f is fine, noone else owns it 
 			}
 		}
-	*/
-	
+	}
+
+    (rough draft by robey:)
+*/
+void 
+check_conflicts_with_other (EazelInstall *service, 
+			    GList *packages)
+{
+	GList *owners;
+	GList *iter, *iter_file, *iter_pack;
+	PackageData *pack, *pack_owner;
+	char *filename;
+
+	if (eazel_install_get_force (service) ||
+	    eazel_install_get_ignore_file_conflicts (service)) {
+		trilobite_debug ("(not performing file conflict check)");
+		return;
+	}
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("-> file conflict check begins");
+#endif
+
+	for (iter = g_list_first (packages); iter != NULL; iter = g_list_next (iter)) {
+		pack = PACKAGEDATA (iter->data);
+
+		if (pack->conflicts_checked) {
+			continue;
+		}
+
+		pack->conflicts_checked = TRUE;
+		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
+			filename = (char *)(iter_file->data);
+			owners = eazel_package_system_query (service->private->package_system,
+							     service->private->cur_root,
+							     filename,
+							     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
+							     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
+			packagedata_list_prune (&owners, pack->modifies, TRUE, TRUE);
+			for (iter_pack = g_list_first (owners); iter_pack != NULL; iter_pack = g_list_next (iter_pack)) {
+				pack_owner = (PackageData *)(iter_pack->data);
+
+				if (strcmp (pack_owner->name, pack->name) == 0) {
+					/* can't conflict with self */
+					continue;
+				}
+
+				trilobite_debug ("file conflict: %s from %s conflicts with %s",
+						 filename, pack->name, pack_owner->name);
+				if (package_is_upgrading_and_doesnt_need_file (pack_owner, packages, filename)) {
+					/* the owner of this file is a package that we're upgrading, and the
+					 * new version no longer has this file, so everything's okay. */
+					trilobite_debug ("...but it's okay, we're upgrading %s and it ditched that file",
+							 pack_owner->name);
+				} else {
+					/* boo */
+					trilobite_debug ("FIXME more stuff here");
+				}
+
+				packagedata_destroy (pack_owner, TRUE);
+			}
+			g_list_free (owners);
+		}
+	}
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("<- file conflict check ends");
+#endif
 }
 
 void 

@@ -92,7 +92,6 @@ trilobite_open_uri (const char *uri_text)
 
 	err = gnome_vfs_open_uri (&handle, uri, GNOME_VFS_OPEN_READ);
 	if (err != GNOME_VFS_OK) {
-
 		trilobite_debug ("fetch-uri on '%s': open failed: %s", 
 				 uri_text, 
 				 gnome_vfs_result_to_string (err));

@@ -1,5 +1,22 @@
 2001-01-08  Robey Pointer  <robey@eazel.com>
 
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied), (is_filename_probably_a_directory),
+	(no_two_packages_with_same_file),
+	(package_is_upgrading_and_doesnt_need_file),
+	(check_conflicts_with_other):
+
+	Rough drafts for 2 of the functions Eskil left in pseudocode form.
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* components/services/trilobite/libtrilobite/trilobite-core-network
+	.c: (trilobite_open_uri):
+
+	Fix two typos (no code change).
+
+2001-01-08  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/nautilus-view/nautilus-service-instal
 	l-view.c: (nautilus_service_install_preflight_check),
 	(nautilus_service_install_installing):
