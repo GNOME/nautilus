@@ -28,7 +28,6 @@
 
 #include "nautilus-gdk-font-extensions.h"
 
-#include "nautilus-font-factory.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string-list.h"

@@ -27,7 +27,6 @@
 #include "nautilus-text-caption.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-glib-extensions.h"
-#include "nautilus-entry.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
