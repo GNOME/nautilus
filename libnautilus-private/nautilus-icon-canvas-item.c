@@ -1214,35 +1214,7 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 static void
 draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
 {
-	void (* affine_function)
-		(art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
-		 const art_u8 *src, int src_width, int src_height, int src_rowstride,
-		 const double affine[6],
-		 ArtFilterLevel level,
-		 ArtAlphaGamma *alpha_gamma);
-
-	affine[4] += x_offset;
-	affine[5] += y_offset;
-
-	affine_function = gdk_pixbuf_get_has_alpha (pixbuf)
-		? art_rgb_rgba_affine
-		: art_rgb_affine;
-	
-	(* affine_function)
-		(buf->buf,
-		 buf->rect.x0, buf->rect.y0,
-		 buf->rect.x1, buf->rect.y1,
-		 buf->buf_rowstride,
-		 gdk_pixbuf_get_pixels (pixbuf),
-		 gdk_pixbuf_get_width (pixbuf),
-		 gdk_pixbuf_get_height (pixbuf),
-		 gdk_pixbuf_get_rowstride (pixbuf),
-		 affine,
-		 ART_FILTER_NEAREST,
-		 NULL);
-
-	affine[4] -= x_offset;
-	affine[5] -= y_offset;
+    nautilus_gnome_canvas_draw_pixbuf (buf, pixbuf, affine[4] + x_offset, affine[5] + y_offset);	
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */

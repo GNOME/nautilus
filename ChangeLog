@@ -1,3 +1,18 @@
+2001-01-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description), (get_IDE_description):
+	Incorporated Bud's patch to the disk size calculation in the
+	hardware view, which sidesteps integer overflow problems and makes
+	it consistent with industry convention by using 1000 instead of
+	1024 for the definition of a kbyte.  Also tweaked the RAM size
+	calculation, but it's still not quite right yet.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_pixbuf_aa):
+	improved performance by using nautilus_gnome_canvas_draw_pixbuf
+	to draw on the aa canvas instead of libart.
+	
 2001-01-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
