@@ -20,6 +20,8 @@ bin_PROGRAMS =					\
 	nautilus-music-view
 
 nautilus_music_view_SOURCES =		        \
+	mp3head.c				\
+	mp3head.h				\
 	mpg123_handler.c			\
 	mpg123_handler.h			\
 	nautilus-music-view.c			\

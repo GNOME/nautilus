@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-music-view.h"
 #include "mpg123_handler.h"
+#include "mp3head.h"
 
 #include "pixmaps.h"
 
@@ -96,6 +97,8 @@ typedef struct {
 	int track_number;
 	int bitrate;
 	int track_time;
+	int ver;          /* 1=MPEG1, 0=MPEG2 */
+	int samprate;
 	
 	char *title;
 	char *artist;
@@ -131,8 +134,6 @@ enum {
 	SORT_BY_BITRATE,
 	SORT_BY_TIME
 };
-
-static int bitrates[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1};
 
 static GtkTargetEntry music_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
@@ -417,13 +418,20 @@ release_song_info (SongInfo *info)
 	g_free (info);
 }
 
-/* determine if the passed in filename is an mp3 file by looking at the extension */
-/* FIXME bugzilla.eazel.com 1281: use mime-type for this? */
+/* determine if a file is an mp3 file by looking at the mime type */
 static gboolean
-is_mp3_file(const char *song_uri)
+is_mp3_file(GnomeVFSFileInfo *file_info)
 {
-	return nautilus_str_has_suffix(song_uri, ".mp3")
-                || nautilus_str_has_suffix(song_uri, ".MP3");
+	return nautilus_str_has_prefix(file_info->mime_type, "audio/")
+		&& nautilus_str_has_suffix(file_info->mime_type, "mp3");
+}
+
+/* utility routine to strip the trailing blank padding from the end of a string */
+static void
+strip_trailing_blanks (char *str)
+{
+	int index;
+	for (index = 30; index > 0 && str[index] <= 0x20; str[index--] = '\0');
 }
 
 /* read the id3 tag of the file if present */
@@ -455,12 +463,15 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	
 	temp_str[30] = '\0';
 	strncpy (temp_str, &tag_buffer[3], 30);
+	strip_trailing_blanks(temp_str);
 	song_info->title = g_strdup(temp_str);
   
 	strncpy (temp_str, &tag_buffer[33], 30);
+	strip_trailing_blanks(temp_str);
 	song_info->artist = g_strdup(temp_str);
 
 	strncpy (temp_str, &tag_buffer[63], 30);
+	strip_trailing_blanks(temp_str);
 	song_info->album = g_strdup(temp_str); 
 
 	temp_str[4] = '\0';
@@ -468,6 +479,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	song_info->year = g_strdup(temp_str);
 
 	strncpy (temp_str, &tag_buffer[97], 30);
+	strip_trailing_blanks(temp_str);
 	song_info->comment = g_strdup(temp_str);
 
     	if (tag_buffer[97 + 28] == 0) {
@@ -477,64 +489,6 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
         }
 
 	return TRUE;
-}
-
-/* this utility routine is the inner loop of fetch_bit_rate that scans the passed in buffer
-   for a sync field.  If it finds a valid header, it returns the bit-rate index; otherwise, return -1 */
-static int
-scan_for_header(guchar  *buffer, int buffer_length)
-{
-	int index;
-			
-	for (index = 0; index < (buffer_length - 2); index++) {
-		if ((buffer[index] == 255) && 
-			((buffer[index + 1] & 224) != 0)) {
-				return (buffer[index + 2] >> 4) & 15;
-		}
-	}
-	
-	return -1;
-}
-
-/* fetch_bit_rate returns the bit rate of the file by scanning for a frame and extracting the
-   information from the frame header */
-static int
-fetch_bit_rate (const char *song_uri)
-{
-	guchar buffer[1024];
-	GnomeVFSHandle *mp3_file;
-	GnomeVFSResult result;
-	GnomeVFSFileSize length_read;
-	int bit_rate_index;
-
-	/* open the file */
-	
-	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
-	if (result != GNOME_VFS_OK) {
-		return -1;
-        }
-	
-	/* read a byte at a time until we get a sync field, which consists of a byte of 255 followed
-	   by a byte with the next 3 bits on */
-    	
-    	bit_rate_index = -1;
-    	while (TRUE) {
-		result = gnome_vfs_read(mp3_file, buffer, sizeof(buffer), &length_read);
-		if ((result != GNOME_VFS_OK) || (length_read < 3)) {
-			break;
-		}
-		bit_rate_index = scan_for_header(buffer, length_read);
-    		if (bit_rate_index >= 0)
-    			break;
-	};
-		
-    	gnome_vfs_close(mp3_file);
-    	
-    	/* fetch the bitrate field, and look up the actual bitrate in the table */
-    	if (bit_rate_index < 0)
-    		return -1;
-    			
-	return bitrates[bit_rate_index];
 }
 
 /* fetch_play_time takes the pathname to a file and returns the play time in seconds */
@@ -560,10 +514,10 @@ format_play_time (int track_time)
 	return g_strdup_printf ("%d:%02d ", minutes, remain_seconds);
 }
 
-/* utility routine to pull an initial number from the beginning of the passed in name.
+/* extract a track number from the file name
    return -1 if there wasn't any */
 static int
-extract_initial_number(const char *name_str)
+extract_number(const char *name_str)
 {
 	char *temp_str;
 	gboolean found_digit;
@@ -571,7 +525,9 @@ extract_initial_number(const char *name_str)
 	
 	found_digit = FALSE;
 	accumulator = 0;
-	temp_str = (char*) name_str;
+	if (isdigit(*name_str)) temp_str = (char*) name_str;
+	else if (strchr(name_str,'(')!=NULL) temp_str = (char *)strchr(name_str,'(')+1;
+	else return -1;
 	
 	while (*temp_str) {
 		if (isdigit(*temp_str)) {
@@ -594,8 +550,13 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
+	guchar buffer[1024];  
+	GnomeVFSHandle *mp3_file;
+	GnomeVFSResult result;
+	GnomeVFSFileSize length_read;
 
-	if (!is_mp3_file (song_uri)) {
+
+	if (!is_mp3_file (file_info)) {
 		return NULL;
         }
 
@@ -605,18 +566,28 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 	has_info = read_id_tag (song_uri, info);
 
 	/* if we couldn't get a track number, see if we can pull one from
-	   the beginning of the file name */
+	   the file name */
 	if (info->track_number <= 0) {
-		info->track_number = extract_initial_number(file_info->name);
+		info->track_number = extract_number(file_info->name);
 	}
-  	
+		  	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
 		info->title = g_strdup (file_info->name);
 	}	
-	
-	info->bitrate = fetch_bit_rate (song_uri);
-	info->track_time = fetch_play_time (file_info, info->bitrate);
+
+	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
+	if (result == GNOME_VFS_OK) {
+  		result = gnome_vfs_read(mp3_file, buffer, sizeof(buffer), &length_read);
+		if ((result == GNOME_VFS_OK) && (length_read > 512)) {
+			info->bitrate = get_bitrate (buffer,length_read);
+			info->samprate = get_samprate (buffer,length_read);
+			info->ver = get_mpgver (buffer,length_read);
+			info->track_time = fetch_play_time (file_info, info->bitrate);
+		}
+		gnome_vfs_close(mp3_file);
+	}
+
 	return	info;
 }
 

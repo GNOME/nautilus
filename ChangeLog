@@ -1,3 +1,18 @@
+2000-06-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/Makefile.am:
+	* components/music/mp3head.c,h: (extractI4), (is_mphead), (is_xhead),
+	(get_bitrate), (get_samprate), (get_mpgver):
+	* components/music/mp3head.h:
+	integrated Erik Gustavsson's patch to support variable bit rate
+	file properly in the music view.
+	* components/music/nautilus-music-view.c: (is_mp3_file),
+	(strip_trailing_blanks), (read_id_tag), (extract_number),
+	(fetch_song_info):
+	fixed bug 1281, music view should use mime types instead of
+	extensions, by using the mime type in is_mp3_file.  Also, cleaned
+	up Erik's patch for removing trailing blanks and integrated it.
+	
 2000-06-26  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* HACKING: Move bonobo after gnome-vfs since it now
