@@ -412,10 +412,6 @@ nautilus_music_view_background_changed (NautilusMusicView *music_view)
 	NautilusBackground *background;
 	char *color_spec, *image;
 	
-	/* disable background metadata saving for now */
-	
-	return;
-	
 	directory = nautilus_directory_get (music_view->details->uri);
 	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
 	

@@ -1,3 +1,22 @@
+2000-05-16  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: Maciej helped me refine the find command so it
+	doesn't go into po or CVS directories and only looks at files.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_background_changed): Turned the metadata saving
+	code back on. I think I fixed the problem that made Andy turn it off.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(set_metadata_eat_value): Fixed a double-delete problem. Oops.
+	(nautilus_directory_set_metadata): Fixed code that wasn't emitting the
+	metadata_changed signal enough.
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_fill_rectangle_with_color): Fixed a crash in Gdk. It turns
+	out gdk_rgb needs to be initialized, even though I don't think that
+	was the intent.
+
 2000-05-16  John Sullivan  <sullivan@eazel.com>
 
 	Some work getting the menu items for "Open With" in place,
@@ -39,8 +58,8 @@
 	(nautilus_music_view_initialize),
 	(nautilus_music_view_background_changed),
 	(nautilus_music_view_update_from_uri):
-	improved the layout of the music view, and pinned the size
-	of the album cover image, temporarily disabled background_changed since
+	Improved the layout of the music view, and pinned the size of the
+	album cover image, temporarily disabled background_changed since
 	it's not working with recent metadata changes
 	
 2000-05-16  Darin Adler  <darin@eazel.com>

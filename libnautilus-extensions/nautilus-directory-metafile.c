@@ -480,7 +480,6 @@ set_metadata_eat_value (NautilusDirectory *directory,
 		}
 		found = g_hash_table_lookup_extended
 			(file_table, combined_key, &old_key, &old_value);
-		g_free (combined_key);
 
 		/* Put the change into the hash. Delete the old change. */
 		if (!found) {
@@ -650,7 +649,7 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	if (directory->details->metafile_read) {
 		if (set_metadata_string_in_metafile (directory, NULL, key,
 						     default_metadata, metadata)) {
-			nautilus_directory_request_write_metafile (directory);
+			nautilus_directory_emit_metadata_changed (directory);
 		}
 	} else {
 		value = metadata_value_new (default_metadata, metadata);

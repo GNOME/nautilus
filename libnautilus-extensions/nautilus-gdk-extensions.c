@@ -69,6 +69,9 @@ nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
 {
 	GdkGCValues saved_values;
 	
+	/* FIXME: Workaround for a bug in gdk_rgb. */
+	gdk_rgb_init ();
+	
 	gdk_gc_get_values (gc, &saved_values);
 	gdk_rgb_gc_set_foreground (gc, rgb);
 	nautilus_fill_rectangle (drawable, gc, rectangle);
