@@ -105,6 +105,8 @@ static void setup_title_font                           (NautilusRPMView        *
 static void rpm_view_notify_location_change_callback (NautilusContentViewFrame *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusRPMView        *rpm_view);
+static gint check_installed			     (gchar *package_name, gchar *package_version, gchar *package_release);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
@@ -351,18 +353,55 @@ nautilus_rpm_view_realize(GtkWidget *widget)
 	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
 }
 
-/* utility to format time using std library routines */
+/* use the package database to see if the passed-in package is installed or not */
+/* return 0 if it's not installed, one if it is, -1 if same package, different version */
 
-#if 0
-
-static char* format_time(time_t time_value)
+static gint 
+check_installed(gchar *package_name, gchar *package_version, gchar *package_release)
 {
-	char *time_string = g_strdup(ctime(&time_value));
-	time_string[strlen(time_string) - 1] = '\0';
-	return time_string;
-}
+ 	rpmdb rpm_db;
+ 	Header header;
+ 	gint rpm_result, find_result;
+	gint index;
+	dbiIndexSet matches;
+	gint result = 0;
+	gchar *version_ptr, *release_ptr;
+	
+ 	rpmReadConfigFiles(NULL, NULL);   
+    	rpm_result = rpmdbOpen("", &rpm_db, O_RDONLY, 0644);
+	if (rpm_result != 0) {
+		g_message("couldn't open package database: %d", rpm_result);
+		return 0;
+	}
+	
+	/* see if it's installed - if not, return */
+	find_result = rpmdbFindPackage(rpm_db, package_name, &matches);
+	if ((find_result != 0) || !matches.count) {
+		rpmdbClose(rpm_db);
+		return 0;
+	}
 
-#endif
+	/* a package with our name is installed - now see if our version matches */
+	for (index = 0; index < matches.count; index++)
+	  {
+	  	header = rpmdbGetRecord(rpm_db, matches.recs[index].recOffset);
+	  	headerGetEntry(header, RPMTAG_VERSION, NULL, (void **) &version_ptr, NULL);
+	  	headerGetEntry(header, RPMTAG_RELEASE, NULL, (void **) &release_ptr, NULL);
+	  	
+	  	if (!strcmp(version_ptr, package_version) && !strcmp(release_ptr, package_release))
+	  		result = 1;
+	  	headerFree(header);
+
+	  }
+	  		
+	dbiFreeIndexRecord(matches);
+	rpmdbClose(rpm_db);
+
+	if (result == 1)
+		return 1;
+	else
+		return -1;
+}
 
 /* here's where we do most of the real work of populating the view with info from the package */
 /* open the package and copy the information, and then set up the appropriate views with it */
@@ -374,9 +413,11 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	/* open the package */
 	HeaderIterator iterator;
 	Header header_info, signature;
+	GtkWidget *temp_widget;
 	char buffer[512];
 	gint iterator_tag, type, data_size, result, index, file_count;
 	gchar *data_ptr, *temp_str;
+	gboolean is_installed;
 	gint file_descriptor;
 	gint *integer_ptr;
   	
@@ -384,6 +425,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	gchar **links = NULL;	
 	gchar *temp_version = NULL;
 	gchar *temp_release = NULL;
+	gchar *package_name = NULL;
+	
 	const char *path_name = uri + 7;
 	
 	file_descriptor = open(path_name, O_RDONLY, 0644);
@@ -402,6 +445,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			integer_ptr = (int*) data_ptr;
 			switch (iterator_tag) {
                         case RPMTAG_NAME:
+                                package_name = strdup(data_ptr);
                                 temp_str = g_strdup_printf("Package \"%s\" ", data_ptr);
                                 gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);				 
                                 g_free(temp_str);
@@ -456,10 +500,6 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			temp_str = g_strdup_printf("version %s-%s", temp_version, temp_release);
 			gtk_label_set (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
 			g_free(temp_str);
-			if (temp_version)
-				g_free(temp_version);
-			if (temp_release)
-				g_free(temp_release);
 		}
 		
 		headerFreeIterator(iterator);			
@@ -467,6 +507,19 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		close(file_descriptor);	
 	}
 	
+	/* determine if the package is installed */
+	
+	is_installed = check_installed(package_name, temp_version, temp_release);
+			
+	/* generate a message with the appropriate action buttons describing the install state */
+
+	if (is_installed)
+		temp_widget = gtk_label_new("This package is currently installed");
+	else
+		temp_widget = gtk_label_new("This package is not installed");
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, 0, 0, 8);	
+  	gtk_widget_show(temp_widget);
+
 	/* add the files in the package to the list */
 
   	gtk_clist_freeze(GTK_CLIST(rpm_view->details->package_file_list));
@@ -494,11 +547,14 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	g_free(path);
   	g_free(links);
   	gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
-	
-	/* determine if the package is installed or not */
-	
-	/* set up the appropriate buttons */
 
+	if (package_name)
+		g_free(package_name);
+	if (temp_version)
+		g_free(temp_version);
+	if (temp_release)
+		g_free(temp_release);
+	
 }
 
 void
