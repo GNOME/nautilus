@@ -1,3 +1,21 @@
+2000-07-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/browser.xml:
+	* libnautilus-extensions/nautilus-theme.c,h:
+	(nautilus_theme_get_image_path), (nautilus_theme_make_selector):
+	added code to make a pixbuf that exemplifies a theme;
+	Arlo is going to give me a better design soon
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directory_path),
+	(make_properties_from_directory), (make_properties_from_xml_node),
+	(theme_clicked_callback), (vfs_file_exists), (has_image_file),
+	(add_theme_selector), (make_properties_from_themes),
+	(make_category), (nautilus_property_browser_update_contents):
+	lots of work here: added a title gotten from the xml file,
+	added theme selector and theme support
+	* src/nautilus-window-menus.c:
+	disabled test mode, since it was inadvertently closing the sidebar
+	
 2000-07-09  Ian McKellar  <yakk@yakk.net.au>
 
 	* components/services/vault/command-line/Makefile.am:

@@ -24,11 +24,17 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
 
 #include <parser.h>
 #include <xmlmemory.h>
 
+#include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <librsvg/rsvg.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
@@ -146,7 +152,6 @@ nautilus_theme_get_image_path (const char *image_name)
 		g_free (temp_str);
 	
 		/* see if a theme-specific image exists; if so, return it */
-
 		if (g_file_exists (image_path))
 			return image_path;
 		
@@ -162,4 +167,43 @@ nautilus_theme_get_image_path (const char *image_name)
 	/* we couldn't find anything, so return NULL */
 	g_free (image_path);
 	return NULL;
+}
+
+/* create a pixbuf that represents the passed in theme name */
+/* this is a placeholder until we get Arlo's design */
+
+GdkPixbuf *
+nautilus_theme_make_selector (const char *theme_name)
+{
+	char *pixbuf_file, *temp_str ;
+	GdkPixbuf *pixbuf;
+	
+	temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.png");
+	pixbuf_file = nautilus_pixmap_file(temp_str);
+	g_free (temp_str);
+	
+	if (!g_file_exists (pixbuf_file)) {
+		g_free (pixbuf_file);
+		temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.svg");
+		pixbuf_file = nautilus_pixmap_file(temp_str);
+		g_free (temp_str);
+		if (!g_file_exists (pixbuf_file)) {
+			g_free (pixbuf_file);
+			pixbuf_file = nautilus_pixmap_file ("i-directory.png");
+		}	
+	}
+	
+	if (nautilus_str_has_suffix(pixbuf_file, ".svg")) {
+		FILE *f = fopen (pixbuf_file, "rb");
+		if (f != NULL) {
+			pixbuf = rsvg_render_file (f, 1.0);
+			fclose (f);
+		}
+	
+	} else {
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+	}
+	
+	g_free (pixbuf_file);
+	return pixbuf;
 }

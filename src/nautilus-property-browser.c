@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 struct NautilusPropertyBrowserDetails {
@@ -118,6 +119,8 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 
 #define BROWSER_BACKGROUND_COLOR "rgb:DDDD/EEEE/FFFF"
 #define BROWSER_TITLE_COLOR "rgb:FFFF/FFFF/FFFF"
+#define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
+
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
 #define PROPERTY_BROWSER_WIDTH 528
@@ -1288,7 +1291,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 
 				/* put the reset item in the pole position */
 				add_to_content_table(property_browser, temp_vbox, 
-					strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : 0, 2);				
+					strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : CONTENT_TABLE_WIDTH, 2);				
 			}
 	}
 		
@@ -1308,12 +1311,12 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 {
 	char *directory_uri;
 	int new_index;
-	int index = 0;
+	int index = CONTENT_TABLE_WIDTH;
 	char *user_directory;	
 
 	/* make room for the reset property if necessary */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		index = 1;
+		index += 1;
 	}
 	
 	/* first, make properties from the shared space */
@@ -1359,8 +1362,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	GtkWidget *container;
 	GtkWidget *label_box, *label;
 	char *label_text;
-	
-	int index = 0;
+	int index = CONTENT_TABLE_WIDTH;
 	gboolean local_only = property_browser->details->remove_mode;
 	gboolean is_color = !strcmp (property_browser->details->category, "colors");
 	
@@ -1431,16 +1433,182 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	}
 }
 
+/* handle clicks on the theme selector by setting the theme */
+static void
+theme_clicked_callback(GtkWidget *widget, char *theme_name)
+{
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
+	
+	nautilus_theme_set_theme (theme_name);
+        nautilus_property_browser_update_contents (property_browser);
+}
+
+static gboolean
+vfs_file_exists (const char *file_uri)
+{
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+	
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (file_uri, file_info, 0, NULL);
+	gnome_vfs_file_info_unref (file_info);
+
+	return result == GNOME_VFS_OK;
+}
+
+/* utility routine to test for the presence of an icon file */
+static gboolean
+has_image_file(const char *path_uri, const char *dir_name, const char *image_file)
+{
+	char* image_uri;
+	gboolean exists;
+	
+	image_uri = g_strdup_printf("%s/%s/%s.png", path_uri, dir_name, image_file);
+	exists = vfs_file_exists (image_uri);
+	g_free (image_uri);
+	if (exists)
+		return TRUE;
+
+	image_uri = g_strdup_printf("%s/%s/%s.svg", path_uri, dir_name, image_file);
+	exists = vfs_file_exists (image_uri);
+	g_free (image_uri);
+	return exists;
+}
+
+/* add a theme selector to the browser */
+static void
+add_theme_selector (NautilusPropertyBrowser *property_browser, const char* directory_uri,
+		    const char *theme_name, const char *current_theme, int index)
+{
+	GtkWidget *label, *pix_widget, *button, *temp_box, *temp_vbox;
+	GdkPixbuf *theme_pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	NautilusBackground *background;
+	
+	temp_box = gtk_vbox_new (FALSE, 0);
+
+	/* generate a pixbuf to represent the theme */
+	theme_pixbuf = nautilus_theme_make_selector (theme_name);
+	gdk_pixbuf_render_pixmap_and_mask (theme_pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (theme_pixbuf);
+	
+	/* generate a pixwidget to hold it */
+	
+	pix_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+	gtk_widget_show (pix_widget);	
+	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
+	
+	button = gtk_button_new();
+	gtk_widget_show(button);
+	gtk_widget_set_usize(button, 96, 80);
+	
+	/* use the name as a label */
+	label = gtk_label_new (theme_name);
+	gtk_box_pack_start (GTK_BOX (temp_box), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
+
+	/* put the button in a vbox so it won't grow vertically */
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (temp_vbox);
+	
+	gtk_box_pack_start (GTK_BOX (temp_vbox), button, FALSE, FALSE, 8);
+	add_to_content_table (property_browser, temp_vbox, index, 8);
+	gtk_container_add (GTK_CONTAINER (button), temp_box);
+	gtk_widget_show (temp_box);
+
+	/* set the background of the current theme to distinguish it */
+	if (!nautilus_strcmp (current_theme, theme_name)) {
+		background = nautilus_get_widget_background (button);
+		nautilus_background_set_color (background, THEME_SELECT_COLOR);
+	}
+		
+	/* add a signal to handle clicks */
+	gtk_object_set_user_data (GTK_OBJECT(button), property_browser);
+	gtk_signal_connect_full
+		(GTK_OBJECT (button),
+		 "clicked",
+		 GTK_SIGNAL_FUNC (theme_clicked_callback),
+		 NULL,
+		 g_strdup (theme_name),
+		 g_free,
+		 FALSE,
+		 FALSE);
+	
+}
+
+/* generate browser items corresponding to all the available themes, with the current theme specially designated */
+
+static void
+make_properties_from_themes (NautilusPropertyBrowser *property_browser, xmlNodePtr node)
+{
+	char *directory_uri, *current_theme;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+	char *pixmap_directory;
+	int index;
+	
+	/* get the current theme */
+	current_theme = nautilus_theme_get_theme();
+	
+	/* iterate the pixmap directory to find other installed themes */	
+	pixmap_directory = nautilus_get_pixmap_directory ();
+	index = CONTENT_TABLE_WIDTH;
+	add_theme_selector (property_browser, pixmap_directory, "default", current_theme, index++);
+
+	/* add a theme element for the default theme */
+
+	/* get the uri for the images directory */
+	directory_uri = nautilus_get_uri_from_local_path (pixmap_directory);
+	g_free (pixmap_directory);
+			
+	result = gnome_vfs_directory_list_load (&list, directory_uri,
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+	if (result != GNOME_VFS_OK) {
+		g_free (directory_uri);
+		g_free (current_theme);
+		return;
+	}
+
+	/* interate through the directory for each file */
+	current_file_info = gnome_vfs_directory_list_first(list);
+	while (current_file_info != NULL) {
+		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) &&
+			(current_file_info->name[0] != '.'))
+			if (has_image_file (directory_uri, current_file_info->name, "i-directory" ))
+				add_theme_selector (property_browser, directory_uri, current_file_info->name, current_theme, index++);
+			current_file_info = gnome_vfs_directory_list_next (list);
+	}
+	
+	g_free (directory_uri);
+	g_free (current_theme);
+	gnome_vfs_directory_list_destroy (list);	
+}
+
 /* make_category generates widgets corresponding all of the objects in the passed in directory */
 
 static void
-make_category(NautilusPropertyBrowser *property_browser, const char* path, const char* mode, xmlNodePtr node)
+make_category(NautilusPropertyBrowser *property_browser, const char* path, const char* mode, xmlNodePtr node, const char *description)
 {
-	/* case out on the mode: if the mode is directory, handle by iterating through the directory */
+	GtkWidget *description_label;
+	
+	/* add the description to the table */
+	description_label = gtk_label_new (description);
+	gtk_widget_show (description_label);
+
+	gtk_table_attach (GTK_TABLE (property_browser->details->content_table),
+			  description_label, 0, CONTENT_TABLE_WIDTH, 0 , 1, 
+			  GTK_FILL, GTK_FILL, 8, 2);
+	
+	/* case out on the mode */
 	if (strcmp(mode, "directory") == 0)
-		make_properties_from_directory(property_browser, path);
+		make_properties_from_directory (property_browser, path);
 	else if (strcmp(mode, "inline") == 0)
-		make_properties_from_xml_node(property_browser, node);
+		make_properties_from_xml_node (property_browser, node);
+	else if (strcmp(mode, "themes") == 0)
+		make_properties_from_themes (property_browser, node);
+
 }
 
 /* this is a utility routine to generate a category link widget and install it in the browser */
@@ -1545,16 +1713,17 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			char* category_name =  xmlGetProp (cur_node, "name");
 			char* category_image = xmlGetProp (cur_node, "image");
 			char* category_type  = xmlGetProp (cur_node, "type");
-			
+			char* category_description = xmlGetProp (cur_node, "description");
+				
 			if (property_browser->details->category && !strcmp(property_browser->details->category, category_name)) {
 				char *category_path = xmlGetProp (cur_node, "path");
 				char *category_mode = xmlGetProp (cur_node, "mode");
 				
-				make_category(property_browser, category_path, category_mode, cur_node);
+				make_category(property_browser, category_path, category_mode, cur_node, category_description);
 				nautilus_property_browser_set_drag_type(property_browser, category_type);
 				break;
 			} else if (property_browser->details->category == NULL) {
-				make_category_link(property_browser, category_name, category_image, index++);
+				make_category_link (property_browser, category_name, category_image, index++);
 			}
 		}
 	}

@@ -44,7 +44,9 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 
+/*
 #define WINDOW_ITEMS_TEST
+*/
 
 static GtkWindow *bookmarks_window = NULL;
 
