@@ -1,3 +1,17 @@
+2000-06-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/Makefile.am:
+	* icons/knob.png:
+	added a nice knobbie image for the stretch handles
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles_aa), (nautilus_icon_canvas_item_render):
+	use the knob image instead of a black rectangle for the
+	stretch handles.  For now, it only appears in aa mode and they're
+	not positioned right.
+	* src/nautilus-window-toolbars.c: (get_stock_callback),
+	(get_stock_widget), (setup_button), (setup_toolbar_images):
+	added the search button to the toolbar theming machinery
+	
 2000-06-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-window-menus.c: (clear_appended_bookmark_items):

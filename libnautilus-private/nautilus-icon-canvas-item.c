@@ -176,6 +176,11 @@ static void     draw_pixbuf                                (GdkPixbuf           
 							    int                           y);
 static gboolean hit_test_stretch_handle                    (NautilusIconCanvasItem       *item,
 							    const ArtIRect               *canvas_rect);
+static void	draw_pixbuf_aa 				   (GdkPixbuf *pixbuf, 
+							    GnomeCanvasBuf *buf, 
+							    double affine[6],
+							    int x_offset,
+							    int y_offset);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
 
@@ -804,37 +809,6 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	gdk_gc_unref (gc);
 }
 
-/* utility routine to use libart to draw a rectangle in the anti-aliased canvas */
-
-static void
-draw_filled_rectangle_aa (GnomeCanvasBuf *buf, int left, int top, int width, int height)
-{
-	ArtVpath vpath[6];
-	ArtSVP *path;
-
-	vpath[0].code = ART_MOVETO;
-	vpath[0].x = left;
-	vpath[0].y = top;
-	vpath[1].code = ART_LINETO;
-	vpath[1].x = left;
-	vpath[1].y = top + height;
-	vpath[2].code = ART_LINETO;
-	vpath[2].x = left + width;
-	vpath[2].y = top + height;
-	vpath[3].code = ART_LINETO;
-	vpath[3].x = left + width;
-	vpath[3].y = top;
-	vpath[4].code = ART_LINETO;
-	vpath[4].x = left;
-	vpath[4].y = top;
-	vpath[5].code = ART_END;
-	vpath[5].x = 0;
-	vpath[5].y = 0;
-	
-	path = art_svp_from_vpath(vpath);
-	gnome_canvas_render_svp(buf, path, 0x000000FF);
-	art_svp_free(path);	
-}
 
 /* draw the stretch handles in the anti-aliased canvas */
 
@@ -842,15 +816,29 @@ static void
 draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 		      const ArtIRect *rect)
 {
+	int knob_width, knob_height;
+	char *knob_filename;
+	GdkPixbuf *knob_pixbuf;
+	double affine[6];
+	
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
+
+	knob_filename = nautilus_pixmap_file ("knob.png");
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_width = gdk_pixbuf_get_width (knob_pixbuf) - 6;
+	knob_height = gdk_pixbuf_get_height (knob_pixbuf) - 6;
 	
-	draw_filled_rectangle_aa (buf, rect->x0, rect->y0, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
-	draw_filled_rectangle_aa (buf, rect->x1 - STRETCH_HANDLE_THICKNESS, rect->y0, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
-	draw_filled_rectangle_aa (buf, rect->x1 - STRETCH_HANDLE_THICKNESS, rect->y1 - STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
-	draw_filled_rectangle_aa (buf, rect->x0, rect->y1 - STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
+	art_affine_identity(affine);
 	
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) rect->x0, (int) rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) rect->x0, (int) (rect->y1 - knob_height));
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) (rect->x1 - knob_width), (int) rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) (rect->x1 - knob_width), (int) (rect->y1 - knob_height));
+	
+	g_free(knob_filename);
+	gdk_pixbuf_unref(knob_pixbuf);	
 }
 
 static void
@@ -1224,28 +1212,10 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		buf->is_bg = FALSE;
 	}
 	
+	
 	/* draw the icon */
-	if (gdk_pixbuf_get_has_alpha(temp_pixbuf))
-		art_rgb_rgba_affine (buf->buf,
-				     buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
-				     buf->buf_rowstride,
-				     gdk_pixbuf_get_pixels(temp_pixbuf),
-				     gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
-				     gdk_pixbuf_get_rowstride(temp_pixbuf),
-				     i2c,
-				     ART_FILTER_NEAREST,
-				     NULL);
-	else
-		art_rgb_affine (buf->buf,
-				buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
-				buf->buf_rowstride,
-				gdk_pixbuf_get_pixels(temp_pixbuf),
-				gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
-				gdk_pixbuf_get_rowstride(temp_pixbuf),
-				i2c,
-				ART_FILTER_NEAREST,
-				NULL);
-
+	draw_pixbuf_aa (temp_pixbuf, buf, i2c, 0, 0);
+	
 	if (temp_pixbuf != icon_item->details->pixbuf)
 		gdk_pixbuf_unref(temp_pixbuf);
 

@@ -132,6 +132,7 @@ icon_DATA =\
 	i-stalled.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
+	knob.png \
 	leftarrow.png \
 	loading.png \
 	multi-ok.png \

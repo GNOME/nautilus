@@ -213,6 +213,30 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 	window->home_button = current_toolbar_info[TOOLBAR_HOME_BUTTON_INDEX].widget;	
 }
 
+/* utility to find the stock widget within a toolbar button so we can switch it's pixmap */
+
+static void
+get_stock_callback (GtkWidget *widget, gpointer callback_data)
+{
+	GtkWidget **stock_widget;
+	stock_widget = callback_data;
+
+	if (GNOME_IS_STOCK_PIXMAP_WIDGET(widget)) {
+		*stock_widget = widget;
+		/* We'd stop the iterating now if we could. */
+	}
+}
+
+static GtkWidget *
+get_stock_widget (GtkContainer *container)
+{
+	GtkWidget *stock_widget;
+
+	stock_widget = NULL;
+	gtk_container_foreach (container, get_stock_callback, &stock_widget);
+	return stock_widget;
+}
+
 
 /* set up the toolbar info based on the current theme selection from preferences */
 
@@ -228,7 +252,7 @@ setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 		full_name = g_strdup_printf ("nautilus/%s/%s.png", theme_name, icon_name);
 	}
 	
-	widget = nautilus_gtk_container_get_first_child (GTK_CONTAINER (GTK_BIN (button)->child));
+	widget = get_stock_widget (GTK_CONTAINER (GTK_BIN (button)->child));
 	gnome_stock_set_icon (GNOME_STOCK (widget), full_name);
 	g_free (full_name);
 	gtk_widget_queue_resize (button); 
@@ -247,6 +271,7 @@ setup_toolbar_images(NautilusWindow *window)
 	setup_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
 	setup_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
 	setup_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
+	setup_button (window->search_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
 	setup_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
 
 	g_free(theme_name);
