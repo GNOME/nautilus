@@ -1,3 +1,22 @@
+2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2282, Undo menu item initially sensitive, but 
+	nothing to undo.
+	
+	* components/notes/nautilus-notes.c: (finish_loading_note),
+	(notes_load_location), (make_notes_view):
+	Disconnect the editable object form the undo manager
+	while location is being changed so an undo transaction
+	is not registered during inital text loading.
+	
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(nautilus_undo_teardown_nautilus_entry_for_undo),
+	(nautilus_undo_setup_editable_for_undo),
+	(nautilus_undo_teardown_editable_for_undo):
+	When a teardown function is called, also unregister the
+	GtkObject from the undo manager in addtion to signal
+	disconnection.
+
 2000-08-23  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

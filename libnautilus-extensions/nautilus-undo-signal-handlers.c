@@ -97,6 +97,8 @@ nautilus_undo_teardown_nautilus_entry_for_undo (NautilusEntry *entry)
 	gtk_signal_disconnect_by_func (GTK_OBJECT (entry), 
 		    GTK_SIGNAL_FUNC (nautilus_entry_user_changed_callback),		    
 		    NULL);
+
+	nautilus_undo_unregister (GTK_OBJECT (entry));
 }
 
 /* nautilus_undo_setup_nautilus_entry_for_undo
@@ -201,7 +203,7 @@ nautilus_undo_setup_editable_for_undo (GtkEditable *editable)
 		    NULL);
 
 
-	data = g_new(EditableUndoObjectData, 1);
+	data = g_new (EditableUndoObjectData, 1);
 	data->undo_registered = FALSE;
 	gtk_object_set_data_full (GTK_OBJECT (editable), "undo_registered", 
 				  data, free_editable_object_data);
@@ -223,6 +225,7 @@ nautilus_undo_teardown_editable_for_undo (GtkEditable *editable)
 		    GTK_SIGNAL_FUNC (editable_delete_text_callback),		    
 		    NULL);
 
+	nautilus_undo_unregister (GTK_OBJECT (editable));
 }
 
 /* restore_editable_from_undo_snapshot_callback
