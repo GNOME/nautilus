@@ -1,3 +1,11 @@
+2003-02-03  David Bordoley <bordoley@msu.edu>
+
+       * lbnautilus-private/nautilus-file-operations.c 
+       (handle_transfer_vfs_error):
+       Fixed dialogs to use GTK_STOCK_CANCEL/GTK_STOCK_OK
+       instead of stop where appropriate. Fix button order to be
+       HIG compliant.
+
 2003-02-03  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window.c (nautilus_window_finalize):

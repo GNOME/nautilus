@@ -800,7 +800,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	switch (transfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
-		/* transfer error, prompt the user to continue or stop */
+		/* transfer error, prompt the user to continue or cancel */
 
 		/* stop timeout while waiting for user */
 		nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);
@@ -911,7 +911,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		    error_kind == ERROR_SOURCE_IN_TARGET) {
 			/* We can't continue, just tell the user. */
 			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
-				TRUE, text, dialog_title, _("Stop"), NULL);
+				TRUE, text, dialog_title, GTK_STOCK_OK, NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
 		} else if ((error_location == ERROR_LOCATION_SOURCE
@@ -926,15 +926,15 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				dialog_title,
-				 _("Skip"), _("Stop"), NULL);
+				 GTK_STOCK_CANCEL, _("Skip"), NULL);
 				 
 			switch (error_dialog_button_pressed) {
 			case 0:
-				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-				break;
-			case 1:
 			case GTK_RESPONSE_DELETE_EVENT:
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+				break;
+			case 1:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
 			default:
 				g_assert_not_reached ();
@@ -946,17 +946,17 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_dialog_button_pressed = eel_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				 dialog_title,
-				 _("Skip"), _("Retry"), _("Stop"), NULL);
+				 _("Skip"), GTK_STOCK_CANCEL, _("Retry"), NULL);
 
 			switch (error_dialog_button_pressed) {
 			case 0:
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
 			case 1:
-				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			case 2:
-				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_RETRY;
 				break;
 			default:
 				g_assert_not_reached ();
