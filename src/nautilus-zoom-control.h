@@ -54,8 +54,9 @@ struct NautilusZoomControl {
 struct NautilusZoomControlClass {
 	GtkEventBoxClass parent_class;
 	
-	void (*zoom_in)	 (NautilusZoomControl *control);
-	void (*zoom_out) (NautilusZoomControl *control);
+	void (*zoom_in)		(NautilusZoomControl *control);
+	void (*zoom_out) 	(NautilusZoomControl *control);
+	void (*zoom_default) 	(NautilusZoomControl *control);
 };
 
 GtkType    nautilus_zoom_control_get_type           (void);

@@ -1,3 +1,72 @@
+2000-06-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug #305.  CLicking in center of zoom control
+	does not change zoom level.
+
+	Clicking in the center of the zoom control emits a ZOOM_DEFAULT
+	signal.  It is up to each view that connects to this signal
+	to determine what is the default zoom setting.  Right now, all
+	views are using NAUTILUS_ZOOM_LEVEL_STANDARD.  This could be
+	changed to a zoom level better suited for the view.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Added zoom_default interface.
+	
+	* libnautilus/nautilus-zoomable.c:
+	* libnautilus/nautilus-zoomable.h:
+	(impl_Nautilus_Zoomable_zoom_default)
+	Implimetation function of zoom_default interface
+	
+	(nautilus_zoomable_initialize_class):
+	Set up new ZOOM_DEFAULT signal.
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_initialize_class),
+	(fm_directory_view_initialize), (zoom_out_callback),
+	(zoom_default_callback), (zoomable_zoom_default_callback),
+	(fm_directory_view_restore_default_zoom_level):
+	New functions to enable zoom to default.
+	
+	* src/file-manager/fm-icon-view.c:	
+	(fm_icon_view_initialize_class):
+	Override zoom_default method.
+	
+	(fm_icon_view_restore_default_zoom_level),
+	New function to enable zoom to default.
+	
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_initialize_class):
+	Override zoom_default method.
+	
+	(fm_list_view_restore_default_zoom_level):
+	New function to enable zoom to default.
+	
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+
+	* src/nautilus-view-frame.c: 
+	* src/nautilus-view-frame.h:
+	(nautilus_view_frame_zoom_default):
+	New signal handling callback
+
+	* src/nautilus-window.c: 
+	(zoom_default_callback):
+	New signal handling callback
+	
+	* src/nautilus-zoom-control.c:
+	* src/nautilus-zoom-control.h:
+	(nautilus_zoom_control_class_initialize),
+	(nautilus_zoom_control_button_press_event):
+
+	Work in progress on bug #971
+	* src/file-manager/fm-directory-view.c:
+	(open_one_properties_window),
+
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(nautilus_entry_user_changed_callback),
+	(editable_register_edit_undo),
+	(restore_editable_from_undo_snapshot_callback):
+
 2000-06-13  Darin Adler  <darin@eazel.com>
 
 	Renamed and changed around parameters for the basic operations on

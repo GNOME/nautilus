@@ -726,6 +726,17 @@ fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	fm_icon_view_set_zoom_level(icon_view, new_level);
 }
 
+static void
+fm_icon_view_restore_default_zoom_level (FMDirectoryView *view)
+{
+	FMIconView *icon_view;
+
+	g_return_if_fail (FM_IS_ICON_VIEW (view));
+
+	icon_view = FM_ICON_VIEW (view);
+	fm_icon_view_set_zoom_level(icon_view, NAUTILUS_ZOOM_LEVEL_STANDARD);
+}
+
 static gboolean 
 fm_icon_view_can_zoom_in (FMDirectoryView *view) 
 {
@@ -1481,7 +1492,8 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
-	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;	
+	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
+	fm_directory_view_class->restore_default_zoom_level = fm_icon_view_restore_default_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_icon_view_clear;

@@ -54,6 +54,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 
 static GHashTable *windows;
 
@@ -550,6 +551,8 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 				   VALUE_COLUMN + 1,
 				   BASIC_PAGE_ICON_AND_NAME_ROW, 
 				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
+				   
+	nautilus_undo_setup_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
 
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (file);

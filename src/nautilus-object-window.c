@@ -90,6 +90,8 @@ static void               zoom_in_callback                              (Nautilu
 									 NautilusWindow         *window);
 static void               zoom_out_callback                             (NautilusZoomControl    *zoom_control,
 									 NautilusWindow         *window);
+static void               zoom_default_callback                         (NautilusZoomControl    *zoom_control,
+									 NautilusWindow         *window);
 static void               sidebar_panels_changed_callback               (gpointer                user_data);
 static NautilusViewFrame *window_find_sidebar_panel_by_identifier       (NautilusWindow         *window,
 									 NautilusViewIdentifier *identifier);
@@ -225,6 +227,15 @@ zoom_out_callback (NautilusZoomControl *zoom_control,
 	}
 }
 
+static void
+zoom_default_callback (NautilusZoomControl *zoom_control,
+            	       NautilusWindow      *window)
+{
+	if (window->content_view != NULL) {
+		nautilus_view_frame_zoom_default (window->content_view);
+	}
+}
+
 
 static void
 nautilus_window_constructed (NautilusWindow *window)
@@ -267,6 +278,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (window->zoom_control);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_callback, window);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_callback, window);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_default", zoom_default_callback, window);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all (location_bar_box);

@@ -53,6 +53,7 @@ struct NautilusZoomableClass
 					 gdouble zoom_level);
 	void (*zoom_in)	                (NautilusZoomable *view);
 	void (*zoom_out)	        (NautilusZoomable *view);
+	void (*zoom_default)	        (NautilusZoomable *view);
 	void (*zoom_to_fit)	        (NautilusZoomable *view);
 
 	gpointer servant_init_func, servant_destroy_func, vepv;

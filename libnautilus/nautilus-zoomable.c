@@ -50,6 +50,7 @@ enum {
 	SET_ZOOM_LEVEL,
 	ZOOM_IN,
 	ZOOM_OUT,
+	ZOOM_DEFAULT,
 	ZOOM_TO_FIT,
 	LAST_SIGNAL
 };
@@ -89,6 +90,8 @@ static void          impl_Nautilus_Zoomable_zoom_in             (impl_POA_Nautil
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_out            (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
+static void          impl_Nautilus_Zoomable_zoom_default        (impl_POA_Nautilus_Zoomable *servant,
+								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_to_fit         (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 
@@ -102,6 +105,7 @@ POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 	(gpointer) &impl_Nautilus_Zoomable__get_is_continuous,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_in,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_out,
+	(gpointer) &impl_Nautilus_Zoomable_zoom_default,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
 };
 
@@ -152,7 +156,7 @@ impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
 static void
 impl_Nautilus_Zoomable_zoom_in (impl_POA_Nautilus_Zoomable *servant,
 				CORBA_Environment          *ev)
-{
+{	
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_IN]);
 }
 
@@ -162,6 +166,14 @@ impl_Nautilus_Zoomable_zoom_out (impl_POA_Nautilus_Zoomable *servant,
 {
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_OUT]);
 }
+
+static void
+impl_Nautilus_Zoomable_zoom_default (impl_POA_Nautilus_Zoomable *servant,
+				CORBA_Environment          *ev)
+{
+	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_DEFAULT]);
+}
+
 
 static void
 impl_Nautilus_Zoomable_zoom_to_fit (impl_POA_Nautilus_Zoomable *servant,
@@ -275,6 +287,13 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_out),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+	signals[ZOOM_DEFAULT] = 
+		gtk_signal_new ("zoom_default",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_default),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	signals[ZOOM_TO_FIT] = 
@@ -474,3 +493,4 @@ nautilus_zoomable_real_set_bonobo_control (NautilusZoomable *view,
 	view->details->control = bonobo_control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (view->details->control));
 }
+

@@ -139,56 +139,61 @@ struct FMDirectoryViewClass {
 	 * with a function that returns a newly-allocated GList of
 	 * NautilusFile pointers.
 	 */
-	GList *	(* get_selection) 	 (FMDirectoryView *view);
+	GList *	(* get_selection) 	 	(FMDirectoryView *view);
 	
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
-        void    (* bump_zoom_level)      (FMDirectoryView *view,
-					  int zoom_increment);
+        void    (* bump_zoom_level)      	(FMDirectoryView *view,
+					  	 int zoom_increment);
+
+        /* bump_zoom_level is a function pointer that subclasses must override
+         * to change the zoom level of an object. */
+        void    (* restore_default_zoom_level) (FMDirectoryView *view);
 
         /* can_zoom_in is a function pointer that subclasses must override to
          * return whether the view is at maximum size (furthest-in zoom level) */
-        gboolean (* can_zoom_in)	 (FMDirectoryView *view);
+        gboolean (* can_zoom_in)	 	(FMDirectoryView *view);
 
         /* can_zoom_out is a function pointer that subclasses must override to
          * return whether the view is at minimum size (furthest-out zoom level) */
-        gboolean (* can_zoom_out)	 (FMDirectoryView *view);
+        gboolean (* can_zoom_out)	 	(FMDirectoryView *view);
         
         /* select_all is a function pointer that subclasses must override to
          * select all of the items in the view */
-        void     (* select_all)	         (FMDirectoryView *view);
+        void     (* select_all)	         	(FMDirectoryView *view);
 
         /* set_selection is a function pointer that subclasses must
          * override to select the specified items (and unselect all
          * others). The argument is a list of NautilusFiles. */
 
-        void     (* set_selection)	 (FMDirectoryView *view, GList *selection);
+        void     (* set_selection)	 	(FMDirectoryView *view, 
+        					 GList *selection);
 
         /* merge_menus is a function pointer that subclasses can override to
          * add their own menu items to the window's menu bar.
          * If overridden, subclasses must call parent class's function.
          */
-        void    (* merge_menus)         (FMDirectoryView *view);
+        void    (* merge_menus)         	(FMDirectoryView *view);
 
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
          * It is called (at least) whenever the selection changes. If overridden, 
          * subclasses must call parent class's function.
          */
-        void    (* update_menus)         (FMDirectoryView *view);
+        void    (* update_menus)         	(FMDirectoryView *view);
 
 	/* get_required_metadata_keys is a function pointer that subclasses
 	 * may override to request additional metadata to be read before showing
-	 * the directory view. If overridden, subclasses must call parent class's
+	 * the directory view. If overridden, subclasses must all parent class's
 	 * function.
 	 */
 	void    (* get_required_metadata_keys)
-                                         (FMDirectoryView *view,
-					  GList          **directory_metadata_keys,
-					  GList          **file_metadata_keys);
+                                         	(FMDirectoryView *view,
+					  	 GList           **directory_metadata_keys,
+					  	 GList           **file_metadata_keys);
 
-	void	(* start_renaming_item)	 (FMDirectoryView *view,
-					  const char *uri);
+	void	(* start_renaming_item)	 	(FMDirectoryView *view,
+					  	 const char *uri);
 };
 
 /* GtkObject support */
@@ -212,6 +217,7 @@ gboolean           fm_directory_view_can_zoom_in                    (FMDirectory
 gboolean           fm_directory_view_can_zoom_out                   (FMDirectoryView       *view);
 void               fm_directory_view_bump_zoom_level                (FMDirectoryView       *view,
 								     int                    zoom_increment);
+void               fm_directory_view_restore_default_zoom_level     (FMDirectoryView       *view);
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);

@@ -60,7 +60,7 @@ static void free_editable_object_data 			 (gpointer 	data);
 
 static void 
 nautilus_entry_user_changed_callback (NautilusEntry *entry)
-{	
+{		
 	/* Register undo transaction */	
 	editable_register_edit_undo (GTK_EDITABLE (entry));
 }
@@ -151,6 +151,7 @@ editable_register_edit_undo (GtkEditable *editable)
 	/* Check our undo registered flag */
 	data = gtk_object_get_data (GTK_OBJECT (editable), "undo_registered");
 	if (data == NULL) {
+		g_warning ("Undo data is NULL");
 		return;
 	}
 
@@ -164,7 +165,7 @@ editable_register_edit_undo (GtkEditable *editable)
 	undo_data->position = gtk_editable_get_position (editable);
 	undo_data->selection_start = editable->selection_start_pos;
 	undo_data->selection_end = editable->selection_end_pos;
-	
+
 	nautilus_undo_register
 		(GTK_OBJECT (editable),
 		 restore_editable_from_undo_snapshot_callback,
@@ -243,6 +244,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
 	/* Check our undo registered flag */
 	data = gtk_object_get_data (target, "undo_registered");
 	if (data == NULL) {
+		g_warning ("Undo regisetred flag not found");
 		return;
 	}
 	

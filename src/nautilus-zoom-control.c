@@ -41,6 +41,7 @@
 enum {
 	ZOOM_IN,
 	ZOOM_OUT,
+	ZOOM_DEFAULT,
 	LAST_SIGNAL
 };
 
@@ -117,6 +118,15 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
 						   zoom_out),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	signals[ZOOM_DEFAULT] =
+		gtk_signal_new ("zoom_default",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
+						   zoom_default),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
@@ -304,6 +314,7 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 		zoom_control->current_zoom += 1;
 		changed = TRUE;
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
+		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_DEFAULT]);			
 		zoom_control->current_zoom = NAUTILUS_ZOOM_LEVEL_STANDARD;
 		changed = TRUE;
 	}
