@@ -39,15 +39,17 @@ typedef struct _NautilusUserLevelManager NautilusUserLevelManager;
  * "user_level_changed", no parameters
  * 
  */
-NautilusUserLevelManager*    nautilus_user_level_manager_get                  (void);
-void                         nautilus_user_level_manager_set_user_level       (guint user_level);
-guint                        nautilus_user_level_manager_get_user_level       (void);
-guint                        nautilus_user_level_manager_get_num_user_levels  (void);
-NautilusStringList          *nautilus_user_level_manager_get_user_level_names (void);
-GtkObject                   *nautilus_user_level_manager_get_gconf_client     (void);
-char			    *nautilus_user_level_manager_make_current_gconf_key       (const char *preference_name);
-char			    *nautilus_user_level_manager_make_gconf_key       (const char *preference_name,
-									       int user_level);
+NautilusUserLevelManager*    nautilus_user_level_manager_get                    (void);
+void                         nautilus_user_level_manager_set_user_level         (guint       user_level);
+guint                        nautilus_user_level_manager_get_user_level         (void);
+guint                        nautilus_user_level_manager_get_num_user_levels    (void);
+NautilusStringList          *nautilus_user_level_manager_get_user_level_names   (void);
+GtkObject                   *nautilus_user_level_manager_get_gconf_client       (void);
+char			    *nautilus_user_level_manager_make_current_gconf_key (const char *preference_name);
+char			    *nautilus_user_level_manager_make_gconf_key         (const char *preference_name,
+										 int         user_level);
+char			    *nautilus_user_level_manager_get_user_level_string  (void);
+
 
 BEGIN_GNOME_DECLS
 

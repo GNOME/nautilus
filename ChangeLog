@@ -1,5 +1,34 @@
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_close_dialog_callback),
+	(nautilus_global_preferences_show_dialog),
+	(nautilus_global_preferences_hide_dialog),
+	(nautilus_global_preferences_set_dialog_title):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add functions for hiding the preferences dialog and changing its
+	title.  Also, connect a "closed" signal to prevent the dialog from
+	killing itself since its singleton and lives for the entire life
+	of the application.
+	
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(nautilus_user_level_manager_get_user_level),
+	(nautilus_user_level_manager_make_current_gconf_key),
+	(nautilus_user_level_manager_get_user_level_string):
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	Make nautilus_user_level_manager_get_user_level_string () public.
+	
+	* src/nautilus-window-menus.c: (settings_menu_customize_callback),
+	(nautilus_window_initialize_menus), (user_level_changed_callback),
+	(update_user_level_menu_items), (get_customize_user_level_string),
+	(get_customize_user_level_setttings_menu_string):
+	Change the customize menu item's label based on the user level.
+	Make it insensitive for the novice user level.  Close the
+	preferences dialog when the user level changes to novice.
+
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string.c:
 	(nautilus_str_capitalize), (nautilus_self_check_string):
 	* libnautilus-extensions/nautilus-string.h:

@@ -47,6 +47,8 @@ static char *     global_preferences_get_sidebar_panel_key              (const c
 static gboolean   global_preferences_is_sidebar_panel_enabled           (NautilusViewIdentifier *panel_identifier,
 									 gpointer                ignore);
 static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
+static gboolean   global_preferences_close_dialog_callback              (GtkWidget               *dialog,
+									 gpointer                user_data);
 
 /*
  * Private stuff
@@ -66,6 +68,11 @@ global_preferences_create_dialog (void)
 	 * an xml file.
 	 */
 	prefs_dialog = nautilus_preferences_dialog_new (GLOBAL_PREFERENCES_DIALOG_TITLE);
+
+	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
+			    "close",
+			    GTK_SIGNAL_FUNC (global_preferences_close_dialog_callback),
+			    NULL);
 
 	/* Create a preference box */
 	preference_box = NAUTILUS_PREFERENCES_BOX (nautilus_preferences_dialog_get_prefs_box
@@ -398,6 +405,15 @@ global_preferences_register_for_ui (void)
 				       (gconstpointer) FALSE);	
 }
 
+static gboolean
+global_preferences_close_dialog_callback (GtkWidget   *dialog,
+					  gpointer    user_data)
+{
+	nautilus_global_preferences_hide_dialog ();
+
+	return TRUE;
+}
+
 #define USER_LEVEL_NOVICE	0
 #define USER_LEVEL_INTERMEDIATE 1
 #define USER_LEVEL_HACKER	2
@@ -477,6 +493,25 @@ nautilus_global_preferences_show_dialog (void)
 	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
 
 	gtk_widget_show (global_prefs_dialog);
+}
+
+void
+nautilus_global_preferences_hide_dialog (void)
+{
+	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
+
+	gtk_widget_hide (global_prefs_dialog);
+}
+
+void
+nautilus_global_preferences_set_dialog_title (const char *title)
+{
+	GtkWidget *global_prefs_dialog;
+	g_return_if_fail (title != NULL);
+	
+	global_prefs_dialog = global_preferences_get_dialog ();
+
+	gtk_window_set_title (GTK_WINDOW (global_prefs_dialog), title);
 }
 
 void

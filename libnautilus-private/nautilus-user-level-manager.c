@@ -88,7 +88,6 @@ static void                      user_level_manager_destroy                   (G
 static NautilusUserLevelManager *user_level_manager_new                       (void);
 static void                      user_level_manager_ensure_global_manager     (void);
 static void                      user_level_set_default_if_needed             (NautilusUserLevelManager      *manager);
-char *                           gconf_get_user_level_string                  (void);
 
 
 /* Gconf callbacks */
@@ -204,19 +203,6 @@ user_level_manager_ensure_global_manager (void)
 	g_assert (global_manager != NULL);
 }
 
-char *
-gconf_get_user_level_string (void)
-{
-	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
-	char			 *user_level_string;
-
-	g_assert (manager->gconf_client != NULL);
-	
-	user_level_string = gconf_client_get_string (manager->gconf_client, USER_LEVEL_KEY, NULL);
-
-	return user_level_string;
-}
-
 static void
 user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 {
@@ -305,7 +291,7 @@ nautilus_user_level_manager_get_user_level (void)
 	char			 *user_level_string;
 	gint			 index;
 
-	user_level_string = gconf_get_user_level_string ();
+	user_level_string = nautilus_user_level_manager_get_user_level_string ();
 	/* FIXME: Asserting based on something that's read from GConf
 	 * seems like a bad idea. It means we core dump if
 	 * something's wrong.
@@ -388,7 +374,7 @@ nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
-	user_level_string = gconf_get_user_level_string ();
+	user_level_string = nautilus_user_level_manager_get_user_level_string ();
 	g_assert (user_level_string != NULL);
 
 	key = g_strdup_printf ("%s/%s/%s",
@@ -401,3 +387,15 @@ nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 	return key;
 }
 
+char *
+nautilus_user_level_manager_get_user_level_string (void)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+	char			 *user_level_string;
+
+	g_assert (manager->gconf_client != NULL);
+	
+	user_level_string = gconf_client_get_string (manager->gconf_client, USER_LEVEL_KEY, NULL);
+
+	return user_level_string;
+}

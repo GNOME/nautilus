@@ -44,25 +44,33 @@
 
 static GtkWindow *bookmarks_window = NULL;
 
-static void                  activate_bookmark_in_menu_item      (BonoboUIHandler        *uih,
-								  gpointer                user_data,
-								  const char             *path);
-static void                  append_bookmark_to_menu             (NautilusWindow         *window,
-								  const NautilusBookmark *bookmark,
-								  const char             *menu_item_path);
-static void                  clear_appended_bookmark_items       (NautilusWindow         *window,
-								  const char             *menu_path,
-								  const char             *last_static_item_path);
-static NautilusBookmarkList *get_bookmark_list                   (void);
-static void                  refresh_bookmarks_in_go_menu        (NautilusWindow         *window);
-static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow         *window);
-static void                  update_eazel_theme_menu_item        (NautilusWindow         *window);
-static void                  update_undo_menu_item               (NautilusWindow         *window);
-static void                  edit_bookmarks                      (NautilusWindow         *window);
+static void                  activate_bookmark_in_menu_item                 (BonoboUIHandler        *uih,
+									     gpointer                user_data,
+									     const char             *path);
+static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
+									     const NautilusBookmark *bookmark,
+									     const char             *menu_item_path);
+static void                  clear_appended_bookmark_items                  (NautilusWindow         *window,
+									     const char             *menu_path,
+									     const char             *last_static_item_path);
+static NautilusBookmarkList *get_bookmark_list                              (void);
+static void                  refresh_bookmarks_in_go_menu                   (NautilusWindow         *window);
+static void                  refresh_bookmarks_in_bookmarks_menu            (NautilusWindow         *window);
+static void                  update_eazel_theme_menu_item                   (NautilusWindow         *window);
+static void                  update_undo_menu_item                          (NautilusWindow         *window);
+static void                  edit_bookmarks                                 (NautilusWindow         *window);
+
+
+
 
 /* User level things */
-static guint                 convert_menu_path_to_user_level  (const char             *path);
-static const char *          convert_user_level_to_menu_path  (guint                   user_level);
+static guint                 convert_menu_path_to_user_level                (const char             *path);
+static const char *          convert_user_level_to_menu_path                (guint                   user_level);
+static char *                get_customize_user_level_setttings_menu_string (void);
+static void                  update_user_level_menu_items                   (NautilusWindow         *window);
+static void                  user_level_changed_callback                    (GtkObject              *user_level_manager,
+									     gpointer                user_data);
+static char *                get_customize_user_level_string                (void);
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
@@ -307,7 +315,7 @@ settings_menu_customize_callback (BonoboUIHandler *ui_handler,
 				  gpointer user_data,
 				  const char *path)
 {
-	nautilus_property_browser_new();
+	nautilus_property_browser_new ();
 }
 
 static void
@@ -863,8 +871,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	bonobo_ui_handler_menu_new_item (ui_handler,
 					 NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
-					 _("Customize Current User Level..."),
-					 _("Customize Current User Level"),
+					 _("Customize Settings..."),
+					 _("Customize Settings for the Current User Level"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
@@ -872,16 +880,24 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 settings_menu_user_level_customize_callback,
         				 NULL);
-	
+
 	bonobo_ui_handler_menu_new_separator (ui_handler,
 					      NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR,
 					      -1);
 
- 	/* Update the user level menus to reflect the user level reality */
-	bonobo_ui_handler_menu_set_radio_state (
-		ui_handler, 
-		convert_user_level_to_menu_path (nautilus_user_level_manager_get_user_level ()),
-		TRUE);
+//  	/* Update the user level menus to reflect the user level reality */
+// 	bonobo_ui_handler_menu_set_radio_state (
+// 		ui_handler, 
+// 		convert_user_level_to_menu_path (nautilus_user_level_manager_get_user_level ()),
+// 		TRUE);
+
+	update_user_level_menu_items (window);
+
+	/* Register to find out about user level changes in order to update the customize label */
+	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
+			    "user_level_changed",
+			    user_level_changed_callback,
+			    window);
 	
 	window->updating_bonobo_radio_menu_item = FALSE;
 
@@ -1090,6 +1106,68 @@ update_undo_menu_item (NautilusWindow *window)
 	}
 }
 
+static void
+user_level_changed_callback (GtkObject	*user_level_manager,
+			     gpointer	user_data)
+{
+	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+
+	update_user_level_menu_items (NAUTILUS_WINDOW (user_data));
+
+	/* Hide the customize dialog for notive user level */
+	if (nautilus_user_level_manager_get_user_level () == 0) {
+		nautilus_global_preferences_hide_dialog ();
+	}
+	/* Otherwise update its title to reflect the user level */
+	else {
+		char *dialog_title;
+
+		dialog_title = get_customize_user_level_string ();
+		g_assert (dialog_title != NULL);
+
+		nautilus_global_preferences_set_dialog_title (dialog_title);
+	}
+}
+
+static void
+update_user_level_menu_items (NautilusWindow *window)
+{
+	char *customize_string;
+	int user_level;
+
+        g_assert (window != NULL);
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+	window->updating_bonobo_radio_menu_item = TRUE;
+
+	customize_string = get_customize_user_level_setttings_menu_string ();
+	g_assert (customize_string != NULL);
+
+	user_level = nautilus_user_level_manager_get_user_level ();
+
+ 	/* Update the user radio group to reflect reality */
+	bonobo_ui_handler_menu_set_radio_state (window->uih, 
+						convert_user_level_to_menu_path (user_level),
+						TRUE);
+
+	/* FIXME: We want to hide the customize button for the novice user level.
+	 * It cant find a bonobo ui handler call to hide a menu item, so make it 
+	 * insensitive for now.
+	 */
+	bonobo_ui_handler_menu_set_sensitivity (window->uih,
+						NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
+						(user_level > 0));
+
+
+ 	/* Update the "Customize Settings..." item to reflect the user level to customize */
+	bonobo_ui_handler_menu_set_label (window->uih,
+					  NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
+					  customize_string);
+
+	window->updating_bonobo_radio_menu_item = FALSE;
+}
+
 static guint
 convert_menu_path_to_user_level (const char *path)
 {
@@ -1131,3 +1209,42 @@ convert_user_level_to_menu_path (guint user_level)
 
 	return NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE;
 }
+
+static char *
+get_customize_user_level_string (void)
+{
+	char *user_level_string;
+	char *capitalized_user_level_string;
+	char *title;
+	
+	user_level_string = nautilus_user_level_manager_get_user_level_string ();
+	g_assert (user_level_string != NULL);
+
+	capitalized_user_level_string = nautilus_str_capitalize (user_level_string);
+	g_assert (capitalized_user_level_string != NULL);
+	
+	g_free (user_level_string);
+
+	title = g_strdup_printf ("Customize %s Settings", capitalized_user_level_string);
+
+	g_free (capitalized_user_level_string);
+
+	return title;
+}
+
+static char *
+get_customize_user_level_setttings_menu_string (void)
+{
+	char *title;
+	char *ellipse_suffixed_title;
+
+	title = get_customize_user_level_string ();
+	g_assert (title != NULL);
+
+	ellipse_suffixed_title = g_strdup_printf ("%s...", title);
+
+	g_free (title);
+
+	return ellipse_suffixed_title;
+}
+
