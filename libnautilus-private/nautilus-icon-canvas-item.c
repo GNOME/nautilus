@@ -594,6 +594,7 @@ multiply_pixbuf_rgba (GdkPixbuf *pixbuf, guint rgba)
 	int width, height, rowstride;
 	gboolean has_alpha;
 	int x, y;
+	guchar *p;
 
 	g_return_if_fail (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
 	g_return_if_fail (gdk_pixbuf_get_n_channels (pixbuf) == 3
@@ -612,8 +613,6 @@ multiply_pixbuf_rgba (GdkPixbuf *pixbuf, guint rgba)
 	pixels = gdk_pixbuf_get_pixels (pixbuf);
 
 	for (y = 0; y < height; y++) {
-		guchar *p;
-
 		p = pixels;
 
 		for (x = 0; x < width; x++) {

@@ -5200,6 +5200,8 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
 	char *text_frame_path, *highlight_color_str;
+	GtkStyle *style;
+	guchar r, g, b;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
@@ -5216,9 +5218,6 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
 	
 	if (highlight_color_str == NULL) {
-		GtkStyle *style;
-		guchar r, g, b;
-
 		style = gtk_widget_get_style (GTK_WIDGET (container));
 
 		r = style->base[GTK_STATE_SELECTED].red >> 8;
