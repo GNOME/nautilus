@@ -99,8 +99,12 @@ enum {
 	BOUNDS_CHANGED,
 	LAST_SIGNAL
 };
+
 static guint signals[LAST_SIGNAL];
 
+static	GdkColor highlight_background_color;
+static	GdkColor highlight_text_color;
+	
 /* GtkObject */
 static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass  *class);
 static void     nautilus_icon_canvas_item_initialize       (NautilusIconCanvasItem       *item);
@@ -208,6 +212,10 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
+
+	/* set up the highlight colors - soon, get these from preferences */
+	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
+	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);	
 }
 
 /* Object initialization function for the icon item. */
@@ -558,6 +566,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	NautilusIconCanvasItemDetails *details;
 	int width_so_far, height_so_far;
 	GdkGC* gc;
+	GdkGCValues save_gc;
 	int max_text_width;
 	int icon_width, text_left, box_left;
 	GnomeIconTextInfo *icon_text_info;
@@ -565,9 +574,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	const char *text_piece;
 	int i;
 	char *combined_text;
-	gboolean have_editable, have_additional;
+	gboolean have_editable, have_additional, needs_highlight;
 
 	details = item->details;
+	needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
 
 	have_editable = details->editable_text != NULL
 		&& details->editable_text[0] != '\0';
@@ -598,6 +608,21 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	max_text_width = floor (MAX_TEXT_WIDTH * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit);
 	
+	/* if the icon is highlighted, do some set-up */
+				
+	if (needs_highlight && drawable != NULL) {
+		GnomeCanvasItem *canvas_item = GNOME_CANVAS_ITEM(item);
+		gdk_gc_get_values(gc, &save_gc);
+				
+		gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),  &highlight_background_color, FALSE, TRUE);
+		gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),  &highlight_text_color, FALSE, TRUE);
+
+		gdk_gc_set_foreground(gc, &highlight_background_color);
+		
+		gdk_draw_rectangle (drawable, gc, TRUE, icon_left + (icon_width - details->text_width) / 2, icon_bottom, details->text_width, details->text_height);
+		gdk_gc_set_foreground(gc, &highlight_text_color);	
+	}
+	
 	pieces = g_strsplit (combined_text, "\n", 0);
 	
 	for (i = 0; (text_piece = pieces[i]) != NULL; i++) {
@@ -614,17 +639,21 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && details->is_renaming == FALSE) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
+			
+
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
-						
-			/* if it's selected, embolden the text by drawing again offset by one pixel */
-			if (details->is_highlighted_for_selection || details->is_highlighted_for_drop)
+			
+			/* if it's highlighted, embolden by drawing twice */
+			if (needs_highlight)
 				gnome_icon_paint_text (icon_text_info, drawable, gc,
-						       text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
+					       		  text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
+
 
 			/* if it's prelit, underline the text */
 			if (details->is_prelit) {
 				gnome_icon_underline_text (icon_text_info, drawable, gc, text_left + 1, icon_bottom + height_so_far);
+			
 			}
 		}
 		
@@ -634,9 +663,14 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		gnome_icon_text_info_free (icon_text_info);
 	}
 	g_strfreev (pieces);
+
+	if (needs_highlight && drawable != NULL)
+		gdk_gc_set_foreground(gc, &save_gc.foreground);
 	
 	height_so_far += 2; /* extra slop for nicer highlighting */
-	
+	if (needs_highlight)
+		width_so_far += 2; /* account for emboldening */
+		
 	if (drawable != NULL) {
 		/* Current calculations should match what we measured before drawing.
 		 * This assumes that we will always make a separate call to measure
