@@ -958,14 +958,26 @@ nautilus_directory_notify_files_added (GList *uris)
 			continue;
 		}
 
-		/* Collect the URIs to use. */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		if (vfs_uri == NULL) {
-			nautilus_directory_unref (directory);
-			g_warning ("bad uri %s", uri);
-			continue;
+		file = nautilus_file_get_existing (uri);
+		if (file) {
+			/* A file already exists, it was probably renamed.
+			 * If it was renamed this could be ignored, but 
+			 * queue a change just in case */
+			nautilus_file_changed (file);
+			nautilus_file_unref (file);
+		} else {
+			/* Collect the URIs to use. */
+			vfs_uri = gnome_vfs_uri_new (uri);
+			if (vfs_uri == NULL) {
+				nautilus_directory_unref (directory);
+				g_warning ("bad uri %s", uri);
+				continue;
+			}
+			
+			hash_table_list_prepend (added_lists, 
+						 directory, 
+						 vfs_uri);
 		}
-		hash_table_list_prepend (added_lists, directory, vfs_uri);
 		nautilus_directory_unref (directory);
 	}
 
