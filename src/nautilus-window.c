@@ -82,24 +82,26 @@ enum {
 /* Other static variables */
 static GSList *history_list = NULL;
 
-static void nautilus_window_initialize_class      	(NautilusWindowClass 	*klass);
-static void nautilus_window_initialize            	(NautilusWindow      	*window);
-static void nautilus_window_destroy               	(GtkObject          	*object);
-static void nautilus_window_set_arg               	(GtkObject           	*object,
-						   	 GtkArg               	*arg,
-						  	 guint               	arg_id);
-static void nautilus_window_get_arg               	(GtkObject           	*object,
-						   	 GtkArg              	*arg,
-						  	 guint                	arg_id);
-static void nautilus_window_realize               	(GtkWidget           	*widget);
-static void nautilus_window_real_set_content_view 	(NautilusWindow      	*window,
-						   	 NautilusViewFrame   	*new_view);
-static void sidebar_panels_changed_callback       	(gpointer             	user_data);
-static void toolbar_visibility_changed_callback   	(gpointer		user_data);
-static void locationbar_visibility_changed_callback   	(gpointer		user_data);
-static void statusbar_visibility_changed_callback   	(gpointer		user_data);
-static void sidebar_visibility_changed_callback   	(gpointer		user_data);
-static void nautilus_window_show			(GtkWidget 		*widget);
+static void nautilus_window_initialize_class        (NautilusWindowClass *klass);
+static void nautilus_window_initialize              (NautilusWindow      *window);
+static void nautilus_window_destroy                 (GtkObject           *object);
+static void nautilus_window_set_arg                 (GtkObject           *object,
+						     GtkArg              *arg,
+						     guint                arg_id);
+static void nautilus_window_get_arg                 (GtkObject           *object,
+						     GtkArg              *arg,
+						     guint                arg_id);
+static void nautilus_window_size_request            (GtkWidget           *widget,
+						     GtkRequisition      *requisition);
+static void nautilus_window_realize                 (GtkWidget           *widget);
+static void nautilus_window_real_set_content_view   (NautilusWindow      *window,
+						     NautilusViewFrame   *new_view);
+static void sidebar_panels_changed_callback         (gpointer             user_data);
+static void toolbar_visibility_changed_callback     (gpointer             user_data);
+static void locationbar_visibility_changed_callback (gpointer             user_data);
+static void statusbar_visibility_changed_callback   (gpointer             user_data);
+static void sidebar_visibility_changed_callback     (gpointer             user_data);
+static void nautilus_window_show                    (GtkWidget           *widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -135,6 +137,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 				 ARG_CONTENT_VIEW);
 	
 	widget_class->realize = nautilus_window_realize;
+	widget_class->size_request = nautilus_window_size_request;
 }
 
 static void
@@ -550,6 +553,43 @@ nautilus_window_realize (GtkWidget *widget)
 		 * leaking the pixmap and mask here, but if we unref
 		 * them here, the task bar crashes.
 		 */
+	}
+}
+
+static void
+nautilus_window_size_request (GtkWidget		*widget,
+			      GtkRequisition	*requisition)
+{
+	guint max_width;
+	guint max_height;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (widget));
+	g_return_if_fail (requisition != NULL);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+
+	/* Limit the requisition to be within 90% of the available screen 
+	 * real state.
+	 *
+	 * This way the user will have a fighting chance of getting
+	 * control of their window back if for whatever reason one of the
+	 * window's descendants decide they want to be 4000 pixels wide.
+	 *
+	 * Note that the user can still make the window really huge by hand.
+	 *
+	 * Bugs in components or other widgets that cause such huge geometries
+	 * to be requested, should still be fixed.  This code is here only to 
+	 * prevent the extremely frustrating consequence of such bugs.
+	 */
+	max_width = (gdk_screen_width () * 90) / 100;
+	max_height = (gdk_screen_height () * 90) / 100;
+
+	if (requisition->width > max_width) {
+		requisition->width = max_width;
+	}
+	
+	if (requisition->height > max_height) {
+		requisition->height = max_height;
 	}
 }
 

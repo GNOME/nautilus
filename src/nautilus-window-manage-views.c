@@ -66,6 +66,21 @@
 #define x_message(parameters)
 #endif
 
+/* This number controls a maximum character count for a Nautilus window title
+ * (not counting the prefix 'Nautilus:')
+ * 
+ * Without limiting the window title, the window manager makes the window wide
+ * enough to able to display the whole title.  When this happens, the Nautilus
+ * window in question becomes unusable.
+ *
+ * This is a very common thing to happen, especially with generated web content,
+ * such as bugzilla queries, which generate very long urls.
+ *
+ * I found the number experimentally.  To properly compute it, we would need 
+ * window manager support to access the character metrics for the window title.
+ */
+#define MAX_TITLE_LENGTH 180
+
 void
 nautilus_window_report_selection_change (NautilusWindow *window,
                                          GList *selection,
@@ -213,12 +228,17 @@ static void
 nautilus_window_update_title_internal (NautilusWindow *window, const char *title)
 {
         char *window_title;
+        char *truncated_title;
         
         if (strcmp (title, _("Nautilus")) == 0) {
                 gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
         } else {
-                window_title = g_strdup_printf (_("Nautilus: %s"), title);
+                truncated_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
+                window_title = g_strdup_printf (_("Nautilus: %s"), truncated_title);
+                g_free (truncated_title);
+
                 gtk_window_set_title (GTK_WINDOW (window), window_title);
+
                 g_free (window_title);
         }
         

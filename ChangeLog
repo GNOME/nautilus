@@ -1,3 +1,23 @@
+2000-08-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Make Nautilus tolerant to window titles and component geometries
+	that are too huge to be usable.
+	
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_middle_truncate), (nautilus_self_check_string):
+	* libnautilus-extensions/nautilus-string.h:
+	New function for truncating strings in the middle.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_update_title_internal):
+	Truncate titles to something reasonable to avoid the window
+	manager from making the window too huge to be usable.
+
+	* src/nautilus-window.c: (nautilus_window_initialize_class),
+	(nautilus_window_realize), (nautilus_window_size_request):
+	Limit the window geometry requisition to within the avaialble
+	screen real state.
+	
 2000-08-09  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

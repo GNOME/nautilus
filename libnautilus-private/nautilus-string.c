@@ -483,6 +483,51 @@ nautilus_str_capitalize (const char *string)
 	return capitalized;
 }
 
+char *
+nautilus_str_middle_truncate (const char *string,
+			      guint truncate_length)
+{
+	char *truncated;
+	guint length;
+	guint num_left_chars;
+	guint num_right_chars;
+
+	const char delimter[] = "...";
+	const guint delimter_length = strlen (delimter);
+	const guint min_truncate_length = delimter_length + 2;
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	/* It doesnt make sense to truncate strings to less than
+	 * the size of the delimter plus 2 characters (one on each
+	 * side)
+	 */
+	if (truncate_length < min_truncate_length) {
+		return strdup (string);
+	}
+
+	length = strlen (string);
+
+	/* Make sure the string is not already small enough. */
+	if (length <= truncate_length) {
+		return strdup (string);
+	}
+
+	/* Find the 'middle' where the truncation will occur. */
+	num_left_chars = (truncate_length - delimter_length) / 2;
+	num_right_chars = truncate_length - num_left_chars - delimter_length + 1;
+
+	truncated = g_malloc (sizeof(char) * truncate_length + 1);
+
+	strncpy (truncated, string, num_left_chars);
+	strncpy (truncated + num_left_chars, delimter, delimter_length);
+	strncpy (truncated + num_left_chars + delimter_length, string + length - num_right_chars + 1, num_right_chars);
+	
+	return truncated;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -613,6 +658,38 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize (""), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize ("foo"), "Foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize ("Foo"), "Foo");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 0), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 1), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 3), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 4), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 5), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 6), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("foo", 7), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 0), "a_much_longer_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 1), "a_much_longer_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 2), "a_much_longer_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 3), "a_much_longer_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 4), "a_much_longer_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 5), "a...o");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 6), "a...oo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 7), "a_...oo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 8), "a_...foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("a_much_longer_foo", 9), "a_m...foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 8), "so...ven");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 8), "so...odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 9), "som...ven");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 9), "som...odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 10), "som...even");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 10), "som..._odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 11), "some...even");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 11), "some..._odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 12), "some..._even");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 12), "some...g_odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 13), "somet..._even");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 13), "something_odd");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_even", 14), "something_even");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_middle_truncate ("something_odd", 13), "something_odd");
 
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_to_int (string, &integer), boolean_result); \
