@@ -72,13 +72,13 @@ static gboolean	     need_to_show_first_time_druid		 (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
-static POA_Bonobo_GenericFactory__epv factory_epv = {
+static POA_GNOME_ObjectFactory__epv factory_epv = {
 	NULL,
 	&manufactures,
 	&create_object
 };
 static PortableServer_ServantBase__epv base_epv;
-static POA_Bonobo_GenericFactory__vepv vepv = {
+static POA_GNOME_ObjectFactory__vepv vepv = {
 	&base_epv,
 	&factory_epv
 };
@@ -135,8 +135,8 @@ create_factory (PortableServer_POA poa,
 	BonoboObjectServant *servant;
 
 	servant = g_new0 (BonoboObjectServant, 1);
-	((POA_Bonobo_GenericFactory *) servant)->vepv = &vepv;
-	POA_Bonobo_GenericFactory__init ((PortableServer_Servant) servant, ev);
+	((POA_GNOME_ObjectFactory *) servant)->vepv = &vepv;
+	POA_GNOME_ObjectFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
 
