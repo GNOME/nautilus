@@ -309,7 +309,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	g_print ("<P>");
 	if ((header->copyright_holder) && (header->copyright_year))
 		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">Copyright</A> &copy; %s by %s", context->base_file, header->copyright_year, header->copyright_holder);
-	g_print ("<HR>\n<H1>Table of Contents</H1>\n\n");
+	g_print ("<HR>\n<H2>Table of Contents</H2>\n\n");
 	g_print ("<P>\n");
 }
 
@@ -445,18 +445,18 @@ toc_title_start_element (Context *context,
 	case SECTION:
 	case APPENDIX:
 		if (context->sect1 == 0) {
-			g_print ("<H1>");
+			g_print ("<DT>");
 		} else if (context->sect2 == 0) {
 			if (context->chapter > 0) {
-				g_print ("<H2>&nbsp;&nbsp;");
+				g_print ("<DT>&nbsp;&nbsp;");
 			} else {
-				g_print ("<H2>");
+				g_print ("<DT>");
 			}
 
 		} else if (context->sect3 == 0) {
-			g_print ("<H3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			g_print ("<DT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		} else {
-			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			g_print ("<DT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 
 		if (context->preface > 0) {
@@ -516,11 +516,11 @@ toc_title_start_element (Context *context,
 	case SECT4:
 	case SECT5:
 		if (context->sect2 == 0) {
-			g_print ("<H2>");
+			g_print ("<DT>");
 		} else if (context->sect3 == 0) {
-			g_print ("<H3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			g_print ("<DT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		} else {
-			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			g_print ("<DT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 		if (context->chapter > 0) {
 			g_print ("%d", context->chapter);
@@ -570,26 +570,26 @@ toc_title_end_element (Context *context,
 	switch (index) {
 	case PREFACE:
 	case APPENDIX:
-		g_print ("</A></H1>");
+		g_print ("</A></DT>");
 		break;
 	case CHAPTER:
-		g_print ("</A></H1>");
+		g_print ("</A></DT>");
 		break;
 	case SECT1:
 	case SECTION:
 		if (context->doctype == ARTICLE_DOC) {
-			g_print ("</A></H2>\n");
+			g_print ("</A></DT>\n");
 		} else {
-			g_print ("</H2>");
+			g_print ("</DT>");
 		}
 		break;
 	case SECT2:
-		g_print ("</H3>\n");
+		g_print ("</DT>\n");
 		break;
 	case SECT3:
 	case SECT4:
 	case SECT5:
-		g_print ("</H4>\n");
+		g_print ("</DT>\n");
 		break;
 	default:
 		break;
