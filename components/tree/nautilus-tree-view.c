@@ -318,13 +318,26 @@ cancel_activation (NautilusTreeView *view)
 }
 
 static void
+row_activated_callback (GtkTreeView *treeview, GtkTreePath *path, 
+			GtkTreeViewColumn *column, NautilusTreeView *view)
+{
+	if (gtk_tree_view_row_expanded (view->details->tree_widget, path)) {
+		gtk_tree_view_collapse_row (view->details->tree_widget, path);
+	} else {
+		gtk_tree_view_expand_row (view->details->tree_widget, 
+					  path, FALSE);
+	}
+}
+
+
+static void
 selection_changed_callback (GtkTreeSelection *selection,
 			    NautilusTreeView *view)
 {
 	NautilusFileAttributes attributes;
 	GtkTreeIter iter;
 
-        cancel_activation (view);
+	cancel_activation (view);
 
 	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
 		return;
@@ -583,6 +596,10 @@ create_tree (NautilusTreeView *view)
 
 	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)), "changed",
 				 G_CALLBACK (selection_changed_callback), view, 0);
+
+	g_signal_connect (G_OBJECT (view->details->tree_widget), 
+			  "row-activated", G_CALLBACK (row_activated_callback),
+			  view);
 
 	schedule_show_selection (view);
 }
