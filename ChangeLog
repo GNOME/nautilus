@@ -1,3 +1,21 @@
+2000-11-14  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        (init_entities),
+        (gdb3html_internalSubset):
+        New function and a workaround for the entity bug. Should now support
+        &mdash;/&hellip;/&percent; - Fixes bug #2438.
+
+        * components/help/help-method.c:
+        (transform_file), (old_help_file),
+        (find_help_file):
+        Realized that that the gnome_help_file_path function checks for the
+        existance of the file using g_file_exists. This spoiled things for the
+        way we were trying to detect locale. Fixed it (Bug #4618).
+
+        There is still a bug in this which I will tackle later. This'll do for
+        now.
+
 2000-11-14  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:

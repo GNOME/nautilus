@@ -196,6 +196,15 @@ find_element_info (ElementInfo *elements,
 
 	return NULL;
 }
+static void
+init_entities (xmlDocPtr doc) {
+	xmlAddDocEntity (doc, "mdash", XML_INTERNAL_GENERAL_ENTITY,
+		         NULL, NULL, "&mdash;");
+	xmlAddDocEntity (doc, "hellip", XML_INTERNAL_GENERAL_ENTITY,
+		         NULL, NULL, "&hellip;");
+	xmlAddDocEntity (doc, "percnt", XML_INTERNAL_GENERAL_ENTITY,
+		         NULL, NULL, "%");
+}
 
 /* our callbacks for the xmlSAXHandler */
 
@@ -408,6 +417,10 @@ gdb3html_internalSubset (Context *context, const xmlChar *name,
 	ctxt = context->ParserCtxt;
 	
 	xmlCreateIntSubset (ctxt->myDoc, name, ExternalID, SystemID);
+	/* Initialize our "custom" entities - This is a libxml 1.x SAX hack */
+	/* FIXME: Remove the below when we use DOM and/or libxml 2.x */
+	init_entities (ctxt->myDoc);
+
 	if (((ExternalID != NULL) || (SystemID != NULL)) &&
 	    (ctxt->validate && ctxt->wellFormed && ctxt->myDoc)) {
 		xmlDtdPtr ret = NULL;
