@@ -7,7 +7,6 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	-I$(top_srcdir)/components/services/trilobite/src \
 	-I$(top_srcdir)/components/services/trilobite/lib \
 	$(GNOMEUI_CFLAGS)                       \
 	$(GCONF_CFLAGS)				\
@@ -60,7 +59,6 @@ trilobite_eazel_time_service_cli_LDFLAGS =	\
 	$(NULL)
 
 trilobite_eazel_time_service_cli_LDADD = 	\
-	$(top_builddir)/components/services/trilobite/src/libtrilobited.la \
 	$(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
 	$(NULL)
 

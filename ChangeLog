@@ -1,5 +1,16 @@
 2000-05-24  Eskil Heyn Olsen  <eskil@eazel.om>
 
+	* components/services/trilobite/Makefile.am:
+	Accidently removed the wrong subdir, reinserted lib and removed src.
+
+	* components/services/trilobite/sample/service/Makefile.am
+	* components/services/trilobite/sample/command-line/Makefile.am
+	* components/services/time/service/Makefile.am:
+	updated to use libtrilobite instead of libtrilobited
+
+	* components/services/time/command-line/Makefile.am:
+	Updated to only use libtrilobite
+
 	* components/services/trilobite/Makefile.am (SUBDIRS): 
 	Removed src from subdirs.
 

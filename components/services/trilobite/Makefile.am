@@ -1,2 +1,2 @@
-SUBDIRS = idl src sample
+SUBDIRS = idl lib sample
 
