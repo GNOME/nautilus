@@ -1,4 +1,24 @@
 2002-10-05  Dave Camp  <dave@ximian.com>
+
+	* icons/crux_eggplant/crux_eggplant.xml:
+	* icons/crux_teal/crux_teal.xml:
+	* icons/default/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/sierra/sierra.xml:
+	* icons/tahoe/tahoe.xml:  Remove unused theme elements.
+	* configure.in:
+	* icons/crux_eggplant/Makefile.am:
+	* icons/crux_teal/Makefile.am:
+	* icons/default/Makefile.am:
+	* icons/gnome/Makefile.am:
+	* icons/sierra/Makefile.am:
+	* icons/tahoe/Makefile.am: Remove unused icons and backgrounds
+	from the build.
+	* libnautilus-private/nautilus-theme.c: (has_theme_xml),
+	(theme_get_themes_for_location): Check for the existence of
+	theme.xml rather than an i-directory image.
+
+2002-10-05  Dave Camp  <dave@ximian.com>
 	
 	* libnautilus-private/nautilus-directory-background.c:
 	(initialize_background_from_settings),

@@ -395,31 +395,6 @@ vfs_file_exists (const char *file_uri)
 	return result == GNOME_VFS_OK;
 }
 
-static gboolean
-has_image_file (const char *path_uri,
-		const char *dir_name,
-		const char *image_file)
-{
-	char* image_uri;
-	gboolean exists;
-
-	image_uri = g_strdup_printf ("%s/%s/%s.png", path_uri, dir_name, image_file);
-
-	exists = vfs_file_exists (image_uri);
-	g_free (image_uri);
-
-	if (exists) {
-		return TRUE;
-	}
-
-	image_uri = g_strdup_printf ("%s/%s/%s.svg", path_uri, dir_name, image_file);
-
-	exists = vfs_file_exists (image_uri);
-	g_free (image_uri);
-
-	return exists;
-}
-
 static char*
 theme_get_property (const char *themes_location_uri,
 		    const char *theme_name,
@@ -534,6 +509,23 @@ theme_list_prepend (GList *theme_list,
 	return g_list_prepend (theme_list, attributes);
 }
 
+static gboolean 
+has_theme_xml (const char *theme_location_uri,
+	       const char *theme_name)
+{
+	char *xml_uri;
+	gboolean ret;
+	
+	xml_uri = g_strdup_printf ("%s/%s/%s.xml", 
+				   theme_location_uri,
+				   theme_name, theme_name);
+
+	ret = vfs_file_exists (xml_uri);
+	g_free (xml_uri);
+	
+	return ret;
+}
+
 static GList *
 theme_get_themes_for_location (const char *themes_location_uri,
 			       gboolean builtin)
@@ -563,7 +555,7 @@ theme_get_themes_for_location (const char *themes_location_uri,
 
 		if ((file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
 		    && (file_info->name[0] != '.')) {
-			if (has_image_file (themes_location_uri, file_info->name, "i-directory" )) {
+			if (has_theme_xml (themes_location_uri, file_info->name )) {
 				themes = theme_list_prepend (themes,
 							     themes_location_uri,
 							     file_info->name,
