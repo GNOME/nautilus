@@ -1,16 +1,17 @@
---- Makefile.in.in	Fri Oct 27 16:45:24 2000
-+++ Makefile.in.in	Fri Oct 27 16:45:03 2000
-@@ -35,7 +35,8 @@
+--- Makefile.in.in	Sat Oct 28 04:56:44 2000
++++ Makefile.in.in	Sat Oct 28 04:56:01 2000
+@@ -35,7 +35,9 @@
  GMSGFMT = PATH=../src:$$PATH @GMSGFMT@
  MSGFMT = @MSGFMT@
  XGETTEXT = PATH=../src:$$PATH @XGETTEXT@
 -MSGMERGE = PATH=../src:$$PATH msgmerge
 +MSGMERGE = PATH=../src:$$PATH ./update.pl --dist
 +GENPOT   = PATH=../src:$$PATH ./update.pl --pot
++GENHEAD  = touch .headerlock && PATH=../src:$$PATH ./update.pl --headers
  
  DEFS = @DEFS@
  CFLAGS = @CFLAGS@
-@@ -85,12 +86,7 @@
+@@ -85,12 +87,7 @@
  all-no:
  
  $(srcdir)/$(PACKAGE).pot: $(POTFILES)
@@ -24,7 +25,7 @@
  
  $(srcdir)/cat-id-tbl.c: stamp-cat-id; @:
  $(srcdir)/stamp-cat-id: $(PACKAGE).pot
-@@ -216,13 +212,12 @@
+@@ -216,18 +213,18 @@
  	for cat in $$catalogs; do \
  	  cat=`basename $$cat`; \
  	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
@@ -41,3 +42,9 @@
  	    mv $$lang.old.po $$lang.po; \
  	  fi; \
  	done
+ 
+ POTFILES: POTFILES.in
++	$(GENHEAD)
+ 	( if test 'x$(srcdir)' != 'x.'; then \
+ 	    posrcprefix='$(top_srcdir)/'; \
+ 	  else \
