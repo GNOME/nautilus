@@ -1,3 +1,33 @@
+2000-01-20  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_entry):
+	Fixed double free that was causing lots of nasty errors in
+	the file manager.
+	(fm_directory_view_load_uri):
+	Made the old directory hang around a bit longer when loading
+	a new uri.
+	(display_selection_info):
+	(fm_directory_view_send_selection_change):
+	(display_selection_info_idle_cb):
+	Fixed a storage leak and broke out the selection change into
+	its own function instead of mixing it with the status line.
+	Also made the selection actually use URIs instead of just
+	names for the selected items.
+
+	* libnautilus/nautilus-directory.h:
+	libnautilus/nautilus-directory.c:
+	(nautilus_file_get_uri):
+	Added this function that gets a URI (rather than just a
+	leaf name).
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_finalize):
+	(nautilus_self_check_directory):
+	Added more self checks and fixed a bug where a metadata
+	change would get lost if you delete the directory too soon
+	after making the change.
+
 2000-01-20  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus/gtkflist.c:

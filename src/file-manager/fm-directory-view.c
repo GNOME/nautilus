@@ -237,7 +237,6 @@ display_selection_info (FMDirectoryView *view)
 	NautilusFileList *p;
 	char *first_item_name;
 	Nautilus_StatusRequestInfo sri;
-	Nautilus_SelectionRequestInfo selri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -246,22 +245,18 @@ display_selection_info (FMDirectoryView *view)
 	count = 0;
 	size = 0;
 	first_item_name = NULL;
-	memset(&selri, 0, sizeof(selri));
-	selri.selected_uris._buffer = g_alloca(g_list_length(selection) * sizeof(char *));
 	for (p = selection; p != NULL; p = p->next) {
 		NautilusFile *file;
-		char *fn;
 
 		file = p->data;
 		count++;
 		size += nautilus_file_get_info (file)->size;
-		fn = nautilus_file_get_name (file);
 		if (first_item_name == NULL)
-			first_item_name = fn;
-		selri.selected_uris._buffer[selri.selected_uris._length++] = fn;
+			first_item_name = nautilus_file_get_name (file);
 	}
+		
 	g_list_free (selection);
-
+	
 	memset(&sri, 0, sizeof(sri));
 
 	if (count == 0) 
@@ -294,8 +289,33 @@ display_selection_info (FMDirectoryView *view)
 
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
+}
+
+static void
+fm_directory_view_send_selection_change (FMDirectoryView *view)
+{
+	Nautilus_SelectionRequestInfo request;
+	NautilusFileList *selection;
+	NautilusFileList *p;
+	int i;
+
+	memset (&request, 0, sizeof (request));
+
+	/* Collect a list of URIs. */
+	selection = fm_directory_view_get_selection (view);
+	request.selected_uris._buffer = g_alloca (g_list_length (selection) * sizeof (char *));
+	for (p = selection; p != NULL; p = p->next)
+		request.selected_uris._buffer[request.selected_uris._length++]
+			= nautilus_file_get_uri (p->data);
+	g_list_free (selection);
+
+	/* Send the selection change. */
 	nautilus_view_frame_request_selection_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &selri);
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
+
+	/* Free the URIs. */
+	for (i = 0; i < request.selected_uris._length; i++)
+		g_free (request.selected_uris._buffer[i]);
 }
 
 
@@ -411,7 +431,10 @@ display_selection_info_idle_cb (gpointer data)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (data), FALSE);
 
 	view = FM_DIRECTORY_VIEW (data);
+
 	display_selection_info (view);
+	fm_directory_view_send_selection_change (view);
+
 	view->details->display_selection_idle_id = 0;
 
 	return FALSE;
@@ -659,7 +682,7 @@ fm_directory_view_activate_entry (FMDirectoryView *view, NautilusFile *file)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (file != NULL);
 
-	name = nautilus_file_get_info (file)->name;
+	name = nautilus_file_get_name (file);
 	new_uri = gnome_vfs_uri_append_path(view->details->uri, name);
 	g_free (name);
 
@@ -695,6 +718,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	};			/* FIXME */
 	GnomeVFSResult result;
 	Nautilus_ProgressRequestInfo pri;
+	NautilusDirectory *old_model;
 
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -702,8 +726,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	fm_directory_view_stop (view);
 
-	if (view->details->model != NULL)
-		gtk_object_unref (GTK_OBJECT (view->details->model));
+	old_model = view->details->model;
 	view->details->model = nautilus_directory_get (uri);
 
 	if (view->details->uri != NULL)
@@ -716,6 +739,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 
 	fm_directory_view_clear (view);
+
+	if (old_model != NULL)
+		gtk_object_unref (GTK_OBJECT (old_model));
 
 	memset(&pri, 0, sizeof(pri));
 	pri.type = Nautilus_PROGRESS_UNDERWAY;

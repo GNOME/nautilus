@@ -109,6 +109,7 @@ GnomeVFSFileInfo * nautilus_file_get_info                 (NautilusFile         
 void               nautilus_file_ref                      (NautilusFile             *file);
 void               nautilus_file_unref                    (NautilusFile             *file);
 char *             nautilus_file_get_name                 (NautilusFile             *file);
+char *		   nautilus_file_get_uri                  (NautilusFile             *file);
 
 /* Utility functions for formatting file-related information.
  * FIXME: Probably these should be moved to some appropriate place in libnautilus.

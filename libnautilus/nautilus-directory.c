@@ -126,6 +126,9 @@ nautilus_directory_finalize (GtkObject *object)
 
 	directory = NAUTILUS_DIRECTORY (object);
 
+	if (directory->details->write_metafile_idle_id != 0)
+		nautilus_directory_write_metafile (directory);
+
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
 
 	/* Unref all the files. */
@@ -152,7 +155,6 @@ nautilus_directory_finalize (GtkObject *object)
 	if (directory->details->alternate_metafile_uri != NULL)
 		gnome_vfs_uri_unref (directory->details->alternate_metafile_uri);
 	xmlFreeDoc (directory->details->metafile_tree);
-	nautilus_directory_remove_write_metafile_idle (directory);
 
 	g_free (directory->details);
 
@@ -805,7 +807,27 @@ nautilus_file_get_name (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
+	g_assert (file->ref_count != 0);
+	g_assert (file->directory == NULL || NAUTILUS_IS_DIRECTORY (file->directory));
+	g_assert (file->info->name != NULL);
+	g_assert (file->info->name[0] != '\0');
+
 	return g_strdup (file->info->name);
+}
+
+char *
+nautilus_file_get_uri (NautilusFile *file)
+{
+	GnomeVFSURI *uri;
+	char *uri_text;
+
+	g_return_val_if_fail (file != NULL, NULL);
+	g_return_val_if_fail (file->directory != NULL, NULL);
+
+	uri = gnome_vfs_uri_append_path (file->directory->details->uri, file->info->name);
+	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (uri);
+	return uri_text;
 }
 
 GnomeVFSFileInfo *
@@ -917,9 +939,18 @@ nautilus_self_check_directory (void)
 	file_count = 0;
 	nautilus_directory_get_files (directory, get_files_cb, &data_dummy);
 
+	nautilus_directory_set_metadata (directory, "TEST", "default", "value");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
+
 	gtk_object_unref (GTK_OBJECT (directory));
 
 	g_assert (g_hash_table_size (directory_objects) == 0);
+
+	directory = nautilus_directory_get ("file:///etc");
+
+	g_assert (g_hash_table_size (directory_objects) == 1);
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 
 	/* nautilus_directory_escape_slashes */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes (""), "");
