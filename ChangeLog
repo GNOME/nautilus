@@ -1,3 +1,26 @@
+2002-07-25  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(icon_theme_changed_callback): upd.
+	(nautilus_icon_factory_init): upd.
+	(is_theme_in_user_directory): move from here.
+	(set_theme_name): kill.
+	(nautilus_icon_factory_init, cache_icon_new),
+	(cache_icon_ref, cache_icon_unref): only do the
+	cache_icons thing when debugging is turned on.
+
+	* libnautilus-private/nautilus-find-icon-image.c
+	(is_theme_in_user_directory): move to here.
+	(nautilus_icon_theme_set_names),
+	(nautilus_icon_theme_destroy),
+	(nautilus_icon_theme_new): impl.
+	(choose_theme): upd.
+	(get_themed_icon_file_path): don't do the XML parse of
+	i-regular.xml twice, just pass scalable_details in to
+	read_details.
+	(details_from_doc_node): split from
+	(read_details): upd.
+
 2002-07-25  Dave Camp  <dave@ximian.com>
 
 	* components/tree/nautilus-tree-view.c: (get_root_uri_callback),

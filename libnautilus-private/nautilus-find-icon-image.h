@@ -39,8 +39,8 @@ typedef struct {
 } NautilusIconTheme;
 
 typedef struct {
-	NautilusIconTheme current;
-	NautilusIconTheme fallback;
+	NautilusIconTheme *current;
+	NautilusIconTheme *fallback;
 } NautilusIconThemeSpecifications;
 
 typedef struct {
@@ -55,5 +55,10 @@ char *nautilus_get_icon_file_name           (const NautilusIconThemeSpecificatio
 					     NautilusIconDetails                   *details,
 					     NautilusIconDetails                   *scalable_details);
 char *nautilus_remove_icon_file_name_suffix (const char                            *name);
+
+NautilusIconTheme *nautilus_icon_theme_new       (void);
+gboolean           nautilus_icon_theme_set_names (NautilusIconTheme *icon_theme,
+						  const char        *new_name);
+void               nautilus_icon_theme_destroy   (NautilusIconTheme *icon_theme);
 
 #endif
