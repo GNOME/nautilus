@@ -1285,7 +1285,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	if (result != GNOME_VFS_OK) {
 		char *path = gnome_vfs_get_local_path_from_uri (uri);
 		char *message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
-		nautilus_error_dialog (message, _("Couldn't read directory"), 
+		nautilus_error_dialog (message, _("Can't Read Folder"), 
 				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
 		g_free (path);
 		g_free (message);
