@@ -1,3 +1,47 @@
+2001-02-24  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+        Fix bug 5462 ("View as %s" and "%s Viewer" composed messages hard
+	to translate) by making Nautilus view oafinfo files provide the
+	full messages.
+
+	* libnautilus-extensions/nautilus-view-identifier.h,
+	libnautilus-extensions/nautilus-view-identifier.c:
+	nautilus_view_identifier_new, nautilus_view_identifier_copy,
+	nautilus_view_identifier_new_from_oaf_server_info,
+	nautilus_view_identifier_free): Add `view_as_label' and
+	`viewer_label' fields; determine them from either special new oaf
+	attributes or compose them from `view_as_name'.
+
+	* libnautilus-extensions/nautilus-program-chooser.c
+	(program_file_pair_get_program_name_for_display): Use new
+	identifier fields.
+	* src/file-manager/fm-directory-view.c
+	(add_component_to_bonobo_menu): Use new identifier fields.
+	* src/nautilus-window.c (create_view_as_menu_item): Use new
+	identifier fields.
+
+	* components/hardware/Nautilus_View_hardware.oaf.in,
+	components/image-viewer/Nautilus_View_image.oaf.in,
+	components/loser/content/Nautilus_View_content-loser.oaf.in,
+	components/mozilla/Nautilus_View_mozilla.oaf.in,
+	components/music/Nautilus_View_music.oaf.in,
+	components/rpmview/Nautilus_View_rpm.oaf.in,
+	components/sample/Nautilus_View_sample.oaf.in,
+	components/services/install/nautilus-view/Nautilus_View_install.oaf.in,
+	components/services/inventory-view/Nautilus_View_inventory.oaf.in,
+	components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in,
+	components/services/summary/Nautilus_View_services-summary.oaf.in,
+	components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in,
+	components/shell/Nautilus_View_shell.oaf.in,
+	components/text/Nautilus_View_text.oaf.in,
+	src/Nautilus_shell.oaf.in: Add `nautilus:view_as_label' and
+	`nautilus:viewer_label' properties.
+
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.c:
+	Fix author line.
+
 2001-02-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	Not reviewed, as this just contains some comments for translators.

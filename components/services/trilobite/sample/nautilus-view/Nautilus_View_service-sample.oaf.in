@@ -1,25 +1,27 @@
 <oaf_info>
 
 <oaf_server iid="OAFIID:nautilus_sample_service_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c" type="exe" location="nautilus-sample-service-view">
-<oaf_attribute name="repo_ids" type="stringv">
-<item value="IDL:GNOME/ObjectFactory:1.0"/>
-</oaf_attribute>
-<oaf_attribute name="name" type="string" _value="Services startup view factory"/>
-<oaf_attribute name="description" type="string" _value="Nautilus services startup view factory"/>
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" _value="Services startup view factory"/>
+	<oaf_attribute name="description" type="string" _value="Nautilus services startup view factory"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_sample_service_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82" type="factory" location="OAFIID:nautilus_sample_service_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c">
-<oaf_attribute name="repo_ids" type="stringv">
-<item value="IDL:Bonobo/Unknown:1.0"/>
-<item value="IDL:Bonobo/Control:1.0"/>
-<item value="IDL:Nautilus/View:1.0"/>
-</oaf_attribute>
-<oaf_attribute name="name" type="string" _value="eazel sample service view"/>
-<oaf_attribute name="description" type="string" _value="Nautilus eazel sample service view component"/>
-<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
-<item value="eazel-sample"/>
-</oaf_attribute>
-<oaf_attribute name="nautilus:view_as_name" type="string" _value="Service"/>
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" _value="eazel sample service view"/>
+	<oaf_attribute name="description" type="string" _value="Nautilus eazel sample service view component"/>
+	<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+		<item value="eazel-sample"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" _value="Service"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" _value="View as Service"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" _value="Service Viewer"/>
 </oaf_server>
 
 </oaf_info>

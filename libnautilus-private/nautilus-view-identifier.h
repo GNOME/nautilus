@@ -28,12 +28,12 @@
 #include <liboaf/liboaf.h>
 
 typedef struct {
-	char *iid;	/* Unique ID */
-	char *name;	/* human-readable name */
+	char *iid;	      /* Unique ID */
+	char *name;	      /* human-readable name */
+	char *view_as_label;  /* "View as <name>" */
+	char *viewer_label;   /* "<name> Viewer" */
 } NautilusViewIdentifier;
 
-NautilusViewIdentifier *nautilus_view_identifier_new                      (const char                   *iid,
-									   const char                   *name);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo               *server,
 									   char                         *name_attribute);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view    (OAF_ServerInfo               *server);

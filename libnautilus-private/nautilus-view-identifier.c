@@ -25,13 +25,28 @@
 #include <config.h>
 #include "nautilus-view-identifier.h"
 
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+
+
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
 #include <glib.h>
 #include <stdlib.h>
 
+static NautilusViewIdentifier *
+nautilus_view_identifier_new (const char *iid,
+			      const char *name,
+			      const char *view_as_label,
+			      const char *label_viewer);
+
+
+
 NautilusViewIdentifier *
-nautilus_view_identifier_new (const char *iid, const char *name)
+nautilus_view_identifier_new (const char *iid, 
+			      const char *name,
+			      const char *view_as_label,
+			      const char *viewer_label)
 {
         NautilusViewIdentifier *new_identifier;
         
@@ -41,6 +56,12 @@ nautilus_view_identifier_new (const char *iid, const char *name)
         new_identifier = g_new0 (NautilusViewIdentifier, 1);
         new_identifier->iid = g_strdup (iid);
         new_identifier->name = g_strdup (name);
+
+        new_identifier->view_as_label = view_as_label ? g_strdup (view_as_label) :
+		g_strdup_printf (_("View as %s"), name);
+
+        new_identifier->viewer_label = view_as_label ? g_strdup (viewer_label) :
+		g_strdup_printf (_("%s Viewer"), name);
         
         return new_identifier;
 }
@@ -52,7 +73,10 @@ nautilus_view_identifier_copy (const NautilusViewIdentifier *identifier)
 		return NULL;
 	}
 	
-	return nautilus_view_identifier_new (identifier->iid, identifier->name);
+	return nautilus_view_identifier_new (identifier->iid, 
+					     identifier->name, 
+					     identifier->view_as_label,
+					     identifier->viewer_label);
 }
 
 /* Returns a list of languages, containing
@@ -112,11 +136,16 @@ NautilusViewIdentifier *
 nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char *name_attribute)
 {
         const char *view_as_name;       
+        const char *view_as_label;       
+        const char *viewer_label;       
         GSList *langs;
 
         langs = get_lang_list ();
 
         view_as_name = oaf_server_info_prop_lookup (server, name_attribute, langs);
+	view_as_label = oaf_server_info_prop_lookup (server, "nautilus:view_as_label", langs);
+	viewer_label = oaf_server_info_prop_lookup (server, "nautilus:viewer_label", langs);
+
         if (view_as_name == NULL) {
                 view_as_name = oaf_server_info_prop_lookup (server, "name", langs);
         }
@@ -137,12 +166,14 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
 			*colon_ptr = '\0';
 		}
 		
-		new_identifier = nautilus_view_identifier_new (server->iid, display_name);
+		new_identifier = nautilus_view_identifier_new (server->iid, display_name,
+							       view_as_label, viewer_label);
 		g_free(display_name);
 		return new_identifier;					
 	}
 		
-        return nautilus_view_identifier_new (server->iid, view_as_name);
+        return nautilus_view_identifier_new (server->iid, view_as_name,
+					     view_as_label, viewer_label);
 }
 
 NautilusViewIdentifier *
@@ -165,6 +196,8 @@ nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
         if (identifier != NULL) {
                 g_free (identifier->iid);
                 g_free (identifier->name);
+                g_free (identifier->view_as_label);
+                g_free (identifier->viewer_label);
                 g_free (identifier);
         }
 }

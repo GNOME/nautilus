@@ -2966,8 +2966,7 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 	launch_parameters = viewer_launch_parameters_new (identifier, uri, directory_view);
 	nautilus_view_identifier_free (identifier);
 
-	label = g_strdup_printf (_("%s Viewer"),
-				 launch_parameters->identifier->name);
+	label = g_strdup (launch_parameters->identifier->viewer_label);
 	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
 
 	add_open_with_program_menu_item (directory_view->details->ui, 

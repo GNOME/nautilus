@@ -185,8 +185,7 @@ program_file_pair_get_program_name_for_display (ProgramFilePair *pair)
 		  || pair->view_identifier != NULL);
 
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		return g_strdup_printf
-			(_("View as %s"), pair->view_identifier->name);
+		return g_strdup (pair->view_identifier->view_as_label);
 	}
 
 	return g_strdup (pair->application->name);	

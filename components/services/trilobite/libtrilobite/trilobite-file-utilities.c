@@ -19,8 +19,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors: J Shane Culpepper <pepper@eazel.com>
- *	     Robey Pointer <robey@eazel.com>
+ *  Authors: John Sullivan <sullivan@eazel.com>
+ *           Maciej Stachowiak <mjs@eazel.com>
  */
 
 #include <config.h>
