@@ -1,3 +1,12 @@
+2001-02-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	Fix incorrect class name in the GTK_CHECK_CLASS_CAST
+	macro. We were using NautilusIconListView instead of
+	NautilusIconContainerClass.
+	
 2001-02-27  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

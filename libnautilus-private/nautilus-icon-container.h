@@ -33,7 +33,7 @@
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
 #define NAUTILUS_ICON_CONTAINER_CLASS(k) \
-	GTK_CHECK_CLASS_CAST (k, nautilus_icon_container_get_type (), NautilusIconListView)
+	GTK_CHECK_CLASS_CAST (k, nautilus_icon_container_get_type (), NautilusIconContainerClass)
 #define NAUTILUS_IS_ICON_CONTAINER(obj) \
 	GTK_CHECK_TYPE (obj, nautilus_icon_container_get_type ())
 
