@@ -62,6 +62,7 @@ struct NautilusWindowDetails
         GList *selection;
 	char *title;
 	NautilusFile *viewed_file;
+        gboolean viewed_file_seen;
 
         /* New location. */
         NautilusLocationChangeType location_change_type;

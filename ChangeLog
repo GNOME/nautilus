@@ -1,3 +1,30 @@
+2001-02-23  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 6738 (View as Web Page window closes if user follows bad
+	link). The shell was closing the window as part of its feature to
+	close windows when the underlying item is deleted.
+
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_not_yet_confirmed): Added new function so we can
+	tell a file that's never been seen from one that we already have
+	information about.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback): Keep track of whether we have ever
+	seen the file for real, and only close the window if it was here
+	before and is now gone, rather than if it was never there. This is
+	a roundabout way to fix the problem reported, but seems like a
+	nice rule in any case. Also added FIXMEs to some questionable code
+	I found here.
+	(update_for_new_location): Set up the variable that is used to
+	check if we have ever seen the file for real.
+
+	* src/nautilus-about.c: Formatting tweaks.
+	
 2001-02-23  Eric Fischer <eric@eazel.com>
 
 	reviewed by: Robin Slomkowski <rslomkow@eazel.com>

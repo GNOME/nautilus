@@ -2,7 +2,7 @@
 
    nautilus-file.h: Nautilus file model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -116,7 +116,7 @@ void                    nautilus_file_invalidate_attributes             (Nautilu
 void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
-gboolean      		nautilus_file_contains_text                  	(NautilusFile           	*file);
+gboolean                nautilus_file_contains_text                     (NautilusFile                   *file);
 char *                  nautilus_file_get_name                          (NautilusFile                   *file);
 char *                  nautilus_file_get_uri                           (NautilusFile                   *file);
 char *                  nautilus_file_get_uri_scheme                    (NautilusFile                   *file);
@@ -144,9 +144,7 @@ NautilusRequestStatus   nautilus_file_get_deep_counts                   (Nautilu
 									 guint                          *file_count,
 									 guint                          *unreadable_directory_count,
 									 GnomeVFSFileSize               *total_size);
-
-gboolean      		nautilus_file_should_show_directory_item_count	(NautilusFile                   *file);
-
+gboolean                nautilus_file_should_show_directory_item_count  (NautilusFile                   *file);
 GList *                 nautilus_file_get_keywords                      (NautilusFile                   *file);
 void                    nautilus_file_set_keywords                      (NautilusFile                   *file,
 									 GList                          *keywords);
@@ -201,6 +199,12 @@ void                    nautilus_file_cancel                            (Nautilu
  * but it could hang around longer if someone ref'd it.
  */
 gboolean                nautilus_file_is_gone                           (NautilusFile                   *file);
+
+/* Return true if this file is not confirmed to have ever really
+ * existed. This is true when the NautilusFile object has been created, but no I/O
+ * has yet confirmed the existence of a file by that name.
+ */
+gboolean                nautilus_file_is_not_yet_confirmed              (NautilusFile                   *file);
 
 /* Simple getting and setting top-level metadata. */
 char *                  nautilus_file_get_metadata                      (NautilusFile                   *file,

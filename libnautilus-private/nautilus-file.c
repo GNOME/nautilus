@@ -4274,6 +4274,23 @@ nautilus_file_is_gone (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_is_not_yet_confirmed
+ * 
+ * Check if we're in a state where we don't know if a file really
+ * exists or not, before the initial I/O is complete.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if the file is already gone.
+ **/
+gboolean
+nautilus_file_is_not_yet_confirmed (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return file->details->info == NULL;
+}
+
+/**
  * nautilus_file_check_if_ready
  *
  * Check whether the values for a set of file attributes are

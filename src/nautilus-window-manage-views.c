@@ -462,26 +462,52 @@ viewed_file_changed_callback (NautilusFile *file,
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (window->details->viewed_file == file);
 
+        if (!nautilus_file_is_not_yet_confirmed (file)) {
+                window->details->viewed_file_seen = TRUE;
+        }
+
 	/* Close window if the file it's viewing has been deleted. */
 	if (nautilus_file_is_gone (file)) {
-                /* Detecting a file is gone may happen in the middle
-                 * of a pending location change, we need to cancel it
-                 * before closing the window or things break.
+                /* Don't close the window in the case where the
+                 * file was never seen in the first place.
                  */
-                end_location_change (window);
-
-                /* FIXME bugzilla.eazel.com 5038: Is closing the window really the right thing to do
-                 * for all cases?
-                 */
-		nautilus_window_close (window);
+                if (window->details->viewed_file_seen) {
+                        /* Detecting a file is gone may happen in the
+                         * middle of a pending location change, we
+                         * need to cancel it before closing the window
+                         * or things break.
+                         */
+                        /* FIXME: It makes no sense that this call is
+                         * needed. When the window is destroyed, it
+                         * calls nautilus_window_manage_views_destroy,
+                         * which calls free_location_change, which
+                         * should be sufficient. Also, if this was
+                         * really needed, wouldn't it be needed for
+                         * all other nautilus_window_close callers?
+                         */
+                        end_location_change (window);
+                        
+                        /* FIXME bugzilla.eazel.com 5038: Is closing
+                         * the window really the right thing to do for
+                         * all cases?
+                         */
+                        nautilus_window_close (window);
+                }
 	} else {
                 new_location = nautilus_file_get_uri (file);
 
-                /* if the file was renamed, update location and/or title
-                 * ignore fragments in this comparison, because NautilusFile doesn't track the fragment
-                 * we're currently viewing
+                /* FIXME: We need to graft the fragment part of the
+                 * old location onto the new renamed location or we'll
+                 * lose the fragment part of the location altogether.
+                 * If we did that, then we woudn't need to ignore
+                 * fragments in this comparison.
                  */
-                if (!nautilus_uris_match_ignore_fragments (new_location, window->details->location)) {
+                /* If the file was renamed, update location and/or
+                 * title. Ignore fragments in this comparison, because
+                 * NautilusFile omits the fragment part.
+                 */
+                if (!nautilus_uris_match_ignore_fragments (new_location,
+                                                           window->details->location)) {
                         g_free (window->details->location);
                         window->details->location = new_location;
                         
@@ -546,6 +572,7 @@ update_for_new_location (NautilusWindow *window)
         cancel_viewed_file_changed_callback (window);
         file = nautilus_file_get (window->details->location);
         nautilus_window_set_viewed_file (window, file);
+        window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
         gtk_signal_connect (GTK_OBJECT (file),
                             "changed",
                             viewed_file_changed_callback,

@@ -156,7 +156,8 @@ nautilus_about_initialize (NautilusAbout *about)
 	area_width  = gdk_pixbuf_get_width  (about->details->background_pixbuf);
 	area_height = gdk_pixbuf_get_height (about->details->background_pixbuf);
 	
-	gtk_widget_set_usize ( GTK_WIDGET (about->details->drawing_area), area_width, area_height);
+	gtk_widget_set_usize (GTK_WIDGET (about->details->drawing_area),
+			      area_width, area_height);
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
 	gtk_signal_connect (GTK_OBJECT (about->details->drawing_area), "expose_event",
@@ -455,7 +456,7 @@ static gboolean
 nautilus_about_close (NautilusAbout *about, gpointer  *unused)
 {
 	if (about->details->timer_task != 0) {
-		gtk_timeout_remove(about->details->timer_task);
+		gtk_timeout_remove (about->details->timer_task);
 		about->details->timer_task = 0;
 	}  
 	return FALSE;
@@ -477,4 +478,3 @@ update_authors_if_necessary (gpointer callback_data)
 	}
 	return TRUE;
 }
-
