@@ -249,7 +249,7 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 
 	window_rect = eel_art_irect_scale_by (window_rect, 
 		1 / GNOME_CANVAS (container)->pixels_per_unit);
-	
+
 	/* pass the uri, mouse-relative x/y and icon width/height */
 	context->iteratee (uri, 
 			   (int) window_rect.x0,
@@ -1131,6 +1131,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 				      int x, int y)
 {
 	NautilusIcon *icon;
+	NautilusFile *file;
 	double world_x, world_y;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -1152,13 +1153,15 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	 */
 
 	/* Find if target icon accepts our drop. */
-	if (icon != NULL 
-		&& (container->details->dnd_info->drag_info.data_type != EEL_ICON_DND_KEYWORD) 
-		&& !nautilus_drag_can_accept_items 
-			(nautilus_file_get (
-				nautilus_icon_container_get_icon_uri (container, icon)), 
-			container->details->dnd_info->drag_info.selection_list)) {
-		icon = NULL;
+	if (icon != NULL && (container->details->dnd_info->drag_info.data_type != EEL_ICON_DND_KEYWORD)) {
+		    file = nautilus_file_get (nautilus_icon_container_get_icon_uri (container, icon));
+
+		    if (!nautilus_drag_can_accept_items (file,
+							 container->details->dnd_info->drag_info.selection_list)) {
+			    icon = NULL;
+		    }
+
+		    nautilus_file_unref (file);
 	}
 
 	set_drop_target (container, icon);
@@ -1321,11 +1324,12 @@ drag_motion_callback (GtkWidget *widget,
 {
 	int default_action, non_default_action;
 	int resulting_action;
-	
+
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
 	set_up_auto_scroll_if_needed (NAUTILUS_ICON_CONTAINER (widget));
+
 	/* Find out what the drop actions are based on our drag selection and
 	 * the drop target.
 	 */
