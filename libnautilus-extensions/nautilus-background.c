@@ -69,6 +69,7 @@ struct NautilusBackgroundDetails
 {
 	char *color;
 	char *tile_image_uri;
+	GdkPixmap *tile_pixmap;
 	GdkPixbuf *tile_image;
 	NautilusPixbufLoadHandle *load_tile_image_handle;
 };
@@ -585,6 +586,25 @@ nautilus_get_widget_background (GtkWidget *widget)
 	nautilus_widget_background_changed (widget, background);
 
 	return background;
+}
+
+gboolean
+nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background)
+{
+	if (background == NULL) {
+		return FALSE;
+	}
+	
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
+
+	if (background->details->tile_image != NULL) {
+		return TRUE;
+	}
+	if (nautilus_gradient_is_gradient (background->details->color)) {
+		return TRUE;
+	}
+	
+	return FALSE;
 }
 
 void

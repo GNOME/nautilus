@@ -96,6 +96,9 @@ void		    nautilus_background_receive_dropped_color (NautilusBackground     *bac
 /* Gets or creates a background so that it's attached to a widget. */
 NautilusBackground *nautilus_get_widget_background            (GtkWidget              *widget);
 
+/* Find out if a nautilus background is too complex for GtkStyle, so that we have to draw it ourselves */
+gboolean            nautilus_background_is_too_complex_for_gtk_style (NautilusBackground     *background);
+
 typedef struct NautilusBackgroundDetails NautilusBackgroundDetails;
 
 struct NautilusBackground
