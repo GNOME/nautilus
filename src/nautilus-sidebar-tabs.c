@@ -34,6 +34,7 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -79,7 +80,8 @@ struct NautilusSidebarTabsDetails {
 	int total_height;
 	gboolean title_mode;
 	GdkRectangle title_rect;
-	GdkFont	 *tab_font;	
+	NautilusScalableFont *tab_font;	
+	int font_size;
 	GdkColor tab_color;
 	GdkColor background_color;
 	GdkColor line_color;
@@ -160,7 +162,7 @@ setup_dark_text(NautilusSidebarTabs *sidebar_tabs)
 static void
 nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 {
-	char *font_name, *temp_str;
+	char *temp_str;
 	char *tab_pieces, *tab_piece_path;
 	GdkColor color;
 	int intensity;
@@ -208,17 +210,12 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 
 	/* unload the old font if necessary */
 	if (sidebar_tabs->details->tab_font) {
-		gdk_font_unref (sidebar_tabs->details->tab_font);
+		gtk_object_unref (GTK_OBJECT (sidebar_tabs->details->tab_font));
 	}
 	
-	/* load the font, using a default if none is specified */
-	font_name = nautilus_theme_get_theme_data ("sidebar", "TAB_FONT");
-	if (font_name == NULL) {
-		font_name = g_strdup ("-*-charter-regular-r-normal-*-24-*-*-*-*-*-*-*");
-	}
-	
-	sidebar_tabs->details->tab_font = gdk_font_load (font_name);
-	g_free (font_name);	
+	/* use the default font.  In the future, it should fetch the font name and properties from the theme */
+	sidebar_tabs->details->tab_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+	sidebar_tabs->details->font_size = 12;
 }
 
 /* initialize a newly allocated sidebar tabs object */
@@ -285,6 +282,10 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 	if (sidebar_tabs->details->tab_piece_images[0] != NULL) {
 		nautilus_sidebar_tabs_unload_tab_pieces (sidebar_tabs);
 	}		
+	
+	if (sidebar_tabs->details->tab_font) {
+		gtk_object_unref (GTK_OBJECT (sidebar_tabs->details->tab_font));
+	}
 	
 	/* release the tab list, if any */
 	if (sidebar_tabs->details->tab_items)
@@ -445,22 +446,52 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
     }
 }
 
+/* utility to allocate a gdk_pixbuf and fill it with a specified color */
+
+static GdkPixbuf*
+make_colored_pixbuf (int pixbuf_width, int pixbuf_height, GdkColor *color)
+{
+	GdkPixbuf *pixbuf;
+	int row, col, stride;
+	char *pixels, *row_pixels;
+	
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
+	
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	stride = gdk_pixbuf_get_rowstride (pixbuf);
+	
+	/* loop through and set each pixel */
+	for (row = 0; row < pixbuf_height; row++) {
+		row_pixels =  (pixels + (row * stride));
+		for (col = 0; col < pixbuf_width; col++) {		
+			*row_pixels++ = color->red;
+			*row_pixels++ = color->green;
+			*row_pixels++ = color->blue;
+			*row_pixels++ = 255;
+		}
+	}
+	return pixbuf;
+}
+
 /* draw a single tab using the default, non-themed approach */
 static int
 draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
-	      char *tab_name, int x, int y, gboolean prelight_flag, GdkRectangle *tab_rect)
+		    char *tab_name, int x, int y, gboolean prelight_flag, GdkRectangle *tab_rect)
 {  
-	int		text_y_offset;
 	int		tab_bottom;
 	int		tab_right;
-	int		name_width;
+	int		name_width, name_height;
 	int		total_width;
 	GtkWidget	*widget;
-
+	GdkPixbuf	*temp_pixbuf;
+	ArtIRect	text_rect;
+	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
 	/* measure the name and compute the bounding box */
-	name_width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, tab_name);
+	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+						tab_name, &name_width, &name_height);
+	
 	total_width = name_width + 2*TAB_MARGIN;
 
 	widget = GTK_WIDGET (sidebar_tabs);
@@ -481,6 +512,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	gdk_gc_set_foreground (gc, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
 	gdk_draw_rectangle (widget->window, gc, TRUE, x, y + 1, total_width, sidebar_tabs->details->tab_height - 1); 
 	
+
 	/* draw the border */
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	gdk_draw_line(widget->window, gc, x + 1, y, x + total_width - 2, y);
@@ -491,14 +523,38 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->hilight_color);  
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + total_width - 3, y + 2);
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + 2, y + sidebar_tabs->details->tab_height - 1);
-		
-	/* draw the name */
-	text_y_offset = y + (sidebar_tabs->details->tab_height >> 1) + 5;  
-	gdk_gc_set_foreground (gc, prelight_flag ? &sidebar_tabs->details->prelit_text_color : &sidebar_tabs->details->text_color);  
-	gdk_draw_string (widget->window,
-			 GTK_WIDGET (sidebar_tabs)->style->font,
-			 gc, x + TAB_MARGIN, text_y_offset, tab_name);
 	
+	/* allocate the pixbuf and fill it with the background color */
+	temp_pixbuf = make_colored_pixbuf (name_width + 1, name_height + 1, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
+	
+	/* draw the name into the pixbuf using anti-aliased text */
+	text_rect.x0 = 1;
+	text_rect.x1 = text_rect.x0 + name_width;
+	text_rect.y0 = 1;
+	text_rect.y1 = text_rect.y0 + name_height;
+	
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
+					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+					  tab_name, prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK, 255);
+	
+	text_rect.x0 -= 1;
+	text_rect.y0 -= 1;
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
+					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+					  tab_name, prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE, 255);
+	
+	/* blit the pixbuf to the drawable, then release it */
+
+	gdk_pixbuf_render_to_drawable_alpha (temp_pixbuf,
+					widget->window,
+					0, 0,
+					x + TAB_MARGIN, y + 5,
+					name_width + 1, name_height + 1,
+					GDK_PIXBUF_ALPHA_BILEVEL, 128,
+					GDK_RGB_DITHER_MAX,
+					0, 0);
+	
+	gdk_pixbuf_unref (temp_pixbuf);	
 	
 	/* draw the bottom lines */
 	tab_bottom = y + sidebar_tabs->details->tab_height - 1;
@@ -571,12 +627,12 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	      		GdkRectangle *tab_rect)
 {  
 	GtkWidget *widget;
-	int name_width, piece_width, tab_width;
+	int name_width, name_height;
+	int piece_width, tab_width;
 	int current_pos, right_edge_pos;
-	int text_x_pos, text_y_offset, left_width;
+	int text_x_pos, left_width;
 	int highlight_offset;
 	ArtIRect text_rect;
-	double font_scale_factor;
 	
 	widget = GTK_WIDGET (sidebar_tabs);
 	/* FIXME bugzilla.eazel.com 2504: can't prelight active state yet */
@@ -584,11 +640,10 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	if (sidebar_tabs->details->title_mode) {
 		highlight_offset += TAB_ACTIVE_LEFT - TAB_NORMAL_LEFT;
 	}
-
-	font_scale_factor = 0.5;
 	
 	/* measure the size of the name */
-	name_width = gdk_string_width (sidebar_tabs->details->tab_font, tab_name) * font_scale_factor;	
+	nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+						tab_name, &name_width, &name_height);
 	
 	/* draw the left edge piece */
 	current_pos = x - widget->allocation.x;
@@ -607,23 +662,23 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 		current_pos += piece_width;
 	}
 				
-	/* draw the name using a large font and shrinking it for anti-aliased text   */
-	text_y_offset = (sidebar_tabs->details->tab_height >> 1) + 5;
 	if (!first_flag && !prev_invisible) {
 		text_x_pos += text_h_offset;
 	}
 
 	text_rect.x0 = text_x_pos + 1;
-	text_rect.y0 = y - widget->allocation.y + 5;
+	text_rect.y0 = y - widget->allocation.y + (name_height >> 1);
 	text_rect.x1 = text_x_pos + 1 + name_width;
 	text_rect.y1 = y + sidebar_tabs->details->tab_height;
 		
-	nautilus_gdk_pixbuf_draw_text (tab_pixbuf, sidebar_tabs->details->tab_font, font_scale_factor,
-					&text_rect, tab_name, NAUTILUS_RGB_COLOR_BLACK, 191);		
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
+					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+					  tab_name, NAUTILUS_RGB_COLOR_BLACK, 255);
 	text_rect.x0 -= 1;
 	text_rect.y0 -= 1;
-	nautilus_gdk_pixbuf_draw_text (tab_pixbuf, sidebar_tabs->details->tab_font, font_scale_factor, &text_rect,
-					 tab_name, NAUTILUS_RGB_COLOR_WHITE, 255);		
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
+					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+					  tab_name, NAUTILUS_RGB_COLOR_WHITE, 255);
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {
@@ -659,7 +714,7 @@ get_text_offset (void)
 static int
 get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is_themed, gboolean first_flag)
 {
-	int edge_width, name_width;
+	int edge_width, name_width, name_height;
 	
 	if (this_tab == NULL)
 		return 0;
@@ -670,7 +725,9 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 			edge_width = gdk_pixbuf_get_width (sidebar_tabs->details->tab_piece_images[TAB_NORMAL_LEFT]);
 		else
 			edge_width = 0;
-		name_width = gdk_string_width(sidebar_tabs->details->tab_font, this_tab->tab_text) / 2;
+		nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
+						this_tab->tab_text, &name_width, &name_height);
+	
 	} else {	
 		edge_width = 2 * TAB_MARGIN;
 		name_width = gdk_string_width(GTK_WIDGET (sidebar_tabs)->style->font, this_tab->tab_text);

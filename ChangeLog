@@ -1,3 +1,16 @@
+2000-09-03  Andy Hertzfeld  <andy@eazel.com>
+
+	made the arlo sidebar tabs use the official anti-aliased text machinery,
+	instead of the scaling hack it was using.  Also, made the non-themed
+	tabs use anti-aliased text.
+	
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(nautilus_sidebar_tabs_destroy), (make_colored_pixbuf),
+	(draw_one_tab_plain), (draw_one_tab_themed), (get_tab_width):
+	use NautilusScalableFont to render and measure the labels, for both
+	types of tabs
+	
 Sun Sep 03 19:09:49 2000  George Lebl <jirka@5z.com>
 
 	* src/nautilus-first-time-druid.c (nautilus_first_time_druid_show):
