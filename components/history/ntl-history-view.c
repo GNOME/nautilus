@@ -63,11 +63,13 @@ get_uri_from_row (GtkCList *clist, int row)
 
 
 static void
-install_icon (GtkCList *clist, const NautilusBookmark *bookmark, gint row)
+install_icon (GtkCList *clist, gint row)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
+	const NautilusBookmark *bookmark;
 
+	bookmark = get_bookmark_from_row (clist, row);
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
 		  				    NAUTILUS_ICON_SIZE_SMALLER,
 						    &pixmap,
@@ -81,6 +83,20 @@ install_icon (GtkCList *clist, const NautilusBookmark *bookmark, gint row)
 			      HISTORY_VIEW_COLUMN_ICON,
 			      pixmap,
 			      bitmap);
+}
+
+static void
+history_view_update_icons (HistoryView *history_view)
+{
+  GtkCList *clist;
+  int row;
+
+  clist = history_view->clist;
+
+  for (row = 0; row < clist->rows; ++row) 
+    {
+      install_icon (clist, row);
+    }
 }
 
 static void
@@ -124,7 +140,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
   			       new_rownum,
   			       bookmark,
   			       (GtkDestroyNotify)gtk_object_unref);
-  install_icon (clist, bookmark, new_rownum);
+  install_icon (clist, new_rownum);
 
   gtk_clist_columns_autosize(clist);
 
@@ -241,6 +257,12 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   /* handle events */
   gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
+
+  gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					 "theme_changed",
+					 history_view_update_icons,
+					 GTK_OBJECT (hview));
+
 
   hview->clist = (GtkCList *)clist;
 

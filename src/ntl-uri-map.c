@@ -118,7 +118,10 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
       navinfo->default_content_iid = "ntl_web_browser";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Web Page"));
+                                                     nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
     }
   else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
     {

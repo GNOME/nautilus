@@ -1,5 +1,24 @@
 2000-02-24  John Sullivan  <sullivan@eazel.com>
 
+	* src/ntl-uri-map.c: (my_notify_when_ready):
+	Added "View as Text" as an option for html pages. Untestable
+	right now because attempting to load html pages fails.
+
+	* components/history/ntl-history-view.c:
+	(install_icon): Removed bookmark parameter; now it determines that
+	from the other parameters.
+	(history_view_update_icons): New function, walks through list updating
+	the icon for each row.
+	(hyperbola_navigation_history_notify_location_change): Removed bookmark
+	parameter from install_icon call.
+	(make_obj):  register to call history_view_update_icons
+	when nautilus_icon_factory emits "theme_changed" signal. This has
+	no current visible effect, because changing the theme in Nautilus
+	does not change the theme in the separate icon factory used in this
+	metaview. This is bugzilla bug #5.
+
+2000-02-24  John Sullivan  <sullivan@eazel.com>
+
 	Cleaned up after fix to bug 14 from yesterday.
 
 	* src/ntl-types.h: Removed use_new_window field from
