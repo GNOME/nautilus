@@ -86,15 +86,20 @@ nautilus-summary-view \
 nautilus-sidebar-loser \
 nautilus-tree-view \
 nautilus-image-view \
-ntl-history-view \
-ntl-notes \
-ntl-web-search \
-ntl-web-browser \
+nautilus-music-view \
+nautilus-service-install-view \
+nautilus-inventory-view \
+nautilus-change-password-view \
+nautilus-summary-view \
+trilobite-eazel-time-view \
+nautilus-sample-service-view \
+eazel-proxy \
+eazel-proxy-util \
 "
 
 if [ "$extreme" = "yes" ]
 then
-    AUX_PROGS="oafd gconfd-0.6 gconfd-1 eazel-proxy $AUX_PROGS"
+    AUX_PROGS="oafd gconfd-1 $AUX_PROGS"
 fi
 
 unset FOUND_ANY
