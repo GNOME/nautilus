@@ -1,3 +1,10 @@
+2000-05-08  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-uri-map.c (get_lang_list),
+	(nautilus_view_identifier_new_from_oaf_server_info): Provide the
+	language from either the LANGUAGE or LANG environment variable,
+	for proper l10n of OAF name attributes,
+
 2000-05-09  Christopher Blizzard  <blizzard@redhat.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c

@@ -522,6 +522,7 @@ get_lang_list (void)
 {
         GSList *retval;
         char *lang;
+        char * equal_char;
 
         retval = NULL;
 
@@ -531,10 +532,16 @@ get_lang_list (void)
                 lang = getenv ("LANG");
         }
 
+
         if (lang) {
+                equal_char = strchr (lang, '=');
+                if (equal_char != NULL) {
+                        lang = equal_char + 1;
+                }
+
                 retval = g_slist_prepend (retval, lang);
         }
-                
+        
         return retval;
 }
 
@@ -546,17 +553,17 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
 
         langs = get_lang_list ();
         
-        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
+        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", langs);
 
         if (view_as_name == NULL) {
-                view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
+                view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
         }
 
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
         }
        
-        // g_free (langs);
+        g_slist_free (langs);
 
         return nautilus_view_identifier_new (server->iid, view_as_name);
 }
@@ -685,8 +692,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 #endif
         }
   
-        /* add_components_from_metadata (navinfo); */
-                
         add_meta_view_iids_from_preferences (navinfo);
         
         /* Now that all the content_identifiers are in place, we're ready to choose
@@ -699,6 +704,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         (* notify_ready) (result_code, navinfo, notify_ready_data);
 }
 
+/* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
 
 static void
 add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
