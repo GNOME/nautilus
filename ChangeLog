@@ -1,3 +1,22 @@
+2001-02-14  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_delayed_close_destroy_dialog_callback),
+	(timed_wait_delayed_close_timeout_callback), (timed_wait_free),
+	(timed_wait_dialog_destroy_callback), (timed_wait_callback),
+	(nautilus_timed_wait_start_with_duration),
+	(nautilus_timed_wait_stop):
+	Non-cancellable timed wait dialogs do not free the timed wait
+	when the dialog is dismissed - instead they wait for the call to
+	timed_wait_stop to do it - otherwise the call to timed_wait_stop
+	asserts. Removed superfluous argument in timed_wait_callback.
+	When timed wait dialog remaining up due to minimum uptime feature
+	are closed by the user, we now cancel the pending timeout that
+	would close them without user intervention.
+
+
 2001-02-14  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>
@@ -40,6 +59,7 @@
 	* libnautilus-extensions/nautilus-volume-monitor.c:
 	(volume_is_removable), (close_error_pipe):
 		
+>>>>>>> 1.3766
 2001-02-14  Eric Fischer <eric@eazel.com>
 
 	* nautilus-installer/install-lib/Makefile.am:

@@ -67,7 +67,7 @@ static GHashTable *timed_wait_hash_table;
 static void find_message_label_callback (GtkWidget *widget,
 					 gpointer   callback_data);
 
-static void timed_wait_cancel_callback (GtkObject *object, gpointer callback_data);
+static void timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data);
 
 
 static guint
@@ -111,17 +111,32 @@ add_label_to_dialog (GnomeDialog *dialog, const char *message)
 			    TRUE, TRUE, GNOME_PAD);
 }
 
+static void
+timed_wait_delayed_close_destroy_dialog_callback (GtkObject *object, gpointer callback_data)
+{
+	gtk_timeout_remove (GPOINTER_TO_UINT (callback_data));
+}
+
 static gboolean
-timed_wait_delayed_destroy_dialog_callback (gpointer callback_data)
-{	
+timed_wait_delayed_close_timeout_callback (gpointer callback_data)
+{
+	guint handler_id;
+
+	handler_id = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (callback_data), "delayed_close_handler_timeout_id"));
+	
+	gtk_signal_disconnect_by_func (GTK_OBJECT (callback_data),
+			    	       timed_wait_delayed_close_destroy_dialog_callback,
+			    	       GUINT_TO_POINTER (handler_id));
+			    	       
 	gtk_object_destroy (GTK_OBJECT (callback_data));
 
 	return FALSE;
 }
 
 static void
-timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
+timed_wait_free (TimedWait *wait)
 {
+	guint delayed_close_handler_id;
 	guint32 time_up;
 
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) != NULL);
@@ -143,14 +158,22 @@ timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
 		 */
 		 
 		gtk_signal_disconnect_by_func (GTK_OBJECT (wait->dialog),
-				    timed_wait_cancel_callback, wait);
+				    timed_wait_dialog_destroy_callback, wait);
 
 		/* compute time up in milliseconds
 		 */
 		time_up = (nautilus_get_system_time () - wait->dialog_creation_time) / 1000;
 		
-		if (do_min_time_up_test && time_up < TIMED_WAIT_MIN_TIME_UP) {
-			gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up, timed_wait_delayed_destroy_dialog_callback, wait->dialog);
+		if (time_up < TIMED_WAIT_MIN_TIME_UP) {
+			delayed_close_handler_id = gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up,
+			                                            timed_wait_delayed_close_timeout_callback,
+			                                            wait->dialog);
+			gtk_object_set_data (GTK_OBJECT (wait->dialog),
+					     "delayed_close_handler_timeout_id",
+					     GUINT_TO_POINTER (delayed_close_handler_id));
+			gtk_signal_connect (GTK_OBJECT (wait->dialog), "destroy",
+					    timed_wait_delayed_close_destroy_dialog_callback,
+					    GUINT_TO_POINTER (delayed_close_handler_id));
 		} else {
 			gtk_object_destroy (GTK_OBJECT (wait->dialog));
 		}
@@ -161,7 +184,7 @@ timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
 }
 
 static void
-timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
+timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data)
 {
 	TimedWait *wait;
 
@@ -169,11 +192,16 @@ timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
 
 	g_assert (GNOME_DIALOG (object) == wait->dialog);
 
+	wait->dialog = NULL;
+	
+	/* When there's no cancel_callback, the originator will/must
+	 * call nautilus_timed_wait_stop which will call timed_wait_free.
+	 */
+
 	if (wait->cancel_callback != NULL) {
 		(* wait->cancel_callback) (wait->callback_data);
+		timed_wait_free (wait);
 	}
-	
-	timed_wait_free (wait, FALSE);
 }
 
 static gboolean
@@ -213,7 +241,7 @@ timed_wait_callback (gpointer callback_data)
 	 * to be called no matter how the dialog goes away.
 	 */
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    timed_wait_cancel_callback, wait);
+			    timed_wait_dialog_destroy_callback, wait);
 
 	wait->timeout_handler_id = 0;
 	wait->dialog = dialog;
@@ -253,8 +281,8 @@ nautilus_timed_wait_start_with_duration (int duration,
 
 	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {
-		timed_wait_hash_table = g_hash_table_new
-			(timed_wait_hash, timed_wait_hash_equal);
+		timed_wait_hash_table = nautilus_g_hash_table_new_free_at_exit
+			(timed_wait_hash, timed_wait_hash_equal, __FILE__ ": timed wait");
 	}
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
 	g_hash_table_insert (timed_wait_hash_table, wait, wait);
@@ -289,7 +317,7 @@ nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
 
 	g_return_if_fail (wait != NULL);
 
-	timed_wait_free (wait, TRUE);
+	timed_wait_free (wait);
 }
 
 static const char **
