@@ -59,7 +59,7 @@ rm hest
 
 if test "$1" = "push"; then
     echo "Copying installer to /h/public/robey ..."
-    if "$USER" = "robey"; then
+    if test "$USER" = "robey"; then
         cp eazel-installer.sh /h/public/bin/
     else
         echo "You are not Robey, therefore you are lame.  Enter your password."
