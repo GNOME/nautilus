@@ -76,6 +76,11 @@ static NautilusPreferencesItemDescription windows_and_desktop_items[] = {
 	  N_("Use Nautilus to draw the desktop"),
 	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
+        { N_("Desktop"),
+	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+	  N_("Use your home folder as the desktop"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
+	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  N_("Open each file or folder in a separate window"),
