@@ -1,5 +1,17 @@
 2001-02-05  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed part of bug 6329 (entering "gconf://" as location
+	crashes Nautilus). After this fix, it still crashes Nautilus,
+	but in a gconf-specific way.
+
+	* src/nautilus-window-manage-views.c:
+	(load_new_location_in_all_views): Don't try to load
+	a location in new_content_view if it's NULL.
+
+2001-02-05  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Mike Fleming <mfleming@eazel.com>
 
 	Fixed bug 6324 (Switching views crashes every time)

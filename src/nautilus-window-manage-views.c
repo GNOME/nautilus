@@ -849,7 +849,8 @@ load_new_location_in_all_views (NautilusWindow *window,
                                 NautilusViewFrame *view_to_skip)
 {
         set_displayed_location (window, location);
-        if (window->new_content_view != view_to_skip) {
+        if (window->new_content_view != view_to_skip
+            && window->new_content_view != NULL) {
                 load_new_location_in_one_view (window->new_content_view,
                                                location,
                                                selection);
