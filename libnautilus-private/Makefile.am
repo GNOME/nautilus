@@ -21,7 +21,12 @@ INCLUDES = 						\
 	$(NULL)
 
 libnautilus_extensions_la_LDFLAGS=	\
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
+	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la \
+	$(top_builddir)/librsvg/librsvg.la \
+	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
 	$(GNOME_LIBS) 			\
+	$(GNOMECANVASPIXBUF_LIBS)	\
 	$(OAF_LIBS) 			\
 	$(BONOBO_LIBS) 			\
 	$(GHTTP_LIBS) 			\

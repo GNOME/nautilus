@@ -1,3 +1,39 @@
+2000-07-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/html/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/rpmview/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/services/vault/nautilus-view/Makefile.am:
+	* components/tree/Makefile.am:
+	* components/websearch/Makefile.am:
+	* cut-n-paste-code/widgets/e-paned/Makefile.am:
+	* cut-n-paste-code/widgets/nautilus-druid/Makefile.am:
+	* helper-utilities/authenticate/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* librsvg/Makefile.am:
+	* src/Makefile.am:
+	* test/Makefile.am:
+
+	Make the cut-n-paste libraries be only static archives.  Link all
+	the private libraries statically into libnautilus-extensions.
+	Remove all the references to private libraries in all the
+	components and other users of libnautilus-extensions so that
+	dependencies can be managed in just one place.
+	
 2000-07-26  Robey Pointer  <robey@eazel.com>
 
 	*

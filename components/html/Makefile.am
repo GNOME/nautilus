@@ -36,8 +36,6 @@ ntl_web_browser_SOURCES =		\
 ntl_web_browser_LDADD =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la		\
 	$(GTKHTML_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\

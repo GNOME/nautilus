@@ -20,8 +20,6 @@ nautilus_authenticate_SOURCES =\
 
 nautilus_authenticate_LDADD =	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la                                \
 	$(GNOMEUI_LIBS)	\
 	$(GCONF_LIBS) \
 	$(PAM_LIBS) \

@@ -1,6 +1,6 @@
 NULL=
 
-lib_LTLIBRARIES=libnautilus-druid.la
+noinst_LTLIBRARIES = libnautilus-druid.la
 
 INCLUDES = \
 	-I$(top_srcdir)/cut-n-paste-code \
@@ -8,10 +8,7 @@ INCLUDES = \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(NULL)
 
-libnautilus_druid_la_LDFLAGS=\
-	$(GNOME_LIBS) \
-	$(GDK_PIXBUF_LIBS) \
-	$(NULL)
+libnautilus_druid_la_LDFLAGS = -static
 
 libnautilus_druid_la_SOURCES = \
 	nautilus-druid-page-edge.c \

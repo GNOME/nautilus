@@ -27,8 +27,6 @@ nautilus_sidebar_loser_SOURCES =		\
 nautilus_sidebar_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la		\
 	$(GNOMEUI_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS) \

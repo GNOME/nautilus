@@ -36,8 +36,6 @@ nautilus_sample_service_view_LDADD =				\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la		\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(GCONF_LIBS)					\

@@ -37,8 +37,6 @@ nautilus_service_install_view_SOURCES =		        \
 nautilus_service_install_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la		\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \

@@ -6,9 +6,9 @@ SUBDIRS =\
 	idl \
 	intl \
 	cut-n-paste-code \
+	librsvg \
 	libnautilus \
 	libnautilus-extensions \
-	librsvg \
 	helper-utilities \
 	components \
 	po \

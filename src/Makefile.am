@@ -25,9 +25,6 @@ LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la \
-	$(top_builddir)/librsvg/librsvg.la                                \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
 	$(GCONF_LIBS) \
