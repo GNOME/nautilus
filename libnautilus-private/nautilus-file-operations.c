@@ -325,7 +325,7 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	g_return_if_fail (transfer_info->progress_dialog == NULL);
 
 	transfer_info->progress_dialog = nautilus_file_operations_progress_new 
-		(transfer_info->operation_title, "", "", "", 1, 1);
+		(transfer_info->operation_title, "", "", "", 0, 0);
 
 	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
 			    "clicked",

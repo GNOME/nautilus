@@ -76,6 +76,13 @@ struct NautilusFileOperationsProgressDetails {
 static void
 nautilus_file_operations_progress_update (NautilusFileOperationsProgress *dialog)
 {
+	if (dialog->details->bytes_total == 0) {
+		/* we haven't set up the file count yet, do not update the progress
+		 * bar until we do
+		 */
+		return;
+	}
+
 	gtk_progress_configure (GTK_PROGRESS (dialog->details->progress_bar),
 				dialog->details->total_bytes_copied,
 				0.0, dialog->details->bytes_total);
@@ -327,24 +334,28 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *dial
 	dialog->details->from_prefix = from_prefix;
 	dialog->details->to_prefix = to_prefix;
 
-	progress_count = g_strdup_printf (_("%ld of %ld"), dialog->details->file_index, 
-		dialog->details->files_total);
-	gtk_label_set_text (GTK_LABEL (dialog->details->progress_count_label), progress_count);
-	g_free (progress_count);
+	if (dialog->details->bytes_total > 0) {
+		/* we haven't set up the file count yet, do not update the progress
+		 * count until we do
+		 */
+		gtk_label_set_text (GTK_LABEL (dialog->details->operation_name_label), progress_verb);
+		set_text_unescaped_trimmed (GTK_LABEL (dialog->details->item_name),
+			item_name, PATH_TRIM_WIDTH);
 
+		progress_count = g_strdup_printf (_("%ld of %ld"), dialog->details->file_index, 
+			dialog->details->files_total);
+		gtk_label_set_text (GTK_LABEL (dialog->details->progress_count_label), progress_count);
+		g_free (progress_count);
 
-	gtk_label_set_text (GTK_LABEL (dialog->details->operation_name_label), progress_verb);
-	set_text_unescaped_trimmed (GTK_LABEL (dialog->details->item_name),
-		item_name, PATH_TRIM_WIDTH);
-
-	gtk_label_set_text (GTK_LABEL (dialog->details->from_label), from_prefix);
-	set_text_unescaped_trimmed (GTK_LABEL (dialog->details->from_path_label),
-		from_path, PATH_TRIM_WIDTH);
-
-	if (dialog->details->to_prefix != NULL && dialog->details->to_path_label != NULL) {
-		gtk_label_set_text (GTK_LABEL (dialog->details->to_label), to_prefix);
-		set_text_unescaped_trimmed (GTK_LABEL (dialog->details->to_path_label),
-			to_path, PATH_TRIM_WIDTH);
+		gtk_label_set_text (GTK_LABEL (dialog->details->from_label), from_prefix);
+		set_text_unescaped_trimmed (GTK_LABEL (dialog->details->from_path_label),
+			from_path, PATH_TRIM_WIDTH);
+	
+		if (dialog->details->to_prefix != NULL && dialog->details->to_path_label != NULL) {
+			gtk_label_set_text (GTK_LABEL (dialog->details->to_label), to_prefix);
+			set_text_unescaped_trimmed (GTK_LABEL (dialog->details->to_path_label),
+				to_path, PATH_TRIM_WIDTH);
+		}
 	}
 
 	nautilus_file_operations_progress_update (dialog);
@@ -386,7 +397,8 @@ nautilus_file_operations_progress_freeze (NautilusFileOperationsProgress *dialog
 void
 nautilus_file_operations_progress_thaw (NautilusFileOperationsProgress *dialog)
 {
-	if (dialog->details->freeze_count > 0)
+	if (dialog->details->freeze_count > 0) {
 		dialog->details->freeze_count--;
+	}
 }
 

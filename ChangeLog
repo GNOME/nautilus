@@ -1,3 +1,25 @@
+2001-02-05  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Seth Nickel <seth@eazel.com>
+
+	Fix 5930 (Copy dialog often shows "1" as total number of
+		  fields in operation)
+
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_new_file):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(create_transfer_dialog):
+	Special case the preparing to copy/move phase -- when the
+	bytes_total is 0, don't display the count.
+	
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_thaw):
+	Formatting.
+
+	* HACKING:
+	Tiny tweak.
+
 2001-02-05  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-public.h:
