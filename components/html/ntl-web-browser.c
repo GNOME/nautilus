@@ -54,8 +54,12 @@ static char *
 canonicalize_url (const char *in_url, const char *base_url)
 {
   char *ctmp, *ctmp2, *retval, *removebegin, *removeend, *curpos;
+  gboolean trailing_slash = FALSE;
 
   g_return_val_if_fail(in_url, NULL);
+
+  if(base_url && base_url[strlen(base_url)-1] == '/')
+    trailing_slash = TRUE;
 
   ctmp = strstr(in_url, "://");
   if(ctmp)
@@ -65,6 +69,11 @@ canonicalize_url (const char *in_url, const char *base_url)
     }
   else if(*in_url == '/')
     {
+      int inc = 0;
+
+      if(trailing_slash)
+	inc++;
+
       ctmp = base_url?strstr(base_url, "://"):NULL;
       if(!ctmp)
 	{
@@ -74,7 +83,7 @@ canonicalize_url (const char *in_url, const char *base_url)
 
       ctmp2 = strchr(ctmp + 3, '/');
 
-      retval = g_strconcat(base_url, in_url, NULL);
+      retval = g_strconcat(base_url, in_url+inc, NULL);
       goto out;
     }
 
@@ -113,7 +122,7 @@ canonicalize_url (const char *in_url, const char *base_url)
   ctmp = strchr(ctmp, '/');
   if(!ctmp) {
     ctmp = retval;
-    retval = g_strconcat(retval, "/", NULL);
+    retval = g_strconcat(retval, trailing_slash?"":"/", NULL);
     g_free(ctmp);
     return retval;
   }

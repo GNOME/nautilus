@@ -1,6 +1,7 @@
 SUBDIRS=converters
 
 bin_PROGRAMS=hyperbola
+lib_LTLIBRARIES=libvfs-help.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOMEUI_CFLAGS) $(BONOBO_CFLAGS) \
@@ -20,10 +21,20 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-index.c	\
 	hyperbola-nav-search.c
 
-EXTRA_DIST=pages.map hyperbola.goad
+EXTRA_DIST=pages.map hyperbola.goad help-methods.conf
 
 goaddir=$(sysconfdir)/CORBA/servers
 goad_DATA=hyperbola.goad
 
 mapdatadir=$(datadir)/hyperbola/maps
 mapdata_DATA=pages.map
+
+module_flags = -export_dynamic -avoid-version
+modulesdir = $(libdir)/vfs/modules
+
+libvfs_help_la_SOURCES = help-method.c
+libvfs_help_la_LDFLAGS = $(module_flags)
+libvfs_help_la_LIBADD  = $(GLIB_LIBS)
+
+modulesconfdir=$(sysconfdir)/vfs/modules
+modulesconf_DATA = help-methods.conf

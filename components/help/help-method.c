@@ -34,10 +34,10 @@
 
 #include <gnome.h>
 
-#include "gnome-vfs.h"
+#include <libgnomevfs/gnome-vfs.h>
 #include "help-method.h"
-#include "gnome-vfs-module.h"
-#include "module-shared.h"
+#include <libgnomevfs/gnome-vfs-module.h>
+#include <libgnomevfs/gnome-vfs-module-shared.h>
 
 /* FIXME: temporary var, until we get i18n involved */
 #define TOPHELPDIR "/usr/share/gnome/help2/"
