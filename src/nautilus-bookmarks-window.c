@@ -783,12 +783,12 @@ repopulate (void)
 				selection_changed_id);
 	g_signal_handler_block (bookmark_list_store,
 				row_deleted_signal_id);
-        g_signal_handler_block (bookmark_list_store,
+        g_signal_handler_block (bookmark_list_widget,
                                 row_activated_signal_id);
 
 	gtk_list_store_clear (store);
 	
-	g_signal_handler_unblock (bookmark_selection,
+	g_signal_handler_unblock (bookmark_list_widget,
 				  row_activated_signal_id);
 	g_signal_handler_unblock (bookmark_list_store,
 				  row_deleted_signal_id);
