@@ -93,6 +93,7 @@
 	<accel name="*Shift*KP_Delete" verb="Delete"/>
         <accel name="*Alt*Down" verb="Open"/>
         <accel name="*Alt**Shift*Down" verb="OpenCloseParent"/>
+	<accel name="*Control*i" verb="Properties"/>
 </keybindings>
 <menu>
 	<submenu name="File">
@@ -145,7 +146,7 @@
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Properties"
                                   pixtype="stock" pixname="gtk-properties"
-				  accel="*Control*i"
+				  accel="*Alt*Return"
 				  verb="Properties"/>
 		</placeholder>
 		<placeholder name="Global File Items Placeholder">
