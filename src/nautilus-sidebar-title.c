@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 
 static void     nautilus_index_title_initialize_class   (NautilusIndexTitleClass *klass);
 static void     nautilus_index_title_destroy           (GtkObject               *object);
@@ -268,6 +269,7 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	char *notes_text;
 	char *temp_string;
 	char *info_string;
+	GdkFont *font;
 
 	/* NULL can happen because nautilus_file_get returns NULL for the root. */
 	file = index_title->details->file;
@@ -334,12 +336,10 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->more_info, 0, 0, 0);
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
 	}   
-	
-	/* FIXME bugzilla.eazel.com 667: 
-	 * don't use hardwired font like this - get it from preferences 
-	 */
-	nautilus_gtk_widget_set_font_by_name (index_title->details->more_info,
-					      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
+
+        font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (index_title->details->more_info, font);
+        gdk_font_unref (font);
 	
 	g_free(info_string);
 	
@@ -356,11 +356,9 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
 		}
 		
-		/* FIXME bugzilla.eazel.com 667: 
-		 * don't use hardwired font like this - get it from preferences 
-		 */
-		nautilus_gtk_widget_set_font_by_name (index_title->details->notes,
-						      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
+		font = nautilus_font_factory_get_font_from_preferences (12);
+		nautilus_gtk_widget_set_font (index_title->details->notes, font);
+		gdk_font_unref (font);
 		
 		g_free (notes_text);
 	} else if (index_title->details->notes != NULL) {

@@ -43,6 +43,7 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-icon-text-item.h"
+#include "nautilus-font-factory.h"
 #include "nautilus-lib-self-check-functions.h"
 
 
@@ -2404,20 +2405,6 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 }
 
-static GdkFont *
-load_font (const char *name)
-{
-	GdkFont *font;
-
-	/* FIXME bugzilla.eazel.com 40: 
-	 * Eventually we need a runtime check, but an assert is better than nothing. 
-	 */
-	font = gdk_font_load (name);
-	g_assert (font != NULL);
-	return font;
-}
-
-
 /* Handler for the editing_started signal of an icon text item.  We block the
  * event handler so that it will not be called while the text is being edited.
  */
@@ -2459,14 +2446,13 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
-        /* FIXME bugzilla.eazel.com 619: read font from metadata and/or preferences */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = load_font ("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = load_font ("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = load_font ("-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_from_preferences (8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_from_preferences (8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_from_preferences (10);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_from_preferences (12);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_from_preferences (14);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_from_preferences (18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_from_preferences (18);
 
 	container->details = details;
 

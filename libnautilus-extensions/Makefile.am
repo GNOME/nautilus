@@ -55,6 +55,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-gtk-macros.h			\
 	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
+	nautilus-font-factory.h			\
 	nautilus-icon-text-item.h		\
 	nautilus-keep-last-vertical-box.h	\
 	nautilus-link.h				\
@@ -109,6 +110,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-drag.c				\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
+	nautilus-font-factory.c			\
 	nautilus-icon-grid.c			\
 	nautilus-icon-text-item.c		\
 	nautilus-keep-last-vertical-box.c	\

@@ -39,14 +39,15 @@
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
@@ -161,6 +162,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	NautilusPropertyBrowser *property_browser;
  	char *image_file_name;
 	GtkWidget* widget, *temp_hbox, *temp_frame;
+	GdkFont *font;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 	widget = GTK_WIDGET (object);
@@ -224,8 +226,12 @@ nautilus_property_browser_initialize (GtkObject *object)
 	
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new  (_("Select A Category:"));
-	/* FIXME bugzilla.eazel.com 667: Hardcoded font. */
-	nautilus_gtk_widget_set_font_by_name(property_browser->details->title_label, "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
+
+
+        font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font(property_browser->details->title_label, font);
+        gdk_font_unref (font);
+
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
   	

@@ -1,3 +1,40 @@
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Task 667.  Unhardcode font strings.
+
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_get_current_font_factory), (nautilus_font_factory_get),
+	(nautilus_font_factory_new), (nautilus_font_factory_initialize),
+	(nautilus_font_factory_initialize_class), (font_hash_node_alloc),
+	(font_hash_node_free), (font_hash_node_lookup),
+	(font_hash_node_lookup_with_insertion),
+	(nautilus_font_factory_get_font_by_family),
+	(nautilus_font_factory_get_font_from_preferences),
+	(nautilus_font_factory_get_fallback_font), (make_font_name_string):
+	* libnautilus-extensions/nautilus-font-factory.h:
+	New class to obtain fonts either by family or from preferences.  A
+	specific size can be requested.
+
+	Right now its a pretty dumb class, but it can be enhanced to do
+	smart things like looking at gtkstyles and/or smarted choosing of
+	fonts if the specifically requested size is not avialable.
+	
+	* components/hardware/nautilus-hardware-view.c: (setup_form_title):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(setup_form_title):
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize):
+	* src/nautilus-sidebar-title.c: (nautilus_index_title_update_info):
+	Unhardcode xlfd font strings in all of these and use the font
+	factory instead.
+
 2000-06-02  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (fm_list_handle_dropped_icons):

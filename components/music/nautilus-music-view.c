@@ -46,6 +46,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
@@ -195,6 +196,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
 	GtkWidget *scrollwindow;
 	char *titles[] = {_("Track "), _("Title"), _("Artist"), _("Year"), _("Bitrate "), _("Time "), _("Album"),  _("Comment"),};
+	GdkFont *font;
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -219,9 +221,10 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* allocate a widget for the album title */
 	
 	music_view->details->album_title = gtk_label_new (_("Album Title"));
-        /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
-	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
-                                              "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+
+        font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font (music_view->details->album_title, font);
+
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
 	gtk_widget_show (music_view->details->album_title);
 	

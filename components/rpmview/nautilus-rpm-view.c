@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
@@ -136,6 +137,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	GtkWidget *temp_box, *temp_title_box, *temp_widget;
 	GtkTable *table;
   	static gchar *list_headers[] = { N_("Package Contents") };
+	GdkFont *font;
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
@@ -176,9 +178,11 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* allocate the name field */
 	
 	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
-        /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
-	nautilus_gtk_widget_set_font_by_name (rpm_view->details->package_title,
-					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
+
+        font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font (rpm_view->details->package_title, font);
+        gdk_font_unref (font);
+
 	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_title, 0, 0, 0);	
 	gtk_widget_show (rpm_view->details->package_title);
 	

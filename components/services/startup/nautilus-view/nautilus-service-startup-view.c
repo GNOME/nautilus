@@ -38,6 +38,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <stdio.h>
 
 #include "nautilus-service-startup-view.h"
@@ -469,6 +470,7 @@ setup_form_title (NautilusServicesContentView* view,
 	GtkWidget* temp_widget;
 	char* file_name;	
 	GtkWidget* temp_container;
+	GdkFont *font;
 
 	temp_container = gtk_hbox_new (FALSE, 0);
 	
@@ -482,9 +484,11 @@ setup_form_title (NautilusServicesContentView* view,
   	g_free (file_name);
 
  	view->details->form_title = gtk_label_new (title_text);
-	/* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
-	nautilus_gtk_widget_set_font_by_name (view->details->form_title,
-					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+
+        font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font (view->details->form_title, font);
+        gdk_font_unref (font);
+
 	gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
 	gtk_widget_show (view->details->form_title);
 }

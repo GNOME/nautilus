@@ -35,8 +35,9 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -276,7 +277,8 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 	GtkWidget *temp_widget;
 	char *file_name;	
 	GtkWidget *temp_container = gtk_hbox_new(FALSE, 0);
-	
+	GdkFont *font;
+
 	gtk_box_pack_start (GTK_BOX(view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
 	
@@ -289,9 +291,12 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 	}
 	
  	temp_widget = gtk_label_new (title_text);
-	/* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
-	nautilus_gtk_widget_set_font_by_name (temp_widget,
-					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+
+        font = nautilus_font_factory_get_font_from_preferences (18);
+
+	nautilus_gtk_widget_set_font (temp_widget, font);
+        gdk_font_unref (font);
+
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	
 	gtk_widget_show (temp_widget);
 }
