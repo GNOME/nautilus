@@ -177,6 +177,12 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
+
+	if (getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
+		puts ("XXX enabling test components.");
+		oaf_set_test_components_enabled (TRUE);
+	}
+
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	bonobo_activate (); /* do now since we need it before main loop */

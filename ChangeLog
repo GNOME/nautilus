@@ -1,3 +1,15 @@
+2000-09-18  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bugzilla.eazelc.om 674 2052
+	
+	* components/loser/content/nautilus-content-loser.oafinfo,
+	components/loser/sidebar/nautilus-sidebar-loser.oafinfo,
+	components/sample/nautilus-sample-content-view.oafinfo: Set
+	test_only attribute to TRUE.
+
+	* src/nautilus-main.c (main): Enable test components if
+	NAUTILUS_ENABLE_TEST_COMPONENTS evnironment variable is set.
+
 2000-09-19  Yukihiro Nakai <nakai@gnome.gr.jp>
 
 	* nautilus.desktop: Add Japanese entry
