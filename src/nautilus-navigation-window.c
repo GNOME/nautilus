@@ -1458,6 +1458,19 @@ nautilus_navigation_window_show (GtkWidget *widget)
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 }
 
+static void 
+real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
+{
+	
+    if(default_width) {
+	   *default_width = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH;
+	}
+	
+	if(default_height) {
+       *default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;	
+	}
+}
+
 static void
 nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 {
@@ -1473,4 +1486,5 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = real_set_title;
+	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 }

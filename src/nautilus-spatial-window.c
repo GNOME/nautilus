@@ -312,6 +312,17 @@ real_delete_event (GtkWidget *window, GdkEventAny *event)
 	return FALSE;
 }
 
+static void 
+real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
+{
+   if(default_width) {
+      *default_width = NAUTILUS_SPATIAL_WINDOW_DEFAULT_WIDTH;
+   }
+   if(default_height) {
+      *default_height = NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT;	
+   }
+}
+
 static void
 nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 {
@@ -346,4 +357,5 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 		real_set_content_view_widget;
 	GTK_WIDGET_CLASS (class)->delete_event =
 		real_delete_event;
+	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 }

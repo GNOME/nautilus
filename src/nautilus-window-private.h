@@ -139,8 +139,11 @@ struct _NautilusNavigationWindowDetails {
 #define NAUTILUS_WINDOW_MIN_WIDTH			200
 #define NAUTILUS_WINDOW_MIN_HEIGHT			200
 
-#define NAUTILUS_WINDOW_DEFAULT_WIDTH			500
-#define NAUTILUS_WINDOW_DEFAULT_HEIGHT			300
+#define NAUTILUS_SPATIAL_WINDOW_DEFAULT_WIDTH			500
+#define NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT			300
+
+#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH        800
+#define NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT       550
 
 typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
                                                 NautilusBookmark *bookmark);

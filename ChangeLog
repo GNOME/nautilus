@@ -1,3 +1,12 @@
+2003-12-01 Sivaiah Nallagatla <snallagatla@novell.com>
+	
+	* src/nautilus-navigation-window.c (real_get_default_size) (nautilus_navigation_window_class_init)
+	* src/nautilus-spatial-window.c	(real_get_default_size) (nautilus_spatial_window_class_init)
+	* src/nautilus-window-private.h
+	* src/nautilus-window.c (set_initial_window_geometry)
+	* src/nautilus-window.h : make default size of navigation window bigger and different from that 
+	of spatial window. #127604 in b.g.o
+ 
 2003-11-26  Sebastien Bacher  <seb128@debian.org>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in: Fix 
