@@ -4372,8 +4372,8 @@ real_update_menus (FMDirectoryView *view)
 		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
 		 FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 		 selection_count > 1
-			? _("R_emove Custom Images")
-			: _("R_emove Custom Image"));
+			? _("R_emove Custom Icons")
+			: _("R_emove Custom Icon"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 				       files_have_any_custom_images (selection));

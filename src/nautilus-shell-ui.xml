@@ -125,23 +125,22 @@
 		<menuitem name="Select All"
 			  _label="Select _All" 
 			  verb="Select All"/>
+				
+		<placeholder name="Edit Items Placeholder" delimit="top"/>
+		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
 		
 		<separator/>
-
-		<menuitem name="User Level Customization" 
-			  _label="P_references..." 
-			  _tip="Edit Nautilus preferences"
-			  pixtype="stock" pixname="gtk-preferences" 
-			  verb="User Level Customization"/>
 
 		<menuitem name="Customize" 
 			  _label="_Backgrounds and Emblems..." 
 			  _tip="Display patterns, colors, and emblems that can be used to customize appearance"
 			  verb="Customize"/>
-
-		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
-		<placeholder name="Edit Items Placeholder" delimit="top"/>
-
+		
+		<menuitem name="User Level Customization" 
+			  _label="P_references..." 
+			  _tip="Edit Nautilus preferences"
+			  pixtype="stock" pixname="gtk-preferences" 
+			  verb="User Level Customization"/>
 	</submenu>
 
 	<submenu name="View" _label="_View">
