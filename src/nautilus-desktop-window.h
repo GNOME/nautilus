@@ -50,7 +50,8 @@ typedef struct {
 } NautilusDesktopWindowClass;
 
 GtkType                nautilus_desktop_window_get_type            (void);
-NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application);
+NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application,
+								    GdkScreen           *screen);
 void                   nautilus_desktop_window_update_directory    (NautilusDesktopWindow *window);
 
 #endif /* NAUTILUS_DESKTOP_WINDOW_H */

@@ -25,11 +25,12 @@
 #ifndef NAUTILUS_PREFERENCES_DIALOG_H
 #define NAUTILUS_PREFERENCES_DIALOG_H
 
+#include <gdk/gdk.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
 G_BEGIN_DECLS
 
-void nautilus_preferences_dialog_show (void);
+void nautilus_preferences_dialog_show (GdkScreen *screen);
 
 G_END_DECLS
 

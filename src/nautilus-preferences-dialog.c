@@ -25,9 +25,10 @@
 #include <config.h>
 #include "nautilus-preferences-dialog.h"
 
-#include "libnautilus-private/nautilus-global-preferences.h"
-#include "libnautilus-private/nautilus-sidebar-functions.h"
 #include "nautilus-theme-selector.h"
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences-box.h>
@@ -415,9 +416,9 @@ preferences_show_help (GtkWindow *parent,
 	g_return_if_fail (helpfile != NULL);
 	g_return_if_fail (sect_id != NULL);
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    helpfile, sect_id, &error);
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (parent),
+		NULL, "user-guide", helpfile, sect_id, &error);
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
@@ -627,7 +628,12 @@ global_preferences_get_dialog (void)
 }
 
 void
-nautilus_preferences_dialog_show (void)
+nautilus_preferences_dialog_show (GdkScreen *screen)
 {
-	gtk_window_present (GTK_WINDOW (global_preferences_get_dialog ()));
+	GtkWindow *dialog;
+
+	dialog = GTK_WINDOW (global_preferences_get_dialog ());
+
+	gtk_window_set_screen (dialog, screen);
+	gtk_window_present (dialog);
 }

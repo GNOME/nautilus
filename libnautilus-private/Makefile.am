@@ -35,6 +35,15 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
+EGGFILES =			\
+	egg-screen-exec.h	\
+	egg-screen-exec.c	\
+	egg-screen-url.h	\
+	egg-screen-url.c	\
+	egg-screen-help.h	\
+	egg-screen-help.c	\
+	$(NULL)
+
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
 	eggtreemultidnd.c \
@@ -162,6 +171,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view-identifier.h \
 	nautilus-volume-monitor.c \
 	nautilus-volume-monitor.h \
+	$(EGGFILES) \
 	$(NULL)
 
 fsattributesdir = $(datadir)/nautilus
@@ -197,6 +207,7 @@ EXTRA_DIST = 				\
 	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
+	update-from-egg.sh		\
 	$(schema_DATA)			\
 	$(NULL)
 
@@ -208,3 +219,8 @@ CLEANFILES = \
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh

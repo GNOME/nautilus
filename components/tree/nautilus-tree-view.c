@@ -236,9 +236,12 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 {
         char *uri, *file_uri;
         NautilusTreeView *view;
+	GdkScreen *screen;
 	
         view = NAUTILUS_TREE_VIEW (callback_data);
-	
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (view->details->tree_widget));
+
         g_assert (file == view->details->activation_file);
 
 	/* FIXME: reenable && !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) */
@@ -248,13 +251,13 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 	    && eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 
 		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_launch_application_from_command (NULL, uri, NULL, FALSE);
+		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
 
 	} else if (uri != NULL
 	    	   && eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		   
 		file_uri = nautilus_file_get_uri (file);
-		nautilus_launch_desktop_file (file_uri, NULL, NULL);
+		nautilus_launch_desktop_file (screen, file_uri, NULL, NULL);
 		g_free (file_uri);
 		
 	} else if (uri != NULL
@@ -268,7 +271,7 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 		if (file_uri == NULL) {
 			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
 		} else {
-			nautilus_launch_application_from_command (NULL, file_uri, NULL, FALSE);
+			nautilus_launch_application_from_command (screen, NULL, file_uri, NULL, FALSE);
 			g_free (file_uri);
 		}
 		   

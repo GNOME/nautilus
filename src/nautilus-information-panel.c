@@ -322,6 +322,8 @@ nautilus_information_panel_create_context_menu (NautilusInformationPanel *inform
 	has_background = background && !information_panel->details->is_default_background;
 
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu),
+			     gtk_widget_get_screen (GTK_WIDGET (information_panel)));
 	
 	/* add the reset background item, possibly disabled */
 	menu_item = gtk_menu_item_new_with_mnemonic (_("Use _Default Background"));

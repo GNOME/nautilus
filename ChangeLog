@@ -1,3 +1,175 @@
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* acconfig.h: define HAVE_GTK_MULTIHEAD for
+	egg-screen-exec methods.
+
+	* configure.in: require gtk 2.1.0 and don't
+	define HAVE_GTK_MULTIHEAD.
+
+	* libnautilus-private/nautilus-multihead-hacks.h: kill.
+
+	* libnautilus-private/nautilus-directory-background:
+	(make_root_pixmap), (set_root_pixmap): use
+	 gdk_screen_get_display instead of assuming the default
+	display.
+
+	* src/nautilus-shell.c: (restore_one_window_callback):
+	add backwards compat support for sessions without
+	a screen number.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_application_from_command):
+	s/eel_gnome_screen_exec/eel_gnome_exec..._on_screen/g
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(new_terminal_callback): ditto.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/egg-screen-help.[ch]:
+	* libnautilus-private/egg-screen-url.[ch]:
+	add the multiscreen variants of gnome-help from libegg.
+
+	* libnautilus-private/nautilus-multihead-hacks.h: add
+	gtk_window_get_screen.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(help_cb): use egg_screen_help_display_desktop and use
+	the chooser window as the transient parent for the error
+	dialog.
+
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_response_callback): use
+	egg_screen_help_display_desktop.
+
+	* src/nautilus-preferences-dialog.c: (preferences_show_help):
+	use egg_screen_help_display_desktop and use the prefs dialog
+	as the transient parent for the error dialog rather than
+	the help button.
+
+	* src/nautilus-property-browser.c: (help_button_callback):
+	use egg_screen_help_display_desktop.
+
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback): use
+	egg_screen_help_display_desktop and use the NautilusWindow as
+	the transient parent for the error dialog.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(make_root_pixmap), (set_root_pixmap): don't pass
+	a screen number arg, pass a GdkScreen instead. Also,
+	fix bogus use of the default root window.
+	(image_loading_done_callback): update.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_set_stipple): ref the new stipple
+	before unrefing the old.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_container_set_workarea): fix up sanity check.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: check for gtk with multihead
+	support and define GTK_MULTIHEAD.
+
+	* components/tree/nautilus-tree-view.c:
+	(got_activation_uri_callback): launch applications on the
+	correct screen.
+
+	* libnautilus-private/Makefile.am: add egg-screen-exec.[ch]
+	to the build.
+
+	* libnautilus-private/nautilus-directory-background.c:
+	Make sure we're drawing the background on the correct
+	screen.
+
+	* libnautilus-private/nautilus-dnd.[ch]: (nautilus_drag_init),
+	(nautilus_drag_finalize): move the stipple from here into
+	icon-dnd, where its actually used.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles): create the stipple on the correct
+	screen.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(realize): create the stipple here, but use eel_stipple
+	instead of homebrew.
+
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_set_stipple): impl changing the stipple.
+
+	* libnautilus-private/nautilus-multihead-hacks.h: impl
+	A set of hacks to allow building with gtk+ 2.0.x and
+	not have loads of #ifdef HAVE_GTK_MULTIHEAD.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	Launch the mime capplet on the correct screen.
+	
+	* libnautilus-private/nautilus-program-choosing.c:
+	Implement launching apps on the correct screen.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_container_set_workarea), (net_workarea_changed),
+	(desktop_icon_view_property_filter),
+	(fm_desktop_icon_view_finalize), (unrealized_callback),
+	(realized_callback), (fm_desktop_icon_view_init),
+	(new_terminal_callback), (new_launcher_callback),
+	(change_background_callback), (volume_ops_callback):
+	* src/file-manager/fm-directory-view.c: (edit_launcher),
+	(edit_launcher_callback), (new_launcher_callback),
+	(run_script_callback), (create_popup_menu), (activate_callback),
+	(fm_directory_view_move_copy_items):
+	* src/file-manager/fm-properties-window.c:
+	(create_properties_window), (fm_properties_window_present):
+
+	* src/nautilus-application.c:
+	(nautilus_application_create_desktop_windows): create a desktop
+	window on every screen.
+	(nautilus_application_create_window): realize the window on
+	the given screen.
+	(volume_mounted_callback): open a new window on the default
+	screen when a new volume is mounted.
+
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_new): realize on the correct screen
+	using the dimensions of said screen.
+	(realize), (unrealize): set and unset NAUTILUS_DESKTOP_WINDOW_ID
+	on the RootWindow on the correct screen on realize and unrealize.
+	(set_wmspec_desktop_hint), (set_desktop_window_id): use
+	gdk_property_change.
+
+	* src/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_show): show the dialog on the correct
+	screen.
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_new): realize on the correct screen.
+	(nautilus_property_browser_show): use a weak pointer instead
+	of destroy handler crack.
+
+	* src/nautilus-shell.c:
+	(open_window): open on the default screen.
+	(save_window_states), (restore_one_window_callback): save
+	and restore screen info across restart.
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_create_context_menu):
+	Pop the context menu up on the correct screen.
+
+	* src/nautilus-window-menus.c: bring everything up on the
+	correct screen.
+
+	* src/nautilus-window.c:
+	(nautilus_window_size_request): use the dimensions of the screen
+	upon which the window is realized.
+
 2002-10-01  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

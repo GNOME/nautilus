@@ -27,6 +27,7 @@
 #ifndef NAUTILUS_APPLICATION_H
 #define NAUTILUS_APPLICATION_H
 
+#include <gdk/gdk.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
@@ -63,7 +64,8 @@ void                 nautilus_application_startup           (NautilusApplication
 							     const char          *default_geometry,
 							     const char          *urls[]);
 GList *              nautilus_application_get_window_list   (void);
-NautilusWindow *     nautilus_application_create_window     (NautilusApplication *application);
+NautilusWindow *     nautilus_application_create_window     (NautilusApplication *application,
+							     GdkScreen           *screen);
 void                 nautilus_application_close_all_windows (void);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);

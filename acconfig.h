@@ -20,3 +20,4 @@
 #undef bzopen
 #undef bzread
 #undef bzwrite
+#define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec functions */

@@ -98,7 +98,7 @@ create_selection_shadow (NautilusIconContainer *container,
 		return NULL;
 	}
 		
-	stipple = container->details->dnd_info->drag_info.stipple;
+	stipple = container->details->dnd_info->stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
 
 	canvas = EEL_CANVAS (container);
@@ -1385,6 +1385,21 @@ drag_data_received_callback (GtkWidget *widget,
 }
 
 void
+nautilus_icon_dnd_set_stipple (NautilusIconContainer *container,
+			       GdkBitmap             *stipple)
+{
+	if (stipple != NULL) {
+		g_object_ref (stipple);
+	}
+	
+	if (container->details->dnd_info->stipple != NULL) {
+		g_object_unref (container->details->dnd_info->stipple);
+	}
+
+	container->details->dnd_info->stipple = stipple;
+}
+
+void
 nautilus_icon_dnd_init (NautilusIconContainer *container,
 			GdkBitmap *stipple)
 {
@@ -1394,7 +1409,7 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 
 	container->details->dnd_info = g_new0 (NautilusIconDndInfo, 1);
 	nautilus_drag_init (&container->details->dnd_info->drag_info,
-		drag_types, G_N_ELEMENTS (drag_types), stipple);
+		drag_types, G_N_ELEMENTS (drag_types));
 
 	/* Set up the widget as a drag destination.
 	 * (But not a source, as drags starting from this widget will be
@@ -1421,6 +1436,9 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	g_signal_connect (container, "drag_leave",
 			  G_CALLBACK (drag_leave_callback), NULL);
 
+	if (stipple != NULL) {
+		container->details->dnd_info->stipple = g_object_ref (stipple);
+	}
 }
 
 void
@@ -1430,6 +1448,10 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 
 	if (container->details->dnd_info != NULL) {
 		stop_auto_scroll (container);
+
+		if (container->details->dnd_info->stipple != NULL) {
+			g_object_unref (container->details->dnd_info->stipple);
+		}
 
 		nautilus_drag_finalize (&container->details->dnd_info->drag_info);
 		container->details->dnd_info = NULL;

@@ -62,6 +62,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 
@@ -186,7 +187,9 @@ file_menu_new_window_callback (BonoboUIComponent *component,
 	NautilusWindow *new_window;
 
 	current_window = NAUTILUS_WINDOW (user_data);
-	new_window = nautilus_application_create_window (current_window->application);
+	new_window = nautilus_application_create_window (
+				current_window->application,
+				gtk_window_get_screen (GTK_WINDOW (current_window)));
 	nautilus_window_go_home (new_window);
 }
 
@@ -565,18 +568,26 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component,
 
 static void
 preferences_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
+		      gpointer user_data, 
+		      const char *verb)
 {
-	nautilus_preferences_dialog_show ();
+	GtkWindow *window;
+
+	window = GTK_WINDOW (user_data);
+
+	nautilus_preferences_dialog_show (gtk_window_get_screen (window));
 }
 
 static void
 backgrounds_and_emblems_callback (BonoboUIComponent *component, 
-		    gpointer user_data, 
-		    const char *verb)
+				  gpointer user_data, 
+				  const char *verb)
 {
-	nautilus_property_browser_show ();
+	GtkWindow *window;
+
+	window = GTK_WINDOW (user_data);
+
+	nautilus_property_browser_show (gtk_window_get_screen (window));
 }
 
 static void
@@ -672,16 +683,19 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
+	NautilusWindow *window;
 	GError *error;
 	GtkWidget *dialog;
 
 	error = NULL;
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml",
-				    "gosnautilus-21", &error);
+	window = NAUTILUS_WINDOW (user_data);
+
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (GTK_WINDOW (window)),
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21", &error);
+
 	if (error) {
-		dialog = gtk_message_dialog_new (NULL,
+		dialog = gtk_message_dialog_new (GTK_WINDOW (window),
 						 GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
@@ -1041,8 +1055,13 @@ add_bookmark_for_current_location (NautilusWindow *window)
 static void
 edit_bookmarks (NautilusWindow *window)
 {
-        gtk_window_present
-		(get_or_create_bookmarks_window (G_OBJECT (window)));
+	GtkWindow *dialog;
+
+	dialog = get_or_create_bookmarks_window (G_OBJECT (window));
+
+	gtk_window_set_screen (
+		dialog, gtk_window_get_screen (GTK_WINDOW (window)));
+        gtk_window_present (dialog);
 }
 
 void

@@ -33,6 +33,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <gtk/gtkhbbox.h>
 #include <gnome.h>
 #include <glade/glade.h>
@@ -124,10 +125,10 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 	if (response_id == GTK_RESPONSE_HELP) {
 		GError *error = NULL;
 
-		gnome_help_display_desktop (NULL,
-					    "user-guide",
-					    "wgosnautilus.xml", "gosnautilus-36",
-					    &error);
+		egg_screen_help_display_desktop (
+			gtk_window_get_screen (GTK_WINDOW (dialog)),
+			NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-36", &error);
+
 		if (error) {
 			GtkWidget *err_dialog;
 			err_dialog = gtk_message_dialog_new (GTK_WINDOW (dialog),

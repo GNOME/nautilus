@@ -82,6 +82,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <math.h>
 #include <atk/atkrelationset.h>
 
@@ -214,7 +215,6 @@ static GtkTargetEntry drag_types[] = {
 	{ "text/uri-list",  0, PROPERTY_TYPE }
 };
 
-static NautilusPropertyBrowser *main_browser = NULL;
 
 EEL_CLASS_BOILERPLATE (NautilusPropertyBrowser,
 				   nautilus_property_browser,
@@ -490,15 +490,13 @@ nautilus_property_browser_destroy (GtkObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					 nautilus_property_browser_theme_changed,
 					 property_browser);
-	if (object == GTK_OBJECT (main_browser))
-		main_browser = NULL;
 		
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* create a new instance */
 NautilusPropertyBrowser *
-nautilus_property_browser_new (void)
+nautilus_property_browser_new (GdkScreen *screen)
 {
 	NautilusPropertyBrowser *browser;
 
@@ -506,6 +504,7 @@ nautilus_property_browser_new (void)
 		(gtk_widget_new (nautilus_property_browser_get_type (), NULL));
 
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
+	gtk_window_set_screen (GTK_WINDOW (browser), screen);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
 	return browser;
@@ -514,12 +513,17 @@ nautilus_property_browser_new (void)
 /* show the main property browser */
 
 void
-nautilus_property_browser_show (void)
+nautilus_property_browser_show (GdkScreen *screen)
 {
-	if (main_browser == NULL) {
-		main_browser = nautilus_property_browser_new ();
+	static GtkWindow *browser = NULL;
+
+	if (browser == NULL) {
+		browser = GTK_WINDOW (nautilus_property_browser_new (screen));
+		g_object_add_weak_pointer (G_OBJECT (browser),
+					   (gpointer *) &browser);
 	} else {
-		gtk_window_present (GTK_WINDOW (main_browser));
+		gtk_window_set_screen (browser, screen);
+		gtk_window_present (browser);
 	}
 }
 
@@ -1486,12 +1490,12 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml", "gosnautilus-50",
-				    &error);
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (GTK_WINDOW (property_browser)),
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-50", &error);
+
 	if (error) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (widget),
+		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,

@@ -46,10 +46,6 @@ nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
-	gtk_widget_set_size_request (GTK_WIDGET (window),
-				     gdk_screen_width (),
-				     gdk_screen_height ());
-
 	gtk_window_move (GTK_WINDOW (window), 0, 0);
 
 	/* shouldn't really be needed given our semantic type
@@ -57,18 +53,6 @@ nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 	 */
 	gtk_window_set_resizable (GTK_WINDOW (window),
 				  FALSE);
-}
-
-static void
-nautilus_desktop_window_realized (NautilusDesktopWindow *window)
-{
-	/* Tuck the desktop windows xid in the root to indicate we own the desktop.
-	 */
-	Window window_xid;
-	window_xid = GDK_WINDOW_XWINDOW (GTK_WIDGET (window)->window);
-	gdk_property_change (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
-			     gdk_x11_xatom_to_atom (XA_WINDOW), 32,
-			     PropModeReplace, (guchar *) &window_xid, 1);
 }
 
 static gint
@@ -96,20 +80,27 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 }
 
 NautilusDesktopWindow *
-nautilus_desktop_window_new (NautilusApplication *application)
+nautilus_desktop_window_new (NautilusApplication *application,
+			     GdkScreen           *screen)
 {
 	NautilusDesktopWindow *window;
+	int width_request, height_request;
+
+	width_request = gdk_screen_get_width (screen);
+	height_request = gdk_screen_get_height (screen);
 
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_widget_new (nautilus_desktop_window_get_type(),
 				 "app", application,
 				 "app_id", "nautilus",
+				 "width_request", width_request,
+				 "height_request", height_request,
+				 "screen", screen,
 				 NULL));
 
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 
-	g_signal_connect (window, "realize", G_CALLBACK (nautilus_desktop_window_realized), NULL);
 	g_signal_connect (window, "delete_event", G_CALLBACK (nautilus_desktop_window_delete_event), NULL);
 
 	/* Point window at the desktop folder.
@@ -127,7 +118,6 @@ finalize (GObject *object)
 
 	window = NAUTILUS_DESKTOP_WINDOW (object);
 
-	gdk_property_delete (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
 	g_free (window->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -262,23 +252,54 @@ map (GtkWidget *widget)
 
 
 static void
-set_wmspec_desktop_hint (GdkWindow *window)
+unrealize (GtkWidget *widget)
 {
-        Atom atom;
-        
-        atom = XInternAtom (gdk_display,
-                            "_NET_WM_WINDOW_TYPE_DESKTOP",
-                            False);
+	NautilusDesktopWindow *window;
+	GdkWindow *root_window;
 
-        XChangeProperty (GDK_WINDOW_XDISPLAY (window),
-                         GDK_WINDOW_XWINDOW (window),
-                         XInternAtom (gdk_display,
-                                      "_NET_WM_WINDOW_TYPE",
-                                      False),
-                         XA_ATOM, 32, PropModeReplace,
-                         (guchar *) &atom, 1);
+	window = NAUTILUS_DESKTOP_WINDOW (widget);
+
+	root_window = gdk_screen_get_root_window (
+				gtk_window_get_screen (GTK_WINDOW (window)));
+
+	gdk_property_delete (root_window,
+			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
+
+	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
+static void
+set_wmspec_desktop_hint (GdkWindow *window)
+{
+	GdkAtom atom;
+
+	atom = gdk_atom_intern ("_NET_WM_WINDOW_TYPE_DESKTOP", FALSE);
+        
+	gdk_property_change (window,
+			     gdk_atom_intern ("_NET_WM_WINDOW_TYPE", FALSE),
+			     gdk_x11_xatom_to_atom (XA_ATOM), 32,
+			     GDK_PROP_MODE_REPLACE, (guchar *) &atom, 1);
+}
+
+static void
+set_desktop_window_id (NautilusDesktopWindow *window,
+		       GdkWindow             *gdkwindow)
+{
+	/* Tuck the desktop windows xid in the root to indicate we own the desktop.
+	 */
+	Window window_xid;
+	GdkWindow *root_window;
+
+	root_window = gdk_screen_get_root_window (
+				gtk_window_get_screen (GTK_WINDOW (window)));
+
+	window_xid = GDK_WINDOW_XWINDOW (gdkwindow);
+
+	gdk_property_change (root_window,
+			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
+			     gdk_x11_xatom_to_atom (XA_WINDOW), 32,
+			     GDK_PROP_MODE_REPLACE, (guchar *) &window_xid, 1);
+}
 
 static void
 realize (GtkWidget *widget)
@@ -296,6 +317,8 @@ realize (GtkWidget *widget)
 
 	/* This is the new way to set up the desktop window */
 	set_wmspec_desktop_hint (widget->window);
+
+	set_desktop_window_id (window, widget->window);
 }
 
 static void
@@ -311,6 +334,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_WIDGET_CLASS (class)->realize = realize;
+	GTK_WIDGET_CLASS (class)->unrealize = unrealize;
 
 
 	GTK_WIDGET_CLASS (class)->map = map;
