@@ -376,11 +376,23 @@ rpm_create_db (char *dbpath,
 }
 
 void
-eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system)
+eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system,
+				      GList *dbpaths)
 {	
+	GList *iterator;
+
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 	g_assert (system->private->dbs);
+
+	system->private->dbpaths = dbpaths;
+	for (iterator = dbpaths; iterator; iterator = g_list_next (iterator)) {
+		char *db = (char*)iterator->data;
+		char *root = (char*)(iterator = g_list_next (iterator))->data;
+
+		info (system, "Adding %s as root for %s", root, db);
+		g_hash_table_insert (system->private->db_to_root, db, root);
+	}
 
 	g_hash_table_foreach (system->private->db_to_root, (GHFunc)rpm_create_db, system);
 
@@ -475,11 +487,12 @@ eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system)
  Load Package implemementation
 *************************************************************/
 
-static void 
-rpm_packagedata_fill_from_rpm_header (EazelPackageSystemRpm3 *system,
-				      PackageData *pack, 
-				      Header hd,
-				      int detail_level)
+
+void 
+eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *system,
+							PackageData *pack, 
+							Header hd,
+							int detail_level)
 {
 	unsigned long *sizep;
 
@@ -606,8 +619,7 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 
 	/* Get Header block */
 	rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
-	rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);	
-
+	eazel_package_system_rpm3_packagedata_fill_from_header (system, pack, hd, detail_level);
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 
 	fdClose (fd);
@@ -696,7 +708,10 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 			offset = dbiIndexRecordOffset (matches, i);
 			hd = rpmdbGetRecord (db, offset);
 			pack = packagedata_new ();
-			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);
+			eazel_package_system_rpm3_packagedata_fill_from_header (system, 
+										pack, 
+										hd, 
+										detail_level);
 			g_free (pack->install_root);
 			pack->install_root = g_strdup (dbpath);
 			if (g_list_find_custom (*result, 
@@ -739,10 +754,11 @@ eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 		hd = rpmdbGetRecord (db, offset);
 		pack = packagedata_new ();
 
-		rpm_packagedata_fill_from_rpm_header (system, pack, hd, 0);
-
 		if (strstr (pack->name, key)) {
-			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);			
+			eazel_package_system_rpm3_packagedata_fill_from_header (system, 
+										pack, 
+										hd, 
+										detail_level);
 			(*result) = g_list_prepend (*result, pack);
 		} else {
 			packagedata_destroy (pack, TRUE);
@@ -829,7 +845,6 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				 EazelPackageSystemQueryEnum flag,
 				 int detail_level)
 {
-#ifdef HAVE_RPM_30
 	GList *result = NULL;
 	struct RpmQueryPiggyBag pig;
 	
@@ -850,9 +865,6 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	eazel_package_system_rpm3_close_dbs (system);
 
 	return result;
-#else
-	return NULL;
-#endif /* HAVE_RPM_30 */
 }
 
 /************************************************************
@@ -1217,7 +1229,8 @@ eazel_package_system_rpm3_class_initialize (EazelPackageSystemRpm3Class *klass)
 }
 
 static void
-eazel_package_system_rpm3_initialize (EazelPackageSystemRpm3 *system) {
+eazel_package_system_rpm3_initialize (EazelPackageSystemRpm3 *system) 
+{
 	g_assert (system != NULL);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 	
@@ -1258,7 +1271,6 @@ EazelPackageSystemRpm3 *
 eazel_package_system_rpm3_new (GList *dbpaths) 
 {
 	EazelPackageSystemRpm3 *system;
-	GList *iterator;
 
 	g_return_val_if_fail (dbpaths, NULL);
 
@@ -1266,16 +1278,6 @@ eazel_package_system_rpm3_new (GList *dbpaths)
 
 	gtk_object_ref (GTK_OBJECT (system));
 	gtk_object_sink (GTK_OBJECT (system));
-
-	system->private->dbpaths = dbpaths;
-	for (iterator = dbpaths; iterator; iterator = g_list_next (iterator)) {
-		char *db = (char*)iterator->data;
-		char *root = (char*)(iterator = g_list_next (iterator))->data;
-
-		info (system, "Adding %s as root for %s", root, db);
-		g_hash_table_insert (system->private->db_to_root, db, root);
-	}
-	eazel_package_system_rpm3_create_dbs (system);
 
 	return system;
 }

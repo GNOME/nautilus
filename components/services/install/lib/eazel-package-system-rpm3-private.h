@@ -25,11 +25,17 @@
 #define EAZEL_PACKAGE_SYSTEM_RPM3_PRIVATE_H
 
 #include "eazel-package-system-rpm3.h"
+#include <rpm/rpmlib.h>
 
 void eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system);
 gboolean eazel_package_system_rpm3_close_dbs (EazelPackageSystemRpm3 *system);
 gboolean eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system);
-void eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system);
+void eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system, GList*);
+void eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *system,
+							     PackageData *pack, 
+							     Header hd,
+							     int detail_level);
+
 PackageData* eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 						     PackageData *in_package,
 						     const char *filename,

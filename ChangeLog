@@ -1,3 +1,27 @@
+2000-12-12  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: My imaginary friend Oskar.
+
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_create_dbs),
+	(rpm_packagedata_fill_from_file),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query),
+	(eazel_package_system_rpm3_initialize),
+	(eazel_package_system_rpm3_new):
+
+	GtkObject is soo lame, whoever likes this, should surely be struck
+	down with OO book.
+	
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_query_impl),
+	(eazel_package_system_rpm4_query_foreach),
+	(eazel_package_system_rpm4_new):
+	Implemented more rpm4 query stuff.
+
 2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed silly bug involving the new Sound Busy dialog.
