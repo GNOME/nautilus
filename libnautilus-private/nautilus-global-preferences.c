@@ -45,6 +45,7 @@ static GtkWidget *global_preferences_create_check_group (GtkWidget           *pa
 							 const char * const   pref_names[],
 							 guint                num_prefs);
 static GtkWidget *global_preferences_get_dialog         (void);
+static void       global_preferences_register_for_ui   (void);
 static void       global_preferences_register_static    (NautilusPreferences *prefs);
 static void       global_preferences_register_dynamic   (NautilusPreferences *prefs);
 
@@ -116,20 +117,6 @@ static const NautilusPreferencesInfo global_preferences_static_info[] =
 		FALSE,
 		NULL
 	},
-	{
-		NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-		"",	/* No caption since not currently displayed in preferences dialog */
-		NAUTILUS_PREFERENCE_STRING,
-		"name|size|date_modified|type",
-		NULL
-	},
-	{
-		NAUTILUS_PREFERENCES_ICON_THEME,
-		"",	/* No caption since not currently displayed in preferences dialog */
-		NAUTILUS_PREFERENCE_STRING,
-		"default",
-		NULL
-	}
 };
 
 /*
@@ -141,6 +128,8 @@ global_preferences_create_dialog (void)
 	GtkWidget		*panes[3];
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*prefs_box;
+
+	global_preferences_register_for_ui ();
 
 	prefs_dialog = nautilus_preferences_dialog_new (GLOBAL_PREFERENCES_DIALOG_TITLE);
 	
@@ -241,9 +230,13 @@ global_preferences_register_static (NautilusPreferences *prefs)
 	g_assert (prefs != NULL);
 
 	/* Register the static prefs */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (global_preferences_static_info); i++)
-	{
-		nautilus_preferences_register_from_info (prefs, &global_preferences_static_info[i]);
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (global_preferences_static_info); i++) {
+		nautilus_preferences_set_info (prefs,
+					       global_preferences_static_info[i].name,
+					       global_preferences_static_info[i].description,
+					       global_preferences_static_info[i].type,
+					       global_preferences_static_info[i].default_value,
+					       global_preferences_static_info[i].data);
 	}
 }
 
@@ -280,47 +273,47 @@ global_preferences_register_dynamic (NautilusPreferences *prefs)
 {
 	g_assert (prefs != NULL);
 
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
-						   "History View",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) TRUE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
+				       "History View",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) TRUE,
+				       NULL);
 	
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
-						   "Web Search View",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) TRUE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
+				       "Web Search View",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) TRUE,
+				       NULL);
 
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
-						   "Annotations",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) TRUE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
+				       "Annotations",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) TRUE,
+				       NULL);
 
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
-						   "Help Contents",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) TRUE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
+				       "Help Contents",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) TRUE,
+				       NULL);
 
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
-						   "Help Index",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) FALSE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
+				       "Help Index",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE,
+				       NULL);
 
-	nautilus_preferences_register_from_values (prefs,
-						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
-						   "Help Search",
-						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) FALSE,
-						   NULL);
+	nautilus_preferences_set_info (prefs,
+				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
+				       "Help Search",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE,
+				       NULL);
 }
 
 static GtkWidget *
@@ -343,6 +336,20 @@ global_preferences_get_dialog (void)
 	}
 
 	return global_prefs_dialog;
+}
+
+static void
+global_preferences_register_for_ui (void)
+{
+	static gboolean initialized = FALSE;
+
+	if (!initialized)
+	{
+		initialized = TRUE;
+
+ 		global_preferences_register_static (nautilus_preferences_get_global_preferences ());
+ 		global_preferences_register_dynamic (nautilus_preferences_get_global_preferences ());
+	}
 }
 
 /*
@@ -373,16 +380,3 @@ nautilus_global_preferences_shutdown (void)
 	gtk_object_unref (global_prefs);
 }
 
-void
-nautilus_global_preferences_initialize (void)
-{
-	static gboolean initialized = FALSE;
-
-	if (!initialized)
-	{
-		initialized = TRUE;
-
- 		global_preferences_register_static (nautilus_preferences_get_global_preferences ());
- 		global_preferences_register_dynamic (nautilus_preferences_get_global_preferences ());
-	}
-}

@@ -255,7 +255,6 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
   NautilusWindow *mainwin;
 
   nautilus_navinfo_init();
-  nautilus_global_preferences_initialize ();
 
   /* Set default configuration */
   mainwin = nautilus_app_create_window(app);

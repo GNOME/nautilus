@@ -128,14 +128,12 @@ synch_menus_with_preference (void)
 static void
 preference_changed_callback (NautilusPreferences *preferences,
          		     const char *name,
-         		     NautilusPreferencesType type,
          		     gconstpointer value,
          		     gpointer user_data)
 
 {
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
-	g_assert (type == NAUTILUS_PREFERENCE_STRING);
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
@@ -282,10 +280,10 @@ create_icon_text_window (void)
 
 	synch_menus_with_preference ();
 
-	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
-					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					   preference_changed_callback,
-					   NULL);
+	nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
+						  NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+						  preference_changed_callback,
+						  NULL);
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
                     	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_cb),

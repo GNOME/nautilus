@@ -1,3 +1,93 @@
+2000-04-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Preferences work.  Make preference registration implicit.
+
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h: 
+	(prefs_hash_lookup_with_implicit_registration): New function to do
+	preference lookup with implicit registration.  If the pref is not
+	found at first, it will be automatically added.
+
+	(preference_get): Replace the old badly named prefs_get_pref with
+	something simpler.
+
+	(preference_set): Same here.
+
+	(nautilus_preferences_set_info): Add a function that allows
+	tweaking the default values and other info for a pref.
+	
+	(nautilus_preferences_add_enum_callback):
+	(nautilus_preferences_add_boolean_callback):
+	(nautilus_preferences_add_string_callback): New callback adding
+	functions that work with implicit registration.  The caller needs
+	to know the type of preference they want to munge beforehand for
+	the implicit registration to work.
+
+	Also cleanup a bunch bucnhsome of style issues.
+
+	* nautilus-widgets/test-nautilus-widgets.c:
+	Update for all the pref changes.
+
+	* libnautilus/nautilus-global-preferences.c,
+	  libnautilus/nautilus-global-preferences.h:
+	(global_preferences_register_for_ui): Add a new private function
+	to register only preferences used in the pref dialog ui.
+
+	(global_preferences_static_info): Remove 
+	NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES and
+	NAUTILUS_PREFERENCES_ICON_THEME since they dont have a ui and can
+	be used implicitly.
+
+	(nautilus_global_preferences_initialize): Removed. 
+
+	* libnautilus/nautilus-icon-factory.c:
+	(icon_theme_changed_callback): Doesnt take a type paramater no
+	more.
+	
+	(nautilus_get_current_icon_factory): Remove the global preferences
+	initialization code and blurb.  Not needed since prefs are
+	registered implicitly as needed.  Use
+	nautilus_preferences_add_string_callback instead of obsolete
+	nautilus_preferences_add_callback.
+
+	(nautilus_icon_factory_initialize_class):  Add a preferences call
+	to set the default value for the ICON_THEME string.
+	We might want to change things such that no default has to be installed
+	for this preference.  If so, then the code that fetches the preference
+	would have to deal with either a NULL return value (or "").
+
+	* src/ntl-app.c:
+	(nautilus_app_startup): Remove global preferences initialization
+	call.
+
+	* src/file-manager/fm-directory-view.c:
+	(user_level_changed_callback): 
+	(use_new_window_changed_callback): Callbacks dont take a
+	preference type argument no more.
+
+	(fm_directory_view_initialize): Use 
+	nautilus_preferences_add_{enum,boolean}_callback instead of obsolete
+	nautilus_preferences_add_callback.
+
+	* src/file-manager/fm-icon-text-window.c:
+	(preference_changed_callback): Doesnt take a type paramater no
+	more.
+
+	(create_icon_text_window): Use 
+	nautilus_preferences_add_string_callback instead of obsolete
+	nautilus_preferences_add_callback.
+
+	* src/file-manager/fm-icon-view.c:
+	(text_attribute_names_changed_callback): Doesnt take a type paramater no
+	more.
+
+	(fm_icon_view_initialize_class): Add a preferences call
+	to set the default value for the ICON_VIEW_TEXT_ATTRIBUTE_NAMES string.
+	We might want to change things such that no default has to be installed
+	for this preference.  If so, then the code that fetches the preference
+	would have to deal with either a NULL return value (or "").
+	
+	
 2000-04-05  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:

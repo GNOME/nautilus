@@ -168,12 +168,10 @@ static void           unschedule_display_of_pending_files                       
 static void           disconnect_model_handlers                                   (FMDirectoryView         *view);
 static void           user_level_changed_callback                                 (NautilusPreferences     *preferences,
 										   const char              *name,
-										   NautilusPreferencesType  type,
 										   gconstpointer            value,
 										   gpointer                 user_data);
 static void           use_new_window_changed_callback                             (NautilusPreferences     *preferences,
 										   const char              *name,
-										   NautilusPreferencesType  type,
 										   gconstpointer            value,
 										   gpointer                 user_data);
 static void           add_nautilus_file_to_uri_map                                (FMDirectoryView         *preferences,
@@ -469,19 +467,19 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	/* Keep track of subsequent user level changes so that we dont have to query
 	 * preferences continually */
-	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
-					   NAUTILUS_PREFERENCES_USER_LEVEL,
-					   user_level_changed_callback,
-					   directory_view);
+	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
+						NAUTILUS_PREFERENCES_USER_LEVEL,
+						user_level_changed_callback,
+						directory_view);
 
 	directory_view->details->use_new_window =
 		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
 						  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
 
-	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
-					   NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					   use_new_window_changed_callback,
-					   directory_view);	
+	nautilus_preferences_add_boolean_callback (nautilus_preferences_get_global_preferences (),
+						   NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+						   use_new_window_changed_callback,
+						   directory_view);	
 }
 
 static void
@@ -2014,13 +2012,11 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 static void
 use_new_window_changed_callback (NautilusPreferences *preferences,
 			         const char *name,
-			         NautilusPreferencesType type,
 			         gconstpointer value,
 			         gpointer user_data)
 {
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW) == 0);
-	g_assert (type == NAUTILUS_PREFERENCE_BOOLEAN);
 	g_assert (GPOINTER_TO_INT (value) == FALSE || GPOINTER_TO_INT (value) == TRUE);
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
@@ -2030,7 +2026,6 @@ use_new_window_changed_callback (NautilusPreferences *preferences,
 static void
 user_level_changed_callback (NautilusPreferences *preferences,
 			     const char *name,
-			     NautilusPreferencesType type,
 			     gconstpointer value,
 			     gpointer user_data)
 {
@@ -2039,7 +2034,6 @@ user_level_changed_callback (NautilusPreferences *preferences,
 
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_USER_LEVEL) == 0);
-	g_assert (type == NAUTILUS_PREFERENCE_ENUM);
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	directory_view = FM_DIRECTORY_VIEW (user_data);

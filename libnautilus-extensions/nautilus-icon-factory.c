@@ -180,7 +180,6 @@ typedef struct {
 
 static void                  icon_theme_changed_callback             (NautilusPreferences      *preferences,
 								      const char               *name,
-								      NautilusPreferencesType   type,
 								      gconstpointer             value,
 								      gpointer                  user_data);
 static GtkType               nautilus_icon_factory_get_type          (void);
@@ -219,22 +218,20 @@ nautilus_get_current_icon_factory (void)
         if (global_icon_factory == NULL) {
 		char *theme_preference;
 
-		/* No guarantee that nautilus preferences have been set
-		 * up properly, so we have to initialize them all here just
-		 * to be sure that the icon_theme preference will work.
-		 */
-		nautilus_global_preferences_initialize ();
 		theme_preference
 			= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
 					       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
+
+		g_assert (theme_preference != NULL);
+
                 global_icon_factory = nautilus_icon_factory_new (theme_preference);
                 g_free (theme_preference);
 
-		nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
-						   NAUTILUS_PREFERENCES_ICON_THEME,
-						   icon_theme_changed_callback,
-						   NULL);	
-
+		nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
+							  NAUTILUS_PREFERENCES_ICON_THEME,
+							  icon_theme_changed_callback,
+							  NULL);	
+		
         }
         return global_icon_factory;
 }
@@ -287,6 +284,19 @@ nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class)
 				  GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
+	/* Set the default icon theme.
+	 *
+	 * We might want to change things such that no default has to be installed
+	 * for this preference.  If so, then the code that fetches the preference
+	 * would have to deal with either a NULL return value (or "").
+	 */
+	nautilus_preferences_set_info (nautilus_preferences_get_global_preferences (),
+				       NAUTILUS_PREFERENCES_ICON_THEME,
+				       NULL,
+				       NAUTILUS_PREFERENCE_STRING,
+				       "default",
+				       NULL);
 }
 
 /* Destroy one image in the cache. */
@@ -599,13 +609,11 @@ get_icon_file_path (const char *name, guint size_in_pixels, ArtIRect *text_rect)
 static void
 icon_theme_changed_callback (NautilusPreferences *preferences,
          		     const char *name,
-         		     GtkFundamentalType type,
          		     gconstpointer value,
          		     gpointer user_data)
 {
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_THEME) == 0);
-	g_assert (type == NAUTILUS_PREFERENCE_STRING);
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 

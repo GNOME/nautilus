@@ -58,7 +58,6 @@ enum
 };
 
 void                      nautilus_global_preferences_shutdown           (void);
-void                      nautilus_global_preferences_initialize         (void);
 void                      nautilus_global_preferences_show_dialog        (void);
 const NautilusStringList *nautilus_global_preferences_get_meta_view_iids (void);
 

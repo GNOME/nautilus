@@ -145,7 +145,6 @@ create_bool_item (void)
 	return item;
 }
 
-
 static const gchar * prefs_global_user_level_names[] =
 {
 	"novice",
@@ -213,11 +212,14 @@ create_dummy_prefs (void)
 
 	/* Register the static prefs */
 	for (i = 0; i < 3; i++)	{
-		nautilus_preferences_register_from_info (NAUTILUS_PREFERENCES (dummy_prefs),
-							 &prefs_global_static_pref_info[i]);
+		nautilus_preferences_set_info (NAUTILUS_PREFERENCES (dummy_prefs),
+					       prefs_global_static_pref_info[i].name,
+					       prefs_global_static_pref_info[i].description,
+					       prefs_global_static_pref_info[i].type,
+					       prefs_global_static_pref_info[i].default_value,
+					       prefs_global_static_pref_info[i].data);
 	}
-
-
+	
 	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (dummy_prefs),
 				       "user_level",
 				       2);
