@@ -7,6 +7,7 @@ CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/components/services/install/lib  \
+	-I$(top_srcdir)/components/services/trilobite \
 	-I$(top_builddir) \
 	-I/usr/include/rpm \
 	$(GCONF_CFLAGS) \
