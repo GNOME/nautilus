@@ -39,6 +39,7 @@
 
 #include <gnome.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmessagedialog.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -2544,10 +2545,9 @@ static gboolean
 confirm_empty_trash (GtkWidget *parent_view)
 {
 	GtkWidget *dialog;
-	int response;
-	GtkWidget *hbox, *vbox, *image, *label, *button;
-	gchar     *str;
+	GtkWidget *button;
 	GdkScreen *screen;
+	int response;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
@@ -2556,13 +2556,21 @@ confirm_empty_trash (GtkWidget *parent_view)
 	
 	screen = gtk_widget_get_screen (parent_view);
 
-	dialog = gtk_dialog_new ();
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_NONE,
+					 _("Empty all of the items from "
+					   "the trash?"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("If you choose to empty "
+						    "the trash, all items in "
+						    "it will be permanently "
+						    "lost. Please note that "
+						    "you can also delete them "
+						    "sepately."));
+
 	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
-	gtk_window_set_title (GTK_WINDOW (dialog), "");
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
 				"Nautilus");
 
@@ -2570,55 +2578,11 @@ confirm_empty_trash (GtkWidget *parent_view)
         gtk_widget_realize (dialog);
 	gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
 				      gdk_screen_get_root_window (screen));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
-
-	hbox = gtk_hbox_new (FALSE, 12);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
-			    FALSE, FALSE, 0);
-
-	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_QUESTION,
-					  GTK_ICON_SIZE_DIALOG);
-	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
-	gtk_widget_show (image);
-	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
-	gtk_widget_show (vbox);
-
-	str = g_strconcat ("<span weight=\"bold\" size=\"larger\">", 
-		_("Are you sure you want to empty "
-		"all of the items from the trash?"), 
-		"</span>", 
-		NULL);
-		
-	label = gtk_label_new (str);  
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-	g_free (str);
-
-	label = gtk_label_new (_("If you empty the trash, items "
-		"will be permanently deleted."));
-	
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
 
-	button = eel_gtk_button_new_with_stock_icon (_("_Empty"),
-						     GTK_STOCK_DELETE);
+	button = gtk_button_new_with_mnemonic (_("_Empty Trash"));
 	gtk_widget_show (button);
 	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 
