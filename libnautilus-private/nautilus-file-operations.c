@@ -1099,7 +1099,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	is_merge =  target_is_dir && is_directory (progress_info->source_name);
 
 	if (is_merge) {
-		secondary_text = _("If you replace the existing folder, any files in it that conflicts with the files being copied will be overwritten.");
+		secondary_text = _("If you replace the existing folder, any files in it that conflict with the files being copied will be overwritten.");
 	} else {
 		secondary_text = _("If you replace an existing file, its contents will be overwritten.");
 	}
