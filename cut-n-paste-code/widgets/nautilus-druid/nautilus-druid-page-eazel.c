@@ -381,6 +381,8 @@ nautilus_druid_page_eazel_prepare (NautilusDruidPage *page,
 		gtk_widget_grab_default (NAUTILUS_DRUID (druid)->finish);
 		break;
 	case NAUTILUS_DRUID_OTHER:
+		nautilus_druid_set_buttons_sensitive (NAUTILUS_DRUID (druid), TRUE, TRUE, TRUE);
+		nautilus_druid_set_show_finish (NAUTILUS_DRUID (druid), FALSE);
 	default:
 		break;
 	}
