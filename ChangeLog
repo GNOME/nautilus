@@ -1,3 +1,17 @@
+2001-02-22  J Shane Culpepper  <pepper@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_title_changed_callback), (mozilla_js_status_callback),
+	(mozilla_get_containing_window), (mozilla_new_window_callback):
+
+	Catch mozilla or javascript trying to open a new window and
+	post a nautilus warning dialog that they are not supported.
+	Fix for bug #3058.  Still needs better a  worded warning message.
+
 2001-02-22  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 6312, information about translation in the about box,

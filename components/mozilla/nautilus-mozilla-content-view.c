@@ -31,6 +31,7 @@
 
 #define nopeDEBUG_ramiro 1
 #define nopeDEBUG_mfleming 1
+#define nopeDEBUG_pepper 1
 
 #ifdef DEBUG_mfleming
 #define DEBUG_MSG(x)	g_print x;
@@ -58,6 +59,9 @@
 #include <stdlib.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
+
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 #ifdef EAZEL_SERVICES
 #include <libtrilobite/libammonite-gtk.h>
@@ -169,6 +173,9 @@ static gint	mozilla_dom_key_press_callback			(GtkMozEmbed                    *mo
 static gint	mozilla_dom_mouse_click_callback		(GtkMozEmbed			*mozilla,
 								 gpointer			dom_event,
 								 gpointer			user_data);
+static void	mozilla_js_status_callback			(GtkMozEmbed			*mozilla);
+
+static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla);
 
 /* Private NautilusMozillaContentView functions */ 
 
@@ -363,6 +370,19 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
+					"js_status",
+					GTK_SIGNAL_FUNC (mozilla_js_status_callback),
+					view,
+					GTK_OBJECT (view->details->mozilla));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
+					"new_window",
+					GTK_SIGNAL_FUNC (mozilla_new_window_callback),
+					view,
+					GTK_OBJECT (view->details->mozilla));
+
 	
 	gtk_box_pack_start (GTK_BOX (view), GTK_WIDGET (view->details->mozilla), TRUE, TRUE, 1);
 	
@@ -769,6 +789,52 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_free (new_title);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
+}
+
+static void
+mozilla_js_status_callback (GtkMozEmbed *mozilla)
+{
+	char *message;
+
+	message = gtk_moz_embed_get_js_status (mozilla);
+	if (message && (strlen (message) != 0)) {
+
+#ifdef DEBUG_pepper
+		g_print ("Javascript Status ");
+		g_print (": %s\n", message);
+#endif
+
+	}
+
+	g_free (message);
+}
+
+static GtkWindow *
+mozilla_get_containing_window (GtkMozEmbed *mozilla)
+{
+	GtkWidget *window;
+
+	window = gtk_widget_get_ancestor (GTK_WIDGET (mozilla), GTK_TYPE_WINDOW);
+	if (window == NULL) {
+		return NULL;
+	}
+
+	return GTK_WINDOW (window);
+}
+
+static void
+mozilla_new_window_callback (GtkMozEmbed *mozilla)
+{
+	GnomeDialog     *dialog;
+
+#ifdef DEBUG_pepper
+	g_warning ("Nautilus does not support javascript spawning of new windows!\n");
+#endif
+
+	dialog = nautilus_show_warning_dialog (_("Nautilus does not support javascript spawning of new windows!"),
+					     _("Nautilus Mozilla View Warning"),
+					     mozilla_get_containing_window (mozilla));
+
 }
 
 static void

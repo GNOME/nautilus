@@ -44,6 +44,7 @@ noinst_HEADERS =\
 
 nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(BONOBO_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
