@@ -1,3 +1,60 @@
+2000-11-23  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	Preliminary glossary supports.
+	Fix bug #2399, #4702, #4724. Partial fix for #4724
+	(a few of the above are thanks to patches/mails from
+	jfleck@inkstain.net)
+	Some other misc. bug-fixing.
+	Cleaned up some code.
+	Preliminary glossary support (thanks to a patch by
+	jfleck@inkstain.net)
+	
+	* components/help/help-method.c:
+	(file_in_info_path):
+	Fix a typo preventing it from searching /usr/gnome/info
+	Add in support for /usr/share/info directory for Debian (hopefully
+	this fixes bug #4414)
+	(transform_file),
+	(find_help_file): Move the searching for HTML files into the
+	find_help_file function to make things consistant. Fixes bug #4724
+
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(init_entities): Conver entities to use a table, and add support for
+	iso-latin characters (for i18n purposes).
+	(parse_file): set version to XML_DEFAULT_VERSION, fixes bug #2399
+	#if 0'd out a useless call to a function
+	(xml_parse_file): #if 0'd out this function since we no longer use it
+	
+	* components/help/converters/gnome-db2html2/sect-elements.c:
+	(sect_figure_start_element): 
+	Increment the figure count as soon as we enter (instead of when we
+	leave) (should fix #4702)
+
+	* components/help/converters/gnome-db2html2/gdb3html.[ch]:
+	* components/help/converters/gnome-db2html2/sect-elements.[ch]:
+	* components/help/converters/gnome-db2html2/sect-preparse.c,
+	* components/help/converters/gnome-db2html2/toc-elements.c:
+	(glossentry_stack_add), (glossary_start_element),
+	(sect_glossseealso_start_element),
+	(sect_glosssee_start_element),
+	(sect_preparse_glossary_start_element),
+	(sect_preparse_glossterm_characters),
+	(toc_glossdiv_start_element), (toc_glossdiv_end_element)
+	(toc_glossentry_start_element), (toc_glossentry_end_element),
+	(toc_glossterm_start_element), (toc_glossterm_end_element):
+	New functions for glossary support
+
+	(sect_title_start_element), (sect_title_end_element),
+	(sect_title_characters),
+	(toc_author_start_element), (toc_author_characters)
+	(toc_title_start_element), (toc_title_end_element),
+	(toc_title_characters):
+	Modified functions for glossary support
+	
+	(sect_preparse_set_doctype):
+	Add support for glossary, and fix a bug (we should set to BOOK_DOC and
+	ARTICLE_DOC instead of just BOOK or ARTICLE!!!)
+
 2000-11-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/Makefile.am:
