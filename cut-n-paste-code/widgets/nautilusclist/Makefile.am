@@ -4,7 +4,7 @@ noinst_LTLIBRARIES = libnautilusclist.la
 
 INCLUDES = \
 	-I$(top_srcdir)/cut-n-paste-code \
-	$(GNOME_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
 	$(NULL)
 
 libnautilusclist_la_LDFLAGS = -static

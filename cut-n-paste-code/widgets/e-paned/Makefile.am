@@ -4,7 +4,7 @@ noinst_LTLIBRARIES = libe-paned.la
 
 INCLUDES = \
 	-I$(top_srcdir)/cut-n-paste-code \
-	$(GNOME_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
 	$(NULL)
 
 libe_paned_la_LDFLAGS = -static

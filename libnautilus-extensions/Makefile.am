@@ -13,7 +13,7 @@ INCLUDES = 						\
 	$(ESD_CFLAGS)					\
 	$(GCONF_CFLAGS) 				\
 	$(GHTTP_CFLAGS) 				\
-	$(GNOME_CFLAGS) 				\
+	$(GNOMEUI_CFLAGS) 				\
 	$(MEDUSA_CFLAGS) 				\
 	$(OAF_CFLAGS) 					\
 	$(VFS_CFLAGS) 					\
