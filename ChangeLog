@@ -1,5 +1,23 @@
 2001-04-09  Andy Hertzfeld  <andy@eazel.com>
 
+	implemented arrow pointer for annotations, to make it more
+	clear what they're annotating.
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_send_to_server):
+	removed debugging message
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text), (draw_item_aa_text),
+	(nautilus_canvas_note_item_update):
+	draw the arrow pointer
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (get_emblem_rectangle):
+	position the annotation so the arrow points at the right place.
+	
+2001-04-09  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/Makefile.am:
 	linked with ammonite so we can get the user name
 	* libnautilus-extensions/nautilus-annotation.c:

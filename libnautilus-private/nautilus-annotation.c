@@ -1173,7 +1173,6 @@ nautilus_annotation_send_to_server (const char *digest,
 	/* post the annotation request to the server using ghttp */
 	xmlDocDumpMemory (xml_document, &request_text, &request_size);
 	
-	g_message ("posted request is %s", request_text);
 	if (!http_post_simple (SERVER_POST_URI, "note", request_text)) {
 		g_message ("post request failed");
 	}

@@ -231,6 +231,10 @@ static void     emblem_layout_reset                        (EmblemLayout        
 static gboolean emblem_layout_next                         (EmblemLayout                  *layout,
 							    GdkPixbuf                    **emblem_pixbuf,
 							    ArtIRect                      *emblem_rect);
+static void	get_emblem_rectangle 			   (NautilusIconCanvasItem 	  *icon_item,
+					   		    int 			  which_emblem,
+					   		    ArtIRect 			  *rect);
+
 static void     draw_pixbuf                                (GdkPixbuf                     *pixbuf,
 							    GdkDrawable                   *drawable,
 							    int                            x,
@@ -1872,7 +1876,10 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 {
 	uint fill_color, outline_color;
 	double top, left;
+	double delta_x, delta_y;
 	ArtDRect icon_rect;
+	ArtIRect emblem_rect;
+	int annotation_width;
 	char *note_text;
 	GnomeCanvas *canvas;
 	GnomeCanvasItem *item;
@@ -1902,6 +1909,19 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 		 	NULL);
 
 	g_free (note_text);	
+
+	/* reposition the item now that it's had a chance to be properly sized */
+	if (canvas->aa) {
+		get_emblem_rectangle (icon_item, emblem_index, &emblem_rect);
+		annotation_width = icon_item->details->annotation->x2 - icon_item->details->annotation->x1;
+		left = ((emblem_rect.x1 + emblem_rect.x0) / 2) - (annotation_width / 2.0 );
+		top = (emblem_rect.y1 + emblem_rect.y0) / 2;
+		
+		delta_x = left - icon_item->details->annotation->x1;
+		delta_y = top -  icon_item->details->annotation->y1;
+		gnome_canvas_item_move (icon_item->details->annotation, delta_x, delta_y);
+	}	
+	
 	gnome_canvas_item_raise_to_top (icon_item->details->annotation);		
 }
 
@@ -2276,6 +2296,28 @@ nautilus_icon_canvas_item_get_icon_rectangle (NautilusIconCanvasItem *item,
 	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : nautilus_icon_canvas_item_get_icon_height (item)) / pixels_per_unit;
 }
 
+static void
+get_emblem_rectangle (NautilusIconCanvasItem *icon_item,
+		      int which_emblem,
+		      ArtIRect *rect)
+{
+	EmblemLayout emblem_layout;
+	GdkPixbuf *pixbuf;
+	int emblem_index;
+	
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_item->details->canvas_rect);
+	emblem_index = 0;
+	
+	rect->x0 = 0;
+	rect->y0 = 0;
+	rect->x1 = 0;
+	rect->y1 = 0;
+	
+	while (emblem_index < which_emblem && emblem_layout_next (&emblem_layout, &pixbuf, rect)) {
+		emblem_index += 1;
+	}
+}
+			
 /* Get the rectangle of the icon only, in canvas coordinates. */
 static void
 get_icon_canvas_rectangle (NautilusIconCanvasItem *item,

@@ -72,6 +72,10 @@ enum {
 #define DEFAULT_FONT_SIZE 12
 #define LINE_BREAK_CHARACTERS " -_,;.?/&"
 
+#define ARROW_HEIGHT 16
+#define MIN_ARROW_HALF_WIDTH 4
+#define MAX_ARROW_HALF_WIDTH 12
+
 static void nautilus_canvas_note_item_class_init (NautilusCanvasNoteItemClass *class);
 static void nautilus_canvas_note_item_init       (NautilusCanvasNoteItem      *note_item);
 static void nautilus_canvas_note_item_destroy    (GtkObject          *object);
@@ -346,6 +350,7 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 								  strlen (display_text));
 		total_width = dimensions.width + 8;
 		height = dimensions.height * (1 + (total_width / ANNOTATION_WIDTH));
+		height += ARROW_HEIGHT;
 		gtk_object_unref (GTK_OBJECT (scalable_font));
 	} else {
 		font = nautilus_font_factory_get_font_from_preferences (DEFAULT_FONT_SIZE);				
@@ -725,7 +730,7 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 	eel_smooth_text_layout_set_line_wrap_width (smooth_text_layout, width - 4);
 	
 	dest_bounds.x0 = 0;
-	dest_bounds.y0 = 0;
+	dest_bounds.y0 = ARROW_HEIGHT;
 	dest_bounds.x1 = width;
 	dest_bounds.y1 = height;
 	 
@@ -928,12 +933,13 @@ static void
 nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSVP *clip_path, gint flags)
 {
 	NautilusCanvasNoteItem *note_item;
-	ArtVpath vpath[11];
+	ArtVpath vpath[9];
 	ArtVpath *vpath2;
 	ArtSVP *stroke_svp;
 	double x0, y0, x1, y1;
-
-	
+	double round_off_amount;
+	double midpoint;
+	double arrow_half_width;
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
 	if (note_item_parent_class->update)
@@ -941,79 +947,66 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 
 	if (item->canvas->aa) {
 		x0 = note_item->x1;
-		y0 = note_item->y1;
+		y0 = note_item->y1 + ARROW_HEIGHT;
 		x1 = note_item->x2;
 		y1 = note_item->y2;
 
+		round_off_amount = item->canvas->pixels_per_unit;
+		
 		gnome_canvas_item_reset_bounds (item);
+		midpoint = (x1 + x0) / 2;
+		arrow_half_width = (x1 - x0) / 16;
+		arrow_half_width = CLAMP (arrow_half_width, MIN_ARROW_HALF_WIDTH, MAX_ARROW_HALF_WIDTH);
+				
+		vpath[0].code = ART_MOVETO;
+		vpath[0].x = x0 - round_off_amount;
+		vpath[0].y = y0 - round_off_amount;
+		
+		vpath[1].code = ART_LINETO;
+		vpath[1].x = x0 - round_off_amount;
+		vpath[1].y = y1 + round_off_amount;
+		
+		vpath[2].code = ART_LINETO;
+		vpath[2].x = x1 + round_off_amount;
+		vpath[2].y = y1 + round_off_amount;
+		
+		vpath[3].code = ART_LINETO;
+		vpath[3].x = x1 + round_off_amount;
+		vpath[3].y = y0 - round_off_amount;
 
-		if (note_item->fill_set) {
-			vpath[0].code = ART_MOVETO;
-			vpath[0].x = x0;
-			vpath[0].y = y0;
-			vpath[1].code = ART_LINETO;
-			vpath[1].x = x0;
-			vpath[1].y = y1;
-			vpath[2].code = ART_LINETO;
-			vpath[2].x = x1;
-			vpath[2].y = y1;
-			vpath[3].code = ART_LINETO;
-			vpath[3].x = x1;
-			vpath[3].y = y0;
-			vpath[4].code = ART_LINETO;
-			vpath[4].x = x0;
-			vpath[4].y = y0;
-			vpath[5].code = ART_END;
-			vpath[5].x = 0;
-			vpath[5].y = 0;
+		vpath[4].code = ART_LINETO;
+		vpath[4].x = midpoint + arrow_half_width + round_off_amount;
+		vpath[4].y = y0 - round_off_amount;
+		
+		vpath[5].code = ART_LINETO;
+		vpath[5].x = midpoint + round_off_amount;
+		vpath[5].y = note_item->y1 - round_off_amount;
+				
+		vpath[6].code = ART_LINETO;
+		vpath[6].x = midpoint - arrow_half_width - round_off_amount;
+		vpath[6].y = y0 - round_off_amount;
+				
+		vpath[7].code = ART_LINETO;
+		vpath[7].x = x0 - round_off_amount;
+		vpath[7].y = y0 - round_off_amount;
+				
+		vpath[8].code = ART_END;
+		vpath[8].x = 0;
+		vpath[8].y = 0;
 
-			vpath2 = art_vpath_affine_transform (vpath, affine);
+		vpath2 = art_vpath_affine_transform (vpath, affine);
 
-			gnome_canvas_item_update_svp_clip (item, &note_item->fill_svp, art_svp_from_vpath (vpath2), clip_path);
-			art_free (vpath2);
-		} else
-			gnome_canvas_item_update_svp (item, &note_item->fill_svp, NULL);
-
-		if (note_item->outline_set) {
-			/* If the item is filled, the vpath will
-			 * already be built so whats the point in
-			 * rebuilding it?  If its not already built
-			 * then lets build it. */
+		gnome_canvas_item_update_svp_clip (item, &note_item->fill_svp, art_svp_from_vpath (vpath2), clip_path);
 			
-			if (!note_item->fill_set) {
-				vpath[0].code = ART_MOVETO;
-				vpath[0].x = x0;
-				vpath[0].y = y0;
-				vpath[1].code = ART_LINETO;
-				vpath[1].x = x0;
-				vpath[1].y = y1;
-				vpath[2].code = ART_LINETO;
-				vpath[2].x = x1;
-				vpath[2].y = y1;
-				vpath[3].code = ART_LINETO;
-				vpath[3].x = x1;
-				vpath[3].y = y0;
-				vpath[4].code = ART_LINETO;
-				vpath[4].x = x0;
-				vpath[4].y = y0;
-				vpath[5].code = ART_END;
-				vpath[5].x = 0;
-				vpath[5].y = 0;					
-			}
+		stroke_svp = art_svp_vpath_stroke (vpath2,
+							ART_PATH_STROKE_JOIN_MITER,
+							ART_PATH_STROKE_CAP_BUTT,
+							(note_item->width_pixels) ? note_item->width : (note_item->width * item->canvas->pixels_per_unit),
+							4,
+							25);
 
-			vpath2 = art_vpath_affine_transform (vpath, affine);
-			
-			stroke_svp = art_svp_vpath_stroke (vpath2,
-							   ART_PATH_STROKE_JOIN_MITER,
-							   ART_PATH_STROKE_CAP_BUTT,
-							   (note_item->width_pixels) ? note_item->width : (note_item->width * item->canvas->pixels_per_unit),
-							   4,
-							   0.25);
-
-			gnome_canvas_item_update_svp_clip (item, &note_item->outline_svp, stroke_svp, clip_path);
-			art_free (vpath2);
-		} else
-			gnome_canvas_item_update_svp (item, &note_item->outline_svp, NULL);
+		gnome_canvas_item_update_svp_clip (item, &note_item->outline_svp, stroke_svp, clip_path);
+		art_free (vpath2);
 
 		eel_gnome_canvas_item_request_redraw
 			(GNOME_CANVAS_ITEM (item));
