@@ -32,9 +32,8 @@
 #include "trilobite-eazel-time-service.h"
 #include <trilobite-eazel-time-service-public.h>
 
-#define OAF_ID_FACTORY "OAFIID:trilobite_eazel_time_service_factory:134276-deadbeef"
-#define OAF_ID "OAFIID:trilobite_eazel_time_service:134276-deadbeef-deed"
-
+#define OAF_ID_FACTORY "OAFIID:trilobite_eazel_time_service_factory:1acc6ab1-f79f-4c8d-ab87-04982fc8c19f"
+#define OAF_ID "OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
 /*
   These are some generally needed objects to get CORBA connectivity
 */
@@ -76,7 +75,7 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 						       "vendor_name", "Eazel, inc.",
 						       "vendor_url", "http://www.eazel.com",
 						       "url", "http://www.eazel.com/",
-						       "icon_uri", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
+						       "icon", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
 						       NULL));
 
 	service = trilobite_eazel_time_service_new ();

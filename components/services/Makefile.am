@@ -1,2 +1,2 @@
-SUBDIRS = trilobite startup install
+SUBDIRS = trilobite startup install time
 

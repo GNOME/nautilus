@@ -1,3 +1,36 @@
+2000-05-22  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/trilobite/src/trilobite-service-private.h: 
+	* components/services/trilobite/src/trilobite-service-public.h: 
+	* components/services/trilobite/src/trilobite-service.c:
+	Changed for the _uri change.
+	
+	* components/services/trilobite/sample/service/main.c: 
+	* components/services/trilobite/sample/command-line/main.c: 
+	Changed for the new OAFID's.
+
+	* components/services/trilobite/idl/trilobite-service.idl: 
+	Removed the _uri from get_icon_uri
+
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	Better error handling, eg. for bad urls and whatnot.
+
+	* components/services/time/service/Makefile.am (pixmap_DATA): 
+	Installs an icon for the service (now we need an icon)
+
+	* components/services/time/idl/trilobite-eazel-time-service.idl: 
+	Added two strings to the CannotGetTime exception.
+
+	* components/services/time/command-line/main.c (main): 
+	Updated to use the new oafids. Better error handling.
+
+	* components/services/Makefile.am (SUBDIRS): 
+	Added the time service
+
+	* components/services/trilobite/sample/service/trilobite-eazel-sample-service.oafinfo: 
+	* components/services/time/service/trilobite-eazel-time-service.oafinfo: 
+	Added attributes to the oafinfo files. Also gave them some real oafids.
+	
 2000-05-22  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed task 514, show file/folder permissions with emblems.

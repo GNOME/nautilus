@@ -32,7 +32,7 @@
 
 #include "trilobite-eazel-time-service.h"
 
-#define OAF_ID "OAFIID:trilobite_eazel_time_service:134276-deadbeef-deed"
+#define OAF_ID "OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
 
 int     arg_list_info,
 	arg_max_diff,
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 		g_message ("service vendor name : %s", Trilobite_Service_get_vendor_name (trilobite, &ev));
 		g_message ("service vendor url  : %s", Trilobite_Service_get_vendor_url (trilobite, &ev));
 		g_message ("service url         : %s", Trilobite_Service_get_url (trilobite, &ev));
-		g_message ("service icon        : %s", Trilobite_Service_get_icon_uri (trilobite, &ev));		
+		g_message ("service icon        : %s", Trilobite_Service_get_icon (trilobite, &ev));		
 		Trilobite_Service_unref (trilobite, &ev);
 	} 
 
@@ -100,15 +100,18 @@ int main(int argc, char *argv[]) {
 
 	if (arg_url) {
 		Trilobite_Eazel_Time_set_time_url (timeservice, arg_url, &ev);
-	} else {
-		Trilobite_Eazel_Time_set_time_url (timeservice, "", &ev);
-	}
-
+	} 
 
 	diff = Trilobite_Eazel_Time_check_time (timeservice, &ev);
-	if (ev._major == CORBA_USER_EXCEPTION) {
+	if (ev._major != CORBA_NO_EXCEPTION) {
 		if (strcmp (ex_Trilobite_Eazel_Time_CannotGetTime, CORBA_exception_id (&ev)) == 0) {
+			Trilobite_Eazel_Time_CannotGetTime *exn; 
 			fprintf (stderr, "Unable to obtain time from server\n");
+			exn = (Trilobite_Eazel_Time_CannotGetTime*)CORBA_exception_value (&ev);
+			fprintf (stderr, "URL was %s\nReason is %s\n", exn->url, exn->reason);
+		} else {
+			fprintf (stderr, "Unhandleable error occured while communicating with the time-service\n");
+			fprintf (stderr, "Caught %s\n", CORBA_exception_id (&ev));
 		}
 		arg_update_time = 0;
 		CORBA_exception_free (&ev);

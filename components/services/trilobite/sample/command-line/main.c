@@ -31,7 +31,7 @@
 
 #include "sample-service.h"
 
-#define OAF_ID "OAFIID:trilobite_eazel_sample_service:134276"
+#define OAF_ID "OAFIID:trilobite_eazel_sample_service:3d972cc6-d42d-4669-bd42-966998b3c306"
 
 
 CORBA_Environment ev;
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 		g_message ("service vendor name : %s", Trilobite_Service_get_vendor_name (trilobite, &ev));
 		g_message ("service vendor url  : %s", Trilobite_Service_get_vendor_url (trilobite, &ev));
 		g_message ("service url         : %s", Trilobite_Service_get_url (trilobite, &ev));
-		g_message ("service icon        : %s", Trilobite_Service_get_icon_uri (trilobite, &ev));
+		g_message ("service icon        : %s", Trilobite_Service_get_icon (trilobite, &ev));
 		
 		Trilobite_Service_unref (trilobite, &ev);
 	} else {

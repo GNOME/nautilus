@@ -32,8 +32,8 @@
 #include "sample-service.h"
 #include <sample-service-public.h>
 
-#define OAF_ID_FACTORY "OAFIID:trilobite_eazel_sample_service_factory:134276"
-#define OAF_ID "OAFIID:trilobite_eazel_sample_service:134276"
+#define OAF_ID_FACTORY "OAFIID:trilobite_eazel_sample_service_factory:19084a03-2f85-456e-95ed-bcebf8141e97"
+#define OAF_ID "OAFIID:trilobite_eazel_sample_service:3d972cc6-d42d-4669-bd42-966998b3c306"
 
 /*
   These are some generally needed objects to get CORBA connectivity
@@ -77,7 +77,7 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 						       "vendor_name", "Eazel, inc.",
 						       "vendor_url", "http://www.eazel.com",
 						       "url", "http://www.eazel.com/sample",
-						       "icon_uri", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
+						       "icon", "gnome-default-dlg.png",
 						       NULL));
 
 	service = sample_service_new ();

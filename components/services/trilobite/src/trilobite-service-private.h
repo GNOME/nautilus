@@ -36,7 +36,7 @@ struct _TrilobiteServicePrivate {
 	char *service_vendor_name;
 	char *service_vendor_url;
 	char *service_url;
-	char *service_icon_uri;
+	char *service_icon;
 	     
 };
 

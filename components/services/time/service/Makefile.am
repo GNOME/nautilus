@@ -26,10 +26,13 @@ LDFLAGS = \
 	$(NULL)
 
 
+
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = trilobite-eazel-time-service.png
+
 # CORBA magic
 
 oafdir = $(datadir)/oaf
-
 oaf_DATA = trilobite-eazel-time-service.oafinfo
 
 CORBA_GENERATED =	\
@@ -64,6 +67,10 @@ trilobite_eazel_time_service_LDADD =	\
 	$(top_builddir)/components/services/trilobite/src/libtrilobited.la \
 	$(NULL)
 
+
+## Extra stuff
+
 EXTRA_DIST = \
 	$(oaf_DATA)		\
+	$(pixmap_DATA) 		\
 	$(NULL)
