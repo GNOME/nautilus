@@ -517,14 +517,13 @@ nautilus_window_constructed(NautilusWindow *window)
 #else
   window->content_hbox = gtk_hpaned_new();
   {
-/* Extrapolate width based on username. 'andy' will get 136, 'sopwith' will get 275, others will
-   watch funky things happen. Go ahead and laugh - this is serious UI research here! */
-	char *un = getenv("USER");
-	double pos = 136;
+/* special case the width of the index panel for sopwith */
+	char *user_name = getenv("USER");
+	gint pos = 136;
 
-	if(un)
-		pos += ((double)(275-136))/((double)('s'-'a')) * ((double)(tolower(*un) - 'a'));
-	gtk_paned_set_position(GTK_PANED(window->content_hbox), floor(pos));
+	if (!strcmp(user_name, "sopwith"))
+		pos = 275;
+	gtk_paned_set_position(GTK_PANED(window->content_hbox), pos);
   }
 #endif
   gnome_app_set_contents(app, window->content_hbox);
