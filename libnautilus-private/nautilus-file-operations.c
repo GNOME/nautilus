@@ -32,6 +32,7 @@
 #include "nautilus-lib-self-check-functions.h"
 
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
@@ -195,80 +196,48 @@ icon_position_iterator_get_next (IconPositionIterator *position_iterator,
 	return TRUE;
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
-static GdkFont *
-get_label_font (void)
-{
-	GtkWidget *label;
-	GtkStyle *style;
-	GdkFont *font;
-
-	/* FIXME: Does this really pick up the correct font if the rc
-	 * file has a special case for the particular dialog we are
-	 * preparing?
-	 */
-
-	label = gtk_label_new ("");
-	style = gtk_widget_get_style (label);
-	font = style->font;
-	gdk_font_ref (font);
-	gtk_object_sink (GTK_OBJECT (label));
-
-	return font;
-}
-
-#endif
-
 static char *
-ellipsize_string_for_dialog (const char *str)
+ellipsize_string_for_dialog (PangoContext *context, const char *str)
 {
-	char *result;
-#ifdef GNOME2_CONVERSION_COMPLETE
-	GdkFont *font;
 	int maximum_width;
+	char *result;
+	PangoLayout *layout;
+	PangoFontMetrics *metrics;
 
-	/* I believe the most appropriate fix here is to change it to be based on
-	 * some number of characters, rather than on a pixel width.
-	 * We just can't do anything sane with the pixel width since
-	 * we don't have all the PangoLayout information.
-	 *
-	 * So in brief we want an ellipsize function in eel which
-	 * takes a number of chars, computes log attrs for the string,
-	 * and chops the string at one of the is_cursor_position points,
-	 * such that the string has fewer chars than the given number.
-	 *
-	 * Code in nautilus-news.c implements this in a UTF-8-unsafe way,
-	 * should be moved to Eel and used here as well.
-	 */
-	
-	/* get a nice length to ellipsize to, based on the font */
-	font = get_label_font ();
-	maximum_width = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
+	layout = pango_layout_new (context);
 
-	result = eel_string_ellipsize (str, font, maximum_width, EEL_ELLIPSIZE_MIDDLE);
-	gdk_font_unref (font);
-#else
-	result = g_strdup (str);
-#endif
+	metrics = pango_context_get_metrics (
+		context, pango_context_get_font_description (context), NULL);
+
+	maximum_width = pango_font_metrics_get_approximate_char_width (metrics) * 25 / PANGO_SCALE;
+
+	pango_font_metrics_unref (metrics);
+
+	eel_pango_layout_set_text_ellipsized (
+		layout, str, maximum_width, EEL_ELLIPSIZE_MIDDLE);
+
+	result = g_strdup (pango_layout_get_text (layout));
+
+	g_object_unref (layout);
 
 	return result;
 }
 
 static char *
-format_and_ellipsize_uri_for_dialog (const char *uri)
+format_and_ellipsize_uri_for_dialog (GtkWidget *context, const char *uri)
 {
 	char *unescaped, *result;
 
 	unescaped = eel_format_uri_for_display (uri);
-	result = ellipsize_string_for_dialog (unescaped);
+	result = ellipsize_string_for_dialog (
+		gtk_widget_get_pango_context (context), unescaped);
 	g_free (unescaped);
 
 	return result;
 }
 
 static char *
-extract_and_ellipsize_file_name_for_dialog (const char *uri)
+extract_and_ellipsize_file_name_for_dialog (GtkWidget *context, const char *uri)
 {
 	char *basename;
 	char *unescaped, *result;
@@ -277,7 +246,8 @@ extract_and_ellipsize_file_name_for_dialog (const char *uri)
 	g_return_val_if_fail (basename != NULL, NULL);
 
 	unescaped = gnome_vfs_unescape_string_for_display (basename);
-	result = ellipsize_string_for_dialog (unescaped);
+	result = ellipsize_string_for_dialog (
+		gtk_widget_get_pango_context (context), unescaped);
 	g_free (unescaped);
 	g_free (basename);
 
@@ -835,12 +805,14 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		if (progress_info->source_name != NULL) {
 			formatted_source_name = format_and_ellipsize_uri_for_dialog
-				(progress_info->source_name);
+				(parent_for_error_dialog (transfer_info),
+				 progress_info->source_name);
 		}
 
 		if (progress_info->target_name != NULL) {
 			formatted_target_name = format_and_ellipsize_uri_for_dialog
-				(progress_info->target_name);
+				(parent_for_error_dialog (transfer_info),
+				 progress_info->target_name);
 		}
 
 		error_kind = ERROR_OTHER;
@@ -1035,7 +1007,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	/* Handle special case files such as Trash, mount links and home directory */	
 	if (is_special_link (progress_info->target_name)) {
 		formatted_name = extract_and_ellipsize_file_name_for_dialog
-			(progress_info->target_name);
+			(parent_for_error_dialog (transfer_info),
+			 progress_info->target_name);
 		
 		if (transfer_info->kind == TRANSFER_MOVE) {
 			text = g_strdup_printf (_("\"%s\" could not be moved to the new location, "
@@ -1061,7 +1034,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	}
 	
 	/* transfer conflict, prompt the user to replace or skip */
-	formatted_name = format_and_ellipsize_uri_for_dialog (progress_info->target_name);
+	formatted_name = format_and_ellipsize_uri_for_dialog (
+		parent_for_error_dialog (transfer_info), progress_info->target_name);
 	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
 				  "Would you like to replace it?"), 
 				formatted_name);

@@ -1,3 +1,15 @@
+2002-02-27  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(handle_transfer_overwrite, handle_transfer_vfs_error),
+	(handle_transfer_overwrite): pass a widget context to
+	help pango. 
+	(extract_and_ellipsize_file_name_for_dialog),
+	(format_and_ellipsize_uri_for_dialog): pass pango context
+	to ellipsization.
+	(ellipsize_string_for_dialog): re-implement for pango.
+	(get_label_font): kill.
+
 2002-02-27  Darin Adler  <darin@bentspoon.com>
 
 	* src/nautilus-sidebar-tabs.c: (make_tab_text_layout): New
