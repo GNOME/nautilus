@@ -1,3 +1,11 @@
+2000-10-11  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(wipe_redirect_table), (add_redirect), (trilobite_redirect_lookup):
+
+	Fixing bug #3686, summary-view crashes on gconf error.  Fixed the
+	gconf wiping function to work with newest version of gconf.
+
 2000-10-11  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_destroy): Don't remove

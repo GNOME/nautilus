@@ -97,7 +97,7 @@ wipe_redirect_table (void)
 
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		entry = (GConfEntry *) (iter->data);
-		doomed_key = g_strdup_printf ("%s/%s", REDIRECT_GCONF_PATH, gconf_entry_get_key (entry));
+		doomed_key = g_strdup_printf ("%s%s", REDIRECT_GCONF_PATH, gconf_entry_get_key (entry));
 		gconf_engine_unset (conf_engine, doomed_key, &error);
 		if (error != NULL) {
 			g_warning ("trilobite redirect: gconf couldn't delete key '%s': %s", doomed_key, error->message);
@@ -116,7 +116,7 @@ add_redirect (const char *key, const char *value)
 	char *full_key, *p;
 
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", REDIRECT_GCONF_PATH, key);
+	full_key = g_strdup_printf ("%s%s", REDIRECT_GCONF_PATH, key);
 
 	/* convert all spaces to dashes */
 	while ((p = strchr (full_key, ' ')) != NULL) {
@@ -233,7 +233,7 @@ trilobite_redirect_lookup (const char *key)
 	char *value;
 
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", REDIRECT_GCONF_PATH, key);
+	full_key = g_strdup_printf ("%s%s", REDIRECT_GCONF_PATH, key);
 
 	/* convert all spaces to dashes */
 	while ((p = strchr (full_key, ' ')) != NULL) {
