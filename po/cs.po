@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-28 12:43+0100\n"
-"PO-Revision-Date: 2005-01-29 15:45+0100\n"
+"POT-Creation-Date: 2005-01-31 06:05+0100\n"
+"PO-Revision-Date: 2005-01-31 10:58+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1862,7 +1862,9 @@ msgstr "Soubor \"%s\" již existuje. Chcete jej nahradit?"
 msgid ""
 "If you replace the existing folder, any files in it that conflict with the "
 "files being copied will be overwritten."
-msgstr "Pokud nahradíte existující adresář, všechny soubory v něm, které kolidují s kopírovanými soubory, budou přepsány."
+msgstr ""
+"Pokud nahradíte existující adresář, všechny soubory v něm, které kolidují s "
+"kopírovanými soubory, budou přepsány."
 
 #: libnautilus-private/nautilus-file-operations.c:1104
 msgid "If you replace an existing file, its contents will be overwritten."
@@ -1888,7 +1890,7 @@ msgstr "Nahradit _vše"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1195
-#: libnautilus-private/nautilus-file.c:4748
+#: libnautilus-private/nautilus-file.c:4749
 #: src/file-manager/fm-directory-view.c:7897
 #, c-format
 msgid "link to %s"
@@ -2034,8 +2036,8 @@ msgstr "Přesouvám soubory do koše"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1933
-msgid "Files thrown out:"
-msgstr "Vyhozené soubory:"
+msgid "Throwing out file:"
+msgstr "Vyhazuji soubor:"
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-private/nautilus-file-operations.c:1935
@@ -2054,8 +2056,8 @@ msgstr "Přesouvám soubory"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1944
-msgid "Files moved:"
-msgstr "Přesunuté soubory:"
+msgid "Moving file:"
+msgstr "Přesouvám soubor:"
 
 #: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Preparing To Move..."
@@ -2072,8 +2074,8 @@ msgstr "Vytvářím odkazy k souborům"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1958
-msgid "Files linked:"
-msgstr "Vytvořené odkazy:"
+msgid "Linking file:"
+msgstr "Vytvářím odkaz na soubor:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1960
@@ -2095,8 +2097,8 @@ msgstr "Kopíruji soubory"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1970
-msgid "Files copied:"
-msgstr "Zkopírované soubory:"
+msgid "Copying file:"
+msgstr "Kopíruji soubor:"
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-private/nautilus-file-operations.c:1972
@@ -2254,7 +2256,9 @@ msgstr "Odstranit všechny položky z koše?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Pokud se rozhodnete vyprázdnit koš, budou položky natrvalo odstraněny. Všimněte si, že je také můžete odstranit po jedné."
+msgstr ""
+"Pokud se rozhodnete vyprázdnit koš, budou položky natrvalo odstraněny. "
+"Všimněte si, že je také můžete odstranit po jedné."
 
 #. name, stock id
 #: libnautilus-private/nautilus-file-operations.c:2587
@@ -2308,65 +2312,65 @@ msgstr "Služby v"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2964
+#: libnautilus-private/nautilus-file.c:2965
 msgid "today at 00:00:00 PM"
 msgstr "dnes v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2966
 #: src/nautilus-file-management-properties.c:493
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2967
+#: libnautilus-private/nautilus-file.c:2968
 msgid "today at 00:00 PM"
 msgstr "dnes v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2969
 msgid "today at %-I:%M %p"
 msgstr "dnes v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2970
+#: libnautilus-private/nautilus-file.c:2971
 msgid "today, 00:00 PM"
 msgstr "dnes, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2972
 msgid "today, %-I:%M %p"
 msgstr "dnes, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2973
 #: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2975
 msgid "today"
 msgstr "dnes"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2983
+#: libnautilus-private/nautilus-file.c:2984
 msgid "yesterday at 00:00:00 PM"
 msgstr "včera v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2984
+#: libnautilus-private/nautilus-file.c:2985
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "včera v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2986
+#: libnautilus-private/nautilus-file.c:2987
 msgid "yesterday at 00:00 PM"
 msgstr "včera v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2987
+#: libnautilus-private/nautilus-file.c:2988
 msgid "yesterday at %-I:%M %p"
 msgstr "včera v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2989
+#: libnautilus-private/nautilus-file.c:2990
 msgid "yesterday, 00:00 PM"
 msgstr "včera, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2990
+#: libnautilus-private/nautilus-file.c:2991
 msgid "yesterday, %-I:%M %p"
 msgstr "včera, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2992
 #: libnautilus-private/nautilus-file.c:2993
+#: libnautilus-private/nautilus-file.c:2994
 msgid "yesterday"
 msgstr "včera"
 
@@ -2375,63 +2379,63 @@ msgstr "včera"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:3004
+#: libnautilus-private/nautilus-file.c:3005
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Pondělí, 00. červenec 0000 v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3005
+#: libnautilus-private/nautilus-file.c:3006
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %B %Y v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3007
+#: libnautilus-private/nautilus-file.c:3008
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pá, 00. kvě 0000 v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3008
+#: libnautilus-private/nautilus-file.c:3009
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d. %b %Y v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3010
+#: libnautilus-private/nautilus-file.c:3011
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pá, 00. kvě 0000 v 00:00"
 
-#: libnautilus-private/nautilus-file.c:3011
+#: libnautilus-private/nautilus-file.c:3012
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d. %b %Y v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3013
+#: libnautilus-private/nautilus-file.c:3014
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. kvě 0000 v 00:00"
 
-#: libnautilus-private/nautilus-file.c:3014
+#: libnautilus-private/nautilus-file.c:3015
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3016
+#: libnautilus-private/nautilus-file.c:3017
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. kvě 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:3017
+#: libnautilus-private/nautilus-file.c:3018
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d. %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3019
+#: libnautilus-private/nautilus-file.c:3020
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:3020
+#: libnautilus-private/nautilus-file.c:3021
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3022
+#: libnautilus-private/nautilus-file.c:3023
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: libnautilus-private/nautilus-file.c:3023
+#: libnautilus-private/nautilus-file.c:3024
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:4314
+#: libnautilus-private/nautilus-file.c:4315
 #: src/file-manager/fm-directory-view.c:1859
 #, c-format
 msgid "%u item"
@@ -2440,7 +2444,7 @@ msgstr[0] "%u položka"
 msgstr[1] "%u položky"
 msgstr[2] "%u položek"
 
-#: libnautilus-private/nautilus-file.c:4315
+#: libnautilus-private/nautilus-file.c:4316
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
@@ -2448,7 +2452,7 @@ msgstr[0] "%u adresář"
 msgstr[1] "%u adresáře"
 msgstr[2] "%u adresářů"
 
-#: libnautilus-private/nautilus-file.c:4316
+#: libnautilus-private/nautilus-file.c:4317
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2457,37 +2461,37 @@ msgstr[1] "%u soubory"
 msgstr[2] "%u souborů"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4641
-#: libnautilus-private/nautilus-file.c:4657
+#: libnautilus-private/nautilus-file.c:4642
+#: libnautilus-private/nautilus-file.c:4658
 msgid "? items"
 msgstr "? položek"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4647
+#: libnautilus-private/nautilus-file.c:4648
 msgid "? bytes"
 msgstr "? bajtů"
 
-#: libnautilus-private/nautilus-file.c:4662
+#: libnautilus-private/nautilus-file.c:4663
 msgid "unknown type"
 msgstr "neznámý typ"
 
-#: libnautilus-private/nautilus-file.c:4665
+#: libnautilus-private/nautilus-file.c:4666
 msgid "unknown MIME type"
 msgstr "neznámý typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4671
+#: libnautilus-private/nautilus-file.c:4672
 #: src/file-manager/fm-properties-window.c:1208
 msgid "unknown"
 msgstr "neznámý"
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4705
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4722
+#: libnautilus-private/nautilus-file.c:4723
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2497,7 +2501,7 @@ msgstr ""
 "že váš soubor gnome-vfs.keys je na špatném místě nebo z nějakého jiného "
 "důvodu nejde najít."
 
-#: libnautilus-private/nautilus-file.c:4726
+#: libnautilus-private/nautilus-file.c:4727
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2506,15 +2510,15 @@ msgstr ""
 "Nebyl nalezen popis typu mime \"%s\" (soubor je \"%s\"), oznamte prosím v "
 "poštovní konferenci gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4742
+#: libnautilus-private/nautilus-file.c:4743
 msgid "link"
 msgstr "odkaz"
 
-#: libnautilus-private/nautilus-file.c:4762
+#: libnautilus-private/nautilus-file.c:4763
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
-#: libnautilus-private/nautilus-file.c:6190
+#: libnautilus-private/nautilus-file.c:6191
 #: libnautilus-private/nautilus-global-preferences.c:540
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -6356,6 +6360,18 @@ msgstr "Síťové servery"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazit vaše síťové servery ve správci souborů Nautilus"
+
+#~ msgid "Files thrown out:"
+#~ msgstr "Vyhozené soubory:"
+
+#~ msgid "Files moved:"
+#~ msgstr "Přesunuté soubory:"
+
+#~ msgid "Files linked:"
+#~ msgstr "Vytvořené odkazy:"
+
+#~ msgid "Files copied:"
+#~ msgstr "Zkopírované soubory:"
 
 #~ msgid "_Empty"
 #~ msgstr "_Vyprázdnit"
