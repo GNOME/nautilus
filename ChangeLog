@@ -1,5 +1,16 @@
 2001-05-08  Darin Adler  <darin@eazel.com>
 
+	Started with patch by Yoann Vandoorselaere
+	<yoann@mandrakesoft.com> to not re-open /proc/mounts each time,
+	but to simply rewind it instead. The patch had a lot of problems
+	on Solaris and when HAVE_CDDA is true, but I reworked it so it
+	should be OK.
+
+	* libnautilus-private/nautilus-volume-monitor.c: (get_mount_list),
+	(get_current_mount_list): Use rewind.
+
+2001-05-08  Darin Adler  <darin@eazel.com>
+
 	Integrated a fixed version of Gene's patch to compile under
 	FreeBSD.
 

@@ -976,34 +976,53 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 }
 
 
-static GList *
-get_current_mount_list (void)
-{
-	GList *current_mounts = NULL;
-	NautilusVolume *volume = NULL;
-	FILE *fh;
 
 #ifdef SOLARIS_MNT
-	MountTableEntry ent_storage;
-	MountTableEntry *ent = &ent_storage;
-	
+
+static GList *
+get_mount_list (void) 
+{
+        FILE *fh;
+        GList *volumes;
+        MountTableEntry ent;
+        NautilusVolume *volume;
+
+	volumes = NULL;
+        
 	fh = setmntent (MOUNT_TABLE_PATH, "r");
-	if (fh != NULL) {
-		while (! getmntent (fh, ent)) {
-			volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);
-			volume->is_removable = has_removable_mntent_options (ent);
-			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
-			current_mounts = mount_volume_add_filesystem (volume, current_mounts);
-		}
+	if (fh == NULL) {
+		return NULL;
 	}
-#else
-	const char *file_name;
+
+        while (! getmntent(fh, &ent)) {
+                volume = create_volume (ent.mnt_special, ent.mnt_mountp, ent.mnt_fstype);
+                volume->is_removable = has_removable_mntent_options (&ent);
+                volume->is_read_only = hasmntopt (&ent, MNTOPT_RO) != NULL;
+                volumes = mount_volume_add_filesystem (volume, volumes);
+        }
+
+	fclose (fh);
+
+        return volumes;
+}
+
+#else /* !SOLARIS_MNT */
+
+static GList *
+get_mount_list (void) 
+{
+        GList *volumes;
+        NautilusVolume *volume;
+        static FILE *fh = NULL;
+        const char *file_name;
 	const char *separator;
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	EelStringList *list;
 	char *device_path, *mount_path, *filesystem;
 
+	volumes = NULL;
+        
 	if (mnttab_exists) { 
 		file_name = "/etc/mnttab";
 		separator = "\t";
@@ -1011,49 +1030,70 @@ get_current_mount_list (void)
 		file_name = "/proc/mounts";
 		separator = " ";
 	}
-	fh = fopen (file_name, "r");
+	
 	if (fh == NULL) {
-		g_warning ("Unable to open %s: %s", file_name, strerror (errno));
-		return NULL;
-	}
+                fh = fopen (file_name, "r");
+                if (fh == NULL) {
+                        g_warning ("Unable to open %s: %s", file_name, strerror (errno));
+                        return NULL;
+                }
+        } else {
+                rewind (fh);
+        }
 
 	while (fgets (line, sizeof(line), fh)) {
-		if (sscanf (line, "%s", device_name) == 1) {
-			list = eel_string_list_new_from_tokens (line, separator, FALSE);
-			if (list != NULL) {
-				/* The string list needs to have at least 3 items per line.
-				 * We need to find at least device path, mount path and file system type.
-				 */
-				if (eel_string_list_get_length (list) >= 3) {
-					device_path = eel_string_list_nth (list, 0);
-					mount_path = eel_string_list_nth (list, 1);
-					filesystem = eel_string_list_nth (list, 2);
-					volume = create_volume (device_path, mount_path, filesystem);
-					g_free (device_path);
-					g_free (mount_path);
-					g_free (filesystem);
-					current_mounts = mount_volume_add_filesystem (volume, current_mounts);
-				}				
-				eel_string_list_free (list);
-			}			
+                if (sscanf (line, "%s", device_name) != 1) {
+                        continue;
 		}
-  	}
-#endif /* SOLARIS_MNT */
 
-	if (fh != NULL) {
-		fclose (fh);
-	}
-	
+                list = eel_string_list_new_from_tokens (line, separator, FALSE);
+                if (list == NULL) {
+                        continue;
+		}
+                
+                /* The string list needs to have at least 3 items per line.
+                 * We need to find at least device path, mount path and file system type.
+                 */
+                if (eel_string_list_get_length (list) >= 3) {
+                        device_path = eel_string_list_nth (list, 0);
+                        mount_path = eel_string_list_nth (list, 1);
+                        filesystem = eel_string_list_nth (list, 2);
+                        volume = create_volume (device_path, mount_path, filesystem);
+                        g_free (device_path);
+                        g_free (mount_path);
+                        g_free (filesystem);
+                        volumes = mount_volume_add_filesystem (volume, volumes);
+                }
+
+		eel_string_list_free (list);
+  	}
+        
+        return volumes;
+}
+
+#endif /* !SOLARIS_MNT */
+
+
+static GList *
+get_current_mount_list (void)
+{
+	GList *volumes;
+#ifdef HAVE_CDDA
+        NautilusVolume *volume;
+#endif
+
+	volumes = get_mount_list ();
+
 #ifdef HAVE_CDDA
 	/* CD Audio tricks */
 	if (locate_audio_cd ()) {
 		volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 		mount_volume_get_name (volume);
-		current_mounts = mount_volume_add_filesystem (volume, current_mounts);
+		volumes = mount_volume_add_filesystem (volume, volumes);
 	}
 #endif
 
-	return current_mounts;
+	return volumes;
 }
 
 
