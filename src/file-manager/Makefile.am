@@ -13,18 +13,8 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService-common.c
 
 libntl_file_manager_la_SOURCES=		\
-	fm-directory-list.h		\
-	fm-directory-list.c		\
 	fm-icon-cache.c			\
 	fm-icon-cache.h			\
-	desktop-canvas.c		\
-	desktop-canvas.h		\
-	desktop-item.c			\
-	desktop-item.h			\
-	desktop-layout.h		\
-	desktop-layout.c		\
-	desktop-window.c		\
-	desktop-window.h		\
 	dfos-corba.c			\
 	dfos-corba.h			\
 	dfos-xfer-progress-dialog.c	\
@@ -37,32 +27,31 @@ libntl_file_manager_la_SOURCES=		\
 	fm-directory-view.h		\
 	fm-directory-view.c
 
-noinst_PROGRAMS=gnome-desktop
+# noinst_PROGRAMS=gnome-desktop
 
-gnome_desktop_SOURCES=			\
-	desktop-canvas.c		\
-	desktop-canvas.h		\
-	desktop-item.c			\
-	desktop-item.h			\
-	desktop-layout.h		\
-	desktop-layout.c		\
-	desktop-menu.h			\
-	desktop-menu.c			\
-	desktop-window.c		\
-	desktop-window.h		\
-	fm-directory-list.h		\
-	fm-directory-list.c		\
-	fm-icon-cache.c			\
-	fm-icon-cache.h			\
-	gnome-desktop.c
+# gnome_desktop_SOURCES=			\
+# 	desktop-canvas.c		\
+# 	desktop-canvas.h		\
+# 	desktop-item.c			\
+# 	desktop-item.h			\
+# 	desktop-layout.h		\
+# 	desktop-layout.c		\
+# 	desktop-menu.h			\
+# 	desktop-menu.c			\
+# 	desktop-window.c		\
+# 	desktop-window.h		\
+# 	fm-directory-list.h		\
+# 	fm-directory-list.c		\
+# 	fm-icon-cache.c			\
+# 	fm-icon-cache.h			\
+# 	gnome-desktop.c
 
-gnome_desktop_LDADD=\
-		$(BONOBO_LIBS) \
-		$(GNORBA_LIBS) \
-		$(GNOMEUI_LIBS) \
-		$(GDK_PIXBUF_LIBS) \
-		$(VFS_LIBS)
-
+# gnome_desktop_LDADD=\
+# 		$(BONOBO_LIBS) \
+# 		$(GNORBA_LIBS) \
+# 		$(GNOMEUI_LIBS) \
+# 		$(GDK_PIXBUF_LIBS) \
+# 		$(VFS_LIBS)
 
 dfos-corba.h: GNOME_Desktop_FileOperationService.h
 
