@@ -81,7 +81,6 @@ NautilusFile *          nautilus_file_get                       (const char     
 /* Basic operations on file objects. */
 NautilusFile *          nautilus_file_ref                       (NautilusFile                  *file);
 void                    nautilus_file_unref                     (NautilusFile                  *file);
-void                    nautilus_file_delete                    (NautilusFile                  *file);
 
 /* Monitor the file. */
 void                    nautilus_file_monitor_add               (NautilusFile                  *file,

@@ -3415,48 +3415,6 @@ nautilus_file_get_real_directory (NautilusFile *file)
 	return dir;
 }
 
-
-
-
-/**
- * nautilus_file_delete
- * 
- * Delete this file.
- * @file: NautilusFile representing the file in question.
- **/
-void
-nautilus_file_delete (NautilusFile *file)
-{
-	char *text_uri;
-	GnomeVFSResult result;
-
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	/* Deleting a file that's already gone is easy. */
-	if (file->details->is_gone) {
-		return;
-	}
-
-	/* Do the actual deletion. */
-	text_uri = nautilus_file_get_uri (file);
-	if (nautilus_file_is_directory (file)) {
-		/* FIXME bugzilla.eazel.com 1887: This does sync. I/O! */
-		result = gnome_vfs_remove_directory (text_uri);
-	} else {
-		/* FIXME bugzilla.eazel.com 1887: This does sync. I/O! */
-		result = gnome_vfs_unlink (text_uri);
-	}
-	g_free (text_uri);
-
-	/* Mark the file gone. */
-	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOT_FOUND) {
-		nautilus_file_ref (file);
-		nautilus_file_mark_gone (file);
-		nautilus_file_changed (file);
-		nautilus_file_unref (file);
-	}
-}
-
 void
 nautilus_file_mark_gone (NautilusFile *file)
 {
