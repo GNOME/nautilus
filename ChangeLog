@@ -1,5 +1,32 @@
 2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/nautilus-dependent-shared/shared-service-utilities.c:
+	* components/services/nautilus-dependent-shared/shared-service-utilities.h:
+	* components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	* components/services/nautilus-dependent-shared/shared-service-widgets.h:
+	Remove a bunch of unused code.  Also removed 'go_to_uri()' which
+	does the exact same thing (and nothing more) than
+	'nautilus_view_open_location()'.  Use that directly instead.
+
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(show_dialog_and_run_away),
+	(nautilus_service_install_view_update_from_uri):
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.c:
+	(gather_config_button_cb), (register_later_cb),
+	(make_http_post_request):
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	(authn_succeeded), (maintenance_button_cb):
+	Tiny bit of 'go_to_uri' cleanup.
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (logged_in_callback), (logged_out_callback),
+	(preferences_button_cb), (register_button_cb), (goto_service_cb),
+	(goto_update_cb), (error_dialog_cancel_cb),
+	(footer_item_clicked_callback):
+	Add #defines for magical uris and 'go_to_uri' cleanup.
+
+2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/main.c: (main):
 	Dont need to check the mozilla environment anymore.
 	

@@ -28,8 +28,6 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/nautilus-image.h>
 
-void		go_to_uri		(NautilusView		*view,
-					 char			*uri);
 gboolean	is_location		(char			*document_string,
 					 const char		*place_string);
 

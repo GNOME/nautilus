@@ -28,16 +28,6 @@
 
 #include <stdio.h>
 
-/* utility routine to go to another uri */
-
-void
-go_to_uri (NautilusView	*nautilus_view, char	*uri)
-{
-
-	nautilus_view_open_location (nautilus_view, uri);
-
-}
-
 /* utility for checking a uri */
 
 gboolean

@@ -298,7 +298,7 @@ authn_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment 
 
 #if 0
 	if (registered_ok) {
-		go_to_uri (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+		nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
 	}
 #endif
 }
@@ -407,7 +407,7 @@ static void
 maintenance_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
 {
 
-	go_to_uri (view->details->nautilus_view, SERVICE_HELP_LOCATION);
+	nautilus_view_open_location (view->details->nautilus_view, SERVICE_HELP_LOCATION);
 
 }
 

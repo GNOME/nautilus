@@ -808,7 +808,7 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 	nautilus_view_report_load_complete (view->details->nautilus_view);
 
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-	go_to_uri (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 }
 
 static void
@@ -1105,7 +1105,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	}
 	if (tries == 50) {
 		g_error (_("Cannot create temporary directory"));
-		go_to_uri (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+		nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 	}
 	Trilobite_Eazel_Install__set_tmp_dir (service, tmpdir, &ev);
 

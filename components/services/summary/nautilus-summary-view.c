@@ -72,6 +72,9 @@
 #define	SUMMARY_CONFIG_XML			"eazel-services://anonymous/services"
 #define	SUMMARY_CONFIG_XML_2			"eazel-services:/services"
 
+#define SUMMARY_TERMS_OF_USE_URI		"eazel-services://anonymous/aboutus/terms_of_use"
+#define SUMMARY_PRIVACY_STATEMENT_URI		"eazel-services://anonymous/aboutus/privacy"
+
 #define SUMMARY_XML_KEY				"eazel_summary_xml"
 #define URL_REDIRECT_TABLE			"eazel_url_table_xml"
 #define REGISTER_KEY				"eazel_service_register"
@@ -1041,7 +1044,7 @@ logged_in_callback (gpointer	raw)
 	view->details->logged_in = TRUE;
 
 	update_menu_items (view, TRUE);
-	go_to_uri (view->details->nautilus_view, "eazel:");
+	nautilus_view_open_location (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
@@ -1056,7 +1059,7 @@ logged_out_callback (gpointer	raw)
 	view->details->logged_in = FALSE;
 	
 	update_menu_items (view, FALSE);
-	go_to_uri (view->details->nautilus_view, "eazel:");
+	nautilus_view_open_location (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
@@ -1073,7 +1076,7 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		g_assert ("Failed to load Registration url!\n");
 	}
 
-	go_to_uri (view->details->nautilus_view, url);
+	nautilus_view_open_location (view->details->nautilus_view, url);
 	g_free (url);
 
 }
@@ -1090,7 +1093,7 @@ register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		g_assert ("Failed to load Registration url!\n");
 	}
 
-	go_to_uri (view->details->nautilus_view, url);
+	nautilus_view_open_location (view->details->nautilus_view, url);
 	g_free (url);
 
 }
@@ -1100,7 +1103,7 @@ static void
 goto_service_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
 	
-	go_to_uri (cbdata->nautilus_view, cbdata->uri);
+	nautilus_view_open_location (cbdata->nautilus_view, cbdata->uri);
 
 }
 
@@ -1109,7 +1112,7 @@ static void
 goto_update_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
 	
-	go_to_uri (cbdata->nautilus_view, cbdata->uri);
+	nautilus_view_open_location (cbdata->nautilus_view, cbdata->uri);
 
 }
 
@@ -1119,7 +1122,7 @@ error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
 {
 	char	*user_home;
 	user_home = nautilus_get_user_main_directory ();	
-	go_to_uri (view->details->nautilus_view, user_home);
+	nautilus_view_open_location (view->details->nautilus_view, user_home);
 	g_free (user_home);
 
 }
@@ -1611,11 +1614,11 @@ footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_da
 		break;
 
 	case FOOTER_TERMS_OF_USER:
-		go_to_uri (view->details->nautilus_view, "eazel-services://anonymous/aboutus/terms_of_use");
+		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_TERMS_OF_USE_URI);
 		break;
 
 	case FOOTER_PRIVACY_STATEMENT:
-		go_to_uri (view->details->nautilus_view, "eazel-services://anonymous/aboutus/privacy");
+		nautilus_view_open_location (view->details->nautilus_view, SUMMARY_PRIVACY_STATEMENT_URI);
 		break;
 
 	default:

@@ -46,16 +46,10 @@ GtkWidget* create_label_widget						(const char *text,
 									 guint	     ypad,
 									 gint	     horizontal_offset,
 									 gint	     vertical_offset);
-GtkWidget* create_summary_service_title_top_widget			(const char *login_status_text);
-GtkWidget* create_summary_service_title_bottom_widget			(const char *section_title);
 GtkWidget* create_services_header_widget				(const char *left_text,
 									 const char *right_text);
-GtkWidget* create_summary_service_large_grey_header_widget		(const char *right_text);
-GtkWidget* create_summary_service_small_grey_header_widget		(const char *left_text);
 void       show_feedback                 				(GtkWidget  *widget,
 					  				 char       *error_text);
-void       set_widget_foreground_color   				(GtkWidget  *widget,
-					  				 const char *color_spec);
 
 #endif /* SHARED_SERVICE_WIDGETS_H */
 

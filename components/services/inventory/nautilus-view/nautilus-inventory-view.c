@@ -68,8 +68,6 @@ static void		gather_config_button_cb				(GtkWidget			*button,
 									 NautilusInventoryView		*view);
 static void		register_later_cb				(GtkWidget			*button,
 									 NautilusInventoryView		*view);
-static void		go_to_uri					(NautilusInventoryView		*view,
-									 char				*uri);
 static char		*get_home_uri					(void);
 static void		update_now					(void);
 static ghttp_request	*make_http_post_request 			(char				*uri,
@@ -245,7 +243,7 @@ gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view)
 	else {
 
 		/* give error feedback or go to the summary form if successful */
-		go_to_uri (view, "eazel:overview?config");
+		nautilus_view_open_location (view, "eazel:overview?config");
 	}
 
 	g_free (config_string);
@@ -260,7 +258,7 @@ register_later_cb (GtkWidget	*button, NautilusInventoryView	*view)
 	char	*home_path;
 
 	home_path = get_home_uri ();
-	go_to_uri (view, home_path);
+	nautilus_view_open_location (view, home_path);
 	g_free (home_path);
 
 }
@@ -329,16 +327,6 @@ make_http_post_request (char	*uri, char	*post_body, char	*auth_token)
 	}
 
 	return request;
-
-}
-
-/* utility routine to go to another uri */
-
-static void
-go_to_uri (NautilusInventoryView	*view, char	*uri)
-{
-
-	nautilus_view_open_location (view->details->nautilus_view, uri);
 
 }
 
