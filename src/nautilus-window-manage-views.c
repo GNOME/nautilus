@@ -31,7 +31,7 @@
  */
 
 #include <config.h>
-#include "ntl-window-msgs.h"
+#include "nautilus-window-manage-views.h"
 
 #include <stdarg.h>
 #include <libgnome/gnome-i18n.h>
@@ -45,10 +45,10 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include "ntl-app.h"
-#include "ntl-uri-map.h"
-#include "ntl-window-private.h"
-#include "ntl-window-state.h"
+#include "nautilus-application.h"
+#include "nautilus-applicable-views.h"
+#include "nautilus-window-private.h"
+#include "nautilus-window-state.h"
 #include "nautilus-location-bar.h"
 
 /*#define EXTREME_DEBUGGING*/

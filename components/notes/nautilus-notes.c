@@ -144,7 +144,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         Notes *notes;
         NautilusBackground *background;
          
-        g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
+        g_return_val_if_fail (strcmp (goad_id, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
@@ -202,7 +202,7 @@ main(int argc, char *argv[])
 	
         /* initialize CORBA and Bonobo */
 
-        gnome_init_with_popt_table("ntl-notes", VERSION,
+        gnome_init_with_popt_table("nautilus-notes", VERSION,
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
@@ -214,7 +214,7 @@ main(int argc, char *argv[])
         gnome_vfs_init ();
         
         factory = bonobo_generic_factory_new_multi
-                ("OAFIID:ntl_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
+                ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
                  make_notes_view, NULL);
 
         do {

@@ -24,7 +24,7 @@
  */
 
 #include <config.h>
-#include "nautilus-index-title.h"
+#include "nautilus-sidebar-title.h"
 
 #include <ctype.h>
 #include <string.h>

@@ -24,10 +24,10 @@
  *
  */
 
-#ifndef NTL_WINDOW_MSGS_H
-#define NTL_WINDOW_MSGS_H
+#ifndef NAUTILUS_WINDOW_MANAGE_VIEWS_H
+#define NAUTILUS_WINDOW_MANAGE_VIEWS_H
 
-#include "ntl-window.h"
+#include "nautilus-window.h"
 
 void nautilus_window_request_location_change  (NautilusWindow                 *window,
                                                Nautilus_NavigationRequestInfo *loc,

@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_SAMPLE_CONTENT_VIEW_H
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusSampleContentView NautilusSampleContentView;

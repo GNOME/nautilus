@@ -24,11 +24,11 @@
  *
  */
 
-/* ntl-view.h: Interface of the object representing a data
+/* nautilus-view-frame.h: Interface of the object representing a data
    view. */
 
-#ifndef NTL_VIEW_H
-#define NTL_VIEW_H
+#ifndef NAUTILUS_VIEW_FRAME_H
+#define NAUTILUS_VIEW_FRAME_H
 
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkbin.h>
@@ -149,4 +149,4 @@ void          nautilus_view_frame_construct_arg_set       (NautilusViewFrame    
 }
 #endif /* __cplusplus */
 
-#endif /* NTL_VIEW_H */
+#endif /* NAUTILUS_VIEW_FRAME_H */

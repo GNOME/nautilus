@@ -25,9 +25,9 @@
  */
 
 #include <config.h>
-#include "ntl-app.h"
+#include "nautilus-application.h"
 
-#include "ntl-window-state.h"
+#include "nautilus-window-state.h"
 #include <libnautilus/libnautilus.h>
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"

@@ -23,7 +23,7 @@
  */
 
 #include <config.h>
-#include "nautilus-index-tabs.h"
+#include "nautilus-sidebar-tabs.h"
 
 #include <math.h>
 #include <stdio.h>

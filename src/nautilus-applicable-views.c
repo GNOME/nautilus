@@ -27,11 +27,11 @@
 
 /* #define DEBUG_MJS 1 */
 
-/* ntl-uri-map.c: Implementation of routines for mapping a location
+/* nautilus-applicable-views.c: Implementation of routines for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
 #include <config.h>
-#include "ntl-uri-map.h"
+#include "nautilus-applicable-views.h"
 
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>

@@ -25,7 +25,7 @@
  */
 
 #include <config.h>
-#include "ntl-index-panel.h"
+#include "nautilus-sidebar.h"
 
 #include <math.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -45,8 +45,8 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <nautilus-widgets/nautilus-preferences.h>
-#include "nautilus-index-tabs.h"
-#include "nautilus-index-title.h"
+#include "nautilus-sidebar-tabs.h"
+#include "nautilus-sidebar-title.h"
 
 struct NautilusIndexPanelDetails {
 	GtkVBox *container;

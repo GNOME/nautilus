@@ -24,11 +24,11 @@
  *
  */
 
-/* nautilus-view-frame.c: Implementation for object that represents a
+/* nautilus-view.c: Implementation for object that represents a
    nautilus view implementation. */
 
 #include <config.h>
-#include "nautilus-view-frame.h"
+#include "nautilus-view.h"
 
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_CONTENT_LOSER_H
 #define NAUTILUS_CONTENT_LOSER_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusContentLoser      NautilusContentLoser;

@@ -24,12 +24,12 @@
  *
  */
 
-/* ntl-view-private.h: Internals of the view proxy that are shared between different implementation files */
+/* nautilus-view-frame-private.h: Internals of the view proxy that are shared between different implementation files */
 
-#ifndef NTL_VIEW_PRIVATE_H
-#define NTL_VIEW_PRIVATE_H
+#ifndef NAUTILUS_VIEW_FRAME_PRIVATE_H
+#define NAUTILUS_VIEW_FRAME_PRIVATE_H
 
-#include "ntl-view.h"
+#include "nautilus-view-frame.h"
 
 typedef struct {
         POA_Nautilus_ViewFrame servant;

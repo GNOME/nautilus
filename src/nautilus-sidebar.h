@@ -23,11 +23,11 @@
  *  in a vertical panel and hosts the meta-views.
  */
 
-#ifndef NTL_INDEX_PANEL_H
-#define NTL_INDEX_PANEL_H
+#ifndef NAUTILUS_SIDEBAR_H
+#define NAUTILUS_SIDEBAR_H
 
 #include <gtk/gtkeventbox.h>
-#include "ntl-view.h"
+#include "nautilus-view-frame.h"
 
 typedef struct NautilusIndexPanel NautilusIndexPanel;
 typedef struct NautilusIndexPanelClass  NautilusIndexPanelClass;
@@ -68,4 +68,4 @@ void                nautilus_index_panel_set_uri          (NautilusIndexPanel *p
 void                nautilus_index_panel_set_title        (NautilusIndexPanel *panel,
 							   const char         *new_title);
 
-#endif /* NTL_INDEX_PANEL_H */
+#endif /* NAUTILUS_SIDEBAR_H */

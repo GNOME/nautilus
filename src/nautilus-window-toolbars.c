@@ -24,8 +24,8 @@
 */
 
 #include <config.h>
-#include "ntl-window-private.h"
-#include "ntl-app.h"
+#include "nautilus-window-private.h"
+#include "nautilus-application.h"
 
 #include <gnome.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>

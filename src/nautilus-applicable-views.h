@@ -23,7 +23,7 @@
  *
  */
 
-/* ntl-uri-map.h: Interface for mapping a location change request to a set of views and actual URL to be loaded. */
+/* nautilus-applicable-views.h: Interface for mapping a location change request to a set of views and actual URL to be loaded. */
 
 #ifndef NAUTILUS_URI_MAP_H
 #define NAUTILUS_URI_MAP_H

@@ -25,22 +25,21 @@
  *
  */
 
-/* ntl-window.c: Implementation of the main window object */
+/* nautilus-window.c: Implementation of the main window object */
 
 #include <config.h>
-#include "ntl-window-private.h"
+#include "nautilus-window-private.h"
 
-#include "ntl-window-msgs.h"
-#include "ntl-window-state.h"
-#include "ntl-app.h"
+#include "nautilus-window-manage-views.h"
+#include "nautilus-window-state.h"
+#include "nautilus-application.h"
 
 #include <gnome.h>
 #include <math.h>
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
 #include "nautilus-location-bar.h"
-#include "ntl-index-panel.h"
-#include "ntl-miniicon.h"
+#include "nautilus-sidebar.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -53,6 +52,7 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-extensions/nautilus-mini-icon.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>

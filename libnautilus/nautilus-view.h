@@ -24,11 +24,11 @@
  *
  */
 
-/* nautilus-view-frame.h: Interface of the object representing the frame a
+/* nautilus-view.h: Interface of the object representing the frame a
    data view plugs into. */
 
-#ifndef NAUTILUS_VIEW_FRAME_H
-#define NAUTILUS_VIEW_FRAME_H
+#ifndef NAUTILUS_VIEW_H
+#define NAUTILUS_VIEW_H
 
 #include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-control.h>

@@ -31,7 +31,7 @@
 #include <config.h>
 
 #include "nautilus-self-check-functions.h"
-#include "ntl-app.h"
+#include "nautilus-application.h"
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>

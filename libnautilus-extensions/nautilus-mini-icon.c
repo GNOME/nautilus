@@ -20,7 +20,7 @@
  */
 
 #include <config.h>
-#include "ntl-miniicon.h"
+#include "nautilus-mini-icon.h"
 
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>

@@ -216,7 +216,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   GtkCList *clist;
   HistoryView *hview;
 
-  g_return_val_if_fail(!strcmp(goad_id, "OAFIID:ntl_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"), NULL);
+  g_return_val_if_fail(!strcmp(goad_id, "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"), NULL);
 
   hview = g_new0(HistoryView, 1);
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
 
-  gnome_init_with_popt_table("ntl-history-view", VERSION, 
+  gnome_init_with_popt_table("nautilus-history-view", VERSION, 
                              argc, argv,
                              oaf_popt_options, 0, NULL); 
   orb = oaf_init (argc, argv);
@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();
 
-  factory = bonobo_generic_factory_new_multi("OAFIID:ntl_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", make_obj, NULL);
 
   do {
     bonobo_main();

@@ -19,10 +19,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef NTL_APP_H
-#define NTL_APP_H
+#ifndef NAUTILUS_APPLICATION_H
+#define NAUTILUS_APPLICATION_H
 
-#include "ntl-window.h"
+#include "nautilus-window.h"
 
 #ifdef __cplusplus
 extern "C" {

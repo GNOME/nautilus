@@ -24,11 +24,11 @@
  *
  */
 
-/* ntl-zoomable-frame-svr.c: CORBA server implementation of
+/* nautilus-zoomable-frame-corba.c: CORBA server implementation of
    Nautilus::ZoomableFrame interface of a nautilus ViewFrame. */
 
 #include <config.h>
-#include "ntl-view-private.h"
+#include "nautilus-view-frame-private.h"
 
 typedef struct {
 	POA_Nautilus_ZoomableFrame servant;

@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_SERVICE_STARTUP_VIEW_H
 #define NAUTILUS_SERVICE_STARTUP_VIEW_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtk.h>
 
 typedef struct _NautilusServicesContentView NautilusServicesContentView;

@@ -31,6 +31,6 @@
 
 #include <bonobo.h>
 #include <libnautilus/nautilus-view-component.h>
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 
 #endif /* LIBNAUTILUS_H */

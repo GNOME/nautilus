@@ -23,17 +23,17 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-window.h: Interface of the main window object */
+/* nautilus-window.h: Interface of the main window object */
 
-#ifndef NTL_WINDOW_H
-#define NTL_WINDOW_H
+#ifndef NAUTILUS_WINDOW_H
+#define NAUTILUS_WINDOW_H
 
 #include <libgnomeui/gnome-app.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
-#include "ntl-uri-map.h"
-#include "ntl-view.h"
-#include "ntl-index-panel.h"
+#include "nautilus-applicable-views.h"
+#include "nautilus-view-frame.h"
+#include "nautilus-sidebar.h"
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))

@@ -29,8 +29,8 @@
 
 #include <config.h>
 
-#include "ntl-view-private.h"
-#include "ntl-window.h"
+#include "nautilus-view-frame-private.h"
+#include "nautilus-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>

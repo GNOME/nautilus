@@ -28,8 +28,8 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
-#include "ntl-app.h"
-#include "ntl-window-private.h"
+#include "nautilus-application.h"
+#include "nautilus-window-private.h"
 #include "nautilus-property-browser.h"
 
 #include <libnautilus/nautilus-undo-manager.h>

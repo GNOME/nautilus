@@ -31,7 +31,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-icon-dnd.h			\
 	nautilus-icon-grid.h			\
 	bonobo-stream-vfs.h			\
-	gtkscrollframe.h			\
+	nautilus-scroll-frame.h			\
 	libnautilus-extensions.h		\
 	nautilus-alloc.h			\
 	nautilus-background.h			\
@@ -61,6 +61,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
+	nautilus-mini-icon.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-self-checks.h			\
@@ -78,7 +79,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-directory-metafile.h		\
 	nautilus-lib-self-check-functions.h	\
 	bonobo-stream-vfs.c			\
-	gtkscrollframe.c			\
+	nautilus-scroll-frame.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
@@ -113,6 +114,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-mime-type.c			\
+	nautilus-mini-icon.c			\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
 	nautilus-self-checks.c			\

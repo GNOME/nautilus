@@ -30,7 +30,7 @@
 #include <gtk/gtkvscrollbar.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkviewport.h>
-#include "gtkscrollframe.h"
+#include "nautilus-scroll-frame.h"
 
 
 /* scrolled window policy and size requisition handling:

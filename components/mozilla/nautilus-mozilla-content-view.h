@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_MOZILLA_CONTENT_VIEW_H
 #define NAUTILUS_MOZILLA_CONTENT_VIEW_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtkvbox.h>
 
 typedef struct NautilusMozillaContentView      NautilusMozillaContentView;

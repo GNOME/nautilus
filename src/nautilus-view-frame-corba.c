@@ -23,13 +23,13 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-view-frame-svr.c: CORBA server implementation of the object
+/* nautilus-view-frame-corba.c: CORBA server implementation of the object
    representing a data view frame. */
 
 #include <config.h>
 
-#include "ntl-view-private.h"
-#include "ntl-window.h"
+#include "nautilus-view-frame-private.h"
+#include "nautilus-window.h"
 
 static Nautilus_ViewWindow impl_Nautilus_ViewFrame__get_main_window         (PortableServer_Servant                servant,
 									     CORBA_Environment                    *ev);

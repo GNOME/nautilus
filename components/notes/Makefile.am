@@ -1,4 +1,4 @@
-bin_PROGRAMS=ntl-notes
+bin_PROGRAMS=nautilus-notes
 
 INCLUDES=\
 	-I$(top_srcdir)		\
@@ -19,9 +19,9 @@ LDADD=\
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)
 
-ntl_notes_SOURCES=ntl-notes.c
+nautilus_notes_SOURCES=nautilus-notes.c
 
 oafdir=$(datadir)/oaf
-oaf_DATA=ntl-notes.oafinfo
+oaf_DATA=nautilus-notes.oafinfo
 
 EXTRA_DIST=$(oaf_DATA)

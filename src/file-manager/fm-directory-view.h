@@ -28,7 +28,7 @@
 #include <bonobo/bonobo-ui-handler.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>

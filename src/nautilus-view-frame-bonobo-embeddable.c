@@ -26,8 +26,8 @@
 
 #include <config.h>
 
-#include "ntl-view-private.h"
-#include "ntl-window.h"
+#include "nautilus-view-frame-private.h"
+#include "nautilus-window.h"
 #include <libnautilus-extensions/bonobo-stream-vfs.h>
 
 typedef struct {

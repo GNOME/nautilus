@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_SIDEBAR_LOSER_H
 #define NAUTILUS_SIDEBAR_LOSER_H
 
-#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-view.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusSidebarLoser      NautilusSidebarLoser;

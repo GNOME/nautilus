@@ -1,7 +1,7 @@
-#ifndef NTL_WINDOW_PRIVATE_H
-#define NTL_WINDOW_PRIVATE_H
+#ifndef NAUTILUS_WINDOW_PRIVATE_H
+#define NAUTILUS_WINDOW_PRIVATE_H
 
-#include "ntl-window.h"
+#include "nautilus-window.h"
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include <gtk/gtk.h>
