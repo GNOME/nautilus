@@ -1,3 +1,32 @@
+2001-08-01  Mike Fleming  <mfleming@eazel.com>
+
+	Added gnome-vfs authentication dialog support.
+	Currently works with HTTP basic and proxy authentication.
+
+	A bug causes the dialog to appear more than once in quick succession
+	in some cases.
+
+	Separate processes (eg sidebar components) that need to access
+	a protected URL will also pop open their own individual dialogs
+	at this point 
+
+	There's also no integration with Mozilla at this point, so
+	Mozilla too will prompt separately.
+
+	This code works against gnome-vfs head and the gnome-vfs-1-0
+	branch, as well as the soon-to-be-released gnome-vfs 1.0.2
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-authn-manager.c:
+	(construct_password_dialog), (present_authn_dialog_blocking),
+	(mark_callback_completed), (authn_dialog_button_clicked),
+	(authn_dialog_closed), (authn_dialog_destroyed),
+	(present_authn_dialog_nonblocking),
+	(run_authn_dialog_on_main_thread), (vfs_authn_callback),
+	(nautilus_authn_manager_initialize):
+	* libnautilus-private/nautilus-authn-manager.h:
+	* src/nautilus-application.c: (finish_startup):
+
 2001-08-01  Darin Adler  <darin@bentspoon.com>
 
 	* THANKS: More people to thank.

@@ -63,6 +63,7 @@
 #include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
+#include <libnautilus-private/nautilus-authn-manager.h>
 #include <liboaf/liboaf.h>
 
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
@@ -420,6 +421,9 @@ finish_startup (NautilusApplication *application)
 {
 	/* initialize the sound machinery */
 	nautilus_sound_initialize ();
+
+	/* initialize URI authentication manager */
+	nautilus_authn_manager_initialize ();
 
 	/* Make the desktop work with gmc and old Nautilus. */
 	migrate_gmc_trash ();

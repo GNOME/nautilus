@@ -100,6 +100,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-file.c \
 	nautilus-view-identifier.c \
 	nautilus-volume-monitor.c \
+	nautilus-authn-manager.c \
 	$(NULL)
 
 # Everything is private for now
@@ -168,6 +169,7 @@ noinst_HEADERS = \
 	nautilus-vfs-file.h \
 	nautilus-view-identifier.h \
 	nautilus-volume-monitor.h \
+	nautilus-authn-manager.h \
 	$(NULL)
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
