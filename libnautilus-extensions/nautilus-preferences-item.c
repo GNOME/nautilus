@@ -90,11 +90,11 @@ static void enum_radio_group_changed_callback                (GtkWidget         
 							      gpointer                      user_data);
 static void boolean_button_toggled_callback                  (GtkWidget                    *button_group,
 							      gpointer                      user_data);
-static void text_item_changed_callback                       (GtkWidget                    *string_picker,
-							      gpointer                      user_data);
 static void editable_string_changed_callback                 (GtkWidget                    *caption,
 							      gpointer                      user_data);
 static void integer_changed_callback                         (GtkWidget                    *caption,
+							      gpointer                      user_data);
+static void font_family_item_changed_callback                (GtkWidget                    *caption,
 							      gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
@@ -489,8 +489,8 @@ preferences_item_create_font_family (NautilusPreferencesItem *item,
 
 	item->details->change_signal_ID = gtk_signal_connect (GTK_OBJECT (item->details->child),
 							      "changed",
-							      GTK_SIGNAL_FUNC (text_item_changed_callback),
-							      (gpointer) item);
+							      GTK_SIGNAL_FUNC (font_family_item_changed_callback),
+							      item);
 }
 
 
@@ -606,19 +606,24 @@ boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
-text_item_changed_callback (GtkWidget *button, gpointer user_data)
+font_family_item_changed_callback (GtkWidget *string_picker, gpointer user_data)
 {
 	NautilusPreferencesItem	*item;
+	char *selected_string;
 
-	g_assert (user_data != NULL);
-	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
 
 	item = NAUTILUS_PREFERENCES_ITEM (user_data);
 
-	g_assert (item->details->child != NULL);
-	g_assert (NAUTILUS_IS_STRING_PICKER (item->details->child));
+	g_return_if_fail (item->details->preference_name != NULL);
 
-	preferences_item_update_text_settings_at_idle (item);
+	selected_string = nautilus_string_picker_get_selected_string (NAUTILUS_STRING_PICKER (string_picker));
+	g_return_if_fail (selected_string != NULL);
+
+	nautilus_preferences_set (item->details->preference_name, selected_string);
+
+	g_free (selected_string);
 }
 
 static void
