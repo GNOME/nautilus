@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2000-07-07 12:30+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -990,6 +990,7 @@ msgstr "Predolged"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Ime"
@@ -1963,13 +1964,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "Ne morem zbrisati pogona"
 
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "Smeti"
-
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
 msgstr "_Prestavi sem"
@@ -2739,16 +2733,16 @@ msgstr "Praznim Smeti"
 msgid "Preparing to Empty the Trash..."
 msgstr "Pripravljam se na praznjenje Smeti..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Ste prepričani, da želite trajno zbrisati vse predmete v Smeteh?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Sprazni"
 
@@ -2920,7 +2914,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2998,6 +2992,12 @@ msgstr "povezava"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "povezava (prekinjena)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "Smeti"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -3249,51 +3249,51 @@ msgstr "ali smo osvetleni za spust pri vleci in spusti"
 msgid "The selection rectangle"
 msgstr "Pravokotnik izbire"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Uokviri besedilo"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Riši okvir okoli neizbranega besedil"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Barva izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Barva izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Alfa kanal izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Prosojnost izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Alfa kanal osvetlitve"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Prosojnost osvetlitve za izbrane ikone"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Barva svetlih podatkov"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Barva, ki se uporabi za besedilo podatkov na temnem ozadju"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Barva temnih podatkov"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Barva, ki se uporabi za besedilo podatkov na svetlem ozadju"
 
@@ -4097,7 +4097,7 @@ msgstr "Spremeni način upravljanja z datotekami"
 msgid "File Management"
 msgstr "Upravljanje datotek"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "Domača mapa"
 
@@ -4247,31 +4247,31 @@ msgstr "Ozadje"
 msgid "Empty Trash"
 msgstr "Sprazni Smeti"
 
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "Odpri %d oken?"
 msgstr[1] "Odpri %d oken?"
 
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "Ste prepričani, da želite trajno zbrisati \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "To bo odprlo %d ločenih oken. Ste prepričani, da to želite?"
 msgstr[1] "To bo odprlo %d ločenih oken. Ste prepričani, da to želite?"
 
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Ste prepričani, da želite trajno zbrisati \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4279,38 +4279,38 @@ msgid_plural ""
 msgstr[0] "Ste prepričani, da želite trajno zbrisati %d izbranih predmetov?"
 msgstr[1] "Ste prepričani, da želite trajno zbrisati %d izbranih predmetov?"
 
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "Trajno zbriši vse izbrane predmete"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "Zbriši?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "Izberi kategorijo:"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "Vzorci:"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "Izbran \"%s\""
 
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d izbranih map"
 msgstr[1] "%d izbranih map"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4318,19 +4318,19 @@ msgstr[0] " (vsebuje %d predmetov)"
 msgstr[1] " (vsebuje %d predmetov)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (vsebuje skupaj %d predmetov)"
 msgstr[1] " (vsebuje skupaj %d predmetov)"
 
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "izbran \"%s\" (%s)"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4338,14 +4338,14 @@ msgstr[0] "%d izbranih predmetov (%s)"
 msgstr[1] "%d izbranih predmetov (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d drugih predmetov izbranih (%s)"
 msgstr[1] "%d drugih predmetov izbranih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "Neporabljen prostor"
@@ -4357,7 +4357,7 @@ msgstr "Neporabljen prostor"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4366,52 +4366,52 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Mapa \"%s\" vsebuje več datotek kot jih zmore obvladati Nautilus. Nekatere "
 "datoteke ne bodo prikazane."
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "Preveč datotek"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "\"%s\" ne more biti prestavljena v Smeti. Jo želite zbrisati takoj?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "\"%s\" ne more biti prestavljena v Smeti. Jo želite zbrisati takoj?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "\"%s\" ne more biti prestavljena v Smeti. Jo želite zbrisati takoj?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "Zbriši takoj?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ste prepričani, da želite iz Smeti trajno zbrisati \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4424,46 +4424,46 @@ msgstr[0] ""
 msgstr[1] ""
 "Ste prepričani, da želite iz Smeti trajno zbrisati %d izbranih predmetov?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "Zbriši iz Smeti?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Uporabi \"%s\" za odprtje izbranega predmeta"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Drug _program..."
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "_Program..."
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Poženi \"%s\" na izbranih predmetih"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Vse izvršljive datoteke v tej mapi se bodo pojavile v menuju \"Skripte\"."
 "Izbira skripte iz menuja bo pognala skripto z izbranimi predmeti kot vhodom."
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4472,11 +4472,11 @@ msgstr ""
 "Vse izvršljive datoteke v tej mapi se bodo pojavile v menuju \"Skripte\"."
 "Izbira skripte iz menuja bo pognala skripto z izbranimi predmeti kot vhodom."
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "O skriptah"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4516,19 +4516,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: lega in velikost trenutnega okna"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" bo prestavljena, če izberete ukaz \"Prilepi datoteke\""
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" bo skopirana, če izberete ukaz \"Prilepi datoteke\""
 
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4541,7 +4541,7 @@ msgstr[1] ""
 "\"%d\" izbranih predmetov po prestavljenih, če izberete ukaz \"Prilepi "
 "datoteke\""
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4552,166 +4552,166 @@ msgstr[0] ""
 msgstr[1] ""
 "%d izbranih predmetov bo skopiranih, če izberete ukaz \"Prilepi datoteke\""
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Na odložišču ni ničesar za prilepit."
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "Napaka ob priklopu"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "Napaka ob odklopu"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "Napaka storitev"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "I_zvrzi"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Odklopi napravo"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Odpri _v novem oknu"
 msgstr[1] "Odpri _v novem oknu"
 
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "Domača mapa"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "so mape"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "_Zbriši iz Smeti"
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "Trajno zbriši vse izbrane predmete"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "_Vrzi v Smeti"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Prestavi vsak izbran predmet v Smeti"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Zbriši"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "_Ustvari povezave"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "_Ustvari povezavo"
 
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Sprazni Smeti"
 
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "I_zreži datoteko"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "I_zreži datoteke"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "_Kopiraj datoteko"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Kopiraj datoteke"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "Te povezave se ne da uporabiti, ker nima cilja. Jo želite vreči v Smeti?"
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
 "Te povezave se ne da uporabiti, ker nima cilja. Jo želite vreči v Smeti?"
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Te povezave se ne da uporabiti, ker njen cilj \"%s\" ne obstaja. Jo želite "
 "vreči v Smeti?"
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "Pokvarjena povezava"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "\"%s\" je izvršljiva datoteka z besedilom. Jo želite pognati ali prikazati  "
 "njeno vsebino?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "Poženi ali prikaži?"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "Poženi v _terminalu"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "_Prikaz"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "_Poženi"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Odpiram \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "Prekliči odpiranje?"
 
@@ -4919,33 +4919,29 @@ msgstr "Povrni i_zvorno velikost ikon"
 msgid "Restore Icon's Original Si_ze"
 msgstr "Povrni i_zvorno velikost ikone"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "kaže na \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "Vleci in spusti je podprt le v krajevni datotečni sistem."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Vleci in spusti je podprt le v krajevni datotečni sistem."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Napaka vleci in spusti"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Uporabljena je bila neveljavna vrsta večenja."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Ime datoteke"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5015,7 +5011,7 @@ msgid "Images Only"
 msgstr "Le slike"
 
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Lastnosti"
 
@@ -5548,41 +5544,41 @@ msgstr "(prazno)"
 msgid "Loading..."
 msgstr "Nalagam..."
 
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 msgid "Open"
 msgstr "Odpri"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "Nova _mapa"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "Nova _mapa"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "Kopiraj datoteke"
 
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "_Prilepi datoteke v mapo"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "Vrzi v _Smeti"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr "Datotečni sistem"
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr "Mrežna soseščina"
 
@@ -6260,7 +6256,7 @@ msgstr "Mrežni strežniki"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "_Ime spletnega mesta:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7814,6 +7810,9 @@ msgstr "Mrežni strežniki"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
+
+#~ msgid "File name"
+#~ msgstr "Ime datoteke"
 
 #~ msgid ""
 #~ "Some of the files could not be added as emblems because they did not "

@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
-"POT-Creation-Date: 2004-02-04 15:46+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2004-02-04 00:32+0100\n"
 "Last-Translator: Sanlig Badral <Badral@openmn.org>\n"
 "Language-Team: Mongolian <openmn-gnome@lists.sf.net>\n"
@@ -25,8 +26,12 @@ msgid "Factory for Nautilus component adapter factories "
 msgstr "Наутилусын бүрэлдхүүний адаптеруудыг боловсруулагчийн үйлдвэр"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:3
-msgid "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to look like Nautilus Views"
-msgstr "Bonobo-Тохируулгууд болон -Embeddables-уудыг наутилусынх мэт үзэгдэхүйц болгож тохируулдаг объектын фабрик."
+msgid ""
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
+msgstr ""
+"Bonobo-Тохируулгууд болон -Embeddables-уудыг наутилусынх мэт үзэгдэхүйц "
+"болгож тохируулдаг объектын фабрик."
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
@@ -56,8 +61,11 @@ msgid "Couldn't remove emblem with name '%s'."
 msgstr "'%s' Эмблемийг устгаж чадсангүй."
 
 #: components/emblem/nautilus-emblem-view.c:204
-msgid "This is probably because the emblem is a permanent one, and not one you added yourself."
-msgstr "Энэ эмблемийг та өөрөө оруулж өгөөгүй бөгөөд байнгын статустай байж болох."
+msgid ""
+"This is probably because the emblem is a permanent one, and not one you "
+"added yourself."
+msgstr ""
+"Энэ эмблемийг та өөрөө оруулж өгөөгүй бөгөөд байнгын статустай байж болох."
 
 #: components/emblem/nautilus-emblem-view.c:205
 msgid "Couldn't Remove Emblem"
@@ -69,8 +77,11 @@ msgid "Couldn't rename emblem with name '%s'."
 msgstr "'%s' Эмблемийн нэрийг өөрчилж болсонгүй"
 
 #: components/emblem/nautilus-emblem-view.c:240
-msgid "This is probably because the emblem is a permanent one, and not one that you added yourself."
-msgstr "Энэ эмблемийг та өөрөө оруулж өгөөгүй бөгөөд байнгын статустай байж болох."
+msgid ""
+"This is probably because the emblem is a permanent one, and not one that you "
+"added yourself."
+msgstr ""
+"Энэ эмблемийг та өөрөө оруулж өгөөгүй бөгөөд байнгын статустай байж болох."
 
 #: components/emblem/nautilus-emblem-view.c:241
 msgid "Couldn't Rename Emblem"
@@ -93,12 +104,20 @@ msgid "Add Emblems..."
 msgstr "Эмблем нэмэх..."
 
 #: components/emblem/nautilus-emblem-view.c:521
-msgid "Enter a descriptive name next to each emblem.  This name will be used in other places to identify the emblem."
-msgstr "Эмблем болгонд нэрийг нь оруулж өгнө үү. Эдгээр нэрийн тусламжтайгаар та дараа нь өгөгдсөн эмблемийг таньж болно."
+msgid ""
+"Enter a descriptive name next to each emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+"Эмблем болгонд нэрийг нь оруулж өгнө үү. Эдгээр нэрийн тусламжтайгаар та "
+"дараа нь өгөгдсөн эмблемийг таньж болно."
 
 #: components/emblem/nautilus-emblem-view.c:523
-msgid "Enter a descriptive name next to the emblem.  This name will be used in other places to identify the emblem."
-msgstr "Эмблемдээ нэрийг нь оруулж өгнө үү. Энэхүү нэрийн тусламжтайгаар та дараа нь энэ эмблемийг таньж болно."
+msgid ""
+"Enter a descriptive name next to the emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+"Эмблемдээ нэрийг нь оруулж өгнө үү. Энэхүү нэрийн тусламжтайгаар та дараа нь "
+"энэ эмблемийг таньж болно."
 
 #: components/emblem/nautilus-emblem-view.c:742
 msgid "Some of the files could not be added as emblems."
@@ -144,8 +163,7 @@ msgstr "Файл »%s« зураг биш юм шиг байна."
 msgid "The dragged file does not appear to be a valid image."
 msgstr "Чирж аваачсан файл нь зургийн файл гэж танигдахгүй байна."
 
-#: components/emblem/nautilus-emblem-view.c:904
-#: data/browser.xml.h:35
+#: components/emblem/nautilus-emblem-view.c:904 data/browser.xml.h:35
 #: src/nautilus-property-browser.c:1741
 msgid "Erase"
 msgstr "Устгах"
@@ -224,8 +242,17 @@ msgid "Software"
 msgstr "Програм хангамж"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#: components/image_properties/nautilus-image-properties-view.c:237
 #, c-format
+msgid ""
+"<b>Image Type:</b> %s (%s)\n"
+"<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
+"<b>Image Type:</b> %s (%s)\n"
+"<b>Resolution:</b> %dx%d pixels\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
 msgstr "Зургийн мэдээллийг ачаалж болсонгүй"
 
@@ -279,8 +306,7 @@ msgid "Copy the selected text to the clipboard"
 msgstr "Сонгосон текстийг клипборд (түр санах-д) хуулах"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-#: libnautilus/nautilus-clipboard-ui.xml.h:10
-#: src/nautilus-shell-ui.xml.h:35
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:35
 msgid "_Copy Text"
 msgstr "Текст х_уулах"
 
@@ -431,15 +457,19 @@ msgstr "Ноорог"
 
 #: data/browser.xml.h:30
 msgid "Drag a color to an object to change it to that color"
-msgstr "Заасан өнгөөр будахын тулд сонгосон өнгөө будах объект дээрээ чирч тавина уу"
+msgstr ""
+"Заасан өнгөөр будахын тулд сонгосон өнгөө будах объект дээрээ чирч тавина уу"
 
 #: data/browser.xml.h:31
 msgid "Drag a pattern tile to an object to change it"
-msgstr "Заасан хээгээр хээлэхийн тулд сонгосон загвараа объект дээрээ чирч тавина уу"
+msgstr ""
+"Заасан хээгээр хээлэхийн тулд сонгосон загвараа объект дээрээ чирч тавина уу"
 
 #: data/browser.xml.h:32
 msgid "Drag an emblem to an object to add it to the object"
-msgstr "Заасан эмблемээр тодорхойлохын тулд сонгосон эмблемээ объект дээрээ чирч тавина уу"
+msgstr ""
+"Заасан эмблемээр тодорхойлохын тулд сонгосон эмблемээ объект дээрээ чирч "
+"тавина уу"
 
 #: data/browser.xml.h:33
 msgid "Eclipse"
@@ -473,8 +503,7 @@ msgstr "Цэцэгс"
 msgid "Fossil"
 msgstr "Эртний олдвор"
 
-#: data/browser.xml.h:42
-#: icons/gnome/gnome.xml.h:2
+#: data/browser.xml.h:42 icons/gnome/gnome.xml.h:2
 msgid "GNOME"
 msgstr "GNOME"
 
@@ -690,8 +719,7 @@ msgstr "Дэлгэцийн тохируулгууд"
 msgid "Configure network services (web server, DNS server, etc.)"
 msgstr "Сүлжээний тохиргоогоо хийх (Web-Server, DNS-Sever, г.м.)"
 
-#: data/serverconfig.desktop.in.h:2
-#: data/serverconfig.directory.in.h:2
+#: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
 msgid "Server Settings"
 msgstr "Толгой компьютерийн тохируулга"
 
@@ -699,8 +727,7 @@ msgstr "Толгой компьютерийн тохируулга"
 msgid "Configure network services"
 msgstr "Сүлжээний тохиргоогоо хийх"
 
-#: data/starthere-link.desktop.in.h:1
-#: data/starthere.desktop.in.h:1
+#: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
 #: data/starthere.directory.in.h:1
 msgid "Start Here"
 msgstr "Эндээс эхэлнэ"
@@ -881,13 +908,11 @@ msgstr "ZDNet-Линукс-Нөөцийн төв"
 msgid "Zero-Knowledge"
 msgstr "Тэг-мэдлэг"
 
-#: data/sysconfig.desktop.in.h:1
-#: data/sysconfig.directory.in.h:1
+#: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
 msgstr "Бүхэл системийн тохиргоог өөрчлөх (бүх хэрэглэгчдэд нөлөөлнө)"
 
-#: data/sysconfig.desktop.in.h:2
-#: data/sysconfig.directory.in.h:2
+#: data/sysconfig.desktop.in.h:2 data/sysconfig.directory.in.h:2
 msgid "System Settings"
 msgstr "Системийн тохиргоо"
 
@@ -925,7 +950,9 @@ msgstr "Sierra"
 
 #: icons/sierra/sierra.xml.h:2
 msgid "Uses manila folders and gray-green backgrounds."
-msgstr "Ногоон саарал өнгийн дэвсгэр өнгөөр мөн хавтасны өнгийг боодлын бор цаасны өнгөөр сонгоно"
+msgstr ""
+"Ногоон саарал өнгийн дэвсгэр өнгөөр мөн хавтасны өнгийг боодлын бор цаасны "
+"өнгөөр сонгоно"
 
 #: icons/tahoe/tahoe.xml.h:1
 msgid "Tahoe"
@@ -950,6 +977,7 @@ msgstr "Урьдчилан харах"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Нэр"
@@ -1049,8 +1077,19 @@ msgid "Widget for the property page"
 msgstr "Тодруулга хуудсын элемент"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
-msgid "A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Possible values are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and \"mime_type\"."
-msgstr "Эмблем харагдалт ба ажлын тавцан дээрхи эмблемийн доохи текстүүдийн жагсаалт. Бичээс харагдалтын тоо томруулалтын төвшингөөс хамаарна. Боломжит утгууд: »size« (Хэмжээ), »type« (Төрөл), »date_modified« (Өөрчилөгдсөн огноо), »date_changed« (Өөрчилөгдсөн огноо), »date_accessed« (Хандсан огноо), »owner« (Эзэмшигч), »group« (Бүлэг), »permissions« (Хандалтын эрх), »octal_permissions« (Наймт хандалтын эрх) болон »mime_type« (MIME-төрөл)."
+msgid ""
+"A list of captions below an icon in the icon view and the desktop. The "
+"actual number of captions shown depends on the zoom level. Possible values "
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
+msgstr ""
+"Эмблем харагдалт ба ажлын тавцан дээрхи эмблемийн доохи текстүүдийн "
+"жагсаалт. Бичээс харагдалтын тоо томруулалтын төвшингөөс хамаарна. Боломжит "
+"утгууд: »size« (Хэмжээ), »type« (Төрөл), »date_modified« (Өөрчилөгдсөн "
+"огноо), »date_changed« (Өөрчилөгдсөн огноо), »date_accessed« (Хандсан "
+"огноо), »owner« (Эзэмшигч), »group« (Бүлэг), »permissions« (Хандалтын эрх), "
+"»octal_permissions« (Наймт хандалтын эрх) болон »mime_type« (MIME-төрөл)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add Nautilus to session"
@@ -1069,8 +1108,15 @@ msgid "Criteria for search bar searching"
 msgstr "Хайх самбарын хайлтын шалгуур"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
-msgid "Criteria when matching files searched for in the search bar. If set to \"search_by_text\", then Nautilus will Search for files by file name only. If set to \"search_by_text_and_properties\", then Nautilus will search for files by file name and file properties."
-msgstr "Хайлтын самбарын тусламжтай файл хайхад хэрэглэх шалгуур. Боломжит утгууд: »search_by_text« (Зөвхөн файлын нэрээр хайх) болон »search_by_text_and_properties« (Файлын нэр ба файлын онцлогоорхайх)."
+msgid ""
+"Criteria when matching files searched for in the search bar. If set to "
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
+msgstr ""
+"Хайлтын самбарын тусламжтай файл хайхад хэрэглэх шалгуур. Боломжит утгууд: "
+"»search_by_text« (Зөвхөн файлын нэрээр хайх) болон "
+"»search_by_text_and_properties« (Файлын нэр ба файлын онцлогоорхайх)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Current Nautilus theme (deprecated)"
@@ -1157,16 +1203,32 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Файлын тохируулга диалог дахь 'тусгай' төлвүүдийг нээх"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
-msgid "Filename for the default folder background. Only used if background_set is true."
-msgstr "Стандарт лавлахын дэвсгэр файлын нэр. Зөвхөн »background_set«үнэн үед хэрэглэгдэнэ."
+msgid ""
+"Filename for the default folder background. Only used if background_set is "
+"true."
+msgstr ""
+"Стандарт лавлахын дэвсгэр файлын нэр. Зөвхөн »background_set«үнэн үед "
+"хэрэглэгдэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid "Filename for the default side pane background. Only used if side_pane_background_set is true."
-msgstr "Стандарт лавлахын дэвсгэр файлын нэр. Зөвхөн »side_pane_background_set«үнэн үед хэрэглэгдэнэ."
+msgid ""
+"Filename for the default side pane background. Only used if "
+"side_pane_background_set is true."
+msgstr ""
+"Стандарт лавлахын дэвсгэр файлын нэр. Зөвхөн »side_pane_background_set«үнэн "
+"үед хэрэглэгдэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
-msgid "Folders over this size will be truncated to around this size. The purpose of this is to avoid unintentionally blowing the heap and killing Nautilus on massive folders. A negative value denotes no limit. The limit is approximate due to the reading of folders chunk-wise."
-msgstr "Энэ хэмжээнээс дээш хэмжээтэй лавлахууд энэ хэмжээсээр таслагдана. Үүний зорилго нь хэт их өгөгдлийн улмаас Наутилусын санамсаргүй гарч болох гацаанаас зайлсхийх юм. Сөрөг утга хязгааргүй гэсэн үг. Лавлахууд том өгөгдлийн нэгжээр ушигдаж буй учир хязгаарын хэмжээ ойролцоогоор гарна."
+msgid ""
+"Folders over this size will be truncated to around this size. The purpose of "
+"this is to avoid unintentionally blowing the heap and killing Nautilus on "
+"massive folders. A negative value denotes no limit. The limit is approximate "
+"due to the reading of folders chunk-wise."
+msgstr ""
+"Энэ хэмжээнээс дээш хэмжээтэй лавлахууд энэ хэмжээсээр таслагдана. Үүний "
+"зорилго нь хэт их өгөгдлийн улмаас Наутилусын санамсаргүй гарч болох "
+"гацаанаас зайлсхийх юм. Сөрөг утга хязгааргүй гэсэн үг. Лавлахууд том "
+"өгөгдлийн нэгжээр ушигдаж буй учир хязгаарын хэмжээ ойролцоогоор гарна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1177,95 +1239,175 @@ msgid "Home icon visible on desktop"
 msgstr "Гэр эмблемийг дэлгэцэнд харуулах"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
-msgid "If set to true, Nautilus will only show folders in the tree side pane. Otherwise it will show both folders and files."
-msgstr "Хэрвээ утга үнэн бол Наутилус хажуугийн мод самбарт зөвхөн лавлахууд харуулна. Үгүй бол лавлах болон файлуудыг харуулна."
+msgid ""
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус хажуугийн мод самбарт зөвхөн лавлахууд "
+"харуулна. Үгүй бол лавлах болон файлуудыг харуулна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
-msgid "If set to true, newly opened windows will have the location bar visible."
-msgstr "Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад хаягийн самбар харагдана. "
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
+msgstr ""
+"Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад хаягийн самбар харагдана. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr "Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад хажуугийн самбар харагдана. "
+msgstr ""
+"Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад хажуугийн самбар харагдана. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr "Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад төлвийн самбар харагдана. "
+msgstr ""
+"Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад төлвийн самбар харагдана. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад багаж самбар харагдана. "
+msgstr ""
+"Хэрвээ утга үнэн бол шинээр нээгдсэн цонхнуудад багаж самбар харагдана. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
-msgid "If set to true, then Nautilus lets you edit some of the more esoteric options of a file in the file preferences dialog."
-msgstr "Хэрвээ утга үнэн бол Наутилус танд файлын тодруулга диалогт илүү хэцүү нарийн тохируулга тогтооно."
+msgid ""
+"If set to true, then Nautilus lets you edit some of the more esoteric "
+"options of a file in the file preferences dialog."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус танд файлын тодруулга диалогт илүү хэцүү "
+"нарийн тохируулга тогтооно."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then Nautilus shows folders prior to showing files in the icon and list views."
-msgstr "Хэрвээ утга үнэн бол Наутилус лавлахуудыг файлуудын өмнө эмблем ба жагсаалт хэлбэрээр харуулна."
+msgid ""
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус лавлахуудыг файлуудын өмнө эмблем ба жагсаалт "
+"хэлбэрээр харуулна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid "If set to true, then Nautilus will ask for confirmation when you attempt to put files in the trash."
-msgstr "Хэрвээ утга үнэн бол таныг файл хогийн сав руу чулуудахад Наутилус баталгаажуулалт асууна."
+msgid ""
+"If set to true, then Nautilus will ask for confirmation when you attempt to "
+"put files in the trash."
+msgstr ""
+"Хэрвээ утга үнэн бол таныг файл хогийн сав руу чулуудахад Наутилус "
+"баталгаажуулалт асууна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid "If set to true, then Nautilus will bring up a new Nautilus window by default whenever an item is opened."
-msgstr "Хэрвээ утга үнэн бол Наутилус стандартаар бүх нээлттэй объектуудыг шинэ Наутилус цонхонд харуулна."
+msgid ""
+"If set to true, then Nautilus will bring up a new Nautilus window by default "
+"whenever an item is opened."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус стандартаар бүх нээлттэй объектуудыг шинэ "
+"Наутилус цонхонд харуулна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr "Хэрэв утга үнэн бол Наутилус эмблемүүдийг дэлгэц дээр зурна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
-msgid "If set to true, then Nautilus will have a feature allowing you to delete a file immediately and in-place, instead of moving it to the trash. This feature can be dangerous, so use caution."
-msgstr "Хэрвээ утга үнэн бол, Наутилус хогоос зайлсхийхийн тулд файл ул мөргүй устгахыг таньд зөвшөөрнө. Энэ функс осолтой тул анхааралтай хэрэглэнэ үү."
+msgid ""
+"If set to true, then Nautilus will have a feature allowing you to delete a "
+"file immediately and in-place, instead of moving it to the trash. This "
+"feature can be dangerous, so use caution."
+msgstr ""
+"Хэрвээ утга үнэн бол, Наутилус хогоос зайлсхийхийн тулд файл ул мөргүй "
+"устгахыг таньд зөвшөөрнө. Энэ функс осолтой тул анхааралтай хэрэглэнэ үү."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
-msgid "If set to true, then Nautilus will just show the user's bookmarks in the bookmark menu."
-msgstr "Хэрвээ утга үнэн бол Наутилус хэрэглэгчийн хавчуургуудыг хавчуурга цэсэнд харуулна."
+msgid ""
+"If set to true, then Nautilus will just show the user's bookmarks in the "
+"bookmark menu."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус хэрэглэгчийн хавчуургуудыг хавчуурга цэсэнд "
+"харуулна."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-msgid "If set to true, then Nautilus will use the user's home folder as the desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "Хэрвээ утга үнэн бол Наутилус хэрэглэгчийн гэр лавлахыг дэлгэцээр хэрэглэнэ. Хэрэв худал бол ~/Desktop лавлахыг дэлгэцээр хэрэглэнэ."
+msgid ""
+"If set to true, then Nautilus will use the user's home folder as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус хэрэглэгчийн гэр лавлахыг дэлгэцээр хэрэглэнэ. "
+"Хэрэв худал бол ~/Desktop лавлахыг дэлгэцээр хэрэглэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
-msgid "If set to true, then backup files such as those created by Emacs are displayed. Currently, only files ending in a tilde (~) are considered backup files."
-msgstr "Хэрвээ утга үнэн бол Емаксаар үүсгэгдсэн нөөц файлууд харагдана. Одоогоор зөвхөн тилдэ-гээр (~) төгссөн файлуудыг нөөц файл гэж авч байгаа."
+msgid ""
+"If set to true, then backup files such as those created by Emacs are "
+"displayed. Currently, only files ending in a tilde (~) are considered backup "
+"files."
+msgstr ""
+"Хэрвээ утга үнэн бол Емаксаар үүсгэгдсэн нөөц файлууд харагдана. Одоогоор "
+"зөвхөн тилдэ-гээр (~) төгссөн файлуудыг нөөц файл гэж авч байгаа."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
-msgid "If set to true, then hidden files are shown in the file manager. Hidden files are either dotfiles or are listed in the folder's .hidden file."
-msgstr "Хэрвээ утга үнэн бол далдлагдсан файлууд файл менежерт харагдана. Далд файлуудад цэгээр эхэлсэн эсвэл .hidden ээр эхэлсэн файлууд орно."
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the folder's .hidden file."
+msgstr ""
+"Хэрвээ утга үнэн бол далдлагдсан файлууд файл менежерт харагдана. Далд "
+"файлуудад цэгээр эхэлсэн эсвэл .hidden ээр эхэлсэн файлууд орно."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
-msgid "If this is set to true, Nautilus adds itself to the session when it starts up. This means it will be started the next time you log in."
-msgstr "Хэрвээ утга үнэн бол Наутилус эхлэхдээ суулт руу өөрийгөө нэмнэ. Энэ нь таныг дараагийн удаа нэвтрэнгүүт автоматаар эхлэнэ гэсэн үг. "
+msgid ""
+"If this is set to true, Nautilus adds itself to the session when it starts "
+"up. This means it will be started the next time you log in."
+msgstr ""
+"Хэрвээ утга үнэн бол Наутилус эхлэхдээ суулт руу өөрийгөө нэмнэ. Энэ нь "
+"таныг дараагийн удаа нэвтрэнгүүт автоматаар эхлэнэ гэсэн үг. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-msgid "If this is set to true, an icon linking to the computer location will be put on the desktop."
-msgstr "Хэрвээ утга үнэн бол эмблем хогийн сав лавлах руу холбоод дэлгэцийн нүүрэн дээр тавина."
+msgid ""
+"If this is set to true, an icon linking to the computer location will be put "
+"on the desktop."
+msgstr ""
+"Хэрвээ утга үнэн бол эмблем хогийн сав лавлах руу холбоод дэлгэцийн нүүрэн "
+"дээр тавина."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If this is set to true, an icon linking to the home folder will be put on the desktop."
-msgstr "Хэрвээ утга үнэн бол эмблем гэр лавлах руу холбоод дэлгэцийн нүүрэн дээр тавина."
+msgid ""
+"If this is set to true, an icon linking to the home folder will be put on "
+"the desktop."
+msgstr ""
+"Хэрвээ утга үнэн бол эмблем гэр лавлах руу холбоод дэлгэцийн нүүрэн дээр "
+"тавина."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
-msgid "If this is set to true, an icon linking to the trash will be put on the desktop."
-msgstr "Хэрвээ утга үнэн бол эмблем хогийн сав лавлах руу холбоод дэлгэцийн нүүрэн дээр тавина."
+msgid ""
+"If this is set to true, an icon linking to the trash will be put on the "
+"desktop."
+msgstr ""
+"Хэрвээ утга үнэн бол эмблем хогийн сав лавлах руу холбоод дэлгэцийн нүүрэн "
+"дээр тавина."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"."
-msgstr "Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь файлууд эргэсэн дарааллаар эрэмбэлэгдэнэ. Хэрвээ тэд нэрсээрээ эрэмбэлэгдсэн бол файлууд »a« аас »z« хүртэл биш харин »z« ээс »a« гэж эрэмбэлэгдэнэ гэсэн үг."
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"."
+msgstr ""
+"Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь файлууд эргэсэн "
+"дарааллаар эрэмбэлэгдэнэ. Хэрвээ тэд нэрсээрээ эрэмбэлэгдсэн бол файлууд »a« "
+"аас »z« хүртэл биш харин »z« ээс »a« гэж эрэмбэлэгдэнэ гэсэн үг."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-msgid "If true, files in new windows will be sorted in reverse order. ie, if sorted by name, then instead of sorting the files from \"a\" to \"z\", they will be sorted from \"z\" to \"a\"; if sorted by size, instead of being incrementally they will be sorted decrementally."
-msgstr "Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь файлууд эргэсэн дарааллаар эрэмбэлэгдэнэ. Хэрвээ тэд нэрсээрээ эрэмбэлэгдсэн бол файлууд »a« аас »z« хүртэл биш харин »z« ээс »a« гэж эрэмбэлэгдэнэ гэсэн үг.Хэрвээ хэмжээгээр бол нэмэгдэхээр байсан бол хасагдахаар эрэмблэгдэнэ."
+msgid ""
+"If true, files in new windows will be sorted in reverse order. ie, if sorted "
+"by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+"sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+"incrementally they will be sorted decrementally."
+msgstr ""
+"Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь файлууд эргэсэн "
+"дарааллаар эрэмбэлэгдэнэ. Хэрвээ тэд нэрсээрээ эрэмбэлэгдсэн бол файлууд »a« "
+"аас »z« хүртэл биш харин »z« ээс »a« гэж эрэмбэлэгдэнэ гэсэн үг.Хэрвээ "
+"хэмжээгээр бол нэмэгдэхээр байсан бол хасагдахаар эрэмблэгдэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь эмблемүүд стандартаар нарийн эмхлэгдэнэ."
+msgstr ""
+"Хэрвээ утга үнэн бол, шинээр нээгдсэн цонхнууд дахь эмблемүүд стандартаар "
+"нарийн эмхлэгдэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-msgid "If true, labels will be placed beside icons rather than underneath them."
+msgid ""
+"If true, labels will be placed beside icons rather than underneath them."
 msgstr "Хэрвээ утга үнэн бол бичээсүүд эмблемийн доор нь байрлана."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
@@ -1273,8 +1415,13 @@ msgid "If true, new windows will use manual layout by default."
 msgstr "Хэрэв үнэн бол шинэ цонхнууд стандартаар гар харагдац хэрэглэнэ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
-msgid "Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory."
-msgstr "Энэ хэмжээнээс (байтаар) илүү хэмжээтэй зургуудыг мини харагдацаар харуулахгүй. Учир нь том хэмжээтэй зургуудын хувьд хамаг цаг иддэг."
+msgid ""
+"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
+"setting is to avoid thumbnailing large images that may take a long time to "
+"load or use lots of memory."
+msgstr ""
+"Энэ хэмжээнээс (байтаар) илүү хэмжээтэй зургуудыг мини харагдацаар "
+"харуулахгүй. Учир нь том хэмжээтэй зургуудын хувьд хамаг цаг иддэг."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "List of possible captions on icons"
@@ -1289,8 +1436,12 @@ msgid "Maximum image size for thumbnailing"
 msgstr "Мини харагдалтын зургийн хамгийн их хэмжээ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-msgid "Name of the Nautilus theme to use. This has been deprecated as of Nautilus 2.2. Please use the icon theme instead."
-msgstr "Наутилусын нэр загварыг хэрэглэх. Энэ нь Наутилус-2.2 -т буруушаагдсан. Үүний оронд эмблем загвар хэрэглэнэ үү."
+msgid ""
+"Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
+"2.2. Please use the icon theme instead."
+msgstr ""
+"Наутилусын нэр загварыг хэрэглэх. Энэ нь Наутилус-2.2 -т буруушаагдсан. "
+"Үүний оронд эмблем загвар хэрэглэнэ үү."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Nautilus handles drawing the desktop"
@@ -1305,8 +1456,12 @@ msgid "Only show folders in the tree sidebar"
 msgstr "Зөвхөн хажуугийн мод самбарт лавлахууд харуулах"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
-msgid "Possible values are \"single\" to launch files on a single click, or \"double\" to launch them on a double click."
-msgstr "Боломжит утгууд нь нэг товшилтоор файл ажилуулах \"дан\" , давхар товшилтоор ажиллуулах \"давхар\"."
+msgid ""
+"Possible values are \"single\" to launch files on a single click, or \"double"
+"\" to launch them on a double click."
+msgstr ""
+"Боломжит утгууд нь нэг товшилтоор файл ажилуулах \"дан\" , давхар товшилтоор "
+"ажиллуулах \"давхар\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Put labels beside icons"
@@ -1341,28 +1496,72 @@ msgid "Side pane view"
 msgstr "Хажуугийн самбар харагдац"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-msgid "Speed tradeoff for when to preview a sound file when mousing over a files icon. If set to \"always\" then always plays the sound, even if the file is on a remote server. If set to \"local_only\" then only plays previews on local filesystems. If set to \"never\" then it never previews sound."
-msgstr "Хулгана эмблем дээгүүр нь гүйхэд хэзээ ауди файлуудын урьд. харагдалт харуулахыг тогтоох. Боломжит утгууд: »always« (тэр файл алсын сервер дээр байсан ч хамаагүй үргэлж тоглуулах), »local_only« (зөвхөн дотоод файлын системд байгааг тоглуулах) болон »never« (огт тоглуулахгүй)."
+msgid ""
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local_only\" then only plays previews on "
+"local filesystems. If set to \"never\" then it never previews sound."
+msgstr ""
+"Хулгана эмблем дээгүүр нь гүйхэд хэзээ ауди файлуудын урьд. харагдалт "
+"харуулахыг тогтоох. Боломжит утгууд: »always« (тэр файл алсын сервер дээр "
+"байсан ч хамаагүй үргэлж тоглуулах), »local_only« (зөвхөн дотоод файлын "
+"системд байгааг тоглуулах) болон »never« (огт тоглуулахгүй)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-msgid "Speed tradeoff for when to show a preview of text file contents in the file's icon. If set to \"always\" then always show previews, even if the folder is on a remote server. If set to \"local_only\" then only show previews for local filesystems. If set to \"never\" then never bother to read preview data."
-msgstr "Хэзээ текст файлуудын агуулгыг эмблемээр урьд. харуулах эсэхийг тогтоох. Боломжит утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж харуулана), »local_only« (зөвхөн дотоод файлын системд байгааг харуулна) болон »never« (харуулахгүй)."
+msgid ""
+"Speed tradeoff for when to show a preview of text file contents in the "
+"file's icon. If set to \"always\" then always show previews, even if the "
+"folder is on a remote server. If set to \"local_only\" then only show "
+"previews for local filesystems. If set to \"never\" then never bother to "
+"read preview data."
+msgstr ""
+"Хэзээ текст файлуудын агуулгыг эмблемээр урьд. харуулах эсэхийг тогтоох. "
+"Боломжит утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж "
+"харуулана), »local_only« (зөвхөн дотоод файлын системд байгааг харуулна) "
+"болон »never« (харуулахгүй)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-msgid "Speed tradeoff for when to show an image file as a thumbnail. If set to \"always\" then always thumbnail, even if the folder is on a remote server. If set to \"local_only\" then only show thumbnails for local filesystems. If set to \"never\" then never bother to thumbnail images, just use a generic icon."
-msgstr "Хэзээ зургийн файлуудыг мини харагдацаар харуулах эсэхийг тогтоох. Боломжит утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж харуулана), »local_only« (зөвхөн дотоод файлын системд байгааг харуулна) болон »never« (харуулахгүй)."
+msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local_only\" then only show thumbnails for local filesystems. If "
+"set to \"never\" then never bother to thumbnail images, just use a generic "
+"icon."
+msgstr ""
+"Хэзээ зургийн файлуудыг мини харагдацаар харуулах эсэхийг тогтоох. Боломжит "
+"утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж харуулана), "
+"»local_only« (зөвхөн дотоод файлын системд байгааг харуулна) болон "
+"»never« (харуулахгүй)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-msgid "Speed tradeoff for when to show the number of items in a folder. If set to \"always\" then always show item counts, even if the folder is on a remote server. If set to \"local_only\" then only show counts for local filesystems. If set to \"never\" then never bother to compute item counts."
-msgstr "Хэзээ лавлах доторх объектуудын тоог харуулах эсэхийг тогтоох. Боломжит утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж объектуудын тоог харуулана), »local_only« (зөвхөн дотоод файлын системд байгааг харуулна) болон »never« (харуулахгүй)."
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"\"always\" then always show item counts, even if the folder is on a remote "
+"server. If set to \"local_only\" then only show counts for local "
+"filesystems. If set to \"never\" then never bother to compute item counts."
+msgstr ""
+"Хэзээ лавлах доторх объектуудын тоог харуулах эсэхийг тогтоох. Боломжит "
+"утгууд: »always« (тэр алсын сервер дээр байсан ч хамаагүй үргэлж объектуудын "
+"тоог харуулана), »local_only« (зөвхөн дотоод файлын системд байгааг "
+"харуулна) болон »never« (харуулахгүй)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-msgid "The default sort-order for items in the icon view. Possible values are \"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr "Эмблем харагдацтай объектуудын стандарт эрэмбийн дараалал. Боломжит утгууд нь: »name« (Нэр), »size« (Хэмжээ), »type« (Төрөл), »modification_date« (Өөрчилсөн огноо) болон »emblems« (Эмблем)."
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
+msgstr ""
+"Эмблем харагдацтай объектуудын стандарт эрэмбийн дараалал. Боломжит утгууд "
+"нь: »name« (Нэр), »size« (Хэмжээ), »type« (Төрөл), "
+"»modification_date« (Өөрчилсөн огноо) болон »emblems« (Эмблем)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-msgid "The default sort-order for the items in the list view. Possible values are \"name\", \"size\", \"type\", and \"modification_date\"."
-msgstr "Жагсаалт харагдацтай объектуудын стандарт эрэмбийн дараалал. Боломжит утгууд нь: »name« (Нэр), »size« (Хэмжээ), »type« (Төрөл), болон »modification_date« (Өөрчилсөн огноо)."
+msgid ""
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
+msgstr ""
+"Жагсаалт харагдацтай объектуудын стандарт эрэмбийн дараалал. Боломжит утгууд "
+"нь: »name« (Нэр), »size« (Хэмжээ), »type« (Төрөл), болон "
+"»modification_date« (Өөрчилсөн огноо)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "The default width of the side pane in new windows."
@@ -1377,11 +1576,15 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "Шинэ нээгдсэн цонхнуудад хажуу самбар харагдац харуулах."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-msgid "This name can be set if you want a custom name for the home icon on the desktop."
+msgid ""
+"This name can be set if you want a custom name for the home icon on the "
+"desktop."
 msgstr "Дэлгэц дээрхи гэр лавлахдаа өөрөө нэр өгөх бол энд өгнө үү."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "This name can be set if you want a custom name for the trash icon on the desktop."
+msgid ""
+"This name can be set if you want a custom name for the trash icon on the "
+"desktop."
 msgstr "Дэлгэц дээрхи хогийн сав лавлахдаа өөрөө нэр өгөх бол энд өгнө үү."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -1405,12 +1608,24 @@ msgid "What to do with executable text files when activated"
 msgstr "Хэрвээ ажлын текст файлууд идэвхижсэн бол яах вэ?"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
-msgid "What to do with executable text files when they are activated (single or double clicked). Possible values are \"launch\" to launch them as programs, \"ask\" to ask what to do via a dialog, and \"display\" to display them as text files."
-msgstr "Хэрвээ ажлын текст файлууд идэвхижсэн бол яах вэ? (дан эсвэл давхар товшилт). Боломжит утгууд: »launch« (рограм ажиллуулах шиг), »ask« (Диалог дуудагдана) болон »display« (Текст өгөгдлөөр харуулах)."
+msgid ""
+"What to do with executable text files when they are activated (single or "
+"double clicked). Possible values are \"launch\" to launch them as programs, "
+"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"text files."
+msgstr ""
+"Хэрвээ ажлын текст файлууд идэвхижсэн бол яах вэ? (дан эсвэл давхар "
+"товшилт). Боломжит утгууд: »launch« (рограм ажиллуулах шиг), »ask« (Диалог "
+"дуудагдана) болон »display« (Текст өгөгдлөөр харуулах)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
-msgid "When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are \"list_view\" and \"icon_view\"."
-msgstr "Хавтасуудын харагдалтад хэрэглэх стандарт харагдац. Боломжит утгууд: »list_view« (Жагсаалт харагдалт) болон »icon_view« (Эмблем харагдац)."
+msgid ""
+"When a folder is visited this viewer is used unless you have selected "
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
+msgstr ""
+"Хавтасуудын харагдалтад хэрэглэх стандарт харагдац. Боломжит утгууд: "
+"»list_view« (Жагсаалт харагдалт) болон »icon_view« (Эмблем харагдац)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "When to show number of items in a folder"
@@ -1426,11 +1641,13 @@ msgstr "Зургийн файлуудын мини харагдацыг хэзэ
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Whether a custom default folder background has been set."
-msgstr "Хэрэглэгчийн тод. стандарт лавлахын дэвсгэрийг хэрэглэх эсэхийг тогтоо."
+msgstr ""
+"Хэрэглэгчийн тод. стандарт лавлахын дэвсгэрийг хэрэглэх эсэхийг тогтоо."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "Whether a custom default side pane background has been set."
-msgstr "Хэрэглэгчийн тод. стандарт хажуу самбарын дэвсгэрийг хэрэглэх эсэхийг тогтоо."
+msgstr ""
+"Хэрэглэгчийн тод. стандарт хажуу самбарын дэвсгэрийг хэрэглэх эсэхийг тогтоо."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Whether to ask for confirmation when moving files to trash"
@@ -1667,19 +1884,16 @@ msgid "You cannot delete a volume icon."
 msgstr "Та дискийн эмблемийг устгаж чадахгүй."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-msgid "If you want to eject the volume, please use Eject in the right-click menu of the volume."
-msgstr "Хэрвээ та дискийг түлхэх санаатай бол эмблем дээр баруун товшуураа дараад түлхэх гэсэнг сонгоно уу."
+msgid ""
+"If you want to eject the volume, please use Eject in the right-click menu of "
+"the volume."
+msgstr ""
+"Хэрвээ та дискийг түлхэх санаатай бол эмблем дээр баруун товшуураа дараад "
+"түлхэх гэсэнг сонгоно уу."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
 msgid "Can't Delete Volume"
 msgstr "Диск устгаж чадахгүй"
-
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "Хогийн сав"
 
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
@@ -1730,8 +1944,11 @@ msgid "Couldn't Install Emblem"
 msgstr "Эмблемийг суулгаж чадсангүй"
 
 #: libnautilus-private/nautilus-emblem-utils.c:203
-msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr "Өршөөгөөрэй, шинэ эмблемийн түлхүүр үгэнд зөвхөн үсэг, хоосон зай болон тоо л оруулж болно."
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgstr ""
+"Өршөөгөөрэй, шинэ эмблемийн түлхүүр үгэнд зөвхөн үсэг, хоосон зай болон тоо "
+"л оруулж болно."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -1752,11 +1969,14 @@ msgstr "Эмблемийг суулгаж чадсангүй."
 
 #: libnautilus-private/nautilus-emblem-utils.c:258
 msgid "Sorry, unable to save custom emblem."
-msgstr "Харамсалтай нь хэрэглэгчийн тохируулж өгсөн эмблемийг хадгалж болсонгүй."
+msgstr ""
+"Харамсалтай нь хэрэглэгчийн тохируулж өгсөн эмблемийг хадгалж болсонгүй."
 
 #: libnautilus-private/nautilus-emblem-utils.c:275
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Харамсалтай нь хэрэглэгчийн тохируулж өгсөн эмблемийн нэрийг хадгалж болсонгүй."
+msgstr ""
+"Харамсалтай нь хэрэглэгчийн тохируулж өгсөн эмблемийн нэрийг хадгалж "
+"болсонгүй."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:457
 #, c-format
@@ -1791,8 +2011,12 @@ msgstr "Устгах явцад алдаа гарлаа."
 
 #: libnautilus-private/nautilus-file-operations.c:563
 #, c-format
-msgid "\"%s\" cannot be deleted because you do not have permissions to modify its parent folder."
-msgstr "»%s« нь устгагдаж болохгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт хийх эрх байхгүй юм байна."
+msgid ""
+"\"%s\" cannot be deleted because you do not have permissions to modify its "
+"parent folder."
+msgstr ""
+"»%s« нь устгагдаж болохгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт хийх "
+"эрх байхгүй юм байна."
 
 #: libnautilus-private/nautilus-file-operations.c:569
 #, c-format
@@ -1801,8 +2025,12 @@ msgstr "»%s« нь зөвхөн унших дискэн дээр байгаа �
 
 #: libnautilus-private/nautilus-file-operations.c:600
 #, c-format
-msgid "\"%s\" cannot be moved because you do not have permissions to change it or its parent folder."
-msgstr "»%s« нь зөөгдөхгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт хийх эрх байхгүй юм байна."
+msgid ""
+"\"%s\" cannot be moved because you do not have permissions to change it or "
+"its parent folder."
+msgstr ""
+"»%s« нь зөөгдөхгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт хийх эрх "
+"байхгүй юм байна."
 
 #: libnautilus-private/nautilus-file-operations.c:604
 msgid "Error while moving. "
@@ -1810,13 +2038,21 @@ msgstr "Зөөх явцад алдаа гарлаа. "
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
-msgid "Cannot move \"%s\" because it or its parent folder are contained in the destination."
-msgstr "»%s« зөөгдөхгүй. Учир нь энэ объект эсвэл эх хавтас зөвхөн унших дискэн дээр байна."
+msgid ""
+"Cannot move \"%s\" because it or its parent folder are contained in the "
+"destination."
+msgstr ""
+"»%s« зөөгдөхгүй. Учир нь энэ объект эсвэл эх хавтас зөвхөн унших дискэн дээр "
+"байна."
 
 #: libnautilus-private/nautilus-file-operations.c:615
 #, c-format
-msgid "Cannot move \"%s\" to the trash because you do not have permissions to change it or its parent folder."
-msgstr "»%s« нь хогйн сав руу зөөгдөхгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт хийх эрх байхгүй юм байна."
+msgid ""
+"Cannot move \"%s\" to the trash because you do not have permissions to "
+"change it or its parent folder."
+msgstr ""
+"»%s« нь хогйн сав руу зөөгдөхгүй. Учир нь танд түүний эх-хавтсанд өөрчлөлт "
+"хийх эрх байхгүй юм байна."
 
 #: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
@@ -1958,8 +2194,13 @@ msgid "Could not move \"%s\" to the new location."
 msgstr "\"%s\" -г шинэ байрлал руу зөөж чадсангүй."
 
 #: libnautilus-private/nautilus-file-operations.c:1030
-msgid "The name is already used for a special item that cannot be removed or replaced.  If you still want to move the item, rename it and try again."
-msgstr "Нэрийг зөөх эсвэл сольж болохгүй тусгай зүйлд хэрэглэж байна.  Хэрэв та элементийг зөөвөрлөхийг хүссээр байвал нэрийг нь солиод дахин оролдоод үзнэ үү."
+msgid ""
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to move the item, rename it and try again."
+msgstr ""
+"Нэрийг зөөх эсвэл сольж болохгүй тусгай зүйлд хэрэглэж байна.  Хэрэв та "
+"элементийг зөөвөрлөхийг хүссээр байвал нэрийг нь солиод дахин оролдоод үзнэ "
+"үү."
 
 #: libnautilus-private/nautilus-file-operations.c:1034
 #, c-format
@@ -1967,8 +2208,13 @@ msgid "Could not copy \"%s\" to the new location."
 msgstr "\"%s\" -г шинэ байрлал руу хуулж чадсангүй."
 
 #: libnautilus-private/nautilus-file-operations.c:1037
-msgid "The name is already used for a special item that cannot be removed or replaced.  If you still want to copy the item, rename it and try again."
-msgstr "Нэрийг зөөх эсвэл сольж болохгүй тусгай зүйлд хэрэглэж байна.  Хэрэв та элементийг зөөвөрлөхийг хүссээр байвал нэрийг нь солиод дахин оролдоод үзнэ үү."
+msgid ""
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to copy the item, rename it and try again."
+msgstr ""
+"Нэрийг зөөх эсвэл сольж болохгүй тусгай зүйлд хэрэглэж байна.  Хэрэв та "
+"элементийг зөөвөрлөхийг хүссээр байвал нэрийг нь солиод дахин оролдоод үзнэ "
+"үү."
 
 #: libnautilus-private/nautilus-file-operations.c:1043
 msgid "Unable to Replace File"
@@ -1982,7 +2228,8 @@ msgstr "Файл »%s« хэдийнэ оршиж байна. Та энийг о
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "Хэрвээ та байгаа файлд орлуулга хийх гэж байгаа бол түүний агуулга дарагдана."
+msgstr ""
+"Хэрвээ та байгаа файлд орлуулга хийх гэж байгаа бол түүний агуулга дарагдана."
 
 #: libnautilus-private/nautilus-file-operations.c:1070
 #: libnautilus-private/nautilus-file-operations.c:1089
@@ -1999,10 +2246,6 @@ msgid "Replace _All"
 msgstr "_Бүгдийг орлуулах."
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2057,9 +2300,6 @@ msgid " (another copy)"
 msgstr " (өөр нэгэн Хуулбар)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2095,9 +2335,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (бас нэгэн Хуулбар)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2244,7 +2481,9 @@ msgstr "Та энэ хогийн саванд зориулсан хавтсыг 
 
 #: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr "Хогийн сав лавлах хогийн сав руу зөөгдсөн элеменгүүдийг хадгалахад хэрэглэгдэнэ."
+msgstr ""
+"Хогийн сав лавлах хогийн сав руу зөөгдсөн элеменгүүдийг хадгалахад "
+"хэрэглэгдэнэ."
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
@@ -2361,22 +2600,23 @@ msgstr "Хогийн савыг хоосолж байна."
 msgid "Preparing to Empty the Trash..."
 msgstr "Хогийн савыг хоослоход бэлтгэж байна..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr "Та хогийн саванд байгаа бүх объектуудыг эргэлт буцалтгүй устгахыг хүсч байна уу?"
+msgstr ""
+"Та хогийн саванд байгаа бүх объектуудыг эргэлт буцалтгүй устгахыг хүсч байна "
+"уу?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Хэрвээ хогийн сав лавлахыг хоосолбол элементүүд тогтмол устгагдана."
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Хоослох"
 
 #: libnautilus-private/nautilus-file-utilities.c:368
 #: libnautilus-private/nautilus-global-preferences.c:523
-#: nautilus-computer.desktop.in.h:1
-#: src/nautilus-navigation-window-ui.xml.h:9
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
 msgid "Computer"
 msgstr "тооцоолуур"
 
@@ -2537,14 +2777,31 @@ msgstr "00.00.00"
 msgid "%m/%d/%y"
 msgstr "%y.%m.%d"
 
-#. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
+#, fuzzy, c-format
+msgid "%u item"
+msgid_plural "%u items"
+msgstr[0] "? объект"
+msgstr[1] "? объект"
+
 #: libnautilus-private/nautilus-file.c:4266
+#, fuzzy, c-format
+msgid "%u folder"
+msgid_plural "%u folders"
+msgstr[0] "Хавтас огтлох"
+msgstr[1] "Хавтас огтлох"
+
 #: libnautilus-private/nautilus-file.c:4267
+#, fuzzy, c-format
+msgid "%u file"
+msgid_plural "%u files"
+msgstr[0] "шинэ файл"
+msgstr[1] "шинэ файл"
+
+#. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4592
 #: libnautilus-private/nautilus-file.c:4608
-#, c-format
 msgid "? items"
 msgstr "? объект"
 
@@ -2574,13 +2831,23 @@ msgid "program"
 msgstr "Програм"
 
 #: libnautilus-private/nautilus-file.c:4666
-msgid "Can't find description even for \"x-directory/normal\". This probably means that your gnome-vfs.keys file is in the wrong place or isn't being found for some other reason."
-msgstr "Бүр »x-directory/normal«-ийн тайлбарыг ч олж чадахгүй байна. Үүний учир нь gnome-vfs.keys файл буруу байрлалд орших эсвэл ямар нэгэн шалтгаанаас болж олдохгүй байна гэсэн үг."
+msgid ""
+"Can't find description even for \"x-directory/normal\". This probably means "
+"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
+"some other reason."
+msgstr ""
+"Бүр »x-directory/normal«-ийн тайлбарыг ч олж чадахгүй байна. Үүний учир нь "
+"gnome-vfs.keys файл буруу байрлалд орших эсвэл ямар нэгэн шалтгаанаас болж "
+"олдохгүй байна гэсэн үг."
 
 #: libnautilus-private/nautilus-file.c:4670
 #, c-format
-msgid "No description found for mime type \"%s\" (file is \"%s\"), please tell the gnome-vfs mailing list."
-msgstr "MIME-Type »%s«-ийн тайлбарыг олж чадахгүй байна. (Файл нь »%s«), Үүнийхээ тухай gnome-vfs-И-Мэйлийн жагсаалтад оруулна уу."
+msgid ""
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
+msgstr ""
+"MIME-Type »%s«-ийн тайлбарыг олж чадахгүй байна. (Файл нь »%s«), Үүнийхээ "
+"тухай gnome-vfs-И-Мэйлийн жагсаалтад оруулна уу."
 
 #: libnautilus-private/nautilus-file.c:4684
 msgid "link"
@@ -2589,6 +2856,12 @@ msgstr "Холбоос"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "Линк (эвдрэлтэй)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "Хогийн сав"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -2841,57 +3114,61 @@ msgid "The selection rectangle"
 msgstr "Сонголтын тэгш өнцөгт"
 
 # !! CHECK !!
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Хүрээний текст"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Сонгоогүй текстийг хүрээлэх"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Сонголтын тэгш өнцөгт Өнгө"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Сонголтын тэгш өнцөгтийн өнгө"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Сонголтын тэгш өнцөгт Альфа"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Сонголтын тэгш өнцөгтийн өнгөний идэвх"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Альфа сонголт"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Сонгосон файлуудын өнгөний идэвх"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Цайвар Info-Өнгө"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Бараан дэвсгэр дээр гарах мэдээллийн текстийн өнгө"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Бараан Info-Өнгө"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Цайвар дэвсгэр дээр гарах мэдээллийн текстийн өнгө"
 
 #: libnautilus-private/nautilus-icon-dnd.c:732
-msgid "Do you want to switch to manual layout and leave this item where you dropped it? This will clobber the stored manual layout."
-msgstr "Та гар хуваарийн горимд шилжин энэ объектыг орхисон байранд нь үлдээх үү? Энэ нь одоогийн гар хуваарийг дарж бичнэ гэдгийг анхаарна уу."
+msgid ""
+"Do you want to switch to manual layout and leave this item where you dropped "
+"it? This will clobber the stored manual layout."
+msgstr ""
+"Та гар хуваарийн горимд шилжин энэ объектыг орхисон байранд нь үлдээх үү? "
+"Энэ нь одоогийн гар хуваарийг дарж бичнэ гэдгийг анхаарна уу."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -2901,16 +3178,27 @@ msgid "This folder uses automatic layout."
 msgstr "Эн хавтас автомат лэйоут хэрэглэж байна."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
-msgid "Do you want to switch to manual layout and leave these items where you dropped them? This will clobber the stored manual layout."
-msgstr "Та гарны хуваарийн горимд шилжин эдгээр объектуудыг орхисон байранд нь үлдээх үү? Ингэснээр одоогийн гарны хуваарийг дарж бичнэ гэдгийг анхаарна уу."
+msgid ""
+"Do you want to switch to manual layout and leave these items where you "
+"dropped them? This will clobber the stored manual layout."
+msgstr ""
+"Та гарны хуваарийн горимд шилжин эдгээр объектуудыг орхисон байранд нь "
+"үлдээх үү? Ингэснээр одоогийн гарны хуваарийг дарж бичнэ гэдгийг анхаарна уу."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
-msgid "Do you want to switch to manual layout and leave this item where you dropped it?"
-msgstr "Та гарны хуваарийн горимд шилжин энэ объектыг орхисон байранд нь үлдээх үү?"
+msgid ""
+"Do you want to switch to manual layout and leave this item where you dropped "
+"it?"
+msgstr ""
+"Та гарны хуваарийн горимд шилжин энэ объектыг орхисон байранд нь үлдээх үү?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
-msgid "Do you want to switch to manual layout and leave these items where you dropped them?"
-msgstr "Та гарны хуваарийн горимд шилжин эдгээр объектуудыг орхисон байранд нь үлдээх үү?"
+msgid ""
+"Do you want to switch to manual layout and leave these items where you "
+"dropped them?"
+msgstr ""
+"Та гарны хуваарийн горимд шилжин эдгээр объектуудыг орхисон байранд нь "
+"үлдээх үү?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -2923,29 +3211,43 @@ msgstr "Сэлгэх"
 #: libnautilus-private/nautilus-medusa-support.c:123
 #, c-format
 msgid ""
-"If you would like to enable fast searches, you can edit the file %s as root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-"To start indexing and search services right away, you should also run the following commands as root:\n"
+"If you would like to enable fast searches, you can edit the file %s as root. "
+"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+"To start indexing and search services right away, you should also run the "
+"following commands as root:\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
 "\n"
-"Fast searches will not be available until an initial index of your files has been created.  This may take a long time."
+"Fast searches will not be available until an initial index of your files has "
+"been created.  This may take a long time."
 msgstr ""
-"Хэрэв та түргэн хайлт хийхийг хүсч байвал %s -ыг Эзэнээр авна уу. Хэрэв та харгалзах нүдийг »yes« -дээр тохируулбал Медуза(далайн мөөг) идэвхжинэ.\n"
-" Индексжүүлэлт болон хайлтыг идэвхжүлэхийн тулд дараах командуудыг Эзэн хэлбэрээр өгнө: \n"
+"Хэрэв та түргэн хайлт хийхийг хүсч байвал %s -ыг Эзэнээр авна уу. Хэрэв та "
+"харгалзах нүдийг »yes« -дээр тохируулбал Медуза(далайн мөөг) идэвхжинэ.\n"
+" Индексжүүлэлт болон хайлтыг идэвхжүлэхийн тулд дараах командуудыг Эзэн "
+"хэлбэрээр өгнө: \n"
 "\n"
 "medusa-index\n"
 "medusa-searchd\n"
 "\n"
-"Таны файлын эхний л индекс өгөгдөнгүүт түргэн хайлт хийх боломжтой болно. Энэ нь харин удаан үргэлжилж магад."
+"Таны файлын эхний л индекс өгөгдөнгүүт түргэн хайлт хийх боломжтой болно. "
+"Энэ нь харин удаан үргэлжилж магад."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
-"Medusa, the application that performs searches, cannot be found on your system.  If you have compiled nautilus yourself, you will need to install a copy of medusa and recompile nautilus.  (A copy of Medusa may be available at ftp://ftp.gnome.org)\n"
-"If you are using a packaged version of Nautilus, fast searching is not available.\n"
+"Medusa, the application that performs searches, cannot be found on your "
+"system.  If you have compiled nautilus yourself, you will need to install a "
+"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
+"at ftp://ftp.gnome.org)\n"
+"If you are using a packaged version of Nautilus, fast searching is not "
+"available.\n"
 msgstr ""
-"Хайлт хийх үүрэгтэй Медуза (Далайн мөөг) таны систем дотор олдсонгүй. Хэрэв та өөрөө Наутилусыг бүрдүүлсэн бол Медузагийн нэг хувилбарыг суулгаж дараа нь Наутилусын компиляцыг шинээр хийх хэрэгтэй. (Медузагийнхувилбар ftp://ftp.gnome.org дор байж болно)\n"
-"Харин та Наутилусын пакет(багц) хувилбарыг хэрэглэж байгаа бол хурдан хайлт хийх боломжгүй.\n"
+"Хайлт хийх үүрэгтэй Медуза (Далайн мөөг) таны систем дотор олдсонгүй. Хэрэв "
+"та өөрөө Наутилусыг бүрдүүлсэн бол Медузагийн нэг хувилбарыг суулгаж дараа "
+"нь Наутилусын компиляцыг шинээр хийх хэрэгтэй. (Медузагийнхувилбар ftp://ftp."
+"gnome.org дор байж болно)\n"
+"Харин та Наутилусын пакет(багц) хувилбарыг хэрэглэж байгаа бол хурдан хайлт "
+"хийх боломжгүй.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
@@ -3068,8 +3370,12 @@ msgid "_Go There"
 msgstr "тийш очих"
 
 #: libnautilus-private/nautilus-program-chooser.c:1447
-msgid "You can configure which programs are offered for which file types in the File Types and Programs dialog."
-msgstr "Та дараах »Файлын төрөл болон програмууд«-диалог-цонхонд ямар програмуудыг аль фалйын төрөлд хэрэглэхээр санал болгохыг тохируулна"
+msgid ""
+"You can configure which programs are offered for which file types in the "
+"File Types and Programs dialog."
+msgstr ""
+"Та дараах »Файлын төрөл болон програмууд«-диалог-цонхонд ямар програмуудыг "
+"аль фалйын төрөлд хэрэглэхээр санал болгохыг тохируулна"
 
 #: libnautilus-private/nautilus-program-chooser.c:1482
 msgid "Open with Other Application"
@@ -3121,8 +3427,13 @@ msgstr "Ямар ч үйлдэл холбогдоогүй байна"
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1605
-msgid "You can configure GNOME to associate applications with file types. Do you want to associate an application with this file type now?"
-msgstr "Та програмуудыг файлын төрөлтэй харъяалуулан холбоход ГНОМЕ-ийг тохируулж болно.Та одоо энэ файлын төрөлтэй аль нэг програмыг харъяалуулахыг хүсч байна уу?"
+msgid ""
+"You can configure GNOME to associate applications with file types. Do you "
+"want to associate an application with this file type now?"
+msgstr ""
+"Та програмуудыг файлын төрөлтэй харъяалуулан холбоход ГНОМЕ-ийг тохируулж "
+"болно.Та одоо энэ файлын төрөлтэй аль нэг програмыг харъяалуулахыг хүсч "
+"байна уу?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
 msgid "_Associate Application"
@@ -3156,8 +3467,14 @@ msgid "Invalid Action Associated"
 msgstr "Хүчингүй үйлдэл холбогдсон байна"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-msgid "You can configure GNOME to associate a different application or viewer with this file type. Do you want to associate an application or viewer with this file type now?"
-msgstr "Та програмуудыг файлын төрөлтэй харъяалуулан холбоход ГНОМЕ-ийг тохируулж болно.Та одоо энэ файлын төрөлтэй аль нэг програм эсвэл харагч харъяалуулахыг хүсч байна уу?"
+msgid ""
+"You can configure GNOME to associate a different application or viewer with "
+"this file type. Do you want to associate an application or viewer with this "
+"file type now?"
+msgstr ""
+"Та програмуудыг файлын төрөлтэй харъяалуулан холбоход ГНОМЕ-ийг тохируулж "
+"болно.Та одоо энэ файлын төрөлтэй аль нэг програм эсвэл харагч "
+"харъяалуулахыг хүсч байна уу?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 msgid "_Associate Action"
@@ -3169,8 +3486,12 @@ msgstr "Нээж чадахгүй байна. Та өөр програм хэр�
 
 #: libnautilus-private/nautilus-program-choosing.c:530
 #, c-format
-msgid "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" locations."
-msgstr "»%s« дараах файл »%s«-ийг нээж чадахгүй байна. Учир нь »%s« төрлийн файлуудыг »%s«-байршилд нээж чадахгүй байна."
+msgid ""
+"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+"locations."
+msgstr ""
+"»%s« дараах файл »%s«-ийг нээж чадахгүй байна. Учир нь »%s« төрлийн "
+"файлуудыг »%s«-байршилд нээж чадахгүй байна."
 
 #: libnautilus-private/nautilus-program-choosing.c:535
 msgid "Open Failed, would you like to choose another action?"
@@ -3178,8 +3499,12 @@ msgstr "Нээх бүтэлгүйтэв. Та өөр үйлдэл сонгохы
 
 #: libnautilus-private/nautilus-program-choosing.c:536
 #, c-format
-msgid "The default action can't open \"%s\" because it can't access files at \"%s\" locations."
-msgstr "Стандарт үйлдэл »%s« -г нээж чадахгүй байна. Учир нь тэр »%s« байрлал дахь файлууд руу хандаж чадахгүй байна."
+msgid ""
+"The default action can't open \"%s\" because it can't access files at \"%s\" "
+"locations."
+msgstr ""
+"Стандарт үйлдэл »%s« -г нээж чадахгүй байна. Учир нь тэр »%s« байрлал дахь "
+"файлууд руу хандаж чадахгүй байна."
 
 #: libnautilus-private/nautilus-program-choosing.c:543
 #: libnautilus-private/nautilus-program-choosing.c:576
@@ -3188,21 +3513,37 @@ msgstr "Байршил руу нэвтэрч чадсангүй"
 
 #: libnautilus-private/nautilus-program-choosing.c:562
 #, c-format
-msgid "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\".locations."
-msgstr "»%s« дараах файл »%s«-ийг нээж чадахгүй байна. Учир нь »%s« төрлийн файлуудыг »%s«-байршилд нээж чадахгүй байна."
+msgid ""
+"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+"locations."
+msgstr ""
+"»%s« дараах файл »%s«-ийг нээж чадахгүй байна. Учир нь »%s« төрлийн "
+"файлуудыг »%s«-байршилд нээж чадахгүй байна."
 
 #: libnautilus-private/nautilus-program-choosing.c:565
-msgid "No other applications are available to view this file.  If you copy this file onto your computer, you may be able to open it."
-msgstr "Энэ файлыг нээж харах чадвартай ямар ч програм алга. хэрэв та энэ файлыг өөрийнхөө компьютер дээр хуулбарлавал нээж магад."
+msgid ""
+"No other applications are available to view this file.  If you copy this "
+"file onto your computer, you may be able to open it."
+msgstr ""
+"Энэ файлыг нээж харах чадвартай ямар ч програм алга. хэрэв та энэ файлыг "
+"өөрийнхөө компьютер дээр хуулбарлавал нээж магад."
 
 #: libnautilus-private/nautilus-program-choosing.c:569
 #, c-format
-msgid "The default action can't open \"%s\" because it can't access files at \"%s\".locations."
-msgstr "Стандарт үйлдэл »%s« -г нээж чадахгүй байна. Учир нь тэр »%s« байрлал дахь файлууд руу хандаж чадахгүй байна."
+msgid ""
+"The default action can't open \"%s\" because it can't access files at \"%s\"."
+"locations."
+msgstr ""
+"Стандарт үйлдэл »%s« -г нээж чадахгүй байна. Учир нь тэр »%s« байрлал дахь "
+"файлууд руу хандаж чадахгүй байна."
 
 #: libnautilus-private/nautilus-program-choosing.c:571
-msgid "No other actions are available to view this file.  If you copy this file onto your computer, you may be able to open it."
-msgstr "Энэ файлыг нээж харах чадвартай ямар ч програм алга. хэрэв та энэ файлыг өөрийнхөө компьютер дээр хуулбарлавал нээж магад."
+msgid ""
+"No other actions are available to view this file.  If you copy this file "
+"onto your computer, you may be able to open it."
+msgstr ""
+"Энэ файлыг нээж харах чадвартай ямар ч програм алга. хэрэв та энэ файлыг "
+"өөрийнхөө компьютер дээр хуулбарлавал нээж магад."
 
 #: libnautilus-private/nautilus-program-choosing.c:830
 #: libnautilus-private/nautilus-program-choosing.c:1047
@@ -3212,7 +3553,9 @@ msgstr "»%s«-ийг нээж байна"
 
 #: libnautilus-private/nautilus-program-choosing.c:1191
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "Өршөөгөөрэй, аюулгүйн журмын дагуу та алсаас орсон компьютер дээрээс команд өгөх боломжгүй."
+msgstr ""
+"Өршөөгөөрэй, аюулгүйн журмын дагуу та алсаас орсон компьютер дээрээс команд "
+"өгөх боломжгүй."
 
 #: libnautilus-private/nautilus-program-choosing.c:1193
 msgid "This is disabled due to security considerations."
@@ -3243,8 +3586,11 @@ msgid "This drop target only supports local files."
 msgstr "Энэ байршил нь зөвхөн локал (дотоод) файлуудтай зохицож ажиллана"
 
 #: libnautilus-private/nautilus-program-choosing.c:1237
-msgid "To open non-local files copy them to a local folder and then drop them again."
-msgstr "Дотоод бус файлуудыг нээхийн тулд тэдгээрийг хуулаад дотоод хавтас дотор дахин орхиод үзнэ үү."
+msgid ""
+"To open non-local files copy them to a local folder and then drop them again."
+msgstr ""
+"Дотоод бус файлуудыг нээхийн тулд тэдгээрийг хуулаад дотоод хавтас дотор "
+"дахин орхиод үзнэ үү."
 
 #: libnautilus-private/nautilus-program-choosing.c:1239
 #: libnautilus-private/nautilus-program-choosing.c:1251
@@ -3252,8 +3598,12 @@ msgid "Drop Target Only Supports Local Files"
 msgstr "Энэ байршил нь зөвхөн дотоод файлуудтай зохицож ажиллана"
 
 #: libnautilus-private/nautilus-program-choosing.c:1249
-msgid "To open non-local files copy them to a local folder and then drop them again. The local files you dropped have already been opened."
-msgstr "Дотоод бус файлуудыг нээхийн тулд тэдгээрийг хуулаад дотоод хавтас дотор дахин орхиод үзнэ үү. Таны орхисон файлууд хэдийнэ нээгдсэн байна."
+msgid ""
+"To open non-local files copy them to a local folder and then drop them "
+"again. The local files you dropped have already been opened."
+msgstr ""
+"Дотоод бус файлуудыг нээхийн тулд тэдгээрийг хуулаад дотоод хавтас дотор "
+"дахин орхиод үзнэ үү. Таны орхисон файлууд хэдийнэ нээгдсэн байна."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -3455,14 +3805,20 @@ msgstr "»%s« -үгсийг аль нэгийг нь ч агуулаагүй [�
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[400K-аас том хэмжээний] ба [дараах үгсийг бүгдийг нь агуулаагүй Объектууд »Алим Жүрж«]"
+msgstr ""
+"[400K-аас том хэмжээний] ба [дараах үгсийг бүгдийг нь агуулаагүй Объектууд "
+"»Алим Жүрж«]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
 #. strings elsewhere.  Translate only the words "and" here.
 #: libnautilus-private/nautilus-search-uri.c:560
-msgid "[Items larger than 400K], [owned by root and without all the words \"apple orange\"]"
-msgstr "[400K-аас том хэмжээний] ба [Эзэнгийн эзэмшлийн бус болон дараах үгсийг бүгдийг нь агуулаагүй Объектууд »Алим Жүрж«]"
+msgid ""
+"[Items larger than 400K], [owned by root and without all the words \"apple "
+"orange\"]"
+msgstr ""
+"[400K-аас том хэмжээний] ба [Эзэнгийн эзэмшлийн бус болон дараах үгсийг "
+"бүгдийг нь агуулаагүй Объектууд »Алим Жүрж«]"
 
 #. The beginning of the description of a search that has just been
 #. performed.  The "%s" here is a description of a single criterion,
@@ -3485,8 +3841,11 @@ msgid "Items containing \"stuff\" in their names and that are regular files"
 msgstr "Нэрэндээ »stuff« -ийг агуулсан болоод байнгын файл-Объектууд"
 
 #: libnautilus-private/nautilus-search-uri.c:709
-msgid "Items containing \"stuff\" in their names, that are regular files and smaller than 2000 bytes"
-msgstr "Нэрэндээ »stuff« -ийг агуулсан болоод 2000 Битээс бага байнгын файл-Объектууд"
+msgid ""
+"Items containing \"stuff\" in their names, that are regular files and "
+"smaller than 2000 bytes"
+msgstr ""
+"Нэрэндээ »stuff« -ийг агуулсан болоод 2000 Битээс бага байнгын файл-Объектууд"
 
 #: libnautilus-private/nautilus-search-uri.c:713
 msgid "Items containing \"medusa\" in their names and that are folders"
@@ -3522,8 +3881,7 @@ msgstr "%s-р харах"
 msgid "%s Viewer"
 msgstr "%s-харагч програм"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:1
-#: src/nautilus-shell-ui.xml.h:1
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:1
 msgid "C_lear Text"
 msgstr "Текстийг _устгах"
 
@@ -3531,8 +3889,7 @@ msgstr "Текстийг _устгах"
 msgid "Cut Text"
 msgstr "Текстийг таслах авах"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:4
+#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:4
 msgid "Cut _Text"
 msgstr "Текстийг тасалж _авах"
 
@@ -3548,8 +3905,7 @@ msgstr "Клипборд (түр санах-д) сануулсан тексти�
 msgid "Remove the selected text without putting it on the clipboard"
 msgstr "Сонгосон текстийг clipboard (түр санах-д) хуулалгүйгээр устгах"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:8
-#: src/nautilus-shell-ui.xml.h:19
+#: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:19
 msgid "Select _All"
 msgstr "Бүгдийг с_онгох"
 
@@ -3557,8 +3913,7 @@ msgstr "Бүгдийг с_онгох"
 msgid "Select all the text in a text field"
 msgstr "Баримтанд буй бүх текстийг сонгох"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:11
-#: src/nautilus-shell-ui.xml.h:39
+#: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:39
 msgid "_Paste Text"
 msgstr "Текст _буулгах"
 
@@ -3574,8 +3929,7 @@ msgstr "Файлууд хэрхэн зохицуулагдахыг энд тод
 msgid "File Management"
 msgstr "Файлуудыг зохицуулах"
 
-#: nautilus-home.desktop.in.h:1
-#: src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "Гэр хавтас"
 
@@ -3625,19 +3979,29 @@ msgstr "Наутилусын фабрик"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Жагсаалтыг гүйлгэж харах горимд оруулдаг Наутилусын файл менежер -ийн бүрэлдхүүн"
+msgstr ""
+"Жагсаалтыг гүйлгэж харах горимд оруулдаг Наутилусын файл менежер -ийн "
+"бүрэлдхүүн"
 
 #: src/Nautilus_shell.server.in.h:10
-msgid "Nautilus file manager component that shows a scrollable list for search results"
-msgstr "Хайлтын  үр дүнгийн жагсаалтыг гүйлгэж харах горимд оруулдаг Наутилусын файл менежер -ийн бүрэлдхүүн"
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Хайлтын  үр дүнгийн жагсаалтыг гүйлгэж харах горимд оруулдаг Наутилусын файл "
+"менежер -ийн бүрэлдхүүн"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr "Хоёр хэмжээст эмблемийн талбараар харах горимд оруулдаг Наутилусын файл менежер -ийн бүрэлдхүүн"
+msgstr ""
+"Хоёр хэмжээст эмблемийн талбараар харах горимд оруулдаг Наутилусын файл "
+"менежер -ийн бүрэлдхүүн"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Эмблемүүдийг дэлгэцэн дээр шууд харуулах горимд оруулдаг Наутилусын файл менежер -ийн бүрэлдхүүн"
+msgstr ""
+"Эмблемүүдийг дэлгэцэн дээр шууд харуулах горимд оруулдаг Наутилусын файл "
+"менежер -ийн бүрэлдхүүн"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager desktop icon view"
@@ -3664,7 +4028,9 @@ msgid "Nautilus shell"
 msgstr "Наутилусын-Shell"
 
 #: src/Nautilus_shell.server.in.h:19
-msgid "Nautilus shell operations that can be done from subsequent command-line invocations"
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
 msgstr "Наутилусын-Shell-ын командын мөрүүдээс дуудагдаж хийгдэх үйлдлүүд"
 
 #: src/Nautilus_shell.server.in.h:20
@@ -3713,53 +4079,101 @@ msgstr "Дэвсгэр"
 msgid "Empty Trash"
 msgstr "Хогийн сав хоослох"
 
-#: src/file-manager/fm-directory-view.c:536
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:539
+#, fuzzy, c-format
+msgid "Open %d Window?"
+msgid_plural "Open %d Windows?"
+msgstr[0] "Жолоодлогын цонхонд нээх"
+msgstr[1] "Жолоодлогын цонхонд нээх"
+
+#: src/file-manager/fm-directory-view.c:540
 msgid "Are you sure you want to open all files?"
 msgstr "Та бүх файлуудыг нээхийг итгэл төгс хүсч байна уу?"
 
-#: src/file-manager/fm-directory-view.c:538
-#: src/nautilus-location-bar.c:158
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
+#, fuzzy, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Хөтөч цонх нээх"
+msgstr[1] "Хөтөч цонх нээх"
+
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Та »%s« -ийг бүрмөсөн устгахдаа итгэл төгс байна уу?"
 
-#: src/file-manager/fm-directory-view.c:889
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:892
+#, fuzzy, c-format
+msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items?"
+msgstr[0] "Та »%s« -ийг бүрмөсөн устгахдаа итгэл төгс байна уу?"
+msgstr[1] "Та »%s« -ийг бүрмөсөн устгахдаа итгэл төгс байна уу?"
+
+#: src/file-manager/fm-directory-view.c:900
 msgid "If you delete an item, it is permanently lost."
 msgstr "Хэрэв та устгавал объектуудыг бүрмөсөн устгана"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "Устгах уу?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 msgid "Select Pattern"
 msgstr "Ангилалаа сонго"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 msgid "_Pattern:"
 msgstr "_Хэв:"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "»%s« сонгогдсон"
 
+#: src/file-manager/fm-directory-view.c:1747
+#, fuzzy, c-format
+msgid "%d folder selected"
+msgid_plural "%d folders selected"
+msgstr[0] "»%s« сонгогдсон"
+msgstr[1] "»%s« сонгогдсон"
+
+#: src/file-manager/fm-directory-view.c:1757
+#, fuzzy, c-format
+msgid " (containing %d item)"
+msgid_plural " (containing %d items)"
+msgstr[0] "»%s«-ийг нэрэн дотроо агуулсан [Объектууд ]"
+msgstr[1] "»%s«-ийг нэрэн дотроо агуулсан [Объектууд ]"
+
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1740
-#: src/file-manager/fm-directory-view.c:1750
-#: src/file-manager/fm-directory-view.c:1761
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1768
+#, c-format
+msgid " (containing a total of %d item)"
+msgid_plural " (containing a total of %d items)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "»%s« сонгогдсон (%s)"
 
+#: src/file-manager/fm-directory-view.c:1788
+#, fuzzy, c-format
+msgid "%d item selected (%s)"
+msgid_plural "%d items selected (%s)"
+msgstr[0] "»%s« сонгогдсон (%s)"
+msgstr[1] "»%s« сонгогдсон (%s)"
+
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1781
-#: src/file-manager/fm-directory-view.c:1789
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1796
+#, fuzzy, c-format
+msgid "%d other item selected (%s)"
+msgid_plural "%d other items selected (%s)"
+msgstr[0] "»%s« сонгогдсон (%s)"
+msgstr[1] "»%s« сонгогдсон (%s)"
+
+#: src/file-manager/fm-directory-view.c:1817
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Сул зай: %s"
@@ -3771,7 +4185,7 @@ msgstr "%s, Сул зай: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3780,100 +4194,121 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Хавтас »%s« Наутилусын даацаас хэтэрсэн тооны файл агуулж байна."
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr "Зарим файлууд харагдахгүй байна."
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "Хэтэрхий олон тооны файлууд байна"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Файлыг хогийн саванд хаяж чадсангүй. Шууд устгах уу?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "\"%s\" файл хогийн сав руу зөөгдөхгүй байна."
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Элементийг хогийн саванд хаяж чадсангүй. Шууд устгах уу?"
 
-#: src/file-manager/fm-directory-view.c:3243
-msgid "Cannot move some items to trash, do you want to delete these immediately?"
+#: src/file-manager/fm-directory-view.c:3250
+msgid ""
+"Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Зарим элементийг хогийн саванд хаяж чадсангүй. Шууд устгах уу?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "Шууд устгах уу?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Та »%s« -ийг хогийн савнаас бүрмөсөн устгаж зайлуулахыг хүсч байна уу?"
 
-#: src/file-manager/fm-directory-view.c:3286
-#: src/file-manager/fm-directory-view.c:3295
-#, c-format
+#: src/file-manager/fm-directory-view.c:3293
+#, fuzzy, c-format
+msgid ""
+"Are you sure you want to permanently delete the %d selected item from the "
+"trash?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items from the "
+"trash?"
+msgstr[0] ""
+"Та »%s« -ийг хогийн савнаас бүрмөсөн устгаж зайлуулахыг хүсч байна уу?"
+msgstr[1] ""
+"Та »%s« -ийг хогийн савнаас бүрмөсөн устгаж зайлуулахыг хүсч байна уу?"
+
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Хэрэв та бичлэг устгавал бүр мөсөн устана."
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "Хогийн савнаас устгаж зайлуулах уу?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "»%s«-ийг сонгож авсан объектийг нээхэд хэрэглэх"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Өөр Х._Програм..."
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "Х._Програм..."
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "»%s« -ийг сонгосон бүх объектууд дээр үйлдэх"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "\"%s\" хэвээс баримт үүсгэх"
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Энэ хавтсан буй бүх гүйцэтгэх файлууд Скрипт-Цэсэн дотор гарна."
 
-#: src/file-manager/fm-directory-view.c:4494
-msgid "Choosing a script from the menu will run that script with any selected items as input."
-msgstr "Энэ цэснээс сонгосон скрипт нь түүний хамтаар сонгогдсон өгөгдлүүдийн хамтаар ажиллагаанд орно."
+#: src/file-manager/fm-directory-view.c:4501
+msgid ""
+"Choosing a script from the menu will run that script with any selected items "
+"as input."
+msgstr ""
+"Энэ цэснээс сонгосон скрипт нь түүний хамтаар сонгогдсон өгөгдлүүдийн "
+"хамтаар ажиллагаанд орно."
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "Скриптүүдийн тухай"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing a script from the menu will run that script.\n"
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script.\n"
 "\n"
-"When executed from a local folder, scripts will be passed the selected file names. When executed from a remote folder (e.g. a folder showing web or ftp content), scripts will be passed no parameters.\n"
+"When executed from a local folder, scripts will be passed the selected file "
+"names. When executed from a remote folder (e.g. a folder showing web or ftp "
+"content), scripts will be passed no parameters.\n"
 "\n"
-"In all cases, the following environment variables will be set by Nautilus, which the scripts may use:\n"
+"In all cases, the following environment variables will be set by Nautilus, "
+"which the scripts may use:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected "
+"files (only if local)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n"
 "\n"
@@ -3881,184 +4316,216 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Энэ хавтсан буй бүх гүйцэтгэх(exe) файлууд Скрипт-Цэсэн дотор гарна. Энэ цэснээс сонгосон скрипт тэр дороо ажиллаж эхэлнэ.\n"
+"Энэ хавтсан буй бүх гүйцэтгэх(exe) файлууд Скрипт-Цэсэн дотор гарна. Энэ "
+"цэснээс сонгосон скрипт тэр дороо ажиллаж эхэлнэ.\n"
 "\n"
-"Хэрэв нэгэн дотоод хавтаснаас скриптийг ажиллуулбал тэрээр тодорхой файлын нэрийг авна. Бүр алсын хавтаснаас мөн үйлдлийг хийвэл скрипт ямар нэгэн параметр авахгүй.\n"
+"Хэрэв нэгэн дотоод хавтаснаас скриптийг ажиллуулбал тэрээр тодорхой файлын "
+"нэрийг авна. Бүр алсын хавтаснаас мөн үйлдлийг хийвэл скрипт ямар нэгэн "
+"параметр авахгүй.\n"
 "\n"
-"Ямар ч тохиолдолд Наутилус скрипт болгоны хэрэглэж чадах дараах хэдэн орчны хувьсагчдыг тавьдаг:\n"
+"Ямар ч тохиолдолд Наутилус скрипт болгоны хэрэглэж чадах дараах хэдэн орчны "
+"хувьсагчдыг тавьдаг:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: Сонгогдсон файлуудын байршлыг Newline-аар ялгаж өгсөн(зөвхөн дотоод тохиолдолд)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: Сонгогдсон файлуудын байршлыг Newline-"
+"аар ялгаж өгсөн(зөвхөн дотоод тохиолдолд)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: Сонгогдсон файлуудын URI-ийг Newline-аар ялгаж өгсөн\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: Сонгогдсон файлуудын URI-ийг Newline-аар "
+"ялгаж өгсөн\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: Одоогийн байршлын URI\n"
 "\n"
-"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: Одоо идэвхтэй байгаа цонхны байршил болоод хэмжээ"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: Одоо идэвхтэй байгаа цонхны байршил болоод "
+"хэмжээ"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "»Буулгах«-командыг сонгоход »%s« зөөгдөнө"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "»Буулгах«-командыг сонгоход »%s« хуулагдана"
 
-#: src/file-manager/fm-directory-view.c:4638
-#: src/file-manager/fm-directory-view.c:4645
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
-#, c-format
+#: src/file-manager/fm-directory-view.c:4646
+#, fuzzy, c-format
+msgid ""
+"The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
+"The %d selected items will be moved if you select the Paste Files command"
+msgstr[0] "»Буулгах«-командыг сонгоход »%s« зөөгдөнө"
+msgstr[1] "»Буулгах«-командыг сонгоход »%s« зөөгдөнө"
+
+#: src/file-manager/fm-directory-view.c:4653
+#, fuzzy, c-format
+msgid ""
+"The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
+"The %d selected items will be copied if you select the Paste Files command"
+msgstr[0] "»Буулгах«-командыг сонгоход »%s« хуулагдана"
+msgstr[1] "»Буулгах«-командыг сонгоход »%s« хуулагдана"
+
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Клипбордоос (cipboard) буулгах юу ч алга."
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "Төхөөргийг таньж холбоход алдаа гарлаа"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "Төхөөргийн холбоосыг салгахад алдаа гарлаа"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 msgid "Eject Error"
 msgstr "Түлхэхэд алдаа гарлаа"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "Г_аргах"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Хуваалтыг салгах"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
+#, fuzzy, c-format
+msgid "Open in New Window"
+msgid_plural "Open in %d New Windows"
+msgstr[0] "Шинэ цонхонд нээх."
+msgstr[1] "Шинэ цонхонд нээх."
+
+#: src/file-manager/fm-directory-view.c:5265
 msgid "Browse Folder"
 msgstr "Хавтас нэгжих"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 msgid "Browse Folders"
 msgstr "Хавтас нэгжих"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "Хогийн савнаас _устгах "
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "Бүх соносон объектуудыг бүрмөсөн устгах"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "_Хогийн саванд хийх"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Сонгосон объект болгоныг хогийн саванд хийх"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Устгах"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "_Холбоосууд тогтоох"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "_Холбоос тогтоох"
 
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "Хогийн савыг хо_ослох"
 
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "Файлыг са_лгаж авах"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Файлуудыг са_лгаж авах"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "Файлыг х_уулах"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "Файлуудыг х_уулах"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Холбоос тасарсан байна. Хогийн саванд хийх үү? "
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 msgid "This link can't be used, because it has no target."
-msgstr "Энэ холбоосыг ашиглах боломжгүй. Учир нь заасан тодорхой ямар ч байршил алга."
+msgstr ""
+"Энэ холбоосыг ашиглах боломжгүй. Учир нь заасан тодорхой ямар ч байршил алга."
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr "Энэ холбоосыг ашиглах боломжгүй. Учир нь заасан тодорхой ямар ч »%s« байршил алга."
+msgstr ""
+"Энэ холбоосыг ашиглах боломжгүй. Учир нь заасан тодорхой ямар ч »%s« байршил "
+"алга."
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "Эвдрэлтэй холбоос"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr " Та »%s«-г ажиллуулах эсвэл дотоод агуулгыг харуулахыг хүсэж байна уу?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" ажиллах боломж бүхий текст файл."
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "Ажиллуулах эсвэл дотоод агуулгыг нь харуулах уу?"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "_Терминал дотор ажиллуулах"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "_Агуулга харуулах"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "_Ажиллуулах"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "»%s«-ийг нээж байна."
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "Нээх үйлдлийг зогсоох уу?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Танд »%s«-ийн агуулгыг үзэх эрх алга."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4081,13 +4548,19 @@ msgstr "Хавтсыг харуулахад алдаа гарлаа."
 
 #: src/file-manager/fm-error-reporting.c:103
 #, c-format
-msgid "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "Нэр »%s« энэ хавтаст аль хэдийнэ хэрэглэгдэж байна. Өөр ямар нэгэн нэр ашиглана уу."
+msgid ""
+"The name \"%s\" is already used in this folder. Please use a different name."
+msgstr ""
+"Нэр »%s« энэ хавтаст аль хэдийнэ хэрэглэгдэж байна. Өөр ямар нэгэн нэр "
+"ашиглана уу."
 
 #: src/file-manager/fm-error-reporting.c:108
 #, c-format
-msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "Энэ хавтаст »%s« байхгүй байна. Магадгүй тэрээр саяхан устгагдсанэсвэл өөр байрлал руу зөөгдсөн байж болох."
+msgid ""
+"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgstr ""
+"Энэ хавтаст »%s« байхгүй байна. Магадгүй тэрээр саяхан устгагдсанэсвэл өөр "
+"байрлал руу зөөгдсөн байж болох."
 
 #: src/file-manager/fm-error-reporting.c:113
 #, c-format
@@ -4096,8 +4569,11 @@ msgstr "Танд »%s«-ийн нэрийг өөрчлөх эрх байхгүй
 
 #: src/file-manager/fm-error-reporting.c:118
 #, c-format
-msgid "The name \"%s\" is not valid because it contains the character \"/\". Please use a different name."
-msgstr "Нэр »%s« нь »/« гэсэн тамдэгт агуулсан учир хүчингүй. Өөр нэр ашиглана уу."
+msgid ""
+"The name \"%s\" is not valid because it contains the character \"/\". Please "
+"use a different name."
+msgstr ""
+"Нэр »%s« нь »/« гэсэн тамдэгт агуулсан учир хүчингүй. Өөр нэр ашиглана уу."
 
 #: src/file-manager/fm-error-reporting.c:122
 #, c-format
@@ -4107,7 +4583,9 @@ msgstr "Нэр »%s« нь хүчингүй. Өөр нэр ашиглана уу
 #: src/file-manager/fm-error-reporting.c:128
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr "Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн нэрийг өөрчилж чадсангүй."
+msgstr ""
+"Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн нэрийг өөрчилж "
+"чадсангүй."
 
 #: src/file-manager/fm-error-reporting.c:137
 #, c-format
@@ -4124,13 +4602,16 @@ msgstr "Нэр солиход алдаа гарлаа."
 
 #: src/file-manager/fm-error-reporting.c:165
 #, c-format
-msgid "You do not have the permissions necessary to change the group of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Танд »%s«-ийн бүлгийг өөрчлөн эрх байхгүй байна."
 
 #: src/file-manager/fm-error-reporting.c:169
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr "Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн бүлгийг өөрчилж чадсангүй."
+msgstr ""
+"Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн бүлгийг өөрчилж "
+"чадсангүй."
 
 #: src/file-manager/fm-error-reporting.c:177
 #, c-format
@@ -4148,7 +4629,9 @@ msgstr "Бүлгийг өөрчлөхөд алдаа гарлаа."
 #: src/file-manager/fm-error-reporting.c:203
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-msgstr "Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн эзэмшигчийг өөрчилж чадсангүй"
+msgstr ""
+"Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-ийн эзэмшигчийг өөрчилж "
+"чадсангүй"
 
 #: src/file-manager/fm-error-reporting.c:210
 #, c-format
@@ -4165,8 +4648,11 @@ msgstr "Эзэмшигчийг өөрчлөхөд алдаа гарлаа"
 
 #: src/file-manager/fm-error-reporting.c:235
 #, c-format
-msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr "Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-д хандах зөвшөөрлийн тохируулгыг өөрчилж чадсангүй"
+msgid ""
+"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgstr ""
+"Бичихээс хамгаалагдсан дискэн дээр байгаа тул »%s«-д хандах зөвшөөрлийн "
+"тохируулгыг өөрчилж чадсангүй"
 
 #: src/file-manager/fm-error-reporting.c:242
 #, c-format
@@ -4244,32 +4730,26 @@ msgstr "Эмблемүүдийг оригинал хэм_жээнд нь ору�
 msgid "Restore Icon's Original Si_ze"
 msgstr "Эмблемүүдийг оригинал хэм_жээнд нь оруулах"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "»%s«-ийг заасан"
 
-#: src/file-manager/fm-icon-view.c:2572
-#: src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 msgid "Drag and drop is not supported."
 msgstr "Чирч хаях (drag and drop) үйлдэл дэмжигдээгүй."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Чирч хаях үйлдлийг зөвхөн дотоод файл системд дэмжигдсэн."
 
-#: src/file-manager/fm-icon-view.c:2574
-#: src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 msgid "Drag and Drop Error"
 msgstr "Чирч хаяхад алдаа гарлаа"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Чирч хаях(drag and drop)-ын утгагүй үйлдэл хийгдлээ"
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Файлын нэр"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -4321,7 +4801,7 @@ msgid "Images Only"
 msgstr "Зөвхөн зургууд"
 
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Тодруулга"
 
@@ -4355,8 +4835,13 @@ msgid "unreadable"
 msgstr "унших боломжгүй"
 
 #: src/file-manager/fm-properties-window.c:1759
-#: src/file-manager/fm-properties-window.c:1768
 #, c-format
+msgid "%d item, with size %s"
+msgid_plural "%d items, totalling %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
 msgstr "(зарим агуулгуудыг унших боломжгүй)"
 
@@ -4407,8 +4892,7 @@ msgstr "--"
 msgid "Size:"
 msgstr "Хэмжээ:"
 
-#: src/file-manager/fm-properties-window.c:2271
-#: src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Байршил:"
 
@@ -4547,8 +5031,12 @@ msgstr "Нэг эмблем сонгоно уу"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
-msgid "Search results may not include items modified after %s, when your drive was last indexed."
-msgstr "Таны диск уншигч хамгийн сүүлд ажилласнаас %s хойш өөрчилсөн объектуудыг агуулж болохгүй."
+msgid ""
+"Search results may not include items modified after %s, when your drive was "
+"last indexed."
+msgstr ""
+"Таны диск уншигч хамгийн сүүлд ажилласнаас %s хойш өөрчилсөн объектуудыг "
+"агуулж болохгүй."
 
 #: src/file-manager/fm-search-list-view.c:144
 msgid "Search Results"
@@ -4568,13 +5056,21 @@ msgid "Search Service Not Available"
 msgstr "Хайх үйлдэл байхгүй"
 
 #: src/file-manager/fm-search-list-view.c:190
-msgid "The search you have selected is newer than the index on your system.  The search will return no results right now."
-msgstr "Таны сонгосон хайлт тань таны системийн дээрх индексээс шинэ юм байна.  Тиймээс хайлт яг одоо үр дүн өгөхгүй. "
+msgid ""
+"The search you have selected is newer than the index on your system.  The "
+"search will return no results right now."
+msgstr ""
+"Таны сонгосон хайлт тань таны системийн дээрх индексээс шинэ юм байна.  "
+"Тиймээс хайлт яг одоо үр дүн өгөхгүй. "
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
-msgid "You can create a new index by running \"medusa-indexd\" as root on the command line."
-msgstr "Та шинэ индекс үүсгэхийн тулд командын мөрөнд эзнээр (root) »medusa-indexd« командыг бичээрэй."
+msgid ""
+"You can create a new index by running \"medusa-indexd\" as root on the "
+"command line."
+msgstr ""
+"Та шинэ индекс үүсгэхийн тулд командын мөрөнд эзнээр (root) »medusa-indexd« "
+"командыг бичээрэй."
 
 #: src/file-manager/fm-search-list-view.c:197
 msgid "Search For Items That Are Too New"
@@ -4582,11 +5078,17 @@ msgstr "Нэн шинэ объектуудыг хайх"
 
 #: src/file-manager/fm-search-list-view.c:201
 msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr "Таны компьютер дэх индекслэсэн бүх файлууд таны сонгосон шалгууруудад тохироод байна."
+msgstr ""
+"Таны компьютер дэх индекслэсэн бүх файлууд таны сонгосон шалгууруудад "
+"тохироод байна."
 
 #: src/file-manager/fm-search-list-view.c:203
-msgid "You can check the spelling on your selections or add more criteria to narrow your results."
-msgstr "Та зөв бичсэн эсэх болон хайлтын дүнд олдсон файлуудын тоог багасгахын тулд шалгуурынхаа тоог нэмэгдүүлэн хайлтынхаа хүрээг нь улам хумиж өгвөл зохилтой."
+msgid ""
+"You can check the spelling on your selections or add more criteria to narrow "
+"your results."
+msgstr ""
+"Та зөв бичсэн эсэх болон хайлтын дүнд олдсон файлуудын тоог багасгахын тулд "
+"шалгуурынхаа тоог нэмэгдүүлэн хайлтынхаа хүрээг нь улам хумиж өгвөл зохилтой."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
@@ -4596,8 +5098,12 @@ msgstr "Хайж байхад алдаа гарлаа"
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
-msgid "Find cannot open your file system index.  Your index may be missing or corrupt."
-msgstr "Хайлт таны файлын системийн индексийг олохгүй байна.  Таны индекс байхгүй эсвэл гэмтэлтэй байна."
+msgid ""
+"Find cannot open your file system index.  Your index may be missing or "
+"corrupt."
+msgstr ""
+"Хайлт таны файлын системийн индексийг олохгүй байна.  Таны индекс байхгүй "
+"эсвэл гэмтэлтэй байна."
 
 #: src/file-manager/fm-search-list-view.c:215
 msgid "Error Reading File Index"
@@ -4608,16 +5114,23 @@ msgid "An error occurred while loading this search's contents."
 msgstr "Энэ хайлтын агуулгыг ачаалах явцад алдаа гарлаа."
 
 #: src/file-manager/fm-search-list-view.c:240
-msgid "To do a fast search, Find requires an index of the files on your system."
-msgstr "Хурдан хайлт хийхийн тулд таны системд файлын индекс байх шаардлагатай."
+msgid ""
+"To do a fast search, Find requires an index of the files on your system."
+msgstr ""
+"Хурдан хайлт хийхийн тулд таны системд файлын индекс байх шаардлагатай."
 
 #: src/file-manager/fm-search-list-view.c:242
-msgid "To do a content search, Find requires an index of the files on your system."
+msgid ""
+"To do a content search, Find requires an index of the files on your system."
 msgstr "Агуулгын хайлт хийхийн тулд таны системд файлын индекс шаардлагатай."
 
 #: src/file-manager/fm-search-list-view.c:245
-msgid "Find can't access your index right now so a slower search will be performed that doesn't use the index."
-msgstr "Хайлт таны индекс рүү яг одоо хандаж чадахгүй байна. Индекс хэрэглэхгүйгээр хайх нь маш удаан."
+msgid ""
+"Find can't access your index right now so a slower search will be performed "
+"that doesn't use the index."
+msgstr ""
+"Хайлт таны индекс рүү яг одоо хандаж чадахгүй байна. Индекс хэрэглэхгүйгээр "
+"хайх нь маш удаан."
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
@@ -4635,21 +5148,33 @@ msgstr "Агуулгаар хайлт хийх боломжгүй"
 
 #: src/file-manager/fm-search-list-view.c:255
 msgid ""
-"Your index files are available but the Medusa search daemon, which handles index requests, isn't running.  To start this program, log in as root and enter this command at the command line:\n"
+"Your index files are available but the Medusa search daemon, which handles "
+"index requests, isn't running.  To start this program, log in as root and "
+"enter this command at the command line:\n"
 "\n"
 "medusa-searchd"
 msgstr ""
-"Таны индексийн файлууд байна гэвч индексийн хандалтыг боловсруулдаг Медузагийн Хайлтын Daemon ажиллаагүй байна. Энэ прграммыг ажиллуулахын тулд та Эзэн статусаар ороод командын мөрөнд дараах командыг өгнө үү:\n"
+"Таны индексийн файлууд байна гэвч индексийн хандалтыг боловсруулдаг "
+"Медузагийн Хайлтын Daemon ажиллаагүй байна. Энэ прграммыг ажиллуулахын тулд "
+"та Эзэн статусаар ороод командын мөрөнд дараах командыг өгнө үү:\n"
 "\n"
 "medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:269
-msgid "To do a fast search, Find requires an index of the files on your system.  Your computer is currently creating that index."
-msgstr "Түргэн хайлт хийхийн тулд аны системд файлын индекслэлт шаардлагатай байна. Таны компьютер яг одоо энэ индексийг үүсгэж байна. "
+msgid ""
+"To do a fast search, Find requires an index of the files on your system.  "
+"Your computer is currently creating that index."
+msgstr ""
+"Түргэн хайлт хийхийн тулд аны системд файлын индекслэлт шаардлагатай байна. "
+"Таны компьютер яг одоо энэ индексийг үүсгэж байна. "
 
 #: src/file-manager/fm-search-list-view.c:273
-msgid "To do a content search, Find requires an index of the content on your system.  Your computer is currently creating that index."
-msgstr "Агуулгын хайлт хийхийн тулд аны системд файлын индексжилт шаардлагатай байна. Таны компьютер яг одоо үүнийг үүсэж байна."
+msgid ""
+"To do a content search, Find requires an index of the content on your "
+"system.  Your computer is currently creating that index."
+msgstr ""
+"Агуулгын хайлт хийхийн тулд аны системд файлын индексжилт шаардлагатай "
+"байна. Таны компьютер яг одоо үүнийг үүсэж байна."
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
@@ -4665,28 +5190,52 @@ msgid "Indexed Searches Are Not Available"
 msgstr "Индексээр хөөх хайлт хийх боломжгүй"
 
 #: src/file-manager/fm-search-list-view.c:293
-msgid "To do a fast search, Find requires an index of the files on your system.  No index is available right now."
-msgstr "Түргэн хайлт хийхийн тулд Хайлт таны системд файлын индекс шаардаж байна. Яг одоо индекс алга."
+msgid ""
+"To do a fast search, Find requires an index of the files on your system.  No "
+"index is available right now."
+msgstr ""
+"Түргэн хайлт хийхийн тулд Хайлт таны системд файлын индекс шаардаж байна. Яг "
+"одоо индекс алга."
 
 #: src/file-manager/fm-search-list-view.c:296
-msgid "To do a content search, Find requires an index of the content on your system.  No index is available right now."
-msgstr "Агуулгын хайлт хийхийн тулд Хайлт таны системд файлын индекс шаардаж байна. Яг одоогоор индекс алга.."
+msgid ""
+"To do a content search, Find requires an index of the content on your "
+"system.  No index is available right now."
+msgstr ""
+"Агуулгын хайлт хийхийн тулд Хайлт таны системд файлын индекс шаардаж байна. "
+"Яг одоогоор индекс алга.."
 
 #: src/file-manager/fm-search-list-view.c:300
-msgid "You can create an index by running \"medusa-indexd\" as root on the command line.  Until a complete index is available, searches will take several minutes."
-msgstr "Та индексжүүлэлтийг »medusa-indexd« командыг эзэн эрхээр өгснөөр үүсгэж болно. Бүтэн индексжүүлэлт хийгдэж дуустал хэдэн минут үргэлжилж магадгүй."
+msgid ""
+"You can create an index by running \"medusa-indexd\" as root on the command "
+"line.  Until a complete index is available, searches will take several "
+"minutes."
+msgstr ""
+"Та индексжүүлэлтийг »medusa-indexd« командыг эзэн эрхээр өгснөөр үүсгэж "
+"болно. Бүтэн индексжүүлэлт хийгдэж дуустал хэдэн минут үргэлжилж магадгүй."
 
 #: src/file-manager/fm-search-list-view.c:305
-msgid "You can create an index by running \"medusa-indexd\" as root on the command line.  Until a complete index is available, content searches cannot be performed."
-msgstr "Та индексжүүлэлтийг »medusa-indexd« командыг эзэн эрхээр өгснөөр үүсгэж болно. Бүтэн индексжүүлэлт хийгдэж дуустал хэдэн минут үргэлжилж магадгүй."
+msgid ""
+"You can create an index by running \"medusa-indexd\" as root on the command "
+"line.  Until a complete index is available, content searches cannot be "
+"performed."
+msgstr ""
+"Та индексжүүлэлтийг »medusa-indexd« командыг эзэн эрхээр өгснөөр үүсгэж "
+"болно. Бүтэн индексжүүлэлт хийгдэж дуустал хэдэн минут үргэлжилж магадгүй."
 
 #: src/file-manager/fm-search-list-view.c:329
 msgid "Fast searches are not enabled on your computer."
 msgstr "Таны компьютер дээр хурдан хайлт хийх бололцоогүй"
 
 #: src/file-manager/fm-search-list-view.c:330
-msgid "To do a fast search, Find requires an index of the files on your system. Your system administrator has disabled fast search on your computer, so no index is available."
-msgstr "Түргэн хайлт хийхийн тулд таны системд файлын индексжүүлэлт хэрэгтэй. Систем администратор таны компьютерийн түргэн хайлтыг унтраасан тул ямар ч индекс байхгүй."
+msgid ""
+"To do a fast search, Find requires an index of the files on your system. "
+"Your system administrator has disabled fast search on your computer, so no "
+"index is available."
+msgstr ""
+"Түргэн хайлт хийхийн тулд таны системд файлын индексжүүлэлт хэрэгтэй. Систем "
+"администратор таны компьютерийн түргэн хайлтыг унтраасан тул ямар ч индекс "
+"байхгүй."
 
 #: src/file-manager/fm-search-list-view.c:334
 msgid "Fast Searches Not Enabled"
@@ -4702,12 +5251,18 @@ msgstr "Хаана"
 #. * items visible (this comment is to inform translators of this
 #. * tricky concept).
 #.
+#: src/file-manager/fm-search-list-view.c:567
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
+#, fuzzy, c-format
+msgid "_Reveal in New Window"
+msgid_plural "Reveal in %d _New Windows"
+msgstr[0] "Шинэ цонхонд нээх."
+msgstr[1] "Шинэ цонхонд нээх."
+
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 #: src/file-manager/fm-search-list-view.c:685
 msgid "Nautilus found more search results than it can display."
 msgstr "Наутилус үзүүлж дийлэхгүй их хайлтын үр дүн олдлоо."
@@ -4728,36 +5283,36 @@ msgstr "(Хоосон)"
 msgid "Loading..."
 msgstr "Ачаалж байна..."
 
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 msgid "Open"
 msgstr "Нээх"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 msgid "Create Folder"
 msgstr "Хавтас үүсгэх"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 msgid "Cut Folder"
 msgstr "Хавтас огтлох"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 msgid "Copy Folder"
 msgstr "Хавтас хуулах"
 
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 msgid "Paste Files into Folder"
 msgstr "Файлыг лавлах руу буулгах"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 msgid "Move to Trash"
 msgstr "Хогийн саванд хийх"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr "Файлын систем"
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr "Сүлжээний хөрш"
 
@@ -4789,7 +5344,8 @@ msgid "Open a new GNOME terminal window"
 msgstr "Шинэ GNOME-Терминал цонх нээх"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
-msgid "Show a window that lets you set your desktop background's pattern or color"
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
 msgstr "Таны дэлгэцийн дэвсгэрийн өнгө болон хээг тохируулах цонх харуулах"
 
 #. add the reset background item, possibly disabled
@@ -4864,12 +5420,19 @@ msgid "Mount the selected volume"
 msgstr "Сонгосон хуваалтыг залгах"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
-msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
-msgstr "»Файл тасалж авах« эсвэл »Файл хуулбарлах«-аар сонгосон файлуудыг зөөх эсвэл хувилах"
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgstr ""
+"»Файл тасалж авах« эсвэл »Файл хуулбарлах«-аар сонгосон файлуудыг зөөх эсвэл "
+"хувилах"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
-msgid "Move or copy files previously selected by a Cut Files or Copy Files command into the selected folder"
-msgstr "»Файл тасалж авах« эсвэл »Файл хуулбарлах« тушаалаар сонгосон файлуудыг зөөх эсвэл хуулах"
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command "
+"into the selected folder"
+msgstr ""
+"»Файл тасалж авах« эсвэл »Файл хуулбарлах« тушаалаар сонгосон файлуудыг зөөх "
+"эсвэл хуулах"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
@@ -5053,7 +5616,9 @@ msgstr "Эсрэг дараалал"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Эмблемүүдийг аль болох цонхонд багтааж давхарлахгүй байхаар бодож шинээр байршуулах."
+msgstr ""
+"Эмблемүүдийг аль болох цонхонд багтааж давхарлахгүй байхаар бодож шинээр "
+"байршуулах."
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Restore each selected icon to its original size"
@@ -5086,8 +5651,12 @@ msgid "Your files were last indexed at %s."
 msgstr "Таны файлууд хамгийн сүүлд %s-нд индексжүүлэлт хийгдсэн байна."
 
 #: src/file-manager/nautilus-indexing-info.c:170
-msgid "Once a day your files and text content are indexed so your searches are fast. "
-msgstr "Хайлтын процессыг хурдасгах үүднээс Таны файлууд болон тэдгээрийнтекстэн агуулгуудад өдөрт нэг удаа индексжүүлэлтийг хийнэ."
+msgid ""
+"Once a day your files and text content are indexed so your searches are "
+"fast. "
+msgstr ""
+"Хайлтын процессыг хурдасгах үүднээс Таны файлууд болон тэдгээрийнтекстэн "
+"агуулгуудад өдөрт нэг удаа индексжүүлэлтийг хийнэ."
 
 #: src/file-manager/nautilus-indexing-info.c:172
 #: src/file-manager/nautilus-indexing-info.c:200
@@ -5099,16 +5668,25 @@ msgid "Your files are currently being indexed."
 msgstr "Таны файлууд одоо индексжүүлэлт хийгдэж байна."
 
 #: src/file-manager/nautilus-indexing-info.c:198
-msgid "Once a day your files and text content are indexed so your searches are fast."
-msgstr "Хайлтын процессыг хурдасгах үүднээс, таны файлууд болон тэдгээрийн текстэн агуулгуудад өдөрт нэг удаа индексжүүлэлтийг хийнэ."
+msgid ""
+"Once a day your files and text content are indexed so your searches are fast."
+msgstr ""
+"Хайлтын процессыг хурдасгах үүднээс, таны файлууд болон тэдгээрийн текстэн "
+"агуулгуудад өдөрт нэг удаа индексжүүлэлтийг хийнэ."
 
 #: src/file-manager/nautilus-indexing-info.c:257
 msgid "There is no index of your files right now."
 msgstr "Одоогийн байдлаар таны файлуудад ямар ч индекс алга."
 
 #: src/file-manager/nautilus-indexing-info.c:258
-msgid "When Fast Search is enabled, Find creates an index to speed up searches.  Fast searching is not enabled on your computer, so you do not have an index right now."
-msgstr "Түргэн хайлт идэвхтэй байгаа бол хурдасгах зорилгоор индекс олоно. Таны компьютер дээр түргэн хайлт идэвхжээгүй тул одоогоор таны файлуудад индекс алга."
+msgid ""
+"When Fast Search is enabled, Find creates an index to speed up searches.  "
+"Fast searching is not enabled on your computer, so you do not have an index "
+"right now."
+msgstr ""
+"Түргэн хайлт идэвхтэй байгаа бол хурдасгах зорилгоор индекс олоно. Таны "
+"компьютер дээр түргэн хайлт идэвхжээгүй тул одоогоор таны файлуудад индекс "
+"алга."
 
 #: src/file-manager/nautilus-indexing-info.c:262
 msgid "No Index of Files"
@@ -5164,8 +5742,12 @@ msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "\"%s\" шаардлагатай хавтсуудыг наутилус үүсгэж чадсангүй."
 
 #: src/nautilus-application.c:267
-msgid "Before running Nautilus, please create the following folder, or set permissions such that Nautilus can create it."
-msgstr "Та наутилусыг ажиллуулахын өмнө дараах хавтсыг шинээр үүсгэх эсвэл наутилуст өөрт нь ийм үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
+msgid ""
+"Before running Nautilus, please create the following folder, or set "
+"permissions such that Nautilus can create it."
+msgstr ""
+"Та наутилусыг ажиллуулахын өмнө дараах хавтсыг шинээр үүсгэх эсвэл наутилуст "
+"өөрт нь ийм үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
 
 #: src/nautilus-application.c:270
 msgid "Couldn't Create Required Folders"
@@ -5177,8 +5759,12 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr "Наутилус дараах шаардлагатай лавлахуулыг устгаж чадсангүй: %s."
 
 #: src/nautilus-application.c:273
-msgid "Before running Nautilus, please create these folders, or set permissions such that Nautilus can create them."
-msgstr "Та наутилусыг ажиллуулахын өмнө энэ хавтсыг шинээр зохиох эсвэл наутилуст өөрт нь ийм үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
+msgid ""
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
+msgstr ""
+"Та наутилусыг ажиллуулахын өмнө энэ хавтсыг шинээр зохиох эсвэл наутилуст "
+"өөрт нь ийм үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
 
 #: src/nautilus-application.c:341
 msgid "Link To Old Desktop"
@@ -5186,11 +5772,17 @@ msgstr "Хуучин тавцан руу холбох"
 
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr "Ажлын тавцан дээр \"Хуучин тавцанг руу холбох\" нэртэй лавлах үүсгэгдэв."
+msgstr ""
+"Ажлын тавцан дээр \"Хуучин тавцанг руу холбох\" нэртэй лавлах үүсгэгдэв."
 
 #: src/nautilus-application.c:358
-msgid "The location of the desktop directory has changed in GNOME 2.4. You can open the link and move over the files you want, then delete the link."
-msgstr "ГНОМЕ 2.4-т ажлын тавцангийн лавлах хадгалах байрлал өөрчилөгдсөн. Ажлын тавцан дээр »хуучин ажлын тавцангийн холбоос« гэж үүсгэгдсэн.Та үүнийг нээж хүссэн файлуудаа зөөж аваад холбоосыг устгаж болно."
+msgid ""
+"The location of the desktop directory has changed in GNOME 2.4. You can open "
+"the link and move over the files you want, then delete the link."
+msgstr ""
+"ГНОМЕ 2.4-т ажлын тавцангийн лавлах хадгалах байрлал өөрчилөгдсөн. Ажлын "
+"тавцан дээр »хуучин ажлын тавцангийн холбоос« гэж үүсгэгдсэн.Та үүнийг нээж "
+"хүссэн файлуудаа зөөж аваад холбоосыг устгаж болно."
 
 #: src/nautilus-application.c:360
 msgid "Migrated Old Desktop"
@@ -5207,30 +5799,53 @@ msgstr "Хуучин ажлын тавцан луу шилжүүлэх"
 #. * since neither of the above causes explain it.
 #.
 #: src/nautilus-application.c:534
-msgid "Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again."
-msgstr "Наутилус ажиллахгүй байна. Та консол дээрээс »bonobo-slay« команд  өгвөл ажиллаж магад. Үгүй бол компьютерээ шинээр асаах эсвэл Наутилусыг шинээр суулгах л үлдэж байна."
+msgid ""
+"Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
+"console may fix the problem. If not, you can try rebooting the computer or "
+"installing Nautilus again."
+msgstr ""
+"Наутилус ажиллахгүй байна. Та консол дээрээс »bonobo-slay« команд  өгвөл "
+"ажиллаж магад. Үгүй бол компьютерээ шинээр асаах эсвэл Наутилусыг шинээр "
+"суулгах л үлдэж байна."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:540
 msgid ""
-"Nautilus can't be used now. Running the command \"bonobo-slay\" from the console may fix the problem. If not, you can try rebooting the computer or installing Nautilus again.\n"
+"Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
+"console may fix the problem. If not, you can try rebooting the computer or "
+"installing Nautilus again.\n"
 "\n"
-"Bonobo couldn't locate the Nautilus_shell.server file. One cause of this seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation library's directory. Another possible cause would be bad install with a missing Nautilus_Shell.server file.\n"
+"Bonobo couldn't locate the Nautilus_shell.server file. One cause of this "
+"seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation "
+"library's directory. Another possible cause would be bad install with a "
+"missing Nautilus_Shell.server file.\n"
 "\n"
-"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, which may be needed by other applications.\n"
+"Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, "
+"which may be needed by other applications.\n"
 "\n"
-"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but we don't know why.\n"
+"Sometimes killing bonobo-activation-server and gconfd fixes the problem, but "
+"we don't know why.\n"
 "\n"
-"We have also seen this error when a faulty version of bonobo-activation was installed."
+"We have also seen this error when a faulty version of bonobo-activation was "
+"installed."
 msgstr ""
-"Наутилус ажиллахгүй байна. Та консол дээрээс »bonobo-slay« команд  өгвөл ажилаж магад. Үгүй бол компьютерээ шинээр асаах эсвэл наутилусыг шинээр суулгаад үз.\n"
-"Bonobo Nautilus_Shell.server файлыг олсонгүй. Магадгүй LD_LIBRARY_PATH bonobo-ийн идэвхжүүлэлтийн Bibliothek хавтсыг дотроо агуулаагүйгээс байж болно. Эсвэл анх суулгахдаа Наутилусын Nautilus_Shell.server файлыг дутуу суулгасан байж болох.\n"
+"Наутилус ажиллахгүй байна. Та консол дээрээс »bonobo-slay« команд  өгвөл "
+"ажилаж магад. Үгүй бол компьютерээ шинээр асаах эсвэл наутилусыг шинээр "
+"суулгаад үз.\n"
+"Bonobo Nautilus_Shell.server файлыг олсонгүй. Магадгүй LD_LIBRARY_PATH "
+"bonobo-ийн идэвхжүүлэлтийн Bibliothek хавтсыг дотроо агуулаагүйгээс байж "
+"болно. Эсвэл анх суулгахдаа Наутилусын Nautilus_Shell.server файлыг дутуу "
+"суулгасан байж болох.\n"
 "\n"
-"»bonobo-slay« командыг өгснөөр өөр бусад програмуудад хэрэглэгдэж болох Bonobo-ийн бүх идэвхжүүлэлтийн болон GConf-процессуудыг хүчээр таслан зогсооно.\n"
+"»bonobo-slay« командыг өгснөөр өөр бусад програмуудад хэрэглэгдэж болох "
+"Bonobo-ийн бүх идэвхжүүлэлтийн болон GConf-процессуудыг хүчээр таслан "
+"зогсооно.\n"
 "\n"
-"Заримдаа идэвхжүүлэлтийн болон GConf-процессуудыг хүчээр таслан зогсоосноор доголдол арилдаг ч яагаад гэдгийг бид мэдэхгүй.\n"
+"Заримдаа идэвхжүүлэлтийн болон GConf-процессуудыг хүчээр таслан зогсоосноор "
+"доголдол арилдаг ч яагаад гэдгийг бид мэдэхгүй.\n"
 "\n"
-"Мөн bonobo-идэвхжүүлэлтийн эвдрэлтэй хувилбар суугдсан байхад ажиглагдаж байсан"
+"Мөн bonobo-идэвхжүүлэлтийн эвдрэлтэй хувилбар суугдсан байхад ажиглагдаж "
+"байсан"
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -5240,29 +5855,42 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:570
-#: src/nautilus-application.c:588
+#: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Гэнэтийн алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй."
 
 #: src/nautilus-application.c:571
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to register the file manager view server."
-msgstr "Файл менежерийн харах серверийг бүртгэх үед Bonobo-д гарсан гэнэтийн алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй."
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to register the file manager view server."
+msgstr ""
+"Файл менежерийн харах серверийг бүртгэх үед Bonobo-д гарсан гэнэтийн "
+"алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй."
 
 #: src/nautilus-application.c:589
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the factory.Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
-msgstr "Фабрикийг олох гэж оролдох үед гарсан гэнэтийн алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй. Bonobo идэвхжүүлэлтийг хаагаад Наутилусыг шинээр нээвэл доголдол арилж магад."
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to locate the factory.Killing bonobo-activation-server and "
+"restarting Nautilus may help fix the problem."
+msgstr ""
+"Фабрикийг олох гэж оролдох үед гарсан гэнэтийн алдаанаас болж Наутилусыг "
+"одоогоор ашиглах боломжгүй. Bonobo идэвхжүүлэлтийг хаагаад Наутилусыг шинээр "
+"нээвэл доголдол арилж магад."
 
 #: src/nautilus-application.c:596
-msgid "Nautilus can't be used now, due to an unexpected error from Bonobo when attempting to locate the shell object. Killing bonobo-activation-server and restarting Nautilus may help fix the problem."
-msgstr "Shell-объектийг олох гэж оролдох үед гарсан гэнэтийн алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй. Bonobo идэвхжүүлэлтийг хаагаад Наутилусыг шинээр нээвэл доголдол арилж магад."
+msgid ""
+"Nautilus can't be used now, due to an unexpected error from Bonobo when "
+"attempting to locate the shell object. Killing bonobo-activation-server and "
+"restarting Nautilus may help fix the problem."
+msgstr ""
+"Shell-объектийг олох гэж оролдох үед гарсан гэнэтийн алдаанаас болж "
+"Наутилусыг одоогоор ашиглах боломжгүй. Bonobo идэвхжүүлэлтийг хаагаад "
+"Наутилусыг шинээр нээвэл доголдол арилж магад."
 
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:231
-#: src/nautilus-property-browser.c:1456
-#: src/nautilus-window-menus.c:648
+#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:648
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5300,8 +5928,7 @@ msgid "Fewer Options"
 msgstr "Цөөн сонголтууд"
 
 #. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:227
-#: src/nautilus-simple-search-bar.c:125
+#: src/nautilus-complex-search-bar.c:227 src/nautilus-simple-search-bar.c:125
 msgid "Find Them!"
 msgstr "Тэднийг ол!"
 
@@ -5336,7 +5963,8 @@ msgid "Connect to Server"
 msgstr "Сервер рүү холбох"
 
 #: src/nautilus-connect-server-dialog.c:191
-msgid "Link _Name:"
+#, fuzzy
+msgid "Link _name:"
 msgstr "Холбоосын _Нэр:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -5440,8 +6068,12 @@ msgid "Behavior"
 msgstr "Шинж байдал "
 
 #: src/nautilus-file-management-properties.glade.h:45
-msgid "Choose the order of information to appear beneath icon names. More information will appear when zooming in closer."
-msgstr "Эмблемийн нэрийн дор үзүүлэх мэдээллийн дарааллыг сонго. Ойртуулан томруулах тусам илүү олон мэдээлэл үзэж болно."
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"information will appear when zooming in closer."
+msgstr ""
+"Эмблемийн нэрийн дор үзүүлэх мэдээллийн дарааллыг сонго. Ойртуулан томруулах "
+"тусам илүү олон мэдээлэл үзэж болно."
 
 #: src/nautilus-file-management-properties.glade.h:46
 msgid "Choose the order of information to appear in the list view."
@@ -5639,8 +6271,13 @@ msgid "Go To:"
 msgstr "Тийш явах:"
 
 #: src/nautilus-location-bar.c:154
+#, fuzzy, c-format
+msgid "Do you want to view %d location?"
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] "Дараагийн очсон хаяг (байршил) руу очих"
+msgstr[1] "Дараагийн очсон хаяг (байршил) руу очих"
+
 #: src/nautilus-location-bar.c:170
-#, c-format
 msgid "View in Multiple Windows?"
 msgstr "Олон цонхонд харуулах уу?"
 
@@ -5669,7 +6306,9 @@ msgid "Only create windows for explicitly specified URIs."
 msgstr "Зөвхөн тусгай зааж өгсөн URI-уудад цонх зохиох."
 
 #: src/nautilus-main.c:195
-msgid "Do not manage the desktop (ignore the preference set in the preferences dialog)."
+msgid ""
+"Do not manage the desktop (ignore the preference set in the preferences "
+"dialog)."
 msgstr "Ажлын дэлгэцийг удирдахгүй (тохируулгын тухай мэдээллийг үл тоох)."
 
 #: src/nautilus-main.c:197
@@ -5689,37 +6328,35 @@ msgid "File Manager"
 msgstr "Файл менежер"
 
 #. Set initial window title
-#: src/nautilus-main.c:240
-#: src/nautilus-spatial-window.c:301
-#: src/nautilus-window-menus.c:602
-#: src/nautilus-window.c:173
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:301
+#: src/nautilus-window-menus.c:602 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Наутилус"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "Наутилус: --ШАЛГАХ нь URIs-ийн хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
-msgstr "Наутилус: --ШАЛГАХ нь бусад сонголтуудын хамт хэрэглэгдэж болохгүй байна.\n"
+msgstr ""
+"Наутилус: --ШАЛГАХ нь бусад сонголтуудын хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "Наутилус: --Гаралт нь URI-ийн хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
-msgstr "Наутилус: --Дахин Эхлүүлэх үйлдэл нь URI-ийн хамт хэрэглэгдэж болохгүй байна.\n"
+msgstr ""
+"Наутилус: --Дахин Эхлүүлэх үйлдэл нь URI-ийн хамт хэрэглэгдэж болохгүй "
+"байна.\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
-msgstr "Наутилус: --Хэлбэр хэмжээ нь нэгээс олон тооны URI-ийн хамт хэрэглэгдэж болохгүй байна.\n"
+msgstr ""
+"Наутилус: --Хэлбэр хэмжээ нь нэгээс олон тооны URI-ийн хамт хэрэглэгдэж "
+"болохгүй байна.\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
@@ -5745,7 +6382,9 @@ msgid "Clear History"
 msgstr "Үйл явцын хураангуй"
 
 #: src/nautilus-navigation-window-menus.c:427
-msgid "Do you want to remove any bookmarks with the non-existing location from your list?"
+msgid ""
+"Do you want to remove any bookmarks with the non-existing location from your "
+"list?"
 msgstr "Та энэ байршилтай холбоотой бүх тэмдэглэгээг жагсаалтаасаа хасах уу?"
 
 #: src/nautilus-navigation-window-menus.c:429
@@ -5783,7 +6422,9 @@ msgstr "Энэ цонхны статус харуулдаг самбарын ү�
 
 #: src/nautilus-navigation-window-ui.xml.h:6
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Очих байршлын цэс болон Урагшлах/Ухрах командад хадгалагдсан жагсаалтыг цэвэрлэх"
+msgstr ""
+"Очих байршлын цэс болон Урагшлах/Ухрах командад хадгалагдсан жагсаалтыг "
+"цэвэрлэх"
 
 #: src/nautilus-navigation-window-ui.xml.h:7
 msgid "Close _All Windows"
@@ -5800,10 +6441,11 @@ msgstr "_Сервер лүү холбогдож байна..."
 
 #: src/nautilus-navigation-window-ui.xml.h:11
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Энэ цэсэн дэх хаягийн тэмдэглэгээнүүдийг тохируулж засварлахад ашигладаг цонхыг үзүүлэх"
+msgstr ""
+"Энэ цэсэн дэх хаягийн тэмдэглэгээнүүдийг тохируулж засварлахад ашигладаг "
+"цонхыг үзүүлэх"
 
-#: src/nautilus-navigation-window-ui.xml.h:12
-#: src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:12 src/nautilus-shell-ui.xml.h:10
 msgid "Find"
 msgstr "Хайх"
 
@@ -5841,8 +6483,7 @@ msgstr "_Хаягийн(байршлын) цонх"
 msgid "Reload"
 msgstr "Шинээр ачаалах"
 
-#: src/nautilus-navigation-window-ui.xml.h:21
-#: src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:21 src/nautilus-shell-ui.xml.h:18
 msgid "Search this computer for files"
 msgstr "Энэ компьютер дотор файл хайх"
 
@@ -5918,8 +6559,7 @@ msgstr "Х_ог"
 msgid "_Up"
 msgstr "_Дээш"
 
-#: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-navigation-window-ui.xml.h:39 src/nautilus-shell-ui.xml.h:48
 msgid "_View"
 msgstr "_Харах"
 
@@ -5928,8 +6568,7 @@ msgid "Information"
 msgstr "Мэдээлэл"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-navigation-window.c:701
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-navigation-window.c:701 src/nautilus-shell-ui.xml.h:27
 msgid "View as..."
 msgstr "Дараах хэлбэрээр харах:..."
 
@@ -5940,7 +6579,9 @@ msgstr "Файл хөтөч: %s"
 
 #: src/nautilus-navigation-window.c:1117
 msgid "One of the side panels encountered an error and can't continue."
-msgstr "Аль нэг хажуугийн самбар алдаатай тулгаран цааш үргэлжлүүлэн ажиллах боломжгүй байна."
+msgstr ""
+"Аль нэг хажуугийн самбар алдаатай тулгаран цааш үргэлжлүүлэн ажиллах "
+"боломжгүй байна."
 
 #: src/nautilus-navigation-window.c:1118
 msgid "Unfortunately I couldn't tell which one."
@@ -5949,7 +6590,9 @@ msgstr "Харамсалтай нь яг ямар нь гэдгийг би то�
 #: src/nautilus-navigation-window.c:1121
 #, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "%s хажуугийн самбар алдаатай тулгаран цааш үргэлжлүүлэн ажиллах боломжгүй байна."
+msgstr ""
+"%s хажуугийн самбар алдаатай тулгаран цааш үргэлжлүүлэн ажиллах боломжгүй "
+"байна."
 
 #: src/nautilus-navigation-window.c:1122
 msgid "If this keeps happening, you might want to turn this panel off."
@@ -6062,8 +6705,7 @@ msgstr "Уучлаарай, та файлын хүчинтэй нэрийг өг
 msgid "Please try again."
 msgstr "Ахин оролдоно уу."
 
-#: src/nautilus-property-browser.c:1111
-#: src/nautilus-property-browser.c:1156
+#: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
 msgid "Couldn't Install Pattern"
 msgstr "Хэвийг суулгаж чадсангүй"
 
@@ -6075,8 +6717,7 @@ msgstr "Уучлаарай, та Reset-зургийг сольж болохгү�
 msgid "Reset is a special image that cannot be deleted."
 msgstr "Усгагдах боломжгүй тусгай зураг буцаж суув."
 
-#: src/nautilus-property-browser.c:1124
-#: src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
 #: src/nautilus-property-browser.c:1344
 msgid "Not an Image"
 msgstr "Зураг биш байна"
@@ -6106,14 +6747,12 @@ msgstr "Өнгийг суулгаж чадсангүй"
 msgid "Select a color to add"
 msgstr "Оуулах өнгөө сонгоно уу"
 
-#: src/nautilus-property-browser.c:1327
-#: src/nautilus-property-browser.c:1343
+#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Уучлаарай, харамсалтай нь %s хэрэглэж болохуйц зургийн файл биш байна."
 
-#: src/nautilus-property-browser.c:1328
-#: src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
 msgid "The file is not an image."
 msgstr "Файл зураг биш байна."
 
@@ -6340,7 +6979,8 @@ msgstr ""
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
-"Please make sure that the address is correct and alternatively, type in this address in the file manager directly"
+"Please make sure that the address is correct and alternatively, type in this "
+"address in the file manager directly"
 msgstr ""
 "URI %s -тай холбогдож чадсангүй\n"
 "Хаягаа зөв өгсөн эсэхээ шалгаад файлын менежерт хаягаа шууд өгөөд үзнэ үү"
@@ -6355,7 +6995,8 @@ msgstr ""
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr "Сүлжээний серверүүддээ нэг шинэ сервеер нэмж өгөн түүнийгээ холбож өгөх"
+msgstr ""
+"Сүлжээний серверүүддээ нэг шинэ сервеер нэмж өгөн түүнийгээ холбож өгөх"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
@@ -6387,8 +7028,12 @@ msgid "Display credits for the creators of Nautilus"
 msgstr "Наутилусыг зохиогчдын тухай мэдээллийг үзүүлэх"
 
 #: src/nautilus-shell-ui.xml.h:7
-msgid "Display patterns, colors, and emblems that can be used to customize appearance"
-msgstr "Дэлгэцийн үзэмжийг тохируулахад ашиглаж болохуйц хээ, өнгө, эмблемүүдийг үзүүлэх"
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+"Дэлгэцийн үзэмжийг тохируулахад ашиглаж болохуйц хээ, өнгө, эмблемүүдийг "
+"үзүүлэх"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Display the latest contents of the current location"
@@ -6430,13 +7075,11 @@ msgstr "Profiling шинээр эхлүүлэх"
 msgid "Show the contents at the normal size"
 msgstr "Агуулгыг ангийн хэмжээгээр үзүүлэх"
 
-#: src/nautilus-shell-ui.xml.h:21
-#: src/nautilus-zoom-control.c:96
+#: src/nautilus-shell-ui.xml.h:21 src/nautilus-zoom-control.c:96
 msgid "Show the contents in less detail"
 msgstr "Бага детальчилж үзүүлэх"
 
-#: src/nautilus-shell-ui.xml.h:22
-#: src/nautilus-zoom-control.c:95
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-zoom-control.c:95
 msgid "Show the contents in more detail"
 msgstr "Агуулгыг нэгд гэнэгүй үзүүлэх"
 
@@ -6670,8 +7313,11 @@ msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr " »%s«-ийг харуулж чадахгүй, учир нь \"%s\" хост олдсонгүй."
 
 #: src/nautilus-window-manage-views.c:1324
-msgid "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Таны итгэмжилэгчийн тохируулгууд бүрэн зөв болоод хостын нэр зөв бичигдсэн эсэхийг шалгана уу."
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr ""
+"Таны итгэмжилэгчийн тохируулгууд бүрэн зөв болоод хостын нэр зөв бичигдсэн "
+"эсэхийг шалгана уу."
 
 #: src/nautilus-window-manage-views.c:1331
 msgid "Check that your proxy settings are correct."
@@ -6679,20 +7325,32 @@ msgstr "Таны итгэмжилэгчийн тохируулгууд бүрэ�
 
 #: src/nautilus-window-manage-views.c:1336
 #, c-format
-msgid "Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser."
-msgstr "Наутилус SMB masterхөтөчтэй холбогдож чадаагүй тул »%s«-ийг харуулж чадахгүй байна."
+msgid ""
+"Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
+"browser."
+msgstr ""
+"Наутилус SMB masterхөтөчтэй холбогдож чадаагүй тул »%s«-ийг харуулж чадахгүй "
+"байна."
 
 #: src/nautilus-window-manage-views.c:1339
 msgid "Check that an SMB server is running in the local network."
 msgstr "Дотоод сүлжээнд SMB сервер ажиллаж байгаа эсэхийг шалгана уу."
 
 #: src/nautilus-window-manage-views.c:1349
-msgid "Searching is unavailable right now, because you either have no index, or the search service isn't running."
-msgstr "Яг одоо хайлт хийх боломжгүй. Учир нь та ямар ч индекс тодорхойлж өгөөгүй эсвэл хайлтын үйлчилгээ ажиллахгүй байна гэсэн үг."
+msgid ""
+"Searching is unavailable right now, because you either have no index, or the "
+"search service isn't running."
+msgstr ""
+"Яг одоо хайлт хийх боломжгүй. Учир нь та ямар ч индекс тодорхойлж өгөөгүй "
+"эсвэл хайлтын үйлчилгээ ажиллахгүй байна гэсэн үг."
 
 #: src/nautilus-window-manage-views.c:1352
-msgid "Be sure that you have started the Medusa search service, and if you don't have an index, that the Medusa indexer is running."
-msgstr "Та Medusa-хайлтын системийг эхлүүлсэн эсэх эсвэл индексгүй бол Медузагийн индексчлэл явагдаж буй эсэхийг шалгана уу."
+msgid ""
+"Be sure that you have started the Medusa search service, and if you don't "
+"have an index, that the Medusa indexer is running."
+msgstr ""
+"Та Medusa-хайлтын системийг эхлүүлсэн эсэх эсвэл индексгүй бол Медузагийн "
+"индексчлэл явагдаж буй эсэхийг шалгана уу."
 
 #: src/nautilus-window-manage-views.c:1354
 msgid "Searching Unavailable"
@@ -6727,8 +7385,7 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:599
-#: src/nautilus-window-menus.c:600
+#: src/nautilus-window-menus.c:599 src/nautilus-window-menus.c:600
 msgid "Translator Credits"
 msgstr ""
 "Монгол хөрвүүлэг (анхны оролдлого):\n"
@@ -6737,8 +7394,12 @@ msgstr ""
 "Санлигийн Бадрал <badral@openmn.org>"
 
 #: src/nautilus-window-menus.c:605
-msgid "Nautilus is a graphical shell for GNOME that makes it easy to manage your files and the rest of your system."
-msgstr "Наутилус бол таны файлуудыг болоод таны системийн удирдлагыг хялбарчлах GNOME-ийн график Shell бүрхүүл юм."
+msgid ""
+"Nautilus is a graphical shell for GNOME that makes it easy to manage your "
+"files and the rest of your system."
+msgstr ""
+"Наутилус бол таны файлуудыг болоод таны системийн удирдлагыг хялбарчлах "
+"GNOME-ийн график Shell бүрхүүл юм."
 
 #: src/nautilus-window-toolbars.c:365
 msgid "Go back a few pages"
@@ -6801,3 +7462,5 @@ msgstr "Сүлжээний серверүүд"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Наутилусын файл менежерээр дамжуулан Сүлжээний серверүүдийг харах."
 
+#~ msgid "File name"
+#~ msgstr "Файлын нэр"

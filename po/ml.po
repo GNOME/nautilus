@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:nautilus.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
@@ -970,6 +970,7 @@ msgstr "തിരനോട്ടം"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "പേര‍്"
@@ -1823,13 +1824,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "തെരഞ്ഞെടുത്ത ലക്കം വിടുവിക്കുക"
 
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "ചവറ്റുകുട്ട‌"
-
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
 msgstr "ഇങ്ങോട്ട് മാറ്റുക"
@@ -2541,16 +2535,16 @@ msgstr "ചവറുകള്‌ ഒഴിപ്പിക്കുന്നു"
 msgid "Preparing to Empty the Trash..."
 msgstr "ചവറുകള്‌ ഒഴിപ്പിക്കാന്‌ തയ്യാറെടുക്കുന്നു..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "താങ്കള്‌ സന്ദ‍ര്ശിച്ച സ്ഥാന-പ്പട്ടിക കളയേണ്ടതുണ്ടോ?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "കളയുക"
 
@@ -2723,7 +2717,7 @@ msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2796,6 +2790,12 @@ msgstr "ബന്ധം"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "ബന്ധം (പൊട്ടിയ)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "ചവറ്റുകുട്ട‌"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -3047,51 +3047,51 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "തെരഞ്ഞെടുക്കല് ചതുരം"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "വാചക അറ"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "തെരഞ്ഞെടുക്കാത്ത വാചകത്തിന‍് ചുറ്റും ചട്ടക്കുട് വരയ്‍ക്കുക"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടി നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടിയുടെ നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടി ആല്‌ഫ"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടിയുടെ സുതാര്യത"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "പ്രസ്ഫുരണ ആല്‌ഫ"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "തിരഞ്ഞെടുത്ത ചിഹ്നത്തിന് വേണ്ടിയുള്ള പ്രസ്ഫുരണത്തിന്റെ അതാര്യത"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "ഇരുണ്ട നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "തെളിഞ്ഞ നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr ""
 
@@ -3823,7 +3823,7 @@ msgstr ""
 msgid "File Management"
 msgstr "രചനാ നടത്തിപ്പ്"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "ആസ്ഥാന-കൂട്"
 
@@ -3967,31 +3967,31 @@ msgstr "പശ്ചാത്തലം"
 msgid "Empty Trash"
 msgstr "ചവറ് കളയുക"
 
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "%d ജാലകം തുറക്കണോ?"
 msgstr[1] "%d ജാലകം തുറക്കണോ?"
 
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "താങ്കള്‌ക്ക് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "താങ്കള്‌ക്ക് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -3999,38 +3999,38 @@ msgid_plural ""
 msgstr[0] "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 msgstr[1] "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "തെറഞ്ഞെടുത്ത് എല്ലാ ഇനങ്ങളും സ്ഥായിയായി നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "മാതൃകകള്"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "മാതൃകകള്"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" തെരഞ്ഞെടുത്തൂ"
 
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d കൂടുകള്‌ തെരഞ്ഞെടുത്തൂ"
 msgstr[1] "%d കൂടുകള്‌ തെരഞ്ഞെടുത്തൂ"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4038,19 +4038,19 @@ msgstr[0] " (%d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്
 msgstr[1] " (%d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്നു)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (ആകെ %d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്നു)"
 msgstr[1] " (ആകെ %d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" തെരഞ്ഞെടുത്തൂ (%s)"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4058,14 +4058,14 @@ msgstr[0] "%d ഇനങ്ങള്‌ തെരഞ്ഞെടുത്തൂ(%
 msgstr[1] "%d ഇനങ്ങള്‌ തെരഞ്ഞെടുത്തൂ(%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d മറ്റ് ഇനങ്ങള് തെരഞ്ഞെടുത്തൂ(%s)"
 msgstr[1] "%d മറ്റ് ഇനങ്ങള് തെരഞ്ഞെടുത്തൂ(%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, c-format
 msgid "%s, Free space: %s"
 msgstr ""
@@ -4077,7 +4077,7 @@ msgstr ""
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4086,53 +4086,53 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "ധാരാളം രചനകള്‌‌"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "ഉടനെ നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "താങ്കള്‌ക്ക് ചവറ്റ്കുട്ടയില് നിന്നും \"%s\" എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4143,53 +4143,53 @@ msgid_plural ""
 msgstr[0] "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 msgstr[1] "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "ചവറ്റുകുട്ടയില്‌ നിന്ന് നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "തെരഞ്ഞെടുത്ത ഇനങ്ങള്‌ തുറക്കാന്‌ \"%s\" ഉപയോഗിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "മറ്റ് അനുപ്രയോഗങ്ങള്‌"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "അനുപ്രയോഗങ്ങള്‌"
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" തെരഞ്ഞെടുത്ത ഇനങ്ങളില് പ്രവ‍ര്ത്തിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "നിര്‍ദ്ദേശ-സംഹിത‌കളെപ്പറ്റി"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4211,20 +4211,20 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "\"%s\" മാറ്റി സ്ഥാപിക്കപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" പക‍ര്ത്തപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4237,7 +4237,7 @@ msgstr[1] ""
 "%d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് മാറ്റി സ്ഥാപിക്കപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം "
 "തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4248,159 +4248,159 @@ msgstr[0] ""
 msgstr[1] ""
 "%d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് പക‍ര്ത്തപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "ഒട്ടുവലകയില്‌ ഒട്ടിക്കാന്‌ അവിടെ ഒന്നുമില്ല"
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "നിഷ്കാസനം"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "വാല്യം അണ്‌മൌണ്ട് ചെയ്യുക"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "പുതിയ ജാലകത്തില് തുറക്കുക"
 msgstr[1] "പുതിയ ജാലകത്തില് തുറക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "ചവറ്റുകുട്ടയില്‌ നിന്ന് നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "തെറഞ്ഞെടുത്ത് എല്ലാ ഇനങ്ങളും സ്ഥായിയായി നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് നീക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "തെരഞ്ഞെടുത്ത ഓരോ ഇനങ്ങളും ചവറ്റുകുട്ടയിലേക്ക് നീക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "ബന്ധം സ്ഥാപിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "ബന്ധം സ്ഥാപിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "ചവറ് കളയുക"
 
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "മുറിപ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "മുറിപ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "പക‍ര്പ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "പക‍ര്പ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "താങ്കള്‌ സന്ദ‍ര്ശിച്ച സ്ഥാന-പ്പട്ടിക കളയേണ്ടതുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 msgid "This link can't be used, because it has no target."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "പൊട്ടിയ കണ്ണി"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "സഞ്ചരണം അല്ലെങ്കില്‌ പ്രദ‍ര്ശനം?"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "കല്പ്പനാസ്ഥാനത്ത് പ്രവ‍ര്ത്തിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "പ്രദ‍ര്ശനം"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "നടപ്പിലാക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" തുറക്കുന്നു"
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "തുറക്കുന്നത് റദ്ദാക്കണോ?"
 
@@ -4605,33 +4605,29 @@ msgstr "ചിഹ്നംങ്ങളുടെ യഥാര്ത്ഥ വല�
 msgid "Restore Icon's Original Si_ze"
 msgstr "ചിഹ്നം യഥാര്ത്ഥ വലിപ്പത്തില് കൊണ്ടു വരിക"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" ല് ചൂണ്ടി കാണിച്ചിരിക്കുന്നു"
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "വലിക്കുന്നതും ഇടുന്നതും തകരാറ്"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "ഒരു തെറ്റായ തരമാണ‍് ഉപയോഗിച്ചത്."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "രചനാനാമം"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -4683,7 +4679,7 @@ msgid "Images Only"
 msgstr "ഛായാ ചിത്രങ്ങള്‌ മാത്രം"
 
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 #, fuzzy
 msgid "Properties"
 msgstr "ഗുണഗണങ്ങള്‌"
@@ -5150,42 +5146,42 @@ msgstr "(ഒഴിഞ്ഞ)"
 msgid "Loading..."
 msgstr "കാത്തിരിക്കൂ..."
 
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 #, fuzzy
 msgid "Open"
 msgstr "തുറക്കുക"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "പക‍ര്പ്പ്"
 
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "ഒട്ടിപ്പ്‌"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് നീക്കുക"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr ""
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr ""
 
@@ -5806,7 +5802,7 @@ msgstr "ശൃംഖലാ സേവനം"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "പേര‍്:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7312,6 +7308,9 @@ msgstr "ശൃംഖലാ സേവനം"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
+
+#~ msgid "File name"
+#~ msgstr "രചനാനാമം"
 
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "തെരഞ്ഞെടുത്ത വാചകത്തിനുവേണ്ടി Google-ല്‌ തെരയുക"

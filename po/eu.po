@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
@@ -996,6 +996,7 @@ msgstr "Aurrekoa"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Izena"
@@ -1891,13 +1892,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "Ezin da uneko gaia ezabatu"
 
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "Zakarrontzia"
-
 #: libnautilus-private/nautilus-dnd.c:615
 #, fuzzy
 msgid "_Move here"
@@ -2672,17 +2666,17 @@ msgstr "Zakarrontzia husten"
 msgid "Preparing to Empty the Trash..."
 msgstr "Zakarrontzia husteko prestatzen..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
 "Ziur zaude Zakarrontziko elementu guztiak betiko ezabatu nahi dituzula?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 #, fuzzy
 msgid "_Empty"
 msgstr "Hustu"
@@ -2855,7 +2849,7 @@ msgid "%m/%d/%y"
 msgstr "%y-%m-%d"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2933,6 +2927,12 @@ msgstr "esteka"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "esteka (hautsita)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "Zakarrontzia"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 #, fuzzy
@@ -3195,56 +3195,56 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "Hautatutako ikonoa tiragarri egiten du"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 #, fuzzy
 msgid "Frame Text"
 msgstr "Itsatsi testua"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 #, fuzzy
 msgid "Selection Box Color"
 msgstr "Edukien _fitxako hautapena"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 #, fuzzy
 msgid "Color of the selection box"
 msgstr "Etxeko helbidera joaten da"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 #, fuzzy
 msgid "Selection Box Alpha"
 msgstr "Hautatu dena"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 #, fuzzy
 msgid "Dark Info Color"
 msgstr "Artelazki beltza"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr ""
 
@@ -4043,7 +4043,7 @@ msgstr ""
 msgid "File Management"
 msgstr "Fitxategi-jabea:"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 #, fuzzy
 msgid "Home Folder"
 msgstr "Karpeta berria"
@@ -4205,31 +4205,31 @@ msgstr "Atzeko planoa"
 msgid "Empty Trash"
 msgstr "Hustu zakarrontzia"
 
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "%d leiho ireki?"
 msgstr[1] "%d leiho ireki?"
 
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "Ziur zaude \"%s\" behin betiko ezabatu nahi duzula?"
 
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Honek %d leiho irekiko ditu. Ziur zaude hori egin nahi duzula?"
 msgstr[1] "Honek %d leiho irekiko ditu. Ziur zaude hori egin nahi duzula?"
 
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Ziur zaude \"%s\" behin betiko ezabatu nahi duzula?"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4237,38 +4237,38 @@ msgid_plural ""
 msgstr[0] "Ziur zaude hautatutako %d elementuak betiko ezabatu nahi dituzula?"
 msgstr[1] "Ziur zaude hautatutako %d elementuak betiko ezabatu nahi dituzula?"
 
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "Hautatutako elementu guztiak behin betiko ezabatzen ditu"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "Ezabatu?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "Hautatu kategoria bat:"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "Ereduak"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" hautatuta"
 
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d karpeta hautatuta"
 msgstr[1] "%d karpeta hautatuta"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4276,19 +4276,19 @@ msgstr[0] " (%d elementu ditu)"
 msgstr[1] " (%d elementu ditu)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (guztira %d elementu ditu)"
 msgstr[1] " (guztira %d elementu ditu)"
 
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" hautatuta (%s)"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4296,14 +4296,14 @@ msgstr[0] "%d elementu hautatuta (%s)"
 msgstr[1] "%d elementu hautatuta (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "beste %d elementu hautatuta (%s)"
 msgstr[1] "beste %d elementu hautatuta (%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "Estilo librea"
@@ -4315,7 +4315,7 @@ msgstr "Estilo librea"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4324,52 +4324,52 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "\"%s\" karpetak Nautilus-ek maneiatzeko baino fitxategi gehiago ditu.  "
 "Fitxategietako batzuk ez dira bistaratuko. "
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "Fitxategi gehiegi"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Ezin da \"%s\" Zakarrontzira eraman.Berehala ezabatu nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Ezin da \"%s\" Zakarrontzira eraman.Berehala ezabatu nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Ezin da \"%s\" Zakarrontzira eraman.Berehala ezabatu nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "Berehala ezabatu?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ziur zaude \"%s\" Zakarrontzitik behin betiko ezabatu nahi duzula?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4384,39 +4384,39 @@ msgstr[1] ""
 "Ziur zaude hautatutako %d elementuak Zakarrontzitik betiko ezabatu nahi "
 "dituzula?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "Zakarrontzitik ezabatu?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Erabili \"%s\" hautatutako elementua irekitzeko"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Beste _Aplikazio bat..."
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "_Aplikazio bat..."
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Exekutatu \"%s\" hautatutako elementuetan"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
@@ -4424,7 +4424,7 @@ msgstr ""
 "menuan.  Menuko script bat aukeratzen baduzu, script hori exekutatuko da "
 "hautatutako edozein elementu sarrera moduan erabilita. "
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4434,11 +4434,11 @@ msgstr ""
 "menuan.  Menuko script bat aukeratzen baduzu, script hori exekutatuko da "
 "hautatutako edozein elementu sarrera moduan erabilita. "
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "Script-ei buruz"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4480,21 +4480,21 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: uneko leihoaren kokalekua eta tamaina"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, \"%s\" lekuz aldatuko da"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, \"%s\" kopiatu egingo da"
 
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4507,7 +4507,7 @@ msgstr[1] ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, hautatutako %d elementuak "
 "lekuz aldatuko dira"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4520,178 +4520,178 @@ msgstr[1] ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, hautatutako %d  elementuak "
 "kopiatu egingo dira"
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Arbelean ez dago itsasteko ezer."
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "Errorea muntatzean"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "Errorea desmuntatzean"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "Errorea muntatzean"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #, fuzzy
 msgid "E_ject"
 msgstr "Exekutatu"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 #, fuzzy
 msgid "_Unmount Volume"
 msgstr "Desmuntatu bolumena"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Ireki leiho berrian"
 msgstr[1] "Ireki leiho berrian"
 
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "Karpeta berria"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "Karpeta berria"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 #, fuzzy
 msgid "_Delete from Trash"
 msgstr "Ezabatu _Zakarrontzitik"
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "Hautatutako elementu guztiak behin betiko ezabatzen ditu"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 #, fuzzy
 msgid "Mo_ve to Trash"
 msgstr "Eraman Zakarrontzira"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Hautatutako elementu guztiak Zakarrontzira eramaten ditu"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 #, fuzzy
 msgid "_Delete"
 msgstr "Ezabatu"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 #, fuzzy
 msgid "Ma_ke Links"
 msgstr "Sortu _Estekak"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 #, fuzzy
 msgid "Ma_ke Link"
 msgstr "Sortu esteka"
 
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Hustu zakarrontzia"
 
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "Eb_aki fitxategia"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Eb_aki fitxategiak"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "_Kopiatu fitxategia"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Kopiatu fitxategiak"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "Esteka hori ezin da erabili, helbururik ez duelako.  Zakarrontzira eraman "
 "nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
 "Esteka hori ezin da erabili, helbururik ez duelako.  Zakarrontzira eraman "
 "nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Esteka hori ezin da erabili, bere helburua (\"%s\") ez dagoelako. "
 "Zakarrontzira eraman nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "Esteka hautsita"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "\"%s\" testu-fitxategi exekutagarria da.  Exekutatu nahi duzu edo bere "
 "edukia bistaratu?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, fuzzy, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "Testu-fitxategi exekutagarriak"
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "Exekutatu edo Bistaratu?"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 #, fuzzy
 msgid "Run in _Terminal"
 msgstr "Terminal berria"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 #, fuzzy
 msgid "_Display"
 msgstr "Bistaratu"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 #, fuzzy
 msgid "_Run"
 msgstr "Exekutatu"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" irekitzen"
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "Irekitzea bertan behera utzi?"
 
@@ -4910,36 +4910,31 @@ msgstr "Berrezarri ikonoen jatorrizko tamaina"
 msgid "Restore Icon's Original Si_ze"
 msgstr "Berrezarri iko_noaren jatorrizko tamaina"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" seinalatzen"
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr ""
 "Arrastatu eta jaregitea fitxategi-sistema lokalekin bakarrik egin daiteke."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Arrastatu eta jaregitea fitxategi-sistema lokalekin bakarrik egin daiteke."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Errorea arrastatu eta jaregitean"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Arrastatze-mota baliogabea erabili da."
-
-#: src/file-manager/fm-list-view.c:1052
-#, fuzzy
-msgid "File name"
-msgstr "Fitxategi-jabea:"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5009,7 +5004,7 @@ msgid "Images Only"
 msgstr "Irudiak bakarrik"
 
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 #, fuzzy
 msgid "Properties"
 msgstr "%s - Propietateak"
@@ -5568,41 +5563,41 @@ msgstr "Hustu"
 msgid "Loading..."
 msgstr "_Helbidea..."
 
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 msgid "Open"
 msgstr "Ireki"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "Ezin da karpeta irakurri"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "Ezin da karpeta irakurri"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "Kopiatu fitxategiak"
 
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "izen gabeko karpeta"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "Eraman _Zakarrontzira"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr ""
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr ""
 
@@ -6315,7 +6310,7 @@ msgstr "Netraverse"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "Gunearen izena:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7947,6 +7942,10 @@ msgstr "Netraverse"
 #, fuzzy
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"
+
+#, fuzzy
+#~ msgid "File name"
+#~ msgstr "Fitxategi-jabea:"
 
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "Bilatu Google-n hautatutako testua"

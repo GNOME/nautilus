@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.gnome-2-4.hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2003-10-14 21:51+0200\n"
 "Last-Translator: Gabor Sari <saga@chello.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -1192,6 +1192,7 @@ msgstr "Előnézet"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Név"
@@ -2147,16 +2148,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "A kötet nem törölhető"
 
-# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4751
-# libnautilus-private/nautilus-trash-directory.c:301
-# src/file-manager/fm-desktop-icon-view.c:65
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "Kuka"
-
 # libnautilus-private/nautilus-program-chooser.c:1338
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
@@ -3071,17 +3062,17 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Felkészülés a kuka ürítésére..."
 
 # libnautilus-private/nautilus-file-operations.c:2311
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Tényleg véglegesen törölni akarod a Kukában található elemeket?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
 # libnautilus-private/nautilus-file-operations.c:2314
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "Ü_rítés"
 
@@ -3277,7 +3268,7 @@ msgstr "%y/%m/%d"
 
 # libnautilus-private/nautilus-file.c:3401
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3368,6 +3359,15 @@ msgstr "link"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "link (törött)"
+
+# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4751
+# libnautilus-private/nautilus-trash-directory.c:301
+# src/file-manager/fm-desktop-icon-view.c:65
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "Kuka"
 
 # libnautilus-private/nautilus-global-preferences.c:987
 #: libnautilus-private/nautilus-global-preferences.c:102
@@ -3642,55 +3642,55 @@ msgid "The selection rectangle"
 msgstr "A kijelölés téglalapja"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Szöveg bekeretezése"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Keret rajzolása a ki nem jelölt szöveg köré"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Kijelölődoboz színe"
 
 # src/nautilus-shell-ui.xml.h:28
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "A kijelölődoboz színe"
 
 # src/nautilus-shell-ui.xml.h:92
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "A kijelölődoboz alfa csatornája"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "A kijelölődoboz átlátszósága"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Kivilágítás alfája"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1030
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "A kijelölt ikonok kivilágításának átlátszósága"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Világos információszín"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Sötét háttér előtt használt szín az információs üzenetekhez"
 
 # data/browser.xml.h:21
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Sötét információszín"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Világos háttér előtt használt szín az információs üzenetekhez"
 
@@ -4623,7 +4623,7 @@ msgid "File Management"
 msgstr "Fájlkezelés"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "Saját mappa"
 
@@ -4808,7 +4808,7 @@ msgid "Empty Trash"
 msgstr "Kuka ürítése"
 
 # src/file-manager/fm-directory-view.c:468
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
@@ -4816,13 +4816,13 @@ msgstr[0] "%d ablak megnyitása?"
 msgstr[1] "%d ablak megnyitása?"
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "Biztosan véglegesen törölni akarod a következőt: \"%s\"?"
 
 # src/file-manager/fm-directory-view.c:466
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -4830,13 +4830,13 @@ msgstr[0] "Ez %d ablakot fog megnyitni. Biztosan ezt akarod?"
 msgstr[1] "Ez %d ablakot fog megnyitni. Biztosan ezt akarod?"
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Biztosan véglegesen törölni akarod a következőt: \"%s\"?"
 
 # src/file-manager/fm-directory-view.c:2641
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4845,39 +4845,39 @@ msgstr[0] "Biztosan véglegesen törölni akarod a %d kijelölt elemet?"
 msgstr[1] "Biztosan véglegesen törölni akarod a %d kijelölt elemet?"
 
 # src/file-manager/fm-directory-view.c:3191
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "Minden kijelölt elem végleges törlése"
 
 # src/file-manager/fm-directory-view.c:2607
 # src/file-manager/fm-directory-view.c:2648
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "Törlés?"
 
 # src/nautilus-property-browser.c:2012
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "Kategória választása:"
 
 # src/nautilus-property-browser.c:2068
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "Minták:"
 
 # src/file-manager/fm-directory-view.c:1224
 # src/file-manager/fm-directory-view.c:1189
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" kijelölve"
 
 # src/file-manager/fm-directory-view.c:1229
 # src/file-manager/fm-directory-view.c:1194
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -4885,7 +4885,7 @@ msgstr[0] "%d mappa kijelölve"
 msgstr[1] "%d mappa kijelölve"
 
 # src/file-manager/fm-directory-view.c:1204
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4894,7 +4894,7 @@ msgstr[1] " (%d elemet tartalmaz)"
 
 # src/file-manager/fm-directory-view.c:1204
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -4902,14 +4902,14 @@ msgstr[0] " (összesen %d elemet tartalmaz)"
 msgstr[1] " (összesen %d elemet tartalmaz)"
 
 # src/file-manager/fm-directory-view.c:1215
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" kijelölt (%s)"
 
 # src/file-manager/fm-directory-view.c:1254
 # src/file-manager/fm-directory-view.c:1219
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4918,14 +4918,14 @@ msgstr[1] "%d elem kijelölve (%s)"
 
 # src/file-manager/fm-directory-view.c:1229
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "még %d elem kijelölve (%s)"
 msgstr[1] "még %d elem kijelölve (%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "Szabad hely:"
@@ -4938,7 +4938,7 @@ msgstr "Szabad hely:"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4948,59 +4948,59 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "A mappában (\"%s\") több fájl van, mint amennyivel a Nautilus meg tud "
 "birkózni. Nem jelenik meg minden fájl."
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
 # src/file-manager/fm-directory-view.c:1392
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "Túl sok fájl"
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "\"%s\" nem helyezhető át a Kukába. Törölni akarod most rögtön?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "\"%s\" nem helyezhető át a Kukába. Törölni akarod most rögtön?"
 
 # src/file-manager/fm-directory-view.c:2589
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "\"%s\" nem helyezhető át a Kukába. Törölni akarod most rögtön?"
 
 # src/file-manager/fm-directory-view.c:2606
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "Törlés azonnal?"
 
 # src/file-manager/fm-directory-view.c:2637
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Biztosan véglegesen törölni akarod a következőt a Kukából: \"%s\"?"
 
 # src/file-manager/fm-directory-view.c:2641
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -5011,46 +5011,46 @@ msgid_plural ""
 msgstr[0] "Biztosan véglegesen törölni akarod a %d kijelölt elemet a Kukából?"
 msgstr[1] "Biztosan véglegesen törölni akarod a %d kijelölt elemet a Kukából?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
 # src/file-manager/fm-directory-view.c:2647
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "Törlés a Kukából?"
 
 # src/file-manager/fm-directory-view.c:2920
 # src/file-manager/fm-directory-view.c:2961
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Használd a következőt a kijelölt elem megnyitásához: \"%s\""
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Más _alkalmazás..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "Egy _alkalmazás..."
 
 # src/file-manager/fm-directory-view.c:2920
 # src/file-manager/fm-directory-view.c:2961
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" futtatása minden kijelölt elemre"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
@@ -5058,7 +5058,7 @@ msgstr ""
 "menü alatt. Ha kiválasztasz egy programot a menüből, lefuttathatod bármelyik "
 "kijelölt elemmel (a kijelölt elem lesz a program bemenete)."
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -5068,11 +5068,11 @@ msgstr ""
 "menü alatt. Ha kiválasztasz egy programot a menüből, lefuttathatod bármelyik "
 "kijelölt elemmel (a kijelölt elem lesz a program bemenete)."
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "Programok névjegye"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -5113,16 +5113,16 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: a jelenlegi ablak helyzete és mérete"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "\"%s\" áthelyezésére akkor kerül sor, ha kiválasztod a Fájl beillesztése "
 "parancsot a menüből"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
@@ -5130,7 +5130,7 @@ msgstr ""
 "parancsot a menüből"
 
 # src/file-manager/fm-directory-view.c:2594
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -5143,7 +5143,7 @@ msgstr[1] ""
 "A %d kijelölt elem akkor kerül áthelyezésre, ha kiválasztod a Fájl "
 "beillesztése parancsot a menüből"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -5156,43 +5156,43 @@ msgstr[1] ""
 "A %d kijelölt elem akkor kerül másolásra, ha kiválasztod a Fájl beillesztése "
 "parancsot a menüből"
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nincs semmi a vágólapon."
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "Hiba beillesztéskor"
 
 # libnautilus-private/nautilus-volume-monitor.c:1308
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "Hiba leválasztáskor"
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "Hiba beillesztéskor"
 
 # src/file-manager/fm-properties-window.c:1966
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "_Kiadás"
 
 # src/file-manager/fm-desktop-icon-view.c:1042
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "Kötet _leválasztása"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:20
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
@@ -5200,61 +5200,61 @@ msgstr[0] "Megnyitás új _ablakban"
 msgstr[1] "Megnyitás új _ablakban"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "Saját mappa"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "Saját mappa"
 
 # src/file-manager/fm-directory-view.c:3197
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "Törlés a _kukából"
 
 # src/file-manager/fm-directory-view.c:3191
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "Minden kijelölt elem végleges törlése"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:13
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Át_helyezés a kukába"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Minden kijelölt elem áthelyezése a Kukába"
 
 # src/file-manager/fm-directory-view.c:2607
 # src/file-manager/fm-directory-view.c:2648
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Törlés"
 
 # src/file-manager/fm-directory-view.c:3235
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "_Kapcsok létrehozása"
 
 # src/file-manager/fm-directory-view.c:3429
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "_Kapocs létrehozása"
 
 # src/file-manager/fm-directory-view.c:3255
 # src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Kuka ürítése"
@@ -5263,7 +5263,7 @@ msgstr "_Kuka ürítése"
 # components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 # components/sample/nautilus-sample-content-view-ui.xml.h:4
 # src/nautilus-shell-ui.xml.h:77
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "_Fájl kivágása"
 
@@ -5271,24 +5271,24 @@ msgstr "_Fájl kivágása"
 # components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 # components/sample/nautilus-sample-content-view-ui.xml.h:4
 # src/nautilus-shell-ui.xml.h:77
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "_Fájlok kivágása"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:73
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "Fájl _másolása"
 
 # libnautilus-private/nautilus-file-operations.c:1848
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "Fájlok _másolása"
 
 # src/file-manager/fm-directory-view.c:3420
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
@@ -5296,7 +5296,7 @@ msgstr ""
 "kapcsot a Kukába?"
 
 # src/file-manager/fm-directory-view.c:3420
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
@@ -5304,7 +5304,7 @@ msgstr ""
 "kapcsot a Kukába?"
 
 # src/file-manager/fm-directory-view.c:3423
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
@@ -5312,52 +5312,52 @@ msgstr ""
 "létezik. Áthelyezed a kapcsot a Kukába?"
 
 # src/file-manager/fm-directory-view.c:3429
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "Törött kapocs"
 
 # src/file-manager/fm-directory-view.c:3483
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "\"%s\" egy futtatható szövegfájl. Végre szeretnéd hajtani az utasításokat, "
 "melyeket tartalmaz, vagy meg szeretnéd nézni a tartalmát?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
 # src/file-manager/fm-directory-view.c:3489
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "Futtatás vagy megtekintés?"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "_Futtatás terminálban"
 
 # src/file-manager/fm-directory-view.c:3491
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "_Megjelenítés"
 
 # src/file-manager/fm-directory-view.c:3490
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "_Futtatás"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:791
 # src/file-manager/fm-directory-view.c:3672
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" megnyitása"
 
 # src/file-manager/fm-directory-view.c:3678
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "Mégsem nyitod meg?"
 
@@ -5617,34 +5617,29 @@ msgid "Restore Icon's Original Si_ze"
 msgstr "Ikon eredeti méretének viss_zaállítása"
 
 # src/file-manager/fm-icon-view.c:1440
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "erre mutat: \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "A Drag'n'Drop csak helyi fájlrendszereken támogatott."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "A Drag'n'Drop csak helyi fájlrendszereken támogatott."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Drag'n'Drop hiba"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Érvénytelen elhúzott típus."
-
-# src/file-manager/fm-properties-window.c:1910
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Fájlnév"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5724,7 +5719,7 @@ msgstr "Csak képek"
 
 # src/file-manager/fm-properties-window.c:519
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Tulajdonságok"
 
@@ -6352,47 +6347,47 @@ msgid "Loading..."
 msgstr "Betöltés..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:40
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 #, fuzzy
 msgid "Open"
 msgstr "_Megnyitás"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "Mappa _létrehozása"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "Mappa _létrehozása"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:73
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "Fájl _másolása"
 
 # libnautilus-private/nautilus-file-operations.c:2092
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "_Fájlok beillesztése a mappába"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:13
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "Át_helyezés a kukába"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr "Fájlrendszer"
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr "Hálózatok"
 
@@ -7180,7 +7175,7 @@ msgstr "Hálózati kiszolgálók"
 # src/nautilus-bookmarks-window.c:164
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "_Név:"
 
 # src/nautilus-location-bar.c:62
@@ -9049,6 +9044,10 @@ msgstr "Hálózati kiszolgálók"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "_Parancsfájlok megtekintése a rájuk kattintáskor"
+
+# src/file-manager/fm-properties-window.c:1910
+#~ msgid "File name"
+#~ msgstr "Fájlnév"
 
 # components/text/services/google.xml.h:1
 #~ msgid "Search Google for Selected Text"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2003-06-25 09:40+0700\n"
 "Last-Translator: Yohanes Nugroho <yohanes@opensource.or.id>\n"
 "Language-Team: Indonesia <sukarelawan@gnome.linux.or.id>\n"
@@ -991,6 +991,7 @@ msgstr "Preview"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nama"
@@ -1991,13 +1992,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "Tidak bisa menghapus volume"
 
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "Tong Sampah"
-
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
 msgstr "_Pindahkan ke sini"
@@ -2769,17 +2763,17 @@ msgstr "Mengosongkan Tong Sampah"
 msgid "Preparing to Empty the Trash..."
 msgstr "Mempersiapkan Pengosongan Tong Sampah"
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
 "Apakah Anda yakin ingin menghapus secara permanan semua objek di Tong Sampah?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Kosongkan"
 
@@ -2952,7 +2946,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3030,6 +3024,12 @@ msgstr "link"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "link (terputus)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "Tong Sampah"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -3281,51 +3281,51 @@ msgstr "apakah akan disorot (highlight) ketika bisa Drag &Drop"
 msgid "The selection rectangle"
 msgstr "Kotak seleksi"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Teks Frame"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Gambar frame disekeliling teks yang tidak dipilih"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Warna Kotak Seleksi"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Warna untuk kotak seleksi"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Nilai alfa untuk kotak seleksi"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Tingkat transparansi kotak seleksi"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Nilai Alfa Untuk Highgligt"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Tingkat transparansi ikon terpilih"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Warna Teks Cerah"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Warna yang digunakan untuk teks dengan latar belakang gelap"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Warna Teks Gelap"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Warna yang digunakan untuk teks dengan latar belakang cerah"
 
@@ -4133,7 +4133,7 @@ msgstr "Mengubah bagaimana file dimanajemeni"
 msgid "File Management"
 msgstr "Manajemen File"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "Folder Home"
 
@@ -4282,19 +4282,19 @@ msgstr "Latar Belakang"
 msgid "Empty Trash"
 msgstr "Kosongkan Tong Sampah"
 
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "Buka %d Window?"
 msgstr[1] "Buka %d Window?"
 
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "Apa Anda yakin ingin menghapus \"%s\" secara permanen?"
 
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -4303,12 +4303,12 @@ msgstr[0] ""
 msgstr[1] ""
 "Ini akan membuka %d window terpisah. Apa Anda yakin ingin melakukan ini?"
 
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Apa Anda yakin ingin menghapus \"%s\" secara permanen?"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4318,38 +4318,38 @@ msgstr[0] ""
 msgstr[1] ""
 "Apa Anda yakin ingin menghapus %d objek yang terpilih secara permanen?"
 
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "Hapus semua objek terpilih secara permanan"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "Hapus?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "Pilih Sebuah Kategori:"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "_Pola"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" terpilih"
 
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d folder dipilih"
 msgstr[1] "%d folder dipilih"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4357,19 +4357,19 @@ msgstr[0] " (mengandung %d objek)"
 msgstr[1] " (mengandung %d objek)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (total mengandung %d objek)"
 msgstr[1] " (total mengandung %d objek)"
 
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" diipilih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4377,14 +4377,14 @@ msgstr[0] "%d objek diipilih (%s)"
 msgstr[1] "%d objek diipilih (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d objek lain dipilih (%s)"
 msgstr[1] "%d objek lain dipilih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "Ruang kosong:"
@@ -4396,7 +4396,7 @@ msgstr "Ruang kosong:"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4405,41 +4405,41 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Folder \"%s \" memiliki jumlah file lebih dari yang dapat ditangani "
 "Nautilus. Beberapa file tidak akan ditampilkan."
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "Terlalu Banyak File"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "\"%s\" tidak bisa dipindahkan ke Tong Sampah. Apakah Anda ingin langsung "
 "menghapusnya?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "\"%s\" tidak bisa dipindahkan ke Tong Sampah. Apakah Anda ingin langsung "
 "menghapusnya?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
@@ -4447,17 +4447,17 @@ msgstr ""
 "\"%s\" tidak bisa dipindahkan ke Tong Sampah. Apakah Anda ingin langsung "
 "menghapusnya?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "Hapus Segera?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr ""
 "Apakah Anda yakin ingin menghapus \"%s\" secara permanen dari Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4470,39 +4470,39 @@ msgstr[0] ""
 msgstr[1] ""
 "Apakah Anda yakin ingin mengapus %d objek terpilih dari Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "Hapus dari Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Gunakan \"%s\" untuk membuka objek terpilih"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "_Aplikasi Lain..."
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "Sebuah _Aplikasi..."
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Jalankan \"%s\" pada objek terpilih manapun"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
@@ -4510,7 +4510,7 @@ msgstr ""
 "sebuah skrip dari menu itu akan menjalankan skrip itu dengan input file yang "
 "terpilih"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4520,11 +4520,11 @@ msgstr ""
 "sebuah skrip dari menu itu akan menjalankan skrip itu dengan input file yang "
 "terpilih"
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "About Scripts"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4565,19 +4565,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ukuran dan posisi window saat ini"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" akan dipindahkan jika Anda memilih perintah Paste File"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" akan disalin jika Anda memilih perintah Paste File"
 
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4590,7 +4590,7 @@ msgstr[1] ""
 "%d objek yang Anda pilih akan dipindahkan jika Anda memilih perintah Paste "
 "File"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4601,168 +4601,168 @@ msgstr[0] ""
 msgstr[1] ""
 "%d objek yang Anda pilih akan disalin jika Anda memilih perintah Paste File"
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Clipboard kosong, tidak ada yang bisa dipaste"
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "Mount Error"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "Unmount Error"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "Mount Error"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "E_ject"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Unmount Volume"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Buka dalam W_indow Baru"
 msgstr[1] "Buka dalam W_indow Baru"
 
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "Folder Home"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "Folder Home"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "_Hapus dari Tong Sampah"
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "Hapus semua objek terpilih secara permanan"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Pindahkan ke Tong _Sampah"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Pindahkan setiap item terpilih ke Tong Sampah"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Hapus"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "Buat _Link"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Buat _Link"
 
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Kosongkan Tong Sampah"
 
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "Cu_t File"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Cu_t File"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "_Salin File"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Salin File"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "Link ini tidak bisa dipakai, karena tidak punya target. Apakah Anda ingin "
 "memindahkan link ini ke Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
 "Link ini tidak bisa dipakai, karena tidak punya target. Apakah Anda ingin "
 "memindahkan link ini ke Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Link ini tidak bisa dipakai, karena targetnya \"%s\" hilang. Apakah Anda "
 "ingin memindahkan link ini ke Tong Sampah?"
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "Link Rusak"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "\"%s\" adalah file teks yang dapat dieksekusi. Anda ingin menjalankannya, "
 "atau melihat isinya?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "Jalankan atau Tampilkan"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "Jalankan di _Terminal"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "_Tampilkan"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "_Jalankan"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Membuka \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "Batalkan Pembukaan File?"
 
@@ -4976,33 +4976,29 @@ msgstr "Kembalikan ukuran asli ikon"
 msgid "Restore Icon's Original Si_ze"
 msgstr "Kembalikan ukuran asli ikon"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "menunjuk ke \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "Drag and drop hanya didukung di file sistem lokal."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Drag and drop hanya didukung di file sistem lokal."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Drag and Drop error"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Tipe drag yang tidak valid digunakan"
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Nama File"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5072,7 +5068,7 @@ msgid "Images Only"
 msgstr "Hanya Gambar"
 
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Properti"
 
@@ -5608,42 +5604,42 @@ msgstr "(Kosong)"
 msgid "Loading..."
 msgstr "Meload...."
 
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 #, fuzzy
 msgid "Open"
 msgstr "_Buka"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "Folder Home"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "Folder Home"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "_Salin File"
 
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "_Paste File"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "Pindahkan ke Tong _Sampah"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr ""
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr ""
 
@@ -6324,7 +6320,7 @@ msgstr "Server jaringan"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "_Nama"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7884,6 +7880,9 @@ msgstr "Server jaringan"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Lihat Server Jaringan Anda di file manager Nautilus"
+
+#~ msgid "File name"
+#~ msgstr "Nama File"
 
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "Cari teks terpilih di Google"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.2 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-11 12:30+0100\n"
 "PO-Revision-Date: 2003-03-20 09:00+0600\n"
 "Last-Translator: Progga <abulfazl@juniv.edu>\n"
 "Language-Team: Bangla <gnome-translation@bengalinux.org>\n"
@@ -1024,6 +1024,7 @@ msgstr "প্রাকদর্শন"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "নাম"
@@ -1962,13 +1963,6 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "ভলিউমটিকে মোছা যাচ্ছে না"
 
-#: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
-#: libnautilus-private/nautilus-trash-directory.c:343
-msgid "Trash"
-msgstr "আবর্জনার বাক্স"
-
 #: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
 msgstr "এখানে সরিয়ে আনো (_এ)"
@@ -2746,16 +2740,16 @@ msgstr "আবর্জনার বাক্স খালি করা হচ�
 msgid "Preparing to Empty the Trash..."
 msgstr "আবর্জনার বাক্স খালি করার জন্য প্রস্তুতি নেয়া হচ্ছে..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "আপনি কি নিশ্চিত যে আবর্জনার বাক্সের সবকিছু আপনি স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "ফাঁকা করা হোক (_ক)"
 
@@ -2932,7 +2926,7 @@ msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1813
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3010,6 +3004,12 @@ msgstr "লিঙ্ক"
 #: libnautilus-private/nautilus-file.c:4704
 msgid "link (broken)"
 msgstr "লিঙ্ক (অচল)"
+
+#: libnautilus-private/nautilus-file.c:5999
+#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-trash-directory.c:343
+msgid "Trash"
+msgstr "আবর্জনার বাক্স"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -3263,58 +3263,58 @@ msgstr "টেনে এনে রেখে দেয়ার জন্য আম�
 msgid "The selection rectangle"
 msgstr "চিহ্নিত করার সময় ব্যবহৃত চতুর্ভূজ"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "ফ্রেম টেক্সট"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "যেসব টেক্সট চিহ্নিত করা হয়নি তার চারদিকে একটি ফ্রেম আঁকুন"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "বাছাই করার বাক্সের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "বাছাই করার বাক্সের রং"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "বাছাই করার বাক্স আলফা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "বাছাই করার বাক্সের অস্বচ্ছতা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "আলফাকে চিহ্নিত করা হোক"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "আইকন চিহ্নিত করার ক্ষেত্রে অস্বচ্ছতা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "হালকা রঙে প্রদর্শিত তথ্যের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "গাঢ় পটভূমির প্রেক্ষাপটে তথ্য প্রদর্শনে ব্যবহৃত রং"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "গাঢ় রঙে প্রদর্শিত তথ্যের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "হালকা পটভূমির প্রেক্ষাপটে তথ্য প্রদর্শনে ব্যবহৃত রং"
 
@@ -4137,7 +4137,7 @@ msgstr "ফাইল ব্যবস্থাপনার পদ্ধতি প
 msgid "File Management"
 msgstr "ফাইল ব্যবস্থাপনা"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
 msgid "Home Folder"
 msgstr "প্রথম (Home) ফোল্ডার"
 
@@ -4288,31 +4288,31 @@ msgstr "পটভূমি"
 msgid "Empty Trash"
 msgstr "আবর্জনার বাক্স ফাঁকা করা হোক"
 
-#: src/file-manager/fm-directory-view.c:536
+#: src/file-manager/fm-directory-view.c:539
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "%dটি উইন্ডো কি চালু করা হবে?"
 msgstr[1] "%dটি উইন্ডো কি চালু করা হবে?"
 
-#: src/file-manager/fm-directory-view.c:537
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "আপনি কি \"%s\"'কে স্থায়ীভাবে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "এটি %dটি পৃথক উইন্ডো চালু করবে। আপনি কি এই কাজটির ব্যাপারে নিশ্চিত?"
 msgstr[1] "এটি %dটি পৃথক উইন্ডো চালু করবে। আপনি কি এই কাজটির ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:885
+#: src/file-manager/fm-directory-view.c:888
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "আপনি কি \"%s\"'কে স্থায়ীভাবে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:892
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4320,38 +4320,38 @@ msgid_plural ""
 msgstr[0] "আপনি চিহ্নিত করা %dটি ফাইল/ফোল্ডারকে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 msgstr[1] "আপনি চিহ্নিত করা %dটি ফাইল/ফোল্ডারকে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:897
+#: src/file-manager/fm-directory-view.c:900
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "চিহ্নিত সবকিছুকে স্থায়ীভাবে মুছে ফেলো"
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:901
 msgid "Delete?"
 msgstr "মুছে ফেলা হবে কি?"
 
-#: src/file-manager/fm-directory-view.c:1037
+#: src/file-manager/fm-directory-view.c:1040
 #, fuzzy
 msgid "Select Pattern"
 msgstr "কোন একটি শ্রেণী বেছে নিন:"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1056
 #, fuzzy
 msgid "_Pattern:"
 msgstr "প্যাটার্ন:"
 
-#: src/file-manager/fm-directory-view.c:1738
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\"'কে চিহ্নিত করা হয়েছে"
 
-#: src/file-manager/fm-directory-view.c:1740
+#: src/file-manager/fm-directory-view.c:1747
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%dটি ফোল্ডার চিহ্নিত করা হয়েছে"
 msgstr[1] "%dটি ফোল্ডার চিহ্নিত করা হয়েছে"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1757
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4359,19 +4359,19 @@ msgstr[0] " (%d সংখ্যক ফাইল/ফোল্ডার ধার�
 msgstr[1] " (%d সংখ্যক ফাইল/ফোল্ডার ধারণ করছে)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1761
+#: src/file-manager/fm-directory-view.c:1768
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (সর্বমোট %dটি ফাইল/ফোল্ডার ধারণ করছে)"
 msgstr[1] " (সর্বমোট %dটি ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1777
+#: src/file-manager/fm-directory-view.c:1784
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" চিহ্নিত করা হয়েছে (%s)"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1788
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4379,14 +4379,14 @@ msgstr[0] "%d সংখ্যক ফাইল/ফোল্ডার চিহ্
 msgstr[1] "%d সংখ্যক ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1796
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "আরো %dটি  ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
 msgstr[1] "আরো %dটি  ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
 
-#: src/file-manager/fm-directory-view.c:1810
+#: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "ফাঁকা জায়গা"
@@ -4398,7 +4398,7 @@ msgstr "ফাঁকা জায়গা"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1835
+#: src/file-manager/fm-directory-view.c:1842
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4407,41 +4407,41 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1967
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "\"%s\" ফোল্ডারে যে সংখ্যক ফাইল আছে তা প্রদর্শন করা ননটিলাসর পক্ষে সম্ভব নয়। তাই "
 "কিছু ফাইলকে প্রদর্শন করা হবে না। দুঃখিত।"
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1973
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Too Many Files"
 msgstr "ফাইলের সংখ্যা অত্যধিক"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3242
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "\"%s\"'কে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এটিকে এখনই স্থায়ীভাবে "
 "মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3243
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3247
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "\"%s\"'কে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এটিকে এখনই স্থায়ীভাবে "
 "মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3250
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
@@ -4449,17 +4449,17 @@ msgstr ""
 "\"%s\"'কে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এটিকে এখনই স্থায়ীভাবে "
 "মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
 msgstr "এখনই কি স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3289
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr ""
 "আপনি কি নিশ্চিতভাবে আবর্জনার বাক্স থেকে \"%s\"'কে স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3293
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4474,39 +4474,39 @@ msgstr[1] ""
 "আপনি কি নিশ্চিতভাবে আবর্জনার বাক্স থেকে %dটি চিহ্নিত ফাইল/ফোল্ডারকে স্থায়ীভাবে মুছে "
 "ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3302
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3303
 msgid "Delete From Trash?"
 msgstr "আবর্জনার বাক্স থেকে কি মুছে ফেলা হবে?"
 
-#: src/file-manager/fm-directory-view.c:3659
+#: src/file-manager/fm-directory-view.c:3666
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "চিহ্নিত ফাইল ব্যবহারের জন্য \"%s\" ব্যবহার করা হোক"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "অন্যান্য অ্যাপলিকে_শন..."
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3730
 msgid "An _Application..."
 msgstr "এ_কটি অ্যাপলিকেশন..."
 
-#: src/file-manager/fm-directory-view.c:4074
+#: src/file-manager/fm-directory-view.c:4081
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "কোন একটি চিহ্নিত ফাইলের জন্য \"%s\" চালানো হোক"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4492
+#: src/file-manager/fm-directory-view.c:4499
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
@@ -4514,7 +4514,7 @@ msgstr ""
 "স্ক্রিপ্ট বেছে নিলে তা যে কোন চিহ্নিত ফাইলকে ইনপুট হিসেবে ব্যবহার করে চলতে আরম্ভ "
 "করবে।"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4501
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4524,11 +4524,11 @@ msgstr ""
 "স্ক্রিপ্ট বেছে নিলে তা যে কোন চিহ্নিত ফাইলকে ইনপুট হিসেবে ব্যবহার করে চলতে আরম্ভ "
 "করবে।"
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4503
 msgid "About Scripts"
 msgstr "স্ক্রিপ্ট সম্পর্কিত"
 
-#: src/file-manager/fm-directory-view.c:4497
+#: src/file-manager/fm-directory-view.c:4504
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4569,19 +4569,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: বর্তমান উইন্ডোর আকার ও অবস্থান"
 
-#: src/file-manager/fm-directory-view.c:4627
-#: src/file-manager/fm-tree-view.c:786
+#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "ফাইল পেস্ট (Paste) করার কমান্ড দিলে \"%s\"'কে স্থানান্তর করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4631
-#: src/file-manager/fm-tree-view.c:790
+#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "ফাইল পেস্ট (Paste) করার কমান্ড দিলে \"%s\"'কে কপি করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4638
+#: src/file-manager/fm-directory-view.c:4646
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4592,7 +4592,7 @@ msgstr[0] ""
 msgstr[1] ""
 "ফাইল পেস্ট (Paste) করার কমান্ড দিলে চিহ্নিত %dটি ফাইল/ফোল্ডারকে স্থানান্তর করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4653
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4603,171 +4603,171 @@ msgstr[0] ""
 msgstr[1] ""
 "ফাইল পেস্ট (Paste) করার কমান্ড দিলে চিহ্নিত %dটি ফাইল/ফোল্ডারকে কপি করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4727
-#: src/file-manager/fm-tree-view.c:866
+#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "ক্লিপবোর্ডে পেস্ট (Paste) করার মত কিছু নেই"
 
-#: src/file-manager/fm-directory-view.c:4829
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:4838
+#: src/file-manager/fm-directory-view.c:5849
 msgid "Mount Error"
 msgstr "মাউন্ট করায় সমস্যা"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4900
 msgid "Unmount Error"
 msgstr "আনমাউন্ট করায় সমস্যা"
 
-#: src/file-manager/fm-directory-view.c:4894
+#: src/file-manager/fm-directory-view.c:4903
 #, fuzzy
 msgid "Eject Error"
 msgstr "মাউন্ট করায় সমস্যা"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 msgid "E_ject"
 msgstr "বে_র করে দেয়া হোক"
 
-#: src/file-manager/fm-directory-view.c:5118
+#: src/file-manager/fm-directory-view.c:5127
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "ফাইল সিস্টেম _আনমাউন্ট করা হোক"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/fm-tree-view.c:958
+#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "নতুন উইন্ডোতে চালু করো"
 msgstr[1] "নতুন উইন্ডোতে চালু করো"
 
-#: src/file-manager/fm-directory-view.c:5204
+#: src/file-manager/fm-directory-view.c:5265
 #, fuzzy
 msgid "Browse Folder"
 msgstr "প্রথম (Home) ফোল্ডার"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5267
 #, fuzzy
 msgid "Browse Folders"
 msgstr "প্রথম (Home) ফোল্ডার"
 
-#: src/file-manager/fm-directory-view.c:5229
+#: src/file-manager/fm-directory-view.c:5290
 msgid "_Delete from Trash"
 msgstr "আবর্জনার বাক্স থেকে _মুছে ফেলো"
 
-#: src/file-manager/fm-directory-view.c:5231
+#: src/file-manager/fm-directory-view.c:5292
 msgid "Delete all selected items permanently"
 msgstr "চিহ্নিত সবকিছুকে স্থায়ীভাবে মুছে ফেলো"
 
-#: src/file-manager/fm-directory-view.c:5234
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5295
+#: src/file-manager/fm-directory-view.c:5633
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "আবর্জনার বাক্সে স্থানান্তর করো (_স)"
 
-#: src/file-manager/fm-directory-view.c:5236
+#: src/file-manager/fm-directory-view.c:5297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "প্রতিটি চিহ্নিত ফাইল/ফোল্ডারকে আবর্জনার বাক্সে স্থানান্তর করো"
 
-#: src/file-manager/fm-directory-view.c:5260
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "মুছে ফেলো (_ম)"
 
-#: src/file-manager/fm-directory-view.c:5280
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Ma_ke Links"
 msgstr "লিঙ্কসমূহ তৈরি করো (_র)"
 
-#: src/file-manager/fm-directory-view.c:5281
+#: src/file-manager/fm-directory-view.c:5342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "লিঙ্ক তৈরি করো (_ল)"
 
 # HACK msgstr "লিঙ্ক তৈ_রি করা হোক"
-#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5355
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "আবর্জনার বাক্স খালি করো (_খ)"
 
 # HACK msgstr "আবর্জনার বাক্স _খালি করা হোক"
-#: src/file-manager/fm-directory-view.c:5310
+#: src/file-manager/fm-directory-view.c:5371
 msgid "Cu_t File"
 msgstr "ফাইল কাট (Cut) করো (_ট)"
 
-#: src/file-manager/fm-directory-view.c:5311
+#: src/file-manager/fm-directory-view.c:5372
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "ফাইলগুলো কাট (Cut) করো (_ট)"
 
-#: src/file-manager/fm-directory-view.c:5320
+#: src/file-manager/fm-directory-view.c:5381
 msgid "_Copy File"
 msgstr "ফাইল _কপি (Copy) করো (_ক)"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5382
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "ফাইলগুলো কপি (Copy) করা হোক (_ক)"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5624
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "কিছু নির্দেশ করে না বলে এই লিঙ্কটি অকেজো। এই লিঙ্কটিকে কি আবর্জনার বাক্সে ফেলে "
 "দেবেন?"
 
-#: src/file-manager/fm-directory-view.c:5581
+#: src/file-manager/fm-directory-view.c:5626
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
 "কিছু নির্দেশ করে না বলে এই লিঙ্কটি অকেজো। এই লিঙ্কটিকে কি আবর্জনার বাক্সে ফেলে "
 "দেবেন?"
 
-#: src/file-manager/fm-directory-view.c:5583
+#: src/file-manager/fm-directory-view.c:5628
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "এই লিঙ্কটি ব্যবহারযোগ্য নয় কারণ এটির লক্ষ্য \"%s\" এর কোন অস্তিত্ব নেই। এই লিঙ্কটিকে "
 "কি আবর্জনার বাক্সে ফেলে দেবেন?"
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5633
 msgid "Broken Link"
 msgstr "অকার্যকর লিঙ্ক"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5691
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "\"%s\" একটি এক্সিকিউটেবল (চালানো যায়, এমন) টেক্সট ফাইল। আপনি কি এটি চালাতে চান "
 "নাকি এর ভেতর যা লেখা আছে তা পড়তে চান?"
 
-#: src/file-manager/fm-directory-view.c:5648
+#: src/file-manager/fm-directory-view.c:5693
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5654
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run or Display?"
 msgstr "চালানো হবে নাকি লেখা প্রদর্শন করা হবে?"
 
-#: src/file-manager/fm-directory-view.c:5655
+#: src/file-manager/fm-directory-view.c:5700
 msgid "Run in _Terminal"
 msgstr "টার্মিনালে চালানো হোক (_ট)"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5701
 msgid "_Display"
 msgstr "প্রদর্শন (_প)"
 
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5704
 msgid "_Run"
 msgstr "চালানো হোক (_চ)"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5982
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" চালু করা হচ্ছে"
 
 # "C"
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5988
 msgid "Cancel Open?"
 msgstr "পড়ার প্রচেষ্টা কি বাতিল করা হবে?"
 
@@ -4983,35 +4983,31 @@ msgid "Restore Icon's Original Si_ze"
 msgstr "আইকনের প্রকৃত আকার ব্যবহার করা হোক (_ক)"
 
 # HACK msgstr "আইকনের প্রকৃত আ_কার ব্যবহার করা হোক"
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" এর প্রতি নির্দেশ করা হচ্ছে"
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "টেনে এনে ফেলে দেয়ার প্রক্রিয়া শুধুমাত্র স্থানীয় ফাইল সিস্টেমের ক্ষেত্রে প্রযোজ্য।"
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "টেনে এনে ফেলে দেয়ার প্রক্রিয়া শুধুমাত্র স্থানীয় ফাইল সিস্টেমের ক্ষেত্রে প্রযোজ্য।"
 
 # "C" - "টেনে এনে ফেলে দেয়া"র ব্যাপারটা খুব একটা পছন্দ হচ্ছে না।
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "টেনে এনে ফেলে দেয়ার প্রক্রিয়ায় সমস্যা"
 
 # "C"
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "টেনে আনার সময় ভুল পদ্ধতি অবলম্বন করা হয়েছে।"
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "ফাইলের নাম"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5085,7 +5081,7 @@ msgstr "শুধুমাত্র ছবি"
 
 # HACK msgstr "ফাইল _পেস্ট (Paste) করা হোক"
 #: src/file-manager/fm-properties-window.c:914
-#: src/file-manager/fm-tree-view.c:1051
+#: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "বৈশিষ্ট্যাবলি"
 
@@ -5629,43 +5625,43 @@ msgid "Loading..."
 msgstr "আসিতেছে..."
 
 # HACK msgstr "_নতুন ফোল্ডার"
-#: src/file-manager/fm-tree-view.c:947
+#: src/file-manager/fm-tree-view.c:949
 #, fuzzy
 msgid "Open"
 msgstr "প্রদর্শন (_প)"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
+#: src/file-manager/fm-tree-view.c:973
 #, fuzzy
 msgid "Create Folder"
 msgstr "নতুন ফোল্ডার তৈরি করো (_ফ)"
 
-#: src/file-manager/fm-tree-view.c:987
+#: src/file-manager/fm-tree-view.c:989
 #, fuzzy
 msgid "Cut Folder"
 msgstr "নতুন ফোল্ডার তৈরি করো (_ফ)"
 
-#: src/file-manager/fm-tree-view.c:1001
+#: src/file-manager/fm-tree-view.c:1003
 #, fuzzy
 msgid "Copy Folder"
 msgstr "ফাইল _কপি (Copy) করো (_ক)"
 
 # HACK msgstr "যে ফোল্ডারে স্ক্রিপ্টসমূহ আছে তা _দেখানো হোক"
-#: src/file-manager/fm-tree-view.c:1015
+#: src/file-manager/fm-tree-view.c:1017
 #, fuzzy
 msgid "Paste Files into Folder"
 msgstr "ফোল্ডারের মধ্যে ফাইল পেস্ট (Paste) করা হোক (_প)"
 
-#: src/file-manager/fm-tree-view.c:1033
+#: src/file-manager/fm-tree-view.c:1035
 #, fuzzy
 msgid "Move to Trash"
 msgstr "আবর্জনার বাক্সে স্থানান্তর করো (_স)"
 
-#: src/file-manager/fm-tree-view.c:1086
+#: src/file-manager/fm-tree-view.c:1088
 msgid "Filesystem"
 msgstr "ফাইলসিস্টেম"
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1090
 msgid "Network Neighbourhood"
 msgstr "নেটওয়ার্ক নেইবরহুড"
 
@@ -6383,7 +6379,7 @@ msgstr "নেটওয়ার্ক সার্ভার"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "নাম (_ন):"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7989,6 +7985,9 @@ msgstr "নেটওয়ার্ক সার্ভার"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "ব্যবহৃত নেটওয়ার্ক সার্ভারগুলোকে নটনটিলাসাইল ম্যানেজারে প্রদর্শন করা হোক"
+
+#~ msgid "File name"
+#~ msgstr "ফাইলের নাম"
 
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "চিহ্নিত টেক্সটের ওপর গুগল (Google)-এ অনুসন্ধান করা হোক"

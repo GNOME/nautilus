@@ -322,7 +322,9 @@ load_thumbnail_frame (NautilusIconFactory *factory)
 	if (factory->thumbnail_frame != NULL) {
 		g_object_unref (factory->thumbnail_frame);
 	}
-	factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
+	if (image_path != NULL) {
+		factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
+	}
 	g_free (image_path);
 }
 
