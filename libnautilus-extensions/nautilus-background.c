@@ -23,6 +23,8 @@
 */
 
 #include <config.h>
+#include <ctype.h>
+
 #include "nautilus-background.h"
 
 #include <gtk/gtksignal.h>
@@ -333,36 +335,114 @@ draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 }
 
 /* draw the background on the anti-aliased canvas */
+/* we support n-point gradients by looping on the color string */
+
 void nautilus_background_draw_aa (NautilusBackground *background,
 				  GnomeCanvasBuf *buffer,
 				  int entire_width,
 				  int entire_height)
 {
-	char *start_color_spec, *end_color_spec;
+	char *start_color_spec, *current_color;
+	char *temp_str, *percentage_str; 
+	GnomeCanvasBuf save_buf;
 	guint32 start_rgb, end_rgb;
-	gboolean horizontal_gradient;
+	gboolean horizontal_gradient, more_to_do;
+	int current_width, current_height;
+	int remaining_width, remaining_height;
+	int accumulator, temp_value;
 	
 	if (!buffer->is_buf) {
 		if (background->details->combine_mode || (background->details->tile_image == NULL)) {
+			/* get the initial color */
 			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
-			end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
-			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
-
 			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
-			end_rgb = nautilus_parse_rgb_with_white_default (end_color_spec);
-		
 			g_free (start_color_spec);
-			g_free (end_color_spec);
-		
-			if (start_rgb != end_rgb) {
-				nautilus_gnome_canvas_fill_with_gradient
-					(buffer, entire_width, entire_height,
-					 start_rgb, end_rgb,
-					 horizontal_gradient);
-			} else
-				gnome_canvas_buf_ensure_buf(buffer);
+			
+			/* set up constants for the loop */
+			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
+			current_color = nautilus_strchr (background->details->color, '-');
+			more_to_do = TRUE;
+			current_width = entire_width;
+			current_height = entire_height;			
+			save_buf = *buffer;
+			
+			while (more_to_do) {
+				/* extract the next color and flag the continuation state */
+				if (current_color == NULL) {
+					end_rgb = start_rgb;
+					more_to_do = FALSE;
+				} else {
+					start_color_spec = nautilus_gradient_get_start_color_spec (current_color + 1);
+					
+					/* remove percentage specifier, if necessary */
+					percentage_str = nautilus_strchr (start_color_spec, '|');
+					if (percentage_str) {
+						*percentage_str = '\0';
+					}
+					end_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
+					g_free (start_color_spec);
+
+					temp_str = nautilus_strchr (current_color + 1, '-');
+					if (temp_str == NULL) {
+						more_to_do = FALSE;
+					} else {
+						/* extract the percentage and scale done the width or height */
+						percentage_str = nautilus_strchr (current_color, '|');
+						if (percentage_str) {
+							percentage_str += 1;
+							accumulator = 0;
+							while (isdigit (*percentage_str))  {
+								accumulator = (10 * accumulator) + (*percentage_str - '0');
+								percentage_str += 1;
+							}
+							
+							if (horizontal_gradient) {
+								temp_value = current_width * accumulator / 100;
+								remaining_width = current_width - temp_value;
+								current_width = temp_value;
+							} else {
+								temp_value = current_height * accumulator / 100;
+								remaining_height = current_height - temp_value;
+								current_height = temp_value;
+							}
+							
+							current_color = temp_str;
+							more_to_do = TRUE;
+						} else {
+							more_to_do = FALSE;
+						}
+						
+					}
+				}
+				
+				/* draw the gradient or solid color */		
+				if (start_rgb != end_rgb) {
+					nautilus_gnome_canvas_fill_with_gradient
+						(buffer, current_width, current_height,
+						 start_rgb, end_rgb,
+						 horizontal_gradient);
+				} else
+					gnome_canvas_buf_ensure_buf(buffer);
+			
+				/* set things up for the next time through, if necessary */
+				start_rgb = end_rgb;
+				/* bump the buffer pointer by the amount done */
+				if (more_to_do) {
+					if (horizontal_gradient) {
+						buffer->buf += (3 * current_width);
+						current_width = remaining_width;
+						buffer->rect.x1 = buffer->rect.x0 + remaining_width;
+					} else {
+						buffer->buf += (current_height * buffer->buf_rowstride);
+						current_height = remaining_height;
+						buffer->rect.y1 = buffer->rect.y0 + remaining_height;
+					}
+				}
+			}
+			*buffer = save_buf;
 		}
 		
+		/* draw the tiled background image if we have one */
 		if (background->details->tile_image) {
 			draw_pixbuf_tiled_aa (background->details->tile_image, buffer);
 		} 		
