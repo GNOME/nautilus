@@ -1,3 +1,10 @@
+2000-03-24  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 337 (Crash on userlevel change).
+	
+	* src/file-manager/fm-directory-view.c (user_level_changed_callback):
+	Fixed incorrect assert.
+
 2000-03-24  Andy Hertzfeld <andy@eazel.com>
 
 	moved pixbuf special effect routines into libnautilus, to prepare for
@@ -85,7 +92,7 @@
 
 2000-03-22  Darin Adler  <darin@eazel.com>
 
-	Fixed bug 334 (Need proper hit detection when hit-testing icons.
+	Fixed bug 334 (Need proper hit detection when hit-testing icons)
 
 	* libnautilus/nautilus-icon-canvas-item.c: (hit_test_pixbuf):
 	Fixed a typo-type error where we were checking every pixel of the

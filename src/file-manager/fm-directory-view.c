@@ -1877,8 +1877,7 @@ user_level_changed_callback (NautilusPreferences *preferences,
 
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_USER_LEVEL) == 0);
-	g_assert (type == NAUTILUS_PREFERENCE_BOOLEAN);
-	g_assert (GPOINTER_TO_INT (value) == FALSE || GPOINTER_TO_INT (value) == TRUE);
+	g_assert (type == NAUTILUS_PREFERENCE_ENUM);
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	directory_view = FM_DIRECTORY_VIEW (user_data);
