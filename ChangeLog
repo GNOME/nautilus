@@ -1,5 +1,15 @@
 2001-05-01  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/news/nautilus-news.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* src/nautilus-about.c:
+	* src/nautilus-sidebar-tabs.c:
+	More work on changing parameters for functions that accept and
+	return ArtIRect, EelArtIPoint, ArtDRect, EelDimensions to pass by
+	value instead of by pointer.
+
+2001-05-01  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/main.c: (main): Make warnings and criticals
 	stop in the debugger to make this beast easier to debug.
 	

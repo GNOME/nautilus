@@ -470,9 +470,10 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 			if (time_x_pos >= LOGO_LEFT_OFFSET + logo_width) {
 				time_y_pos = offset + ((gdk_pixbuf_get_height (channel_data->logo_image) - time_dimensions.height) / 2);
 				eel_scalable_font_draw_text (channel_data->owner->font, pixbuf, 
-					  time_x_pos, time_y_pos,
-					  NULL, TIME_FONT_SIZE, time_str, strlen (time_str),
-					  EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
+							     time_x_pos, time_y_pos,
+							     eel_gdk_pixbuf_whole_pixbuf,
+							     TIME_FONT_SIZE, time_str, strlen (time_str),
+							     EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
 			}
 		}
 	}
@@ -510,7 +511,7 @@ draw_rss_title (RSSChannelData *channel_data,
 	if (!measure_only) {
 		eel_scalable_font_draw_text (channel_data->owner->font, pixbuf, 
 					  label_offset, v_offset,
-					  NULL,
+					  eel_gdk_pixbuf_whole_pixbuf,
 					  18,
 					  channel_data->title, strlen (channel_data->title),
 					  EEL_RGB_COLOR_BLACK,
@@ -680,7 +681,9 @@ nautilus_news_update_display (News *news_data, gboolean measure_only)
 			return v_offset;
 		}
 		
-		eel_gdk_pixbuf_fill_rectangle_with_color (news_data->pixbuf, NULL, NEWS_BACKGROUND_RGBA);	
+		eel_gdk_pixbuf_fill_rectangle_with_color (news_data->pixbuf,
+							  eel_gdk_pixbuf_whole_pixbuf,
+							  NEWS_BACKGROUND_RGBA);	
 	}
 	
 	/* loop through the channel list, drawing one channel at a time */
@@ -712,7 +715,9 @@ nautilus_news_configure_event (GtkWidget *widget, GdkEventConfigure *event, News
 	news_data->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
 					    widget->allocation.width, widget->allocation.height);
 	
-	eel_gdk_pixbuf_fill_rectangle_with_color (news_data->pixbuf, NULL, NEWS_BACKGROUND_RGBA);	
+	eel_gdk_pixbuf_fill_rectangle_with_color (news_data->pixbuf,
+						  eel_gdk_pixbuf_whole_pixbuf,
+						  NEWS_BACKGROUND_RGBA);	
 	return TRUE;
 }
 

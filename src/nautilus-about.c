@@ -225,7 +225,7 @@ nautilus_about_repaint (GtkWidget *widget,
 	/* draw the background image */
 	if (about->details->background_pixbuf != NULL) {
 		draw_pixbuf (about->details->background_pixbuf,
-						     widget->window, 0, 0);
+			     widget->window, 0, 0);
 	}
 }
 
@@ -243,16 +243,17 @@ draw_aa_string (EelScalableFont *font,
 {
 	if (shadow_offset != 0) {
 		eel_scalable_font_draw_text (font, pixbuf,
-						  x_pos + shadow_offset, y_pos + shadow_offset,
-						  NULL,
-						  font_size,
-						  text, strlen (text),
-						  shadow_color, EEL_OPACITY_FULLY_OPAQUE);	
+					     x_pos + shadow_offset, y_pos + shadow_offset,
+					     eel_gdk_pixbuf_whole_pixbuf,
+					     font_size,
+					     text, strlen (text),
+					     shadow_color, EEL_OPACITY_FULLY_OPAQUE);	
 	}
 	
-	eel_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
-					  font_size,
-					  text, strlen (text), color, EEL_OPACITY_FULLY_OPAQUE);
+	eel_scalable_font_draw_text (font, pixbuf, x_pos, y_pos,
+				     eel_gdk_pixbuf_whole_pixbuf,
+				     font_size,
+				     text, strlen (text), color, EEL_OPACITY_FULLY_OPAQUE);
 }
 
 /* randomize_authors randomizes the order array so different names get displayed in different positions each time */
@@ -426,7 +427,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	
 	eel_gdk_pixbuf_fill_rectangle_with_color
 		(about->details->background_pixbuf,
-		 &author_area,
+		 author_area,
 		 EEL_RGBA_COLOR_PACK (255, 255, 255, 255));
 
 	/* randomize the author array */

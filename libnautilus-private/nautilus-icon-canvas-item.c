@@ -1693,12 +1693,14 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int 
  				      icon_item->details->text_height);
 	if (needs_highlight) {
 		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);	
-		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf,
+							  eel_gdk_pixbuf_whole_pixbuf,
 							  container->details->highlight_color);
 		clear_rounded_corners (text_pixbuf, container->details->highlight_frame, 5);
 		
 	} else {
-		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+		eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf,
+							  eel_gdk_pixbuf_whole_pixbuf,
 							  EEL_RGBA_COLOR_PACK (0, 0, 0, 0));
 	}
 
