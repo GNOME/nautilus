@@ -26,64 +26,7 @@ libnautilus_extensions_la_LDFLAGS=\
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 
-libnautilus_extensionsinclude_HEADERS=		\
-	nautilus-background-canvas-group.h	\
-	nautilus-drag.h				\
-	nautilus-file-changes-queue.h		\
-	nautilus-icon-canvas-item.h		\
-	nautilus-icon-dnd.h			\
-	nautilus-icon-grid.h			\
-	bonobo-stream-vfs.h			\
-	libnautilus-extensions.h		\
-	nautilus-alloc.h			\
-	nautilus-background.h			\
-	nautilus-bonobo-extensions.h		\
-	nautilus-bookmark.h			\
-	nautilus-debug.h			\
-	nautilus-directory-background.h		\
-	nautilus-directory.h			\
-	nautilus-entry.h			\
-	nautilus-file-attributes.h		\
-	nautilus-file-utilities.h		\
-	nautilus-file.h				\
-	nautilus-gdk-extensions.h		\
-	nautilus-gdk-pixbuf-extensions.h	\
-	nautilus-generous-bin.h			\
-	nautilus-glib-extensions.h		\
-	nautilus-global-preferences.h		\
-	nautilus-gnome-extensions.h		\
-	nautilus-graphic-effects.h		\
-	nautilus-gtk-extensions.h		\
-	nautilus-gtk-macros.h			\
-	nautilus-icon-container.h		\
-	nautilus-icon-factory.h			\
-	nautilus-font-factory.h			\
-	nautilus-icon-text-item.h		\
-	nautilus-keep-last-vertical-box.h	\
-	nautilus-link.h				\
-	nautilus-link-set.h			\
-	nautilus-list-column-title.h		\
-	nautilus-list.h                         \
-	nautilus-metadata.h			\
-	nautilus-mime-actions.h			\
-	nautilus-mini-icon.h			\
-	nautilus-program-chooser.h		\
-	nautilus-program-choosing.h		\
-	nautilus-self-checks.h			\
-	nautilus-string-list.h			\
-	nautilus-string.h			\
-	nautilus-undo-manager.h			\
-	nautilus-view-identifier.h		\
-	nautilus-xml-extensions.h		\
-	$(NULL)
-
 libnautilus_extensions_la_SOURCES = \
-	nautilus-icon-private.h			\
-	nautilus-file-private.h			\
-	nautilus-directory-private.h		\
-	nautilus-directory-metafile.h		\
-	nautilus-lib-self-check-functions.h	\
-	nautilus-undo-context.h			\
 	bonobo-stream-vfs.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
@@ -91,7 +34,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-bookmark.c			\
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
-	nautilus-default-file-icon.h		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
 	nautilus-directory-metafile.c		\
@@ -134,3 +76,65 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-view-identifier.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
+
+libnautilus_extensionsinclude_HEADERS = 
+
+# Everything is private for now
+noinst_HEADERS =				\
+	bonobo-stream-vfs.h			\
+	libnautilus-extensions.h		\
+	nautilus-alloc.h			\
+	nautilus-background-canvas-group.h	\
+	nautilus-background.h			\
+	nautilus-bonobo-extensions.h		\
+	nautilus-bookmark.h			\
+	nautilus-debug.h			\
+	nautilus-default-file-icon.h		\
+	nautilus-directory-background.h		\
+	nautilus-directory-metafile.h		\
+	nautilus-directory-private.h		\
+	nautilus-directory.h			\
+	nautilus-drag.h				\
+	nautilus-entry.h			\
+	nautilus-file-attributes.h		\
+	nautilus-file-changes-queue.h		\
+	nautilus-file-private.h			\
+	nautilus-file-utilities.h		\
+	nautilus-file.h				\
+	nautilus-font-factory.h			\
+	nautilus-gdk-extensions.h		\
+	nautilus-gdk-pixbuf-extensions.h	\
+	nautilus-generous-bin.h			\
+	nautilus-glib-extensions.h		\
+	nautilus-global-preferences.h		\
+	nautilus-gnome-extensions.h		\
+	nautilus-graphic-effects.h		\
+	nautilus-gtk-extensions.h		\
+	nautilus-gtk-macros.h			\
+	nautilus-icon-canvas-item.h		\
+	nautilus-icon-container.h		\
+	nautilus-icon-dnd.h			\
+	nautilus-icon-factory.h			\
+	nautilus-icon-grid.h			\
+	nautilus-icon-private.h			\
+	nautilus-icon-text-item.h		\
+	nautilus-keep-last-vertical-box.h	\
+	nautilus-lib-self-check-functions.h	\
+	nautilus-link-set.h			\
+	nautilus-link.h				\
+	nautilus-list-column-title.h		\
+	nautilus-list.h                         \
+	nautilus-metadata.h			\
+	nautilus-mime-actions.h			\
+	nautilus-mini-icon.h			\
+	nautilus-program-chooser.h		\
+	nautilus-program-choosing.h		\
+	nautilus-self-checks.h			\
+	nautilus-string-list.h			\
+	nautilus-string.h			\
+	nautilus-undo-context.h			\
+	nautilus-undo-manager.h			\
+	nautilus-view-identifier.h		\
+	nautilus-xml-extensions.h		\
+	$(NULL)
+
