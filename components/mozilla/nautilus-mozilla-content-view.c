@@ -1384,7 +1384,7 @@ pre_widget_initialize (void)
 #if (MOZILLA_MILESTONE >= 19)
 	/* this will be in Mozilla 0.8 */
 	/* Its a bug in mozilla embedding that we need to cast the const away */
-	gtk_moz_embed_set_profile_path (profile_base_path, (char *) profile_name);
+	gtk_moz_embed_set_profile_path (profile_base_path, (char *) profile_directory_name);
 #endif
 
 	g_free (cache_path);
