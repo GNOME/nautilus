@@ -421,7 +421,7 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	view->details->uri = g_strdup (uri);
 
 #ifdef DEBUG_ramiro
-	g_print ("nautilus_mozilla_content_view_load_uri (uri = %s, same = )\n", 
+	g_print ("nautilus_mozilla_content_view_load_uri (uri = %s, same = %d)\n", 
 		 view->details->uri, same_uri);
 #endif
 	/* If the request can be handled by mozilla, pass the uri as is.  Otherwise,
@@ -1266,8 +1266,6 @@ mozilla_content_view_one_time_happenings (void)
 	}
 
 	once = TRUE;
-
-	g_print ("%s()\n", __FUNCTION__);
 
 	/* Tell the security manager to allow ftp:// and file:// content through. */
 	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
