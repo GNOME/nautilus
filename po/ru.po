@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-07-20 15:01+0000\n"
-"PO-Revision-Date: 2000-07-20 15:02+00:00\n"
+"POT-Creation-Date: 2000-07-25 14:15+0000\n"
+"PO-Revision-Date: 2000-07-25 14:21+00:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,7 +395,7 @@ msgid "Pause"
 msgstr "Пауза"
 
 #: components/music/nautilus-music-view.c:1152
-#: src/file-manager/dfos-xfer.c:267 src/nautilus-window-toolbars.c:149
+#: src/file-manager/dfos-xfer.c:333 src/nautilus-window-toolbars.c:149
 msgid "Stop"
 msgstr "Стоп"
 
@@ -630,109 +630,117 @@ msgstr ""
 msgid "Could not set URLType from config file!"
 msgstr "Невозможно установить URLType из файла настроек!"
 
-#: components/services/install/lib/eazel-install-object.c:532
+#: components/services/install/lib/eazel-install-object.c:542
 msgid "Creating temporary download directory ...\n"
 msgstr "Создание временного каталога для скачивания...\n"
 
-#: components/services/install/lib/eazel-install-object.c:537
+#: components/services/install/lib/eazel-install-object.c:547
 msgid "Could not create temporary directory!\n"
 msgstr "Невозможно создать временный каталог!\n"
 
-#: components/services/install/lib/eazel-install-object.c:550
+#: components/services/install/lib/eazel-install-object.c:560
 msgid "Getting package list from remote server ...\n"
 msgstr "Получение списка пакетов с удаленного сервера...\n"
 
-#: components/services/install/lib/eazel-install-object.c:560
+#: components/services/install/lib/eazel-install-object.c:570
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Невозможно получить package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:604
+#: components/services/install/lib/eazel-install-object.c:614
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "Невозможна запись в файл %s, используется обработчик журнала по умолчанию"
 
-#: components/services/install/lib/eazel-install-object.c:623
-#: components/services/install/lib/eazel-install-object.c:647
+#: components/services/install/lib/eazel-install-object.c:633
+#: components/services/install/lib/eazel-install-object.c:657
 msgid "ftp install not supported"
 msgstr "ftp пока не поддерживается"
 
-#: components/services/install/lib/eazel-install-object.c:630
+#: components/services/install/lib/eazel-install-object.c:640
 msgid "Install failed"
 msgstr "Сбой установки"
 
-#: components/services/install/lib/eazel-install-object.c:654
+#: components/services/install/lib/eazel-install-object.c:664
 msgid "Uninstall failed"
 msgstr "Сбой удаления пакета"
 
-#: components/services/install/lib/eazel-install-protocols.c:57
-#: components/services/install/lib/eazel-install-protocols.c:147
+#: components/services/install/lib/eazel-install-protocols.c:64
+#: components/services/install/lib/eazel-install-protocols.c:154
 #, c-format
 msgid "Downloading %s..."
 msgstr "Скачивание %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:68
+#: components/services/install/lib/eazel-install-protocols.c:75
 #, c-format
 msgid "Could not open target file %s"
 msgstr "Невозможно открыть целевой файл %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:75
-#: components/services/install/lib/eazel-install-protocols.c:293
+#: components/services/install/lib/eazel-install-protocols.c:82
+#: components/services/install/lib/eazel-install-protocols.c:351
 msgid "Could not create an http request !"
 msgstr "Невозможно создать http-запрос!"
 
-#: components/services/install/lib/eazel-install-protocols.c:80
+#: components/services/install/lib/eazel-install-protocols.c:87
 msgid "Invalid uri !"
 msgstr "Неправильный uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:87
-#: components/services/install/lib/eazel-install-protocols.c:300
+#: components/services/install/lib/eazel-install-protocols.c:94
+#: components/services/install/lib/eazel-install-protocols.c:358
 msgid "Could not prepare http request !"
 msgstr "Невозможно подготовить http-запрос!"
 
-#: components/services/install/lib/eazel-install-protocols.c:91
+#: components/services/install/lib/eazel-install-protocols.c:98
 msgid "Couldn't get async mode "
 msgstr "Невозможно установить асинхронный режим"
 
-#: components/services/install/lib/eazel-install-protocols.c:112
+#: components/services/install/lib/eazel-install-protocols.c:119
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "Ошибка HTTP: %d %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:122
+#: components/services/install/lib/eazel-install-protocols.c:129
 msgid "Could not get request body!"
 msgstr "Невозможно получить тело запроса!"
 
-#: components/services/install/lib/eazel-install-protocols.c:148
+#: components/services/install/lib/eazel-install-protocols.c:155
 msgid "FTP not supported yet"
 msgstr "FTP пока не поддерживается"
 
-#: components/services/install/lib/eazel-install-protocols.c:160
+#: components/services/install/lib/eazel-install-protocols.c:167
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Проверка локального файла %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:240
+#: components/services/install/lib/eazel-install-protocols.c:247
+#: components/services/install/lib/eazel-install-protocols.c:295
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Невозможно получить URL для %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:289
+msgid "Using local protocol cannot resolve library dependencies"
+msgstr ""
+"Использование локального протокола непозволяет разрешить зависимости "
+"библиотек"
+
+#: components/services/install/lib/eazel-install-protocols.c:347
 #, c-format
 msgid "Search URL: %s"
 msgstr "Поиск URL: %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:297
+#: components/services/install/lib/eazel-install-protocols.c:355
 msgid "Invalid uri"
 msgstr "Неправильный uri"
 
-#: components/services/install/lib/eazel-install-protocols.c:308
+#: components/services/install/lib/eazel-install-protocols.c:369
+#: components/services/install/lib/eazel-install-protocols.c:373
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Невозможно запросить URL для %s"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:123
-#: components/services/install/lib/eazel-install-rpm-glue.c:314
+#: components/services/install/lib/eazel-install-rpm-glue.c:325
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Активирован режим сухого запуска. В действительности пакеты установлены не "
@@ -743,7 +751,7 @@ msgid "Reading the install package list ..."
 msgstr "Считывание списка устанавливаемых пакетов ..."
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:184
-#: components/services/install/lib/eazel-install-rpm-glue.c:289
+#: components/services/install/lib/eazel-install-rpm-glue.c:300
 #, c-format
 msgid "Category = %s"
 msgstr "Категория = %s"
@@ -753,53 +761,53 @@ msgstr "Категория = %s"
 msgid "Failed to retreive %s!"
 msgstr "Не удалось получить %s!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:267
+#: components/services/install/lib/eazel-install-rpm-glue.c:275
 #, c-format
 msgid "Category = %s, %d packages"
 msgstr "Категория = %s, %d пакетов"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:354
+#: components/services/install/lib/eazel-install-rpm-glue.c:365
 #, c-format
 msgid "Uninstalling %s"
 msgstr "Удаление %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:364
+#: components/services/install/lib/eazel-install-rpm-glue.c:375
 msgid "Package uninstall failed !"
 msgstr "Сбой удаления пакета!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:698
+#: components/services/install/lib/eazel-install-rpm-glue.c:726
 msgid "Packages database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:711
+#: components/services/install/lib/eazel-install-rpm-glue.c:739
 #, c-format
 msgid "Package %s is not installed"
 msgstr "Пакет %s не установлен"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:715
+#: components/services/install/lib/eazel-install-rpm-glue.c:743
 #, c-format
 msgid "Error finding index to %s"
 msgstr "Ошибка поиска индекса для %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:745
+#: components/services/install/lib/eazel-install-rpm-glue.c:773
 msgid "Dependency check failed."
 msgstr "Сбой проверки зависимостей."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:798
+#: components/services/install/lib/eazel-install-rpm-glue.c:826
 #, c-format
 msgid "Removing package %s"
 msgstr "Удаление пакета %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:910
+#: components/services/install/lib/eazel-install-rpm-glue.c:944
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1006
+#: components/services/install/lib/eazel-install-rpm-glue.c:1040
 msgid "RPM package database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1231
+#: components/services/install/lib/eazel-install-rpm-glue.c:1279
 #, c-format
 msgid "%s %s breaks %s"
 msgstr "%s %s остановливает %s"
@@ -807,22 +815,33 @@ msgstr "%s %s остановливает %s"
 #. If we end here, it's a conflict is going to break something
 #. FIXME: bugzilla.eazel.com 1514
 #. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1272
+#: components/services/install/lib/eazel-install-rpm-glue.c:1320
 #, c-format
 msgid "%s conflicts %s-%s"
 msgstr "%s конфликтует с %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1286
+#. FIXME bugzilla.eazel.com 1316
+#. Need to find a solid way to capture file dependencies, and once they do not
+#. appear at this point anymore, remove them. And in the end, check the list is
+#. empty.
+#.
+#. Perhaps the smartest thing is to check at the final install. We can't resolve
+#. these deps anyway, as we have on idea as to where the file is from.
+#.
+#. Or do a http search for a package providing the lib
+#.
+#: components/services/install/lib/eazel-install-rpm-glue.c:1338
+#: components/services/install/lib/eazel-install-rpm-glue.c:1346
 #, c-format
 msgid "Processing dep for %s : requires %s"
 msgstr "Обработка зависимостей для %s: требуется %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1504
+#: components/services/install/lib/eazel-install-rpm-glue.c:1575
 #, c-format
 msgid "%d dependencies failed!"
 msgstr "Сбой %d зависимостей!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1567
+#: components/services/install/lib/eazel-install-rpm-glue.c:1638
 msgid "Dependencies are ok"
 msgstr "Зависимости в порядке"
 
@@ -834,39 +853,39 @@ msgstr "*** Начало дампа пакета ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** Конец дампа пакета ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:120
+#: components/services/install/lib/eazel-install-xml-package-list.c:122
 msgid "*** No package nodes! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:122
+#: components/services/install/lib/eazel-install-xml-package-list.c:124
 msgid "*** Bailing from package parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:146
+#: components/services/install/lib/eazel-install-xml-package-list.c:148
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** Файл списка пакетов не содержит данных! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:151
+#: components/services/install/lib/eazel-install-xml-package-list.c:153
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:153
+#: components/services/install/lib/eazel-install-xml-package-list.c:155
 msgid "*** Bailing from categories parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:159
+#: components/services/install/lib/eazel-install-xml-package-list.c:161
 msgid "*** No Categories! ***\n"
 msgstr "*** Нет категорий! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:161
+#: components/services/install/lib/eazel-install-xml-package-list.c:163
 msgid "*** Bailing from category parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:273
+#: components/services/install/lib/eazel-install-xml-package-list.c:275
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Ошибка создания списка xml-пакетов! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:320
+#: components/services/install/lib/eazel-install-xml-package-list.c:322
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Ошибка считывания списка пакетов! ***\n"
 
@@ -905,77 +924,77 @@ msgstr "%A %-m/%-d/%y %-I:%M %p"
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2492
+#: libnautilus-extensions/nautilus-file.c:2509
 msgid "0 items"
 msgstr "0 элементов"
 
-#: libnautilus-extensions/nautilus-file.c:2492
+#: libnautilus-extensions/nautilus-file.c:2509
 msgid "0 directories"
 msgstr "0 каталогов"
 
-#: libnautilus-extensions/nautilus-file.c:2493
+#: libnautilus-extensions/nautilus-file.c:2510
 msgid "0 files"
 msgstr "0 файлов"
 
-#: libnautilus-extensions/nautilus-file.c:2497
+#: libnautilus-extensions/nautilus-file.c:2514
 msgid "1 item"
 msgstr "1 элемент"
 
-#: libnautilus-extensions/nautilus-file.c:2497
+#: libnautilus-extensions/nautilus-file.c:2514
 msgid "1 directory"
 msgstr "1 каталог"
 
-#: libnautilus-extensions/nautilus-file.c:2498
+#: libnautilus-extensions/nautilus-file.c:2515
 msgid "1 file"
 msgstr "1 файл"
 
-#: libnautilus-extensions/nautilus-file.c:2501
+#: libnautilus-extensions/nautilus-file.c:2518
 #, c-format
 msgid "%u items"
 msgstr "%u элементов"
 
-#: libnautilus-extensions/nautilus-file.c:2501
+#: libnautilus-extensions/nautilus-file.c:2518
 #, c-format
 msgid "%u directories"
 msgstr "%d каталогов"
 
-#: libnautilus-extensions/nautilus-file.c:2502
+#: libnautilus-extensions/nautilus-file.c:2519
 #, c-format
 msgid "%u files"
 msgstr "%u файлов"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:2819
-#: libnautilus-extensions/nautilus-file.c:2827
+#: libnautilus-extensions/nautilus-file.c:2836
+#: libnautilus-extensions/nautilus-file.c:2844
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:2819
-#: libnautilus-extensions/nautilus-file.c:2829
+#: libnautilus-extensions/nautilus-file.c:2836
+#: libnautilus-extensions/nautilus-file.c:2846
 #: src/file-manager/fm-properties-window.c:850
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:2831
+#: libnautilus-extensions/nautilus-file.c:2848
 msgid "unknown type"
 msgstr "неизвестный тип"
 
-#: libnautilus-extensions/nautilus-file.c:2833
+#: libnautilus-extensions/nautilus-file.c:2850
 msgid "unknown MIME type"
 msgstr "неизвестный MIME-тип"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:2838
+#: libnautilus-extensions/nautilus-file.c:2855
 msgid "unknown"
 msgstr "неизвестно"
 
-#: libnautilus-extensions/nautilus-file.c:2867
+#: libnautilus-extensions/nautilus-file.c:2884
 msgid "program"
 msgstr "программа"
 
-#: libnautilus-extensions/nautilus-file.c:3181
+#: libnautilus-extensions/nautilus-file.c:3198
 msgid " --"
 msgstr "--"
 
@@ -1282,16 +1301,16 @@ msgstr "Неизвестный XferOverwriteMode %d"
 msgid "Unknown XferErrorMode %d"
 msgstr "Неизвестный XferErrorMode %d"
 
-#: src/file-manager/dfos-xfer.c:198
+#: src/file-manager/dfos-xfer.c:173
 msgid "From:"
 msgstr "С:"
 
-#: src/file-manager/dfos-xfer.c:202
+#: src/file-manager/dfos-xfer.c:187
 msgid "To:"
 msgstr "По:"
 
 #. transfer error, prompt the user to continue or stop
-#: src/file-manager/dfos-xfer.c:259
+#: src/file-manager/dfos-xfer.c:325
 #, c-format
 msgid ""
 "Error %s copying file %s.\n"
@@ -1300,20 +1319,20 @@ msgstr ""
 "Ошибка %s при копировании файла %s.\n"
 "Хотите продолжить?"
 
-#: src/file-manager/dfos-xfer.c:266
+#: src/file-manager/dfos-xfer.c:332
 msgid "File copy error"
 msgstr "Ошибка копирования файла"
 
-#: src/file-manager/dfos-xfer.c:267 src/file-manager/dfos-xfer.c:313
-#: src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:333 src/file-manager/dfos-xfer.c:379
+#: src/file-manager/dfos-xfer.c:390
 msgid "Skip"
 msgstr "Пропустить"
 
-#: src/file-manager/dfos-xfer.c:267
+#: src/file-manager/dfos-xfer.c:333
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/file-manager/dfos-xfer.c:301
+#: src/file-manager/dfos-xfer.c:367
 #, c-format
 msgid ""
 "File %s already exists.\n"
@@ -1322,24 +1341,24 @@ msgstr ""
 "Файл %s уже существует.\n"
 "Хотите заменить его?"
 
-#: src/file-manager/dfos-xfer.c:312 src/file-manager/dfos-xfer.c:323
+#: src/file-manager/dfos-xfer.c:378 src/file-manager/dfos-xfer.c:389
 msgid "File copy conflict"
 msgstr "Конфликт при копировании файла"
 
-#: src/file-manager/dfos-xfer.c:313 src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:379 src/file-manager/dfos-xfer.c:390
 msgid "Replace"
 msgstr "Заменить"
 
-#: src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:390
 msgid "Replace All"
 msgstr "Заменить все"
 
-#: src/file-manager/dfos-xfer.c:378 src/file-manager/dfos-xfer.c:690
+#: src/file-manager/dfos-xfer.c:444 src/file-manager/dfos-xfer.c:762
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Неизвестный GnomeVFSXferProgressStatus %d"
 
-#: src/file-manager/dfos-xfer.c:443
+#: src/file-manager/dfos-xfer.c:509
 #, c-format
 msgid ""
 "The transfer between\n"
@@ -1356,109 +1375,121 @@ msgstr ""
 "не может быть начата:\n"
 "%s"
 
-#: src/file-manager/dfos-xfer.c:548
+#: src/file-manager/dfos-xfer.c:614
+msgid "Moving files"
+msgstr "Перемещение файлов"
+
+#: src/file-manager/dfos-xfer.c:615
+msgid "moved"
+msgstr "перемещено"
+
+#: src/file-manager/dfos-xfer.c:616 src/file-manager/dfos-xfer.c:866
 msgid "Moving"
 msgstr "Перемещение"
 
-#: src/file-manager/dfos-xfer.c:549
+#: src/file-manager/dfos-xfer.c:617
 msgid "Preparing To Move..."
 msgstr "Подготовка к перемещению..."
 
-#: src/file-manager/dfos-xfer.c:550
+#: src/file-manager/dfos-xfer.c:618
 msgid "Finishing Move..."
 msgstr "Завершение перемещения..."
 
-#: src/file-manager/dfos-xfer.c:558
+#: src/file-manager/dfos-xfer.c:627
+msgid "Copying files"
+msgstr "Копирование файлов"
+
+#: src/file-manager/dfos-xfer.c:628
+msgid "copied"
+msgstr "скопировано"
+
+#: src/file-manager/dfos-xfer.c:629
 msgid "Copying"
 msgstr "Копирование"
 
-#: src/file-manager/dfos-xfer.c:559
+#: src/file-manager/dfos-xfer.c:630
 msgid "Preparing To Copy..."
 msgstr "Подготовка к копированию..."
 
-#: src/file-manager/dfos-xfer.c:560
-msgid "Finishing Copy..."
-msgstr "Завершение копирования..."
-
-#: src/file-manager/dfos-xfer.c:576
+#: src/file-manager/dfos-xfer.c:648
 msgid "You cannot copy items into the Trash."
 msgstr "Вы не можете копировать элементы в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:577
+#: src/file-manager/dfos-xfer.c:649
 msgid "Error copying"
 msgstr "Ошибка копирования"
 
-#: src/file-manager/dfos-xfer.c:578 src/file-manager/dfos-xfer.c:597
-#: src/file-manager/dfos-xfer.c:612 src/file-manager/dfos-xfer.c:755
-#: src/file-manager/dfos-xfer.c:765
+#: src/file-manager/dfos-xfer.c:650 src/file-manager/dfos-xfer.c:669
+#: src/file-manager/dfos-xfer.c:684 src/file-manager/dfos-xfer.c:827
+#: src/file-manager/dfos-xfer.c:837
 msgid "OK"
 msgstr "OK"
 
-#: src/file-manager/dfos-xfer.c:594
+#: src/file-manager/dfos-xfer.c:666
 msgid "You cannot move the Trash."
 msgstr "Вы не можете перемещать в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:595
+#: src/file-manager/dfos-xfer.c:667
 msgid "You cannot copy the Trash."
 msgstr "Вы не можете копировать в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:596 src/file-manager/dfos-xfer.c:611
-#: src/file-manager/dfos-xfer.c:754 src/file-manager/dfos-xfer.c:764
+#: src/file-manager/dfos-xfer.c:668 src/file-manager/dfos-xfer.c:683
+#: src/file-manager/dfos-xfer.c:826 src/file-manager/dfos-xfer.c:836
 msgid "Error moving to Trash"
 msgstr "Ошибка перемещения в мусорную корзину"
 
-#: src/file-manager/dfos-xfer.c:609
+#: src/file-manager/dfos-xfer.c:681
 msgid "You cannot move an item into itself."
 msgstr "Вы не можете переместить элемент сам в себя."
 
-#: src/file-manager/dfos-xfer.c:610
+#: src/file-manager/dfos-xfer.c:682
 msgid "You cannot copy an item into itself."
 msgstr "Вы не можете скопировать элемент сам в себя."
 
-#: src/file-manager/dfos-xfer.c:753
+#: src/file-manager/dfos-xfer.c:825
 msgid "You cannot throw away the Trash."
 msgstr "Вы не можете удалить мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:760
+#: src/file-manager/dfos-xfer.c:832
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "Вы не можете поместить \"%s\" в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:792
-msgid "Moving to Trash"
-msgstr "Переместить в мусорную корзину"
+#: src/file-manager/dfos-xfer.c:864
+msgid "Moving files to the Trash"
+msgstr "Перемещение файлов в мусорную корзину"
 
-#: src/file-manager/dfos-xfer.c:793
+#: src/file-manager/dfos-xfer.c:865
+msgid "thrown out"
+msgstr ""
+
+#: src/file-manager/dfos-xfer.c:867
 msgid "Preparing to Move to Trash..."
 msgstr "Подготовка к перемещению в мусорную корзину..."
 
-#: src/file-manager/dfos-xfer.c:794
-msgid "Finishing Move to Trash..."
-msgstr "Завершение перемещения в мусорную корзину..."
+#: src/file-manager/dfos-xfer.c:909
+msgid "Deleting files"
+msgstr "Удаление файлов"
 
-#: src/file-manager/dfos-xfer.c:833
+#: src/file-manager/dfos-xfer.c:910 src/file-manager/dfos-xfer.c:960
+msgid "deleted"
+msgstr "удалено"
+
+#: src/file-manager/dfos-xfer.c:911 src/file-manager/dfos-xfer.c:961
 msgid "Deleting"
 msgstr "Удаление"
 
-#: src/file-manager/dfos-xfer.c:834
-msgid "Preparing to Delete..."
-msgstr "Подготовка к удалению..."
+#: src/file-manager/dfos-xfer.c:912
+msgid "Preparing to Delete files..."
+msgstr "Подготовка к удалению файлов..."
 
-#: src/file-manager/dfos-xfer.c:835
-msgid "Finishing Delete..."
-msgstr "Завершение удаления..."
-
-#: src/file-manager/dfos-xfer.c:879
+#: src/file-manager/dfos-xfer.c:959
 msgid "Emptying the Trash"
 msgstr "Очистка мусорной корзины"
 
-#: src/file-manager/dfos-xfer.c:880
+#: src/file-manager/dfos-xfer.c:962
 msgid "Preparing to Empty the Trash..."
 msgstr "Подготовка к очистке мусорной корзины..."
-
-#: src/file-manager/dfos-xfer.c:881
-msgid "Finishing Emptying the Trash..."
-msgstr "Завершение счистки мусорной корзины..."
 
 #: src/file-manager/fm-directory-view.c:861
 #, c-format
@@ -2165,71 +2196,66 @@ msgid "Draw background and icons on desktop."
 msgstr "Рисовать фон и пиктограмы на рабочем столе."
 
 #. set the title
-#: src/nautilus-property-browser.c:194
+#: src/nautilus-property-browser.c:207
 msgid "Nautilus Property Browser"
 msgstr "Обозреватель свойств Наутилуса"
 
 #. add the title label
-#: src/nautilus-property-browser.c:240 src/nautilus-property-browser.c:1839
+#: src/nautilus-property-browser.c:265 src/nautilus-property-browser.c:1925
 msgid "Select A Category:"
 msgstr "Выберите категорию:"
 
-#: src/nautilus-property-browser.c:254
+#: src/nautilus-property-browser.c:298
 msgid "Add new..."
 msgstr "Добавить новую"
 
-#: src/nautilus-property-browser.c:265
+#: src/nautilus-property-browser.c:309
 msgid "Remove..."
 msgstr "Удалить..."
 
-#: src/nautilus-property-browser.c:742 src/nautilus-property-browser.c:836
+#: src/nautilus-property-browser.c:816 src/nautilus-property-browser.c:910
 #, c-format
 msgid "Sorry, but '%s' is not an image file!"
 msgstr "Извините, но \"%s\" не является файлом изображения!"
 
-#: src/nautilus-property-browser.c:769
+#: src/nautilus-property-browser.c:843
 msgid "Create a New Emblem:"
 msgstr "Создать новую эмблему:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:774
+#: src/nautilus-property-browser.c:848
 msgid "Keyword:"
 msgstr "Ключевое слово:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:791
+#: src/nautilus-property-browser.c:865
 msgid "Select an image file for the new emblem:"
 msgstr "Выберите файл изображения для новой эмблемы:"
 
-#: src/nautilus-property-browser.c:895
+#: src/nautilus-property-browser.c:969
 msgid "Select an image file to add as a background:"
 msgstr "Выберите файл изображения для добавления как фон:"
 
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:1067
 msgid "Select a color to add:"
 msgstr "Выберите цвет для добавления:"
 
-#: src/nautilus-property-browser.c:1848
+#: src/nautilus-property-browser.c:1933
 msgid "Cancel Remove"
 msgstr "Отменить удаление"
 
-#: src/nautilus-property-browser.c:1850
+#: src/nautilus-property-browser.c:1935
 #, c-format
 msgid "Add a new %s"
 msgstr "Добавить новый %s"
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1867
+#: src/nautilus-property-browser.c:1950
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "Щелкните на %s, чтобы удалить его"
 
-#: src/nautilus-property-browser.c:1871
-#, c-format
-msgid "Categories: %s"
-msgstr "Категории: %s"
-
-#: src/nautilus-property-browser.c:1880
+#: src/nautilus-property-browser.c:1962
 #, c-format
 msgid "Remove a %s"
 msgstr "Удалить %s"
@@ -2651,9 +2677,3 @@ msgstr "Сервисы Eazel"
 #: src/nautilus-zoom-control.c:283
 msgid "%.0f%%"
 msgstr "%.0f%%"
-
-#~ msgid "Upgrading..."
-#~ msgstr "Обновление..."
-
-#~ msgid "Installing..."
-#~ msgstr "Установка..."
