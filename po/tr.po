@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1.0\n"
-"POT-Creation-Date: 2000-07-22 18:14+0200\n"
-"PO-Revision-Date: 2000-07-22 18:15+0200\n"
+"POT-Creation-Date: 2000-07-24 13:31+0200\n"
+"PO-Revision-Date: 2000-07-24 13:34+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -399,7 +399,7 @@ msgid "Pause"
 msgstr "Durdur"
 
 #: components/music/nautilus-music-view.c:1152
-#: src/file-manager/dfos-xfer.c:267 src/nautilus-window-toolbars.c:149
+#: src/file-manager/dfos-xfer.c:318 src/nautilus-window-toolbars.c:149
 msgid "Stop"
 msgstr "Dur"
 
@@ -1308,16 +1308,16 @@ msgstr "Tanýnmayan XferOverwriteMode %d"
 msgid "Unknown XferErrorMode %d"
 msgstr "Tanýnmayan XferErrorMode %d"
 
-#: src/file-manager/dfos-xfer.c:198
+#: src/file-manager/dfos-xfer.c:165
 msgid "From:"
 msgstr "Kaynak :"
 
-#: src/file-manager/dfos-xfer.c:202
+#: src/file-manager/dfos-xfer.c:172
 msgid "To:"
 msgstr "Hedef :"
 
 #. transfer error, prompt the user to continue or stop
-#: src/file-manager/dfos-xfer.c:259
+#: src/file-manager/dfos-xfer.c:310
 #, c-format
 msgid ""
 "Error %s copying file %s.\n"
@@ -1326,20 +1326,20 @@ msgstr ""
 "Hata %s , %s kopyalanýrken oluþtu .\n"
 "Devam etmek ister misin ?"
 
-#: src/file-manager/dfos-xfer.c:266
+#: src/file-manager/dfos-xfer.c:317
 msgid "File copy error"
 msgstr "Dosya kopyalama hatasý"
 
-#: src/file-manager/dfos-xfer.c:267 src/file-manager/dfos-xfer.c:313
-#: src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:318 src/file-manager/dfos-xfer.c:364
+#: src/file-manager/dfos-xfer.c:375
 msgid "Skip"
 msgstr "Atla"
 
-#: src/file-manager/dfos-xfer.c:267
+#: src/file-manager/dfos-xfer.c:318
 msgid "Retry"
 msgstr "Yeniden dene"
 
-#: src/file-manager/dfos-xfer.c:301
+#: src/file-manager/dfos-xfer.c:352
 #, c-format
 msgid ""
 "File %s already exists.\n"
@@ -1348,24 +1348,24 @@ msgstr ""
 "%s zaten varolan bir dosya .\n"
 "O'nu deðiþtriyim mi ?"
 
-#: src/file-manager/dfos-xfer.c:312 src/file-manager/dfos-xfer.c:323
+#: src/file-manager/dfos-xfer.c:363 src/file-manager/dfos-xfer.c:374
 msgid "File copy conflict"
 msgstr "Dosya kopyalama çekiþmesi"
 
-#: src/file-manager/dfos-xfer.c:313 src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:364 src/file-manager/dfos-xfer.c:375
 msgid "Replace"
 msgstr "Üstüne yaz"
 
-#: src/file-manager/dfos-xfer.c:324
+#: src/file-manager/dfos-xfer.c:375
 msgid "Replace All"
 msgstr "Hepsinin üstüne yaz"
 
-#: src/file-manager/dfos-xfer.c:378 src/file-manager/dfos-xfer.c:690
+#: src/file-manager/dfos-xfer.c:429 src/file-manager/dfos-xfer.c:747
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Tanýnmayan GnomeVFSXferProgressStatus %d"
 
-#: src/file-manager/dfos-xfer.c:443
+#: src/file-manager/dfos-xfer.c:494
 #, c-format
 msgid ""
 "The transfer between\n"
@@ -1382,109 +1382,121 @@ msgstr ""
 "baþlatýlamadý :\n"
 "%s"
 
-#: src/file-manager/dfos-xfer.c:548
+#: src/file-manager/dfos-xfer.c:599
+msgid "Moving files"
+msgstr "Dosyalarý taþýyorum"
+
+#: src/file-manager/dfos-xfer.c:600
+msgid "moved"
+msgstr "taþýndý"
+
+#: src/file-manager/dfos-xfer.c:601 src/file-manager/dfos-xfer.c:851
 msgid "Moving"
 msgstr "Taþýnýyor"
 
-#: src/file-manager/dfos-xfer.c:549
+#: src/file-manager/dfos-xfer.c:602
 msgid "Preparing To Move..."
 msgstr "Taþýmayý hazýrlýyorum ..."
 
-#: src/file-manager/dfos-xfer.c:550
+#: src/file-manager/dfos-xfer.c:603
 msgid "Finishing Move..."
 msgstr "Taþýmayý bitiriyorum ..."
 
-#: src/file-manager/dfos-xfer.c:558
+#: src/file-manager/dfos-xfer.c:612
+msgid "Copying files"
+msgstr "Dosyalarý kopyalýyorum"
+
+#: src/file-manager/dfos-xfer.c:613
+msgid "copied"
+msgstr "kopyalandý"
+
+#: src/file-manager/dfos-xfer.c:614
 msgid "Copying"
 msgstr "Kopyalanýyor"
 
-#: src/file-manager/dfos-xfer.c:559
+#: src/file-manager/dfos-xfer.c:615
 msgid "Preparing To Copy..."
 msgstr "Kopyalamayý hazýrlýyorum ..."
 
-#: src/file-manager/dfos-xfer.c:560
-msgid "Finishing Copy..."
-msgstr "Kopyalamayý bitiriyorum ..."
-
-#: src/file-manager/dfos-xfer.c:576
+#: src/file-manager/dfos-xfer.c:633
 msgid "You cannot copy items into the Trash."
 msgstr "Çöp kutusun kopyalayamasýn ."
 
-#: src/file-manager/dfos-xfer.c:577
+#: src/file-manager/dfos-xfer.c:634
 msgid "Error copying"
 msgstr "Kopyalanýrken hata oldu"
 
-#: src/file-manager/dfos-xfer.c:578 src/file-manager/dfos-xfer.c:597
-#: src/file-manager/dfos-xfer.c:612 src/file-manager/dfos-xfer.c:755
-#: src/file-manager/dfos-xfer.c:765
+#: src/file-manager/dfos-xfer.c:635 src/file-manager/dfos-xfer.c:654
+#: src/file-manager/dfos-xfer.c:669 src/file-manager/dfos-xfer.c:812
+#: src/file-manager/dfos-xfer.c:822
 msgid "OK"
 msgstr "Oldu"
 
-#: src/file-manager/dfos-xfer.c:594
+#: src/file-manager/dfos-xfer.c:651
 msgid "You cannot move the Trash."
 msgstr "Çöp kutusunu taþýyamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:595
+#: src/file-manager/dfos-xfer.c:652
 msgid "You cannot copy the Trash."
 msgstr "Çöp kutusunu kopyalayamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:596 src/file-manager/dfos-xfer.c:611
-#: src/file-manager/dfos-xfer.c:754 src/file-manager/dfos-xfer.c:764
+#: src/file-manager/dfos-xfer.c:653 src/file-manager/dfos-xfer.c:668
+#: src/file-manager/dfos-xfer.c:811 src/file-manager/dfos-xfer.c:821
 msgid "Error moving to Trash"
 msgstr "Çöp kutusuna taþýnýrken hata oldu ."
 
-#: src/file-manager/dfos-xfer.c:609
+#: src/file-manager/dfos-xfer.c:666
 msgid "You cannot move an item into itself."
 msgstr "Bir birimi kendisine taþýyamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:610
+#: src/file-manager/dfos-xfer.c:667
 msgid "You cannot copy an item into itself."
 msgstr "Bir birime kendisine kopyalayamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:753
+#: src/file-manager/dfos-xfer.c:810
 msgid "You cannot throw away the Trash."
 msgstr "Çöp kutusunu atamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:760
+#: src/file-manager/dfos-xfer.c:817
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "\"%s\"'yi çöpe atamazsýn ."
 
-#: src/file-manager/dfos-xfer.c:792
-msgid "Moving to Trash"
-msgstr "Çöp kutusuna taþýnýyor"
+#: src/file-manager/dfos-xfer.c:849
+msgid "Moving files to the Trash"
+msgstr "Dosyalarý çöp kutusuna taþýyorum"
 
-#: src/file-manager/dfos-xfer.c:793
+#: src/file-manager/dfos-xfer.c:850
+msgid "thrown out"
+msgstr "dýþarý atýldý"
+
+#: src/file-manager/dfos-xfer.c:852
 msgid "Preparing to Move to Trash..."
 msgstr "Çöp kutusuna taþýmaya hazýrlanýyorum ..."
 
-#: src/file-manager/dfos-xfer.c:794
-msgid "Finishing Move to Trash..."
-msgstr "Çöp kutusuna taþýmayý bitiriyorum .."
+#: src/file-manager/dfos-xfer.c:894
+msgid "Deleting files"
+msgstr "Dosyalarý siliyorum"
 
-#: src/file-manager/dfos-xfer.c:833
+#: src/file-manager/dfos-xfer.c:895 src/file-manager/dfos-xfer.c:945
+msgid "deleted"
+msgstr "silindi"
+
+#: src/file-manager/dfos-xfer.c:896 src/file-manager/dfos-xfer.c:946
 msgid "Deleting"
 msgstr "Siliyorum"
 
-#: src/file-manager/dfos-xfer.c:834
-msgid "Preparing to Delete..."
-msgstr "Silmeyi hazýrlýyorum ..."
+#: src/file-manager/dfos-xfer.c:897
+msgid "Preparing to Delete files..."
+msgstr "Dosyalarý silmeye hazýrlanýyorum ..."
 
-#: src/file-manager/dfos-xfer.c:835
-msgid "Finishing Delete..."
-msgstr "Silmeyi bitiriyorum ..."
-
-#: src/file-manager/dfos-xfer.c:879
+#: src/file-manager/dfos-xfer.c:944
 msgid "Emptying the Trash"
 msgstr "Çöp kutusunu boþaltýyorum"
 
-#: src/file-manager/dfos-xfer.c:880
+#: src/file-manager/dfos-xfer.c:947
 msgid "Preparing to Empty the Trash..."
 msgstr "Çöp kutusunu boþaltmaya hazýrlanýyorum ..."
-
-#: src/file-manager/dfos-xfer.c:881
-msgid "Finishing Emptying the Trash..."
-msgstr "Çöp kutusunu boþaltmayý bitiriyorum .."
 
 #: src/file-manager/fm-directory-view.c:861
 #, c-format
@@ -2197,71 +2209,66 @@ msgid "Draw background and icons on desktop."
 msgstr "Masaüstünde ardalan ve simgeleri göster."
 
 #. set the title
-#: src/nautilus-property-browser.c:194
+#: src/nautilus-property-browser.c:207
 msgid "Nautilus Property Browser"
 msgstr "Nautilus Özellikler gezgini"
 
 #. add the title label
-#: src/nautilus-property-browser.c:240 src/nautilus-property-browser.c:1839
+#: src/nautilus-property-browser.c:265 src/nautilus-property-browser.c:1925
 msgid "Select A Category:"
 msgstr "Bir rumuz seç :"
 
-#: src/nautilus-property-browser.c:254
+#: src/nautilus-property-browser.c:298
 msgid "Add new..."
 msgstr "Ekle ..."
 
-#: src/nautilus-property-browser.c:265
+#: src/nautilus-property-browser.c:309
 msgid "Remove..."
 msgstr "Sil ..."
 
-#: src/nautilus-property-browser.c:742 src/nautilus-property-browser.c:836
+#: src/nautilus-property-browser.c:816 src/nautilus-property-browser.c:910
 #, c-format
 msgid "Sorry, but '%s' is not an image file!"
 msgstr "Maalessef `%s' bir resim deðildir!"
 
-#: src/nautilus-property-browser.c:769
+#: src/nautilus-property-browser.c:843
 msgid "Create a New Emblem:"
 msgstr "Yeni bir rozet yarat :"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:774
+#: src/nautilus-property-browser.c:848
 msgid "Keyword:"
 msgstr "Anahtar sözcük :"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:791
+#: src/nautilus-property-browser.c:865
 msgid "Select an image file for the new emblem:"
 msgstr "Yeni rozet için bir resim belirle :"
 
-#: src/nautilus-property-browser.c:895
+#: src/nautilus-property-browser.c:969
 msgid "Select an image file to add as a background:"
 msgstr "Ardalan olarak eklenecek bir resmi seç :"
 
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:1067
 msgid "Select a color to add:"
 msgstr "Eklenecek bir rengi belirle :"
 
-#: src/nautilus-property-browser.c:1848
+#: src/nautilus-property-browser.c:1933
 msgid "Cancel Remove"
 msgstr "Silmeyi iptal et"
 
-#: src/nautilus-property-browser.c:1850
+#: src/nautilus-property-browser.c:1935
 #, c-format
 msgid "Add a new %s"
 msgstr "Yeni bir %s ekle"
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1867
+#: src/nautilus-property-browser.c:1950
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "Bir %s'ye týklayarak onu silebilirsin."
 
-#: src/nautilus-property-browser.c:1871
-#, c-format
-msgid "Categories: %s"
-msgstr "Rumuz : %s"
-
-#: src/nautilus-property-browser.c:1880
+#: src/nautilus-property-browser.c:1962
 #, c-format
 msgid "Remove a %s"
 msgstr "Bir %s'yi sil"
@@ -2682,9 +2689,3 @@ msgstr "Eazel Hizmetleri"
 #: src/nautilus-zoom-control.c:283
 msgid "%.0f%%"
 msgstr "%% %.f"
-
-#~ msgid "Upgrading..."
-#~ msgstr "Yeniliyorum ..."
-
-#~ msgid "Installing..."
-#~ msgstr "Yükliyorum ..."
