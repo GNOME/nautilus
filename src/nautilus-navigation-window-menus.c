@@ -174,11 +174,11 @@ file_menu_close_window_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-file_menu_exit_callback (BonoboUIHandler *ui_handler, 
-			 gpointer user_data, 
-			 const char *path)
+file_menu_close_all_windows_callback (BonoboUIHandler *ui_handler, 
+			         gpointer user_data, 
+			         const char *path)
 {
-	gtk_main_quit ();
+	nautilus_application_close_all_windows ();
 }
 
 static void
@@ -1031,22 +1031,19 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 GNOME_KEY_MOD_CLOSE,
         				 file_menu_close_window_callback,
         				 window);
-
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_EXIT);
-
+        				 
         bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_EXIT_ITEM,
-        				 _("_Exit"),
-        				 _("Exit from Nautilus"),
+        				 NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM,
+        				 _("Close All Windows"),
+        				 _("Close all windows"),
         				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_EXIT,
-        				 GNOME_KEY_NAME_EXIT,
-        				 GNOME_KEY_MOD_EXIT,
-        				 file_menu_exit_callback,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 file_menu_close_all_windows_callback,
         				 NULL);
-
-
+        				 
 	/* Edit menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_EDIT_MENU, _("_Edit"));
 

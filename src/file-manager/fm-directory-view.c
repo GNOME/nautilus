@@ -2659,7 +2659,7 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 			 ui_handler, selection,
 			 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
 			 _("Move all selected items to the Trash"),
-			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
+			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 3,
 			  'T', GDK_CONTROL_MASK,
 			 bonobo_menu_move_to_trash_callback, view);
 	} else {
@@ -2668,7 +2668,7 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 			 ui_handler, selection,
 			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
 			 _("Delete all selected items"),
-			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
+			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 3,
 			 0, 0,
 			 bonobo_menu_move_to_trash_callback, view);
 	}
@@ -2777,15 +2777,15 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE,
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 1);
+		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE_ALL_WINDOWS,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 1);
 
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 		 _("View or modify the properties of the selected items"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 2,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 2,
 		 0, 0,
 		 bonobo_menu_open_properties_window_callback, view);
 
@@ -2796,7 +2796,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
 		 _("Duplicate all selected items"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 4,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 4,
 		  'D', GDK_CONTROL_MASK,
 		 bonobo_menu_duplicate_callback, view);
 	insert_bonobo_menu_item 
@@ -2804,7 +2804,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
 		 _("Delete all items in the trash"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 5,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 5,
 		  0, 0,
 		 bonobo_menu_empty_trash_callback, view);
 	insert_bonobo_menu_item 

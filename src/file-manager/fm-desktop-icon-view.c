@@ -29,7 +29,6 @@
 #include "fm-desktop-mounting.h"
 #include "fm-icon-view.h"
 
-#include "src/nautilus-application.h"
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gnome.h>
@@ -256,19 +255,6 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		}
 		g_list_free (disk_list);
 	}
-	
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-	
-	/* Close desktop */
-        menu_item = gtk_menu_item_new_with_label (_("Close Nautilus Desktop"));
-	gtk_signal_connect (GTK_OBJECT (menu_item),
-			    "activate",
-			    GTK_SIGNAL_FUNC (nautilus_application_close_desktop),
-			    NULL);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
 }
 
 static char *

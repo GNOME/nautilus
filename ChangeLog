@@ -1,3 +1,22 @@
+2000-08-01  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_trash_delete_menu),
+	(fm_directory_view_real_merge_menus):
+	* src/file-manager/fm-directory-view.h:
+	* src/nautilus-application.c:
+	(nautilus_application_close_all_windows):
+	* src/nautilus-application.h:
+	* src/nautilus-window-menus.c:
+	(file_menu_close_all_windows_callback),
+	(nautilus_window_initialize_menus):
+	Removed "Close Nautilus Desktop" from the desktop's
+	right click menu. Removed "Exit" from the File menu.
+	Added "Close All Windows" t the File menu. Bug# 1846
+
 2000-08-01  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1552 (Need "never" option for display-embedded-text

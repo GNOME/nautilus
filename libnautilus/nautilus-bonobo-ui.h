@@ -40,8 +40,7 @@
 #define NAUTILUS_MENU_PATH_FILE_MENU			"/File"
 #define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/File/New Window"
 #define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/File/Close"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_EXIT	"/File/Separator before Exit"
-#define NAUTILUS_MENU_PATH_EXIT_ITEM			"/File/Exit"
+#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
 
 /* Edit menu */
 #define NAUTILUS_MENU_PATH_EDIT_MENU			"/Edit"

@@ -476,6 +476,15 @@ nautilus_application_close_desktop (void)
 	}
 }
 
+void
+nautilus_application_close_all_windows (void)
+{
+	while (nautilus_application_window_list) {
+		nautilus_window_close (NAUTILUS_WINDOW (nautilus_application_window_list->data));
+	}
+}
+
+
 static void
 nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
 {

@@ -56,6 +56,8 @@ gboolean             nautilus_application_startup       (NautilusApplication *ap
 GSList		*nautilus_application_windows (void);
 NautilusWindow	*nautilus_application_create_window (NautilusApplication *application);
 
+void	nautilus_application_close_all_windows (void);
+
 void	nautilus_application_open_desktop (NautilusApplication *application);
 void	nautilus_application_close_desktop (void);
 
