@@ -88,9 +88,4 @@ GList *    gnome_icon_container_get_selection           (GnomeIconContainer     
 void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
 void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
 
-void       gnome_icon_container_xlate_selected          (GnomeIconContainer      *container,
-							 int                      delta_x,
-							 int                      delta_y,
-							 gboolean                 raise);
-
 #endif

@@ -76,8 +76,7 @@ main(int argc, char *argv[])
 		/* Run the checks for nautilus and libnautilus. */
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
-		if (nautilus_self_checks_failed ())
-			return EXIT_FAILURE;
+		nautilus_exit_if_self_checks_failed ();
 	} else {
 #endif
 

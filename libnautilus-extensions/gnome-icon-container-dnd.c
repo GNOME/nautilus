@@ -40,11 +40,12 @@
 
 
 
-struct _DndSelectionItem {
+typedef struct {
 	char *uri;
-	int x, y;
-};
-typedef struct _DndSelectionItem DndSelectionItem;
+	gboolean got_icon_position;
+	int icon_x, icon_y;
+	int icon_width, icon_height;
+} DndSelectionItem;
 
 static GtkTargetEntry drag_types [] = {
 	{ GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST_TYPE, 0, GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST },
@@ -61,9 +62,6 @@ static GtkTargetEntry drop_types [] = {
 };
 static const int num_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
 
-/* number of pixels of margin for shadow box  */
-#define SHADOW_MARGIN 8
-
 static GnomeCanvasItem *
 create_selection_shadow (GnomeIconContainer *container,
 			 GList *list)
@@ -73,9 +71,6 @@ create_selection_shadow (GnomeIconContainer *container,
 	GdkBitmap *stipple;
 	int max_x, max_y;
 	int min_x, min_y;
-	int icon_width, icon_height;
-	int cell_width;
-	int x_offset;
 	GList *p;
 
 	if (list == NULL)
@@ -84,11 +79,6 @@ create_selection_shadow (GnomeIconContainer *container,
 	stipple = container->details->dnd_info->stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
 
-	icon_width = GNOME_ICON_CONTAINER_ICON_WIDTH (container);
-	icon_height = GNOME_ICON_CONTAINER_ICON_HEIGHT (container);
-	cell_width = GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-	x_offset = cell_width - icon_width - SHADOW_MARGIN;
-	
 	canvas = GNOME_CANVAS (container);
 
 	/* Creating a big set of rectangles in the canvas can be expensive, so
@@ -115,10 +105,13 @@ create_selection_shadow (GnomeIconContainer *container,
 
 		item = p->data;
 
-		x1 = item->x + x_offset;
-		y1 = item->y;
-		x2 = item->x + icon_width + x_offset;
-		y2 = item->y + icon_height;
+		if (!item->got_icon_position)
+			continue;
+
+		x1 = item->icon_x;
+		y1 = item->icon_y;
+		x2 = x1 + item->icon_width;
+		y2 = y1 + item->icon_height;
         				
 		if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y) {
 			GnomeCanvasItem *rect;
@@ -167,10 +160,7 @@ dnd_selection_item_new (void)
 {
 	DndSelectionItem *new;
 
-	new = g_new (DndSelectionItem, 1);
-	new->uri = NULL;
-	new->x = 0;
-	new->y = 0;
+	new = g_new0 (DndSelectionItem, 1);
 	
 	return new;
 }
@@ -198,7 +188,10 @@ destroy_selection_list (GList *list)
 
 /* Source-side handling of the drag.  */
 
-/* Encode a "special/x-gnome-icon-list" selection.  */
+/* Encode a "special/x-gnome-icon-list" selection.
+   Along with the URIs of the dragged files, this encodes
+   the location and size of each icon relative to the cursor.
+*/
 static void
 set_gnome_icon_list_selection (GnomeIconContainer *container,
 			       GtkSelectionData *selection_data)
@@ -206,28 +199,29 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 	GnomeIconContainerDetails *details;
 	GList *p;
 	GString *data;
-	gdouble x_offset, y_offset;
 
 	details = container->details;
-	x_offset = details->dnd_info->start_x;
-	y_offset = details->dnd_info->start_y;
 
 	data = g_string_new (NULL);
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 		char *uri;
 		char *s;
-		int x, y;
+		int icon_x, icon_y, icon_width, icon_height;
 
 		icon = p->data;
 		if (!icon->is_selected)
 			continue;
 
-		x = icon->x - x_offset - (GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2);
-		y = icon->y - y_offset;
+		/* Corner of the icon relative to the cursor. */
+		icon_x = icon->x - details->dnd_info->start_x;
+		icon_y = icon->y - details->dnd_info->start_y;
+		icon_width = GNOME_ICON_CONTAINER_ICON_WIDTH (container);
+		icon_height = GNOME_ICON_CONTAINER_ICON_HEIGHT (container);
 
 		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
-		s = g_strdup_printf ("%s\r%d:%d\r\n", uri, x, y);
+		s = g_strdup_printf ("%s\r%d:%d:%d:%d\r\n",
+				     uri, icon_x, icon_y, icon_width, icon_height);
 		g_free (uri);
 
 		g_string_append (data, s);
@@ -364,9 +358,12 @@ get_gnome_icon_list_selection (GnomeIconContainer *container,
 
 		/* 2: Decode geometry information.  */
 
-		if (sscanf (p, "%d:%d%*s", &item->x, &item->y) != 2)
+		item->got_icon_position = sscanf (p, "%d:%d:%d:%d%*s",
+						  &item->icon_x, &item->icon_y,
+						  &item->icon_height, &item->icon_width) == 4;
+		if (!item->got_icon_position)
 			g_warning ("Invalid special/x-gnome-icon-list data received: "
-				   "invalid geometry specification.");
+				   "invalid icon position specification.");
 
 		dnd_info->selection_list
 			= g_list_prepend (dnd_info->selection_list, item);
@@ -527,6 +524,7 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 					    int x, int y)
 {
 	GnomeIconContainerDndInfo *dnd_info;
+	GList *p;
 
 	dnd_info = container->details->dnd_info;
 	if (dnd_info->selection_list == NULL)
@@ -551,14 +549,41 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 	*/
 	if (context->action == GDK_ACTION_MOVE) {
 		double world_x, world_y;
-		
+		GList *icons_to_select;
+
 		gnome_canvas_window_to_world (GNOME_CANVAS (container),
 					      x, y, &world_x, &world_y);
-		
-		gnome_icon_container_xlate_selected (container,
-						     world_x - dnd_info->start_x,
-						     world_y - dnd_info->start_y,
-						     TRUE);
+
+		icons_to_select = NULL;
+		for (p = dnd_info->selection_list; p != NULL; p = p->next) {
+			DndSelectionItem *item;
+			GnomeIconContainerIcon *icon;
+
+			item = p->data;
+			icon = gnome_icon_container_get_icon_by_uri
+				(container, item->uri);
+
+			if (icon == NULL) {
+				g_warning ("drag between containers not implemented yet");
+				continue;
+			}
+
+			if (item->got_icon_position) {
+				int icon_x, icon_y;
+
+				icon_x = (int) world_x + item->icon_x;
+				icon_y = (int) world_y + item->icon_y;
+				
+				gnome_icon_container_move_icon
+					(container, icon, icon_x, icon_y, TRUE);
+			}
+
+			icons_to_select = g_list_prepend (icons_to_select, icon);
+		}
+
+		gnome_icon_container_select_list_unselect_others (container, icons_to_select);
+
+		g_list_free (icons_to_select);
 	}
 	
 	destroy_selection_list (dnd_info->selection_list);
@@ -627,6 +652,12 @@ drag_leave_cb (GtkWidget *widget,
 	       guint32 time,
 	       gpointer data)
 {
+	GnomeIconContainerDndInfo *dnd_info;
+
+	dnd_info = GNOME_ICON_CONTAINER (widget)->details->dnd_info;
+
+	if (dnd_info->shadow != NULL)
+		gnome_canvas_item_hide (dnd_info->shadow);
 }
 
 void
@@ -735,8 +766,8 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         pixbuf_args[0].name = "NautilusIconsViewIconItem::pixbuf";
         gtk_object_getv (GTK_OBJECT (pixbuf_item), 1, pixbuf_args);
         temp_pixbuf = (GdkPixbuf *) GTK_VALUE_OBJECT (pixbuf_args[0]);
-        gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128); 
-       
+        gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128);
+	
         /* set the pixmap and mask for dragging */
         gtk_drag_set_icon_pixmap (context, gtk_widget_get_colormap (GTK_WIDGET (container)),
 				  pixmap_for_dragged_file, mask_for_dragged_file,

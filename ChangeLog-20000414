@@ -1,3 +1,67 @@
+2000-01-25  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	(create_selection_shadow):
+	(set_gnome_icon_list_selection):
+	(get_gnome_icon_list_selection):
+	(gnome_icon_container_receive_dropped_icons):
+	Redid drag code so that it will work if there are multiple
+	windows involved, although we still don't handle copies.
+	Changed selection to include the width and height of the icon,
+	and to hold the top left of the icon.
+
+	* libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container.c:
+	(move_icon):
+	(gnome_icon_container_move_icon):
+	Made move_icon visible to the DnD code, and added a raise boolean
+	so it could move and icon and bring it to the front.
+	(gnome_icon_container_get_icon_by_uri):
+	(gnome_icon_container_select_list_unselect_others):
+	Added new functions for use by DnD code.
+
+	* libnautilus/gnome-icon-container-private.h:
+	libnautilus/gnome-icon-container.c:
+	(handle_icon_button_press):
+	Got rid of unused drag_x_offset and drag_y_offset.
+
+	* libnautilus/gnome-icon-container.c:
+	(icon_select):
+	(icon_toggle_selected):
+	(select_icon):
+	(select_one_unselect_others):
+	(toggle_icon):
+	(unselect_all_but_one):
+	(unselect_all):
+	(rubberband_select_in_cell):
+	(kbd_move_to):
+	(kbd_space):
+	(linger_select_timeout_cb):
+	(handle_icon_button_press):
+	(gnome_icon_container_select_all):
+	(gnome_icon_container_unselect_all):
+	Cleaned up selection logic and made it simpler.
+
+	* libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container.c:
+	(gnome_icon_container_xlate_selected):
+	Got rid of unused function.
+
+	* libnautilus/nautilus-self-checks.h:
+	libnautilus/nautilus-self-checks.c:
+	(nautilus_self_checks_failed):
+	(nautilus_exit_if_self_checks_failed):
+	src/ntl-main.c:
+	(main):
+	Added blank lines before and after the first and last failed
+	checks when at least one check fails.
+
+	* src/ntl-view.c:
+	(nautilus_view_destroy):
+	Removed a straggler message. (I hope Elliot's not still using it.)
+
+	* RENAMING: Some new name ideas.
+	
 2000-01-25  John Sullivan <sullivan@eazel.com>
 
 	Better text for displayed file dates. This is currently used only

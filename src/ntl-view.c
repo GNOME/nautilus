@@ -243,8 +243,6 @@ nautilus_view_destroy(GtkObject      *view)
   NautilusViewClass *klass = NAUTILUS_VIEW_CLASS(view->klass);
   NautilusView *nview = NAUTILUS_VIEW(view);
 
-  g_message("-------------------- nautilus_view_destroy(%p): %u", view, nview->timer_id);
-
   if(nview->timer_id)
     {
       g_source_remove(nview->timer_id);

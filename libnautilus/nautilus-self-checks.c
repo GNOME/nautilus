@@ -30,6 +30,7 @@
 
 #include "nautilus-self-checks.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 static gboolean failed;
 
@@ -37,14 +38,22 @@ static const char *current_expression;
 static const char *current_file_name;
 static int current_line_number;
 
-gboolean nautilus_self_checks_failed (void)
+void nautilus_exit_if_self_checks_failed (void)
 {
-	return failed;
+	if (!failed)
+		return;
+
+	printf ("\n");
+
+	exit (EXIT_FAILURE);
 }
 
 static void
 nautilus_report_check_failure (char *result, char *expected)
 {
+	if (!failed)
+		printf ("\n");
+
 	printf ("FAIL: check failed in %s, line %d\n", current_file_name, current_line_number);
 	printf ("      evaluated: %s\n", current_expression);
 	printf ("       expected: %s\n", expected == NULL ? "NULL" : expected);

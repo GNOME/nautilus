@@ -149,9 +149,6 @@ struct _GnomeIconContainerDetails {
 	/* Whether we are actually performing a dragging action.  */
 	gboolean doing_drag;
 
-	/* Drag offset.  */
-	int drag_x_offset, drag_y_offset;
-
 	/* Idle ID.  */
 	guint idle_id;
 
@@ -180,5 +177,13 @@ struct _GnomeIconContainerDetails {
 
 #define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     48
 #define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    48
+
+GnomeIconContainerIcon *gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
+							      const char *uri);
+void gnome_icon_container_move_icon (GnomeIconContainer *container,
+				     GnomeIconContainerIcon *icon,
+				     int x, int y, gboolean raise);
+void gnome_icon_container_select_list_unselect_others (GnomeIconContainer *container,
+						       GList *icons);
 
 #endif /* GNOME_ICON_CONTAINER_PRIVATE_H */

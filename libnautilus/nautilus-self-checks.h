@@ -27,17 +27,6 @@
 
 #include <glib.h>
 
-gboolean nautilus_self_checks_failed   (void);
-void     nautilus_before_check         (const char *expression,
-					const char *file_name,
-					int         line_number);
-void     nautilus_check_boolean_result (gboolean    result,
-					gboolean    expected_value);
-void     nautilus_check_integer_result (long        result,
-					long        expected_value);
-void     nautilus_check_string_result  (char       *result,
-					const char *expected_value);
-
 #define NAUTILUS_CHECK_RESULT(type, expression, expected_value) \
 G_STMT_START { \
 	nautilus_before_check (#expression, __FILE__, __LINE__); \
@@ -50,6 +39,19 @@ G_STMT_START { \
 	NAUTILUS_CHECK_RESULT(integer, expression, expected_value)
 #define NAUTILUS_CHECK_STRING_RESULT(expression, expected_value) \
 	NAUTILUS_CHECK_RESULT(string, expression, expected_value)
+
+void nautilus_exit_if_self_checks_failed (void);
+
+void nautilus_before_check               (const char *expression,
+					  const char *file_name,
+					  int         line_number);
+
+void nautilus_check_boolean_result       (gboolean    result,
+					  gboolean    expected_value);
+void nautilus_check_integer_result       (long        result,
+					  long        expected_value);
+void nautilus_check_string_result        (char       *result,
+					  const char *expected_value);
 
 #define NAUTILUS_SELF_CHECK_FUNCTION_PROTOTYPE(function) \
 	void function (void);

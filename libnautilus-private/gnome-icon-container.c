@@ -45,7 +45,8 @@
 
 /* Timeout for making the icon currently selected for keyboard operation
    visible.  FIXME: This *must* be higher than the double-click time in GDK,
-   but there is no way to access its value from outside.  */
+   but there is no way to access its value from outside.
+*/
 #define KBD_ICON_VISIBILITY_TIMEOUT 300
 
 /* Timeout for selecting an icon in "linger-select" mode (i.e. by just placing the
@@ -175,29 +176,24 @@ icon_show (GnomeIconContainerIcon *icon)
 }
 
 static void
-icon_select (GnomeIconContainerIcon *icon,
-	     gboolean sel)
+icon_toggle_selected (GnomeIconContainerIcon *icon)
 {
-
-        if (sel == icon->is_selected)
-            return;
-            
-	icon->is_selected = sel;
+	icon->is_selected = !icon->is_selected;
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
-			       "selected", (gboolean) sel,
+			       "selected", (gboolean) icon->is_selected,
 			       NULL);
 }
 
+/* Select an icon. Return TRUE if selection has changed. */
 static gboolean
-icon_toggle_selection (GnomeIconContainerIcon *icon)
+icon_select (GnomeIconContainerIcon *icon,
+	     gboolean select)
 {
-	if (icon->is_selected) {
-		icon_select (icon, FALSE);
-		return TRUE;
-	} else {
-		icon_select (icon, TRUE);
+	if (select == icon->is_selected)
 		return FALSE;
-	}
+
+	icon_toggle_selected (icon);
+	return TRUE;
 }
 
 static gboolean
@@ -984,37 +980,9 @@ button_event_modifies_selection (GdkEventButton *event)
 	return event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK);
 }
 
-
-/* Select an icon.  Return TRUE if selection has changed.  */
 static gboolean
-select_icon (GnomeIconContainer *container,
-	     GnomeIconContainerIcon *icon,
-	     gboolean sel)
-{
-	GnomeIconContainerDetails *details;
-	gboolean was_selected;
-
-	details = container->details;
-
-	was_selected = icon->is_selected;
-	icon_select (icon, sel);
-
-	if ((! was_selected && sel) || (was_selected && ! sel))
-		return TRUE;
-	else
-		return FALSE;
-}
-
-static void
-toggle_icon (GnomeIconContainer *container,
-	     GnomeIconContainerIcon *icon)
-{
-	icon_toggle_selection (icon);
-}
-
-static gboolean
-unselect_all_but_one (GnomeIconContainer *container,
-		      GnomeIconContainerIcon *icon_to_avoid)
+select_one_unselect_others (GnomeIconContainer *container,
+			    GnomeIconContainerIcon *icon_to_select)
 {
 	GnomeIconContainerDetails *details;
 	GList *p;
@@ -1022,31 +990,28 @@ unselect_all_but_one (GnomeIconContainer *container,
 
 	details = container->details;
 	selection_changed = FALSE;
-
+	
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		if (icon != icon_to_avoid && icon->is_selected) {
-			icon_select (icon, FALSE);
-			selection_changed = TRUE;
-		}
+		selection_changed |= icon_select (icon, icon == icon_to_select);
 	}
-
+	
 	return selection_changed;
 }
 
 static gboolean
 unselect_all (GnomeIconContainer *container)
 {
-	return unselect_all_but_one (container, NULL);
+	return select_one_unselect_others (container, NULL);
 }
 
 /* FIXME: This could be optimized a bit.  */
-static void
-move_icon (GnomeIconContainer *container,
+void
+gnome_icon_container_move_icon (GnomeIconContainer *container,
 	   GnomeIconContainerIcon *icon,
-	   gint x, gint y)
+	   int x, int y, gboolean raise)
 {
 	GnomeIconContainerDetails *details;
 	gint old_x, old_y;
@@ -1088,6 +1053,12 @@ move_icon (GnomeIconContainer *container,
 		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y + 1);
 
 	icon_position (icon, container, x, y);
+	if (raise)
+		icon_raise (icon);
+
+	/* Update the keyboard selection indicator.  */
+	if (details->kbd_current == icon)
+		set_kbd_current (container, icon, FALSE);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[ICON_MOVED],
 			 icon->data, x, y);
@@ -1123,31 +1094,12 @@ rubberband_select_in_cell (GList *cell,
 						    prev_x1, prev_y1,
 						    prev_x2, prev_y2);
 
-		if (in_curr_region && ! in_prev_region) {
-			if (icon->was_selected_before_rubberband) {
-				if (icon->is_selected) {
-					icon_select (icon, FALSE);
-					selection_changed = TRUE;
-				}
-			} else {
-				if (! icon->is_selected) {
-					icon_select (icon, TRUE);
-					selection_changed = TRUE;
-				}
-			}
-		} else if (in_prev_region && ! in_curr_region) {
-			if (icon->was_selected_before_rubberband) {
-				if (! icon->is_selected) {
-					icon_select (icon, TRUE);
-					selection_changed = TRUE;
-				}
-			} else {
-				if (icon->is_selected) {
-					icon_select (icon, FALSE);
-					selection_changed = TRUE;
-				}
-			}
-		}
+		if (in_curr_region && ! in_prev_region)
+			selection_changed |= icon_select (icon,
+							  !icon->was_selected_before_rubberband);
+		else if (in_prev_region && ! in_curr_region)
+			selection_changed |= icon_select (icon,
+							  icon->was_selected_before_rubberband);
 	}
 
 	return selection_changed;
@@ -1374,7 +1326,7 @@ kbd_move_to (GnomeIconContainer *container,
 		gboolean selection_changed;
 
 		selection_changed = unselect_all (container);
-		selection_changed |= select_icon (container, icon, TRUE);
+		selection_changed |= icon_select (icon, TRUE);
 
 		if (selection_changed)
 			gtk_signal_emit (GTK_OBJECT (container),
@@ -1661,7 +1613,7 @@ kbd_space (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
 	if (container->details->kbd_current != NULL) {
-		if (select_icon (container, container->details->kbd_current, TRUE))
+		if (icon_select (container->details->kbd_current, TRUE))
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[SELECTION_CHANGED]);
 	}
@@ -1825,8 +1777,8 @@ button_release_event (GtkWidget *widget,
 			gboolean selection_changed;
 
 			selection_changed
-				= unselect_all_but_one (container,
-							details->drag_icon);
+				= select_one_unselect_others (container,
+							      details->drag_icon);
 
 			if (selection_changed)
 				gtk_signal_emit (GTK_OBJECT (container),
@@ -2104,7 +2056,7 @@ linger_select_timeout_cb (gpointer data)
 	icon = details->linger_selection_mode_icon;
 
 	selection_changed = unselect_all (container);
-	selection_changed |= select_icon (container, icon, TRUE);
+	selection_changed |= icon_select (icon, TRUE);
 
 	set_kbd_current (container, icon, FALSE);
 	make_icon_visible (container, icon);
@@ -2132,7 +2084,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 			  GdkEventButton *event)
 {
 	GnomeIconContainerDetails *details;
-	gdouble world_x, world_y;
 
 	details = container->details;
 
@@ -2154,12 +2105,12 @@ handle_icon_button_press (GnomeIconContainer *container,
 		return FALSE;
 
 	if (button_event_modifies_selection (event)) {
-		toggle_icon (container, icon);
+		icon_toggle_selected (icon);
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[SELECTION_CHANGED]);
 	} else if (! icon->is_selected) {
 		unselect_all (container);
-		select_icon (container, icon, TRUE);
+		icon_select (icon, TRUE);
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[SELECTION_CHANGED]);
 	}
@@ -2184,11 +2135,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 	details->drag_icon = icon;
 	details->drag_x = event->x;
 	details->drag_y = event->y;
-
-	gnome_canvas_window_to_world (GNOME_CANVAS (container), event->x, event->y,
-				      &world_x, &world_y);
-	details->drag_x_offset = (gint) world_x - icon->x;
-	details->drag_y_offset = (gint) world_y - icon->y;
 
 	return TRUE;
 }
@@ -2689,28 +2635,51 @@ gnome_icon_container_get_selection (GnomeIconContainer *container)
 void
 gnome_icon_container_select_all (GnomeIconContainer *container)
 {
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerIconGrid *grid;
-	GList **p, *q;
-	guint i, j;
 	gboolean selection_changed;
+	GList *p;
 
-	g_return_if_fail (container != NULL);
-
-	details = container->details;
-	grid = details->grid;
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	selection_changed = FALSE;
-	p = grid->elems;
-	for (i = 0; i < grid->height; i++) {
-		for (j = 0; j < grid->width; j++) {
-			for (q = p[j]; q != NULL; q =q->next) {
-				if (select_icon (container, q->data, TRUE))
-					selection_changed = TRUE;
-			}
-		}
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		GnomeIconContainerIcon *icon;
 
-		p += grid->alloc_width;
+		icon = p->data;
+		selection_changed |= icon_select (icon, TRUE);
+	}
+
+	if (selection_changed)
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+}
+
+/**
+ * gnome_icon_container_select_list_unselect_others:
+ * @container: An icon container widget.
+ * @list: A list of GnomeContainerIcons.
+ * 
+ * Select only the icons in the list, deselect all others.
+ **/
+void
+gnome_icon_container_select_list_unselect_others (GnomeIconContainer *container,
+						  GList *icons)
+{
+	gboolean selection_changed;
+	GList *p;
+
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
+
+	/* To avoid an N^2 algorithm, we could put the icons into a hash
+	   table, but this should be OK for now.
+	*/
+
+	selection_changed = FALSE;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		GnomeIconContainerIcon *icon;
+
+		icon = p->data;
+		selection_changed |= icon_select
+			(icon, g_list_find (icons, icon) != NULL);
 	}
 
 	if (selection_changed)
@@ -2727,66 +2696,48 @@ gnome_icon_container_select_all (GnomeIconContainer *container)
 void
 gnome_icon_container_unselect_all (GnomeIconContainer *container)
 {
-	GnomeIconContainerDetails *details;
-	gboolean selection_changed;
-	GList *p;
-
-	g_return_if_fail (container != NULL);
-
-	details = container->details;
-
-	selection_changed = FALSE;
-	for (p = details->icons; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-
-		icon = p->data;
-		if (select_icon (container, icon, FALSE))
-			selection_changed = TRUE;
-	}
-
-	if (selection_changed)
+	if (unselect_all (container))
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[SELECTION_CHANGED]);
 }
 
 /**
- * gnome_icon_container_xlate_selected:
+ * gnome_icon_container_get_icon_by_uri:
  * @container: An icon container widget.
- * @amount_x: Amount of translation on the X axis.
- * @amount_y: Amount of translation on the Y axis.
- * @raise: Whether icons should be raised during this operation.
+ * @uri: The uri of an icon to find.
  * 
- * Translate all the currently selected items in @container by @amount_x
- * horizontally and @amount_y vertically.  Positive values move to the
- * right/bottom, negative values to the left/top.
+ * Locate an icon, given the URI. The URI must match exactly.
+ * Later we may have to have some way of figuring out if the
+ * URI specifies the same object that does not require an exact match.
  **/
-void
-gnome_icon_container_xlate_selected (GnomeIconContainer *container,
-				     gint amount_x,
-				     gint amount_y,
-				     gboolean raise)
+GnomeIconContainerIcon *
+gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
+				      const char *uri)
 {
 	GnomeIconContainerDetails *details;
 	GList *p;
 
-	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-
-	if (amount_x == 0 && amount_y == 0)
-		return;
+	/* Eventually, we must avoid searching the entire icon list,
+	   but it's OK for now.
+	*/
 
 	details = container->details;
 
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
+		char *icon_uri;
+		gboolean is_match;
 
 		icon = p->data;
-		if (icon->is_selected) {
-			move_icon (container, icon,
-				   icon->x + amount_x, icon->y + amount_y);
-			if (raise)
-				icon_raise (icon);
-		}
+
+		icon_uri = nautilus_icons_controller_get_icon_uri
+			(details->controller, icon->data);
+		is_match = strcmp (uri, icon_uri) == 0;
+		g_free (icon_uri);
+
+		if (is_match)
+			return icon;
 	}
 
-	set_kbd_current (container, details->kbd_current, FALSE);
+	return NULL;
 }
