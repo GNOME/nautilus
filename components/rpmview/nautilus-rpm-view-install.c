@@ -127,7 +127,6 @@ get_detailed_errors_foreach (const PackageData *pack, GString *message)
 		break;
 	}
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 }
@@ -145,7 +144,6 @@ get_detailed_errors (const PackageData *pack, int installing)
 		g_string_sprintfa (message, _("Uninstalling %s failed because of the following issue(s):\n"), pack->name);
 	}
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 
