@@ -1,2 +1,2 @@
-SUBDIRS = widgets libegg
+SUBDIRS = widgets libegg gsequence
 

@@ -34,6 +34,7 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
+        $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la \
 	$(CORE_LIBS) \
 	$(POPT_LIBS) \
 	$(NULL)

@@ -1,5 +1,24 @@
 2003-06-27  Alexander Larsson  <alexl@redhat.com>
 
+        Patch by Soren Sandmann
+	
+	* configure.in:
+	CFLAGS for gsequence
+	
+	* cut-n-paste-code/Makefile.am:
+	* cut-n-paste-code/gsequence/.cvsignore:
+	* cut-n-paste-code/gsequence/Makefile.am:
+	* cut-n-paste-code/gsequence/gsequence.[ch]:
+	New cut-n-paste lib for gsequence (by Soren Sandmann)
+	
+	* src/Makefile.am:
+	Link to gsequence
+	
+	* src/file-manager/fm-list-model.c:
+	Use gsequence plus a reverse mapping hashtable.
+
+2003-06-27  Alexander Larsson  <alexl@redhat.com>
+
 	This is based on a patch by Jürg Billeter <j@bitron.ch> which was
 	partly based on a patch by Wolfgang Pichler <madmin@dialog-telekom.at>.
 

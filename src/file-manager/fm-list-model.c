@@ -2,7 +2,8 @@
 
 /* fm-list-model.h - a GtkTreeModel for file lists. 
 
-   Copyright (C) 2001, 2002 Anders Carlsson 
+   Copyright (C) 2001, 2002 Anders Carlsson
+   Copyright (C) 2003, Soeren Sandmann
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,7 +20,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Anders Carlsson <andersca@gnu.org>
+   Authors: Anders Carlsson <andersca@gnu.org>, Soeren Sandmann (sandmann@daimi.au.dk)
 */
 
 #include <config.h>
@@ -32,15 +33,17 @@
 #include <gtk/gtktreesortable.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-dnd.h>
+#include <gsequence/gsequence.h>
 
-#define G_SLIST(x) ((GSList *) x)
+static int fm_list_model_compare_func (gconstpointer a,
+				       gconstpointer b,
+				       gpointer      user_data);
 
 static GObjectClass *parent_class;
 
 struct FMListModelDetails {
-	GSList *files;
-	GSList *tail;
-	int length;
+	GSequence *files;
+	GHashTable *reverse_map;	/* map from files to GSequencePtr's */
 
 	int stamp;
 
@@ -134,22 +137,24 @@ static gboolean
 fm_list_model_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path)
 {
 	FMListModel *model;
-	GSList *list;
+	GSequencePtr ptr;
 	int i;
 	
 	model = (FMListModel *)tree_model;
 
 	i = gtk_tree_path_get_indices (path)[0];
 
-	if (i >= model->details->length) {
+	if (i >= g_sequence_get_length (model->details->files)) {
 		return FALSE;
 	}
 
-	list = g_slist_nth (model->details->files, i);
+	ptr = g_sequence_get_ptr_at_pos (model->details->files, i);
 
 	iter->stamp = model->details->stamp;
-	iter->user_data = list;
+	iter->user_data = ptr;
 
+	g_assert (!g_sequence_ptr_is_end (iter->user_data));
+	
 	return TRUE;
 }
 
@@ -158,30 +163,19 @@ fm_list_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
 	GtkTreePath *path;
 	FMListModel *model;
-	GSList *list;
-	int i;
 
 	model = (FMListModel *)tree_model;
 	
 	g_return_val_if_fail (iter->stamp == model->details->stamp, NULL);
-	
-	i = 0;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list == iter->user_data) {
-			break;
-		}
-
-		i++;
-	}
-
-	if (list == NULL) {
+	if (g_sequence_ptr_is_end (iter->user_data)) {
+		/* FIXME is this right? */
 		return NULL;
 	}
-
-	path = gtk_tree_path_new ();
-	gtk_tree_path_append_index (path, i);
 	
+	path = gtk_tree_path_new ();
+	gtk_tree_path_append_index (path, g_sequence_ptr_get_position (iter->user_data));
+
 	return path;
 }
 
@@ -199,8 +193,9 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	model = (FMListModel *)tree_model;
 
 	g_return_if_fail (model->details->stamp == iter->stamp);
+	g_return_if_fail (!g_sequence_ptr_is_end (iter->user_data));
 
-	file = G_SLIST (iter->user_data)->data;
+	file = g_sequence_ptr_get_data (iter->user_data);
 	
 	switch (column) {
 	case FM_LIST_MODEL_FILE_COLUMN:
@@ -275,9 +270,9 @@ fm_list_model_iter_next (GtkTreeModel *tree_model, GtkTreeIter *iter)
 
 	g_return_val_if_fail (model->details->stamp == iter->stamp, FALSE);
 
-	iter->user_data = G_SLIST (iter->user_data)->next;
+	iter->user_data = g_sequence_ptr_next (iter->user_data);
 
-	return (iter->user_data != NULL);
+	return !g_sequence_ptr_is_end (iter->user_data);
 }
 
 static gboolean
@@ -291,15 +286,14 @@ fm_list_model_iter_children (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTre
 		return FALSE;
 	}
 
-	if (model->details->files != NULL) {
-		iter->stamp = model->details->stamp;
-		iter->user_data = model->details->files;
-
-		return TRUE;
-	}
-	else {
+	if (g_sequence_get_length (model->details->files) == 0) {
 		return FALSE;
 	}
+
+	iter->stamp = model->details->stamp;
+	iter->user_data = g_sequence_get_begin_ptr (model->details->files);
+
+	return TRUE;
 }
 
 static gboolean
@@ -316,7 +310,7 @@ fm_list_model_iter_n_children (GtkTreeModel *tree_model, GtkTreeIter *iter)
 	model = (FMListModel *)tree_model;
 
 	if (iter == NULL) {
-		return model->details->length;
+		return g_sequence_get_length (model->details->files);
 	}
 
 	g_return_val_if_fail (model->details->stamp == iter->stamp, -1);
@@ -328,7 +322,7 @@ static gboolean
 fm_list_model_iter_nth_child (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *parent, int n)
 {
 	FMListModel *model;
-	GSList *child;
+	GSequencePtr child;
 
 	model = (FMListModel *)tree_model;
 	
@@ -336,17 +330,16 @@ fm_list_model_iter_nth_child (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTr
 		return FALSE;
 	}
 
-	child = g_slist_nth (model->details->files, n);
+	child = g_sequence_get_ptr_at_pos (model->details->files, n);
 
-	if (child != NULL) {
-		iter->stamp = model->details->stamp;
-		iter->user_data = child;
-
-		return TRUE;
-	}
-	else {
+	if (g_sequence_ptr_is_end (child)) {
 		return FALSE;
 	}
+
+	iter->stamp = model->details->stamp;
+	iter->user_data = child;
+
+	return TRUE;
 }
 
 static gboolean
@@ -358,32 +351,24 @@ fm_list_model_iter_parent (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeI
 gboolean
 fm_list_model_get_tree_iter_from_file (FMListModel *model, NautilusFile *file, GtkTreeIter *iter)
 {
-	GSList *list;
+	GSequencePtr ptr;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list->data == file) {
-			break;
-		}
-	}
+	ptr = g_hash_table_lookup (model->details->reverse_map, file);
 
-	if (list == NULL) {
+	if (!ptr) {
 		return FALSE;
 	}
 
+	g_assert (!g_sequence_ptr_is_end (ptr));
+	g_assert (g_sequence_ptr_get_data (ptr) == file);
+	
 	if (iter != NULL) {
 		iter->stamp = model->details->stamp;
-		iter->user_data = list;
+		iter->user_data = ptr;
 	}
 	
 	return TRUE;
 }
-
-/* Sorting */
-typedef struct _SortTuple
-{
-  gint offset;
-  GSList *el;
-} SortTuple;
 
 static int
 fm_list_model_compare_func (gconstpointer a,
@@ -394,11 +379,11 @@ fm_list_model_compare_func (gconstpointer a,
 	NautilusFile *file2;
 	FMListModel *model;
 	int result;
-	
+
 	model = (FMListModel *)user_data;
 
-	file1 = ((SortTuple *)a)->el->data;
-	file2 = ((SortTuple *)b)->el->data;
+	file1 = (NautilusFile *)a;
+	file2 = (NautilusFile *)b;
 
 	result = nautilus_file_compare_for_sort (file1, file2,
 						 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
@@ -411,58 +396,47 @@ fm_list_model_compare_func (gconstpointer a,
 static void
 fm_list_model_sort (FMListModel *model)
 {
-	GtkTreeIter iter;
-	GArray *sort_array;
-	gint i;
-	gint *new_order;
-	GSList *list;
+	GSequence *files;
+	GSequencePtr *old_order;
 	GtkTreePath *path;
+	int *new_order;
+	int length;
+	int i;
 
-	if (model->details->length <= 1) {
+	files = model->details->files;
+	length = g_sequence_get_length (files);
+
+	if (length <= 1) {
 		return;
 	}
-
-	list = G_SLIST (model->details->files);
 	
-	sort_array = g_array_sized_new (FALSE, FALSE,
-					sizeof (SortTuple),
-					model->details->length);
+	/* generate old order of GSequencePtr's */
+	old_order = g_new (GSequencePtr, length);
+	for (i = 0; i < length; ++i) {
+		GSequencePtr ptr = g_sequence_get_ptr_at_pos (files, i);
 
-	for (i = 0; i < model->details->length; i++) {
-		SortTuple tuple;
-
-		/* If this fails, we are in an inconsistent state.  Bad */
-		g_return_if_fail (list != NULL);
-
-		tuple.offset = i;
-		tuple.el = list;
-		g_array_append_val (sort_array, tuple);
-
-		list = list->next;
+		old_order[i] = ptr;
 	}
 
-	g_array_sort_with_data (sort_array, fm_list_model_compare_func, model);
-	
-	for (i = 0; i < model->details->length - 1; i++) {
-		g_array_index (sort_array, SortTuple, i).el->next = g_array_index (sort_array, SortTuple, i + 1).el;
+	/* sort */
+	g_sequence_sort (files, fm_list_model_compare_func, model);
+
+	/* generate new order */
+	new_order = g_new (int, length);
+	for (i = 0; i < length; ++i) {
+		new_order[i] = g_sequence_ptr_get_position (old_order[i]);
 	}
-	g_array_index (sort_array, SortTuple, model->details->length - 1).el->next = NULL;
-	model->details->files = g_array_index (sort_array, SortTuple, 0).el;
 
 	/* Let the world know about our new order */
-	new_order = g_new (int, model->details->length);
-	for (i = 0; i < model->details->length; i++) {
-		new_order[i] = g_array_index (sort_array, SortTuple, i).offset;
-	}
 	path = gtk_tree_path_new ();
-	iter.stamp = model->details->stamp;
-	iter.user_data = NULL;
 
+	g_assert (new_order != NULL);
 	gtk_tree_model_rows_reordered (GTK_TREE_MODEL (model),
 				       path, NULL, new_order);
+
 	gtk_tree_path_free (path);
+	g_free (old_order);
 	g_free (new_order);
-	g_array_free (sort_array, TRUE);
 }
 
 static gboolean
@@ -624,65 +598,22 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GSList *list, *tmp, *tmp_prev;
-	NautilusFile *file1;
-	int result;
+	GSequencePtr new_ptr;
 	
 	/* We may only add each file once. */
-	if (fm_list_model_get_tree_iter_from_file (model, file, NULL) == TRUE) {
+	if (fm_list_model_get_tree_iter_from_file (model, file, NULL)) {
 		return;
 	}
 
-	tmp_prev = NULL;
+	nautilus_file_ref (file);
 	
-	list = g_slist_alloc ();
-	list->data = nautilus_file_ref (file);
+	new_ptr = g_sequence_insert_sorted (model->details->files, file,
+					    fm_list_model_compare_func, model);
+
+	g_hash_table_insert (model->details->reverse_map, file, new_ptr);
 	
 	iter.stamp = model->details->stamp;
-	iter.user_data = list;
-
-	if (model->details->tail == NULL) {
-		model->details->files = iter.user_data;
-		model->details->tail = iter.user_data;
-	}
-	else {
-		for (tmp = model->details->files; tmp; tmp = tmp->next) {
-			file1 = tmp->data;
-
-			result = nautilus_file_compare_for_sort (file, file1,
-								 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
-								 model->details->sort_directories_first,
-								 (model->details->order == GTK_SORT_DESCENDING));
-			if (result < 0) {
-				break;
-			}
-
-			tmp_prev = tmp;
-		}
-
-		if (tmp != NULL) {
-			if (tmp == model->details->files) {
-				list->next = model->details->files;
-				model->details->files = list;
-			}
-			else {
-				list->next = tmp;
-			}
-		}
-
-		if (tmp_prev != NULL) {
-			if (tmp_prev == model->details->tail) {
-				model->details->tail->next = list;
-				model->details->tail = list;
-			}
-			else {
-				tmp_prev->next = list;
-			}
-		}
-
-	}
-
-	model->details->length += 1;
+	iter.user_data = new_ptr;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
@@ -694,21 +625,19 @@ fm_list_model_file_changed (FMListModel *model, NautilusFile *file)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GSList *list;
+	GSequencePtr ptr;
 
-	for (list = model->details->files; list; list = list->next) {
-		if (list->data == file) {
-			break;
-		}
-	}
-
-	if (list == NULL) {
+	ptr = g_hash_table_lookup (model->details->reverse_map, file);
+	if (!ptr) {
 		return;
 	}
-	
-	iter.stamp = model->details->stamp;
-	iter.user_data = list;
-	
+
+	g_sequence_ptr_sort_changed (ptr, fm_list_model_compare_func, model);
+
+	if (!fm_list_model_get_tree_iter_from_file (model, file, &iter)) {
+		return;
+	}
+
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
 	gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
 	gtk_tree_path_free (path);
@@ -717,64 +646,25 @@ fm_list_model_file_changed (FMListModel *model, NautilusFile *file)
 gboolean
 fm_list_model_is_empty (FMListModel *model)
 {
-	return model->details->length == 0;
-}
-
-static GSList *
-remove_link_saving_prev (GSList *list, GSList *link, GSList **prevp)
-{
-	GSList *node;
-	GSList *prev;
-	
-	prev = NULL;
-
-	for (node = list; node; node = node->next) {
-		if (node == link) {
-			if (prev != NULL) {
-				prev->next = link->next;
-			}
-			
-			if (list == link) {
-				list = list->next;
-			}
-			
-			link->next = NULL;
-			break;
-		}
-
-		prev = node;
-	}
-
-	*prevp = prev;
-
-	return list;
+	return (g_sequence_get_length (model->details->files) == 0);
 }
 
 static void
 fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 {
+	GSequencePtr ptr;
 	GtkTreePath *path;
-	GSList *prev;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
-	nautilus_file_unref (NAUTILUS_FILE (G_SLIST (iter->user_data)->data));
-	
-	prev = NULL;
-	model->details->files = remove_link_saving_prev (model->details->files,
-							 iter->user_data,
-							 &prev);
-	model->details->length -= 1;
+	ptr = iter->user_data;
 
-	if (iter->user_data == model->details->tail) {
-		model->details->tail = prev;
-	}
+	g_hash_table_remove (model->details->reverse_map, g_sequence_ptr_get_data (ptr));
+	g_sequence_remove (ptr);
 
 	model->details->stamp++;
-
 	
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
-
 }
 
 void
@@ -794,9 +684,9 @@ fm_list_model_clear (FMListModel *model)
 
 	g_return_if_fail (model != NULL);
 
-	while (model->details->files != NULL) {
+	while (g_sequence_get_length (model->details->files) > 0) {
 		iter.stamp = model->details->stamp;
-		iter.user_data = model->details->files;
+		iter.user_data = g_sequence_get_begin_ptr (model->details->files);
 		fm_list_model_remove (model, &iter);
 	}
 }
@@ -960,6 +850,8 @@ fm_list_model_finalize (GObject *object)
 
 	model = FM_LIST_MODEL (object);
 
+	g_sequence_free (model->details->files);
+	g_hash_table_destroy (model->details->reverse_map);
 	g_free (model->details);
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -969,6 +861,8 @@ static void
 fm_list_model_init (FMListModel *model)
 {
 	model->details = g_new0 (FMListModelDetails, 1);
+	model->details->files = g_sequence_new ((GDestroyNotify)nautilus_file_unref);
+	model->details->reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	model->details->stamp = g_random_int ();
 	model->details->sort_column_id = -1;
 }

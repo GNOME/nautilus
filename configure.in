@@ -293,6 +293,11 @@ GIMPHWRAPBOX_MODULES="gtk+-2.0"
 GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
 AC_SUBST(GIMPHWRAPBOX_CFLAGS)
 
+dnl gsequence
+GSEQUENCE_MODULES="glib-2.0"
+GSEQUENCE_CFLAGS="`$PKG_CONFIG --cflags $GSEQUENCE_MODULES`"
+AC_SUBST(GSEQUENCE_CFLAGS)
+	
 dnl libegg
 LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
@@ -387,6 +392,7 @@ components/emblem/Makefile
 components/image_properties/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/libegg/Makefile
+cut-n-paste-code/gsequence/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/gimphwrapbox/Makefile
 data/Makefile
