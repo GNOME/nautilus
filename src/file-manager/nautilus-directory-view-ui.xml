@@ -1,23 +1,61 @@
 <Root>
+<commands>
+	<cmd name="Create Link"
+         _label="Create Link"
+	 _tip="Create a symbolic link for each selected item"/>
+	<cmd name="Duplicate"
+         _label="Duplicate"
+	 _tip="Duplicate each selected item"/>
+	<cmd name="Empty Trash"
+         _label="Empty Trash"
+	 _tip="Delete all items in the trash"/>
+	<cmd name="New Folder"
+         _label="New Folder"
+	 _tip="Create a new empty folder inside this folder"/>
+	<cmd name="Open"
+         _label="Open"
+	 _tip="Open the selected item in this window"/>
+	<cmd name="OpenNew"
+         _label="Open in New Window"
+	 _tip="Open each selected item in a new window"/>
+	<cmd name="OtherApplication"
+         _label="Other Application..."
+	 _tip="Choose another application with which to open the selected item"/>
+	<cmd name="OtherViewer"
+         _label="Other Viewer..."
+	 _tip="Choose another viewer with which to view the selected item"/>
+	<cmd name="Remove Custom Icons"
+         _label="Remove Custom Images"
+	 _tip="Remove any custom images from selected icons"/>
+	<cmd name="Reset Background"
+         _label="Reset Background"
+	 _tip="Remove any custom pattern or color from the background of this location"/>
+	<cmd name="Select All"
+         _label="Select All Files"
+	 _tip="Select all items in this window"/>
+	<cmd name="Show Properties"
+         _label="Show Properties"
+	 _tip="View or modify the properties of each selected item"/>
+	<cmd name="Trash"
+         _label="Move to Trash"
+	 _tip="Move each selected item to the Trash"/>
+</commands>
 <menu>
 	<submenu name="File">
 
 		<placeholder name="New Items Placeholder">
 			<menuitem name="New Folder"
-				  _label="New Folder"
-				  _tip="Create a new empty folder inside this folder"
+				  _label="New _Folder"
 			  	  accel="*Control*n"
 				  verb="New Folder"/>
 		</placeholder>
 		<placeholder name="Open Placeholder">
 			<menuitem name="Open"
 				  _label="_Open"
-				  _tip="Open the selected item in this window"
 				  accel="*Control*o"
 				  verb="Open"/>
 			<menuitem name="OpenNew"
 				  _label="_Open in New Window"
-				  _tip="Open each selected item in a new window"
 				  verb="OpenNew"/>
 			<submenu name="Open With" 
 				 _label="Open With" 
@@ -25,13 +63,11 @@
 				<placeholder name="Applications Placeholder"/>
 				<menuitem name="OtherApplication"
 					  _label="Other _Application..."
-					  _tip="Choose another application with which to open the selected item"
 					  verb="OtherApplication"/>
 				<separator/>
 				<placeholder name="Viewers Placeholder"/>
 				<menuitem name="OtherViewer"
 					  _label="Other _Viewer..."
-					  _tip="Choose another viewer with which to view the selected item"
 					  verb="OtherViewer"/>
 			</submenu>
 		</placeholder>
@@ -39,22 +75,18 @@
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Show Properties"
 				  _label="Show _Properties"
-				  _tip="View or modify the properties of each selected item"
 				  accel="*Control*i"
 				  verb="Show Properties"/>
 			<menuitem name="Trash"
 				  _label="Move to _Trash"
-				  _tip="Move each selected item to the Trash"
 				  accel="*Control*t"
 				  verb="Trash"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
-				  _tip="Duplicate each selected item"
 				  accel="*Control*d"
 				  verb="Duplicate"/>
 			<menuitem name="Create Link"
 				  _label="Create _Link"
-				  _tip="Create a symbolic link for each selected item"
 				  accel="*Control*l"
 				  verb="Create Link"/>
 		</placeholder>
@@ -62,7 +94,6 @@
 		<placeholder name="Global File Items Placeholder">
 			<menuitem name="Empty Trash"
 				  _label="_Empty Trash"
-				  _tip="Delete all items in the trash"
 				  verb="Empty Trash"/>
 		</placeholder>
 	</submenu>
@@ -70,14 +101,12 @@
 	<submenu name="Edit">
 		<menuitem name="Select All"
 			  _label="_Select All Files" 
-			  _tip="Select all items in this window"
 			  accel="*Control*a"
 			  verb="Select All"/>
 		
 		<placeholder name="Edit Items Placeholder">
 			<menuitem name="Remove Custom Icons"
 				  _label="R_emove Custom Images" 
-				  _tip="Remove any custom images from selected icons"
 				  verb="Remove Custom Icons"/>
 		</placeholder>
 
@@ -85,9 +114,30 @@
 </menu>
 <popups>
 	<popup name="background">
-		<menuitem name="Select All"
-			  _label="Select All Files"
-			  verb="Select All"/>
+		<placeholder name="Before Zoom Items">
+			<menuitem name="New Folder" verb="New Folder"/>
+			<placeholder name="View Items" delimit="top"/>
+		</placeholder>
+		<placeholder name="After Zoom Items">
+			<menuitem name="Reset Background" verb="Reset Background"/>
+		</placeholder>
+	</popup>
+	<popup name="selection">
+		<menuitem name="Open" verb="Open"/>
+		<menuitem name="OpenNew" verb="OpenNew"/>
+		<submenu name="Open With" _label="Open With">
+			<placeholder name="Applications Placeholder"/>
+			<menuitem name="OtherApplication" verb="OtherApplication"/>
+			<separator/>
+			<placeholder name="Viewers Placeholder"/>
+			<menuitem name="OtherViewer" verb="OtherViewer"/>
+		</submenu>
+		<separator/>
+		<menuitem name="Show Properties" verb="Show Properties"/>
+		<menuitem name="Trash" verb="Trash"/>
+		<menuitem name="Duplicate" verb="Duplicate"/>
+		<menuitem name="Create Link" verb="Create Link"/>
+		<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>
 	</popup>
 </popups>
 </Root>

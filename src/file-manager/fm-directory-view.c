@@ -95,6 +95,7 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
 enum {
 	ADD_FILE,
@@ -3458,6 +3459,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Empty Trash", bonobo_menu_empty_trash_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
 		BONOBO_UI_VERB ("Remove Custom Icons", (BonoboUIVerbFn)remove_custom_icons_callback),
+		BONOBO_UI_VERB ("Reset Background", (BonoboUIVerbFn)reset_background_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -3599,13 +3601,23 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	menu = create_selection_context_menu (view);
-	if (menu != NULL) {
-		nautilus_pop_up_context_menu (menu,
+	/* work in progress */
+	if (TRUE) {
+		menu = create_selection_context_menu (view);
+		if (menu != NULL) {
+			nautilus_pop_up_context_menu (menu,
+						      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+						      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+						      0);
+		}
+	} else {
+		nautilus_pop_up_context_menu (create_popup_menu 
+					      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      0);
 	}
+
 }
 
 /**
@@ -3630,7 +3642,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 					      0);
 	} else {
 		nautilus_pop_up_context_menu (create_popup_menu 
-					      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
+					      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      0);

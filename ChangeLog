@@ -1,3 +1,28 @@
+2000-11-13  John Sullivan  <sullivan@eazel.com>
+
+	More work towards converting directory view context menus
+	to use Bonobo. Checking in so Darin can help me debug.
+	The Bonobo context menus still aren't used unless you
+	modify code.
+
+	* src/file-manager/fm-directory-view.c: 
+	(real_merge_menus): Add verb handler for "Reset Background"
+	(fm_directory_view_pop_up_selection_context_menu): Add
+	conditional to execute Bonobo version (if TRUE changed to FALSE).
+	(fm_directory_view_pop_up_background_context_menu): formatting tweak.
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Added command definitions for all verbs. Moved labels from
+	context items into commands. Moved tips into commands. Populated
+	the background and selection popup menu definitions.
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Added command definitions for all verbs and ids. Defined labels
+	for commands. Moved tips into commands. Partially populated the
+	background popup menu definition.
+	* src/nautilus-shell-ui.xml: Moved accelerators for Zoom commands
+	to menu items, so they don't appear in context menus. Add labels
+	for Zoom commands. Add degenerate background popup that defines
+	the zoom items.
+
 2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-choosing.c
