@@ -2,7 +2,7 @@
 # Suomennos: http://gnome-fi.sourceforge.net/
 #
 # Copyright (C) 2002 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2002.
+# Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2002.
 #
 #
 # Suomennossuositukset tai -ehdotukset:
@@ -20,14 +20,12 @@
 #
 # scripts = skriptit (onko parempia ehdotuksia?)
 #
-#: libnautilus-private/nautilus-authn-manager.c:70
-#: libnautilus-private/nautilus-authn-manager.c:71
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.7\n"
-"POT-Creation-Date: 2002-01-26 17:02+0200\n"
-"PO-Revision-Date: 2002-01-26 14:07+0200\n"
-"Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
+"POT-Creation-Date: 2002-08-27 16:41+0300\n"
+"PO-Revision-Date: 2002-04-10 23:33+0300\n"
+"Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
@@ -444,7 +442,7 @@ msgstr "OK"
 #. add the button box at the bottom with a cancel button
 #: components/help/hyperbola-nav-index.c:2041
 #: components/news/nautilus-news.c:2358
-#: src/file-manager/fm-directory-view.c:4580
+#: src/file-manager/fm-directory-view.c:4581
 msgid "Cancel"
 msgstr "Peru"
 
@@ -2489,7 +2487,7 @@ msgstr "Gimp"
 msgid "Desktop"
 msgstr "Tyˆpˆyt‰"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5212
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5215
 #: libnautilus-private/nautilus-trash-directory.c:388
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2547,11 +2545,16 @@ msgstr "Ohjelmat"
 msgid "Configure network services (web server, DNS server, etc.)"
 msgstr "Muuta verkkopalvelujen (www-palvelin, DNS-palvelin, yms.) asetuksia"
 
-#: data/serverconfig.desktop.in.h:2
+#: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
 msgid "Server Configuration"
 msgstr "Palvelinasetukset"
 
+#: data/serverconfig.directory.in.h:1
+msgid "Configure network services"
+msgstr "Muuta verkkopalvelujen asetuksia"
+
 #: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+#: data/starthere.directory.in.h:1
 msgid "Start Here"
 msgstr "Aloita t‰st‰"
 
@@ -2731,11 +2734,11 @@ msgstr "ZDNet Linux-keskus"
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
-#: data/sysconfig.desktop.in.h:1
+#: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
 msgstr "Muuta j‰rjestelm‰n laajuisia asetuksia (vaikuttaa joka k‰ytt‰j‰‰n)"
 
-#: data/sysconfig.desktop.in.h:2
+#: data/sysconfig.desktop.in.h:2 data/sysconfig.directory.in.h:2
 msgid "System Settings"
 msgstr "J‰rjestelm‰n asetukset"
 
@@ -5287,94 +5290,94 @@ msgstr "Tyhjenn‰ roskakori"
 msgid "Unmount Volume"
 msgstr "Irrota osio"
 
-#: src/file-manager/fm-directory-view.c:463
+#: src/file-manager/fm-directory-view.c:464
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "T‰m‰ avaisi %d eri ikkunaa. Oletko varma, ett‰ haluat tehd‰ t‰m‰n?"
 
-#: src/file-manager/fm-directory-view.c:465
+#: src/file-manager/fm-directory-view.c:466
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Avataanko %d ikkunaa?"
 
-#: src/file-manager/fm-directory-view.c:772
+#: src/file-manager/fm-directory-view.c:773
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Oletko varma, ett‰ haluat poistaa kohteen \"%s\" pysyv‰sti?"
 
-#: src/file-manager/fm-directory-view.c:776
+#: src/file-manager/fm-directory-view.c:777
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr ""
 "Oletko varma, ett‰ haluat poistaa pysyv‰sti kaikki %d valittua kohdetta?"
 
-#: src/file-manager/fm-directory-view.c:782
+#: src/file-manager/fm-directory-view.c:783
 msgid "Delete?"
 msgstr "Poistetaanko?"
 
-#: src/file-manager/fm-directory-view.c:783
-#: src/file-manager/fm-directory-view.c:2962
-#: src/file-manager/fm-directory-view.c:3002
+#: src/file-manager/fm-directory-view.c:784
+#: src/file-manager/fm-directory-view.c:2963
+#: src/file-manager/fm-directory-view.c:3003
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Poista"
 
-#: src/file-manager/fm-directory-view.c:1419
+#: src/file-manager/fm-directory-view.c:1420
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" valittu"
 
-#: src/file-manager/fm-directory-view.c:1421
+#: src/file-manager/fm-directory-view.c:1422
 msgid "1 folder selected"
 msgstr "1 hakemisto valittu"
 
-#: src/file-manager/fm-directory-view.c:1424
+#: src/file-manager/fm-directory-view.c:1425
 #, c-format
 msgid "%d folders selected"
 msgstr "%d hakemistoa valittu"
 
-#: src/file-manager/fm-directory-view.c:1431
+#: src/file-manager/fm-directory-view.c:1432
 msgid " (containing 0 items)"
 msgstr " (sis‰lt‰‰ 0 kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1433
+#: src/file-manager/fm-directory-view.c:1434
 msgid " (containing 1 item)"
 msgstr " (sis‰lt‰‰ yhden kohteen)"
 
-#: src/file-manager/fm-directory-view.c:1435
+#: src/file-manager/fm-directory-view.c:1436
 #, c-format
 msgid " (containing %d items)"
 msgstr " (sis‰lt‰‰ %d kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1442
+#: src/file-manager/fm-directory-view.c:1443
 msgid " (containing a total of 0 items)"
 msgstr " (sis‰lt‰‰ yhteens‰ 0 kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1444
+#: src/file-manager/fm-directory-view.c:1445
 msgid " (containing a total of 1 item)"
 msgstr " (sis‰lt‰‰ yhteens‰ yhden kohteen)"
 
-#: src/file-manager/fm-directory-view.c:1446
+#: src/file-manager/fm-directory-view.c:1447
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (sis‰lt‰‰ yhteens‰ %d kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1459
+#: src/file-manager/fm-directory-view.c:1460
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1463
+#: src/file-manager/fm-directory-view.c:1464
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d kohdetta on valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1470
+#: src/file-manager/fm-directory-view.c:1471
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 toinen kohde on valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1473
+#: src/file-manager/fm-directory-view.c:1474
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d muuta kohdetta on valittu (%s)"
@@ -5386,7 +5389,7 @@ msgstr "%d muuta kohdetta on valittu (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1502
+#: src/file-manager/fm-directory-view.c:1503
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -5395,7 +5398,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1628
+#: src/file-manager/fm-directory-view.c:1629
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -5404,17 +5407,17 @@ msgstr ""
 "Hakemisto \"%s\" sis‰lt‰‰ enemm‰n tiedostoja kuin Nautilus voi k‰sitell‰. "
 "Joitakin tiedostoja ei n‰y."
 
-#: src/file-manager/fm-directory-view.c:1635
+#: src/file-manager/fm-directory-view.c:1636
 msgid "Too Many Files"
 msgstr "Liian monta tiedostoa"
 
-#: src/file-manager/fm-directory-view.c:2944
+#: src/file-manager/fm-directory-view.c:2945
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "Kohdetta \"%s\" ei voi siirt‰‰ roskakoriin. Haluatko poistaa sen heti?"
 
-#: src/file-manager/fm-directory-view.c:2949
+#: src/file-manager/fm-directory-view.c:2950
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -5422,7 +5425,7 @@ msgid ""
 msgstr ""
 "Ei voi siirt‰‰ %d valittua kohdetta roskakoriin. Haluatko poistaa ne heti?"
 
-#: src/file-manager/fm-directory-view.c:2953
+#: src/file-manager/fm-directory-view.c:2954
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -5431,17 +5434,17 @@ msgstr ""
 "On %d valittua kohdetta, joita ei voi siirt‰‰ roskakoriin. Haluatko poistaa "
 "n‰m‰ %d kohdetta heti?"
 
-#: src/file-manager/fm-directory-view.c:2961
+#: src/file-manager/fm-directory-view.c:2962
 msgid "Delete Immediately?"
 msgstr "Poistetaanko heti?"
 
-#: src/file-manager/fm-directory-view.c:2991
+#: src/file-manager/fm-directory-view.c:2992
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr ""
 "Oletko varma, ett‰ haluat poistaa kohteen \"%s\" pysyv‰sti roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:2995
+#: src/file-manager/fm-directory-view.c:2996
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -5450,40 +5453,40 @@ msgstr ""
 "Oletko varma, ett‰ haluat poistaa pysyv‰sti kaikki %d valittua kohdetta "
 "roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:3001
+#: src/file-manager/fm-directory-view.c:3002
 msgid "Delete From Trash?"
 msgstr "Poistetaanko roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:3311
-#: src/file-manager/fm-directory-view.c:3353
+#: src/file-manager/fm-directory-view.c:3312
+#: src/file-manager/fm-directory-view.c:3354
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "K‰yt‰ ohjelmaa \"%s\" valitun kohteen avaamiseen"
 
-#: src/file-manager/fm-directory-view.c:3435
+#: src/file-manager/fm-directory-view.c:3436
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Muu _sovellus..."
 
-#: src/file-manager/fm-directory-view.c:3435
+#: src/file-manager/fm-directory-view.c:3436
 msgid "An _Application..."
 msgstr "_Sovellus..."
 
-#: src/file-manager/fm-directory-view.c:3441
+#: src/file-manager/fm-directory-view.c:3442
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Muu _katselin..."
 
-#: src/file-manager/fm-directory-view.c:3441
+#: src/file-manager/fm-directory-view.c:3442
 msgid "A _Viewer..."
 msgstr "_Katselin..."
 
-#: src/file-manager/fm-directory-view.c:3658
+#: src/file-manager/fm-directory-view.c:3659
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Aja ohjelma \"%s\" valituilla kohteilla"
 
-#: src/file-manager/fm-directory-view.c:3859
+#: src/file-manager/fm-directory-view.c:3860
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -5493,11 +5496,11 @@ msgstr ""
 "skriptivalikossa. Kun skripti k‰ynnistet‰‰n t‰st‰ valikosta, se saa "
 "syˆtteen‰‰n valitut tiedostot."
 
-#: src/file-manager/fm-directory-view.c:3862
+#: src/file-manager/fm-directory-view.c:3863
 msgid "About Scripts"
 msgstr "Tietoja skripteist‰"
 
-#: src/file-manager/fm-directory-view.c:3863
+#: src/file-manager/fm-directory-view.c:3864
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -5538,124 +5541,124 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: nykyisen ikkunan sijainti ja koko"
 
-#: src/file-manager/fm-directory-view.c:3929
+#: src/file-manager/fm-directory-view.c:3930
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" siirtyy jos annat \"liit‰ tiedostoja\"-komennon"
 
-#: src/file-manager/fm-directory-view.c:3933
+#: src/file-manager/fm-directory-view.c:3934
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" kopioituu, jos annat \"liit‰ tiedostoja\"-komennon"
 
-#: src/file-manager/fm-directory-view.c:3940
+#: src/file-manager/fm-directory-view.c:3941
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "%d valittua kohdetta siirtyv‰t, jos annat \"liit‰ tiedostoja\"-komennon"
 
-#: src/file-manager/fm-directory-view.c:3944
+#: src/file-manager/fm-directory-view.c:3945
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "%d valittua kohdetta kopioituvat, jos annat \"liit‰ tiedostoja\"-komennon"
 
-#: src/file-manager/fm-directory-view.c:4090
+#: src/file-manager/fm-directory-view.c:4091
 msgid "There is nothing on the clipboard to paste."
 msgstr "Leikepˆyd‰ll‰ ei ole mit‰‰n liitett‰v‰‰."
 
-#: src/file-manager/fm-directory-view.c:4209
+#: src/file-manager/fm-directory-view.c:4210
 msgid "Open _in This Window"
 msgstr "Avaa _t‰ss‰ ikkunassa"
 
-#: src/file-manager/fm-directory-view.c:4212
+#: src/file-manager/fm-directory-view.c:4213
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Avaa _uudessa ikkunassa"
 
-#: src/file-manager/fm-directory-view.c:4214
+#: src/file-manager/fm-directory-view.c:4215
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Avaa %d uutta _ikkunaa n‰ytt‰mist‰ varten"
 
-#: src/file-manager/fm-directory-view.c:4232
+#: src/file-manager/fm-directory-view.c:4233
 msgid "Delete from _Trash..."
 msgstr "Poista _roskakorista..."
 
-#: src/file-manager/fm-directory-view.c:4232
+#: src/file-manager/fm-directory-view.c:4233
 msgid "Delete from _Trash"
 msgstr "Poista _roskakorista"
 
-#: src/file-manager/fm-directory-view.c:4234
+#: src/file-manager/fm-directory-view.c:4235
 msgid "Delete all selected items permanently"
 msgstr "Poista kaikki valitut kohteet pysyv‰sti"
 
-#: src/file-manager/fm-directory-view.c:4237
+#: src/file-manager/fm-directory-view.c:4238
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Siirr‰ _roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:4239
+#: src/file-manager/fm-directory-view.c:4240
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Siirr‰ jokainen valittu kohde roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:4266
+#: src/file-manager/fm-directory-view.c:4267
 msgid "De_lete..."
 msgstr "_Poista..."
 
-#: src/file-manager/fm-directory-view.c:4266
+#: src/file-manager/fm-directory-view.c:4267
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "_Poista"
 
-#: src/file-manager/fm-directory-view.c:4287
+#: src/file-manager/fm-directory-view.c:4288
 msgid "Make _Links"
 msgstr "_Tee linkkej‰"
 
-#: src/file-manager/fm-directory-view.c:4288
+#: src/file-manager/fm-directory-view.c:4289
 msgid "Make _Link"
 msgstr "_Tee linkki"
 
-#: src/file-manager/fm-directory-view.c:4303
+#: src/file-manager/fm-directory-view.c:4304
 msgid "_Empty Trash..."
 msgstr "_Tyhjenn‰ roskakori..."
 
-#: src/file-manager/fm-directory-view.c:4304
+#: src/file-manager/fm-directory-view.c:4305
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "_Tyhjenn‰ roskakori"
 
-#: src/file-manager/fm-directory-view.c:4315
+#: src/file-manager/fm-directory-view.c:4316
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Poista _mukautetut kuvat"
 
-#: src/file-manager/fm-directory-view.c:4316
+#: src/file-manager/fm-directory-view.c:4317
 msgid "R_emove Custom Image"
 msgstr "Poista _mukautettu kuva"
 
-#: src/file-manager/fm-directory-view.c:4330
+#: src/file-manager/fm-directory-view.c:4331
 msgid "Cu_t File"
 msgstr "_Leikkaa tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4331
+#: src/file-manager/fm-directory-view.c:4332
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Leikkaa tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4341
+#: src/file-manager/fm-directory-view.c:4342
 msgid "_Copy File"
 msgstr "_Kopioi tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4342
+#: src/file-manager/fm-directory-view.c:4343
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "Kopioi tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4506
+#: src/file-manager/fm-directory-view.c:4507
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5663,7 +5666,7 @@ msgstr ""
 "T‰t‰ linkki‰ ei voi k‰ytt‰‰, koska sill‰ ei ole kohdetta. Haluatko heitt‰‰ "
 "t‰m‰n linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4509
+#: src/file-manager/fm-directory-view.c:4510
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5672,15 +5675,15 @@ msgstr ""
 "T‰t‰ linkki‰ ei voi k‰ytt‰‰, koska sen kohdetta \"%s\" ei ole olemassa. "
 "Haluatko heitt‰‰ t‰m‰n linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4515
+#: src/file-manager/fm-directory-view.c:4516
 msgid "Broken Link"
 msgstr "Rikkin‰inen linkki"
 
-#: src/file-manager/fm-directory-view.c:4516
+#: src/file-manager/fm-directory-view.c:4517
 msgid "Throw Away"
 msgstr "Heit‰ pois"
 
-#: src/file-manager/fm-directory-view.c:4569
+#: src/file-manager/fm-directory-view.c:4570
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -5689,35 +5692,35 @@ msgstr ""
 "\"%s\" on suoritettava tekstitiedosto. Haluatko k‰ynnist‰‰ sen vai n‰hd‰ sen "
 "sis‰llˆn?"
 
-#: src/file-manager/fm-directory-view.c:4575
+#: src/file-manager/fm-directory-view.c:4576
 msgid "Run or Display?"
 msgstr "K‰ynnist‰ vai n‰yt‰?"
 
-#: src/file-manager/fm-directory-view.c:4576
+#: src/file-manager/fm-directory-view.c:4577
 msgid "Run"
 msgstr "K‰ynnist‰"
 
-#: src/file-manager/fm-directory-view.c:4577
+#: src/file-manager/fm-directory-view.c:4578
 msgid "Display"
 msgstr "N‰yttˆ"
 
-#: src/file-manager/fm-directory-view.c:4628
+#: src/file-manager/fm-directory-view.c:4630
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 "Valitettavasti et voi turvallisuussyist‰ suorittaa komentoja et‰sivustolta."
 
-#: src/file-manager/fm-directory-view.c:4630
+#: src/file-manager/fm-directory-view.c:4632
 msgid "Can't execute remote links"
 msgstr "Et‰linkkej‰ ei voi suorittaa"
 
-#: src/file-manager/fm-directory-view.c:4758
+#: src/file-manager/fm-directory-view.c:4783
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Avaa tiedostoa \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4764
+#: src/file-manager/fm-directory-view.c:4789
 msgid "Cancel Open?"
 msgstr "Perutaanko avaaminen?"
 
