@@ -1,5 +1,11 @@
 2003-03-14  Dave Camp  <dave@ximian.com>
 
+	* components/adapter/nautilus-adapter-stream-load-strategy.c 
+	(nautilus_adapter_stream_load_strategy_load_location): Recompute
+	the mime type and passit to the stream's load method.
+
+2003-03-14  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-icon-dnd.c (drag_leave_callback): 
 	Clear the drop target.
 

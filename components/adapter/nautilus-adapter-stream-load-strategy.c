@@ -40,6 +40,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 
 struct NautilusAdapterStreamLoadStrategyDetails {
 	Bonobo_PersistStream  persist_stream;
@@ -172,16 +173,12 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	if (BONOBO_EX (&ev) || CORBA_Object_is_nil (stream, &ev)) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 	} else {
-		/* FIXME bugzilla.gnome.org 41248: 
-		 * Dan Winship points out that we should pass the
-		 * MIME type here to work with new implementers of
-		 * PersistStream that pay attention to the MIME type. It
-		 * doesn't matter right now, but we should fix it
-		 * eventually. Currently, we don't store the MIME type, but
-		 * it should be easy to keep it around and pass it in here.
-		 */
-
-		mime_type = "";
+		/* This adds an extra sniffing, which is a bit of a problem.
+		 * We think this is ok, since it is relatively cheap and
+		 * the adapter isn't used often.  When the adapter is
+		 * moved into the nautilus process, this should use the
+		 * mime type from the NautilusFile. */
+		mime_type = gnome_vfs_get_mime_type (uri);
 		args [0] = &stream;
 		args [1] = &mime_type;
 
@@ -192,6 +189,8 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 			args,
 			unref_stream_cb,
 			stream);
+
+		g_free (mime_type);
         }
 
 	g_object_unref (strategy);
