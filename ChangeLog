@@ -1,3 +1,16 @@
+2001-03-06  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+	
+	Fix 7455 (Intermittent crash when opening trash folder)
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(trash_callback_check_done), (trash_file_call_when_ready):
+
+	Added an "initializing" field to TrashCallback object. This
+	is set while connecting the call_when_ready callbacks in
+	trash_file_call_when_ready (). trash_callback_check_done ()
+	checks this flag and only succeeds when it's false.
+
 2001-03-06  Darin Adler  <darin@eazel.com>
 
 	* README: Updated to refer to gnome-vfs-1-0 branch.
