@@ -62,6 +62,10 @@
 #define NAUTILUS_COMMAND_CLEAR				"/commands/Clear"
 #define NAUTILUS_COMMAND_SELECT_ALL			"/commands/Select All"
 
+#define NAUTILUS_COMMAND_ZOOM_IN_FROM_POPUP		"/commands/Zoom In Popup"
+#define NAUTILUS_COMMAND_ZOOM_OUT_FROM_POPUP		"/commands/Zoom Out Popup"
+#define NAUTILUS_COMMAND_ZOOM_NORMAL_FROM_POPUP		"/commands/Zoom Normal Popup"
+
 /** 
  * Components can use these placeholder paths with BonoboUIContainer calls to 
  * insert new items in well-defined positions. 
@@ -114,7 +118,6 @@
 
 /* Use the "extra help items" placeholder to add help-related items */
 #define NAUTILUS_MENU_PATH_EXTRA_HELP_ITEMS_PLACEHOLDER	"/menu/Help/Extra Help Items"
-
 
 /* Components can use these paths with BonoboUIHandler calls to
  * locate toolbars and toolbar items for the purpose of merging.

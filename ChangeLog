@@ -1,3 +1,28 @@
+2000-11-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed a couple of cases where context menus appeared on
+	the desktop that should have been hidden. This leaves
+	behind a new (Bonobo) bug where there are two adjacent 
+	separators in the desktop background context menu, which
+	I will write up.
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	Add popup zooming commands here that need to be manipulated
+	by directory view.
+	* src/file-manager/fm-directory-view.c: (real_merge_menus):
+	Hide the zooming items in the popup if the directory view
+	does not support zooming (e.g., desktop)
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus):
+	Hide the Lay Out submenu in the popup if the icon view
+	does not support auto-layout (e.g., desktop)
+	* src/nautilus-shell-ui.xml: Make zooming items in popup use
+	different commands than zooming items in normal menu, so they
+	can be hidden independently.
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Attach callbacks to new popup zooming items.
+
 2000-11-15  Gene Z. Ragan  <gzr@eazel.com>	
 
 	Fixed bug 4717, Nautilus draw desktop icons overlapping.
@@ -5,8 +30,8 @@
 	The problem was caused by the icon container responding to
 	an idle function that lays out icons that had been
 	newly added.  This is a problem if the callback is called
-	form an idle after th eicon container has been created, but
-	before a size has been allocated. A nely intialized GtkWidget
+	from an idle after the icon container has been created, but
+	before a size has been allocated. A newly intialized GtkWidget
 	has a default allocation of 0, 0, 1, 1 which is too small
 	for the layout algorithm to work properly.  A flag was added
 	that is set to TRUE when the size_allocate function is called.

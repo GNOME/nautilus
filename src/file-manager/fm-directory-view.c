@@ -3538,6 +3538,15 @@ real_merge_menus (FMDirectoryView *view)
 			    	   schedule_update_menus,
 			    	   GTK_OBJECT (view));
 
+	/* Do one-time state changes here; context-dependent ones go in update_menus */
+	if (!fm_directory_view_supports_zooming (view)) {
+		nautilus_bonobo_set_hidden 
+			(view->details->ui, NAUTILUS_COMMAND_ZOOM_IN_FROM_POPUP, TRUE);
+		nautilus_bonobo_set_hidden 
+			(view->details->ui, NAUTILUS_COMMAND_ZOOM_OUT_FROM_POPUP, TRUE);
+		nautilus_bonobo_set_hidden 
+			(view->details->ui, NAUTILUS_COMMAND_ZOOM_NORMAL_FROM_POPUP, TRUE);
+	}
 }
 
 static void

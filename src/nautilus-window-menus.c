@@ -1237,6 +1237,12 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
 		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
 		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
+		/* Separate verbs for the Zoom items in the context menus so that
+		 * they can be hidden when the normal ones are merely desensitized.
+		 */
+		BONOBO_UI_VERB ("Zoom In Popup", view_menu_zoom_in_callback),
+		BONOBO_UI_VERB ("Zoom Out Popup", view_menu_zoom_out_callback),
+		BONOBO_UI_VERB ("Zoom Normal Popup", view_menu_zoom_normal_callback),
 		BONOBO_UI_VERB ("Add Bookmark", bookmarks_menu_add_bookmark_callback),
 		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
 

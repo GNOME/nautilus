@@ -78,6 +78,8 @@
 #define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
+#define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Lay Out"
+
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_RENAME 				"/commands/Rename"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
@@ -1539,6 +1541,14 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	bonobo_ui_component_add_listener (icon_view->details->ui, ID_TIGHTER_LAYOUT, tighter_layout_state_changed_callback, view);
 	bonobo_ui_component_add_listener (icon_view->details->ui, ID_SORT_REVERSED, sort_reversed_state_changed_callback, view);
 	icon_view->details->menus_ready = TRUE;
+
+	/* Do one-time state-setting here; context-dependent state-setting
+	 * is done in update_menus.
+	 */
+	if (!fm_icon_view_supports_auto_layout (icon_view)) {
+		nautilus_bonobo_set_hidden 
+			(icon_view->details->ui, POPUP_PATH_LAY_OUT, TRUE);
+	}
 
 	update_layout_menus (icon_view);
 }
