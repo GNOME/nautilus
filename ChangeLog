@@ -1,3 +1,13 @@
+2002-07-09  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-property-browser.c
+	(property_browser_category_button_new): build
+	radio button & set mode.
+	(category_clicked_callback): cut most of it out.
+	(make_category_link): upd.
+	(build_radio_accessibility_relations): kill - uses
+	real radio buttons now.
+
 2002-07-09  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
