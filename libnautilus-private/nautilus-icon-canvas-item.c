@@ -94,6 +94,7 @@ struct NautilusIconCanvasItemDetails {
 	guint rendered_is_highlighted_for_selection : 1;
 	guint rendered_is_highlighted_for_drop : 1;
 	guint rendered_is_prelit : 1;
+	guint rendered_is_focused : 1;
 	
 	guint is_renaming : 1;
 
@@ -1247,13 +1248,20 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 			g_free (audio_filename);
 		}
 	}
-	
+
 	if (icon_item->details->is_highlighted_for_selection
 	    || icon_item->details->is_highlighted_for_drop) {
+		guint color;
+
 		old_pixbuf = temp_pixbuf;
-		temp_pixbuf = eel_create_darkened_pixbuf (temp_pixbuf,
-							  0.8 * 255,
-							  0.8 * 255);
+
+		color =  GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (canvas)) ? NAUTILUS_ICON_CONTAINER (canvas)->details->highlight_color_rgba : NAUTILUS_ICON_CONTAINER (canvas)->details->active_color_rgba;
+
+		temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf,
+							   EEL_RGBA_COLOR_GET_R (color),
+							   EEL_RGBA_COLOR_GET_G(color),
+							   EEL_RGBA_COLOR_GET_B (color));
+							   
 		g_object_unref (old_pixbuf);
 	} 
 
@@ -1267,7 +1275,8 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	      && icon_item->details->rendered_is_active == icon_item->details->is_active
 	      && icon_item->details->rendered_is_prelit == icon_item->details->is_prelit
 	      && icon_item->details->rendered_is_highlighted_for_selection == icon_item->details->is_highlighted_for_selection
-	      && icon_item->details->rendered_is_highlighted_for_drop == icon_item->details->is_highlighted_for_drop)) {
+	      && icon_item->details->rendered_is_highlighted_for_drop == icon_item->details->is_highlighted_for_drop
+	      && (icon_item->details->is_highlighted_for_selection && icon_item->details->rendered_is_focused == GTK_WIDGET_HAS_FOCUS (EEL_CANVAS_ITEM (icon_item)->canvas)))) {
 		if (icon_item->details->rendered_pixbuf != NULL) {
 			g_object_unref (icon_item->details->rendered_pixbuf);
 		}
@@ -1276,6 +1285,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 		icon_item->details->rendered_is_prelit = icon_item->details->is_prelit;
 		icon_item->details->rendered_is_highlighted_for_selection = icon_item->details->is_highlighted_for_selection;
 		icon_item->details->rendered_is_highlighted_for_drop = icon_item->details->is_highlighted_for_drop;
+		icon_item->details->rendered_is_focused = GTK_WIDGET_HAS_FOCUS (EEL_CANVAS_ITEM (icon_item)->canvas);
 	}
 
 	g_object_ref (icon_item->details->rendered_pixbuf);
