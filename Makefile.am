@@ -61,7 +61,8 @@ appicon_DATA = nautilus-launch-icon.png
 Applicationsdir = $(datadir)/gnome/apps/Applications
 Applications_DATA = $(DESKTOP_FILES)
 
-
+Toplevelmenudir = $(datadir)/gnome/apps 
+Toplevelmenu_DATA = nautilus-help.desktop
 
 ## [The following is shamelessly copied from gnome-vfs.]
 
