@@ -33,17 +33,6 @@
 #include "eazel-install-public.h"
 #include <eazel-package-system.h>
 
-EazelInstallOperationStatus ei_install_packages (EazelInstall *service, GList *categories);
-EazelInstallOperationStatus ei_uninstall_packages (EazelInstall *service, GList *categories);
-EazelInstallOperationStatus ei_revert_transaction (EazelInstall *service, GList *packages);
-
-gboolean eazel_install_prepare_package_system (EazelInstall *service);
-gboolean eazel_install_free_package_system (EazelInstall *service);
-
-unsigned long eazel_install_get_total_size_of_packages (EazelInstall *service,
-							const GList *packages);
-void eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
-						      PackageData *pack);
 gboolean eazel_install_check_if_related_package (EazelInstall *service,
 						 PackageData *package,
 						 PackageData *dep);

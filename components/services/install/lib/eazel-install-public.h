@@ -49,10 +49,10 @@ extern "C" {
 #define EAZEL_IS_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
 typedef enum {
-	EAZEL_INSTALL_NOTHING = 0,
-	EAZEL_INSTALL_INSTALL_OK = 1<<0,
-	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
-	EAZEL_INSTALL_REVERSION_OK = 1<<2
+	EAZEL_INSTALL_NOTHING = 0x0,
+	EAZEL_INSTALL_INSTALL_OK = 0x1,
+	EAZEL_INSTALL_UNINSTALL_OK = 0x2,
+	EAZEL_INSTALL_REVERSION_OK = 0x4
 } EazelInstallOperationStatus;
 
 typedef enum {
@@ -88,6 +88,11 @@ struct _EazelInstallClass
 				   int package_num, int num_packages, 
 				   int package_size_completed, int package_size_total,
 				   int total_size_completed, int total_size);
+	void (*uninstall_progress)  (EazelInstall *service, 
+				     const PackageData *pack, 
+				     int package_num, int num_packages, 
+				     int package_size_completed, int package_size_total,
+				     int total_size_completed, int total_size);
 	void (*dependency_check) (EazelInstall *service, const PackageData *pack, const PackageData *needed);
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
@@ -159,6 +164,11 @@ void eazel_install_emit_install_progress          (EazelInstall *service,
 						   int package_num, int num_packages, 
 						   int package_size_completed, int package_size_total,
 						   int total_size_completed, int total_size);
+void eazel_install_emit_uninstall_progress      (EazelInstall *service, 
+						 const PackageData *pack,
+						 int package_num, int num_packages, 
+						 int package_size_completed, int package_size_total,
+						 int total_size_completed, int total_size);
 void eazel_install_emit_download_progress         (EazelInstall *service,
 						   const PackageData *package,
 						   int amount, 
@@ -211,6 +221,8 @@ void eazel_install_revert_transaction_from_file (EazelInstall *service,
 
 void eazel_install_delete_downloads (EazelInstall *service);
 
+void eazel_install_init_transaction (EazelInstall *service);
+void eazel_install_save_transaction_report (EazelInstall *service);
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */

@@ -64,6 +64,7 @@ enum {
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
+	UNINSTALL_PROGRESS,
 	DOWNLOAD_FAILED,
 	MD5_CHECK_FAILED,
 	INSTALL_FAILED,
@@ -123,6 +124,9 @@ void eazel_install_emit_feature_consistency_check_default (EazelInstall *service
 void eazel_install_emit_install_progress_default (EazelInstall *service,
 						  const PackageData *pack,
 						  int, int, int, int, int, int);
+void eazel_install_emit_uninstall_progress_default (EazelInstall *service,
+						    const PackageData *pack,
+						    int, int, int, int, int, int);
 void  eazel_install_emit_download_progress_default (EazelInstall *service,
 						    const PackageData *package,
 						    int amount,
@@ -200,6 +204,7 @@ eazel_install_finalize (GtkObject *object)
 	g_list_free (service->private->root_dirs);
 
 	g_list_free (service->private->transaction);
+	g_list_free (service->private->failed_packages);
 	
 	g_free (service->private->transaction_dir);
 	g_free (service->private->cur_root);
@@ -235,12 +240,18 @@ eazel_install_start_signal (EazelPackageSystem *system,
 	service->private->infoblock[2]++;
 	switch (op) {
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
-	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
 		eazel_install_emit_install_progress (service, 
 						     pack,
 						     service->private->infoblock[2], service->private->infoblock[3],
 						     0, pack->bytesize,
 						     service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_uninstall_progress (service, 
+						       pack,
+						       service->private->infoblock[2], service->private->infoblock[3],
+						       0, pack->bytesize,
+						       service->private->infoblock[4], service->private->infoblock[5]);				     
 		break;
 	default:
 		break;
@@ -256,15 +267,28 @@ eazel_install_end_signal (EazelPackageSystem *system,
 {
 	switch (op) {
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
-	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
 		eazel_install_emit_install_progress (service, 
 						     pack,
 						     service->private->infoblock[2], service->private->infoblock[3],
 						     pack->bytesize, pack->bytesize,
 						     service->private->infoblock[4], service->private->infoblock[5]);				     
 		break;
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_uninstall_progress (service, 
+						       pack,
+						       service->private->infoblock[2], service->private->infoblock[3],
+						       pack->bytesize, pack->bytesize,
+						       service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
 	default:
 		break;
+	}
+	if (pack->toplevel) {
+		if (g_list_find (service->private->failed_packages, (PackageData*)pack) == NULL) {
+			g_message ("Adding %s to transaction", pack->name);
+			service->private->transaction = g_list_prepend (service->private->transaction,
+									(PackageData*)pack);
+		}
 	}
 	return TRUE;
 }
@@ -280,12 +304,18 @@ eazel_install_progress_signal (EazelPackageSystem *system,
 	if ((info[0] != 0) && (info[0] != info[1])) {
 		switch (op) {
 		case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
-		case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
 			eazel_install_emit_install_progress (service, 
 							     pack,
 							     service->private->infoblock[2], service->private->infoblock[3],
 							     info[0], pack->bytesize,
 							     info[4], info[5]);
+			break;
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+			eazel_install_emit_uninstall_progress (service, 
+							       pack,
+							       service->private->infoblock[2], service->private->infoblock[3],
+							       info[0], pack->bytesize,
+							       info[4], info[5]);
 			break;
 		default:
 			break;
@@ -301,6 +331,10 @@ eazel_install_failed_signal (EazelPackageSystem *system,
 			     EazelInstall *service)
 {
 	trilobite_debug ("*** %s failed", pack->name);
+
+	service->private->failed_packages = g_list_prepend (service->private->failed_packages, 
+							    (PackageData*)pack);
+
 	if (pack->toplevel) {
 		trilobite_debug ("emiting failed for %s", pack->name);
 		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL) {
@@ -461,6 +495,15 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
 				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, 
 				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+	signals[UNINSTALL_PROGRESS] = 
+		gtk_signal_new ("uninstall_progress",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, uninstall_progress),
+				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,
@@ -510,6 +553,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->file_uniqueness_check = NULL;
 	klass->feature_consistency_check = NULL;
 	klass->install_progress = NULL;
+	klass->uninstall_progress = NULL;
 	klass->download_progress = NULL;
 	klass->download_failed = NULL;
 	klass->md5_check_failed = NULL;
@@ -522,6 +566,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->file_uniqueness_check = eazel_install_emit_file_uniqueness_check_default;
 	klass->feature_consistency_check = eazel_install_emit_feature_consistency_check_default;
 	klass->install_progress = eazel_install_emit_install_progress_default;
+	klass->uninstall_progress = eazel_install_emit_uninstall_progress_default;
 	klass->download_progress = eazel_install_emit_download_progress_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
 	klass->md5_check_failed = eazel_install_emit_md5_check_failed_default;
@@ -666,6 +711,7 @@ eazel_install_initialize (EazelInstall *service) {
 							  (GCompareFunc)g_str_equal);
 	service->private->downloaded_files = NULL;
 	service->private->transaction = NULL;
+	service->private->failed_packages = NULL;
 	service->private->revert = FALSE;
 	service->private->ssl_rename = FALSE;
 	service->private->ignore_file_conflicts = FALSE;
@@ -687,7 +733,7 @@ eazel_install_initialize (EazelInstall *service) {
 		char *tmp = NULL;
 
 #ifndef EAZEL_INSTALL_SLIM
-		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());
+		tmp = g_strdup_printf ("%s/.nautilus/packagedb/", g_get_home_dir ());
 		list = g_list_prepend (list, g_strdup (g_get_home_dir ()));
 		list = g_list_prepend (list, tmp);
 #else
@@ -1158,7 +1204,6 @@ eazel_install_install_packages (EazelInstall *service,
 			g_warning (_("Install failed"));
 		} 
 		
-		eazel_install_unlock_tmp_dir (service);
 		trilobite_debug ("service->private->downloaded_files = 0x%p", 
 				 (unsigned int)service->private->downloaded_files);
 		
@@ -1199,15 +1244,7 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_fetch_remote_package_list (service);
 	}
 
-/*
-  FIXME: bugzilla.eazel.com 5752
-	if (eazel_install_get_ei2 (service)) {
-		result = uninstall_packages (service, categories);
-	} else {
-		result = ei_uninstall_packages (service, categories);
-	}
-*/
-	result = ei_uninstall_packages (service, categories);
+	result = uninstall_packages (service, categories);
 
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
@@ -1232,17 +1269,7 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	service->private->revert = TRUE;
 
 	if (create_temporary_directory (service)) {
-
-/*
-  FIXME: bugzilla.eazel.com 5753
-		if (eazel_install_get_ei2 (service)) {
-			result = revert_transaction (service, packages);
-		} else {
-			result = ei_revert_transaction (service, packages);
-		}
-*/
-		result = ei_revert_transaction (service, packages);
-		eazel_install_unlock_tmp_dir (service);
+		result = revert_transaction (service, packages);
 	} else {
 		result = EAZEL_INSTALL_NOTHING;
 	} 
@@ -1293,6 +1320,110 @@ eazel_install_add_repository (EazelInstall *service, const char *dir)
 	service->private->local_repositories = g_list_prepend (service->private->local_repositories, g_strdup (dir));
 }
 
+static void
+eazel_install_do_transaction_save_report_helper (xmlNodePtr node,
+						     GList *packages)
+{
+	GList *iterator;
+
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack;
+		char *tmp;
+		pack = (PackageData*)iterator->data;
+		switch (pack->modify_status) {
+		case PACKAGE_MOD_INSTALLED:			
+			tmp = g_strdup_printf ("Installed %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		case PACKAGE_MOD_UNINSTALLED:			
+			tmp = g_strdup_printf ("Uninstalled %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		default:
+			break;
+		}
+		if (pack->modifies) {
+			eazel_install_do_transaction_save_report_helper (node, pack->modifies);
+		}
+	}
+}
+
+void
+eazel_install_save_transaction_report (EazelInstall *service) 
+{
+	FILE *outfile;
+	xmlDocPtr doc;
+	xmlNodePtr node, root;
+	char *name = NULL;
+
+	if (eazel_install_get_transaction_dir (service) == NULL) {
+		g_warning ("Transaction directory not set, not storing transaction report");
+	}
+
+	/* Ensure the transaction dir is present */
+	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
+		int retval;
+		retval = mkdir (eazel_install_get_transaction_dir (service), 0755);		       
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_warning (_("Could not create transaction directory (%s)! ***\n"), 
+					   eazel_install_get_transaction_dir (service));
+				return;
+			}
+		}
+	}
+
+	/* Create xml */
+	doc = xmlNewDoc ("1.0");
+	root = node = xmlNewNode (NULL, "TRANSACTION");
+	xmlDocSetRootElement (doc, node);
+
+	/* Make a unique name */
+	name = g_strdup_printf ("%s/transaction.%lu", eazel_install_get_transaction_dir (service),
+				(unsigned long) time (NULL));
+	while (g_file_test (name, G_FILE_TEST_ISFILE)) {
+		g_free (name);
+		sleep (1);
+		name = g_strdup_printf ("%s/transaction.%lu", 
+					eazel_install_get_transaction_dir (service), 
+					(unsigned long) time (NULL));
+	}
+
+	trilobite_debug (_("Writing transaction to %s"), name);
+	
+	/* Open and save */
+	outfile = fopen (name, "w");
+	xmlAddChild (root, eazel_install_packagelist_to_xml (service->private->transaction, FALSE));
+	node = xmlAddChild (node, xmlNewNode (NULL, "DESCRIPTIONS"));
+
+	{
+		char *tmp;
+		tmp = g_strdup_printf ("%lu", (unsigned long) time (NULL));		
+		xmlNewChild (node, NULL, "DATE", tmp);
+		g_free (tmp);
+	}
+
+	eazel_install_do_transaction_save_report_helper (node, service->private->transaction);
+
+	xmlDocDump (outfile, doc);
+	
+	fclose (outfile);
+	g_free (name);
+}
+
+void
+eazel_install_init_transaction (EazelInstall *service) 
+{
+	/* Null the list of files met in the transaction */
+	g_list_free (service->private->transaction);
+	service->private->transaction = NULL;
+
+	/* Null the list of files met in the transaction */
+	g_list_free (service->private->transaction);
+	service->private->transaction = NULL;
+}
 
 /************************************************
   Signal emitters and default handlers.
@@ -1428,13 +1559,56 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 } 
 
 void 
+eazel_install_emit_uninstall_progress (EazelInstall *service, 
+				       const PackageData *pack,
+				       int package_num, int num_packages, 
+				       int package_size_completed, int package_size_total,
+				       int total_size_completed, int total_size)
+{
+	EAZEL_INSTALL_SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_PROGRESS], 
+			 pack,
+			 package_num, num_packages,
+			 package_size_completed, package_size_total,
+			 total_size_completed, total_size);
+
+}
+
+void 
+eazel_install_emit_uninstall_progress_default (EazelInstall *service, 
+					       const PackageData *pack,
+					       int package_num, int num_packages, 
+					       int package_size_completed, int package_size_total,
+					       int total_size_completed, int total_size)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	EAZEL_INSTALL_SANITY(service);
+
+	if (service->callback != CORBA_OBJECT_NIL) {
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress (service->callback, 
+									  package, 
+									  package_num, num_packages,
+									  package_size_completed, package_size_total,
+									  total_size_completed, total_size,
+									  &ev);
+		CORBA_free (package);
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
 eazel_install_emit_download_progress (EazelInstall *service, 
 				      const PackageData *pack,
 				      int amount, 
 				      int total)
 {
 	EAZEL_INSTALL_SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], pack, amount, total);
+	//gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], pack, amount, total);
 }
 
 void 

@@ -263,7 +263,15 @@ eazel_package_system_install (EazelPackageSystem *system,
 {
 	EPS_SANE (system);
 	g_assert (system->private->install);
-	(*system->private->install) (system, root, packages, flags);
+	
+	/* If we're in test mode, disable FORCE just to trigger
+	   any potiental errors */
+	if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_TEST) {
+		(*system->private->install) (system, root, packages, 
+					     flags & ~EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE);
+	} else {
+		(*system->private->install) (system, root, packages, flags);
+	}
 }
 
 void                 

@@ -17,6 +17,7 @@ module Trilobite {
 		   
 		enum PackageStatusEnum {
 			UNKNOWN_STATUS,
+			CANCELLED,            /* medium: Package cancelled, eg wrong password or such */
 			SOURCE_NOT_SUPPORTED, /* bad: we don't install source packages */
 			DEPENDENCY_FAIL,      /* bad: a dependency failed in next level */
 			FILE_CONFLICT,        /* bad: this file owns a file that the
@@ -181,11 +182,19 @@ module Trilobite {
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 
-							in long package_num, in long num_packages, 
-							in long package_size_completed, in long package_size_total,
-							in long total_size_completed, in long total_size);
+						      in long package_num, 
+						      in long num_packages, 
+						      in long package_size_completed, 
+						      in long package_size_total,
+						      in long total_size_completed, 
+						      in long total_size);
 			oneway void uninstall_progress (in PackageDataStruct package, 
-							in long amount, in long total);
+							in long package_num, 
+							in long num_packages, 
+							in long package_size_completed, 
+							in long package_size_total,
+							in long total_size_completed, 
+							in long total_size);
 
 			/* Called whenever a package (un)install fails
 			*/

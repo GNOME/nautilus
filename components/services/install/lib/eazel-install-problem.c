@@ -101,7 +101,7 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 }
 
 static void
-get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
+get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 {
 	char *message = NULL;
 	char *required = NULL;
@@ -110,6 +110,17 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	GList **errors = &(data->errors);
 	PackageData *previous_pack = NULL;
 	PackageData *top_pack = NULL;
+	PackageData *pack = NULL;
+
+	if (IS_PACKAGEDATA (foo)) {
+		pack = PACKAGEDATA (foo);
+	} else if (IS_PACKAGEBREAKS (foo)) {
+		pack = packagebreaks_get_package (PACKAGEBREAKS (foo));
+	} else if (IS_PACKAGEDEPENDENCY (foo)) {
+		pack = PACKAGEDEPENDENCY (foo)->package;
+	} else {
+		g_assert_not_reached ();
+	}
 
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
@@ -124,6 +135,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+	case PACKAGE_CANCELLED:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		message = g_strdup_printf (_("%s is a source package, which is not yet supported"), 
@@ -141,7 +153,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		if (pack->soft_depends) {
+		if (pack->depends) {
 
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
@@ -231,7 +243,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_messages_foreach, data);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_messages_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_messages_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_breaks_foreach, data);
 
@@ -240,7 +252,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 }
 
 static void
-get_detailed_uninstall_messages_foreach (PackageData *pack, 
+get_detailed_uninstall_messages_foreach (GtkObject *foo,
 					 GetErrorsForEachData *data)
 {
 	char *message = NULL;
@@ -250,6 +262,17 @@ get_detailed_uninstall_messages_foreach (PackageData *pack,
 	GList **errors = &(data->errors);
 	PackageData *previous_pack = NULL;
 	PackageData *top_pack = NULL;
+	PackageData *pack = NULL;
+
+	if (IS_PACKAGEDATA (foo)) {
+		pack = PACKAGEDATA (foo);
+	} else if (IS_PACKAGEBREAKS (foo)) {
+		pack = packagebreaks_get_package (PACKAGEBREAKS (foo));
+	} else if (IS_PACKAGEDEPENDENCY (foo)) {
+		pack = PACKAGEDEPENDENCY (foo)->package;
+	} else {
+		g_assert_not_reached ();
+	}
 
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
@@ -264,6 +287,7 @@ get_detailed_uninstall_messages_foreach (PackageData *pack,
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+	case PACKAGE_CANCELLED:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		message = g_strdup_printf (_("%s is a source package, which is not yet supported"), 
@@ -310,7 +334,7 @@ get_detailed_uninstall_messages_foreach (PackageData *pack,
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_messages_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_messages_foreach, data);
 
@@ -613,10 +637,22 @@ get_detailed_cases_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachData
    - package status looks ok, check modification_status
 */
 static void
-get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
+get_detailed_cases_foreach (GtkObject *foo, 
+			    GetErrorsForEachData *data)
 {
 	/* GList **errors = &(data->errors); */
 	PackageData *previous_pack = NULL;
+	PackageData *pack = NULL;
+
+	if (IS_PACKAGEDATA (foo)) {
+		pack = PACKAGEDATA (foo);
+	} else if (IS_PACKAGEBREAKS (foo)) {
+		pack = packagebreaks_get_package (PACKAGEBREAKS (foo));
+	} else if (IS_PACKAGEDEPENDENCY (foo)) {
+		pack = PACKAGEDEPENDENCY (foo)->package;
+	} else {
+		g_assert_not_reached ();
+	}
 
 #ifdef EIP_DEBUG
 	g_message ("get_detailed_cases_foreach (%p)", pack);
@@ -633,13 +669,14 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+	case PACKAGE_CANCELLED:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		if (pack->soft_depends) {
+		if (pack->depends) {
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				add_update_case (data->problem, pack, FALSE, &(data->errors)); 
@@ -672,7 +709,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_cases_foreach, data);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_cases_breaks_foreach, data);
 
@@ -686,9 +723,20 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
    - package status looks ok, check modification_status
 */
 static void
-get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
+get_detailed_uninstall_cases_foreach (GtkObject *foo, GetErrorsForEachData *data)
 {
 	PackageData *previous_pack = NULL;
+	PackageData *pack = NULL;
+
+	if (IS_PACKAGEDATA (foo)) {
+		pack = PACKAGEDATA (foo);
+	} else if (IS_PACKAGEBREAKS (foo)) {
+		pack = packagebreaks_get_package (PACKAGEBREAKS (foo));
+	} else if (IS_PACKAGEDEPENDENCY (foo)) {
+		pack = PACKAGEDEPENDENCY (foo)->package;
+	} else {
+		g_assert_not_reached ();
+	}
 	
 #ifdef EIP_DEBUG
 	g_message ("get_detailed_uninstall_cases_foreach (data->path = %p)", data->path);
@@ -706,6 +754,7 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+	case PACKAGE_CANCELLED:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
@@ -733,7 +782,7 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_cases_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_cases_foreach, data);
 
@@ -744,7 +793,7 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 		data->path = NULL;
 	}
 
-	if (pack->toplevel) {
+	if (pack->toplevel && pack->status == PACKAGE_BREAKS_DEPENDENCY) {
                 /* This is just to make sure the toplevel is first */
 		data->packs = g_list_reverse (data->packs);
 		add_cascade_remove (data->problem, &(data->packs), FALSE, &(data->errors));
@@ -1105,9 +1154,9 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 	problem->in_step_problem_mode = FALSE;
 
 	if (uninstall) {
-		get_detailed_uninstall_cases_foreach (pack_copy, &data);
+		get_detailed_uninstall_cases_foreach (GTK_OBJECT (pack_copy), &data);
 	} else {
-		get_detailed_cases_foreach (pack_copy, &data);
+		get_detailed_cases_foreach (GTK_OBJECT (pack_copy), &data);
 	}
 
 	gtk_object_unref (GTK_OBJECT (pack_copy));
@@ -1133,9 +1182,9 @@ eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
 	pack_copy = packagedata_copy (pack, TRUE);
 
 	if (uninstall) {
-		get_detailed_uninstall_messages_foreach (pack_copy, &data);
+		get_detailed_uninstall_messages_foreach (GTK_OBJECT (pack_copy), &data);
 	} else {
-		get_detailed_messages_foreach (pack_copy, &data);
+		get_detailed_messages_foreach (GTK_OBJECT (pack_copy), &data);
 	}
 
 	gtk_object_unref (GTK_OBJECT (pack_copy));
@@ -1267,7 +1316,6 @@ build_categories_from_problem_list (EazelInstallProblem *problem,
 			break;
 		case EI_PROBLEM_CASCADE_REMOVE: {
 			GList *iterator;
-			g_message ("%s:%d cascade", __FILE__, __LINE__);
 			for (iterator = pcase->u.cascade.packages; iterator; iterator = g_list_next (iterator)) {
 				packages = g_list_prepend (packages, iterator->data);
 			}

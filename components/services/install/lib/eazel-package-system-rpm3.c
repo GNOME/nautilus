@@ -123,7 +123,7 @@ rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system,
 #ifdef USE_PERCENT
 	lc = localeconv ();
 	pig.separator = *(lc->decimal_point);
-	trilobite_debug ("I am in in a %c country",  pig.separator);
+	info (system, "I am in in a %c country",  pig.separator);
 	pig.state = 1;
 	pig.bytes_read_in_line = 0;
 	pig.line[0] = '\0';
@@ -284,6 +284,25 @@ get_total_size_of_packages (const GList *packages)
 	return result;
 }
 
+static void
+eazel_package_system_rpm3_set_mod_status (EazelPackageSystemRpm3 *system,
+					  EazelPackageSystemOperation op,
+					  PackageData *pack)
+{
+	if (pack->modify_status == PACKAGE_MOD_UNTOUCHED) {
+		switch (op) {
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+			pack->modify_status = PACKAGE_MOD_INSTALLED;
+			break;
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+			pack->modify_status = PACKAGE_MOD_UNINSTALLED;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 #ifdef USE_PERCENT
 /* This monitors an rpm process pipe and emits
    signals during execution */
@@ -414,6 +433,11 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 						pig->bytes_installed += pig->pack->bytesize;
 						pig->packages_seen = g_list_prepend (pig->packages_seen,
 										     pig->pack);
+
+						eazel_package_system_rpm3_set_mod_status (pig->system,
+											  pig->op,
+											  pig->pack);
+
 						eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (pig->system),
 									       pig->op,
 									       pig->pack);
@@ -863,16 +887,16 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			PackageData *package = packagedata_new ();
 			PackageDependency *pack_dep = packagedependency_new ();
 
-			/* If it's a lib*.so* or a /yadayada, add to provides */
-			if ((strncmp (requires_name[index], "lib", 3)==0 && 
-			     strstr (requires_name[index], ".so")) ||
+			/* If it's a lib*.so* or a /yadayada, but not ld-linux.so
+			   or rpmlib( add to provides */
+			if (((strncmp (requires_name[index], "lib", 3)==0 && strstr (requires_name[index], ".so")) ||
 			    (strncmp (requires_name[index], "ld-linux.so", 11) == 0) ||
-			    (*requires_name[index]=='/')) {
-				/* Unless it has a ( in the name */
-				if (strchr (requires_name[index], '(')==NULL) {
-					package->features = g_list_prepend (package->features, 
-									    g_strdup (requires_name[index]));
-				}
+			    (*requires_name[index]=='/')) &&
+			    (strncmp (requires_name[index], "rpmlib(", 7) != 0)) {
+
+
+				package->features = g_list_prepend (package->features, 
+								    g_strdup (requires_name[index]));
 			} else {
 				/* Otherwise, add as a package name */
 				package->name = g_strdup (requires_name[index]);
@@ -881,7 +905,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 					NULL : g_strdup (requires_version[index]);
 			}
 			/* If anything set, add dep */
-			if (package->name || package->provides) {
+			if (package->name || package->features) {
 				pack_dep->sense = rpm_sense_to_softcat_sense (system,
 									      requires_flag[index]);
 				package->archtype = trilobite_get_distribution_arch ();
@@ -1273,6 +1297,18 @@ monitor_subcommand_pipe (EazelPackageSystemRpm3 *system,
 	info (system, "ending monitor on %d", fd);
 }
 
+static void
+eazel_package_system_rpm3_set_state (EazelPackageSystemRpm3 *system,
+				     GList *packages,
+				     PackageSystemStatus status) {
+	GList *iterator;
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = PACKAGEDATA (iterator->data);
+		pack->status = status;
+	}
+}
+
+
 /* returns TRUE on success */
 static gboolean
 manual_rpm_command (GList *args, int *fd)
@@ -1352,6 +1388,7 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe, pig);
 #endif
 	} else {
+		eazel_package_system_rpm3_set_state (system, pig->packages_to_expect, PACKAGE_CANCELLED);
 		/* FIXME: fail all the packages in pig */
 	}
 }
@@ -1362,6 +1399,7 @@ static void
 check_if_all_packages_seen (EazelPackageSystemRpm3 *system, 
 			    const char *dbpath,
 			    EazelPackageSystemOperation op,
+			    int flags,
 			    GList *packages,
 			    GList *seen)
 {
@@ -1372,6 +1410,20 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
+
+		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_TEST) {
+				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
+								 op,
+								 pack);				
+				eazel_package_system_rpm3_set_mod_status (system,
+									  op,
+									  pack);
+				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
+							       op,
+							       pack);
+				continue;
+		} 
+		
 		/* HACK: that fixes bugzilla.eazel.com 4914 */		  
 		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 			if (eazel_package_system_is_installed (EAZEL_PACKAGE_SYSTEM (system),
@@ -1386,6 +1438,9 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
 								 op,
 								 pack);				
+				eazel_package_system_rpm3_set_mod_status (system,
+									  op,
+									  pack);
 				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
 							       op,
 							       pack);
@@ -1395,7 +1450,8 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 						 pack,
 						 (GCompareFunc)eazel_install_package_compare)) {
 				fail (system, "did not see %s", pack->name);
-				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
+					eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), 
+									  op, pack);
 			}
 		}
 	}
@@ -1427,7 +1483,7 @@ eazel_package_system_rpm3_install_uninstall (EazelPackageSystemRpm3 *system,
 	eazel_package_system_rpm3_execute (system, &pig, args);
 	destroy_string_list (args);
 
-	check_if_all_packages_seen (system, dbpath, op, packages, pig.packages_seen);
+	check_if_all_packages_seen (system, dbpath, op, flags, packages, pig.packages_seen);
 	g_list_free (pig.packages_seen);
 
 	g_hash_table_foreach_remove (pig.name_to_package, (GHRFunc)clear_name_to_package, NULL);

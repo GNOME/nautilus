@@ -191,13 +191,18 @@ impl_install_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 static void 
 impl_uninstall_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 			 const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
-			 const CORBA_long amount,
-			 const CORBA_long total,
-			 CORBA_Environment * ev)
+			 const CORBA_long package_num, const CORBA_long num_packages, 
+			 const CORBA_long package_size_completed, const CORBA_long package_size_total,
+			 const CORBA_long total_size_completed, const CORBA_long total_size,
+			 CORBA_Environment * ev) 
 {
 	PackageData *pack;
 	pack = packagedata_from_corba_packagedatastruct (corbapack);
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], 
+			 pack,
+			 package_num, num_packages,
+			 package_size_completed, package_size_total,
+			 total_size_completed, total_size);
 	gtk_object_unref (GTK_OBJECT (pack));
 }
 
@@ -429,8 +434,10 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, uninstall_progress),
-				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				GTK_TYPE_NONE, 7, 
+				GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,

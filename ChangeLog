@@ -1,3 +1,135 @@
+2001-02-08  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	This commit fixed bugs:
+	5723 ei2: check that install_failed_signal was not called 
+	5752 ei2: port the uninstall stuff to the new ei2 
+	5753 ei2: port the revert stuff to ei2 
+	5757 fix leaks in EazelProblemHander 
+	5957 eazel-install cli tool no longer uninstalls nicely
+	6100 RPM4: don't handle dependencies called "rpmlib(.*)"
+	6173 ei2: finish conflict and feature breakage  
+	6191 make revert work (ei2: resurrect transaction stuff) 
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors_foreach):
+	Updated for the CANCELLED status.
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_preflight_check_signal):
+	Fixed an output string.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the CANCELLED status.
+	uninstall_progress now has same signature as install_progress.
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_uninstall_progress),
+	(eazel_install_callback_class_initialize):
+	uninstall_progress now has same signature as install_progress.
+
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata),
+	(traverse_packagetree_md5), (corba_packagedatastruct_fill_deps),
+	(packagedata_from_corba_packagedatastruct),
+	(packagedata_tree_from_corba_packagedatastructlist),
+	(categorydata_list_from_corba_categorystructlist):
+	Added the CANCELLED status.
+	Commented out sending ->provides in signals.
+	Added some g_asserts to find a bug.
+	categorydata_list_from_corba_categorystructlist uses
+	packagedata_list_from_corba_packagedatastructlist.
+	
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_start_transaction), (dump_one_package),
+	(compare_break_to_package_by_name),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse):
+	Threw out most of the old code. Keeping logic.c untill 6190 is
+	closed.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (check_md5_on_files), (is_satisfied),
+	(check_tree_helper), (execute), (set_toplevel),
+	(get_packages_with_mod_flag), (check_uninst_vs_downgrade),
+	(debug_revert), (compare_break_to_package_by_name),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber),
+	(install_packages), (uninstall_packages), (revert_transaction):
+	Moved revert and uninstall into logic2.c and updated them
+	appropriately.
+	Added paranoia check in case bad xml dependency has a version but
+	an senseless sense.
+	When reviving, set parent->topleve to TRUE, not revived package.
+	Revived the transaction stuff (for revert).
+	Don't allow a package to depend on a package of the same name,
+	this is often a problem during softcat updates.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), (eazel_install_start_signal),
+	(eazel_install_end_signal), (eazel_install_progress_signal),
+	(eazel_install_failed_signal), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_do_transaction_save_report_helper),
+	(eazel_install_save_transaction_report),
+	(eazel_install_init_transaction),
+	(eazel_install_emit_uninstall_progress),
+	(eazel_install_emit_uninstall_progress_default),
+	(eazel_install_emit_download_progress):
+	uninstall_progress now has same signature as install_progress.
+	Fixed some dumb bugs in install/uninstall progress emission.
+	Added some lists to check on install status.
+	Moved some of the transaction stuff from logic.c here.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach),
+	(get_detailed_uninstall_messages_foreach),
+	(get_detailed_cases_foreach),
+	(get_detailed_uninstall_cases_foreach),
+	(eazel_install_problem_tree_to_case),
+	(eazel_install_problem_tree_to_string),
+	(build_categories_from_problem_list):
+	Updated again for the new PackageBreaks objects.
+	Fixed so cli uninstall works nice again.
+	Added the CANCELLED status.
+	The problem handler is deteriorating, either we use it or we scrap
+	it.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new),
+	(eazel_package_system_rpm3_set_mod_status),
+	(monitor_rpm_process_pipe_percent_output),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(eazel_package_system_rpm3_set_state),
+	(eazel_package_system_rpm3_execute), (check_if_all_packages_seen),
+	(eazel_package_system_rpm3_install_uninstall):
+	Don't spam about the locales decimal seperator.
+	Set modification status after handling a package, so transaction
+	logs make sense.
+	Don't accept requirements of type "rpmlib(.*".
+	Ability to set all packages to CANCELLED if root helper failed
+	login.
+	If TEST is set, fake success all the time.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(categorydata_new), (categorydata_destroy_foreach),
+	(packagedata_status_enum_to_str),
+	(packagedata_status_str_to_enum):
+	Added the CANCELLED status.
+	Improved the debug strings for alloc/dealloc of category data
+	structures.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_install):
+	If TEST, disable FORCE.
+
 2001-02-08  John Harper  <jsh@eazel.com>
 
 	Fixed bug 6044 (Druid should be clearer on what the right

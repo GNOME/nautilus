@@ -63,7 +63,11 @@ struct _EazelInstallCallbackClass
 				   int package_size_completed, int package_size_total,
 				   int total_size_completed, int total_size);
 	/* Called during uninstall of a package */
-	void (*uninstall_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
+	void (*uninstall_progress)  (EazelInstallCallback *service, 
+				     const PackageData *pack, 
+				     int package_num, int num_packages, 
+				     int package_size_completed, int package_size_total,
+				     int total_size_completed, int total_size);
 
 	/* Called when a package is undergoing the different checks */
 	void (*file_conflict_check)(EazelInstallCallback *service, const PackageData *package);

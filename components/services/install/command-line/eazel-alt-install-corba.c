@@ -556,7 +556,7 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 	if (cases) return FALSE;
 
 	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
-		 arg_erase ? "uninstall" : "install",
+		 arg_erase ? "uninstall" : arg_revert ? "revert" : "install",
 		 total_packages, total_bytes/1024);
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		PackageData *pack = (PackageData*)iterator->data;

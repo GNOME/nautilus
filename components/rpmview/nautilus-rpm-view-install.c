@@ -96,7 +96,7 @@ get_detailed_errors_foreach (const PackageData *pack, GString *message)
 {
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
-		break;
+	case PACKAGE_CANCELLED:
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:

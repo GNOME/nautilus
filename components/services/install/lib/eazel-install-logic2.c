@@ -21,6 +21,7 @@
  *          Robey Pointer <robey@eazel.com>
  */
 
+#include "eazel-install-logic.h"
 #include "eazel-install-logic2.h"
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
@@ -84,7 +85,7 @@ dump_tree_helper (GList *packages, char *indent, GList *path)
 				 pack->eazel_id,
 				 (pack->fillflag & MUST_HAVE) ? "filled" : "not filled",
 				 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
-				 pack->md5);
+				 pack->toplevel ? "TOP":"");
 		tmp = g_strdup_printf ("%s  ", indent);
 		if (g_list_find (path, pack)) {
 			trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
@@ -155,7 +156,9 @@ check_md5_on_files (EazelInstall *service,
 			trilobite_debug ("No MD5 available for %s", pack->name);
 		}
 	}	
+
 	g_list_free (flat_packages);
+	eazel_install_unlock_tmp_dir (service);
 
 	return result;
 }
@@ -685,6 +688,16 @@ is_satisfied (EazelInstall *service,
 		return FALSE;
 	}
 
+	/* If the dependency has a version, but no sense, something is terribly
+	   wrong with the xml */
+#if EI2_DEBUG & 0x4
+	if (dep->version && dep->sense == 0) {
+		trilobite_debug ("I'm going to die now, because softcat is making no sense");
+		trilobite_debug ("Or rather, the xml returned a invalid dependency sense");
+	}
+#endif
+	if (dep->version) { g_assert (dep->sense!=0); }
+
 	sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("is_satisfied? %p %s %s %s", 
@@ -856,10 +869,27 @@ check_dependencies_foreach (PackageData *package,
 
 	for (iterator = package->depends; iterator; iterator = g_list_next (iterator)) {
 		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);		
-		if (is_satisfied (service, dep)) {
+
+		if (dep->package->name && strcmp (dep->package->name, package->name)==0) {
+			char *name_a, *name_b;
+
+			name_a = packagedata_get_readable_name (package);
+			name_b = packagedata_get_readable_name (dep->package);
+
+			g_warning ("Possible inconsistency!");
+			g_warning ("%s depends on %s", name_a, name_b);
+
+			g_free (name_a);
+			g_free (name_b);
+
+			package->status = PACKAGE_INVALID;
 			remove = g_list_prepend (remove, dep);
 		} else {
-			eazel_install_emit_dependency_check (service, package, dep);
+			if (is_satisfied (service, dep)) {
+				remove = g_list_prepend (remove, dep);
+			} else {
+				eazel_install_emit_dependency_check (service, package, dep);
+			}
 		}
 	}
 
@@ -975,6 +1005,7 @@ check_tree_helper (EazelInstall *service,
 						pack_update->status = PACKAGE_PARTLY_RESOLVED;
 						remove = g_list_prepend (remove, breakage);
 						pack->status = PACKAGE_PARTLY_RESOLVED;
+						pack_update->toplevel = TRUE;
 					} else {
 #if EI2_DEBUG & 0x4
 						trilobite_debug ("%s still has conflict", pack_update->name);
@@ -1584,7 +1615,7 @@ eazel_install_get_total_size_of_packages (EazelInstall *service,
 	return result;
 }
 
-static void
+static gboolean
 execute (EazelInstall *service,
 	 GList *packages,
 	 EazelPackageSystemOperation op,
@@ -1592,6 +1623,7 @@ execute (EazelInstall *service,
 {
 	TrilobiteRootHelper *root_helper;
 	GList *flat_packages;
+	gboolean result = FALSE;
 
 	flat_packages = flatten_packagedata_dependency_tree (packages);
 
@@ -1603,6 +1635,8 @@ execute (EazelInstall *service,
 		flags |= EAZEL_PACKAGE_SYSTEM_OPERATION_TEST;
 	}
 
+	eazel_install_init_transaction (service);
+	
 	/* Init the hack var to emit the old style progress signals */
 	service->private->infoblock [0] = 0;
 	service->private->infoblock [1] = 0;
@@ -1632,12 +1666,14 @@ execute (EazelInstall *service,
 		break;
 	}
 
+	if (service->private->failed_packages == NULL) {
+		eazel_install_save_transaction_report (service);
+		result = TRUE;
+	} 
 	g_list_free (flat_packages);
+	
+	return result;
 }
-
-/***********************************************************************************/
-
-/* These are the methods exposed to the the rest of the service object */
 
 static void 
 install_packages_helper (EazelInstall *service, 
@@ -1664,6 +1700,13 @@ install_packages_helper (EazelInstall *service,
 	trilobite_debug ("<- install_packages_helper");
 #endif	
 	return;
+}
+
+static void
+set_toplevel (PackageData *package,
+	      EazelInstall *service)
+{
+	package->toplevel = TRUE;
 }
 
 static void
@@ -1696,12 +1739,286 @@ expand_package_suites (EazelInstall *service, GList **packages)
 	*packages = newlist;
 }
 
-static void
-set_toplevel (PackageData *package,
-	      EazelInstall *service)
+/***********************************************************************************/
+/* This is the revert majick */
+
+static GList *
+get_packages_with_mod_flag (GList *packages,
+			    PackageModification mod) 
 {
-	package->toplevel = TRUE;
+	GList *it;
+	GList *res;
+	
+	res = NULL;
+	for (it = packages; it; it = g_list_next (it)) {
+		PackageData *pack;
+		pack = (PackageData*)it->data;
+		if (pack->modify_status == mod) {
+			res = g_list_prepend (res, pack);
+		}
+		if (pack->soft_depends) {
+			res = g_list_concat (res, 
+					     get_packages_with_mod_flag (pack->soft_depends, mod));
+		}
+		if (pack->modifies) {
+			res = g_list_concat (res, 
+					     get_packages_with_mod_flag (pack->modifies, mod));
+		}
+	}
+	return res;
 }
+
+/* Function to prune the uninstall list for elements marked as downgrade */
+static void
+check_uninst_vs_downgrade (GList **inst, 
+			   GList **down) 
+{
+	GList *it;
+	GList *remove;
+	
+	remove = NULL;
+	for (it = *inst; it; it = g_list_next (it)) {
+		GList *entry;
+		PackageData *pack;
+
+		pack = (PackageData*)it->data;
+		entry = g_list_find_custom (*down, pack->name, (GCompareFunc)eazel_install_package_name_compare);
+		if (entry != NULL) {
+			remove = g_list_prepend (remove, it->data);
+		}
+	}
+
+	for (it = remove; it; it = g_list_next (it)) {
+		(*inst) = g_list_remove (*inst, it->data);
+	}
+}
+
+static void
+debug_revert (PackageData *pack, char *str)
+{
+	char *name = packagedata_get_readable_name (pack);
+	g_message ("will %s %s", str, name);
+	g_free (name);
+}
+
+/***********************************************************************************/
+/* This is the uninstall dep check majick */
+
+static int
+compare_break_to_package_by_name (PackageBreaks *breakage, PackageData *pack)
+{
+	PackageData *broken_package = packagebreaks_get_package (breakage);
+
+	return eazel_install_package_compare (broken_package, pack);
+}
+
+/* This traverses upwards in the deptree from the initial list, and adds
+   all packages that will break to "breaks" */
+static void
+eazel_uninstall_upward_traverse (EazelInstall *service,
+				 GList **packages,
+				 GList **failed,
+				 GList **breaks)
+{
+	GList *iterator;
+	/*
+	  Create set
+	  add all packs from packages to set
+	  dep check
+	  for all break, add to packages and recurse
+	 */
+
+	trilobite_debug ("in eazel_uninstall_upward_traverse");
+
+	g_assert (packages!=NULL);
+	g_assert (*packages!=NULL);
+	g_assert (breaks!=NULL);
+	g_assert (*breaks==NULL);
+
+	/* Open the package system */
+
+	/* Add all packages to the set */
+
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		GList *matches = NULL;
+		GList *match_iterator;
+		GList *tmp_breaks = NULL;
+		GList *b_iterator = NULL;
+
+		/* Get the packages required by pack */
+		trilobite_debug ("checking reqs by %p %s", pack, rpmname_from_packagedata (pack));
+		matches = eazel_package_system_query (service->private->package_system,
+						      service->private->cur_root,
+						      pack,
+						      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+						      PACKAGE_FILL_NO_DIRS_IN_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES);
+		
+		/* For all of them, mark as a break conflict */
+		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
+			PackageData *requiredby = (PackageData*)match_iterator->data;;
+			
+			requiredby->status = PACKAGE_DEPENDENCY_FAIL;
+			pack->status = PACKAGE_BREAKS_DEPENDENCY;
+			trilobite_debug ("logic.c: %p %s requires %p %s", 
+					 requiredby, requiredby->name, 
+					 pack, pack->name);
+
+			/* If the broken package is in packages, just continue */
+			if (g_list_find_custom (*packages, requiredby,
+						(GCompareFunc)eazel_install_package_compare)) {
+				trilobite_debug ("skip %p %s", requiredby, requiredby->name);
+				continue;
+			}
+
+			/* only add to breaks if it's a new breakage */
+			if (g_list_find_custom (*breaks, (gpointer)requiredby, 
+						(GCompareFunc)compare_break_to_package_by_name)) {
+				(*breaks) = g_list_prepend ((*breaks), requiredby);
+			}
+			
+			/* Create a FeatureMissing breakage */
+			{
+				PackageFeatureMissing *breakage = packagefeaturemissing_new ();
+				packagebreaks_set_package (PACKAGEBREAKS (breakage), requiredby);
+				packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
+				gtk_object_unref (GTK_OBJECT (breakage));
+			}
+
+			/* If the pac has not been failed yet (and is a toplevel),
+			   fail it */
+			if (!g_list_find_custom (*failed, (gpointer)pack->name, 
+						 (GCompareFunc)eazel_install_package_name_compare) &&
+			    pack->toplevel) {
+				(*failed) = g_list_prepend (*failed, pack);
+			}
+		}
+		g_list_foreach (matches, (GFunc)gtk_object_unref, NULL);
+		g_list_free (matches);
+
+		/* Now check the packages that broke, this is where eg. uninstalling
+		   glib begins to take forever */
+		if (*breaks) {
+			eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
+		}
+		
+		/* Add the result from the recursion */
+		for (b_iterator = tmp_breaks; b_iterator; b_iterator = g_list_next (b_iterator)) {
+			(*breaks) = g_list_prepend ((*breaks), b_iterator->data);
+		}
+	}
+	
+	/* Remove the failed packages */
+	for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
+		(*packages) = g_list_remove (*packages, iterator->data);
+	}
+
+	trilobite_debug ("out eazel_uninstall_upward_traverse");
+}
+
+static void
+eazel_uninstall_check_for_install (EazelInstall *service,
+				   GList **packages,
+				   GList **failed)
+{
+	GList *iterator;
+	GList *remove  = NULL;
+	GList *result = NULL;
+
+	trilobite_debug ("in eazel_uninstall_check_for_install");
+	g_assert (packages);
+	trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages)); 
+	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {		
+		PackageData *pack = (PackageData*)iterator->data;
+
+		if (eazel_package_system_is_installed (service->private->package_system,
+						       service->private->cur_root,
+						       pack->name,
+						       pack->version,
+						       pack->minor,
+						       EAZEL_SOFTCAT_SENSE_EQ)) {
+			
+			pack->toplevel = TRUE;
+			result = g_list_prepend (result, pack);
+		} else {
+			pack->status = PACKAGE_CANNOT_OPEN;
+			remove = g_list_prepend (remove, pack);
+		}		
+	}
+	
+	for (iterator = remove; iterator; iterator=g_list_next (iterator)) {
+		(*packages) = g_list_remove (*packages, iterator->data);
+		(*failed) = g_list_prepend (*failed, iterator->data);
+	}
+	g_list_free (remove);
+	remove = NULL;
+	
+	trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages)); 
+	trilobite_debug ("g_list_length (result) = %d", g_list_length (result)); 
+	
+	g_list_free (*packages);
+	(*packages) = result;
+	
+	trilobite_debug ("out eazel_uninstall_check_for_install");
+}
+
+/* Calls the upward and downward traversal */
+static void
+eazel_uninstall_globber (EazelInstall *service,
+			 GList **packages,
+			 GList **failed)
+{
+	GList *iterator;
+	GList *tmp;
+
+	/*
+	  call upward with packages
+	  call downward with packages and &tmp
+	  add all from &tmp to packages
+	*/
+
+	trilobite_debug ("in eazel_uninstall_globber");
+
+	tmp = NULL;
+
+	eazel_uninstall_check_for_install (service, packages, failed);
+	for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
+		trilobite_debug ("not installed %p %s", 
+				 (PackageData*)iterator->data, ((PackageData*)iterator->data)->name);
+		eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
+	}
+	g_list_foreach (*failed, (GFunc)gtk_object_unref, NULL);
+	g_list_free (*failed);
+
+	/* If there are still packages and we're not forcing,
+	   do upwards traversel */
+	if (*packages && !eazel_install_get_force (service)) {
+		eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
+
+#if EI2_DEBUG & 0x4
+		if (*failed) {
+			trilobite_debug ("FAILED");
+			dump_tree (*failed);
+		}
+#endif
+		for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack = (PackageData*)iterator->data;
+			trilobite_debug ("failed %p %s", pack, pack->name);
+			//dump_one_package (GTK_OBJECT (pack), "");
+			eazel_install_emit_uninstall_failed (service, pack);
+		}
+		g_list_foreach (*failed, (GFunc)gtk_object_unref, NULL);
+		g_list_free (*failed);
+		g_list_free (tmp);
+	}
+
+	trilobite_debug ("out eazel_uninstall_glob");
+}
+
+
+/***********************************************************************************/
+
+/* These are the methods exposed to the the rest of the service object */
 
 EazelInstallOperationStatus 
 install_packages (EazelInstall *service, GList *categories)
@@ -1726,7 +2043,7 @@ install_packages (EazelInstall *service, GList *categories)
 #endif	
 	if (packages) {
 		if (eazel_install_emit_preflight_check (service, packages)) {
-			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
 			gboolean go_ahead = TRUE;
 			
 			/* FIXME: bugzilla.eazel.com 5722
@@ -1739,10 +2056,10 @@ install_packages (EazelInstall *service, GList *categories)
 				}
 			}
 			if (go_ahead) {
-				execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL, flags);
-				/* FIXME: bugzilla.eazel.com 5723
-				   we need to detect if install_failed_signal was called */
-				result = EAZEL_INSTALL_INSTALL_OK;
+				/* Execute the operation */
+				if (execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL, flags)) {
+					result = EAZEL_INSTALL_INSTALL_OK;
+				} 
 			}
 		}
 	}
@@ -1761,13 +2078,98 @@ install_packages (EazelInstall *service, GList *categories)
 EazelInstallOperationStatus 
 uninstall_packages (EazelInstall *service, GList *categories)
 {
-	EazelInstallOperationStatus result = EAZEL_INSTALL_NOTHING;
+	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
+	GList *packages = NULL;
+	GList *failed = NULL;	
+
+	trilobite_debug (" --> uninstall_all_packages");
+	packages = packagedata_list_copy (categorylist_flatten_to_packagelist (categories), TRUE);	
+	eazel_uninstall_globber (service, &packages, &failed);
+	
+	if (packages) {
+		if (eazel_install_emit_preflight_check (service, packages)) {
+			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+			if (execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL, flags)) {
+				result = EAZEL_INSTALL_UNINSTALL_OK;
+			}
+		}
+	}
+
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
+
+	trilobite_debug ("uninstall returns returning %s", 
+			 result == EAZEL_INSTALL_UNINSTALL_OK ? "OK" : "FAILED");
+	trilobite_debug (" <-- uninstall_all_packages");
 	return result;
 }
 
-EazelInstallOperationStatus 
-revert_transaction (EazelInstall *service, GList *packages)
+EazelInstallStatus
+revert_transaction (EazelInstall *service, 
+		    GList *packages)
 {
-	EazelInstallOperationStatus result = EAZEL_INSTALL_NOTHING;
+	GList *uninst, *inst, *upgrade, *downgrade;
+	CategoryData *cat;
+	GList *categories;
+	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
+
+	uninst = get_packages_with_mod_flag (packages, PACKAGE_MOD_INSTALLED);
+	inst = get_packages_with_mod_flag (packages, PACKAGE_MOD_UNINSTALLED);
+	upgrade = get_packages_with_mod_flag (packages, PACKAGE_MOD_DOWNGRADED);
+	downgrade = get_packages_with_mod_flag (packages, PACKAGE_MOD_UPGRADED);
+
+	check_uninst_vs_downgrade (&uninst, &downgrade);
+
+	g_list_foreach (uninst, (GFunc)debug_revert, "uninstall");
+	g_list_foreach (inst, (GFunc)debug_revert, "install");
+	g_list_foreach (downgrade, (GFunc)debug_revert, "downgrade");
+	g_list_foreach (upgrade, (GFunc)debug_revert, "upgrade");
+
+	cat = categorydata_new ();
+	categories = g_list_prepend (NULL, cat);
+
+	if (uninst) {
+		eazel_install_set_uninstall (service, TRUE);
+		eazel_install_set_downgrade (service, FALSE);
+		eazel_install_set_update (service, FALSE);
+		cat->packages = uninst;
+		if (uninstall_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
+			result = EAZEL_INSTALL_REVERSION_OK;
+		}
+	}
+	if (inst) {
+		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, FALSE);
+		eazel_install_set_update (service, FALSE);
+		cat->packages = inst;
+		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
+			result = EAZEL_INSTALL_REVERSION_OK;
+		}
+	}
+	if (downgrade) {
+		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, TRUE);
+		eazel_install_set_update (service, FALSE);
+		cat->packages = downgrade;
+		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
+			result = EAZEL_INSTALL_REVERSION_OK;
+		}
+	}
+	if (upgrade) {
+		eazel_install_set_uninstall (service, FALSE);
+		eazel_install_set_downgrade (service, TRUE);
+		eazel_install_set_update (service, TRUE);
+		cat->packages = upgrade;
+		if (install_packages (service, categories) == EAZEL_INSTALL_UNINSTALL_OK) {
+			result = EAZEL_INSTALL_REVERSION_OK;
+		}
+	}
+
+
+	categorydata_destroy (cat);
+	g_list_free (categories);
+
 	return result;
 }
+
+

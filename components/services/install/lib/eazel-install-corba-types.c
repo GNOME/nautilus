@@ -117,17 +117,22 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	case PACKAGE_ALREADY_INSTALLED:
 		corbapack->status = GNOME_Trilobite_Eazel_ALREADY_INSTALLED;
 		break;
+	case PACKAGE_CANCELLED:
+		corbapack->status = GNOME_Trilobite_Eazel_CANCELLED;
+		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY:
 		corbapack->status = GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY;
 		break;
 	}
 
+/*      None of the callback signals wants this.... 
 	if (pack->provides) {		
 		g_list_to_corba_string_sequence (&(corbapack->provides), pack->provides);
 	} else {
 		corbapack->provides._length = 0;
 		corbapack->provides._buffer = NULL;
 	}
+*/
 
 	/* depends will be filled in further up, if they're required --
 	 * many times, this function is called to create a single corba package with no other package pointers */
@@ -204,6 +209,7 @@ traverse_packagetree_md5 (const PackageData *pack, GHashTable *md5_table)
 	g_hash_table_insert (md5_table, pack->md5, (void *)pack);
 	for (iter = g_list_first (pack->depends); iter != NULL; iter = g_list_next (iter)) {
 		dep = (PackageDependency *)(iter->data);
+		g_assert (dep);
 		traverse_packagetree_md5 (dep->package, md5_table);
 	}
 	for (iter = g_list_first (pack->breaks); iter != NULL; iter = g_list_next (iter)) {
@@ -244,6 +250,7 @@ corba_packagedatastruct_fill_deps (GNOME_Trilobite_Eazel_PackageDataStruct *corb
 			dep = (PackageDependency *)(iter->data);
 
 			/* set up a PackageDependencyStruct for it */
+			g_assert (dep);
 			corbadep = &(corbapack->depends._buffer[i]);
 			sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
 			corbadep->sense = CORBA_string_dup (sense_str);
@@ -251,6 +258,7 @@ corba_packagedatastruct_fill_deps (GNOME_Trilobite_Eazel_PackageDataStruct *corb
 			corbadep->package_md5 = CORBA_string_dup (dep->package->md5);
 			g_free (sense_str);
 		}
+		g_assert (i!=0);
 	}
 
 	if (pack->breaks != NULL) {
@@ -393,6 +401,9 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 	case GNOME_Trilobite_Eazel_ALREADY_INSTALLED:
 		pack->status = PACKAGE_ALREADY_INSTALLED;
 		break;
+	case GNOME_Trilobite_Eazel_CANCELLED:
+		pack->status = PACKAGE_CANCELLED;
+		break;
 	case GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY:
 		pack->status = PACKAGE_CIRCULAR_DEPENDENCY;
 		break;
@@ -481,6 +492,7 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 				pack->depends = g_list_prepend (pack->depends, dep);
 			}
 		}
+
 		pack->depends = g_list_reverse (pack->depends);
 
 		for (j = 0; j < corbapack->breaks._length; j++) {
@@ -568,7 +580,7 @@ GList*
 categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList *corbacategories)
 {
 	GList *categories;
-	guint i,j;
+	guint i;
 
 	categories = NULL;
 
@@ -582,17 +594,9 @@ categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_Cat
 		corbacategory = &(corbacategories->_buffer[i]);
 		packagelist = &(corbacategory->packages);
 
-		for (j = 0; j < packagelist->_length; j++) {
-			PackageData *pack;
-			GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
-			
-			corbapack = &(packagelist->_buffer[j]);
-			pack = packagedata_from_corba_packagedatastruct (corbapack);
-			packages = g_list_prepend (packages, pack);
-		}
 		category = categorydata_new ();
 		category->name = (strlen (corbacategory->name) > 0) ? g_strdup (corbacategory->name) : NULL;
-		category->packages = packages;
+		category->packages = packagedata_list_from_corba_packagedatastructlist (packagelist);
 		categories = g_list_prepend (categories, category);
 	}
 

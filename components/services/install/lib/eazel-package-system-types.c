@@ -38,10 +38,11 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-#define DEBUG_PACKAGE_ALLOCS 
+#undef DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int report_all = 0;
+
 static int package_total_allocs = 0, package_max = 0;
 static int package_allocs = 0;
 GList *packages_allocated = NULL;
@@ -106,7 +107,7 @@ categorydata_new (void)
 	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
-	if (report_all) trilobite_debug ("category_allocs inced to %d (%p)", category_allocs, result);
+	if (report_all) trilobite_debug ("category_allocs increased to %d (%p)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	result->name = NULL;
 	result->description = NULL;
@@ -157,13 +158,13 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	if (report_all) trilobite_debug ("category_allocs = %d (%p) %s", category_allocs, cd, cd ? cd->name: "?");
+	if (report_all) trilobite_debug ("category_allocs decreased to %d (%p) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
-	if (g_list_length (cd->packages)) {
+	if (cd->packages) {
 		g_list_foreach (cd->packages, (GFunc)gtk_object_unref, NULL);
-	}
+	} else trilobite_debug ("EMPTY");
 	g_list_free (cd->packages);
 	cd->packages = NULL;
 	if (g_list_length (cd->depends)) {
@@ -771,6 +772,9 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_RESOLVED:
 		result = g_strdup ("RESOLVED");
 		break;
+	case PACKAGE_CANCELLED:
+		result = g_strdup ("CANCELLED");
+		break;
 	case PACKAGE_ALREADY_INSTALLED:
 		result = g_strdup ("ALREADY_INSTALLED");
 		break;
@@ -799,6 +803,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
+	else if (strcmp (st, "CANCELLED")==0) { result = PACKAGE_CANCELLED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
 	else if (strcmp (st, "CIRCULAR_DEPENDENCY")==0) { result = PACKAGE_CIRCULAR_DEPENDENCY; } 
 	else { g_assert_not_reached (); result = PACKAGE_UNKNOWN_STATUS; };
