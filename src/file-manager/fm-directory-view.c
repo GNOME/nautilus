@@ -140,6 +140,12 @@ struct FMDirectoryViewDetails
 
 	gboolean batching_selection_level;
 	gboolean selection_changed_while_batched;
+
+	/* FIXME bugzilla.eazel.com 4539: 
+	 * get rid of this when all nautilus_mime_actions_wait_for_full_file_attributes
+	 * calls are gone.
+	 */
+	int waiting_for_activation_count_hack;
 };
 
 /* forward declarations */
@@ -3108,7 +3114,13 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 	if (nautilus_g_list_exactly_one_item (files)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-		nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (files->data));
+		/* FIXME bugzilla.eazel.com 4539: 
+		 * need to remove the wait here, as it can iterate the main idle
+		 * loop and cause all sorts of havoc (see bug 4480) 
+		 */
+		if (view->details->waiting_for_activation_count_hack > 0) {
+			nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (files->data));
+		}
 
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (files->data));
 		for (node = applications; node != NULL; node = node->next) {
@@ -3381,7 +3393,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 		
-		nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (selection->data));
+		/* FIXME bugzilla.eazel.com 4539: 
+		 * need to remove the wait here, as it can iterate the main idle
+		 * loop and cause all sorts of havoc (see bug 4480) 
+		 */
+		if (view->details->waiting_for_activation_count_hack > 0) {
+			nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (selection->data));
+		}
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
@@ -3595,6 +3613,9 @@ schedule_update_menus (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
+	/* Make sure we haven't already destroyed it */
+	g_assert (view->details->nautilus_view != NULL);
+
 	view->details->menu_states_untrustworthy = TRUE;
 	
 	if (view->details->menus_merged
@@ -3712,6 +3733,11 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	parameters = callback_data;
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
+
+	/* FIXME bugzilla.eazel.com 4539: 
+	 * remove this hack when all wait_until_ready calls are gone */
+	g_assert (view->details->waiting_for_activation_count_hack > 0);
+	--view->details->waiting_for_activation_count_hack;
 
 	uri = nautilus_file_get_activation_uri (file);
 
@@ -3832,6 +3858,12 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->file = file;
 	parameters->use_new_window = use_new_window;
 
+	/* FIXME bugzilla.eazel.com 4539: 
+	 * This is a workaround for the real fix of getting rid of all
+	 * wait_until_ready calls.
+	 */
+	g_assert (view->details->waiting_for_activation_count_hack >= 0);
+	++view->details->waiting_for_activation_count_hack;
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);
 

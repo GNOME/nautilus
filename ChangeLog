@@ -1,3 +1,22 @@
+2000-11-06  Darin Adler  <darin@eazel.com>
+
+	Rolled in John's fix for bug 4480 (Crash while navigating
+	in Vault). This fix is a workaround for the real problem,
+	described in new bug 4539.
+
+	* src/file-manager/fm-directory-view.c:
+	Added details->waiting_for_activation_count_hack.
+	(create_open_with_gtk_menu), 
+	(reset_bonobo_open_with_menu):
+	Don't try to get full file attributes if we're still
+	waiting for any pending activation.
+	(schedule_update_menus): Added an assert while debugging
+	that is useful enough to keep.
+	(activate_callback): 
+	decrement details->waiting_for_activation_count_hack.
+	(fm_directory_view_activate_file):
+	increment details->waiting_for_activation_count_hack.
+
 2000-11-06  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: updated requirements ofr packages,
