@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus Latvian translation\n"
-"POT-Creation-Date: 2002-03-10 18:06-0800\n"
+"POT-Creation-Date: 2002-03-17 23:46+0100\n"
 "PO-Revision-Date: 2001-11-04 21:02+0200\n"
 "Last-Translator: Peteris Krisjanis <peteris.krisjanis@ttc.lv>\n"
 "Language-Team: Latvian <pecisk@inbox.lv>\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Nautilus component adapter factory"
 msgstr ""
 
-#: components/adapter/main.c:99
+#: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
 msgstr ""
 
@@ -886,21 +886,21 @@ msgstr "Laiks"
 msgid "Set Cover Image"
 msgstr "Uzstâdît Vâka Attçlu"
 
-#: components/music/nautilus-music-view.c:740
+#: components/music/nautilus-music-view.c:743
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Piedodiet, bet %s nav lietoâjama attçla datne."
 
-#: components/music/nautilus-music-view.c:742
+#: components/music/nautilus-music-view.c:745
 #: src/nautilus-property-browser.c:1040 src/nautilus-property-browser.c:1291
 msgid "Not an Image"
 msgstr "Ne attçls"
 
-#: components/music/nautilus-music-view.c:788
+#: components/music/nautilus-music-view.c:791
 msgid "Select an image file for the album cover:"
 msgstr "Izvçlaties attçla datni priekð albûma vâka:"
 
-#: components/music/nautilus-music-view.c:1170
+#: components/music/nautilus-music-view.c:1193
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. This is "
 "because the Enable sound server startup setting in the Sound section of the "
@@ -910,12 +910,12 @@ msgstr ""
 "Aktivizçt skaòas serveri sâkuma uzstâdîjums Skaòas sekcijâ Kontroles Centrâ "
 "ir izslçgts."
 
-#: components/music/nautilus-music-view.c:1173
-#: components/music/nautilus-music-view.c:1185
+#: components/music/nautilus-music-view.c:1196
+#: components/music/nautilus-music-view.c:1208
 msgid "Unable to Play File"
 msgstr "Nevar Nospçlçt Datni"
 
-#: components/music/nautilus-music-view.c:1181
+#: components/music/nautilus-music-view.c:1204
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the sound card, or your sound card is "
@@ -927,31 +927,31 @@ msgstr ""
 "nepareizi nokonfigurçta. Pamçìiniet iziet no jebkurâm aplikâcijâm kas varçtu "
 "bloíçt skaòas karti."
 
-#: components/music/nautilus-music-view.c:1209
+#: components/music/nautilus-music-view.c:1232
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Piedodiet, bet mûzikas skats vçl nevar spçlçt nelokâlâs datnes."
 
-#: components/music/nautilus-music-view.c:1210
+#: components/music/nautilus-music-view.c:1233
 msgid "Can't Play Remote Files"
 msgstr "Nevar Spçlçt Attâlinâtas Datnes"
 
-#: components/music/nautilus-music-view.c:1497
+#: components/music/nautilus-music-view.c:1519
 msgid "Drag to seek within track"
 msgstr "Velciet lai meklçtu celiòâ"
 
-#: components/music/nautilus-music-view.c:1524
+#: components/music/nautilus-music-view.c:1546
 msgid "Previous"
 msgstr "Iepriekðçjais"
 
-#: components/music/nautilus-music-view.c:1539
+#: components/music/nautilus-music-view.c:1561
 msgid "Play"
 msgstr "Spçlçt"
 
-#: components/music/nautilus-music-view.c:1553
+#: components/music/nautilus-music-view.c:1575
 msgid "Pause"
 msgstr "Pauzçt"
 
-#: components/music/nautilus-music-view.c:1567
+#: components/music/nautilus-music-view.c:1589
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:938
@@ -959,20 +959,20 @@ msgstr "Pauzçt"
 msgid "Stop"
 msgstr "Stop"
 
-#: components/music/nautilus-music-view.c:1581
+#: components/music/nautilus-music-view.c:1603
 msgid "Next"
 msgstr "Nâkoðais"
 
-#: components/music/nautilus-music-view.c:1688
+#: components/music/nautilus-music-view.c:1710
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Piedodiet, bet ir kïûda lasot %s."
 
-#: components/music/nautilus-music-view.c:1689
+#: components/music/nautilus-music-view.c:1711
 msgid "Can't Read Folder"
 msgstr "Nevar Nolasît Mapi"
 
-#: components/music/nautilus-music-view.c:1785
+#: components/music/nautilus-music-view.c:1811
 #, c-format
 msgid "<span size=\"xx-large\">%s - %s</span>"
 msgstr ""
@@ -1067,8 +1067,8 @@ msgid "Invalid RSS URL"
 msgstr "Nepareizs RSS URL"
 
 #: components/news/nautilus-news.c:1870
-#: libnautilus-private/nautilus-undo-signal-handlers.c:174
-msgid "Edit"
+#, fuzzy
+msgid "Edi_t"
 msgstr "Rediìçt"
 
 #: components/news/nautilus-news.c:2142
@@ -1077,44 +1077,50 @@ msgid "Site Name"
 msgstr "Saites Nosaukums:"
 
 #: components/news/nautilus-news.c:2168
-msgid "Remove Site"
+#, fuzzy
+msgid "_Remove Site"
 msgstr "Izdzçst Saiti"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2194
-msgid "Site Name:"
+#, fuzzy
+msgid "Site _Name:"
 msgstr "Saites Nosaukums:"
 
-#: components/news/nautilus-news.c:2209
-msgid "Site RSS URL:"
+#: components/news/nautilus-news.c:2212
+#, fuzzy
+msgid "Site _RSS URL:"
 msgstr "Saites RSS URL:"
 
-#: components/news/nautilus-news.c:2227
-msgid "Add New Site"
+#: components/news/nautilus-news.c:2232
+#, fuzzy
+msgid "_Add New Site"
 msgstr "Pievienot Jaunu Saiti"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2257
+#: components/news/nautilus-news.c:2262
 msgid "Add a New Site:"
 msgstr "Pievienot Jaunu Saiti:"
 
-#: components/news/nautilus-news.c:2268
-msgid "Remove a Site:"
+#: components/news/nautilus-news.c:2273
+#, fuzzy
+msgid "Remove a _Site:"
 msgstr "Dzçst Saiti:"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2300
-msgid "Select Sites:"
+#: components/news/nautilus-news.c:2323
+#, fuzzy
+msgid "_Select Sites:"
 msgstr "Izvçlçties Saites:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2323
-#: libnautilus-private/nautilus-program-chooser.c:1289
-msgid "Done"
+#: components/news/nautilus-news.c:2353
+#, fuzzy
+msgid "_Done"
 msgstr "Izdarîts"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2394
+#: components/news/nautilus-news.c:2424
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1123,11 +1129,12 @@ msgstr ""
 "lapâm. Klikðíiniet uz Izvçlçties Saites lai izvçlçtos saites ko parâdît."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2415
-msgid "Select Sites"
+#: components/news/nautilus-news.c:2445
+#, fuzzy
+msgid "_Select Sites"
 msgstr "Izvçlçties Saites"
 
-#: components/news/nautilus-news.c:2486
+#: components/news/nautilus-news.c:2516
 msgid "image indicating that the news has changed"
 msgstr "attçls ziòojot ka ziòas ir mainijuðâs"
 
@@ -2119,7 +2126,7 @@ msgstr "Saites Mçríis:"
 msgid "Cancel"
 msgstr "Atsaukt"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:374
+#: libnautilus-private/nautilus-file-operations-progress.c:421
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld no %ld"
@@ -2482,7 +2489,7 @@ msgstr "Aizvietot Visas"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1114
-#: libnautilus-private/nautilus-file.c:4176
+#: libnautilus-private/nautilus-file.c:4239
 #, c-format
 msgid "link to %s"
 msgstr "saite uz %s"
@@ -3091,7 +3098,7 @@ msgstr "foo (124. kopija)"
 msgid "foo (124th copy).txt"
 msgstr "foo (124. kopija).txt"
 
-#: libnautilus-private/nautilus-file.c:2205
+#: libnautilus-private/nautilus-file.c:2212
 msgid " (invalid Unicode)"
 msgstr ""
 
@@ -3110,64 +3117,64 @@ msgstr ""
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2427
+#: libnautilus-private/nautilus-file.c:2490
 msgid "today at 00:00:00 PM"
 msgstr "ðodien plkst. 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2428
+#: libnautilus-private/nautilus-file.c:2491
 msgid "today at %-I:%M:%S %p"
 msgstr "ðodien %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2430
+#: libnautilus-private/nautilus-file.c:2493
 msgid "today at 00:00 PM"
 msgstr "ðodien 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2431
+#: libnautilus-private/nautilus-file.c:2494
 msgid "today at %-I:%M %p"
 msgstr "ðodien %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2433
+#: libnautilus-private/nautilus-file.c:2496
 msgid "today, 00:00 PM"
 msgstr "ðodien, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2434
+#: libnautilus-private/nautilus-file.c:2497
 msgid "today, %-I:%M %p"
 msgstr "ðodiena, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2436
-#: libnautilus-private/nautilus-file.c:2437
+#: libnautilus-private/nautilus-file.c:2499
+#: libnautilus-private/nautilus-file.c:2500
 msgid "today"
 msgstr "ðodiena"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2446
+#: libnautilus-private/nautilus-file.c:2509
 msgid "yesterday at 00:00:00 PM"
 msgstr "vakardien 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2447
+#: libnautilus-private/nautilus-file.c:2510
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vakardien %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2449
+#: libnautilus-private/nautilus-file.c:2512
 msgid "yesterday at 00:00 PM"
 msgstr "vakardien 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2450
+#: libnautilus-private/nautilus-file.c:2513
 msgid "yesterday at %-I:%M %p"
 msgstr "vakardien %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2515
 msgid "yesterday, 00:00 PM"
 msgstr "vakardiena, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2453
+#: libnautilus-private/nautilus-file.c:2516
 msgid "yesterday, %-I:%M %p"
 msgstr "vakardiena, %-I:M %p"
 
-#: libnautilus-private/nautilus-file.c:2455
-#: libnautilus-private/nautilus-file.c:2456
+#: libnautilus-private/nautilus-file.c:2518
+#: libnautilus-private/nautilus-file.c:2519
 msgid "yesterday"
 msgstr "vakardiena"
 
@@ -3176,132 +3183,132 @@ msgstr "vakardiena"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2467
+#: libnautilus-private/nautilus-file.c:2530
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Treðdiena, 0000. gada 0. septembris, 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2468
+#: libnautilus-private/nautilus-file.c:2531
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2470
+#: libnautilus-private/nautilus-file.c:2533
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pirm, Okt 00 0000, 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2534
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2536
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pirm, Okt 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2474
+#: libnautilus-private/nautilus-file.c:2537
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2539
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2477
+#: libnautilus-private/nautilus-file.c:2540
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2479
+#: libnautilus-private/nautilus-file.c:2542
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2480
+#: libnautilus-private/nautilus-file.c:2543
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2482
+#: libnautilus-private/nautilus-file.c:2545
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2483
+#: libnautilus-private/nautilus-file.c:2546
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%d/%d/%y, %i:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2485
+#: libnautilus-private/nautilus-file.c:2548
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2486
+#: libnautilus-private/nautilus-file.c:2549
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3761
+#: libnautilus-private/nautilus-file.c:3824
 msgid "0 items"
 msgstr "0 priekðmetu"
 
-#: libnautilus-private/nautilus-file.c:3761
+#: libnautilus-private/nautilus-file.c:3824
 msgid "0 folders"
 msgstr "0 mapes"
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3825
 msgid "0 files"
 msgstr "0 datnes"
 
-#: libnautilus-private/nautilus-file.c:3766
+#: libnautilus-private/nautilus-file.c:3829
 msgid "1 item"
 msgstr "1 priekðmets"
 
-#: libnautilus-private/nautilus-file.c:3766
+#: libnautilus-private/nautilus-file.c:3829
 msgid "1 folder"
 msgstr "1 mape"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3830
 msgid "1 file"
 msgstr "1 datne"
 
-#: libnautilus-private/nautilus-file.c:3770
+#: libnautilus-private/nautilus-file.c:3833
 #, c-format
 msgid "%u items"
 msgstr "%u priekðmeti"
 
-#: libnautilus-private/nautilus-file.c:3770
+#: libnautilus-private/nautilus-file.c:3833
 #, c-format
 msgid "%u folders"
 msgstr "%u mapes"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3834
 #, c-format
 msgid "%u files"
 msgstr "%u datnes"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4078
-#: libnautilus-private/nautilus-file.c:4094
+#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4157
 msgid "? items"
 msgstr "? priekðmeti"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4084
+#: libnautilus-private/nautilus-file.c:4147
 msgid "? bytes"
 msgstr "? baiti"
 
-#: libnautilus-private/nautilus-file.c:4099
+#: libnautilus-private/nautilus-file.c:4162
 msgid "unknown type"
 msgstr "nezinâms tips"
 
-#: libnautilus-private/nautilus-file.c:4102
+#: libnautilus-private/nautilus-file.c:4165
 msgid "unknown MIME type"
 msgstr "nezinâms MIME tips"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4108
+#: libnautilus-private/nautilus-file.c:4171
 msgid "unknown"
 msgstr "nezinâms"
 
-#: libnautilus-private/nautilus-file.c:4140
+#: libnautilus-private/nautilus-file.c:4203
 msgid "program"
 msgstr "programma"
 
-#: libnautilus-private/nautilus-file.c:4152
+#: libnautilus-private/nautilus-file.c:4215
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3311,7 +3318,7 @@ msgstr ""
 "iespçjams jûsu gnome-vfs.keys datne atrodas nepareizâ vietâ vai arî nevar "
 "tikt atrasta kâda cita iemesla dçï."
 
-#: libnautilus-private/nautilus-file.c:4156
+#: libnautilus-private/nautilus-file.c:4219
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3320,15 +3327,15 @@ msgstr ""
 "Nav atrasts apraksts mime tipam \"%s\" (datne ir \"%s\"), lûdzu pasakiet to "
 "gnome-vfs epasta sarakstç."
 
-#: libnautilus-private/nautilus-file.c:4170
+#: libnautilus-private/nautilus-file.c:4233
 msgid "link"
 msgstr "saite"
 
-#: libnautilus-private/nautilus-file.c:4190
+#: libnautilus-private/nautilus-file.c:4253
 msgid "link (broken)"
 msgstr "saite (pârrauta)"
 
-#: libnautilus-private/nautilus-file.c:5197
+#: libnautilus-private/nautilus-file.c:5260
 #: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:68
 msgid "Trash"
@@ -3779,6 +3786,10 @@ msgstr "Statuss"
 msgid "Choose"
 msgstr "Izvçlçties"
 
+#: libnautilus-private/nautilus-program-chooser.c:1289
+msgid "Done"
+msgstr "Izdarîts"
+
 #: libnautilus-private/nautilus-program-chooser.c:1359
 #, fuzzy
 msgid "_Modify..."
@@ -4128,6 +4139,10 @@ msgstr "Nautilus meklç jûsu diskos aktritumkastes mapes."
 msgid "on the desktop"
 msgstr "uz darbavirsmas"
 
+#: libnautilus-private/nautilus-undo-signal-handlers.c:174
+msgid "Edit"
+msgstr "Rediìçt"
+
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo Edit"
 msgstr "Atsaukt Redîìçðanu"
@@ -4422,93 +4437,93 @@ msgstr "Tukðot Atkritumkasti"
 msgid "Unmount Volume"
 msgstr "Nomontçt Partîciju"
 
-#: src/file-manager/fm-directory-view.c:468
+#: src/file-manager/fm-directory-view.c:469
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:470
+#: src/file-manager/fm-directory-view.c:471
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Atvçrt %d Logus?"
 
-#: src/file-manager/fm-directory-view.c:780
+#: src/file-manager/fm-directory-view.c:781
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:784
+#: src/file-manager/fm-directory-view.c:785
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:790
+#: src/file-manager/fm-directory-view.c:791
 msgid "Delete?"
 msgstr "Dzçst?"
 
-#: src/file-manager/fm-directory-view.c:790
-#: src/file-manager/fm-directory-view.c:2965
-#: src/file-manager/fm-directory-view.c:3007
+#: src/file-manager/fm-directory-view.c:791
+#: src/file-manager/fm-directory-view.c:2985
+#: src/file-manager/fm-directory-view.c:3027
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Dzçst"
 
-#: src/file-manager/fm-directory-view.c:1434
+#: src/file-manager/fm-directory-view.c:1435
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" izvçleti"
 
-#: src/file-manager/fm-directory-view.c:1436
+#: src/file-manager/fm-directory-view.c:1437
 msgid "1 folder selected"
 msgstr "1 mape izvçlçta"
 
-#: src/file-manager/fm-directory-view.c:1439
+#: src/file-manager/fm-directory-view.c:1440
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mapes izvçlçtas"
 
-#: src/file-manager/fm-directory-view.c:1446
+#: src/file-manager/fm-directory-view.c:1447
 msgid " (containing 0 items)"
 msgstr " (satur 0 objektus) "
 
-#: src/file-manager/fm-directory-view.c:1448
+#: src/file-manager/fm-directory-view.c:1449
 msgid " (containing 1 item)"
 msgstr " (satur 1 objektu) "
 
-#: src/file-manager/fm-directory-view.c:1450
+#: src/file-manager/fm-directory-view.c:1451
 #, c-format
 msgid " (containing %d items)"
 msgstr " (satur %d objektus) "
 
-#: src/file-manager/fm-directory-view.c:1457
+#: src/file-manager/fm-directory-view.c:1458
 msgid " (containing a total of 0 items)"
 msgstr " (satur kopâ 0 priekðmetus) "
 
-#: src/file-manager/fm-directory-view.c:1459
+#: src/file-manager/fm-directory-view.c:1460
 msgid " (containing a total of 1 item)"
 msgstr " (satur kopâ 1 priekðmetu) "
 
-#: src/file-manager/fm-directory-view.c:1461
+#: src/file-manager/fm-directory-view.c:1462
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (satur kopâ %d priekðmetus) "
 
-#: src/file-manager/fm-directory-view.c:1474
+#: src/file-manager/fm-directory-view.c:1475
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" izvçleti (%s)"
 
-#: src/file-manager/fm-directory-view.c:1478
+#: src/file-manager/fm-directory-view.c:1479
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d priekðmeti izvçlçti (%s)"
 
-#: src/file-manager/fm-directory-view.c:1485
+#: src/file-manager/fm-directory-view.c:1486
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 cits priekðmets izvçlçts (%s)"
 
-#: src/file-manager/fm-directory-view.c:1488
+#: src/file-manager/fm-directory-view.c:1489
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d citi priekðmeti izvçlçti (%s)"
@@ -4520,7 +4535,7 @@ msgstr "%d citi priekðmeti izvçlçti (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1517
+#: src/file-manager/fm-directory-view.c:1518
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4529,98 +4544,98 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1642
+#: src/file-manager/fm-directory-view.c:1643
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
 "will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1649
+#: src/file-manager/fm-directory-view.c:1650
 msgid "Too Many Files"
 msgstr "Par Daudz Datòu"
 
-#: src/file-manager/fm-directory-view.c:2948
+#: src/file-manager/fm-directory-view.c:2968
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2953
+#: src/file-manager/fm-directory-view.c:2973
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2957
+#: src/file-manager/fm-directory-view.c:2977
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2965
+#: src/file-manager/fm-directory-view.c:2985
 msgid "Delete Immediately?"
 msgstr "Dzçst Nekavçjoties?"
 
-#: src/file-manager/fm-directory-view.c:2997
+#: src/file-manager/fm-directory-view.c:3017
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3001
+#: src/file-manager/fm-directory-view.c:3021
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3007
+#: src/file-manager/fm-directory-view.c:3027
 msgid "Delete From Trash?"
 msgstr "Dzçst No Atkritumkastes?"
 
-#: src/file-manager/fm-directory-view.c:3323
-#: src/file-manager/fm-directory-view.c:3365
+#: src/file-manager/fm-directory-view.c:3347
+#: src/file-manager/fm-directory-view.c:3389
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3447
+#: src/file-manager/fm-directory-view.c:3471
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Cita _Aplikâcija..."
 
-#: src/file-manager/fm-directory-view.c:3447
+#: src/file-manager/fm-directory-view.c:3471
 msgid "An _Application..."
 msgstr "_Aplikâcija..."
 
-#: src/file-manager/fm-directory-view.c:3453
+#: src/file-manager/fm-directory-view.c:3477
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Cits _Skatîtâjs..."
 
-#: src/file-manager/fm-directory-view.c:3453
+#: src/file-manager/fm-directory-view.c:3477
 msgid "A _Viewer..."
 msgstr "_Skatîtâjs..."
 
-#: src/file-manager/fm-directory-view.c:3671
+#: src/file-manager/fm-directory-view.c:3695
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3876
+#: src/file-manager/fm-directory-view.c:3900
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3879
+#: src/file-manager/fm-directory-view.c:3903
 msgid "About Scripts"
 msgstr "Par Skriptiem"
 
-#: src/file-manager/fm-directory-view.c:3880
+#: src/file-manager/fm-directory-view.c:3904
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4642,123 +4657,123 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3946
+#: src/file-manager/fm-directory-view.c:3970
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3950
+#: src/file-manager/fm-directory-view.c:3974
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3957
+#: src/file-manager/fm-directory-view.c:3981
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3961
+#: src/file-manager/fm-directory-view.c:3985
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4107
+#: src/file-manager/fm-directory-view.c:4131
 msgid "There is nothing on the clipboard to paste."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4223
+#: src/file-manager/fm-directory-view.c:4269
 msgid "Open _in This Window"
 msgstr "Atvçrt Ðajâ _Logâ"
 
-#: src/file-manager/fm-directory-view.c:4226
+#: src/file-manager/fm-directory-view.c:4272
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Atvçrt Jaunâ _Logâ"
 
-#: src/file-manager/fm-directory-view.c:4228
+#: src/file-manager/fm-directory-view.c:4274
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Atvçrt %d Jaunos _Logos"
 
-#: src/file-manager/fm-directory-view.c:4246
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash..."
 msgstr "Dzçst no A_tkritumkastes"
 
-#: src/file-manager/fm-directory-view.c:4246
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash"
 msgstr "Dzçst no A_tkritumkastes"
 
-#: src/file-manager/fm-directory-view.c:4248
+#: src/file-manager/fm-directory-view.c:4294
 msgid "Delete all selected items permanently"
 msgstr "Dzçst visus izvçlçtos priekðmetus nekavçjoties"
 
-#: src/file-manager/fm-directory-view.c:4251
+#: src/file-manager/fm-directory-view.c:4297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Pârvietot uz A_tkritumkasti"
 
-#: src/file-manager/fm-directory-view.c:4253
+#: src/file-manager/fm-directory-view.c:4299
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Pârvietot katru izvçlçto priekðmetu uz Atkritumkasti"
 
-#: src/file-manager/fm-directory-view.c:4280
+#: src/file-manager/fm-directory-view.c:4326
 msgid "De_lete..."
 msgstr "_Dzçst..."
 
-#: src/file-manager/fm-directory-view.c:4280
+#: src/file-manager/fm-directory-view.c:4326
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "_Dzçst"
 
-#: src/file-manager/fm-directory-view.c:4301
+#: src/file-manager/fm-directory-view.c:4347
 msgid "Make _Links"
 msgstr "Izveidot _Saites"
 
-#: src/file-manager/fm-directory-view.c:4302
+#: src/file-manager/fm-directory-view.c:4348
 msgid "Make _Link"
 msgstr "Izveidot _Saiti"
 
-#: src/file-manager/fm-directory-view.c:4317 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4363 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "_Iztukðot Atkritumkasti"
 
-#: src/file-manager/fm-directory-view.c:4318
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/fm-directory-view.c:4364
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Iztukðot Atkritumkasti"
 
-#: src/file-manager/fm-directory-view.c:4329
+#: src/file-manager/fm-directory-view.c:4375
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4330
+#: src/file-manager/fm-directory-view.c:4376
 msgid "R_emove Custom Image"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4344
+#: src/file-manager/fm-directory-view.c:4390
 msgid "Cu_t File"
 msgstr "Iz_nemt Datni"
 
-#: src/file-manager/fm-directory-view.c:4345
+#: src/file-manager/fm-directory-view.c:4391
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Iz_nemt Datnes"
 
-#: src/file-manager/fm-directory-view.c:4355
+#: src/file-manager/fm-directory-view.c:4401
 msgid "_Copy File"
 msgstr "_Kopçt Datni"
 
-#: src/file-manager/fm-directory-view.c:4356
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/fm-directory-view.c:4402
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Copy Files"
 msgstr "_Kopçt Datnes"
 
-#: src/file-manager/fm-directory-view.c:4521
+#: src/file-manager/fm-directory-view.c:4567
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4766,56 +4781,56 @@ msgstr ""
 "Ðî saite nevar tikt izmantota, tâpçc ka tai nav mçría. Vai jûs gribat ðo "
 "saiti ievietot Atkritumkastç?"
 
-#: src/file-manager/fm-directory-view.c:4524
+#: src/file-manager/fm-directory-view.c:4570
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4530
+#: src/file-manager/fm-directory-view.c:4576
 msgid "Broken Link"
 msgstr "Pâtraukta Saite"
 
-#: src/file-manager/fm-directory-view.c:4530
+#: src/file-manager/fm-directory-view.c:4576
 msgid "Throw Away"
 msgstr "Aizmest Projâm"
 
-#: src/file-manager/fm-directory-view.c:4587
+#: src/file-manager/fm-directory-view.c:4633
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4593
+#: src/file-manager/fm-directory-view.c:4639
 msgid "Run or Display?"
 msgstr "Sâknçt vai Parâdît?"
 
-#: src/file-manager/fm-directory-view.c:4594
+#: src/file-manager/fm-directory-view.c:4640
 msgid "Run"
 msgstr "Sâknçt"
 
-#: src/file-manager/fm-directory-view.c:4595
+#: src/file-manager/fm-directory-view.c:4641
 msgid "Display"
 msgstr "Parâdît"
 
-#: src/file-manager/fm-directory-view.c:4650
+#: src/file-manager/fm-directory-view.c:4696
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4652
+#: src/file-manager/fm-directory-view.c:4698
 msgid "Can't execute remote links"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4796
+#: src/file-manager/fm-directory-view.c:4842
 #, c-format
 msgid "Opening \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4802
+#: src/file-manager/fm-directory-view.c:4848
 msgid "Cancel Open?"
 msgstr "Atsaukt Atvçrðanu?"
 
@@ -4940,93 +4955,93 @@ msgstr ""
 msgid "Cancel Rename?"
 msgstr "Atcelt Pârsaukðanu?"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:149
 msgid "by _Name"
 msgstr "pçc _Vârda"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:150
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:156
 msgid "by _Size"
 msgstr "pçc _Izmçra"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:157
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:163
 msgid "by _Type"
 msgstr "pçc _Tipa"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:164
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:170
 msgid "by Modification _Date"
 msgstr "pçc Izmaiòu_ Datuma"
 
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:171
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:177
 msgid "by _Emblems"
 msgstr "pçc _Emblçmas"
 
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:178
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:1379
-#: src/file-manager/nautilus-icon-view-ui.xml.h:37
+#: src/file-manager/fm-icon-view.c:1375
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
 msgid "_Restore Icons' Original Sizes"
 msgstr "Atjaunot Ikonu Orìinâlos Izmç_rus"
 
-#: src/file-manager/fm-icon-view.c:1380
+#: src/file-manager/fm-icon-view.c:1376
 msgid "_Restore Icon's Original Size"
 msgstr "Atjaunot Ikonas Orìinâlo Izmç_ru"
 
-#: src/file-manager/fm-icon-view.c:1728
+#: src/file-manager/fm-icon-view.c:1718
 #, c-format
 msgid "pointing at \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2509
+#: src/file-manager/fm-icon-view.c:2499
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2510 src/file-manager/fm-icon-view.c:2529
+#: src/file-manager/fm-icon-view.c:2500 src/file-manager/fm-icon-view.c:2519
 msgid "Drag and Drop error"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2528
+#: src/file-manager/fm-icon-view.c:2518
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:186
+#: src/file-manager/fm-list-view.c:215
 #, fuzzy
 msgid "File name"
 msgstr "Datnes Îpaðnieks:"
 
-#: src/file-manager/fm-list-view.c:205
+#: src/file-manager/fm-list-view.c:237
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Izmçrs"
 
-#: src/file-manager/fm-list-view.c:214
+#: src/file-manager/fm-list-view.c:246
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tips"
 
-#: src/file-manager/fm-list-view.c:223
+#: src/file-manager/fm-list-view.c:255
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Izmaiòu Datums"
@@ -5574,93 +5589,106 @@ msgstr ""
 msgid "Remove any custom pattern or color from the background of this location"
 msgstr ""
 
-#. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
+msgid "Rename"
+msgstr "Pârsaukt"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#, fuzzy
+msgid "Rename selected item"
+msgstr "Dublicçt katru izvçlçto priekðmetu"
+
+#. add the reset background item, possibly disabled
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 #: src/nautilus-sidebar.c:567
 msgid "Reset Background"
 msgstr "Atsaukt Fonu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset View to Match Preferences"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Reset View to Match _Preferences"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Scripts"
 msgstr "Skripti"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Select All Files"
 msgstr "Izvçlçties Visas Datnes"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Select _All Files"
 msgstr "Izvçlçties Vis_as Datnes"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Select all items in this window"
 msgstr "Izvçlçties visus priekðmetus ðajâ logâ"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show Properties"
 msgstr "Parâdît Rekvizîtus"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show Trash"
 msgstr "Parâdît Atkritumkasti"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "Show _Properties"
 msgstr "Parâdît _Rekvizîtus"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "Show the contents of the Trash"
 msgstr "Parâdît Atkritumkastes saturu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Parâdît mapi kas satur skriptus ðai izvçlnei"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "View or modify the properties of each selected item"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Duplicate"
 msgstr "_Dublicçt"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_Make Link"
 msgstr "_Izveidot Saiti"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_New Folder"
 msgstr "_Jauna Mape"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
 msgid "_Open"
 msgstr "_Atvçrt"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Open Scripts Folder"
 msgstr "_Atvçrt Skriptu Mapi"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+#: src/file-manager/nautilus-directory-view-ui.xml.h:65
 msgid "_Paste Files"
 msgstr "I_zlikt Datnes"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+#: src/file-manager/nautilus-directory-view-ui.xml.h:66
+msgid "_Rename"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:67
 msgid "_Show Trash"
 msgstr "_Parâdît Atkritumkasti"
 
@@ -5709,63 +5737,50 @@ msgid "Re_versed Order"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:23
-msgid "Rename"
-msgstr "Pârsaukt"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:24
-#, fuzzy
-msgid "Rename selected item"
-msgstr "Dublicçt katru izvçlçto priekðmetu"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:26
+#: src/file-manager/nautilus-icon-view-ui.xml.h:24
 msgid "Restore Icons' Original Sizes"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:27
+#: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Restore each selected icon to its original size"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:28
+#: src/file-manager/nautilus-icon-view-ui.xml.h:26
 msgid "Reversed Order"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:29
+#: src/file-manager/nautilus-icon-view-ui.xml.h:27
 msgid "Stretch Icon"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:30
+#: src/file-manager/nautilus-icon-view-ui.xml.h:28
 msgid "Tighter Layout"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:31
+#: src/file-manager/nautilus-icon-view-ui.xml.h:29
 msgid "Tighter _Layout"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+#: src/file-manager/nautilus-icon-view-ui.xml.h:30
 msgid "Toggle using a tighter layout scheme"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+#: src/file-manager/nautilus-icon-view-ui.xml.h:31
 msgid "_Clean Up by Name"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
 msgid "_Lay Out Items"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
 msgid "_Manually"
 msgstr ""
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:36
-msgid "_Rename"
-msgstr ""
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
 msgid "_Stretch Icon"
 msgstr ""
 
@@ -6715,7 +6730,7 @@ msgid "Change the visibility of this window's sidebar"
 msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:5
-msgid "Change the visibility of this window's status bar"
+msgid "Change the visibility of this window's statusbar"
 msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:6
@@ -6811,9 +6826,10 @@ msgstr ""
 msgid "Hide Location _Bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:449
-msgid "Hide St_atus Bar"
-msgstr ""
+#: src/nautilus-shell-ui.xml.h:29
+#, fuzzy
+msgid "Hide St_atusbar"
+msgstr "Parâdît Statusa Joslu"
 
 #: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:455
 msgid "Hide _Sidebar"
@@ -6905,8 +6921,8 @@ msgid "Up"
 msgstr "Augðup"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:55 src/nautilus-window.c:521
-#: src/nautilus-window.c:1387
+#: src/nautilus-shell-ui.xml.h:55 src/nautilus-window.c:490
+#: src/nautilus-window.c:1345
 msgid "View as..."
 msgstr "Parâdît kâ..."
 
@@ -7268,6 +7284,10 @@ msgstr "Aizmirst Vçsturi?"
 msgid "Forget"
 msgstr "Aizmirst"
 
+#: src/nautilus-window-menus.c:449
+msgid "Hide St_atus Bar"
+msgstr ""
+
 #: src/nautilus-window-menus.c:450
 msgid "Show St_atus Bar"
 msgstr "Parâdît Statusa Joslu"
@@ -7310,7 +7330,7 @@ msgstr ""
 "èaula, kas atïauj viegli parvaldît\n"
 "jûsu datnes un pârçjo sistçmu."
 
-#: src/nautilus-window-menus.c:698
+#: src/nautilus-window-menus.c:699
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7319,24 +7339,24 @@ msgstr ""
 "Vieta \"%s\" vairs neeksistç. Vai jûs vçlaties izdzçst jebkâdas grâmatzîmes, "
 "saistîtas ar ðo vietu no jûsu saraksta?"
 
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:703
 msgid "Bookmark for Nonexistent Location"
 msgstr "Grâmatzîme uz Neeksistçjoðu Vietu"
 
-#: src/nautilus-window-menus.c:703
+#: src/nautilus-window-menus.c:704
 msgid "Remove"
 msgstr "Dzçst"
 
-#: src/nautilus-window-menus.c:714
+#: src/nautilus-window-menus.c:715
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Vieta \"%s\" vairs neeksistç."
 
-#: src/nautilus-window-menus.c:715
+#: src/nautilus-window-menus.c:716
 msgid "Go to Nonexistent Location"
 msgstr "Ej uz Neeksistçjoðu Vietu"
 
-#: src/nautilus-window-menus.c:784
+#: src/nautilus-window-menus.c:785
 msgid "Go to the location specified by this bookmark"
 msgstr "Ej uz vietu, norâdîtu ðajâ grâmatzîmç"
 
@@ -7348,26 +7368,26 @@ msgstr "Atpakaï"
 msgid "Forward"
 msgstr "Uz priekðu"
 
-#: src/nautilus-window.c:1093
+#: src/nautilus-window.c:1051
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Parâdît ðo vietu ar \"%s\""
 
-#: src/nautilus-window.c:2117
+#: src/nautilus-window.c:2074
 #, fuzzy
 msgid "Application ID"
 msgstr "Applikâcijas"
 
-#: src/nautilus-window.c:2118
+#: src/nautilus-window.c:2075
 msgid "The application ID of the window."
 msgstr ""
 
-#: src/nautilus-window.c:2124
+#: src/nautilus-window.c:2081
 #, fuzzy
 msgid "Application"
 msgstr "Applikâcijas"
 
-#: src/nautilus-window.c:2125
+#: src/nautilus-window.c:2082
 msgid "The NautilusApplication associated with this window."
 msgstr ""
 
@@ -7376,10 +7396,6 @@ msgstr ""
 
 #~ msgid "search by text and properties"
 #~ msgstr "meklçt pçc teksta un rekvizîtiem"
-
-#, fuzzy
-#~ msgid "_Done"
-#~ msgstr "Izdarîts"
 
 #~ msgid "Mailing list where you can send feedback about Nautilus"
 #~ msgstr ""
