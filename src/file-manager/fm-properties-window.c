@@ -74,18 +74,20 @@ enum {
 	PERMISSIONS_PAGE_OWNER_ROW,
 	PERMISSIONS_PAGE_GROUP_ROW,
 	PERMISSIONS_PAGE_OTHERS_ROW,
-	PERMISSIONS_PAGE_INTENTIONALLY_BLANK_ROW,
+	PERMISSIONS_PAGE_SPECIAL_FLAGS_ROW,
 	PERMISSIONS_PAGE_FULL_STRING_ROW,
 	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
 	PERMISSIONS_PAGE_ROW_COUNT
-};	
+};
 
 enum {
 	PERMISSIONS_CHECKBOXES_READ_COLUMN,
 	PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 	PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 	PERMISSIONS_CHECKBOXES_COLUMN_COUNT
-};	
+};
+
+#define PERMISSIONS_CHECKBOXES_ROW_COUNT (PERMISSIONS_PAGE_OTHERS_ROW+1)
 
 enum {
 	MORE_PAGE_MIME_TYPE_ROW,
@@ -123,8 +125,7 @@ add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
 
 	add_prompt (vbox, prompt_text, FALSE);
 
-	/* Separator between check buttons and prompt. */
-  	separator_line = gtk_hseparator_new ();
+ 	separator_line = gtk_hseparator_new ();
   	gtk_widget_show (separator_line);
   	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, GNOME_PAD_BIG);
 }		   
@@ -866,7 +867,7 @@ add_permissions_row_label (GtkTable *table,
 	gtk_widget_show (label);
 	
 	gtk_table_attach (table, label,
-			  0, 0 + 1,
+			  TITLE_COLUMN, TITLE_COLUMN + 1,
 			  row, row + 1,
 			  GTK_FILL, 0,
 			  0, 0);
@@ -1027,11 +1028,49 @@ add_permissions_checkbox (GtkTable *table,
 }
 
 static void
+add_special_execution_checkbox (GtkHBox *hbox, const char *label_text)
+{
+	GtkWidget *check_button;
+
+	check_button = gtk_check_button_new_with_label (label_text);
+	gtk_widget_show (check_button);
+
+	gtk_box_pack_start (GTK_BOX (hbox), check_button, FALSE, FALSE, 0);
+}
+
+static void
+add_special_execution_flags (GtkTable *table, 
+			     NautilusFile *file,
+			     int row,
+			     int initial_column,
+			     int column_span)
+{
+	GtkWidget *frame;
+	GtkWidget *hbox;
+
+	frame = gtk_frame_new (_("Special Execution Flags"));
+	gtk_widget_show (frame);
+	gtk_table_attach (table, frame,
+			  initial_column, initial_column + column_span,
+			  row, row+1,
+			  0, 0,
+			  0, 0);
+
+	hbox = gtk_hbox_new (TRUE, GNOME_PAD);
+	gtk_widget_show (hbox);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD_SMALL);
+	gtk_container_add (GTK_CONTAINER (frame), hbox);
+
+	add_special_execution_checkbox (GTK_HBOX (hbox), _("set user ID"));
+	add_special_execution_checkbox (GTK_HBOX (hbox), _("set group ID"));
+	add_special_execution_checkbox (GTK_HBOX (hbox), _("sticky"));
+}
+
+static void
 create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *vbox;
-	GtkTable *row_label_table, *check_button_table;
-	GtkWidget *check_buttons_hbox;
+	GtkTable *page_table, *check_button_table;
 	char *file_name, *prompt_text;
 
 	vbox = create_page_with_vbox (notebook, _("Permissions"));
@@ -1043,47 +1082,52 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 				_("You are not the owner, so you can't change these permissions."));
 		}
 
-		check_buttons_hbox = gtk_hbox_new (FALSE, 0);
-		gtk_box_set_spacing (GTK_BOX (check_buttons_hbox), GNOME_PAD);
-		gtk_widget_show (check_buttons_hbox);
+		page_table = GTK_TABLE (gtk_table_new (PERMISSIONS_PAGE_ROW_COUNT, 
+						       COLUMN_COUNT, FALSE));
+		apply_standard_table_padding (page_table);
+		gtk_widget_show (GTK_WIDGET (page_table));
 		gtk_box_pack_start (GTK_BOX (vbox), 
-				    GTK_WIDGET (check_buttons_hbox), 
-				    FALSE, FALSE, 0);
+				    GTK_WIDGET (page_table), 
+				    TRUE, TRUE, 0);
 
-		row_label_table = GTK_TABLE (gtk_table_new 
-						(PERMISSIONS_PAGE_ROW_COUNT, 
-						 1, TRUE));
-		apply_standard_table_padding (row_label_table);
-		gtk_widget_show (GTK_WIDGET (row_label_table));
-		gtk_box_pack_start (GTK_BOX (check_buttons_hbox), 
-				    GTK_WIDGET (row_label_table), 
-				    FALSE, FALSE, 0);
-
+		/* Make separate table for grid of checkboxes so it can be
+		 * homogeneous; we don't want overall table to be homogeneous though.
+		 */
 		check_button_table = GTK_TABLE (gtk_table_new 
-						   (PERMISSIONS_PAGE_ROW_COUNT, 
+						   (PERMISSIONS_CHECKBOXES_ROW_COUNT, 
 						    PERMISSIONS_CHECKBOXES_COLUMN_COUNT, 
 						    TRUE));
 		apply_standard_table_padding (check_button_table);
 		gtk_widget_show (GTK_WIDGET (check_button_table));
-		gtk_box_pack_start (GTK_BOX (check_buttons_hbox), 
-				    GTK_WIDGET (check_button_table), 
-				    FALSE, FALSE, 0);
+		gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
+				  VALUE_COLUMN, VALUE_COLUMN + 1,
+				  PERMISSIONS_PAGE_TITLE_ROW, PERMISSIONS_CHECKBOXES_ROW_COUNT,
+				  0, 0,
+				  0, 0);
 
-		add_permissions_row_label (row_label_table, file, 
+		/* This first empty label is a hack to make the title row
+		 * in the main table the same height as the title row in
+		 * the checkboxes sub-table so the other row titles will
+		 * line up horizontally with the checkbox rows.
+		 */
+		add_permissions_row_label (page_table, file, 
+					   PERMISSIONS_PAGE_TITLE_ROW, 
+					   "", NULL);
+		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_OWNER_ROW, 
 					   _("owner (%s):"), "owner");
-		add_permissions_row_label (row_label_table, file, 
+		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_GROUP_ROW, 
 					   _("group (%s):"), "group");
-		add_permissions_row_label (row_label_table, file, 
+		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_OTHERS_ROW, 
 					   _("others:"), NULL);
 		
-		add_permissions_row_label (row_label_table, file, 
+		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
 					   _("as text:"), NULL);
 		
-		add_permissions_row_label (row_label_table, file, 
+		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
 					   _("as octal number:"), NULL);
 		
@@ -1144,16 +1188,20 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
 
-		install_value_field (check_button_table, 
+		add_special_execution_flags (page_table, file,
+					     PERMISSIONS_PAGE_SPECIAL_FLAGS_ROW,
+					     TITLE_COLUMN, VALUE_COLUMN+1 - TITLE_COLUMN);					  
+
+		install_value_field (page_table, 
 				     PERMISSIONS_PAGE_FULL_STRING_ROW, 
-				     PERMISSIONS_CHECKBOXES_READ_COLUMN, 
-				     PERMISSIONS_CHECKBOXES_COLUMN_COUNT - PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     VALUE_COLUMN, 
+				     1, 
 				     file, "permissions"); 
 
-		install_value_field (check_button_table, 
+		install_value_field (page_table, 
 				     PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
-				     PERMISSIONS_CHECKBOXES_READ_COLUMN, 
-				     PERMISSIONS_CHECKBOXES_COLUMN_COUNT - PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     VALUE_COLUMN, 
+				     1, 
 				     file, "octal_permissions"); 
 	} else {
 		file_name = nautilus_file_get_name (file);

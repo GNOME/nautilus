@@ -1,3 +1,15 @@
+2000-06-20  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Left-justified prompt.
+	
+	* src/file-manager/fm-properties-window.c:
+	(add_prompt_and_separator), (add_permissions_row_label),
+	(add_special_execution_checkbox), (add_special_execution_flags),
+	(create_permissions_page): Added as yet non-working checkboxes
+	for the SUID, GUID, and Sticky flags. The layout and wording
+	are abysmal; this will not stand.
+
 2000-06-20  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 1359 (Navigating into empty folder hangs).

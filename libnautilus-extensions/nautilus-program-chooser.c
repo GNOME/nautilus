@@ -961,6 +961,8 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	/* Prompt at top of dialog. */
 	prompt_label = gtk_label_new (prompt);
 	gtk_widget_show (prompt_label);
+	/* Move prompt to left edge */
+	gtk_misc_set_alignment (GTK_MISC (prompt_label), 0, 0.5);
   	g_free (prompt);
 
   	gtk_box_pack_start (GTK_BOX (dialog_vbox), prompt_label, FALSE, FALSE, 0);
