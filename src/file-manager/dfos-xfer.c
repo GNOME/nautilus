@@ -50,6 +50,7 @@ typedef struct XferInfo {
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
 	XferKind kind;
+	gboolean show_progress_dialog;
 } XferInfo;
 
 static XferInfo *
@@ -89,6 +90,9 @@ static void
 create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 		    XferInfo *xfer_info)
 {
+	if (!xfer_info->show_progress_dialog)
+		return;
+
 	g_return_if_fail (xfer_info->progress_dialog == NULL);
 
 	xfer_info->progress_dialog
@@ -116,22 +120,26 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_COLLECTING:
-		dfos_xfer_progress_dialog_set_operation_string
-			(DFOS_XFER_PROGRESS_DIALOG
-				 (xfer_info->progress_dialog),
-				 xfer_info->preparation_name);
+		if (xfer_info->progress_dialog != NULL) {
+			dfos_xfer_progress_dialog_set_operation_string
+				(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 xfer_info->preparation_name);
+		}
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
-		dfos_xfer_progress_dialog_set_operation_string
-			(DFOS_XFER_PROGRESS_DIALOG
-				 (xfer_info->progress_dialog),
-				 xfer_info->operation_name);
-		dfos_xfer_progress_dialog_set_total
-			(DFOS_XFER_PROGRESS_DIALOG
-				 (xfer_info->progress_dialog),
-				 progress_info->files_total,
-				 progress_info->bytes_total);
+		if (xfer_info->progress_dialog != NULL) {
+			dfos_xfer_progress_dialog_set_operation_string
+				(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 xfer_info->operation_name);
+			dfos_xfer_progress_dialog_set_total
+				(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 progress_info->files_total,
+					 progress_info->bytes_total);
+		}
 		return TRUE;
 				 
 	case GNOME_VFS_XFER_PHASE_MOVING:
@@ -142,34 +150,38 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		/* fall through */
 
 	case GNOME_VFS_XFER_PHASE_COPYING:
-		if (progress_info->bytes_copied == 0) {
-			dfos_xfer_progress_dialog_new_file
-				(DFOS_XFER_PROGRESS_DIALOG
-				 (xfer_info->progress_dialog),
-				 progress_info->source_name,
-				 progress_info->target_name,
-				 xfer_info->kind != XFER_MOVE_TO_TRASH &&
-				 xfer_info->kind != XFER_EMPTY_TRASH
-				 ? _("From:") : "",
-				 xfer_info->kind != XFER_MOVE_TO_TRASH &&
-				 xfer_info->kind != XFER_EMPTY_TRASH
-				 ? _("To:") : NULL,
-				 progress_info->file_index,
-				 progress_info->file_size);
-		} else {
-			dfos_xfer_progress_dialog_update
-				(DFOS_XFER_PROGRESS_DIALOG
-				 (xfer_info->progress_dialog),
-				 MIN (progress_info->bytes_copied, 
-				 	progress_info->bytes_total),
-				 MIN (progress_info->total_bytes_copied,
-				 	progress_info->bytes_total));
+		if (xfer_info->progress_dialog != NULL) {
+			if (progress_info->bytes_copied == 0) {
+				dfos_xfer_progress_dialog_new_file
+					(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 progress_info->source_name,
+					 progress_info->target_name,
+					 xfer_info->kind != XFER_MOVE_TO_TRASH &&
+					 xfer_info->kind != XFER_EMPTY_TRASH
+					 ? _("From:") : "",
+					 xfer_info->kind != XFER_MOVE_TO_TRASH &&
+					 xfer_info->kind != XFER_EMPTY_TRASH
+					 ? _("To:") : NULL,
+					 progress_info->file_index,
+					 progress_info->file_size);
+			} else {
+				dfos_xfer_progress_dialog_update
+					(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 MIN (progress_info->bytes_copied, 
+					 	progress_info->bytes_total),
+					 MIN (progress_info->total_bytes_copied,
+					 	progress_info->bytes_total));
+			}
 		}
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		nautilus_file_changes_consume_changes (TRUE);
-		gtk_widget_destroy (xfer_info->progress_dialog);
+		if (xfer_info->progress_dialog != NULL) {
+			gtk_widget_destroy (xfer_info->progress_dialog);
+		}
 		g_free (xfer_info);
 		return TRUE;
 
@@ -212,11 +224,13 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
-		dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
-						  (xfer_info->progress_dialog));
-		dfos_xfer_progress_dialog_thaw (DFOS_XFER_PROGRESS_DIALOG
-						(xfer_info->progress_dialog));
-		gtk_widget_destroy (xfer_info->progress_dialog);
+		if (xfer_info->progress_dialog != NULL) {
+			dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
+							  (xfer_info->progress_dialog));
+			dfos_xfer_progress_dialog_thaw (DFOS_XFER_PROGRESS_DIALOG
+							(xfer_info->progress_dialog));
+			gtk_widget_destroy (xfer_info->progress_dialog);
+		}
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	}
 }
@@ -497,10 +511,16 @@ fs_xfer (const GList *item_uris,
 		xfer_info->operation_name = _("Moving");
 		xfer_info->preparation_name =_("Preparing To Move...");
 		xfer_info->kind = XFER_MOVE;
+		/* Do an arbitrary guess that an operation will take very little
+		 * time and the progress shouldn't be shown.
+		 */
+		xfer_info->show_progress_dialog =  g_list_length ((GList *)item_uris) > 20;
 	} else {
 		xfer_info->operation_name = _("Copying");
 		xfer_info->preparation_name =_("Preparing To Copy...");
 		xfer_info->kind = XFER_COPY;
+		/* always show progress during copy */
+		xfer_info->show_progress_dialog = TRUE;
 	}
 
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
@@ -558,6 +578,11 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 		xfer_info->parent_view = parent_view;
 		xfer_info->progress_dialog = NULL;
 
+		/* Do an arbitrary guess that an operation will take very little
+		 * time and the progress shouldn't be shown.
+		 */
+		xfer_info->show_progress_dialog = g_list_length ((GList *)item_uris) > 20;
+
 		xfer_info->operation_name = _("Moving to Trash");
 		xfer_info->preparation_name =_("Preparing to Move to Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
@@ -605,7 +630,7 @@ fs_empty_trash (GtkWidget *parent_view)
 		xfer_info = g_new (XferInfo, 1);
 		xfer_info->parent_view = parent_view;
 		xfer_info->progress_dialog = NULL;
-
+		xfer_info->show_progress_dialog = TRUE;
 		xfer_info->operation_name = _("Emptying the Trash");
 		xfer_info->preparation_name =_("Preparing to Empty the Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;

@@ -1,3 +1,19 @@
+2000-05-03  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c (create_xfer_dialog),
+	(handle_xfer_ok), (handle_xfer_vfs_error), (fs_xfer),
+	(fs_move_to_trash), (fs_empty_trash):
+	Add a simple heuristic to only show the progress dialog
+	for file operations that are likely to take a non-trivial
+	ammount of time in which case the progress dialog flashed
+	on the screen for a split of a second.
+
+	* libnautilus-extensions/nautilus-icon-dnd.c
+	(nautilus_icon_dnd_modifier_based_action):
+	Switch the modifier key for copy to Control. This is a better
+	modifier because Alt had to be held down after the drag started
+	otherwise one would move the window instead of starting a drag.
+	
 2000-05-03  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

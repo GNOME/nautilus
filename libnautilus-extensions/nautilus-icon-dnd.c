@@ -1173,13 +1173,13 @@ nautilus_icon_dnd_modifier_based_action ()
 	GdkModifierType modifiers;
 	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
 
-	if ((modifiers & GDK_MOD1_MASK) != 0) {
+	if ((modifiers & GDK_CONTROL_MASK) != 0) {
 		return GDK_ACTION_COPY;
 #if 0
 	/* FIXME bugzilla.eazel.com 628:
 	 * don't know how to do links yet
 	 */
-	 } else if ((modifiers & GDK_CONTROL_MASK) != 0) {
+	 } else if ((modifiers & GDK_MOD1_MASK) != 0) {
 		return GDK_ACTION_LINK;
 #endif
 	}
