@@ -1,5 +1,22 @@
 2000-01-03  John Sullivan  <sullivan@eazel.com>
 
+	Added underline-accelerators to Add Bookmark and
+	Edit Bookmarks in Bookmarks menu. This was much
+	more difficult than I expected.
+
+	* src/nautilus-bookmarks-menu.c:
+	  (init): Removed all the guts of this function.
+	  (nautilus_bookmarks_menu_new): Now calls
+	  nautilus_bookmarks_menu_fill() on freshly-created menu.
+	  (nautilus_bookmarks_menu_fill): New function, takes over
+	  the chore of initially populating the Bookmarks menu.
+	  Uses GnomeUIInfo structs to set up Add Bookmarks and
+	  Edit Bookmarks so they'll have underline-accelerators.
+	  Also they now have tooltip strings (and I added a call
+	  to gnome_app_install_menu_hints() to make the tooltips work).
+
+2000-01-03  John Sullivan  <sullivan@eazel.com>
+
 	Fixed memory leaks in bookmarks stuff
 
 	* src/nautilus-bookmarklist.c: (nautilus_bookmarklist_delete_item_at):

@@ -44,13 +44,13 @@ static GtkWidget *get_bookmarks_window			(void);
 static void nautilus_bookmarks_menu_append		(NautilusBookmarksMenu *,
 							 GtkWidget *);
 static void nautilus_bookmarks_menu_clear_bookmarks	(NautilusBookmarksMenu *);
+static void nautilus_bookmarks_menu_fill		(NautilusBookmarksMenu *);
 static void nautilus_bookmarks_menu_repopulate		(NautilusBookmarksMenu *);
 
 /* static variables */
 
 static GtkMenuClass 	    *parent_class = NULL;
 static NautilusBookmarklist *bookmarks = NULL;
-
 
 /* GtkObject methods.  */
 
@@ -87,41 +87,10 @@ class_init (NautilusBookmarksMenuClass *class)
 static void
 init (NautilusBookmarksMenu *bookmarks_menu)
 {
-	GtkWidget *item;
-
-	if (gnome_preferences_get_menus_have_tearoff())
-	{
-		nautilus_bookmarks_menu_append(bookmarks_menu, 
-					       gtk_tearoff_menu_item_new());
-	}
-
-	/* FIXME: Add Bookmark and Edit Bookmarks need accelerators */
-	item = gtk_menu_item_new_with_label(_("Add Bookmark"));
-	gtk_signal_connect(GTK_OBJECT (item), "activate",
-			   GTK_SIGNAL_FUNC (add_bookmark_cb),
-			   bookmarks_menu);
-	nautilus_bookmarks_menu_append(bookmarks_menu, item);
-
-	item = gtk_menu_item_new_with_label(_("Edit Bookmarks..."));
-	gtk_signal_connect(GTK_OBJECT (item), "activate",
-			   GTK_SIGNAL_FUNC (edit_bookmarks_cb),
-			   NULL);
-	nautilus_bookmarks_menu_append(bookmarks_menu, item);
-
-	item = gtk_menu_item_new();
-	/* mark this menu item specially so we can recognize it later */
-	gtk_object_set_data(GTK_OBJECT(item), 
-			    LAST_STATIC_ITEM, 
-			    GINT_TO_POINTER(TRUE));
-	nautilus_bookmarks_menu_append(bookmarks_menu, item);
-
-	gtk_signal_connect_while_alive(GTK_OBJECT(bookmarks),
-			   	       "contents_changed",
-			   	       GTK_SIGNAL_FUNC(list_changed_cb),
-			   	       bookmarks_menu,
-			   	       GTK_OBJECT(bookmarks_menu));
-
-	nautilus_bookmarks_menu_repopulate(bookmarks_menu);
+	/* All the work is done in nautilus_bookmarks_new(). This is a little
+	 * unpleasant, but required so that the initialization code can access
+	 * the window parameter to _new().
+	 */
 }
 
 static void
@@ -170,7 +139,7 @@ bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 }
 
 static void
-edit_bookmarks_cb(GtkMenuItem* item, gpointer func_data)
+edit_bookmarks_cb(GtkMenuItem* item, gpointer ignored)
 {
 	GtkWidget *gtk_window = get_bookmarks_window();
 	if (GTK_WIDGET_VISIBLE(gtk_window))
@@ -282,6 +251,63 @@ nautilus_bookmarks_menu_clear_bookmarks (NautilusBookmarksMenu *menu)
 }
 
 /**
+ * nautilus_bookmarks_menu_fill:
+ * 
+ * Starting with a completely empty menu, adds in the static items
+ * then one for each bookmark. Broken out only for clarity; don't call outside of
+ * nautilus_bookmarks_menu_new().
+ * @menu: The freshly-created NautilusBookmarksMenu that needs to be filled in.
+ **/
+static void
+nautilus_bookmarks_menu_fill (NautilusBookmarksMenu *menu)
+{
+	GtkWidget 	      *item; 
+	gboolean   	       has_tearoff_item;
+	GnomeUIInfo	       static_items[] = 
+		{
+		GNOMEUIINFO_ITEM_DATA(N_("_Add Bookmark"), 
+				      N_("Add a bookmark for the current location to this menu."), 
+				      add_bookmark_cb, menu, NULL),
+		GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
+				      N_("Display a window that allows editing the bookmarks in this menu."), 
+				      edit_bookmarks_cb),
+		GNOMEUIINFO_END
+		};
+
+	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(menu));
+	g_return_if_fail(NAUTILUS_IS_WINDOW(menu->window));
+
+	has_tearoff_item = gnome_preferences_get_menus_have_tearoff();
+	if (has_tearoff_item)
+	{
+		nautilus_bookmarks_menu_append(menu, 
+					       gtk_tearoff_menu_item_new());
+	}
+
+	gnome_app_fill_menu(GTK_MENU_SHELL(menu), 
+			    static_items, 
+			    (GNOME_APP(menu->window))->accel_group, 
+			    TRUE,
+			    has_tearoff_item ? 1 : 0);
+	gnome_app_install_menu_hints(GNOME_APP(menu->window), static_items);
+
+	item = gtk_menu_item_new();
+	/* mark this menu item specially so we can recognize it later */
+	gtk_object_set_data(GTK_OBJECT(item), 
+			    LAST_STATIC_ITEM, 
+			    GINT_TO_POINTER(TRUE));
+	nautilus_bookmarks_menu_append(menu, item);
+
+	gtk_signal_connect_while_alive(GTK_OBJECT(bookmarks),
+			   	       "contents_changed",
+			   	       GTK_SIGNAL_FUNC(list_changed_cb),
+			   	       menu,
+			   	       GTK_OBJECT(menu));
+
+	nautilus_bookmarks_menu_repopulate(menu);		
+}
+
+/**
  * nautilus_bookmarks_menu_new:
  * 
  * Create a new bookmarks menu for use in @window. It's the caller's
@@ -293,14 +319,16 @@ nautilus_bookmarks_menu_clear_bookmarks (NautilusBookmarksMenu *menu)
 GtkWidget *
 nautilus_bookmarks_menu_new (NautilusWindow *window)
 {
-	NautilusBookmarksMenu *new;
+	NautilusBookmarksMenu *new_bookmarks_menu;
 
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
-	new = gtk_type_new (NAUTILUS_TYPE_BOOKMARKS_MENU);
-	new->window = window;
+	new_bookmarks_menu = gtk_type_new (NAUTILUS_TYPE_BOOKMARKS_MENU);
+	new_bookmarks_menu->window = window;
 
-	return GTK_WIDGET (new);
+	nautilus_bookmarks_menu_fill(new_bookmarks_menu);
+
+	return GTK_WIDGET (new_bookmarks_menu);
 }
 
 /**
