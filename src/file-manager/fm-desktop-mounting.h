@@ -61,8 +61,6 @@ typedef struct {
 	
 	gboolean is_mounted;
 	gboolean did_mount;
-
-	NautilusFile *file;	
 } DeviceInfo;
 
 void	fm_desktop_remove_mount_links		(DeviceInfo             *device,

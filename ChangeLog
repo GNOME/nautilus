@@ -1,5 +1,13 @@
 2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
 
+	* src/file-manager/fm-desktop-mounting.c:
+	(mount_device_deactivate), (add_mount_device),
+	(fm_desktop_free_device_info):
+	Fixed a crasher in unmounting that was a result of changing the 
+	way adding and removing icons to the desktop were done.
+	
+2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 1838, seperate volume mounting code into a new source file.
 	
 	* src/file-manager/Makefile.am:

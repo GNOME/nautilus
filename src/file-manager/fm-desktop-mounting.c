@@ -37,6 +37,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <mntent.h>
+#include <libnautilus-extensions/nautilus-directory-private.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <sys/ioctl.h>
@@ -363,15 +364,13 @@ mount_device_activate (FMDesktopIconView *view, DeviceInfo *device)
 static void
 mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
-	NautilusIconContainer *container;
+	GList dummy_list;
 	
 	/* Remove mounted device icon from desktop */
-	if (device->file != NULL) {
-		container = NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
-		nautilus_icon_container_remove (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (device->file));
-		nautilus_file_unref (device->file);
-		device->file = NULL;
-	}
+	dummy_list.data = device->link_uri;
+	dummy_list.next = NULL;
+	dummy_list.prev = NULL;
+	nautilus_directory_notify_files_removed (&dummy_list);
 
 	/* Clean up old link */
 	remove_mount_link (device);
@@ -602,7 +601,6 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 	newdev = g_new0 (DeviceInfo, 1);
 	g_assert (newdev);
 	newdev->device_fd   = -1;
-	newdev->file 	    = NULL;
 	newdev->fsname 	    = g_strdup (ent->mnt_fsname);
 	newdev->mount_path  = g_strdup (ent->mnt_dir);
 	newdev->volume_name = NULL;
@@ -776,11 +774,6 @@ fm_desktop_free_device_info (DeviceInfo *device, FMDesktopIconView *icon_view)
 	if (device->link_uri != NULL) {
 		g_free (device->link_uri);
 		device->link_uri = NULL;
-	}
-
-	if (device->file != NULL) {
-		nautilus_file_unref (device->file);
-		device->file = NULL;
 	}
 }
 
