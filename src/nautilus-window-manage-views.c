@@ -848,6 +848,9 @@ load_new_location_in_all_views (NautilusWindow *window,
                                 GList *selection,
                                 NautilusViewFrame *view_to_skip)
 {
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (location != NULL);
+
         set_displayed_location (window, location);
         if (window->new_content_view != view_to_skip
             && window->new_content_view != NULL) {
@@ -1051,7 +1054,8 @@ static void
 cancel_location_change (NautilusWindow *window)
 {
         NautilusViewFrame *skip_view;
-        if (window->details->pending_location != NULL) {
+        if (window->details->pending_location != NULL
+            && window->details->location != NULL) {
                 
                 /* Tell previously-notified views to go back to the old page */
                 if (window->new_content_view == NULL

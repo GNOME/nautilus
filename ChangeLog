@@ -1,3 +1,15 @@
+2001-02-06  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fixed bug 6365 (Crash at boot if invalid file name given)
+
+	* src/nautilus-window-manage-views.c:
+	(load_new_location_in_all_views): Added some parameter checking
+	to make future bugs like this even easier to find.
+	(cancel_location_change): Don't reset to old location when old
+	location is NULL.
+
 2001-02-05  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Seth Nickel <seth@eazel.com>
