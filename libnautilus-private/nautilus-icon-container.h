@@ -118,7 +118,8 @@ void       nautilus_icon_container_unselect_all            (NautilusIconContaine
 void       nautilus_icon_container_select_all              (NautilusIconContainer *view);
 
 /* operations on the selection */
-GList *    nautilus_icon_container_get_selection           (NautilusIconContainer *view);
+GList     *nautilus_icon_container_get_selection           (NautilusIconContainer *view);
+void       nautilus_icon_container_set_selection           (NautilusIconContainer *view, GList *selection);
 gboolean   nautilus_icon_container_has_stretch_handles     (NautilusIconContainer *container);
 gboolean   nautilus_icon_container_is_stretched            (NautilusIconContainer *container);
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);

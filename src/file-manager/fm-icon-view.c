@@ -101,6 +101,7 @@ static void                   fm_icon_view_initialize_class                     
 static void                   fm_icon_view_merge_menus                          (FMDirectoryView          *view);
 static gboolean               fm_icon_view_react_to_icon_change_idle_callback   (gpointer                  data);
 static void                   fm_icon_view_select_all                           (FMDirectoryView          *view);
+static void                   fm_icon_view_set_selection                        (FMDirectoryView          *view, GList *selection);
 static void                   fm_icon_view_set_zoom_level                       (FMIconView               *view,
 										 NautilusZoomLevel         new_level);
 static void                   fm_icon_view_update_menus                         (FMDirectoryView          *view);
@@ -171,6 +172,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->remove_file = fm_icon_view_remove_file;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
+	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
         fm_directory_view_class->append_background_context_menu_items = fm_icon_view_append_background_context_menu_items;
         fm_directory_view_class->append_selection_context_menu_items = fm_icon_view_append_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
@@ -847,6 +849,17 @@ fm_icon_view_select_all (FMDirectoryView *view)
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
         nautilus_icon_container_select_all(icon_container);
+}
+
+static void
+fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
+{
+	NautilusIconContainer *icon_container;
+
+	g_return_if_fail (FM_IS_ICON_VIEW (view));
+
+	icon_container = get_icon_container (FM_ICON_VIEW (view));
+	nautilus_icon_container_set_selection (icon_container, selection);
 }
 
 static void

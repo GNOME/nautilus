@@ -1,3 +1,37 @@
+2000-04-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	Make selection persistent across content view changes (task 105). 
+
+	* src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view.h
+	(fm_directory_view_set_selection): New function.
+	(set_selection): New virtual method that must by implemented by
+	subclasses.
+	(add_nautilus_file_to_uri_map, remove_nautilus_file_from_uri_map,
+	free_file_by_uri_map_entry, free_file_by_uri_map): New functions
+	to manage a hash table mapping from uri strings to NautilusFile
+	objects.
+	(notify_selection_change_cb): New function; on a selection change
+	notification, either set the selection immediately if the view has
+	completed loading, or establish it as pending.
+	(display_pending_files): Maintain the uri -> file hash table on
+	notifications from the model; do any pending selections required
+	when loading completes.
+	
+	* src/file-manager/fm-list-view.c (fm_list_view_set_selection):
+	New function to implement `set_selection' virtual method.
+
+	* src/file-manager/fm-icon-view.c (fm_icon_view_set_selection):
+	New function to implement `set_selection' virtual method.
+
+	* libnautilus/nautilus-list.c (nautilus_list_set_selection): New
+	function: set the selection to a specified set of rows.
+
+	* libnautilus/nautilus-icon-container.c,
+	libnautilus/nautilus-icon-container.h
+	(nautilus_icon_container_set_selection): New function: set the
+	selection to a specified set of icons.
+
 2000-04-04  Andy Hertzfeld <andy@eazel.com>
 
 	* components.services/startup/nautilus-service-startup-view.c:

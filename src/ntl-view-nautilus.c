@@ -124,6 +124,7 @@ nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, 
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_notify_selection_change(nvi->view_client, nav_ctx, ev);
+
   if(ev->_major != CORBA_NO_EXCEPTION)
     gtk_object_destroy(GTK_OBJECT(view));
 }

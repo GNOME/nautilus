@@ -30,6 +30,9 @@
 #include "nautilus-list.h"
 
 #include <gtk/gtkdnd.h>
+#include <glib.h>
+#include "nautilus-gdk-extensions.h"
+
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -1566,3 +1569,46 @@ nautilus_list_get_selection (NautilusList *list)
 
 	return retval;
 }
+
+void
+nautilus_list_set_selection (NautilusList *list, GList *selection)
+{
+	GList *p;
+	gboolean selection_changed;
+	gboolean select_this;
+	int i;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+	/* FIXME: Selecting n items in an m-element container is an
+	   O(m*n) task using this algorithm, making it quadratic if
+	   you select them all with this method, which actually
+	   happens if you select all in list view and switch to icon
+	   view. We should build a hash table from the list first;
+	   then we can get O(m+n) performance. */
+
+	selection_changed = FALSE;
+
+	for (p = GTK_CLIST (list)->row_list, i = 0; p != NULL; p = p->next, i++) {
+		GtkCListRow *row;
+		gpointer row_data;
+		
+		row = p->data;
+		row_data = row->data;
+
+		select_this = (NULL != g_list_find (selection, row_data)); 
+
+		if (row->state == GTK_STATE_SELECTED) {
+			if (!select_this) {
+				gtk_clist_unselect_row (GTK_CLIST (list), i, -1);
+				selection_changed = TRUE;
+			}
+		} else {
+			if (select_this) {
+				gtk_clist_select_row (GTK_CLIST (list), i, -1);
+				selection_changed = TRUE;
+			}
+		}
+	}
+}
+

@@ -143,6 +143,12 @@ struct _FMDirectoryViewClass {
          * select all of the items in the view */
         void     (* select_all)	         (FMDirectoryView *view);
 
+        /* set_selection is a function pointer that subclasses must
+         * override to select the specified items (and unselect all
+         * others). The argument is a list of NautilusFiles. */
+
+        void     (* set_selection)	 (FMDirectoryView *view, GList *selection);
+
         /* merge_menus is a function pointer that subclasses can override to
          * add their own menu items to the window's menu bar.
          * If overridden, subclasses must call parent class's function.
@@ -179,6 +185,7 @@ gboolean                  fm_directory_view_can_zoom_out                  (FMDir
 void                      fm_directory_view_bump_zoom_level               (FMDirectoryView *view,
 									   int              zoom_increment);
 void                      fm_directory_view_select_all                    (FMDirectoryView *view);
+void                      fm_directory_view_set_selection                 (FMDirectoryView *view, GList *selection);
 void			  fm_directory_view_move_copy_items		  (NautilusIconContainer  *container,
 									   const GList 		  *item_uris,
 									   const GdkPoint 	  *relative_item_points,

@@ -116,9 +116,9 @@ GtkType    nautilus_list_get_type        (void);
 GtkWidget *nautilus_list_new_with_titles (int                 columns,
 					  const char * const *titles);
 GList *    nautilus_list_get_selection   (NautilusList       *list);
+void       nautilus_list_set_selection   (NautilusList       *list, GList *selection);
 gboolean   nautilus_list_is_row_selected (NautilusList	     *list,
 					  int		      row);
-
 void 	   nautilus_list_set_pixbuf_list (NautilusList       *list,
 				      	  gint	   	      row,
 				      	  gint		      column,

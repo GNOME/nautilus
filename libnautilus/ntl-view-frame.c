@@ -149,7 +149,7 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   Nautilus_SelectionInfo * selinfo,
 					   CORBA_Environment * ev)
 {
-  gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_SELECTION_CHANGE], selinfo);
+  gtk_signal_emit (GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_SELECTION_CHANGE], selinfo);
 }
 
 static void

@@ -26,7 +26,6 @@
 #include "nautilus-icon-container.h"
 
 #include <math.h>
-#include <string.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -594,6 +593,7 @@ select_one_unselect_others (NautilusIconContainer *container,
 		NautilusIcon *icon;
 
 		icon = p->data;
+
 		selection_changed |= icon_set_selected (container, icon, icon == icon_to_select);
 	}
 	
@@ -2497,6 +2497,49 @@ nautilus_icon_container_select_all (NautilusIconContainer *container)
 				 signals[SELECTION_CHANGED]);
 	}
 }
+
+/**
+ * nautilus_icon_container_set_selection:
+ * @container: An icon container widget.
+ * 
+ * Set the selection to exactly the icons in @container which have
+ * programmer data matching one of the items in @selection.
+ **/
+
+void
+nautilus_icon_container_set_selection (NautilusIconContainer *container, GList *selection)
+{
+	gboolean selection_changed;
+	GList *p;
+	gboolean select_this;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	selection_changed = FALSE;
+
+	/* FIXME: Selecting n items in an m-element container is an
+	   O(m*n) task using this algorithm, making it quadratic if
+	   you select them all with this method, which actually
+	   happens if you select all in list view and switch to icon
+	   view. We should build a hash table from the list first;
+	   then we can get O(m+n) performance. */
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		NautilusIcon *icon;
+
+		icon = p->data;
+		
+		select_this = (NULL != g_list_find (selection, icon->data)); 
+		
+		selection_changed |= icon_set_selected (container, icon, select_this);
+	}
+
+	if (selection_changed) {
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+	}
+}
+
 
 /**
  * nautilus_icon_container_select_list_unselect_others:

@@ -98,6 +98,9 @@ struct _FMDirectoryViewDetails
 	GList *pending_files_added;
 	GList *pending_files_removed;
 	GList *pending_files_changed;
+	GList *pending_uris_selected;
+
+	GHashTable *files_by_uri;
 
 	gboolean loading;
 
@@ -136,6 +139,9 @@ static void           stop_location_change_cb                                   
 static void           notify_location_change_cb                                   (NautilusViewFrame       *view_frame,
 										   Nautilus_NavigationInfo *nav_context,
 										   FMDirectoryView         *directory_view);
+static void           notify_selection_change_cb                                  (NautilusViewFrame       *view_frame,
+										   Nautilus_SelectionInfo  *sel_context,
+										   FMDirectoryView         *directory_view);
 static void           open_cb                                                     (GtkMenuItem             *item,
 										   GList                   *files);
 static void           open_in_new_window_cb                                       (GtkMenuItem             *item,
@@ -170,6 +176,16 @@ static void           use_new_window_changed_callback                           
 										   NautilusPreferencesType  type,
 										   gconstpointer            value,
 										   gpointer                 user_data);
+static void           add_nautilus_file_to_uri_map                                (FMDirectoryView         *preferences,
+										   NautilusFile            *file);
+static void           remove_nautilus_file_from_uri_map                           (FMDirectoryView         *preferences,
+										   NautilusFile            *file);
+static void           free_file_by_uri_map_entry                                  (gpointer                 key, 
+										   gpointer                 value, 
+										   gpointer                 data);
+static void           free_file_by_uri_map                                        (FMDirectoryView         *view);
+
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -181,6 +197,7 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, remove_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -271,6 +288,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, remove_file);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 }
 
 static void
@@ -398,6 +416,8 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
 	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
 	
+	directory_view->details->files_by_uri = g_hash_table_new (g_str_hash, g_str_equal);
+
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (directory_view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
@@ -419,6 +439,10 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
+			    "notify_selection_change",
+			    GTK_SIGNAL_FUNC (notify_selection_change_cb), 
 			    directory_view);
 
         gtk_signal_connect (GTK_OBJECT (get_bonobo_control (directory_view)),
@@ -486,6 +510,8 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	unschedule_display_of_pending_files (view);
+
+	free_file_by_uri_map (view);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->view_frame));
 
@@ -673,6 +699,52 @@ notify_location_change_cb (NautilusViewFrame *view_frame,
 }
 
 static void
+g_free_callback (gpointer data, 
+	 gpointer ignore)
+{
+	g_free (data);
+}
+
+static void
+notify_selection_change_cb (NautilusViewFrame *view_frame,
+			    Nautilus_SelectionInfo *selection_context,
+			    FMDirectoryView *directory_view)
+{
+	int i;
+	GList *selection;
+	NautilusFile *data;
+
+	selection = NULL;
+
+	if (directory_view->details->loading) {
+		g_list_foreach (directory_view->details->pending_uris_selected, g_free_callback, NULL);
+		g_list_free (directory_view->details->pending_uris_selected);
+		directory_view->details->pending_uris_selected = NULL;
+	}
+
+	if (!selection_context->self_originated) {
+		for (i = 0; i < selection_context->selected_uris._length; i++) {
+				
+				
+			if (!directory_view->details->loading) {
+				data = g_hash_table_lookup (directory_view->details->files_by_uri,
+							    selection_context->selected_uris._buffer[i]);				
+				if (data != NULL) {
+					selection = g_list_prepend (selection, data);
+				}
+			} else {
+				directory_view->details->pending_uris_selected = 
+					g_list_prepend (directory_view->details->pending_uris_selected, 
+							g_strdup (selection_context->selected_uris._buffer[i]));
+			}
+
+			fm_directory_view_set_selection (directory_view, selection);
+			g_list_free (selection);
+		}
+	} 
+}
+
+static void
 stop_location_change_cb (NautilusViewFrame *view_frame,
 			 FMDirectoryView *directory_view)
 {
@@ -742,7 +814,7 @@ zoomable_zoom_out_cb (NautilusZoomable *zoomable, FMDirectoryView *directory_vie
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	GList *files_added, *files_removed, *files_changed, *p;
+	GList *files_added, *files_removed, *files_changed, *uris_selected, *p;
 	NautilusFile *file;
 
 	if (view->details->model != NULL
@@ -750,10 +822,14 @@ display_pending_files (FMDirectoryView *view)
 		stop_load (view, FALSE);
 	}
 
+	/* FIXME: fix memory management here */
+
 	files_added = view->details->pending_files_added;
 	files_removed = view->details->pending_files_removed;
 	files_changed = view->details->pending_files_changed;
-	if (files_added == NULL && files_removed == NULL && files_changed == NULL) {
+	uris_selected = view->details->pending_uris_selected;
+
+	if (files_added == NULL && files_removed == NULL && files_changed == NULL && uris_selected == NULL) {
 		return FALSE;
 	}
 	view->details->pending_files_added = NULL;
@@ -765,6 +841,8 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_added; p != NULL; p = p->next) {
 		file = p->data;
 		
+		add_nautilus_file_to_uri_map (view, NAUTILUS_FILE (file));
+
 		if (!nautilus_file_is_gone (file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[ADD_FILE],
@@ -776,6 +854,9 @@ display_pending_files (FMDirectoryView *view)
 		file = p->data;
 		
 		g_assert (nautilus_file_is_gone (file));
+
+		remove_nautilus_file_from_uri_map (view, NAUTILUS_FILE (file));
+
 		gtk_signal_emit (GTK_OBJECT (view),
 				 signals[REMOVE_FILE],
 				 file);
@@ -784,6 +865,9 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_changed; p != NULL; p = p->next) {
 		file = p->data;
 		
+		/* FIXME: what does files_changed mean, do I need to
+                   modify the files_by_uri hash table here? */
+
 		if (!nautilus_file_is_gone (file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[FILE_CHANGED],
@@ -792,6 +876,31 @@ display_pending_files (FMDirectoryView *view)
 	}
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
+
+	if (nautilus_directory_are_all_files_seen (view->details->model)) {
+		GList *selection;
+		char *uri;
+
+		selection = NULL;
+		view->details->pending_uris_selected = NULL;
+		
+		for (p = uris_selected; p != NULL; p = p->next) {
+			uri = p->data;
+
+			file = g_hash_table_lookup (view->details->files_by_uri, uri);
+			
+			selection = g_list_prepend (selection, file);
+
+			g_free (uri);
+		}
+
+		g_list_free (uris_selected);
+
+		fm_directory_view_set_selection (view, selection);
+
+		/* FIXME: free selection when done */
+		
+	}
 
 	nautilus_file_list_free (files_added);
 	nautilus_file_list_free (files_removed);
@@ -1857,6 +1966,21 @@ fm_directory_view_select_all (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_set_selection:
+ *
+ * set the selection to the items identified in @selection. @selection
+ * should be a list of NautilusFiles
+ * 
+ **/
+void
+fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->set_selection) (view, selection);
+}
+
+/**
  * fm_directory_view_stop:
  * 
  * Stop the current ongoing process, such as switching to a new uri.
@@ -1940,6 +2064,7 @@ fm_directory_view_get_container_uri (NautilusIconContainer *container,
 
 	return nautilus_directory_get_uri (view->details->model);
 }
+
 
 #undef XFER_CALLBACK_DEBUG
 static gint
@@ -2110,4 +2235,65 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
 }
+
+
+static void
+add_nautilus_file_to_uri_map (FMDirectoryView *view,
+			      NautilusFile    *file)
+{
+	nautilus_file_ref (file);
+	g_hash_table_insert (view->details->files_by_uri, nautilus_file_get_uri (file), file);
+}
+
+static void
+remove_nautilus_file_from_uri_map (FMDirectoryView *view,
+				   NautilusFile    *file)
+{
+	char *orig_uri_str;
+	char *uri_str;
+	gpointer ignore;
+	
+	uri_str =  nautilus_file_get_uri (file);
+		
+	if (g_hash_table_lookup_extended (view->details->files_by_uri, uri_str, 
+					  (gpointer *) &orig_uri_str, 
+					  &ignore)) {
+		g_hash_table_remove (view->details->files_by_uri, uri_str);
+		g_free (orig_uri_str);
+		nautilus_file_unref (file);
+	}
+
+	g_free (uri_str);
+}
+
+static void
+free_file_by_uri_map_entry (gpointer key, 
+			    gpointer value, 
+			    gpointer data)
+{
+	char *uri_str;
+	NautilusFile *file;
+
+	uri_str = (char *) key;
+	file = NAUTILUS_FILE (value);
+
+	g_free (uri_str);
+	nautilus_file_unref (file);
+
+}
+
+static void
+free_file_by_uri_map (FMDirectoryView *view)
+{
+	g_hash_table_foreach	(view->details->files_by_uri,
+				 free_file_by_uri_map_entry,
+				 NULL);
+
+	g_hash_table_destroy (view->details->files_by_uri);
+}
+
+
+
+
+
 

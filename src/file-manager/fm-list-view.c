@@ -132,6 +132,7 @@ static void              fm_list_view_initialize_class            (gpointer     
 static void              fm_list_view_destroy                     (GtkObject          *object);
 static void              fm_list_view_done_adding_files           (FMDirectoryView    *view);
 static void              fm_list_view_select_all                  (FMDirectoryView    *view);
+static void              fm_list_view_set_selection               (FMDirectoryView    *view, GList *selection);
 static void              fm_list_view_set_zoom_level              (FMListView         *list_view,
 								   NautilusZoomLevel   new_level);
 static void              fm_list_view_sort_items                  (FMListView         *list_view,
@@ -173,6 +174,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
+	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 }
 
 static void
@@ -751,6 +753,19 @@ fm_list_view_select_all (FMDirectoryView *view)
         clist = GTK_CLIST (get_list (FM_LIST_VIEW(view)));
         gtk_clist_select_all (clist);
 }
+
+/* select all of the items in the view */
+static void
+fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
+{
+	NautilusList *nlist;
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+	
+        nlist = NAUTILUS_LIST (get_list (FM_LIST_VIEW(view)));
+
+        nautilus_list_set_selection (nlist, selection);
+}
+
 
 static void
 fm_list_view_sort_items (FMListView *list_view, 
