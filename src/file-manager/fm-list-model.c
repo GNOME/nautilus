@@ -29,6 +29,7 @@
 
 #include <string.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -125,6 +126,13 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	case FM_LIST_MODEL_LARGE_ICON_COLUMN:
 	case FM_LIST_MODEL_LARGER_ICON_COLUMN:
 	case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
 		return GDK_TYPE_PIXBUF;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		return G_TYPE_BOOLEAN;
@@ -190,6 +198,9 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	NautilusZoomLevel zoom_level;
 	int width, height;
 	char *modifier;
+	GList *emblem_icons;
+	NautilusFile *parent_file;
+	EelStringList *emblems_to_ignore;
 
 	model = (FMListModel *)tree_model;
 
@@ -257,6 +268,45 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		}
 		g_value_set_object (value, icon);
 		g_object_unref (icon);
+		break;
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
+		g_value_init (value, GDK_TYPE_PIXBUF);
+
+		parent_file = nautilus_file_get_parent (file);
+		emblems_to_ignore = eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+		if (parent_file) {
+			if (!nautilus_file_can_write (parent_file)) {
+				eel_string_list_prepend (emblems_to_ignore, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+			}
+			nautilus_file_unref (parent_file);
+		}
+		emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
+		eel_string_list_free (emblems_to_ignore);
+
+		if (emblem_icons != NULL) {
+			zoom_level = fm_list_model_get_zoom_level_from_emblem_column_id (column);
+			icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
+			icon = nautilus_icon_factory_get_pixbuf_for_icon (emblem_icons->data, NULL, icon_size,
+									  NULL, NULL, FALSE, NULL);
+			eel_g_list_free_deep (emblem_icons);
+	
+			height = gdk_pixbuf_get_height (icon);
+			if (height > icon_size) {
+				width = gdk_pixbuf_get_width (icon) * icon_size / height;
+				height = icon_size;
+				tmp = gdk_pixbuf_scale_simple (icon, width, height, GDK_INTERP_BILINEAR);
+				g_object_unref (icon);
+				icon = tmp;
+			}
+			g_value_set_object (value, icon);
+			g_object_unref (icon);
+		}
 		break;
 	case FM_LIST_MODEL_SIZE_COLUMN:
 		g_value_init (value, G_TYPE_STRING);
@@ -867,6 +917,52 @@ fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
 	}
 
 	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_ICON_COLUMN);
+}
+
+NautilusZoomLevel
+fm_list_model_get_zoom_level_from_emblem_column_id (int column)
+{
+	switch (column) {
+	case FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	case FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	case FM_LIST_MODEL_SMALL_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALL;
+	case FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	case FM_LIST_MODEL_LARGE_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGE;
+	case FM_LIST_MODEL_LARGER_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGER;
+	case FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGEST;
+	}
+
+	g_return_val_if_reached (NAUTILUS_ZOOM_LEVEL_STANDARD);
+}
+
+int
+fm_list_model_get_emblem_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+		return FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		return FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALL:
+		return FM_LIST_MODEL_SMALL_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_STANDARD:
+		return FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGE:
+		return FM_LIST_MODEL_LARGE_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGER:
+		return FM_LIST_MODEL_LARGER_EMBLEM_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGEST:
+		return FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN;
+	}
+
+	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN);
 }
 
 void

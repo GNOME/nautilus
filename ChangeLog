@@ -1,5 +1,21 @@
 2004-01-09  Alexander Larsson  <alexl@redhat.com>
 
+        Patch from Jürg Billeter <j@bitron.ch>
+	
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.[ch]:
+	pixbuf CellRenderer that handles emblems too
+	
+	* src/file-manager/fm-list-model.[ch]:
+	* src/file-manager/fm-list-view.c:
+	Add support for emblems to list
+	
+	* src/file-manager/fm-tree-model.[ch]
+	* src/file-manager/fm-tree-view.c:
+	Add support for emblems to tree
+
+2004-01-09  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c: (nautilus_file_can_rename),
 	(nautilus_file_is_nautilus_link):
 	* libnautilus-private/nautilus-link.c:

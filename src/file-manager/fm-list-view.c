@@ -52,6 +52,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus/nautilus-scroll-positionable.h>
+#include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -804,7 +805,7 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
 
 	/* Create the file name column */
-	cell = gtk_cell_renderer_pixbuf_new ();
+	cell = nautilus_cell_renderer_pixbuf_emblem_new ();
 	view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 	
 	view->details->file_name_column = gtk_tree_view_column_new ();
@@ -816,6 +817,7 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_view_column_set_attributes (view->details->file_name_column,
 					     cell,
 					     "pixbuf", FM_LIST_MODEL_SMALLEST_ICON_COLUMN,
+					     "pixbuf_emblem", FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN,
 					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
@@ -1194,7 +1196,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 			     gboolean always_set_level)
 {
 	int icon_size;
-	int column;
+	int column, emblem_column;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
@@ -1218,9 +1220,11 @@ fm_list_view_set_zoom_level (FMListView *view,
 
 	/* Select correctly scaled icons. */
 	column = fm_list_model_get_column_id_from_zoom_level (new_level);
+	emblem_column = fm_list_model_get_emblem_column_id_from_zoom_level (new_level);
 	gtk_tree_view_column_set_attributes (view->details->file_name_column,
 					     GTK_CELL_RENDERER (view->details->pixbuf_cell),
 					     "pixbuf", column,
+					     "pixbuf_emblem", emblem_column,
 					     NULL);
 
 	/* Scale text. */

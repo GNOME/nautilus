@@ -62,6 +62,7 @@
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
 struct FMTreeViewDetails {
 	GtkWidget *scrolled_window;
@@ -1125,12 +1126,13 @@ create_tree (FMTreeView *view)
 	/* Create column */
 	column = gtk_tree_view_column_new ();
 
-	cell = gtk_cell_renderer_pixbuf_new ();
+	cell = nautilus_cell_renderer_pixbuf_emblem_new ();
 	gtk_tree_view_column_pack_start (column, cell, FALSE);
 	gtk_tree_view_column_set_attributes (column, cell,
 					     "pixbuf", FM_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
 					     "pixbuf_expander_closed", FM_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
 					     "pixbuf_expander_open", FM_TREE_MODEL_OPEN_PIXBUF_COLUMN,
+					     "pixbuf_emblem", FM_TREE_MODEL_EMBLEM_PIXBUF_COLUMN,
 					     NULL);
 	
 	cell = gtk_cell_renderer_text_new ();

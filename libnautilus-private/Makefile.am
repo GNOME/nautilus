@@ -49,6 +49,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
+	nautilus-cell-renderer-pixbuf-emblem.c \
+	nautilus-cell-renderer-pixbuf-emblem.h \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.c \
 	nautilus-customization-data.h \
