@@ -192,6 +192,9 @@ typedef struct {
 	ArtIRect text_rect;
 } IconCacheKey;
 
+#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20.0
+#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20.0
+
 /* forward declarations */
 
 static void                  icon_theme_changed_callback             (gpointer                  user_data);
@@ -1673,6 +1676,23 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	gdk_pixbuf_unref (pixbuf);
 }
 
+static gboolean
+embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
+{
+	if (art_irect_empty (embedded_text_rect)) {
+		return FALSE;
+	}
+
+	if (embedded_text_rect->x1 - embedded_text_rect->x0 
+	    < MINIMUM_EMBEDDED_TEXT_RECT_WIDTH ||
+	    embedded_text_rect->y1 - embedded_text_rect->y0 
+	    < MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 GdkPixbuf *
 nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
 				  const ArtIRect *embedded_text_rect,
@@ -1703,9 +1723,9 @@ nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
 	}
 
 	/* Quick out for the case where there's no place to embed the
-	 * text or no text.
+	 * text or the place is too small or there's no text.
 	 */
-	if (art_irect_empty (embedded_text_rect) || nautilus_strlen (text) == 0) {
+	if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
 		return gdk_pixbuf_ref (pixbuf_without_text);
 	}
 
@@ -1803,7 +1823,7 @@ nautilus_icon_factory_embed_file_text (GdkPixbuf *pixbuf_without_text,
 	g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), NULL);
 
 	/* Quick out to save us getting the file's text. */
-	if (art_irect_empty (embedded_text_rect) && file == NULL) {
+	if (!embedded_text_rect_usable (embedded_text_rect) && file == NULL) {
 		return gdk_pixbuf_ref (pixbuf_without_text);
 	}
 

@@ -1017,16 +1017,16 @@ get_icon_images_callback (NautilusIconContainer *container,
 		 NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE,
 		 &text_rect);
 	nautilus_scalable_icon_unref (scalable_icon);
-	if (icon_size_x < NAUTILUS_ICON_SIZE_STANDARD
-	    || icon_size_y < NAUTILUS_ICON_SIZE_STANDARD) {
-		pixbuf_with_text = pixbuf_without_text;
-	} else {
-		pixbuf_with_text = nautilus_icon_factory_embed_file_text
-			(pixbuf_without_text,
-			 &text_rect,
-			 file);
-		gdk_pixbuf_unref (pixbuf_without_text);
-	}
+
+	/* Get the text to embed; this will bail out early if
+	 * the rect is too small.
+	 */
+	pixbuf_with_text = nautilus_icon_factory_embed_file_text
+		(pixbuf_without_text,
+		 &text_rect,
+		 file);
+	gdk_pixbuf_unref (pixbuf_without_text);
+
 	return pixbuf_with_text;
 }
 

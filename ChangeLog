@@ -1,3 +1,26 @@
+2000-05-06  John Sullivan  <sullivan@eazel.com>
+
+	Fixed up code that limits how small icons are before they
+	stop showing embedded text. Too bad you can't see it in
+	action until embedded text is turned back on.
+
+	* icons/eazel/i-regular.xml: Added an embedded-text rectangle
+	for one size smaller icon than had one before.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	Added #defines for minimum embedded text rectangle width
+	and height.
+	(embedded_text_rect_usable): New function, ensures that the
+	embedded text rectangle is sufficiently large.
+	(nautilus_icon_factory_embed_text),
+	(nautilus_icon_factory_embed_file_text): Use new function to
+	skip embedded text if rectangle is nonexistent or too small.
+	
+	* src/file-manager/fm-icon-view.c:
+	(get_icon_images_callback): Removed the text-rectangle size
+	limit here since now there's a universal one inside
+	nautilus_icon_factory.
+
 2000-05-06  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
