@@ -1,3 +1,15 @@
+2003-03-24  Gaute Lindkvist <lindkvis@stud.ntnu.no>
+
+	* libnautilus-private/nautilus-file.h:
+        * libnautilus-private/nautilus-file.c (nautilus_file_get_string_attribute),
+	(nautilus_file_get_volume_name),
+	(nautilus_file_get_volume_free_space)
+	Added functions for finding volume name and free space
+
+	* src/file-manager/fm-properties-window.c (should_show_free_space),
+	(create_basic_page)
+	Now shows volume name and free space
+		
 2003-03-24  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-manage-views.c (nautilus_window_reload):
