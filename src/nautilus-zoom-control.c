@@ -218,7 +218,7 @@ draw_number (GtkWidget *widget, GdkRectangle *box)
 		char_height = gdk_pixbuf_get_height (number_pixbuf);
 
 		x = box->x + num_h_offset + ((box->width - char_width * strlen (buffer)) >> 1);  
-		y = box->y + num_v_offset + ((box->height - char_height) >> 1) + zoom_control->details->y_offset;
+		y = box->y + num_v_offset + ((box->height - char_height) >> 1);
 
 		cur_char = &buffer[0];		
 		while (*cur_char) {
@@ -241,7 +241,7 @@ draw_number (GtkWidget *widget, GdkRectangle *box)
 		pango_layout_get_pixel_extents (zoom_control->details->layout, NULL, &logical_rect);
 
 		x = box->x + num_h_offset + (box->width - logical_rect.width)  / 2;
-		y = box->y + num_v_offset + (box->height - logical_rect.height) / 2 + zoom_control->details->y_offset;
+		y = box->y + num_v_offset + (box->height - logical_rect.height) / 2;
 
 		gtk_paint_layout (widget->style,
 				  widget->window,
