@@ -77,9 +77,10 @@ load_theme_document (const char * theme_name)
 {
 	xmlDocPtr theme_document;
 	char *theme_path, *temp_str;
+	char *user_directory, *themes_directory;
 	
 	/* formulate the theme path name */
-	if (strcmp (theme_name, "default") == 0) {
+	if (strcmp(theme_name, "default") == 0) {
 		theme_path = nautilus_pixmap_file ("default.xml");
 	} else {
 		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
@@ -87,6 +88,23 @@ load_theme_document (const char * theme_name)
 		g_free(temp_str);
 	}
 
+	/* if we can't find the theme document in the global area, try in the user's home */
+	if (theme_path == NULL) {
+		user_directory = nautilus_get_user_directory ();
+		themes_directory = nautilus_make_path (user_directory, "themes");
+		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
+		theme_path = nautilus_make_path (themes_directory, temp_str);
+		
+		g_free (user_directory);
+		g_free (themes_directory);
+		g_free (temp_str);
+	
+		if (!g_file_exists (theme_path)) {
+			g_free (theme_path);
+			theme_path = NULL;
+		}
+	}
+	
 	/* if the file cannot be found, return NULL for no document */
 	if (theme_path == NULL) {
 		return NULL;
@@ -114,10 +132,9 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 {
 	char *theme_name, *temp_str;
 	char *theme_data;
-	static gboolean did_set_up_free_last_theme;
-	
 	xmlDocPtr theme_document;
 	xmlNodePtr resource_node;
+	static gboolean did_set_up_free_last_theme = FALSE;
 	
 	/* fetch the current theme name */
 	theme_data = NULL;
@@ -171,6 +188,30 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	return theme_data;
 }
 
+/* utility routine to return the full path to a themed image that
+   searches the local themes if it can't find it in the shared space */
+static char *
+nautilus_pixmap_file_may_be_local (const char *themed_image)
+{
+	char *image_path, *user_directory, *themes_directory;
+	
+	image_path = nautilus_pixmap_file (themed_image);
+	if (image_path == NULL) {
+		user_directory = nautilus_get_user_directory ();
+		themes_directory = nautilus_make_path (user_directory, "themes");
+		
+		image_path = nautilus_make_path (themes_directory, themed_image);
+		if (!g_file_exists (image_path)) {
+			g_free (image_path);
+			image_path = NULL;
+		}
+		
+		g_free (user_directory);
+		g_free (themes_directory);
+	}
+	return image_path;
+}
+
 /* given the current theme, fetch the full path name of an image with the passed-in name  */
 /* return NULL if there isn't a corresponding image.  Optionally, add a .png suffix if we */
 /* cant otherwise find one. 								  */
@@ -184,7 +225,7 @@ nautilus_theme_get_image_path (const char *image_name)
 	
 	if (nautilus_strcmp (theme_name, "default") != 0) {
 		temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
-		image_path = nautilus_pixmap_file (temp_str);
+		image_path = nautilus_pixmap_file_may_be_local (temp_str);
 	
 		g_free (theme_name);
 	
@@ -197,7 +238,7 @@ nautilus_theme_get_image_path (const char *image_name)
 		/* try if with a .png extension if it doesn't already have one */
 		if (!nautilus_istr_has_suffix (image_name, ".png")) {
 			png_string = g_strconcat (temp_str, ".png", NULL);
-			image_path = nautilus_pixmap_file (png_string);
+			image_path = nautilus_pixmap_file_may_be_local (png_string);
 			g_free (png_string);
 			
 			if (image_path) {
@@ -271,7 +312,7 @@ nautilus_theme_make_selector (const char *theme_name)
 	/* couldn't find a custom one, so try for a directory */	
 	g_free (temp_str);
 	temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.png");
-	pixbuf_file = nautilus_pixmap_file(temp_str);
+	pixbuf_file = nautilus_pixmap_file (temp_str);
 	g_free (temp_str);
 	
 	if (pixbuf_file == NULL) {
@@ -279,9 +320,12 @@ nautilus_theme_make_selector (const char *theme_name)
 		pixbuf_file = nautilus_pixmap_file(temp_str);
 		g_free (temp_str);
 		if (pixbuf_file == NULL) {
-			pixbuf_file = nautilus_pixmap_file ("i-directory.png");
+			temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.png");	
+			pixbuf_file = nautilus_pixmap_file (temp_str);
+			g_free (temp_str);
 		}	
 	}
+	
 	
 	/* try the user directory if necessary */
 	if (pixbuf_file == NULL) {

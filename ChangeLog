@@ -1,3 +1,20 @@
+2000-09-25  Andy Hertzfeld  <andy@eazel.com>
+
+	finished the work for user-added themes, teaching the icon
+	factory and other machinery to look in ~/.nautilus/themes to
+	find theme
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (set_theme),
+	(make_full_icon_path), (get_themed_icon_file_path):
+	added a "local_theme" instance variable, determined it's state
+	during set_theme and used it to make full paths.
+	
+	* libnautilus-extensions/nautilus-theme.c: (load_theme_document),
+	(nautilus_theme_get_theme_data),
+	(nautilus_pixmap_file_may_be_local),
+	(nautilus_theme_get_image_path), (nautilus_theme_make_selector):
+	made various routines look at the local theme store when necessary
+	
 2000-09-25  John Sullivan  <sullivan@eazel.com>
 
 	Some work on the "sidebar panel has failed" situation.

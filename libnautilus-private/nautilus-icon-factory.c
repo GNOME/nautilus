@@ -137,7 +137,10 @@ typedef struct {
 	GtkObject object;
 
         char *theme_name;
-
+	
+	/* the local_theme boolean is set if the theme was user-added (lives in ~/.nautilus) */
+	gboolean local_theme;
+	
 	/* A hash table so we pass out the same scalable icon pointer
 	 * every time someone asks for the same icon. Scalable icons
 	 * are removed from this hash table when they are destroyed.
@@ -643,6 +646,7 @@ nautilus_icon_factory_remove_by_uri (const char *image_uri)
 static void
 set_theme (const char *theme_name)
 {
+	char *user_directory, *themes_directory, *this_theme_directory;
 	NautilusIconFactory *factory;
 
 	factory = get_icon_factory ();
@@ -656,6 +660,18 @@ set_theme (const char *theme_name)
         g_free (factory->theme_name);
         factory->theme_name = g_strdup (theme_name);
 
+	/* set the local_theme boolean if the theme is local */
+	
+	user_directory = nautilus_get_user_directory ();
+	themes_directory = nautilus_make_path (user_directory, "themes");
+	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
+	factory->local_theme = g_file_exists (this_theme_directory);
+	
+	g_free (user_directory);
+	g_free (themes_directory);
+	g_free (this_theme_directory);
+	
+	/* we changed the theme, so emit the icons_changed signal */
 	gtk_signal_emit (GTK_OBJECT (factory),
 			 signals[ICONS_CHANGED]);
 }
@@ -744,17 +760,27 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 }
 
 static char *
-make_full_icon_path (const char *path, const char *suffix)
+make_full_icon_path (const char *path, const char *suffix, gboolean local_theme)
 {
 	char *partial_path, *full_path;
-
+	char *user_directory, *themes_directory;
+	
 	if (path[0] == '/') {
 		return g_strconcat (path, suffix, NULL);
 	}
 
-	/* Build a path for this icon. */
+	/* Build a path for this icon, depending on the local_theme boolean. */
 	partial_path = g_strconcat (path, suffix, NULL);
-	full_path = nautilus_pixmap_file (partial_path);
+	if (local_theme) {
+		user_directory = nautilus_get_user_directory ();
+		themes_directory = nautilus_make_path (user_directory, "themes");
+		full_path = nautilus_make_path (themes_directory, partial_path);
+		g_free (user_directory);
+		g_free (themes_directory);
+	} else {
+		full_path = nautilus_pixmap_file (partial_path);
+	}
+	
 	g_free (partial_path);
 	return full_path;
 }
@@ -808,6 +834,7 @@ get_themed_icon_file_path (const char *theme_name,
 	ArtIRect parsed_rect;
 	NautilusIconFactory *factory;
 	char *user_directory;
+	gboolean local_theme;
 	
 	g_assert (icon_name != NULL);
 
@@ -819,6 +846,7 @@ get_themed_icon_file_path (const char *theme_name,
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 	factory = get_icon_factory ();
+	local_theme = factory->local_theme && theme_name != NULL;
 	
 	/* Try each suffix. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
@@ -835,7 +863,7 @@ get_themed_icon_file_path (const char *theme_name,
 		if (aa_mode) {
 			aa_path = g_strconcat (partial_path, "-aa", NULL);
 			path = make_full_icon_path (aa_path,
-						    icon_file_name_suffixes[i]);
+						    icon_file_name_suffixes[i], local_theme);
 			g_free (aa_path);
 		
 			/* Return the path if the file exists. */
@@ -848,7 +876,7 @@ get_themed_icon_file_path (const char *theme_name,
 		}
 						
 		path = make_full_icon_path (partial_path,
-					    icon_file_name_suffixes[i]);
+					    icon_file_name_suffixes[i], local_theme);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
@@ -863,7 +891,7 @@ get_themed_icon_file_path (const char *theme_name,
 	if (path != NULL && details != NULL) {
 		memset (&details->text_rect, 0, sizeof (details->text_rect));
 
-		xml_path = make_full_icon_path (themed_icon_name, ".xml");
+		xml_path = make_full_icon_path (themed_icon_name, ".xml", local_theme);
 
 		doc = xmlParseFile (xml_path);
 		g_free (xml_path);
