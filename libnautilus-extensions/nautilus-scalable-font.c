@@ -677,8 +677,6 @@ nautilus_scalable_font_measure_text_lines (NautilusScalableFont	*font,
 
 	for (i = 0; i < num_text_lines; i++) {
 		g_assert (text_lines[i] != NULL);
-		g_assert (text_line_widths[i] > 0);
-		g_assert (text_line_heights[i] > 0);
 
 		nautilus_scalable_font_measure_text (font,
 						     font_width,
