@@ -1,3 +1,16 @@
+2000-05-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-graphic-effects.c,h:
+	(nautilus_draw_frame):
+	added routine to draw a frame with a drop-shadow into a pixbuf
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_thumbnail_path), (nautilus_icon_factory_make_thumbnails):
+	at Arlo's suggestion, made thumbnails have drop shadows.  Enhanced
+	the routine that was drawing the frame and moved it into graphic
+	effects.  Also, fixed an embarrasing bug where thumbnails for
+	non-png images were being stored in weird directories with the
+	proper extension.
+	
 2000-05-18  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/Makefile.am:

@@ -47,8 +47,10 @@
 #include "nautilus-default-file-icon.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-graphic-effects.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
@@ -975,7 +977,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	/* append an image suffix if the correct one isn't already present */
 	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG")) {		
 		char* old_uri = thumbnail_uri;
-		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
+		thumbnail_uri = g_strdup_printf("%s.png", thumbnail_uri);
 		g_free(old_uri);			
 	}
 			
@@ -2065,40 +2067,6 @@ check_for_thumbnails (NautilusIconFactory *factory)
 	return FALSE;
 }
 
-/* utility to draw the thumbnail frame.  The frame is rectangular, so it doesn't need an alpha channel */
-static void
-draw_thumbnail_frame (GdkPixbuf *frame_pixbuf)
-{
-	int index, width, height, depth, rowstride, fill_value;
-  	guchar *pixels, *temp_pixels;
-	
-	width = gdk_pixbuf_get_width (frame_pixbuf);
-	height = gdk_pixbuf_get_height (frame_pixbuf);
-	depth = gdk_pixbuf_get_bits_per_sample (frame_pixbuf);
-	pixels = gdk_pixbuf_get_pixels (frame_pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (frame_pixbuf);
-
-	/* loop through the pixbuf a scaleline at a time, drawing the frame */
-	for (index = 0; index < height; index++) {
-		/* special case the first and last line to make them dark */
-		fill_value = (index == 0 || index == height - 1) ? 0 : 239;
-		memset(pixels, fill_value, rowstride);
-		
-		/* draw the frame at the edge for each scanline */
-		temp_pixels = pixels;
-		*temp_pixels++ = 0;
-		*temp_pixels++ = 0;
-		*temp_pixels++ = 0;
-		
-		pixels += rowstride;
-		
-		temp_pixels = pixels - 3;
-		*temp_pixels++ = 0;
-		*temp_pixels++ = 0;
-		*temp_pixels++ = 0;		
-	}
-}
-
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
 static int
@@ -2141,28 +2109,16 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			if (full_size_image != NULL) {
 				GdkPixbuf *scaled_image, *framed_image;
 				int scaled_width, scaled_height;
-				int full_width = gdk_pixbuf_get_width (full_size_image);
-				int full_height = gdk_pixbuf_get_height (full_size_image);
-					
-				if (full_width > full_height) {
-					scaled_width = 96;
-					scaled_height = full_height * 96 / full_width;
-				} else {
-					scaled_height = 96;
-					scaled_width = full_width * 96 / full_height;
-				}
-
-				/* scale the image, then release the large one */
-				scaled_image = gdk_pixbuf_scale_simple (full_size_image,
-									scaled_width, scaled_height,
-									GDK_INTERP_BILINEAR);				
-				gdk_pixbuf_unref (full_size_image);
 				
-				/* make the frame to mount it in - don't use an alpha channel, since it's rectangular */
+				scaled_image = nautilus_gdk_pixbuf_scale_to_fit(full_size_image, 96, 96);	
+				scaled_width = gdk_pixbuf_get_width (scaled_image);
+				scaled_height = gdk_pixbuf_get_height (scaled_image);
+				
+				/* make the frame to mount it in - use an alpha channel, so part of the drop shadow can be transparent */
 				framed_image = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-							       FALSE, 8,
-							       scaled_width + 12, scaled_height + 12);
-				draw_thumbnail_frame(framed_image);
+							       TRUE, 8,
+							       scaled_width + 16, scaled_height + 16);
+				nautilus_draw_frame(framed_image);
 				
 				/* copy the scaled image into it, then release it */
 				gdk_pixbuf_copy_area (scaled_image, 0, 0,

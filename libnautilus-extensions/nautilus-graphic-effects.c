@@ -221,6 +221,95 @@ nautilus_create_colorized_pixbuf (GdkPixbuf *src,
 	return dest;
 }
 
+/* draw a frame with a drop shadow into the passed in pixbuf */
+
+void
+nautilus_draw_frame (GdkPixbuf *frame_pixbuf)
+{
+	int index, h_index, last_index, pin_width;
+	int width, height, depth, rowstride, fill_value;
+  	guchar *pixels, *temp_pixels;
+	
+	width = gdk_pixbuf_get_width (frame_pixbuf);
+	height = gdk_pixbuf_get_height (frame_pixbuf);
+	depth = gdk_pixbuf_get_bits_per_sample (frame_pixbuf);
+	pixels = gdk_pixbuf_get_pixels (frame_pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (frame_pixbuf);
+
+	/* loop through the pixbuf a scaleline at a time, drawing the frame */
+	for (index = 0; index < height; index++) {
+		/* special case the first and last few lines to make them dark */
+		fill_value = 239;
+		pin_width = width;
+		last_index = height - index;
+		if (index == 0)
+			fill_value = 0;
+		else if (index > (height - 6)) {
+			fill_value = (index - (height - 5)) * 50;
+			pin_width = width - (height - index);
+		}	
+		/* memset(pixels, fill_value, rowstride); */
+		temp_pixels = pixels;
+		for (h_index = 0; h_index < pin_width; h_index++) {
+			*temp_pixels++ = fill_value;
+			*temp_pixels++ = fill_value;
+			*temp_pixels++ = fill_value;
+			*temp_pixels++ = ((last_index < 6) && ((4 - last_index) > h_index)) ? 0 : 255;
+		}
+		
+		/* draw the frame at the edge for each scanline */
+		if (last_index > 5) {
+			temp_pixels = pixels;
+			*temp_pixels++ = 0;
+			*temp_pixels++ = 0;
+			*temp_pixels++ = 0;
+			*temp_pixels++ = 255;
+		}
+		
+		pixels += rowstride;
+		
+		/* handle the last 5 pixels specially for the drop shadow */
+		
+		temp_pixels = pixels - 5*4;
+
+		if (last_index > 4) {
+			*temp_pixels++ = 0;
+			*temp_pixels++ = 0;
+			*temp_pixels++ = 0;		
+			*temp_pixels++ = 255;
+		} else temp_pixels += 4;
+		
+		if (last_index > 3) {			
+			*temp_pixels++ = 50;
+			*temp_pixels++ = 50;
+			*temp_pixels++ = 50;		
+			*temp_pixels++ = index < 1 ? 0 : 255;
+		}  else temp_pixels += 4;
+		
+		if (last_index > 2) {
+			*temp_pixels++ = 100;
+			*temp_pixels++ = 100;
+			*temp_pixels++ = 100;		
+			*temp_pixels++ = index < 2 ? 0 : 255;
+		}  else temp_pixels += 4;
+		
+		if (last_index > 1) {
+			*temp_pixels++ = 150;
+			*temp_pixels++ = 150;
+			*temp_pixels++ = 150;		
+			*temp_pixels++ = index < 3 ? 0 : 255;
+		}  else temp_pixels += 4;
+		
+		if (last_index > 0) {
+			*temp_pixels++ = 200;
+			*temp_pixels++ = 200;
+			*temp_pixels++ = 200;		
+			*temp_pixels++ = index < 4 ? 0 : 255;
+		}
+	}
+}
+
+
 /* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
    clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
    checkerboard instead of reducing the alpha since it will be turned into an alpha-less
