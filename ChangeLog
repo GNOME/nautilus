@@ -1,3 +1,15 @@
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(top_left_read_callback): Change code so it doesn't send a file
+	changed message and then assume nothing changed.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_get_image_uri): Handle the case where it
+	can't create the directory without seg faulting.
+
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1404 (Preferences panes should be in some

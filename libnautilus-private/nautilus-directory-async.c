@@ -2793,6 +2793,7 @@ top_left_read_callback (GnomeVFSResult result,
 			gpointer callback_data)
 {
 	NautilusDirectory *directory;
+	NautilusFile *changed_file;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -2800,6 +2801,7 @@ top_left_read_callback (GnomeVFSResult result,
 
 	directory->details->top_left_read_state->file->details->top_left_text_is_up_to_date = TRUE;
 
+	changed_file = NULL;
 	if (result == GNOME_VFS_OK) {
 		g_free (directory->details->top_left_read_state->file->details->top_left_text);
 		directory->details->top_left_read_state->file->details->top_left_text =
@@ -2807,12 +2809,18 @@ top_left_read_callback (GnomeVFSResult result,
 		
 		directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
 
-		nautilus_file_changed (directory->details->top_left_read_state->file);
+		changed_file = directory->details->top_left_read_state->file;
+		nautilus_file_ref (changed_file);
 		
 		g_free (file_contents);
 	}
 	
 	top_left_read_done (directory);
+
+	if (changed_file != NULL) {
+		nautilus_file_changed (changed_file);
+		nautilus_file_unref (changed_file);
+	}
 }
 
 static gboolean

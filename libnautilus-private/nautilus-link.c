@@ -399,6 +399,10 @@ nautilus_link_local_get_image_uri (const char *path)
 	/* if the image is remote, see if we can find it in our local cache */
 	if (nautilus_is_remote_uri (icon_uri)) {
 		local_path = make_local_path (icon_uri);
+		if (local_path == NULL) {
+			g_free (icon_uri);
+			return NULL;
+		}
 		if (g_file_exists (local_path)) {
 			g_free (icon_uri);			
 			local_uri = gnome_vfs_get_uri_from_local_path (local_path);
