@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus\n"
+"Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2003-10-09 16:29+0200\n"
-"PO-Revision-Date: 2003-10-14 14:02+0200\n"
+"PO-Revision-Date: 2003-10-31 01:03+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,6 @@ msgstr "Nytt namn på merket:"
 #: components/emblem/nautilus-emblem-view.c:331
 msgid "Rename"
 msgstr "Gje nytt namn"
-
 
 #: components/emblem/nautilus-emblem-view.c:503
 msgid "Add Emblems..."
@@ -245,15 +244,15 @@ msgstr "Oversyn over maskinvare"
 
 #: components/hardware/nautilus-hardware-view.c:632
 msgid "This is a placeholder for the CPU page."
-msgstr ""
+msgstr "Dette er ein plasshaldar for CPU-sida"
 
 #: components/hardware/nautilus-hardware-view.c:657
 msgid "This is a placeholder for the RAM page."
-msgstr ""
+msgstr "Dette er ein plasshaldar for RAM-sida."
 
 #: components/hardware/nautilus-hardware-view.c:682
 msgid "This is a placeholder for the IDE page."
-msgstr ""
+msgstr "Dette er ein plasshaldar for IDE-sida."
 
 #: components/history/Nautilus_View_history.server.in.in.h:1
 msgid "History"
@@ -273,16 +272,15 @@ msgstr "Bilete"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
 msgid "Image Properties content view component"
-msgstr ""
+msgstr "Innhaldsvisarkomponent for bileteeigenskapar"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Nautilus-tema"
+msgstr "Nautilus-visar for bileteeigenskapar"
 
 #: components/image_properties/nautilus-image-properties-view.c:93
 msgid "Failed to load image information"
-msgstr ""
+msgstr "Klarte ikkje å lasta informasjon om biletet"
 
 #: components/image_properties/nautilus-image-properties-view.c:145
 #, c-format
@@ -290,15 +288,16 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Biletetype:</b> %s (%s)\n"
+"<b>Oppløysing:</b> %d x %d pikslar\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:255
-#, fuzzy
 msgid "loading..."
-msgstr "Plassering"
+msgstr "Lastar ..."
 
 #: components/image_properties/nautilus-image-properties-view.c:268
 msgid "URI currently displayed"
-msgstr ""
+msgstr "URI som vert vist no"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Notes"
@@ -306,38 +305,32 @@ msgstr "Notat"
 
 # panel/basep-widget.c:885
 #: components/notes/Nautilus_View_notes.server.in.in.h:2
-#, fuzzy
 msgid "Notes side pane"
-msgstr "Gøym dette panelet"
+msgstr "Sidepanel for notatar"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
-msgstr "Historikkstorleik"
+msgstr "Nautilus-sidepanel for notatar"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
-#, fuzzy
 msgid "Factory for text view"
-msgstr "Fabrikk for EBrowser-kontroll"
+msgstr "Fabrikk for tekstframsyning"
 
 #: components/text/Nautilus_View_text.server.in.in.h:2
 msgid "Text"
 msgstr "Tekst"
 
 #: components/text/Nautilus_View_text.server.in.in.h:3
-#, fuzzy
 msgid "Text Viewer"
-msgstr "Bruk framsynar"
+msgstr "Tekstvisar"
 
 #: components/text/Nautilus_View_text.server.in.in.h:4
-#, fuzzy
 msgid "Text view"
-msgstr "Visningstype:"
+msgstr "Tekstframsyning"
 
 #: components/text/Nautilus_View_text.server.in.in.h:5
-#, fuzzy
 msgid "Text view factory"
-msgstr "Tekstkomponent fabrikk"
+msgstr "Fabrikk for tekstframsyning"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
@@ -345,9 +338,8 @@ msgstr "Vis som tekst"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 #: libnautilus/nautilus-clipboard-ui.xml.h:2
-#, fuzzy
 msgid "Copy the selected text to the clipboard"
-msgstr "Kopierer utvalet til utklippstavla"
+msgstr "Kopierer merka tekst til utklippstavla"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:64
@@ -355,56 +347,49 @@ msgid "_Copy Text"
 msgstr "_Kopier tekst"
 
 #: components/text/services/google.xml.h:1
-#, fuzzy
 msgid "Search Google for Selected Text"
-msgstr "Søk etter tekst"
+msgstr "Søk på Google etter den merka teksten"
 
 #: components/text/services/google.xml.h:2
 msgid "Use Google to search the web for the selected text"
-msgstr ""
+msgstr "Bruk Google til å søka på verdsveven etter den merka teksten"
 
 #: components/text/services/webster.xml.h:1
-#, fuzzy
 msgid "Look Up Selected Text in Dictionary"
-msgstr "Slå opp ord i ordliste"
+msgstr "Slå opp merka tekst i ordliste"
 
 #: components/text/services/webster.xml.h:2
 msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr ""
+msgstr "Slå opp den merka teksten i Merriam-Webster-ordboka."
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:1
 msgid "animation to indicate on-going activity"
-msgstr ""
+msgstr "animasjon som viser at noko skjer"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
 #: components/throbber/nautilus-throbber.c:587
-#, fuzzy
 msgid "throbber"
-msgstr "Oktober"
+msgstr ""
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:3
-#, fuzzy
 msgid "throbber factory"
-msgstr "EBrowser fabrikk"
+msgstr ""
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:4
-#, fuzzy
 msgid "throbber object factory"
-msgstr "bonobo GnoMines objekt fabrikk"
+msgstr ""
 
 #: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr ""
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:1
-#, fuzzy
 msgid "Nautilus Tree side pane"
-msgstr "Nautilus-tema"
+msgstr "Nautilus sidepanel for treframsyning"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Tree view"
-msgstr "Nautilus-tema"
+msgstr "Nautilus treframsyning"
 
 # gsm/splash.c:65
 #: components/tree/Nautilus_View_tree.server.in.in.h:3
@@ -412,48 +397,42 @@ msgid "Tree"
 msgstr "Tre"
 
 #: components/tree/nautilus-tree-model.c:1135
-#, fuzzy
 msgid "(Empty)"
-msgstr "Tom"
+msgstr "(Tom)"
 
 #: components/tree/nautilus-tree-model.c:1135
-#, fuzzy
 msgid "Loading..."
-msgstr "Plassering"
+msgstr "Lastar ..."
 
 # gmenu/treenew.c:43 gmenu/treenew.c:52 gmenu/treenew.c:73 gmenu/treenew.c:82
 #: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Home Folder"
-msgstr "Ny mappe"
+msgstr "Heimemappe"
 
 #: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
-msgstr ""
+msgstr "Filsystem"
 
 #: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
-msgstr ""
+msgstr "Nettverksnabolaget"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
 msgstr "Program"
 
 #: data/applications.desktop.in.h:2
-#, fuzzy
 msgid "Browse available software"
-msgstr "Bla gjennom tilgjengelege X11-fargar."
+msgstr "Bla gjennom tilgjengeleg programvare"
 
 # panel/launcher.c:499 panel/launcher.c:693 panel/menu.c:1715
 #: data/browser.xml.h:1
-#, fuzzy
 msgid "Apparition"
-msgstr "Applikasjon"
+msgstr ""
 
 #: data/browser.xml.h:2
-#, fuzzy
 msgid "Art"
-msgstr "Artist"
+msgstr "Kunst"
 
 #: data/browser.xml.h:3
 msgid "Azul"
@@ -465,45 +444,39 @@ msgid "Black"
 msgstr "Svart"
 
 #: data/browser.xml.h:5
-#, fuzzy
 msgid "Blue Ridge"
-msgstr "Blå:"
+msgstr "Blå kant"
 
 #: data/browser.xml.h:6
-#, fuzzy
 msgid "Blue Rough"
-msgstr "Blå:"
+msgstr "Røff blå"
 
 # panel/foobar-widget.c:323
 #: data/browser.xml.h:7
-#, fuzzy
 msgid "Blue Type"
-msgstr "Etter type"
+msgstr "Blå type"
 
 #: data/browser.xml.h:8
-#, fuzzy
 msgid "Brushed Metal"
-msgstr "Thrash Metal"
+msgstr "Børsta metall"
 
 #: data/browser.xml.h:9
-#, fuzzy
 msgid "Bubble Gum"
-msgstr "Boble3D"
+msgstr "Tyggegummi"
 
 #: data/browser.xml.h:10
+#, fuzzy
 msgid "Burlap"
-msgstr ""
+msgstr "Vadmål"
 
 # gnome-terminal/gnome-terminal.glade.h:52
 #: data/browser.xml.h:11
-#, fuzzy
 msgid "C_olors"
-msgstr "Fargar"
+msgstr "F_argar"
 
 #: data/browser.xml.h:12
-#, fuzzy
 msgid "Camera"
-msgstr "Kabaret"
+msgstr "Kamera"
 
 #: data/browser.xml.h:13
 msgid "Camouflage"
@@ -534,18 +507,16 @@ msgid "Cork"
 msgstr "Kork"
 
 #: data/browser.xml.h:20
-#, fuzzy
 msgid "Countertop"
-msgstr "Innhald"
+msgstr "Benkplate"
 
 #: data/browser.xml.h:21
 msgid "Danger"
-msgstr "Farleg"
+msgstr "Fare"
 
 #: data/browser.xml.h:22
-#, fuzzy
 msgid "Danube"
-msgstr "Dance"
+msgstr "Donau"
 
 #: data/browser.xml.h:23
 msgid "Dark Cork"
@@ -558,24 +529,20 @@ msgstr "Mørk GNOME"
 
 # panel/logout.c:192
 #: data/browser.xml.h:25
-#, fuzzy
 msgid "Deep Teal"
-msgstr "Deltabell"
+msgstr ""
 
 #: data/browser.xml.h:26
-#, fuzzy
 msgid "Distinguished"
-msgstr "ferdig"
+msgstr ""
 
 #: data/browser.xml.h:27
-#, fuzzy
 msgid "Documents"
-msgstr "Dokumentasjon:"
+msgstr "Dokument"
 
 #: data/browser.xml.h:28
-#, fuzzy
 msgid "Dots"
-msgstr "notat"
+msgstr "Prikkar"
 
 #: data/browser.xml.h:29
 msgid "Draft"
@@ -583,20 +550,19 @@ msgstr "Kladd"
 
 #: data/browser.xml.h:30
 msgid "Drag a color to an object to change it to that color"
-msgstr ""
+msgstr "Dra ein farge til eit objekt for å endra fargen på det"
 
 #: data/browser.xml.h:31
 msgid "Drag a pattern tile to an object to change it"
-msgstr ""
+msgstr "Dra ei mønsterflis til eit objekt for å endra det"
 
 #: data/browser.xml.h:32
 msgid "Drag an emblem to an object to add it to the object"
-msgstr ""
+msgstr "Dra eit merke til eit objekt for å merka det"
 
 #: data/browser.xml.h:33
-#, fuzzy
 msgid "Eclipse"
-msgstr "Ellipse"
+msgstr ""
 
 #: data/browser.xml.h:34
 msgid "Envy"
@@ -613,24 +579,20 @@ msgid "Fibers"
 msgstr "Fiber"
 
 #: data/browser.xml.h:38
-#, fuzzy
 msgid "Fire Engine"
-msgstr "Første linje"
+msgstr "Brannbil"
 
 #: data/browser.xml.h:39
-#, fuzzy
 msgid "Fleur De Lis"
-msgstr "Fila eksisterar"
+msgstr ""
 
 #: data/browser.xml.h:40
-#, fuzzy
 msgid "Floral"
-msgstr "Flyttal"
+msgstr ""
 
 #: data/browser.xml.h:41
-#, fuzzy
 msgid "Fossil"
-msgstr "Umogleg"
+msgstr "Fossilt"
 
 # gsm/splash.c:450
 #: data/browser.xml.h:42 icons/gnome/gnome.xml.h:2
@@ -646,9 +608,8 @@ msgid "Grapefruit"
 msgstr "Grapefrukt"
 
 #: data/browser.xml.h:45
-#, fuzzy
 msgid "Green Weave"
-msgstr "Skjermsparar"
+msgstr ""
 
 # gnome-terminal/gnome-terminal.glade.h:28 panel/panel_config.c:1619
 #: data/browser.xml.h:46
@@ -673,9 +634,8 @@ msgid "Lemon"
 msgstr "Sitron"
 
 #: data/browser.xml.h:51
-#, fuzzy
 msgid "Mail"
-msgstr "Metal"
+msgstr "Post"
 
 #: data/browser.xml.h:52
 msgid "Mango"
@@ -683,14 +643,12 @@ msgstr "Mango"
 
 # help-browser/toc.c:136
 #: data/browser.xml.h:53
-#, fuzzy
 msgid "Manila Paper"
-msgstr "Manualsider"
+msgstr ""
 
 #: data/browser.xml.h:54
-#, fuzzy
 msgid "Moss Ridge"
-msgstr "Preg bilete"
+msgstr ""
 
 #: data/browser.xml.h:55
 msgid "Mud"
@@ -698,7 +656,7 @@ msgstr "Gjørme"
 
 #: data/browser.xml.h:56
 msgid "Multimedia"
-msgstr ""
+msgstr "Multimedia"
 
 #: data/browser.xml.h:57
 msgid "New"
@@ -713,33 +671,29 @@ msgid "OK"
 msgstr "OK"
 
 #: data/browser.xml.h:60
-#, fuzzy
 msgid "Ocean Strips"
-msgstr "Ved oppstart"
+msgstr ""
 
 #: data/browser.xml.h:61
 msgid "Oh No"
 msgstr "Å nei"
 
 #: data/browser.xml.h:62
-#, fuzzy
 msgid "Onyx"
-msgstr "På"
+msgstr ""
 
 #: data/browser.xml.h:63
 msgid "Orange"
 msgstr "Oransje"
 
 #: data/browser.xml.h:64
-#, fuzzy
 msgid "Package"
-msgstr "Rackspace"
+msgstr "Pakke"
 
 # help-browser/bookmarks.c:221
 #: data/browser.xml.h:65
-#, fuzzy
 msgid "Pale Blue"
-msgstr "Sidetittel"
+msgstr ""
 
 #: data/browser.xml.h:66
 msgid "Personal"
@@ -747,18 +701,16 @@ msgstr "Personleg"
 
 #: data/browser.xml.h:67
 msgid "Pictures"
-msgstr ""
+msgstr "Bilete"
 
 #: data/browser.xml.h:68
-#, fuzzy
 msgid "Purple Marble"
-msgstr "lillaaktig blå"
+msgstr ""
 
 # panel/session.c:290
 #: data/browser.xml.h:69
-#, fuzzy
 msgid "Ridged Paper"
-msgstr "Red Carpet"
+msgstr ""
 
 #: data/browser.xml.h:70
 msgid "Rough Paper"
@@ -773,9 +725,8 @@ msgid "Sea Foam"
 msgstr "Sjøsprøyt"
 
 #: data/browser.xml.h:73
-#, fuzzy
 msgid "Shale"
-msgstr "Skalert"
+msgstr ""
 
 #: data/browser.xml.h:74
 msgid "Silver"
@@ -790,14 +741,12 @@ msgid "Sky Ridge"
 msgstr ""
 
 #: data/browser.xml.h:77
-#, fuzzy
 msgid "Snow Ridge"
-msgstr "Vis tid"
+msgstr ""
 
 #: data/browser.xml.h:78
-#, fuzzy
 msgid "Sound"
-msgstr "Soul"
+msgstr "Lyd"
 
 # panel/gnome-panel-properties.c:585
 #: data/browser.xml.h:79
@@ -805,19 +754,16 @@ msgid "Special"
 msgstr "Spesiell"
 
 #: data/browser.xml.h:80
-#, fuzzy
 msgid "Stucco"
-msgstr "Vellukka"
+msgstr ""
 
 #: data/browser.xml.h:81
-#, fuzzy
 msgid "Tangerine"
-msgstr "Understreking"
+msgstr ""
 
 #: data/browser.xml.h:82
-#, fuzzy
 msgid "Terracotta"
-msgstr "Terror"
+msgstr "Terrakotta"
 
 #: data/browser.xml.h:83
 msgid "Urgent"
@@ -833,7 +779,7 @@ msgstr ""
 
 #: data/browser.xml.h:86
 msgid "Web"
-msgstr ""
+msgstr "Verdsveven"
 
 #: data/browser.xml.h:87
 msgid "White"
@@ -844,19 +790,16 @@ msgid "White Ribs"
 msgstr ""
 
 #: data/browser.xml.h:89
-#, fuzzy
 msgid "_Emblems"
-msgstr "Emblem"
+msgstr "M_erker"
 
 #: data/browser.xml.h:90
-#, fuzzy
 msgid "_Patterns"
-msgstr "Mønster"
+msgstr "_Mønster"
 
 #: data/favorites.desktop.in.h:1
-#, fuzzy
 msgid "Favorite applications"
-msgstr "_Anna program"
+msgstr "Yndlingsprogram"
 
 # panel/foobar-widget.c:1067 panel/menu.c:3846 panel/menu.c:5475
 # panel/menu.c:5529 panel/menu.c:5537
@@ -866,12 +809,11 @@ msgstr "Favorittar"
 
 #: data/preferences.desktop.in.h:1
 msgid "Adjust your user environment"
-msgstr ""
+msgstr "Tilpass brukarmiljøet ditt"
 
 #: data/preferences.desktop.in.h:2
-#, fuzzy
 msgid "Desktop Preferences"
-msgstr "Vis brukarval"
+msgstr "Brukarval for skrivebordet"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
