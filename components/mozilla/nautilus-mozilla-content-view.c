@@ -241,24 +241,6 @@ mozilla_content_view_set_busy_cursor (NautilusMozillaContentView *view)
 }
 
 static void
-mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
-					      Nautilus_ProgressType	progress_type,
-					      gdouble			progress_amount)
-{
-	Nautilus_ProgressRequestInfo progress_request;
-
-        g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
-
-	memset (&progress_request, 0, sizeof (progress_request));
-	
-	progress_request.type = progress_type;
-	progress_request.amount = progress_amount;
-
-	nautilus_view_request_progress_change (view->details->nautilus_view,
-					       &progress_request);
-}
-
-static void
 mozilla_content_view_clear_busy_cursor (NautilusMozillaContentView *view)
 {
         g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
@@ -275,9 +257,9 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 {
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	mozilla_content_view_report_load_underway (view);
-	nautilus_mozilla_content_view_load_uri (view, navinfo->actual_uri);
-	mozilla_content_view_report_load_complete (view);
+	nautilus_view_report_load_underway (nautilus_view);
+	nautilus_mozilla_content_view_load_uri (view, location);
+	nautilus_view_report_load_complete (nautilus_view);
 }
 
 static void
