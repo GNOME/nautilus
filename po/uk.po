@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2000-10-26 14:33+0300\n"
+"POT-Creation-Date: 2000-10-27 00:53+0200\n"
 "PO-Revision-Date: 2000-08-23 16:17+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -171,22 +171,37 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: components/loser/content/nautilus-content-loser-ui.xml.h:9
+#: components/loser/content/nautilus-content-loser-ui.xml.h:13
+#: components/loser/content/nautilus-content-loser-ui.xml.h:17
 msgid "Kill Content Loser"
 msgstr ""
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:10
+#: components/loser/content/nautilus-content-loser-ui.xml.h:14
+#: components/loser/content/nautilus-content-loser-ui.xml.h:18
 msgid "Kill the Loser content view"
 msgstr ""
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:11
+#: components/loser/content/nautilus-content-loser-ui.xml.h:15
+#: components/loser/content/nautilus-content-loser-ui.xml.h:19
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:11
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:15
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:19
 #: components/mozilla/nautilus-mozilla-ui.xml.h:12
+#: components/mozilla/nautilus-mozilla-ui.xml.h:17
+#: components/mozilla/nautilus-mozilla-ui.xml.h:22
 #: components/sample/nautilus-sample-content-view-ui.xml.h:12
-#: src/nautilus-shell-ui.xml.h:81
+#: components/sample/nautilus-sample-content-view-ui.xml.h:17
+#: components/sample/nautilus-sample-content-view-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:81 src/nautilus-shell-ui.xml.h:174
+#: src/nautilus-shell-ui.xml.h:268
 msgid "_File"
 msgstr "Файл"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:12
+#: components/loser/content/nautilus-content-loser-ui.xml.h:16
+#: components/loser/content/nautilus-content-loser-ui.xml.h:20
 msgid "_Kill Content Loser"
 msgstr ""
 
@@ -210,14 +225,20 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:9
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:13
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:17
 msgid "Kill Sidebar Loser"
 msgstr ""
 
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:10
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:14
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:18
 msgid "Kill the Loser sidebar panel"
 msgstr ""
 
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:12
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:16
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:20
 msgid "_Kill Sidebar Loser"
 msgstr ""
 
@@ -233,7 +254,7 @@ msgstr ""
 msgid "You have tried to kill the Sidebar Loser"
 msgstr ""
 
-#: components/mozilla/nautilus-mozilla-content-view.c:172
+#: components/mozilla/nautilus-mozilla-content-view.c:171
 #: libnautilus-extensions/nautilus-preferences.c:1086
 #, c-format
 msgid ""
@@ -243,7 +264,7 @@ msgstr ""
 "Помилка GConf:\n"
 "  %s"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:179
+#: components/mozilla/nautilus-mozilla-content-view.c:178
 #: libnautilus-extensions/nautilus-preferences.c:1093
 #, c-format
 msgid ""
@@ -260,18 +281,26 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: components/mozilla/nautilus-mozilla-ui.xml.h:9
+#: components/mozilla/nautilus-mozilla-ui.xml.h:14
+#: components/mozilla/nautilus-mozilla-ui.xml.h:19
 msgid "Mozilla Test"
 msgstr ""
 
 #: components/mozilla/nautilus-mozilla-ui.xml.h:10
+#: components/mozilla/nautilus-mozilla-ui.xml.h:15
+#: components/mozilla/nautilus-mozilla-ui.xml.h:20
 msgid "This is a Mozilla merged menu item"
 msgstr ""
 
 #: components/mozilla/nautilus-mozilla-ui.xml.h:11
+#: components/mozilla/nautilus-mozilla-ui.xml.h:16
+#: components/mozilla/nautilus-mozilla-ui.xml.h:21
 msgid "This is a Mozilla merged tool bar button"
 msgstr ""
 
 #: components/mozilla/nautilus-mozilla-ui.xml.h:13
+#: components/mozilla/nautilus-mozilla-ui.xml.h:18
+#: components/mozilla/nautilus-mozilla-ui.xml.h:23
 msgid "_Mozilla Test"
 msgstr ""
 
@@ -362,7 +391,8 @@ msgstr "Пауза"
 #: libnautilus-extensions/nautilus-file-operations.c:397
 #: libnautilus-extensions/nautilus-file-operations.c:416
 #: libnautilus-extensions/nautilus-file-operations.c:434
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-shell-ui.xml.h:155
+#: src/nautilus-shell-ui.xml.h:249
 msgid "Stop"
 msgstr "Зупинка"
 
@@ -408,6 +438,7 @@ msgid "%s would not work anymore\n"
 msgstr ""
 
 #: components/rpmview/nautilus-rpm-view-install.c:111
+#, c-format
 msgid "%s would break other installed packages\n"
 msgstr ""
 
@@ -453,7 +484,7 @@ msgid "Install Failed"
 msgstr "Не вдалося встановити"
 
 #: components/rpmview/nautilus-rpm-view-install.c:288
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:959
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:950
 msgid "Incorrect password."
 msgstr "Нев╕рний пароль."
 
@@ -564,18 +595,26 @@ msgstr "Перев╕рку завершено."
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: components/sample/nautilus-sample-content-view-ui.xml.h:9
+#: components/sample/nautilus-sample-content-view-ui.xml.h:14
+#: components/sample/nautilus-sample-content-view-ui.xml.h:19
 msgid "Sample"
 msgstr ""
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:10
+#: components/sample/nautilus-sample-content-view-ui.xml.h:15
+#: components/sample/nautilus-sample-content-view-ui.xml.h:20
 msgid "This is a sample merged menu item"
 msgstr ""
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:11
+#: components/sample/nautilus-sample-content-view-ui.xml.h:16
+#: components/sample/nautilus-sample-content-view-ui.xml.h:21
 msgid "This is a sample merged tool bar button"
 msgstr ""
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:13
+#: components/sample/nautilus-sample-content-view-ui.xml.h:18
+#: components/sample/nautilus-sample-content-view-ui.xml.h:23
 msgid "_Sample"
 msgstr ""
 
@@ -955,7 +994,7 @@ msgstr ""
 msgid "*** End pkg dump ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-types.c:455
+#: components/services/install/lib/eazel-install-types.c:454
 #, c-format
 msgid "Cannot open %s"
 msgstr ""
@@ -983,74 +1022,74 @@ msgstr ""
 msgid "*** Malformed depends node!"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:176
+#: components/services/install/lib/eazel-install-xml-package-list.c:174
 #, c-format
 msgid "*** Unknown node type '%s'"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:193
+#: components/services/install/lib/eazel-install-xml-package-list.c:191
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:198
+#: components/services/install/lib/eazel-install-xml-package-list.c:196
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:199
+#: components/services/install/lib/eazel-install-xml-package-list.c:197
 msgid "*** Bailing from categories parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:205
+#: components/services/install/lib/eazel-install-xml-package-list.c:203
 msgid "*** No Categories! ***\n"
 msgstr "*** Нема╓ категор╕й! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:206
+#: components/services/install/lib/eazel-install-xml-package-list.c:204
 msgid "*** Bailing from category parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:260
+#: components/services/install/lib/eazel-install-xml-package-list.c:258
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:262
-#: components/services/install/lib/eazel-install-xml-package-list.c:270
+#: components/services/install/lib/eazel-install-xml-package-list.c:260
+#: components/services/install/lib/eazel-install-xml-package-list.c:268
 msgid "*** Bailing from transaction parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:268
+#: components/services/install/lib/eazel-install-xml-package-list.c:266
 msgid "*** No packages! ***\n"
 msgstr "*** Нема╓ пакет╕в! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:304
+#: components/services/install/lib/eazel-install-xml-package-list.c:302
 msgid "*** No category nodes! ***"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:308
+#: components/services/install/lib/eazel-install-xml-package-list.c:306
 msgid "*** Cannot find the CATEGORIES xmlnode! ***"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:342
+#: components/services/install/lib/eazel-install-xml-package-list.c:340
 #, c-format
 msgid "*** Unknown node %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:435
+#: components/services/install/lib/eazel-install-xml-package-list.c:433
 msgid "*** Error generating xml package list! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:482
+#: components/services/install/lib/eazel-install-xml-package-list.c:480
 msgid "*** Error reading package list! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:688
+#: components/services/install/lib/eazel-install-xml-package-list.c:686
 msgid "*** The osd xml contains no data! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:693
+#: components/services/install/lib/eazel-install-xml-package-list.c:691
 msgid "*** Bailing from osd parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:746
+#: components/services/install/lib/eazel-install-xml-package-list.c:744
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr ""
@@ -1061,140 +1100,140 @@ msgid "Easy Install"
 msgstr "Просте встановлення"
 
 #. Setup the progress header
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:212
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:206
 msgid "Messages"
 msgstr "Пов╕домлення"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:212
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:206
 msgid "Progress"
 msgstr "Поступ"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:573
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:567
 #, c-format
 msgid "Downloading package %s"
 msgstr "Звантажування пакету %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:580
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:574
 #, c-format
 msgid "Downloading package %s ..."
 msgstr "Звантажування пакету %s..."
 
 #. done!  turn progress bar into a label
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:585
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:785
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:579
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:779
 msgid "Complete!"
 msgstr "Завершено!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:607
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:601
 #, c-format
 msgid "Dependency check: Package %s needs %s"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:648
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:642
 msgid ""
 "I'm about to install the following packages:\n"
 "\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:666
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:660
 msgid ""
 "\n"
 "Is this okay?"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:686
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:680
 msgid "Preparing to install 1 package"
 msgstr "П╕дготовка до встановлення 1 пакету"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:688
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:682
 #, fuzzy, c-format
 msgid "Preparing to install %d packages"
 msgstr "П╕дготовка до встановлення %d пакет╕в"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:709
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:703
 #, c-format
 msgid "Download of package %s failed!"
 msgstr ""
 
 #. starting a new package -- create new progress indicator
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:726
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:720
 #, c-format
 msgid "Installing package %d of %d"
 msgstr "Встановлення пакету %d з %d"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:747
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:741
 msgid ""
 "A core package of nautilus has been updated.\n"
 "You should restart nautilus."
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:749
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:743
 msgid "Nautilus updated"
 msgstr "Оновлення Наут╕луса"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:756
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:750
 #, c-format
 msgid "Installing package %s ..."
 msgstr "Встановлення пакету %s..."
 
 #. first package is the main one.  update top info, now that we know it
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:764
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:758
 #, c-format
 msgid "Installing \"%s\""
 msgstr "Встановлення \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:773
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:767
 #, c-format
 msgid "Version: %s"
 msgstr "Верс╕я: %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:832
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:823
 msgid "Installation complete!"
 msgstr "Встановлення завершено!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:834
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:825
 msgid "Installation aborted."
 msgstr "Встановлення перервано."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:836
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:827
 msgid "Installation failed!"
 msgstr "Не вдалось встановити!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:850
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:841
 #, c-format
 msgid "%s %s: would not work anymore\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:853
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:844
 #, c-format
 msgid "%s %s: couldn't find this package\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:856
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:847
 #, c-format
 msgid "%s %s: source package (not supported)\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:859
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:850
 #, c-format
 msgid "%s %s: would break other installed packages\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:863
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:854
 #, c-format
 msgid "%s %s: conflicts with installed files\n"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:866
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:857
 #, c-format
 msgid "%s %s: already installed\n"
 msgstr "%s %s: вже встановлено\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:897
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:888
 msgid "This package has already been installed."
 msgstr "Цей пакет вже встановлено."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:904
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:895
 msgid ""
 "Installation Failed!\n"
 "\n"
@@ -1202,39 +1241,39 @@ msgstr ""
 "Не вдалось встановити!\n"
 "\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:923
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:914
 msgid "Should I delete the leftover RPM files?"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1072
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1063
 #, fuzzy
 msgid "Downloading remote package"
 msgstr "Звантажування пакету %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1074
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1065
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Звантажування \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1076
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1067
 #, fuzzy
 msgid "Downloading some package"
 msgstr "Звантажування пакету %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1107
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1098
 #, fuzzy
 msgid "Cannot create temporary directory"
 msgstr "*** Не вдалося створити тимчасовий каталог! ***\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1132
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1123
 msgid "Contacting install server ..."
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1184
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1175
 msgid "Package download aborted."
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1186
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1177
 msgid "Aborted."
 msgstr ""
 
@@ -1284,122 +1323,138 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:9
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:17
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:25
 msgid "Configure your service preferences"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:10
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:18
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:26
 msgid "Go to the Eazel Services Registration Form"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:11
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:19
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:27
 msgid "Logout from Eazel Services"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:12
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:20
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:28
 msgid "Show the login dialog box"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:13
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:21
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:29
 msgid "_Login to Eazel Services"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:14
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:22
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:30
 msgid "_Logout from Eazel Services"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:15
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:23
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:31
 msgid "_Register for Eazel Services"
 msgstr ""
 
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:16
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:24
+#: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:32
 msgid "_Service Preferences"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:282
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:271
 msgid "Register"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:283
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:272
 msgid "Login"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:284
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:292
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:273
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:281
 msgid "Terms of Use"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:285
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:293
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:274
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:282
 msgid "Privacy Statement"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:290
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:279
 msgid "Account Preferences"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:291
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:280
 msgid "Logout"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:340
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:329
 #, fuzzy, c-format
 msgid "Welcome Back %s!"
 msgstr "Ласкаво просимо у Наут╕лус!"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:346
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:335
 msgid "You are not logged in!"
 msgstr ""
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:425
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:414
 msgid "Your Services"
 msgstr "Ваш╕ серв╕си"
 
 #. create the Additional Services pane
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:483
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:472
 msgid "Additional Services"
 msgstr ""
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:536
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:525
 msgid "Current Updates"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1150
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1209
 #, fuzzy
 msgid "Service Error"
 msgstr "Серв╕си"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1212
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1259
 #, fuzzy
 msgid "Services Login"
 msgstr "Серв╕си"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1212
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1259
 msgid "Register Now"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1239
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1251
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1285
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1297
 msgid "Please login to eazel services"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1243
-msgid "Oops! Your user name or password were not correct. Please try again:"
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1289
+msgid "Opps! Your user name or password were not correct. Please try again:"
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1247
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1293
 msgid "We're sorry, but your name and password are still not recognized."
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1444
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1484
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
 "later."
 msgstr ""
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1458
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:1498
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -2020,6 +2075,7 @@ msgid "%u folders"
 msgstr "тек: %u"
 
 #: libnautilus-extensions/nautilus-file.c:2972
+#, c-format
 msgid "%u files"
 msgstr "файл╕в: %u"
 
@@ -2830,39 +2886,61 @@ msgstr ""
 #. * bonobo-ui-extract. Add this file to your project's
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
-#: libnautilus/nautilus-clipboard-ui.xml.h:9 src/nautilus-shell-ui.xml.h:15
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+#: libnautilus/nautilus-clipboard-ui.xml.h:17
+#: libnautilus/nautilus-clipboard-ui.xml.h:25 src/nautilus-shell-ui.xml.h:15
+#: src/nautilus-shell-ui.xml.h:107 src/nautilus-shell-ui.xml.h:201
 msgid "C_lear Text"
 msgstr "Очистити текст"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:24
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+#: libnautilus/nautilus-clipboard-ui.xml.h:18
+#: libnautilus/nautilus-clipboard-ui.xml.h:26 src/nautilus-shell-ui.xml.h:24
+#: src/nautilus-shell-ui.xml.h:116 src/nautilus-shell-ui.xml.h:210
 #, fuzzy
 msgid "Copy the selected text to the clipboard"
 msgstr "Скоп╕ювати текст у буфер обм╕ну"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:27
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+#: libnautilus/nautilus-clipboard-ui.xml.h:19
+#: libnautilus/nautilus-clipboard-ui.xml.h:27 src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:119 src/nautilus-shell-ui.xml.h:213
 #, fuzzy
 msgid "Cut the selected text to the clipboard"
 msgstr "Вир╕зати текст у буфер обм╕ну"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:51
+#: libnautilus/nautilus-clipboard-ui.xml.h:12
+#: libnautilus/nautilus-clipboard-ui.xml.h:20
+#: libnautilus/nautilus-clipboard-ui.xml.h:28 src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:143 src/nautilus-shell-ui.xml.h:237
 #, fuzzy
 msgid "Paste the text stored on the clipboard"
 msgstr "Вставити текст записаний у буфер╕ обм╕ну"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:13
+#: libnautilus/nautilus-clipboard-ui.xml.h:21
+#: libnautilus/nautilus-clipboard-ui.xml.h:29
 #, fuzzy
 msgid "Remove the selected text without putting it on the clipboard"
 msgstr "Видалити вибраний текст без записування його у буфер обм╕ну"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:78
+#: libnautilus/nautilus-clipboard-ui.xml.h:14
+#: libnautilus/nautilus-clipboard-ui.xml.h:22
+#: libnautilus/nautilus-clipboard-ui.xml.h:30 src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:171 src/nautilus-shell-ui.xml.h:265
 msgid "_Copy Text"
 msgstr "Скоп╕ювати текст"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:15
+#: libnautilus/nautilus-clipboard-ui.xml.h:23
+#: libnautilus/nautilus-clipboard-ui.xml.h:31
 msgid "_Cut Text"
 msgstr "Вир╕зати текст"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:16 src/nautilus-shell-ui.xml.h:90
+#: libnautilus/nautilus-clipboard-ui.xml.h:16
+#: libnautilus/nautilus-clipboard-ui.xml.h:24
+#: libnautilus/nautilus-clipboard-ui.xml.h:32 src/nautilus-shell-ui.xml.h:90
+#: src/nautilus-shell-ui.xml.h:183 src/nautilus-shell-ui.xml.h:277
 msgid "_Paste Text"
 msgstr "Вставити текст"
 
@@ -3015,11 +3093,15 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:2775
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:81
 msgid "_Open"
 msgstr "В╕дкрити"
 
 #: src/file-manager/fm-directory-view.c:2778
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:69
 msgid "Open With"
 msgstr ""
 
@@ -3042,6 +3124,8 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:2801
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:68
 msgid "New Folder"
 msgstr "Нова тека"
 
@@ -3055,11 +3139,15 @@ msgstr "Стерти з см╕тника"
 
 #: src/file-manager/fm-directory-view.c:2811
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:67
 msgid "Move to _Trash"
 msgstr "Перенести у см╕тник"
 
 #: src/file-manager/fm-directory-view.c:2815
 #: src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:79
 msgid "_Duplicate"
 msgstr ""
 
@@ -3069,6 +3157,8 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:2821
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "Create _Link"
 msgstr ""
 
@@ -3077,6 +3167,8 @@ msgstr ""
 #.
 #: src/file-manager/fm-directory-view.c:2828
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:77
 msgid "Show _Properties"
 msgstr "Показати властивост╕"
 
@@ -3086,16 +3178,22 @@ msgstr "Спорожнити см╕тник..."
 
 #: src/file-manager/fm-directory-view.c:2834
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:80
 msgid "_Empty Trash"
 msgstr "Спорожнити см╕тник"
 
 #: src/file-manager/fm-directory-view.c:2838
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/nautilus-directory-view-ui.xml.h:83
 msgid "_Select All Files"
 msgstr "Вибрити вс╕ файли"
 
 #: src/file-manager/fm-directory-view.c:2842
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:74
 msgid "R_emove Custom Images"
 msgstr ""
 
@@ -3292,61 +3390,85 @@ msgstr ""
 
 #: src/file-manager/fm-icon-view.c:152
 #: src/file-manager/nautilus-icon-view-ui.xml.h:33
+#: src/file-manager/nautilus-icon-view-ui.xml.h:60
+#: src/file-manager/nautilus-icon-view-ui.xml.h:87
 msgid "by _Name"
 msgstr "за назвою"
 
 #: src/file-manager/fm-icon-view.c:153
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
+#: src/file-manager/nautilus-icon-view-ui.xml.h:40
+#: src/file-manager/nautilus-icon-view-ui.xml.h:67
 msgid "Keep icons sorted by name in rows"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:159
 #: src/file-manager/nautilus-icon-view-ui.xml.h:34
+#: src/file-manager/nautilus-icon-view-ui.xml.h:61
+#: src/file-manager/nautilus-icon-view-ui.xml.h:88
 msgid "by _Size"
 msgstr "за розм╕ром"
 
 #: src/file-manager/fm-icon-view.c:160
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
+#: src/file-manager/nautilus-icon-view-ui.xml.h:41
+#: src/file-manager/nautilus-icon-view-ui.xml.h:68
 msgid "Keep icons sorted by size in rows"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:166
 #: src/file-manager/nautilus-icon-view-ui.xml.h:35
+#: src/file-manager/nautilus-icon-view-ui.xml.h:62
+#: src/file-manager/nautilus-icon-view-ui.xml.h:89
 msgid "by _Type"
 msgstr "за типом"
 
 #: src/file-manager/fm-icon-view.c:167
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
+#: src/file-manager/nautilus-icon-view-ui.xml.h:42
+#: src/file-manager/nautilus-icon-view-ui.xml.h:69
 msgid "Keep icons sorted by type in rows"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:173
 #: src/file-manager/nautilus-icon-view-ui.xml.h:31
+#: src/file-manager/nautilus-icon-view-ui.xml.h:58
+#: src/file-manager/nautilus-icon-view-ui.xml.h:85
 msgid "by Modification _Date"
 msgstr "за датою модиф╕кац╕╖"
 
 #: src/file-manager/fm-icon-view.c:174
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
+#: src/file-manager/nautilus-icon-view-ui.xml.h:39
+#: src/file-manager/nautilus-icon-view-ui.xml.h:66
 msgid "Keep icons sorted by modification date in rows"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:180
 #: src/file-manager/nautilus-icon-view-ui.xml.h:32
+#: src/file-manager/nautilus-icon-view-ui.xml.h:59
+#: src/file-manager/nautilus-icon-view-ui.xml.h:86
 msgid "by _Emblems"
 msgstr "за емблемами"
 
 #: src/file-manager/fm-icon-view.c:181
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+#: src/file-manager/nautilus-icon-view-ui.xml.h:65
 msgid "Keep icons sorted by emblems in rows"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:504
 #: src/file-manager/nautilus-icon-view-ui.xml.h:28
+#: src/file-manager/nautilus-icon-view-ui.xml.h:55
+#: src/file-manager/nautilus-icon-view-ui.xml.h:82
 msgid "_Stretch Icon"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:512
 #: src/file-manager/nautilus-icon-view-ui.xml.h:27
+#: src/file-manager/nautilus-icon-view-ui.xml.h:54
+#: src/file-manager/nautilus-icon-view-ui.xml.h:81
 msgid "_Restore Icons' Original Sizes"
 msgstr ""
 
@@ -3356,17 +3478,23 @@ msgstr ""
 
 #: src/file-manager/fm-icon-view.c:518
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
+#: src/file-manager/nautilus-icon-view-ui.xml.h:51
+#: src/file-manager/nautilus-icon-view-ui.xml.h:78
 msgid "_Icon Captions..."
 msgstr "П╕дписи п╕ктограм..."
 
 #. Modify file name. We only allow this on a single file selection.
 #: src/file-manager/fm-icon-view.c:521
 #: src/file-manager/nautilus-icon-view-ui.xml.h:26
+#: src/file-manager/nautilus-icon-view-ui.xml.h:53
+#: src/file-manager/nautilus-icon-view-ui.xml.h:80
 msgid "_Rename"
 msgstr "Перейменувати"
 
 #: src/file-manager/fm-icon-view.c:525
 #: src/file-manager/nautilus-icon-view-ui.xml.h:23
+#: src/file-manager/nautilus-icon-view-ui.xml.h:50
+#: src/file-manager/nautilus-icon-view-ui.xml.h:77
 msgid "_Clean Up by Name"
 msgstr ""
 
@@ -3376,16 +3504,22 @@ msgstr ""
 
 #: src/file-manager/fm-icon-view.c:532
 #: src/file-manager/nautilus-icon-view-ui.xml.h:18
+#: src/file-manager/nautilus-icon-view-ui.xml.h:45
+#: src/file-manager/nautilus-icon-view-ui.xml.h:72
 msgid "Re_versed Order"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:536
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
+#: src/file-manager/nautilus-icon-view-ui.xml.h:52
+#: src/file-manager/nautilus-icon-view-ui.xml.h:79
 msgid "_Lay out items"
 msgstr ""
 
 #: src/file-manager/fm-icon-view.c:539
 #: src/file-manager/nautilus-icon-view-ui.xml.h:30
+#: src/file-manager/nautilus-icon-view-ui.xml.h:57
+#: src/file-manager/nautilus-icon-view-ui.xml.h:84
 msgid "_manually"
 msgstr ""
 
@@ -3579,6 +3713,8 @@ msgstr ""
 #.
 #: src/file-manager/fm-search-list-view.c:331
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:12
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:16
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:20
 msgid "_Reveal in New Window"
 msgstr ""
 
@@ -3601,62 +3737,92 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "Choose another application with which to open the selected item"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "Choose another viewer with which to view the selected item"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "Create a new empty folder inside this folder"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
 msgid "Create a symbolic link for each selected item"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "Delete all items in the trash"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:65
 msgid "Duplicate each selected item"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "Move each selected item to the Trash"
 msgstr "Перенести вс╕ вибран╕ елементи у см╕тник"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:70
 msgid "Open each selected item in a new window"
 msgstr "В╕дкрити кожен вибраний елемент в новому в╕кн╕"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:71
 msgid "Open the selected item in this window"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:72
 msgid "Other _Application..."
 msgstr "╤нш╕ програми..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:73
 msgid "Other _Viewer..."
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:75
 msgid "Remove any custom images from selected icons"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:76
 msgid "Select all items in this window"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:78
 msgid "View or modify the properties of each selected item"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:82
 msgid "_Open in New Window"
 msgstr "В╕дкрити у новому в╕кн╕"
 
@@ -3668,38 +3834,56 @@ msgstr "В╕дкрити у новому в╕кн╕"
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: src/file-manager/nautilus-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+#: src/file-manager/nautilus-icon-view-ui.xml.h:63
 msgid "Choose which information appears beneath each icon's name"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
+#: src/file-manager/nautilus-icon-view-ui.xml.h:64
 msgid "Display icons in the opposite order"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
+#: src/file-manager/nautilus-icon-view-ui.xml.h:43
+#: src/file-manager/nautilus-icon-view-ui.xml.h:70
 msgid "Leave icons wherever they are dropped"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
+#: src/file-manager/nautilus-icon-view-ui.xml.h:44
+#: src/file-manager/nautilus-icon-view-ui.xml.h:71
 msgid "Make the selected icon stretchable"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-icon-view-ui.xml.h:46
+#: src/file-manager/nautilus-icon-view-ui.xml.h:73
 msgid "Rename selected icon"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
+#: src/file-manager/nautilus-icon-view-ui.xml.h:47
+#: src/file-manager/nautilus-icon-view-ui.xml.h:74
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: src/file-manager/nautilus-icon-view-ui.xml.h:48
+#: src/file-manager/nautilus-icon-view-ui.xml.h:75
 msgid "Restore each selected icon to its original size"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
+#: src/file-manager/nautilus-icon-view-ui.xml.h:49
+#: src/file-manager/nautilus-icon-view-ui.xml.h:76
 msgid "Toggle using a tighter layout scheme"
 msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:29
+#: src/file-manager/nautilus-icon-view-ui.xml.h:56
+#: src/file-manager/nautilus-icon-view-ui.xml.h:83
 msgid "_Tighter Layout"
 msgstr ""
 
@@ -3761,15 +3945,21 @@ msgstr ""
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:9
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:13
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:17
 msgid "Reveal each selected item in its original folder"
 msgstr ""
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:10
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:14
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:18
 #, fuzzy
 msgid "Show _Indexing Status"
 msgstr "Показати панель стану"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:11
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:15
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:19
 msgid "Show status of indexing used by searching"
 msgstr ""
 
@@ -3902,11 +4092,7 @@ msgid ""
 "familiar with the working of GNOME and Linux."
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:362
-msgid "Intermediate"
-msgstr ""
-
-#: src/nautilus-first-time-druid.c:363
+#: src/nautilus-first-time-druid.c:365
 msgid ""
 "For non-technical users that are comfortable with\n"
 "their GNOME and Linux environment."
@@ -4407,36 +4593,44 @@ msgstr ""
 #. * bonobo-ui-extract. Add this file to your project's
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
-#: src/nautilus-service-ui.xml.h:9
+#: src/nautilus-service-ui.xml.h:9 src/nautilus-service-ui.xml.h:17
+#: src/nautilus-service-ui.xml.h:25
 msgid "Go to the Eazel Services Summary Page"
 msgstr ""
 
-#: src/nautilus-service-ui.xml.h:10
+#: src/nautilus-service-ui.xml.h:10 src/nautilus-service-ui.xml.h:18
+#: src/nautilus-service-ui.xml.h:26
 msgid "Go to the Eazel Software Catalog"
 msgstr ""
 
-#: src/nautilus-service-ui.xml.h:11
+#: src/nautilus-service-ui.xml.h:11 src/nautilus-service-ui.xml.h:19
+#: src/nautilus-service-ui.xml.h:27
 msgid "Go to your online storage repository"
 msgstr ""
 
-#: src/nautilus-service-ui.xml.h:12
+#: src/nautilus-service-ui.xml.h:12 src/nautilus-service-ui.xml.h:20
+#: src/nautilus-service-ui.xml.h:28
 msgid "Services"
 msgstr "Серв╕си"
 
-#: src/nautilus-service-ui.xml.h:13
+#: src/nautilus-service-ui.xml.h:13 src/nautilus-service-ui.xml.h:21
+#: src/nautilus-service-ui.xml.h:29
 #, fuzzy
 msgid "_Eazel Services"
 msgstr "Серв╕си"
 
-#: src/nautilus-service-ui.xml.h:14
+#: src/nautilus-service-ui.xml.h:14 src/nautilus-service-ui.xml.h:22
+#: src/nautilus-service-ui.xml.h:30
 msgid "_Online Storage"
 msgstr ""
 
-#: src/nautilus-service-ui.xml.h:15
+#: src/nautilus-service-ui.xml.h:15 src/nautilus-service-ui.xml.h:23
+#: src/nautilus-service-ui.xml.h:31
 msgid "_Services"
 msgstr "Серв╕си"
 
-#: src/nautilus-service-ui.xml.h:16
+#: src/nautilus-service-ui.xml.h:16 src/nautilus-service-ui.xml.h:24
+#: src/nautilus-service-ui.xml.h:32
 msgid "_Software Catalog"
 msgstr "Каталог програмного забезпечення"
 
@@ -4447,346 +4641,439 @@ msgstr "Каталог програмного забезпечення"
 #. * bonobo-ui-extract. Add this file to your project's
 #. * POTFILES.in. DO NOT compile it as part of your application.
 #.
-#: src/nautilus-shell-ui.xml.h:9
+#: src/nautilus-shell-ui.xml.h:9 src/nautilus-shell-ui.xml.h:101
+#: src/nautilus-shell-ui.xml.h:195
 msgid " Advanced"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-shell-ui.xml.h:10 src/nautilus-shell-ui.xml.h:102
+#: src/nautilus-shell-ui.xml.h:196
 msgid " Beginner"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:11
+#: src/nautilus-shell-ui.xml.h:11 src/nautilus-shell-ui.xml.h:103
+#: src/nautilus-shell-ui.xml.h:197
 msgid " Intermediate"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:12
+#: src/nautilus-shell-ui.xml.h:12 src/nautilus-shell-ui.xml.h:104
+#: src/nautilus-shell-ui.xml.h:198
 msgid "Add a bookmark for the current location to this menu"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:13
+#: src/nautilus-shell-ui.xml.h:13 src/nautilus-shell-ui.xml.h:105
+#: src/nautilus-shell-ui.xml.h:199
 msgid "Back"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:14 src/nautilus-shell-ui.xml.h:106
+#: src/nautilus-shell-ui.xml.h:200
 msgid "C_hange Appearance..."
 msgstr "Зм╕нити зовн╕шн╕й вигляд..."
 
-#: src/nautilus-shell-ui.xml.h:16
+#: src/nautilus-shell-ui.xml.h:16 src/nautilus-shell-ui.xml.h:108
+#: src/nautilus-shell-ui.xml.h:202
 msgid "Change the visibility of this window's location bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:17
+#: src/nautilus-shell-ui.xml.h:17 src/nautilus-shell-ui.xml.h:109
+#: src/nautilus-shell-ui.xml.h:203
 msgid "Change the visibility of this window's sidebar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-shell-ui.xml.h:18 src/nautilus-shell-ui.xml.h:110
+#: src/nautilus-shell-ui.xml.h:204
 msgid "Change the visibility of this window's status bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:19 src/nautilus-shell-ui.xml.h:111
+#: src/nautilus-shell-ui.xml.h:205
 msgid "Change the visibility of this window's tool bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:20 src/nautilus-shell-ui.xml.h:112
+#: src/nautilus-shell-ui.xml.h:206
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:21 src/nautilus-shell-ui.xml.h:113
+#: src/nautilus-shell-ui.xml.h:207
 msgid "Close _All Windows"
 msgstr "Закрити вс╕ в╕кна"
 
-#: src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-shell-ui.xml.h:114
+#: src/nautilus-shell-ui.xml.h:208
 msgid "Close all Nautilus windows"
 msgstr "Закрити вс╕ в╕кна Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:23
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-shell-ui.xml.h:115
+#: src/nautilus-shell-ui.xml.h:209
 msgid "Close this window"
 msgstr "Закрити це в╕кно"
 
-#: src/nautilus-shell-ui.xml.h:25
+#: src/nautilus-shell-ui.xml.h:25 src/nautilus-shell-ui.xml.h:117
+#: src/nautilus-shell-ui.xml.h:211
 msgid "Custo_mization..."
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:26 src/nautilus-shell-ui.xml.h:118
+#: src/nautilus-shell-ui.xml.h:212
 msgid "Cut _Text"
 msgstr "Вир╕зати текст"
 
-#: src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-shell-ui.xml.h:120
+#: src/nautilus-shell-ui.xml.h:214
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-shell-ui.xml.h:29 src/nautilus-shell-ui.xml.h:121
+#: src/nautilus-shell-ui.xml.h:215
 msgid "Display credits for the creators of Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:30 src/nautilus-shell-ui.xml.h:122
+#: src/nautilus-shell-ui.xml.h:216
 msgid "Display on-line help for Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-shell-ui.xml.h:31 src/nautilus-shell-ui.xml.h:123
+#: src/nautilus-shell-ui.xml.h:217
 msgid "Display the Property Browser, containing patterns, colors, and emblems"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:32 src/nautilus-shell-ui.xml.h:124
+#: src/nautilus-shell-ui.xml.h:218
 msgid "Display the latest contents of the current location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-shell-ui.xml.h:125
+#: src/nautilus-shell-ui.xml.h:219
 msgid "Display the set of available appearance themes"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-shell-ui.xml.h:126
+#: src/nautilus-shell-ui.xml.h:220
 msgid "Edit Settings..."
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-shell-ui.xml.h:127
+#: src/nautilus-shell-ui.xml.h:221
 msgid "Edit settings for the current user level"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-shell-ui.xml.h:128
+#: src/nautilus-shell-ui.xml.h:222
 msgid "Find"
 msgstr "Знайти"
 
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-shell-ui.xml.h:129
+#: src/nautilus-shell-ui.xml.h:223
 msgid "For_get History"
 msgstr "Забути ╕стор╕ю"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:38 src/nautilus-shell-ui.xml.h:130
+#: src/nautilus-shell-ui.xml.h:224
 msgid "Forward"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:39 src/nautilus-shell-ui.xml.h:131
+#: src/nautilus-shell-ui.xml.h:225
 msgid "Go to Eazel Services"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:40 src/nautilus-shell-ui.xml.h:132
+#: src/nautilus-shell-ui.xml.h:226
 #, fuzzy
 msgid "Go to the home location"
 msgstr "Наут╕лус: Закладки"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:41 src/nautilus-shell-ui.xml.h:133
+#: src/nautilus-shell-ui.xml.h:227
 msgid "Go to the location that contains this one"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:42
+#: src/nautilus-shell-ui.xml.h:42 src/nautilus-shell-ui.xml.h:134
+#: src/nautilus-shell-ui.xml.h:228
 #, fuzzy
 msgid "Go to the next visited location"
 msgstr "Наут╕лус: Закладки"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:43 src/nautilus-shell-ui.xml.h:135
+#: src/nautilus-shell-ui.xml.h:229
 #, fuzzy
 msgid "Go to the previous visited location"
 msgstr "Наут╕лус: Закладки"
 
-#: src/nautilus-shell-ui.xml.h:44 src/nautilus-window-menus.c:444
+#: src/nautilus-shell-ui.xml.h:44 src/nautilus-shell-ui.xml.h:136
+#: src/nautilus-shell-ui.xml.h:230 src/nautilus-window-menus.c:444
 msgid "Hide Location Bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:45 src/nautilus-window-menus.c:432
+#: src/nautilus-shell-ui.xml.h:45 src/nautilus-shell-ui.xml.h:137
+#: src/nautilus-shell-ui.xml.h:231 src/nautilus-window-menus.c:432
 msgid "Hide Sidebar"
 msgstr "Прибрати б╕чну панель"
 
-#: src/nautilus-shell-ui.xml.h:46 src/nautilus-window-menus.c:426
+#: src/nautilus-shell-ui.xml.h:46 src/nautilus-shell-ui.xml.h:138
+#: src/nautilus-shell-ui.xml.h:232 src/nautilus-window-menus.c:426
 msgid "Hide Status Bar"
 msgstr "Прибрати панель стану"
 
-#: src/nautilus-shell-ui.xml.h:47 src/nautilus-window-menus.c:438
+#: src/nautilus-shell-ui.xml.h:47 src/nautilus-shell-ui.xml.h:139
+#: src/nautilus-shell-ui.xml.h:233 src/nautilus-window-menus.c:438
 msgid "Hide Tool Bar"
 msgstr "Прибрати панель ╕нструмент╕в"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:48 src/nautilus-shell-ui.xml.h:140
+#: src/nautilus-shell-ui.xml.h:234
 msgid "Home"
 msgstr "Дом╕вка"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-shell-ui.xml.h:141
+#: src/nautilus-shell-ui.xml.h:235
 msgid "Nautilus _Feedback..."
 msgstr "Зворотн╕й зв'язок..."
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:50 src/nautilus-shell-ui.xml.h:142
+#: src/nautilus-shell-ui.xml.h:236
 msgid "Open another Nautilus window for the displayed location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:52 src/nautilus-shell-ui.xml.h:144
+#: src/nautilus-shell-ui.xml.h:238
 msgid "Refresh"
 msgstr "Оновити"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:53 src/nautilus-shell-ui.xml.h:145
+#: src/nautilus-shell-ui.xml.h:239
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Видалити вибраний текст без записування його у буфер обм╕ну"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:54 src/nautilus-shell-ui.xml.h:146
+#: src/nautilus-shell-ui.xml.h:240
 msgid "Report Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:55 src/nautilus-shell-ui.xml.h:147
+#: src/nautilus-shell-ui.xml.h:241
 msgid "Reset Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:56 src/nautilus-shell-ui.xml.h:148
+#: src/nautilus-shell-ui.xml.h:242
 msgid "Search the World Wide Web"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:57 src/nautilus-shell-ui.xml.h:149
+#: src/nautilus-shell-ui.xml.h:243
 msgid "Search this computer for files"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:58 src/nautilus-shell-ui.xml.h:150
+#: src/nautilus-shell-ui.xml.h:244
 msgid ""
 "Show a page from which you can send feedback about Nautilus to its creators"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:59 src/nautilus-shell-ui.xml.h:151
+#: src/nautilus-shell-ui.xml.h:245
 msgid "Show the contents at the normal size"
 msgstr "Показати вм╕ст в нормальному розм╕р╕"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:60 src/nautilus-shell-ui.xml.h:152
+#: src/nautilus-shell-ui.xml.h:246
 msgid "Show the contents in less detail"
 msgstr "Показати вм╕ст менш детальн╕ше"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:61 src/nautilus-shell-ui.xml.h:153
+#: src/nautilus-shell-ui.xml.h:247
 msgid "Show the contents in more detail"
 msgstr "Показати вм╕ст детальн╕ше"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:62 src/nautilus-shell-ui.xml.h:154
+#: src/nautilus-shell-ui.xml.h:248
 msgid "Start Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:64 src/nautilus-shell-ui.xml.h:156
+#: src/nautilus-shell-ui.xml.h:250
 msgid "Stop Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:65 src/nautilus-shell-ui.xml.h:157
+#: src/nautilus-shell-ui.xml.h:251
 msgid "Stop loading this location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:66 src/nautilus-shell-ui.xml.h:159
+#: src/nautilus-shell-ui.xml.h:253
 msgid "Up"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:67 src/nautilus-shell-ui.xml.h:160
+#: src/nautilus-shell-ui.xml.h:254
 msgid "Use Advanced settings"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:68 src/nautilus-shell-ui.xml.h:161
+#: src/nautilus-shell-ui.xml.h:255
 msgid "Use Beginner settings"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:69 src/nautilus-shell-ui.xml.h:162
+#: src/nautilus-shell-ui.xml.h:256
 msgid "Use Intermediate settings"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:70 src/nautilus-shell-ui.xml.h:163
+#: src/nautilus-shell-ui.xml.h:257
 msgid "Web Search"
 msgstr "Пошук у WWW"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:71 src/nautilus-shell-ui.xml.h:164
+#: src/nautilus-shell-ui.xml.h:258
 msgid "Zoom _In"
 msgstr "Зб╕льшити"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:72 src/nautilus-shell-ui.xml.h:165
+#: src/nautilus-shell-ui.xml.h:259
 msgid "Zoom _Out"
 msgstr "Зменшити"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:73 src/nautilus-shell-ui.xml.h:166
+#: src/nautilus-shell-ui.xml.h:260
 msgid "_About Nautilus..."
 msgstr "Про Наут╕лус..."
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:74 src/nautilus-shell-ui.xml.h:167
+#: src/nautilus-shell-ui.xml.h:261
 msgid "_Add Bookmark"
 msgstr "Додати закладку"
 
-#: src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:75 src/nautilus-shell-ui.xml.h:168
+#: src/nautilus-shell-ui.xml.h:262
 msgid "_Back"
 msgstr "Назад"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:76 src/nautilus-shell-ui.xml.h:169
+#: src/nautilus-shell-ui.xml.h:263
 msgid "_Bookmarks"
 msgstr "Закладки"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:77 src/nautilus-shell-ui.xml.h:170
+#: src/nautilus-shell-ui.xml.h:264
 msgid "_Close Window"
 msgstr "Закрити в╕кно"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:79 src/nautilus-shell-ui.xml.h:172
+#: src/nautilus-shell-ui.xml.h:266
 msgid "_Edit"
 msgstr "Редагування"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:80 src/nautilus-shell-ui.xml.h:173
+#: src/nautilus-shell-ui.xml.h:267
 msgid "_Edit Bookmarks..."
 msgstr "Редагувати закладки..."
 
-#: src/nautilus-shell-ui.xml.h:82 src/nautilus-window-menus.c:1335
+#: src/nautilus-shell-ui.xml.h:82 src/nautilus-shell-ui.xml.h:175
+#: src/nautilus-shell-ui.xml.h:269 src/nautilus-window-menus.c:1335
 msgid "_Find"
 msgstr "Знайти"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:83 src/nautilus-shell-ui.xml.h:176
+#: src/nautilus-shell-ui.xml.h:270
 msgid "_Forward"
 msgstr "Вперед"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:84 src/nautilus-shell-ui.xml.h:177
+#: src/nautilus-shell-ui.xml.h:271
 msgid "_Go"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:85 src/nautilus-shell-ui.xml.h:178
+#: src/nautilus-shell-ui.xml.h:272
 msgid "_Help"
 msgstr "Дов╕дка"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-shell-ui.xml.h:179
+#: src/nautilus-shell-ui.xml.h:273
 msgid "_Home"
 msgstr "Дом╕вка"
 
-#: src/nautilus-shell-ui.xml.h:87
+#: src/nautilus-shell-ui.xml.h:87 src/nautilus-shell-ui.xml.h:180
+#: src/nautilus-shell-ui.xml.h:274
 msgid "_Nautilus User Manual"
 msgstr "Кер╕вництво користувача Наут╕луса"
 
-#: src/nautilus-shell-ui.xml.h:88
+#: src/nautilus-shell-ui.xml.h:88 src/nautilus-shell-ui.xml.h:181
+#: src/nautilus-shell-ui.xml.h:275
 msgid "_New Window"
 msgstr "Нове в╕кно"
 
-#: src/nautilus-shell-ui.xml.h:89
+#: src/nautilus-shell-ui.xml.h:89 src/nautilus-shell-ui.xml.h:182
+#: src/nautilus-shell-ui.xml.h:276
 msgid "_Normal Size"
 msgstr "Звичайний розм╕р"
 
-#: src/nautilus-shell-ui.xml.h:91
+#: src/nautilus-shell-ui.xml.h:91 src/nautilus-shell-ui.xml.h:184
+#: src/nautilus-shell-ui.xml.h:278
 msgid "_Profiler"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:92
+#: src/nautilus-shell-ui.xml.h:92 src/nautilus-shell-ui.xml.h:185
+#: src/nautilus-shell-ui.xml.h:279
 msgid "_Refresh"
 msgstr "Оновити"
 
-#: src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:93 src/nautilus-shell-ui.xml.h:186
+#: src/nautilus-shell-ui.xml.h:280
 msgid "_Report Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:94 src/nautilus-shell-ui.xml.h:187
+#: src/nautilus-shell-ui.xml.h:281
 msgid "_Reset Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:95 src/nautilus-shell-ui.xml.h:188
+#: src/nautilus-shell-ui.xml.h:282
 msgid "_Select All"
 msgstr "Вибрати все"
 
-#: src/nautilus-shell-ui.xml.h:96
+#: src/nautilus-shell-ui.xml.h:96 src/nautilus-shell-ui.xml.h:189
+#: src/nautilus-shell-ui.xml.h:283
 msgid "_Start Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:97 src/nautilus-shell-ui.xml.h:190
+#: src/nautilus-shell-ui.xml.h:284
 msgid "_Stop Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:98
+#: src/nautilus-shell-ui.xml.h:98 src/nautilus-shell-ui.xml.h:192
+#: src/nautilus-shell-ui.xml.h:286
 msgid "_Up a Level"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:99
+#: src/nautilus-shell-ui.xml.h:99 src/nautilus-shell-ui.xml.h:193
+#: src/nautilus-shell-ui.xml.h:287
 #, fuzzy
 msgid "_View"
 msgstr "Файл"
 
-#: src/nautilus-shell-ui.xml.h:100
+#: src/nautilus-shell-ui.xml.h:100 src/nautilus-shell-ui.xml.h:194
+#: src/nautilus-shell-ui.xml.h:288
 msgid "_Web Search"
 msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:158 src/nautilus-shell-ui.xml.h:252
+msgid "Undo the last text change"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:191 src/nautilus-shell-ui.xml.h:285
+#, fuzzy
+msgid "_Undo"
+msgstr "Знайти"
 
 #: src/nautilus-shell.c:167
 msgid "Caveat"
