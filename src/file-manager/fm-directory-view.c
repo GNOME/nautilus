@@ -1670,7 +1670,7 @@ debuting_uri_data_free (DebutingUriData *data)
 	g_free (data);
 }
  
-gboolean
+static gboolean
 remove_debuting_uri (GHashTable *hash_table, const char *key)
 {
 	return eel_g_hash_table_remove_deep_custom
