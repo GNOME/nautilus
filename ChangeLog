@@ -1,3 +1,79 @@
+2000-08-07  set J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/inventory/Makefile.am:
+	* components/services/inventory/idl/.cvsignore:
+	* components/services/inventory/idl/Makefile.am:
+	* components/services/inventory/idl/trilobite-eazel-inventory.idl:
+	* components/services/inventory/lib/Makefile.am:
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/inventory/nautilus-view/icons/.cvsignore:
+	* components/services/inventory/nautilus-view/icons/Makefile.am:
+	* components/services/inventory/service/.cvsignore:
+	* components/services/inventory/service/Makefile.am:
+	* components/services/inventory/service/main.c:
+	*
+	components/services/inventory/service/trilobite-eazel-inventory-imp
+	l.c:
+	* components/services/login/Makefile.am:
+	* components/services/login/idl/.cvsignore:
+	* components/services/login/idl/Makefile.am:
+	* components/services/login/idl/trilobite-eazel-login.idl:
+	* components/services/login/lib/.cvsignore:
+	* components/services/login/lib/Makefile.am:
+	* components/services/login/lib/trilobite-eazel-login-public.h:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/icons/.cvsignore:
+	* components/services/login/nautilus-view/icons/Makefile.am:
+	* components/services/login/service/.cvsignore:
+	* components/services/login/service/Makefile.am:
+	* components/services/login/service/main.c:
+	* components/services/login/service/trilobite-eazel-login-impl.c:
+	* components/services/startup/Makefile.am:
+	* components/services/startup/lib/.cvsignore:
+	* components/services/startup/lib/Makefile.am:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/icons/.cvsignore:
+	* components/services/startup/nautilus-view/icons/Makefile.am:
+	* components/services/summary/Makefile.am:
+	* components/services/summary/idl/.cvsignore:
+	* components/services/summary/idl/Makefile.am:
+	* components/services/summary/idl/trilobite-eazel-summary.idl:
+	* components/services/summary/lib/.cvsignore:
+	* components/services/summary/lib/Makefile.am:
+	* components/services/summary/lib/trilobite-eazel-summary-public.h:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/icons/.cvsignore:
+	* components/services/summary/nautilus-view/icons/Makefile.am:
+	* components/services/summary/service/.cvsignore:
+	* components/services/summary/service/Makefile.am:
+	* components/services/summary/service/main.c:
+	*
+	components/services/summary/service/trilobite-eazel-summary-impl.c:
+	* components/services/vault/Makefile.am:
+	* components/services/vault/command-line/Makefile.am:
+	* components/services/vault/idl/.cvsignore:
+	* components/services/vault/idl/Makefile.am:
+	* components/services/vault/idl/trilobite-eazel-vault.idl:
+	* components/services/vault/lib/.cvsignore:
+	* components/services/vault/lib/Makefile.am:
+	* components/services/vault/lib/trilobite-eazel-vault-public.h:
+	* components/services/vault/nautilus-view/.cvsignore:
+	* components/services/vault/nautilus-view/Makefile.am:
+	* components/services/vault/nautilus-view/icons/.cvsignore:
+	* components/services/vault/nautilus-view/icons/Makefile.am:
+	* components/services/vault/nautilus-view/main.c:
+	* components/services/vault/nautilus-view/nautilus-vault-view.c:
+	* components/services/vault/nautilus-view/nautilus-vault-view.h:
+	* components/services/vault/service/.cvsignore:
+	* components/services/vault/service/Makefile.am:
+	* components/services/vault/service/main.c:
+	* components/services/vault/service/trilobite-eazel-vault-impl.c:
+	* configure.in:
+
+	Removing lots of empty files and useless directory structures so that
+	the source tarballs will look much better and useless files won't be
+	installed.  Hope this doesn't break anyone's buildtree.
+
 2000-08-07  Darin Adler  <darin@eazel.com>
 
 	Fixed bugs 1985 and 1986 (infinite loops using Mozilla).

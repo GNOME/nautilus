@@ -32,6 +32,5 @@ eazel_vault_LDADD =							\
 	$(VFS_LIBS)							\
 	$(OAF_LIBS)							\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/components/services/vault/lib/libvault_corba.a \
 	$(NULL)
 

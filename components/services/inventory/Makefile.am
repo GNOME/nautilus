@@ -1,1 +1,1 @@
-SUBDIRS = idl lib nautilus-view
+SUBDIRS = lib nautilus-view

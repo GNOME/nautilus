@@ -1,7 +1,5 @@
 NULL =
 
-SUBDIR = icons
-
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
 	 -DG_LOG_DOMAIN=\"trilobite-eazel-inventory\"		\
@@ -34,7 +32,6 @@ nautilus_inventory_view_SOURCES =					\
 	$(NULL)
 
 nautilus_inventory_view_LDADD =							\
-	$(top_builddir)/components/services/inventory/lib/libinventory_corba.a  \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\

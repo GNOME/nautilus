@@ -1,7 +1,5 @@
 NULL =
 
-SUBDIR = icons
-
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
 	 -DG_LOG_DOMAIN=\"trilobite-eazel-summary\"		\
@@ -35,7 +33,6 @@ nautilus_summary_view_SOURCES =						\
 	$(NULL)
 
 nautilus_summary_view_LDADD =						\
-	$(top_builddir)/components/services/summary/lib/libsummary_corba.a \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\
