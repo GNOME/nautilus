@@ -1,3 +1,11 @@
+2002-03-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus/nautilus-clipboard.c
+	(select_all_callback): use g_object_weak_ref
+	instead of the "destroy" signal which is mostly
+	useless.
+	(idle_source_destroy_callback): impl.
+
 2002-03-11  James Henstridge  <james@daa.com.au>
 
 	* configure.in: build fix: get rid of unneeded semicolons which
