@@ -31,6 +31,7 @@
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
+#define METAFILE_FACTORY_IID "OAFIID:nautilus_metafile_factory:bc318c01-4106-4622-8d6c-b419ec89e4c6"
 
 #define NAUTILUS_TYPE_APPLICATION	     (nautilus_application_get_type ())
 #define NAUTILUS_APPLICATION(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))

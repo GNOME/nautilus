@@ -1,3 +1,17 @@
+2001-02-05  Michael Engber  <engber@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-metafile-factory.c:
+	(nautilus_metafile_factory_new), (free_factory_instance),
+	(nautilus_metafile_factory_get_instance):
+	* libnautilus-extensions/nautilus-metafile-factory.h:
+	* src/Nautilus_shell.oaf.in:
+	* src/nautilus-application.c: (manufactures), (create_object),
+	(nautilus_application_startup):
+	* src/nautilus-application.h:
+	Add the MetafileFactory to the main object factory.
+
 2001-02-05  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

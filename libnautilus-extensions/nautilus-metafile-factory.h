@@ -44,6 +44,6 @@ typedef struct {
 
 GtkType nautilus_metafile_factory_get_type (void);
 
-NautilusMetafileFactory *nautilus_meta_file_factory_new (void);
+NautilusMetafileFactory *nautilus_metafile_factory_get_instance (void);
 
 #endif /* NAUTILUS_METAFILE_FACTORY_H */

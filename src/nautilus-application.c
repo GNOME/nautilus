@@ -55,13 +55,14 @@
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
+#include <libnautilus-extensions/nautilus-metafile-factory.h>
 #include <liboaf/liboaf.h>
 
-#define FACTORY_IID	"OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
-#define ICON_VIEW_IID	"OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define LIST_VIEW_IID	"OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+#define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
+#define ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
+#define LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
-#define SHELL_IID	"OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
+#define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
 static CORBA_boolean manufactures                          (PortableServer_Servant    servant,
 							    const CORBA_char         *iid,
@@ -106,7 +107,8 @@ manufactures (PortableServer_Servant servant,
 		|| strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0
 		|| strcmp (iid, LIST_VIEW_IID) == 0
 		|| strcmp (iid, SEARCH_LIST_VIEW_IID) == 0
-		|| strcmp (iid, SHELL_IID) == 0;
+		|| strcmp (iid, SHELL_IID) == 0
+		|| strcmp (iid, METAFILE_FACTORY_IID) == 0;
 }
 
 static CORBA_Object
@@ -134,6 +136,8 @@ create_object (PortableServer_Servant servant,
 	} else if (strcmp (iid, SHELL_IID) == 0) {
 		application = NAUTILUS_APPLICATION (((BonoboObjectServant *) servant)->bonobo_object);
 		object = BONOBO_OBJECT (nautilus_shell_new (application));
+	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
+		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
 	} else {
 		return CORBA_OBJECT_NIL;
 	}
@@ -398,7 +402,7 @@ nautilus_application_startup (NautilusApplication *application,
 			detailed_message = _("Nautilus can't be used now. "
 					     "Rebooting the computer or installing "
 					     "Nautilus again may fix the problem.\n\n"
-					     "OAF couldn't locate the Nautilus_Shell.oaf file. "
+					     "OAF couldn't locate the Nautilus_shell.oaf file. "
 					     "One cause of this seems to be an LD_LIBRARY_PATH "
 					     "that does not include the oaf library's directory. "
 					     "Another possible cause would be bad install "

@@ -82,4 +82,13 @@
   <oaf_attribute name="description" type="string" _value="Nautilus shell operations that can be done from subsequent command-line invocations"/>
 </oaf_server>
 
+<oaf_server iid="OAFIID:nautilus_metafile_factory:bc318c01-4106-4622-8d6c-b419ec89e4c6" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+  <oaf_attribute name="repo_ids" type="stringv">
+    <item value="IDL:Bonobo/Unknown:1.0"/>
+    <item value="IDL:Nautilus/MetafileFactory:1.0"/>
+  </oaf_attribute>
+  <oaf_attribute name="name" type="string" _value="Nautilus metafile factory"/>
+  <oaf_attribute name="description" type="string" _value="Produces metafile objects for accessing Nautilus metadata"/>
+</oaf_server>
+
 </oaf_info>

@@ -110,12 +110,33 @@ destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-NautilusMetafileFactory *
-nautilus_meta_file_factory_new (void)
+static NautilusMetafileFactory *
+nautilus_metafile_factory_new (void)
 {
 	NautilusMetafileFactory *metafile_factory;
 	metafile_factory = NAUTILUS_METAFILE_FACTORY (gtk_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
 	return metafile_factory;
+}
+
+static NautilusMetafileFactory *the_factory;
+
+static void
+free_factory_instance (void)
+{
+	bonobo_object_unref (BONOBO_OBJECT (the_factory));
+}
+
+NautilusMetafileFactory *
+nautilus_metafile_factory_get_instance (void)
+{
+	if (the_factory == NULL) {
+		the_factory = nautilus_metafile_factory_new ();
+		g_atexit (free_factory_instance);
+	}
+	
+	bonobo_object_ref (BONOBO_OBJECT (the_factory));
+	
+	return the_factory;
 }
 
 static Nautilus_Metafile
