@@ -282,6 +282,14 @@ file_menu_close_parent_windows_callback (BonoboUIComponent *component,
 }
 
 static void
+file_menu_close_all_windows_callback (BonoboUIComponent *component, 
+					 gpointer user_data, 
+					 const char *verb)
+{
+	nautilus_application_close_all_spatial_windows ();
+}
+
+static void
 go_up_close_current_window_callback (BonoboUIComponent *component, 
 				     gpointer user_data, 
 				     const char *verb)
@@ -321,6 +329,7 @@ real_merge_menus (NautilusWindow *nautilus_window)
 	BonoboControl *control;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Close Parent Folders", file_menu_close_parent_windows_callback),
+		BONOBO_UI_VERB ("Close All Folders", file_menu_close_all_windows_callback),
 		BONOBO_UI_VERB ("UpCloseCurrent", go_up_close_current_window_callback),
 		BONOBO_UI_VERB_END
 	};
