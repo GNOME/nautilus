@@ -28,8 +28,6 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(LIBPNG) \
 	$(NULL)
 
-libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
-
 libnautilus_extensions_la_SOURCES = \
 	bonobo-stream-vfs.c			\
 	nautilus-background-canvas-group.c	\
@@ -99,12 +97,9 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-xml-extensions.c		\
 	$(NULL)
 
-libnautilus_extensionsinclude_HEADERS = 
-
 # Everything is private for now
 noinst_HEADERS =				\
 	bonobo-stream-vfs.h			\
-	libnautilus-extensions.h		\
 	nautilus-alloc.h			\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\

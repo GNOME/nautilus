@@ -1,5 +1,19 @@
 2000-06-20  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/Makefile.am:
+	Exorcise libnautilus-extensions.h.  Its really used anywhere and
+	stuff in this library is private anyway.  Also, prevent the
+	makefile from even creating the installed libnautilus-extensions
+	directory since nothing gets installed there.
+
+	* libnautilus-extensions/libnautilus-extensions.h:
+	Removed from build.
+	
+	* components/help/hyperbola-main.c:
+	Updated for libnautilus-extensions.h exorcism.
+	
+2000-06-20  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/tree/.cvsignore:
 	Ignore the generated files. 
 
