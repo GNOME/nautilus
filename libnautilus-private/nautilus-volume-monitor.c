@@ -128,6 +128,10 @@
 #define endmntent(f) fclose(f)
 #endif
 
+#ifdef __linux__
+#include <linux/cdrom.h>
+#endif
+
 #ifdef HAVE_CDDA_INTERFACE_H
 #ifdef HAVE_CDDA_PARANOIA_H
 /* Take this out for now */
@@ -2092,14 +2096,54 @@ nautilus_file_system_type_free (NautilusFileSystemType *type)
 	g_free (type);
 }
 
+#ifdef __linux__
+static int
+get_iso9660_volume_name_data_track_offset (int fd)
+{
+	struct cdrom_tocentry toc;
+	char toc_header[2];
+	int i, offset;
+
+	if (ioctl (fd, CDROMREADTOCHDR, &toc_header)) {
+		return 0;
+	}
+
+	for (i = toc_header[0]; i <= toc_header[1]; i++) {
+		memset (&toc, 0, sizeof (struct cdrom_tocentry));
+		toc.cdte_track = i;
+		toc.cdte_format = CDROM_MSF;
+		if (ioctl (fd, CDROMREADTOCENTRY, &toc)) {
+			return 0;
+		}
+
+		if (toc.cdte_ctrl & CDROM_DATA_TRACK) {
+			offset = ((i == 1) ? 0 :
+				(int)toc.cdte_addr.msf.frame +
+				(int)toc.cdte_addr.msf.second*75 +
+				(int)toc.cdte_addr.msf.minute*75*60 - 150);
+			return offset;
+		}
+	}
+
+	return 0;
+}
+#endif
+
 static char *
 get_iso9660_volume_name (NautilusVolume *volume, int fd)
 {
 	struct iso_primary_descriptor iso_buffer;
+	int offset;
 
-	lseek (fd, (off_t) 2048*16, SEEK_SET);
+#ifdef __linux__
+	offset = get_iso9660_volume_name_data_track_offset (fd);
+#else
+	offset = 0;
+#endif
+
+	lseek (fd, (off_t) 2048*(offset+16), SEEK_SET);
 	read (fd, &iso_buffer, 2048);
-	
+
 	if (iso_buffer.volume_id == NULL) {
 		return g_strdup (_("ISO 9660 Volume"));
 	}
