@@ -48,9 +48,14 @@ struct _NautilusServicesContentViewDetails {
 	GtkWidget		  *account_name;
 	GtkWidget		  *account_password;
 	GtkWidget		  *confirm_password;
+	GtkWidget		  *register_button;
+	GtkWidget		  *error_text;
 };
 
+
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/DDDD/FFFF"
+/* FIXME: the service domain name should be settable and kept with the other preferences. */
+#define SERVICE_DOMAIN_NAME		       "hippie.eazel.com"
 
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
 static void nautilus_service_startup_view_initialize       (NautilusServicesContentView *view);
@@ -76,58 +81,63 @@ config_button_cb (GtkWidget *button, char *data)
 	}
 }
 
+/* callback invoked to enable/disable the register button when something is typed into a field */
+static void
+entry_changed_cb (GtkWidget *entry, NautilusServicesContentView *view)
+{
+	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
+	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
+	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
+
+	gboolean button_enabled = email && strlen(email) && password && strlen(password) && confirm && strlen(confirm);
+	gtk_widget_set_sensitive(view->details->register_button, button_enabled);
+}
+
 /* utility routine to make an HTTP request.  For now, it works synchronously but soon 
    it will optionally work asynchronously.  Return NULL if we get an error */
 
-static gchar*
+static ghttp_request *
 make_http_post_request(gchar *uri, gchar *post_body)
 {
-    gchar *result;
     ghttp_request *request = NULL;
     gchar *proxy = g_getenv("http_proxy");
-    
+        
     request = ghttp_request_new();
    
     if (!request)
-     	return NULL;
+    	return NULL;
      	
-    if (proxy && (ghttp_set_proxy(request, proxy) != 0))
-    	{
-      	ghttp_request_destroy(request);
+    if (proxy && (ghttp_set_proxy(request, proxy) != 0)) {
+	ghttp_request_destroy(request);
     	return NULL;
-    	}
+    }
     
-    if (ghttp_set_uri(request, uri) != 0)
-    	{
-      	ghttp_request_destroy(request);
-    	return NULL;
-    	}
+    if (ghttp_set_uri(request, uri) != 0) {
+	ghttp_request_destroy(request);
+	return NULL;
+    }
 
     ghttp_set_type(request, ghttp_type_post);
     ghttp_set_header(request, http_hdr_Accept, "text/xml");
+    ghttp_set_header(request, http_hdr_Host, SERVICE_DOMAIN_NAME);
     /* FIXME: user agent version and OS should be substituted on the fly */
     ghttp_set_header(request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");   
     ghttp_set_header(request, http_hdr_Connection, "close");
  
     ghttp_set_body(request, post_body, strlen(post_body));
    
-    if (ghttp_prepare(request) != 0)
-   		{
-     	ghttp_request_destroy(request);
-   		return NULL;
-   		}
+    if (ghttp_prepare(request) != 0) {
+	ghttp_request_destroy(request);
+   	return NULL;
+    }
    
     /* here's where it spends all the time doing the actual request  */
-    if (ghttp_process(request) != ghttp_done)
-    	{ 	    
+    if (ghttp_process(request) != ghttp_done) { 	    
       	ghttp_request_destroy(request);
     	return NULL;
-    	}
+    }
     
-    result = g_strdup(ghttp_get_body(request));
-    ghttp_request_destroy(request);
-	
-	return result;
+    return request;
 }
 
 /* callback to handle the configuration button */    
@@ -137,25 +147,86 @@ gather_config_button_cb (GtkWidget *button, char *data)
 	g_message("gather configuration button clicked");
 }
 
-/* callback to handle the register button */    
-/* FIXME: this is test code - need to make it less hardwired */
+/* utility routine to show an error message */
+
+static void
+show_error(NautilusServicesContentView *view, gchar* error_message)
+{
+	gtk_label_set_text(GTK_LABEL(view->details->error_text), error_message);
+	gtk_widget_show(view->details->error_text);
+}
+
+/* handle the registration command */
+/* FIXME: get error messages from a file somewhere */
+   
 static void
 register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
-	gchar *response_str, *body;
-	gchar *uri = "http://hippie.eazel.com/cgi-bin/register";
+	Nautilus_NavigationRequestInfo nri;	
+	ghttp_request *request;	
+	gchar *response_str, *body, *uri;
 	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
 	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
+	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
+	gboolean registered_ok = FALSE;
 	
+	/* see if the email address is valid; if not, display an error */
+	
+	if (!strlen(email) || !strchr(email,'@')) {
+		show_error(view, "You have not typed a valid email address!  Please correct it and try again.");
+		return;
+	}
+	
+	/* see if the passwords are valid and matching; if not, display an error */
+	
+	if (!strlen(password) || !strlen(confirm)) {
+		show_error(view, "You have not typed a valid password!  Please correct it and try again.");
+		return;
+	}
+
+	if (strcmp(password, confirm)) {
+		show_error(view, "The passwords don't match!  Please correct them and try again.");
+		return;
+	}
+		
+	/* hide the error text and give feedback in the status area during the request */
+	gtk_widget_hide(view->details->error_text);
+		
 	/* FIXME: need to url-encode the arguments here */
 	body = g_strdup_printf("email=%s&pwd=%s", email, password);
+	uri = g_strdup_printf("http://%s/temp.pl", SERVICE_DOMAIN_NAME);
 	 
-	g_message("making http request with body %s", body);
-	response_str = make_http_post_request(uri, body);
-	g_message("response from http request is %s", response_str);
-	if (response_str)
-		g_free(response_str);
+	request = make_http_post_request(uri, body);
+	response_str = ghttp_get_body(request);
+	
+	/* handle the error response */
+	if (strstr(response_str, "<ERROR field=") == response_str) {
+		if (strstr(response_str, "email")) {
+			if (strstr(response_str, "taken"))
+				show_error(view, "That email address is already registered!  Please change it and try again.");
+			else
+				show_error(view, "That email address is invalid!  Please change it and try again.");
+		}
+	}
+	else {
+	/* check for a cookie that indicates success */
+		const gchar* cookie = ghttp_get_header(request, "Set-Cookie");
+		g_message("cookie is %s", cookie);
+		
+	/* we found the cookie, so save it in the services file */
+		registered_ok = TRUE;
+	}
+	
+	g_free(uri); 
 	g_free(body);
+	ghttp_request_destroy(request);
+	
+	/* we succeeded in registering, so advance to the configuration form */	
+	if (registered_ok) {
+  		memset(&nri, 0, sizeof(nri));
+  		nri.requested_uri = "eazel:config";
+  		 nautilus_view_frame_request_location_change((NautilusViewFrame*)view->details->view_frame, &nri);
+	}
 }
 
 /* FIXME: this routine should be someone else, and should take user preferences into account */
@@ -272,7 +343,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 0,1, GTK_FILL, GTK_FILL, 2,2);
   	gtk_widget_show(temp_widget);
-  	view->details->account_name = gtk_entry_new_with_max_length(20);
+  	view->details->account_name = gtk_entry_new_with_max_length(36);
   	gtk_table_attach(table, view->details->account_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4,4);
   	gtk_widget_show(view->details->account_name);
 
@@ -300,22 +371,26 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);	
 	gtk_widget_show (GTK_WIDGET(table));	
 
+	/* attach a changed signal to the 3 entry fields, so we can enable the button when something is typed into all 3 fields */
+	gtk_signal_connect (GTK_OBJECT (view->details->account_name), "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);	
+	gtk_signal_connect (GTK_OBJECT (view->details->account_password), "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);	
+	gtk_signal_connect (GTK_OBJECT (view->details->confirm_password), "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);	
+	
 	/* allocate the command buttons - first the register button */
 	
-	config_button = gtk_button_new ();		    
+	view->details->register_button = gtk_button_new ();		    
 	config_label = gtk_label_new (" Register Now ");
 	gtk_widget_show (config_label);
-	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
+	gtk_container_add (GTK_CONTAINER (view->details->register_button), config_label); 	
 	
 	temp_box = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->register_button, FALSE, FALSE, 16);
 
-	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
+	gtk_signal_connect (GTK_OBJECT (view->details->register_button), "clicked",
 			    GTK_SIGNAL_FUNC (register_button_cb), view);	
-	/*
-	gtk_widget_set_sensitive(config_button, FALSE);
-	*/
-	gtk_widget_show (config_button);
+	
+	gtk_widget_set_sensitive(view->details->register_button, FALSE);
+	gtk_widget_show (view->details->register_button);
 
 	/* now allocate the decline button */
 	
@@ -331,6 +406,10 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	/* show the buttons */
 	gtk_widget_show(temp_box);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
+
+	/* add a label for error messages, but don't show it until there's an error */
+	view->details->error_text = gtk_label_new ("");	
+	gtk_box_pack_start(GTK_BOX(view->details->form), view->details->error_text, 0, 0, 8);			 	
 }
 
 /* create the config form */

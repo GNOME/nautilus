@@ -1,3 +1,11 @@
+2000-04-05  Andy Hertzfeld <andy@eazel.com>
+
+	* components/services/startup/nautilus-service-startup-view.c:
+	made the registration code display errors on various conditions; made it make an
+	HTTP request to the service cgi and give appropriate error feedback or move to
+	the configuration form if successful.  Disabled the registration button unless something
+	is typed into each field.
+	
 2000-04-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 394 (clicking Home button segfaults)
