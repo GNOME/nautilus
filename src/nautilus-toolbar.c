@@ -93,10 +93,10 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
   GtkToolbarChild *child;
   GtkAllocation alloc;
   GtkRequisition child_requisition;
-  gint border_width;
-  gint spacing;
-  gint item_width, item_height;
-  gint width_to_use, height_to_use;
+  int border_width;
+  int spacing, save_x;
+  int item_width, item_height;
+  int width_to_use, height_to_use;
   
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_TOOLBAR (widget));
@@ -192,7 +192,8 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	  /* special case the throbber, so it's positioned at the far right */
 	  
 	  if (child->widget == nautilus_toolbar->throbber) {
-	  	alloc.x = widget->allocation.width - alloc.width;
+		save_x = alloc.x;
+		alloc.x = widget->allocation.width - alloc.width;
 	  }
 
 	  gtk_widget_size_allocate (child->widget, &alloc);
@@ -201,6 +202,10 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	    alloc.x += child_requisition.width;
 	  else
 	    alloc.y += child_requisition.height;
+
+	  if (child->widget == nautilus_toolbar->throbber) {
+		alloc.x = save_x;
+	  }
 
 	  break;
 

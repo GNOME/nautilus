@@ -1,3 +1,10 @@
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-toolbar.c: (nautilus_toolbar_size_allocate):
+	fixed bug 2628, merged toolbar items appear after throbber, by
+	saving and restoring the current position around the positioning
+	of the throbber.
+	
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
 	Converted more preferences to not be coupled to user level,
