@@ -97,7 +97,7 @@ eazel_install_flatten_categories (EazelInstall *service,
 	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
 		CategoryData *cat = (CategoryData*)category_iterator->data;
 		if (packages) {
-			packages = g_list_concat (packages, cat->packages);
+			packages = g_list_concat (packages, g_list_copy (cat->packages));
 		} else {
 			packages = g_list_copy (cat->packages);
 		}
