@@ -40,7 +40,6 @@
 struct NautilusEntryDetails {
 	gboolean user_edit;
 	gboolean special_tab_handling;
-	gboolean cursor_obscured;
 
 	guint select_idle_id;
 };
@@ -77,9 +76,6 @@ nautilus_entry_init (NautilusEntry *entry)
 	
 	entry->details->user_edit = TRUE;
 
-	/* Allow pointer motion events so we can expose an obscured cursor if necessary */
-	gtk_widget_set_events (widget, gtk_widget_get_events (widget) | GDK_POINTER_MOTION_MASK);
-
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 	emacs_shortcuts_preference_changed_callback (entry);
 }
@@ -115,17 +111,6 @@ nautilus_entry_finalize (GObject *object)
 	g_free (entry->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
-}
-
-static void
-obscure_cursor (NautilusEntry *entry)
-{
-	if (entry->details->cursor_obscured) {
-		return;
-	}
-	
-	entry->details->cursor_obscured = TRUE;	
-	eel_gdk_window_set_invisible_cursor (GTK_ENTRY (entry)->text_area);
 }
 
 static gboolean
@@ -196,14 +181,6 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 	entry = NAUTILUS_ENTRY (widget);
 	editable = GTK_EDITABLE (widget);
-
-	/* Reset cursor to I-Beam */
-	if (entry->details->cursor_obscured) {
-		cursor = gdk_cursor_new (GDK_XTERM);
-		gdk_window_set_cursor (GTK_ENTRY (entry)->text_area, cursor);
-		gdk_cursor_destroy (cursor);
-		entry->details->cursor_obscured = FALSE;
-	}
 
 	old_had = gtk_editable_get_selection_bounds (editable, &old_start, &old_end);
 

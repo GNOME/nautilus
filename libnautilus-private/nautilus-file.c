@@ -994,33 +994,11 @@ nautilus_file_rename (NautilusFile *file,
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
 	GnomeVFSURI *vfs_uri;
-	char *uri, *path;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
-	/* FIXME: Rename GMC URLs on the local file system by setting
-	 * their metadata only. This leaves no way to rename them for
-	 * real.
-	 */
-	if (nautilus_file_is_gmc_url (file)) {
-		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		g_free (uri);
-
-		if (path != NULL) {
-#ifdef GNOME2_CONVERSION_COMPLETE
-			gnome_metadata_set (path, "icon-caption", strlen (new_name) + 1, new_name);
-#endif
-			g_free (path);
-		
-			(* callback) (file, GNOME_VFS_OK, callback_data);
-			nautilus_file_changed (file);
-			return;
-		}
-	}
-	
 	 /* Make return an error for incoming names containing path separators. */
 	 if (strstr (new_name, "/") != NULL) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
@@ -1939,82 +1917,11 @@ nautilus_file_is_metafile (NautilusFile *file)
 		(file->details->relative_uri);
 }
 
-static gboolean
-is_special_desktop_gmc_file (NautilusFile *file)
-{
-	static char *home_dir;
-	static int home_dir_len;
-	/* FIXME: Is a fixed-size buffer here OK? */
-	char buffer [1024];
-	char *uri, *path;
-	int s;
-
-	if (!nautilus_file_is_local (file)) {
-		return FALSE;
-	}
-	
-	if (strcmp (file->details->relative_uri, "Trash.gmc") == 0) {
-		return TRUE;
-	}
-
-	/* FIXME: This does I/O here (the readlink call) which should
-	 * be done at async. time instead. Doing the I/O here means
-	 * that we potentially do this readlink over and over again
-	 * every time this function is called, slowing Nautilus down.
-	 */
-	if (nautilus_file_is_symbolic_link (file)) {
-		/* You would think that
-		 * nautilus_file_get_symbolic_link_target_path would
-		 * be useful here, but you would be wrong.  The
-		 * information kept around by NautilusFile is not
-		 * available right now, and I have no clue how to fix
-		 * this. On top of that, inode/device are not stored,
-		 * so it is not possible to see if a link is a symlink
-		 * to the home directory.  sigh. -Miguel
-		 */
-		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL){
-			s = readlink (path, buffer, sizeof (buffer)-1);
-			g_free (path);
-		} else {
-			s = -1;
-		}
-		g_free (uri);
-
-		if (s == -1) {
-			return FALSE;
-		}
-
-		buffer [s] = 0;
-		
-		if (home_dir == NULL) {
-			home_dir = g_strdup (g_get_home_dir ());
-			home_dir_len = strlen (home_dir);
-			
-			if (home_dir != NULL && home_dir [home_dir_len-1] == '/') {
-				home_dir [home_dir_len-1] = 0;
-				home_dir_len--;
-			}
-			
-		}
-		if (home_dir != NULL) {
-			if (strcmp (home_dir, buffer) == 0) {
-				return TRUE;
-			}
-		}
-	}
-	return FALSE;
-}
-
 gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
 			   gboolean show_backup)
 {
-	if (nautilus_file_is_in_desktop (file) && is_special_desktop_gmc_file (file)) {
-		return FALSE;
-	}
 	return (show_hidden || ! nautilus_file_is_hidden_file (file)) &&
 		(show_backup || ! nautilus_file_is_backup_file (file));
 }
@@ -2128,34 +2035,10 @@ nautilus_file_set_metadata (NautilusFile *file,
 			    const char *default_metadata,
 			    const char *metadata)
 {
-	char *icon_path;
-	char *local_path;
-	char *local_uri;
-	
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
 
-	if (strcmp (key, NAUTILUS_METADATA_KEY_CUSTOM_ICON) == 0) {
-		if (nautilus_file_is_in_desktop (file)
-		    && nautilus_file_is_local (file)) {
-
-			local_uri = nautilus_file_get_uri (file);
-			local_path = gnome_vfs_get_local_path_from_uri (local_uri);
-			icon_path = gnome_vfs_get_local_path_from_uri (metadata);
-
-			if (local_path != NULL && icon_path != NULL) {
-#ifdef GNOME2_CONVERSION_COMPLETE
-				gnome_metadata_set (local_path, "icon-filename", strlen (icon_path)+1, icon_path);
-#endif
-			}
-
-			g_free (icon_path);
-			g_free (local_path);
-			g_free (local_uri);
-		}
-	}
-	
 	nautilus_directory_set_file_metadata
 		(file->details->directory,
 		 get_metadata_name (file),
@@ -2370,7 +2253,7 @@ nautilus_file_monitor_remove (NautilusFile *file,
 
 
 /* Return the uri associated with the passed-in file, which may not be
- * the actual uri if the file is an old-style gmc link or a nautilus
+ * the actual uri if the file is an desktop file or a nautilus
  * xml link file.
  */
 char *
@@ -2383,7 +2266,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 	}
 
 	if (file->details->activation_uri != NULL) {
-		return file->details->activation_uri;
+		return g_strdup (file->details->activation_uri);
 	}
 
 	/* If the file is a symbolic link, we return the file the link points at */
@@ -4514,22 +4397,6 @@ nautilus_file_is_nautilus_link (NautilusFile *file)
 {
 	return nautilus_file_is_mime_type (file, "application/x-nautilus-link") ||
 		nautilus_file_is_mime_type (file, "application/x-gnome-app-info");
-}
-
-/**
- * nautilus_file_is_gmc_url
- * 
- * Check if this file is a gmc url
- * @file: NautilusFile representing the file in question.
- * 
- * Returns: True if the file is a gmc url
- * 
- **/
-gboolean
-nautilus_file_is_gmc_url (NautilusFile *file)
-{
-	return strncmp (file->details->relative_uri, "url", 3) == 0
-		&& nautilus_file_is_in_desktop (file);
 }
 
 /**

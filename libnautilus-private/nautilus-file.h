@@ -137,7 +137,6 @@ gboolean                nautilus_file_is_symbolic_link                  (Nautilu
 char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
 gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
-gboolean                nautilus_file_is_gmc_url                        (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);

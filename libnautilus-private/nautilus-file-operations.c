@@ -376,7 +376,7 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	g_signal_connect (transfer_info->progress_dialog,
 			  "response",
 			  G_CALLBACK (handle_response_callback),
-			  NULL);
+			  transfer_info);
 	g_signal_connect (transfer_info->progress_dialog,
 			  "close",
 			  G_CALLBACK (handle_close_callback),

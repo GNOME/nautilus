@@ -126,6 +126,19 @@ close_callback (GtkDialog *dialog)
 {
 }
 
+/* GObject methods. */
+static void
+nautilus_file_operations_progress_finalize (GObject *object)
+{
+	NautilusFileOperationsProgress *progress;
+
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (object);
+
+	g_free (progress->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
 /* GtkObject methods.  */
 
 static void
@@ -137,10 +150,9 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 
 	if (progress->details->delayed_close_timeout_id != 0) {
 		g_source_remove (progress->details->delayed_close_timeout_id);
+		progress->details->delayed_close_timeout_id = 0;
 	}
-
-	g_free (progress->details);
-
+	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -257,14 +269,19 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 static void
 nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass)
 {
+	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	GtkDialogClass *dialog_class;
 
+	gobject_class = G_OBJECT_CLASS (klass);
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 	dialog_class = GTK_DIALOG_CLASS (klass);
 
+
+	gobject_class->finalize = nautilus_file_operations_progress_finalize;
+	
 	object_class->destroy = nautilus_file_operations_progress_destroy;
 
 	/* The progress dialog should not have a title and a close box.
