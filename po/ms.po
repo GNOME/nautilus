@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
-"POT-Creation-Date: 2002-03-24 15:59+0100\n"
+"POT-Creation-Date: 2002-03-27 01:39+0800\n"
 "PO-Revision-Date: 2002-01-15 08:13+0800\n"
 "Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -140,23 +140,23 @@ msgstr "Panel sidebar sejarah bagi Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:1
 msgid "Content Loser"
-msgstr ""
+msgstr "Kandungan Kambing"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:2
 msgid "Content Loser Viewer"
-msgstr ""
+msgstr "Pelihat Kandungan Kambing"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:3
 msgid "Nautilus Content Loser"
-msgstr ""
+msgstr "Kandungan Kandungan Kambing"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:4
 msgid "Nautilus content loser component's factory"
-msgstr ""
+msgstr "Kilang komponen kandungan kambing Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:5
 msgid "Nautilus content loser factory"
-msgstr ""
+msgstr "Kilang kandungan kambing nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:6
 msgid "Nautilus content view that fails on command"
@@ -164,11 +164,11 @@ msgstr ""
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:7
 msgid "View as Content Loser"
-msgstr ""
+msgstr "Lihat sebagai Kandungan Kambing"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:1
 msgid "Kill Content Loser"
-msgstr ""
+msgstr "Bunuh Kandungan Kambing"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:2
 msgid "Kill the Loser content view"
@@ -1462,8 +1462,6 @@ msgstr "Teal mendalam"
 msgid "Distinguished"
 msgstr ""
 
-# src/prefs.c:618
-# ui/galeon.glade.h:140
 #: data/browser.xml.h:25
 msgid "Dots"
 msgstr "Bintik"
@@ -1553,7 +1551,6 @@ msgstr "Penting"
 msgid "Indigo"
 msgstr "Indigo"
 
-# ui/galeon.glade.h:200
 #: data/browser.xml.h:47
 msgid "Leaf"
 msgstr "Dedaun"
@@ -3162,7 +3159,6 @@ msgstr "0 item"
 msgid "0 folders"
 msgstr "0 folder"
 
-# ui/galeon.glade.h:134
 #: libnautilus-private/nautilus-file.c:3825
 msgid "0 files"
 msgstr "0 fail"
@@ -3175,7 +3171,6 @@ msgstr "1 item"
 msgid "1 folder"
 msgstr "1 folder"
 
-# ui/galeon.glade.h:134
 #: libnautilus-private/nautilus-file.c:3830
 msgid "1 file"
 msgstr "1 fail"
@@ -3403,7 +3398,6 @@ msgstr "Mengikut Emblem"
 msgid "8"
 msgstr "8"
 
-# ui/galeon.glade.h:7
 #: libnautilus-private/nautilus-global-preferences.c:203
 msgid "10"
 msgstr "10"
@@ -3817,58 +3811,56 @@ msgstr ""
 
 #. "%s" is a regular expression string, for example "[abc]"
 #: libnautilus-private/nautilus-search-uri.c:230
-#, fuzzy, c-format
+#, c-format
 msgid "[Items ]matching the regular expression \"%s\""
-msgstr "Cari teks atau regular expression (regex):"
+msgstr "[Item ]padan ungkapan regular \"%s\""
 
 #. "%s" is a file glob, for example "*.txt"
 #: libnautilus-private/nautilus-search-uri.c:234
 #, c-format
 msgid "[Items ]matching the file pattern \"%s\""
-msgstr ""
+msgstr "[Item ]padan dengan corak fail \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:247
 msgid "[Items that are ]regular files"
-msgstr ""
+msgstr "[Item yang ] fail regular"
 
 #: libnautilus-private/nautilus-search-uri.c:250
 msgid "[Items that are ]text files"
 msgstr ""
 
 #: libnautilus-private/nautilus-search-uri.c:253
-#, fuzzy
 msgid "[Items that are ]applications"
-msgstr "Aplikasi _lain"
+msgstr "[Item adalah ]Aplikasi"
 
 #: libnautilus-private/nautilus-search-uri.c:256
-#, fuzzy
 msgid "[Items that are ]folders"
-msgstr "Cipta folder baru"
+msgstr "[Item adalah]folder"
 
 #: libnautilus-private/nautilus-search-uri.c:259
 msgid "[Items that are ]music"
-msgstr ""
+msgstr "[Item adalah]muzik"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-private/nautilus-search-uri.c:267
 #, c-format
 msgid "[Items ]that are not %s"
-msgstr ""
+msgstr "[Item ]adalah bukan %s"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-private/nautilus-search-uri.c:272
 #, c-format
 msgid "[Items ]that are %s"
-msgstr ""
+msgstr "[Item ] adalah %s"
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-private/nautilus-search-uri.c:286
 #, c-format
 msgid "[Items ]not owned by \"%s\""
-msgstr ""
+msgstr "[Item ]tidak dimiliki oleh \"%s\""
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
@@ -4144,47 +4136,40 @@ msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:2
-#, fuzzy
 msgid "C_lear Text"
-msgstr "Teks Plain"
+msgstr "Teks Je_rnih"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:2
-#, fuzzy
 msgid "Clear Text"
-msgstr "Teks Plain"
+msgstr "Teks Jernih"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
-#, fuzzy
 msgid "Copy Text"
-msgstr "Salin"
+msgstr "Salin Teks"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:4
 msgid "Copy the selected text to the clipboard"
 msgstr "Salin teks dipilih ke papanklip"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:5
-#, fuzzy
 msgid "Cut Text"
-msgstr "Teks alt"
+msgstr "Potong Teks"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:12
-#, fuzzy
 msgid "Cut _Text"
-msgstr "_Teks"
+msgstr "Potong _Teks"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:7
 msgid "Cut the selected text to the clipboard"
 msgstr "Potong teks dipilih ke papanklip"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:8
-#, fuzzy
 msgid "Paste Text"
-msgstr "Teks Plain"
+msgstr "Tepek Teks"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
-#, fuzzy
 msgid "Paste the text stored on the clipboard"
-msgstr "Tepek clipboard"
+msgstr "Tepek teks yang disimpan pada papanklip"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:10
 msgid "Remove the selected text without putting it on the clipboard"
@@ -4216,11 +4201,11 @@ msgstr "Folder Rumah"
 
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
-msgstr ""
+msgstr "Lihat folder rumah padan pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "Kilang bagi shell Nautilus dan pengurus fail"
 
 #: src/Nautilus_shell.server.in.h:2
 msgid "Icons"
@@ -4228,7 +4213,7 @@ msgstr "Ikon"
 
 #: src/Nautilus_shell.server.in.h:3
 msgid "Icons Viewer"
-msgstr ""
+msgstr "Pelihat Ikon"
 
 #: src/Nautilus_shell.server.in.h:4
 msgid "List"
@@ -4236,7 +4221,7 @@ msgstr "Senarai"
 
 #: src/Nautilus_shell.server.in.h:5
 msgid "List Viewer"
-msgstr ""
+msgstr "Pelihat Senarai"
 
 #: src/Nautilus_shell.server.in.h:6
 msgid "Nautilus factory"
@@ -4244,42 +4229,43 @@ msgstr "Kilang Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr ""
+msgstr "Komponen pengurus fail Nautilus yang memapar senarai boleh skrol"
 
 #: src/Nautilus_shell.server.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
+"Komponen pengurus fail Nautilus yang memapar senarai boleh skrol bagi hasil "
+"pencarian"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr ""
+msgstr "Komponen pengurus fail Nautilus yang memapar ruang ikon dua-dimensi"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr ""
+msgstr "Komponen pengurus fail Nautilus yang memapar ikon pada desktop"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr ""
+msgstr "Paparan ikon desktop pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr ""
+msgstr "Paparan ikon pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager list view"
-msgstr ""
+msgstr "Paparan senarai pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager search results list view"
-msgstr ""
+msgstr "paparan senarai hasil pencarian pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:15
-#, fuzzy
 msgid "Nautilus metafile factory"
-msgstr "Kilang paparan Nautilus Galeon"
+msgstr "Kilang metafile Nautilus"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
@@ -4290,10 +4276,11 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
+"Operasi shell Nautilus yang boleh dilakukan dari seruan arahan-baris berikut"
 
 #: src/Nautilus_shell.server.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr ""
+msgstr "Hasilkan objek metafile bagi menakses metadata Nautilus"
 
 #: src/Nautilus_shell.server.in.h:19
 msgid "Search List"
@@ -4338,94 +4325,94 @@ msgstr "Sampah Kosong"
 msgid "Unmount Volume"
 msgstr "NyahLekap Volum"
 
-#: src/file-manager/fm-directory-view.c:469
+#: src/file-manager/fm-directory-view.c:470
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Ia akan membuka %d tetingkap berasingan. Anda pasti untuk melakukannya?"
 
-#: src/file-manager/fm-directory-view.c:471
+#: src/file-manager/fm-directory-view.c:472
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Buka %d Tetingkap?"
 
-#: src/file-manager/fm-directory-view.c:781
+#: src/file-manager/fm-directory-view.c:782
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Anda pasti untuk padam \"%s\" buat selamanya?"
 
-#: src/file-manager/fm-directory-view.c:785
+#: src/file-manager/fm-directory-view.c:786
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Anda pasti untuk memadam %d item dipilih buat selamanya?"
 
-#: src/file-manager/fm-directory-view.c:791
+#: src/file-manager/fm-directory-view.c:792
 msgid "Delete?"
 msgstr "Padam?"
 
-#: src/file-manager/fm-directory-view.c:791
-#: src/file-manager/fm-directory-view.c:2985
-#: src/file-manager/fm-directory-view.c:3027
+#: src/file-manager/fm-directory-view.c:792
+#: src/file-manager/fm-directory-view.c:2986
+#: src/file-manager/fm-directory-view.c:3028
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Padam"
 
-#: src/file-manager/fm-directory-view.c:1435
+#: src/file-manager/fm-directory-view.c:1436
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" dipilih"
 
-#: src/file-manager/fm-directory-view.c:1437
+#: src/file-manager/fm-directory-view.c:1438
 msgid "1 folder selected"
 msgstr "1 folder dipilih"
 
-#: src/file-manager/fm-directory-view.c:1440
+#: src/file-manager/fm-directory-view.c:1441
 #, c-format
 msgid "%d folders selected"
 msgstr "%d folder dipilih"
 
-#: src/file-manager/fm-directory-view.c:1447
+#: src/file-manager/fm-directory-view.c:1448
 msgid " (containing 0 items)"
 msgstr " ( mengandungi 0 item)"
 
-#: src/file-manager/fm-directory-view.c:1449
+#: src/file-manager/fm-directory-view.c:1450
 msgid " (containing 1 item)"
 msgstr " (mengandungi 1 item)"
 
-#: src/file-manager/fm-directory-view.c:1451
+#: src/file-manager/fm-directory-view.c:1452
 #, c-format
 msgid " (containing %d items)"
 msgstr " ( mengandungi %d item)"
 
-#: src/file-manager/fm-directory-view.c:1458
+#: src/file-manager/fm-directory-view.c:1459
 msgid " (containing a total of 0 items)"
 msgstr " ( semuanya mengandungi 0 item)"
 
-#: src/file-manager/fm-directory-view.c:1460
+#: src/file-manager/fm-directory-view.c:1461
 msgid " (containing a total of 1 item)"
 msgstr " ( semuanya mengandungi 1 item)"
 
-#: src/file-manager/fm-directory-view.c:1462
+#: src/file-manager/fm-directory-view.c:1463
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (semuanya mengandungi %d item)"
 
-#: src/file-manager/fm-directory-view.c:1475
+#: src/file-manager/fm-directory-view.c:1476
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" dipilih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1479
+#: src/file-manager/fm-directory-view.c:1480
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d item dipilih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1486
+#: src/file-manager/fm-directory-view.c:1487
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 item lain dipilih (%s)"
 
-#: src/file-manager/fm-directory-view.c:1489
+#: src/file-manager/fm-directory-view.c:1490
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d item lain dipilih (%s)"
@@ -4437,7 +4424,7 @@ msgstr "%d item lain dipilih (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1518
+#: src/file-manager/fm-directory-view.c:1519
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s,  %s"
@@ -4446,7 +4433,7 @@ msgstr "%s%s,  %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1643
+#: src/file-manager/fm-directory-view.c:1644
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4455,82 +4442,84 @@ msgstr ""
 "Folder ini \"%s\" mengandungi lebih fail daripada yang Nautilus boleh "
 "kendali. terdapat fail yang tidak akan dipaparkan."
 
-#: src/file-manager/fm-directory-view.c:1650
+#: src/file-manager/fm-directory-view.c:1651
 msgid "Too Many Files"
 msgstr "Terlalu Banyak Fail"
 
-#: src/file-manager/fm-directory-view.c:2968
+#: src/file-manager/fm-directory-view.c:2969
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" tak dapat dipindahkan ke Sampah. Adakah anda ingin memadamnya terus?"
 
-#: src/file-manager/fm-directory-view.c:2973
+#: src/file-manager/fm-directory-view.c:2974
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
 msgstr ""
+"%d item dipilih tak dapat dipindah ke Sampah. Anda ingin memadamnya terus?"
 
-#: src/file-manager/fm-directory-view.c:2977
+#: src/file-manager/fm-directory-view.c:2978
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
+"%d dari item dipilih tak dpaat dipindahkan ke Sampah. Anda ingin memadam %d "
+"item itu terus?"
 
-#: src/file-manager/fm-directory-view.c:2985
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:2986
 msgid "Delete Immediately?"
-msgstr "Papar menu context secepat mungkin"
+msgstr "Padam Terus?"
 
-#: src/file-manager/fm-directory-view.c:3017
+#: src/file-manager/fm-directory-view.c:3018
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr ""
+msgstr "Anda pasti untuk memadam  \"%s\" selamanya dari Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3021
+#: src/file-manager/fm-directory-view.c:3022
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
-msgstr ""
+msgstr "Anda pasti untuk memadam  \"%s\" item dipilih selamanya dari Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3027
+#: src/file-manager/fm-directory-view.c:3028
 msgid "Delete From Trash?"
-msgstr ""
+msgstr "Padam Dari Sampah?"
 
-#: src/file-manager/fm-directory-view.c:3347
-#: src/file-manager/fm-directory-view.c:3389
+#: src/file-manager/fm-directory-view.c:3348
+#: src/file-manager/fm-directory-view.c:3390
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr ""
+msgstr "Guna \"%s\" untuk membuka item dipilih"
 
-#: src/file-manager/fm-directory-view.c:3471
+#: src/file-manager/fm-directory-view.c:3472
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Aplikasi _lain..."
 
-#: src/file-manager/fm-directory-view.c:3471
+#: src/file-manager/fm-directory-view.c:3472
 msgid "An _Application..."
 msgstr "Satu _Aplikasi..."
 
-#: src/file-manager/fm-directory-view.c:3477
+#: src/file-manager/fm-directory-view.c:3478
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "_Pelihat Lain..."
 
-#: src/file-manager/fm-directory-view.c:3477
+#: src/file-manager/fm-directory-view.c:3478
 msgid "A _Viewer..."
-msgstr "Satu Pelihat..."
+msgstr "Satu _Pelihat..."
 
-#: src/file-manager/fm-directory-view.c:3695
+#: src/file-manager/fm-directory-view.c:3696
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Laksanakan \"%s\" pada item dipilih"
 
-#: src/file-manager/fm-directory-view.c:3900
+#: src/file-manager/fm-directory-view.c:3904
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4539,11 +4528,11 @@ msgstr ""
 "Semua fail bolehlaksana pada folder ini akan ada pada menu Skrip. Memilih "
 "skrip pada menu akan melaksanakan skrip dengan item dipilih sebagai inputnya."
 
-#: src/file-manager/fm-directory-view.c:3903
+#: src/file-manager/fm-directory-view.c:3907
 msgid "About Scripts"
 msgstr "Perihal Skrip"
 
-#: src/file-manager/fm-directory-view.c:3904
+#: src/file-manager/fm-directory-view.c:3908
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4565,220 +4554,223 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3970
+#: src/file-manager/fm-directory-view.c:3974
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" akan dipindah jika anda pilih arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:3974
+#: src/file-manager/fm-directory-view.c:3978
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" akan disalin jika anda pilih Arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:3981
+#: src/file-manager/fm-directory-view.c:3985
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "%d item dipilih akan dipindahkan jika anda pilih arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:3985
+#: src/file-manager/fm-directory-view.c:3989
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr "%d item dipilih akan disalin jika anda pilih arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:4131
+#: src/file-manager/fm-directory-view.c:4135
 msgid "There is nothing on the clipboard to paste."
 msgstr "Tiada apa-apa pada papanklip untuk ditepek."
 
-#: src/file-manager/fm-directory-view.c:4269
+#: src/file-manager/fm-directory-view.c:4273
 msgid "Open _in This Window"
 msgstr "Buka d_i Tetingkap ini"
 
-#: src/file-manager/fm-directory-view.c:4272
+#: src/file-manager/fm-directory-view.c:4276
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Buka d_i Tetingkap Baru"
 
-#: src/file-manager/fm-directory-view.c:4274
+#: src/file-manager/fm-directory-view.c:4278
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Buka di %d Tetingkap Baru"
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4296
 msgid "Delete from _Trash..."
 msgstr "Padam daripada _Sampah..."
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4296
 msgid "Delete from _Trash"
 msgstr "Padam daripada _Sampah"
 
-#: src/file-manager/fm-directory-view.c:4294
+#: src/file-manager/fm-directory-view.c:4298
 msgid "Delete all selected items permanently"
 msgstr "Padam semua item dipilih selamanya"
 
-#: src/file-manager/fm-directory-view.c:4297
+#: src/file-manager/fm-directory-view.c:4301
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "PIndah ke _Sampah"
 
-#: src/file-manager/fm-directory-view.c:4299
+#: src/file-manager/fm-directory-view.c:4303
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Pindahkan setiap item dipilih ke Sampah"
 
-#: src/file-manager/fm-directory-view.c:4326
+#: src/file-manager/fm-directory-view.c:4330
 msgid "De_lete..."
 msgstr "Pa_dam..."
 
-#: src/file-manager/fm-directory-view.c:4326
+#: src/file-manager/fm-directory-view.c:4330
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "Pa_dam"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4351
 msgid "Make _Links"
 msgstr "Buat _Pautan"
 
-#: src/file-manager/fm-directory-view.c:4348
+#: src/file-manager/fm-directory-view.c:4352
 msgid "Make _Link"
 msgstr "Buat _Pautan"
 
-#: src/file-manager/fm-directory-view.c:4363 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4367 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "_kosongkan Sampah..."
 
-#: src/file-manager/fm-directory-view.c:4364
+#: src/file-manager/fm-directory-view.c:4368
 #: src/file-manager/nautilus-directory-view-ui.xml.h:60
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Kosongkan Sampah"
 
-#: src/file-manager/fm-directory-view.c:4375
+#: src/file-manager/fm-directory-view.c:4379
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "_Buang Imej Sendiri"
 
-#: src/file-manager/fm-directory-view.c:4376
+#: src/file-manager/fm-directory-view.c:4380
 msgid "R_emove Custom Image"
 msgstr "_Buang Imej Sendiri"
 
-# ui/galeon.glade.h:134
-#: src/file-manager/fm-directory-view.c:4390
+#: src/file-manager/fm-directory-view.c:4394
 msgid "Cu_t File"
 msgstr "Po_tong Fail"
 
-# ui/galeon.glade.h:134
-#: src/file-manager/fm-directory-view.c:4391
+#: src/file-manager/fm-directory-view.c:4395
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Po_tong Fail"
 
-#: src/file-manager/fm-directory-view.c:4401
+#: src/file-manager/fm-directory-view.c:4405
 msgid "_Copy File"
 msgstr "_Salin Fail"
 
-#: src/file-manager/fm-directory-view.c:4402
+#: src/file-manager/fm-directory-view.c:4406
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Copy Files"
 msgstr "_Salin Fail"
 
-#: src/file-manager/fm-directory-view.c:4567
+#: src/file-manager/fm-directory-view.c:4571
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4570
+#: src/file-manager/fm-directory-view.c:4574
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4576
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:4580
 msgid "Broken Link"
-msgstr "Ranap"
+msgstr "Pautan Rosak"
 
-#: src/file-manager/fm-directory-view.c:4576
+#: src/file-manager/fm-directory-view.c:4580
 msgid "Throw Away"
-msgstr ""
+msgstr "Baling Keluar"
 
-#: src/file-manager/fm-directory-view.c:4633
+#: src/file-manager/fm-directory-view.c:4637
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr ""
+"\"%s\" adalah fail teks bolehlaksana. Adakah anda inging melaksanakannya, "
+"atau papar kandunganya?"
 
-#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-directory-view.c:4643
 msgid "Run or Display?"
-msgstr ""
+msgstr "Laksana atau Papar?"
 
-#: src/file-manager/fm-directory-view.c:4640
+#: src/file-manager/fm-directory-view.c:4644
 msgid "Run"
 msgstr "Laksana"
 
-#: src/file-manager/fm-directory-view.c:4641
+#: src/file-manager/fm-directory-view.c:4645
 msgid "Display"
-msgstr "Paparan"
+msgstr "Papar"
 
-#: src/file-manager/fm-directory-view.c:4696
+#: src/file-manager/fm-directory-view.c:4700
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
+"Maaf, anda tak boleh laksanakan arahan dari tapak jauh kerana sebab "
+"keselamatan"
 
-#: src/file-manager/fm-directory-view.c:4698
+#: src/file-manager/fm-directory-view.c:4702
 msgid "Can't execute remote links"
-msgstr ""
+msgstr "Tak boleh laksanakan pautan jauh"
 
-#: src/file-manager/fm-directory-view.c:4842
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:4846
+#, c-format
 msgid "Opening \"%s\""
-msgstr "Buka imej (%s)"
+msgstr "Membuka \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4848
+#: src/file-manager/fm-directory-view.c:4852
 msgid "Cancel Open?"
-msgstr ""
+msgstr "Batal Buka?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
 msgid ""
 "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr ""
+"Anda tak mempunyai keizinan diperlukan untuk melihat kandungan bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr ""
+msgstr "\"%s\" tak dijumpai. Mungkin ianya telah dipadam baru-baru ini."
 
 #: src/file-manager/fm-error-reporting.c:68
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr ""
+msgstr "Maaf, tak dapat memapar semua kandungan bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:71
 msgid "Error Displaying Folder"
-msgstr ""
+msgstr "Ralat Memapar Folder"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr ""
+msgstr "Nama  \"%s\" sudah digunakan dalam folder ini. Sila guna nama lain."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
+"Tiada  \"%s\" di dalam folder ini. Mungkin ianya telah dipindah atau dipadam?"
 
 #: src/file-manager/fm-error-reporting.c:112
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
-msgstr ""
+msgstr "Anda tidak mempunyai keizinan diperlukan untuk menukarnama \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:117
 #, c-format
@@ -4989,7 +4981,6 @@ msgid ""
 "custom icons."
 msgstr ""
 
-# ui/galeon.glade.h:176
 #: src/file-manager/fm-properties-window.c:312 src/nautilus-sidebar.c:778
 msgid "Images Only"
 msgstr "Imej Sahaja"
@@ -5001,19 +4992,19 @@ msgstr "Ciri-ciri %s"
 
 #: src/file-manager/fm-properties-window.c:783
 msgid "Cancel Group Change?"
-msgstr ""
+msgstr "Batal Penukaran Kumpulan?"
 
 #: src/file-manager/fm-properties-window.c:784
 msgid "Changing group"
-msgstr ""
+msgstr "Menukar Kumpulan"
 
 #: src/file-manager/fm-properties-window.c:944
 msgid "Cancel Owner Change?"
-msgstr ""
+msgstr "Batal Penukaran Pemilik"
 
 #: src/file-manager/fm-properties-window.c:945
 msgid "Changing owner"
-msgstr ""
+msgstr "Menukar pemilik"
 
 #: src/file-manager/fm-properties-window.c:1127
 msgid "nothing"
@@ -5021,21 +5012,21 @@ msgstr "tiada apa-apa"
 
 #: src/file-manager/fm-properties-window.c:1129
 msgid "unreadable"
-msgstr ""
+msgstr "takboleh dibaca"
 
 #: src/file-manager/fm-properties-window.c:1138
 #, c-format
 msgid "1 item, with size %s"
-msgstr ""
+msgstr "1 item, dengan saiz %s"
 
 #: src/file-manager/fm-properties-window.c:1140
 #, c-format
 msgid "%d items, totalling %s"
-msgstr ""
+msgstr "%d item, menjumlahkan %s"
 
 #: src/file-manager/fm-properties-window.c:1146
 msgid "(some contents unreadable)"
-msgstr ""
+msgstr "(terdapat kandunga takboleh dibaca"
 
 #. Also set the title field here, with a trailing carriage return & space
 #. * if the value field has two lines. This is a hack to get the
@@ -5043,9 +5034,8 @@ msgstr ""
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
 #: src/file-manager/fm-properties-window.c:1160
-#, fuzzy
 msgid "Contents:"
-msgstr "Kandungan"
+msgstr "Kandungan:"
 
 #: src/file-manager/fm-properties-window.c:1507
 msgid "Basic"
@@ -5065,14 +5055,12 @@ msgid "Location:"
 msgstr "Lokasi:"
 
 #: src/file-manager/fm-properties-window.c:1590
-#, fuzzy
 msgid "Link Target:"
-msgstr "Teks pautan"
+msgstr "Sasaran Pautan:"
 
 #: src/file-manager/fm-properties-window.c:1593
-#, fuzzy
 msgid "MIME Type:"
-msgstr "Jenis MIME"
+msgstr "Jenis MIME:"
 
 #: src/file-manager/fm-properties-window.c:1599
 msgid "Modified:"
@@ -5080,28 +5068,27 @@ msgstr "Diubahsuai:"
 
 #: src/file-manager/fm-properties-window.c:1602
 msgid "Accessed:"
-msgstr ""
+msgstr "DiAkses:"
 
 #: src/file-manager/fm-properties-window.c:1611
 msgid "_Select Custom Icon..."
-msgstr ""
+msgstr "_Pilih Ikon Tersendiri..."
 
 #: src/file-manager/fm-properties-window.c:1617
-#, fuzzy
 msgid "_Remove Custom Icon"
-msgstr "_Buang Cecikut"
+msgstr "_Buang Ikon Tersendiri"
 
 #: src/file-manager/fm-properties-window.c:1907
 msgid "Set User ID"
-msgstr ""
+msgstr "Tetapkan ID Pengguna"
 
 #: src/file-manager/fm-properties-window.c:1912
 msgid "Special Flags:"
-msgstr ""
+msgstr "Tanda Istimewa:"
 
 #: src/file-manager/fm-properties-window.c:1915
 msgid "Set Group ID"
-msgstr ""
+msgstr "Tetapkan ID Kumpulan"
 
 #: src/file-manager/fm-properties-window.c:1917
 msgid "Sticky"
@@ -5113,7 +5100,7 @@ msgstr "Keizinan"
 
 #: src/file-manager/fm-properties-window.c:1949
 msgid "You are not the owner, so you can't change these permissions."
-msgstr ""
+msgstr "Anda bukan pemiliknya, jadi anda tak boleh menukar keizinannya."
 
 #: src/file-manager/fm-properties-window.c:1962
 msgid "File Owner:"
@@ -5153,25 +5140,24 @@ msgstr "Paparan Teks:"
 
 #: src/file-manager/fm-properties-window.c:2070
 msgid "Number View:"
-msgstr ""
+msgstr "Paparan Nombor:"
 
 #: src/file-manager/fm-properties-window.c:2071
 msgid "Last Changed:"
-msgstr ""
+msgstr "Terkahir Diubah:"
 
 #: src/file-manager/fm-properties-window.c:2075
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
-msgstr ""
+msgstr "Keizinan bagi \"%s\" tak dapat ditentukan."
 
 #: src/file-manager/fm-properties-window.c:2353
 msgid "Cancel Showing Properties Window?"
-msgstr ""
+msgstr "Batal Papar Tetingkap Ciri-ciri?"
 
 #: src/file-manager/fm-properties-window.c:2354
-#, fuzzy
 msgid "Creating Properties window"
-msgstr "Cipta tetingkap baru"
+msgstr "Mencipta Tetingkap Ciri-ciri"
 
 #: src/file-manager/fm-properties-window.c:2447
 msgid "Select an icon:"
@@ -5183,6 +5169,8 @@ msgid ""
 "Search results may not include items modified after %s, when your drive was "
 "last indexed."
 msgstr ""
+"Hasil carian tidak termasuk item yang diubahsuai selepas %s, bila cakera "
+"anda terkahir diindeks."
 
 #: src/file-manager/fm-search-list-view.c:144
 msgid "Search Results"
@@ -5192,12 +5180,12 @@ msgstr "Hasil pencarian"
 msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
-msgstr ""
+msgstr "Maaf, Servis pencarian Medusa tidak ada kerana ianya tidak dipasang."
 
 #: src/file-manager/fm-search-list-view.c:167
 #: src/file-manager/nautilus-indexing-info.c:303
 msgid "Search Service Not Available"
-msgstr ""
+msgstr "Servis Pencarian Tidak Ada"
 
 #: src/file-manager/fm-search-list-view.c:190
 msgid ""
@@ -5205,10 +5193,14 @@ msgid ""
 "search will return no results right now.  You can create a new  index by "
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
+"Carian yang anda pilih adalah lebih baru daripada yang diindeks pada sistem "
+"anda. Pencarian tidak akan memulangkan hasil sekarang. Anda boleh cipta "
+"indeks baru dengan melaksanakan  \"medusa-indexd\" sebagai root pada arahan "
+"baris."
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
-msgstr ""
+msgstr "Cari item yang terlalu baru"
 
 #: src/file-manager/fm-search-list-view.c:200
 msgid ""
@@ -5216,11 +5208,14 @@ msgid ""
 "can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
+"Setiap fail terindeks pada komputer padan dengan kriteria yang anda pilih. "
+"Anda boleh semak ejaan pada pilihan atau tambah lebih kriteria untuk "
+"menyempitkan hasilnya."
 
 #: src/file-manager/fm-search-list-view.c:204
 #: src/file-manager/fm-search-list-view.c:225
 msgid "Error during search"
-msgstr ""
+msgstr "Ralat ketika mencari"
 
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
@@ -5233,12 +5228,12 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:214
 msgid "Error reading file index"
-msgstr ""
+msgstr "Ralat membaca indeks fail"
 
 #: src/file-manager/fm-search-list-view.c:220
 #, c-format
 msgid "An error occurred while loading this search's contents: %s"
-msgstr ""
+msgstr "Terdapat ralat berlaku bila memuatkan kandungan carian ini: %s"
 
 #: src/file-manager/fm-search-list-view.c:244
 msgid ""
@@ -5246,22 +5241,27 @@ msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
+"Untuk melakukan carian pantas, Carian memerlukan satu indeks bagi fail pada "
+"sistem anda. Carian kini tak dapat mengakses indeks , jadi carian perlahan "
+"yang tak menggunakan indeks akan dilakukan"
 
 #: src/file-manager/fm-search-list-view.c:249
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
 msgstr ""
+"Untuk melakukan carian kandungan, Carian memerlukan indeks bagi fail pada "
+"sistem anda. Carian tak dapat mengakses indeks anda sekarang."
 
 #: src/file-manager/fm-search-list-view.c:253
 msgid "Fast searches are not available"
-msgstr ""
+msgstr "Carian Pantas tidak ada"
 
 #: src/file-manager/fm-search-list-view.c:254
 #: src/file-manager/fm-search-list-view.c:284
 #: src/file-manager/fm-search-list-view.c:307
 msgid "Content searches are not available"
-msgstr ""
+msgstr "Carian Kandungan tidak ada"
 
 #: src/file-manager/fm-search-list-view.c:257
 msgid ""
@@ -5319,9 +5319,8 @@ msgid "Fast searches are not enabled on your computer"
 msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:506
-#, fuzzy
 msgid "Where"
-msgstr "Minggu"
+msgstr "Dimana"
 
 #. "Reveal in New Window" means open the parent folder for the
 #. * selected item in a new window, select the item in that window,
@@ -5357,12 +5356,11 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:686
 msgid "Too Many Matches"
-msgstr ""
+msgstr "Terlalu Banyak Padanan"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
-#, fuzzy
 msgid "Change Desktop Background"
-msgstr "Guna imej sebagai latar belakang"
+msgstr "Tukar Latar Belakang Desktop"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
@@ -5916,12 +5914,10 @@ msgstr "Lokasi"
 msgid "_Remove"
 msgstr "_Buang"
 
-# ui/galeon.glade.h:247
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
 msgstr "Lebih Opsyen"
 
-# ui/galeon.glade.h:247
 #: src/nautilus-complex-search-bar.c:209
 msgid "Fewer Options"
 msgstr "Kurang Opsyen"
@@ -6011,8 +6007,6 @@ msgstr "nautilus: --restart tak boleh diguna dengan URI.\n"
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry tak boleh diguna dengan lebih drpd 1 URI.\n"
 
-# src/prefs.c:618
-# ui/galeon.glade.h:140
 #: src/nautilus-preferences-dialog.c:54
 msgid "Fonts"
 msgstr "Fonts"
@@ -6108,8 +6102,6 @@ msgstr "Turutan Isihan"
 msgid "Always list folders before files"
 msgstr ""
 
-# src/prefs.c:618
-# ui/galeon.glade.h:140
 #: src/nautilus-preferences-dialog.c:155 src/nautilus-preferences-dialog.c:384
 #, fuzzy
 msgid "Icon Captions"
@@ -6127,22 +6119,22 @@ msgstr "Paparan Default"
 
 #: src/nautilus-preferences-dialog.c:172
 msgid "View new folders using:"
-msgstr ""
+msgstr "Lihat folder baru menggunakan:"
 
 #. Icon View Defaults
 #: src/nautilus-preferences-dialog.c:177 src/nautilus-preferences-dialog.c:182
 #: src/nautilus-preferences-dialog.c:187 src/nautilus-preferences-dialog.c:192
 #: src/nautilus-preferences-dialog.c:198 src/nautilus-preferences-dialog.c:204
 msgid "Icon View Defaults"
-msgstr ""
+msgstr "Paparan Ikon Default"
 
 #: src/nautilus-preferences-dialog.c:179 src/nautilus-preferences-dialog.c:214
 msgid "Lay Out Items:"
-msgstr ""
+msgstr "Susun Atur Item:"
 
 #: src/nautilus-preferences-dialog.c:184 src/nautilus-preferences-dialog.c:219
 msgid "Sort in reversed order"
-msgstr ""
+msgstr "Isih dalam turutan songsang"
 
 # src/prefs.c:618
 # ui/galeon.glade.h:140
@@ -6156,28 +6148,26 @@ msgstr "Aras zoom default:"
 
 #: src/nautilus-preferences-dialog.c:200
 msgid "Use tighter layout"
-msgstr ""
+msgstr "Guna susunatur ketat"
 
 #: src/nautilus-preferences-dialog.c:206 src/nautilus-preferences-dialog.c:241
 msgid "Font size at default zoom level:"
-msgstr ""
+msgstr "Saiz font pada aras zoom default:"
 
 #. List View Defaults
 #: src/nautilus-preferences-dialog.c:212 src/nautilus-preferences-dialog.c:217
 #: src/nautilus-preferences-dialog.c:222 src/nautilus-preferences-dialog.c:227
 #: src/nautilus-preferences-dialog.c:233 src/nautilus-preferences-dialog.c:239
 msgid "List View Defaults"
-msgstr ""
+msgstr "Paparan Senarai Default"
 
 #: src/nautilus-preferences-dialog.c:250
-#, fuzzy
 msgid "Search Complexity Options"
-msgstr "Penyempurnaan"
+msgstr "Opsyen Pencarian Kompleks"
 
 #: src/nautilus-preferences-dialog.c:252
-#, fuzzy
 msgid "search type to do by default"
-msgstr "_Tetapkan sebagai default"
+msgstr "jenis carian untuk dilakukan sebagai default"
 
 #: src/nautilus-preferences-dialog.c:260 src/nautilus-shell-ui.xml.h:31
 msgid "Home"
@@ -6199,7 +6189,7 @@ msgstr "Liang:"
 
 #: src/nautilus-preferences-dialog.c:282
 msgid "Proxy requires a username and password:"
-msgstr ""
+msgstr "Proksi memerlukan namapengguna dan katalaluan"
 
 #: src/nautilus-preferences-dialog.c:289
 msgid "Username:"
@@ -6215,17 +6205,15 @@ msgstr "TandaBuku Dalaman"
 
 #: src/nautilus-preferences-dialog.c:303
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
-msgstr ""
+msgstr "Jangan sertakan tandabuku dalaman pada menu TandaBuku"
 
 #: src/nautilus-preferences-dialog.c:310
-#, fuzzy
 msgid "Show Text in Icons"
-msgstr "_Papar kawalan edit"
+msgstr "Papar Teks pada Ikon"
 
 #: src/nautilus-preferences-dialog.c:315
-#, fuzzy
 msgid "Show Count of Items in Folders"
-msgstr "Papar hanya direk_tori ini"
+msgstr "Papar Bilangan Item di dalam Folder"
 
 #: src/nautilus-preferences-dialog.c:320 src/nautilus-preferences-dialog.c:325
 msgid "Show Thumbnails for Image Files"
@@ -6237,7 +6225,7 @@ msgstr ""
 
 #: src/nautilus-preferences-dialog.c:330
 msgid "Preview Sound Files"
-msgstr ""
+msgstr "Prebiu Fail Bunyi"
 
 #. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
 #: src/nautilus-preferences-dialog.c:337
@@ -6250,24 +6238,23 @@ msgstr "Tab"
 
 #: src/nautilus-preferences-dialog.c:357
 msgid "Show only folders (no files) in the tree"
-msgstr ""
+msgstr "Papar hanya folder (tiada fail) pada pepohon"
 
 #: src/nautilus-preferences-dialog.c:364
 msgid "Maximum items per site"
-msgstr ""
+msgstr "Item Maksima per tapak"
 
 #: src/nautilus-preferences-dialog.c:366
 msgid "Maximum number of items displayed per site"
-msgstr ""
+msgstr "Bilangan maksima item dipaparkan per tapak"
 
 #: src/nautilus-preferences-dialog.c:369
-#, fuzzy
 msgid "Update Minutes"
-msgstr "Minit"
+msgstr "Minit Kemaskini"
 
 #: src/nautilus-preferences-dialog.c:371
 msgid "Update frequency in minutes"
-msgstr ""
+msgstr "Kekerapan kemaskini dalam minit"
 
 #: src/nautilus-preferences-dialog.c:380
 msgid "View Preferences"
@@ -6279,15 +6266,15 @@ msgstr "Penampilan"
 
 #: src/nautilus-preferences-dialog.c:382
 msgid "Windows & Desktop"
-msgstr ""
+msgstr "Tetingkap & Desktop"
 
 #: src/nautilus-preferences-dialog.c:383
 msgid "Icon & List Views"
-msgstr ""
+msgstr "Paparan Ikon & Senarai"
 
 #: src/nautilus-preferences-dialog.c:385
 msgid "Sidebar Panels"
-msgstr ""
+msgstr "Panel Sidebar"
 
 #: src/nautilus-preferences-dialog.c:387
 msgid "Search"
@@ -6295,21 +6282,20 @@ msgstr "Cari"
 
 #: src/nautilus-preferences-dialog.c:389
 msgid "Navigation"
-msgstr ""
+msgstr "Navigasi"
 
 #: src/nautilus-preferences-dialog.c:390
 msgid "Speed Tradeoffs"
 msgstr ""
 
 #: src/nautilus-preferences-dialog.c:391
-#, fuzzy
 msgid "News Panel"
-msgstr "Pada Laman Baru"
+msgstr "Panel Berita"
 
 #: src/nautilus-preferences-dialog.c:442
 #, c-format
 msgid "Display %s tab in sidebar"
-msgstr ""
+msgstr "Papar tab %s pada sidebar"
 
 #: src/nautilus-profiler.c:209
 msgid "Print"
@@ -6326,11 +6312,11 @@ msgstr ""
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:261
 msgid "Backgrounds and Emblems"
-msgstr ""
+msgstr "Latarbelakang dan Emblem"
 
 #: src/nautilus-property-browser.c:364
 msgid "_Add new..."
-msgstr ""
+msgstr "_Tambah..."
 
 #. FIXME: Using spaces to add padding is not good design.
 #: src/nautilus-property-browser.c:380
@@ -6340,26 +6326,25 @@ msgstr "_Buang..."
 #: src/nautilus-property-browser.c:847
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr ""
+msgstr "Maaf, corak %s tak dapat dipadam."
 
 #: src/nautilus-property-browser.c:848 src/nautilus-property-browser.c:877
 msgid "Couldn't delete pattern"
-msgstr ""
+msgstr "Tak dapat padam corak"
 
 #: src/nautilus-property-browser.c:876
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr ""
+msgstr "Maaf, emblem %s tak dapat dipadam."
 
 #: src/nautilus-property-browser.c:915
-#, fuzzy
 msgid "Create a New Emblem:"
-msgstr "Cipta tab baru"
+msgstr "Cipta Emblem Baru:"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:922
 msgid "Keyword:"
-msgstr ""
+msgstr "Katakunci:"
 
 # ui/galeon.glade.h:176
 #. set up a gnome icon entry to pick the image file
@@ -6369,67 +6354,63 @@ msgstr "Imej:"
 
 #: src/nautilus-property-browser.c:940
 msgid "Select an image file for the new emblem:"
-msgstr ""
+msgstr "Pilih fail imej bagi emblem baru:"
 
 #: src/nautilus-property-browser.c:970
-#, fuzzy
 msgid "Create a New Color:"
-msgstr "Cipta folder baru"
+msgstr "Cipta Warna Baru:"
 
 #. make the name label and field
 #: src/nautilus-property-browser.c:977
-#, fuzzy
 msgid "Color name:"
-msgstr "Nama _Cecikut"
+msgstr "Nama warna:"
 
 #: src/nautilus-property-browser.c:989
 msgid "Color value:"
-msgstr ""
+msgstr "Nilai warna:"
 
 #: src/nautilus-property-browser.c:1025
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr ""
+msgstr "Maaf,  \"%s\" bukannya nama fail yang sah."
 
 #: src/nautilus-property-browser.c:1027
 msgid "Sorry, but you did not supply a valid file name."
-msgstr ""
+msgstr "Maaf, anda tidak membekalkan nama fail yang sah."
 
 #: src/nautilus-property-browser.c:1029 src/nautilus-property-browser.c:1072
 msgid "Couldn't install pattern"
-msgstr ""
+msgstr "Tak dapat memasang corak"
 
 #: src/nautilus-property-browser.c:1040
 msgid "Sorry, but you can't replace the reset image."
-msgstr ""
+msgstr "Maaf, anda tak boleh menggantikan imej ulangtetap."
 
 #: src/nautilus-property-browser.c:1071
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr ""
+msgstr "Maaf, tapi corak %s tak dapat dipasang."
 
 #: src/nautilus-property-browser.c:1094
-#, fuzzy
 msgid "Select an image file to add as a pattern:"
-msgstr "Pilih fail untuk ditambah"
+msgstr "Pilih fail imeh untuk ditambah sebagai corak:"
 
 #: src/nautilus-property-browser.c:1154
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr ""
+msgstr "Maaf, anda mesti nyatakan nama bukan-kosong bagi warna baru."
 
 #: src/nautilus-property-browser.c:1155
 msgid "Couldn't install color"
-msgstr ""
+msgstr "Tak dapat memasang warna"
 
 #: src/nautilus-property-browser.c:1210
-#, fuzzy
 msgid "Select a color to add:"
-msgstr "Pilih fail untuk ditambah"
+msgstr "Pilih warna untuk ditambah:"
 
 #: src/nautilus-property-browser.c:1290
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
-msgstr "'%s' tidak wujud atau bukan fail imej yang sah\n"
+msgstr "Maaf, '%s' bukanlah fail imej yang boleh digunakan!"
 
 #: src/nautilus-property-browser.c:1308
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
