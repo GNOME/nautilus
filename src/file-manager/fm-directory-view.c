@@ -46,6 +46,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-drag.h>
@@ -94,6 +95,7 @@ struct FMDirectoryViewDetails
 	NautilusZoomable *zoomable;
 
 	NautilusDirectory *model;
+	BonoboUIComponent *ui;
 	
 	guint display_selection_idle_id;
 	guint update_menus_idle_id;
@@ -2567,15 +2569,16 @@ compute_menu_item_info (FMDirectoryView *directory_view,
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
 		name = g_strdup (_("New Folder"));
 		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
-			name = g_strdup (_("Delete from _Trash..."));
-		} else {
-			name = g_strdup (_("Delete from _Trash"));
-		}
-		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
-		name = g_strdup (_("Move to _Trash"));
+		if (fm_directory_all_selected_items_in_trash (directory_view)) {
+			if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+				name = g_strdup (_("Delete from _Trash..."));
+			} else {
+				name = g_strdup (_("Delete from _Trash"));
+			}
+		} else {
+			name = g_strdup (_("Move to _Trash"));
+		}
 		*return_sensitivity = !fm_directory_view_is_read_only (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
@@ -2971,16 +2974,9 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 
 	/* Don't add item if Trash link is in selection */
 	if (!link_in_selection) {
-		/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
-		if (!fm_directory_all_selected_items_in_trash (view)) {
-			append_gtk_menu_item (view, menu, files,
-					      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-					      trash_callback);
-		} else {
-			append_gtk_menu_item (view, menu, files,
-					      FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-					      trash_callback);
-		}
+		append_gtk_menu_item (view, menu, files,
+				      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+				      trash_callback);
 	}
 
 	if (!link_in_selection) {
@@ -3152,42 +3148,45 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 					(GDestroyNotify) viewer_launch_parameters_free);
 	g_free (label);
 }
+#endif /* UIH */
 
-/* Put up either the "Move to Trash" or the "Delete from Trash" menu item. Can't
- * use the menu-item-updating mechanism used for other dynamic menus here because
- * the hint and control key both change, which the menu-item-updating mechanism
- * doesn't currently handle. Could rewrite it. Also, maybe they should use the
- * same control key.
- */
 static void
-reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
+update_one_menu_item (FMDirectoryView *view,
+		      GList *selection,
+		      const char *menu_path)
 {
-	bonobo_ui_handler_menu_remove (ui_handler, 
-		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
-	bonobo_ui_handler_menu_remove (ui_handler, 
-		 FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
+	char *label_string;
+	gboolean sensitive;
+        compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
 
-	if (!fm_directory_all_selected_items_in_trash (view)) {
-		insert_bonobo_menu_item 
-			(view,
-			 ui_handler, selection,
-			 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-			 _("Move all selected items to the Trash"),
-			 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) + 1,
-			 'T', GDK_CONTROL_MASK,
-			 (BonoboUIHandlerCallback) trash_callback, view);
-	} else {
-		insert_bonobo_menu_item 
-			(view,
-			 ui_handler, selection,
-			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-			 _("Delete all selected items permanently"),
-			 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) + 1,
-			 0, 0,
-			 (BonoboUIHandlerCallback) trash_callback, view);
-	}
+	nautilus_bonobo_set_sensitive (view->details->ui, menu_path, sensitive);
+	nautilus_bonobo_set_label (view->details->ui, menu_path, label_string);
+	g_free (label_string);
 }
 
+static void
+reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
+{
+	if (fm_directory_all_selected_items_in_trash (view)) {
+		nautilus_bonobo_set_description (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 _("Delete all selected items permanently"));
+		nautilus_bonobo_set_accelerator (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 "");
+	} else {
+		nautilus_bonobo_set_description (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 _("Move all selected items to the Trash"));
+		nautilus_bonobo_set_accelerator (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 "*Control*t");
+	}
+
+	update_one_menu_item (view, selection, FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
+}
+
+#ifdef UIH
 static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
 {
@@ -3263,8 +3262,6 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 static void
 fm_directory_view_real_merge_menus (FMDirectoryView *view)
 {
-        BonoboUIComponent *ui_component;
-        GList *selection;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Folder", (BonoboUIVerbFn)new_folder_callback),
 		BONOBO_UI_VERB ("Open", (BonoboUIVerbFn)open_callback),
@@ -3281,178 +3278,55 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
-						NAUTILUS_DATADIR,
-						"nautilus-directory-view-ui.xml",
-						"nautilus");
-	bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
+	/* FIXME: Need to ref this? Or unref it on destroy? */
+	view->details->ui = nautilus_view_set_up_ui (view->details->nautilus_view,
+						     NAUTILUS_DATADIR,
+						     "nautilus-directory-view-ui.xml",
+						     "nautilus");
+	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 
-        selection = fm_directory_view_get_selection (view);
-
-#ifdef UIH
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
-		 _("Create a new folder in this window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER) + 1,
-		  'N', GDK_CONTROL_MASK,
-		 (BonoboUIHandlerCallback) new_folder_callback, view);
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
-		 _("Open the selected item in this window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_OPEN_PLACEHOLDER) + 1,
-		 'O', GDK_CONTROL_MASK,
-		 (BonoboUIHandlerCallback) open_callback, view);
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
-		 _("Open each selected item in a new window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) + 1,
-		 0, 0,
-		 (BonoboUIHandlerCallback) open_in_new_window_callback, view);
-	reset_bonobo_open_with_menu (view, ui_handler, selection);
-
-        bonobo_ui_handler_menu_new_separator
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_FILE_ITEMS,
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER) + 1);
-
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
-		 _("View or modify the properties of the selected items"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_FILE_ITEMS) + 1,
-		 'I', GDK_CONTROL_MASK,
-		 (BonoboUIHandlerCallback) open_properties_window_callback, view);
-
-	reset_bonobo_trash_delete_menu (view, ui_handler, selection);
-
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
-		 _("Duplicate each selected item"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) + 2,
-		  'D', GDK_CONTROL_MASK,
-		 (BonoboUIHandlerCallback) duplicate_callback, view);
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
-		 _("Create a symbolic link for each selected item"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
-		  'L', GDK_CONTROL_MASK,
-		 (BonoboUIHandlerCallback) create_link_callback, view);
-
-        bonobo_ui_handler_menu_new_separator
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH,
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER) + 1);
-
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
-		 _("Delete all items in the trash"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH) + 1,
-		  0, 0,
-		 bonobo_menu_empty_trash_callback, view);
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
-		 _("Select all items in this window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM),
-		  0, 0,	/* Accelerator will be inherited */
-		 bonobo_menu_select_all_callback, view);
-
-        bonobo_ui_handler_menu_new_separator
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET,
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER));
-
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
-		 _("Remove the custom image from each selected icon"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET) + 1,
-		  0, 0,
-		 (BonoboUIHandlerCallback) remove_custom_icons_callback, view);
+	fm_directory_view_update_menus (view);
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
 			    	   "settings_changed",
 			    	   schedule_update_menus,
 			    	   GTK_OBJECT (view));
-#endif /* UIH */
-
-        nautilus_file_list_free (selection);
 }
-
-#ifdef UIH
-
-static void
-update_one_menu_item (FMDirectoryView *view,
-		      BonoboUIHandler *ui_handler,
-		      GList *selection,
-		      const char *menu_path)
-{
-	char *label_string;
-	gboolean sensitive;
-        compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
-
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
-	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label_string);
-	g_free (label_string);
-}
-
-#endif
 
 static void
 fm_directory_view_real_update_menus (FMDirectoryView *view)
 {
-#ifdef UIH
-	BonoboUIHandler *handler;
 	GList *selection;
 
-	handler = fm_directory_view_get_bonobo_ui_handler (view);
 	selection = fm_directory_view_get_selection (view);
 
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW);
 
-	reset_bonobo_open_with_menu (view, handler, selection);
-	reset_bonobo_trash_delete_menu (view, handler, selection);
+#ifdef UIH
+	reset_bonobo_open_with_menu (view, selection);
+#endif	
+	reset_bonobo_trash_delete_menu (view, selection);
 
-	update_one_menu_item (view, handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
-	update_one_menu_item (view, handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH);
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS);
 
-	update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, selection,
 			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM);
 
 	nautilus_file_list_free (selection);
-#endif
 }
 
 static GtkMenu *

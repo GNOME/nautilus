@@ -39,29 +39,27 @@
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
-/* Paths to use when creating & referring to bonobo menu items.
+/* Paths to use when referring to bonobo menu items.
  * These are the new ones defined by FMDirectoryView. The
  * Nautilus-wide ones are in <libnautilus/nautilus-bonobo-ui.h>
+ * Note that this may change as we complete the switchover to the
+ * new Bonobo UI code.
  */
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/File/Open"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/File/OpenNew"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/File/Open With"
-#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER				"/File/New Folder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_FILE_ITEMS		"/File/Separator Before File Items"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/File/Delete"
-#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/File/Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/File/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/File/Duplicate"
-#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/File/Create Link"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH        "/File/Separator Before Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH             	   	"/File/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/File/Show Properties"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET		"/Edit/Before Reset"
-#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/Edit/Reset Background"
-#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/Edit/Remove Custom Icons"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/File/Open With/OtherApplication"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS		"/File/Open With/SeparatorBeforeViewers"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/File/Open With/OtherViewer"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
+#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER				"/menu/File/New Items Placeholder/New Folder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/File/File Items Placeholder/Delete"
+#define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/menu/File/File Items Placeholder/Duplicate"
+#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/menu/File/File Items Placeholder/Show Properties"
+#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/menu/Edit/Global Edit Items Placeholder/Reset Background"
+#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/menu/File/Open Placeholder/Open With/OtherApplication"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS		"/menu/File/Open Placeholder/Open With/SeparatorBeforeViewers"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))

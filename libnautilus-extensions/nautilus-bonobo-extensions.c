@@ -28,6 +28,28 @@
 #include "nautilus-bonobo-extensions.h"
 
 void
+nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
+			   	 const char *path,
+			   	 const char *accelerator)
+{
+	bonobo_ui_component_set_prop (ui, path,
+				      "accel",
+				      accelerator,
+				      NULL);
+}
+
+void
+nautilus_bonobo_set_description (BonoboUIComponent *ui,
+			   	 const char *path,
+			   	 const char *description)
+{
+	bonobo_ui_component_set_prop (ui, path,
+				      "descr",
+				      description,
+				      NULL);
+}
+
+void
 nautilus_bonobo_set_label (BonoboUIComponent *ui,
 			   const char *path,
 			   const char *label)

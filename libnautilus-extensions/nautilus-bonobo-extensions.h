@@ -29,6 +29,14 @@
 
 #include <bonobo/bonobo-ui-component.h>
 
+void nautilus_bonobo_set_accelerator (BonoboUIComponent *ui_component,
+				      const char        *path,
+				      const char	*accelerator);
+
+void nautilus_bonobo_set_description (BonoboUIComponent *ui_component,
+				      const char        *path,
+				      const char	*description);
+
 void nautilus_bonobo_set_label (BonoboUIComponent *ui_component,
 				const char        *path,
 				const char	  *label);

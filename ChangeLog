@@ -1,3 +1,36 @@
+2000-10-06  John Sullivan  <sullivan@eazel.com>
+
+	Work on bug 3496 (labels in menu items never change)
+	Work on bug 3495 (menu item sensitivity never changes)
+	Fixed bug 3503 ("Delete from Trash" never appears)
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_accelerator),
+	(nautilus_bonobo_set_description): More new wrappers for
+	xml shenanigans.
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	* src/file-manager/fm-directory-view.h:
+	Updated #defines for menu paths to match new syntax (start
+	with "/menu", include placeholder names)
+	
+	* src/file-manager/fm-directory-view.c: 
+	Store the BonoboUIComponent in FMDirectoryViewDetails.
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(reset_bonobo_trash_delete_menu),
+	(compute_menu_item_info): merge "Move to Trash" and
+	"Delete from Trash" into single item.
+	(update_one_menu_item): Use new-style Bonobo calls.
+	(fm_directory_view_real_merge_menus): Remove old #ifddeffed code.
+	(fm_directory_view_real_update_menus): #ifdef guts back
+	in, and remove UIHandler references.
+	* src/file-manager/nautilus-directory-view-ui.xml: Fixed typo
+	in "Open in New Window" label.
+	* src/nautilus-window-menus.c:
+	(nautilus_window_update_find_menu_item): Removed stray debugging
+	comment.
+
 2000-10-06  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

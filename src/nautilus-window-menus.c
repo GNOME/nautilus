@@ -1538,8 +1538,6 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 {
 	char *label_string;
 
-	g_message ("called nautilus_window_update_find_menu_item");
-
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	label_string = g_strdup 
