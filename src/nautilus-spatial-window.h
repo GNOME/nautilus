@@ -106,6 +106,7 @@ struct NautilusWindow {
   GtkWidget *forward_button;
   GtkWidget *up_button;
   GtkWidget *reload_button;
+  GtkWidget *search_button;
   GtkWidget *stop_button;
   GtkWidget *home_button;
   
@@ -149,6 +150,7 @@ void             nautilus_window_remove_sidebar_panel (NautilusWindow    *window
                                                        NautilusViewFrame *sidebar_panel);
 void             nautilus_window_goto_uri             (NautilusWindow    *window,
                                                        const char        *uri);
+void             nautilus_window_start_search         (NautilusWindow *window);
 void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);

@@ -1,3 +1,35 @@
+2000-06-13  Rebecca Schulman  <rebecka@eazel.com>
+	Initial changes to implement search architecture.
+
+	* libnautilus-extensions/Makefile.am:
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	Changed metafile reading to skip this for search directories
+	call a separate sync reader for search directories (the
+	async handle creates a thread but doesn't talk to medusa
+	yet)
+
+	Added
+	* libnautilus-extensions/nautilus-search-async.c:
+	* libnautilus-extensions/nautilus-search-async.h:
+	location of future async search calls
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	added is_search_directory boolean field to NautilusDirectoryDetails
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-directory.h:
+	nautilus_search_directory_new supplemnts nautilus_directory_new
+	and test functions nautilus_diretory_is_search_directory and
+	nautilus_uri_is_search_uri
+
+	* src/nautilus-window.c:
+	* src/nautilus-window-toolbars.c:
+	added search button (icon to come!)
+	
+	* src/nautilus.oafinfo:
+	added search: to list of acceptable 
+	content for list view
+	
 2000-06-13  Darin Adler  <darin@eazel.com>
 
 	Preparations to make nautilus_file_get use async. I/O.

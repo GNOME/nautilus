@@ -64,6 +64,7 @@ static void               nautilus_directory_initialize_class (gpointer     klas
 static GnomeVFSResult     nautilus_make_directory_and_parents (GnomeVFSURI *uri,
 							       guint        permissions);
 static NautilusDirectory *nautilus_directory_new              (const char  *uri);
+static NautilusDirectory *nautilus_search_directory_new       (const char  *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -279,7 +280,12 @@ nautilus_directory_get (const char *uri)
 		nautilus_directory_ref (directory);
 	} else {
 		/* Create a new directory object instead. */
-		directory = nautilus_directory_new (canonical_uri);
+		if (nautilus_uri_is_search_uri (canonical_uri)) {
+			directory = nautilus_search_directory_new (canonical_uri);
+		}
+		else {
+			directory = nautilus_directory_new (canonical_uri);
+		}
 		if (directory == NULL) {
 			return NULL;
 		}
@@ -378,6 +384,26 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 }
       
 static NautilusDirectory *
+nautilus_search_directory_new (const char* uri)
+{
+	NautilusDirectory *directory;
+
+	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
+	/* We can assume lots of stuff about the directory, 
+	   since we know it is a local search */
+	/* this should be fixed when (if) searching
+	   becomes part of gnome-vfs */
+	directory->details->uri_text = g_strdup (uri);
+	directory->details->uri = NULL;
+	directory->details->metafile_uri = NULL;
+	directory->details->alternate_metafile_uri = NULL;
+	directory->details->is_local = TRUE;
+	directory->details->is_search_directory = TRUE;
+
+	return directory;
+}
+
+static NautilusDirectory *
 nautilus_directory_new (const char* uri)
 {
 	NautilusDirectory *directory;
@@ -400,9 +426,12 @@ nautilus_directory_new (const char* uri)
 	directory->details->metafile_uri = metafile_uri;
 	directory->details->alternate_metafile_uri = alternate_metafile_uri;
 	directory->details->is_local = gnome_vfs_uri_is_local (vfs_uri);
+	directory->details->is_search_directory = FALSE;
 
 	return directory;
 }
+
+
 
 gboolean
 nautilus_directory_is_local (NautilusDirectory *directory)
@@ -411,6 +440,16 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	
 	return directory->details->is_local;
 }
+
+
+gboolean
+nautilus_directory_is_search_directory (NautilusDirectory *directory)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	
+	return directory->details->is_search_directory;
+}
+
 
 gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
@@ -841,15 +880,19 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (wait_for_metadata == FALSE || wait_for_metadata == TRUE);
 	g_return_if_fail (callback != NULL);
-
-	nautilus_directory_call_when_ready_internal
-		(directory,
-		 NULL,
-		 file_attributes,
-		 wait_for_metadata,
-		 callback,
-		 NULL,
-		 callback_data);
+	if (nautilus_directory_is_search_directory (directory)) {
+	}
+	/* Run search */
+	{
+		nautilus_directory_call_when_ready_internal
+			(directory,
+			 NULL,
+			 file_attributes,
+			 wait_for_metadata,
+			 callback,
+			 NULL,
+			 callback_data);
+	}
 }
 
 typedef struct {
@@ -948,6 +991,21 @@ static int data_dummy;
 static guint file_count;
 static gboolean got_metadata_flag;
 static gboolean got_files_flag;
+
+
+gboolean
+nautilus_uri_is_search_uri (const char *canonical_uri) 
+{
+	g_return_val_if_fail (canonical_uri != NULL, FALSE);
+
+	if (strncmp (canonical_uri, "search:", 7) == 0) {
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+
+}
 
 static void
 get_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)

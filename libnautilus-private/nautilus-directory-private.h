@@ -64,6 +64,10 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
+	/* This is so that we can display search directories
+	   too in the directory views */
+	gboolean is_search_directory;
+	   
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
@@ -146,3 +150,4 @@ int           nautilus_directory_number_outstanding        (void);
 /* Shared functions not directly related to NautilusDirectory/File. */
 int           nautilus_compare_file_with_name              (gconstpointer              a,
 							    gconstpointer              b);
+gboolean      nautilus_uri_is_search_uri                   (const char *canonical_uri);

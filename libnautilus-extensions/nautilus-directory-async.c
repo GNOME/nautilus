@@ -29,6 +29,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-search-async.h"
 
 #include <gtk/gtkmain.h>
 
@@ -323,6 +324,11 @@ void
 nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	/* Don't read metafiles for search directories 
+	   since they don't exist yet */
+	if (nautilus_directory_is_search_directory (directory)) {
+		return;
+	}
 
 	if (directory->details->metafile_read
 	    || directory->details->metafile_read_state != NULL) {
@@ -1329,25 +1335,39 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	}
 
 	mark_all_files_unconfirmed (directory);
-	g_assert (directory->details->uri->text != NULL);
+	/* The second condition should be true for 
+	   directories, and the first should be
+	   true for searches */
+	g_assert (nautilus_uri_is_search_uri (directory->details->uri_text) ||
+		  directory->details->uri->text != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	gnome_vfs_async_load_directory_uri
-		(&directory->details->directory_load_in_progress, /* handle */
-		 directory->details->uri,                         /* uri */
-		 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
-		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
-		 NULL, 					          /* meta_keys */
-		 NULL, 					          /* sort_rules */
-		 FALSE, 				          /* reverse_order */
-		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-		 NULL,                                            /* filter_pattern */
-		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
-		 directory_load_callback,                         /* callback */
-		 directory);
+	/* Don't use gnome vfs load mechanisms for 
+	   doing searches.  Use a separate search call */
+	if (nautilus_directory_is_search_directory (directory)) {
+		nautilus_async_medusa_search (&directory->details->directory_load_in_progress,
+						   directory->details->uri_text,
+						   directory_load_callback,
+						   directory);
+	}
+	else {
+		gnome_vfs_async_load_directory_uri
+			(&directory->details->directory_load_in_progress, /* handle */
+			 directory->details->uri,                         /* uri */
+			 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
+			  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+			 NULL, 					          /* meta_keys */
+			 NULL, 					          /* sort_rules */
+			 FALSE, 				          /* reverse_order */
+			 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
+			 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
+			  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+			 NULL,                                            /* filter_pattern */
+			 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
+			 directory_load_callback,                         /* callback */
+			 directory);
+	}
 }
 
 /* Stop monitoring the file list if it is being monitored. */
@@ -1372,6 +1392,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 
 	state_changed (directory);
 }
+
 
 static gboolean
 is_wanted (NautilusFile *file, RequestCheck check_wanted)

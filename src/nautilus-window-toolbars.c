@@ -45,8 +45,9 @@ static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
 #define TOOLBAR_RELOAD_BUTTON_INDEX	3
 /* separator */
 #define TOOLBAR_HOME_BUTTON_INDEX	5
+#define TOOLBAR_SEARCH_BUTTON_INDEX     6
 /* separator */
-#define TOOLBAR_STOP_BUTTON_INDEX	7
+#define TOOLBAR_STOP_BUTTON_INDEX	8
 
 
 static void
@@ -74,6 +75,13 @@ toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 }
 
 
+static void
+toolbar_search_callback (GtkWidget *widget, NautilusWindow *window)
+{
+	nautilus_window_start_search (window);
+}
+
+
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
@@ -91,6 +99,9 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
 	 toolbar_home_callback, "nautilus/eazel/Home.png"),
+	GNOMEUIINFO_ITEM_STOCK
+	(N_("Search"), N_("Search for files"),
+	 toolbar_search_callback, "nautilus/eazel/Search.png"),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
@@ -193,6 +204,7 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 	window->forward_button = current_toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
 	window->up_button = current_toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
 	window->reload_button = current_toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
+	window->search_button = current_toolbar_info[TOOLBAR_SEARCH_BUTTON_INDEX].widget;
 	window->stop_button = current_toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;	
 	window->home_button = current_toolbar_info[TOOLBAR_HOME_BUTTON_INDEX].widget;	
 }
