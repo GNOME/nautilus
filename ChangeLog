@@ -1,5 +1,21 @@
 2001-11-08  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_loading_directory),
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions):
+	Remove John Sullivan's email address from these error messages.
+
+	* src/nautilus-view-frame.c: (shut_down),
+	(nautilus_view_frame_unrealize), (nautilus_view_frame_destroy),
+	(nautilus_view_frame_finalize), (nautilus_view_frame_class_init):
+	Start shutting down in unrealize, since the BonoboPlug will also
+	start shutting down then, and we don't want to misinterpret that
+	as a failure.
+
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
 	* configure.in:
 	* cut-n-paste-code/widgets/Makefile.am:
 	* cut-n-paste-code/widgets/e-paned:

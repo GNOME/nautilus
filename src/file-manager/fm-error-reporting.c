@@ -63,7 +63,7 @@ fm_report_error_loading_directory (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
 	}
@@ -129,7 +129,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_renaming_file, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_renaming_file", 
 			   error, gnome_vfs_result_to_string (error));
 		/* fall through */
 	case GNOME_VFS_ERROR_GENERIC:
@@ -169,7 +169,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group", 
 			   error, gnome_vfs_result_to_string (error));
 		file_name = nautilus_file_get_display_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\"."), file_name);
@@ -203,7 +203,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_owner, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_owner", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
 	}
@@ -235,7 +235,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_permissions, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_permissions", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
 	}
