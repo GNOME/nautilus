@@ -1,3 +1,36 @@
+2000-12-09  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/nautilus-summary-callba
+	cks.c: (authn_cb_succeeded), (authn_cb_failed), (login_button_cb),
+	(logout_button_cb), (logged_in_callback), (logged_out_callback),
+	(preferences_button_cb), (forgot_password_button_cb),
+	(register_button_cb):
+	* components/services/summary/nautilus-view/nautilus-summary-callba
+	cks.h:
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.c: (generate_error_dialog), (generate_login_dialog),
+	(widget_set_nautilus_background_color), (error_dialog_cancel_cb),
+	(get_window_from_summary_view), (set_dialog_parent),
+	(name_or_password_field_activated):
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.h:
+	* components/services/summary/nautilus-view/nautilus-summary-menu-i
+	tems.c: (update_menu_items), (merge_bonobo_menu_items),
+	(bonobo_register_callback), (bonobo_login_callback),
+	(bonobo_logout_callback), (bonobo_preferences_callback):
+	* components/services/summary/nautilus-view/nautilus-summary-menu-i
+	tems.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view-p
+	rivate.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (updates_tab_selected_callback):
+
+	Breaking the summary view up into separate files.  It was getting
+	way to monolithic.  Still needs more cleanup from the rewrite before
+	pr2 but much more managable now.  Getting it ready for inventory
+	additions.
+
 2000-12-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5102, Changing to or from Music View advances song in

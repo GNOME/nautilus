@@ -27,6 +27,13 @@ bin_PROGRAMS =								\
 	nautilus-summary-view
 
 nautilus_summary_view_SOURCES =						\
+	nautilus-summary-view-private.h					\
+	nautilus-summary-callbacks.h					\
+	nautilus-summary-callbacks.c					\
+	nautilus-summary-menu-items.h					\
+	nautilus-summary-menu-items.c					\
+	nautilus-summary-dialogs.h					\
+	nautilus-summary-dialogs.c					\
 	nautilus-summary-view.h						\
 	nautilus-summary-view.c		    				\
 	main.c								\
