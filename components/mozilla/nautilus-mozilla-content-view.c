@@ -59,11 +59,11 @@
 /* Code-copied from nsGUIEvent.h */
 
 enum nsEventStatus {  
-	/// The event is ignored, do default processing
+	/* The event is ignored, do default processing */
  	nsEventStatus_eIgnore,            
- 	/// The event is consumed, don't do default processing
+ 	/* The event is consumed, don't do default processing */
  	nsEventStatus_eConsumeNoDefault, 
- 	/// The event is consumed, but do default processing
+ 	/* The event is consumed, but do default processing */
 	nsEventStatus_eConsumeDoDefault  
 };
  
