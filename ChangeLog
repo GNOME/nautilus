@@ -1,3 +1,19 @@
+2001-02-19  Andy Hertzfeld  <andy@eazel.com>
+
+	got basic annotation infrastructure working
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-annotation.c:
+	(digest_file_completed), (digest_file_failed),
+	(calculate_checksum_callback), (read_file_open_callback),
+	(calculate_file_digest), (get_annotation_path),
+	(look_up_local_annotation), (has_local_annotation),
+	(got_annotations_callback), (fetch_annotations_from_server),
+	(get_annotation_from_server), (got_file_digest),
+	(nautilus_annotation_has_annotation):
+	* libnautilus-extensions/nautilus-metadata.h:
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+
 2001-02-13  Andy Hertzfeld  <andy@eazel.com>
 	
 	first very rough cut at annotation stuff, not even building yet

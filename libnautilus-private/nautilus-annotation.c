@@ -46,12 +46,12 @@
  * Modified October 1995 by Erik Troan for RPM
  */
 
-
 #include <config.h>
 #include "nautilus-annotation.h"
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
+#include "nautilus-file-private.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
@@ -61,14 +61,14 @@
 #include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <librsvg/rsvg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 /* icon selection callback function. */
-typedef void (* NautilusCalculateDigestCallback) (NautilusFile *file, const char *file_digest);
+typedef void (* NautilusCalculateDigestCallback) (NautilusFile *file, char *file_digest);
+typedef struct NautilusDigestFileHandle NautilusDigestFileHandle;
 
 typedef struct {
 	guint32 buf[4];
@@ -79,13 +79,17 @@ typedef struct {
 
 struct NautilusDigestFileHandle {
 	GnomeVFSAsyncHandle *handle;
+	NautilusCalculateDigestCallback callback;
 	NautilusFile *file;
 	char *buffer;
 	MD5Context digest_context;
 };
 
-#undef _MD5_STANDALONE
+#define READ_CHUNK_SIZE 65536
+#define SERVER_URI_TEMPLATE			"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
 
+
+static GList* annotation_request_queue = NULL;
 
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
 
@@ -369,16 +373,35 @@ digest_file_close_callback (GnomeVFSAsyncHandle *handle,
  * the buffer to the caller.
  */
 static void
-read_file_succeeded (NautilusDigestFileHandle *digest_handle)
+digest_file_completed (NautilusDigestFileHandle *digest_handle)
 {
-	char digest_result[16];
+	guchar digest_result[16];
+	char digest_string [33];
+	char*  hex_string = "0123456789abcdef";
+	int index, result_index;
+	int current_value;
+	
 	gnome_vfs_async_close (digest_handle->handle,
 				       digest_file_close_callback,
 				       NULL);
 	
 	/* Invoke the callback to continue processing the annotation */
-	md5_final (&ctx, &digest_result);
-	(* digest_handle->callback) (digest_handle->file, &digest_result);
+	md5_final (&digest_handle->digest_context, digest_result);
+	
+	/* make a hex string for the digest result */
+	digest_string[32] = '\0';
+	for (index = 0; index < 32; index++) {
+		current_value = digest_result[index >> 1];
+		if (index & 1)	{
+			result_index = current_value & 15;
+		} else {
+			result_index = (current_value >> 4) & 15;
+		}
+		
+		digest_string[index] = hex_string[result_index];
+	}
+	
+	(* digest_handle->callback) (digest_handle->file, &digest_string[0]);
 	
 	g_free (digest_handle->buffer);
 	g_free (digest_handle);
@@ -386,7 +409,7 @@ read_file_succeeded (NautilusDigestFileHandle *digest_handle)
 
 /* Tell the caller we failed. */
 static void
-read_file_failed (NautilusDigestFileHandle *digest_handle, GnomeVFSResult result)
+digest_file_failed (NautilusDigestFileHandle *digest_handle, GnomeVFSResult result)
 {
 	gnome_vfs_async_close (digest_handle->handle,
 				       digest_file_close_callback,
@@ -408,7 +431,6 @@ calculate_checksum_callback (GnomeVFSAsyncHandle *handle,
 				gpointer callback_data)
 {
 	NautilusDigestFileHandle *digest_handle;
-	gboolean read_more;
 
 	/* Do a few reality checks. */
 	g_assert (bytes_requested == READ_CHUNK_SIZE);
@@ -419,18 +441,12 @@ calculate_checksum_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Check for a failure. */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		digest_file_failed (read_handle, result);
-		return;
-	}
-
-	/* Check for the extremely unlikely case where the file size overflows. */
-	if (digest_handle->bytes_read + bytes_read < digest_handle->bytes_read) {
-		digest_file_failed (digest_handle, GNOME_VFS_ERROR_TOO_BIG);
+		digest_file_failed (digest_handle, result);
 		return;
 	}
 
 	/* accumulate the recently read data into the checksum */
-	md5_update (&digest_handle->context, buffer, bytes_read);
+	md5_update (&digest_handle->digest_context, buffer, bytes_read);
 	
 	/* Read more unless we are at the end of the file. */
 	if (bytes_read > 0 && result == GNOME_VFS_OK) {
@@ -451,7 +467,7 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 			 gpointer callback_data)
 {
 	NautilusDigestFileHandle *digest_handle;
-	
+
 	digest_handle = callback_data;
 	g_assert (digest_handle->handle == handle);
 
@@ -473,7 +489,7 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 /* calculate the digest for the passed-in file asynchronously, invoking the passed in
  * callback when the calculation has been completed.
  */
-static void
+static NautilusDigestFileHandle*
 calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callback)
 {
 	NautilusDigestFileHandle *handle;
@@ -488,9 +504,10 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 	handle->file = file;
 
 	/* allocate the buffer */
+	handle->buffer = g_malloc (READ_CHUNK_SIZE);
 	
 	/* initialize the MD5 stuff */
-	md5_init(&handle->context);		
+	md5_init(&handle->digest_context);		
 	
 	/* open the file */
 	gnome_vfs_async_open (&handle->handle,
@@ -502,41 +519,143 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 	return handle;	
 }
 
+/* given a digest value, return the path to it in the local cache */
+static char *
+get_annotation_path (const char *digest)
+{
+	char *user_directory, *annotation_directory;
+	char *annotation_path;
+	
+	user_directory = nautilus_get_user_directory ();
+	annotation_directory = nautilus_make_path (user_directory, "annotations");
+	annotation_path = nautilus_make_path (annotation_directory, digest);
+	
+	g_free (user_directory);
+	g_free (annotation_directory);
+	return annotation_path;
+}
+
 /* look up the passed-in digest in the local annotation cache */
 static char *
 look_up_local_annotation (NautilusFile *file, const char *digest)
 {
+	GnomeVFSResult result;
+	int  file_size;
+	char *uri, *path, *file_data;
+	
+	path = get_annotation_path (digest);
+	if (g_file_exists (path)) {
+		/* load the file and return it */
+		uri = gnome_vfs_get_uri_from_local_path (path);
+		result = nautilus_read_entire_file (uri, &file_size, &file_data);
+		g_free (uri);
+		g_free (path);
+		if (result == GNOME_VFS_OK) {
+			return file_data;
+		} else {
+			return NULL;
+		}
+	}
+	g_free (path);
 	return NULL;
 }
 
 static gboolean
 has_local_annotation (const char *digest)
 {
-	return FALSE;
+	gboolean has_annotation;
+	char *path;
+	
+	path = get_annotation_path (digest);
+	has_annotation = g_file_exists (path);
+	g_free (path);
+	return has_annotation;
 }
 
-/* ask the server for an annotation asynchrounously  */
+/* completion routine invoked when we've loaded the an annotation file from the service.
+ * We must parse it, and walk through it to save the annotations in the local cache.
+ */
+
+static void
+got_annotations_callback (GnomeVFSResult result,
+			 GnomeVFSFileSize file_size,
+			 char *file_contents,
+			 gpointer callback_data)
+{
+	g_message ("got annotation callback, result is %d, file size is %d, file is %s", (int) result, (int) file_size, file_contents);
+}
+
+/* format the request, and send it to the server */
+/* the first cut implementation simply sends the digests as a cgi parameter,
+ * but soon we'll want use SOAP or XML-RPC
+ */
+static void
+fetch_annotations_from_server (void)
+{
+	GString *temp_string;
+	GList *current_entry, *save_entry;
+	char *uri;
+	
+	/* check to see if there are enough requests, or a long enough delay since the last one */
+	
+	current_entry = annotation_request_queue;
+	save_entry = current_entry;
+	annotation_request_queue = NULL;
+	
+	/* simple cgi-based request format passed the digests as part of the uri, so
+	 * gather the variable parts
+	 */
+	temp_string = g_string_new ("");
+	while (current_entry != NULL) {
+		g_string_append (temp_string, (char*) current_entry->data);
+		if (current_entry->next != NULL) {
+			g_string_append (temp_string, ",");
+		}
+		current_entry = current_entry->next;	
+	}
+	
+
+	uri = g_strdup_printf (SERVER_URI_TEMPLATE, temp_string->str);		
+	g_string_free (temp_string, TRUE);
+	nautilus_g_list_free_deep (save_entry);
+	
+	g_message ("asking server for %s", uri);
+	
+	/* read the result from the server asynchronously */
+	nautilus_read_entire_file_async (uri, got_annotations_callback, NULL);
+	g_free (uri);
+}
+
+/* ask the server for an annotation asynchronously  */
 static void
 get_annotation_from_server (NautilusFile *file, const char *file_digest)
 {
+	/* add the request to the queue, and kick it off it there's enough of them */
+	annotation_request_queue = g_list_prepend (annotation_request_queue, g_strdup (file_digest));
+	fetch_annotations_from_server ();
 }
 
 /* callback that's invokes when we've finished calculating the file's digest.  Remember
  * it in the metadata, and look up the associated annotation
  */
-void got_file_digest (NautilusFile *file, const char *file_digest)
+static void
+got_file_digest (NautilusFile *file, const char *file_digest)
 {
 	/* save the digest in the file metadata */
 	
+	if (file_digest == NULL) {
+		return;
+	}
+	
 	/* lookup the annotations associated with the file. If there is one, flag the change and we're done */
 	if (has_local_annotation (file_digest)) {
-		nautilus_file_changed (file);
+		nautilus_file_emit_changed (file);
 		return;
 	}
 
 	/* there isn't a local annotation, so ask the server for one */
 	get_annotation_from_server (file, file_digest);
-	return NULL;	
+	return;	
 }
 
 /* return the annotation associated with a file. If we haven't inspected this file yet,
@@ -574,7 +693,7 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
  */
 int	nautilus_annotation_has_annotation (NautilusFile *file)
 {
-
+	return 0;
 }
 
 /* add an annotation to a file */

@@ -44,6 +44,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libnautilus-extensions/nautilus-annotation.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -1756,6 +1757,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 {
 	char *actual_uri, *path;
 	char *attribute_names;
+	char *annotations;
 	char **text_array;
 	int i , slot_index;
 	char *attribute_string;
@@ -1766,6 +1768,10 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_assert (additional_text != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	/* fetch the annotations */
+	annotations = nautilus_annotation_get_annotation (file);
+	g_free (annotations);
+
 	/* In the smallest zoom mode, no text is drawn. */
 	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		*editable_text = NULL;
@@ -1773,7 +1779,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_name (file);
 	}
-	
+		
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
