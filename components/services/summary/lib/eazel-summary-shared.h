@@ -44,6 +44,7 @@ struct _ServicesData {
 struct _EazelNewsData {
 	char		*name;
 	char		*icon;
+	char		*date;
 	char		*message;
 };
 
@@ -55,6 +56,7 @@ struct _UpdateNewsData {
 	char		*icon;
 	char		*button_label;
 	char		*uri;
+	char		*softcat_uri;
 };
 
 struct _SummaryData {

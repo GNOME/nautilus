@@ -86,6 +86,7 @@ eazel_news_data_new ()
 
 	return_value->name = NULL;
 	return_value->icon = NULL;
+	return_value->date = NULL;
 	return_value->message = NULL;
 
 	return return_value;
@@ -105,6 +106,7 @@ update_news_data_new ()
 	return_value->icon = NULL;
 	return_value->button_label = NULL;
 	return_value->uri = NULL;
+	return_value->softcat_uri = NULL;
 
 	return return_value;
 
@@ -148,6 +150,7 @@ parse_a_eazel_news_item (xmlNodePtr node)
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
+	return_value->date = g_strdup (xml_get_value (node, "DATE"));
 	return_value->message = g_strdup (xml_get_value (node, "MESSAGE"));
 
 	return return_value;
@@ -167,6 +170,7 @@ parse_a_update_news_item (xmlNodePtr node)
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
 	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
 	return_value->uri = g_strdup (xml_get_value (node, "URI"));
+	return_value->softcat_uri = g_strdup (xml_get_value (node, "SOFTCAT_URI"));
 
 	return return_value;
 

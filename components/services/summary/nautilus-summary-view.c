@@ -65,6 +65,10 @@
 #define REGISTER_KEY				"eazel_service_register"
 #define PREFERENCES_KEY				"eazel_service_account_maintenance"
 
+#define	GOTO_BUTTON_LABEL			"Go There!"
+#define	SOFTCAT_GOTO_BUTTON_LABEL		"More Info!"
+#define	INSTALL_GOTO_BUTTON_LABEL		"Install Me!"
+
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
 typedef enum {
@@ -137,6 +141,8 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*news_icon_container;
 	GtkWidget	*news_icon_widget;
 	char		*news_icon_name;
+	GtkWidget	*news_date_widget;
+	char		*news_date;
 	GtkWidget	*news_description_header_widget;
 	char		*news_description_header;
 	GtkWidget	*news_description_body_widget;
@@ -160,6 +166,10 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*update_goto_label_widget;
 	char		*update_goto_label;
 	char		*update_redirects[500];
+	GtkWidget	*update_softcat_goto_button;
+	GtkWidget	*update_softcat_goto_label_widget;
+	char		*update_softcat_goto_label;
+	char		*update_softcat_redirects[500];
 
 	/* EazelProxy -- for logging in/logging out */
 	EazelProxy_UserControl user_control;
@@ -289,6 +299,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->current_news_row++;
 		eazel_news_node = iterator->data;
 		view->details->news_icon_name = eazel_news_node->icon;
+		view->details->news_date = eazel_news_node->date;
 		view->details->news_description_body = eazel_news_node->message;
 		generate_eazel_news_entry_row (view, view->details->current_news_row);
 
@@ -352,7 +363,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->services_icon_name = service_node->icon;
 		view->details->services_description_header = service_node->description_header;
 		view->details->services_description_body = service_node->description;
-		view->details->services_goto_label = service_node->button_label;
+		view->details->services_goto_label = g_strdup (_(GOTO_BUTTON_LABEL));
 		view->details->services_button_enabled = service_node->enabled;
 		view->details->services_redirects[view->details->current_service_row - 1] = service_node->uri;
 		generate_service_entry_row (view, view->details->current_service_row);
@@ -455,10 +466,12 @@ generate_summary_form (NautilusSummaryView	*view)
 		update_news_node = iterator->data;
 		view->details->update_icon_name = update_news_node->icon;
 		view->details->update_description_header = update_news_node->name;
-		view->details->update_description_version = update_news_node->version;
+		view->details->update_description_version = g_strdup_printf ("Version %s", update_news_node->version);
 		view->details->update_description_body = update_news_node->description;
-		view->details->update_goto_label = update_news_node->button_label;
+		view->details->update_goto_label = g_strdup (_(INSTALL_GOTO_BUTTON_LABEL));
+		view->details->update_softcat_goto_label = g_strdup (_(SOFTCAT_GOTO_BUTTON_LABEL));
 		view->details->update_redirects[view->details->current_update_row - 1] = update_news_node->uri;
+		view->details->update_softcat_redirects[view->details->current_update_row - 1] = update_news_node->softcat_uri;
 		generate_update_news_entry_row (view, view->details->current_update_row);
 
 		g_free (update_news_node);
@@ -537,7 +550,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_button_container);
 	view->details->services_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->services_goto_button);
-	gtk_widget_set_usize (view->details->services_goto_button, 140, -1);
+	gtk_widget_set_usize (view->details->services_goto_button, 80, -1);
 	view->details->services_goto_label_widget = gtk_label_new (view->details->services_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->services_goto_label_widget, font);
@@ -642,8 +655,8 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	g_free (view->details->update_description_version);
 	view->details->update_description_version = NULL;
 	
-	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->update_description_version_widget, FALSE, FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->update_description_version_widget, FALSE, FALSE, 1);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 
 	gtk_table_attach (view->details->updates_table, temp_vbox, 1, 2, row - 1, row, FALSE, FALSE, 0, 0);
 
@@ -652,7 +665,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->update_button_container);
 	view->details->update_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->update_goto_button);
-	gtk_widget_set_usize (view->details->update_goto_button, 140, -1);
+	gtk_widget_set_usize (view->details->update_goto_button, 80, -1);
 	view->details->update_goto_label_widget = gtk_label_new (view->details->update_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->update_goto_label_widget, font);
