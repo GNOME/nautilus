@@ -1685,7 +1685,7 @@ create_open_with_gtk_menu (GList *files)
 	add_open_with_gtk_menu_item (open_with_menu, NULL);
 
 	for (i = 0; i < 3; ++i) {
-		label = g_strdup_printf (_("Application %d"), i+1);
+		label = g_strdup_printf (_("Viewer %d"), i+1);
 		add_open_with_gtk_menu_item (open_with_menu, label);
 		g_free (label);
 	}
