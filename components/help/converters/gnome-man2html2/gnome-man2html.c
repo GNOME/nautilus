@@ -2233,8 +2233,8 @@ static char
 			}
 			c++;
 			while (*c && strncmp(c,endwith,i)) 
-				while (*c++!='\n');
-			while (*c++!='\n');
+				while (*c && *c++!='\n');
+			while (*c && *c++!='\n');
 			break;
 		}
 		case V('n','f'):
