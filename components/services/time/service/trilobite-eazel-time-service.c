@@ -129,7 +129,7 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 		service->object->private->time_obtained += diff;
 	}
 
-	/* FIXME: bugzilla.eazel.com 938:
+	/* FIXME bugzilla.eazel.com 938:
 	   do auth stuff and set time */
 
 	if (stime (&service->object->private->server_time) != 0) {

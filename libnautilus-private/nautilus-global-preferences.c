@@ -259,7 +259,7 @@ global_preferences_get_sidebar_panel_view_identifiers (void)
 
 	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
 
-	oaf_result = oaf_query (query, NULL /* FIXME: alphabetize by name in the future? */, &ev);
+	oaf_result = oaf_query (query, NULL /* FIXME bugzilla.eazel.com 1276: alphabetize by name in the future? */, &ev);
 		
 	view_identifiers = NULL;
         if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
@@ -347,7 +347,8 @@ global_preferences_register_sidebar_panels_preferences_for_ui (void)
 
 		g_assert (preference_key != NULL);
 
-		/* FIXME: The actual defaults fed to this function need to be queried 
+		/* FIXME bugzilla.eazel.com 1275: 
+		 * The actual defaults fed to this function need to be queried 
 		 * so that only the appropiate sidebar panels show for a user level.
 		 */
 		global_preferences_register_boolean_with_defaults (preference_key,

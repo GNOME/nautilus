@@ -1,5 +1,24 @@
 2000-06-06  John Sullivan  <sullivan@eazel.com>
 
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_new_with_config):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(do_rpm_install):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_update_time):
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_sidebar_panel_view_identifiers),
+	(global_preferences_register_sidebar_panels_preferences_for_ui):
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback):
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_create_font_family):
+	* nautilus-widgets/nautilus-preferences.c:
+	(preferences_hash_node_check_changes_func),
+	(preferences_gconf_callback):
+	Added bug numbers to FIXMEs.
+
+2000-06-06  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-mime-actions.c:
 	(nautilus_mime_get_default_action_type_for_uri),
 	(nautilus_mime_get_default_application_for_uri),

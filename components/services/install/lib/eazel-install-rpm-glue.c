@@ -558,7 +558,7 @@ do_rpm_install (EazelInstall *service,
                                      "Package %s skipped.", pkg_file);	
 			
 			/*
-			  FIXME: bugzilla.eazel.com 1093:
+			  FIXME bugzilla.eazel.com 1093:
 			  this call fails.
 			  pd = packagedata_new_from_rpm_header (binary_headers[num_binary_packages]);
 			*/

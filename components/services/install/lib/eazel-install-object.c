@@ -479,7 +479,7 @@ eazel_install_new_with_config (const char *config_file)
 							   "port_number", topts->port_number,
 							   NULL));
 
-	/* FIXME: bugzilla.eazel.com 982:
+	/* FIXME bugzilla.eazel.com 982:
 	   topts and iopts are leaked at this point. There needs
 	   to be a set of _destroy methods in eazel-install-metadata.c */
 

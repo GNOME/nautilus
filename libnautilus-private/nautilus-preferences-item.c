@@ -427,7 +427,7 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 	
 	g_free (description);
 
-	/* FIXME bugzilla.eazel.com XXX: Need to query system for available fonts */
+	/* FIXME bugzilla.eazel.com 1274: Need to query system for available fonts */
 	font_list = nautilus_string_list_new ();
 
 	nautilus_string_list_insert (font_list, "helvetica");

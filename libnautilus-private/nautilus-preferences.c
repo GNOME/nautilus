@@ -336,7 +336,9 @@ preferences_hash_node_check_changes_func (gpointer key,
 	old_user_level = (guint) user_data;
 	new_user_level = nautilus_user_level_manager_get_user_level ();
 
-	/* FIXME: This is currently only works for keys, it doenst work with whole namespaces */
+	/* FIXME bugzilla.eazel.com 1273: 
+	 * This currently only works for keys, it doesnt work with whole namespaces 
+	 */
 	if (!nautilus_user_level_manager_compare_preference_between_user_levels (node->name,
 										 old_user_level,
 										 new_user_level)) {
@@ -536,7 +538,7 @@ preferences_gconf_callback (GConfClient	*client,
 		/* The prefix should be the same */
 		if (strncmp (key, expected_key, strlen (expected_key)) != 0) {
 
-			/* FIXME: This is triggering the first time the beast runs
+			/* FIXME bugzilla.eazel.com 1272: This is triggering the first time the beast runs
 			 * without an existing ~/.gconf directory.
 			 */
 #if 0

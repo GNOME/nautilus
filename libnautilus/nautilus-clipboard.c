@@ -106,12 +106,12 @@ add_menu_items_callback (GtkWidget *widget,
 	ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (callback_data));
 
 	/* I wish I understsood better why we have to do this. */
-	/* FIXME: Doesn't the remote UI handler leak here? */
+	/* FIXME bugzilla.eazel.com 1259: Doesn't the remote UI handler leak here? */
 	bonobo_ui_handler_set_container
 		(ui_handler, 
 		 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (callback_data)));
 
-	/* FIXME: We never mark any of these items insensitive. */
+	/* FIXME bugzilla.eazel.com 733: We never mark any of these items insensitive. */
 	add_menu_item (ui_handler,
 		       NAUTILUS_MENU_PATH_CUT_ITEM,
 		       _("_Cut"),
