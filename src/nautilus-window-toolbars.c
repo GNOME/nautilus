@@ -263,22 +263,7 @@ set_up_special_bonobo_button (NautilusWindow            *window,
 	
 	bonobo_ui_toolbar_button_item_set_image (item, pixbuf);
 	g_object_unref (pixbuf);
-
-#if GNOME2_CONVERSION_COMPLETE
-	/* FIXME bugzilla.gnome.org 45005:
-	 * Setting the style here accounts for the preference, but does not
-	 * account for a hard-wired toolbar style or later changes in style
-	 * (such as if the toolbar is detached and made vertical). There
-	 * is currently no Bonobo API to support matching the style properly.
-	 */
-	bonobo_ui_toolbar_item_set_style 
-		(BONOBO_UI_TOOLBAR_ITEM (item),
-		 gnome_preferences_get_toolbar_labels ()
-		 	? BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL
-		 	: BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_ONLY);
-#endif
 }			      
-
 
 static void
 set_up_toolbar_images (NautilusWindow *window)
