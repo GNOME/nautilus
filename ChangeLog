@@ -1,3 +1,32 @@
+2000-05-29  Andy Hertzfeld  <andy@eazel.com>
+
+	implemented task 259, simple UI for previewing sounds.  Implemented by
+	making the icon container emit a preview signal on mouse-over, then connecting
+	to it in fm-icon-view to inspect the mime-type and launch/kill a sound player.
+	Currently only works for mp3 files, but others types are coming soon.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_INT__POINTER_INT):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	added new marshaller to handle our "preview" signal
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_event):
+	generate the preview signal when the mouse enters and leaves the icon
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_emit_preview_signal):
+	support for the preview signal
+	
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_sound),
+	(icon_container_preview_callback), (create_icon_container):
+	receive the preview signal and inspect the mime type.  Right now we
+	just handle mp3s.  Use a timeout to delay, current set at 1000 ms.
+	When the timeout fires, launch a player.  If we leave the icon, kill the
+	timeout and player as necessary.
+	
 2000-05-29  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

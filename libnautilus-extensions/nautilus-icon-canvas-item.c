@@ -68,7 +68,8 @@ struct NautilusIconCanvasItemDetails {
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
-
+	guint is_active : 1;
+	
 	gboolean is_renaming;
 };
 
@@ -1180,6 +1181,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
 			gnome_canvas_item_request_update (item);
+		    icon_item->details->is_active = nautilus_icon_container_emit_preview_signal(NAUTILUS_ICON_CONTAINER(item->canvas), item, TRUE);
 		}
 		return TRUE;
 		
@@ -1190,7 +1192,10 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			 * higlighted for drop. The latter gets turned on
 			 * by the drag&drop motion callback.
 			 */
+		    
+			nautilus_icon_container_emit_preview_signal(NAUTILUS_ICON_CONTAINER(item->canvas), item, FALSE);			
 			icon_item->details->is_prelit = FALSE;
+			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
 			gnome_canvas_item_request_update (item);
 		}

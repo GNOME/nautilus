@@ -126,6 +126,10 @@ void nautilus_gtk_marshal_INT__POINTER_POINTER                                  
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
 										 GtkArg        *args);
+void nautilus_gtk_marshal_INT__POINTER_INT					(GtkObject     *object,
+										 GtkSignalFunc  func,
+										 gpointer       func_data,
+										 GtkArg        *args);
 void nautilus_gtk_marshal_POINTER__NONE                                         (GtkObject     *object,
 										 GtkSignalFunc  func,
 										 gpointer       func_data,

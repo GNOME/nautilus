@@ -117,6 +117,7 @@ enum {
 	ICON_TEXT_CHANGED,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
+	PREVIEW,
 	SELECTION_CHANGED,	
 	LAST_SIGNAL
 };
@@ -2373,6 +2374,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 						     layout_changed),
 				  gtk_marshal_NONE__NONE,
 				  GTK_TYPE_NONE, 0);
+	signals[PREVIEW]
+		= gtk_signal_new ("preview",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     preview),
+				  nautilus_gtk_marshal_INT__POINTER_INT,
+				  GTK_TYPE_INT, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_BOOL);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -3633,6 +3644,26 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
 }
 
+/* emit preview signal, called by the canvas item */
+
+int nautilus_icon_container_emit_preview_signal(NautilusIconContainer *icon_container, GnomeCanvasItem *item, gboolean start_flag)
+{
+	int result;
+	NautilusIcon *icon;
+	
+	icon = NAUTILUS_ICON_CANVAS_ITEM (item)->user_data;
+
+	result = 0;
+	gtk_signal_emit (GTK_OBJECT (icon_container),
+		signals[PREVIEW],
+		icon->data,
+		start_flag,
+		&result);
+	
+	return result;
+}
+
+/* preferences callbacks */
 static void
 click_policy_changed_callback (gpointer user_data)
 {

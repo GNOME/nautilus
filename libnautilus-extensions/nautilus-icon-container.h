@@ -117,6 +117,9 @@ struct NautilusIconContainerClass {
 	void         (* icon_text_changed)        (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   const char *text);
+	int	     (* preview)		  (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   gboolean start_flag);
 };
 
 /* GtkObject */
@@ -165,5 +168,8 @@ void       nautilus_icon_container_enable_linger_selection (NautilusIconContaine
 							    gboolean               enable);
 void       nautilus_icon_container_set_anti_aliased_mode   (NautilusIconContainer *view,
 							    gboolean               anti_aliased_mode);
+int 	   nautilus_icon_container_emit_preview_signal	    (NautilusIconContainer *view,
+							     GnomeCanvasItem *item, 
+							     gboolean start_flag);
 
 #endif

@@ -32,6 +32,11 @@
 #include <errno.h>
 #include <stdio.h>
 #include <locale.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <unistd.h>
+
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -127,6 +132,11 @@ static const SortCriterion sort_criteria[] = {
 		N_("Keep icons sorted by emblems in rows")
 	}
 };
+
+/* some state variables used for sound previewing */
+
+static pid_t mp3_pid = 0;
+static int timeout = -1;
 
 struct FMIconViewDetails
 {
@@ -1079,6 +1089,77 @@ icon_container_activate_callback (NautilusIconContainer *container,
 	}
 }
 
+/* handle the preview signal by inspecting the mime type.  For now, we only preview sound files. */
+
+/* here's the timer task that actually plays the file using mpg123. */
+/* FIXME: we should get the application from our mime-type stuff */
+
+static gint play_file(NautilusFile *file)
+{
+	char * file_uri;
+	file_uri = nautilus_file_get_uri(file);
+	
+	mp3_pid = fork ();
+	if (mp3_pid == (pid_t) 0) {
+		execlp ("mpg123", "mpg123", file_uri + 7, NULL);
+		_exit (0);
+	}
+
+	g_free(file_uri);
+	timeout = -1;
+	
+	return 0;
+}
+
+/* this routine is invoked from the preview signal handler to preview a sound file.  We
+   want to wait a suitable delay until we actually do it, so set up a timer task to actually
+   start playing.  If we move out before the task files, we remove it. */
+   
+static void
+preview_sound(NautilusFile *file, gboolean start_flag)
+{	
+	if (start_flag) {
+		timeout = gtk_timeout_add(1000, (GtkFunction) play_file, file);
+
+	} else {
+		
+		if (mp3_pid) {
+			kill (mp3_pid, SIGTERM);
+			mp3_pid = 0;
+		}
+		if (timeout >= 0) {
+			gtk_timeout_remove(timeout);
+			timeout = -1;
+		}
+	}
+
+}
+
+static int
+icon_container_preview_callback (NautilusIconContainer *container,
+				 NautilusFile *file,
+				 gboolean start_flag,
+				 FMIconView *icon_view)
+{
+	int result;
+	char *mime_type;
+
+	mime_type = nautilus_file_get_mime_type(file);
+	result = 0;
+	
+	/* preview files based on the mime_type. */
+	/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
+
+	if (!nautilus_strcmp(mime_type, "audio/x-mp3")) {   	
+		result = 1;
+		preview_sound(file, start_flag);
+	}
+	
+	g_free(mime_type);
+
+	return result;
+}
+
 static int
 icon_container_compare_icons_callback (NautilusIconContainer *container,
 				       NautilusFile *file_a,
@@ -1481,6 +1562,10 @@ create_icon_container (FMIconView *icon_view)
 			    "layout_changed",
 			    GTK_SIGNAL_FUNC (layout_changed_callback),
 			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "preview",
+			    GTK_SIGNAL_FUNC (icon_container_preview_callback),
+			    icon_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));
