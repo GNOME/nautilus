@@ -1,0 +1,10 @@
+#include "trilobite-service.idl"
+
+module Trilobite {
+	module Eazel {
+		interface Sample : Service {
+			void remember(in string something);
+			void say_it();
+		};
+	};
+};
