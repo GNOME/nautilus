@@ -296,7 +296,6 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	g_return_val_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar), NULL);
 
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (nautilus_search_bar_criterion_new ());
-	nautilus_search_bar_criterion_initialize (criterion);
 	details = criterion->details;
 
 	details->type = type;

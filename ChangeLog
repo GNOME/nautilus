@@ -1,3 +1,9 @@
+2001-08-30  Darin Adler  <darin@bentspoon.com>
+
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_from_values): Fix a storage
+	leak that Yoann found.
+
 2001-08-28  Darin Adler  <darin@bentspoon.com>
 
 	* components/help/hyperbola-filefmt.c: (get_locale_score),
