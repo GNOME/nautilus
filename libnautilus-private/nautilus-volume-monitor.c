@@ -723,6 +723,7 @@ static gboolean
 mount_volume_floppy_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_FLOPPY;
+	volume->is_removable = TRUE;
 	return TRUE;
 }
 
@@ -801,6 +802,8 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 	close (fd);
 
 	volume->type = NAUTILUS_VOLUME_CDROM;
+	volume->is_removable = TRUE;
+	volume->is_read_only = TRUE;
 
 	return TRUE;
 }
@@ -1221,6 +1224,9 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 {
 	gboolean mounted = FALSE;
 	
+	volume->is_removable = FALSE;
+	volume->is_read_only = FALSE;
+		
 	if (nautilus_str_has_prefix (volume->device_path, FLOPPY_DEVICE_PATH_PREFIX)) {		
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
@@ -1257,10 +1263,5 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 		mounted = mount_volume_xiafs_add (volume);
 	}
 	
-	if (mounted) {
-		volume->is_removable = FALSE;
-		volume->is_read_only = FALSE;
-	}
-
 	return mounted;
 }

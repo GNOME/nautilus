@@ -1,3 +1,14 @@
+2001-01-05  Gene Z. Ragan  <gzr@eazel.com>
+	
+	My previous change dealing with dekstop mounts was a bit too
+	overzealous.  Removable volumes now appear on the desktop
+	when mounted.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_floppy_add), (mount_volume_iso9660_add),
+	(mount_volume_add_filesystem):
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+
 2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	xml-i18n-toolized Nautilus (plus a bit of other cleanup) as part
