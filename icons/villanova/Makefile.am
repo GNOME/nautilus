@@ -17,11 +17,17 @@ villa_DATA =	\
 	i-directory.png			\
 	i-directory-aa.png		\
 	i-directory-accept-12-aa.png	\
+	i-directory-accept-12.png	\
 	i-directory-accept-24-aa.png	\
+	i-directory-accept-24.png	\
 	i-directory-accept-36-aa.png	\
+	i-directory-accept-36.png	\
 	i-directory-accept-72-aa.png	\
+	i-directory-accept-72.png	\
 	i-directory-accept-96-aa.png	\
+	i-directory-accept-96.png	\
 	i-directory-accept-aa.png	\
+	i-directory-accept.png		\
 	number_strip.png		\
 	theme_preview.png		\
 	villanova_green.png		\

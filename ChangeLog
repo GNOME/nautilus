@@ -1,3 +1,23 @@
+2000-11-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_color_selection_dialog_new), (add_color_to_file),
+	(add_color_to_browser), (show_color_selection_window),
+	(add_new_color), (make_properties_from_xml_node):
+	fixed bug 4197, colors can't be given a name, by adding a
+	color selection window with a name entry, and using that
+	to name the color.
+	
+	* icons/villanova/Makefile.am:
+	* icons/villanova/i-directory-accept-*.png:
+	fixed bug 4641, missing non-aa "folder-accept" image for the
+	villanova theme, by adding new images from Susan.
+	
+	* icons/eazel/eazel.xml:
+	* icons/villanova/villanova.xml:
+	tweaked the selection box colors for the eazel and villanova
+	themes according to Susan's specification.
+	
 2000-11-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3057, Icon renaming state can get broken by clicking 

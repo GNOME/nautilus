@@ -52,6 +52,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-color-picker.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -113,6 +114,9 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *keyword;
 	GtkWidget *emblem_image;
 	GtkWidget *file_entry;
+	
+	GtkWidget *color_picker;
+	GtkWidget *color_name;
 	
 	char *path;
 	char *category;
@@ -978,8 +982,49 @@ nautilus_emblem_dialog_new(NautilusPropertyBrowser *property_browser)
 	return dialog;
 }
 
-/* add the newly selected file to the browser images */
+/* create the color selection dialog */
 
+static GtkWidget*
+nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
+{
+	GtkWidget *widget;
+	GtkWidget *dialog = gnome_dialog_new(_("Create a New Color:"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	GtkWidget *table = gtk_table_new(2, 2, FALSE);
+
+	/* make the name label and field */	
+	
+	widget = gtk_label_new(_("Color name:"));
+	gtk_widget_show(widget);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	
+  	property_browser->details->color_name = gtk_entry_new_with_max_length (24);
+	gtk_widget_show(property_browser->details->color_name);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+
+	/* default image is the generic emblem */
+	g_free(property_browser->details->image_path);
+		
+	widget = gtk_label_new(_("Color value:"));
+	gtk_widget_show(widget);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+ 
+	/* set up a gnome file entry to pick the image file */
+	property_browser->details->color_picker = gnome_color_picker_new ();
+	gtk_widget_show (property_browser->details->color_picker);
+	
+	gtk_widget_show(property_browser->details->color_picker);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_picker, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+		
+	/* install the table in the dialog */
+	
+	gtk_widget_show(table);	
+	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
+	
+	return dialog;
+}
+
+/* add the newly selected file to the browser images */
 static void
 add_background_to_browser (GtkWidget *widget, gpointer *data)
 {
@@ -1087,7 +1132,7 @@ add_new_background(NautilusPropertyBrowser *property_browser)
 /* here's where we add the passed in color to the file that defines the colors */
 
 static void
-add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_spec)
+add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_spec, const char *color_name)
 {
 	xmlNodePtr cur_node;
 	char* xml_path = get_xml_path(property_browser);
@@ -1107,9 +1152,10 @@ add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_s
 			char* category_name =  xmlGetProp (cur_node, "name");
 			if (strcmp(category_name, "colors") == 0) {
 				/* add a new color node */
-				xmlNodePtr new_color_node = xmlNewChild(cur_node, NULL, "color", NULL);
-				xmlNodeSetContent(new_color_node, color_spec);
-				xmlSetProp(new_color_node, "local", "1");
+				xmlNodePtr new_color_node = xmlNewChild (cur_node, NULL, "color", NULL);
+				xmlNodeSetContent (new_color_node, color_spec);
+				xmlSetProp (new_color_node, "local", "1");
+				xmlSetProp (new_color_node, "name", color_name);
 				break;
 			}
 		}
@@ -1125,26 +1171,61 @@ add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_s
 	g_free(xml_path);
 }
 
-/* handle the OK button being pushed on the color selector */
+/* handle the OK button being pushed on the color selection dialog */
 static void
-add_color_to_browser (GtkWidget *widget, gpointer *data)
+add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 {
-	char* color_spec;
+	char *color_spec;
+	char *color_name;
+	
+	gdouble color[4];
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
+
+	if (which_button == GNOME_OK) {	
+		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
+		color_spec = g_strdup_printf
+			("rgb:%04hX/%04hX/%04hX",
+		 	(gushort) (color[0] * 65535.0 + 0.5),
+		 	(gushort) (color[1] * 65535.0 + 0.5),
+		 	(gushort) (color[2] * 65535.0 + 0.5));
+
+		color_name = gtk_entry_get_text (GTK_ENTRY (property_browser->details->color_name));
+		add_color_to_file (property_browser, color_spec, color_name);
+		nautilus_property_browser_update_contents(property_browser);
+		g_free(color_spec);	
+	} 
+	
+	gtk_widget_destroy(property_browser->details->dialog);
+	property_browser->details->dialog = NULL;
+}
+
+/* create the color selection dialog, pre-set with the color that was just selected */
+static void
+show_color_selection_window (GtkWidget *widget, gpointer *data)
+{
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
-	
+
 	gtk_color_selection_get_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog)->colorsel), color);
 	gtk_widget_destroy (property_browser->details->dialog);
-	property_browser->details->dialog = NULL;	
 
-	color_spec = g_strdup_printf
-		("rgb:%04hX/%04hX/%04hX",
-		 (gushort) (color[0] * 65535.0 + 0.5),
-		 (gushort) (color[1] * 65535.0 + 0.5),
-		 (gushort) (color[2] * 65535.0 + 0.5));
-	add_color_to_file(property_browser, color_spec);
-	nautilus_property_browser_update_contents(property_browser);
-	g_free(color_spec);	
+	/* allocate a new color selection dialog */
+	property_browser->details->dialog = nautilus_color_selection_dialog_new (property_browser);		
+
+	/* set the color to the one picked by the selector */
+	gnome_color_picker_set_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), color[0], color[1], color[2], 1.0);
+	
+	/* connect the signals to the new dialog */
+	
+	gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
+				"destroy",
+				(GtkSignalFunc) dialog_destroy, property_browser);
+	gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
+				 "clicked",
+				 (GtkSignalFunc) add_color_to_browser, property_browser);
+	gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
+	gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
+
 }
 
 
@@ -1169,7 +1250,7 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 				    (GtkSignalFunc) dialog_destroy, property_browser);
 		gtk_signal_connect (GTK_OBJECT (color_dialog->ok_button),
 				    "clicked",
-				    (GtkSignalFunc) add_color_to_browser, property_browser);
+				    (GtkSignalFunc) show_color_selection_window, property_browser);
 		gtk_signal_connect_object (GTK_OBJECT (color_dialog->cancel_button),
 					   "clicked",
 					   (GtkSignalFunc) gtk_widget_destroy,
@@ -1624,7 +1705,9 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	gboolean local_only = property_browser->details->remove_mode;
 	
 	/* add a reset property in the first slot */
-	add_reset_property (property_browser);
+	if (!property_browser->details->remove_mode) {
+		add_reset_property (property_browser);
+	}
 	
 	index = 1;
 	property_browser->details->has_local = FALSE;
