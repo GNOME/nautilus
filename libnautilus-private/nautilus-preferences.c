@@ -26,85 +26,79 @@
 #include <nautilus-widgets/nautilus-preferences.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 
-static const gchar * PREFERENCES_GLOBAL_DOMAIN = "Nautilus::Global";
+static const char * PREFERENCES_GLOBAL_DOMAIN = "Nautilus::Global";
 
-#include <stdio.h>
-
-enum
-{
+enum {
 	ACTIVATE,
 	LAST_SIGNAL
 };
 
-typedef struct
-{
+typedef struct {
 	NautilusPreferencesInfo	pref_info;
 	gpointer		pref_value;
 	GList			*callback_list;
 } PrefHashInfo;
 
-typedef struct
-{
+typedef struct {
 	NautilusPreferencesCallback	callback_proc;
 	gpointer		user_data;
 	const PrefHashInfo	*hash_info;
 } PrefCallbackInfo;
 
-struct _NautilusPreferencesDetails
-{
-	gchar		*domain;
+struct _NautilusPreferencesDetails {
+	char		*domain;
 	GHashTable	*prefs_hash_table;
 };
 
 /* NautilusPreferencesClass methods */
-static void               nautilus_preferences_initialize_class (NautilusPreferencesClass      *klass);
-static void               nautilus_preferences_initialize       (NautilusPreferences           *prefs);
+static void                    nautilus_preferences_initialize_class (NautilusPreferencesClass      *klass);
+static void                    nautilus_preferences_initialize       (NautilusPreferences           *prefs);
 
 /* GtkObjectClass methods */
-static void               prefs_destroy                         (GtkObject                     *object);
+static void                    prefs_destroy                         (GtkObject                     *object);
 
 /* PrefHashInfo functions */
-static PrefHashInfo *     pref_hash_info_alloc                  (const NautilusPreferencesInfo *pref_info);
-static void               pref_hash_info_free                   (PrefHashInfo                  *pref_hash_info);
-static void               pref_hash_info_free_func              (gpointer                       key,
-								 gpointer                       value,
-								 gpointer                       user_data);
+static PrefHashInfo *          pref_hash_info_alloc                  (const NautilusPreferencesInfo *pref_info);
+static void                    pref_hash_info_free                   (PrefHashInfo                  *pref_hash_info);
+static void                    pref_hash_info_free_func              (gpointer                       key,
+								      gpointer                       value,
+								      gpointer                       user_data);
 
 /* PrefCallbackInfo functions */
-static PrefCallbackInfo * pref_callback_info_alloc              (NautilusPreferencesCallback    callback_proc,
-								 gpointer                       user_data,
-								 const PrefHashInfo            *hash_info);
-static void               pref_callback_info_free               (PrefCallbackInfo              *pref_hash_info);
-static void               pref_callback_info_free_func          (gpointer                       data,
-								 gpointer                       user_data);
-static void               pref_callback_info_invoke_func        (gpointer                       data,
-								 gpointer                       user_data);
-static void               pref_hash_info_add_callback           (PrefHashInfo                  *pref_hash_info,
-								 NautilusPreferencesCallback    callback_proc,
-								 gpointer                       user_data);
-static void               pref_hash_info_remove_callback        (PrefHashInfo                  *pref_hash_info,
-								 NautilusPreferencesCallback    callback_proc,
-								 gpointer                       user_data);
+static PrefCallbackInfo *      pref_callback_info_alloc              (NautilusPreferencesCallback    callback_proc,
+								      gpointer                       user_data,
+								      const PrefHashInfo            *hash_info);
+static void                    pref_callback_info_free               (PrefCallbackInfo              *pref_hash_info);
+static void                    pref_callback_info_free_func          (gpointer                       data,
+								      gpointer                       user_data);
+static void                    pref_callback_info_invoke_func        (gpointer                       data,
+								      gpointer                       user_data);
+static void                    pref_hash_info_add_callback           (PrefHashInfo                  *pref_hash_info,
+								      NautilusPreferencesCallback    callback_proc,
+								      gpointer                       user_data);
+static void                    pref_hash_info_remove_callback        (PrefHashInfo                  *pref_hash_info,
+								      NautilusPreferencesCallback    callback_proc,
+								      gpointer                       user_data);
 
 /* Private stuff */
-static NautilusPreferencesType prefs_check_supported_type            (NautilusPreferencesType             pref_type);
-static gboolean           prefs_set_pref                        (NautilusPreferences           *prefs,
-								 const gchar                   *pref_name,
-								 gpointer                       pref_value);
-static gboolean           prefs_get_pref                        (NautilusPreferences           *prefs,
-								 const gchar                   *pref_name,
-								 NautilusPreferencesType            *pref_type_out,
-								 gconstpointer                 *pref_value_out);
-PrefHashInfo *            prefs_hash_lookup                     (NautilusPreferences           *prefs,
-								 const gchar                   *pref_name);
-static gchar * nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pref_info);
+static NautilusPreferencesType prefs_check_supported_type            (NautilusPreferencesType        pref_type);
+static gboolean                prefs_set_pref                        (NautilusPreferences           *prefs,
+								      const char                    *pref_name,
+								      gpointer                       pref_value);
+static gboolean                prefs_get_pref                        (NautilusPreferences           *prefs,
+								      const char                    *pref_name,
+								      NautilusPreferencesType       *pref_type_out,
+								      gconstpointer                 *pref_value_out);
+PrefHashInfo *                 prefs_hash_lookup                     (NautilusPreferences           *prefs,
+								      const char                    *pref_name);
+static char *                  make_gnome_config_string              (const NautilusPreferencesInfo *pref_info);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferences, nautilus_preferences, GTK_TYPE_OBJECT)
 
 /*
  * NautilusPreferencesClass methods
  */
-	static void
+static void
 nautilus_preferences_initialize_class (NautilusPreferencesClass *prefs_class)
 {
 	GtkObjectClass *object_class;
@@ -125,7 +119,7 @@ nautilus_preferences_initialize (NautilusPreferences *prefs)
 	prefs->details->domain = NULL;
 
 	prefs->details->prefs_hash_table = g_hash_table_new (g_str_hash, 
-							  g_str_equal);
+							     g_str_equal);
 }
 
 /*
@@ -141,14 +135,9 @@ prefs_destroy (GtkObject *object)
 	
 	prefs = NAUTILUS_PREFS (object);
 
-	if (prefs->details->domain)
-	{
-		g_free (prefs->details->domain);
-		prefs->details->domain = NULL;
-	}
+	g_free (prefs->details->domain);
 
-	if (prefs->details->prefs_hash_table)
-	{
+	if (prefs->details->prefs_hash_table != NULL) {
 		g_hash_table_foreach (prefs->details->prefs_hash_table,
 				      pref_hash_info_free_func,
 				      (gpointer) NULL);
@@ -161,8 +150,7 @@ prefs_destroy (GtkObject *object)
 	g_free (prefs->details);
 	
 	/* Chain */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*
@@ -200,12 +188,9 @@ pref_hash_info_free (PrefHashInfo *pref_hash_info)
 	g_assert (pref_hash_info->pref_info.pref_name != NULL);
 	g_assert (pref_hash_info->pref_info.pref_description != NULL);
 
-	if (pref_hash_info->callback_list)
-	{
-		g_list_foreach (pref_hash_info->callback_list,
-				pref_callback_info_free_func,
-				(gpointer) NULL);
-	}
+	g_list_foreach (pref_hash_info->callback_list,
+			pref_callback_info_free_func,
+			NULL);
 	
 	g_free (pref_hash_info->pref_info.pref_name);
 	g_free (pref_hash_info->pref_info.pref_description);
@@ -259,15 +244,14 @@ pref_hash_info_remove_callback (PrefHashInfo			*pref_hash_info,
 
 	new_list = g_list_copy (pref_hash_info->callback_list);
 
-	for (iterator = new_list; iterator != NULL; iterator = iterator->next) 
-	{
+	for (iterator = new_list; iterator != NULL; iterator = iterator->next) {
 		PrefCallbackInfo *callback_info = (PrefCallbackInfo *) iterator->data;
 
 		g_assert (callback_info != NULL);
 
 		if (callback_info->callback_proc == callback_proc &&
-		    callback_info->user_data == user_data)
-		{
+		    callback_info->user_data == user_data) {
+
 			pref_hash_info->callback_list = 
 				g_list_remove (pref_hash_info->callback_list, 
 					       (gpointer) callback_info);
@@ -351,11 +335,11 @@ pref_callback_info_invoke_func (gpointer	data,
 
  	prefs = (const NautilusPreferences *) user_data;
 
- 	(*pref_callback_info->callback_proc) (GTK_OBJECT (prefs),
-					      pref_callback_info->hash_info->pref_info.pref_name,
-					      pref_callback_info->hash_info->pref_info.pref_type,
-					      pref_callback_info->hash_info->pref_value,
-					      pref_callback_info->user_data);
+ 	(* pref_callback_info->callback_proc) (GTK_OBJECT (prefs),
+					       pref_callback_info->hash_info->pref_info.pref_name,
+					       pref_callback_info->hash_info->pref_info.pref_type,
+					       pref_callback_info->hash_info->pref_value,
+					       pref_callback_info->user_data);
 }
 
 /*
@@ -370,7 +354,7 @@ prefs_check_supported_type (NautilusPreferencesType pref_type)
 
 static gboolean
 prefs_set_pref (NautilusPreferences     *prefs,
-		const gchar       *pref_name,
+		const char       *pref_name,
 		gpointer          pref_value)
 {
 	PrefHashInfo * pref_hash_info;
@@ -381,8 +365,7 @@ prefs_set_pref (NautilusPreferences     *prefs,
 
 	pref_hash_info = prefs_hash_lookup (prefs, pref_name);
 
-	if (!pref_hash_info)
-	{
+	if (!pref_hash_info) {
 		return FALSE;
 	}
 
@@ -393,22 +376,21 @@ prefs_set_pref (NautilusPreferences     *prefs,
 	pref_hash_info->pref_value = pref_value;
 
 	/* gnome-config for now ; in the future gconf */
-	switch (pref_hash_info->pref_info.pref_type)
-	{
+	switch (pref_hash_info->pref_info.pref_type) {
+
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		gnome_config_set_bool (pref_name, (gboolean) GPOINTER_TO_INT(pref_hash_info->pref_value));
+		gnome_config_set_bool (pref_name, GPOINTER_TO_INT (pref_hash_info->pref_value));
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		gnome_config_set_int (pref_name, (gint) GPOINTER_TO_INT(pref_hash_info->pref_value));
+		gnome_config_set_int (pref_name, GPOINTER_TO_INT (pref_hash_info->pref_value));
 		break;
 	}
 
 	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
 	gnome_config_sync ();
 
-	if (pref_hash_info->callback_list)
-	{
+	if (pref_hash_info->callback_list) {
 		g_list_foreach (pref_hash_info->callback_list,
 				pref_callback_info_invoke_func,
 				(gpointer) prefs);
@@ -419,7 +401,7 @@ prefs_set_pref (NautilusPreferences     *prefs,
 
 static gboolean
 prefs_get_pref (NautilusPreferences         *prefs,
-		const gchar           *pref_name,
+		const char           *pref_name,
 		NautilusPreferencesType    *pref_type_out,
 		gconstpointer         *pref_value_out)
 {
@@ -430,8 +412,7 @@ prefs_get_pref (NautilusPreferences         *prefs,
 	g_return_val_if_fail (pref_type_out != NULL, FALSE);
 	g_return_val_if_fail (pref_value_out != NULL, FALSE);
 
-	if (!pref_hash_info)
-	{
+	if (!pref_hash_info) {
 		return FALSE;
 	}
 
@@ -449,7 +430,7 @@ prefs_get_pref (NautilusPreferences         *prefs,
  * NautilusPreferences public methods
  */
 GtkObject *
-nautilus_preferences_new (const gchar *domain)
+nautilus_preferences_new (const char *domain)
 {
 	NautilusPreferences *prefs;
 
@@ -464,7 +445,7 @@ void
 nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 					 const NautilusPreferencesInfo *pref_info)
 {
-	gchar		*gnome_config_string = NULL;
+	char		*gnome_config_string = NULL;
 	PrefHashInfo	*pref_hash_info;
 
 	g_return_if_fail (prefs != NULL);
@@ -477,10 +458,8 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 	
 	pref_hash_info = prefs_hash_lookup (prefs, pref_info->pref_name);
 
-	if (pref_hash_info)
-	{
+	if (pref_hash_info) {
 		g_warning ("the '%s' preference is already registered.\n", pref_info->pref_name);
-
 		return;
 	}
 
@@ -490,19 +469,19 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 			     (gpointer) pref_info->pref_name,
 			     (gpointer) pref_hash_info);
 
-	gnome_config_string = nautilus_preferences_make_gnome_config_string (pref_info);
+	gnome_config_string = make_gnome_config_string (pref_info);
 
 	g_assert (gnome_config_string != NULL);
 
-	/* gnome-config for now ; in the future gconf */
-	switch (pref_hash_info->pref_info.pref_type)
-	{
+	/* gnome-config for now; in the future gconf */
+	switch (pref_hash_info->pref_info.pref_type) {
+
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		pref_hash_info->pref_value = (gpointer) GINT_TO_POINTER(gnome_config_get_bool (gnome_config_string));
+		pref_hash_info->pref_value = GINT_TO_POINTER (gnome_config_get_bool (gnome_config_string));
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		pref_hash_info->pref_value = (gpointer) GINT_TO_POINTER(gnome_config_get_int (gnome_config_string));
+		pref_hash_info->pref_value = GINT_TO_POINTER (gnome_config_get_int (gnome_config_string));
 		break;
 	}
 
@@ -512,10 +491,10 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 	gnome_config_sync ();
 }
 
-static gchar *
-nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pref_info)
+static char *
+make_gnome_config_string (const NautilusPreferencesInfo *pref_info)
 {
-	gchar * rv = NULL;
+	char * rv = NULL;
 	GString * tmp = NULL;
 
 	g_assert (pref_info != NULL);
@@ -524,23 +503,18 @@ nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pr
 	
 	g_string_append (tmp, "=");
 	
-	switch (pref_info->pref_type)
-	{
+	switch (pref_info->pref_type) {
+
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		if ((gboolean) GPOINTER_TO_INT(pref_info->pref_default_value))
-		{
+		if (GPOINTER_TO_INT (pref_info->pref_default_value)) {
 			g_string_append (tmp, "true");
-		}
-		else
-		{
+		} else {
 			g_string_append (tmp, "false");
 		}
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-
-		g_string_sprintfa  (tmp, "%d", (gint) GPOINTER_TO_INT(pref_info->pref_default_value));
-
+		g_string_sprintfa  (tmp, "%d", GPOINTER_TO_INT (pref_info->pref_default_value));
 		break;
 	}
 	
@@ -556,8 +530,8 @@ nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pr
 
 void
 nautilus_preferences_register_from_values (NautilusPreferences		*prefs,
-					   gchar			*pref_name,
-					   gchar			*pref_description,
+					   char			*pref_name,
+					   char			*pref_description,
 					   NautilusPreferencesType	pref_type,
 					   gconstpointer		pref_default_value,
 					   gpointer			type_data)
@@ -582,7 +556,7 @@ nautilus_preferences_register_from_values (NautilusPreferences		*prefs,
 
 const NautilusPreferencesInfo *
 nautilus_preferences_get_pref_info (NautilusPreferences          *prefs,
-				    const gchar            *pref_name)
+				    const char            *pref_name)
 {
 	PrefHashInfo * pref_hash_info;
 
@@ -599,7 +573,7 @@ nautilus_preferences_get_pref_info (NautilusPreferences          *prefs,
 
 PrefHashInfo *
 prefs_hash_lookup (NautilusPreferences   *prefs,
-		   const gchar           *pref_name)
+		   const char           *pref_name)
 {
 	gpointer hash_value;
 
@@ -614,7 +588,7 @@ prefs_hash_lookup (NautilusPreferences   *prefs,
 
 gboolean
 nautilus_preferences_add_callback (NautilusPreferences		*prefs,
-				   const gchar			*pref_name,
+				   const char			*pref_name,
 				   NautilusPreferencesCallback  callback_proc,
 				   gpointer			user_data)
 {
@@ -627,10 +601,8 @@ nautilus_preferences_add_callback (NautilusPreferences		*prefs,
 
 	pref_hash_info = prefs_hash_lookup (prefs, pref_name);
 
-	if (!pref_hash_info)
-	{
+	if (!pref_hash_info) {
 		g_warning ("trying to add a callback to an unregistered preference.\n");
-
 		return FALSE;
 	}
 
@@ -643,7 +615,7 @@ nautilus_preferences_add_callback (NautilusPreferences		*prefs,
 
 gboolean
 nautilus_preferences_remove_callback (NautilusPreferences	   *prefs,
-				      const gchar		   *pref_name,
+				      const char		   *pref_name,
 				      NautilusPreferencesCallback  callback_proc,
 				      gpointer			   user_data)
 {
@@ -656,10 +628,8 @@ nautilus_preferences_remove_callback (NautilusPreferences	   *prefs,
 
 	pref_hash_info = prefs_hash_lookup (prefs, pref_name);
 
-	if (!pref_hash_info)
-	{
+	if (!pref_hash_info) {
 		g_warning ("trying to remove a callback from an unregistered preference.\n");
-
 		return FALSE;
 	}
 
@@ -672,7 +642,7 @@ nautilus_preferences_remove_callback (NautilusPreferences	   *prefs,
 
 void
 nautilus_preferences_set_boolean (NautilusPreferences     *prefs,
-				  const gchar		  *pref_name,
+				  const char		  *pref_name,
 				  gboolean		  boolean_value)
 {
 	gboolean rv;
@@ -681,14 +651,14 @@ nautilus_preferences_set_boolean (NautilusPreferences     *prefs,
 	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
 	g_return_if_fail (pref_name != NULL);
 
-	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER(boolean_value));
+	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER (boolean_value));
 
 	g_assert (rv);
 }
 
 gboolean
 nautilus_preferences_get_boolean (NautilusPreferences  *prefs,
-				  const gchar    *pref_name)
+				  const char    *pref_name)
 {
 	gboolean		rv;
 	NautilusPreferencesType	pref_type;
@@ -700,22 +670,20 @@ nautilus_preferences_get_boolean (NautilusPreferences  *prefs,
 
 	rv = prefs_get_pref (prefs, pref_name, &pref_type, &value);
 
-	if (!rv)
-	{
+	if (!rv) {
 		g_warning ("could not get boolean preference '%s'\n", pref_name);
-
 		return FALSE;
 	}
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_BOOLEAN);
 
-	return (gboolean) GPOINTER_TO_INT(value);
+	return GPOINTER_TO_INT (value);
 }
 
 void
 nautilus_preferences_set_enum (NautilusPreferences	*prefs,
-			       const gchar    *pref_name,
-			       gint           enum_value)
+			       const char    *pref_name,
+			       int           enum_value)
 {
 	gboolean rv;
 
@@ -723,14 +691,14 @@ nautilus_preferences_set_enum (NautilusPreferences	*prefs,
 	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
 	g_return_if_fail (pref_name != NULL);
 
-	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER(enum_value));
+	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER (enum_value));
 
 	g_assert (rv);
 }
 
-gint
+int
 nautilus_preferences_get_enum (NautilusPreferences  *prefs,
-			       const gchar    *pref_name)
+			       const char    *pref_name)
 {
 	gboolean		rv;
 	NautilusPreferencesType	pref_type;
@@ -742,16 +710,14 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 	
 	rv = prefs_get_pref (prefs, pref_name, &pref_type, &value);
 
-	if (!rv)
-	{
+	if (!rv) {
 		g_warning ("could not get enum preference '%s'\n", pref_name);
-
 		return FALSE;
 	}
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_ENUM);
 
-	return GPOINTER_TO_INT(value);
+	return GPOINTER_TO_INT (value);
 }
 
 NautilusPreferences *
@@ -759,8 +725,7 @@ nautilus_preferences_get_global_preferences (void)
 {
 	static GtkObject * global_preferences = NULL;
 
-	if (!global_preferences)
-	{
+	if (global_preferences == NULL) {
 		global_preferences = nautilus_preferences_new (PREFERENCES_GLOBAL_DOMAIN);
 	}
 

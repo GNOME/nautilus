@@ -169,15 +169,29 @@ nautilus_directory_finalize (GtkObject *object)
 NautilusDirectory *
 nautilus_directory_get (const char *uri)
 {
-	char *canonical_uri;
+	char *canonical_uri, *with_slashes;
+	size_t length;
 	NautilusDirectory *directory;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
 	/* FIXME: This currently ignores the issue of two uris that are not identical but point
-	   to the same data except for the specific case of trailing '/' characters.
-	*/
+	 * to the same data except for the specific case of trailing '/' characters.
+	 */
 	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
+	if (strcmp (canonical_uri, uri) != 0) {
+		/* If some trailing '/' were stripped, there's the possibility,
+		 * that we stripped away all the '/' from a uri that has only
+		 * '/' characters. If you change this code, check to make sure
+		 * that "file:///" still works as a URI.
+		 */
+		length = strlen (canonical_uri);
+		if (length == 0 || canonical_uri[length - 1] == ':') {
+			with_slashes = g_strconcat (canonical_uri, "///", NULL);
+			g_free (canonical_uri);
+			canonical_uri = with_slashes;
+		}
+	}
 
 	/* Create the hash table first time through. */
 	if (directory_objects == NULL) {
@@ -606,6 +620,7 @@ nautilus_directory_start_monitoring (NautilusDirectory *directory,
 		return;
 	}
 	
+	g_assert (directory->details->uri->text != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	result = gnome_vfs_async_load_directory_uri
