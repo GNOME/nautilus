@@ -626,6 +626,7 @@ nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_AUTO:
 	case NAUTILUS_VOLUME_CDROM:
 	case NAUTILUS_VOLUME_EXT2:
+	case NAUTILUS_VOLUME_EXT3:
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_HSFS:
@@ -660,6 +661,7 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 	 */
 	switch (volume->volume_type) {
 	case NAUTILUS_VOLUME_EXT2:
+	case NAUTILUS_VOLUME_EXT3:
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_NFS:
 	case NAUTILUS_VOLUME_REISER:
@@ -775,6 +777,9 @@ mount_volume_make_name (NautilusVolume *volume)
 		
 	case NAUTILUS_VOLUME_EXT2:
 		return make_volume_name_from_path (volume, _("Ext2 Volume"));
+		
+	case NAUTILUS_VOLUME_EXT3:
+		return make_volume_name_from_path (volume, _("Ext3 Volume"));
 
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_VFAT:
@@ -857,6 +862,7 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	case NAUTILUS_VOLUME_AUTO:
 	case NAUTILUS_VOLUME_CDDA: 	
 	case NAUTILUS_VOLUME_EXT2:
+	case NAUTILUS_VOLUME_EXT3:
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
@@ -1155,6 +1161,13 @@ static gboolean
 mount_volume_ext2_add (NautilusVolume *volume)
 {		
 	volume->volume_type = NAUTILUS_VOLUME_EXT2;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_ext3_add (NautilusVolume *volume)
+{		
+	volume->volume_type = NAUTILUS_VOLUME_EXT3;
 	return TRUE;
 }
 
@@ -1836,6 +1849,8 @@ mount_volume_prepend_filesystem (GList *volume_list, NautilusVolume *volume)
 		added = mount_volume_hsfs_add (volume);
 	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
 		added = mount_volume_ext2_add (volume);
+	} else if (strcmp (volume->filesystem, "ext3") == 0) {		
+		added = mount_volume_ext3_add (volume);
 	} else if (strcmp (volume->filesystem, "fat") == 0) {		
 		added = mount_volume_fat_add (volume);
 	} else if (strcmp (volume->filesystem, "hpfs") == 0) {		
