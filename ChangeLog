@@ -1,5 +1,12 @@
 2002-07-12  Damon Chaplin  <damon@ximian.com>
 
+	* libnautilus-private/nautilus-program-chooser.c
+	(nautilus_program_chooser_instance_init): add a Help button.
+	(help_cb): show the help page corresponding to the current dialog mode.
+	Fixes bug #85804.
+
+2002-07-12  Damon Chaplin  <damon@ximian.com>
+
 	* libnautilus-private/nautilus-file-operations.c (confirm_empty_trash):
 	ui-review fixes to add an icon to the 'Empty' button, add a mnemonic,
 	make 'Empty' the default button, and change the title.

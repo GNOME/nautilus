@@ -38,6 +38,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkhbbox.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -53,6 +54,8 @@
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <gtk/gtkmessagedialog.h>
+#include <libgnome/gnome-help.h>
 
 #define RESPONSE_CHOOSE 1000
 
@@ -160,6 +163,48 @@ program_file_pair_compute_status (ProgramFilePair *pair)
 	pair->status = new_status;
 	return TRUE;
 }
+
+static void
+help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
+{
+	GError *error = NULL;
+	gchar *section;
+
+	switch (program_chooser->details->action_type) {
+	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
+		section = "gosnautilus-75";
+		break;
+	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
+	default:
+		section = "gosnautilus-111";
+		break;
+	}
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    "wgosnautilus.xml",
+				    section,
+				    &error);
+
+	if (error) {
+		GtkWidget *err_dialog;
+		err_dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (button)),
+						     GTK_DIALOG_MODAL,
+						     GTK_MESSAGE_ERROR,
+						     GTK_BUTTONS_CLOSE,
+						     _("There was an error displaying help: %s"),
+						     error->message);
+
+		g_signal_connect (G_OBJECT (err_dialog),
+				  "response", G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
+		gtk_widget_show (err_dialog);
+		g_error_free (error);
+	}
+}
+
 
 static void
 program_file_pair_set_file (ProgramFilePair *pair, NautilusFile *file)
@@ -1274,11 +1319,24 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 {
 	GtkWidget *dialog_vbox, *scrolled_window;
 	GtkWidget *framed_hbox;
+	GtkWidget *help_button;
 	GtkWidget *change_button_holder, *change_button;
 	GtkWidget *capplet_button_frame, *capplet_hbox;
 	GtkWidget *capplet_button, *caption, *capplet_button_vbox;
 	
 	program_chooser->details = g_new0 (NautilusProgramChooserDetails, 1);
+
+	/* This is a slight hack - we add our own help button to the dialog's
+	   button box. We don't want it to go through the normal response
+	   callback. */
+	help_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (program_chooser)->action_area),
+			  help_button, FALSE, TRUE, 0);
+	gtk_widget_show (help_button);
+	gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (GTK_DIALOG (program_chooser)->action_area), help_button, TRUE);
+
+	g_signal_connect_object (help_button, "clicked",
+				 G_CALLBACK (help_cb), program_chooser, 0);
 
 	program_chooser->details->cancel_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
 									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
@@ -1396,6 +1454,9 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 
   	/* Make confirmation button the default. */
   	gtk_dialog_set_default_response (GTK_DIALOG (program_chooser), GTK_RESPONSE_OK);
+
+	/* We don't need the separator as we use frames. */
+  	gtk_dialog_set_has_separator (GTK_DIALOG (program_chooser), FALSE);
 }
 
 
