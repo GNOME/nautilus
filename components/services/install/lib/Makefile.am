@@ -31,6 +31,7 @@ noinst_HEADERS = \
 	eazel-install-metadata.h		\
 	eazel-install-protocols.h		\
 	eazel-install-rpm-glue.h		\
+	eazel-install-rpm-signature.h		\
 	eazel-install-query.h			\
 	eazel-install-tests.h			\
 	eazel-install-xml-package-list.h	\
@@ -53,6 +54,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
 	eazel-install-rpm-glue.c		\
+	eazel-install-rpm-signature.c		\
 	eazel-install-query.c			\
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.c	\
