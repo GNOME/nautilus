@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-07-10 21:06+0200\n"
-"PO-Revision-Date: 2001-07-10 21:16+0200\n"
+"POT-Creation-Date: 2001-07-12 06:53+0200\n"
+"PO-Revision-Date: 2001-07-12 06:58+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1604,7 +1604,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:699
-#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1311
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -1924,47 +1924,57 @@ msgstr "T_ypsnitt"
 msgid "Lucida"
 msgstr "Lucida"
 
-#: components/text/nautilus-text-view-ui.xml.h:3
+#: components/text/nautilus-text-view-ui.xml.h:3 data/linksets/home.xml.h:3
+#: src/nautilus-service-ui.xml.h:4
+msgid "Services"
+msgstr "Tjänster"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+msgid "Text view"
+msgstr "Textvy"
+
+#: components/text/nautilus-text-view-ui.xml.h:5
 msgid "Use the Courier Font"
 msgstr "Använd typsnittet Courier"
 
-#: components/text/nautilus-text-view-ui.xml.h:4
+#: components/text/nautilus-text-view-ui.xml.h:6
 msgid "Use the Fixed Font"
 msgstr "Använd typsnittet Fixed"
 
-#: components/text/nautilus-text-view-ui.xml.h:5
+#: components/text/nautilus-text-view-ui.xml.h:7
 msgid "Use the GTK System Font"
 msgstr "Använd GTK:s systemtypsnitt"
 
-#: components/text/nautilus-text-view-ui.xml.h:6
+#: components/text/nautilus-text-view-ui.xml.h:8
 msgid "Use the Helvetica Font"
 msgstr "Använd typsnittet Helvetica"
 
-#: components/text/nautilus-text-view-ui.xml.h:7
+#: components/text/nautilus-text-view-ui.xml.h:9
 msgid "Use the Lucida Font"
 msgstr "Använd typsnittet Lucida"
 
-#: components/text/nautilus-text-view-ui.xml.h:8
+#: components/text/nautilus-text-view-ui.xml.h:10
 msgid "Use the Times Font"
 msgstr "Använd typsnittet Times"
 
-#: components/text/nautilus-text-view-ui.xml.h:9
+#: components/text/nautilus-text-view-ui.xml.h:11
 msgid "_Courier"
 msgstr "_Courier"
 
-#: components/text/nautilus-text-view-ui.xml.h:10
+#: components/text/nautilus-text-view-ui.xml.h:12
 msgid "_Fixed"
 msgstr "_Fixed"
 
-#: components/text/nautilus-text-view-ui.xml.h:11
+#: components/text/nautilus-text-view-ui.xml.h:13
 msgid "_GTK System Font"
 msgstr "_GTK:s systemtypsnitt"
 
-#: components/text/nautilus-text-view-ui.xml.h:12
+#: components/text/nautilus-text-view-ui.xml.h:14
 msgid "_Helvetica"
 msgstr "_Helvetica"
 
-#: components/text/nautilus-text-view-ui.xml.h:13
+#: components/text/nautilus-text-view-ui.xml.h:15
 msgid "_Times"
 msgstr "_Times"
 
@@ -1979,10 +1989,6 @@ msgstr "Text"
 #: components/text/Nautilus_View_text.oaf.in.h:3
 msgid "Text Viewer"
 msgstr "Textvisare"
-
-#: components/text/Nautilus_View_text.oaf.in.h:4
-msgid "Text view"
-msgstr "Textvy"
 
 #: components/text/Nautilus_View_text.oaf.in.h:5
 msgid "Text view factory"
@@ -2393,10 +2399,6 @@ msgstr "Dator"
 #: data/linksets/home.xml.h:2
 msgid "Home Directory"
 msgstr "Hemkatalog"
-
-#: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
-msgid "Services"
-msgstr "Tjänster"
 
 #: data/linksets/portals.xml.h:1
 msgid "Excite"
@@ -4666,83 +4668,87 @@ msgstr "Visa som %s"
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: libnautilus-private/nautilus-volume-monitor.c:562
-#: libnautilus-private/nautilus-volume-monitor.c:581
+#: libnautilus-private/nautilus-volume-monitor.c:564
+#: libnautilus-private/nautilus-volume-monitor.c:583
 msgid "Unknown"
 msgstr "Okänd"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:709
+#: libnautilus-private/nautilus-volume-monitor.c:713
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus-private/nautilus-volume-monitor.c:710
+#: libnautilus-private/nautilus-volume-monitor.c:714
 msgid "CD-ROM"
 msgstr "Cd-rom"
 
-#: libnautilus-private/nautilus-volume-monitor.c:711
+#: libnautilus-private/nautilus-volume-monitor.c:715
 msgid "Zip Drive"
 msgstr "Zip-enhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:726
-#: libnautilus-private/nautilus-volume-monitor.c:768
+#: libnautilus-private/nautilus-volume-monitor.c:730
+#: libnautilus-private/nautilus-volume-monitor.c:772
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
-#: libnautilus-private/nautilus-volume-monitor.c:758
+#: libnautilus-private/nautilus-volume-monitor.c:762
 msgid "Root"
 msgstr "Rot"
 
-#: libnautilus-private/nautilus-volume-monitor.c:775
+#: libnautilus-private/nautilus-volume-monitor.c:779
 msgid "Ext2 Volume"
 msgstr "Ext2-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:780
+#: libnautilus-private/nautilus-volume-monitor.c:782
+msgid "Ext3 Volume"
+msgstr "Ext3-volym"
+
+#: libnautilus-private/nautilus-volume-monitor.c:787
 msgid "MSDOS Volume"
 msgstr "MSDOS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:783
+#: libnautilus-private/nautilus-volume-monitor.c:790
 msgid "NFS Volume"
 msgstr "NFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:786
+#: libnautilus-private/nautilus-volume-monitor.c:793
 msgid "ReiserFS Volume"
 msgstr "ReiserFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:789
+#: libnautilus-private/nautilus-volume-monitor.c:796
 msgid "UFS Volume"
 msgstr "UFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:792
+#: libnautilus-private/nautilus-volume-monitor.c:799
 msgid "XFS Volume"
 msgstr "XFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:805
+#: libnautilus-private/nautilus-volume-monitor.c:812
 msgid "Unknown Volume"
 msgstr "Okänd volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1526
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Mount Error"
 msgstr "Monteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1526
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Unmount Error"
 msgstr "Avmonteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1593
+#: libnautilus-private/nautilus-volume-monitor.c:1608
 msgid "is write-protected, mounting read-only"
 msgstr "är skrivskyddad, monterar som endast läsbar"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1596
+#: libnautilus-private/nautilus-volume-monitor.c:1611
 msgid "is not a valid block device"
 msgstr "är inte en giltig blockenhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1597
+#: libnautilus-private/nautilus-volume-monitor.c:1612
 msgid "No medium found"
 msgstr "Inget medium hittades"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1601
+#: libnautilus-private/nautilus-volume-monitor.c:1616
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4751,7 +4757,7 @@ msgstr ""
 "diskett i enheten."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1605
+#: libnautilus-private/nautilus-volume-monitor.c:1620
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4759,11 +4765,11 @@ msgstr ""
 "Nautilus kunde inte montera volymen. Det finns antagligen inget media i "
 "enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1608
+#: libnautilus-private/nautilus-volume-monitor.c:1623
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "felaktig filsystemstyp, felaktig flagga, felaktigt superblock på"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1611
+#: libnautilus-private/nautilus-volume-monitor.c:1626
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4771,7 +4777,7 @@ msgstr ""
 "Nautilus kunde inte montera diskettstationen. Disketten är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1614
+#: libnautilus-private/nautilus-volume-monitor.c:1629
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4779,20 +4785,20 @@ msgstr ""
 "Nautilus kunde inte montera den valda volymen. Volymen är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1619
+#: libnautilus-private/nautilus-volume-monitor.c:1634
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kunde inte montera den valda diskettstationen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1621
+#: libnautilus-private/nautilus-volume-monitor.c:1636
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunde inte montera den valda volymen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1626
+#: libnautilus-private/nautilus-volume-monitor.c:1641
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunde inte avmontera den valda volymen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1793
+#: libnautilus-private/nautilus-volume-monitor.c:1808
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
@@ -7389,27 +7395,27 @@ msgstr "Kunde inte installera färg"
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1310
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:1327
+#: src/nautilus-property-browser.c:1328
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1331
-#: src/nautilus-property-browser.c:1335 src/nautilus-property-browser.c:1364
+#: src/nautilus-property-browser.c:1329 src/nautilus-property-browser.c:1332
+#: src/nautilus-property-browser.c:1336 src/nautilus-property-browser.c:1365
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1331
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1334
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7418,64 +7424,64 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1364
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2022
+#: src/nautilus-property-browser.c:2023
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
-#: src/nautilus-property-browser.c:2030 src/nautilus-theme-selector.c:193
+#: src/nautilus-property-browser.c:2031 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2036
 msgid "Add a New Pattern..."
 msgstr "Lägg till ett nytt mönster..."
 
-#: src/nautilus-property-browser.c:2038
+#: src/nautilus-property-browser.c:2039
 msgid "Add a New Color..."
 msgstr "Lägg till en ny färg..."
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:2042
 msgid "Add a New Emblem..."
 msgstr "Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2064
+#: src/nautilus-property-browser.c:2065
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2067
+#: src/nautilus-property-browser.c:2068
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2070
+#: src/nautilus-property-browser.c:2071
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2080
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2083
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2086
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2105
 msgid "Remove a Pattern..."
 msgstr "Ta bort ett mönster..."
 
-#: src/nautilus-property-browser.c:2107
+#: src/nautilus-property-browser.c:2108
 msgid "Remove a Color..."
 msgstr "Ta bort en färg..."
 
-#: src/nautilus-property-browser.c:2110
+#: src/nautilus-property-browser.c:2111
 msgid "Remove an Emblem..."
 msgstr "Ta bort ett emblem..."
 
