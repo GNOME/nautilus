@@ -99,6 +99,22 @@ void               nautilus_directory_set_metadata        (NautilusDirectory    
 							   const char               *default_metadata,
 							   const char               *metadata);
 
+gboolean	   nautilus_directory_get_boolean_metadata (NautilusDirectory	    *directory,
+							    const char		    *tag,
+							    gboolean		    default_metadata);
+void               nautilus_directory_set_boolean_metadata (NautilusDirectory       *directory,
+							   const char               *tag,
+							   gboolean		    default_metadata,
+							   gboolean                 metadata);
+
+int	   	   nautilus_directory_get_integer_metadata (NautilusDirectory	    *directory,
+							    const char		    *tag,
+							    int		            default_metadata);
+void               nautilus_directory_set_integer_metadata (NautilusDirectory       *directory,
+							   const char               *tag,
+							   int		    	    default_metadata,
+							   int			    metadata);
+
 /* Monitor the files in a directory.
    Since there's a monitoring ref. count, you must call nautilus_directory_stop_monitoring
    if you called nautilus_directory_start_monitoring.

@@ -1,3 +1,14 @@
+2000-01-31  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus/nautilus-directory.h:
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_boolean_metadata), 
+	(nautilus_directory_set_boolean_metadata),
+	(nautilus_directory_get_integer_metadata), 
+	(nautilus_directory_set_integer_metadata): New convenience functions
+	for getting/setting metadata that's naturally in boolean or integer form.
+	I'll be adding clients for these next.
+
 2000-01-31  Darin Adler  <darin@eazel.com>
 
 	NautilusDirectory is now in charge of loading directories.

@@ -851,6 +851,107 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	nautilus_directory_request_write_metafile (directory);
 }
 
+gboolean 
+nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
+					 const char *tag,
+					 gboolean default_metadata)
+{
+	char *result_as_string;
+	gboolean result;
+
+	result_as_string = nautilus_directory_get_metadata (
+				directory,
+				tag,
+				default_metadata ? "TRUE" : "FALSE");
+
+	/* Handle oddball case of non-existent directory */
+	if (result_as_string == NULL)
+		return default_metadata;
+
+	if (strcmp (result_as_string, "TRUE") == 0)
+	{
+		result = TRUE;
+	} 
+	else if (strcmp (result_as_string, "FALSE") == 0)
+	{
+		result = FALSE;
+	}
+	else
+	{
+		g_assert_not_reached ();
+		result = default_metadata;
+	}
+
+	g_free (result_as_string);
+	return result;
+
+}
+
+void               
+nautilus_directory_set_boolean_metadata (NautilusDirectory *directory,
+					 const char *tag,
+					 gboolean default_metadata,
+					 gboolean metadata)
+{
+	nautilus_directory_set_metadata (directory,
+					 tag,
+					 default_metadata ? "TRUE" : "FALSE",
+					 metadata ? "TRUE" : "FALSE");
+}
+
+int 
+nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
+					 const char *tag,
+					 int default_metadata)
+{
+	char *result_as_string;
+	char *default_as_string;
+	int result;
+
+	default_as_string = g_strdup_printf ("%d", default_metadata);
+	result_as_string = nautilus_directory_get_metadata (
+				directory,
+				tag,
+				default_as_string);
+
+	/* Handle oddball case of non-existent directory */
+	if (result_as_string == NULL)
+	{
+		result = default_metadata;
+	}
+	else
+	{
+		result = atoi (result_as_string);
+		g_free (result_as_string);
+	}
+
+	g_free (default_as_string);
+	return result;
+
+}
+
+void               
+nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
+					 const char *tag,
+					 int default_metadata,
+					 int metadata)
+{
+	char *value_as_string;
+	char *default_as_string;
+
+	value_as_string = g_strdup_printf ("%d", metadata);
+	default_as_string = g_strdup_printf ("%d", default_metadata);
+
+	nautilus_directory_set_metadata (directory,
+					 tag,
+					 default_as_string,
+					 value_as_string);
+
+	g_free (value_as_string);
+	g_free (default_as_string);
+}
+
+
 static char *
 nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
@@ -1452,6 +1553,21 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_set_metadata (directory, "TEST", "default", "value");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
+
+	nautilus_directory_set_boolean_metadata (directory, "TEST_BOOLEAN", TRUE, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (directory, "TEST_BOOLEAN", TRUE), TRUE);
+	nautilus_directory_set_boolean_metadata (directory, "TEST_BOOLEAN", TRUE, FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (directory, "TEST_BOOLEAN", TRUE), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (NULL, "TEST_BOOLEAN", TRUE), TRUE);
+
+	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 0, 17);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 0), 17);
+	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 0, -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 0), -1);
+	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 42, 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (NULL, "TEST_INTEGER", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "NONEXISTENT_KEY", 42), 42);
 
 	gtk_object_unref (GTK_OBJECT (directory));
 
