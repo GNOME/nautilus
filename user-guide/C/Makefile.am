@@ -8,7 +8,6 @@ SGML_DIR=$(datadir)/gnome/help
 
 TARGET_DIR=$(SGML_DIR)/$(DOC_MODULE)/$(LANG)/
 
-
 install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 
 	installfiles=`echo $(srcdir)/sgml/*.sgml 		\
@@ -26,6 +25,8 @@ install-data-local:
 
 dist-hook:
 	mkdir $(distdir)/sgml 
-	-cp $(srcdir)/sgml/*.sgml $(srcdir)/img/*.png  $(distdir)/sgml
+	mkdir $(distdir)/img
+	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
+	-cp $(srcdir)/img/*.png $(distdir)/img
 
 .PHONY : html
