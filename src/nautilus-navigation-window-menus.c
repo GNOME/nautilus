@@ -811,13 +811,20 @@ remove_bookmarks_after (NautilusWindow *window,
         nautilus_g_list_free_deep (children);
 }
 
+static NautilusBookmarkList *bookmarks = NULL;
+
+static void
+free_bookmark_list (void)
+{
+	gtk_object_unref (GTK_OBJECT (bookmarks));
+}
+
 static NautilusBookmarkList *
 get_bookmark_list (void)
 {
-        static NautilusBookmarkList *bookmarks = NULL;
-
         if (bookmarks == NULL) {
                 bookmarks = nautilus_bookmark_list_new ();
+		g_atexit (free_bookmark_list);
         }
 
         return bookmarks;
@@ -1535,7 +1542,7 @@ schedule_refresh_dynamic_bookmarks (NautilusWindow *window)
 static void
 refresh_go_menu (NautilusWindow *window)
 {
-	GSList *p;
+	GList *p;
 	int index;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));

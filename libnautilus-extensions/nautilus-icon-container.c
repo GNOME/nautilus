@@ -2847,6 +2847,41 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	nautilus_icon_container_update_scroll_region (container);
 }
 
+/* Call a function for all the icons. */
+typedef struct {
+	NautilusIconCallback callback;
+	gpointer callback_data;
+} CallbackAndData;
+
+static void
+call_icon_callback (gpointer data, gpointer callback_data)
+{
+	NautilusIcon *icon;
+	CallbackAndData *callback_and_data;
+
+	icon = data;
+	callback_and_data = callback_data;
+	(* callback_and_data->callback) (icon->data, callback_and_data->callback_data);
+}
+
+void
+nautilus_icon_container_for_each (NautilusIconContainer *container,
+				  NautilusIconCallback callback,
+				  gpointer callback_data)
+{
+	CallbackAndData callback_and_data;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	callback_and_data.callback = callback;
+	callback_and_data.callback_data = callback_data;
+
+	g_list_foreach (container->details->icons,
+			call_icon_callback, &callback_and_data);
+	g_list_foreach (container->details->new_icons,
+			call_icon_callback, &callback_and_data);
+}
+
 /* utility routine to remove a single icon from the container */
 
 static void

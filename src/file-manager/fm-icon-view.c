@@ -445,6 +445,12 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 }
 
 static void
+unref_cover (NautilusIconData *data, gpointer callback_data)
+{
+	nautilus_file_unref (NAUTILUS_FILE (data));
+}
+
+static void
 fm_icon_view_clear (FMDirectoryView *view)
 {
 	NautilusIconContainer *icon_container;
@@ -454,6 +460,7 @@ fm_icon_view_clear (FMDirectoryView *view)
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
 
 	/* Clear away the existing icons. */
+	nautilus_icon_container_for_each (icon_container, unref_cover, NULL);
 	nautilus_icon_container_clear (icon_container);
 }
 

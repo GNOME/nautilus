@@ -903,6 +903,16 @@ fm_directory_view_destroy (GtkObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
+	/* Since we are owned by the NautilusView, if we're going it's
+	 * gone. It would be even better to NULL this out when the
+	 * NautilusView goes away, but this is good enough for our
+	 * purposes.
+	 */
+	view->details->nautilus_view = NULL;
+
+	fm_directory_view_stop (view);
+	fm_directory_view_clear (view);
+
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					      show_hidden_files_changed_callback,
 					      view);
@@ -1170,7 +1180,12 @@ done_loading (FMDirectoryView *view)
 	if (!view->details->loading) {
 		return;
 	}
-	nautilus_view_report_load_complete (view->details->nautilus_view);
+	/* This can be called during destruction, in which case there
+	 * is no NautilusView any more.
+	 */
+	if (view->details->nautilus_view != NULL) {
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+	}
 	view->details->loading = FALSE;
 }
 

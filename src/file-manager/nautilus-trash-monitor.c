@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* 
    nautilus-trash-monitor.c: Nautilus trash state watcher.
  
@@ -22,16 +24,14 @@
 */
 
 #include <config.h>
-#include <gnome.h>
-#include <glib.h>
-
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
-
 #include "nautilus-trash-monitor.h"
+
 #include "libnautilus-extensions/nautilus-directory.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
+#include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 
 struct NautilusTrashMonitorDetails {
 	NautilusDirectory *trash_directory;
@@ -44,13 +44,14 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+static NautilusTrashMonitor *nautilus_trash_monitor;
 
 static void nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass);
-static void nautilus_trash_monitor_initialize (gpointer object, gpointer klass);
+static void nautilus_trash_monitor_initialize       (gpointer                   object,
+						     gpointer                   klass);
+static void destroy                                 (GtkObject                 *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
-
-static NautilusTrashMonitor *nautilus_trash_monitor;
 
 static void
 nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
@@ -58,6 +59,8 @@ nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
+
+	object_class->destroy = destroy;
 
 	signals[TRASH_STATE_CHANGED] = gtk_signal_new ("trash_state_changed",
        				GTK_RUN_LAST,
@@ -151,33 +154,40 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 		 nautilus_trash_metadata_ready_callback, trash_monitor);
 }
 
+static void
+destroy (GtkObject *object)
+{
+	NautilusTrashMonitor *trash_monitor;
+
+	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
+
+	nautilus_directory_file_monitor_remove
+		(trash_monitor->details->trash_directory, 
+		 trash_monitor);
+	gtk_object_unref (GTK_OBJECT (trash_monitor->details->trash_directory));	
+	g_free (trash_monitor->details);
+}
+
+static void
+unref_trash_monitor (void)
+{
+	gtk_object_unref (GTK_OBJECT (nautilus_trash_monitor));
+}
+
 NautilusTrashMonitor *
 nautilus_trash_monitor_get (void)
 {
 	if (nautilus_trash_monitor == NULL) {
 		/* not running yet, start it up */
 		nautilus_trash_monitor = gtk_type_new (NAUTILUS_TYPE_TRASH_MONITOR);
+		g_atexit (unref_trash_monitor);
 	}
 
 	return nautilus_trash_monitor;
 }
 
-void
-nautilus_trash_monitor_shutdown (void)
-{
-	if (nautilus_trash_monitor == NULL) {
-		return;
-	}
-
-	nautilus_directory_file_monitor_remove (nautilus_trash_monitor->details->trash_directory, 
-		nautilus_trash_monitor);
-	gtk_object_unref (GTK_OBJECT (nautilus_trash_monitor->details->trash_directory));	
-	g_free (nautilus_trash_monitor->details);
-	g_free (nautilus_trash_monitor);
-}
-
 gboolean
 nautilus_trash_monitor_is_empty (void)
 {
-	return nautilus_trash_monitor->details->empty;
+	return nautilus_trash_monitor_get ()->details->empty;
 }

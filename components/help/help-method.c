@@ -71,61 +71,67 @@ help_uri_new (void)
 }
 
 static char *
+escape_for_shell (const char *item)
+{
+        /* FIXME: This should add single quotes around items that need
+         * it and handle single quotes themselves right. For now, just
+         * put a placeholder that does ntohing.
+         */
+        return g_strdup (item);
+}
+
+static char *
 help_uri_to_string (HelpURI *help_uri)
 {
-        const char *scheme;
-	char *after_scheme;
-	char *escaped, *uri;
+        const char *command;
+	char *parameter, *command_line, *escaped, *uri;
 
-        scheme = "pipe:";
-        after_scheme = NULL;
-	
 	switch (help_uri->type) {
-	case SGML_FILE: case XML_FILE: 
+	case SGML_FILE: case XML_FILE:
+                command = "gnome-db2html2";
 		if (help_uri->section != NULL) {
-			after_scheme = g_strdup_printf
-                                ("gnome-db2html2 %s?%s;mime-type=text/html",
-                                 help_uri->file, help_uri->section);
+                        parameter = g_strconcat (help_uri->file, "?", help_uri->section, NULL);
                 } else {
-			after_scheme = g_strdup_printf
-                                ("gnome-db2html2 %s;mime-type=text/html",
-                                 help_uri->file);
+			parameter = g_strdup (help_uri->file);
                 }
 		break;
 	case MAN_FILE:
-		after_scheme = g_strdup_printf
-                        ("gnome-man2html2 %s;mime-type=text/html",
-                         help_uri->file);
+                command = "gnome-man2html2";
+                parameter = g_strdup (help_uri->file);
 		break;
 	case INFO_FILE:
-		after_scheme = g_strdup_printf
-                        ("gnome-info2html2 %s;mime-type=text/html",
-                         help_uri->file);
+                command = "info2html2";
+                parameter = g_strdup (help_uri->file);
 		break;
+
 	case HTML_FILE:
-                scheme = "file://";
-		if (help_uri->section != NULL) {
-                        after_scheme = g_strconcat (help_uri->file,
-                                                    "#",
-                                                    help_uri->section,
-                                                    NULL);
-		} else {
-                        after_scheme = g_strdup (help_uri->file);
+                escaped = gnome_vfs_escape_path_string (help_uri->file);
+		if (help_uri->section == NULL) {
+                        uri = g_strconcat ("file://", escaped, NULL);
+                } else {
+                        uri = g_strconcat ("file://", escaped, "#", help_uri->section, NULL);
                 }
-		break;
+                g_free (escaped);
+		return uri;
 	case UNKNOWN_FILE:
 		return NULL;
 	default:
 		/* FIXME: An assert at runtime may be a bit harsh.
-                 * We'd like behavior more like g_return_if_fail.
+                 * We'd prefer behavior more like g_return_if_fail.
+                 * In glib 2.0 we can use g_return_val_if_reached.
                  */
 		g_assert_not_reached ();
                 return NULL;
 	}
         
-        escaped = gnome_vfs_escape_string (after_scheme);
-        g_free (after_scheme);
-        uri = g_strconcat (scheme, escaped, NULL);
+        /* Build a command line. */
+        escaped = escape_for_shell (parameter);
+        g_free (parameter);
+        command_line = g_strconcat (command, " ", escaped, ";mime-type=text/html", NULL);
+        g_free (escaped);
+        escaped = gnome_vfs_escape_string (command_line);
+        g_free (command_line);
+        uri = g_strconcat ("pipe:", escaped, NULL);
         g_free (escaped);
 
 	return uri;

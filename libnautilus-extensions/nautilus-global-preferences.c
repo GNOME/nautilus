@@ -23,20 +23,19 @@
 */
 
 #include <config.h>
-#include <liboaf/liboaf.h>
 #include "nautilus-global-preferences.h"
 
-#include <gtk/gtkbox.h>
-
-#include "nautilus-preferences-group.h"
-#include "nautilus-preferences-item.h"
-#include "nautilus-preferences-dialog.h"
-#include "nautilus-user-level-manager.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-view-identifier.h"
+#include "nautilus-preferences-dialog.h"
+#include "nautilus-preferences-group.h"
+#include "nautilus-preferences-item.h"
 #include "nautilus-string.h"
+#include "nautilus-user-level-manager.h"
+#include "nautilus-view-identifier.h"
+#include <gtk/gtkbox.h>
+#include <liboaf/liboaf.h>
 
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
@@ -44,37 +43,18 @@
 /* default web search uri - this will soon be changed to point to our service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
 
-/* Private stuff */
-static GtkWidget *global_preferences_create_dialog                      (void);
-static GtkWidget *global_preferences_get_dialog                         (void);
-static void       global_preferences_register                           (void);
+/* Forward declarations */
 static char *     global_preferences_get_sidebar_panel_key              (const char             *panel_iid);
-static gboolean   global_preferences_is_sidebar_panel_enabled           (NautilusViewIdentifier *panel_identifier,
-									 gpointer                ignore);
+static gboolean   global_preferences_is_sidebar_panel_enabled_cover     (gpointer                data,
+									 gpointer                callback_data);
 static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
 static gboolean   global_preferences_close_dialog_callback              (GtkWidget              *dialog,
 									 gpointer                user_data);
-static void       global_preferences_register_with_defaults             (const char             *name,
-									 const char             *description,
-									 NautilusPreferenceType  type,
-									 gconstpointer           novice_default,
-									 gconstpointer           intermediate_default,
-									 gconstpointer           hacker_default);
 static void       global_preferences_register_boolean_with_defaults     (const char             *name,
 									 const char             *description,
 									 gboolean                novice_default,
 									 gboolean                intermediate_default,
 									 gboolean                hacker_default);
-static void       global_preferences_register_string_with_defaults      (const char             *name,
-									 const char             *description,
-									 const char             *novice_default,
-									 const char             *intermediate_default,
-									 const char             *hacker_default);
-static void       global_preferences_register_enum_with_defaults        (const char             *name,
-									 const char             *description,
-									 int                     novice_default,
-									 int                     intermediate_default,
-									 int                     hacker_default);
 
 static GtkWidget *global_prefs_dialog = NULL;
 
@@ -367,10 +347,11 @@ nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void)
         
 	enabled_view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
         
-        enabled_view_identifiers = nautilus_g_list_partition (enabled_view_identifiers,
-                                                      (NautilusGPredicateFunc) global_preferences_is_sidebar_panel_enabled,
-                                                      NULL,
-                                                      &disabled_view_identifiers);
+        enabled_view_identifiers = nautilus_g_list_partition
+		(enabled_view_identifiers,
+		 global_preferences_is_sidebar_panel_enabled_cover,
+		 NULL,
+		 &disabled_view_identifiers);
 	
         nautilus_view_identifier_list_free (disabled_view_identifiers);
 
@@ -385,10 +366,11 @@ nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
         
 	enabled_view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
         
-        enabled_view_identifiers = nautilus_g_list_partition (enabled_view_identifiers,
-							      (NautilusGPredicateFunc) global_preferences_is_sidebar_panel_enabled,
-							      NULL,
-							      &disabled_view_identifiers);
+        enabled_view_identifiers = nautilus_g_list_partition
+		(enabled_view_identifiers,
+		 global_preferences_is_sidebar_panel_enabled_cover,
+		 NULL,
+		 &disabled_view_identifiers);
 	
         nautilus_view_identifier_list_free (enabled_view_identifiers);
 	
@@ -477,8 +459,7 @@ global_preferences_get_sidebar_panel_key (const char *panel_iid)
 }
 
 static gboolean
-global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier,
-					     gpointer ignore)
+global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier)
 {
 	gboolean enabled;
         gchar	 *key;
@@ -495,6 +476,12 @@ global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_ident
         g_free (key);
 
         return enabled;
+}
+
+static gboolean
+global_preferences_is_sidebar_panel_enabled_cover (gpointer data, gpointer callback_data)
+{
+	return global_preferences_is_sidebar_panel_enabled (data);
 }
 
 static void

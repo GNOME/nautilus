@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* 
    nautilus-trash-monitor.h: Nautilus trash state watcher.
  
@@ -56,7 +58,6 @@ struct NautilusTrashMonitorClass {
 GtkType			nautilus_trash_monitor_get_type		(void);
 
 NautilusTrashMonitor   *nautilus_trash_monitor_get 		(void);
-void			nautilus_trash_monitor_shutdown		(void);
 gboolean		nautilus_trash_monitor_is_empty 	(void);
 
 #endif

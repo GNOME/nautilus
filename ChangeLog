@@ -1,3 +1,115 @@
+2000-08-09  Darin Adler  <darin@eazel.com>
+
+	After this change, you will get a warning each time you exit
+	unless you get the new Bonobo with my destroy-notify bug fix.
+
+	Fixed the "metafile read fails" bug. Fixed a bunch of memory
+	leaks that I found because I added a new function to get rid
+	of hash tables at quit time and there's a hash table with all
+	the NautilusDirectory objects in there. I'm only 1/2 done
+	with what I'm working on, but people need the "read fails"
+	bug fix.
+
+	* components/help/help-method.c: (escape_for_shell),
+	(help_uri_to_string): Improve code that constructs URIs so it
+	doesn't to excessive escaping.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_failed): Fixed a bug that caused it to fail to
+	read "public" metafiles.
+	(new_files_callback): Redid the fix for "NULL names" to check
+	the result from the call instead of checking the name for NULL.
+	
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_connect_background_to_directory_metadata):
+	Got rid of the dummy callback so the NautilusDirectory code
+	knows that only the metadata needs to be monitored.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get): Got rid of silly ref and sink code.
+	We don't use the floating feature, so we should just ignore it.
+	Use the new function that creates a hash table that should be
+	empty and freed on exit. This helps us detect leaks.
+	(nautilus_directory_file_monitor_add): Got rid of incorrect
+	code that would reject a caller that didn't supply a callback.
+	Callers might want to monitor metadata only, not files.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_name): Got rid of silly ref and sink code.
+	We don't use the floating feature, so we should just ignore it.
+	(modify_link_hash_table), (add_to_link_hash_table_list),
+	(add_to_link_hash_table), (remove_from_link_hash_table_list),
+	(remove_from_link_hash_table): Maintain a hash table to map from
+	a URI to links to that URI.
+	(nautilus_file_new_from_info): Got rid of silly ref and sink code.
+	We don't use the floating feature, so we should just ignore it.
+	To share more code, call nautilus_file_update_info as part of
+	the implementation here.
+	(nautilus_file_update_info): Maintain the hash table entries as
+	the symlink_name field changes.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(free_hash_tables_at_exit),
+	(nautilus_g_hash_table_new_free_at_exit):
+	Added new function to create a hash table that should be empty on
+	exit, check that is is empty, and free it at exit time.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Got rid of some function-pointer casting.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(call_icon_callback), (nautilus_icon_container_for_each):
+	Added a new call to iterate all the icons in the container.
+	Needed so we can unref all the files when we empty it.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_short_list_components_for_uri):
+	Updated for name change: NautilusGPredicateFunc ->
+	NautilusPredicateFunction.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (done_loading):
+	Added code to stop and clear when destroying the directory view.
+	
+	* src/file-manager/fm-icon-view.c: (unref_cover),
+	(fm_icon_view_clear): Added code to get rid of the refs on all
+	the files when the icon view is cleared.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_clear): Added
+	code to get rid of the refs on all the files when the icon view is
+	cleared.
+	
+	* src/file-manager/nautilus-trash-monitor.h:
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize_class), (destroy),
+	(unref_trash_monitor), (nautilus_trash_monitor_get),
+	(nautilus_trash_monitor_is_empty):
+	Added code to destroy the trash monitor on exit.
+	
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_initialize_class), (stop_monitoring_one),
+	(clear), (destroy), (nautilus_bookmark_list_load_file): Added code
+	to clear out the list at destroy time the same way we already did
+	before loading a file.
+	
+	* src/nautilus-window-menus.c: (free_bookmark_list),
+	(get_bookmark_list): Add code to free the global bookmark list
+	on exit to help with leak checking.
+	(refresh_go_menu): Changed to use GList instead of GSList.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Unref the current_location_bookmark and last_location_bookmark
+	to fix a leak.
+	(free_history_list), (nautilus_add_to_history_list): Free the
+	history list at exit time to make it easier to spot leaks.
+	(nautilus_window_get_history_list_callback): Change the history
+	list to be a GList instead of GSList.
+
 2000-08-09  John Sullivan  <sullivan@eazel.com>
 
 	Finished bug 1753 (search results should start out sorted

@@ -29,12 +29,6 @@
 #include <libgnomeui/gnome-canvas.h>
 #include "nautilus-icon-factory.h"
 
-typedef struct NautilusIconContainer NautilusIconContainer;
-typedef struct NautilusIconContainerClass NautilusIconContainerClass;
-typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
-
-typedef struct NautilusIconData NautilusIconData;
-
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
 #define NAUTILUS_ICON_CONTAINER_CLASS(k) \
@@ -45,10 +39,10 @@ typedef struct NautilusIconData NautilusIconData;
 #define NAUTILUS_ICON_CONTAINER_ICON_DATA(pointer) \
 	((NautilusIconData *) (pointer))
 
-struct NautilusIconContainer {
-	GnomeCanvas canvas;
-	NautilusIconContainerDetails *details;
-};
+typedef struct NautilusIconData NautilusIconData;
+
+typedef void (* NautilusIconCallback) (NautilusIconData *icon_data,
+				       gpointer callback_data);
 
 typedef struct {
 	int x;
@@ -62,8 +56,15 @@ typedef enum {
 	NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED
 } NautilusIconCanvasLayoutMode;
 
-struct NautilusIconContainerClass {
-	GnomeCanvasClass parent_class;
+typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
+
+typedef struct {
+	GnomeCanvas canvas;
+	NautilusIconContainerDetails *details;
+} NautilusIconContainer;
+
+typedef struct {
+	GnomeCanvasClass parent_slot;
 
 	/* Operations on the container. */
 	int          (* button_press) 	          (NautilusIconContainer *container,
@@ -127,7 +128,7 @@ struct NautilusIconContainerClass {
 	int	     (* preview)		  (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gboolean start_flag);
-};
+} NautilusIconContainerClass;
 
 /* GtkObject */
 guint      nautilus_icon_container_get_type                      (void);
@@ -140,6 +141,9 @@ gboolean   nautilus_icon_container_add                           (NautilusIconCo
 								  NautilusIconData      *data);
 gboolean   nautilus_icon_container_remove                        (NautilusIconContainer *view,
 								  NautilusIconData      *data);
+void       nautilus_icon_container_for_each                      (NautilusIconContainer *view,
+								  NautilusIconCallback   callback,
+								  gpointer               callback_data);
 void       nautilus_icon_container_request_update                (NautilusIconContainer *view,
 								  NautilusIconData      *data);
 void       nautilus_icon_container_request_update_all            (NautilusIconContainer *container);
@@ -191,4 +195,4 @@ void       nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconCo
 								  int                    zoom_level,
 								  GdkFont               *font);
 
-#endif
+#endif /* NAUTILUS_ICON_CONTAINER_H */

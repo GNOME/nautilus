@@ -31,7 +31,13 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 
-
+typedef struct {
+	GHashTable *hash_table;
+	char *display_name;
+} HashTableToFree;
+
+GList *hash_tables_to_free_at_exit;
+
 /**
  * nautilus_g_date_new_tm:
  * 
@@ -341,10 +347,10 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
  * false. */
 
 GList *
-nautilus_g_list_partition (GList	          *list,
-			   NautilusGPredicateFunc  predicate,
-			   gpointer	           user_data,
-			   GList                 **failed)
+nautilus_g_list_partition (GList *list,
+			   NautilusPredicateFunction  predicate,
+			   gpointer user_data,
+			   GList **failed)
 {
 	GList *predicate_true;
 	GList *predicate_false;
@@ -561,8 +567,55 @@ gint64
 nautilus_get_system_time (void)
 {
 	struct timeval tmp;
+
 	gettimeofday (&tmp, NULL);
-	return (gint64)tmp.tv_usec + ((gint64)tmp.tv_sec) * G_GINT64_CONSTANT(1000000);
+	return (gint64)tmp.tv_usec + (gint64)tmp.tv_sec * G_GINT64_CONSTANT (1000000);
+}
+
+static void
+free_hash_tables_at_exit (void)
+{
+	GList *p;
+	HashTableToFree *hash_table_to_free;
+	guint size;
+
+	for (p = hash_tables_to_free_at_exit; p != NULL; p = p->next) {
+		hash_table_to_free = p->data;
+
+		size = g_hash_table_size (hash_table_to_free->hash_table);
+		if (size != 0) {
+			g_warning ("hash table %s still has %u elements at quit time",
+				   hash_table_to_free->display_name, size);
+		}
+
+		g_hash_table_destroy (hash_table_to_free->hash_table);
+		g_free (hash_table_to_free->display_name);
+		g_free (hash_table_to_free);
+	}
+}
+
+GHashTable *
+nautilus_g_hash_table_new_free_at_exit (GHashFunc hash_func,
+					GCompareFunc key_compare_func,
+					const char *display_name)
+{
+	GHashTable *hash_table;
+	HashTableToFree *hash_table_to_free;
+
+	if (hash_tables_to_free_at_exit == NULL) {
+		g_atexit (free_hash_tables_at_exit);
+	}
+
+	hash_table = g_hash_table_new (hash_func, key_compare_func);
+
+	hash_table_to_free = g_new (HashTableToFree, 1);
+	hash_table_to_free->hash_table = hash_table;
+	hash_table_to_free->display_name = g_strdup (display_name);
+
+	hash_tables_to_free_at_exit = g_list_prepend
+		(hash_tables_to_free_at_exit, hash_table_to_free);
+
+	return hash_table;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -590,14 +643,10 @@ check_tm_to_g_date (time_t time)
 }
 
 static gboolean
-nautilus_test_predicate (char *data,
-			 char *user_data)
+nautilus_test_predicate (gpointer data,
+			 gpointer callback_data)
 {
-	if (g_strcasecmp (data, user_data) <= 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	return g_strcasecmp (data, callback_data) <= 0;
 }
 
 void
@@ -692,7 +741,7 @@ nautilus_self_check_glib_extensions (void)
 	expected_failed = g_list_append (expected_failed, "Range Rover");
 	
 	actual_passed = nautilus_g_list_partition (list_to_partition, 
-						   (NautilusGPredicateFunc) nautilus_test_predicate,
+						   nautilus_test_predicate,
 						   "m",
 						   &actual_failed);
 	

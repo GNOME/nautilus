@@ -243,15 +243,6 @@ background_destroyed_callback (NautilusBackground *background,
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_directory_background_theme_changed,
 					      background);
-
-}
-
-/* dummy callback for directory monitoring */
-static void
-dummy_callback (NautilusDirectory *directory,
-		GList             *files,
-		gpointer	  data)
-{
 }
 
 /* return true if the background is not in the default state */
@@ -349,8 +340,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 		nautilus_directory_file_monitor_add (directory,
 						     background,
 						     NULL, TRUE, FALSE,
-						     dummy_callback,
-						     NULL);					     
+						     NULL, NULL);					     
 		
 		/* arrange for notification when the theme changes */
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_directory_background_theme_changed, background);	

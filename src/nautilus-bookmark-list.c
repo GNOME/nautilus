@@ -47,16 +47,19 @@ enum {
 	LAST_SIGNAL
 };
 
+static guint signals[LAST_SIGNAL];
+static char *window_geometry;
+
 /* forward declarations */
 static void        append_bookmark_node                 (gpointer              list_element,
 							 gpointer              user_data);
+static void        destroy                              (GtkObject            *object);
 static const char *nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
 static void        set_window_geometry_internal         (const char           *string);
-
-static guint signals[LAST_SIGNAL];
-static char *window_geometry;
+static void        stop_monitoring_bookmark             (NautilusBookmarkList *bookmarks,
+							 NautilusBookmark     *bookmark);
 
 /* Initialization.  */
 
@@ -66,6 +69,8 @@ nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
+
+	object_class->destroy = destroy;
 
 	signals[CONTENTS_CHANGED] =
 		gtk_signal_new ("contents_changed",
@@ -89,7 +94,30 @@ nautilus_bookmark_list_initialize (NautilusBookmarkList *bookmarks)
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
 
-
+static void
+stop_monitoring_one (gpointer data, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (data));
+	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
+
+	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
+				  NAUTILUS_BOOKMARK (data));
+}		  
+
+static void
+clear (NautilusBookmarkList *bookmarks)
+{
+	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
+	nautilus_gtk_object_list_free (bookmarks->list);
+	bookmarks->list = NULL;
+}
+
+static void
+destroy (GtkObject *object)
+{
+	clear (NAUTILUS_BOOKMARK_LIST (object));
+}
+
 /**
  * append_bookmark_node:
  * 
@@ -144,7 +172,6 @@ bookmark_in_list_changed_callback (NautilusBookmark *bookmark,
 	nautilus_bookmark_list_contents_changed (bookmarks);
 }				   
 				   
-
 static void
 stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark)
@@ -153,16 +180,6 @@ stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
 				       bookmark_in_list_changed_callback,
 				       bookmarks);
 }
-
-static void
-stop_monitoring_one (gpointer data, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_BOOKMARK (data));
-	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
-
-	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
-				  NAUTILUS_BOOKMARK (data));
-}		  
 
 static void
 insert_bookmark_internal (NautilusBookmarkList *bookmarks,
@@ -410,10 +427,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	xmlNodePtr node;
 
 	/* Wipe out old list. */
-	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	nautilus_gtk_object_list_free (bookmarks->list);
-	bookmarks->list = NULL;
-	
+	clear (bookmarks);
 
 	/* Read new list from file */
 	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));

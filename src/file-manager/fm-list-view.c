@@ -961,10 +961,18 @@ fm_list_view_get_background_widget (FMDirectoryView *view)
 static void
 fm_list_view_clear (FMDirectoryView *view)
 {
+	GtkCList *list;
+	int row;
+
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
+	list = GTK_CLIST (get_list (FM_LIST_VIEW (view)));
+
 	/* Clear away the existing list items. */
-	gtk_clist_clear (GTK_CLIST (get_list (FM_LIST_VIEW (view))));
+	for (row = 0; row < list->rows; ++row) {
+		nautilus_file_unref (NAUTILUS_FILE (gtk_clist_get_row_data (list, row)));
+	}
+	gtk_clist_clear (list);
 }
 
 static void

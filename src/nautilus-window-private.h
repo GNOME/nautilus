@@ -45,7 +45,7 @@ void                 nautilus_window_view_failed                       (Nautilus
 									NautilusViewFrame          *view);
 void                 nautilus_send_history_list_changed                (void);
 void                 nautilus_add_to_history_list                      (NautilusBookmark           *bookmark);
-GSList *             nautilus_get_history_list                         (void);
+GList *              nautilus_get_history_list                         (void);
 void                 nautilus_window_add_bookmark_for_current_location (NautilusWindow             *window);
 void                 nautilus_window_initialize_menus                  (NautilusWindow             *window);
 void                 nautilus_window_initialize_toolbars               (NautilusWindow             *window);

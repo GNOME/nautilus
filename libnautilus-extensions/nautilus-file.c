@@ -68,6 +68,8 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static GHashTable *symbolic_links;
+
 static void  nautilus_file_initialize_class          (NautilusFileClass    *klass);
 static void  nautilus_file_initialize                (NautilusFile         *file);
 static void  destroy                                 (GtkObject            *object);
@@ -127,15 +129,98 @@ nautilus_file_new_from_name (NautilusDirectory *directory,
 
 	file = gtk_type_new (NAUTILUS_TYPE_FILE);
 
-	nautilus_file_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
-
 	nautilus_directory_ref (directory);
 
 	file->details->directory = directory;
 	file->details->name = g_strdup (name);
 
 	return file;
+}
+
+static gboolean
+info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
+{
+	GnomeVFSFileInfo *info;
+
+	if (file == NULL) {
+		return TRUE;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), TRUE);
+	info = file->details->info;
+	if (info == NULL) {
+		return TRUE;
+	}
+	return (info->valid_fields & needed_mask) != needed_mask;
+}
+
+typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
+
+static void
+modify_link_hash_table (NautilusFile *file,
+			ModifyListFunction modify_function)
+{
+	const char *symlink_name;
+	gboolean found;
+	gpointer original_key;
+	gpointer original_value;
+	GList *list;
+
+	/* Check if there is a symlink name. If none, we are OK. */
+	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)) {
+		return;
+	}
+	symlink_name = file->details->info->symlink_name;
+	if (symlink_name == NULL) {
+		return;
+	}
+
+	/* Creat the hash table first time through. */
+	if (symbolic_links == NULL) {
+		symbolic_links = nautilus_g_hash_table_new_free_at_exit
+			(g_str_hash, g_str_equal, "nautilus-file.c: symbolic_links");
+	}
+
+	/* Find the old contents of the hash table. */
+	found = g_hash_table_lookup_extended
+		(symbolic_links, symlink_name,
+		 &original_key, &original_value);
+	if (!found) {
+		list = NULL;
+	} else {
+		g_hash_table_remove (symbolic_links, symlink_name);
+		g_free (original_key);
+		list = original_value;
+	}
+	list = (* modify_function) (list, file);
+	if (list != NULL) {
+		g_hash_table_insert (symbolic_links, g_strdup (symlink_name), list);
+	}
+}
+
+static GList *
+add_to_link_hash_table_list (GList *list, NautilusFile *file)
+{
+	g_assert (g_list_find (list, file) == NULL);
+	return g_list_prepend (list, file);
+}
+
+static void
+add_to_link_hash_table (NautilusFile *file)
+{
+	modify_link_hash_table (file, add_to_link_hash_table_list);
+}
+
+static GList *
+remove_from_link_hash_table_list (GList *list, NautilusFile *file)
+{
+	g_assert (g_list_find (list, file) != NULL);
+	return g_list_remove (list, file);
+}
+
+static void
+remove_from_link_hash_table (NautilusFile *file)
+{
+	modify_link_hash_table (file, remove_from_link_hash_table_list);
 }
 
 NautilusFile *
@@ -149,15 +234,10 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 
 	file = gtk_type_new (NAUTILUS_TYPE_FILE);
 
-	nautilus_file_ref (file);
-	gtk_object_sink (GTK_OBJECT (file));
-
-	gnome_vfs_file_info_ref (info);
 	nautilus_directory_ref (directory);
-
 	file->details->directory = directory;
-	file->details->info = info;
-	file->details->name = info->name;
+
+	nautilus_file_update_info (file, info);
 
 	return file;
 }
@@ -281,7 +361,7 @@ destroy (GtkObject *object)
 		}
 	}
 
-	nautilus_directory_unref (file->details->directory);
+	nautilus_directory_unref (directory);
 	if (file->details->info == NULL) {
 		g_free (file->details->name);
 	} else {
@@ -877,16 +957,18 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 		return FALSE;
 	}
 
-	gnome_vfs_file_info_ref (info);
+	remove_from_link_hash_table (file);
 
+	gnome_vfs_file_info_ref (info);
 	if (file->details->info == NULL) {
 		g_free (file->details->name);
 	} else {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
-
 	file->details->info = info;
 	file->details->name = info->name;
+
+	add_to_link_hash_table (file);
 
 	return TRUE;
 }
@@ -1448,22 +1530,6 @@ nautilus_file_get_uri (NautilusFile *file)
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (uri);
 	return uri_text;
-}
-
-static gboolean
-info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
-{
-	GnomeVFSFileInfo *info;
-
-	if (file == NULL) {
-		return TRUE;
-	}
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), TRUE);
-	info = file->details->info;
-	if (info == NULL) {
-		return TRUE;
-	}
-	return (info->valid_fields & needed_mask) != needed_mask;
 }
 
 /**

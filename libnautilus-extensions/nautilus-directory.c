@@ -57,6 +57,8 @@ static guint signals[LAST_SIGNAL];
          | GNOME_VFS_PERM_GROUP_ALL \
 	 | GNOME_VFS_PERM_OTHER_ALL)
 
+static GHashTable *directories;
+
 static GnomeVFSURI *      construct_private_metafile_uri      (GnomeVFSURI *uri);
 static void               nautilus_directory_destroy          (GtkObject   *object);
 static void               nautilus_directory_initialize       (gpointer     object,
@@ -67,8 +69,6 @@ static GnomeVFSResult     nautilus_make_directory_and_parents (GnomeVFSURI *uri,
 static NautilusDirectory *nautilus_directory_new              (const char  *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
-
-static GHashTable *directory_objects;
 
 static void
 nautilus_directory_initialize_class (gpointer klass)
@@ -165,7 +165,7 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_g_list_free_deep (directory->details->monitor_list);
 	}
 
-	g_hash_table_remove (directory_objects, directory->details->uri_text);
+	g_hash_table_remove (directories, directory->details->uri_text);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
@@ -297,14 +297,15 @@ nautilus_directory_get (const char *uri)
 	canonical_uri = make_uri_canonical (uri);
 
 	/* Create the hash table first time through. */
-	if (directory_objects == NULL) {
-		directory_objects = g_hash_table_new (g_str_hash, g_str_equal);
+	if (directories == NULL) {
+		directories = nautilus_g_hash_table_new_free_at_exit
+			(g_str_hash, g_str_equal, "nautilus-directory.c: directories");
 	}
 
 	/* If the object is already in the hash table, look it up. */
 
 	g_assert (is_canonical_uri (canonical_uri));
-	directory = g_hash_table_lookup (directory_objects,
+	directory = g_hash_table_lookup (directories,
 					 canonical_uri);
 	if (directory != NULL) {
 		nautilus_directory_ref (directory);
@@ -318,9 +319,7 @@ nautilus_directory_get (const char *uri)
 		g_assert (strcmp (directory->details->uri_text, canonical_uri) == 0);
 
 		/* Put it in the hash table. */
-		nautilus_directory_ref (directory);
-		gtk_object_sink (GTK_OBJECT (directory));
-		g_hash_table_insert (directory_objects,
+		g_hash_table_insert (directories,
 				     directory->details->uri_text,
 				     directory);
 	}
@@ -641,11 +640,11 @@ get_parent_directory_if_exists (const char *uri)
 	g_free (directory_uri);
 
 	/* Get directory from hash table. */
-	if (directory_objects == NULL) {
+	if (directories == NULL) {
 		directory = NULL;
 	} else {
 		g_assert (is_canonical_uri (canonical_uri));
-		directory = g_hash_table_lookup (directory_objects,
+		directory = g_hash_table_lookup (directories,
 						 canonical_uri);
 	}
 	g_free (canonical_uri);
@@ -1001,7 +1000,6 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
-	g_return_if_fail (callback != NULL);
 
 	if (force_reload) {
 		nautilus_directory_force_reload (directory);
@@ -1100,7 +1098,7 @@ got_files_callback (NautilusDirectory *directory, GList *files, gpointer callbac
 int
 nautilus_directory_number_outstanding (void)
 {
-        return g_hash_table_size (directory_objects);
+        return g_hash_table_size (directories);
 }
 
 void
@@ -1111,7 +1109,7 @@ nautilus_self_check_directory (void)
 
 	directory = nautilus_directory_get ("file:///etc");
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
 	file_count = 0;
 	nautilus_directory_file_monitor_add
@@ -1158,11 +1156,11 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_unref (directory);
 
-	while (g_hash_table_size (directory_objects) != 0) {
+	while (g_hash_table_size (directories) != 0) {
 		gtk_main_iteration ();
 	}
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
 	directory = nautilus_directory_get ("file:///etc");
 
@@ -1190,13 +1188,13 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->files == NULL, TRUE);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 
 	nautilus_directory_unref (directory);
 
-	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
 	/* escape_slashes */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes (""), "");

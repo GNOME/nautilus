@@ -80,7 +80,7 @@ enum {
 };
 
 /* Other static variables */
-static GSList *history_list = NULL;
+static GList *history_list = NULL;
 
 static void nautilus_window_initialize_class        (NautilusWindowClass *klass);
 static void nautilus_window_initialize              (NautilusWindow      *window);
@@ -493,6 +493,12 @@ nautilus_window_destroy (GtkObject *object)
 	g_slist_foreach (window->forward_list, (GFunc)gtk_object_unref, NULL);
 	g_slist_free (window->back_list);
 	g_slist_free (window->forward_list);
+	if (window->current_location_bookmark != NULL) {
+		gtk_object_unref (GTK_OBJECT (window->current_location_bookmark));
+	}
+	if (window->last_location_bookmark != NULL) {
+		gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
+	}
 	
 	if (window->statusbar_clear_id != 0) {
 		g_source_remove (window->statusbar_clear_id);
@@ -1066,6 +1072,12 @@ nautilus_send_history_list_changed (void)
 			 	 "history_list_changed");
 }
 
+static void
+free_history_list (void)
+{
+	nautilus_gtk_object_list_free (history_list);
+}
+
 void
 nautilus_add_to_history_list (NautilusBookmark *bookmark)
 {
@@ -1073,24 +1085,30 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 	 * this is not a NautilusWindow function. Perhaps it belongs
 	 * in its own file.
 	 */
-	GSList *found_link;
+	static gboolean free_history_list_is_set_up;
+	GList *found_link;
 
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	found_link = g_slist_find_custom (history_list, 
-					  bookmark,
-					  nautilus_bookmark_compare_with);
+	if (!free_history_list_is_set_up) {
+		g_atexit (free_history_list);
+		free_history_list_is_set_up = TRUE;
+	}
+
+	gtk_object_ref (GTK_OBJECT (bookmark));
+
+	found_link = g_list_find_custom (history_list, 
+					 bookmark,
+					 nautilus_bookmark_compare_with);
 	
 	/* Remove any older entry for this same item. There can be at most 1. */
-	if (found_link != NULL)
-	{
+	if (found_link != NULL) {
 		gtk_object_unref (found_link->data);
-		history_list = g_slist_remove_link (history_list, found_link);
+		history_list = g_list_remove_link (history_list, found_link);
 	}
 
 	/* New item goes first. */
-	gtk_object_ref (GTK_OBJECT (bookmark));
-	history_list = g_slist_prepend(history_list, bookmark);
+	history_list = g_list_prepend (history_list, bookmark);
 
 	/* Tell world that history list has changed. At least all the
 	 * NautilusWindows (not just this one) are listening.
@@ -1098,7 +1116,7 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 	nautilus_send_history_list_changed ();
 }
 
-GSList *
+GList *
 nautilus_get_history_list (void)
 {
 	return history_list;
@@ -1207,11 +1225,11 @@ nautilus_window_get_history_list_callback (NautilusViewFrame *view,
 	Nautilus_HistoryList *list;
 	NautilusBookmark *bookmark;
 	int length, i;
-	GSList *p;
+	GList *p;
 	char *name, *location;
 
 	/* Get total number of history items */
-	length = g_slist_length (history_list);
+	length = g_list_length (history_list);
 
 	history = Nautilus_History__alloc ();
 	list = &history->list;

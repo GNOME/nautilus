@@ -433,7 +433,7 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
-	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) gnome_vfs_mime_application_has_id_not_in_list, 
+	result = nautilus_g_list_partition (result, (NautilusPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
 					    metadata_application_remove_ids, &removed);
 
 	gnome_vfs_mime_application_list_free (removed);
@@ -511,7 +511,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	}
 
 	iids = nautilus_g_list_partition
-		(iids, (NautilusGPredicateFunc) string_not_in_list, 
+		(iids, (NautilusPredicateFunction) string_not_in_list, 
 		 metadata_component_remove_ids, &removed);
 
 	g_list_free (removed);
