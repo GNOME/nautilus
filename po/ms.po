@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
-"POT-Creation-Date: 2002-03-30 03:26+0800\n"
+"POT-Creation-Date: 2002-04-03 03:06+0800\n"
 "PO-Revision-Date: 2002-01-15 08:13+0800\n"
 "Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -2214,6 +2214,9 @@ msgid ""
 "\n"
 "There is not enough space on the destination."
 msgstr ""
+"Ralat ketika menyalin ke \"%s\".\n"
+"\n"
+"Tidak cukup ruang pada destinasi."
 
 #: libnautilus-private/nautilus-file-operations.c:651
 #, c-format
@@ -2222,6 +2225,9 @@ msgid ""
 "\n"
 "There is not enough space on the destination."
 msgstr ""
+"Ralay bila memindah ke \"%s\".\n"
+"\n"
+"Tidak cukup ruang pada destinasi."
 
 #: libnautilus-private/nautilus-file-operations.c:655
 #, c-format
@@ -2263,6 +2269,9 @@ msgid ""
 "\n"
 "You do not have permissions to write to this folder."
 msgstr ""
+"Ralat bila memindah item ke \"%s\".\n"
+"\n"
+"Anda tidak mempunyai keizinan untuk menulis ke folder ini."
 
 #: libnautilus-private/nautilus-file-operations.c:682
 #, c-format
@@ -2271,6 +2280,9 @@ msgid ""
 "\n"
 "The destination disk is read-only."
 msgstr ""
+"Ralat bila memindah item ke \"%s\".\n"
+"\n"
+"Cakera destinasi adalah baca-sahaja."
 
 #: libnautilus-private/nautilus-file-operations.c:689
 #, c-format
@@ -2279,6 +2291,9 @@ msgid ""
 "\n"
 "You do not have permissions to write to this folder."
 msgstr ""
+"Ralat bila mencipta pautan pada \"%s\".\n"
+"\n"
+"Anda tidak mempunyai keizinan untuk menulis ke folder ini."
 
 #: libnautilus-private/nautilus-file-operations.c:693
 #, c-format
@@ -2287,6 +2302,9 @@ msgid ""
 "\n"
 "The destination disk is read-only."
 msgstr ""
+"Error while creating links in \"%s\".\n"
+"\n"
+"Cakera destinasi adalah baca-sahaja."
 
 #: libnautilus-private/nautilus-file-operations.c:722
 #, c-format
@@ -3501,47 +3519,47 @@ msgstr "Jenis MIME"
 msgid "none"
 msgstr "tiada"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1726
+#: libnautilus-private/nautilus-icon-canvas-item.c:1775
 msgid "file icon"
 msgstr "ikon fail"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1845
+#: libnautilus-private/nautilus-icon-canvas-item.c:1894
 msgid "editable text"
 msgstr "teks boleh edit"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1846
+#: libnautilus-private/nautilus-icon-canvas-item.c:1895
 msgid "the editable label"
 msgstr "label boleh edit"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1853
+#: libnautilus-private/nautilus-icon-canvas-item.c:1902
 msgid "additional text"
 msgstr "teks tambahan"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1854
+#: libnautilus-private/nautilus-icon-canvas-item.c:1903
 msgid "some more text"
 msgstr "lebih teks"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1861
+#: libnautilus-private/nautilus-icon-canvas-item.c:1910
 msgid "highlighted for selection"
 msgstr "terserlah bagi pilihan"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1862
+#: libnautilus-private/nautilus-icon-canvas-item.c:1911
 msgid "whether we are highlighted for a selection"
 msgstr "samada ianya terserlah bagi pilihan"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1869
+#: libnautilus-private/nautilus-icon-canvas-item.c:1918
 msgid "highlighted as keyboard focus"
 msgstr "terserlah sebagai fokus papankekunci"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1870
+#: libnautilus-private/nautilus-icon-canvas-item.c:1919
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "samada ianya terserlah untuk merender fokus papankekunci"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1878
+#: libnautilus-private/nautilus-icon-canvas-item.c:1927
 msgid "highlighted for drop"
 msgstr "terserlah bagi jatuhan"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1879
+#: libnautilus-private/nautilus-icon-canvas-item.c:1928
 msgid "whether we are highlighted for a D&D drop"
 msgstr "samada terserlah bagi jatuhan DND"
 
@@ -3663,111 +3681,111 @@ msgstr ""
 msgid "Is the default for all \"%s\" items."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:988
+#: libnautilus-private/nautilus-program-chooser.c:989
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Ubahsuai \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1014
+#: libnautilus-private/nautilus-program-chooser.c:1015
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr ""
 
 #. Radio button for setting default for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1021
+#: libnautilus-private/nautilus-program-chooser.c:1022
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Guna defaul bagi \"%s\" item"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1028
+#: libnautilus-private/nautilus-program-chooser.c:1029
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr ""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1034
+#: libnautilus-private/nautilus-program-chooser.c:1035
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Guna default hanya untuk \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-private/nautilus-program-chooser.c:1041
+#: libnautilus-private/nautilus-program-chooser.c:1042
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1199
+#: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
 #: src/nautilus-bookmarks-window.c:207
 msgid "Name"
 msgstr "Nama"
 
-#: libnautilus-private/nautilus-program-chooser.c:1208
+#: libnautilus-private/nautilus-program-chooser.c:1209
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-private/nautilus-program-chooser.c:1286
+#: libnautilus-private/nautilus-program-chooser.c:1287
 msgid "Choose"
 msgstr "Pilih"
 
-#: libnautilus-private/nautilus-program-chooser.c:1289
+#: libnautilus-private/nautilus-program-chooser.c:1290
 msgid "Done"
 msgstr "Selesai"
 
-#: libnautilus-private/nautilus-program-chooser.c:1359
+#: libnautilus-private/nautilus-program-chooser.c:1360
 msgid "_Modify..."
 msgstr "_Ubahsuai..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-private/nautilus-program-chooser.c:1368
+#: libnautilus-private/nautilus-program-chooser.c:1369
 msgid "File Types and Programs"
 msgstr "Jenis Fail dan Program"
 
-#: libnautilus-private/nautilus-program-chooser.c:1380
+#: libnautilus-private/nautilus-program-chooser.c:1381
 msgid "_Go There"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1387
+#: libnautilus-private/nautilus-program-chooser.c:1388
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1418
+#: libnautilus-private/nautilus-program-chooser.c:1419
 msgid "Open with Other"
 msgstr "Buka dengan Lain"
 
-#: libnautilus-private/nautilus-program-chooser.c:1419
+#: libnautilus-private/nautilus-program-chooser.c:1420
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1423
+#: libnautilus-private/nautilus-program-chooser.c:1424
 msgid "View as Other"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1424
+#: libnautilus-private/nautilus-program-chooser.c:1425
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1526
+#: libnautilus-private/nautilus-program-chooser.c:1527
 #, c-format
 msgid "No viewers are available for \"%s\"."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1527
+#: libnautilus-private/nautilus-program-chooser.c:1528
 msgid "No Viewers Available"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1530
+#: libnautilus-private/nautilus-program-chooser.c:1531
 #, c-format
 msgid "No applications are available for \"%s\"."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1531
+#: libnautilus-private/nautilus-program-chooser.c:1532
 msgid "No Applications Available"
 msgstr ""
 
@@ -3775,7 +3793,7 @@ msgstr ""
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
-#: libnautilus-private/nautilus-program-chooser.c:1538
+#: libnautilus-private/nautilus-program-chooser.c:1539
 #, c-format
 msgid ""
 "%s\n"
@@ -4810,163 +4828,167 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
+"Nama \"%s\" adalah tidak sah kerana ia mengandungi aksara \"/\". Sila guna "
+"nama lain."
 
 #: src/file-manager/fm-error-reporting.c:121
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr ""
+msgstr "Nama \"%s\" adalah tidak sah. Sila guna nama lain."
 
 #: src/file-manager/fm-error-reporting.c:127
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr ""
+"Tak dapat menukar nama bagi \"%s\" kerana ianya pada cakera baca-sahaja"
 
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Maaf, tak dapat menukarnama \"%s\" ke \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
-msgstr ""
+msgstr "Ralat menukarnama"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
 msgid ""
 "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr ""
+"Anda tidak mempunyai keizinan mencukupi untuk menukar kumpulan bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:167
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr ""
+"Tak dapat menukar kumpulan bagi \"%s\" kerana ianya pada cakera baca-sahaja"
 
 #: src/file-manager/fm-error-reporting.c:175
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr ""
+msgstr "Maaf, tak dapat menukar kumbulan bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:179
 msgid "Error Setting Group"
-msgstr ""
+msgstr "Ralat Menetapkan Kumpulan"
 
 #: src/file-manager/fm-error-reporting.c:201
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr ""
+"Tak dapat tukar pemilik bagi \"%s\" kerana ianya pada cakera baca-sahaja"
 
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr ""
+msgstr "Maaf, tak dapat menukar pemilik bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:211
 msgid "Error Setting Owner"
-msgstr ""
+msgstr "Ralat Menetapkan Pemilik"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
+"Tak dapat menukar keizinan bagi \"%s\" kerana ianya pada cakera baca-sahaja"
 
 #: src/file-manager/fm-error-reporting.c:240
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr ""
+msgstr "Maaf, tak dapat menukar keizinan bagi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:243
 msgid "Error Setting Permissions"
-msgstr ""
+msgstr "Ralat Menetapkan Keizinan"
 
 #: src/file-manager/fm-error-reporting.c:309
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Menukarnama \"%s\" ke \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:314
 msgid "Cancel Rename?"
-msgstr ""
+msgstr "Batal Tukarnama?"
 
 #: src/file-manager/fm-icon-view.c:149
-#, fuzzy
 msgid "by _Name"
-msgstr "_Nama"
+msgstr "mengikut _Nama"
 
 #: src/file-manager/fm-icon-view.c:150
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
-msgstr ""
+msgstr "Biar ikon diisih mengikut nama dalam baris"
 
 #: src/file-manager/fm-icon-view.c:156
-#, fuzzy
 msgid "by _Size"
-msgstr "Saiz"
+msgstr "mengikut _Saiz"
 
 #: src/file-manager/fm-icon-view.c:157
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
-msgstr ""
+msgstr "Biarkan ikon diisih mengikut saiz dalam baris"
 
 #: src/file-manager/fm-icon-view.c:163
 msgid "by _Type"
-msgstr ""
+msgstr "mengikut _Jenis"
 
 #: src/file-manager/fm-icon-view.c:164
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
-msgstr ""
+msgstr "Biarkan ikon diisih mengikut jenis dalam baris"
 
 #: src/file-manager/fm-icon-view.c:170
 msgid "by Modification _Date"
-msgstr ""
+msgstr "mengikut _Tarikh Diubahsuai"
 
 #: src/file-manager/fm-icon-view.c:171
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
-msgstr ""
+msgstr "Biarkan ikon diisih mengikur tarikh diubahsuai dalam baris"
 
 #: src/file-manager/fm-icon-view.c:177
 msgid "by _Emblems"
-msgstr ""
+msgstr "mengikut _Emblem"
 
 #: src/file-manager/fm-icon-view.c:178
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
-msgstr ""
+msgstr "Biarkan ikon diisih mengikut emblem dalam baris"
 
 #: src/file-manager/fm-icon-view.c:1376
 #: src/file-manager/nautilus-icon-view-ui.xml.h:34
 msgid "_Restore Icons' Original Sizes"
-msgstr ""
+msgstr "_Pulihkan Saiz Asal Ikon"
 
 #: src/file-manager/fm-icon-view.c:1377
 msgid "_Restore Icon's Original Size"
-msgstr ""
+msgstr "_Pulihkan Saiz Asal Ikon"
 
 #: src/file-manager/fm-icon-view.c:1712
 #, c-format
 msgid "pointing at \"%s\""
-msgstr ""
+msgstr "menuding ke \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2492
 msgid "Drag and drop is only supported to local file systems."
-msgstr ""
+msgstr "Heret dan jatuh hanya disokong pada sistemfail lokal."
 
 #: src/file-manager/fm-icon-view.c:2493 src/file-manager/fm-icon-view.c:2512
-#, fuzzy
 msgid "Drag and Drop error"
-msgstr "Pengendali heret"
+msgstr "Ralat Heret dan Jatuh"
 
 #: src/file-manager/fm-icon-view.c:2511
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "Jenis heretan tidak sah digunakan."
 
 #: src/file-manager/fm-list-view.c:215
-#, fuzzy
 msgid "File name"
-msgstr "Namafail"
+msgstr "Nama fail"
 
+# Saiz bra
 #: src/file-manager/fm-list-view.c:237
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
@@ -5003,15 +5025,16 @@ msgstr ""
 "sebagai ikon sendiri."
 
 #: src/file-manager/fm-properties-window.c:305 src/nautilus-sidebar.c:771
-#, fuzzy
 msgid "Local Images Only"
-msgstr "Muatkan semua imej"
+msgstr "Imej lokal Sahaja"
 
 #: src/file-manager/fm-properties-window.c:310 src/nautilus-sidebar.c:776
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
 msgstr ""
+"Fail yang anda jatuhkan adalah bukan imej. Anda hanya boleh guna imej lokal "
+"sebagai ikon sendiri."
 
 #: src/file-manager/fm-properties-window.c:312 src/nautilus-sidebar.c:778
 msgid "Images Only"
@@ -5422,12 +5445,14 @@ msgstr "Buang corak atau warna sendiri dari latarbelakang desktop"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 #, fuzzy
 msgid "Reset Desktop Background"
-msgstr "Guna imej sebagai latar belakang"
+msgstr "Ulangtetap  Latarbelakang Desktop"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
+"Papar tetingkap yang membolehkan anda menetapkan corak atau warna bagi "
+"latarbelakang desktop"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5742,28 +5767,30 @@ msgstr "Secara _Manual"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:35
 msgid "_Stretch Icon"
-msgstr ""
+msgstr "_Regang Ikon"
 
 #: src/file-manager/nautilus-indexing-info.c:89
 #, c-format
 msgid "Indexing is %d%% complete."
-msgstr ""
+msgstr "Pengindeksan %d%% selesai."
 
 #: src/file-manager/nautilus-indexing-info.c:164
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
 msgstr ""
+"Sekali sehari fail dan kandungan teks anda diindeks supaya pencarian menjadi "
+"pantas."
 
 #: src/file-manager/nautilus-indexing-info.c:166
 #: src/file-manager/nautilus-indexing-info.c:204
 msgid "Indexing Status"
-msgstr ""
+msgstr "Status Pengindeksan"
 
 #: src/file-manager/nautilus-indexing-info.c:171
 #, c-format
 msgid "Your files were last indexed at %s"
-msgstr ""
+msgstr "Fail anda terakhir diindeks pada %s"
 
 #: src/file-manager/nautilus-indexing-info.c:202
 msgid ""
@@ -7223,7 +7250,7 @@ msgstr ""
 #: src/nautilus-window-menus.c:346
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
-msgstr "Anda pasti mahu Nautilus melipakan lokasi mana yang telah dilawati?"
+msgstr "Anda pasti mahu Nautilus melupakan lokasi mana yang telah dilawati?"
 
 #: src/nautilus-window-menus.c:351
 msgid "Forget History?"
@@ -7259,7 +7286,7 @@ msgstr "Papar _Bar Lokasi"
 #.
 #: src/nautilus-window-menus.c:607
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr ""
+msgstr "Hakcipta (C) 1999-2001 Eazel, Inc."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -7274,6 +7301,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
+"Nautilus adalah shell grafikal bagi GNOME yang memudahkan pengurusan fail "
+"dan keseluruhan sistem."
 
 #: src/nautilus-window-menus.c:690
 #, c-format
@@ -7281,6 +7310,8 @@ msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr ""
+"Lokasi \"%s\" tidak wujud. Adakah anda ingin membuang sebarang tandabuku "
+"berkaitan lokasi ini dari senarai anda?"
 
 #: src/nautilus-window-menus.c:694
 msgid "Bookmark for Nonexistent Location"
