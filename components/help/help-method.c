@@ -117,7 +117,11 @@ help_uri_to_string (HelpURI *help_uri)
 
 	switch (help_uri->type) {
 	case SGML_FILE: case XML_FILE:
+#ifdef USE_GNOME_DB2HTML3
+		command = "gnome-db2html3";
+#else
                 command = "gnome-db2html2";
+#endif
 		if (help_uri->section != NULL) {
                         parameter = g_strconcat (help_uri->file, "?", help_uri->section, NULL);
                 } else {
