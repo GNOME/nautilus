@@ -5904,11 +5904,21 @@ nautilus_extract_top_left_text (const char *text,
 	int line, i;
 	gunichar c;
 	char *text_copy;
+	const char *utf8_end;
+	gboolean validated;
 
         text_copy = NULL;
-        if (text != NULL && !g_utf8_validate (text, length, NULL)) {
-		text_copy = try_to_make_utf8 (text, &length);
-		text = text_copy;
+        if (text != NULL) {
+		/* Might be a partial utf8 character at the end if we didn't read whole file */
+		validated = g_utf8_validate (text, length, &utf8_end);
+		if (!validated &&
+		    !(length >= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES &&
+		      text + length - utf8_end < 6)) {
+			text_copy = try_to_make_utf8 (text, &length);
+			text = text_copy;
+		} else if (!validated) {
+			length = utf8_end - text;
+		}
         }
 
 	if (text == NULL || length == 0) {
