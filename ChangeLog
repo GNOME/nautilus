@@ -1,3 +1,20 @@
+2000-05-05  Andy Hertzfeld <andy@eazel.com>
+
+	did some work at the request of Bud
+	
+	* libnautilus-extenstions/nautilus-global-preferences.h:
+	added preference NAUTILUS_PREFERENCES_SIDEBAR_WIDTH
+	* src/ntl-window.c:
+	set the initial sidebar width from NAUTILUS_PREFERENCES_SIDEBAR_WIDTH.  As a welcome
+	side-effect, this allowed  me to remove the old "sopwidth hack". I also increased
+	the default size.
+	* src/ntl-index-panel:
+	added old_width to details.  Overrode size_allocate signal to get in there when the
+	size changes to record it in preferences when it changes
+	
+	* src/nautilus-index-title.c:
+	changed the font used for the title to helvetica, to match the other text
+	
 2000-05-05  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/.cvsignore: Ignore the new files that

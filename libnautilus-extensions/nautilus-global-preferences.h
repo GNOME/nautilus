@@ -38,6 +38,9 @@ BEGIN_GNOME_DECLS
 /* Show hidden files  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/nautilus/preferences/show_hidden_files"
 
+/* sidebar width */
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  		"/nautilus/preferences/sidebar_width"
+
 /* Home URI  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"/nautilus/preferences/home_uri"
 

@@ -36,11 +36,13 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-type.h>
+#include <nautilus-widgets/nautilus-preferences.h>
 #include "ntl-meta-view.h"
 #include "nautilus-index-tabs.h"
 #include "nautilus-index-title.h"
@@ -57,6 +59,7 @@ struct NautilusIndexPanelDetails {
 	int selected_index;
 	NautilusDirectory *directory;
 	int background_connection;
+    int old_width;
 };
 
 static void     nautilus_index_panel_initialize_class   (GtkObjectClass     *object_klass);
@@ -75,6 +78,8 @@ static void     nautilus_index_panel_drag_data_received (GtkWidget          *wid
 							 GtkSelectionData   *selection_data,
 							 guint               info,
 							 guint               time);
+static void 	nautilus_index_panel_size_allocate       (GtkWidget              *widget,
+						  	 GtkAllocation         *allocation);
 static void     nautilus_index_panel_update_info        (NautilusIndexPanel *index_panel,
 							 const char         *title);
 static void     nautilus_index_panel_update_buttons     (NautilusIndexPanel *index_panel);
@@ -131,6 +136,7 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 	widget_class->motion_notify_event = nautilus_index_panel_motion_event;
 	widget_class->leave_notify_event = nautilus_index_panel_leave_event;
 	widget_class->button_press_event  = nautilus_index_panel_press_event;
+	widget_class->size_allocate = nautilus_index_panel_size_allocate;
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -188,6 +194,8 @@ nautilus_index_panel_initialize (GtkObject *object)
 			  GTK_WIDGET (index_panel->details->index_tabs),
 			  FALSE, FALSE, 0);
 
+	index_panel->details->old_width = widget->allocation.width;
+	
 	/* allocate and install the meta-tabs */
   	index_panel->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
 	gtk_object_ref (GTK_OBJECT (index_panel->details->notebook));
@@ -866,4 +874,23 @@ nautilus_index_panel_set_title (NautilusIndexPanel *index_panel, const char* new
 {       
 	nautilus_index_title_set_text (index_panel->details->title,
 				       new_title);
+}
+
+/* we override size allocate so we can remember our size when it changes, since the paned widget
+   doesn't generate a signal */
+   
+static void
+nautilus_index_panel_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+{
+	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL(widget);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+
+	/* remember the size if it changed */
+	
+	if (widget->allocation.width != index_panel->details->old_width) {
+		index_panel->details->old_width = widget->allocation.width;
+ 		nautilus_preferences_set_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, widget->allocation.width);
+	
+	}	
 }

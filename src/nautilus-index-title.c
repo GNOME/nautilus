@@ -231,7 +231,7 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 	 * don't use hardwired font like this - get it from preferences 
 	 */
 	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
-				  "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
+				  "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	
 	nautilus_gtk_widget_set_font (index_title->details->title, label_font);
 	g_free (displayed_text);

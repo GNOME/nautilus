@@ -42,6 +42,7 @@
 
 #include <libnautilus/nautilus-bonobo-ui.h>
 
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
@@ -194,8 +195,6 @@ static void zoom_in_cb  (NautilusZoomControl *zoom_control,
                          NautilusWindow      *window);
 static void zoom_out_cb (NautilusZoomControl *zoom_control,
                          NautilusWindow      *window);
-
-/* #define CONTENTS_AS_HBOX 1 */
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
@@ -363,6 +362,7 @@ nautilus_window_constructed(NautilusWindow *window)
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame;
   GnomeDockItemBehavior behavior;
+  int sidebar_width;
   
   app = GNOME_APP(window);
 
@@ -408,20 +408,10 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
   gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);
 
-#ifdef CONTENTS_AS_HBOX
-  window->content_hbox = gtk_hbox_new(FALSE, 0);
-#else
   window->content_hbox = gtk_hpaned_new();
-  {
-/* special case the width of the index panel for sopwith */
-	char *user_name = getenv("USER");
-	gint pos = 136;
-
-	if (!strcmp(user_name, "sopwith"))
-		pos = 275;
-	gtk_paned_set_position(GTK_PANED(window->content_hbox), pos);
-  }
-#endif
+  sidebar_width = nautilus_preferences_get_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
+  gtk_paned_set_position(GTK_PANED(window->content_hbox), sidebar_width);
+ 
   gnome_app_set_contents(app, window->content_hbox);
 
   /* set up the index panel in a frame */
@@ -434,11 +424,7 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_show (GTK_WIDGET (window->index_panel));
   gtk_container_add(GTK_CONTAINER(temp_frame), GTK_WIDGET (window->index_panel));
 
-#ifdef CONTENTS_AS_HBOX
-  gtk_box_pack_start(GTK_BOX(window->content_hbox), temp_frame, FALSE, FALSE, 0);
-#else
   gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
-#endif
 
   gtk_widget_show_all(window->content_hbox);
 
@@ -1064,11 +1050,7 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
 
       nautilus_content_view_set_active (NAUTILUS_CONTENT_VIEW (new_view)); 
 
-#ifdef CONTENTS_AS_HBOX
-      gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET (new_view), TRUE, TRUE, 0);
-#else
       gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET (new_view), TRUE, FALSE);
-#endif      
     }
       
   gtk_widget_queue_resize(window->content_hbox);
