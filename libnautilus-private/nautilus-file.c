@@ -2259,9 +2259,49 @@ nautilus_file_set_integer_metadata (NautilusFile *file,
 		 metadata);
 }
 
+static char *
+make_valid_utf8 (char *name)
+{
+	GString *string;
+	const char *remainder, *invalid;
+	int remaining_bytes, valid_bytes;
+
+	string = NULL;
+	remainder = name;
+	remaining_bytes = strlen (name);
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid)) {
+			break;
+		}
+		valid_bytes = invalid - remainder;
+
+		if (string == NULL) {
+			string = g_string_sized_new (remaining_bytes);
+		}
+		g_string_append_len (string, remainder, valid_bytes);
+		g_string_append_c (string, '?');
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
+	}
+
+	if (string == NULL) {
+		return name;
+	}
+
+	g_string_append (string, remainder);
+	g_string_append (string, _(" (invalid Unicode)"));
+	g_assert (g_utf8_validate (string->str, -1, NULL));
+	g_free (name);
+	return g_string_free (string, FALSE);
+}
+
 char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
+	char *name;
+
 	if (file == NULL) {
 		return NULL;
 	}
@@ -2269,30 +2309,26 @@ nautilus_file_get_display_name (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	
  	if (file->details->got_link_info && file->details->display_name != NULL) {
- 		return g_strdup (file->details->display_name);
+ 		name = g_strdup (file->details->display_name);
 	} else {
-		return nautilus_file_get_name (file);
+		name = nautilus_file_get_name (file);
+		if (name == NULL) {
+			/* Fall back to the escaped form if the unescaped form is no
+			 * good. This is dangerous for people who code with the name,
+			 * but convenient for people who just want to display it.
+			 */
+			name = g_strdup (file->details->relative_uri);
+		}
 	}
-}
 
+	return make_valid_utf8 (name);
+}
 
 char *
 nautilus_file_get_name (NautilusFile *file)
 {
-	char *name;
-
-	name = gnome_vfs_unescape_string (file->details->relative_uri, "/");
-	if (name != NULL) {
-		return name;
-	}
-
-	/* Fall back to the escaped form if the unescaped form is no
-	 * good. This is dangerous for people who code with the name,
-	 * but convenient for people who just want to display it.
-	 */
-	return g_strdup (file->details->relative_uri);
+	return gnome_vfs_unescape_string (file->details->relative_uri, "/");
 }
-
    
 void             
 nautilus_file_monitor_add (NautilusFile *file,
