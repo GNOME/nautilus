@@ -1,5 +1,12 @@
 2000-06-01  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_all_applications_for_uri,
+	nautilus_mime_get_all_components_for_uri): Properly implemented w/
+	appropriate metadata checking, etc.
+	(gnome_vfs_mime_application_has_id): Utility function for
+	comparison purposes.
+
 	* libnautilus-extensions/nautilus-directory.h,
 	libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_wait_until_ready): Non-asynchronous equivalent

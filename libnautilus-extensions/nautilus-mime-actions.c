@@ -35,6 +35,8 @@
 
 #include <stdio.h>
 
+/* FIXME: free the mallocs */
+
 static OAF_ServerInfo *
 OAF_ServerInfo__copy (OAF_ServerInfo *orig)
 {
@@ -452,7 +454,7 @@ nautilus_do_component_query (const char *mime_type,
 
 
 
-static const char *
+static char *
 get_mime_type_from_uri (const char *text_uri)
 {
         GnomeVFSURI *vfs_uri;
@@ -712,22 +714,53 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	return result;
 }
 
+static gint
+gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
+{
+	return strcmp (application->id, id);
+}
+
 GList *
 nautilus_mime_get_all_applications_for_uri (const char *uri)
 {
-	/* FIXME: Temporary hack for testing */
-	const char *mime_type;
+	char *mime_type;
 	GList *result;
+	NautilusDirectory *directory;
+	GList *metadata_application_ids;
+	GList *p;
+	GnomeVFSMimeApplication *application;
+
+	directory = nautilus_directory_get (uri);
+
+	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
+	metadata_application_ids = nautilus_directory_get_metadata_list (directory, "APPLICATION", "ID");
+	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
-	result = gnome_vfs_mime_get_all_applications (mime_type);
 
-	/* Hack within a hack: at the moment the short list is sometimes
-	 * populated even though the "full" list isn't.
-	 */
-	if (result == NULL) {
-		result = gnome_vfs_mime_get_short_list_applications (mime_type);
+	if (mime_type != NULL) {
+		result = gnome_vfs_mime_get_all_applications (mime_type);
+		/* FIXME: temporary hack; the non_uri code should do this merge */
+		if (result == NULL) {
+			result = gnome_vfs_mime_get_short_list_applications (mime_type);
+		}
+	} else {
+		result = NULL;
 	}
+
+	for (p = metadata_application_ids; p != NULL; p = p->next) {
+		if (!g_list_find_custom (result,
+					 p->data,
+					 (GCompareFunc) gnome_vfs_mime_application_has_id)) {
+			application = gnome_vfs_mime_application_new_from_id (p->data);
+
+			if (application != NULL) {
+				result = g_list_prepend (result, application);
+			}
+		}
+	}
+		
+	/* FIXME: should sort alphabetically by name or something */
 
 	return result;
 }
@@ -735,19 +768,36 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 GList *
 nautilus_mime_get_all_components_for_uri (const char *uri)
 {
-	/* FIXME: Temporary hack for testing */
-	const char *mime_type;
+	char *mime_type;
+	char *uri_scheme;
 	GList *result;
+	GList *files;
+	GList *attributes;
+	GList *info_list;
+	NautilusDirectory *directory;
+	GList *explicit_iids;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
 
 	mime_type = get_mime_type_from_uri (uri);
-	result = gnome_vfs_mime_get_all_components (mime_type);
+	uri_scheme = uri_string_get_scheme (uri);
 
-	/* Hack within a hack: at the moment the short list is sometimes
-	 * populated even though the "full" list isn't.
-	 */
-	if (result == NULL) {
-		result = gnome_vfs_mime_get_short_list_components (mime_type);
-	}
+	directory = nautilus_directory_get (uri);
+
+        /* Arrange for all the file attributes we will need. */
+        attributes = NULL;
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+
+	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
+	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
+	g_list_free (attributes);
+
+	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
+	
+	return (info_list);
+
+	CORBA_exception_free (&ev);
 	
 	return result;
 }
