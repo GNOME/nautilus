@@ -86,7 +86,7 @@ struct _NautilusSummaryViewDetails {
 
 	/* Login State */
 	char		*user_name;
-	gboolean	logged_in;
+	volatile gboolean	logged_in;
 
 	/* Services control panel */
 	int		current_service_row;
@@ -811,13 +811,9 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 
 	g_message ("Login succeeded");
 	view->details->logged_in = TRUE;
-	/* dispose of startup form that was shown */
-	gtk_widget_destroy (view->details->form);
-	view->details->form = NULL;
-
-	generate_startup_form (view);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+	g_print ("finish success callback\n");
 }
 
 static void
@@ -892,7 +888,18 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		g_free (password);
 
 	}
+	while (view->details->logged_in != TRUE && CORBA_Object_non_existent (view->details->user_control, &ev) != TRUE) {
+		g_print ("foo");
+		gtk_main_iteration ();
+	}
+	/* dispose of startup form that was shown */
+	gtk_widget_destroy (view->details->form);
+	view->details->form = NULL;
 
+
+	g_print ("bar");
+	generate_startup_form (view);
+	
 	CORBA_exception_free (&ev);
 
 }

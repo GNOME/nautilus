@@ -1,5 +1,15 @@
 2000-09-18  J Shane Culpepper  <pepper@eazel.com>
 
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (authn_cb_succeeded), (login_button_cb):
+
+	Added a gtk_main_iteration to block for the corba callback so that
+	login will wait until it gets a return value.  The summary view
+	actually works now but is still pretty unreliable and throws lots
+	of warnings.
+
+2000-09-18  J Shane Culpepper  <pepper@eazel.com>
+
 	* components/services/summary/lib/eazel-summary-shared.c:
 	(parse_a_service), (parse_a_eazel_news_item),
 	(parse_a_update_news_item):
