@@ -48,9 +48,12 @@ module Nautilus {
 		 * changed its location and would confused by an
 		 * additional load call, but it's deprecated and may
 		 * be removed from a future version of this interface.
+		 * The "and_select" version is used to specify the
+		 * initial selection in the new location.
 		 */
 		oneway void open_location (in URI location);
 		oneway void open_location_in_new_window (in URI location);
+		oneway void open_in_new_window_and_select (in URI location, in URIList selection);
 		oneway void report_location_change (in URI location);
 
 		/* Called by a view component to announce a change in the

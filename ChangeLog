@@ -1,3 +1,65 @@
+2000-08-18  John Sullivan  <sullivan@eazel.com>
+
+	More work on bug 1750 ("Reveal in New Window" feature for 
+	search results). Now it opens a new window with the right
+	item selected. The only remaining work is to make the new
+	window scroll as necessary to reveal the item.
+
+	Along the way, fixed an unreported bug where the selection
+	wasn't being maintained on view switches.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	added #define for nautilus_gtk_marshal_NONE__STRING_POINTER.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Added open_in_new_window_and_select call.
+	
+	* libnautilus/nautilus-view.h,
+	* libnautilus/nautilus-view.c:
+	(nautilus_view_open_in_new_window_and_select):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_open_location_in_new_window),
+	(impl_Nautilus_ViewFrame_open_in_new_window_and_select):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_open_in_new_window_and_select):
+	* src/nautilus-view-frame.h: Wired together the various
+	pieces to get open_in_new_window_and_select across CORBA
+	and into the view frame.
+
+	* src/nautilus-window.h: added pending_selection field
+	* src/nautilus-window-manage-views.h: added
+	nautilus_window_open_in_new_window_and_select
+	* src/nautilus-window.c: 
+	(nautilus_window_open_in_new_window_and_select_callback),
+	(nautilus_window_connect_view): Wiring to connect view
+	frame signals to window.
+	(nautilus_window_destroy): free pending_selection
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_update_view): Changed call from 
+	nautilus_window_report_selection_changed to
+	nautilus_view_frame_selection_changed. This was the source
+	of the selection-not-preserved-across-view-changes bug.
+	Darin came up with this fix.
+	(open_location): Added a new_selection parameter to this
+	bottleneck function. It is set as the pending_selection
+	in the window.
+	(nautilus_window_open_location),
+	(nautilus_window_open_location_in_new_window),
+	(nautilus_window_report_location_change): Update existing
+	callers of open_location to pass NULL for new_selection parameter.
+	(nautilus_window_open_in_new_window_and_select): New function,
+	calls open_location with a selection (among other parameters).
+	(nautilus_window_update_state): When loading a new location, set
+	the location to pending_selection rather than NULL (and clear
+	pending_selection later so it doesn't unnecessarily hang around).
+
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback): 
+	Call open_in_new_window_and_select instead of just 
+	open_location_in_new_window
+
 2000-08-18  Michael Engber  <engber@eazel.com>
 
 	Final cut at syncing our desktop background with GNOME's (bug 1047)

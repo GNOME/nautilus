@@ -327,6 +327,24 @@ nautilus_view_open_location_in_new_window (NautilusView *view,
 }
 
 void
+nautilus_view_open_in_new_window_and_select (NautilusView *view,
+					     const char *location,
+					     GList *selection)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	Nautilus_URIList *uri_list;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		uri_list = nautilus_uri_list_from_g_list (selection);
+		Nautilus_ViewFrame_open_in_new_window_and_select (view_frame, (CORBA_char *) location, uri_list, &ev);
+		CORBA_free (uri_list);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+void
 nautilus_view_report_location_change (NautilusView *view,
 				      const char *location)
 {

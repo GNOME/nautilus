@@ -490,6 +490,7 @@ nautilus_window_destroy (GtkObject *object)
 	
 	g_free (window->location);
 	nautilus_g_list_free_deep (window->selection);
+	nautilus_g_list_free_deep (window->pending_selection);
 	g_slist_foreach (window->back_list, (GFunc)gtk_object_unref, NULL);
 	g_slist_foreach (window->forward_list, (GFunc)gtk_object_unref, NULL);
 	g_slist_free (window->back_list);
@@ -1140,6 +1141,15 @@ nautilus_window_open_location_in_new_window_callback (NautilusViewFrame *view,
 }
 
 static void
+nautilus_window_open_in_new_window_and_select_callback (NautilusViewFrame *view,
+						        const char *location,
+						        GList *selection,
+						        NautilusWindow *window)
+{
+	nautilus_window_open_in_new_window_and_select (window, location, selection, view);
+}
+
+static void
 nautilus_window_report_location_change_callback (NautilusViewFrame *view,
 						 const char *location,
 						 NautilusWindow *window)
@@ -1271,6 +1281,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	CONNECT (open_location);
 	CONNECT (open_location_in_new_window);
+	CONNECT (open_in_new_window_and_select);
 	CONNECT (report_location_change);
 	CONNECT (report_selection_change);
 	CONNECT (report_status);

@@ -23,9 +23,6 @@
    Authors: Rebecca Schulman <rebecka@eazel.com>
 */
 
-/* Perhaps this would be better off as a set of actual special cases rather than a subclass? 
-   We haven't changed much, and there is a lot of copied code (duplicate functionality)*/
-
 #include <config.h>
 #include "fm-search-list-view.h"
 
@@ -33,6 +30,8 @@
 #include "fm-list-view-private.h"
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -40,7 +39,6 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/File/Reveal"
@@ -487,8 +485,9 @@ static void
 reveal_selected_items_callback (gpointer ignored, gpointer user_data)
 {
 	FMDirectoryView *directory_view;
-	char *uri;
+	char *parent_uri;
 	NautilusFile *file;
+	GList *file_as_list;
 	GList *selection;
 	GList *node;
 
@@ -500,16 +499,16 @@ reveal_selected_items_callback (gpointer ignored, gpointer user_data)
 
 	for (node = selection; node != NULL; node = node->next) {
 		file = NAUTILUS_FILE (node->data);
-		uri = nautilus_file_get_parent_uri (file);
-		if (uri != NULL) {
-			/* FIXME: bugzilla.eazel.com 1750 
-			 * Needs to reveal the item by selecting and scrolling 
-			 */
-			nautilus_view_open_location_in_new_window
+		parent_uri = nautilus_file_get_parent_uri (file);
+		if (parent_uri != NULL) {
+			file_as_list = g_list_prepend (NULL, nautilus_file_get_uri (file));
+			nautilus_view_open_in_new_window_and_select
 				(fm_directory_view_get_nautilus_view (directory_view), 
-				 uri);
+				 parent_uri,
+				 file_as_list);
+			nautilus_g_list_free_deep (file_as_list);
 		}
-		g_free (uri);
+		g_free (parent_uri);
 	}
 	
 

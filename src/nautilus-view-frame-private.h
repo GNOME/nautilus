@@ -51,6 +51,9 @@ void          nautilus_view_frame_open_location               (NautilusViewFrame
                                                                const char        *location);
 void          nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
                                                                const char        *location);
+void          nautilus_view_frame_open_in_new_window_and_select (NautilusViewFrame *view,
+                                                               const char        *location,
+                                                               GList             *selection);
 void          nautilus_view_frame_report_location_change      (NautilusViewFrame *view,
                                                                const char        *location);
 void          nautilus_view_frame_report_selection_change     (NautilusViewFrame *view,

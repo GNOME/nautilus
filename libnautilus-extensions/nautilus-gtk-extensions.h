@@ -119,6 +119,7 @@ void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment   
 
 #define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
 #define nautilus_gtk_marshal_NONE__POINTER_STRING_STRING nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__STRING_POINTER gtk_marshal_NONE__POINTER_POINTER
 #define nautilus_gtk_marshal_BOOL__POINTER_POINTER nautilus_gtk_marshal_INT__POINTER_POINTER
 #define nautilus_gtk_marshal_INT__POINTER_STRING nautilus_gtk_marshal_INT__POINTER_POINTER
 #define nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER

@@ -79,21 +79,24 @@ typedef struct {
         /* These signals correspond to the Nautilus::ViewFrame CORBA interface. They
          * are requests that the underlying view may make of the shell via the frame.
          */
-        void (* open_location)	             (NautilusViewFrame *view,
-                                              const char *location);
-        void (* open_location_in_new_window) (NautilusViewFrame *view,
-                                              const char *location);
-        void (* report_location_change)	     (NautilusViewFrame *view,
-                                              const char *location);
-        void (* report_selection_change)     (NautilusViewFrame *view,
-                                              GList *selection); /* list of char * */
-        void (* report_status)               (NautilusViewFrame *view,
-                                              const char *status);
-        void (* report_load_underway)        (NautilusViewFrame *view);
-        void (* report_load_progress)        (NautilusViewFrame *view,
-                                              double fraction_done);
-        void (* report_load_complete)        (NautilusViewFrame *view);
-        void (* report_load_failed)          (NautilusViewFrame *view);
+        void (* open_location)	               (NautilusViewFrame *view,
+                                                const char *location);
+        void (* open_location_in_new_window)   (NautilusViewFrame *view,
+                                                const char *location);
+        void (* open_in_new_window_and_select) (NautilusViewFrame *view,
+                                                const char *location,
+                                                GList *selection); /* list of char * */
+        void (* report_location_change)	       (NautilusViewFrame *view,
+                                                const char *location);
+        void (* report_selection_change)       (NautilusViewFrame *view,
+                                                GList *selection); /* list of char * */
+        void (* report_status)                 (NautilusViewFrame *view,
+                                                const char *status);
+        void (* report_load_underway)          (NautilusViewFrame *view);
+        void (* report_load_progress)          (NautilusViewFrame *view,
+                                                double fraction_done);
+        void (* report_load_complete)          (NautilusViewFrame *view);
+        void (* report_load_failed)            (NautilusViewFrame *view);
 
         /* These are higher-level signals. We are moving more work into
          * this class, so we no longer have one signal for each CORBA

@@ -495,7 +495,7 @@ nautilus_window_update_view (NautilusWindow *window,
         
         /* FIXME: Is NULL a way to indicate no selection, or no change? */
         if (new_selection != NULL) {
-                nautilus_window_report_selection_change (window, new_selection, NULL);
+        	nautilus_view_frame_selection_changed (view, new_selection);
         }
 }
 
@@ -692,9 +692,9 @@ static void
 open_location (NautilusWindow *window,
                const char *location,
                gboolean force_new_window,
+               GList *new_selection,
                NautilusViewFrame *view_if_already_loading)
 {
-        NautilusWindow *new_window;
         NautilusWindow *traverse_window;
         gboolean create_new_window;
 	GSList *element;
@@ -735,14 +735,19 @@ open_location (NautilusWindow *window,
 		}
 
 		/* No open window found.  Create a new one. */
-                new_window = nautilus_application_create_window (window->application);
-                nautilus_window_goto_uri (new_window, location);
-        } else {
-                nautilus_window_begin_location_change
-                        (window, location,
-                         view_if_already_loading,
-                         NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
+                open_location (
+                	nautilus_application_create_window (window->application), 
+                	location, FALSE, new_selection, NULL);
+                return;
         }
+
+	nautilus_g_list_free_deep (window->pending_selection);
+        window->pending_selection = nautilus_g_str_list_copy (new_selection);
+
+        nautilus_window_begin_location_change
+               (window, location,
+                view_if_already_loading,
+                NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
 void
@@ -751,7 +756,7 @@ nautilus_window_open_location (NautilusWindow *window,
                                NautilusViewFrame *view)
 {
         /* Don't pass along the view because everyone should be told to load. */
-        open_location (window, location, FALSE, NULL);
+        open_location (window, location, FALSE, NULL, NULL);
 }
 
 void
@@ -760,7 +765,17 @@ nautilus_window_open_location_in_new_window (NautilusWindow *window,
                                              NautilusViewFrame *view)
 {
         /* Don't pass along the view because everyone should be told to load. */
-        open_location (window, location, TRUE, NULL);
+        open_location (window, location, TRUE, NULL, NULL);
+}
+
+void
+nautilus_window_open_in_new_window_and_select (NautilusWindow *window,
+                                               const char *location,
+                                               GList *selection,
+                                               NautilusViewFrame *view)
+{
+        /* Don't pass along the view because everyone should be told to load. */
+        open_location (window, location, TRUE, selection, NULL);
 }
 
 void
@@ -768,7 +783,7 @@ nautilus_window_report_location_change (NautilusWindow *window,
                                         const char *location,
                                         NautilusViewFrame *view)
 {
-        open_location (window, location, FALSE, view);
+        open_location (window, location, FALSE, NULL, view);
 }
 
 NautilusViewFrame *
@@ -1031,8 +1046,9 @@ nautilus_window_update_state (gpointer data)
                         
                         if (window->pending_ni != NULL) {
                                 location = window->pending_ni->location;
-                                selection = NULL;
+                                selection = window->pending_selection;
                         } else {
+                        	g_assert (window->pending_selection == NULL);
                                 location = window->location;
                                 selection = window->selection;
                         }
@@ -1056,6 +1072,9 @@ nautilus_window_update_state (gpointer data)
                                                              window->new_requesting_view,
                                                              window->new_content_view);
                         }
+
+                        nautilus_g_list_free_deep (window->pending_selection);
+                        window->pending_selection = NULL;
                         
                         window->sent_update_view = TRUE;
                         window->made_changes++;
