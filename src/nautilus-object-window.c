@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus/nautilus-undo-manager.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -356,97 +357,100 @@ zoom_out_cb (NautilusZoomControl *zoom_control,
 
 
 static void
-nautilus_window_constructed(NautilusWindow *window)
+nautilus_window_constructed (NautilusWindow *window)
 {
-  GnomeApp *app;
-  GtkWidget *location_bar_box, *statusbar;
-  GtkWidget *temp_frame;
-  GnomeDockItemBehavior behavior;
-  int sidebar_width;
+	GnomeApp *app;
+	GtkWidget *location_bar_box, *statusbar;
+  	GtkWidget *temp_frame;
+  	GnomeDockItemBehavior behavior;
+  	int sidebar_width;
+  	NautilusUndoManager *undo_manager;
   
-  app = GNOME_APP(window);
+  	app = GNOME_APP(window);
 
-  /* set up location bar */
+	/* Set up undo manager */
+	undo_manager = gtk_object_get_data ( GTK_OBJECT(window->app), "NautilusUndoManager");
+	g_assert (undo_manager);
+	gtk_object_set_data ( GTK_OBJECT(window), "NautilusUndoManager", undo_manager);
 
-  location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
-  gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
+	/* set up location bar */
+	location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
+	gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
-  window->ent_uri = nautilus_location_bar_new();
-  gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
+	window->ent_uri = nautilus_location_bar_new();	
+	nautilus_location_bar_enable_undo ( NAUTILUS_LOCATION_BAR (window->ent_uri), undo_manager, TRUE);
+	
+	gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_cb, window);
-  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);
-  behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE | GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
-  if(!gnome_preferences_get_toolbar_detachable())
-     behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
-  gnome_app_add_docked(app, location_bar_box, "uri-entry",
-  		       behavior, GNOME_DOCK_TOP, 2, 0, 0);
+	gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);
+  	behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE | GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
+	if(!gnome_preferences_get_toolbar_detachable())
+		behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
+	gnome_app_add_docked(app, location_bar_box, "uri-entry", behavior, GNOME_DOCK_TOP, 2, 0, 0);
 
-  /* Option menu for content view types; it's empty here, filled in when a uri is set. */
-  window->option_cvtype = gtk_option_menu_new();
-  gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_SMALL);
-  gtk_widget_show(window->option_cvtype);
+	/* Option menu for content view types; it's empty here, filled in when a uri is set. */
+	window->option_cvtype = gtk_option_menu_new();
+	gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_SMALL);
+	gtk_widget_show(window->option_cvtype);
 
-  /* allocate the zoom control and place on the right next to the menu */
+	/* allocate the zoom control and place on the right next to the menu */
+	window->zoom_control = nautilus_zoom_control_new ();
+	gtk_widget_show (window->zoom_control);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_cb, window);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_cb, window);
+	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
   
-  window->zoom_control = nautilus_zoom_control_new ();
-  gtk_widget_show (window->zoom_control);
-  gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_cb, window);
-  gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_cb, window);
-  gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
-  
-  gtk_widget_show_all(location_bar_box);
+	gtk_widget_show_all(location_bar_box);
 
-  /* set up status bar */
+	/* set up status bar */
+	gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
+	
+	/* insert a little padding so text isn't jammed against frame */
+	gtk_misc_set_padding(GTK_MISC ((GTK_STATUSBAR (statusbar))->label), GNOME_PAD, 0);
+	window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
 
-  gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
-  /* insert a little padding so text isn't jammed against frame */
-  gtk_misc_set_padding(GTK_MISC ((GTK_STATUSBAR (statusbar))->label), GNOME_PAD, 0);
-  window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
+	/* set up window contents and policy */	
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
+	gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);
 
-  /* set up window contents and policy */
-
-  gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
-  gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);
-
-  window->content_hbox = gtk_hpaned_new();
-  sidebar_width = nautilus_preferences_get_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
-  gtk_paned_set_position(GTK_PANED(window->content_hbox), sidebar_width);
+	window->content_hbox = gtk_hpaned_new();
+	sidebar_width = nautilus_preferences_get_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
+	gtk_paned_set_position(GTK_PANED(window->content_hbox), sidebar_width);
  
-  gnome_app_set_contents(app, window->content_hbox);
+	gnome_app_set_contents(app, window->content_hbox);
 
-  /* set up the index panel in a frame */
-
-  temp_frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
-  gtk_widget_show(temp_frame);
+	/* set up the index panel in a frame */
+	temp_frame = gtk_frame_new(NULL);
+	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
+	gtk_widget_show(temp_frame);
   
-  window->index_panel = nautilus_index_panel_new();
-  gtk_widget_show (GTK_WIDGET (window->index_panel));
-  gtk_container_add(GTK_CONTAINER(temp_frame), GTK_WIDGET (window->index_panel));
+	window->index_panel = nautilus_index_panel_new();
+	gtk_widget_show (GTK_WIDGET (window->index_panel));
+	gtk_container_add(GTK_CONTAINER(temp_frame), GTK_WIDGET (window->index_panel));
 
-  gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
+	gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
 
-  gtk_widget_show_all(window->content_hbox);
+	gtk_widget_show_all(window->content_hbox);
 
-  /* enable mouse tracking for the index panel */
-  gtk_widget_add_events(GTK_WIDGET (window->index_panel), GDK_POINTER_MOTION_MASK);
+	/* enable mouse tracking for the index panel */
+	gtk_widget_add_events(GTK_WIDGET (window->index_panel), GDK_POINTER_MOTION_MASK);
 
-  /* CORBA and Bonobo setup */
-  window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
-  window->uih = bonobo_ui_handler_new();
-  bonobo_ui_handler_set_app(window->uih, app);
-  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
+	/* CORBA and Bonobo setup */
+	window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
+	window->uih = bonobo_ui_handler_new();
+	bonobo_ui_handler_set_app(window->uih, app);
+	bonobo_ui_handler_set_statusbar(window->uih, statusbar);
 
-  /* Create menus and toolbars */
-  nautilus_window_initialize_menus (window);
-  nautilus_window_initialize_toolbars (window);
-
-  /* Set initial sensitivity of some buttons & menu items 
-   * now that they're all created.
-   */
-  nautilus_window_allow_back(window, FALSE);
-  nautilus_window_allow_forward(window, FALSE);
-  nautilus_window_allow_stop(window, FALSE);
+	/* Create menus and toolbars */
+	nautilus_window_initialize_menus (window);
+	nautilus_window_initialize_toolbars (window);
+	
+	/* Set initial sensitivity of some buttons & menu items 
+	* now that they're all created.
+	*/
+	nautilus_window_allow_back(window, FALSE);
+	nautilus_window_allow_forward(window, FALSE);
+	nautilus_window_allow_stop(window, FALSE);
 }
 
 static void
@@ -469,11 +473,12 @@ nautilus_window_set_arg (GtkObject      *object,
     g_assert(app->name);
     g_free(app->prefix);
     app->prefix = g_strconcat("/", app->name, "/", NULL);
-    if(!old_app_name)
+    if(!old_app_name) {
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
+     }
     break;
   case ARG_APP:
-    window->app = BONOBO_OBJECT(GTK_VALUE_OBJECT(*arg));
+    	window->app = BONOBO_OBJECT(GTK_VALUE_OBJECT(*arg));
     break;
   case ARG_CONTENT_VIEW:
     nautilus_window_real_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));

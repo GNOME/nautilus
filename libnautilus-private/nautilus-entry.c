@@ -28,7 +28,6 @@
 #include "nautilus-entry.h"
 
 #include "nautilus-gtk-macros.h"
-#include <libnautilus/nautilus-undo-manager.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
@@ -121,7 +120,10 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		case 'z':
 			if (event->state & GDK_CONTROL_MASK && entry->use_undo == TRUE
 			    && entry->handle_undo_key == TRUE) {
-				nautilus_undo_manager_undo_last_transaction();
+			    	NautilusUndoManager *undo_manager;
+			    	undo_manager = gtk_object_get_data ( GTK_OBJECT (entry), NAUTILUS_UNDO_MANAGER_NAME);
+				g_assert (undo_manager);
+				nautilus_undo_manager_undo (undo_manager);
 				return FALSE;
 			}
 			break;
@@ -189,6 +191,7 @@ static void
 nautilus_entry_changed (GtkEditable *editable)
 {
 	NautilusEntry *entry;
+	NautilusUndoTransactionInProgress *tip;
 	
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_ENTRY (editable));
@@ -197,10 +200,10 @@ nautilus_entry_changed (GtkEditable *editable)
 
 	/* Register undo transaction */	
 	if (!entry->undo_registered && entry->use_undo) {
-		nautilus_undo_manager_begin_transaction (_("Edit"));
-		nautilus_undoable_save_undo_snapshot (GTK_OBJECT(entry), save_undo_snapshot_callback,
-					      restore_from_undo_snapshot_callback);
-		nautilus_undo_manager_end_transaction ();
+		tip = nautilus_undo_manager_begin_transaction (GTK_OBJECT (entry), _("Edit"));
+		nautilus_undoable_save_undo_snapshot (tip->transaction, GTK_OBJECT(entry), save_undo_snapshot_callback,
+					      	      restore_from_undo_snapshot_callback);
+		nautilus_undo_manager_end_transaction (tip);
 
 		entry->undo_registered = TRUE;
 	}
@@ -270,15 +273,17 @@ restore_from_undo_snapshot_callback (NautilusUndoable *undoable)
  * Enable undo mechanism in entry item. 
  */
 void 
-nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
+nautilus_entry_enable_undo (NautilusEntry *entry, NautilusUndoManager *manager, gboolean value)
 {
 	g_assert (entry);
 	g_assert (NAUTILUS_IS_ENTRY (entry));
-	
+
 	entry->undo_registered = !value;
 	entry->use_undo = value;
 
-	if (!entry->undo_registered) {
+	if (!entry->undo_registered) {		
+		gtk_object_set_data ( GTK_OBJECT(entry), NAUTILUS_UNDO_MANAGER_NAME, manager);
+		
 		/* Get copy of entry text */
 		if (entry->undo_text != NULL) {
 			g_free (entry->undo_text);

@@ -122,7 +122,8 @@ destroy (GtkObject *object)
 
 /* nautilus_undoable_save_undo_snapshot */
 void 
-nautilus_undoable_save_undo_snapshot (GtkObject *target, GtkSignalFunc save_func, GtkSignalFunc restore_func)
+nautilus_undoable_save_undo_snapshot (NautilusUndoTransaction *transaction, GtkObject *target, 
+				      GtkSignalFunc save_func, GtkSignalFunc restore_func)
 {
 	gboolean result;
 	NautilusUndoable *undoable;
@@ -138,7 +139,7 @@ nautilus_undoable_save_undo_snapshot (GtkObject *target, GtkSignalFunc save_func
 	gtk_signal_connect_while_alive (GTK_OBJECT (undoable), "restore_from_undo_snapshot", restore_func, target, target);
 
 	/* Add undoable to current transaction */
-	result = nautilus_undo_manager_add_undoable_to_transaction (undoable);
+	result = nautilus_undo_transaction_add_undoable (transaction, undoable);
 
 	/* Fire SAVE_UNDO_SNAPSHOT signal */
 	gtk_signal_emit (GTK_OBJECT (undoable),

@@ -26,16 +26,12 @@
 #define NAUTILUS_UNDO_TRANSACTION_H
 
 #include <glib.h>
-
 #include "nautilus-undoable.h"
-
-typedef struct NautilusUndoTransaction NautilusUndoTransaction;
 
 struct NautilusUndoTransaction {
 	gchar *name;
 	GList *transaction_list;
 };
-
 
 NautilusUndoTransaction *nautilus_undo_transaction_new		  (const gchar *name);
 void			nautilus_undo_transaction_destroy  	  (NautilusUndoTransaction *transaction);

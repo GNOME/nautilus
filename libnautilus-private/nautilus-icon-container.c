@@ -3453,6 +3453,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
+	GtkWidget *toplevel;
+	NautilusUndoManager *manager;
 	ArtIRect text_rect;
 	ArtDRect icon_rect;
 	GdkFont *font;
@@ -3487,6 +3489,11 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 					nautilus_icon_text_item_get_type (),
 					NULL));
 
+	/* Add undo manager */
+	toplevel = gtk_widget_get_toplevel ( GTK_WIDGET (container));
+	manager = gtk_object_get_data ( GTK_OBJECT (toplevel), NAUTILUS_UNDO_MANAGER_NAME);
+	gtk_object_set_data ( GTK_OBJECT (details->rename_widget), NAUTILUS_UNDO_MANAGER_NAME, manager);
+	
 	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
 	ppu = GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;

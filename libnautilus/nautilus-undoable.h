@@ -40,9 +40,10 @@
 #define NAUTILUS_IS_UNDOABLE_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDOABLE))
 
-typedef struct NautilusUndoable NautilusUndoable;
 typedef struct NautilusUndoableClass NautilusUndoableClass;
 typedef struct NautilusUndoManager NautilusUndoManager;
+typedef struct NautilusUndoable NautilusUndoable;
+typedef struct NautilusUndoTransaction NautilusUndoTransaction;
 
 struct NautilusUndoable {	
 	GtkObject parent;
@@ -62,8 +63,8 @@ struct NautilusUndoableClass {
 GtkType	nautilus_undoable_get_type 				(void);
 
 GtkObject 	*nautilus_undoable_new 				(void);
-void		nautilus_undoable_save_undo_snapshot		(GtkObject *target, GtkSignalFunc save_func,
-								 GtkSignalFunc restore_func);
+void		nautilus_undoable_save_undo_snapshot		(NautilusUndoTransaction *transaction, GtkObject *target, 
+								 GtkSignalFunc save_func, GtkSignalFunc restore_func);
 void		nautilus_undoable_restore_from_undo_snapshot	(NautilusUndoable *undoable);
 
 #endif

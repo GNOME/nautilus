@@ -59,7 +59,7 @@ void nautilus_add_to_history_list (NautilusBookmark *bookmark);
 GSList *nautilus_get_history_list (void);
 
 void nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);
-void nautilus_window_edit_bookmarks (NautilusWindow *window);
+void nautilus_window_edit_bookmarks (GtkObject *object);
 void nautilus_window_initialize_menus (NautilusWindow *window);
 void nautilus_window_initialize_toolbars (NautilusWindow *window);
 

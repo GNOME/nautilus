@@ -29,6 +29,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
+#include <libnautilus/nautilus-undo-manager.h>
 
 #define NAUTILUS_LOCATION_BAR(obj) \
 	GTK_CHECK_CAST (obj, nautilus_location_bar_get_type (), NautilusLocationBar)
@@ -54,9 +55,13 @@ typedef struct {
 					  const char *location);
 } NautilusLocationBarClass;
 
-GtkType    nautilus_location_bar_get_type     (void);
-GtkWidget* nautilus_location_bar_new          (void);
-void       nautilus_location_bar_set_location (NautilusLocationBar *bar,
-					       const char          *location);
+GtkType    nautilus_location_bar_get_type     	(void);
+GtkWidget* nautilus_location_bar_new          	(void);
+void       nautilus_location_bar_set_location 	(NautilusLocationBar *bar,
+					       	 const char          *location);
+void	   nautilus_location_bar_enable_undo  	(NautilusLocationBar *bar,
+				    		 NautilusUndoManager *manager,
+				    		 gboolean value);
+
 
 #endif /* NAUTILUS_LOCATION_BAR_H */

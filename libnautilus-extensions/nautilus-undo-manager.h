@@ -26,9 +26,10 @@
 #define NAUTILUS_UNDO_MANAGER_H
 
 #include <bonobo/bonobo-object.h>
-#include <libnautilus/nautilus-undo-manager-component.h>
 #include <bonobo/bonobo-persist.h>
+
 #include "nautilus-undo-transaction.h"
+#include "nautilus-undo.h"
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
 	(nautilus_undo_manager_get_type ())
@@ -43,6 +44,7 @@
 	
 typedef struct NautilusUndoManagerClass NautilusUndoManagerClass;
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
+typedef struct NautilusUndoTransactionInProgress NautilusUndoTransactionInProgress;
 
 struct NautilusUndoManager {
 	BonoboPersist parent;
@@ -50,41 +52,44 @@ struct NautilusUndoManager {
 };
 
 struct NautilusUndoManagerClass {
-	BonoboPersistClass parent_class;
-	
+	BonoboPersistClass parent_class;	
 	void (* undo_transaction_occurred) (GtkObject *object, gpointer data);
-
 	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
+struct NautilusUndoTransactionInProgress {
+	NautilusUndoManager *manager;
+	NautilusUndoTransaction *transaction;
+
+};
+
+#define NAUTILUS_UNDO_MANAGER_NAME "NautilusUndoManager"
 
 /* GtkObject */
-GtkType			nautilus_undo_manager_get_type 				(void);
-NautilusUndoManager 	*nautilus_undo_manager_new 				(void);
+GtkType			nautilus_undo_manager_get_type 				 (void);
+NautilusUndoManager 	*nautilus_undo_manager_new 				 (void);
 
 /* Prototypes */
-gboolean 		nautilus_undo_manager_initialize_global_manager		 (void);
-gboolean 		nautilus_undo_manager_add_undoable_to_transaction 	 (NautilusUndoable *undoable);
-gboolean		nautilus_undo_manager_begin_transaction			 (const gchar *name);
-gboolean 		nautilus_undo_manager_end_transaction			 (void);
-gboolean 		nautilus_undo_manager_undo_last_transaction		 (void);
-gboolean 		nautilus_undo_manager_redo_last_undone_transaction	 (void);
-NautilusUndoTransaction *nautilus_undo_manager_get_current_transaction 	 	 (void);
-gboolean 		nautilus_undo_manager_transaction_in_progress 		 (void);
-gboolean 		nautilus_undo_manager_add_undo_transaction 		 (NautilusUndoTransaction 
-										  *transaction);
-gboolean 		nautilus_undo_manager_add_redo_transaction 		 (NautilusUndoTransaction
-										  *transaction);
-gboolean 		nautilus_undo_manager_remove_transaction 		 (NautilusUndoTransaction 
-										  *transaction);
+NautilusUndoTransactionInProgress *nautilus_undo_manager_begin_transaction       (GtkObject *object, const gchar *name);
+void 			nautilus_undo_manager_end_transaction			 (NautilusUndoTransactionInProgress *transaction);
+
+void 			nautilus_undo_manager_undo			 	 (NautilusUndoManager *manager);
+void 			nautilus_undo_manager_redo	 			 (NautilusUndoManager *manager);
+
+void 			nautilus_undo_manager_add_transaction 		 	 (NautilusUndoManager *manager,
+										  NautilusUndoTransaction *transaction);
+
+gboolean 		nautilus_undo_manager_can_undo 		 		 (NautilusUndoManager *manager);
+gboolean 		nautilus_undo_manager_can_redo 		 		 (NautilusUndoManager *manager);
+
+const gchar		*nautilus_undo_manager_get_current_undo_transaction_name (NautilusUndoManager *manager);
+const gchar 		*nautilus_undo_manager_get_current_redo_transaction_name (NautilusUndoManager *manager);
+
+void			nautilus_undo_manager_enable_redo 			 (NautilusUndoManager *manager, gboolean value);
+void			nautilus_undo_manager_set_queue_depth 			 (NautilusUndoManager *manager, gint depth);
+
+
 gboolean 		nautilus_undo_manager_unregister_object 		 (GtkObject *object);
-gboolean 		nautilus_undo_manager_can_undo 		 		 (void);
-gboolean 		nautilus_undo_manager_can_redo 		 		 (void);
-gint			nautilus_undo_manager_get_current_undo_transaction_name	 (gchar *name, gint max_length);
-gint			nautilus_undo_manager_get_current_redo_transaction_name	 (gchar *name, gint max_length);
-NautilusUndoManager	*nautilus_undo_manager_get_undo_manager	 		 (void);
-gboolean		nautilus_undo_manager_enable_redo 			 (gboolean value);
-gboolean		nautilus_undo_manager_set_queue_depth 			 (gint depth);
 
 #endif
 

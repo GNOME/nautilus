@@ -10,14 +10,14 @@
 #pragma inhibit push
 #endif
 
-#include "nautilus-undo-manager-component.idl"
+#include "nautilus-undo.idl"
 
 #if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
 #pragma inhibit pop
 #endif
 
 %{
-#pragma include_defs "libnautilus/nautilus-undo-manager-component.h"
+#pragma include_defs "libnautilus/nautilus-undo.h"
 %}
 
 module Nautilus {
@@ -120,7 +120,7 @@ module Nautilus {
 	
 	interface Application : ::Bonobo::GenericFactory, ::Bonobo::Unknown {
 		readonly attribute ViewWindowList view_windows;
-		readonly attribute UndoManager undo_manager;
+		readonly attribute Undo::Manager undo_manager;
 		ViewWindow new_view_window ();
 	};
 };

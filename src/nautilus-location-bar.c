@@ -268,7 +268,26 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal.*/
 	gtk_entry_set_text (bar->entry,
-			    location == NULL ? "" : location);
-
-	nautilus_entry_enable_undo (NAUTILUS_ENTRY (bar->entry), TRUE);
+			    location == NULL ? "" : location);	
 }
+
+/**
+ * nautilus_location_bar_enable_undo
+ * 
+ * Set staus of location bar undo functionality.
+ * 
+ * @bar: A NautilusLocationBar.
+ * @manager: A NautilusUndoManager.  Can be NULL.
+ * @enable: State to set undo functionality in.
+ */
+void
+nautilus_location_bar_enable_undo (NautilusLocationBar *bar,
+				    NautilusUndoManager *manager,
+				    gboolean value)
+{
+	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
+
+	nautilus_entry_enable_undo ( NAUTILUS_ENTRY (bar->entry), manager, value);	
+}
+
+

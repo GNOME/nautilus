@@ -1,3 +1,97 @@
+2000-05-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	First phase of modifying undo code.  These changes
+	affect the way undo is handled internally to Nautilus and
+	also defines a new IDL.  This is work in progress.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c: (iti_event),
+	(restore_from_undo_snapshot_callback):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+
+	* libnautilus/.cvsignore:
+	Added generated IDL source and header files to ignore
+	
+	* libnautilus/Makefile.am:
+	Modified makefile to include new IDL file for undo manager
+	
+	* libnautilus/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__destroy),
+	(impl_Nautilus_Undo_Manager__create),
+	(impl_Nautilus_Undo_Manager__append),
+	(impl_Nautilus_Undo_Manager__forget),
+	(nautilus_undo_manager_initialize),
+	(nautilus_undo_manager_initialize_class),
+	(nautilus_undo_manager_begin_transaction),
+	(nautilus_undo_manager_end_transaction),
+	(nautilus_undo_manager_undo), (nautilus_undo_manager_redo),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_unregister_object),
+	(nautilus_undo_manager_can_undo), (nautilus_undo_manager_can_redo),
+	(get_current_transaction_name),
+	(nautilus_undo_manager_get_current_undo_transaction_name),
+	(nautilus_undo_manager_get_current_redo_transaction_name),
+	(destroy), (nautilus_undo_manager_enable_redo),
+	(nautilus_undo_manager_set_queue_depth),
+	(free_undo_manager_list_data), (prune_undo_manager_list):
+	Changes to support new IDL and new undo manager mechanism.
+	
+	* libnautilus/nautilus-undo.idl:
+	New undo manager IDL file
+
+	* libnautilus/nautilus-undo-manager-component.idl:
+	Removed old undo manager IDL file
+	
+	* src/file-manager/fm-properties-window.c: 
+	(create_basic_page):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+	
+	* src/nautilus-bookmarks-window.c: 
+	(create_bookmarks_window),
+	(on_text_field_focus_in_event), 
+	(on_window_delete_event):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+	
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_set_location),
+	(nautilus_location_bar_enable_undo):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+	
+	* src/nautilus-window-menus.c: 
+	(edit_menu_undo_callback),
+	(edit_menu_cut_callback), 
+	(bookmarks_menu_edit_bookmarks_callback),
+	(get_bookmarks_window), 
+	(nautilus_bookmarks_exiting),
+	(nautilus_window_edit_bookmarks),
+	(nautilus_window_initialize_menus), 
+	(update_undo_menu_item):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager
+
+	* src/ntl-app.c: 
+	(impl_Nautilus_Application__get_view_windows),
+	(impl_Nautilus_Application_new_view_window),
+	(impl_Nautilus_Application_supports),
+	(impl_Nautilus_Application_create_object),
+	(impl_Nautilus_Application__create), (nautilus_app_get_type),
+	(nautilus_app_class_init), (nautilus_app_init), (nautilus_app_new),
+	(nautilus_app_destroy), (nautilus_app_startup),
+	(nautilus_app_create_window):
+	Modified to use gtk_object_get_data() mechanism to locate undo manager.
+	Added and modified IDL C stubs to match new IDL interface.
+	
+	* src/ntl-window.c: 
+	(nautilus_window_constructed),	
+	(nautilus_window_set_arg):
+	Changed order that arguments are set at time of main window create so the app instance
+	variable is valid when the main window is contructed.
+
 2000-05-17  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/eazel-install.c:

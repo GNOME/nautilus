@@ -1,0 +1,40 @@
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
+#ifndef NAUTUILUS_UNDO_IDL_INCLUDED
+#define NAUTUILUS_UNDO_MANAGER_IDL_INCLUDED
+
+#include <gnome-factory.idl>
+#include <Bonobo.idl>
+
+module Nautilus {
+
+	module Undo {
+
+		//  Forward declarations
+		interface Manager;
+		interface Transaction;
+		
+		//  Contains elements that describe a transaction
+		struct TransactionMenuInfo {
+			string name;
+			string description;
+		};
+
+		//  An undo transaction
+		interface Transaction : ::Bonobo::Unknown {
+			readonly attribute TransactionMenuInfo undo_description;
+			readonly attribute TransactionMenuInfo redo_description;
+			readonly attribute string base_description;
+
+			void undo (in Transaction transaction);
+		};
+
+		//  The main interface that handles undo transactions
+		interface Manager : ::Bonobo::Unknown {
+			void append (in Transaction transaction);
+			void forget (in Transaction transaction);
+		};
+	};
+};
+
+#endif /* NAUTUILUS_UNDO_IDL_INCLUDED */

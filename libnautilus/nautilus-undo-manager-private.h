@@ -31,10 +31,8 @@
 #include "nautilus-undo-transaction.h"
 
 /* Private data */
-NautilusUndoManager *global_undo_manager;
 
 struct NautilusUndoManagerDetails {
-	NautilusUndoTransaction *transaction;	/* Current active and unique transaction */
 	GList *undo_list;
 	GList *redo_list;
 	gboolean transaction_in_progress;

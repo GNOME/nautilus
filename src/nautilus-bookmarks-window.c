@@ -108,7 +108,7 @@ static void	repopulate		      (void);
  * Return value: A pointer to the new window.
  **/
 GtkWidget *
-create_bookmarks_window(NautilusBookmarkList *list)
+create_bookmarks_window (NautilusBookmarkList *list, NautilusUndoManager *manager)
 {
 	GtkWidget *window;
 	GtkWidget *content_area;
@@ -130,7 +130,7 @@ create_bookmarks_window(NautilusBookmarkList *list)
 			      BOOKMARKS_WINDOW_MIN_HEIGHT);
 	nautilus_bookmarks_window_restore_geometry (window);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-
+	
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_show (content_area);
 	gtk_container_add (GTK_CONTAINER (window), content_area);
@@ -191,8 +191,13 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 
-	/* Wire up all the signals. */
 
+	/* Add undo manager to widgets */
+	g_assert (manager);
+	gtk_object_set_data ( GTK_OBJECT (name_field), NAUTILUS_UNDO_MANAGER_NAME, manager);
+	gtk_object_set_data ( GTK_OBJECT (uri_field), NAUTILUS_UNDO_MANAGER_NAME, manager);
+
+	/* Wire up all the signals. */
 	bookmark_list_changed_signalID =
 		gtk_signal_connect (GTK_OBJECT(bookmarks), "contents_changed",
 				    GTK_SIGNAL_FUNC(on_bookmark_list_changed),
@@ -518,11 +523,15 @@ on_text_field_focus_in_event (GtkWidget *widget,
 			       GdkEventFocus *event,
 			       gpointer user_data)
 {
+	NautilusUndoManager *manager;
+	
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
+	manager = gtk_object_get_data ( GTK_OBJECT (widget), NAUTILUS_UNDO_MANAGER_NAME);
+	
 	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
 	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), TRUE);
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(widget), TRUE);	
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(widget), manager, TRUE);	
 	return FALSE;
 }
 
@@ -570,8 +579,8 @@ on_window_delete_event (GtkWidget *widget,
 	gtk_widget_hide (widget);
 
 	/* Disable undo for entry widgets*/
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(name_field), FALSE);
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(uri_field), FALSE);
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(name_field), NULL, FALSE);
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(uri_field), NULL, FALSE);
 
 	/* Remove object transactions from undo manager */
 	nautilus_undo_manager_unregister_object(GTK_OBJECT(name_field));

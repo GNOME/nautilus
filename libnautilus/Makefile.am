@@ -21,23 +21,22 @@ libnautilus_la_LDFLAGS=\
 	$(XML_LIBS) \
 	$(LIBPNG)
 
-nautilus_undo_manager_component_idl_sources = 	 \
-	nautilus-undo-manager-component-stubs.c  \
-	nautilus-undo-manager-component-skels.c  \
-	nautilus-undo-manager-component-common.c \
-	nautilus-undo-manager-component.h
-
 nautilus_view_component_idl_sources =		\
 	nautilus-view-component-stubs.c		\
 	nautilus-view-component-skels.c		\
 	nautilus-view-component.h		\
 	nautilus-view-component-common.c
 
-BUILT_SOURCES =  \
-		$(nautilus_undo_manager_component_idl_sources)  \
-		$(nautilus_view_component_idl_sources) 		\
-		$(NULL)
+nautilus_undo_idl_sources =	\
+	nautilus-undo-stubs.c	\
+	nautilus-undo-skels.c	\
+	nautilus-undo.h		\
+	nautilus-undo-common.c
 
+BUILT_SOURCES = \
+	$(nautilus_view_component_idl_sources)	\
+	$(nautilus_undo_idl_sources)
+	
 libnautilusincludedir=$(includedir)/libnautilus
 
 libnautilusinclude_HEADERS=			\
@@ -57,8 +56,8 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=					\
 	nautilus-undo-manager-private.h			\
 	nautilus-view-frame-private.h			\
-	$(nautilus_undo_manager_component_idl_sources) 	\
 	$(nautilus_view_component_idl_sources)		\
+	$(nautilus_undo_idl_sources)			\
 	nautilus-clipboard.c				\
 	nautilus-content-view-frame.c			\
 	nautilus-meta-view-frame.c			\
@@ -69,16 +68,21 @@ libnautilus_la_SOURCES=					\
 	nautilus-undoable.c				\
 	$(NULL)
 
-$(nautilus_undo_manager_component_idl_sources): nautilus_undo_manager_component_idl_stamp
-nautilus_undo_manager_component_idl_stamp: nautilus-undo-manager-component.idl
-	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-undo-manager-component.idl
-	touch nautilus_undo_manager_component_idl_stamp
-
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
-CLEANFILES=nautilus_view_component_idl_stamp nautilus_undo_manager_component_idl_stamp
+$(nautilus_undo_idl_sources): nautilus_undo_idl_stamp
+nautilus_undo_idl_stamp: nautilus-undo.idl
+	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-undo.idl
+	touch nautilus_undo_idl_stamp
 
-EXTRA_DIST = nautilus-undo-manager-component.idl nautilus-view-component.idl
+CLEANFILES = \
+	nautilus_view_component_idl_stamp	\
+	nautilus_undo_idl_stamp
+
+EXTRA_DIST = \
+	nautilus-view-component.idl	\
+	nautilus-undo.idl
+
