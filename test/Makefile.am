@@ -32,9 +32,12 @@ LDADD =\
 
 noinst_PROGRAMS =				\
 	test-nautilus-mime-actions		\
+	test-nautilus-mime-actions-set		\
 	$(NULL)
 
 test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
+
+test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 
 EXTRA_DIST =					\
 	test-nautilus-mime-actions.c		\

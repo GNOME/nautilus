@@ -38,22 +38,22 @@ GList                   *nautilus_mime_get_all_applications_for_uri          (co
 GList                   *nautilus_mime_get_all_components_for_uri            (const char             *uri);
 
 
-void                     nautilus_mime_set_default_action_type_for_uri       (const char             *mime_type,
+void                     nautilus_mime_set_default_action_type_for_uri       (const char             *uri,
 									      GnomeVFSMimeActionType  action_type);
-void                     nautilus_mime_set_default_application_for_uri       (const char             *mime_type,
-									      GnomeVFSMimeApplication *application);
-void                     nautilus_mime_set_default_component_for_uri         (const char             *mime_type,
-									      OAF_ServerInfo         *component_iid);
+void                     nautilus_mime_set_default_application_for_uri       (const char             *uri,
+									      const char             *application_id);
+void                     nautilus_mime_set_default_component_for_uri         (const char             *uri,
+									      const char             *component_iid);
 /* Stored as delta to current user level */
-void                     nautilus_mime_set_short_list_applications_for_uri   (const char             *mime_type,
+void                     nautilus_mime_set_short_list_applications_for_uri   (const char             *uri,
 									      GList                  *applications);
-void                     nautilus_mime_set_short_list_components_for_uri     (const char             *mime_type,
+void                     nautilus_mime_set_short_list_components_for_uri     (const char             *uri,
 									      GList                  *components);
 /* No way to override system list; can only add. */
-void                     nautilus_mime_extend_all_applications_for_uri       (const char             *mime_type,
+void                     nautilus_mime_extend_all_applications_for_uri       (const char             *uri,
 									      GList                  *applications);
 /* Only "user" entries may be removed. */
-void                    nautilus_mime_remove_from_all_applications_for_uri   (const char             *mime_type,
+void                    nautilus_mime_remove_from_all_applications_for_uri   (const char             *uri,
 									      GList                  *applications);
 /* No way to add to all components; oafinfo database assumed trusted in this regard. */
 
