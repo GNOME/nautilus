@@ -1,3 +1,14 @@
+2000-06-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c,h:
+	(directory_changed_callback),
+	(nautilus_directory_background_is_set),
+	(nautilus_connect_background_to_directory_metadata):
+	added nautilus_directory_background_is_set, and some cleanups
+	* src/file-manager/fm-directory-view.c: (compute_menu_item_info),
+	(fm_directory_view_real_update_menus):
+	used nautilus_directory_background_is_set to enable/disable item
+	
 2000-06-29  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.h:

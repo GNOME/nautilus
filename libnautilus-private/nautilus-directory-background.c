@@ -125,24 +125,24 @@ directory_changed_callback (NautilusDirectory *directory,
 	image = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
                                                  NULL);
-	
+
 	/* if there's none, read the default from the theme */
 	if (color == NULL && image == NULL) {
 		color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
 		image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
 		image = local_data_file_to_uri(image);
 	}
-	
+
 	nautilus_background_set_color (background, color);     
 	nautilus_background_set_tile_image_uri (background, image);
 	
 	g_free (color);
 	g_free (image);
 
-        /* Unblock the handler. */
-        gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-                                            background_changed_callback,
-                                            directory);
+	/* Unblock the handler. */
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
+                                        background_changed_callback,
+                                        directory);
 }
 
 /* handle the theme changing */
@@ -225,39 +225,65 @@ dummy_callback (NautilusDirectory *directory,
 {
 }
 
+/* return true if the background is not in the default state */
+gboolean
+nautilus_directory_background_is_set (NautilusBackground *background)
+{
+	gboolean is_set;
+	NautilusDirectory *directory;
+	char *color, *image;
+	
+	directory = NAUTILUS_DIRECTORY(gtk_object_get_data (GTK_OBJECT (background),
+                                             "nautilus_background_directory"));
+
+	color = nautilus_directory_get_metadata (directory,
+                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
+                                                 NULL);
+	image = nautilus_directory_get_metadata (directory,
+                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
+                                                 NULL);
+	is_set = (color != NULL) || (image != NULL);
+
+	g_free (color);
+	g_free (image);
+	
+	return is_set;
+}
+
+/* key routine that hooks up a background and directory */
 void
 nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                                    NautilusDirectory *directory)
 {
-        NautilusBackground *background;
-        gpointer old_directory;
+	NautilusBackground *background;
+	gpointer old_directory;
 
 	/* Get at the background object we'll be connecting. */
 	background = nautilus_get_widget_background (widget);
 
-        /* Check if it is already connected. */
-        old_directory = gtk_object_get_data (GTK_OBJECT (background),
+	/* Check if it is already connected. */
+	old_directory = gtk_object_get_data (GTK_OBJECT (background),
                                              "nautilus_background_directory");
-        if (old_directory == directory) {
-                return;
-        }
+	if (old_directory == directory) {
+		return;
+	}
 
-        /* Disconnect old signal handlers. */
-        if (old_directory != NULL) {
-                g_assert (NAUTILUS_IS_DIRECTORY (old_directory));
-                gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+	/* Disconnect old signal handlers. */
+	if (old_directory != NULL) {
+		g_assert (NAUTILUS_IS_DIRECTORY (old_directory));
+		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_changed_callback),
                                                old_directory);
-                gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_destroyed_callback),
                                                old_directory);
-                gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_reset_callback),
                                                old_directory);
-                gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
+		gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
-        	nautilus_directory_file_monitor_remove (old_directory, background);
+		nautilus_directory_file_monitor_remove (old_directory, background);
 		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_directory_background_theme_changed,
 					      background);

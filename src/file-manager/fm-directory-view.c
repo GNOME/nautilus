@@ -51,6 +51,8 @@
 
 #include <libnautilus-extensions/nautilus-alloc.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -2000,7 +2002,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
         	*return_sensitivity = files_have_any_custom_images (selection);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND) == 0) {
                 name = g_strdup (_("Reset _Background"));
-        	*return_sensitivity = nautilus_background_is_set 
+        	*return_sensitivity = nautilus_directory_background_is_set 
         		(fm_directory_view_get_background (directory_view));
         } else {
                 g_assert_not_reached ();
@@ -2726,10 +2728,8 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH);
-        update_one_menu_item (view, handler, selection,
+	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS);
-        update_one_menu_item (view, handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND);
 
 	nautilus_file_list_free (selection);
 }
