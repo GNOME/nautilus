@@ -29,6 +29,8 @@
 #ifndef NAUTILUS_COMPLEX_SEARCH_BAR_H
 #define NAUTILUS_COMPLEX_SEARCH_BAR_H
 
+#include <libnautilus-extensions/nautilus-entry.h>
+
 #include "nautilus-search-bar.h"
 #include "nautilus-window.h"
 
@@ -56,5 +58,7 @@ GtkWidget *nautilus_complex_search_bar_new      (NautilusWindow *window);
 
 GSList *   nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar);
 void       nautilus_complex_search_bar_queue_resize     (NautilusComplexSearchBar      *bar);
+void       nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard (NautilusComplexSearchBar   *bar,
+									    NautilusEntry *entry);
 #endif /* NAUTILUS_COMPLEX_SEARCH_BAR_H */
 

@@ -548,8 +548,10 @@ nautilus_search_bar_criterion_new_with_type (NautilusSearchBarCriterionType crit
 		new_criterion = NULL;
 		g_assert_not_reached ();
 	}
-	
-		
+	if (new_criterion->details->value_entry) {
+		nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard 
+			(bar, new_criterion->details->value_entry);
+	}
 	return new_criterion;
 }
 

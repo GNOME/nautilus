@@ -30,6 +30,7 @@
 
 #include "nautilus-search-bar-criterion-private.h"
 #include "nautilus-search-bar-criterion.h"
+#include "nautilus-window-private.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtkeventbox.h>
@@ -38,6 +39,7 @@
 #include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -473,15 +475,40 @@ GtkWidget *
 nautilus_complex_search_bar_new (NautilusWindow *window)
 {
 	GtkWidget *bar;
+	NautilusSearchBarCriterion *first_criterion;
 
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
 	bar = gtk_widget_new (NAUTILUS_TYPE_COMPLEX_SEARCH_BAR, NULL);
 	gtk_object_set_data (GTK_OBJECT (bar), "associated_window", window);
+	
+	/* Set up the first criterion's entry for the clipboard */
+	first_criterion = NAUTILUS_COMPLEX_SEARCH_BAR (bar)->details->search_criteria->data;
+	g_assert (first_criterion != NULL);
+	g_assert (first_criterion->details->use_value_entry);
+
+	nautilus_clipboard_set_up_editable 
+		(GTK_EDITABLE (first_criterion->details->value_entry),
+		 nautilus_window_get_ui_container (window),
+		 TRUE);
 
 	return bar;
 }
 
+void
+nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard (NautilusComplexSearchBar *bar,
+								 NautilusEntry *entry)
+{
+	NautilusWindow *associated_window;
+
+	associated_window = gtk_object_get_data (GTK_OBJECT (bar),
+						 "associated_window");
+
+	g_assert (associated_window != NULL);
+	nautilus_clipboard_set_up_editable (GTK_EDITABLE (entry),
+					    nautilus_window_get_ui_container (associated_window),
+					    TRUE);
+}
 
 static void                       
 more_options_callback (GtkObject *object,

@@ -1,3 +1,21 @@
+2000-11-30  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 3750, to make cut/copy/paste work
+	in the complex search bar
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* src/nautilus-complex-search-bar.h:
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_new),
+	Set up the first criterion after we create 
+	the bar.
+	(nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard):
+	add a second procedure that new criteria with entries call
+	when they are added.
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_with_type):
+	set an entry up for the clipboard, if one exists.
+
 2000-11-30  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: ramiro@eazel.com
