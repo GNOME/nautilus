@@ -220,29 +220,14 @@ Nautilus Mozilla component. This component can be optionally built
 with Nautilus. It is automatically enabled at configure time if
 Mozilla development libraries are detected on your system.
 
-The latest Mozilla RPMs that we require can be found here:
+The recommended version of Mozilla for use with Nautilus is 0.9.1.
 
-RedHat 6.x: http://developer.eazel.com/eazel-hacking/updates/redhat62/mozilla
-RedHat 7.x: http://developer.eazel.com/eazel-hacking/updates/redhat70/mozilla
+The latest Mozilla packages can be found here:
 
-The recommended version of Mozilla for use with Nautilus is 0.8.  If
-you are using RPMS from mozilla.org, Chris Blizzard, RedHat Rawhide or
-the above Eazel URL, then then make sure you use the mozilla-0.8.1-5
-RPMS, otherwise you will be a victim of bug 7961 (Hyperlinks broken in
-Help Pages)
+ftp://ftp.mozilla.org/pub/mozilla/releases/mozilla0.9.1/
 
-Mozilla with Nautilus support table:
-
-Milestone 18 (M18) or lower - Will not work with Nautilus any more.
-Mozilla 0.7                 - Will not work with Nautilus any more.
-Mozilla 0.8		    - Will work with Nautilus.  Has received
-                              the most testing of all versions.
-Mozilla 0.8.1		    - Will work with Nautilus as long as you
-                              use the mozilla-0.8.1-5 RPMS.
-Mozilla 0.9		    - Known to work.  Very little testing.
-
-After installing these rpms, you can build nautilus with Mozilla
-support as follows:
+After installing these packages (RPMs for example) you can build Nautilus
+with Mozilla support as follows:
 
         cd nautilus
         rm -f config.cache config.status
