@@ -28,23 +28,22 @@
 
 #include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
 #include "nautilus-gtk-macros.h"
 
-struct _NautilusPasswordDialogDetail
+struct _NautilusPasswordDialogDetails
 {
+	/* Attributes */
 	char		*username;
 	char		*password;
-	gint		last_button_clicked;
 	gboolean	readonly_username;
-	GtkWidget	*table;
-	GtkWidget	*blurb;
-};
+	gboolean	remember;
+	char		*remember_label_text;
 
-enum
-{
-	ACTIVATE,
-	LAST_SIGNAL
+	/* Internal widgetry and flags */
+	GtkWidget	*table;
+	GtkWidget	*remember_button;
 };
 
 static const char * stock_buttons[] =
@@ -54,38 +53,37 @@ static const char * stock_buttons[] =
 	NULL
 };
 
-static const gint UNKNOWN_BUTTON = -1;
-static const gint OK_BUTTON = 0;
-static const gint DEFAULT_BUTTON = 0;
-static const guint DEFAULT_BORDER_WIDTH = 0;
+/* Dialog button indeces */
+static const gint  DIALOG_OK_BUTTON = 0;
 
-enum 
-{
-	USERNAME_ROW = 0,
-	PASSWORD_ROW
-};
+/* Caption table rows indeces */
+static const guint CAPTION_TABLE_USERNAME_ROW = 0;
+static const guint CAPTION_TABLE_PASSWORD_ROW = 1;
+
+/* Layout constants */
+static const guint DIALOG_BORDER_WIDTH = 0;
+static const guint CAPTION_TABLE_BORDER_WIDTH = 4;
 
 /* NautilusPasswordDialogClass methods */
-static void nautilus_password_dialog_initialize_class (NautilusPasswordDialogClass *klass);
+static void nautilus_password_dialog_initialize_class (NautilusPasswordDialogClass *password_dialog_class);
 static void nautilus_password_dialog_initialize       (NautilusPasswordDialog      *password_dialog);
 
 
+
 /* GtkObjectClass methods */
-static void bnautilus_password_dialog_destroy         (GtkObject                   *object);
+static void nautilus_password_dialog_destroy          (GtkObject                   *object);
+
 
 /* GtkDialog callbacks */
-static void dialog_clicked_callback                   (GtkWidget                   *widget,
-						       gint                         n,
-						       gpointer                     data);
 static void dialog_show_callback                      (GtkWidget                   *widget,
-						       gpointer                     data);
-static void dialog_destroy_callback                   (GtkWidget                   *widget,
-						       gpointer                     data);
-
-/* NautilusCaptionTable callbacks */
+						       gpointer                     callback_data);
+static void dialog_close_callback                     (GtkWidget                   *widget,
+						       gpointer                     callback_data);
+/* Caption table callbacks */
 static void caption_table_activate_callback           (GtkWidget                   *widget,
 						       gint                         entry,
-						       gpointer                     data);
+						       gpointer                     callback_data);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPasswordDialog,
 				   nautilus_password_dialog,
@@ -102,72 +100,107 @@ nautilus_password_dialog_initialize_class (NautilusPasswordDialogClass * klass)
 	widget_class = GTK_WIDGET_CLASS(klass);
 
 	/* GtkObjectClass */
-	object_class->destroy = bnautilus_password_dialog_destroy;
+	object_class->destroy = nautilus_password_dialog_destroy;
 }
 
 static void
 nautilus_password_dialog_initialize (NautilusPasswordDialog *password_dialog)
 {
-	password_dialog->detail = g_new (NautilusPasswordDialogDetail, 1);
+	password_dialog->details = g_new (NautilusPasswordDialogDetails, 1);
 
-	password_dialog->detail->username = NULL;
-	password_dialog->detail->password = NULL;
+	password_dialog->details->username = NULL;
+	password_dialog->details->password = NULL;
+	password_dialog->details->readonly_username = FALSE;
 
-	password_dialog->detail->last_button_clicked = UNKNOWN_BUTTON;
-	password_dialog->detail->readonly_username = FALSE;
+	password_dialog->details->remember_label_text = NULL;
+	password_dialog->details->remember = FALSE;
 
-	password_dialog->detail->table = NULL;
+	password_dialog->details->table = NULL;
+	password_dialog->details->remember_button = NULL;
+}
+
+/* GtkObjectClass methods */
+static void
+nautilus_password_dialog_destroy (GtkObject* object)
+{
+	NautilusPasswordDialog *password_dialog;
+	
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (object));
+	
+	password_dialog = NAUTILUS_PASSWORD_DIALOG (object);
+	
+	if (password_dialog->details->username) {
+		g_free (password_dialog->details->username);
+	}
+
+	if (password_dialog->details->password) {
+		g_free (password_dialog->details->password);
+	}
+
+	if (password_dialog->details->remember_label_text) {
+		g_free (password_dialog->details->remember_label_text);
+	}
+
+	g_free (password_dialog->details);
 }
 
 /* GtkDialog callbacks */
 static void
-dialog_clicked_callback (GtkWidget *widget, gint n, gpointer data)
+dialog_show_callback (GtkWidget *widget, gpointer callback_data)
 {
-	NautilusPasswordDialog *password_dialog = (NautilusPasswordDialog *) data;
+	NautilusPasswordDialog *password_dialog;
 
-	g_assert (password_dialog != NULL);
+	g_return_if_fail (callback_data != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (callback_data));
 
-	password_dialog->detail->last_button_clicked = n;
+	password_dialog = NAUTILUS_PASSWORD_DIALOG (callback_data);
 
-	gtk_grab_remove(GTK_WIDGET (password_dialog));
-
-	gtk_widget_hide(GTK_WIDGET (password_dialog));
+	/* Move the focus to the password entry */
+	nautilus_caption_table_entry_grab_focus (NAUTILUS_CAPTION_TABLE (password_dialog->details->table), 
+						 CAPTION_TABLE_PASSWORD_ROW);
 }
 
 static void
-dialog_show_callback (GtkWidget *widget, gpointer data)
+dialog_close_callback (GtkWidget *widget, gpointer callback_data)
 {
-	NautilusPasswordDialog *password_dialog = (NautilusPasswordDialog *) data;
+	NautilusPasswordDialog *password_dialog;
 
-	g_assert (password_dialog != NULL);
+	g_return_if_fail (callback_data != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (callback_data));
 
-	nautilus_caption_table_entry_grab_focus (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table), 
-						 PASSWORD_ROW);
+	password_dialog = NAUTILUS_PASSWORD_DIALOG (callback_data);
+
+	gtk_widget_hide (widget);
 }
 
+/* Caption table callbacks */
 static void
-dialog_destroy_callback (GtkWidget *widget, gpointer data)
+caption_table_activate_callback (GtkWidget *widget, gint entry, gpointer callback_data)
 {
-	NautilusPasswordDialog *password_dialog = (NautilusPasswordDialog *) data;
+	NautilusPasswordDialog *password_dialog;
 
-	g_assert (password_dialog != NULL);
+	g_return_if_fail (callback_data != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (callback_data));
 
-	g_free (password_dialog->detail);
+	password_dialog = NAUTILUS_PASSWORD_DIALOG (callback_data);
 
-	gtk_grab_remove(GTK_WIDGET (password_dialog));
-}
+	/* If the username entry was activated, simply advance the focus to the password entry */
+	if (entry == CAPTION_TABLE_USERNAME_ROW) {
+		nautilus_caption_table_entry_grab_focus (NAUTILUS_CAPTION_TABLE (password_dialog->details->table), 
+							 CAPTION_TABLE_PASSWORD_ROW);
+	}
+	/* If the password entry was activated, then simulate and OK button press to continue to hide process */
+	else if (entry == CAPTION_TABLE_PASSWORD_ROW) {
+		GtkWidget *button;
+		
+		button = g_list_nth_data (GNOME_DIALOG (password_dialog)->buttons, DIALOG_OK_BUTTON);
+		
+		g_assert (button != NULL);
+		g_assert (GTK_IS_BUTTON (button));
 
-
-/* NautilusCaptionTable callbacks */
-static void
-caption_table_activate_callback (GtkWidget *widget, gint entry, gpointer data)
-{
-	NautilusPasswordDialog *password_dialog = (NautilusPasswordDialog *) data;
-
-	g_assert (password_dialog != NULL);
-
-	if (entry == (nautilus_caption_table_get_num_rows (NAUTILUS_CAPTION_TABLE (widget)) - 1))
-		dialog_clicked_callback(GTK_WIDGET (password_dialog), OK_BUTTON, (gpointer) password_dialog);
+		gtk_button_clicked (GTK_BUTTON (button));
+	}
 }
 
 /* Public NautilusPasswordDialog methods */
@@ -189,51 +222,48 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			      TRUE,	/* allow_grow */
 			      FALSE);	/* auto_shrink */
 
-	gtk_widget_realize (GTK_WIDGET (password_dialog));
-	
- 	gdk_window_set_functions (GTK_WIDGET (password_dialog)->window, 
-				  GDK_FUNC_ALL | GDK_FUNC_RESIZE | GDK_FUNC_MINIMIZE);
-
  	gtk_window_set_position (GTK_WINDOW (password_dialog), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal (GTK_WINDOW (password_dialog), TRUE);
 
- 	gtk_container_set_border_width (GTK_CONTAINER (password_dialog), 
-				       DEFAULT_BORDER_WIDTH);
+ 	gtk_container_set_border_width (GTK_CONTAINER (password_dialog), DIALOG_BORDER_WIDTH);
 
-	gnome_dialog_set_default (GNOME_DIALOG (password_dialog), 
-				 DEFAULT_BUTTON);
+	gnome_dialog_set_default (GNOME_DIALOG (password_dialog), DIALOG_OK_BUTTON);
 
-	gtk_signal_connect(GTK_OBJECT (password_dialog),
-			   "clicked",
-			   GTK_SIGNAL_FUNC (dialog_clicked_callback),
-			   (gpointer) password_dialog);
+	/* Dont close the dialog on click.  We'll mange the destruction our selves */
+	gnome_dialog_set_close (GNOME_DIALOG (password_dialog), FALSE);
 
-	gtk_signal_connect(GTK_OBJECT (password_dialog),
-			   "show",
-			   GTK_SIGNAL_FUNC (dialog_show_callback),
-			   (gpointer) password_dialog);
-
-	gtk_signal_connect(GTK_OBJECT (password_dialog),
-			   "destroy",
-			   GTK_SIGNAL_FUNC (dialog_destroy_callback),
-			   (gpointer) password_dialog);
+	/* Make the close operation 'just_hide' the dialog - not nuke it */
+	gnome_dialog_close_hides (GNOME_DIALOG (password_dialog), TRUE);
 	
-	/* The table that holds the captions */
-	password_dialog->detail->table = nautilus_caption_table_new (2);
+	gtk_signal_connect_while_alive (GTK_OBJECT (password_dialog),
+					"show",
+					GTK_SIGNAL_FUNC (dialog_show_callback),
+					(gpointer) password_dialog,
+					GTK_OBJECT (password_dialog));
+	
+	gtk_signal_connect_while_alive (GTK_OBJECT (password_dialog),
+					"close",
+					GTK_SIGNAL_FUNC (dialog_close_callback),
+					(gpointer) password_dialog,
+					GTK_OBJECT (password_dialog));
 
-	gtk_signal_connect (GTK_OBJECT (password_dialog->detail->table),
+	/* The table that holds the captions */
+	password_dialog->details->table = nautilus_caption_table_new (2);
+	
+	gtk_signal_connect (GTK_OBJECT (password_dialog->details->table),
 			   "activate",
 			   GTK_SIGNAL_FUNC (caption_table_activate_callback),
 			   (gpointer) password_dialog);
 
-	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-					     USERNAME_ROW,
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+					     CAPTION_TABLE_USERNAME_ROW,
 					     "Username:",
 					     "",
 					     TRUE,
 					     TRUE);
 
-	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-					     PASSWORD_ROW,
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+					     CAPTION_TABLE_PASSWORD_ROW,
 					     "Password:",
 					     "",
 					     FALSE,
@@ -245,15 +275,23 @@ nautilus_password_dialog_new (const char	*dialog_title,
 	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox), 10);
 	
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
-			    password_dialog->detail->table,
+			    password_dialog->details->table,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
 
-	/* Configure the table */
- 	gtk_container_set_border_width (GTK_CONTAINER(password_dialog->detail->table), 
-					DEFAULT_BORDER_WIDTH);
+	password_dialog->details->remember_button = 
+		gtk_check_button_new_with_label ("Remember this password");
 
+	gtk_box_pack_end (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
+			  password_dialog->details->remember_button,
+			  TRUE,	/* expand */
+			  TRUE,	/* fill */
+			  4);		/* padding */
+	
+	/* Configure the table */
+ 	gtk_container_set_border_width (GTK_CONTAINER(password_dialog->details->table), CAPTION_TABLE_BORDER_WIDTH);
+	
 	gtk_widget_show_all (GNOME_DIALOG (password_dialog)->vbox);
 	
 	nautilus_password_dialog_set_username (password_dialog, username);
@@ -263,78 +301,52 @@ nautilus_password_dialog_new (const char	*dialog_title,
 	return GTK_WIDGET (password_dialog);
 }
 
-/* GtkObjectClass methods */
-static void
-bnautilus_password_dialog_destroy (GtkObject* object)
-{
-	NautilusPasswordDialog *password_dialog;
-	
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (object));
-	
-	password_dialog = NAUTILUS_PASSWORD_DIALOG (object);
-
-	if (password_dialog->detail->username)
-		g_free (password_dialog->detail->username);
-
-	if (password_dialog->detail->password)
-		g_free (password_dialog->detail->password);
-}
-
 gboolean
-nautilus_password_dialog_run_and_block(NautilusPasswordDialog *password_dialog)
+nautilus_password_dialog_run_and_block (NautilusPasswordDialog *password_dialog)
 {
+	gint button_clicked;
+
 	g_return_val_if_fail (password_dialog != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog), FALSE);
-
-	password_dialog->detail->last_button_clicked = UNKNOWN_BUTTON;
-
-	gtk_widget_show_all (GTK_WIDGET (password_dialog));
 	
-	gtk_grab_add (GTK_WIDGET (password_dialog));
+	button_clicked = gnome_dialog_run_and_close (GNOME_DIALOG (password_dialog));
 
-	while (password_dialog->detail->last_button_clicked == UNKNOWN_BUTTON)
-		gtk_main_iteration ();
-	
-	if (password_dialog->detail->last_button_clicked == OK_BUTTON)
-		return TRUE;
-	
-	return FALSE;
+	return (button_clicked == DIALOG_OK_BUTTON);
 }
 
 void
-nautilus_password_dialog_set_username (NautilusPasswordDialog *password_dialog,
-				       const char * username)
+nautilus_password_dialog_set_username (NautilusPasswordDialog	*password_dialog,
+				       const char		*username)
 {
 	g_return_if_fail (password_dialog != NULL);
 	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
 
-	nautilus_caption_table_set_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-					       USERNAME_ROW,
+	nautilus_caption_table_set_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+					       CAPTION_TABLE_USERNAME_ROW,
 					       username);
 }
 
 void
-nautilus_password_dialog_set_password (NautilusPasswordDialog *password_dialog,
-				       const char * password)
+nautilus_password_dialog_set_password (NautilusPasswordDialog	*password_dialog,
+				       const char		*password)
 {
 	g_return_if_fail (password_dialog != NULL);
 	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
 	
-	nautilus_caption_table_set_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-					       PASSWORD_ROW,
+	nautilus_caption_table_set_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+					       CAPTION_TABLE_PASSWORD_ROW,
 					       password);
 }
 
 void
-nautilus_password_dialog_set_readonly_username (NautilusPasswordDialog *password_dialog,
-						gboolean readonly)
+nautilus_password_dialog_set_readonly_username (NautilusPasswordDialog	*password_dialog,
+						gboolean		readonly)
 {
 	g_return_if_fail (password_dialog != NULL);
 	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
 	
-	nautilus_caption_table_set_entry_readonly (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-						   USERNAME_ROW,
+	nautilus_caption_table_set_entry_readonly (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+						   CAPTION_TABLE_USERNAME_ROW,
 						   readonly);
 }
 
@@ -344,8 +356,8 @@ nautilus_password_dialog_get_username (NautilusPasswordDialog *password_dialog)
 	g_return_val_if_fail (password_dialog != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog), NULL);
 
-	return nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-						      USERNAME_ROW);
+	return nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+						      CAPTION_TABLE_USERNAME_ROW);
 }
 
 char *
@@ -354,6 +366,43 @@ nautilus_password_dialog_get_password (NautilusPasswordDialog *password_dialog)
 	g_return_val_if_fail (password_dialog != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog), NULL);
 
-	return nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->detail->table),
-						      PASSWORD_ROW);
+	return nautilus_caption_table_get_entry_text (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
+						      CAPTION_TABLE_PASSWORD_ROW);
+}
+
+gboolean
+nautilus_password_dialog_get_remember (NautilusPasswordDialog *password_dialog)
+{
+	g_return_val_if_fail (password_dialog != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog), FALSE);
+
+	return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (password_dialog->details->remember_button));
+}
+
+void
+nautilus_password_dialog_set_remember (NautilusPasswordDialog *password_dialog,
+				       gboolean                remember)
+{
+	g_return_if_fail (password_dialog != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (password_dialog->details->remember_button),
+				      remember);
+}
+
+void
+nautilus_password_dialog_set_remember_label_text (NautilusPasswordDialog *password_dialog,
+						  const char             *remember_label_text)
+{
+	GtkWidget *label;
+
+	g_return_if_fail (password_dialog != NULL);
+	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
+
+	label = GTK_BIN (password_dialog->details->remember_button)->child;
+
+	g_assert (label != NULL);
+	g_assert (GTK_IS_LABEL (label));
+
+	gtk_label_set_text (GTK_LABEL (label), remember_label_text);
 }

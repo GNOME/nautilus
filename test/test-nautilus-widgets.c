@@ -2,7 +2,6 @@
 #include <config.h>
 
 #include <libnautilus-extensions/nautilus-caption-table.h>
-#include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string-picker.h>
 #include <libnautilus-extensions/nautilus-text-caption.h>
@@ -11,14 +10,11 @@
 
 static void test_radio_group                     (void);
 static void test_caption_table                   (void);
-static void test_password_dialog                 (void);
 static void test_string_picker                   (void);
 static void test_text_caption                    (void);
 
 /* Callbacks */
 static void test_radio_changed_callback          (GtkWidget *button_group,
-						  gpointer   user_data);
-static void test_authenticate_boink_callback     (GtkWidget *button,
 						  gpointer   user_data);
 static void string_picker_changed_callback       (GtkWidget *string_picker,
 						  gpointer   user_data);
@@ -35,7 +31,6 @@ main (int argc, char * argv[])
 
 	test_radio_group ();
 	test_caption_table ();
-	test_password_dialog ();
 	test_string_picker ();
 	test_text_caption ();
 
@@ -183,36 +178,6 @@ test_text_caption (void)
 }
 
 static void
-test_authenticate_boink_callback (GtkWidget *button, gpointer user_data)
-{
-	GtkWidget *dialog;
-	gboolean  rv;
-	char	  *username;
-	char	  *password;
-
-	dialog = nautilus_password_dialog_new ("Authenticate Me",
-					       "foouser",
-					       "sekret",
-					       FALSE);
-
-	rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
-
-	username = nautilus_password_dialog_get_username (NAUTILUS_PASSWORD_DIALOG (dialog));
-	password = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
-
-	g_assert (username != NULL);
-	g_assert (password != NULL);
-
-	g_print ("test_authenticate_boink_callback (rv=%d , username='%s' , password='%s')\n",
-		 rv,
-		 username,
-		 password);
-
-	g_free (username);
-	g_free (password);
-}
-
-static void
 string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 {
 	char	  *text;
@@ -240,28 +205,6 @@ text_caption_changed_callback (GtkWidget *text_caption, gpointer user_data)
 	g_print ("text_caption_changed_callback(%s)\n", text);
 	
 	g_free (text);
-}
-
-static void
-test_password_dialog (void)
-{
-	GtkWidget * window;
-	GtkWidget * button;
-
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-
-	button = gtk_button_new_with_label ("Boink me to authenticate");
-
-	gtk_signal_connect (GTK_OBJECT (button),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (test_authenticate_boink_callback),
-			    (gpointer) NULL);
-
-	gtk_container_add (GTK_CONTAINER (window), button);
-
-	gtk_widget_show (button);
-
-	gtk_widget_show (window);
 }
 
 static void

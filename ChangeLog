@@ -1,3 +1,36 @@
+2000-07-11  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(nautilus_password_dialog_initialize_class),
+	(nautilus_password_dialog_initialize),
+	(nautilus_password_dialog_destroy), (dialog_show_callback),
+	(dialog_close_callback), (caption_table_activate_callback),
+	(nautilus_password_dialog_new),
+	(nautilus_password_dialog_run_and_block),
+	(nautilus_password_dialog_set_username),
+	(nautilus_password_dialog_set_password),
+	(nautilus_password_dialog_set_readonly_username),
+	(nautilus_password_dialog_get_username),
+	(nautilus_password_dialog_get_password),
+	(nautilus_password_dialog_get_remember),
+	(nautilus_password_dialog_set_remember),
+	(nautilus_password_dialog_set_remember_label_text):
+	* libnautilus-extensions/nautilus-password-dialog.h:
+	Many cleanups and improvements.  Use the GnomeDialog run_and_close
+	call instead of our own event loop hack.  Removed many unneeded
+	callbacks and details member variables.  Add checks for all
+	callbacks.  Add support for remembering the password.
+	
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-password-dialog.c:
+	(authenticate_boink_callback), (exit_callback), (main):
+	Add a new test for the password dialog.
+
+	* test/test-nautilus-widgets.c: (main),
+	(text_caption_changed_callback):
+	Removed the old password dialog test.
+		
 2000-07-10  J Shane Culpepper  <pepper@eazel.com>
 
 	*

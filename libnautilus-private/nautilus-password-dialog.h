@@ -37,13 +37,13 @@ BEGIN_GNOME_DECLS
 
 typedef struct _NautilusPasswordDialog       NautilusPasswordDialog;
 typedef struct _NautilusPasswordDialogClass  NautilusPasswordDialogClass;
-typedef struct _NautilusPasswordDialogDetail NautilusPasswordDialogDetail;
+typedef struct _NautilusPasswordDialogDetails NautilusPasswordDialogDetails;
 
 struct _NautilusPasswordDialog
 {
 	GnomeDialog gnome_dialog;
 
-	NautilusPasswordDialogDetail *detail;
+	NautilusPasswordDialogDetails *details;
 };
 
 struct _NautilusPasswordDialogClass
@@ -52,20 +52,29 @@ struct _NautilusPasswordDialogClass
 };
 
 
-GtkType    nautilus_password_dialog_get_type              (void);
-GtkWidget* nautilus_password_dialog_new                   (const char             *dialog_title,
-							   const char             *username,
-							   const char             *password,
-							   gboolean                readonly_username);
-gboolean   nautilus_password_dialog_run_and_block         (NautilusPasswordDialog *auth_dialog);
-void       nautilus_password_dialog_set_username          (NautilusPasswordDialog *auth_dialog,
+GtkType    nautilus_password_dialog_get_type                (void);
+GtkWidget* nautilus_password_dialog_new                     (const char             *dialog_title,
+							     const char             *username,
+							     const char             *password,
+							     gboolean                readonly_username);
+gboolean   nautilus_password_dialog_run_and_block           (NautilusPasswordDialog *password_dialog);
+
+/* Attribute mutators */
+void     nautilus_password_dialog_set_username            (NautilusPasswordDialog *password_dialog,
 							   const char             *username);
-void       nautilus_password_dialog_set_password          (NautilusPasswordDialog *auth_dialog,
+void     nautilus_password_dialog_set_password            (NautilusPasswordDialog *password_dialog,
 							   const char             *password);
-void       nautilus_password_dialog_set_readonly_username (NautilusPasswordDialog *auth_dialog,
+void     nautilus_password_dialog_set_readonly_username   (NautilusPasswordDialog *password_dialog,
 							   gboolean                readonly);
-char *     nautilus_password_dialog_get_username          (NautilusPasswordDialog *auth_dialog);
-char *     nautilus_password_dialog_get_password          (NautilusPasswordDialog *auth_dialog);
+void     nautilus_password_dialog_set_remember            (NautilusPasswordDialog *password_dialog,
+							   gboolean                remember);
+void     nautilus_password_dialog_set_remember_label_text (NautilusPasswordDialog *password_dialog,
+							   const char             *remember_label_text);
+
+/* Attribute accessors */
+char *   nautilus_password_dialog_get_username            (NautilusPasswordDialog *password_dialog);
+char *   nautilus_password_dialog_get_password            (NautilusPasswordDialog *password_dialog);
+gboolean nautilus_password_dialog_get_remember            (NautilusPasswordDialog *password_dialog);
 
 BEGIN_GNOME_DECLS
 
