@@ -1,3 +1,14 @@
+2001-03-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fixed bug 7666 (default user level should be Intermediate)
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_get_user_level): Reworked function a
+	little to support explicit default; made Intermediate the
+	default.
+
 2001-03-10  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>

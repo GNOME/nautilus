@@ -42,6 +42,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
+#define DEFAULT_USER_LEVEL	NAUTILUS_USER_LEVEL_INTERMEDIATE
 
 /*
  * PreferencesEntry:
@@ -557,7 +558,7 @@ nautilus_preferences_get_user_level (void)
 {
 	char *key;
 	char *user_level;
-	int result = 0;
+	int result;
 
 	/* This is a little silly, but it is technically possible
 	 * to have different user_level defaults in each user level.
@@ -576,11 +577,13 @@ nautilus_preferences_get_user_level (void)
 	g_free (key);
 
 	if (nautilus_str_is_equal (user_level, "advanced")) {
-		result = 2;
+		result = NAUTILUS_USER_LEVEL_ADVANCED;
 	} else if (nautilus_str_is_equal (user_level, "intermediate")) {
-		result = 1;
+		result = NAUTILUS_USER_LEVEL_INTERMEDIATE;
+	} else if (nautilus_str_is_equal (user_level, "novice")) {
+		result = NAUTILUS_USER_LEVEL_NOVICE;
 	} else {
-		result = 0;
+		result = DEFAULT_USER_LEVEL;
 	}
 	
 	g_free (user_level);
