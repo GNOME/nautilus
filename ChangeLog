@@ -1,5 +1,10 @@
 2002-04-30  Alex Larsson  <alexl@redhat.com>
 
+	* components/Makefile.am:
+	Disable news sidebar.
+
+2002-04-30  Alex Larsson  <alexl@redhat.com>
+
 	* src/nautilus-shell-ui.xml:
 	Removed ellipsis from items that are meant brings up dialog and
 	nothing more. IE: About, Preferences and Edit Bookmarks.
@@ -7,6 +12,13 @@
 
 	* libnautilus-private/nautilus-icon-container.c (key_press_event):
 	Don't eat alt-down key events.
+
+	* src/nautilus-preferences-dialog.c:
+	Disable news preferences.
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Use Alt-down as alternative open.
+	
 
 2002-04-29 David Bordoley <bordoley@msu.edu>
 
