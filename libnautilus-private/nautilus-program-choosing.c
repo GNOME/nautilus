@@ -631,9 +631,9 @@ nautilus_launch_application_from_command (GdkScreen  *screen,
 	}
 
 	if (use_terminal) {
-		eel_gnome_screen_open_terminal (screen, full_command);
+		eel_gnome_open_terminal_on_screen (full_command, screen);
 	} else {
-	    	eel_gnome_screen_shell_execute (screen, full_command);
+	    	eel_gnome_shell_execute_on_screen (full_command, screen);
 	}
 
 	g_free (full_command);

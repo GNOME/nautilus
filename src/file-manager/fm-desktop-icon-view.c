@@ -753,7 +753,7 @@ new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *
 {
         g_assert (FM_DIRECTORY_VIEW (data));
 
-	eel_gnome_screen_open_terminal (gtk_widget_get_screen (GTK_WIDGET (data)), NULL);
+	eel_gnome_open_terminal_on_screen (NULL, gtk_widget_get_screen (GTK_WIDGET (data)));
 }
 
 static void
