@@ -121,7 +121,6 @@ nautilus_druid_size_request (GtkWidget *widget,
 
 	temp_width += border * 2;
 	temp_height += GNOME_PAD_SMALL;
-	/* FIXME bugzilla.eazel.com 2553: do we need to do something with the buttons requisition? */
 	temp_width = temp_width * 4  + GNOME_PAD_SMALL * 3;
 
 	/* pick which is bigger, the buttons, or the NautilusDruidPages */

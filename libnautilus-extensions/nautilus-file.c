@@ -1658,7 +1658,7 @@ nautilus_file_get_uri (NautilusFile *file)
 static char *
 nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type)
 {	 
-	struct tm *file_time;
+	struct tm *file_time = NULL;
 	const char *format;
 	GDate *today;
 	GDate *file_date;

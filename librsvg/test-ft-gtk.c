@@ -83,7 +83,7 @@ static void invert_glyph (guchar *buf, int rowstride, int width, int height)
 	guint32 *middle;
 
 	if (width >= 8 && ((rowstride & 3) == 0)) {
-		first = (-(int)buf) & 3;
+		first = (-(long)buf) & 3;
 		n_words = (width - first) >> 2;
 		last = first + (n_words << 2);
 

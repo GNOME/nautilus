@@ -1,3 +1,23 @@
+Wed Sep 13 22:06:55 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extensions/nautilus-druid.c
+	  (nautilus_druid_size_request):  After some investigation found that
+	  fixme (#2553) was complete bollocks, so I removed it.
+
+	* libnautilus-extensions/nautilus-file.c (nautilus_file_get_uri):
+	  Apparently my current alpha compiler (egcs 1.1.2) is now more
+	  sensitive to uninitialized vars.  This one is harmless, since there
+	  was a g_assert_not_reached for the case where it's uninited.
+
+	* libnautilus-extensions/nautilus-scalable-font.c (invert_glyph),
+	  librsvg/test-ft-gtk.c (invert_glyph):
+	  YAIKES! casting to to (int) to get artithmetic.  Changed to (long)
+	  but that's still Wrong(tm)
+
+	* src/file-manager/fm-desktop-icon-view.c (get_sort_category):
+	  remove the "char *link_type", as it wasn't ever used, it was
+	  only freed thus causing havoc
+
 2000-09-13  Josh Barrow  <linuxfan@ionet.net>
 
 	* icons/Makefile.am:

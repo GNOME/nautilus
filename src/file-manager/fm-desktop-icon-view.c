@@ -822,7 +822,7 @@ typedef enum {
 static SortCategory
 get_sort_category (NautilusFile *file)
 {
-	char *path, *link_type;
+	char *path;
 	SortCategory category;
 
 	if (!nautilus_file_is_nautilus_link (file)) {
@@ -847,7 +847,6 @@ get_sort_category (NautilusFile *file)
 		}
 		
 		g_free (path);
-		g_free (link_type);
 	}
 	
 	return category;
