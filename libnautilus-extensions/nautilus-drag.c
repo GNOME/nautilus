@@ -246,7 +246,7 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 void
-nautilus_drag_default_drop_action (GdkDragContext *context,
+nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	const char *target_uri_string, const GList *items,
 	int *default_action, int *non_default_action)
 {
@@ -262,9 +262,15 @@ nautilus_drag_default_drop_action (GdkDragContext *context,
 	}
 
 	actions = context->actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
-	if (actions != (GDK_ACTION_MOVE | GDK_ACTION_COPY)) {
-		 /* We can't pick between copy and move, just
-		  * go with the suggested action.
+	if (actions == 0) {
+		 /* We can't use copy or move, just go with the suggested action.
+		  * 
+		  * Note: it would be more correct to only choose between move
+		  * and copy if both are specified in context->actions.
+		  * There is a problem in gtk-dnd.c though where context->actions
+		  * gets set only to copy when Control is held down, despite the
+		  * fact that bot copy and move were requested.
+		  * 
 		  */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
@@ -277,6 +283,7 @@ nautilus_drag_default_drop_action (GdkDragContext *context,
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
 	same_fs = TRUE;
+
 	gnome_vfs_check_same_fs_uris (target_uri, dropped_uri, &same_fs);
 	gnome_vfs_uri_unref (dropped_uri);
 	gnome_vfs_uri_unref (target_uri);

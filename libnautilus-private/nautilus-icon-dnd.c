@@ -919,17 +919,16 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 			*non_default_action = 0;
 			return;
 		}
-		nautilus_drag_default_drop_action (context, drop_target, 
+		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
 			container->details->dnd_info->drag_info.selection_list, 
 			default_action, non_default_action);
-		g_free (drop_target);
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_KEYWORD:
 		*default_action = context->suggested_action;
-		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
 		break;
 
 	default:
@@ -1173,6 +1172,7 @@ drag_motion_callback (GtkWidget *widget,
 		      guint32 time)
 {
 	int default_action, non_default_action;
+	int resulting_action;
 
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
@@ -1186,8 +1186,9 @@ drag_motion_callback (GtkWidget *widget,
 
 	/* set the right drop action, choose based on modifier key state
 	 */
-	gdk_drag_status (context, nautilus_drag_modifier_based_action (default_action, 
-		non_default_action), time);
+	resulting_action = nautilus_drag_modifier_based_action (default_action, 
+		non_default_action);
+	gdk_drag_status (context, resulting_action, time);
 
 	return TRUE;
 }

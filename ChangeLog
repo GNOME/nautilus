@@ -1,3 +1,20 @@
+2000-07-25  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	(nautilus_drag_default_drop_action_for_icons), (drag_motion_callback):
+	Work around a bug in gtk-dnd.c that was making it impossible to
+	force a move when dragging in between two volumes - the default
+	is copy in that case and holding down Control would force it to
+	be a copy too.
+	The fix I did is only correct for icon drags, changed the routine
+	name to reflect that better.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_get_drop_action):
+	Fix a typo bug that caused the non-default drop action to be 
+	undefined for non-icon drags.
+
 2000-07-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (category_clicked_callback),
