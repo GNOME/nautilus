@@ -100,6 +100,13 @@ nautilus_desktop_window_realized (NautilusDesktopWindow *window)
 			     XA_WINDOW, 32, PropModeReplace, (guchar *) &window_xid, 1);
 }
 
+static gint
+nautilus_desktop_window_delete_event (NautilusDesktopWindow *window)
+{
+	/* Returning true tells GTK+ not to delete the window. */
+	return TRUE;
+}
+
 NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApplication *application)
 {
@@ -117,6 +124,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 
 	gtk_signal_connect (GTK_OBJECT (window), "realize", GTK_SIGNAL_FUNC (nautilus_desktop_window_realized), NULL);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (nautilus_desktop_window_delete_event), NULL);
 
 	desktop_directory_path = nautilus_get_desktop_directory ();
 	
@@ -189,7 +197,8 @@ realize (GtkWidget *widget)
 	 */
 	gnome_win_hints_set_hints (widget,
 				   WIN_HINTS_SKIP_WINLIST
-				   | WIN_HINTS_SKIP_TASKBAR);
+				   | WIN_HINTS_SKIP_TASKBAR
+				   | WIN_HINTS_SKIP_FOCUS);
 
 	/* FIXME bugzilla.eazel.com 1255: 
 	 * Should we do a gdk_window_move_resize here, in addition to

@@ -163,6 +163,8 @@ void              nautilus_gtk_style_shade                             (GdkColor
 void              nautilus_gtk_class_name_make_like_existing_type      (const char               *class_name,
 									GtkType                   existing_gtk_type);
 
+GList		  *nautilus_get_window_list_ordered_front_to_back      (void);
+
 /* marshals */
 
 #define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER

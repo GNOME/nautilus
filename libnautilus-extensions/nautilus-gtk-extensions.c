@@ -30,6 +30,9 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-font-extensions.h"
 
+#include <gdk/gdk.h>
+#include <gdk/gdkprivate.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkrc.h>
@@ -58,6 +61,12 @@
  * This is the standard padding used to make them look non-crammed.
  */
 #define NAUTILUS_STANDARD_BUTTON_PADDING 1
+
+/* How far down the window tree will we search when looking for top-level
+ * windows? Some window managers doubly-reparent the client, so account
+ * for that, and add some slop.
+ */
+#define MAXIMUM_WM_REPARENTING_DEPTH 4
 
 static gboolean
 finish_button_activation (gpointer data)
@@ -1714,4 +1723,140 @@ nautilus_gtk_class_name_make_like_existing_type (const char *class_name,
 	}
 		
 	gtk_widget_destroy (temporary);
+}
+
+/* helper function for nautilus_get_window_list_ordered_front_to_back () */
+static GtkWidget *
+window_at_or_below (int depth, Window xid, gboolean *keep_going)
+{
+	static Atom wm_state = 0;
+
+	GtkWidget *widget;
+
+	Atom actual_type;
+	int actual_format;
+	gulong nitems, bytes_after;
+	gulong *prop;
+
+	GdkWindow *window;
+	gpointer data;
+
+	Window root, parent, *children;
+	int nchildren, i;
+
+	if (wm_state == 0) {
+		wm_state = XInternAtom (GDK_DISPLAY (), "WM_STATE", False);
+	}
+
+	/* Check if the window is a top-level client window.
+	 * Windows will have a WM_STATE property iff they're top-level.
+	 */
+	if (XGetWindowProperty (GDK_DISPLAY (), xid, wm_state, 0, 1,
+				False, AnyPropertyType, &actual_type,
+				&actual_format, &nitems, &bytes_after,
+				(guchar **) &prop) == Success
+	    && prop != NULL && actual_format == 32 && prop[0] == NormalState)
+	{
+		/* Found a top-level window */
+
+		if (prop != NULL) {
+			XFree (prop);
+		}
+
+		/* Does GDK know anything about this window? */
+		window = gdk_window_lookup (xid);
+		if (window != NULL) {
+			gdk_window_get_user_data (window, &data);
+			if (data != NULL)
+			{
+				/* Found one of the widgets we're after */
+				*keep_going = FALSE;
+				return GTK_WIDGET (data);
+			}
+		}
+
+		/* No point in searching past here. It's a top-level
+		 * window, but not from this application.
+		 */
+		*keep_going = FALSE;
+		return NULL;
+	}
+
+	/* Not found a top-level window yet, so keep recursing. */
+	if (depth < MAXIMUM_WM_REPARENTING_DEPTH) {
+		if (XQueryTree (GDK_DISPLAY (), xid, &root,
+				&parent, &children, &nchildren) != 0)
+		{
+			widget = NULL;
+
+			for (i = 0; *keep_going && i < nchildren; i++) {
+				widget = window_at_or_below (depth + 1,
+							     children[i],
+							     keep_going);
+			}
+
+			if (children != NULL) {
+				XFree (children);
+			}
+
+			if (! *keep_going) {
+				return widget;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+/* nautilus_get_window_list_ordered_front_to_back:
+ *
+ * Return a list of GtkWindows's, representing the stacking order (top to
+ * bottom) of all windows (known to the local GDK).
+ *
+ * (Involves a large number of X server round trips, so call sparingly)
+ */
+GList *
+nautilus_get_window_list_ordered_front_to_back (void)
+{
+	Window root, parent, *children;
+	int nchildren, i;
+	GList *windows;
+	GtkWidget *widget;
+	gboolean keep_going;
+
+	/* There's a possibility that a window will be closed in
+	 * the period between us querying the child-of-root windows
+	 * and getting round to search _their_ children. So arrange
+	 * for errors to be caught and ignored.
+	 */
+
+	gdk_error_trap_push ();
+
+	windows = NULL;
+
+	if (XQueryTree (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+			&root, &parent, &children, &nchildren) != 0)
+	{
+		for (i = 0; i < nchildren; i++) {
+			keep_going = TRUE;
+			widget = window_at_or_below (0, children[i],
+						     &keep_going);
+			if (widget != NULL) {
+				/* XQueryTree returns window in bottom ->
+				 * top order, so consing up the list in
+				 * the normal manner will reverse this
+				 * giving the desired top -> bottom order
+				 */
+				windows = g_list_prepend (windows, widget);
+			}
+		}
+		if (children != NULL) {
+			XFree (children);
+		}
+	}
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+
+	return windows;
 }

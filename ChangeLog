@@ -1,3 +1,30 @@
+2001-01-25  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fix bug 5561 (Add a function to nautilus to iterate through
+	windows in stacking order):
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c,
+	libnautilus-extensions/nautilus-gtk-extensions.h
+	(nautilus_get_window_list_ordered_front_to_back): new function,
+	returns a list of all top-level windows in stacking order (from
+	top to bottom)
+
+	Fixed parts of bug 5553 (Enlightenment-related problems)
+
+	* src/nautilus-desktop-window.c
+	(nautilus_desktop_window_delete_event): connected to
+	`delete_event' signal of the desktop window. Unconditionally
+	returns TRUE. This stops GTK+ deleting the window in response
+	to WM_DELETE_WINDOW requests, and thus fixes the bug where it's
+	possible to delete the desktop window in Enlightenment
+
+	* src/nautilus-desktop-window.c (realize): added SKIP_FOCUS to
+	the _WIN_HINTS we set (even though, ages ago, I told Gene not
+	to. Otherwise Enlightenment includes the desktop window in its
+	M-TAB list)
+
 2001-01-25  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Harper
