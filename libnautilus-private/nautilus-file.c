@@ -401,7 +401,7 @@ finalize (GObject *object)
 	}
 
 	nautilus_async_destroying_file (file);
-	
+
 	remove_from_link_hash_table (file);
 
 	directory = file->details->directory;
@@ -4637,12 +4637,15 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	update_links_if_target (file);
 
+	/* Drop it from the symlink hash ! */
+	remove_from_link_hash_table (file);
+
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
 	if (!nautilus_file_is_self_owned (file)) {
 		nautilus_directory_remove_file (directory, file);
 	}
-	
+
 	/* Drop away all the old file information. */
 	if (file->details->info != NULL) {
 		gnome_vfs_file_info_unref (file->details->info);
