@@ -263,25 +263,55 @@ nautilus_horizontal_splitter_draw (GtkWidget    *widget,
 	}
 }
 
-/* routine to toggle the open/closed state of the splitter */
-static void
-toggle_splitter_position (NautilusHorizontalSplitter *splitter)
+void
+nautilus_horizontal_splitter_expand (NautilusHorizontalSplitter *splitter)
 {
 	int position;
+
+	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	position = e_paned_get_position (E_PANED (splitter));
 
 	if (position >= CLOSED_THRESHOLD) {
-		splitter->details->saved_size = position;
-		position = 0;
-	} else {
-		position = splitter->details->saved_size;
-		if (splitter->details->saved_size < CLOSED_THRESHOLD) {
-			position = NOMINAL_SIZE;
-		}
+		return;
+	}
+
+	position = splitter->details->saved_size;
+	if (position < CLOSED_THRESHOLD) {
+		position = NOMINAL_SIZE;
 	}
 	
 	e_paned_set_position (E_PANED (splitter), position);
+}
+
+void
+nautilus_horizontal_splitter_collapse (NautilusHorizontalSplitter *splitter)
+{
+	int position;
+
+	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+
+	position = e_paned_get_position (E_PANED (splitter));
+
+	if (position < CLOSED_THRESHOLD) {
+		return;
+	}
+
+	splitter->details->saved_size = position;
+	e_paned_set_position (E_PANED (splitter), 0);
+}
+
+/* routine to toggle the open/closed state of the splitter */
+void
+nautilus_horizontal_splitter_toggle_position (NautilusHorizontalSplitter *splitter)
+{
+	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+
+	if (e_paned_get_position (E_PANED (splitter)) >= CLOSED_THRESHOLD) {
+		nautilus_horizontal_splitter_collapse (splitter);
+	} else {
+		nautilus_horizontal_splitter_expand (splitter);
+	}
 }
 
 /* NautilusHorizontalSplitter public methods */
@@ -324,7 +354,7 @@ nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *
 		delta = abs (event->x - splitter->details->down_position);
 		delta_time = abs (splitter->details->down_time - event->time);
 		if (delta < SPLITTER_CLICK_SLOP && delta_time < SPLITTER_CLICK_TIMEOUT)  {
-			toggle_splitter_position(splitter);
+			nautilus_horizontal_splitter_toggle_position (splitter);
 		}
 	}
 

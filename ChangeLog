@@ -1,3 +1,27 @@
+2000-10-03  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3420: "Show Sidebar" can leave sidebar at zero width
+
+	* libnautilus-extensions/nautilus-horizontal-splitter.h:
+	New public functions nautilus_horizontal_splitter_expand,
+	..._collapse, and ..._toggle_position.
+	
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(nautilus_horizontal_splitter_expand): Broken out of
+	toggle_position, just does the expanding part (or nothing
+	if already expanded).
+	(nautilus_horizontal_splitter_collapse): Broken out of
+	toggle_position, just does the collapsing part (or nothing
+	if already collapsed).
+	(nautilus_horizontal_splitter_toggle_position): renamed
+	from toggle_splitter_position; now calls the broken-out
+	functions.
+	(nautilus_horizontal_splitter_button_release): Updated for
+	name change.
+	
+	* src/nautilus-window.c: (nautilus_window_show_sidebar):
+	Call nautilus_horizontal_splitter_expand when showing sidebar.
+
 2000-10-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* README:

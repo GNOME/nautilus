@@ -51,6 +51,10 @@ typedef struct {
 GtkType    nautilus_horizontal_splitter_get_type (void);
 GtkWidget *nautilus_horizontal_splitter_new      (void);
 
+void	   nautilus_horizontal_splitter_collapse	(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_expand		(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_toggle_position	(NautilusHorizontalSplitter *splitter);
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_HORIZONTAL_SPLITTER_H */

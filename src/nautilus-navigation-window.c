@@ -1661,6 +1661,8 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 	gtk_widget_show (widget);
 	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
+		/* Make sure sidebar is not in collapsed form also */
+		nautilus_horizontal_splitter_expand (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 	}
 	nautilus_window_update_show_hide_menu_items (window);
 }
