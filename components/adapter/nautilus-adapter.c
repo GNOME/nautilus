@@ -128,6 +128,10 @@ nautilus_adapter_destroy (GtkObject *object)
 	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
 			       adapter->details->report_load_failed_id);
 
+	if (adapter->details->embed_strategy != NULL) {
+		nautilus_adapter_embed_strategy_deactivate (adapter->details->embed_strategy);
+	}
+
 	if (adapter->details->load_strategy != NULL) {
 		nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
 		gtk_object_unref (GTK_OBJECT (adapter->details->load_strategy));

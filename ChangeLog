@@ -1,3 +1,18 @@
+2001-03-01  John Harper  <jsh@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 7238 ("View as EOG Image" adds toolbar icons that
+	don't go away):
+
+	* components/adapter/nautilus-adapter.c
+	(nautilus_adapter_destroy): when the adapter has a non-null
+	embedding strategy, deactivate it before destroying
+
+	I think there may be a refcounting problem in EOG that caused
+	the original problem, but the above should always be safe, and
+	will protect nautilus from misbehaving components
+
 2001-03-01  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <ian@eazel.com>
