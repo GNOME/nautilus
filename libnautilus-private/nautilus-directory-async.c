@@ -224,6 +224,8 @@ static void
 metafile_read_done (NautilusDirectory *directory)
 {
 	g_free (directory->details->metafile_read_state);
+	directory->details->metafile_read_state = NULL;	
+
 	directory->details->metafile_read = TRUE;
 
 	/* Move over the changes to the metafile that were in the hash table. */
