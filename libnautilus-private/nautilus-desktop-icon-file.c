@@ -201,6 +201,7 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	file_info->size = 0;
 	file_info->permissions =
 		GNOME_VFS_PERM_OTHER_WRITE |
+		GNOME_VFS_PERM_GROUP_WRITE |
 		GNOME_VFS_PERM_USER_READ |
 		GNOME_VFS_PERM_OTHER_READ |
 		GNOME_VFS_PERM_GROUP_READ;
