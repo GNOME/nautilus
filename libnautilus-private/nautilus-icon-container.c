@@ -47,7 +47,7 @@
 #include "nautilus-icon-text-item.h"
 #include "nautilus-font-factory.h"
 #include "nautilus-lib-self-check-functions.h"
-
+#include "nautilus-theme.h"
 #include "nautilus-icon-private.h"
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
@@ -3808,15 +3808,37 @@ static void
 update_label_color (NautilusBackground *background,
 		    NautilusIconContainer *container)
 {
+	char *light_info_color, *dark_info_color;
+	uint light_info_value, dark_info_value;
+	
 	g_assert (NAUTILUS_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	
+	/* read the info colors from the current theme; use a reasonable default if undefined */
+	light_info_color = nautilus_theme_get_theme_data ("directory", "LIGHT_INFO_COLOR");
+	if (light_info_color == NULL) {
+		light_info_value = 0xAAAAFD;
+	} else {
+		light_info_value = strtoul (light_info_color, NULL, 0);
+		g_free (light_info_color);
+	}
+	
+	dark_info_color = nautilus_theme_get_theme_data ("directory", "DARK_INFO_COLOR");
+	if (dark_info_color == NULL) {
+		dark_info_value = 0x33337F;
+	} else {
+		dark_info_value = strtoul (dark_info_color, NULL, 0);
+		g_message ("dark info color is %s, value is %8x", dark_info_color,
+		dark_info_value);
+		g_free (dark_info_color);
+	}
+	
 	if (nautilus_background_is_dark (background)) {
 		container->details->label_color = 0xEFEFEF;
-		container->details->label_info_color = 0xAAAAEF;
+		container->details->label_info_color = light_info_value;
 	} else {
-		container->details->label_color = 000000;
-		container->details->label_info_color = 0x00007F;
+		container->details->label_color = 0x000000;
+		container->details->label_info_color = dark_info_value;
 	}
 }
 

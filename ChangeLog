@@ -1,3 +1,19 @@
+2000-08-07  Andy Hertzfeld  <andy@eazel.com>
+
+	last minute tweak for demo release of info color text: now it
+	gets it from the current theme
+	* icons/arlo/arlo.xml:
+	added info color values for arlo theme
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class):
+	made the selected info color a more neutral gray
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(update_label_color):
+	get the info color from the theme
+	* src/nautilus-sidebar-title.c:
+	(nautlius_sidebar_title_select_text_color):
+	for now, use the same color as the name
+	
 2000-08-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* CVSVERSION: New file, used to detect whether we are configuring

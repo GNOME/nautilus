@@ -236,7 +236,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	/* set up the highlight colors - soon, get these from preferences */
 	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
 	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);	
-	gdk_color_parse ("rgb:AA/AA/FF", &highlight_text_info_color);	
+	gdk_color_parse ("rgb:AA/AA/AA", &highlight_text_info_color);	
 }
 
 /* Object initialization function for the icon item. */

@@ -208,12 +208,13 @@ nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		sidebar = GTK_WIDGET (sidebar)->parent;
 		background = nautilus_get_widget_background (sidebar);
 		
+		/* FIXME: for now, both the title and info colors are the same */
 		if (nautilus_background_is_dark (background)) {
 			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-			sidebar_info_title_color = g_strdup("rgb:AAAA/AAAA/FFFF");
+			sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
 		} else {
 			sidebar_title_color = g_strdup("rgb:0000/0000/0000");
-			sidebar_info_title_color = g_strdup("rgb:0000/0000/7FFF");
+			sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
 		}
 
 	set_widget_color (sidebar_title->details->title, sidebar_title_color);
