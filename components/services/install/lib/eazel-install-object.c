@@ -35,6 +35,8 @@
 #include <libtrilobite/libtrilobite.h>
 #include "trilobite-eazel-install.h"
 #include "eazel-install-corba-types.h"
+#else
+#include <libtrilobite/trilobite-core-utils.h>
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 #include "eazel-install-metadata.h"
@@ -188,8 +190,8 @@ eazel_install_finalize (GtkObject *object)
 	transferoptions_destroy (service->private->topts);
 	installoptions_destroy (service->private->iopts);
 
-	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
-		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize) {
+		GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize (object);
 	}
 
 	g_message ("out eazel_install_finalize");
@@ -682,6 +684,71 @@ eazel_install_open_log (EazelInstall *service,
 	g_warning (_("Cannot write to file %s, using default log handler"), fname);
 }
 
+static gboolean
+eazel_install_alter_mode_on_temp (EazelInstall *service,
+				  mode_t mode)
+{
+	GList *iterator;
+	gboolean result = TRUE;
+
+	g_message ("D: locking dir to 0%o", mode);
+
+	/* First set mode 400 on all files */
+	if (chmod (eazel_install_get_tmp_dir (service), mode + 0100) != 0) {
+		g_warning ("D: cannot change %s to 0%o", eazel_install_get_tmp_dir (service), mode + 0100);
+		result = FALSE;
+	}
+
+	for (iterator = service->private->downloaded_files; iterator; iterator = g_list_next (iterator)) {
+		char *filename = (char*)iterator->data;
+		if (filename) {
+			if (chmod (filename, mode) != 0) {
+				g_warning ("D: cannot change %s to 0%o", filename, mode);
+				result = FALSE;
+			}
+		}
+	}
+	
+	g_message ("D: locking done");
+
+	return result;
+}
+
+gboolean 
+eazel_install_lock_tmp_dir (EazelInstall *service)
+{
+	return eazel_install_alter_mode_on_temp (service, 0400);
+}
+
+gboolean 
+eazel_install_unlock_tmp_dir (EazelInstall *service)
+{
+	return eazel_install_alter_mode_on_temp (service, 0600);
+}
+
+static void
+eazel_install_delete_downloads (EazelInstall *service)
+{
+	if (service->private->downloaded_files && eazel_install_emit_delete_files (service)) {
+		GList *iterator;
+		PackageData *top_pack, *sub_pack;
+		
+		trilobite_debug ("*** deleting the package files");
+		for (iterator = g_list_first (service->private->downloaded_files); iterator;
+		     iterator = g_list_next (iterator)) {
+			char *filename = (char*)iterator->data;
+			trilobite_debug ("*** file '%s'", filename);
+			if (unlink (filename) != 0) {
+				g_warning ("unable to delete file %s !", filename);
+			}
+			
+		}
+		if (rmdir (eazel_install_get_tmp_dir (service))!=0) {
+				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));			
+		}
+	}
+}
+
 void 
 eazel_install_install_packages (EazelInstall *service, 
 				GList *categories,
@@ -712,24 +779,11 @@ eazel_install_install_packages (EazelInstall *service,
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Install failed"));
 	} 
-	if ((result & EAZEL_INSTALL_DOWNLOADS) && eazel_install_emit_delete_files (service)) {
-		GList *iterator;
-		PackageData *top_pack, *sub_pack;
 
-		trilobite_debug ("deleting the package files");
-		for (iterator = g_list_first (service->private->downloaded_files); iterator;
-		     iterator = g_list_next (iterator)) {
-			char *filename = (char*)iterator->data;
-			trilobite_debug ("deleting file '%s'", filename);
-			if (unlink (filename) != 0) {
-				g_warning ("unable to delete file %s !", filename);
-			}
+	eazel_install_unlock_tmp_dir (service);
+	g_message ("D: service->private->downloaded_files = 0x%x", service->private->downloaded_files);
+	eazel_install_delete_downloads (service);
 
-		}
-		if (rmdir (eazel_install_get_tmp_dir (service))!=0) {
-				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));			
-		}
-	}
 	g_free (service->private->cur_root);
 
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
@@ -776,6 +830,8 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	eazel_install_prepare_package_system (service);
 	result = revert_transaction (service, packages);
 
+	eazel_install_unlock_tmp_dir (service);
+	eazel_install_delete_downloads (service);
 	eazel_install_emit_done (service, result | EAZEL_INSTALL_REVERSION_OK);
 }
 

@@ -119,7 +119,7 @@ packagedata_new ()
 	pack->modifies = NULL;
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
-	memset (pack->md5, 0, 16);
+	pack->md5 = NULL;
 	return pack;
 }
 
@@ -263,6 +263,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->filename = NULL;
 	g_free (pack->install_root);
 	pack->install_root = NULL;
+	g_free (pack->md5);
+	pack->md5 = NULL;
 
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));

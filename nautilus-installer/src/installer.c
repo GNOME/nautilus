@@ -319,9 +319,9 @@ create_finish_page_good (GtkWidget *druid,
 							       create_pixmap (GTK_WIDGET (window),druid_sidebar_xpm),
 							       NULL);
 							       
-	gtk_widget_set_name (finish_page, "finish_page");
+	gtk_widget_set_name (finish_page, "finish_page_good");
 	gtk_widget_ref (finish_page);
-	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page", finish_page,
+	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page_good", finish_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (finish_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
@@ -340,16 +340,17 @@ create_finish_page_evil (GtkWidget *druid,
 	GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
 
 	finish_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
-							       _("Finished..."),
-							       _("Your machine is now possessed..."),
 							       NULL,
+							       "I failed, your machine is now possessed...",
+							       create_pixmap (GTK_WIDGET (window),
+									      evil_xpm),
 							       create_pixmap (GTK_WIDGET (window),
 									      druid_sidebar_xpm),
 							       NULL);
 							       
-	gtk_widget_set_name (finish_page, "finish_page");
+	gtk_widget_set_name (finish_page, "finish_page_evil");
 	gtk_widget_ref (finish_page);
-	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page", finish_page,
+	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page_evil", finish_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (finish_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
@@ -425,6 +426,12 @@ create_window (EazelInstaller *installer)
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_install),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->finish_good), "prepare",
+			    GTK_SIGNAL_FUNC (prep_finish),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->finish_evil), "prepare",
+			    GTK_SIGNAL_FUNC (prep_finish),
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (installer->finish_good), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
@@ -1295,9 +1302,24 @@ eazel_installer_initialize (EazelInstaller *object) {
 	
 	eazel_install_get_depends (installer);
 	
+	if (!installer->categories) {
+		CategoryData *cat = categorydata_new ();
+		PackageData *pack = packagedata_new ();
+		struct utsname ub;
+		
+		uname (&ub);
+		g_warning ("Ugh, not categories");
+		cat->name = g_strdup ("Nautilus");
+		pack->name = g_strdup ("nautilus");
+		pack->archtype = g_strdup (ub.machine);
+		cat->packages = g_list_prepend (NULL, pack);
+		installer->categories = g_list_prepend (NULL, cat);
+	}
+
 	for (iterator = installer->categories; iterator; iterator=iterator->next) {
 		eazel_installer_add_category (installer, (CategoryData*)iterator->data);
 	}
+
 	g_free (package_destination);
 	g_free (tmpdir);
 }

@@ -104,7 +104,7 @@ eazel_install_flatten_categories (EazelInstall *service,
 	
 	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
 		CategoryData *cat = (CategoryData*)category_iterator->data;
-		packages = g_list_concat (packages, cat->packages);
+		packages = g_list_concat (cat->packages, packages);
 	}
 
 
@@ -147,6 +147,17 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	eazel_install_set_interface_flags (service, interface_flags);
 	eazel_install_set_problem_filters (service, problem_filters);
 	
+	if (! g_file_test (eazel_install_get_tmp_dir (service), G_FILE_TEST_ISDIR)) {
+		int retval;
+		retval = mkdir (eazel_install_get_tmp_dir (service), 0755);		       
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_error (_("*** Could not create tmp directory (%s)! ***\n"), 
+					 eazel_install_get_tmp_dir (service));
+			}
+		}
+	}
+
 	if (categories == NULL) {
 		g_message (_("Reading the install package list %s"), eazel_install_get_package_list (service));
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service));
@@ -160,7 +171,6 @@ install_new_packages (EazelInstall *service, GList *categories) {
 
 		/* Now download all the packages */
 		if (eazel_install_download_packages (service, TRUE, &packages, NULL)) {
-			result = EAZEL_INSTALL_DOWNLOADS;
 
 			/* Files downloaded, now install */
 			if (eazel_install_do_install_packages (service, packages)) {
@@ -234,6 +244,8 @@ eazel_install_download_packages (EazelInstall *service,
 			} else {
 				result = TRUE;
 				package->toplevel = toplevel;
+				/* If downloaded package has soft_deps,
+				   fetch them by a recursive call */
 				if (package->soft_depends) {
 					eazel_install_download_packages (service,
 									 FALSE,
@@ -695,8 +707,9 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 	
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
 	
+/* 1.39 has the code to parse --percent output */
 	if (bytes_read) {
-		/* fprintf (stdout, "%c", tmp); fflush (stdout); */
+		/* fprintf (stdout, "%c", tmp); fflush (stdout);  */
 		/* Percentage output, parse and emit... */
 		if (tmp=='#') {
 			int amount;
@@ -774,7 +787,6 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 	}
 }
 
-/* 1.39 has the code to parse --percent output */
 static gboolean
 eazel_install_monitor_process_pipe (GIOChannel *source,
 				    GIOCondition condition,
@@ -805,15 +817,19 @@ eazel_install_display_arguments (GList *args)
 	fprintf (stdout, "\n");
 }
 
-void
+/* Monitors the subcommand pipe and returns the number of packages installed */
+gint
 eazel_install_monitor_subcommand_pipe (EazelInstall *service,
-				       int fd,
+				       int fd, 
 				       GIOFunc monitor_func)
 {
 	GIOChannel *channel;
-	channel = g_io_channel_unix_new (fd);
-	g_message ("D: beginning monitor on %d", fd);
+
 	service->private->subcommand_running = TRUE;
+	channel = g_io_channel_unix_new (fd);
+
+	g_message ("D: beginning monitor on %d", fd);
+
 	g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
 			monitor_func, 
 			service);
@@ -821,8 +837,50 @@ eazel_install_monitor_subcommand_pipe (EazelInstall *service,
 		g_main_iteration (TRUE);
 	}
 	g_message ("D: ending monitor on %d", fd);
+
+	switch (eazel_install_get_package_system (service)) {
+	case EAZEL_INSTALL_USE_RPM:
+		return service->private->packsys.rpm.packages_installed;
+		break;
+	}
 }
 
+gboolean
+eazel_install_do_transaction_md5_check (EazelInstall *service, 
+					GList *packages)
+{
+	gboolean result = TRUE;
+	GList *iterator;
+
+	result = eazel_install_lock_tmp_dir (service);
+
+	if (!result) {
+		g_warning (_("Failed to lock the downloaded file"));
+		return FALSE;
+	}
+
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		
+		if (pack->md5) {
+			char md5[16];
+			md5_get_digest_from_file (pack->filename, md5);
+/*
+  FIXME bugzilla.eazel.com 2241: until we get the md5 set in the xml parse, don't md5 check it
+*/
+			if (memcmp (pack->md5, md5, 16)!=0) {
+				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
+				result = FALSE;
+			} else {
+				g_message ("D: md5 match");
+			}
+		} else {
+			g_warning ("D: No md5 for %s", pack->name);
+		}
+	}	
+
+	return result;
+}
 
 /* This begins the package transaction.
    Return value is number of failed packages */
@@ -850,20 +908,28 @@ eazel_install_start_transaction (EazelInstall *service,
 	args = NULL;
 	res = 0;
 
-	eazel_install_do_transaction_fill_hash (service, packages);
-	eazel_install_do_transaction_get_total_size (service, packages);
-	args = eazel_install_start_transaction_make_argument_list (service, packages);
+	if (service->private->downloaded_files) {
+		if (eazel_install_do_transaction_md5_check (service, packages) == FALSE) {
+			res = g_list_length (packages);
+		}
+	}
 
-	g_message (_("Preflight (%d bytes, %d packages)"), 
-		   service->private->packsys.rpm.total_size,
-		   service->private->packsys.rpm.num_packages);
-	eazel_install_emit_preflight_check (service, 					     
-					    service->private->packsys.rpm.total_size,
-					    service->private->packsys.rpm.num_packages);
-
-	eazel_install_display_arguments (args);
+	if (res == 0) {
+		eazel_install_do_transaction_fill_hash (service, packages);
+		eazel_install_do_transaction_get_total_size (service, packages);
+		args = eazel_install_start_transaction_make_argument_list (service, packages);
+		
+		g_message (_("Preflight (%d bytes, %d packages)"), 
+			   service->private->packsys.rpm.total_size,
+			   service->private->packsys.rpm.num_packages);
+		eazel_install_emit_preflight_check (service, 					     
+						    service->private->packsys.rpm.total_size,
+						    service->private->packsys.rpm.num_packages);
+		
+		eazel_install_display_arguments (args);
+	}
 #ifdef EAZEL_INSTALL_SLIM
-	{
+	if (res == 0) {
 		char **argv;
 		int i;
 		int flags;
@@ -893,26 +959,31 @@ eazel_install_start_transaction (EazelInstall *service,
 		}
 	}
 #else /* EAZEL_INSTALL_SLIM     */
-	/* Fire off the helper */	
-	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
-	root_helper_stat = trilobite_root_helper_start (root_helper);
-	if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
-		g_warning ("Error in starting trilobite_root_helper");
-		res = service->private->packsys.rpm.num_packages;
-	}
-
-	/* Run RPM */
-	if (res==0 && trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
-	    TRILOBITE_ROOT_HELPER_SUCCESS) {
-		g_warning ("Error in running trilobite_root_helper");
-		res = service->private->packsys.rpm.num_packages;
+	if (res == 0) {
+		/* Fire off the helper */	
+		root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
+		root_helper_stat = trilobite_root_helper_start (root_helper);
+		if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
+			g_warning ("Error in starting trilobite_root_helper");
+			res = service->private->packsys.rpm.num_packages;
+		}
+		
+		/* Run RPM */
+		if (res==0 && trilobite_root_helper_run (root_helper, 
+							 TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
+		    TRILOBITE_ROOT_HELPER_SUCCESS) {
+			g_warning ("Error in running trilobite_root_helper");
+			res = service->private->packsys.rpm.num_packages;
+		}
 	}
 
 #endif /* EAZEL_INSTALL_SLIM     */
 	if (res==0) {		
-		eazel_install_monitor_subcommand_pipe (service,
-						       fd,
-						       (GIOFunc)eazel_install_monitor_process_pipe);
+		int installed_packages;
+		installed_packages = eazel_install_monitor_subcommand_pipe (service,
+									    fd,
+								 (GIOFunc)eazel_install_monitor_process_pipe);
+		res = g_list_length (packages) - installed_packages;
 	}
 
 	g_list_foreach (args, (GFunc)g_free, NULL);
@@ -1393,10 +1464,17 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			}
 		
 			if (result!=0) {
-				g_message (_("%s %s from %s to %s"), 
-					   pack->name, 
-					   result>0 ? _("upgrades") : _("downgrades"), 
-					   existing_package->version, pack->version);
+				if (result>0) {
+					g_message (_("%s upgrades from version %s to %s"),
+						   pack->name, 
+						   existing_package->version, 
+						   pack->version);
+				} else {
+					g_message (_("%s downgrades from version %s to %s"),
+						   pack->name, 
+						   existing_package->version, 
+						   pack->version);
+				}
 			} else {
 				g_message (_("%s version %s already installed"), 
 					   pack->name, 
@@ -1442,22 +1520,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		PackageData *dep;
 
 		conflict = service->private->packsys.rpm.conflicts[iterator];
-
-		/* Check if a previous conflict solve has fixed this conflict */
-		/*
-		if (g_list_find_custom (extras_in_this_batch,
-					conflict.needsName,
-					(GCompareFunc)eazel_install_package_name_compare)) {
-			g_message ("D: already handled %s", conflict.needsName);
-			continue;
-		}
-		*/
-		if (g_list_find_custom (extras_in_this_batch,
-					conflict.byName,
-					(GCompareFunc)eazel_install_package_name_compare)) {
-			g_message ("D: already handled %s", conflict.needsName);
-			continue;
-		}
+		
 		pack_entry = g_list_find_custom (*packages, 
 						 (gpointer)&conflict,
 						 (GCompareFunc)eazel_install_package_conflict_compare);
@@ -1466,7 +1529,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			case RPMDEP_SENSE_REQUIRES: {
 				char *tmp;
 				
-				g_warning (_("%s %s breaks %s"), 
+				g_warning (_("%s version %s breaks %s"), 
 					   conflict.needsName, 
 					   conflict.needsVersion, 
 					   conflict.byName);
@@ -1573,6 +1636,19 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   We cannot just put it into extrapackages, as a later dep
 			   might fail, and then we have to fail the package */
 			GList *extralist;
+			
+			/* Check if a previous conflict solve has fixed this conflict.
+			   Note, we don't check till after download, since only a download
+			   will reveal the packagename in case we need to download
+			   using fetch_package_which_provides */
+			if (g_list_find_custom (extras_in_this_batch,
+						dep->name,
+						(GCompareFunc)eazel_install_package_name_compare)) {
+				g_message ("D: already handled %s", conflict.needsName);
+				packagedata_remove_soft_dep (dep, pack);
+				continue;
+			}
+
 
 			/* FIXME bugzilla.eazel.com 2584:
 			   Need to check that the downloaded package is of sufficiently high version
@@ -1846,7 +1922,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 
 				/* Add to "packages" */
 				for (iterator = extrapackages; iterator; iterator = g_list_next (iterator)) {
-					(*packages) = g_list_prepend (*packages, iterator->data);
+					(*packages) = g_list_append (*packages, iterator->data);
 				}
 				
 				/* Now recurse into eazel_install_ensure_deps with

@@ -49,7 +49,8 @@ begin_install (EazelInstaller  *installer)
 	GList *install_categories = NULL;
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
-	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
+
+	gnome_druid_set_buttons_sensitive(druid,FALSE,FALSE,TRUE);
 
 	for (iterator = installer->categories; iterator; iterator = iterator->next) {
 		CategoryData *category = (CategoryData*)iterator->data;
@@ -63,7 +64,8 @@ begin_install (EazelInstaller  *installer)
 	if (install_categories) {
 		eazel_installer_do_install (installer, install_categories);
 	}
-	gnome_druid_set_buttons_sensitive(druid,TRUE,TRUE,TRUE);
+
+	gnome_druid_set_buttons_sensitive(druid,FALSE,TRUE,TRUE);
 	
 	return FALSE;
 }
@@ -83,6 +85,14 @@ prep_install (GnomeDruidPage  *gnomedruidpage,
 	      EazelInstaller  *installer)
 {
 	g_timeout_add (0, (GSourceFunc)begin_install, installer);
+}
+
+void
+prep_finish (GnomeDruidPage  *gnomedruidpage,
+	     GtkWidget *druid,
+	     EazelInstaller  *installer)
+{
+	gnome_druid_set_buttons_sensitive(GNOME_DRUID (druid), FALSE, TRUE, FALSE);
 }
 
 

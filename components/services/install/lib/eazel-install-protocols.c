@@ -50,7 +50,6 @@ typedef struct {
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
-#define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 
 #ifdef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 #define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
@@ -263,7 +262,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 								      file_to_report ? file_to_report : info->source_name,
 								      info->file_size,
 								      info->file_size);
-			} else {
+			} else if (info->bytes_copied > 0) {
 				eazel_install_emit_download_progress (service, 
 								      file_to_report ? file_to_report : info->source_name,
 								      info->bytes_copied,
@@ -440,20 +439,28 @@ eazel_install_fetch_file (EazelInstall *service,
 	g_return_val_if_fail (url!=NULL, FALSE);
 	g_return_val_if_fail (target_file!=NULL, FALSE);
 
-	result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 
-								     url, 
-								     file_to_report, 
-								     target_file);
+	if (g_file_test (target_file, G_FILE_TEST_ISFILE)) {
+		g_message ("%s already present, not downloading", target_file);
+		result = TRUE;
+	} else {
+		result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 
+									     url, 
+									     file_to_report, 
+									     target_file);
+		/* If file didn't exist, and downloaded successfully, add to
+		   list of downloaded file */
+		if (result) {
+			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
+									     g_strdup (target_file));
+		}
+	}
 	
 	if (result==FALSE) {
 		g_warning (_("Failed to retreive %s!"), 
 			   file_to_report ? file_to_report : g_basename (target_file));
 		eazel_install_emit_download_failed (service, 
 						    file_to_report ? file_to_report : g_basename (target_file));
-	} else {
-		service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
-								     g_strdup (target_file));
-	}
+	} 
 
 	return result;
 }
@@ -522,30 +529,15 @@ eazel_install_fetch_package (EazelInstall *service,
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result==TRUE) {
-			char md5[16];
 			packagedata_fill_from_file (package, targetname); 
-#ifndef EAZEL_INSTALL_SLIM
-			md5_get_digest_from_file (package, md5);
-/*
-  FIXME bugzilla.eazel.com 2241: until we get the md5 set in the xml parse, don't md5 check it
-
-			if (memcmp (package->md5, md5, 16)!=0) {
-				g_warning (_("MD5 mismatch, package may be compromised"));
-				packagedata_destroy (package);
-				result = FALSE;
-			} else {
-				g_message ("D: md5 match");
-			}
-*/
-#endif /* EAZEL_INSTALL_SLIM */
 		} else {
-			g_message (_("File download failed"));
+			g_warning (_("File download failed"));
 		}
 
 		g_free (targetname);
-		g_free (url);
 	}
 	
+	g_free (url);
 	return result;
 }
 
@@ -585,9 +577,11 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 						      eazel_install_get_tmp_dir (service),
 						      filename_from_url (url));
 			result = eazel_install_fetch_file (service, url, NULL, targetname);
-			if (!result) {
+			if (result) {
 				packagedata_fill_from_file (*package, targetname);
+			} else {
 				(*package)->status = PACKAGE_DEPENDENCY_FAIL;
+				g_warning (_("File download failed"));
 			}
 			g_free (targetname);
 		}
@@ -685,8 +679,8 @@ get_url_for_package  (EazelInstall *service,
 							url = g_strdup (pack->filename);
 							
 							g_list_foreach (packages, 
-									(GFunc)packagedata_destroy_foreach, 
-									NULL);
+									(GFunc)packagedata_destroy, 
+									GINT_TO_POINTER (TRUE));
 						}						
 #else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 						url = g_strdup (ghttp_get_body (request));

@@ -1,3 +1,101 @@
+2000-09-06  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_metadata), (create_default_configuration_metafile),
+	(xml_doc_sanity_checks):
+	Removed \n's for g_print/warnings/messages
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), 
+	Changed to call parents finalize
+	(eazel_install_alter_mode_on_temp),
+	(eazel_install_lock_tmp_dir), (eazel_install_unlock_tmp_dir),
+	Calls to chmod all the downloaded files and the tmpdir.
+	(eazel_install_delete_downloads),
+	(eazel_install_install_packages):
+	Moved the deletion of downloads to a seperate call, so revert can
+	also reap it's benefits.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (eazel_install_fetch_file),
+	Fixed download progress emission to only emit with amount==0 once
+	for gnome-vfs downloads.
+	Also checks for existence of package prior to download. This
+	should be safe once md5 checking is done, and prevents
+	fetch_dependencies from fetching the same file over and over
+	(which maybe should be solver in another way).
+	(eazel_install_fetch_package),
+	Moved the md5 checking code into eazel_install_start_transaction.
+	(eazel_install_fetch_package_which_provides),
+	Fixed evil bug I found now that i modified rpmsearch.cgi to
+	support ?provides= searches.
+	(get_url_for_package):
+	Fixed a packagedata_destroy_foreach call.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	Prototypes for the calls to chmod unchmod tmpdir + downloads.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_flatten_categories), 
+	Reversed the order of list concatenation.
+	(install_new_packages),
+	Creates tmpdir, needed for reverttransaction.
+	(eazel_install_download_packages),
+	Removed the EAZEL_INSTALL_DOWNLOADS status flag, check the
+	downloaded_files list in private instead.
+	(eazel_install_monitor_rpm_propcess_pipe),
+	Moved a comment reg. parsing rpm --percent here.
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_do_transaction_md5_check),	
+	(eazel_install_start_transaction),
+	Moved the md5 checking to be near the installtion routine.
+	(eazel_install_check_existing_packages),
+	Modified some strings to be more i18n friendly
+	(eazel_install_fetch_rpm_dependencies),
+	Do a check so the some packages isn't added several times.
+	(eazel_install_ensure_deps):
+	list append rather then prepend. Seems rpm isn't as nonchalant
+	about the order of rpm's as we were led to believe.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	Removed the EAZEL_INSTALL_DOWNLOADS status flag, check the
+	downloaded_files list in private instead.
+
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_destroy):
+	Made the md5 a pointer rather then char[16];
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	* components/services/trilobite/libtrilobite/makefile.staticlib.in:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	I needed some cpp loving to keep the gnome-vfs stuff out of
+	nautilus-installer.
+	
+	* components/services/trilobite/sample/service/sample-service-impl.
+	c: (sample_service_finalize), (sample_service_unref),
+	(sample_service_class_initialize):
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	* components/services/trilobite/sample/lib/sample-service-public.h:
+	* components/services/trilobite/sample/service/main.c:
+	(trilobite_service_factory_destroy):
+	Fixed the destroy mechanism's of sample-service (bug 967)
+	
+	* configure.in:
+	Added the mystic libtrilobite/makefile/staticlib.in
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(prep_install), (prep_finish):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (create_finish_page_good),
+	(create_finish_page_evil), (create_window),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/link.sh:
+	More installer loving. Now it enables/disables the next/back
+	buttons in a more sane manner, plus handles lack of
+	package-list.xml better.
+
 2000-09-05  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

@@ -47,6 +47,10 @@ void
 prep_install                           (GnomeDruidPage  *gnomedruidpage,
 					GtkWidget *druid,
 					EazelInstaller  *installer);
+void
+prep_finish                           (GnomeDruidPage  *gnomedruidpage,
+				       GtkWidget *druid,
+				       EazelInstaller  *installer);
 
 #endif /* EAZEL_INSTALLER_CALLBACKS_H */
 

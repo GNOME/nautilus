@@ -60,8 +60,8 @@ struct _SampleService
 
 GtkType                       sample_service_get_type   (void);
 SampleService*                sample_service_new        (void);
-POA_Trilobite_Eazel_Sample__epv* sample_service_get_epv    (void);
-void                          sample_service_destroy    (GtkObject *object);
+POA_Trilobite_Eazel_Sample__epv* sample_service_get_epv (void);
+void                          sample_service_unref      (GtkObject *object);
 
 void              sample_service_remember             (SampleService *sample, const char *something);
 void              sample_service_say_it               (SampleService *sample);

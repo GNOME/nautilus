@@ -154,7 +154,7 @@ struct _PackageData {
 	GList* breaks; 
 
 	char *filename;
-	char md5[16];
+	char *md5;
 	char *install_root;
 	
 	/* 

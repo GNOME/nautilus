@@ -43,7 +43,7 @@ create_default_metadata (const char* config_file) {
 	gboolean rv;
 	int retval;
 
-	g_print (_("Creating default configuration file ...\n"));
+	g_print (_("Creating default configuration file ..."));
 
 	/* Ensure our services dir exists */
 	if (! g_file_test (EAZEL_SERVICES_DIR, G_FILE_TEST_ISDIR)) {
@@ -51,7 +51,7 @@ create_default_metadata (const char* config_file) {
 			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
 			if (retval < 0) {
 				if (errno != EEXIST) {
-					g_warning (_("*** Could not create services directory (%s)! ***\n"), 
+					g_warning (_("*** Could not create services directory (%s)! ***"), 
 						   EAZEL_SERVICES_DIR_HOME);
 					rv = FALSE;
 				}
@@ -61,7 +61,7 @@ create_default_metadata (const char* config_file) {
 		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
 		if (retval < 0) {
 			if (errno != EEXIST) {
-				g_warning (_("*** Could not create services directory (%s)! ***\n"), 
+				g_warning (_("*** Could not create services directory (%s)! ***"), 
 					   EAZEL_SERVICES_DIR);
 				rv = FALSE;
 			}
@@ -70,7 +70,7 @@ create_default_metadata (const char* config_file) {
 
 	rv = create_default_configuration_metafile (config_file);
 	if (rv == FALSE) {
-		g_warning (_("*** Could not create the default configuration file! ***\n"));
+		g_warning (_("*** Could not create the default configuration file! ***"));
 		return FALSE;
 	}
 	return TRUE;
@@ -103,7 +103,7 @@ create_default_configuration_metafile (const char* target_file) {
 
 	if (doc == NULL) {
 		xmlFreeDoc (doc);
-		g_error (_("*** Error generating default configuration file! ***\n"));
+		g_error (_("*** Error generating default configuration file! ***"));
 	}
 
 	xmlSaveFile (target_file, doc);
@@ -120,21 +120,21 @@ xml_doc_sanity_checks (xmlDocPtr doc) {
 
 	if (doc == NULL) {
 		xmlFreeDoc (doc);
-		g_warning (_("*** Unable to open config file! ***\n"));
+		g_warning (_("*** Unable to open config file! ***"));
 		return FALSE;
 	}
 
 	base = doc->root;
 	if (base == NULL) {
 		xmlFreeDoc (doc);
-		g_warning (_("*** The config file contains no data! ***\n"));
+		g_warning (_("*** The config file contains no data! ***"));
 		return FALSE;
 	}
 	
 	if (g_strcasecmp (base->name, "EAZEL_INSTALLER")) {
-		g_print (_("*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"));
+		g_print (_("*** Cannot find the EAZEL_INSTALLER xmlnode! ***"));
 		xmlFreeDoc (doc);
-		g_warning (_("*** Bailing from xmlparse! ***\n"));
+		g_warning (_("*** Bailing from xmlparse! ***"));
 		return FALSE;
 	}
 

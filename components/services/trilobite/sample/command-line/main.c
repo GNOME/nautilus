@@ -77,16 +77,6 @@ int main(int argc, char *argv[]) {
 		g_error ("Cannot activate %s\n",OAF_ID);
 	}
 
-	trilobite = bonobo_object_corba_objref (BONOBO_OBJECT (service));
-
-	/* Display some stuff about the corba object interfaces */
-	g_message ("CORBA Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
-		   CORBA_Object_is_a (trilobite, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (trilobite, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Eazel/Sample:1.0", &ev)?"yes":"no");
-	
-
 	/* Display some stuff about the bonobo object interfaces */
 	g_message ("BONOBO Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
 		   bonobo_object_client_has_interface (service, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",

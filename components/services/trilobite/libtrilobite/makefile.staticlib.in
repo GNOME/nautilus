@@ -1,0 +1,28 @@
+OBJS=\
+	helixcode-utils.o		\
+	trilobite-core-distribution.o	\
+	trilobite-root-helper.o		\
+	trilobite-core-utils.o		
+
+INCLUDES=\
+	-DTRILOBITE_VERSION=\"0.1.0\"				\
+	-I.							\
+	-I@top_srcdir@						\
+        -I@top_srcdir@/components/services/trilobite		\
+	@GNOME_CFLAGS@						\
+	@XML_CFLAGS@						\
+	$(NULL)
+
+LIB=libtrilobite_minimal.a
+
+CC=gcc
+CPPFLAGS=$(INCLUDES) $(DEFINES)
+
+all: $(LIB)
+
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) libtrilobite_minimal.a $(OBJS)
+
+clean:
+	rm -f $(OBJS)
+	rm -f $(LIB)

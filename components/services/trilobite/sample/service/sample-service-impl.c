@@ -168,13 +168,15 @@ sample_service_get_epv()
   GTK+ object stuff
 *****************************************/
 
-/* This is the object destroyer. It should clean up any
+/* This is the object finalize. It should clean up any
  data allocated by the object, and if possible, call 
-the parent destroyer */
-void
-sample_service_destroy (GtkObject *object)
+the parent finalize */
+static void
+sample_service_finalize (GtkObject *object)
 {
 	SampleService *service;
+
+	g_message ("in sample_service_finalize");
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SAMPLE_SERVICE (object));
@@ -187,9 +189,19 @@ sample_service_destroy (GtkObject *object)
 	}
 
 	/* Call parents destroy */
-	if (GTK_OBJECT_CLASS (sample_service_parent_class)->destroy) {
-		GTK_OBJECT_CLASS (sample_service_parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (sample_service_parent_class)->finalize) {
+		GTK_OBJECT_CLASS (sample_service_parent_class)->finalize (object);
 	}
+
+	g_message ("out sample_service_finalize");
+}
+
+void sample_service_unref (GtkObject *object) 
+{
+	g_message ("sample_service_unref");
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SAMPLE_SERVICE (object));
+	bonobo_object_unref (BONOBO_OBJECT (object));
 }
 
 /*
@@ -203,7 +215,7 @@ sample_service_class_initialize (SampleServiceClass *klass)
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*)klass;
-	object_class->destroy = (void(*)(GtkObject*))sample_service_destroy;
+	object_class->finalize = sample_service_finalize;
 
 	sample_service_parent_class = gtk_type_class (bonobo_object_get_type ());
 

@@ -32,9 +32,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <gnome.h>
+
+#ifndef TRILOBITE_SLIM 
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#endif /* TRILOBITE_SLIM */
+
 #include "trilobite-core-utils.h"
 
 #define TRILOBITE_SERVICE_CONFIG_DIR "/etc/trilobite"
@@ -176,7 +180,7 @@ trilobite_close_log (void)
 	}
 }
 
-
+#ifndef TRILOBITE_SLIM
 static GnomeVFSHandle *
 trilobite_open_uri (const char *uri_text)
 {
@@ -206,7 +210,9 @@ trilobite_open_uri (const char *uri_text)
 	gnome_vfs_uri_unref (uri);
 	return handle;
 }
+#endif /* TRILOBITE_SLIM */
 
+#ifndef TRILOBITE_SLIM
 /* fetch a file from an url, using gnome-vfs
  * (using gnome-vfs allows urls of the type "eazel-auth:/etc" to work)
  * generally this will be used to fetch XML files.
@@ -259,7 +265,9 @@ fail:
 	gnome_vfs_close (handle);
 	return FALSE;
 }
+#endif /* TRILOBITE_SLIM */
 
+#ifndef TRILOBITE_SLIM
 gboolean
 trilobite_fetch_uri_to_file (const char *uri_text, const char *filename)
 {
@@ -294,8 +302,9 @@ trilobite_fetch_uri_to_file (const char *uri_text, const char *filename)
 
 	return (err == GNOME_VFS_OK);
 }
+#endif /* TRILOBITE_SLIM */
 
-
+#ifndef TRILOBITE_SLIM
 /* trilobite_init -- does all the init stuff 
  * FIXME bugzilla.eazel.com 1656:
  * for now, this requires init_gnome, and thus a running X server.
@@ -358,6 +367,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 fail:
 	return FALSE;
 }
+#endif /* TRILOBITE_SLIM */
 
 const char *
 trilobite_get_useragent_string (gboolean version, char *suffix)

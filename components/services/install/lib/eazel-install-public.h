@@ -119,6 +119,12 @@ Trilobite_Eazel_Install eazel_install_create_corba_object (BonoboObject *service
 void eazel_install_open_log                       (EazelInstall *service,
 						   const char *fname);
 
+/* This sets mode 500 on tmpdir and all files in
+   private->downloaded_files */
+gboolean eazel_install_lock_tmp_dir               (EazelInstall *service);
+/* This sets mode 700 on tmpdir and downloaded files */
+gboolean eazel_install_unlock_tmp_dir               (EazelInstall *service);
+
 void eazel_install_emit_install_progress          (EazelInstall *service, 
 						   const PackageData *pack,
 						   int package_num, int num_packages, 
