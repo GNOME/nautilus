@@ -1278,7 +1278,7 @@ fm_directory_view_get_model (FMDirectoryView *view)
 }
 
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
 static gboolean
@@ -1523,7 +1523,7 @@ compute_menu_item_info (const char *path,
 		}
 		*return_sensitivity = selection_length > 0;
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
@@ -1658,7 +1658,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_open_properties_window_cb,
                                          view);
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
         bonobo_ui_handler_menu_new_item (ui_handler,
@@ -1746,7 +1746,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN, count);
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, count);
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DELETE, count);
@@ -2326,7 +2326,7 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
 		return 1;
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
