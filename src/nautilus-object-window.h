@@ -101,16 +101,7 @@ struct NautilusWindow {
         NautilusViewIdentifier *content_view_id;
         GList *sidebar_panels;
         
-        /* Widgets to keep track of (for state changes, etc) */
-        GtkWidget *back_button;
-        GtkWidget *forward_button;
-        GtkWidget *up_button;
-        GtkWidget *reload_button;
-        GtkWidget *search_local_button;
-        GtkWidget *search_web_button;
-        GtkWidget *stop_button;
-        GtkWidget *home_button;
-        
+        /* Widgets to keep track of (for state changes, etc) */      
         GtkWidget *zoom_control;
         GtkWidget *throbber;
         

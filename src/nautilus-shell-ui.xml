@@ -232,18 +232,22 @@
 	<toolitem name="Back"
                   _label="Back"
 		  _descr="Go to the previous visited location"
-	          verb=""/>
+	          pixtype="stock" pixname="Back"
+		  verb=""/>
 	<toolitem name="Forward"
                   _label="Forward"
 		  _descr="Go to the next visited location"
+	          pixtype="stock" pixname="Forward"
 	          verb=""/>
 	<toolitem name="Up"
                   _label="Up"
 		  _descr="Go to the location that contains this one"
+	          pixtype="stock" pixname="Up"
 	          verb=""/>
 	<toolitem name="Reload"
 		  _label="Refresh"
 		  _descr="Display the latest contents of the current location"
+	          pixtype="stock" pixname="Refresh"
 		  verb=""/>
 
 	<toolitem/>
@@ -251,14 +255,17 @@
 	<toolitem name="Home"
 		  _label="Home"
 		  _descr="Go to the home location"
+	          pixtype="stock" pixname="Home"
 		  verb=""/>
 	<toolitem name="Toggle Find Mode"
                   _label="Find"
 		  _descr="Search this computer for files"
+	          pixtype="stock" pixname="Search"
 		  verb=""/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
 		  _descr="Search the World Wide Web"
+	          pixtype="stock" pixname="Search"
 		  verb=""/>
 
 	<toolitem/>
@@ -266,11 +273,15 @@
 	<toolitem name="Stop"
 		  _label="Stop"
 		  _descr="Stop loading this location"
+	          pixtype="stock" pixname="Stop"
 	          verb=""/>
 	<toolitem name="Services"
                   _label="Services"
 		  _descr="Go to the Eazel services location"
+	          pixtype="stock" pixname="Services"
 	          _verb=""/>
+	
+	<control name="ThrobberWrapper"/>
 </dockitem>
 
 <dockitem name="Location Bar" behavior="exclusive,never vertical">

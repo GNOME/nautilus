@@ -216,6 +216,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 {
 	nautilus_window_update_find_menu_item (NAUTILUS_WINDOW (window));
 
+	/*
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), FALSE);
@@ -226,6 +227,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 	default:
 		g_assert_not_reached ();
 	}
+	*/
 }
 
 void
@@ -457,7 +459,7 @@ nautilus_window_constructed (NautilusWindow *window)
 					NULL);
 	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
 
-	/* Create menus and tool bars */
+	/* initalize the menus and tool bars */
 	nautilus_window_initialize_menus (window);
 	nautilus_window_initialize_toolbars (window);
 	

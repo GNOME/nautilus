@@ -1,3 +1,26 @@
+2000-10-06  Andy Hertzfeld  <andy@eazel.com>
+
+	tried to put the right themable icons for the toolbar, but only
+	succeeded at getting the stock icons.  Also, made the throbber
+	show up, but it's not properly positioned yet.
+	
+	* src/nautilus-shell-ui.xml:
+	added stock icons and control for throbber
+	
+	* src/nautilus-window-toolbars.c: (set_up_button),
+	(set_up_toolbar_images), (set_up_throbber_frame_type),
+	(allocate_throbber), (nautilus_window_initialize_toolbars):
+	revamped for the new bonobo, and tell the ui handler about the
+	themed icons (temporarily disabled for now)
+	
+	* src/nautilus-window.c: (navigation_bar_mode_changed_callback),
+	(nautilus_window_constructed):
+	initialize the toolbar
+	
+	* src/nautilus-window.h:
+	removed the button fields, since they're now referenced through
+	bonobo
+	
 2000-10-06  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3512 (Some separators not appearing in the
