@@ -580,7 +580,7 @@ nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file
 		(directory->details->file_list, node);
 	g_list_free_1 (node);
 
-	if (file->details->unconfirmed == FALSE) {
+	if (!file->details->unconfirmed) {
 		directory->details->confirmed_file_count--;
 	}
 
@@ -1168,52 +1168,29 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 		} else {
 			/* Handle notification in the old directory. */
 			old_directory = file->details->directory;
-			hash_table_list_prepend (changed_lists,
-						 old_directory,
-						 file);
-
 			collect_parent_directories (parent_directories, old_directory);
 
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
-			g_assert (new_directory != NULL);
-
 			collect_parent_directories (parent_directories, new_directory);
 
-			/* If the file is moving between directories,
-			 * there is more to do.
-			 */
-			if (new_directory != old_directory) {
-				/* Update the name. */
-				name = nautilus_uri_get_basename (pair->to_uri);
-				nautilus_file_update_name (file, name);
-				g_free (name);
-				
-				/* Remove from old directory. */
-				nautilus_directory_remove_file (old_directory, file);
+			/* Update the file's name. */
+			name = nautilus_uri_get_basename (pair->to_uri);
+			nautilus_file_update_name (file, name);
+			g_free (name);
 
-				/* Point the file at the new
-				 * directory. We already have a ref to
-				 * it from the get_parent_directory
-				 * function so we don't have to ref.
-				 */
-				/* FIXME bugzilla.eazel.com 5067: This
-				 * needs to update the link hash
-				 * table.
-				 */
-				file->details->directory = new_directory;
-
-				/* Add to new directory. */
-				nautilus_directory_add_file (new_directory, file);
-				
-				/* Handle notification in the new directory. */
-				hash_table_list_prepend (added_lists,
-							 new_directory,
-							 file);
+			/* Update the file's directory. */
+			nautilus_file_set_directory (file, new_directory);
+			
+			hash_table_list_prepend
+				(changed_lists, old_directory, file);
+			if (old_directory != new_directory) {
+				hash_table_list_prepend
+					(added_lists, new_directory, file);
 			}
 
-			/* Done with the old directory. */
 			nautilus_directory_unref (old_directory);
+			nautilus_directory_unref (new_directory);
 
 			/* Unref each file once to balance out nautilus_file_get. */
 			unref_list = g_list_prepend (unref_list, file);

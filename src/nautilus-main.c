@@ -138,12 +138,12 @@ main (int argc, char *argv[])
 
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
+		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform a quick set of self-check tests."), NULL },
 #endif
-		{ "quit", '\0', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
-		{ "restart", '\0', POPT_ARG_NONE, &restart_shell, 0, N_("Restart Nautilus."), NULL },
-		{ "no-default-window", '\0', POPT_ARG_NONE, &no_default_window, 0, N_("Only create Nautilus windows for explicity specified URIs."), NULL },
-		{ "geometry", '\0', POPT_ARG_STRING, &geometry, 0, N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+		{ "geometry", 'g', POPT_ARG_STRING, &geometry, 0, N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0, N_("Only create Nautilus windows for explicitly specified URIs."), NULL },
+		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
+		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0, N_("Restart Nautilus."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -182,11 +182,11 @@ main (int argc, char *argv[])
 	nautilus_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
 
 	/* Get parameters. */
+	geometry = NULL;
 	kill_shell = FALSE;
-	restart_shell = FALSE;
-	start_desktop = FALSE;
 	no_default_window = FALSE;
 	perform_self_check = FALSE;
+	restart_shell = FALSE;
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
@@ -197,7 +197,7 @@ main (int argc, char *argv[])
 		fprintf (stderr, _("nautilus: --check cannot be used with URIs.\n"));
 		return EXIT_FAILURE;
 	}
-	if (perform_self_check && (kill_shell || restart_shell || start_desktop || no_default_window)) {
+	if (perform_self_check && (kill_shell || restart_shell)) {
 		fprintf (stderr, _("nautilus: --check cannot be used with other options.\n"));
 		return EXIT_FAILURE;
 	}

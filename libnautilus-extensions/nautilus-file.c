@@ -80,15 +80,6 @@ typedef struct {
 	gpointer callback_data;
 } Operation;
 
-/* These are in sort order. Known things come first, then things
- * where we can't know, finally things where we don't yet know.
- */
-typedef enum {
-	KNOWN,
-	UNKNOWABLE,
-	UNKNOWN
-} Knowledge;
-
 typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
 
 enum {
@@ -157,8 +148,8 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 #endif
 
 	nautilus_directory_ref (directory);
-
 	file->details->directory = directory;
+
 	file->details->relative_uri = g_strdup (relative_uri);
 
 	return file;
@@ -390,6 +381,12 @@ nautilus_file_get (const char *uri)
 	return nautilus_file_get_internal (uri, TRUE);
 }
 
+static gboolean
+is_self_owned (NautilusFile *file)
+{
+	return file->details->directory->details->as_file == file;
+}
+
 static void
 destroy (GtkObject *object)
 {
@@ -406,7 +403,7 @@ destroy (GtkObject *object)
 
 	directory = file->details->directory;
 	
-	if (directory->details->as_file == file) {
+	if (is_self_owned (file)) {
 		directory->details->as_file = NULL;
 	} else {
 		if (!file->details->is_gone) {
@@ -462,12 +459,6 @@ nautilus_file_unref (NautilusFile *file)
 #endif
 
 	gtk_object_unref (GTK_OBJECT (file));
-}
-
-static gboolean
-is_self_owned (NautilusFile *file)
-{
-	return file->details->directory->details->as_file == file;
 }
 
 /**
@@ -1112,7 +1103,7 @@ static void
 update_links_if_target (NautilusFile *target_file)
 {
 	GList *link_files, *p;
-	
+
 	link_files = get_link_files (target_file);
 	for (p = link_files; p != NULL; p = p->next) {
 		update_link (NAUTILUS_FILE (p->data), target_file);
@@ -1227,6 +1218,46 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 	}
 
 	return TRUE;
+}
+
+void
+nautilus_file_set_directory (NautilusFile *file,
+			     NautilusDirectory *new_directory)
+{
+	NautilusDirectory *old_directory;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory));
+	g_return_if_fail (!file->details->is_gone);
+	g_return_if_fail (!is_self_owned (file));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (new_directory));
+
+	old_directory = file->details->directory;
+	if (old_directory == new_directory) {
+		return;
+	}
+
+	nautilus_file_ref (file);
+
+	/* FIXME bugzilla.eazel.com 2044: Need to let links that
+	 * point to the old name know that the file has been moved.
+	 */
+
+	remove_from_link_hash_table (file);
+
+	nautilus_directory_remove_file (old_directory, file);
+
+	nautilus_directory_ref (new_directory);
+	file->details->directory = new_directory;
+	nautilus_directory_unref (old_directory);
+
+	nautilus_directory_add_file (new_directory, file);
+
+	add_to_link_hash_table (file);
+
+	update_links_if_target (file);
+
+	nautilus_file_unref (file);
 }
 
 static Knowledge
@@ -4131,6 +4162,8 @@ nautilus_file_mark_gone (NautilusFile *file)
 {
 	NautilusDirectory *directory;
 
+	g_return_if_fail (!file->details->is_gone);
+
 	file->details->is_gone = TRUE;
 
 	update_links_if_target (file);
@@ -4381,13 +4414,13 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 
 void
 nautilus_file_invalidate_attributes (NautilusFile *file,
-				 GList        *file_attributes)
+				     GList *file_attributes)
 {
 	/* Cancel possible in-progress loads of any of these attributes */
 	nautilus_directory_cancel_loading_file_attributes (file->details->directory,
 							   file,
 							   file_attributes);
-
+	
 	/* Actually invalidate the values */
 	nautilus_file_invalidate_attributes_internal (file, file_attributes);
 	

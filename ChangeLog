@@ -1,3 +1,40 @@
+2000-12-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fixed bug 5067 (Moving a file doesn't update the directory in the
+	link hash table).
+	
+	Fixed bug 5366 (error when passing two directories on the command
+	line).
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_remove_file): Change code that was doing "==
+	FALSE" which is not such good style.
+	(nautilus_directory_notify_files_moved): Change to properly update
+	file names in all cases and to update the directory with a new
+	nautilus_file_set_directory function.
+	
+	* libnautilus-extensions/nautilus-file-private.h: Moved the
+	Knowledge enum up here. I was going to make a change that required
+	it, and now I don't feel like moving it back.
+	
+	* libnautilus-extensions/nautilus-file.h: Add
+	nautilus_file_set_directory (and reformat).
+
+	* libnautilus-extensions/nautilus-file.c: (is_self_owned),
+	(destroy): Moved is_self_owned so the destroy function can use it.
+	(update_info_internal): Call the update_links functions before
+	(nautilus_file_set_directory): New function that changes the
+	parent directory and updates everything appropriately.
+	(nautilus_file_mark_gone): Added a check that the file is not
+	already marked gone.
+
+	* src/nautilus-main.c: (main): Sort the command-line options, add
+	some single-character versions, add code to initialize the
+	"geometry" variable for the case where the option is not passed,
+	removed some unused code that sets start_desktop twice.
+
 2000-12-28  Pavel Cisler  <pavel@eazel.com>
 
 	Fixed bug 4952 (Move or copy or large number of items fails).
@@ -36,7 +73,7 @@
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
 
-	Fixed bug 2802 (copy all metadata, not just certain items). There
+	Fixed bug 2808 (copy all metadata, not just certain items). There
 	are still a few loose ends but it's basically there.
 
 	Fixed bug 5296 (Hardware overview should be localized).

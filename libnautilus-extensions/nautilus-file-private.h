@@ -26,6 +26,19 @@
 #include "nautilus-directory.h"
 #include "nautilus-glib-extensions.h"
 
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
+
+/* These are in the typical sort order. Known things come first, then
+ * things where we can't know, finally things where we don't yet know.
+ */
+typedef enum {
+	KNOWN,
+	UNKNOWABLE,
+	UNKNOWN
+} Knowledge;
+
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
@@ -45,7 +58,7 @@ struct NautilusFileDetails
 	guint deep_unreadable_count;
 	GnomeVFSFileSize deep_size;
 
-	GList *mime_list; 	/* If this is a directory, the list of MIME types in it. */
+	GList *mime_list; /* If this is a directory, the list of MIME types in it. */
 	char *top_left_text;
 	char *activation_uri;
 
@@ -86,35 +99,32 @@ struct NautilusFileDetails
 	nautilus_boolean_bit activation_uri_is_up_to_date  : 1;
 };
 
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
-
-NautilusFile *nautilus_file_new_from_info            (NautilusDirectory *directory,
-						      GnomeVFSFileInfo  *info);
-NautilusFile *nautilus_file_get_existing             (const char        *uri);
-void          nautilus_file_emit_changed             (NautilusFile      *file);
-void          nautilus_file_mark_gone                (NautilusFile      *file);
-char *        nautilus_extract_top_left_text         (const char        *text,
-						      int                length);
-gboolean      nautilus_file_contains_text            (NautilusFile      *file);
+NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory *directory,
+							    GnomeVFSFileInfo  *info);
+NautilusFile *nautilus_file_get_existing                   (const char        *uri);
+void          nautilus_file_emit_changed                   (NautilusFile      *file);
+void          nautilus_file_mark_gone                      (NautilusFile      *file);
+char *        nautilus_extract_top_left_text               (const char        *text,
+							    int                length);
+gboolean      nautilus_file_contains_text                  (NautilusFile      *file);
+void          nautilus_file_set_directory                  (NautilusFile      *file,
+							    NautilusDirectory *directory);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
  * new state.  */
-gboolean      nautilus_file_update_info              (NautilusFile      *file,
-						      GnomeVFSFileInfo  *info);
-gboolean      nautilus_file_update_name              (NautilusFile      *file,
-						      const char        *name);
+gboolean      nautilus_file_update_info                    (NautilusFile      *file,
+							    GnomeVFSFileInfo  *info);
+gboolean      nautilus_file_update_name                    (NautilusFile      *file,
+							    const char        *name);
 
 /* Return true if the top lefts of files in this directory should be
  * fetched, according to the preference settings.
  */
-gboolean      nautilus_file_should_get_top_left_text (NautilusFile      *file);
+gboolean      nautilus_file_should_get_top_left_text       (NautilusFile      *file);
 
 /* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void          nautilus_file_invalidate_attributes_internal (NautilusFile *file,
-							    GList        *file_attributes);
-
+void          nautilus_file_invalidate_attributes_internal (NautilusFile      *file,
+							    GList             *file_attributes);
