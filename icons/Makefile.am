@@ -237,6 +237,7 @@ icon_DATA =\
 	side_bar_image.png \
 	temp-home.png \
 	text-selection-frame.png \
+	text-selection-frame-aa.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \
