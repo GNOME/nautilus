@@ -116,6 +116,7 @@
 
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Properties"
+                                  pixtype="stock" pixname="gtk-properties"
 				  accel="*Control*i"
 				  verb="Properties"/>
 		</placeholder>
@@ -266,7 +267,9 @@
 		<placeholder name="Mime Actions" delimit="none"/>
                 <separator/>
 
-                <menuitem name="Properties" verb="Properties"/>
+                <menuitem name="Properties"
+                          pixtype="stock" pixname="gtk-properties"
+                          verb="Properties"/>
 	</popup>
 </popups>
 </Root>
