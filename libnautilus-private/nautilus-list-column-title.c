@@ -327,9 +327,11 @@ get_sort_indicator (GtkWidget *widget, gboolean ascending)
  * Some of these magic numbers could be replaced with some more dynamic values
  */
 enum {
-	CELL_TITLE_INSET = 6,
+	CELL_TITLE_INSET = 3,
 	TITLE_BASELINE_OFFSET = 6,
-	SORT_ORDER_INDICATOR_WIDTH = 10
+	SORT_ORDER_INDICATOR_WIDTH = 10,
+	SORT_INDICATOR_X_OFFSET = 6,
+	SORT_INDICATOR_Y_OFFSET = 3
 };
 
 static void
@@ -384,9 +386,9 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			text_x_offset = cell_rectangle.x + CELL_TITLE_INSET;
 		}
 
-		/* Paint the column title tiles as rectangles using "menu" (COLUMN_TITLE_THEME_STYLE_NAME)
-		 * style buttons as used by GtkCList produce round corners in some themes.
-		 * Eventually we might consider having a separate style for column titles
+		/* Paint the column tiles as rectangles using "menu" (COLUMN_TITLE_THEME_STYLE_NAME).
+		 * Style buttons as used by GtkCList produce round corners in some themes.
+		 * Eventually we might consider having a separate style for column titles.
 		 */
 		gtk_paint_box (widget->style, target_drawable,
 			       column_title->details->tracking_column_prelight == index ? 
@@ -403,13 +405,13 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			int y_offset;
 
 			if (right_justified) {
-				sort_indicator_x_offset = cell_rectangle.x + CELL_TITLE_INSET;		
+				sort_indicator_x_offset = cell_rectangle.x + SORT_INDICATOR_X_OFFSET;		
 			} else {
 				sort_indicator_x_offset = cell_rectangle.x + cell_rectangle.width 
-					   - CELL_TITLE_INSET - SORT_ORDER_INDICATOR_WIDTH;		
+					   - SORT_INDICATOR_X_OFFSET - SORT_ORDER_INDICATOR_WIDTH;		
 			}
-			y_offset = TITLE_BASELINE_OFFSET + 2;
-
+			y_offset = cell_rectangle.y + cell_rectangle.height / 2 
+				   - SORT_INDICATOR_Y_OFFSET;
 
 			/* allocate the sort indicator copy gc first time around */
 			if (column_title->details->copy_area_gc == NULL) {
@@ -447,7 +449,7 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			 */
 			nautilus_rectangle_inset (&cell_redraw_area, 2, 2);
 			if (right_justified) {
-				text_x_offset -= gdk_string_width (widget->style->font, cell_label) + 4;
+				text_x_offset -= gdk_string_width (widget->style->font, cell_label) + 3;
 			}
 
 			gtk_paint_string (widget->style, target_drawable, GTK_STATE_NORMAL,
