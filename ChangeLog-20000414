@@ -1,3 +1,36 @@
+2000-02-09  John Sullivan <sullivan@eazel.com>
+
+	* src/file-manager/fm-icon-text-window.c:
+	(get_attribute_index_from_option_menu): New helper function.
+	(ensure_unique_attributes): New function, makes sure that no
+	two option menus in this window have same value.
+	(is_in_chosen_values): New function, used by ensure_unique_attributes.
+	(get_chosen_attribute_name): Use get_attribute_index_from_option_menu.
+	(changed_attributes_option_menu_cb): Reworked to use array of
+	option menus; also calls ensure_unique_attributes so the user can't
+	set more than one of the menus to the same value (new one wins, old
+	one gets set to first unused value).
+	(create_attributes_option_menu): Now takes menu_number parameter,
+	which is passed to item-activation callback.
+	(create_icon_text_window): Reworked to use array of option menus;
+	renamed all glade-invented variable names to sensible ones.
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_append_background_context_menu_items):
+	Added a separator before "Customize Icon Text...", since by acting
+	globally rather than on the viewed directory it's conceptually in a
+	different class than the other menu items. It may move out of this
+	menu entirely someday.
+	
+	* libnautilus/nautilus-directory.c:
+	(nautilus_file_get_size_as_string): Back to using "--" for directories,
+	so there's no blank line. We want to use item counts here, but I've
+	postponed implementing that feature.
+	(nautilus_file_get_type_as_string): Made files with no mime type
+	return "unknown type" at Andy's suggestion.
+	(nautilus_file_compare_by_type): New function, needed to compare
+	nautilus-generated type strings (can't use GnomeVFS comparison function).
+
 2000-02-09  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-view-bonobo-control.c: In notify_location_change, send
