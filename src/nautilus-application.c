@@ -57,6 +57,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtkinvisible.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -972,8 +973,9 @@ spatial_window_destroyed_callback (void *user_data, GObject *window)
 
 NautilusWindow *
 nautilus_application_present_spatial_window (NautilusApplication *application,
-					    const char          *location,
-					    GdkScreen           *screen)
+					     NautilusWindow      *requesting_window,
+					     const char          *location,
+					     GdkScreen           *screen)
 {
 	NautilusWindow *window;
 	GList *l;
@@ -999,6 +1001,29 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 	}
 
 	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, screen);
+	if (requesting_window) {
+		/* Center the window over the requesting window by default */
+		int orig_x, orig_y, orig_width, orig_height;
+		int new_x, new_y, new_width, new_height;
+		
+		gtk_window_get_position (GTK_WINDOW (requesting_window), 
+					 &orig_x, &orig_y);
+		gtk_window_get_size (GTK_WINDOW (requesting_window), 
+				     &orig_width, &orig_height);
+		gtk_window_get_default_size (GTK_WINDOW (window),
+					     &new_width, &new_height);
+		
+		new_x = orig_x + (orig_width - new_width) / 2;
+		new_y = orig_y + (orig_height - new_height) / 2;
+		
+		if (orig_width - new_width < 10) {
+			new_x += 10;
+			new_y += 10;
+		}
+
+		gtk_window_move (GTK_WINDOW (window), new_x, new_y);
+	}
+
 	nautilus_application_spatial_window_list = g_list_prepend (nautilus_application_spatial_window_list, window);
 	g_object_weak_ref (G_OBJECT (window), 
 			   spatial_window_destroyed_callback, NULL);

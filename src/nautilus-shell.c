@@ -152,8 +152,9 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 		}
 		
 		window = nautilus_application_present_spatial_window (shell->details->application,
-								     uri,
-								     gdk_screen_get_default ());
+								      NULL,
+								      uri,
+								      gdk_screen_get_default ());
 		g_free (home_uri);
 	}
 	
@@ -347,6 +348,7 @@ restore_one_window_callback (const char *attributes,
 #endif
 	if (eel_strlen (location) > 0) {
 		window = nautilus_application_present_spatial_window (shell->details->application, 
+								      NULL,
 								      location,
 								      screen);
 	} else {

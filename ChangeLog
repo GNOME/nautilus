@@ -1,3 +1,14 @@
+2004-03-29  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-application.c:
+	(nautilus_application_present_spatial_window):
+	* src/nautilus-application.h:
+	* src/nautilus-shell.c: (open_window),
+	(restore_one_window_callback):
+	* src/nautilus-window-manage-views.c: (open_location): When 
+	opening a spatial window for the first time, place it over the 
+	parent window.
+
 2004-03-26  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (get_target_file_for_original_file):

@@ -685,6 +685,7 @@ open_location (NautilusWindow *window,
                         if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
                                 target_window = nautilus_application_present_spatial_window (
                                         window->application,
+					window,
                                         location,
                                         gtk_window_get_screen (GTK_WINDOW (window)));
                                 do_load_location = FALSE;
@@ -699,6 +700,7 @@ open_location (NautilusWindow *window,
         case Nautilus_ViewFrame_OPEN_IN_SPATIAL :
                 target_window = nautilus_application_present_spatial_window (
                         window->application,
+			window,
                         location,
                         gtk_window_get_screen (GTK_WINDOW (window)));
                 break;
