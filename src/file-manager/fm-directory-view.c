@@ -27,8 +27,6 @@
 
 #include <gnome.h>
 
-#define FM_DEBUG(x)
-
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/gnome-icon-container.h>
 #include <libnautilus/gtkflist.h>
@@ -36,6 +34,8 @@
 #include "fm-directory-view.h"
 #include "fm-icon-cache.h"
 #include "fm-public-api.h"
+
+#define FM_DEBUG(x)
 
 #define DISPLAY_TIMEOUT_INTERVAL 500
 
@@ -50,7 +50,7 @@ display_selection_info (FMDirectoryView *view,
 {
 	GnomeVFSFileSize size;
 	guint count;
-	gchar *size_string, msg[32];
+	gchar *size_string, *msg;
 	GList *p;
 	Nautilus_StatusRequestInfo sri;
 
@@ -65,6 +65,9 @@ display_selection_info (FMDirectoryView *view,
 	}
 
 	if (count == 0) {
+	        memset(&sri, 0, sizeof(sri));
+	        sri.status_string = "";
+	        nautilus_view_client_request_status_change(NAUTILUS_VIEW_CLIENT(view), &sri);
 		return;
 	}
 
@@ -96,11 +99,12 @@ display_selection_info (FMDirectoryView *view,
 		}
 	}
 
-	g_snprintf (msg, sizeof(msg), _("%d %s selected in %s"),
-		    count, (count==1)?_("files"):_("file"), size_string);
+	msg = g_strdup_printf (_("%d %s selected -- %s"),
+		    count, (count==1)?_("file"):_("files"), size_string);
 	memset(&sri, 0, sizeof(sri));
 	sri.status_string = msg;
 	nautilus_view_client_request_status_change(NAUTILUS_VIEW_CLIENT(view), &sri);
+        g_free (msg);
 
 	g_free (size_string);
 }
@@ -142,8 +146,6 @@ display_icon_container_selection_info_idle_cb (gpointer data)
 	FMDirectoryView *view;
 	GnomeIconContainer *icon_container;
 	GList *selection;
-
-	puts (__FUNCTION__);
 
 	view = FM_DIRECTORY_VIEW (data);
 	icon_container = get_icon_container (view);
@@ -754,7 +756,8 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 		}
 	}
 
-	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
+	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE
+	    && list)
 		view->current_position
 			= gnome_vfs_directory_list_get_position (list);
 

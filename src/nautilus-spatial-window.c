@@ -583,10 +583,12 @@ nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
   g_assert(window->uris_prev);
 
   memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = window->uris_prev->data;
+  nri.requested_uri = g_strdup(window->uris_prev->data);
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
   nautilus_window_change_location(window, &nri, NULL, TRUE);
+
+  g_free(nri.requested_uri);
 }
 
 static void
@@ -597,7 +599,11 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
   g_assert(window->uris_next);
 
   memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = window->uris_next->data;
+  nri.requested_uri = g_strdup(window->uris_next->data);
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
+  
   nautilus_window_change_location(window, &nri, NULL, FALSE);
+
+  g_free(nri.requested_uri);
 }
+

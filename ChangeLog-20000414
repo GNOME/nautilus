@@ -1,3 +1,26 @@
+1999-12-15  Darin Adler  <darin@eazel.com>
+
+	* configure.in: Turned "-Wshadow" and "-Wundef" off for now, since they
+	fire in some existing code.
+	* gnome-icon-container.c: (handle_icon_button_press): Null out the drag
+	variables before sending the activate signal. This makes activating an
+	icon with a double-click work without crashing.
+	* ntl-main.c: (main): Make critical and warning messages fatal if
+	NAUTILUS_DEBUG is set in the environment. Make sure you have a new
+	gnome-vfs that doesn't use g_warning for status messages.
+	* ntl-window-msgs.c: (nautilus_window_change_location_internal):
+	Made the history store away the current position as the new "previous"
+	instead of storing away the new position. This makes the forward and
+	back buttons work better.
+	* ntl-window.c: (nautilus_window_back, nautilus_window_fwd):
+	Had to make a corresponding change here after the change to the
+	history mechanism.
+	* fm-directory-view.c: (display_selection_info): Some fixes to the
+	selection info display: "file"/"files" was backwards, text said "in"
+	before the file size, and the display was not cleared when the
+	selection was made empty. I still see problems where the selection
+	info gets cleared when the window is lowered and then raised.
+	 
 1999-12-15  Andy Hertzfeld <andy@eazel.com>
 
 	* my first change: changed ntl-window-state.c

@@ -83,29 +83,41 @@ nautilus_window_request_location_change(NautilusWindow *window,
 static void
 nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigationInfo *loci, gboolean is_back)
 {
+  char *old_location;
+
   CORBA_free(window->si); window->si = NULL;
 
-  if(is_back)
+  /* Maintain history lists. */
+  if (is_back)
     {
-      window->uris_next = g_slist_prepend(window->uris_next, window->uris_prev->data);
-      window->uris_prev = g_slist_remove(window->uris_prev, window->uris_prev->data);
+      /* Going back. Remove one item from the prev list and add the current item to the next list. */
+
+      g_assert(window->uris_prev);
+      g_assert(!strcmp(window->uris_prev->data, loci->navinfo.requested_uri));
+      g_assert(window->ni);
+
+      window->uris_next = g_slist_prepend(window->uris_next, g_strdup(window->ni->requested_uri));
+      g_free(window->uris_prev->data);
+      window->uris_prev = g_slist_remove_link(window->uris_prev, window->uris_prev);
     }
   else
     {
-      char *append_val;
-      if(window->uris_next && !strcmp(loci->navinfo.requested_uri, window->uris_next->data))
+      /* Going forward. Remove one item from the next if it's the same as the the request.
+       * Otherwise, clobber the entire next list.
+       */
+
+      if (window->uris_next && !strcmp(loci->navinfo.requested_uri, window->uris_next->data))
 	{
-	  append_val = window->uris_next->data;
-	  window->uris_next = g_slist_remove(window->uris_next, window->uris_next->data);
+	  g_free(window->uris_next->data);
+	  window->uris_next = g_slist_remove_link(window->uris_next, window->uris_next);
 	}
       else
 	{
-	  append_val = g_strdup(loci->navinfo.requested_uri);
 	  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
 	  g_slist_free(window->uris_next); window->uris_next = NULL;
 	}
-      if(append_val)
-        window->uris_prev = g_slist_prepend(window->uris_prev, append_val);
+      if (window->ni)
+	window->uris_prev = g_slist_prepend(window->uris_prev, g_strdup(window->ni->requested_uri));
     }
 
   gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);

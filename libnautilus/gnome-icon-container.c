@@ -2254,26 +2254,31 @@ handle_icon_button_press (GnomeIconContainer *container,
 	}
 
 	if (event->type == GDK_2BUTTON_PRESS) {
+		/* Double clicking should *never* trigger a D&D action.
+                 * We must clear this out before emitting the signal, because
+		 * handling the activate signal might invalidate the drag_icon pointer.
+                 */
+		priv->drag_button = 0;
+		priv->drag_icon = NULL;
+
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
 				 icon->text, icon->data);
 
-		/* Double clicking should *never* trigger a D&D action.  */
-		priv->drag_button = 0;
-		priv->drag_icon = NULL;
 		return TRUE;
 	}
 
 	if (event->button == 3) {
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[CONTEXT_CLICK],
-				 icon->text, icon->data);
-
 		/* FIXME this means you cannot drag with right click.  Instead,
                    we should setup a timeout and emit this signal if the
                    timeout expires without movement.  */
 		priv->drag_button = 0;
 		priv->drag_icon = NULL;
+
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[CONTEXT_CLICK],
+				 icon->text, icon->data);
+
 		return TRUE;
 	}
 

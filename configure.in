@@ -34,8 +34,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	CFLAGS="$CFLAGS \
 	-W -Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
-	-Wno-sign-compare -Wsign-promo -Wshadow \
-	-Wundef"
+	-Wno-sign-compare -Wsign-promo"
 fi
 if test "$GCC" = "yes" -a "$set_fatal_warnings" != "no"; then
 	echo "enable fatal warnings = $set_fatal_warnings"
