@@ -38,6 +38,7 @@
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
+#include "nautilus-window-service-ui.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
@@ -344,19 +345,17 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
-		 bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container)));
+		 nautilus_window_get_ui_container (window));
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       DATADIR,
 			       "nautilus-shell-ui.xml",
 			       "nautilus");
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	
-	/* merge in the services menu if necessary */
-
+	/* Load the services part of the user interface too if desired. */
 #ifdef EAZEL_SERVICES
-	nautilus_window_install_service_menu (window);
+	nautilus_window_install_service_ui (window);
 #endif
 
 	/* set up location bar */
@@ -1797,11 +1796,9 @@ nautilus_window_show (GtkWidget *widget)
 }
 
 Bonobo_UIContainer 
-nautilus_window_get_bonobo_ui_container (NautilusWindow *window)
+nautilus_window_get_ui_container (NautilusWindow *window)
 {
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), CORBA_OBJECT_NIL);
 
-	/* FIXME: Do we have to ref the container here? */
-	return bonobo_ui_component_get_container (window->details->shell_ui);
+	return bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container));
 }
-

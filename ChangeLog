@@ -1,3 +1,51 @@
+2000-10-18  Darin Adler  <darin@eazel.com>
+
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	* src/nautilus-location-bar.c: (nautilus_location_bar_new):
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_new):
+	Use calls by new names.
+	
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(editable_key_press_event), (nautilus_undo_editable_set_undo_key):
+	Disabled the undo-key part of undo also. The old code was actually
+	harmless because it got the name of the signal wrong, but it's
+	better to have it disabled.
+	* src/nautilus-shell-ui.xml: Added a comment that points out the
+	2nd place where undo has been disabled.
+	
+	* libnautilus/nautilus-clipboard.h:
+	* libnautilus/nautilus-clipboard.c: (cut_callback),
+	(copy_callback), (paste_callback), (clear_callback),
+	(set_paste_sensitive_if_clipboard_contains_data),
+	(focus_changed_callback), (target_destroy_callback),
+	(nautilus_clipboard_set_up_editable), (first_focus_callback),
+	(control_destroyed_callback),
+	(nautilus_clipboard_set_up_editable_in_control),
+	(disconnect_set_up_in_control_handlers):
+	Some minor cleanup of the clipboard code. Includes bug fixes for
+	items that are already in focus when the clipboard is hooked up
+	(should never happen), and a fix for code that was using
+	gtk_signal_disconnect on something that was connected with
+	gtk_signal_connect_while_alive (doesn't work). Also got rid of
+	misguided code that was copying a Bonobo_UIContainer with memcpy
+	(since Bonobo_UIContainer is just a pointer).
+	
+	* src/Makefile.am:
+	* src/nautilus-window-private.h:
+	Changed source file name from nautilus-service-menu to
+	nautilus-service-ui, since it does a toolbar item, not just a
+	menu.
+	
+	* src/nautilus-window-service-ui.c:
+	* src/nautilus-window-service-ui.h:
+	A second cut at the service UI code. It no longer leaks a UI
+	component.
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_get_ui_container): Use our own pointer to the UI
+	container instead of asking the shell UI for its container.
+
 2000-10-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3862 (Icon view reversed after looking at list view)

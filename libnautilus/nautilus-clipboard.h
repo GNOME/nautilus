@@ -29,14 +29,19 @@
 #include <gtk/gtkeditable.h>
 #include <bonobo/bonobo-control.h>
 
-/* Components should use this, which includes menu merging. */
-void nautilus_clipboard_set_up_editable_from_bonobo_control         (GtkEditable     *target,
-								     BonoboControl   *control);
+/* This makes this editable put clipboard commands into the passed UI
+ * container when the editable is in focus. Callers in Nautilus
+ * normally get the UI container from
+ * nautilus_window_get_bonobo_ui_container.
+ */
+void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
+						    Bonobo_UIContainer  container);
 
-/* Local editable widgets should set up clipboard capabilities using this function.
-   They can obtain their local ui container using the function
-   nautilus_window_get_bonobo_ui_container */
-void nautilus_clipboard_set_up_editable_from_bonobo_ui_container   (GtkEditable     *target,
-								    Bonobo_UIContainer container);
+/* Components should use this convenient cover instead of the call
+ * above. This cover waits until the UI container shows up, so it can be
+ * called even before the control has a UI container.
+ */
+void nautilus_clipboard_set_up_editable_in_control (GtkEditable        *target,
+						    BonoboControl      *control);
 
 #endif /* NAUTILUS_CLIPBOARD_H */

@@ -131,8 +131,9 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 	bar->details->entry = NAUTILUS_ENTRY (nautilus_entry_new ());
 	nautilus_undo_set_up_nautilus_entry_for_undo (bar->details->entry);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
-	nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GTK_EDITABLE (bar->details->entry),
-								     nautilus_window_get_bonobo_ui_container (window));
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (bar->details->entry),
+		 nautilus_window_get_ui_container (window));
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
 				   nautilus_gtk_button_auto_click, 

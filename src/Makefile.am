@@ -86,6 +86,7 @@ noinst_HEADERS = \
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
+	nautilus-window-service-ui.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
 	$(profiler_headers)			\
@@ -126,7 +127,7 @@ nautilus_SOURCES = \
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
-	nautilus-window-service-menu.c		\
+	nautilus-window-service-ui.c		\
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\

@@ -30,72 +30,58 @@
 #include <config.h>
 #include "nautilus-clipboard.h"
 
-#include "nautilus-bonobo-ui.h"
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtksignal.h>
 
+static void disconnect_set_up_in_control_handlers (GtkObject *object,
+						   gpointer callback_data);
 
 static void
-cut_callback (BonoboUIComponent *ui_component,
+cut_callback (BonoboUIComponent *ui,
 	      gpointer callback_data,
-	      const char *cname)
+	      const char *command_name)
 {
-	GtkEditable *editable_widget;
-
-	g_assert (BONOBO_IS_UI_COMPONENT (ui_component));
-	g_assert (strcmp (cname, "Cut") == 0);
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+	g_assert (strcmp (command_name, "Cut") == 0);
 	
-	editable_widget = GTK_EDITABLE (callback_data);
-	gtk_editable_cut_clipboard (editable_widget);
+	gtk_editable_cut_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
-copy_callback (BonoboUIComponent *ui_component,
+copy_callback (BonoboUIComponent *ui,
 	       gpointer callback_data,
-	       const char *cname)
+	       const char *command_name)
 {
-	GtkEditable *editable_widget;
-	
-	g_assert (BONOBO_IS_UI_COMPONENT (ui_component));
-	g_assert (strcmp (cname, "Copy") == 0);
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+	g_assert (strcmp (command_name, "Copy") == 0);
 		
-	editable_widget = GTK_EDITABLE (callback_data);
-	gtk_editable_copy_clipboard (editable_widget);
+	gtk_editable_copy_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
-paste_callback (BonoboUIComponent *ui_component,
+paste_callback (BonoboUIComponent *ui,
 		gpointer callback_data,
-		const char *cname)
+		const char *command_name)
 {
-	GtkEditable *editable_widget;
-
-	g_assert (BONOBO_IS_UI_COMPONENT (ui_component));
-	g_assert (strcmp (cname, "Paste") == 0);
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+	g_assert (strcmp (command_name, "Paste") == 0);
 		
-	editable_widget = GTK_EDITABLE (callback_data);
-	gtk_editable_paste_clipboard (editable_widget);
+	gtk_editable_paste_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
-clear_callback (BonoboUIComponent *ui_component,
+clear_callback (BonoboUIComponent *ui,
 		gpointer callback_data,
-		const char *cname)
+		const char *command_name)
 {
-	GtkEditable *editable_widget;
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+	g_assert (strcmp (command_name, "Clear") == 0);
 
-	g_assert (BONOBO_IS_UI_COMPONENT (ui_component));
-	g_assert (strcmp (cname, "Clear") == 0);
-
-
-	editable_widget = GTK_EDITABLE (callback_data);
-	gtk_editable_delete_selection (editable_widget);
+	gtk_editable_delete_selection (GTK_EDITABLE (callback_data));
 }
 
-#ifdef N0
+#ifdef SENSITIVITY_ADJUSTMENT_WORKS
+
 static void
 set_paste_sensitive_if_clipboard_contains_data (BonoboUIHandler *ui_handler)
 {
@@ -108,55 +94,7 @@ set_paste_sensitive_if_clipboard_contains_data (BonoboUIHandler *ui_handler)
 						NAUTILUS_MENU_PATH_PASTE_ITEM,
 						clipboard_contains_data);
 }
-#endif
 
-static void
-add_menu_items_callback (GtkWidget *widget,
-			 GdkEventAny *event,
-			 gpointer callback_data)
-{
-	BonoboUIComponent *ui_component;
-	gpointer container_data;
-	Bonobo_UIContainer container;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Cut", (BonoboUIVerbFn) cut_callback),
-		BONOBO_UI_VERB ("Copy", (BonoboUIVerbFn) copy_callback),
-		BONOBO_UI_VERB ("Paste", (BonoboUIVerbFn) paste_callback),
-		BONOBO_UI_VERB ("Clear", (BonoboUIVerbFn) clear_callback),
-		BONOBO_UI_VERB_END
-	};
-
-	ui_component = gtk_object_get_data (GTK_OBJECT (widget), "clipboard_ui_component");
-	container_data = gtk_object_get_data (GTK_OBJECT (widget), "associated_ui_container");
-	container = * (Bonobo_UIContainer *) container_data;
-
-	bonobo_ui_component_set_container (ui_component,
-					   container);
-	bonobo_ui_util_set_ui (ui_component, 
-			       DATADIR,
-			       "nautilus-clipboard-ui.xml",
-			       "nautilus");
-	g_assert (BONOBO_IS_UI_COMPONENT (ui_component));
-
-	/* Add the verbs */
-	bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, widget);
-	/* FIXME bugzilla.eazel.com 733: Update the sensitivities */
-	
-}
-
-static void
-remove_menu_items_callback (GtkWidget *widget,
-			    GdkEventAny *event,
-			    gpointer callback_data)
-{
-	BonoboUIComponent *ui_component;
-
-	ui_component = gtk_object_get_data (GTK_OBJECT (widget), "clipboard_ui_component");
-	bonobo_ui_component_unset_container (ui_component);
-
-}
-
-#ifdef N0
 static void
 set_clipboard_menu_items_sensitive (BonoboUIHandler *ui_handler)
 {
@@ -197,113 +135,167 @@ set_clipboard_menu_items_insensitive (BonoboUIHandler *ui_handler,
 							FALSE);
 	}
 }
+
 #endif
 
-static void
-container_copy_free (gpointer data)
-{
-	g_free (data);
-}
+typedef struct {
+	BonoboUIComponent *component;
+	Bonobo_UIContainer container;
+} TargetCallbackData;
 
 static void
-ui_component_remove_container_and_unref (gpointer data)
+focus_changed_callback (GtkWidget *widget,
+			GdkEventAny *event,
+			gpointer callback_data)
 {
+	TargetCallbackData *target_data;
 	BonoboUIComponent *ui;
-	
-	ui = BONOBO_UI_COMPONENT (data);
-     
-	bonobo_ui_component_unset_container (ui); 
-	bonobo_object_unref (BONOBO_OBJECT (ui));
+
+	g_assert (GTK_IS_EDITABLE (widget));
+	g_assert (callback_data != NULL);
+	target_data = callback_data;
+	g_assert (BONOBO_IS_UI_COMPONENT (target_data->component));
+
+	/* Connect the component to the container if the widget has focus. */
+	ui = target_data->component;
+	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+		bonobo_ui_component_set_container (ui,
+						   target_data->container);
+		bonobo_ui_component_freeze (ui, NULL);
+		bonobo_ui_util_set_ui (ui,
+				       DATADIR,
+				       "nautilus-clipboard-ui.xml",
+				       "nautilus");
+		bonobo_ui_component_thaw (ui, NULL);
+
+		/* FIXME bugzilla.eazel.com 733: Update sensitivities of the
+		 * commands now, also arrange for them to stay updated as the
+		 * state of the editable changes.
+		 */
+	} else {
+		bonobo_ui_component_unset_container (ui);
+	}
 }
 
 static void
-finish_setting_up_editable  (GtkEditable *target,
-			     Bonobo_UIContainer container)
+target_destroy_callback (GtkObject *object,
+			 gpointer callback_data)
 {
-	BonoboUIComponent *ui;
-	Bonobo_UIContainer *ui_container;
-	char *component_name;
+	TargetCallbackData *target_data;
 
-	/* Create a unique component name for each clipboard item,
-	   since they are registered and deregistered by name */
-	component_name = g_strdup_printf ("Clipboard %p", target);
-	ui = bonobo_ui_component_new (component_name);
-	g_free (component_name);
-	
-	ui_container = g_new0 (Bonobo_UIContainer, 1);
-	memcpy (ui_container, &container, sizeof (Bonobo_UIContainer));
+	g_assert (callback_data != NULL);
+	target_data = callback_data;
+	g_assert (BONOBO_IS_UI_COMPONENT (target_data->component));
 
-	/* Free the ui component when we get rid of the widget */
-	gtk_object_set_data_full (GTK_OBJECT (target), "clipboard_ui_component", 
-				  ui, ui_component_remove_container_and_unref);
-	gtk_object_set_data_full (GTK_OBJECT (target), "associated_ui_container",
-				  ui_container, container_copy_free);
-
-	gtk_signal_connect (GTK_OBJECT (target), "focus_in_event",
-			    GTK_SIGNAL_FUNC (add_menu_items_callback),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (target), "focus_out_event",
-			    GTK_SIGNAL_FUNC (remove_menu_items_callback),
-			    NULL);
-
-
-}
-
-static void
-finish_setting_up_editable_from_bonobo_control_callback (gpointer data,
-							 GdkEventAny *event,
-							 gpointer user_data)
-{
-	GtkEditable *target;
-	BonoboControl *control;
-
-	target = GTK_EDITABLE (data);
-	control = BONOBO_CONTROL (user_data);
-
-	/* Don't set up the clipboard again on future focus_in's */
-	gtk_signal_disconnect_by_func (GTK_OBJECT (data),
-				       GTK_SIGNAL_FUNC (finish_setting_up_editable_from_bonobo_control_callback),
-				       user_data);
-
-	finish_setting_up_editable (target,
-				    bonobo_control_get_remote_ui_container (control));
-
-	/* Do the initial merging */
-	add_menu_items_callback (GTK_WIDGET (target), 
-				 NULL,
-				 NULL);
-				 
-
+	/* Disconnect the component from the container, and then free
+	 * everything.
+	 */
+	bonobo_ui_component_unset_container (target_data->component);
+	bonobo_object_unref (BONOBO_OBJECT (target_data->component));
+	bonobo_object_release_unref (target_data->container, NULL);
+	g_free (target_data);
 }
 
 void
-nautilus_clipboard_set_up_editable_from_bonobo_control (GtkEditable *target,
-							BonoboControl *control)
+nautilus_clipboard_set_up_editable (GtkEditable *target,
+				    Bonobo_UIContainer ui_container)
 {
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Cut", cut_callback),
+		BONOBO_UI_VERB ("Copy", copy_callback),
+		BONOBO_UI_VERB ("Paste", paste_callback),
+		BONOBO_UI_VERB ("Clear", clear_callback),
+		BONOBO_UI_VERB_END
+	};
+	BonoboUIComponent *ui;
+	TargetCallbackData *target_data;
+	
+	g_return_if_fail (GTK_IS_EDITABLE (target));
+	g_return_if_fail (ui_container != CORBA_OBJECT_NIL);
 
+	/* Create the UI component and set up the verbs. */
+	ui = bonobo_ui_component_new_default ();
+	bonobo_ui_component_add_verb_list_with_data (ui, verbs, target);
 
+	/* Do the actual connection of the UI to the container at
+	 * focus time, and disconnect at both focus and destroy
+	 * time.
+	 */
+	target_data = g_new (TargetCallbackData, 1);
+	bonobo_object_ref (BONOBO_OBJECT (ui));
+	target_data->component = ui;
+	target_data->container = bonobo_object_dup_ref (ui_container, NULL);
+	gtk_signal_connect_after (GTK_OBJECT (target), "focus_in_event",
+				  focus_changed_callback, target_data);
+	gtk_signal_connect_after (GTK_OBJECT (target), "focus_out_event",
+				  focus_changed_callback, target_data);
+	gtk_signal_connect (GTK_OBJECT (target), "destroy",
+			    target_destroy_callback, target_data);
+
+	/* Call the focus changed callback once to merge if the window is
+	 * already in focus.
+	 */
+	focus_changed_callback (GTK_WIDGET (target), NULL, target_data);
+}
+
+static void
+first_focus_callback (GtkWidget *widget,
+		      GdkEventAny *event,
+		      gpointer callback_data)
+{
+	/* Don't set up the clipboard again on future focus_in's. This
+	 * is one-time work.
+	 */
+	disconnect_set_up_in_control_handlers
+		(GTK_OBJECT (widget),
+		 callback_data);
+
+	/* Do the rest of the setup. */
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (widget),
+		 bonobo_control_get_remote_ui_container (BONOBO_CONTROL (callback_data)));
+}
+
+static void
+control_destroyed_callback (GtkObject *object,
+			    gpointer callback_data)
+{
+	disconnect_set_up_in_control_handlers
+		(object, callback_data);
+}
+
+void
+nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
+					       BonoboControl *control)
+{
 	g_return_if_fail (GTK_IS_EDITABLE (target));
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
 
 	/* Use lazy initialization, so that we wait until after
-	   embedding, and thus for the ability to get the remote
-	   ui container */
-	gtk_signal_connect_while_alive (GTK_OBJECT (target),
-					"focus_in_event",
-					finish_setting_up_editable_from_bonobo_control_callback,
-					control, GTK_OBJECT (control));
-
+	 * embedding. At that point, the UI container will be set up,
+	 * but it's not necessarily set up now.
+	 */
+	/* We'd like to use gtk_signal_connect_while_alive, but it's
+	 * not compatible with gtk_signal_disconnect calls.
+	 */
+	gtk_signal_connect (GTK_OBJECT (target),
+			    "focus_in_event",
+			    first_focus_callback,
+			    control);
+	gtk_signal_connect (GTK_OBJECT (target),
+			    "destroy",
+			    control_destroyed_callback,
+			    control);
 }
-	
 
-void
-nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GtkEditable *target,
-							     Bonobo_UIContainer ui_container)
+static void
+disconnect_set_up_in_control_handlers (GtkObject *object,
+				       gpointer callback_data)
 {
-	
-
-	g_return_if_fail (GTK_IS_EDITABLE (target));
-	finish_setting_up_editable (target,
-				    ui_container);
+	gtk_signal_disconnect_by_func (object,
+				       first_focus_callback,
+				       callback_data);
+	gtk_signal_disconnect_by_func (object,
+				       control_destroyed_callback,
+				       callback_data);
 }
-

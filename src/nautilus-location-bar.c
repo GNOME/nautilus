@@ -510,8 +510,9 @@ nautilus_location_bar_new (NautilusWindow *window)
 	location_bar = NAUTILUS_LOCATION_BAR (bar);
 
 	/* Clipboard */
-	nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GTK_EDITABLE (location_bar->entry),
-								     nautilus_window_get_bonobo_ui_container (window));
+	nautilus_clipboard_set_up_editable
+		(GTK_EDITABLE (location_bar->entry),
+		 nautilus_window_get_ui_container (window));
 
 	return bar;
 }

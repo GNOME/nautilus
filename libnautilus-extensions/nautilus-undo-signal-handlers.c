@@ -284,22 +284,34 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
  * Allow the use of ctrl-z from within widget.
  */
 
-static void 
+/* Undo is disabled until we have a better implementation.
+ * Both here and in nautilus-shell-ui.xml.
+ */
+
+#ifdef UNDO_ENABLED
+
+/* FIXME: This needs a return value of gboolean. */
+static void
 editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer user_data)
 {	
 	switch (event->keyval) {
-		/* Undo */
-		case 'z':
-			if ((event->state & GDK_CONTROL_MASK) != 0) {
-				nautilus_undo (GTK_OBJECT (editable));
-				return;
-			}
-			break;
-
-		default:
-			break;
+	/* Undo */
+	case 'z':
+		if ((event->state & GDK_CONTROL_MASK) != 0) {
+			nautilus_undo (GTK_OBJECT (editable));
+			/* FIXME: Need to stop the signal to prevent
+			 * re-handling the same event.
+			 */
+			return;
+		}
+		break;
+		
+	default:
+		break;
 	}
 }
+
+#endif
 
 /* editable_set_undo_key
  *
@@ -310,16 +322,18 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 void 
 nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 {
+#ifdef UNDO_ENABLED
 	if (value) {
 		/* Connect to entry signals */
 		gtk_signal_connect (GTK_OBJECT (editable), 
-		    "key-press-event",
-		    GTK_SIGNAL_FUNC (editable_key_press_event),
-		    NULL);
-	}
-	else {
+				    "key_press_event",
+				    GTK_SIGNAL_FUNC (editable_key_press_event),
+				    NULL);
+	} else {
+		/* FIXME: This warns if the handler is already connected. */
 		gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
-		    GTK_SIGNAL_FUNC (editable_key_press_event),		    
-		    NULL);
-	}	
+					       GTK_SIGNAL_FUNC (editable_key_press_event),		    
+					       NULL);
+	}
+#endif
 }
