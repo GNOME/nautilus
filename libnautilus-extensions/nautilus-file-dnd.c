@@ -73,7 +73,7 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 	 */
 	for (max = 100; items != NULL && max >= 0; items = items->next, max--) {
 		if (!nautilus_drag_can_accept_item (drop_target_item, 
-			((DragSelectionItem *)items->data)->uri)) {
+			((EelDragSelectionItem *)items->data)->uri)) {
 			return FALSE;
 		}
 	}
@@ -90,7 +90,7 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 	g_return_if_fail (keyword != NULL);
 
 	/* special case the erase emblem */
-	if (strcmp (keyword, ERASE_KEYWORD) == 0) {
+	if (strcmp (keyword, NAUTILUS_FILE_DND_ERASE_KEYWORD) == 0) {
 		keywords = NULL;
 	} else {
 		keywords = nautilus_file_get_keywords (file);

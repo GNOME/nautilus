@@ -114,7 +114,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-search-uri.c \
 	nautilus-sidebar-functions.c \
 	nautilus-sound.c \
-	nautilus-tabs.c \
 	nautilus-theme.c \
 	nautilus-thumbnails.c \
 	nautilus-trash-directory.c \
@@ -191,7 +190,6 @@ noinst_HEADERS = \
 	nautilus-search-uri.h \
 	nautilus-sidebar-functions.h \
 	nautilus-sound.h \
-	nautilus-tabs.h \
 	nautilus-theme.h \
 	nautilus-thumbnails.h \
 	nautilus-trash-directory.h \

@@ -46,7 +46,6 @@
 #include <eel/eel-password-dialog.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-viewport.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <eel/eel-clickable-image.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -139,8 +138,6 @@ nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass 
 	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	object_class->destroy = nautilus_service_install_view_destroy;
 	object_class->finalize = nautilus_service_install_view_finalize;
-
-	nautilus_global_preferences_initialize ();
 }
 
 static void

@@ -648,7 +648,7 @@ fm_list_receive_dropped_icons (EelList *list,
 			for (p = drop_data; p != NULL; p = p->next) {
 				/* do a shallow copy of all the uri strings of the copied files */
 				source_uris = g_list_prepend (source_uris, 
-							      ((DragSelectionItem *)p->data)->uri);
+							      ((EelDragSelectionItem *)p->data)->uri);
 			}
 			source_uris = g_list_reverse (source_uris);
 			

@@ -42,7 +42,6 @@
 #include <gtk/gtklabel.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <eel/eel-ctree.h>
-#include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus/libnautilus.h>
 #include <limits.h>
 #include <stdio.h>
@@ -63,24 +62,27 @@ static GtkTargetEntry rpm_dnd_target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR },
 };
 
-static void nautilus_rpm_view_drag_data_received (GtkWidget            *widget,
-                                                  GdkDragContext       *context,
-                                                  int                   x,
-                                                  int                   y,
-                                                  GtkSelectionData     *selection_data,
-                                                  guint                 info,
-                                                  guint                 time);
-static void nautilus_rpm_view_initialize_class   (NautilusRPMViewClass *klass);
-static void nautilus_rpm_view_initialize         (NautilusRPMView      *view);
-static void nautilus_rpm_view_destroy            (GtkObject            *object);
-static void rpm_view_load_location_callback      (NautilusView         *view,
-                                                  const char           *location,
-                                                  NautilusRPMView      *rpm_view);
-static void nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
-				   		  NautilusRPMView *rpm_view);
-
-static void file_activation_callback (EelCTree *ctree, EelCTreeNode *node, int column,
-                                      NautilusRPMView *rpm_view);
+static void       nautilus_rpm_view_drag_data_received      (GtkWidget            *widget,
+							     GdkDragContext       *context,
+							     int                   x,
+							     int                   y,
+							     GtkSelectionData     *selection_data,
+							     guint                 info,
+							     guint                 time);
+static void       nautilus_rpm_view_initialize_class        (NautilusRPMViewClass *klass);
+static void       nautilus_rpm_view_initialize              (NautilusRPMView      *view);
+static void       nautilus_rpm_view_destroy                 (GtkObject            *object);
+static void       rpm_view_load_location_callback           (NautilusView         *view,
+							     const char           *location,
+							     NautilusRPMView      *rpm_view);
+static void       nautilus_rpm_view_verify_package_callback (GtkWidget            *widget,
+							     NautilusRPMView      *rpm_view);
+static void       file_activation_callback                  (EelCTree             *ctree,
+							     EelCTreeNode         *node,
+							     int                   column,
+							     NautilusRPMView      *rpm_view);
+static GdkPixbuf *pixbuf_new_named                          (const char           *name);
+static GtkWidget *image_new_named                           (const char           *name);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
@@ -106,7 +108,6 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	GtkWidget *temp_box, *temp_widget;
 	GtkWidget *icon_title_box, *title_box;
 	GtkTable *table;
-  	char *default_icon_path;
         GtkWidget *viewport;
   	
   	static gchar *list_headers[] = { N_("Package Contents") };
@@ -144,9 +145,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), icon_title_box, FALSE, FALSE, 0);	
 	
 	/* allocate a nautilus_image to hold the icon */
-	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-	rpm_view->details->package_image = eel_image_new (default_icon_path);
-	g_free (default_icon_path);
+	rpm_view->details->package_image = image_new_named ("gnome-pack-rpm.png");
 	gtk_widget_show (rpm_view->details->package_image);
 	gtk_box_pack_start (GTK_BOX (icon_title_box), rpm_view->details->package_image, FALSE, FALSE, 8);	
 	
@@ -527,14 +526,18 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 {
 	char *temp_str;
 	gboolean is_installed;
-	char *path_name, *default_icon_path;
-	
+	char *path_name;
+	GdkPixbuf *pixbuf;
+
 	path_name = gnome_vfs_get_local_path_from_uri (uri);
 		
 	/* load the standard icon as the default */
-	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-    	eel_image_set_pixbuf_from_file_name (EEL_IMAGE (rpm_view->details->package_image), default_icon_path);
-        g_free (default_icon_path);
+	pixbuf =  pixbuf_new_named ("gnome-pack-rpm.png");
+
+	if (pixbuf != NULL) {
+		eel_image_set_pixbuf (EEL_IMAGE (rpm_view->details->package_image), pixbuf);
+		gdk_pixbuf_unref (pixbuf);
+	}
 
 #ifdef EAZEL_SERVICES	       
         rpm_view->details->package = eazel_package_system_load_package (rpm_view->details->package_system,
@@ -786,4 +789,40 @@ nautilus_rpm_view_drag_data_received (GtkWidget *widget, GdkDragContext *context
                 g_warning ("unknown drop type");
                 break;
         }
+}
+
+static GdkPixbuf *
+pixbuf_new_named (const char *name)
+{
+	char *image_file_path;
+ 	GdkPixbuf *pixbuf = NULL;
+	
+	image_file_path = g_strdup_printf ("%s/%s", DATADIR "/pixmaps/nautilus", name);
+
+	if (g_file_exists (image_file_path)) {
+		pixbuf =gdk_pixbuf_new_from_file (image_file_path);
+	}
+	g_free (image_file_path);
+        
+	return pixbuf;
+}
+
+static GtkWidget *
+image_new_named (const char *name)
+{
+        GtkWidget *image;
+ 	GdkPixbuf *pixbuf;
+	
+        g_return_val_if_fail (name != NULL, NULL);
+
+	image = eel_image_new (NULL);
+
+	pixbuf = pixbuf_new_named (name);
+	
+	if (pixbuf != NULL) {
+		eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
+		gdk_pixbuf_unref (pixbuf);
+	}
+        
+	return image;
 }

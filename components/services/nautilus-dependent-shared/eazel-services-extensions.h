@@ -56,6 +56,10 @@
 
 #define EAZEL_SERVICES_HEADER_TEXT_SIZE_REL 4
 
+#define EAZEL_USER_LEVEL_NOVICE		0
+#define EAZEL_USER_LEVEL_INTERMEDIATE	1
+#define EAZEL_USER_LEVEL_ADVANCED	2
+
 /*
  * The xalign, yalign, xpadding, and ypadding attribures work
  * exactly as they do with GtkMisc.
@@ -63,46 +67,47 @@
 
 BEGIN_GNOME_DECLS
 
-GdkPixbuf *eazel_services_pixbuf_new              (const char *name);
-GtkWidget *eazel_services_image_new               (const char *icon_name,
-						   const char *tile_name,
-						   guint32     background_color);
-GtkWidget *eazel_services_image_new_clickable     (const char *icon_name,
-						   const char *tile_name,
-						   guint32     background_color);
-GtkWidget *eazel_services_image_new_from_uri      (const char *uri,
-						   const char *tile_name,
-						   guint32     background_color,
-						   int         max_width,
-						   int         max_height);
+GdkPixbuf *eazel_services_pixbuf_new                   (const char *name);
+GtkWidget *eazel_services_image_new                    (const char *icon_name,
+							const char *tile_name,
+							guint32     background_color);
+GtkWidget *eazel_services_image_new_clickable          (const char *icon_name,
+							const char *tile_name,
+							guint32     background_color);
+GtkWidget *eazel_services_image_new_from_uri           (const char *uri,
+							const char *tile_name,
+							guint32     background_color,
+							int         max_width,
+							int         max_height);
 GtkWidget *eazel_services_clickable_image_new_from_uri (const char *uri,
 							const char *tile_name,
 							guint32     background_color,
 							int         max_width,
 							int         max_height);
-GtkWidget *eazel_services_label_new               (const char *text,
-						   guint       drop_shadow_offset,
-						   float       xalign,
-						   float       yalign,
-						   gint        xpadding,
-						   gint        ypadding,
-						   guint32     text_color,
-						   guint32     background_color,
-						   const char *tile_name,
-						   gint       num_larger_sizes,
-						   gboolean    bold);
-GtkWidget *eazel_services_label_new_clickable     (const char *text,
-						   guint       drop_shadow_offset,
-						   float       xalign,
-						   float       yalign,
-						   gint        xpadding,
-						   gint        ypadding,
-						   guint32     text_color,
-						   guint32     background_color,
-						   const char *tile_name,
-						   gint       num_larger_sizes,
-						   gboolean    bold);
-char *     eazel_services_get_current_date_string (void);
+GtkWidget *eazel_services_label_new                    (const char *text,
+							guint       drop_shadow_offset,
+							float       xalign,
+							float       yalign,
+							gint        xpadding,
+							gint        ypadding,
+							guint32     text_color,
+							guint32     background_color,
+							const char *tile_name,
+							gint        num_larger_sizes,
+							gboolean    bold);
+GtkWidget *eazel_services_label_new_clickable          (const char *text,
+							guint       drop_shadow_offset,
+							float       xalign,
+							float       yalign,
+							gint        xpadding,
+							gint        ypadding,
+							guint32     text_color,
+							guint32     background_color,
+							const char *tile_name,
+							gint        num_larger_sizes,
+							gboolean    bold);
+char      *eazel_services_get_current_date_string      (void);
+int        eazel_services_get_user_level               (void);
 
 END_GNOME_DECLS
 

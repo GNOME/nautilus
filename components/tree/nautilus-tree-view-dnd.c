@@ -872,7 +872,7 @@ nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 	source_uris = NULL;
 	for (p = selection_list; p != NULL; p = p->next) {
 		/* do a shallow copy of all the uri strings of the copied files */
-		source_uris = g_list_prepend (source_uris, ((DragSelectionItem *)p->data)->uri);
+		source_uris = g_list_prepend (source_uris, ((EelDragSelectionItem *)p->data)->uri);
 	}
 	source_uris = g_list_reverse (source_uris);
 	

@@ -153,7 +153,7 @@ create_selection_shadow (NautilusIconContainer *container,
 					NULL));
 	
 	for (p = list; p != NULL; p = p->next) {
-		DragSelectionItem *item;
+		EelDragSelectionItem *item;
 		int x1, y1, x2, y2;
 
 		item = p->data;
@@ -784,7 +784,7 @@ handle_local_move (NautilusIconContainer *container,
 		   double world_x, double world_y)
 {
 	GList *moved_icons, *p;
-	DragSelectionItem *item;
+	EelDragSelectionItem *item;
 	NautilusIcon *icon;
 
 	if (container->details->auto_layout) {
@@ -836,7 +836,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	source_uris = NULL;
 	for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next) {
 		/* do a shallow copy of all the uri strings of the copied files */
-		source_uris = g_list_prepend (source_uris, ((DragSelectionItem *)p->data)->uri);
+		source_uris = g_list_prepend (source_uris, ((EelDragSelectionItem *)p->data)->uri);
 	}
 	source_uris = g_list_reverse (source_uris);
 	
@@ -851,9 +851,9 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		for (index = 0, p = container->details->dnd_info->drag_info.selection_list;
 			p != NULL; index++, p = p->next) {
 		     	g_array_index (source_item_locations, GdkPoint, index).x =
-		     		((DragSelectionItem *)p->data)->icon_x;
+		     		((EelDragSelectionItem *)p->data)->icon_x;
 		     	g_array_index (source_item_locations, GdkPoint, index).y =
-				((DragSelectionItem *)p->data)->icon_y;
+				((EelDragSelectionItem *)p->data)->icon_y;
 		}
 	}
 		
@@ -934,7 +934,7 @@ selection_includes_special_link (GList *selection_list)
 	link_in_selection = FALSE;
 
 	for (node = selection_list; node != NULL; node = node->next) {
-		uri = ((DragSelectionItem *) node->data)->uri;
+		uri = ((EelDragSelectionItem *) node->data)->uri;
 
 		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
 		local_path = gnome_vfs_get_local_path_from_uri (uri);

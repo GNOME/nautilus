@@ -23,32 +23,35 @@
 */
 
 #include <config.h>
-
 #include "eazel-services-extensions.h"
 
+#include <eel/eel-clickable-image.h>
+#include <eel/eel-smooth-widget.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <gconf/gconf-client.h>
+#include <gconf/gconf.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-
-#include <libnautilus-extensions/nautilus-theme.h>
-#include <eel/eel-string.h>
-#include <eel/eel-clickable-image.h>
-
+#include <libgnome/gnome-util.h>
 #include <time.h>
+
+static void listen_for_smooth_graphics_changes (void);
 
 GdkPixbuf *
 eazel_services_pixbuf_new (const char *name)
 {
-	char *path;
-	GdkPixbuf *pixbuf;
+	char *image_file_path;
+ 	GdkPixbuf *pixbuf = NULL;
 
-	g_return_val_if_fail (name != NULL, NULL);
-
-	path = nautilus_theme_get_image_path (name);
+        g_return_val_if_fail (name != NULL, NULL);
 	
-	g_return_val_if_fail (path != NULL, NULL);
+	image_file_path = g_strdup_printf ("%s/%s", DATADIR "/pixmaps/nautilus", name);
 
-	pixbuf = gdk_pixbuf_new_from_file (path);
-	g_free (path);
+	if (g_file_exists (image_file_path)) {
+		pixbuf =gdk_pixbuf_new_from_file (image_file_path);
+	}
+	g_free (image_file_path);
 
 	return pixbuf;
 }
@@ -61,6 +64,8 @@ eazel_services_image_new (const char *icon_name,
 	GtkWidget *image;
 	GdkPixbuf *pixbuf = NULL;
 	GdkPixbuf *tile_pixbuf = NULL;
+
+	listen_for_smooth_graphics_changes ();
 
 	if (icon_name) {
 		pixbuf = eazel_services_pixbuf_new (icon_name);
@@ -86,6 +91,8 @@ eazel_services_image_new_clickable (const char *icon_name,
 	GtkWidget *image;
 	GdkPixbuf *pixbuf = NULL;
 	GdkPixbuf *tile_pixbuf = NULL;
+
+	listen_for_smooth_graphics_changes ();
 
 	if (icon_name) {
 		pixbuf = eazel_services_pixbuf_new (icon_name);
@@ -126,6 +133,8 @@ eazel_services_image_new_from_uri (const char *uri,
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
+	listen_for_smooth_graphics_changes ();
+
 	/* load the image - synchronously, at least at first */
 	pixbuf = eel_gdk_pixbuf_load (uri);
 	
@@ -163,6 +172,8 @@ eazel_services_clickable_image_new_from_uri (const char *uri,
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
+	listen_for_smooth_graphics_changes ();
+
 	/* load the image - synchronously, at least at first */
 	pixbuf = eel_gdk_pixbuf_load (uri);
 	
@@ -186,9 +197,6 @@ eazel_services_clickable_image_new_from_uri (const char *uri,
 	return image;
 }
 
-
-
-
 GtkWidget *
 eazel_services_label_new (const char *text,
 			  guint drop_shadow_offset,
@@ -204,6 +212,8 @@ eazel_services_label_new (const char *text,
 {
  	GtkWidget *label;
 	GdkPixbuf *tile_pixbuf = NULL;
+
+	listen_for_smooth_graphics_changes ();
 
 	if (tile_name != NULL) {
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
@@ -252,6 +262,8 @@ eazel_services_label_new_clickable (const char *text,
  	GtkWidget *label;
 	GdkPixbuf *tile_pixbuf = NULL;
 
+	listen_for_smooth_graphics_changes ();
+
 	if (tile_name != NULL) {
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
@@ -298,4 +310,207 @@ eazel_services_get_current_date_string (void)
 	my_localtime = localtime (&my_time);
 
         return eel_strdup_strftime (_("%A, %B %d"), my_localtime);
+}
+
+/* FIXME: It is obviously beyond words to describe how dauntingly lame
+ *        this cut and pasted code here is.  
+ *	  See also the USER_LEVEL macros in eazel-services-extensions.h
+ */
+#define SMOOTH_GRAPHICS_KEY "/apps/nautilus/preferences/smooth_graphics_mode"
+#define USER_LEVEL_KEY "/apps/nautilus/user_level"
+
+/* Code cut-n-pasted from nautilus-gconf-extensions.c */
+static gboolean
+eazel_services_gconf_handle_error (GError **error)
+{
+	char *message;
+	static gboolean shown_dialog = FALSE;
+	
+	g_return_val_if_fail (error != NULL, FALSE);
+
+	if (*error != NULL) {
+		g_warning (_("GConf error:\n  %s"), (*error)->message);
+		if (! shown_dialog) {
+			shown_dialog = TRUE;
+
+			message = g_strdup_printf (_("GConf error:\n  %s\n"
+						     "All further errors shown "
+						     "only on terminal"),
+						   (*error)->message);
+			eel_show_error_dialog (message, _("GConf Error"), NULL);
+			g_free (message);
+		}
+		g_error_free (*error);
+		*error = NULL;
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static GConfClient *global_gconf_client = NULL;
+
+static void
+preferences_unref_global_gconf_client (void)
+{
+	if (global_gconf_client == NULL) {
+		gtk_object_unref (GTK_OBJECT (global_gconf_client));
+	}
+
+	global_gconf_client = NULL;
+}
+
+static GConfClient *
+preferences_get_global_gconf_client (void)
+{
+	/* Initialize gconf if needed */
+	if (!gconf_is_initialized ()) {
+		GError *error = NULL;
+		char *argv[] = { "eazel-services", NULL };
+		
+		if (!gconf_init (1, argv, &error)) {
+			
+			if (eazel_services_gconf_handle_error (&error)) {
+				return NULL;
+			}
+		}
+	}
+
+	if (global_gconf_client == NULL) {
+		global_gconf_client = gconf_client_get_default ();
+
+		if (global_gconf_client == NULL) {
+			return NULL;
+		}
+
+		g_atexit (preferences_unref_global_gconf_client);
+
+		gconf_client_add_dir (global_gconf_client,
+				      "/apps/nautilus",
+				      GCONF_CLIENT_PRELOAD_NONE,
+				      NULL);
+	}
+
+	return global_gconf_client;
+}
+
+static gboolean
+preferences_gconf_get_boolean (const char *key)
+{
+	gboolean result;
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, FALSE);
+	
+	client = preferences_get_global_gconf_client ();
+	g_return_val_if_fail (client != NULL, FALSE);
+	
+	result = gconf_client_get_bool (client, key, &error);
+	
+	if (eazel_services_gconf_handle_error (&error)) {
+		result = FALSE;
+	}
+	
+	return result;
+}
+
+static char *
+preferences_gconf_get_string (const char *key)
+{
+	char *result;
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, NULL);
+	
+	client = preferences_get_global_gconf_client ();
+	g_return_val_if_fail (client != NULL, NULL);
+	
+	result = gconf_client_get_string (client, key, &error);
+	
+	if (eazel_services_gconf_handle_error (&error)) {
+		result = g_strdup ("");
+	}
+	
+	return result;
+}
+
+static void
+smooth_graphics_changed_notice (GConfClient *client, 
+				guint connection_id, 
+				GConfEntry *entry, 
+				gpointer notice_data)
+{
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (entry->key != NULL);
+
+	eel_smooth_widget_global_set_is_smooth (preferences_gconf_get_boolean (SMOOTH_GRAPHICS_KEY));
+}
+
+static void
+listen_for_smooth_graphics_changes (void)
+{
+	static gboolean notification_installed = FALSE;
+	GConfClient *client;
+	GError *error;
+
+	if (notification_installed) {
+		return;
+	}
+
+	if (!gconf_is_initialized ()) {
+		char *argv[] = { "eazel-services", NULL };
+		error = NULL;
+		
+		if (!gconf_init (1, argv, &error)) {
+			if (eazel_services_gconf_handle_error (&error)) {
+				return;
+			}
+		}
+	}
+
+	client = preferences_get_global_gconf_client ();
+	g_return_if_fail (client != NULL);
+	
+	gconf_client_notify_add (client,
+				 SMOOTH_GRAPHICS_KEY,
+				 smooth_graphics_changed_notice,
+				 NULL,
+				 NULL,
+				 &error);
+	
+	if (eazel_services_gconf_handle_error (&error)) {
+		return;
+	}
+
+	notification_installed = TRUE;
+
+	eel_smooth_widget_global_set_is_smooth (preferences_gconf_get_boolean (SMOOTH_GRAPHICS_KEY));
+}
+
+#define DEFAULT_USER_LEVEL		EAZEL_USER_LEVEL_INTERMEDIATE
+
+int
+eazel_services_get_user_level (void)
+{
+	char *user_level;
+	int result;
+
+	user_level = preferences_gconf_get_string (USER_LEVEL_KEY);
+
+	if (eel_str_is_equal (user_level, "advanced")) {
+		result = EAZEL_USER_LEVEL_ADVANCED;
+	} else if (eel_str_is_equal (user_level, "intermediate")) {
+		result = EAZEL_USER_LEVEL_INTERMEDIATE;
+	} else if (eel_str_is_equal (user_level, "novice")) {
+		result = EAZEL_USER_LEVEL_NOVICE;
+	} else {
+		result = DEFAULT_USER_LEVEL;
+	}
+	
+	g_free (user_level);
+
+	return result;
 }

@@ -9,6 +9,7 @@ INVENTORY_CFLAGS=
 endif
 
 INCLUDES = 							\
+	-DDATADIR=\""$(datadir)"\" \
 	-DPREFIX=\"$(prefix)\" 					\
 	-DG_LOG_DOMAIN=\"Nautilus-RPM\" 			\
 	-I$(top_srcdir) 					\
@@ -52,7 +53,6 @@ nautilus_rpm_view_SOURCES =		        \
 
 nautilus_rpm_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(EEL_LIBS) \
 	$(LIBRSVG_LIBS) \
 	$(INVENTORY_LIBS)			\

@@ -1,5 +1,72 @@
 2001-04-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri),
+	(nautilus_rpm_view_drag_data_received), (pixbuf_new_named),
+	(image_new_named):
+	Remove depenency on Nautilus themes and thus libnautilus-extensions.
+	
+	* components/services/install-view/Makefile.am:
+	* components/services/install-view/callbacks.c:
+	(nautilus_service_install_done):
+	* components/services/install-view/nautilus-service-install-view.c:
+	(nautilus_service_install_view_initialize_class):
+	* components/services/inventory-view/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
+	(eazel_services_pixbuf_new), (eazel_services_image_new),
+	(eazel_services_image_new_clickable),
+	(eazel_services_image_new_from_uri),
+	(eazel_services_clickable_image_new_from_uri),
+	(eazel_services_label_new), (eazel_services_label_new_clickable),
+	(eazel_services_get_current_date_string),
+	(eazel_services_gconf_handle_error),
+	(preferences_unref_global_gconf_client),
+	(preferences_get_global_gconf_client),
+	(preferences_gconf_get_boolean), (preferences_gconf_get_string),
+	(smooth_graphics_changed_notice),
+	(listen_for_smooth_graphics_changes),
+	(eazel_services_get_user_level):
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
+	* components/services/summary/Makefile.am:
+	* components/services/summary/nautilus-summary-menu-items.c:
+	(ui_component_set_hidden), (update_menu_items):
+	* components/services/summary/nautilus-summary-view.c:
+	(nautilus_summary_view_initialize_class):
+	Remove dependency on libnautilus-extensions.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-tabs.h:
+	* libnautilus-extensions/nautilus-tabs.c:
+	* components/services/summary/nautilus-tabs.h:
+	* components/services/summary/nautilus-tabs.c:
+	Move the nautilus tabs widget to the only place where its used -
+	the summary view.
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	Trim down the includes to only whats needed.
+	
+	* libnautilus-extensions/nautilus-file-dnd.h:
+	* libnautilus-extensions/nautilus-file-dnd.c:
+	Make the ERASE_KEYWORD be part only of nautilus-file-dnd.h as
+	NAUTILUS_FILE_DND_ERASE_KEYWORD to make it clear where it lives.
+	
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_move_copy_files):
+	(nautilus_drag_can_accept_items),
+	(nautilus_drag_file_receive_dropped_keyword):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(create_selection_shadow), (handle_local_move),
+	(handle_nonlocal_move), (selection_includes_special_link):
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
+	Update for eel dnd changes.  Make sure all public eel dnd stuff
+	has the right namespace.
+	
+2001-04-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-profiler.c:
 	Add missing eel includes to fix profile build.
 	

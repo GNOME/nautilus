@@ -46,10 +46,11 @@ nautilus_summary_view_SOURCES =			\
 	nautilus-summary-view-private.h		\
 	nautilus-summary-view.c			\
 	nautilus-summary-view.h			\
+	nautilus-tabs.c				\
+	nautilus-tabs.h				\
 	$(NULL)
 
 nautilus_summary_view_LDADD =									\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la		\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a	\
 	$(INVENTORY_LIBS)									\

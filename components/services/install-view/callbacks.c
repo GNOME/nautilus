@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include "nautilus-service-install-view.h"
+#include "eazel-services-extensions.h"
 #include "forms.h"
 #include "callbacks.h"
 #include "eazel-install-metadata.h"		/* eazel_install_configure_check_jump_after_install */
@@ -34,7 +35,6 @@
 #include <errno.h>
 #include <libeazelinstall.h>
 #include <eel/eel-label.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #define MAX_DESCRIBE_MENUS      3
 
@@ -617,7 +617,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		}
 		if (view->details->cancelled_before_downloads ||
 		    view->details->already_installed ||
-		    (nautilus_preferences_get_user_level () < NAUTILUS_USER_LEVEL_ADVANCED)) {
+		    (eazel_services_get_user_level () < EAZEL_USER_LEVEL_ADVANCED)) {
 			/* don't ask about erasing rpms */
 			question_dialog = FALSE;
 			answer = TRUE;

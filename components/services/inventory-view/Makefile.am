@@ -36,7 +36,6 @@ nautilus_inventory_view_SOURCES =		\
 	main.c
 
 nautilus_inventory_view_LDADD =								\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/libnautilus/libnautilus.la					\
 	$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la	\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \

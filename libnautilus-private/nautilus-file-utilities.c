@@ -25,28 +25,16 @@
 #include <config.h>
 #include "nautilus-file-utilities.h"
 
-#include "nautilus-file.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 #include "nautilus-metafile.h"
-#include <ctype.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-xfer.h>
-#include <pthread.h>
-#include <pwd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)

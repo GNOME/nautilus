@@ -33,6 +33,7 @@
 #include "nautilus-summary-footer.h"
 #include "nautilus-summary-menu-items.h"
 #include "nautilus-summary-view-private.h"
+#include "nautilus-tabs.h"
 #include <bonobo/bonobo-control.h>
 #include <eel/eel-background.h>
 #include <eel/eel-clickable-image.h>
@@ -48,8 +49,6 @@
 #include <gnome.h>
 #include <gtk/gtkalignment.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-tabs.h>
 #include <liboaf/liboaf.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
@@ -775,8 +774,6 @@ nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass)
 	widget_class = GTK_WIDGET_CLASS (klass);
 	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	object_class->destroy = nautilus_summary_view_destroy;
-
-	nautilus_global_preferences_initialize ();
 }
 
 static void

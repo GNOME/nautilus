@@ -3,6 +3,7 @@ include $(top_srcdir)/Makefile.shared
 SUBDIRS = icons
 
 INCLUDES = \
+	-DDATADIR=\""$(datadir)"\" \
 	-DPREFIX=\"$(prefix)\" 					\
 	-DG_LOG_DOMAIN=\"eazel-service\"			\
 	-I$(top_srcdir)						\
@@ -35,7 +36,6 @@ libnautilusdepshared_a_SOURCES =\
 
 test_footer_header_LDADD = \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(EEL_LIBS) \
 	$(LIBRSVG_LIBS) \

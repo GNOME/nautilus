@@ -32,7 +32,6 @@ nautilus_change_password_view_SOURCES =					\
 	$(NULL)
 
 nautilus_change_password_view_LDADD =						\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\

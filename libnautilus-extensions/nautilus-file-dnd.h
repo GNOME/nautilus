@@ -28,6 +28,8 @@
 #include <eel/eel-dnd.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
+#define NAUTILUS_FILE_DND_ERASE_KEYWORD "erase"
+
 gboolean nautilus_drag_can_accept_item              (NautilusFile *drop_target_item,
 						     const char   *item_uri);
 gboolean nautilus_drag_can_accept_items             (NautilusFile *drop_target_item,

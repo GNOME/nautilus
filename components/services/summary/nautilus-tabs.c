@@ -37,7 +37,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-scalable-font.h>
-#include <libnautilus-extensions/nautilus-theme.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -102,30 +101,34 @@ static guint signals[LAST_SIGNAL];
 
 /* headers */
 
-static void     nautilus_tabs_initialize_class	(NautilusTabsClass *klass);
-static void     nautilus_tabs_initialize	(NautilusTabs      *pixmap);
-static void	nautilus_tabs_draw (GtkWidget *widget, GdkRectangle *box);
-
-static int      nautilus_tabs_expose		(GtkWidget              *widget,
-						 GdkEventExpose         *event);
-static void     nautilus_tabs_destroy		(GtkObject              *object);
-static void	nautilus_tabs_size_request	(GtkWidget *widget, GtkRequisition *requisition);
-
-static int	nautilus_tabs_hit_test		(NautilusTabs *tabs, int x, int y);
-
-static void	nautilus_tabs_load_tab_pieces	(NautilusTabs *tabs, const char *tab_piece_directory);
-static gboolean nautilus_tabs_motion_event      (GtkWidget        *tabs,
-						 GdkEventMotion   *event);
-static gboolean nautilus_tabs_press_event	(GtkWidget        *widget,
-						 GdkEventButton   *event);
-static gboolean nautilus_tabs_leave_event	(GtkWidget *tabs_widget, GdkEventCrossing *event);
-static void	nautilus_tabs_prelight_tab	(NautilusTabs *tabs, int which_tab);
-static void	nautilus_tabs_select_tab	(NautilusTabs *tabs, int which_tab);
-static void	nautilus_tabs_unload_tab_pieces (NautilusTabs *tabs);
-
-static void     draw_all_tabs		        (NautilusTabs *tabs);
-static TabItem* tab_item_find_by_name		(NautilusTabs	*tabs,
-						 const char		*name);
+static void     nautilus_tabs_initialize_class  (NautilusTabsClass *klass);
+static void     nautilus_tabs_initialize        (NautilusTabs      *pixmap);
+static void     nautilus_tabs_draw              (GtkWidget         *widget,
+						 GdkRectangle      *box);
+static int      nautilus_tabs_expose            (GtkWidget         *widget,
+						 GdkEventExpose    *event);
+static void     nautilus_tabs_destroy           (GtkObject         *object);
+static void     nautilus_tabs_size_request      (GtkWidget         *widget,
+						 GtkRequisition    *requisition);
+static int      nautilus_tabs_hit_test          (NautilusTabs      *tabs,
+						 int                x,
+						 int                y);
+static void     nautilus_tabs_load_tab_pieces   (NautilusTabs      *tabs,
+						 const char        *tab_piece_directory);
+static gboolean nautilus_tabs_motion_event      (GtkWidget         *tabs,
+						 GdkEventMotion    *event);
+static gboolean nautilus_tabs_press_event       (GtkWidget         *widget,
+						 GdkEventButton    *event);
+static gboolean nautilus_tabs_leave_event       (GtkWidget         *tabs_widget,
+						 GdkEventCrossing  *event);
+static void     nautilus_tabs_prelight_tab      (NautilusTabs      *tabs,
+						 int                which_tab);
+static void     nautilus_tabs_select_tab        (NautilusTabs      *tabs,
+						 int                which_tab);
+static void     nautilus_tabs_unload_tab_pieces (NautilusTabs      *tabs);
+static void     draw_all_tabs                   (NautilusTabs      *tabs);
+static TabItem* tab_item_find_by_name           (NautilusTabs      *tabs,
+						 const char        *name);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusTabs, nautilus_tabs, GTK_TYPE_DRAWING_AREA)
 
@@ -183,7 +186,7 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	tabs->details->tab_font = eel_scalable_font_get_default_bold_font ();
 	tabs->details->font_size = 14;
 	
-	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");
+	gray_tab_directory_path = g_strdup (DATADIR "/pixmaps/nautilus/gray_tab_pieces");
 	nautilus_tabs_load_tab_pieces (tabs, gray_tab_directory_path);
 	g_free (gray_tab_directory_path);
 		

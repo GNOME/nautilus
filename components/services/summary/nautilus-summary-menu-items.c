@@ -44,7 +44,6 @@
 #include <gnome-xml/tree.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <liboaf/liboaf.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
@@ -68,6 +67,18 @@ static void	bonobo_preferences_callback	(BonoboUIComponent		*ui,
 						 gpointer			user_data,
 						 const char			*verb);
 
+/* A tiny bit of code cut-n-pasted from nautilus-bonobo-extensions.h */
+static void
+ui_component_set_hidden (BonoboUIComponent *ui,
+			 const char *path,
+			 gboolean hidden)
+{
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
+	bonobo_ui_component_set_prop (ui, path,
+				      "hidden",
+				      hidden ? "1" : "0",
+				      NULL);
+}
 
 /* update the visibility of the menu items according to the login state */
 void
@@ -79,21 +90,21 @@ update_menu_items (NautilusSummaryView *view, gboolean logged_in)
 		(nautilus_view_get_bonobo_control 
 			(view->details->nautilus_view)); 
 
-	nautilus_bonobo_set_hidden (ui,
-				    "/commands/Register",
-				    logged_in);
+	ui_component_set_hidden (ui,
+				 "/commands/Register",
+				 logged_in);
 	
-	nautilus_bonobo_set_hidden (ui,
-				     "/commands/Login",
-				    logged_in);
+	ui_component_set_hidden (ui,
+				 "/commands/Login",
+				 logged_in);
 
-	nautilus_bonobo_set_hidden (ui,
-				    "/commands/Preferences",
-				    !logged_in);
+	ui_component_set_hidden (ui,
+				 "/commands/Preferences",
+				 !logged_in);
 	
-	nautilus_bonobo_set_hidden (ui,
-				    "/commands/Logout",
-				    !logged_in);				    				    
+	ui_component_set_hidden (ui,
+				 "/commands/Logout",
+				 !logged_in);				    				    
 }
 
 /* this routine is invoked when the view is activated to merge in our menu items */
