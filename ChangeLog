@@ -1,5 +1,12 @@
 2003-09-18  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-window-manage-views.c (begin_location_change):
+	Check for content_view != NULL before saving current location
+	the old view might have failed. Fixes bug #119407.
+	Thanks to Narayana Pattipati for discovering this.
+
+2003-09-18  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-main.c (main):
 	Call gnome_vfs_shutdown before unreffing application to
 	avoid crashes on shutdown.
