@@ -1,3 +1,11 @@
+2000-12-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	fixed bug 2390, uri-activating security hole, by following
+	Frank's recommendation, which is to not allow any parameters
+	to the launch command, which is enforced by using execlp
+	instead of system.
+	
 2000-12-11  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	Not reviewed, I have no buddies...

@@ -3323,18 +3323,19 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		performed_special_handling = TRUE;
 	} else if (nautilus_istr_has_prefix (uri, "command:")) {
 		/* don't allow command execution from remote uris to partially mitigate
-		 * the security risk of executing arbitrary commands.  We want to
-		 * further constrain this before 1.0, as expressed bug 2390 */
-		
+		 * the security risk of executing arbitrary commands. */	
 		if (!nautilus_file_is_local (file)) {
 			nautilus_error_dialog (_("Sorry, but you can't execute commands from a remote site due to security considerations."), 
 					       _("Can't execute remote links"), NULL);
 			performed_special_handling = TRUE;
 		} else {
-			/* FIXME bugzilla.eazel.com 2390: Quite a security hole here. */
-			command = g_strconcat (uri + 8, " &", NULL);
-			system (command);
-			g_free (command);
+			/* as an additional security precaution, we only execute commands without
+			 * any parameters, which is enforced by using fork/execlp instead of system
+			 */
+			if (fork () == 0) {
+				command = uri + 8;
+				execlp (command, command, NULL);
+			}
 			performed_special_handling = TRUE;
 		}
 	} else if (file_is_launchable (file)) {
