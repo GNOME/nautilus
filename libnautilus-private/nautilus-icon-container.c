@@ -109,6 +109,8 @@
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
+static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
+
 static void          compute_stretch                          (StretchState               *start,
 							       StretchState               *current);
 static NautilusIcon *get_first_selected_icon                  (NautilusIconContainer      *container);
@@ -3082,7 +3084,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusBackground *background;
-	char *text_frame_path;
 	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -3128,10 +3129,9 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 update_label_color,
 		 GTK_OBJECT (container));	
 
-	/* fetch the highlight frame */
-	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
-	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path);
-	g_free (text_frame_path);
+	/* read in theme-dependent data */
+	nautilus_icon_container_theme_changed (container);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
 	
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
@@ -3383,6 +3383,10 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
 	}
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_icon_container_theme_changed,
+					      container);
 
 	icon_free (icon);
 
@@ -4684,6 +4688,36 @@ nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_fixed_size = is_fixed_size;
+}
+
+/* handle theme changes */
+
+static void
+nautilus_icon_container_theme_changed (gpointer user_data)
+{
+	NautilusIconContainer *container;
+	char *text_frame_path, *highlight_color_str;
+
+	container = NAUTILUS_ICON_CONTAINER (user_data);
+	
+	/* load the highlight frame */		
+	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
+	if (container->details->highlight_frame) {
+		gdk_pixbuf_unref (container->details->highlight_frame);
+	}
+	
+	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path);
+	g_free (text_frame_path);
+
+	/* load the highlight color */	
+	highlight_color_str = nautilus_theme_get_theme_data ("directory", "HIGHLIGHT_COLOR_RGBA");
+	
+	if (highlight_color_str == NULL) {
+			container->details->highlight_color = 0x00000066;
+		} else {
+			container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
+			g_free (highlight_color_str);
+		}
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

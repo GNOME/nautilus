@@ -1622,6 +1622,47 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	g_free (combined_text);
 }
 
+/* clear the corners of the selection pixbuf by copying the corners of the passed-in pixbuf */
+static void
+clear_rounded_corners (GdkPixbuf *destination_pixbuf, GdkPixbuf *corner_pixbuf, int corner_size)
+{
+	int dest_width, dest_height, src_width, src_height;
+		
+	dest_width = gdk_pixbuf_get_width (destination_pixbuf);
+	dest_height = gdk_pixbuf_get_height (destination_pixbuf);
+	
+	src_width = gdk_pixbuf_get_width (corner_pixbuf);
+	src_height = gdk_pixbuf_get_height (corner_pixbuf);
+	
+	/* draw top left corner */
+	gdk_pixbuf_copy_area (corner_pixbuf,
+				0, 0,
+				corner_size, corner_size,
+				destination_pixbuf,
+				0, 0);
+	
+	/* draw top right corner */
+	gdk_pixbuf_copy_area (corner_pixbuf,
+				src_width - corner_size, 0,
+				corner_size, corner_size,
+				destination_pixbuf,
+				dest_width - corner_size, 0);
+
+	/* draw bottom left corner */
+	gdk_pixbuf_copy_area (corner_pixbuf,
+				0, src_height - corner_size,
+				corner_size, corner_size,
+				destination_pixbuf,
+				0, dest_height - corner_size);
+	
+	/* draw bottom right corner */
+	gdk_pixbuf_copy_area (corner_pixbuf,
+				src_width - corner_size, src_height - corner_size,
+				corner_size, corner_size,
+				destination_pixbuf,
+				dest_width - corner_size, dest_height - corner_size);
+}
+
 static void
 draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
 {
@@ -1658,20 +1699,20 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	/* Set up the background. */
 	needs_highlight = icon_item->details->is_highlighted_for_selection
 		|| icon_item->details->is_highlighted_for_drop;
+
+	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+				TRUE,
+				8,
+				icon_item->details->text_width,
+				icon_item->details->text_height);
 	
 	if (needs_highlight) {
-		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);
-
-		text_pixbuf = nautilus_stretch_frame_image (container->details->highlight_frame, 9, 8, 9, 8,
-							    icon_item->details->text_width,
-							    icon_item->details->text_height, TRUE);		
+		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);	
+		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+							       container->details->highlight_color);
+		clear_rounded_corners (text_pixbuf, container->details->highlight_frame, 5);
+		
 	} else {
-		text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-				      TRUE,
-				      8,
-				      icon_item->details->text_width,
-				      icon_item->details->text_height);
-
 		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
 							       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
 	}

@@ -1,3 +1,24 @@
+2000-10-26  Andy Hertzfeld  <`andy@eazel.com>
+
+	worked on bug 3898, selection in the aa icon view is too slow.
+	Fixed by using a fill to make the selection pixbuf with some tiny
+	blits for the rounded corners, instead of stretching a pixbuf.
+	Also, made the selection color themable in the process.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(clear_rounded_corners), (draw_label_text_aa):
+	make the selection pixbuf with a fill and then some
+	blits for the corner.
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize), (icon_destroy),
+	(nautilus_icon_container_set_is_fixed_size),
+	(nautilus_icon_container_theme_changed):
+	made it read the selection color from the current theme
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added a field to keep the selection color w/alpha.
+	* icons/default.xml:
+	added semi-transparent gray selection color to default theme.
+	
 2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-buffered-widget.c:
