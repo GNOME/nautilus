@@ -1,3 +1,12 @@
+2000-10-19  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (nautilus_summary_view_load_uri),
+	(bonobo_login_callback):
+
+	Fixing login menu callback and adding logic to only display login
+	dialog when no user is logged in.
+
 2000-10-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed some cases where the error message for why a

@@ -217,9 +217,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	UpdateNewsData		*update_news_node;
 	GList			*iterator;
 	GtkWidget		*temp_scrolled_window;
-	gboolean		got_url_table;
 	GtkWidget 		*viewport;
-	char			*url;
 	GtkWidget		*temp_hbox;
 	GtkWidget		*temp_vbox;
 	GtkWidget		*temp_label;
@@ -227,52 +225,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
-
-	url = NULL;
-
-	view->details->logged_in = am_i_logged_in (view);
-
-	if (view->details->logged_in) {
-		/* fetch urls */
-		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
-		if (!got_url_table) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
-		}
-		/* fetch and parse the xml file */
-		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-		if (!url) {
-			g_assert ("Failed to get summary xml home !\n");
-		}
-		view->details->xml_data = parse_summary_xml_file (url);
-		g_free (url);
-		if (view->details->xml_data == NULL) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
-		}
-
-	}
-	else {
-
-		/* fetch urls */
-		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
-		if (!got_url_table) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
-		}
-
-		/* fetch and parse the xml file */
-		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-		if (!url) {
-			g_assert ("Failed to get summary xml home !\n");
-		}
-		view->details->xml_data = parse_summary_xml_file (url);
-		g_free (url);
-		if (view->details->xml_data == NULL) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
-		}
-	}
 
 	if (view->details->form != NULL) {
 		gtk_container_remove (GTK_CONTAINER (view), view->details->form);
@@ -1251,12 +1203,66 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 			        const char		*uri)
 {
 
+	char		*url;
+	gboolean	got_url_table;
+
+	got_url_table = FALSE;
+	url = NULL;
+
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
 
+	/* get xml data and verify network connections */
+	view->details->logged_in = am_i_logged_in (view);
+
+	if (view->details->logged_in) {
+		/* fetch urls */
+		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
+		if (!got_url_table) {
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
+		}
+		/* fetch and parse the xml file */
+		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+		if (!url) {
+			g_assert ("Failed to get summary xml home !\n");
+		}
+		view->details->xml_data = parse_summary_xml_file (url);
+		g_free (url);
+		if (view->details->xml_data == NULL) {
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
+		}
+
+	}
+	else {
+
+		/* fetch urls */
+		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
+		if (!got_url_table) {
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
+		}
+
+		/* fetch and parse the xml file */
+		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+		if (!url) {
+			g_assert ("Failed to get summary xml home !\n");
+		}
+		view->details->xml_data = parse_summary_xml_file (url);
+		g_free (url);
+		if (view->details->xml_data == NULL) {
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
+		}
+	}
+
 	generate_summary_form (view);
-	generate_login_dialog (view);
+
+	if (!view->details->logged_in) {
+		generate_login_dialog (view);
+	}
 
 }
 
@@ -1291,7 +1297,7 @@ bonobo_login_callback (BonoboUIComponent *ui, gpointer user_data, const char *ve
 	NautilusSummaryView *view;
 	
 	view = NAUTILUS_SUMMARY_VIEW (user_data);
-	login_button_cb (NULL, view);
+	generate_login_dialog (view);
 }
 
 static void
