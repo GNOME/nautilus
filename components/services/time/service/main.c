@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	trilobite_init ("trilobite-eazel-time-service-factory", "0.1", NULL, argc, argv);
+	trilobite_init ("trilobite-eazel-time-service-factory", "0.1", NULL, NULL, argc, argv);
 
 	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
 						    trilobite_eazel_time_service_factory,

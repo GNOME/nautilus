@@ -50,10 +50,11 @@ int trilobite_pexec (const char *path,
    It trims down on the amount of random code and libs the
    bootstrap installer needs to link against */
 #ifndef TRILOBITE_SLIM 
-gboolean trilobite_init (const char *service_name, 
-			 const char *version_name, 
+gboolean trilobite_init (const char *service_name,
+			 const char *version_name,
 			 const char *log_filename,
-			 int argc, 
+			 const struct poptOption *options,
+			 int argc,
 			 char **argv);
 poptContext trilobite_get_popt_context (void);
 void trilobite_main (void);

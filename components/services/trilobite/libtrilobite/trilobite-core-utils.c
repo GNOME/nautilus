@@ -170,20 +170,23 @@ trilobite_get_popt_context (void)
  */
 gboolean
 trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
-		int argc, char **argv)
+		const struct poptOption *options, int argc, char **argv)
 {
 	CORBA_ORB orb;
 	FILE *logf;
 	char *real_log_filename;
+	const struct poptOption *pass_options;
+
+	pass_options = (options != NULL) ? options : oaf_popt_options;
 
 #ifdef TRILOBITE_USE_X
-	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
+	gnome_init_with_popt_table (service_name, version_name, argc, argv, pass_options, 0, NULL);
 	trilobite_popt = NULL;
 #else
 	gtk_type_init ();
 	gtk_signal_init ();
 	gnomelib_init (service_name, version_name);
-	gnomelib_register_popt_table (oaf_popt_options, service_name);
+	gnomelib_register_popt_table (pass_options, service_name);
 	trilobite_popt = gnomelib_parse_args (argc, argv, 0);
 #endif
 	orb = oaf_init (argc, argv);

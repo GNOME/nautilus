@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv)) {
+	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", NULL, argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}

@@ -1,3 +1,19 @@
+2001-01-02  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (main):
+	* components/services/install/server/main.c: (main):
+	* components/services/time/service/main.c: (main):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_init):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	* components/services/trilobite/sample/service/main.c: (main):
+
+	Add a parameter to trilobite_init to allow a service to pass its
+	own popt options along (needed for the command-line installer).
+
 2001-01-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:
@@ -12,7 +28,7 @@
 	(draw_pixbuf_aa):
 	improved performance by using nautilus_gnome_canvas_draw_pixbuf
 	to draw on the aa canvas instead of libart.
-	
+
 2001-01-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

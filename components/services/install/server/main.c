@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 	signal (SIGSEGV, &sig_segv_handler);
 
 	if (!trilobite_init ("trilobite-eazel-install-service", "0.1", "~/.nautilus/trilobite-install.log",
-			     argc, argv)) {
+			     NULL, argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}

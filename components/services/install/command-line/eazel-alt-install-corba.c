@@ -673,14 +673,14 @@ int main(int argc, char *argv[]) {
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
 	   X call, yech */
-#if 1
+#if 0
 	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
 	orb = oaf_init (argc, argv);
 	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");
 	}
 #else
-	trilobite_init ("Eazel Install", "1.0", NULL, argc, argv);
+	trilobite_init ("Eazel Install", "1.0", NULL, options, argc, argv);
 	ctxt = trilobite_get_popt_context ();
 #endif
 
@@ -697,10 +697,10 @@ int main(int argc, char *argv[]) {
 		category->name = g_strdup ("files from commandline");
 		category->packages = packages;
 		categories = g_list_prepend (NULL, category);		
-	} 
+	}
 
 	bonobo_activate ();
-	
+
 	cb = eazel_install_callback_new ();
 	problem = eazel_install_problem_new (); 
 	gtk_object_ref (GTK_OBJECT (problem));
