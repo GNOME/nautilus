@@ -4,16 +4,23 @@
 <oaf_attribute name="repo_ids" type="stringv">
 <item value="IDL:GNOME/GenericFactory:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Services startup view factory"/>
 <oaf_attribute name="description" type="string" value="Nautilus services startup view factory"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82" type="factory" location="OAFIID:nautilus_service_startup_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c">
 <oaf_attribute name="repo_ids" type="stringv">
-<item value="IDL:GNOME/Control:1.0"/>
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
 <item value="IDL:Nautilus/ContentView:1.0"/>
 <item value="IDL:Nautilus/View:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Services startup view"/>
 <oaf_attribute name="description" type="string" value="Nautilus services startup view component"/>
+<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+<item value="eazel"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Service"/>
 </oaf_server>
 
 </oaf_info>

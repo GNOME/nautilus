@@ -6,6 +6,7 @@
 <item value="IDL:Nautilus/Application:1.0"/>
 <item value="IDL:Bonobo/Unknown:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus application"/>
 <oaf_attribute name="description" type="string" value="File manager component's factory"/>
 </oaf_server>
 
@@ -16,7 +17,13 @@
 <item value="IDL:Nautilus/ContentView:1.0"/>
 <item value="IDL:Nautilus/View:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="File manager icon view"/>
 <oaf_attribute name="description" type="string" value="File manager component that shows a two-dimensional icon space"/>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="special/directory"/>
+<item value="special/webdav-directory"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Icons"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c" type="factory" location="OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
@@ -26,7 +33,13 @@
 <item value="IDL:Nautilus/ContentView:1.0"/>
 <item value="IDL:Nautilus/View:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="File manager list view"/>
 <oaf_attribute name="description" type="string" value="File manager component that shows a scrollable list"/>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="special/directory"/>
+<item value="special/webdav-directory"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:ntl_window:88e8b2e4-b627-4221-b566-5ba32185c88d" type="factory" location="OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
@@ -34,6 +47,7 @@
 <item value="IDL:Nautilus/ViewWindow:1.0"/>
 <item value="IDL:Bonobo/Unknown:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus window"/>
 <oaf_attribute name="description" type="string" value="Nautilus window"/>
 </oaf_server>
 

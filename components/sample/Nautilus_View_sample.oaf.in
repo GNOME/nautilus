@@ -4,6 +4,7 @@
 <oaf_attribute name="repo_ids" type="stringv">
 <item value="IDL:GNOME/GenericFactory:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Sample view factory"/>
 <oaf_attribute name="description" type="string" value="Sample content view component's factory"/>
 </oaf_server>
 
@@ -14,7 +15,12 @@
 <item value="IDL:Nautilus/ContentView:1.0"/>
 <item value="IDL:Nautilus/View:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Sample view"/>
 <oaf_attribute name="description" type="string" value="Sample content view component"/>
+<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+<item value="*"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Sample"/>
 </oaf_server>
 
 </oaf_info>

@@ -4,6 +4,7 @@
 <oaf_attribute name="repo_ids" type="stringv">
 <item value="IDL:GNOME/GenericFactory:1.0"/>
 </oaf_attribute>
+<oaf_attribute name="name" type="string" value="Music view factory"/>
 <oaf_attribute name="description" type="string" value="Factory for music view"/>
 </oaf_server>
 
@@ -14,7 +15,16 @@
 <item value="IDL:Nautilus/ContentView:1.0"/>
 <item value="IDL:Nautilus/View:1.0"/>
 </oaf_attribute>
-<oaf_attribute name="description" type="string" value="music view"/>
+<oaf_attribute name="name" type="string" value="Music view"/>
+<oaf_attribute name="description" type="string" value="Music view"/>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="special/directory"/>
+<item value="special/webdav-directory"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:required_directory_content_mime_types" type="stringv">
+<item value="audio/x-mpeg"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Music"/>
 </oaf_server>
 
 </oaf_info>
