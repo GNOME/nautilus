@@ -126,6 +126,15 @@ static void                  update_user_level_menu_items                   (Nau
 static char *                get_customize_user_level_string                (void);
 static void		     update_preferences_dialog_title		    (void);
 
+static const char * normal_menu_titles[] = {
+	NAUTILUS_MENU_PATH_FILE_MENU,
+	NAUTILUS_MENU_PATH_EDIT_MENU,
+	NAUTILUS_MENU_PATH_VIEW_MENU,
+	NAUTILUS_MENU_PATH_GO_MENU,
+	NAUTILUS_MENU_PATH_BOOKMARKS_MENU,
+	NAUTILUS_MENU_PATH_HELP_MENU
+};
+
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
         NautilusBookmark *bookmark;
@@ -1051,6 +1060,69 @@ refresh_all_bookmarks (NautilusWindow *window)
 	append_dynamic_bookmarks (window);
 }
 
+static char *
+get_menu_title (const char *path)
+{
+	if (strcmp (path, NAUTILUS_MENU_PATH_FILE_MENU) == 0) {
+		return g_strdup (_("_File"));
+	}
+
+	if (strcmp (path, NAUTILUS_MENU_PATH_EDIT_MENU) == 0) {
+		return g_strdup (_("_Edit"));
+	}
+
+	if (strcmp (path, NAUTILUS_MENU_PATH_VIEW_MENU) == 0) {
+		return g_strdup (_("_View"));
+	}
+
+	if (strcmp (path, NAUTILUS_MENU_PATH_GO_MENU) == 0) {
+		return g_strdup (_("_Go"));
+	}
+
+	if (strcmp (path, NAUTILUS_MENU_PATH_BOOKMARKS_MENU) == 0) {
+		return g_strdup (_("_Bookmarks"));
+	}
+
+	if (strcmp (path, NAUTILUS_MENU_PATH_HELP_MENU) == 0) {
+		return g_strdup (_("_Help"));
+	}
+
+	g_assert_not_reached ();
+
+	return NULL;
+}
+
+
+static void
+remove_underline_accelerator_from_menu_title (NautilusWindow *window, 
+					      const char *menu_path)
+{
+	char *old_label;
+	char *new_label;
+
+	old_label = bonobo_ui_handler_menu_get_label (window->ui_handler, menu_path);
+	new_label = nautilus_str_strip_chr (old_label, '_');
+	bonobo_ui_handler_menu_set_label (window->ui_handler, menu_path, new_label);
+
+	g_free (old_label);
+	g_free (new_label);
+}					      
+
+/**
+ * nautilus_window_disable_keyboard_navigation_for_menus
+ * 
+ * Prevents alt-key shortcuts from pulling down menus.
+ */
+void
+nautilus_window_disable_keyboard_navigation_for_menus (NautilusWindow *window)
+{
+	int index;
+
+	for (index = 0; index < NAUTILUS_N_ELEMENTS (normal_menu_titles); ++index) {
+		remove_underline_accelerator_from_menu_title (window, normal_menu_titles[index]);
+	}
+}
+
 /**
  * nautilus_window_initialize_bookmarks_menu
  * 
@@ -1108,9 +1180,12 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 
 static void
 new_top_level_menu (NautilusWindow *window, 
-		    const char *menu_path,
-		    const char *title)
+		    const char *menu_path)
 {
+	char *title;
+
+	title = get_menu_title (menu_path);
+
 	/* Note that we don't bother with hints for menu titles.
 	 * We can revisit this anytime if someone thinks they're useful.
 	 */
@@ -1123,6 +1198,7 @@ new_top_level_menu (NautilusWindow *window,
 					    NULL,
 					    0,
 					    0);
+	g_free (title);
 }				    
 
 /*( handler to receive the user_level_changed signal, so we can update the menu and dialog
@@ -1146,6 +1222,16 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 	}
 }
 
+static void
+nautilus_window_create_top_level_menus (NautilusWindow *window)
+{
+	int index;
+
+	for (index = 0; index < NAUTILUS_N_ELEMENTS (normal_menu_titles); ++index) {
+		new_top_level_menu (window, normal_menu_titles[index]);
+	}
+}
+
 /**
  * nautilus_window_initialize_menus
  * 
@@ -1163,9 +1249,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         g_assert (ui_handler != NULL);
         
         bonobo_ui_handler_create_menubar (ui_handler);
+	nautilus_window_create_top_level_menus (window);
 
 	/* File menu */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_FILE_MENU, _("_File"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM,
@@ -1237,7 +1323,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER);
 
 	/* Edit menu */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_EDIT_MENU, _("_Edit"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_UNDO_ITEM,
@@ -1345,7 +1430,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         append_placeholder (window, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER);
 
         /* View menu */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_VIEW_MENU, _("_View"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_RELOAD_ITEM,
@@ -1449,7 +1533,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         
 
 	/* Go menu */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_GO_MENU, _("_Go"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_BACK_ITEM,
@@ -1515,7 +1598,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         
 	/* Bookmarks */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_BOOKMARKS_MENU, _("_Bookmarks"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM,
@@ -1544,7 +1626,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	append_placeholder (window, NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);			 
 
 	/* Help */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_HELP_MENU, _("_Help"));
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_ABOUT_ITEM,

@@ -1,3 +1,35 @@
+2000-08-31  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2327 (Alt-key shortcuts to navigate menus shouldn't
+	work on Desktop). Control-key shortcuts to invoke items directly
+	still work. I had to fix a Bonobo bug to make this work, so
+	until you get a new Bonobo this won't work for you (but it will
+	still compile and run and all).
+
+	* src/nautilus-window.h:
+	Prototype for nautilus_window_disable_keyboard_navigation_for_menus.
+	
+	* src/nautilus-window-menus.c: Added normal_menu_titles, a static
+	array of menu paths used for iterating across all the textual
+	menu titles.
+	(get_menu_title): New function, returns menu title given path.
+	(remove_underline_accelerator_from_menu_title): New function,
+	resets the label of a menu to be the same, but without the underline.
+	(nautilus_window_disable_keyboard_navigation_for_menus): New function,
+	iterates through normal_menu_titles calling remove_underline_... 
+	on each.
+	(new_top_level_menu): Now computes title from path using get_menu_title
+	instead of taking title as parameter.
+	(nautilus_window_create_top_level_menus): New function, creates all
+	the top-level menus (other than weird user level one) by iterating
+	across normal_menu_titles.
+	(nautilus_window_initialize_menus): Now calls _create_top_level_menus
+	instead of creating each one at a time.
+
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	Now calls nautilus_window_disable_keyboard_navigation_for_menus
+	just after creating the NautilusWindow.
+
 2000-08-31  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-about.c: (nautilus_about_initialize),
