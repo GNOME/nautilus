@@ -179,6 +179,7 @@ static char *manpath[MAX_MAN_PATHS + 1] = {
 				 * setting.
 				 */
 		    "/usr/X11/man/",
+		    "/usr/X11R6/man/"
 		    "/usr/man/",
 		    "/usr/local/man/",
 		    "/usr/exp/man/",
@@ -3896,7 +3897,7 @@ void main(int argc, char **argv)
 
     if (*t == '/') {
       for (i = 1; manpath[i]; i++) {
-	if (strncmp(manpath[i], t, strlen(manpath[i])) == 0) {
+        if (strncmp(manpath[i], t, strlen (manpath [i])) == 0) {
 	  break;
 	}
       }
