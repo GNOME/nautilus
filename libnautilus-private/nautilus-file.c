@@ -3257,15 +3257,28 @@ get_user_name_from_id (uid_t uid)
 static char *
 get_real_name (struct passwd *user)
 {
-	char *part_before_comma, *capitalized_login_name, *real_name;
+	char *locale_string, *part_before_comma, *capitalized_login_name, *real_name;
 
 	if (user->pw_gecos == NULL) {
 		return NULL;
 	}
 
-	part_before_comma = eel_str_strip_substring_and_after (user->pw_gecos, ",");
+	locale_string = eel_str_strip_substring_and_after (user->pw_gecos, ",");
+	if (!g_utf8_validate (locale_string, -1, NULL)) {
+		part_before_comma = g_locale_to_utf8 (locale_string, -1, NULL, NULL, NULL);
+		g_free (locale_string);
+	} else {
+		part_before_comma = locale_string;
+	}
 
-	capitalized_login_name = eel_str_capitalize (user->pw_name);
+	if (!g_utf8_validate (user->pw_name, -1, NULL)) {
+		locale_string = g_locale_to_utf8 (user->pw_name, -1, NULL, NULL, NULL);
+	} else {
+		locale_string = g_strdup (user->pw_name);
+	}
+	
+	capitalized_login_name = eel_str_capitalize (locale_string);
+	g_free (locale_string);
 
 	if (capitalized_login_name == NULL) {
 		real_name = part_before_comma;
