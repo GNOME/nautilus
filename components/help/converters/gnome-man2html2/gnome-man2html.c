@@ -3640,7 +3640,15 @@ static char *search_manpath(char *name)
         }
 	strmaxcpy(smfbuf, manpath[i], LARGE_STR_MAX);
 	strmaxcat(smfbuf, name, LARGE_STR_MAX);
-	if (stat(smfbuf, &stbuf) !=-1) return smfbuf;
+	if (stat(smfbuf, &stbuf) !=-1) {
+		return smfbuf;
+	} else {
+		strmaxcpy(smfbuf, manpath[i], LARGE_STR_MAX);
+		strmaxcat(smfbuf, name, LARGE_STR_MAX);
+		strmaxcat(smfbuf, ".gz", LARGE_STR_MAX);
+		if (stat(smfbuf, &stbuf) !=-1)
+			return smfbuf;
+	}
     }
     return NULL;
 }
