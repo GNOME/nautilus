@@ -1,3 +1,48 @@
+2000-06-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 173 (UI for reverting directory view background 
+	to default). Added "Reset Background" to Settings and 
+	context menu.
+
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_is_set), (nautilus_background_reset):
+	New functions for checking whether the background has
+	been set, and for resetting it to the uncustomized state.
+	
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(background_changed_callback), (directory_changed_callback):
+	Changed default metadata value from white to NULL.
+	
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class), (reset_background_callback),
+	(fm_directory_view_get_background_widget),
+	(fm_directory_view_get_background), (compute_menu_item_info),
+	(append_gtk_menu_item_with_view), (append_selection_menu_subtree),
+	(fm_directory_view_real_create_background_context_menu_items),
+	(create_open_with_gtk_menu),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(insert_bonobo_menu_item), (insert_bonobo_menu_subtree),
+	(reset_bonobo_trash_delete_menu), (reset_bonobo_open_with_menu),
+	(fm_directory_view_real_merge_menus), (update_one_menu_item),
+	(fm_directory_view_real_update_menus): Put "Reset Background"
+	menu item in Settings menu and context menu; keep its
+	sensitivity synched with background state.
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_background_widget): New function to let
+	superclass get at the NautilusBackground.
+	(fm_icon_view_initialize_class): Wire up new function.
+	(fm_icon_view_initialize), (create_icon_container): Remove
+	unused return value for create_icon_container.
+	
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_get_background_widget): New function to let
+	superclass get at the NautilusBackground.
+	(fm_list_view_initialize_class): Wire up new function.
+	(create_list): Remove unused return value.
+
 2000-06-14  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* nautilus.spec.in: Added multiple Requires: because we can't rely on other packages
