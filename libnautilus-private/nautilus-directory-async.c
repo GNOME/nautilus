@@ -2432,7 +2432,7 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Record either a failure or success. */
 	if (result != GNOME_VFS_ERROR_EOF) {
-		file->details->directory_count_failed = TRUE;
+		file->details->mime_list_failed = TRUE;
 		nautilus_g_list_free_deep (file->details->mime_list);
 		file->details->mime_list = NULL;
 		file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
