@@ -549,7 +549,9 @@ xml_parse_document (gchar *filename)
 	 * modified so as not to spew debug warnings all around */
 	xmlDocPtr ret;
 	xmlParserCtxtPtr ctxt;
-	gchar *directory = NULL;
+	char *directory;
+
+	directory = NULL;
 
 	ctxt = xmlCreateFileParserCtxt(filename);
 	if (ctxt == NULL) {
