@@ -1,3 +1,21 @@
+2001-01-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5427, Right-click menu for disk should include
+	a way to unmount it.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(unmount_volume_callback), (volume_link_is_selection),
+	(real_update_menus), (real_merge_menus):
+	Add a context sensitive menu to Nautilus volume links
+	which allows the volume it represents to be unmounted.
+	Only allow this if the volume is removable. Currently
+	only removable volumes are shown on the desktop.
+	
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	Add command path for new unmount volume command
+	
 2001-01-10  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Harper

@@ -65,7 +65,8 @@
 static const char untranslated_trash_link_name[] = N_("Trash");
 #define TRASH_LINK_NAME _(untranslated_trash_link_name)
 
-#define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL	"/commands/Empty Trash Conditional"
+#define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL		"/commands/Empty Trash Conditional"
+#define DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL	"/commands/Unmount Volume Conditional"
 
 #define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
 
@@ -118,6 +119,8 @@ static void     real_update_menus                                 (FMDirectoryVi
 static gboolean real_supports_zooming                             (FMDirectoryView        *view);
 static void     update_disks_menu                                 (FMDesktopIconView      *view);
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
+static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
@@ -418,6 +421,43 @@ reset_background_callback (BonoboUIComponent *component,
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
 
+static void
+unmount_volume_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+{
+        FMDirectoryView *view;
+	NautilusFile *file;
+	char *uri, *path, *mount_uri, *mount_path;
+	GList *selection;
+			    
+        g_assert (FM_IS_DIRECTORY_VIEW (data));
+        
+        view = FM_DIRECTORY_VIEW (data);
+        
+       if (!volume_link_is_selection (view)) {
+		return;       
+       }
+              
+	selection = fm_directory_view_get_selection (view);
+
+	file = NAUTILUS_FILE (selection->data);
+	uri = nautilus_file_get_uri (file);
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path != NULL) {
+		mount_uri = nautilus_link_local_get_link_uri (path);
+		mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
+		if (mount_path != NULL) {
+			nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (), mount_path, FALSE);
+		}
+		
+		g_free (mount_path);
+		g_free (mount_uri);
+		g_free (path);
+	}
+	g_free (uri);
+
+	nautilus_file_list_free (selection);
+}
+
 static gboolean
 trash_link_is_selection (FMDirectoryView *view)
 {
@@ -437,6 +477,36 @@ trash_link_is_selection (FMDirectoryView *view)
 		 */
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		if (path != NULL && nautilus_link_local_is_trash_link (path)) {
+			result = TRUE;
+		}
+		g_free (path);
+		g_free (uri);
+	}
+	
+	nautilus_file_list_free (selection);
+
+	return result;
+}
+
+static gboolean
+volume_link_is_selection (FMDirectoryView *view)
+{
+	GList *selection;
+	gboolean result;
+	char *uri, *path;
+
+	result = FALSE;
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (nautilus_g_list_exactly_one_item (selection)
+	    && nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
+		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+		/* It's probably OK that this only works for local
+		 * items, since the volume we care about is on the desktop.
+		 */
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL && nautilus_link_local_is_volume_link (path)) {
 			result = TRUE;
 		}
 		g_free (path);
@@ -967,7 +1037,7 @@ real_update_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
 	char *label;
-	gboolean include_empty_trash;
+	gboolean include_empty_trash, include_unmount_volume;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -1010,6 +1080,24 @@ real_update_menus (FMDirectoryView *view)
 		g_free (label);
 	}
 
+	/* Unmount Volume */
+	include_unmount_volume = volume_link_is_selection (view);
+	nautilus_bonobo_set_hidden
+		(desktop_view->details->ui,
+		 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+		 !include_unmount_volume);
+	if (include_unmount_volume) {
+		label = g_strdup (_("Unmount Volume"));
+		nautilus_bonobo_set_label
+			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+			 label);
+		nautilus_bonobo_set_sensitive 
+			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
+		g_free (label);
+	}
+
 	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
 
@@ -1022,6 +1110,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
+		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
 		BONOBO_UI_VERB_END
 	};
 
