@@ -873,6 +873,11 @@ update_layout_menus (FMIconView *view)
 			(ui_handler, MENU_PATH_TIGHTER_LAYOUT, fm_icon_view_using_tighter_layout (view));	
 				
 #endif
+		nautilus_bonobo_set_toggle_state 
+			(view->details->ui, MENU_PATH_TIGHTER_LAYOUT, fm_icon_view_using_tighter_layout (view));
+
+		nautilus_bonobo_set_toggle_state 
+			(view->details->ui, MENU_PATH_SORT_REVERSED, view->details->sort_reversed);
 
 		/* Sort order isn't relevant for manual layout. */
 		nautilus_bonobo_set_sensitive
@@ -1557,7 +1562,9 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 
 	bonobo_ui_component_add_verb_list_with_data (icon_view->details->ui, verbs, view);
 
+
         selection = fm_directory_view_get_selection (view);
+
 
 #ifdef UIH
 

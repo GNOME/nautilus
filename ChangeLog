@@ -1,3 +1,15 @@
+2000-10-10  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 3530, to make reverse sort and
+	tighter layout show state
+
+	* src/file-manager/fm-icon-view.c: (update_layout_menus),
+	Added toggle function to update bonobo state when the
+	tighter layout and reverse sort menu items are selected
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Added a type=toggle parameter to the layout and reverse
+	sort order menu items
+	
+
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3587 ("Close All Windows" doesn't work)
