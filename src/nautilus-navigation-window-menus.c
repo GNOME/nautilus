@@ -116,12 +116,10 @@ static void                  add_bookmark_for_current_location             (Naut
 /* User level things */
 static guint                 convert_verb_to_user_level                    (const char       *verb);
 static const char *          convert_user_level_to_path                    (guint             user_level);
-static void                  update_user_level_menu_items                  (NautilusWindow   *window);
 static void                  switch_to_user_level                          (NautilusWindow   *window,
 									    int               new_user_level);
 
 
-#define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
 #define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
 #define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
@@ -678,7 +676,6 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 {
 	char *old_user_level_icon_name;
 	int old_user_level;
-	char *new_user_level_icon_name;
 	char *new_user_level_icon_name_selected;
 
 	if (window->details->shell_ui == NULL) {
@@ -709,15 +706,6 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 				  new_user_level_icon_name_selected);
 	g_free (new_user_level_icon_name_selected);
 	
-
-	/* set up the menu title image to reflect the new user level */
-	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
-	/* the line below is disabled because of a bug in bonobo. */
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  NAUTILUS_MENU_PATH_USER_LEVEL,
-				  new_user_level_icon_name);
-	g_free (new_user_level_icon_name);
-
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	nautilus_window_ui_thaw (window);
@@ -1151,17 +1139,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 					       GTK_OBJECT (window));
 }
 
-/* handler to receive the user_level_changed signal, so we can update the menu and dialog
-   when the user level changes */
-static void
-user_level_changed_callback (gpointer callback_data)
-{
-	g_return_if_fail (callback_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
-
-	update_user_level_menu_items (NAUTILUS_WINDOW (callback_data));
-}
-
 static void
 add_user_level_menu_item (NautilusWindow *window, 
 			  const char *menu_path, 
@@ -1275,14 +1252,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
 				  NAUTILUS_USER_LEVEL_ADVANCED);
-	update_user_level_menu_items (window);				  
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-
-	/* Monitor user level changes so that we can update the user level menu pane */
-	nautilus_preferences_add_callback_while_alive ("user_level",
-						       user_level_changed_callback,
-						       window,
-						       GTK_OBJECT (window));
 
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
@@ -1472,29 +1442,6 @@ schedule_refresh_go_menu (NautilusWindow *window)
                         = gtk_idle_add (refresh_go_menu_idle_callback,
                                         window);
 	}	
-}
-
-static void
-update_user_level_menu_items (NautilusWindow *window)
-{
-	int user_level;
-	char *user_level_icon_name;
-	
-        g_assert (window != NULL);
-        g_assert (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_ui_freeze (window);
-
- 	/* Update the user radio group to reflect reality */
-	user_level = nautilus_preferences_get_user_level ();
-	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
-
-	nautilus_bonobo_set_icon (window->details->shell_ui,
-				  NAUTILUS_MENU_PATH_USER_LEVEL,
-				  user_level_icon_name);
-	g_free (user_level_icon_name);
-
-	nautilus_window_ui_thaw (window);
 }
 
 

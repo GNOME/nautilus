@@ -232,6 +232,29 @@
 			  verb="Report Profiling"/>
 	</submenu>
 
+	<submenu name="Preferences" _label="_Preferences">
+
+		<placeholder name="User Levels Placeholder" delimit="none">
+			<menuitem name="Switch to Beginner Level" 
+				  _label=" _Beginner"
+				  _tip="Use preferences appropriate for beginners"
+                                  verb="" pixtype="filename"/>
+			<menuitem name="Switch to Intermediate Level" 
+				  _label=" _Intermediate" 
+				  _tip="Use preferences appropriate for most people"
+                                  verb="" pixtype="filename"/>
+			<menuitem name="Switch to Advanced Level" 
+				  _label=" _Advanced" 
+				  _tip="Use preferences appropriate for experts"
+                                  verb="" pixtype="filename"/>
+		</placeholder>
+		<separator/>
+		<menuitem name="User Level Customization" 
+			  _label="_Edit Preferences..." 
+			  _tip="Edit various Nautilus preferences"
+			  verb="User Level Customization"/>
+	</submenu>
+
 	<submenu name="Help" _label="_Help">
 		<menuitem name="Nautilus Manual" 
 			  _label="Nautilus User _Manual" 
@@ -259,30 +282,6 @@
 			  _label="_About Nautilus..." 
 			  _tip="Display credits for the creators of Nautilus"
 			  verb="About Nautilus"/>
-	</submenu>
-
-
-	<submenu name="Preferences" _label="_Preferences" pixtype="filename">
-
-		<placeholder name="User Levels Placeholder" delimit="none">
-			<menuitem name="Switch to Beginner Level" 
-				  _label=" _Beginner"
-				  _tip="Use preferences appropriate for beginners"
-                                  verb="" pixtype="filename"/>
-			<menuitem name="Switch to Intermediate Level" 
-				  _label=" _Intermediate" 
-				  _tip="Use preferences appropriate for most people"
-                                  verb="" pixtype="filename"/>
-			<menuitem name="Switch to Advanced Level" 
-				  _label=" _Advanced" 
-				  _tip="Use preferences appropriate for experts"
-                                  verb="" pixtype="filename"/>
-		</placeholder>
-		<separator/>
-		<menuitem name="User Level Customization" 
-			  _label="_Edit Preferences..." 
-			  _tip="Edit various Nautilus preferences"
-			  verb="User Level Customization"/>
 	</submenu>
 </menu>
 

@@ -1,5 +1,23 @@
 2001-03-23  John Sullivan  <sullivan@eazel.com>
 
+	At Andy and Arlo's request, removed the icon from the
+	Preferences menu and moved the Help menu after it. Andy
+	is investigating another way for the current user level
+	symbol to appear onscreen somewhere.
+
+	* src/nautilus-shell-ui.xml: Moved Preferences submenu
+	before Help; removed 'pixtype="filename"'
+	
+	* src/nautilus-window-menus.c: 
+	(switch_to_user_level): Removed code to set menu title icon.
+	(user_level_changed_callback), (update_user_level_menu_items):
+	Removed these functions, which were only setting the menu title icon.
+	(nautilus_window_initialize_menus_part_1): removed call to
+	update_user_level_menu_items and callback setup for 
+	user_level_changed_callback.
+
+2001-03-23  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 7846: crash removing only bookmark in Bookmarks window.
 
 	GtkCList is emitting a select_row signal on a non-existent row, 
