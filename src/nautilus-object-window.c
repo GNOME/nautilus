@@ -186,9 +186,9 @@ nautilus_window_goto_url (GtkWidget *widget,
   Nautilus_NavigationRequestInfo navinfo;
 
   memset(&navinfo, 0, sizeof(navinfo));
-  navinfo.requested_uri = url;
+  navinfo.requested_uri = (char *)url;
   navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
-  navinfo.new_window_enforced = V_UNKNOWN;
+  navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
   nautilus_window_request_location_change(NAUTILUS_WINDOW(window), &navinfo,
                                           NULL);
@@ -440,13 +440,6 @@ nautilus_window_new(const char *app_id)
   return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, NULL));
 }
 
-static void
-nautilus_window_close (GtkWidget *widget,
-                       GtkWidget *window)
-{
-  gtk_widget_destroy(window);
-}
-
 void
 nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
 {
@@ -600,7 +593,7 @@ nautilus_window_change_location(NautilusWindow *window,
   gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
 
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_url),
-                                       loci->requested_uri);
+                                       loci->navinfo.requested_uri);
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
   /* If we need to load a different IID, do that before sending the location change request */
@@ -617,8 +610,8 @@ nautilus_window_change_location(NautilusWindow *window,
 
   loci->navinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
 
-  if(requesting_view != window->content_view)
-    gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci);
+  loci->navinfo.self_originated = (requesting_view == window->content_view);
+  gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci);
 
   notfound_views = keep_views = discard_views = NULL;
   for(cur = window->meta_views; cur; cur = cur->next)
@@ -627,8 +620,8 @@ nautilus_window_change_location(NautilusWindow *window,
 
       if(g_slist_find_custom(loci->meta_iids, view->iid, (GCompareFunc)strcmp))
 	{
-	  if(requesting_view != ((GtkWidget *)view))
-	    gtk_signal_emit(GTK_OBJECT(view), signum, loci);
+          loci->navinfo.self_originated = (requesting_view == ((GtkWidget *)view));
+          gtk_signal_emit(GTK_OBJECT(view), signum, loci);
 	}
       else
 	{
@@ -637,6 +630,7 @@ nautilus_window_change_location(NautilusWindow *window,
 	  discard_views = g_slist_prepend(discard_views, view);
 	}
     }
+  loci->navinfo.self_originated = FALSE;
   for(cur = loci->meta_iids; cur; cur = cur->next)
     {
       GSList *curview;
@@ -681,13 +675,13 @@ static void nautilus_window_real_request_selection_change(NautilusWindow *window
   selinfo.selected_uri = loc->selected_uri;
   selinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
 
-  if(((GtkWidget *)window->content_view) != requesting_view)
+  selinfo.self_originated = (((GtkWidget *)window->content_view) == requesting_view);
     gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
 
   for(cur = window->meta_views; cur; cur = cur->next)
     {
-      if(cur->data != requesting_view)
-	gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
+      selinfo.self_originated = (cur->data == requesting_view);
+      gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
     }
 }
 

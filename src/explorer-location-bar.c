@@ -89,9 +89,6 @@ drag_data_received_cb (GtkWidget *widget,
 	if (g_list_length (names) > 1)
 		g_warning ("FIXME: should we clone ourselfs ?");
 
-	EXPLORER_DEBUG (("Received \"%s\" in location\n",
-			 (gchar *)names->data));
-
 	explorer_location_bar_set_uri_string (location_bar,
 					      names->data);
 	gtk_signal_emit (GTK_OBJECT (location_bar),
@@ -117,8 +114,6 @@ drag_data_get_cb (GtkWidget *widget,
 
 	entry_txt = gtk_entry_get_text (GTK_ENTRY (location_bar->entry));
 	g_return_if_fail (entry_txt != NULL);
-
-	EXPLORER_DEBUG (("Sending location '%s'\n", entry_txt));
 
 	switch (info) {
 	case EXPLORER_DND_URI_LIST:

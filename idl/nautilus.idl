@@ -12,12 +12,14 @@ module Nautilus {
     string referring_uri, actual_referring_uri, referring_content_type;
 
     Object content_view;
+    boolean self_originated;
   };
 
   struct SelectionInfo {
     string selected_uri;
 
     Object content_view;
+    boolean self_originated;
   };
 
   struct SelectionRequestInfo {

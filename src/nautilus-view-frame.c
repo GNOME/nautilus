@@ -113,8 +113,7 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
    klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(view)->klass);
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
    newservant->servant.vepv = klass->vepv;
-   if(!newservant->servant.vepv->GNOME_Unknown_epv)
-     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
+   newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv(FALSE);
    newservant->view = view;
    servant_init_func = klass->servant_init_func;
    servant_init_func((PortableServer_Servant) newservant, ev);

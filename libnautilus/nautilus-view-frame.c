@@ -148,8 +148,7 @@ impl_Nautilus_View__create(NautilusViewClient *view, CORBA_Environment * ev)
    servant_init_func = view_class->servant_init_func;
    newservant = g_new0(impl_POA_Nautilus_View, 1);
    newservant->servant.vepv = view_class->vepv;
-   if(!newservant->servant.vepv->GNOME_Unknown_epv)
-     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
+   newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv(FALSE);
    newservant->view = view;
    servant_init_func((PortableServer_Servant) newservant, ev);
 
@@ -433,4 +432,10 @@ nautilus_view_client_size_allocate (GtkWidget     *widget,
 
   if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
     gtk_widget_size_allocate (bin->child, &child_allocation);
+}
+
+GnomeObject *
+nautilus_view_client_get_gnome_object    (NautilusViewClient        *view)
+{
+  return view->control;
 }
