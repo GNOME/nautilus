@@ -176,7 +176,7 @@ read_proc_info(const gchar* proc_filename)
 /* utility routine to extract information from a string and add it to an XML node */
 
 static char*
-extract_info(gchar* data, const gchar *field_name)
+extract_info(gchar* data, const gchar *field_name, gint nth)
 {
 	int index;
 	char **info_array;
@@ -189,10 +189,13 @@ extract_info(gchar* data, const gchar *field_name)
 		if (info_array[index] == NULL)
 			break;
 		if (nautilus_str_has_prefix(info_array[index], field_name)) {
-			field_data = info_array[index] + strlen(field_name);
-			field_data = strchr(field_data, ':') + 1;
-			field_data =  g_strchug(field_data);
-			break;
+			if(nth>0) nth--;
+			else {
+				field_data = info_array[index] + strlen(field_name);
+				field_data = strchr(field_data, ':') + 1;
+				field_data =  g_strchug(field_data);
+				break;
+			}
 		}
 	}
 	
@@ -207,23 +210,30 @@ extract_info(gchar* data, const gchar *field_name)
 /* get descriptive text about the CPU */
 
 static char*
-get_CPU_description()
+get_CPU_description(gint nth)
 {
 	char *temp_str, *result;
 	GString* string_data = g_string_new("");
 	char* proc_data = read_proc_info("cpuinfo");
+
+	if(extract_info(proc_data, "processor", nth) == NULL) {
+		/* can't find nth processor */
+		g_free(proc_data);
+		g_string_free(string_data, TRUE);
+		return NULL;
+	}
 	
-	temp_str = extract_info(proc_data, "model name");
+	temp_str = extract_info(proc_data, "model name", nth);
 	g_string_append(string_data, temp_str);
 	g_string_append(string_data, " CPU\n");
 	g_free(temp_str);
 	
-	temp_str = extract_info(proc_data, "cpu MHz");
+	temp_str = extract_info(proc_data, "cpu MHz", nth);
 	g_string_append(string_data, temp_str);
 	g_string_append(string_data, " MHz\n");
 	g_free(temp_str);
 	
-	temp_str = extract_info(proc_data, "cache size");
+	temp_str = extract_info(proc_data, "cache size", nth);
 	g_string_append(string_data, temp_str);
 	g_string_append(string_data, " cache size\n");
 	g_free(temp_str);
@@ -243,7 +253,7 @@ get_RAM_description()
 	GString* string_data = g_string_new("");
 	char* proc_data = read_proc_info("meminfo");
 	
-	temp_str = extract_info(proc_data, "MemTotal");
+	temp_str = extract_info(proc_data, "MemTotal", 0);
 	/* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
         num_str = gnome_vfs_file_size_to_string (1000 * atoi(temp_str));
@@ -294,6 +304,7 @@ static void setup_overview_form(NautilusHardwareView *view)
 	char  *file_name, *temp_text;
 	GtkWidget *temp_widget, *temp_box;
 	GtkWidget *container_box;
+	int cpunum = 0;
 	
 	/* allocate a vbox as the container */	
 	view->details->form = gtk_vbox_new(FALSE,0);
@@ -305,26 +316,30 @@ static void setup_overview_form(NautilusHardwareView *view)
 	setup_form_title(view, NULL, "Hardware Overview");
 
 	/* allocate a horizontal box */
-	
+
 	container_box = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), container_box, 0, 0, 2);	
 	gtk_widget_show (GTK_WIDGET(container_box));
-	
-	temp_box = gtk_vbox_new(FALSE, 4);
- 	gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
- 	gtk_widget_show (temp_box);
 
- 	file_name = gnome_pixmap_file ("nautilus/cpu.png");
-  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
-  	gtk_widget_show(temp_widget);
-  	g_free (file_name);
-	
-	temp_text = get_CPU_description();
-	temp_widget = gtk_label_new (temp_text);
-	g_free(temp_text);
-	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
- 	gtk_widget_show (temp_widget);
+	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
+		temp_box = gtk_vbox_new(FALSE, 4);
+		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
+		gtk_widget_show (temp_box);
+
+		file_name = gnome_pixmap_file ("nautilus/cpu.png");
+			temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
+			gtk_widget_show(temp_widget);
+			g_free (file_name);
+		
+		//temp_text = get_CPU_description(cpunum);
+		temp_widget = gtk_label_new (temp_text);
+		g_free(temp_text);
+		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
+		gtk_widget_show (temp_widget);
+
+		cpunum++;
+	}
 
 	/* set up the memory info */
 	
