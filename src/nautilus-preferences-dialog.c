@@ -364,7 +364,7 @@ preferences_show_help (GtkWindow *parent,
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
-						 _("There was an error displaying help: %s"),
+						 _("There was an error displaying help: \n%s"),
 						 error->message);
 
 		g_signal_connect (G_OBJECT (dialog),
