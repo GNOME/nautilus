@@ -300,7 +300,7 @@ global_preferences_get_sidebar_panel_view_identifiers (void)
 
 	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
 
-	oaf_result = oaf_query (query, NULL /* FIXME bugzilla.eazel.com 1276: alphabetize by name in the future? */, &ev);
+	oaf_result = oaf_query (query, NULL, &ev);
 		
 	view_identifiers = NULL;
         if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
