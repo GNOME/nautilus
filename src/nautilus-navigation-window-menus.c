@@ -853,25 +853,6 @@ activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const 
 #endif
 
 static void
-append_placeholder (NautilusWindow *window, const char *placeholder_path)
-{
-#ifdef UIH
-        bonobo_ui_handler_menu_new_placeholder (window->ui_handler,
-                                                placeholder_path);
-#endif
-}
-
-static void
-append_separator (NautilusWindow *window, const char *separator_path)
-{
-#ifdef UIH
-        bonobo_ui_handler_menu_new_separator (window->ui_handler,
-                                              separator_path,
-                                              -1);
-#endif
-}
-
-static void
 append_bookmark_to_menu (NautilusWindow *window, 
                          NautilusBookmark *bookmark, 
                          const char *menu_item_path,
@@ -963,6 +944,14 @@ get_static_bookmarks_file_path (void)
 	g_free (xml_file_path);
 
 	return NULL;
+}
+
+static void
+append_separator (NautilusWindow *window, const char *path)
+{
+#ifdef UIH
+	/* Need to implement this for the built-in bookmarks */
+#endif
 }
 
 static char *
@@ -1460,436 +1449,12 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
 
-#ifdef UIH
-        ui_handler = window->ui_handler;
-        g_assert (ui_handler != NULL);
-        
-        bonobo_ui_handler_create_menubar (ui_handler);
-#endif
 	nautilus_window_create_top_level_menus (window);
 
-#ifdef UIH
-	/* File menu */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM,
-        				 _("_New Window"),
-        				 _("Create a new window"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_NEW,
-        				 0,
-        				 0,
-        				 file_menu_new_window_callback,
-        				 window);
-
-        append_placeholder (window, NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER);
-        append_placeholder (window, NAUTILUS_MENU_PATH_OPEN_PLACEHOLDER);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CLOSE_ITEM,
-        				 _("_Close Window"),
-        				 _("Close this window"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_CLOSE,
-        				 'W',
-        				 GDK_CONTROL_MASK,
-        				 file_menu_close_window_callback,
-        				 window);
-        				 
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM,
-        				 _("Close _All Windows"),
-        				 _("Close all Nautilus windows"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'W',
-        				 GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-        				 file_menu_close_all_windows_callback,
-        				 NULL);
-
-        append_placeholder (window, NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER);
-
-	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE,
-        				 "", /* No initial text; set in update_find_menu_item */
-        				 _(NAUTILUS_HINT_FIND),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'F',
-        				 GDK_CONTROL_MASK,
-        				 file_menu_toggle_find_mode_callback,
-        				 window);
         nautilus_window_update_find_menu_item (window);
-        				 
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH,
-        				 _("_Web Search"),
-        				 _(NAUTILUS_HINT_WEB_SEARCH),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'F',
-        				 GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-        				 file_menu_web_search_callback,
-        				 window);
-        append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER);
-
-	/* Edit menu */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_UNDO_ITEM,
-        				 _("_Undo"),
-        				 _("Undo the last text change"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_UNDO,
-        				 GNOME_KEY_NAME_UNDO,
-        				 GNOME_KEY_MOD_UNDO,
-        				 edit_menu_undo_callback,
-        				 window);
-
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CUT_ITEM,
-        				 _("_Cut Text"),
-        				 _("Cuts the selected text to the clipboard"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_CUT,
-        				 GNOME_KEY_NAME_CUT,
-        				 GNOME_KEY_MOD_CUT,
-        				 edit_menu_cut_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_COPY_ITEM,
-        				 _("_Copy Text"),
-        				 _("Copies the selected text to the clipboard"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_COPY,
-        				 GNOME_KEY_NAME_COPY,
-        				 GNOME_KEY_MOD_COPY,
-        				 edit_menu_copy_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_PASTE_ITEM,
-        				 _("_Paste Text"),
-        				 _("Pastes the text stored on the clipboard"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_PASTE,
-        				 GNOME_KEY_NAME_PASTE,
-        				 GNOME_KEY_MOD_PASTE,
-        				 edit_menu_paste_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CLEAR_ITEM,
-        				 _("C_lear Text"),
-        				 _("Removes the selected text without putting it on the clipboard"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 GNOME_KEY_NAME_CLEAR,
-        				 GNOME_KEY_MOD_CLEAR,
-        				 edit_menu_clear_callback,
-        				 window);
-
-	/* Desensitize these menu items until something gets selected */
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
-						NAUTILUS_MENU_PATH_CUT_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
-						NAUTILUS_MENU_PATH_COPY_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
-						NAUTILUS_MENU_PATH_PASTE_ITEM,
-						TRUE);
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
-						NAUTILUS_MENU_PATH_CLEAR_ITEM,
-						TRUE);
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
-        				 _("_Select All"),
-        				 NULL,	/* No hint since it's insensitive here */
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'A',	/* Keyboard shortcut applies to overriders too */
-        				 GDK_CONTROL_MASK,
-        				 NULL,
-        				 NULL);
-
-	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL);
-	
-	bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM,
-        				 _("_Customization..."),
-        				 _("Displays the Property Browser, to add properties to objects and customize appearance"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 customize_callback,
-        				 NULL);
-	
-	bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM,
-        				 _("_Change Appearance..."),
-        				 _("Displays a list of alternative appearances, to allow you to change the appearance"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 change_appearance_callback,
-        				 NULL);
-
-        append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER);
-        append_placeholder (window, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER);
-
-        /* View menu */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_RELOAD_ITEM,
-        				 _("_Refresh"),
-        				 _(NAUTILUS_HINT_REFRESH),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'R',
-        				 GDK_CONTROL_MASK,
-        				 view_menu_reload_callback,
-        				 window);
-
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR,
-        				 "", /* Title computed dynamically */
-        				 _("Change the visibility of this window's sidebar"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 view_menu_show_hide_sidebar_callback,
-        				 window);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR,
-        				 "", /* Title computed dynamically */
-        				 _("Change the visibility of this window's tool bar"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 view_menu_show_hide_tool_bar_callback,
-        				 window);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR,
-        				 "", /* Title computed dynamically */
-        				 _("Change the visibility of this window's location bar"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 view_menu_show_hide_location_bar_callback,
-        				 window);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR,
-        				 "", /* Title computed dynamically */
-        				 _("Change the visibility of this window's status bar"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 view_menu_show_hide_status_bar_callback,
-        				 window);
         nautilus_window_update_show_hide_menu_items (window);
 
-        append_placeholder (window, NAUTILUS_MENU_PATH_SHOW_HIDE_PLACEHOLDER);
-        append_placeholder (window, NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER);
-
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
-        				 _("Zoom _In"),
-        				 _("Show the contents in more detail"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 '=',
-        				 GDK_CONTROL_MASK,
-        				 view_menu_zoom_in_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
-        				 _("Zoom _Out"),
-        				 _("Show the contents in less detail"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 '-',
-        				 GDK_CONTROL_MASK,
-        				 view_menu_zoom_out_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
-        				 _("_Normal Size"),
-        				 _("Show the contents at the normal size"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 view_menu_zoom_normal_callback,
-        				 window);
-
-        
-
-	/* Go menu */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_BACK_ITEM,
-        				 _("_Back"),
-        				 _(NAUTILUS_HINT_BACK),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 '[',
-        				 GDK_CONTROL_MASK,
-        				 go_menu_back_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_FORWARD_ITEM,
-        				 _("_Forward"),
-        				 _(NAUTILUS_HINT_FORWARD),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 ']',
-        				 GDK_CONTROL_MASK,
-        				 go_menu_forward_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_UP_ITEM,
-        				 _("_Up a Level"),
-        				 _(NAUTILUS_HINT_UP),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'U',
-        				 GDK_CONTROL_MASK,
-        				 go_menu_up_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_HOME_ITEM,
-        				 _("_Home"),
-        				 _(NAUTILUS_HINT_HOME),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'H',
-        				 GDK_CONTROL_MASK,
-        				 go_menu_home_callback,
-        				 window);
-        				 
-	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET);
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM,
-        				 _("For_get History"),
-        				 _("Clear contents of Go menu and Back/Forward lists"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0, 0,
-        				 go_menu_forget_history_callback,
-        				 window);
-
-        append_placeholder (window, NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
-
-        
-	/* Bookmarks */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM,
-        				 _("_Add Bookmark"),
-        				 _("Add a bookmark for the current location to this menu"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'B',
-        				 GDK_CONTROL_MASK,
-        				 bookmarks_menu_add_bookmark_callback,
-        				 window);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM,
-        				 _("_Edit Bookmarks..."),
-        				 _("Display a window that allows editing the bookmarks in this menu"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 bookmarks_menu_edit_bookmarks_callback,
-        				 window);
-
-	append_placeholder (window, NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);			 
-
-	/* Help */
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_ABOUT_ITEM,
-        				 _("_About Nautilus..."),
-        				 _("Displays information about the Nautilus program"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
-        				 GNOME_STOCK_MENU_ABOUT,
-        				 '/',
-        				 GDK_CONTROL_MASK,
-        				 help_menu_about_nautilus_callback,
-        				 NULL);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK,
-        				 _("_Nautilus Feedback"),
-        				 _("Shows a page from which you can send feedback about Nautilus to its creators"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 help_menu_nautilus_feedback_callback,
-        				 window);
-
-        /* Desensitize the items that aren't implemented at this level.
-         * Some (hopefully all) will be overridden by implementations by the
-         * different content views.
-         */
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler, 
-        				        NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
-						FALSE);
-
+#ifdef UIH
 	/* connect to the user level changed signal, so we can update the menu when the
 	   user level changes */
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_user_level_manager_get ()),
@@ -1920,21 +1485,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
 				  NAUTILUS_USER_LEVEL_HACKER);
 
-	bonobo_ui_handler_menu_new_separator (ui_handler,
-					      NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR,
-					      -1);
-
-	bonobo_ui_handler_menu_new_item (ui_handler,
-					 NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
-					 _("Edit Settings..."),
-					 _("Edit Settings for the Current User Level"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 user_level_customize_callback,
-        				 window);
 
         update_user_level_menu_items (window);
 	
@@ -1988,17 +1538,18 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 {
 	char *label_string;
 
+	g_message ("called nautilus_window_update_find_menu_item");
+
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	label_string = g_strdup 
 		(nautilus_window_get_search_mode (window) 
 			? _("_Browse") 
 			: _("_Find"));
-#ifdef UIH
-	bonobo_ui_handler_menu_set_label (window->ui_handler, 
-					  NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE, 
-					  label_string);
-#endif
+
+	nautilus_bonobo_set_label (window->details->shell_ui, 
+				   "/menu/File/Toggle Find Mode",
+				   label_string);
 	g_free (label_string);
 
 #ifndef UIH
@@ -2006,13 +1557,9 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 	return;
 
 	add_user_level_menu_item (0, 0, 0);
-	append_placeholder (0, 0);
 	bookmark_holder_free (0);
-	edit_bookmarks (0);
 	convert_user_level_to_verb (0);
-	forget_history_if_confirmed (0);
 	show_bogus_bookmark_window (0);
-	switch_and_show_intermediate_settings_callback (0, 0);
 	user_level_changed_callback (0, 0);
 #endif
 }

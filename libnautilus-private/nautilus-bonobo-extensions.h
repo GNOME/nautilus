@@ -29,6 +29,10 @@
 
 #include <bonobo/bonobo-ui-component.h>
 
+void nautilus_bonobo_set_label (BonoboUIComponent *ui_component,
+				const char        *path,
+				const char	  *label);
+
 void nautilus_bonobo_set_sensitive (BonoboUIComponent *ui_component,
 				    const char        *path,
 				    gboolean           sensitive);

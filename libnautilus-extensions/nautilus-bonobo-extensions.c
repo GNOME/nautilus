@@ -28,6 +28,17 @@
 #include "nautilus-bonobo-extensions.h"
 
 void
+nautilus_bonobo_set_label (BonoboUIComponent *ui,
+			   const char *path,
+			   const char *label)
+{
+	bonobo_ui_component_set_prop (ui, path,
+				      "label",
+				      label,
+				      NULL);
+}
+
+void
 nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
 			       const char *path,
 			       gboolean sensitive)

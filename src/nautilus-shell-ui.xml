@@ -224,7 +224,7 @@
 	</submenu>
 </menu>
 
-<dockitem name="Tool Bar" look="both">
+<dockitem name="Tool Bar" look="both" behavior="exclusive">
 
 	<toolitem name="Back"
                   _label="Back"
@@ -270,7 +270,7 @@
 	          _verb=""/>
 </dockitem>
 
-<dockitem name="Location Bar">
+<dockitem name="Location Bar" behavior="exclusive,never vertical">
 	<control name="Wrapper"/>
 </dockitem>
 

@@ -1,3 +1,31 @@
+2000-10-06  John Sullivan  <sullivan@eazel.com>
+
+	Work on bug 3496 (labels in menu bar items never change)
+	Finished bug 3505 (tool bar & location bar don't extend across window)
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_label): New cover for bonobo xml
+	shenanigans to change the displayed label of an item
+	(menu item, toolbar item, whatever).
+	
+	* src/nautilus-shell-ui.xml: Set behavior attributes on
+	tool bar and location bar so they fill the width of the
+	window and so the location bar can't be made vertical.
+	(Requires bonobo update to see this work.)
+	
+	* src/nautilus-window-menus.c: 
+	(append_separator): New not-yet-implemented function called
+	by other not-yet-working-again code.
+	(nautilus_window_initialize_menus): Took out a bunch of the
+	old #ifdeffed code now that the replacement code works.
+	
+	(nautilus_window_update_find_menu_item): Toggle the label
+	of the Find menu item.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Removed some #ifdeffed code.
+
 2000-10-06  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

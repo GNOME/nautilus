@@ -367,19 +367,6 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
-#ifdef UIH
-	behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE
-		| GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
-	if (!gnome_preferences_get_toolbar_detachable ()) {
-		behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
-	}
-#endif
-
-#ifdef UIH
-	gnome_app_add_docked (app, location_bar_box,
-			      URI_ENTRY_DOCK_ITEM, behavior,
-			      GNOME_DOCK_TOP, 2, 0, 0);
-#endif
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set.
 	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
@@ -405,8 +392,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (location_bar_box);
 	
 #ifdef UIH
-	/* insert a little padding so status bar text isn't jammed against frame */
-	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (status_bar)->label), GNOME_PAD, 0);
 	window->status_bar_context_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (status_bar),
 							      "IhateGtkStatusbar");
 #endif
