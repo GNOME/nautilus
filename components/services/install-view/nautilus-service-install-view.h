@@ -58,7 +58,9 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *package_version;
 	GtkWidget       *total_progress_bar;
 	GtkWidget       *current_progress_bar;
-	GtkWidget       *feedback_text;
+	GtkWidget	*message_box;
+	GtkWidget       *current_feedback_text;
+	GtkWidget       *overall_feedback_text;
 };
 
 

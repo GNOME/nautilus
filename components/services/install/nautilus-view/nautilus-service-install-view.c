@@ -57,10 +57,13 @@ static void	service_install_load_location_callback		(NautilusView				*nautilus_v
 static void	generate_install_form				(NautilusServiceInstallView		*view);
 static void	generate_form_title				(NautilusServiceInstallView		*view,
 								 const char				*title_text);
+static void	fake_overall_install_progress			(NautilusServiceInstallView		*view);
+static void	generate_current_progress			(NautilusServiceInstallView		*view,
+								 char					*progress_message);
 static void	nautilus_service_install_view_update_from_uri	(NautilusServiceInstallView		*view,
 								 const char				*uri);
-static void	show_feedback					(NautilusServiceInstallView		*view,
-								 char					*error_message);
+static void	show_overall_feedback				(NautilusServiceInstallView		*view,
+								 char					*progress_message);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
@@ -68,9 +71,8 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_
 static void
 generate_install_form (NautilusServiceInstallView	*view) {
 
-	GtkWidget	*temp_box;
 	GdkFont		*font;
-	int		counter;
+	GtkWidget	*temp_box;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -104,45 +106,8 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->package_version);
 
-	/* add a label for error messages, but don't show it until there's an error */
-	view->details->feedback_text = gtk_label_new ("");
-	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
-
-	/* Add progress meters */
-
-        /* Add the single package meter */
-	/* Create a center alignment object */
-	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-			    gtk_widget_show (temp_box);
-	gtk_widget_show (temp_box);
-	view->details->current_progress_bar = gtk_progress_bar_new ();
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->current_progress_bar);
-	gtk_widget_show (view->details->current_progress_bar);
-
-	/* bogus current progress loop */
-	for (counter = 1; counter <= 5000; counter++) {
-		float value;
-
-		value = (float) counter / 5000;
-
-		if (counter == 1) {
-			show_feedback (view, "Installing package foo ...");
-		}
-		if (counter == 5000) {
-			break;
-		}
-		else {
-			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->current_progress_bar), value);
-			while (gtk_events_pending ()) {
-				gtk_main_iteration ();
-			}
-		}
-	}
-
-        /* Add the overall progress meter */
-	/* Create a center alignment object */
-	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
+	/* generate the overall progress bar */
+	temp_box = gtk_alignment_new (0.2, 0.2, 0, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 			    gtk_widget_show (temp_box);
 	gtk_widget_show (temp_box);
@@ -150,34 +115,16 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->total_progress_bar);
 	gtk_widget_show (view->details->total_progress_bar);
 
-	/* bogus current progress loop */
-	for (counter = 1; counter <= 20000; counter++) {
-		float value;
+	/* add a label for progress messages, but don't show it until there's a message */
+	view->details->overall_feedback_text = gtk_label_new ("");
+	font = nautilus_font_factory_get_font_from_preferences (16);
+	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, 0, 0, 8);
 
-		value = (float) counter / 20000;
-
-		if (counter == 1) {
-			show_feedback (view, "Installing package 1 of 4 ...");
-		}
-		if (counter == 5000) {
-			show_feedback (view, "Installing package 2 of 4 ...");
-		}
-		if (counter == 10000) {
-			show_feedback (view, "Installing package 3 of 4 ...");
-		}
-		if (counter == 15000) {
-			show_feedback (view, "Installing package 4 of 4 ...");
-		}
-		if (counter == 20000) {
-			break;
-		}
-		else {
-			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->total_progress_bar), value);
-			while (gtk_events_pending ()) {
-				gtk_main_iteration ();
-			}
-		}
-	}
+	/* add an hbox at the bottom of the screen to hold current progress but don't show it yet */
+        view->details->message_box = gtk_vbox_new (FALSE, 0);
+        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->message_box, 0, 0, 4);
+	gtk_widget_show (view->details->message_box);
 
 }
 
@@ -211,12 +158,100 @@ generate_form_title (NautilusServiceInstallView	*view,
         gtk_widget_show (view->details->form_title);
 }
 
+static void
+fake_overall_install_progress (NautilusServiceInstallView	*view) {
+
+	int 	counter;
+
+	for (counter = 1; counter <= 20000; counter++) {
+		float value;
+
+		value = (float) counter / 20000;
+
+		if (counter == 1) {
+			show_overall_feedback (view, "Installing package 1 of 4 ...");
+		}
+		if (counter == 5000) {
+			show_overall_feedback (view, "Installing package 2 of 4 ...");
+		}
+		if (counter == 10000) {
+			show_overall_feedback (view, "Installing package 3 of 4 ...");
+		}
+		if (counter == 15000) {
+			show_overall_feedback (view, "Installing package 4 of 4 ...");
+		}
+		if (counter == 20000) {
+			break;
+		}
+		else {
+			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->total_progress_bar), value);
+			while (gtk_events_pending ()) {
+				gtk_main_iteration ();
+			}
+		}
+	}
+
+}
+
+static void
+generate_current_progress (NautilusServiceInstallView	*view, char	*progress_message) {
+
+	GtkWidget	*temp_container;
+	GtkWidget	*temp_box;
+	GdkFont		*font;
+	int		counter;
+     
+	temp_container = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (view->details->message_box), temp_container, 0, 0, 4);
+	gtk_widget_show (temp_container);
+
+	/* add a label for progress messages, but don't show it until there's a message */
+	view->details->current_feedback_text = gtk_label_new ("");
+	font = nautilus_font_factory_get_font_from_preferences (16);
+	nautilus_gtk_widget_set_font (view->details->current_feedback_text, font);
+	gtk_box_pack_start (GTK_BOX (temp_container), view->details->current_feedback_text, 0, 0, 8);
+
+	/* Create a center alignment object */
+	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_box_pack_end (GTK_BOX (temp_container), temp_box, FALSE, FALSE, 4);
+			    gtk_widget_show (temp_box);
+	gtk_widget_show (temp_box);
+	view->details->current_progress_bar = gtk_progress_bar_new ();
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->current_progress_bar);
+	gtk_widget_show (view->details->current_progress_bar);
+
+	/* bogus current progress loop */
+	for (counter = 1; counter <= 5000; counter++) {
+		float value;
+
+		value = (float) counter / 5000;
+
+		if (counter == 1) {
+			gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), progress_message);
+			gtk_widget_show (view->details->current_feedback_text);
+		}
+		if (counter == 5000) {
+			gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), "Complete!");
+			gtk_widget_show (view->details->current_feedback_text);
+			break;
+		}
+		else {
+			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->current_progress_bar), value);
+			while (gtk_events_pending ()) {
+				gtk_main_iteration ();
+			}
+		}
+	}
+
+}
+
 /* utility routine to show an error message */
 static void
-show_feedback (NautilusServiceInstallView	*view, char	*error_message) {
+show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message) {
 
-	gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
-	gtk_widget_show (view->details->feedback_text);
+	gtk_label_set_text (GTK_LABEL (view->details->overall_feedback_text), progress_message);
+	gtk_widget_show (view->details->overall_feedback_text);
+
 }
 
 static void
@@ -389,6 +424,14 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view,
 	if (temp_release) {
 		g_free (temp_release);
 	}
+
+	/* Ad hock crap to fake a full install */
+	show_overall_feedback (view, "Waiting for downloads");
+	generate_current_progress (view, "Downloading foo.rpm");
+	generate_current_progress (view, "Downloading bar.rpm");		
+	generate_current_progress (view, "Downloading baz.rpm");		
+	generate_current_progress (view, "Downloading bam.rpm");		
+	fake_overall_install_progress (view);
 
 }
 
