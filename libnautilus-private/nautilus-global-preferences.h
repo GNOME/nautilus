@@ -39,8 +39,6 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_THEME				"/apps/nautilus/preferences/theme"
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"/apps/nautilus/icon_view/captions"
-/* Are built-in bookmarks showing or not? */
-#define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"/apps/nautilus/preferences/hide_built_in_bookmarks"
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
 /* Keep track of the sound playing process */
@@ -65,8 +63,9 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
-/* Home URI  */
+/* Navigation  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
+#define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
 
 /* Proxy */
 #define NAUTILUS_PREFERENCES_HTTP_PROXY                 	"preferences/http-proxy"

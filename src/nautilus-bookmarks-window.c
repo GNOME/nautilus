@@ -45,7 +45,6 @@ static GtkWidget	    *bookmark_list_widget = NULL; /* awkward name to distinguis
 static GtkWidget	    *name_field = NULL;
 static int		     name_field_changed_signalID;
 static GtkWidget	    *remove_button = NULL;
-static GtkWidget	    *show_static_checkbox = NULL;
 static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
 static int		     uri_field_changed_signalID;
@@ -81,9 +80,6 @@ static gboolean on_window_delete_event 	      (GtkWidget *,
 					       GdkEvent *, 
 					       gpointer user_data);
 static void	repopulate		      (void);
-
-static void	update_built_in_bookmarks_checkbox_to_match_preference (gpointer user_data);
-static void	update_built_in_bookmarks_preference_to_match_checkbox (gpointer user_data);
 
 #define BOOKMARK_LIST_COLUMN_ICON		0
 #define BOOKMARK_LIST_COLUMN_NAME		1
@@ -192,19 +188,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	nautilus_gtk_button_set_padding (GTK_BUTTON (remove_button), GNOME_PAD_SMALL);
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
-
-	show_static_checkbox = gtk_check_button_new_with_label (_("Include built-in bookmarks in menu"));
-	gtk_widget_show (show_static_checkbox);
-	gtk_box_pack_end (GTK_BOX (right_side), show_static_checkbox, FALSE, FALSE, 0);
-
-	update_built_in_bookmarks_checkbox_to_match_preference (GTK_CHECK_BUTTON (show_static_checkbox));
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-					   update_built_in_bookmarks_checkbox_to_match_preference,
-					   show_static_checkbox);
-
-	gtk_signal_connect (GTK_OBJECT (show_static_checkbox), "toggled",
-			    update_built_in_bookmarks_preference_to_match_checkbox,
-			    show_static_checkbox);
 
 	bookmark_list_changed_signalID =
 		gtk_signal_connect (GTK_OBJECT(bookmarks), "contents_changed",
@@ -630,40 +613,4 @@ repopulate (void)
 	}
 	  
 	gtk_clist_thaw (GTK_CLIST (bookmark_list_widget));
-}
-
-static void
-synch_built_in_bookmarks_preference_and_checkbox (GtkCheckButton *checkbox, gboolean trust_checkbox)
-{
-	gboolean preference_setting, checkbox_setting;
-
-	g_assert (GTK_IS_CHECK_BUTTON (checkbox));
-
-	preference_setting = !nautilus_preferences_get_boolean 
-		(NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, FALSE);
-
-	checkbox_setting = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
-
-	if (preference_setting == checkbox_setting) {
-		return;
-	}
-
-	if (trust_checkbox) {
-		nautilus_preferences_set_boolean
-			(NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, !checkbox_setting);
-	} else {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), preference_setting);
-	}
-}
-
-static void
-update_built_in_bookmarks_preference_to_match_checkbox (gpointer user_data)
-{
-	synch_built_in_bookmarks_preference_and_checkbox (user_data, TRUE);
-}
-
-static void
-update_built_in_bookmarks_checkbox_to_match_preference (gpointer user_data)
-{
-	synch_built_in_bookmarks_preference_and_checkbox (user_data, FALSE);
 }

@@ -1,5 +1,21 @@
 2000-10-26  Andy Hertzfeld  <andy@eazel.com>
 
+	fixed bug 2814, move "built-in bookmarks" checkbox from the
+	edit bookmarks window to preferences/navigation.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), (global_preferences_register):
+	added a checkbox to control the "hide built-in bookmarks" preference
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	renamed preference path so the built-in bookmarks preference can
+	be in the preferences window
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window),
+	(repopulate):
+	removed the built-in bookmarks checkbox from the edit bookmarks
+	window
+	
+2000-10-26  Andy Hertzfeld  <andy@eazel.com>
+
 	added a new theme from Susan
 	
 	* configure.in:

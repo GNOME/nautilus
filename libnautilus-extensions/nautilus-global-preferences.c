@@ -325,6 +325,14 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 
+	/* built-in bookmarks */
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+					     _("Built-in Bookmarks"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
 	/* all done */
 
 	return prefs_dialog;
@@ -977,8 +985,13 @@ global_preferences_register (void)
 							   _("Can add Content"),
 							   FALSE,
 							   TRUE,
-							   TRUE);
-	
+							   TRUE);	
+	/* built-in bookmarks */
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+							   _("Don't include the built-in bookmarks"),
+							   FALSE,
+							   FALSE,
+							   FALSE);
 
 	{
 		char	*user_main_directory;
