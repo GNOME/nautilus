@@ -29,8 +29,6 @@ Requires:	gdk-pixbuf >= 0.8.0
 Requires:	bonobo >= 0.20
 Requires:	popt >= 1.5
 Requires:	freetype2 >= 1.0beta8
-# this will eventually move into the services component
-Requires:	ammonite >= 0.1
 
 %description
 Nautilus is an open-source file manager and graphical shell being
@@ -43,13 +41,54 @@ GNOME desktop environment when it is finished.
 Summary:	Libraries and include files for developing nautilus components
 Group:		Development/Libraries
 Requires:	%name = %{PACKAGE_VERSION}
-Obsoletes:	%{name}-devel
+
+%package mozilla
+Summary:        Component for use with mozilla
+Group:          User Interface/Desktop
+Requires:       %name = %{PACKAGE_VERSION}
+
+%package trilobite
+Summary:        Component for use with installation service
+Group:          User Interface/Desktop
+Requires:       %name = %{PACKAGE_VERSION}
+Requires:	ammonite >= 0.1
+
+%package: extras
+Summary:	extra goodies to use nautilus
+Group:          User Interface/Desktop
+Requires:	eog >= 0.4
+Requires:	mpg123 >= 0.59
+
+%package suggested
+Summary:	Nautilus and usefull components
+Group:          User Interface/Desktop
+Requires:       %name = %{PACKAGE_VERSION}
+Requires:	%name-mozilla = %{PACKAGE_VERSION}
+Requires:	%name-trilobite = %{PACKAGE_VERSION}
+Requires:	%name-extras = %{PACKAGE_VERSION}
 
 %description devel
 This package provides the necessary development libraries and include
 files to allow you to develop nautilus components.
 
+%description mozilla
+This enables the uses of embedded mozilla.
+
+%description trilobite
+This enables the use of the install rpm functionality 
+
+%description suggested
+This is a meta package that requires packages usefull for running
+nautilus, and getting multi media to work such as eog and mpg123
+
+%description extras
+This is usefull utilities to use with nautilus such as 
+
 %changelog
+* Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
+- removed obsoletes from sub packages and added mozilla and trilobite
+subpackages
+
 * Wed Apr 26 2000 Ramiro Estrugo <ramiro@eazel.com>
 - created this thing
 
@@ -98,12 +137,7 @@ fi
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
 %{prefix}/bin/*.sh
-%{prefix}/bin/eazel-gen-xml
 %{prefix}/bin/eazel-helper
-%{prefix}/bin/eazel-install
-%{prefix}/bin/eazel-sample-client
-%{prefix}/bin/eazel-time
-%{prefix}/bin/eazel-vault
 %{prefix}/bin/gnome-db2html2
 %{prefix}/bin/gnome-info2html2
 %{prefix}/bin/gnome-man2html2
@@ -116,29 +150,29 @@ fi
 %{prefix}/bin/nautilus-history-view
 %{prefix}/bin/nautilus-image-view
 %{prefix}/bin/nautilus-login-view
-%{prefix}/bin/nautilus-mozilla-content-view
 %{prefix}/bin/nautilus-music-view
 %{prefix}/bin/nautilus-notes
-%{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/nautilus-sample-content-view
-%{prefix}/bin/nautilus-sample-service-view
-%{prefix}/bin/nautilus-service-install-view
 %{prefix}/bin/nautilus-sidebar-loser
-%{prefix}/bin/nautilus-summary-view
 %{prefix}/bin/run-nautilus
-%{prefix}/bin/trilobite-eazel-install-service
-%{prefix}/bin/trilobite-eazel-sample-service
-%{prefix}/bin/trilobite-eazel-time-service
-%{prefix}/bin/trilobite-eazel-time-view
 %{prefix}/idl/*.idl
-%{prefix}/lib/*.0
-%{prefix}/lib/*.so
+%{prefix}/lib/libnautilus-adapter.so.0
+%{prefix}/lib/libnautilus-adapter.so.0.0.0
+%{prefix}/lib/libnautilus-extensions.so.0
+%{prefix}/lib/libnautilus-extensions.so.0.0.0
+%{prefix}/lib/libnautilus-tree-view.so.0
+%{prefix}/lib/libnautilus-tree-view.so.0.0.0
+%{prefix}/lib/libnautilus.so.0
+%{prefix}/lib/libnautilus.so.0.0.0
+%{prefix}/lib/libnautilus-adapter.so
+%{prefix}/lib/libnautilus-extensions.so
+%{prefix}/lib/libnautilus-tree-view.so
+%{prefix}/lib/libnautilus.so
+
 %{prefix}/lib/vfs/modules/*.so
 
 
 %defattr (0444, bin, bin)
-%config %{sysconfdir}/pam.d/eazel-helper
-%config %{sysconfdir}/security/console.apps/eazel-helper
 %config %{sysconfdir}/vfs/modules/*.conf
 %{prefix}/share/gnome/apps/Applications/*.desktop
 %{prefix}/share/gnome/ui/*.xml
@@ -156,7 +190,6 @@ fi
 %{prefix}/share/nautilus/top/.*.xml
 %{prefix}/share/nautilus/top/Computer
 %{prefix}/share/nautilus/top/Services
-%{prefix}/share/oaf/*.oafinfo
 %{prefix}/share/pixmaps/*.png
 %{prefix}/share/pixmaps/nautilus/*.gif
 %{prefix}/share/pixmaps/nautilus/*.png
@@ -175,6 +208,20 @@ fi
 %{prefix}/share/pixmaps/nautilus/throbber/*.png
 %{prefix}/share/pixmaps/nautilus/vector/*.svg
 %{prefix}/share/pixmaps/nautilus/vector/*.xml
+%{prefix}/share/oaf/help-contents.oafinfo
+%{prefix}/share/oaf/help-factory.oafinfo
+%{prefix}/share/oaf/nautilus-adapter.oafinfo
+%{prefix}/share/oaf/nautilus-content-loser.oafinfo
+%{prefix}/share/oaf/nautilus-hardware-view.oafinfo
+%{prefix}/share/oaf/nautilus-history-view.oafinfo
+%{prefix}/share/oaf/nautilus-image-view.oafinfo
+%{prefix}/share/oaf/nautilus-login-view.oafinfo
+%{prefix}/share/oaf/nautilus-music-view.oafinfo
+%{prefix}/share/oaf/nautilus-notes.oafinfo
+%{prefix}/share/oaf/nautilus-sample-content-view.oafinfo
+%{prefix}/share/oaf/nautilus-sidebar-loser.oafinfo
+%{prefix}/share/oaf/nautilus-tree-view.oafinfo
+%{prefix}/share/oaf/nautilus.oafinfo
 
 %files devel
 
@@ -186,3 +233,44 @@ fi
 %{prefix}/include/eazel-install/*.h
 %{prefix}/include/libnautilus/*.h
 %{prefix}/include/libtrilobite/*.h
+
+%files mozilla
+
+%defattr(0555, bin, bin)
+%{prefix}/bin/nautilus-mozilla-content-view
+
+%defattr(0444, bin, bin)
+%{prefix}/share/oaf/nautilus-mozilla-content-view.oafinfo
+
+%files trilobite
+
+%defattr(0555, bin, bin)
+%{prefix}/bin/eazel-install
+%{prefix}/bin/nautilus-service-install-view
+%{prefix}/bin/trilobite-eazel-install-service
+%{prefix}/bin/trilobite-eazel-time-service
+%{prefix}/bin/trilobite-eazel-time-view
+%{prefix}/bin/nautilus-summary-view
+%{prefix}/bin/nautilus-rpm-view
+%{prefix}/bin/eazel-time
+%{prefix}/bin/eazel-gen-xml
+%{prefix}/bin/eazel-vault
+%{prefix}/lib/libeazelinstall.so.0
+%{prefix}/lib/libeazelinstall.so.0.0.0
+%{prefix}/lib/libtrilobite-service.so.0
+%{prefix}/lib/libtrilobite-service.so.0.0.0
+%{prefix}/lib/libtrilobite.so.0
+%{prefix}/lib/libtrilobite.so.0.0.0
+%{prefix}/lib/libeazelinstall.so
+%{prefix}/lib/libtrilobite-service.so
+%{prefix}/lib/libtrilobite.so
+
+%defattr(0444, bin, bin)
+%config %{sysconfdir}/pam.d/eazel-helper
+%config %{sysconfdir}/security/console.apps/eazel-helper
+%{prefix}/share/oaf/nautilus-service-install-view.oafinfo
+%{prefix}/share/oaf/trilobite-eazel-install-service.oafinfo
+%{prefix}/share/oaf/trilobite-eazel-time-service.oafinfo
+%{prefix}/share/oaf/trilobite-eazel-time-view.oafinfo
+%{prefix}/share/oaf/nautilus-summary-view.oafinfo
+%{prefix}/share/oaf/nautilus-rpm-view.oafinfo
