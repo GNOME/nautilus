@@ -41,7 +41,7 @@ any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFil
 {
 	gboolean result;
 
-	nautilus_mime_actions_wait_for_required_file_attributes (file);
+	nautilus_mime_actions_wait_for_full_file_attributes (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		result = nautilus_mime_has_any_components_for_file (file);

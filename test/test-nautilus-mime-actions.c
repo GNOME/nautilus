@@ -131,7 +131,7 @@ main (int argc, char **argv)
 	uri = argv[1];
 	file = nautilus_file_get (uri);
 
-	nautilus_mime_actions_wait_for_required_file_attributes (file);
+	nautilus_mime_actions_wait_for_full_file_attributes (file);
 	
 	default_action = nautilus_mime_get_default_action_for_file (file);
 	puts ("Default Action");

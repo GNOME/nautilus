@@ -1394,7 +1394,7 @@ nautilus_sidebar_update_all (NautilusSidebar *sidebar)
 	GList *attributes;
 	gboolean ready;
 
-	attributes = nautilus_mime_actions_get_required_file_attributes ();
+	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	ready = nautilus_file_check_if_ready (sidebar->details->file, attributes);
 	g_list_free (attributes);
 
@@ -1448,7 +1448,7 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 					   nautilus_sidebar_update_all,
 					   GTK_OBJECT (sidebar));
 
-	attributes = nautilus_mime_actions_get_required_file_attributes ();
+	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	nautilus_file_monitor_add (sidebar->details->file, sidebar, attributes);
 	g_list_free (attributes);
 

@@ -203,7 +203,7 @@ nautilus_navigation_info_new (const char *location,
                                              NULL, FALSE);
         
         /* Arrange for all the file attributes we will need. */
-        attributes = nautilus_mime_actions_get_required_file_attributes ();
+        attributes = nautilus_mime_actions_get_full_file_attributes ();
         nautilus_file_call_when_ready (info->file, attributes,
                                        got_file_info_callback, info);
         g_list_free (attributes);

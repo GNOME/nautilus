@@ -577,7 +577,7 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 
 	file = nautilus_file_get (new_uri);
 
-	nautilus_mime_actions_wait_for_required_file_attributes (file);
+	nautilus_mime_actions_wait_for_full_file_attributes (file);
 
 	/* User has explicitly chosen a viewer other than the default, so
 	 * make it the default and then switch locations.
@@ -3108,7 +3108,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 	if (nautilus_g_list_exactly_one_item (files)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-		nautilus_mime_actions_wait_for_required_file_attributes (NAUTILUS_FILE (files->data));
+		nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (files->data));
 
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (files->data));
 		for (node = applications; node != NULL; node = node->next) {
@@ -3378,7 +3378,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 		
-		nautilus_mime_actions_wait_for_required_file_attributes (NAUTILUS_FILE (selection->data));
+		nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (selection->data));
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
@@ -3761,7 +3761,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (!performed_special_handling) {
-		nautilus_mime_actions_wait_for_required_file_attributes (file);
+		nautilus_mime_actions_wait_for_full_file_attributes (file);
 
 		action_type = nautilus_mime_get_default_action_type_for_file (file);
 		application = nautilus_mime_get_default_application_for_file (file);
