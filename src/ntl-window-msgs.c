@@ -396,7 +396,7 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
         }
 
       new_uri = gnome_vfs_uri_new (loci->navinfo.requested_uri);
-      if(!new_uri)
+      if(!new_uri && loci->navinfo.actual_uri)
         new_uri = gnome_vfs_uri_new (loci->navinfo.actual_uri);
       if(new_uri)
         {

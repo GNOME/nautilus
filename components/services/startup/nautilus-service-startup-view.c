@@ -42,6 +42,10 @@ struct _NautilusServicesContentViewDetails {
 	gchar                     *uri;
 	NautilusContentViewFrame  *view_frame;
 	GtkWidget		  *form;
+	
+	GtkWidget		  *account_name;
+	GtkWidget		  *account_password;
+	GtkWidget		  *confirm_password;
 };
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/DDDD/FFFF"
@@ -107,32 +111,15 @@ static void setup_test_form(NautilusServicesContentView *view)
 	gtk_widget_show (config_button);
 }
 
-/* create the signup form */
+/* shared utility to allocate a title for a form */
 
-static void setup_signup_form(NautilusServicesContentView *view)
+static void setup_form_title(GtkBox *container, const gchar* title_text)
 {
-	/* put a label here as a placeholder just to show something */
-	view->details->form = gtk_label_new ("Signup Form");
-	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
-	gtk_widget_show (view->details->form);
-}
-
-/* create the config form */
-
-static void setup_config_form(NautilusServicesContentView *view)
-{
-	gchar *file_name;
-	GtkWidget *temp_widget, *temp_container;
-	gchar *message;
-	/* allocate a vbox as the container */	
-	view->details->form = gtk_vbox_new(FALSE,0);
-	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
-	gtk_widget_show(view->details->form);
-
-	/* build the title in an hbox */	
+	GtkWidget *temp_widget;
+	gchar *file_name;	
+	GtkHBox *temp_container = gtk_hbox_new(FALSE,0);
 	
-	temp_container = gtk_hbox_new(FALSE,0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);	
+	gtk_box_pack_start (GTK_BOX (container), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
 	
  	file_name = gnome_pixmap_file ("nautilus/eazel-logo.gif");
@@ -141,9 +128,86 @@ static void setup_config_form(NautilusServicesContentView *view)
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
 
-	temp_widget = gtk_label_new ("Eazel Service Configuration Gathering");
-	gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 0);			
+	temp_widget = gtk_label_new (title_text);
+	gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);			
  	gtk_widget_show (temp_widget);
+}
+
+/* create the signup form */
+
+static void setup_signup_form(NautilusServicesContentView *view)
+{
+	gchar *message;
+	GtkTable *table;
+	GtkWidget *temp_widget;
+	
+	/* allocate a vbox as the container for the form */	
+	view->details->form = gtk_vbox_new(FALSE,0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+
+	/* set up the title */	
+	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Registration Form");
+
+	/* display a descriptive message */
+	/* FIXME: get the text from a file or from the service */
+	message = "Use this form to register for the Eazel Service, free of charge.  It will give you a storage space on the web that is easily accessed from Nautilus, and access to a customized software catalog that will allow you to install new applications with a single click";
+	temp_widget = gtk_label_new (message);
+ 	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	
+	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+ 	gtk_widget_show (temp_widget);
+
+	/* allocate a table to hold the signup form */
+	
+	table = GTK_TABLE(gtk_table_new(2, 3, FALSE));
+
+	/* account name */
+  	temp_widget = gtk_label_new("Account Name: ");
+  	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
+  	gtk_table_attach(table, temp_widget, 0,1, 0,1, GTK_FILL, GTK_FILL, 2,2);
+  	gtk_widget_show(temp_widget);
+  	view->details->account_name = gtk_entry_new_with_max_length(20);
+  	gtk_table_attach(table, view->details->account_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4,4);
+  	gtk_widget_show(view->details->account_name);
+
+	/* password */
+  	temp_widget = gtk_label_new("Account Password: ");
+  	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
+  	gtk_table_attach(table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 2,2);
+  	gtk_widget_show(temp_widget);
+  	view->details->account_password = gtk_entry_new_with_max_length(20);
+  	gtk_table_attach(table, view->details->account_password, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4,4);
+  	gtk_widget_show(view->details->account_password);
+
+	/* confirm password */
+  	temp_widget = gtk_label_new("Confirm Password: ");
+  	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
+  	gtk_table_attach(table, temp_widget, 0,1, 2,3, GTK_FILL, GTK_FILL, 2,2);
+  	gtk_widget_show(temp_widget);
+  	view->details->confirm_password = gtk_entry_new_with_max_length(20);
+  	gtk_table_attach(table, view->details->confirm_password, 1, 2, 2,3, GTK_FILL, GTK_FILL, 4,4);
+  	gtk_widget_show(view->details->confirm_password);
+	
+	/* insert the table */
+	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);	
+	gtk_widget_show (GTK_WIDGET(table));	
+}
+
+/* create the config form */
+
+static void setup_config_form(NautilusServicesContentView *view)
+{
+	gchar *message;
+	GtkWidget *temp_widget;
+	
+	/* allocate a vbox as the container */	
+	view->details->form = gtk_vbox_new(FALSE,0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+
+	/* set up the title */	
+	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Configuration Gathering");
 	
 	/* make label containing text about uploading the configuration data */
 	/* FIXME: It should get this text from a file or from the service */

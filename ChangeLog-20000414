@@ -1,3 +1,11 @@
+2000-04-04  Andy Hertzfeld <andy@eazel.com>
+
+	* src/ntl=window-msgs.c:
+	fixed bug where it was allocating a uri for a null string by only
+	trying the actual_uri if it's non-null
+	* components.services/startup/nautilus-service-startup-view.h:
+	more work on the registration form
+	
 2000-04-03  Andy Hertzfeld <andy@eazel.com>
 
 	more work on the service component
