@@ -45,6 +45,7 @@ typedef enum {
 	MAN_FILE,
 	INFO_FILE,
 	HTML_FILE,
+	XML_FILE, 
 	UNKNOWN_FILE
 } HelpFileTypes;
 
@@ -80,7 +81,7 @@ help_uri_to_string (HelpURI *help_uri)
         after_scheme = NULL;
 	
 	switch (help_uri->type) {
-	case SGML_FILE:
+	case SGML_FILE: case XML_FILE: 
 		if (help_uri->section != NULL) {
 			after_scheme = g_strdup_printf
                                 ("gnome-db2html2 %s?%s;mime-type=text/html",
@@ -112,6 +113,8 @@ help_uri_to_string (HelpURI *help_uri)
                         after_scheme = g_strdup (help_uri->file);
                 }
 		break;
+	case UNKNOWN_FILE:
+		return NULL;
 	default:
 		/* FIXME: An assert at runtime may be a bit harsh.
                  * We'd like behavior more like g_return_if_fail.
@@ -166,6 +169,8 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
         
 	if (g_strcasecmp (mime_type, "text/sgml") == 0) {
 		help_uri->type = SGML_FILE;
+	} else if (g_strcasecmp (mime_type, "text/xml") == 0) {
+		help_uri->type = XML_FILE;
 	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
 	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
@@ -176,6 +181,8 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 		help_uri->type = MAN_FILE;
 	} else if (file_in_info_path (file)) {
   	        help_uri->type = INFO_FILE;
+	} else {
+		help_uri->type = UNKNOWN_FILE;
 	}
 
 	return TRUE;
@@ -339,7 +346,7 @@ help_do_transform (GnomeVFSTransform *transform,
 	} else {
 		help_uri = transform_relative_file (old_uri);
 	}
-
+	
 	if (help_uri == NULL) {
 		return GNOME_VFS_ERROR_NOT_FOUND;
         }

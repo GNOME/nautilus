@@ -20,6 +20,7 @@ ElementInfo sect_preparse[] = {
 	{ FORMALPARA, "formalpara", NULL, NULL, NULL},
 	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL},
+	{ ARTICLEINFO, "articleinfo", NULL, NULL, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", NULL, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, NULL},

@@ -32,6 +32,7 @@ ElementInfo toc_elements[] = {
 	{ FORMALPARA, "formalpara", NULL, NULL, NULL},
 	{ BOOKINFO, "bookinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ ARTHEADER, "artheader", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
+	{ ARTICLEINFO, "articleinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) toc_author_start_element, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, (charactersSAXFunc) toc_author_characters },

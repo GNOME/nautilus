@@ -65,6 +65,7 @@ void sect_tt_start_element (Context *context, const gchar *name, const xmlChar *
 void sect_tt_end_element (Context *context, const gchar *name);
 void sect_b_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_b_end_element (Context *context, const gchar *name);
+void sect_b_arrow_end_element (Context *context, const gchar *name);
 void sect_tti_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_tti_end_element (Context *context, const gchar *name);
 void sect_btt_start_element (Context *context, const gchar *name, const xmlChar **atrs);

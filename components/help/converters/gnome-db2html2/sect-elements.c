@@ -17,6 +17,7 @@ ElementInfo sect_elements[] = {
 	{ FORMALPARA, "formalpara", (startElementSAXFunc) sect_formalpara_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL },
 	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL}, //(startElementSAXFunc) artheader_start_element, (endElementSAXFunc) sect_artheader_end_element, NULL},
+	{ ARTICLEINFO, "articleinfo", NULL, NULL, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) sect_author_start_element, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
@@ -60,7 +61,7 @@ ElementInfo sect_elements[] = {
 	{ GUIBUTTON, "guibutton", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUIICON, "guiicon", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUILABEL, "guilabel", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
-	{ GUIMENU, "guimenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIMENU, "guimenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_arrow_end_element, (charactersSAXFunc) sect_write_characters},
 	{ GUIMENUITEM, "guimenuitem", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
 	{ HARDWARE, "hardware", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ KEYCAP, "keycap", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
@@ -82,8 +83,7 @@ ElementInfo sect_elements[] = {
 	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (endElementSAXFunc) sect_funcparams_end_element, (charactersSAXFunc) sect_write_characters},
 	{ PARAMDEF, "paramdef", (startElementSAXFunc) sect_paramdef_start_element, NULL, (charactersSAXFunc) sect_write_characters},
 	{ VOID, "void", (startElementSAXFunc) sect_void_start_element, NULL, NULL },
-	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
-	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
+	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_arrow_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -842,6 +842,7 @@ sect_graphic_start_element (Context *context,
 	gchar **atrs_ptr;
 	gchar *format = NULL;
 	gchar *fileref = NULL;
+	gchar *lowcaseformat = NULL;
 	SectContext *sect_context = (SectContext *)context->data;
 
 	if (!IS_IN_SECT (context))
@@ -871,10 +872,18 @@ sect_graphic_start_element (Context *context,
 	if (fileref == NULL)
 		return;
 
-	if (format == NULL || (!g_strcasecmp (format, "gif")))
+	if (g_strcasecmp (format, "gif") == 0) {
 		sect_context->figure->img = g_strdup_printf ("%s.gif", fileref);
-	else
+	} else if ((g_strcasecmp (format, "jpg") == 0) ||
+		   (g_strcasecmp (format, "jpeg") == 0)) {
+		/* Some people decide to use .jpg, others use .jpeg */
+		lowcaseformat = g_strdup (format);
+		g_strdown (lowcaseformat);
+		sect_context->figure->img = g_strdup_printf ("%s.%s", fileref, lowcaseformat);
+		g_free (lowcaseformat);
+	} else {
 		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
+	} 
 }
 
 void
@@ -938,6 +947,15 @@ sect_b_end_element (Context *context,
 		return;
 
 	sect_print (context, "</B>");
+}
+
+void sect_b_arrow_end_element (Context *context,
+                               const gchar *name)
+{
+	        if (!IS_IN_SECT (context))
+			return;
+		
+		sect_print (context, "-&gt;</B>");
 }
 
 void
