@@ -74,9 +74,21 @@ enum {
 };
 
 enum {
-	BASIC_PAGE_TITLE_COLUMN,
-	BASIC_PAGE_VALUE_COLUMN,
-	BASIC_PAGE_COLUMN_COUNT
+	PERMISSIONS_PAGE_PERMISSIONS_ROW,
+	PERMISSIONS_PAGE_OWNER_ROW,
+	PERMISSIONS_PAGE_GROUP_ROW,
+	PERMISSIONS_PAGE_ROW_COUNT
+};
+
+enum {
+	MORE_PAGE_MIME_TYPE_ROW,
+	MORE_PAGE_ROW_COUNT
+};
+
+enum {
+	TITLE_COLUMN,
+	VALUE_COLUMN,
+	COLUMN_COUNT
 };
 
 static void
@@ -376,23 +388,21 @@ install_title_value_pair (GtkTable *table,
 	/* Move widget to right edge (justifying text not the right thing here). */
 	gtk_misc_set_alignment (GTK_MISC (title_field), 1, 0.5);
 	gtk_widget_show (title_field);
-	gtk_table_attach_defaults (GTK_TABLE (table),
-				   title_field,
-				   BASIC_PAGE_TITLE_COLUMN, 
-				   BASIC_PAGE_TITLE_COLUMN + 1,
-				   row, 
-				   row + 1);
+	gtk_table_attach (GTK_TABLE (table), title_field,
+			  TITLE_COLUMN, TITLE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
 
 	value_field = gtk_label_new ("");
 	/* Move widget to left edge (justifying text not the right thing here). */
 	gtk_misc_set_alignment (GTK_MISC (value_field), 0, 0.5);
 	gtk_widget_show (value_field);
-	gtk_table_attach_defaults (GTK_TABLE (table),
-				   value_field,
-				   BASIC_PAGE_VALUE_COLUMN, 
-				   BASIC_PAGE_VALUE_COLUMN + 1,
-				   row, 
-				   row + 1);
+	gtk_table_attach (GTK_TABLE (table), value_field,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
@@ -412,39 +422,67 @@ install_title_value_pair (GtkTable *table,
 }
 
 static void
+create_page_with_table_in_vbox (GtkNotebook *notebook, 
+				const char *title, 
+				int row_count, 
+				GtkWidget **return_table, 
+				GtkWidget **return_vbox)
+{
+	GtkWidget *table;
+	GtkWidget *vbox;
+
+	g_assert (GTK_IS_NOTEBOOK (notebook));
+	g_assert (title != NULL);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), GNOME_PAD);
+	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
+
+	table = gtk_table_new (row_count, COLUMN_COUNT, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), GNOME_PAD);
+	gtk_table_set_col_spacings (GTK_TABLE (table), GNOME_PAD);
+	gtk_widget_show (table);
+	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);	
+
+	if (return_table != NULL) {
+		*return_table = table;
+	}
+
+	if (return_vbox != NULL) {
+		*return_vbox = vbox;
+	}
+}			
+
+static void
 create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 {
+	GtkWidget *table;
 	GtkWidget *icon_pixmap_widget, *name_field;
-	GtkWidget *basic_page_table;
 
-	basic_page_table = gtk_table_new (BASIC_PAGE_ROW_COUNT, BASIC_PAGE_COLUMN_COUNT, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (basic_page_table), GNOME_PAD);
-	gtk_table_set_col_spacings (GTK_TABLE (basic_page_table), GNOME_PAD);
-	gtk_widget_show (basic_page_table);
-	gtk_container_add (GTK_CONTAINER (notebook), basic_page_table);
-	gtk_container_set_border_width (GTK_CONTAINER (basic_page_table), GNOME_PAD);
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
-				    gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0),
-				    gtk_label_new (_("Basic")));
-
+	create_page_with_table_in_vbox (notebook, 
+					_("Basic"), 
+					BASIC_PAGE_ROW_COUNT, 
+					&table, 
+					NULL);
 
 	/* Icon pixmap */
 	icon_pixmap_widget = create_pixmap_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
-	gtk_table_attach_defaults (GTK_TABLE (basic_page_table),
+	gtk_table_attach_defaults (GTK_TABLE (table),
 				   icon_pixmap_widget,
-				   BASIC_PAGE_TITLE_COLUMN, 
-				   BASIC_PAGE_TITLE_COLUMN + 1,
+				   TITLE_COLUMN, 
+				   TITLE_COLUMN + 1,
 				   BASIC_PAGE_ICON_AND_NAME_ROW, 
 				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 
 	/* Name field */
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
-	gtk_table_attach_defaults (GTK_TABLE (basic_page_table),
+	gtk_table_attach_defaults (GTK_TABLE (table),
 				   name_field,
-				   BASIC_PAGE_VALUE_COLUMN, 
-				   BASIC_PAGE_VALUE_COLUMN + 1,
+				   VALUE_COLUMN, 
+				   VALUE_COLUMN + 1,
 				   BASIC_PAGE_ICON_AND_NAME_ROW, 
 				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 
@@ -483,20 +521,13 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					       name_field_update_to_match_file,
 					       GTK_OBJECT (name_field));
 
-	/* File uri */
-	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_LOCATION_ROW,
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
 				  _("Location:"), file, "parent_uri");
-	
-	/* File type */
-	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_TYPE_ROW,
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
 				  _("Type:"), file, "type");
-	
-	/* File size */
-	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_SIZE_ROW,
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
 				  _("Size:"), file, "size");
-	
-	/* File date */
-	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_DATE_ROW,
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_DATE_ROW,
 				  _("Date Modified:"), file, "date_modified");
 }
 
@@ -509,25 +540,9 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 
 	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (emblems_page_vbox);
-	gtk_container_add (GTK_CONTAINER (notebook), emblems_page_vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_page_vbox), GNOME_PAD);
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
-				    gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1),
-				    gtk_label_new (_("Emblems")));
+	gtk_notebook_append_page (notebook, emblems_page_vbox, gtk_label_new (_("Emblems")));
 	
-
-	/* The prompt. */
-	prompt = gtk_label_new (_("This is a placeholder for the final emblems design. For now, you can turn some hard-wired properties with corresponding emblems on and off."));
-	gtk_widget_show (prompt);
-	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), prompt, FALSE, FALSE, 0);
-   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
-
-	/* Separator between prompt and check buttons. */
-  	separator_line = gtk_hseparator_new ();
-  	gtk_widget_show (separator_line);
-  	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), separator_line, TRUE, TRUE, 8);
-
 	/* Holder for two columns of check buttons. */
 	check_buttons_box = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (check_buttons_box);
@@ -570,6 +585,82 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 			gtk_box_pack_start (GTK_BOX (right_buttons_box), button, FALSE, FALSE, 0);
 		}
 	}
+
+	/* The prompt. */
+	prompt = gtk_label_new (_("Images and a complete list of available emblems coming soon."));
+	gtk_widget_show (prompt);
+	gtk_box_pack_end (GTK_BOX (emblems_page_vbox), prompt, FALSE, FALSE, 0);
+   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+
+	/* Separator between check buttons and prompt. */
+  	separator_line = gtk_hseparator_new ();
+  	gtk_widget_show (separator_line);
+  	gtk_box_pack_end (GTK_BOX (emblems_page_vbox), separator_line, TRUE, TRUE, 8);
+
+}
+
+static void
+create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
+{
+	GtkWidget *table;
+	GtkWidget *vbox;
+	GtkWidget *prompt, *separator_line;
+
+	create_page_with_table_in_vbox (notebook, 
+					_("Permissions"), 
+					PERMISSIONS_PAGE_ROW_COUNT, 
+					&table, 
+					&vbox);
+
+	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_PERMISSIONS_ROW,
+				  _("as string:"), file, "permissions");
+	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_OWNER_ROW,
+				  _("Owner:"), file, "owner");
+	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_GROUP_ROW,
+				  _("Group:"), file, "group");
+
+	/* Here's some temporary stuff to avoid frightening the masses. */
+	prompt = gtk_label_new (_("Don't panic. This is not the final permissions user interface."));
+	gtk_widget_show (prompt);
+	gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
+   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+
+  	separator_line = gtk_hseparator_new ();
+  	gtk_widget_show (separator_line);
+  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 8);
+}
+
+
+
+static void
+create_more_page (GtkNotebook *notebook, NautilusFile *file)
+{
+	GtkWidget *table;
+	GtkWidget *vbox;
+	GtkWidget *separator_line, *prompt;
+
+	create_page_with_table_in_vbox (notebook, 
+					_("More"), 
+					MORE_PAGE_ROW_COUNT, 
+					&table, 
+					&vbox);
+
+	install_title_value_pair (GTK_TABLE (table), MORE_PAGE_MIME_TYPE_ROW,
+				  _("MIME type:"), file, "mime_type");
+
+	/* The prompt. */
+	prompt = gtk_label_new (_("Tell sullivan@eazel.com all your good ideas for what should go here."));
+	gtk_widget_show (prompt);
+	gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
+   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+
+	/* Separator between check buttons and prompt. */
+  	separator_line = gtk_hseparator_new ();
+  	gtk_widget_show (separator_line);
+  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 8);
 }
 
 static GtkWindow *
@@ -600,6 +691,8 @@ create_properties_window (NautilusFile *file)
 	/* Create the pages. */
 	create_basic_page (GTK_NOTEBOOK (notebook), file);
 	create_emblems_page (GTK_NOTEBOOK (notebook), file);
+	create_permissions_page (GTK_NOTEBOOK (notebook), file);
+	create_more_page (GTK_NOTEBOOK (notebook), file);
 
 	return window;
 }
