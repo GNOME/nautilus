@@ -1,5 +1,17 @@
 2001-02-25  Maciej Stachowiak  <mjs@eazel.com>
 
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.c: 
+	(set_parameters_from_command_line): Fixed bug 7000.
+
+	* components/services/summary/nautilus-summary-view-private.h,
+	components/services/summary/nautilus-summary-view.c: changed
+	things to properly internationalize strings in #defines to fix bug
+	6997 (Defined "More Info" message does not end up in translation).
+
+2001-02-25  Maciej Stachowiak  <mjs@eazel.com>
+
 	reviewed by: Seth Nickell  <snickell@stanford.edu>
 
 	Fixed bug 6822 (Need to be able to support services that run a

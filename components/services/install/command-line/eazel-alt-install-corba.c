@@ -181,7 +181,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 		check_ev ("set_protocol");
 	}
 	if (arg_erase + arg_revert > 1) {
-			fprintf (stderr, _("*** Erase and revert ?  Somebody set us up the bomb!\n"));
+			fprintf (stderr, _("*** Erase and revert ?  Somebody set up us the bomb!\n"));
 			exit (1);
 	}
 	if (arg_upgrade) {

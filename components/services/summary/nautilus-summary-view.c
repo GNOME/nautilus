@@ -112,6 +112,19 @@ static void     cancel_load_in_progress                (NautilusSummaryView *vie
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
+
+static const char goto_button_label[] = N_("Go There");
+#define GOTO_BUTTON_LABEL _(goto_button_label)
+
+static const char softcat_goto_button_label[] = N_("More Info");
+#define SOFTCAT_GOTO_BUTTON_LABEL _(softcat_goto_button_label)
+
+static const char install_goto_button_label[] = N_("Install");
+#define INSTALL_GOTO_BUTTON_LABEL _(install_goto_button_label)
+
+
+
+
 static const char *footer_online_items[] =
 {
 	N_("Account Preferences"),

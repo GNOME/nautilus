@@ -47,10 +47,6 @@
 #define REGISTER_KEY				"eazel_service_register"
 #define PREFERENCES_KEY				"eazel_service_account_maintenance"
 
-#define GOTO_BUTTON_LABEL			_("Go There")
-#define SOFTCAT_GOTO_BUTTON_LABEL		_("More Info")
-#define INSTALL_GOTO_BUTTON_LABEL		_("Install")
-
 #define MAX_IMAGE_WIDTH				50
 #define MAX_IMAGE_HEIGHT			50
 
