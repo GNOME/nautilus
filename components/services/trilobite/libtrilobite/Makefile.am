@@ -18,6 +18,7 @@ INCLUDES = \
 	$(GCONF_CFLAGS)		\
 	$(OAF_CFLAGS)		\
 	$(XML_CFLAGS)		\
+	$(VFS_CFLAGS)		\
 	$(NULL)
 
 libtrilobite_la_LDFLAGS =	\
@@ -26,6 +27,7 @@ libtrilobite_la_LDFLAGS =	\
 	$(GCONF_LIBS)		\
 	$(BONOBO_LIBS)		\
 	$(XML_LIBS)		\
+	$(VFS_LIBS)		\
 	$(NULL)
 
 libtrilobite_service_la_LDFLAGS =\
