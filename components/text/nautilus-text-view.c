@@ -54,10 +54,10 @@
 
 #include <limits.h>
 
-
 #define MAX_SERVICE_ITEMS 32
 #define TEXT_VIEW_CHUNK_SIZE 65536
 #define MAX_FILE_SIZE	1024*1024
+#define MAX_SELECTION_SIZE 256
 
 struct NautilusTextViewDetails {
 	NautilusFile *file;
@@ -453,7 +453,6 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			g_free (mapped_text);
 			
 			/* load the resultant page through gnome-vfs */
-
 			if (nautilus_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
  				gtk_editable_delete_text (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);   
 				gtk_text_insert (GTK_TEXT (parameters->text_view->details->text_display),
@@ -468,8 +467,12 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 		g_free (selected_text);
 	} else {
 		selected_text = get_selected_text (GTK_EDITABLE (parameters->text_view->details->text_display));
-	
 		if (selected_text != NULL) {
+			/* truncate the selection to a reasonable size */
+			if (strlen (selected_text) > MAX_SELECTION_SIZE) {
+				selected_text [MAX_SELECTION_SIZE] = '\0';
+			}
+			
 			/* formulate the url */
 			mapped_text = gnome_vfs_escape_string (selected_text);
 			uri = g_strdup_printf (parameters->service_template, mapped_text);

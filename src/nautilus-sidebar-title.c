@@ -56,6 +56,9 @@
 #include <libnautilus-extensions/nautilus-label-with-background.h>
 #include <libnautilus-extensions/nautilus-image-with-background.h>
 
+/* maximum allowable size to be displayed as the title */
+#define MAX_TITLE_SIZE 256
+
 static void                nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
 static void                nautilus_sidebar_title_destroy          (GtkObject                 *object);
 static void                nautilus_sidebar_title_initialize       (NautilusSidebarTitle      *pixmap);
@@ -163,7 +166,6 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	/* set up the label colors according to the theme, and get notified of changes */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
-
 }
 
 /* destroy by throwing away private storage */
@@ -616,8 +618,13 @@ nautilus_sidebar_title_set_text (NautilusSidebarTitle *sidebar_title,
 				 const char* new_text)
 {
 	g_free (sidebar_title->details->title_text);
-	sidebar_title->details->title_text = g_strdup (new_text);
-
+	
+	/* truncate the title to a reasonable size */
+	if (new_text && strlen (new_text) > MAX_TITLE_SIZE) {
+		sidebar_title->details->title_text = g_strndup (new_text, MAX_TITLE_SIZE);
+	} else {
+		sidebar_title->details->title_text = g_strdup (new_text);
+	}
 	/* Recompute the displayed text. */
 	update_title (sidebar_title);
 }

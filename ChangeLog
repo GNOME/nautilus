@@ -1,3 +1,18 @@
+2001-02-15  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 6589, nautilus crashes if a moderate sized text block
+	is used for dictionary lookup.  Fixed by imposing sanity limits
+	on both the selection size passed to services and the sidebar
+	title.
+	
+	* components/text/nautilus-text-view.c: (handle_service_menu_item):
+	truncate the selection if it's greater than a reasonable size.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_set_text):
+	truncate the sidebar title if it's longer than a reasonable limit.
+	
 2001-02-15  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
