@@ -451,14 +451,19 @@ nautilus_preferences_set_integer (const char *name,
 				  int int_value)
 {
 	char *key;
+	int old_value;
 
 	g_return_if_fail (name != NULL);
 	
 	key = preferences_key_make (name);
-	nautilus_gconf_set_integer (key, int_value);
-	g_free (key);
+	old_value = nautilus_preferences_get_integer (name);
 
-	nautilus_gconf_suggest_sync ();
+	if (int_value != old_value) {
+		nautilus_gconf_set_integer (key, int_value);
+
+		nautilus_gconf_suggest_sync ();
+	}
+	g_free (key);
 }
 
 int
@@ -482,14 +487,19 @@ nautilus_preferences_set (const char *name,
 			  const char *string_value)
 {
 	char *key;
+	char *old_value;
 
 	g_return_if_fail (name != NULL);
-	
-	key = preferences_key_make (name);
-	nautilus_gconf_set_string (key, string_value);
-	g_free (key);
 
-	nautilus_gconf_suggest_sync ();
+	key = preferences_key_make (name);
+	old_value = nautilus_preferences_get (name);
+
+	if (strcmp (string_value, old_value) != 0) {
+		nautilus_gconf_set_string (key, string_value);
+		
+		nautilus_gconf_suggest_sync ();
+	}
+	g_free (key);
 }
 
 char *

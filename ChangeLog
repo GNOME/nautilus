@@ -1,3 +1,26 @@
+2001-02-23  Arik Devens  <arik@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fixed bug 6847, if you delete the text in the homedir preference
+	by holding down the backspace key nautilus freezes and eventually
+	crashes.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(text_item_changed_callback), (editable_string_changed_callback),
+	(integer_changed_callback), (nautilus_preferences_item_get_name),
+	(update_text_settings_at_idle),
+	(preferences_item_update_text_settings_at_idle),
+	(update_integer_settings_at_idle),
+	(preferences_item_update_integer_settings_at_idle): Added using
+	idle handlers to set preferences instead of setting the directly
+	on changed.
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_integer), (nautilus_preferences_set):
+	Added checking whether the new value has changed from the current
+	value before setting it.
+
 2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>

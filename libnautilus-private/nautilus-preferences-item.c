@@ -34,6 +34,7 @@
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmain.h>
 
 #include "nautilus-radio-button-group.h"
 #include "nautilus-string-picker.h"
@@ -53,6 +54,8 @@ enum
 static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
 static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
 static const NautilusPreferencesItemType PREFERENCES_ITEM_UNDEFINED_ITEM = -1U;
+static gboolean text_idle_handler = FALSE;
+static gboolean integer_idle_handler = FALSE;
 
 struct _NautilusPreferencesItemDetails
 {
@@ -76,34 +79,36 @@ static void preferences_item_get_arg                   (GtkObject               
 							guint                         arg_id);
 
 /* Private stuff */
-static void preferences_item_construct                 (NautilusPreferencesItem      *item,
-							const gchar                  *preference_name,
-							NautilusPreferencesItemType   item_type);
-static void preferences_item_create_enum               (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void preferences_item_create_short_enum         (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void preferences_item_create_editable_string    (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void preferences_item_create_integer    (NautilusPreferencesItem      *item,
-							const char     *preference_name);
+static void preferences_item_construct                        (NautilusPreferencesItem      *item,
+							       const gchar                  *preference_name,
+							       NautilusPreferencesItemType   item_type);
+static void preferences_item_create_enum                      (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
+static void preferences_item_create_short_enum                (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
+static void preferences_item_create_boolean                   (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
+static void preferences_item_create_editable_string           (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
+static void preferences_item_create_integer                   (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void preferences_item_create_theme	       (NautilusPreferencesItem      *item,
-							const char     *preference_name);
-static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
-							GtkWidget                    *button,
-							gpointer                      user_data);
-static void boolean_button_toggled_callback            (GtkWidget                    *button_group,
-							gpointer                      user_data);
-static void text_item_changed_callback                 (GtkWidget                    *string_picker,
-							gpointer                      user_data);
-static void editable_string_changed_callback           (GtkWidget                    *caption,
-							gpointer                      user_data);
-static void integer_changed_callback           (GtkWidget                    *caption,
-							gpointer                      user_data);
+							       const char                   *preference_name);
+static void preferences_item_create_theme	              (NautilusPreferencesItem      *item,
+							       const char                   *preference_name);
+static void preferences_item_update_text_settings_at_idle     (NautilusPreferencesItem      *preferences_item);
+static void preferences_item_update_integer_settings_at_idle  (NautilusPreferencesItem      *preferences_item);
+static void enum_radio_group_changed_callback                 (GtkWidget                    *button_group,
+							       GtkWidget                    *button,
+							       gpointer                      user_data);
+static void boolean_button_toggled_callback                   (GtkWidget                    *button_group,
+							       gpointer                      user_data);
+static void text_item_changed_callback                        (GtkWidget                    *string_picker,
+							       gpointer                      user_data);
+static void editable_string_changed_callback                  (GtkWidget                    *caption,
+							       gpointer                      user_data);
+static void integer_changed_callback                          (GtkWidget                    *caption,
+							       gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
 
@@ -718,7 +723,6 @@ static void
 text_item_changed_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusPreferencesItem	*item;
-	char			*text;
 
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
@@ -728,21 +732,13 @@ text_item_changed_callback (GtkWidget *button, gpointer user_data)
 	g_assert (item->details->child != NULL);
 	g_assert (NAUTILUS_IS_STRING_PICKER (item->details->child));
 
-	text = nautilus_string_picker_get_selected_string (NAUTILUS_STRING_PICKER (item->details->child));
-
-	if (text != NULL)
-	{
-		nautilus_preferences_set (item->details->preference_name, text);
-		
-		g_free (text);
-	}
+	preferences_item_update_text_settings_at_idle (item);
 }
 
 static void
 editable_string_changed_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusPreferencesItem	*item;
-	char			*text;
 	
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
@@ -752,22 +748,13 @@ editable_string_changed_callback (GtkWidget *button, gpointer user_data)
 	g_assert (item->details->child != NULL);
 	g_assert (NAUTILUS_IS_TEXT_CAPTION (item->details->child));
 
-	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (item->details->child));
-	
-	if (text != NULL)
-	{
-		nautilus_preferences_set (item->details->preference_name, text);
-		
-		g_free (text);
-	}
+	preferences_item_update_text_settings_at_idle (item);
 }
 
 static void
 integer_changed_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusPreferencesItem	*item;
-	char			*text;
-	int value = 0;
 	
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
@@ -777,13 +764,7 @@ integer_changed_callback (GtkWidget *button, gpointer user_data)
 	g_assert (item->details->child != NULL);
 	g_assert (NAUTILUS_IS_TEXT_CAPTION (item->details->child));
 
-	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (item->details->child));
-
-	if (text != NULL) {
-		nautilus_eat_str_to_int (text, &value);
-	}
-
-	nautilus_preferences_set_integer (item->details->preference_name, value);
+	preferences_item_update_integer_settings_at_idle (item);
 }
 
 char *
@@ -792,4 +773,64 @@ nautilus_preferences_item_get_name (const NautilusPreferencesItem *preferences_i
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item), NULL);
 
 	return g_strdup (preferences_item->details->preference_name);
+}
+
+static gboolean
+update_text_settings_at_idle (NautilusPreferencesItem *preferences_item)
+{
+	char *text;
+
+	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (preferences_item->details->child));
+
+	if (text != NULL)
+	{
+		nautilus_preferences_set (preferences_item->details->preference_name, text);
+		
+		g_free (text);
+	}
+	
+	text_idle_handler = FALSE;
+
+	return FALSE;
+}
+
+static void
+preferences_item_update_text_settings_at_idle (NautilusPreferencesItem *preferences_item)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item));
+
+	if (text_idle_handler == FALSE) {
+		gtk_idle_add ((GtkFunction) update_text_settings_at_idle, preferences_item);
+		text_idle_handler = TRUE;
+	}
+}
+
+static gboolean
+update_integer_settings_at_idle (NautilusPreferencesItem *preferences_item)
+{
+	int value = 0;
+	char *text;
+
+	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (preferences_item->details->child));
+
+	if (text != NULL) {
+		nautilus_eat_str_to_int (text, &value);
+	}
+	
+	nautilus_preferences_set_integer (preferences_item->details->preference_name, value);
+
+	integer_idle_handler = FALSE;
+
+	return FALSE;
+}
+
+static void
+preferences_item_update_integer_settings_at_idle (NautilusPreferencesItem *preferences_item)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item));
+
+	if (integer_idle_handler == FALSE) {
+		gtk_idle_add ((GtkFunction) update_integer_settings_at_idle, preferences_item);
+		integer_idle_handler = TRUE;
+	}
 }
