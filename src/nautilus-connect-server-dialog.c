@@ -536,10 +536,6 @@ setup_for_type (NautilusConnectServerDialog *dialog)
 
  connection_name:
 	
-	gtk_table_set_row_spacing  (GTK_TABLE (table),
-				    i-1,
-				    18);
-	
 	label = gtk_label_new_with_mnemonic (_("_Name to use for connection:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
@@ -594,18 +590,24 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	GtkWidget *table;
 	GtkWidget *combo;
 	GtkWidget *hbox;
+	GtkWidget *vbox;
 	
 	dialog->details = g_new0 (NautilusConnectServerDialogDetails, 1);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
-
-	hbox = gtk_hbox_new (FALSE, 6);
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			    vbox, FALSE, TRUE, 0);
+	gtk_widget_show (vbox);
+			    
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox, FALSE, TRUE, 0);
 	gtk_widget_show (hbox);
 	
@@ -635,25 +637,24 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_widget_show (combo);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), combo);
 	gtk_box_pack_start (GTK_BOX (hbox),
-			    combo, FALSE, TRUE, 0);
+			    combo, TRUE, TRUE, 0);
 	g_signal_connect (combo, "changed",
 			  G_CALLBACK (combo_changed_callback),
 			  dialog);
 	
 
 	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox, FALSE, TRUE, 0);
 	gtk_widget_show (hbox);
 
-	label = gtk_label_new_with_mnemonic ("       ");
+	label = gtk_label_new_with_mnemonic ("    ");
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    label, FALSE, FALSE, 0);
 	
 	
 	dialog->details->table = table = gtk_table_new (5, 2, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_widget_show (table);
