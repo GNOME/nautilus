@@ -138,10 +138,13 @@ char **broken_cdda_interface_h_workaround = strerror_tr;
 
 #ifdef HAVE_SYS_MNTTAB_H
 typedef struct mnttab MountTableEntry;
+#define MOUNT_TABLE_ENTRY_TYPE(ent) ((ent)->mnt_fstype)
 #elif defined (HAVE_GETMNTINFO)
 typedef struct statfs MountTableEntry;
+#define MOUNT_TABLE_ENTRY_TYPE(ent) ((ent)->f_fstypename)
 #else
 typedef struct mntent MountTableEntry;
+#define MOUNT_TABLE_ENTRY_TYPE(ent) ((ent)->mnt_type)
 #endif
 
 typedef struct {
@@ -496,7 +499,7 @@ has_removable_mntent_options (MountTableEntry *ent)
 	if (hasmntopt (ent, "user") != NULL
 	    || hasmntopt (ent, "users") != NULL
 	    || hasmntopt (ent, "owner") != NULL
-	    || eel_strcmp("supermount", ent->mnt_type) == 0) {
+	    || eel_strcmp("supermount", MOUNT_TABLE_ENTRY_TYPE (ent)) == 0) {
 		return TRUE;
 	}
 #endif
@@ -529,22 +532,23 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 #ifdef HAVE_SYS_MNTTAB_H
         MountTableEntry ent_storage;
 #endif
+#ifdef HAVE_GETMNTINFO
+	int count, index;
+#endif
 	ent = NULL;
 	volume = NULL;
 	volumes = NULL;
 
 #ifdef HAVE_GETMNTINFO
-	int count, index;
-	
 	count = getmntinfo (&ent, MNT_WAIT);
 	/* getmentinfo returns a pointer to static data. Do not free. */
 	for (index = 0; index < count; index++) {
-		if (has_removable_mntent_options (ent + 1)) {
+		if (has_removable_mntent_options (&ent[index])) {
 			volume = create_volume (ent[index].f_mntfromname,
-						ent[index].f_mntoname);
+						ent[index].f_mntonname);
 			volume->is_removable = TRUE;
 			volumes = finish_creating_volume_and_prepend
-				(monitor, volume, ent[index].f_fstyename, volumes);
+				(monitor, volume, ent[index].f_fstypename, volumes);
 		}
 	}
 #endif
@@ -603,15 +607,17 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 static gboolean
 entry_is_supermounted_volume (const MountTableEntry *ent, const NautilusVolume *volume)
 {
-      char * fs_opt;
       gboolean result = FALSE;
+#ifdef HAVE_HASMNTOPT
+      char * fs_opt;
 
-      if (strcmp (ent->mnt_type, "supermount") == 0) {
+      if (strcmp (MOUNT_TABLE_ENTRY_TYPE (ent), "supermount") == 0) {
               fs_opt = eel_str_strip_substring_and_after (hasmntopt (ent, "dev="),
                                                           ",");
               result = strcmp (volume->device_path, fs_opt + strlen ("dev=")) == 0;
               g_free (fs_opt);
       }
+#endif
       return result;
 }
 

@@ -1,3 +1,16 @@
+2002-07-11  jacob berkman  <jacob@ximian.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (entry_is_supermounted_volume): 
+	(has_removable_mntent_options): use a macro to portably access the
+	fs type (fixes bug #87889)
+	(entry_is_supermounted_volume): #ifdef HAVE_HASMNTOPT around the
+	body of this
+	(get_removable_volumes): fix typos etc. when HAVE_GETMNTINFO is
+	defined
+
+	* configure.in: add checks for getmntinfo and sys/mount.h so that
+	bsd mount code paths actually get built / run
+
 2002-07-11  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-directory.c
