@@ -26,6 +26,7 @@ MEDUSA_REQUIRED=0.5
 ESOUND_REQUIRED=0.2.22
 LIBGHTTP_REQUIRED=1.0.9
 SCROLLKEEPER_REQUIRED=0.1.4
+AMMONITE_REQUIRED=1.0.0
 
 AC_SUBST(IMLIB_REQUIRED)
 AC_SUBST(LIBXML_REQUIRED)
@@ -847,28 +848,12 @@ dnl = Begin tests for ammonite (--enable-eazel-services only)
 dnl ====================================
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
-	AC_MSG_CHECKING(for Ammonite >= 1.0.0)
-	if test -n `gnome-config --libs ammonite | cut -d ' ' -f1`;
-	then
-		vers=`gnome-config --modversion ammonite | sed -e "s/[^-]*-//" | \
-			awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2 * 100 + $3;}'`
-		if test "$vers" -ge 1000; then
-			ammonite_ok=true;
-		else
-			ammonite_ok=false
-		fi
-	fi
+	EAZEL_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
 
-	if $ammonite_ok; then
-		AMMONITE_CFLAGS=`gnome-config --cflags ammonite`
-		AMMONITE_LIBS=`gnome-config --libs ammonite`
-		AC_MSG_RESULT(yes)
-		AC_SUBST(AMMONITE_CFLAGS)
-		AC_SUBST(AMMONITE_LIBS)
-	else
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Ammonite 1.0.0 or newer is required for Eazel Services. Please obtain it from Eazel's FTP site)
-	fi
+	AMMONITE_CFLAGS=`$GNOME_CONFIG --cflags ammonite`
+	AMMONITE_LIBS=`$GNOME_CONFIG --libs ammonite`
+	AC_SUBST(AMMONITE_CFLAGS)
+	AC_SUBST(AMMONITE_LIBS)
 fi
 dnl =======================
 dnl = End tests for ammonite

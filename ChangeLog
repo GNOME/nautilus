@@ -1,3 +1,14 @@
+2001-03-12  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
+
+	* configure.in:
+	Change ammonite version checking to use the same logic as
+	other version number checks, to fix the broken tinderbox
+
+	* nautilus.spec.in:
+	Inherit the required ammonite version number from configure.in
+
 2001-03-12  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* configure.in: upped the test to 1000 instead of
