@@ -338,26 +338,16 @@ nautilus_link_desktop_file_get_link_name_from_desktop (GnomeDesktopItem *desktop
 static char *
 nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	GnomeIconTheme *icon_theme;
 	char *icon_uri;
-	char *absolute;
+	const char *icon;
 
 	icon_uri = g_strdup (gnome_desktop_item_get_string (desktop_file, "X-Nautilus-Icon"));
 	if (icon_uri != NULL) {
 		return icon_uri;
 	}
 
-	/* Fall back to a standard icon. */
-	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	absolute = gnome_desktop_item_get_icon (desktop_file, icon_theme);
-	
-	if (absolute == NULL) {
-		return NULL;
-	}
-
-	icon_uri = gnome_vfs_get_uri_from_local_path (absolute);
-	g_free (absolute);
-	return icon_uri;
+	icon = gnome_desktop_item_get_string (desktop_file, GNOME_DESKTOP_ITEM_ICON);
+	return g_strdup (icon);
 }
 
 char *
