@@ -244,7 +244,7 @@ static void                fm_directory_view_select_file                        
 static void                monitor_file_for_open_with                             (FMDirectoryView      *view,
 										   NautilusFile         *file);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, NAUTILUS_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
@@ -958,8 +958,8 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+	nautilus_scrolled_window_set_hadjustment (NAUTILUS_SCROLLED_WINDOW (view), NULL);
+	nautilus_scrolled_window_set_vadjustment (NAUTILUS_SCROLLED_WINDOW (view), NULL);
 
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 

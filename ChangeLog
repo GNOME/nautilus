@@ -1,3 +1,43 @@
+2001-01-08  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Some infrastructure for bug 2068 and related bugs.
+	No actual user-visible changes yet.
+
+	* libnautilus-extensions/nautilus-scrolled-window.h:
+	* libnautilus-extensions/nautilus-scrolled-window.c:
+	New files, implement a subclass of GtkScrolledWindow
+	that sends a signal when the scroll position changes.
+	This was tragically left out of GtkScrolledWindow.
+	(nautilus_scrolled_window_initialize_class),
+	(nautilus_scrolled_window_initialize): The usual stuff.
+	(get_hadjustment), (get_vadjustment): Little helper
+	functions to avoid repeating some casting.
+	(adjustment_changed_callback): Callback that emits the
+	scroll_changed signal when the scroll changes.
+	(connect_adjustment): Helper function that disconnects
+	old signals and sets up new ones when the adjustment
+	objects change.
+	(real_set_arg): virtual function overridden to connect
+	up adjustment_changed_callback.
+	(nautilus_scrolled_window_set_vadjustment),
+	(nautilus_scrolled_window_set_hadjustment): New functions
+	that call through to gtk_scrolled_window_xxx and connect
+	up adjustment_changed_callback.
+	
+	* libnautilus-extensions/Makefile.am: Add the new
+	files to the build.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	#define NAUTILUS_METADATA_KEY_ICON_VIEW_SCROLL_ORIGIN
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Make FMDirectoryView inherit
+	from NautilusScrolledWindow instead of GtkScrolledWindow so
+	it can hook into the scroll_changed signal.
+
 2001-01-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5507, nautilus crashes when you unmount a drive while a file is

@@ -116,6 +116,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-program-choosing.c		\
 	nautilus-radio-button-group.c		\
 	nautilus-scalable-font.c		\
+	nautilus-scrolled-window.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
 	nautilus-sound.c			\
@@ -220,6 +221,7 @@ noinst_HEADERS =				\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
 	nautilus-scalable-font.h		\
+	nautilus-scrolled-window.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
 	nautilus-sound.h			\

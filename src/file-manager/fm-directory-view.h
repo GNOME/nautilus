@@ -27,12 +27,12 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkscrolledwindow.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-scrolled-window.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus/nautilus-view.h>
 
@@ -70,12 +70,12 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 typedef struct FMDirectoryViewDetails FMDirectoryViewDetails;
 
 struct FMDirectoryView {
-	GtkScrolledWindow parent;
+	NautilusScrolledWindow parent;
 	FMDirectoryViewDetails *details;
 };
 
 struct FMDirectoryViewClass {
-	GtkScrolledWindowClass parent_class;
+	NautilusScrolledWindowClass parent_class;
 
 	/* The 'clear' signal is emitted to empty the view of its contents.
 	 * It must be replaced by each subclass.
