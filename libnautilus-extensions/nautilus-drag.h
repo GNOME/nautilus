@@ -46,6 +46,29 @@ typedef enum {
 	NAUTILUS_ICON_DND_KEYWORD
 } NautilusIconDndTargetType;
 
+/* DnD-related information. */
+typedef struct {
+	GtkTargetList *target_list;
+
+	/* Stuff saved at "receive data" time needed later in the drag. */
+	gboolean got_drop_data_type;
+	NautilusIconDndTargetType data_type;
+	GtkSelectionData *selection_data;
+
+	/* Start of the drag, in world coordinates. */
+	gdouble start_x, start_y;
+
+	/* List of DndSelectionItems, representing items being dragged, or NULL
+	 * if data about them has not been received from the source yet.
+	 */
+	GList *selection_list;
+
+	/* Stipple for drawing icon shadows during DnD.  */
+	GdkBitmap *stipple;
+
+} NautilusDragInfo;
+
+
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE "special/x-gnome-icon-list"
 #define NAUTILUS_ICON_DND_URI_LIST_TYPE        "text/uri-list"
@@ -53,6 +76,14 @@ typedef enum {
 #define NAUTILUS_ICON_DND_COLOR_TYPE           "application/x-color"
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
+
+void
+nautilus_drag_init (NautilusDragInfo *drag_info,
+	const GtkTargetEntry *drag_types, int drag_type_count, 
+	GdkBitmap *stipple);
+
+void
+nautilus_drag_finalize (NautilusDragInfo *drag_info);
 
 
 DragSelectionItem 	*nautilus_drag_selection_item_new 	(void);

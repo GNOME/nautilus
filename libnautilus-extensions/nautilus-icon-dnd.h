@@ -35,23 +35,8 @@
 
 /* DnD-related information. */
 typedef struct {
-	GtkTargetList *target_list;
-
-	/* Stuff saved at "receive data" time needed later in the drag. */
-	gboolean got_drop_data_type;
-	NautilusIconDndTargetType data_type;
-	GtkSelectionData *selection_data;
-
-	/* Start of the drag, in world coordinates. */
-	gdouble start_x, start_y;
-
-	/* List of DndSelectionItems, representing items being dragged, or NULL
-	 * if data about them has not been received from the source yet.
-	 */
-	GList *selection_list;
-
-	/* Stipple for drawing icon shadows during DnD.  */
-	GdkBitmap *stipple;
+	/* inherited drag info context */
+	NautilusDragInfo drag_info;
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;

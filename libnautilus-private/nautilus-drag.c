@@ -32,6 +32,33 @@
 
 #include "nautilus-glib-extensions.h"
 
+void
+nautilus_drag_init (NautilusDragInfo *drag_info,
+	const GtkTargetEntry *drag_types, int drag_type_count, 
+	GdkBitmap *stipple)
+{
+	drag_info->target_list = gtk_target_list_new (drag_types,
+						   drag_type_count);
+
+	if (stipple) {
+		drag_info->stipple = gdk_bitmap_ref (stipple);
+	}
+}
+
+void
+nautilus_drag_finalize (NautilusDragInfo *drag_info)
+{
+	gtk_target_list_unref (drag_info->target_list);
+	nautilus_drag_destroy_selection_list (drag_info->selection_list);
+
+	if (drag_info != NULL) {
+		gdk_bitmap_unref (drag_info->stipple);
+	}
+
+	g_free (drag_info);
+}
+
+
 /* Functions to deal with DragSelectionItems.  */
 
 DragSelectionItem *

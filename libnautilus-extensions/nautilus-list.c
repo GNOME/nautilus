@@ -83,9 +83,15 @@ struct NautilusListDetails
 	guint select_row_signal_id;
 	guint unselect_row_signal_id;
 
+	/* Drag state */
+	NautilusDragInfo *drag_info;
+
 	/* Delayed selection information */
 	int dnd_select_pending;
 	guint dnd_select_pending_state;
+
+	/* Targets for drag data */
+	GtkTargetList *target_list; 
 
 	/* Stuff saved at "receive data" time needed later in the drag. */
 	gboolean got_drop_data_type;
@@ -148,7 +154,6 @@ enum {
 	CONTEXT_CLICK_SELECTION,
 	CONTEXT_CLICK_BACKGROUND,
 	ACTIVATE,
-	START_DRAG,
 	SELECTION_CHANGED,
 	SELECT_MATCHING_NAME,
 	SELECT_PREVIOUS_NAME,
@@ -270,6 +275,11 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
 static guint list_signals[LAST_SIGNAL];
 
+static GtkTargetEntry drag_types [] = {
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }
+};
 
 
 /* Standard class initialization function */
@@ -310,15 +320,6 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_POINTER);
-	list_signals[START_DRAG] =
-		gtk_signal_new ("start_drag",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusListClass, start_drag),
-				gtk_marshal_NONE__INT_POINTER,
-				GTK_TYPE_NONE, 2,
-				GTK_TYPE_INT,
-				GTK_TYPE_GDK_EVENT);
 	list_signals[SELECTION_CHANGED] =
 		gtk_signal_new ("selection_changed",
 				GTK_RUN_FIRST,
@@ -460,6 +461,10 @@ nautilus_list_initialize (NautilusList *list)
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
 
+	list->details->drag_info = g_new0 (NautilusDragInfo, 1);
+	nautilus_drag_init (list->details->drag_info, drag_types,
+		NAUTILUS_N_ELEMENTS (drag_types), NULL);
+
 	/* Get ready to accept some dragged stuff. */
 	gtk_drag_dest_set (GTK_WIDGET (list),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -489,7 +494,6 @@ nautilus_list_initialize (NautilusList *list)
 	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						click_policy_changed_callback,
 						list);
-
 }
 
 static void
@@ -498,6 +502,9 @@ nautilus_list_destroy (GtkObject *object)
 	NautilusList *list;
 
 	list = NAUTILUS_LIST (object);
+
+	nautilus_drag_finalize (list->details->drag_info);
+	g_free (list->details->drag_info);
 
 	unschedule_keyboard_row_reveal (list);
 
@@ -2283,8 +2290,9 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	/* This is the same threshold value that is used in gtkdnd.c */
 
 	if (MAX (abs (list->details->dnd_press_x - event->x),
-		 abs (list->details->dnd_press_y - event->y)) <= 3)
+		 abs (list->details->dnd_press_y - event->y)) <= 3) {
 		return FALSE;
+	}
 
 	/* Handle any pending selections */
 
@@ -2297,10 +2305,11 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 		list->details->dnd_select_pending_state = 0;
 	}
 
-	gtk_signal_emit (GTK_OBJECT (list),
-			 list_signals[START_DRAG],
-			 list->details->dnd_press_button,
-			 event);
+	gtk_drag_begin (widget, list->details->drag_info->target_list,
+		GDK_ACTION_MOVE,
+		list->details->dnd_press_button,
+		(GdkEvent *) event);
+
 	return TRUE;
 }
 
@@ -2390,7 +2399,19 @@ static gboolean
 nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		       gint x, gint y, guint time)
 {
-	return FALSE;
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
+	if (!list->details->drag_info->got_drop_data_type) {
+		gtk_drag_get_data (widget, context,
+				   GPOINTER_TO_INT (context->targets->data),
+				   time);
+	}
+
+
+	return TRUE;
 }
 
 /* We override the drag_drop signal to do nothing */

@@ -1,5 +1,40 @@
 2000-06-01  Pavel Cisler  <pavel@eazel.com>
 
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-drag.c: 
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_drag_init), (nautilus_drag_finalize),
+	(create_selection_shadow), (set_gnome_icon_list_selection),
+	(nautilus_icon_container_dropped_icon_feedback),
+	(drag_data_received_callback),
+	(nautilus_icon_container_ensure_drag_data), (drag_end_callback),
+	(confirm_switch_to_manual_layout), (handle_local_move),
+	(handle_nonlocal_move),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_dnd_update_drop_target),
+	(nautilus_icon_container_free_drag_data), (nautilus_icon_dnd_init),
+	(nautilus_icon_dnd_fini), (nautilus_icon_dnd_begin_drag),
+	(drag_drop_callback), (nautilus_list_initialize),
+	(nautilus_list_destroy),
+	(nautilus_list_drag_begin), (nautilus_list_drag_data_get),:
+	More list view drag&drop work. Move more code from nautilus-icon-dnd.c
+	to the shared nautlus-drag.c file. Split common drag&drop state from 
+	NautilusIconDndInfo into NautilusDragInfo.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_motion), (nautilus_list_motion):
+	Start hooking up drag-related signals.
+
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h:
+	(nautilus_list_initialize_class):
+	Get rid of the unused START_DRAG signal.
+
+2000-06-01  Pavel Cisler  <pavel@eazel.com>
+
 	* src/file-manager/fm-icon-view.c: (play_file):
 	Fix call to gnome_vfs_unescape_string to match new prototype.
 

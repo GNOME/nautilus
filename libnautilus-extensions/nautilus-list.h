@@ -102,9 +102,6 @@ struct NautilusListClass {
 	/* Signal: open the file in the selected row */
 	void (* activate) (NautilusList *list, gpointer data);
 
-	/* Signal: initiate a drag and drop operation */
-	void (* start_drag) (NautilusList *list, int button, GdkEvent *event);
-
 	/* Signal: selection has changed */
 	void (* selection_changed) (NautilusList *list);
 
