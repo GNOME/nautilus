@@ -1,3 +1,19 @@
+2001-03-06  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Christian Meyer <chrisime@gnome.org>
+
+	(Bug 7315.  Thanks to Christian Meyer for tracking down
+	places where this needed to be fixed.)
+
+	* components/help/converters/gnome-db2html2/Makefile.am:
+	* components/help/converters/gnome-info2html2/Makefile.am:
+	* cut-n-paste-code/widgets/e-paned/Makefile.am:
+	* cut-n-paste-code/widgets/gimphwrapbox/Makefile.am:
+	* cut-n-paste-code/widgets/nautilusclist/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	In all of these, change GNOME_CFLAGS to GNOMEUI_CFLAGS so that
+	they get the correct #include path for the GTK headers.
+
 2001-03-06  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

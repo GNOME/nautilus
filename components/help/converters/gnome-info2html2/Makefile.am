@@ -3,7 +3,7 @@
 INCLUDES = 			\
 	-I$(includedir)		\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	$(GNOME_CFLAGS)	
+	$(GNOMEUI_CFLAGS)	
 
 LDADD = \
 	$(GNOME_LIBS) $(Z_LIBS) $(BZ_LIBS)

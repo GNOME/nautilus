@@ -4,7 +4,7 @@ noinst_LTLIBRARIES = libgtkhwrapbox.la
 
 INCLUDES = \
 	-I$(top_srcdir)/cut-n-paste-code \
-	$(GNOME_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
 	$(NULL)
 
 libgtkhwrapbox_la_LDFLAGS = -static

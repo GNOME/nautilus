@@ -4,7 +4,7 @@ INCLUDES = 						\
 	-I$(includedir)					\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(GNOME_CFLAGS)					\
+	$(GNOMEUI_CFLAGS)					\
 	$(XML_CFLAGS)
 
 LDADD = \
