@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_XML_EXTENSIONS_H
 #define NAUTILUS_XML_EXTENSIONS_H
 
-#include <tree.h>
+#include <gnome-xml/tree.h>
 #include <glib.h>
 
 xmlNodePtr nautilus_xml_get_children                        (xmlNodePtr  parent);

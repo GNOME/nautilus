@@ -34,6 +34,7 @@
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome-xml/parser.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
@@ -65,7 +66,6 @@
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <liboaf/liboaf.h>
 #include <math.h>
-#include <parser.h>
 
 struct NautilusSidebarDetails {
 	GtkVBox *container;

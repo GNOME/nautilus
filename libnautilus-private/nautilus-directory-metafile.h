@@ -23,7 +23,7 @@
 */
 
 #include "nautilus-directory.h"
-#include <tree.h>
+#include <gnome-xml/tree.h>
 
 /* Interface for file metadata. */
 char *   nautilus_directory_get_file_metadata              (NautilusDirectory *directory,

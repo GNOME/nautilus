@@ -30,8 +30,8 @@
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
+#include <gnome-xml/xmlmemory.h>
 #include <stdlib.h>
-#include <xmlmemory.h>
 
 #define METAFILE_XML_VERSION "1.0"
 

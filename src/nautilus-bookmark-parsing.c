@@ -28,9 +28,8 @@
 #include <config.h>
 #include "nautilus-bookmark-parsing.h"
 
+#include <gnome-xml/xmlmemory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-
-#include <xmlmemory.h>
 
 NautilusBookmark *
 nautilus_bookmark_new_from_node (xmlNodePtr node)

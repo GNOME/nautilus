@@ -32,8 +32,21 @@
 
 #include <ctype.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <gtk/gtkeventbox.h>
+#include <gtk/gtkfilesel.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkvbox.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -52,8 +65,6 @@
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 #include <math.h>
-#include <parser.h>
-#include <xmlmemory.h>
 
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;

@@ -179,7 +179,7 @@ build_services_glist_from_xml (xmlNodePtr node)
 	xmlNodePtr	service;
 
 	return_value = NULL;
-	service = node->childs;
+	service = node->xmlChildrenNode;
 	if (service == NULL) {
 		g_warning (_("There is no service data !\n"));
 		return NULL;
@@ -204,7 +204,7 @@ build_eazel_news_glist_from_xml (xmlNodePtr node)
 	xmlNodePtr	news_item;
 
 	return_value = NULL;
-	news_item = node->childs;
+	news_item = node->xmlChildrenNode;
 	if (news_item == NULL) {
 		g_warning (_("There is no eazel news data !\n"));
 		return NULL;
@@ -229,7 +229,7 @@ build_update_news_glist_from_xml (xmlNodePtr node)
 	xmlNodePtr	news_item;
 
 	return_value = NULL;
-	news_item = node->childs;
+	news_item = node->xmlChildrenNode;
 	if (news_item == NULL) {
 		g_warning (_("There is no eazel news data !\n"));
 		return NULL;
@@ -295,7 +295,7 @@ parse_summary_xml_file (const char *url)
 		return NULL;
 	}
 
-	child = doc->root->childs;
+	child = doc->root->xmlChildrenNode;
 
 	if (child == NULL) {
 		g_print (_("Could not find any summary configuration data!\n"));

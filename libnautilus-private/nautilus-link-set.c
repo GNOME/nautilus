@@ -34,14 +34,14 @@
 #include "nautilus-preferences.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <parser.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <xmlmemory.h>
 
 /* routine to create a new link file in the specified directory */
 static gboolean

@@ -166,12 +166,12 @@ trilobite_redirect_parse_xml (char *blob, int length)
 
 	wipe_redirect_table ();
 
-	for (child = base->childs; child; child = child->next) {
+	for (child = base->xmlChildrenNode; child; child = child->next) {
 		if (g_strcasecmp (child->name, "location") == 0) {
 			/* libxml sucks */
 			name = uri = NULL;
 
-			for (child2 = child->childs; child2; child2 = child2->next) {
+			for (child2 = child->xmlChildrenNode; child2; child2 = child2->next) {
 				if (g_strcasecmp (child2->name, "name") == 0) {
 					name = xmlNodeGetContent (child2);
 				}

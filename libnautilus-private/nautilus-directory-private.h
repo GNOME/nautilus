@@ -28,7 +28,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 
-#include <tree.h>
+#include <gnome-xml/tree.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"

@@ -45,17 +45,18 @@
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-xml-extensions.h"
-#include <gnome.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <librsvg/rsvg.h>
-#include <parser.h>
 #include <stdio.h>
 #include <string.h>
-#include <xmlmemory.h>
 
 /* List of suffixes to search when looking for an icon file. */
 static const char *icon_file_name_suffixes[] =

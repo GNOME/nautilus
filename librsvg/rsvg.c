@@ -47,8 +47,8 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include "SAX.h"
-#include "xmlmemory.h"
+#include <gnome-xml/SAX.h>
+#include <gnome-xml/xmlmemory.h>
 
 #include "rsvg-bpath-util.h"
 #include "rsvg-defs.h"

@@ -36,6 +36,7 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
+#include <gnome-xml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -47,7 +48,6 @@
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
 #include <liboaf/liboaf.h>
-#include <parser.h>
 #include <popt.h>
 #include <stdlib.h>
 
@@ -222,6 +222,7 @@ main (int argc, char *argv[])
 	}
 
 	/* Initialize the services that we use. */
+	LIBXML_TEST_VERSION
 	g_atexit (xmlCleanupParser);
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);

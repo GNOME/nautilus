@@ -1,3 +1,61 @@
+2000-10-19  Darin Adler  <darin@eazel.com>
+
+	Do some routine housekeeping that will help make the future
+	switchover to libxml2 easier.
+	
+	* components/help/converters/gnome-db2html2/gdb3html.h:
+	* components/help/hyperbola-nav-index.c:
+	* components/help/hyperbola-nav-search.c:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	* libnautilus-extensions/nautilus-link-set.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-theme.c:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-xml-extensions.h:
+	* librsvg/rsvg.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmark-parsing.c:
+	* src/nautilus-bookmark-parsing.h:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-theme-selector.c:
+	* src/nautilus-window-menus.c:
+	Use the <gnome-xml/> prefix on all includes of gnome-xml headers.
+	This is allowed with the version of libxml1 we use now, and
+	required for libxml2. Note that we now require the newer libxml1
+	version that allows this, because Bonobo requires it.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category), (parse_shared),
+	(parse_memory_transaction_file), (parse_local_xml_package_list),
+	(generate_xml_package_list), (osd_parse_dependency),
+	(osd_parse_implementation), (osd_parse_softpkg),
+	(osd_parse_shared):
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(build_services_glist_from_xml), (build_eazel_news_glist_from_xml),
+	(build_update_news_glist_from_xml), (parse_summary_xml_file):
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	(xml_get_value):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_parse_xml):
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	(nautilus_xml_get_children):
+	Use xmlChildrenNode instead of childs, as recommended by the
+	libxml maintainer for libxml1/libxml2 compatibility.
+	
+	* src/nautilus-main.c: (main): Use the LIBXML_TEST_VERSION macro
+	as recommended by the libxml maintainer for libxml1/libxml2
+	compatibility.
+	
+	* components/music/nautilus-music-view.c:
+	Added a lot of FIXMEs. Some other rudimentary cleanup.
+
 2000-10-19  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

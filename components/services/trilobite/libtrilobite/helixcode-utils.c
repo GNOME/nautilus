@@ -47,7 +47,7 @@ xml_get_value (xmlNode* node, const char* name)
 		free (ret);
 		return tmp;
 	}
-	child = node->childs;
+	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, name) == 0) {
 			ret = xmlNodeGetContent (child);

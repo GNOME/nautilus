@@ -34,12 +34,12 @@
 #include "nautilus-preferences.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <parser.h>
 #include <stdlib.h>
-#include <xmlmemory.h>
 
 /* Link type XML tags */
 #define NAUTILUS_LINK_GENERIC_TAG	"Generic Link"

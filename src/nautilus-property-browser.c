@@ -29,20 +29,33 @@
  */
 
 #include <config.h>
-#include <math.h>
-#include <ctype.h>
-
-
 #include "nautilus-property-browser.h"
+
 #include "nautilus-signaller.h"
-
-#include <parser.h>
-#include <xmlmemory.h>
-
-
+#include <ctype.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <gtk/gtkcolorsel.h>
+#include <gtk/gtkdnd.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtkeventbox.h>
+#include <gtk/gtkfilesel.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkselection.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkviewport.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-file-entry.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <gnome.h>
-
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-directory.h>
@@ -62,6 +75,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <math.h>
 
 /* property types */
 

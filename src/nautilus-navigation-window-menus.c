@@ -38,6 +38,8 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -57,8 +59,6 @@
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <parser.h>
-#include <xmlmemory.h>
 
 #ifdef ENABLE_PROFILER
 #include "nautilus-profiler.h"

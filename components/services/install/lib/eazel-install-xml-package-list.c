@@ -79,7 +79,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->breaks = NULL;
 	rv->modifies = NULL;
 
-	dep = package->childs;
+	dep = package->xmlChildrenNode;
 	while (dep) {
 		if (g_strcasecmp (dep->name, "SOFT_DEPEND") == 0) {
 			PackageData* depend;
@@ -123,14 +123,14 @@ parse_category (xmlNode* cat) {
 	category = categorydata_new ();
 	category->name = g_strdup (xml_get_value (cat, "name"));
 
-	pkg = cat->childs;
+	pkg = cat->xmlChildrenNode;
 	if (pkg == NULL) {
 		g_print (_("*** No package nodes! ***"));
 		g_free (category);
 		g_error (_("*** Bailing from package parse! ***"));
 	}
 	while (pkg) {
-		pkg2 = pkg->childs;
+		pkg2 = pkg->xmlChildrenNode;
 		if (pkg2 == NULL) {
 			g_print (_("*** No package nodes! ***"));
 			g_free (category);
@@ -190,7 +190,7 @@ static GList* parse_shared (xmlNodePtr base)
 		return NULL;
 	}
 	
-	category = base->childs;
+	category = base->xmlChildrenNode;
 	if (category == NULL) {
 		g_print (_("*** No Categories! ***\n"));
 		g_warning (_("*** Bailing from category parse! ***\n"));
@@ -253,7 +253,7 @@ parse_memory_transaction_file (const char *mem,
 		return NULL;
 	}
 	
-	packages = doc->root->childs->childs;
+	packages = doc->root->xmlChildrenNode->xmlChildrenNode;
 	if(packages == NULL) {
 		g_print (_("*** No packages! ***\n"));
 		xmlFreeDoc (doc);
@@ -298,7 +298,7 @@ parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, cha
 		g_print (_("*** Cannot find the CATEGORIES xmlnode! ***"));
 		goto out;
 	}
-	node = base->childs;
+	node = base->xmlChildrenNode;
 	list = NULL;
 	while (node) {
 		if (g_strcasecmp (node->name, "CATEGORY") == 0) {
@@ -385,7 +385,7 @@ generate_xml_package_list (const char* pkg_template_file,
 
 				/* NOTE: This xmlGetProp leaks, since its return value 
 				   is forgotten */
-				if ((doc->root->childs == NULL) ||
+				if ((doc->root->xmlChildrenNode == NULL) ||
 				    (strlen (package_array[0]) && strcmp (cur_category, package_array[0]))) {
 					g_free (cur_category);
 					cur_category = g_strdup (package_array[0]);
@@ -567,7 +567,7 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 	xmlNodePtr child;
 	PackageData *softpack;
 
-	child = node->childs;
+	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROVIDES") == 0) {
 			/* do nothing yet.  maybe someday? */
@@ -592,7 +592,7 @@ osd_parse_implementation (PackageData *pack,
 {
 	xmlNodePtr child;
 
-	child = node->childs;
+	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
 			pack->archtype = g_strdup (xml_get_value (child, "VALUE"));
@@ -636,7 +636,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	result->version = g_strdup (xml_get_value (softpkg, "VERSION"));
 	result->md5 = g_strdup (xml_get_value (softpkg, "MD5"));
 	
-	child = softpkg->childs;
+	child = softpkg->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "ABSTRACT")==0) {
 			result->description = g_strdup (xmlNodeGetContent (child));
@@ -670,7 +670,7 @@ osd_parse_shared (xmlDocPtr doc)
 		return result;
 	}
 
-	child = base->childs;
+	child = base->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			PackageData *pack;

@@ -23,28 +23,25 @@
 */
 
 #include <config.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
+#include "nautilus-theme.h"
 
-#include <parser.h>
-#include <xmlmemory.h>
-
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <librsvg/rsvg.h>
-
-#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-preferences.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-preferences.h"
-
-#include "nautilus-theme.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <librsvg/rsvg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /* static globals to hold the last accessed and default theme files */
 static char	 *last_theme_name = NULL;

@@ -29,6 +29,8 @@
 #include "nautilus-link-set-window.h"
 
 #include "nautilus-window.h"
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -49,9 +51,7 @@
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
-#include <parser.h>
 #include <stdlib.h>
-#include <xmlmemory.h>
 
 /* global to hold the currently allocated link set window, if any */
 

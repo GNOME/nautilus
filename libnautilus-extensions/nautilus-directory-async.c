@@ -34,10 +34,10 @@
 #include "nautilus-link.h"
 #include "nautilus-search-uri.h"
 #include "nautilus-string.h"
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkmain.h>
-#include <parser.h>
 #include <stdlib.h>
-#include <xmlmemory.h>
 #include <stdio.h>
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \

@@ -35,26 +35,25 @@
 #include "nautilus-volume-monitor.h"
 #include <errno.h>
 #include <fcntl.h>
-
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <gtk/gtkmain.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-exec.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #if HAVE_SYS_VFSTAB_H
 #include <sys/vfstab.h>
 #else
 #include <fstab.h>
 #endif
-
-#include <glib.h>
-#include <gnome.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomevfs/gnome-vfs.h>
-
-#include <parser.h>
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <xmlmemory.h>
 
 #if HAVE_SYS_MNTTAB_H
 #include <sys/mnttab.h>

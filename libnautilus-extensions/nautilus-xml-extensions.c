@@ -25,10 +25,10 @@
 #include <config.h>
 #include "nautilus-xml-extensions.h"
 
-#include <glib.h>
 #include "nautilus-string.h"
+#include <glib.h>
+#include <gnome-xml/xmlmemory.h>
 #include <stdlib.h>
-#include <xmlmemory.h>
 
 xmlNodePtr
 nautilus_xml_get_children (xmlNodePtr parent)
@@ -36,7 +36,7 @@ nautilus_xml_get_children (xmlNodePtr parent)
 	if (parent == NULL) {
 		return NULL;
 	}
-	return parent->childs;
+	return parent->xmlChildrenNode;
 }
 
 xmlNodePtr

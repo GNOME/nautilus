@@ -41,9 +41,9 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 
-#include <parser.h>
-#include <tree.h>
-#include <xmlmemory.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/tree.h>
+#include <gnome-xml/xmlmemory.h>
 
 enum {
 	CONTENTS_CHANGED,
