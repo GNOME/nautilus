@@ -40,6 +40,7 @@
 #include <eel/eel-viewport.h>
 #include <eel/eel-wrap-table.h>
 #include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
@@ -127,6 +128,19 @@ typedef struct {
 	FMDirectoryView *directory_view;
 } StartupData;
 
+
+/* drag and drop definitions */
+
+enum {
+	TARGET_URI_LIST,
+	TARGET_GNOME_URI_LIST
+};
+
+static GtkTargetEntry target_table[] = {
+	{ "text/uri-list",  0, TARGET_URI_LIST },
+	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
+};
+
 #define ERASE_EMBLEM_FILENAME	"erase.png"
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
@@ -146,6 +160,8 @@ static void directory_view_destroyed_callback     (FMDirectoryView         *view
 						   gpointer                 callback_data);
 static void select_image_button_callback          (GtkWidget               *widget,
 						   FMPropertiesWindow      *properties_window);
+static void set_icon_callback                     (const char* icon_path, 
+						   FMPropertiesWindow *properties_window);
 static void remove_image_button_callback          (GtkWidget               *widget,
 						   FMPropertiesWindow      *properties_window);
 static void remove_pending_file                   (StartupData             *data,
@@ -258,6 +274,77 @@ update_properties_window_icon (EelImage *image)
 	gdk_pixbuf_unref (pixbuf);
 }
 
+
+/* utility to test if a uri refers to a local image */
+static gboolean
+uri_is_local_image (const char *uri)
+{
+	GdkPixbuf *pixbuf;
+	char *image_path;
+	
+	image_path = gnome_vfs_get_local_path_from_uri (uri);
+	if (image_path == NULL) {
+		return FALSE;
+	}
+
+	pixbuf = gdk_pixbuf_new_from_file (image_path);
+	g_free (image_path);
+	
+	if (pixbuf == NULL) {
+		return FALSE;
+	}
+	gdk_pixbuf_unref (pixbuf);
+	return TRUE;
+}
+
+static void  
+fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *context,
+					 int x, int y,
+					 GtkSelectionData *selection_data,
+					 guint info, guint time)
+{
+	char **uris;
+	gboolean exactly_one;
+	EelImage *image;
+ 	GtkWindow *window; 
+
+	uris = g_strsplit (selection_data->data, "\r\n", 0);
+	exactly_one = uris[0] != NULL && uris[1] == NULL;
+
+	image = EEL_IMAGE (widget);
+ 	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
+
+
+	if (!exactly_one) {
+		eel_show_error_dialog (
+				       _("You can't assign more than one custom icon at a time! "
+					 "Please drag just one image to set a custom icon."), 
+				       _("More Than One Image"),
+				       window);
+	} else {		
+		if (uri_is_local_image (uris[0])) {			
+			set_icon_callback (gnome_vfs_get_local_path_from_uri (uris[0]), 
+					   FM_PROPERTIES_WINDOW (window));
+		} else {	
+			if (eel_is_remote_uri (uris[0])) {
+				eel_show_error_dialog (
+						       _("The file that you dropped is not local.  "
+							 "You can only use local images as custom icons."), 
+						       _("Local Images Only"),
+						       window);
+				
+			} else {
+				eel_show_error_dialog (
+						       _("The file that you dropped is not an image.  "
+							 "You can only use local images as custom icons."),
+						       _("Images Only"),
+						       window);
+			}
+		}		
+	}
+	g_strfreev (uris);
+}
+
 static GtkWidget *
 create_image_widget_for_file (NautilusFile *file)
 {
@@ -267,6 +354,16 @@ create_image_widget_for_file (NautilusFile *file)
 	pixbuf = get_pixbuf_for_properties_window (file);
 	
 	image = eel_image_new (NULL);
+
+	/* prepare the image to receive dropped objects to assign custom images */
+	gtk_drag_dest_set (GTK_WIDGET (image),
+			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
+			   target_table, EEL_N_ELEMENTS (target_table),
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+
+	gtk_signal_connect( GTK_OBJECT (image), "drag_data_received",
+			    GTK_SIGNAL_FUNC (fm_properties_window_drag_data_received), NULL);
+
 
 	eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
 
