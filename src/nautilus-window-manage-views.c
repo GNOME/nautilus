@@ -672,7 +672,7 @@ open_location (NautilusWindow *window,
         case Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE :
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 			target_window = window;
-			if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+			if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 				if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
 					target_window = nautilus_application_create_navigation_window 
 						(window->application,
