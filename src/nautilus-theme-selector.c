@@ -536,7 +536,7 @@ static void
 exit_remove_mode (NautilusThemeSelector *theme_selector)
 {
 	theme_selector->details->remove_mode = FALSE;
-	set_help_label (theme_selector, TRUE);
+	set_help_label (theme_selector, FALSE);
 	
 	/* change the add button label back to it's normal state */
 	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label), _("Add New Theme"));
