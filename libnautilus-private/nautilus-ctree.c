@@ -85,13 +85,13 @@ COLUMN_FROM_XPIXEL (GtkCList * clist,
 
 
 enum {
-  ARG_0,
-  ARG_N_COLUMNS,
-  ARG_TREE_COLUMN,
-  ARG_INDENT,
-  ARG_SPACING,
-  ARG_SHOW_STUB,
-  ARG_LINE_STYLE
+	ARG_0,
+	ARG_N_COLUMNS,
+	ARG_TREE_COLUMN,
+	ARG_INDENT,
+	ARG_SPACING,
+	ARG_SHOW_STUB,
+	ARG_LINE_STYLE
 };
 
 
@@ -107,6 +107,9 @@ static void nautilus_ctree_realize           (GtkWidget      *widget);
 static void nautilus_ctree_unrealize         (GtkWidget      *widget);
 static gint nautilus_ctree_button_press      (GtkWidget      *widget,
 					 GdkEventButton *event);
+static gboolean nautilus_ctree_event   	(GtkWidget      *widget,
+					 GdkEvent 	*event,
+					 gpointer 	user_data);
 static void ctree_attach_styles         (NautilusCTree       *ctree,
 					 NautilusCTreeNode   *node,
 					 gpointer        data);
@@ -305,13 +308,13 @@ static void drag_dest_cell               (GtkCList         *clist,
 
 enum
 {
-  TREE_SELECT_ROW,
-  TREE_UNSELECT_ROW,
-  TREE_EXPAND,
-  TREE_COLLAPSE,
-  TREE_MOVE,
-  CHANGE_FOCUS_ROW_EXPANSION,
-  LAST_SIGNAL
+	TREE_SELECT_ROW,
+	TREE_UNSELECT_ROW,
+	TREE_EXPAND,
+	TREE_COLLAPSE,
+	TREE_MOVE,
+	CHANGE_FOCUS_ROW_EXPANSION,
+	LAST_SIGNAL
 };
 
 static GtkCListClass *parent_class = NULL;
@@ -347,43 +350,43 @@ nautilus_ctree_get_type (void)
 static void
 nautilus_ctree_class_init (NautilusCTreeClass *klass)
 {
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
-  GtkCListClass *clist_class;
-  GtkBindingSet *binding_set;
+	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
+	GtkCListClass *clist_class;
+	GtkBindingSet *binding_set;
 
-  object_class = (GtkObjectClass *) klass;
-  widget_class = (GtkWidgetClass *) klass;
-  container_class = (GtkContainerClass *) klass;
-  clist_class = (GtkCListClass *) klass;
+	object_class = (GtkObjectClass *) klass;
+	widget_class = (GtkWidgetClass *) klass;
+	container_class = (GtkContainerClass *) klass;
+	clist_class = (GtkCListClass *) klass;
 
-  parent_class = gtk_type_class (GTK_TYPE_CLIST);
-  container_class = gtk_type_class (GTK_TYPE_CONTAINER);
+	parent_class = gtk_type_class (GTK_TYPE_CLIST);
+	container_class = gtk_type_class (GTK_TYPE_CONTAINER);
 
-  gtk_object_add_arg_type ("NautilusCTree::n_columns",
-			   GTK_TYPE_UINT,
-			   GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT_ONLY,
-			   ARG_N_COLUMNS);
-  gtk_object_add_arg_type ("NautilusCTree::tree_column",
-			   GTK_TYPE_UINT,
-			   GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT_ONLY,
-			   ARG_TREE_COLUMN);
-  gtk_object_add_arg_type ("NautilusCTree::indent",
-			   GTK_TYPE_UINT,
-			   GTK_ARG_READWRITE,
-			   ARG_INDENT);
-  gtk_object_add_arg_type ("NautilusCTree::spacing",
-			   GTK_TYPE_UINT,
-			   GTK_ARG_READWRITE,
-			   ARG_SPACING);
-  gtk_object_add_arg_type ("NautilusCTree::show_stub",
-			   GTK_TYPE_BOOL,
-			   GTK_ARG_READWRITE,
-			   ARG_SHOW_STUB);
-  object_class->set_arg = nautilus_ctree_set_arg;
-  object_class->get_arg = nautilus_ctree_get_arg;
+	gtk_object_add_arg_type ("NautilusCTree::n_columns",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_N_COLUMNS);
+	gtk_object_add_arg_type ("NautilusCTree::tree_column",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_TREE_COLUMN);
+	gtk_object_add_arg_type ("NautilusCTree::indent",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_INDENT);
+	gtk_object_add_arg_type ("NautilusCTree::spacing",
+				 GTK_TYPE_UINT,
+				 GTK_ARG_READWRITE,
+				 ARG_SPACING);
+	gtk_object_add_arg_type ("NautilusCTree::show_stub",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_SHOW_STUB);
+	object_class->set_arg = nautilus_ctree_set_arg;
+	object_class->get_arg = nautilus_ctree_get_arg;
 
-  ctree_signals[TREE_SELECT_ROW] =
+	ctree_signals[TREE_SELECT_ROW] =
     gtk_signal_new ("tree_select_row",
 		    GTK_RUN_FIRST,
 		    object_class->type,
@@ -432,7 +435,7 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
   widget_class->realize = nautilus_ctree_realize;
   widget_class->unrealize = nautilus_ctree_unrealize;
   widget_class->button_press_event = nautilus_ctree_button_press;
-
+  
   widget_class->drag_begin = nautilus_ctree_drag_begin;
   widget_class->drag_motion = nautilus_ctree_drag_motion;
   widget_class->drag_data_received = nautilus_ctree_drag_data_received;
@@ -502,7 +505,7 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
 				GDK_KP_Multiply, GDK_CONTROL_MASK,
 				"change_focus_row_expansion", 1,
 				GTK_TYPE_ENUM,
-				NAUTILUS_CTREE_EXPANSION_TOGGLE_RECURSIVE);
+				NAUTILUS_CTREE_EXPANSION_TOGGLE_RECURSIVE);	
 }
 
 static void
@@ -595,14 +598,18 @@ nautilus_ctree_init (NautilusCTree *ctree)
 
 	clist = GTK_CLIST (ctree);
 
-	ctree->tree_indent    = 20;
-	ctree->tree_spacing   = 5;
-	ctree->tree_column    = 0;
-	ctree->line_style     = NAUTILUS_CTREE_LINES_NONE;
-	ctree->drag_compare   = NULL;
-	ctree->show_stub      = TRUE;
-
+	ctree->tree_indent    	= 20;
+	ctree->tree_spacing   	= 5;
+	ctree->tree_column    	= 0;
+	ctree->line_style     	= NAUTILUS_CTREE_LINES_NONE;
+	ctree->drag_compare   	= NULL;
+	ctree->show_stub      	= TRUE;
+	ctree->prelight_node	= NULL;
+	
 	clist->button_actions[0] |= GTK_BUTTON_EXPANDS;
+
+	gtk_signal_connect (GTK_OBJECT (ctree), "event",
+			    GTK_SIGNAL_FUNC (nautilus_ctree_event), ctree);
 }
 
 static void
@@ -699,6 +706,52 @@ nautilus_ctree_realize (GtkWidget *widget)
 				  GDK_LINE_ON_OFF_DASH, None, None);
       gdk_gc_set_dashes (ctree->lines_gc, 0, "\1\1", 2);
     }
+}
+
+#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
+				 (clist)->row_list_end : \
+				 g_list_nth ((clist)->row_list, (row)))
+
+static gint 
+nautilus_ctree_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+	GdkEventMotion *motion;
+	int press_row, press_column, row;
+	NautilusCTree *tree;
+	NautilusCTreeNode *node, *old_node;
+	NautilusCTreeRow *ctree_row;
+	GtkCList *clist;
+	
+	if (event->type == GDK_MOTION_NOTIFY) {
+		motion = (GdkEventMotion *) event;
+
+		tree = NAUTILUS_CTREE (widget);
+		clist = GTK_CLIST (widget);
+		
+		/* Get node that we are over */
+		row = gtk_clist_get_selection_info (clist, motion->x, motion->y, &press_row, &press_column);
+		ctree_row = ROW_ELEMENT (clist, press_row)->data;
+		if (ctree_row != NULL) {
+			node = nautilus_ctree_find_node_ptr (tree, ctree_row);
+			if (node != NULL) {
+				if (nautilus_ctree_is_hot_spot (tree, motion->x, motion->y)) {
+					if (node != tree->prelight_node) {
+						/* Redraw old prelit node and save and draw new highlight */
+						old_node = tree->prelight_node;
+						tree->prelight_node = node;
+						nautilus_ctree_draw_node (tree, old_node);
+						nautilus_ctree_draw_node (tree, tree->prelight_node);
+					}				
+				} else if (tree->prelight_node != NULL) {
+					/* End prelighting of last expander */
+					tree->prelight_node = NULL;
+					nautilus_ctree_draw_node (tree, node);
+				}
+			}
+		}
+	}
+
+	return FALSE;
 }
 
 static void
@@ -1061,16 +1114,14 @@ get_cell_style (GtkCList     *clist,
 }
 
 static gint
-nautilus_ctree_draw_expander (NautilusCTree     *ctree,
-			 NautilusCTreeRow  *ctree_row,
-			 GtkStyle     *style,
-			 GdkRectangle *clip_rectangle,
-			 gint          x)
+nautilus_ctree_draw_expander (NautilusCTree *ctree, NautilusCTreeRow *ctree_row, GtkStyle *style,
+			      GdkRectangle *clip_rectangle, gint x)
 {
 	GtkCList *clist;
 	GdkPoint points[3];
 	gint justification_factor;
 	gint y;
+	NautilusCTreeNode *node;
 
 	clist = GTK_CLIST (ctree);
 	if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
@@ -1108,7 +1159,13 @@ nautilus_ctree_draw_expander (NautilusCTree     *ctree,
 	if (ctree_row->mouse_down) {
 		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
 	} else {
-		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], TRUE, points, 3);
+		node = nautilus_ctree_find_node_ptr (ctree, ctree_row);
+		if (node != NULL && node == ctree->prelight_node) {
+			/* Draw prelight state */
+			gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
+		} else {
+			gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], TRUE, points, 3);
+		}
 	}
 	
 	x += justification_factor * (PM_SIZE + 3);
@@ -1926,6 +1983,10 @@ draw_row (GtkCList     *clist,
 void
 nautilus_ctree_draw_node (NautilusCTree *ctree, NautilusCTreeNode *node)
 {
+	if (ctree == NULL || node == NULL) {
+		return;
+	}
+	
 	tree_draw_node (ctree, node);
 }
 

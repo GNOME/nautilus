@@ -112,6 +112,8 @@ struct _NautilusCTree
 	guint line_style     : 2;
 	guint show_stub      : 1;
 
+	NautilusCTreeNode *prelight_node;
+
 	NautilusCTreeCompareDragFunc drag_compare;
 };
 
