@@ -1,3 +1,10 @@
+2000-03-16  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(disconnect_model_handlers), (stop_load): Fixed the CRITICALs that
+	I recently introduced. Made sure our unrefs match our refs for
+	monitor_files.
+
 2000-03-16  John Sullivan  <sullivan@eazel.com>
 
 	Made icon theme changes persist across sessions by

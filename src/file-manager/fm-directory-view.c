@@ -667,6 +667,8 @@ stop_load (FMDirectoryView *view, gboolean error)
 	progress.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	nautilus_view_frame_request_progress_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
+
+	view->details->loading = FALSE;
 }
 
 
@@ -1790,13 +1792,15 @@ disconnect_handler (FMDirectoryView *view, int *id)
 static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
-	if (view->details->model != NULL) {
-		nautilus_directory_monitor_files_unref (view->details->model);
-	}
-
 	disconnect_handler (view, &view->details->files_added_handler_id);
 	disconnect_handler (view, &view->details->files_removed_handler_id);
 	disconnect_handler (view, &view->details->files_changed_handler_id);
+
+	if (view->details->loading) {
+		g_assert (view->details->model != NULL);
+		nautilus_directory_monitor_files_unref (view->details->model);
+		view->details->loading = FALSE;
+	}
 }
 
 /**
