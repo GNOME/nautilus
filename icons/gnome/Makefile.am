@@ -13,6 +13,7 @@ gnome_DATA =\
 	i-directory-72.png \
 	i-directory-96.png \
 	i-directory.png \
+	i-executable.png \
 	i-music.png \
 	i-regular-12.png \
 	i-regular-192.png \
