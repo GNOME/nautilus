@@ -722,12 +722,10 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 	const char *message;
 
-	/* FIXME: Use of the word "directory" makes this FMIconView specific.
-	 * Move this into FMIconView so NautilusIconContainer can
-	 * be used for things that are not directories?
-	 */
-	/* FIXME bugzilla.eazel.com 544: The hard-coded newlines in these
-	 * messages are terrible!
+	/* FIXME bugzilla.eazel.com 915: Use of the word "directory"
+	 * makes this FMIconView specific. Move these messages into
+	 * FMIconView so NautilusIconContainer can be used for things
+	 * that are not directories?
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->selection_list)) {
@@ -1145,9 +1143,11 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
         
-	/* unfortunately, X is very slow when using a stippled mask, so only use the stipple
-	   for relatively small pixbufs.  FIXME: Eventually, we may have to remove this entirely
-	   for UI consistency reasons */
+	/* unfortunately, X is very slow when using a stippled mask,
+	   so only use the stipple for relatively small pixbufs. */
+	/* FIXME bugzilla.eazel.com 914: Eventually, we may have to
+	 * remove this entirely for UI consistency reasons.
+	 */
 	
 	if (gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf) < 4096) {
 		transparent_pixbuf = nautilus_make_semi_transparent (pixbuf);

@@ -557,7 +557,8 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		/* We have to handle this case because if you pass
 		 * GNOME_VFS_ERROR_MODE_ABORT, you never get the
 		 * error code for a failed rename.
-		 * FIXME: I believe this represents a bug in GNOME VFS.
+		 * FIXME bugzilla.eazel.com 912: I believe this
+		 * represents a bug in GNOME VFS.
 		 */
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	default:
@@ -1135,7 +1136,7 @@ nautilus_file_get_mapped_uri (NautilusFile *file)
 		return NULL;
 	}
 		
-	/* FIXME: Need to use async. I/O. */
+	/* FIXME bugzilla.eazel.com 911: Need to use async. I/O. */
 	/* see if it's a gmc style URI by reading the first part of the file */
 	result = gnome_vfs_open (&handle, actual_uri, GNOME_VFS_OPEN_READ);
 	if (result == GNOME_VFS_OK) {

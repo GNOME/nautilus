@@ -2719,11 +2719,12 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		return;
 	}
 
-	/* Close any open edit.
-	 * FIXME: Why must we do this? This function is called if there's
-	 * any change. Probably we only want to do this for certain kinds
-	 * of changes and even then it seems rude to discard the user's
-	 * text instead of prompting.
+	/* Close any open edit. */
+	/* FIXME bugzilla.eazel.com 913: Why must we do this? This
+	 * function is called if there's any change. Probably we only
+	 * want to do this for certain kinds of changes and even then
+	 * it seems rude to discard the user's text instead of
+	 * prompting.
 	 */
 	end_renaming_mode (container, TRUE);
 

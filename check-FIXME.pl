@@ -80,7 +80,7 @@ foreach my $file (@ARGV)
 if ($no_bug_lines ne "")
   {
     my @no_bug_list = sort split /\n/, $no_bug_lines;
-    print "\n", scalar(@no_bug_list), " FIXMEs don't have bug reports:\n\n";
+    print "\n", scalar(@no_bug_list), " FIXMEs don't have bug numbers:\n\n";
     foreach my $line (@no_bug_list)
       {
         print $line, "\n";
@@ -88,6 +88,7 @@ if ($no_bug_lines ne "")
   }
 
 # list the ones with bugs that are not open
+print "\n", scalar(keys %bug_lines), " FIXMEs with bug numbers.\n";
 sub numerically { $a <=> $b; }
 foreach my $bug (sort numerically keys %bug_lines)
   {
@@ -106,3 +107,4 @@ foreach my $bug (sort numerically keys %bug_lines)
         print $line, "\n";
       }
   }
+print "\n";

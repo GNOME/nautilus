@@ -35,7 +35,8 @@ static float determine_suse_version (void);
 static float determine_debian_version (void);
 
 char*
-xml_get_value (xmlNode* node, const char* name) {
+xml_get_value (xmlNode* node, const char* name)
+{
 	char* ret;
 	xmlNode *child;
 
@@ -57,7 +58,8 @@ xml_get_value (xmlNode* node, const char* name) {
 } /* end xml_get_value */
 
 xmlDocPtr
-prune_xml (char* xmlbuf) {
+prune_xml (char* xmlbuf)
+{
 	xmlDocPtr doc;
 	char* newbuf;
 	int length;
@@ -85,7 +87,8 @@ prune_xml (char* xmlbuf) {
 } /* end prune_xml */
 
 gboolean
-check_for_root_user () {
+check_for_root_user (void)
+{
 	uid_t uid;
 
 	uid = getuid ();
@@ -98,7 +101,8 @@ check_for_root_user () {
 } /* end check_for_root_user */
 
 gboolean
-check_for_redhat () {
+check_for_redhat (void)
+{
 	if (g_file_exists ("/etc/redhat-release") != 0) {
 		return TRUE;
 	}
@@ -107,14 +111,13 @@ check_for_redhat () {
 	}
 } /* end check_for_redhat */
 
-
-/* FIXME - the following functions are not closing fd correctly.  This needs
-   to be fixed and the functions need to be cleaned up.  They are ugly right
-   now.  Bug #908 in Bugzilla.
+/* FIXME bugzilla.eazel.com 908: - the following functions are not
+ * closing fd correctly.  This needs to be fixed and the functions
+ * need to be cleaned up.  They are ugly right now.
  */
-
 static float
-determine_redhat_version () {
+determine_redhat_version (void)
+{
 
 	int fd;
 	char buf[1024];
@@ -125,6 +128,7 @@ determine_redhat_version () {
 	fd = open ("/etc/redhat-release", O_RDONLY);
 	g_return_val_if_fail (fd != -1, 0);
 	read (fd, buf, 1023);
+	close (fd);
 	buf[1023] = '\0';
 	/* These check for LinuxPPC. For whatever reason, they use
 	   /etc/redhat-release */
@@ -155,8 +159,8 @@ determine_redhat_version () {
 } /* determine_redhat_version */
 
 static float
-determine_mandrake_version () {
-
+determine_mandrake_version (void)
+{
 	int fd;
 	char buf[1024];
 	char* text;
@@ -166,6 +170,7 @@ determine_mandrake_version () {
 	fd = open ("/etc/mandrake-release", O_RDONLY);
 	g_return_val_if_fail (fd != -1, 0);
 	read (fd, buf, 1023);
+	close (fd);
 	buf[1023] = '\0';
 	text = strstr (buf, "6.0");
 	if (text)
@@ -188,8 +193,8 @@ determine_mandrake_version () {
 } /* determine_mandrake_version */
 
 static float
-determine_turbolinux_version () {
-
+determine_turbolinux_version (void)
+{
 	int fd;
 	char buf[1024];
 	char* text;
@@ -199,6 +204,7 @@ determine_turbolinux_version () {
 	fd = open ("/etc/turbolinux-release", O_RDONLY);
 	g_return_val_if_fail (fd != -1, 0);
 	read (fd, buf, 1023);
+	close (fd);
 	buf[1023] = '\0';
 	text = strstr (buf, "7.");
 	if (text)
@@ -221,8 +227,8 @@ determine_turbolinux_version () {
 } /* determine_turbolinux_version */
 
 static float
-determine_suse_version () {
-
+determine_suse_version (void)
+{
 	int fd;
 	char buf[1024];
 	char* text;
@@ -232,6 +238,7 @@ determine_suse_version () {
 	fd = open ("/etc/SuSE-release", O_RDONLY);
 	g_return_val_if_fail (fd != -1, 0);
 	read (fd, buf, 1023);
+	close (fd);
 	buf[1023] = '\0';
 	text = strstr (buf, "6.");
 	if (!text)
@@ -248,7 +255,8 @@ determine_suse_version () {
 } /* determine_suse_version */
 
 static float
-determine_debian_version () {
+determine_debian_version (void)
+{
 
 	int fd;
 	char buf[1024];
@@ -257,6 +265,7 @@ determine_debian_version () {
 	fd = open ("/etc/debian_version", O_RDONLY);
 	g_return_val_if_fail (fd != -1, 0);
 	read (fd, buf, 1023);
+	close (fd);
 	buf[1023] = '\0';
 	sscanf (buf, "%f", &version);
 	if (version < 2.1)
@@ -265,8 +274,8 @@ determine_debian_version () {
 } /* determine_debian_version */
 
 DistributionType
-determine_distribution_type (void) {
-
+determine_distribution_type (void)
+{
 	float version;
 	DistributionType rv;
 
@@ -363,69 +372,42 @@ determine_distribution_type (void) {
 	return rv;
 } /* determine_distribution_type */
 
-char*
-get_distribution_name (const DistributionType* dtype) {
-
-	char* rv;
-	rv = NULL;
-
-	while (rv != NULL) {
-		switch ((int) dtype) {
-			case DISTRO_REDHAT_5:
-				rv = g_strdup ("RedHat Linux 5.x");
-				break;
-			case DISTRO_REDHAT_6:
-				rv = g_strdup ("RedHat Linux 6.0");
-				break;
-			case DISTRO_REDHAT_6_1:
-				rv = g_strdup ("RedHat Linux 6.1");
-				break;
-			case DISTRO_REDHAT_6_2:
-				rv = g_strdup ("RedHat Linux 6.2");
-				break;
-			case DISTRO_MANDRAKE_6_1:
-				rv = g_strdup ("Mandrake Linux 6.2");
-				break;
-			case DISTRO_MANDRAKE_7:
-				rv = g_strdup ("Mandrake Linux 7.x");
-				break;
-			case DISTRO_CALDERA:
-				rv = g_strdup ("Caldera OpenLinux");
-				break;
-			case DISTRO_SUSE:
-				rv = g_strdup ("SuSe Linux");
-				break;
-			case DISTRO_LINUXPPC:
-				rv = g_strdup ("LinuxPPC");
-				break;
-			case DISTRO_TURBOLINUX_4:
-				rv = g_strdup ("TurboLinux 4.x");
-				break;
-			case DISTRO_TURBOLINUX_6:
-				rv = g_strdup ("TurboLinux 6.x");
-				break;
-			case DISTRO_COREL:
-				rv = g_strdup ("Corel Linux");
-				break;
-			case DISTRO_DEBIAN_2_1:
-				rv = g_strdup ("Debian GNU/Linux 2.1");
-				break;
-			case DISTRO_DEBIAN_2_2:
-				rv = g_strdup ("Debian GNU/Linux 2.2");
-				break;
-			case DISTRO_UNKNOWN:
-				rv = g_strdup ("Unknown Linux Distribtion");
-				break;
-			default:
-				rv = g_strdup ("INVALID_RETURN_VALUE");
-				break;
-		}
-	}
-	if (rv == "INVALID_RETURN_VALUE") {
+char *
+get_distribution_name (const DistributionType* dtype)
+{
+	switch ((int) dtype) {
+	case DISTRO_REDHAT_5:
+		return g_strdup ("RedHat Linux 5.x");
+	case DISTRO_REDHAT_6:
+		return g_strdup ("RedHat Linux 6.0");
+	case DISTRO_REDHAT_6_1:
+		return g_strdup ("RedHat Linux 6.1");
+	case DISTRO_REDHAT_6_2:
+		return g_strdup ("RedHat Linux 6.2");
+	case DISTRO_MANDRAKE_6_1:
+		return g_strdup ("Mandrake Linux 6.2");
+	case DISTRO_MANDRAKE_7:
+		return g_strdup ("Mandrake Linux 7.x");
+	case DISTRO_CALDERA:
+		return g_strdup ("Caldera OpenLinux");
+	case DISTRO_SUSE:
+		return g_strdup ("SuSe Linux");
+	case DISTRO_LINUXPPC:
+		return g_strdup ("LinuxPPC");
+	case DISTRO_TURBOLINUX_4:
+		return g_strdup ("TurboLinux 4.x");
+	case DISTRO_TURBOLINUX_6:
+		return g_strdup ("TurboLinux 6.x");
+	case DISTRO_COREL:
+		return g_strdup ("Corel Linux");
+	case DISTRO_DEBIAN_2_1:
+		return g_strdup ("Debian GNU/Linux 2.1");
+	case DISTRO_DEBIAN_2_2:
+		return g_strdup ("Debian GNU/Linux 2.2");
+	case DISTRO_UNKNOWN:
+		return g_strdup ("unknown Linux distribution");
+	default:
 		fprintf (stderr, "Invalid DistributionType !\n");
 		exit (1);
-	}
-	else {
-		return rv;
 	}
 } /* end get_distribution_name */

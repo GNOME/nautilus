@@ -134,7 +134,7 @@ struct FMIconViewDetails
 
 	const SortCriterion *sort;
 
-	/* FIXME: Workaround for Bonobo bug. */
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	gboolean updating_bonobo_radio_menu_item;
 };
 
@@ -480,7 +480,7 @@ update_layout_menus (FMIconView *view)
 		return;
 	}
 
-	/* FIXME: Workaround for Bonobo bug. */
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	view->details->updating_bonobo_radio_menu_item = TRUE;
 	path = MENU_PATH_MANUAL_LAYOUT;
 	if (nautilus_icon_container_is_auto_layout (get_icon_container (view))) {
@@ -755,7 +755,7 @@ sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 
 	icon_view = FM_ICON_VIEW (user_data);
 
-	/* FIXME: Workaround for Bonobo bug. */
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}
@@ -774,7 +774,7 @@ manual_layout_callback (BonoboUIHandler *handler,
 
 	icon_view = FM_ICON_VIEW (user_data);
 
-	/* FIXME: Workaround for Bonobo bug. */
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	if (icon_view->details->updating_bonobo_radio_menu_item) {
 		return;
 	}

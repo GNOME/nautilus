@@ -1,3 +1,32 @@
+2000-05-16  Darin Adler  <darin@eazel.com>
+
+	Quick cleanup pass on FIXMEs.
+	
+	* check-FIXME.pl: Added the count of FIXMEs with bug numbers
+	as well as the count of FIXMEs without.
+	
+	* components/services/trilobite/lib/helixcode-utils.c:
+	(xml_get_value), (prune_xml), (check_for_root_user),
+	(check_for_redhat), (determine_redhat_version),
+	(determine_mandrake_version), (determine_turbolinux_version),
+	(determine_suse_version), (determine_debian_version),
+	(determine_distribution_type), (get_distribution_name):
+	A tiny bit of cleanup on these functions. There was some really
+	bad code in here, including code that compared strings with ==.
+	Also a lot of code that does open and then no close, for no
+	good reason, so I added the close.
+	
+	* libnautilus-extensions/nautilus-file.c: (rename_callback),
+	(nautilus_file_get_mapped_uri):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout), (nautilus_icon_dnd_begin_drag):
+	* src/file-manager/fm-icon-view.c: (update_layout_menus),
+	(sort_callback), (manual_layout_callback):
+	* src/ntl-view.c: (nautilus_view_destroy_client):
+	Added bug numbers to some FIXMEs.
+
 2000-05-16  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/sample/service/Makefile.am
