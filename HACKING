@@ -34,5 +34,8 @@ ORBit requires you to install popt-1.5, which can be fetched from:
 
 * Build and install nautilus into your selected prefix.
 
+Also, you need to do a "killall oafd; killall gconfd" before
+running Nautilus if OAF, GConf, or any of the .oafinfo files
+in any module changed.
 
 All patches should go through nautilus-list@lists.eazel.com

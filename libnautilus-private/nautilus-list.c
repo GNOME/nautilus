@@ -420,9 +420,12 @@ nautilus_list_destroy (GtkObject *object)
 					      click_policy_changed_callback,
 					      list);
 
-	g_free (list->details);
-
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
+	/* Must do this after calling the parent, because GtkCList calls
+	 * the clear method, which must have a valid details pointer.
+	 */
+	g_free (list->details);
 }
 
 static void

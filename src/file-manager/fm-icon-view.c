@@ -1087,7 +1087,7 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 {
 	NautilusDirectory *directory;
 	char *position_string;
-	char *scale_string;
+	char *scale_string, *scale_string_x, *scale_string_y;
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
@@ -1106,30 +1106,29 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
                                         icon_view);
 	}
 
-	/* Store the new position of the icon in the metadata.
-	 * FIXME bugzilla.eazel.com 661: 
-	 * Is a comma acceptable in locales where it is the decimal separator?
-	 */
+	/* Store the new position of the icon in the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
-	position_string = g_strdup_printf ("%d,%d", x, y);
-	nautilus_file_set_metadata (file, 
-				    NAUTILUS_METADATA_KEY_ICON_POSITION, 
-				    NULL, 
-				    position_string);
+	if (!nautilus_icon_container_is_auto_layout (container)) {
+		position_string = g_strdup_printf ("%d,%d", x, y);
+		nautilus_file_set_metadata (file, 
+					    NAUTILUS_METADATA_KEY_ICON_POSITION, 
+					    NULL, 
+					    position_string);
+	}
 
 	/* FIXME bugzilla.eazel.com 662: 
 	 * %.2f is not a good format for the scale factor. We'd like it to
 	 * say "2" or "2x" instead of "2.00".
-	 * FIXME bugzilla.eazel.com 663: 
-	 * scale_x == scale_y is too strict a test. It would be better to
-	 * check if the string representations match instead of the FP values.
-	 * FIXME bugzilla.eazel.com 661: 
-	 * Is a comma acceptable in locales where it is the decimal separator?
 	 */
-	if (scale_x == scale_y) {
-		scale_string = g_strdup_printf ("%.2f", scale_x);
+	scale_string_x = g_strdup_printf ("%.2f", scale_x);
+	scale_string_y = g_strdup_printf ("%.2f", scale_y);
+	if (strcmp (scale_string_x, scale_string_y) == 0) {
+		scale_string = scale_string_x;
+		g_free (scale_string_y);
 	} else {
-		scale_string = g_strdup_printf ("%.2f,%.2f", scale_x, scale_y);
+		scale_string = g_strconcat (scale_string_x, ",", scale_string_y);
+		g_free (scale_string_x);
+		g_free (scale_string_y);
 	}
 	nautilus_file_set_metadata (file,
 				    NAUTILUS_METADATA_KEY_ICON_SCALE,

@@ -1,4 +1,23 @@
+2000-05-02  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Added a mention of "killall oafd" and "killall gconfd".
+	
+	* libnautilus-extensions/nautilus-list.c (nautilus_list_destroy):
+	Fixed a bug where we'd free the details structure and then write
+	to it afterwards. This was torturing John today. It happens when
+	you leave a page that's set to list view.
+	
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_icon_changed_callback): Fixed bug 663 that was
+	about the issue of similar but not identical floating point
+	numbers and also bug 661 that wasn't a bug at all!
+	
+	* src/file-manager/fm-properties-window.c
+	(get_pixmap_and_mask_for_properties_window):
+	Removed the FIXME from this file, since the bug is fixed.
+
 2000-05-2  Cody Russell  <car0969@gamma2.uta.edu>
+
 	* src/ntl-window.c: Respect the user's GNOME preferences. Lock
 	down the "Location" toolbar if the user has "Can detach and
 	move toolbars" disabled in gnomecc.
