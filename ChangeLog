@@ -1,3 +1,18 @@
+2000-10-30  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4166, "New Folder" offset problem.
+
+	Also reverted Enter to activate selected items instead of
+	entering renaming mode.
+
+	* libnautilus-extensions/nautilus-icon-container.c: 
+	(relayout):
+	Call nautilus_icon_container_update_scroll_region before
+	processing pending reveal and rename actions.
+
+	(key_press_event):
+	Enter keypress activates selected items
+	
 2000-10-30  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/proxy.c: (load_nscp_proxy_settings),

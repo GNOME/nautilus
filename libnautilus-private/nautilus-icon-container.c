@@ -1080,10 +1080,10 @@ relayout (NautilusIconContainer *container)
 		lay_down_icons (container, container->details->icons, 0);
 	}
 
+	nautilus_icon_container_update_scroll_region (container);
+
 	process_pending_icon_to_reveal (container);
 	process_pending_icon_to_rename (container);
-	
-	nautilus_icon_container_update_scroll_region (container);
 }
 
 static void
@@ -2697,7 +2697,6 @@ key_press_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	gboolean handled;
 	gboolean flush_typeahead;
-	GList *selection;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	handled = FALSE;
@@ -2755,19 +2754,7 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Return:
 		case GDK_KP_Enter:
-			/* Return enters renaming mode if only one item is selected. */
-			/* FIXME: This code shouldn't know about nautilus_file. It
-			 * needs to be generalized.
-			 */
-			/*activate_selected_items (container);*/
-			selection = nautilus_icon_container_get_selection (container);
-			if (selection != NULL) {
-				if (nautilus_g_list_exactly_one_item (selection)
-				    && nautilus_file_can_rename (selection->data)) {
-					nautilus_icon_container_start_renaming_selected_item (container);					
-				}
-				g_list_free (selection);
-			}
+			activate_selected_items (container);
 			handled = TRUE;
 			break;
 		
