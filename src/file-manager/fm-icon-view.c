@@ -187,8 +187,6 @@ static void                 fm_icon_view_set_directory_sort_by                 (
 static void                 fm_icon_view_set_zoom_level                        (FMIconView           *view,
 										NautilusZoomLevel     new_level,
 										gboolean              always_set_level);
-static void                 fm_icon_view_update_icon_container_fonts           (FMIconView           *icon_view);
-static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView           *icon_view);
 static void                 fm_icon_view_update_click_mode                     (FMIconView           *icon_view);
 static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView           *icon_view,
 										NautilusFile         *file,
@@ -1888,22 +1886,6 @@ fm_icon_view_image_display_policy_changed (FMDirectoryView *directory_view)
 }
 
 static void
-font_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (callback_data));
-}
-
-static void
-default_zoom_level_font_size_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_font_size_table (FM_ICON_VIEW (callback_data));
-}
-
-static void
 fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
@@ -2024,8 +2006,6 @@ default_zoom_level_changed_callback (gpointer callback_data)
 							    get_default_zoom_level ());
 		fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 	}
-
-	fm_icon_view_update_icon_container_font_size_table (icon_view);
 }
 
 static void
@@ -2070,88 +2050,6 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 {
 	fm_directory_view_move_copy_items (item_uris, relative_item_points, target_dir,
 		copy_action, x, y, view);
-}
-
-static void
-fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
-{
-	NautilusIconContainer *icon_container;
-	char *font_name;
-	
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_ICON_VIEW_FONT);
-
-	nautilus_icon_container_set_font_name (icon_container, font_name);
-
-	g_free (font_name);
-}
-
-static int default_zoom_level_font_size = 12;
-
-static int
-get_default_zoom_level_font_size (void)
-{
-	static gboolean auto_storaged_added = FALSE;
-
-	if (auto_storaged_added == FALSE) {
-		auto_storaged_added = TRUE;
-		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-					       &default_zoom_level_font_size);
-	}
-
-	return default_zoom_level_font_size;
-}
-
-static void
-fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
-{
-	/* Deltas in points from the default zoom level.  The actual font size table
-	 * is computed by taking the default_zoom level and assigning the default
-	 * zoom level font size for that.  Then all values above the default zoom
-	 * level are computed by using the positive deltas.  The values below the 
-	 * default zoom level as respectively computed by using the negative deltas
-	 */
-	static int positive_font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		0, +2, +4, +4, +6, +6, +8 };
-	static int negative_font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		0, -2, -3, -3, -4, -4, -5 };
-
-	const int min_font_size = 5;
-	const int max_font_size = 30;
-
-	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
-	NautilusIconContainer *icon_container;
-	int default_zoom_level_font_size;
-	int i;
- 	int j;
-	NautilusZoomLevel default_level;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	default_zoom_level_font_size = get_default_zoom_level_font_size ();
-	default_level = get_default_zoom_level ();
-
-	g_return_if_fail (default_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
-	g_return_if_fail (default_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
-
-	for (i = default_level, j = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++,j++) {
-		font_size_table[i] = CLAMP (default_zoom_level_font_size + positive_font_size_delta_table[j],
-					    min_font_size,
-					    max_font_size);
-	}
-
-	for (i = default_level - 1, j = 0; i >= NAUTILUS_ZOOM_LEVEL_SMALLEST; i--,j++) {
-		font_size_table[i] = CLAMP (default_zoom_level_font_size + negative_font_size_delta_table[j],
-					    min_font_size,
-					    max_font_size);
-
-	}
-	
-	nautilus_icon_container_set_font_size_table (icon_container, font_size_table);
-	nautilus_icon_container_request_update_all (icon_container);
 }
 
 static void
@@ -2223,8 +2121,6 @@ create_icon_container (FMIconView *icon_view)
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));
 
-	fm_icon_view_update_icon_container_fonts (icon_view);
-	fm_icon_view_update_icon_container_font_size_table (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
@@ -2447,12 +2343,6 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 		setup_sound_preview = TRUE;
 	}
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-						  font_changed_callback, 
-						  icon_view, G_OBJECT (icon_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						  default_zoom_level_font_size_changed_callback,
-						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
 						  icon_view, G_OBJECT (icon_view));

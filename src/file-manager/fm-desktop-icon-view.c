@@ -122,7 +122,7 @@ static void     update_disks_menu                                 (FMDesktopIcon
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
 static NautilusDeviceType volume_link_device_type                 (FMDirectoryView        *view);
-
+static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
 
 EEL_CLASS_BOILERPLATE (FMDesktopIconView,
 			      fm_desktop_icon_view,
@@ -560,7 +560,29 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->delayed_init_signal = 0;
 }
 
+static void
+font_changed_callback (gpointer callback_data)
+{
+ 	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (callback_data));
+	
+	fm_desktop_icon_view_update_icon_container_fonts (FM_DESKTOP_ICON_VIEW (callback_data));
+}
 
+static void
+fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
+{
+	NautilusIconContainer *icon_container;
+	char *font;
+	
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+
+	font = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_FONT);
+
+	nautilus_icon_container_set_font (icon_container, font);
+
+	g_free (font);
+}
 
 static void
 fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
@@ -647,7 +669,13 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 				      default_zoom_level_changed,
 				      desktop_icon_view);
+	
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_FONT,
+						  font_changed_callback, 
+						  desktop_icon_view, G_OBJECT (desktop_icon_view));
+	
 	default_zoom_level_changed (desktop_icon_view);
+	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
 	/* Read out the panel desktop area and update the icon container
 	 * accordingly */
