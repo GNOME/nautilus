@@ -1797,6 +1797,7 @@ done_loading (FMDirectoryView *view)
 			
 			nautilus_file_list_free (selection);
 		}
+		fm_directory_view_display_selection_info (view);
 	}
 
 	fm_directory_view_end_loading (view);
