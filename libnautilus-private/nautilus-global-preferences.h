@@ -31,7 +31,7 @@
 G_BEGIN_DECLS
 
 /* Which theme is active */
-#define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file-views/icon_theme"
+#define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file_views/icon_theme"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
@@ -48,26 +48,26 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
 
 /* Display  */
-#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file-views/show_hidden_files"
-#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file-views/show_backup_files"
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
+#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file_views/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
 /* Sidebar panels  */
-#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar-panels/tree/show_only_directories"
+#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
 
 /* Navigation  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
 
 /* Proxy */
-#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"/system/gnome-vfs/use-http-proxy"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_HOST                 	"/system/gnome-vfs/http-proxy-host"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"/system/gnome-vfs/http-proxy-port"
+#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"/system/gnome_vfs/use_http_proxy"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_HOST                 	"/system/gnome_vfs/http_proxy_host"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"/system/gnome_vfs/http_proxy_port"
 
 /* HTTP Proxy Authentication */
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH                "/system/gnome-vfs/use-http-proxy-authorization"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome-vfs/http-proxy-authorization-user"
-#define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome-vfs/http-proxy-authorization-password"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH                "/system/gnome_vfs/use_http_proxy_authorization"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome_vfs/http_proxy_authorization_user"
+#define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome_vfs/http_proxy_authorization_password"
 
 /* Content fonts */
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
@@ -108,13 +108,13 @@ enum
 
 
 /* Icon View */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon-view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon-view/default_sort_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon-view/default_use_tighter_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon-view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon-view/default_zoom_level_font_size"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon-view/default_use_manual_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon_view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon_view/default_sort_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon_view/default_use_tighter_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon_view/default_zoom_level_font_size"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon_view/font"
 
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
@@ -123,17 +123,17 @@ enum
  * In nautilus-global-preferences.c we install callbacks for
  * the proxy preference and update the other 2 when it changes 
  */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon-view/default_sort_order_or_manual_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon_view/default_sort_order_or_manual_layout"
 
 /* Which text attributes appear beneath icon names */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon-view/captions"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon_view/captions"
 
 /* List View */
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list-view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list-view/default_sort_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list-view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list-view/default_zoom_level_font_size"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list-view/font"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list_view/default_sort_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list_view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list_view/default_zoom_level_font_size"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list_view/font"
 
 /* News panel */
 #define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"

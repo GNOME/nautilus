@@ -41,6 +41,7 @@
       <applyto>/apps/nautilus/preferences/xalf/options</applyto>
       <owner>nautilus</owner>
       <type>list</type>
+      <list_type>string</list_type>
       <locale name="C">
          <short>xalf options</short>
          <long>
@@ -247,24 +248,187 @@
       </locale>
     </schema>
 
-   <schema>
-      <key>/schemas/apps/nautilus/preferences/smooth_graphics_mode</key>
-      <applyto>/apps/nautilus/preferences/smooth_graphics_mode</applyto>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/preview_sound</key>
+      <applyto>/apps/nautilus/preferences/preview_sound</applyto>
       <owner>nautilus</owner>
-      <type>bool</type>
-      <default>true</default>
+      <type>string</type>
+      <default>local_only</default>
       <locale name="C">
-         <short>Whether to use smooth (antialiased) graphics</short>
+         <short>Whether to preview sounds when mousing over an icon</short>
          <long>
-           If toggled on, smooth out jagged graphics, possibly 
-           using more resources.
+           Speed tradeoff for when to preview a sound file when mousing
+           over a files icon.
+           If set to "always" then always plays the sound, 
+           even if the file is on a remote server.
+           If set to "local_only" then only plays previews on local filesystems.
+           If set to "never" then it never previews sound.
          </long>
       </locale>
     </schema>
 
-   <schema>
-      <key>/schemas/apps/nautilus/list-view/font</key>
-      <applyto>/apps/nautilus/list-view/font</applyto>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/show_special_flags</key>
+      <applyto>/apps/nautilus/preferences/show_special_flags</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Enable 'special' flags in file preferences dialog</short>
+	 <long>
+	  If set to true, then nautilus lets you edit some of the more
+	  esoteric options of a file in the file preferences dialog.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/sort_directories_first</key>
+      <applyto>/apps/nautilus/preferences/sort_directories_first</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Show directories first in windows</short>
+	 <long>
+	  If set to true, then nautilus shows directories prior to
+	  showing files in the icon and list views.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/show_desktop</key>
+      <applyto>/apps/nautilus/preferences/show_desktop</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Nautilus handles drawing the desktop</short>
+	 <long>
+	  If set to true, then nautilus will draw the icons on the
+	  desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/desktop_is_home_dir</key>
+      <applyto>/apps/nautilus/preferences/desktop_is_home_dir</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Nautilus uses the users home directory as the desktop</short>
+	 <long>
+	  If set to true, then nautilus will use the user's home
+	  directory as the desktop.  If it is false, then it will use
+	  ~/.gnome-desktop as the desktop.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/can_add_content</key>
+      <applyto>/apps/nautilus/preferences/can_add_content</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>User can add patterns to pattern dialog</short>
+	 <long>
+	  If set to true, then the user can add their own patterns,
+	  emblems and colors to the pattern dialog.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/search_bar_type</key>
+      <applyto>/apps/nautilus/preferences/search_bar_type</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>search_by_text</default>
+      <locale name="C">
+         <short>Criteria for search bar searching.</short>
+	 <long>
+	  Criteria when matching files searched for in the search bar.
+	  If set to search_by_text, then nautilus will Search for files
+	  by file name only.
+	  If set to search_by_text_and_properties", then nautilus will
+	  search for files by file name and file properties. 
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/window_always_new</key>
+      <applyto>/apps/nautilus/preferences/window_always_new</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Bring up a new window for every opened file</short>
+	 <long>
+	  If set to true, then nautilus will bring up a new nautilus
+	  window by default whenever an item is opened.
+	</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/window_always_new</key>
+      <applyto>/apps/nautilus/preferences/window_always_new</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Bring up a new window for every opened file</short>
+	 <long>
+	  If set to true, then nautilus will bring up a new nautilus
+	  window by default whenever an item is opened.
+	</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/icon_view/captions</key>
+      <applyto>/apps/nautilus/icon_view/captions</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[size,date_modified,type]</default>
+      <locale name="C">
+         <short>List of possible captions on icons</short>
+         <long>
+	  A list of captions below an icon in the icon view and
+          the desktop.  The actual number of captions shown depends on
+          the zoom level.  Possible values are:
+	  size, type, date_modified, date_changed, date_accessed, owner,
+	  group, permissions, octal_permissions and mime_type
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/hide_built_in_bookmarks</key>
+      <applyto>/apps/nautilus/preferences/hide_built_in_bookmarks</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Hide default bookmarks in the bookmark menu.</short>
+	 <long>
+	  If set to true, then nautilus will just show the user's
+	  bookmarks in the bookmark menu.
+	</long>
+      </locale>
+    </schema>
+
+
+    <schema>
+      <key>/schemas/apps/nautilus/list_view/font</key>
+      <applyto>/apps/nautilus/list_view/font</applyto>
       <owner>nautilus</owner>
       <type>string</type>
       <default>sans</default>
@@ -277,8 +441,8 @@
     </schema>
 
    <schema>
-      <key>/schemas/apps/nautilus/list-view/default_zoom_level_font_size</key>
-      <applyto>/apps/nautilus/list-view/default_zoom_level_font_size</applyto>
+      <key>/schemas/apps/nautilus/list_view/default_zoom_level_font_size</key>
+      <applyto>/apps/nautilus/list_view/default_zoom_level_font_size</applyto>
       <owner>nautilus</owner>
       <type>string</type>
       <default>12</default>
