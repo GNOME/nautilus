@@ -1,3 +1,9 @@
+2004-09-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/file-manager/fm-directory-view.c: (get_activation_action),
+	(real_update_menus_volumes), (fm_directory_view_activate_files):
+	Plug a couple of leaks. Closes bug #152769.
+
 2004-09-17  Alexander Larsson  <alexl@redhat.com>
 
 	* cut-n-paste-code/libegg/egg-recent-model.c:

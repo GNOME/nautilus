@@ -3849,6 +3849,8 @@ get_activation_action (NautilusFile *file)
 			action = ACTIVATION_ACTION_OPEN_IN_APPLICATION;
 		}
 	}
+	g_free (activation_uri);
+
 	return action;
 }
 
@@ -5768,6 +5770,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 			     eel_istr_has_prefix (uri, "dav:") ||
 			     eel_istr_has_prefix (uri, "davs:"))) {
 				show_connect = TRUE;
+				g_free (uri);
 			}
 		} else if (nautilus_file_is_mime_type (file,
 						       "x-directory/smb-share")) {
