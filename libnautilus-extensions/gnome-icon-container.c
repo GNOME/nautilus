@@ -651,7 +651,6 @@ icon_grid_add_auto (GnomeIconContainerIconGrid *grid,
 		*x_return = grid->first_free_x;
 	if (y_return != NULL)
 		*y_return = grid->first_free_y;
-	g_message("Autoposition at (%d, %d)", grid->first_free_x, grid->first_free_y);
 
 	icon_grid_update_first_free_forward (grid);
 }
