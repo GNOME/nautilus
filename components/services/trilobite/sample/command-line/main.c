@@ -62,7 +62,6 @@ int main(int argc, char *argv[]) {
 	Trilobite_Service trilobite;
 	Trilobite_Eazel_Sample sample_service; 
 
-	Trilobite_PasswordQueryClient trilobite_client;
 	TrilobiteRootClient *root_client = NULL;
 
 	if (trilobite_init ("trilobite-sample-client", "0.1", NULL, argc, argv, NULL) == FALSE) {
@@ -114,24 +113,12 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
-	        Trilobite_PasswordQuery trilobite_password;
-
 		root_client = trilobite_root_client_new ();
 		gtk_signal_connect (GTK_OBJECT (root_client), "need_password", GTK_SIGNAL_FUNC (get_password_dude),
 				    NULL);
 
-		trilobite_password = bonobo_object_query_interface (BONOBO_OBJECT (service),
-								    "IDL:Trilobite/PasswordQuery:1.0");
-		trilobite_client = trilobite_root_client_get_passwordqueryclient (root_client);
-		if (trilobite_password) {
-			Trilobite_PasswordQuery_set_query_client (trilobite_password, trilobite_client, &ev);
-			if (ev._major != CORBA_NO_EXCEPTION) {
-				g_warning ("set-query-client got exception :(");
-			}
-			Trilobite_PasswordQuery_unref (trilobite_password, &ev);
-			CORBA_Object_release (trilobite_password, &ev);
-		} else {
-			g_warning ("Never set client!");
+		if (! trilobite_root_client_attach (root_client, service)) {
+			g_warning ("root_client_attach to Trilobite/PasswordQuery failed :(");
 		}
 	} else {
 		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");

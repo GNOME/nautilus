@@ -72,6 +72,7 @@ POA_Trilobite_PasswordQueryClient__epv *trilobite_root_client_get_epv (void);
 void trilobite_root_client_unref (GtkObject *object);
 
 Trilobite_PasswordQueryClient trilobite_root_client_get_passwordqueryclient (TrilobiteRootClient *root_client);
+gboolean trilobite_root_client_attach (TrilobiteRootClient *root_client, BonoboObjectClient *service);
 
 #ifdef __cplusplus
 }

@@ -1,3 +1,17 @@
+2000-07-25  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client-pu
+	blic.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	(trilobite_root_client_get_passwordqueryclient),
+	(trilobite_root_client_attach):
+	* components/services/trilobite/sample/command-line/main.c: (main):
+
+	Move oft-repeated code (that attaches a TrilobiteRootClient to a
+	service) into the API of the TrilobiteRootClient.
+
 2000-07-25  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

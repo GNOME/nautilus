@@ -269,6 +269,9 @@ trilobite_root_client_new (void)
 
 /**********   functions that actually implement the root client   **********/
 
+/* returns the actual corba object for the PasswordQueryClient.
+ * only needed if you feel like writing your own _attach function instead of using the one below.
+ */
 Trilobite_PasswordQueryClient
 trilobite_root_client_get_passwordqueryclient (TrilobiteRootClient *root_client)
 {
@@ -276,4 +279,48 @@ trilobite_root_client_get_passwordqueryclient (TrilobiteRootClient *root_client)
 	g_return_val_if_fail (TRILOBITE_IS_ROOT_CLIENT (root_client), CORBA_OBJECT_NIL);
 
 	return root_client->private->pq_client;
+}
+
+/* if 'service' implements PasswordQuery, this function attaches the TrilobiteRootClient to that
+ * PasswordQuery as the callback mechanism.
+ * --- this is a necessary step, if you want a working TrilobiteRootClient.
+ * returns TRUE on success
+ */
+gboolean
+trilobite_root_client_attach (TrilobiteRootClient *root_client, BonoboObjectClient *service)
+{
+	Trilobite_PasswordQuery trilobite_password;
+	CORBA_Environment ev;
+
+	g_return_val_if_fail (root_client != NULL, FALSE);
+	g_return_val_if_fail (TRILOBITE_IS_ROOT_CLIENT (root_client), FALSE);
+	g_return_val_if_fail (service != NULL, FALSE);
+	g_return_val_if_fail (BONOBO_IS_OBJECT_CLIENT (service), FALSE);
+	g_assert (root_client->private->pq_client != CORBA_OBJECT_NIL);
+
+	CORBA_exception_init (&ev);
+	if (! bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
+		goto fail;
+	}
+
+	trilobite_password = bonobo_object_query_interface (BONOBO_OBJECT (service),
+							    "IDL:Trilobite/PasswordQuery:1.0");
+	if (trilobite_password == CORBA_OBJECT_NIL) {
+		g_warning ("somehow query-interface(PasswordQuery) returned nil");
+		goto fail;
+	}
+
+	Trilobite_PasswordQuery_set_query_client (trilobite_password, root_client->private->pq_client, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("set-query-client got exception :(");
+	}
+	Trilobite_PasswordQuery_unref (trilobite_password, &ev);
+	CORBA_Object_release (trilobite_password, &ev);
+
+	CORBA_exception_free (&ev);
+	return TRUE;
+
+fail:
+	CORBA_exception_free (&ev);
+	return FALSE;
 }
