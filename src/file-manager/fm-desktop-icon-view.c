@@ -30,6 +30,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <libgnome/gnome-dentry.h>
@@ -62,8 +63,13 @@
 
 #define TRASH_LINK_NAME _("Trash")
 
+#define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL	"/commands/Empty Trash Conditional"
+
+#define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
+
 struct FMDesktopIconViewDetails
 {
+	BonoboUIComponent *ui;
 };
 
 typedef struct {
@@ -107,6 +113,8 @@ static int      desktop_icons_compare_callback                            (Nauti
 static void	create_or_rename_trash 					  (void);
 								   
 static gboolean real_supports_auto_layout     	 		  	  (FMIconView  	    *view);
+static void	real_merge_menus 		     	 		  (FMDirectoryView  *view);
+static void	real_update_menus 		     	 		  (FMDirectoryView  *view);
 static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  *view);
 
 
@@ -131,6 +139,10 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
 	/* Clean up details */	
+	if (icon_view->details->ui != NULL) {
+		bonobo_ui_component_unset_container (icon_view->details->ui);
+		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+	}
 	g_free (icon_view->details);
 
 	/* Clean up any links that may be left over */
@@ -154,6 +166,8 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
 	fm_directory_view_class->create_selection_context_menu_items = fm_desktop_icon_view_create_selection_context_menu_items;
+	fm_directory_view_class->merge_menus = real_merge_menus;
+	fm_directory_view_class->update_menus = real_update_menus;
 	fm_directory_view_class->supports_zooming = real_supports_zooming;
 
 	fm_icon_view_class->supports_auto_layout = real_supports_auto_layout;
@@ -346,32 +360,91 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
+new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+{
+	nautilus_gnome_open_terminal (NULL);
+}
+
+static void
+change_background_callback (BonoboUIComponent *component, 
+	  		    gpointer data, 
+			    const char *verb)
+{
+	nautilus_launch_application_from_command 
+		("background-properties-capplet", NULL, FALSE);
+}
+
+static void
+empty_trash_callback (BonoboUIComponent *component, 
+	  	      gpointer data, 
+		      const char *verb)
+{
+        g_assert (FM_IS_DIRECTORY_VIEW (data));
+
+	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (data)));
+}
+
+static void
+reset_background_callback (BonoboUIComponent *component, 
+			   gpointer data, 
+			   const char *verb)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (data));
+
+	nautilus_background_reset 
+		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
+}
+
+static void
+quit_desktop_callback (BonoboUIComponent *component, 
+		       gpointer data, 
+		       const char *verb)
+{
+	nautilus_application_close_desktop ();
+}
+
+/* FIXME bugzilla.eazel.com 3579:
+ * This is obsolete when the context menus are converted to Bonobo.
+ */
+static void
 new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	nautilus_gnome_open_terminal (NULL);
 }
 
+/* FIXME bugzilla.eazel.com 3579:
+ * This is obsolete when the context menus are converted to Bonobo.
+ */
 static void
 reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_background_reset (fm_directory_view_get_background (view));
 }
 
+/* FIXME bugzilla.eazel.com 3579:
+ * This is obsolete when the context menus are converted to Bonobo.
+ */
 static void
 change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_launch_application_from_command ("background-properties-capplet", NULL, FALSE);
 }
 
+/* FIXME bugzilla.eazel.com 3579:
+ * This is obsolete when the context menus are converted to Bonobo.
+ */
 static void
 quit_nautilus_desktop_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_application_close_desktop ();
 }
 
+/* FIXME bugzilla.eazel.com 3579:
+ * This is obsolete when the context menus are converted to Bonobo.
+ */
 static void 
-empty_trash_callback (gpointer ignored, gpointer view)
+empty_trash_menu_item_callback (gpointer ignored, gpointer view)
 {
         g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -433,7 +506,7 @@ fm_desktop_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 		gtk_menu_append (menu, menu_item);
                 gtk_signal_connect (GTK_OBJECT (menu_item),
                                     "activate",
-                                    empty_trash_callback,
+                                    empty_trash_menu_item_callback,
                                     view);
 		gtk_widget_set_sensitive (menu_item, !nautilus_trash_monitor_is_empty ());
 	}
@@ -1073,6 +1146,162 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 	} else {
 		return +1;
 	}
+}
+
+static void
+mount_or_unmount_removable_volume (BonoboUIComponent *component,
+	       			   const char *path,
+	       			   Bonobo_UIComponent_EventType type,
+	       			   const char *state,
+	       			   gpointer user_data)
+{
+	g_assert (BONOBO_IS_UI_COMPONENT (component));
+
+	if (strcmp (state, "") == 0) {
+		/* State goes blank when component is removed; ignore this. */
+		return;
+	}
+
+	nautilus_volume_monitor_mount_unmount_removable 
+		(nautilus_volume_monitor_get (), (char *)user_data); 
+}	       
+
+/* Fill in the context menu with an item for each disk that is or could be mounted */
+static void
+update_disks_menu (FMDesktopIconView *view)
+{
+	GList *disk_list;
+	GList *element;
+	guint index;
+	char *name;
+	char *command_name;
+	char *command_path;
+	NautilusVolume *volume;
+
+	/* Clear any previously inserted items */
+	nautilus_bonobo_remove_menu_items_and_commands
+		(view->details->ui, DESKTOP_BACKGROUND_POPUP_PATH_DISKS);
+	
+	/* Get a list containing the all removable volumes in the volume monitor */
+	disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
+
+	/* Iterate list and populate menu with removable volumes */
+	for (element = disk_list, index = 0; 
+	     element != NULL; 
+	     element = element->next, ++index) {
+		volume = element->data;
+
+		 /* Determine human-readable name from mount path */
+		name = strrchr (volume->mount_path, '/');
+		if (name != NULL) {
+			name = name + 1;
+		} else {
+			name = volume->mount_path;
+		}
+
+		nautilus_bonobo_add_numbered_toggle_menu_item 
+			(view->details->ui,
+			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
+			 index,
+			 name);
+
+		command_name = nautilus_bonobo_get_numbered_menu_item_command
+			(view->details->ui,
+			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
+			 index);
+
+		command_path = g_strconcat ("/commands/", command_name, NULL);
+		nautilus_bonobo_set_toggle_state
+			(view->details->ui,
+			 command_path,
+			 nautilus_volume_monitor_volume_is_mounted (volume));
+		g_free (command_path);
+
+		bonobo_ui_component_add_listener_full
+			(view->details->ui,
+			 command_name,
+			 mount_or_unmount_removable_volume,
+			 g_strdup (volume->mount_path),
+			 g_free);
+
+		g_free (command_name);
+	}
+	g_list_free (disk_list);
+}
+
+static void
+real_update_menus (FMDirectoryView *view)
+{
+	FMDesktopIconView *desktop_view;
+	char *label;
+	gboolean include_empty_trash;
+	
+	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+	desktop_view = FM_DESKTOP_ICON_VIEW (view);
+
+	/* Disks menu */
+	update_disks_menu (desktop_view);
+
+	/* Reset Background */
+	nautilus_bonobo_set_sensitive 
+		(desktop_view->details->ui, 
+		 FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND,
+		 nautilus_file_background_is_set 
+		 	(fm_directory_view_get_background (view)));
+
+	/* Empty Trash */
+	include_empty_trash = trash_link_is_selection (view);
+	nautilus_bonobo_set_hidden
+		(desktop_view->details->ui,
+		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
+		 !include_empty_trash);
+	if (include_empty_trash) {
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+			label = g_strdup (_("Empty Trash..."));
+		} else {
+			label = g_strdup (_("Empty Trash"));
+		}
+		g_message ("calling nautilus_bonobo_set_label on %s with %s", DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL, label);
+		nautilus_bonobo_set_label
+			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
+			 label);
+		nautilus_bonobo_set_sensitive 
+			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
+			 !nautilus_trash_monitor_is_empty ());
+		g_free (label);
+	}
+}
+
+static void
+real_merge_menus (FMDirectoryView *view)
+{
+	FMDesktopIconView *desktop_view;
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Change Background", change_background_callback),
+		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
+		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
+		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
+		BONOBO_UI_VERB ("Quit Desktop", quit_desktop_callback),
+		BONOBO_UI_VERB_END
+	};
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+
+	desktop_view = FM_DESKTOP_ICON_VIEW (view);
+
+	desktop_view->details->ui = bonobo_ui_component_new ("Desktop Icon View");
+	bonobo_ui_component_set_container (desktop_view->details->ui,
+					   fm_directory_view_get_bonobo_ui_container (view));
+	bonobo_ui_util_set_ui (desktop_view->details->ui,
+			       DATADIR,
+			       "nautilus-desktop-icon-view-ui.xml",
+			       "nautilus");
+	bonobo_ui_component_add_verb_list_with_data (desktop_view->details->ui, verbs, view);
 }
 
 static gboolean

@@ -149,48 +149,146 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 	return hidden;
 }
 
-void
-nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char *path, 
-			       const char *label, GdkPixbuf *pixbuf)
+static char *
+get_numbered_menu_item_name (BonoboUIComponent *ui,
+			      const char *container_path,
+			      guint index)
 {
-	char *xml_string, *encoded_label, *verb_name;
-	char *name, *full_id, *pixbuf_data;
+	return g_strdup_printf ("%u", index);
+}			      
+
+char *
+nautilus_bonobo_get_numbered_menu_item_path (BonoboUIComponent *ui,
+					      const char *container_path, 
+					      guint index)
+{
+	char *item_name;
+	char *item_path;
+
+	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), NULL); 
+	g_return_val_if_fail (container_path != NULL, NULL);
+
+	item_name = get_numbered_menu_item_name (ui, container_path, index);
+	item_path = g_strconcat (container_path, "/", item_name, NULL);
+	g_free (item_name);
+
+	return item_path;
+}
+
+char *
+nautilus_bonobo_get_numbered_menu_item_command (BonoboUIComponent *ui,
+						 const char *container_path, 
+						 guint index)
+{
+	char *command_name;
+	char *path;
+
+	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), NULL); 
+	g_return_val_if_fail (container_path != NULL, NULL);
+
+	path = nautilus_bonobo_get_numbered_menu_item_path (ui, container_path, index);
+	command_name = gnome_vfs_escape_string (path);
+	g_free (path);
+	
+	return command_name;
+}
+
+static void
+add_numbered_menu_item_internal (BonoboUIComponent *ui,
+			 	  const char *container_path,
+			 	  guint index,
+			 	  const char *label,
+			 	  gboolean is_toggle,
+			 	  GdkPixbuf *pixbuf)
+{
+	char *xml_item, *xml_command; 
+	char *encoded_label, *command_name;
+	char *item_name, *pixbuf_data;
+
+	g_assert (BONOBO_IS_UI_COMPONENT (ui)); 
+	g_assert (container_path != NULL);
+	g_assert (label != NULL);
+	g_assert (!is_toggle || pixbuf == NULL);
 
 	/* Because we are constructing the XML ourselves, we need to
          * encode the label.
 	 */
 	encoded_label = bonobo_ui_util_encode_str (label);
 
-	/* Labels may contain characters that are illegal in names. So
-	 * we create the name by URI-encoding the label.
-	 */
-	full_id = g_strdup_printf ("%s/%s", path, id);
-	name = gnome_vfs_escape_string (id);
-	verb_name = gnome_vfs_escape_string (full_id);
+	item_name = get_numbered_menu_item_name 
+		(ui, container_path, index);
+	command_name = nautilus_bonobo_get_numbered_menu_item_command 
+		(ui, container_path, index);
 
-	if (pixbuf != NULL) {
+	/* Note: we ignore the pixbuf for toggle items. This could be changed
+	 * if we ever want a toggle item that also has a pixbuf.
+	 */
+	if (is_toggle) {
+		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
+						item_name, encoded_label, command_name);
+	} else if (pixbuf != NULL) {
 		/* Encode pixbuf type and data into XML string */			
 		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
-		xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-						name, encoded_label, verb_name, pixbuf_data);	
+		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
+						item_name, encoded_label, command_name, pixbuf_data);	
 		g_free (pixbuf_data);
 	} else {
-		xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
-						name, encoded_label, verb_name);
+		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\"/>\n", 
+						item_name, encoded_label, command_name);
 	}
-	
-	bonobo_ui_component_set (ui, path, xml_string, NULL);
-
-	if (pixbuf != NULL) {
-		bonobo_ui_util_set_pixbuf (ui, path, pixbuf);
-	}
-	
 	g_free (encoded_label);
-	g_free (name);
-	g_free (verb_name);
-	g_free (full_id);
-	g_free (xml_string);
+	g_free (item_name);
+	
+	bonobo_ui_component_set (ui, container_path, xml_item, NULL);
+	g_free (xml_item);
+
+	/* Make the command node here too, so callers can immediately set
+	 * properties on it (otherwise it doesn't get created until some
+	 * time later).
+	 */
+	xml_command = g_strdup_printf ("<cmd name=\"%s\"/>\n", command_name);
+	bonobo_ui_component_set (ui, "/commands", xml_command, NULL);
+	g_free (xml_command);
+
+	g_free (command_name);
+}			 
+
+/* Add a menu item specified by number into a given path. Used for
+ * dynamically creating a related series of menu items. Each index
+ * must be unique (normal use is to call this in a loop, and
+ * increment the index for each item).
+ */
+void
+nautilus_bonobo_add_numbered_menu_item (BonoboUIComponent *ui, 
+					 const char *container_path, 
+					 guint index,
+			       		 const char *label, 
+			       		 GdkPixbuf *pixbuf)
+{
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui)); 
+	g_return_if_fail (container_path != NULL);
+	g_return_if_fail (label != NULL);
+
+	add_numbered_menu_item_internal (ui, container_path, index, label, FALSE, pixbuf);
+}
+
+/* Add a menu item specified by number into a given path. Used for
+ * dynamically creating a related series of menu items. Each index
+ * must be unique (normal use is to call this in a loop, and
+ * increment the index for each item).
+ */
+void
+nautilus_bonobo_add_numbered_toggle_menu_item (BonoboUIComponent *ui, 
+					        const char *container_path, 
+					        guint index,
+			       		        const char *label)
+{
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui)); 
+	g_return_if_fail (container_path != NULL);
+	g_return_if_fail (label != NULL);
+
+	add_numbered_menu_item_internal (ui, container_path, index, label, TRUE, NULL);
 }
 
 void
@@ -225,26 +323,13 @@ nautilus_bonobo_add_menu_separator (BonoboUIComponent *ui, const char *path)
 	bonobo_ui_component_set (ui, path, "<separator/>", NULL);
 }
 
-char *
-nautilus_bonobo_get_menu_item_verb_name (const char *path)
-{
-	char *verb_name, *escaped_path;
-	
-	escaped_path = gnome_vfs_escape_string (path);
-
-	verb_name = g_strdup_printf ("verb:%s", escaped_path);
-
-	g_free (escaped_path);
-	
-	return verb_name;
-}
-
 static void
-remove_verbs (BonoboUIComponent *ui, const char *container_path)
+remove_commands (BonoboUIComponent *ui, const char *container_path)
 {
 	BonoboUINode *path_node;
 	BonoboUINode *child_node;
 	char *verb_name;
+	char *id_name;
 
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (container_path != NULL);
@@ -260,8 +345,16 @@ remove_verbs (BonoboUIComponent *ui, const char *container_path)
 			verb_name = bonobo_ui_node_get_attr (child_node, "verb");
 			if (verb_name != NULL) {
 				bonobo_ui_component_remove_verb (ui, verb_name);
+				bonobo_ui_node_free_string (verb_name);
+			} else {
+				/* Only look for an id if there's no verb */
+				id_name = bonobo_ui_node_get_attr (child_node, "id");
+				if (id_name != NULL) {
+					bonobo_ui_component_remove_listener (ui, id_name);
+					bonobo_ui_node_free_string (id_name);
+				}
 			}
-			bonobo_ui_node_free_string (verb_name);
+
 		}
 	}
 
@@ -279,15 +372,15 @@ remove_verbs (BonoboUIComponent *ui, const char *container_path)
  * @container_path: The standard bonobo-style path specifier for this placeholder or submenu.
  */
 void
-nautilus_bonobo_remove_menu_items_and_verbs (BonoboUIComponent *ui, 
-					     const char *container_path)
+nautilus_bonobo_remove_menu_items_and_commands (BonoboUIComponent *ui, 
+					        const char *container_path)
 {
 	char *remove_wildcard;
 	
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (container_path != NULL);
 
-	remove_verbs (ui, container_path);
+	remove_commands (ui, container_path);
 
 	/* For speed, remove menu items themselves all in one fell swoop,
 	 * though we removed the verbs one-by-one.

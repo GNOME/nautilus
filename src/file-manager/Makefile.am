@@ -47,6 +47,7 @@ noinst_HEADERS = 			\
 
 uidir = $(datadir)/gnome/ui
 ui_DATA =					\
+	nautilus-desktop-icon-view-ui.xml	\
 	nautilus-directory-view-ui.xml		\
 	nautilus-icon-view-ui.xml		\
 	nautilus-search-list-view-ui.xml	\

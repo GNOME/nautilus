@@ -76,6 +76,8 @@
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
+#define TRASH_URI	"trash:"
+
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
@@ -772,6 +774,19 @@ bonobo_menu_select_all_callback (BonoboUIComponent *component,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_select_all (callback_data);
+}
+
+static void
+show_trash_callback (BonoboUIComponent *component, 
+		     gpointer callback_data, 
+		     const char *verb)
+{      
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);          
+
+	nautilus_view_open_location
+		(view->details->nautilus_view, TRASH_URI);
 }
 
 static void
@@ -3239,25 +3254,25 @@ add_open_with_program_menu_item (BonoboUIComponent *ui,
 				 GDestroyNotify destroy_notify)
 {
 	char *escaped_label, *verb_name, *item_path;
-	char *item_id;
 	
 	escaped_label = nautilus_str_double_underscores (label);
 
-	item_id = g_strdup_printf ("program%d", index);
-	nautilus_bonobo_add_menu_item (ui, item_id,
-				       parent_path,
-				       escaped_label, 
-				       NULL);
+	nautilus_bonobo_add_numbered_menu_item 
+		(ui, 
+		 parent_path,
+		 index,
+		 escaped_label, 
+		 NULL);
 	g_free (escaped_label);
 
-	item_path = g_strconcat (parent_path, "/", item_id, NULL);
-	g_free (item_id);
+	item_path = nautilus_bonobo_get_numbered_menu_item_path
+		(ui, parent_path, index);
 
 	nautilus_bonobo_set_tip (ui, item_path, tip);
-	
-	verb_name = nautilus_bonobo_get_menu_item_verb_name (item_path);
 	g_free (item_path);
 	
+	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
+		(ui, parent_path, index);	
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);	   
 	g_free (verb_name);
 }				 
@@ -3395,13 +3410,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	int index;
 	
 	/* Clear any previous inserted items in the applications and viewers placeholders */
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands 
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands 
 		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands 
 		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
@@ -3475,6 +3490,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Trash", (BonoboUIVerbFn)trash_callback),
 		BONOBO_UI_VERB ("Duplicate", (BonoboUIVerbFn)duplicate_callback),
 		BONOBO_UI_VERB ("Create Link", (BonoboUIVerbFn)create_link_callback),
+		BONOBO_UI_VERB ("Show Trash", show_trash_callback),
 		BONOBO_UI_VERB ("Empty Trash", bonobo_menu_empty_trash_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
 		BONOBO_UI_VERB ("Remove Custom Icons", (BonoboUIVerbFn)remove_custom_icons_callback),
@@ -3621,7 +3637,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* work in progress */
-	if (TRUE) {
+	if (FALSE) {
 		menu = create_selection_context_menu (view);
 		if (menu != NULL) {
 			nautilus_pop_up_context_menu (menu,
@@ -3654,7 +3670,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* work in progress */
-	if (TRUE) {
+	if (FALSE) {
 		nautilus_pop_up_context_menu (create_background_context_menu (view),
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,

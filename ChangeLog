@@ -1,3 +1,94 @@
+2000-11-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	More work towards using Bonobo for context menus. All
+	context menu items should now appear and be correctly 
+	hooked up. The Bonobo context menus are still not quite
+	enabled, awaiting a couple of Bonobo fixes.
+
+	Redid the API for creating dynamic sets of Bonobo 
+	menu items (as used by bookmarks, application & viewer
+	lists), and added support for lists of toggle items
+	(needed for Disks submenu in desktop context menu).
+
+	Also, added "Show Trash" menu item in File menu, just above
+	Empty Trash, after discussing with Andy and Arlo.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(get_numbered_menu_item_name): New helper function, returns
+	generated menu item name given parent path and index.
+	(nautilus_bonobo_get_numbered_menu_item_command): New
+	function, returns generated command name given parent path
+	and index. 
+	(nautilus_bonobo_get_numbered_menu_item_path): New function,
+	returns generated menu item path given parent path and index.
+	(add_numbered_menu_item_internal): New helper function,
+	creates menu item using these other new calls. Mostly extracted
+	and rewritten from nautilus_bonobo_add_menu_item.
+	(nautilus_bonobo_add_numbered_menu_item): Renamed from
+	nautilus_bonobo_add_menu_item, and reimplemented to
+	call add_numbered_menu_item_internal.
+	(nautilus_bonobo_add_numbered_toggle_menu_item):
+	New function, like _add_numbered_menu_item but creates a
+	toggle menu item.
+	(remove_commands): Renamed from remove_verbs; now handles ids
+	as well as verbs.
+	(nautilus_bonobo_remove_menu_items_and_commands):
+	Renamed from ..._items_and_verbs; now handles ids as well as
+	verbs.
+	(nautilus_bonobo_get_menu_item_verb_name): Removed; replaced by
+	_get_numbered_menu_item_command.
+	
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	New file, Bonobo-style version of desktop context menus.
+	* src/file-manager/Makefile.am: Include new file in build.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	Add BonoboUIComponent to details struct.
+	(fm_desktop_icon_view_destroy): Dispose of BonoboUIComponent.
+	(fm_desktop_icon_view_initialize_class): wire up overrides for
+	merge_menus and update_menus.
+	(new_terminal_callback),
+	(change_background_callback), (empty_trash_callback),
+	(reset_background_callback), (quit_desktop_callback):
+	New Bonobo-style menu callbacks.
+	(empty_trash_menu_item_callback): Renamed so I could use the old
+	simpler name for new Bonobo callback; this one will be deleted
+	when the Bonobo conversion is completed.
+	(fm_desktop_icon_view_create_selection_context_menu_items): Reflect
+	name change.
+	(mount_or_unmount_removable_volume): New Bonobo listener callback
+	used by Disks items.
+	(update_disks_menu): New function, recreates the Disks menu.
+	(real_update_menus): New function, updates the dynamic desktop
+	context menu items.
+	(real_merge_menus): New function, wires up the BonoboUIComponent
+	and verbs.
+	
+	* src/file-manager/fm-directory-view.c: 
+	(fm_directory_view_pop_up_background_context_menu),
+	(fm_directory_view_pop_up_selection_context_menu): Change TRUE
+	to FALSE to enable the Bonobo context menus.
+	(show_trash_callback): New function, navigates to "trash:"
+	(add_open_with_program_menu_item), (reset_bonobo_open_with_menu):
+	Reworked for new API.
+	(real_merge_menus): Add verb for "Show Trash"
+	
+	* src/file-manager/nautilus-directory-view-ui.xml: Added 
+	"Show Trash"; added placeholders in background popup used
+	for desktop view.
+	
+	* src/nautilus-window-menus.c: 
+	(append_bookmark_to_menu): Updated for new numbered_menu_item
+	API; deleted unused parameter.
+	(create_menu_item_from_node), (append_dynamic_bookmarks),
+	(refresh_go_menu): Updated append_bookmark_to_menu callers for
+	API changes.
+	(nautilus_window_remove_bookmarks_menu_items),
+	(nautilus_window_remove_go_menu_items): Updated for API name changes.
+
 2000-11-15  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

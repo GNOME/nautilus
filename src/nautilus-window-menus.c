@@ -92,9 +92,8 @@ static GtkWindow *bookmarks_window = NULL;
 
 static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
 									     NautilusBookmark *bookmark,
-									     const char 	    *unique_id,
-									     const char             *menu_item_path,
-									     const char 	    *menu_item_name,
+									     const char             *parent_path,
+									     guint		     index_in_parent,
 									     gboolean		     is_in_bookmarks_menu);
 static void		     append_dynamic_bookmarks 			    (NautilusWindow *window);
 static NautilusBookmarkList *get_bookmark_list                              (void);
@@ -828,14 +827,13 @@ activate_bookmark_in_menu_item (BonoboUIComponent *component, gpointer user_data
 static void
 append_bookmark_to_menu (NautilusWindow *window, 
                          NautilusBookmark *bookmark, 
-			 const char *unique_id,
-                         const char *menu_item_path,
-                         const char *menu_item_name,
+                         const char *parent_path,
+			 guint index_in_parent,
                          gboolean is_bookmarks_menu)
 {
 	BookmarkHolder *bookmark_holder;		
 	char *raw_name, *display_name, *truncated_name, *verb_name;
-	char *escaped_id, *ui_path;
+	char *ui_path;
 	GdkPixbuf *pixbuf;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
@@ -856,24 +854,27 @@ append_bookmark_to_menu (NautilusWindow *window,
 
 	/* Create menu item with pixbuf */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
-	nautilus_bonobo_add_menu_item (window->details->shell_ui, unique_id, menu_item_path, display_name, pixbuf);
+	nautilus_bonobo_add_numbered_menu_item 
+		(window->details->shell_ui, 
+		 parent_path, 
+		 index_in_parent, 
+		 display_name, 
+		 pixbuf);
 	gdk_pixbuf_unref (pixbuf);
+	g_free (display_name);
 	
 	/* Add the status tip */
-	escaped_id = gnome_vfs_escape_string (unique_id);	
-	ui_path = g_strdup_printf ("%s/%s", menu_item_path, escaped_id);
+	ui_path = nautilus_bonobo_get_numbered_menu_item_path
+		(window->details->shell_ui, parent_path, index_in_parent);
 	nautilus_bonobo_set_tip (window->details->shell_ui, ui_path, _("Go to the location specified by this bookmark"));
 	g_free (ui_path);
 			
 	/* Add verb to new bookmark menu item */
-	ui_path = g_strdup_printf ("%s/%s", menu_item_path, unique_id);	
-	verb_name = nautilus_bonobo_get_menu_item_verb_name (ui_path);
+	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
+		(window->details->shell_ui, parent_path, index_in_parent);
 	bonobo_ui_component_add_verb_full (window->details->shell_ui, verb_name, 
 					   activate_bookmark_in_menu_item, bookmark_holder, 
 					   bookmark_holder_free_cover);
-	g_free (escaped_id);
-	g_free (ui_path);
-	g_free (display_name);
 	g_free (verb_name);
 }
 
@@ -919,16 +920,14 @@ create_menu_item_from_node (NautilusWindow *window,
 	NautilusBookmark *bookmark;
 	xmlChar *xml_folder_name;
 	int sub_index;
-	char *index_as_string, *sub_menu_path, *escaped_name;
+	char *sub_menu_path, *escaped_name;
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 		
 	if (strcmp (node->name, "bookmark") == 0) {
-		index_as_string = g_strdup_printf ("item_%d", index);
 		bookmark = nautilus_bookmark_new_from_node (node);
-		append_bookmark_to_menu (window, bookmark, index_as_string, menu_path, menu_path, TRUE);		
+		append_bookmark_to_menu (window, bookmark, menu_path, index, TRUE);		
 		gtk_object_unref (GTK_OBJECT (bookmark));
-		g_free (index_as_string);
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
 	} else if (strcmp (node->name, "folder") == 0) {
@@ -1319,10 +1318,10 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands
 		(window->details->shell_ui, 
 		 NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
 }
@@ -1330,7 +1329,7 @@ nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 void
 nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
-	nautilus_bonobo_remove_menu_items_and_verbs 
+	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER);
 }
@@ -1360,7 +1359,6 @@ append_dynamic_bookmarks (NautilusWindow *window)
         NautilusBookmarkList *bookmarks;
 	guint bookmark_count;
 	guint index;
-	char *name;
 		
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -1369,14 +1367,11 @@ append_dynamic_bookmarks (NautilusWindow *window)
 	/* append new set of bookmarks */
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 	for (index = 0; index < bookmark_count; ++index) {
-		name = g_strdup_printf ("Bookmark%d", index);
 		append_bookmark_to_menu (window,
 		                         nautilus_bookmark_list_item_at (bookmarks, index),
-		                         name,
 		                         NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER,
-		                         name,
+		                         index,
 		                         TRUE);
-                g_free (name);
 	}
 }
 
@@ -1414,7 +1409,6 @@ refresh_go_menu (NautilusWindow *window)
 {
 	GList *node;
 	int index;
-	char *name;
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -1428,14 +1422,11 @@ refresh_go_menu (NautilusWindow *window)
 	for (node = nautilus_get_history_list (), index = 0;
 	     node != NULL;
 	     node = node->next, index++) {
-		name = g_strdup_printf ("History%d", index); 
 		append_bookmark_to_menu (window,
 					 NAUTILUS_BOOKMARK (node->data),
-					 name,
 					 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER,
-					 name,
+					 index,
 					 FALSE);
-		g_free (name);
 	}
 }
 

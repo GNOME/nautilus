@@ -1,0 +1,47 @@
+<Root>
+<commands>
+        <cmd name="Change Background"
+         _label="Change Desktop Background"
+         _tip="Show a window that lets you set your desktop background's pattern or color"/>
+        <cmd name="Empty Trash Conditional"
+         _label="Empty Trash"
+         _tip="Delete all items in the trash"/>
+        <cmd name="New Terminal"
+         _label="New Terminal"
+         _tip="Open a new GNOME terminal window"/>
+        <cmd name="Quit Desktop"
+         _label="Quit Nautilus Desktop"
+         _tip="Stop letting Nautilus draw the desktop"/>
+        <cmd name="Reset Background"
+         _label="Reset Desktop Background"
+         _tip="Remove any custom pattern or color from the desktop background"/>
+</commands>
+<popups>
+        <popup name="background">
+                <placeholder name="Before Zoom Items">
+                        <placeholder name="New Items">
+                                <menuitem name="New Terminal" verb="New Terminal"/>
+                        </placeholder>
+                        <placeholder name="Volume Items" delimit="top">
+                                <submenu name="Disks" 
+                                         _label="Disks"
+                                         _tip="Mount or unmount disks"/>
+                        </placeholder>
+                </placeholder>
+                <placeholder name="After Zoom Items">
+                        <placeholder name="Background Items">
+                                <menuitem name="Reset Background" verb="Reset Background"/>
+                                <menuitem name="Change Background" verb="Change Background"/>
+                        </placeholder>
+                        <separator/>
+                        <menuitem name="Quit Desktop" verb="Quit Desktop"/>
+                </placeholder>
+        </popup>
+
+        <popup name="selection">
+                <placeholder name="Empty Trash Holder" delimit="top">
+                        <menuitem name="Empty Trash" verb="Empty Trash Conditional"/>
+                </placeholder>
+        </popup>
+</popups>
+</Root>
