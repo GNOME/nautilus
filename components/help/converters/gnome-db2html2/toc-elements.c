@@ -143,6 +143,7 @@ ElementInfo toc_elements[] = {
 	{ GLOSSTERM, "glossterm", (startElementSAXFunc) toc_glossterm_start_element, (endElementSAXFunc) toc_glossterm_end_element, (charactersSAXFunc) toc_title_characters},
 	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
 	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
+	{ EXAMPLE, "example", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

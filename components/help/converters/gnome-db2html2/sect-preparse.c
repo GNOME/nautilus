@@ -130,6 +130,7 @@ ElementInfo sect_preparse[] = {
 	{ GLOSSTERM, "glossterm", NULL, NULL, (charactersSAXFunc) sect_preparse_glossterm_characters},
 	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
 	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
+	{ EXAMPLE, "example", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

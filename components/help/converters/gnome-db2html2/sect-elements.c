@@ -121,6 +121,7 @@ ElementInfo sect_elements[] = {
 	{ GLOSSTERM, "glossterm", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
 	{ GLOSSSEE, "glosssee", (startElementSAXFunc) sect_glosssee_start_element, NULL,  NULL },
 	{ GLOSSSEEALSO, "glossseealso", (startElementSAXFunc) sect_glossseealso_start_element, NULL, NULL },
+	{ EXAMPLE, "example", NULL, NULL, NULL },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -680,6 +681,7 @@ sect_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (EXAMPLE));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -724,6 +726,9 @@ sect_title_start_element (Context *context,
 	case GLOSSENTRY:
 		sect_print (context, "<B><H2>");
 		break;
+	case EXAMPLE:
+		sect_print (context, "<H3>");
+		break;
 	default:
 		break;
 	};
@@ -754,7 +759,8 @@ sect_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
-	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (EXAMPLE));
+
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
@@ -786,6 +792,8 @@ sect_title_end_element (Context *context,
 	case GLOSSENTRY:
 	        sect_print (context, "</H2></B>");
 		break;
+	case EXAMPLE:
+		sect_print (context, "</H3>");
 	default:
 		break;
 	};
@@ -2096,4 +2104,3 @@ sect_glossseealso_start_element (Context *context, const gchar *name, const xmlC
 		}
 	}
 }
-

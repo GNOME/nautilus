@@ -126,7 +126,8 @@ typedef enum ElementIndex {
 	GLOSSTERM,
 	GLOSSSEE,
 	GLOSSSEEALSO, /* 115 */
-	UNDEFINED /* 116 */
+	EXAMPLE,
+	UNDEFINED /* 117 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
