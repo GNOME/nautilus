@@ -74,6 +74,7 @@ typedef struct {
 	gboolean metafile;
 	gboolean file_list; /* always FALSE if file != NULL */
 	gboolean file_info;
+	gboolean get_slow_mime_type;  /* only relevant if file_info is "true" */
 	gboolean directory_count;
 	gboolean deep_count;
 	gboolean top_left_text;
@@ -737,16 +738,18 @@ set_up_request_by_file_attributes (Request *request,
 		 nautilus_str_compare) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
-		 nautilus_str_compare) != NULL;
-	request->file_info |= g_list_find_custom
-		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
 		 nautilus_str_compare) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
 		 nautilus_str_compare) != NULL;
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
+				nautilus_str_compare) != NULL) {
+		request->file_info |= TRUE;
+		request->get_slow_mime_type = TRUE;
+	}
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
 				nautilus_str_compare) != NULL) {
@@ -832,7 +835,7 @@ update_file_info_in_list_if_needed (GList *list,
 	}
 
 	/* the file is in the list already update the file info if needed */
-	nautilus_file_update_info (NAUTILUS_FILE (list_entry->data), file_info);
+	nautilus_file_update_info (NAUTILUS_FILE (list_entry->data), file_info, FALSE);
 
 	return TRUE;
 }
@@ -874,7 +877,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		if (file != NULL) {
 			/* file already exists, check if it changed */
 			file->details->unconfirmed = FALSE;
-			if (nautilus_file_update_info (file, file_info)) {
+			if (nautilus_file_update_info (file, file_info, FALSE)) {
 				/* File changed, notify about the change. */
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
@@ -1137,7 +1140,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	g_assert (file == NULL || NAUTILUS_IS_FILE (file));
 	g_assert (file != NULL || directory_callback != NULL);
 	g_assert (file == NULL || file_callback != NULL);
-
+	
 	/* Construct a callback object. */
 	callback.file = file;
 	if (file == NULL) {
@@ -1311,7 +1314,6 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 					   GList *vfs_uri_list)
 {
 	GnomeVFSAsyncHandle *handle;
-
 	gnome_vfs_async_get_file_info
 		(&handle,
 		 vfs_uri_list,
@@ -1432,9 +1434,25 @@ lacks_info (NautilusFile *file)
 }
 
 static gboolean
+lacks_slow_mime_type (NautilusFile *file)
+{
+	/* Don't try and get the the slow mime type
+	   if we couldn't get the file info in the first place */
+	return file->details->slow_mime_type == NULL
+		&& !file->details->is_gone
+		&& !file->details->get_info_failed;
+}
+
+static gboolean
 wants_info (const Request *request)
 {
 	return request->file_info;
+}
+
+static gboolean
+wants_slow_mime_type (const Request *request)
+{
+	return request->get_slow_mime_type;
 }
 
 static gboolean
@@ -1505,6 +1523,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->file_info) {
 		if (has_problem (directory, file, lacks_info)) {
+			return FALSE;
+		}
+	}
+	
+	if (request->get_slow_mime_type) {
+		if (has_problem (directory, file, lacks_slow_mime_type)) {
 			return FALSE;
 		}
 	}
@@ -1646,7 +1670,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	g_assert (directory->details->uri != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	
 	gnome_vfs_async_load_directory
 		(&directory->details->directory_load_in_progress, /* handle */
 		 directory->details->uri,                         /* uri */
@@ -2205,9 +2228,11 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 	NautilusFile *get_info_file;
 	GnomeVFSGetFileInfoResult *result;
+	gboolean got_slow_mime_type;
 
+	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
 	directory = NAUTILUS_DIRECTORY (callback_data);
-
+	got_slow_mime_type = directory->details->get_slow_mime_type_for_file;
 	g_assert (handle == NULL || handle == directory->details->get_info_in_progress);
 	g_assert (nautilus_g_list_exactly_one_item (results));
 	get_info_file = directory->details->get_info_file;
@@ -2220,10 +2245,10 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	if (result->result != GNOME_VFS_OK) {
 		get_info_file->details->get_info_failed = TRUE;
 	} else {
-		nautilus_file_update_info (get_info_file, result->file_info);
+		nautilus_file_update_info (get_info_file, result->file_info,
+					   got_slow_mime_type);
 	}
 	nautilus_file_changed (get_info_file);
-
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2234,6 +2259,7 @@ start_getting_file_info (NautilusDirectory *directory)
 	char *uri;
 	GnomeVFSURI *vfs_uri;
 	GList fake_list;
+	gboolean get_slow_mime_type;
 
 	/* If there's already a file info fetch in progress, check to
 	 * be sure it's still wanted.
@@ -2254,7 +2280,15 @@ start_getting_file_info (NautilusDirectory *directory)
 
 	/* Figure out which file to get file info for. */
 	do {
-		file = select_needy_file (directory, lacks_info, wants_info);
+		file = select_needy_file (directory, lacks_slow_mime_type, wants_slow_mime_type);
+		if (file == NULL) {
+			file = select_needy_file (directory, lacks_info, wants_info);
+
+			get_slow_mime_type = FALSE;
+		}
+		else {
+			get_slow_mime_type = TRUE;
+		}
 		if (file == NULL) {
 			return;
 		}
@@ -2271,16 +2305,29 @@ start_getting_file_info (NautilusDirectory *directory)
 
 	/* Found one we need to get the info for. */
 	directory->details->get_info_file = file;
+	directory->details->get_slow_mime_type_for_file = get_slow_mime_type;
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;
-	gnome_vfs_async_get_file_info
-		(&directory->details->get_info_in_progress,
-		 &fake_list,
-		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 get_info_callback,
-		 directory);
+	if (get_slow_mime_type) {
+		gnome_vfs_async_get_file_info
+			(&directory->details->get_info_in_progress,
+			 &fake_list,
+			 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+			  | GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE
+			  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+			 get_info_callback,
+			 directory);
+	}
+	else {
+		gnome_vfs_async_get_file_info
+			(&directory->details->get_info_in_progress,
+			 &fake_list,
+			 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+			  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+			 get_info_callback,
+			 directory);
+	}
 	gnome_vfs_uri_unref (vfs_uri);
 }
 

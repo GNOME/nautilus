@@ -1509,7 +1509,7 @@ get_mime_type_from_file (NautilusFile *file)
 		
 		g_list_free (file_attributes);
 		
-		type = nautilus_file_get_mime_type (file);
+		type = nautilus_file_get_slow_mime_type (file);
 	}
 
 	return type == NULL ? g_strdup ("application/octet-stream") : type;

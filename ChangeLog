@@ -1,3 +1,51 @@
+2000-10-06  Rebecca Schulman  <rebecka@eazel.com>
+	* libnautilus-extensions/nautilus-directory-async.c:
+	* libnautilus-extensions/nautilus-directory-private.h:
+	(set_up_request_by_file_attributes),
+	(update_file_info_in_list_if_needed),
+	(dequeue_pending_idle_callback),
+	(nautilus_directory_call_when_ready_internal),
+	(nautilus_directory_get_info_for_new_files),
+	(lacks_slow_mime_type), (wants_slow_mime_type),
+	(request_is_satisfied), (start_monitoring_file_list),
+	(get_info_callback), (start_getting_file_info):
+	Added separate ability to get file info with a 
+	slow mime type in addition to the regular info.
+	This call uses the same call chain, to get file info
+	as the default, except it calls the async_get_file_info
+	call with arguments to specify the mime type as slow.
+	Since the file info structure itself doesn't 
+	keep track of what kind of mime type is returned,
+	we keep track of this in the nautilus directory
+	structure itself.
+
+	* libnautilus-extensions/nautilus-file-private.h:
+	Changed the file object to keep track of both
+	kinds of mime types, and use the default one,
+	unless specifically requested otherwise.
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-file.h:
+	(nautilus_file_new_from_info), (destroy),
+	(nautilus_file_update_info), 
+	(nautilus_file_compare_by_type),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_get_type_as_string),
+	(nautilus_file_get_slow_mime_type), (nautilus_file_get_mime_type),
+	(nautilus_file_is_mime_type):
+	Add and extra argument to update_info,
+	to describe how the mime type was received.
+	Altered the mime type call, and added a get_slow_mime_type
+	call.  Free and update the new mime type fields where
+	appropriate.
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	Added a comment about where we'll need to
+	add code to fix bug 690
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(get_mime_type_from_file):
+	Updated the mime type call here to request the 
+	slow mime type.
+
 2000-10-06  John Sullivan  <sullivan@eazel.com>
 
 	Work on bug 3496 (labels in menu items never change)
@@ -31,6 +79,7 @@
 	(nautilus_window_update_find_menu_item): Removed stray debugging
 	comment.
 
+>>>>>>> 1.2225
 2000-10-06  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

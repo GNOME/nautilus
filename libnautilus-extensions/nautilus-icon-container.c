@@ -4317,6 +4317,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
 					nautilus_icon_text_item_get_type (),
 					NULL));
+	/* Connect the text item to the clipboard */
+
 
 	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
