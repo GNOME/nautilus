@@ -1,3 +1,17 @@
+2000-04-17  Andy Hertzfeld <andy@eazel.com>
+
+	fixed bug involving making thumbnails for directories where we don't
+	have write permissions by making them in $HOME/.nautilus/thumbnails.
+	
+	* libnautilus/nautilus-directory.c:
+	moved escape_slashes routine to nautilus-strings so it can be shared
+	* libnautilus/nautilus-string.c,h:
+	added nautilus_str_escape_slashes, copies from nautilus-directory
+	* libnautilus/nautilus-icon-factory.c:
+	added boolean to make_thumbnail_path to make the thumbnails in
+	$HOME/.nautilus/thumbnails instead of in the local directory, and
+	then used it when we can't write to the local one.
+	
 2000-04-16  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-index-panel.c:

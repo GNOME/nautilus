@@ -853,34 +853,95 @@ vfs_file_exists (const char *file_uri)
 	return result == GNOME_VFS_OK;
 }
 
+/* utility copied from Nautilus directory */
+
+static GnomeVFSResult
+nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
+{
+	GnomeVFSResult result;
+	GnomeVFSURI *parent_uri;
+
+	/* Make the directory, and return right away unless there's
+	   a possible problem with the parent.
+	*/
+	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	if (result != GNOME_VFS_ERROR_NOTFOUND) {
+		return result;
+	}
+
+	/* If we can't get a parent, we are done. */
+	parent_uri = gnome_vfs_uri_get_parent (uri);
+	if (parent_uri == NULL) {
+		return result;
+	}
+
+	/* If we can get a parent, use a recursive call to create
+	   the parent and its parents.
+	*/
+	result = nautilus_make_directory_and_parents (parent_uri, permissions);
+	gnome_vfs_uri_unref (parent_uri);
+	if (result != GNOME_VFS_OK) {
+		return result;
+	}
+
+	/* A second try at making the directory after the parents
+	   have all been created.
+	*/
+	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	return result;
+}
+
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
-make_thumbnail_path (const char *image_uri, gboolean directory_only)
+make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory)
 {
 	char *thumbnail_uri;
-	char *temp_str = g_strdup (image_uri);
-	char *last_slash = strrchr (temp_str, '/');
+	char *directory_name = g_strdup (image_uri);
+	char *last_slash = strrchr (directory_name, '/');
 	*last_slash = '\0';
 	
-	if (directory_only) {
-		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", temp_str);
-	} else {
-		if (nautilus_str_has_suffix (image_uri, ".png")
-		    || nautilus_str_has_suffix (image_uri, ".PNG")) {
-			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s", temp_str, last_slash + 1);
-		} else {
-			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
-		}
+	/* either use the local directory or one in the user's home directory, as selected by the passed in flag */
+	if (use_local_directory)
+		thumbnail_uri =  g_strdup_printf ("%s/.thumbnails", directory_name);
+	else  {
+		GnomeVFSResult result;
+		GnomeVFSURI  *thumbnail_directory_uri;
+	        	
+	        gchar *escaped_uri = nautilus_str_escape_slashes (directory_name);		
+		thumbnail_uri = g_strdup_printf("file://%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
+		g_free(escaped_uri);
+		
+		/* we must create the directory if it doesnt exist */
+			
+		thumbnail_directory_uri = gnome_vfs_uri_new (thumbnail_uri);
+		result = nautilus_make_directory_and_parents (thumbnail_directory_uri, THUMBNAIL_DIR_PERMISSIONS);
+		gnome_vfs_uri_unref (thumbnail_directory_uri);
 	}
-	g_free (temp_str);
+	
+	/* append the file name if necessary */
+	if (!directory_only) {
+		gchar* old_uri = thumbnail_uri;
+		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
+		g_free(old_uri);			
+	}
+	
+	/* append an image suffix if the correct one isn't already present */
+	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG")) {		
+		gchar* old_uri = thumbnail_uri;
+		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
+		g_free(old_uri);			
+	}
+			
+	g_free (directory_name);
 	return thumbnail_uri;
 }
 
-/* structure used for making thumbnails, associating a uri with the requesting controller */
+/* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
 
 typedef struct {
 	char *thumbnail_uri;
+	gboolean is_local;
 } NautilusThumbnailInfo;
 
 /* GCompareFunc-style function for comparing NautilusThumbnailInfos.
@@ -910,32 +971,51 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	GnomeVFSResult result;
 	char *thumbnail_uri;
 	char *file_uri;
-
+	gboolean local_flag = TRUE;
 	file_uri = nautilus_file_get_uri (file);
 	
-	/* compose the uri for the thumbnail */
-	thumbnail_uri = make_thumbnail_path (file_uri, FALSE);
+	/* compose the uri for the thumbnail locally */
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, TRUE);
 		
-	/* if the thumbnail file already exists, simply return the uri */
+	/* if the thumbnail file already exists locally, simply return the uri */
 	if (vfs_file_exists (thumbnail_uri)) {
 		g_free (file_uri);
 		return thumbnail_uri;
 	}
 	
-        /* make the thumbnail directory if necessary */
+	/* now try it globally */
 	g_free (thumbnail_uri);
-	thumbnail_uri = make_thumbnail_path (file_uri, TRUE);
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE);
+		
+	/* if the thumbnail file already exists in the common area,  return that uri */
+	if (vfs_file_exists (thumbnail_uri)) {
+		g_free (file_uri);
+		return thumbnail_uri;
+	}
+	
+        /* make the thumbnail directory if necessary, at first try it locally */
+	g_free (thumbnail_uri);
+	local_flag = TRUE;
+	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag);
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
 
+	/* if we can't make if locally, try it in the global place */
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {	
+		g_free (thumbnail_uri);
+		local_flag = FALSE;
+		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag);
+		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
+	}
+	
 	/* the thumbnail needs to be created, so add an entry to the thumbnail list */
  
-	/* FIXME: need to handle error by making directory elsewhere */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
-		g_warning ("error when making thumbnail directory: %d", result);	
+
+		g_warning ("error when making thumbnail directory %d, for %s", result, thumbnail_uri);	
 	} else {
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
-		
+		info->is_local = local_flag;
 		factory = nautilus_get_current_icon_factory ();		
 		if (factory->thumbnails) {
 			if (g_list_find_custom (factory->thumbnails, info, compare_thumbnail_info) == NULL) {
@@ -1607,7 +1687,7 @@ check_for_thumbnails (NautilusIconFactory *factory)
 	     next_thumbnail != NULL;
 	     next_thumbnail = next_thumbnail->next) {
 		info = (NautilusThumbnailInfo*) next_thumbnail->data;
-		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE);
+		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local);
 		if (vfs_file_exists (current_thumbnail)) {
 			/* we found one, so update the icon and remove all of the elements up to and including
 			   this one from the pending list. */
@@ -1701,7 +1781,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			
 		/* First, compute the path name of the target thumbnail */
 		g_free (factory->new_thumbnail_path);
-		factory->new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE);
+		factory->new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local);
 
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(thumbnail_pid = fork())) {

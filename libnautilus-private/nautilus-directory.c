@@ -94,7 +94,6 @@ static int                           compare_queued_callbacks                   
 static GnomeVFSURI *                 construct_alternate_metafile_uri                    (GnomeVFSURI                   *uri);
 static xmlNode *                     create_metafile_root                                (NautilusDirectory             *directory);
 static gboolean                      dequeue_pending_idle_callback                       (gpointer                       callback_data);
-static char *                        escape_slashes                                      (const char                    *path);
 static char *                        get_metadata_from_node                              (xmlNode                       *node,
 											  const char                    *key,
 											  const char                    *default_metadata);
@@ -735,58 +734,6 @@ nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 	}
 }
 
-/* To use a directory name as a file name, we need to escape any slashes.
-   This means that "/" is replaced by "%2F" and "%" is replaced by "%25".
-   Later we might share the escaping code with some more generic escaping
-   function, but this should do for now.
-*/
-static char *
-escape_slashes (const char *path)
-{
-	char c;
-	const char *in;
-	guint length;
-	char *result;
-	char *out;
-
-	/* Figure out how long the result needs to be. */
-	in = path;
-	length = 0;
-	while ((c = *in++) != '\0')
-		switch (c) {
-		case '/':
-		case '%':
-			length += 3;
-			break;
-		default:
-			length += 1;
-		}
-
-	/* Create the result string. */
-	result = g_malloc (length + 1);
-	in = path;
-	out = result;	
-	while ((c = *in++) != '\0')
-		switch (c) {
-		case '/':
-			*out++ = '%';
-			*out++ = '2';
-			*out++ = 'F';
-			break;
-		case '%':
-			*out++ = '%';
-			*out++ = '2';
-			*out++ = '5';
-			break;
-		default:
-			*out++ = c;
-		}
-	g_assert (out == result + length);
-	*out = '\0';
-
-	return result;
-}
-
 static GnomeVFSResult
 nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 {
@@ -844,7 +791,7 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 
 	/* Construct a file name from the URI. */
 	uri_as_string = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-	escaped_uri = escape_slashes (uri_as_string);
+	escaped_uri = nautilus_str_escape_slashes (uri_as_string);
 	g_free (uri_as_string);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
 	g_free (escaped_uri);
@@ -1824,14 +1771,14 @@ nautilus_self_check_directory (void)
 	nautilus_directory_unref (directory);
 
 	/* escape_slashes */
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a"), "a");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("/"), "%2F");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%"), "%25");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a/a"), "a%2Fa");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("a%a"), "a%25a");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%25"), "%2525");
-	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%2F"), "%252F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("/"), "%2F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%"), "%25");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a/a"), "a%2Fa");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a%a"), "a%25a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%25"), "%2525");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%2F"), "%252F");
 
 	g_list_free (list);
 }

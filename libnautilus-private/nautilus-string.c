@@ -248,6 +248,59 @@ nautilus_eat_str_to_int (char *source, int *integer)
 	return result;
 }
 
+/* To use a directory name as a file name, we need to escape any slashes.
+   This means that "/" is replaced by "%2F" and "%" is replaced by "%25".
+   Later we might share the escaping code with some more generic escaping
+   function, but this should do for now.
+*/
+char *
+nautilus_str_escape_slashes (const char *string)
+{
+	char c;
+	const char *in;
+	guint length;
+	char *result;
+	char *out;
+
+	/* Figure out how long the result needs to be. */
+	in = string;
+	length = 0;
+	while ((c = *in++) != '\0')
+		switch (c) {
+		case '/':
+		case '%':
+			length += 3;
+			break;
+		default:
+			length += 1;
+		}
+
+	/* Create the result string. */
+	result = g_malloc (length + 1);
+	in = string;
+	out = result;	
+	while ((c = *in++) != '\0')
+		switch (c) {
+		case '/':
+			*out++ = '%';
+			*out++ = '2';
+			*out++ = 'F';
+			break;
+		case '%':
+			*out++ = '%';
+			*out++ = '2';
+			*out++ = '5';
+			break;
+		default:
+			*out++ = c;
+		}
+	g_assert (out == result + length);
+	*out = '\0';
+
+	return result;
+}
+
+
 char *
 nautilus_str_double_underscores (const char *string)
 {
