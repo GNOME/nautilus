@@ -1400,7 +1400,7 @@ fm_list_view_select_all (FMDirectoryView *view)
         nautilus_clist_select_all (clist);
 }
 
-/* select all of the items in the view */
+/* select items in the view */
 static void
 fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 {

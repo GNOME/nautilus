@@ -2658,7 +2658,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	char *parent_uri;
 
 	parent_uri = fm_directory_view_get_uri (directory_view);
-	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET (directory_view), parent_uri, new_folder_done, directory_view);
 
 	g_free (parent_uri);
 }

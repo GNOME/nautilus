@@ -3313,7 +3313,6 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 	GList *p;
 	int i;
 	NautilusCListRow *row;
-	gpointer row_data;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 
@@ -3323,14 +3322,12 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 	for (p = selection; p != NULL; p = p->next) {
 		g_hash_table_insert (hash, p->data, p->data);
 	}
+
 	for (p = NAUTILUS_CLIST (list)->row_list, i = 0; p != NULL; p = p->next, i++) {
 		row = p->data;
-		row_data = row->data;
-
-		selection_changed |= row_set_selected
-			(list, i, row_data,
-			 g_hash_table_lookup (hash, row_data) != NULL);
+		selection_changed |= row_set_selected (list, i, row, g_hash_table_lookup (hash, row->data) != NULL);
 	}
+	
 	g_hash_table_destroy (hash);
 
 	if (selection_changed) {

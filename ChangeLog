@@ -1,3 +1,17 @@
+2000-10-25  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_set_selection):
+	nautilus_list_set_selection used to pass a bogus NautilusCListRow*
+	to row_set_selected
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_new_folder):
+	whitespace change
+
+	* src/file-manager/fm-list-view.c:
+	comment corrected
+
 2000-10-25  Darin Adler  <darin@eazel.com>
 
 	* components/adapter/bonobo-stream-vfs.c: (vfs_get_info),
