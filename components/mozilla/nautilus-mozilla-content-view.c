@@ -179,7 +179,6 @@ static gint	mozilla_dom_key_press_callback			(GtkMozEmbed                    *mo
 static gint	mozilla_dom_mouse_click_callback		(GtkMozEmbed			*mozilla,
 								 gpointer			dom_event,
 								 gpointer			user_data);
-static void	mozilla_js_status_callback			(GtkMozEmbed			*mozilla);
 
 static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla);
 
@@ -370,11 +369,6 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
 				"dom_mouse_click",
 				GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
-				view);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
-				"js_status",
-				GTK_SIGNAL_FUNC (mozilla_js_status_callback),
 				view);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
@@ -799,24 +793,6 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 
-static void
-mozilla_js_status_callback (GtkMozEmbed *mozilla)
-{
-	char *message;
-
-	message = gtk_moz_embed_get_js_status (mozilla);
-	if (message && (strlen (message) != 0)) {
-
-#ifdef DEBUG_pepper
-		g_print ("Javascript Status ");
-		g_print (": %s\n", message);
-#endif
-
-	}
-
-	g_free (message);
-}
-
 static GtkWindow *
 mozilla_get_containing_window (GtkMozEmbed *mozilla)
 {
@@ -836,10 +812,10 @@ mozilla_new_window_callback (GtkMozEmbed *mozilla)
 	GnomeDialog     *dialog;
 
 #ifdef DEBUG_pepper
-	g_warning ("Nautilus does not support javascript spawning of new windows!\n");
+	g_warning ("Nautilus does not support JavaScript spawning of new windows!\n");
 #endif
 
-	dialog = nautilus_show_warning_dialog (_("A Javascript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by Javascript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
+	dialog = nautilus_show_warning_dialog (_("A JavaScript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by JavaScript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
 					     _("Nautilus Mozilla View Warning"),
 					     mozilla_get_containing_window (mozilla));
 

@@ -1,3 +1,34 @@
+2001-02-26  J Shane Culpepper  <pepper@eazel.com>
+
+        reviewed by: John Sullivan <sullivan@eazel.com>
+
+        * README:
+        Reflecting the need for minimum Mozilla version of 0.8
+
+        * components/mozilla/nautilus-mozilla-content-view.c:
+        (nautilus_mozilla_content_view_initialize),
+        (mozilla_new_window_callback):
+
+        Fixed spelling of Javascript to JavaScript.  Removed the
+        js_status callback because it was only added for debugging
+        and Ramiro found a bug in it.  Finish bug #6885.
+
+
+        * configure.in: Nautilus mozilla component now requires
+        0.8.  Fix for bug #7042.
+
+2001-02-26  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7023 (Multi-window mode opens second instance of same
+	window.)
+
+	* src/nautilus-window-manage-views.c:
+	(open_location_prefer_existing_window_callback): For windows that
+	are changing locations, we want to reuse them if the pending
+	location is the one we are trying to open.
+
 2001-02-26  John Harper  <jsh@eazel.com>
 
 	reviewed by: Michael Engber <engber@eazel.com>
