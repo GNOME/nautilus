@@ -308,7 +308,7 @@ nautilus_property_browser_new (void)
 		(gtk_type_new (nautilus_property_browser_get_type ()));
 	
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
-  	gtk_window_set_policy (GTK_WINDOW(browser), FALSE, FALSE, FALSE);
+  	gtk_window_set_policy (GTK_WINDOW(browser), TRUE, TRUE, FALSE);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
 	return browser;
@@ -1166,8 +1166,8 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 			 x_delta, y_delta);
 	}
 	
-	/* hide the property browser - it will later be destroyed when the drag ends */	
-	property_browser->details->keep_around = (event->state & GDK_SHIFT_MASK) != 0;
+	/* optionally (if the shift key is down) hide the property browser - it will later be destroyed when the drag ends */	
+	property_browser->details->keep_around = (event->state & GDK_SHIFT_MASK) == 0;
 	if (!property_browser->details->keep_around)
 		gtk_widget_hide(GTK_WIDGET(property_browser));
 }

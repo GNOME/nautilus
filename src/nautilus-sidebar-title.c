@@ -35,6 +35,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -192,23 +193,43 @@ set_widget_color (GtkWidget *widget, const char* color_spec)
 	gtk_style_unref (style);
 }
 
+/* utility that returns true if the title is over a dark background.  We do this by finding the
+   sidebar and asking its background */
+void
+nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
+{
+	GtkWidget *widget, *sidebar;
+	NautilusBackground *background;
+	char *sidebar_title_color;
+	
+	widget = GTK_WIDGET (sidebar_title);
+	sidebar = widget->parent;
+	if (sidebar) {
+		sidebar = GTK_WIDGET (sidebar)->parent;
+		background = nautilus_get_widget_background (sidebar);
+		
+		if (nautilus_background_is_dark (background)) {
+			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+		} else {
+			sidebar_title_color = g_strdup("rgb:0000/0000/0000");
+		}
+
+	set_widget_color (sidebar_title->details->title, sidebar_title_color);
+	set_widget_color (sidebar_title->details->more_info, sidebar_title_color);
+	
+	g_free (sidebar_title_color);	
+	}
+}
+
+
 /* handle theme changes by setting up the color of the labels */
 static void
 nautilus_sidebar_title_theme_changed (gpointer user_data)
 {
-	char *sidebar_title_color;
-	NautilusSidebarTitle *sidebar_title;
+	NautilusSidebarTitle *sidebar_title;	
 	
-	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);	
-	sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "LABEL_COLOR");
-	if (sidebar_title_color == NULL) {	
-		sidebar_title_color = g_strdup("rgb:0000/0000/0000");
-	}
-	
-	set_widget_color (sidebar_title->details->title, sidebar_title_color);
-	set_widget_color (sidebar_title->details->more_info, sidebar_title_color);
-	
-	g_free (sidebar_title_color);
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);		
+	nautlius_sidebar_title_select_text_color (sidebar_title);
 }
 
 /* set up the icon image */
@@ -388,8 +409,11 @@ static void
 update_all (NautilusSidebarTitle *sidebar_title)
 {
 	update_icon (sidebar_title);
+	
 	update_title (sidebar_title);
 	update_more_info (sidebar_title);
+	nautlius_sidebar_title_select_text_color (sidebar_title);
+	
 	update_emblems (sidebar_title);
 	update_notes (sidebar_title);
 }

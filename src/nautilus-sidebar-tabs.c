@@ -183,8 +183,10 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 {
 	char *temp_str;
 	char *tab_pieces, *tab_piece_path, *sidebar_rect_text;
-	GdkRectangle	*rect_ptr;
-
+	GdkColor color;
+	GdkRectangle *rect_ptr;
+	int intensity;
+	
 	/* set up the default values */
 	sidebar_tabs->details->tab_left_offset = TAB_DEFAULT_LEFT_OFFSET;
 	
@@ -209,7 +211,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 			g_free (tab_piece_path);
 
 			if (sidebar_tabs->details->tab_pieces) {				
-				/* so load the rectangles from the current theme */
+				/* we got a theme image, so load the rectangles from the current theme */
 				sidebar_rect_text = nautilus_theme_get_theme_data ("sidebar", "PIECE_OFFSETS");
 				if (sidebar_rect_text  != NULL) {
 					parse_rectangle_list (sidebar_tabs, sidebar_rect_text);
@@ -221,6 +223,17 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 				if (temp_str) {
 					sidebar_tabs->details->tab_left_offset = atoi(temp_str);
 					g_free (temp_str);
+				}
+				
+				/* set the text color according to the pixbuf */
+				nautilus_gdk_pixbuf_average_value (sidebar_tabs->details->tab_pieces, &color);
+				intensity = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;	
+
+				if (intensity < 160) {
+					setup_light_text (sidebar_tabs);
+				} else {
+					setup_dark_text (sidebar_tabs);
+
 				}
 				
 				/* copy the background portion into a separate image, to use as a tile */
@@ -863,15 +876,12 @@ nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_t
 	gtk_widget_queue_draw(GTK_WIDGET(sidebar_tabs));	
 }
 
-/* utility routine that returns true if the passed-in color is lighter than average
-   this could be more sophisticated by weighting the components for luminosity, but the simple adding
-   should suffice, since either way is OK for the middle ground */
-   
+/* utility routine that returns true if the passed-in color is lighter than average */   
 static gboolean
 is_light_color(GdkColor *color)
 {
-	int total_color = color->red + color->green + color->blue;
-	return total_color > 160*4096*3; /* biased slightly so the default of 99/99/99 uses light text */
+	int intensity = (((color->red >> 8) * 77) + ((color->green >> 8) * 150) + ((color->blue >> 8) * 28)) >> 8;	
+	return intensity > 160; /* biased slightly toward dark so default of 0x999999 uses light text light Susan specified */
 }
 
 /* set the background color associated with a tab */
@@ -887,11 +897,13 @@ nautilus_sidebar_tabs_set_color (NautilusSidebarTabs *sidebar_tabs,
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->tab_color, FALSE, TRUE);
 
-	if (is_light_color(&sidebar_tabs->details->tab_color))
-		setup_dark_text(sidebar_tabs);
-	else
-		setup_light_text(sidebar_tabs);
-	
+	if (sidebar_tabs->details->tab_pieces == NULL) {
+		if (is_light_color(&sidebar_tabs->details->tab_color))
+			setup_dark_text(sidebar_tabs);
+		else
+			setup_light_text(sidebar_tabs);
+	}
+		
 	gtk_widget_queue_draw (GTK_WIDGET(sidebar_tabs));	
 }
 

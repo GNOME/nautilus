@@ -1,3 +1,30 @@
+2000-07-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c,h:
+	(nautilus_background_is_dark):
+	added a method to determine if backgrounds are generally dark or light colored
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c,h:
+	(nautilus_gdk_pixbuf_average_value):
+	added a method to get a pixbufs average color component values
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data), (is_light_color),
+	(nautilus_sidebar_tabs_set_color):
+	made the tabs use light or dark colored label text depending on the tab color
+	* src/nautilus-sidebar-title.c,h:
+	(nautlius_sidebar_title_select_text_color),
+	(nautilus_sidebar_title_theme_changed), (update_all):
+	made the sidebar title use light or dark colored text depending on the background
+	* src/nautilus-sidebar.c: (receive_dropped_color),
+	(background_appearance_changed_callback):
+	added call to tell sidebar label to calculate text color when background changes
+	* src/nautilus-property-browser.c: (nautilus_property_browser_new),
+	(element_clicked_callback):
+	flipped sense of shift key for keeping the property browser open; now it stays open
+	by default unless the shift key is down.
+	Also, made the window resizable
+	* data/browser.xml:
+	tweaked colors in browser
+	
 2000-07-09  J Shane Culpepper  <pepper@eazel.com>
 
 	*

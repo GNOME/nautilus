@@ -58,5 +58,8 @@ void                      nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbu
 GdkPixbuf *               nautilus_gdk_pixbuf_scale_to_fit             (GdkPixbuf                  *pixbuf,
 									int                         max_width,
 									int                         max_height);
-
+/* return average color values for each component */
+void			  nautilus_gdk_pixbuf_average_value		(GdkPixbuf		   *pixbuf,
+									 GdkColor		   *result_color);
+									 
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

@@ -57,5 +57,6 @@ char *     nautilus_sidebar_title_get_text      (NautilusSidebarTitle *sidebar_t
 gboolean   nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *sidebar_title,
 						 int                   x,
 						 int                   y);
+void	   nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title);
 
 #endif /* NAUTILUS_SIDEBAR_TITLE_H */

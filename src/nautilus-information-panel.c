@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+ /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* Nautilus
  * Copyright (C) 1999, 2000 Eazel, Inc.
@@ -613,7 +613,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		       GtkSelectionData *selection_data)
 {
 	guint16 *channels;
-	char *color_spec;
+	char *color_spec, *title;
 
 	if (selection_data->length != 8 || selection_data->format != 16) {
 		g_warning ("received invalid color data");
@@ -658,6 +658,12 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
 			 GTK_WIDGET (sidebar), x, y, selection_data);
+		
+		/* regenerate the display */
+		title = nautilus_sidebar_title_get_text (sidebar->details->title);
+		nautilus_sidebar_update_info (sidebar, title);  	
+		g_free(title);
+		
 		break;
 	}
 	g_free(color_spec);
@@ -994,6 +1000,8 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 	background_image = nautilus_directory_get_metadata (sidebar->details->directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    sidebar->details->default_background_image);
+	
+	nautlius_sidebar_title_select_text_color (sidebar->details->title);
 	
 	is_default_color = !nautilus_strcmp(background_color, sidebar->details->default_background_color);
 	is_default_image = !nautilus_strcmp(background_image, sidebar->details->default_background_image);

@@ -74,6 +74,7 @@ void                nautilus_background_set_combine_mode                 (Nautil
 char *              nautilus_background_get_color                        (NautilusBackground     *background);
 char *              nautilus_background_get_tile_image_uri               (NautilusBackground     *background);
 gboolean	    nautilus_background_get_combine_mode		 (NautilusBackground	 *background);
+gboolean	    nautilus_background_is_dark				 (NautilusBackground	 *background);
 gboolean            nautilus_background_is_set                           (NautilusBackground     *background);
 
 /* Explicitly fills a rectangle with a background. */

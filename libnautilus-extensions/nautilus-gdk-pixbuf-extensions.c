@@ -317,6 +317,47 @@ nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf *pixbuf,
 	}
 }
 
+/* return the average value of each component */
+void nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
+{
+	int red_total, green_total, blue_total, count;
+	int row, column;
+	int width, height;
+	int row_stride;
+	guchar *pixsrc, *original_pixels;
+	
+	gboolean has_alpha;
+	
+	red_total = 0;
+	green_total = 0;
+	blue_total = 0;
+	count = 0;
+
+	/* iterate through the pixbuf, counting up each component */
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	row_stride = gdk_pixbuf_get_rowstride (pixbuf);
+	original_pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+	for (row = 0; row < height; row++) {
+		pixsrc = original_pixels + row * row_stride;
+		for (column = 0; column < width; column++) {
+			red_total += *pixsrc++;
+			green_total += *pixsrc++;
+			blue_total += *pixsrc++;
+			count += 1;
+			if (has_alpha) {
+				pixsrc++;
+			}
+		}
+	}
+
+	color->red =   (red_total   * 256) / count;
+	color->green = (green_total * 256) / count;
+	color->blue =  (blue_total  * 256) / count;
+}
+
 /* scale the passed in pixbuf to conform to the passed-in maximum width and height */
 /* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
 GdkPixbuf *

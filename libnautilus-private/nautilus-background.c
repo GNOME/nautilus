@@ -830,6 +830,41 @@ nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background
 	return FALSE;
 }
 
+/* determine if a background is darker or lighter than average, to help clients know what
+   colors to draw on top with */
+gboolean
+nautilus_background_is_dark (NautilusBackground *background)
+{
+	GdkColor color;
+	int intensity, intensity2;
+	char *start_color_spec, *end_color_spec;
+	
+	if (background->details->tile_image != NULL) {
+		nautilus_gdk_pixbuf_average_value (background->details->tile_image, &color);
+			
+	} else if (nautilus_gradient_is_gradient (background->details->color)) {
+		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
+		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
+		
+		nautilus_gdk_color_parse_with_white_default (start_color_spec, &color);	
+		intensity = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;		 
+		nautilus_gdk_color_parse_with_white_default (end_color_spec, &color);	
+		intensity2 = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;		 
+		
+		g_free (start_color_spec);
+		g_free (end_color_spec);
+		
+		return (intensity + intensity2) < 320;
+	} else {
+		nautilus_gdk_color_parse_with_white_default (background->details->color, &color);	
+	}
+	
+	intensity = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;		 
+	return intensity < 160; /* biased slightly to be dark */
+}
+
+   
+/* handle dropped colors */
 void
 nautilus_background_receive_dropped_color (NautilusBackground *background,
 					   GtkWidget *widget,
