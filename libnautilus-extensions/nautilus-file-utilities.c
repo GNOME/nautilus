@@ -173,7 +173,7 @@ nautilus_uri_get_basename (const char *uri)
 	}
 
 	/* Extract name part. */
-	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	name = gnome_vfs_uri_extract_short_name (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
 	return name;
