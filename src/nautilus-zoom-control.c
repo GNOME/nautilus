@@ -80,6 +80,8 @@ struct NautilusZoomControlDetails {
 	GdkPixbuf *number_strip;
 	PrelightMode prelight_mode;
 
+	GdkFont *label_font;
+
 	gboolean marking_menu_items;
 };
 
@@ -280,14 +282,13 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 {
 	char buffer[8];
 	char *cur_char;
-	GdkFont *label_font;
 	GdkGC* temp_gc; 
 	int x, y, percent; 
 	int char_height, char_width, char_offset;
 	int num_v_offset, num_h_offset;
 	NautilusZoomControl *zoom_control;
 	GdkPixbuf *number_pixbuf;
-	
+
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	number_pixbuf = NULL;
 	
@@ -328,13 +329,9 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 
 			x += char_width;
 		}
-	} else {
-              label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
-				
-		x = num_h_offset + ((widget->allocation.width - gdk_string_width(label_font, buffer)) >> 1);  
-		
-		gdk_draw_string (widget->window, label_font, temp_gc, x, y, &buffer[0]);
-		gdk_font_unref(label_font);
+	} else {				
+		x = num_h_offset + ((widget->allocation.width - gdk_string_width(zoom_control->details->label_font, buffer)) >> 1);  
+		gdk_draw_string (widget->window, zoom_control->details->label_font, temp_gc, x, y, &buffer[0]);
 	}
 	
 	if (number_pixbuf != zoom_control->details->number_strip) {
@@ -359,7 +356,6 @@ static void
 draw_pixbuf_with_prelight (NautilusZoomControl *zoom_control, GdkPixbuf *pixbuf, int x_pos, int y_pos, PrelightMode mode)
 {
 	GdkPixbuf *temp_pixbuf;
-	
 	temp_pixbuf = pixbuf;
 	if (zoom_control->details->prelight_mode == mode) {
 		temp_pixbuf = nautilus_create_spotlight_pixbuf (temp_pixbuf);
@@ -423,7 +419,7 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 
 static void
 nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
-{ 
+{
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget));
 
@@ -433,7 +429,6 @@ nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
 			       0,
 			       widget->allocation.width,
 			       widget->allocation.height);
-
 	draw_zoom_control_image (widget, box);	
 	draw_number (widget, box);
 }
@@ -453,7 +448,7 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	draw_zoom_control_image (widget, &box);	
 	draw_number (widget, &box);
-	
+
 	return FALSE;
 }
 
@@ -485,6 +480,15 @@ nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
 	
 	if (zoom_control->details->zoom_increment_image) {
 		gdk_pixbuf_unref (zoom_control->details->zoom_increment_image);
+	}
+
+	if (zoom_control->details->number_strip != NULL) {
+		gdk_pixbuf_unref (zoom_control->details->number_strip);
+	}
+
+	if (zoom_control->details->label_font != NULL) {
+		gdk_font_unref(zoom_control->details->label_font);
+		zoom_control->details->label_font = NULL;
 	}
 
 }
@@ -519,6 +523,10 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 	zoom_control->details->zoom_decrement_image = load_themed_image ("decrement.png");
 	zoom_control->details->zoom_increment_image = load_themed_image ("increment.png");
 	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
+	
+	if (zoom_control->details->number_strip == NULL) {
+		zoom_control->details->label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
+	}
 
 	nautilus_zoom_control_update_offsets (zoom_control);
 }

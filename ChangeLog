@@ -1,3 +1,14 @@
+2000-12-15  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-zoom-control.c: (draw_number),
+	(draw_pixbuf_with_prelight), (nautilus_zoom_control_draw),
+	(nautilus_zoom_control_expose),
+	(nautilus_zoom_control_unload_images),
+	(nautilus_zoom_control_load_images):
+	Fixed performance of zoom control drawing by elimitating
+	continual calls to gdk_fontset_load - bug 3317. Also fixed
+	a falure to unref the number strip image.
+
 2000-12-15  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
