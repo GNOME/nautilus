@@ -2155,7 +2155,7 @@ nautilus_directory_forget_file_attributes (NautilusDirectory *directory,
 	cancel_loading_attributes (directory, file_attributes);
 
 	for (node = directory->details->file_list; node != NULL; node = node->next) {
-		nautilus_file_forget_attributes_internal (NAUTILUS_FILE (p->data),
+		nautilus_file_forget_attributes_internal (NAUTILUS_FILE (node->data),
 							  file_attributes);
 	}
 
