@@ -20,6 +20,7 @@ MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
 STARTUP_NOTIFICATION_REQUIRED=0.5
+EXIF_REQUIRED=0.5.12
 
 AC_SUBST(ART_REQUIRED)
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED)
@@ -221,6 +222,17 @@ PKG_CHECK_MODULES(MEDUSA, medusa-2.0 >= $MEDUSA_REQUIRED, have_medusa=yes, have_
 if test "x$have_medusa" = "xyes"; then
   AC_DEFINE(HAVE_MEDUSA,1)
   EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES medusa-2.0"
+fi
+
+dnl exif checking
+
+AC_MSG_CHECKING(for libExif)
+
+PKG_CHECK_MODULES(EXIF, libexif >= $EXIF_REQUIRED, have_exif=yes, have_exif=no)
+if test "x$have_exif" = "xyes"; then
+  AC_DEFINE(HAVE_EXIF,1)
+  AC_SUBST(EXIF_CFLAGS)
+  AC_SUBST(EXIF_LIBS)
 fi
 
 dnl ==========================================================================

@@ -11,7 +11,8 @@ INCLUDES =						\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
-	$(COMPONENT_CFLAGS)
+	$(COMPONENT_CFLAGS)				\
+	$(EXIF_CFLAGS)
 
 bonobodir = $(libdir)/bonobo
 bonobo_LTLIBRARIES = libnautilus-image-properties-view.la
@@ -23,7 +24,8 @@ libnautilus_image_properties_view_la_SOURCES =		\
 
 libnautilus_image_properties_view_la_LIBADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(COMPONENT_LIBS)
+	$(COMPONENT_LIBS)				\
+	$(EXIF_LIBS)
 
 libnautilus_image_properties_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
