@@ -58,20 +58,44 @@ get_mime_type_from_uri_hack (const char *uri)
 GnomeVFSMimeAction *
 nautilus_mime_get_default_action_for_uri (const char *uri)
 {
-	return NULL;
+	/* FIXME: Temporary hack for testing */
+	char *mime_type;
+	GnomeVFSMimeAction *result;
+
+	mime_type = get_mime_type_from_uri_hack (uri);
+	result = gnome_vfs_mime_get_default_action (mime_type);
+	g_free (mime_type);
+
+	return result;
 }
 
 
 GnomeVFSMimeApplication *
 nautilus_mime_get_default_application_for_uri (const char *uri)
 {
-	return NULL;
+	/* FIXME: Temporary hack for testing */
+	char *mime_type;
+	GnomeVFSMimeApplication *result;
+	
+	mime_type = get_mime_type_from_uri_hack (uri);
+	result = gnome_vfs_mime_get_default_application (mime_type);
+	g_free (mime_type);
+
+	return result;
 }
 
 OAF_ServerInfo *
 nautilus_mime_get_default_component_for_uri (const char *uri)
 {
-	return NULL;
+	/* FIXME: Temporary hack for testing */
+	char *mime_type;
+	OAF_ServerInfo *result;
+
+	mime_type = get_mime_type_from_uri_hack (uri);
+	result = gnome_vfs_mime_get_default_component (mime_type);
+	g_free (mime_type);
+
+	return result;
 }
 
 
