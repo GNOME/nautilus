@@ -61,20 +61,29 @@ eazel_package_system_suggest_id ()
 		}
 		break;
 	case DISTRO_MANDRAKE: 
+		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		break;
 	case DISTRO_YELLOWDOG:
+		result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
+		break;
 	case DISTRO_TURBOLINUX: 
 		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
 		break;
-/* FIXME bugzilla.eazel.com 4853
-   straighten out which distro uses which package system,
-   and what version uses which rpm_x ? */
 	case DISTRO_COREL: 
+		result = EAZEL_PACKAGE_SYSTEM_DEB;
+		break;
 	case DISTRO_DEBIAN: 
 		result = EAZEL_PACKAGE_SYSTEM_DEB;
 		break;
 	case DISTRO_CALDERA: 
+		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		break;
 	case DISTRO_SUSE: 
+		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		break;
 	case DISTRO_LINUXPPC: 
+		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		break;
 	case DISTRO_UNKNOWN:
 		result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
 		break;

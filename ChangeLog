@@ -1,3 +1,14 @@
+2001-02-24  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 4853, in eazel-package-system-suggest-id ensure
+	distro-to-system.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_suggest_id): Added distro to package system
+	mappings for the rest of the distro's trilobyte can detect.
+
 2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Eskil Olsen  <eskil@eazel.com>
