@@ -38,7 +38,6 @@
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_alphagamma.h>
 #include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_affine.h>
 #include "art_render.h"
 #include "art_render_mask.h"
 
@@ -62,22 +61,44 @@ struct _TestCtx {
 static void invert_glyph (guchar *buf, int rowstride, int width, int height)
 {
 	int x, y;
+	int first;
+	int n_words;
+	int last;
+	guint32 *middle;
 
-	for (y = 0; y < height; y++) {
-		int n_words = (width + 3) >> 2;
-		for (x = 0; x < n_words; x++)
-			((guint32 *)buf)[x] = ~((guint32 *)buf)[x];
-		buf += rowstride;
+	if (width >= 8 && ((rowstride & 3) == 0)) {
+		first = (-(int)buf) & 3;
+		n_words = (width - first) >> 2;
+		last = first + (n_words << 2);
+
+		for (y = 0; y < height; y++) {
+			middle = (guint32 *)(buf + first);
+			for (x = 0; x < first; x++)
+				buf[x] = ~buf[x];
+			for (x = 0; x < n_words; x++)
+				middle[x] = ~middle[x];
+			for (x = last; x < width; x++)
+				buf[x] = ~buf[x];
+			buf += rowstride;
+		}
+	} else {
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++)
+				buf[x] = ~buf[x];
+			buf += rowstride;
+		}
 	}
 }
 
-static void draw_line (TestCtx *ctx, int line_num)
+static void draw_line (TestCtx *ctx, int line_num, ArtIRect *rect)
 {
 	GtkWidget *drawingarea = ctx->drawingarea;
 	int y0;
 	RsvgFTGlyph *glyph;
 	const double affine[6] = { 1, 0, 0, 1, 5, 12 };
 	int glyph_xy[2];
+	ArtIRect line_rect, clear_rect, glyph_rect, draw_rect;
+
 
 	y0 = line_num * ctx->y_sp - ctx->y_scroll;
 	if (line_num < 0 || line_num >= ctx->n_lines) {
@@ -86,7 +107,6 @@ static void draw_line (TestCtx *ctx, int line_num)
 				    TRUE,
 				    0, y0, ctx->width, ctx->y_sp);
 	} else {
-		int draw_x0, draw_x1, draw_y0, draw_y1;
 		guchar *buf;
 		int rowstride;
 
@@ -96,34 +116,41 @@ static void draw_line (TestCtx *ctx, int line_num)
 					       affine,
 					       glyph_xy);
 		rowstride = glyph->rowstride;
-		buf = glyph->buf;
 
-		draw_x0 = glyph_xy[0];
-		draw_y0 = y0 + glyph_xy[1];
-		draw_x1 = draw_x0 + glyph->width;
-		draw_y1 = draw_y0 + glyph->height;
-		g_print ("(%d, %d) - (%d, %d)\n",
-			 draw_x0, draw_y0, draw_x1, draw_y1);
+		glyph_rect.x0 = glyph_xy[0];
+		glyph_rect.y0 = y0 + glyph_xy[1];
+		glyph_rect.x1 = glyph_rect.x0 + glyph->width;
+		glyph_rect.y1 = glyph_rect.y0 + glyph->height;
+		line_rect.x0 = 0;
+		line_rect.y0 = y0;
+		line_rect.x1 = ctx->width;
+		line_rect.y1 = y0 + ctx->y_sp;
+		art_irect_intersect (&clear_rect, rect, &line_rect);
+
 		gdk_draw_rectangle (drawingarea->window,
 				    drawingarea->style->white_gc,
 				    TRUE,
-				    0, y0, ctx->width, ctx->y_sp);
-#if 0
-		gdk_draw_rectangle (drawingarea->window,
-				    drawingarea->style->black_gc,
-				    TRUE,
-				    draw_x0, draw_y0,
-				    draw_x1 - draw_x0, draw_y1 - draw_y0);
-#endif
-		invert_glyph (buf, rowstride,
-			      draw_x1 - draw_x0, draw_y1 - draw_y0);
-		gdk_draw_gray_image (drawingarea->window,
-				     drawingarea->style->white_gc,
-				     draw_x0, draw_y0,
-				     draw_x1 - draw_x0, draw_y1 - draw_y0,
-				     GDK_RGB_DITHER_NONE,
-				     buf,
-				     rowstride);
+				    clear_rect.x0, clear_rect.y0,
+				    clear_rect.x1 - clear_rect.x0,
+				    clear_rect.y1 - clear_rect.y0);
+
+		art_irect_intersect (&draw_rect, rect, &glyph_rect);
+		if (!art_irect_empty (&draw_rect)) {
+			buf = glyph->buf +
+				draw_rect.x0 - glyph_rect.x0 +
+				rowstride * (draw_rect.y0 - glyph_rect.y0);
+			invert_glyph (buf, rowstride,
+				      draw_rect.x1 - draw_rect.x0,
+				      draw_rect.y1 - draw_rect.y0);
+			gdk_draw_gray_image (drawingarea->window,
+					     drawingarea->style->white_gc,
+					     draw_rect.x0, draw_rect.y0,
+					     draw_rect.x1 - draw_rect.x0,
+					     draw_rect.y1 - draw_rect.y0,
+					     GDK_RGB_DITHER_NONE,
+					     buf,
+					     rowstride);
+		}
 		rsvg_ft_glyph_unref (glyph);
 	}
 }
@@ -133,13 +160,19 @@ test_expose (GtkWidget *widget, GdkEventExpose *event, TestCtx *ctx)
 {
 	int line0, line1;
 	int line;
+	ArtIRect rect;
 
-	line0 = (event->area.y + ctx->y_scroll) / ctx->y_sp;
-	line1 = (event->area.y + event->area.height + ctx->y_scroll +
-		 ctx->y_sp - 1) / ctx->y_sp;
+	rect.x0 = event->area.x;
+	rect.y0 = event->area.y;
+	rect.x1 = rect.x0 + event->area.width;
+	rect.y1 = rect.y0 + event->area.height;
+	line0 = (rect.y0 + ctx->y_scroll) / ctx->y_sp;
+	line1 = (rect.y1 + ctx->y_scroll + ctx->y_sp - 1) / ctx->y_sp;
 	for (line = line0; line < line1; line++) {
+#ifdef VERBOSE
 		g_print ("drawing line %d of [%d..%d]\n", line, line0, line1 - 1);
-		draw_line (ctx, line);
+#endif
+		draw_line (ctx, line, &rect);
 	}
 	return FALSE;
 }

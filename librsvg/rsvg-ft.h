@@ -4,7 +4,7 @@ typedef struct _RsvgFTGlyph RsvgFTGlyph;
 struct _RsvgFTGlyph {
 	int refcnt;
 	int width, height;
-	double xpen, ypen; /* location of pen after the glyph */
+	double xpen, ypen; /* relative location of pen after the glyph */
 	int rowstride;
 	guchar *buf;
 };

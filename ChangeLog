@@ -1,5 +1,19 @@
 2000-08-12  Raph Levien  <raph@acm.org>
 
+	* librsvg/rsvg-ft.c: Got glyph cache working. Eviction when
+	cache is full is not yet done, though, so RAM usage can grow.
+
+	This checkin caused an API change! The xpen and ypen fields
+	of the RsvgFTGlyph structure are now relative to the tranlation
+	components of the affine (ie affine[4] and affine[5]). Prior
+	to this checkin, they were relative to the upper left corner
+	of the glyph.
+
+	* librsvg/test-ft-gtk.c: Much tighter drawing, taking into
+	account both bbox of what's to be drawn and the expose rect.
+
+2000-08-12  Raph Levien  <raph@acm.org>
+
 	* librsvg/makefile-simple (CFLAGS): Added suitable warnings
 	so that broken code like the problem below doesn't slip through.
 

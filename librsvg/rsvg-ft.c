@@ -95,6 +95,7 @@ struct _RsvgFTGlyphDesc {
 
 struct _RsvgFTGlyphCacheEntry {
 	RsvgFTGlyphCacheEntry *prev, *next; /* for lru list */
+	int x0, y0; /* relative to affine */
 	RsvgFTGlyph *glyph;
 };
 
@@ -120,11 +121,11 @@ rsvg_ft_glyph_desc_equal (gconstpointer v, gconstpointer v2)
 			sizeof(RsvgFTGlyphDesc));
 }
 
-#if 0
 /**
  * rsvg_ft_glyph_lookup: Look up a glyph in the glyph cache.
  * @ctx: The Rsvg FT context.
  * @desc: Glyph descriptor.
+ * @xy: Where to store relative coordinates of glyph.
  *
  * Looks up the glyph in the glyph cache. If found, moves it to the front
  * of the LRU list. It does not bump the refcount on the glyph - most
@@ -133,7 +134,8 @@ rsvg_ft_glyph_desc_equal (gconstpointer v, gconstpointer v2)
  * Return value: The glyph if found, otherwise NULL.
  **/
 static RsvgFTGlyph *
-rsvg_ft_glyph_lookup (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc)
+rsvg_ft_glyph_lookup (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
+		      int glyph_xy[2])
 {
 	RsvgFTGlyphCacheEntry *entry;
 
@@ -155,9 +157,47 @@ rsvg_ft_glyph_lookup (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc)
 		ctx->glyph_first = entry;
 
 	}
+	glyph_xy[0] = entry->x0;
+	glyph_xy[1] = entry->y0;
 	return entry->glyph;
 }
-#endif
+
+/**
+ * rsvg_ft_glyph_insert: Insert a glyph into the glyph cache.
+ * @ctx: The RsvgFT context.
+ * @desc: Glyph descriptor.
+ * @glyph: The glyph itself.
+ * @x0: Relative x0 of glyph.
+ * @y0: Relative y0 of glyph.
+ *
+ * Inserts @glyph into the glyph cache under the glyph descriptor @desc.
+ * This routine also takes care of evicting glyphs when the cache
+ * becomes full.
+ **/
+static void
+rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
+		      RsvgFTGlyph *glyph, int x0, int y0)
+{
+	RsvgFTGlyphDesc *new_desc;
+	RsvgFTGlyphCacheEntry *entry;
+
+	/* todo: check for full cache and evict if so */
+	new_desc = g_new (RsvgFTGlyphDesc, 1);
+	memcpy (new_desc, desc, sizeof (RsvgFTGlyphDesc));
+	entry = g_new (RsvgFTGlyphCacheEntry, 1);
+	entry->prev = NULL;
+	entry->next = ctx->glyph_first;
+	if (entry->next != NULL) {
+		entry->next->prev = entry;
+	} else {
+		ctx->glyph_last = entry;
+	}
+	ctx->glyph_first = entry;
+	entry->glyph = glyph;
+	entry->x0 = x0;
+	entry->y0 = y0;
+	g_hash_table_insert (ctx->glyph_hash_table, new_desc, entry);
+}
 
 RsvgFTCtx *
 rsvg_ft_ctx_new (void) {
@@ -495,14 +535,72 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
 		xy[1] = -glyph->bitmap_top;
 		result->width = bitmap->width;
 		result->height = bitmap->rows;
-		result->xpen = FT_TOFLOAT (delta.x + glyph->advance.x) - xy[0];
-		result->ypen = -FT_TOFLOAT (delta.y + glyph->advance.y) - xy[1];
+		result->xpen = FT_TOFLOAT (glyph->advance.x);
+		result->ypen = -FT_TOFLOAT (glyph->advance.y);
 		result->rowstride = bitmap->pitch;
 		bufsize = bitmap->pitch * bitmap->rows;
 		buf = g_malloc (bufsize);
 		memcpy (buf, bitmap->buffer, bufsize);
 		result->buf = buf;
 	}
+	return result;
+}
+
+/**
+ * rsvg_ft_get_glyph_cached: Get a rendered glyph, trying the cache.
+ * @ctx: The RsvgFT context.
+ * @fh: Font handle for the font.
+ * @glyph_ix: Glyph index.
+ * @sx: Width of em in pixels.
+ * @sy: Height of em in pixels.
+ * @affine: Affine transformation.
+ * @xy: Where to store the top left coordinates.
+ *
+ * Note: The nominal resolution is 72 dpi. For rendering at other resolutions,
+ * scale the @affine by resolution/(72 dpi).
+ *
+ * Return value: The rendered glyph.
+ **/
+static RsvgFTGlyph *
+rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
+			  FT_UInt glyph_ix, double sx, double sy,
+			  const double affine[6], int xy[2])
+{
+	RsvgFTGlyphDesc desc;
+	RsvgFTFont *font;
+	RsvgFTGlyph *result;
+	int x_sp;
+
+	if (affine[1] != 0 || affine[2] != 0 || affine[0] != affine[3]) {
+		font = rsvg_ft_font_resolve (ctx, fh);
+		return rsvg_ft_get_glyph (font, glyph_ix, sx, sy, affine, xy);
+	}
+	desc.fh = fh;
+	desc.char_width = floor (sx * 64 + 0.5);
+	desc.char_height = floor (sy * 64 + 0.5);
+	desc.glyph_index = glyph_ix;
+	x_sp = floor (4 * (affine[4] - floor (affine[4])));
+	desc.x_subpixel = x_sp;
+	desc.y_subpixel = 0;
+#ifdef VERBOSE
+	g_print ("affine[4] = %g, x subpix = %x\n",
+		 affine[4], desc.x_subpixel);
+#endif
+	result = rsvg_ft_glyph_lookup (ctx, &desc, xy);
+	if (result == NULL) {
+		int x0, y0;
+		font = rsvg_ft_font_resolve (ctx, fh);
+		result = rsvg_ft_get_glyph (font, glyph_ix, sx, sy, affine, xy);
+		if (result == NULL)
+			return NULL;
+		x0 = xy[0] - floor (affine[4]);
+		y0 = xy[1] - floor (affine[5]);
+		rsvg_ft_glyph_insert (ctx, &desc, result, x0, y0);
+	} else {
+		xy[0] += floor (affine[4]);
+		xy[1] += floor (affine[5]);
+	}
+	result->refcnt++;
 	return result;
 }
 
@@ -535,6 +633,8 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	double glyph_affine[6];
 	FT_UInt glyph_index;
 	FT_UInt last_glyph = 0; /* for kerning */
+	int n_glyphs;
+	double init_x, init_y;
 
 	font = rsvg_ft_font_resolve (ctx, fh);
 	if (font == NULL)
@@ -548,6 +648,9 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	for (j = 0; j < 6; j++)
 		glyph_affine[j] = affine[j];
 
+	init_x = affine[4];
+	init_y = affine[5];
+	n_glyphs = 0;
 	for (i = 0; i < len; i++) {
 		RsvgFTGlyph *glyph;
 
@@ -577,21 +680,24 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 		if (glyph_index != 0)
 			last_glyph = glyph_index;
 
-		glyph = rsvg_ft_get_glyph (font, glyph_index,
-					   sx, sy, glyph_affine,
-					   glyph_xy + i * 2);
-		/* todo: handle glyph == NULL */
-		glyphs[i] = glyph;
+		glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
+						  sx, sy, glyph_affine,
+						  glyph_xy + n_glyphs * 2);
+		if (glyph != NULL) {
+			glyphs[n_glyphs] = glyph;
 
-		glyph_bbox.x0 = glyph_xy[i * 2];
-		glyph_bbox.y0 = glyph_xy[i * 2 + 1];
-		glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
-		glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
+			glyph_bbox.x0 = glyph_xy[i * 2];
+			glyph_bbox.y0 = glyph_xy[i * 2 + 1];
+			glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
+			glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
 
-		art_irect_union (&bbox, &bbox, &glyph_bbox);
+			art_irect_union (&bbox, &bbox, &glyph_bbox);
 
-		glyph_affine[4] = glyph->xpen + glyph_bbox.x0;
-		glyph_affine[5] = glyph->ypen + glyph_bbox.y0;
+			glyph_affine[4] += glyph->xpen;
+			glyph_affine[5] += glyph->ypen;
+
+			n_glyphs++;
+		}
 	}
 
 	rowstride = (bbox.x1 - bbox.x0 + 3) & -4;
@@ -603,12 +709,12 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	result->height = bbox.y1 - bbox.y0;
 	xy[0] = bbox.x0;
 	xy[1] = bbox.y0;
-	result->xpen = glyph_affine[4] - bbox.x0;
-	result->ypen = glyph_affine[5] - bbox.y0;
+	result->xpen = glyph_affine[4] - init_x;
+	result->ypen = glyph_affine[5] - init_y;
 	result->rowstride = rowstride;
 	result->buf = buf;
 
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < n_glyphs; i++) {
 		rsvg_ft_glyph_composite (result, glyphs[i],
 					 glyph_xy[i * 2] - bbox.x0,
 					 glyph_xy[i * 2 + 1] - bbox.y0);
