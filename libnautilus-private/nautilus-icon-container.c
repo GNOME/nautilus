@@ -1149,7 +1149,7 @@ snap_position (NautilusIconContainer *container,
 	/* Find the grid position vertically and place on the proper baseline */
 	baseline_y = *y + icon_height;
 	baseline_y = SNAP_NEAREST_VERTICAL (baseline_y);
-	*y = baseline_y - (icon_position.y1 - icon_position.y0);
+	*y = baseline_y - icon_height;
 }
 
 static int
@@ -1358,7 +1358,7 @@ find_empty_location (NautilusIconContainer *container,
 
 		if (!placement_grid_position_is_free (grid, grid_position)) {
 			icon_position.y0 += SNAP_SIZE_Y;
-			icon_position.y1 = icon_position.y0 + icon_width;
+			icon_position.y1 = icon_position.y0 + icon_height;
 			
 			if (icon_position.y1 + DESKTOP_PAD_VERTICAL > canvas_height) {
 				/* Move to the next column */
@@ -1366,10 +1366,10 @@ find_empty_location (NautilusIconContainer *container,
 				while (icon_position.y0 < DESKTOP_PAD_VERTICAL) {
 					icon_position.y0 += SNAP_SIZE_Y;
 				}
-				icon_position.y1 = icon_position.y0 + icon_width;
+				icon_position.y1 = icon_position.y0 + icon_height;
 				
 				icon_position.x0 += SNAP_SIZE_X;
-				icon_position.x1 = icon_position.x0 + icon_height;
+				icon_position.x1 = icon_position.x0 + icon_width;
 			}
 				
 			collision = TRUE;
