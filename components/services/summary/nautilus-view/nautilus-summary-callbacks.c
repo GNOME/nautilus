@@ -109,6 +109,11 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 	g_assert (Pending_None == view->details->pending_operation);
 
+	/* FIXME this doesn't actually handle the case when user_control is NIL
+	 * very well.  No callback is generated, so no user feedback is generated
+	 * and the summary view is left in an illegal state
+	 */
+
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
 		view->details->authn_callback = ammonite_auth_callback_wrapper_new (bonobo_poa(), &cb_funcs, view);
 

@@ -827,7 +827,6 @@ nautilus_summary_view_destroy (GtkObject *object)
 	}
 
 	g_assert (Pending_None == view->details->pending_operation);
-	CORBA_Object_release (view->details->user_control, &ev);
 
 	g_free (view->details);
 	
