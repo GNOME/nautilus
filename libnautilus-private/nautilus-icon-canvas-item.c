@@ -174,9 +174,22 @@ static void     draw_pixbuf                          (GdkPixbuf                 
 						      GdkDrawable                   *drawable,
 						      int                            x,
 						      int                            y);
+static PangoLayout *get_label_layout                 (PangoLayout                  **layout,
+						      NautilusIconCanvasItem        *item,
+						      const char                    *text);
+static void     draw_label_layout                    (NautilusIconCanvasItem        *item,
+						      GdkDrawable                   *drawable,
+						      PangoLayout                   *layout,
+						      gboolean                       highlight,
+						      int                            x,
+						      int                            y,
+						      GdkGC                         *gc);
+
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
 						      ArtIRect                       canvas_rect);
 static gboolean icon_canvas_item_is_smooth           (const NautilusIconCanvasItem  *icon_item);
+
+static void     update_label_layouts                 (NautilusIconCanvasItem *item);
 
 EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem,
 		       nautilus_icon_canvas_item,
@@ -489,7 +502,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	ArtIRect before, after, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
-		
+
 	/* Compute new bounds. */
 	before = eel_gnome_canvas_item_get_current_canvas_bounds
 		(GNOME_CANVAS_ITEM (item));
@@ -540,38 +553,6 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 
 /* Rendering */
 
-/* routine to underline the text in a gnome_icon_text structure */
-
-#if GNOME2_CONVERSION_COMPLETE
-
-static void
-gnome_icon_underline_text (GnomeIconTextInfo *text_info,
-			   GdkDrawable *drawable,
-			   GdkGC *gc,
-			   int x, int y)
-{
-	GList *item;
-	int text_width;
-	GnomeIconTextInfoRow *row;
-	int xpos;
-
-	y += text_info->font->ascent;
-
-	for (item = text_info->rows; item; item = item->next) {
-		if (item->data) {
-			row = item->data;
-			xpos = (text_info->width - row->width) / 2;
-			text_width = gdk_text_width_wc(text_info->font, row->text_wc, row->text_length);
-			gdk_draw_line(drawable, gc, x + xpos, y + 1, x + xpos + text_width, y + 1);
-	
-			y += text_info->baseline_skip;
-		} else
-			y += text_info->baseline_skip / 2;
-	}
-}
-
-#endif
-
 static gboolean
 in_single_click_mode (void)
 {
@@ -585,7 +566,6 @@ in_single_click_mode (void)
   #define PERFORMANCE_TEST_MEASURE_DISABLE
 */
 
-/* Draw the text in a box, using gnomelib routines. */
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    GdkDrawable *drawable,
@@ -594,33 +574,23 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 {
 	NautilusIconCanvasItemDetails *details;
 	guint width_so_far, height_so_far;
-	GdkGC* gc;
-	GdkGCValues save_gc;
-	guint32 label_color;
 	GnomeCanvasItem *canvas_item;
-	int max_text_width;
-	int icon_width, box_left;
-#if GNOME2_CONVERSION_COMPLETE
-	int text_left;
-	GnomeIconTextInfo *icon_text_info;
-#endif
-	char **pieces;
-	const char *text_piece;
-	int i;
-	char *combined_text;
+	PangoLayout *layout;
+	guint32 label_color;
+	int layout_width, layout_height;
+	int icon_width;
 	gboolean have_editable, have_additional, needs_highlight;
-
-	gc = NULL;
+	int max_text_width, box_left;
+	GdkGC *gc;
+	
 	icon_width = 0;
+	gc = NULL;
 	
 	details = item->details;
 	needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
 
-	have_editable = details->editable_text != NULL
-		&& details->editable_text[0] != '\0';
-	have_additional = details->additional_text != NULL
-		&& details->additional_text[0] != '\0';
-
+	have_editable = details->editable_text != NULL && details->editable_text[0] != '\0';
+	have_additional = details->additional_text != NULL && details->additional_text[0] != '\0';
 
 	/* No font or no text, then do no work. */
 	if (!have_editable && !have_additional) {
@@ -651,137 +621,116 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 #endif
 
-	/* Combine editable and additional text for processing */
-	combined_text = g_strconcat
-		(have_editable ? details->editable_text : "",
-		 (have_editable && have_additional) ? "\n" : "",
-		 have_additional ? details->additional_text : "",
-		 NULL);
-
+	canvas_item = GNOME_CANVAS_ITEM (item);
+	if (drawable != NULL) {
+		gc = gdk_gc_new (canvas_item->canvas->layout.bin_window);
+		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
+	}
+	
 	width_so_far = 0;
 	height_so_far = 0;
 
-	canvas_item = GNOME_CANVAS_ITEM (item);
-	if (drawable != NULL) {
-		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
-		gc = gdk_gc_new (canvas_item->canvas->layout.bin_window);
-		gdk_gc_get_values (gc, &save_gc);
-	}
-	
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming) {
 		gdk_rgb_gc_set_foreground (gc, highlight_background_color);
-		
+				
 		gdk_draw_rectangle
-			(drawable, gc, TRUE,
+			(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
 			 icon_left + (icon_width - details->text_width) / 2,
 			 icon_bottom,
 			 details->text_width, details->text_height);
+		
+	}	
 
-		gdk_rgb_gc_set_foreground (gc, highlight_text_color);
-	}
-	
-	if (!needs_highlight && drawable != NULL) {
-		label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), TRUE);
-		gdk_rgb_gc_set_foreground (gc, label_color);
-	}
-	
-	pieces = g_strsplit (combined_text, "\n", 0);
-	
-	for (i = 0; (text_piece = pieces[i]) != NULL; i++) {
-		/* Replace empty string with space for measurement and drawing.
-		 * This makes empty lines appear, instead of being collapsed out.
-		 */
-		if (text_piece[0] == '\0') {
-			text_piece = " ";
+	if (have_editable) {
+		layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
+
+		if (drawable != NULL) {
+			if (needs_highlight) {
+				label_color = highlight_text_color;
+			} else {
+				label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), TRUE);
+			}
+
+			gdk_rgb_gc_set_foreground (gc, label_color);
+			
+			draw_label_layout (item, drawable,
+					   layout, needs_highlight,
+					   icon_left + (icon_width - max_text_width) / 2,
+					   icon_bottom, gc);
 		}
 		
-#ifdef GNOME2_CONVERSION_COMPLETE
-		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece,
-			 LINE_BREAK_CHARACTERS,
-			 max_text_width, TRUE);
+		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
 		
-		/* Draw text if we are not in user rename mode */
-		if (drawable != NULL && !details->is_renaming) {
-			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
-						
-			gnome_icon_paint_text
-				(icon_text_info, drawable, gc,
-				 text_left, icon_bottom + height_so_far,
-				 GTK_JUSTIFY_CENTER);
-			
-			/* if it's highlighted, embolden by drawing twice */
-			if (needs_highlight) {
-				gnome_icon_paint_text
-					(icon_text_info, drawable, gc,
-					 text_left + 1, icon_bottom + height_so_far,
-					 GTK_JUSTIFY_CENTER);
-			}
-			
-			/* if it's prelit, and we're in click-to-activate mode, underline the text */
-			if (details->is_prelit && in_single_click_mode ()) {
-				gnome_icon_underline_text
-					(icon_text_info, drawable, gc,
-					 text_left + 1, icon_bottom + height_so_far);
-			}
-		}
+		width_so_far = MAX (width_so_far, (guint) layout_width);
+		height_so_far += layout_height + LABEL_LINE_SPACING;
+		
+		g_object_unref (layout);
+	}
+	
+	if (have_additional) {
+		layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
 
-		if (drawable != NULL && i == 0) {
+		if (drawable != NULL) {
 			if (needs_highlight) {
-				gdk_rgb_gc_set_foreground (gc, highlight_text_info_color);
+				label_color = highlight_text_info_color;
 			} else {
 				label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), FALSE);
-				gdk_rgb_gc_set_foreground (gc, label_color);
 			}
+
+			gdk_rgb_gc_set_foreground (gc, label_color);
+			
+			draw_label_layout (item, drawable,
+					   layout, needs_highlight,
+					   icon_left + (icon_width - max_text_width) / 2,
+					   icon_bottom + height_so_far, gc);
 		}
 		
-		width_so_far = MAX (width_so_far, (guint) icon_text_info->width);
-		height_so_far += icon_text_info->height;
-		
-		gnome_icon_text_info_free (icon_text_info);
-#endif
+		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
+
+		width_so_far = MAX (width_so_far, (guint) layout_width);
+		height_so_far += layout_height + LABEL_LINE_SPACING;
+
 	}
-	g_strfreev (pieces);
 	
 	/* add slop used for highlighting, even if we're not highlighting now */
 	width_so_far += 4;
-	
+
 	if (drawable != NULL) {
 		/* Current calculations should match what we measured before drawing.
 		 * This assumes that we will always make a separate call to measure
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
-#if !(defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
 		g_assert ((int) height_so_far == details->text_height);
 		g_assert ((int) width_so_far == details->text_width);
 #endif
+		box_left = icon_left + (icon_width - details->text_width) / 2;
 
-		gdk_gc_set_foreground (gc, &save_gc.foreground);
-	
-		box_left = icon_left + (icon_width - width_so_far) / 2;
-		
-		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
-		if (details->is_highlighted_as_keyboard_focus) {
-			gdk_gc_set_stipple (gc, eel_stipple_bitmap ());
-			gdk_gc_set_fill (gc, GDK_STIPPLED);
-			gdk_draw_rectangle
-				(drawable, gc, FALSE,
-				 box_left, icon_bottom - 2,
-				 width_so_far, 2 + height_so_far);
+		if (item->details->is_highlighted_as_keyboard_focus) {
+			gtk_paint_focus (GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style,
+					 drawable,
+					 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
+					 NULL,
+					 GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas),
+					 "icon-container",
+					 box_left,
+					 icon_bottom,
+					 details->text_width,
+					 details->text_height);
 		}
-		
-		gdk_gc_unref (gc);
 	} else {
 		/* If measuring, remember the width & height. */
 		details->text_width = width_so_far;
 		details->text_height = height_so_far;
 	}
 
-	g_free (combined_text);
+	if (gc != NULL) {
+		g_object_unref (gc);
+	}
 }
 
 static void
@@ -1240,6 +1189,28 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
+static void
+update_label_layouts (NautilusIconCanvasItem *item)
+{
+	/* We have to disable this for now due to a bug in pangoft2 that causes a crash
+	 * when rendering an underlined layout.
+	 */
+#ifdef GNOME2_CONVERSION_COMPLETE
+	PangoUnderline underline;
+	
+	underline = (item->details->is_prelit && in_single_click_mode ()) ?
+		PANGO_UNDERLINE_SINGLE : PANGO_UNDERLINE_NONE;
+		
+	if (item->details->editable_text_layout != NULL) {
+		eel_pango_layout_set_underline (item->details->editable_text_layout, underline);
+	}
+
+	if (item->details->additional_text_layout != NULL) {
+		eel_pango_layout_set_underline (item->details->additional_text_layout, underline);
+	}
+#endif
+}
+
 static PangoLayout *
 create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
@@ -1268,6 +1239,8 @@ get_label_layout (PangoLayout **layout,
 {
 	if (*layout == NULL) {
 		*layout = create_label_layout (item, text);
+
+		update_label_layouts (item);
 	}
 	
 	g_object_ref (*layout);
@@ -1276,14 +1249,36 @@ get_label_layout (PangoLayout **layout,
 
 static void
 draw_label_layout (NautilusIconCanvasItem *item,
-		   GdkPixbuf *pixbuf,
+		   GdkDrawable *drawable,
 		   PangoLayout *layout,
 		   gboolean highlight,
+		   int x,
 		   int y,
-		   guint32 color)
+		   GdkGC *gc)
+{
+	if (drawable == NULL) {
+		return;
+	}
+
+	if (item->details->is_renaming) {
+		return;
+	}
+	
+	gdk_draw_layout (drawable, gc,
+			 x, y,
+			 layout);
+}
+
+static void
+draw_label_layout_aa (NautilusIconCanvasItem *item,
+		      GdkPixbuf *pixbuf,
+		      PangoLayout *layout,
+		      gboolean highlight,
+		      int y,
+		      guint32 color)
 {
 	int x;
-
+	
 	if (pixbuf == NULL) {
 		return;
 	}
@@ -1291,6 +1286,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		return;
 	}
 	x = (item->details->text_width - pango_layout_get_width (layout) / PANGO_SCALE) / 2;
+
 	if (!highlight) {
 		eel_gdk_pixbuf_draw_layout (pixbuf, x, y, color, layout);
 	} else {
@@ -1374,9 +1370,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), TRUE);
 		}
 
-		draw_label_layout (item, destination_pixbuf,
-				   layout, needs_highlight,
-				   icon_bottom + height_so_far, label_color);
+		draw_label_layout_aa (item, destination_pixbuf,
+				      layout, needs_highlight,
+				      icon_bottom + height_so_far, label_color);
 		
 		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
 
@@ -1395,9 +1391,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), FALSE);
 		}
 		
-		draw_label_layout (item, destination_pixbuf,
-				   layout, needs_highlight,
-				   icon_bottom + height_so_far, label_color);
+		draw_label_layout_aa (item, destination_pixbuf,
+				      layout, needs_highlight,
+				      icon_bottom + height_so_far, label_color);
 		
 		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
 
@@ -1417,7 +1413,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
-#if 0 /* !(defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE) */
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE) 
 		g_assert (height_so_far == details->text_height);
 		g_assert (width_so_far == details->text_width);
 #endif
@@ -1599,6 +1595,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 	case GDK_ENTER_NOTIFY:
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
+			update_label_layouts (icon_item);
 			gnome_canvas_item_request_update (item);
 			/* FIXME bugzilla.gnome.org 42473: 
 			 * We should emit our own signal here,
@@ -1639,6 +1636,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
+			update_label_layouts (icon_item);
 			gnome_canvas_item_request_update (item);
 		}
 		return TRUE;
