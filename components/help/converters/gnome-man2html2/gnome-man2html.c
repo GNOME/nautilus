@@ -2223,7 +2223,7 @@ static char
 			char *endwith="..\n";
 			i=3;
 			c=c+j;
-			if (*c!='\n') {
+			if (*c!='\n' && strncmp(c, "\\\"", 2)) {
 				endwith=c-1;i=1;
 				c[-1]='.';
 				while (*c && *c!='\n') {
