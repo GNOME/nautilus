@@ -1,3 +1,17 @@
+2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4901, Music view displays "()" when MP3 lacks
+	Year tag
+	
+	* components/music/nautilus-music-view.c: (get_song_text),
+	(read_id_tag):
+	Don't display Year parentheses if year tad is absent or empty
+	
+	* components/music/mpg123.c: (mpg123_id3v1_to_id3v2):
+	* components/music/mpg123.h:
+	More cleanup to support ID3v2 tags. This fixes breakage
+	in displaying ID3v1 track numbers.
+
 2000-12-12  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

@@ -371,7 +371,7 @@ static char *
 get_song_text (NautilusMusicView *music_view, int row)
 {
 	char *song_text, *song_name, *album_name, *year;
-	
+		
 	album_name = NULL;
 	year = NULL;
 	
@@ -380,13 +380,16 @@ get_song_text (NautilusMusicView *music_view, int row)
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 6, &album_name);
 	
 	if (album_name != NULL) {
-		if (year != NULL) {
+		/* Ignore year if string is NULL or empty */
+		if (year != NULL && strlen (year) > 0) {
 			song_text = g_strdup_printf ("%s\n%s (%s)", song_name, album_name, year);
 		} else {
 			song_text = g_strdup_printf ("%s\n%s", song_name, album_name);
                 }
 	} else {
-                if (year != NULL) {
+		/* Ignore year if string is NULL or empty */
+		if (year != NULL && strlen (year) > 0) {
+			g_message ("%s %d", year, strlen (year));
                         song_text = g_strdup_printf ("%s (%s)", song_name, year);
                 } else {
                         song_text = g_strdup (song_name);
@@ -622,6 +625,7 @@ static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
 {
 	const char *path;
+	char *escaped_path;
 	GnomeVFSURI *uri;
 	id3_t *id3;
 	struct id3v1tag_t id3v1tag;
@@ -639,9 +643,11 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	}
 	
 	path = gnome_vfs_uri_get_path (uri);
-	file = fopen (path, "rb");
+	escaped_path = gnome_vfs_unescape_string_for_display (path);
+	file = fopen (escaped_path, "rb");
 	if (file == NULL) {
 		gnome_vfs_uri_unref (uri);
+		g_free (escaped_path);
 		return FALSE;	
 	}
 	
@@ -660,17 +666,20 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 		/* Failed to read any sort of tag */
 		gnome_vfs_uri_unref (uri);
 		fclose (file);
-		return FALSE;
+		g_free (escaped_path);
+		return FALSE;		
 	}
 	
 	/* Copy data from tag into our info struct */
-	song_info->title = g_strdup(tag.title);
-	song_info->artist = g_strdup(tag.artist);
-	song_info->album = g_strdup(tag.album); 
-	song_info->year = g_strdup(tag.year);
-	song_info->comment = g_strdup(tag.comment);
+	song_info->title = g_strdup (tag.title);
+	song_info->artist = g_strdup (tag.artist);
+	song_info->album = g_strdup (tag.album); 
+	song_info->year = g_strdup (tag.year);
+	song_info->comment = g_strdup (tag.comment);
+	song_info->track_number = atoi (tag.track);
 
 	/* Clean up */
+	g_free (escaped_path);
 	fclose (file);
 	gnome_vfs_uri_unref (uri);	
 	return TRUE;

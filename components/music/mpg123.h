@@ -42,7 +42,8 @@ struct id3v1tag_t {
 	char artist[30];
 	char album[30];
 	char year[4];
-	char comment[30];
+	char comment[28];
+	char track[2];
 	unsigned char genre;
 };
 
@@ -53,6 +54,7 @@ struct id3tag_t {
 	char year[5];
 	char comment[256];
 	char genre[256];
+	char track[2];
 };
 
 typedef struct
