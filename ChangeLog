@@ -1,3 +1,15 @@
+2000-07-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/nautilus-desktop-window.c: (realize):
+	Fixed bug 1254, Determine whether unfocussable desktop
+	cause problems.
+
+	This bug mainly had to do with renaming the icon.  I played with
+	the feature to try and find any other problems.  None arose,
+	but we should test this feature when we have QA.
+
+	Thanks ramiro for the tip.
+
 2000-07-17  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 1506: we need a way to specify "none" for icon captions

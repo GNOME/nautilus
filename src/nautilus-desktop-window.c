@@ -159,6 +159,10 @@ realize (GtkWidget *widget)
 	}
 	g_list_free (children);
 
+	/* Make sure we get keyboard events */
+	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 
+			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
+			      
 	/* Do the work of realizing. */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
@@ -186,10 +190,6 @@ realize (GtkWidget *widget)
 
 	/* Make sure that focus, and any window lists or task bars also
 	 * skip the window.
-	 */
-	/* FIXME bugzilla.eazel.com 1254: 
-	 * Is having no ability to focus on the window going to
-	 * be a problem for renaming icons?
 	 */
 	gnome_win_hints_set_hints (widget,
 				   WIN_HINTS_SKIP_FOCUS
