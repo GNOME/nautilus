@@ -722,6 +722,12 @@ start_over_timer (EazelInstaller *installer)
 }
 
 static void
+start_over_button (GtkWidget *widget, EazelInstaller *installer)
+{
+	start_over (installer);
+}
+
+static void
 skip_over_remove_problems (GtkWidget *widget,
 			   EazelInstaller *installer) 
 {
@@ -891,7 +897,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		}
 		gtk_widget_set_name (button, "remove_button");
 		gtk_signal_connect (GTK_OBJECT (button), "clicked",
-				    GTK_SIGNAL_FUNC (start_over_callback),
+				    GTK_SIGNAL_FUNC (start_over_button),
 				    installer);
 		gtk_widget_show (button);
 		gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
