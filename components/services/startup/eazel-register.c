@@ -91,6 +91,10 @@ void add_package_info(xmlDoc* configuration_metafile)
          
 		headerFree(current_package);
 		current_offset = rpmdbNextRecNum(rpm_db, current_offset);
+	  	
+		/* donate some time to gtk to handle updates, etc */
+		while (gtk_events_pending())
+			gtk_main_iteration();
 	  }
     
     	/* update the count */

@@ -226,18 +226,22 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	
 	/* send the config file to the server via HTTP */
 	uri = g_strdup_printf("http://%s/profile/set.pl", SERVICE_DOMAIN_NAME);
-	
+
+	gethostname(&host_name[0], 511);
+		
 	encoded_token = gnome_vfs_escape_string(view->details->auth_token, GNOME_VFS_URI_ENCODING_XALPHAS);
 	encoded_host_name = gnome_vfs_escape_string(host_name, GNOME_VFS_URI_ENCODING_XALPHAS);
 	
-	gethostname(&host_name[0], 511);
 	cookie_str = g_strdup_printf("token=%s; computer=%s", encoded_token, encoded_host_name);
 	request = make_http_post_request(uri, config_string, cookie_str);
+
 	g_free(encoded_token);
 	g_free(encoded_host_name);
 	g_free(cookie_str);
 	
 	response_str = ghttp_get_body(request);
+	g_message("config response was %s", response_str);
+
 	g_free(uri);
 	ghttp_request_destroy(request);
 	
@@ -268,7 +272,7 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
 	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
 	gboolean registered_ok = FALSE;
-	
+		
 	/* see if the email address is valid; if not, display an error */
 	
 	if (!strlen(email) || !strchr(email,'@')) {
@@ -334,13 +338,14 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 				service_node = xmlNewDocNode(service_doc, NULL, (const CHAR*) "SERVICE", NULL);
 				service_doc->root = service_node;
 	                        xmlSetProp(service_node, "domain", SERVICE_DOMAIN_NAME);
-	                        xmlSetProp(service_node, "token", temp_str);
   		
   				/* save the token in the view object for subsequent accesses */
   				if (view->details->auth_token)
   					g_free(view->details->auth_token);
-  				view->details->auth_token = g_strdup(temp_str);
-  					
+  				
+				view->details->auth_token = g_strdup(gnome_vfs_unescape_string(temp_str));	
+	                        xmlSetProp(service_node, "token", view->details->auth_token);
+				
 				temp_filename = g_strdup_printf("%s/.nautilus/service.xml", g_get_home_dir());
 				xmlSaveFile(temp_filename, service_doc);
   				xmlFreeDoc(service_doc);

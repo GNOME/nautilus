@@ -1,5 +1,14 @@
 2000-04-13  Andy Hertzfeld <andy@eazel.com>
 
+	* components/services/startup/nautilus-service-startup-view.c:
+	fixed problems with the url escaping by unescaping the token
+	return by the service before re-escaping it
+	* components/services/startup/eazel-register.c:
+	added periodic call to gtk_main_iteration during configuration gather
+	to get feedback displayed
+
+2000-04-13  Andy Hertzfeld <andy@eazel.com>
+
 	added Susan's images to service registration and configuration upload
 	
 	* configure.in:
