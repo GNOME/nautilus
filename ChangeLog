@@ -1,3 +1,14 @@
+2000-05-15  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(nautilus_icon_canvas_item_update), (gnome_icon_underline_text):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(bounds_changed_callback):
+	A long time ago I removed the parameter from the bounds_changed
+	signal of the canvas item and did a half-assed job. This made
+	it crash a lot for martin. Finished the job.
+
 2000-05-15  J Shane Culpepper  <pepper@eazel.com>
 
 	* HACKING: Added new gnome-http dep.  Minor fixes to order to jive
@@ -6,7 +17,7 @@
 	hardcoded -lghttp
 	* components/services/trilobite/sample/nautilus-view/Makefile.am:
 	Removed hardcoded -lghttp
-	* configure.in: Added test for ghttp since it is now a dependancy.
+	* configure.in: Added test for ghttp since it is now a dependency.
 
 2000-05-15  Darin Adler  <darin@eazel.com>
 
@@ -929,7 +940,7 @@ Thu May 11 16:52:14 2000  Raph Levien  <raph@acm.org>
 	directories for trilobite, the core service framework.  Added
 	directories for the proof of concept time sync service.  Also added
 	nautilus-installer directory at the base level of nautilus which will
-	contain the bootstrap installer for nautilus and its dependancies. Most
+	contain the bootstrap installer for nautilus and its dependencies. Most
 	these changes are in the build harness yet.
 
 2000-05-09  John Sullivan  <sullivan@eazel.com>

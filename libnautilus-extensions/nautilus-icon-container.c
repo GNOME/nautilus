@@ -2693,13 +2693,11 @@ activate_selected_items (NautilusIconContainer *container)
 
 static void
 bounds_changed_callback (NautilusIconCanvasItem *item,
-			 const ArtDRect *old_bounds,
 			 NautilusIconContainer *container)
 {
 	NautilusIcon *icon;
 
 	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
-	g_assert (old_bounds != NULL);
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	icon = item->user_data;

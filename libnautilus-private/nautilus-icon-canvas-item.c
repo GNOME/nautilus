@@ -202,9 +202,8 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconCanvasItemClass,
 						     bounds_changed),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -527,7 +526,8 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 {
 	nautilus_icon_canvas_item_update_bounds (NAUTILUS_ICON_CANVAS_ITEM (item));
 	nautilus_gnome_canvas_item_request_redraw (item);
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));
+	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update,
+				    (item, affine, clip_path, flags));
 }
 
 /* Rendering */
@@ -535,7 +535,10 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 /* routine to underline the text in a gnome_icon_text structure */
 
 static void
-gnome_icon_underline_text (GnomeIconTextInfo *text_info, GdkDrawable *drawable, GdkGC *gc, int x, int y)
+gnome_icon_underline_text (GnomeIconTextInfo *text_info,
+			   GdkDrawable *drawable,
+			   GdkGC *gc,
+			   int x, int y)
 {
 	GList *item;
 	int text_width;
