@@ -114,6 +114,7 @@ void          nautilus_file_set_directory                  (NautilusFile        
 gboolean      nautilus_file_get_date                       (NautilusFile           *file,
 							    NautilusDateType        date_type,
 							    time_t                 *date);
+void	      nautilus_file_updated_deep_count_in_progress (NautilusFile	   *file);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains

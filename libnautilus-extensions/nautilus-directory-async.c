@@ -2540,9 +2540,10 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 		}
 	}
 
-	nautilus_file_changed (file);
+	nautilus_file_updated_deep_count_in_progress (file);
 
 	if (done) {
+		nautilus_file_changed (file);
 		async_job_end (directory, "deep count");
 		nautilus_directory_async_state_changed (directory);
 	}

@@ -81,6 +81,7 @@ typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
 
 enum {
 	CHANGED,
+	UPDATED_DEEP_COUNT_IN_PROGRESS,
 	LAST_SIGNAL
 };
 
@@ -113,6 +114,14 @@ nautilus_file_initialize_class (NautilusFileClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusFileClass, changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
+		gtk_signal_new ("updated_deep_count_in_progress",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
@@ -4172,6 +4181,29 @@ nautilus_file_changed (NautilusFile *file)
 	}
 }
 
+/**
+ * nautilus_file_updated_deep_count_in_progress
+ * 
+ * Notify clients that a newer deep count is available for
+ * the directory in question.
+ */
+void
+nautilus_file_updated_deep_count_in_progress (NautilusFile *file) {
+	GList *link_files, *node;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (nautilus_file_is_directory (file));
+
+	/* Send out a signal. */
+	gtk_signal_emit (GTK_OBJECT (file), signals[UPDATED_DEEP_COUNT_IN_PROGRESS], file);
+
+	/* Tell link files pointing to this object about the change. */
+	link_files = get_link_files (file);
+	for (node = link_files; node != NULL; node = node->next) {
+		nautilus_file_updated_deep_count_in_progress (NAUTILUS_FILE (node->data));
+	}
+	nautilus_file_list_free (link_files);	
+}
 
 /**
  * nautilus_file_emit_changed

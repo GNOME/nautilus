@@ -1,5 +1,43 @@
 2001-01-23  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 2153 (deep count calculation in properties window
+	could be faster)
+
+	Fixed bug 5687 (Sidebar flickers and CPU thrashes during
+	deep count calculation in properties window)
+
+	Changed the deep count calculation to send a specialized
+	signal when the in-progress count updates, instead of using
+	"file_changed", since many parts of the UI react to file_changed
+	by doing (in this case unnecessary) work. My stopwatch measurement
+	on a large directory showed that the time to calculate 20000
+	contained files went from 147 seconds to 8 seconds, and the CPU
+	usage pegged around 15% (formerly 100%).
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(deep_count_callback): Call nautilus_file_changed only when
+	count is finished; call nautilus_file_updated_deep_count_in_progress
+	after every new higher value is computed.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	Added prototype for nautilus_file_updated_deep_count_in_progress.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_initialize_class): define "updated_deep_count_in_progres"
+	signal.
+	(nautilus_file_updated_deep_count_in_progress): send this new signal
+	for this file (which must be a directory) and any links pointing to
+	it.
+	
+	* src/file-manager/fm-properties-window.c:
+	(attach_directory_contents_value_field): Make text field in properties
+	window react to new signal instead of "changed".
+
+2001-01-23  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 5959 (File name in "no applications available"
 	dialog should be in quotes)
 

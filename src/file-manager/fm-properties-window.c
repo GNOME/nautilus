@@ -1016,7 +1016,7 @@ attach_directory_contents_value_field (GtkTable *table,
 
 	/* Connect to signal to update value when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
-					       "changed",
+					       "updated_deep_count_in_progress",
 					       directory_contents_value_field_update,
 					       GTK_OBJECT (value_field));	
 }					

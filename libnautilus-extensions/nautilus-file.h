@@ -304,6 +304,9 @@ typedef struct {
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);
 
+	/* Called periodically while directory deep count is being computed. */
+	void                  (* updated_deep_count_in_progress) (NautilusFile *file);
+
 	/* Virtual functions (mainly used for trash directory). */
 	void                  (* monitor_add)            (NautilusFile         *file,
 							  gconstpointer         client,
