@@ -79,7 +79,9 @@ typedef struct {
 	GdkPixbuf *pixbuf; /* offscreen buffer for news display */
 	
 	GdkPixbuf *closed_triangle;
+	GdkPixbuf *closed_triangle_changed;
 	GdkPixbuf *open_triangle;
+	GdkPixbuf *open_triangle_changed;
 	GdkPixbuf *bullet;
 	
 	GtkWidget *main_box;
@@ -285,8 +287,16 @@ do_destroy (GtkObject *obj, News *news)
 		gdk_pixbuf_unref (news->closed_triangle);
 	}
         
+	if (news->closed_triangle_changed != NULL) {
+		gdk_pixbuf_unref (news->closed_triangle_changed);
+	}
+        
 	if (news->open_triangle != NULL) {
 		gdk_pixbuf_unref (news->open_triangle);
+	}
+	
+	if (news->open_triangle_changed != NULL) {
+		gdk_pixbuf_unref (news->open_triangle_changed);
 	}
 	
 	if (news->bullet != NULL) {
@@ -338,9 +348,17 @@ draw_triangle (GdkPixbuf *pixbuf, RSSChannelData *channel_data, int v_offset)
 	int v_delta, triangle_position;
 	int logo_height;
 	if (channel_data->is_open) {
-		triangle = channel_data->owner->open_triangle;
+		if (channel_data->channel_changed) {
+			triangle = channel_data->owner->open_triangle_changed;
+		} else {
+			triangle = channel_data->owner->open_triangle;
+		}
 	} else {
-		triangle = channel_data->owner->closed_triangle;
+		if (channel_data->channel_changed) {
+			triangle = channel_data->owner->closed_triangle_changed;
+		} else {
+			triangle = channel_data->owner->closed_triangle;
+		}
 	}	
 	
 	if (channel_data->logo_image == NULL) {
@@ -1020,6 +1038,7 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	
 	if (channel_data->logo_image) {
 		gdk_pixbuf_unref (channel_data->logo_image);
+		channel_data->logo_image = NULL;
 	}
 	
 	if (pixbuf != NULL) {
@@ -1433,11 +1452,14 @@ nautilus_news_load_images (News *news_data)
 	char *news_bullet_path;
 	
 	load_xpm_image (&news_data->closed_triangle, (const char**) triangle_xpm);
+	load_xpm_image (&news_data->closed_triangle_changed, (const char**) triangle_changed_xpm);
 	load_xpm_image (&news_data->open_triangle, (const char**) open_triangle_xpm);
+	load_xpm_image (&news_data->open_triangle_changed, (const char**) open_triangle_changed_xpm);
 	
 	if (news_data->bullet != NULL) {
 		gdk_pixbuf_unref (news_data->bullet);
 	}
+	
 	news_bullet_path = nautilus_theme_get_image_path ("news_bullet.png");	
 	if (news_bullet_path != NULL) {
 		news_data->bullet = gdk_pixbuf_new_from_file (news_bullet_path);
