@@ -1,2 +1,2 @@
-SUBDIRS = C es no sv
+SUBDIRS = C es ko no sv
 
