@@ -182,43 +182,6 @@ AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
 
 AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
 
-
-dnl ====================================
-dnl = Optionally build the installer
-dnl ====================================
-
-ENABLE_INSTALLER=
-AC_ARG_ENABLE(installer,
-[  --enable-installer		Create Nautilus installer],
-ENABLE_INSTALLER=1
-AC_DEFINE(ENABLE_INSTALLER))
-
-AC_SUBST(ENABLE_INSTALLER)
-AM_CONDITIONAL(ENABLE_INSTALLER, test "x$ENABLE_INSTALLER" = "x1")
-
-
-
-
-dnl ====================================
-dnl = Begin tests for eazel-services
-dnl ====================================
-AC_ARG_ENABLE(
-	[eazel-services],
-	[  --enable-eazel-services	Enable support for Eazel Services (default is no)],
-	[ EAZEL_SERVICES_ENABLED=$enableval ], 
-	[ EAZEL_SERVICES_ENABLED=no ])
-
-AC_SUBST(EAZEL_SERVICES)
-
-if test x"$EAZEL_SERVICES_ENABLED" = xyes; then
-	AC_DEFINE(EAZEL_SERVICES)
-fi
-AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES_ENABLED" = "xyes")
-dnl =======================
-dnl = End tests for eazel-services
-dnl =======================
-
-
 dnl ====================================
 dnl = Begin tests for FreeType2
 dnl ====================================
@@ -288,24 +251,6 @@ AC_SUBST(FREETYPE2_LIBS)
 dnl =======================
 dnl = End tests for FreeType2
 dnl =======================
-
-dnl ====================================
-dnl = Beging authenticate helper
-dnl ====================================
-BUILD_AUTHENTICATE_HELPER=
-
-AC_CHECK_LIB(pam, pam_authenticate, 
-  [BUILD_AUTHENTICATE_HELPER=1
-  AC_DEFINE(HAVE_PAM)
-  AC_CHECK_LIB(pam_misc, pam_misc_setenv,
-  [PAM_LIBS="-ldl -lpam -lpam_misc"], [PAM_LIBS="-ldl -lpam"], -ldl -lpam) ], [PAM_LIBS=], -ldl)
-
-AC_SUBST(PAM_LIBS)
-
-AM_CONDITIONAL(BUILD_AUTHENTICATE_HELPER, test "x$BUILD_AUTHENTICATE_HELPER" = "x1")
-dnl ====================================
-dnl = End authenticate helper
-dnl ====================================
 
 dnl ====================================
 dnl = mozilla embedded component support
@@ -557,86 +502,6 @@ AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
 	CDDA_LIBS="$CDDA_LIBS -lcdda_paranoia, -lcdda_interface";
 		AM_CONDITIONAL(HAVE_CDDA, true);
 	])
-
-dnl ====================================
-dnl = rpmview component support
-dnl ====================================
-
-if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
-then
-	rpm_libs=$BZ_LIBS
-	rpm_xlibs=
-	have_rpm=no
-	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
-	AC_CHECK_FUNC(dbopen, [],
-	  AC_CHECK_LIB(db-3.1, __db185_open, [rpm_libs="$rpm_libs -ldb-3.1"],
-	    AC_CHECK_LIB(db-3, __db185_open, [rpm_libs="$rpm_libs -ldb-3"],
-	      AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
-	        AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
-		  AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
-		    AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))))
-	               )
-	AC_CHECK_LIB(rpmio, Fdopen, [rpm_xlibs="-lrpmio"],[rpm_xlibs=""],$rpm_libs)
-	AC_CHECK_LIB(rpm, rpmRunTransactions,[have_rpm=yes],
-	  [have_rpm=no], [$rpm_libs $rpm_xlibs])
-	if test "x$have_rpm" = "xyes" ; then
-	  dnl FIXME
-	  dnl Ideally I should check for rpm and where it is
-
-	  AC_MSG_CHECKING([rpm version])
-	  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
-
-	  AM_CONDITIONAL(COMPILE_RPM_30, false)
-	  AM_CONDITIONAL(COMPILE_RPM_40, false)
-	  case $RPM_VERSION in
-		3.0.5|3.0.6)
-			AC_DEFINE(HAVE_RPM_30)
-			_found_valid_rpm="yes"
-			AM_CONDITIONAL(COMPILE_RPM_30, true)
-			dnl if automake conditionals hadn't been a joke, I 
-			dnl wouldn't need this shite.
-			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
-			AC_SUBST(PACKAGESYSTEM)
-			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm3.o"
-			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
-			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm3.c"
-			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
-		;;
-		4.*)
-			AC_DEFINE(HAVE_RPM_40)
-			_found_valid_rpm="yes"
-			AM_CONDITIONAL(COMPILE_RPM_40, true)
-			PACKAGESYSTEM="libeazelpackagesystem-rpm4.la"
-			AC_SUBST(PACKAGESYSTEM)
-			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm4.o eazel-package-system-rpm3.o"
-			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
-			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm4.c eazel-package-system-rpm3.c"
-			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
-		;;
-	  esac
-
-	  if test "x$_found_valid_rpm" = "xyes"; then
-		AC_MSG_RESULT([found $RPM_VERSION, yes])
-		AC_DEFINE(HAVE_RPM)  	
-	  	RPM_LIBS="-lrpm -lz $rpm_xlibs $rpm_libs"
-		AC_SUBST(RPM_VERSION)
-		build_rpmview=yes
-		rpmversion="$RPM_VERSION"
-	  else
-		AC_MSG_RESULT([no])
-		AC_MSG_WARN([RPM 3.0.5 or higher required, $RPM_VERSION found])
-		build_rpmview=no
-	  fi
-	fi
-	AC_SUBST(RPM_LIBS)
-else
-	build_rpmview=no
-fi
-AM_CONDITIONAL(BUILD_RPM_COMPONENTS, test "x$build_rpmview" = "xyes")
-
-dnl ====================================
-dnl = End rpmview checks
-dnl ====================================
 
 dnl Checks for libraries.
 AM_PATH_GLIB($GLIB_REQUIRED,,
@@ -1024,10 +889,8 @@ fi
 
 AC_OUTPUT([
 nautilus.spec
-nautilus-installer.spec
 Makefile
 helper-utilities/Makefile
-helper-utilities/authenticate/Makefile
 helper-utilities/error-dialog/Makefile
 helper-utilities/xml-migrate/Makefile
 helper-scripts/Makefile
@@ -1057,11 +920,6 @@ cut-n-paste-code/widgets/gimphwrapbox/Makefile
 libnautilus/Makefile
 libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile
-nautilus-installer/Makefile
-nautilus-installer/package-list.xml
-nautilus-installer/libtrilobite/Makefile
-nautilus-installer/install-lib/Makefile
-nautilus-installer/src/Makefile
 src/Makefile
 src/file-manager/Makefile
 components/Makefile
@@ -1077,39 +935,8 @@ components/help/converters/gnome-man2html2/Makefile
 components/image-viewer/Makefile
 components/music/Makefile
 components/notes/Makefile
-components/rpmview/Makefile
 components/sample/Makefile
 components/mozilla/Makefile
-components/services/Makefile
-components/services/trilobite/Makefile
-components/services/trilobite/idl/Makefile
-components/services/trilobite/libtrilobite/Makefile
-components/services/trilobite/libtrilobite/makefile.staticlib
-components/services/trilobite/utils/Makefile
-components/services/trilobite/sample/Makefile
-components/services/trilobite/sample/idl/Makefile
-components/services/trilobite/sample/lib/Makefile
-components/services/trilobite/sample/service/Makefile
-components/services/trilobite/sample/command-line/Makefile
-components/services/trilobite/sample/nautilus-view/Makefile
-components/services/trilobite/sample/nautilus-view/icons/Makefile
-components/services/trilobite/helper/Makefile
-components/services/nautilus-dependent-shared/Makefile
-components/services/nautilus-dependent-shared/icons/Makefile
-components/services/install/Makefile
-components/services/install/lib/Makefile
-components/services/install/lib/makefile.staticlib
-components/services/install/idl/Makefile
-components/services/install/server/Makefile
-components/services/install/command-line/Makefile
-components/services/inventory/Makefile
-components/services/install-view/Makefile
-components/services/clone/Makefile
-components/services/inventory-view/Makefile
-components/services/login/Makefile
-components/services/login/nautilus-view/Makefile
-components/services/summary/Makefile
-components/services/summary/icons/Makefile
 components/text/Makefile
 components/text/services/Makefile
 components/throbber/Makefile
@@ -1152,16 +979,6 @@ echo "CFLAGS : $CFLAGS" | tr -s [:blank:] " "
 echo "LDFLAGS : $LDFLAGS"
 echo ""
 
-dnl <= Rpm-view integrated? =>
-case x$build_rpmview in
-  xyes)
-	echo "RPM view component                : YES ($rpmversion)"
-	;;
-  *)
-	echo "RPM view component                : NO"
-	;;
-esac
-
 dnl <= Mozilla component integrated? =>
 case $found_mozilla in
   t*)
@@ -1175,16 +992,6 @@ case $found_mozilla in
 	;;
   *)
 	echo "Mozilla component                 : NO"
-	;;
-esac
-
-dnl <= Do we want Eazel Services =>
-case "X$EAZEL_SERVICES_ENABLED" in
-  Xyes)
-	echo "Eazel Services                    : YES"
-	;;
-  *)
-	echo "Eazel Services                    : NO"
 	;;
 esac
 

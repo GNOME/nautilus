@@ -62,14 +62,6 @@ Requires:	mozilla-psm >= 0.8
 Conflicts:	mozilla = M18
 Conflicts:	mozilla = M17
 
-%package trilobite
-Summary:        Nautilus component framework for services
-Group:          User Interface/Desktop
-Requires:       %name = %{PACKAGE_VERSION}
-Requires:	ammonite >= @AMMONITE_REQUIRED@
-Requires:	rpm >= @RPM_VERSION@
-Requires:	usermode >= 1.35
-
 %package extras
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
@@ -80,7 +72,11 @@ Summary:	Nautilus and a suggested set of components
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	%name-mozilla = %{PACKAGE_VERSION}
-Requires:	%name-trilobite = %{PACKAGE_VERSION}
+##
+## FIXME: We need to deal with the fact that trilobite builds after
+##        nautilus.
+##
+##Requires:	%name-trilobite = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
 Requires:	mozilla-mail >= 0.8
 Requires:	mozilla-psm >= 0.8
@@ -91,11 +87,6 @@ files to allow you to develop Nautilus components.
 
 %description mozilla
 This enables the use of embedded Mozilla as a Nautilus component.
-
-%description trilobite
-This is a framework library for service components in Nautilus.  It is
-required by all Eazel Services, including the package installer, and
-can be used to develop new services.
 
 %description suggested
 This is a meta-package that requires packages useful for running
@@ -128,7 +119,6 @@ export LC_ALL LINGUAS LANG
 ## Warning!  Make sure there are no spaces or tabs after the \ 
 ## continuation character, or else the rpm demons will eat you.
 CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
-	--enable-eazel-services \
 	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
 
@@ -276,9 +266,7 @@ scrollkeeper-update
 %{prefix}/bin/nautilus-config
 
 %defattr(0444, bin, bin)
-%{prefix}/include/libtrilobite/eazel/*/*.h
 %{prefix}/include/libnautilus/*.h
-%{prefix}/include/libtrilobite/*.h
 
 %files mozilla
 
@@ -287,45 +275,6 @@ scrollkeeper-update
 
 %defattr(0444, bin, bin)
 %{prefix}/share/oaf/Nautilus_View_mozilla.oaf
-
-%files trilobite
-
-%defattr(0555, bin, bin)
-%{prefix}/bin/eazel-install
-%{prefix}/bin/nautilus-service-install-view
-%{prefix}/bin/trilobite-eazel-install-service
-%{prefix}/bin/nautilus-summary-view
-%{prefix}/bin/nautilus-change-password-view
-%{prefix}/bin/eazel-gen-xml
-%{prefix}/bin/eazel-inventory-client
-%{prefix}/bin/trilobite-inventory-service
-%{prefix}/bin/nautilus-inventory-view
-%{prefix}/lib/libeazelinstall.so.0
-%{prefix}/lib/libeazelinstall.so.0.0.0
-%{prefix}/lib/libeazelpackagesystem.so
-%{prefix}/lib/libeazelpackagesystem.so.0
-%{prefix}/lib/libeazelpackagesystem.so.0.0.0
-%{prefix}/lib/libeazelpackagesystem-rpm*.so
-%{prefix}/lib/libeazelpackagesystem-rpm*.so.0
-%{prefix}/lib/libeazelpackagesystem-rpm*.so.0.0.0
-%{prefix}/lib/libtrilobite-inventory-service*so*
-%{prefix}/lib/libtrilobite-service.so.0
-%{prefix}/lib/libtrilobite-service.so.0.0.0
-%{prefix}/lib/libtrilobite.so.0
-%{prefix}/lib/libtrilobite.so.0.0.0
-%{prefix}/lib/libeazelinstall.so
-%{prefix}/lib/libtrilobite-service.so
-%{prefix}/lib/libtrilobite.so
-
-%defattr(0444, bin, bin)
-%config %{sysconfdir}/pam.d/eazel-helper
-%config %{sysconfdir}/security/console.apps/eazel-helper
-%{prefix}/share/oaf/Nautilus_View_install.oaf
-%{prefix}/share/oaf/Trilobite_Service_install.oaf
-%{prefix}/share/oaf/Nautilus_View_change-password.oaf
-%{prefix}/share/oaf/Nautilus_View_services-summary.oaf
-%{prefix}/share/oaf/Trilobite_Service_inventory.oaf
-%{prefix}/share/oaf/Nautilus_View_inventory.oaf
 
 %files extras
 

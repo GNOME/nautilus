@@ -22,7 +22,6 @@ SUBDIRS =			\
 	src 			\
 	components		\
 	$(APPLETS_SUBDIRS)	\
-	nautilus-installer	\
 	test 			\
 	user-guide		\
 	help			\
@@ -54,7 +53,6 @@ EXTRA_DIST=					\
 	Makefile.shared				\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\
-	nautilus-installer			\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps

@@ -1,11 +1,6 @@
 NULL=
 
-if BUILD_AUTHENTICATE_HELPER
-AUTHENTICATE_HELPER_SUBDIRS = authenticate
-endif
-
 SUBDIRS = \
-	$(AUTHENTICATE_HELPER_SUBDIRS) \
 	error-dialog \
 	xml-migrate \
 	$(NULL)
