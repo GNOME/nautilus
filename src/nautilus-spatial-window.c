@@ -137,8 +137,8 @@ static void cancel_view_as_callback                   (NautilusWindow      *wind
 static void real_add_current_location_to_history_list (NautilusWindow      *window);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
-				   nautilus_window,
-				   BONOBO_TYPE_WINDOW)
+			      nautilus_window,
+			      BONOBO_TYPE_WINDOW)
 
 static void
 unref_mini_icon (void)
@@ -197,10 +197,10 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 }
 
 static void
-nautilus_window_for_each_sidebar_panel (const char *name,
-					const char *iid,
-					const char *preference_key,
-					gpointer callback_data) 
+add_sidebar_panel_callback (const char *name,
+			    const char *iid,
+			    const char *preference_key,
+			    gpointer callback_data) 
 {
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (iid != NULL);
@@ -208,9 +208,9 @@ nautilus_window_for_each_sidebar_panel (const char *name,
 	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 	
 	eel_preferences_add_callback_while_alive (preference_key,
-						       sidebar_panels_changed_callback,
-						       callback_data,
-						       GTK_OBJECT (callback_data));
+						  sidebar_panels_changed_callback,
+						  callback_data,
+						  GTK_OBJECT (callback_data));
 }
 
 static void
@@ -221,7 +221,7 @@ nautilus_window_initialize (NautilusWindow *window)
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 
 	/* Keep track of changes in enabled state of sidebar panels */
-	nautilus_sidebar_for_each_panel (nautilus_window_for_each_sidebar_panel, window);
+	nautilus_sidebar_for_each_panel (add_sidebar_panel_callback, window);
 
 	/* Keep the main event loop alive as long as the window exists */
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
@@ -755,20 +755,23 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (window->content_hbox);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
-	/* set up the sidebar */
-	window->sidebar = nautilus_sidebar_new ();
-	
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		/* set up the sidebar */
+		window->sidebar = nautilus_sidebar_new ();
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
 		gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
 				    go_to_callback, window);
 		e_paned_pack1 (E_PANED (window->content_hbox),
 			       GTK_WIDGET (window->sidebar),
 			       FALSE, FALSE);
+#if 0
+		bonobo_ui_engine_add_sync (bonobo_window_get_ui_engine (BONOBO_WINDOW (window)),
+					   sidebar_sync);
+#endif
 	}
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
@@ -1588,6 +1591,7 @@ nautilus_window_add_sidebar_panel (NautilusWindow *window,
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (window->sidebar));
 	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);
 	
 	nautilus_sidebar_add_panel (window->sidebar, sidebar_panel);
@@ -2025,11 +2029,7 @@ update_sidebar_panels_from_preferences (NautilusWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	/* FIXME bugzilla.eazel.com 1243: 
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+	if (window->sidebar == NULL) {
 		return;
 	}
 
@@ -2129,8 +2129,11 @@ nautilus_window_toolbar_showing (NautilusWindow *window)
 void 
 nautilus_window_hide_sidebar (NautilusWindow *window)
 {
+	if (window->sidebar == NULL) {
+		return;
+	}
 	gtk_widget_hide (GTK_WIDGET (window->sidebar));
-	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+	if (window->content_hbox != NULL) {
 		e_paned_set_position (E_PANED (window->content_hbox), 0);
 	}
 	nautilus_window_update_show_hide_menu_items (window);
@@ -2141,9 +2144,12 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 {
 	GtkWidget *widget;
 
+	if (window->sidebar == NULL) {
+		return;
+	}
 	widget = GTK_WIDGET (window->sidebar);
 	gtk_widget_show (widget);
-	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+	if (window->content_hbox != NULL) {
 		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
 		/* Make sure sidebar is not in collapsed form also */
 		nautilus_horizontal_splitter_expand (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
@@ -2154,7 +2160,9 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 gboolean
 nautilus_window_sidebar_showing (NautilusWindow *window)
 {
-	return GTK_WIDGET_VISIBLE (window->sidebar);
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
+
+	return window->sidebar != NULL && GTK_WIDGET_VISIBLE (window->sidebar);
 }
 
 void 

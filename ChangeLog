@@ -1,3 +1,57 @@
+2001-05-31  Darin Adler  <darin@bentspoon.com>
+
+	Fixed a bug where the MIME type components short list query was
+	not sorted. This could result in the wrong default component being
+	selected, and may be the problem that caused some users to get the
+	text component instead of the Mozilla web page component.
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_file_internal): Update
+	since nautilus_do_component_query no longer takes an &ev.
+	(nautilus_mime_get_short_list_applications_for_file): Remove
+	unused ev variable. Fix problem where the user's added items would
+	be added in reverse order.
+	(build_joined_string): New helper function.
+	(nautilus_mime_get_short_list_components_for_file): Update since
+	nautilus_do_component_query no longer takes an &ev. Pass in a
+	sorting order to the query so we don't lose the order of the short
+	list.
+	(nautilus_mime_actions_file_needs_full_file_attributes): Update
+	since nautilus_do_component_query no longer takes an &ev.
+	(nautilus_mime_get_all_components_for_file): Update since
+	nautilus_do_component_query no longer takes an &ev.
+	(mime_get_all_components_for_uri_scheme): Update since
+	nautilus_do_component_query no longer takes an &ev.
+	(nautilus_do_component_query): Update to use its own &ev instead of
+	take one passed in. None of the callers were looking at the &ev.
+	
+	* libnautilus-private/nautilus-directory-async.c: Bumped the
+	number of items per call back up. Now that we've done other bug
+	fixes, this makes things faster overall, not slower, although it
+	does make the time until the first icon shows up a bit longer.
+	
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_set_file):
+	Don't monitor the directory item count. If the main view monitors
+	it we'll display it. If the main view doesn't, we'll show the old
+	"last known" value or nothing. It's better to do less I/O and
+	sometimes be wrong than do more I/O to always be right in this
+	case.
+	
+	* src/nautilus-window.c: (add_sidebar_panel_callback),
+	(nautilus_window_initialize), (nautilus_window_constructed),
+	(nautilus_window_add_sidebar_panel),
+	(update_sidebar_panels_from_preferences),
+	(nautilus_window_hide_sidebar), (nautilus_window_show_sidebar),
+	(nautilus_window_sidebar_showing):
+	Simplify sidebar logic. Among other things, we no longer create an
+	invisible sidebar for the desktop.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(in_single_click_mode): Use "(void)", not "()".
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_did_not_drag): Coding style tweak.
+
 2001-05-29 John Fleck <jfleck@inkstain.net>
 
 	Initial checkin of gnome-db2html3, the new DocBook xml->html converter

@@ -288,7 +288,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->event = nautilus_icon_canvas_item_event;
 
 	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					       &click_policy_auto_value);
+					  &click_policy_auto_value);
 }
 
 /* Object initialization function for the icon item. */
@@ -733,7 +733,7 @@ gnome_icon_underline_text (GnomeIconTextInfo *text_info,
 }
 
 static gboolean
-in_single_click_mode ()
+in_single_click_mode (void)
 {
 	return click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE;
 }

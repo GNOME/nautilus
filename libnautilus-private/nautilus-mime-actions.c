@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-mime-actions.h - uri-specific versions of mime action functions
+/* nautilus-mime-actions.c - uri-specific versions of mime action functions
 
    Copyright (C) 2000, 2001 Eazel, Inc.
 
@@ -55,8 +55,7 @@ static GList      *nautilus_do_component_query                   (const char    
 								  gboolean                  ignore_content_mime_types,
 								  GList                    *explicit_iids,
 								  char                    **extra_sort_criteria,
-								  char                     *extra_requirements,
-								  CORBA_Environment        *ev);
+								  char                     *extra_requirements);
 static GList      *str_list_difference                           (GList                    *a,
 								  GList                    *b);
 static char      **strv_concat                                   (char                    **a,
@@ -346,7 +345,6 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	char *uri_scheme;
 	GList *item_mime_types;
 	GList *explicit_iids;
-	CORBA_Environment ev;
 	OAF_ServerInfo *server;
 	char **sort_conditions;
 	char *extra_requirements;
@@ -360,8 +358,6 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	used_user_chosen_info = TRUE;
 
 	info_list = NULL;
-
-	CORBA_exception_init (&ev);
 
 	mime_type = nautilus_file_get_mime_type (file);
 
@@ -402,13 +398,13 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	if (metadata_default) {
 		extra_requirements = g_strconcat ("iid == '", default_component_string, "'", NULL);
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, TRUE,
-							 explicit_iids, sort_conditions, extra_requirements, &ev);
+							 explicit_iids, sort_conditions, extra_requirements);
 		g_free (extra_requirements);
 	}
 
 	if (info_list == NULL) {
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE, 
-							 explicit_iids, sort_conditions, NULL, &ev);
+							 explicit_iids, sort_conditions, NULL);
 	}
 
 	if (info_list != NULL) {
@@ -428,8 +424,6 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	g_free (uri_scheme);
 	g_free (mime_type);
 	g_free (default_component_string);
-
-	CORBA_exception_free (&ev);
 
 	if (user_chosen != NULL) {
 		*user_chosen = used_user_chosen_info;
@@ -477,7 +471,6 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	GList *metadata_application_remove_ids;
 	GList *p;
 	GnomeVFSMimeApplication *application;
-	CORBA_Environment ev;
 
 	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
 		return NULL;
@@ -494,8 +487,6 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 					    uri_scheme, &removed);
 	gnome_vfs_mime_application_list_free (removed);
 
-	CORBA_exception_init (&ev);
-
 	metadata_application_add_ids = nautilus_file_get_metadata_list 
 		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
@@ -507,10 +498,11 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 
 
 	result = eel_g_list_partition (result, (EelPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
-					    metadata_application_remove_ids, &removed);
+				       metadata_application_remove_ids, &removed);
 	
 	gnome_vfs_mime_application_list_free (removed);
 
+	result = g_list_reverse (result);
 	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
 		if (g_list_find_custom (result,
 					p->data,
@@ -519,15 +511,35 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 					p->data,
 					(GCompareFunc) strcmp) == NULL) {
 			application = gnome_vfs_application_registry_get_mime_application (p->data);
-
 			if (application != NULL) {
 				result = g_list_prepend (result, application);
 			}
 		}
 	}
+	result = g_list_reverse (result);
 
-	CORBA_exception_free (&ev);
+	return result;
+}
 
+static char *
+build_joined_string (GList *list, const char *prefix, const char *separator, const char *suffix)
+{
+	GString *string;
+	GList *node;
+	char *result;
+
+	string = g_string_new (prefix);
+	if (list != NULL) {
+		g_string_append (string, list->data);
+		for (node = list->next; node != NULL; node = node->next) {
+			g_string_append (string, separator);
+			g_string_append (string, list->data);
+		}
+	}
+	g_string_append (string, suffix);
+
+	result = string->str;
+	g_string_free (string, FALSE);
 	return result;
 }
 
@@ -546,15 +558,12 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 	GList *p;
 	OAF_ServerInfo *component;
 	GList *explicit_iids;
-	CORBA_Environment ev;
+	char *extra_sort_conditions[2];
 	char *extra_requirements;
-	char *prev;
 
 	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
 		return NULL;
 	}
-
-	CORBA_exception_init (&ev);
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
@@ -601,28 +610,23 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		}
 	}
 
-	/* By copying the iids using g_list_prepend, we've reversed the short
-	   list order.  We need to use the order to determine the first available
-	   component, so reverse it now to maintain original ordering */
-	iids = g_list_reverse (iids);		
-	result = NULL;
+	/* By copying the iids using g_list_prepend, we've reversed
+	 * the short list order. We need to use the order to determine
+	 * the first available component, so reverse it now to
+	 * maintain original ordering.
+	 */
 
-	if (iids != NULL) {
-		extra_requirements = g_strdup ("has (['");
-		for (p = iids; p != NULL; p = p->next) {
-			prev = extra_requirements;
-
-			if (p->next != NULL) {
-				extra_requirements = g_strconcat (prev, p->data, "','", NULL);
-			} else {
-				extra_requirements = g_strconcat (prev, p->data, "'], iid)", NULL);
-			}
-			g_free (prev);
-		}
-
+	if (iids == NULL) {
+		result = NULL;
+	} else {
+		iids = g_list_reverse (iids);
+		extra_sort_conditions[0] = build_joined_string (iids, "prefer_by_list_order (iid, ['", "','", "'])'");
+		extra_sort_conditions[1] = NULL;
+		extra_requirements = build_joined_string (iids, "has (['", "','", "'], iid)");
 		result = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
-						      explicit_iids, NULL, extra_requirements, &ev);
+						      explicit_iids, extra_sort_conditions, extra_requirements);
 		g_free (extra_requirements);
+		g_free (extra_sort_conditions[0]);
 	}
 
 	eel_g_list_free_deep (item_mime_types);
@@ -725,7 +729,6 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	GList *info_list;
 	GList *explicit_iids;
 	GList *p;
-	CORBA_Environment ev;
 	gboolean needs_full_attributes;
 
 	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
@@ -735,8 +738,6 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 		return FALSE;
 	}
 
-	CORBA_exception_init (&ev);
-
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
 	mime_type = nautilus_file_get_mime_type (file);
@@ -744,7 +745,7 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, NULL, TRUE,
-						 explicit_iids, NULL, NULL, &ev);
+						 explicit_iids, NULL, NULL);
 	
 	needs_full_attributes = FALSE;
 
@@ -756,7 +757,6 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	eel_g_list_free_deep (explicit_iids);
 	g_free (uri_scheme);
 	g_free (mime_type);
-	CORBA_exception_free (&ev);
 
 	return needs_full_attributes;
 }
@@ -770,13 +770,10 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 	GList *item_mime_types;
 	GList *info_list;
 	GList *explicit_iids;
-	CORBA_Environment ev;
 
 	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
 		return NULL;
 	}
-
-	CORBA_exception_init (&ev);
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
@@ -789,14 +786,13 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 	}
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
-						 explicit_iids, NULL, NULL, &ev);
+						 explicit_iids, NULL, NULL);
 	
 	eel_g_list_free_deep (explicit_iids);
 	eel_g_list_free_deep (item_mime_types);
 
 	g_free (uri_scheme);
 	g_free (mime_type);
-	CORBA_exception_free (&ev);
 
 	return info_list;
 }
@@ -818,25 +814,11 @@ nautilus_mime_has_any_components_for_file (NautilusFile      *file)
 static GList *
 mime_get_all_components_for_uri_scheme (const char *uri_scheme)
 {
-	GList *info_list;
-	CORBA_Environment ev;
-
 	g_return_val_if_fail (eel_strlen (uri_scheme) > 0, NULL);
 
-	CORBA_exception_init (&ev);
-
-	info_list = nautilus_do_component_query (NULL,
-						 uri_scheme,
-						 NULL,
-						 TRUE,
-						 NULL,
-						 NULL,
-						 NULL,
-						 &ev);
-
-	CORBA_exception_free (&ev);
-
-	return info_list;
+	return nautilus_do_component_query
+		(NULL, uri_scheme, NULL, TRUE,
+		 NULL, NULL, NULL);
 }
 
 gboolean
@@ -1573,13 +1555,13 @@ nautilus_do_component_query (const char        *mime_type,
 			     gboolean           ignore_content_mime_types,
 			     GList             *explicit_iids,
 			     char             **extra_sort_criteria,
-			     char              *extra_requirements,
-			     CORBA_Environment *ev)
+			     char              *extra_requirements)
 { 
 	OAF_ServerInfoList *oaf_result;
 	char *query;
 	GList *retval;
 	char **all_sort_criteria;
+	CORBA_Environment ev;
 
         oaf_result = NULL;
         query = NULL;
@@ -1594,16 +1576,18 @@ nautilus_do_component_query (const char        *mime_type,
         printf ("query: \"%s\"\n", query);
 #endif
 
-	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);;
+	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
 
-	oaf_result = oaf_query (query, all_sort_criteria, ev);
+	CORBA_exception_init (&ev);
+
+	oaf_result = oaf_query (query, all_sort_criteria, &ev);
 		
 	g_free (all_sort_criteria);
 	g_free (query);
 
 	retval = NULL;
 
-        if (ev->_major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
                 GHashTable *content_types;
                 guint i;
            
@@ -1628,9 +1612,11 @@ nautilus_do_component_query (const char        *mime_type,
                 }
 
                 mime_type_hash_table_destroy (content_types);
-        } 
+        }
 
 	CORBA_free (oaf_result);
+
+	CORBA_exception_free (&ev);
 	
 	return g_list_reverse (retval);
 }

@@ -2482,7 +2482,6 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-
 	/* An item didn't take the press, so it's a background press.
          * We ignore double clicks on the desktop for now.
 	 */
@@ -2534,11 +2533,11 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 				      GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
+	gboolean selection_changed;
+		
 	details = container->details;
 
 	if (!button_event_modifies_selection (event) && !details->drag_icon->is_selected) {
-		gboolean selection_changed;
-		
 		selection_changed = select_one_unselect_others 
 			(container, details->drag_icon);
 		

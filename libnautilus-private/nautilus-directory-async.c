@@ -58,7 +58,7 @@
 #endif
 
 
-#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 10
+#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 100
 
 /* Keep async. jobs down to this number for all directories. */
 #define MAX_ASYNC_JOBS 10

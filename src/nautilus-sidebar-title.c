@@ -622,7 +622,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	}
 
 	eel_label_set_text (EEL_LABEL (sidebar_title->details->more_info_label),
-				 info_string->str);
+			    info_string->str);
 
 	g_string_free (info_string, TRUE);
 }
@@ -748,15 +748,15 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 							   GTK_OBJECT (sidebar_title));
 			
 			/* Monitor the things needed to get the right
-			 * icon. Also monitor a directory's item count because
-			 * the "size" attribute is based on that.
+			 * icon. Don't monitor a directory's item
+			 * count even though the "size" attribute is
+			 * based on that, because the main view will
+			 * get it for us in most cases, and in other
+			 * cases it's OK to now show the size.
 			 */
 			attributes = nautilus_icon_factory_get_required_file_attributes ();		
 			attributes = g_list_prepend (attributes,
-						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-			attributes = g_list_prepend (attributes,
 						     NAUTILUS_FILE_ATTRIBUTE_METADATA);
-
 			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
 						   attributes);
 			g_list_free (attributes);
