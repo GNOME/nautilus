@@ -3072,6 +3072,8 @@ activation_uri_done (NautilusDirectory *directory,
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
 
+	nautilus_file_changed (file);
+
 	async_job_end (directory, "activation URI");
 	nautilus_directory_async_state_changed (directory);
 }
