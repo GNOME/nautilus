@@ -5280,7 +5280,8 @@ file_list_all_are_folders (GList *file_list)
 	
 	for (l = file_list; l != NULL; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
-		if (nautilus_file_is_nautilus_link (file)) {
+		if (nautilus_file_is_nautilus_link (file) &&
+		    !NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 			activation_uri = nautilus_file_get_activation_uri (file);
 			
 			if (activation_uri == NULL ||
