@@ -1,3 +1,12 @@
+2001-02-20  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Middle-truncate
+	really long file names to avoid an error dialog
+	that is much wider than the screen.
+
 2001-02-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-location-bar.c: (try_to_expand_path):
