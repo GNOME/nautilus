@@ -1,3 +1,10 @@
+2002-07-31  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(build_error_string): fall back to the other routines if
+	source_name is NULL [ eg. permission failure moving a
+	whole directory not a single file ] #87686
+
 2002-07-27  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-factory.c
