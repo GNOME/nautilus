@@ -49,10 +49,11 @@ typedef struct {
 } NautilusLinkIconNotificationInfo;
 
 gboolean
-nautilus_link_create (const char *directory_path,
-		      const char *name,
-		      const char *image,
-		      const char *target_uri)
+nautilus_link_create (const char 	*directory_path,
+		      const char 	*name,
+		      const char 	*image,
+		      const char 	*target_uri,
+		      NautilusLinkType 	link_type )
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
@@ -70,8 +71,28 @@ nautilus_link_create (const char *directory_path,
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
 	 * Note: The value of the tag identfies what type of link this.  */
-	xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_GENERIC);
+	switch (link_type) {
+		case NAUTILUS_LINK_GENERIC:
+			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_GENERIC_TAG);
+			break;
 
+		case NAUTILUS_LINK_TRASH:
+			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_TRASH_TAG);
+			break;
+
+		case NAUTILUS_LINK_MOUNT:
+			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_MOUNT_TAG);
+			break;
+
+		case NAUTILUS_LINK_HOME:
+			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_HOME_TAG);
+			break;
+
+		default:
+			g_assert_not_reached ();
+			break;			
+	}	
+	
 	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
 	xmlSetProp (root_node, "LINK", target_uri);
@@ -378,7 +399,7 @@ nautilus_link_is_volume_link (const char *path)
 	retval = FALSE;
 	link_type = nautilus_link_get_link_type (path);
 	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
+		if (strcmp (link_type, NAUTILUS_LINK_MOUNT_TAG) == 0) {
 			retval = TRUE;
 		} else {
 			retval = FALSE;
@@ -398,7 +419,7 @@ nautilus_link_is_home_link (const char *path)
 	retval = FALSE;
 	link_type = nautilus_link_get_link_type (path);
 	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
+		if (strcmp (link_type, NAUTILUS_LINK_HOME_TAG) == 0) {
 			retval = TRUE;
 		} else {
 			retval = FALSE;
@@ -418,7 +439,7 @@ nautilus_link_is_trash_link (const char *path)
 	retval = FALSE;
 	link_type = nautilus_link_get_link_type (path);
 	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
+		if (strcmp (link_type, NAUTILUS_LINK_TRASH_TAG) == 0) {
 			retval = TRUE;
 		} else {
 			retval = FALSE;

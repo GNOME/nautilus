@@ -29,18 +29,28 @@
 #include "nautilus-file.h"
 
 /* Link types */
-#define NAUTILUS_LINK_GENERIC 	"Generic Link"
-#define NAUTILUS_LINK_TRASH 	"Trash Link"
-#define NAUTILUS_LINK_MOUNT 	"Mount Link"
-#define NAUTILUS_LINK_HOME 	"Home Link"
+typedef enum
+{
+	NAUTILUS_LINK_GENERIC,
+	NAUTILUS_LINK_TRASH,
+	NAUTILUS_LINK_MOUNT,
+	NAUTILUS_LINK_HOME
+} NautilusLinkType;
+
+/* Link type XML tags */
+#define NAUTILUS_LINK_GENERIC_TAG 	"Generic Link"
+#define NAUTILUS_LINK_TRASH_TAG 	"Trash Link"
+#define NAUTILUS_LINK_MOUNT_TAG 	"Mount Link"
+#define NAUTILUS_LINK_HOME_TAG 		"Home Link"
 
 /* Create a new link file. Takes a path, works locally, and uses sync. I/O.
  * Returns TRUE if it succeeds, FALSE if it fails.
  */
-gboolean nautilus_link_create 				(const char *directory_path,
-							 const char *name,
-							 const char *image, 
-							 const char *target_uri);
+gboolean nautilus_link_create 				(const char 	  *directory_path,
+							 const char 	  *name,
+							 const char 	  *image, 
+							 const char 	  *target_uri,
+							 NautilusLinkType link_type);
 
 /* Change the icon of an existing link file. Takes a path, works
  * locally, and uses sync. I/O. Returns TRUE if it succeeds, FALSE if

@@ -1,3 +1,30 @@
+2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c: 
+	(nautilus_link_create):
+	Added a link type argument to API to allow caller to 
+	specify type of link.
+	
+	(nautilus_link_is_volume_link), (nautilus_link_is_home_link),
+	(nautilus_link_is_trash_link):
+	Renamed old constants to use _TAG at the end of old define.
+	The name of th eprevious define is now used in the 
+	enumeration of link types.
+	
+	* libnautilus-extensions/nautilus-link.h:
+	Added argument to nautilus_link_create and created 
+	an enum to define the types of links.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(startup_create_mount_links), (volume_mounted_callback),
+	(place_home_directory), (create_or_rename_trash),
+	(get_sort_category):
+	Changed callers of nautilus_link_create to use new argument.
+	
+	* src/file-manager/fm-properties-window.c:
+	(get_and_ref_file_to_display):
+	Changed callers of nautilus_link_create to use new argument.
+
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

@@ -203,17 +203,9 @@ startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
 
 	/* Create link */
-	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, target_uri);
-	if (result) {		
-		char *link_uri;
-		
-		link_uri = nautilus_make_path (desktop_path, volume->volume_name);
-
-		/* Identify this as a mount link */
-		nautilus_link_set_type (link_uri, NAUTILUS_LINK_MOUNT);
-		g_free (link_uri);		
-	}
-	
+	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
+				       target_uri, NAUTILUS_LINK_MOUNT);
+				       	
 	g_free (desktop_path);
 	g_free (target_uri);
 	g_free (icon_name);
@@ -451,17 +443,9 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
 
 	/* Create link */
-	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, target_uri);
-	if (result) {		
-		char *link_uri;
-		
-		link_uri = nautilus_make_path (desktop_path, volume->volume_name);
-
-		/* Identify this as a mount link */
-		nautilus_link_set_type (link_uri, NAUTILUS_LINK_MOUNT);
-		g_free (link_uri);		
-	}
-	
+	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
+				       target_uri, NAUTILUS_LINK_MOUNT);
+				       	
 	g_free (desktop_path);
 	g_free (target_uri);
 	g_free (icon_name);
@@ -583,16 +567,14 @@ place_home_directory (FMDesktopIconView *icon_view)
 	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
 	
 	home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
-	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
+	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", 
+					  home_dir_uri, NAUTILUS_LINK_HOME);
 	g_free (home_dir_uri);
 	if (!made_link) {
 		/* FIXME: Is a message to the console acceptable here? */
 		g_message ("Unable to create home link");
-	} else {
-		/* Identify as home directory link type */
-		nautilus_link_set_type (home_link_path, NAUTILUS_LINK_HOME);
 	}
-	
+		
 	g_free (home_link_uri);
 	g_free (home_link_path);
 	g_free (home_link_name);
@@ -654,7 +636,6 @@ create_or_rename_trash (void)
 	GnomeVFSURI *trash_dir_uri;
 	char *trash_dir_uri_text;
 	GnomeVFSResult result;
-	char *trash_path;
 	char *desktop_directory_path;
 
 	/* Check for trash link */
@@ -669,13 +650,8 @@ create_or_rename_trash (void)
 							      GNOME_VFS_URI_HIDE_NONE);
 		gnome_vfs_uri_unref (trash_dir_uri);
 		desktop_directory_path = nautilus_get_desktop_directory ();
-		if (nautilus_link_create (desktop_directory_path,
-				      _("Trash"), "trash-empty.png", 
-				      trash_dir_uri_text)) {
-			trash_path = nautilus_make_path (desktop_directory_path, _("Trash"));
-			nautilus_link_set_type (trash_path, NAUTILUS_LINK_TRASH);
-			g_free (trash_path);			
-		}		
+		nautilus_link_create (desktop_directory_path, _("Trash"), "trash-empty.png", 
+				      trash_dir_uri_text, NAUTILUS_LINK_TRASH);
 		g_free (trash_dir_uri_text);
 		g_free (desktop_directory_path);
 	}
@@ -765,11 +741,11 @@ get_sort_category (NautilusFile *file)
 		link_type = nautilus_link_get_link_type (path);
 		if (link_type == NULL) {
 			category = SORT_OTHER;
-		} else if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
+		} else if (strcmp (link_type, NAUTILUS_LINK_HOME_TAG) == 0) {
 			category = SORT_HOME_LINK;
-		} else if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
+		} else if (strcmp (link_type, NAUTILUS_LINK_MOUNT_TAG) == 0) {
 			category = SORT_MOUNT_LINK;
-		} else if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
+		} else if (strcmp (link_type, NAUTILUS_LINK_TRASH_TAG) == 0) {
 			category = SORT_TRASH_LINK;
 		} else {
 			category = SORT_OTHER;
