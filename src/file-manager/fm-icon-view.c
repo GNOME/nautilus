@@ -2739,14 +2739,12 @@ fm_icon_view_class_init (FMIconViewClass *klass)
         klass->set_directory_sort_by = fm_icon_view_real_set_directory_sort_by;
         klass->set_directory_sort_reversed = fm_icon_view_real_set_directory_sort_reversed;
         klass->set_directory_tighter_layout = fm_icon_view_real_set_directory_tighter_layout;
-
-	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-					       &preview_sound_auto_value);
 }
 
 static void
 fm_icon_view_init (FMIconView *icon_view)
 {
+	static gboolean setup_sound_preview = FALSE;
 	NautilusIconContainer *icon_container;
 
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
@@ -2755,6 +2753,12 @@ fm_icon_view_init (FMIconView *icon_view)
 	icon_view->details->sort = &sort_criteria[0];
 
 	create_icon_container (icon_view);
+
+	if (!setup_sound_preview) {
+		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+						  &preview_sound_auto_value);
+		setup_sound_preview = TRUE;
+	}
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 						  font_changed_callback, 

@@ -1,3 +1,14 @@
+2002-02-04  Michael Meeks  <michael@ximian.com>
+
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_class_init): move re-enterant CORBA stuff
+	(fm_icon_view_init): to here.
+
+	* src/nautilus-shell-ui.xml: add a default placeholder.
+
+	* configure.in (BONOBO_UI_REQUIRED): require a fixed
+	libbonoboui that can cope with default placeholders.
+
 2002-02-04  Darin Adler  <darin@bentspoon.com>
 
 	* src/nautilus-shell-ui.xml: Put a placeholder in so that component
