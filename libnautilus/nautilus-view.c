@@ -30,6 +30,19 @@
 #include <gtk/gtk.h>
 #include "libnautilus.h"
 
+enum {
+  NOTIFY_LOCATION_CHANGE,
+  NOTIFY_SELECTION_CHANGE,
+  LOAD_STATE,
+  SAVE_STATE,
+  SHOW_PROPERTIES,
+  STOP_LOCATION_CHANGE,
+  LAST_SIGNAL
+};
+
+static  guint nautilus_view_frame_signals[LAST_SIGNAL];
+
+
 typedef struct {
   POA_Nautilus_View servant;
   gpointer gnome_object;
@@ -90,7 +103,7 @@ impl_Nautilus_View_save_state(impl_POA_Nautilus_View * servant,
 			      CORBA_char * config_path,
 			      CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "save_state", config_path);
+  gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[SAVE_STATE], config_path);
 }
 
 static void
@@ -98,7 +111,7 @@ impl_Nautilus_View_load_state(impl_POA_Nautilus_View * servant,
 			      CORBA_char * config_path,
 			      CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "load_state", config_path);
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), nautilus_view_frame_signals[LOAD_STATE], config_path);
 }
 
 static void
@@ -106,14 +119,14 @@ impl_Nautilus_View_notify_location_change(impl_POA_Nautilus_View * servant,
 					  Nautilus_NavigationInfo * navinfo,
 					  CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "notify_location_change", navinfo);
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_LOCATION_CHANGE], navinfo);
 }
 
 static void
 impl_Nautilus_View_show_properties(impl_POA_Nautilus_View * servant,
 				   CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "show_properties");
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), nautilus_view_frame_signals[SHOW_PROPERTIES]);
 }
 
 static void
@@ -121,14 +134,14 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   Nautilus_SelectionInfo * selinfo,
 					   CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "notify_selection_change", selinfo);
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_SELECTION_CHANGE], selinfo);
 }
 
 static void
 impl_Nautilus_View_stop_location_change(impl_POA_Nautilus_View * servant,
 					CORBA_Environment * ev)
 {
-  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "stop_location_change");
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), nautilus_view_frame_signals[STOP_LOCATION_CHANGE]);
 }
 
 
@@ -242,7 +255,6 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
-  int i;
 
   object_class = (GtkObjectClass*) klass;
   object_class->destroy = (void (*)(GtkObject*))nautilus_view_frame_destroy;
@@ -258,44 +270,49 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
   klass->servant_destroy_func = POA_Nautilus_View__fini;
   klass->vepv = &impl_Nautilus_View_vepv;
 
-  i = 0;
-  klass->view_frame_signals[i++] = gtk_signal_new("notify_location_change",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_location_change),
-						   gtk_marshal_NONE__BOXED,
-						   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  klass->view_frame_signals[i++] = gtk_signal_new("load_state",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, load_state),
-						   gtk_marshal_NONE__STRING,
-						   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-  klass->view_frame_signals[i++] = gtk_signal_new("save_state",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, save_state),
-						   gtk_marshal_NONE__STRING,
-						   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-  klass->view_frame_signals[i++] = gtk_signal_new("show_properties",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, show_properties),
-						   gtk_marshal_NONE__NONE,
-						   GTK_TYPE_NONE, 0);
-  klass->view_frame_signals[i++] = gtk_signal_new("notify_selection_change",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_selection_change),
-						   gtk_marshal_NONE__BOXED,
-						   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  klass->view_frame_signals[i++] = gtk_signal_new("stop_location_change",
-						   GTK_RUN_LAST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, stop_location_change),
-						   gtk_marshal_NONE__NONE,
-						   GTK_TYPE_NONE, 0);
-  gtk_object_class_add_signals (object_class, klass->view_frame_signals, i);
+  klass->view_frame_signals[NOTIFY_LOCATION_CHANGE] =
+    gtk_signal_new("notify_location_change",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_location_change),
+		   gtk_marshal_NONE__BOXED,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  klass->view_frame_signals[NOTIFY_SELECTION_CHANGE] = 
+    gtk_signal_new("notify_selection_change",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_selection_change),
+		   gtk_marshal_NONE__BOXED,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  klass->view_frame_signals[LOAD_STATE] = 
+    gtk_signal_new("load_state",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, load_state),
+		   gtk_marshal_NONE__STRING,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+  klass->view_frame_signals[SAVE_STATE] = 
+    gtk_signal_new("save_state",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, save_state),
+		   gtk_marshal_NONE__STRING,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+  klass->view_frame_signals[SHOW_PROPERTIES] = 
+    gtk_signal_new("show_properties",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, show_properties),
+		   gtk_marshal_NONE__NONE,
+		   GTK_TYPE_NONE, 0);
+  klass->view_frame_signals[STOP_LOCATION_CHANGE] = 
+    gtk_signal_new("stop_location_change",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, stop_location_change),
+		   gtk_marshal_NONE__NONE,
+		   GTK_TYPE_NONE, 0);
+  gtk_object_class_add_signals (object_class, klass->view_frame_signals, LAST_SIGNAL);
 }
 
 static void
