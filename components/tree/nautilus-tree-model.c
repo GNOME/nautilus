@@ -48,8 +48,6 @@ typedef struct TreeNode TreeNode;
 
 struct TreeNode {
 	/* part of this node for the file itself */
-
-	gboolean inserted;
 	int ref_count;
 
 	NautilusFile *file;
@@ -62,7 +60,6 @@ struct TreeNode {
 	TreeNode *prev;
 
 	/* part of the node used only for directories */
-
 	int dummy_child_ref_count;
 	int all_children_ref_count;
 	
@@ -72,8 +69,11 @@ struct TreeNode {
 	guint files_changed_id;
 
 	TreeNode *first_child;
-	gboolean done_loading;
-	gboolean inserting_first_child;
+
+	/* misc. flags */
+	guint done_loading : 1;
+	guint inserting_first_child : 1;
+	guint inserted : 1;
 };
 
 struct NautilusTreeModelDetails {
@@ -518,11 +518,11 @@ report_node_inserted (NautilusTreeModel *model, TreeNode *node)
 	report_row_inserted (model, &iter);
 	node->inserted = TRUE;
 
-	if (tree_node_has_dummy_child (node)) {
-		report_dummy_row_inserted (model, node);
-	}
 	if (node->directory != NULL) {
 		report_row_has_child_toggled (model, &iter);
+       }
+       if (tree_node_has_dummy_child (node)) {
+               report_dummy_row_inserted (model, node);
 	}
 }
 

@@ -1,3 +1,14 @@
+2002-05-27  Jonathan Blandford  <jrb@gnome.org>
+
+	* components/tree/nautilus-tree-model.c
+	(TreeNode): make flag storage more efficient.
+	(report_node_inserted): report has_child toggled before
+	reporting row_inserted.
+
+	* components/tree/nautilus-tree-view.c
+	(row_inserted_expand_node_callback): remove evil hack to
+	emit has_child toggled on the view.
+
 2002-05-27  Chris Lyttle  <chris@wilddev.net>
 
 	* Makefile.am: remove omf-install dir

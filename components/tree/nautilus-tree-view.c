@@ -157,14 +157,6 @@ row_inserted_expand_node_callback (GtkTreeModel     *tree_model,
 	g_return_if_fail (uri != NULL);
 
 	parent_path = gtk_tree_model_get_path (tree_model, &parent);
-
-	/* FIXME: this is really grim, but it works around the
-	 * fact that we can't do a child_toggled before the
-	 * row_insert on the child, so things get confused */
-	gtk_tree_model_row_has_child_toggled (
-		GTK_TREE_MODEL (view->details->child_model),
-		parent_path, &parent);
-
 	sort_path = gtk_tree_model_sort_convert_child_path_to_path
 		(view->details->sort_model, parent_path);
 
