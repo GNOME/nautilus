@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2001-04-01 22:12+0200\n"
-"PO-Revision-Date: 2001-04-01 23:05+02:00\n"
+"PO-Revision-Date: 2001-04-21 23:05+02:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1715,7 +1715,7 @@ msgstr "Vis som musik"
 #. set up the default font
 #: components/notes/nautilus-notes.c:200
 #: components/text/nautilus-text-view.c:186
-#: libnautilus-extensions/nautilus-global-preferences.c:1118
+#: libnautilus-extensions/nautilus-global-preferences.c:1126
 #: libnautilus-extensions/nautilus-icon-container.c:3332
 #: libnautilus-extensions/nautilus-icon-container.c:3333
 #: libnautilus-extensions/nautilus-icon-container.c:3334
@@ -4126,7 +4126,7 @@ msgid "Google"
 msgstr "Google"
 
 #: data/linksets/search_engines.xml.h:3
-#: libnautilus-extensions/nautilus-global-preferences.c:808
+#: libnautilus-extensions/nautilus-global-preferences.c:811
 msgid "Search Engines"
 msgstr "Søgemotorer"
 
@@ -5712,52 +5712,52 @@ msgstr "Indbyggede bogmærker"
 msgid "Speed Tradeoffs"
 msgstr "Hastighedsvalg"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:794
+#: libnautilus-extensions/nautilus-global-preferences.c:795
 msgid "Search"
 msgstr "Søgning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:796
+#: libnautilus-extensions/nautilus-global-preferences.c:798
 msgid "Search Complexity Options"
 msgstr "Indstillinger for kompleksitet i søgning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:802
+#: libnautilus-extensions/nautilus-global-preferences.c:804
 msgid "Fast Search"
 msgstr "Hurtig søgning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:846
+#: libnautilus-extensions/nautilus-global-preferences.c:854
 msgid "Fonts"
 msgstr "Skrifttyper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1026
+#: libnautilus-extensions/nautilus-global-preferences.c:1034
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Vis %s-fane i sidepanelet"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1073
+#: libnautilus-extensions/nautilus-global-preferences.c:1081
 msgid "always"
 msgstr "altid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1074
+#: libnautilus-extensions/nautilus-global-preferences.c:1082
 msgid "Always"
 msgstr "Altid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1077
+#: libnautilus-extensions/nautilus-global-preferences.c:1085
 msgid "local only"
 msgstr "kun lokalt"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1078
+#: libnautilus-extensions/nautilus-global-preferences.c:1086
 msgid "Local Files Only"
 msgstr "Kun lokale filer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1081
+#: libnautilus-extensions/nautilus-global-preferences.c:1089
 msgid "never"
 msgstr "aldrig"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1082
+#: libnautilus-extensions/nautilus-global-preferences.c:1090
 msgid "Never"
 msgstr "Aldrig"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1145
+#: libnautilus-extensions/nautilus-global-preferences.c:1153
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing "
 "currently can't be performed because the program crond, which does nightly "
@@ -5769,13 +5769,13 @@ msgstr ""
 "opgaver på din computer, er slået fra. Slå crond til for at få hurtigsøgning "
 "til at virke korrekt."
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1152
-#: libnautilus-extensions/nautilus-global-preferences.c:1170
+#: libnautilus-extensions/nautilus-global-preferences.c:1160
+#: libnautilus-extensions/nautilus-global-preferences.c:1178
 msgid "Files May Not Be Indexed"
 msgstr "Filerne er muligvis ikke indekseret"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1153
-#: libnautilus-extensions/nautilus-global-preferences.c:1171
+#: libnautilus-extensions/nautilus-global-preferences.c:1161
+#: libnautilus-extensions/nautilus-global-preferences.c:1179
 msgid ""
 "If you are running Linux, you can log in as root and type these commands to "
 "start cron:\n"
@@ -5789,7 +5789,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1162
+#: libnautilus-extensions/nautilus-global-preferences.c:1170
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing "
 "may not be performed because the program crond, which does nightly tasks on "
@@ -6587,7 +6587,7 @@ msgstr "_Indsæt tekst"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
-#: src/nautilus-window-menus.c:569
+#: src/nautilus-window-menus.c:573
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -7390,13 +7390,18 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
-msgstr "For at kunne lave hurtige søgninger kræves et indeks over filerne på systemet. Der kan ikke opnås adgang til dit indeks lige nu så en langsommere søgning der ikke benytter indekset, vil blive udført."
+msgstr ""
+"For at kunne lave hurtige søgninger kræves et indeks over filerne på "
+"systemet. Der kan ikke opnås adgang til dit indeks lige nu så en langsommere "
+"søgning der ikke benytter indekset, vil blive udført."
 
 #: src/file-manager/fm-search-list-view.c:246
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
-msgstr "For at søge efter indhold kræves et indeks over filerne på systemet. Der kan i øjeblikket ikke opnås adgang til indekset."
+msgstr ""
+"For at søge efter indhold kræves et indeks over filerne på systemet. Der kan "
+"i øjeblikket ikke opnås adgang til indekset."
 
 #: src/file-manager/fm-search-list-view.c:250
 msgid "Fast searches are not available"
@@ -7414,7 +7419,10 @@ msgid ""
 "Your index files are available but the Medusa search daemon, which handles "
 "index requests, isn't running.  To start this program, log in as root and "
 "enter this command at the command line: medusa-searchd"
-msgstr "Din indeksfiler er tilgængelige, men Medusa søgedæmonen som håndterer indeksforespørgsler, kører ikke. Dette program startes ved at logge ind som root og indtaste denne kommando ved kommandolinjen: medusa-searchd"
+msgstr ""
+"Din indeksfiler er tilgængelige, men Medusa søgedæmonen som håndterer "
+"indeksforespørgsler, kører ikke. Dette program startes ved at logge ind som "
+"root og indtaste denne kommando ved kommandolinjen: medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:274
 msgid ""
@@ -7423,7 +7431,11 @@ msgid ""
 "index, this search may take several minutes.  Would you like to create an "
 "index? Creating an index will be done while you are not actively using your "
 "computer."
-msgstr "For at kunne foretage en hurtig søgning kræves et indeks over filerne på systemet. Maskinen har i øjeblikket ikke et indeks, og fordi indekset så ikke kan bruges, kan søgningen tage flere minutter. Vil du oprette et indeks? Det bliver gjort mens du ikke bruger din maskine aktivt."
+msgstr ""
+"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
+"systemet. Maskinen har i øjeblikket ikke et indeks, og fordi indekset så "
+"ikke kan bruges, kan søgningen tage flere minutter. Vil du oprette et "
+"indeks? Det bliver gjort mens du ikke bruger din maskine aktivt."
 
 #: src/file-manager/fm-search-list-view.c:283
 msgid ""
@@ -7431,7 +7443,10 @@ msgid ""
 "system.  Your computer does not have an index right now.  Would you like to "
 "create an index?  Creating an index will be done while you are not actively "
 "using your computer."
-msgstr "For at kunne foretage en søgning efter indhold kræves et indeks over filerne på systemet. Maskinen har i øjeblikket ikke et indeks. Vil du oprette ét? Det bliver gjort mens du ikke bruger din maskine aktivt."
+msgstr ""
+"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
+"på systemet. Maskinen har i øjeblikket ikke et indeks. Vil du oprette ét? "
+"Det bliver gjort mens du ikke bruger din maskine aktivt."
 
 #: src/file-manager/fm-search-list-view.c:290
 #: src/file-manager/fm-search-list-view.c:318
@@ -7452,33 +7467,46 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
-msgstr "For at kunne foretage en hurtig søgning kræves et indeks over filerne på systemet. Maskinen er i øjeblikket ved at lave det. Fordi indekset så ikke kan bruges, kan søgningen tage flere minutter."
+msgstr ""
+"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
+"systemet. Maskinen er i øjeblikket ved at lave det. Fordi indekset så ikke "
+"kan bruges, kan søgningen tage flere minutter."
 
 #: src/file-manager/fm-search-list-view.c:312
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index.  Content searches "
 "will be available when the index is complete."
-msgstr "For at kunne foretage en søgning efter indhold kræves et indeks over filerne på systemet. Maskinen er i øjeblikket ved at lave det. Indholdssøgning bliver tilgængeligt når indekset er færdigt."
+msgstr ""
+"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
+"på systemet. Maskinen er i øjeblikket ved at lave det. Indholdssøgning "
+"bliver tilgængeligt når indekset er færdigt."
 
 #: src/file-manager/fm-search-list-view.c:326
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  An "
 "index can't be created right now. When an index is not available, searches "
 "will take several minutes."
-msgstr "For at kunne foretage en hurtig søgning kræves et indeks over filerne på systemet. Et indeks kan ikke laves lige nu. Når et indeks ikke er til stede, kan søgninger tage flere minutter."
+msgstr ""
+"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
+"systemet. Et indeks kan ikke laves lige nu. Når et indeks ikke er til stede, "
+"kan søgninger tage flere minutter."
 
 #: src/file-manager/fm-search-list-view.c:332
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  An index can't be created right now."
-msgstr "For at kunne foretage en søgning efter indhold kræves et indeks over filerne på systemet. Et indeks kan ikke laves lige nu."
+msgstr ""
+"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
+"på systemet. Et indeks kan ikke laves lige nu."
 
 #: src/file-manager/fm-search-list-view.c:341
 msgid ""
 "The program that creates an index is not set up correctly.  You can create "
 "an index by hand by running \"medusa-indexd\" as root on the command line."
-msgstr "Programmet der laver et indeks, er ikke indstillet rigtigt. Du kan oprette et indeks manuelt ved at køre \"medusa-indexd\" som root fra kommandolinjen."
+msgstr ""
+"Programmet der laver et indeks, er ikke indstillet rigtigt. Du kan oprette "
+"et indeks manuelt ved at køre \"medusa-indexd\" som root fra kommandolinjen."
 
 #. It is not necessary to translate this text just yet; it has not been
 #. edited yet, and will be replaced by a final copy in a few days.
@@ -7488,7 +7516,10 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
-msgstr "For at kunne foretage en hurtig søgning kræves et indeks over filerne på systemet. Din systemadministrator har deaktiveret hurtige søgninger på maskinen så intet indeks er tilgængeligt."
+msgstr ""
+"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
+"systemet. Din systemadministrator har deaktiveret hurtige søgninger på "
+"maskinen så intet indeks er tilgængeligt."
 
 #: src/file-manager/fm-search-list-view.c:364
 msgid "Fast searches are not available on your computer"
@@ -7499,7 +7530,10 @@ msgstr "Hurtige søgninger er ikke tilgængelige på din maskine"
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Fast search is disabled in your Search preferences, so no index is available."
-msgstr "For at kunne foretage en hurtig søgning kræves et indeks over filerne på systemet. Hurtige søgninger er slået fra i dine søgningsindstillinger så intet indeks er tilgængeligt."
+msgstr ""
+"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
+"systemet. Hurtige søgninger er slået fra i dine søgningsindstillinger så "
+"intet indeks er tilgængeligt."
 
 #: src/file-manager/fm-search-list-view.c:376
 #: src/file-manager/nautilus-indexing-info.c:345
@@ -7514,7 +7548,11 @@ msgid ""
 "Then select Search preferences and put a checkmark in the Enable Fast Search "
 "checkbox. An index will be generated while your computer is idle, so your "
 "index won't be available immediately."
-msgstr "For at aktivere hurtige søgniner, åbn indstillingsmenuen og vælg Indstillinger. Vælg så Søgningsindstillinger og afkryds \"Aktivér hurtige søgninger\". Et indeks bliver genereret mens computeren ikke foretager sig noget, så indekset bliver ikke tilgængeligt med det samme."
+msgstr ""
+"For at aktivere hurtige søgniner, åbn indstillingsmenuen og vælg "
+"Indstillinger. Vælg så Søgningsindstillinger og afkryds \"Aktivér hurtige "
+"søgninger\". Et indeks bliver genereret mens computeren ikke foretager sig "
+"noget, så indekset bliver ikke tilgængeligt med det samme."
 
 #: src/file-manager/fm-search-list-view.c:551
 msgid "Where"
@@ -7549,7 +7587,9 @@ msgstr "Åbn i %d _nye vinduer"
 msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
-msgstr "Nautilus fandt flere søgeresultater end der kan fremvises. Nogle bliver udeladt."
+msgstr ""
+"Nautilus fandt flere søgeresultater end der kan fremvises. Nogle bliver "
+"udeladt."
 
 #: src/file-manager/fm-search-list-view.c:725
 msgid "Too Many Matches"
@@ -8003,7 +8043,10 @@ msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
-msgstr "Nautilus kunne ikke oprette den påkrævede mappe \"%s\". Opret denne mappe eller ændr rettigheder sådan at Nautilus kan oprette den, før du kører programmet igen."
+msgstr ""
+"Nautilus kunne ikke oprette den påkrævede mappe \"%s\". Opret denne mappe "
+"eller ændr rettigheder sådan at Nautilus kan oprette den, før du kører "
+"programmet igen."
 
 #: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
@@ -8023,7 +8066,8 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"Opret denne mappe eller ændr rettigheder sådan at Nautilus kan oprette den, før du kører programmet igen."
+"Opret denne mappe eller ændr rettigheder sådan at Nautilus kan oprette den, "
+"før du kører programmet igen."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -8040,7 +8084,10 @@ msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
 "computer or installing Nautilus again."
-msgstr "Nautilus kan ikke bruges lige nu. Kørsel af kommandoen \"nautilus-clean.sh -x\" fra konsollen kan måske kurere problemet. Ellers kan du prøve at genstarte maskinen eller geninstallere Nautilus."
+msgstr ""
+"Nautilus kan ikke bruges lige nu. Kørsel af kommandoen \"nautilus-clean.sh "
+"-x\" fra konsollen kan måske kurere problemet. Ellers kan du prøve at "
+"genstarte maskinen eller geninstallere Nautilus."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:413
@@ -8139,7 +8186,7 @@ msgstr "Bogmærker"
 msgid "Location"
 msgstr "Placering"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:763
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:767
 msgid "Remove"
 msgstr "Fjern"
 
@@ -8264,27 +8311,29 @@ msgstr "Efterprøver din internetforbindelse og ser efter opdateringer..."
 msgid "Downloading Nautilus updates..."
 msgstr "Henter Nautilus-opdateringer..."
 
-#: src/nautilus-first-time-druid.c:906
+#: src/nautilus-first-time-druid.c:910
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
-msgstr "HVis du har brugt Filhåndtering til Gnome (GMC), flytter dette dine skrivebordsikoner til Nautilus og lader Nautilus håndtere skrivebordet.\n"
+msgstr ""
+"HVis du har brugt Filhåndtering til Gnome (GMC), flytter dette dine "
+"skrivebordsikoner til Nautilus og lader Nautilus håndtere skrivebordet.\n"
 
-#: src/nautilus-first-time-druid.c:913
+#: src/nautilus-first-time-druid.c:917
 msgid "Use Nautilus to draw the desktop."
 msgstr "Lad Nautilus håndtere skrivebordet."
 
-#: src/nautilus-first-time-druid.c:919
+#: src/nautilus-first-time-druid.c:923
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Overfør eksisterende skrivebordsikoner til Nautilus skrivebordet."
 
 #. This option is currently disabled, per bugzilla.eazel.com 7557
-#: src/nautilus-first-time-druid.c:927
+#: src/nautilus-first-time-druid.c:931
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Start Nautilus sammen med Gnome."
 
-#: src/nautilus-first-time-druid.c:967
+#: src/nautilus-first-time-druid.c:971
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8298,7 +8347,7 @@ msgstr ""
 "tager tid, men bliver udført mens maskinen ikke laver noget.\n"
 "Hurtige søgninger kræver at cron-dæmonen kører på systemet.\n"
 
-#: src/nautilus-first-time-druid.c:972
+#: src/nautilus-first-time-druid.c:976
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8310,15 +8359,15 @@ msgstr ""
 "filindhold og -navn, dato, og andre egenskaber ved filer. Indekseringen\n"
 "tager tid, men bliver udført mens maskinen ikke laver noget.\n"
 
-#: src/nautilus-first-time-druid.c:981
+#: src/nautilus-first-time-druid.c:985
 msgid "Enable fast search"
 msgstr "Aktivér hurtige søgninger"
 
-#: src/nautilus-first-time-druid.c:982
+#: src/nautilus-first-time-druid.c:986
 msgid "Turn fast search on when cron is enabled"
 msgstr "Slå hurtig søgning til når cron er startet."
 
-#: src/nautilus-first-time-druid.c:1028
+#: src/nautilus-first-time-druid.c:1045
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "currently can't be performed because the program crond, which does\n"
@@ -8342,7 +8391,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: src/nautilus-first-time-druid.c:1036
+#: src/nautilus-first-time-druid.c:1053
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "may not be performed because the program crond, which does nightly tasks\n"
@@ -8356,8 +8405,10 @@ msgid ""
 "/etc/rc.d/init.d/cron start\n"
 msgstr ""
 "Indeksering er slået til hvad der aktiverer hurtige søgninger. Imidlertid\n"
-"bliver indeksering i øjeblikket måske ikke udført fordi programmet crond som\n"
-"tager siger af at udføre natlige gøremål på maskinen, ikke kører. For at være\n"
+"bliver indeksering i øjeblikket måske ikke udført fordi programmet crond "
+"som\n"
+"tager siger af at udføre natlige gøremål på maskinen, ikke kører. For at "
+"være\n"
 "sikker på at hurtige søgninger kan udføres, start crond.\n"
 "\n"
 "Hvis du kører Linux, kan du logge ind som root og indtaste disse kommandoer\n"
@@ -8366,7 +8417,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: src/nautilus-first-time-druid.c:1123
+#: src/nautilus-first-time-druid.c:1140
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
 "Nautilus windows: one shows your home folder, and the\n"
@@ -8382,7 +8433,7 @@ msgstr ""
 "\n"
 "Vi håber du vil kunne lide at bruge Nautilus!"
 
-#: src/nautilus-first-time-druid.c:1130
+#: src/nautilus-first-time-druid.c:1147
 msgid ""
 "Click Finish to launch Nautilus. You'll start with a\n"
 "window showing your home folder.\n"
@@ -8394,15 +8445,15 @@ msgstr ""
 "\n"
 "Vi håber du vil kunne lide at bruge Nautilus!"
 
-#: src/nautilus-first-time-druid.c:1154
+#: src/nautilus-first-time-druid.c:1171
 msgid "Nautilus First Time Setup"
 msgstr "Nautilus første-gangsopsætning"
 
-#: src/nautilus-first-time-druid.c:1184
+#: src/nautilus-first-time-druid.c:1201
 msgid "Welcome to Nautilus"
 msgstr "Velkommen til Nautilus"
 
-#: src/nautilus-first-time-druid.c:1186
+#: src/nautilus-first-time-druid.c:1203
 msgid ""
 "Nautilus...\n"
 "    Is a great file manager for the GNOME desktop.\n"
@@ -8421,51 +8472,51 @@ msgstr ""
 "Tryk på Næste for at tilpasse dit Nautilus-miljø."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1197
+#: src/nautilus-first-time-druid.c:1214
 msgid "Finished"
 msgstr "Færdig"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1210
+#: src/nautilus-first-time-druid.c:1227
 msgid "Choose Your User Level"
 msgstr "Vælg dit brugerniveau"
 
 #. set up the GMC transition page
-#: src/nautilus-first-time-druid.c:1214
+#: src/nautilus-first-time-druid.c:1231
 msgid "GMC to Nautilus Transition"
 msgstr "Overgang fra GMC til Nautilus"
 
 #. set up the `Launch Medusa' page
-#: src/nautilus-first-time-druid.c:1218
+#: src/nautilus-first-time-druid.c:1238
 msgid "Fast Searches"
 msgstr "Hurtige søgninger"
 
 #. set up optional page to tell the user how to run cron
-#: src/nautilus-first-time-druid.c:1226
+#: src/nautilus-first-time-druid.c:1246
 msgid "The Cron Daemon"
 msgstr "Cron-dæmonen"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1231
+#: src/nautilus-first-time-druid.c:1251
 msgid "Checking Your Internet Connection"
 msgstr "Kontrollerer din Internetforbindelse"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1242
+#: src/nautilus-first-time-druid.c:1262
 msgid "Updating Nautilus..."
 msgstr "Opdaterer Nautilus..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1250
+#: src/nautilus-first-time-druid.c:1270
 msgid "Web Proxy Configuration"
 msgstr "Konfigurering af mellemvært"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1325
+#: src/nautilus-first-time-druid.c:1345
 msgid "Decoding Update..."
 msgstr "Dekoder opdatering..."
 
-#: src/nautilus-first-time-druid.c:1342
+#: src/nautilus-first-time-druid.c:1362
 msgid "Update Complete. Click Next to Continue."
 msgstr "Opdatering fuldført. Klik næste for at fortsætte."
 
@@ -8473,7 +8524,7 @@ msgstr "Opdatering fuldført. Klik næste for at fortsætte."
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1357
+#: src/nautilus-first-time-druid.c:1377
 msgid "No Update Available... Press Next to Continue."
 msgstr "Ingen opdatering tilgængelig... Tryk næste for at fortsætte."
 
@@ -8992,7 +9043,7 @@ msgstr ""
 "Nautilus filhåndterings komponent der viser et 2-dimensionelt rum med ikoner"
 
 #: src/Nautilus_shell.oaf.in.h:10
-msgid "Nautilus file manager component that shows icons on the the desktop"
+msgid "Nautilus file manager component that shows icons on the desktop"
 msgstr "Nautilus filhåndterings komponent der viser ikoner på skrivebordet"
 
 #: src/Nautilus_shell.oaf.in.h:11
@@ -9023,7 +9074,8 @@ msgstr "Nautilus-skal"
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
-msgstr "Nautilus skaloperationer der kan gøres fra efterfølgende kommandolinjekørsler"
+msgstr ""
+"Nautilus skaloperationer der kan gøres fra efterfølgende kommandolinjekørsler"
 
 #: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -9164,19 +9216,19 @@ msgstr "Gå til næste besøgte lokation"
 msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøgte placering"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:446
 msgid "Hide Location _Bar"
 msgstr "Skjul _adresselinjen"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
 msgid "Hide St_atus Bar"
 msgstr "Skjul _statuslinjen"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:434
 msgid "Hide _Sidebar"
 msgstr "Skjul s_idebjælken"
 
-#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:440
 msgid "Hide _Toolbar"
 msgstr "Skjul _værktøjslinjen"
 
@@ -9244,7 +9296,9 @@ msgstr "Vælg _alt"
 msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
-msgstr "Vis en side som du kan sende tilbagemeldinger om Nautilus og Eazel-tjenester fra"
+msgstr ""
+"Vis en side som du kan sende tilbagemeldinger om Nautilus og Eazel-tjenester "
+"fra"
 
 #: src/nautilus-shell-ui.xml.h:56
 msgid "Show the contents at the normal size"
@@ -9354,7 +9408,7 @@ msgstr "_Ændr bogmærker..."
 msgid "_Feedback"
 msgstr "Tilbagemeldinger"
 
-#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1358
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1383
 msgid "_Find"
 msgstr "_Find"
 
@@ -9706,7 +9760,7 @@ msgstr "Kan ikke vise lokation"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:313
+#: src/nautilus-window-menus.c:317
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -9714,37 +9768,37 @@ msgstr ""
 "Er du sikker på at du ønsker at glemme historikken? Hvis det er tilfældet, "
 "vil du være dømt til at gentage den."
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:320
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Er du sikker på at du ønsker at Nautilus skal glemme stederne du har besøgt?"
 
-#: src/nautilus-window-menus.c:321
+#: src/nautilus-window-menus.c:325
 msgid "Forget History?"
 msgstr "Glem historik?"
 
-#: src/nautilus-window-menus.c:322
+#: src/nautilus-window-menus.c:326
 msgid "Forget"
 msgstr "Glem"
 
-#: src/nautilus-window-menus.c:425
+#: src/nautilus-window-menus.c:429
 msgid "Show St_atus Bar"
 msgstr "Vis st_atuslinje"
 
-#: src/nautilus-window-menus.c:431
+#: src/nautilus-window-menus.c:435
 msgid "Show _Sidebar"
 msgstr "Vis _sidepanel"
 
-#: src/nautilus-window-menus.c:437
+#: src/nautilus-window-menus.c:441
 msgid "Show _Toolbar"
 msgstr "Vis værk_tøjslinje"
 
-#: src/nautilus-window-menus.c:443
+#: src/nautilus-window-menus.c:447
 msgid "Show Location _Bar"
 msgstr "Vis adresselinje"
 
-#: src/nautilus-window-menus.c:494
+#: src/nautilus-window-menus.c:498
 msgid "Preferences"
 msgstr "Indstillinger"
 
@@ -9754,11 +9808,11 @@ msgstr "Indstillinger"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:581
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © Eazel, Inc. 1999-2001"
 
-#: src/nautilus-window-menus.c:579
+#: src/nautilus-window-menus.c:583
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -9775,35 +9829,37 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:592
 msgid "Translator Credits"
 msgstr "Kenneth Christiansen, Keld Simonsen og Ole Laursen"
 
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:762
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
-msgstr "Stedet \"%s\" eksisterer ikke. Ønsker du at fjerne alle bogmærker med dette sted fra din liste?"
+msgstr ""
+"Stedet \"%s\" eksisterer ikke. Ønsker du at fjerne alle bogmærker med dette "
+"sted fra din liste?"
 
-#: src/nautilus-window-menus.c:762
+#: src/nautilus-window-menus.c:766
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bogmærke for ikke-eksisterende sted"
 
-#: src/nautilus-window-menus.c:776
+#: src/nautilus-window-menus.c:780
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Stedet \"%s\" eksisterer ikke længere."
 
-#: src/nautilus-window-menus.c:777
+#: src/nautilus-window-menus.c:781
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokation"
 
-#: src/nautilus-window-menus.c:846
+#: src/nautilus-window-menus.c:850
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til stedet givet ved dette bogmærke"
 
-#: src/nautilus-window-menus.c:1357
+#: src/nautilus-window-menus.c:1382
 msgid "_Browse"
 msgstr "_Gennemse"
 
