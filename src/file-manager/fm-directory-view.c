@@ -188,7 +188,6 @@ static GdkAtom copied_files_atom;
 
 static gboolean show_delete_command_auto_value;
 static gboolean confirm_trash_auto_value;
-static gboolean use_new_window_auto_value;
 
 static char *scripts_directory_uri;
 static int scripts_directory_uri_length;
@@ -250,12 +249,6 @@ struct FMDirectoryViewDetails
 };
 
 typedef enum {
-	RESPECT_PREFERENCE,
-	PREFER_EXISTING_WINDOW,
-	FORCE_NEW_WINDOW
-} WindowChoice;
-
-typedef enum {
 	ACTIVATION_ACTION_LAUNCH,
 	ACTIVATION_ACTION_LAUNCH_IN_TERMINAL,
 	ACTIVATION_ACTION_DISPLAY,
@@ -265,7 +258,8 @@ typedef enum {
 typedef struct {
 	FMDirectoryView *view;
 	NautilusFile *file;
-	WindowChoice choice;
+	Nautilus_ViewFrame_OpenMode mode;
+	Nautilus_ViewFrame_OpenFlags flags;
 	NautilusFileCallback callback;
 } ActivateParameters;
 
@@ -303,7 +297,8 @@ static void     trash_or_delete_files                          (FMDirectoryView 
 								const GList          *files);
 static void     fm_directory_view_activate_file                (FMDirectoryView      *view,
 								NautilusFile         *file,
-								WindowChoice          choice);
+								Nautilus_ViewFrame_OpenMode mode,
+								Nautilus_ViewFrame_OpenFlags flags);
 static void     load_directory                                 (FMDirectoryView      *view,
 								NautilusDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
@@ -549,7 +544,7 @@ open_callback (BonoboUIComponent *component, gpointer callback_data, const char 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	selection = fm_directory_view_get_selection (view);
-	fm_directory_view_activate_files (view, selection);
+	fm_directory_view_activate_files (view, selection, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0);
 	nautilus_file_list_free (selection);
 }
 
@@ -558,25 +553,12 @@ open_alternate_callback (BonoboUIComponent *component, gpointer callback_data, c
 {
 	FMDirectoryView *view;
 	GList *selection;
-	char *uri;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
-	if (use_new_window_auto_value) {
-	        /* UI should have prevented this from being called unless exactly
-	         * one item is selected.
-	         */
-	        if (selection_contains_one_item_in_menu_callback (view, selection)) {
-	        	uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
-			nautilus_view_open_location_in_this_window
-				(view->details->nautilus_view, uri);
-			g_free (uri);
-	        }        
-	} else {
-		if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
-			g_list_foreach (selection, open_one_in_new_window, view);
-		}
+	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+		g_list_foreach (selection, open_one_in_new_window, view);
 	}
 
 	nautilus_file_list_free (selection);
@@ -628,30 +610,14 @@ fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *applicati
 static void
 open_location (FMDirectoryView *directory_view, 
 	       const char *new_uri, 
-	       WindowChoice choice)
+	       Nautilus_ViewFrame_OpenMode mode,
+	       Nautilus_ViewFrame_OpenFlags flags)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 	g_assert (new_uri != NULL);
 
-	switch (choice) {
-	case RESPECT_PREFERENCE:
-		if (use_new_window_auto_value) {
-			nautilus_view_open_location_prefer_existing_window
-				(directory_view->details->nautilus_view, new_uri);
-		} else {
-			nautilus_view_open_location_in_this_window
-				(directory_view->details->nautilus_view, new_uri);
-		}
-		break;
-	case PREFER_EXISTING_WINDOW:
-		nautilus_view_open_location_prefer_existing_window
-			(directory_view->details->nautilus_view, new_uri);
-		break;
-	case FORCE_NEW_WINDOW:
-		nautilus_view_open_location_force_new_window
-			(directory_view->details->nautilus_view, new_uri, NULL);
-		break;
-	}
+	nautilus_view_open_location (directory_view->details->nautilus_view,
+				     new_uri, mode, flags, NULL);
 }
 
 static void
@@ -676,7 +642,7 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	nautilus_mime_set_default_component_for_file (file, identifier->iid);
 	nautilus_file_unref (file);
 
-	open_location (directory_view, new_uri, RESPECT_PREFERENCE);
+	open_location (directory_view, new_uri, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0);
 }
 
 static void
@@ -1385,8 +1351,6 @@ fm_directory_view_init (FMDirectoryView *view)
 						  &confirm_trash_auto_value);
 		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 						  &show_delete_command_auto_value);
-		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-						  &use_new_window_auto_value);
 	}
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
@@ -1451,12 +1415,6 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	filtering_changed_callback (view);
 	
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-				      schedule_update_menus_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-				      filtering_changed_callback, view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
@@ -1522,8 +1480,6 @@ fm_directory_view_finalize (GObject *object)
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					 filtering_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
@@ -3299,7 +3255,8 @@ open_one_in_new_window (gpointer data, gpointer callback_data)
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
 					 NAUTILUS_FILE (data),
-					 FORCE_NEW_WINDOW);
+					 Nautilus_ViewFrame_OPEN_IN_NAVIGATION,
+					 0);
 }
 
 NautilusFile *
@@ -4356,7 +4313,7 @@ open_scripts_folder_callback (BonoboUIComponent *component,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	open_location (view, scripts_directory_uri, RESPECT_PREFERENCE);
+	open_location (view, scripts_directory_uri, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0);
 	
 	eel_show_info_dialog_with_details 
 		(_("All executable files in this folder will appear in the "
@@ -4828,31 +4785,20 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
 				       selection_count != 0);
 
-	if (use_new_window_auto_value) {
-		nautilus_bonobo_set_sensitive (view->details->ui, 
-					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
-					       selection_count == 1);
-
-		nautilus_bonobo_set_label
-			(view->details->ui,
-			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
-			 _("Open _in This Window"));
+	if (selection_count <= 1) {
+		label_with_underscore = g_strdup (_("Navigation Window"));
 	} else {
-		if (selection_count <= 1) {
-			label_with_underscore = g_strdup (_("Open _in New Window"));
-		} else {
-			label_with_underscore = g_strdup_printf (_("Open _in %d New Windows"), selection_count);
-		}
-		nautilus_bonobo_set_label
-			(view->details->ui,
-			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
-			 label_with_underscore);
-		g_free (label_with_underscore);
-					   
-		nautilus_bonobo_set_sensitive (view->details->ui, 
-					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
-					       selection_count != 0);
-	}	
+		label_with_underscore = g_strdup_printf (_("%d Navigation Windows"), selection_count);
+	}
+	nautilus_bonobo_set_label
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+		 label_with_underscore);
+	g_free (label_with_underscore);
+	
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+				       selection_count != 0);
 
 	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
@@ -5305,7 +5251,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT &&
 		    nautilus_mime_has_any_components_for_file (file)) {
-			open_location (view, uri, parameters->choice);
+			open_location (view, uri, parameters->mode, parameters->flags);
 		} else {
 			nautilus_launch_show_file
 				(file, fm_directory_view_get_containing_window (view));
@@ -5389,7 +5335,8 @@ cancel_activate_callback (gpointer callback_data)
 static void
 fm_directory_view_activate_file (FMDirectoryView *view, 
 				 NautilusFile *file,
-				 WindowChoice choice)
+				 Nautilus_ViewFrame_OpenMode mode,
+				 Nautilus_ViewFrame_OpenFlags flags)
 {
 	ActivateParameters *parameters;
 	NautilusFileAttributes attributes;
@@ -5412,7 +5359,8 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
 	parameters->file = file;
-	parameters->choice = choice;
+	parameters->mode = mode;
+	parameters->flags = flags;
 	parameters->callback = activate_activation_uri_ready_callback;
 
 	file_name = nautilus_file_get_display_name (file);
@@ -5443,7 +5391,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
  **/
 void
 fm_directory_view_activate_files (FMDirectoryView *view, 
-				  GList *files)
+				  GList *files,
+				  Nautilus_ViewFrame_OpenMode mode,
+				  Nautilus_ViewFrame_OpenFlags flags)
 {
 	GList *node;
 	int file_count;
@@ -5458,15 +5408,21 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	 * but it proved mysterious in practice.
 	 */
 	file_count = g_list_length (files);
-	use_new_window = file_count > 1	|| use_new_window_auto_value;
+	use_new_window = file_count > 1;
+
+	if (use_new_window && mode == Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE) {
+#if !NEW_UI_COMPLETE
+		/* Match the current window type */
+		mode = Nautilus_ViewFrame_OPEN_IN_SPATIAL;
+#endif
+	}
 	
 	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
 		for (node = files; node != NULL; node = node->next) {  	
-			fm_directory_view_activate_file 
-				(view, node->data,
-				 file_count == 1
-				 ? RESPECT_PREFERENCE
-				 : PREFER_EXISTING_WINDOW);
+			/* The ui should ask for navigation or object windows
+			 * depending on what the current one is */
+			fm_directory_view_activate_file
+				(view, node->data, mode, flags);
 		}
 	}
 }

@@ -1,0 +1,47 @@
+<Root>
+
+<!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
+
+<commands>
+</commands>
+
+<menu>
+	<submenu name="File">
+		<placeholder name="Location Placeholder">
+			<menuitem name="Up"
+			  _label="Open _Pa_rent"
+			  _tip="Open the parent folder"
+			  accel="*Alt*Up"
+			  verb="Up"/>
+		<menuitem name="Go to Location"
+			  _label="Open _Location..."
+			  accel="*Control*l"
+			  verb="Go to Location"/>
+		</placeholder>
+		<placeholder name="Close Items Placeholder">
+			<menuitem name="Close With Parents"
+			  _label="Close _All Parents"
+			  _tip="Close all Navigation windows"
+			  accel="*Control**Shift*w"
+			  verb="Close With Parents"/>
+		</placeholder>
+	</submenu>
+
+	<submenu name="Places" _label="_Places">
+		<menuitem name="Home" 
+			  _label="_Home" 
+			  accel="*Alt*Home"
+			  pixtype="stock" pixname="gtk-home"
+			  verb="Home"/>
+		<menuitem name="Go to Trash"
+			  _label="_Trash"
+			  _tip="Go to the trash folder"
+			  verb="Go to Trash"/>
+		<menuitem name="Go to Burn CD"
+			  _label="CD _Creator"
+			  _tip="Go to the CD Creator"
+			  verb="Go to Burn CD"/>
+	</submenu>
+</menu>
+
+</Root>

@@ -30,6 +30,7 @@
 
 #include "nautilus-window.h"
 #include "nautilus-application.h"
+#include "nautilus-spatial-window.h"
 
 #define NAUTILUS_TYPE_DESKTOP_WINDOW            (nautilus_desktop_window_get_type())
 #define NAUTILUS_DESKTOP_WINDOW(object)         (GTK_CHECK_CAST ((object), NAUTILUS_TYPE_DESKTOP_WINDOW, NautilusDesktopWindow))
@@ -40,13 +41,13 @@
 typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 
 typedef struct {
-	NautilusWindow parent_spot;
+	NautilusSpatialWindow parent_spot;
 	NautilusDesktopWindowDetails *details;
         gboolean affect_desktop_on_next_location_change;
 } NautilusDesktopWindow;
 
 typedef struct {
-	NautilusWindowClass parent_spot;
+	NautilusSpatialWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
 GType                  nautilus_desktop_window_get_type            (void);

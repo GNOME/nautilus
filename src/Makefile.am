@@ -72,6 +72,8 @@ nautilus_SOURCES = \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
+	nautilus-navigation-window.c            \
+	nautilus-navigation-window-menus.c      \
 	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
@@ -82,13 +84,14 @@ nautilus_SOURCES = \
 	nautilus-sidebar-title.c		\
 	nautilus-signaller.c			\
 	nautilus-simple-search-bar.c		\
+	nautilus-spatial-window.c               \
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
+	nautilus-window-toolbars.c              \
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
-	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
 	nautilus-applicable-views.h		\
@@ -104,6 +107,7 @@ nautilus_SOURCES = \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
+	nautilus-navigation-window.h            \
 	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
@@ -116,6 +120,7 @@ nautilus_SOURCES = \
 	nautilus-sidebar-title.h		\
 	nautilus-signaller.h			\
 	nautilus-simple-search-bar.h		\
+	nautilus-spatial-window.h               \
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
 	nautilus-view-frame-private.h		\
@@ -152,6 +157,8 @@ server_DATA = $(server_in_files:.server.in=.server)
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
+	nautilus-navigation-window-ui.xml       \
+	nautilus-spatial-window-ui.xml       \
 	$(NULL)
 
 gladedir = $(datadir)/nautilus/glade

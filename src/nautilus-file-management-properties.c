@@ -325,9 +325,6 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET,
 					    NAUTILUS_PREFERENCES_ENABLE_DELETE);
 	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET,
-					    NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
-	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
 					    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	eel_preferences_glade_connect_bool_slave (xml_dialog,

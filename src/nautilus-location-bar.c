@@ -106,10 +106,10 @@ EEL_CLASS_BOILERPLATE (NautilusLocationBar,
 		       nautilus_location_bar,
 		       NAUTILUS_TYPE_NAVIGATION_BAR)
 
-static NautilusWindow *
+static NautilusNavigationWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
 {
-	return NAUTILUS_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
+	return NAUTILUS_NAVIGATION_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
 }
 
 static void
@@ -126,7 +126,7 @@ drag_data_received_callback (GtkWidget *widget,
 	NautilusApplication *application;
 	int name_count;
 	NautilusWindow *new_window;
-	NautilusWindow *window;
+	NautilusNavigationWindow *window;
 	GdkScreen      *screen;
 	gboolean new_windows_for_extras;
 	char *prompt;
@@ -177,11 +177,11 @@ drag_data_received_callback (GtkWidget *widget,
 	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget));
 
 	if (new_windows_for_extras) {
-		application = window->application;
+		application = NAUTILUS_WINDOW (window)->application;
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
 		for (node = names->next; node != NULL; node = node->next) {
-			new_window = nautilus_application_create_window (application, screen);
+			new_window = nautilus_application_create_navigation_window (application, screen);
 			nautilus_window_go_to (new_window, node->data);
 		}
 	}
@@ -760,7 +760,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 }
 
 GtkWidget *
-nautilus_location_bar_new (NautilusWindow *window)
+nautilus_location_bar_new (NautilusNavigationWindow *window)
 {
 	GtkWidget *bar;
 	NautilusLocationBar *location_bar;
@@ -771,7 +771,7 @@ nautilus_location_bar_new (NautilusWindow *window)
 	/* Clipboard */
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (location_bar->details->entry),
-		 nautilus_window_get_ui_container (window),
+		 nautilus_window_get_ui_container (NAUTILUS_WINDOW (window)),
 		 TRUE);
 
 	return bar;

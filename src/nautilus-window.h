@@ -60,7 +60,18 @@ typedef struct {
 	 * NautilusWindow's idea of the "current location" to the history
 	 * list, or nothing at all.
 	 */
-        void (* add_current_location_to_history_list) (NautilusWindow *window);
+        void   (* add_current_location_to_history_list) (NautilusWindow *window);
+
+        char * (* get_title) (NautilusWindow *window);
+        void   (* set_title) (NautilusWindow *window, const char *title);
+
+        void   (* merge_menus)   (NautilusWindow *window);
+        void   (* load_view_as_menu) (NautilusWindow *window);
+        void   (* set_content_view_widget) (NautilusWindow *window, 
+                                            NautilusViewFrame *frame);
+        void   (* set_throbber_active) (NautilusWindow *window,
+                                        gboolean active);
+        void   (* prompt_for_location) (NautilusWindow *window);
 } NautilusWindowClass;
 
 typedef enum {
@@ -76,41 +87,23 @@ struct NautilusWindow {
         
         NautilusWindowDetails *details;
         
-        /** UI stuff **/
-        NautilusSidePane *sidebar;
-        NautilusInformationPanel *information_panel;
-        GtkWidget *content_hbox;
-        GtkWidget *view_as_option_menu;
-        GtkWidget *navigation_bar;
-        
-	char *last_geometry;
-	
-       guint save_geometry_timeout_id;
-	  
         /** CORBA-related elements **/
         NautilusApplication *application;
         
         /** State information **/
         
-        /* Information about current location/selection */
-        
-        /* Back/Forward chain, and history list. 
-         * The data in these lists are NautilusBookmark pointers. 
-         */
-        GList *back_list, *forward_list;
-        
-        NautilusBookmark *current_location_bookmark; 
+        /* Information about current location/selection */        
+        NautilusBookmark *current_location_bookmark;
         NautilusBookmark *last_location_bookmark;
-        
+
         /* Current views stuff */
         NautilusViewFrame *content_view;
-        GList *sidebar_panels;
-        
-        /* Widgets to keep track of (for state changes, etc) */      
-        GtkWidget *zoom_control;
         
         /* Pending changes */
         NautilusViewFrame *new_content_view;
+
+        /* All views */
+        GList *views;
 
         /* Window showed state (for saved_window_positions) */
         NautilusWindowShowState show_state;
@@ -123,44 +116,25 @@ void             nautilus_window_close                (NautilusWindow    *window
 char *           nautilus_window_get_location         (NautilusWindow    *window);
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        const char        *location);
-gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);
-void             nautilus_window_set_search_mode      (NautilusWindow    *window,
-                                                       gboolean           search_mode);
 void             nautilus_window_go_home              (NautilusWindow    *window);
+void             nautilus_window_go_up                (NautilusWindow    *window);
+void             nautilus_window_prompt_for_location  (NautilusWindow    *window);
+void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
+void             nautilus_window_update_title         (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
-void             nautilus_window_allow_back           (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_forward        (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_up             (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_reload         (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_stop           (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
-                                                       gboolean           allow);
-void		 nautilus_window_clear_back_list      (NautilusWindow    *window);
-void		 nautilus_window_clear_forward_list   (NautilusWindow    *window);
-void		 nautilus_forget_history	      (void);
-void             nautilus_bookmarks_exiting           (void);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
-gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window,
-                                                       gboolean           save_preference);
-void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window,
-                                                       gboolean           save_preference);
-gboolean	 nautilus_window_location_bar_showing (NautilusWindow    *window);
-void 		 nautilus_window_hide_toolbar         (NautilusWindow 	 *window);
-void 		 nautilus_window_show_toolbar         (NautilusWindow 	 *window);
-gboolean	 nautilus_window_toolbar_showing      (NautilusWindow    *window);
-void 		 nautilus_window_hide_sidebar         (NautilusWindow 	 *window);
-void 		 nautilus_window_show_sidebar         (NautilusWindow 	 *window);
-gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);
+
 void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
 void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
 gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
-void		 nautilus_window_save_geometry	      (NautilusWindow 	 *window);
+void             nautilus_window_allow_reload         (NautilusWindow    *window,
+                                                       gboolean           allow);
+void             nautilus_window_allow_up             (NautilusWindow    *window, 
+                                                       gboolean           allow);
+void             nautilus_window_allow_stop           (NautilusWindow    *window, 
+                                                       gboolean           allow);
+void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
+                                                       gboolean           allow);
 
 #endif

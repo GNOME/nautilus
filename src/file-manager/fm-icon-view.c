@@ -1702,7 +1702,23 @@ icon_container_activate_callback (NautilusIconContainer *container,
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), file_list);
+	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view),
+					  file_list, 
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0);
+}
+
+static void
+icon_container_activate_alternate_callback (NautilusIconContainer *container,
+					    GList *file_list,
+					    FMIconView *icon_view)
+{
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+
+	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), 
+					  file_list, 
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND);
 }
 
 static void
@@ -2444,6 +2460,8 @@ create_icon_container (FMIconView *icon_view)
 	
 	g_signal_connect_object (icon_container, "activate",	
 			 G_CALLBACK (icon_container_activate_callback), icon_view, 0);
+	g_signal_connect_object (icon_container, "activate_alternate",	
+			 G_CALLBACK (icon_container_activate_alternate_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "band_select_started",
 				 G_CALLBACK (band_select_started_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "band_select_ended",

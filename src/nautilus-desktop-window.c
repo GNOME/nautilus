@@ -24,14 +24,20 @@
 
 #include <config.h>
 #include "nautilus-desktop-window.h"
+#include "nautilus-window-private.h"
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtklayout.h>
+#include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
+
+#define STATUS_BAR_PATH         "/status"
+#define MENU_BAR_PATH           "/menu"
 
 struct NautilusDesktopWindowDetails {
 	int dummy;
@@ -40,7 +46,7 @@ struct NautilusDesktopWindowDetails {
 static void set_wmspec_desktop_hint (GdkWindow *window);
 
 GNOME_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window,
-			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
+			 NautilusSpatialWindow, NAUTILUS_TYPE_SPATIAL_WINDOW)
 
 static void
 nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
@@ -68,7 +74,7 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 {
 	g_assert (NAUTILUS_IS_DESKTOP_WINDOW (window));
 	
-	window->affect_desktop_on_next_location_change = TRUE;
+	NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = TRUE;
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), EEL_DESKTOP_URI);
 }
 
@@ -344,6 +350,23 @@ real_add_current_location_to_history_list (NautilusWindow *window)
 	 */
 }
 
+static char *
+real_get_title (NautilusWindow *window)
+{
+	return g_strdup (_("Desktop"));
+}
+
+static void
+real_merge_menus (NautilusWindow *window)
+{
+	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, merge_menus, (window));
+
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    STATUS_BAR_PATH, TRUE);
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    MENU_BAR_PATH, TRUE);
+}
+
 static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
@@ -356,4 +379,8 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 
 	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
+	NAUTILUS_WINDOW_CLASS (class)->merge_menus 
+		= real_merge_menus;
+	NAUTILUS_WINDOW_CLASS (class)->get_title 
+		= real_get_title;
 }

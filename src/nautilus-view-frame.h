@@ -65,12 +65,10 @@ typedef struct {
         void               (* failed)                               (NautilusViewFrame *view);
 
         /* These will only happen after load_underway (guaranteed). */
-        void               (* open_location_in_this_window)         (NautilusViewFrame *view,
-                                                                     const char        *location);
-        void               (* open_location_prefer_existing_window) (NautilusViewFrame *view,
-                                                                     const char        *location);
-        void               (* open_location_force_new_window)       (NautilusViewFrame *view,
+        void               (* open_location)                        (NautilusViewFrame *view,
                                                                      const char        *location,
+                                                                     Nautilus_ViewFrame_OpenMode mode,
+                                                                     Nautilus_ViewFrame_OpenFlags flags,
                                                                      GList             *selection); /* list of char * */
         void               (* report_location_change)               (NautilusViewFrame *view,
                                                                      const char        *location,
@@ -123,6 +121,9 @@ float              nautilus_view_frame_get_max_zoom_level        (NautilusViewFr
 gboolean           nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_can_zoom_in           (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_can_zoom_out          (NautilusViewFrame   *view);
+
 GList *            nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);

@@ -63,9 +63,7 @@ enum {
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
-	OPEN_LOCATION_FORCE_NEW_WINDOW,
-	OPEN_LOCATION_IN_THIS_WINDOW,
-	OPEN_LOCATION_PREFER_EXISTING_WINDOW,
+	OPEN_LOCATION,
 	REPORT_LOCATION_CHANGE,
 	REPORT_REDIRECT,
 	TITLE_CHANGED,
@@ -112,6 +110,14 @@ struct NautilusViewFrameDetails {
 
 	guint failed_idle_id;
 	guint socket_gone_idle_id;
+
+	/* zoom data */
+	float zoom_level;
+	float min_zoom_level;
+	float max_zoom_level;
+	gboolean has_min_zoom_level;
+	gboolean has_max_zoom_level;
+	GList *zoom_levels;
 };
 
 static void nautilus_view_frame_init       (NautilusViewFrame      *view);
@@ -265,9 +271,23 @@ nautilus_view_frame_finalize (GObject *object)
 
 static void
 emit_zoom_parameters_changed (NautilusViewFrame *view)
-{
-	if (view->details->zoomable_frame != NULL) {
+{	
+	eel_g_list_free_deep (view->details->zoom_levels);
+
+	if (view->details->zoomable_frame) {
+		view->details->min_zoom_level = bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
+		view->details->max_zoom_level = bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
+		view->details->has_min_zoom_level = bonobo_zoomable_frame_has_min_zoom_level (view->details->zoomable_frame);
+		view->details->has_max_zoom_level = bonobo_zoomable_frame_has_max_zoom_level (view->details->zoomable_frame);
+		view->details->zoom_levels = bonobo_zoomable_frame_get_preferred_zoom_levels (view->details->zoomable_frame);
+		
 		g_signal_emit (view, signals[ZOOM_PARAMETERS_CHANGED], 0);
+	} else {
+		view->details->min_zoom_level = 0.0;
+		view->details->max_zoom_level = 0.0;
+		view->details->has_min_zoom_level = FALSE;
+		view->details->has_max_zoom_level = FALSE;
+		view->details->zoom_levels = NULL;
 	}
 }
 
@@ -349,7 +369,6 @@ view_frame_underway (NautilusViewFrame *view)
 
 /* stimulus 
    - open_location call from component
-   - open_location_in_new_window
    - report_selection_change
    - report_status
    - set_title 
@@ -449,6 +468,8 @@ static void
 emit_zoom_parameters_changed_callback (gpointer data,
 				       gpointer callback_data)
 {
+	
+
 	emit_zoom_parameters_changed (NAUTILUS_VIEW_FRAME (data));
 }
 
@@ -469,7 +490,13 @@ static void
 emit_zoom_level_changed_callback (gpointer data,
 				  gpointer callback_data)
 {
-	g_signal_emit (data,
+	NautilusViewFrame *view;
+	
+	view = NAUTILUS_VIEW_FRAME (data);
+	
+	view->details->zoom_level = bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
+
+	g_signal_emit (view,
 			 signals[ZOOM_LEVEL_CHANGED], 0,
 			 * (float *) callback_data);
 }
@@ -959,7 +986,7 @@ nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
+	return view->details->zoom_level;
 }
 
 void
@@ -984,7 +1011,7 @@ nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
+	return view->details->min_zoom_level;
 }
 
 float
@@ -996,7 +1023,7 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
+	return view->details->max_zoom_level;
 }
 
 gboolean
@@ -1008,7 +1035,7 @@ nautilus_view_frame_get_has_min_zoom_level (NautilusViewFrame *view)
 		return FALSE;
 	}
 
-	return bonobo_zoomable_frame_has_min_zoom_level (view->details->zoomable_frame);
+	return view->details->has_min_zoom_level;
 }
 
 gboolean
@@ -1020,7 +1047,7 @@ nautilus_view_frame_get_has_max_zoom_level (NautilusViewFrame *view)
 		return FALSE;
 	}
 
-	return bonobo_zoomable_frame_has_max_zoom_level (view->details->zoomable_frame);
+	return view->details->has_max_zoom_level;
 }
 
 gboolean
@@ -1034,6 +1061,24 @@ nautilus_view_frame_get_is_continuous (NautilusViewFrame *view)
 
 	return bonobo_zoomable_frame_is_continuous (view->details->zoomable_frame);
 }
+
+gboolean
+nautilus_view_frame_get_can_zoom_in (NautilusViewFrame *view)
+{       
+	return !view->details->has_max_zoom_level ||
+                (view->details->zoom_level
+                 < view->details->max_zoom_level);
+
+}
+
+gboolean
+nautilus_view_frame_get_can_zoom_out (NautilusViewFrame *view)
+{       
+	return !view->details->has_min_zoom_level ||
+                (view->details->zoom_level
+                 > view->details->min_zoom_level);
+}
+
 
 GList *
 nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
@@ -1101,6 +1146,7 @@ nautilus_view_frame_get_first_visible_file (NautilusViewFrame *view)
 		CORBA_free (uri);
 		CORBA_exception_free (&ev);
 	}
+
 	return ret;
 }
 
@@ -1132,37 +1178,11 @@ nautilus_view_frame_get_view_iid (NautilusViewFrame *view)
 }
 
 void
-nautilus_view_frame_open_location_in_this_window (NautilusViewFrame *view,
-						  const char *location)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
-	view_frame_wait_is_over (view);
-	g_signal_emit (view, signals[OPEN_LOCATION_IN_THIS_WINDOW], 0, location);
-}
-
-void
-nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *view,
-							  const char *location)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	if (view->details->state == VIEW_FRAME_FAILED) {
-		return;
-	}
-
-	view_frame_wait_is_over (view);
-	g_signal_emit (view, signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], 0, location);
-}
-
-void
-nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
-						    const char *location,
-						    GList *selection)
+nautilus_view_frame_open_location (NautilusViewFrame *view,
+				   const char *location,
+				   Nautilus_ViewFrame_OpenMode mode,
+				   Nautilus_ViewFrame_OpenFlags flags,
+				   GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
@@ -1172,8 +1192,8 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-		       signals[OPEN_LOCATION_FORCE_NEW_WINDOW], 0,
-		       location, selection);
+		       signals[OPEN_LOCATION], 0,
+		       location, mode, flags, selection);
 }
 
 void
@@ -1537,33 +1557,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
-	signals[OPEN_LOCATION_FORCE_NEW_WINDOW] = g_signal_new
-		("open_location_force_new_window",
+	signals[OPEN_LOCATION] = g_signal_new
+		("open_location",
 		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_force_new_window),
+				  open_location),
 		 NULL, NULL,
-		 eel_marshal_VOID__STRING_POINTER,
-		 G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_POINTER);
-	signals[OPEN_LOCATION_IN_THIS_WINDOW] = g_signal_new
-		("open_location_in_this_window",
-		 G_TYPE_FROM_CLASS (class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_in_this_window),
-		 NULL, NULL,
-		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW] = g_signal_new
-		("open_location_prefer_existing_window",
-		 G_TYPE_FROM_CLASS (class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_prefer_existing_window),
-		 NULL, NULL,
-		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, G_TYPE_STRING);
+		 eel_marshal_VOID__STRING_LONG_LONG_POINTER,
+		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_LONG, G_TYPE_LONG, G_TYPE_POINTER);
 	signals[REPORT_LOCATION_CHANGE] = g_signal_new
 		("report_location_change",
 		 G_TYPE_FROM_CLASS (class),

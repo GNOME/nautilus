@@ -76,6 +76,8 @@ typedef struct {
 	char *location;
 	GList *selection;
 	char *title;
+	Nautilus_ViewFrame_OpenMode mode;
+	Nautilus_ViewFrame_OpenFlags flags;
 } LocationPlus;
 
 BONOBO_CLASS_BOILERPLATE_FULL (NautilusView, nautilus_view, Nautilus_View,
@@ -556,38 +558,8 @@ free_location_plus_callback (gpointer callback_data)
 }
 
 static void
-call_open_location_in_this_window (NautilusView *view,
-				   gpointer callback_data)
-{
-	CORBA_Environment ev;
-	Nautilus_ViewFrame view_frame;
-	
-	view_frame = view_frame_call_begin (view, &ev);
-	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_open_location_in_this_window
-			(view_frame, callback_data, &ev);
-	}
-	view_frame_call_end (view_frame, &ev);
-}
-
-static void
-call_open_location_prefer_existing_window (NautilusView *view,
-					   gpointer callback_data)
-{
-	CORBA_Environment ev;
-	Nautilus_ViewFrame view_frame;
-	
-	view_frame = view_frame_call_begin (view, &ev);
-	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_open_location_prefer_existing_window
-			(view_frame, callback_data, &ev);
-	}
-	view_frame_call_end (view_frame, &ev);
-}
-
-static void
-call_open_location_force_new_window (NautilusView *view,
-				     gpointer callback_data)
+call_open_location (NautilusView *view,
+		    gpointer callback_data)
 {
 	LocationPlus *location_plus;
 	CORBA_Environment ev;
@@ -599,12 +571,13 @@ call_open_location_force_new_window (NautilusView *view,
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
 		uri_list = nautilus_uri_list_from_g_list (location_plus->selection);
-		Nautilus_ViewFrame_open_location_force_new_window
-			(view_frame, location_plus->location, uri_list, &ev);
+		Nautilus_ViewFrame_open_location
+			(view_frame, location_plus->location, location_plus->mode, location_plus->flags, uri_list, &ev);
 		CORBA_free (uri_list);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
+
 
 static void
 call_report_location_change (NautilusView *view,
@@ -788,40 +761,23 @@ call_close_window (NautilusView *view,
 	view_frame_call_end (view_frame, &ev);
 }
 
-
 void
-nautilus_view_open_location_in_this_window (NautilusView *view,
-					    const char *location)
-{
-	queue_outgoing_call (view,
-			     call_open_location_in_this_window,
-			     g_strdup (location),
-			     g_free);
-}
-
-void
-nautilus_view_open_location_prefer_existing_window (NautilusView *view,
-						    const char *location)
-{
-	queue_outgoing_call (view,
-			     call_open_location_prefer_existing_window,
-			     g_strdup (location),
-			     g_free);
-}
-
-void
-nautilus_view_open_location_force_new_window (NautilusView *view,
-					      const char *location,
-					      GList *selection)
+nautilus_view_open_location (NautilusView *view,
+			     const char *location,
+			     Nautilus_ViewFrame_OpenMode mode,
+			     Nautilus_ViewFrame_OpenFlags flags,
+			     GList *selection)
 {
 	LocationPlus *location_plus;
-
+	
 	location_plus = g_new0 (LocationPlus, 1);
 	location_plus->location = g_strdup (location);
 	location_plus->selection = str_list_copy (selection);
-
+	location_plus->mode = mode;
+	location_plus->flags = flags;
+	
 	queue_outgoing_call (view,
-			     call_open_location_force_new_window,
+			     call_open_location,
 			     location_plus,
 			     free_location_plus_callback);
 }

@@ -87,18 +87,19 @@ module Nautilus {
 	 *      'selection' - ro - URIList           - the selection
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
-		/* Called by the view component to change the location
-		 * shown in the window, or to open a window. The
-		 * "prefer existing window" variant will use an
-		 * existing window if one exists for that location and
-		 * will otherwise open a new window (with no
-		 * selection). In the case where you force a new
-		 * window, you can specify the initial selection.
-		 */
-		oneway void open_location_in_this_window (in URI location);
-		oneway void open_location_prefer_existing_window (in URI location);
-		oneway void open_location_force_new_window (in URI location,
-							    in URIList selection);
+		enum OpenMode {
+			OPEN_ACCORDING_TO_MODE,
+			OPEN_IN_SPATIAL,
+			OPEN_IN_NAVIGATION
+		};
+
+		typedef long OpenFlags;
+                const OpenFlags OPEN_FLAG_CLOSE_BEHIND = 1;
+
+                oneway void open_location (in URI location,
+                                           in OpenMode mode,
+					   in OpenFlags flags,
+                                           in URIList selection);
 
 		/* Called by a view component when the location
 		 * changes, but the view component is handling it

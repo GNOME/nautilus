@@ -46,9 +46,6 @@ G_BEGIN_DECLS
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
-/* Window options */
-#define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
-
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"
@@ -77,7 +74,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
 
 /* Which views should be displayed for new windows */
-#define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
 #define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"

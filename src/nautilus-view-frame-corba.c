@@ -53,6 +53,8 @@ typedef struct {
 	char *location;
 	GList *selection;
 	char *title;
+	Nautilus_ViewFrame_OpenMode mode;
+	Nautilus_ViewFrame_OpenFlags flags;
 } LocationPlus;
 
 static void
@@ -75,29 +77,17 @@ free_location_plus_callback (gpointer callback_data)
 }
 
 static void
-open_in_this_window (NautilusViewFrame *view,
-		     gpointer callback_data)
-{
-	nautilus_view_frame_open_location_in_this_window (view, callback_data);
-}
-
-static void
-open_prefer_existing_window (NautilusViewFrame *view,
-			     gpointer callback_data)
-{
-	nautilus_view_frame_open_location_prefer_existing_window (view, callback_data);
-}
-
-static void
-open_force_new_window (NautilusViewFrame *view,
-		       gpointer callback_data)
+open_location (NautilusViewFrame *view,
+	       gpointer callback_data)
 {
 	LocationPlus *location_plus;
 
 	location_plus = callback_data;
-	nautilus_view_frame_open_location_force_new_window
+	nautilus_view_frame_open_location
 		(view,
 		 location_plus->location,
+		 location_plus->mode,
+		 location_plus->flags,
 		 location_plus->selection);
 }
 
@@ -192,46 +182,25 @@ close_window (NautilusViewFrame *view,
 {
 	nautilus_view_frame_close_window (view);
 }
-
 static void
-impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
-						      const CORBA_char *location,
-						      CORBA_Environment *ev)
-{
-	nautilus_view_frame_queue_incoming_call
-		(servant,
-		 open_in_this_window,
-		 g_strdup (location),
-		 g_free);
-}
-
-static void
-impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant servant,
-							      const CORBA_char *location,
-							      CORBA_Environment *ev)
-{
-	nautilus_view_frame_queue_incoming_call
-		(servant,
-		 open_prefer_existing_window,
-		 g_strdup (location),
-		 g_free);
-}
-
-static void
-impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant servant,
-							const CORBA_char *location,
-							const Nautilus_URIList *selection,
-							CORBA_Environment *ev)
+impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
+				       const CORBA_char *location,
+				       Nautilus_ViewFrame_OpenMode mode,
+				       Nautilus_ViewFrame_OpenFlags flags,
+				       const Nautilus_URIList *selection,
+				       CORBA_Environment *ev)
 {
 	LocationPlus *location_plus;
 
 	location_plus = g_new0 (LocationPlus, 1);
 	location_plus->location = g_strdup (location);
 	location_plus->selection = nautilus_g_list_from_uri_list (selection);
+	location_plus->mode = mode;
+	location_plus->flags = flags;
 
 	nautilus_view_frame_queue_incoming_call
 		(servant,
-		 open_force_new_window,
+		 open_location,
 		 location_plus,
 		 free_location_plus_callback);
 }
@@ -393,9 +362,7 @@ BONOBO_CLASS_BOILERPLATE_FULL (NautilusViewFrameCorbaPart, nautilus_view_frame_c
 static void
 nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
 {
-	class->epv.open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
-	class->epv.open_location_prefer_existing_window = impl_Nautilus_ViewFrame_open_location_prefer_existing_window;
-	class->epv.open_location_force_new_window = impl_Nautilus_ViewFrame_open_location_force_new_window;
+	class->epv.open_location = impl_Nautilus_ViewFrame_open_location;
 	class->epv.report_location_change = impl_Nautilus_ViewFrame_report_location_change;
 	class->epv.report_redirect = impl_Nautilus_ViewFrame_report_redirect;
 	class->epv.report_selection_change = impl_Nautilus_ViewFrame_report_selection_change;

@@ -281,7 +281,12 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 
 		/* Non-local executables don't get launched. They act like non-executables. */
 		if (file_uri == NULL) {
-			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
+			nautilus_view_open_location
+				(NAUTILUS_VIEW (view), 
+				 uri, 
+				 Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+				 0,
+				 NULL);
 		} else {
 			nautilus_launch_application_from_command (screen, NULL, file_uri, NULL, FALSE);
 			g_free (file_uri);
@@ -294,7 +299,12 @@ got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 				g_free (view->details->selection_location);
 			}
 			view->details->selection_location = g_strdup (uri);
-			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
+			nautilus_view_open_location
+				(NAUTILUS_VIEW (view), 
+				 uri,
+				 Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+				 0,
+				 NULL);
 		}
 	}
 

@@ -1,0 +1,163 @@
+<Root>
+
+<!-- A description of each placeholder's purpose is in libnautilus/nautilus-bonobo-ui.h -->
+
+<commands>
+	<!-- We define commands here for (at least) all the items
+	 for which we share tip or sensitivity state between more
+	 than one item (usually 1 menuitem and 1 toolitem.
+	-->
+	 
+	<cmd name="Back" accel="*Alt*Left"
+	 _tip="Go to the previous visited location"/>
+	<cmd name="Forward" accel="*Alt*Right"
+	 _tip="Go to the next visited location"/>
+	<cmd name="Find"
+	 _tip="Search this computer for files"/>
+	<cmd name="Toggle Find Mode" 
+	 _label="Find"
+	 _tip="Search this computer for files"/>
+</commands>
+
+<menu>
+	<submenu name="File">
+		<placeholder name="Close Items Placeholder">
+			<menuitem name="Close All Windows"
+			  _label="Close _All Windows"
+			  _tip="Close all Navigation windows"
+			  accel="*Control**Shift*w"
+			  verb="Close All Windows"/>
+		</placeholder>
+	</submenu>
+	<submenu name="View" _label="_View">
+		<placeholder name="Show Hide Placeholder" delimit="top">
+			<menuitem name="Show Hide Sidebar" 
+				  type="toggle"
+				  _label="_Side Pane"
+				  _tip="Change the visibility of this window's sidebar"
+				  accel="F9"
+				  id="Show Hide Sidebar"/>
+			<menuitem name="Show Hide Location Bar" 
+				  type="toggle"
+				  _label="Location _Bar"
+				  _tip="Change the visibility of this window's location bar"
+				  id="Show Hide Location Bar"/>
+			<menuitem name="Show Hide Statusbar" 
+				  type="toggle"
+				  _label="St_atusbar"
+				  _tip="Change the visibility of this window's statusbar"
+				  id="Show Hide Statusbar"/>
+		</placeholder>
+	</submenu>
+
+	<submenu name="Go" _label="_Go">
+                <placeholder name="Navigation Items">
+		<menuitem name="Up" 
+			  _label="_Up" 
+			  accel="*Alt*Up"
+			  pixtype="stock" pixname="gtk-go-up"
+			  verb="Up"/>
+		<menuitem name="Back" 
+			  _label="_Back"
+ 			  pixtype="stock" pixname="gtk-go-back"
+			  verb="Back"/>
+		<menuitem name="Forward" 
+			  _label="_Forward"
+ 			  pixtype="stock" pixname="gtk-go-forward"
+			  verb="Forward"/>
+                </placeholder>
+                <separator/>
+		<menuitem name="Home" 
+			  _label="_Home" 
+			  accel="*Alt*Home"
+			  pixtype="stock" pixname="gtk-home"
+			  verb="Home"/>
+		<menuitem name="Go to Trash"
+			  _label="_Trash"
+			  _tip="Go to the trash folder"
+			  verb="Go to Trash"/>
+		<menuitem name="Go to Location"
+			  _label="_Location..."
+			  accel="*Control*l"
+			  verb="Go to Location"/>
+
+		<separator/>
+
+		<menuitem name="Clear History" 
+			  _label="_Clear History" 
+			  _tip="Clear contents of Go menu and Back/Forward lists"
+			  verb="Clear History"/>
+
+		<placeholder name="History Placeholder" delimit="top"/>
+	</submenu>
+
+	<submenu name="Bookmarks" _label="_Bookmarks">
+		<menuitem name="Add Bookmark" 
+			  _label="_Add Bookmark" 
+			  _tip="Add a bookmark for the current location to this menu"
+			  accel="*Control*d"
+			  pixtype="stock" pixname="gtk-add"
+			  verb="Add Bookmark"/>
+		<menuitem name="Edit Bookmarks" 
+			  _label="_Edit Bookmarks" 
+			  _tip="Display a window that allows editing the bookmarks in this menu"
+			  accel="*Control*b"
+			  verb="Edit Bookmarks"/>
+
+		<placeholder name="Built-in Bookmarks Placeholder" delimit="top"/>
+		<placeholder name="Bookmarks Placeholder" delimit="top"/>
+	</submenu>
+</menu>
+
+<dockitem name="Location Bar" behavior="exclusive,never vertical">
+	<control name="Wrapper" behavior="expandable"/>
+</dockitem>
+
+<dockitem name="Toolbar" behavior="exclusive">
+
+	<toolitem name="Back"
+                  _label="Back"
+		  priority="1"
+	          pixtype="stock" pixname="gtk-go-back"
+	          verb="Back"/>
+	<control name="BackMenu"/>
+	<toolitem name="Forward"
+                  _label="Forward"
+	          pixtype="stock" pixname="gtk-go-forward"
+	          verb="Forward"/>
+	<control name="ForwardMenu"/>
+	<toolitem name="Up"
+                  _label="Up"
+	          pixtype="stock" pixname="gtk-go-up"
+	          verb="Up"/>
+	<toolitem name="Stop" _label="Stop"
+	          pixtype="stock" pixname="gtk-stop"
+	          verb="Stop"/>	
+	<toolitem name="Reload"
+		  _label="Reload"
+	          pixtype="stock" pixname="gtk-refresh"
+		  verb="Reload"/>
+	<separator/>
+
+	<toolitem name="Home"
+		  _label="Home"
+		  priority="1"
+	          pixtype="stock" pixname="gtk-home"
+		  verb="Home"/>
+	<toolitem name="Toggle Find Mode"
+		  priority="1"
+	          type="toggle"
+	          pixtype="stock" pixname="Search"
+		  verb="Toggle Find Mode"/>
+	<toolitem name="Burn CD"
+		  _label="Write to CD"
+		  priority="1"
+	          pixtype="stock" pixname="gtk-cdrom"
+		  verb="Burn CD"/>
+
+
+	<placeholder name="Extra Buttons Placeholder" delimit="top"/>
+		
+	<control name="ThrobberWrapper" behavior="pack-end"/>
+</dockitem>
+</Root>

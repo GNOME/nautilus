@@ -48,7 +48,7 @@ struct NautilusSwitchableNavigationBarDetails {
 	NautilusLocationBar *location_bar;
 	NautilusSwitchableSearchBar *search_bar;
 	
-	NautilusWindow *window;
+	NautilusNavigationWindow *window;
 	GtkWidget *hbox;
 };
 
@@ -119,7 +119,7 @@ create_search_bar_if_non_existant (NautilusSwitchableNavigationBar *bar)
 		return;
 	}
 
-	bar->details->search_bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (nautilus_switchable_search_bar_new (bar->details->window));
+	bar->details->search_bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (nautilus_switchable_search_bar_new (NAUTILUS_WINDOW (bar->details->window)));
 
 	g_signal_connect_object (bar->details->search_bar, "location_changed",
 				 G_CALLBACK (nautilus_navigation_bar_location_changed), bar, G_CONNECT_SWAPPED);
@@ -129,7 +129,7 @@ create_search_bar_if_non_existant (NautilusSwitchableNavigationBar *bar)
 
 
 GtkWidget *
-nautilus_switchable_navigation_bar_new (NautilusWindow *window)
+nautilus_switchable_navigation_bar_new (NautilusNavigationWindow *window)
 {
 	GtkWidget *bar;
 	NautilusSwitchableNavigationBar *switchable_navigation_bar;

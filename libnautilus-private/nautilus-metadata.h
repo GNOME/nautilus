@@ -60,6 +60,7 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"list_view_sort_reversed"
 
 #define NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY			"window_geometry"
+#define NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION		"window_scroll_position"
 
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR   	"sidebar_background_color"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE   	"sidebar_background_tile_image"

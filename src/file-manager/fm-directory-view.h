@@ -343,7 +343,9 @@ void                fm_directory_view_end_loading                      (FMDirect
  * FMDirectoryView and its subclasses 
  */
 void                fm_directory_view_activate_files                   (FMDirectoryView  *view,
-									GList            *files);
+									GList            *files,
+									Nautilus_ViewFrame_OpenMode mode,
+									Nautilus_ViewFrame_OpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 gboolean            fm_directory_view_confirm_multiple_windows         (FMDirectoryView  *view,

@@ -64,7 +64,7 @@ typedef struct {
 } NautilusSwitchableNavigationBarClass;
 
 GType    			    nautilus_switchable_navigation_bar_get_type	(void);
-GtkWidget* 			    nautilus_switchable_navigation_bar_new     	(NautilusWindow *window);
+GtkWidget* 			    nautilus_switchable_navigation_bar_new     	(NautilusNavigationWindow *window);
 NautilusSwitchableNavigationBarMode nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar     *switchable_navigation_bar);
 void       			    nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *switchable_navigation_bar,
 								 		 NautilusSwitchableNavigationBarMode  mode);

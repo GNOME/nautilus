@@ -130,8 +130,10 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	const char *existing_location;
 	gboolean prefer_existing_window;
 
-	prefer_existing_window = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
-
+#if NEW_UI_COMPLETE
+	/* FIXME: This needs more thought */
+#endif
+	prefer_existing_window = TRUE;
 
         /* If the user's preference is always_open_in_new_window
 	 * we raise an existing window for the location if it already exists.
@@ -156,21 +158,26 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
         }
 
         /* Otherwise, open a new window. */
-	window = nautilus_application_create_window (shell->details->application,
-						     gdk_screen_get_default ());
-
+	if (uri) {
+		window = nautilus_application_present_spatial_window (shell->details->application,
+								     uri,
+								     gdk_screen_get_default ());
+	} else {
+		window = nautilus_application_create_navigation_window (shell->details->application,
+									gdk_screen_get_default ());
+		if (uri == NULL) {
+			nautilus_window_go_home (window);
+		} else {
+			nautilus_window_go_to (window, uri);
+		}
+	}
+	
 	if (geometry != NULL) {
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								      geometry,
 								      APPLICATION_WINDOW_MIN_WIDTH,
 								      APPLICATION_WINDOW_MIN_HEIGHT,
 								      FALSE);
-	}
-
-	if (uri == NULL) {
-		nautilus_window_go_home (window);
-	} else {
-		nautilus_window_go_to (window, uri);
 	}
 }
 
@@ -348,11 +355,16 @@ restore_one_window_callback (const char *attributes,
 		screen = gdk_screen_get_default ();
 	}
 
-	window = nautilus_application_create_window (shell->details->application, screen);
-	
+#if NEW_UI_COMPLETE 
+/* don't always create object windows here */
+#endif
 	if (eel_strlen (location) > 0) {
-		nautilus_window_go_to (window, location);
+		window = nautilus_application_present_spatial_window (shell->details->application, 
+								      location,
+								      screen);
 	} else {
+		window = nautilus_application_create_navigation_window (shell->details->application,
+									screen);
 		nautilus_window_go_home (window);
 	}
 

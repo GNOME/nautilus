@@ -1,3 +1,447 @@
+2003-09-30  Dave Camp  <dave@ximian.com>
+
+	* Merge the nautilus-spatial-playground branch to HEAD.
+
+2003-09-30  Dave Camp  <dave@ximian.com>
+
+	* src/Makefile.am:
+	* src/nautilus-application.c:
+	(nautilus_application_get_spatial_window_list),
+	(nautilus_application_get_existing_spatial_window),
+	(find_parent_spatial_window),
+	(nautilus_application_close_with_parent_windows),
+	(spatial_window_destroyed_callback),
+	(nautilus_application_present_spatial_window):
+	* src/nautilus-application.h:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_update_directory):
+	* src/nautilus-desktop-window.h:
+	* src/nautilus-object-window.c:
+	* src/nautilus-object-window.h:
+	* src/nautilus-shell.c: (open_window),
+	(restore_one_window_callback):
+	* src/nautilus-spatial-window.c: (save_window_geometry_timeout),
+	(nautilus_spatial_window_configure_event),
+	(nautilus_spatial_window_unrealize),
+	(nautilus_spatial_window_destroy),
+	(nautilus_spatial_window_finalize),
+	(nautilus_spatial_window_save_geometry),
+	(nautilus_spatial_window_save_scroll_position),
+	(nautilus_spatial_window_show),
+	(file_menu_close_with_parent_windows_callback), (real_merge_menus),
+	(real_set_content_view_widget), (real_delete_event),
+	(nautilus_spatial_window_instance_init),
+	(nautilus_spatial_window_class_init):
+	* src/nautilus-spatial-window.h:
+	* src/nautilus-window-manage-views.c: (open_location),
+	(position_and_show_window_callback):
+	* src/nautilus-window-private.h:  Renamed NautilusObjectWindow 
+	to NautilusSpatialWindow.
+
+2003-09-30  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window-manage-views.c (load_new_location_in_all_views):
+	Don't load from window->new_content_view in the view list.
+
+2003-09-29  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_tear_down_sidebar),
+	(nautilus_navigation_window_clear_back_list),
+	(compare_view_identifier_with_iid),
+	(disconnect_and_destroy_sidebar_panel), (set_side_panel_image),
+	(side_panel_image_changed_callback),
+	(report_side_panel_failure_to_user),
+	(side_panel_view_failed_callback), (connect_side_panel),
+	(side_panel_view_loaded_callback),
+	(nautilus_navigation_window_set_sidebar_panels):
+	* src/nautilus-window-manage-views.c: (change_selection),
+	(update_title), (view_frame_info_new), (set_view_frame_info),
+	(nautilus_window_get_view_frame_label),
+	(report_content_view_failure_to_user_internal),
+	(load_new_location_in_all_views), (load_content_view),
+	(handle_view_failure), (position_and_show_window_callback),
+	(nautilus_window_stop_loading),
+	(nautilus_window_connect_extra_view),
+	(nautilus_window_disconnect_extra_view),
+	(content_view_failed_callback), (view_loaded_callback),
+	(connect_view), (disconnect_view), (disconnect_view_callback),
+	(nautilus_window_manage_views_destroy):
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window.h:  Move side-panel specific code into
+	the navigation window.
+
+2003-09-28  James Willcox  <james@ximian.com>
+
+	* libnautilus-private/nautilus-metadata.h:
+	* src/nautilus-object-window.c: (nautilus_object_window_destroy),
+	(nautilus_object_window_save_scroll_position), (delete_event_cb),
+	(nautilus_object_window_instance_init):
+	* src/nautilus-object-window.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_first_visible_file):
+	* src/nautilus-window-manage-views.c:
+	(position_and_show_window_callback):
+
+	Save the scroll position in object windows.
+
+2003-09-24  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-desktop-window.c: (real_get_title),
+	(nautilus_desktop_window_class_init): Return "Desktop" for everything.
+	* src/nautilus-navigation-window.c: (real_set_title),
+	(nautilus_navigation_window_class_init): Set the title to 
+	"File Browser: foo"
+	* src/nautilus-object-window.c: (real_set_title),
+	(nautilus_object_window_class_init): Set the title to the object
+	name.
+	* src/nautilus-window-manage-views.c: (update_title): Moved
+	title handling to NautilusWindow.
+	(nautilus_window_manage_views_destroy): Destroy side panes.
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (compute_default_title), (real_get_title),
+	(nautilus_window_get_title), (real_set_title),
+	(nautilus_window_set_title), (nautilus_window_update_title),
+	(nautilus_window_class_init): Moved title handling here.
+
+2003-09-24  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-navigation-window.c: (activate_nth_short_list_item),
+	(activate_extra_viewer), (view_as_menu_switch_views_callback),
+	(create_view_as_menu_item), (new_gtk_separator),
+	(view_as_menu_choose_view_callback), (load_view_as_menu),
+	(real_load_view_as_menu), (real_set_content_view_widget),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-window-manage-views.c:
+	(location_has_really_changed):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (update_extra_viewer_in_view_as_menus),
+	(nautilus_window_synch_view_as_menus), (real_load_view_as_menu),
+	(load_view_as_menus_callback), (real_set_content_view_widget),
+	(nautilus_window_class_init):
+	* src/nautilus-window.h: Fixed up the View As optionmenu for
+	the navigation window. 
+
+2003-09-23  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-navigation-window-menus.c: (forget_history_if_yes),
+	(forget_history_if_confirmed), (go_menu_forget_history_callback),
+	(nautilus_window_remove_go_menu_callback),
+	(nautilus_window_remove_go_menu_items), (refresh_go_menu),
+	(refresh_go_menu_idle_callback), (schedule_refresh_go_menu),
+	(nautilus_navigation_window_initialize_go_menu),
+	(nautilus_navigation_window_initialize_menus_part_1),
+	(nautilus_navigation_window_initialize_menus_part_2):
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1):
+	* src/nautilus-window.c: (ui_idle_handler):  Moved the Go menu 
+	and history to the navigation window.  In the spatial window,
+	moved Open Parent and Open Location to the File menu, and added 
+	a Places menu with a few static bookmarks.
+
+2003-09-23  Dave Camp  <dave@ximian.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.c: (call_open_location),
+	(nautilus_view_open_location):
+	* libnautilus/nautilus-view.h:
+	* src/nautilus-view-frame-corba.c: (open_location), (close_window),
+	(impl_Nautilus_ViewFrame_open_location),
+	(nautilus_view_frame_corba_part_class_init):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_open_location),
+	(nautilus_view_frame_class_init):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c: (new_window_show_callback),
+	(open_location), (nautilus_window_open_location),
+	(nautilus_window_open_location_with_selection),
+	(open_location_callback): Implemented a new open_location API.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_did_not_drag),
+	(nautilus_icon_container_class_init), (handle_icon_button_press),
+	(activate_selected_items), (activate_selected_items_alternate):
+	* libnautilus-private/nautilus-icon-container.h:
+	* src/file-manager/fm-directory-view.c: (open_callback),
+	(open_location), (switch_location_and_view),
+	(open_one_in_new_window), (open_scripts_folder_callback),
+	(activate_callback), (fm_directory_view_activate_file),
+	(fm_directory_view_activate_files):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_activate_callback),
+	(icon_container_activate_alternate_callback),
+	(create_icon_container):
+	* src/file-manager/fm-list-view.c: (activate_selected_items),
+	(activate_selected_items_alternate), (fm_list_view_did_not_drag),
+	(button_press_callback):  Use new open_location API, if an 
+	item is middle-clicked to activate, close the window
+	behind it.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback):
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_open_location_callback):
+	* components/history/nautilus-history-view.c:
+	(row_activated_callback):
+	* components/tree/nautilus-tree-view.c:
+	(got_activation_uri_callback): Updated for new open_location API.
+
+2003-09-21  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-shell-ui.xml: Get rid of the find menu item for 
+	now.
+
+2003-09-21  Dave Camp  <dave@ximian.com>
+
+	* src/Makefile.am: Added nautilus-spatial-window-ui.xml.
+	* src/nautilus-application.h:
+	* src/nautilus-application.c:
+	(nautilus_application_close_all_navigation_windows): Moved
+	here from nautilus_application_close_all_windows, only
+	close navigation windows.
+	(nautilus_application_get_existing_object_window),
+	(find_parent_object_window),
+	(nautilus_application_close_with_parent_windows): New functions.
+	* src/nautilus-navigation-window-menus.c:
+	(file_menu_close_all_windows_callback),
+	(nautilus_navigation_window_initialize_menus_part_1):
+	* src/nautilus-navigation-window-ui.xml: Move "Close All Windows" 
+	to the navigation window.
+	* src/nautilus-object-window.h:
+	* src/nautilus-object-window.c:
+	(file_menu_close_with_parent_windows_callback), (real_merge_menus),
+	(nautilus_object_window_class_init): Added a "Close With Parents"
+	command to the spatial windows.
+	* src/nautilus-shell-ui.xml: 
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1): Took out "close all 
+	windows"
+
+2003-09-18  Dave Camp  <dcamp@novell.com>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h: Removed 
+	the "start with toolbar" preference.
+	* src/nautilus-navigation-window-menus.c: 
+	(nautilus_navigation_window_update_show_hide_menu_items),
+	(nautilus_navigation_window_initialize_menus_part_1): 
+	* src/nautilus-navigation-window-ui.xml: Removed the toolbar 
+	toggle.
+	* src/nautilus-window-private.h: Removed the unused 
+	throbber bits.
+	* src/nautilus-window-toolbars.c:
+	(nautilus_navigation_window_initialize_toolbars): Ignore the
+	"start with toolbar" preference.
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_show): Show or hide the dock 
+	items before showing the window.
+
+2003-09-14  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h: Removed the
+	"always use new window" preference.
+	* libnautilus/nautilus-view-component.idl: Updated the 
+	documentation for the open_location functions.
+	* src/Makefile.am: Added new files.
+	* src/file-manager/fm-directory-view.c: (open_alternate_callback),
+	(open_location), (switch_location_and_view),
+	(fm_directory_view_init), (fm_directory_view_finalize),
+	(open_one_in_new_window), (open_scripts_folder_callback),
+	(real_update_menus), (fm_directory_view_activate_files): Use new
+	window-opening logic.
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml: Moved "open
+	in new window" to Open With.
+	* src/nautilus-application.h:
+	* src/nautilus-application.c:
+	(nautilus_application_get_object_window_list), (create_window),
+	(object_window_destroyed_callback),
+	(nautilus_application_present_object_window): New functions.
+	(nautilus_application_create_navigation_window): Moved here
+	from nautilus_application_create_window().
+	(volume_unmounted_callback): Close the window if it's the last
+	one.
+	* src/nautilus-desktop-window.h:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_update_directory), (real_merge_menus),
+	(nautilus_desktop_window_class_init): Derive from 
+	NautilusObjectWindow.
+	* src/nautilus-location-bar.h:
+	* src/nautilus-location-bar.c: (nautilus_location_bar_get_window),
+	(drag_data_received_callback), (nautilus_location_bar_new): Take
+	a NautilusNavigationWindow.
+	* src/nautilus-navigation-window-menus.c: (go_menu_back_callback),
+	(go_menu_forward_callback),
+	(view_menu_show_hide_sidebar_state_changed_callback),
+	(view_menu_show_hide_toolbar_state_changed_callback),
+	(view_menu_show_hide_location_bar_state_changed_callback),
+	(nautilus_navigation_window_update_show_hide_menu_items),
+	(bookmarks_menu_add_bookmark_callback),
+	(bookmarks_menu_edit_bookmarks_callback), (append_separator),
+	(free_bookmark_list), (get_bookmark_list),
+	(remove_bookmarks_for_uri_if_yes), (show_bogus_bookmark_window),
+	(create_menu_item_from_node), (add_bookmark_for_current_location),
+	(edit_bookmarks),
+	(nautilus_window_bookmarks_preference_changed_callback),
+	(refresh_bookmarks_menu),
+	(nautilus_navigation_window_initialize_bookmarks_menu),
+	(nautilus_navigation_window_initialize_menus_part_1),
+	(nautilus_navigation_window_initialize_menus_part_2),
+	(nautilus_navigation_window_remove_bookmarks_menu_callback),
+	(nautilus_navigation_window_remove_bookmarks_menu_items),
+	(append_dynamic_bookmarks), (refresh_bookmarks_menu_idle_callback),
+	(schedule_refresh_bookmarks_menu):  Moved all of the
+	navigation-window-specific menu code here.
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-shell.c: (open_window),
+	(restore_one_window_callback): Open navigation windows (this
+	needs work).
+	* src/nautilus-switchable-navigation-bar.c:
+	(create_search_bar_if_non_existant),
+	(nautilus_switchable_navigation_bar_new):
+	* src/nautilus-switchable-navigation-bar.h: Take a 
+	NautilusNavigationWindow.
+	* src/nautilus-view-frame.c: (emit_zoom_parameters_changed),
+	(emit_zoom_parameters_changed_callback),
+	(emit_zoom_level_changed_callback),
+	(nautilus_view_frame_get_zoom_level),
+	(nautilus_view_frame_get_min_zoom_level),
+	(nautilus_view_frame_get_max_zoom_level),
+	(nautilus_view_frame_get_has_min_zoom_level),
+	(nautilus_view_frame_get_has_max_zoom_level),
+	(nautilus_view_frame_get_can_zoom_in),
+	(nautilus_view_frame_get_can_zoom_out):
+	* src/nautilus-view-frame.h: Store zoom parameters in the
+	view frame so that it can be a model for the UI rather than
+	the zoom control.
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_instance_init), (go_to_callback),
+	(navigation_bar_location_changed_callback),
+	(navigation_bar_mode_changed_callback),
+	(side_pane_close_requested_callback),
+	(side_pane_size_allocate_callback), (setup_side_pane_width),
+	(set_current_side_panel), (side_pane_switch_page_callback),
+	(nautilus_navigation_window_set_up_sidebar),
+	(nautilus_navigation_window_tear_down_sidebar),
+	(nautilus_navigation_window_unrealize),
+	(nautilus_navigation_window_destroy),
+	(nautilus_navigation_window_finalize),
+	(nautilus_navigation_window_add_sidebar_panel),
+	(nautilus_navigation_window_remove_sidebar_panel),
+	(nautilus_navigation_window_go_back),
+	(nautilus_navigation_window_go_forward),
+	(nautilus_navigation_window_set_search_mode),
+	(nautilus_navigation_window_get_search_mode),
+	(nautilus_navigation_window_go_home),
+	(nautilus_navigation_window_allow_back),
+	(nautilus_navigation_window_allow_forward), (real_merge_menus),
+	(zoom_level_changed_callback), (zoom_parameters_changed_callback),
+	(connect_view), (disconnect_view), (real_set_content_view_widget),
+	(real_set_throbber_active),
+	(nautilus_navigation_window_show_location_bar_temporarily),
+	(real_prompt_for_location),
+	(nautilus_navigation_window_clear_forward_list),
+	(nautilus_navigation_window_clear_back_list), (add_sidebar_panels),
+	(show_dock_item), (hide_dock_item), (dock_item_showing),
+	(nautilus_navigation_window_hide_location_bar),
+	(nautilus_navigation_window_show_location_bar),
+	(nautilus_navigation_window_location_bar_showing),
+	(nautilus_navigation_window_hide_toolbar),
+	(nautilus_navigation_window_show_toolbar),
+	(nautilus_navigation_window_toolbar_showing),
+	(nautilus_navigation_window_hide_sidebar),
+	(nautilus_navigation_window_show_sidebar),
+	(nautilus_navigation_window_sidebar_showing),
+	(nautilus_navigation_window_get_base_page_index),
+	(nautilus_navigation_window_show),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-navigation-window.h:
+	* src/nautilus-object-window.c: (save_window_geometry_timeout),
+	(nautilus_object_window_configure_event),
+	(nautilus_object_window_unrealize),
+	(nautilus_object_window_destroy),
+	(nautilus_object_window_finalize),
+	(nautilus_object_window_save_geometry),
+	(nautilus_object_window_show), (real_set_content_view_widget),
+	(nautilus_object_window_instance_init),
+	(nautilus_object_window_class_init):
+	* src/nautilus-object-window.h:
+	* src/nautilus-window-manage-views.c: (change_selection),
+	(update_title), (set_displayed_location), (handle_go_back),
+	(handle_go_forward), (handle_go_elsewhere), (update_up_button),
+	(viewed_file_changed_callback), (update_history),
+	(update_for_new_location), (open_location),
+	(nautilus_window_open_location),
+	(nautilus_window_open_location_with_selection),
+	(load_new_location_in_sidebar_panels),
+	(load_new_location_in_all_views),
+	(disconnect_and_destroy_sidebar_panel), (handle_view_failure),
+	(position_and_show_window_callback),
+	(nautilus_window_stop_loading),
+	(nautilus_navigation_window_set_sidebar_panels),
+	(zoom_level_changed_callback), (zoom_parameters_changed_callback),
+	(go_back_callback),
+	(open_location_prefer_existing_window_callback),
+	(open_location_force_new_window_callback),
+	(report_redirect_callback), (set_side_panel_image),
+	(view_loaded_callback), (nautilus_window_manage_views_destroy),
+	(nautilus_navigation_window_back_or_forward):
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-menus.c: (bookmark_holder_new),
+	(show_bogus_bookmark_window), (activate_bookmark_in_menu_item),
+	(nautilus_menus_append_bookmark_to_menu),
+	(file_menu_new_window_callback), (file_menu_burn_cd_callback),
+	(go_menu_location_callback),
+	(nautilus_window_update_show_hide_menu_items),
+	(nautilus_window_initialize_menus_part_1),
+	(nautilus_window_initialize_menus_part_2), (refresh_go_menu):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c:
+	(activate_back_or_forward_menu_item),
+	(activate_back_menu_item_callback),
+	(activate_forward_menu_item_callback),
+	(create_back_or_forward_menu), (get_back_button),
+	(get_forward_button), (back_or_forward_button_pressed_callback),
+	(create_back_or_forward_toolbar_item), (throbber_set_throbbing),
+	(throbber_created_callback),
+	(nautilus_navigation_window_set_throbber_active),
+	(nautilus_navigation_window_activate_throbber),
+	(nautilus_navigation_window_initialize_toolbars):
+	* src/nautilus-window.c: (nautilus_window_instance_init),
+	(ui_idle_handler), (nautilus_window_go_up),
+	(nautilus_window_allow_up), (nautilus_window_allow_stop),
+	(nautilus_window_allow_reload), (nautilus_window_allow_burn_cd),
+	(nautilus_window_go_home), (nautilus_window_launch_cd_burner),
+	(nautilus_window_prompt_for_location),
+	(nautilus_window_get_location), (real_merge_menus),
+	(nautilus_window_constructed), (nautilus_window_destroy),
+	(nautilus_window_finalize), (nautilus_window_close),
+	(update_extra_viewer_in_view_as_menus),
+	(nautilus_window_synch_view_as_menus),
+	(load_view_as_menus_callback), (nautilus_window_display_error),
+	(real_set_content_view_widget),
+	(nautilus_window_set_content_view_widget), (show_dock_item),
+	(hide_dock_item), (dock_item_showing),
+	(nautilus_window_hide_status_bar),
+	(nautilus_window_show_status_bar),
+	(nautilus_window_status_bar_showing), (nautilus_window_show),
+	(nautilus_window_get_ui_container),
+	(nautilus_window_set_viewed_file), (add_to_history_list),
+	(real_add_current_location_to_history_list),
+	(nautilus_window_add_current_location_to_history_list),
+	(nautilus_forget_history), (nautilus_window_class_init):
+	* src/nautilus-window.h: Split NautilusWindow into three 
+	classes.  A NautilusWindow base class, a NautilusObjectWindow
+	class, and a NautilusNavigationWindow class.
+
 2003-09-30  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_scroll_to_icon):
@@ -107,7 +551,7 @@
 	* cut-n-paste-code/gsequence/gsequence.c:
 	Patch from Soeren Sandmann to fix removes.
 	Thanks to Martin Wehner for tracking this down.
-
+	
 2003-09-11 Mathieu Lacage <mathieu@gnome.org>
 
 	* src/file-manager/fm-properties-window.c: add a wait cursor during

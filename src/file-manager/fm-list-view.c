@@ -153,7 +153,23 @@ activate_selected_items (FMListView *view)
 	
 	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
-					  file_list);
+					  file_list,
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  0);
+	nautilus_file_list_free (file_list);
+
+}
+
+static void
+activate_selected_items_alternate (FMListView *view)
+{
+	GList *file_list;
+	
+	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
+					  file_list,
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND);
 	nautilus_file_list_free (file_list);
 
 }
@@ -185,10 +201,13 @@ fm_list_view_did_not_drag (FMListView *view,
 			gtk_tree_selection_select_path (selection, path);
 		}
 
-		if ((event->button == 1)
-		    && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
+		if ((click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
 		    && !button_event_modifies_selection(event)) {
-			activate_selected_items (view);
+			if (event->button == 1) {
+				activate_selected_items (view);
+			} else if (event->button == 2) {
+				activate_selected_items_alternate (view);
+			}
 		}
 		gtk_tree_path_free (path);
 	}
@@ -421,7 +440,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if (event->button == 1 && 
+		if ((event->button == 1 || event->button == 2)  && 
 		    event->type == GDK_BUTTON_PRESS) {
 			if (view->details->double_click_path[1]) {
 				gtk_tree_path_free (view->details->double_click_path[1]);
@@ -430,13 +449,15 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			view->details->double_click_path[0] = gtk_tree_path_copy (path);
 		}
 		
-		if (event->type == GDK_2BUTTON_PRESS && 
-		    (event->button == 1 || event->button == 3)) {
+		if (event->type == GDK_2BUTTON_PRESS) {
 			if (view->details->double_click_path[1] &&
 			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0
 			    && !button_event_modifies_selection (event)) {
-				activate_selected_items (view);
-				
+				if ((event->button == 1 || event->button == 3)) {
+					activate_selected_items (view);
+				} else if (event->button == 2) {
+					activate_selected_items_alternate (view);
+				}
 			}
 		}
 		

@@ -31,7 +31,7 @@
 #define NAUTILUS_LOCATION_BAR_H
 
 #include "nautilus-navigation-bar.h"
-#include "nautilus-window.h"
+#include "nautilus-navigation-window.h"
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
@@ -56,6 +56,6 @@ typedef struct {
 } NautilusLocationBarClass;
 
 GType      nautilus_location_bar_get_type     	(void);
-GtkWidget* nautilus_location_bar_new          	(NautilusWindow *window);
+GtkWidget* nautilus_location_bar_new          	(NautilusNavigationWindow *window);
 
 #endif /* NAUTILUS_LOCATION_BAR_H */

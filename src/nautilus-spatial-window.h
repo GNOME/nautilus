@@ -5,6 +5,7 @@
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
+ *  Copyright (C) 2003 Ximian, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -20,147 +21,45 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@bentspoon.com>
- *
  */
 /* nautilus-window.h: Interface of the main window object */
 
-#ifndef NAUTILUS_WINDOW_H
-#define NAUTILUS_WINDOW_H
+#ifndef NAUTILUS_SPATIAL_WINDOW_H
+#define NAUTILUS_SPATIAL_WINDOW_H
 
-#include <bonobo/bonobo-window.h>
-#include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
-#include "nautilus-applicable-views.h"
-#include "nautilus-view-frame.h"
-#include "nautilus-application.h"
-#include "nautilus-information-panel.h"
-#include "nautilus-side-pane.h"
+#include "nautilus-window.h"
+#include "nautilus-window-private.h"
 
-#define NAUTILUS_TYPE_WINDOW              (nautilus_window_get_type())
-#define NAUTILUS_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
-#define NAUTILUS_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_IS_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
-#define NAUTILUS_IS_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_TYPE_SPATIAL_WINDOW              (nautilus_spatial_window_get_type())
+#define NAUTILUS_SPATIAL_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SPATIAL_WINDOW, NautilusSpatialWindow))
+#define NAUTILUS_SPATIAL_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SPATIAL_WINDOW, NautilusSpatialWindowClass))
+#define NAUTILUS_IS_SPATIAL_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SPATIAL_WINDOW))
+#define NAUTILUS_IS_SPATIAL_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SPATIAL_WINDOW))
 
-#ifndef NAUTILUS_WINDOW_DEFINED
-#define NAUTILUS_WINDOW_DEFINED
-typedef struct NautilusWindow NautilusWindow;
+#ifndef NAUTILUS_SPATIAL_WINDOW_DEFINED
+#define NAUTILUS_SPATIAL_WINDOW_DEFINED
+typedef struct _NautilusSpatialWindow        NautilusSpatialWindow;
 #endif
+typedef struct _NautilusSpatialWindowClass   NautilusSpatialWindowClass;
+typedef struct _NautilusSpatialWindowDetails NautilusSpatialWindowDetails;
 
-typedef struct {
-        BonoboWindowClass parent_spot;
+struct _NautilusSpatialWindow {
+        NautilusWindow parent_object;
 
-	/* Function pointers for overriding, without corresponding signals */
-
-	/* add_current_location_to_history_list is a function pointer that
-	 * subclasses may override if they wish to add something other than
-	 * NautilusWindow's idea of the "current location" to the history
-	 * list, or nothing at all.
-	 */
-        void (* add_current_location_to_history_list) (NautilusWindow *window);
-} NautilusWindowClass;
-
-typedef enum {
-        NAUTILUS_WINDOW_NOT_SHOWN,
-        NAUTILUS_WINDOW_POSITION_SET,
-        NAUTILUS_WINDOW_SHOULD_SHOW
-} NautilusWindowShowState;
-
-typedef struct NautilusWindowDetails NautilusWindowDetails;
-
-struct NautilusWindow {
-        BonoboWindow parent_object;
+        gboolean affect_spatial_window_on_next_location_change;
         
-        NautilusWindowDetails *details;
-        
-        /** UI stuff **/
-        NautilusSidePane *sidebar;
-        NautilusInformationPanel *information_panel;
-        GtkWidget *content_hbox;
-        GtkWidget *view_as_option_menu;
-        GtkWidget *navigation_bar;
-        
-	char *last_geometry;
-	
-       guint save_geometry_timeout_id;
-	  
-        /** CORBA-related elements **/
-        NautilusApplication *application;
-        
-        /** State information **/
-        
-        /* Information about current location/selection */
-        
-        /* Back/Forward chain, and history list. 
-         * The data in these lists are NautilusBookmark pointers. 
-         */
-        GList *back_list, *forward_list;
-        
-        NautilusBookmark *current_location_bookmark; 
-        NautilusBookmark *last_location_bookmark;
-        
-        /* Current views stuff */
-        NautilusViewFrame *content_view;
-        GList *sidebar_panels;
-        
-        /* Widgets to keep track of (for state changes, etc) */      
-        GtkWidget *zoom_control;
-        
-        /* Pending changes */
-        NautilusViewFrame *new_content_view;
-
-        /* Window showed state (for saved_window_positions) */
-        NautilusWindowShowState show_state;
+        NautilusSpatialWindowDetails *details;
 };
 
-GType            nautilus_window_get_type             (void);
-void		 nautilus_window_ui_freeze	      (NautilusWindow	 *window);
-void		 nautilus_window_ui_thaw	      (NautilusWindow	 *window);
-void             nautilus_window_close                (NautilusWindow    *window);
-char *           nautilus_window_get_location         (NautilusWindow    *window);
-void             nautilus_window_go_to                (NautilusWindow    *window,
-                                                       const char        *location);
-gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);
-void             nautilus_window_set_search_mode      (NautilusWindow    *window,
-                                                       gboolean           search_mode);
-void             nautilus_window_go_home              (NautilusWindow    *window);
-void             nautilus_window_display_error        (NautilusWindow    *window,
-                                                       const char        *error_msg);
-void             nautilus_window_allow_back           (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_forward        (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_up             (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_reload         (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_stop           (NautilusWindow    *window,
-                                                       gboolean           allow);
-void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
-                                                       gboolean           allow);
-void		 nautilus_window_clear_back_list      (NautilusWindow    *window);
-void		 nautilus_window_clear_forward_list   (NautilusWindow    *window);
-void		 nautilus_forget_history	      (void);
-void             nautilus_bookmarks_exiting           (void);
-void		 nautilus_window_reload		      (NautilusWindow	 *window);
-gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window,
-                                                       gboolean           save_preference);
-void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window,
-                                                       gboolean           save_preference);
-gboolean	 nautilus_window_location_bar_showing (NautilusWindow    *window);
-void 		 nautilus_window_hide_toolbar         (NautilusWindow 	 *window);
-void 		 nautilus_window_show_toolbar         (NautilusWindow 	 *window);
-gboolean	 nautilus_window_toolbar_showing      (NautilusWindow    *window);
-void 		 nautilus_window_hide_sidebar         (NautilusWindow 	 *window);
-void 		 nautilus_window_show_sidebar         (NautilusWindow 	 *window);
-gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);
-void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
-void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
-gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
-void		 nautilus_window_save_geometry	      (NautilusWindow 	 *window);
+struct _NautilusSpatialWindowClass {
+        NautilusWindowClass parent_spot;
+};
+
+
+GType            nautilus_spatial_window_get_type             (void);
+GtkWidget       *nautilus_spatial_window_get                  (const char            *uri);
+void             nautilus_spatial_window_save_geometry        (NautilusSpatialWindow *window);
+void             nautilus_spatial_window_save_scroll_position (NautilusSpatialWindow *window);
+
 
 #endif

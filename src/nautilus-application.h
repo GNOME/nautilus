@@ -44,6 +44,11 @@
 typedef struct NautilusWindow NautilusWindow;
 #endif
 
+#ifndef NAUTILUS_SPATIAL_WINDOW_DEFINED
+#define NAUTILUS_SPATIAL_WINDOW_DEFINED
+typedef struct _NautilusSpatialWindow NautilusSpatialWindow;
+#endif
+
 typedef struct {
 	BonoboGenericFactory parent;
 	NautilusUndoManager *undo_manager;
@@ -63,10 +68,16 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             do_first_time_druid_check,
 							     const char          *default_geometry,
 							     const char          *urls[]);
-GList *              nautilus_application_get_window_list   (void);
-NautilusWindow *     nautilus_application_create_window     (NautilusApplication *application,
-							     GdkScreen           *screen);
-void                 nautilus_application_close_all_windows (void);
+GList *              nautilus_application_get_window_list           (void);
+GList *              nautilus_application_get_spatial_window_list    (void);
+
+NautilusWindow *     nautilus_application_present_spatial_window     (NautilusApplication *application,
+								      const char          *location,
+								      GdkScreen           *screen);
+NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
+									GdkScreen           *screen);
+void                 nautilus_application_close_all_navigation_windows (void);
+void                 nautilus_application_close_with_parent_windows (NautilusSpatialWindow *window);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
 

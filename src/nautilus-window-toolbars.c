@@ -66,39 +66,40 @@ enum {
 
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
-				    NautilusWindow *window,
+				    NautilusNavigationWindow *window,
 				    gboolean back)
 {
 	int index;
 	
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
 	index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
-	nautilus_window_back_or_forward (window, back, index);
+
+	nautilus_navigation_window_back_or_forward (window, back, index);
 }
 
 static void
-activate_back_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *window)
+activate_back_menu_item_callback (GtkMenuItem *menu_item, NautilusNavigationWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, TRUE);
 }
 
 static void
-activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *window)
+activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusNavigationWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, FALSE);
 }
 
 static GtkMenu *
-create_back_or_forward_menu (NautilusWindow *window, gboolean back)
+create_back_or_forward_menu (NautilusNavigationWindow *window, gboolean back)
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
 	GList *list_link;
 	int index;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 	
 	menu = GTK_MENU (gtk_menu_new ());
 
@@ -124,13 +125,13 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 }
 
 static GtkWidget *
-get_back_button (NautilusWindow *window)
+get_back_button (NautilusNavigationWindow *window)
 {
 	return window->details->back_button_item;
 }
 
 static GtkWidget *
-get_forward_button (NautilusWindow *window)
+get_forward_button (NautilusNavigationWindow *window)
 {
 	return window->details->forward_button_item;
 }
@@ -163,20 +164,20 @@ back_or_forward_button_pressed_callback (GtkWidget *widget,
 					 GdkEventButton *event,
 					 gpointer *user_data)
 {
-	NautilusWindow *window;
+	NautilusNavigationWindow *window;
 	gboolean back;
 
 	g_return_val_if_fail (GTK_IS_BUTTON (widget), FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_WINDOW (user_data), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (user_data), FALSE);
 
-	window = NAUTILUS_WINDOW (user_data);
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
 	back = widget == get_back_button (window);
 	g_assert (back || widget == get_forward_button (window));
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
 
-	gnome_popup_menu_do_popup_modal (GTK_WIDGET (create_back_or_forward_menu (NAUTILUS_WINDOW (user_data), back)),
+	gnome_popup_menu_do_popup_modal (GTK_WIDGET (create_back_or_forward_menu (NAUTILUS_NAVIGATION_WINDOW (user_data), back)),
 					 menu_position_under_widget, widget, event, widget, widget);
 	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
@@ -200,7 +201,7 @@ back_or_forward_key_pressed_callback (GtkWidget *widget,
 }
 
 static GtkWidget *
-create_back_or_forward_toolbar_item (NautilusWindow *window, 
+create_back_or_forward_toolbar_item (NautilusNavigationWindow *window, 
 				     const char     *tooltip,
 				     const char     *control_path)
 {
@@ -226,7 +227,7 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 				 G_CALLBACK (back_or_forward_button_pressed_callback),
 				 window, 0);
 
-	bonobo_ui_component_widget_set (window->details->shell_ui,
+	bonobo_ui_component_widget_set (NAUTILUS_WINDOW (window)->details->shell_ui,
 					control_path,
 					button,
 					NULL);
@@ -235,7 +236,7 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 }
 
 static void
-throbber_set_throbbing (NautilusWindow *window,
+throbber_set_throbbing (NautilusNavigationWindow *window,
 			gboolean        throbbing)
 {
 	CORBA_boolean b;
@@ -256,7 +257,7 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 			   gpointer           user_data)
 {
 	char *exception_as_text;
-	NautilusWindow *window;
+	NautilusNavigationWindow *window;
 
 	if (BONOBO_EX (ev)) {
 		exception_as_text = bonobo_exception_get_text (ev);
@@ -265,13 +266,13 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 		return;
 	}
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (user_data));
 
-	window = NAUTILUS_WINDOW (user_data);
+	window = NAUTILUS_NAVIGATION_WINDOW (user_data);
 
 	window->details->throbber_activating = FALSE;
 
-	bonobo_ui_component_object_set (window->details->shell_ui,
+	bonobo_ui_component_object_set (NAUTILUS_WINDOW (window)->details->shell_ui,
 					"/Toolbar/ThrobberWrapper",
 					throbber, ev);
 	CORBA_exception_free (ev);
@@ -292,7 +293,8 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 }
 
 void
-nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
+nautilus_navigation_window_set_throbber_active (NautilusNavigationWindow *window, 
+						gboolean allow)
 {
 	if (( window->details->throbber_active &&  allow) ||
 	    (!window->details->throbber_active && !allow)) {
@@ -304,23 +306,17 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	else
 		access ("nautilus-throbber: stop", 0);
 
-	window->details->throbber_active = allow;
-
-	nautilus_window_ui_freeze (window);
-
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+	nautilus_bonobo_set_sensitive (NAUTILUS_WINDOW (window)->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
 
+	window->details->throbber_active = allow;
 	if (window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
 		throbber_set_throbbing (window, allow);
 	}
-
-	nautilus_window_ui_thaw (window);
 }
 
-
 void
-nautilus_window_activate_throbber (NautilusWindow *window)
+nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 {
 	CORBA_Environment ev;
 	char *exception_as_text;
@@ -355,13 +351,11 @@ nautilus_window_activate_throbber (NautilusWindow *window)
 }
 
 void
-nautilus_window_initialize_toolbars (NautilusWindow *window)
+nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window)
 {
-	nautilus_window_ui_freeze (window);
+	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
-		nautilus_window_activate_throbber (window);
-	}
+	nautilus_navigation_window_activate_throbber (window);
 
 	window->details->back_button_item = create_back_or_forward_toolbar_item 
 		(window, _("Go back a few pages"),
@@ -370,5 +364,5 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		(window, _("Go forward a number of pages"),
 		 "/Toolbar/ForwardMenu");
 
-	nautilus_window_ui_thaw (window);
+	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }

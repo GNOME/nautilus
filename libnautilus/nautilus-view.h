@@ -70,13 +70,11 @@ NautilusView *     nautilus_view_new_from_bonobo_control              (BonoboCon
 BonoboControl *    nautilus_view_get_bonobo_control                   (NautilusView           *view);
 
 /* Calls to the Nautilus shell via the view frame. See the IDL for detailed comments. */
-void               nautilus_view_open_location_in_this_window         (NautilusView           *view,
-								       const char             *location_uri);
-void               nautilus_view_open_location_prefer_existing_window (NautilusView           *view,
-								       const char             *location_uri);
-void               nautilus_view_open_location_force_new_window       (NautilusView           *view,
+void               nautilus_view_open_location                        (NautilusView           *view,
 								       const char             *location_uri,
-								       GList                  *selection); /* list of URI char *s */
+								       Nautilus_ViewFrame_OpenMode mode,
+								       Nautilus_ViewFrame_OpenFlags flags,
+								       GList                  *selection);
 void               nautilus_view_report_location_change               (NautilusView           *view,
 								       const char             *location_uri,
 								       GList                  *selection, /* list of URI char *s */

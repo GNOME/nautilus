@@ -43,13 +43,10 @@ void          nautilus_view_frame_queue_incoming_call                  (Portable
 BonoboObject *nautilus_view_frame_create_corba_part                    (NautilusViewFrame           *widget);
 NautilusViewFrame *nautilus_view_frame_from_servant                    (PortableServer_Servant     servant);
 
-/* ViewFrame */
-void          nautilus_view_frame_open_location_in_this_window         (NautilusViewFrame         *view,
-                                                                        const char                *location);
-void          nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame         *view,
-                                                                        const char                *location);
-void          nautilus_view_frame_open_location_force_new_window       (NautilusViewFrame         *view,
+void          nautilus_view_frame_open_location                        (NautilusViewFrame         *view,
                                                                         const char                *location,
+                                                                        Nautilus_ViewFrame_OpenMode mode,
+                                                                        Nautilus_ViewFrame_OpenFlags flags,
                                                                         GList                     *selection);
 void          nautilus_view_frame_report_location_change               (NautilusViewFrame         *view,
                                                                         const char                *location,

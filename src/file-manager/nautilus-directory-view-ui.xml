@@ -28,8 +28,8 @@
          _label="_Open"
 	 _tip="Open the selected item in this window"/>
 	<cmd name="OpenAlternate"
-         _label="Open _in New Window"
-	 _tip="Open each selected item in a new window"/>
+         _label="Navigation Window"
+	 _tip="Open each selected item in a navigation window"/>
 	<cmd name="Open Scripts Folder"
          _label="_Open Scripts Folder"
 	 _tip="Show the folder containing the scripts that appear in this menu"/>
@@ -94,12 +94,13 @@
                                   accel="*Control*o"
 				  pixtype="stock" pixname="gtk-open"
 				  verb="Open"/>
-			<menuitem name="OpenAlternate"
-				  accel="*Control**Shift*o"
-				  verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 _tip="Choose a program with which to open the selected item">
+			        <menuitem name="OpenAlternate"
+				  accel="*Control**Shift*o"
+				  verb="OpenAlternate"/>
+				<separator/>
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication"
 					  verb="OtherApplication"/>
@@ -219,12 +220,13 @@
 			<menuitem name="Open" 
 			 pixtype="stock" pixname="gtk-open"
 			 verb="Open"/>
-			<menuitem name="OpenAlternate" 
-			 verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 tearoff="0"
 				 _tip="Choose a program with which to open the selected item">
+			        <menuitem name="OpenAlternate" 
+			                  verb="OpenAlternate"/>
+                                <separator/>
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication" verb="OtherApplication"/>
 				<separator/>

@@ -39,8 +39,11 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
 #include "nautilus-main.h"
+#include "nautilus-spatial-window.h"
+#include "nautilus-navigation-window.h"
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
+#include "nautilus-window-private.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-macros.h>
@@ -87,6 +90,9 @@ static GList *nautilus_application_desktop_windows;
 
 /* Keeps track of all the nautilus windows. */
 static GList *nautilus_application_window_list;
+
+/* Keeps track of all the object windows */
+static GList *nautilus_application_spatial_window_list;
 
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
@@ -138,6 +144,12 @@ GList *
 nautilus_application_get_window_list (void)
 {
 	return nautilus_application_window_list;
+}
+
+GList *
+nautilus_application_get_spatial_window_list (void)
+{
+	return nautilus_application_spatial_window_list;
 }
 
 static void
@@ -755,10 +767,108 @@ nautilus_application_close_desktop (void)
 }
 
 void
-nautilus_application_close_all_windows (void)
+nautilus_application_close_all_navigation_windows (void)
 {
-	while (nautilus_application_window_list != NULL) {
-		nautilus_window_close (NAUTILUS_WINDOW (nautilus_application_window_list->data));
+	GList *list_copy;
+	GList *l;
+	
+	list_copy = g_list_copy (nautilus_application_window_list);
+	for (l = list_copy; l != NULL; l = l->next) {
+		NautilusWindow *window;
+		
+		window = NAUTILUS_WINDOW (l->data);
+		
+		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+			nautilus_window_close (window);
+		}
+	}
+	g_list_free (list_copy);
+}
+
+static NautilusSpatialWindow *
+nautilus_application_get_existing_spatial_window (const char *location)
+{
+	GList *l;
+	
+	for (l = nautilus_application_get_spatial_window_list ();
+	     l != NULL; l = l->next) {
+		char *window_location;
+		
+		window_location = nautilus_window_get_location (NAUTILUS_WINDOW (l->data));
+		if (!strcmp (location, window_location)) {
+			g_free (window_location);
+			return NAUTILUS_SPATIAL_WINDOW (l->data);
+		}
+		g_free (window_location);
+	}
+	return NULL;
+}
+
+static NautilusSpatialWindow *
+find_parent_spatial_window (NautilusSpatialWindow *window)
+{
+	NautilusFile *file;
+	NautilusFile *parent_file;
+	char *location;
+	char *desktop_directory;
+
+	location = nautilus_window_get_location (NAUTILUS_WINDOW (window));
+	file = nautilus_file_get (location);
+	g_free (location);
+
+	if (!file) {
+		return NULL;
+	}
+	
+	desktop_directory = nautilus_get_desktop_directory_uri ();	
+	
+	parent_file = nautilus_file_get_parent (file);
+	nautilus_file_unref (file);
+	while (parent_file) {
+		NautilusSpatialWindow *parent_window;
+		
+		location = nautilus_file_get_uri (parent_file);
+
+		/* Stop at the desktop directory, as this is the
+		 * conceptual root of the spatial windows */
+		if (!strcmp (location, desktop_directory)) {
+			g_free (location);
+			g_free (desktop_directory);
+			nautilus_file_unref (parent_file);
+			return NULL;
+		}
+
+		parent_window = nautilus_application_get_existing_spatial_window (location);
+		g_free (location);
+		
+		if (parent_window) {
+			nautilus_file_unref (parent_file);
+			return parent_window;
+		}
+		file = parent_file;
+		parent_file = nautilus_file_get_parent (file);
+		nautilus_file_unref (file);
+	}
+	g_free (desktop_directory);
+
+	return NULL;
+}
+
+void
+nautilus_application_close_with_parent_windows (NautilusSpatialWindow *window)
+{
+	NautilusSpatialWindow *parent_window;
+
+	g_return_if_fail (NAUTILUS_IS_SPATIAL_WINDOW (window));
+
+	parent_window = find_parent_spatial_window (window);
+	nautilus_window_close (NAUTILUS_WINDOW (window));
+	window = parent_window;
+	
+	while (parent_window) {
+		parent_window = find_parent_spatial_window (window);
+		nautilus_window_close (NAUTILUS_WINDOW (window));
+		window = parent_window;
 	}
 }
 
@@ -781,107 +891,28 @@ nautilus_window_delete_event_callback (GtkWidget *widget,
 	return TRUE;
 }				       
 
-static gboolean
-save_window_geometry_timeout (gpointer callback_data)
+
+static NautilusWindow *
+create_window (NautilusApplication *application,
+	       GType window_type,
+	       GdkScreen *screen)
 {
 	NautilusWindow *window;
 	
-	window = NAUTILUS_WINDOW (callback_data);
-	
-	nautilus_window_save_geometry (window);
-
-	window->save_geometry_timeout_id = 0;
-	return FALSE;
-}
- 
-static gboolean
-nautilus_window_configure_event_callback (GtkWidget *widget,
-						GdkEventConfigure *event,
-						gpointer callback_data)
-{
-	NautilusWindow *window;
-	char *geometry_string;
-	
-	window = NAUTILUS_WINDOW (widget);
-	
-	/* Only save the geometry if the user hasn't resized the window
-	 * for half a second. Otherwise delay the callback another half second.
-	 */
-	if (window->save_geometry_timeout_id != 0) {
-		g_source_remove (window->save_geometry_timeout_id);	
-	}
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (window)) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		
-		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-	
-		/* If the last geometry is NULL the window must have just
-		 * been shown. No need to save geometry to disk since it
-		 * must be the same.
-		 */
-		if (window->last_geometry == NULL) {
-			window->last_geometry = geometry_string;
-			return FALSE;
-		}
-	
-		/* Don't save geometry if it's the same as before. */
-		if (!strcmp (window->last_geometry, geometry_string)) {
-			g_free (geometry_string);
-			return FALSE;
-		}
-
-		g_free (window->last_geometry);
-		window->last_geometry = geometry_string;
-
-		window->save_geometry_timeout_id = 
-				g_timeout_add (500, save_window_geometry_timeout, window);
-	}
-
-	return FALSE;
-}
-
-static gboolean
-nautilus_window_unrealize_event_callback (GtkWidget *widget,
-						GdkEvent *event,
-						gpointer callback_data)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (widget);
-
-	if (window->save_geometry_timeout_id != 0) {
-		g_source_remove (window->save_geometry_timeout_id);
-		window->save_geometry_timeout_id = 0;
-		nautilus_window_save_geometry (window);
-	}
-
-	return FALSE;
-}
-
-NautilusWindow *
-nautilus_application_create_window (NautilusApplication *application,
-				    GdkScreen           *screen)
-{
-	NautilusWindow *window;
-
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
-	window = NAUTILUS_WINDOW (gtk_widget_new (nautilus_window_get_type (),
+	window = NAUTILUS_WINDOW (gtk_widget_new (window_type,
 						  "app", application,
 						  "app_id", "nautilus",
 						  "screen", screen,
 						  NULL));
 
-	g_signal_connect (window, "delete_event",
-			  G_CALLBACK (nautilus_window_delete_event_callback), NULL);
+	g_signal_connect_data (window, "delete_event",
+			       G_CALLBACK (nautilus_window_delete_event_callback), NULL, NULL,
+			       G_CONNECT_AFTER);
 
 	g_signal_connect_object (window, "destroy",
 				 G_CALLBACK (nautilus_application_destroyed_window), application, 0);
-
-	g_signal_connect (window, "configure_event",
-			  G_CALLBACK (nautilus_window_configure_event_callback), NULL);
-
-	g_signal_connect (window, "unrealize",
-			  G_CALLBACK (nautilus_window_unrealize_event_callback), NULL);
 
 	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 
@@ -889,6 +920,65 @@ nautilus_application_create_window (NautilusApplication *application,
 	 * successfully display its initial URI. Otherwise it will be destroyed
 	 * without ever having seen the light of day.
 	 */
+
+	return window;
+}
+
+static void
+spatial_window_destroyed_callback (void *user_data, GObject *window)
+{
+	nautilus_application_spatial_window_list = g_list_remove (nautilus_application_spatial_window_list, window);
+		
+}
+
+NautilusWindow *
+nautilus_application_present_spatial_window (NautilusApplication *application,
+					    const char          *location,
+					    GdkScreen           *screen)
+{
+	NautilusWindow *window;
+	GList *l;
+
+	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
+
+	for (l = nautilus_application_get_spatial_window_list ();
+	     l != NULL; l = l->next) {
+		NautilusWindow *existing_window;
+		char *existing_location;
+               	     
+		existing_window = NAUTILUS_WINDOW (l->data);
+		existing_location = existing_window->details->pending_location;
+                
+		if (existing_location == NULL) {
+			existing_location = existing_window->details->location;
+		}
+
+		if (eel_uris_match (existing_location, location)) {
+			gtk_window_present (GTK_WINDOW (existing_window));
+			g_object_ref (existing_window);
+			return existing_window;
+		}
+	}
+
+	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, screen);
+	nautilus_application_spatial_window_list = g_list_prepend (nautilus_application_spatial_window_list, window);
+	g_object_weak_ref (G_OBJECT (window), 
+			   spatial_window_destroyed_callback, NULL);
+	
+	nautilus_window_go_to (window, location);
+	
+	return window;
+}
+
+NautilusWindow *
+nautilus_application_create_navigation_window (NautilusApplication *application,
+					       GdkScreen           *screen)
+{
+	NautilusWindow *window;
+
+	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
+	
+	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, screen);
 
 	return window;
 }
@@ -977,23 +1067,6 @@ window_can_be_closed (NautilusWindow *window)
 	return FALSE;
 }
 
-static gboolean
-is_last_closable_window (NautilusWindow *window)
-{
-	GList *node, *window_list;
-	
-	window_list = nautilus_application_get_window_list ();
-	
-	for (node = window_list; node != NULL; node = node->next) {
-		if (window != NAUTILUS_WINDOW (node->data) && window_can_be_closed (NAUTILUS_WINDOW (node->data))) {
-			return FALSE;
-		}
-	}
-	
-	return TRUE;
-}
-
-
 /* Called whenever a volume is unmounted. Check and see if there are any windows open
  * displaying contents on the volume. If there are, close them.
  * It would also be cool to save open window and position info.
@@ -1029,12 +1102,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
-		if (is_last_closable_window (window)) {
-			/* Don't close the last or only window. Try to redirect to the default home directory. */		 	
-			nautilus_window_go_home (window);
-		} else {
-			nautilus_window_close (window);
-		}
+		nautilus_window_close (window);
 	}
 		
 	g_list_free (close_list);

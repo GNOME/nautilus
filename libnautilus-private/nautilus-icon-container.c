@@ -148,6 +148,7 @@ typedef struct {
 static GType         nautilus_icon_container_accessible_get_type (void);
 
 static void          activate_selected_items                        (NautilusIconContainer *container);
+static void          activate_selected_items_alternate              (NautilusIconContainer *container);
 static void          nautilus_icon_container_theme_changed          (gpointer               user_data);
 static void          compute_stretch                                (StretchState          *start,
 								     StretchState          *current);
@@ -204,6 +205,7 @@ GNOME_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container,
 /* The NautilusIconContainer signals.  */
 enum {
 	ACTIVATE,
+	ACTIVATE_ALTERNATE,
 	BAND_SELECT_STARTED,
 	BAND_SELECT_ENDED,
 	BUTTON_PRESS,
@@ -3209,7 +3211,11 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 			 * NautilusList goes the other way because its "links" seem
 			 * much more link-like.
 			 */
-			activate_selected_items (container);
+			if (event->button == MIDDLE_BUTTON) {
+				activate_selected_items_alternate (container);
+			} else {
+				activate_selected_items (container);
+			}
 		}
 	}
 }
@@ -3827,6 +3833,16 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
+	signals[ACTIVATE_ALTERNATE]
+		= g_signal_new ("activate_alternate",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 activate_alternate),
+		                NULL, NULL,
+		                g_cclosure_marshal_VOID__POINTER,
+		                G_TYPE_NONE, 1,
+				G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
 		= g_signal_new ("context_click_selection",
 		                G_TYPE_FROM_CLASS (class),
@@ -4237,25 +4253,28 @@ handle_icon_button_press (NautilusIconContainer *container,
 		return TRUE;
 	}
 
-	if (event->button == DRAG_BUTTON &&
+	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
 	    event->type == GDK_BUTTON_PRESS) {
 		/* The next double click has to be on this icon */
 		details->double_click_icon[1] = details->double_click_icon[0];
 		details->double_click_icon[0] = icon;
 	}
 	if (event->type == GDK_2BUTTON_PRESS &&
-	    event->button == DRAG_BUTTON) {
+	    (event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON)) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 		
 		if (icon == details->double_click_icon[1] &&
 		    !button_event_modifies_selection (event)) {
-			activate_selected_items (container);
+			if (event->button == MIDDLE_BUTTON) {
+				activate_selected_items_alternate (container);
+			} else {
+				activate_selected_items (container);
+			}
 		}
 		return TRUE;
 	}
-	
 	if (event->button == DRAG_BUTTON
 	    || event->button == DRAG_MENU_BUTTON) {
 		details->drag_button = event->button;
@@ -4567,6 +4586,22 @@ activate_selected_items (NautilusIconContainer *container)
 	if (selection != NULL) {
 	  	g_signal_emit (container,
 				 signals[ACTIVATE], 0,
+				 selection);
+	}
+	g_list_free (selection);
+}
+
+static void
+activate_selected_items_alternate (NautilusIconContainer *container)
+{
+	GList *selection;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	selection = nautilus_icon_container_get_selection (container);
+	if (selection != NULL) {
+	  	g_signal_emit (container,
+				 signals[ACTIVATE_ALTERNATE], 0,
 				 selection);
 	}
 	g_list_free (selection);

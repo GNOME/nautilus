@@ -221,8 +221,9 @@ nautilus_adapter_open_location_callback  (NautilusAdapterEmbedStrategy *strategy
 					  const char                   *uri,
 					  NautilusAdapter              *adapter)
 {
-	nautilus_view_open_location_in_this_window
-		(adapter->details->nautilus_view, uri);
+	nautilus_view_open_location
+		(adapter->details->nautilus_view, 
+		 uri, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0, NULL);
 }
 
 
