@@ -24,7 +24,7 @@ libnautilus_extensions_la_LDFLAGS=\
 fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
 BUILT_SOURCES=$(fsextension_idl_sources)
 
-libnautilus_extensionsincludedir=$(includedir)/libnautilus
+libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 libnautilus_extensionsinclude_HEADERS=			\
 	bonobo-stream-vfs.h			\
 	gtkscrollframe.h			\

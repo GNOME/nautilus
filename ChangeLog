@@ -1,3 +1,16 @@
+2000-04-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/Makefile.am: Install .h files in the
+	right place.
+
+	* nautilus.spec.in: New file.  First try at a rpm spec.  Not
+	expected to quite work yet.
+
+	* .cvsignore: Ignore the generated spec.
+
+	* Makefile.am,
+	  configure.in: Add nautilus.spec file to build.
+
 2000-04-26  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c

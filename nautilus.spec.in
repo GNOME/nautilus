@@ -1,0 +1,120 @@
+# Note this is NOT a relocatable thing :)
+%define name		nautilus
+%define ver		@VERSION@
+%define RELEASE		prw2
+%define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
+%define prefix		/usr
+%define sysconfdir	/etc
+
+Name:		%name
+Summary:	Nautilus is an open-source file manager and graphical shell.
+Version: 	%ver
+Release: 	%rel
+Copyright: 	GPL
+Group:		System Environment/Libraries
+Source: 	%{name}-%{ver}.tar.gz
+URL: 		http://nautilus.eazel.com/
+BuildRoot:	/var/tmp/%{name}-%{ver}-root
+Docdir: 	%{prefix}/doc
+Requires:	gnome-libs
+Requires:	gnome-vfs
+Requires:	gtkhtml
+Requires:	gdk-pixbuf
+Requires:	bonobo
+Requires:	eog
+
+%description
+Nautilus is an open-source file manager and graphical shell being
+developed by Eazel, Inc. and others. It is part of the GNOME project, and its
+source code can be found in the GNOME CVS repository. Nautilus is still in
+the early stages of development. It will become an integral part of the
+GNOME desktop environment when it is finished.
+
+%package devel
+Summary:	Libraries and include files for developing nautilus components
+Group:		Development/Libraries
+Requires:	%name = %{PACKAGE_VERSION}
+Obsoletes:	%{name}-devel
+
+%description devel
+This package provides the necessary development libraries and include
+files to allow you to develop nautilus components.
+
+%changelog
+* Wed Apr 26 2000 Ramiro Estrugo <ramiro@eazel.com>
+- created this thing
+
+%prep
+%setup
+
+%build
+%ifarch alpha
+  MYARCH_FLAGS="--host=alpha-redhat-linux"
+%endif
+
+LC_ALL=""
+LINGUAS=""
+LANG=""
+export LC_ALL LINGUAS LANG
+
+CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
+	--enable-eazel-services \
+	--sysconfdir=%{sysconfdir}
+
+if [ "$SMP" != "" ]; then
+  (make "MAKE=make -k -j $SMP"; exit 0)
+  make
+else
+  make
+fi
+
+%install
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
+
+for FILE in "$RPM_BUILD_ROOT/bin/*"; do
+	file "$FILE" | grep -q not\ stripped && strip $FILE
+done
+
+%clean
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+%post
+if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
+  echo "%{prefix}/lib" >> /etc/ld.so.conf
+fi
+  
+/sbin/ldconfig
+  
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(0555, bin, bin)
+%dir %{prefix}/share/gnome/nautilus
+
+
+%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
+%{prefix}/bin/*
+%{prefix}/lib/lib*.so.*
+
+%defattr(0644, bin, bin)
+%{prefix}/share/gnome/nautilus/docs/*
+
+%defattr (0444, bin, bin)
+%{prefix}/share/locale/*/LC_MESSAGES/*
+%{prefix}/share/mime-info/nautilus.keys
+%{sysconfdir}/CORBA/servers/*
+
+%files devel
+
+%defattr(0555, bin, bin)
+%dir %{prefix}/include/libnautilus
+%{prefix}/lib/*.a
+%{prefix}/lib/*.so
+%{prefix}/lib/*.la
+
+%defattr(0444, bin, bin)
+%{prefix}/lib/*Conf.sh
+%{prefix}/include/nautilus/*
+%{prefix}/share/idl/*.idl
