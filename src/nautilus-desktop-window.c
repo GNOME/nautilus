@@ -174,7 +174,7 @@ destroy (GtkObject *object)
 
 static void
 set_gdk_window_background (GdkWindow *window,
-			   gboolean   already_have_root_bg,
+			   gboolean   have_pixel,
 			   Pixmap     pixmap,
 			   gulong     pixel)
 {
@@ -182,22 +182,21 @@ set_gdk_window_background (GdkWindow *window,
 
 	w = GDK_WINDOW_XWINDOW (window);
 
-	if (already_have_root_bg) {		
-		if (pixmap != None)
-			XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
-						    pixmap);
-		else
-			XSetWindowBackground (GDK_DISPLAY (), w,
-					      pixel);
-	} else {
+	if (pixmap != None)
+		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
+					    pixmap);
+	else if (have_pixel)
+		XSetWindowBackground (GDK_DISPLAY (), w,
+				      pixel);
+	else
 		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
 					    None);
-	}
 }
 
 static void
 set_window_background (GtkWidget *widget,
 		       gboolean   already_have_root_bg,
+		       gboolean   have_pixel,
 		       Pixmap     pixmap,
 		       gulong     pixel)
 {
@@ -212,8 +211,11 @@ set_window_background (GtkWidget *widget,
 
 	if (GTK_IS_WINDOW (widget))
 		gtk_widget_set_app_paintable (widget, TRUE);
-
+	
 	if (!already_have_root_bg) {
+		have_pixel = FALSE;
+		already_have_root_bg = TRUE;
+		
 		/* We want to do this round-trip-to-server work only
 		 * for the first invocation, not on recursions
 		 */
@@ -227,13 +229,12 @@ set_window_background (GtkWidget *widget,
 		if (type == XA_PIXMAP) {
 			if (format == 32 && nitems == 1 && bytes_after == 0) {
 				pixmap = *(Pixmap *) data;
-				already_have_root_bg = TRUE;
 			}
   
 			XFree (data);
 		}
 
-		if (!already_have_root_bg) {
+		if (pixmap == None) {
 			XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
 					    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
 					    0L, 1L, False, AnyPropertyType,
@@ -243,15 +244,16 @@ set_window_background (GtkWidget *widget,
 			if (type != None) {
 				if (format == 32 && nitems == 1 && bytes_after == 0) {
 					pixel = *(gulong *) data;
-					already_have_root_bg = TRUE;
+					have_pixel = TRUE;
 				}
 				
 				XFree (data);
 			}
 		}
 	}
-
-	set_gdk_window_background (widget->window, TRUE, pixmap, pixel);
+	
+	set_gdk_window_background (widget->window,
+				   have_pixel, pixmap, pixel);
 	
 	/* Recurse to child widget (assumes we already chained up and
 	 * realized child widget)
@@ -262,7 +264,8 @@ set_window_background (GtkWidget *widget,
 		gtk_widget_realize (GTK_BIN (widget)->child);
 		
 		set_window_background (GTK_BIN (widget)->child,
-				       TRUE, pixmap, pixel);
+				       already_have_root_bg, have_pixel,
+				       pixmap, pixel);
 	}
 
 	/* For both parent and child, if it's a layout then set on the
@@ -270,7 +273,8 @@ set_window_background (GtkWidget *widget,
 	 */
 	if (GTK_IS_LAYOUT (widget))
 		set_gdk_window_background (GTK_LAYOUT (widget)->bin_window,
-					   TRUE, pixmap, pixel);
+					   have_pixel,
+					   pixmap, pixel);
 }
 
 static void
@@ -344,7 +348,7 @@ map (GtkWidget *widget)
 
 	window = NAUTILUS_DESKTOP_WINDOW (widget);
 	
-	set_window_background (widget, FALSE, None, 0);
+	set_window_background (widget, FALSE, FALSE, None, 0);
 	
 	/* Chain up to realize our children */
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
