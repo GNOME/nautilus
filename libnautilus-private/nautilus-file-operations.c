@@ -1926,7 +1926,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				(parent_view, 
 				 FALSE,
 				 GTK_MESSAGE_ERROR,
-				 _("You cannot copy items into the trash."),
+				 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0)
+				 ? _("You cannot copy items into the trash.")
+				 : _("You cannot create links inside the trash."),
 				 _("Files and folders can only be moved into the trash."), 
 				 NULL,
 				 GTK_STOCK_OK, NULL);

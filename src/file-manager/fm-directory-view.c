@@ -5573,7 +5573,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	g_assert (nautilus_file_is_broken_symbolic_link (file));
 
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
-	prompt = _("The link is borken, do you want to move it to the Trash?");
+	prompt = _("The link is broken, do you want to move it to the Trash?");
 	if (target_path == NULL) {
 		detail = g_strdup (_("This link can't be used, because it has no target."));
 	} else {
