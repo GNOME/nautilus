@@ -744,8 +744,6 @@ handle_local_move (NautilusIconContainer *container,
 	}		
 	nautilus_icon_container_select_list_unselect_others
 		(container, moved_icons);
-	/* Might have been moved in a way that requires adjusting scroll region */
-	nautilus_icon_container_update_scroll_region (container);
 	g_list_free (moved_icons);
 }
 
