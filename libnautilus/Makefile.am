@@ -21,7 +21,12 @@ libnautilus_la_LDFLAGS=\
 	$(XML_LIBS) \
 	$(LIBPNG)
 
-nautilus_view_component_idl_sources=nautilus-view-component-stubs.c nautilus-view-component-skels.c nautilus-view-component.h nautilus-view-component-common.c
+nautilus_view_component_idl_sources =		\
+	nautilus-view-component-stubs.c		\
+	nautilus-view-component-skels.c		\
+	nautilus-view-component.h		\
+	nautilus-view-component-common.c
+
 BUILT_SOURCES=$(nautilus_view_component_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
@@ -34,17 +39,18 @@ libnautilusinclude_HEADERS=			\
 	nautilus-view-frame.h			\
 	$(NULL)
 
-libnautilus_la_SOURCES=$(nautilus_view_component_idl_sources)	\
+libnautilus_la_SOURCES=				\
+	$(nautilus_view_component_idl_sources)	\
 	nautilus-zoomable.c			\
 	nautilus-content-view-frame.c		\
-	nautilus-meta-view-frame.c			\
+	nautilus-meta-view-frame.c		\
 	nautilus-view-frame.c			\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	orbit-idl `gnome-config --cflags idl` nautilus-view-component.idl
+	orbit-idl `gnome-config --cflags idl` $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
 CLEANFILES=nautilus_view_component_idl_stamp
