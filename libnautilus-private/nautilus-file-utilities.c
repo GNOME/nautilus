@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -352,6 +353,20 @@ nautilus_get_uri_from_local_path (const char *local_path)
 	g_free (escaped_path);
 	return result;
 }
+
+/* convenience routine to use gnome-vfs to test if a string is a remote uri */
+gboolean
+nautilus_is_remote_uri (const char *uri)
+{
+	gboolean is_local;
+	GnomeVFSURI *vfs_uri;
+	
+	vfs_uri = gnome_vfs_uri_new(uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri);
+	gnome_vfs_uri_unref(vfs_uri);
+	return !is_local;
+}
+
 
 /* FIXME: Callers just use this and dereference so we core dump if
  * pixmaps are missing. That is lame.

@@ -55,6 +55,9 @@ char *                  nautilus_get_local_path_from_uri (const char            
 /* Turn a path into a "file://" URI. */
 char *                  nautilus_get_uri_from_local_path (const char                *local_full_path);
 
+/* convenience routine to test if a string is a remote uri */
+gboolean		nautilus_is_remote_uri		 (const char 		    *uri);
+
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
  * exists and returns NULL if it doesn't.

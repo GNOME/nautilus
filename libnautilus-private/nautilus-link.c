@@ -149,19 +149,6 @@ icon_read_done_callback (GnomeVFSResult result,
 	free_icon_notification_info(info);
 }
 
-/* utility to use gnome-vfs to determine if a uri is local or not */
-static gboolean
-is_remote_uri (const char *uri)
-{
-	gboolean is_local;
-	GnomeVFSURI *vfs_uri;
-	
-	vfs_uri = gnome_vfs_uri_new(uri);
-	is_local = gnome_vfs_uri_is_local (vfs_uri);
-	gnome_vfs_uri_unref(vfs_uri);
-	return !is_local;
-}
-
 /* returns the image associated with a link file */
 char*
 nautilus_link_get_image_uri (const char *link_file_uri)
@@ -188,8 +175,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 	
 	/* if the image is remote, see if we can find it in our local cache */
 	
-	if (is_remote_uri(icon_uri)) {
-	
+	if (nautilus_is_remote_uri(icon_uri)) {
 		local_path = make_local_path(icon_uri);
 		
 		if (g_file_exists(local_path)) {

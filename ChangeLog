@@ -1,3 +1,18 @@
+2000-06-27  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c,h:
+	(nautilus_is_remote_uri):
+	added a utility routine to determine if a string represents
+	a remote uri.
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_get_image_uri):
+	made it use nautilus_is_remote_uri
+	* src/nautilus-sidebar.c: (uri_is_local_image),
+	(add_command_buttons):
+	fixed bug 1494, can't set up custom icon to directories with
+	blanks in their name, by escaping and unescaping when we translate
+	between paths and uris.  Also, fixed bug 607 by using is_remote_uri.
+	
 2000-06-27  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-view-component.idl:

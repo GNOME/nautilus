@@ -539,21 +539,21 @@ hit_test (NautilusSidebar *sidebar,
 	return NO_PART;
 }
 
-/* FIXME bugzilla.eazel.com 606: 
- * If passed a bogus URI this could block for a long time. 
- */
+/* utility to test if a uri refers to a local image */
 static gboolean
 uri_is_local_image (const char *uri)
 {
 	GdkPixbuf *pixbuf;
+	char *image_path;
 	
-	/* FIXME bugzilla.eazel.com 607: 
-	 * Perhaps this should not be hardcoded like this. 
-	 */
-	if (!nautilus_str_has_prefix (uri, "file://")) {
+	if (nautilus_is_remote_uri (uri)) {
 		return FALSE;
 	}
-	pixbuf = gdk_pixbuf_new_from_file (uri + 7);
+	
+	image_path = nautilus_get_local_path_from_uri (uri);
+	pixbuf = gdk_pixbuf_new_from_file (image_path);
+	g_free (image_path);
+	
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
@@ -1146,8 +1146,8 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    0);
 
 		temp_str = g_strdup_printf("'%s'", 
-		             nautilus_str_has_prefix (sidebar->details->uri, "file://") ?
-			     sidebar->details->uri + 7 : sidebar->details->uri);
+			nautilus_str_has_prefix (sidebar->details->uri, "file://") ?
+			sidebar->details->uri + 7 : sidebar->details->uri);
 
 		id_string = g_strdup_printf (application->id, temp_str); 		
 		g_free(temp_str);
