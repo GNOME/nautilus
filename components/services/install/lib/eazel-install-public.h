@@ -100,6 +100,7 @@ void eazel_install_emit_download_progress (EazelInstall *service,
 
 void eazel_install_fetch_pockage_list (EazelInstall *service);
 void eazel_install_new_packages (EazelInstall *service);
+void eazel_install_uninstall (EazelInstall *service);
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */

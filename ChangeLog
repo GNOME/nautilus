@@ -1,5 +1,25 @@
 2000-05-27  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_uninstall):
+	* components/services/install/lib/eazel-install-public.h:
+	Added eazel_install_uninstall call to the gtk+ object. This
+	opened a can of worms reg. error during uninstall, which is
+	also relevant to install. See bug#1024.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_a_package),
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages), (uninstall_a_package), (do_rpm_uninstall),
+	(rpm_uninstall):
+	More passing around of a EazelService object. And more sane
+	errorhandling to avoid the lib causing an exit.
+	
+	* nautilus-installer/src/installer.c: (installer):
+	Partial uninstall support.
+
+2000-05-27  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	* components/services/time/command-line/Makefile.am:
 	* components/services/time/service/trilobite-eazel-time-service.c:
 	(trilobite_eazel_time_service_initialize):

@@ -20,7 +20,7 @@ static char *package_list[LAST] = {
 	"/nautilus-only-list.xml",
 	"/services-only-list.xml",
 	"/package-list.xml",
-	"/package-list.xml",
+	"/package-uninstall-list.xml",
 };
 
 static void 
@@ -98,15 +98,11 @@ void installer (GtkWidget *window,
 		return;
 	}
 
-	if (method==UNINSTALL) {
-		gnome_warning_dialog ("We don't do UNINSTALL yet");
-		return;
-	}
 	if (method==UPGRADE) {
 		gnome_warning_dialog ("We don't do UPGRADE yet");
 		return;
 	}
-/*
+
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
 						 "verbose", TRUE,
 						 "silent", FALSE,
@@ -126,7 +122,6 @@ void installer (GtkWidget *window,
 						 "package_list", PACKAGE_LIST, 
 						 "port_number", PORT_NUMBER,
 						 NULL));
-*/
 
 	service = eazel_install_new_with_config ("/var/eazel/services/eazel-services-config.xml");
 	g_assert (service != NULL);
@@ -144,7 +139,17 @@ void installer (GtkWidget *window,
 	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_download_progress, window);
 	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_install_progress, window);
 
-	eazel_install_new_packages (service);
+	switch (method) {
+	case FULL_INST:
+	case NAUTILUS_ONLY:
+	case SERVICES_ONLY:
+	case UPGRADE:
+		eazel_install_new_packages (service);
+		break;
+	case UNINSTALL:
+		eazel_install_uninstall (service);
+		break;
+	};
 	eazel_install_destroy (GTK_OBJECT (service));
 
 	package_label = gtk_object_get_data (GTK_OBJECT (window), "package_label");

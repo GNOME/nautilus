@@ -515,6 +515,21 @@ eazel_install_new_packages (EazelInstall *service)
 	} 
 }
 
+void 
+eazel_install_uninstall (EazelInstall *service)
+{
+	SANITY (service);
+
+	g_message ("eazel_install_new_packages");
+
+	if (service->private->iopts->protocol == PROTOCOL_HTTP) {
+		fetch_remote_package_list (service);
+	}
+	if (uninstall_packages (service)==FALSE) {
+		g_warning ("*** Uninstall failed");
+	} 
+}
+
 
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
  interest beyond this point, except for a fucking big dragon*/

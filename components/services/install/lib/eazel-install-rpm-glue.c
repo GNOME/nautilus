@@ -41,7 +41,7 @@
 
 typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
 
-static void download_a_package (EazelInstall *service,
+static gboolean download_a_package (EazelInstall *service,
                                 PackageData* package);
 
 static gboolean download_all_packages (EazelInstall *service,
@@ -54,7 +54,8 @@ static gboolean install_all_packages (EazelInstall *service,
                                       GList* categories);
 
 
-static gboolean uninstall_a_package (PackageData* package,
+static gboolean uninstall_a_package (EazelInstall *service,
+				     PackageData* package,
                                      int uninstall_flags,
                                      int problem_filters,
                                      int interface_flags);
@@ -76,7 +77,8 @@ static int rpm_install (EazelInstall *service,
                         rpm_install_cb callback,
                         void* user_data);
 
-static int rpm_uninstall (char* root_dir,
+static int rpm_uninstall (EazelInstall *service, 
+			  char* root_dir,
                           char* file,
                           int install_flags,
                           int problem_filters,
@@ -92,7 +94,8 @@ static int do_rpm_install (EazelInstall *service,
                            rpm_install_cb callback,
                            void* user_data);
 
-static int do_rpm_uninstall (char* root_dir,
+static int do_rpm_uninstall (EazelInstall *service, 
+			     char* root_dir,
                              GList* packages,
                              int install_flags,
                              int problem_filters,
@@ -143,20 +146,28 @@ install_new_packages (EazelInstall *service) {
 		rv = FALSE;
 	} else {
 		rv = download_all_packages (service, categories);
-		
-		rv = install_all_packages (service,
-					   install_flags,
-					   problem_filters,
-					   interface_flags,
-					   categories);
+		if (rv == TRUE) {
+			rv = install_all_packages (service,
+						   install_flags,
+						   problem_filters,
+						   interface_flags,
+						   categories);
+		} else {
+			g_warning ("Install not called, since some files were not downloaded");
+		}
 	}
 	
 	return rv;
 } /* end install_new_packages */
 
-static void
-download_a_package (EazelInstall *service, PackageData* package) {
-
+/* Returns FALSE is file was not fetched */
+static gboolean
+download_a_package (EazelInstall *service, 
+		    PackageData* package) 
+{
+	gboolean result;
+	
+	result = TRUE;
 	if (eazel_install_get_protocol (service) == PROTOCOL_HTTP) {
 		char* rpmname;
 		char* targetname;
@@ -180,7 +191,7 @@ download_a_package (EazelInstall *service, PackageData* package) {
 		g_print ("Downloading %s...\n", rpmname);
 		rv = http_fetch_remote_file (service, url, targetname);
 		if (rv != TRUE) {
-			g_error ("*** Failed to retreive %s! ***\n", url);
+			result = FALSE;
 		}
 
 		g_free (rpmname);
@@ -188,12 +199,19 @@ download_a_package (EazelInstall *service, PackageData* package) {
 		g_free (url);
 
 	}
+	return result;
 } /* end download_a_package */
 
+/*
+  Returns FALSE if some packages failed;
+ */
 static gboolean
 download_all_packages (EazelInstall *service,
-                       GList* categories) {
+                       GList* categories) 
+{
+	gboolean result;
 
+	result = TRUE;
 	while (categories) {
 		CategoryData* cat;
 		GList* pkgs;
@@ -207,7 +225,10 @@ download_all_packages (EazelInstall *service,
 
 			package = pkgs->data;
 
-			download_a_package (service, package);
+			if (download_a_package (service, package) == FALSE) {
+				g_warning ("*** Failed to retreive %s! ***\n", package->name);
+				result = FALSE;
+			}
 
 			pkgs = pkgs->next;
 		}
@@ -216,7 +237,7 @@ download_all_packages (EazelInstall *service,
 
 	free_categories (categories);
 	
-	return TRUE;
+	return result;
 } /* end download_all_packages */
 
 static gboolean
@@ -227,6 +248,7 @@ install_all_packages (EazelInstall *service,
                       GList* categories) {
 
 	gboolean rv;
+	rv = TRUE;
 
 	while (categories) {
 		CategoryData* cat = categories->data;
@@ -257,9 +279,7 @@ install_all_packages (EazelInstall *service,
 
 			if (retval == 0) {
 				g_print (_("Package install successful !\n"));
-				rv = TRUE;
-			}
-			else {
+			} else {
 				g_print (_("Package install failed !\n"));
 				rv = FALSE;
 			}
@@ -309,10 +329,15 @@ uninstall_packages (EazelInstall *service) {
 		while (pkgs) {
 			PackageData* package = pkgs->data;
 
-			rv = uninstall_a_package (package,
-                                                  uninstall_flags,
-                                                  problem_filters,
-                                                  interface_flags);
+			if (uninstall_a_package (service, 
+						 package,
+						 uninstall_flags,
+						 problem_filters,
+						 interface_flags) == FALSE) {
+				g_warning ("Uninstall failed for %s",package->name);
+			} else {
+				rv = FALSE;
+			}
 			pkgs = pkgs->next;
 		}
 		categories = categories->next;
@@ -325,7 +350,8 @@ uninstall_packages (EazelInstall *service) {
 } /* end install_new_packages */
 
 static gboolean
-uninstall_a_package (PackageData* package,
+uninstall_a_package (EazelInstall *service,
+		     PackageData* package,
                      int uninstall_flags,
                      int problem_filters,
                      int interface_flags) {
@@ -340,10 +366,12 @@ uninstall_a_package (PackageData* package,
                                package->version,
                                package->minor);
 
+	rv = TRUE;
 	if (g_strcasecmp (package->archtype, "src") != 0) {
 
 		g_print ("Uninstalling %s\n", pkg);
-		retval = rpm_uninstall ("/",
+		retval = rpm_uninstall (service,
+					"/",
                                         pkg,
                                         uninstall_flags,
                                         problem_filters,
@@ -351,16 +379,14 @@ uninstall_a_package (PackageData* package,
 		g_free (pkg);
 		if (retval == 0) {
 			g_print ("Package uninstall successful!\n");
-			rv = TRUE;
-		}
-		else {
+		} else {
 			g_print (_("Package uninstall failed !\n"));
 			rv = FALSE;
 		}
-	}
-	else {
+	} else {
   		g_print ("%s seems to be a source package.  Skipping ...\n", pkg);
 		g_free (pkg);
+		rv = FALSE;
   	}
 
 	return rv;
@@ -604,8 +630,13 @@ do_rpm_install (EazelInstall *service,
 } /* end do_rpm_install */
 
 static int
-do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
-                  int problem_filters, int interface_flags) {
+do_rpm_uninstall (EazelInstall *service, 
+		  char* root_dir, 
+		  GList* packages, 
+		  int install_flags,
+                  int problem_filters, 
+		  int interface_flags) 
+{
 	rpmdb db;
 	int count, i;
 	int rc;
@@ -634,7 +665,7 @@ do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
 		const char* dn;
 		dn = rpmGetPath ((root_dir ? root_dir : ""), "%{_dbpath}", NULL);
 		if (!dn) {
-			g_error (_("Packages database query failed !\n"));
+			g_warning (_("Packages database query failed !\n"));
 		}
 		return g_list_length (packages);
 	}
@@ -665,9 +696,9 @@ do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
 						num_packages++;
 					}
 				}
+				dbiFreeIndexRecord (matches);
 				break;
 		}
-		dbiFreeIndexRecord (matches);
 	}
 
 	if (!(interface_flags & UNINSTALL_NODEPS)) {
@@ -689,8 +720,8 @@ do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
 	}
 	if (!stop_uninstall && rpmdep != NULL) {
 		num_failed += rpmRunTransactions (rpmdep,
-                                                  NULL,
-                                                  NULL,
+						  rpm_show_progress,
+						  service,
                                                   NULL,
                                                   &probs,
                                                   install_flags,
@@ -734,7 +765,8 @@ rpm_install (EazelInstall *service,
 } /* end rpm_install */
 
 static int
-rpm_uninstall (char* root_dir,
+rpm_uninstall (EazelInstall *service, 
+	       char* root_dir,
                char* file,
                int install_flags,
                int problem_filters,
@@ -744,7 +776,8 @@ rpm_uninstall (char* root_dir,
 
   list = g_list_append (NULL, file);
 
-  result = do_rpm_uninstall (root_dir,
+  result = do_rpm_uninstall (service,
+			     root_dir,
                              list,
                              install_flags,
                              problem_filters,
