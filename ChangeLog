@@ -1,3 +1,12 @@
+2002-03-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c
+	(nautilus_window_constructed): create a UI component for
+	the status, that is separate from the shell UI component.
+	(nautilus_window_finalize): release the status_ui.
+	(nautilus_window_clear_status): remove fixme #43597
+	(nautilus_window_set_status): upd.
+
 2002-03-08  Darin Adler  <darin@bentspoon.com>
 
 	* components/adapter/main.c: (main): Use gdk_get_display, not

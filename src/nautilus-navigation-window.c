@@ -334,16 +334,9 @@ nautilus_window_clear_status (gpointer callback_data)
 
 	window = NAUTILUS_WINDOW (callback_data);
 
-	nautilus_window_ui_freeze (window);
-
-	/* FIXME bugzilla.gnome.org 43597:
-	 * Should pass "" or NULL here. This didn't work, then did, now doesn't again.
-	 * When this is fixed in Bonobo we should change this line.
-	 */
-	bonobo_ui_component_set_status (window->details->shell_ui, " ", NULL);
+	bonobo_ui_component_set_status (window->details->status_ui, NULL, NULL);
 	window->status_bar_clear_id = 0;
 
-	nautilus_window_ui_thaw (window);
 	return FALSE;
 }
 
@@ -353,19 +346,15 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 	if (window->status_bar_clear_id != 0) {
 		g_source_remove (window->status_bar_clear_id);
 	}
-	
-	nautilus_window_ui_freeze (window);
 
 	if (text != NULL && text[0] != '\0') {
-		bonobo_ui_component_set_status (window->details->shell_ui, text, NULL);
+		bonobo_ui_component_set_status (window->details->status_ui, text, NULL);
 		window->status_bar_clear_id = g_timeout_add
 			(STATUS_BAR_CLEAR_TIMEOUT, nautilus_window_clear_status, window);
 	} else {
 		nautilus_window_clear_status (window);
 		window->status_bar_clear_id = 0;
 	}
-
-	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -553,6 +542,15 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
+		 nautilus_window_get_ui_container (window),
+		 NULL);
+
+	/* Create a separate component so when we remove the status
+	 * we don't loose the status bar
+	 */
+      	window->details->status_ui = bonobo_ui_component_new ("Status Component");
+	bonobo_ui_component_set_container
+		(window->details->status_ui,
 		 nautilus_window_get_ui_container (window),
 		 NULL);
 
@@ -817,6 +815,11 @@ nautilus_window_finalize (GObject *object)
 	if (window->details->shell_ui != NULL) {
 		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
 		bonobo_object_unref (window->details->shell_ui);
+	}
+
+	if (window->details->status_ui != NULL) {
+		bonobo_ui_component_unset_container (window->details->status_ui, NULL);
+		bonobo_object_unref (window->details->status_ui);
 	}
 
 	nautilus_file_unref (window->details->viewed_file);

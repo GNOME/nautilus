@@ -48,6 +48,7 @@ struct NautilusWindowDetails
         /* Bonobo. */
         BonoboUIContainer *ui_container;
         BonoboUIComponent *shell_ui;
+        BonoboUIComponent *status_ui;
         gboolean updating_bonobo_state;
 
 	int ui_change_depth;
