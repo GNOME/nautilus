@@ -1,3 +1,29 @@
+2001-02-27  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7068 (Icon View lags behind changes to
+	Icon Captions window)
+
+	The correct behavior depended on the order in which
+	preferences callbacks were processed, which is not
+	something upon which one should rely.
+
+	* src/file-manager/fm-icon-text-window.h:
+	* src/file-manager/fm-icon-text-window.c:
+	(icon_captions_changed_callback): Removed this function.
+	(fm_get_text_attribute_names_preference): Changed name
+	from fm_get_text_attribute_names_preference_or_default;
+	now reads preference as well as returning latest well-formed
+	version of preference (formerly the preference-reading code
+	and preference-returning code were separated, with tragic
+	consequences).
+	(synch_menus_with_preference): Updated for name change.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_icon_text_attribute_names): Updated
+	for name change.
+
 2001-02-27  Eric Fischer <eric@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

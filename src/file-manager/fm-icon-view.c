@@ -996,7 +996,7 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 
 	piece_count = pieces_by_level[fm_icon_view_get_zoom_level (view)];
 
-	all_names = fm_get_text_attribute_names_preference_or_default ();
+	all_names = fm_get_text_attribute_names_preference ();
 	pieces_so_far = 0;
 
 	for (c = all_names; *c != '\0'; ++c) {

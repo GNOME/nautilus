@@ -144,7 +144,7 @@ synch_menus_with_preference (gpointer user_data)
 	char **text_array;
 	int i, string_index;
 
-	preference = fm_get_text_attribute_names_preference_or_default ();
+	preference = fm_get_text_attribute_names_preference ();
 	text_array = g_strsplit (preference, "|", 0);
 	g_free (preference);
 	
@@ -394,40 +394,26 @@ fm_icon_text_window_get_or_create (void)
 	return GTK_WINDOW (icon_text_window);
 }
 
-/* This string will leak at exit time */
-static char *icon_captions = NULL;
-
-static void
-icon_captions_changed_callback (gpointer callback_data)
+char *
+fm_get_text_attribute_names_preference (void)
 {
-	char *new_icon_captions = NULL;
-	
-	g_free (icon_captions);
-	
+	/* FIXME: This string leaks at exit, which matters only if you're
+	 * using a leak checker.
+	 */
+	static char *icon_captions = NULL;
+	char *new_icon_captions;
+		
 	new_icon_captions = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS);
 	
 	if (attribute_names_string_is_good (new_icon_captions)) {
-		icon_captions = new_icon_captions;
-		return;
+		g_free (icon_captions);
+		icon_captions = g_strdup (new_icon_captions);
 	}
 
-	icon_captions = g_strdup (DEFAULT_ATTRIBUTE_NAMES);
-}
+	g_free (new_icon_captions);
 
-char *
-fm_get_text_attribute_names_preference_or_default (void)
-{
-	static gboolean icon_captions_callback_added = FALSE;
-
-	/* Add the callback once for the life of our process */
-	if (!icon_captions_callback_added) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-						   icon_captions_changed_callback,
-						   NULL);
-		icon_captions_callback_added = TRUE;
-
-		/* Peek for the first time */
-		icon_captions_changed_callback (NULL);
+	if (icon_captions == NULL) {
+		icon_captions = g_strdup (DEFAULT_ATTRIBUTE_NAMES);
 	}
 
 	return g_strdup (icon_captions);
