@@ -1,8 +1,26 @@
-2000-05-13  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2000-05-12  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 620, when multiple files are selected, they all should be opened when the
+	user single or double click.
+
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added last_selected_files field to icon_container details, so the selection can be
+	remembered through the double click process
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(forget_selected_files), (remember_selected_files),
+	(nautilus_icon_container_almost_drag), (handle_icon_button_press),
+	(activate_selected_items):
+	changed the activate signal to take a list of file objects instead of a single one;
+	added routines remember_selected_files and forget_selected_files to build and release the list;
+	called remember and forget when appropriate, and used the list to pass to the signal.
+	* src/file-manager/fm-icon-view.c (icon_container_activate_callback):
+	made the signal handler activate all the files in the list
+	
+2000-05-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
 	(notify_selection_change_callback), (display_pending_files):
-	some of Darin's recent changes wouldn't compile, so I fixed it
+	some of Darin's recent changes wouldn't compile, so I fixed them
 	
 2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
 

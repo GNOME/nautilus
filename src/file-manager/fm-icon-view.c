@@ -955,16 +955,22 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 	nautilus_icon_container_set_selection (icon_container, selection);
 }
 
+/* activate the passed-in list of files.  Open the first one potentially in the original window,
+   and subsequent ones in new windows */    
 static void
 icon_container_activate_callback (NautilusIconContainer *container,
-				  NautilusFile *file,
+				  GList *file_list,
 				  FMIconView *icon_view)
 {
+	int count;
+	GList *p;
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
-	g_assert (NAUTILUS_IS_FILE (file));
 
-	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (icon_view), file, FALSE);
+	count = 0;
+	for (p = file_list; p != NULL; p = p->next) {  	
+		fm_directory_view_activate_file (FM_DIRECTORY_VIEW (icon_view), p->data, count++ > 0);
+	}
 }
 
 static int

@@ -93,6 +93,9 @@ static void          hide_rename_widget                       (NautilusIconConta
 							       NautilusIcon               *icon);
 static void          click_policy_changed_callback            (gpointer                    user_data);
 
+static void 	     remember_selected_files		      (NautilusIconContainer 	*container);
+static void 	     forget_selected_files		      (NautilusIconContainer 	*container);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
 
@@ -1598,6 +1601,7 @@ destroy (GtkObject *object)
 	int i;
 
 	container = NAUTILUS_ICON_CONTAINER (object);
+	forget_selected_files(container);
 
 	nautilus_icon_dnd_fini (container);
         nautilus_icon_container_clear (container);
@@ -1625,6 +1629,7 @@ destroy (GtkObject *object)
 					      container);
 	
 	nautilus_icon_container_flush_typeselect_state (container);
+	
 	g_free (container->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -1762,14 +1767,47 @@ button_press_event (GtkWidget *widget,
 	return return_value;
 }
 
+/* deallocate the list of selected files */
+static void
+forget_selected_files (NautilusIconContainer *container)
+{
+	if (container->details->last_selected_files) {
+		g_list_free(container->details->last_selected_files);
+		container->details->last_selected_files = NULL;	
+	}
+}
+
+/* remember the selected files in a list for later access */
+static void
+remember_selected_files (NautilusIconContainer *container)
+{
+	NautilusIcon *icon;
+	GList *p;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	forget_selected_files(container);
+	for (p = container->details->icons; p != NULL; p = p->next) {  	
+	  	icon = p->data;
+		if (icon->is_selected) {
+			container->details->last_selected_files = g_list_prepend
+				(container->details->last_selected_files, icon->data);
+		}
+	}	
+}
+
 static void
 nautilus_icon_container_almost_drag (NautilusIconContainer *container,
 				     GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
-
 	details = container->details;
 
+	/* build list of selected icons before we blow away the selection */	
+	
+	if (event->type != GDK_2BUTTON_PRESS)
+		remember_selected_files(container);
+ 	
 	if (!button_event_modifies_selection (event)) {
 		gboolean selection_changed;
 		
@@ -1791,12 +1829,10 @@ nautilus_icon_container_almost_drag (NautilusIconContainer *container,
 		    && event->time - details->button_down_time < MAX_CLICK_TIME
 		    && ! button_event_modifies_selection (event)) {
 			
-			/* FIXME bugzilla.eazel.com 620: This should activate all 
-			 * selected icons, not just one.
-			 */
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[ACTIVATE],
-					 details->drag_icon->data);
+					 container->details->last_selected_files);
+			forget_selected_files(container);
 		}
 	}
 }
@@ -2454,7 +2490,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 			  GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
-
+	
 	if (event->button != DRAG_BUTTON
 	    && event->button != CONTEXTUAL_MENU_BUTTON) {
 		return TRUE;
@@ -2479,7 +2515,11 @@ handle_icon_button_press (NautilusIconContainer *container,
 			}
 		}
 	}
-	
+
+	/* build list of selected icons before we blow away the selection */
+	if ((event->type != GDK_2BUTTON_PRESS) && button_event_modifies_selection (event))
+		remember_selected_files(container);
+ 	
 	/* Modify the selection as appropriate. Selection is modified
 	 * the same way for contextual menu as it would be without. 
 	 */
@@ -2511,18 +2551,15 @@ handle_icon_button_press (NautilusIconContainer *container,
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[CONTEXT_CLICK_SELECTION]);
 
-		return TRUE;
 	} else if (event->type == GDK_2BUTTON_PRESS) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
-		/* FIXME bugzilla.eazel.com 620: 
-		 * This should activate all selected icons, not just one 
-		 */
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
-				 icon->data);
+				 container->details->last_selected_files);
+		forget_selected_files(container);
 	}
 
 	return TRUE;
@@ -2636,22 +2673,21 @@ icon_destroy (NautilusIconContainer *container,
 	}
 }
 
+
 /* activate any selected items in the container */
 static void
 activate_selected_items (NautilusIconContainer *container)
 {
-	NautilusIcon *icon;
-	GList *p;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	for (p = container->details->icons; p != NULL; p = p->next) {  	
-	  	icon = p->data;
-		if (icon->is_selected) {
-	  		gtk_signal_emit (GTK_OBJECT (container),
-					 signals[ACTIVATE],
-					 icon->data);
-		}
+	remember_selected_files(container);
+	if (container->details->last_selected_files != NULL) {
+	  	gtk_signal_emit (GTK_OBJECT (container),
+				signals[ACTIVATE],
+				container->details->last_selected_files);
+
+		forget_selected_files(container);
 	}
 }
 
