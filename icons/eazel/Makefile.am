@@ -39,19 +39,6 @@ eazel_DATA =					\
 	i-directory-aa.png			\
 	i-directory-accept.xml			\
 	i-directory.xml				\
-	i-regular-12.png			\
-	i-regular-12-aa.png			\
-	i-regular-24.png			\
-	i-regular-24-aa.png			\
-	i-regular-36.png			\
-	i-regular-36-aa.png			\
-	i-regular-72.png			\
-	i-regular-72-aa.png			\
-	i-regular-96.png			\
-	i-regular-96-aa.png			\
-	i-regular.png				\
-	i-regular-aa.png			\
-	i-regular.xml				\
 	number_strip.png			\
 	theme_preview.png			\
 	zoom_body.png				\

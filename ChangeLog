@@ -1,3 +1,30 @@
+2000-09-19  Andy Hertzfeld  <andy@eazel.com>
+
+	added a new theme for the classic GNOME icons, and made changed the
+	default document icons to the one's from the eazel theme that can
+	display embedded text.  This is a step on the way toward refining
+	the default theme.  I think Darin's recent check-in broke the
+	icon factory so it only displays icons from the default theme; I'll
+	try to fix that soon.
+	
+	* configure.in:
+	added new gnome theme folder
+	* icons/Makefile.am:
+	added the document icons from the eazel theme to the default theme
+	* icons/eazel/Makefile.am:
+	removed the document icons from the eazel theme since it now
+	inherits theme from the default theme
+	* icons/eazel/i-regular.xml:
+	removed the document xml file from the eazel theme 
+	* icons/i-regular.xml:
+	added the document xml file to the default theme
+	
+	* icons/gnome/.cvsignore:
+	* icons/gnome/Makefile.am:
+	* icons/gnome/gnome.xml:
+	added new gnome theme for the classic gnome look, for people who
+	prefer it.
+	
 2000-09-19  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 3157 (Going to a bogus URI crashes nautilus).

@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = arlo eazel vector throbber
+SUBDIRS = arlo eazel gnome vector throbber
 
 icondir = $(datadir)/pixmaps/nautilus
 
@@ -142,12 +142,18 @@ icon_DATA =\
 	i-nfs.png \
 	i-printer.png \
 	i-regular-12.png \
-	i-regular-192.png \
+	i-regular-12-aa.png \
 	i-regular-24.png \
+	i-regular-24-aa.png \
 	i-regular-36.png \
+	i-regular-36-aa.png \
 	i-regular-72.png \
+	i-regular-72-aa.png \
 	i-regular-96.png \
+	i-regular-96-aa.png \
 	i-regular.png \
+	i-regular-aa.png \
+	i-regular.xml \
 	i-search-72.png \
 	i-sock.png \
 	i-stalled.png \
