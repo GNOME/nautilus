@@ -26,16 +26,6 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
-
-#include <string.h>
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-uidefs.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <gnome.h>
-
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbox.h>
@@ -47,16 +37,21 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
-
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <string.h>
 
 static GHashTable *windows;
 
@@ -108,6 +103,9 @@ enum {
 	VALUE_COLUMN,
 	COLUMN_COUNT
 };
+
+static void cancel_group_change_callback (gpointer callback_data);
+static void cancel_owner_change_callback (gpointer callback_data);
 
 typedef struct {
 	NautilusFile *file;
@@ -516,7 +514,19 @@ group_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callb
 	g_assert (callback_data == NULL);
 	
 	/* Report the error if it's an error. */
+	nautilus_timed_wait_stop (cancel_group_change_callback, file);
 	fm_report_error_setting_group (file, result);
+	nautilus_file_unref (file);
+}
+
+static void
+cancel_group_change_callback (gpointer callback_data)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (callback_data);
+	nautilus_file_cancel (file, group_change_callback, NULL);
+	nautilus_file_unref (file);
 }
 
 static void
@@ -524,7 +534,14 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 {
 	g_assert (pair != NULL);
 
-	/* Try to change file owner. If this fails, complain to user. */
+	/* Try to change file group. If this fails, complain to user. */
+	nautilus_file_ref (pair->file);
+	nautilus_timed_wait_start
+		(cancel_group_change_callback,
+		 pair->file,
+		 _("Cancel Group Change?"),
+		 _("Changing group"),
+		 NULL); /* FIXME: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
 		 group_change_callback, NULL);
@@ -639,15 +656,37 @@ owner_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callb
 	g_assert (callback_data == NULL);
 	
 	/* Report the error if it's an error. */
+	nautilus_timed_wait_stop (cancel_owner_change_callback, file);
 	fm_report_error_setting_owner (file, result);
+	nautilus_file_unref (file);
+}
+
+static void
+cancel_owner_change_callback (gpointer callback_data)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (callback_data);
+	nautilus_file_cancel (file, owner_change_callback, NULL);
+	nautilus_file_unref (file);
 }
 
 static void
 activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 {
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (pair != NULL);
+	g_assert (NAUTILUS_IS_FILE (pair->file));
+	g_assert (pair->name != NULL);
 
 	/* Try to change file owner. If this fails, complain to user. */
+	nautilus_file_ref (pair->file);
+	nautilus_timed_wait_start
+		(cancel_group_change_callback,
+		 pair->file,
+		 _("Cancel Owner Change?"),
+		 _("Changing owner"),
+		 NULL); /* FIXME: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
 		 owner_change_callback, NULL);

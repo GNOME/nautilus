@@ -33,6 +33,8 @@
 
 #include <libnautilus-extensions/nautilus-file.h>
 
+static void cancel_rename_callback (gpointer callback_data);
+
 void
 fm_report_error_renaming_file (NautilusFile *file,
 			       const char *new_name,
@@ -139,8 +141,6 @@ typedef struct {
 	char *new_name;
 } RenameCallbackData;
 
-static void cancel_rename_callback (gpointer callback_data);
-
 static void
 rename_callback_data_free (RenameCallbackData *data)
 {
@@ -215,12 +215,13 @@ fm_rename_file (NautilusFile *file,
 	nautilus_file_ref (file);
 	data->file = file;
 	data->new_name = g_strdup (new_name);
-	nautilus_file_rename (file, new_name,
-			      rename_callback, data);
 	nautilus_timed_wait_start (cancel_rename_callback,
 				   data,
 				   _("Cancel Rename?"),
 				   wait_message,
 				   NULL); /* FIXME: Parent this? */
+	nautilus_file_rename (file, new_name,
+			      rename_callback, data);
 	g_free (wait_message);
+
 }

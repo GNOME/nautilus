@@ -1299,6 +1299,9 @@ nautilus_file_monitor_remove (NautilusFile *file,
 }			      
 
 
+/* FIXME: This needs to be changed to use async. I/O, and callers need
+ * to use the "call when ready" way for asking for the info.
+ */
 /* return the uri associated with the passed-in file, which may not be the actual uri if
    the file is an old-style gmc link or a nautilus xml file */
 char *

@@ -222,7 +222,7 @@ int                     nautilus_file_compare_for_sort_reversed (NautilusFile   
 int                     nautilus_file_compare_name		(NautilusFile                  *file_1,
 								 const char		       *pattern);
 
-/* FIXME: This probably doesn't belong in here, since it involves opening the file. */
+/* FIXME: This needs a better name. */
 char *                  nautilus_file_get_mapped_uri            (NautilusFile                  *file);
 
 /* Give a file a chance to activate itself instead of letting the

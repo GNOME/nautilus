@@ -1,5 +1,20 @@
 2000-07-13  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-file.h: Fix a FIXME.
+	* libnautilus-extensions/nautilus-file.c: Add a FIXME.
+	
+	* src/file-manager/fm-error-reporting.c: (fm_rename_file):
+	Start the timed wait first in case the call succeeds or fails
+	immediately.
+	
+	* src/file-manager/fm-properties-window.c:
+	(group_change_callback), (cancel_group_change_callback),
+	(activate_group_callback), (owner_change_callback),
+	(cancel_owner_change_callback), (activate_owner_callback):
+	Added a timed wait for each of these operations.
+
+2000-07-13  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-file.c:
 	(set_permissions_callback), (nautilus_file_set_permissions),
 	(set_owner_and_group_callback), (set_owner_and_group),
