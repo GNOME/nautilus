@@ -23,7 +23,7 @@
  *
  */
 
-/* nautilus-zoomable.c: FIXME */
+/* nautilus-zoomable.c: FIXME bugzilla.eazel.com 681 */
 
 #include <config.h>
 #include "nautilus-zoomable.h"
@@ -479,7 +479,9 @@ nautilus_zoomable_real_set_bonobo_control (NautilusZoomable *view,
 
   CORBA_exception_init(&ev);
 
-  /* FIXME: what if this fails? Create a new control, or bomb somehow? */
+  /* FIXME bugzilla.eazel.com 682: 
+   * what if this fails? Create a new control, or bomb somehow? 
+   */
   view->private->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
 
   /* We don't need the extra ref the above creates. */

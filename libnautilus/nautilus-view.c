@@ -495,7 +495,9 @@ nautilus_view_frame_real_set_bonobo_control (NautilusViewFrame *view,
 
   CORBA_exception_init(&ev);
 
-  /* FIXME: what if this fails? Create a new control, or bomb somehow? */
+  /* FIXME bugzilla.eazel.com 682: 
+   * what if this fails? Create a new control, or bomb somehow? 
+   */
   view->private->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
   bonobo_object_unref (view->private->control); /* we don't want this spare ref */
   

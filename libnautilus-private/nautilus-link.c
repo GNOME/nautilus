@@ -106,7 +106,7 @@ nautilus_link_get_link_uri(const char *link_file_uri)
 }
 
 /* strips the suffix from the passed in string if it's a link file */
-/* FIXME: don't do this at expert user levels */
+/* FIXME bugzilla.eazel.com 683: don't do this at expert user levels */
 char*
 nautilus_link_get_display_name(char* link_file_name)
 {

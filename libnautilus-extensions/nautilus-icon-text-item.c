@@ -6,7 +6,7 @@
  * Authors: Miguel de Icaza <miguel@gnu.org>
  *          Federico Mena <federico@gimp.org>
  *
- * FIXME: Provide a ref-count fontname caching like thing.
+ * FIXME bugzilla.eazel.com 685: Provide a ref-count fontname caching like thing.
  */
 
 #include <config.h>
@@ -247,7 +247,7 @@ iti_destroy (GtkObject *object)
 	priv = iti->priv;
 	item = GNOME_CANVAS_ITEM (object);
 
-	/* FIXME: stop selection and editing */
+	/* FIXME bugzilla.eazel.com 686: stop selection and editing */
 
 	/* Queue redraw of bounding box */
 
@@ -297,7 +297,7 @@ static GdkFont *
 get_default_font (void)
 {
 	if (!default_font) {
-		/* FIXME: this is never unref-ed */
+		/* FIXME bugzilla.eazel.com 687: this is never unref-ed */
 		default_font = gdk_fontset_load (DEFAULT_FONT_NAME);
 		g_assert (default_font != NULL);
 	}
@@ -1006,7 +1006,8 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 
 	iti->font = gdk_font_ref (font);
 
-	/* FIXME: We update the font and layout here instead of in the
+	/* FIXME bugzilla.eazel.com 684: 
+	 * We update the font and layout here instead of in the
 	 * ::update() method because the stupid icon list makes use of iti->ti
 	 * and expects it to be valid at all times.  It should request the
 	 * item's bounds instead.

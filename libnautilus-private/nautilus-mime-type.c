@@ -40,7 +40,7 @@ typedef struct {
 } MimeTypeItem;
 
 /* here is the string table associating mime types with commands */
-/* FIXME:  this should be kept in a file somewhere, possibly using GConf or OAF */
+/* FIXME bugzilla.eazel.com 586:  this should be kept in a file somewhere, possibly using GConf or OAF */
 
 static MimeTypeItem mime_type_table [] = {
 	{ "text", "plain",  "Edit with gEdit", "gedit" },
