@@ -1,6 +1,14 @@
 2001-02-21  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/file-manager/fm-properties-window.c: (set_icon_callback):
+	Property window now stores a uri (as opposed to a path) in
+	metadata for custom icons - bug 6841.
+
+2001-02-21  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
 	             John Sullivan <sullivan@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:

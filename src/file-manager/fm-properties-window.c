@@ -2375,13 +2375,16 @@ static void
 set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 {
 	NautilusFile *file;
+	char *icon_uri;
 	
 	g_return_if_fail (properties_window != NULL);
 	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
 
 	if (icon_path != NULL) {
 		file = properties_window->details->original_file;
-		nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, icon_path);
+		icon_uri = gnome_vfs_get_uri_from_local_path (icon_path);
+		nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, icon_uri);
+		g_free (icon_uri);
 		nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
 
 		/* re-enable the property window's clear image button */ 
