@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-21 20:44+0100\n"
-"PO-Revision-Date: 2004-03-07 04:26-0600\n"
+"PO-Revision-Date: 2004-03-07 21:14-0600\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@users.sf.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -369,7 +369,7 @@ msgstr "เหล็กขัดแปรง"
 
 #: data/browser.xml.h:9
 msgid "Bubble Gum"
-msgstr "หมากฝรั่ง"
+msgstr "บานเย็น"
 
 #: data/browser.xml.h:10
 msgid "Burlap"
@@ -426,7 +426,7 @@ msgstr ""
 
 #: data/browser.xml.h:23
 msgid "Dark Cork"
-msgstr ""
+msgstr "มะเขือดอง"
 
 #: data/browser.xml.h:24
 msgid "Dark GNOME"
@@ -528,7 +528,7 @@ msgstr ""
 
 #: data/browser.xml.h:49
 msgid "Leaf"
-msgstr "หญ้าอ่อน"
+msgstr "ใบอ่อน"
 
 # It's lemon color.  มะนาว will make Thai people think of lime.
 #: data/browser.xml.h:50
@@ -679,7 +679,7 @@ msgstr "คลื่นขาว"
 
 #: data/browser.xml.h:86
 msgid "Web"
-msgstr ""
+msgstr "ใย"
 
 #: data/browser.xml.h:87
 msgid "White"
@@ -687,7 +687,7 @@ msgstr "ขาว"
 
 #: data/browser.xml.h:88
 msgid "White Ribs"
-msgstr ""
+msgstr "แถบขาว"
 
 #: data/browser.xml.h:89
 msgid "_Emblems"
@@ -4168,10 +4168,12 @@ msgstr "_ทิ้งลงถังขยะ"
 msgid "Move each selected item to the Trash"
 msgstr "ย้ายรายการที่เลือกไปไว้ในถังขยะ"
 
+# This is for "edit->delete" and right-click menu on files.
+# It means "delete no through trash" in both contexts.
 #: src/file-manager/fm-directory-view.c:5358
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
-msgstr "_ลบ"
+msgstr "_ลบถาวร"
 
 #: src/file-manager/fm-directory-view.c:5378
 msgid "Ma_ke Links"
@@ -5251,7 +5253,7 @@ msgstr "คุณ_สมบัติ"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_Rename..."
-msgstr "เปลี่_ยนชื่อ..."
+msgstr "เ_ปลี่ยนชื่อ..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_Scripts"
@@ -5721,9 +5723,10 @@ msgstr "<span weight=\"bold\">ค่าปริยายของมุมม�
 msgid "Always"
 msgstr "เสมอ"
 
+# "or deleting files." here means "not through trash"
 #: src/nautilus-file-management-properties.glade.h:38
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "_ถามก่อนที่จะเทถังขยะหรือลบแฟ้ม"
+msgstr "_ถามก่อนที่จะเทถังขยะหรือลบแฟ้มอย่างถาวร"
 
 #: src/nautilus-file-management-properties.glade.h:39
 msgid "Behavior"
