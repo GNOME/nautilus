@@ -32,6 +32,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -354,6 +355,25 @@ nautilus_unique_temporary_file_name (void)
 	}
 
 	return file_name;
+}
+
+const char *
+nautilus_get_vfs_method_display_name (char *method)
+{
+	if (g_ascii_strcasecmp (method, "computer") == 0 ) {
+		return _("Computer");
+	} else if (g_ascii_strcasecmp (method, "network") == 0 ) {
+		return _("Network");
+	} else if (g_ascii_strcasecmp (method, "fonts") == 0 ) {
+		return _("Fonts");
+	} else if (g_ascii_strcasecmp (method, "themes") == 0 ) {
+		return _("Themes");
+	} else if (g_ascii_strcasecmp (method, "burn") == 0 ) {
+		return _("CD Creator");
+	} else if (g_ascii_strcasecmp (method, "smb") == 0 ) {
+		return _("Windows Network");
+	}
+	return NULL;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -1,3 +1,20 @@
+2004-01-07  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	(nautilus_get_vfs_method_display_name): New funciton
+	
+	* src/nautilus-window.c:
+	Use nautilus_get_vfs_method_display_name to set
+	the title
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	Remove tab icon navigation. Makes normal keynav work.
+	
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window.[ch]:
+	* src/nautilus-window-manage-views.c:
+	Add location button menu to spatial windows.
+	
 2004-01-06  Dave Camp  <dave@ximian.com>
 
 	* configure.in: Remove components/tree/Makefile from

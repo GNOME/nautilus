@@ -55,6 +55,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define TAB_NAVIGATION_DISABLED
+
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
@@ -2905,6 +2907,7 @@ select_matching_name (NautilusIconContainer *container,
 	return TRUE;
 }
 
+#ifndef TAB_NAVIGATION_DISABLED
 static void
 select_previous_or_next_icon (NautilusIconContainer *container, 
 			      gboolean next, 
@@ -2945,6 +2948,7 @@ select_previous_or_next_icon (NautilusIconContainer *container,
 		keyboard_move_to (container, icon, NULL, event);
 	}
 }
+#endif
 
 /* GtkObject methods.  */
 
@@ -3774,12 +3778,14 @@ key_press_event (GtkWidget *widget,
 			keyboard_space (container, event);
 			handled = TRUE;
 			break;
+#ifndef TAB_NAVIGATION_DISABLED
 		case GDK_Tab:
 		case GDK_ISO_Left_Tab:
 			select_previous_or_next_icon (container, 
 						      (event->state & GDK_SHIFT_MASK) == 0, event);
 			handled = TRUE;
 			break;
+#endif
 		case GDK_Return:
 		case GDK_KP_Enter:
 			activate_selected_items (container);

@@ -34,6 +34,7 @@
 #include "nautilus-application.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
@@ -89,6 +90,10 @@ struct _NautilusSpatialWindowDetails {
         guint save_geometry_timeout_id;	  
 	
 	GtkWidget *content_box;
+	GtkWidget *location_button;
+	GtkWidget *location_statusbar;
+
+	GnomeVFSURI *location;
 };
 
 GNOME_CLASS_BOILERPLATE (NautilusSpatialWindow, nautilus_spatial_window,
@@ -189,6 +194,10 @@ nautilus_spatial_window_finalize (GObject *object)
 	
 	window = NAUTILUS_SPATIAL_WINDOW (object);
 
+	if (window->details->location != NULL) {
+		gnome_vfs_uri_unref (window->details->location);
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -282,6 +291,7 @@ static void
 real_merge_menus (NautilusWindow *nautilus_window)
 {
 	NautilusSpatialWindow *window;
+	BonoboControl *control;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Close Parent Folders", file_menu_close_parent_windows_callback),
 		BONOBO_UI_VERB ("UpCloseCurrent", go_up_close_current_window_callback),
@@ -300,6 +310,12 @@ real_merge_menus (NautilusWindow *nautilus_window)
 
 	bonobo_ui_component_add_verb_list_with_data (nautilus_window->details->shell_ui,
 						     verbs, window);
+
+	control = bonobo_control_new (window->details->location_statusbar);
+	bonobo_ui_component_object_set (nautilus_window->details->shell_ui,
+		       			"/status/StatusButton",
+					BONOBO_OBJREF (control),
+					NULL);
 }
 
 static void
@@ -332,8 +348,159 @@ real_get_default_size(NautilusWindow *window, guint *default_width, guint *defau
 }
 
 static void
+location_menu_item_activated_callback (GtkWidget *menu_item,
+				       NautilusSpatialWindow *window)
+{
+	GnomeVFSURI *uri;
+	char *location;
+
+	uri = g_object_get_data (G_OBJECT (menu_item), "uri");
+	location = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), location);
+	g_free (location);
+	
+}
+
+static void
+menu_deactivate_callback (GtkWidget *menu,
+			  gpointer   data)
+{
+	GMainLoop *loop;
+
+	loop = data;
+
+	if (g_main_loop_is_running (loop)) {
+		g_main_loop_quit (loop);
+	}
+}
+
+static void
+menu_popup_pos (GtkMenu   *menu,
+		gint      *x,
+		gint      *y,
+		gboolean  *push_in,
+		gpointer	user_data)
+{
+	GtkWidget *widget;
+	GtkRequisition menu_requisition, button_requisition;
+
+	widget = user_data;
+
+	gtk_widget_size_request (GTK_WIDGET (menu), &menu_requisition);
+	gtk_widget_size_request (widget, &button_requisition);
+
+	gdk_window_get_origin (widget->window, x, y);
+
+	*y -= menu_requisition.height - button_requisition.height;
+
+	*push_in = TRUE;
+}
+
+static char *
+get_uri_name (GnomeVFSURI *uri) 
+{
+	char *name, *short_name;
+	const char *method;
+
+	if (!gnome_vfs_uri_has_parent (uri) && 
+	    g_ascii_strcasecmp (uri->method_string, "file") != 0) {
+		method = nautilus_get_vfs_method_display_name (uri->method_string);
+		if (method == NULL) {
+			method = uri->method_string;
+		}
+
+		short_name = gnome_vfs_uri_extract_short_name (uri);
+		if (short_name == NULL ||
+		    strcmp (short_name, GNOME_VFS_URI_PATH_STR) == 0) {
+			return g_strdup (method);
+		}
+		name = g_strdup_printf ("%s: %s", method, short_name);
+		g_free (short_name);
+	} else {
+		name = gnome_vfs_uri_extract_short_name (uri);
+	}
+	return name;
+}
+
+static void
+location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *window)
+{
+	GtkWidget *popup, *menu_item;
+	GnomeVFSURI *uri;
+	char *name;
+	GMainLoop *loop;
+
+	g_return_if_fail (window->details->location != NULL);
+
+	popup = gtk_menu_new ();
+	
+	uri = gnome_vfs_uri_ref (window->details->location);
+	while (uri != NULL) {
+		name = get_uri_name (uri);
+		menu_item = gtk_image_menu_item_new_with_label (name);
+		g_free (name);
+		gtk_widget_show (menu_item);
+		g_signal_connect (menu_item, "activate",
+				  G_CALLBACK (location_menu_item_activated_callback),
+				  window);
+		g_object_set_data_full (G_OBJECT (menu_item), "uri", uri, (GDestroyNotify)gnome_vfs_uri_unref);
+
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (popup), menu_item);
+
+		uri = gnome_vfs_uri_get_parent (uri);
+	}
+	gtk_menu_set_screen (GTK_MENU (popup), gtk_widget_get_screen (widget));
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	g_signal_connect (popup, "deactivate",
+			  G_CALLBACK (menu_deactivate_callback),
+			  loop);
+
+	gtk_grab_add (popup);
+	gtk_menu_popup (GTK_MENU (popup), NULL, NULL, menu_popup_pos, widget, 1, GDK_CURRENT_TIME);
+	g_main_loop_run (loop);
+	gtk_grab_remove (popup);
+	g_main_loop_unref (loop);
+ 	gtk_object_sink (GTK_OBJECT (popup));
+}
+
+void
+nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
+					      const char            *location)
+{
+	GnomeVFSURI *uri;
+	char *name;
+	
+	uri = NULL;
+	if (location != NULL) {
+		uri = gnome_vfs_uri_new (location);
+	}
+	if (uri != NULL) {
+		name = get_uri_name (uri);
+		gtk_button_set_label (GTK_BUTTON (window->details->location_button),
+				      name);
+		g_free (name);
+		gtk_widget_set_sensitive (window->details->location_button, TRUE);
+	} else {
+		gtk_button_set_label (GTK_BUTTON (window->details->location_button),
+				      "");
+		gtk_widget_set_sensitive (window->details->location_button, FALSE);
+	}
+
+	if (window->details->location != NULL) {
+		gnome_vfs_uri_unref (window->details->location);
+	}
+	window->details->location = uri;
+}
+
+static void
 nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 {
+	GtkShadowType shadow_type;
+	GtkWidget *frame;
+	GtkRcStyle *rc_style;
+
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
@@ -342,6 +509,40 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_widget_show (window->details->content_box);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), 
 				    window->details->content_box);
+
+	window->details->location_statusbar = gtk_statusbar_new ();
+	gtk_widget_show (window->details->location_statusbar);
+	gtk_widget_hide (GTK_STATUSBAR (window->details->location_statusbar)->frame);
+	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (window->details->location_statusbar), 
+					   FALSE);
+
+	window->details->location_button = gtk_button_new_with_label ("");
+	gtk_button_set_relief (GTK_BUTTON (window->details->location_button),
+			       GTK_RELIEF_NONE);
+	rc_style = gtk_widget_get_modifier_style (window->details->location_button);
+	rc_style->xthickness = 0;
+	rc_style->ythickness = 0;
+	gtk_widget_modify_style (window->details->location_button, 
+				 rc_style);
+
+	gtk_widget_show (window->details->location_button);
+
+	frame = gtk_frame_new (NULL);
+	gtk_widget_style_get (GTK_WIDGET (window->details->location_statusbar), 
+			      "shadow_type", &shadow_type, NULL);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), shadow_type);
+	gtk_box_pack_start (GTK_BOX (window->details->location_statusbar), 
+			    frame, TRUE, TRUE, 0);
+	gtk_widget_show (frame);
+
+	gtk_container_add (GTK_CONTAINER (frame), 
+			   window->details->location_button);
+	
+	gtk_widget_set_sensitive (window->details->location_button, FALSE);
+	g_signal_connect (window->details->location_button, 
+			  "clicked", 
+			  G_CALLBACK (location_button_clicked_callback), window);
+	gtk_widget_show (window->details->location_statusbar);
 }
 
 static void

@@ -32,6 +32,7 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
@@ -1160,28 +1161,42 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
+static gboolean 
+is_method_root (char *uri)
+{
+	while (*uri != 0) {
+		if (*uri == ':') {
+			break;
+		}
+		if (!g_ascii_isalpha (*uri)) {
+			return FALSE;
+		}
+		uri++;
+	}
+	return (strcmp (uri, "://") == 0 ||
+		strcmp (uri, ":///") == 0);
+}
+
 static char *
 compute_default_title (const char *text_uri)
 {
 	NautilusFile *file;
 	char *title;
 	char *canonical_uri;
+	char *colon;
 	
 	canonical_uri = eel_make_uri_canonical (text_uri);
 	
+	title = NULL;
 	if (canonical_uri == NULL) {
 		title = g_strdup ("");
-	} else if (strcmp (canonical_uri, "computer:///") == 0 ) {
-		title = g_strdup (_("Computer"));
-	} else if (strcmp (canonical_uri, "network:///") == 0 ) {
-		title = g_strdup (_("Network"));
-	} else if (strcmp (canonical_uri, "fonts:///") == 0 ) {
-		title = g_strdup (_("Fonts"));
-	} else if (strcmp (canonical_uri, "themes:///") == 0 ) {
-		title = g_strdup (_("Themes"));
-	} else if (strcmp (canonical_uri, "burn:///") == 0 ) {
-		title = g_strdup (_("CD Creator"));
-	} else {
+	} else if (is_method_root (canonical_uri)) {
+		colon = strchr (canonical_uri, ':');
+		g_assert (colon != NULL);
+		*colon = 0;
+		title = g_strdup (nautilus_get_vfs_method_display_name (canonical_uri));
+	} 
+	if (title == NULL) {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);

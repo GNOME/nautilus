@@ -446,7 +446,7 @@ viewed_file_changed_callback (NautilusFile *file,
                                                            window->details->location)) {
                         g_free (window->details->location);
                         window->details->location = new_location;
-                        
+			
                         /* Check if we can go up. */
                         update_up_button (window);
 #if !NEW_UI_COMPLETE
@@ -454,6 +454,12 @@ viewed_file_changed_callback (NautilusFile *file,
                                 /* Change the location bar to match the current location. */
                                 nautilus_navigation_bar_set_location
                                         (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
+                                         window->details->location);
+                        }                  
+                        if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+                                /* Change the location button to match the current location. */
+                                nautilus_spatial_window_set_location_button
+                                        (NAUTILUS_SPATIAL_WINDOW (window),
                                          window->details->location);
                         }                  
 #endif
@@ -570,6 +576,13 @@ update_for_new_location (NautilusWindow *window)
                                                     window->details->location,
                                                     window->details->title);
 	}
+
+	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+		/* Change the location button to match the current location. */
+		nautilus_spatial_window_set_location_button
+			(NAUTILUS_SPATIAL_WINDOW (window),
+			 window->details->location);
+	}                  
 #endif
 }
 

@@ -69,4 +69,6 @@ char *   nautilus_unique_temporary_file_name         (void);
 char *   nautilus_find_file_in_gnome_path            (char       *file);
 GList *  nautilus_find_all_files_in_gnome_path       (char       *file);
 
+const char *nautilus_get_vfs_method_display_name (char *method);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */
