@@ -1396,9 +1396,9 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* at first, we just handle sounds */
 
 	if (should_preview_sound (file)) {
-		/* FIXME: we can only preview local sounds */	
 		mime_type = nautilus_file_get_mime_type (file);
-		if (nautilus_istr_has_prefix (mime_type, "audio/") && nautilus_file_is_local (file)) {   	
+		if (nautilus_istr_has_prefix (mime_type, "audio/") &&
+				nautilus_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
 			if (nautilus_sound_can_play_sound ()) {
 				result = 1;
 				preview_sound (file, start_flag);

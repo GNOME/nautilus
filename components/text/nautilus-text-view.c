@@ -33,6 +33,7 @@
 #include <bonobo/bonobo-control.h>
 
 #include <libnautilus/libnautilus.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -79,7 +80,6 @@ typedef struct {
 } ServiceMenuItemParameters;
 
 #define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
-#define ADDITIONAL_SERVICES_COMMAND_PATH "/commands/Services Placeholder/Services/Service Items"
 
 static void nautilus_text_view_initialize_class			(NautilusTextViewClass *klass);
 static void nautilus_text_view_initialize			(NautilusTextView      *view);
@@ -183,7 +183,7 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
 	gtk_widget_show (text_view->details->text_display);
-	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), TRUE);
+	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), FALSE);
 
 	/* add signal handlers to the text field to enable/disable the service menu items */
 	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
@@ -440,7 +440,7 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 	xmlNodePtr service_node;
 	char *label, *escaped_label;
 	char *tooltip, *template;
-	char *verb_name, *item_path, *source_mode;
+	char *verb_name, *item_path, *verb_path, *source_mode;
 	ServiceMenuItemParameters *parameters;
 	BonoboUIComponent *ui;
 	
@@ -488,15 +488,14 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 							   handle_service_menu_item,
 							   parameters,
 							  (GDestroyNotify) service_menu_item_parameters_free);	   
-			g_free (verb_name);	
 			
 			/* initially disable the item unless it's document-based; it will be enabled if there's a selection */
-			item_path = nautilus_bonobo_get_numbered_menu_item_path
-					(ui, ADDITIONAL_SERVICES_MENU_PATH, *index);	
+			verb_path = g_strdup_printf ("/commands/%s", verb_name);
 			if (nautilus_strcmp (source_mode, "document") != 0) {
-				nautilus_bonobo_set_sensitive (ui, item_path, FALSE);
+				nautilus_bonobo_set_sensitive (ui, verb_path, FALSE);
 			}
-			g_free (item_path);
+			g_free (verb_name);	
+			g_free (verb_path);
 			
 			*index += 1;
 		}
@@ -583,7 +582,7 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 	BonoboControl *control;
 	GtkEditable *text_widget;
 	gboolean has_selection;
-	char *command_path;
+	char *verb_name, *verb_path;
 	int index;
 	
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
@@ -597,14 +596,17 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 	/* iterate through the menu items, handling the selection state */
 	
 	for (index = 0; index < text_view->details->service_item_count; index++) {
-		command_path = nautilus_bonobo_get_numbered_menu_item_path
-					(ui, ADDITIONAL_SERVICES_MENU_PATH, index);
+		verb_name = nautilus_bonobo_get_numbered_menu_item_command 
+				(ui, ADDITIONAL_SERVICES_MENU_PATH, index);	
+		
+		verb_path = g_strdup_printf ("/commands/%s", verb_name);
 		if (text_view->details->service_item_uses_selection[index]) {
 			nautilus_bonobo_set_sensitive (ui, 
-				       command_path,
+				       verb_path,
 				       has_selection);
 		}
-		g_free (command_path);
+		g_free (verb_name);
+		g_free (verb_path);
 	}
 	
 	return FALSE;
@@ -630,6 +632,11 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 		
 		gtk_signal_connect (GTK_OBJECT (bonobo_control_get_ui_component (control)),
 			    "ui_event", handle_ui_event, text_view);
+	
+		nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (text_view->details->text_display),
+						       		control,
+						       		FALSE);
+
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content

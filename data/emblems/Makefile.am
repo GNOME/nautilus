@@ -5,6 +5,7 @@ emblemsdir = $(datadir)/nautilus/emblems
 emblems_DATA = \
 	certified.png \
 	cool.png \
+	danger.png \
 	distinguished.png \
 	draft.png \
 	erase.png \

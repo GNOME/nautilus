@@ -24,6 +24,7 @@ icon_DATA =\
 	emblem-OK.svg \
 	emblem-certified.svg \
 	emblem-cool.svg \
+	emblem-danger.svg \
 	emblem-distinguished.svg \
 	emblem-draft.svg \
 	emblem-favorite.svg \

@@ -1,3 +1,31 @@
+2000-12-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize), (add_one_service),
+	(update_service_menu_items), (merge_bonobo_menu_items):
+	fixed problem with "command/verb separation", and added support
+	for the clipboard to the text view.
+
+	* nautilus-clean.sh:
+	added nautilus-text-view to nautilus-clean.sh
+	
+	* data/emblems/Makefile.am:
+	* data/emblems/danger.png:
+	* icons/Makefile.am:
+	* icons/emblem-danger.svg:
+	added danger emblem from Susan
+	
+	* icons/i-executable.png:
+	* icons/i-executable-aa.png:	
+	fixed bug 4691, executable icon looks like KDE icon, by using
+	a new icon from Susan
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+	fixed bug 4926, Nautilus tries to preview realaudio files but
+	can't, by special casing the realaudio mime type.  Also, cleaned
+	things up a little by removing redundant is_local call.
+	
 2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 954, Plays two MP3s at once instead of one at a time
