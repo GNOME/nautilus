@@ -666,8 +666,7 @@ nautilus_launch_desktop_file (const char	*desktop_file_uri,
 	}
 	
 	error = NULL;
-	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri,
-						GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri, 0,
 						&error);	
 	if (error != NULL) {
 		message = g_strconcat (_("There was an error launching the application.\n\n"

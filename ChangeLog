@@ -1,3 +1,13 @@
+2002-07-10  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-program-choosing.c
+	(nautilus_launch_desktop_file): don't pass
+	GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS to 
+	gnome_desktop_item_new_from_uri(), as it returns NULL if the executable
+	isn't found and we crash. Nautilus will find out that it doesn't exist
+	when it tries to run it, and it will show an error dialog.
+	Fixes bug #87286.
+
 2002-07-10  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-sidebar.c (nautilus_sidebar_update_appearance):
