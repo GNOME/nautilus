@@ -654,10 +654,14 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
 					       emblems_table);
+	gtk_widget_show (scroller);
+
 	/* Get rid of default lowered shadow appearance. */
+	
+#if 0	/* FIXME: bugzilla.eazel.com 853 */
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (GTK_BIN (scroller)->child), 
 				      GTK_SHADOW_NONE);
-	gtk_widget_show (scroller);
+#endif				      
 
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	

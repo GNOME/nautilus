@@ -1,3 +1,10 @@
+2000-05-10  John Sullivan  <set EMAIL_ADDRESS environment variable>
+
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	Commented out shadow-setting line that causes asserts and
+	strange window behavior for some people's builds (but not mine
+	when I checked this in). Will fix later.
+
 2000-05-09  Andy Hertzfeld <andy@eazel.com>
 	
 	* src/nautilus-window-toolbar.c:
