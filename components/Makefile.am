@@ -21,7 +21,6 @@ SUBDIRS = \
 	hardware \
 	help \
 	history \
-	html \
 	loser \
 	music \
 	notes \
