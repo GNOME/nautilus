@@ -1,3 +1,18 @@
+2001-03-09  John Sullivan  <sullivan@eazel.com>
+
+	Merge from HEAD:
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7615 (searching for "    " crashes)
+
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_criteria_to_search_uri):
+	Change code that counts characters in search URI
+	to use the same math as the code that appends
+	to string.
+
 2001-03-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Merge from HEAD:
