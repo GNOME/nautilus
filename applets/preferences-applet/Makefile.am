@@ -11,20 +11,20 @@ INCLUDES = -I. -I$(srcdir) \
 	-DBINDIR=\""$(bindir)"\" \
 	$(NULL)
 
-bin_PROGRAMS = nautilus-launcher-applet
+bin_PROGRAMS = nautilus-preferences-applet
 
-nautilus_launcher_applet_SOURCES =\
-	nautilus-launcher-applet.c \
+nautilus_preferences_applet_SOURCES =\
+	nautilus-preferences-applet.c \
 	$(NULL)
 
-nautilus_launcher_applet_LDADD =	\
+nautilus_preferences_applet_LDADD =	\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(APPLETS_LIBS) \
 	$(NULL)
 
 gnorbadir  = $(sysconfdir)/CORBA/servers
-gnorba_DATA = nautilus-launcher-applet.gnorba
+gnorba_DATA = nautilus-preferences-applet.gnorba
 
 EXTRA_DIST =\
 	$(gnorba_DATA) \

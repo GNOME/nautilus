@@ -1,3 +1,20 @@
+2001-01-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* applets/Makefile.am:
+	* applets/launcher/Makefile.am:
+	* applets/launcher/nautilus-launcher-applet.c: (button_toggled),
+	(show_desktop_changed_callback), (delete_event), (main):
+	* applets/launcher/nautilus-launcher-applet.gnorba:
+	* applets/preferences-applet/Makefile.am:
+	* applets/preferences-applet/nautilus-preferences-applet.c:
+	(accept_all_cookies), (preference_toggle_destroy_callback),
+	(boolean_preference_changed_callback), (button_toggled),
+	(boolean_toggle_button_new), (main):
+	* applets/preferences-applet/nautilus-preferences-applet.gnorba:
+	* configure.in:
+	A very simple applet to debug show desktop and smooth graphics
+	preferences.
+	
 2001-01-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:
