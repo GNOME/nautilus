@@ -2286,7 +2286,6 @@ static void
 nautilus_icon_canvas_item_accessible_initialize (AtkObject *accessible,
                                                  gpointer data)
 {
-	NautilusIconCanvasItem *item;
         NautilusIconCanvasItemAccessiblePrivate *priv;
 
         if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize) {
