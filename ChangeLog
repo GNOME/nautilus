@@ -1,3 +1,12 @@
+2000-10-26  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (authn_cb_succeeded), (nautilus_summary_view_initialize),
+	(nautilus_summary_view_destroy):
+
+	Rolling back gconf evil that seems to be causing the production runs
+	of the summary to segfault.
+
 2000-10-26  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed the panel menu item to launch the desktop
 	and one nautilus window, starting at the user's 

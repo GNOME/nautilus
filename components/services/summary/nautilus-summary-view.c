@@ -54,8 +54,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <gconf/gconf.h>
-
 #include <orb/orbit.h>
 #include <liboaf/liboaf.h>
 #include <libtrilobite/trilobite-redirect.h>
@@ -222,8 +220,6 @@ struct _NautilusSummaryViewDetails {
 	SummaryPendingOperationType pending_operation;
 	EazelProxy_AuthnCallback authn_callback;
 
-	/* GConf */
-	GConfEngine *	engine_gconf;
 };
 
 static void     nautilus_summary_view_initialize_class (NautilusSummaryViewClass   *klass);
@@ -884,20 +880,6 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 }
 
 static void
-save_default_eazel_service_user (NautilusSummaryView *view, const EazelProxy_User *user)
-{
-	GConfValue *value;
-
-	value = gconf_value_new (GCONF_VALUE_STRING);
-
-	gconf_value_set_string (value, user->user_name);
-	
-	gconf_engine_set (view->details->engine_gconf, KEY_GCONF_TRILOBITE_DEFAULT_USER, value, NULL);
-
-	gconf_value_free (value);
-}
-
-static void
 authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment *ev)
 {
 	NautilusSummaryView    *view;
@@ -911,8 +893,6 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	
 	g_message ("Login succeeded");
 	timeout = gtk_timeout_add (0, logged_in_callback, view);
-
-	save_default_eazel_service_user (view, user);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -1362,8 +1342,6 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 
-	view->details->engine_gconf = gconf_engine_get_default();
-
 	if ( CORBA_NO_EXCEPTION != ev._major ) {
 		/* FIXME bugzilla.eazel.com 2740: user should be warned that Ammonite may not be installed */
 		g_warning ("Couldn't instantiate eazel-proxy\n");
@@ -1405,8 +1383,6 @@ nautilus_summary_view_destroy (GtkObject *object)
 	
 	g_assert (Pending_None == view->details->pending_operation);
 	CORBA_Object_release (view->details->user_control, &ev);
-
-	gconf_engine_unref (view->details->engine_gconf);
 
 	g_free (view->details);
 	
