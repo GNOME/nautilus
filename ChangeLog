@@ -1,3 +1,12 @@
+2000-10-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (set_album_cover),
+	(image_button_callback), (nautilus_music_view_set_album_image):
+	completed bug 2261, setting images for album covers, by making
+	the set album cover button the proper size, and leaving it visible
+	even when there's a cover so you can change it after setting it.
+	
 2000-10-18  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/file-manager/Makefile.am:
