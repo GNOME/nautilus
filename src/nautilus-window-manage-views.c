@@ -625,7 +625,7 @@ handle_unreadable_location (NautilusWindow *window, const char *uri)
 		file_name = nautilus_file_get_name (file);
         	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
                 g_free (file_name);
-                nautilus_error_dialog_parented (message, GTK_WINDOW (window));
+                nautilus_error_dialog (message, GTK_WINDOW (window));
                 g_free (message);
 	}
 
@@ -760,7 +760,7 @@ report_content_view_failure_to_user (NautilusWindow *window)
 	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
 				   "You can choose another view or go to a different location.", 
 				   window->content_view_id->name);
-	nautilus_error_dialog_parented (message, GTK_WINDOW (window));
+	nautilus_error_dialog (message, GTK_WINDOW (window));
 	g_free (message);
 }
 
@@ -1227,11 +1227,11 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * happens when a new window cannot display its initial URI. 
                  */
                 gtk_object_destroy (GTK_OBJECT (window));
-                nautilus_error_dialog (error_message);
+                nautilus_error_dialog (error_message, NULL);
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
-                nautilus_error_dialog_parented (error_message, GTK_WINDOW (window));
+                nautilus_error_dialog (error_message, GTK_WINDOW (window));
                 
                 /* If it was an error loading a URI that had been
                  * dragged to the location bar, we might need to reset
