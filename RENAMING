@@ -25,19 +25,19 @@ libnautilus/nautilus-meta-view-frame.c -> libnautilus/nautilus-meta-view.c
 libnautilus/nautilus-meta-view-frame.h -> libnautilus/nautilus-meta-view.h
 libnautilus/nautilus-view-frame.c -> libnautilus/nautilus-view.c
 libnautilus/nautilus-view-frame.h -> libnautilus/nautilus-view.h
+src/ntl-view-nautilus.c -> src/nautilus-view-frame-nautilus-view.c
+src/ntl-index-panel.c -> nautilus-sidebar.c
+src/ntl-index-panel.h -> nautilus-sidebar.h
+src/ntl-miniicon.c -> libnautilus-extensions/nautilus-mini-icon.c
+src/ntl-miniicon.h -> libnautilus-extensions/nautilus-mini-icon.h
 
 src/ntl-types.h -> (delete this file)
 
-src/ntl-index-panel.c -> ?
-src/ntl-index-panel.h -> ?
-src/ntl-miniicon.c -> ?
-src/ntl-miniicon.h -> ?
-src/ntl-uri-map.c -> ?
-src/ntl-uri-map.h -> ?
-src/ntl-view-frame-svr.c -> ?
-src/ntl-view-nautilus.c -> ?
-src/ntl-window-msgs.c -> ?
-src/ntl-window-msgs.h -> ?
+
+src/ntl-uri-map.c -> nautilus-applicable-views.c
+src/ntl-uri-map.h -> nautilus-applicable-views.h
+src/ntl-window-msgs.c -> nautilus-window-manage-views.c
+src/ntl-window-msgs.h -> nautilus-window-manage-views.h
 
 ntl* -> nautilus*
 
