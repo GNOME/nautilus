@@ -131,7 +131,7 @@ eazel_inventory_collect_software (void) {
 	node = xmlNewNode (NULL, "SOFTWARE");
 
 	distro = trilobite_get_distribution ();
-	distro_string = trilobite_get_distribution_name (distro, TRUE, FALSE);
+	distro_string = trilobite_get_distribution_name (distro, TRUE, TRUE);
 	if (!distro_string) {
 		/* do we really want to pass this string? */
 		distro_string = g_strdup_printf ("Unknown Distribution");
