@@ -39,6 +39,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
@@ -523,6 +524,7 @@ void
 nautilus_gnome_open_terminal (const char *command)
 {
 	char *terminal_path;
+	char *terminal_path_with_flags;
 	char *shell;
 	gboolean quote_all;
 	char *command_line;
@@ -543,15 +545,7 @@ nautilus_gnome_open_terminal (const char *command)
 	}
 	
 	if (terminal_path == NULL) {
-		terminal_path = gnome_is_program_in_path ("dtterm");
-	}
-	
-	if (terminal_path == NULL) {
 		terminal_path = gnome_is_program_in_path ("nxterm");
-	}
-	
-	if (terminal_path == NULL) {
-		terminal_path = gnome_is_program_in_path ("dtterm");
 	}
 	
 	if (terminal_path == NULL) {
@@ -566,19 +560,29 @@ nautilus_gnome_open_terminal (const char *command)
 		terminal_path = gnome_is_program_in_path ("xterm");
 	}
 	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("dtterm");
+	}
 
+	
 	if (terminal_path == NULL){
 		g_message (" Could not start a terminal ");
 	} else if (command){
 		if (quote_all) {
-			command_line = g_strconcat (terminal_path, " -e '", command, "'", NULL);
+			command_line = g_strconcat (terminal_path_with_flags, " -e '", command, "'", NULL);
 		} else {
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
 		nautilus_gnome_terminal_shell_execute (shell, command_line);
 		g_free (command_line);
 	} else {
-		nautilus_gnome_terminal_shell_execute (shell, terminal_path);
+	        if (quote_all) {
+			terminal_path_with_flags = g_strconcat (terminal_path, " --login", NULL);
+		        nautilus_gnome_terminal_shell_execute (shell, terminal_path_with_flags);
+		        g_free (terminal_path_with_flags);
+		} else {
+			nautilus_gnome_terminal_shell_execute (shell, terminal_path);
+		}
 	}
 
 
