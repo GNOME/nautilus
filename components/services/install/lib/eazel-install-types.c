@@ -196,44 +196,6 @@ packagedata_new ()
 	return pack;
 }
 
-PackageData*
-packagedata_new_from_rpm_conflict (struct rpmDependencyConflict conflict) 
-{
-	PackageData *result;
-	
-	result = packagedata_new ();
-
-	result->name = g_strdup (conflict.needsName);
-	result->version = (conflict.needsVersion && (strlen (conflict.needsVersion) > 1)) ? g_strdup (conflict.needsVersion) : NULL;
-	return result;
-}
-
-PackageData*
-packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict conflict) 
-{
-	PackageData *result;
-	
-	result = packagedata_new ();
-
-	result->name = g_strdup (conflict.byName);
-	result->version = (conflict.byVersion && (strlen (conflict.byVersion) > 1)) ? g_strdup (conflict.byVersion) : NULL;
-	return result;
-}
-
-PackageData*
-packagedata_new_from_rpm_header (Header hd) 
-{
-	PackageData *pack;
-
-	pack = packagedata_new ();
-
-	packagedata_fill_from_rpm_header (pack, hd);
-
-	pack->status = PACKAGE_UNKNOWN_STATUS;
-	pack->toplevel = FALSE;
-	return pack;
-};
-
 GList *
 packagedata_list_copy (const GList *list, gboolean deep)
 {
@@ -295,188 +257,6 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	} /* No need to null if !deep, as packagedata_new does that */
 
 	return result;
-}
-
-/* FIXME bugzilla.eazel.com 2351:
-   check possible leaks from using headerGetEntry.
-   Addition ; it looks like it depends on the tag type. From reading
-   in rpm-3.0.4/lib/header.c(copyEntry), which is called by headerGetEntry,
-   some types get a new memory array returned, whereas others get a pointer
-   into the header...
-   grr....
-*/
-void 
-packagedata_fill_from_rpm_header (PackageData *pack, 
-				  Header hd)
-{
-	unsigned long *sizep;
-	char *tmp;
-
-	headerGetEntry (hd,
-			RPMTAG_NAME, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->name);
-	pack->name = g_strdup (tmp);
-
-	headerGetEntry (hd,
-			RPMTAG_VERSION, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->version);
-	pack->version = g_strdup (tmp);
-
-	headerGetEntry (hd,
-			RPMTAG_RELEASE, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->minor);
-	pack->minor = g_strdup (tmp);
-
-	headerGetEntry (hd,
-			RPMTAG_ARCH, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->archtype);
-	pack->archtype = g_strdup (tmp);
-
-	headerGetEntry (hd,
-			RPMTAG_SIZE, NULL,
-			(void **) &sizep, NULL);	
-	pack->bytesize = *sizep;
-
-	headerGetEntry (hd,
-			RPMTAG_DESCRIPTION, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->description);
-	pack->description = g_strdup (tmp);
-
-	headerGetEntry (hd,
-			RPMTAG_SUMMARY, NULL,
-			(void **) &tmp, NULL);
-	g_free (pack->summary);
-	pack->summary = g_strdup (tmp);
-
-	pack->packsys_struc = (gpointer)hd;
-
-	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
-	g_list_free (pack->provides);
-	pack->provides = NULL;
-
-	{
-		char **paths = NULL;
-		char **paths_copy = NULL;
-		char **names = NULL;
-		int *indexes = NULL;
-		int count = 0;
-		int index = 0;
-		int num_paths = 0;
-
-                /* RPM v.3.0.4 and above has RPMTAG_BASENAMES */
-
-		headerGetEntry (hd,			
-				RPMTAG_DIRINDEXES, NULL,
-				(void**)&indexes, NULL);
-		headerGetEntry (hd,			
-				RPMTAG_DIRNAMES, NULL,
-				(void**)&paths, &num_paths);
-		headerGetEntry (hd,			
-				RPMTAG_BASENAMES, NULL,
-				(void**)&names, &count);
-
-		/* Copy all paths and shave off last /.
-		   This is needed to remove the dir entries from 
-		   the packagedata's provides list. */
-		paths_copy = g_new0 (char*, num_paths);
-		for (index=0; index<num_paths; index++) {
-			paths_copy[index] = g_strdup (paths[index]);
-			paths_copy[index][strlen (paths_copy[index]) - 1] = 0;
-		}
-
-		/* Now loop through all the basenames */
-		/* NOTE: This algorithm has sizeof (paths) * sizeof (names)
-		   complexity, aka O(n²) */
-		for (index=0; index<count; index++) {
-			char *fullname = NULL;
-			int index2 = 0;
-
-			if (paths) {
-				fullname = g_strdup_printf ("%s/%s", paths_copy[indexes[index]], names[index]);
-			} else {
-				fullname = g_strdup (names[index]);
-			}
-			/* Check it's not a dirname, by looping through all
-			   paths_copy and check that fullname does not occur there */
-			for (index2 = 0; index2 < num_paths; index2++) {
-				if (strcmp (paths_copy[index2], fullname)==0) {
-					g_free (fullname);
-					fullname = NULL;
-					break;
-				}
-			}
-			if (fullname) {
-				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
-				pack->provides = g_list_prepend (pack->provides, fullname);
-			}
-		}
-		for (index=0; index<num_paths; index++) {
-			g_free (paths_copy[index]);
-		}
-		g_free (paths_copy);
-		xfree (paths);
-		xfree (names);
-	}
-}
-
-/* FIXME bugzilla.eazel.com 1532:
-   RPM specific code */
-PackageData* 
-packagedata_new_from_file (const char *file)
-{
-	PackageData *pack;
-
-	pack = packagedata_new ();
-	packagedata_fill_from_file (pack, file);
-	return pack;
-}
-
-/* FIXME bugzilla.eazel.com 1532:
-   RPM specific code */
-/* 
-   This fills the fields from a given file.
-*/
-gboolean 
-packagedata_fill_from_file (PackageData *pack, const char *filename)
-{
-	static FD_t fd;
-	Header hd;
-
-	/* Set filename field */
-	if (pack->filename != filename) {
-		g_free (pack->filename);
-		pack->filename = g_strdup (filename);
-	}
-
-	/* Already loaded a packsys struc ? */
-	if (pack->packsys_struc) {
-		/* FIXME bugzilla.eazel.com
-		   This probably is a leak... */
-		headerFree ((Header) pack->packsys_struc);
-	}
-
-	/* Open rpm */
-	fd = fdOpen (filename, O_RDONLY, 0);
-
-	if (fd == NULL) {
-		g_warning (_("Cannot open %s"), filename);
-		pack->status = PACKAGE_CANNOT_OPEN;
-		return FALSE;
-	}
-
-	/* Get Header block */
-	rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
-	packagedata_fill_from_rpm_header (pack, hd);	
-
-	pack->status = PACKAGE_UNKNOWN_STATUS;
-
-	fdClose (fd);
-	return TRUE;
 }
 
 #define COPY_STRING(name) do { \
@@ -1088,6 +868,44 @@ eazel_install_package_other_version_compare (PackageData *pack,
 	return -1;
 }
 
+int 
+eazel_install_package_matches_versioning (PackageData *a, 
+					  const char *version,
+					  const char *minor)
+{
+	int result = 0;
+
+	if (version && minor) {
+		g_message ("strcmp (%s, %s) = %d strcmp (%s, %s)= %d", 
+			   a->minor, minor, 
+			   strcmp (a->minor, minor), 
+			   a->version, version,
+			   strcmp (a->version, version));
+		if (strcmp (a->minor, minor)==0 &&
+		    strcmp (a->version, version)==0) {
+			result = 1;
+		}
+	} else if (version && !minor) {
+		g_message ("strcmp (%s, %s)= %d", 
+			   a->version, version,
+			   strcmp (a->version, version));
+		if (strcmp (a->version, version)==0) {
+			result = 1;
+		}
+	} else if (!version && minor) {
+		g_message ("strcmp (%s, %s)= %d", 
+			   a->minor, minor,
+			   strcmp (a->minor, minor));
+		if (strcmp (a->minor, minor)==0) {
+			result = 1;
+		}
+	} else if (!version && !minor) {
+		g_message ("!version && !minor");
+		result = 1;
+	}
+ 	
+	return result;
+}
 
 /* The evil marshal func */
 

@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <rpm/rpmlib.h>
 #include <libtrilobite/trilobite-core-distribution.h>
 
 typedef enum _URLType URLType;
@@ -101,17 +100,12 @@ enum _URLType {
 };
 const char *eazel_install_protocol_as_string (URLType protocol);
 
-enum _PackageType {
-	PACKAGE_TYPE_RPM,
-	PACKAGE_TYPE_DPKG,
-	PACKAGE_TYPE_SOLARIS
-};
-
 enum _PackageFillFlags {
-	PACKAGE_FILL_EVERYTHING = 0x00,
+	PACKAGE_FILL_EVERYTHING = 0x0,
 	PACKAGE_FILL_NO_TEXT = 0x01,
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
-	PACKAGE_FILL_NO_DEPENDENCIES = 0x04
+	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
+	PACKAGE_FILL_MINIMAL = 0xff
 };
 
 /* FIXME eventually this is going away completely */
@@ -222,12 +216,6 @@ PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
 GList *packagedata_list_copy (const GList *list, gboolean deep);
 
-PackageData* packagedata_new_from_rpm_header (Header );
-PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
-PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
-
-gboolean packagedata_fill_from_file (PackageData *pack, const char *filename);
-void packagedata_fill_from_rpm_header (PackageData *pack, Header );
 void packagedata_fill_in_missing (PackageData *package, const PackageData *full_package, int fill_flags);
 
 void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
@@ -266,7 +254,7 @@ typedef struct {
 
 PackageRequirement* packagerequirement_new (PackageData *pack, PackageData *req);
 
-/* Compares */
+/* glib style ompares */
 
 int eazel_install_package_provides_basename_compare (char *a, char *b);
 int eazel_install_package_provides_compare (PackageData *pack, char *name);
@@ -276,6 +264,11 @@ int eazel_install_requirement_dep_name_compare (PackageRequirement *req, const c
 int eazel_install_requirement_dep_compare (PackageRequirement *req, PackageData *pack);
 int eazel_install_package_version_compare (PackageData *pack, char *version);
 int eazel_install_package_other_version_compare (PackageData *pack, PackageData *other);
+
+/* Other compare functions */
+
+/* Specific compare where b is more complete then a, do not use in glib functions */
+int eazel_install_package_matches_versioning (PackageData *a, const char *version, const char *minor);
 
 /* Evil marshal func */
 

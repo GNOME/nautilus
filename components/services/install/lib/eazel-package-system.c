@@ -105,6 +105,42 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 	return result;
 }
 
+gboolean             
+eazel_package_system_is_installed (EazelPackageSystem *package_system,
+				   const char *dbpath,
+				   const char *name,
+				   const char *version,
+				   const char *minor)
+{
+	GList *matches;
+	gboolean result = FALSE;
+	
+	matches = eazel_package_system_query (package_system,
+					      dbpath,
+					      (const gpointer)name,
+					      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+					      PACKAGE_FILL_MINIMAL);
+
+	if (matches) {
+		if (version || minor) {
+			GList *iterator;
+
+			for (iterator = matches; iterator && !result; iterator = g_list_next (iterator)) {
+				PackageData *pack = (PackageData*)iterator->data;
+				if (eazel_install_package_matches_versioning (pack, version, minor)) {
+					result = TRUE;
+				}
+			}
+		} else {
+			result = TRUE;
+		}
+		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	}
+	g_list_free (matches);
+
+	return result;
+}
+
 PackageData*
 eazel_package_system_load_package (EazelPackageSystem *system,
 				   PackageData *in_package,
@@ -172,7 +208,7 @@ eazel_package_system_verify (EazelPackageSystem *system,
 gboolean 
 eazel_package_system_emit_start (EazelPackageSystem *system, 
 				 EazelPackageSystemOperation op, 
-				 PackageData *package)
+				 const PackageData *package)
 {
 	gboolean result = TRUE;
 	EPS_API (system);
@@ -188,7 +224,7 @@ gboolean
 eazel_package_system_emit_progress (EazelPackageSystem *system, 
 				    EazelPackageSystemOperation op, 
 				    unsigned long info[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS],
-				    PackageData *package)
+				    const PackageData *package)
 {
 	gboolean result = TRUE;
 	int infos;
@@ -214,7 +250,7 @@ eazel_package_system_emit_progress (EazelPackageSystem *system,
 gboolean 
 eazel_package_system_emit_failed (EazelPackageSystem *system, 
 				  EazelPackageSystemOperation op, 
-				  PackageData *package)
+				  const PackageData *package)
 {
 	gboolean result = TRUE;
 	EPS_API (system);
@@ -231,14 +267,13 @@ eazel_package_system_emit_failed (EazelPackageSystem *system,
 gboolean 
 eazel_package_system_emit_end (EazelPackageSystem *system, 
 			       EazelPackageSystemOperation op, 
-			       PackageData *package)
+			       const PackageData *package)
 {
 	gboolean result = TRUE;
 	EPS_API (system);
 
 	gtk_signal_emit (GTK_OBJECT (system),
 			 signals [END],
-			 system,
 			 op, 
 			 package,
 			 &result);

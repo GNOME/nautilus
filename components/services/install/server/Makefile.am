@@ -47,6 +47,8 @@ trilobite_eazel_install_service_LDADD =								\
 	$(RPM_LIBS)										\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la 			\
 	$(top_builddir)/components/services/install/lib/libeazelsoftcat.la 			\
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la		\
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	 	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la 	\
 	$(GNOMEUI_LIBS) 									\

@@ -477,6 +477,7 @@ trilobite_root_helper_run_program (TrilobiteRootHelper *root_helper, const char 
 
 	/* any argument containing an unprintable is an immediate error */
 	for (item = g_list_first (argv); item; item = g_list_next (item)) {
+		g_assert (item->data == NULL);
 		for (p = (char *)item->data; *p; p++) {
 			if ((*p < ' ') || (*p == 127)) {
 				g_warning ("TrilobiteRootHelper: run %s: argument %d contained an "

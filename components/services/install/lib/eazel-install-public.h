@@ -269,7 +269,6 @@ ei_mutator_decl (transaction_dir, char*);
 ei_mutator_decl (server_port, guint);
 ei_mutator_decl (cgi_path, char*);
 ei_mutator_decl (eazel_auth, gboolean);
-ei_mutator_decl (package_system, int);
 ei_mutator_decl (ssl_rename, gboolean);
 ei_mutator_decl (ignore_file_conflicts, gboolean);
 
@@ -294,7 +293,6 @@ ei_access_decl (transaction_dir, char*);
 ei_access_decl (server_port, guint);
 ei_access_decl (cgi_path, char*);
 ei_access_decl (eazel_auth, gboolean);
-ei_access_decl (package_system, int);
 ei_access_decl (ssl_rename, gboolean);
 ei_access_decl (ignore_file_conflicts, gboolean);
 

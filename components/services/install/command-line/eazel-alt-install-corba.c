@@ -86,6 +86,7 @@ CORBA_Environment ev;
 int cli_result = 0;
 GList *cases = NULL;
 GList *categories;
+gboolean downloaded_files = FALSE;
 
 static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_STRING, &arg_batch, 0, N_("Set the default answer to continue, also default delete to Yes"), NULL},
@@ -236,23 +237,27 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 				int total,
 				char *title) 
 {
+	downloaded_files = TRUE;
+
 	if (amount==0) {
-		fprintf (stdout, "Downloading %s...\n", name);
+		fprintf (stdout, "Downloading %s...", name);
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "(%d/%d) = %.1f %%\r", 
-				 amount, total,
-				 (float) (((float) amount * 100.0) / total));
-			fflush (stdout);
+			fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%%", 
+				 name,
+				 amount, total, amount / (total / 100));
+				 /* (float) (((float) amount * 100.0) / total));  %.1f */
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "(%d/%d) = %.1f %%\r\n",
-				 amount, total, 100.0);
+			fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% Done\n",
+				 name,
+				 amount, total, 100);
+		} else {
+			fprintf (stdout, "Downloading %s... Done\n", name);
 		}
-		fprintf (stdout, "Done\n");
-		fflush (stdout);
 	}
+	fflush (stdout);
 }
 
 static void 
@@ -264,27 +269,30 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			       char *title)
 {
 	if (amount==0) {
-		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->description);
+		fprintf (stdout, "%s %s", title, pack->name);
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) = %.1f%%\r", 
+			fprintf (stdout, "\r%s %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%", 
+				 title, pack->name,
 				 package_num, num_packages,
 				 total_size_completed, total_size,
 				 amount, total,
-				 (float) (((float) amount * 100.0) / total));
-			fflush (stdout);
+				 amount / (total / 100));
 		}
 	}
 	if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) = %.1f %%\r\n",
+			fprintf (stdout, "\r%s %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n",
+				 title, pack->name,
 				 package_num, num_packages,
 				 total_size_completed, total_size,
-				 amount, total, 100.0);
+				 amount, total, 100);
+		} else {
+			fprintf (stdout, "Done\n");
 		}
-		fprintf (stdout, "Done\n");
-		fflush (stdout);
+
 	}
+	fflush (stdout);
 }
 
 static void
@@ -390,8 +398,8 @@ something_failed (EazelInstallCallback *service,
 
 	if (arg_debug) {
 		tree_helper (service, pd, "", "", 4, title);
+		fprintf (stdout, "\n");
 	}
-	fprintf (stdout, "\n");
 
 	g_free (title);
 
@@ -460,29 +468,15 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 static void
 dep_check (EazelInstallCallback *service,
 	   const PackageData *package,
-	   const PackageData *needs,
+	   const PackageData *needs_package,
 	   gpointer unused) 
 {
-	if (needs->name && needs->version) {
-		fprintf (stdout, "Doing dependency check for %s-%s - need %s-%s\n", 
-			 package->name, package->version,
-			 needs->name, needs->version);
-	} else if (needs->name) {
-		fprintf (stdout, "Doing dependency check for %s-%s - need %s\n", 
-			 package->name, package->version,
-			 needs->name);
-	} else if (needs->provides) {
-		GList *iterator;
-		fprintf (stdout, "Doing dependency check for %s-%s - need", 
-			 package->name, package->version);
-		for (iterator = needs->provides; iterator; iterator = g_list_next (iterator)) {
-			fprintf (stdout, " %s", (char*)iterator->data);
-		}
-		fprintf (stdout, "\n");
-	} else {
-		fprintf (stdout, "Doing dependency check for %s-%s - needs something, but I don't know what it was...\n", 
-			 package->name, package->version);
-	}
+	char *pack, *needs;
+	pack = packagedata_get_readable_name (package);
+	needs = packagedata_get_readable_name (needs_package);
+	printf ("Dependency : %s needs %s\n", pack, needs);
+	g_free (pack);
+	g_free (needs);
 }
 
 static void
@@ -568,7 +562,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}		
 	} 
 
-	if (!arg_query && !arg_erase && !arg_file && ask_delete) {
+	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
 		if (arg_batch) {			

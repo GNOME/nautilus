@@ -1,3 +1,115 @@
+2000-12-06 Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	Needs to link with eazelpackagesystem now.
+	
+	* components/services/install/command-line/Makefile.am:
+	Build eazel-test-types.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal),
+	(eazel_install_progress_signal), (something_failed), (dep_check):
+	Nicer output.
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_package_load), (main):
+	Moved the packagelist_prun test into eazel-test-types. Also
+	relaxed the test of uninstall (doesn't require progress signals
+	now).
+	
+	* components/services/install/command-line/eazel-test-types.c:
+	(make_package), (test_packagelist_prune),
+	(test_eazel_install_package_matches_versioning), (main):
+	Test packagedatalist_prune and the new ugly func for testing
+	version-minor match.
+	
+	* components/services/install/lib/Makefile.am:
+	Do compile eazel-install-query.c anymore.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(packagedata_new_from_rpm_conflict),
+	(packagedata_new_from_rpm_conflict_reversed),
+	(eazel_install_do_rpm_dependency_check):
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), (eazel_install_set_arg),
+	(eazel_install_class_initialize), (eazel_install_initialize),
+	(eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_query_package_system),
+	(eazel_install_get_size_increasement),
+	(eazel_install_emit_preflight_check):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-logic.c:
+	(install_packages), (eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_install_packages), (uninstall_all_packages),
+	(uninstall_packages), (get_total_size_of_packages),
+	(eazel_install_start_signal), (eazel_install_end_signal),
+	(eazel_install_progress_signal), (eazel_install_failed_signal),
+	(eazel_install_start_transaction),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies),
+	(eazel_install_do_dependency_check),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install):
+	Fixes bug 4936, use EazelPackageSystem in EazelInstall.
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(problem_step_foreach_remove),
+	(eazel_install_problem_tree_to_case),
+	(eazel_install_problem_handle_cases):
+	Slammed some ifdef EIP_DEBUG around some debug.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(eazel_install_package_matches_versioning):
+	New funky match function. Since I needed the same check two
+	places, I moved it into a generel function.
+	Also cut out all the rpmload code.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(monitor_rpm_process_pipe), (rpm_packagedata_fill_from_rpm_header),
+	(eazel_package_system_rpm3_load_package),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_requires),
+	(eazel_package_system_rpm3_query_foreach),
+	(monitor_subcommand_pipe), (eazel_package_system_rpm3_execute),
+	(check_if_all_packages_seen),
+	(eazel_package_system_rpm3_install_uninstall):
+	Fixed 4914. And also added the use of the packages_seen in
+	piggyback.
+	
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_is_installed),
+	(eazel_package_system_emit_start),
+	(eazel_package_system_emit_progress),
+	(eazel_package_system_emit_failed),
+	(eazel_package_system_emit_end):
+	Added const to all the signal emitters.
+	Added the is_installed call.
+	
+	* components/services/install/nautilus-view/Makefile.am:
+	Link against eazelpackagesystem
+	
+	* components/services/install/server/Makefile.am:
+	Link against eazelpackagesystem
+
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.h:
+	Added a documentational comment.
+	
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_run_program):
+	Added an api g_assert that I ran into (no element in args may be null).
+
 2000-12-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/file-manager/fm-search-list-view.c: (load_error_callback):

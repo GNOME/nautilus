@@ -80,17 +80,17 @@ EazelPackageSystem  *eazel_package_system_new_real (void);
 
 gboolean eazel_package_system_emit_start (EazelPackageSystem*, 
 					  EazelPackageSystemOperation, 
-					  PackageData*);
+					  const PackageData*);
 gboolean eazel_package_system_emit_progress (EazelPackageSystem*, 
 					     EazelPackageSystemOperation, 
 					     unsigned long[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS],
-					     PackageData*);
+					     const PackageData*);
 gboolean eazel_package_system_emit_failed (EazelPackageSystem*, 
 					   EazelPackageSystemOperation, 
-					   PackageData*);
+					   const PackageData*);
 gboolean eazel_package_system_emit_end (EazelPackageSystem*, 
 					EazelPackageSystemOperation, 
-					PackageData*);
+					const PackageData*);
 
 void eazel_package_system_marshal_BOOL__ENUM_POINTER (GtkObject *object,
 						      GtkSignalFunc func,

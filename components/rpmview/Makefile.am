@@ -25,6 +25,8 @@ if EAZEL_SERVICES
 extra_libs = \
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/install/lib/libeazelsoftcat.la \
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la 
 extra_sources = \
 	nautilus-rpm-view-install.h		\

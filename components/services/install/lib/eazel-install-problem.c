@@ -36,7 +36,7 @@ static GtkObjectClass *eazel_install_problem_parent_class;
                             g_return_val_if_fail (IS_EAZEL_INSTALL_PROBLEM(s), val);
 
 
-#define EIP_DEBUG
+#undef EIP_DEBUG
 
 /* Data argument to get_detailed_errors_foreach.
    Contains the installer and a path in the tree
@@ -1002,7 +1002,9 @@ problem_step_foreach_remove (int *key,
 			     GHashTable *joint)
 {
 	GList *real_list;
+#ifdef EIP_DEBUG
 	g_message ("problem_step_foreach_remove, key = %d", *key);
+#endif
 	real_list = g_hash_table_lookup (joint, key);
 	if (real_list) {
 		real_list = g_list_concat (real_list,
@@ -1052,9 +1054,11 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 
 	P_SANITY (problem);
 
+#ifdef EIP_DEBUG
 	g_message ("eazel_install_problem_tree_to_case ( pack = 0x%p, uninstall=%s)", 
 		   pack,  
 		   uninstall ? "TRUE" : "FALSE");
+#endif
 
 	data.problem = problem;
 	data.errors = (*output);
@@ -1408,10 +1412,8 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 			   G_GNUC_PRETTY_FUNCTION);
 	}
 	if (uninstall_categories) {
-		g_message ("uninstall TRUE");
 		service_uninstall = TRUE;
 	} else {
-		g_message ("uninstall FALSE");
 		service_uninstall = FALSE;
 	}
 

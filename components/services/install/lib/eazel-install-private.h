@@ -25,6 +25,7 @@
 #define EAZEL_INSTALL_PRIVATE_H
 
 #include "eazel-install-public.h"
+#include "eazel-package-system.h"
 #include "eazel-softcat.h"
 
 /* Funky define to step a GList iterator one ahead */
@@ -58,20 +59,9 @@ struct _EazelInstallPrivate {
 
 	gboolean use_local_package_list;
   	
-	PackageSystem package_system;
-	union {
-		struct {
-			gboolean rpmrc_read;
-			GHashTable *dbs;
-			unsigned long total_size, 
-				      current_installed_size, 
-				      num_packages, 
-				      packages_installed;
-			int install_flags,
-			    interface_flags,
-			    problem_filters;
-		} rpm;
-	} packsys;  	
+	EazelPackageSystem *package_system;
+	/* hacky way to implement the old style signals with the new package system object */
+	unsigned long infoblock[6];
 
 	/* This hash maps from package name-version-release to the 
 	   package. Packages are added in eazel-install-rpm-glue.c do_rpm_install

@@ -31,6 +31,7 @@
 #include "eazel-install-types.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
+#include <eazel-package-system.h>
 
 typedef enum {
 	EAZEL_INSTALL_NOTHING = 0,
@@ -39,6 +40,23 @@ typedef enum {
 	EAZEL_INSTALL_REVERSION_OK = 1<<2
 } EazelInstallOperationStatus;
 	
+gboolean eazel_install_start_signal (EazelPackageSystem *system,
+				     EazelPackageSystemOperation op,
+				     const PackageData *pack,
+				     EazelInstall *service);
+gboolean eazel_install_end_signal (EazelPackageSystem *system,
+				   EazelPackageSystemOperation op,
+				   const PackageData *pack,
+				   EazelInstall *service);
+gboolean  eazel_install_progress_signal (EazelPackageSystem *system,
+					 EazelPackageSystemOperation op,
+					 unsigned long *info,
+					 const PackageData *pack,
+					 EazelInstall *service);
+gboolean eazel_install_failed_signal (EazelPackageSystem *system,
+				      EazelPackageSystemOperation op,
+				      const PackageData *pack,
+				      EazelInstall *service);
 
 EazelInstallOperationStatus install_packages (EazelInstall *service, GList *categories);
 EazelInstallOperationStatus uninstall_packages (EazelInstall *service, GList *categories);

@@ -71,6 +71,7 @@ DistributionName trilobite_get_distribution_enum (const char *name, gboolean com
 
 /* Return an allocated string holding this machine's architecture name
  * (usually "i386" for now, but who knows what the future holds?)
+ * caller must deallocate returned string
  */
 char *trilobite_get_distribution_arch (void);
 

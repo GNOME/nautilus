@@ -29,6 +29,7 @@
 #include "eazel-install-query.h"
 
 /* We use rpmvercmp to compare versions... */
+#include <rpm/rpmlib.h>
 #include <rpm/misc.h>
 
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -168,21 +169,10 @@ eazel_install_pre_install_packages (EazelInstall *service,
 	g_list_free (failed_packages);
 }
 
-static void
-eazel_install_set_settings (EazelInstall *service) {
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		eazel_install_rpm_set_settings (service);
-		break;
-	}	
-}
-
 EazelInstallStatus
 install_packages (EazelInstall *service, GList *categories) {
 	EazelInstallStatus result;
 
-	eazel_install_set_settings (service);
-	
 	if (categories == NULL) {
 		trilobite_debug (_("Reading the install package list %s"), eazel_install_get_package_list (service));
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL, NULL);
@@ -243,7 +233,10 @@ eazel_install_download_packages (EazelInstall *service,
 				   ok */
 				fetch_package = FALSE;	
 				result = TRUE;
-				packagedata_fill_from_file (package, package->filename);
+				package = eazel_package_system_load_package (service->private->package_system,
+									     package, 
+									     package->filename,
+									     PACKAGE_FILL_EVERYTHING);
 			} else {
 				/* The file didn't exist, remove the 
 				   leading path and set the filename, plus
@@ -364,19 +357,21 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			continue;
 		} */
 
-		owners = eazel_install_simple_query (service,
+		owners = eazel_package_system_query (service->private->package_system,
+						     service->private->cur_root,
 						     filename,
-						     EI_SIMPLE_QUERY_OWNS,
-						     1,
-						     pack->modifies);
+						     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
+						     PACKAGE_FILL_EVERYTHING);
+		packagedata_list_prune (&owners, pack->modifies, TRUE, TRUE);
+		
 		if (g_list_length (owners) > 1) {
 			GList *pit;
 			/* FIXME: bugzilla.eazel.com 2959
-			   More then one packages owns this file,
+			   More than one packages owns this file,
 			   this cannot happen (or should not at least)
 			*/
 			trilobite_debug ("***************************************************");
-			trilobite_debug ("More then one package owns the file %s", filename);
+			trilobite_debug ("More than one package owns the file %s", filename);
 			trilobite_debug ("This is filed as bug 2959");
 			trilobite_debug ("Try rpm --rebuilddb");
 			for (pit = owners; pit; pit = g_list_next (pit)) {
@@ -447,7 +442,6 @@ eazel_install_do_install_packages (EazelInstall *service,
 	if (packages) {
 		rv = FALSE;
 		eazel_install_ensure_deps (service, &packages, &failedfiles);
-		eazel_install_free_package_system (service);
 		if (g_list_length (packages)) {
 			if (eazel_install_start_transaction (service, packages) == 0) {
 				rv = TRUE;
@@ -473,7 +467,6 @@ uninstall_all_packages (EazelInstall *service,
 
 		failed = NULL;
 		eazel_uninstall_globber (service, &cat->packages, &failed);
-		eazel_install_free_package_system (service);
 
 		if (eazel_install_start_transaction (service, cat->packages) != 0) {
 			result = EAZEL_INSTALL_NOTHING;
@@ -489,8 +482,6 @@ uninstall_packages (EazelInstall *service,
 		    GList* categories) 
 {
 	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
-	
-	eazel_install_set_settings (service);
 	
 	result |= uninstall_all_packages (service, categories);
 
@@ -611,24 +602,6 @@ revert_transaction (EazelInstall *service,
 	return result;
 }
 
-static void
-eazel_install_do_transaction_fill_hash (EazelInstall *service,
-					GList *packages)
-{
-	GList *iterator;
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		char *tmp;		
-		PackageData *pack;
-
-		pack = (PackageData*)iterator->data;
-		tmp = g_strdup_printf ("%s", pack->name);
-		/* trilobite_debug ("adding %s to name_to_package_hash", tmp); */
-		g_hash_table_insert (service->private->name_to_package_hash,
-				     tmp,
-				     iterator->data);
-	}
-}
-
 unsigned long
 eazel_install_get_total_size_of_packages (EazelInstall *service,
 					  const GList *packages)
@@ -650,53 +623,6 @@ eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
 {
 	service->private->transaction = g_list_prepend (service->private->transaction,
 							pack);
-}
-
-/* FIXME: bugzilla.eazel.com 4936
-   kill off this sucker */
-static GList*
-eazel_install_start_transaction_make_argument_list (EazelInstall *service,
-						    GList *packages)
-{
-	GList *args;
-	GList *iterator;
-
-	args = NULL;
-
-	/* Add the packages to the arg list */
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		PackageData *pack;
-
-		pack = (PackageData*)iterator->data;
-		/* If we're uninstalling, we need the package name, 
-		   if installing/upgrading, the filename.
-		   Since the rpmname is not part of the packagedata,
-		   we need to g_strdup both into the args list.
-		*/
-		if (eazel_install_get_uninstall (service)) {
-			pack->modify_status = PACKAGE_MOD_UNINSTALLED;
-			args = g_list_prepend (args, g_strdup (rpmname_from_packagedata (pack)));
-		} else {
-			pack->modify_status = PACKAGE_MOD_INSTALLED;
-			args = g_list_prepend (args, g_strdup (pack->filename));
-		}
-		/* NOTE: rpm does not generate hash/percent output for
-		   - uninstall
-		   thus, I add them to the transaction report here */
-		if (pack->toplevel &&
-		    eazel_install_get_uninstall (service)) {
-			eazel_install_do_transaction_add_to_transaction (service, pack);
-		}
-	}
-	
-	/* Set the RPM parameters */
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		eazel_install_start_transaction_make_rpm_argument_list (service, &args);
-		break;
-	}
-
-	return args;
 }
 
 static void
@@ -790,132 +716,6 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 	
 	fclose (outfile);
 	g_free (name);
-}
-
-static gboolean
-eazel_install_monitor_process_pipe (GIOChannel *source,
-				    GIOCondition condition,
-				    EazelInstall *service)
-{
-	if (condition == (G_IO_ERR | G_IO_NVAL | G_IO_HUP)) {
-		service->private->subcommand_running = FALSE;
-	} else {
-		switch (eazel_install_get_package_system (service)) {
-		case EAZEL_INSTALL_USE_RPM:
-			service->private->subcommand_running = 
-				eazel_install_monitor_rpm_process_pipe (source, 
-									condition, 
-									service);
-			break;
-		}
-		/* if monitor returns false, it's done */
-		if (service->private->subcommand_running == FALSE) {
-			eazel_install_do_transaction_save_report (service);
-		}
-	}
-	return service->private->subcommand_running;
-}
-
-#ifdef EAZEL_INSTALL_SLIM
-#ifdef DEBUG_RPM_OUTPUT
-static gboolean
-eazel_install_monitor_err_process_pipe (GIOChannel *source,
-					GIOCondition condition,
-					EazelInstall *service)
-{
-	static char *rpmoutname = NULL;
-	FILE *rpmoutput;
-	char tmp;
-	int bytes_read;
-
-	if (condition == (G_IO_ERR | G_IO_NVAL | G_IO_HUP)) {
-		service->private->subcommand_running = FALSE;
-	}
-	g_io_channel_read (source, &tmp, 1, &bytes_read);
-
-	if (bytes_read) {
-		if (rpmoutname == NULL) {
-			rpmoutname = tempnam ("/tmp", "rpmEr");
-		}
-		rpmoutput = fopen (rpmoutname, "at");
-		fprintf (rpmoutput, "%c", tmp); 
-		fflush (rpmoutput); 
-		fclose (rpmoutput);
-	}
-
-	return service->private->subcommand_running;
-}
-#endif /* DEBUG_RPM_OUTPUT */
-#endif
-
-static void
-eazel_install_display_arguments (GList *args) 
-{
-	char *str, *tmp;
-	GList *iterator;
-
-	str = g_strdup ("ARGS: ");
-	for (iterator = args; iterator; iterator = g_list_next (iterator)) {
-		tmp = g_strdup_printf ("%s%s ", str, (char*)iterator->data);
-		g_free (str);
-		str = tmp;
-		if (strlen (str) > 1000) {
-			trilobite_debug ("%s", str);
-			g_free (str);
-			str = g_strdup ("");
-		}
-	}
-	trilobite_debug ("%s", str);
-}
-
-/* Monitors the subcommand pipe and returns the number of packages installed */
-static gint
-eazel_install_monitor_subcommand_pipe (EazelInstall *service,
-				       int fd, 
-				       int stderrfd,
-				       GIOFunc monitor_func)
-{
-	int result = 0;
-	GIOChannel *channel;
-
-	service->private->subcommand_running = TRUE;
-	channel = g_io_channel_unix_new (fd);
-
-	trilobite_debug ("beginning monitor on %d", fd);
-#ifdef EAZEL_INSTALL_SLIM
-	/* In the statically linked installer, we can get
-	   the stderr and fill it into a file */
-	if (stderrfd > 0) {
-		trilobite_debug ("beginning monitor on stderr %d", stderrfd);
-	}
-#else
-	trilobite_debug ("not reading stderrfd %d", stderrfd);
-#endif
-	g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
-			monitor_func, 
-			service);
-#ifdef EAZEL_INSTALL_SLIM
-#ifdef DEBUG_RPM_OUTPUT
-	if (stderrfd > 0) {
-		GIOChannel *err_channel;
-		err_channel = g_io_channel_unix_new (stderrfd);
-		g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
-				(GIOFunc)eazel_install_monitor_err_process_pipe, 
-				service);
-	}
-#endif /* DEBUG_RPM_OUTPUT */
-#endif /* EAZEL_INSTALL_SLIM */
-	while (service->private->subcommand_running) {
-		g_main_iteration (TRUE);
-	}
-	trilobite_debug ("ending monitor on %d", fd);
-
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		result =  service->private->packsys.rpm.packages_installed;
-		break;
-	}
-	return result;
 }
 
 /* 
@@ -1051,6 +851,17 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 	return result;
 }
 
+static unsigned long
+get_total_size_of_packages (const GList *packages)
+{
+	const GList *iterator;
+	unsigned long result = 0;
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		result += pack->bytesize;
+	}
+	return result;
+}
 
 /* A GHRFunc to clean
    out the name_to_package hash table 
@@ -1064,41 +875,82 @@ eazel_install_clean_name_to_package_hash (char *key,
 	return TRUE;
 }
 
+gboolean eazel_install_start_signal (EazelPackageSystem *system,
+				     EazelPackageSystemOperation op,
+				     const PackageData *pack,
+				     EazelInstall *service)
+{
+	service->private->infoblock[2]++;
+	eazel_install_emit_install_progress (service, 
+					     pack,
+					     service->private->infoblock[2], service->private->infoblock[3],
+					     0, pack->bytesize,
+					     service->private->infoblock[4], service->private->infoblock[5]);				     
+	return TRUE;
+}
+
+gboolean eazel_install_end_signal (EazelPackageSystem *system,
+				   EazelPackageSystemOperation op,
+				   const PackageData *pack,
+				   EazelInstall *service)
+{
+	eazel_install_emit_install_progress (service, 
+					     pack,
+					     service->private->infoblock[2], service->private->infoblock[3],
+					     pack->bytesize, pack->bytesize,
+					     service->private->infoblock[4], service->private->infoblock[5]);				     
+	return TRUE;
+}
+
+gboolean  eazel_install_progress_signal (EazelPackageSystem *system,
+					 EazelPackageSystemOperation op,
+					 unsigned long *info,
+					 const PackageData *pack,
+					 EazelInstall *service)
+{
+	service->private->infoblock[4] = info[4];
+	if ((info[0] != 0) && (info[0] != info[1])) {
+		eazel_install_emit_install_progress (service, 
+						     pack,
+						     service->private->infoblock[2], service->private->infoblock[3],
+						     info[0], pack->bytesize,
+						     info[4], info[5]);
+	}
+	return TRUE;
+}
+
+gboolean eazel_install_failed_signal (EazelPackageSystem *system,
+				      EazelPackageSystemOperation op,
+				      const PackageData *pack,
+				      EazelInstall *service)
+{
+	trilobite_debug ("*** %s failed", pack->name);
+	if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL) {
+		eazel_install_emit_install_failed (service, pack);
+	} else if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
+		eazel_install_emit_uninstall_failed (service, pack);
+	}
+	return TRUE;
+}
+
 /* This begins the package transaction.
    Return value is number of failed packages 
 */
-/* FIXME bugzilla.eazel.com
-   RPM specific code */
+
 int
 eazel_install_start_transaction (EazelInstall *service,
 				 GList* packages) 
 {
-#ifdef EAZEL_INSTALL_SLIM
-	int child_pid = -1, child_status;
-#else
 	TrilobiteRootHelper *root_helper;
-	TrilobiteRootHelperStatus root_helper_stat;
-#endif
-	GList *args;
-	int fd;
-	int stderr = -1;
 	int res;
-	int child_exitcode;
+	int flag = 0;
 
 	if (g_list_length (packages) == 0) {
 		return -1;
 	}
 		
-	service->private->packsys.rpm.packages_installed = 0;
-	service->private->packsys.rpm.num_packages = g_list_length (packages);
-	service->private->packsys.rpm.current_installed_size = 0;
-	service->private->packsys.rpm.total_size = 0;
-
-	args = NULL;
 	res = 0;
 	
-	/* FIXME: bugzilla.eazel.com 4936
-	   keep this */
 	if (service->private->downloaded_files) {
 		/* I need to get the lenght here, because all_files_check can alter the list */
 		int l  = g_list_length (packages);
@@ -1110,126 +962,47 @@ eazel_install_start_transaction (EazelInstall *service,
 		}
 	}
 
-	if (res == 0) {
-		eazel_install_do_transaction_fill_hash (service, packages);
-		service->private->packsys.rpm.total_size = 
-			eazel_install_get_total_size_of_packages (service,
-								  packages);
-		args = eazel_install_start_transaction_make_argument_list (service, packages);
-		
-		trilobite_debug (_("Preflight (%ld bytes, %ld packages)"), 
-			   service->private->packsys.rpm.total_size,
-			   service->private->packsys.rpm.num_packages);
-		if (!eazel_install_emit_preflight_check (service, packages)) {
-			trilobite_debug ("Operation aborted at user request");
-			res = g_list_length (packages);
-		} 
+	if (eazel_install_get_test (service)) {
+		flag |= EAZEL_PACKAGE_SYSTEM_OPERATION_TEST;
+	}
+	if (eazel_install_get_force (service)) {
+		flag |= EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+	}
+	if (eazel_install_get_update (service)) {
+		flag |= EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE;
+	}
+	if (eazel_install_get_downgrade (service)) {
+		flag |= EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE;
 	}
 
-	if (res==0) {	     
-		eazel_install_display_arguments (args);
-	}
+	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
+	gtk_object_set_data (GTK_OBJECT (service->private->package_system), 
+			     "trilobite-root-helper", root_helper);	
 
-#ifdef EAZEL_INSTALL_SLIM
-	if (res == 0) {
-		char **argv;
-		int i;		
-		GList *iterator;
-		 
-		/* Create argv list */
-		argv = g_new0 (char*, g_list_length (args) + 2);
-		argv[0] = g_strdup ("rpm");
-		i = 1;
-		for (iterator = args; iterator; iterator = g_list_next (iterator)) {
-			argv[i] = g_strdup (iterator->data);
-			i++;
-		}
-		argv[i] = NULL;
+	/* Init the hack var to emit the old style progress signals */
+	service->private->infoblock [0] = 0;
+	service->private->infoblock [1] = 0;
+	service->private->infoblock [2] = 0;
+	service->private->infoblock [3] = g_list_length (packages);
+	service->private->infoblock [4] = 0;
+	service->private->infoblock [5] = get_total_size_of_packages (packages);
 
-		if (access ("/bin/rpm", R_OK|X_OK)!=0) {
-			g_warning ("/bin/rpm missing or not executable for uid");
-			res = service->private->packsys.rpm.num_packages;
-		} 
-		/* start /bin/rpm... */
-		if (res==0 &&
-		    (child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &stderr))==0) {
-			g_warning ("Could not start rpm");
-			res = service->private->packsys.rpm.num_packages;
+	if (eazel_install_emit_preflight_check (service, packages)) {
+		if (eazel_install_get_uninstall (service)) {
+			eazel_package_system_uninstall (service->private->package_system,
+							service->private->cur_root,
+							packages,
+							flag);
 		} else {
-			trilobite_debug ("rpm running...");
-			trilobite_debug ("fd = %d", fd);
-			trilobite_debug ("stderr = %d", stderr);
+			eazel_package_system_install (service->private->package_system,
+						      service->private->cur_root,
+						      packages,
+						      flag);
 		}
 
-		for (i = 0; argv[i]; i++) {
-			g_free (argv[i]);
-		}
-		g_free (argv);
+		eazel_install_do_transaction_save_report (service);
 	}
-#else /* EAZEL_INSTALL_SLIM     */
-	if (res == 0) {
-		/* Fire off the helper */	
-		root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
-		root_helper_stat = trilobite_root_helper_start (root_helper);
-		if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
-			g_warning ("Error in starting trilobite_root_helper");
-			res = service->private->packsys.rpm.num_packages;
-		}
-		
-		/* Run RPM */
-		if (res==0 && trilobite_root_helper_run (root_helper, 
-							 TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
-		    TRILOBITE_ROOT_HELPER_SUCCESS) {
-			g_warning ("Error in running trilobite_root_helper");
-			res = service->private->packsys.rpm.num_packages;
-			trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
-		}
-	}
-
-#endif /* EAZEL_INSTALL_SLIM     */
-	if (res==0) {		
-		int installed_packages;
-		installed_packages = eazel_install_monitor_subcommand_pipe (service,
-									    fd,
-									    stderr,
-									    (GIOFunc)eazel_install_monitor_process_pipe);
-		res = g_list_length (packages) - installed_packages;
-#ifdef EAZEL_INSTALL_SLIM
-		waitpid (child_pid, &child_status, 0);
-		if (WIFEXITED (child_status)) {
-			child_exitcode = WEXITSTATUS (child_status);
-		} else {
-			child_exitcode = -1;
-		}
-#else	/* EAZEL_INSTALL_SLIM */
-		/* this REALLY SUCKS -- but the exit code from userhelper is WORTHLESS! */
-		child_exitcode = 0;
-		/*
-		  child_exitcode = trilobite_root_helper_get_exit_code (root_helper);
-		*/
-		trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
-#endif	/* EAZEL_INSTALL_SLIM */
-		trilobite_debug ("child exit code = %d", child_exitcode);
-		/* but first, do a sanity check:
-		 * if rpm returned 0 exit code, and we're uninstalling, it probably did them all.
-		 * (it doesn't tend to give any progress info on that stuff.)
-		 * if we think we succeeded, but rpm returned a non-zero exit code, we probably
-		 * actually failed.
-		 */
-		if (eazel_install_get_uninstall (service) && (child_exitcode == 0)) {
-			res = 0;
-		} else if (eazel_install_get_test (service) && (child_exitcode == 0)) {
-			/* in test mode, 0 = good */
-			res = 0;
-		} else if ((child_exitcode != 0) && (res == 0)) {
-			res = g_list_length (packages);
-		}
-		trilobite_debug ("transaction status = %d", res);
-	}
-
-	g_list_foreach (args, (GFunc)g_free, NULL);
-	g_list_free (args);
-
+	
 	g_list_free (service->private->transaction);
 	service->private->transaction = NULL;
 
@@ -1387,35 +1160,6 @@ eazel_install_prune_packages (EazelInstall *service,
 	va_end (ap);
 }
 
-
-gboolean
-eazel_install_prepare_package_system (EazelInstall *service)
-{
-	gboolean result = FALSE;
-
-	trilobite_debug (_("Preparing package system"));
-
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		result = eazel_install_prepare_rpm_system (service);	       
-		break;
-	}
-	return result;
-}
-
-gboolean
-eazel_install_free_package_system (EazelInstall *service)
-{
-	gboolean result = FALSE;
-
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		result = eazel_install_free_rpm_system (service);	       
-		break;
-	}
-	return result;
-}
-
 static void
 eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackages)
 {
@@ -1437,10 +1181,11 @@ eazel_install_check_existing_packages (EazelInstall *service,
 
 	result = EAZEL_INSTALL_STATUS_NEW_PACKAGE;
 	/* query for existing package of same name */
-	existing_packages = eazel_install_simple_query (service, 
-							pack->name, 
-							EI_SIMPLE_QUERY_MATCHES, 
-							0, NULL);
+	existing_packages = eazel_package_system_query (service->private->package_system,
+							service->private->cur_root,
+							pack->name,
+							EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+							PACKAGE_FILL_EVERYTHING);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
@@ -1805,7 +1550,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		if (fetch_result) {
 			/* if it succeeds, add to a list of extras for this package 
 			   We cannot just put it into extrapackages, as a later dep
-			   might fail, and then we have to fail the package */
+			   might fail, and than we have to fail the package */
 			GList *extralist;
 			
 			/* Check if a previous requirement download solved this
@@ -1874,7 +1619,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				g_list_free (extralist);
 				g_hash_table_remove (extras, pack->name);
 				
-				/* Don't add it to failedpackages more then once */
+				/* Don't add it to failedpackages more than once */
 				if (g_list_find (*failedpackages, pack) == NULL) {
 					(*failedpackages) = g_list_prepend (*failedpackages, pack);
 				}
@@ -2088,21 +1833,16 @@ eazel_install_do_dependency_check (EazelInstall *service,
 				   GList **failedpackages,
 				   GList **requirements)
 {
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM: {
-		eazel_install_do_rpm_dependency_check (service, 
-						       packages,
-						       failedpackages,
-						       requirements);
-		/* RPM's depCheck doens't do fileconflicts, so we do
+	eazel_install_do_rpm_dependency_check (service, 
+					       packages,
+					       failedpackages,
+					       requirements);
+	/* RPM's depCheck doens't do fileconflicts, so we do
 		   them ourselves */
-		eazel_install_do_file_conflict_check (service, 
-						      packages,
-						      failedpackages,
-						      requirements);
-	}
-	break;
-	}	
+	eazel_install_do_file_conflict_check (service, 
+					      packages,
+					      failedpackages,
+					      requirements);
 }
 
 /*
@@ -2279,8 +2019,12 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 		GList *break_iterator = NULL;
 		
 		trilobite_debug ("checking reqs by %s", rpmname_from_packagedata (pack));
-		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_REQUIRES,
-						      1, *packages);
+		matches = eazel_package_system_query (service->private->package_system,
+						      service->private->cur_root,
+						      pack,
+						      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+						      PACKAGE_FILL_EVERYTHING);
+		packagedata_list_prune (&matches, *packages, TRUE, TRUE);
 		
 		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
 			PackageData *requiredby = (PackageData*)match_iterator->data;;
@@ -2362,7 +2106,11 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 
 		pack = (PackageData*)iterator->data;
 
-		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+		matches = eazel_package_system_query (service->private->package_system,
+						      service->private->cur_root,
+						      pack->name,
+						      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+						      PACKAGE_FILL_EVERYTHING);
 		trilobite_debug ("%s had %d hits", pack->name, g_list_length (matches));
 
 		/* Now iterate over all packages that match pack->name */
@@ -2388,13 +2136,21 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 			for (j = 0; j < require_name_count; j++) {
 				if ((*require_name[j] != '/') &&
 				    !strstr (require_name[j], ".so")) {
+					PackageData *tmp_pack = packagedata_new ();
 					GList *second_matches;
 					GList *second_match_iterator;
 
-					second_matches = eazel_install_simple_query (service, 
-										     require_name[j],
-										     EI_SIMPLE_QUERY_MATCHES,
-										     2, *packages, *requires);
+					tmp_pack->name = g_strdup (require_name[j]);
+					second_matches = 
+						eazel_package_system_query (service->private->package_system,
+									    service->private->cur_root,
+									    tmp_pack,
+									    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+									    PACKAGE_FILL_EVERYTHING);
+					packagedata_list_prune (&second_matches, *packages, TRUE, TRUE);
+					packagedata_list_prune (&second_matches, *requires, TRUE, TRUE);
+					packagedata_destroy (tmp_pack, TRUE);
+
 					/* Iterate over all packages that match the required package */
 					for (second_match_iterator = second_matches;
 					     second_match_iterator; 
@@ -2420,13 +2176,17 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 							   requiring the requirement, excluding
 							   all pacakges from requires and packages */
 							third_matches = 
-								eazel_install_simple_query (service, 
-											    isrequired->name,
-											    EI_SIMPLE_QUERY_REQUIRES, 
-											    3, 
-											    *packages, 
-											    *requires,
-											    tmp_requires);
+								eazel_package_system_query (service->private->package_system,
+											    service->private->cur_root,
+											    pack->name,
+											    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+											    PACKAGE_FILL_EVERYTHING);
+							packagedata_list_prune (&third_matches, 
+										*packages, TRUE, TRUE);
+							packagedata_list_prune (&third_matches, 
+										*requires, TRUE, TRUE);
+							packagedata_list_prune (&third_matches, 
+										tmp_requires, TRUE, TRUE);
 							
 							if (third_matches) {
 								trilobite_debug ("skipped %s, others depend on it", 
@@ -2492,21 +2252,33 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 		PackageData *pack = (PackageData*)iterator->data;
 		GList *matches;
 
-		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+		matches = eazel_package_system_query (service->private->package_system,
+						      service->private->cur_root,
+						      pack->name,
+						      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+						      PACKAGE_FILL_NO_TEXT | PACKAGE_FILL_NO_DEPENDENCIES);
 		/* If it's installed, continue */
 		if (matches) {
-			if (g_list_length (matches)==1) {
-				PackageData *matched = (PackageData*)matches->data;
-				/* This is mucho important. If not marked 
-				   as toplevel, upwards traverse will not fail the package
-				   is it has dependents */
-				matched->toplevel = TRUE;
-
-				result = g_list_prepend (result, matched);
- 			} else {
-				g_assert_not_reached ();
+			GList *match_it;
+			gboolean any = FALSE;
+			for (match_it = matches; match_it; match_it = g_list_next (match_it)) {
+				PackageData *matched = (PackageData*)match_it->data;
+				if (eazel_install_package_matches_versioning (matched, 
+									      pack->version, 
+									      pack->minor)) {
+					matched->toplevel = TRUE;
+					/* mark that at least one matched */
+					any = TRUE;
+					result = g_list_prepend (result, matched);
+				} else {
+					packagedata_destroy (matched, TRUE);
+				}
+				
+ 			} 
+			if (!any) {
+				pack->status = PACKAGE_CANNOT_OPEN;
+				remove = g_list_prepend (remove, pack);
 			}
-			/* Free the list structure */
 			g_list_free (matches);
 			continue;
 		} else {

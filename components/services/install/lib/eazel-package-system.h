@@ -48,64 +48,21 @@ typedef enum {
 	EAZEL_PACKAGE_SYSTEM_DEB
 } EazelPackageSystemId;
 
-/* This is query enums, and specifies what the "key" in
-   eazel_package_system_query means */
 typedef enum {
-	/* "key" is a const char* filename, eg "/usr/lib/libglib.so.1" 
-	    returned packages are packages that are 
-           listed as owning the specified file */
 	EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
-
-        /* "key" is a const char* feature, eg. "libglib-1.2.so.0"
-	   returned pacakges are packages that are listed as providing
-	   this feature */
 	EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES,
-
-	/* "key" is a const PackageData* packageobject, the following
-	    fields are needed :
-           p->name must be set
-           p->version must be set
-           p->release must be set
-	   returned packages are packages listed as requiring the
-           matched package. This means first a query is done for
-           all packages matching the given name-version-release,
-           and then a search for packages requiring this */
 	EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-
-	/* "key" is a const char* package-name
-	    */
 	EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-
-	/* "key" is a const char* substring that must occur in the name, eg. "gnome" gives
-	   all packages that has "gnome" in the name, and "" gives all packages */
 	EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR
 } EazelPackageSystemQueryEnum;
 
 enum {
-	/* Do operation in "test" mode. If package system does not have this, 
-	   don't do the operation */
 	EAZEL_PACKAGE_SYSTEM_OPERATION_TEST = 0x1,
-
-	/* Do operation is force mode if available, if not, you're screwed */
 	EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE = 0x2,
-
-	/* Allow upgrading packages (only used for install) */   
 	EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE = 0x10, 
-
-	/* Allow downgrading packages (only used for install) */   
 	EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE = 0x20
 };
 
-enum {
-	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_DESCRIPTION = 0x1,
-	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_SUMMARY = 0x2,
-	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4,
-	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_PROVIDES = 0x8
-};
-
-/* This enum is used in the signals, to let
-   the signal handler know what the current operation
-   was (rather then the client having to remember it) */
 typedef enum {
 	EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL,
 	EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL,
@@ -117,17 +74,18 @@ struct _EazelPackageSystemClass
 	GtkObjectClass parent_class;
 	gboolean (*start)(EazelPackageSystem*, 
 			  EazelPackageSystemOperation, 
-			  PackageData*);
+			  const PackageData*,
+			  unsigned long*);
 	gboolean (*progress)(EazelPackageSystem*, 
 			     EazelPackageSystemOperation, 
-			     PackageData*, 
+			     const PackageData*, 
 			     unsigned long*);
 	gboolean (*failed)(EazelPackageSystem*, 
 			   EazelPackageSystemOperation, 
-			   PackageData*);
+			   const PackageData*);
 	gboolean (*end)(EazelPackageSystem*, 
 			EazelPackageSystemOperation, 
-			PackageData*);
+			const PackageData*);
 };
 
 typedef enum {
@@ -152,6 +110,12 @@ GtkType              eazel_package_system_get_type (void);
 
 EazelPackageSystemDebug eazel_package_system_get_debug (EazelPackageSystem *system);
 void                    eazel_package_system_set_debug (EazelPackageSystem *system, EazelPackageSystemDebug d);
+
+gboolean             eazel_package_system_is_installed (EazelPackageSystem *package_system,
+							const char *dbpath,
+							const char *name,
+							const char *version,
+							const char *minor);
 
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
 							PackageData *in_package,

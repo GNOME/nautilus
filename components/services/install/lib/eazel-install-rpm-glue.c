@@ -48,296 +48,37 @@
 #include <sys/wait.h>
 #endif
 
+#include "eazel-package-system.h"
+#include "eazel-package-system-rpm3.h"
+
 #define PERCENTS_PER_RPM_HASH 2
 #undef DEBUG_RPM_OUTPUT
 
-void 
-eazel_install_rpm_set_settings (EazelInstall *service) {
-	int install_flags, interface_flags, problem_filters;
+PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
+PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
+
+PackageData*
+packagedata_new_from_rpm_conflict (struct rpmDependencyConflict conflict) 
+{
+	PackageData *result;
 	
-	install_flags = 0;
-	interface_flags = 0;
-	problem_filters = 0;
-	
-	if (eazel_install_get_test (service)) {
-		trilobite_debug (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
-		install_flags |= RPMTRANS_FLAG_TEST;
-	}
+	result = packagedata_new ();
 
-	if (eazel_install_get_update (service)) {
-		interface_flags |= INSTALL_UPGRADE;
-	}
-
-	if (eazel_install_get_verbose (service)) {
-		rpmSetVerbosity (RPMMESS_VERBOSE);
-	} else {
-		rpmSetVerbosity (RPMMESS_NORMAL);
-	}
-
-	if (eazel_install_get_force (service)) {
-		trilobite_debug ("Force is enabled");
-		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
-			RPMPROB_FILTER_REPLACEOLDFILES |
-			RPMPROB_FILTER_REPLACENEWFILES |
-			RPMPROB_FILTER_OLDPACKAGE;
-	}
-
-
-	service->private->packsys.rpm.install_flags = install_flags;
-	service->private->packsys.rpm.interface_flags = interface_flags;
-	service->private->packsys.rpm.problem_filters = problem_filters;
-
-	/* this spams to stderr -- is that what we really want? */
-	if (eazel_install_get_debug (service) && 0) {
-		rpmSetVerbosity (RPMMESS_DEBUG);
-	}
+	result->name = g_strdup (conflict.needsName);
+	result->version = (conflict.needsVersion && (strlen (conflict.needsVersion) > 1)) ? g_strdup (conflict.needsVersion) : NULL;
+	return result;
 }
 
-void
-eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
-							GList **args)
+PackageData*
+packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict conflict) 
 {
-	if (eazel_install_get_test (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("--test"));
-	} 
-	if (eazel_install_get_force (service)) {
-		g_warning ("Force mode!");
-		if (eazel_install_get_uninstall (service)) {
-			(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
-		} else {
-			(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
-			(*args) = g_list_prepend (*args, g_strdup ("--force"));
-		}
-	}
-	if (eazel_install_get_ignore_file_conflicts (service) &&
-	    !eazel_install_get_force (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("--force"));
-	}
-	if (eazel_install_get_uninstall (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("-e"));
-	} else if (eazel_install_get_update (service) || eazel_install_get_downgrade (service)) {
-		if (eazel_install_get_downgrade (service)) {
-			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
-		}
-		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
-	} else {
-		(*args) = g_list_prepend (*args, g_strdup ("-ivh"));
-	}
-}
-
-
-gboolean
-eazel_install_monitor_rpm_process_pipe (GIOChannel *source,
-					GIOCondition condition,
-					EazelInstall *service)
-{
-	char         tmp;
-	static       guint package_name_length = 256;
-	static       char package_name [256];
-	ssize_t      bytes_read;
-	static       PackageData *pack = NULL;
-	static       int pct;
-#ifdef DEBUG_RPM_OUTPUT
-	static char *rpmoutname = NULL;
-	FILE *rpmoutput;
-#endif
+	PackageData *result;
 	
-	g_io_channel_read (source, &tmp, 1, &bytes_read);
-	
-/* 1.39 has the code to parse --percent output */
-	if (bytes_read) {
-#ifdef DEBUG_RPM_OUTPUT
-		if (rpmoutname == NULL) {
-			rpmoutname = tempnam ("/tmp", "rpmSt");
-		}
-		rpmoutput = fopen (rpmoutname, "at");
-		fprintf (rpmoutput, "%c", tmp); 
-		fflush (rpmoutput); 
-		fclose (rpmoutput);
-#endif
-		/* Percentage output, parse and emit... */
-		if (tmp=='#') {
-			int amount;
-			if (pack == NULL) {
-				return TRUE;
-			}
-			pct += PERCENTS_PER_RPM_HASH;
-			if (pct == 100) {
-				amount = pack->bytesize;
-			} else {
-				amount =  (pack->bytesize / 100) * pct;
-			}
-			if (pack && amount) {
-				eazel_install_emit_install_progress (service, 
-								     pack, 
-								     service->private->packsys.rpm.packages_installed, 
-								     service->private->packsys.rpm.num_packages,
-								     amount, 
-								     pack->bytesize,
-								     service->private->packsys.rpm.current_installed_size + amount,
-								     service->private->packsys.rpm.total_size);
-			}
-					/* By invalidating the pointer here, we
-					   only emit with amount==total once */
-			if (pct==100) {
-				service->private->packsys.rpm.current_installed_size += pack->bytesize;
-					/* If a toplevel pacakge completed, add to transction list */
-				if (pack->toplevel) {
-					eazel_install_do_transaction_add_to_transaction (service, pack);
-				}
-				pack = NULL;
-				pct = 0;
-				package_name [0] = 0;
-			}
-		}  else  if (tmp != ' ') {
-			/* Read untill we hit a space */
-			package_name[0] = 0;
-			while (bytes_read && tmp != ' ') {
-				if (strlen (package_name) < package_name_length) {
-					/* Add char to package */
-					int x;
-					x = strlen (package_name);
-					if (!isspace (tmp)) {
-						package_name [x] = tmp;
-						package_name [x+1] = 0;
-					}
-				}
-					/* read next byte */
-				g_io_channel_read (source, &tmp, 1, &bytes_read);
-				if (tmp=='\n') {
-					package_name[0] = '\0';
-					break;
-				}
-			}
-			
-			/* Not percantage mark, that means filename, step ahead one file */
-			pack = g_hash_table_lookup (service->private->name_to_package_hash, package_name);
-			if (pack==NULL) {
-				/* might be "warning:" */
-				if (strcmp (package_name, "warning:") == 0) {
-					package_name[0] = 0;
-					while (tmp != '\n') {
-						g_io_channel_read (source, &tmp, 1, &bytes_read);
-					}
-					trilobite_debug ("warning received");
-				} else {
-					trilobite_debug ("lookup \"%s\" failed", package_name);
-				}
-			} else {
-				trilobite_debug ("matched \"%s\"", package_name);
-				pct = 0;
-				service->private->packsys.rpm.packages_installed ++;
-				eazel_install_emit_install_progress (service, 
-								     pack, 
-								     service->private->packsys.rpm.packages_installed, 
-								     service->private->packsys.rpm.num_packages,
-								     0, 
-								     pack->bytesize,
-								     service->private->packsys.rpm.current_installed_size,
-								     service->private->packsys.rpm.total_size);
-			}
-		}
-	} 
+	result = packagedata_new ();
 
-	if (bytes_read == 0) {
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-}
-
-static gboolean
-eazel_install_free_rpm_system_close_db_foreach (char *key, rpmdb db, gpointer unused)
-{
-	if (db) {
-		trilobite_debug (_("Closing db for %s (open)"), key);
-		rpmdbClose (db);
-		db = NULL;
-		g_free (key);
-	} else {
-		trilobite_debug (_("Closing db for %s (not open)"), key);
-	}
-
-	return TRUE;
-}
-
-gboolean
-eazel_install_free_rpm_system (EazelInstall *service)
-{
-	/* Close all the db's */
-	g_assert (service->private->packsys.rpm.dbs);
-	trilobite_debug ("g_hash_table_size (service->private->packsys.rpm.dbs) = %d",
-			 g_hash_table_size (service->private->packsys.rpm.dbs));
-	g_hash_table_foreach_remove (service->private->packsys.rpm.dbs, 
-				     (GHRFunc)eazel_install_free_rpm_system_close_db_foreach,
-				     NULL);	
-	trilobite_debug ("g_hash_table_size (service->private->packsys.rpm.dbs) = %d",
-			 g_hash_table_size (service->private->packsys.rpm.dbs));
-
-	if (service->private->packsys.rpm.rpmrc_read) {
-		rpmFreeRpmrc ();
-	}
-	service->private->packsys.rpm.rpmrc_read = FALSE;
-/*
-  This crashes, so it's commented out. 
-  These are the vars used for this.
-  
-	rpmTransactionSet *set;
-	set = &(service->private->packsys.rpm.set);
-
-	if (*set != NULL) {
-		rpmtransFree (*set);
-		(*set) = NULL;
-	}
-*/
-	return TRUE;
-}
-
-gboolean
-eazel_install_prepare_rpm_system(EazelInstall *service)
-{
-	GList *iterator;
-
-	g_assert (service->private->packsys.rpm.dbs);
-
-	if (service->private->packsys.rpm.rpmrc_read==FALSE) {
-		trilobite_debug ("Read rpmrc file %s", eazel_install_get_rpmrc_file (service));
-		rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
-	}
-	service->private->packsys.rpm.rpmrc_read = TRUE;
-
-	g_assert (g_list_length (eazel_install_get_root_dirs (service)));
-
-	addMacro(NULL, "_dbpath", NULL, "/", 0);
-
-	if (g_hash_table_size (service->private->packsys.rpm.dbs) > 0) {
-		trilobite_debug ("db already open ?");
-		return TRUE;
-	}
-	
-	for (iterator = eazel_install_get_root_dirs (service); iterator; iterator = g_list_next (iterator)) {
-		const char *root_dir;	
-		rpmdb db;
-		
-		root_dir = (char*)iterator->data;
-		
-		if (rpmdbOpen (root_dir, &db, O_RDONLY, 0644)) {
-			trilobite_debug ("Opening packages database in %s failed", root_dir);
-			trilobite_debug ("(first time)");
-		} else {			
-			if (db) {
-				trilobite_debug (_("Opened packages database in %s"), root_dir);
-				g_hash_table_insert (service->private->packsys.rpm.dbs,
-						     g_strdup (root_dir),
-						     db);
-			} else {
-				trilobite_debug (_("Opening packages database in %s failed"), root_dir);
-			}
-		}
-	}
-
-
-	return TRUE;
+	result->name = g_strdup (conflict.byName);
+	result->version = (conflict.byVersion && (strlen (conflict.byVersion) > 1)) ? g_strdup (conflict.byVersion) : NULL;
+	return result;
 }
 
 /*
@@ -483,9 +224,9 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 
 	trilobite_debug ("eazel_install_do_rpm_dependency_check");
 
-	g_assert (service->private->packsys.rpm.dbs);
+	g_assert (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs);
 
-	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs,
+	db = (rpmdb)g_hash_table_lookup (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs,
 					 service->private->cur_root);
 	if (!db) {
 		return;

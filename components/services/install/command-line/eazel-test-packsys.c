@@ -27,55 +27,6 @@
 
 #include <libtrilobite/trilobite-root-helper.h>
 
-static PackageData*
-make_package (char *name, char *version, char *minor)
-{
-	PackageData *p;
-	p = packagedata_new ();
-	p->name = g_strdup (name);
-	p->version = g_strdup (version);
-	p->minor = g_strdup (minor);
-	return p;
-}
-
-static void
-test_packagelist_prune (void)
-{
-	PackageData *p, *q;
-	GList *in = NULL, *rm = NULL;
-
-	p = make_package ("hest", "1.0", "1");
-	q = make_package ("hest", "1.1", "1");
-	in = g_list_prepend (in, p);
-	rm = g_list_prepend (rm, q);
-
-	p = make_package ("fisk", "1.0", "1");
-	q = make_package ("fisk", "1.0", "2");
-	in = g_list_prepend (in, p);
-	rm = g_list_prepend (rm, q);
-
-	p = make_package ("gris", "1.0", "1");
-	q = make_package ("gris", "1.0", "1");
-	in = g_list_prepend (in, p);
-	rm = g_list_prepend (rm, q);
-
-	p = make_package ("odder", "1.0", "1");
-	in = g_list_prepend (in, p);
-	p = make_package ("bæver", "1.0", "1");
-	in = g_list_prepend (in, p);
-	p = make_package ("kanin", "1.0", "1");
-	in = g_list_prepend (in, p);
-	p = make_package ("osteklokke", "1.0", "1");
-	in = g_list_prepend (in, p);
-
-	packagedata_list_prune (&in, rm, TRUE, TRUE);
-	if (g_list_length (in) == 4) {
-		g_message ("packagedata_list_prune ok");
-	} else {
-		g_message ("packagedata_list_prune FAIL");
-	}
-}
-
 static void
 test_package_load (EazelPackageSystem *packsys,
 		   const char *package_file_name) 
@@ -83,9 +34,9 @@ test_package_load (EazelPackageSystem *packsys,
 	PackageData *p;
 	int flag;
 
-	flag = 0;
+	flag = PACKAGE_FILL_EVERYTHING;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description==NULL && p->summary==NULL && p->provides==NULL) {
+	if (p->description && p->summary && p->provides) {
 		g_message ("load_package test 1 ok");
 	} else {
 		g_message ("load_package test 1 FAIL");
@@ -93,27 +44,19 @@ test_package_load (EazelPackageSystem *packsys,
 
 	packagedata_destroy (p, TRUE);
 
-	flag = EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_DESCRIPTION;
+	flag = PACKAGE_FILL_NO_PROVIDES;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description && p->summary==NULL && p->provides==NULL) {
+	if (p->description && p->summary && p->provides==NULL) {
 		g_message ("load_package test 2 ok");
 	} else {
 		g_message ("load_package test 2 FAIL");
 	}
 	packagedata_destroy (p, TRUE);
 
-	flag = EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_SUMMARY;
-	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description==NULL && p->summary && p->provides==NULL) {
-		g_message ("load_package test 3 ok");
-	} else {
-		g_message ("load_package test 3 FAIL");
-	}
-	packagedata_destroy (p, TRUE);
 
-	flag = EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED;
+	flag = PACKAGE_FILL_NO_PROVIDES;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
-	if (p->description==NULL && p->summary==NULL && p->provides) {
+	if (p->description && p->summary && p->provides==NULL) {
 		g_message ("load_package test 4 ok");
 	} else {
 		g_message ("load_package test 4 FAIL");
@@ -306,12 +249,12 @@ test_install (EazelPackageSystem *packsys,
 				      EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE);
 
 	if (signals[3]) {
-		g_message ("install FAIL");
+		g_message ("install FAIL (inconsistent)");
 	} else if (signals[0] && signals[1] && signals[2]) {
 		if (is_installed (packsys, dbpath, package_file_name)) {
 			g_message ("install ok");
 		} else {
-			g_message ("install FAIL");
+			g_message ("install FAIL (package not installed)");
 		}
 	} else {
 		g_message ("install FAIL");
@@ -355,15 +298,15 @@ test_uninstall (EazelPackageSystem *packsys,
 					EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE);
 
 	if (signals[3]) {
-		g_message ("install FAIL");
-	} else if (signals[0] && signals[1] && signals[2]) {
+		g_message ("uninstall FAIL (inconsistent)");
+	} else if (signals[0] && signals[2]) {
 		if (is_installed (packsys, dbpath, package_file_name)) {
-			g_message ("install FAIL");
+			g_message ("uninstall FAIL (package still installed)");
 		} else {
-			g_message ("install ok");
+			g_message ("uninstall ok");
 		}
 	} else {
-		g_message ("install FAIL");
+		g_message ("uninstall FAIL");
 	}
 
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
@@ -398,9 +341,7 @@ int main(int argc, char *argv[]) {
 	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE); 
 
 	test_package_load (packsys, argv[1]);
-	test_packagelist_prune ();
 	test_matches_query (packsys);
-
 	test_install (packsys, home_dbpath, argv[1]);
 	test_verify (packsys, home_dbpath, argv[1]);
 	test_uninstall (packsys, home_dbpath, argv[1]);

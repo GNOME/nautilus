@@ -64,7 +64,6 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-logic.c			\
 	eazel-install-rpm-glue.c		\
 	eazel-install-rpm-signature.c		\
-	eazel-install-query.c			\
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\

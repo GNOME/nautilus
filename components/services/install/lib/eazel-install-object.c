@@ -83,7 +83,6 @@ enum {
 	ARG_PACKAGE_LIST_STORAGE_PATH,
 	ARG_PACKAGE_LIST,
 	ARG_ROOT_DIRS,
-	ARG_PACKAGE_SYSTEM,
 	ARG_SERVER_PORT,
 	ARG_TRANSACTION_DIR,
 	ARG_CGI_PATH,
@@ -258,12 +257,6 @@ eazel_install_finalize (GtkObject *object)
 	installoptions_destroy (service->private->iopts);
 	eazel_softcat_unref (GTK_OBJECT (service->private->softcat));
 
-	switch (service->private->package_system) {
-	case EAZEL_INSTALL_USE_RPM:
-		g_hash_table_destroy (service->private->packsys.rpm.dbs);
-		break;
-	}
-
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize (object);
 	}
@@ -348,9 +341,6 @@ eazel_install_set_arg (GtkObject *object,
 		break;
 	case ARG_SERVER_PORT:
 		eazel_install_set_server_port (service, GTK_VALUE_UINT(*arg));
-		break;
-	case ARG_PACKAGE_SYSTEM:
-		eazel_install_set_package_system (service, GTK_VALUE_ENUM(*arg));
 		break;
 	case ARG_ROOT_DIRS:
 		eazel_install_set_root_dirs (service, (GList*)GTK_VALUE_POINTER(*arg));
@@ -554,10 +544,6 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
 				 ARG_SERVER_PORT);
-	gtk_object_add_arg_type ("EazelInstall::package_system",
-				 GTK_TYPE_ENUM,
-				 GTK_ARG_READWRITE,
-				 ARG_PACKAGE_SYSTEM);
 	gtk_object_add_arg_type ("EazelInstall::cgi_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
@@ -597,8 +583,6 @@ eazel_install_initialize (EazelInstall *service) {
 		service->private->transaction_dir = NULL;
 		g_message (_("Transactions are not stored, could not find home dir"));
 	}
-	service->private->packsys.rpm.rpmrc_read = FALSE;
-	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
 	service->private->log_to_stderr = FALSE;
@@ -621,33 +605,34 @@ eazel_install_initialize (EazelInstall *service) {
 #endif
 
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
-	trilobite_debug ("packsys.rpm.dbs = 0x%p", service->private->packsys.rpm.dbs);
 
-	/* FIXME: bugzilla.eazel.com 4851
-	   remove this when 4851 fixed */
-	/* Set default root dirs list */
 	{
 		GList *list = NULL;
 		char *tmp = NULL;
-#ifndef EAZEL_INSTALL_SLIM
-		/* FIXME bugzilla.eazel.com 2581:
-		   RPM specific code */
-		if (g_get_home_dir ()) {
-			tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
-			if (g_file_test (tmp, G_FILE_TEST_ISDIR)==0) {			
-				g_message ("Creating rpmdb in %s", tmp);
-				addMacro(NULL, "_dbpath", NULL, "/", 0);
-				mkdir (tmp, 0700);
-				rpmdbInit (tmp, 0644);
-			}
-			
-			list = g_list_prepend (list, tmp);
-		}
-#endif
-		list = g_list_prepend (list, DEFAULT_RPM_DB_ROOT);
-		eazel_install_set_root_dirs (service, list);
-		g_free (tmp);
-		g_list_free (list);
+
+		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());
+		list = g_list_prepend (list, g_strdup (g_get_home_dir ()));
+		list = g_list_prepend (list, tmp);
+
+		service->private->package_system = eazel_package_system_new (list);
+		eazel_package_system_set_debug (service->private->package_system, 
+						EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+				    "start",
+				    (GtkSignalFunc)eazel_install_start_signal,
+				    service);
+		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+				    "progress",
+				    (GtkSignalFunc)eazel_install_progress_signal,
+				    service);
+		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+				    "failed",
+				    (GtkSignalFunc)eazel_install_failed_signal,
+				    service);
+		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+				    "end",
+				    (GtkSignalFunc)eazel_install_end_signal,
+				    service);
 	}
 }
 
@@ -1010,7 +995,6 @@ eazel_install_install_packages (EazelInstall *service,
 		g_free (service->private->cur_root);
 		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 		eazel_install_set_uninstall (service, FALSE);
-		eazel_install_prepare_package_system (service);
 		result = install_packages (service, categories);
 		
 		if (result == EAZEL_INSTALL_NOTHING) {
@@ -1053,7 +1037,6 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_fetch_remote_package_list (service);
 	}
 
-	eazel_install_prepare_package_system (service);
 	result = uninstall_packages (service, categories);
 
 	if (result == EAZEL_INSTALL_NOTHING) {
@@ -1079,7 +1062,6 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	service->private->revert = TRUE;
 
 	if (create_temporary_directory (service)) {
-		eazel_install_prepare_package_system (service);
 		result = revert_transaction (service, packages);
 		
 		eazel_install_unlock_tmp_dir (service);
@@ -1119,8 +1101,11 @@ eazel_install_query_package_system (EazelInstall *service,
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root);
 
-	eazel_install_prepare_package_system (service);
-	result = eazel_install_simple_query (service, query, flags, 0, NULL);
+	result = eazel_package_system_query (service->private->package_system,
+					     root,
+					     (const gpointer)query,
+					     EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+					     PACKAGE_FILL_EVERYTHING);
 	return result;
 }
 
@@ -1205,6 +1190,27 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
 
+static unsigned long
+eazel_install_get_size_increasement (EazelInstall *service, 
+				     GList *packages)
+{
+	const GList *iterator;
+	unsigned long result = 0;
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		GList *modit;
+		result += pack->bytesize;
+		if (pack->modifies) {
+			for (modit = pack->modifies; modit; modit = g_list_next (modit)) {
+				PackageData *modpack = (PackageData*)modit->data;
+				result -= modpack->bytesize;
+			}
+			
+		}
+	}
+	return result;
+}
+
 gboolean
 eazel_install_emit_preflight_check (EazelInstall *service, 
 				    GList *packages)
@@ -1216,7 +1222,7 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 
 	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
 
-	size_packages = eazel_install_get_total_size_of_packages (service, packages);
+	size_packages = eazel_install_get_size_increasement (service, packages);
 	num_packages = g_list_length (packages);
 
 	for (iterator = packages; iterator; glist_step (iterator)) {
@@ -1553,7 +1559,6 @@ ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
-ei_mutator_impl (package_system, int, package_system);
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
 ei_mutator_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts);
 
@@ -1573,7 +1578,6 @@ ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, 
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
 ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
 ei_access_impl (root_dirs, GList*, root_dirs, NULL);
-ei_access_impl (package_system, int, package_system, 0);
 ei_access_impl (ssl_rename, gboolean, ssl_rename, FALSE);
 ei_access_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts, FALSE);
 

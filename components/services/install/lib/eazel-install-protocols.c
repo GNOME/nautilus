@@ -33,7 +33,10 @@
 #include <config.h>
 #include <errno.h>
 
+#include "eazel-package-system.h"
+
 /* We use rpmvercmp to compare versions... */
+#include <rpm/rpmlib.h>
 #include <rpm/misc.h>
 
 #include <libtrilobite/trilobite-core-utils.h>
@@ -541,7 +544,11 @@ eazel_install_fetch_package (EazelInstall *service,
 					      filename_from_url (url));
 		result = eazel_install_fetch_file (service, url, package->name, targetname);
 		if (result) {
-			packagedata_fill_from_file (package, targetname); 
+			package = eazel_package_system_load_package (service->private->package_system,
+								     package, 
+								     targetname,
+								     PACKAGE_FILL_EVERYTHING);
+							   
 			if (name) {
 				if (strcmp (name, package->name)) {
 					g_warning (_("Downloaded package does not have the correct name"));
@@ -554,8 +561,7 @@ eazel_install_fetch_package (EazelInstall *service,
 				if (rpmvercmp (package->version, version)<0) {
 					g_warning (_("Downloaded package does not have the correct version"));
 					g_warning (_("Package %s had version %s and not %s"), 
-						   package->name, package->version, version);
-					result = FALSE;
+						   package->name, package->version, version);					result = FALSE;
 				}
 			}
 		} 
