@@ -42,7 +42,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-07 11:25+0200\n"
 "PO-Revision-Date: 2004-01-22 00:54-0200\n"
 "Last-Translator: Nikos Charonitakis <charosn@her.fothnet.gr>\n"
 "Language-Team: Greek <tux@hellug.gr>\n"
@@ -92,7 +92,7 @@ msgstr "Όψη Εμβλήματος του Ναυτίλου"
 #: components/emblem/nautilus-emblem-view.c:203
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Δεν είναι δυνατή η απομάκρυνση του εμβλήματος με όνομα '%s'. "
+msgstr "Δεν είναι δυνατή η απομάκρυνση του εμβλήματος με όνομα '%s'."
 
 #: components/emblem/nautilus-emblem-view.c:204
 msgid ""
@@ -1045,6 +1045,7 @@ msgstr "Προεπισκόπηση"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Όνομα"
@@ -1252,7 +1253,7 @@ msgstr "Προεπιλεγμένη σειρά ταξινόμησης"
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default zoom level used by the icon view."
 msgstr ""
-"Προεπιλεγμένο επίπεδο εστίασης που χρησιμοποιείται από την προβολή εικονιδίων"
+"Προεπιλεγμένο επίπεδο εστίασης που χρησιμοποιείται από την προβολή εικονιδίων."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
@@ -1289,7 +1290,7 @@ msgid ""
 "side_pane_background_set is true."
 msgstr ""
 "'Ονομα αρχείου για το προεπιλεγμένο παρασκηνίο πλευρικού ταμπλώ. "
-"Χρησιμοποιείται μόνο αν είναι true τοι side_pane_background_set"
+"Χρησιμοποιείται μόνο αν είναι true το side_pane_background_set."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
@@ -1324,7 +1325,7 @@ msgstr ""
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
-"Αν ορισθεί σε true, θα είναι ορατή στα νέα παράθυρα η γραμμή διευθύνσεων. "
+"Αν ορισθεί σε true, θα είναι ορατή στα νέα παράθυρα η γραμμή διευθύνσεων."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid "If set to true, newly opened windows will have the side pane visible."
@@ -1421,7 +1422,7 @@ msgid ""
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 "Αν ορισθεί σε true, τότε προβάλλονται τα  κρυφά αρχεία. Τα κρυφά αρχεία "
-"είναι είτε dotfiles  είναι είναι στη λίστα καταλόγου .hidden"
+"είναι είτε dotfiles είτε στη λίστα καταλόγου .hidden."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1505,8 +1506,8 @@ msgid ""
 msgstr ""
 "Δε θα γίνεται προεπισκόπηση σε εικόνες πάνω από αυτό το μέγεθος (σε bytes). "
 "Ο σκοπός αυτής της ρύθμισης είναι να αποφευχθεί η προεπισκόπηση μεγάλων "
-"αρχείων που θα καθυστερούν να φορτώσουν και θα χρησιμοποιούν μεγάλο φορτο "
-"μνήμης. "
+"αρχείων που θα καθυστερούν να φορτώσουν και θα χρησιμοποιούν μεγάλο μέγεθος "
+"μνήμης."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "List of possible captions on icons"
@@ -1921,7 +1922,7 @@ msgstr "Τύπος"
 
 #: libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
-msgstr "Ο τύπος του αρχείου"
+msgstr "Ο τύπος του αρχείου."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
 #: src/file-manager/fm-search-list-view.c:531
@@ -1954,7 +1955,7 @@ msgstr "Ομάδα"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
 msgid "The group of the file."
-msgstr "Η ομάδα του αρχείου"
+msgstr "Η ομάδα του αρχείου."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
 #: src/file-manager/fm-properties-window.c:2865
@@ -1979,7 +1980,7 @@ msgstr "Τύπος MIME"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
 msgid "The mime type of the file."
-msgstr "Ο τύπος MIME του αρχείου"
+msgstr "Ο τύπος MIME του αρχείου."
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -2146,7 +2147,7 @@ msgstr ""
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
-"Το \"%s\" δε μπορεί να διαγραφεί διότι βρίσκεται σε δίσκο μόνο για ανάγνωση. "
+"Το \"%s\" δε μπορεί να διαγραφεί διότι βρίσκεται σε δίσκο μόνο για ανάγνωση."
 
 #: libnautilus-private/nautilus-file-operations.c:600
 #, c-format
@@ -2731,17 +2732,17 @@ msgstr "Άδειασμα των Απορριμάτων"
 msgid "Preparing to Empty the Trash..."
 msgstr "Προετοιμασία Αδειάσματος των Απορριμμάτων..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
 "Είστε βέβαιοι ότι θέλετε να αδειάσετε οριστικά όλα τα περιεχόμενά των "
 "Απορριμμάτων;"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Αν αδειάσετε τα απορρίματα, τα αντικείμενα θα διαγραφούν οριστικά."
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "Ά_δειασμα"
 
@@ -3243,52 +3244,52 @@ msgstr "Το ορθογώνιο επιλογής"
 
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Κείμενο Πλαισίου"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Σχηματισμός πλαισίου γύρω από το μη επιλεγμένο κείμενο"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Χρώμα κουτιού επιλογής"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Χρώμα του κουτιού επιλογής"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Κουτί Επιλογής Άλφα"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Αδιαφάνεια του κουτιού επιλογής"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Επισήμανση Άλφα"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Αδιαφάνεια του φωτισμού για επιλογμένα εικονίδια"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Πληροφορίες φωτεινού χρώματος"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr ""
 "Χρώμα που χρησιμοποιείται για κείμενο πληροφοριών μέσα σε σκοτεινό παρασκήνιο"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Πληροφορίες σκοτεινού χρώματος"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr ""
 "Χρώμα που χρησιμοποιείται για κείμενο πληροφοριών μέσα σε φωτεινό παρασκήνιο"
@@ -3537,7 +3538,7 @@ msgstr "Επιλογή εμφάνισης για το \"%s\":"
 #: libnautilus-private/nautilus-program-chooser.c:1591
 #, c-format
 msgid "No viewers are available for \"%s\"."
-msgstr "Δεν υπάρχουν διαθέσιμα προγράμματα προβολής για το \"%s\""
+msgstr "Δεν υπάρχουν διαθέσιμα προγράμματα προβολής για το \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1592
 msgid "No Viewers Available"
@@ -3708,7 +3709,7 @@ msgstr "Δεν είναι δυνατή η εκτέλεση απομακρυσμ�
 #: libnautilus-private/nautilus-program-choosing.c:1204
 #: libnautilus-private/nautilus-program-choosing.c:1270
 msgid "Details: "
-msgstr "Λεπτομέρειες:"
+msgstr "Λεπτομέρειες: "
 
 #: libnautilus-private/nautilus-program-choosing.c:1206
 #: libnautilus-private/nautilus-program-choosing.c:1272
@@ -4397,7 +4398,7 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:3236
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
-msgstr "Το αρχείο \"%s\" δε μπορεί να μετακινηθεί στα Απορρίμματα"
+msgstr "Το αρχείο \"%s\" δε μπορεί να μετακινηθεί στα απορρίμματα."
 
 #: src/file-manager/fm-directory-view.c:3240
 msgid "Cannot move items to trash, do you want to delete them immediately?"
@@ -4953,32 +4954,28 @@ msgstr "Επαναφορά Εικονιδίων στα Αρχικά Με_γέθ�
 msgid "Restore Icon's Original Si_ze"
 msgstr "Επαναφορά Εικονιδίου στο Αρχικό _Μέγεθος"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1990
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "δείχνει στο \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2573 src/file-manager/fm-icon-view.c:2597
 msgid "Drag and drop is not supported."
 msgstr "Η μεταφορά και ρίψη (drag και drop) δεν υποστηρίζεται."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2574
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Η μεταφορά και ρίψη (drag και drop) είναι διαθέσιμη μόνο στα τοπικά "
 "συστήματα αρχείων."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2575 src/file-manager/fm-icon-view.c:2599
 msgid "Drag and Drop Error"
 msgstr "Σφάλμα Μεταφοράς και Ρίψης (drag και drop)"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2598
 msgid "An invalid drag type was used."
 msgstr "Χρησιμοποιήθηκε μη έγκυρο είδος μεταφοράς."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Όνομα αρχείου"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5478,7 +5475,7 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:329
 msgid "Fast searches are not enabled on your computer."
-msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες στον υπολογιστή σας"
+msgstr "Οι γρήγορες αναζητήσεις δεν είναι διαθέσιμες στον υπολογιστή σας."
 
 #: src/file-manager/fm-search-list-view.c:330
 msgid ""
@@ -5488,7 +5485,7 @@ msgid ""
 msgstr ""
 "Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
 "αρχείων του συστήματός σας. Ο διαχειριστής σας έχει απενεργοποιήσει τη "
-"γρήγορη αναζήτηση στον υπολογιστή σας, οπότε δεν υπάρχει διαθέσιμος πίνακας. "
+"γρήγορη αναζήτηση στον υπολογιστή σας, οπότε δεν υπάρχει διαθέσιμος πίνακας."
 
 #: src/file-manager/fm-search-list-view.c:334
 msgid "Fast Searches Not Enabled"
@@ -5935,7 +5932,7 @@ msgstr "Η δημιουργία ευρετηρίου είναι κατά %d%% ο
 #: src/file-manager/nautilus-indexing-info.c:165
 #, c-format
 msgid "Your files were last indexed at %s."
-msgstr "Τα αρχεία σας ανανεώθηκαν στο ευρετήριο τελευταία φορά στις %s"
+msgstr "Τα αρχεία σας ανανεώθηκαν στο ευρετήριο τελευταία φορά στις %s."
 
 #: src/file-manager/nautilus-indexing-info.c:170
 msgid ""
@@ -6065,8 +6062,8 @@ msgstr "Δεσμός στην Παλιά Επιφάνεια Εργασίας"
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
-"Ένας δεσμός με το όνομα \"Δεσμός στην Παλαιά Επιφάνεια Εργασίας\" "
-"δημιουργήθηκε στην επιφάνεια εργασίας"
+"Ένας δεσμός με το όνομα \"Δεσμός στην Παλιά Επιφάνεια Εργασίας\" "
+"δημιουργήθηκε στην επιφάνεια εργασίας."
 
 #: src/nautilus-application.c:358
 msgid ""
@@ -6249,7 +6246,7 @@ msgstr "Αδύνατη η σύνδεση με τον εξυπηρετητή"
 #: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "\"%s\" is not a valid location."
-msgstr "Το \"%s\" δεν είναι έγκυρη τοποθεσία"
+msgstr "Το \"%s\" δεν είναι έγκυρη τοποθεσία."
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
@@ -6265,7 +6262,8 @@ msgstr "Σύνδεση με τον Εξυπηρετητή"
 
 #
 #: src/nautilus-connect-server-dialog.c:191
-msgid "Link _Name:"
+#, fuzzy
+msgid "Link _name:"
 msgstr "Ό_νομα Συνδέσμου:"
 
 #
@@ -6626,7 +6624,7 @@ msgid ""
 "dialog)."
 msgstr ""
 "Να μη γίνει διαχείριση της επιφάνειας εργασίας (αγνοεί τις προτιμήσεις στο "
-"διάλογο προτιμήσεων)"
+"διάλογο προτιμήσεων)."
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
@@ -7649,12 +7647,12 @@ msgstr "Απέτυχε η προσπάθεια αυθεντικοποίησης.
 
 #: src/nautilus-window-manage-views.c:1311
 msgid "Access was denied."
-msgstr "Δεν επιτράπηκε η πρόσβαση"
+msgstr "Δεν επιτράπηκε η πρόσβαση."
 
 #: src/nautilus-window-manage-views.c:1321
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Αδύνατη η εμφάνιση του \"%s\" διότι δεν βρέθηκε σύστημα \"%s\""
+msgstr "Αδύνατη η εμφάνιση του \"%s\", διότι δε βρέθηκε σύστημα \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1324
 msgid ""
@@ -7810,6 +7808,9 @@ msgstr "Εξυπηρετητές Δικτύου"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Εμφάνιση των εξυπηρετητών δικτύου στο διαχειριστή αρχείων του Ναυτίλου"
+
+#~ msgid "File name"
+#~ msgstr "Όνομα αρχείου"
 
 #~ msgid "Close this window"
 #~ msgstr "Κλείσιμο αυτού του παραθύρου"
