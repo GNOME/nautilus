@@ -1271,16 +1271,21 @@ update_one_menu_item (FMIconView *view,
 static void
 fm_icon_view_update_menus (FMDirectoryView *view)
 {
+	FMIconView *icon_view;
         GList *selection;
 
+        icon_view = FM_ICON_VIEW (view);
+
 	/* don't update if the menus aren't ready */
-	if (!FM_ICON_VIEW (view)->details->menus_ready) {
+	if (!icon_view->details->menus_ready) {
 		return;
 	}
 	
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
         selection = fm_directory_view_get_selection (view);
+
+	bonobo_ui_component_freeze (icon_view->details->ui, NULL);
 
 	update_one_menu_item (FM_ICON_VIEW (view), selection, 
 			      MENU_PATH_STRETCH_ICON,
@@ -1291,6 +1296,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
         update_one_menu_item (FM_ICON_VIEW (view), selection, 
 			      MENU_PATH_RENAME,
 			      COMMAND_RENAME);
+
+	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
 	nautilus_file_list_free (selection);
 }

@@ -3070,6 +3070,8 @@ real_update_menus (FMDirectoryView *view)
 	
 	selection = fm_directory_view_get_selection (view);
 
+	bonobo_ui_component_freeze (view->details->ui, NULL);
+
 	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
 			      FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER);
@@ -3102,6 +3104,8 @@ real_update_menus (FMDirectoryView *view)
 	update_one_menu_item (view, selection,
 			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
 			      NAUTILUS_COMMAND_SELECT_ALL);
+
+	bonobo_ui_component_thaw (view->details->ui, NULL);
 
 	nautilus_file_list_free (selection);
 }

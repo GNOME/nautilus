@@ -1023,6 +1023,8 @@ real_update_menus (FMDirectoryView *view)
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
+	bonobo_ui_component_freeze (desktop_view->details->ui, NULL);
+
 	/* Disks menu */
 	update_disks_menu (desktop_view);
 
@@ -1055,6 +1057,8 @@ real_update_menus (FMDirectoryView *view)
 			 !nautilus_trash_monitor_is_empty ());
 		g_free (label);
 	}
+
+	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
 
 static void

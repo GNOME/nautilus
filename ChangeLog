@@ -2,6 +2,17 @@
 
 	reviewed by: Darin Adler <darin@eazel.com>
 
+	* src/file-manager/fm-desktop-icon-view.c: (real_update_menus):
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):
+	Bracketed menu-updating code with bonobo_ui_component_freeze/thaw.
+	This speeds up fm_directory_view_update_menus by about 50%, and
+	it's called a zillion times so that can't hurt.
+
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
 	* src/file-manager/fm-directory-view.c: (open_callback),
 	(open_in_new_window_callback), (other_application_callback),
 	(other_viewer_callback), (trash_callback), (duplicate_callback),
