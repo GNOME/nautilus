@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 05:28+0100\n"
-"PO-Revision-Date: 2004-01-16 15:28+0100\n"
+"POT-Creation-Date: 2004-02-27 04:26+0100\n"
+"PO-Revision-Date: 2004-02-27 13:25+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -1209,6 +1209,8 @@ msgstr "'speciale' vlaggen inschakelen in bestandsvoorkeuren-dialoogvenster"
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr ""
+"Schakelt het traditionele Nautilus-gedrag in, waarbij alle vensters "
+"bladervensters zijn"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1350,6 +1352,9 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
+"Als ingesteld op waar, dan zijn alle Nautilusvensters bladervensters. Dit is "
+"hoe Nautilus zich gedroeg vóór versie 2.6, en sommige mensen prefereren dit "
+"gedrag."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1723,31 +1728,26 @@ msgstr "Al dan niet tonen van verborgen bestanden"
 msgid "Width of the side pane"
 msgstr "Breedte van het zijpaneel"
 
-#. GRUT modified this item
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
 msgstr "Naar _boven"
 
-#. GRUT modified this item
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
 msgstr "Naar b_eneden"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "%s tonen"
+msgstr "_Tonen"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Zoeken"
+msgstr "_Verbergen"
 
 #  add the reset background item, possibly disabled
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Standaard achter_grond terugzetten"
+msgstr "S_tandaard gebruiken"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2747,7 +2747,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4289
-#: src/file-manager/fm-directory-view.c:1813
+#: src/file-manager/fm-directory-view.c:1814
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -4043,30 +4043,30 @@ msgstr "Achtergrond"
 msgid "Empty Trash"
 msgstr "Prullenbak legen"
 
-#: src/file-manager/fm-directory-view.c:539
+#: src/file-manager/fm-directory-view.c:540
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "%d venster openen?"
 msgstr[1] "%d vensters openen?"
 
-#: src/file-manager/fm-directory-view.c:540
+#: src/file-manager/fm-directory-view.c:541
 msgid "Are you sure you want to open all files?"
 msgstr "Weet u zeker dat u alle bestanden wilt openen?"
 
-#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:542 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Dit zal %d nieuw venster openen."
 msgstr[1] "Dit zal %d nieuwe vensters openen."
 
-#: src/file-manager/fm-directory-view.c:888
+#: src/file-manager/fm-directory-view.c:889
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Weet u zeker dat u \"%s\" blijvend wilt verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:892
+#: src/file-manager/fm-directory-view.c:893
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4076,35 +4076,35 @@ msgstr[0] ""
 msgstr[1] ""
 "Weet u zeker dat u de %d geselecteerde items permanent wilt verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:900
+#: src/file-manager/fm-directory-view.c:901
 msgid "If you delete an item, it is permanently lost."
 msgstr "Als u een item verwijdert, is het voorgoed verloren."
 
-#: src/file-manager/fm-directory-view.c:901
+#: src/file-manager/fm-directory-view.c:902
 msgid "Delete?"
 msgstr "Verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:1040
+#: src/file-manager/fm-directory-view.c:1041
 msgid "Select Pattern"
 msgstr "Selecteer een patroon"
 
-#: src/file-manager/fm-directory-view.c:1056
+#: src/file-manager/fm-directory-view.c:1057
 msgid "_Pattern:"
 msgstr "_Patroon:"
 
-#: src/file-manager/fm-directory-view.c:1745
+#: src/file-manager/fm-directory-view.c:1746
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" geselecteerd"
 
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1748
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d map geselecteerd"
 msgstr[1] "%d mappen geselecteerd"
 
-#: src/file-manager/fm-directory-view.c:1757
+#: src/file-manager/fm-directory-view.c:1758
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4112,19 +4112,19 @@ msgstr[0] " (bevat %d item)"
 msgstr[1] " (bevat %d items)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1768
+#: src/file-manager/fm-directory-view.c:1769
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (bevatten in totaal %d item)"
 msgstr[1] " (bevatten in totaal %d items)"
 
-#: src/file-manager/fm-directory-view.c:1784
+#: src/file-manager/fm-directory-view.c:1785
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" geselecteerd (%s)"
 
-#: src/file-manager/fm-directory-view.c:1788
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4132,14 +4132,14 @@ msgstr[0] "%d item geselecteerd (%s)"
 msgstr[1] "%d items geselecteerd (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1796
+#: src/file-manager/fm-directory-view.c:1797
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d ander item geselecteerd (%s)"
 msgstr[1] "%d andere items geselecteerd (%s)"
 
-#: src/file-manager/fm-directory-view.c:1817
+#: src/file-manager/fm-directory-view.c:1818
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Vrije ruimte: %s"
@@ -4151,7 +4151,7 @@ msgstr "%s, Vrije ruimte: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1842
+#: src/file-manager/fm-directory-view.c:1843
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4160,52 +4160,52 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1968
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "De map \"%s\" bevat meer bestanden dan Nautilus aankan."
 
-#: src/file-manager/fm-directory-view.c:1973
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Some files will not be displayed."
 msgstr "Sommige bestanden worden niet weergegeven."
 
-#: src/file-manager/fm-directory-view.c:1974
+#: src/file-manager/fm-directory-view.c:1975
 msgid "Too Many Files"
 msgstr "Te veel bestanden"
 
-#: src/file-manager/fm-directory-view.c:3242
+#: src/file-manager/fm-directory-view.c:3243
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Kan bestand niet naar de prullenbak verplaatsen. Wilt u het direct "
 "verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3244
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Kan het bestand \"%s\" niet naar prullenbak verplaatsen."
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3248
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Kan items niet naar de prullenbak verplaatsen. Wilt u ze direct verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3251
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Kan sommige items niet naar de prullenbak verplaatsen. Wilt u die direct "
 "verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:3257
+#: src/file-manager/fm-directory-view.c:3258
 msgid "Delete Immediately?"
 msgstr "Direct verwijderen?"
 
-#: src/file-manager/fm-directory-view.c:3289
+#: src/file-manager/fm-directory-view.c:3290
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Weet u zeker dat u \"%s\" blijvend wilt verwijderen uit de prullenbak?"
 
-#: src/file-manager/fm-directory-view.c:3293
+#: src/file-manager/fm-directory-view.c:3294
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4220,45 +4220,73 @@ msgstr[1] ""
 "Weet u zeker dat u de %d geselecteerde items blijvend wilt verwijderen uit "
 "de Prullenbak?"
 
-#: src/file-manager/fm-directory-view.c:3302
+#: src/file-manager/fm-directory-view.c:3303
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Als u een item verwijdert, zal het voorgoed verloren gaan."
 
-#: src/file-manager/fm-directory-view.c:3303
+#: src/file-manager/fm-directory-view.c:3304
 msgid "Delete From Trash?"
 msgstr "Verwijderen uit de Prullenbak?"
 
-#: src/file-manager/fm-directory-view.c:3666
+#: src/file-manager/fm-directory-view.c:3667
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Gebruik \"%s\" om het geselecteerde item te openen"
 
-#: src/file-manager/fm-directory-view.c:3730
+#: src/file-manager/fm-directory-view.c:3731
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Andere _toepassing..."
 
-#: src/file-manager/fm-directory-view.c:3730
+#: src/file-manager/fm-directory-view.c:3731
 msgid "An _Application..."
 msgstr "Een _toepassing..."
 
-#: src/file-manager/fm-directory-view.c:4189
+#: src/file-manager/fm-directory-view.c:3915
+#, c-format
+msgid "Cannot open %s"
+msgstr "Kan %s niet openen"
+
+#: src/file-manager/fm-directory-view.c:3918
+#, c-format
+msgid ""
+"The filename \"%s\" indicates that this file is of type \"%s\". The contents "
+"of the file indicate that the file is of type \"%s\". If you open this file, "
+"the file might present a security risk to your system.\n"
+"\n"
+"Do not open the file unless you created the file yourself, or received the "
+"file from a trusted source. To open the file, rename the file to the correct "
+"extension for \"%s\", then open the file normally. Alternatively, use the "
+"Open With menu to choose a specific application for the file. "
+msgstr ""
+"De bestandsnaam \"%s\" geeft aan dat dit bestand van type \"%s\" is. De "
+"inhoud van het bestand geeft echter aan dat het van type \"%s\" is. "
+"Als u dit bestand opent, kan het een veiligheidsrisico vormen voor uw "
+"systeem.\n"
+"\n"
+"Open het bestand niet tenzij u het zelf aangemaakt hebt, of ontvangen van "
+"een vertrouwde bron. Om het bestand te openen, hernoemt u het met het correcte "
+"achtervoegsel voor \"%s\". Open het bestand daarna op de normale manier. "
+"U kunt ook het 'Openen met'-menu gebruiken om een specifieke toepassing "
+"voor het bestand te kiezen. "
+
+#: src/file-manager/fm-directory-view.c:4289
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Voer \"%s\" uit op ieder geselecteerde item"
 
-#: src/file-manager/fm-directory-view.c:4423
+#: src/file-manager/fm-directory-view.c:4523
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Document aanmaken vanaf sjabloon \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4607
+#: src/file-manager/fm-directory-view.c:4707
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Alle uitvoerbare bestanden in deze map zullen getoond worden in het Scripts-"
 "menu."
 
-#: src/file-manager/fm-directory-view.c:4609
+#: src/file-manager/fm-directory-view.c:4709
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4266,11 +4294,11 @@ msgstr ""
 "Door een script te kiezen uit het menu wordt het script uitgevoerd met de "
 "geselecteerde items als invoer."
 
-#: src/file-manager/fm-directory-view.c:4611
+#: src/file-manager/fm-directory-view.c:4711
 msgid "About Scripts"
 msgstr "Scripts info"
 
-#: src/file-manager/fm-directory-view.c:4612
+#: src/file-manager/fm-directory-view.c:4712
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4313,19 +4341,19 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: positie en afmetingen van het huidige "
 "venster"
 
-#: src/file-manager/fm-directory-view.c:4743
+#: src/file-manager/fm-directory-view.c:4843
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" wordt verplaatst als u de opdracht 'Plak Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4747
+#: src/file-manager/fm-directory-view.c:4847
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" wordt gekopieerd als u de opdracht 'Plak Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4754
+#: src/file-manager/fm-directory-view.c:4854
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4338,7 +4366,7 @@ msgstr[1] ""
 "De %d geselecteerde items worden verplaatst als u de opdracht Bestanden "
 "plakken geeft"
 
-#: src/file-manager/fm-directory-view.c:4761
+#: src/file-manager/fm-directory-view.c:4861
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4351,35 +4379,35 @@ msgstr[1] ""
 "De %d geselecteerde items worden gekopieerd als u de opdracht Bestanden "
 "plakken geeft"
 
-#: src/file-manager/fm-directory-view.c:4843
+#: src/file-manager/fm-directory-view.c:4943
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Er staat niets op het klembord om te plakken."
 
-#: src/file-manager/fm-directory-view.c:4946
-#: src/file-manager/fm-directory-view.c:5993
+#: src/file-manager/fm-directory-view.c:5046
+#: src/file-manager/fm-directory-view.c:6097
 msgid "Mount Error"
 msgstr "Koppelingsfout"
 
-#: src/file-manager/fm-directory-view.c:5008
+#: src/file-manager/fm-directory-view.c:5108
 msgid "Unmount Error"
 msgstr "Ontkoppelingsfout"
 
-#: src/file-manager/fm-directory-view.c:5011
+#: src/file-manager/fm-directory-view.c:5111
 msgid "Eject Error"
 msgstr "Uitwerpfout"
 
-#: src/file-manager/fm-directory-view.c:5273
+#: src/file-manager/fm-directory-view.c:5373
 msgid "E_ject"
 msgstr "Uit_werpen"
 
-#: src/file-manager/fm-directory-view.c:5273
+#: src/file-manager/fm-directory-view.c:5373
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "Volumen _ontkoppelen"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5403
+#: src/file-manager/fm-directory-view.c:5503
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -4387,122 +4415,121 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Openen in nieuw venster"
 msgstr[1] "Openen in %d nieuwe vensters"
 
-#: src/file-manager/fm-directory-view.c:5410
+#: src/file-manager/fm-directory-view.c:5510
 msgid "Browse Folder"
 msgstr "Map doorbladeren"
 
-#: src/file-manager/fm-directory-view.c:5412
+#: src/file-manager/fm-directory-view.c:5512
 msgid "Browse Folders"
 msgstr "Mappen doorbladeren"
 
-#: src/file-manager/fm-directory-view.c:5435
+#: src/file-manager/fm-directory-view.c:5535
 msgid "_Delete from Trash"
 msgstr "Verwijderen uit de _prullenbak"
 
-#: src/file-manager/fm-directory-view.c:5437
+#: src/file-manager/fm-directory-view.c:5537
 msgid "Delete all selected items permanently"
 msgstr "Verwijder alle geselecteerde items blijvend"
 
-#: src/file-manager/fm-directory-view.c:5440
-#: src/file-manager/fm-directory-view.c:5778
+#: src/file-manager/fm-directory-view.c:5540
+#: src/file-manager/fm-directory-view.c:5878
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Verplaatsen naar _Prullenbak"
 
-#: src/file-manager/fm-directory-view.c:5442
+#: src/file-manager/fm-directory-view.c:5542
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Verplaats alle geselecteerde items naar de Prullenbak"
 
-#. GRUT modified this item
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5566
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Verwijderen"
 
-#: src/file-manager/fm-directory-view.c:5486
+#: src/file-manager/fm-directory-view.c:5586
 msgid "Ma_ke Links"
 msgstr "Verwij_zingen maken"
 
-#: src/file-manager/fm-directory-view.c:5487
+#: src/file-manager/fm-directory-view.c:5587
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Verwij_zing maken"
 
-#: src/file-manager/fm-directory-view.c:5500
+#: src/file-manager/fm-directory-view.c:5600
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "Prullenbak _legen"
 
-#: src/file-manager/fm-directory-view.c:5516
+#: src/file-manager/fm-directory-view.c:5616
 msgid "Cu_t File"
 msgstr "Bestand _knippen"
 
-#: src/file-manager/fm-directory-view.c:5517
+#: src/file-manager/fm-directory-view.c:5617
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Bestanden k_nippen"
 
-#: src/file-manager/fm-directory-view.c:5526
+#: src/file-manager/fm-directory-view.c:5626
 msgid "_Copy File"
 msgstr "Bestand kopië_ren"
 
-#: src/file-manager/fm-directory-view.c:5527
+#: src/file-manager/fm-directory-view.c:5627
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "Bestanden kopië_ren"
 
-#: src/file-manager/fm-directory-view.c:5769
+#: src/file-manager/fm-directory-view.c:5869
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "De verwijzing is loos, wilt u haar in de prullenbak gooien?"
 
-#: src/file-manager/fm-directory-view.c:5771
+#: src/file-manager/fm-directory-view.c:5871
 msgid "This link can't be used, because it has no target."
 msgstr "Deze verwijzing kan niet gebruikt worden, omdat het doel ontbreekt"
 
-#: src/file-manager/fm-directory-view.c:5773
+#: src/file-manager/fm-directory-view.c:5873
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Deze verwijzing kan niet gebruikt worden, omdat haar doel \"%s\" niet "
 "bestaat."
 
-#: src/file-manager/fm-directory-view.c:5778
+#: src/file-manager/fm-directory-view.c:5878
 msgid "Broken Link"
 msgstr "Loze verwijzing"
 
-#: src/file-manager/fm-directory-view.c:5836
+#: src/file-manager/fm-directory-view.c:5936
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Wilt u \"%s\" uitvoeren, of de inhoud bekijken?"
 
-#: src/file-manager/fm-directory-view.c:5838
+#: src/file-manager/fm-directory-view.c:5938
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" is een uitvoerbaar tekstbestand."
 
-#: src/file-manager/fm-directory-view.c:5844
+#: src/file-manager/fm-directory-view.c:5944
 msgid "Run or Display?"
 msgstr "Uitvoeren of weergeven?"
 
-#: src/file-manager/fm-directory-view.c:5845
+#: src/file-manager/fm-directory-view.c:5945
 msgid "Run in _Terminal"
 msgstr "Uitvoeren in _Terminalvenster"
 
-#: src/file-manager/fm-directory-view.c:5846
+#: src/file-manager/fm-directory-view.c:5946
 msgid "_Display"
 msgstr "_Weergeven"
 
-#: src/file-manager/fm-directory-view.c:5849
+#: src/file-manager/fm-directory-view.c:5949
 msgid "_Run"
 msgstr "_Uitvoeren"
 
-#: src/file-manager/fm-directory-view.c:6127
+#: src/file-manager/fm-directory-view.c:6231
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Openen van \"%s\"..."
 
-#: src/file-manager/fm-directory-view.c:6133
+#: src/file-manager/fm-directory-view.c:6237
 msgid "Cancel Open?"
 msgstr "Openen afbreken?"
 
@@ -5969,7 +5996,6 @@ msgid "Connect to Server"
 msgstr "Verbinden met server"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _name:"
 msgstr "Verwijzings_naam:"
 
@@ -7086,7 +7112,6 @@ msgstr "Achtergronden en _emblemen..."
 msgid "_CD Creator"
 msgstr "_CD-maker"
 
-#. GRUT modified this item
 #: src/nautilus-shell-ui.xml.h:33
 msgid "_Close"
 msgstr "Sl_uiten"
