@@ -1,0 +1,481 @@
+<!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+]>
+
+<!--
+      (Do not remove this comment block.)
+  Version: 0.1
+  Last modified: March 24, 2001
+  This document is maintained by Eazel Inc.
+  Maintainers:
+               Eazel Inc.
+               Dan Mueth <dan@eazel.com>
+               Arlo Rose <arlo@eazel.com>
+  Translators:
+               (translators put your name and email here)
+-->
+
+
+<!-- =============Document Header ============================= -->
+
+<article id="index"> <!-- please do not change the id -->
+
+  <artheader>
+    <title>Nautilus Screenshot Guidelines</title>
+    <copyright>
+      <year>2001</year>
+      <holder>Eazel Inc.</holder>
+    </copyright>
+
+  <!-- translators: uncomment this:
+
+  <copyright>
+   <year>2000</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+  <!-- do not put authorname in the header except in copyright - use
+  section "authors" below -->
+
+  <!-- Use this legal notice for online documents which depend on -->
+  <!-- core GNOME packages.                                       -->
+  <legalnotice id="legalnotice">
+   <para>
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <ulink type="help" 
+    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    License</citetitle></ulink>, Version 1.1 or any later version 
+    published by the Free Software Foundation with no Invariant Sections, 
+    no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
+    can be found <ulink type="help" url="gnome-help:gnufdl">here</ulink>
+    or in the file COPYING-DOCS which shipped as part of this package.
+   </para>
+   <para>
+    Many of the names used by companies to distinguish their products and
+    services are claimed as trademarks. Where those names appear in any
+    GNOME documentation, and those trademarks are made aware to the members
+    of the GNOME Documentation Project, the names have been printed in caps
+    or initial caps.
+   </para>
+  </legalnotice>
+
+ </artheader>
+
+ <!-- ============= Document Body ============================= -->
+
+ <!-- ======= Introduction ======= -->
+ <sect1 id="intro">
+  <title>Introduction</title>
+
+  <para>
+   This document provides guidelines for creating screenshots of
+   <application>Nautilus</application> for use in Nautilus
+   documentation.  It is also meant to help localizers produce
+   localized screenshots of Nautilus as part of the translated
+   Nautilus documentation.
+  </para>
+
+ </sect1>
+
+
+ <!-- ======= General Guidelines ======= -->
+ <sect1 id="generalguidelines">
+  <title>General Guidelines</title>
+  <para>
+   The following guidelines should be used for all screenshots used in
+   Nautilus documentation which is shipped with Nautilus.
+  </para>
+
+  <sect2 id="appearance">
+   <title>Appearance</title>
+   <para>
+    Nautilus should be set to the "Default" theme. Because the
+    Nautilus, Gtk+, and Sawfish themes are not yet integrated, you
+    will have to manually set the Gtk+ and Sawfish themes to "Crux" in the
+    GNOME Control Center.  You will also need to set the color to
+    match that of the default Nautilus theme by selecting
+    <guilabel>'Crux' GTK+ Theme</guilabel> in the Control Center and
+    set the color to 0.37, 0.44, and 0.60 for red, green and blue
+    respectively.
+   </para>
+  </sect2>
+
+  <sect2 id="size">
+   <title>Screenshot Size</title>
+   <para>
+    Screenshots should be small enough to fit in the default-sized
+    Nautilus main panel which is 646 by 418 pixels.  Note that this
+    size includes any callouts which may be present.  You should
+    generally allow 7 pixels on the top and left and 11 pixels on the
+    bottom and right for the drop shadow, so your original screenshot
+    should be no more than 628 by 400.  If you will have callouts, you
+    should allow 34 pixels for each side with a callout instead of the
+    7 or 11 pixels for the drop shadow. (eg. A screenshot for a
+    figure with a callout on the left should be at most 646-11-34=601
+    pixels across.)
+   </para>
+  </sect2>
+
+  <sect2 id="focus">
+   <title>Window Focus</title>
+   <para>
+    You should always make sure that the window you are taking a
+    screenshot of has "focus", ie. if you were to type the text you
+    type would be directed to this window.  Generally the window
+    decorations appear differently when the window has focus - it
+    often has more color or brighter color.  Typically a window is
+    given focus by clicking on the window border, but this will vary
+    depending upon your window manager configuration.
+   </para>
+  </sect2>
+
+  <sect2 id="trademarks">
+   <title>Trademarks</title>
+   <para>
+    Screenshots should not include any trademarked logos, such as
+    Eazel's logo, Red Hat's logo, or any others.  It may contain the
+    GNOME logo. If your screenshot has a logo, please erase the logo
+    in the GIMP.
+   </para>
+  </sect2>
+
+  <sect2 id="colors">
+   <title>Colors</title>
+   <para>
+    In order to avoid distracting or visually confusing screenshots,
+    you should use colors with low saturation values for callouts or
+    any other drawings you make on your image.
+   </para>
+  </sect2>
+
+  <sect2 id="techniques">
+   <title>Techniques</title>
+   <para>
+    There are several techniques which we commonly use in the
+    screenshots:
+    <variablelist>
+     <varlistentry>
+      <term>Drop Shadow</term>
+      <listitem>
+       <para>
+        A drop shadow gives the image a perspective and a generally
+        more polished and professional look.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Callouts</term>
+      <listitem>
+       <para>
+        Callouts are labels which are used to describe certain
+        portions of the screenshot.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Circled Object Callouts</term>
+      <listitem>
+       <para>
+        For small items in a screenshot, such as buttons or icons, a
+        modified callout is used which circles the item.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Drawings</term>
+      <listitem>
+       <para>
+        Sometimes it is necessary to draw on a screenshot, such as
+        to represent the action of a drag-and-drop action.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+  </sect2>
+
+ </sect1>
+
+
+ <!-- ======= Tools ======= -->
+ <sect1 id="tools">
+  <title>Tools</title>
+
+  <sect2 id="takingscreenshots">
+   <title>Tools for Taking Screenshots</title>
+   <para>
+    There are many tools for taking screenshots on Linux.  The
+    <application>Screenshooter Applet</application> is a very
+    convenient tool for taking screenshots.  The
+    <application>GIMP</application> and <application>xv</application>
+    are two other popular tools.  In some situations, the command line
+    tool, <application>xwd</application> is useful, especially in
+    combination with the <command>sleep</command> command.
+   </para>
+   <para>
+    For dialogs which are tricky to grab such as the dialog you see
+    when you quit GNOME, the <application>Xnest</application>
+    application is useful.  It allows you to run an entire X and GNOME
+    session in a window.  It is also helpful if you would like to take
+    a screenshot of your whole desktop and make that desktop a
+    customized size, since your Xnest window can be any size you want.
+   </para>
+  </sect2>
+
+  <sect2 id="imagemanipulationtools">
+   <title>Image Manipulation Tools</title>
+   <para>
+    The most common tool for manipulating images on Linux is the
+    <application>GIMP</application>.  You will need some of
+    the sophistocated features of this application which are not
+    available in other tools for Linux.
+   </para>
+  </sect2>
+ </sect1>
+
+
+ <!-- ======= Creating a Drop Shadow ======= -->
+ <sect1 id="dropshadow">
+  <title>Creating a Drop Shadow</title>
+
+  <para>
+   The drop shadow is used to give the screenshot perspective and to
+   set it aside from the normal appearance of the interface,
+   emphasizing that it is in fact a screenshot instead of a piece of
+   the interface.  It also gives it a more professional appearance. To
+   see the desired effect, compare the following two screenshots, with
+   and without the drop shadow.
+   <figure>
+    <title>Before Drop Shadow</title>
+    <screenshot>
+     <screeninfo>Before Drop Shadow</screeninfo>
+     <graphic  format="png" fileref="figures/dropshadow_before" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+   <figure>
+    <title>With Drop Shadow</title>
+    <screenshot>
+     <screeninfo>With Drop Shadow</screeninfo>
+     <graphic  format="png" fileref="figures/dropshadow_after" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+  </para>
+
+  <para>
+   Creating a drop shadow in the GIMP is easy:
+   <orderedlist>
+    <listitem>
+      <para>
+       Load image into GIMP
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Convert to RGB with
+       <keycombo><keycap>Alt</keycap><keycap>r</keycap></keycombo>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Select all
+       <keycombo><keycap>Ctrl</keycap><keycap>a</keycap></keycombo>
+       and copy
+       <keycombo><keycap>Ctrl</keycap><keycap>c</keycap></keycombo>.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Create a new image
+       <keycombo><keycap>Ctrl</keycap><keycap>n</keycap></keycombo>,
+       and make it about 100 pixels wider and taller than the image to
+       give you some room to work.  Make it a transparent background.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Paste the image with
+       <keycombo><keycap>Ctrl</keycap><keycap>v</keycap></keycombo>
+       and then anchor it with
+       <keycombo><keycap>Ctrl</keycap><keycap>h</keycap></keycombo>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Create the Shadow by right-clicking on the image and selecting
+       <menuchoice>
+         <guimenu>Script Fu</guimenu>
+         <guisubmenu>Shadow</guisubmenu>
+         <guimenuitem>Drop Shadow</guimenuitem>
+       </menuchoice>.
+       Use <guilabel>Offset X</guilabel> and <guilabel>Offset
+       Y</guilabel> of 4 and <guilabel>Blur Radius</guilabel> of 9.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Merge Layers with
+       <keycombo><keycap>Ctrl</keycap><keycap>m</keycap></keycombo>.
+       At the dialog, you probably will want to select
+       <guilabel>Clipped to bottom layer</guilabel> unless you have
+       more work to do, in which case you should select
+       <guilabel>Expanded as necessary</guilabel>.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       If you have other work to do, such as adding callouts, do this now.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Autocrop your image by right-clicking on the image and
+       selecting
+       <menuchoice>
+         <guimenu>Image</guimenu>
+         <guisubmenu>Transforms</guisubmenu>
+         <guimenuitem>Autocrop</guimenuitem>
+       </menuchoice>.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+       Save the image by right-clicking on the image and selecting
+       <menuchoice>
+         <guimenu>File</guimenu> <guimenuitem>Save As</guimenuitem>
+         </menuchoice>.  You will want to save it as a PNG image for
+         use in in the documentation.  If you expect to edit this
+         further in the future and have added layers to your image
+         you may want to also save it in XCF format.
+      </para>
+    </listitem>
+   </orderedlist>
+  </para>
+ </sect1>
+
+
+ <!-- ======= Creating Callouts ======= -->
+ <sect1 id="callouts">
+  <title>Creating Callouts</title>
+
+  <para>
+   Callouts are used to identify a part of a screenshot, typically in
+   order to introduce the terminology associated with that part of
+   the screenshot.  In order to keep things simpler, make the
+   screenshot smaller, and increase flexibility, callouts are often
+   numbered instead of being directly labelled.
+   <figure>
+    <title>Before Callout</title>
+    <screenshot>
+     <screeninfo>Before Callout</screeninfo>
+     <graphic  format="png" fileref="figures/callout_before" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+   <figure>
+    <title>With Callout</title>
+    <screenshot>
+     <screeninfo>With Callout</screeninfo>
+     <graphic  format="png" fileref="figures/callout_after" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+  </para>
+
+  <para>
+   The typical dimensions of callouts are: disks inside image are 17
+   pixels in diameter with a 2 pixel-wide white border, lines are 3
+   pixels in diameter with a 2 pixel-wide white border, and disks
+   outside image are 21 pixels in diameter with no border.  When
+   creating a circle to fill with color, make sure it is
+   anti-aliased. The numbers are generally in 14 point, bold
+   Helvetica.  
+  </para>
+
+ </sect1>
+
+
+ <!-- ======= Circling Items for Callouts ======= -->
+ <sect1 id="circling">
+  <title>Circling Items for Callouts</title>
+
+
+  <para>
+   FIXME
+   <figure>
+    <title>Before Circle Callout</title>
+    <screenshot>
+     <screeninfo>Before Circle Callout</screeninfo>
+     <graphic  format="png" fileref="figures/circle_callout_before" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+   <figure>
+    <title>With Circle Callout</title>
+    <screenshot>
+     <screeninfo>With Circle Callout</screeninfo>
+     <graphic  format="png" fileref="figures/circle_callout_after" 
+      srccredit="Dan Mueth <dan@eazel.com>">
+     </graphic>
+    </screenshot>
+   </figure>
+  </para>
+
+
+  <para>
+   FIXME
+  </para>
+ </sect1>
+
+
+ <!-- ======= Finishing Touches ======= -->
+ <sect1 id="finishingtouches">
+  <title>Finishing Touches</title>
+
+  <para>
+   FIXME
+  </para>
+ </sect1>
+
+
+ <!-- ======= Resources  ======= -->
+ <sect1 id="resources">
+  <title>Resources</title>
+  
+  <para>
+   The following resources may be helpful:
+
+   <itemizedlist>
+     <listitem>
+     <para>
+      <ulink type="http" url="http://manual.gimp.org/">GIMP
+      Manual</ulink>
+     </para>
+    </listitem>
+   <listitem>
+     <para>
+      <ulink type="http" url="http://www.rru.com/~meo/gimp/">GIMP
+      FAQ's</ulink>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <ulink type="http"
+      url="http://empyrean.lib.ndsu.nodak.edu/~nem/gimp/tuts/"> GIMP
+      Tutorials</ulink>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </sect1>
+ 
+</article>
+
+
