@@ -1,10 +1,20 @@
-Get the gnome.m4 file from gnome-libs HEAD, and stick it in your $(prefix)/share/aclocal
-directory. I hope you know how to get aclocal to find the .m4 files
+To build Nautilus without interfering with an existing Gnome install,
+you will need to build several components from CVS into a separate
+prefix.
 
-Install ORBit, gtkhtml, gnome-vfs and bonobo from CVS.
+For example, you could install these components into /usr/local/gnome2
+or /usr/local/nautilus. Do do this, make sure to specify these with
+the --prefix option to autogen.sh or configure.
 
-If you can't figure it out from those instructions, too bad. :)
+Specifically, you will need to:
+
+* Get the gnome.m4 file from gnome-libs HEAD, and and manually copy it
+to your $(prefix)/share/aclocal directory. 
+
+* Install ORBit, gtkhtml, gnome-vfs and bonobo from CVS, in that
+order. Make sure to autogen with your selected prefix.
+
+* Build and install nautilus into your selected prefix.
+
 
 All patches should go through nautilus-maint@gnome.org
-
--- Elliot
