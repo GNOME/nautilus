@@ -650,9 +650,9 @@ global_preferences_register (void)
 	
 	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							   	  _("Show thumbnails for image files"),
-							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
-							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
-							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
 	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 							   	  _("Read and write metadata in each directory"),
