@@ -1,3 +1,11 @@
+2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_set_link_uri):
+	Added a call to nautilus_directory_async_state_changed ()
+	as part of my last bug fix to update the NautilusFile
+	that its activation URI has changed.
+
 2000-09-08  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-login-view.c:
