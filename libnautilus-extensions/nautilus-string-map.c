@@ -31,11 +31,6 @@
 #include "nautilus-lib-self-check-functions.h"
 #include <string.h>
 
-/* FIXME bugzilla.eazel.com 2442: 
- * The case sensitive flag is not functional yet.  Need to change
- * NautilusStringList to also accept a case_sensitive flag to make it work.
- */
-
 struct _NautilusStringMap
 {
 	GList		*map;
