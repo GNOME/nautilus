@@ -1274,6 +1274,10 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	i2c[0] = 1.0;
 	i2c[3] = 1.0;
 	
+	/* force it to integer pixel boundaries to avoid losing some of the left edge */
+	i2c[4] = floor (i2c[4]);
+	i2c[5] = floor (i2c[5]);
+	
 	if (buf->is_bg) {
 		gnome_canvas_buf_ensure_buf (buf);
 		buf->is_bg = FALSE;

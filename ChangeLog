@@ -1,3 +1,11 @@
+2000-08-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_render):
+	fixed bug 1849, left edge of icons sometime get chopped off in
+	anti-aliased mode. Fixed by truncating the offset in the
+	affine transfer to integers.
+	
 2000-08-04  Darin Adler  <darin@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
