@@ -658,12 +658,6 @@ static void nautilus_window_destroy (NautilusWindow *window)
     GTK_OBJECT_CLASS(klass->parent_class)->destroy(GTK_OBJECT(window));
 }
 
-GtkWidget *
-nautilus_window_new(const char *app_id, BonoboObject *app)
-{
-  return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, "app", app, NULL));
-}
-
 void
 nautilus_window_close (NautilusWindow *window)
 {
