@@ -1,5 +1,14 @@
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
+	* data/mime/nautilus.keys
+	
+	Removed [en_US] from file-type human-readable descriptions.
+	Added text explaining how to add a localized description.
+	This fixes problem where if your language variable isn't
+	set you get raw MIME types instead of human-readable descriptions.	
+
+2000-04-25  John Sullivan  <sullivan@eazel.com>
+
 	More FIXME-to-bug work.
 
 	* libnautilus-extensions/nautilus-icon-container.c,
