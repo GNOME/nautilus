@@ -5,7 +5,7 @@
 #
 #  Author(s): Kenneth Christiansen
 #
-#  GNOME PO Update Utility requires the XML to POT Generator, ui-extract.pl
+#  GNOME PO Update Utility can use the XML to POT Generator, ui-extract.pl
 #  Please distribute it along with this scrips, aswell as desk.po and
 #  README.tools.
 #
@@ -13,7 +13,7 @@
 #  used within.
 
 
-$VERSION = "1.3.2";
+$VERSION = "1.5beta1";
 $LANG    = $ARGV[0];
 $PACKAGE  = "nautilus";
 $| = 1;
@@ -35,10 +35,18 @@ if ($LANG=~/^-(.)*/){
     }
     elsif ($LANG eq "--dist" || "$LANG" eq "-D"){
         &Merging;
-#       &Status;
     }
     elsif ($LANG eq "--pot" || "$LANG" eq "-P"){
+	if (-e ".headerlock"){
+	unlink(".headerlock");
    	&GeneratePot;
+	}else{
+        &GenHeaders;
+	&GeneratePot;}
+        exit;
+    }
+    elsif ($LANG eq "--headers" || "$LANG" eq "-S"){
+        &GenHeaders;
         exit;
     }
     elsif ($LANG eq "--maintain" || "$LANG" eq "-M"){
@@ -50,6 +58,7 @@ if ($LANG=~/^-(.)*/){
 
 } else {
    if(-s "$LANG.po"){
+        &GenHeaders; 
 	&GeneratePot;
 	&Merging;
 	&Status;
@@ -71,11 +80,11 @@ sub Version{
 sub Help{
     print "Usage: ./update.pl [OPTIONS] ...LANGCODE\n";
     print "Updates pot files and merge them with the translations.\n\n";
-    print "  -V, --version                shows the version\n";
     print "  -H, --help                   shows this help page\n";
-    print "  -P, --pot                    only generates the potfile\n";
-#   print "  -S, --status                 shows the status of the po file\n";
+    print "  -P, --pot                    generate the pot file only\n";
+    print "  -S, --headers                generate the XML headerfiles in POTFILES.in\n";
     print "  -M, --maintain               search for missing files in POTFILES.in\n";
+    print "  -V, --version                shows the version\n";
     print "\nExamples of use:\n";
     print "update.sh --pot    just creates a new pot file from the source\n";
     print "update.sh da       created new pot file and updated the da.po file\n\n";
@@ -92,8 +101,8 @@ sub Maintain{
     
     open(BUF1, "$a|");
 
-    @buf2 = <BUF2>;
-    @buf1 = <BUF1>;
+    @buf1_1 = <BUF1>;
+    @buf1_2 = <BUF2>;
 
     if (-s "POTFILES.ignore"){
         open FILE, "POTFILES.ignore";
@@ -102,30 +111,30 @@ sub Maintain{
                 push @bup, $_;
             }
         }
-        print "POTFILES.ignore found! Ignoring files...\n";
-        @buf2 = (@bup, @buf2);
+        print "Found POTFILES.ignore: Ignoring files...\n";
+        @buf1_2 = (@bup, @buf1_2);
     }
 
-    foreach my $file (@buf1){
+    foreach my $file (@buf1_1){
         open FILE, "<$file";
         while (<FILE>) {
             if ($_=~/_\(\"/o){
                 $file = unpack("x3 A*",$file) . "\n";
-                push @buff1, $file;
+                push @buf2_1, $file;
                 last;
             }
         }
     }
 
-    @bufff1 = sort (@buff1);
-    @bufff2 = sort (@buf2);
+    @buf3_1 = sort (@buf2_1);
+    @buf3_2 = sort (@buf1_2);
 
     my %in2;
-    foreach (@bufff2) {
+    foreach (@buf3_2) {
        $in2{$_} = 1;
     }
 
-    foreach (@bufff1){
+    foreach (@buf3_1){
        if (!exists($in2{$_})){
            push @result, $_ }
        }
@@ -134,8 +143,8 @@ sub Maintain{
         open OUT, ">POTFILES.in.missing";
         print OUT @result;
         print "\nHere are the results:\n\n", @result, "\n";
-        print "File POTFILES.in.missing is being placed in directory...\n";
-        print "Please add the files that should be ignored in POTFILES.ignore\n";
+        print "The file POTFILES.in.missing has been placed in the current directory.\n";
+        print "Files supposed to be ignored should be placed in POTFILES.ignore\n";
     }
     else{
         print "\nWell, it's all perfect! Congratulation!\n";
@@ -147,38 +156,42 @@ sub InvalidOption{
     print "Try `update.pl --help' for more information.\n";
 }
  
+sub GenHeaders{
+	
+    if(-s "ui-extract.pl"){
+    print "Found ui-extract.pl script\nRunning ui-extract...\n";
+    open FILE, "<POTFILES.in";
+    while (<FILE>) {
+       if ($_=~ /(.*)(\.xml\.h)/o){
+          $filename = "$1\.xml";
+          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+          system($xmlfiles);
+          }
+      
+       elsif ($_=~ /(.*)(\.glade\.h)/o){
+          $filename = "$1\.glade";
+          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+          system($xmlfiles);  
+       }
+    }
+        
+    close FILE;
+}}
+
 
 sub GeneratePot{
 
-    print "Building the $PACKAGE.pot...\n\n";
+    print "Building the $PACKAGE.pot...\n";
 
-    $c="xgettext --default-domain\=$PACKAGE --directory\=\.\."
-      ." --add-comments --keyword\=\_ --keyword\=N\_"
-      ." --files-from\=\.\/POTFILES\.in ";  
-    $c1="test \! -f $PACKAGE\.po \|\| \( rm -f \.\/$PACKAGE\.pot "
-       ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
+    $GETTEXT ="xgettext --default-domain\=$PACKAGE --directory\=\.\."
+             ." --add-comments --keyword\=\_ --keyword\=N\_"
+             ." --files-from\=\.\/POTFILES\.in ";  
+    $GTEST   ="test \! -f $PACKAGE\.po \|\| \( rm -f \.\/$PACKAGE\.pot "
+             ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
 
-    if (-s "ui-extract.pl"){
-       open FILE, "<POTFILES.in";	
-       while (<FILE>) {
-          if ($_=~ /(.*)(\.xml\.h)/o){
-             $filename = "$1\.xml";
-             $xmlfiles="\.\/ui-extract.pl --update ../$filename";
-             system($xmlfiles);
-             }
-
-          elsif ($_=~ /(.*)(\.glade\.h)/o){
-             $filename = "$1\.glade";
-             $xmlfiles="\.\/ui-extract.pl --update ../$filename";
-             system($xmlfiles);
-          }
-       }
-    }
-
-    close FILE;
-
-    system($c);
-    system($c1);
+    system($GETTEXT);
+    system($GTEST);
+    print "Wrote $PACKAGE.pot\n";
 }
 
 sub Merging{
@@ -190,14 +203,11 @@ sub Merging{
     }
 
     if ($ARGV[0] ne "--dist" && $ARGV[0] ne "-D") {
-        print "\n\nMerging $LANG.po with $PACKAGE.pot, creating updated $LANG.po...\n\n";
+        print "Merging $LANG.po with $PACKAGE.pot...";
     }
 
     $d="cp $LANG.po $LANG.po.old && msgmerge $LANG.po.old $PACKAGE.pot -o $LANG.po";
 
-    if ($ARGV[0] ne "--dist" && $ARGV[0] ne "-D") {
-        print "Working, please wait";
-    }
     system($d);
     
     if ($ARGV[0] ne "--dist" && $ARGV[0] ne "-D") {
@@ -215,8 +225,8 @@ sub NotExisting{
 }
 
 sub Status{
-    $f="msgfmt --statistics $LANG.po";
+    $STATUS="msgfmt --statistics $LANG.po";
     
-    system($f);
+    system($STATUS);
     print "\n";   
 }
