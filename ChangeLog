@@ -1,3 +1,9 @@
+2000-07-27  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location): Fixed lack of NULL in
+	a g_strconcat that was causing an intermittent crash on boot.
+
 2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1474, special handling for running as root
@@ -31,9 +37,9 @@
 	* libnautilus-extensions/nautilus-gnome-extensions.h:
 	(max_open_files), (nautilus_gnome_terminal_shell_execute),
 	(nautilus_gnome_open_terminal):
-	For the above, added a call to launch a new Terminal, pieced together
-	from the origina GMC code, getting rid of some cruft we do not
-	need and using stock glib calls where possible.
+	For the above, added a call to launch a new Terminal, pieced
+	together from the original GMC code, getting rid of some cruft we
+	do not need and using stock glib calls where possible.
 
 	* src/file-manager/fm-directory-view.c:
 	(new_folder_menu_item_callback), (fm_directory_view_add_menu_item),
@@ -54,7 +60,7 @@
 	Used a non-zero border to offset the items more from the dialog edges
 	to make it look more as designed.
 
-2000-07-27  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
+2000-07-27  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fixes a number of bugs from rebecka latest commit.
 	The UI for search is almost working. I will finish it

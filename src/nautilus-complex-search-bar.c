@@ -152,13 +152,21 @@ nautilus_complex_search_bar_get_location  (NautilusComplexSearchBar *bar)
 	char *location;
 	GSList *criteria;
 
-	g_return_val_if_fail (bar->details->search_criteria != NULL, "search:[file:///]");
+	g_return_val_if_fail (bar->details->search_criteria != NULL, g_strdup ("search:[file:///]"));
+
 	location = g_strdup ("search:[file:///]");
 	for (criteria = bar->details->search_criteria; criteria != NULL; criteria = criteria->next) {
-		location = g_strconcat (location, "");
+		/* FIXME: 1: It's missing a NULL on the end so it
+		 * crashes unless you are "lucky". 2: It leaks because
+		 * the old location isn't freed. Perhaps use GString
+		 * instead? 3: It's 1/2-written code that doesn't do
+		 * anything.
+		 */
+		/* location = g_strconcat (location, ""); */
 	}
-	return "fixme";
 
+	/* FIXME: Not implemented yet. */
+	return location;
 }
 
 static void                       
