@@ -6866,23 +6866,24 @@ nautilus_icon_container_accessible_initialize (AtkObject *accessible,
 			    accessible_private_data_quark, 
 			    priv);
 
-	nautilus_icon_container_accessible_update_selection 
-		(ATK_OBJECT (accessible));
-
-	container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
-	g_signal_connect (G_OBJECT (container), "selection_changed",
-			  G_CALLBACK (nautilus_icon_container_accessible_selection_changed_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "icon_added",
-			  G_CALLBACK (nautilus_icon_container_accessible_icon_added_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "icon_removed",
-			  G_CALLBACK (nautilus_icon_container_accessible_icon_removed_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "cleared",
-			  G_CALLBACK (nautilus_icon_container_accessible_cleared_cb), 
-			  accessible);
-
+	if (GTK_IS_ACCESSIBLE (accessible)) {
+		nautilus_icon_container_accessible_update_selection 
+			(ATK_OBJECT (accessible));
+		
+		container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
+		g_signal_connect (G_OBJECT (container), "selection_changed",
+				  G_CALLBACK (nautilus_icon_container_accessible_selection_changed_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "icon_added",
+				  G_CALLBACK (nautilus_icon_container_accessible_icon_added_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "icon_removed",
+				  G_CALLBACK (nautilus_icon_container_accessible_icon_removed_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "cleared",
+				  G_CALLBACK (nautilus_icon_container_accessible_cleared_cb), 
+				  accessible);
+	}
 }
 
 static void
