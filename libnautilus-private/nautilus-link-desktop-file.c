@@ -100,7 +100,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 					 const GdkPoint    *point,
 					 NautilusLinkType   type)
 {
-	char *uri, *contents, *temp;
+	char *uri, *contents;
 	GnomeDesktopItem *desktop_item;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
@@ -115,20 +115,13 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 				    "Encoding=UTF-8\n"
 				    "Name=%s\n"
 				    "Type=%s\n"
-				    "URL=%s\n",
+				    "URL=%s\n"
+				    "%s%s\n",
 				    name,
 				    get_tag (type),
-				    target_uri);
-				    
-	if (image != NULL) {
-		temp = g_strdup_printf ("%s"
-					"X-Nautilus-Icon=%s\n",
-					contents,
-					image);
-		g_free (contents);
-		contents = temp;
-		temp = NULL;
-	}
+				    target_uri,
+				    image != NULL ? "X-Nautilus-Icon=" : "",
+				    image != NULL ? image : "");
 	
 	desktop_item = gnome_desktop_item_new_from_string (uri,
 							   contents,
