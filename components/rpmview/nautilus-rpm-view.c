@@ -39,12 +39,13 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
@@ -92,8 +93,6 @@ struct NautilusRPMViewDetails {
 	GtkVBox   *package_container;
 	GtkWidget *go_to_button;
 	
-	GdkPixbuf *package_pixbuf;
-	
 	GtkWidget *package_file_list;
         gboolean  package_installed;
 	
@@ -125,7 +124,8 @@ static void rpm_view_load_location_callback      (NautilusView         *view,
 static void nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 				   		  NautilusRPMView *rpm_view);
 
-static gint check_installed                      (gchar                *package_name,
+static gint check_installed                      (NautilusRPMView      *rpm_view,
+						  gchar                *package_name,
                                                   gchar                *package_version,
                                                   gchar                *package_release);
 static void file_selection_callback              (GtkCList             *clist,
@@ -158,7 +158,11 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 {
   	NautilusBackground *background;
 	GtkWidget *temp_box, *temp_widget;
+	GtkWidget *icon_title_box, *title_box;
 	GtkTable *table;
+  	GdkFont *title_font;
+  	char *default_icon_path;
+  	
   	static gchar *list_headers[] = { N_("Package Contents") };
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
@@ -183,36 +187,43 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	rpm_view->details->package_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
 	gtk_container_add (GTK_CONTAINER (rpm_view), GTK_WIDGET (rpm_view->details->package_container));
 	gtk_widget_show (GTK_WIDGET (rpm_view->details->package_container));
-		
+
+	/* allocate an hbox to hold the package icon and the title info */
+	icon_title_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (icon_title_box);
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), icon_title_box, FALSE, FALSE, 0);	
+	
+	/* allocate a pixwidget to hold the icon */
+	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
+	rpm_view->details->package_image = gnome_pixmap_new_from_file (default_icon_path);
+	g_free (default_icon_path);
+	gtk_widget_show (rpm_view->details->package_image);
+	gtk_box_pack_start (GTK_BOX (icon_title_box), rpm_view->details->package_image, FALSE, FALSE, 8);	
+	
+	/* allocate another vbox to hold the titles */
+	title_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (title_box);
+	gtk_box_pack_start (GTK_BOX (icon_title_box), title_box, TRUE, TRUE, 8);	
+	
 	/* allocate the name field */
-	
-	rpm_view->details->package_title = nautilus_label_new (_("Package Title"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (rpm_view->details->package_title), 18);
-	
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_title, FALSE,
-				FALSE, 1);	
+	rpm_view->details->package_title = gtk_label_new (_("Package Title"));
+	title_font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font (rpm_view->details->package_title, title_font);
+	gdk_font_unref (title_font);
+	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_title, FALSE, FALSE, 1);	
 	gtk_widget_show (rpm_view->details->package_title);
 	
-	/* allocate the release-version field */
-	
-	rpm_view->details->package_release = nautilus_label_new ("1.0-1");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (rpm_view->details->package_release), 12);
-	
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_release,
-				 FALSE, FALSE, 1);	
+	/* allocate the release-version field */	
+	rpm_view->details->package_release = gtk_label_new ("1.0-1");
+	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_release, FALSE, FALSE, 1);	
 	gtk_widget_show (rpm_view->details->package_release);
 	
-	/* allocate the summary field */
-	
-	rpm_view->details->package_summary = nautilus_label_new ("");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (rpm_view->details->package_summary), 12);
-	
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_summary,
-				 FALSE, FALSE, 2);		
+	/* allocate the summary field */	
+	rpm_view->details->package_summary = gtk_label_new ("");	
+	gtk_box_pack_start (GTK_BOX (title_box), rpm_view->details->package_summary, FALSE, FALSE, 2);		
 	gtk_widget_show (rpm_view->details->package_summary);
 		
 	/* allocate a table to hold the fields of information */
-	
 	table = GTK_TABLE(gtk_table_new(4, 4, FALSE));
 	gtk_widget_set_usize (GTK_WIDGET (table), 420, -1);
 	
@@ -301,12 +312,11 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start(GTK_BOX (rpm_view->details->package_container), temp_box, FALSE, FALSE, 8);	
 	gtk_widget_show(temp_box);
 	
-	rpm_view->details->package_installed_message = nautilus_label_new("");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (rpm_view->details->package_installed_message), 14);
+	rpm_view->details->package_installed_message = gtk_label_new("");
  	
-	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_installed_message,
+	gtk_box_pack_start (GTK_BOX (temp_box), rpm_view->details->package_installed_message,
 				 FALSE, FALSE, 2);		
-	gtk_widget_show(rpm_view->details->package_installed_message);
+	gtk_widget_show (rpm_view->details->package_installed_message);
 	
 	/* install button */
 	rpm_view->details->package_install_button = gtk_button_new();		    
@@ -398,9 +408,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_widget_show(rpm_view->details->go_to_button);
 	
 	/* add the description */
-	rpm_view->details->package_description = nautilus_label_new (_("Description"));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (rpm_view->details->package_description), 12);
-	
+	rpm_view->details->package_description = gtk_label_new (_("Description"));	
 	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description,
 				FALSE, FALSE, 8);	
 	gtk_widget_show (rpm_view->details->package_description);
@@ -456,15 +464,17 @@ go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
 /* return 0 if it's not installed, one if it is, -1 if same package, different version */
 
 static gint 
-check_installed(gchar *package_name, gchar *package_version, gchar *package_release)
+check_installed (NautilusRPMView *rpm_view, gchar *package_name, gchar *package_version, gchar *package_release)
 {
  	rpmdb rpm_db;
  	Header header;
+ 	char time_buffer[512];
  	gint rpm_result, find_result;
 	gint index;
 	dbiIndexSet matches;
 	gint result = 0;
-	gchar *version_ptr, *release_ptr;
+	gchar *version_ptr, *release_ptr, *install_time_ptr;
+	
 	
  	rpmReadConfigFiles (NULL, NULL);   
     	rpm_result = rpmdbOpen ("", &rpm_db, O_RDONLY, 0644);
@@ -486,6 +496,13 @@ check_installed(gchar *package_name, gchar *package_version, gchar *package_rele
 	  	header = rpmdbGetRecord(rpm_db, matches.recs[index].recOffset);
 	  	headerGetEntry(header, RPMTAG_VERSION, NULL, (void **) &version_ptr, NULL);
 	  	headerGetEntry(header, RPMTAG_RELEASE, NULL, (void **) &release_ptr, NULL);
+	  	
+	  	install_time_ptr = NULL;
+	  	headerGetEntry(header, RPMTAG_INSTALLTIME, NULL, (void **) &install_time_ptr, NULL);
+	  	if (install_time_ptr) {
+			strftime(time_buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) install_time_ptr));
+			gtk_label_set_text (GTK_LABEL (rpm_view->details->package_idate), time_buffer);
+	  	}
 	  	
 	  	if (!strcmp(version_ptr, package_version) && !strcmp(release_ptr, package_release))
 	  		result = 1;
@@ -521,23 +538,24 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	int *integer_ptr;
         char *summary;
         char *description;
+	char *default_icon_path;
+	
 #ifdef EAZEL_SERVICES
         PackageData *pack;
 #endif
-  	
-	gchar **path = NULL;
-	gchar **links = NULL;	
-	gchar *temp_version = NULL;
-	gchar *temp_release = NULL;
-	gchar *package_name = NULL;
+	char **path = NULL;
+	char **links = NULL;	
+	char *temp_version = NULL;
+	char *temp_release = NULL;
+	char *package_name = NULL;
 	
 	const char *path_name = uri + 7;
 	
-	if (rpm_view->details->package_pixbuf) {
-		gdk_pixbuf_unref (rpm_view->details->package_pixbuf);
-		rpm_view->details->package_pixbuf = NULL;
-	}
-	
+	/* load the standard icon as the default */
+	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
+    	gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), default_icon_path);   				
+	g_free (default_icon_path);
+		
 	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);
 	 
 	if (file_descriptor != NULL) {
@@ -556,7 +574,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                         case RPMTAG_NAME:
                                 package_name = g_strdup(data_ptr);
                                 temp_str = g_strdup_printf(_("Package \"%s\" "), data_ptr);
-                                nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_title), temp_str);
+                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_title), temp_str);
                                 g_free(temp_str);
                                 break;
                         case RPMTAG_VERSION:
@@ -577,10 +595,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                                 break;
                         case RPMTAG_ICON:
                                 break;
-                        case RPMTAG_LICENSE:
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_license), data_ptr);
-                                break;
-                        case RPMTAG_BUILDTIME:
+                         case RPMTAG_BUILDTIME:
                                 strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) data_ptr));
                                 gtk_label_set_text (GTK_LABEL (rpm_view->details->package_bdate), buffer);
                                 break;
@@ -595,14 +610,15 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
     				descriptor = open("/tmp/rpm.gif", O_RDWR | O_CREAT, 0666);
     				write (descriptor, data_ptr, data_size);
     				close (descriptor);
-    				rpm_view->details->package_pixbuf = gdk_pixbuf_new_from_file ("/tmp/rpm.gif");
+    				
+    				gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), "/tmp/rpm.gif");   				
     				unlink ("/tmp/rpm.gif");  
 				break;
                         case RPMTAG_XPM:
      				descriptor = open("/tmp/rpm.xpm", O_RDWR | O_CREAT, 0666);
     				write (descriptor, data_ptr, data_size);
     				close (descriptor);
-    				rpm_view->details->package_pixbuf = gdk_pixbuf_new_from_file ("/tmp/rpm.xpm");
+    				gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), "/tmp/rpm.xpm");   				
     				unlink ("/tmp/rpm.xpm");  
                                 break;
 			}
@@ -614,8 +630,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                    rpm versions. So this is not as hackish as it looks */
                 headerGetEntry (header_info, RPMTAG_DESCRIPTION, NULL, (void**)&description, NULL);
                 headerGetEntry (header_info, RPMTAG_SUMMARY, NULL, (void**)&summary, NULL);
-                nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_description), description );
-                nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_summary), summary );
+                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_description), description );
+                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_summary), summary );
 
                 /* FIXME bugzilla.eazel.com 2409:
                    Should they (things returned from headerGetEntry and the
@@ -623,7 +639,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 
 		if (temp_version) {
 			temp_str = g_strdup_printf (_("version %s-%s"), temp_version, temp_release);
-			nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_release), temp_str);				 
+			gtk_label_set_text (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
 			g_free (temp_str);
 		}
 		
@@ -634,14 +650,14 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	}
 	
 	/* determine if the package is installed */
-	is_installed = check_installed(package_name, temp_version, temp_release);
+	is_installed = check_installed(rpm_view, package_name, temp_version, temp_release);
 	rpm_view->details->package_installed = is_installed != 0;
 			
 	/* set up the install message and buttons */
 	if (is_installed)
-		nautilus_label_set_text (NAUTILUS_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
+		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
 	else 
-		nautilus_label_set_text (NAUTILUS_LABEL(rpm_view->details->package_installed_message), "This package is currently not installed");
+		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently not installed");
 	
 	if (is_installed == 0)
 		gtk_widget_show(rpm_view->details->package_install_button);

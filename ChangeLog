@@ -1,3 +1,13 @@
+2000-09-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), (check_installed),
+	(nautilus_rpm_view_update_from_uri):
+	removed anti-aliased text from rpm_view, since it was causing
+	too many problems; displayed icon contained in package header, or
+	a generic package icon if there isn't one; gather and display
+	package install time correctly.
+	
 2000-08-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	* ChangeLog: rolled over to ChangeLog-20000831.
