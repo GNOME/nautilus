@@ -122,6 +122,11 @@ struct NautilusIconContainerDetails {
 	guint keyboard_icon_reveal_timer_id;
 	NautilusIcon *keyboard_icon_to_reveal;
 
+	/* If a request is made to reveal an unpositioned icon we remember
+	 * it and reveal it once it gets positioned (in relayout).
+	 */
+	NautilusIcon *pending_icon_to_reveal;
+
 	/* Remembered information about the start of the current event. */
 	guint32 button_down_time;
 	

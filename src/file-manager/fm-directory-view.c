@@ -215,6 +215,9 @@ static void           metadata_ready_callback                                   
 static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
 										   gboolean 		     state,
 										   gpointer		     callback_data);
+static void	      fm_directory_view_select_file				  (FMDirectoryView	    *view,
+										   NautilusFile		    *file);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -2365,18 +2368,11 @@ fm_directory_view_trash_or_delete_files (FMDirectoryView *view, GList *files)
 static void
 start_renaming_item (FMDirectoryView *view, const char *uri)
 {
-	GList *selection;
 	NautilusFile *file;
-
-	selection = NULL;
 	file = nautilus_file_get (uri);
-	if (file ==  NULL) {
-		return;
+	if (file !=  NULL) {
+		fm_directory_view_select_file (view, file);
 	}
-
-	selection = g_list_prepend (NULL, file);
-	fm_directory_view_set_selection (view, selection);
-	nautilus_file_list_free (selection);
 }
 
 typedef struct {
@@ -2402,17 +2398,33 @@ new_folder_rename_later (void *callback_data)
 }
 
 static void
-new_folder_done (const char *new_folder_uri, gpointer data)
+reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, char* target_uri)
 {
-	FMDirectoryView *directory_view;
+	if (nautilus_file_matches_uri (new_file, target_uri)) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (view), &reveal_newly_added_folder, target_uri);
+		fm_directory_view_select_file (view, new_file);
+		fm_directory_view_reveal_selection (view);
+	}
+}
+
+static void
+new_folder_done (const char *new_folder_uri, FMDirectoryView *directory_view)
+{
 	RenameLaterParameters *parameters;
+
+	/* We need to run after the default handler adds the folder we want to
+	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+	 * must use connect_after.
+	 */
+	gtk_signal_connect_full (GTK_OBJECT (directory_view),
+				 "add_file",
+				 &reveal_newly_added_folder,
+				 NULL,
+				 g_strdup (new_folder_uri),
+				 g_free,
+				 FALSE,
+				 TRUE);
 	
-	directory_view = (FMDirectoryView *)data;
-	parameters = g_new0 (RenameLaterParameters, 1);
-
-	parameters->uri = g_strdup (new_folder_uri);
-	parameters->view = directory_view;
-
 	/* FIXME bugzilla.eazel.com 1260:
 	 * runing the start_renaming_item with a delay because at this point
 	 * it's not in the icon container's icon list. 
@@ -2421,7 +2433,19 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	 * is arbitrary, if the machine is loaded up, it may not be enough.
 	 * Need to add a mechanism here that ensures synchronously that the item
 	 * is added to the icon container instead.
+	 * 
+	 * You might think we can fix this by simply moving this call into
+	 * the "add_file" signal handler, but you'd be wrong. When "add_file"
+	 * is emitted the icon will have been added, but not placed. Reveal
+	 * (in nautilus_icon-container.c) had to be modified to handle
+	 * this case (all the pending_icon_to_reveal stuff). A similar change
+	 * will have to be done for renaming. Then, this can be fixed by doing
+	 * it at "add_file" time.
 	 */
+	parameters = g_new0 (RenameLaterParameters, 1);
+	parameters->uri = g_strdup (new_folder_uri);
+	parameters->view = directory_view;
+
 	gtk_timeout_add (100, new_folder_rename_later, parameters);
 }
 
@@ -2431,7 +2455,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	char *parent_uri;
 
 	parent_uri = fm_directory_view_get_uri (directory_view);
-	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, (void (*)(const char *, gpointer)) new_folder_done, directory_view);
 
 	g_free (parent_uri);
 }
@@ -3902,6 +3926,15 @@ fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
 	NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 set_selection, (view, selection));
+}
+
+static void
+fm_directory_view_select_file (FMDirectoryView *view, NautilusFile *file)
+{
+	GList file_list;
+	file_list.data = file;
+	file_list.next = NULL;
+	fm_directory_view_set_selection (view, &file_list);
 }
 
 /**

@@ -1,3 +1,20 @@
+2000-10-19  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_is_positioned), (pending_icon_to_reveal_destroy_callback),
+	(get_pending_icon_to_reveal), (set_pending_icon_to_reveal),
+	(reveal_icon), (process_pending_icon_to_reveal),
+	(lay_down_icons_tblr), (relayout):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-directory-view.c: (start_renaming_item),
+	(reveal_newly_added_folder), (new_folder_done),
+	(fm_directory_view_new_folder), (fm_directory_view_set_selection),
+	(fm_directory_view_select_file):
+
+	Newly added folders are now revealed (bug 2208). Other cases
+	(e.g. duplicate) still remain. They will require adding new hooks
+	to nautilus-file-operations.
+
 2000-10-19  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

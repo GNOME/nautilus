@@ -175,6 +175,12 @@ icon_free (NautilusIcon *icon)
 	g_free (icon);
 }
 
+static gboolean
+icon_is_positioned (const NautilusIcon *icon)
+{
+	return icon->x != ICON_UNPOSITIONED_VALUE && icon->y != ICON_UNPOSITIONED_VALUE;
+}
+
 static void
 icon_set_position (NautilusIcon *icon,
 		   double x, double y)
@@ -362,6 +368,44 @@ nautilus_icon_container_scroll (NautilusIconContainer *container,
 }
 
 static void
+pending_icon_to_reveal_destroy_callback (NautilusIconCanvasItem *item, NautilusIconContainer *container)
+{
+	g_assert (container->details->pending_icon_to_reveal != NULL);
+	g_assert (container->details->pending_icon_to_reveal->item == item);
+	container->details->pending_icon_to_reveal = NULL;
+}
+
+static NautilusIcon*
+get_pending_icon_to_reveal (NautilusIconContainer *container)
+{
+	return container->details->pending_icon_to_reveal;
+}
+
+static void
+set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon)
+{
+	NautilusIcon *cur_pending;
+	
+	cur_pending = container->details->pending_icon_to_reveal;
+	
+	if (icon == cur_pending) {
+		return;
+	}
+	
+	if (cur_pending != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (cur_pending->item),
+					       &pending_icon_to_reveal_destroy_callback,
+					       container);
+	}
+	
+	if (icon != NULL) {
+		gtk_signal_connect (GTK_OBJECT (icon->item), "destroy", &pending_icon_to_reveal_destroy_callback, container);
+	}
+	
+	container->details->pending_icon_to_reveal = icon;
+}
+
+static void
 reveal_icon (NautilusIconContainer *container,
 	     NautilusIcon *icon)
 {
@@ -369,6 +413,13 @@ reveal_icon (NautilusIconContainer *container,
 	GtkAllocation *allocation;
 	GtkAdjustment *hadj, *vadj;
 	int x1, y1, x2, y2;
+
+	if (!icon_is_positioned (icon)) {
+		set_pending_icon_to_reveal (container, icon);
+		return;
+	}
+	
+	set_pending_icon_to_reveal (container, NULL);
 
 	details = container->details;
 	allocation = &GTK_WIDGET (container)->allocation;
@@ -388,6 +439,18 @@ reveal_icon (NautilusIconContainer *container,
 		nautilus_gtk_adjustment_set_value (hadj, x1);
 	} else if (x2 > hadj->value + allocation->width) {
 		nautilus_gtk_adjustment_set_value (hadj, x2 - allocation->width);
+	}
+}
+
+static void
+process_pending_icon_to_reveal (NautilusIconContainer *container)
+{
+	NautilusIcon *pending_icon_to_reveal;
+	
+	pending_icon_to_reveal = get_pending_icon_to_reveal (container);
+	
+	if (pending_icon_to_reveal != NULL) {
+		reveal_icon (container, pending_icon_to_reveal);
 	}
 }
 
@@ -882,7 +945,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		/* Add only placed icons in list */
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
-			if (icon->x != ICON_UNPOSITIONED_VALUE && icon->y != ICON_UNPOSITIONED_VALUE) {
+			if (icon_is_positioned (icon)) {
 				placed_icons = g_list_append (placed_icons, icon);
 			} else {
 				icon->x = 0;
@@ -1008,6 +1071,9 @@ relayout (NautilusIconContainer *container)
 		resort (container);
 		lay_down_icons (container, container->details->icons, 0);
 	}
+
+	process_pending_icon_to_reveal (container);
+	
 	nautilus_icon_container_update_scroll_region (container);
 }
 
