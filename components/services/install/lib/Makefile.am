@@ -91,18 +91,16 @@ libeazelpackagesystem_la_SOURCES = 		\
 
 # libeazelpackagesystem-skeleton
 
-noinst_HEADERS=eazel-package-system-skeleton.h
-
 libeazelpackagesystem_skeleton_la_SOURCES = 	\
+	eazel-package-system-skeleton.h		\
 	eazel-package-system-skeleton.c		\
 	$(NULL)
 
 
 # libeazelpackagesystem-rpm3
 
-noinst_HEADERS=eazel-package-system-rpm3.h
-
 libeazelpackagesystem_rpm3_la_SOURCES = 	\
+	eazel-package-system-rpm3.h		\
 	eazel-package-system-rpm3.c		\
 	$(NULL)
 
