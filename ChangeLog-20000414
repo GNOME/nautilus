@@ -1,7 +1,5 @@
 1999-12-20  Maciej Stachowiak  <mjs@eazel.com>
 
-	* components/html/ntl-web-browser.c: Fix warnings.
-
 	* src/ntl-view.h: Remove request_* calls from public API (they are
 	just an implementation detail of the fact that NautilusView
 	implements a Nautilus:ViewFrame CORBA server - the nautilus app
@@ -20,6 +18,8 @@
 	* src/Makefile.am: add ntl-view-frame-svr.[ch] to build.
 		
 	* src/ntl-window.c: Add myself to About box (pout).
+
+	* components/html/ntl-web-browser.c: Fix warnings.	
 
 1999-12-20  Elliot Lee  <sopwith@redhat.com>
 
