@@ -316,7 +316,7 @@ preferences_item_create_enum (NautilusPreferencesItem	*item,
 
 	g_assert (item->details->preference_name != NULL);
 
-	item->details->child = nautilus_radio_button_group_new ();
+	item->details->child = nautilus_radio_button_group_new (FALSE);
 		
  	value = nautilus_preferences_get_enum (item->details->preference_name, 0);
 	
@@ -360,7 +360,7 @@ preferences_item_create_short_enum (NautilusPreferencesItem	*item,
 
 	g_assert (item->details->preference_name != NULL);
 
-	item->details->child = nautilus_radio_button_group_new_horizontal ();
+	item->details->child = nautilus_radio_button_group_new (TRUE);
 		
  	value = nautilus_preferences_get_enum (item->details->preference_name, 0);
 	

@@ -1,3 +1,35 @@
+2000-08-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	(nautilus_radio_button_group_initialize),
+	(nautilus_radio_button_group_new),
+	(nautilus_radio_button_group_set_entry_pixbuf),
+	(nautilus_radio_button_group_set_entry_description_text):
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+
+	Have only one constructor and feed it whether the radio button
+	group is horizontal or not.
+
+	Changed the login of some assertions on code that is meant for the
+	NOT horzontal case.  This should fix the torrent of assertions at
+	startup.
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_enum),
+	(preferences_item_create_short_enum):
+
+	Update for radio button group constructor change.
+
+	* src/nautilus-first-time-druid.c: (set_up_user_level_page),
+	(set_up_service_signup_page):
+
+	Update for radio button group constructor change.
+
+	* test/test-nautilus-widgets.c: (main), (radio_group_load_it_up),
+	(test_radio_group), (test_radio_group_horizontal):
+
+	Add a test for the radio button group horizontal case.
+	
 2000-08-02  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:

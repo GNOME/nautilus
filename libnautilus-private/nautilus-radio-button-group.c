@@ -122,7 +122,7 @@ nautilus_radio_button_group_initialize (NautilusRadioButtonGroup *button_group)
 	button_group->details->rows = NULL;
 	button_group->details->group = NULL;
 	button_group->details->num_items = 0;
-	button_group->details->horizontal = 0;
+	button_group->details->horizontal = FALSE;
 }
 
 /*
@@ -197,22 +197,12 @@ button_toggled (GtkWidget *button, gpointer user_data)
  * NautilusRadioButtonGroup public methods
  */
 GtkWidget*
-nautilus_radio_button_group_new (void)
+nautilus_radio_button_group_new (gboolean is_horizontal)
 {
 	NautilusRadioButtonGroup *button_group;
 
 	button_group = gtk_type_new (nautilus_radio_button_group_get_type ());
-	
-	return GTK_WIDGET (button_group);
-}
- 
-GtkWidget*
-nautilus_radio_button_group_new_horizontal (void)
-{
-	NautilusRadioButtonGroup *button_group;
-
-	button_group = gtk_type_new (nautilus_radio_button_group_get_type ());
-	button_group->details->horizontal = TRUE;
+	button_group->details->horizontal = is_horizontal;
 	
 	return GTK_WIDGET (button_group);
 }
@@ -366,7 +356,7 @@ nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_g
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
 	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
-	g_return_if_fail (button_group->details->horizontal);
+	g_return_if_fail (button_group->details->horizontal == FALSE);
 
 	table = GTK_TABLE (button_group);
 
@@ -407,7 +397,7 @@ nautilus_radio_button_group_set_entry_description_text (NautilusRadioButtonGroup
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
 	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
-	g_return_if_fail (button_group->details->horizontal);
+	g_return_if_fail (button_group->details->horizontal == FALSE);
 
 	table = GTK_TABLE (button_group);
 

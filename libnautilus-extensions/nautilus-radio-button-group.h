@@ -71,9 +71,7 @@ typedef struct
 } NautilusRadioButtonGroupSignalData;
 
 GtkType    nautilus_radio_button_group_get_type                   (void);
-GtkWidget* nautilus_radio_button_group_new	                  (void);
-GtkWidget* nautilus_radio_button_group_new_horizontal             (void);
-
+GtkWidget* nautilus_radio_button_group_new	                  (gboolean is_horizontal);
 
 
 /* Insert a new item to the group.  Returns the new item's index */

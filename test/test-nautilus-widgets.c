@@ -27,6 +27,7 @@ create_pixbuf (const char *name)
 }
 
 static void test_radio_group                     (void);
+static void test_radio_group_horizontal          (void);
 static void test_caption_table                   (void);
 static void test_string_picker                   (void);
 static void test_text_caption                    (void);
@@ -48,6 +49,7 @@ main (int argc, char * argv[])
 	gnome_init ("foo", "bar", argc, argv);
 
 	test_radio_group ();
+	test_radio_group_horizontal ();
 	test_caption_table ();
 	test_string_picker ();
 	test_text_caption ();
@@ -58,36 +60,76 @@ main (int argc, char * argv[])
 }
 
 static void
+radio_group_load_it_up (NautilusRadioButtonGroup	*group, 
+			gboolean			use_icons,
+			gboolean			use_descriptions)
+{
+	g_return_if_fail (group != NULL);
+	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (group));
+
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (group), "Apples");
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (group), "Oranges");
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (group), "Strawberries");
+	
+	if (use_descriptions)
+	{
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 0, _("Apple description"));
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 1, _("Oranges description"));
+		nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (group), 2, _("Strawberries description"));
+	}
+
+	if (use_icons)
+	{
+		GdkPixbuf *pixbufs[3];
+		
+		pixbufs[0] = create_pixbuf ("novice.png");
+		pixbufs[1] = create_pixbuf ("intermediate.png");
+		pixbufs[2] = create_pixbuf ("expert.png");
+		
+		nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (group), 0, pixbufs[0]);
+		nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (group), 1, pixbufs[1]);
+		nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (group), 2, pixbufs[2]);
+		
+		gdk_pixbuf_unref (pixbufs[0]);
+		gdk_pixbuf_unref (pixbufs[1]);
+		gdk_pixbuf_unref (pixbufs[2]);
+	}
+}
+
+static void
 test_radio_group (void)
 {
 	GtkWidget *window;
 	GtkWidget *buttons;
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	GdkPixbuf *pixbufs[3];
+	buttons = nautilus_radio_button_group_new (FALSE);
+
+	radio_group_load_it_up (NAUTILUS_RADIO_BUTTON_GROUP (buttons), TRUE, TRUE);
+
+	gtk_signal_connect (GTK_OBJECT (buttons),
+			    "changed",
+			    GTK_SIGNAL_FUNC (test_radio_changed_callback),
+			    (gpointer) NULL);
+
+	gtk_container_add (GTK_CONTAINER (window), buttons);
+
+	gtk_widget_show (buttons);
+
+	gtk_widget_show (window);
+}
+
+static void
+test_radio_group_horizontal (void)
+{
+	GtkWidget *window;
+	GtkWidget *buttons;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	buttons = nautilus_radio_button_group_new ();
+	buttons = nautilus_radio_button_group_new (TRUE);
 
-	pixbufs[0] = create_pixbuf ("novice.png");
-	pixbufs[1] = create_pixbuf ("intermediate.png");
-	pixbufs[2] = create_pixbuf ("expert.png");
-
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Apples");
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Oranges");
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Strawberries");
-
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, pixbufs[0]);
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, pixbufs[1]);
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, pixbufs[2]);
-
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, _("Apple description"));
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, _("Oranges description"));
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, _("Strawberries description"));
-
-	gdk_pixbuf_unref (pixbufs[0]);
-	gdk_pixbuf_unref (pixbufs[1]);
-	gdk_pixbuf_unref (pixbufs[2]);
+	radio_group_load_it_up (NAUTILUS_RADIO_BUTTON_GROUP (buttons), FALSE, FALSE);
 
 	gtk_signal_connect (GTK_OBJECT (buttons),
 			    "changed",

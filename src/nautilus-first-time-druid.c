@@ -168,7 +168,7 @@ set_up_user_level_page (NautilusDruidPageStandard *page)
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
 
-	radio_buttons = nautilus_radio_button_group_new ();
+	radio_buttons = nautilus_radio_button_group_new (FALSE);
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
@@ -231,7 +231,7 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
 
-	radio_buttons = nautilus_radio_button_group_new ();
+	radio_buttons = nautilus_radio_button_group_new (FALSE);
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
