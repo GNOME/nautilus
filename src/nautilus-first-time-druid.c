@@ -44,6 +44,7 @@
 
 static NautilusApplication *save_application;
 static gboolean save_manage_desktop;
+
 static int last_user_level;
 static int last_signup_choice;
 
@@ -60,7 +61,8 @@ static void
 druid_finished (GtkWidget *druid_page)
 {
 	char *user_main_directory;
-
+	const char *signup_uris[2];
+	
 	gtk_widget_destroy(gtk_widget_get_toplevel(druid_page));
 
 	user_main_directory = nautilus_get_user_main_directory();
@@ -74,7 +76,14 @@ druid_finished (GtkWidget *druid_page)
 	}
 	g_free (user_main_directory);
 
-	nautilus_application_startup(save_application, save_manage_desktop, NULL);
+	if (last_signup_choice == 0) {
+		signup_uris[0] = "eazel:register";
+		signup_uris[1] = NULL;
+		nautilus_application_startup(save_application, save_manage_desktop, &signup_uris[0]);
+		
+	} else {
+		nautilus_application_startup(save_application, save_manage_desktop, NULL);
+	}
 }
 
 /* set up an event box to serve as the background */
@@ -216,6 +225,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	/* remember parameters for later window invocation */
 	save_application = application;
 	save_manage_desktop = manage_desktop;
+	
 	dialog = gnome_dialog_new (_("Nautilus: Initial Preferences"),
 				   NULL);
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);

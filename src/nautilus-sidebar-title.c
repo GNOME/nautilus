@@ -222,7 +222,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 		nautilus_icon_factory_get_pixmap_and_mask_for_file
 			(sidebar_title->details->file,
 			 "accept",
-			 NAUTILUS_ICON_SIZE_STANDARD,
+			 NAUTILUS_ICON_SIZE_LARGE,
 			 &pixmap, &mask);
 	} else {
 		pixmap = NULL;
