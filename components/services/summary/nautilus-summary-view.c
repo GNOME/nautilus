@@ -69,8 +69,12 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*login_label;
 	GtkWidget	*maintenance_button;
 	GtkWidget	*maintenance_label;
+	GtkWidget	*register_button;
+	GtkWidget	*register_label;
 	GtkWidget	*logout_button;
 	GtkWidget	*logout_label;
+	GtkWidget	*community_button;
+	GtkWidget	*community_label;
 
 	GtkWidget	*feedback_text;
 
@@ -98,6 +102,10 @@ static void	entry_changed_cb			(GtkWidget			*entry,
 static void	goto_vault_cb				(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 static void	update_netscape_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
+static void	register_button_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
+static void	community_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
@@ -259,6 +267,20 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
+	/* register button */
+	view->details->register_button = gtk_button_new ();
+	view->details->register_label = gtk_label_new (" Register Now! ");
+	gtk_widget_show (view->details->register_label);
+	gtk_container_add (GTK_CONTAINER (view->details->register_button), view->details->register_label);
+	button_box = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (button_box), view->details->register_button, FALSE, FALSE, 21);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->register_button, FALSE, FALSE, 1);
+	gtk_signal_connect (GTK_OBJECT (view->details->register_button), "clicked", GTK_SIGNAL_FUNC (register_button_cb), view);
+	gtk_widget_show (view->details->register_button);
+	gtk_widget_show (button_box);
+	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
+
+
 	/* maintenance button */
 	view->details->maintenance_button = gtk_button_new ();
 	view->details->maintenance_label = gtk_label_new (" I need some help! ");
@@ -282,6 +304,19 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->logout_button, FALSE, FALSE, 1);
 	gtk_signal_connect (GTK_OBJECT (view->details->logout_button), "clicked", GTK_SIGNAL_FUNC (logout_button_cb), view);
 	gtk_widget_show (view->details->logout_button);
+	gtk_widget_show (button_box);
+	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
+
+	/* community button */
+	view->details->community_button = gtk_button_new ();
+	view->details->community_label = gtk_label_new (" Go to Eazel Community! ");
+	gtk_widget_show (view->details->community_label);
+	gtk_container_add (GTK_CONTAINER (view->details->community_button), view->details->community_label);
+	button_box = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (button_box), view->details->community_button, FALSE, FALSE, 21);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->community_button, FALSE, FALSE, 1);
+	gtk_signal_connect (GTK_OBJECT (view->details->community_button), "clicked", GTK_SIGNAL_FUNC (community_button_cb), view);
+	gtk_widget_show (view->details->community_button);
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
@@ -562,6 +597,24 @@ maintenance_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
 	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
+
+}
+
+/* callback to handle the community button.  Right now only does a simple redirect. */
+static void
+community_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+
+	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
+
+}
+
+/* callback to handle the register button.  Right now only does a simple redirect. */
+static void
+register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+
+	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/register.html");
 
 }
 
