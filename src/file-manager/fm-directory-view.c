@@ -1076,10 +1076,10 @@ get_scripts_directory (void)
 	NautilusDirectory *directory;	
 
 	scripts_directory_path = nautilus_make_path (g_get_home_dir (),
-						     ".nautilus-scripts");
+						     ".gnome/nautilus-scripts");
 
 	if (!g_file_exists (scripts_directory_path)) {
-		mkdir (scripts_directory_path, 
+		mkdir (scripts_directory_path,
 		       GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
 	}
 
