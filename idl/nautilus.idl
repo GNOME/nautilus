@@ -49,4 +49,10 @@ module Nautilus {
     oneway void request_location_change(in NavigationRequestInfo navinfo);
     oneway void request_selection_change(in SelectionRequestInfo selinfo);
   };
+
+  interface MetaViewFrame : ViewFrame {
+  };
+
+  interface ContentViewFrame : ViewFrame {
+  };
 };

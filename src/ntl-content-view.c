@@ -27,6 +27,22 @@
 #include "ntl-content-view.h"
 #include <gtk/gtksignal.h>
 
+static PortableServer_ServantBase__epv base_epv = { NULL};
+
+static POA_Nautilus_ContentViewFrame__epv impl_Nautilus_ContentViewFrame_epv = {
+  NULL
+};
+
+extern POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv;
+
+static POA_Nautilus_ContentViewFrame__vepv impl_Nautilus_ContentViewFrame_vepv =
+{
+   &base_epv,
+   NULL,
+   &impl_Nautilus_ViewFrame_epv,
+   &impl_Nautilus_ContentViewFrame_epv
+};
+
 static void nautilus_content_view_class_init (NautilusContentViewClass *klass);
 static void nautilus_content_view_init (NautilusContentView *view);
 
@@ -60,6 +76,10 @@ nautilus_content_view_class_init (NautilusContentViewClass *klass)
   object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
+
+  NAUTILUS_VIEW_CLASS(klass)->servant_init_func = POA_Nautilus_ContentViewFrame__init;
+  NAUTILUS_VIEW_CLASS(klass)->servant_destroy_func = POA_Nautilus_ContentViewFrame__fini;
+  NAUTILUS_VIEW_CLASS(klass)->vepv = &impl_Nautilus_ContentViewFrame_vepv;
 }
 
 static void

@@ -27,6 +27,22 @@
 #include "ntl-meta-view.h"
 #include <gtk/gtksignal.h>
 
+static PortableServer_ServantBase__epv base_epv = { NULL};
+
+static POA_Nautilus_MetaViewFrame__epv impl_Nautilus_MetaViewFrame_epv = {
+  NULL
+};
+
+extern POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv;
+
+static POA_Nautilus_MetaViewFrame__vepv impl_Nautilus_MetaViewFrame_vepv =
+{
+   &base_epv,
+   NULL,
+   &impl_Nautilus_ViewFrame_epv,
+   &impl_Nautilus_MetaViewFrame_epv
+};
+
 static void nautilus_meta_view_class_init (NautilusMetaViewClass *klass);
 static void nautilus_meta_view_init (NautilusMetaView *view);
 
@@ -60,6 +76,9 @@ nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
   object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
+  NAUTILUS_VIEW_CLASS(klass)->servant_init_func = POA_Nautilus_MetaViewFrame__init;
+  NAUTILUS_VIEW_CLASS(klass)->servant_destroy_func = POA_Nautilus_MetaViewFrame__fini;
+  NAUTILUS_VIEW_CLASS(klass)->vepv = &impl_Nautilus_MetaViewFrame_vepv;
 }
 
 static void

@@ -64,6 +64,8 @@ struct _NautilusViewClass
   GtkBinClass *parent_class;
   guint view_signals[6];
   guint num_construct_args;
+
+  gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
 struct _NautilusView

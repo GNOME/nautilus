@@ -62,7 +62,7 @@ impl_Nautilus_ViewFrame_request_status_change(impl_POA_Nautilus_ViewFrame * serv
                                               Nautilus_StatusRequestInfo * statinfo,
                                               CORBA_Environment * ev);
 
-static POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
+POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
    NULL,			/* _private */
    (void(*))&impl_Nautilus_ViewFrame_request_location_change,
@@ -84,6 +84,10 @@ impl_Nautilus_ViewFrame__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewFrame *
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
+   NautilusViewClass *klass;
+   void (*servant_destroy_func)(PortableServer_Servant, CORBA_Environment *);
+
+   klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(servant->view)->klass);
 
    CORBA_exception_init(&ev);
 
@@ -92,7 +96,8 @@ impl_Nautilus_ViewFrame__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewFrame *
    CORBA_free(objid);
    obj->servant = NULL;
 
-   POA_Nautilus_ViewFrame__fini((PortableServer_Servant) servant, &ev);
+   servant_destroy_func = klass->servant_destroy_func;
+   servant_destroy_func((PortableServer_Servant) servant, &ev);
    g_free(servant);
    CORBA_exception_free(&ev);
 }
@@ -102,13 +107,17 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
 {
    GnomeObject *retval;
    impl_POA_Nautilus_ViewFrame *newservant;
+   NautilusViewClass *klass;
+   void (*servant_init_func)(PortableServer_Servant, CORBA_Environment *);
 
+   klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(view)->klass);
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
-   newservant->servant.vepv = &impl_Nautilus_ViewFrame_vepv;
+   newservant->servant.vepv = klass->vepv;
    if(!newservant->servant.vepv->GNOME_Unknown_epv)
      newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
    newservant->view = view;
-   POA_Nautilus_ViewFrame__init((PortableServer_Servant) newservant, ev);
+   servant_init_func = klass->servant_init_func;
+   servant_init_func((PortableServer_Servant) newservant, ev);
 
    retval = gnome_object_new_from_servant(newservant);
 
@@ -222,7 +231,9 @@ nautilus_view_class_init (NautilusViewClass *klass)
   widget_class->size_request = nautilus_view_size_request;
   widget_class->size_allocate = nautilus_view_size_allocate;
 
-  klass->notify_location_change = NULL;
+  klass->servant_init_func = POA_Nautilus_ViewFrame__init;
+  klass->servant_destroy_func = POA_Nautilus_ViewFrame__fini;
+  klass->vepv = &impl_Nautilus_ViewFrame_vepv;
 
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
   klass->view_constructed = nautilus_view_constructed;
