@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-02-20 15:43+0100\n"
-"PO-Revision-Date: 2001-02-20 15:34+01:00\n"
+"POT-Creation-Date: 2001-02-20 15:45+0100\n"
+"PO-Revision-Date: 2001-02-20 15:50+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3161,8 +3161,8 @@ msgstr "Inkluderte nedlastinger"
 #: components/services/summary/nautilus-summary-view.c:811
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
-"unavailable right now, or your computer might be configured "
-"incorrectly.Please contact support@eazel.com."
+"unavailable right now, or your computer might be configured incorrectly. "
+"Please contact support@eazel.com."
 msgstr ""
 "Kunne ikke hente tjenestedata fra Eazels tjener. Tjeneren kan være "
 "utilgjengelig akkurat nå, eller kanskje din datamaskin ikke er riktig "
@@ -3179,30 +3179,21 @@ msgstr ""
 #: components/services/summary/nautilus-summary-view.c:850
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
-"now, or your computer might be configured incorrectly.You could try again "
+"now, or your computer might be configured incorrectly. You could try again "
 "later."
-msgstr ""
-"Kunne ikke koble til Eazels tjener. Tjeneren kan være utilgjengelig akkurat "
-"nå, eller kanskje din datamaskin ikke er riktig konfigurert. Du kan prøve "
-"igjen senere."
+msgstr "Kunne ikke koble til Eazels tjener. Tjeneren kan være utilgjengelig akkurat nå, eller kanskje din datamaskin ikke er riktig konfigurert. Du kan prøve igjen senere."
 
 #: components/services/summary/nautilus-summary-view.c:860
-#, fuzzy
 msgid ""
 "Found a problem with redirect data on Eazel servers. Please contact "
 "support@eazel.com."
-msgstr ""
-"Fant et problem med data på Eazel's tjenere. Vennligst kontakt "
-"support@eazel.com."
+msgstr "Fant et problem med omdirigeringsdata på Eazel's tjenere. Vennligst kontakt support@eazel.com."
 
 #: components/services/summary/nautilus-summary-view.c:871
-#, fuzzy
 msgid ""
 "Information is missing from the redirect data on Eazel servers. Please "
 "contact support@eazel.com."
-msgstr ""
-"Fant et problem med data på Eazel's tjenere. Vennligst kontakt "
-"support@eazel.com."
+msgstr "Manglende informasjon fra omdirigeringsdata på Eazel's tjenere. Vennligst kontakt support@eazel.com."
 
 #: components/services/summary/nautilus-summary-view-ui.xml.h:1
 msgid "Configure your service preferences"
@@ -5192,6 +5183,9 @@ msgid ""
 "Turns on the Medusa daemon, which indexes your hard disk\n"
 "when your computer is idle."
 msgstr ""
+"Slå på raskt søk (indekserer din harddisk)\n"
+"Slår på Medusa daemonen, som indekserer din harddisk når\n"
+"datamaskinen ikke arbeider."
 
 #: libnautilus-extensions/nautilus-global-preferences.c:178
 msgid ""
@@ -5334,9 +5328,8 @@ msgid "Search Complexity Options"
 msgstr "Alternativer for kompleksitet i søk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:695
-#, fuzzy
 msgid "Fast Search"
-msgstr "Søk"
+msgstr "Raskt søk"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:701
 msgid "Search Tradeoffs"
@@ -7039,35 +7032,25 @@ msgstr ""
 #. It is not necessary to translate this text just yet; it has not been
 #. edited yet, and will be replaced by a final copy in a few days.
 #: src/file-manager/fm-search-list-view.c:361
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
-msgstr ""
-"For å utføre et raskt søk, krever \"Find\" en indeks over filene på ditt "
-"system. Din systemadministrator har slått av indeksering og dette medfører "
-"at din maskin ikke har en indeks akkurat nå. Fordi \"Find\" ikke kan bruke "
-"en indeks vil søk kunne ta flere minutter. "
+msgstr "For å utføre et raskt søk, krever \"Find\" en indeks over filene på ditt system. Din systemadministrator har slått av indeksering, så ingen indeks er tilgjengelig."
 
 #: src/file-manager/fm-search-list-view.c:365
-#, fuzzy
 msgid "Fast searches are not available on your computer"
-msgstr "Raskt søk er ikke tilgjengelig"
+msgstr "Raskt søk er ikke tilgjengelig på din datamaskin"
 
 #: src/file-manager/fm-search-list-view.c:374
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Fast search is disabled in your Search preferences, so no index is available."
-msgstr ""
-"For å utføre et innholdssøk krever \"Find\" en indeks over filene på ditt "
-"system. \"Find\" kan ikke aksessere din indeks akkurat nå."
+msgstr "For å utføre et raskt søk krever \"Find\" en indeks over filene på ditt system. \"Raskt søk er slått av i brukervalg for søk, så ingen indeks er tilgjengelig."
 
 #: src/file-manager/fm-search-list-view.c:377
-#, fuzzy
 msgid "Fast searches are not available on your computer."
-msgstr "Raskt søk er ikke tilgjengelig"
+msgstr "Raskt søk er ikke tilgjengelig på din datamaskin."
 
 #: src/file-manager/fm-search-list-view.c:378
 msgid ""
@@ -7075,7 +7058,7 @@ msgid ""
 "Then select Search preferences and put a checkmark in the Enable Fast Search "
 "checkbox. An index will be generated while your computer is idle, so your "
 "index won't be available immediately."
-msgstr ""
+msgstr "For å bruke raske søk, åpne brukervalg-menyen og velg \"Brukervalg\". Velg så brukervalg for søk, og kryss av for \"Bruk raskt søk\". En indeks vil genereres når din datamaskin ikke er i bruk, så indeksen vil ikke være tilgjengelig med én gang."
 
 #: src/file-manager/fm-search-list-view.c:552
 msgid "Where"
