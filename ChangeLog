@@ -1,3 +1,48 @@
+2000-06-23  Darin Adler  <darin@eazel.com>
+
+	Some icon layout fixes.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (map_pixbuf),
+	(draw_label_text_aa), (nautilus_icon_canvas_item_render),
+	(nautilus_icon_canvas_item_event),
+	(nautilus_icon_canvas_item_hit_test_stretch_handles),
+	(nautilus_icon_canvas_item_get_max_text_width):
+	Added comments and FIXMEs and fixed formatting. Removed unused
+	functions and changed all the functions to return values in world
+	coordinates rather than doing some in canvas coordinates.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_gtk_adjustment_set_value): Added a function that clamps
+	to the scroll bar range. The original in Gtk allows scrolling past
+	the end of where the scroll bar does.
+	(scroll): Call the new function. This fixes the "auto-scroll past
+	edge of the screen" problem.
+	(reveal_icon): Use the new function even though it shouldn't matter
+	here.
+	(set_scroll_region): Add some padding on the left and right and
+	fix some of the math. Also use the new function to clamp the value
+	instead of trying to do it by hand here. I think this fixes the
+	dancing icon problem.
+	(get_icon_space_width), (lay_down_one_line), (relayout): Wrote new
+	layout code that works more simply and is closer to the layout we
+	want. This fixes a few bugs, but for now it's only for auto layout
+	-- I still need to fix manual layout.
+	(nautilus_icon_container_update_icon): Made the maximum size for
+	icons take the X and Y scale factors into account too. Now we
+	probably need maximum scale factors, but without this stretching
+	was quite broken.
+	(nautilus_icon_container_start_renaming_selected_item): Simplified
+	some of the renaming code to require a bit less from the canvas
+	item.
+	(nautilus_icon_container_emit_preview_signal): Let booleans be
+	booleans.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Moved nautilus_icon_container_set_anti_aliased_mode into the
+	private header.
+	
 2000-06-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.c,h:

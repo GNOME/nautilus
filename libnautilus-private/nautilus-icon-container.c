@@ -46,7 +46,6 @@
 #include "nautilus-font-factory.h"
 #include "nautilus-lib-self-check-functions.h"
 
-
 #include "nautilus-icon-grid.h"
 #include "nautilus-icon-private.h"
 
@@ -75,6 +74,18 @@
 /* Maximum size (pixels) allowed for icons at the standard zoom level. */
 #define MAXIMUM_IMAGE_SIZE 96
 #define MAXIMUM_EMBLEM_SIZE 48
+
+#define ICON_PAD_LEFT 4
+#define ICON_PAD_RIGHT 4
+#define ICON_BASE_WIDTH 96
+
+#define ICON_PAD_TOP 4
+#define ICON_PAD_BOTTOM 4
+
+#define CONTAINER_PAD_LEFT 4
+#define CONTAINER_PAD_RIGHT 4
+#define CONTAINER_PAD_TOP 4
+#define CONTAINER_PAD_BOTTOM 4
 
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
@@ -126,7 +137,6 @@ static guint signals[LAST_SIGNAL];
 static GdkBitmap *stipple;
 static char stipple_bits[] = { 0x02, 0x01 };
 
-
 /* Functions dealing with NautilusIcons.  */
 
 static void
@@ -152,12 +162,6 @@ icon_set_position (NautilusIcon *icon,
 	icon->y = y;
 }
 
-/* icon_get_size and icon_set_size are used by the stretching user interface,
- * which currently stretches in a way that keeps the aspect ratio. Later we
- * might have a stretching interface that stretches Y separate from X and
- * we will change this around.
- */
-
 static void
 icon_get_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
@@ -173,6 +177,11 @@ icon_get_size (NautilusIconContainer *container,
 	}
 }
 
+/* The icon_set_size function is used by the stretching user
+ * interface, which currently stretches in a way that keeps the aspect
+ * ratio. Later we might have a stretching interface that stretches Y
+ * separate from X and we will change this around.
+ */
 static void
 icon_set_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
@@ -190,9 +199,9 @@ icon_set_size (NautilusIconContainer *container,
 		nautilus_get_icon_size_for_zoom_level
 		(container->details->zoom_level);
 	nautilus_icon_container_move_icon (container, icon,
-					icon->x, icon->y,
-					scale, scale,
-					FALSE);
+					   icon->x, icon->y,
+					   scale, scale,
+					   FALSE);
 }
 
 static void
@@ -265,6 +274,23 @@ icon_get_bounding_box (NautilusIcon *icon,
 
 /* Utility functions for NautilusIconContainer.  */
 
+/* FIXME: Need better name for this. The normal
+ * gtk_adjustment_set_value ignores page size, which disagrees with
+ * the logic used by scroll bars.
+ */
+static void
+nautilus_gtk_adjustment_set_value (GtkAdjustment *adjustment,
+				   gfloat value)
+{
+	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
+	
+	value = CLAMP (value, adjustment->lower, adjustment->upper - adjustment->page_size);
+	if (value != adjustment->value) {
+		adjustment->value = value;
+		gtk_adjustment_value_changed (adjustment);
+	}
+}
+
 static void
 scroll (NautilusIconContainer *container,
 	int delta_x, int delta_y)
@@ -274,8 +300,8 @@ scroll (NautilusIconContainer *container,
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
 
-	gtk_adjustment_set_value (hadj, hadj->value + delta_x);
-	gtk_adjustment_set_value (vadj, vadj->value + delta_y);
+	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
+	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 }
 
 static void
@@ -296,15 +322,15 @@ reveal_icon (NautilusIconContainer *container,
 	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 
 	if (y1 < vadj->value) {
-		gtk_adjustment_set_value (vadj, y1);
+		nautilus_gtk_adjustment_set_value (vadj, y1);
 	} else if (y2 > vadj->value + allocation->height) {
-		gtk_adjustment_set_value (vadj, y2 - allocation->height);
+		nautilus_gtk_adjustment_set_value (vadj, y2 - allocation->height);
 	}
 
 	if (x1 < hadj->value) {
-		gtk_adjustment_set_value (hadj, x1);
+		nautilus_gtk_adjustment_set_value (hadj, x1);
 	} else if (x2 > hadj->value + allocation->width) {
-		gtk_adjustment_set_value (hadj, x2 - allocation->width);
+		nautilus_gtk_adjustment_set_value (hadj, x2 - allocation->width);
 	}
 }
 
@@ -321,8 +347,8 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 
 	g_assert (icon != NULL);
 
-	/* Only reveal the icon if it's still the keyboard focus
-	 * or if it's still selected.
+	/* Only reveal the icon if it's still the keyboard focus or if
+	 * it's still selected.
 	 */
 	/* FIXME bugzilla.eazel.com 612: 
 	 * Need to unschedule this if the user scrolls explicitly.
@@ -379,7 +405,7 @@ clear_keyboard_focus (NautilusIconContainer *container)
 	container->details->keyboard_focus = NULL;
 }
 
-/* Set `icon' as the icon currently selected for keyboard operations. */
+/* Set @icon as the icon currently selected for keyboard operations. */
 static void
 set_keyboard_focus (NautilusIconContainer *container,
 		    NautilusIcon *icon)
@@ -422,6 +448,7 @@ nautilus_gnome_canvas_request_update_all (GnomeCanvas *canvas)
 	nautilus_gnome_canvas_item_request_update_deep (canvas->root);
 }
 
+/* FIXME: Move to nautilus-gnome-extensions.h. */
 /* gnome_canvas_set_scroll_region doesn't do an update, even though it should.
  * The update is in there with an #if 0 around it, with no explanation of
  * why it's commented out. For now, work around this by requesting an update
@@ -454,33 +481,35 @@ set_scroll_region (NautilusIconContainer *container)
 	GtkAllocation *allocation;
 	GtkAdjustment *vadj, *hadj;
 
-	gnome_canvas_item_get_bounds (GNOME_CANVAS (container)->root,
-				      &x1, &y1, &x2, &y2);
+	gnome_canvas_item_get_bounds
+		(GNOME_CANVAS (container)->root,
+		 &x1, &y1, &x2, &y2);
+
+	x1 -= CONTAINER_PAD_LEFT;
+	x2 += CONTAINER_PAD_RIGHT;
+	y1 -= CONTAINER_PAD_TOP;
+	y2 += CONTAINER_PAD_BOTTOM;
 
 	content_width = x2 - x1;
 	content_height = y2 - y1;
 
 	allocation = &GTK_WIDGET (container)->allocation;
 
-	scroll_width = MAX (content_width, allocation->width);
-	scroll_height = MAX (content_height, allocation->height);
+	/* FIXME bugzilla.eazel.com 622: We subtracting one from each
+	 * dimension to avoid having scroll arrows. But where does
+	 * this extra pixel come from?
+	 */
+	scroll_width = MAX (content_width, allocation->width - 1);
+	scroll_height = MAX (content_height, allocation->height - 1);
 
-	/* FIXME bugzilla.eazel.com 622: Why are we subtracting one from each dimension? */
 	nautilus_gnome_canvas_set_scroll_region
 		(GNOME_CANVAS (container),
 		 x1, y1,
-		 x1 + scroll_width - 1,
-		 y1 + scroll_height - 1);
+		 x1 + scroll_width,
+		 y1 + scroll_height);
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
-
-	if (content_width <= allocation->width) {
-		gtk_adjustment_set_value (hadj, x1);
-	}
-	if (content_height <= allocation->height) {
-		gtk_adjustment_set_value (vadj, y1);
-	}
 
 	step_increment = nautilus_get_icon_size_for_zoom_level
 		(container->details->zoom_level) / 4;
@@ -493,6 +522,9 @@ set_scroll_region (NautilusIconContainer *container)
 		vadj->step_increment = step_increment;
 		gtk_adjustment_changed (vadj);
 	}
+
+	nautilus_gtk_adjustment_set_value (hadj, hadj->value);
+	nautilus_gtk_adjustment_set_value (vadj, vadj->value);
 }
 
 static NautilusIconContainer *sort_hack_container;
@@ -536,11 +568,92 @@ auto_position_icon (NautilusIconContainer *container,
 	icon_set_position (icon, position.x, position.y);
 }
 
+/* Given an icon's bounds, compute the width of the space it should be
+ * placed in.
+ */
+static int
+get_icon_space_width (const ArtDRect *bounds)
+{
+	double world_width;
+	int power_of_two_width;
+
+	world_width = ICON_PAD_LEFT + (bounds->x1 - bounds->x0) + ICON_PAD_RIGHT;
+	for (power_of_two_width = ICON_BASE_WIDTH;
+	     power_of_two_width < world_width;
+	     power_of_two_width += power_of_two_width) {
+		g_return_val_if_fail (power_of_two_width >= ICON_BASE_WIDTH, ICON_BASE_WIDTH);
+	}
+	return power_of_two_width;
+}
+
+static void
+lay_down_one_line (NautilusIconContainer *container,
+		   GList *line_start,
+		   GList *line_end,
+		   double *y)
+{
+	GList *p;
+	double max_height_above, max_height_below;
+	NautilusIcon *icon;
+	ArtDRect bounds, icon_bounds;
+	double height_above, height_below, x, width;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (line_end == NULL || g_list_first (line_start) == g_list_first (line_end));
+	g_assert (y != NULL);
+
+	/* Compute the total height above and below the baseline. */
+	max_height_above = 0;
+	max_height_below = 0;
+	for (p = line_start; p != line_end; p = p->next) {
+		icon = p->data;
+
+		nautilus_gnome_canvas_item_get_world_bounds
+			(GNOME_CANVAS_ITEM (icon->item), &bounds);
+		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);
+		height_above = icon_bounds.y1 - bounds.y0;
+		height_below = bounds.y1 - icon_bounds.y1;
+
+		if (height_above > max_height_above) {
+			max_height_above = height_above;
+		}
+		if (height_below > max_height_below) {
+			max_height_below = height_below;
+		}
+	}
+
+	/* Advance to the baseline. */
+	*y += ICON_PAD_TOP + max_height_above;
+
+	/* Lay out the icons along the baseline. */
+	x = 0;
+	for (p = line_start; p != line_end; p = p->next) {
+		icon = p->data;
+
+		nautilus_gnome_canvas_item_get_world_bounds
+			(GNOME_CANVAS_ITEM (icon->item), &bounds);
+		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);		
+		width = get_icon_space_width (&bounds);
+
+		icon_set_position
+			(icon,
+			 x + (width - (icon_bounds.x1 - icon_bounds.x0)) / 2,
+			 *y - (icon_bounds.y1 - icon_bounds.y0));
+
+		x += width;
+	}
+
+	/* Advance to next line. */
+	*y += max_height_below + ICON_PAD_BOTTOM;
+}
+
 static void
 relayout (NautilusIconContainer *container)
 {
-	GList *p;
+	GList *p, *line_start;
 	NautilusIcon *icon;
+	ArtDRect bounds;
+	double canvas_width, line_width, space_width, y;
 
 	if (!container->details->auto_layout) {
 		return;
@@ -554,18 +667,51 @@ relayout (NautilusIconContainer *container)
 	 * same logic would probably apply.
 	 */
 
-	/* Place the icon that must stay put first. */
+	/* Don't do any re-laying-out during stretching. Later we
+	 * might add smart logic that does this and leaves room for
+	 * the stretched icon, but if we do it we want it to be fast
+	 * and only re-lay-out when it's really needed.
+	 */
 	if (container->details->drag_icon != NULL) {
-		nautilus_icon_grid_add (container->details->grid,
-					container->details->drag_icon);
+		return;
 	}
 
-	/* Place all the other icons. */
+	/* Lay out icons a line at a time. */
+	gnome_canvas_c2w (GNOME_CANVAS (container),
+			  GTK_WIDGET (container)->allocation.width, 0,
+			  &canvas_width, NULL);
+	line_width = 0;
+	line_start = container->details->icons;
+	y = 0;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		/* Get the width of the icon. */
+		nautilus_gnome_canvas_item_get_world_bounds
+			(GNOME_CANVAS_ITEM (icon->item), &bounds);
+		space_width = get_icon_space_width (&bounds);
+
+		/* If this icon doesn't fit, lay out the line that's queued up. */
+		if (line_start != p && line_width + space_width > canvas_width) {
+			lay_down_one_line (container, line_start, p, &y);
+			line_width = 0;
+			line_start = p;
+		}
+
+		/* Add this icon. */
+		line_width += space_width;
+	}
+
+	/* Lay down that last line of icons. */
+	if (line_start != NULL) {
+		lay_down_one_line (container, line_start, NULL, &y);
+	}
+
+	/* Add all the icons back into the grid. */
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 
 		if (icon != container->details->drag_icon) {
-			auto_position_icon (container, icon);
 			nautilus_icon_grid_add (container->details->grid, icon);
 		}
 	}
@@ -647,6 +793,7 @@ request_idle (NautilusIconContainer *container)
 }
 
 
+
 /* Container-level icon handling functions.  */
 
 static gboolean
@@ -659,14 +806,13 @@ static gboolean
 select_one_unselect_others (NautilusIconContainer *container,
 			    NautilusIcon *icon_to_select)
 {
-	GList *p;
 	gboolean selection_changed;
+	GList *p;
+	NautilusIcon *icon;
 
 	selection_changed = FALSE;
 	
 	for (p = container->details->icons; p != NULL; p = p->next) {
-		NautilusIcon *icon;
-
 		icon = p->data;
 
 		selection_changed |= icon_set_selected
@@ -726,7 +872,6 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon_raise (icon);
 	}
 }
-
 
 /* Implementation of rubberband selection.  */
 
@@ -1040,13 +1185,13 @@ compare_icons_horizontal_first (NautilusIconContainer *container,
 		return -1;
 	}
 	if (icon_a->x > icon_b->x) {
-		return 1;
+		return +1;
 	}
 	if (icon_a->y < icon_b->y) {
 		return -1;
 	}
 	if (icon_a->y > icon_b->y) {
-		return 1;
+		return +1;
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
 }
@@ -1060,13 +1205,13 @@ compare_icons_vertical_first (NautilusIconContainer *container,
 		return -1;
 	}
 	if (icon_a->y > icon_b->y) {
-		return 1;
+		return +1;
 	}
 	if (icon_a->x < icon_b->x) {
 		return -1;
 	}
 	if (icon_a->x > icon_b->x) {
-		return 1;
+		return +1;
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
 }
@@ -1109,7 +1254,7 @@ compare_with_start_row (NautilusIconContainer *container,
 		return -1;
 	}
 	if (container->details->arrow_key_start > bounds.y1) {
-		return 1;
+		return +1;
 	}
 	return 0;
 }
@@ -1126,7 +1271,7 @@ compare_with_start_column (NautilusIconContainer *container,
 		return -1;
 	}
 	if (container->details->arrow_key_start > bounds.x1) {
-		return 1;
+		return +1;
 	}
 	return 0;
 }
@@ -1469,7 +1614,7 @@ match_best_name (NautilusIconContainer *container,
 	const char *name;
 	int match_length;
 
-	match_state = (BestNameMatch *)data;
+	match_state = (BestNameMatch *) data;
 
 	name = nautilus_icon_canvas_item_get_editable_text (candidate->item);	
 
@@ -1479,12 +1624,13 @@ match_best_name (NautilusIconContainer *container,
 			break;
 		}
 
-		/* expect the matched pattern to already be lowercase */
+		/* Require the match pattern to already be lowercase. */
 		g_assert (tolower (match_state->name[match_length]) 
-			== match_state->name[match_length]);
+			  == match_state->name[match_length]);
 			
-		if (tolower (name[match_length]) != match_state->name[match_length])
+		if (tolower (name[match_length]) != match_state->name[match_length]) {
 			break;
+		}
 	}
 
 	if (match_length > match_state->last_match_length) {
@@ -1522,7 +1668,6 @@ select_matching_name (NautilusIconContainer *container,
 			       NULL,
 			       match_best_name,
 			       &match_state);
-			       
 	if (icon == NULL) {
 		return;
 	}
@@ -1543,11 +1688,13 @@ static int
 compare_icons_by_name (gconstpointer a, gconstpointer b)
 {
 	const NautilusIcon *icon_a, *icon_b;
+
 	icon_a = a;
 	icon_b = b;
 
-	return g_strcasecmp (nautilus_icon_canvas_item_get_editable_text (icon_a->item),
-		nautilus_icon_canvas_item_get_editable_text (icon_b->item));
+	return g_strcasecmp
+		(nautilus_icon_canvas_item_get_editable_text (icon_a->item),
+		 nautilus_icon_canvas_item_get_editable_text (icon_b->item));
 }
 
 static GList *
@@ -1558,7 +1705,7 @@ build_sorted_icon_list (NautilusIconContainer *container)
 	}
 
 	return g_list_sort (nautilus_g_list_copy (container->details->icons), 
-		compare_icons_by_name);
+			    compare_icons_by_name);
 }
 
 static void
@@ -1591,8 +1738,6 @@ select_previous_or_next_name (NautilusIconContainer *container,
 		item = next ? item->next : item->prev;
 	} else if (list != NULL) {
 		/* no selection yet, pick the first or last item to select */
-		g_assert (g_list_first (list) != NULL);
-		g_assert (g_list_last (list) != NULL);
 		item = next ? g_list_first (list) : g_list_last (list);
 	}
 
@@ -2416,6 +2561,9 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
+	/* FIXME: Fonts should be supplied by the caller and not
+	 * hard-wired calls from NautilusIconContainer to font factory.
+	 */
  	/* font table - this isn't exactly proportional, but it looks better than computed */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_from_preferences (8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_from_preferences (8);
@@ -2444,6 +2592,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	container->details->original_text = NULL;
 	container->details->type_select_state = NULL;
 
+	/* FIXME: Settings should be supplied by the caller and not
+	 * hard-wired calls from NautilusIconContainer to preferences.
+	 */
+
 	/* Initialize the single click mode from preferences */
 	mode = nautilus_preferences_get_enum
 		(NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -2458,7 +2610,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	
 	/* Keep track of changes in graphics trade offs */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-					   (NautilusPreferencesCallback) anti_aliased_preferences_changed, 
+					   anti_aliased_preferences_changed, 
 					   container);
 }
 
@@ -2593,8 +2745,9 @@ nautilus_icon_container_new (void)
 	gtk_widget_pop_colormap ();
 
 	canvas = GNOME_CANVAS(new);
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, FALSE))
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, FALSE)) {
 		canvas->aa = TRUE;
+	}
 	
 	return new;
 }
@@ -2700,7 +2853,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
-	guint icon_size_x, icon_size_y, max_image_size;
+	guint icon_size_x, icon_size_y, max_image_size, max_emblem_size;
 	NautilusScalableIcon *scalable_icon;
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
@@ -2731,21 +2884,26 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 &scalable_icon);
 
 	/* compute the maximum size based on the scale factor */
-	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS(container)->pixels_per_unit;
+	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
+	max_emblem_size = MAXIMUM_EMBLEM_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	
 	/* Get the appropriate images for the file. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(scalable_icon,
-		 icon_size_x, icon_size_y,
-		 max_image_size, max_image_size);
+		 icon_size_x,
+		 icon_size_y,
+		 max_image_size * icon->scale_x,
+		 max_image_size * icon->scale_y);
 	nautilus_scalable_icon_unref (scalable_icon);
 	emblem_pixbufs = NULL;
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
-			 icon_size_x, icon_size_y,
-			 MAXIMUM_EMBLEM_SIZE, MAXIMUM_EMBLEM_SIZE);
+			 icon_size_x,
+			 icon_size_y,
+			 max_emblem_size * icon->scale_x,
+			 max_emblem_size * icon->scale_y);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);
@@ -3473,20 +3631,17 @@ nautilus_icon_container_is_renaming (NautilusIconContainer *container)
  * 
  * Displays the edit name widget on the first selected icon
  **/
- 
 void
 nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	ArtIRect text_rect;
 	ArtDRect icon_rect;
 	GdkFont *font;
 	const char *editable_text;
 	int max_text_width;
-	int cx0, cy0, cx1, cy1;
+	int cx0, cx1, cy1;
 	int marginX, marginY;
-	double ppu;
 	
 	/* Check if it already in renaming mode. */
 	details = container->details;
@@ -3500,9 +3655,6 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		return;
 	}
 
-	/* Get location of text item */
-	nautilus_icon_canvas_item_get_text_bounds (icon->item, &text_rect);
-
 	/* Make a copy of the original editable text for a later compare */
 	editable_text = nautilus_icon_canvas_item_get_editable_text (icon->item);
 	details->original_text = g_strdup (editable_text);
@@ -3515,40 +3667,35 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
-	ppu = GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;
-	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (icon->item) * ppu);
+	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (icon->item));
 	nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_rect);
-	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx0, &cy0);
-	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x1, icon_rect.y1, &cx1, &cy1);
+	gnome_canvas_w2c (GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx0, NULL);
+	gnome_canvas_w2c (GNOME_CANVAS(container), icon_rect.x1, icon_rect.y1, &cx1, &cy1);
 
-	cx0 = cx0 + ((cx1 - cx0) - max_text_width) / 2;
-	cy0 = text_rect.y0;
+	cx0 += ((cx1 - cx0) - max_text_width) / 2;
 
-	nautilus_icon_text_item_get_margins(&marginX, &marginY);
-		
-	nautilus_icon_text_item_configure (details->rename_widget, 
-					   cx0 - marginX,	/* x */
-					   cy0 - marginY,	/* y */		
-					   max_text_width + 4, 	/* width */
-					   font,		/* font */
-					   editable_text,	/* text */
-					   1);			/* allocate local copy */
+	nautilus_icon_text_item_get_margins (&marginX, &marginY);
+	nautilus_icon_text_item_configure
+		(details->rename_widget, 
+		 cx0 - marginX,	        /* x */
+		 cy1 - marginY,         /* y */		
+		 max_text_width + 4, 	/* width */
+		 font,		        /* font */
+		 editable_text,	        /* text */
+		 TRUE);		        /* allocate local copy */
 	
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
-			    GTK_SIGNAL_FUNC (editing_started),
-			    container);
+			    GTK_SIGNAL_FUNC (editing_started), container);
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_stopped",
-			    GTK_SIGNAL_FUNC (editing_stopped),
-			    container);
+			    GTK_SIGNAL_FUNC (editing_stopped), container);
 	
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	nautilus_icon_container_update_icon (container, icon);
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;
-	
-	nautilus_icon_canvas_item_set_renaming (icon->item, details->renaming);
+	nautilus_icon_canvas_item_set_renaming (icon->item, TRUE);
 }
 
 static void
@@ -3578,7 +3725,7 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 		}
 	}
 	
-	hide_rename_widget(container, icon);
+	hide_rename_widget (container, icon);
 }
 
 static void
@@ -3594,24 +3741,27 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	
 	/* We are not in renaming mode */
 	container->details->renaming = FALSE;
-	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
+	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);		
 }
 
 /* emit preview signal, called by the canvas item */
-
-int nautilus_icon_container_emit_preview_signal(NautilusIconContainer *icon_container, GnomeCanvasItem *item, gboolean start_flag)
+gboolean
+nautilus_icon_container_emit_preview_signal (NautilusIconContainer *icon_container,
+					     NautilusIcon *icon,
+					     gboolean start_flag)
 {
-	int result;
-	NautilusIcon *icon;
+	gboolean result;
 	
-	icon = NAUTILUS_ICON_CANVAS_ITEM (item)->user_data;
-
-	result = 0;
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container), FALSE);
+	g_return_val_if_fail (icon != NULL, FALSE);
+	g_return_val_if_fail (start_flag == FALSE || start_flag == TRUE, FALSE);
+	
+	result = FALSE;
 	gtk_signal_emit (GTK_OBJECT (icon_container),
-		signals[PREVIEW],
-		icon->data,
-		start_flag,
-		&result);
+			 signals[PREVIEW],
+			 icon->data,
+			 start_flag,
+			 &result);
 	
 	return result;
 }
@@ -3623,8 +3773,6 @@ click_policy_changed_callback (gpointer user_data)
 	NautilusIconContainer *container;
 	int mode;
 
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
-	
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
 	mode = nautilus_preferences_get_enum
@@ -3640,8 +3788,6 @@ anti_aliased_preferences_changed (gpointer user_data)
 	NautilusIconContainer *container;
 	gboolean aa_mode;
 
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
-	
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
 	aa_mode = nautilus_preferences_get_boolean

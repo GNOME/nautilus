@@ -65,7 +65,7 @@ struct NautilusIconCanvasItemDetails {
 	int text_height;
 	
 	/* preview state */
-	int is_active;
+	guint is_active : 1;
 
     	/* Highlight state. */
    	guint is_highlighted_for_selection : 1;
@@ -1008,9 +1008,8 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
-
 static GdkPixbuf *
-map_pixbuf(NautilusIconCanvasItem *icon_item)
+map_pixbuf (NautilusIconCanvasItem *icon_item)
 {
 	GnomeCanvas *canvas;
 	char *audio_filename;
@@ -1022,31 +1021,41 @@ map_pixbuf(NautilusIconCanvasItem *icon_item)
 	if (icon_item->details->is_prelit) {
 		temp_pixbuf = nautilus_create_spotlight_pixbuf (icon_item->details->pixbuf);
 		
+		/* FIXME: This hard-wired image is inappropriate to
+		 * this level of code, which shouldn't know that the
+		 * preview is audio, nor should it have an icon
+		 * hard-wired in.
+		 */
+
 		/* if the icon is currently being previewed, superimpose an image to indicate that */
 		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
-		if (icon_item->details->is_active == 1) {
-			/* load the audio symbol */
+		if (icon_item->details->is_active) {
+			/* Load the audio symbol. */
 			audio_filename = nautilus_pixmap_file ("audio.png");
-			audio_pixbuf = gdk_pixbuf_new_from_file(audio_filename);
+			audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename);
 			
-			/* composite it onto the icon */
-			if (audio_pixbuf) {	
-				gdk_pixbuf_composite (audio_pixbuf,
-			      		temp_pixbuf,
-			      		0, 0,
-			      		gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
-			     		4, 4,
-			      		canvas->pixels_per_unit, canvas->pixels_per_unit,
-			      		GDK_INTERP_BILINEAR, 0xFF);
-
-				gdk_pixbuf_unref(audio_pixbuf);
+			/* Composite it onto the icon. */
+			if (audio_pixbuf != NULL) {
+				gdk_pixbuf_composite
+					(audio_pixbuf,
+					 temp_pixbuf,
+					 0, 0,
+					 gdk_pixbuf_get_width (temp_pixbuf),
+					 gdk_pixbuf_get_height(temp_pixbuf),
+					 4, 4,
+					 canvas->pixels_per_unit,
+					 canvas->pixels_per_unit,
+					 GDK_INTERP_BILINEAR, 0xFF);
+				
+				gdk_pixbuf_unref (audio_pixbuf);
 			}
 			
-			g_free(audio_filename);
+			g_free (audio_filename);
 		}
 	}
 	
-	if (icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop) {
+	if (icon_item->details->is_highlighted_for_selection
+	    || icon_item->details->is_highlighted_for_drop) {
 		old_pixbuf = temp_pixbuf;
 		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
 							       0.8 * 255,
@@ -1126,22 +1135,32 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 		&& icon_item->details->additional_text[0] != '\0';
 
 	/* No font or no text, then do no work. */
-	if (icon_item->details->font == NULL || (!have_editable && !have_additional)) {
+	if (icon_item->details->font == NULL
+	    || (!have_editable && !have_additional)) {
 		icon_item->details->text_height = 0;
 		icon_item->details->text_width = 0;			
 		return;
 	}
 	
-	if (icon_item->details->is_renaming)
+	if (icon_item->details->is_renaming) {
+		/* FIXME: Why is it OK to leave text_height and
+		 * text_width alone in this code path?
+		 */
 		return;
+	}
 		
 	visual = gdk_visual_get_system ();
 
 	/* allocate a pixmap to draw the text into, and clear it to white */
-	pixmap = gdk_pixmap_new (NULL, icon_item->details->text_width, icon_item->details->text_height, visual->depth);
+	pixmap = gdk_pixmap_new
+		(NULL,
+		 icon_item->details->text_width,
+		 icon_item->details->text_height,
+		 visual->depth);
 
 	/* Set up the background. */
-	needs_highlight = icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop;
+	needs_highlight = icon_item->details->is_highlighted_for_selection
+		|| icon_item->details->is_highlighted_for_drop;
 	
 	gc = gdk_gc_new (pixmap);
 	gdk_rgb_gc_set_foreground (gc,
@@ -1154,10 +1173,10 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 			    icon_item->details->text_height);
 	gdk_gc_unref (gc);
 	
-	/* use a common routine to draw the label into the pixmap */
+	/* Use a common routine to draw the label into the pixmap. */
 	draw_label_text (icon_item, pixmap, x_delta, 0);
 	
-	/* turn it into a pixbuf */
+	/* Turn it into a pixbuf. */
 	colormap = gdk_colormap_new (visual, FALSE);
 	text_pixbuf = gdk_pixbuf_get_from_drawable
 		(NULL, pixmap, colormap,
@@ -1168,22 +1187,22 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	gdk_colormap_unref (colormap);
 	gdk_pixmap_unref (pixmap);
 	
-	/* add an alpha channel to the pixbuf */
+	/* Add an alpha channel to the pixbuf. */
 	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
-	if (needs_highlight) {
-		text_pixbuf_with_alpha = text_pixbuf;
-	} else {
+	if (!needs_highlight) {
+		/* When highlighting we use opaque text. */
 		text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
 			(text_pixbuf, TRUE,
 			 pixels[0], pixels[1], pixels[2]);
 		gdk_pixbuf_unref (text_pixbuf);
+		text_pixbuf = text_pixbuf_with_alpha;
 	}
 	
-	/* draw the pixbuf containing the label */
+	/* Draw the pixbuf containing the label. */
 	i2c[4] -= x_delta;
-	draw_pixbuf_aa (text_pixbuf_with_alpha, buf, i2c, 0, 0);
+	draw_pixbuf_aa (text_pixbuf, buf, i2c, 0, 0);
 	i2c[4] += x_delta;
-	gdk_pixbuf_unref (text_pixbuf_with_alpha);
+	gdk_pixbuf_unref (text_pixbuf);
 }
 
 /* draw the item for anti-aliased mode */
@@ -1201,10 +1220,11 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	
 	/* map the pixbuf for selection or other effects */
-	temp_pixbuf = map_pixbuf(icon_item);
+	temp_pixbuf = map_pixbuf (icon_item);
 
-	/* compute the affine transform, but force the scale to 1.0 because the icon factory does
-	   the scaling for us */
+	/* Compute the affine transform, but force the scale to 1.0
+	 * because the icon factory does the scaling for us.
+	 */
 	gnome_canvas_item_i2c_affine (item, i2c);
 	i2c[0] = 1.0;
 	i2c[3] = 1.0;
@@ -1214,12 +1234,12 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		buf->is_bg = FALSE;
 	}
 	
-	
 	/* draw the icon */
 	draw_pixbuf_aa (temp_pixbuf, buf, i2c, 0, 0);
 	
-	if (temp_pixbuf != icon_item->details->pixbuf)
-		gdk_pixbuf_unref(temp_pixbuf);
+	if (temp_pixbuf != icon_item->details->pixbuf) {
+		gdk_pixbuf_unref (temp_pixbuf);
+	}
 
 	/* draw the emblems */
 	get_icon_canvas_rectangle (icon_item, &icon_rect);
@@ -1234,12 +1254,9 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	draw_stretch_handles_aa (icon_item, buf, &icon_rect);
 		
 	/* draw the text */
-
 	i2c[5] += icon_rect.y1 - icon_rect.y0;
 	x_delta = (icon_item->details->text_width - (icon_rect.x1 - icon_rect.x0)) / 2;
 	draw_label_text_aa (icon_item, buf, i2c, x_delta);
-	
-	buf->is_bg = FALSE;
 }
 
 
@@ -1257,19 +1274,40 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
 			gnome_canvas_item_request_update (item);
-		    icon_item->details->is_active = nautilus_icon_container_emit_preview_signal(NAUTILUS_ICON_CONTAINER(item->canvas), item, TRUE);
+			/* FIXME: We should emit our own signal here,
+			 * not one from the container; it could hook
+			 * up to that signal and emit one of its
+			 * own. Doing it this way hard-codes what
+			 * "user_data" is. Also, the two signals
+			 * should be separate. The "unpreview" signal
+			 * does not have a return value.
+			 */
+			icon_item->details->is_active = nautilus_icon_container_emit_preview_signal
+				(NAUTILUS_ICON_CONTAINER (item->canvas),
+				 NAUTILUS_ICON_CANVAS_ITEM (item)->user_data,
+				 TRUE);
 		}
 		return TRUE;
 		
 	case GDK_LEAVE_NOTIFY:
 		if (icon_item->details->is_prelit 
-			|| icon_item->details->is_highlighted_for_drop) {
+		    || icon_item->details->is_highlighted_for_drop) {
 			/* When leaving, turn of the prelight state and the
 			 * higlighted for drop. The latter gets turned on
 			 * by the drag&drop motion callback.
 			 */
-		    
-			nautilus_icon_container_emit_preview_signal(NAUTILUS_ICON_CONTAINER(item->canvas), item, FALSE);			
+			/* FIXME: We should emit our own signal here,
+			 * not one from the containe; it could hook up
+			 * to that signal and emit one of its
+			 * ownr. Doing it this way hard-codes what
+			 * "user_data" is. Also, the two signals
+			 * should be separate. The "unpreview" signal
+			 * does not have a return value.
+			 */
+			nautilus_icon_container_emit_preview_signal
+				(NAUTILUS_ICON_CONTAINER (item->canvas),
+				 NAUTILUS_ICON_CANVAS_ITEM (item)->user_data,
+				 FALSE);			
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
@@ -1293,28 +1331,6 @@ compute_text_rectangle (NautilusIconCanvasItem *item,
 	text_rect->y0 = icon_rect->y1;
 	text_rect->x1 = text_rect->x0 + item->details->text_width;
 	text_rect->y1 = text_rect->y0 + item->details->text_height;
-}
-
-static void
-compute_editable_text_rectangle (NautilusIconCanvasItem *item,
-				 const ArtIRect *icon_rect,
-				 ArtIRect *text_rect)
-{
-	int text_width, text_height;
-
-	g_assert (item->details->editable_text != NULL);
-	
-	/* Get editable text dimensions */
-	text_width = gdk_text_width (item->details->font, item->details->editable_text, 
-				     strlen (item->details->editable_text));
-	text_height = gdk_text_height (item->details->font, item->details->editable_text, 
-				       strlen (item->details->editable_text));
-
-	/* Compute text rectangle. */
-	text_rect->x0 = (icon_rect->x0 + icon_rect->x1) / 2 - text_width / 2;
-	text_rect->y0 = icon_rect->y1;
-	text_rect->x1 = text_rect->x0 + text_width;
-	text_rect->y1 = text_rect->y0 + text_height;
 }
 
 static gboolean
@@ -1574,8 +1590,8 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 }
 
 gboolean
-nautilus_icon_canvas_item_hit_test_stretch_handles  (NautilusIconCanvasItem *item,
-						     const ArtPoint *world_point)
+nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
+						    const ArtPoint *world_point)
 {
 	ArtIRect canvas_rect;
 
@@ -1606,37 +1622,6 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 	return hit_test (item, &canvas_rect);
 }
 
-
-/* Return coordinates of icon text location */
-void
-nautilus_icon_canvas_item_get_text_bounds (NautilusIconCanvasItem *icon_item,
-					   ArtIRect *text_rect)
-{
-	ArtIRect icon_rect;
-
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
-	g_return_if_fail (icon_item->details->editable_text != NULL);
-	g_return_if_fail (text_rect != NULL);
-	
-	get_icon_canvas_rectangle (icon_item, &icon_rect);
-	compute_text_rectangle (icon_item, &icon_rect, text_rect);
-}
-								
-/* Return coordinates of icon editable_text location */
-void
-nautilus_icon_canvas_item_get_editable_text_bounds (NautilusIconCanvasItem *icon_item,
-						    ArtIRect *text_rect)
-{
-	ArtIRect icon_rect;
-
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
-	g_return_if_fail (icon_item->details->editable_text != NULL);
-	g_return_if_fail (text_rect != NULL);
-	
-	get_icon_canvas_rectangle (icon_item, &icon_rect);
-	compute_editable_text_rectangle (icon_item, &icon_rect, text_rect);
-}
-
 const char *
 nautilus_icon_canvas_item_get_editable_text (NautilusIconCanvasItem *icon_item)
 {
@@ -1645,7 +1630,7 @@ nautilus_icon_canvas_item_get_editable_text (NautilusIconCanvasItem *icon_item)
 	return icon_item->details->editable_text;
 }
 
-void 
+void
 nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean state)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
@@ -1659,8 +1644,8 @@ nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean s
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
 
-int 
+double
 nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 {
-	return MAX_TEXT_WIDTH;
+	return MAX_TEXT_WIDTH * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 }

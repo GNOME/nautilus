@@ -193,5 +193,8 @@ void          nautilus_icon_container_update_icon                 (NautilusIconC
 								   NautilusIcon          *icon);
 void          nautilus_icon_container_flush_typeselect_state      (NautilusIconContainer *container);
 gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconContainer *container);
+gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconContainer *view,
+								   NautilusIcon          *icon,
+								   gboolean               start_flag);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */
