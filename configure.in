@@ -158,9 +158,9 @@ dnl = rpmview component support
 dnl ====================================
 
 rpm_libs=
-AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2], 
+AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
 dnl <= Check for bzip2 > 1.0.0
-	AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2])
+  AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2])
 dnl =>
 AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
