@@ -84,51 +84,25 @@ nautilus_view_identifier_copy (const NautilusViewIdentifier *identifier)
 static GSList *
 get_lang_list (void)
 {
-        GSList *retval;
-	const char *tmp;
-        char *lang, *lang_with_locale, *org_pointer;
-        char *equal_char;
+   	GSList *retval;
+	const GList *l;
+	const char *lang;
 
-        retval = NULL;
-
-        tmp = g_getenv ("LANGUAGE");
-
-        if (tmp == NULL) {
-                tmp = g_getenv ("LANG");
-        }
-
-	lang = g_strdup (tmp);
-	org_pointer = lang;
-
-	if (lang != NULL) {
-		/* envs can be in NAME=VALUE form */
-		equal_char = strchr (lang, '=');
-		if (equal_char != NULL) {
-			lang = equal_char + 1;
+	retval = NULL;
+	
+	for (l = gnome_i18n_get_language_list (NULL);
+	     l != NULL;
+	     l = g_list_next (l)) {
+		lang = l->data;
+		/* skip C locale */
+		if (l->data && strcmp (lang, "C") == 0) {
+			continue;
 		}
 		
-		/* lang may be in form LANG_LOCALE */
-		equal_char = strchr (lang, '_');
-		if (equal_char != NULL) {
-			lang_with_locale = g_strdup (lang);
-			*equal_char = 0;
-		} else {
-			lang_with_locale = NULL;
-		}
-
-		/* Make sure we don't give oaf an empty
-		   lang string */
-		if (!eel_str_is_empty (lang_with_locale)) {
-			retval = g_slist_prepend (retval, 
-						  g_strdup (lang_with_locale));
-		}
-		g_free (lang_with_locale);
 		if (!eel_str_is_empty (lang)) {
 			retval = g_slist_prepend (retval, g_strdup (lang));
 		}
-        }
-	g_free (org_pointer);
-        
+	}
         return retval;
 }
 
