@@ -1,3 +1,10 @@
+2001-04-10  John Harper  <jsh@eazel.com>
+
+	* src/nautilus-first-time-druid.c (druid_finished): re-removed
+	the code to immediately add the services link (looks like it
+	was added as a result of Rebecca's checkin of 2001-04-06),
+	since it's done at idle time now
+
 2001-04-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* acconfig.h:

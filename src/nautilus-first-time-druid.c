@@ -208,7 +208,6 @@ static void
 druid_finished (GtkWidget *druid_page)
 {
 	char *user_main_directory;
-	char *desktop_path;
 	const char *signup_uris[3];
 	
 	
@@ -259,12 +258,6 @@ druid_finished (GtkWidget *druid_page)
 		gtk_idle_add (convert_gmc_desktop_icons, NULL);
 	}
 
-	/* Create default services icon on the desktop */
-	desktop_path = nautilus_get_desktop_directory ();
-	nautilus_link_local_create (desktop_path, _("Eazel Services"), "hand.png", 
-				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
-	g_free (desktop_path);
-	
 	/* Arrange to create default services icon on the desktop. Do this
 	 * at idle time for the same reason as when converting gmc icons
 	 */
