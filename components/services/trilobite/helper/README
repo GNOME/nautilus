@@ -1,0 +1,34 @@
+For eazel-helper to work, it must be installed in a well-known
+location, and it needs two config files to be placed in the PAM setup
+directories.  Here are the files I use:
+
+###  /etc/pam.d/eazel-helper  ###
+#%PAM-1.0
+auth       sufficient   /lib/security/pam_rootok.so
+auth       required     /lib/security/pam_pwdb.so
+session    optional     /lib/security/pam_xauth.so
+account    required     /lib/security/pam_permit.so
+
+###  /etc/security/console.apps/eazel-helper ###
+USER=root
+PROGRAM=/root/eazel-helper
+SESSION=true
+FALLBACK=true
+
+
+
+Obviously, PROGRAM in the latter file is where to find the actual
+binary for eazel-helper.  I'm not sure what SESSION and FALLBACK do; I
+just copied them from helix-update.  Likewise the whole pam.d file is
+just a copy from helix-update.  There may be better contents for these
+files than my ham-handed bumbling.
+
+The whole setup requires "userhelper" to be installed in /usr/sbin.
+On Redhat, this is package "usermode-1.20-1".
+
+
+Weirdly, "userhelper" doesn't seem to work remotely.  Not sure what
+the deal is.
+
+
+-- Robey Pointer, 7 july 2000
