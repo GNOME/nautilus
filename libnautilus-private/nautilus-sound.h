@@ -28,8 +28,8 @@
 #include <glib.h>
 #include <sys/wait.h>
 
-gboolean	nautilus_sound_can_play_sound (void);
 void		nautilus_sound_initialize (void);
+gboolean	nautilus_sound_can_play_sound (void);
 void		nautilus_sound_kill_sound (void);
 void		nautilus_sound_register_sound (pid_t sound_process);
 

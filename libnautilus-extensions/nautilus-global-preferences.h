@@ -39,8 +39,6 @@ BEGIN_GNOME_DECLS
 
 /* Keep track of the sound playing process */
 #define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
-/* Does the system have audio output capability */
-#define NAUTILUS_PREFERENCES_HAS_AUDIO_OUT			"preferences/audio_out"
 
 /* Text fields */
 #define NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS                "preferences/use_emacs_shortcuts"

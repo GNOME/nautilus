@@ -1,4 +1,20 @@
 2001-04-05  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 7821, SOLARIS: Nautilus hangs attempted to initialize ESD
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove unused sound init preference.
+	
+	* libnautilus-extensions/nautilus-sound.c:
+	* libnautilus-extensions/nautilus-sound.h:
+	(nautilus_sound_initialize):
+	Remove call to esd_open_audio. It is the wrong call to use and
+	caused problems on Solaris.
+	
+	(nautilus_sound_can_play_sound):
+	Call esd_sound_open to determine if we can handle audio playback.
+		
+2001-04-05  Gene Z. Ragan  <gzr@eazel.com>
 	
 	Fixed bug 7790, Music View silently fails if sound
 	hardware busy or missing

@@ -54,23 +54,8 @@ kill_sound_if_necessary (void)
    into a quiescent state */
 void
 nautilus_sound_initialize (void)
-{
- 	int open_result;
- 	
- 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
- 	
- 	/* Check and see if the system itself can play sound. We do this by attmepting
- 	 * to open esd. Save the result of this as a preference.  This value only
- 	 * means that the system has audio out capabilities and should not be used as
- 	 * a way to check the current audio output state.
- 	 */
-	open_result = esd_audio_open ();
-	if (open_result < 0) {
- 		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT, 0);
-	} else {
-		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT, 1);
-		esd_audio_close ();
-	}
+{ 	
+ 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0); 	
 }
 
 /* if there is a sound registered, kill it, and register the empty sound */
@@ -103,14 +88,21 @@ nautilus_sound_register_sound (pid_t sound_process)
 gboolean
 nautilus_sound_can_play_sound (void)
 {
-	int sound_process;
+	int sound_process, open_result;
 	
 	/* first see if there's already one in progress; if so, return true */
 	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
 	if (sound_process > 0) {
 		return TRUE;
 	}
-	
+		
 	/* Now check and see if system has audio out capabilites */
-	return nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT);
+	open_result = esd_open_sound (NULL);
+	if (open_result == -1) {
+ 		return FALSE;
+	} else {
+		esd_close (open_result);
+		return TRUE;
+	}
 }
+
