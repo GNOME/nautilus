@@ -32,6 +32,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkwindow.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct {
 	int x;
@@ -85,6 +86,11 @@ void       nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas    
  * code. This is for within canvas item code.
  */
 void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
+
+void	   nautilus_gnome_canvas_draw_pixmap			(GnomeCanvasBuf *buf,
+								 GdkPixbuf *pixbuf,
+								 int x,
+								 int y);
 
 /* Fill a canvas buffer with a gradient background. */
 void       nautilus_gnome_canvas_fill_with_gradient             (GnomeCanvasBuf  *buffer,

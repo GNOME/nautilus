@@ -1,3 +1,15 @@
+2000-09-21  Michael Engber  <engber@eazel.com>
+
+	Move nautilus_gnome_canvas_draw_pixmap to nautilus-gnome-extensions 
+	* libnautilus-extensions/nautilus-background.c:
+	(draw_pixbuf_centered_aa), (draw_pixbuf_tiled_aa):
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_draw_pixmap_helper),
+	(nautilus_gnome_canvas_draw_pixmap_helper_alpha),
+	(nautilus_gnome_canvas_draw_pixmap),
+	(nautilus_gnome_canvas_fill_rgb):
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+
 2000-09-21  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:

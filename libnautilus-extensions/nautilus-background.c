@@ -40,11 +40,6 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
-#include <libart_lgpl/art_rgb_affine.h>
-#include <libart_lgpl/art_rgb_rgba_affine.h>
-#include <libart_lgpl/art_svp_vpath.h>
-
-#include <stdio.h>
 
 static void nautilus_background_initialize_class (gpointer            klass);
 static void nautilus_background_initialize       (gpointer            object,
@@ -435,135 +430,6 @@ nautilus_background_draw (NautilusBackground *background,
 }
 
 static void
-nautilus_copy_pixbuf_to_canvasbuf_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
-{
-	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
-	int dst_bytes_per_row = copy_width * 3;
-	
-	while (dst < dst_limit) {
- 		memcpy (dst, src, dst_bytes_per_row);
-		dst += dst_rowstride;
-		src += src_rowstride;
-	}
-}
-
-static void
-nautilus_copy_pixbuf_to_canvasbuf_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
-{
-	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
-	int dst_bytes_per_row = copy_width * 3;
-	
-	while (dst < dst_limit) {
-	
-		art_u8 *dst_p = dst;
-		art_u8 *dst_p_limit = dst + dst_bytes_per_row;
-		
-		const art_u8 *src_p = src;
-		
-		while (dst_p < dst_p_limit) {
-			int alpha = src_p[3];
-			if (alpha) {
-				if (alpha == 255) {
-					dst_p[0] = src_p[0];
-					dst_p[1] = src_p[1];
-					dst_p[2] = src_p[2];
-				} else {
-		  			int tmp;
-					art_u8 bg_r = dst_p[0];
-					art_u8 bg_g = dst_p[1];
-					art_u8 bg_b = dst_p[2];
-
-					tmp = (src_p[0] - bg_r) * alpha;
-					dst_p[0] = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
-					tmp = (src_p[1] - bg_g) * alpha;
-					dst_p[1] = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
-					tmp = (src_p[2] - bg_b) * alpha;
-					dst_p[2] = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);		  
-				}
-			}
-			
-			dst_p += 3;
-			src_p += 4;
-		}
-		
-		dst += dst_rowstride;
-		src += src_rowstride;
-	}
-}
-
-/* Draws a pixbuf into a canvas update buffer (unscaled). The x,y coords are the location
- * of the pixbuf in canvas space (NOT relative to the canvas buffer).
- */
-static void
-nautilus_copy_pixbuf_to_canvasbuf (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x, int y)
-{
-	art_u8 *dst;
-	int pixbuf_width, pixbuf_height;
-
-	/* copy_left/top/right/bottom define the rect of the pixbuf (pixbuf relative)
-	 * we will copy into the canvas buffer
-	 */
-	int copy_left, copy_top, copy_right, copy_bottom;
-	
-	dst = buf->buf;
-
-	pixbuf_width = gdk_pixbuf_get_width (pixbuf);
-	pixbuf_height = gdk_pixbuf_get_height (pixbuf);
-
-	if (x > buf->rect.x0) {
-		copy_left = 0;
-		dst += (x - buf->rect.x0) * 3;
-	} else {
-		copy_left = buf->rect.x0 - x;
-	}
-	
-	if (x + pixbuf_width > buf->rect.x1) {
-		copy_right = buf->rect.x1 - x;
-	} else {
-		copy_right = pixbuf_width;		
-	}
-	
-	if (copy_left >= copy_right) {
-		return;
-	}
-	
-	if (y > buf->rect.y0) {
-		dst += (y - buf->rect.y0) * buf->buf_rowstride;
-		copy_top = 0;
-	} else {
-		copy_top = buf->rect.y0 - y;
-	}
-	
-	if (y + pixbuf_height > buf->rect.y1) {
-		copy_bottom = buf->rect.y1 - y;
-	} else {
-		copy_bottom = pixbuf_height;		
-	}
-
-	if (copy_top >= copy_bottom) {
-		return;
-	}
-
-	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		nautilus_copy_pixbuf_to_canvasbuf_helper_alpha (
-			dst,
-			buf->buf_rowstride,
-			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 4 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
-			gdk_pixbuf_get_rowstride (pixbuf),
-			copy_right - copy_left,
-			copy_bottom - copy_top);
-	} else {
-		nautilus_copy_pixbuf_to_canvasbuf_helper (
-			dst,
-			buf->buf_rowstride,
-			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 3 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
-			gdk_pixbuf_get_rowstride (pixbuf),
-			copy_right - copy_left,
-			copy_bottom - copy_top);
-	}
-}
-
-static void
 draw_pixbuf_centered_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 			 int entire_width, int entire_height)
 {
@@ -577,7 +443,7 @@ draw_pixbuf_centered_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 	image_left = (entire_width - image_width) / 2;
 	image_top = (entire_height - image_height) / 2;
 
-	nautilus_copy_pixbuf_to_canvasbuf (buffer, pixbuf, image_left, image_top);
+	nautilus_gnome_canvas_draw_pixmap (buffer, pixbuf, image_left, image_top);
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -614,7 +480,7 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 			tile_y = blit_y - y;
 			blit_height = MIN (tile_height, end_y - y) - tile_y;
 			
-			nautilus_copy_pixbuf_to_canvasbuf (buffer, pixbuf, x, y);
+			nautilus_gnome_canvas_draw_pixmap (buffer, pixbuf, x, y);
 		}
 	}
 }

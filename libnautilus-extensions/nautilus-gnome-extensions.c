@@ -194,6 +194,155 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 	}
 }
 
+static void
+nautilus_gnome_canvas_draw_pixmap_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+{
+	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
+	int dst_bytes_per_row = copy_width * 3;
+	
+	while (dst < dst_limit) {
+ 		memcpy (dst, src, dst_bytes_per_row);
+		dst += dst_rowstride;
+		src += src_rowstride;
+	}
+}
+
+static void
+nautilus_gnome_canvas_draw_pixmap_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+{
+	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
+	int dst_bytes_per_row = copy_width * 3;
+	
+	while (dst < dst_limit) {
+	
+		art_u8 *dst_p = dst;
+		art_u8 *dst_p_limit = dst + dst_bytes_per_row;
+		
+		const art_u8 *src_p = src;
+		
+		while (dst_p < dst_p_limit) {
+			int alpha = src_p[3];
+			if (alpha) {
+				if (alpha == 255) {
+					dst_p[0] = src_p[0];
+					dst_p[1] = src_p[1];
+					dst_p[2] = src_p[2];
+				} else {
+		  			int tmp;
+					art_u8 bg_r = dst_p[0];
+					art_u8 bg_g = dst_p[1];
+					art_u8 bg_b = dst_p[2];
+
+					tmp = (src_p[0] - bg_r) * alpha;
+					dst_p[0] = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
+					tmp = (src_p[1] - bg_g) * alpha;
+					dst_p[1] = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
+					tmp = (src_p[2] - bg_b) * alpha;
+					dst_p[2] = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);		  
+				}
+			}
+			
+			dst_p += 3;
+			src_p += 4;
+		}
+		
+		dst += dst_rowstride;
+		src += src_rowstride;
+	}
+}
+
+/* Draws a pixbuf into a canvas update buffer (unscaled). The x,y coords are the location
+ * of the pixbuf in canvas space (NOT relative to the canvas buffer).
+ */
+void
+nautilus_gnome_canvas_draw_pixmap (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x, int y)
+{
+	art_u8 *dst;
+	int pixbuf_width, pixbuf_height;
+
+	/* copy_left/top/right/bottom define the rect of the pixbuf (pixbuf relative)
+	 * we will copy into the canvas buffer
+	 */
+	int copy_left, copy_top, copy_right, copy_bottom;
+	
+	dst = buf->buf;
+
+	pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+	pixbuf_height = gdk_pixbuf_get_height (pixbuf);
+
+	if (x > buf->rect.x0) {
+		copy_left = 0;
+		dst += (x - buf->rect.x0) * 3;
+	} else {
+		copy_left = buf->rect.x0 - x;
+	}
+	
+	if (x + pixbuf_width > buf->rect.x1) {
+		copy_right = buf->rect.x1 - x;
+	} else {
+		copy_right = pixbuf_width;		
+	}
+	
+	if (copy_left >= copy_right) {
+		return;
+	}
+	
+	if (y > buf->rect.y0) {
+		dst += (y - buf->rect.y0) * buf->buf_rowstride;
+		copy_top = 0;
+	} else {
+		copy_top = buf->rect.y0 - y;
+	}
+	
+	if (y + pixbuf_height > buf->rect.y1) {
+		copy_bottom = buf->rect.y1 - y;
+	} else {
+		copy_bottom = pixbuf_height;		
+	}
+
+	if (copy_top >= copy_bottom) {
+		return;
+	}
+
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		nautilus_gnome_canvas_draw_pixmap_helper_alpha (
+			dst,
+			buf->buf_rowstride,
+			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 4 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
+			gdk_pixbuf_get_rowstride (pixbuf),
+			copy_right - copy_left,
+			copy_bottom - copy_top);
+	} else {
+		nautilus_gnome_canvas_draw_pixmap_helper (
+			dst,
+			buf->buf_rowstride,
+			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 3 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
+			gdk_pixbuf_get_rowstride (pixbuf),
+			copy_right - copy_left,
+			copy_bottom - copy_top);
+	}
+}
+
+#if 0
+static void
+nautilus_gnome_canvas_fill_rgb (GnomeCanvasBuf *buf, art_u8 r, art_u8 g, art_u8 b)
+{
+	art_u8 *dst = buf->buf;
+	int width = buf->rect.x1 - buf->rect.x0;
+	int height = buf->rect.y1 - buf->rect.y0;
+
+	if (buf->buf_rowstride == width * 3) {
+	 	art_rgb_fill_run (dst, r, g, b, width * height);
+	} else {
+		art_u8 *dst_limit = dst + height * buf->buf_rowstride;
+		while (dst < dst_limit) {
+	 		art_rgb_fill_run (dst, r, g, b, width);
+			dst += buf->buf_rowstride;
+		}
+	}
+}
+#endif
+
 /**
  * nautilus_gnome_canvas_fill_with_gradient, for the anti-aliased canvas:
  * @buffer: canvas buffer to draw into.
