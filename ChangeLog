@@ -1,3 +1,12 @@
+2001-10-09  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-find-icon-image.c:
+	Include libgnomevfs/gnome-vfs-utils.h, needed for
+	gnome_vfs_icon_path_from_filename().
+
+	* libnautilus-private/nautilus-volume-monitor.c (copy_volume):
+	Copy is_read_only.
+
 2001-10-09  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Require newer versions of various libraries to

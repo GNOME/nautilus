@@ -36,6 +36,7 @@
 #include <libgnome/gnome-util.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <string.h>
 
 /* List of suffixes to search when looking for an icon file. */

@@ -1628,6 +1628,7 @@ copy_volume (const NautilusVolume *volume)
 	new_volume->volume_name = g_strdup (volume->volume_name);
 	new_volume->device = volume->device;
 	
+	new_volume->is_read_only = volume->is_read_only;
 	new_volume->is_removable = volume->is_removable;
 	new_volume->is_audio_cd = volume->is_audio_cd;
 
