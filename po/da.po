@@ -16,6 +16,7 @@
 #   location -> placering, sted
 #   permissions -> rettigheder
 #   script -> program, tekstprogram (når distinktion er nødvendig)
+#   selected items -> valgte objekter (da de er udvalgte snarere end markerede)
 #   service -> tjeneste
 #   side bar -> sidepanel (alle andre 'bar' er linjer)
 #   trash -> papirkurven
@@ -24,8 +25,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
-"PO-Revision-Date: 2004-01-10 16:35+0100\n"
+"POT-Creation-Date: 2004-02-01 21:51+0100\n"
+"PO-Revision-Date: 2004-02-01 21:51+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -260,7 +261,7 @@ msgid "Software"
 msgstr "Programmel"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -269,7 +270,7 @@ msgid_plural ""
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
 "<b>Billedtype:</b> %s (%s)\n"
-"<b>Opløsning:</b> %dx%d punkter\n"
+"<b>Opløsning:</b> %dx%d punkt\n"
 msgstr[1] ""
 "<b>Billedtype:</b> %s (%s)\n"
 "<b>Opløsning:</b> %dx%d punkter\n"
@@ -1000,105 +1001,97 @@ msgstr "Navn"
 
 #: libnautilus-extension/nautilus-column.c:176
 msgid "Name of the column"
-msgstr ""
+msgstr "Navn på kolonnen"
 
 #: libnautilus-extension/nautilus-column.c:182
 msgid "Attribute"
-msgstr ""
+msgstr "Egenskab"
 
 #: libnautilus-extension/nautilus-column.c:183
 msgid "The attribute name to display"
-msgstr ""
+msgstr "Den egenskab der skal vises"
 
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
 #: libnautilus-extension/nautilus-property-page.c:183
-#, fuzzy
 msgid "Label"
-msgstr "Eazel"
+msgstr "Etiket"
 
 #: libnautilus-extension/nautilus-column.c:190
 msgid "Label to display in the column"
-msgstr ""
+msgstr "Etiket som skal vises i kolonnen"
 
 #: libnautilus-extension/nautilus-column.c:196
 msgid "Description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: libnautilus-extension/nautilus-column.c:197
 msgid "A user-visible description of the column"
-msgstr ""
+msgstr "En bruger-synlig beskrivelse af kolonnen"
 
 #: libnautilus-extension/nautilus-column.c:204
-#, fuzzy
 msgid "xalign"
-msgstr "henvisning"
+msgstr "x-justering"
 
 #: libnautilus-extension/nautilus-column.c:205
 msgid "The x-alignment of the column"
-msgstr ""
+msgstr "Den vandrette justering af kolonnen"
 
 #: libnautilus-extension/nautilus-menu-item.c:207
-#, fuzzy
 msgid "Name of the item"
-msgstr "Gendan rettelsen"
+msgstr "Navn på punktet"
 
 #: libnautilus-extension/nautilus-menu-item.c:214
 msgid "Label to display to the user"
-msgstr ""
+msgstr "Etiket som skal vises til brugeren"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr ""
+msgstr "Tip"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
-msgstr ""
+msgstr "Værktøjstip for menupunktet"
 
 #: libnautilus-extension/nautilus-menu-item.c:227
-#, fuzzy
 msgid "Icon"
-msgstr "Ikoner"
+msgstr "Ikon"
 
 #: libnautilus-extension/nautilus-menu-item.c:228
 msgid "Name of the icon to display in the menu item"
-msgstr ""
+msgstr "Navn på ikonet som skal vises i menupunktet"
 
 #: libnautilus-extension/nautilus-menu-item.c:235
 msgid "Sensitive"
-msgstr ""
+msgstr "Følsom"
 
 #: libnautilus-extension/nautilus-menu-item.c:236
 msgid "Whether the menu item is sensitive"
-msgstr ""
+msgstr "Om menupunktet er følsomt"
 
 #: libnautilus-extension/nautilus-menu-item.c:242
-#, fuzzy
 msgid "Priority"
-msgstr "Udskriv"
+msgstr "Prioritet"
 
 #: libnautilus-extension/nautilus-menu-item.c:243
-#, fuzzy
 msgid "Show priority text in toolbars"
-msgstr "Vis t_ekst i ikoner:"
+msgstr "Vis prioriteret tekst i værktøjslinjer"
 
 #: libnautilus-extension/nautilus-property-page.c:177
 msgid "Name of the page"
-msgstr ""
+msgstr "Navn på siden"
 
 #: libnautilus-extension/nautilus-property-page.c:184
 msgid "Label widget to display in the notebook tab"
-msgstr ""
+msgstr "Etiketkontrol som skal vises i notesbogfane"
 
 #: libnautilus-extension/nautilus-property-page.c:190
-#, fuzzy
 msgid "Page"
-msgstr "Pakke"
+msgstr "Side"
 
 #: libnautilus-extension/nautilus-property-page.c:191
-#, fuzzy
 msgid "Widget for the property page"
-msgstr "Bredde af sidepanelet"
+msgstr "Kontrol for egenskabssiden"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1171,14 +1164,12 @@ msgid "Default Side Pane Background Filename"
 msgstr "Forvalgt sidepanelsbaggrundsfilnavn"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default column order in the list view"
-msgstr "Forvalgt zoomniveuaet for listevisningen."
+msgstr "Forvalgt kolonneorden for listevisningen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default column order in the list view."
-msgstr "Forvalgt zoomniveuaet for listevisningen."
+msgstr "Forvalgt kolonneorden for listevisningen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
@@ -1189,14 +1180,12 @@ msgid "Default icon zoom level"
 msgstr "Forvalgt ikonzoomniveau"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default list of columns visible in the list view"
-msgstr "Forvalgt zoomniveuaet for listevisningen."
+msgstr "Forvalgt liste af synlige kolonner for listevisningen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Default list of columns visible in the list view."
-msgstr "Forvalgt zoomniveuaet for listevisningen."
+msgstr "Forvalgt liste af synlige kolonner for listevisningen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
@@ -1208,11 +1197,11 @@ msgstr "Forvalgt sorteringsorden"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default zoom level used by the icon view."
-msgstr "Forvalgt zoomniveuaet for ikonvisningen."
+msgstr "Forvalgt zoomniveauet for ikonvisningen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
-msgstr "Forvalgt zoomniveuaet for listevisningen."
+msgstr "Forvalgt zoomniveauet for listevisningen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid "Desktop font"
@@ -1823,9 +1812,8 @@ msgid "Xenix Volume"
 msgstr "Xenix-arkiv"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
-#, fuzzy
 msgid "The name and icon of the file."
-msgstr "Destinationen og kilden er den samme fil."
+msgstr "Navnet og ikonet for filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
 #: src/file-manager/fm-search-list-view.c:519
@@ -1834,7 +1822,7 @@ msgstr "Størrelse"
 
 #: libnautilus-private/nautilus-column-utilities.c:51
 msgid "The size of the file."
-msgstr ""
+msgstr "Størrelsen af filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
 #: src/file-manager/fm-search-list-view.c:525
@@ -1842,9 +1830,8 @@ msgid "Type"
 msgstr "Type"
 
 #: libnautilus-private/nautilus-column-utilities.c:59
-#, fuzzy
 msgid "The type of the file."
-msgstr " tekstfil"
+msgstr "Typen af filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
 #: src/file-manager/fm-search-list-view.c:531
@@ -1852,38 +1839,32 @@ msgid "Date Modified"
 msgstr "Dato for ændring"
 
 #: libnautilus-private/nautilus-column-utilities.c:66
-#, fuzzy
 msgid "The date the file was modified."
-msgstr "Forsøget på at logge ind mislykkedes."
+msgstr "Den dato hvor filen sidst blev ændret."
 
 #: libnautilus-private/nautilus-column-utilities.c:73
-#, fuzzy
 msgid "Date Accessed"
-msgstr "dato for adgang"
+msgstr "Dato for tilgang"
 
 #: libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr ""
+msgstr "Den dato hvor filen sidst blev tilgået."
 
 #: libnautilus-private/nautilus-column-utilities.c:81
-#, fuzzy
 msgid "Owner"
-msgstr "Ejer:"
+msgstr "Ejer"
 
 #: libnautilus-private/nautilus-column-utilities.c:82
-#, fuzzy
 msgid "The owner of the file."
-msgstr "Ejeren kunne ikke ændres."
+msgstr "Ejeren af filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:89
-#, fuzzy
 msgid "Group"
 msgstr "Gruppe"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
-#, fuzzy
 msgid "The group of the file."
-msgstr "Gruppen kunne ikke ændres."
+msgstr "Ejergruppen for filen"
 
 #: libnautilus-private/nautilus-column-utilities.c:97
 #: src/file-manager/fm-properties-window.c:2865
@@ -1891,29 +1872,24 @@ msgid "Permissions"
 msgstr "Rettigheder"
 
 #: libnautilus-private/nautilus-column-utilities.c:98
-#, fuzzy
 msgid "The permissions of the file."
-msgstr "Rettighederne kunne ikke ændres."
+msgstr "Rettighederne for filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:105
-#, fuzzy
 msgid "Octal Permissions"
-msgstr "oktale rettigheder"
+msgstr "Oktale rettigheder"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
-#, fuzzy
 msgid "The permissions of the file, in octal notation."
-msgstr "Rettighederne for den valgte fil kunne ikke bestemmes."
+msgstr "Rettighederne for den filen i oktal notation."
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
 msgstr "MIME-type"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
-#, fuzzy
 msgid "The mime type of the file."
-msgstr " tekstfil"
+msgstr "MIME-typen af filen."
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -2295,6 +2271,10 @@ msgid "Replace _All"
 msgstr "Erstat _alle"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2349,6 +2329,9 @@ msgid " (another copy)"
 msgstr " (ny kopi)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2384,6 +2367,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (ny kopi)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2513,9 +2499,8 @@ msgid "You cannot copy items into the trash."
 msgstr "Du kan ikke kopiere objekter til papirkurven."
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "Du kan ikke kopiere objekter til papirkurven."
+msgstr "Du kan ikke oprette henvisninger inde i papirkurven."
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
@@ -2837,17 +2822,17 @@ msgstr[0] "%u objekt"
 msgstr[1] "%u objekter"
 
 #: libnautilus-private/nautilus-file.c:4266
-#, fuzzy, c-format
+#, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
-msgstr[0] "%u mapper"
+msgstr[0] "%u mappe"
 msgstr[1] "%u mapper"
 
 #: libnautilus-private/nautilus-file.c:4267
-#, fuzzy, c-format
+#, c-format
 msgid "%u file"
 msgid_plural "%u files"
-msgstr[0] "%u filer"
+msgstr[0] "%u fil"
 msgstr[1] "%u filer"
 
 #. This means no contents at all were readable
@@ -4137,21 +4122,21 @@ msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
 #: src/file-manager/fm-directory-view.c:536
-#, fuzzy, c-format
+#, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
-msgstr[0] "Åbn %d nye vinduer?"
-msgstr[1] "Åbn %d nye vinduer?"
+msgstr[0] "Åbn %d vindue?"
+msgstr[1] "Åbn %d vinduer?"
 
 #: src/file-manager/fm-directory-view.c:537
 msgid "Are you sure you want to open all files?"
 msgstr "Er du sikker på at du ønsker at åbne alle filer?"
 
 #: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] "Dette vil åbne %d separate vinduer."
+msgstr[0] "Dette vil åbne %d separat vindue."
 msgstr[1] "Dette vil åbne %d separate vinduer."
 
 #: src/file-manager/fm-directory-view.c:885
@@ -4160,16 +4145,15 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Er du sikker på at du en gang for alle ønsker at slette \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] ""
-"Er du sikker på at du en gang for alle ønsker at slette de %d markerede "
-"elementer?"
+"Er du sikker på at du en gang for alle ønsker at slette %d valgt objekt?"
 msgstr[1] ""
-"Er du sikker på at du en gang for alle ønsker at slette de %d markerede "
-"elementer?"
+"Er du sikker på at du en gang for alle ønsker at slette de %d valgte "
+"objekter?"
 
 #: src/file-manager/fm-directory-view.c:897
 msgid "If you delete an item, it is permanently lost."
@@ -4190,49 +4174,49 @@ msgstr "_Mønster:"
 #: src/file-manager/fm-directory-view.c:1738
 #, c-format
 msgid "\"%s\" selected"
-msgstr "\"%s\" markeret"
+msgstr "\"%s\" valgt"
 
 #: src/file-manager/fm-directory-view.c:1740
-#, fuzzy, c-format
+#, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "%d mapper markeret"
-msgstr[1] "%d mapper markeret"
+msgstr[0] "%d mappe valgt"
+msgstr[1] "%d mapper valgt"
 
 #: src/file-manager/fm-directory-view.c:1750
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
-msgstr[0] " (med %d objekter)"
+msgstr[0] " (med %d objekt)"
 msgstr[1] " (med %d objekter)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1761
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
-msgstr[0] " (med et totalt antal af %d objekter)"
+msgstr[0] " (med et totalt antal af %d objekt)"
 msgstr[1] " (med et totalt antal af %d objekter)"
 
 #: src/file-manager/fm-directory-view.c:1777
 #, c-format
 msgid "\"%s\" selected (%s)"
-msgstr "\"%s\" markeret (%s)"
+msgstr "\"%s\" valgt (%s)"
 
 #: src/file-manager/fm-directory-view.c:1781
-#, fuzzy, c-format
+#, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
-msgstr[0] "%d objekter markeret (%s)"
-msgstr[1] "%d objekter markeret (%s)"
+msgstr[0] "%d objekt valgt (%s)"
+msgstr[1] "%d objekter valgt (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1789
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
-msgstr[0] "%d andre objekter markeret (%s)"
-msgstr[1] "%d andre objekter markeret (%s)"
+msgstr[0] "%d andet objekt valgt (%s)"
+msgstr[1] "%d andre objekter valgt (%s)"
 
 #: src/file-manager/fm-directory-view.c:1810
 #, c-format
@@ -4301,7 +4285,7 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Er du sikker på at du vil slette \"%s\" permanent fra papirkurven?"
 
 #: src/file-manager/fm-directory-view.c:3286
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
@@ -4309,8 +4293,7 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr[0] ""
-"Er du sikker på at du vil slette de %d valgte objekter fra papirkurven "
-"permanent?"
+"Er du sikker på at du vil slette %d valgt objekt fra papirkurven permanent?"
 msgstr[1] ""
 "Er du sikker på at du vil slette de %d valgte objekter fra papirkurven "
 "permanent?"
@@ -4326,7 +4309,7 @@ msgstr "Slet fra papirkurven?"
 #: src/file-manager/fm-directory-view.c:3659
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "Brug \"%s\" til at åbne det markerede objekt"
+msgstr "Brug \"%s\" til at åbne det valgte objekt"
 
 #: src/file-manager/fm-directory-view.c:3723
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
@@ -4340,7 +4323,7 @@ msgstr "Et _program..."
 #: src/file-manager/fm-directory-view.c:4074
 #, c-format
 msgid "Run \"%s\" on any selected items"
-msgstr "Benyt \"%s\" til de markerede filer"
+msgstr "Benyt \"%s\" til de valgte filer"
 
 #: src/file-manager/fm-directory-view.c:4308
 #, c-format
@@ -4356,8 +4339,8 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-" Valg af et program fra menuen vil køre programmet med alle de markerede "
-"elementer som inddata."
+"Valg af et program fra menuen vil køre programmet med alle de valgte "
+"objekter som inddata."
 
 #: src/file-manager/fm-directory-view.c:4496
 msgid "About Scripts"
@@ -4417,29 +4400,27 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
 
 #: src/file-manager/fm-directory-view.c:4638
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr[0] ""
-"De %d markerede filer vil blive flyttet hvis du vælger kommandoen 'indsæt "
-"filer'"
+"%d valgt objekt vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
 msgstr[1] ""
-"De %d markerede filer vil blive flyttet hvis du vælger kommandoen 'indsæt "
+"De %d valgte objekter vil blive flyttet hvis du vælger kommandoen 'indsæt "
 "filer'"
 
 #: src/file-manager/fm-directory-view.c:4645
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr[0] ""
-"De %d markerede filer vil blive kopieret hvis du vælger kommandoen 'indsæt "
-"filer'"
+"%d valgt objekt vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
 msgstr[1] ""
-"De %d markerede filer vil blive kopieret hvis du vælger kommandoen 'indsæt "
+"De %d valgte objekter vil blive kopieret hvis du vælger kommandoen 'indsæt "
 "filer'"
 
 #: src/file-manager/fm-directory-view.c:4727
@@ -4472,11 +4453,11 @@ msgstr "_Afmontér arkiv"
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:5197
 #: src/file-manager/fm-tree-view.c:958
-#, fuzzy, c-format
+#, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Åbn i nyt vindue"
-msgstr[1] "Åbn i nyt vindue"
+msgstr[1] "Åbn i %d nye vinduer"
 
 #: src/file-manager/fm-directory-view.c:5204
 msgid "Browse Folder"
@@ -4543,7 +4524,6 @@ msgid "_Copy Files"
 msgstr "_Kopiér filer"
 
 #: src/file-manager/fm-directory-view.c:5579
-#, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Henvisningen er ødelagt. Ønsker du at flytte den til papirkurven?"
 
@@ -4830,14 +4810,11 @@ msgstr "Filnavn"
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
 msgid "%s Visible Columns"
-msgstr ""
+msgstr "%s synlige kolonner"
 
 #: src/file-manager/fm-list-view.c:1531
-#, fuzzy
 msgid "Choose the order of information to appear in this folder."
-msgstr ""
-"Vælg rækkefølgen af oplysninger der vises under ikonnavnene. Yderligere "
-"oplysninger dukker op når du zoomer ind."
+msgstr "Vælg rækkefølgen af oplysninger der vises i denne mappe."
 
 #: src/file-manager/fm-properties-window.c:477
 msgid "You can't assign more than one custom icon at a time!"
@@ -4916,11 +4893,11 @@ msgid "unreadable"
 msgstr "ulæseligt"
 
 #: src/file-manager/fm-properties-window.c:1759
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "1 element med størrelsen %s"
-msgstr[1] "1 element med størrelsen %s"
+msgstr[0] "%d element, med størrelsen %s"
+msgstr[1] "%d elementer, i alt %s"
 
 #: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
@@ -5141,47 +5118,38 @@ msgid "Search Service Not Available"
 msgstr "Søgetjeneste ikke tilgængelig"
 
 #: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now."
 msgstr ""
 "Den søgning du har valgt, er nyere end indekset på dit system. Søgningen vil "
-"ikke give noget resultat nu. Du kan oprette et nyt indeks ved at køre "
-"'medusa-indexd' som root ved kommandolinjen."
+"ikke give noget resultat nu."
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
 msgid ""
 "You can create a new index by running \"medusa-indexd\" as root on the "
 "command line."
 msgstr ""
-"Søgningen kan ikke åbne dit filsystemsindeks. Indekset mangler måske eller "
-"er beskadiget. Du kan oprette et indeks manuelt ved at køre \"medusa-indexd"
-"\" som root fra kommandolinjen."
+"Du kan oprette et nyt indeks ved at køre \"medusa-indexd\" som administrator "
+"fra kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:197
 msgid "Search For Items That Are Too New"
 msgstr "Søgning efter filer som er for nye"
 
 #: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
 msgid "Every indexed file on your computer matches the criteria you selected. "
 msgstr ""
-"Alle indekserede filer på din maskine passer på det kriterium, du har valgt. "
-"Du kan tjekke stavemåden for dine valg, eller tilføje flere kriterier for at "
-"indsnævre resultaterne."
+"Alle indekserede filer på din maskine passer på det kriterium, du har valgt."
 
 #: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
 msgid ""
 "You can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
-"Alle indekserede filer på din maskine passer på det kriterium, du har valgt. "
-"Du kan tjekke stavemåden for dine valg, eller tilføje flere kriterier for at "
-"indsnævre resultaterne."
+"Prøv at kontrollere stavningen af dine valg eller tilføje flere kriterier "
+"for at indsnævre resultatet."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
@@ -5191,50 +5159,40 @@ msgstr "Fejl under søgning"
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt."
 msgstr ""
 "Søgningen kan ikke åbne dit filsystemsindeks. Indekset mangler måske eller "
-"er beskadiget. Du kan oprette et indeks manuelt ved at køre \"medusa-indexd"
-"\" som root fra kommandolinjen."
+"er beskadiget."
 
 #: src/file-manager/fm-search-list-view.c:215
 msgid "Error Reading File Index"
 msgstr "Fejl ved læsning af filindeks"
 
 #: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
 msgid "An error occurred while loading this search's contents."
-msgstr "En fejl skete ved indlæsning af indholdet i denne søgning: %s"
+msgstr "En fejl opstod ved indlæsning af indholdet i denne søgning."
 
 #: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system."
 msgstr ""
-"For at søge efter indhold kræves et indeks over filerne på systemet. Der kan "
-"i øjeblikket ikke opnås adgang til indekset."
+"For at foretage en hurtig søgning kræves et indeks over filerne på systemet."
 
 #: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the files on your system."
-msgstr ""
-"For at søge efter indhold kræves et indeks over filerne på systemet. Der kan "
-"i øjeblikket ikke opnås adgang til indekset."
+msgstr "For at søge efter indhold kræves et indeks over filerne på systemet."
 
 # sætningen er i passiv for at undgå at blande Find ind i det
 #: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
 msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
-"For at kunne lave hurtige søgninger kræves et indeks over filerne på "
-"systemet. Der kan ikke opnås adgang til dit indeks lige nu så en langsommere "
-"søgning der ikke benytter indekset, vil blive udført."
+"Der kan ikke opnås adgang til dit indeks lige nu så en langsommere søgning "
+"der ikke benytter indekset, vil blive udført."
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
@@ -5265,23 +5223,20 @@ msgstr ""
 "medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index."
 msgstr ""
-"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
-"systemet. Maskinen er i øjeblikket ved at lave det. Fordi indekset så ikke "
-"kan bruges, kan søgningen tage flere minutter."
+"For at foretage en hurtig søgning kræves et indeks over filerne på systemet. "
+"Maskinen er i øjeblikket ved at lave dette indeks."
 
 #: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index."
 msgstr ""
-"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
-"på systemet. Et indeks kan ikke laves lige nu."
+"For at søge efter indhold kræves et indeks over filerne på systemet. "
+"Maskinen er i øjeblikket ved at lave dette indeks."
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
@@ -5299,46 +5254,40 @@ msgid "Indexed Searches Are Not Available"
 msgstr "Indekserede søgninger er ikke tilgængelige"
 
 #: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
 msgstr ""
-"For at søge efter indhold kræves et indeks over filerne på systemet. Der kan "
-"i øjeblikket ikke opnås adgang til indekset."
+"For at foretage en hurtig søgning kræves et indeks over filerne på systemet. "
+"Intet indeks er tilgængelig i øjeblikket."
 
 #: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
 msgstr ""
-"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
-"på systemet. Et indeks kan ikke laves lige nu."
+"For at søge efter indhold kræves et indeks over filerne på systemet. Intet "
+"indeks er tilgængelig i øjeblikket."
 
 #: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
 msgstr ""
-"For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
-"systemet. Intet indeks er tilgængeligt i øjeblikket. Du kan oprette ét ved "
-"at køre \"medusa-indexd\" som root ved kommandolinjen. Når et indeks ikke er "
-"til stede, kan søgninger tage flere minutter."
+"Du kan oprette et indeks ved at køre \"medusa-indexd\" som administrator ved "
+"kommandolinjen. Sålænge et indeks ikke er til stede, kan søgninger tage "
+"flere minutter."
 
 #: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
 msgstr ""
-"For at kunne foretage en søgning efter indhold kræves et indeks over filerne "
-"på systemet. Intet indeks er i øjeblikket tilgængeligt. Du kan oprette ét "
-"ved at køre \"medusa-indexd\" som root ved kommandolinjen. Før et komplet "
-"indeks er oprettet, kan du ikke foretage søgninger efter indhold."
+"Du kan oprette et indeks ved at køre \"medusa-indexd\" som administrator ved "
+"kommandolinjen. Før et komplet indeks er oprettet, kan du ikke foretage "
+"søgninger efter indhold."
 
 #: src/file-manager/fm-search-list-view.c:329
 msgid "Fast searches are not enabled on your computer."
@@ -5370,11 +5319,11 @@ msgstr "Hvor"
 #.
 #: src/file-manager/fm-search-list-view.c:567
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
+#, c-format
 msgid "_Reveal in New Window"
 msgid_plural "Reveal in %d _New Windows"
-msgstr[0] "_Vis i et nyt vindue"
-msgstr[1] "_Vis i et nyt vindue"
+msgstr[0] "Vis i _nyt vindue"
+msgstr[1] "Vis i %d _nye vinduer"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -5418,14 +5367,12 @@ msgid "Copy Folder"
 msgstr "Kopiér mappe"
 
 #: src/file-manager/fm-tree-view.c:1015
-#, fuzzy
 msgid "Paste Files into Folder"
-msgstr "_Indsæt filer i mappe"
+msgstr "Indsæt filer i mappe"
 
 #: src/file-manager/fm-tree-view.c:1033
-#, fuzzy
 msgid "Move to Trash"
-msgstr "Sm_id i papirkurv"
+msgstr "Flyt til papirkurv"
 
 #: src/file-manager/fm-tree-view.c:1086
 msgid "Filesystem"
@@ -5490,18 +5437,16 @@ msgid "Choose another application with which to open the selected item"
 msgstr "Vælg et andet program som du vil bruge til at åbne det valgte objekt"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
-#, fuzzy
 msgid "Create _Document"
-msgstr "Opret _mappe"
+msgstr "Opret _dokument"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Folder"
 msgstr "Opret _mappe"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
-#, fuzzy
 msgid "Create a new empty file inside this folder"
-msgstr "Opret en ny tom mappe i denne mappe"
+msgstr "Opret en ny tom fil i denne mappe"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Create a new empty folder inside this folder"
@@ -5509,7 +5454,7 @@ msgstr "Opret en ny tom mappe i denne mappe"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Create a symbolic link for each selected item"
-msgstr "Opret en symbolsk henvisning for hver markeret element"
+msgstr "Opret en symbolsk henvisning for hver valgt objekt"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "D_uplicate"
@@ -5517,11 +5462,11 @@ msgstr "D_uplikér"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "Slet alle markerede elementer uden at flytte dem til papirkurven."
+msgstr "Slet alle valgte objekter uden at flytte dem til papirkurven."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Duplicate each selected item"
-msgstr "Duplikér alle markerede elementer"
+msgstr "Duplikér alle valgte objekter"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Edit Launcher"
@@ -5547,7 +5492,7 @@ msgstr "Montér det valgte arkiv"
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
-"Flyt eller kopiér filer som tidligere var markeret af en 'klip filer'- eller "
+"Flyt eller kopiér filer som tidligere var udvalgt med en 'klip filer'- eller "
 "'kopiér filer'-kommando"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
@@ -5555,8 +5500,8 @@ msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
 msgstr ""
-"Flyt eller kopiér filer som tidligere var markeret af en 'klip filer'- eller "
-"'kopiér filer'-kommando, ind i den markerede mappe"
+"Flyt eller kopiér filer som tidligere var udvalgt med en 'klip filer'- eller "
+"'kopiér filer'-kommando, ind i den valgte mappe"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
@@ -5576,18 +5521,17 @@ msgstr "Åbn i navigationsvindue"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Open the selected item in this window"
-msgstr "Åbn det markerede element i dette vindue"
+msgstr "Åbn det valgte objekt i dette vindue"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
-"Forbered de markerede filer til at blive kopieret med en 'indsæt filer'-"
-"kommando"
+"Forbered de valgte filer til at blive kopieret med en 'indsæt filer'-kommando"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
-"Forbered de markerede filer til at blive flyttet med en indsæt filer-kommando"
+"Forbered de valgte filer til at blive flyttet med en 'indsæt filer'-kommando"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prot_ect"
@@ -5599,7 +5543,7 @@ msgstr "Beskyt det valgte arkiv"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Rename selected item"
-msgstr "Omdøb det markerede element"
+msgstr "Omdøb det valgte objekt"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Reset View to _Defaults"
@@ -5608,8 +5552,8 @@ msgstr "Nulstil visning til _forvalg"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
-"Nulstil sorteringsordnen og zoomniveauet til at passe med det foretrukne for "
-"denne visning"
+"Nulstil sorteringsrækkefølgen og zoomniveauet til at passe med det "
+"foretrukne for denne visning"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Run or manage scripts from ~/Nautilus/scripts"
@@ -5649,12 +5593,11 @@ msgstr "Benyt standardbaggrunden for dette sted"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "View or modify the properties of each selected item"
-msgstr "Vis eller ændr egenskaberne for hver af de markerede elementer"
+msgstr "Vis eller ændr egenskaberne for hver af de valgte objekter"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
-#, fuzzy
 msgid "_Empty File"
-msgstr "_Kopiér fil"
+msgstr "_Tom fil"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Format"
@@ -5777,9 +5720,9 @@ msgid "Indexing is %d%% complete."
 msgstr "Indeksering er %d%% færdig."
 
 #: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
+#, c-format
 msgid "Your files were last indexed at %s."
-msgstr "Dine filer blev sidst indekseret %s"
+msgstr "Dine filer blev sidst indekseret %s."
 
 #: src/file-manager/nautilus-indexing-info.c:170
 msgid ""
@@ -5795,17 +5738,15 @@ msgid "Indexing Status"
 msgstr "Indekseringsstatus"
 
 #: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
 msgid "Your files are currently being indexed."
-msgstr "Dine filer blev sidst indekseret %s"
+msgstr "Dine filer bliver i øjeblikket indekseret."
 
 #: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
 msgstr ""
-"En gang om dagen bliver dine filer og tekstindhold indekseret så søgninger "
-"er hurtige."
+"En gang om dagen bliver dine filer og deres tekstindhold indekseret så "
+"søgninger er hurtige."
 
 #: src/file-manager/nautilus-indexing-info.c:257
 msgid "There is no index of your files right now."
@@ -5838,13 +5779,12 @@ msgid "%I:%M %p, %x"
 msgstr "%H:%M, %x"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
-#, fuzzy
 msgid "Select the columns visible in this folder"
-msgstr "Opret en ny tom mappe i denne mappe"
+msgstr "Vælg de kolonner som skal være synlige i denne mappe"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
-msgstr ""
+msgstr "Synlige _kolonner..."
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:1
 msgid "Reveal each selected item in its original folder"
@@ -5871,19 +5811,17 @@ msgid "Couldn't Create Required Folder"
 msgstr "Kan ikke oprette krævet mappe"
 
 #: src/nautilus-application.c:265
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "Kan ikke oprette påkrævede mapper"
+msgstr "Kunne ikke oprette den påkrævede mappe \"%s\"."
 
 #: src/nautilus-application.c:267
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus kunne ikke oprette den påkrævede mappe \"%s\". Opret denne mappe "
-"eller ændr rettigheder sådan at Nautilus kan oprette den, før du kører "
-"programmet igen."
+"Opret denne mappe eller ændr rettighederne sådan at Nautilus kan oprette "
+"den, før du kører programmet igen."
 
 #: src/nautilus-application.c:270
 msgid "Couldn't Create Required Folders"
@@ -5895,17 +5833,12 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus kunne ikke oprette de følgende påkrævede mapper: %s."
 
 #: src/nautilus-application.c:273
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus kunne ikke oprette følgende påkrævede mapper:\n"
-"\n"
-"%s\n"
-"\n"
-"Opret denne mappe eller ændr rettigheder sådan at Nautilus kan oprette den, "
-"før du kører programmet igen."
+"Opret disse mapper eller ændr rettighederne sådan at Nautilus kan oprette "
+"dem, før du kører programmet igen."
 
 #: src/nautilus-application.c:341
 msgid "Link To Old Desktop"
@@ -5996,6 +5929,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6104,19 +6038,16 @@ msgid "Connect to Server"
 msgstr "Tilkobl til server"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _Name:"
-msgstr "_Navn:"
+msgstr "Henvisnings_navn:"
 
 #: src/nautilus-connect-server-dialog.c:210
-#, fuzzy
 msgid "_Location (URL):"
-msgstr "_Sted:"
+msgstr "_Placering (URL):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "Emblemer:"
+msgstr "Eksempel:"
 
 #: src/nautilus-connect-server-dialog.c:248
 msgid "C_onnect"
@@ -6127,9 +6058,8 @@ msgid "Desktop"
 msgstr "Skrivebord"
 
 #: src/nautilus-file-management-properties.c:307
-#, fuzzy
 msgid "None"
-msgstr "ingen"
+msgstr "Ingen"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
@@ -6172,9 +6102,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">Ikonvisningsforvalg</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">Mapper</span>"
+msgstr "<span weight=\"bold\">Listekolonner</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -6221,11 +6150,8 @@ msgstr ""
 "oplysninger dukker op når du zoomer ind."
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Vælg rækkefølgen af oplysninger der vises under ikonnavnene. Yderligere "
-"oplysninger dukker op når du zoomer ind."
+msgstr "Vælg rækkefølgen af oplysninger der vises i listevisningen."
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
@@ -6250,7 +6176,7 @@ msgstr "Ikontekster"
 
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
-msgstr ""
+msgstr "Listekolonner"
 
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Local Files Only"
@@ -6421,11 +6347,11 @@ msgid "Go To:"
 msgstr "Gå til:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Vil du vise disse %d steder?"
-msgstr[1] "Vil du vise disse %d steder?"
+msgstr[0] "Vil du vise %d sted?"
+msgstr[1] "Vil du vise %d steder?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -6486,22 +6412,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan ikke bruges med URI'er.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan ikke bruges med andre tilvalg.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan ikke bruges med URI'er.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan ikke bruges med URI'er.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan ikke bruges med mere end én URI.\n"
 
@@ -6602,9 +6533,8 @@ msgstr "Fremad"
 
 #: src/nautilus-navigation-window-ui.xml.h:14
 #: src/nautilus-spatial-window-ui.xml.h:6
-#, fuzzy
 msgid "Go to templates folder"
-msgstr "Gå til papirkurvsmappen"
+msgstr "Gå til skabelonsmappen"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
@@ -7165,9 +7095,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Vælg en visning for dette sted eller ret hvilke der er til rådighed"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "Luk denne mappens overliggende mapper"
+msgstr "Luk denne mappe"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7263,18 +7192,16 @@ msgid "_About"
 msgstr "_Om"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "_Backgrounds and Emblems..."
-msgstr "_Baggrunde og emblemer"
+msgstr "_Baggrunde og emblemer..."
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "_CD Creator"
 msgstr "_Cd-brænder"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "_Luk vindue"
+msgstr "_Luk"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7347,7 +7274,7 @@ msgstr "Luk _ophavsmapper"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close this folder's parents"
-msgstr "Luk denne mappens overliggende mapper"
+msgstr "Luk denne mappes overliggende mapper"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
@@ -7476,26 +7403,24 @@ msgid "Check that your proxy settings are correct."
 msgstr "Kontrollér at mellemværtsindstillingene er korrekte."
 
 #: src/nautilus-window-manage-views.c:1336
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr ""
-"Kunne ikke vise \"%s\" fordi Nautilus ikke kan kontakte SMB-hovedkataloget."
+"Kunne ikke vise \"%s\" fordi Nautilus ikke kan kontakte SMB-hovedbrowseren."
 
 #: src/nautilus-window-manage-views.c:1339
 msgid "Check that an SMB server is running in the local network."
 msgstr "Kontrollér at der kører en SMB-server på lokalnetværket."
 
 #: src/nautilus-window-manage-views.c:1349
-#, fuzzy
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
-"Søgning er ikke muligt nu fordi du enten ikke har noget indeks eller "
-"søgetjenesten ikke kører. Sikr dig at du har startet Medusa-søgetjenesten, "
-"og hvis du ikke har et indeks, at Medusas indeksering kører."
+"Søgning er ikke tilgængeligt i øjeblikket fordi du ikke har noget indeks "
+"eller søgetjenesten ikke kører."
 
 #: src/nautilus-window-manage-views.c:1352
 msgid ""
@@ -7601,7 +7526,7 @@ msgstr "Zoom"
 
 #: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
-msgstr "Angiv zoomniveuaet for den aktuelle visning"
+msgstr "Angiv zoomniveauet for den aktuelle visning"
 
 #: src/network-scheme.desktop.in.h:1
 msgid "Network Servers"
@@ -7611,65 +7536,14 @@ msgstr "Netværksservere"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine netværksservere i Nautilus-filhåndteringen"
 
-#~ msgid "0 items"
-#~ msgstr "0 objekter"
-
-#~ msgid "0 folders"
-#~ msgstr "0 mapper"
-
-#~ msgid "0 files"
-#~ msgstr "0 filer"
-
-#~ msgid "1 item"
-#~ msgstr "1 objekt"
-
-#~ msgid "1 folder"
-#~ msgstr "1 mappe"
-
-#~ msgid "1 file"
-#~ msgstr "1 fil"
-
-#~ msgid "%u items"
-#~ msgstr "%u objekter"
-
-#~ msgid "date changed"
-#~ msgstr "dato for ændring"
-
 #~ msgid "C_hoose"
 #~ msgstr "_Vælg"
-
-#~ msgid "1 folder selected"
-#~ msgstr "1 mappe markeret"
-
-#~ msgid " (containing 0 items)"
-#~ msgstr " (med 0 objekter)"
-
-#~ msgid " (containing 1 item)"
-#~ msgstr " (med 1 objekt)"
-
-#~ msgid " (containing a total of 0 items)"
-#~ msgstr " (med et totalt antal af 0 objekter)"
-
-#~ msgid " (containing a total of 1 item)"
-#~ msgstr " (med et totalt antal af 1 objekt)"
-
-#~ msgid "1 other item selected (%s)"
-#~ msgstr "1 andet objekt markeret (%s)"
 
 #~ msgid "Other _Viewer..."
 #~ msgstr "Anden frem_viser..."
 
 #~ msgid "A _Viewer..."
 #~ msgstr "En frem_viser..."
-
-#~ msgid "Open in %d New Windows"
-#~ msgstr "Åbn i %d nye vinduer"
-
-#~ msgid "%d items, totalling %s"
-#~ msgstr "%d elementer, totalt %s"
-
-#~ msgid "Reveal in %d _New Windows"
-#~ msgstr "Vis i %d _nye vinduer"
 
 #~ msgid "Choose another viewer with which to view the selected item"
 #~ msgstr ""
