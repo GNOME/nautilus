@@ -26,27 +26,28 @@
 
 #include <string.h>
 
-#define ICON_NAME_BLOCK_DEVICE          "file-blockdev"
-#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "file-symlink"
-#define ICON_NAME_CHARACTER_DEVICE      "file-chardev"
-#define ICON_NAME_DIRECTORY             "file-directory"
-#define ICON_NAME_EXECUTABLE            "file-executable"
-#define ICON_NAME_FIFO                  "file-fifo"
-#define ICON_NAME_REGULAR               "file-regular"
-#define ICON_NAME_SEARCH_RESULTS        "file-search"
-#define ICON_NAME_SOCKET                "file-sock"
-#define ICON_NAME_THUMBNAIL_LOADING     "loading"
-#define ICON_NAME_TRASH_EMPTY           "trash-empty"
-#define ICON_NAME_TRASH_NOT_EMPTY       "trash-full"
+#define ICON_NAME_BLOCK_DEVICE          "gnome-fs-blockdev"
+#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "gnome-fs-symlink"
+#define ICON_NAME_CHARACTER_DEVICE      "gnome-fs-chardev"
+#define ICON_NAME_DIRECTORY             "gnome-fs-directory"
+#define ICON_NAME_EXECUTABLE            "gnome-fs-executable"
+#define ICON_NAME_FIFO                  "gnome-fs-fifo"
+#define ICON_NAME_REGULAR               "gnome-fs-regular"
+#define ICON_NAME_SEARCH_RESULTS        "gnome-fs-search"
+#define ICON_NAME_SOCKET                "gnome-fs-socket"
+
+#define ICON_NAME_MIME_PREFIX           "gnome-mime-"
+
+#define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
+
 
 /* Returns NULL for regular */
 static char *
-get_icon_name (const char       *file_uri,
-	       GnomeVFSFileInfo *file_info,
-	       const char       *mime_type)
+get_icon_name (const char          *file_uri,
+	       GnomeVFSFileInfo    *file_info,
+	       const char          *mime_type,
+	       GnomeIconLookupFlags flags)
 {
-  /* FIXME: Special case trash here */
-
   if (file_info &&
       (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE))
     {
@@ -80,7 +81,8 @@ get_icon_name (const char       *file_uri,
   /* don't use the executable icon for text files, since it's more useful to display
    * embedded text
    */
-  if (file_info &&
+  if ((flags & GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT) &&
+      file_info &&
       (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) &&
       (file_info->permissions	& (GNOME_VFS_PERM_USER_EXEC
 				   | GNOME_VFS_PERM_GROUP_EXEC
@@ -126,23 +128,83 @@ make_mime_name (const char *mime_type)
   while ((p = strchr(mime_type_without_slashes, '/')) != NULL)
     *p = '-';
   
-  icon_name = g_strconcat ("mime-", mime_type_without_slashes, NULL);
+  icon_name = g_strconcat (ICON_NAME_MIME_PREFIX, mime_type_without_slashes, NULL);
   g_free (mime_type_without_slashes);
   
   return icon_name;
 }
 
+static char *
+make_generic_mime_name (const char *mime_type)
+{
+  char *generic_mime_type, *icon_name;
+  char *p;
+
+  
+  if (mime_type == NULL) {
+    return NULL;
+  }
+
+  generic_mime_type = g_strdup (mime_type);
+  
+  icon_name = NULL;
+  if ((p = strchr(generic_mime_type, '/')) != NULL)
+    {
+      *p = 0;
+  
+      icon_name = g_strconcat (ICON_NAME_MIME_PREFIX, generic_mime_type, NULL);
+    }
+  g_free (generic_mime_type);
+  
+  return icon_name;
+}
+
+
+static gboolean
+mimetype_supported_by_gdk_pixbuf (const char *mime_type)
+{
+	guint i;
+	static GHashTable *formats = NULL;
+	static const char *types [] = {
+		"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
+		"image/png", "image/pnm", "image/ras", "image/tga",
+		"image/tiff", "image/wbmp", "image/x-xbitmap",
+		"image/x-xpixmap"
+	};
+
+	if (!formats) {
+		formats = g_hash_table_new (g_str_hash, g_str_equal);
+
+		for (i = 0; i < G_N_ELEMENTS (types); i++)
+			g_hash_table_insert (formats,
+					     (gpointer) types [i],
+					     GUINT_TO_POINTER (1));	
+	}
+
+	if (g_hash_table_lookup (formats, mime_type))
+		return TRUE;
+
+	return FALSE;
+}
+
+
 char *
-gnome_icon_lookup (GnomeIconLoader         *icon_loader,
-		   const char              *file_uri,
-		   const char              *custom_icon,
-		   GnomeVFSFileInfo        *file_info,
-		   const char              *mime_type,
-		   GnomeIconLookupFlags     flags,
-		   GnomeIconLookupOutFlags *out_flags)
+gnome_icon_lookup (GnomeIconLoader            *icon_loader,
+		   GnomeThumbnailFactory      *thumbnail_factory,
+		   const char                 *file_uri,
+		   const char                 *custom_icon,
+		   GnomeVFSFileInfo           *file_info,
+		   const char                 *mime_type,
+		   GnomeIconLookupFlags        flags,
+		   GnomeIconLookupResultFlags *result)
 {
   char *icon_name;
   char *mime_name;
+  char *thumbnail;
+  time_t mtime;
+
+  if (result)
+    *result = GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE;
   
   /* Look for availibility of custom icon */
   if (custom_icon)
@@ -153,43 +215,64 @@ gnome_icon_lookup (GnomeIconLoader         *icon_loader,
 	return g_strdup (custom_icon);
     }
 
-  if (flags & GNOME_ICON_LOOKUP_FLAGS_USE_THUMBNAILS)
+  if (thumbnail_factory)
     {
-      /* TODO: look for thumbnails, set out_flags for thumbnail creation */
-      /* TODO: Also look for view as itself, even for svgs if supported */
+      if (flags & GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES &&
+	  (mimetype_supported_by_gdk_pixbuf (mime_type) ||
+	   (strcmp (mime_type, "image/svg") == 0 &&
+	    gnome_icon_loader_get_allow_svg (icon_loader)))  &&
+	  strncmp (file_uri, "file:/", 6) == 0 &&
+	  file_info && file_info->size < SELF_THUMBNAIL_SIZE_THRESHOLD)
+	return gnome_vfs_get_local_path_from_uri (file_uri);
+      
+      mtime = 0;
+      if (file_info)
+	mtime = file_info->mtime;
+      
+      thumbnail = gnome_thumbnail_factory_lookup (thumbnail_factory, file_uri,
+						  mtime);
+      if (thumbnail)
+	{
+	  if (result)
+	    *result = GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL;
+	  
+	  return thumbnail;
+	}
     }
-
-  icon_name = get_icon_name (file_uri, file_info, mime_type);
-
-  if (icon_name && gnome_icon_loader_has_icon (icon_loader, icon_name))
-    return icon_name;
-  g_free (icon_name);
 
   if (mime_type)
     {
       mime_name = get_vfs_mime_name (mime_type);
-      
       if (mime_name && gnome_icon_loader_has_icon (icon_loader, mime_name))
 	return mime_name;
       g_free (mime_name);
       
       mime_name = make_mime_name (mime_type);
+      if (mime_name && gnome_icon_loader_has_icon (icon_loader, mime_name))
+	return mime_name;
+      g_free (mime_name);
       
+      mime_name = make_generic_mime_name (mime_type);
       if (mime_name && gnome_icon_loader_has_icon (icon_loader, mime_name))
 	return mime_name;
       g_free (mime_name);
     }
       
+  icon_name = get_icon_name (file_uri, file_info, mime_type, flags);
+  if (icon_name && gnome_icon_loader_has_icon (icon_loader, icon_name))
+    return icon_name;
+  g_free (icon_name);
 
   return g_strdup (ICON_NAME_REGULAR);
 }
 
 char *
 gnome_icon_lookup_sync (GnomeIconLoader         *icon_loader,
+			GnomeThumbnailFactory   *thumbnail_factory,
 			const char              *file_uri,
 			const char              *custom_icon,
 			GnomeIconLookupFlags     flags,
-			GnomeIconLookupOutFlags *out_flags)
+			GnomeIconLookupResultFlags *result)
 {
   const char *mime_type;
   char *res;
@@ -207,12 +290,13 @@ gnome_icon_lookup_sync (GnomeIconLoader         *icon_loader,
 
 
   res = gnome_icon_lookup (icon_loader,
+			   thumbnail_factory,
 			   file_uri,
 			   custom_icon,
 			   file_info,
 			   mime_type,
 			   flags,
-			   out_flags);
+			   result);
   
   gnome_vfs_file_info_unref (file_info);
 

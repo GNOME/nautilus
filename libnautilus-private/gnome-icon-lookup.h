@@ -25,32 +25,37 @@
 
 #include <libgnome/gnome-icon-loader.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include "gnome-thumbnail.h"
 
 G_BEGIN_DECLS
 
 typedef enum {
   GNOME_ICON_LOOKUP_FLAGS_NONE = 0,
-  GNOME_ICON_LOOKUP_FLAGS_USE_THUMBNAILS = 1<<0,
+  GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT = 1<<0,
+  GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES = 1<<1,
 } GnomeIconLookupFlags;
 
 typedef enum {
-  GNOME_ICON_LOOKUP_OUT_FLAGS_NONE = 0,
-  GNOME_ICON_LOOKUP_OUT_FLAGS_CREATE_THUMBNAIL = 1<<0,
-} GnomeIconLookupOutFlags;
+  GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE = 0,
+  GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL = 1<<0,
+} GnomeIconLookupResultFlags;
 
-char *gnome_icon_lookup (GnomeIconLoader         *icon_loader,
-			 const char              *file_uri,
-			 const char              *custom_icon,
-			 GnomeVFSFileInfo        *file_info,
-			 const char              *mime_type,
-			 GnomeIconLookupFlags     flags,
-			 GnomeIconLookupOutFlags *out_flags);
 
-char *gnome_icon_lookup_sync (GnomeIconLoader         *icon_loader,
-			      const char              *file_uri,
-			      const char              *custom_icon,
-			      GnomeIconLookupFlags     flags,
-			      GnomeIconLookupOutFlags *out_flags);
+char *gnome_icon_lookup      (GnomeIconLoader            *icon_loader,
+			      GnomeThumbnailFactory      *thumbnail_factory,
+			      const char                 *file_uri,
+			      const char                 *custom_icon,
+			      GnomeVFSFileInfo           *file_info,
+			      const char                 *mime_type,
+			      GnomeIconLookupFlags        flags,
+			      GnomeIconLookupResultFlags *result);
+char *gnome_icon_lookup_sync (GnomeIconLoader            *icon_loader,
+			      GnomeThumbnailFactory      *thumbnail_factory,
+			      const char                 *file_uri,
+			      const char                 *custom_icon,
+			      GnomeIconLookupFlags        flags,
+			      GnomeIconLookupResultFlags *result);
+
 
 G_END_DECLS
 
