@@ -429,7 +429,9 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	 * prevents any possible ambiguity for cases where a path
 	 * would looks like a URI.
 	 */
-	if (application->expects_uris) {
+	if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ||
+	    (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES &&
+	     nautilus_istr_has_prefix (uri, "file:"))) {
 		parameter = g_strdup (uri);
 	} else {
 		parameter = gnome_vfs_get_local_path_from_uri (uri);
@@ -450,7 +452,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			return;
 		}
 	}
-	
+
 	nautilus_launch_application_from_command (application->command,
 						  parameter, 
 						  application->requires_terminal);

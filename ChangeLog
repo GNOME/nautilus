@@ -1,3 +1,24 @@
+2001-01-29  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	Launch an application with a uri as a parameter for
+	applications that accept uris for all locations, and 
+	non-file parameters where applications expect 
+	uris for non-file locations.  This fixes bug 4962,
+	"Open with mpg123 fails for local files"
+	* libnautilus-extensins/nautilus-file-utilities.h:
+	* libnautilus-extensins/nautilus-file-utilities.c
+	(nautilus_uri_get_scheme), (nautilus_uri_is_local_scheme):
+	Add new uri_get_scheme function and fix a lack of 
+	colons in the nautilus_uri_is_local_scheme function
+	that was causing us to do a istr_has_prefix (uri, "file")
+	to check if a uri was of scheme file.
+	* libnautilus-extensions/nautilus-file.c: 
+	(nautilus_file_get_uri_scheme) refactor the code in here
+	to use the nautilus_uri_get_scheme function 
+
 2001-01-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Arik Devens  <arik@eazel.com>

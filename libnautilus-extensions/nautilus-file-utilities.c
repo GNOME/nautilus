@@ -188,6 +188,22 @@ nautilus_uri_get_basename (const char *uri)
 	return name;
 }
 
+char *
+nautilus_uri_get_scheme (const char *uri)
+{
+	char *colon;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	colon = strchr (uri, ':');
+	
+	if (colon == NULL) {
+		return NULL;
+	}
+	
+	return g_strndup (uri, colon - uri);
+}
+
 gboolean
 nautilus_uri_is_trash (const char *uri)
 {
@@ -201,10 +217,10 @@ nautilus_uri_is_local_scheme (const char *uri)
 	gboolean is_local_scheme;
 	char *temp_scheme;
 	int i;
-	char *local_schemes[] = {"file", "help", "ghelp", "gnome-help",
-				 "trash", "man", "info", 
-				 "hardware", "search", "pipe",
-				 "gnome-trash", NULL};
+	char *local_schemes[] = {"file:", "help:", "ghelp:", "gnome-help:",
+				 "trash:", "man:", "info:", 
+				 "hardware:", "search:", "pipe:",
+				 "gnome-trash:", NULL};
 
 	is_local_scheme = FALSE;
 	for (temp_scheme = *local_schemes, i = 0; temp_scheme != NULL; i++, temp_scheme = local_schemes[i]) {
@@ -1287,6 +1303,13 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp"), "file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme (""), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("file:///var/tmp::"), "file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_get_scheme ("man:ls"), "man");
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("file:///var/tmp"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uri_is_local_scheme ("http://www.yahoo.com"), FALSE);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");

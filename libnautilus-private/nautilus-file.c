@@ -2145,7 +2145,6 @@ nautilus_file_get_uri (NautilusFile *file)
 char *
 nautilus_file_get_uri_scheme (NautilusFile *file)
 {
-	char *colon;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
@@ -2154,14 +2153,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 		return NULL;
 	}
 
-	colon = strchr (file->details->directory->details->uri, ':');
-
-	if (colon == NULL) {
-		return NULL;
-	}
-
-	return g_strndup (file->details->directory->details->uri, 
-			  colon - file->details->directory->details->uri);
+	return nautilus_uri_get_scheme (file->details->directory->details->uri);
 }
 
 gboolean
