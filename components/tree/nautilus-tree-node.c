@@ -103,24 +103,33 @@ nautilus_tree_node_new (NautilusFile *file)
 NautilusTreeNode *
 nautilus_tree_node_get_parent (NautilusTreeNode   *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_NODE (node), NULL);
+
 	return node->details->parent;
 }
 
 GList *
 nautilus_tree_node_get_children  (NautilusTreeNode   *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_NODE (node), NULL);
+
 	return node->details->children;
 }
 
 NautilusFile *
 nautilus_tree_node_get_file      (NautilusTreeNode   *node)
 {
+	/* This is assumed to always return non-null, so have to crash.. */
+	g_assert (NAUTILUS_IS_TREE_NODE (node));
+
 	return node->details->file;
 }
 
 char *
 nautilus_tree_node_get_uri      (NautilusTreeNode   *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_NODE (node), NULL);
+
 	return g_strdup (node->details->uri);
 }
 
@@ -128,6 +137,8 @@ void
 nautilus_tree_node_update_uri (NautilusTreeNode *node)
 {
 	char *uri, *parent_uri;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	uri = nautilus_file_get_uri (node->details->file);
 
@@ -143,6 +154,8 @@ nautilus_tree_node_update_uri (NautilusTreeNode *node)
 NautilusDirectory *
 nautilus_tree_node_get_directory (NautilusTreeNode   *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_NODE (node), NULL);
+
 	return node->details->directory;
 }
 
@@ -150,6 +163,8 @@ void
 nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 			       NautilusTreeNode   *parent)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (parent));
 	g_return_if_fail (node->details->parent == NULL);
 
 	node->details->parent = parent;
@@ -159,6 +174,8 @@ nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 gboolean
 nautilus_tree_node_is_toplevel (NautilusTreeNode *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_NODE (node), FALSE);
+
 	return node->details->is_toplevel;
 }
 
@@ -166,6 +183,8 @@ nautilus_tree_node_is_toplevel (NautilusTreeNode *node)
 void
 nautilus_tree_node_remove_from_parent (NautilusTreeNode *node)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	if (node->details->parent != NULL) {
 		node->details->parent->details->children = g_list_remove
 			(node->details->parent->details->children, node);
@@ -178,6 +197,8 @@ nautilus_tree_node_remove_children (NautilusTreeNode *node)
 {
 	GList *p;
 	NautilusTreeNode *child;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	for (p = node->details->children; p != NULL; p = p->next) {
 		child = p->data;

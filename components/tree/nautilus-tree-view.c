@@ -233,6 +233,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	GdkBitmap *open_mask;
 	char *uri;
 
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	file = nautilus_tree_node_get_file (node);
 
 	if (nautilus_tree_view_should_skip_file (view, file)) {
@@ -343,10 +346,17 @@ forget_view_node (NautilusTreeView *view,
 		  NautilusCTreeNode *view_node)
 {
 	NautilusFile *file;
+	NautilusTreeNode *node;
 
 	file = nautilus_tree_view_node_to_file (view, view_node);
+	node = nautilus_tree_view_node_to_model_node (view, view_node);
 
-	forget_unparented_node (view, nautilus_tree_view_node_to_model_node (view, view_node));
+	g_return_if_fail (node != NULL);
+
+	forget_unparented_node (view, node);
+
+	nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
+					  view_node, NULL);
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
 	nautilus_file_unref (file);
@@ -375,6 +385,9 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusCTreeNode *view_node;
 	NautilusFile *file;
 	const char *uri;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	file = nautilus_tree_node_get_file (node);
 
@@ -441,6 +454,9 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	GdkPixmap *open_pixmap;
 	GdkBitmap *open_mask;
 	
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	file = nautilus_tree_node_get_file (node);
 
 	if (nautilus_tree_view_should_skip_file (view, file)) {
@@ -521,6 +537,8 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 static void
 register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 	g_return_if_fail (!nautilus_tree_node_is_toplevel (node));
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) == NULL) {
@@ -531,6 +549,9 @@ register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 static void
 forget_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
 }
 
@@ -541,6 +562,9 @@ insert_unparented_nodes (NautilusTreeView *view, NautilusTreeNode *node)
 	NautilusDirectory *directory;
 	GList *p, *to_add;
 	NautilusTreeNode *sub_node;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	file = nautilus_tree_node_get_file (node);
 
@@ -890,6 +914,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 				  MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
 				       view->details->tree->style->font->ascent
 				       + view->details->tree->style->font->descent));
+        nautilus_ctree_set_indent (NAUTILUS_CTREE (view->details->tree), 12);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
 			    "tree_expand",
@@ -969,8 +994,7 @@ disconnect_model_handlers (NautilusTreeView *view)
 {
 	NautilusTreeNode *node;
 
-	node = nautilus_tree_model_get_node (view->details->model,
-					     "file:///");
+	node = nautilus_tree_model_get_node (view->details->model, "file:///");
 
 	if (node != NULL) {
 		nautilus_tree_model_monitor_remove (view->details->model, view);
@@ -1033,6 +1057,8 @@ nautilus_tree_view_destroy (GtkObject *object)
 
 	nautilus_tree_expansion_state_save (view->details->expansion_state);
 	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
+
+	g_list_free (view->details->unparented_tree_nodes);
 
 	g_free (view->details->current_main_view_uri);
 	g_free (view->details->selected_uri);
@@ -1188,6 +1214,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	NautilusCTreeNode *view_node;
 	NautilusCTreeNode *last_valid_view_node;
 	NautilusFile *file;
+	NautilusTreeNode *node;
 
 	view_node = NULL;
 	last_valid_view_node = NULL;
@@ -1252,10 +1279,11 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 								  last_valid_view_node),
 			   TRUE);
 
-	call_when_uri_loaded_or_parent_done_loading (view, uri, 
-						     nautilus_tree_model_get_node (view->details->model,
-										   (char *) p->prev->data),
-						     expand_uri_sequence_and_select_end);
+	node = nautilus_tree_model_get_node (view->details->model, (char *) p->prev->data);
+	if (node != NULL) {
+		call_when_uri_loaded_or_parent_done_loading (view, uri, node,
+							     expand_uri_sequence_and_select_end);
+	}
 	
 	p->prev->next = NULL;
 	p->prev = NULL;
@@ -1366,7 +1394,12 @@ static void
 reload_whole_tree (NautilusTreeView *view,
 		   gboolean          force_reload)
 {
-	reload_model_node_recursive (view, nautilus_tree_model_get_node (view->details->model, "file:///"), force_reload);
+	NautilusTreeNode *node;
+
+	node = nautilus_tree_model_get_node (view->details->model, "file:///");
+	if (node != NULL) {
+		reload_model_node_recursive (view, node, force_reload);
+	}
 }
 
 
@@ -1377,6 +1410,7 @@ expand_node_for_file (NautilusTreeView *view,
 {
 	char *uri;
 	gboolean ever_expanded;
+	NautilusTreeNode *node;
 
 	uri = nautilus_file_get_uri (file);
 	ever_expanded = nautilus_tree_expansion_state_was_ever_expanded (view->details->expansion_state, 
@@ -1385,10 +1419,10 @@ expand_node_for_file (NautilusTreeView *view,
 						   uri);
 	g_free (uri);
 
-	reload_model_node_recursive (view, 
-				     nautilus_tree_model_get_node_from_file (view->details->model, 
-									     file),
-				     ever_expanded);
+	node = nautilus_tree_model_get_node_from_file (view->details->model, file);
+	if (node != NULL) {
+		reload_model_node_recursive (view, node, ever_expanded);
+	}
 }
 
 static void

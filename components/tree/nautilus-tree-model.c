@@ -176,6 +176,7 @@ nautilus_tree_model_destroy (GtkObject *object)
 	remove_all_nodes (model);
 
 	g_list_free (model->details->monitor_clients);
+	g_list_free (model->details->unparented_nodes);
 
 	g_hash_table_destroy (model->details->file_to_node_map);
 
@@ -286,6 +287,9 @@ remove_all_nodes (NautilusTreeModel *model)
 		model->details->root_node = NULL;
 	}
 	model->details->root_node_reported = FALSE;
+
+	g_list_free (model->details->unparented_nodes);
+	model->details->unparented_nodes = NULL;
 }
 
 void
@@ -298,6 +302,9 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 	GList *reporting_queue, *link;
 	GList *monitor_attributes;
 	
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (initial_nodes_callback != NULL);
+
 	reporting_queue = NULL;
 
 	/* If we just (re)started monitoring the whole tree, make sure
@@ -353,6 +360,8 @@ void
 nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 				    gconstpointer              client)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+
 	model->details->monitor_clients = g_list_remove (model->details->monitor_clients, (gpointer) client);
 
 	if (model->details->root_node_reported) {
@@ -376,6 +385,8 @@ static gboolean
 nautilus_tree_model_node_has_monitor_clients (NautilusTreeModel         *model,
 					      NautilusTreeNode          *node)
 {
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+
 	return (node->details->monitor_clients != NULL);
 }
 
@@ -439,6 +450,9 @@ static void
 nautilus_tree_model_node_end_monitoring (NautilusTreeModel         *model,
 					 NautilusTreeNode          *node)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_added_id);
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_changed_id);
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->done_loading_id);
@@ -462,6 +476,9 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 	GList *p;
 	GList *lost_nodes;
 	NautilusDirectory *directory;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	if (!nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 		report_done_loading (model, node);
@@ -501,6 +518,9 @@ nautilus_tree_model_stop_monitoring_node (NautilusTreeModel *model,
 					  NautilusTreeNode  *node,
 					  gconstpointer      client)
 {
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 	if (!nautilus_file_is_directory (nautilus_tree_node_get_file (node)) || node->details->monitor_clients == NULL) {
 		return;
 	}
@@ -523,6 +543,9 @@ nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
 						    gconstpointer      client)
 {
 	GList *p;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
 	nautilus_tree_model_stop_monitoring_node (model, node, client);
 
@@ -548,6 +571,9 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 {
 	NautilusFile *file;
 	NautilusTreeNode *node;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
 
 	file = nautilus_file_get (uri);
 	

@@ -1,3 +1,29 @@
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	Fixed bug 6825 (nesting indent in tree panel too large,
+	requires excessive scrolling):
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_initialize): call gtk_ctree_set_indent to
+	set the indent size of the tree view to 12 pixels (instead of
+	the default 20)
+
+	Fixed a couple of memory leaks:
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_destroy): remember to free the
+	unparented_tree_nodes list
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_destroy, remove_all_nodes): remember to
+	free the unparented_nodes list
+
+	Try to find more information about bug 7018:
+
+	* components/tree/nautilus-tree-view.c,
+	components/tree/nautilus-tree-model.c,
+	components/tree/nautilus-tree-node.c: added a lot of error
+	checking (i.e. g_return_if_fail, etc)
+
 2001-02-26  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Eric Fischer <eric@eazel.com>
