@@ -256,12 +256,6 @@ icon_show (GnomeIconContainerIcon *icon)
 }
 
 static void
-icon_hide (GnomeIconContainerIcon *icon)
-{
-	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (icon->item));
-}
-
-static void
 icon_select (GnomeIconContainerIcon *icon,
 	     gboolean sel)
 {
@@ -476,18 +470,6 @@ icon_grid_resize_allocation (GnomeIconContainerIconGrid *grid,
 	grid->alloc_height = new_alloc_height;
 }
 
-static GnomeIconContainerIconGrid *
-icon_grid_new_same_alloc (GnomeIconContainerIconGrid *grid)
-{
-	GnomeIconContainerIconGrid *new_grid;
-
-	new_grid = icon_grid_new ();
-	icon_grid_resize_allocation (new_grid,
-				     grid->alloc_width, grid->alloc_height);
-
-	return new_grid;
-}
-
 static void
 icon_grid_update_first_free_forward (GnomeIconContainerIconGrid *grid)
 {
@@ -579,7 +561,7 @@ icon_grid_resize (GnomeIconContainerIconGrid *grid,
 	grid->width = width;
 	grid->height = height;
 
-	if (grid->visible_width > grid->width)
+	if (grid->visible_width != grid->width)
 		icon_grid_set_visible_width (grid, grid->width);
 }
 
@@ -669,6 +651,7 @@ icon_grid_add_auto (GnomeIconContainerIconGrid *grid,
 		*x_return = grid->first_free_x;
 	if (y_return != NULL)
 		*y_return = grid->first_free_y;
+	g_message("Autoposition at (%d, %d)", grid->first_free_x, grid->first_free_y);
 
 	icon_grid_update_first_free_forward (grid);
 }
@@ -861,22 +844,6 @@ prepare_for_layout (GnomeIconContainer *container)
 		icon = p->data;
 		icon->layout_done = FALSE;
 	}
-}
-
-/* Line up icons belonging to the grid line pointed by `p'.  */
-static void
-line_up (GnomeIconContainer *container,
-	 GList **p)
-{
-	GnomeIconContainerIconGrid *grid;
-	GList **temp_line;
-	guint i;
-
-	grid = container->priv->grid;
-
-	temp_line = alloca (grid->width * sizeof (*temp_line));
-	for (i = 0; i < grid->width; i++)
-		temp_line[i] = p[i];
 }
 
 /* Find the "first" icon (in left-to-right, top-to-bottom order) in
@@ -1076,16 +1043,6 @@ add_idle (GnomeIconContainer *container)
 		return;
 
 	container->priv->idle_id = gtk_idle_add (idle_handler, container);
-}
-
-static void
-remove_idle (GnomeIconContainer *container)
-{
-	if (container->priv->idle_id == 0)
-		return;
-
-	gtk_idle_remove (container->priv->idle_id);
-	container->priv->idle_id = 0;
 }
 
 
@@ -1869,7 +1826,8 @@ size_allocate (GtkWidget *widget,
 				  MAX (visible_width, grid->width),
 				  MAX (visible_height, grid->height));
 
-	icon_grid_set_visible_width (grid, visible_width);
+	icon_grid_resize(grid, visible_width, visible_height);
+	/*	icon_grid_set_visible_width (grid, visible_width); */
 
 	set_scroll_region (container);
 }
