@@ -165,7 +165,8 @@ static void                fm_directory_view_duplicate_selection                
 										   GList                *files,
 										   GArray		*item_locations);
 static void                fm_directory_view_create_links_for_files               (FMDirectoryView      *view,
-										   GList                *files);
+										   GList                *files,
+										   GArray		*item_locations);
 static void                fm_directory_view_trash_or_delete_files                (FMDirectoryView      *view,
 										   GList                *files);
 static void                fm_directory_view_destroy                              (GtkObject            *object);
@@ -720,13 +721,16 @@ create_link_callback (BonoboUIComponent *component, gpointer callback_data, cons
 {
         FMDirectoryView *view;
         GList *selection;
+        GArray *selected_item_locations;
         
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-	        fm_directory_view_create_links_for_files (view, selection);
+		selected_item_locations = fm_directory_get_selected_icon_locations (view);
+	        fm_directory_view_create_links_for_files (view, selection, selected_item_locations);
+	        g_array_free (selected_item_locations, TRUE);
 	}
 
         nautilus_file_list_free (selection);
@@ -2201,10 +2205,24 @@ append_uri_one (gpointer data, gpointer callback_data)
 }
 
 static void
-fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
+offset_drop_points (GArray *relative_item_points,
+		    int x_offset, int y_offset)
+{
+	guint index;
+
+	for (index = 0; index < relative_item_points->len; index++) {
+		g_array_index (relative_item_points, GdkPoint, index).x += x_offset;
+		g_array_index (relative_item_points, GdkPoint, index).y += y_offset;
+	}
+}
+
+static void
+fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
+					  GArray *relative_item_points)
 {
 	GList *uris;
 	CopyMoveDoneData *copy_move_done_data;
+	g_assert (g_list_length (files) == relative_item_points->len);
 	
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
@@ -2215,22 +2233,16 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
 
         g_assert (g_list_length (uris) == g_list_length (files));
 
+	/* offset the drop locations a bit so that we don't pile
+	 * up the icons on top of each other
+	 */
+	offset_drop_points (relative_item_points, DUPLICATE_HORIZONTAL_ICON_OFFSET,
+		DUPLICATE_VERTICAL_ICON_OFFSET);
+
         copy_move_done_data = pre_copy_move (view);
-	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view),
-		copy_move_done_callback, copy_move_done_data);
+	nautilus_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_LINK, 
+		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	nautilus_g_list_free_deep (uris);
-}
-
-static void
-offset_drop_points (GArray *relative_item_points,
-		    int x_offset, int y_offset)
-{
-	guint index;
-
-	for (index = 0; index < relative_item_points->len; index++) {
-		g_array_index (relative_item_points, GdkPoint, index).x += x_offset;
-		g_array_index (relative_item_points, GdkPoint, index).y += y_offset;
-	}
 }
 
 static void

@@ -1,3 +1,14 @@
+2000-12-04  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* src/file-manager/fm-directory-view.c: (create_link_callback),
+	(offset_drop_points), (fm_directory_view_create_links_for_files):
+	Fixed 4946 - Create link consistently crashes Nautilus.
+	Fixed it by implementing the proper positioning code for creating
+	symbolic links from a context menu, copying the logic from the
+	"Duplicate selection" code path.
+
 2000-12-03  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-softcat.c:	
