@@ -1,3 +1,9 @@
+2000-02-28  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/nautilus-window-menus.c (clear_appended_bookmark_items):
+	Added an explicit cast to (const char *) to avoid gcc 2.95.2
+	complaining.
+
 2000-02-28  John Sullivan <sullivan@eazel.com>
 
         Separated out more menu-handling code into new file.

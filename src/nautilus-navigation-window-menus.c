@@ -32,6 +32,8 @@
 
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
+#include <bonobo/bonobo-ui-handler.h>
+
 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
                                                                   gpointer user_data, 
