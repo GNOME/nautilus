@@ -58,7 +58,7 @@
 #define PROGRAM_CHOOSER_DEFAULT_HEIGHT	 303
 
 static void
-populate_program_list (NautilusProgramChooserType type,
+populate_program_list (GnomeVFSMimeActionType type,
 		       NautilusFile *file,
 		       GtkCList *clist)
 {
@@ -69,11 +69,11 @@ populate_program_list (NautilusProgramChooserType type,
 	GnomeVFSMimeApplication *application;
 	int new_row;
 
-	g_assert (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS
-		  || type == NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS);
+	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
+		  || type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 
 	uri = nautilus_file_get_uri (file);
-	programs = type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS
+	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
 		? gnome_vfs_mime_get_all_components_for_uri (uri)
 		: gnome_vfs_mime_get_all_applications_for_uri (uri);
 	g_free (uri);
@@ -83,7 +83,7 @@ populate_program_list (NautilusProgramChooserType type,
 		/* One extra slot so it's NULL-terminated */
 		text = g_new0 (char *, PROGRAM_LIST_COLUMN_COUNT+1);
 
-		if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+		if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 			view_identifier = nautilus_view_identifier_new_from_content_view 
 				((OAF_ServerInfo *)program->data);
 			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup_printf 
@@ -95,7 +95,7 @@ populate_program_list (NautilusProgramChooserType type,
 
 		new_row = gtk_clist_append (clist, text);
 
-		if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+		if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 			gtk_clist_set_row_data_full 
 				(clist, new_row, 
 				 view_identifier, 
@@ -110,7 +110,7 @@ populate_program_list (NautilusProgramChooserType type,
 		g_strfreev (text);
 	}
 
-	if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+	if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		gnome_vfs_mime_component_list_free (programs);
 	} else {
 		gnome_vfs_mime_application_list_free (programs);
@@ -381,7 +381,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 
 
 GnomeDialog *
-nautilus_program_chooser_new (NautilusProgramChooserType type,
+nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 			      NautilusFile *file)
 {
 	GtkWidget *window;
@@ -401,11 +401,11 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
 	file_name = nautilus_file_get_name (file);
 
 	switch (type) {
-	case NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS:
+	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
 		title = _("Nautilus: Open with Other");
 		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"."), file_name);
 		break;
-	case NAUTILUS_PROGRAM_CHOOSER_COMPONENTS:
+	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
 	default:
 		title = _("Nautilus: View as Other");
 		prompt = g_strdup_printf (_("Choose a view for \"%s\"."), file_name);
@@ -515,7 +515,7 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
  * has been destroyed.
  * 
  * @program_chooser: The result of calling nautilus_program_chooser_new
- * with type NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS.
+ * with type GNOME_VFS_MIME_ACTION_TYPE_APPLICATION.
  * 
  * Return value: a GnomeVFSMimeApplication specifying a component. The caller
  * should make a copy if they want to use it after the dialog has been
@@ -530,7 +530,7 @@ nautilus_program_chooser_get_application (GnomeDialog *program_chooser)
 
 	g_return_val_if_fail 
 		(GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type")) 
-			== NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS,
+			== GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 		 NULL);
 
 	clist = GTK_CLIST (gtk_object_get_data (GTK_OBJECT (program_chooser), "list"));
@@ -548,7 +548,7 @@ nautilus_program_chooser_get_application (GnomeDialog *program_chooser)
  * has been destroyed.
  * 
  * @program_chooser: The result of calling nautilus_program_chooser_new
- * with type NAUTILUS_PROGRAM_CHOOSER_COMPONENTS.
+ * with type GNOME_VFS_MIME_ACTION_TYPE_COMPONENT.
  * 
  * Return value: a NautilusViewIdentifier specifying a component. The caller
  * should make a copy if they want to use it after the dialog has been
@@ -563,7 +563,7 @@ nautilus_program_chooser_get_component (GnomeDialog *program_chooser)
 
 	g_return_val_if_fail 
 		(GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type")) 
-			== NAUTILUS_PROGRAM_CHOOSER_COMPONENTS,
+			== GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
 		 NULL);
 
 	clist = GTK_CLIST (gtk_object_get_data (GTK_OBJECT (program_chooser), "list"));

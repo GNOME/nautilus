@@ -44,7 +44,7 @@
  */
 static GnomeDialog *
 set_up_program_chooser (NautilusFile *file, 
-			NautilusProgramChooserType type, 
+			GnomeVFSMimeActionType type, 
 			GtkWindow *parent)
 {
 	GnomeDialog *dialog;
@@ -93,7 +93,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	 * but for now we just use a modal dialog.
 	 */
 	dialog = set_up_program_chooser 
-		(file, NAUTILUS_PROGRAM_CHOOSER_COMPONENTS, parent_window);
+		(file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT, parent_window);
 
 	if (gnome_dialog_run (dialog) == GNOME_OK) {
 		identifier = nautilus_program_chooser_get_component (dialog);;
@@ -140,7 +140,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	 * but for now we just use a modal dialog.
 	 */
 	dialog = set_up_program_chooser 
-		(file, NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS, parent_window);
+		(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, parent_window);
 
 	if (gnome_dialog_run (dialog) == GNOME_OK) {
 		application = nautilus_program_chooser_get_application (dialog);

@@ -33,15 +33,10 @@
 #include "nautilus-file.h"
 #include "nautilus-view-identifier.h"
 
-typedef enum {
-	NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS,
-	NAUTILUS_PROGRAM_CHOOSER_COMPONENTS,
-} NautilusProgramChooserType;
+GnomeDialog 		*nautilus_program_chooser_new 		  (GnomeVFSMimeActionType  type, 
+					   			   NautilusFile 	  *file);
 
-GnomeDialog 		*nautilus_program_chooser_new 		  (NautilusProgramChooserType  type, 
-					   			   NautilusFile 	      *file);
-
-GnomeVFSMimeApplication *nautilus_program_chooser_get_application (GnomeDialog 		      *program_chooser);
-NautilusViewIdentifier  *nautilus_program_chooser_get_component   (GnomeDialog 		      *program_chooser);
+GnomeVFSMimeApplication *nautilus_program_chooser_get_application (GnomeDialog 		  *program_chooser);
+NautilusViewIdentifier  *nautilus_program_chooser_get_component   (GnomeDialog 		  *program_chooser);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSER_H */
