@@ -1,5 +1,15 @@
 2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Do the required directory check only if the nautilus shell is not
+	about to be killed.  As a side effect of the new desktop location
+	preference, the required directory code now checks preferences.
+	Unfortunately, at this stage in the game, nautilus preferences
+	might not be initialized, causing assertions.  This only occurs in
+	the "nautilus --quit" case.
+	
+2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* README:
 	Add link to Mike Fleming's useful Mozilla + Nautilus problems and
 	solutions document.

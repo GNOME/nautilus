@@ -398,7 +398,7 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
-	if (!check_required_directories (application)) {
+	if (!kill_shell && !check_required_directories (application)) {
 		return;
 	}
 
