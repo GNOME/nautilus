@@ -1,3 +1,10 @@
+2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	Fix bug 3845.  When configured to use an HTTP proxy, Mozilla won't
+	go through Ammonite.  The fix is to tell the mozilla network
+	library to NOT use the proxy to resolve 'localhost'.
+
 2000-10-26  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
