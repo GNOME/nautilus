@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -170,7 +171,7 @@ druid_set_first_time_file_flag (void)
 static void
 druid_finished (GtkWidget *druid_page)
 {
-	char *user_main_directory;
+	char *user_main_directory, *desktop_path;
 	const char *signup_uris[2];
 	
 	user_main_directory = nautilus_get_user_main_directory ();
@@ -215,6 +216,14 @@ druid_finished (GtkWidget *druid_page)
 	}
 	signup_uris[1] = NULL;
 	
+	/* FIXME bugzilla.eazel.com bug 5681: Services icon on desktop may need better icon and text
+	/* Create default services icon on the desktop */
+	desktop_path = nautilus_get_desktop_directory ();
+	nautilus_link_local_create (desktop_path, _("Eazel Services"), "Services.png", 
+				    "http://services.eazel.com", NAUTILUS_LINK_GENERIC);
+	g_free (desktop_path);
+	
+	/* Time to start. Hooray! */
 	nautilus_application_startup (save_application, FALSE, FALSE, save_manage_desktop, 
 				      FALSE, FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
 	

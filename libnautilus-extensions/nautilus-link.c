@@ -108,6 +108,11 @@ nautilus_link_local_create (const char *directory_path,
 	char *uri;
 	GList dummy_list;
 	
+	g_return_val_if_fail (directory_path != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (image != NULL, FALSE);
+	g_return_val_if_fail (target_uri != NULL, FALSE);
+	
 	/* create a new xml document */
 	output_document = xmlNewDoc ("1.0");
 	
@@ -421,6 +426,14 @@ nautilus_link_local_get_link_uri (const char *path)
 {
 	return local_get_root_property (path, "LINK");
 }
+
+/* Returns the link type of the link file. */
+gboolean
+nautilus_link_local_get_link_type (const char *path)
+{
+	return get_link_type (local_get_root_property (path, "NAUTILUS_LINK"));
+}
+
 
 /* Returns the link type of the link file. */
 NautilusLinkType
