@@ -181,7 +181,7 @@ help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
 		break;
 	}
 
-	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", section,
+	egg_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", section,
 					    gtk_window_get_screen (GTK_WINDOW (program_chooser)), &error);
 
 	if (error) {

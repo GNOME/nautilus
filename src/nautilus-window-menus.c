@@ -636,7 +636,7 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			"gnome-help", &error);
 	} else {
 		egg_help_display_desktop_on_screen (
-			NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21",
+			NULL, "user-guide", "user-guide.xml", "gosnautilus-21",
 			gtk_window_get_screen (GTK_WINDOW (window)), &error);
 	}
 

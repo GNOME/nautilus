@@ -3178,7 +3178,7 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 {
 	GError *error = NULL;
 
-	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51",
+	egg_help_display_desktop_on_screen (NULL, "user-guide", "user-guide.xml", "gosnautilus-51",
 					    gtk_window_get_screen (GTK_WINDOW (property_window)),
 &error);
 

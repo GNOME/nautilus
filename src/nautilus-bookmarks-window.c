@@ -134,7 +134,7 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 		GError *error = NULL;
 
 		egg_help_display_desktop_on_screen (
-			NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-36",
+			NULL, "user-guide", "user-guide.xml", "gosnautilus-36",
 			gtk_window_get_screen (GTK_WINDOW (dialog)), &error);
 
 		if (error) {

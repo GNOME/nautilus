@@ -264,7 +264,7 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 			section = "gosnautilus-60";
 			break;
 		}
-		preferences_show_help (GTK_WINDOW (parent), "wgosnautilus.xml", section);
+		preferences_show_help (GTK_WINDOW (parent), "user-guide.xml", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		/* remove gconf monitors */
 		eel_gconf_monitor_remove ("/apps/nautilus/icon_view");
