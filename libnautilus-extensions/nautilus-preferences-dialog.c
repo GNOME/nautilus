@@ -166,6 +166,10 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 			       TRUE,			 /* allow_grow */
 			       FALSE);			 /* auto_shrink */
 
+	gtk_window_set_default_size (GTK_WINDOW (prefs_dialog),
+				     510,
+				     406);
+
 	/* Doesnt work in enlightenment or sawmill */
 #if 0
 	/* This is supposed to setup the window manager functions */

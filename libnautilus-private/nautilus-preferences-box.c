@@ -28,6 +28,7 @@
 #include "nautilus-gtk-macros.h"
 
 #include <gtk/gtkclist.h>
+#include <gtk/gtknotebook.h>
 
 enum
 {
@@ -51,7 +52,7 @@ typedef struct
 struct _NautilusPreferencesBoxDetails
 {
 	GtkWidget	*category_list;
-	GtkWidget	*pane_container;
+	GtkWidget       *pane_container;
 
 	GList		*panes;
 
@@ -70,8 +71,6 @@ static void                   nautilus_preferences_box_initialize       (Nautilu
 
 /* GtkObjectClass methods */
 static void                   nautilus_preferences_box_destroy          (GtkObject             *object);
-
-
 
 /* Misc private stuff */
 static void                   prefs_box_construct                 (NautilusPreferencesBox      *prefs_box);
@@ -206,16 +205,29 @@ prefs_box_construct (NautilusPreferencesBox *prefs_box)
 			    TRUE,
 			    0);
 
+	/* The gtk notebook that the panes go into. */
+	prefs_box->details->pane_container = gtk_notebook_new ();
+
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (prefs_box->details->pane_container), FALSE);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (prefs_box->details->pane_container), FALSE);
+	
+	gtk_box_pack_start (GTK_BOX (prefs_box),
+			    prefs_box->details->pane_container,
+			    TRUE,
+			    TRUE,
+			    0);
+
 	gtk_widget_show (prefs_box->details->category_list);
+	gtk_widget_show (prefs_box->details->pane_container);
 }
 
 static void
 prefs_box_select_pane (NautilusPreferencesBox	*prefs_box,
 		       guint		pane_row)
 {
-	GList			*pane_node;
+	GList           *pane_node;
 	PaneInfo	*pane_info;
-	GList			*pane_iterator;
+	GList		*pane_iterator;
 
 	g_assert (prefs_box != NULL);
 	g_assert (NAUTILUS_IS_PREFS_BOX (prefs_box));
@@ -249,10 +261,7 @@ prefs_box_select_pane (NautilusPreferencesBox	*prefs_box,
 			}
 
 			gtk_widget_show (info->pane_widget);
-		}
-		else
-		{
-			gtk_widget_hide (info->pane_widget);
+			gtk_notebook_set_page (GTK_NOTEBOOK (prefs_box->details->pane_container), g_list_position (prefs_box->details->panes, pane_iterator));
 		}
 		
 		pane_iterator = pane_iterator->next;
@@ -341,12 +350,8 @@ nautilus_preferences_box_add_pane (NautilusPreferencesBox	*prefs_box,
 	
 	info->pane_widget = nautilus_preferences_pane_new (pane_title,
 						     pane_description);
-
-	gtk_box_pack_start (GTK_BOX (prefs_box),
-			    info->pane_widget,
-			    TRUE,
-			    TRUE,
-			    PREFS_BOX_PANE_LEFT_OFFSET);
+	
+	gtk_notebook_append_page (GTK_NOTEBOOK (prefs_box->details->pane_container), info->pane_widget, NULL);
 
 	text[PREFS_BOX_CATEGORY_COLUMN] = (gchar *) pane_title;
 

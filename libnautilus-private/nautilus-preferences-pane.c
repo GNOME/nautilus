@@ -190,8 +190,8 @@ prefs_pane_construct (NautilusPreferencesPane	*prefs_pane,
 		/* Add title frame to ourselves */
 		gtk_box_pack_start (GTK_BOX (prefs_pane),
 				    prefs_pane->details->title_frame,
-				    FALSE,
-				    FALSE,
+				    TRUE,
+				    TRUE,
 				    0);
 		
 		gtk_widget_show (prefs_pane->details->title_frame);
@@ -208,6 +208,7 @@ prefs_pane_construct (NautilusPreferencesPane	*prefs_pane,
 			    PREFS_PANE_GROUPS_BOX_TOP_OFFSET);
 
 	gtk_widget_show (prefs_pane->details->groups_box);
+	gtk_widget_show (GTK_WIDGET (prefs_pane));
 }
 
 
@@ -271,7 +272,7 @@ nautilus_preferences_pane_add_group (NautilusPreferencesPane	*prefs_pane,
 
 	prefs_pane->details->groups = g_list_append (prefs_pane->details->groups,
 						     (gpointer) group);
-	
+
 	gtk_box_pack_start (GTK_BOX (prefs_pane->details->groups_box),
 			    group,
 			    TRUE,

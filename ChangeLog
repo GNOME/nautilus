@@ -1,3 +1,22 @@
+2001-01-29  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fixed bug 5627, Preferences window needs better sizing.
+	
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(prefs_box_construct), (prefs_box_select_pane),
+	(nautilus_preferences_box_add_pane): Added a notebook view to put
+	the preference panes in. Removed hiding and showing of panes.
+	libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_construct): Added setting of default
+	size to the preferences dialog for the default font size.
+	libnautilus-extensions/nautilus-preferences-dialog.h:
+	libnautilus-extensions/nautilus-preferences-pane.c:
+	(prefs_pane_construct), (nautilus_preferences_pane_add_group):
+	Added showing of preference panes on creation so that the notebook
+	view sizes correctly.
+
 2001-01-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	Added logic to handle volume mount name collisions.

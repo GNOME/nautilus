@@ -65,5 +65,3 @@ void       nautilus_preferences_dialog_update        (NautilusPreferencesDialog 
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_DIALOG_H */
-
-
