@@ -595,6 +595,37 @@ fm_list_receive_dropped_keyword (NautilusList *list, char* keyword, int x, int y
 }
 
 
+static gboolean
+fm_list_handle_dragged_items (NautilusList *list,
+			      int action,
+			      GList *drop_data,
+			      int x, int y, guint info,
+			      FMListView *list_view)
+{
+	gboolean ret_val;
+
+	switch (info) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+	case NAUTILUS_ICON_DND_URI_LIST:
+		/* FIXME: bugzilla.eazel.com 2948 
+		   Pavel will finish it: check if this is a directory. */
+		ret_val = FALSE;
+		break;
+	case NAUTILUS_ICON_DND_KEYWORD:	
+		ret_val = TRUE;
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:	
+		break;
+	default:
+		break;
+	}
+
+	return ret_val;
+}
+
+
+
 static void
 fm_list_handle_dropped_items (NautilusList *list,
 			      int action,
@@ -819,6 +850,10 @@ set_up_list (FMListView *list_view)
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "select_next_name",
 			    select_next_name_callback,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "handle_dragged_items",
+			    GTK_SIGNAL_FUNC(fm_list_handle_dragged_items),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "handle_dropped_items",

@@ -100,15 +100,28 @@ struct NautilusListClass {
 	void (* selection_changed) (NautilusList *list);
 
 	/* column resize tracking calls */
-	void (* column_resize_track_start) (GtkWidget *widget, int column);
-	void (* column_resize_track) (GtkWidget *widget, int column);
-	void (* column_resize_track_end) (GtkWidget *widget, int column);
-	void (* select_matching_name) (GtkWidget *widget, const char *);
-	void (* select_previous_name) (GtkWidget *widget);
-	void (* select_next_name) (GtkWidget *widget);
-	void (* handle_dropped_items) (GtkWidget *widget, GdkDragContext *context, GList *items);
-	void (* get_drag_pixmap) (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
-	int  (* get_sort_column_index) (void);
+	void      (* column_resize_track_start) (GtkWidget *widget, int column);
+	void      (* column_resize_track)       (GtkWidget *widget, int column);
+	void      (* column_resize_track_end)   (GtkWidget *widget, int column);
+	void      (* select_matching_name)      (GtkWidget *widget, const char *);
+	void      (* select_previous_name)      (GtkWidget *widget);
+	void      (* select_next_name)          (GtkWidget *widget);
+	void      (* get_drag_pixmap)           (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
+	int       (* get_sort_column_index)     (void);
+
+	/* dnd handling. defer the semantics of dnd to the application side, not nautilus-list */
+	gboolean  (* handle_dragged_items)      (GtkWidget     *widget,
+						 int            action,
+						 GList         *drop_data,
+						 int            x,
+						 int            y,
+						 guint          info);
+	void      (* handle_dropped_items)      (GtkWidget     *widget,
+						 int            action,
+						 GList         *drop_data,
+						 int            x,
+						 int            y,
+						 guint          info);
 };
 
 typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, gpointer);
@@ -145,3 +158,8 @@ void	     nautilus_list_set_rejects_dropped_icons (NautilusList	  *list,
 						      gboolean		   new_value);
 
 #endif /* NAUTILUS_LIST_H */
+
+
+
+
+

@@ -1,3 +1,20 @@
+2000-10-03  Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_BOOL__INT_POINTER_INT_INT_UINT): add function.
+	* libnautilus-extensions/nautilus-gtk-extensions.h: add prototype.
+	
+	* libnautilus-extensions/nautilus-list.c: 
+	(nautilus_list_initialize_class),
+	(nautilus_list_prelight_if_necessary), (nautilus_list_drag_motion),
+	(nautilus_list_drag_drop), (nautilus_list_drag_data_received):
+	* libnautilus-extensions/nautilus-list.h:
+	add the handle-dragged-items signal to handle prelighting when you 
+	drag.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dragged_items),
+	(set_up_list): hook to the handle-dragged-items signal.
+
 2000-10-03  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3155 (need feedback item in Help menu)

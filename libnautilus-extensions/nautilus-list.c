@@ -38,15 +38,15 @@
 #include <gtk/gtkmain.h>
 #include <glib.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-
-#include "nautilus-background.h"
-#include "nautilus-drag.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gdk-pixbuf-extensions.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-list-column-title.h"
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-graphic-effects.h>
+#include <libnautilus-extensions/nautilus-drag.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-list-column-title.h>
 
 /* Timeout for making the row currently selected for keyboard operation visible.
  * Unlike in nautilus-icon-container, there appear to be no adverse effects from
@@ -117,6 +117,7 @@ struct NautilusListDetails
 	GdkGC *selection_light_color;
 	GdkGC *selection_medium_color;
 	GdkGC *selection_main_color;
+
 };
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
@@ -173,6 +174,7 @@ enum {
 	SELECT_PREVIOUS_NAME,
 	SELECT_NEXT_NAME,
 	HANDLE_DROPPED_ITEMS,
+	HANDLE_DRAGGED_ITEMS,
 	GET_DRAG_PIXMAP,
 	GET_SORT_COLUMN_INDEX,
 	LAST_SIGNAL
@@ -373,6 +375,19 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_next_name),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
+	list_signals[HANDLE_DRAGGED_ITEMS] =
+		gtk_signal_new ("handle_dragged_items",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dragged_items),
+				nautilus_gtk_marshal_BOOL__INT_POINTER_INT_INT_UINT,
+				GTK_TYPE_BOOL, 
+				5,
+				GTK_TYPE_INT,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT,
+				GTK_TYPE_UINT);
 	list_signals[HANDLE_DROPPED_ITEMS] =
 		gtk_signal_new ("handle_dropped_items",
 				GTK_RUN_LAST,
@@ -2988,10 +3003,30 @@ nautilus_list_stop_auto_scroll (NautilusList *list)
 	}
 }
 
+static void
+nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context,
+				     int x, int y, guint time)
+{
+	gboolean is_prelight_necessary;
+
+	/* FIXME: bugzilla.eazel.com 2948 
+	   pavels will finish it */
+
+	/* should we prelight the current row ? */
+	gtk_signal_emit (GTK_OBJECT (list), 
+			 list_signals[HANDLE_DRAGGED_ITEMS],
+			 context->action, 
+			 list->details->drag_info->selection_list,
+			 x, y, 
+			 list->details->drag_info->data_type, 
+			 &is_prelight_necessary);
+
+}
+
 
 static gboolean
 nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
-		       int x, int y, guint time)
+			   int x, int y, guint time)
 {
 	NautilusList *list;
 	int default_action, non_default_action, resulting_action;
@@ -3005,6 +3040,8 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	nautilus_list_get_drop_action (list, context, x, y, &default_action, &non_default_action);
 	resulting_action = nautilus_drag_modifier_based_action (default_action, non_default_action);
 	gdk_drag_status (context, resulting_action, time);
+
+	nautilus_list_prelight_if_necessary (list, context, x, y, time);
 
 	return TRUE;
 }
@@ -3023,7 +3060,6 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 	gtk_drag_get_data (GTK_WIDGET (widget), context,
 			   GPOINTER_TO_INT (context->targets->data),
 			   time);
-
 
 	return FALSE;
 }
@@ -3084,6 +3120,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 
 	drag_info->data_type = info;
 	drag_info->got_drop_data_type = TRUE;
+	drag_info->selection_data = data;
 
 
 	switch (info) {
