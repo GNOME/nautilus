@@ -1,3 +1,15 @@
+2000-11-21  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error):
+	Fixed 4486 and 3748. Made the file copy operation error dialog
+	have a non-misleading title if the title actually shows up (it
+	is not supposed to but it may due to window manager theme bugs).
+	Made the error text for copying into non-writeable dialogs more 
+	accurate.
+	
 2000-11-21  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/*.xpm:
@@ -316,7 +328,7 @@
 	Fixed bug occuring when percentages of multi-point
 	add up to >100% (bug 4759)
 
-2000-11-17  Mathieu Lacage  <mathieu@eazel.om>
+2000-11-17  Mathieu Lacage  <mathieu@eazel.com>
 
 	reviewed by: Sullivan
 

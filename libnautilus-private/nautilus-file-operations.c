@@ -480,6 +480,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	char *text;
 	char *unescaped_name;
 	char *current_operation;
+	char *dialog_title;
 
 	switch (xfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
@@ -497,6 +498,8 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		
 		current_operation = g_strdup (xfer_info->progress_verb);
+
+		dialog_title = g_strdup_printf(_("Error while %s."), current_operation);
 
 		g_strdown (current_operation);
 
@@ -518,7 +521,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				}
 				text = g_strdup_printf
 					(_("Error while %s items to \"%s\".\n"
-					   "The destination is read-only."),
+					   "The destination is not writable."),
 					 current_operation, unescaped_name);
 			}
 			g_free (current_operation);
@@ -526,7 +529,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			
 			result = nautilus_simple_dialog
 				(parent_for_error_dialog (xfer_info), TRUE, text, 
-				_("Error while Copying"), _("Stop"), NULL);
+				dialog_title, _("Stop"), NULL);
 			g_free (text);
 
 			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
@@ -544,7 +547,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			
 			result = nautilus_simple_dialog
 				(parent_for_error_dialog (xfer_info), TRUE, text, 
-				_("Error while Copying"), _("Stop"), NULL);
+				dialog_title, _("Stop"), NULL);
 			g_free (text);
 
 			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
@@ -561,10 +564,12 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		result = nautilus_simple_dialog
 			(parent_for_error_dialog (xfer_info), TRUE, text, 
-			 _("Error while Copying"),
+			dialog_title,
 			 _("Skip"), _("Retry"), _("Stop"), NULL);
-		g_free (text);
 
+		g_free (text);
+		g_free (dialog_title);
+		
 		switch (result) {
 		case 0:
 			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
