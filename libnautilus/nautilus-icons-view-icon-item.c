@@ -36,6 +36,8 @@
 #include "nautilus-string.h"
 #include "gdk-extensions.h"
 
+#define STRETCH_HANDLE_THICKNESS 6
+
 /* Private part of the NautilusIconsViewIconItem structure */
 struct _NautilusIconsViewIconItemDetails {
 	/* The image, text, font. */
@@ -51,6 +53,7 @@ struct _NautilusIconsViewIconItemDetails {
    	guint is_highlighted_for_selection : 1;
 	guint is_highlighted_for_keyboard_selection: 1;
    	guint is_highlighted_for_drop : 1;
+	guint show_stretch_handles : 1;
 };
 
 
@@ -491,6 +494,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	NautilusIconsViewIconItem *icon_item;
 	NautilusIconsViewIconItemDetails *details;
 	ArtIRect pixbuf_rect, drawable_rect, draw_rect;
+	GdkGC *gc;
 	
 	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	details = icon_item->details;
@@ -515,6 +519,34 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 				 draw_rect.x1 - draw_rect.x0, draw_rect.y1 - draw_rect.y0,
 				 GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
 				 draw_rect.x0, draw_rect.y0);
+	}
+
+	/* Draw stretching handles. */
+	if (details->show_stretch_handles) {
+		gc = gdk_gc_new (drawable);
+		
+		gdk_draw_rectangle (drawable, gc, TRUE,
+				    pixbuf_rect.x0 - x,
+				    pixbuf_rect.y0 - y,
+				    STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS);
+		gdk_draw_rectangle (drawable, gc, TRUE,
+				    pixbuf_rect.x1 - x - STRETCH_HANDLE_THICKNESS,
+				    pixbuf_rect.y0 - y,
+				    STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS);
+		gdk_draw_rectangle (drawable, gc, TRUE,
+				    pixbuf_rect.x0 - x,
+				    pixbuf_rect.y1 - y - STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS);
+		gdk_draw_rectangle (drawable, gc, TRUE,
+				    pixbuf_rect.x1 - x - STRETCH_HANDLE_THICKNESS,
+				    pixbuf_rect.y1 - y - STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS,
+				    STRETCH_HANDLE_THICKNESS);
+		
+		gdk_gc_unref (gc);
 	}
 	
 	/* Draw the text. */
@@ -544,7 +576,9 @@ nautilus_icons_view_icon_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf
 
 
 /* Point handler for the icon canvas item. */
-/* FIXME: This currently only reports a hit if the pixbuf is hit. */
+/* FIXME: This currently only reports a hit if the pixbuf or stretch handles are hit,
+ * and ignores hits on the text.
+ */
 static double
 nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, int cx, int cy,
 				     GnomeCanvasItem **actual_item)
@@ -564,8 +598,12 @@ nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, 
 
 	/* Check to see if it's within the item's rectangle at all. */
 	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (icon_item, &rect);
-	if (cx <= rect.x0 || cx >= rect.x1 || cy <= rect.y0 || cy >= rect.y1)
+	if (cx < rect.x0 || cx >= rect.x1 || cy < rect.y0 || cy >= rect.y1)
 		return no_hit;
+
+	/* Check for hits in the stretch handles. */
+	if (nautilus_icons_view_icon_item_get_hit_stretch_handle (icon_item, cx, cy))
+		return 0.0;
 
 	/* Can't get this far without a pixbuf. */
 	g_assert (details->pixbuf != NULL);
@@ -723,4 +761,45 @@ nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconIt
 	
 	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->width);
 	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->height);
+}
+
+void
+nautilus_icons_view_icon_item_set_show_stretch_handles (NautilusIconsViewIconItem *item,
+							gboolean show_stretch_handles)
+{
+	g_return_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item));
+	g_return_if_fail (show_stretch_handles == FALSE || show_stretch_handles == TRUE);
+	
+	if (!item->details->show_stretch_handles == !show_stretch_handles)
+		return;
+
+	item->details->show_stretch_handles = show_stretch_handles;
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
+}
+
+/* Check if one of the stretch handles was hit. */
+gboolean
+nautilus_icons_view_icon_item_get_hit_stretch_handle (NautilusIconsViewIconItem *item,
+						      int canvas_x, int canvas_y)
+{
+	ArtIRect rect;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item), FALSE);
+
+	/* Make sure there are handles to hit. */
+	if (!item->details->show_stretch_handles)
+		return FALSE;
+
+	/* Get both the point and the icon rectangle in canvas coordinates. */
+	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (item, &rect);
+
+	/* Handle the case where it's not in the rectangle at all. */
+	if (canvas_x < rect.x0 || canvas_x >= rect.x1 || canvas_y < rect.y0 || canvas_y >= rect.y1)
+		return FALSE;
+
+	/* Check for hits in the stretch handles. */
+	return (canvas_x < rect.x0 + STRETCH_HANDLE_THICKNESS
+     		|| canvas_x >= rect.x1 - STRETCH_HANDLE_THICKNESS)
+		&& (canvas_y < rect.y0 + STRETCH_HANDLE_THICKNESS
+		    || canvas_y >= rect.y1 - STRETCH_HANDLE_THICKNESS);
 }

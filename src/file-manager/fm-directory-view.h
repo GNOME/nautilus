@@ -81,6 +81,16 @@ struct _FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
+	/* The 'append_item_context_menu_items' signal is emitted 
+	 * when creating a context menu, either an item-specific one or
+	 * a background one. Subclasses might want to override this to
+	 * modify the menu contents.
+	 */
+	void 	(* append_item_context_menu_items) 	 
+					 (FMDirectoryView *view,
+					  GtkMenu *menu,
+					  NautilusFile *file);
+
 	/* The 'append_background_context_menu_items' signal is emitted 
 	 * when creating a context menu, either an item-specific one or
 	 * a background one. Subclasses might want to override this to
@@ -102,7 +112,8 @@ struct _FMDirectoryViewClass {
 
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
-        void    (* bump_zoom_level)      (FMDirectoryView *view, gint zoom_increment);
+        void    (* bump_zoom_level)      (FMDirectoryView *view,
+					  int zoom_increment);
 
         /* can_zoom_in is a function pointer that subclasses must override to
          * return whether the view is at maximum size (furthest-in zoom level) */
@@ -112,56 +123,53 @@ struct _FMDirectoryViewClass {
          * return whether the view is at minimum size (furthest-out zoom level) */
         gboolean (* can_zoom_out)	 (FMDirectoryView *view);
         
-        /* select_sll is a function pointer that subclasses must override to
+        /* select_all is a function pointer that subclasses must override to
          * select all of the items in the view */
-        void (* select_all)	        (FMDirectoryView *view);
+        void     (* select_all)	         (FMDirectoryView *view);
 };
 
 
 
 /* GtkObject support */
-GtkType                   fm_directory_view_get_type                 (void);
+GtkType                   fm_directory_view_get_type                      (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *fm_directory_view_get_view_frame           (FMDirectoryView         *view);
+NautilusContentViewFrame *fm_directory_view_get_view_frame                (FMDirectoryView *view);
 
 /* URI handling */
-void                      fm_directory_view_load_uri                 (FMDirectoryView         *view,
-								      const char              *uri);
+void                      fm_directory_view_load_uri                      (FMDirectoryView *view,
+									   const char      *uri);
 
 /* Functions callable from the user interface and elsewhere. */
-GList *                   fm_directory_view_get_selection            (FMDirectoryView         *view);
-void                      fm_directory_view_stop                     (FMDirectoryView         *view);
-gboolean		  fm_directory_view_can_zoom_in		     (FMDirectoryView	      *view);
-gboolean		  fm_directory_view_can_zoom_out	     (FMDirectoryView	      *view);
-void	                  fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, 
-								      gint 		       zoom_increment);
-void	                  fm_directory_view_select_all              (FMDirectoryView         *view);
+GList *                   fm_directory_view_get_selection                 (FMDirectoryView *view);
+void                      fm_directory_view_stop                          (FMDirectoryView *view);
+gboolean                  fm_directory_view_can_zoom_in                   (FMDirectoryView *view);
+gboolean                  fm_directory_view_can_zoom_out                  (FMDirectoryView *view);
+void                      fm_directory_view_bump_zoom_level               (FMDirectoryView *view,
+									   int              zoom_increment);
+void                      fm_directory_view_select_all                    (FMDirectoryView *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
  * that observers might want to connect with.
  */
-void                      fm_directory_view_clear                    (FMDirectoryView         *view);
-void                      fm_directory_view_begin_adding_entries     (FMDirectoryView         *view);
-void                      fm_directory_view_add_entry                (FMDirectoryView         *view,
-								      NautilusFile            *file);
-void                      fm_directory_view_done_adding_entries      (FMDirectoryView         *view);
-void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);				       			 
+void                      fm_directory_view_clear                         (FMDirectoryView *view);
+void                      fm_directory_view_begin_adding_entries          (FMDirectoryView *view);
+void                      fm_directory_view_add_entry                     (FMDirectoryView *view,
+									   NautilusFile    *file);
+void                      fm_directory_view_done_adding_entries           (FMDirectoryView *view);
+void                      fm_directory_view_begin_loading                 (FMDirectoryView *view);
 
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
-								      NautilusFile            *file,
-								      gboolean		       request_new_window);
-void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
-
-
-
-NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
-void                      fm_directory_view_popup_background_context_menu  (FMDirectoryView *view);
-void                      fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
-								      NautilusFile *file); 
+void                      fm_directory_view_activate_entry                (FMDirectoryView *view,
+									   NautilusFile    *file,
+									   gboolean         request_new_window);
+void                      fm_directory_view_notify_selection_changed      (FMDirectoryView *view);
+NautilusDirectory *       fm_directory_view_get_model                     (FMDirectoryView *view);
+void                      fm_directory_view_popup_background_context_menu (FMDirectoryView *view);
+void                      fm_directory_view_popup_item_context_menu       (FMDirectoryView *view,
+									   NautilusFile    *file); 
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -295,29 +295,33 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 					      NULL);
 
 	if (result == GNOME_VFS_OK) {
+		/* Check for the case where the info doesn't give the file size. */
+		if ((metafile_info.flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0)
+			result = GNOME_VFS_ERROR_GENERIC;
+	}
+
+	if (result == GNOME_VFS_OK) {
 		/* Check for a size that won't fit into a size_t. */
-		if(metafile_info.flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
-			size = metafile_info.size;
-			if (size != metafile_info.size)
-				result = GNOME_VFS_ERROR_TOOBIG;
-		} else
-			size = 0;
+		size = metafile_info.size;
+		if (size != metafile_info.size)
+			result = GNOME_VFS_ERROR_TOOBIG;
 	}
 
 	metafile_handle = NULL;
+	if (result == GNOME_VFS_OK) {
 		result = gnome_vfs_open_uri (&metafile_handle,
 					     metafile_uri,
 					     GNOME_VFS_OPEN_READ);
+	}
 
-	if (result == GNOME_VFS_OK && size) {
+	if (result == GNOME_VFS_OK) {
 		buffer = g_malloc (size);
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
 		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
 		g_free (buffer);
-	} else
-		directory->details->metafile_tree = NULL;
+	}
 
-	if (result == GNOME_VFS_OK)
+	if (metafile_handle != NULL)
 		gnome_vfs_close (metafile_handle);
 
 	return result;
@@ -339,12 +343,6 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 		directory->details->use_alternate_metafile = TRUE;
 	else
 		result = nautilus_directory_try_to_read_metafile (directory, directory->details->metafile_uri);
-
-	/* Check for errors. Later this must be reported to the user, not spit out as a warning. */
-	if (result != GNOME_VFS_OK
-	    && result != GNOME_VFS_ERROR_NOTFOUND
-	    && result != GNOME_VFS_ERROR_NOTADIRECTORY)
-		g_warning ("nautilus_directory_read_metafile failed to read metafile - we should report this to the user");
 }
 
 static void

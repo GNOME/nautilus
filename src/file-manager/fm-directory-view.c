@@ -35,9 +35,9 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-alloc.h>
+#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
@@ -48,6 +48,7 @@ enum
 	CLEAR,
 	DONE_ADDING_ENTRIES,
 	BEGIN_LOADING,
+	APPEND_ITEM_CONTEXT_MENU_ITEMS,
 	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
 	LAST_SIGNAL
 };
@@ -72,7 +73,7 @@ struct _FMDirectoryViewDetails
 };
 
 /* forward declarations */
-static gint display_selection_info_idle_cb 	(gpointer data);
+static int display_selection_info_idle_cb 	(gpointer data);
 static void display_selection_info 		(FMDirectoryView *view);
 static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
 static void fm_directory_view_initialize 	(FMDirectoryView *view);
@@ -81,9 +82,11 @@ static void fm_directory_view_append_background_context_menu_items
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
 static void fm_directory_view_real_append_background_context_menu_items 		
-						(FMDirectoryView *view, GtkMenu *menu);
-static void append_item_context_menu_items 	(FMDirectoryView *view, 
-						 GtkMenu *menu, 
+						(FMDirectoryView *view,
+						 GtkMenu *menu);
+static void fm_directory_view_real_append_item_context_menu_items 		
+						(FMDirectoryView *view,
+						 GtkMenu *menu,
 						 NautilusFile *file);
 static GtkMenu *create_item_context_menu        (FMDirectoryView *view,
 						 NautilusFile *file);
@@ -144,8 +147,8 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_entry),
-		    		gtk_marshal_NONE__POINTER,
-		    		GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		    		gtk_marshal_NONE__BOXED,
+		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 	fm_directory_view_signals[DONE_ADDING_ENTRIES] =
 		gtk_signal_new ("done_adding_entries",
        				GTK_RUN_LAST,
@@ -160,14 +163,22 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
+	fm_directory_view_signals[APPEND_ITEM_CONTEXT_MENU_ITEMS] =
+		gtk_signal_new ("append_item_context_menu_items",
+       				GTK_RUN_FIRST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_item_context_menu_items),
+		    		gtk_marshal_NONE__BOXED_BOXED,
+		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
 	fm_directory_view_signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("append_background_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_background_context_menu_items),
-		    		gtk_marshal_NONE__POINTER,
-		    		GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		    		gtk_marshal_NONE__BOXED,
+		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 
+	klass->append_item_context_menu_items = fm_directory_view_real_append_item_context_menu_items;
 	klass->append_background_context_menu_items = fm_directory_view_real_append_background_context_menu_items;
 
 	/* Function pointers that subclasses must override */
@@ -661,7 +672,7 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
  * 
  **/
 void
-fm_directory_view_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
+fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -810,7 +821,9 @@ fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *vi
 }
 
 static void
-append_item_context_menu_items (FMDirectoryView *view, GtkMenu *menu, NautilusFile *file)
+fm_directory_view_real_append_item_context_menu_items (FMDirectoryView *view,
+						       GtkMenu *menu,
+						       NautilusFile *file)
 {
 	GtkWidget *menu_item;
 
@@ -854,7 +867,9 @@ create_item_context_menu (FMDirectoryView *view,
 	
 	menu = GTK_MENU (gtk_menu_new ());
 
-	append_item_context_menu_items (view, menu, file);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 fm_directory_view_signals[APPEND_ITEM_CONTEXT_MENU_ITEMS], 
+			 menu, file);
 	
 	/* separator between item-specific and view-general menu items */
 	menu_item = gtk_menu_item_new ();
@@ -884,7 +899,7 @@ static void
 fm_directory_view_append_background_context_menu_items (FMDirectoryView *view,
 							GtkMenu *menu)
 {
-	gtk_signal_emit (GTK_OBJECT (view), 
+	gtk_signal_emit (GTK_OBJECT (view),
 			 fm_directory_view_signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS], 
 			 menu);
 }

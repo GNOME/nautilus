@@ -24,10 +24,11 @@
  *
  */
 
-/* ntl-content-view-client.c: Implementation for object that
+/* ntl-content-view-frame.c: Implementation for object that
    represents the frame a nautilus content view plugs into. */
 
-#include "libnautilus.h"
+#include <config.h>
+#include "ntl-content-view-frame.h"
 
 typedef struct {
   POA_Nautilus_View servant;

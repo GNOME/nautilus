@@ -1,9 +1,93 @@
-2000-02-15  Andu Hertzfeld <andy@eazel.com>
+2000-02-16  Darin Adler  <darin@eazel.com>
+
+	Added icon stretching and did some cleanups.
+	Stretched icons aren't yet persistent (the scale factor is not
+	saved in metadata), but that's not much more work.
+
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.h:
+	* libnautilus/gnome-icon-container.c: (icon_new), (icon_position),
+	(icon_set_position), (icon_get_size), (icon_set_size),
+	(icon_toggle_selected), (icon_select), (icon_set_selected),
+	(button_press_event), (gnome_icon_container_begin_stretch),
+	(start_stretching), (gnome_icon_container_stretch),
+	(continue_stretching), (gnome_icon_container_end_stretch),
+	(end_stretching), (button_release_event), (motion_notify_event),
+	(handle_icon_button_press), (gnome_icon_container_clear),
+	(request_update_one), (update_icon), (get_first_selected_icon),
+	(gnome_icon_container_show_stretch_handles),
+	(gnome_icon_container_has_stretch_handles),
+	(gnome_icon_container_is_stretched),
+	(gnome_icon_container_unstretch), (compute_stretch),
+	(nautilus_self_check_compute_stretch),
+	(nautilus_self_check_gnome_icon_container):
+	* libnautilus/nautilus-icons-view-icon-item.h:
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	(nautilus_icons_view_icon_item_draw),
+	(nautilus_icons_view_icon_item_point),
+	(nautilus_icons_view_icon_item_set_show_stretch_handles),
+	(nautilus_icons_view_icon_item_get_hit_stretch_handle):
+	* libnautilus/nautilus-lib-self-check-functions.h:
+	Added machinery for stretching icons.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(append_item_context_menu_items),
+	(fm_directory_view_real_append_item_context_menu_items),
+	(fm_directory_view_initialize_class), (create_item_context_menu):
+	Added machinery for views to have view-specific menu items for
+	icons as well as for the window as a whole.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize_class),
+	(fm_directory_view_icons_append_item_context_menu_items),
+	(show_stretch_handles_cb), (unstretch_item_cb):
+	Added menu items for stretching icons.
+
+	* libnautilus/gnome-icon-container.c: (start_rubberbanding):
+	Fixed bug that would result in two rubberband timeouts at
+	once if you did rubberbanding quickly.
+
+	* components/notes/.cvsignore: Andy's new component needs a
+	.cvsignore file for its generated pieces.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_try_to_read_metafile),
+	(nautilus_directory_read_metafile):
+	Simplified logic in metafile-reading functions and fixed a bug
+	where the vfs handle would be left open if certain categories
+	of errors occurred.
+
+	* libnautilus/nautilus-gtk-extensions.h:
+	Added a missing gtk_marshal function.
+
+	* libnautilus/nautilus-icon-factory.h:
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_size_for_zoom_level),
+	(nautilus_get_icon_size_for_zoom_level),
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file):
+	* src/nautilus-index-title.c: (nautilus_index_title_set_up_icon):
+	* src/nautilus-zoom-control.c: (set_zoom_level):
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_bump_zoom_level), (install_icon):
+	Made some API improvements for the icon factory. Added a missing
+	get_ to the name nautilus_get_icon_size_for_zoom_level and added
+	convenience functions for the most common uses of the factory.
+
+	* libnautilus/ntl-content-view-frame.c:
+	* libnautilus/ntl-meta-view-frame.c:
+	* libnautilus/ntl-view-frame.c:
+	Weaned all the files in libnautilus itself from using the
+	libnautilus.h include file. They instead include the parts that
+	they need. Also added some missing <config.h> includes.
+
+2000-02-15  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-index-panel.c:
-	removed test code that created extra tabs on right-click
+	Removed test code that created extra tabs on right-click.
 	* src/ntl-index-title.c:
-	added logic to break the title into two lines so it can use a larger font,
+	Added logic to break the title into two lines so it can use a larger font,
 	if it can find an appropriate breaking point.
 	
 2000-02-15  Maciej Stachowiak  <mjs@eazel.com>

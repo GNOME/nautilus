@@ -23,10 +23,15 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
+
 /* ntl-meta-view-frame.c: Implementation for object that represents a
    nautilus meta view implementation. */
-#include "libnautilus.h"
+
+#include <config.h>
+#include "ntl-meta-view-frame.h"
+
 #include <libgnome/gnome-i18n.h>
+#include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
 
 typedef struct {

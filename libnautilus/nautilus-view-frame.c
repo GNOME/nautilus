@@ -27,10 +27,12 @@
 /* ntl-view-frame.c: Implementation for object that represents a
    nautilus view implementation. */
 
+#include <config.h>
 #include "ntl-view-frame.h"
 
-#include <gtk/gtk.h>
-#include "libnautilus.h"
+#include <gtk/gtksignal.h>
+#include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-control.h>
 
 enum {
   NOTIFY_LOCATION_CHANGE,

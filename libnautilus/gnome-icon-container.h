@@ -66,6 +66,7 @@ struct _GnomeIconContainerClass {
 };
 
 
+
 guint      gnome_icon_container_get_type                (void);
 GtkWidget *gnome_icon_container_new                     (NautilusIconsController *controller);
 
@@ -75,8 +76,8 @@ void       gnome_icon_container_enable_linger_selection (GnomeIconContainer     
 void       gnome_icon_container_clear                   (GnomeIconContainer      *view);
 void       gnome_icon_container_add                     (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon,
-							 gint                     x,
-							 gint                     y);
+							 int                      x,
+							 int                      y);
 void       gnome_icon_container_add_auto                (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon);
 
@@ -87,10 +88,17 @@ void	   gnome_icon_container_request_update_all 	(GnomeIconContainer 	 *containe
 
 GList *    gnome_icon_container_get_selection           (GnomeIconContainer      *view);
 
-gint       gnome_icon_container_get_zoom_level          (GnomeIconContainer      *view);
-void       gnome_icon_container_set_zoom_level          (GnomeIconContainer      *view, gint new_zoom_level);
+int        gnome_icon_container_get_zoom_level          (GnomeIconContainer      *view);
+void       gnome_icon_container_set_zoom_level          (GnomeIconContainer      *view,
+							 int                      new_zoom_level);
 
 void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
 void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
+
+/* The following all work on the selected icon. */
+gboolean   gnome_icon_container_has_stretch_handles     (GnomeIconContainer      *container);
+gboolean   gnome_icon_container_is_stretched            (GnomeIconContainer      *container);
+void       gnome_icon_container_show_stretch_handles    (GnomeIconContainer      *container);
+void       gnome_icon_container_unstretch               (GnomeIconContainer      *container);
 
 #endif

@@ -43,6 +43,7 @@ void nautilus_run_lib_self_checks (void);
 	macro (nautilus_self_check_directory) \
 	macro (nautilus_self_check_gdk_extensions) \
 	macro (nautilus_self_check_glib_extensions) \
+	macro (nautilus_self_check_gnome_icon_container) \
 	macro (nautilus_self_check_string) \
 /* Add new self-check functions to the list above this line. */
 

@@ -746,7 +746,7 @@ nautilus_icon_factory_scale (GdkPixbuf *standard_sized_image,
  * NAUTILUS_ICON_SIZE_LARGEST, inclusive.
  */
 guint
-nautilus_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
+nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 {
 	switch (zoom_level) {
 	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
@@ -767,4 +767,37 @@ nautilus_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 		g_assert_not_reached ();
 		return NAUTILUS_ICON_SIZE_STANDARD;
 	}
+}
+
+/* Convenience cover for nautilus_icon_factory_get_icon_for_file
+ * and nautilus_icon_factory_get_pixbuf_for_icon.
+ */
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
+					   guint size_in_pixels)
+{
+	NautilusScalableIcon *icon;
+	GdkPixbuf *pixbuf;
+
+	icon = nautilus_icon_factory_get_icon_for_file (file);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels);
+	nautilus_scalable_icon_unref (icon);
+	return pixbuf;
+}
+
+/* Convenience cover for nautilus_icon_factory_get_icon_for_file,
+ * nautilus_icon_factory_get_pixbuf_for_icon,
+ * and gdk_pixbuf_render_pixmap_and_mask.
+ */
+void
+nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
+						    guint size_in_pixels,
+						    GdkPixmap **pixmap,
+						    GdkBitmap **mask)
+{
+	GdkPixbuf *pixbuf;
+
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
+	gdk_pixbuf_unref (pixbuf);
 }

@@ -55,11 +55,19 @@ struct _NautilusIconsViewIconItemClass {
 	GnomeCanvasItemClass parent_class;
 };
 
-GtkType nautilus_icons_view_icon_item_get_type                  (void);
-void    nautilus_icons_view_icon_item_get_icon_world_rectangle  (NautilusIconsViewIconItem *item,
-								 ArtDRect                  *world_rectangle);
-void    nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconItem *item,
-								 ArtIRect                  *window_rectangle);
+GtkType  nautilus_icons_view_icon_item_get_type                  (void);
+
+void     nautilus_icons_view_icon_item_get_icon_world_rectangle  (NautilusIconsViewIconItem *item,
+								  ArtDRect                  *world_rectangle);
+void     nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconItem *item,
+								  ArtIRect                  *window_rectangle);
+
+void     nautilus_icons_view_icon_item_set_show_stretch_handles  (NautilusIconsViewIconItem *item,
+								  gboolean                   show_stretch_handles);
+
+gboolean nautilus_icons_view_icon_item_get_hit_stretch_handle    (NautilusIconsViewIconItem *item,
+								  int                        canvas_x,
+								  int                        canvas_y);
 
 END_GNOME_DECLS
 

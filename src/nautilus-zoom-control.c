@@ -222,9 +222,10 @@ create_zoom_menu(GtkWidget *zoom_control)
 static void
 set_zoom_level(NautilusZoomControl *zoom_control, gint new_level)
 {
-  gtk_widget_queue_draw(GTK_WIDGET(zoom_control));	
+  gtk_widget_queue_draw (GTK_WIDGET (zoom_control));	
   zoom_control->current_zoom = new_level;
-  zoom_control->zoom_factor = (double) nautilus_icon_size_for_zoom_level (zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
+  zoom_control->zoom_factor = (double) nautilus_get_icon_size_for_zoom_level
+	  (zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
   /* FIXME: tell the content view about the zoom change here soon */
 }
 

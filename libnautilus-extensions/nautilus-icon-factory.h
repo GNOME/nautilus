@@ -70,32 +70,52 @@ typedef enum {
 typedef struct _NautilusScalableIcon NautilusScalableIcon;
 
 /* Relationship between zoom levels and icons sizes. */
-guint                 nautilus_icon_size_for_zoom_level         (NautilusZoomLevel     zoom_level);
+guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel      zoom_level);
 
 /* Switch themes. */
-void                  nautilus_icon_factory_set_theme           (const char           *theme_name);
+void                  nautilus_icon_factory_set_theme                    (const char            *theme_name);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file   (NautilusFile         *file);
-NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name    (const char           *scalable_icon_name);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
  */
-GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
-								 guint                 size_in_pixels);
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
+									  guint                  size_in_pixels);
+
+/* Convenience functions for the common case where you want to choose
+ * and render the icon into a pixbuf all at once.
+ */
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile          *file,
+									  guint                  size_in_pixels);
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_by_name           (const char            *icon_name,
+									  guint                  size_in_pixels);
+
+/* Convenience functions for legacy interfaces that require a pixmap and
+ * bitmap. Maybe we can get rid of these one day.
+ */
+void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile          *file,
+									  guint                  size_in_pixels,
+									  GdkPixmap            **pixmap,
+									  GdkBitmap            **mask);
+void                  nautilus_icon_factory_get_pixmap_and_mask_by_name  (NautilusFile          *file,
+									  guint                  size_in_pixels,
+									  GdkPixmap            **pixmap,
+									  GdkBitmap            **mask);
 
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same
  * with ==.
  */
-void                  nautilus_scalable_icon_ref                (NautilusScalableIcon *scalable_icon);
-void                  nautilus_scalable_icon_unref              (NautilusScalableIcon *scalable_icon);
+void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon  *scalable_icon);
+void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon  *scalable_icon);
 
 /* The name of a scalable icon is suitable for storage in metadata.
  * This is a quick way to record the result of getting an icon by name.
  */
-char *                nautilus_scalable_icon_get_name           (NautilusScalableIcon *scalable_icon);
+char *                nautilus_scalable_icon_get_name                    (NautilusScalableIcon  *scalable_icon);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

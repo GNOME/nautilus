@@ -112,36 +112,23 @@ nautilus_index_title_new (void)
 
 void
 nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile *file_object)
-{  
-	GdkPixmap *pixmap_for_dragged_file;
-	GdkBitmap *mask_for_dragged_file;
-	NautilusScalableIcon *icon;
-	GdkPixbuf *pixbuf; 
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	
-	icon = nautilus_icon_factory_get_icon_for_file (file_object);
-	if (icon == NULL)
-		return;
-	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon(icon, NAUTILUS_ICON_SIZE_STANDARD); 
-	nautilus_scalable_icon_unref (icon);
-	
-	/* set up the pixmap and mask of the new gtk_pixmap */
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap_for_dragged_file,
-					   &mask_for_dragged_file, 128);
-	
+	nautilus_icon_factory_get_pixmap_and_mask_for_file
+		(file_object, NAUTILUS_ICON_SIZE_STANDARD,
+		 &pixmap, &mask);
+
 	/* if there's no pixmap so far, so allocate one */
 	if (index_title->details->icon)
 		gtk_pixmap_set (GTK_PIXMAP (index_title->details->icon),
-				pixmap_for_dragged_file, mask_for_dragged_file);
+				pixmap, mask);
 	else {  
-		index_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap_for_dragged_file,
-									 mask_for_dragged_file));
+		index_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 		gtk_widget_show (index_title->details->icon);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->icon, 0, 0, 0);
 	}   
-	
-	/* we're done with the pixmap */
-	gdk_pixbuf_unref(pixbuf);
 }
 
 /* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */

@@ -36,10 +36,11 @@ typedef struct {
 	/* Canvas item for the icon. */
 	NautilusIconsViewIconItem *item;
 
-	/* X/Y coordinates and size. We could use the GnomeCanvasItem
-	 * functions, but this is a lot faster
-	 */
+	/* X/Y coordinates. */
 	double x, y;
+	
+	/* Scale factor (stretches icon). */
+	double scale;
 	
 	/* Whether this item is selected for operation. */
 	gboolean is_selected : 1;
@@ -99,6 +100,20 @@ typedef struct {
 	guint prev_x2, prev_y2;
 } GnomeIconContainerRubberbandInfo;
 
+typedef enum {
+	DRAG_ACTION_MOVE_OR_COPY,
+	DRAG_ACTION_STRETCH
+} DragAction;
+
+typedef struct {
+	/* Pointer position in canvas coordinates. */
+	int pointer_x, pointer_y;
+
+	/* Icon top, left, and size in canvas coordinates. */
+	int icon_x, icon_y;
+	guint icon_size;
+} StretchState;
+
 struct _GnomeIconContainerDetails {
 	NautilusIconsController *controller;
 
@@ -123,6 +138,9 @@ struct _GnomeIconContainerDetails {
 	/* Current icon for keyboard navigation. */
 	GnomeIconContainerIcon *kbd_current;
 
+	/* Current icon with stretch handles, so we have only one. */
+	GnomeIconContainerIcon *stretch_icon;
+
 	/* Rubberbanding status. */
 	GnomeIconContainerRubberbandInfo rubberband_info;
 
@@ -132,20 +150,16 @@ struct _GnomeIconContainerDetails {
 	 */
 	guint kbd_icon_visibility_timer_id;
 
-	/* the time the mouse button went down in milliseconds */
+	/* Remembered information about the start of the current event. */
 	guint32 button_down_time;
-	
-	/* Position of the pointer during the last click. */
-	int drag_x, drag_y;
 
-	/* Button currently pressed, possibly for dragging. */
+	/* Drag state. Valid only if drag_button is non-zero. */
 	guint drag_button;
-
-	/* Icon on which the click happened. */
 	GnomeIconContainerIcon *drag_icon;
-
-	/* Whether we are actually performing a dragging action. */
-	gboolean doing_drag;
+	int drag_x, drag_y;
+	DragAction drag_action;
+	gboolean drag_started;
+	StretchState stretch_start;
 
 	/* Idle ID. */
 	guint idle_id;

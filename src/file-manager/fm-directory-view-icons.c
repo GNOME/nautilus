@@ -63,6 +63,10 @@ static void fm_directory_view_icons_add_entry    (FMDirectoryView *view,
 static void fm_directory_view_icons_append_background_context_menu_items 
 						 (FMDirectoryView *view,
 			    			  GtkMenu *menu);
+static void fm_directory_view_icons_append_item_context_menu_items 
+						 (FMDirectoryView *view,
+			    			  GtkMenu *menu,
+						  NautilusFile *file);
 static void fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
@@ -144,6 +148,8 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_can_zoom_out;
         fm_directory_view_class->select_all
                 = fm_directory_view_icons_select_all;
+        fm_directory_view_class->append_item_context_menu_items
+        	= fm_directory_view_icons_append_item_context_menu_items;
         fm_directory_view_class->append_background_context_menu_items
         	= fm_directory_view_icons_append_background_context_menu_items;
 
@@ -278,7 +284,62 @@ add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 }
 
 static void
-customize_icon_text_cb (GtkMenuItem *menu_item, gpointer *view)
+show_stretch_handles_cb (GtkMenuItem *menu_item, gpointer view)
+{
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	gnome_icon_container_show_stretch_handles
+		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
+}
+
+static void
+unstretch_item_cb (GtkMenuItem *menu_item, gpointer view)
+{
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	gnome_icon_container_unstretch
+		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
+}
+
+static void
+fm_directory_view_icons_append_item_context_menu_items (FMDirectoryView *view,
+							GtkMenu *menu,
+							NautilusFile *file)
+{
+	GnomeIconContainer *icon_container;
+	GtkWidget *menu_item;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (GTK_IS_MENU (menu));
+	g_assert (file != NULL);
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
+				    append_item_context_menu_items, 
+				    (view, menu, file));
+
+	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
+
+	menu_item = gtk_menu_item_new_with_label (_("Stretch Icon"));
+	if (gnome_icon_container_has_stretch_handles (icon_container))
+		gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (show_stretch_handles_cb), view);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label (_("Restore Icon to Unstretched Size"));
+	if (!gnome_icon_container_is_stretched (icon_container))
+		gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (unstretch_item_cb), view);
+	gtk_menu_append (menu, menu_item);
+}
+
+static void
+customize_icon_text_cb (GtkMenuItem *menu_item, gpointer view)
 {
 	GtkWindow *window;
 
@@ -311,8 +372,8 @@ fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *v
 
 	menu_item = gtk_menu_item_new_with_label (_("Customize Icon Text..."));
 	gtk_widget_show (menu_item);
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (customize_icon_text_cb), view);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (customize_icon_text_cb), view);
 	gtk_menu_append (menu, menu_item);
 }
 

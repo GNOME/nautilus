@@ -35,6 +35,7 @@
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-lib-self-check-functions.h"
 
 #include "gnome-icon-container-private.h"
 
@@ -63,13 +64,14 @@
 /* Button assignments. */
 #define DRAG_BUTTON 1
 #define RUBBERBAND_BUTTON 1
-#define STRETCH_BUTTON 2
 #define CONTEXTUAL_MENU_BUTTON 3
 
 static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
 static void gnome_icon_container_initialize (GnomeIconContainer *container);
-static void request_update_one (GnomeIconContainer *container, 
-			        GnomeIconContainerIcon *icon);
+static void update_icon (GnomeIconContainer *container, 
+			 GnomeIconContainerIcon *icon);
+static void compute_stretch (StretchState *start,
+			     StretchState *current);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -107,10 +109,11 @@ icon_new (GnomeIconContainer *container,
 	GnomeIconContainerIcon *new;
         GnomeCanvas *canvas;
         
-	canvas = GNOME_CANVAS(container);
+	canvas = GNOME_CANVAS (container);
 	
 	new = g_new0 (GnomeIconContainerIcon, 1);
 	
+	new->scale = 1.0;
 	new->layout_done = TRUE;
 	
 	new->data = data;
@@ -120,14 +123,14 @@ icon_new (GnomeIconContainer *container,
 					nautilus_icons_view_icon_item_get_type (),
 					NULL));
 
-	request_update_one (container, new);
+	update_icon (container, new);
 	
 	return new;
 }
 
 static void
-icon_position (GnomeIconContainerIcon *icon,
-	       double x, double y)
+icon_set_position (GnomeIconContainerIcon *icon,
+		   double x, double y)
 {
 	if (icon->x == x && icon->y == y)
 		return;
@@ -138,6 +141,30 @@ icon_position (GnomeIconContainerIcon *icon,
 
 	icon->x = x;
 	icon->y = y;
+}
+
+static guint
+icon_get_size (GnomeIconContainer *container,
+	       GnomeIconContainerIcon *icon)
+{
+	return MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+		    * icon->scale,
+		    NAUTILUS_ICON_SIZE_SMALLEST);
+}
+
+static void
+icon_set_size (GnomeIconContainer *container,
+	       GnomeIconContainerIcon *icon,
+	       guint icon_size)
+{
+	if (icon_size == icon_get_size (container, icon))
+		return;
+
+	icon->scale = (double) icon_size /
+		nautilus_get_icon_size_for_zoom_level
+		(container->details->zoom_level);
+
+	update_icon (container, icon);
 }
 
 static void
@@ -153,18 +180,28 @@ icon_show (GnomeIconContainerIcon *icon)
 }
 
 static void
-icon_toggle_selected (GnomeIconContainerIcon *icon)
+icon_toggle_selected (GnomeIconContainer *container,
+		      GnomeIconContainerIcon *icon)
 {
 	icon->is_selected = !icon->is_selected;
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "highlighted_for_selection", (gboolean) icon->is_selected,
 			       NULL);
+
+	/* If the icon is deselected, then get rid of the stretch handles.
+	 * No harm in doing the same if the item is newly selected.
+	 */
+	if (icon == container->details->stretch_icon) {
+		container->details->stretch_icon = NULL;
+		nautilus_icons_view_icon_item_set_show_stretch_handles (icon->item, FALSE);
+	}
 }
 
 /* Select an icon. Return TRUE if selection has changed. */
 static gboolean
-icon_select (GnomeIconContainerIcon *icon,
-	     gboolean select)
+icon_set_selected (GnomeIconContainer *container,
+		   GnomeIconContainerIcon *icon,
+		   gboolean select)
 {
 	/* Since is_selected is a bit field, we have to do the ! business
 	 * to be sure we have either a 1 or a 0. Similarly, the caller
@@ -174,7 +211,7 @@ icon_select (GnomeIconContainerIcon *icon,
 	if (!select == !icon->is_selected)
 		return FALSE;
 
-	icon_toggle_selected (icon);
+	icon_toggle_selected (container, icon);
 	g_assert (!select == !icon->is_selected);
 	return TRUE;
 }
@@ -902,7 +939,7 @@ select_one_unselect_others (GnomeIconContainer *container,
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		selection_changed |= icon_select (icon, icon == icon_to_select);
+		selection_changed |= icon_set_selected (container, icon, icon == icon_to_select);
 	}
 	
 	return selection_changed;
@@ -959,7 +996,7 @@ gnome_icon_container_move_icon (GnomeIconContainer *container,
 	if (new_x_offset > 0 && new_y_offset > 0)
 		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y + 1);
 
-	icon_position (icon, x, y);
+	icon_set_position (icon, x, y);
 	if (raise)
 		icon_raise (icon);
 
@@ -1003,11 +1040,11 @@ rubberband_select_in_cell (GnomeIconContainer *container,
 						    prev_x2, prev_y2);
 
 		if (in_curr_region && ! in_prev_region)
-			selection_changed |= icon_select (icon,
-							  !icon->was_selected_before_rubberband);
+			selection_changed |= icon_set_selected (container, icon,
+								!icon->was_selected_before_rubberband);
 		else if (in_prev_region && ! in_curr_region)
-			selection_changed |= icon_select (icon,
-							  icon->was_selected_before_rubberband);
+			selection_changed |= icon_set_selected (container, icon,
+								icon->was_selected_before_rubberband);
 	}
 
 	return selection_changed;
@@ -1197,9 +1234,10 @@ start_rubberbanding (GnomeIconContainer *container,
 
 	band_info->active = TRUE;
 
-	band_info->timer_id = gtk_timeout_add (RUBBERBAND_TIMEOUT_INTERVAL,
-					       rubberband_timeout_cb,
-					       container);
+	if (band_info->timer_id == 0)
+		band_info->timer_id = gtk_timeout_add (RUBBERBAND_TIMEOUT_INTERVAL,
+						       rubberband_timeout_cb,
+						       container);
 
 	gnome_canvas_item_grab (band_info->selection_rectangle,
 				(GDK_POINTER_MOTION_MASK
@@ -1242,7 +1280,7 @@ kbd_move_to (GnomeIconContainer *container,
 		gboolean selection_changed;
 
 		selection_changed = unselect_all (container);
-		selection_changed |= icon_select (icon, TRUE);
+		selection_changed |= icon_set_selected (container, icon, TRUE);
 
 		if (selection_changed)
 			gtk_signal_emit (GTK_OBJECT (container),
@@ -1529,7 +1567,7 @@ kbd_space (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
 	if (container->details->kbd_current != NULL) {
-		if (icon_select (container->details->kbd_current, TRUE))
+		if (icon_set_selected (container, container->details->kbd_current, TRUE))
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[SELECTION_CHANGED]);
 	}
@@ -1637,9 +1675,10 @@ static gboolean
 button_press_event (GtkWidget *widget,
 		    GdkEventButton *event)
 {
+	GnomeIconContainer *container;
 	gboolean return_value;
-	GnomeIconContainer *container = GNOME_ICON_CONTAINER (widget);
-        
+
+	container = GNOME_ICON_CONTAINER (widget);
         container->details->button_down_time = event->time;
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
@@ -1698,13 +1737,16 @@ gnome_icon_container_almost_drag (GnomeIconContainer *container,
 	}
 	
 	if (details->drag_icon != NULL) {
-		int elapsed_time = event->time - details->button_down_time;
+		int elapsed_time;
+		
 		set_kbd_current (container, details->drag_icon, TRUE);
 		
 		/* If single-click mode, activate the icon, unless modifying
 		 * the selection or pressing for a very long time.
 		 */
-		if (details->single_click_mode && (elapsed_time < MAX_CLICK_TIME)
+		elapsed_time = event->time - details->button_down_time;
+		if (details->single_click_mode
+		    && elapsed_time < MAX_CLICK_TIME
 		    && ! button_event_modifies_selection (event)) {
 			
 			/* FIXME: This should activate all selected icons, not just one */
@@ -1712,28 +1754,76 @@ gnome_icon_container_almost_drag (GnomeIconContainer *container,
 					 signals[ACTIVATE],
 					 details->drag_icon->data);
 		}
-		
-		details->drag_icon = NULL;
 	}
 }
 
-static void
-gnome_icon_container_begin_stretch (GnomeIconContainer *container)
+static gboolean
+start_stretching (GnomeIconContainer *container)
 {
-	g_message ("begin_stretch");
+	GnomeIconContainerDetails *details;
+	GnomeIconContainerIcon *icon;
+	int canvas_x, canvas_y;
+
+	details = container->details;
+	icon = details->stretch_icon;
+	
+	gnome_canvas_w2c (GNOME_CANVAS (container),
+			  details->drag_x, details->drag_y,
+			  &canvas_x, &canvas_y);
+	
+	/* Check if we hit the stretch handles. */
+	if (!nautilus_icons_view_icon_item_get_hit_stretch_handle
+	    (icon->item, canvas_x, canvas_y))
+		return FALSE;
+
+	/* Set up the dragging. */
+	details->drag_action = DRAG_ACTION_STRETCH;
+	details->stretch_start.pointer_x = canvas_x;
+	details->stretch_start.pointer_y = canvas_y;
+	gnome_canvas_w2c (GNOME_CANVAS (container),
+			  icon->x, icon->y,
+			  &details->stretch_start.icon_x,
+			  &details->stretch_start.icon_y);
+	details->stretch_start.icon_size = icon_get_size (container, icon);
+
+	return TRUE;
 }
 
 static void
-gnome_icon_container_stretch (GnomeIconContainer *container,
-				    GdkEventMotion *motion)
+continue_stretching (GnomeIconContainer *container,
+		     int window_x, int window_y)
 {
-	g_message ("stretch");
+	GnomeIconContainerDetails *details;
+	GnomeIconContainerIcon *icon;
+	double world_x, world_y;
+	StretchState stretch_state;
+
+	details = container->details;
+	icon = details->stretch_icon;
+
+	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+				      window_x, window_y,
+				      &world_x, &world_y);
+	gnome_canvas_w2c (GNOME_CANVAS (container),
+			  world_x, world_y,
+			  &stretch_state.pointer_x, &stretch_state.pointer_y);
+
+	compute_stretch (&details->stretch_start,
+			 &stretch_state);
+
+	gnome_canvas_c2w (GNOME_CANVAS (container),
+			  stretch_state.icon_x, stretch_state.icon_y,
+			  &world_x, &world_y);
+
+	icon_set_position (icon, world_x, world_y);
+	icon_set_size (container, icon, stretch_state.icon_size);
 }
 
 static void
-gnome_icon_container_end_stretch (GnomeIconContainer *container)
+end_stretching (GnomeIconContainer *container,
+		int window_x, int window_y)
 {
-	g_message ("end_stretch");
+	continue_stretching (container, window_x, window_y);
 }
 
 static gboolean
@@ -1754,21 +1844,16 @@ button_release_event (GtkWidget *widget,
 	if (event->button == details->drag_button) {
 		details->drag_button = 0;
 		
-	        if (!details->doing_drag)
-			gnome_icon_container_almost_drag (container, event);
-		else {
-			details->doing_drag = FALSE;
-			
-			switch (event->button) {
-			case DRAG_BUTTON:
+		switch (details->drag_action) {
+		case DRAG_ACTION_MOVE_OR_COPY:
+			if (!details->drag_started)
+				gnome_icon_container_almost_drag (container, event);
+			else
 				gnome_icon_container_dnd_end_drag (container);
-				break;
-			case STRETCH_BUTTON:
-				gnome_icon_container_end_stretch (container);
-				break;
-			default:
-				g_assert_not_reached ();
-			}
+			break;
+		case DRAG_ACTION_STRETCH:
+			end_stretching (container, event->x, event->y);
+			break;
 		}
 
 		return TRUE;
@@ -1788,41 +1873,37 @@ motion_notify_event (GtkWidget *widget,
 	container = GNOME_ICON_CONTAINER (widget);
 	details = container->details;
 
-	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      motion->x, motion->y,
-				      &world_x, &world_y);
+	if (details->drag_button != 0) {
+		switch (details->drag_action) {
+		case DRAG_ACTION_MOVE_OR_COPY:
+			if (details->drag_started)
+				break;
 
-	if (details->drag_button != 0 && (details->doing_drag
-					  || (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
-					      && abs (details->drag_y - world_y) >= SNAP_RESISTANCE))) {
-		switch (details->drag_button) {
-		case DRAG_BUTTON:
-			details->doing_drag = TRUE;
-		
-			/* KLUDGE ALERT: Poke the starting values into the motion
-			 * structure so that dragging behaves as expected.
-			 */
-			motion->x = details->drag_x;
-			motion->y = details->drag_y;
+			gnome_canvas_window_to_world (GNOME_CANVAS (container),
+						      motion->x, motion->y,
+						      &world_x, &world_y);
 			
-			gnome_icon_container_dnd_begin_drag (container,
-							     GDK_ACTION_MOVE,
-							     details->drag_button,
-							     motion);
+			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
+			    && abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
+				
+				details->drag_started = TRUE;
+				
+				/* KLUDGE ALERT: Poke the starting values into the motion
+				 * structure so that dragging behaves as expected.
+				 */
+				motion->x = details->drag_x;
+				motion->y = details->drag_y;
+				
+				gnome_icon_container_dnd_begin_drag (container,
+								     GDK_ACTION_MOVE,
+								     details->drag_button,
+								     motion);
+			}
 			break;
-
-		case STRETCH_BUTTON:
-			if (!details->doing_drag)
-				gnome_icon_container_begin_stretch (container);
-			details->doing_drag = TRUE;
-			gnome_icon_container_stretch (container, motion);
+		case DRAG_ACTION_STRETCH:
+			continue_stretching (container, motion->x, motion->y);
 			break;
-			
-		default:
-			g_assert_not_reached ();
 		}
-
-		return TRUE;
 	}
 
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, motion));
@@ -1978,12 +2059,12 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
  	/* font table - this isnt exactly proportional, but it looks better than computed */
         /* FIXME: read font from metadata */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*"); 	
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*"); 	
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*"); 	
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-bitstream-charter-medium-r-normal-*-14-*-*-*-*-*-*-*"); 	
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-16-*-*-*-*-*-*-*"); 	
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-bitstream-charter-medium-r-normal-*-14-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-16-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
 	/* FIXME: Read these from preferences. */
 	details->linger_selection_mode = FALSE;
@@ -2017,7 +2098,7 @@ linger_select_timeout_cb (gpointer data)
 	icon = details->linger_selection_mode_icon;
 
 	selection_changed = unselect_all (container);
-	selection_changed |= icon_select (icon, TRUE);
+	selection_changed |= icon_set_selected (container, icon, TRUE);
 
 	set_kbd_current (container, icon, FALSE);
 	make_icon_visible (container, icon);
@@ -2058,7 +2139,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 		 */
 
 		details->drag_button = 0;
-		details->drag_icon = NULL;
 
 		/* Context menu applies to single item (at least
 		 * for now). Select item first to make this obvious.
@@ -2072,40 +2152,46 @@ handle_icon_button_press (GnomeIconContainer *container,
 		return TRUE;
 	}
 
-	if (event->button != DRAG_BUTTON && event->button != STRETCH_BUTTON)
+	if (event->button != DRAG_BUTTON)
 		return FALSE;
-
-	if (button_event_modifies_selection (event)) {
-		icon_toggle_selected (icon);
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[SELECTION_CHANGED]);
-	} else if (! icon->is_selected) {
-		unselect_all (container);
-		icon_select (icon, TRUE);
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[SELECTION_CHANGED]);
-	}
-
-	if (event->type == GDK_2BUTTON_PRESS) {
-		/* Double clicking should *never* trigger a D&D action.
-                 * We must clear this out before emitting the signal, because
-		 * handling the activate signal might invalidate the drag_icon pointer.
-                 */
-		details->drag_button = 0;
-		details->drag_icon = NULL;
-
-		/* FIXME: This should activate all selected icons, not just one */
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[ACTIVATE],
-				 icon->data);
-
-		return TRUE;
-	}
 
 	details->drag_button = event->button;
 	details->drag_icon = icon;
 	details->drag_x = event->x;
 	details->drag_y = event->y;
+	details->drag_action = DRAG_ACTION_MOVE_OR_COPY;
+	details->drag_started = FALSE;
+
+	/* Check to see if this is a click on the stretch handles.
+	 * If so, it won't modify the selection.
+	 */
+	if (icon == container->details->stretch_icon) {
+		if (start_stretching (container)) {
+			return TRUE;
+		}
+	}
+
+	/* Select or deselect the icon */
+	if (button_event_modifies_selection (event)) {
+		icon_toggle_selected (container, icon);
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+	} else if (! icon->is_selected) {
+		unselect_all (container);
+		icon_set_selected (container, icon, TRUE);
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+	}
+
+	/* Double clicking does not trigger a D&D action. */
+	if (event->type == GDK_2BUTTON_PRESS) {
+		details->drag_button = 0;
+
+		/* FIXME: This should activate all selected icons, not just one */
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[ACTIVATE],
+				 icon->data);
+	}
 
 	return TRUE;
 }
@@ -2207,6 +2293,7 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	details = container->details;
 
 	set_kbd_current (container, NULL, FALSE);
+	details->stretch_icon = NULL;
 
 	for (p = details->icons; p != NULL; p = p->next)
 		icon_destroy (p->data);
@@ -2236,7 +2323,7 @@ setup_icon_in_container (GnomeIconContainer *container,
 }
 
 static void 
-request_update_one (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
+update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	NautilusScalableIcon *scalable_icon;
@@ -2246,11 +2333,14 @@ request_update_one (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 	details = container->details;
 
-	scalable_icon = nautilus_icons_controller_get_icon_image (details->controller, icon->data);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (scalable_icon, nautilus_icon_size_for_zoom_level (details->zoom_level));
+	scalable_icon = nautilus_icons_controller_get_icon_image
+		(details->controller, icon->data);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+		(scalable_icon, icon_get_size (container, icon));
 	nautilus_scalable_icon_unref (scalable_icon);
 
-	label = nautilus_icons_controller_get_icon_text (details->controller, icon->data);
+	label = nautilus_icons_controller_get_icon_text
+		(details->controller, icon->data);
 
 	font = details->label_font[details->zoom_level];
         
@@ -2279,7 +2369,7 @@ gnome_icon_container_add (GnomeIconContainer *container,
 	details = container->details;
 
 	new_icon = icon_new (container, data);
-	icon_position (new_icon, x, y);
+	icon_set_position (new_icon, x, y);
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
 	icon_grid_add (details->grid, new_icon, grid_x, grid_y);
@@ -2321,7 +2411,7 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 	icon_grid_add_auto (container->details->grid, new_icon, &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
 
-	icon_position (new_icon, x, y);
+	icon_set_position (new_icon, x, y);
 
 	setup_icon_in_container (container, new_icon);
 
@@ -2356,7 +2446,7 @@ gnome_icon_container_set_zoom_level(GnomeIconContainer *container, int new_level
 	
 	details->zoom_level = pinned_level;
 	
-	pixels_per_unit = (double) nautilus_icon_size_for_zoom_level (pinned_level)
+	pixels_per_unit = (double) nautilus_get_icon_size_for_zoom_level (pinned_level)
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	gnome_canvas_set_pixels_per_unit (GNOME_CANVAS (container), pixels_per_unit);
 
@@ -2376,7 +2466,7 @@ gnome_icon_container_request_update_all (GnomeIconContainer *container)
 	GList *p;
 
 	for (p = container->details->icons; p != NULL; p = p->next)
-		request_update_one (container, p->data);
+		update_icon (container, p->data);
 }
 
 
@@ -2456,7 +2546,7 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 				dp[cols] = g_list_alloc ();
 				dp[cols]->data = icon;
 
-				icon_position (icon, dx, dy);
+				icon_set_position (icon, dx, dy);
 
 				icon->layout_done = TRUE;
 
@@ -2595,7 +2685,7 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 				    || (icon->y >= 0 && icon->y < y))
 					continue;
 
-				icon_position (icon, dx, y);
+				icon_set_position (icon, dx, y);
 				icon->layout_done = TRUE;
 
 				q[k] = g_list_alloc ();
@@ -2698,7 +2788,7 @@ gnome_icon_container_select_all (GnomeIconContainer *container)
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		selection_changed |= icon_select (icon, TRUE);
+		selection_changed |= icon_set_selected (container, icon, TRUE);
 	}
 
 	if (selection_changed)
@@ -2731,8 +2821,8 @@ gnome_icon_container_select_list_unselect_others (GnomeIconContainer *container,
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		selection_changed |= icon_select
-			(icon, g_list_find (icons, icon) != NULL);
+		selection_changed |= icon_set_selected
+			(container, icon, g_list_find (icons, icon) != NULL);
 	}
 
 	if (selection_changed)
@@ -2795,3 +2885,178 @@ gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
 
 	return NULL;
 }
+
+static GnomeIconContainerIcon *
+get_first_selected_icon (GnomeIconContainer *container)
+{
+	GList *p;
+	GnomeIconContainerIcon *icon;
+
+	/* Find the first selected icon. */
+	icon = NULL;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->is_selected) {
+			return icon;
+		}
+	}
+	return NULL;
+}
+
+/**
+ * gnome_icon_container_show_stretch_handles:
+ * @container: An icon container widget.
+ * 
+ * Makes stretch handles visible on the first selected icon.
+ **/
+void
+gnome_icon_container_show_stretch_handles (GnomeIconContainer *container)
+{
+	GnomeIconContainerDetails *details;
+	GnomeIconContainerIcon *icon;
+
+	icon = get_first_selected_icon (container);
+	if (icon == NULL)
+		return;
+
+	/* Check if it already has stretch handles. */
+	details = container->details;
+	if (details->stretch_icon == icon)
+		return;
+
+	/* Get rid of the existing stretch handles and put them on the new icon. */
+	if (details->stretch_icon != NULL)
+		nautilus_icons_view_icon_item_set_show_stretch_handles
+			(details->stretch_icon->item, FALSE);
+	nautilus_icons_view_icon_item_set_show_stretch_handles (icon->item, TRUE);
+	details->stretch_icon = icon;
+}
+
+/**
+ * gnome_icon_container_has_stretch_handles
+ * @container: An icon container widget.
+ * 
+ * Returns true if the first selected item has stretch handles.
+ **/
+gboolean
+gnome_icon_container_has_stretch_handles (GnomeIconContainer *container)
+{
+	GnomeIconContainerIcon *icon;
+
+	icon = get_first_selected_icon (container);
+	if (icon == NULL) {
+		return FALSE;
+	}
+
+	return icon == container->details->stretch_icon;
+}
+
+/**
+ * gnome_icon_container_is_stretched
+ * @container: An icon container widget.
+ * 
+ * Returns true if the first selected item is stretched to a size other than 1.0.
+ **/
+gboolean
+gnome_icon_container_is_stretched (GnomeIconContainer *container)
+{
+	GnomeIconContainerIcon *icon;
+
+	icon = get_first_selected_icon (container);
+	if (icon == NULL) {
+		return FALSE;
+	}
+
+	return icon->scale != 1.0;
+}
+
+/**
+ * gnome_icon_container_unstretch
+ * @container: An icon container widget.
+ * 
+ * Gets rid of any icon stretching.
+ **/
+void
+gnome_icon_container_unstretch (GnomeIconContainer *container)
+{
+	GnomeIconContainerIcon *icon;
+
+	icon = get_first_selected_icon (container);
+	if (icon == NULL) {
+		return;
+	}
+
+	icon->scale = 1.0;
+	update_icon (container, icon);
+}
+
+static void
+compute_stretch (StretchState *start,
+		 StretchState *current)
+{
+	gboolean right, bottom;
+	int x_stretch, y_stretch;
+
+	/* Figure out which handle we are dragging. */
+	right = start->pointer_x > start->icon_x + start->icon_size / 2;
+	bottom = start->pointer_y > start->icon_y + start->icon_size / 2;
+
+	/* Figure out how big we should stretch. */
+	x_stretch = start->pointer_x - current->pointer_x;
+	y_stretch = start->pointer_y - current->pointer_y;
+	if (right) {
+		x_stretch = -x_stretch;
+	}
+	if (bottom) {
+		y_stretch = -y_stretch;
+	}
+	current->icon_size = MAX ((int)start->icon_size + MIN (x_stretch, y_stretch),
+				  (int)NAUTILUS_ICON_SIZE_SMALLEST);
+
+	/* Figure out where the corner of the icon should be. */
+	current->icon_x = start->icon_x;
+	if (!right) {
+		current->icon_x += start->icon_size - current->icon_size;
+	}
+	current->icon_y = start->icon_y;
+	if (!bottom) {
+		current->icon_y += start->icon_size - current->icon_size;
+	}
+}
+
+
+#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+
+static char *
+nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
+				     int start_pointer_x, int start_pointer_y,
+				     int end_pointer_x, int end_pointer_y)
+{
+	StretchState start, current;
+
+	start.icon_x = icon_x;
+	start.icon_y = icon_y;
+	start.icon_size = icon_size;
+	start.pointer_x = start_pointer_x;
+	start.pointer_y = start_pointer_y;
+	current.pointer_x = end_pointer_x;
+	current.pointer_y = end_pointer_y;
+
+	compute_stretch (&start, &current);
+
+	return g_strdup_printf ("%d,%d:%d",
+				current.icon_x,
+				current.icon_y,
+				current.icon_size);
+}
+
+void
+nautilus_self_check_gnome_icon_container (void)
+{
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
+}
+
+#endif /* ! NAUTILUS_OMIT_SELF_CHECK */
