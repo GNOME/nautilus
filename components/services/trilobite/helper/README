@@ -1,34 +1,22 @@
 For eazel-helper to work, it must be installed in a well-known
 location, and it needs two config files to be placed in the PAM setup
-directories.  Here are the files I use:
+directories.  You get this for free if you do 'gmake install' as root.
 
-###  /etc/pam.d/eazel-helper  ###
-#%PAM-1.0
-auth       sufficient   /lib/security/pam_rootok.so
-auth       required     /lib/security/pam_pwdb.so
-session    optional     /lib/security/pam_xauth.so
-account    required     /lib/security/pam_permit.so
+If you're using eazel-hacking tools (and if you're hacking on Nautilus
+or Trilobite, I highly recommend them), then 'gmake install' will
+install the required PAM files into /gnome/etc instead of /etc.  This
+is fine.  To finish the setup, do (as root):
 
-###  /etc/security/console.apps/eazel-helper ###
-USER=root
-PROGRAM=/root/eazel-helper
-SESSION=true
-FALLBACK=false
+# ln -s /gnome/etc/pam.d/eazel-helper /etc/pam.d/eazel-helper
+# ln -s /gnome/etc/security/console.apps/eazel-helper /etc/security/console.apps/eazel-helper
 
-
-
-Obviously, PROGRAM in the latter file is where to find the actual
-binary for eazel-helper.  I'm not sure what SESSION and FALLBACK do; I
-just copied them from helix-update.  Likewise the whole pam.d file is
-just a copy from helix-update.  There may be better contents for these
-files than my ham-handed bumbling.
+If you have an eazel-hacking from December 2000 or later, it should make
+those links for you, for free.  I forgot to do it before them because
+I'm a loser.
 
 The whole setup requires "userhelper" to be installed in /usr/sbin.
-On Redhat, this is package "usermode-1.20-1".
+On Redhat, this is package "usermode".  I recommend version 1.36 at
+least, because the API has changed a lot.
 
-
-Weirdly, "userhelper" doesn't seem to work remotely.  Not sure what
-the deal is.
-
-
--- Robey Pointer, 7 july 2000
+-- Robey Pointer, 7 jul 2000
+   updated 6 dec 2000
