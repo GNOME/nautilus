@@ -21,6 +21,7 @@ ardmore_DATA =\
 	i-directory.png \
 	i-directory-accept.png \
 	number_strip.png \
+	theme_preview.png \
 	$(NULL)
 
 EXTRA_DIST = $(ardmore_DATA)

@@ -24,5 +24,6 @@ villa_DATA =	\
 	i-directory-accept-96-aa.png	\
 	i-directory-accept-aa.png	\
 	number_strip.png		\
+	theme_preview.png		\
 	villanova.xml
 EXTRA_DIST = $(villa_DATA)
