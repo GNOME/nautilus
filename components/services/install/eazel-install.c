@@ -98,7 +98,7 @@ main (int argc, char* argv[]) {
 	USE_FTP = FALSE;
 	UNINSTALL_MODE = FALSE;
 
-	config_file = g_strdup ("/home/pepper/tmp/eazel-services-config.xml");
+	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
 /*
 	if (argc < 2) {
 		show_usage (1, "\n***You must specify the protocol!***\n");

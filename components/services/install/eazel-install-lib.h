@@ -34,6 +34,9 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 #include <rpm/rpmlib.h>
@@ -100,5 +103,6 @@ gboolean uninstall_packages (InstallOptions* iopts);
 void dump_install_options (InstallOptions* iopts);
 void dump_package_list (PackageData* pkg);
 void free_categories (GList* categories);
+gboolean create_default_configuration_metafile (void);
 
  #endif /* __EAZEL_INSTALL_LIB_H__ */

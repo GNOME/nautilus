@@ -60,7 +60,28 @@ init_default_install_configuration (const char* config_file) {
 	xmlDocPtr doc;
 	xmlNodePtr base;
 	char* tmpbuf;
-	
+
+	if (!g_file_exists (config_file)) {
+		gboolean retval;
+		int rc;
+
+		g_print("Creating default configuration file ...\n");
+		
+		rc = mkdir ("/etc/eazel/services", 0644);
+		if (rc < 0) {
+			if (errno != EEXIST) {
+				fprintf (stderr, "***Could not create services directory !***\n");
+				exit (1);
+			}
+		}
+
+		retval = create_default_configuration_metafile();
+		if (retval == FALSE) {
+			fprintf(stderr, "***Could not create the default configuration file !***\n");
+			exit (1);
+		}
+	}
+
 	doc = xmlParseFile (config_file);
 	
 	if (doc == NULL) {
@@ -326,3 +347,41 @@ free_categories (GList* categories) {
 	g_list_free (categories);
 
 } /* end free_categories */
+
+gboolean
+create_default_configuration_metafile () {
+
+	xmlDocPtr doc;
+	xmlNodePtr tree;
+	char* tmp_str;
+	
+	doc = xmlNewDoc ("1.0");
+	doc->root = xmlNewDocNode (doc, NULL, "EAZEL_INSTALLER", NULL);
+	tree = xmlNewChild (doc->root, NULL, "PROTOCOL", "LOCAL");
+	tree = xmlNewChild (doc->root, NULL, "DEBUG", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "FALSE");
+	tree = xmlNewChild (doc->root, NULL, "VERBOSE", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "SILENT", "FALSE");
+	tree = xmlNewChild (doc->root, NULL, "DEPEND", "FALSE");
+	tree = xmlNewChild (doc->root, NULL, "UNINSTALL", "FALSE");
+	tree = xmlNewChild (doc->root, NULL, "UPDATE", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "PORT", "80");
+	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
+	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_FILE", "/etc/eazel/services/package-list.xml");
+	tree = xmlNewChild (doc->root, NULL, "RPM_STORAGE_DIR", "/tmp/eazel-install");
+	tree = xmlNewChild (doc->root, NULL, "TMPDIR", "/tmp/eazel-install");
+
+	if (doc == NULL) {
+		fprintf (stderr, "***Error generating default configuration file !***\n");
+		xmlFreeDoc (doc);
+		exit (1);
+	}
+
+	tmp_str = g_strdup("/etc/eazel/services/eazel-services-config.xml");
+	xmlSaveFile (tmp_str, doc);
+	xmlFreeDoc (doc);
+	g_free (tmp_str);
+
+	return TRUE;
+
+} /* end create_default_configuration_metafile */
