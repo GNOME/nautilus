@@ -1,3 +1,13 @@
+2000-09-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-first-time-druid.c:
+	(nautilus_first_time_druid_show):
+	fixed bug 2782, druid_welcome.png needs to be redone for each locale,
+	by removing the image and using our nice, shadowed aa text instead.
+	
+	* icons/Makefile.am:
+	removed icons/druid_welcome.png image, since it's no longer used
+
 2000-09-15  Darin Adler  <darin@eazel.com>
 
 	Another try at fixing the Tinderbox.

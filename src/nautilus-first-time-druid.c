@@ -668,7 +668,6 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	GtkWidget *druid;
 	int i;
 	GtkWidget *container, *main_box, *label;
-	GdkPixbuf *pixbuf;
 	
 	/* remember parameters for later window invocation */
 	save_application = application;
@@ -697,25 +696,21 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	}
 		
 	/* set up the initial page */
-	/* The image is marked for translation because it is basically an
-	 * image of english text.  Other languages would probably want to
-	 * create another image and use that.  Theoretically in the future
-	 * gnome-canvas-text will support nice text drawing and this will
-	 * be a non-issue */
-	pixbuf = create_named_pixbuf (_("druid_welcome.png"));
-
-	if (pixbuf != NULL) {
-		nautilus_druid_page_eazel_set_title_image (NAUTILUS_DRUID_PAGE_EAZEL (start_page), pixbuf);
-		gdk_pixbuf_unref (pixbuf);
-	} else {
-		nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page), _("Welcome to Nautilus!"));
-	}
 
 	/* allocate the description using a nautilus_label to get anti-aliased text */
 	container = set_up_background (NAUTILUS_DRUID_PAGE_EAZEL (start_page), "rgb:ffff/ffff/ffff:h");
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	/* make the title label */
+	label = make_anti_aliased_label ( _("Welcome to Nautilus!"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 28);
+	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
+	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGBA_COLOR_PACK (191, 191, 191, 255));
+	
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 16);
 	
 	label = make_anti_aliased_label ( _("Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
