@@ -1,3 +1,12 @@
+2001-11-15  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* src/nautilus-preferences-dialog.c:
+	(preferences_dialog_populate_themes_group):
+	Workaround the crashing preferences dialog problem.  Turn off the
+	theme chooser for now.  The image chooser is broken because of
+	EelLabel usage.  Im hopeful that a general exorcism of EelLabel
+	will fix this along with many other label related problems.
+	
 2001-11-13  Michael Meeks  <michael@ximian.com>
 
 	* components/tree/nautilus-tree-view.c
