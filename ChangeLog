@@ -1,3 +1,19 @@
+2000-08-03  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class), (mount_device_mount),
+	(mount_device_deactivate), (get_floppy_volume_name),
+	Some cleanup.  Added a signal for volume_unmount
+	as well.
+	
+	(add_mount_link_property), (is_volume_link):
+	Functions that set and test if a nautilus link
+	is also a volume mount link.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Added a test call to identify volume links.
+	
 2000-08-03  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-node-private.h: Forgot to check

@@ -170,6 +170,8 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
 
+	/* Check for and clean up any old mount links that may have been left behind */	
+
 	/* Setup home directory link */
 	place_home_directory (desktop_icon_view);
 	

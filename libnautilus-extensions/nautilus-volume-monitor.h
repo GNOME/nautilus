@@ -48,6 +48,7 @@ struct NautilusVolumeMonitorClass {
 
 	/* Signals */
 	char *	     (* volume_mounted)	  	(NautilusVolumeMonitor *monitor);
+	char *	     (* volume_unmounted)	(NautilusVolumeMonitor *monitor);
 };
 
 struct NautilusVolumeMonitorDetails

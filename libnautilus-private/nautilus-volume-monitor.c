@@ -49,6 +49,8 @@
 #include <xmlmemory.h>
 
 
+#define NAUTILUS_MOUNT_LINK_KEY	"NAUTILUS_MOUNT_LINK"
+
 /* FIXME: Remove messages when this code is done. */
 #define MESSAGE g_message
 
@@ -70,6 +72,7 @@ const char * const type_names[] = {
 /* The NautilusVolumeMonitor signals.  */
 enum {
 	VOLUME_MOUNTED,
+	VOLUME_UNMOUNTED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -93,6 +96,8 @@ static void     mount_device_activate_floppy                          	(Nautilus
 static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
 static void	free_device_info             				(DeviceInfo             	*device,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
+static gboolean	add_mount_link_property 				(const char 			*path);
+static gboolean	is_volume_link 						(const char 			*path);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor, nautilus_volume_monitor, GTK_TYPE_OBJECT)
@@ -123,6 +128,17 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 						     volume_mounted),
 				  nautilus_gtk_marshal_STRING__NONE,
 				  GTK_TYPE_STRING, 0);
+
+	signals[VOLUME_UNMOUNTED] 
+		= gtk_signal_new ("volume_unmounted",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+						     volume_unmounted),
+				  nautilus_gtk_marshal_STRING__NONE,
+				  GTK_TYPE_STRING, 0);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);				  
 }
 
 static void
@@ -377,6 +393,10 @@ mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 	result = nautilus_link_create (desktop_path, device->volume_name, icon_name, target_uri);
 	if (result) {
 		device->link_uri = nautilus_make_path (desktop_path, device->volume_name);
+
+		/* Add some special magic so we are able to identify this as a mount link */
+		add_mount_link_property (device->link_uri);
+		
 	} else {
 		MESSAGE ("Unable to create mount link");
 	}
@@ -512,6 +532,12 @@ mount_device_deactivate (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 		default:
 			break;
 	}
+
+	/* Tell anybody who cares */
+	gtk_signal_emit (GTK_OBJECT (monitor),
+			 signals[VOLUME_UNMOUNTED],
+			 &device->mount_path);
+
 }
 
 static void
@@ -974,4 +1000,58 @@ static void
 get_floppy_volume_name (DeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Floppy");
+}
+
+
+/* Add a special XML tag that identifies this link as a mount link.
+ */
+static gboolean
+add_mount_link_property (const char *path)
+{
+	xmlDocPtr document;
+
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
+	}
+
+	xmlSetProp (xmlDocGetRootElement (document),
+		    NAUTILUS_MOUNT_LINK_KEY,
+		    "Nautilus Mount Link");
+	xmlSaveFile (path, document);
+	xmlFreeDoc (document);
+
+	/* Test */
+	{
+		gboolean retval;
+		retval = is_volume_link (path);
+		g_message ("volume link: %d", retval);
+	}
+			
+	return TRUE;
+}
+
+static gboolean
+is_volume_link (const char *path)
+{
+	xmlDocPtr document;
+	char *property;
+	gboolean retval;
+
+	retval = FALSE;
+	
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
+	}
+
+	property = xmlGetProp (xmlDocGetRootElement (document), NAUTILUS_MOUNT_LINK_KEY);
+	if (property != NULL) {
+		retval = TRUE;
+		xmlFree (property);
+	}
+	
+	xmlFreeDoc (document);
+			
+	return retval;
 }
