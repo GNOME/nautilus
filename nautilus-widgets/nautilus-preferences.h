@@ -22,46 +22,46 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_PREFS_H
-#define NAUTILUS_PREFS_H
+#ifndef NAUTILUS_PREFERENCES_H
+#define NAUTILUS_PREFERENCES_H
 
 #include <gtk/gtkhbox.h>
 #include <nautilus-widgets/nautilus-preferences-pane.h>
 
-//#include <gnome.h>
-
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_PREFS            (nautilus_prefs_get_type ())
-#define NAUTILUS_PREFS(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS, NautilusPrefs))
-#define NAUTILUS_PREFS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS, NautilusPrefsClass))
+#define NAUTILUS_TYPE_PREFS            (nautilus_preferences_get_type ())
+#define NAUTILUS_PREFS(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS, NautilusPreferences))
+#define NAUTILUS_PREFERENCES_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS, NautilusPreferencesClass))
 #define NAUTILUS_IS_PREFS(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS))
 #define NAUTILUS_IS_PREFS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS))
 
-typedef struct _NautilusPrefs	       NautilusPrefs;
-typedef struct _NautilusPrefsClass     NautilusPrefsClass;
-typedef struct _NautilusPrefsPrivate   NautilusPrefsPrivate;
+typedef struct _NautilusPreferences	     NautilusPreferences;
+typedef struct _NautilusPreferencesClass     NautilusPreferencesClass;
+typedef struct _NautilusPreferencesDetails   NautilusPreferencesDetails;
 
-struct _NautilusPrefs
+struct _NautilusPreferences
 {
 	/* Super Class */
-	GtkObject		object;
+	GtkObject			object;
 
 	/* Private stuff */
-	NautilusPrefsPrivate	*priv;
+	NautilusPreferencesDetails	*details;
 };
 
-typedef void (*NautilusPrefsCallback) (const GtkObject		*prefs,
-				       const gchar		*pref_name, 
-				       GtkFundamentalType	pref_type,
-				       gconstpointer		pref_value,
-				       gpointer			user_data);
+/*
+ * A callback which you can register to to be notified when a particular
+ * preference changes.
+ */
+typedef void (*NautilusPreferencesCallback) (const GtkObject	*prefs,
+					     const gchar	*pref_name, 
+					     GtkFundamentalType	pref_type,
+					     gconstpointer	pref_value,
+					     gpointer		user_data);
 
-struct _NautilusPrefsClass
+struct _NautilusPreferencesClass
 {
 	GtkObjectClass	object_class;
-
-//	void (*activate) (GtkWidget * prefs, gint entry_number);
 };
 
 typedef struct
@@ -71,7 +71,7 @@ typedef struct
 	GtkFundamentalType	pref_type;
 	gconstpointer		pref_default_value;
 	gpointer		type_data;
-} NautilusPrefInfo;
+} NautilusPreferencesInfo;
 
 typedef struct
 {
@@ -79,38 +79,38 @@ typedef struct
 	const gchar	**enum_descriptions;
 	const gint	*enum_values;
 	guint		num_entries;
-} NautilusPrefEnumData;
+} NautilusPreferencesEnumData;
 
-GtkType                 nautilus_prefs_get_type             (void);
-GtkObject*              nautilus_prefs_new                  (const gchar            *domain);
-void                    nautilus_prefs_register_from_info   (NautilusPrefs          *prefs,
-							     const NautilusPrefInfo *pref_info);
-void                    nautilus_prefs_register_from_values (NautilusPrefs          *prefs,
-							     gchar                  *pref_name,
-							     gchar                  *pref_description,
-							     GtkFundamentalType      pref_type,
-							     gconstpointer           pref_default_value,
-							     gpointer                type_data);
-const NautilusPrefInfo *nautilus_prefs_get_pref_info        (NautilusPrefs          *prefs,
-							     const gchar            *pref_name);
-gboolean                nautilus_prefs_add_callback         (NautilusPrefs          *prefs,
-							     const gchar            *pref_name,
-							     NautilusPrefsCallback   callback,
-							     gpointer                user_data);
-void                    nautilus_prefs_set_boolean          (NautilusPrefs          *prefs,
-							     const gchar            *pref_name,
-							     gboolean                boolean_value);
-gboolean                nautilus_prefs_get_boolean          (NautilusPrefs          *prefs,
-							     const gchar            *pref_name);
-void                    nautilus_prefs_set_enum             (NautilusPrefs          *prefs,
-							     const gchar            *pref_name,
-							     gint                    enum_value);
-gint                    nautilus_prefs_get_enum             (NautilusPrefs          *prefs,
-							     const gchar            *pref_name);
-
+GtkType                 nautilus_preferences_get_type               (void);
+GtkObject*              nautilus_preferences_new                    (const gchar                 *domain);
+void                    nautilus_preferences_register_from_info     (NautilusPreferences         *prefs,
+								     const NautilusPreferencesInfo      *pref_info);
+void                    nautilus_preferences_register_from_values   (NautilusPreferences         *prefs,
+								     gchar                       *pref_name,
+								     gchar                       *pref_description,
+								     GtkFundamentalType           pref_type,
+								     gconstpointer                pref_default_value,
+								     gpointer                     type_data);
+const NautilusPreferencesInfo *nautilus_preferences_get_pref_info          (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name);
+gboolean                nautilus_preferences_add_callback           (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name,
+								     NautilusPreferencesCallback  callback,
+								     gpointer                     user_data);
+void                    nautilus_preferences_set_boolean            (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name,
+								     gboolean                     boolean_value);
+gboolean                nautilus_preferences_get_boolean            (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name);
+void                    nautilus_preferences_set_enum               (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name,
+								     gint                         enum_value);
+gint                    nautilus_preferences_get_enum               (NautilusPreferences         *prefs,
+								     const gchar                 *pref_name);
+NautilusPreferences *   nautilus_preferences_get_global_preferences (void);
 
 BEGIN_GNOME_DECLS
 
-#endif /* NAUTILUS_PREFS_H */
+#endif /* NAUTILUS_PREFERENCES_H */
 
 

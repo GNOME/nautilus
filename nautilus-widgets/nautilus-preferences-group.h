@@ -38,7 +38,7 @@ BEGIN_GNOME_DECLS
 
 typedef struct _NautilusPreferencesGroup	   NautilusPreferencesGroup;
 typedef struct _NautilusPreferencesGroupClass      NautilusPreferencesGroupClass;
-typedef struct _NautilusPreferencesGroupPrivate    NautilusPreferencesGroupPrivate;
+typedef struct _NautilusPreferencesGroupDetails    NautilusPreferencesGroupDetails;
 
 struct _NautilusPreferencesGroup
 {
@@ -46,7 +46,7 @@ struct _NautilusPreferencesGroup
 	GtkFrame			frame;
 	
 	/* Private stuff */
-	NautilusPreferencesGroupPrivate	*priv;
+	NautilusPreferencesGroupDetails	*details;
 };
 
 struct _NautilusPreferencesGroupClass
@@ -55,10 +55,9 @@ struct _NautilusPreferencesGroupClass
 };
 
 GtkType    nautilus_preferences_group_get_type (void);
-GtkWidget* nautilus_preferences_group_new      (const gchar *title);
-
+GtkWidget* nautilus_preferences_group_new      (const gchar              *title);
 void       nautilus_preferences_group_add      (NautilusPreferencesGroup *preferences_group,
- 						GtkWidget		 *item);
+						GtkWidget                *item);
 
 BEGIN_GNOME_DECLS
 

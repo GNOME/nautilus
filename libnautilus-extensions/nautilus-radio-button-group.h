@@ -66,15 +66,15 @@ GtkType    nautilus_radio_button_group_get_type         (void);
 GtkWidget* nautilus_radio_button_group_new              (void);
 
 /* Insert a new item to the group.  Returns the new item's index */
-guint       nautilus_radio_button_group_insert           (NautilusRadioButtonGroup *button_group,
-							  const gchar             *label);
+guint nautilus_radio_button_group_insert           (NautilusRadioButtonGroup *button_group,
+						    const gchar              *label);
 
 /* Get the active item index. By law there always is an active item */
-guint       nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_group);
+guint nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_group);
 
 /* Set the active item index. */
-void       nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
-							 guint active_index);
+void  nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
+						    guint                     active_index);
 
 BEGIN_GNOME_DECLS
 

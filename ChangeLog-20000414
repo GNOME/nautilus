@@ -1,5 +1,28 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences-box.c,
+	nautilus-widgets/nautilus-preferences-box.h,
+	nautilus-widgets/nautilus-preferences-dialog.c,
+	nautilus-widgets/nautilus-preferences-dialog.h,
+	nautilus-widgets/nautilus-preferences-group.c,
+	nautilus-widgets/nautilus-preferences-group.h,
+	nautilus-widgets/nautilus-preferences-item.c,
+	nautilus-widgets/nautilus-preferences-item.h,
+	nautilus-widgets/nautilus-preferences-pane.c,
+	nautilus-widgets/nautilus-preferences-pane.h,
+	nautilus-widgets/nautilus-preferences.c,
+	nautilus-widgets/nautilus-preferences.h,
+	nautilus-widgets/nautilus-radio-button-group.h,
+	nautilus-widgets/test-nautilus-widgets.c,
+	nautilus-widgets/test-preferences.c:
+
+	Cleanup naming of everything to use "preferences" instead of
+	"prefs".  Remove a bunch of unused includes.  Use "Details"
+	instead of "Private" for private structures.  Fix pref item
+	support of boolean values.
+	
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/help/Makefile.am:
 	* components/history/Makefile.am:
 	* components/html/Makefile.am:

@@ -30,12 +30,7 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 
-// #include <gtk/gtkmain.h>
 #include <gnome.h>
-
-#include <libgnomeui/gnome-stock.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
 
 enum
 {
@@ -45,7 +40,7 @@ enum
 
 static const guint PREFS_PANE_GROUPS_BOX_TOP_OFFSET = 0;
 
-struct _NautilusPrefsPanePrivate
+struct _NautilusPreferencesPaneDetails
 {
 	GtkWidget	*title_box;
 	GtkWidget	*title_frame;
@@ -63,25 +58,25 @@ typedef void (*GnomeBoxSignal1) (GtkObject* object,
 				    gint arg1,
 				    gpointer data);
 
-/* NautilusPrefsPaneClass methods */
-static void nautilus_prefs_pane_initialize_class (NautilusPrefsPaneClass *klass);
-static void nautilus_prefs_pane_initialize       (NautilusPrefsPane      *prefs_pane);
+/* NautilusPreferencesPaneClass methods */
+static void nautilus_preferences_pane_initialize_class (NautilusPreferencesPaneClass *klass);
+static void nautilus_preferences_pane_initialize       (NautilusPreferencesPane      *prefs_pane);
 
 /* GtkObjectClass methods */
-static void nautilus_prefs_pane_destroy    (GtkObject            *object);
+static void nautilus_preferences_pane_destroy    (GtkObject            *object);
 
 /* Private stuff */
-static void prefs_pane_construct (NautilusPrefsPane *prefs_pane,
+static void prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
 				  const gchar *pane_title,
 				  const gchar *pane_description);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPrefsPane, nautilus_prefs_pane, GTK_TYPE_VBOX)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesPane, nautilus_preferences_pane, GTK_TYPE_VBOX)
 
 /*
- * NautilusPrefsPaneClass methods
+ * NautilusPreferencesPaneClass methods
  */
 static void
-nautilus_prefs_pane_initialize_class (NautilusPrefsPaneClass *prefs_pane_class)
+nautilus_preferences_pane_initialize_class (NautilusPreferencesPaneClass *prefs_pane_class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -92,42 +87,42 @@ nautilus_prefs_pane_initialize_class (NautilusPrefsPaneClass *prefs_pane_class)
  	parent_class = gtk_type_class (gtk_vbox_get_type ());
 
 	/* GtkObjectClass */
-	object_class->destroy = nautilus_prefs_pane_destroy;
+	object_class->destroy = nautilus_preferences_pane_destroy;
 }
 
 static void
-nautilus_prefs_pane_initialize (NautilusPrefsPane *prefs_pane)
+nautilus_preferences_pane_initialize (NautilusPreferencesPane *prefs_pane)
 {
-	prefs_pane->priv = g_new (NautilusPrefsPanePrivate, 1);
+	prefs_pane->details = g_new (NautilusPreferencesPaneDetails, 1);
 
-	prefs_pane->priv->title_label = NULL;
-	prefs_pane->priv->description_label = NULL;
-	prefs_pane->priv->title_box = NULL;
-	prefs_pane->priv->title_frame = NULL;
-	prefs_pane->priv->groups_box = NULL;
-	prefs_pane->priv->groups = NULL;
-	prefs_pane->priv->show_title = FALSE;
+	prefs_pane->details->title_label = NULL;
+	prefs_pane->details->description_label = NULL;
+	prefs_pane->details->title_box = NULL;
+	prefs_pane->details->title_frame = NULL;
+	prefs_pane->details->groups_box = NULL;
+	prefs_pane->details->groups = NULL;
+	prefs_pane->details->show_title = FALSE;
 }
 
 /*
  *  GtkObjectClass methods
  */
 static void
-nautilus_prefs_pane_destroy(GtkObject* object)
+nautilus_preferences_pane_destroy(GtkObject* object)
 {
-	NautilusPrefsPane * prefs_pane;
+	NautilusPreferencesPane * prefs_pane;
 	
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (object));
 	
-	prefs_pane = NAUTILUS_PREFS_PANE (object);
+	prefs_pane = NAUTILUS_PREFERENCES_PANE (object);
 
-	if (prefs_pane->priv->groups)
+	if (prefs_pane->details->groups)
 	{
-		g_slist_free (prefs_pane->priv->groups);
+		g_slist_free (prefs_pane->details->groups);
 	}
 
-	g_free (prefs_pane->priv);
+	g_free (prefs_pane->details);
 	
 	/* Chain */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
@@ -138,98 +133,98 @@ nautilus_prefs_pane_destroy(GtkObject* object)
  * Private stuff
  */
 static void
-prefs_pane_construct (NautilusPrefsPane *prefs_pane,
+prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
 		      const gchar *pane_title,
 		      const gchar *pane_description)
 {
 	g_assert (prefs_pane != NULL);
-	g_assert (prefs_pane->priv != NULL);
+	g_assert (prefs_pane->details != NULL);
 
 	g_assert (pane_title != NULL);
 	g_assert (pane_description != NULL);
 
-	g_assert (prefs_pane->priv->title_label == NULL);
-	g_assert (prefs_pane->priv->description_label == NULL);
-	g_assert (prefs_pane->priv->title_box == NULL);
-	g_assert (prefs_pane->priv->groups_box == NULL);
-	g_assert (prefs_pane->priv->title_frame == NULL);
-	g_assert (prefs_pane->priv->groups == NULL);
+	g_assert (prefs_pane->details->title_label == NULL);
+	g_assert (prefs_pane->details->description_label == NULL);
+	g_assert (prefs_pane->details->title_box == NULL);
+	g_assert (prefs_pane->details->groups_box == NULL);
+	g_assert (prefs_pane->details->title_frame == NULL);
+	g_assert (prefs_pane->details->groups == NULL);
 
-	prefs_pane->priv->groups = g_slist_alloc ();
+	prefs_pane->details->groups = g_slist_alloc ();
 
-	if (prefs_pane->priv->show_title)
+	if (prefs_pane->details->show_title)
 	{
 		/* Title frame */
-		prefs_pane->priv->title_frame = gtk_frame_new (NULL);
+		prefs_pane->details->title_frame = gtk_frame_new (NULL);
 		
-		gtk_frame_set_shadow_type (GTK_FRAME (prefs_pane->priv->title_frame),
+		gtk_frame_set_shadow_type (GTK_FRAME (prefs_pane->details->title_frame),
 					   GTK_SHADOW_ETCHED_IN);
 		
 		/* Title box */
-		prefs_pane->priv->title_box = gtk_hbox_new (FALSE, 0);
+		prefs_pane->details->title_box = gtk_hbox_new (FALSE, 0);
 		
 		/* Title labels */
-		prefs_pane->priv->title_label = gtk_label_new (pane_title);
-		prefs_pane->priv->description_label = gtk_label_new (pane_description);
+		prefs_pane->details->title_label = gtk_label_new (pane_title);
+		prefs_pane->details->description_label = gtk_label_new (pane_description);
 		
-		gtk_box_pack_start (GTK_BOX (prefs_pane->priv->title_box),
-				    prefs_pane->priv->title_label,
+		gtk_box_pack_start (GTK_BOX (prefs_pane->details->title_box),
+				    prefs_pane->details->title_label,
 				    FALSE,
 				    FALSE,
 				    0);
 		
-		gtk_box_pack_end (GTK_BOX (prefs_pane->priv->title_box),
-				  prefs_pane->priv->description_label,
+		gtk_box_pack_end (GTK_BOX (prefs_pane->details->title_box),
+				  prefs_pane->details->description_label,
 				  FALSE,
 				  FALSE,
 				  0);
 		
-		gtk_widget_show (prefs_pane->priv->title_label);
-		gtk_widget_show (prefs_pane->priv->description_label);
+		gtk_widget_show (prefs_pane->details->title_label);
+		gtk_widget_show (prefs_pane->details->description_label);
 
 		/* Add title box to title frame */
-		gtk_container_add (GTK_CONTAINER (prefs_pane->priv->title_frame),
-				   prefs_pane->priv->title_box);
+		gtk_container_add (GTK_CONTAINER (prefs_pane->details->title_frame),
+				   prefs_pane->details->title_box);
 
-		gtk_widget_show (prefs_pane->priv->title_box);
+		gtk_widget_show (prefs_pane->details->title_box);
 		
 		/* Add title frame to ourselves */
 		gtk_box_pack_start (GTK_BOX (prefs_pane),
-				    prefs_pane->priv->title_frame,
+				    prefs_pane->details->title_frame,
 				    FALSE,
 				    FALSE,
 				    0);
 		
-		gtk_widget_show (prefs_pane->priv->title_frame);
+		gtk_widget_show (prefs_pane->details->title_frame);
 	}
 
 	/* Groups box */
-	prefs_pane->priv->groups_box = gtk_vbox_new (TRUE, 0);
+	prefs_pane->details->groups_box = gtk_vbox_new (TRUE, 0);
 
 	/* Add groups box to ourselves */
 	gtk_box_pack_start (GTK_BOX (prefs_pane),
-			    prefs_pane->priv->groups_box,
+			    prefs_pane->details->groups_box,
 			    FALSE,
 			    FALSE,
 			    PREFS_PANE_GROUPS_BOX_TOP_OFFSET);
 
-	gtk_widget_show (prefs_pane->priv->groups_box);
+	gtk_widget_show (prefs_pane->details->groups_box);
 }
 
 
 /*
- * NautilusPrefsPane public methods
+ * NautilusPreferencesPane public methods
  */
 GtkWidget*
-nautilus_prefs_pane_new (const gchar *pane_title,
+nautilus_preferences_pane_new (const gchar *pane_title,
 			 const gchar *pane_description)
 {
-	NautilusPrefsPane *prefs_pane;
+	NautilusPreferencesPane *prefs_pane;
 
 	g_return_val_if_fail (pane_title != NULL, NULL);
 	g_return_val_if_fail (pane_description != NULL, NULL);
 
-	prefs_pane = gtk_type_new (nautilus_prefs_pane_get_type ());
+	prefs_pane = gtk_type_new (nautilus_preferences_pane_get_type ());
 
 	prefs_pane_construct (prefs_pane, pane_title, pane_description);
 
@@ -237,47 +232,43 @@ nautilus_prefs_pane_new (const gchar *pane_title,
 }
 
 void
-nautilus_prefs_pane_set_title (NautilusPrefsPane *prefs_pane,
+nautilus_preferences_pane_set_title (NautilusPreferencesPane *prefs_pane,
 			       const gchar	 *pane_title)
 {
 	g_return_if_fail (prefs_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
 
-	g_assert (prefs_pane->priv->title_label != NULL);
+	g_assert (prefs_pane->details->title_label != NULL);
 	
-	gtk_label_set_text (GTK_LABEL (prefs_pane->priv->title_label),
+	gtk_label_set_text (GTK_LABEL (prefs_pane->details->title_label),
 			    pane_title);
 }
 
 void
-nautilus_prefs_pane_set_description (NautilusPrefsPane *prefs_pane,
+nautilus_preferences_pane_set_description (NautilusPreferencesPane *prefs_pane,
 				     const gchar	 *pane_description)
 {
 	g_return_if_fail (prefs_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
 
-	g_assert (prefs_pane->priv->description_label != NULL);
+	g_assert (prefs_pane->details->description_label != NULL);
 
-	gtk_label_set_text (GTK_LABEL (prefs_pane->priv->description_label),
+	gtk_label_set_text (GTK_LABEL (prefs_pane->details->description_label),
 			    pane_description);
 }
 
 void
-nautilus_prefs_pane_add_group (NautilusPrefsPane	*prefs_pane,
+nautilus_preferences_pane_add_group (NautilusPreferencesPane	*prefs_pane,
 			       GtkWidget		*prefs_group)
 {
 	g_return_if_fail (prefs_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
 	g_return_if_fail (prefs_group != NULL);
 
-// 	group = nautilus_prefs_group_new (group_title);
-
-	gtk_box_pack_start (GTK_BOX (prefs_pane->priv->groups_box),
+	gtk_box_pack_start (GTK_BOX (prefs_pane->details->groups_box),
 			    prefs_group,
 			    TRUE,
 			    TRUE,
 			    0);
-
-//	gtk_widget_show (prefs_group);
 }
 

@@ -32,7 +32,6 @@ main (int argc, char * argv[])
 
 	dummy_prefs = create_dummy_prefs ();
 	
-//	test_radio_group ();
 	test_preferences_group ();
 	test_preferences_item ();
 		
@@ -209,17 +208,17 @@ create_dummy_prefs (void)
 	GtkObject * dummy_prefs;
 	guint i;
 
-	dummy_prefs = nautilus_prefs_new ("dummy");
+	dummy_prefs = nautilus_preferences_new ("dummy");
 
 	/* Register the static prefs */
 	for (i = 0; i < 3; i++)
 	{
-		nautilus_prefs_register_from_info (NAUTILUS_PREFS (dummy_prefs),
+		nautilus_preferences_register_from_info (NAUTILUS_PREFS (dummy_prefs),
 						   &prefs_global_static_pref_info[i]);
 	}
 
 
-	nautilus_prefs_set_enum (NAUTILUS_PREFS (dummy_prefs),
+	nautilus_preferences_set_enum (NAUTILUS_PREFS (dummy_prefs),
 				 "user_level",
 				 2);
 

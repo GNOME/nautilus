@@ -22,50 +22,47 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_PREFS_DIALOG_H
-#define NAUTILUS_PREFS_DIALOG_H
+#ifndef NAUTILUS_PREFERENCES_DIALOG_H
+#define NAUTILUS_PREFERENCES_DIALOG_H
 
 #include <libgnomeui/gnome-dialog.h>
 #include <nautilus-widgets/nautilus-preferences-box.h>
 
-//#include <gnome.h>
-
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_PREFS_DIALOG            (nautilus_prefs_dialog_get_type ())
-#define NAUTILUS_PREFS_DIALOG(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPrefsDialog))
-#define NAUTILUS_PREFS_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPrefsDialogClass))
+#define NAUTILUS_TYPE_PREFS_DIALOG            (nautilus_preferences_dialog_get_type ())
+#define NAUTILUS_PREFERENCES_DIALOG(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPreferencesDialog))
+#define NAUTILUS_PREFERENCES_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPreferencesDialogClass))
 #define NAUTILUS_IS_PREFS_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS_DIALOG))
 #define NAUTILUS_IS_PREFS_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS_DIALOG))
 
 
-typedef struct _NautilusPrefsDialog	      NautilusPrefsDialog;
-typedef struct _NautilusPrefsDialogClass      NautilusPrefsDialogClass;
-typedef struct _NautilusPrefsDialogPrivate    NautilusPrefsDialogPrivate;
+typedef struct _NautilusPreferencesDialog	      NautilusPreferencesDialog;
+typedef struct _NautilusPreferencesDialogClass      NautilusPreferencesDialogClass;
+typedef struct _NautilusPreferencesDialogDetails    NautilusPreferencesDialogDetails;
 
-struct _NautilusPrefsDialog
+struct _NautilusPreferencesDialog
 {
 	/* Super Class */
-	GnomeDialog			gnome_dialog;
+	GnomeDialog				gnome_dialog;
 
 	/* Private stuff */
-	NautilusPrefsDialogPrivate	*priv;
+	NautilusPreferencesDialogDetails	*details;
 };
 
-struct _NautilusPrefsDialogClass
+struct _NautilusPreferencesDialogClass
 {
 	GnomeDialogClass parent_class;
 
 	void (*activate) (GtkWidget * prefs_dialog, gint entry_number);
 };
 
-GtkType    nautilus_prefs_dialog_get_type              (void);
-GtkWidget* nautilus_prefs_dialog_new                   (const gchar *dialog_title);
-gboolean   nautilus_prefs_dialog_run_and_block         (NautilusPrefsDialog *prefs_dialog);
-GtkWidget* nautilus_prefs_dialog_get_prefs_box         (NautilusPrefsDialog *prefs_dialog);
+GtkType    nautilus_preferences_dialog_get_type      (void);
+GtkWidget* nautilus_preferences_dialog_new           (const gchar         *dialog_title);
+GtkWidget* nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dialog);
 
 BEGIN_GNOME_DECLS
 
-#endif /* NAUTILUS_PREFS_DIALOG_H */
+#endif /* NAUTILUS_PREFERENCES_DIALOG_H */
 
 

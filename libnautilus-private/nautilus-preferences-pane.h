@@ -22,53 +22,51 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_PREFS_PANE_H
-#define NAUTILUS_PREFS_PANE_H
+#ifndef NAUTILUS_PREFERENCES_PANE_H
+#define NAUTILUS_PREFERENCES_PANE_H
 
 #include <libgnomeui/gnome-dialog.h>
 #include <gtk/gtkvbox.h>
 #include <nautilus-widgets/nautilus-preferences-group.h>
 
-//#include <gnome.h>
-
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_PREFS_PANE            (nautilus_prefs_pane_get_type ())
-#define NAUTILUS_PREFS_PANE(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_PANE, NautilusPrefsPane))
-#define NAUTILUS_PREFS_PANE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_PANE, NautilusPrefsPaneClass))
+#define NAUTILUS_TYPE_PREFS_PANE            (nautilus_preferences_pane_get_type ())
+#define NAUTILUS_PREFERENCES_PANE(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_PANE, NautilusPreferencesPane))
+#define NAUTILUS_PREFERENCES_PANE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_PANE, NautilusPreferencesPaneClass))
 #define NAUTILUS_IS_PREFS_PANE(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS_PANE))
 #define NAUTILUS_IS_PREFS_PANE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS_PANE))
 
-typedef struct _NautilusPrefsPane	   NautilusPrefsPane;
-typedef struct _NautilusPrefsPaneClass      NautilusPrefsPaneClass;
-typedef struct _NautilusPrefsPanePrivate    NautilusPrefsPanePrivate;
+typedef struct _NautilusPreferencesPane	   NautilusPreferencesPane;
+typedef struct _NautilusPreferencesPaneClass      NautilusPreferencesPaneClass;
+typedef struct _NautilusPreferencesPaneDetails    NautilusPreferencesPaneDetails;
 
-struct _NautilusPrefsPane
+struct _NautilusPreferencesPane
 {
 	/* Super Class */
 	GtkVBox				vbox;
 
 	/* Private stuff */
-	NautilusPrefsPanePrivate	*priv;
+	NautilusPreferencesPaneDetails	*details;
 };
 
-struct _NautilusPrefsPaneClass
+struct _NautilusPreferencesPaneClass
 {
 	GtkVBoxClass	parent_class;
 
-	void (*construct) (NautilusPrefsPane *prefs_pane, GtkWidget *box);
+	void (*construct) (NautilusPreferencesPane *prefs_pane, GtkWidget *box);
 };
 
-GtkType    nautilus_prefs_pane_get_type              (void);
-GtkWidget* nautilus_prefs_pane_new                   (const gchar *pane_title,
-						      const gchar *pane_description);
-void nautilus_prefs_pane_set_title                   (NautilusPrefsPane * prefs_pane,
-						      const gchar *pane_title);
-void nautilus_prefs_pane_set_description             (NautilusPrefsPane * prefs_pane,
-						      const gchar *pane_description);
-void nautilus_prefs_pane_add_group		     (NautilusPrefsPane *prefs_pane,
-						      GtkWidget *prefs_group);
+GtkType    nautilus_preferences_pane_get_type        (void);
+GtkWidget* nautilus_preferences_pane_new             (const gchar       *pane_title,
+						      const gchar       *pane_description);
+void       nautilus_preferences_pane_set_title       (NautilusPreferencesPane *prefs_pane,
+						      const gchar       *pane_title);
+void       nautilus_preferences_pane_set_description (NautilusPreferencesPane *prefs_pane,
+						      const gchar       *pane_description);
+void       nautilus_preferences_pane_add_group       (NautilusPreferencesPane *prefs_pane,
+						      GtkWidget         *prefs_group);
 
 BEGIN_GNOME_DECLS
 
-#endif /* NAUTILUS_PREFS_PANE_H */
+#endif /* NAUTILUS_PREFERENCES_PANE_H */

@@ -23,7 +23,6 @@
 */
 
 #include "nautilus-preferences-group.h"
-//#include "nautilus-prefs.h"
 
 #include <gnome.h>
 #include <gtk/gtkradiobutton.h>
@@ -42,7 +41,7 @@ typedef struct
 	GtkWidget	*radio_button;
 } ButtonInfo;
 
-struct _NautilusPreferencesGroupPrivate
+struct _NautilusPreferencesGroupDetails
 {
 	GtkWidget	*main_box;
 	GtkWidget	*content_box;
@@ -61,7 +60,7 @@ static void        nautilus_preferences_group_initialize       (NautilusPreferen
 static void        nautilus_preferences_group_destroy          (GtkObject                    *object);
 
 
-/* NautilusPrefsGroupClass methods */
+/* Private stuff */
 static void        preferences_group_construct                 (NautilusPreferencesGroup *prefs_group,
 								const gchar * title);
 
@@ -90,12 +89,12 @@ nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *pref
 static void
 nautilus_preferences_group_initialize (NautilusPreferencesGroup *group)
 {
-	group->priv = g_new (NautilusPreferencesGroupPrivate, 1);
+	group->details = g_new (NautilusPreferencesGroupDetails, 1);
 
-	group->priv->main_box = NULL;
-	group->priv->content_box = NULL;
-	group->priv->description_label = NULL;
-	group->priv->show_description = FALSE;
+	group->details->main_box = NULL;
+	group->details->content_box = NULL;
+	group->details->description_label = NULL;
+	group->details->show_description = FALSE;
 }
 
 /*
@@ -111,13 +110,16 @@ nautilus_preferences_group_destroy(GtkObject* object)
 	
 	group = NAUTILUS_PREFERENCES_GROUP (object);
 
-	g_free (group->priv);
+	g_free (group->details);
 	
 	/* Chain */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+/*
+ * Private stuff
+ */
 static void
 preferences_group_construct (NautilusPreferencesGroup *group,
 			     const gchar * title)
@@ -125,71 +127,54 @@ preferences_group_construct (NautilusPreferencesGroup *group,
 	g_assert (group != NULL);
 	g_assert (title != NULL);
 
-	g_assert (group->priv->content_box == NULL);
-	g_assert (group->priv->main_box == NULL);
-	g_assert (group->priv->description_label == NULL);
-
-//	printf ("preferences_group_construct\n");
-
-// 	pref_info = nautilus_prefs_get_pref_info (NAUTILUS_PREFS (prefs), 
-// 						  pref_name);
-
-// 	g_assert (pref_info != NULL);
-
-// 	g_assert (pref_info->pref_description != NULL);
+	g_assert (group->details->content_box == NULL);
+	g_assert (group->details->main_box == NULL);
+	g_assert (group->details->description_label == NULL);
 
 	/* Ourselves */
 	gtk_frame_set_shadow_type (GTK_FRAME (group),
 				   GTK_SHADOW_ETCHED_IN);
 
-
-// 	gtk_object_set (GTK_OBJECT (group),
-// 			"title_string", group_title,
-// 			NULL);
-
 	gtk_frame_set_label (GTK_FRAME (group), title);
 
 	/* Main box */
-	group->priv->main_box = gtk_vbox_new (FALSE, 0);
+	group->details->main_box = gtk_vbox_new (FALSE, 0);
 
 	gtk_container_add (GTK_CONTAINER (group),
-			   group->priv->main_box);
-
-// 	gtk_container_set_border_width (GTK_CONTAINER (group->priv->content_box),
-// 					GROUP_FRAME_BORDER_WIDTH);
+			   group->details->main_box);
 
 	/* Description label */
-	group->priv->description_label = gtk_label_new ("Blurb");
+	group->details->description_label = gtk_label_new ("Blurb");
 
-	gtk_label_set_justify (GTK_LABEL (group->priv->description_label),
+	gtk_label_set_justify (GTK_LABEL (group->details->description_label),
 			       GTK_JUSTIFY_LEFT);
 
-	gtk_box_pack_start (GTK_BOX (group->priv->main_box),
-			    group->priv->description_label,
+	gtk_box_pack_start (GTK_BOX (group->details->main_box),
+			    group->details->description_label,
 			    FALSE,
 			    FALSE,
 			    0);
 
-	if (group->priv->show_description)
+	if (group->details->show_description)
 	{
-		gtk_widget_show (group->priv->description_label);
+		gtk_widget_show (group->details->description_label);
 	}
 
 	/* Content box */
-	group->priv->content_box = 
+	group->details->content_box = 
 		gtk_vbox_new (FALSE, 0);
 
-	gtk_box_pack_start (GTK_BOX (group->priv->main_box),
-			    group->priv->content_box,
+	gtk_box_pack_start (GTK_BOX (group->details->main_box),
+			    group->details->content_box,
 			    FALSE,
 			    FALSE,
 			    0);
 
-	gtk_container_set_border_width (GTK_CONTAINER (group->priv->content_box),
+	gtk_container_set_border_width (GTK_CONTAINER (group->details->content_box),
 					4);
 
-	gtk_widget_show (group->priv->content_box);
-	gtk_widget_show (group->priv->main_box);
+	gtk_widget_show (group->details->content_box);
+	gtk_widget_show (group->details->main_box);
 }
 
 /*
@@ -202,19 +187,12 @@ nautilus_preferences_group_new (const gchar *title)
 
 	g_return_val_if_fail (title != NULL, NULL);
 
-/* 	printf("nautilus_preferences_group_new()\n"); */
-
 	group = gtk_type_new (nautilus_preferences_group_get_type ());
 
 	preferences_group_construct (group, title);
 	
 	return GTK_WIDGET (group);
 }
-
-// void
-// nautilus_preferences_group_clear (NautilusPreferencesGroup *preferences_group)
-// {
-// }
 
 void
 nautilus_preferences_group_add (NautilusPreferencesGroup *group,
@@ -224,14 +202,10 @@ nautilus_preferences_group_add (NautilusPreferencesGroup *group,
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 	g_return_if_fail (item != NULL);
 
-/* 	printf("nautilus_preferences_group_add()\n"); */
-	
-	gtk_box_pack_start (GTK_BOX (group->priv->content_box),
+	gtk_box_pack_start (GTK_BOX (group->details->content_box),
 			    item,
 			    TRUE,
 			    TRUE,
 			    0);
-
-//	gtk_widget_show (item);
 }
 

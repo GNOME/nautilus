@@ -170,7 +170,7 @@ static const gint prefs_global_user_level_values[] =
 	3
 };
 
-static NautilusPrefEnumData prefs_global_user_level_data =
+static NautilusPreferencesEnumData prefs_global_user_level_data =
 {
 	prefs_global_user_level_names,
 	prefs_global_user_level_descriptions,
@@ -178,7 +178,7 @@ static NautilusPrefEnumData prefs_global_user_level_data =
 	4
 };
 
-static NautilusPrefInfo prefs_global_static_pref_info[] =
+static NautilusPreferencesInfo prefs_global_static_pref_info[] =
 {
 	{
 		"user_level",
@@ -209,17 +209,17 @@ create_dummy_prefs (void)
 	GtkObject * dummy_prefs;
 	guint i;
 
-	dummy_prefs = nautilus_prefs_new ("dummy");
+	dummy_prefs = nautilus_preferences_new ("dummy");
 
 	/* Register the static prefs */
 	for (i = 0; i < 3; i++)
 	{
-		nautilus_prefs_register_from_info (NAUTILUS_PREFS (dummy_prefs),
+		nautilus_preferences_register_from_info (NAUTILUS_PREFS (dummy_prefs),
 						   &prefs_global_static_pref_info[i]);
 	}
 
 
-	nautilus_prefs_set_enum (NAUTILUS_PREFS (dummy_prefs),
+	nautilus_preferences_set_enum (NAUTILUS_PREFS (dummy_prefs),
 				 "user_level",
 				 2);
 

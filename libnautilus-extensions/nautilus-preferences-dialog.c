@@ -39,7 +39,7 @@ enum
 	LAST_SIGNAL
 };
 
-struct _NautilusPrefsDialogPrivate
+struct _NautilusPreferencesDialogDetails
 {
 	GtkWidget	*prefs_box;
 };
@@ -65,12 +65,12 @@ enum
 	PASSWORD_ROW
 };
 
-/* NautilusPrefsDialogClass methods */
-static void nautilus_prefs_dialog_initialize_class (NautilusPrefsDialogClass *klass);
-static void nautilus_prefs_dialog_initialize       (NautilusPrefsDialog      *prefs_dialog);
+/* NautilusPreferencesDialogClass methods */
+static void nautilus_preferences_dialog_initialize_class (NautilusPreferencesDialogClass *klass);
+static void nautilus_preferences_dialog_initialize       (NautilusPreferencesDialog      *prefs_dialog);
 
 /* GtkObjectClass methods */
-static void nautilus_prefs_dialog_destroy          (GtkObject                *object);
+static void nautilus_preferences_dialog_destroy          (GtkObject                *object);
 static void dialog_clicked                         (GtkWidget                *widget,
 						    gint                      n,
 						    gpointer                  data);
@@ -80,19 +80,19 @@ static void dialog_destroy                         (GtkWidget                *wi
 						    gpointer                  data);
 
 /* Misc private stuff */
-static void nautilus_prefs_dialog_construct        (NautilusPrefsDialog      *prefs_dialog,
+static void nautilus_preferences_dialog_construct        (NautilusPreferencesDialog      *prefs_dialog,
 						    const gchar              *dialog_title);
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPrefsDialog, 
-				   nautilus_prefs_dialog, 
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesDialog, 
+				   nautilus_preferences_dialog, 
 				   gnome_dialog_get_type ())
 
 /*
- * NautilusPrefsDialogClass methods
+ * NautilusPreferencesDialogClass methods
  */
 static void
-nautilus_prefs_dialog_initialize_class (NautilusPrefsDialogClass * klass)
+nautilus_preferences_dialog_initialize_class (NautilusPreferencesDialogClass * klass)
 {
 	GtkObjectClass * object_class;
 	GtkWidgetClass * widget_class;
@@ -103,25 +103,23 @@ nautilus_prefs_dialog_initialize_class (NautilusPrefsDialogClass * klass)
  	parent_class = gtk_type_class(gnome_dialog_get_type());
 
 	/* GtkObjectClass */
-	object_class->destroy = nautilus_prefs_dialog_destroy;
+	object_class->destroy = nautilus_preferences_dialog_destroy;
 }
 
 static void
-nautilus_prefs_dialog_initialize (NautilusPrefsDialog * prefs_dialog)
+nautilus_preferences_dialog_initialize (NautilusPreferencesDialog * prefs_dialog)
 {
-	prefs_dialog->priv = g_new (NautilusPrefsDialogPrivate, 1);
+	prefs_dialog->details = g_new (NautilusPreferencesDialogDetails, 1);
 
-	prefs_dialog->priv->prefs_box = NULL;
+	prefs_dialog->details->prefs_box = NULL;
 }
 
 static void
 dialog_clicked(GtkWidget * widget, gint n, gpointer data)
 {
-	NautilusPrefsDialog * prefs_dialog = (NautilusPrefsDialog *) data;
+	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
 	g_assert(prefs_dialog);
-
-// 	gtk_grab_remove(GTK_WIDGET(prefs_dialog));
 
 	gtk_widget_hide(GTK_WIDGET(prefs_dialog));
 }
@@ -129,36 +127,29 @@ dialog_clicked(GtkWidget * widget, gint n, gpointer data)
 static void
 dialog_show(GtkWidget * widget, gpointer data)
 {
-	NautilusPrefsDialog * prefs_dialog = (NautilusPrefsDialog *) data;
+	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
 	g_assert(prefs_dialog);
-
-// 	gtk_caption_table_entry_grab_focus(GTK_CAPTION_TABLE(prefs_dialog->priv->table), 
-// 					   PASSWORD_ROW);
 }
 
 static void
 dialog_destroy(GtkWidget * widget, gpointer data)
 {
-	NautilusPrefsDialog * prefs_dialog = (NautilusPrefsDialog *) data;
+	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
 	g_assert(prefs_dialog);
-
-// 	gtk_grab_remove(GTK_WIDGET(prefs_dialog));
-
-//	gtk_widget_destroy (widget);
 }
 
 static void
-nautilus_prefs_dialog_construct (NautilusPrefsDialog *prefs_dialog,
+nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 				 const gchar	     *dialog_title)
 {
 	GnomeDialog *gnome_dialog;
 
 	g_assert (prefs_dialog != NULL);
-	g_assert (prefs_dialog->priv != NULL);
+	g_assert (prefs_dialog->details != NULL);
 
-	g_assert (prefs_dialog->priv->prefs_box == NULL);
+	g_assert (prefs_dialog->details->prefs_box == NULL);
 
 	gnome_dialog = GNOME_DIALOG (prefs_dialog);
 
@@ -180,8 +171,6 @@ nautilus_prefs_dialog_construct (NautilusPrefsDialog *prefs_dialog,
 	gdk_window_set_functions (GTK_WIDGET (prefs_dialog)->window, GDK_FUNC_MOVE | GDK_FUNC_RESIZE);
 #endif
 
-//	gdk_window_set_decorations (GTK_WINDOW(prefs_dialog), GDK_DECOR_ALL);
-				    
  	gtk_window_set_position (GTK_WINDOW (prefs_dialog), GTK_WIN_POS_CENTER);
 
  	gtk_container_set_border_width (GTK_CONTAINER(prefs_dialog), 
@@ -208,74 +197,54 @@ nautilus_prefs_dialog_construct (NautilusPrefsDialog *prefs_dialog,
 	/* Configure the GNOME_DIALOG's vbox */
  	g_assert (gnome_dialog->vbox);
 
-	prefs_dialog->priv->prefs_box = nautilus_prefs_box_new (_("Prefs Box"));
+	prefs_dialog->details->prefs_box = nautilus_preferences_box_new (_("Prefs Box"));
 	
 	gtk_box_set_spacing (GTK_BOX (gnome_dialog->vbox), 10);
 	
 	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox),
-			    prefs_dialog->priv->prefs_box,
+			    prefs_dialog->details->prefs_box,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
 
-	gtk_widget_show (prefs_dialog->priv->prefs_box);
+	gtk_widget_show (prefs_dialog->details->prefs_box);
 }
 
 GtkWidget*
-nautilus_prefs_dialog_new (const gchar *dialog_title)
+nautilus_preferences_dialog_new (const gchar *dialog_title)
 {
-	NautilusPrefsDialog *prefs_dialog;
+	NautilusPreferencesDialog *prefs_dialog;
 
-	prefs_dialog = gtk_type_new (nautilus_prefs_dialog_get_type ());
+	prefs_dialog = gtk_type_new (nautilus_preferences_dialog_get_type ());
 
-	nautilus_prefs_dialog_construct (prefs_dialog, dialog_title);
+	nautilus_preferences_dialog_construct (prefs_dialog, dialog_title);
 
 	return GTK_WIDGET (prefs_dialog);
 }
 
 /* GtkObjectClass methods */
 static void
-nautilus_prefs_dialog_destroy(GtkObject* object)
+nautilus_preferences_dialog_destroy(GtkObject* object)
 {
-	NautilusPrefsDialog * prefs_dialog;
+	NautilusPreferencesDialog * prefs_dialog;
 	
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (object));
 	
-	prefs_dialog = NAUTILUS_PREFS_DIALOG(object);
+	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG(object);
 
-	g_free (prefs_dialog->priv);
+	g_free (prefs_dialog->details);
 
 	/* Chain */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-gboolean
-nautilus_prefs_dialog_run_and_block(NautilusPrefsDialog* prefs_dialog)
-{
-// 	g_return_val_if_fail(prefs_dialog, FALSE);
-
-// 	prefs_dialog->priv->last_button_clicked = UNKNOWN_BUTTON;
-
-// 	gtk_widget_show_all(GTK_WIDGET(prefs_dialog));
-	
-// 	gtk_grab_add(GTK_WIDGET(prefs_dialog));
-
-// 	while (prefs_dialog->priv->last_button_clicked == UNKNOWN_BUTTON)
-// 		gtk_main_iteration();
-	
-// 	if (prefs_dialog->priv->last_button_clicked == OK_BUTTON)
-// 		return TRUE;
-	
-	return FALSE;
-}
-
 GtkWidget*
-nautilus_prefs_dialog_get_prefs_box (NautilusPrefsDialog *prefs_dialog)
+nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dialog)
 {
 	g_return_val_if_fail (prefs_dialog != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFS_DIALOG (prefs_dialog), NULL);
 
-	return prefs_dialog->priv->prefs_box;
+	return prefs_dialog->details->prefs_box;
 }

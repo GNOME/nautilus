@@ -28,12 +28,6 @@
 
 #include <gtk/gtkclist.h>
 
-// #include <gtk/gtkmain.h>
-
-#include <libgnomeui/gnome-stock.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-
 enum
 {
 	ACTIVATE,
@@ -53,7 +47,7 @@ typedef struct
 	gboolean	constructed;
 } PaneInfo;
 
-struct _NautilusPrefsBoxPrivate
+struct _NautilusPreferencesBoxDetails
 {
 	GtkWidget	*category_list;
 	GtkWidget	*pane_container;
@@ -67,20 +61,20 @@ typedef void (*GnomeBoxSignal1) (GtkObject* object,
 				    gint arg1,
 				    gpointer data);
 
-/* NautilusPrefsBoxClass methods */
-static void                   nautilus_prefs_box_initialize_class (NautilusPrefsBoxClass *klass);
-static void                   nautilus_prefs_box_initialize       (NautilusPrefsBox      *prefs_box);
+/* NautilusPreferencesBoxClass methods */
+static void                   nautilus_preferences_box_initialize_class (NautilusPreferencesBoxClass *klass);
+static void                   nautilus_preferences_box_initialize       (NautilusPreferencesBox      *prefs_box);
 
 
 
 /* GtkObjectClass methods */
-static void                   nautilus_prefs_box_destroy          (GtkObject             *object);
+static void                   nautilus_preferences_box_destroy          (GtkObject             *object);
 
 
 
 /* Misc private stuff */
-static void                   prefs_box_construct                 (NautilusPrefsBox      *prefs_box);
-static void                   prefs_box_select_pane               (NautilusPrefsBox      *prefs_box,
+static void                   prefs_box_construct                 (NautilusPreferencesBox      *prefs_box);
+static void                   prefs_box_select_pane               (NautilusPreferencesBox      *prefs_box,
 								   guint                  pane_row);
 
 
@@ -100,13 +94,13 @@ static void                   category_list_select_row            (GtkCList     
 								   GdkEventButton        *event,
 								   gpointer               user_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPrefsBox, nautilus_prefs_box, GTK_TYPE_HBOX)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesBox, nautilus_preferences_box, GTK_TYPE_HBOX)
 
 /*
- * NautilusPrefsBoxClass methods
+ * NautilusPreferencesBoxClass methods
  */
 static void
-nautilus_prefs_box_initialize_class (NautilusPrefsBoxClass *prefs_box_class)
+nautilus_preferences_box_initialize_class (NautilusPreferencesBoxClass *prefs_box_class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -117,39 +111,39 @@ nautilus_prefs_box_initialize_class (NautilusPrefsBoxClass *prefs_box_class)
  	parent_class = gtk_type_class (gtk_hbox_get_type ());
 
 	/* GtkObjectClass */
-	object_class->destroy = nautilus_prefs_box_destroy;
+	object_class->destroy = nautilus_preferences_box_destroy;
 }
 
 static void
-nautilus_prefs_box_initialize (NautilusPrefsBox *prefs_box)
+nautilus_preferences_box_initialize (NautilusPreferencesBox *prefs_box)
 {
-	prefs_box->priv = g_new (NautilusPrefsBoxPrivate, 1);
+	prefs_box->details = g_new (NautilusPreferencesBoxDetails, 1);
 
-	prefs_box->priv->category_list = NULL;
-	prefs_box->priv->pane_container = NULL;
-	prefs_box->priv->panes = NULL;
+	prefs_box->details->category_list = NULL;
+	prefs_box->details->pane_container = NULL;
+	prefs_box->details->panes = NULL;
 
-	prefs_box->priv->selected_pane = PREFS_SELECTED_PANE_UNKNOWN;
+	prefs_box->details->selected_pane = PREFS_SELECTED_PANE_UNKNOWN;
 }
 
 /*
  * GtkObjectClass methods
  */
 static void
-nautilus_prefs_box_destroy (GtkObject *object)
+nautilus_preferences_box_destroy (GtkObject *object)
 {
-	NautilusPrefsBox * prefs_box;
+	NautilusPreferencesBox * prefs_box;
 	
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_BOX (object));
 	
-	prefs_box = NAUTILUS_PREFS_BOX (object);
+	prefs_box = NAUTILUS_PREFERENCES_BOX (object);
 
-	if (prefs_box->priv->panes)
+	if (prefs_box->details->panes)
 	{
 		GList *panes;
 
-		panes = prefs_box->priv->panes;
+		panes = prefs_box->details->panes;
 
 		while (panes)
 		{
@@ -162,10 +156,10 @@ nautilus_prefs_box_destroy (GtkObject *object)
 			panes = panes->next;
 		}
 		
-		g_list_free (prefs_box->priv->panes);
+		g_list_free (prefs_box->details->panes);
 	}
 
-	g_free (prefs_box->priv);
+	g_free (prefs_box->details);
 	
 	/* Chain */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
@@ -176,13 +170,13 @@ nautilus_prefs_box_destroy (GtkObject *object)
  * Misc private stuff
  */
 static void
-prefs_box_construct (NautilusPrefsBox *prefs_box)
+prefs_box_construct (NautilusPreferencesBox *prefs_box)
 {
 	g_assert (prefs_box != NULL);
-	g_assert (prefs_box->priv != NULL);
+	g_assert (prefs_box->details != NULL);
 
-	g_assert (prefs_box->priv->category_list == NULL);
-	g_assert (prefs_box->priv->panes == NULL);
+	g_assert (prefs_box->details->category_list == NULL);
+	g_assert (prefs_box->details->panes == NULL);
 
 	/* Configure ourselves */
  	gtk_box_set_homogeneous (GTK_BOX (prefs_box), FALSE);
@@ -190,32 +184,32 @@ prefs_box_construct (NautilusPrefsBox *prefs_box)
  	gtk_box_set_spacing (GTK_BOX (prefs_box), PREFS_BOX_SPACING);
 
 	/* The category list */
-	prefs_box->priv->category_list = 
+	prefs_box->details->category_list = 
 		gtk_clist_new (PREFS_BOX_NUM_CATEGORY_COLUMNS);
 
-	gtk_signal_connect (GTK_OBJECT (prefs_box->priv->category_list), 
+	gtk_signal_connect (GTK_OBJECT (prefs_box->details->category_list), 
 			    "select_row",
 			    GTK_SIGNAL_FUNC (category_list_select_row),
 			    (gpointer) prefs_box);
 
-	gtk_clist_set_selection_mode (GTK_CLIST (prefs_box->priv->category_list), 
+	gtk_clist_set_selection_mode (GTK_CLIST (prefs_box->details->category_list), 
 				      GTK_SELECTION_BROWSE);
 
-	gtk_clist_set_column_auto_resize (GTK_CLIST (prefs_box->priv->category_list),
+	gtk_clist_set_column_auto_resize (GTK_CLIST (prefs_box->details->category_list),
 					  PREFS_BOX_CATEGORY_COLUMN,
 					  TRUE);
 	
 	gtk_box_pack_start (GTK_BOX (prefs_box),
-			    prefs_box->priv->category_list,
+			    prefs_box->details->category_list,
 			    FALSE,
 			    TRUE,
 			    0);
 
-	gtk_widget_show (prefs_box->priv->category_list);
+	gtk_widget_show (prefs_box->details->category_list);
 }
 
 static void
-prefs_box_select_pane (NautilusPrefsBox	*prefs_box,
+prefs_box_select_pane (NautilusPreferencesBox	*prefs_box,
 		       guint		pane_row)
 {
 	GList			*pane_node;
@@ -224,19 +218,19 @@ prefs_box_select_pane (NautilusPrefsBox	*prefs_box,
 
 	g_assert (prefs_box != NULL);
 	g_assert (NAUTILUS_IS_PREFS_BOX (prefs_box));
-	g_assert (prefs_box->priv != NULL);
-	g_assert (prefs_box->priv->panes != NULL);
+	g_assert (prefs_box->details != NULL);
+	g_assert (prefs_box->details->panes != NULL);
 
-	g_assert (pane_row < g_list_length (prefs_box->priv->panes));
+	g_assert (pane_row < g_list_length (prefs_box->details->panes));
 
-	pane_node = g_list_nth (prefs_box->priv->panes, pane_row);
+	pane_node = g_list_nth (prefs_box->details->panes, pane_row);
 
 	g_assert (pane_node != NULL);
 
 	pane_info = pane_node->data;
 
 	/* Show only the corresponding pane widget */
-	pane_iterator = prefs_box->priv->panes;
+	pane_iterator = prefs_box->details->panes;
 
 	while (pane_iterator)
 	{
@@ -301,7 +295,7 @@ category_list_select_row (GtkCList		*clist,
 			  GdkEventButton	*event,
 			  gpointer		user_data)
 {
-	NautilusPrefsBox *prefs_box = (NautilusPrefsBox *) user_data;
+	NautilusPreferencesBox *prefs_box = (NautilusPreferencesBox *) user_data;
 
 	g_assert (prefs_box != NULL);
 	g_assert (NAUTILUS_IS_PREFS_BOX (prefs_box));
@@ -310,14 +304,14 @@ category_list_select_row (GtkCList		*clist,
 }
 
 /*
- * NautilusPrefsBox public methods
+ * NautilusPreferencesBox public methods
  */
 GtkWidget*
-nautilus_prefs_box_new (const gchar *box_title)
+nautilus_preferences_box_new (const gchar *box_title)
 {
-	NautilusPrefsBox *prefs_box;
+	NautilusPreferencesBox *prefs_box;
 
-	prefs_box = gtk_type_new (nautilus_prefs_box_get_type ());
+	prefs_box = gtk_type_new (nautilus_preferences_box_get_type ());
 
 	prefs_box_construct (prefs_box);
 
@@ -325,7 +319,7 @@ nautilus_prefs_box_new (const gchar *box_title)
 }
 
 GtkWidget *
-nautilus_prefs_box_add_pane (NautilusPrefsBox	*prefs_box,
+nautilus_preferences_box_add_pane (NautilusPreferencesBox	*prefs_box,
 			     const gchar *pane_title,
 			     const gchar *pane_description)
 {
@@ -340,10 +334,10 @@ nautilus_prefs_box_add_pane (NautilusPrefsBox	*prefs_box,
 
 	info = pane_info_alloc (pane_title);
 
-	prefs_box->priv->panes = g_list_append (prefs_box->priv->panes, 
+	prefs_box->details->panes = g_list_append (prefs_box->details->panes, 
 						(gpointer) info);
 
-	info->pane_widget = nautilus_prefs_pane_new (pane_title,
+	info->pane_widget = nautilus_preferences_pane_new (pane_title,
 						     pane_description);
 
 	gtk_box_pack_start (GTK_BOX (prefs_box),
@@ -354,7 +348,7 @@ nautilus_prefs_box_add_pane (NautilusPrefsBox	*prefs_box,
 
 	text[PREFS_BOX_CATEGORY_COLUMN] = (gchar *) pane_title;
 
-	new_row = gtk_clist_append (GTK_CLIST (prefs_box->priv->category_list), 
+	new_row = gtk_clist_append (GTK_CLIST (prefs_box->details->category_list), 
 				    text);
 
 	return info->pane_widget;

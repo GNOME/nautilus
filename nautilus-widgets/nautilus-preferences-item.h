@@ -44,8 +44,7 @@ typedef enum
 {
 	NAUTILUS_PREFERENCES_ITEM_UNKNOWN,
 	NAUTILUS_PREFERENCES_ITEM_BOOL,
-	NAUTILUS_PREFERENCES_ITEM_ENUM,
-	NAUTILUS_PREFERENCES_ITEM_INT
+	NAUTILUS_PREFERENCES_ITEM_ENUM
 } NautilusPreferencesItemType;
 
 struct _NautilusPreferencesItem
@@ -60,19 +59,12 @@ struct _NautilusPreferencesItem
 struct _NautilusPreferencesItemClass
 {
 	GtkVBoxClass	vbox_class;
-
-// 	void (*construct) (NautilusPreferencesItem *preferences_item, 
-// 			   const gchar * group_title,
-// 			   GtkObject *prefs,
-// 			   const gchar *pref_name);
-
-// 	void (*changed) (NautilusPreferencesItem *preferences_item);
 };
 
-GtkType    nautilus_preferences_item_get_type              (void);
-GtkWidget* nautilus_preferences_item_new		   (GtkObject *prefs,
-							    const gchar *pref_name,
-							    NautilusPreferencesItemType item_type);
+GtkType    nautilus_preferences_item_get_type (void);
+GtkWidget* nautilus_preferences_item_new      (GtkObject                   *prefs,
+					       const gchar                 *pref_name,
+					       NautilusPreferencesItemType  item_type);
 
 BEGIN_GNOME_DECLS
 
