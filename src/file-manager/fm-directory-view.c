@@ -3693,8 +3693,6 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 		g_string_append_printf (ui_xml, "<cmd name=\"%s\" label=\"%s\"/>", verb, label);
 	}
 
-	g_slist_free (langs_cpy);
-
 	ui_xml = g_string_append (ui_xml, "</commands><popups><popup name=\"selection\"><placeholder name=\"Mime Actions\"><separator/>");
 
 	/* build the UI */
@@ -3736,6 +3734,8 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 		g_string_append (ui_xml, "/>");
 	}
 	
+	g_slist_free (langs_cpy);
+
 	ui_xml = g_string_append (ui_xml, "</placeholder></popup></popups></Root>");
 	ui_xml_str = g_string_free (ui_xml, FALSE);
 
