@@ -1,3 +1,23 @@
+2001-01-18  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 3417 (Put existing preferences at right levels)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility): First pass at setting
+	appropriate defaults and user levels for preferences.
+	
+	(global_preferences_create_dialog): Put "show only folders in
+	tree view" before other preferences that appear only in higher
+	user levels, 'cuz it looks better that way.
+	
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c: (user_level_customize_callback):
+	Renamed "Edit Settings" menu item & dialog to "Preferences";
+	marked dialog title for localization.
+
 2001-01-18  Andy Hertzfeld  <andy@eazel.com>
 
 	now that the bonobo problems are resolved, we can go back to

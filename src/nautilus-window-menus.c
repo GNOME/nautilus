@@ -480,7 +480,7 @@ user_level_customize_callback (BonoboUIComponent *component,
 			       gpointer user_data, 
 			       const char *verb)
 {
-	nautilus_global_preferences_set_dialog_title ("Edit Settings");
+	nautilus_global_preferences_set_dialog_title (_("Preferences"));
 	nautilus_global_preferences_show_dialog ();
 }
 

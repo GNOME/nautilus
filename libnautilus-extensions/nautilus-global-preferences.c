@@ -217,15 +217,9 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						  NAUTILUS_USER_LEVEL_HACKER,
-						  TRUE);
 
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  FALSE);
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						  NAUTILUS_USER_LEVEL_HACKER,
 						  FALSE);
 
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, 
@@ -262,7 +256,7 @@ global_preferences_install_defaults (void)
 	
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
+						  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 						  NAUTILUS_USER_LEVEL_NOVICE,
@@ -276,7 +270,7 @@ global_preferences_install_defaults (void)
 						  TRUE);
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD,
 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  FALSE);
+						  TRUE);
 
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 						  NAUTILUS_USER_LEVEL_NOVICE,
@@ -291,7 +285,7 @@ global_preferences_install_defaults (void)
 
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						  NAUTILUS_USER_LEVEL_INTERMEDIATE,
-						  NAUTILUS_SIMPLE_SEARCH_BAR);
+						  NAUTILUS_COMPLEX_SEARCH_BAR);
 	
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 						  NAUTILUS_USER_LEVEL_NOVICE,
@@ -351,6 +345,66 @@ static void
 global_preferences_install_visibility (void)
 {
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_HOME_URI,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+						     NAUTILUS_USER_LEVEL_HACKER);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
+						     NAUTILUS_USER_LEVEL_HACKER);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
+						     NAUTILUS_USER_LEVEL_HACKER);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_METHOD,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_HOME_URI,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 }
 
@@ -435,6 +489,11 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 3,
+							 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 3,
 							 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
@@ -446,11 +505,6 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 3,
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 3,
-							 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
