@@ -54,8 +54,5 @@ appicon_DATA = 	nautilus-launch-icon.png 	\
 Applicationsdir = $(datadir)/applications
 Applications_DATA = $(DESKTOP_FILES)
 
-Toplevelmenudir = $(datadir)/applications
-Toplevelmenu_DATA = nautilus-help.desktop
-
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
