@@ -1534,10 +1534,10 @@ nautilus_icon_canvas_item_bounds (GnomeCanvasItem *item,
         
 	/* Return the result. */
 	pixels_per_unit = item->canvas->pixels_per_unit;
-	*x1 = total_rect.x0 / pixels_per_unit;
-	*y1 = total_rect.y0 / pixels_per_unit;
-	*x2 = total_rect.x1 / pixels_per_unit;
-	*y2 = total_rect.y1 / pixels_per_unit;
+	*x1 = floor (total_rect.x0 / pixels_per_unit);
+	*y1 = floor (total_rect.y0 / pixels_per_unit);
+	*x2 = ceil (total_rect.x1 / pixels_per_unit) + 1;
+	*y2 = ceil (total_rect.y1 / pixels_per_unit) + 1;
 }
 
 /* Get the rectangle of the icon only, in world coordinates. */
