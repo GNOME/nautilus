@@ -226,34 +226,28 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		g_message ("GnomeVFS Error: %s\n",
+		g_message ("D: GnomeVFS Error: %s\n",
 			   gnome_vfs_result_to_string (info->vfs_status));
 		return FALSE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
-		g_message ("Overwriting `%s' with `%s'",
+		g_message ("D: Overwriting `%s' with `%s'",
 			   info->target_name, info->source_name);
 		return TRUE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
-		/* g_message ("Status: OK"); */
 		switch (info->phase) {
 		case GNOME_VFS_XFER_PHASE_INITIAL:
-			g_message ("Initial phase");
 			initial_emit = TRUE;
 			last_emit = FALSE;
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COLLECTING:
-			g_message ("Collecting file list");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_READYTOGO:
-			g_message ("Ready to go!");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_OPENSOURCE:
-			g_message ("Opening source");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
-			g_message ("Opening target");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COPYING:
 			if (initial_emit && info->file_size>0) {
@@ -289,14 +283,10 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			*/
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
-			g_message ("Closing source");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_CLOSETARGET:
-			g_message ("Closing target");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
-			g_message ("Done with `%s' -> `%s', going next",
-				   info->source_name, info->target_name);
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COMPLETED:
 			if (!last_emit) {
@@ -306,22 +296,27 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 								      info->file_size,
 								      info->file_size);
 			}
-			g_message ("All done.");
 			return TRUE;
 		default:
-			g_message ("Unexpected phase %d", info->phase);
+			g_message ("D: Unexpected phase %d", info->phase);
 			return FALSE; /* keep going anyway */
 		}
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
-		g_message ("Duplicate");
+		g_message ("D: Duplicate");
 		return FALSE;
 	default:
-		g_message ("Unknown status");
+		g_message ("D: Unknown status");
 		return FALSE;
 	}       
 	
 	return FALSE; 	
+}
+
+static void 
+free_string (char *str, gpointer unused) \
+{
+	g_free (str);
 }
 
 gboolean 
@@ -331,71 +326,79 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 			     const char *target_file)
 {
 	GnomeVFSResult result;
-	GnomeVFSXferOptions xfer_options;
+	GnomeVFSXferOptions xfer_options = 0;
 	GnomeVFSURI *src_uri, *src_dir_uri;
 	GnomeVFSURI *dest_uri, *dest_dir_uri;
 	GList *src_list;
 	GList *dest_list;
-	const char *tmp;
+	char *tmp;
 	char *t_file;
-	gnome_vfs_callback_struct cbstruct;
+	gnome_vfs_callback_struct *cbstruct;
 
-	g_message ("gnome_vfs_xfer_uri (%s, %s,...)", url, target_file);
-	
-	/* Create source uri */
-	src_uri = gnome_vfs_uri_new (url);
-	g_assert (src_uri);
-	src_dir_uri = gnome_vfs_uri_get_parent (src_uri);
-	g_assert (src_dir_uri);
-	tmp = gnome_vfs_uri_get_basename (src_uri);
-	g_assert (tmp);
-	src_list = g_list_prepend (NULL, (char*)tmp);
-	g_assert (src_list);
-	
 	/* Ensure the target_file has a protocol://,
-	   or at least a file:// */
-	if (strstr (target_file, "://")==0) {
+	   if not, prefix a file:// */
+	if (strstr (target_file, "://")==NULL) {
 		t_file = g_strdup_printf ("file://%s", target_file);
 	} else {
 		t_file = g_strdup (target_file);
 	}
-	/* Create destination uri */
-	dest_uri = gnome_vfs_uri_new (target_file);
+
+	g_message ("D: gnome_vfs_xfer_uri ( %s %s )", url, t_file);
+	
+	/* Create source uri, lots of assertions... */
+	src_uri = gnome_vfs_uri_new (url);
+	g_assert (src_uri);
+	src_dir_uri = gnome_vfs_uri_get_parent (src_uri);
+	g_assert (src_dir_uri);
+	tmp = g_strdup (gnome_vfs_uri_get_basename (src_uri));
+	g_assert (tmp);
+	src_list = g_list_prepend (NULL, tmp);
+	g_assert (src_list);
+	
+	/* Create destination uri, lots of assertions... */
+	dest_uri = gnome_vfs_uri_new (t_file);
 	g_assert (dest_uri);
 	dest_dir_uri = gnome_vfs_uri_get_parent (dest_uri);
 	g_assert (dest_dir_uri);
-	tmp = gnome_vfs_uri_get_basename (dest_uri);
+	tmp = g_strdup (gnome_vfs_uri_get_basename (dest_uri));
 	g_assert (tmp);
-	dest_list = g_list_prepend (NULL, (char*)tmp);
+	dest_list = g_list_prepend (NULL, tmp);
 	g_assert (dest_list);
 	
-	cbstruct.service = service;
-	cbstruct.file_to_report = file_to_report;
+	/* Setup the userdata for the callback, I need both the
+	   service object to emit signals too, and the filename to report */
+	cbstruct = g_new0 (gnome_vfs_callback_struct, 1);
+	cbstruct->service = service;
+	cbstruct->file_to_report = file_to_report;
 
+	/* Execute the gnome_vfs copy */
 	result = gnome_vfs_xfer_uri (src_dir_uri, src_list,
 				     dest_dir_uri, dest_list,
 				     xfer_options,
 				     GNOME_VFS_XFER_ERROR_MODE_QUERY,
 				     GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 				     (GnomeVFSXferProgressCallback)gnome_vfs_xfer_callback,
-				     (gpointer)&cbstruct);
-	g_free (t_file);
+				     cbstruct);
 
-	g_message ("Roev, result = %s", result==GNOME_VFS_OK?"OK":"fucked");
+	g_message ("D: gnome vfs result = %s", result==GNOME_VFS_OK?"OK":"fucked");
  
+	/* Free the various stuff */
+	g_free (t_file);
+	g_free (cbstruct);
+
+	/* Unref all the uri's */
 	gnome_vfs_uri_unref (src_uri);
 	gnome_vfs_uri_unref (src_dir_uri);
 	gnome_vfs_uri_unref (dest_uri);
 	gnome_vfs_uri_unref (dest_dir_uri);
 	
+	/* Free the uri lists */
+	g_list_foreach (src_list, (GFunc)free_string, NULL);
+	g_list_foreach (dest_list, (GFunc)free_string, NULL);
 	g_list_free (src_list);
 	g_list_free (dest_list);
 
-	if (result == GNOME_VFS_OK) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	return result == GNOME_VFS_OK ? TRUE : FALSE;
 }
 #endif /* EAZEL_INSTALL_SLIM */
 
@@ -527,16 +530,36 @@ eazel_install_fetch_package (EazelInstall *service,
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
-		g_message ("%s resolved", package->name);
+		g_message ("D: %s resolved", package->name);
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 		result = eazel_install_fetch_file (service, url, package->name, targetname);
 #else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
 			result = eazel_install_fetch_file (service, url, package->name, targetname);
+		} else {
+			g_warning ("D: cannot handle %s", url);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result==TRUE) {
+			char md5[16];
 			packagedata_fill_from_file (package, targetname); 
+#ifndef EAZEL_INSTALL_SLIM
+			md5_get_digest_from_file (package, md5);
+/*
+  FIXME: bugzilla.eazel.c 2241
+  until we get the md5 set in the xml parse, don't md5 check it
+
+			if (strncmp (package->md5, md5, 16)!=0) {
+				g_warning (_("MD5 mismatch, package may be compromised"));
+				packagedata_destroy (package);
+				result = FALSE;
+			} else {
+				g_message ("D: md5 match");
+			}
+*/
+#endif /* EAZEL_INSTALL_SLIM */
+		} else {
+			g_message (_("File download failed"));
 		}
 
 		g_free (targetname);
@@ -668,9 +691,9 @@ get_url_for_package  (EazelInstall *service,
 						packages = parse_osd_xml_from_memory (ghttp_get_body (request),
 										      ghttp_get_body_len (request));
 						if (g_list_length (packages) == 0) {
-							g_warning ("No url for file");
+							g_warning ("D: No url for file");
 						} else if (g_list_length (packages) > 1) {
-							g_warning ("Ugh, more then one match, using first");
+							g_warning ("D: Ugh, more then one match, using first");
 						}
 
 						if (g_list_length (packages) > 0) {

@@ -7,7 +7,7 @@ OBJS=\
 	eazel-install-xml-package-list.o	\
 	eazel-install-object.o
 
-DEFINES=-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DEAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
+
 INCLUDES=\
 	-I.							\
 	-I@top_srcdir@						\
@@ -23,8 +23,6 @@ LIB=libeazelinstall_minimal.a
 
 CC=gcc
 CPPFLAGS=$(INCLUDES) $(DEFINES)
-CFLAGS=-O -Werror
-#CFLAGS=-g -Werror
 
 all: $(LIB)
 

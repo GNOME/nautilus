@@ -24,7 +24,6 @@ bin_PROGRAMS = nautilus-installer
 nautilus_installer_SOURCES = \
 	main.c \
 	support.c support.h \
-	interface.c interface.h \
 	callbacks.c callbacks.h \
 	installer.c installer.h 
 

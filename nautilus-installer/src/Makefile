@@ -66,7 +66,7 @@ BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/i
 BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 BONOBO_PRINT_CFLAGS = 
 BONOBO_PRINT_LIBS = 
-CATALOGS =  da.gmo de.gmo fr.gmo ga.gmo gl.gmo it.gmo ja.gmo ko.gmo no.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo uk.gmo zh_TW.Big5.gmo
+CATALOGS = 
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
@@ -165,7 +165,7 @@ CFLAGS = -g
 
 bin_PROGRAMS = nautilus-installer
 
-nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	installer.c installer.h 
+nautilus_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callbacks.h 	installer.c installer.h 
 
 
 nautilus_installer_LDFLAGS = -static
@@ -181,8 +181,7 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
 LDFLAGS = 
 LIBS = 
-nautilus_installer_OBJECTS =  main.o support.o interface.o callbacks.o \
-installer.o
+nautilus_installer_OBJECTS =  main.o support.o callbacks.o installer.o
 nautilus_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
@@ -200,8 +199,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/callbacks.P .deps/installer.P .deps/interface.P \
-.deps/main.P .deps/support.P
+DEP_FILES =  .deps/callbacks.P .deps/installer.P .deps/main.P \
+.deps/support.P
 SOURCES = $(nautilus_installer_SOURCES)
 OBJECTS = $(nautilus_installer_OBJECTS)
 

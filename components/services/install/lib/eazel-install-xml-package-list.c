@@ -20,6 +20,7 @@
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
  *          Joe Shaw <joe@helixcode.com>
+ *          Eskil Heyn Olsen <eskil@eazel.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
@@ -130,7 +131,7 @@ parse_category (xmlNode* cat) {
 	CategoryData* category;
 	xmlNode* pkg;
 
-	category = g_new0 (CategoryData, 1);
+	category = categorydata_new ();
 	category->name = xml_get_prop (cat, "name");
 
 	pkg = cat->childs->childs;
@@ -244,7 +245,6 @@ parse_memory_transaction_file (const char *mem,
 	while (packages) {
 		PackageData *pack;
 		pack = parse_package (packages, TRUE);
-		g_message ("TRANS PARSE %s", pack->name);
 		rv = g_list_append (rv, pack);
 		packages = packages->next;
 	}	
@@ -293,6 +293,7 @@ generate_xml_package_list (const char* pkg_template_file,
 	char *tags[] = {"NAME", "VERSION", "MINOR", "ARCH", "BYTESIZE", "SUMMARY", NULL};
 	int num_tags = 5;
 	int lines;
+	char *cur_category = g_strdup ("");
 	
 	doc = xmlNewDoc ("1.0");
 	doc->root = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
@@ -304,7 +305,6 @@ generate_xml_package_list (const char* pkg_template_file,
 	}
 
 	for (index = 0; index < lines; index++) {
-
 		if (entry_array[index] == NULL) {
 			break;
 		}
@@ -321,10 +321,13 @@ generate_xml_package_list (const char* pkg_template_file,
 			/* NOTE: This xmlGetProp leaks, since it's return value 
 			   is forgotten */
 			if ((doc->root->childs == NULL) ||
-			    (xmlGetProp (doc->root->childs, package_array[0]))) {
+			    (strlen (package_array[0]) && strcmp (cur_category, package_array[0]))) {
+				g_free (cur_category);
+				cur_category = g_strdup (package_array[0]);
 				category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
 				xmlSetProp (category, "name", package_array[0]);
 				packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
+				g_message ("Category %s...", cur_category);
 			}
 
 			package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
@@ -511,7 +514,6 @@ osd_parse_implementation (PackageData *pack,
 			g_free (dtmp);
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
 			pack->filename = xml_get_prop (child, "HREF");
-			g_message ("pack->filename = %s", pack->filename);
 			{
 				char *stmp = xml_get_prop (child, "SIZE");
 				if (stmp) {
@@ -526,6 +528,9 @@ osd_parse_implementation (PackageData *pack,
 		}
 		child = child->next;
 	}
+	/* FIXME: bugzilla.eazel.com 2241
+	   we need the md5 in the xml, and then add it to the package here */
+	
 }
 
 PackageData*
@@ -610,8 +615,8 @@ parse_osd_xml_from_memory (const char *mem,
 
 	ptr = strstr (docptr, "<?xml");
 	if (ptr == NULL) {
-		g_warning ("Could not find <?xml tag in string");
-		g_message ("XML is %sEND", docptr);
+		g_warning (_("Could not find <?xml tag in string"));
+		g_message ("D: XML is %sEND", docptr);
 		g_free (docptr);
 		return result;
 	}
@@ -632,8 +637,8 @@ parse_osd_xml_from_memory (const char *mem,
 	doc = xmlParseMemory (ptr, size);
 
 	if (doc == NULL) {
-		g_warning ("XML =\"%s\"", ptr);
-		g_warning ("parse_osd_xml_from_memory, doc == NULL");
+		g_warning ("D: XML =\"%s\"", ptr);
+		g_warning (_("Could not parse the xml"));
 		g_free (docptr);
 		return result;
 	}

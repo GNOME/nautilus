@@ -3,12 +3,13 @@
 pushd `pwd`
 cd ../../components/services/install/lib
 make -f makefile.staticlib clean
-make -f makefile.staticlib
+make CFLAGS="-g -Werror" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DEAZEL_INSTALL_PROTOCOL_USE_OLD_CGI" -f makefile.staticlib
+#make CFLAGS="-O -Werror" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DEAZEL_INSTALL_PROTOCOL_USE_OLD_CGI" -f makefile.staticlib
 popd
 
 make clean
-make CFLAGS="-O -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static"
-gcc -static -O -Werror -o nautilus-installer main.o support.o interface.o callbacks.o installer.o \
+make CFLAGS="-O -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static" DEFINES="-DNAUTILUS_INSTALLER_RELEASE"
+gcc -static -O -Werror -o nautilus-installer main.o support.o callbacks.o installer.o \
 ../../components/services/install/lib/libeazelinstall_minimal.a \
 ../../components/services/trilobite/libtrilobite/helixcode-utils.o \
 ../../components/services/trilobite/libtrilobite/trilobite-core-distribution.o \

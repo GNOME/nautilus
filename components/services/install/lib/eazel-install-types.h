@@ -154,7 +154,7 @@ struct _PackageData {
 	GList* breaks; 
 
 	char *filename;
-
+	char md5[16];
 	char *install_root;
 	
 	/* 
@@ -194,6 +194,8 @@ PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyCon
 
 void packagedata_fill_from_file (PackageData *pack, const char *filename);
 void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
+
+void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
 
 const char *rpmfilename_from_packagedata (const PackageData *pack);
 const char *rpmname_from_packagedata (const PackageData *pack);

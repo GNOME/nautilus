@@ -561,14 +561,17 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			free (data_ptr);
 		}
 		
-                /* FIXME bugzilla.eazel.com 1657: Getting these using the traversal gives leading garbage, due to differing rpm versions
-                   and suckiness in rpmlib */
+                /* NOTE: (bugzilla.eazel.com 1657) These are not read in the iteration loop,
+                   since that can lead to leading garbage in the strings because of differing 
+                   rpm versions. So this is not as hackish as it looks */
                 headerGetEntry (header_info, RPMTAG_DESCRIPTION, NULL, (void**)&description, NULL);
                 headerGetEntry (header_info, RPMTAG_SUMMARY, NULL, (void**)&summary, NULL);
                 nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_description), description );
                 nautilus_label_set_text (NAUTILUS_LABEL (rpm_view->details->package_summary), summary );
+
                 /* FIXME bugzilla.eazel.com 2409:
-                   Should they be freed ? */
+                   Should they (things returned from headerGetEntry and the
+                   iteration) be freed ? (see also bug 2351) */
 
 		if (temp_version) {
 			temp_str = g_strdup_printf (_("version %s-%s"), temp_version, temp_release);

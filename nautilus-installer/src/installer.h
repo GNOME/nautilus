@@ -55,7 +55,9 @@ struct _EazelInstaller
 
 	char *failure_info;
 
-	gboolean debug;
+	GHashTable *category_deps;
+
+	gboolean debug, output;
 	gboolean test;
 };
 

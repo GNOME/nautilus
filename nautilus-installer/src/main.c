@@ -26,12 +26,13 @@
 
 #include <gnome.h>
 
-#include "interface.h"
+#include "installer.h"
 #include "support.h"
 #include "callbacks.h"
 #include <libtrilobite/helixcode-utils.h>
 
 extern int installer_debug;
+extern int installer_output;
 extern int installer_test;
 extern int installer_force;
 extern char *installer_server;
@@ -39,7 +40,8 @@ extern int installer_server_port;
 extern char* installer_local;
 
 static const struct poptOption options[] = {
-	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
+	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show confusing debug output"), NULL},
+	{"output", 'd', POPT_ARG_NONE, &installer_output, 0 , N_("Show debug output"), NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify xml file to yse"), NULL},
@@ -66,3 +68,9 @@ main (int argc, char *argv[])
   return 0;
 }
 
+
+/* Dummy functions to make linking work */
+
+const gpointer oaf_popt_options = NULL;
+gpointer oaf_init (int argc, char *argv[]) {}
+int bonobo_init (gpointer a, gpointer b, gpointer c) {};

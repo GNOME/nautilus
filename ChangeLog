@@ -1,3 +1,100 @@
+2000-08-30  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+	Changed the comments reg. bug 1657
+	 
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(create_package), 
+	Handles ~ in filenames now
+	(main):
+	Proper gtk_signal_func cast for the delete_files signal
+	
+	* components/services/install/command-line/eazel-gen-pre-xml.sh:
+	Script to generate a colon-delimited file for eazel-gen-xml, by
+	using rpm -qp on rpm files.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (eazel_install_initialize):
+	-DEAZEL_INSTALL_SLIM no longer creates a userlocal rpmdb
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (free_string),
+	(gnome_vfs_fetch_remote_file)
+	(get_url_for_package):
+	Added D: to debug output, nicefied the gnome-vfs stuff after shane
+	laughed at me
+	(eazel_install_fetch_package),
+	Added the md5 stuff, it's commented out, as there is no md5 in the
+	xml from the server, thus checking md5 would fail all packages.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages), (download_all_packages),
+	(eazel_install_pre_install_packages), (install_packages),
+	(uninstall_packages), 
+	(eazel_install_prepare_rpm_system), (eazel_install_add_to_rpm_set),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies):
+	So much...
+		- xml packagelist can now have soft_depends which 
+		  the download and install now checks for
+	        - removed some leaks
+	        - check for reopening rpmdb which is bad
+		- clarifying comments for div FIXME's
+	(eazel_install_prune_packages),
+	Fixed a vaarg usage
+	
+	* components/services/install/lib/eazel-install-types.h:
+	Added md5 to the PackageData struct
+
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (categorydata_destroy_foreach),
+	(packagedata_new), (packagedata_destroy_foreach),
+	Added md5 to the PackageData struct
+	Now has some debug stuff to check for deallocating structes.	
+	(packagedata_remove_soft_dep), 
+	added function to remove a package from another packages soft_deps
+	(rpmfilename_from_packagedata):
+	Fixed a wrong g_strconcat
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list)
+	Generates nicer category names...
+	(parse_category), (parse_memory_transaction_file),
+	Uses categorydata_new now
+	(osd_parse_implementation),
+	Added FIXME reg. md5 check
+	(parse_osd_xml_from_memory):
+	D: to debug output
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	No longer sets the defines, they are now set in the link.sh
+	scrip in the nautilus-installer
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(begin_install), (druid_finish), (prep_install):
+	* nautilus-installer/src/installer.c: (set_white_stuff),
+	(create_what_to_do_page), (create_install_page),
+	(create_finish_page), (create_window), (set_images),
+	(eazel_install_progress), (eazel_download_progress),
+	(install_failed_helper), (install_failed), (download_failed),
+	(eazel_install_preflight), (eazel_install_dep_check),
+	(eazel_install_delete_files), (eazel_installer_add_category),
+	(check_system), (eazel_installer_do_install),
+	(eazel_installer_finalize), (eazel_installer_unref),
+	(eazel_installer_class_initialize), (eazel_installer_initialize),
+	(eazel_installer_get_type), (eazel_installer_new):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/interface.c:
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (oaf_init), (bonobo_init):
+	* nautilus-installer/src/support.c:
+	* nautilus-installer/src/support.h:
+	Created a gtkobject for the installer, revamped the choice stuff,
+	so it now offers the categories, stabilization work etc.
+
 2000-08-30  Andy Hertzfeld  <andy@eazel.com>
 
 	added a Netscape-like throbber widget to the toolbar, to give busy feedback.  It uses
@@ -42,7 +139,7 @@
 	off of the stop button.
 	* src/nautilus-window.h:
 	made the nautilus_window know about the throbber
-	
+
 2000-08-29  Mike Fleming  <mfleming@eazel.com>
 
 	* src/nautilus-first-time-druid.c:

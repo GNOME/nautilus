@@ -349,7 +349,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[DELETE_FILES] =
 		gtk_signal_new ("delete_files",
-				GTK_RUN_LAST,
+				GTK_RUN_LAST, 
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, delete_files),
 				gtk_marshal_BOOL__NONE,
@@ -490,8 +490,8 @@ eazel_install_initialize (EazelInstall *service) {
 	/* Set default root dirs list */
 	{
 		GList *list = NULL;
-		char *tmp;
-
+		char *tmp = NULL;
+#ifndef EAZEL_INSTALL_SLIM
 		/* FIXME bugzilla.eazel.com 2581:
 		   RPM specific code */
 		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
@@ -503,10 +503,11 @@ eazel_install_initialize (EazelInstall *service) {
 		}
 
 		list = g_list_prepend (list, tmp);
+#endif
 		list = g_list_prepend (list, DEFAULT_RPM_DB_ROOT);
 		eazel_install_set_root_dirs (service, list);
-		g_list_free (list);
 		g_free (tmp);
+		g_list_free (list);
 	}
 }
 

@@ -317,8 +317,14 @@ create_package (char *name)
 	uname (&buf);
 	pack = packagedata_new ();
 	if (arg_file) {
-		pack->filename = name[0]=='/' ? 
+		/* If file starts with /, use filename,
+		   if it starts with ~, insert g_get_home_dir,
+		   otherwise, insert g_get_current_dir */
+		pack->filename = 
+			name[0]=='/' ? 
 			g_strdup (name) : 
+			name[0]=='~' ?
+			g_strdup_printf ("%s/%s", g_get_home_dir (), name+1) :
 			g_strdup_printf ("%s/%s", g_get_current_dir (), name);
 	} else {
 		pack->name = g_strdup (name);
@@ -434,6 +440,7 @@ int main(int argc, char *argv[]) {
 	if (packages) {
 		CategoryData *category;
 		category = g_new0 (CategoryData, 1);
+		category->name = g_strdup ("files from commandline");
 		category->packages = packages;
 		categories = g_list_prepend (NULL, category);		
 	} else {
@@ -470,7 +477,7 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", (void *)delete_files, NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
 
 	if (arg_erase + arg_query + arg_downgrade + arg_upgrade + arg_revert > 1) {
@@ -506,7 +513,7 @@ int main(int argc, char *argv[]) {
 					fprintf (stdout, "Install root : %s\n", 
 						 p->install_root?p->install_root:"?");
 				} else {
-					fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->description);
+					fprintf (stdout, "%s %s %50.50s\n", p->name, p->version, p->description);
 				}
 			}
 		}

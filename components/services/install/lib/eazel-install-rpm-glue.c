@@ -93,6 +93,10 @@ gboolean eazel_install_free_package_system (EazelInstall *service);
 static int eazel_install_check_existing_packages (EazelInstall *service, 
 						  PackageData *pack);
 
+static void eazel_install_prune_packages (EazelInstall *service, 
+					  PackageData *pack, 
+					  ...);
+
 EazelInstallStatus
 install_new_packages (EazelInstall *service, GList *categories) {
 	EazelInstallStatus result;
@@ -148,6 +152,79 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	return result;
 } /* end install_new_packages */
 
+
+static gboolean
+eazel_install_download_packages (EazelInstall *service,
+				 gboolean toplevel,
+				 GList **packages,
+				 GList **failed_packages)
+{
+	GList *iterator;
+	gboolean result = FALSE;
+	GList *remove_list = NULL;
+
+	g_assert (packages);
+	g_assert (*packages);
+
+	for (iterator = *packages;iterator; iterator = iterator->next) {
+		PackageData* package = (PackageData*)iterator->data;
+		gboolean fetch_package;
+		
+		fetch_package = TRUE;
+
+		g_message ("D: init for %s", package->name);
+		/* if filename in the package is set, but the file
+		   does not exist, get it anyway */
+		if (package->filename) {
+			g_message ("D: Filename set, and file exists = %d", 
+				   g_file_test (package->filename, G_FILE_TEST_ISFILE));
+			if (g_file_test (package->filename, G_FILE_TEST_ISFILE)) {
+				fetch_package = FALSE;	
+				result = TRUE;
+				packagedata_fill_from_file (package, package->filename);
+			} else {
+					/* The file didn't exist, remove the 
+					   leading path and set the filename, plus
+					   toggle the fetch_package to TRUE */
+				char *tmp;
+										
+				tmp = g_basename (package->filename);
+				g_free (package->filename);
+				package->filename = g_strdup (tmp);
+				fetch_package = TRUE;
+			}
+
+		} else {
+			g_message (_("Will download %s"), package->name);
+		}
+
+		if (fetch_package) {
+			if (eazel_install_fetch_package (service, package)==FALSE) {
+				remove_list = g_list_prepend (remove_list, package);
+			} else {
+				result = TRUE;
+				package->toplevel = toplevel;
+				if (package->soft_depends) {
+					eazel_install_download_packages (service,
+									 FALSE,
+									 &package->soft_depends,
+									 NULL);
+				}
+			}
+		}
+	}
+
+	for (iterator = remove_list; iterator; iterator = iterator->next) {
+		(*packages) = g_list_remove (*packages, iterator->data);
+	}
+
+	if (failed_packages) {
+		(*failed_packages) = remove_list;
+	}
+
+	return TRUE;
+}
+
 /*
   Returns FALSE if some packages failed;
  */
@@ -156,97 +233,40 @@ download_all_packages (EazelInstall *service,
                        GList* categories) 
 {
 	gboolean result;
+	GList *iterator;
 
 	result = FALSE;
-	while (categories) {
-		CategoryData* cat;
-		GList* pkgs;
-		GList *remove, *iterator;
-	
-		remove = NULL;
-		cat = categories->data;
-		pkgs = cat->packages;
+	for (iterator = categories; iterator; iterator=iterator->next) {
+		gboolean tmp_result;
+		CategoryData* cat = (CategoryData*)iterator->data;
 
-		g_message (_("Category = %s"), cat->name);
-		while (pkgs) {
-			PackageData* package;
-			gboolean fetch_package;
-
-			package = pkgs->data;
-			fetch_package = TRUE;
-
-			/* if filename in the package is set, but the file
-			   does not exist, get it anyway */
-			if (package->filename) {
-				g_message ("D: Filename set, and file exists = %d", 
-					   g_file_test (package->filename, G_FILE_TEST_ISFILE));
-				if (g_file_test (package->filename, G_FILE_TEST_ISFILE)) {
-					fetch_package = FALSE;	
-					packagedata_fill_from_file (package, package->filename);
-				} else {
-					/* The file didn't exist, remove the 
-					   leading path and set the filename, plus
-					   toggle the fetch_package to TRUE */
-					char *tmp;
-										
-					tmp = g_basename (package->filename);
-					g_free (package->filename);
-					package->filename = g_strdup (tmp);
-					fetch_package = TRUE;
-				}
-
-			} else {
-				g_message (_("Will download %s"), package->name);
-			}
-
-			if (fetch_package) {
-				if (eazel_install_fetch_package (service, package)==FALSE) {
-					remove = g_list_prepend (remove, package);
-				} else {
-					result = TRUE;
-					package->toplevel = TRUE;
-				}
-			}
-			
-			pkgs = pkgs->next;
-		}
-		
-		for (iterator = remove; iterator; iterator = iterator->next) {
-			cat->packages = g_list_remove (cat->packages, iterator->data);
-		}
-
-		categories = categories->next;
+		g_message (_("Downloading packages for category %s"), cat->name);
+		tmp_result = eazel_install_download_packages (service, TRUE, &cat->packages, NULL);
+		result = result ? TRUE : tmp_result;
 	}
-
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-	g_list_free (categories);
 	
 	return result;
-} /* end download_all_packages */
+} 
 
-static gboolean
-install_packages (EazelInstall *service,
-                      GList* categories) 
+/* Checks for pre-existance of all the packages
+   and returns a flattened packagelist (flattens the
+   soft_ and hard_depends */
+static GList*
+eazel_install_pre_install_packages (EazelInstall *service,
+				    GList *categories) 
 {
-
-	gboolean rv;
-	rv = TRUE;
-
-	while (categories) {
-		CategoryData* cat;
-		GList* packages;
-		GList* failedfiles;
-		GList* iterator;
-		
-		cat = categories->data;
-		failedfiles = NULL;
-		packages = NULL;
+	GList* packages = NULL;
+	GList* iterator, *category_iterator;
+	
+	for (category_iterator = categories; category_iterator; category_iterator = category_iterator->next) {
+		GList *failed_packages = NULL;
+		CategoryData *cat = (CategoryData*)category_iterator->data;
 
 		/* Check for existing installed packages */
 		for (iterator = cat->packages; iterator; iterator = iterator->next) {
 			PackageData *pack;
 			int inst_status;
-
+			
 			pack = (PackageData*)iterator->data;
 			inst_status = eazel_install_check_existing_packages (service, pack);
 			g_message ("D: %s: install status = %d", pack->name, inst_status);
@@ -260,32 +280,48 @@ install_packages (EazelInstall *service,
 				packages = g_list_prepend (packages, pack);
 			} else {
 				g_message ("D: Skipping %s...", pack->name);
-				pack->status = PACKAGE_ALREADY_INSTALLED;				
-				eazel_install_emit_install_failed (service, pack);
+				pack->status = PACKAGE_ALREADY_INSTALLED;
+				failed_packages = g_list_prepend (failed_packages, pack);
 			}
 		}
-
-		if (packages) {
-			if (eazel_install_prepare_package_system (service) == FALSE) {
-				return FALSE;
-			}
-			eazel_install_ensure_deps (service, &packages, &failedfiles);
-			eazel_install_free_package_system (service);
-
-			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));
-			if (eazel_install_start_transaction (service, packages) != 0) {
-				rv = FALSE;
-			}
-			
-			g_list_free (packages);
+	
+		for (iterator = failed_packages; iterator; iterator=iterator->next) {
+			eazel_install_prune_packages (service, 
+						      (PackageData*)iterator->data,
+						      &cat->packages, NULL);
 		}
-
-		categories = categories->next;
 	}
 
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-	g_list_free (categories);
+
+	return packages;
+}
+
+static gboolean
+install_packages (EazelInstall *service,
+		  GList* categories) 
+{
+
+	gboolean rv;
+	GList* packages;
+	GList* failedfiles = NULL;
+	rv = TRUE;
+
+	packages = eazel_install_pre_install_packages (service, categories);
 	
+	if (packages) {
+		if (eazel_install_prepare_package_system (service) == FALSE) {
+			return FALSE;
+		}
+		eazel_install_ensure_deps (service, &packages, &failedfiles);
+		eazel_install_free_package_system (service);
+		
+		if (eazel_install_start_transaction (service, packages) != 0) {
+			rv = FALSE;
+		}
+		
+		g_list_free (packages);
+	}
+
 	return rv;
 } /* end install_packages */
 
@@ -343,10 +379,7 @@ uninstall_packages (EazelInstall *service,
 	eazel_install_set_problem_filters (service, problem_filters);
 
 	result |= uninstall_all_packages (service, categories);
-/*
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-	g_list_free (categories);
-*/
+
 	return result;
 
 } /* end install_new_packages */
@@ -960,7 +993,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 static void
 eazel_install_prune_packages (EazelInstall *service, 
 			      PackageData *pack, 
-			      GList **packages_arg, ...)
+			      ...)
 {
 	va_list ap;
 	GList *pruned;
@@ -969,11 +1002,10 @@ eazel_install_prune_packages (EazelInstall *service,
 
 	g_return_if_fail (pack!=NULL);
 
-	va_start (ap, packages_arg);
+	va_start (ap, pack);
 	
-	packages = packages_arg;
 	pruned = NULL;
-	do {
+	while ( (packages = va_arg (ap, GList **)) != NULL) {
 		eazel_install_prune_packages_helper (service,
 						     packages,
 						     &pruned,
@@ -983,7 +1015,7 @@ eazel_install_prune_packages (EazelInstall *service,
 			pack = (PackageData*)iterator->data;
 			(*packages) = g_list_remove (*packages, pack);
 		};
-	} while ( (packages = va_arg (ap, GList **)) != NULL);
+	} 
 	
 	for (iterator = pruned; iterator; iterator = iterator->next) {
 		PackageData *pack;
@@ -1135,6 +1167,11 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 
 	addMacro(NULL, "_dbpath", NULL, "/", 0);
 
+	if (g_hash_table_size (service->private->packsys.rpm.dbs) > 0) {
+		g_message ("D: db already open ?");
+		return TRUE;
+	}
+	
 	for (iterator = eazel_install_get_root_dirs (service); iterator; iterator = iterator->next) {
 		const char *root_dir;	
 		rpmdb db;
@@ -1208,6 +1245,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 		pack = (PackageData*)iterator->data;
 
 		if (!eazel_install_get_uninstall (service)) {
+			g_assert (pack->packsys_struc);
 			err = rpmtransAddPackage (service->private->packsys.rpm.set,
 						  *((Header*)pack->packsys_struc),
 						  NULL, 
@@ -1322,12 +1360,13 @@ eazel_install_check_existing_packages (EazelInstall *service,
 
 	result = 2;
 	/* query for existing package of same name */
-	existing_packages = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+	existing_packages = eazel_install_simple_query (service, 
+							pack->name, 
+							EI_SIMPLE_QUERY_MATCHES, 
+							0, NULL);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
-		/* FIXME bugzilla.eazel.com 2345:
-		   Check the packages root */
 		for (iterator = existing_packages; iterator; iterator = iterator->next) {
 			int res;
 			PackageData *existing_package;
@@ -1343,7 +1382,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			} else if (res > 0) {
 				existing_package->modify_status = PACKAGE_MOD_UPGRADED;
 			} else {
-				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;				
+				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;
 			}
 
 			if (res == 0 && result > 0) {
@@ -1423,8 +1462,20 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 					/* FIXME bugzilla.eazel.com 2583:
 					   Argh, if a lib*.so breaks a package,
 					   we end up here */
+					/* 
+					   I need to find the package P in "packages" that provides
+					   conflict.needsName, then fail P marking it's status as 
+					   PACKAGE_BREAKS_DEPENDENCY, then create PackageData C for
+					   conflict.byName, add to P's depends and mark C's status as
+					   PACKAGE_DEPENDENCY_FAIL. 
+					   Then then client can rerun the operation with all the C's as
+					   part of the update
+					*/
+					g_message ("D: await bugfix for bug 2583");
 					continue;
 				}
+				
+				/* Create a packagedata for the dependecy */
 				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
 				pack = (PackageData*)(pack_entry->data);
 				dep->archtype = g_strdup (pack->archtype);
@@ -1434,7 +1485,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				
 				/* Here I check to see if I'm breaking the -devel package, if so,
 				   request it */
-
+				/* FIXME: bugzilla.eazel.com 2596
+				   It should handle z=x-y instead of only z=x-devel when x breaks z */
+				
 				tmp = g_strdup_printf ("%s-devel", pack->name);
 				if (strcmp (tmp, dep->name)==0) {
 					g_message ("breakage is the devel package");
@@ -1541,8 +1594,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			dep->status = PACKAGE_CANNOT_OPEN;
 			
 			if (!eazel_install_get_force (service)) {
+				/* Remove the extra packages for this package */
 				extralist = g_hash_table_lookup (extras, pack->name);
-				g_list_foreach (extralist, (GFunc)packagedata_destroy_foreach, NULL);
+				g_list_foreach (extralist, (GFunc)packagedata_remove_soft_dep, pack);
 				g_list_free (extralist);
 				g_hash_table_remove (extras, pack->name);
 				

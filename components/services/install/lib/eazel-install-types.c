@@ -37,6 +37,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+/* #define DEBUG_PACKAGE_ALLOCS */
+
+#ifdef DEBUG_PACKAGE_ALLOCS
+static int package_allocs = 0;
+static int category_allocs = 0;
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
 const char*
 protocol_as_string (URLType protocol) 
 {
@@ -58,12 +65,20 @@ protocol_as_string (URLType protocol)
 CategoryData*
 categorydata_new ()
 {
+#ifdef DEBUG_PACKAGE_ALLOCS
+	category_allocs ++;
+#endif /* DEBUG_PACKAGE_ALLOCS */
 	return g_new0 (CategoryData, 1);
 }
 
 void
 categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
+#ifdef DEBUG_PACKAGE_ALLOCS
+	category_allocs --;
+	g_message ("category_allocs = %d", category_allocs);
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
 	g_return_if_fail (cd != NULL);
 	g_free (cd->name);
 	cd->name = NULL;
@@ -82,6 +97,11 @@ packagedata_new ()
 	PackageData *pack;
 	pack = g_new0 (PackageData, 1);
 
+#ifdef DEBUG_PACKAGE_ALLOCS
+	package_allocs ++;
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+	
 	pack->name = NULL;
 	pack->version = NULL;
 	pack->minor = NULL;
@@ -98,6 +118,7 @@ packagedata_new ()
 	pack->modifies = NULL;
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
+	memset (pack->md5, 0, 16);
 	return pack;
 }
 
@@ -219,6 +240,12 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 void 
 packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 {
+#ifdef DEBUG_PACKAGE_ALLOCS
+	package_allocs --;
+	g_message ("package_allocs = %d", package_allocs);
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+
 	g_return_if_fail (pack != NULL);
 	g_free (pack->name);
 	pack->name = NULL;
@@ -254,6 +281,18 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 }
 
 void 
+packagedata_remove_soft_dep (PackageData *remove, 
+			     PackageData *from)
+{
+	g_assert (remove);
+	g_assert (from);
+
+	g_message ("removing %s from %s's deps", remove->name, from->name);
+	from->soft_depends = g_list_remove (from->soft_depends, remove);
+	packagedata_destroy (remove);
+}
+
+void 
 packagedata_destroy (PackageData *pack)
 {
 	packagedata_destroy_foreach (pack, NULL);
@@ -284,7 +323,7 @@ rpmfilename_from_packagedata (const PackageData *pack)
 						    pack->name,
 						    pack->archtype);
 		} else {
-			filename = g_strconcat (pack->name, NULL); 
+			filename = g_strdup (pack->name); 
 		}
 	}
 

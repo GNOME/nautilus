@@ -27,21 +27,20 @@
 #include <gnome.h>
 
 #include "callbacks.h"
-#include "interface.h"
 #include "support.h"
 #include "installer.h"
 
 
 void
-druid_cancel                           (GnomeDruid      *gnomedruid,
-                                        EazelInstaller  *installer)
+druid_cancel (GnomeDruid      *gnomedruid,
+	      EazelInstaller  *installer)
 {
 	exit (1);
 }
 
 
 gboolean
-begin_install                          (EazelInstaller  *installer)
+begin_install (EazelInstaller  *installer)
 {
 	GtkWidget *window = installer->window;
 	GnomeDruid *druid;
@@ -73,21 +72,18 @@ begin_install                          (EazelInstaller  *installer)
 
 
 void
-druid_finish                           (GnomeDruidPage  *gnomedruidpage,
-                                        gpointer         arg1,
-                                        EazelInstaller  *installer)
+druid_finish (GnomeDruidPage  *gnomedruidpage,
+	      gpointer         arg1,
+	      EazelInstaller  *installer)
 {
 	exit (0);
 }
 
 void
-prep_install                           (GnomeDruidPage  *gnomedruidpage,
-					GtkWidget *druid,
-                                        EazelInstaller  *installer)
+prep_install (GnomeDruidPage  *gnomedruidpage,
+	      GtkWidget *druid,
+	      EazelInstaller  *installer)
 {
-	GnomeDruid *druid;
-	GtkButton *button;
-
 	g_timeout_add (0, (GSourceFunc)begin_install, installer);
 }
 

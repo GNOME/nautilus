@@ -21,14 +21,3 @@ GtkWidget*  lookup_widget              (GtkWidget       *widget,
 #define get_widget lookup_widget
 
 
-/*
- * Private Functions.
- */
-
-/* This is used to create the pixmaps in the interface. */
-GtkWidget*  create_pixmap              (GtkWidget       *widget,
-                                        const gchar     *filename,
-                                        gboolean         gnome_pixmap);
-
-GdkImlibImage* create_image            (const gchar     *filename);
-
