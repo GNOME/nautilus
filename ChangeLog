@@ -1,3 +1,17 @@
+2001-06-02  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(modify_volume_name_for_display),
+	(nautilus_volume_monitor_get_target_uri),
+	(mount_volume_make_cdrom_name), (make_volume_name_from_path),
+	(mount_volume_make_name), (mount_volume_activate),
+	(mount_volume_deactivate), (get_current_mount_list),
+	(update_modifed_volume_name), (verify_current_mount_state),
+	(nautilus_volume_monitor_set_volume_name),
+	(get_iso9660_volume_name), (load_additional_mount_list_info):
+	Change volume name logic to be simpler. Also fixed some assert
+	problems with the last check-in.
+
 2001-06-01  Darin Adler  <darin@bentspoon.com>
 
 	Started with patch by Caleb "J." Land <bokonon@rochester.rr.com>
