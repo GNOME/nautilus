@@ -26,6 +26,7 @@ LDADD =\
 	$(XML_LIBS)
 
 hyperbola_SOURCES=		\
+	hyperbola-nav.h		\
 	hyperbola-types.h	\
 	hyperbola-nav-tree.c 	\
 	hyperbola-main.c	\

@@ -1,3 +1,61 @@
+2000-06-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/Makefile.am:
+	Rearranged so libeazelinstall is built before rpmview
+
+	* components/help/Makefile.am:
+	Added a missing .h file so make dist works
+	
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_download_progress_signal),
+	(nautilus_rpm_view_install_progress_signal),
+	(nautilus_rpm_view_download_failed),
+	(nautilus_rpm_view_install_failed_helper),
+	(nautilus_rpm_view_install_failed),
+	(nautilus_rpm_view_dependency_check),
+	(nautilus_rpm_view_install_done),
+	(nautilus_rpm_view_install_package_callback):
+	* components/rpmview/nautilus-rpm-view-install.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize):
+	Added a callback and some skeleton code to the install
+	button. So it now does rpm installs.
+	
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	Changed the libnames.
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(done), (main):
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_destroy),
+	(eazel_install_callback_initialize), (eazel_install_callback_new),
+	(eazel_install_callback_corba_objref),
+	(eazel_install_callback_install_packages),
+	(eazel_install_callback_query):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_search_url_for_package):
+	* components/services/install/server/Makefile.am:
+	* components/services/install/server/main.c:
+	Changed the object destroction scheme, so eazel_install_callback
+	now unrefs and destroys the bonobo object.
+	
+	* components/services/trilobite/sample/lib/Makefile.am:
+	Fixed to pass make dist
+		
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	Patching so it works with the new installer libs (and still some
+	stroking because of the static stuff)
+	
+	* nautilus.spec.in:
+	* po/POTFILES.in:
+	* test/Makefile.am:
+	Slice and dice so make dist and rpm -ta works again.
+
 2000-06-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info):
@@ -5,7 +63,7 @@
 	call (and the corresponding unblock) when we set up the background
 	in update_info, so the new background data isn't written out to the
 	metafile, since no explicit change was made.
-	
+
 2000-06-26  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.c:

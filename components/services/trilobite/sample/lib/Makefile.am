@@ -36,6 +36,10 @@ sample-service.h: $(IDL)
 
 CLEANFILES+=$(CORBA_GENERATED) sample-service.h
 
+noinst_HEADERS =		\
+	sample-service-public.h	\
+	$(NULL)
+
 libsample_corba_a_SOURCES = 					\
 	$(CORBA_GENERATED)					\
 	$(NULL)

@@ -24,7 +24,9 @@
 /* The RPM view component is used to provide an easy-to-use overview of a rpm package */
 
 #include <config.h>
+
 #include "nautilus-rpm-view.h"
+#include "nautilus-rpm-view-install.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -123,7 +125,6 @@ static void file_selection_callback              (GtkCList             *clist,
                                                   NautilusRPMView      *rpm_view);
 static void go_to_button_callback                (GtkWidget            *widget,
                                                   NautilusRPMView      *rpm_view);
-
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
@@ -290,6 +291,11 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_install_button,
 				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_install_button);
+
+        gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_install_button), 
+                            "clicked", 
+                            GTK_SIGNAL_FUNC (nautilus_rpm_view_install_package_callback), 
+                            rpm_view);
 	
 	/* update button */
 	rpm_view->details->package_update_button = gtk_button_new();		    

@@ -20,10 +20,10 @@ SUBDIRS = \
 	loser \
 	music \
 	notes \
-	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	sample \
 	tree \
 	websearch \
 	$(SERVICE_SUBDIRS) \
+	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	$(MOZILLA_COMPONENT_SUBDIRS) \
 	$(NULL)

@@ -75,6 +75,10 @@ CLEANFILES += libleakcheck.so
 libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
 	gcc nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c -Wall -o $@ -shared $(GLIB_CFLAGS) $(GLIB_LIBS) -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
 
+# to include them in "make dist"
+EXTRA_DIST = nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c \
+	nautilus-leak-checker-stubs.h nautilus-leak-hash-table.h nautilus-leak-checker.h nautilus-leak-symbol-lookup.h
+
 leakcheck_DATA = libleakcheck.so
 leakcheckdir= $(DESTDIR)$(libdir)
 
