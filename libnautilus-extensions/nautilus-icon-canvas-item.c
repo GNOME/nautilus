@@ -1487,7 +1487,6 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 							    icon_bottom + height_so_far + 1,
 							    GTK_JUSTIFY_CENTER,
 							    NAUTILUS_RGB_COLOR_BLACK,
-							    FALSE,
 							    underlined);
 			}
 						
@@ -1498,7 +1497,6 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 						    icon_bottom + height_so_far,
 						    GTK_JUSTIFY_CENTER,
 						    label_color,
-						    FALSE,
 						    underlined);
 			
 			/* if it's highlighted, embolden by drawing twice */
@@ -1509,7 +1507,6 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 							    icon_bottom + height_so_far,
 							    GTK_JUSTIFY_CENTER,
 							    label_color,
-							    FALSE,
 							    underlined);
 			}
 			

@@ -1,3 +1,29 @@
+2000-12-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text_aa):
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_text_layout_paint), (nautilus_gdk_pixbuf_new_from_text):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-tabs.c: (draw_tab_label):
+	* src/nautilus-about.c: (draw_aa_string):
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed):
+	* test/test-nautilus-font.c: (main):
+	Lost the "inverted" feature of smooth text drawing.  It wasnt used
+	anywhere except a test program.  It never looked well and the
+	nautilus icon container does something unrelated to select text.
+
+	Also replace some hard coded 255 opacity values to use the
+	NAUTILUS_OPACITY_NONE define.
+	
 2000-12-21  J Shane Culpepper  <pepper@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

@@ -99,8 +99,7 @@ void                   nautilus_scalable_font_draw_text                       (c
 									       const char                  *text,
 									       guint                        text_length,
 									       guint32                      color,
-									       guchar                       overall_alpha,
-									       gboolean                     inverted);
+									       guchar                       overall_alpha);
 void                   nautilus_scalable_font_measure_text_lines              (const NautilusScalableFont  *font,
 									       guint                        font_width,
 									       guint                        font_height,
@@ -126,8 +125,7 @@ void                   nautilus_scalable_font_draw_text_lines_with_dimensions (c
 									       guint                        line_offset,
 									       double                       empty_line_height,
 									       guint32                      color,
-									       guchar                       overall_alpha,
-									       gboolean                     inverted);
+									       guchar                       overall_alpha);
 void                   nautilus_scalable_font_draw_text_lines                 (const NautilusScalableFont  *font,
 									       GdkPixbuf                   *destination_pixbuf,
 									       int                          x,
@@ -140,8 +138,7 @@ void                   nautilus_scalable_font_draw_text_lines                 (c
 									       guint                        line_offset,
 									       double                       empty_line_height,
 									       guint32                      color,
-									       guchar                       overall_alpha,
-									       gboolean                     inverted);
+									       guchar                       overall_alpha);
 guint                  nautilus_scalable_font_largest_fitting_font_size       (const NautilusScalableFont  *font,
 									       const char                  *text,
 									       guint                        available_width,
@@ -163,8 +160,7 @@ GdkPixbuf *            nautilus_gdk_pixbuf_new_from_text                      (c
 									       const char                  *text,
 									       guint                        text_length,
 									       guint32                      color,
-									       guchar                       overall_alpha,
-									       gboolean                     inverted);
+									       guchar                       overall_alpha);
 
 
 
@@ -210,7 +206,6 @@ void                nautilus_text_layout_paint (const NautilusTextLayout   *text
 						int                         y,
 						GtkJustification            justification,
 						guint32                     color,
-						gboolean		    inverted,
 						gboolean		    underlined);
 void                nautilus_text_layout_free  (NautilusTextLayout         *text_info);
 

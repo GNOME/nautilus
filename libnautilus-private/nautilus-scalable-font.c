@@ -679,40 +679,6 @@ nautilus_scalable_font_text_width (const NautilusScalableFont  *font,
 	return text_width;
 }
 
-/* Lifted from Raph's test-ft-gtk.c sample program */
-static void
-invert_glyph (guchar *buf, int rowstride, int width, int height)
-{
-	int x, y;
-	int first;
-	int n_words;
-	int last;
-	guint32 *middle;
-	
-	if (width >= 8 && ((rowstride & 3) == 0)) {
-		first = (-(long)buf) & 3;
-		n_words = (width - first) >> 2;
-		last = first + (n_words << 2);
-		
-		for (y = 0; y < height; y++) {
-			middle = (guint32 *)(buf + first);
-			for (x = 0; x < first; x++)
-				buf[x] = ~buf[x];
-			for (x = 0; x < n_words; x++)
-				middle[x] = ~middle[x];
-			for (x = last; x < width; x++)
-				buf[x] = ~buf[x];
-			buf += rowstride;
-		}
-	} else {
-		for (y = 0; y < height; y++) {
-			for (x = 0; x < width; x++)
-				buf[x] = ~buf[x];
-			buf += rowstride;
-		}
-	}
-}
-
 void
 nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  GdkPixbuf		     *destination_pixbuf,
@@ -724,8 +690,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  const char		     *text,
 				  guint			     text_length,
 				  guint32		     color,
-				  guchar		     overall_alpha,
-				  gboolean		     inverted)
+				  guchar		     overall_alpha)
 {
 	RsvgFTGlyph	*glyph;
  	double		affine[6];
@@ -770,37 +735,6 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 	glyph_area.x1 = glyph_area.x0 + glyph->width;
 	glyph_area.y1 = glyph_area.y0 + glyph->height;
 	
-	/* Invert the glyph if needed */
-	if (inverted) {
-		ArtIRect invert_area;
-		
-		if (clip_area != NULL) {
-			art_irect_intersect (&invert_area, &glyph_area, clip_area);
-		}
-		else {
-			invert_area = glyph_area;
-		}
-
-		if (!art_irect_empty (&invert_area)) {
-			guchar *glyph_pixels;
-			guint glyph_rowstride;
-
-			glyph_rowstride = glyph->rowstride;
-			
-			glyph_pixels = glyph->buf;
-
-			glyph_pixels = 
-				glyph->buf + 
-				(invert_area.x0 - glyph_area.x0) + 
-				glyph_rowstride * (invert_area.y0 - glyph_area.y0);
-
-			invert_glyph (glyph_pixels, 
-				      glyph_rowstride,
-				      invert_area.x1 - invert_area.x0,
-				      invert_area.y1 - invert_area.y0);
-		}
-	}
-
 	/* Translate the glyph area to the (x,y) where its to be rendered */
 	glyph_area.x0 += x;
 	glyph_area.y0 += y;
@@ -970,8 +904,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							guint                        line_offset,
 							double			     empty_line_height,
 							guint32                      color,
-							guchar                       overall_alpha,
-							gboolean		     inverted)
+							guchar                       overall_alpha)
 {
 	guint		i;
 	const char	*line;
@@ -1064,8 +997,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							  line,
 							  length,
 							  color,
-							  overall_alpha,
-							  inverted);
+							  overall_alpha);
 			
 			y += (line_offset + text_line_heights[i]);
 		}
@@ -1092,8 +1024,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 					guint                        line_offset,
 					double			     empty_line_height,
 					guint32                      color,
-					guchar                       overall_alpha,
-					gboolean		     inverted)
+					guchar                       overall_alpha)
 {
 	guint	num_text_lines;
 	guint	*text_line_widths;
@@ -1147,8 +1078,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 								line_offset,
 								empty_line_height,
 								color,
-								overall_alpha,
-								inverted);
+								overall_alpha);
 	
 	g_free (text_line_widths);
 	g_free (text_line_heights);
@@ -1645,7 +1575,6 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 			    int				y, 
 			    GtkJustification		justification,
 			    guint32			color,
-			    gboolean			inverted,
 			    gboolean			underlined)
 {
 	GList *item;
@@ -1698,8 +1627,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 							  row->text,
 							  row->text_length,
 							  color,
-							  255,
-							  inverted);
+							  255);
 
 			/* Underline the text if needed */
 			if (underlined) {
@@ -1733,8 +1661,7 @@ nautilus_gdk_pixbuf_new_from_text (const NautilusScalableFont  *font,
 				   const char                  *text,
 				   guint                        text_length,
 				   guint32                      color,
-				   guchar                       overall_alpha,
-				   gboolean			inverted)
+				   guchar                       overall_alpha)
 {
 	GdkPixbuf *pixbuf;
 	guint text_width;
@@ -1774,8 +1701,7 @@ nautilus_gdk_pixbuf_new_from_text (const NautilusScalableFont  *font,
 					  text,
 					  strlen (text),
 					  color,
-					  overall_alpha,
-					  inverted);
+					  overall_alpha);
 
 	return pixbuf;
 }

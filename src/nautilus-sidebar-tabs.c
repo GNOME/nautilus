@@ -535,14 +535,16 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
-					  prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK, 255, FALSE);
+					  prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK,
+					  NAUTILUS_OPACITY_NONE);
 	
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
 					  0, 0,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
-					  prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE, 255, FALSE);
+					  prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE,
+					  NAUTILUS_OPACITY_NONE);
 	
 	/* blit the pixbuf to the drawable, then release it */
 
@@ -690,7 +692,8 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
-					  NAUTILUS_RGB_COLOR_BLACK, 255, FALSE);
+					  NAUTILUS_RGB_COLOR_BLACK,
+					  NAUTILUS_OPACITY_NONE);
 	text_x -= 1;
 	text_y -= 1;
 
@@ -699,7 +702,8 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
-					  NAUTILUS_RGB_COLOR_WHITE, 255, FALSE);
+					  NAUTILUS_RGB_COLOR_WHITE,
+					  NAUTILUS_OPACITY_NONE);
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {

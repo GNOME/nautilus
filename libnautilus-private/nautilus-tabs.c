@@ -504,7 +504,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 					  NULL,
 					  tabs->details->font_size, tabs->details->font_size,
 					  label, strlen (label),
-					  NAUTILUS_RGB_COLOR_BLACK, 255, FALSE);
+					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_NONE);
 	text_x -= 1;
 	text_y -= 1;
 
@@ -524,7 +524,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 					  tabs->details->font_size, tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
-					  255, FALSE);
+					  NAUTILUS_OPACITY_NONE);
 }
 
 /* draw or layout all of the tabs.

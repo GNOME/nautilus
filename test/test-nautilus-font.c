@@ -322,8 +322,7 @@ main (int argc, char* argv[])
 						line_offset,
 						empty_line_height,
 						BLUE,
-						255,
-						FALSE);
+						NAUTILUS_OPACITY_NONE);
 
 	/*
 	 * Clipped text test.  The "Something" string should be clipped such
@@ -342,25 +341,7 @@ main (int argc, char* argv[])
 					  "Something",
 					  strlen ("Something"),
 					  GREEN,
-					  255,
-					  FALSE);
-
-	/*
-	 * Inverted text test.
-	 */
-	nautilus_scalable_font_draw_text (font,
-					  pixbuf,
-					  50,
-					  350,
-					  NULL,
-					  50,
-					  50,
-					  "This text is inverted",
-					  strlen ("This text is inverted"),
-					  GREEN,
-					  255,
-					  TRUE);
-
+					  NAUTILUS_OPACITY_NONE);
 
 	/*
 	 * Composited text lines test.
@@ -400,8 +381,7 @@ main (int argc, char* argv[])
 								 text,
 								 strlen (text),
 								 BLACK,
-								 255,
-								 FALSE);
+								 NAUTILUS_OPACITY_NONE);
 		g_assert (text_pixbuf != NULL);
 
 		nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (text_pixbuf,
@@ -447,7 +427,6 @@ main (int argc, char* argv[])
 					    layout_area.y0, 
 					    GTK_JUSTIFY_LEFT,
 					    BLACK,
-					    FALSE,
 					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
@@ -461,7 +440,6 @@ main (int argc, char* argv[])
 					    layout_area.y0, 
 					    GTK_JUSTIFY_CENTER,
 					    BLACK,
-					    FALSE,
 					    FALSE);
 		
 		layout_area.x0 += (max_text_width + 20);
@@ -475,7 +453,6 @@ main (int argc, char* argv[])
 					    layout_area.y0, 
 					    GTK_JUSTIFY_RIGHT,
 					    BLACK,
-					    FALSE,
 					    FALSE);
 		
 		nautilus_text_layout_free (text_layout);
@@ -513,7 +490,6 @@ main (int argc, char* argv[])
 					    layout_area.y0, 
 					    GTK_JUSTIFY_CENTER,
 					    BLACK,
-					    FALSE,
 					    TRUE);
 		
 		nautilus_text_layout_free (text_layout);

@@ -408,7 +408,6 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 							    y + label->detail->drop_shadow_offset,
 							    label->detail->text_justification,
 							    label->detail->drop_shadow_color,
-							    FALSE,
 							    FALSE);
 			}
 
@@ -418,7 +417,6 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 						    y,
 						    label->detail->text_justification,
 						    label->detail->text_color,
-						    FALSE,
 						    FALSE);
 
 			y += text_layout->height;
@@ -442,8 +440,7 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 										label->detail->line_offset,
 										label_get_empty_line_height (label),
 										label->detail->drop_shadow_color,
-										label->detail->text_alpha,
-										FALSE);
+										label->detail->text_alpha);
 		}
 
 		nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
@@ -461,8 +458,7 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 									label->detail->line_offset,
 									label_get_empty_line_height (label),
 									label->detail->text_color,
-									label->detail->text_alpha,
-									FALSE);
+									label->detail->text_alpha);
 	}
 }
 
