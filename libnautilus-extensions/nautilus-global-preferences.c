@@ -156,6 +156,11 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 3,
+							 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
 	/*
 	 * Sidebar panels pane
 	 */
@@ -1004,6 +1009,12 @@ global_preferences_register (void)
 							   FALSE,
 							   FALSE,
 							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+							   _("Show only directories in tree sidebar panel"),
+							   FALSE,
+							   FALSE,
+							   FALSE);
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 							   _("Can add Content"),

@@ -776,7 +776,13 @@ nautilus_tree_model_directory_files_added_callback (NautilusDirectory        *di
 	for (p = added_files; p != NULL; p = p->next) {
 		file = (NautilusFile *) p->data;
 		
-		node = nautilus_tree_node_new (file);
+		node = nautilus_tree_model_get_node_from_file (model, file);
+
+		if (node == NULL) {
+			node = nautilus_tree_node_new (file);
+		} else {
+			gtk_object_ref (GTK_OBJECT (node));
+		}			
 		
 		report_node_changed (model, node);
 

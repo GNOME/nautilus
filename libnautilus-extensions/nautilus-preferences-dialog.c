@@ -57,7 +57,7 @@ static const gint DEFAULT_BUTTON = 0;
 static const guint DEFAULT_BORDER_WIDTH = 0;
 
 static const guint PREFS_DIALOG_DEFAULT_WIDTH = 500;
-static const guint PREFS_DIALOG_DEFAULT_HEIGHT = 375;
+static const guint PREFS_DIALOG_DEFAULT_HEIGHT = 403;
 
 enum 
 {

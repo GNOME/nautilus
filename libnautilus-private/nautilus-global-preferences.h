@@ -66,6 +66,7 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
 #define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
+#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar-panels/tree/show_only_directories"
 
 /* Navigation  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"

@@ -1,3 +1,58 @@
+2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-ctree.c (ctree_is_hot_spot):
+	Expand margins around expander by 3 pixels on each side to make it
+	easier to click the disclosure triangle (triangle will prelight
+	when within range), to fix bug 4479
+
+
+	Fix bugs 4497 (Add configuration option to show only folders in
+	tree view) and 2419 (Tree view should track "show hidden files"
+	preference):
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_should_skip_file,
+	nautilus_tree_view_insert_model_node,
+	nautilus_tree_view_remove_model_node,
+	nautilus_tree_view_update_model_node): Handle possibly filtering
+	out hidden files, backup files or non-directories.
+	
+	(filtering_changed_callback,
+	nautilus_tree_view_initialize): Initialize from and watch
+	filtering preferences, reload whole tree when prefs change.
+	
+	(nautilus_tree_view_destroy): Stop watching filtering prefs.
+
+	(reload_model_node, reload_whole_tree, expand_node_for_file,
+	nautilus_tree_view_receive_dropped_icons): Update code for
+	reloading the tree on expand/collapse etc.
+
+ 	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_directory_files_added_callback): Check if we
+	already have a node for each file before trying to create a new
+	one. This was needed because otherwise chaning the preference
+	settins mentioned above would result in crashes.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_hidden_file, nautilus_file_is_backup_file,
+	nautilus_file_should_show,
+	filter_hidden_and_backup_partition_callback,
+	nautilus_file_list_filter_hidden_and_backup): Move hidden file and
+	backup file filtering logic here from fm-directory-view.c.
+
+	* src/file-manager/fm-directory-view.c (queue_pending_files): Use
+	`nautilus_file_list_filter_hidden_and_backup' to do filtering.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h,
+	libnautilus-extensions/nautilus-global-preferences.c
+	(global_preferences_create_dialog, global_preferences_register):
+	Add a new preference for showing only directories in the tree
+	view.
+
+	* libnautilus-extensions/nautilus-preferences-dialog.c: Make
+	preferences dialog a bit bigger to accomodate the new setting.
+
 2000-11-12  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 3210, trash image fails to appear when defined as

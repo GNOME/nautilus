@@ -255,6 +255,19 @@ int                     nautilus_file_compare_for_sort_reversed (NautilusFile   
 int                     nautilus_file_compare_name		(NautilusFile                  *file_1,
 								 const char		       *pattern);
 
+/* filtering functions for use by various directory views */
+
+gboolean                nautilus_file_is_hidden_file            (NautilusFile                  *file);
+gboolean                nautilus_file_is_backup_file            (NautilusFile                  *file);
+gboolean                nautilus_file_should_show               (NautilusFile                  *file, 
+								 gboolean                       show_hidden,
+								 gboolean                       show_backup);
+
+GList                  *nautilus_file_list_filter_hidden_and_backup (GList                     *files,
+								     gboolean                   show_hidden,
+								     gboolean                   show_backup);
+
+
 /* Get the URI that's used when activating the file.
  * Getting this can require reading the contents of the file.
  */

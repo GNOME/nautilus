@@ -1851,10 +1851,6 @@ queue_pending_files (FMDirectoryView *view,
 		     GList **pending_list)
 {
 	GList *filtered_files;
-	GList *files_iterator;
-	NautilusFile *file;
-	char * name;
-	gboolean include_file;
 
 	/* Desktop always filters out hidden files */
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
@@ -1862,46 +1858,16 @@ queue_pending_files (FMDirectoryView *view,
 		view->details->show_backup_files = FALSE;
 	}
 	
-	filtered_files = NULL;
-
 	/* Filter out hidden files if needed */
-	if (!view->details->show_hidden_files || !view->details->show_backup_files) {
-		/* FIXME bugzilla.eazel.com 653: 
-		 * Eventually this should become a generic filtering thingy. 
-		 */
-		for (files_iterator = files; 
-		     files_iterator != NULL; 
-		     files_iterator = files_iterator->next) {
-			file = NAUTILUS_FILE (files_iterator->data);
-			
-			g_assert (file != NULL);
-			
-			name = nautilus_file_get_name (file);
-			
-			g_assert (name != NULL);
 
-			if (!view->details->show_hidden_files && nautilus_str_has_prefix (name, ".")) {
-				include_file = FALSE;
-			} else if (!view->details->show_backup_files && nautilus_str_has_suffix (name, "~")) {
-				include_file = FALSE;
-			} else {
-				include_file = TRUE;
-			}
-
-			if (include_file) {
-				filtered_files = g_list_append (filtered_files, file);
-			}
-			
-			g_free (name);
-		}
-		
-		files = filtered_files;
-	}
+	filtered_files = nautilus_file_list_filter_hidden_and_backup (files,
+								      view->details->show_hidden_files,
+								      view->details->show_backup_files);
 
 	/* Put the files on the pending list if there are any. */
 	if (files != NULL) {
 		nautilus_file_list_ref (files);
-		*pending_list = g_list_concat (*pending_list, g_list_copy (files));
+		*pending_list = g_list_concat (*pending_list, filtered_files);
 		
 		/* If we haven't see all the files yet, then we'll wait for the
 		 * timeout to fire. If we have seen all the files, then we'll use
@@ -1913,8 +1879,6 @@ queue_pending_files (FMDirectoryView *view,
 			schedule_timeout_display_of_pending_files (view);
 		}
 	}
-
-	g_list_free (filtered_files);
 }
 
 static void
@@ -4371,7 +4335,7 @@ filtering_changed_callback (gpointer callback_data)
 	
 	directory_view->details->show_backup_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
-	
+
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {
 		load_directory (directory_view,

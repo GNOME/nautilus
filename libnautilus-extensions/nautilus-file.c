@@ -1708,6 +1708,89 @@ nautilus_file_compare_name (NautilusFile *file,
 	return result;
 }
 
+
+
+gboolean
+nautilus_file_is_hidden_file (NautilusFile *file)
+{
+	char *name;
+	gboolean is_hidden;
+
+	name = nautilus_file_get_name (file);
+	is_hidden = nautilus_str_has_prefix (name, ".");
+	g_free (name);
+
+	return is_hidden;
+}
+
+gboolean 
+nautilus_file_is_backup_file (NautilusFile *file)
+{
+	char *name;
+	gboolean is_backup;
+
+	name = nautilus_file_get_name (file);
+	is_backup = nautilus_str_has_suffix (name, "~");
+	g_free (name);
+
+	return is_backup;
+}
+
+gboolean 
+nautilus_file_should_show (NautilusFile *file, 
+			   gboolean show_hidden,
+			   gboolean show_backup)
+{
+	return (show_hidden || ! nautilus_file_is_hidden_file (file)) &&
+		(show_backup || ! nautilus_file_is_backup_file (file));
+}
+
+typedef enum {
+	SHOW_HIDDEN = 1 << 0,
+	SHOW_BACKUP = 1 << 1
+} NautilusFileFilterOptions;
+
+static gboolean
+filter_hidden_and_backup_partition_callback (gpointer data,
+					     gpointer callback_data)
+{
+	NautilusFile *file;
+	NautilusFileFilterOptions options;
+
+	file = NAUTILUS_FILE (data);
+	options = (NautilusFileFilterOptions) callback_data;
+
+	return nautilus_file_should_show (file, 
+					  options & SHOW_HIDDEN,
+					  options & SHOW_BACKUP);
+}
+
+GList *
+nautilus_file_list_filter_hidden_and_backup (GList    *files,
+					     gboolean  show_hidden,
+					     gboolean  show_backup)
+{
+	GList *filtered_files;
+	GList *removed_files;
+
+	/* FIXME bugzilla.eazel.com 653: 
+	 * Eventually this should become a generic filtering thingy. 
+	 */
+
+	filtered_files = nautilus_file_list_copy (files);
+	filtered_files = nautilus_g_list_partition (filtered_files, 
+						    filter_hidden_and_backup_partition_callback,
+						    (gpointer) ((show_hidden ? SHOW_HIDDEN : 0) |
+								(show_backup ? SHOW_BACKUP : 0)),
+						    &removed_files);
+	nautilus_file_list_free (removed_files);
+
+	return filtered_files;
+}
+
+
+
+
 /* We use the file's URI for the metadata for files in a directory,
  * but we use a hard-coded string for the metadata for the directory
  * itself.

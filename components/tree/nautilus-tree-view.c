@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libgnomevfs/gnome-vfs.h>
 
 
@@ -112,6 +113,8 @@ struct NautilusTreeViewDetails {
 	GHashTable *file_to_hack_node_map;
 
 	gboolean show_hidden_files;
+	gboolean show_backup_files;
+	gboolean show_non_directories;
 
 	NautilusTreeExpansionState *expansion_state;
 	char *selected_uri;
@@ -141,19 +144,22 @@ static NautilusCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView 
 
 static gboolean           ctree_is_node_expanded              (NautilusCTree     *ctree,
 							       NautilusCTreeNode *node);
-static NautilusCTreeNode *file_to_view_node                   (NautilusTreeView *view,
-							       NautilusFile     *file);
-static NautilusCTreeNode *model_node_to_view_node             (NautilusTreeView *view,
-							       NautilusTreeNode *node);
-
-static NautilusFile      *view_node_to_file                   (NautilusTreeView *view,
+static NautilusCTreeNode *file_to_view_node                   (NautilusTreeView  *view,
+							       NautilusFile      *file);
+static NautilusCTreeNode *model_node_to_view_node             (NautilusTreeView  *view,
+							       NautilusTreeNode  *node);
+static NautilusFile      *view_node_to_file                   (NautilusTreeView  *view,
+							       NautilusCTreeNode *node);
+static NautilusTreeNode  *view_node_to_model_node             (NautilusTreeView  *view,
 							       NautilusCTreeNode *node);
 
+static void              nautilus_tree_view_remove_model_node (NautilusTreeView  *view, 
+							       NautilusTreeNode  *node);
 
-static void reload_node_for_file                (NautilusTreeView      *view,
-						 NautilusFile          *file);
-static void expand_node_for_file                (NautilusTreeView      *view,
-						 NautilusFile          *file);
+
+static void reload_model_node                   (NautilusTreeView      *view,
+						 NautilusTreeNode      *node);
+static void reload_whole_tree                   (NautilusTreeView *view);
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
 						 NautilusTreeView      *view);
@@ -268,9 +274,9 @@ static void  nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 						 int x, int y,
 						 int *default_action,
 						 int *non_default_action);
-static void 
-nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
-				 NautilusCTreeNode *current_node);
+static void  nautilus_tree_view_collapse_all    (NautilusTreeView *tree_view,
+						 NautilusCTreeNode *current_node);
+
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -296,31 +302,11 @@ static gboolean
 nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 				     NautilusFile *file)
 {
-	char *name;
-	gboolean should_skip;
-
-	should_skip = FALSE;
-
-	/* FIXME bugzilla.eazel.com 2419: maybe this should track the "show hidden files" preference? */
-
-	if (!view->details->show_hidden_files) {
-
-		/* FIXME bugzilla.eazel.com 653: 
-		 * Eventually this should become a generic filtering thingy. 
-		 */
-			
-		name = nautilus_file_get_name (file);
-			
-		g_assert (name != NULL);
-			
-		if (nautilus_str_has_prefix (name, ".")) {
-			should_skip = TRUE;
-		}
-		
-		g_free (name);
-	}
-		
-	return should_skip;
+	return !(nautilus_file_should_show (file, 
+					    view->details->show_hidden_files, 
+					    view->details->show_backup_files) &&
+		 (view->details->show_non_directories || 
+		  nautilus_file_is_directory (file)));
 }
 
 
@@ -420,7 +406,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusFile *file;
 	NautilusFile *parent_file;
 	char *uri;
-
 	char *text[2];
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -428,6 +413,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	file = nautilus_tree_node_get_file (node);
 
 	if (nautilus_tree_view_should_skip_file (view, file)) {
+		nautilus_tree_view_remove_model_node (view, node);
 		return;
 	}
 
@@ -456,21 +442,19 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 								    &mask);
 
 		view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
-						   parent_view_node, 
-						   NULL,
-						   text,
-						   TREE_SPACING,
-						   pixmap, mask, pixmap, mask,
-						   FALSE,
-						   FALSE);
+							parent_view_node, 
+							NULL,
+							text,
+							TREE_SPACING,
+							pixmap, mask, pixmap, mask,
+							FALSE,
+							FALSE);
 
 		gdk_pixmap_unref (pixmap);
 		if (mask != NULL) {
 			gdk_bitmap_unref (mask);
 		}
 
-		
-		
 		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
 						  view_node,
 						  node);
@@ -550,15 +534,19 @@ static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
 	NautilusCTreeNode *view_node;
-	
+	NautilusFile *file;
+
+	file = nautilus_tree_node_get_file (node);
+
+ 	view_node = model_node_to_view_node (view, node);
+ 	if (view_node != NULL) {
+		forget_view_node_and_children (view, view_node);
+ 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
+ 					    view_node);
+ 	}
+
 	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
 
-	view_node = model_node_to_view_node (view, node);
-	if (view_node != NULL) {
-		forget_view_node_and_children (view, view_node);
-		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
-					    view_node);
-	}
 }
 
 
@@ -596,6 +584,11 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	GdkBitmap *mask;
 	
 	file = nautilus_tree_node_get_file (node);
+
+	if (nautilus_tree_view_should_skip_file (view, file)) {
+		nautilus_tree_view_remove_model_node (view, node);
+		return;
+	}
 
 	view_node = model_node_to_view_node (view, node);
 
@@ -660,8 +653,9 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 			g_free (uri);
 		}
+	} else {
+		nautilus_tree_view_insert_model_node (view, node);
 	}
-	
 }
 
 
@@ -930,6 +924,33 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 }
 
 static void
+filtering_changed_callback (gpointer callback_data)
+{
+	NautilusTreeView *view;
+#if 0
+	NautilusCTreeNode *node;
+#endif
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	view->details->show_hidden_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
+	
+	view->details->show_backup_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
+
+	view->details->show_non_directories = 
+		! nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES, FALSE);
+
+
+	/* Reload the whole tree so that the filtering changes take place. */
+
+	if (view->details->root_seen) {
+		reload_whole_tree (view);
+	}
+}
+
+
+static void
 nautilus_tree_view_initialize (NautilusTreeView *view)
 {
 	/* set up scrolled window */
@@ -995,6 +1016,28 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 	/* init dnd */
 	nautilus_tree_view_init_dnd (view);
 
+	/* Obtain the filtering preferences */
+	view->details->show_hidden_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
+
+	view->details->show_backup_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
+
+	view->details->show_non_directories = 
+		! nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES, FALSE);
+
+	/* Keep track of changes in these prefs to filter files accordingly. */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					   filtering_changed_callback,
+					   view);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					   filtering_changed_callback,
+					   view);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+					   filtering_changed_callback,
+					   view);
+
+
 	/* set up view */
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
@@ -1058,6 +1101,16 @@ nautilus_tree_view_destroy (GtkObject *object)
 	NautilusTreeView *view;
 	
 	view = NAUTILUS_TREE_VIEW (object);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      filtering_changed_callback,
+					      object);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					      filtering_changed_callback,
+					      object);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+					      filtering_changed_callback,
+					      object);
 
 	g_hash_table_foreach (view->details->file_to_node_map,
 			      free_file_to_node_map_entry,
@@ -1350,37 +1403,54 @@ tree_load_location_callback (NautilusView *nautilus_view,
 }
 
 
+
+
 static void
-reload_node_for_file (NautilusTreeView *view,
-		      NautilusFile     *file)
+reload_model_node (NautilusTreeView *view,
+		   NautilusTreeNode *node)
 {
 	GList *p;
-	NautilusTreeNode *node;
+	char *uri;
 
-	node = nautilus_tree_model_get_node_from_file (view->details->model, file);
-	g_return_if_fail (node != NULL);
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
 
-	nautilus_tree_model_monitor_node (view->details->model, node, view);
-
-	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
-		nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
+	if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+		nautilus_tree_model_monitor_node (view->details->model, node, view);
+		
+		for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
+			nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
+			reload_model_node (view, (NautilusTreeNode *) p->data);
+		}
 	}
+	
+	g_free (uri);
 }
+
+
+static void
+reload_whole_tree (NautilusTreeView *view)
+{
+	reload_model_node (view, nautilus_tree_model_get_node (view->details->model, "file:///"));
+}
+
+
 
 static void
 expand_node_for_file (NautilusTreeView *view,
-		      NautilusFile      *file)
+		      NautilusFile     *file)
 {
 	char *uri;
 
 	freeze_if_have_hack_node (view, file);
-
+	
 	uri = nautilus_file_get_uri (file);
 	nautilus_tree_expansion_state_expand_node (view->details->expansion_state,
 						   uri);
 	g_free (uri);
-
-	reload_node_for_file (view, file);
+	
+	reload_model_node (view, 
+			   nautilus_tree_model_get_node_from_file (view->details->model, 
+								   file));
 }
 
 static void
@@ -2694,5 +2764,3 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 		drag_info->selection_list = NULL;
 	}
 }
-
-

@@ -3556,7 +3556,7 @@ ctree_is_hot_spot (NautilusCTree     *ctree,
 	  	     (ctree->line_style == NAUTILUS_CTREE_LINES_TABBED) * 3);
 	}
 
-	return (x >= xl && x <= xl + PM_SIZE && y >= yu && y <= yu + PM_SIZE);
+	return (x >= xl - 3 && x <= xl + 3 + PM_SIZE && y >= yu - 3 && y <= yu + PM_SIZE + 3);
 }
 
 /***********************************************************
