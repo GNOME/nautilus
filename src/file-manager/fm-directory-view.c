@@ -315,8 +315,6 @@ static void     selection_changed_callback                     (NautilusView    
 								FMDirectoryView      *directory_view);
 static void     open_one_in_new_window                         (gpointer              data,
 								gpointer              callback_data);
-static void     open_one_properties_window                     (gpointer              data,
-								gpointer              callback_data);
 static void     zoomable_set_zoom_level_callback               (BonoboZoomable       *zoomable,
 								float                 level,
 								FMDirectoryView      *view);
@@ -1015,11 +1013,8 @@ open_properties_window_callback (BonoboUIComponent *component, gpointer callback
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	if (selection_not_empty_in_menu_callback (view, selection)) {
-		if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
-			g_list_foreach (selection, open_one_properties_window, view);
-		}
-	}
+
+	fm_properties_window_present (selection, view);
 
         nautilus_file_list_free (selection);
 }
@@ -3288,15 +3283,6 @@ open_one_in_new_window (gpointer data, gpointer callback_data)
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
 					 NAUTILUS_FILE (data),
 					 FORCE_NEW_WINDOW);
-}
-
-static void
-open_one_properties_window (gpointer data, gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	fm_properties_window_present (data, callback_data);
 }
 
 NautilusFile *

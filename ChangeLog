@@ -1,3 +1,64 @@
+2003-06-08  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-properties-window.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(has_server_info_in_list), (server_info_list_intersection),
+	(nautilus_mime_get_property_components_for_files):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(open_properties_window_callback), (open_one_in_new_window):
+	* src/file-manager/fm-properties-window.c: (is_multi_file_window),
+	(get_original_file), (get_target_file_for_original_file),
+	(get_target_file), (add_prompt_and_separator),
+	(get_pixbuf_for_properties_window), (reset_icon),
+	(create_image_widget_for_file), (update_name_field),
+	(name_field_restore_original_name), (name_field_done_editing),
+	(file_has_keyword), (get_initial_emblem_state),
+	(emblem_button_toggled), (emblem_button_update),
+	(update_properties_window_title), (remove_from_dialog),
+	(mime_list_equal), (get_mime_list), (properties_window_update),
+	(file_list_attributes_identical), (file_list_get_string_attribute),
+	(file_list_all_local), (file_list_all_directories),
+	(value_field_update_internal), (value_field_update),
+	(attach_value_field_internal), (attach_value_field),
+	(attach_ellipsizing_value_field), (append_separator),
+	(directory_contents_value_field_update),
+	(attach_directory_contents_value_field), (append_title_value_pair),
+	(append_title_and_ellipsizing_value),
+	(update_visibility_of_item_count_fields),
+	(should_show_custom_icon_buttons), (should_show_file_type),
+	(should_show_accessed_date), (should_show_mime_type),
+	(should_show_link_target), (should_show_free_space),
+	(create_basic_page), (get_initial_emblems), (create_emblems_page),
+	(permission_change_callback), (get_initial_permission_state),
+	(permission_button_toggled), (permission_button_update),
+	(set_up_permissions_checkbox), (add_permissions_checkbox),
+	(append_special_execution_checkbox),
+	(append_special_execution_flags), (all_can_get_permissions),
+	(all_can_set_permissions), (get_initial_permissions),
+	(create_permissions_page), (get_uri_list),
+	(bonobo_page_activate_callback), (can_handle_multiple_files),
+	(append_bonobo_pages), (should_show_emblems),
+	(should_show_permissions), (get_pending_key), (startup_data_new),
+	(startup_data_free), (create_properties_window),
+	(get_target_file_list), (add_window), (remove_window),
+	(get_existing_window), (cancel_create_properties_window_callback),
+	(directory_view_destroyed_callback),
+	(cancel_call_when_ready_callback), (remove_pending),
+	(is_directory_ready_callback), (fm_properties_window_present),
+	(real_destroy), (real_finalize), (set_icon_callback),
+	(select_image_button_callback), (remove_image_button_callback):
+	Implement multi-file property dialogs.
+	
+	* components/image_properties/Nautilus_View_image_properties.server
+	.in.in:
+	* components/image_properties/nautilus-image-properties-view.c:
+	(nautilus_image_properties_view_finalize), (get_property),
+	(set_property), (nautilus_image_properties_view_init):
+	* components/notes/Nautilus_View_notes.server.in.in:
+	* components/notes/nautilus-notes.c: (set_bonobo_properties),
+	(make_notes_view): Use new multipage property.
+
 2003-06-08  Greg Merchan  <merchan@phys.lsu.edu>
 	* libnautilus-private/nautilus-program-chooser.c,
 	  src/file-manager/fm-desktop-icon-view.c,

@@ -117,8 +117,11 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			gpointer callback_data)
 {
 	if (arg_id == NOTES_URI) {
+                CORBA_sequence_CORBA_string *uris;
+                
+                uris = arg->_value;
 		notes_load_location (NULL,
-				     BONOBO_ARG_GET_STRING (arg),
+				     uris->_buffer[0],
 				     (Notes *)callback_data);
 	}
 }
@@ -405,8 +408,8 @@ make_notes_view ()
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), BONOBO_OBJREF (notes->property_bag), NULL);
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
-	bonobo_property_bag_add (notes->property_bag, "URI",
-				 NOTES_URI, BONOBO_ARG_STRING,
+	bonobo_property_bag_add (notes->property_bag, "uris",
+				 NOTES_URI, TC_CORBA_sequence_CORBA_string,
 				 NULL, "URI of selected file", 0);
         /* handle events */
         g_signal_connect (notes->view, "load_location",

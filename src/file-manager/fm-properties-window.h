@@ -57,10 +57,9 @@ struct FMPropertiesWindowClass {
 
 typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;
 
-
-
 GType   fm_properties_window_get_type   (void);
-void 	fm_properties_window_present 	(NautilusFile    *file, 
+
+void 	fm_properties_window_present 	(GList *files,
 					 FMDirectoryView *directory_view);
 
 #endif /* FM_PROPERTIES_WINDOW_H */

@@ -61,6 +61,7 @@ nautilus_image_properties_view_finalize (GObject *object)
 		gnome_vfs_async_cancel (view->details->vfs_handle);
 	
 	view->details->vfs_handle = NULL;
+	g_free (view->details->location);
 
 	g_free (view->details);
 
@@ -206,7 +207,14 @@ get_property (BonoboPropertyBag *bag,
 	NautilusImagePropertiesView *view = user_data;
 
 	if (arg_id == PROP_URI) {
-		BONOBO_ARG_SET_STRING (arg, view->details->location);
+		CORBA_sequence_CORBA_string *uris;
+
+		uris = CORBA_sequence_CORBA_string__alloc ();
+		uris->_maximum = uris->_length = 1;
+		uris->_buffer = CORBA_sequence_CORBA_string_allocbuf (uris->_length);
+		uris->_buffer[0] = CORBA_string_dup (view->details->location);
+		arg->_type = TC_CORBA_sequence_CORBA_string;
+		arg->_value = uris;
 	}
 }
 
@@ -220,7 +228,11 @@ set_property (BonoboPropertyBag *bag,
 	NautilusImagePropertiesView *view = user_data;
 
 	if (arg_id == PROP_URI) {
-		load_location (view, BONOBO_ARG_GET_STRING (arg));
+		CORBA_sequence_CORBA_string *uris;
+                
+                uris = arg->_value;
+		view->details->location = g_strdup (uris->_buffer[0]);
+		load_location (view, view->details->location);
 	}
 }
 
@@ -252,7 +264,7 @@ nautilus_image_properties_view_init (NautilusImagePropertiesView *view)
 
 	pb = bonobo_property_bag_new (get_property, set_property,
 				      view);
-	bonobo_property_bag_add (pb, "URI", 0, BONOBO_ARG_STRING,
+	bonobo_property_bag_add (pb, "uris", 0, TC_CORBA_sequence_CORBA_string,
 				 NULL, _("URI currently displayed"), 0);
 	bonobo_control_set_properties (BONOBO_CONTROL (view),
 				       BONOBO_OBJREF (pb), NULL);
