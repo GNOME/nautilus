@@ -44,7 +44,7 @@
 
 static GtkObject *parent_class;
 
-/* signals that a TrilobyteRootHelper can emit */
+/* signals that a TrilobiteRootHelper can emit */
 /* LAST_SIGNAL is just a sentinel marking the end of the list */
 enum {
 	NEED_PASSWORD,
@@ -121,7 +121,7 @@ trilobite_root_helper_initialize (TrilobiteRootHelper *object)
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
 }
 
-/* generate the GtkType for TrilobyteRootHelper */
+/* generate the GtkType for TrilobiteRootHelper */
 GtkType
 trilobite_root_helper_get_type (void)
 {

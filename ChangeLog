@@ -1,3 +1,34 @@
+2000-07-12  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client-pr
+	ivate.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client-pu
+	blic.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (impl_Trilobite_PasswordQuery_set_query_client),
+	(trilobite_passwordquery_destroy),
+	(trilobite_passwordquery_get_password):
+	* components/services/trilobite/sample/command-line/main.c:
+	(get_password_dude), (main):
+	* components/services/trilobite/sample/service/main.c:
+	(trilobite_service_factory_destroy),
+	(trilobite_sample_service_factory):
+
+	Add TrilobiteRootClient: a GTK object that wraps corba password
+	requests and emits a signal to handle it.  The sample command-line
+	service now uses it to ask for a password.
+
+	Fix bug in PasswordQuery where it didn't duplicate (ref) the corba
+	object it stored away.
+
 2000-07-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	*

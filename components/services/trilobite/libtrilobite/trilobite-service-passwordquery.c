@@ -73,7 +73,7 @@ impl_Trilobite_PasswordQuery_set_query_client(impl_POA_Trilobite_PasswordQuery *
 	if (trilobite->private->client != CORBA_OBJECT_NIL) {
 		CORBA_Object_release (trilobite->private->client, ev);
 	}
-	trilobite->private->client = client;
+	trilobite->private->client = CORBA_Object_duplicate (client, ev);
 }
 
 
@@ -109,7 +109,9 @@ trilobite_passwordquery_destroy (GtkObject *object)
 	if (trilobite->private != NULL) {
 		trilobite_root_helper_destroy (GTK_OBJECT (trilobite->private->root_helper));
 		g_free (trilobite->private->prompt);
-		CORBA_Object_release (trilobite->private->client, &ev);
+		if (trilobite->private->client != CORBA_OBJECT_NIL) {
+			CORBA_Object_release (trilobite->private->client, &ev);
+		}
 		g_free (trilobite->private);
 	}
 
@@ -312,7 +314,6 @@ static char*
 trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper, 
 				      TrilobitePasswordQuery *trilobite)
 {
-
 	if (trilobite->private->client == CORBA_OBJECT_NIL) {
 		GtkWidget *dialog;
 		gboolean rv;

@@ -27,6 +27,7 @@
 #include <bonobo.h>
 
 #include <libtrilobite/libtrilobite-service.h>
+#include <libtrilobite/trilobite-root-client-public.h>
 
 #include "sample-service.h"
 
@@ -36,12 +37,33 @@
 CORBA_Environment ev;
 CORBA_ORB orb;
 
+
+static char *
+get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *user_data)
+{
+	char password[80];
+
+	printf ("password for %s: ", prompt);
+	fflush (stdout);
+
+	fgets (password, 80, stdin);
+	if (password[strlen (password) - 1] == '\n') {
+		password[strlen (password) - 1] = 0;
+	}
+	password[79] = 0;
+	return g_strdup (password);
+}
+
+
 /* This is basically ripped from empty-client */
 
 int main(int argc, char *argv[]) {
 	BonoboObjectClient *service;
 	Trilobite_Service trilobite;
 	Trilobite_Eazel_Sample sample_service; 
+
+	Trilobite_PasswordQueryClient trilobite_client;
+	TrilobiteRootClient *root_client = NULL;
 
 	CORBA_exception_init (&ev);
 	gnome_init_with_popt_table ("trilobite-eazel-sample-client", "1.0",argc, argv, oaf_popt_options, 0, NULL);
@@ -88,7 +110,29 @@ int main(int argc, char *argv[]) {
 		Trilobite_Service_unref (trilobite, &ev);
 		CORBA_Object_release (trilobite, &ev);
 	} else {
-		g_warning ("Object does not support IDL:/Trilobite/Service:1.0");
+		g_warning ("Object does not support IDL:Trilobite/Service:1.0");
+	}
+
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
+	        Trilobite_PasswordQuery trilobite_password;
+
+		root_client = trilobite_root_client_new ();
+		gtk_signal_connect (GTK_OBJECT (root_client), "need_password", GTK_SIGNAL_FUNC (get_password_dude),
+				    NULL);
+
+		trilobite_password = bonobo_object_query_interface (BONOBO_OBJECT (service),
+								    "IDL:Trilobite/PasswordQuery:1.0");
+		trilobite_client = trilobite_root_client_get_passwordqueryclient (root_client);
+		if (trilobite_password) {
+			Trilobite_PasswordQuery_set_query_client (trilobite_password, trilobite_client, &ev);
+			if (ev._major != CORBA_NO_EXCEPTION) {
+				g_warning ("set-query-client got exception :(");
+			}
+		} else {
+			g_warning ("Never set client!");
+		}
+	} else {
+		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
 	}
 
 	/* If a test server, call the two methods */
@@ -103,6 +147,11 @@ int main(int argc, char *argv[]) {
 		Trilobite_Eazel_Sample_unref (sample_service, &ev);
 		CORBA_Object_release (sample_service, &ev);
 	} 
+
+	/* throw away the root client if we made one */
+	if (root_client != NULL) {
+		trilobite_root_client_destroy (GTK_OBJECT (root_client));
+	}
 
 	/* Clean up the bonobo_object_activate return value */
 	bonobo_object_unref (BONOBO_OBJECT (service)); 

@@ -43,6 +43,7 @@ CORBA_Environment         ev;
 
 static BonoboGenericFactory *factory;
 static int trilobites_active = 0;
+static TrilobitePasswordQuery *trilobite_password;
 
 static void
 trilobite_service_factory_destroy (GtkObject *object) 
@@ -56,6 +57,8 @@ trilobite_service_factory_destroy (GtkObject *object)
 	g_message ("destroying factory");
 	
 	bonobo_object_unref (BONOBO_OBJECT (factory));
+	trilobite_passwordquery_destroy (GTK_OBJECT (trilobite_password));
+
 	gtk_main_quit ();
 }
 
@@ -65,7 +68,6 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 				  gpointer data) 
 {
 	TrilobiteService *trilobite;
-	TrilobitePasswordQuery *trilobite_password;
 	SampleService *service;
 
 	g_message ("in trilobite_sample_service_factory");
