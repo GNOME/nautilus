@@ -756,13 +756,21 @@ append_bookmark_to_menu (NautilusWindow *window,
 static char *
 get_static_bookmarks_file_path (void)
 {
-	char *xml_file_path;
+	char *xml_file_path, *user_directory_path;
 	
-	/* For now at least, the static bookmarks file is kept in the standard shared data directory. */
-	/* FIXME bugzilla.eazel.com 1826: 
-	 * The service might want to overwrite this file. Can it do so in this location?
+	/* first, try to fetch it from the service update directory. Use the one from there
+	 * if there is one, otherwise, get the built-in one from shared data
 	 */
-
+	
+	user_directory_path = nautilus_get_user_directory ();
+	xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
+	g_free (user_directory_path);
+	if (g_file_exists (xml_file_path)) {
+		return xml_file_path;
+	}
+	
+	g_free (xml_file_path);
+	
 	xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
 	if (g_file_exists (xml_file_path)) {
 		return xml_file_path;
