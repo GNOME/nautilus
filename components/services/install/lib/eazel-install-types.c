@@ -238,7 +238,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	{
 		char **paths = NULL;
 		char **names = NULL;
-		int *indexes;
+		int *indexes = NULL;
 		int count;
 		int index;
 

@@ -1,5 +1,11 @@
 2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Fix uninitialized variable.
+
+2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus.spec.in:
 	Add the nautilus-image-view component.
 	
