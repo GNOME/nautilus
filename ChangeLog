@@ -1,3 +1,20 @@
+2000-07-25  John Sullivan  <sullivan@eazel.com>
+
+	First simple cut at addressing 1469 (clicking on executables
+	does not run them). Now it does, which works great for GUI-type
+	executables but is pretty lame for command-line ones.
+
+	* src/file-manager/fm-directory-view.c: 
+	(file_is_launchable): New utility function, returns true if
+	file is executable and not a directory.
+	(compute_menu_item_info): Disable "Open in New Window" if
+	there's only one item selected and it's executable, since in
+	this case "Open" and "Open in New Window" would have the same
+	behavior and thus the choice is confusing.
+	(fm_directory_view_activate_file): If file is launchable,
+	launch it directly instead of looking for another app/viewer to use.
+	The user can still use "Open With" to open it differently.
+
 2000-07-25  Andy Hertzfeld  <andy@eazel.com>
 
 	reworked the zoom control to make it themable.  It now gets its pieces from

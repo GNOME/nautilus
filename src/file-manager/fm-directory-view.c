@@ -55,6 +55,7 @@
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -116,6 +117,7 @@ struct FMDirectoryViewDetails
 /* forward declarations */
 
 static int            display_selection_info_idle_callback                        (gpointer                  data);
+static gboolean	      file_is_launchable 					  (NautilusFile 	    *file);
 static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
@@ -1976,7 +1978,15 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		} else {
 			name = g_strdup_printf (_("Open in %d _New Windows"), count);
 		}
-		*return_sensitivity = selection != NULL;
+		if (nautilus_g_list_exactly_one_item (selection)) {
+			/* If the only selected item is launchable, dim out "Open in New Window"
+			 * to avoid confusion about how it differs from "Open" in this case (it
+			 * doesn't differ; they would do the same thing).
+			 */
+			*return_sensitivity = !file_is_launchable (NAUTILUS_FILE (selection->data));
+		} else {
+			*return_sensitivity = selection != NULL;
+		}
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
 		name = g_strdup (_("New Folder"));
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
@@ -2874,6 +2884,12 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 					view);
 }
 
+static gboolean
+file_is_launchable (NautilusFile *file)
+{
+	return !nautilus_file_is_directory (file) && nautilus_file_can_execute (file);
+}
+
 /**
  * fm_directory_view_activate_file:
  * 
@@ -2892,6 +2908,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	char *uri;
+	char *executable_path;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -2902,22 +2919,31 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 
 	uri = nautilus_file_get_mapped_uri (file);
 
-	action_type = nautilus_mime_get_default_action_type_for_uri (uri);
-	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-		application = nautilus_mime_get_default_application_for_uri (uri);
-		fm_directory_view_launch_application (application, uri, view);
-		gnome_vfs_mime_application_free (application);
-	} else {
-		/* If the action type is unspecified, treat it like
-		 * the component case. This is most likely to happen
-		 * (only happens?) when there are no registered
-		 * viewers or apps, or there are errors in the
-		 * mime.keys files.
+	if (file_is_launchable (file)) {
+		/* Launch executables to activate them. Maybe this needs to
+		 * handle script-type text tools differently?
 		 */
-		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
-			  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+		executable_path = nautilus_get_local_path_from_uri (uri);
+		nautilus_launch_application_from_command (executable_path, NULL);
+		g_free (executable_path);
+	} else {
+		action_type = nautilus_mime_get_default_action_type_for_uri (uri);
+		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+			application = nautilus_mime_get_default_application_for_uri (uri);
+			fm_directory_view_launch_application (application, uri, view);
+			gnome_vfs_mime_application_free (application);
+		} else {
+			/* If the action type is unspecified, treat it like
+			 * the component case. This is most likely to happen
+			 * (only happens?) when there are no registered
+			 * viewers or apps, or there are errors in the
+			 * mime.keys files.
+			 */
+			g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
+				  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 
-		fm_directory_view_switch_location (view, uri, use_new_window);
+			fm_directory_view_switch_location (view, uri, use_new_window);
+		}
 	}
 
 	g_free (uri);
