@@ -427,6 +427,7 @@ make_root_pixmap (gint width, gint height)
 	Display *display;
         char *display_name;
 	Pixmap result;
+	GdkPixmap *gdk_pixmap;
 
 	gdk_flush ();
 
@@ -448,7 +449,11 @@ make_root_pixmap (gint width, gint height)
 
 	XCloseDisplay (display);
 
-	return gdk_pixmap_foreign_new (result);
+	gdk_pixmap = gdk_pixmap_foreign_new (result);
+	gdk_drawable_set_colormap (GDK_DRAWABLE (gdk_pixmap),
+				   gdk_drawable_get_colormap (gdk_get_default_root_window ()));
+
+	return gdk_pixmap;
 }
 
 /* Set the root pixmap, and properties pointing to it. We
