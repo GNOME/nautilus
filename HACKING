@@ -1,171 +1,41 @@
 ====================
-0: Table of Contents
+0: Table of contents
 ====================
 
-0: Table of Contents
+0: Table of contents
 1: Intro
-2: Module Listing
-3: Distribution Specific Notes
-4: m4 macro and aclocal issues
-5: Issues When Running Nautilus
+2: Using the leak checker
 
 ========
 1: Intro
 ========
 
-To build Nautilus without interfering with an existing Gnome install,
-you will need to build several components from CVS into a separate
-prefix.
+Nautilus source tree is available from CVS (the latest-cutting edge
+version) and in releases (tarballs).
 
-For example, you could install these components into /usr/local/gnome2
-or /usr/local/nautilus. Do do this, make sure to specify these with
-the --prefix= option to autogen.sh or configure.
+If you plan to hack on Nautilus, please make sure you work from the
+CVS version. The CVS version is available on GNOME CVS. The page
+http://developer.gnome.org/tools/cvs.html details how to get started
+with GNOME CVS.
 
-Specifically, you will need to:
+If you want to contribute patches, please send mail to the nautilus
+maintainer (Darin Adler <darin@eazel.com>) and/or the nautilus mailing
+list: <nautilus-list@lists.eazel.com> (subscribtions should be made to
+<nautilus-list-request@lists.eazel.com> with "subscribe" as a
+subject).
 
-* Install all the needed modules into your selected prefix.
+Patches should be made with 'cvs diff -u >patch' and should conform to
+Nautilus coding style as described in docs/style-guide.html Please
+read other relevant documents in the docs directory too.
 
-NOTE:  more documentation is in docs/
-
-* All patches should go through nautilus-list@lists.eazel.com.
-
-=================
-2: Module Listing
-=================
-
-NOTE the development libraries in helix gnome 1.2, are not adequate,
-you need the versions from CVS. (as of  Wed Jun 14 13:48:35 PDT 2000,
-you can use glib, gtk+, imlib, gtk-engine, gnome-xml, gnome-libs from
-Helix Gnome ) also modern version of RedHat come with a new popt,
-
-Nautilus currently requires the following modules from GNOME CVS
-(built in the given order):
-
-    module             branch             configure options      dist.
-    ------             ------             -----------------      -----
-    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
-    glib:              glib-1-2                                  HC1.2
-    gtk+:              gtk-1-2                                   HC1.2
-    imlib:             HEAD                                      HC1.2
-    gnome-xml:         LIB_XML_1_X                               HC1.2
-    ORBit:             orbit-stable-0-5
-    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1    HC1.2
-    gnome-http:        HEAD
-    oaf:               HEAD
-    gconf:             HEAD
-    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
-    gnome-print:       GNOME_PRINT_0_20
-    control-center     control-center-1-0
-    gnome-vfs:         HEAD               --enable-oaf=yes
-    bonobo:            HEAD               --enable-oaf=yes
-    gtkhtml:           HEAD
-    eog:               HEAD               --enable-oaf=yes
-    xpdf:              HEAD
-    medusa:            HEAD
-    nautilus:          HEAD
-
-RH6.2 == Version from Red Hat 6.2 OK
-HC1.2 == Version from Helix Code Gnome 1.2 OK
-
-=============================
-3: Distribution Specfic Notes
-=============================
-
-Other libraries needed:
-
-Here is what has been tested
-You will also need the library package that is associated with each development package,
-these versions are for RedHat 6.2 and Debian "potato":
-
-library         RedHat                   Debian                          Implied Version
---------------  ----------------------   ------------------------------  ------------------
-audiofile       audiofile-devel-0.1.9-3  libaudiofile-dev (0.1.9-0.1)    0.1.9
-libc            glibc-devel-2.1.3-15     libc6-dev (2.1.3-10)            2.1.3
-libc++          egcs-c++-1.1.2-30        libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
-libjpeg         libjpeg-devel-6b-10      libjpeg62-dev (6b-1.2)          6b 1.0-1.2
-libpng          libpng-devel-1.0.5-3     libpng2-dev (1.0.5-1)           1.0.5
-libtiff         libtiff-devel-3.5.4-5    libtiff3g-dev (3.5.4-5)         3.5.4
-libungif        libungif-devel-4.1.0-4   libungif3g-dev (3.0-3)          3.0 or 4.1.0
-w3c-libwww      w3c-libwww-devel-5.2.8-4 libw3c-libwww-dev (5.2.8-1)     5.2.8
-Xlib            XFree86-devel-3.3.6-20   xlib6g-dev (3.3.6-7)            3.3.6
-zlib            zlib-devel-1.1.3-6       zlib1g-dev (1.1.3-5)            1.1.3
-
-Other modules for Red Hat users: either 6.1 or 6.2
-
-	- For most modules, the versions in Red Hat 6.1 or 6.2 will do (listed above).
-	- ORBit requires popt-1.5, which can be fetched from:
-
-	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
-	ftp://ftp.valinux.com/pub/mirrors/redhat/redhat/redhat-6.2/i386/RedHat/RPMS/popt-1.5-0.48.i386.rpm
-
-Other modules for Debian users: using potato, or possibly woody
-
-	- You'll need libwww, which can be found at:
-
-	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww5_5.2.8-1_i386.deb
-	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww-dev_5.2.8-1_i386.deb
-
-If you need to get a copy of popt from source: 
-
-	CVSROOT=:pserver:anonymous@cvs.rpm.org:/cvs/devel
-	The default passwd is a carriage return.  You should do a cvs co popt
-
-==============================
-4: m4 macro and aclocal issues
-==============================
-
-m4 macros have issues.  Trying to install multiple versions of them on you system can be very tricky.
-While building these libraries you will place following m4 macros into "your prefix"/share/aclocal
-directory.  Note you will generally get errors with -I
-
-	glib.m4
-	gtk.m4
-	imlib.m4
-	libIDL.m4
-	ORBit.m4
-	libart.m4
-	gnet.m4
-	oaf.m4
-	gconf.m4
-	gdk-pixbuf.m4
-
-One ugly but functional way to make this work is to symlink your system m4 files into your
-First you need to make the directory where they will live.
-
-	mkdir -p "your prefix"/share/aclocal
-
-Then you need to link all the m4 files from your system aclocal directory to the new one.
-
-	for file in `ls /usr/share/alocal/*m4`
-	do
-		ln -s $file "your prefix"/share/aclocal/
-	done
-	
-Then you want to remove the m4 file for any of the things you are building.
-
-	for link in glib.m4 gtk.m4 imlib.m4 libIDL.m4 ORBit.m4\
-		    libart.m4 gnet.m4 oaf.m4 gconf.m4 gdk-pixbuf.m4
-	do
-		rm "your prefix"/$link
-	done
-		
-* Build and install nautilus into your selected prefix.
-
-===============================
-5: Issues When Running Nautilus
-===============================
-
-Also, you need to do a "killall oafd; killall gconfd" before
-running Nautilus if OAF or GConf changed.
-
-===============================
-6: Using the leak checker
-===============================
+=========================
+2: Using the leak checker
+=========================
 
 Nautilus is set up to use the libleakcheck.so leak checking libary. To
-use it run nautilus with LD_PRELOAD set to the path to the installed
+use it, run Nautilus with LD_PRELOAD set to the path to the installed
 libleakcheck.so libary. For example, if you are using a
-bourne-compatible shell, like bash, you can run nautilus this way to
+bourne-compatible shell, like bash, you can run Nautilus this way to
 run with leak checking:
 
 LD_PRELOAD=/gnome/libs/libleakcheck.so /gnome/bin/nautilus

@@ -1,1 +1,220 @@
-Nautilus is still in its early stages. You can learn more about it at http://nautilus.eazel.com.
+This file contains build instructions for Nautilus, the GNOME shell
+and file manager.
+
+====================
+0: Table of contents
+====================
+
+0: Table of contents
+1: Hacking
+2: Introduction
+3: Distribution-specific notes
+4: Compiling
+5: Running
+
+==========
+1: Hacking
+==========
+
+If you would like to hack on Nautilus, or have patches, please send
+mail to the Nautilus maintainer: Darin Adler<darin@eazel.com>.
+Patches should also be sent to the Nautilus mailing list:
+<nautilus-list@lists.eazel.com>
+
+The HACKING file contains other things you should know when hacking on
+Nautilus and when contributing code. Please, make sure you check the
+coding style document in docs/style-guide.html and other documents
+found in the "docs" directory.
+
+===============
+2: Introduction
+===============
+
+To build Nautilus without interfering with an existing Gnome install,
+you will need to build several components either from CVS or from 
+tarballs into a separate prefix. Detailed instructions on how
+to accomplish this are available in section 4.
+
+==============================
+3: Distribution-specific notes
+==============================
+
+The following describes the libraries that Nautilus hackers use for
+development and what we have tested with. At the moment, we make no
+guarantees one way or another about whether Nautilus will work with
+other versions.
+
+You will also need the library package that is associated with each
+development package, these versions are for RedHat 6.2 and Debian
+"potato":
+
+library         RedHat                   Debian                          Implied Version
+--------------  ----------------------   ------------------------------  ------------------
+audiofile       audiofile-devel-0.1.9-3  libaudiofile-dev (0.1.9-0.1)    0.1.9
+libc            glibc-devel-2.1.3-15     libc6-dev (2.1.3-10)            2.1.3
+libc++          egcs-c++-1.1.2-30        libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
+libjpeg         libjpeg-devel-6b-10      libjpeg62-dev (6b-1.2)          6b 1.0-1.2
+libpng          libpng-devel-1.0.5-3     libpng2-dev (1.0.5-1)           1.0.5
+libtiff         libtiff-devel-3.5.4-5    libtiff3g-dev (3.5.4-5)         3.5.4
+libungif        libungif-devel-4.1.0-4   libungif3g-dev (3.0-3)          3.0 or 4.1.0
+w3c-libwww      w3c-libwww-devel-5.2.8-4 libw3c-libwww-dev (5.2.8-1)     5.2.8
+Xlib            XFree86-devel-3.3.6-20   xlib6g-dev (3.3.6-7)            3.3.6
+zlib            zlib-devel-1.1.3-6       zlib1g-dev (1.1.3-5)            1.1.3
+
+Other modules for Red Hat users: either 6.1 or 6.2
+
+	- For most modules, the versions in Red Hat 6.1 or 6.2 will do (listed above).
+	- ORBit requires popt-1.5, which can be fetched from:
+
+	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
+	ftp://ftp.valinux.com/pub/mirrors/redhat/redhat/redhat-6.2/i386/RedHat/RPMS/popt-1.5-0.48.i386.rpm
+
+Other modules for Debian users: using potato, or possibly woody
+
+	- You'll need libwww, which can be found at:
+
+	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww5_5.2.8-1_i386.deb
+	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww-dev_5.2.8-1_i386.deb
+
+If you need to get a copy of popt from source: 
+
+	CVSROOT=:pserver:anonymous@cvs.rpm.org:/cvs/devel
+	The default passwd is a carriage return.  You should do a cvs co popt
+
+============
+4: Compiling
+============
+
+First, make sure you have installed the packages detailed below. If you are running
+GNOME from binaries (HelixCode or your native distribution binaries), please make sure
+you have installed the corresponding developement packages.  (ie: the *-devel packages
+which provide the necessary C header files.
+
+Then, make sure you have no old version of the packages nautilus depends on on your 
+system. You can check the version of the relevant packages by trying to execute 
+"package-config --version" (ie: gnome-config --version will report gnome-libs version, 
+gconf-config --version will report gconf's version).
+
+	Compiling from tarballs.
+	------------------------
+If you are compiling from tarballs, (ie: using released versions of nautilus and the 
+relevant packages), you want to folow the instructions below.
+
+The folowing lists the packages and the versions they should report.
+
+    module             version            configure options      dist.
+    ------             ------             -----------------      -----
+    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
+    glib:              1.2.8                                     HC1.2
+    gtk+:              1.2.8                                     HC1.2
+    imlib:             1.9.8.1                                   HC1.2
+    gnome-xml:         1.8.1                                     HC1.2
+    ORBit:             0.5.3					 HC1.2
+    gnome-libs:        1.2.4              --enable-prefer-db1    HC1.2
+    gnome-http:        1.0.6
+    oaf:               0.5.0
+    gconf:             0.8
+    gdk-pixbuf:        0.8.0              --enable-canvas-pixbuf
+    gnome-print:       0.20.0
+    control-center     1.2.0
+    gnome-vfs:         HEAD
+    bonobo:            0.17
+    gtkhtml:           0.6
+    eog:               0.3                --with-bonobo
+    medusa:            0.2
+    nautilus:          0.1
+
+RH6.2 == Version from Red Hat 6.2 OK
+HC1.2 == Version from Helix Code Gnome 1.2 OK
+
+If you are running Helix Code's GNOME, you should not need recompile
+the packages marked "HC1.2" provided you have installed the
+corresponding development packages.
+
+We assume you want to install these packages in another prefix than
+/usr since you want to keep a working system. For the following, we
+assume you are installing in /usr/local. ie: ${prefix}=/usr/local
+
+Redefine your PATH env variable: 
+	export PATH=$PATH:${prefix}/bin
+Redefine your LD_LIBRARY_PATH env variable: 
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${prefix}/lib
+Redefine your GNOME_PATH env variable: 
+	export GNOME_PATH=$GNOME_PATH:${prefix}
+
+In the order defined above and with the specific options detailed
+above, you should run the configure scripts with: "./configure
+--prefix=${prefix} --special-options" Then, run make; get root and run
+make install.
+
+You should get a running nautilus soon after. :)
+
+	Compiling from cvs.
+	-------------------
+Compiling from cvs usually requires more work and some packages may
+not compile. Do so at your own risk!!
+
+The folowing lists the packages and the versions that are required.
+
+    module             branch             configure options      dist.
+    ------             ------             -----------------      -----
+    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
+    glib:              glib-1-2                                  HC1.2
+    gtk+:              gtk-1-2                                   HC1.2
+    imlib:             HEAD                                      HC1.2
+    gnome-xml:         LIB_XML_1_X                               HC1.2
+    ORBit:             orbit-stable-0-5                          HC1.2
+    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1    HC1.2
+    gnome-http:        HEAD
+    oaf:               HEAD
+    gconf:             HEAD
+    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
+    gnome-print:       GNOME_PRINT_0_20
+    control-center     control-center-1-0
+    gnome-vfs:         HEAD
+    bonobo:            HEAD
+    gtkhtml:           HEAD
+    eog:               HEAD		  --with-bonobo
+    xpdf:              HEAD
+    medusa:            HEAD
+    nautilus:          HEAD
+
+RH6.2 == Version from Red Hat 6.2 OK
+HC1.2 == Version from Helix Code Gnome 1.2 OK
+
+One difference between tarball and cvs compilation is that when you
+get stuff from cvs, you don't get a configure script. This script has
+to be generated.  This script is usually generated with the help of
+another script available from cvs named "autogen.sh". For those
+interested, "autogen.sh" will run in turn aclocal, automake, autoconf
+and configure. You thus need versions of the GNU tools for the
+folowing packages:
+
+	package		version		command
+	-------		-------		-------
+	automake	1.4		automake --version
+	autoconf	2.13		autoconf --version
+
+Earlier versions might work but no one has tested them.
+
+Once you have these tools, you need to folow the compilation
+instructions detailed above for tarballs but instead of running
+"./configure --stuff", you will run "./autogen.sh --stuff" Using this
+also requires you to create the ${prefix}/share/aclocal directory
+before compiling any package and setup the folowing env variable:
+
+	export ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I ${prefix}/share/aclocal"
+
+Besides these differences, building from CVS should be otherwise
+like building from released packages as described above.
+
+===============================
+5: Issues when running Nautilus
+===============================
+
+There's a script named nautilus-clean.sh, at the top level of the
+Nautilus sources. If OAF or GConf changes, you may need to run this
+script to get Nautilus to work properly. One way to invoke it is
+like this:
+
+	./nautilus-clean.sh -x
