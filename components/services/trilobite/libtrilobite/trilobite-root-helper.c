@@ -229,11 +229,19 @@ static void
 discard_line (int pipe_stdout)
 {
 	char in;
+	char line[2048];
+	int i;
 
+	i = 0;
 	do {
 		in = 0;
 		read (pipe_stdout, &in, 1);
+		if ((in != 0) && (in != '\n') && (i < 2000)) {
+			line[i++] = in;
+		}
 	} while ((in != 0) && (in != '\n'));
+	line[i] = 0;
+	trilobite_debug ("roothelper: throwaway line '%s'", line);
 }
 
 
@@ -264,9 +272,11 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout, int *child_pid)
 	make_nonblocking (*pipe_stdout);
 
 	while (1) {
-		switch (buffer[0] = eazel_helper_response (*pipe_stdout)) {
+		buffer[0] = eazel_helper_response (*pipe_stdout);
+		trilobite_debug ("roothelper: state '0x%02X'", buffer[0]);
+		switch (buffer[0]) {
 		case '\0':
-			trilobite_debug ("roothelper: userhelper died (stdin: %d, stdout: %d, pid: %d",
+			trilobite_debug ("roothelper: userhelper died (stdin: %d, stdout: %d, pid: %d)",
 					 *pipe_stdin, *pipe_stdout, *child_pid);
 			err = TRILOBITE_ROOT_HELPER_NO_USERHELPER;
 			goto give_up;
