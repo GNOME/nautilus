@@ -229,8 +229,8 @@ display_selection_info (FMDirectoryView *view)
 	GList *selection;
 	GnomeVFSFileSize size;
 	guint count;
-	gchar *size_string, *msg;
 	GList *p;
+	gchar *first_item_name;
 	Nautilus_StatusRequestInfo sri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -239,37 +239,49 @@ display_selection_info (FMDirectoryView *view)
 	
 	count = 0;
 	size = 0;
+	first_item_name = NULL;
 	for (p = selection; p != NULL; p = p->next) {
 		GnomeVFSFileInfo *info;
 
 		info = p->data;
 		count++;
 		size += info->size;
+		if (first_item_name == NULL)
+			first_item_name = info->name;
 	}
 
 	g_list_free (selection);
 
-	if (count == 0) {
-	        memset(&sri, 0, sizeof(sri));
+	memset(&sri, 0, sizeof(sri));
+
+	if (count == 0) 
+	{
 	        sri.status_string = "";
-	        nautilus_view_frame_request_status_change 
-	        	(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
-		return;
+	}
+	else
+	{
+		gchar *size_string;
+
+		size_string = gnome_vfs_file_size_to_string (size);
+		if (count == 1)
+		{
+			g_assert (first_item_name != NULL && strlen (first_item_name) > 0);
+			
+			sri.status_string = g_strdup_printf (_("\"%s\" selected -- %s"), 
+							     first_item_name, 
+							     size_string);
+		}
+		else
+		{
+			sri.status_string = g_strdup_printf (_("%d items selected -- %s"), 
+							     count, 
+							     size_string);
+		}
+		g_free (size_string);
 	}
 
-	size_string = gnome_vfs_file_size_to_string (size);
-	if (count == 1)
-		msg = g_strdup_printf (_("1 item selected -- %s"), size_string);
-	else
-		msg = g_strdup_printf (_("%d items selected -- %s"), count, size_string);
-	g_free (size_string);
-
-	memset(&sri, 0, sizeof(sri));
-	sri.status_string = msg;
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
-
-        g_free (msg);
 }
 
 
