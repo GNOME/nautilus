@@ -1,3 +1,13 @@
+2001-02-26  Eric Fischer <eric@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_install_preflight):
+	Fix printf() format specifiers for installer->total_mb so
+	gcc -Wall will stop complaning that a long int is being
+	printed with a %d specifier.
+
 2001-02-26  John Harper  <jsh@eazel.com>
 
 	Fixed bug 6825 (nesting indent in tree panel too large,

@@ -805,7 +805,7 @@ eazel_install_progress (EazelInstall *service,
 	percent += 0.5;
 	gtk_progress_set_percentage (GTK_PROGRESS (progress_overall), percent);
 
-	temp = g_strdup_printf (_("Installing %d packages (%d MB)"), installer->total_packages, installer->total_mb);
+	temp = g_strdup_printf (_("Installing %d packages (%ld MB)"), installer->total_packages, installer->total_mb);
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 	g_free (temp);
 
@@ -1098,13 +1098,13 @@ eazel_install_preflight (EazelInstall *service,
 		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
 		} else {
-			temp = g_strdup_printf (_("Downloading 1 package (%d MB)"), installer->total_mb);
+			temp = g_strdup_printf (_("Downloading 1 package (%ld MB)"), installer->total_mb);
 		}
 	} else {
 		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling %d packages"), num_packages);
 		} else {
-			temp = g_strdup_printf (_("Downloading %d packages (%d MB)"),
+			temp = g_strdup_printf (_("Downloading %d packages (%ld MB)"),
                                                 num_packages, installer->total_mb);
 		}
 	}
