@@ -1,3 +1,28 @@
+2000-11-09  Darin Adler  <darin@eazel.com>
+
+	buddy: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	* libnautilus-extensions/nautilus-wait-until-ready.h:
+	Removed the last vestiges of the wait calls.
+
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	Add declarations for cancel calls (not yet implemented).
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(choose_application_hash), (choose_application_equal),
+	(choose_application_destroy), (choose_component_hash),
+	(choose_component_equal), (choose_component_destroy),
+	(choose_component_callback), (nautilus_choose_component_for_file),
+	(choose_application_callback),
+	(nautilus_choose_application_for_file): Change the
+	implementation to use call_when_ready instead of
+	wait_until_ready.
+
+	* src/file-manager/fm-directory-view.c:
+	Formatting tweaks.
+
 2000-11-09  Mathieu Lacage  <mathieu@eazel.com>
 
 	* docs/dnd.txt: doc about the dnd code.

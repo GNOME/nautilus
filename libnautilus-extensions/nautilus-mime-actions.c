@@ -1626,36 +1626,3 @@ strv_concat (char **a,
 
 	return result;
 }
-
-/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
-#include "nautilus-wait-until-ready.h"
-#include <gtk/gtkmain.h>
-
-static void
-wait_until_ready_callback (NautilusFile *file,
-			   gpointer callback_data)
-{
-	gboolean *data;
-	
-	data = callback_data; 
-	*data = TRUE;
-}
-
-void
-nautilus_mime_actions_wait_for_full_file_attributes (NautilusFile *file)
-{
-	GList *attributes;
-	gboolean callback_done;
-
-	callback_done = FALSE;
-
-	
-	attributes = nautilus_mime_actions_get_full_file_attributes ();
-	nautilus_file_call_when_ready
-		(file, attributes,
-		 wait_until_ready_callback, &callback_done);
-	g_list_free (attributes);
-	while (!callback_done) {
-		gtk_main_iteration ();
-	}
-}

@@ -3666,7 +3666,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 					      0);
 	} else {
 		nautilus_pop_up_context_menu (create_popup_menu 
-						(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
+					      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      0);

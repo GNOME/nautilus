@@ -36,24 +36,88 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
-/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
-#include "nautilus-wait-until-ready.h"
+typedef struct {
+	NautilusFile *file;
+	GtkWindow *parent_window;
+	NautilusApplicationChoiceCallback callback;
+	gpointer callback_data;
+} ChooseApplicationCallbackData;
+
+typedef struct {
+	NautilusFile *file;
+	GtkWindow *parent_window;
+	NautilusComponentChoiceCallback callback;
+	gpointer callback_data;
+} ChooseComponentCallbackData;
+
+static GHashTable *choose_application_hash_table, *choose_component_hash_table;
+
+static guint
+choose_application_hash (gconstpointer p)
+{
+	const ChooseApplicationCallbackData *data;
+
+	data = p;
+	return GPOINTER_TO_UINT (data->file)
+		^ GPOINTER_TO_UINT (data->callback)
+		^ GPOINTER_TO_UINT (data->callback_data);
+}
 
 static gboolean
-any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFile *file)
+choose_application_equal (gconstpointer a,
+			  gconstpointer b)
 {
-	gboolean result;
+	const ChooseApplicationCallbackData *data_a, *data_b;
 
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
+	data_a = a;
+	data_b = a;
+	return data_a->file == data_b->file
+		&& data_a->callback == data_b->callback
+		&& data_a->callback_data == data_b->callback_data;
+}
 
-	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		result = nautilus_mime_has_any_components_for_file (file);
-	} else {
-		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		result = nautilus_mime_has_any_applications_for_file (file);
+static void
+choose_application_destroy (ChooseApplicationCallbackData *choose_data)
+{
+	nautilus_file_unref (choose_data->file);
+	if (choose_data->parent_window != NULL) {
+		gtk_object_unref (GTK_OBJECT (choose_data->parent_window));
 	}
+	g_free (choose_data);
+}
 
-	return result;
+static guint
+choose_component_hash (gconstpointer p)
+{
+	const ChooseApplicationCallbackData *data;
+
+	data = p;
+	return GPOINTER_TO_UINT (data->file)
+		^ GPOINTER_TO_UINT (data->callback)
+		^ GPOINTER_TO_UINT (data->callback_data);
+}
+
+static gboolean
+choose_component_equal (gconstpointer a,
+			gconstpointer b)
+{
+	const ChooseApplicationCallbackData *data_a, *data_b;
+
+	data_a = a;
+	data_b = a;
+	return data_a->file == data_b->file
+		&& data_a->callback == data_b->callback
+		&& data_a->callback_data == data_b->callback_data;
+}
+
+static void
+choose_component_destroy (ChooseComponentCallbackData *choose_data)
+{
+	nautilus_file_unref (choose_data->file);
+	if (choose_data->parent_window != NULL) {
+		gtk_object_unref (GTK_OBJECT (choose_data->parent_window));
+	}
+	g_free (choose_data);
 }
 
 /**
@@ -91,7 +155,6 @@ set_up_program_chooser (NautilusFile *file,
 	return dialog;	
 }
 
-
 /**
  * nautilus_choose_component_for_file:
  * 
@@ -103,54 +166,102 @@ set_up_program_chooser (NautilusFile *file,
  * @callback: Callback called when choice has been made.
  * @callback_data: Parameter passed back when callback is called.
  */
+
+static void
+choose_component_callback (NautilusFile *file,
+			   gpointer callback_data)
+{
+	ChooseComponentCallbackData *choose_data;
+	NautilusViewIdentifier *identifier;
+	GnomeDialog *dialog;
+
+	choose_data = callback_data;
+
+	/* Remove from the hash table. */
+	g_assert (g_hash_table_lookup (choose_component_hash_table,
+				       choose_data) == choose_data);
+	g_hash_table_remove (choose_component_hash_table,
+			     choose_data);
+
+	/* The API uses a callback so we can do this non-modally in the future,
+	 * but for now we just use a modal dialog.
+	 */
+
+	identifier = NULL;
+	dialog = NULL;
+	if (nautilus_mime_has_any_components_for_file (file)) {
+		dialog = set_up_program_chooser (file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
+						 choose_data->parent_window);
+		if (gnome_dialog_run (dialog) == GNOME_OK) {
+			identifier = nautilus_program_chooser_get_component (dialog);
+		}
+	} else {
+		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
+								  file,
+								  choose_data->parent_window);
+	}
+	 
+	/* Call callback even if identifier is NULL, so caller can
+	 * free callback_data if necessary and present some cancel UI
+	 * if desired.
+	 */
+	(* choose_data->callback) (identifier, choose_data->callback_data);
+
+	if (dialog != NULL) {
+		/* Destroy only after callback, since view identifier will
+		 * be destroyed too.
+		 */
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}
+
+	choose_component_destroy (choose_data);
+}
+
 void
 nautilus_choose_component_for_file (NautilusFile *file,
 				    GtkWindow *parent_window,
 				    NautilusComponentChoiceCallback callback,
 				    gpointer callback_data)
 {
-	NautilusViewIdentifier *identifier;
-	GnomeDialog *dialog;
-	gboolean any_choices;
-	GnomeVFSMimeActionType action_type;
+	ChooseComponentCallbackData *choose_data;
+	GList *attributes;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
 	g_return_if_fail (callback != NULL);
 
-	action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
-
-	/* The API uses a callback so we can do this non-modally in the future,
-	 * but for now we just use a modal dialog.
+	/* Grab refs to the objects so they will still be around at
+	 * callback time.
 	 */
-	any_choices = any_programs_available_for_file (action_type, file);
-
-	identifier = NULL;
-	dialog = NULL;
-
-	if (any_choices) {
-		dialog = set_up_program_chooser (file, action_type, parent_window);
-
-		if (gnome_dialog_run (dialog) == GNOME_OK) {
-			identifier = nautilus_program_chooser_get_component (dialog);
-		}
-	} else {
-		nautilus_program_chooser_show_no_choices_message (action_type, file, parent_window);
+	nautilus_file_ref (file);
+	if (parent_window != NULL) {
+		gtk_object_ref (GTK_OBJECT (parent_window));
 	}
-	 
 
-	/* Call callback even if identifier is NULL, so caller can
-	 * free callback_data if necessary and present some cancel
-	 * UI if desired.
-	 */
-	(* callback) (identifier, callback_data);
+	/* Create data to pass through. */
+	choose_data = g_new (ChooseComponentCallbackData, 1);
+	choose_data->file = file;
+	choose_data->parent_window = parent_window;
+	choose_data->callback = callback;
+	choose_data->callback_data = callback_data;
 
-	if (any_choices) {
-		/* Destroy only after callback, since view identifier will
-		 * be destroyed too.
-		 */
-		g_assert (dialog != NULL);
-		gtk_widget_destroy (GTK_WIDGET (dialog));
+	/* Put pending entry into choose hash table. */
+	if (choose_component_hash_table == NULL) {
+		choose_component_hash_table = nautilus_g_hash_table_new_free_at_exit
+			(choose_component_hash,
+			 choose_component_equal,
+			 "choose component");
 	}
+	g_hash_table_insert (choose_component_hash_table,
+			     choose_data, choose_data);
+	
+	/* Do the rest of the work when the attributes are ready. */
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	nautilus_file_call_when_ready (file,
+				       attributes,
+				       choose_component_callback,
+				       choose_data);
+	g_list_free (attributes);
 }				    
 
 /**
@@ -164,55 +275,103 @@ nautilus_choose_component_for_file (NautilusFile *file,
  * @callback: Callback called when choice has been made.
  * @callback_data: Parameter passed back when callback is called.
  */
-void
-nautilus_choose_application_for_file (NautilusFile *file,
-				      GtkWindow *parent_window,
-				      NautilusApplicationChoiceCallback callback,
-				      gpointer callback_data)
+
+static void
+choose_application_callback (NautilusFile *file,
+			     gpointer callback_data)
 {
+	ChooseApplicationCallbackData *choose_data;
 	GnomeDialog *dialog;
 	GnomeVFSMimeApplication *application;
-	gboolean any_choices;
-	GnomeVFSMimeActionType action_type;
 
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-	g_return_if_fail (callback != NULL);
+	choose_data = callback_data;
 
-	action_type = GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+	/* Remove from the hash table. */
+	g_assert (g_hash_table_lookup (choose_application_hash_table,
+				       choose_data) == choose_data);
+	g_hash_table_remove (choose_application_hash_table,
+			     choose_data);
 
 	/* The API uses a callback so we can do this non-modally in the future,
 	 * but for now we just use a modal dialog.
 	 */
-	any_choices = any_programs_available_for_file (action_type, file);
-
 	application = NULL;
 	dialog = NULL;
 
-	if (any_choices) {
-		dialog = set_up_program_chooser 
-			(file, action_type, parent_window);
-
+	if (nautilus_mime_has_any_applications_for_file (file)) {
+		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
+						 choose_data->parent_window);
 		if (gnome_dialog_run (dialog) == GNOME_OK) {
 			application = nautilus_program_chooser_get_application (dialog);
 		}
 	} else {
-		nautilus_program_chooser_show_no_choices_message (action_type, file, parent_window);
+		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
+								  file,
+								  choose_data->parent_window);
 	}	 
 
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
 	 * UI if desired.
 	 */
-	(* callback) (application, callback_data);
+	(* choose_data->callback) (application, choose_data->callback_data);
 
-	if (any_choices) {
+	if (dialog != NULL) {
 		/* Destroy only after callback, since application struct will
 		 * be destroyed too.
 		 */
-		g_assert (dialog != NULL);
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
-}				    
+
+	choose_application_destroy (choose_data);
+}
+
+void
+nautilus_choose_application_for_file (NautilusFile *file,
+				      GtkWindow *parent_window,
+				      NautilusApplicationChoiceCallback callback,
+				      gpointer callback_data)
+{
+	ChooseApplicationCallbackData *choose_data;
+	GList *attributes;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
+	g_return_if_fail (callback != NULL);
+
+	/* Grab refs to the objects so they will still be around at
+	 * callback time.
+	 */
+	nautilus_file_ref (file);
+	if (parent_window != NULL) {
+		gtk_object_ref (GTK_OBJECT (parent_window));
+	}
+
+	/* Create data to pass through. */
+	choose_data = g_new (ChooseApplicationCallbackData, 1);
+	choose_data->file = file;
+	choose_data->parent_window = parent_window;
+	choose_data->callback = callback;
+	choose_data->callback_data = callback_data;
+
+	/* Put pending entry into choose hash table. */
+	if (choose_application_hash_table == NULL) {
+		choose_application_hash_table = nautilus_g_hash_table_new_free_at_exit
+			(choose_application_hash,
+			 choose_application_equal,
+			 "choose application");
+	}
+	g_hash_table_insert (choose_application_hash_table,
+			     choose_data, choose_data);
+	
+	/* Do the rest of the work when the attributes are ready. */
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	nautilus_file_call_when_ready (file,
+				       attributes,
+				       choose_application_callback,
+				       choose_data);
+	g_list_free (attributes);
+}
 
 /**
  * nautilus_launch_application:

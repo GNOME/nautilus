@@ -28,26 +28,32 @@
 
 #include "nautilus-file.h"
 #include "nautilus-view-identifier.h"
-
 #include <gtk/gtkwindow.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
+typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
+						   gpointer			  callback_data);
 typedef void (*NautilusComponentChoiceCallback)   (NautilusViewIdentifier 	 *identifier,
 						   gpointer		 	  callback_data);
-typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
-						   gpointer			  callback_data);						 
-void nautilus_choose_application_for_file     (NautilusFile                      *file,
-					       GtkWindow                         *parent_window,
-					       NautilusApplicationChoiceCallback  callback,
-					       gpointer                           callback_data);
-void nautilus_choose_component_for_file       (NautilusFile                      *file,
-					       GtkWindow                         *parent_window,
-					       NautilusComponentChoiceCallback    callback,
-					       gpointer                           callback_data);
-void nautilus_launch_application     	      (GnomeVFSMimeApplication           *application,
-					       const char                        *uri,
-					       GtkWindow                         *parent_window);
-void nautilus_launch_application_from_command (const char                        *command_string,
-					       const char                        *parameter);
+
+void nautilus_choose_application_for_file        (NautilusFile                      *file,
+						  GtkWindow                         *parent_window,
+						  NautilusApplicationChoiceCallback  callback,
+						  gpointer                           callback_data);
+void nautilus_cancel_choose_application_for_file (NautilusFile                      *file,
+						  NautilusComponentChoiceCallback    callback,
+						  gpointer                           callback_data);
+void nautilus_choose_component_for_file          (NautilusFile                      *file,
+						  GtkWindow                         *parent_window,
+						  NautilusComponentChoiceCallback    callback,
+						  gpointer                           callback_data);
+void nautilus_cancel_choose_component_for_file   (NautilusFile                      *file,
+						  NautilusComponentChoiceCallback    callback,
+						  gpointer                           callback_data);
+void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
+						  const char                        *uri,
+						  GtkWindow                         *parent_window);
+void nautilus_launch_application_from_command    (const char                        *command_string,
+						  const char                        *parameter);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */
