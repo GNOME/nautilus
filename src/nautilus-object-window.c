@@ -411,6 +411,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 static void
 nautilus_window_init (NautilusWindow *window)
 {
+  gtk_quit_add_destroy (1, GTK_OBJECT (window));
 }
 
 static gboolean

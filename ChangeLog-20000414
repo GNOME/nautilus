@@ -1,5 +1,9 @@
 2000-02-15  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-window.c (nautilus_window_init): gtk_quit_add_destroy
+	the NautilusWindow at level 1, so that we can clean up CORBA
+	objects and such when we Exit rather than Closing the last window.
+
 	* src/ntl-index-panel.c: sink and ref the notebook and unref in
 	the destructor, so it gets destroyed even if it never ends up
 	getting added to the index panel.
