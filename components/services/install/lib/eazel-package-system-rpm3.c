@@ -843,7 +843,7 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				      (GHFunc)(system->private->query_foreach),
 				      &pig);
 	} else {
-		(system->private->query_foreach) ((char*)dbpath, NULL, &pig);
+		(system->private->query_foreach) ((char*)dbpath, NULL, (gpointer)&pig);
 	}
 	eazel_package_system_rpm3_close_dbs (system);
 

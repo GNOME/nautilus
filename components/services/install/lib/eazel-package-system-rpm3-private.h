@@ -51,7 +51,7 @@ GList* eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 					EazelPackageSystemQueryEnum flag,
 					unsigned long detail_level);
 
-typedef void (*EazelPackageSystemRpmQueryForeach)(char *dbpath, gpointer db, gpointer *pig);
+typedef void (*EazelPackageSystemRpmQueryForeach)(char *dbpath, gpointer db, gpointer pig);
 
 struct RpmQueryPiggyBag {
 	EazelPackageSystemRpm3 *system;
