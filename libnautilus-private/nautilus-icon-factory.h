@@ -132,7 +132,8 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (const 
 									  const char                  *embedded_text,
 									  guint                        nominal_size,
 									  NautilusEmblemAttachPoints  *attach_points,
-									  gboolean                     wants_default);
+									  gboolean                     wants_default,
+									  char                       **display_name);
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.
@@ -145,7 +146,8 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (Nautil
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
 									  const char                  *modifer,
-									  guint                        size_in_pixels);
+									  guint                        size_in_pixels,
+									  char                       **display_name);
 
 GnomeIconTheme *       nautilus_icon_factory_get_icon_theme               (void);
 GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory        (void);

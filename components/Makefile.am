@@ -11,6 +11,7 @@ SUBDIRS = 					\
 	text 					\
 	throbber 				\
 	tree 					\
+	emblem					\
 	$(NULL)
 
 

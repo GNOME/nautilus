@@ -1268,7 +1268,8 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 					   const char                  *embedded_text,
 					   guint                        nominal_size,
 					   NautilusEmblemAttachPoints  *attach_points,
-					   gboolean                     wants_default)
+					   gboolean                     wants_default,
+					   char                       **display_name)
 {
 	NautilusIconFactory *factory;
 	CacheIcon *cached_icon;
@@ -1293,6 +1294,15 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 			}
 		} else {
 			attach_points->num_points = 0;
+		}
+	}
+
+	if (display_name != NULL) {
+		if (cached_icon->icon_data != NULL &&
+		    cached_icon->icon_data->display_name != NULL) {
+			*display_name = g_strdup (cached_icon->icon_data->display_name);
+		} else {
+			*display_name = NULL;
 		}
 	}
 	
@@ -1396,7 +1406,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, modifier,
 							    embedded_text,
 							    size_in_pixels,
-							    NULL, TRUE);
+							    NULL, TRUE, NULL);
 	
 	g_free (icon);
 
@@ -1407,12 +1417,13 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 					    const char *modifier,
-					    guint size_in_pixels)
+					    guint size_in_pixels,
+					    char **display_name)
 {
 	return nautilus_icon_factory_get_pixbuf_for_icon (icon_name, modifier,
 							  NULL,
 							  size_in_pixels,
-							  NULL, TRUE);
+							  NULL, TRUE, display_name);
 }
 									  
 GdkPixbuf *

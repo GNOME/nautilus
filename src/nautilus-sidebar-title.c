@@ -367,7 +367,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 
 	pixbuf = NULL;
 	if (icon_name != NULL && icon_name[0] != '\0') {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, NULL);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
@@ -577,7 +577,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data, NULL, NULL,
 			 NAUTILUS_ICON_SIZE_STANDARD,
-			 NULL, FALSE);
+			 NULL, FALSE, NULL);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			g_object_unref (pixbuf);

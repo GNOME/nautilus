@@ -217,7 +217,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon, NULL, NULL, 
-		 icon_size, NULL, TRUE);
+		 icon_size, NULL, TRUE, NULL);
 	
 	g_free (icon);
 	

@@ -3939,7 +3939,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 embedded_text,
 		 icon_size,
 		 &attach_points,
-		 TRUE);
+		 TRUE, NULL);
 	
 	g_free (icon_name);
 
@@ -3971,7 +3971,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 NULL,
 			 MIN (icon_size, MAXIMUM_EMBLEM_SIZE),
 			 NULL,
-			 FALSE);
+			 FALSE, NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);

@@ -289,6 +289,13 @@ AC_SUBST(MUSIC_COMPONENT_CFLAGS)
 MUSIC_COMPONENT_LIBS="`$PKG_CONFIG --libs $MUSIC_COMPONENT_MODULES`"
 AC_SUBST(MUSIC_COMPONENT_LIBS)
 
+dnl emblems component
+EMBLEM_COMPONENT_MODULES="$COMPONENT_MODULES librsvg-2.0"
+EMBLEM_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $EMBLEM_COMPONENT_MODULES`"
+AC_SUBST(EMBLEM_COMPONENT_CFLAGS)
+EMBLEM_COMPONENT_LIBS="`$PKG_CONFIG --libs $EMBLEM_COMPONENT_MODULES`"
+AC_SUBST(EMBLEM_COMPONENT_LIBS)
+
 DISABLE_DEPRECATED_CFLAGS=" \
 	-DG_DISABLE_DEPRECATED \
 	-DGDK_DISABLE_DEPRECATED \
@@ -344,6 +351,7 @@ components/text/Makefile
 components/text/services/Makefile
 components/throbber/Makefile
 components/tree/Makefile
+components/emblem/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/gimphwrapbox/Makefile

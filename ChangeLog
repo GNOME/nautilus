@@ -1,3 +1,27 @@
+2002-10-04  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Add display_name argument to nautilus_icon_factory_get_pixbuf_for_icon
+	and nautilus_icon_factory_get_pixbuf_from_name.
+	
+	* libnautilus-private/nautilus-bookmark.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* src/nautilus-sidebar-title.c:
+	Fix up according to change above
+	
+	* components/emblem/Makefile.am:
+	* components/emblem/Nautilus_View_emblem.server.in.in:
+	* components/emblem/libmain.c: (emblem_shlib_make_object):
+	* components/emblem/nautilus-emblem-view-iids.h:
+	* components/emblem/nautilus-emblem-view.c:
+	New emblem sidebar from James Willcox <jwillcox@gnome.org>,
+	with some changes by me.
+
+2002-10-02  James Willcox  <jwillcox@gnome.org>
+
+	* components/Makefile.am:  Added emblems component
+	* configure.in:  same
+
 2002-10-02  Mark McLoughlin  <mark@skynet.ie>
 
 	* acconfig.h: define HAVE_GTK_MULTIHEAD for
