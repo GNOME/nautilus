@@ -505,10 +505,12 @@ nautilus_list_initialize (NautilusList *list)
 			    					    emit_selection_changed,
 			    					    list);
 
+	gtk_widget_push_composite_child ();
 	list->details->title = GTK_WIDGET (nautilus_list_column_title_new());
+	gtk_widget_pop_composite_child ();
 
 	list->details->type_select_pattern = NULL;
-	list->details->last_typeselect_time = 0LL;
+	list->details->last_typeselect_time = G_GINT64_CONSTANT(0);
 }
 
 static void
@@ -1235,7 +1237,7 @@ nautilus_list_flush_typeselect_state (NautilusList *list)
 {
 	g_free (list->details->type_select_pattern);
 	list->details->type_select_pattern = NULL;
-	list->details->last_typeselect_time = 0LL;
+	list->details->last_typeselect_time = G_GINT64_CONSTANT(0);
 }
 
 enum {
@@ -1440,11 +1442,11 @@ nautilus_list_realize (GtkWidget *widget)
 
 	nautilus_list_setup_style_colors (list);
 
-	if (clist->title_window) {
+	if (list->details->title) {
 		gtk_widget_set_parent_window (list->details->title, clist->title_window);
+		gtk_widget_set_parent (list->details->title, GTK_WIDGET (clist));
+		gtk_widget_show (list->details->title);
 	}
-	gtk_widget_set_parent (list->details->title, GTK_WIDGET (clist));
-	gtk_widget_show (list->details->title);
 
 	/* make us the focused widget */
         g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));

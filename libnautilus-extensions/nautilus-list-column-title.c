@@ -32,6 +32,7 @@
 #include "nautilus-list.h"
 
 #include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkmain.h>
 
@@ -57,7 +58,7 @@ enum {
 	DRAG_WIDTH = 6
 };
 
-static char * down_xpm[] = {
+static const char * down_xpm[] = {
 	"6 5 2 1",
 	" 	c None",
 	".	c #000000",
@@ -68,7 +69,7 @@ static char * down_xpm[] = {
 	"  ..  "
 };
 
-static char * up_xpm[] = {
+static const char * up_xpm[] = {
 	"6 5 2 1",
 	" 	c None",
 	".	c #000000",
@@ -87,8 +88,10 @@ struct NautilusListColumnTitleDetails
  	GdkGC *copy_area_gc;
 
  	/* sort order indicator pixmaps, lazily allocated */
- 	GnomePixmap *up_indicator;
- 	GnomePixmap *down_indicator;
+	GdkPixmap *up_indicator_pixmap;
+	GdkBitmap *up_indicator_mask;
+	GdkPixmap *down_indicator_pixmap;
+	GdkBitmap *down_indicator_mask;
 
 	/* offscreen drawing support */
 	/* FIXME bugzilla.eazel.com 614: 
@@ -167,8 +170,10 @@ nautilus_list_column_title_initialize (gpointer object, gpointer klass)
 
 	/* copy_gc, up/down indicators get allocated lazily when needed */
 	column_title->details->copy_area_gc = NULL;
-	column_title->details->up_indicator = NULL;
-	column_title->details->down_indicator = NULL;
+	column_title->details->up_indicator_pixmap = NULL;
+	column_title->details->up_indicator_mask = NULL;
+	column_title->details->down_indicator_pixmap = NULL;
+	column_title->details->down_indicator_mask = NULL;
 	column_title->details->offscreen_widget = NULL;
 	column_title->details->offscreen_pixmap = NULL;
 	column_title->details->offscreen_blitting_gc = NULL;
@@ -229,11 +234,21 @@ nautilus_list_column_title_finalize (GtkObject *object)
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(object);
 
-	if (column_title->details->up_indicator != NULL) {
-		gtk_widget_destroy (GTK_WIDGET (column_title->details->up_indicator));
+	if (column_title->details->up_indicator_pixmap != NULL) {
+		gdk_pixmap_unref (column_title->details->up_indicator_pixmap);
+		column_title->details->up_indicator_pixmap = NULL;
+
+		g_assert (column_title->details->up_indicator_mask != NULL);
+		gdk_bitmap_unref (column_title->details->up_indicator_mask);
+		column_title->details->up_indicator_mask = NULL;
 	}
-	if (column_title->details->down_indicator != NULL) {
-		gtk_widget_destroy (GTK_WIDGET (column_title->details->down_indicator));
+	if (column_title->details->down_indicator_pixmap != NULL) {
+		gdk_pixmap_unref (column_title->details->down_indicator_pixmap);
+		column_title->details->down_indicator_pixmap = NULL;
+
+		g_assert (column_title->details->down_indicator_mask != NULL);
+		gdk_bitmap_unref (column_title->details->down_indicator_mask);
+		column_title->details->down_indicator_mask = NULL;
 	}
 
 	if (column_title->details->offscreen_widget != NULL) {
@@ -295,34 +310,70 @@ get_column_frame_at(GtkWidget *column_title, int index, GdkRectangle *result)
 	parent_clist = GTK_CLIST (column_title->parent);
 
 	*result = parent_clist->column_title_area;
-	result->x = parent_clist->hoffset + parent_clist->column[index].area.x - COLUMN_INSET;
+	result->x = parent_clist->column[index].area.x - COLUMN_INSET;
 	result->y = 0;
 	result->width = parent_clist->column[index].area.width
 			+ CELL_SPACING + 2 * COLUMN_INSET - 1;
 }
 
-static GnomePixmap *
-get_sort_indicator (GtkWidget *widget, gboolean ascending)
+static void
+load_up_indicator (const char **xpm_data,
+		   GdkPixmap **indicator_pixmap, GdkBitmap **indicator_mask)
+{
+	GdkPixbuf *pixbuf;
+
+	/* sanity */
+	*indicator_pixmap = NULL;
+	*indicator_mask = NULL;
+
+	pixbuf = gdk_pixbuf_new_from_xpm_data (xpm_data);
+
+	/* can't load, theoretically, we should always be able to load,
+	 * but we'll be a good coder and catch possible errors */
+	if (pixbuf == NULL) {
+		g_warning ("Cannot load up/down indicator, should never happen");
+		return;
+	}
+
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, indicator_pixmap, indicator_mask, 127);
+
+	gdk_pixbuf_unref (pixbuf);
+}
+
+static void
+get_sort_indicator (GtkWidget *widget, gboolean ascending,
+		    GdkPixmap **indicator_pixmap, GdkBitmap **indicator_mask)
 {
 	/* return the sort order pixmap for a given sort direction
 	 * allocate the pixmap first time around
 	 */
 	NautilusListColumnTitle *column_title;
 
+	g_return_if_fail (indicator_pixmap != NULL);
+	g_return_if_fail (indicator_mask != NULL);
+
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 
 	if (ascending) {
-		if (column_title->details->up_indicator == NULL) {
-			column_title->details->up_indicator = 
-				GNOME_PIXMAP (gnome_pixmap_new_from_xpm_d (up_xpm));
+		if (column_title->details->up_indicator_pixmap == NULL) {
+			g_assert (column_title->details->up_indicator_mask == NULL);
+
+			load_up_indicator (up_xpm,
+					   &column_title->details->up_indicator_pixmap,
+					   &column_title->details->up_indicator_mask);
 		}
-		return column_title->details->up_indicator;
+		*indicator_pixmap = column_title->details->up_indicator_pixmap;
+		*indicator_mask = column_title->details->up_indicator_mask;
 	} else {
-		if (column_title->details->down_indicator == NULL) {
-			column_title->details->down_indicator = 
-				GNOME_PIXMAP (gnome_pixmap_new_from_xpm_d (down_xpm));
+		if (column_title->details->down_indicator_pixmap == NULL) {
+			g_assert (column_title->details->down_indicator_mask == NULL);
+
+			load_up_indicator (down_xpm,
+					   &column_title->details->down_indicator_pixmap,
+					   &column_title->details->down_indicator_mask);
 		}
-		return column_title->details->down_indicator;
+		*indicator_pixmap = column_title->details->down_indicator_pixmap;
+		*indicator_mask = column_title->details->down_indicator_mask;
 	}
 }
 
@@ -404,17 +455,21 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 		int text_x_offset;
 		int text_x_available_end;
 		int sort_indicator_x_offset;
-		GnomePixmap *sort_indicator;
+		GdkPixmap *sort_indicator_pixmap;
+		GdkBitmap *sort_indicator_mask;
 		gboolean right_justified;
 
 		sort_indicator_x_offset = 0;
-		sort_indicator = NULL;
+		sort_indicator_pixmap = NULL;
+		sort_indicator_mask = NULL;
 		right_justified = (parent_clist->column[index].justification == GTK_JUSTIFY_RIGHT);
 
 		/* pick the ascending/descending sort indicator if needed */
 		if (index == parent_clist->sort_column) {
-			sort_indicator = get_sort_indicator (widget, 
-				parent_clist->sort_type == GTK_SORT_ASCENDING);
+			get_sort_indicator (widget, 
+				parent_clist->sort_type == GTK_SORT_ASCENDING,
+				&sort_indicator_pixmap,
+				&sort_indicator_mask);
 		}
 		
 		get_column_frame_at (widget, index, &cell_rectangle);
@@ -449,7 +504,7 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 
 
 		/* Draw the sort indicator if needed */
-		if (sort_indicator != NULL) {
+		if (sort_indicator_pixmap != NULL) {
 			int y_offset;
 
 			if (right_justified) {
@@ -471,18 +526,19 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			}
 			/* move the pixmap clip mask and origin to the right spot in the gc */
 			gdk_gc_set_clip_mask (column_title->details->copy_area_gc, 
-					      sort_indicator->mask);
+					      sort_indicator_mask);
 			gdk_gc_set_clip_origin (column_title->details->copy_area_gc, sort_indicator_x_offset, y_offset);
 
 
 			gdk_draw_pixmap (target_drawable, column_title->details->copy_area_gc, 
-					 sort_indicator->pixmap, 0, 0, sort_indicator_x_offset, y_offset, 
+					 sort_indicator_pixmap, 0, 0, sort_indicator_x_offset, y_offset, 
 					 -1, -1);
 		}
 			
 		if (cell_label) {
 			char *truncated_label;
 			int truncanted_width;
+			GdkRectangle temporary;
 
 			/* Extend the redraw area vertically to contain the entire cell 
 			 * -- seems like if I don't do this, for short exposed areas no text
@@ -496,7 +552,10 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			/* Clip a little more than the cell rectangle to
 			 * not have the text draw over the cell broder.
 			 */
-			nautilus_rectangle_inset (&cell_redraw_area, 2, 2);
+			temporary = cell_rectangle;
+			/* Eeeek: magic numbers */
+			nautilus_rectangle_inset (&temporary, 2, 2);
+			gdk_rectangle_intersect (&cell_redraw_area, &temporary, &cell_redraw_area);
 
 			truncated_label = truncate_string (cell_label, widget->style->font, 
 				text_x_available_end - text_x_offset, &truncanted_width);

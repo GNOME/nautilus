@@ -1,3 +1,30 @@
+Mon Aug 07 00:31:50 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extensions/nautilus-glib-extensions.c
+	  (nautilus_get_system_time):  use G_GINT64_CONSTANT instead of LL
+	  to be more "alpha clean"
+
+	* libnautilus-extensions/nautilus-list-column-title.c
+	  (nautilus_list_column_title_initialize)
+	  (nautilus_list_column_title_finalize) (get_column_frame_at)
+	  (load_up_indicator) (get_sort_indicator)
+	  (nautilus_list_column_title_paint):  Don't use GnomePixmap just
+	  for loading pixmaps, this doesn't work always (read doesn't work
+	  on my machine), plus it's a horrible hack.  Use GdkPixbuf to load
+	  up the sort indicator pixmaps.  The title_window of the clist
+	  scrolls itself horizontally, so don't add the horizontal scroll
+	  again during painting.  Fix text not always redrawing some 2 pixel
+	  stripes because we were clipping the redrawing rectangle rather
+	  then only the outside of the cell.
+
+	* libnautilus-extensions/nautilus-list.c (nautilus_list_initialize)
+	  (nautilus_list_flush_typeselect_state) (nautilus_list_realize):
+	  use G_GINT64_CONSTANT instead of LL.  Use
+	  gtk_widget_push/pop_composite_child when creating the column title
+	  Check existance of list->details->title rather then
+	  clist->title_window when adding it to clist->title_window as
+	  clist->title_window will always exist.
+
 2000-08-06  Mathieu Lacage <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-bar-criterion.c:

@@ -562,7 +562,7 @@ nautilus_get_system_time (void)
 {
 	struct timeval tmp;
 	gettimeofday (&tmp, NULL);
-	return (gint64)tmp.tv_usec + ((gint64)tmp.tv_sec) * 1000000LL;
+	return (gint64)tmp.tv_usec + ((gint64)tmp.tv_sec) * G_GINT64_CONSTANT(1000000);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
