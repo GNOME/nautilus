@@ -168,11 +168,11 @@ create_properties_window (NautilusFile *file)
 		gtk_object_set_data (GTK_OBJECT (button),
 				     "nautilus_property_name",
 				     (char *) property_names[i]);
-		
-		gtk_object_set_data (GTK_OBJECT (button),
+		nautilus_file_ref (file);
+		gtk_object_set_data_full (GTK_OBJECT (button),
 					  "nautilus_file",
-					  file);
-		
+					  file,
+					  (GtkDestroyNotify) nautilus_file_unref);
 		gtk_signal_connect (GTK_OBJECT (button),
 				    "toggled",
 				    property_button_toggled,

@@ -1,4 +1,11 @@
+2000-03-12  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-properties-window.c (create_properties_window):
+	Andy fixed a double-unref bug by removing an unref. The correct
+	fix was to add a ref. I rolled out his change and re-fixed the bug.
+
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+	
 	* libnautilus/nautilus-global-preferences.c,
 	* libnautilus/nautilus-global-preferences.h:
 	(nautilus_global_preferences_get_meta_view_iids) Add a table of
@@ -268,7 +275,7 @@
 	  src/ntl-prefs.c,
 	  src/ntl-prefs.h:
 	Moved prefs widegtry things to nautilus-widgets.
-	
+
 2000-03-10  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/Makefile.am,
