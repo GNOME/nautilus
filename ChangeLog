@@ -1,3 +1,69 @@
+2000-10-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	This introduces the problem thingy to libeazelinstall. A set of
+	funcs that can create humanreadable descriptions of a installation
+	failure, plus repair descriptions and even better, automagically
+	execute them. Basically this is all the RepairCase related crap
+	from the bootstrap installer.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper), (install_failed), (delete_files), (done), (main):
+	Use the new problem thingy
+	
+	* components/services/install/lib/Makefile.am:
+	Added the .c and .h file for the problem thingy
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_existing_packages):
+	Loads of debug output in the case that people kept nagging me
+	about. If they still don't get that this is a known problem, they
+	must be blind.
+	
+	* components/services/install/lib/eazel-install-problem.h:
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_required_name), (get_detailed_messages_foreach),
+	(compare_problem_case), (add_case), (add_force_install_both_case),
+	(add_force_remove_case), (add_remove_case), (add_update_case),
+	(get_detailed_cases_foreach),
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_case_foreach_to_string),
+	(eazel_install_problem_case_foreach_destroy),
+	(eazel_install_problem_case_new),
+	(eazel_install_problem_case_destroy),
+	(eazel_install_problem_case_list_destroy),
+	(eazel_install_problem_new), (eazel_install_problem_finalize),
+	(eazel_install_problem_class_initialize),
+	(eazel_install_problem_initialize),
+	(eazel_install_problem_get_type), (problem_step_foreach_remove),
+	(eazel_install_problem_step), (eazel_install_problem_tree_to_case),
+	(eazel_install_problem_tree_to_string),
+	(eazel_install_problem_cases_to_string),
+	(find_dominant_problem_type), (find_problems_of_type),
+	(find_dominant_problems), (build_categories_from_problem_list),
+	(eazel_install_problem_handle_cases):
+	The problem thingy.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings),
+	(eazel_install_prepare_rpm_system):
+	Set rpm debug if debug==TRUE, also fixed a debug message
+	reg. cannot open rpm db.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+	Allocate the problem thingy.
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+	
+	* nautilus-installer/src/installer.c: (get_required_name):
+	Used the samen get_required_name as the problem thingy
+	
+	* nautilus-installer/src/prescript:
+	Removed the hack that we inserted for bug night.
+
 2000-10-26  Robey Pointer  <robey@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-change-password-

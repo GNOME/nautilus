@@ -1388,7 +1388,12 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			trilobite_debug ("there are %d existing packages called %s",
 					 g_list_length (existing_packages),
 					 pack->name);
+			trilobite_debug ("*********************************************************");
 			trilobite_debug ("This is a bad bad case, see bug 3511");
+			trilobite_debug ("To circumvent this problem, as root, execute this command");
+			trilobite_debug ("(which is dangerous by the way....)");
+			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
+			trilobite_debug ("Or wait for the author to fix bug 3511");
 			/* FIXME bugzilla.eazel.com: 3511 */
 			g_assert_not_reached ();
 		}

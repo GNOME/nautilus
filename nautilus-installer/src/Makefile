@@ -159,12 +159,8 @@ l =
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)/libnautilus-extensions		 		-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
+INCLUDES =  	-I$(top_srcdir)/libnautilus-extensions		 		-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				-DEAZEL_INSTALL_NO_CORBA					-DEAZEL_INSTALL_SLIM						-DNO_TEXT_BOX							$(NULL)
 
-
-CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
-
-CFLAGS = -g
 
 bin_PROGRAMS = eazel-installer
 
@@ -182,6 +178,7 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
+CPPFLAGS = 
 LDFLAGS = 
 LIBS = 
 eazel_installer_OBJECTS =  main.o support.o callbacks.o proxy.o \
@@ -193,6 +190,7 @@ $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
 $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a \
 $(top_builddir)/libnautilus-extensions/nautilus-druid.o \
 $(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o
+CFLAGS = 	-Wall 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes 	-Wnested-externs -Wpointer-arith 	-Werror 	-gdwarf-2 -O
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)

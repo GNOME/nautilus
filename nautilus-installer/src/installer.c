@@ -1151,17 +1151,26 @@ static char *
 get_required_name (const PackageData *pack)
 {
 	char *result = NULL;
-	char *temp, *temp2;
 
 	if (pack==NULL) {
 		result = NULL;
 	} else if (pack->name && pack->version) {
-		if (strstr (pack->version, "EazelSourceSnapshot") != NULL) {
+		/* This is a hack to shorten EazelSourceSnapshot names
+		   into the build date/time */
+		if (strstr (pack->version, "EazelSourceSnapshot.2000") != NULL) {
+			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+					 "Sep", "Oct", "Nov", "Dec"};
+			char *temp, *temp2;
+			int mo, da, ho, mi;
 			/* this crap is too long to display ! */
 			temp = g_strdup (pack->version);
-			temp2 = strstr (temp, "EazelSourceSnapshot");
+			temp2 = strstr (temp, "EazelSourceSnapshot.2000");
 			strcpy (temp2, "ESS");
-			result = g_strdup_printf ("%s v%s", pack->name, temp);
+			temp2 += strlen ("EazelSourceSnapshot.2000");
+			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
+			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
+						  pack->name,
+						  da, month[mo-1], ho, mi);
 			g_free (temp);
 		} else {
 			result = g_strdup_printf ("%s v%s", pack->name, pack->version);

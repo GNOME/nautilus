@@ -1044,8 +1044,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out;
-	int			tries;
-	char			*tmpdir;
 
 	host = g_strdup (INSTALL_HOST);
 	port = INSTALL_PORT;
@@ -1084,6 +1082,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	CORBA_exception_init (&ev);
 	view->details->installer = eazel_install_callback_new ();
+	view->details->problem = eazel_install_problem_new ();
 	view->details->root_client = set_root_client (eazel_install_callback_bonobo (view->details->installer), view);
 	service = eazel_install_callback_corba_objref (view->details->installer);
 	Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
@@ -1092,22 +1091,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
 	/* attempt to create a directory we can use */
-#define RANDCHAR ('A' + (rand () % 23))
-	srand (time (NULL));
-	for (tries = 0; tries < 50; tries++) {
-		tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
-					  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
-					  RANDCHAR, RANDCHAR, (rand () % 1000));
-		if (mkdir (tmpdir, 0700) == 0) {
-			break;
-		}
-		g_free (tmpdir);
-	}
-	if (tries == 50) {
-		g_error (_("Cannot create temporary directory"));
-		nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
-	}
-	Trilobite_Eazel_Install__set_tmp_dir (service, tmpdir, &ev);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_downloading), view);

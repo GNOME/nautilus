@@ -88,7 +88,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	service->private->packsys.rpm.problem_filters = problem_filters;
 
 	if (eazel_install_get_debug (service)) {
-		/* rpmSetVerbosity (RPMMESS_DEBUG); */
+		rpmSetVerbosity (RPMMESS_DEBUG);
 	}
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
@@ -308,7 +308,8 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 		root_dir = (char*)iterator->data;
 		
 		if (rpmdbOpen (root_dir, &db, O_RDONLY, 0644)) {
-			g_warning (_("RPM package database query failed !"));
+			trilobite_debug ("Opening packages database in %s failed", root_dir);
+			trilobite_debug ("(first time)");
 		} else {			
 			if (db) {
 				trilobite_debug (_("Opened packages database in %s"), root_dir);

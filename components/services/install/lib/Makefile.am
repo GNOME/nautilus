@@ -3,6 +3,7 @@ NULL =
 INCLUDES = \
 	-DPREFIX=\"$(prefix)\" 					\
 	-DG_LOG_DOMAIN=\"trilobite-eazel-install-service\"	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\
@@ -36,6 +37,7 @@ noinst_HEADERS = \
 	eazel-install-xml-package-list.h	\
 	eazel-install-private.h			\
 	eazel-install-corba-callback.h		\
+	eazel-install-problem.h			\
 	$(NULL)
 
 libeazelinstallincludedir=$(includedir)/eazel-install
@@ -60,6 +62,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\
+	eazel-install-problem.c			\
 	$(NULL)
 
 libeazelinstall_la_LDFLAGS = \

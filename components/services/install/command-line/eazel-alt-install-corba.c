@@ -30,6 +30,7 @@
 #include <eazel-install-types.h>
 #include <eazel-install-corba-types.h>
 #include <eazel-install-corba-callback.h>
+#include <eazel-install-problem.h>
 
 #include <libtrilobite/libtrilobite.h>
 #include <trilobite-eazel-install.h>
@@ -77,6 +78,8 @@ char    *arg_server,
 
 CORBA_ORB orb;
 CORBA_Environment ev;
+
+GList *cases = NULL;
 
 static const struct poptOption options[] = {
 	{"debug", '0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
@@ -353,11 +356,11 @@ tree_helper (EazelInstallCallback *service,
 			 rpmname_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s%s%s %s(status %d)\n", 
+		fprintf (stdout, "%s%s%s %s(status %s)\n", 
 			 indent,  indent_type,
 			 rpmname_from_packagedata (pd),
 			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed " : "",
-			 pd->status);
+			 packagedata_status_enum_to_str (pd->status));
 		break;
 	}
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {		
@@ -386,12 +389,38 @@ tree_helper (EazelInstallCallback *service,
  */
 static void
 install_failed (EazelInstallCallback *service,
-		const PackageData *pd,		
-		gpointer unused)
+		const PackageData *pd,
+		EazelInstallProblem *problem)
 {
 	char *title;
+	GList *stuff = NULL;	
+
 	title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
 	tree_helper (service, pd, "", "", 4, title);
+	fprintf (stdout, "\n");
+
+	if (problem) {
+		stuff = eazel_install_problem_tree_to_string (problem, pd);
+		if (stuff) {
+			GList *it;
+			for (it = stuff; it; it = g_list_next (it)) {
+				fprintf (stdout, "%s\n", (char*)(it->data));
+			}
+		}
+		
+		eazel_install_problem_tree_to_case (problem, pd, &cases);
+		stuff = eazel_install_problem_cases_to_string (problem, cases);
+		if (cases) {
+			stuff = eazel_install_problem_cases_to_string (problem, cases);
+			if (stuff) {
+				GList *it;
+				for (it = stuff; it; it = g_list_next (it)) {
+					fprintf (stdout, "Solution : %s\n", (char*)(it->data));
+			}
+			}
+		}
+	}
+	
 	g_free (title);
 }
 
@@ -506,21 +535,43 @@ create_package (char *name)
 }
 
 static gboolean
-delete_files (EazelInstallCallback *service, gpointer unused)
+delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 {
-	char answer[10];
+	char answer[128];
+	gboolean ask_delete = FALSE;
 
-	printf ("should i delete the RPM files? (y/n) ");
-	fflush (stdout);
-
-	fgets (answer, 10, stdin);
-	if (answer[0] == 'y' || answer[0] == 'Y') {
-		printf ("you said: YES\n");
+	if (cases) {
+		printf ("continue? (y/n) ");
 		fflush (stdout);
-		return TRUE;
+		
+		fgets (answer, 10, stdin);
+		if (answer[0] == 'y' || answer[0] == 'Y') {
+			printf ("you said: YES\n");
+			fflush (stdout);
+			eazel_install_problem_handle_cases (problem, service, &cases, arg_root);
+		} else {
+			eazel_install_problem_case_list_destroy (cases);
+			cases = NULL;
+			printf ("you said: NO\n");
+			fflush (stdout);
+			ask_delete = TRUE;
+		}		
+	} 
+
+	if (ask_delete) {
+		printf ("should i delete the RPM files? (y/n) ");
+		fflush (stdout);
+		
+		fgets (answer, 10, stdin);
+		if (answer[0] == 'y' || answer[0] == 'Y') {
+			printf ("you said: YES\n");
+			fflush (stdout);
+			return TRUE;
+		} else {
+			printf ("you said: NO\n");
+			fflush (stdout);
+		}
 	}
-	printf ("you said: NO\n");
-	fflush (stdout);
 	return FALSE;
 }
 
@@ -530,7 +581,9 @@ done (EazelInstallCallback *service,
       gpointer unused)
 {
 	fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
-	gtk_main_quit ();
+	if (cases == NULL) {
+		gtk_main_quit ();
+	}
 }
 
 static char *
@@ -574,6 +627,7 @@ int main(int argc, char *argv[]) {
 	char *str;
 	GList *strs;
 	EazelInstallCallback *cb;		
+	EazelInstallProblem *problem = NULL;
 
 	CORBA_exception_init (&ev);
 
@@ -622,6 +676,8 @@ int main(int argc, char *argv[]) {
 	bonobo_activate ();
 	
 	cb = eazel_install_callback_new ();
+	problem = eazel_install_problem_new (); 
+	gtk_object_ref (GTK_OBJECT (problem));
 
 	if (arg_delay) {
 		sleep (10);
@@ -645,13 +701,13 @@ int main(int argc, char *argv[]) {
 			    "");
 	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", 
 			    GTK_SIGNAL_FUNC (install_failed), 
-			    NULL);
+			    problem);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", 
 			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
 			    "Uninstalling");
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", 
 			    GTK_SIGNAL_FUNC (uninstall_failed), 
-			    NULL);
+			    problem);
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", 
 			    GTK_SIGNAL_FUNC (download_failed), 
 			    NULL);
@@ -660,7 +716,7 @@ int main(int argc, char *argv[]) {
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", 
 			    GTK_SIGNAL_FUNC (delete_files), 
-			    NULL);
+			    problem);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", 
 			    GTK_SIGNAL_FUNC (done), 
 			    NULL);
@@ -719,15 +775,15 @@ int main(int argc, char *argv[]) {
 	} else {
 		eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
 	}
-
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	
 	if (!arg_query) {
 		gtk_main ();
 	}
 
-	eazel_install_callback_unref (GTK_OBJECT (cb));
+	categorydata_list_destroy (categories);
 
+	eazel_install_callback_unref (GTK_OBJECT (cb));
+	gtk_object_unref (GTK_OBJECT (problem));
 	/* Corba cleanup */
 	CORBA_exception_free (&ev);
        

@@ -19,10 +19,5 @@ if test $UID -ne 0; then
     xhost + localhost
     su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
     xhost - localhost
-# hack for the bugnight!
-    if test -f /h/public/bin/eazel-trilobite-configure.pl; then
-	echo Configuring services to gegl
-	/h/public/bin/eazel-trilobite-configure.pl gegl
-    fi
     exit
 fi

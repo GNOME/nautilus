@@ -28,6 +28,7 @@
 #include <eazel-install-types.h>
 #include <eazel-install-corba-types.h>
 #include <eazel-install-corba-callback.h>
+#include <eazel-install-problem.h>
 #include "libtrilobite/libtrilobite.h"
 
 typedef struct _NautilusServiceInstallView NautilusServiceInstallView;
@@ -67,8 +68,7 @@ struct _NautilusServiceInstallViewDetails {
 	GList		*message_right;
 	GtkWidget       *current_feedback_text;
 	GtkWidget       *current_progress_bar;
-	EazelInstallCallback *installer;
-	TrilobiteRootClient *root_client;
+
 	char		*current_rpm;
 	int		current_package;
 	char		*remembered_password;
@@ -77,6 +77,10 @@ struct _NautilusServiceInstallViewDetails {
 	int		using_local_file;
 	gboolean	failure;
 	gboolean	cancelled;
+
+	EazelInstallCallback *installer;
+	EazelInstallProblem *problem;
+	TrilobiteRootClient *root_client;
 	
 	/* Crude fix for 
 	   FIXME bugzilla.eazel.com 3431
