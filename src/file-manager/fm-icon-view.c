@@ -54,10 +54,10 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <locale.h>
-#include <esd.h>
 #include <signal.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -172,7 +172,6 @@ static const SortCriterion sort_criteria[] = {
 
 /* some state variables used for sound previewing */
 
-static pid_t mp3_pid = 0;
 static int timeout = -1;
 
 struct FMIconViewDetails
@@ -1756,7 +1755,8 @@ play_file (gpointer callback_data)
 	char *file_uri;
 	char *file_path, *mime_type;
 	gboolean is_mp3;
-
+	pid_t mp3_pid;
+	
 	file = NAUTILUS_FILE (callback_data);
 	file_uri = nautilus_file_get_uri (file);
 	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
@@ -1774,8 +1774,9 @@ play_file (gpointer callback_data)
 				execlp ("play", "play", file_path, NULL);
 			}
 			
-			/* Who cares about storage leaks in the fork? */
 			_exit (0);
+		} else {
+			nautilus_sound_register_sound (mp3_pid);
 		}
 	}
 
@@ -1799,10 +1800,19 @@ play_file (gpointer callback_data)
 static void
 preview_sound (NautilusFile *file, gboolean start_flag)
 {	
+	/*
+	pid_t child;
+	int status_result;
+
 	if (mp3_pid) {
 		kill (-mp3_pid, SIGTERM);
+ 		child = waitpid (mp3_pid, &status_result, 0);       
 		mp3_pid = 0;
 	}
+	*/
+	
+	nautilus_sound_kill_sound ();
+	
 	if (timeout >= 0) {
 		gtk_timeout_remove (timeout);
 		timeout = -1;
@@ -1820,19 +1830,10 @@ icon_container_preview_callback (NautilusIconContainer *container,
 {
 	int result;
 	char *mime_type, *file_name, *message;
-	static int sound_available = 0;
-	
+		
 	result = 0;
-
-	/* perform one-time check to see if sound is available.  If not, don't try to preview */
-	if (sound_available == 0) {
-		sound_available = esd_audio_open();
-		if (sound_available > 0) {
-			esd_audio_close ();
-		}
-	}
 	
-	if (sound_available > 0) {
+	if (nautilus_sound_can_play_sound ()) {
 	
 		/* preview files based on the mime_type. */
 		/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */

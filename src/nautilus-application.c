@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
@@ -312,6 +313,9 @@ nautilus_application_startup (NautilusApplication *application,
 	 */
 	nautilus_application_check_user_directories (application);
 
+	/* initialize the sound machinery */
+	nautilus_sound_initialize ();
+	
 	CORBA_exception_init (&ev);
 
 	/* Start up the factory. */

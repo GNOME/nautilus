@@ -111,6 +111,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-scalable-font.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
+	nautilus-sound.c			\
 	nautilus-stock-dialogs.c		\
 	nautilus-string-list.c			\
 	nautilus-string-map.c			\
@@ -209,6 +210,7 @@ noinst_HEADERS =				\
 	nautilus-scalable-font.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
+	nautilus-sound.h			\
 	nautilus-stock-dialogs.h		\
 	nautilus-string-list.h			\
 	nautilus-string-map.h			\

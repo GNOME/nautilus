@@ -1,3 +1,32 @@
+2000-10-02  Andy Hertzfeld  <andy@eazel.com>
+
+	implemented sound process management using gconf to store the
+	process ID of the currently playing sound, and switched sound
+	previewing and part of the music view to use it.  This also fixed a
+	process leaking bug, as each time a sound preview terminated, it
+	was leaving a zombie process behind.
+
+	* libnautilus-extensions/Makefile.am:
+	added nautilus-sound to the Makefile
+	* libnautilus-extensions/nautilus-sound.c,h:
+	(kill_sound_if_necessary), (nautilus_sound_initialize),
+	(nautilus_sound_kill_sound), (nautilus_sound_register_sound),
+	(nautilus_sound_can_play_sound):
+	set of routines to keep track of the current sound process
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	added NAUTILUS_PREFERENCE_CURRENT_SOUND_STATE
+			
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize):
+	use nautilus_sound_can_play_sound instead of private routine
+	
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_sound),
+	(icon_container_preview_callback):
+	use nautilus_sound for sound previewing
+	
+	* src/nautilus-application.c: (nautilus_application_startup):
+	initialize nautilus_sound
+	
 2000-10-02  Darin Adler  <darin@eazel.com>
 
 	Saw the Tinderbox broken, so I just had to fix it. Also, I

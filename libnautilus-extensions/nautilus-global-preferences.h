@@ -43,7 +43,8 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"/apps/nautilus/preferences/hide_built_in_bookmarks"
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
-
+/* Keep track of the sound playing process */
+#define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"/apps/nautilus/preferences/sound_state"
 
 /*
  * The following preferences are coupled to the user level.

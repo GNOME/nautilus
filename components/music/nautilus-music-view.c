@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
@@ -183,20 +184,6 @@ static void play_current_file                      (NautilusMusicView      *musi
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
 
-/* utility to determine if we can play sounds */
-static gboolean
-can_play_sounds ()
-{
-	int open_result;
-	
-	open_result = esd_audio_open();
-	if (open_result < 0) {
-		return FALSE;
-	}
-	
-	esd_audio_close ();
-	return TRUE;
-}
 
 static void
 nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
@@ -231,7 +218,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	music_view->details->status_timeout = -1;
 	music_view->details->slider_dragging = FALSE;
 	
-	music_view->details->sound_enabled = can_play_sounds ();
+	music_view->details->sound_enabled = nautilus_sound_can_play_sound ();
 	
 	/* allocate a vbox to contain all of the views */
 	
