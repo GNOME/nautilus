@@ -1474,7 +1474,7 @@ select_one_unselect_others (NautilusIconContainer *container,
 			(container, icon, icon == icon_to_select);
 	}
 	
-	if (selection_changed) {
+	if (selection_changed && icon_to_select != NULL) {
 		AtkObject *atk_object = eel_accessibility_for_object (icon_to_select->item);
 		atk_focus_tracker_notify (atk_object);
 	}
