@@ -443,7 +443,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						   FALSE,
 						   FALSE);
 		
-		g_print ("???\n");
 		gtk_ctree_node_set_row_data (GTK_CTREE (view->details->tree),
 					     view_node,
 					     node);
