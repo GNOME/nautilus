@@ -1871,7 +1871,7 @@ post_widget_initialize (void)
 	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
 
 	/* Change http protocol user agent to include the string 'Nautilus' */
-	mozilla_preference_set ("general.useragent.misc", "Nautilus/1.0PR3");
+	mozilla_preference_set ("general.useragent.misc", "Nautilus/1.0Final");
 
 	/* We dont want to use the proxy for localhost */
 	mozilla_preference_set ("network.proxy.no_proxies_on", "localhost");

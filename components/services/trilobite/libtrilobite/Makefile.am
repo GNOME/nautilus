@@ -6,7 +6,7 @@ INCLUDES = \
 	-DPREFIX=\"$(prefix)\" 	\
 	-DG_LOG_DOMAIN=\"libtrilobite\"	\
 	-DSTANDALONE		\
-	-DTRILOBITE_VERSION=\"0.2.0\" \
+	-DTRILOBITE_VERSION=\"0.3.0\" \
 	-I$(srcdir)		\
 	-I.			\
 	-I$(top_srcdir)		\
