@@ -194,7 +194,7 @@ choose_component_callback (NautilusFile *file,
 	identifier = NULL;
 	dialog = NULL;
 	if (nautilus_mime_has_any_components_for_file_extended (file,
-	    "(NOT nautilus:property_page_name.defined()")) {
+	    "NOT nautilus:property_page_name.defined()")) {
 		dialog = set_up_program_chooser (file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
 						 choose_data->parent_window);
 		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {

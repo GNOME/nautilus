@@ -1,3 +1,35 @@
+2002-11-07  James Willcox  <jwillcox@gnome.org>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_file_internal),
+	(nautilus_mime_get_short_list_components_for_file),
+	(nautilus_mime_actions_file_needs_full_file_attributes),
+	(nautilus_mime_get_all_components_for_file_extended),
+	(nautilus_mime_get_popup_components_for_file),
+	(has_server_info_in_list), (server_info_list_intersection),
+	(nautilus_mime_get_popup_components_for_files),
+	(mime_get_all_components_for_uri_scheme),
+	(make_bonobo_activation_query_with_known_mime_type),
+	(make_bonobo_activation_query_with_uri_scheme_only),
+	(nautilus_do_component_query):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* libnautilus-private/nautilus-program-chooser.c:
+	(repopulate_program_list):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(choose_component_callback):
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_mime_action_data_new), (bonobo_mime_action_data_free),
+	(bonobo_mime_action_activate_callback),
+	(bonobo_mime_action_callback),
+	(bonobo_mime_action_menu_data_destroy_callback),
+	(can_handle_multiple_files), (add_bonobo_menu_ui_and_verbs),
+	(get_bonobo_menu_verb_names), (has_file_in_list),
+	(get_unique_files), (reset_bonobo_mime_actions_menu),
+	(real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+
+	Add the ability to have mime-type-sensitive context menus.
+
 2002-11-07  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-customization-data.c:

@@ -54,7 +54,8 @@ static GList      *nautilus_do_component_query                   (const char    
 								  gboolean                  ignore_content_mime_types,
 								  GList                    *explicit_iids,
 								  char                    **extra_sort_criteria,
-								  char                     *extra_requirements);
+								  char                     *extra_requirements,
+								  gboolean                  must_be_view);
 static GList      *str_list_difference                           (GList                    *a,
 								  GList                    *b);
 static char      **strv_concat                                   (char                    **a,
@@ -393,13 +394,13 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	if (metadata_default) {
 		extra_requirements = g_strconcat ("iid == '", default_component_string, "'", NULL);
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, TRUE,
-							 explicit_iids, sort_conditions, extra_requirements);
+							 explicit_iids, sort_conditions, extra_requirements, TRUE);
 		g_free (extra_requirements);
 	}
 
 	if (info_list == NULL) {
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE, 
-							 explicit_iids, sort_conditions, NULL);
+							 explicit_iids, sort_conditions, NULL, TRUE);
 	}
 
 	if (info_list != NULL) {
@@ -624,7 +625,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 		extra_sort_conditions[1] = NULL;
 		extra_requirements = build_joined_string (iids, "has (['", "','", "'], iid)");
 		result = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
-						      explicit_iids, extra_sort_conditions, extra_requirements);
+						      explicit_iids, extra_sort_conditions, extra_requirements, TRUE);
 		g_free (extra_requirements);
 		g_free (extra_sort_conditions[0]);
 	}
@@ -749,7 +750,7 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, NULL, TRUE,
-						 explicit_iids, NULL, NULL);
+						 explicit_iids, NULL, NULL, TRUE);
 	
 	needs_full_attributes = FALSE;
 
@@ -793,7 +794,7 @@ nautilus_mime_get_all_components_for_file_extended (NautilusFile *file,
 	info_list = nautilus_do_component_query (mime_type, uri_scheme,
 						 item_mime_types, FALSE,
 						 explicit_iids, NULL,
-						 extra_reqs);
+						 extra_reqs, TRUE);
 	
 	eel_g_list_free_deep (explicit_iids);
 	eel_g_list_free_deep (item_mime_types);
@@ -802,6 +803,110 @@ nautilus_mime_get_all_components_for_file_extended (NautilusFile *file,
 	g_free (mime_type);
 
 	return info_list;
+}
+
+GList *
+nautilus_mime_get_popup_components_for_file (NautilusFile *file)
+{
+	char *mime_type;
+	char *uri_scheme;
+	char *extra_reqs;
+	GList *item_mime_types;
+	GList *info_list;
+
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
+
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+
+	mime_type = nautilus_file_get_mime_type (file);
+
+	if (!nautilus_mime_actions_check_if_full_attributes_ready (file) || 
+	    !nautilus_file_get_directory_item_mime_types (file, &item_mime_types)) {
+		item_mime_types = NULL;
+	}
+
+	extra_reqs = "repo_ids.has ('IDL:Bonobo/Listener:1.0') AND (nautilus:context_menu_handler == true)";
+
+	info_list = nautilus_do_component_query (mime_type, uri_scheme,
+						 item_mime_types, FALSE,
+						 NULL, NULL,
+						 extra_reqs, FALSE);
+	
+	eel_g_list_free_deep (item_mime_types);
+
+	g_free (uri_scheme);
+	g_free (mime_type);
+
+	return info_list;
+}
+
+static gboolean
+has_server_info_in_list (GList *list, Bonobo_ServerInfo *info)
+{
+	for (; list; list = list->next) {
+		Bonobo_ServerInfo *tmp_info = list->data;
+
+		if (strcmp (tmp_info->iid, info->iid) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static GList *
+server_info_list_intersection (GList *a, GList *b)
+{
+	GList *result = NULL;
+
+	if (a == NULL || b == NULL) {
+		return NULL;
+	}
+
+	while (b) {
+		Bonobo_ServerInfo *info;
+		
+		info = (Bonobo_ServerInfo *)b->data;
+
+		if (has_server_info_in_list (a, info)) {
+			result = g_list_prepend (result,
+				   Bonobo_ServerInfo_duplicate (info));
+
+		}
+		
+		b = b->next;
+	}
+
+	return g_list_reverse (result);
+}
+
+GList *
+nautilus_mime_get_popup_components_for_files (GList *files)
+{
+	GList *result, *l;
+
+	result = NULL;
+
+	for (l = files; l; l = l->next) {
+		GList *components, *new_result;
+
+		components = nautilus_mime_get_popup_components_for_file (l->data);
+		if (result != NULL) {
+			new_result = server_info_list_intersection (result,
+								   components);
+			gnome_vfs_mime_component_list_free (result);
+			gnome_vfs_mime_component_list_free (components);
+			result = new_result;
+		} else {
+			result = components;;
+		}
+
+
+	}	
+
+	return result;
 }
 
 GList *
@@ -838,7 +943,7 @@ mime_get_all_components_for_uri_scheme (const char *uri_scheme)
 
 	return nautilus_do_component_query
 		(NULL, uri_scheme, NULL, TRUE,
-		 NULL, NULL, NULL);
+		 NULL, NULL, NULL, TRUE);
 }
 
 gboolean
@@ -1312,32 +1417,28 @@ static char *
 make_bonobo_activation_query_with_known_mime_type (const char *mime_type, 
 				     const char *uri_scheme, 
 				     GList      *explicit_iids, 
-				     const char *extra_requirements)
+				     const char *extra_requirements,
+				     gboolean    must_be_view)
 {
         char *mime_supertype;
         char *result;
         char *explicit_iid_query;
+	const char *view_as_name_logic;
 
         mime_supertype = mime_type_get_supertype (mime_type);
 
         explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
+	if (must_be_view) {
+		view_as_name_logic = "nautilus:view_as_name.defined ()";
+	} else {
+		view_as_name_logic = "true";
+	}
+
         result = g_strdup_printf 
                 (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus View, or
-                  * with a Bonobo Control or Embeddable that supports
-                  * one of the three persistence interfaces:
-                  * PersistStream, ProgressiveDataSink, or
-                  * PersistFile.
-                  */
-                 "(((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
-                                      "'IDL:Nautilus/View:1.0'])"
-                  "OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0',"
-                                         "'IDL:Bonobo/Embeddable:1.0'])"
-                      "AND repo_ids.has_one (['IDL:Bonobo/PersistStream:1.0',"
-                                             "'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                                             "'IDL:Bonobo/PersistFile:1.0'])))"
+
+                 
                  
                  /* Check that the component either has a specific
                   * MIME type or URI scheme. If neither is specified,
@@ -1345,7 +1446,7 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
                   * and all schemes". For that, you have to do a
                   * wildcard for the MIME type or for the scheme.
                   */
-                 "AND (bonobo:supported_mime_types.defined ()"
+                 "(bonobo:supported_mime_types.defined ()"
                       "OR bonobo:supported_uri_schemes.defined ()"
 		      "OR bonobo:additional_uri_schemes.defined ())"
 
@@ -1379,12 +1480,13 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
 		 "OR (bonobo:additional_uri_schemes.has ('%s')"
                       "OR bonobo:additional_uri_schemes.has ('*')))"
 
-                  /* Check that the component makes it clear that it's
+		 /* Check that the component makes it clear that it's
                    * intended for Nautilus by providing a "view_as"
                    * name. We could instead support a default, but
                    * that would make components that are untested with
                    * Nautilus appear.  */
-                 "AND nautilus:view_as_name.defined ())"
+		  "AND %s)"
+                  
 
                   /* Also select iids that were specifically requested
                      for this location, even if they do not otherwise
@@ -1397,13 +1499,41 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
                  /* The MIME type, MIME supertype, and URI scheme for
                   * the %s above.
                   */
-                 , mime_type, mime_supertype, uri_scheme, uri_scheme
+                 , mime_type, mime_supertype, uri_scheme, uri_scheme,
 
                  /* The explicit metafile iid query for the %s above. */
-                 , explicit_iid_query
+                 view_as_name_logic, explicit_iid_query
 
 		 /* extra requirements */
 		 , extra_requirements != NULL ? extra_requirements : "true");
+
+	if (must_be_view) {
+		char *str;
+
+
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus View, or
+                  * with a Bonobo Control or Embeddable that supports
+                  * one of the three persistence interfaces:
+                  * PersistStream, ProgressiveDataSink, or
+                  * PersistFile.
+                  */
+		str = g_strdup_printf ("(((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
+                                      "'IDL:Nautilus/View:1.0'])"
+                  "OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0',"
+                                         "'IDL:Bonobo/Embeddable:1.0'])"
+                      "AND repo_ids.has_one (['IDL:Bonobo/PersistStream:1.0',"
+                                             "'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                                          "'IDL:Bonobo/PersistFile:1.0']))) "
+					  "AND %s", result);
+		g_free (result);
+		result = str;
+	} else {
+		char *str;
+		str = g_strdup_printf ("((%s", result);
+		g_free (result);
+		result = str;
+	}
 
         g_free (mime_supertype);
         g_free (explicit_iid_query);
@@ -1413,31 +1543,28 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
 static char *
 make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme, 
 				     GList      *explicit_iids, 
-				     const char *extra_requirements)
+				     const char *extra_requirements,
+				     gboolean    must_be_view)
 {
         char *result;
         char *explicit_iid_query;
+	const char *view_as_name_logic;
         
         explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
+	if (must_be_view) {
+		view_as_name_logic = "nautilus:view_as_name.defined ()";
+	} else {
+		view_as_name_logic = "true";
+	}
+
         result = g_strdup_printf 
                 (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus tView, or
-                  * with a Bonobo Control or Embeddable that works on
-                  * a file, which is indicated by Bonobo PersistFile.
-                  */
-                  "(((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                      "'IDL:Nautilus/View:1.0'])"
-                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                         "'IDL:Bonobo/Embeddable:1.0'])"
-                       "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
-
 
                   /* Check if the component supports this particular
                    * URI scheme.
                    */
-                  "AND (((bonobo:supported_uri_schemes.has ('%s')"
+                  "(((bonobo:supported_uri_schemes.has ('%s')"
                          "OR bonobo:supported_uri_schemes.has ('*'))"
 
                   /* Check that the component doesn't require
@@ -1452,13 +1579,12 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
 		  "OR (bonobo:additional_uri_schemes.has ('%s')"
 		      "OR bonobo:additional_uri_schemes.has ('*')))"
 
-
-                  /* Check that the component makes it clear that it's
+		 /* Check that the component makes it clear that it's
                    * intended for Nautilus by providing a "view_as"
                    * name. We could instead support a default, but
                    * that would make components that are untested with
                    * Nautilus appear.  */
-                  "AND nautilus:view_as_name.defined ())"
+		  "AND %s)"
 
                  /* Also select iids that were specifically requested
                      for this location, even if they do not otherwise
@@ -1470,11 +1596,41 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
 		  " AND (%s)"
 
                   /* The URI scheme for the %s above. */
-                  , uri_scheme, uri_scheme
+                  , uri_scheme, uri_scheme, view_as_name_logic
 
                   /* The explicit metafile iid query for the %s above. */
                   , explicit_iid_query,
 		  extra_requirements != NULL ? extra_requirements : "true");
+	
+
+	if (must_be_view) {
+		char *str;
+
+
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus View, or
+                  * with a Bonobo Control or Embeddable that supports
+                  * one of the three persistence interfaces:
+                  * PersistStream, ProgressiveDataSink, or
+                  * PersistFile.
+                  */
+		str = g_strdup_printf ("(((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
+                                      "'IDL:Nautilus/View:1.0'])"
+                  "OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0',"
+                                         "'IDL:Bonobo/Embeddable:1.0'])"
+                      "AND repo_ids.has_one (['IDL:Bonobo/PersistStream:1.0',"
+                                             "'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                                          "'IDL:Bonobo/PersistFile:1.0']))) "
+					  "AND %s", result);
+		g_free (result);
+		result = str;
+	} else {
+		char *str;
+		str = g_strdup_printf ("((%s", result);
+		g_free (result);
+		result = str;
+	}
+		  
 
 	g_free (explicit_iid_query);
 	
@@ -1591,7 +1747,8 @@ nautilus_do_component_query (const char        *mime_type,
 			     gboolean           ignore_content_mime_types,
 			     GList             *explicit_iids,
 			     char             **extra_sort_criteria,
-			     char              *extra_requirements)
+			     char              *extra_requirements,
+			     gboolean           must_be_view)
 { 
 	Bonobo_ServerInfoList *bonobo_activation_result;
 	char *query;
@@ -1603,9 +1760,9 @@ nautilus_do_component_query (const char        *mime_type,
         query = NULL;
 
         if (is_known_mime_type (mime_type)) {
-                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements, must_be_view);
         } else {
-                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements, must_be_view);
         }
 
 	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
