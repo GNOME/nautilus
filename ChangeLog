@@ -1,3 +1,11 @@
+2001-01-31  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* librsvg/rsvg-ft.c: (rsvg_ft_glyph_insert): Updated to evict from
+	the cache whenever above the high water mark instead of only when
+	inserting would put you above the mark.
+
 2001-01-31  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Michael Engber <engber@eazel.com>

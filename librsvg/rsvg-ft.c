@@ -264,8 +264,7 @@ rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 
 	ctx->glyph_bytes += rsvg_ft_glyph_bytes (glyph);
 
-	if ((ctx->glyph_bytes < ctx->glyph_bytes_max) && 
-	    (ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) >= ctx->glyph_bytes_max)) {
+	if (ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) >= ctx->glyph_bytes_max) {
 		rsvg_ft_glyph_evict (ctx, ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) - ctx->glyph_bytes_max);
 	}
 	
