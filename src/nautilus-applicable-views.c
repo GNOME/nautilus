@@ -34,7 +34,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
                      Nautilus_NavigationInfo *old_navinfo,
 		     NautilusView *requesting_view)
 {
-  const gchar *meta_keys[] = {"icon-filename", NULL};
+  const char *meta_keys[] = {"icon-filename", NULL};
   memset(navinfo, 0, sizeof(*navinfo));
 
   navinfo->navinfo.requested_uri = nri->requested_uri;
@@ -79,6 +79,9 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
   g_message("Content type of %s is %s",
             navinfo->navinfo.requested_uri,
             navinfo->navinfo.content_type);
+
+  /* This is just a hardcoded hack until OAF works with Bonobo.
+     In the future we will use OAF queries to determine this information. */
   if(!strcmp(navinfo->navinfo.content_type, "text/html"))
     {
       navinfo->content_iid = "embeddable:explorer-html-component";
