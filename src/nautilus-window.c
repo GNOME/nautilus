@@ -99,6 +99,7 @@ static void toolbar_visibility_changed_callback   	(gpointer		user_data);
 static void locationbar_visibility_changed_callback   	(gpointer		user_data);
 static void statusbar_visibility_changed_callback   	(gpointer		user_data);
 static void sidebar_visibility_changed_callback   	(gpointer		user_data);
+static void nautilus_window_show			(GtkWidget 		*widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -118,6 +119,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 	object_class->set_arg = nautilus_window_set_arg;
 	
 	widget_class = (GtkWidgetClass*) klass;
+	widget_class->show = nautilus_window_show;
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
 				 GTK_TYPE_STRING,
@@ -374,37 +376,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_stop (window, FALSE);
 
 	/* Set up undo manager */
-	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));
-	
-	/* Show or hide views based on preferences */
-
-	/* Do a quick show/hide.  This forces the GnomeApp to set a parent for the dock */
-	gtk_widget_show (GTK_WIDGET (window));
-	gtk_widget_hide (GTK_WIDGET (window));
-		
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
-		nautilus_window_show_toolbar (window);
-	} else {
-		nautilus_window_hide_toolbar (window);
-	}
-
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
-		nautilus_window_show_locationbar (window);
-	} else {
-		nautilus_window_hide_locationbar (window);
-	}
-
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
-		nautilus_window_show_statusbar (window);
-	} else {
-		nautilus_window_hide_statusbar (window);
-	}
-
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
-		nautilus_window_show_sidebar (window);
-	} else {
-		nautilus_window_hide_sidebar (window);
-	}	
+	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));	
 }
 
 static void
@@ -1679,4 +1651,46 @@ nautilus_window_get_base_page_index (NautilusWindow *window)
 	 * in the history list
 	 */ 
 	return forward_count;
+}
+
+/**
+ * nautilus_window_show:
+ * @widget:	GtkWidget
+ *
+ * Call parent and then show/hide window items
+ * base on user prefs.
+ */
+static void
+nautilus_window_show (GtkWidget *widget)
+{	
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (widget);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, show, (widget));
+	
+	/* Show or hide views based on preferences */
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
+		nautilus_window_show_toolbar (window);
+	} else {
+		nautilus_window_hide_toolbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
+		nautilus_window_show_locationbar (window);
+	} else {
+		nautilus_window_hide_locationbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
+		nautilus_window_show_statusbar (window);
+	} else {
+		nautilus_window_hide_statusbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
+		nautilus_window_show_sidebar (window);
+	} else {
+		nautilus_window_hide_sidebar (window);
+	}	
 }
