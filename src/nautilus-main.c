@@ -150,10 +150,6 @@ main (int argc, char *argv[])
 		  N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0,
 		  N_("Restart Nautilus."), NULL },
-		/* FIXME bugzilla.eazel.com 5228: The help for these OAF options
-		 * should be in a separate section.
-		 */
-		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
@@ -195,6 +191,11 @@ main (int argc, char *argv[])
 	no_default_window = FALSE;
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
+
+	gnomelib_register_popt_table (oaf_popt_options, 
+				      oaf_get_popt_table_name ());
+	orb = oaf_init (argc, argv);
+
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
@@ -227,7 +228,7 @@ main (int argc, char *argv[])
 	LIBXML_TEST_VERSION
 	g_atexit (xmlCleanupParser);
 	g_thread_init (NULL);
-	orb = oaf_init (argc, argv);
+
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
 		oaf_set_test_components_enabled (TRUE);
 	}

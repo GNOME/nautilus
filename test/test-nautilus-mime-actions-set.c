@@ -110,8 +110,10 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	GList *attributes;
 
-	g_thread_init (NULL);
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	oaf_init (argc, argv);
+
+	g_thread_init (NULL);
 	gnome_vfs_init ();
 	gnome_init ("test-nautilus-mime-actions-set", "0.0",
 		    argc, argv);

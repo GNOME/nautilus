@@ -812,12 +812,12 @@ init_server_factory (int argc, char **argv)
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-        gnome_init_with_popt_table("bonobo-image-generic", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	gdk_rgb_init ();
-
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	oaf_init (argc, argv);
+
+        gnome_init ("bonobo-image-generic", VERSION,
+		    argc, argv); 
+	gdk_rgb_init ();
 
 	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
 		g_error (_("I could not initialize Bonobo"));

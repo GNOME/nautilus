@@ -90,11 +90,11 @@ int main(int argc, char *argv[])
 
         g_message ("In component.");        
 
-	gnome_init_with_popt_table("trilobite-eazel-time-view", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+
+	gnome_init ("trilobite-eazel-time-view", VERSION, 
+		    argc, argv); 
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 

@@ -48,19 +48,20 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 #include <gnome.h>
+#include <gtk/gtkeventbox.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <ghttp.h>
+
 #include <limits.h>
 
-#include <ghttp.h>
 
 #define MAX_SERVICE_ITEMS 32
 #define TEXT_VIEW_CHUNK_SIZE 65536
 #define MAX_FILE_SIZE	1024*1024
 
-struct _NautilusTextViewDetails {
+struct NautilusTextViewDetails {
 	NautilusFile *file;
-	NautilusView *nautilus_view;
+        GtkWidget *event_box;
 	GnomeVFSAsyncHandle *file_handle;	
 	char *buffer;
 	
@@ -116,9 +117,13 @@ static void zoomable_zoom_out_callback				(BonoboZoomable       *zoomable,
 static void zoomable_zoom_to_fit_callback			(BonoboZoomable       *zoomable,
 								 NautilusTextView      *directory_view);
 
+static void nautilus_text_view_load_uri                         (NautilusTextView *view,
+                                                                 const char *uri);
+
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
                                    nautilus_text_view,
-                                   GTK_TYPE_EVENT_BOX)
+                                   NAUTILUS_TYPE_VIEW)
 
 static float text_view_preferred_zoom_levels[] = { .25, .50, .75, 1.0, 1.5, 2.0, 4.0 };
 static int   text_view_preferred_font_sizes[] = { 9, 10, 12, 14, 18, 24, 36 };
@@ -130,10 +135,8 @@ static void
 nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
 {
 	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
 	
 	object_class->destroy = nautilus_text_view_destroy;
 }
@@ -147,7 +150,9 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	
 	text_view->details = g_new0 (NautilusTextViewDetails, 1);
 
-	text_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (text_view));
+        text_view->details->event_box = gtk_event_box_new ();
+
+        nautilus_view_construct (NAUTILUS_VIEW (text_view), text_view->details->event_box);
 
 	/* set up the zoomable interface */
 	text_view->details->zoomable = bonobo_zoomable_new ();
@@ -167,23 +172,24 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 					     text_view_preferred_zoom_levels, NULL,
 					     NAUTILUS_N_ELEMENTS (text_view_preferred_zoom_levels));
 	
-	bonobo_object_add_interface (BONOBO_OBJECT (text_view->details->nautilus_view),
+	bonobo_object_add_interface (BONOBO_OBJECT (text_view),
 				     BONOBO_OBJECT (text_view->details->zoomable));
  
     	
-	gtk_signal_connect (GTK_OBJECT (text_view->details->nautilus_view), 
+	gtk_signal_connect (GTK_OBJECT (text_view), 
 			    "load_location",
 			    text_view_load_location_callback, 
 			    text_view);
 			    	
+        /* FIXME: eventually, get this from preferences */	
 	/* set up the default font */
-	text_view->details->font_name = g_strdup ("helvetica"); /* eventually, get this from preferences */	
+	text_view->details->font_name = g_strdup ("helvetica"); 
 
 	/* allocate a vbox to contain the text widget */
 	
 	text_view->details->container = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (text_view->details->container), 0);
-	gtk_container_add (GTK_CONTAINER (text_view), GTK_WIDGET (text_view->details->container));
+	gtk_container_add (GTK_CONTAINER (text_view->details->event_box), GTK_WIDGET (text_view->details->container));
 	
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
@@ -211,13 +217,13 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 
 	/* get notified when we are activated so we can merge in our menu items */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(text_view->details->nautilus_view)),
+					(NAUTILUS_VIEW (text_view))),
                             "activate",
                             merge_bonobo_menu_items,
                             text_view);
 		 	
 	/* finally, we can show everything */	
-	gtk_widget_show_all (GTK_WIDGET (text_view));
+	gtk_widget_show_all (GTK_WIDGET (text_view->details->event_box));
 }
 
 static void
@@ -250,13 +256,6 @@ nautilus_text_view_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
-/* Component embedding support */
-NautilusView *
-nautilus_text_view_get_nautilus_view (NautilusTextView *text_view)
-{
-	return text_view->details->nautilus_view;
-}
 
 /* this routine is called when we're finished reading to deallocate the buffer and
  * put up an error message if necessary
@@ -383,8 +382,9 @@ nautilus_text_view_update (NautilusTextView *text_view)
 }
 
 
-void
-nautilus_text_view_load_uri (NautilusTextView *text_view, const char *uri)
+static void
+nautilus_text_view_load_uri (NautilusTextView *text_view, 
+                             const char *uri)
 {
  
 	detach_file (text_view);
@@ -398,9 +398,9 @@ text_view_load_location_callback (NautilusView *view,
                                    const char *location,
                                    NautilusTextView *text_view)
 {
-	nautilus_view_report_load_underway (text_view->details->nautilus_view);
+	nautilus_view_report_load_underway (NAUTILUS_VIEW (text_view));
 	nautilus_text_view_load_uri (text_view, location);
-	nautilus_view_report_load_complete (text_view->details->nautilus_view);
+	nautilus_view_report_load_complete (NAUTILUS_VIEW (text_view));
 }
 
 /* update the font and redraw */
@@ -475,7 +475,7 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			uri = g_strdup_printf (parameters->service_template, mapped_text);
 			
 			/* goto the url */	
-			nautilus_view_open_location_in_this_window (parameters->text_view->details->nautilus_view, uri);
+			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (parameters->text_view), uri);
 
 			g_free (uri);
 			g_free (selected_text);
@@ -692,7 +692,7 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 	int index;
 	
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
-	control = nautilus_view_get_bonobo_control (text_view->details->nautilus_view);	
+	control = nautilus_view_get_bonobo_control (NAUTILUS_VIEW (text_view));	
 	ui = bonobo_control_get_ui_component (control);
 	
 	/* determine if there is a selection */
@@ -729,7 +729,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
 
 	if (state) {
-		nautilus_view_set_up_ui (text_view->details->nautilus_view,
+		nautilus_view_set_up_ui (NAUTILUS_VIEW (text_view),
 				         DATADIR,
 					 "nautilus-text-view-ui.xml",
 					 "nautilus-text-view");

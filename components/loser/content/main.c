@@ -80,12 +80,12 @@ int main(int argc, char *argv[])
 
 	nautilus_content_loser_maybe_fail ("pre-init");
 
-        gnome_init_with_popt_table("nautilus-content-loser", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
-	
+
+        gnome_init ("nautilus-content-loser", VERSION, 
+		    argc, argv); 
+
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	nautilus_content_loser_maybe_fail ("post-init");

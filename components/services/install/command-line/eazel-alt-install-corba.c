@@ -717,8 +717,9 @@ int main(int argc, char *argv[]) {
 	   not having gnome_init called, dies in a
 	   X call, yech */
 #if 0
-	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
 	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");
 	}

@@ -26,11 +26,10 @@
 #define NAUTILUS_MUSIC_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
-#include <gtk/gtkeventbox.h>
 
 
-typedef struct _NautilusMusicView      NautilusMusicView;
-typedef struct _NautilusMusicViewClass NautilusMusicViewClass;
+typedef struct NautilusMusicView      NautilusMusicView;
+typedef struct NautilusMusicViewClass NautilusMusicViewClass;
 
 #define NAUTILUS_TYPE_MUSIC_VIEW	    (nautilus_music_view_get_type ())
 #define NAUTILUS_MUSIC_VIEW(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MUSIC_VIEW, NautilusMusicView))
@@ -38,27 +37,20 @@ typedef struct _NautilusMusicViewClass NautilusMusicViewClass;
 #define NAUTILUS_IS_MUSIC_VIEW(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_MUSIC_VIEW))
 #define NAUTILUS_IS_MUSIC_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_MUSIC_VIEW))
 
-typedef struct _NautilusMusicViewDetails NautilusMusicViewDetails;
+typedef struct NautilusMusicViewDetails NautilusMusicViewDetails;
 
-struct _NautilusMusicView {
-	GtkEventBox parent;
+struct NautilusMusicView {
+	NautilusView base;
 	NautilusMusicViewDetails *details;
 };
 
-struct _NautilusMusicViewClass {
-	GtkEventBoxClass parent_class;
+struct NautilusMusicViewClass {
+	NautilusViewClass base;
 };
 
 
 
 /* GtkObject support */
 GtkType       nautilus_music_view_get_type          (void);
-
-/* Component embedding support */
-NautilusView *nautilus_music_view_get_nautilus_view (NautilusMusicView *view);
-
-/* URI handling */
-void          nautilus_music_view_load_uri          (NautilusMusicView *view,
-						     const char        *uri);
 
 #endif /* NAUTILUS_MUSIC_VIEW_H */

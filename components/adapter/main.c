@@ -100,12 +100,13 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	/* Initialize libraries. */
-        gnome_init_with_popt_table ("nautilus-adapter", VERSION, 
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
-	g_thread_init (NULL);
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+
+	/* Initialize libraries. */
+        gnome_init ("nautilus-adapter", VERSION, 
+		    argc, argv); 
+	g_thread_init (NULL);
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 

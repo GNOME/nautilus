@@ -155,8 +155,10 @@ main (int argc, char **argv)
 	GList *attributes;
 
 	g_thread_init (NULL);
-	oaf_init (argc, argv);
 	gnome_vfs_init ();
+
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
+	oaf_init (argc, argv);
 	gnome_init("test-nautilus-mime-actions", "0.0",
 		       argc, argv);
 

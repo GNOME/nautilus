@@ -97,14 +97,14 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnome_init_with_popt_table("nautilus-throbber", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
+	orb = oaf_init (argc, argv);
+
+	gnome_init ("nautilus-throbber", VERSION, 
+		    argc, argv); 
 
 	gdk_rgb_init ();
 
-	orb = oaf_init (argc, argv);
-	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	/* initialize gnome-vfs, etc */

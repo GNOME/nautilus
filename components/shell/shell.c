@@ -57,11 +57,12 @@ init_bonobo (int argc, char **argv)
     /* Disable session manager connection */
     gnome_client_disable_master_connection ();
 
-    gnome_init_with_popt_table ("xterm-control-factory", "0.0",
-				argc, argv, oaf_popt_options, 0, NULL);
-    gdk_rgb_init ();
-
+    gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
     orb = oaf_init (argc, argv);
+
+    gnome_init_with_popt_table ("xterm-control-factory", "0.0",
+				argc, argv);
+    gdk_rgb_init ();
 
     if (!bonobo_init (orb, NULL, NULL))
 	g_error (_("Could not initialize Bonobo"));

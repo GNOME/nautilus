@@ -72,7 +72,6 @@ main (int argc,
 		{ "info", 'i', POPT_ARG_NONE, &info, 0, N_("Display information about current inventory settings."), NULL },
 		{ "upload", 'u', POPT_ARG_NONE, &upload, 0, N_("Upload inventory now, if not up to date."), NULL },
 		/* FIXME bugzilla.eazel.com 5510: These OAF options don't get translated for some reason. */
-		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 

@@ -74,9 +74,9 @@ int main(int argc, char *argv[]) {
 	TrilobiteRootClient *root_client;
 
 	CORBA_exception_init (&ev);
-	gnomelib_register_popt_table (oaf_popt_options, "OAF options");
-	gnome_init_with_popt_table ("trilobite-eazel-time-service-cli", "1.0",argc, argv, options, 0, NULL);
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+	gnome_init_with_popt_table ("trilobite-eazel-time-service-cli", "1.0",argc, argv, options, 0, NULL);
 	
 	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");

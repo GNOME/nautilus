@@ -175,21 +175,26 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	CORBA_ORB orb;
 	FILE *logf;
 	char *real_log_filename;
-	const struct poptOption *pass_options;
 
-	pass_options = (options != NULL) ? options : oaf_popt_options;
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
+	orb = oaf_init (argc, argv);
 
 #ifdef TRILOBITE_USE_X
-	gnome_init_with_popt_table (service_name, version_name, argc, argv, pass_options, 0, NULL);
+	if (options) {
+		gnome_init_with_popt_table (service_name, version_name, argc, argv, pass_options, 0, NULL);
+	} else {
+		gnome_init (service_name, version_name, argc, argv);
+	}
 	trilobite_popt = NULL;
 #else
 	gtk_type_init ();
 	gtk_signal_init ();
 	gnomelib_init (service_name, version_name);
-	gnomelib_register_popt_table (pass_options, service_name);
+	if (options != NULL) {
+		gnomelib_register_popt_table (options, service_name);
+	}
 	trilobite_popt = gnomelib_parse_args (argc, argv, 0);
 #endif
-	orb = oaf_init (argc, argv);
 
 	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
 		g_error (_("Could not initialize Bonobo"));

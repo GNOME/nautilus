@@ -1,3 +1,49 @@
+2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com> and 
+	             Robey Pointer  <robey@eazel.com>
+
+	Fix bugs 5528 (oaf command-line options show up in main program
+	section, not a separate section) and 5510 (descriptions of
+	OAF-specific options in --help are not translated). To do this I
+	had to change the way the oaf popt options are processed in all
+	the places that do so.
+
+	* components/adapter/main.c: (main):
+	* components/hardware/main.c: (main):
+	* components/help/hyperbola-main.c: (main):
+	* components/image-viewer/Nautilus_View_image.oaf.in:
+	* components/image-viewer/nautilus-image-view.c:
+	(init_server_factory):
+	* components/loser/content/main.c: (main):
+	* components/loser/sidebar/main.c: (main):
+	* components/mozilla/main.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/nautilus-notes.c: (main):
+	* components/rpmview/main.c: (main):
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (main):
+	* components/services/install/nautilus-view/main.c: (main):
+	* components/services/login/nautilus-view/main.c: (main):
+	* components/services/summary/nautilus-view/main.c: (main):
+	* components/services/time/command-line/main.c: (main):
+	* components/services/time/nautilus-view/main.c: (main):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_init):
+	* components/shell/shell.c:
+	* components/text/Nautilus_View_text.oaf.in:
+	* components/text/main.c: (main):
+	* components/throbber/main.c: (main):
+	* components/tree/main.c: (main):
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi):
+	* src/Nautilus_shell.oaf.in:
+	* src/nautilus-main.c: (main):
+	* test/test-nautilus-mime-actions-set.c: (main):
+	* test/test-nautilus-mime-actions.c: (main): Register oaf options
+	with gnomelib_register_popt_options and move oaf_init call to
+	before gnome_init to fix the aforementioned bugs.
+
 2001-02-01  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bug 5648, bad ui in the indexing info
 	dialog.

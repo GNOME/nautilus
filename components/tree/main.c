@@ -104,12 +104,12 @@ main (int argc, char *argv[])
 
 	g_thread_init (NULL);
 	
-        gnome_init_with_popt_table("nautilus-tree-view", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	gdk_rgb_init ();
-
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+
+        gnome_init_with_popt_table("nautilus-tree-view", VERSION, 
+				   argc, argv); 
+	gdk_rgb_init ();
 
 	gnome_vfs_init ();
 	

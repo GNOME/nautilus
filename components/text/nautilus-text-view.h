@@ -22,13 +22,14 @@
 
 /* header file for the text view component */
 
-#ifndef NAUTILUS_MUSIC_VIEW_H
-#define NAUTILUS_MUSIC_VIEW_H
+#ifndef NAUTILUS_TEXT_VIEW_H
+#define NAUTILUS_TEXT_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
-#include <gtk/gtkeventbox.h> 
-typedef struct _NautilusTextView      NautilusTextView;
-typedef struct _NautilusTextViewClass NautilusTextViewClass;
+
+ 
+typedef struct NautilusTextView      NautilusTextView;
+typedef struct NautilusTextViewClass NautilusTextViewClass;
 
 #define NAUTILUS_TYPE_TEXT_VIEW	    (nautilus_text_view_get_type ())
 #define NAUTILUS_TEXT_VIEW(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TEXT_VIEW, NautilusTextView))
@@ -36,15 +37,15 @@ typedef struct _NautilusTextViewClass NautilusTextViewClass;
 #define NAUTILUS_IS_TEXT_VIEW(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TEXT_VIEW))
 #define NAUTILUS_IS_TEXT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TEXT_VIEW))
 
-typedef struct _NautilusTextViewDetails NautilusTextViewDetails;
+typedef struct NautilusTextViewDetails NautilusTextViewDetails;
 
-struct _NautilusTextView {
-	GtkEventBox parent;
+struct NautilusTextView {
+	NautilusView base;
 	NautilusTextViewDetails *details;
 };
 
-struct _NautilusTextViewClass {
-	GtkEventBoxClass parent_class;
+struct NautilusTextViewClass {
+	NautilusViewClass base;
 };
 
 
@@ -52,11 +53,5 @@ struct _NautilusTextViewClass {
 /* GtkObject support */
 GtkType       nautilus_text_view_get_type          (void);
 
-/* Component embedding support */
-NautilusView *nautilus_text_view_get_nautilus_view (NautilusTextView *view);
-
-/* URI handling */
-void          nautilus_text_view_load_uri          (NautilusTextView *view,
-						     						const char *uri);
 
 #endif /* NAUTILUS_TEXT_VIEW_H */
