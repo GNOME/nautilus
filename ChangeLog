@@ -1,3 +1,12 @@
+2001-01-25  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Harper
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw_pixbuf_free), (nautilus_background_draw):
+	Background are now always drawn with the aa code, ensuring
+	their gradients are never striated - bug 5584.
+
 2001-01-25  Josh Barrow  <josh@eazel.com>
 
 	* icons/theme_preview.png:
