@@ -1385,7 +1385,7 @@ sect_variablelist_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<OL>");
+	sect_print (context, "<UL>");
 }
 
 void
@@ -1395,7 +1395,7 @@ sect_variablelist_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "</OL>");
+	sect_print (context, "</UL>");
 }
 
 void
