@@ -10,10 +10,11 @@
 # Nautilus RPM.
 #
 
-# This script is meant to be call by the script that
-# launched Nautilus.  Currently that is run-nautilus.
+# This script is meant to be called by the script that
+# launches Nautilus - currently 'run-nautilus'.
 #
-# The result value of this script is:
+# The return value of nautilus-verify-rpm.sh can be
+# interpreted as follows:
 #
 # 0: Nautilus launch may continue.  This happens if
 #    one of the following occured:
@@ -26,12 +27,12 @@
 #        found in the system.  This is a special
 #        case which occurs in debug builds.  
 #        Lots of people use run-nautilus with
-#        with debug builds, so we dont want to 
-#        break that for them.  Its possible we
-#        might handle this case differently in
-#        the future.  For example, we could have
-#        separate launch scripts for debug and 
-#        rpm installations of Nautilus.
+#        debug builds, so we dont want to break
+#        it for them.  Its possible we might handle
+#        this case differently in the future.
+#        For example, we could have separate launch
+#        scripts for debug and rpm installations of
+#        Nautilus.
 # 
 # 1: Nautilus launch should be aborted.  An error
 #    known to break Nautilus was detected.
@@ -72,8 +73,10 @@ then
 fi
 
 grep "Unsatisfied dependencies" $log | grep bonobo > /dev/null 2>&1
+rv=$?
+rm -f $log
 
-if [ $? -eq 0 ]
+if [ $rv -eq 0 ]
 then
     bonobo_version=`rpm -qi bonobo | grep "Version" | awk '{ print $3; }'`
 
