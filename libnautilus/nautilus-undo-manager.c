@@ -59,8 +59,7 @@ static void   nautilus_undo_manager_initialize       (NautilusUndoManager       
 static void   destroy                                (GtkObject                       *object);
 static void   free_undo_manager_list                 (GList                           *list);
 static GList *prune_undo_manager_list                (GList                           *list,
-						      int                              items);
-
+						      int 			       items);
 /* CORBA/Bonobo */
 static void   impl_Nautilus_Undo_Manager__append     (PortableServer_Servant           servant,
 						      const Nautilus_Undo_Transaction  transaction,
@@ -147,7 +146,6 @@ impl_Nautilus_Undo_Manager__append (PortableServer_Servant servant,
 	manager = ((impl_POA_Nautilus_Undo_Manager *) servant)->bonobo_object;
 	g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
 
-	Nautilus_Undo_Transaction_ref (undo_transaction, ev);
 	nautilus_undo_manager_add_transaction (manager, undo_transaction);
 }
 
@@ -307,7 +305,6 @@ nautilus_undo_manager_redo (NautilusUndoManager *manager)
 
 	/* Place transaction into undo list */
 	undo_transaction = bonobo_object_corba_objref (BONOBO_OBJECT (redo_transaction));
-	Nautilus_Undo_Transaction_ref (undo_transaction, &ev);
 	nautilus_undo_manager_add_transaction (manager, undo_transaction);
 
 	CORBA_exception_free (&ev);
@@ -319,10 +316,13 @@ nautilus_undo_manager_add_transaction (NautilusUndoManager *manager,
 				       Nautilus_Undo_Transaction transaction)
 {
 	int length;
-	
+	Nautilus_Undo_Transaction duplicate_transaction;
+	CORBA_Environment ev;
+
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 	g_return_if_fail (transaction != CORBA_OBJECT_NIL);
-	
+
+	CORBA_exception_init(&ev);
 	/* Check and see if we are over our queue limit */
 	length = g_list_length (manager->details->undo_list);
 	if (length >= manager->details->queue_depth) {
@@ -330,13 +330,19 @@ nautilus_undo_manager_add_transaction (NautilusUndoManager *manager,
 			(manager->details->undo_list, 
 			 (length - manager->details->queue_depth) + 1);
 	}
-	
+
+	/* Perform refs on the transaction */
+	duplicate_transaction = CORBA_Object_duplicate (transaction, &ev);
+	Nautilus_Undo_Transaction_ref (duplicate_transaction, &ev);
+
 	/* Add transaction to undo list */
-	manager->details->undo_list = g_list_append (manager->details->undo_list, transaction);
+	manager->details->undo_list = g_list_append (manager->details->undo_list, duplicate_transaction);
 	
 	/* Fire off signal informing that an undo transaction has occurred */
 	gtk_signal_emit (GTK_OBJECT (manager),
 			 signals[UNDO_TRANSACTION_OCCURRED]);
+
+	CORBA_exception_free(&ev);
 }
 
 /* nautilus_undo_manager_unregister_object

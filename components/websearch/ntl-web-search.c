@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <libnautilus/libnautilus.h>
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <limits.h>
@@ -186,7 +187,9 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
   web_search_populate_engines(hview);
 
-  hview->ent_params = gtk_entry_new();
+  hview->ent_params = nautilus_entry_new();
+  nautilus_entry_enable_undo (NAUTILUS_ENTRY (hview->ent_params), TRUE);
+
   gtk_signal_connect(GTK_OBJECT(hview->ent_params), "activate", do_search, hview);
   gtk_container_add(GTK_CONTAINER(vbox), hview->ent_params);
 

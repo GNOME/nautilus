@@ -124,7 +124,7 @@ edit_menu_undo_callback (BonoboUIHandler *ui_handler,
 	CORBA_exception_init(&ev);
 
 	g_assert (NAUTILUS_IS_WINDOW (user_data));
-
+	
 	/* Locate undo manager */
 	undo_manager = nautilus_get_undo_manager (GTK_OBJECT (user_data));
 	Nautilus_Undo_Manager_undo (undo_manager, &ev);

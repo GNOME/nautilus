@@ -121,8 +121,6 @@ impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
 {
 	NautilusUndoContext *context;
 	
-	//g_assert (NAUTILUS_IS_UNDO_CONTEXT (servant->bonobo_object));
-	//context = NAUTILUS_UNDO_CONTEXT (servant->gtk_object);
 	context = ((impl_POA_Nautilus_Undo_Context *) servant)->bonobo_object;
 
 	g_assert (NAUTILUS_IS_UNDO_CONTEXT (context));
