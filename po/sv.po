@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-07-17 21:13+0200\n"
-"PO-Revision-Date: 2001-07-17 21:18+0200\n"
+"POT-Creation-Date: 2001-07-21 03:56+0200\n"
+"PO-Revision-Date: 2001-07-21 03:59+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1625,7 +1625,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:699
-#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1311
+#: src/nautilus-property-browser.c:1061 src/nautilus-property-browser.c:1314
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -2664,6 +2664,10 @@ msgstr "Tahoe"
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
 msgstr "Detta tema använder fotorealistiska mappar."
+
+#: libnautilus-private/nautilus-customization-data.c:356
+msgid "reset"
+msgstr "återst."
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:381
@@ -4089,7 +4093,7 @@ msgstr "inget"
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-private/nautilus-icon-dnd.c:755
+#: libnautilus-private/nautilus-icon-dnd.c:769
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -4099,7 +4103,7 @@ msgstr ""
 "lämna objektet där du släppte det? Detta kommer att skriva över den lagrade "
 "manuella layouten."
 
-#: libnautilus-private/nautilus-icon-dnd.c:759
+#: libnautilus-private/nautilus-icon-dnd.c:773
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -4109,7 +4113,7 @@ msgstr ""
 "lämna dessa objekt där du släppte dem? Detta kommer att skriva över den "
 "lagrade manuella layouten."
 
-#: libnautilus-private/nautilus-icon-dnd.c:765
+#: libnautilus-private/nautilus-icon-dnd.c:779
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -4117,7 +4121,7 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna detta objekt där du släppte det?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:768
+#: libnautilus-private/nautilus-icon-dnd.c:782
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -4125,11 +4129,11 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna dessa objekt där du släppte dem?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:773
+#: libnautilus-private/nautilus-icon-dnd.c:787
 msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:774
+#: libnautilus-private/nautilus-icon-dnd.c:788
 msgid "Switch"
 msgstr "Byt"
 
@@ -5004,14 +5008,14 @@ msgstr "Bakgrund"
 msgid "%s's Home"
 msgstr "%.0sHem"
 
-#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1484
+#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1493
 msgid "Empty Trash..."
 msgstr "Töm papperskorgen..."
 
 #: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/nautilus-sidebar.c:1485
+#: src/nautilus-sidebar.c:1494
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
 
@@ -6245,7 +6249,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:542
+#: src/nautilus-sidebar.c:544
 msgid "Reset Background"
 msgstr "Återställ bakgrund"
 
@@ -7337,110 +7341,110 @@ msgstr "Lägg till ny..."
 msgid "Remove..."
 msgstr "Ta bort..."
 
-#: src/nautilus-property-browser.c:877
+#: src/nautilus-property-browser.c:880
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:878 src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:881 src/nautilus-property-browser.c:910
 msgid "Couldn't delete pattern"
 msgstr "Kunde inte ta bort mönster"
 
-#: src/nautilus-property-browser.c:906
+#: src/nautilus-property-browser.c:909
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:942
+#: src/nautilus-property-browser.c:945
 msgid "Create a New Emblem:"
 msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:947
+#: src/nautilus-property-browser.c:950
 msgid "Keyword:"
 msgstr "Nyckelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:960
+#: src/nautilus-property-browser.c:963
 msgid "Image:"
 msgstr "Bild:"
 
-#: src/nautilus-property-browser.c:964
+#: src/nautilus-property-browser.c:967
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:991
+#: src/nautilus-property-browser.c:994
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:999
 msgid "Color name:"
 msgstr "Färgnamn:"
 
-#: src/nautilus-property-browser.c:1007
+#: src/nautilus-property-browser.c:1010
 msgid "Color value:"
 msgstr "Färgvärde:"
 
-#: src/nautilus-property-browser.c:1043
+#: src/nautilus-property-browser.c:1046
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Tyvärr, \"%s\" är inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1048
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Tyvärr, du angav inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1047 src/nautilus-property-browser.c:1090
+#: src/nautilus-property-browser.c:1050 src/nautilus-property-browser.c:1093
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1058
+#: src/nautilus-property-browser.c:1061
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1092
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1112
+#: src/nautilus-property-browser.c:1115
 msgid "Select an image file to add as a pattern:"
 msgstr "Välj en bildfil att lägga till som mönster:"
 
-#: src/nautilus-property-browser.c:1171
+#: src/nautilus-property-browser.c:1174
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
-#: src/nautilus-property-browser.c:1172
+#: src/nautilus-property-browser.c:1175
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1231
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1313
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1331
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1329 src/nautilus-property-browser.c:1332
-#: src/nautilus-property-browser.c:1336 src/nautilus-property-browser.c:1365
+#: src/nautilus-property-browser.c:1332 src/nautilus-property-browser.c:1335
+#: src/nautilus-property-browser.c:1339 src/nautilus-property-browser.c:1368
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1331
+#: src/nautilus-property-browser.c:1334
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1334
+#: src/nautilus-property-browser.c:1337
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7449,64 +7453,64 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1364
+#: src/nautilus-property-browser.c:1367
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2023
+#: src/nautilus-property-browser.c:2025
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
-#: src/nautilus-property-browser.c:2031 src/nautilus-theme-selector.c:193
+#: src/nautilus-property-browser.c:2033 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:2036
+#: src/nautilus-property-browser.c:2038
 msgid "Add a New Pattern..."
 msgstr "Lägg till ett nytt mönster..."
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2041
 msgid "Add a New Color..."
 msgstr "Lägg till en ny färg..."
 
-#: src/nautilus-property-browser.c:2042
+#: src/nautilus-property-browser.c:2044
 msgid "Add a New Emblem..."
 msgstr "Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2065
+#: src/nautilus-property-browser.c:2067
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2070
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2071
+#: src/nautilus-property-browser.c:2073
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2082
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2088
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2105
+#: src/nautilus-property-browser.c:2107
 msgid "Remove a Pattern..."
 msgstr "Ta bort ett mönster..."
 
-#: src/nautilus-property-browser.c:2108
+#: src/nautilus-property-browser.c:2110
 msgid "Remove a Color..."
 msgstr "Ta bort en färg..."
 
-#: src/nautilus-property-browser.c:2111
+#: src/nautilus-property-browser.c:2113
 msgid "Remove an Emblem..."
 msgstr "Ta bort ett emblem..."
 
@@ -8098,7 +8102,7 @@ msgstr ""
 "Var vänlig och besök http://www.eazel.com/feedback.html för att komma med "
 "kommentarer, förslag och annan feedback."
 
-#: src/nautilus-sidebar.c:722
+#: src/nautilus-sidebar.c:724
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -8106,11 +8110,11 @@ msgstr ""
 "Du kan inte tilldela mer än en anpassad ikon åt gången! Var vänlig och dra "
 "endast en bild för att ställa in en anpassad ikon."
 
-#: src/nautilus-sidebar.c:724
+#: src/nautilus-sidebar.c:726
 msgid "More Than One Image"
 msgstr "Fler än en bild"
 
-#: src/nautilus-sidebar.c:743
+#: src/nautilus-sidebar.c:745
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -8118,11 +8122,11 @@ msgstr ""
 "Filen som du släppte är inte lokal. Du kan endast använda lokala bilder som "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:745
+#: src/nautilus-sidebar.c:747
 msgid "Local Images Only"
 msgstr "Endast lokala bilder"
 
-#: src/nautilus-sidebar.c:750
+#: src/nautilus-sidebar.c:752
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -8130,17 +8134,17 @@ msgstr ""
 "Filen som du släppte är inte en bild. Du kan endast använda lokala bilder "
 "anpassade ikoner."
 
-#: src/nautilus-sidebar.c:752
+#: src/nautilus-sidebar.c:754
 msgid "Images Only"
 msgstr "Endast bilder"
 
-#: src/nautilus-sidebar.c:1340
+#: src/nautilus-sidebar.c:1349
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1376
+#: src/nautilus-sidebar.c:1385
 msgid "Open with..."
 msgstr "Öppna med..."
 
