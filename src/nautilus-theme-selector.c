@@ -380,7 +380,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	g_free (temp_path);
 	
 	if (!g_file_exists (xml_path)) {
-		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme directory."), theme_path);
+		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme folder."), theme_path);
 		nautilus_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
 		g_free (message);
 	} else {
@@ -445,7 +445,7 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 		GtkFileSelection *file_dialog;
 
 		theme_selector->details->dialog = gtk_file_selection_new
-			(_("Select a theme directory to add as a new theme:"));
+			(_("Select a theme folder to add as a new theme:"));
 		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (theme_selector->details->dialog),
