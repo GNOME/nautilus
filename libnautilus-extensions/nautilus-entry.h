@@ -49,17 +49,21 @@ typedef struct NautilusEntryClass NautilusEntryClass;
 struct NautilusEntry {
 	GtkEntry parent;
 		
-	gchar *undo_text;
 	gboolean undo_registered;
 	gboolean handle_undo_key;
+	gboolean user_edit;
 };
 
 struct NautilusEntryClass {
 	GtkEntryClass parent_class;
+
+	void (*user_changed) (NautilusEntry *entry);
+
 };
 
 GtkType    nautilus_entry_get_type           (void);
 GtkWidget* nautilus_entry_new                (void);
+void 	   nautilus_entry_set_text 	     (NautilusEntry *entry, const gchar *text);
 void       nautilus_entry_select_all         (NautilusEntry *entry);
 void       nautilus_entry_select_all_at_idle (NautilusEntry *entry);
 void       nautilus_entry_set_undo_key       (NautilusEntry *entry,

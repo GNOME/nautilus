@@ -171,6 +171,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
+	nautilus_entry_set_undo_key (NAUTILUS_ENTRY (name_field), TRUE);
 	
 	vbox4 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox4);
@@ -183,6 +184,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	uri_field = nautilus_entry_new ();
 	gtk_widget_show (uri_field);
 	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);
+	nautilus_entry_set_undo_key (NAUTILUS_ENTRY (uri_field), TRUE);
 
 	hbox2 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox2);
@@ -477,9 +479,9 @@ on_select_row (GtkCList	       *clist,
 	g_assert(GTK_IS_ENTRY(uri_field));
 
 	selected = get_selected_bookmark();
-	gtk_entry_set_text(GTK_ENTRY(name_field), 
+	nautilus_entry_set_text(NAUTILUS_ENTRY (name_field), 
 			   nautilus_bookmark_get_name(selected));
-	gtk_entry_set_text(GTK_ENTRY(uri_field), 
+	nautilus_entry_set_text(NAUTILUS_ENTRY (uri_field), 
 			   nautilus_bookmark_get_uri(selected));
 }
 
@@ -521,7 +523,6 @@ on_text_field_focus_in_event (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
 	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
-	nautilus_entry_set_undo_key (NAUTILUS_ENTRY(widget), TRUE);
 	return FALSE;
 }
 
@@ -534,7 +535,6 @@ on_text_field_focus_out_event (GtkWidget *widget,
 
 	update_bookmark_from_text ();
 	gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
-	nautilus_entry_set_undo_key (NAUTILUS_ENTRY(widget), FALSE);
 	return FALSE;
 }
 
@@ -624,13 +624,13 @@ repopulate (void)
 		/* Block signals to avoid modifying non-existent selected item. */
 		gtk_signal_handler_block (GTK_OBJECT (name_field), 
 					  name_field_changed_signalID);
-		gtk_entry_set_text (GTK_ENTRY (name_field), "");
+		nautilus_entry_set_text (NAUTILUS_ENTRY (name_field), "");
 		gtk_signal_handler_unblock (GTK_OBJECT (name_field), 
 					    name_field_changed_signalID);
 
 		gtk_signal_handler_block (GTK_OBJECT (uri_field), 
 					  uri_field_changed_signalID);
-		gtk_entry_set_text (GTK_ENTRY (uri_field), "");
+		nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field), "");
 		gtk_signal_handler_unblock (GTK_OBJECT (uri_field), 
 					    uri_field_changed_signalID);
 	}

@@ -1,3 +1,33 @@
+2000-06-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize_class), 
+	(nautilus_entry_initialize):
+	Fixed bug 983.  Added user_changed signal.
+	
+	(nautilus_entry_destroy), (nautilus_entry_set_text),
+	(nautilus_entry_insert_text), (nautilus_entry_delete_text),
+	(free_undo_data), (register_edit_undo),
+	(restore_from_undo_snapshot_callback),
+	(nautilus_entry_set_undo_key):
+	Cleanups in the way undo was being registered.  Created
+	local undo data structure and removed cached undo text
+	from class.  Localized checking of undo registered
+	boolean to a single location.
+
+	(user_changed_callback):
+	Added callback coonected to user changed signal.
+	Undo registering is handled here.
+
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window),
+	(on_select_row), (on_text_field_focus_in_event),
+	(on_text_field_focus_out_event), (repopulate):
+	Updated code to properly handle undo.
+	
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_set_location):
+	Updated code to properly handle undo.
+
 2000-06-08  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1097 (double-click in list should activate

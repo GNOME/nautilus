@@ -32,7 +32,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
-
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <libgnome/gnome-defs.h>
@@ -370,6 +369,6 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal.*/
-	gtk_entry_set_text (bar->entry,
-			    location == NULL ? "" : location);	
+	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->entry),
+			    location == NULL ? "" : location);
 }

@@ -40,6 +40,19 @@
 
 #include <orb/orbit.h>
 
+enum {
+	USER_CHANGED,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
+
+typedef struct 
+{
+	char *undo_text;
+	gint position;
+} NautilusEntryUndoData;
+
+
 static void nautilus_entry_initialize 	    (NautilusEntry 	*entry);
 static void nautilus_entry_initialize_class (NautilusEntryClass *class);
 static void nautilus_entry_destroy	    (GtkObject 		*object);
@@ -53,7 +66,7 @@ static void nautilus_entry_delete_text      (GtkEditable    	*editable,
 			 		     gint            	start_pos,
 			 		     gint            	end_pos);
 
-static void update_undo_text 		    (NautilusEntry 	*entry);
+static void user_changed_callback            (NautilusEntry     *entry);
 
 /* Undo callbacks */
 static void register_edit_undo (NautilusEntry *entry);
@@ -68,7 +81,7 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	GtkEditableClass *editable_class;
-	
+		
 	widget_class = GTK_WIDGET_CLASS (class);
 	object_class = GTK_OBJECT_CLASS (class);
 	editable_class = GTK_EDITABLE_CLASS (class);
@@ -80,11 +93,28 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 	editable_class->insert_text = nautilus_entry_insert_text;
 	editable_class->delete_text = nautilus_entry_delete_text;
 
+	/* Set up signals */
+	signals[USER_CHANGED] = gtk_signal_new ("user_changed",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusEntryClass,
+						   user_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+				
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
 nautilus_entry_initialize (NautilusEntry *entry)
 {
+	entry->user_edit = TRUE;
+
+	gtk_signal_connect (GTK_OBJECT (entry), 
+		    "user_changed",
+		    GTK_SIGNAL_FUNC (user_changed_callback),
+		    NULL);
+
 }
 
 GtkWidget*
@@ -99,7 +129,6 @@ nautilus_entry_destroy (GtkObject *object)
 	NautilusEntry *entry;
 
 	entry = NAUTILUS_ENTRY (object);
-	g_free (entry->undo_text);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -186,6 +215,34 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 	gtk_idle_add ((GtkFunction)select_all_at_idle, entry);
 }
 
+/**
+ * nautilus_entry_set_text
+ *
+ * This function wraps gtk_entry_set_text.  It sets undo_registered
+ * to TRUE and preserves the old value for a later restore.  This is
+ * done so the programmatic changes to the entry do not register
+ * with the undo manager.
+ *  
+ * @entry: A NautilusEntry
+ * @test: The text to set
+ **/
+
+void 
+nautilus_entry_set_text (NautilusEntry *entry, const gchar *text)
+{
+	gboolean val;
+
+	entry->user_edit = FALSE;
+	
+	val = entry->undo_registered;
+	entry->undo_registered = TRUE;
+
+	gtk_entry_set_text ( GTK_ENTRY (entry), text);
+
+	entry->undo_registered = val;
+
+	entry->user_edit = TRUE;
+}
 
 static void 
 nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
@@ -195,11 +252,9 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 
 	entry = NAUTILUS_ENTRY(editable);
 
-	/* Register undo transaction */	
-	if (!entry->undo_registered) {
-		update_undo_text (entry);
-		register_edit_undo (entry);
-		entry->undo_registered = TRUE;
+	/* Fire off user changed signals */
+	if (entry->user_edit) {
+		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, insert_text, 
@@ -214,17 +269,30 @@ nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
 
 	entry = NAUTILUS_ENTRY(editable);
 
-	/* Register undo transaction */	
-	if (!entry->undo_registered) {
-		update_undo_text (entry);
-		register_edit_undo (entry);
-		entry->undo_registered = TRUE;
+	/* Fire off user changed signals */
+	if (entry->user_edit) {
+		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, delete_text, 
 				   (editable, start_pos, end_pos));
 }			 		     
 
+/* free_undo_data
+ * 
+ * Clean up routine to free entry undo data
+ */
+
+static void 
+free_undo_data (gpointer data)
+{
+	NautilusEntryUndoData *undo_data;
+
+	undo_data = (NautilusEntryUndoData *) data;
+	
+	g_free (undo_data->undo_text);
+	g_free (undo_data);
+}
 
 /* save_undo_snapshot_callback
  * 
@@ -234,11 +302,22 @@ nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
 static void
 register_edit_undo (NautilusEntry *entry)
 {	
+	NautilusEntryUndoData *undo_data;
+
+	if (entry->undo_registered) {
+		return;
+	}
+	
+	undo_data = g_new (NautilusEntryUndoData, 1);
+	undo_data->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+	undo_data->position = gtk_editable_get_position (GTK_EDITABLE (entry));
+	entry->undo_registered = TRUE;
+
 	nautilus_undo_register
 		(GTK_OBJECT (entry),
 		 restore_from_undo_snapshot_callback,
-		 g_strdup (entry->undo_text),
-		 (GDestroyNotify) g_free,
+		 undo_data,
+		 (GDestroyNotify) free_undo_data,
 		 _("Edit"),
 		 _("Undo Edit"),
 		 _("Undo the edit"),
@@ -246,13 +325,6 @@ register_edit_undo (NautilusEntry *entry)
 		 _("Redo the edit"));
 }
 
-
-static void
-update_undo_text (NautilusEntry *entry)
-{
-	g_free (entry->undo_text);
-	entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-}
 
 /* restore_from_undo_snapshot_callback
  * 
@@ -262,16 +334,30 @@ static void
 restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
 {
 	NautilusEntry *entry;
-
+	GtkWindow *window;
+	NautilusEntryUndoData *undo_data;
+	
 	entry = NAUTILUS_ENTRY (target);
+	undo_data = (NautilusEntryUndoData *) callback_data;
+
+	/* Reset the registered flag so we get a new item for future editing. */
+	entry->undo_registered = FALSE;
 
 	/* Register a new undo transaction for redo. */
-	update_undo_text (entry);
 	register_edit_undo (entry);
 	
 	/* Restore the text. */
-	gtk_entry_set_text (GTK_ENTRY(entry), callback_data);
-	update_undo_text (entry);
+	gtk_entry_set_text (GTK_ENTRY (entry), undo_data->undo_text);
+
+	/* Set focus to widget */
+	window = GTK_WINDOW (gtk_widget_get_toplevel ( GTK_WIDGET (target)));
+	gtk_window_set_focus (window, GTK_WIDGET (entry));
+
+	/* We have to do this call, because th eprevious call selects all text */
+	gtk_editable_select_region (GTK_EDITABLE (entry), 0, 0);
+
+	/* Set the i-beam to the end of the text */
+	gtk_editable_set_position ( GTK_EDITABLE (target), undo_data->position);
 
 	/* Reset the registered flag so we get a new item for future editing. */
 	entry->undo_registered = FALSE;
@@ -286,4 +372,12 @@ void
 nautilus_entry_set_undo_key (NautilusEntry *entry, gboolean value)
 {
 	entry->handle_undo_key = value;
+}
+
+
+static void 
+user_changed_callback (NautilusEntry     *entry)
+{
+	/* Register undo transaction */	
+	register_edit_undo (entry);
 }

@@ -29,6 +29,6 @@
 #include <gtk/gtkwindow.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
-GtkWindow *fm_properties_window_get_or_create (NautilusFile *);
+GtkWindow *fm_properties_window_get_or_create (NautilusFile *file);
 
 #endif /* FM_PROPERTIES_WINDOW_H */
