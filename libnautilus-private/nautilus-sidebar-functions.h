@@ -27,22 +27,7 @@
 
 #include <glib/glist.h>
 
-extern const char nautilus_sidebar_news_enabled_preference_name[];
-extern const char nautilus_sidebar_notes_enabled_preference_name[];
-extern const char nautilus_sidebar_history_enabled_preference_name[];
-extern const char nautilus_sidebar_tree_enabled_preference_name[];
-
-/*
- * A callback which can be invoked for each sidebar panel available.
- */
-typedef void (*NautilusSidebarPanelCallback) (const char *name,
-					      const char *iid,
-					      const char *preference_key,
-					      gpointer callback_data);
-
-GList *nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers (void);
-void   nautilus_sidebar_for_each_panel                             (NautilusSidebarPanelCallback callback,
-								    gpointer                     callback_data);
+GList *nautilus_sidebar_get_all_sidebar_panel_view_identifiers (void);
 
 #endif /* NAUTILUS_SIDEBAR_FUNCTIONS_H */
 

@@ -492,34 +492,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  "default_zoom_level"
 	},
 
-	/* Sidebar panel default */
-	{ nautilus_sidebar_news_enabled_preference_name,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ nautilus_sidebar_notes_enabled_preference_name,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ nautilus_sidebar_history_enabled_preference_name,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-	{ nautilus_sidebar_tree_enabled_preference_name,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
-
-	/* news panel preferences */
-	{ NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (6)
-	},
-	{ NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (5)
-	},
-
 	/* non-visible preferences */
 	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
 	  PREFERENCE_BOOLEAN,

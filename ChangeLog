@@ -1,3 +1,16 @@
+2002-11-05  James Willcox  <jwillcox@gnome.org>
+
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-sidebar-functions.c:
+	(sidebar_get_sidebar_panel_view_identifiers),
+	(nautilus_sidebar_get_all_sidebar_panel_view_identifiers):
+	* libnautilus-private/nautilus-sidebar-functions.h:
+	* src/nautilus-window.c: (nautilus_window_instance_init),
+	(nautilus_window_set_up_sidebar), (add_sidebar_panels):
+
+	Removed all the stuff that was used to show/hide sidebars.
+
 2002-11-05  Diego Gonzalez  <diego@pemas.net>
 
 	* po/POTFILES.in: remove nautilus-preferences-dialog.c and

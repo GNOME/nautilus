@@ -118,9 +118,8 @@ enum {
 static GList *history_list;
 static int side_pane_width_auto_value = SIDE_PANE_MINIMUM_WIDTH;
 
-static void update_sidebar_panels_from_preferences (NautilusWindow *window);
-static void sidebar_panels_changed_callback        (gpointer        user_data);
-static void cancel_view_as_callback                (NautilusWindow *window);
+static void add_sidebar_panels                  (NautilusWindow *window);
+static void cancel_view_as_callback             (NautilusWindow *window);
 
 GNOME_CLASS_BOILERPLATE (NautilusWindow, nautilus_window,
 			 BonoboWindow, BONOBO_TYPE_WINDOW)
@@ -153,23 +152,6 @@ set_up_default_icon_list (void)
 	gtk_window_set_default_icon_list (icon_list);
 
 	eel_g_list_free_deep_custom (icon_list, (GFunc) g_object_unref, NULL);
-}
-
-static void
-add_sidebar_panel_callback (const char *name,
-			    const char *iid,
-			    const char *preference_key,
-			    gpointer callback_data) 
-{
-	g_assert (name != NULL);
-	g_assert (iid != NULL);
-	g_assert (preference_key != NULL);
-	g_assert (NAUTILUS_IS_WINDOW (callback_data));
-	
-	eel_preferences_add_callback_while_alive (preference_key,
-						  sidebar_panels_changed_callback,
-						  callback_data,
-						  G_OBJECT (callback_data));
 }
 
 static void
@@ -207,9 +189,6 @@ nautilus_window_instance_init (NautilusWindow *window)
 		 NULL);
 
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
-
-	/* Keep track of changes in enabled state of sidebar panels */
-	nautilus_sidebar_for_each_panel (add_sidebar_panel_callback, window);
 
 	/* Keep the main event loop alive as long as the window exists */
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
@@ -676,7 +655,7 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 				      _("Information"));
 
 	/* Set up the sidebar panels. */
-	update_sidebar_panels_from_preferences (window);
+	add_sidebar_panels (window);
 	
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 }
@@ -1930,18 +1909,14 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 }
 
 /**
- * update_sidebar_panels_from_preferences:
+ * add_sidebar_panels:
  * @window:	A NautilusWindow
  *
- * Update the current list of sidebar panels from preferences.   
- *
- * Disabled panels are removed if they are already in the list.
- *
- * Enabled panels are added if they are not already in the list.
+ * Adds all sidebars available
  *
  */
 static void
-update_sidebar_panels_from_preferences (NautilusWindow *window)
+add_sidebar_panels (NautilusWindow *window)
 {
 	GList *identifier_list;
 
@@ -1951,23 +1926,9 @@ update_sidebar_panels_from_preferences (NautilusWindow *window)
 		return;
 	}
 
-	/* Obtain list of enabled view identifiers */
-	identifier_list = nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers ();
+	identifier_list = nautilus_sidebar_get_all_sidebar_panel_view_identifiers ();
 	nautilus_window_set_sidebar_panels (window, identifier_list);
 	nautilus_view_identifier_list_free (identifier_list);
-}
-
-/**
- * sidebar_panels_changed_callback:
- * @user_data:	Callback data
- *
- * Called when enabled/disabled preferences change for any
- * sidebar panel.
- */
-static void
-sidebar_panels_changed_callback (gpointer user_data)
-{
-	update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
 }
 
 static void 
