@@ -1,3 +1,26 @@
+2001-04-24  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fix bug 7963 (exiting Nautilus [with Ctrl-C for example] leaves
+	nautilus-adapter behind):
+
+	* src/nautilus-component-adapter-factory.c: (activate_factory),
+	(unref_factory), (release_factory), (get_corba_factory),
+	(nautilus_component_adapter_factory_initialize),
+	(nautilus_component_adapter_factory_destroy),
+	(nautilus_component_adapter_factory_initialize_class),
+	(component_adapter_factory_at_exit_destructor),
+	(nautilus_component_adapter_factory_get),
+	(nautilus_component_adapter_factory_create_adapter): Redo so it
+	creates the factory as needed, and doesn't keep a Bonobo reference
+	to the factory so it will die if Nautilus goes away.
+
+	* nautilus-clean.sh: Redo option parsing to use loop.
+
+	* components/throbber/main.c: (main): Fix main function to match
+	standard main. Tweak formatting.
+	
 2001-04-24  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 8418 (two more underline-accelerator conflicts)

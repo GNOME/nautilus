@@ -5,61 +5,36 @@
 # portable, and should be be expected to be used in any kind of
 # production capacity.
 
-quiet=no
 extreme=no
 medusa=no
+nokill=no
+quiet=no
 
-if [ $# -gt 0 ]
-then
-    arg=$1
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-n" ]
-    then
-	nokill=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
-if [ $# -gt 1 ]
-then
-    arg=$2
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
-if [ $# -gt 2 ]
-then
-    arg=$3
-
-    if [ "$arg" = "-q" ]
-    then
-	quiet=yes
-    elif [ "$arg" = "-x" ]
-    then
-	extreme=yes
-    elif [ "$arg" = "-m" ]
-    then
-	medusa=yes
-    fi
-fi
-
+while ( [ $# -gt 0 ] )
+do
+    case "$1" in 
+        '-a')
+            quiet=yes
+            shift
+        ;;
+	'-m')
+	    medusa=yes
+	    shift
+	;;
+	'-n')
+	    nokill=yes
+	    shift
+	;;
+        '-x')
+            extreme=yes
+            shift
+        ;;
+        *)
+            echo "nautilus-clean.sh unknown option: $1"
+            shift
+        ;;
+    esac
+done
 
 echo_unless_quiet ()
 {
