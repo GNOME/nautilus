@@ -3978,7 +3978,7 @@ nautilus_file_list_ref (GList *list)
 void
 nautilus_file_list_unref (GList *list)
 {
-	g_list_foreach (list, (GFunc) nautilus_file_unref, NULL);
+	nautilus_g_list_safe_for_each (list, (GFunc) nautilus_file_unref, NULL);
 }
 
 /**

@@ -1,5 +1,12 @@
 2000-10-07  Pavel Cisler <pavel@eazel.com>
 
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_list_unref):
+	Ooops, need to use nautilus_g_list_save_for_each in the
+	list unref call.
+
+2000-10-07  Pavel Cisler <pavel@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(dequeue_pending_idle_callback):
 	Add a FIXME to some unclear or wrong code.
