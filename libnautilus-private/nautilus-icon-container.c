@@ -3319,11 +3319,12 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 					       &click_policy_auto_value);
 }
 
-static void
+static gboolean
 handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
 	/* End renaming and commit change. */
 	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
+	return FALSE;
 }
 
 static void
@@ -3385,7 +3386,8 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 GTK_OBJECT (container));	
 
 
-	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event", handle_focus_out_event, NULL);	
+	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event",
+                            GTK_SIGNAL_FUNC (handle_focus_out_event), NULL);	
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
