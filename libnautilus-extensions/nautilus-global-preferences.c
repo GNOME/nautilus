@@ -50,9 +50,7 @@
 static const char untranslated_global_preferences_dialog_title[] = N_("Nautilus Preferences");
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _(untranslated_global_preferences_dialog_title)
 
-static const char PROXY_HOST_KEY[] = "/system/gnome-vfs/http-proxy-host";
-static const char PROXY_PORT_KEY[] = "/system/gnome-vfs/http-proxy-port";
-static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
+/* base path for NAUTILUS_PREFERENCES_HTTP_* */
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
 /* A structure that describes a single preferences dialog ui item. */
@@ -355,16 +353,22 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* Proxy defaults */
-	{ USE_PROXY_KEY,
+	{ NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ PROXY_PORT_KEY,
+	{ NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (8080) },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
 
@@ -810,23 +814,44 @@ static PreferenceDialogItem navigation_items[] = {
 	  0
 	},
 	{ N_("HTTP Proxy Settings"),
-	  USE_PROXY_KEY,
+	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 	  N_("Use HTTP Proxy"),
 	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
 	  NULL,
 	  0
 	},
 	{ N_("HTTP Proxy Settings"),
-	  PROXY_HOST_KEY,
+	  NAUTILUS_PREFERENCES_HTTP_PROXY_HOST,
 	  N_("Location:"),
 	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	  NULL,
 	  0
 	},
 	{ N_("HTTP Proxy Settings"),
-	  PROXY_PORT_KEY,
+	  NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 	  N_("Port:"),
 	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER,
+	  NULL,
+	  0
+	},
+	{ N_("HTTP Proxy Settings"),
+	  NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
+	  N_("Proxy requires a username and password:"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	  NULL,
+	  0
+	},
+	{ N_("HTTP Proxy Settings"),
+	  NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME,
+	  N_("Username:"),
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
+	  NULL,
+	  0
+	},
+	{ N_("HTTP Proxy Settings"),
+	  NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD,
+	  N_("Password:"),
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	  NULL,
 	  0
 	},

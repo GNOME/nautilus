@@ -68,9 +68,14 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
 
 /* Proxy */
-#define NAUTILUS_PREFERENCES_HTTP_PROXY                 	"preferences/http-proxy"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"preferences/http-proxy-port"
-#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"preferences/http-use-proxy"
+#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"/system/gnome-vfs/use-http-proxy"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_HOST                 	"/system/gnome-vfs/http-proxy-host"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"/system/gnome-vfs/http-proxy-port"
+
+/* HTTP Proxy Authentication */
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH                "/system/gnome-vfs/use-http-proxy-authorization"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome-vfs/http-proxy-authorization-user"
+#define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome-vfs/http-proxy-authorization-password"
 
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"

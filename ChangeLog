@@ -1,3 +1,25 @@
+2001-03-30  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: John Sullivan  <sullivan@eazel.com>
+
+	Part of bug 4832
+
+	Added preferences for HTTP proxy username/password.
+
+	Really, this is sub-optimal:
+
+	o The first-time druid still doesn't have UI for this
+	o The password is presented and stored in the clear (? does this matter?
+	  It's transmitted in the clear, too)
+	o If the user is using an HTTP proxy that requires authentication, but
+	  have not filled out the username/password correctly, they get an
+	  "Access Denied" dialog
+	o There's no way to tell embedded mozilla about this (bug 74171), so
+	  embedded mozilla prompts the user again for the password
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Mike Fleming  <mfleming@eazel.com>
