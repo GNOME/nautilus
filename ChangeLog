@@ -1,3 +1,19 @@
+2001-02-12  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: <ramiro@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(view_load_location_callback), (mozilla_net_stop_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback),
+	(mozilla_dom_mouse_click_callback), (vfs_read_callback),
+	(update_nautilus_uri), (dispatch_report_location_change),
+	(dispatch_report_load_complete):
+
+	Bug 6436: Throbber wasn't thobbing on mozilla-to-mozilla navigation.
+
+	Confirmed with Darin: call report_load_underway and report_load_complete
+	in case where report_location_changed is used.
+
 2001-02-12  John Harper  <jsh@eazel.com>
 
 	* src/nautilus-application.c (set_session_restart): set the

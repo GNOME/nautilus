@@ -82,7 +82,6 @@ enum nsEventStatus {
 struct NautilusMozillaContentViewDetails {
 	char 		*uri;			/* The URI stored here is nautilus's idea of the URI */
 	GtkWidget 	*mozilla;		/* If this is NULL, the mozilla widget has not yet been initialized */ 
-	gboolean	report_progress_to_view; /* If we notified the view via report_location_change, don't send report_load_xxx */  
 	NautilusView 	*nautilus_view;
 	GdkCursor 	*busy_cursor;
 	char		*vfs_read_buffer;
@@ -421,7 +420,6 @@ view_load_location_callback (NautilusView *nautilus_view,
 	DEBUG_MSG ((">nautilus_view_report_load_underway\n"));
 
 	nautilus_view_report_load_underway (nautilus_view);
-	view->details->report_progress_to_view = TRUE;
 
 	navigate_mozilla_to_nautilus_uri (view, location);
 
@@ -579,11 +577,7 @@ mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 
 	DEBUG_MSG (("gtkembedmoz signal: 'net_stop'\n"));
 
-	if (view->details->report_progress_to_view) {
-		async_report_load_complete (view);
-	} else {
-		DEBUG_MSG (("=%s : report_progress_to_view is FALSE\n", __FUNCTION__));
-	}
+	async_report_load_complete (view);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -598,7 +592,7 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	DEBUG_MSG (("+%s\n", __FUNCTION__));
+	/* DEBUG_MSG (("+%s\n", __FUNCTION__)); */
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
@@ -612,13 +606,13 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	/* This is actually not that efficient */
 	translated_link_message = translate_uri_mozilla_to_nautilus (view, link_message);
 
-	DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, translated_link_message));
+	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, translated_link_message)); */
 
 	async_report_status (view, translated_link_message);
 	g_free (translated_link_message);
 	g_free (link_message);
 
-	DEBUG_MSG (("-%s\n", __FUNCTION__))
+	/* DEBUG_MSG (("-%s\n", __FUNCTION__)) */
 }
 
 static void
@@ -641,14 +635,12 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	 * On occasion, it appears that current_progress may actuall exceed max_progress
 	 */
 
-	if (view->details->report_progress_to_view) {
-		if (max_progress == -1 || max_progress == 0) {
-			async_report_load_progress (view, 0);
-		} else if (max_progress < current_progress) {
-			async_report_load_progress (view, 1.0);
-		} else {
-			async_report_load_progress (view, current_progress / max_progress);
-		}
+	if (max_progress == -1 || max_progress == 0) {
+		async_report_load_progress (view, 0);
+	} else if (max_progress < current_progress) {
+		async_report_load_progress (view, 1.0);
+	} else {
+		async_report_load_progress (view, current_progress / max_progress);
 	}
 }
 
@@ -731,7 +723,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			if (should_mozilla_load_uri_directly (href_translated) 
 			    && 0 == strcmp (href_full, href_translated)) {
 				/* If the URI doesn't need to be translated and we can load it directly,
-				 * then just keep going...report_location_changed will happen in the
+				 * then just keep going...report_location_change will happen in the
 				 * mozilla_location_callback.
 				 */
 				DEBUG_MSG (("=%s : allowing navigate to continue\n", __FUNCTION__));
@@ -825,10 +817,9 @@ vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 		
 		gnome_vfs_async_close (handle, (GnomeVFSAsyncCloseCallback) gtk_true, NULL);
 
-		if (view->details->report_progress_to_view) {
-			DEBUG_MSG ((">nautilus_view_report_load_complete\n"));
-			nautilus_view_report_load_complete (view->details->nautilus_view);
-		}
+		DEBUG_MSG ((">nautilus_view_report_load_complete\n"));
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+
 		DEBUG_MSG (("=%s load complete\n", __FUNCTION__));
     	} else {
 		gnome_vfs_async_read (handle, view->details->vfs_read_buffer, VFS_READ_BUFFER_SIZE, vfs_read_callback, view);
@@ -977,8 +968,6 @@ update_nautilus_uri (NautilusMozillaContentView *view, const char *nautilus_uri)
 	view->details->uri = g_strdup (nautilus_uri);
 
 	DEBUG_MSG (("=%s current URI is now '%s'\n", __FUNCTION__, view->details->uri));
-
-	view->details->report_progress_to_view = FALSE;
 
 	async_report_location_change (view, view->details->uri);
 }
@@ -1544,6 +1533,8 @@ DISPATCH_STRING_TMPL (report_status, report_status, link_message)
 
 DISPATCH_STRING_TMPL (open_location, open_location_in_this_window, open_uri)
 
+/* NOTE: This calls report_load_underway as well to start the throbber throbbing */
+
 static int /* GtkFunction */
 dispatch_report_location_change (gpointer data)
 {
@@ -1555,6 +1546,9 @@ dispatch_report_location_change (gpointer data)
 
 	if (!GTK_OBJECT_DESTROYED (view)) {
 		nautilus_view_report_location_change (view->details->nautilus_view, view->details->pending_report_uri, NULL, view->details->pending_report_uri);
+		nautilus_view_report_load_underway (view->details->nautilus_view);
+		DEBUG_MSG ((">>nautilus_view_report_location_change\n"));
+
 		g_free (view->details->pending_report_uri);
 		view->details->pending_report_uri = NULL;
 	}
@@ -1593,7 +1587,7 @@ dispatch_report_load_complete (gpointer data)
 	view->details->is_pending_report_load_complete = FALSE;
 
 	if (!GTK_OBJECT_DESTROYED (view)) {
-		DEBUG_MSG ((">>nautilus_view_report_load_failed\n"));
+		DEBUG_MSG ((">>nautilus_view_report_load_complete\n"));
 		nautilus_view_report_load_complete (view->details->nautilus_view);
 	}
 
@@ -1648,6 +1642,10 @@ dispatch_report_load_progress (gpointer data)
 
 
 ASYNC_STRING_WRAPPER_TMPL (set_title, title)
+
+/* NOTE:  dispatch_report_location_change calls report_load_underway as
+ * well to start the throbber throbbing
+ */
 
 ASYNC_STRING_WRAPPER_TMPL (report_location_change, report_uri)
 
