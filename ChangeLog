@@ -1,5 +1,30 @@
 2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
 
+        So, I thought I was fixing this bug in the Eazel bugtracker. I hack
+        away, and get gzipped man files showing up in the Help sidebar. Turns
+        out, that the bug I /should/ have been working on was some info-files
+        now showing up in the Help sidebar.
+
+        Oh well, at least we now get gzipp'd man files showing up in the
+        sidebar (which is most man files nowadays).
+
+        So I continuied hacking and fixd bug #4414 (info files in Debian do
+        not show up in Help sidebar)
+
+        * components/help/hyperbola-filefmt.c:
+        (extract_secnum_from_filename),
+        (name_without_suffix): New functions
+
+        (fmt_man_populate_tree_from_subdir):
+        gnome-man2html2 actually supports gzip'd files. So this needed some
+        major work to get it to support them gzip'd files.
+
+        (fmt_info_populate_tree):
+        Also populate tree from the /usr/share/info subdir. I think this helps
+        destroy bug #4414
+
+2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
+
         More Fixing for bug #5118 (tags within a title do not appear in the
         TOC). There are a few 'difficult' cases that are still not supported
         and we probably won't support.

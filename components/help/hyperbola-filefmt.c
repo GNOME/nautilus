@@ -325,6 +325,39 @@ fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
 }
 
 /******** Man page format ********/
+
+/* Caller must free this */
+static char *
+extract_secnum_from_filename (const char *filename) {
+	char *end_string;
+	
+	end_string = strstr (filename, ".gz");
+	if (!end_string) {
+		/* Not a gzipped man file */
+		return g_strdup (strrchr (filename, '.'));
+	} else {
+		/* Its a gzipped man file so we need to return the
+		 * secnum */
+		return g_strndup (end_string-2, 2);
+	}
+	
+}
+
+/* Caller must free this */
+static char *
+man_name_without_suffix (const char *filename) {
+	char *end_string;
+
+	end_string = strstr (filename, ".gz");
+	if (end_string) {
+		/* e.g. manfile.1.gz  would return manfile */
+		return g_strndup (filename, end_string-filename-2);
+	} else {
+		/* e.g. manfile.1 would return manfile */
+		return g_strndup (filename, strlen (filename)-2);
+	}
+}
+
 static void
 fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, char **defpath, char secnum)
 {
@@ -343,18 +376,28 @@ fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, ch
   while((dent = readdir(dirh)))
     {
       char *ctmp;
+      char *manname;
 
       if(dent->d_name[0] == '.')
-	continue;
+	      continue;
 
-      ctmp = strrchr(dent->d_name, '.');
+      ctmp = extract_secnum_from_filename (dent->d_name);
       if(!ctmp)
 	continue;
 
-      if(ctmp[1] != secnum)
-	continue; /* maybe the extension was '.gz' or something, which we most definitely don't handle right now */      
+      if(ctmp[1] != secnum) {
+	      g_free (ctmp);
+	      continue;
+      }
 
-      g_snprintf(namebuf, sizeof(namebuf), "%.*s", (int)(ctmp - dent->d_name), dent->d_name);
+      manname = man_name_without_suffix (dent->d_name);
+      if (strstr (dent->d_name, ".gz")) {
+	      g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)strlen (manname), manname);
+      } else {
+	    /*  g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)(ctmp - dent->d_name), dent->d_name); */
+	      g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)strlen (manname), manname);
+      }
+      g_free (manname);
       strcpy(titlebuf, namebuf);
       strcat(titlebuf, " (man)");
 
@@ -366,6 +409,7 @@ fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, ch
 	make_treesection(tree, thispath);
 
       hyperbola_doc_tree_add(tree, HYP_TREE_NODE_PAGE, (const char **)(thispath?thispath:defpath), titlebuf, uribuf);
+      g_free (ctmp);
     }
 
   closedir(dirh);
@@ -549,7 +593,7 @@ fmt_info_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, c
 
       if(dent->d_name[0] == '.')
 	continue;
-
+      
       do {
 	if(ctmp) *ctmp = '\0';
 	ctmp = strrchr(dent->d_name, '.');
@@ -586,7 +630,8 @@ fmt_info_populate_tree(HyperbolaDocTree *tree)
   translate_array(defpath);
   make_treesection(tree, defpath);
 
-  fmt_info_populate_tree_for_subdir(tree, "/usr/info", defpath);
+  fmt_info_populate_tree_for_subdir (tree, "/usr/info", defpath);
+  fmt_info_populate_tree_for_subdir (tree, "/usr/share/info", defpath);
   if(strcmp(INFODIR, "/usr/info"))
     fmt_info_populate_tree_for_subdir(tree, INFODIR, defpath);
 
