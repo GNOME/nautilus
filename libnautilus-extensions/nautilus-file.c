@@ -36,6 +36,7 @@
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-mime-info.h>
 
 #include <stdlib.h>
 #include <parser.h>
@@ -1359,7 +1360,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		return g_strdup (_("unknown type"));
 	}
 
-	description = gnome_mime_description (mime_type);
+	description = gnome_vfs_mime_description (mime_type);
 	if (nautilus_strlen (description) > 0) {
 		return g_strdup (description);
 	}

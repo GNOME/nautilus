@@ -36,6 +36,7 @@
 #include <gnome.h>
 
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include "help-method.h"
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs-module-shared.h>
@@ -141,7 +142,7 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 		return FALSE;
 
 	help_uri->file = file;
-	mime_type = gnome_mime_type_of_file (file);
+	mime_type = gnome_vfs_mime_type_of_file (file);
 	if (!strcmp (mime_type, "text/sgml") ||
 	    !strcmp (mime_type, "exported SGML document text"))
 		help_uri->type = SGML_FILE;

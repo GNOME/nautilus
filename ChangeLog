@@ -1,3 +1,30 @@
+2000-05-01  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 575 (Make Nautilus use gnome-vfs-mime)
+
+	Converted all the (few) places where Nautilus code was 
+	using the old gnome-libs MIME API to use the new gnome-vfs
+	MIME API.
+
+	* components/help/help-method.c (convert_file_to_uri):
+	Use gnome_vfs_mime_type_of_file. This function should
+	probably use NautilusFile rather than calling the MIME
+	stuff directly, but I just couldn't get distracted into
+	trying to improve it.
+	
+	* libnautilus-extensions/nautilus-file.c
+	(nautilus_file_get_type_as_string): 
+	Use gnome_vfs_mime_description.
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	Use gnome_vfs_mime_get_value.
+
+
+	* data/mime/nautilus.keys: Added a translation for
+	"special/symlink" because it now starts showing up when
+	using ftp:// locations. Perhaps we need to fix something
+	in ftp also.
+
 2000-05-01  Darin Adler  <darin@eazel.com>
 
         * HACKING: Added option for eog. (Sorry Maciej, I had done it

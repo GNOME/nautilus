@@ -37,6 +37,7 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-mime-info.h>
 
 #include <parser.h>
 #include <xmlmemory.h>
@@ -437,7 +438,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 
         mime_type = nautilus_file_get_mime_type (file);
         if (mime_type != NULL) {
-                icon_name = gnome_mime_get_value (mime_type, "icon-filename");
+                icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
 		if (icon_name != NULL) {
 			return icon_name;
 		}
