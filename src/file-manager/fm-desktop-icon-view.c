@@ -77,10 +77,10 @@ static void     fm_desktop_icon_view_trash_state_changed_callback         (Nauti
 									   gboolean                state,
 									   gpointer                callback_data);
 static void     volume_mounted_callback         			  (NautilusVolumeMonitor  *monitor,
-									   NautilusDeviceInfo     *info,
+									   NautilusVolume     	  *volume,
 									   FMDesktopIconView      *icon_view);
 static void     volume_unmounted_callback         			  (NautilusVolumeMonitor  *monitor,
-									   NautilusDeviceInfo     *info,
+									   NautilusVolume     	  *volume,
 									   FMDesktopIconView      *icon_view);
 static void     mount_unmount_removable                                   (GtkCheckMenuItem       *item,
 									   FMDesktopIconView      *icon_view);
@@ -245,7 +245,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    desktop_icon_view);
 
 	/* Check for mountable devices */
-	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
+	nautilus_volume_monitor_find_volumes (desktop_icon_view->details->volume_monitor);
 }
 
 static void
@@ -390,30 +390,30 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 }
 
 static void
-volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *info, 
+volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume, 
 			 FMDesktopIconView *icon_view)
 {
 	gboolean result;
 	char *desktop_path, *target_uri, *icon_name;
 		
 	/* Get icon type */
-	if (strcmp (info->mount_type, "cdrom") == 0) {
+	if (strcmp (volume->mount_type, "cdrom") == 0) {
 		icon_name = g_strdup("i-cdrom.png");
-	} else if (strcmp (info->mount_type, "floppy") == 0) {
+	} else if (strcmp (volume->mount_type, "floppy") == 0) {
 		icon_name = g_strdup("i-floppy.png");
 	} else {
 		icon_name = g_strdup("i-blockdev.png");
 	}
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = nautilus_get_uri_from_local_path (info->mount_path);
+	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
 
 	/* Create link */
-	result = nautilus_link_create (desktop_path, info->volume_name, icon_name, target_uri);
+	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, target_uri);
 	if (result) {		
 		char *link_uri;
 		
-		link_uri = nautilus_make_path (desktop_path, info->volume_name);
+		link_uri = nautilus_make_path (desktop_path, volume->volume_name);
 
 		/* Identify this as a mount link */
 		nautilus_link_set_type (link_uri, NAUTILUS_LINK_MOUNT);
@@ -426,7 +426,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *inf
 }
 
 static void
-volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *info, 
+volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume, 
 			   FMDesktopIconView *icon_view)
 {
 	GnomeVFSResult result;
@@ -434,7 +434,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusDeviceInfo *i
 	GList dummy_list;
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	link_uri = nautilus_make_path (desktop_path, info->volume_name);
+	link_uri = nautilus_make_path (desktop_path, volume->volume_name);
 	
 	if (link_uri != NULL) {
 		/* Remove mounted device icon from desktop */

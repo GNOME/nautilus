@@ -1,3 +1,34 @@
+2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize),
+	(nautilus_volume_monitor_destroy), (mount_volume_is_mounted),
+	(mount_volume_cdrom_set_state), (mount_volume_floppy_set_state),
+	(mount_volume_ext2_set_state), (mount_volume_set_state),
+	(volume_set_state_empty), (mount_volume_mount),
+	(mount_volume_activate_cdrom), (mount_volume_activate_floppy),
+	(mount_volume_activate_ext2), (mount_volume_activate),
+	(eject_cdrom), (mount_volume_deactivate),
+	(mount_volume_do_nothing), (mount_volume_check_change),
+	(mount_volumes_update_is_mounted), (mount_volumes_check_status),
+	(mount_volume_floppy_add), (mount_volume_ext2_add),
+	(mount_volume_iso9660_add), (mount_volume_add_aliases),
+	(add_mount_volume), (mntent_is_removable_fs),
+	(nautilus_volume_monitor_find_volumes),
+	(nautilus_volume_monitor_each_volume),
+	(nautilus_volume_monitor_each_mounted_volume),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(free_volume_info), (get_iso9660_volume_name),
+	(get_ext2_volume_name), (get_floppy_volume_name):
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize), (volume_mounted_callback),
+	(volume_unmounted_callback):
+
+	More naming fixes.  Remove info from NautilusDeviceInfo and renamed it
+	NautilusVolume.  Removed device naming and use volume instead.  Named other
+	structs with Nautilus prepended.
+	
 2000-08-18  John Sullivan  <sullivan@eazel.com>
 
 	More work on bug 1750 ("Reveal in New Window" feature for 
