@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-02 04:09+0200\n"
-"PO-Revision-Date: 2004-06-02 11:33+0200\n"
+"POT-Creation-Date: 2004-06-08 04:20+0200\n"
+"PO-Revision-Date: 2004-06-08 13:26+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1902,7 +1902,17 @@ msgstr "Lituji, nemohu uložit vlastní emblém."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Lituji, nemohu uložit název vlastního emblému."
 
-#: libnautilus-private/nautilus-file-operations-progress.c:457
+#: libnautilus-private/nautilus-file-operations-progress.c:393
+#, c-format
+msgid "(%d:%02d:%d Remaining)"
+msgstr "(zbývá %d:%02d:%d)"
+
+#: libnautilus-private/nautilus-file-operations-progress.c:397
+#, c-format
+msgid "(%d:%02d Remaining)"
+msgstr "(zbývá %d:%02d)"
+
+#: libnautilus-private/nautilus-file-operations-progress.c:510
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld z %ld"
