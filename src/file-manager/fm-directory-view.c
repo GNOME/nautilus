@@ -6599,12 +6599,47 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+cancel_activate (gpointer callback_data)
+{
+	ActivateParameters *parameters;
+
+	parameters = (ActivateParameters *) callback_data;
+
+	parameters->cancelled = TRUE;
+	
+	if (!parameters->mounting) {
+		nautilus_file_cancel_call_when_ready (parameters->file, 
+						      parameters->callback, 
+						      parameters);
+		
+		nautilus_file_unref (parameters->file);
+		
+		g_free (parameters);
+	}
+}
+
+
+static void
 activate_weak_notify (gpointer user_data, 
 		      GObject *object)
 {
 	eel_timed_wait_stop (cancel_activate_callback, user_data);
-	cancel_activate_callback (user_data);
+	
+	cancel_activate (user_data);
 }	      
+
+static void
+cancel_activate_callback (gpointer callback_data)
+{
+	ActivateParameters *parameters;
+	parameters = (ActivateParameters *) callback_data;
+
+	g_object_weak_unref (G_OBJECT (parameters->view), 
+			     activate_weak_notify, 
+			     parameters);
+	
+	cancel_activate (callback_data);
+}
 
 static void
 stop_activate (ActivateParameters *parameters)
@@ -6614,7 +6649,6 @@ stop_activate (ActivateParameters *parameters)
 			     activate_weak_notify, 
 			     parameters);
 }
-
 
 static void
 activate_callback (NautilusFile *file, gpointer callback_data)
@@ -6808,24 +6842,6 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 		(actual_file, attributes, activate_callback, parameters);
 }
 
-static void
-cancel_activate_callback (gpointer callback_data)
-{
-	ActivateParameters *parameters;
-
-	parameters = (ActivateParameters *) callback_data;
-
-	parameters->cancelled = TRUE;
-	if (!parameters->mounting) {
-		nautilus_file_cancel_call_when_ready (parameters->file, 
-						      parameters->callback, 
-						      parameters);
-		
-		nautilus_file_unref (parameters->file);
-		
-		g_free (parameters);
-	}
-}
 
 /**
  * fm_directory_view_activate_file:

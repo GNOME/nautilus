@@ -1,5 +1,12 @@
 2005-01-25  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c: (cancel_activate),
+	(activate_weak_notify), (cancel_activate_callback):
+	weak_unref the view if we cancel the activation.
+	Might fix #145789
+
+2005-01-25  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Post release version bump.
 
