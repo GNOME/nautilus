@@ -2,10 +2,10 @@
 # Young-Ho Cha <ganadist@mizi.com>, 2000, 2001, 2002, 2004
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.5.6\n"
+"Project-Id-Version: nautilus 2.5.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 14:56+0100\n"
-"PO-Revision-Date: 2004-02-08 01:54+0900\n"
+"POT-Creation-Date: 2004-02-25 01:00+0900\n"
+"PO-Revision-Date: 2004-02-25 01:05+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1181,7 +1181,7 @@ msgstr "파일 기본 설정 대화상자에서 '특별' 플래그 사용"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr ""
+msgstr "전통적인 노틸러스 방식을 사용합니다. 모든 창이 브라우저가 됩니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1306,7 +1306,7 @@ msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
-msgstr ""
+msgstr "참이면, 모든 노틸러스 창이 브라우저 창이 됩니다. 2.6 버전보다 앞 버전에서 노틸러스는 이렇게 동작했었고, 일부 사람들은 이런 방식을 더 좋아합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1643,26 +1643,23 @@ msgstr "가장자리 창의 너비"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "위로 이동(_U)"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "아래로 이동(_U)"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "%s 보기"
+msgstr "보기(_S)"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "도움말(_H)"
+msgstr "감추기(_H)"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "기본 바탕색 사용(_D)"
+msgstr "기본값 사용(_D)"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2113,6 +2110,10 @@ msgid "Replace _All"
 msgstr "모두 바꾸기(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4714
 #, c-format
@@ -2167,6 +2168,9 @@ msgid " (another copy)"
 msgstr " (또 다른 사본)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2202,6 +2206,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (또 다른 사본)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -4101,9 +4108,9 @@ msgid "An _Application..."
 msgstr "응용프로그램(_A)..."
 
 #: src/file-manager/fm-directory-view.c:3915
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "휴지통을 복사할 수 없습니다."
+msgstr "%s을(를) 열 수 없습니다"
 
 #: src/file-manager/fm-directory-view.c:3918
 #, c-format
@@ -4117,6 +4124,9 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"%s 파일 이름으로 이 파일이 \"%s\" 타입이라는 걸 알 수 있습니다. 파일의 내용을 보면 이 파일이 \"%s\" 타입이라는 걸 알 수 있습니다. 이 파일을 열면, 시스템에 보안상의 위험이 발생할 수도 있습니다.\n"
+"\n"
+"직접 만든 파일이 아니라면 파일을 열지 마십시오. 아니면 신뢰할 수 있는 곳에서 파일을 받으십시오. 파일을 열려면, 파일을 \"%s\"에 맞는 확장자로 이름을 바꾸시고, 파일을 여십시오. 아니면, \"다른 프로그램으로 열기\" 메뉴에서 파일을 열 프로그램을 직접 지정하십시오."
 
 #: src/file-manager/fm-directory-view.c:4289
 #, c-format
@@ -5675,6 +5685,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5783,7 +5794,6 @@ msgid "Connect to Server"
 msgstr "서버에 연결"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _name:"
 msgstr "바로 가기 이름(_N):"
 
@@ -6138,7 +6148,7 @@ msgstr ""
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
-msgstr "찾아보기 창을 엽니다."
+msgstr "브라우저 창을 엽니다."
 
 #: src/nautilus-main.c:199
 msgid "Quit Nautilus."
@@ -6159,22 +6169,27 @@ msgid "Nautilus"
 msgstr "노틸러스"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "노틸러스: --check는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "노틸러스: --check는 다른 옵션과 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "노틸러스: --quit는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "노틸러스: --restart는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "노틸러스: --geometry는 하나이상의  URI와 같이 사용할 수 없습니다.\n"
 
@@ -6391,7 +6406,7 @@ msgstr "다른 프로그램으로 보기..."
 #: src/nautilus-navigation-window.c:733
 #, c-format
 msgid "File Browser: %s"
-msgstr "파일 찾아보기: %s"
+msgstr "파일 브라우저: %s"
 
 #: src/nautilus-navigation-window.c:1117
 msgid "One of the side panels encountered an error and can't continue."
