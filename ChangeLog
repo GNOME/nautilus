@@ -1,3 +1,35 @@
+2000-09-24  Andy Hertzfeld  <andy@eazel.com>
+	
+	* src/nautilus-throbber.c: (get_throbber_dimensions),
+	(load_themed_image), (nautilus_throbber_load_images),
+	(nautilus_throbber_button_press_event),
+	(nautilus_throbber_set_small_mode):
+	implemented a small mode for the throbber to fix bug 3188.  Also,
+	cleaned up some other throbber problems.
+	* src/nautilus-throbber.h:
+	added nautilus_throbber_set_small_mode, as part of fixing 3188
+	* src/nautilus-window-toolbars.c: (allocate_throbber):
+	set the small mode when necessary
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_directory_and_parents), (nautilus_copy_uri_simple):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	added a "nautilus_copy_uri_simple" cover to gnome_vfs_xfer_uri to
+	make it easy to replace 'cp' system calls.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy), (make_drag_image),
+	(make_color_drag_image), (remove_background), (remove_emblem),
+	(add_background_to_browser), (emblem_dialog_clicked),
+	(make_property_tile), (make_properties_from_directories),
+	(make_properties_from_xml_node):
+	changed the way colors are presented by the property browser to
+	use names instead of color values and to be more consistent with
+	backgrounds.  Also, cleaned up the error handling and replaced
+        'system' calls that had quoting problems with vfs calls, fixing bugs
+	1249 and 2539
+
 2000-09-24  Josh Barrow  <linuxfan@ionet.net>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:

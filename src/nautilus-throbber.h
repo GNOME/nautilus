@@ -59,6 +59,7 @@ GtkWidget *	nautilus_throbber_new		(void);
 
 void		nautilus_throbber_start		(NautilusThrobber *throbber);
 void		nautilus_throbber_stop		(NautilusThrobber *throbber);
+void		nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode);
 
 #ifdef __cplusplus
 }

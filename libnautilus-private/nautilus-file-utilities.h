@@ -90,6 +90,9 @@ NautilusReadFileHandle *nautilus_read_file_async            (const char         
 							     gpointer                   callback_data);
 void                    nautilus_read_file_cancel           (NautilusReadFileHandle    *handle);
 
+/* Convenience routine for simple file copying using text-based uris */
+GnomeVFSResult			nautilus_copy_uri_simple 			(const char *source_uri, const char *dest_uri);
+
 /* gnome-vfs cover to make a directory and parents */
 GnomeVFSResult          nautilus_make_directory_and_parents (GnomeVFSURI               *uri,
 							     guint                      permissions);

@@ -426,6 +426,7 @@ nautilus_user_main_directory_exists(void)
 	return directory_exists;
 }
 
+
 /**
  * nautilus_get_user_main_directory:
  * 
@@ -848,6 +849,25 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	*/
 	result = gnome_vfs_make_directory_for_uri (uri, permissions);
 	return result;
+}
+
+GnomeVFSResult
+nautilus_copy_uri_simple ( const char *source_uri, const char *dest_uri)
+{
+	GnomeVFSResult result;
+	GnomeVFSURI *real_source_uri, *real_dest_uri;
+	real_source_uri = gnome_vfs_uri_new (source_uri);
+	real_dest_uri = gnome_vfs_uri_new (dest_uri);
+		
+	result = gnome_vfs_xfer_uri (real_source_uri, real_dest_uri,
+					GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
+					GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+					NULL, NULL);
+		
+	gnome_vfs_uri_unref (real_source_uri);
+	gnome_vfs_uri_unref (real_dest_uri);
+		
+	return  result;
 }
 
 gboolean

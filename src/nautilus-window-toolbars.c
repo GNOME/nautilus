@@ -339,11 +339,16 @@ static GtkWidget*
 allocate_throbber (GtkWidget *toolbar)
 {
 	GtkWidget *throbber;
+	gboolean small_mode;
 	
 	throbber = nautilus_throbber_new ();
 	gtk_widget_show (throbber);
 	gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar), throbber, NULL, NULL);
 	nautilus_toolbar_set_throbber (NAUTILUS_TOOLBAR (toolbar), throbber);
+	
+	small_mode = GTK_TOOLBAR (toolbar)->style != GTK_TOOLBAR_BOTH;
+	nautilus_throbber_set_small_mode (NAUTILUS_THROBBER (throbber), small_mode);
+	
 	return throbber;
 }
 

@@ -99,7 +99,9 @@ struct NautilusPropertyBrowserDetails {
 	
 	int category_position;
 	int content_table_width;
-	
+
+	GdkPixbuf *property_chit;
+		
 	gboolean remove_mode;
 	gboolean keep_around;
 	gboolean has_local;
@@ -149,10 +151,9 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 #define PROPERTY_BROWSER_WIDTH 528
 #define PROPERTY_BROWSER_HEIGHT 322
 
-
-
 #define MAX_ICON_WIDTH 64
 #define MAX_ICON_HEIGHT 64
+#define COLOR_SQUARE_SIZE 48
 
 #define CONTENT_TABLE_HEIGHT 4
 
@@ -191,6 +192,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
 	GtkWidget *viewport;
+	char *temp_str;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 	widget = GTK_WIDGET (object);
@@ -201,6 +203,11 @@ nautilus_property_browser_initialize (GtkObject *object)
 	property_browser->details->category = g_strdup ("backgrounds");
 	property_browser->details->dragged_file = NULL;
 	property_browser->details->drag_type = NULL;
+
+	/* load the chit frame */
+	temp_str = nautilus_pixmap_file ("chit_frame.png");
+	property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str);
+	g_free (temp_str);
 	
 	/* set the initial size of the property browser */
 	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
@@ -364,6 +371,10 @@ nautilus_property_browser_destroy (GtkObject *object)
 	g_free (property_browser->details->category);
 	g_free (property_browser->details->dragged_file);
 	g_free (property_browser->details->drag_type);
+	
+	if (property_browser->details->property_chit) {
+		gdk_pixbuf_unref (property_browser->details->property_chit);
+	}
 	
 	g_free (property_browser->details);
 	
@@ -539,8 +550,8 @@ ensure_uri_is_image(const char *uri)
 static GdkPixbuf *
 make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
 {
-	GdkPixbuf *pixbuf, *orig_pixbuf, *frame;
-	char *image_file_name, *temp_str;
+	GdkPixbuf *pixbuf, *orig_pixbuf;
+	char *image_file_name;
 
 	image_file_name = g_strdup_printf ("%s/%s/%s",
 					   NAUTILUS_DATADIR,
@@ -565,11 +576,7 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	
 	/* background properties are always a fixed size, while others are pinned to the max size */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		frame = gdk_pixbuf_new_from_file (temp_str);
-		g_free (temp_str);
-		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, frame, TRUE);
-		gdk_pixbuf_unref (frame);
+		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, property_browser->details->property_chit, TRUE);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 		gdk_pixbuf_unref (orig_pixbuf);
@@ -583,16 +590,16 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 /* create a pixbuf and fill it with a color */
 
 static GdkPixbuf*
-make_color_drag_image(NautilusPropertyBrowser *property_browser, const char *color_spec)
+make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *color_spec)
 {
-	GdkPixbuf *color_square = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 48, 48);
-	
-	/* turn the color into a 32-bit integer */
+	GdkPixbuf *color_square;
 	int row, col, stride;
 	char *pixels, *row_pixels;
 	GdkColor color;
+
+	color_square = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, COLOR_SQUARE_SIZE, COLOR_SQUARE_SIZE);
 	
-	gdk_color_parse(property_browser->details->dragged_file, &color);
+	gdk_color_parse(color_spec, &color);
 	color.red >>= 8;
 	color.green >>= 8;
 	color.blue >>= 8;
@@ -601,16 +608,17 @@ make_color_drag_image(NautilusPropertyBrowser *property_browser, const char *col
 	stride = gdk_pixbuf_get_rowstride (color_square);
 	
 	/* loop through and set each pixel */
-	for (row = 0; row < 48; row++) {
+	for (row = 0; row < COLOR_SQUARE_SIZE; row++) {
 		row_pixels =  (pixels + (row * stride));
-		for (col = 0; col < 48; col++) {		
+		for (col = 0; col < COLOR_SQUARE_SIZE; col++) {		
 			*row_pixels++ = color.red;
 			*row_pixels++ = color.green;
 			*row_pixels++ = color.blue;
 			*row_pixels++ = 255;
 		}
 	}
-	return color_square;
+	
+	return nautilus_customization_make_background_chit (color_square, property_browser->details->property_chit, TRUE);	
 }
 
 /* this callback handles button presses on the category widget. It maintains the select color */
@@ -712,10 +720,9 @@ remove_background(NautilusPropertyBrowser *property_browser, const char* backgro
 
 	/* delete the background from the background directory */
 	if (gnome_vfs_unlink (background_uri) != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 1249: 
-		 * Is a g_warning a reasonable way to report this to the user? 
-		 */
-		g_warning ("couldn't delete background %s", background_uri);
+		char *message = g_strdup_printf (_("Sorry, but background %s couldn't be deleted."), background_name);
+		nautilus_error_dialog (message, _("Couldn't delete background"), GTK_WINDOW (property_browser));
+		g_free (message);
 	}
 	
 	g_free (background_uri);
@@ -742,10 +749,9 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 
 	/* delete the emblem from the emblem directory */
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 1249: 
-		 * Is a g_warning a reasonable way to report this to the user? 
-		 */
-		g_warning ("couldn't delete emblem %s", emblem_uri);
+		char *message = g_strdup_printf (_("Sorry, but emblem %s couldn't be deleted."), emblem_name);
+		nautilus_error_dialog (message, _("Couldn't delete background"), GTK_WINDOW (property_browser));
+		g_free (message);
 	}
 	else {
 		emit_emblems_changed_signal ();
@@ -920,10 +926,11 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 {
 	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
-	char *command_str, *path_uri;
+	char *path_uri;
 	char *user_directory;	
 	char *directory_uri;
-
+	GnomeVFSResult result;
+	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
 	/* get the file path from the file selection widget */
@@ -969,19 +976,13 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 		
 	g_free(directory_path);
 	
-	/* FIXME bugzilla.eazel.com 2539: Should use a quoting function that handles strings
-         * with "'" in them.
-	 */
-	command_str = g_strdup_printf ("cp '%s' '%s'", path_name, destination_name);
-	
-	if (system (command_str) != 0) {
-		/* FIXME bugzilla.eazel.com 1249: 
-		 * Is a g_warning a reasonable way to report this to the user? 
-		 */
-		g_warning("couldn't copy background %s", path_name);
+	result = nautilus_copy_uri_simple (path_name, destination_name);		
+	if (result != GNOME_VFS_OK) {
+		char *message = g_strdup_printf (_("Sorry, but the background %s couldn't be installed."), path_name);
+		nautilus_error_dialog (message, _("Couldn't install background"), GTK_WINDOW (property_browser));
+		g_free (message);
 	}
 				
-	g_free(command_str);
 	g_free(path_name);	
 	g_free(destination_name);
 	
@@ -1123,52 +1124,58 @@ add_new_color(NautilusPropertyBrowser *property_browser)
 
 
 /* here's where we handle clicks in the emblem dialog buttons */
-
-/* Callback used when the color selection dialog is destroyed */
 static void
 emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrowser *property_browser)
 {
 	char *directory_uri;
-
+	GnomeVFSResult result;
+	
 	if (which_button == GNOME_OK) {
-		char *command_str, *destination_name, *extension;
+		char *destination_name, *extension;
 		char* new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));
 		char *user_directory;	
 		char *directory_path;
 
-		user_directory = nautilus_get_user_directory ();
+		if (new_keyword == NULL || strlen (new_keyword) == 0) {
+			nautilus_error_dialog (_("Sorry, but you must specify a keyword for the new emblem."), 
+						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+		} else {		
+			user_directory = nautilus_get_user_directory ();
 
-		/* get the path for emblems in the user's home directory */
-		directory_path = nautilus_make_path (user_directory, property_browser->details->category);
-		g_free (user_directory);
+			/* get the path for emblems in the user's home directory */
+			directory_path = nautilus_make_path (user_directory, property_browser->details->category);
+			g_free (user_directory);
 
-		/* make the directory if it doesn't exist */
-		if (!g_file_exists (directory_path)) {
-			directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-			gnome_vfs_make_directory(directory_uri,
-						 GNOME_VFS_PERM_USER_ALL
-						 | GNOME_VFS_PERM_GROUP_ALL
-						 | GNOME_VFS_PERM_OTHER_READ);
-			g_free(directory_uri);
-		}
+			/* make the directory if it doesn't exist */
+			if (!g_file_exists (directory_path)) {
+				directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
+				gnome_vfs_make_directory(directory_uri,
+						 	GNOME_VFS_PERM_USER_ALL
+						 	| GNOME_VFS_PERM_GROUP_ALL
+						 	| GNOME_VFS_PERM_OTHER_READ);
+				g_free(directory_uri);
+			}
 
-		/* formulate the destination file name */
-		extension = strrchr(property_browser->details->image_path, '.');
-		destination_name = g_strdup_printf("%s/%s.%s", directory_path, new_keyword, extension + 1);
-		g_free(directory_path);
+			/* formulate the destination file name */
+			extension = strrchr(property_browser->details->image_path, '.');
+			destination_name = g_strdup_printf("%s/%s.%s", directory_path, new_keyword, extension + 1);
+			g_free(directory_path);
 				
-		/* perform the actual copy */
+			/* perform the actual copy */
+			result = nautilus_copy_uri_simple (property_browser->details->image_path, destination_name);		
 		
-		command_str = g_strdup_printf("cp '%s' '%s'", property_browser->details->image_path, destination_name);
-		emit_emblems_changed_signal ();
-		if (system(command_str) != 0) {
-			g_warning("couldn't copy emblem %s", property_browser->details->image_path);
-		}
+			if (result != GNOME_VFS_OK) {
+				char *message = g_strdup_printf (_("Sorry, but the image at %s couldn't be installed as an emblem."), property_browser->details->image_path);
+				nautilus_error_dialog (message, _("Couldn't install emblem"), GTK_WINDOW (property_browser));
+				g_free (message);
+			} else {
+				emit_emblems_changed_signal ();	
+			}
 			
-		g_free(command_str);
-		g_free(destination_name);
+			g_free(destination_name);
 				
-		nautilus_property_browser_update_contents(property_browser);
+			nautilus_property_browser_update_contents(property_browser);
+		}
 	}
 	
 	gtk_widget_destroy(dialog);
@@ -1357,11 +1364,53 @@ add_to_content_table (NautilusPropertyBrowser *property_browser, GtkWidget* widg
 /* make_properties_from_directories generates widgets corresponding all of the objects 
    in the public and private directories */
 
+static GtkWidget *
+make_property_tile (NautilusPropertyBrowser *property_browser, GtkWidget *pixmap_widget, GtkWidget *label, const char* property_name)
+{
+	
+	NautilusBackground *background;
+	
+	GtkWidget *temp_vbox, *event_box;
+	
+	temp_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(temp_vbox);
+
+	event_box = gtk_event_box_new();
+	gtk_widget_show(event_box);
+		
+	background = nautilus_get_widget_background (GTK_WIDGET (event_box));
+	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+
+	gtk_widget_show (pixmap_widget);
+	gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
+	gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
+
+	if (label != NULL) {
+		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
+		nautilus_buffered_widget_set_background_color
+			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
+
+			gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
+			gtk_widget_show(label);
+	}
+	
+	gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
+	gtk_signal_connect_full
+		(GTK_OBJECT (event_box),
+		 "button_press_event", 
+		 GTK_SIGNAL_FUNC (element_clicked_callback),
+		 NULL,
+		 g_strdup (property_name),
+		 g_free,
+		 FALSE,
+		 FALSE);
+	
+	return temp_vbox;
+}
+
 static int
 make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 {
-
-	NautilusBackground *background;
 	NautilusCustomizationData *customization_data;
 	char *emblem_name;
 	GtkWidget *pixmap_widget;
@@ -1387,40 +1436,11 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									 &emblem_name,
 									 &pixmap_widget,
 									 &label) == GNOME_VFS_OK) {
-		GtkWidget *event_box, *temp_vbox;
+		GtkWidget *temp_vbox;
 		
 		/* allocate a pixmap and insert it into the table */
-		temp_vbox = gtk_vbox_new(FALSE, 0);
-		gtk_widget_show(temp_vbox);
-		
-		event_box = gtk_event_box_new();
-		gtk_widget_show(event_box);
-		
-		background = nautilus_get_widget_background (GTK_WIDGET (event_box));
-		nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
-		
-		gtk_widget_show (pixmap_widget);
-		gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
-		gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
-		
-		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
-		nautilus_buffered_widget_set_background_color
-		(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
-		
-		gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
-		gtk_widget_show(label);
-		
-		gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
-		gtk_signal_connect_full
-			(GTK_OBJECT (event_box),
-			 "button_press_event", 
-			 GTK_SIGNAL_FUNC (element_clicked_callback),
-			 NULL,
-			 g_strdup (emblem_name),
-			 g_free,
-			 FALSE,
-			 FALSE);
-		
+		temp_vbox = make_property_tile (property_browser, pixmap_widget, label, emblem_name);
+				
 		/* put the reset item in the pole position */
 		add_to_content_table(property_browser, temp_vbox, 
 				     strcmp(emblem_name, RESET_IMAGE_NAME) ? index++ : 0, 2);			
@@ -1433,17 +1453,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	return index;
 }
 
-/* utility to build a color label */
-
-static char *
-make_color_label (const char *color_str)
-{
-	GdkColor color;
-	
-	nautilus_gdk_color_parse_with_white_default (color_str, &color);	
-	return g_strdup_printf ("%02X%02X%02X", color.red >> 8, color.green >> 8, color.blue >> 8);
-}
-
 /* generate properties from the children of the passed in node */
 /* for now, we just handle color nodes */
 
@@ -1451,21 +1460,23 @@ static void
 make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNodePtr node)
 {
 	xmlNode *current_node;
-	GtkWidget *container;
-	GtkWidget *label_box, *label;
-	char *label_text;
-	int index = 0;
-	gboolean local_only = property_browser->details->remove_mode;
-	gboolean is_color = !strcmp (property_browser->details->category, "colors");
+	GdkPixbuf *pixbuf;
+	GtkWidget *pixmap_widget, *label;
+	int index;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	
+	gboolean local_only = property_browser->details->remove_mode;
+	
+	index = 0;
 	property_browser->details->has_local = FALSE;
 	
 	for (current_node = nautilus_xml_get_children (node);
 	     current_node != NULL; current_node = current_node->next) {
-		NautilusBackground *background;
-		GtkWidget *frame;
+	        GtkWidget *new_property;
 	
-		char* color_str = xmlNodeGetContent(current_node);
+		char* color_str = xmlNodeGetContent (current_node);
+		char* name_str = xmlGetProp (current_node, "name");
 		char* local = xmlGetProp(current_node, "local");
 		char* deleted = xmlGetProp(current_node, "deleted");
 		
@@ -1474,54 +1485,21 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 		}
 			
 		if (!deleted && (!local_only || (local != NULL))) {
-			GtkWidget *event_box = gtk_event_box_new();
-			gtk_widget_set_usize (event_box, 48, 32);
-			gtk_widget_show (event_box);
+			
+			/* make the image from the color spec */
 
-			frame = gtk_frame_new(NULL);
-  			gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-			gtk_widget_show(frame);
-			
-			container = gtk_vbox_new (0, FALSE);
-			gtk_widget_show (container);
-			gtk_container_add(GTK_CONTAINER(frame), container);
-			
-			gtk_box_pack_start(GTK_BOX(container), event_box, FALSE, FALSE, 0);
-		
-			background = nautilus_get_widget_background (GTK_WIDGET (event_box));
-			nautilus_background_set_color (background, color_str);	
-			
-			/* if it's a color, add a label */
-			if (is_color) {
-				label_box = gtk_event_box_new();
-				background = nautilus_get_widget_background (label_box);
-				nautilus_background_set_color (background, "rgb:ff/ff/ff");	
-				gtk_widget_show (label_box);
-				gtk_widget_set_usize (label_box, 48, 16);
-				gtk_box_pack_start (GTK_BOX (container), label_box, FALSE, FALSE, 0);	
-				
-				label_text = make_color_label (color_str);
-				label = nautilus_label_new (label_text);
-				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 10);
+			pixbuf = make_color_drag_image (property_browser, color_str);			
+			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+			gdk_pixbuf_unref (pixbuf);
+			pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 
-				g_free (label_text);
-				
-				gtk_widget_show (label);
-				gtk_container_add (GTK_CONTAINER (label_box), label);
-			}
-			
-                	gtk_object_set_user_data (GTK_OBJECT (event_box), property_browser);
-			gtk_signal_connect_full
-				(GTK_OBJECT (event_box),
-				 "button_press_event", 
-				 GTK_SIGNAL_FUNC (element_clicked_callback),
-				 NULL,
-				 g_strdup (color_str),
-				 g_free,
-				 FALSE,
-				 FALSE);
+			/* make the label from the name */
+			label = nautilus_label_new (name_str);
+			nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
-			add_to_content_table (property_browser, frame, index++, 12);				
+			/* make the tile from the pixmap and name */
+			new_property = make_property_tile (property_browser, pixmap_widget, label, color_str);
+			add_to_content_table (property_browser, new_property, index++, 12);				
 		}
 	}
 }

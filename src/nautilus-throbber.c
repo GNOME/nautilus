@@ -55,6 +55,7 @@ struct NautilusThrobberDetails {
 	int	max_frame;
 	int	current_frame;	
 	int	timer_task;
+	gboolean small_mode;
 };
 
 static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
@@ -134,7 +135,7 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 		
 		current_entry = current_entry->next;
 	}
-	
+		
 	/* return the result */
 	*throbber_width = current_width;
 	*throbber_height = current_height;
@@ -330,14 +331,24 @@ nautilus_throbber_unload_images (NautilusThrobber *throbber)
 }
 
 static GdkPixbuf*
-load_themed_image (const char *file_name)
+load_themed_image (const char *file_name, gboolean small_mode)
 {
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *temp_pixbuf;
 	char *image_path;
 	
 	image_path = nautilus_theme_get_image_path (file_name);
 	if (image_path) {
 		pixbuf = gdk_pixbuf_new_from_file (image_path);
+		
+		if (small_mode && pixbuf) {
+			temp_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+							       gdk_pixbuf_get_width (pixbuf) / 2,
+							       gdk_pixbuf_get_height (pixbuf) / 2,
+							       GDK_INTERP_BILINEAR);
+			gdk_pixbuf_unref (pixbuf);
+			pixbuf = temp_pixbuf;
+		}
+		
 		g_free (image_path);
 		return pixbuf;
 	}
@@ -362,7 +373,8 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	
 	nautilus_throbber_unload_images (throbber);
 
-	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png");
+	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", throbber->details->small_mode);
+	
 	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list
 	 * until we get an error.
 	 */
@@ -370,7 +382,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	index = 1;
 	while (TRUE) {
 		throbber_frame_name = make_throbber_frame_name (index);
-		pixbuf = load_themed_image (throbber_frame_name);
+		pixbuf = load_themed_image (throbber_frame_name, throbber->details->small_mode);
 		g_free (throbber_frame_name);
 		if (pixbuf == NULL)
 			break;
@@ -391,6 +403,21 @@ nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);  
 	*/
 	return TRUE;
+}
+
+void
+nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode)
+{
+	int throbber_width, throbber_height;
+	
+	if (new_mode != throbber->details->small_mode) {
+		throbber->details->small_mode = new_mode;
+		nautilus_throbber_load_images (throbber);
+
+		get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
+		gtk_widget_set_usize (GTK_WIDGET (throbber), throbber_width, throbber_height);		
+		gtk_widget_queue_resize (GTK_WIDGET (throbber));
+	}
 }
 
 /* handle setting the size */
