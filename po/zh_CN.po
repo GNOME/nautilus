@@ -7,14 +7,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-08 20:57+0200\n"
+"POT-Creation-Date: 2003-10-13 11:59+0200\n"
 "PO-Revision-Date: 2003-08-09 04:56+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -57,8 +57,7 @@ msgstr "Nautilus 徽标视图"
 msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
-msgstr ""
-"无法删除名称为“%s”的徽标。可能由于该徽标是永久的，而不是您自行添加的。"
+msgstr "无法删除名称为“%s”的徽标。可能由于该徽标是永久的，而不是您自行添加的。"
 
 #: components/emblem/nautilus-emblem-view.c:204
 msgid "Couldn't remove emblem"
@@ -142,7 +141,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "拖曳的文件不像是有效的图像。"
 
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1730
+#: src/nautilus-property-browser.c:1731
 msgid "Erase"
 msgstr "删除"
 
@@ -381,15 +380,15 @@ msgstr "(空)"
 msgid "Loading..."
 msgstr "正在载入..."
 
-#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:532 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "主文件夹"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:534
 msgid "Filesystem"
 msgstr "文件系统"
 
-#: components/tree/nautilus-tree-view.c:509
+#: components/tree/nautilus-tree-view.c:536
 msgid "Network Neighbourhood"
 msgstr "网络邻居"
 
@@ -1058,9 +1057,9 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"在搜索栏中匹配文件所用的条件。如果设为“按文字搜索”，则 Nautilus 将会只按文"
-"件名搜索文件。如果设为“按文字和属性”，则 Nautilus 将会按照文件名和文件属性"
-"搜索。"
+"在搜索栏中匹配文件所用的条件。如果设为“按文字搜索”，则 Nautilus 将会只按文件"
+"名搜索文件。如果设为“按文字和属性”，则 Nautilus 将会按照文件名和文件属性搜"
+"索。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -1290,8 +1289,8 @@ msgid ""
 "incrementally they will be sorted decrementally."
 msgstr ""
 "如果为 true，新窗口岁的文件将以逆序排序。即，如果是按照名称排序的话，会"
-"将“z”排在最前面，将“a”排在最后面；如果是按照大小排序的话，会将最大的文件"
-"排在最前面，将最小的文件排在最后面。"
+"将“z”排在最前面，将“a”排在最后面；如果是按照大小排序的话，会将最大的文件排在"
+"最前面，将最小的文件排在最后面。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
@@ -1391,9 +1390,9 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
-"当鼠标指向声音文件图标时预览的速度折衷。如果设为“总是”，将会总是播放声音，"
-"即使文件位于远程服务器上。如果设为“只是本地”，则只会播放本地文件系统上的文"
-"件。如果设为“从不”，则绝不预览声音。"
+"当鼠标指向声音文件图标时预览的速度折衷。如果设为“总是”，将会总是播放声音，即"
+"使文件位于远程服务器上。如果设为“只是本地”，则只会播放本地文件系统上的文件。"
+"如果设为“从不”，则绝不预览声音。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1404,8 +1403,8 @@ msgid ""
 "read preview data."
 msgstr ""
 "在文件图标中显示文本文件内容预览的速度折衷。如果设为“总是”，将会总是显示预"
-"览，即使目录位于远程服务器上。如果设为“只是本地”，则只会显示本地文件系统上"
-"文件的预览。如果设为“从不”，则绝不读取任何预览数据。"
+"览，即使目录位于远程服务器上。如果设为“只是本地”，则只会显示本地文件系统上文"
+"件的预览。如果设为“从不”，则绝不读取任何预览数据。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
@@ -1415,9 +1414,9 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
 msgstr ""
-"将图像文件显示为缩略图时的速度折衷。如果设为“总是”，将会总是显示缩略图，即"
-"使目录位于远程服务器上。如果设为“只是本地”，则只会对本地文件系统上的文件创"
-"建缩略图。如果设为“从不”，则绝不预览图像，只是使用通用图标。"
+"将图像文件显示为缩略图时的速度折衷。如果设为“总是”，将会总是显示缩略图，即使"
+"目录位于远程服务器上。如果设为“只是本地”，则只会对本地文件系统上的文件创建缩"
+"略图。如果设为“从不”，则绝不预览图像，只是使用通用图标。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
@@ -1426,17 +1425,17 @@ msgid ""
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"显示目录中项目数时的速度折衷。如果设为“总是”，将会总是显示项目计数，即使目"
-"录位于远程服务器上。如果设为“只是本地”，则只会对本地文件系统上的文件显示计"
-"数。如果设为“从不”，则绝不计算项目数。"
+"显示目录中项目数时的速度折衷。如果设为“总是”，将会总是显示项目计数，即使目录"
+"位于远程服务器上。如果设为“只是本地”，则只会对本地文件系统上的文件显示计数。"
+"如果设为“从不”，则绝不计算项目数。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", \"emblems\"."
 msgstr ""
-"图标视图中项目的默认排序顺序。可供选择的值是“名称”、“大小”、“类"
-"型”、“修改日期”和“徽标”。"
+"图标视图中项目的默认排序顺序。可供选择的值是“名称”、“大小”、“类型”、“修改日"
+"期”和“徽标”。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
@@ -1496,9 +1495,8 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"激活(单击或双击)可执行的文本文件时要执行什么操作。可供选择的值中，“调用”可"
-"按程序调用文件，“询问”将显示对话框询问操作，“显示”将以文本文件显示其内"
-"容。"
+"激活(单击或双击)可执行的文本文件时要执行什么操作。可供选择的值中，“调用”可按"
+"程序调用文件，“询问”将显示对话框询问操作，“显示”将以文本文件显示其内容。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
@@ -1690,7 +1688,7 @@ msgid "Can't delete volume"
 msgstr "无法删除卷"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5592
+#: libnautilus-private/nautilus-file.c:5611
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2128,7 +2126,7 @@ msgstr "全部替换"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4420
+#: libnautilus-private/nautilus-file.c:4431
 #, c-format
 msgid "link to %s"
 msgstr "到 %s 的链接"
@@ -2454,7 +2452,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "正在准备清空回收站..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:999
+#: src/file-manager/fm-desktop-icon-view.c:1016
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "清空回收站"
@@ -2746,64 +2744,64 @@ msgstr "foo (第124 个复件).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2657
 msgid "today at 00:00:00 PM"
 msgstr "今天 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2660
+#: libnautilus-private/nautilus-file.c:2658
 msgid "today at %-I:%M:%S %p"
 msgstr "今天 %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2662
+#: libnautilus-private/nautilus-file.c:2660
 msgid "today at 00:00 PM"
 msgstr "今天 00:00"
 
-#: libnautilus-private/nautilus-file.c:2663
+#: libnautilus-private/nautilus-file.c:2661
 msgid "today at %-I:%M %p"
 msgstr "今天 %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2665
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today, 00:00 PM"
 msgstr "今天，00:00"
 
-#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2664
 msgid "today, %-I:%M %p"
 msgstr "今天，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2668
-#: libnautilus-private/nautilus-file.c:2669
+#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2667
 msgid "today"
 msgstr "今天"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2676
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨天 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2679
+#: libnautilus-private/nautilus-file.c:2677
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨天 %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2681
+#: libnautilus-private/nautilus-file.c:2679
 msgid "yesterday at 00:00 PM"
 msgstr "昨天 00:00"
 
-#: libnautilus-private/nautilus-file.c:2682
+#: libnautilus-private/nautilus-file.c:2680
 msgid "yesterday at %-I:%M %p"
 msgstr "昨天 %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2684
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday, 00:00 PM"
 msgstr "昨天，00:00"
 
-#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2683
 msgid "yesterday, %-I:%M %p"
 msgstr "昨天，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2687
-#: libnautilus-private/nautilus-file.c:2688
+#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2686
 msgid "yesterday"
 msgstr "昨天"
 
@@ -2812,154 +2810,153 @@ msgstr "昨天"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2697
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000 年 9 月 00 日星期三，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2700
+#: libnautilus-private/nautilus-file.c:2698
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y 年 %-m 月 %-d 日%A，%-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2700
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000 年 10 月 0 日星期一，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2703
+#: libnautilus-private/nautilus-file.c:2701
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y 年 %-m 月 %-d 日%A，%-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2703
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000 年 10 月 00 日星期一，00:00"
 
-#: libnautilus-private/nautilus-file.c:2706
+#: libnautilus-private/nautilus-file.c:2704
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y 年 %_m 月 %-d 日%a，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2706
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000 年 10 月 00 日，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2709
+#: libnautilus-private/nautilus-file.c:2707
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y 年 %-m 月 %-d 日，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2711
+#: libnautilus-private/nautilus-file.c:2709
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000 年 10 月 00 日，00:00"
 
-#: libnautilus-private/nautilus-file.c:2712
+#: libnautilus-private/nautilus-file.c:2710
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y 年 %-m 月 %-d 日，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2714
+#: libnautilus-private/nautilus-file.c:2712
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00，00:00"
 
-#: libnautilus-private/nautilus-file.c:2715
+#: libnautilus-private/nautilus-file.c:2713
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%Y/%-m/%-d，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2717
+#: libnautilus-private/nautilus-file.c:2715
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2718
+#: libnautilus-private/nautilus-file.c:2716
 msgid "%m/%d/%y"
 msgstr "%Y/%m/%d"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 items"
 msgstr "0 项"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 folders"
 msgstr "0 个文件夹"
 
-#: libnautilus-private/nautilus-file.c:4001
+#: libnautilus-private/nautilus-file.c:4012
 msgid "0 files"
 msgstr "0 个文件"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 item"
 msgstr "1 项"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 folder"
 msgstr "1 个文件夹"
 
-#: libnautilus-private/nautilus-file.c:4006
+#: libnautilus-private/nautilus-file.c:4017
 msgid "1 file"
 msgstr "1 个文件"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u items"
 msgstr "%u 项"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u folders"
 msgstr "%u 个文件夹"
 
-#: libnautilus-private/nautilus-file.c:4010
+#: libnautilus-private/nautilus-file.c:4021
 #, c-format
 msgid "%u files"
 msgstr "%u 文件"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4322
-#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4333
+#: libnautilus-private/nautilus-file.c:4349
 msgid "? items"
 msgstr "? 项"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4339
 msgid "? bytes"
 msgstr "? 字节"
 
-#: libnautilus-private/nautilus-file.c:4343
+#: libnautilus-private/nautilus-file.c:4354
 msgid "unknown type"
 msgstr "未知类型"
 
-#: libnautilus-private/nautilus-file.c:4346
+#: libnautilus-private/nautilus-file.c:4357
 msgid "unknown MIME type"
 msgstr "未知 MIME 类型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4352
+#: libnautilus-private/nautilus-file.c:4363
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "未知"
 
-#: libnautilus-private/nautilus-file.c:4384
+#: libnautilus-private/nautilus-file.c:4395
 msgid "program"
 msgstr "程序"
 
-#: libnautilus-private/nautilus-file.c:4396
+#: libnautilus-private/nautilus-file.c:4407
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
-"甚至找不到关于“x-directory/normal”的描述。这可能意味着您的 gnome-vfs.keys "
-"文件位置不对，或者由于其它原因才找不到。"
+"甚至找不到关于“x-directory/normal”的描述。这可能意味着您的 gnome-vfs.keys 文"
+"件位置不对，或者由于其它原因才找不到。"
 
-#: libnautilus-private/nautilus-file.c:4400
+#: libnautilus-private/nautilus-file.c:4411
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
-msgstr ""
-"找不到 MIME 类型“%s” (文件为“%s”) 的描述，请通知 gnome-vfs 邮件列表。"
+msgstr "找不到 MIME 类型“%s” (文件为“%s”) 的描述，请通知 gnome-vfs 邮件列表。"
 
-#: libnautilus-private/nautilus-file.c:4414
+#: libnautilus-private/nautilus-file.c:4425
 msgid "link"
 msgstr "链接"
 
-#: libnautilus-private/nautilus-file.c:4434
+#: libnautilus-private/nautilus-file.c:4445
 msgid "link (broken)"
 msgstr "链接(不正确)"
 
@@ -3226,99 +3223,99 @@ msgstr "无"
 msgid "%s's Home"
 msgstr "%s 的主目录"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2147
+#: libnautilus-private/nautilus-icon-canvas-item.c:2149
 msgid "file icon"
 msgstr "文件图标"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2520
+#: libnautilus-private/nautilus-icon-canvas-item.c:2522
 msgid "editable text"
 msgstr "可编辑文字"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2521
+#: libnautilus-private/nautilus-icon-canvas-item.c:2523
 msgid "the editable label"
 msgstr "可编辑标签"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2528
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "additional text"
 msgstr "附加文字"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2529
+#: libnautilus-private/nautilus-icon-canvas-item.c:2531
 msgid "some more text"
 msgstr "更多文字"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2536
+#: libnautilus-private/nautilus-icon-canvas-item.c:2538
 msgid "highlighted for selection"
 msgstr "突出显示选择"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2537
+#: libnautilus-private/nautilus-icon-canvas-item.c:2539
 msgid "whether we are highlighted for a selection"
 msgstr "是否突出显示选择"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2544
+#: libnautilus-private/nautilus-icon-canvas-item.c:2546
 msgid "highlighted as keyboard focus"
 msgstr "突出显示为键盘聚焦"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2545
+#: libnautilus-private/nautilus-icon-canvas-item.c:2547
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "是否突出显示键盘聚焦"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2553
+#: libnautilus-private/nautilus-icon-canvas-item.c:2555
 msgid "highlighted for drop"
 msgstr "突出显示拖放"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2554
+#: libnautilus-private/nautilus-icon-canvas-item.c:2556
 msgid "whether we are highlighted for a D&D drop"
 msgstr "是否突出显示 D&D 拖放"
 
-#: libnautilus-private/nautilus-icon-container.c:2009
+#: libnautilus-private/nautilus-icon-container.c:2023
 msgid "The selection rectangle"
 msgstr "矩形选区"
 
-#: libnautilus-private/nautilus-icon-container.c:4011
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Frame Text"
 msgstr "给文本装框"
 
-#: libnautilus-private/nautilus-icon-container.c:4012
+#: libnautilus-private/nautilus-icon-container.c:4081
 msgid "Draw a frame around unselected text"
 msgstr "在未选文本周围绘制外框"
 
-#: libnautilus-private/nautilus-icon-container.c:4018
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Selection Box Color"
 msgstr "选择外框颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4019
+#: libnautilus-private/nautilus-icon-container.c:4088
 msgid "Color of the selection box"
 msgstr "选择框颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4024
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Selection Box Alpha"
 msgstr "选择框 Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4025
+#: libnautilus-private/nautilus-icon-container.c:4094
 msgid "Opacity of the selection box"
 msgstr "选择框不透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4032
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Highlight Alpha"
 msgstr "突出显示 Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4033
+#: libnautilus-private/nautilus-icon-container.c:4102
 msgid "Opacity of the highlight for selected icons"
 msgstr "选中项目的突出显示不透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4039
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Light Info Color"
 msgstr "浅信息颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4040
+#: libnautilus-private/nautilus-icon-container.c:4109
 msgid "Color used for information text against a dark background"
 msgstr "深色背景上信息文字所使用的颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4045
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Dark Info Color"
 msgstr "深信息颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4046
+#: libnautilus-private/nautilus-icon-container.c:4115
 msgid "Color used for information text against a light background"
 msgstr "浅色背景上信息文字所使用的颜色"
 
@@ -3652,8 +3649,7 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
 msgstr ""
-"“%s”无法打开“%s”，因为“%s”无法访问位于“%s”的文件。您要选择另外的程序"
-"吗？"
+"“%s”无法打开“%s”，因为“%s”无法访问位于“%s”的文件。您要选择另外的程序吗？"
 
 #: libnautilus-private/nautilus-program-choosing.c:509
 #, c-format
@@ -3661,8 +3657,7 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
 msgstr ""
-"默认操作无法打开“%s”，原因是无法访问位于“%s”的文件。您要选择另外的操作"
-"吗？"
+"默认操作无法打开“%s”，原因是无法访问位于“%s”的文件。您要选择另外的操作吗？"
 
 #: libnautilus-private/nautilus-program-choosing.c:515
 #: libnautilus-private/nautilus-program-choosing.c:546
@@ -3676,8 +3671,8 @@ msgid ""
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
-"“%s”无法打开“%s”，原因是“%s”无法访问位于“%s”的文件。没有可查看此文件"
-"的其它应用程序。如果您将该文件复制到您的机器上，也许可以打开它。"
+"“%s”无法打开“%s”，原因是“%s”无法访问位于“%s”的文件。没有可查看此文件的其它应"
+"用程序。如果您将该文件复制到您的机器上，也许可以打开它。"
 
 #: libnautilus-private/nautilus-program-choosing.c:540
 #, c-format
@@ -3686,8 +3681,8 @@ msgid ""
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
 msgstr ""
-"默认操作无法打开“%s”，原因是无法访问位于“%s”位置的文件。没有可查看该文件"
-"的其它操作。如果您将该文件复制到您的机器上，也许可以打开它。"
+"默认操作无法打开“%s”，原因是无法访问位于“%s”位置的文件。没有可查看该文件的其"
+"它操作。如果您将该文件复制到您的机器上，也许可以打开它。"
 
 #: libnautilus-private/nautilus-program-choosing.c:800
 #: libnautilus-private/nautilus-program-choosing.c:1017
@@ -4027,81 +4022,81 @@ msgstr "当作 %s 查看"
 msgid "%s Viewer"
 msgstr "%s 查看器"
 
-#: libnautilus-private/nautilus-volume-monitor.c:897
+#: libnautilus-private/nautilus-volume-monitor.c:901
 msgid "Unknown"
 msgstr "未知"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1070
+#: libnautilus-private/nautilus-volume-monitor.c:1074
 msgid "Floppy"
 msgstr "软驱"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1071
-#: libnautilus-private/nautilus-volume-monitor.c:1100
+#: libnautilus-private/nautilus-volume-monitor.c:1075
+#: libnautilus-private/nautilus-volume-monitor.c:1104
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1072
+#: libnautilus-private/nautilus-volume-monitor.c:1076
 msgid "Zip Drive"
 msgstr "Zip 驱动器"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1087
-#: libnautilus-private/nautilus-volume-monitor.c:1131
+#: libnautilus-private/nautilus-volume-monitor.c:1091
+#: libnautilus-private/nautilus-volume-monitor.c:1135
 msgid "Audio CD"
 msgstr "音频 CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1122
+#: libnautilus-private/nautilus-volume-monitor.c:1126
 msgid "Root Volume"
 msgstr "根文件卷"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Mount Error"
 msgstr "挂载错误"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Unmount Error"
 msgstr "卸载错误"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1874
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr "Nautilus 无法挂载软驱。驱动器中可能没有软盘。"
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1878
+#: libnautilus-private/nautilus-volume-monitor.c:1882
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr "Nautilus 无法挂载文件卷。设备中可能没有介质。"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1884
+#: libnautilus-private/nautilus-volume-monitor.c:1888
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
 msgstr "Nautilus 无法挂载软驱。软盘可能是无法挂载的格式。"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1887
+#: libnautilus-private/nautilus-volume-monitor.c:1891
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
 msgstr "Nautilus 无法挂载选中的文件卷。文件卷可能是无法挂载的格式。"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1892
+#: libnautilus-private/nautilus-volume-monitor.c:1896
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus 无法挂载选中的软驱。"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1894
+#: libnautilus-private/nautilus-volume-monitor.c:1898
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus 无法挂载选中的文件卷。"
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1899
+#: libnautilus-private/nautilus-volume-monitor.c:1903
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus 无法卸载选中的文件卷。"
 
-#: libnautilus-private/nautilus-volume-monitor.c:2104
+#: libnautilus-private/nautilus-volume-monitor.c:2148
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 文件卷"
 
@@ -4249,104 +4244,104 @@ msgstr "按图标查看(_I)"
 msgid "View as _List"
 msgstr "按列表查看(_L)"
 
-#: src/file-manager/fm-desktop-icon-view.c:579
+#: src/file-manager/fm-desktop-icon-view.c:596
 msgid "Background"
 msgstr "背景"
 
-#: src/file-manager/fm-desktop-icon-view.c:749
+#: src/file-manager/fm-desktop-icon-view.c:766
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "执行工具程序“%s”时出错：%s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1017
+#: src/file-manager/fm-desktop-icon-view.c:1034
 msgid "E_ject"
 msgstr "弹出(_J)"
 
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1134
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "卸载文件卷(_U)"
 
-#: src/file-manager/fm-directory-view.c:493
+#: src/file-manager/fm-directory-view.c:489
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "这将打开 %d 个独立的窗口。您确定要这样做吗？"
 
-#: src/file-manager/fm-directory-view.c:495
+#: src/file-manager/fm-directory-view.c:491
 #, c-format
 msgid "Open %d Windows?"
 msgstr "打开 %d 个窗口？"
 
-#: src/file-manager/fm-directory-view.c:848
+#: src/file-manager/fm-directory-view.c:844
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "您确定要永久删除“%s”？"
 
-#: src/file-manager/fm-directory-view.c:852
+#: src/file-manager/fm-directory-view.c:848
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "您确定要永久删除 %d 个选中项目？"
 
-#: src/file-manager/fm-directory-view.c:858
+#: src/file-manager/fm-directory-view.c:854
 msgid "Delete?"
 msgstr "删除吗？"
 
-#: src/file-manager/fm-directory-view.c:1541
+#: src/file-manager/fm-directory-view.c:1537
 #, c-format
 msgid "\"%s\" selected"
 msgstr "选中了“%s”"
 
-#: src/file-manager/fm-directory-view.c:1543
+#: src/file-manager/fm-directory-view.c:1539
 msgid "1 folder selected"
 msgstr "选中了 1 个文件夹"
 
-#: src/file-manager/fm-directory-view.c:1546
+#: src/file-manager/fm-directory-view.c:1542
 #, c-format
 msgid "%d folders selected"
 msgstr "选中了 %d 个文件夹"
 
-#: src/file-manager/fm-directory-view.c:1553
+#: src/file-manager/fm-directory-view.c:1549
 msgid " (containing 0 items)"
 msgstr " (有 0 项)"
 
-#: src/file-manager/fm-directory-view.c:1555
+#: src/file-manager/fm-directory-view.c:1551
 msgid " (containing 1 item)"
 msgstr " (有 1 项)"
 
-#: src/file-manager/fm-directory-view.c:1557
+#: src/file-manager/fm-directory-view.c:1553
 #, c-format
 msgid " (containing %d items)"
 msgstr " (有 %d 项)"
 
-#: src/file-manager/fm-directory-view.c:1564
+#: src/file-manager/fm-directory-view.c:1560
 msgid " (containing a total of 0 items)"
 msgstr " (总共有 0 项)"
 
-#: src/file-manager/fm-directory-view.c:1566
+#: src/file-manager/fm-directory-view.c:1562
 msgid " (containing a total of 1 item)"
 msgstr " (总共有 1 项)"
 
-#: src/file-manager/fm-directory-view.c:1568
+#: src/file-manager/fm-directory-view.c:1564
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (总共有 %d 项)"
 
-#: src/file-manager/fm-directory-view.c:1581
+#: src/file-manager/fm-directory-view.c:1577
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "选中了“%s” (%s)"
 
-#: src/file-manager/fm-directory-view.c:1585
+#: src/file-manager/fm-directory-view.c:1581
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "选中了 %d 项 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1592
+#: src/file-manager/fm-directory-view.c:1588
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "又选中了 1 项 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1595
+#: src/file-manager/fm-directory-view.c:1591
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "又选中了 %d 项 (%s)"
@@ -4358,7 +4353,7 @@ msgstr "又选中了 %d 项 (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1624
+#: src/file-manager/fm-directory-view.c:1620
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s，%s"
@@ -4367,98 +4362,97 @@ msgstr "%s%s，%s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1749
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
 "will not be displayed."
 msgstr ""
-"文件夹“%s”中包含的文件多于 Nautilus 所能够处理的数量。一些文件将不会被显"
-"示。"
+"文件夹“%s”中包含的文件多于 Nautilus 所能够处理的数量。一些文件将不会被显示。"
 
-#: src/file-manager/fm-directory-view.c:1756
+#: src/file-manager/fm-directory-view.c:1752
 msgid "Too Many Files"
 msgstr "文件太多"
 
-#: src/file-manager/fm-directory-view.c:3050
+#: src/file-manager/fm-directory-view.c:2984
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "无法将“%s”移动到回收站。您要立即删除它吗？"
 
-#: src/file-manager/fm-directory-view.c:3055
+#: src/file-manager/fm-directory-view.c:2989
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
 msgstr "无法将 %d 个选中项目移动到回收站。您要立刻删除它们吗？"
 
-#: src/file-manager/fm-directory-view.c:3059
+#: src/file-manager/fm-directory-view.c:2993
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr "无法将选中项目中的 %d 个移到回收站。您要立刻删除这 %d 个项目吗？"
 
-#: src/file-manager/fm-directory-view.c:3067
+#: src/file-manager/fm-directory-view.c:3001
 msgid "Delete Immediately?"
 msgstr "立刻删除吗？"
 
-#: src/file-manager/fm-directory-view.c:3099
+#: src/file-manager/fm-directory-view.c:3033
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "您确定要从回收站中永久删除“%s”吗？"
 
-#: src/file-manager/fm-directory-view.c:3103
+#: src/file-manager/fm-directory-view.c:3037
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr "您确定要从回收站中永久删除这 %d 个选中项目吗？"
 
-#: src/file-manager/fm-directory-view.c:3109
+#: src/file-manager/fm-directory-view.c:3043
 msgid "Delete From Trash?"
 msgstr "从回收站中删除吗？"
 
-#: src/file-manager/fm-directory-view.c:3387
-#: src/file-manager/fm-directory-view.c:3429
+#: src/file-manager/fm-directory-view.c:3321
+#: src/file-manager/fm-directory-view.c:3363
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "用“%s”打开选中的项目"
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3444
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "其它应用程序(_A)..."
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3444
 msgid "An _Application..."
 msgstr "应用程序(_A)..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3449
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "其它查看器(_V)..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3449
 msgid "A _Viewer..."
 msgstr "查看器(_V)..."
 
-#: src/file-manager/fm-directory-view.c:3597
+#: src/file-manager/fm-directory-view.c:3531
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "无法完成指定操作：%s"
 
-#: src/file-manager/fm-directory-view.c:3621
+#: src/file-manager/fm-directory-view.c:3555
 msgid "Could not complete specified action."
 msgstr "无法完成指定操作。"
 
-#: src/file-manager/fm-directory-view.c:4130
+#: src/file-manager/fm-directory-view.c:4064
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "在任意选中的项目上运行“%s”"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4281
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4467,11 +4461,11 @@ msgstr ""
 "该文件夹中的所有执行文件将显示在脚本菜单中。从该菜单中选择某脚本将会用任意选"
 "中项目作为输入来执行那个脚本。"
 
-#: src/file-manager/fm-directory-view.c:4350
+#: src/file-manager/fm-directory-view.c:4284
 msgid "About Scripts"
 msgstr "关于脚本"
 
-#: src/file-manager/fm-directory-view.c:4351
+#: src/file-manager/fm-directory-view.c:4285
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4509,148 +4503,148 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY：当前窗口的位置和大小"
 
-#: src/file-manager/fm-directory-view.c:4472
+#: src/file-manager/fm-directory-view.c:4406
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "如果您选择了粘贴文件命令，“%s”将被移动"
 
-#: src/file-manager/fm-directory-view.c:4476
+#: src/file-manager/fm-directory-view.c:4410
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "如果您选择了粘贴文件命令，“%s”将被复制"
 
-#: src/file-manager/fm-directory-view.c:4483
+#: src/file-manager/fm-directory-view.c:4417
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "如果您选择了粘贴文件命令，将移动选中的 %d 个项目"
 
-#: src/file-manager/fm-directory-view.c:4487
+#: src/file-manager/fm-directory-view.c:4421
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr "如果您选择了粘贴文件命令，将复制选中的 %d 个项目"
 
-#: src/file-manager/fm-directory-view.c:4566
+#: src/file-manager/fm-directory-view.c:4500
 msgid "There is nothing on the clipboard to paste."
 msgstr "剪贴板中没有东西可以粘贴。"
 
-#: src/file-manager/fm-directory-view.c:4823
+#: src/file-manager/fm-directory-view.c:4757
 msgid "Open _in This Window"
 msgstr "在本窗口中打开(_I)"
 
-#: src/file-manager/fm-directory-view.c:4826
+#: src/file-manager/fm-directory-view.c:4760
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open _in New Window"
 msgstr "在新建窗口中打开(_I)"
 
-#: src/file-manager/fm-directory-view.c:4828
+#: src/file-manager/fm-directory-view.c:4762
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "在 %d 个新建窗口中打开(_I)"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4780
 msgid "_Delete from Trash"
 msgstr "从回收站中删除(_D)"
 
-#: src/file-manager/fm-directory-view.c:4848
+#: src/file-manager/fm-directory-view.c:4782
 msgid "Delete all selected items permanently"
 msgstr "永久删除所有选中的项目"
 
-#: src/file-manager/fm-directory-view.c:4851
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:4785
+#: src/file-manager/fm-directory-view.c:5066
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "移动到回收站(_V)"
 
-#: src/file-manager/fm-directory-view.c:4853
+#: src/file-manager/fm-directory-view.c:4787
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "把每个选中项目都移到回收站"
 
-#: src/file-manager/fm-directory-view.c:4877
+#: src/file-manager/fm-directory-view.c:4811
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "删除(_D)"
 
-#: src/file-manager/fm-directory-view.c:4897
+#: src/file-manager/fm-directory-view.c:4831
 msgid "Ma_ke Links"
 msgstr "创建链接(_K)"
 
-#: src/file-manager/fm-directory-view.c:4898
+#: src/file-manager/fm-directory-view.c:4832
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "创建链接(_K)"
 
-#: src/file-manager/fm-directory-view.c:4911
+#: src/file-manager/fm-directory-view.c:4845
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
 msgstr "清空回收站(_E)"
 
-#: src/file-manager/fm-directory-view.c:4924
+#: src/file-manager/fm-directory-view.c:4858
 msgid "Cu_t File"
 msgstr "剪切文件(_T)"
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4859
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "剪切文件(_T)"
 
-#: src/file-manager/fm-directory-view.c:4934
+#: src/file-manager/fm-directory-view.c:4868
 msgid "_Copy File"
 msgstr "复制文件(_C)"
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4869
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "复制文件(_C)"
 
-#: src/file-manager/fm-directory-view.c:5123
+#: src/file-manager/fm-directory-view.c:5057
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
 msgstr "无法使用该链接，因为它没有目标。您要将该链接移动到回收站中吗？"
 
-#: src/file-manager/fm-directory-view.c:5126
+#: src/file-manager/fm-directory-view.c:5060
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
 msgstr "无法使用该链接，它的目标“%s”不存在。您要将该链接移动到回收站中吗？"
 
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:5066
 msgid "Broken Link"
 msgstr "错误链接"
 
-#: src/file-manager/fm-directory-view.c:5189
+#: src/file-manager/fm-directory-view.c:5123
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr "“%s”是一个可执行文本文件。您是要运行它，还是显示它的内容？"
 
-#: src/file-manager/fm-directory-view.c:5195
+#: src/file-manager/fm-directory-view.c:5129
 msgid "Run or Display?"
 msgstr "运行还是显示？"
 
-#: src/file-manager/fm-directory-view.c:5196
+#: src/file-manager/fm-directory-view.c:5130
 msgid "_Display"
 msgstr "显示(_D)"
 
-#: src/file-manager/fm-directory-view.c:5197
+#: src/file-manager/fm-directory-view.c:5131
 msgid "Run in _Terminal"
 msgstr "在终端中运行(_T)"
 
-#: src/file-manager/fm-directory-view.c:5200
+#: src/file-manager/fm-directory-view.c:5134
 msgid "_Run"
 msgstr "运行(_R)"
 
-#: src/file-manager/fm-directory-view.c:5403
+#: src/file-manager/fm-directory-view.c:5337
 #, c-format
 msgid "Opening \"%s\""
 msgstr "正在打开“%s”"
 
-#: src/file-manager/fm-directory-view.c:5409
+#: src/file-manager/fm-directory-view.c:5343
 msgid "Cancel Open?"
 msgstr "取消打开？"
 
@@ -4983,11 +4977,11 @@ msgstr "类型："
 #: src/file-manager/fm-properties-window.c:2281
 #: src/file-manager/fm-properties-window.c:2290
 #: src/file-manager/fm-properties-window.c:2296
-#: src/file-manager/fm-properties-window.c:2850
-#: src/file-manager/fm-properties-window.c:2871
-#: src/file-manager/fm-properties-window.c:2953
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2961
+#: src/file-manager/fm-properties-window.c:2853
+#: src/file-manager/fm-properties-window.c:2874
+#: src/file-manager/fm-properties-window.c:2956
+#: src/file-manager/fm-properties-window.c:2960
+#: src/file-manager/fm-properties-window.c:2964
 msgid "--"
 msgstr "--"
 
@@ -5031,88 +5025,88 @@ msgstr "选择定制图标(_S)..."
 msgid "_Remove Custom Icon"
 msgstr "删除定制图标(_R)"
 
-#: src/file-manager/fm-properties-window.c:2641
+#: src/file-manager/fm-properties-window.c:2644
 msgid "_Read"
 msgstr "读取(_R)"
 
-#: src/file-manager/fm-properties-window.c:2643
+#: src/file-manager/fm-properties-window.c:2646
 msgid "_Write"
 msgstr "写入(_W)"
 
-#: src/file-manager/fm-properties-window.c:2645
+#: src/file-manager/fm-properties-window.c:2648
 msgid "E_xecute"
 msgstr "执行(_X)"
 
-#: src/file-manager/fm-properties-window.c:2722
+#: src/file-manager/fm-properties-window.c:2725
 msgid "Set _user ID"
 msgstr "设置用户 ID(_U)"
 
-#: src/file-manager/fm-properties-window.c:2727
+#: src/file-manager/fm-properties-window.c:2730
 msgid "Special flags:"
 msgstr "特殊标志："
 
-#: src/file-manager/fm-properties-window.c:2730
+#: src/file-manager/fm-properties-window.c:2733
 msgid "Set gro_up ID"
 msgstr "设置组群 ID(_U)"
 
-#: src/file-manager/fm-properties-window.c:2732
+#: src/file-manager/fm-properties-window.c:2735
 msgid "_Sticky"
 msgstr "粘附(_S)"
 
-#: src/file-manager/fm-properties-window.c:2816
+#: src/file-manager/fm-properties-window.c:2819
 msgid "Permissions"
 msgstr "权限"
 
-#: src/file-manager/fm-properties-window.c:2826
+#: src/file-manager/fm-properties-window.c:2829
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "您不是所有者，所以您不能改变这些权限。"
 
-#: src/file-manager/fm-properties-window.c:2839
+#: src/file-manager/fm-properties-window.c:2842
 msgid "File owner:"
 msgstr "文件所有者："
 
-#: src/file-manager/fm-properties-window.c:2856
+#: src/file-manager/fm-properties-window.c:2859
 msgid "_File group:"
 msgstr "文件组群(_F)："
 
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2868
 msgid "File group:"
 msgstr "文件组群："
 
-#: src/file-manager/fm-properties-window.c:2877
+#: src/file-manager/fm-properties-window.c:2880
 msgid "Owner:"
 msgstr "所有者："
 
-#: src/file-manager/fm-properties-window.c:2878
+#: src/file-manager/fm-properties-window.c:2881
 msgid "Group:"
 msgstr "组群："
 
-#: src/file-manager/fm-properties-window.c:2879
+#: src/file-manager/fm-properties-window.c:2882
 msgid "Others:"
 msgstr "其它："
 
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2955
 msgid "Text view:"
 msgstr "文本视图："
 
-#: src/file-manager/fm-properties-window.c:2956
+#: src/file-manager/fm-properties-window.c:2959
 msgid "Number view:"
 msgstr "数字视图："
 
-#: src/file-manager/fm-properties-window.c:2960
+#: src/file-manager/fm-properties-window.c:2963
 msgid "Last changed:"
 msgstr "最后修改："
 
-#: src/file-manager/fm-properties-window.c:2966
+#: src/file-manager/fm-properties-window.c:2969
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "无法确定“%s”的权限。"
 
-#: src/file-manager/fm-properties-window.c:2969
+#: src/file-manager/fm-properties-window.c:2972
 msgid "The permissions of the selected file could not be determined."
 msgstr "无法确定选中文件的权限。"
 
-#: src/file-manager/fm-properties-window.c:3285
+#: src/file-manager/fm-properties-window.c:3288
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:769
@@ -5124,19 +5118,19 @@ msgstr ""
 "显示帮助时出错：\n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3287
+#: src/file-manager/fm-properties-window.c:3290
 msgid "Couldn't show help"
 msgstr "无法显示帮助"
 
-#: src/file-manager/fm-properties-window.c:3623
+#: src/file-manager/fm-properties-window.c:3626
 msgid "Cancel Showing Properties Window?"
 msgstr "取消显示属性窗口？"
 
-#: src/file-manager/fm-properties-window.c:3624
+#: src/file-manager/fm-properties-window.c:3627
 msgid "Creating Properties window"
 msgstr "正在创建属性窗口"
 
-#: src/file-manager/fm-properties-window.c:3750
+#: src/file-manager/fm-properties-window.c:3753
 msgid "Select an icon"
 msgstr "选择图标"
 
@@ -5280,8 +5274,8 @@ msgid ""
 "searches will take several minutes."
 msgstr ""
 "要执行快速搜索，Find 需要一个您的系统上的文件索引。目前没有可用的索引。您可以"
-"在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，"
-"搜索将会花几分钟时间。"
+"在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，搜"
+"索将会花几分钟时间。"
 
 #: src/file-manager/fm-search-list-view.c:298
 msgid ""
@@ -5291,8 +5285,8 @@ msgid ""
 "index is available, content searches cannot be performed."
 msgstr ""
 "要执行内容搜索，Find 需要一个您的系统上的文件索引。目前没有可用的索引。您可以"
-"在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，"
-"将无法执行内容搜索。"
+"在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，将"
+"无法执行内容搜索。"
 
 #: src/file-manager/fm-search-list-view.c:323
 msgid ""
@@ -5710,25 +5704,25 @@ msgstr "显示索引状态(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "在搜索时显示索引状态"
 
-#: src/nautilus-application.c:220
+#: src/nautilus-application.c:221
 msgid "Couldn't Create Required Folder"
 msgstr "无法创建所需的文件夹"
 
-#: src/nautilus-application.c:221
+#: src/nautilus-application.c:222
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
-"Nautilus 无法创建所需的文件夹“%s”。在运行 Nautilus 前，请创建该文件夹，或设"
-"置好权限以使 Nautilus 可以创建它。"
+"Nautilus 无法创建所需的文件夹“%s”。在运行 Nautilus 前，请创建该文件夹，或设置"
+"好权限以使 Nautilus 可以创建它。"
 
-#: src/nautilus-application.c:226
+#: src/nautilus-application.c:227
 msgid "Couldn't Create Required Folders"
 msgstr "无法创建所需文件夹"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:228
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5745,20 +5739,20 @@ msgstr ""
 "在运行 Nautilus 前，请创建这些文件夹，或设置好权限以使 Nautilus 可以创建它"
 "们。"
 
-#: src/nautilus-application.c:298
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "旧桌面的链接"
 
-#: src/nautilus-application.c:314
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
-"Gnome 2.4 中桌面目录的位置发生了变化。桌面上会创建一个名为“旧桌面的链接”的"
-"链接。您可以打开此链接，将其中的文件移出后删除此链接。"
+"Gnome 2.4 中桌面目录的位置发生了变化。桌面上会创建一个名为“旧桌面的链接”的链"
+"接。您可以打开此链接，将其中的文件移出后删除此链接。"
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr "升迁的旧桌面"
 
@@ -5772,17 +5766,17 @@ msgstr "升迁的旧桌面"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"现在无法使用 Nautilus。在控制台上运行命令“bonobo-slay”有可能解决这个问题。"
-"如果不能解决，您可以试试重新启动机器，或者重装 Nautilus。"
+"现在无法使用 Nautilus。在控制台上运行命令“bonobo-slay”有可能解决这个问题。如"
+"果不能解决，您可以试试重新启动机器，或者重装 Nautilus。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5802,15 +5796,15 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"现在无法使用 Nautilus。从控制台运行“bonobo-slay”可能会解决这个问题。如果不"
-"能解决， 您可以试试重新引导计算机或重新安装 Nautilus。\n"
+"现在无法使用 Nautilus。从控制台运行“bonobo-slay”可能会解决这个问题。如果不能"
+"解决， 您可以试试重新引导计算机或重新安装 Nautilus。\n"
 "\n"
 "Bonobo 无法定位 Nautilus_shell.server 文件。原因之一似乎是 LD_LIBRARY_PATH 没"
 "有包括 bonobo-activation 库的目录。另一种可能性是安装时缺少了 Nautilus_Shell."
 "server 文件。\n"
 "\n"
-"运行“bonobo-slay”会杀死所有的 Bonobo Activation 和 GConf 进程， 其它应用程"
-"序可能会需要这些进程。\n"
+"运行“bonobo-slay”会杀死所有的 Bonobo Activation 和 GConf 进程， 其它应用程序"
+"可能会需要这些进程。\n"
 "\n"
 "有时，杀死 bonobo-activation-server 和 gconfd 会解决这个问题，但我们不知道原"
 "因。\n"
@@ -5825,12 +5819,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:471 src/nautilus-application.c:489
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "由于未预料的错误，现在无法使用 Nautilus。"
 
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5838,7 +5832,7 @@ msgstr ""
 "由于在试图注册文件管理器视图服务器时，遇到未预料到的 Bonobo 错误，现在无法使"
 "用 Nautilus。"
 
-#: src/nautilus-application.c:490
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5847,7 +5841,7 @@ msgstr ""
 "由于在试图定位工厂时，遇到未预料到的 Bonobo 错误，现在无法使用 Nautilus。杀"
 "死 bonobo-activation-server 并重启动 Nautilus 可能会解决这个问题。"
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6308,59 +6302,59 @@ msgstr "选择要添加的颜色"
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "抱歉，“%s”不是一个可用的图像文件！"
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2041
 msgid "Select a Category:"
 msgstr "选择类别："
 
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2050
 msgid "C_ancel Remove"
 msgstr "取消删除(_A)"
 
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2056
 msgid "_Add a New Pattern..."
 msgstr "添加新图案(_A)..."
 
-#: src/nautilus-property-browser.c:2057
+#: src/nautilus-property-browser.c:2059
 msgid "_Add a New Color..."
 msgstr "添加新颜色(_A)..."
 
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2062
 msgid "_Add a New Emblem..."
 msgstr "添加新徽标(_A)..."
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Click on a pattern to remove it"
 msgstr "单击图案以删除"
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2088
 msgid "Click on a color to remove it"
 msgstr "单击颜色以删除"
 
-#: src/nautilus-property-browser.c:2089
+#: src/nautilus-property-browser.c:2091
 msgid "Click on an emblem to remove it"
 msgstr "单击徽标以删除"
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "Patterns:"
 msgstr "图案："
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2103
 msgid "Colors:"
 msgstr "颜色："
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2106
 msgid "Emblems:"
 msgstr "徽标："
 
-#: src/nautilus-property-browser.c:2124
+#: src/nautilus-property-browser.c:2126
 msgid "_Remove a Pattern..."
 msgstr "删除图案(_R)..."
 
-#: src/nautilus-property-browser.c:2127
+#: src/nautilus-property-browser.c:2129
 msgid "_Remove a Color..."
 msgstr "删除颜色(_R)..."
 
-#: src/nautilus-property-browser.c:2130
+#: src/nautilus-property-browser.c:2132
 msgid "_Remove an Emblem..."
 msgstr "删除徽标(_R)..."
 
@@ -7023,8 +7017,7 @@ msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"无法找到主机“%s”，因此无法显示“%s”。请检查拼写以及代理服务器设置的正确"
-"性。"
+"无法找到主机“%s”，因此无法显示“%s”。请检查拼写以及代理服务器设置的正确性。"
 
 #: src/nautilus-window-manage-views.c:1398
 #, c-format
@@ -7064,11 +7057,11 @@ msgstr "Nautilus 无法显示“%s”。"
 msgid "Can't Display Location"
 msgstr "无法显示位置"
 
-#: src/nautilus-window-manage-views.c:1686
+#: src/nautilus-window-manage-views.c:1687
 msgid "Side Pane"
 msgstr "窗格"
 
-#: src/nautilus-window-manage-views.c:1688
+#: src/nautilus-window-manage-views.c:1689
 msgid "Contains a side pane view"
 msgstr "包含一个窗格视图"
 

@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.2 \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-09-05 01:51-0400\n"
+"POT-Creation-Date: 2003-10-13 11:59+0200\n"
 "PO-Revision-Date: 2003-03-20 09:00+0600\n"
 "Last-Translator: Progga <abulfazl@juniv.edu>\n"
 "Language-Team: Bangla <gnome-translation@bengalinux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 # যেসব Stringকে Out of Context বলে মনে হয় অথবা যাদের Translation এর ব্যাপারে Confusion
 # আছে, তাদেরকে "C" দিয়ে Mark করা হয়েছে।
@@ -158,7 +158,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "যে ফাইলটিকে টেনে আনা হয়েছে তা কোন ছবির ফাইল বলে মনে হচ্ছে না।"
 
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1730
+#: src/nautilus-property-browser.c:1731
 msgid "Erase"
 msgstr "মুছে ফেলো"
 
@@ -402,15 +402,15 @@ msgstr "(ফাঁকা)"
 msgid "Loading..."
 msgstr "আসিতেছে..."
 
-#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:532 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "প্রথম (Home) ফোল্ডার"
 
-#: components/tree/nautilus-tree-view.c:521
+#: components/tree/nautilus-tree-view.c:534
 msgid "Filesystem"
 msgstr "ফাইলসিস্টেম"
 
-#: components/tree/nautilus-tree-view.c:523
+#: components/tree/nautilus-tree-view.c:536
 msgid "Network Neighbourhood"
 msgstr "নেটওয়ার্ক নেইবরহুড"
 
@@ -1754,7 +1754,7 @@ msgid "Can't delete volume"
 msgstr "ভলিউমটিকে মোছা যাচ্ছে না"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5613
+#: libnautilus-private/nautilus-file.c:5611
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2203,7 +2203,7 @@ msgstr "সকল ফাইলকে বদল করা হোক"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4433
+#: libnautilus-private/nautilus-file.c:4431
 #, c-format
 msgid "link to %s"
 msgstr "%s নির্দেশক লিঙ্ক"
@@ -2823,66 +2823,66 @@ msgstr "ফুঊঊ (১২৪তম কপি).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2657
 msgid "today at 00:00:00 PM"
 msgstr "আজ সময় ০০:০০:০০ অপরাহ্ণ"
 
 # "C"
-#: libnautilus-private/nautilus-file.c:2660
+#: libnautilus-private/nautilus-file.c:2658
 msgid "today at %-I:%M:%S %p"
 msgstr "আজ সময় %-I:%M:%S %p"
 
 # "C"
-#: libnautilus-private/nautilus-file.c:2662
+#: libnautilus-private/nautilus-file.c:2660
 msgid "today at 00:00 PM"
 msgstr "আজ সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2663
+#: libnautilus-private/nautilus-file.c:2661
 msgid "today at %-I:%M %p"
 msgstr "আজ সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2665
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today, 00:00 PM"
 msgstr "আজ, সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2664
 msgid "today, %-I:%M %p"
 msgstr "আজ, সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2668
-#: libnautilus-private/nautilus-file.c:2669
+#: libnautilus-private/nautilus-file.c:2666
+#: libnautilus-private/nautilus-file.c:2667
 msgid "today"
 msgstr "আজ"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2676
 msgid "yesterday at 00:00:00 PM"
 msgstr "গতকাল সময় ০০:০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2679
+#: libnautilus-private/nautilus-file.c:2677
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "গতকাল সময় %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2681
+#: libnautilus-private/nautilus-file.c:2679
 msgid "yesterday at 00:00 PM"
 msgstr "গতকাল সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2682
+#: libnautilus-private/nautilus-file.c:2680
 msgid "yesterday at %-I:%M %p"
 msgstr "গতকাল সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2684
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday, 00:00 PM"
 msgstr "গতকাল, সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2683
 msgid "yesterday, %-I:%M %p"
 msgstr "গতকাল, সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2687
-#: libnautilus-private/nautilus-file.c:2688
+#: libnautilus-private/nautilus-file.c:2685
+#: libnautilus-private/nautilus-file.c:2686
 msgid "yesterday"
 msgstr "গতকাল"
 
@@ -2891,134 +2891,134 @@ msgstr "গতকাল"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2697
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "বুধবার, সেপ্টেম্বর ০০ ০০০০ সময় ০০:০০:০০ অপরাহ্ণ"
 
 # "C"
-#: libnautilus-private/nautilus-file.c:2700
+#: libnautilus-private/nautilus-file.c:2698
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y সময় %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2700
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "সোমবার, অক্টোবর ০০ ০০০০ সময় ০০:০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2703
+#: libnautilus-private/nautilus-file.c:2701
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y সময় %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2703
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "সোমবার, অক্টোবর ০০ ০০০০ সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2706
+#: libnautilus-private/nautilus-file.c:2704
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2706
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "অক্টোবর ০০ ০০০০ সময় ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2709
+#: libnautilus-private/nautilus-file.c:2707
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y সময় %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2711
+#: libnautilus-private/nautilus-file.c:2709
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "অক্টোবর ০০ ০০০০, ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2712
+#: libnautilus-private/nautilus-file.c:2710
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2714
+#: libnautilus-private/nautilus-file.c:2712
 msgid "00/00/00, 00:00 PM"
 msgstr "০০/০০/০০, ০০:০০ অপরাহ্ণ"
 
-#: libnautilus-private/nautilus-file.c:2715
+#: libnautilus-private/nautilus-file.c:2713
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2717
+#: libnautilus-private/nautilus-file.c:2715
 msgid "00/00/00"
 msgstr "০০/০০/০০"
 
-#: libnautilus-private/nautilus-file.c:2718
+#: libnautilus-private/nautilus-file.c:2716
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:4013
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 items"
 msgstr "০ সংখ্যক বস্তু"
 
-#: libnautilus-private/nautilus-file.c:4013
+#: libnautilus-private/nautilus-file.c:4011
 msgid "0 folders"
 msgstr "০ সংখ্যক ফোল্ডার"
 
-#: libnautilus-private/nautilus-file.c:4014
+#: libnautilus-private/nautilus-file.c:4012
 msgid "0 files"
 msgstr "০ সংখ্যক ফাইল"
 
-#: libnautilus-private/nautilus-file.c:4018
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 item"
 msgstr "১টি বস্তু"
 
-#: libnautilus-private/nautilus-file.c:4018
+#: libnautilus-private/nautilus-file.c:4016
 msgid "1 folder"
 msgstr "১টি ফোল্ডার"
 
-#: libnautilus-private/nautilus-file.c:4019
+#: libnautilus-private/nautilus-file.c:4017
 msgid "1 file"
 msgstr "১টি ফাইল"
 
-#: libnautilus-private/nautilus-file.c:4022
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u items"
 msgstr "%uটি বস্তু"
 
-#: libnautilus-private/nautilus-file.c:4022
+#: libnautilus-private/nautilus-file.c:4020
 #, c-format
 msgid "%u folders"
 msgstr "%uটি ফোল্ডার"
 
-#: libnautilus-private/nautilus-file.c:4023
+#: libnautilus-private/nautilus-file.c:4021
 #, c-format
 msgid "%u files"
 msgstr "%uটি ফাইল"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4335
-#: libnautilus-private/nautilus-file.c:4351
+#: libnautilus-private/nautilus-file.c:4333
+#: libnautilus-private/nautilus-file.c:4349
 msgid "? items"
 msgstr "? বস্তু"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4341
+#: libnautilus-private/nautilus-file.c:4339
 msgid "? bytes"
 msgstr "? বাইট"
 
-#: libnautilus-private/nautilus-file.c:4356
+#: libnautilus-private/nautilus-file.c:4354
 msgid "unknown type"
 msgstr "অজ্ঞাত প্রকৃতি"
 
-#: libnautilus-private/nautilus-file.c:4359
+#: libnautilus-private/nautilus-file.c:4357
 msgid "unknown MIME type"
 msgstr "অজ্ঞাত মাইম প্রকৃতি"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4365
+#: libnautilus-private/nautilus-file.c:4363
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "অজ্ঞাত"
 
-#: libnautilus-private/nautilus-file.c:4397
+#: libnautilus-private/nautilus-file.c:4395
 msgid "program"
 msgstr "প্রোগ্রাম"
 
-#: libnautilus-private/nautilus-file.c:4409
+#: libnautilus-private/nautilus-file.c:4407
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3028,7 +3028,7 @@ msgstr ""
 "ব্যবহৃত gnome-vfs.keys ফাইলটি একটি ভুল স্থানে অবস্থান করছে অথবা অন্য কোন কারণে তা "
 "খুঁজে পাওয়া যাচ্ছে না।"
 
-#: libnautilus-private/nautilus-file.c:4413
+#: libnautilus-private/nautilus-file.c:4411
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3037,11 +3037,11 @@ msgstr ""
 "মাইম প্রকৃতি \"%s\"-এর (ফাইল হল \"%s\") জন্য কোন বিবরণ পাওয়া যাচ্ছে না, দয়া করে "
 "gnome-vfs মেইলিং লিস্টে এই সংবাদটি দিন।"
 
-#: libnautilus-private/nautilus-file.c:4427
+#: libnautilus-private/nautilus-file.c:4425
 msgid "link"
 msgstr "লিঙ্ক"
 
-#: libnautilus-private/nautilus-file.c:4447
+#: libnautilus-private/nautilus-file.c:4445
 msgid "link (broken)"
 msgstr "লিঙ্ক (অচল)"
 
@@ -3309,108 +3309,108 @@ msgstr "কোনটিই নয়"
 msgid "%s's Home"
 msgstr "%s-এর প্রথম (Home) ডিরেক্টরি"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2147
+#: libnautilus-private/nautilus-icon-canvas-item.c:2149
 msgid "file icon"
 msgstr "ফাইলের আইকন"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2520
+#: libnautilus-private/nautilus-icon-canvas-item.c:2522
 msgid "editable text"
 msgstr "পরিবর্তনযোগ্য টেক্সট"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2521
+#: libnautilus-private/nautilus-icon-canvas-item.c:2523
 msgid "the editable label"
 msgstr "পরিবর্তনযোগ্য লেবেল"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2528
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "additional text"
 msgstr "অতিরিক্ত টেক্সট"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2529
+#: libnautilus-private/nautilus-icon-canvas-item.c:2531
 msgid "some more text"
 msgstr "আরো কিছু টেক্সট"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2536
+#: libnautilus-private/nautilus-icon-canvas-item.c:2538
 msgid "highlighted for selection"
 msgstr "বাছাইয়ের উদ্দেশ্যে চিহ্নিত"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2537
+#: libnautilus-private/nautilus-icon-canvas-item.c:2539
 msgid "whether we are highlighted for a selection"
 msgstr "আমরা বাছাইয়ের উদ্দেশ্যে চিহ্নিত হয়েছি কি হইনি"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2544
+#: libnautilus-private/nautilus-icon-canvas-item.c:2546
 msgid "highlighted as keyboard focus"
 msgstr "কীবোর্ড ইনপুটের লক্ষ্য হিসেবে নির্ধারিত"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2545
+#: libnautilus-private/nautilus-icon-canvas-item.c:2547
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "কীবোর্ড ইনপুটের লক্ষ্য হিসেবে আমরা নির্ধারিত হয়েছি কি হইনি"
 
 # "C"
-#: libnautilus-private/nautilus-icon-canvas-item.c:2553
+#: libnautilus-private/nautilus-icon-canvas-item.c:2555
 msgid "highlighted for drop"
 msgstr "স্থানান্তরের জন্য চিহ্নিত"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2554
+#: libnautilus-private/nautilus-icon-canvas-item.c:2556
 msgid "whether we are highlighted for a D&D drop"
 msgstr "টেনে এনে রেখে দেয়ার জন্য আমরা চিহ্নিত হয়েছি কি হইনি"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:2022
+#: libnautilus-private/nautilus-icon-container.c:2023
 msgid "The selection rectangle"
 msgstr "চিহ্নিত করার সময় ব্যবহৃত চতুর্ভূজ"
 
-#: libnautilus-private/nautilus-icon-container.c:4079
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Frame Text"
 msgstr "ফ্রেম টেক্সট"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4080
+#: libnautilus-private/nautilus-icon-container.c:4081
 msgid "Draw a frame around unselected text"
 msgstr "যেসব টেক্সট চিহ্নিত করা হয়নি তার চারদিকে একটি ফ্রেম আঁকুন"
 
-#: libnautilus-private/nautilus-icon-container.c:4086
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Selection Box Color"
 msgstr "বাছাই করার বাক্সের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4087
+#: libnautilus-private/nautilus-icon-container.c:4088
 msgid "Color of the selection box"
 msgstr "বাছাই করার বাক্সের রং"
 
-#: libnautilus-private/nautilus-icon-container.c:4092
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Selection Box Alpha"
 msgstr "বাছাই করার বাক্স আলফা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4093
+#: libnautilus-private/nautilus-icon-container.c:4094
 msgid "Opacity of the selection box"
 msgstr "বাছাই করার বাক্সের অস্বচ্ছতা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4100
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Highlight Alpha"
 msgstr "আলফাকে চিহ্নিত করা হোক"
 
-#: libnautilus-private/nautilus-icon-container.c:4101
+#: libnautilus-private/nautilus-icon-container.c:4102
 msgid "Opacity of the highlight for selected icons"
 msgstr "আইকন চিহ্নিত করার ক্ষেত্রে অস্বচ্ছতা"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4107
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Light Info Color"
 msgstr "হালকা রঙে প্রদর্শিত তথ্যের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4108
+#: libnautilus-private/nautilus-icon-container.c:4109
 msgid "Color used for information text against a dark background"
 msgstr "গাঢ় পটভূমির প্রেক্ষাপটে তথ্য প্রদর্শনে ব্যবহৃত রং"
 
-#: libnautilus-private/nautilus-icon-container.c:4113
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Dark Info Color"
 msgstr "গাঢ় রঙে প্রদর্শিত তথ্যের রং"
 
 # "C"
-#: libnautilus-private/nautilus-icon-container.c:4114
+#: libnautilus-private/nautilus-icon-container.c:4115
 msgid "Color used for information text against a light background"
 msgstr "হালকা পটভূমির প্রেক্ষাপটে তথ্য প্রদর্শনে ব্যবহৃত রং"
 
@@ -4148,43 +4148,43 @@ msgstr "%s হিসেবে প্রদর্শন করা হোক"
 msgid "%s Viewer"
 msgstr "%s প্রদর্শক"
 
-#: libnautilus-private/nautilus-volume-monitor.c:897
+#: libnautilus-private/nautilus-volume-monitor.c:901
 msgid "Unknown"
 msgstr "অজ্ঞাত"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1070
+#: libnautilus-private/nautilus-volume-monitor.c:1074
 msgid "Floppy"
 msgstr "ফ্লপি"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1071
-#: libnautilus-private/nautilus-volume-monitor.c:1100
+#: libnautilus-private/nautilus-volume-monitor.c:1075
+#: libnautilus-private/nautilus-volume-monitor.c:1104
 msgid "CD-ROM"
 msgstr "সিডি-রম"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1072
+#: libnautilus-private/nautilus-volume-monitor.c:1076
 msgid "Zip Drive"
 msgstr "জিপ ড্রাইভ"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1087
-#: libnautilus-private/nautilus-volume-monitor.c:1131
+#: libnautilus-private/nautilus-volume-monitor.c:1091
+#: libnautilus-private/nautilus-volume-monitor.c:1135
 msgid "Audio CD"
 msgstr "গানের সিডি"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1122
+#: libnautilus-private/nautilus-volume-monitor.c:1126
 msgid "Root Volume"
 msgstr "Root ফাইল সিস্টেম খন্ড"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Mount Error"
 msgstr "মাউন্ট করায় সমস্যা"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Unmount Error"
 msgstr "আনমাউন্ট করায় সমস্যা"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1874
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4193,7 +4193,7 @@ msgstr ""
 "ঢোকাতে ভুলে গিয়েছেন।"
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1878
+#: libnautilus-private/nautilus-volume-monitor.c:1882
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4202,7 +4202,7 @@ msgstr ""
 "সিস্টেমটি থাকার কথা, সেখানে কিছু নেই।"
 
 # "C"
-#: libnautilus-private/nautilus-volume-monitor.c:1884
+#: libnautilus-private/nautilus-volume-monitor.c:1888
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4210,7 +4210,7 @@ msgstr ""
 "নটিলাস, ফ্লপি ড্রাইভ মাউন্ট করতে ব্যর্থ হয়েছে। সম্ভবত বর্তমান ফরম্যাটে ফ্লপি ডিস্কটিকে "
 "মাউন্ট করা সম্ভব নয়।"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1887
+#: libnautilus-private/nautilus-volume-monitor.c:1891
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4218,20 +4218,20 @@ msgstr ""
 "নটিলাস, চিহ্নিত ফাইল সিস্টেমটি মাউন্ট করতে ব্যর্থ হয়েছে। সম্ভবত বর্তমান ফরম্যাটে "
 "ফাইল সিস্টেমটিকে মাউন্ট করা সম্ভব নয়।"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1892
+#: libnautilus-private/nautilus-volume-monitor.c:1896
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "নটিলাস চিহ্নিত ফ্লপি ড্রাইভটিকে মাউন্ট করতে ব্যর্থ হয়েছে।"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1894
+#: libnautilus-private/nautilus-volume-monitor.c:1898
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "নটিলাস চিহ্নিত ফাইল সিস্টেমটিকে মাউন্ট করতে ব্যর্থ হয়েছে।"
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1899
+#: libnautilus-private/nautilus-volume-monitor.c:1903
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "নটিলাস চিহ্নিত ফাইল সিস্টেমটিকে আনমাউন্ট করতে ব্যর্থ হয়েছে।"
 
-#: libnautilus-private/nautilus-volume-monitor.c:2104
+#: libnautilus-private/nautilus-volume-monitor.c:2148
 msgid "ISO 9660 Volume"
 msgstr "আই.এস.ও ৯৬৬০ (ISO 9660) ফাইল সিস্টেম"
 
@@ -4404,86 +4404,86 @@ msgstr "বে_র করে দেয়া হোক"
 msgid "_Unmount Volume"
 msgstr "ফাইল সিস্টেম _আনমাউন্ট করা হোক"
 
-#: src/file-manager/fm-directory-view.c:493
+#: src/file-manager/fm-directory-view.c:489
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "এটি %dটি পৃথক উইন্ডো চালু করবে। আপনি কি এই কাজটির ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:495
+#: src/file-manager/fm-directory-view.c:491
 #, c-format
 msgid "Open %d Windows?"
 msgstr "%dটি উইন্ডো কি চালু করা হবে?"
 
-#: src/file-manager/fm-directory-view.c:848
+#: src/file-manager/fm-directory-view.c:844
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "আপনি কি \"%s\"'কে স্থায়ীভাবে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:852
+#: src/file-manager/fm-directory-view.c:848
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "আপনি চিহ্নিত করা %dটি ফাইল/ফোল্ডারকে মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
-#: src/file-manager/fm-directory-view.c:858
+#: src/file-manager/fm-directory-view.c:854
 msgid "Delete?"
 msgstr "মুছে ফেলা হবে কি?"
 
-#: src/file-manager/fm-directory-view.c:1541
+#: src/file-manager/fm-directory-view.c:1537
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\"'কে চিহ্নিত করা হয়েছে"
 
-#: src/file-manager/fm-directory-view.c:1543
+#: src/file-manager/fm-directory-view.c:1539
 msgid "1 folder selected"
 msgstr "১টি ফোল্ডার চিহ্নিত করা হয়েছে"
 
-#: src/file-manager/fm-directory-view.c:1546
+#: src/file-manager/fm-directory-view.c:1542
 #, c-format
 msgid "%d folders selected"
 msgstr "%dটি ফোল্ডার চিহ্নিত করা হয়েছে"
 
-#: src/file-manager/fm-directory-view.c:1553
+#: src/file-manager/fm-directory-view.c:1549
 msgid " (containing 0 items)"
 msgstr " (০ সংখ্যক ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1555
+#: src/file-manager/fm-directory-view.c:1551
 msgid " (containing 1 item)"
 msgstr " (১টি ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1557
+#: src/file-manager/fm-directory-view.c:1553
 #, c-format
 msgid " (containing %d items)"
 msgstr " (%d সংখ্যক ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1564
+#: src/file-manager/fm-directory-view.c:1560
 msgid " (containing a total of 0 items)"
 msgstr " (সর্বমোট শূন্যটি ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1566
+#: src/file-manager/fm-directory-view.c:1562
 msgid " (containing a total of 1 item)"
 msgstr " (সর্বমোট ১টি ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1568
+#: src/file-manager/fm-directory-view.c:1564
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (সর্বমোট %dটি ফাইল/ফোল্ডার ধারণ করছে)"
 
-#: src/file-manager/fm-directory-view.c:1581
+#: src/file-manager/fm-directory-view.c:1577
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" চিহ্নিত করা হয়েছে (%s)"
 
-#: src/file-manager/fm-directory-view.c:1585
+#: src/file-manager/fm-directory-view.c:1581
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d সংখ্যক ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
 
-#: src/file-manager/fm-directory-view.c:1592
+#: src/file-manager/fm-directory-view.c:1588
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "আরো একটি ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
 
-#: src/file-manager/fm-directory-view.c:1595
+#: src/file-manager/fm-directory-view.c:1591
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "আরো %dটি  ফাইল/ফোল্ডার চিহ্নিত করা হয়েছে (%s)"
@@ -4495,7 +4495,7 @@ msgstr "আরো %dটি  ফাইল/ফোল্ডার চিহ্ন�
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1624
+#: src/file-manager/fm-directory-view.c:1620
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4504,7 +4504,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1749
+#: src/file-manager/fm-directory-view.c:1745
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4513,11 +4513,11 @@ msgstr ""
 "\"%s\" ফোল্ডারে যে সংখ্যক ফাইল আছে তা প্রদর্শন করা ননটিলাসর পক্ষে সম্ভব নয়। তাই "
 "কিছু ফাইলকে প্রদর্শন করা হবে না। দুঃখিত।"
 
-#: src/file-manager/fm-directory-view.c:1756
+#: src/file-manager/fm-directory-view.c:1752
 msgid "Too Many Files"
 msgstr "ফাইলের সংখ্যা অত্যধিক"
 
-#: src/file-manager/fm-directory-view.c:3050
+#: src/file-manager/fm-directory-view.c:2984
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
@@ -4525,7 +4525,7 @@ msgstr ""
 "\"%s\"'কে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এটিকে এখনই স্থায়ীভাবে "
 "মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3055
+#: src/file-manager/fm-directory-view.c:2989
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4534,7 +4534,7 @@ msgstr ""
 "%dটি চিহ্নিত ফাইল/ফোল্ডারকে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এগুলোকে "
 "এখনই স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3059
+#: src/file-manager/fm-directory-view.c:2993
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4543,17 +4543,17 @@ msgstr ""
 "চিহ্নিত ফাইল/ফোল্ডারের %dটিকে আবর্জনার বাক্সে সরিয়ে নেয়া যাচ্ছে না। আপনি কি এই %"
 "dটি ফাইল/ফোল্ডারকে এখনই স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3067
+#: src/file-manager/fm-directory-view.c:3001
 msgid "Delete Immediately?"
 msgstr "এখনই কি স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3099
+#: src/file-manager/fm-directory-view.c:3033
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr ""
 "আপনি কি নিশ্চিতভাবে আবর্জনার বাক্স থেকে \"%s\"'কে স্থায়ীভাবে মুছে ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3103
+#: src/file-manager/fm-directory-view.c:3037
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4562,49 +4562,49 @@ msgstr ""
 "আপনি কি নিশ্চিতভাবে আবর্জনার বাক্স থেকে %dটি চিহ্নিত ফাইল/ফোল্ডারকে স্থায়ীভাবে মুছে "
 "ফেলতে চান?"
 
-#: src/file-manager/fm-directory-view.c:3109
+#: src/file-manager/fm-directory-view.c:3043
 msgid "Delete From Trash?"
 msgstr "আবর্জনার বাক্স থেকে কি মুছে ফেলা হবে?"
 
-#: src/file-manager/fm-directory-view.c:3387
-#: src/file-manager/fm-directory-view.c:3429
+#: src/file-manager/fm-directory-view.c:3321
+#: src/file-manager/fm-directory-view.c:3363
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "চিহ্নিত ফাইল ব্যবহারের জন্য \"%s\" ব্যবহার করা হোক"
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3444
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "অন্যান্য অ্যাপলিকে_শন..."
 
-#: src/file-manager/fm-directory-view.c:3510
+#: src/file-manager/fm-directory-view.c:3444
 msgid "An _Application..."
 msgstr "এ_কটি অ্যাপলিকেশন..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3449
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "অন্যান্য প্র_দর্শক..."
 
-#: src/file-manager/fm-directory-view.c:3515
+#: src/file-manager/fm-directory-view.c:3449
 msgid "A _Viewer..."
 msgstr "_একটি প্রদর্শক..."
 
-#: src/file-manager/fm-directory-view.c:3597
+#: src/file-manager/fm-directory-view.c:3531
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "উল্লেখিত কাজটি সম্পন্ন করা যায়নি:  %s"
 
-#: src/file-manager/fm-directory-view.c:3621
+#: src/file-manager/fm-directory-view.c:3555
 msgid "Could not complete specified action."
 msgstr "উল্লেখিত কাজটি সম্পন্ন করা যায়নি।"
 
-#: src/file-manager/fm-directory-view.c:4130
+#: src/file-manager/fm-directory-view.c:4064
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "কোন একটি চিহ্নিত ফাইলের জন্য \"%s\" চালানো হোক"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4281
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4614,11 +4614,11 @@ msgstr ""
 "স্ক্রিপ্ট বেছে নিলে তা যে কোন চিহ্নিত ফাইলকে ইনপুট হিসেবে ব্যবহার করে চলতে আরম্ভ "
 "করবে।"
 
-#: src/file-manager/fm-directory-view.c:4350
+#: src/file-manager/fm-directory-view.c:4284
 msgid "About Scripts"
 msgstr "স্ক্রিপ্ট সম্পর্কিত"
 
-#: src/file-manager/fm-directory-view.c:4351
+#: src/file-manager/fm-directory-view.c:4285
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4659,107 +4659,107 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: বর্তমান উইন্ডোর আকার ও অবস্থান"
 
-#: src/file-manager/fm-directory-view.c:4472
+#: src/file-manager/fm-directory-view.c:4406
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "ফাইল পেস্ট (Paste) করার কমান্ড দিলে \"%s\"'কে স্থানান্তর করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4476
+#: src/file-manager/fm-directory-view.c:4410
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "ফাইল পেস্ট (Paste) করার কমান্ড দিলে \"%s\"'কে কপি করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4483
+#: src/file-manager/fm-directory-view.c:4417
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "ফাইল পেস্ট (Paste) করার কমান্ড দিলে চিহ্নিত %dটি ফাইল/ফোল্ডারকে স্থানান্তর করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4487
+#: src/file-manager/fm-directory-view.c:4421
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "ফাইল পেস্ট (Paste) করার কমান্ড দিলে চিহ্নিত %dটি ফাইল/ফোল্ডারকে কপি করা হবে"
 
-#: src/file-manager/fm-directory-view.c:4566
+#: src/file-manager/fm-directory-view.c:4500
 msgid "There is nothing on the clipboard to paste."
 msgstr "ক্লিপবোর্ডে পেস্ট (Paste) করার মত কিছু নেই"
 
-#: src/file-manager/fm-directory-view.c:4823
+#: src/file-manager/fm-directory-view.c:4757
 msgid "Open _in This Window"
 msgstr "এই উইন্ডোতে চালু করা হোক"
 
-#: src/file-manager/fm-directory-view.c:4826
+#: src/file-manager/fm-directory-view.c:4760
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open _in New Window"
 msgstr "নতুন উইন্ডোতে চালু করো"
 
-#: src/file-manager/fm-directory-view.c:4828
+#: src/file-manager/fm-directory-view.c:4762
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "%dটি নতুন উইন্ডোতে চালু করো"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4780
 msgid "_Delete from Trash"
 msgstr "আবর্জনার বাক্স থেকে _মুছে ফেলো"
 
-#: src/file-manager/fm-directory-view.c:4848
+#: src/file-manager/fm-directory-view.c:4782
 msgid "Delete all selected items permanently"
 msgstr "চিহ্নিত সবকিছুকে স্থায়ীভাবে মুছে ফেলো"
 
-#: src/file-manager/fm-directory-view.c:4851
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:4785
+#: src/file-manager/fm-directory-view.c:5066
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "আবর্জনার বাক্সে স্থানান্তর করো (_স)"
 
-#: src/file-manager/fm-directory-view.c:4853
+#: src/file-manager/fm-directory-view.c:4787
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "প্রতিটি চিহ্নিত ফাইল/ফোল্ডারকে আবর্জনার বাক্সে স্থানান্তর করো"
 
-#: src/file-manager/fm-directory-view.c:4877
+#: src/file-manager/fm-directory-view.c:4811
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "মুছে ফেলো (_ম)"
 
-#: src/file-manager/fm-directory-view.c:4897
+#: src/file-manager/fm-directory-view.c:4831
 msgid "Ma_ke Links"
 msgstr "লিঙ্কসমূহ তৈরি করো (_র)"
 
-#: src/file-manager/fm-directory-view.c:4898
+#: src/file-manager/fm-directory-view.c:4832
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "লিঙ্ক তৈরি করো (_ল)"
 
 # HACK msgstr "লিঙ্ক তৈ_রি করা হোক"
-#: src/file-manager/fm-directory-view.c:4911
+#: src/file-manager/fm-directory-view.c:4845
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
 msgstr "আবর্জনার বাক্স খালি করো (_খ)"
 
 # HACK msgstr "আবর্জনার বাক্স _খালি করা হোক"
-#: src/file-manager/fm-directory-view.c:4924
+#: src/file-manager/fm-directory-view.c:4858
 msgid "Cu_t File"
 msgstr "ফাইল কাট (Cut) করো (_ট)"
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4859
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "ফাইলগুলো কাট (Cut) করো (_ট)"
 
-#: src/file-manager/fm-directory-view.c:4934
+#: src/file-manager/fm-directory-view.c:4868
 msgid "_Copy File"
 msgstr "ফাইল _কপি (Copy) করো (_ক)"
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4869
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "ফাইলগুলো কপি (Copy) করা হোক (_ক)"
 
-#: src/file-manager/fm-directory-view.c:5123
+#: src/file-manager/fm-directory-view.c:5057
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4767,7 +4767,7 @@ msgstr ""
 "কিছু নির্দেশ করে না বলে এই লিঙ্কটি অকেজো। এই লিঙ্কটিকে কি আবর্জনার বাক্সে ফেলে "
 "দেবেন?"
 
-#: src/file-manager/fm-directory-view.c:5126
+#: src/file-manager/fm-directory-view.c:5060
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4776,11 +4776,11 @@ msgstr ""
 "এই লিঙ্কটি ব্যবহারযোগ্য নয় কারণ এটির লক্ষ্য \"%s\" এর কোন অস্তিত্ব নেই। এই লিঙ্কটিকে "
 "কি আবর্জনার বাক্সে ফেলে দেবেন?"
 
-#: src/file-manager/fm-directory-view.c:5132
+#: src/file-manager/fm-directory-view.c:5066
 msgid "Broken Link"
 msgstr "অকার্যকর লিঙ্ক"
 
-#: src/file-manager/fm-directory-view.c:5189
+#: src/file-manager/fm-directory-view.c:5123
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4789,29 +4789,29 @@ msgstr ""
 "\"%s\" একটি এক্সিকিউটেবল (চালানো যায়, এমন) টেক্সট ফাইল। আপনি কি এটি চালাতে চান "
 "নাকি এর ভেতর যা লেখা আছে তা পড়তে চান?"
 
-#: src/file-manager/fm-directory-view.c:5195
+#: src/file-manager/fm-directory-view.c:5129
 msgid "Run or Display?"
 msgstr "চালানো হবে নাকি লেখা প্রদর্শন করা হবে?"
 
-#: src/file-manager/fm-directory-view.c:5196
+#: src/file-manager/fm-directory-view.c:5130
 msgid "_Display"
 msgstr "প্রদর্শন (_প)"
 
-#: src/file-manager/fm-directory-view.c:5197
+#: src/file-manager/fm-directory-view.c:5131
 msgid "Run in _Terminal"
 msgstr "টার্মিনালে চালানো হোক (_ট)"
 
-#: src/file-manager/fm-directory-view.c:5200
+#: src/file-manager/fm-directory-view.c:5134
 msgid "_Run"
 msgstr "চালানো হোক (_চ)"
 
-#: src/file-manager/fm-directory-view.c:5403
+#: src/file-manager/fm-directory-view.c:5337
 #, c-format
 msgid "Opening \"%s\""
 msgstr "\"%s\" চালু করা হচ্ছে"
 
 # "C"
-#: src/file-manager/fm-directory-view.c:5409
+#: src/file-manager/fm-directory-view.c:5343
 msgid "Cancel Open?"
 msgstr "পড়ার প্রচেষ্টা কি বাতিল করা হবে?"
 
@@ -5168,11 +5168,11 @@ msgstr "ধরন:"
 #: src/file-manager/fm-properties-window.c:2281
 #: src/file-manager/fm-properties-window.c:2290
 #: src/file-manager/fm-properties-window.c:2296
-#: src/file-manager/fm-properties-window.c:2850
-#: src/file-manager/fm-properties-window.c:2871
-#: src/file-manager/fm-properties-window.c:2953
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2961
+#: src/file-manager/fm-properties-window.c:2853
+#: src/file-manager/fm-properties-window.c:2874
+#: src/file-manager/fm-properties-window.c:2956
+#: src/file-manager/fm-properties-window.c:2960
+#: src/file-manager/fm-properties-window.c:2964
 msgid "--"
 msgstr "--"
 
@@ -5218,91 +5218,91 @@ msgid "_Remove Custom Icon"
 msgstr "ইচ্ছামাফিক বেছে নেয়া আইকন মুছে ফেলা হোক (_ম)"
 
 # HACK msgstr "ইচ্ছামাফিক তৈরি করা আইকন _মুছে ফেলা হোক"
-#: src/file-manager/fm-properties-window.c:2641
+#: src/file-manager/fm-properties-window.c:2644
 msgid "_Read"
 msgstr "পড়া (_প)"
 
-#: src/file-manager/fm-properties-window.c:2643
+#: src/file-manager/fm-properties-window.c:2646
 msgid "_Write"
 msgstr "লেখা (_ল)"
 
 # HACK msgstr "_লেখা"
-#: src/file-manager/fm-properties-window.c:2645
+#: src/file-manager/fm-properties-window.c:2648
 msgid "E_xecute"
 msgstr "চালানো (_ল)"
 
-#: src/file-manager/fm-properties-window.c:2722
+#: src/file-manager/fm-properties-window.c:2725
 msgid "Set _user ID"
 msgstr "ব্যবহারকারীর আই.ডি নির্ধারণ করা হোক (_ব)"
 
-#: src/file-manager/fm-properties-window.c:2727
+#: src/file-manager/fm-properties-window.c:2730
 msgid "Special flags:"
 msgstr "বিশেষ ফ্ল্যাগ:"
 
-#: src/file-manager/fm-properties-window.c:2730
+#: src/file-manager/fm-properties-window.c:2733
 msgid "Set gro_up ID"
 msgstr "গ্রুপ আই.ডি নির্ধারণ করা হোক (_প)"
 
-#: src/file-manager/fm-properties-window.c:2732
+#: src/file-manager/fm-properties-window.c:2735
 msgid "_Sticky"
 msgstr "স্টিকি (_স)"
 
-#: src/file-manager/fm-properties-window.c:2816
+#: src/file-manager/fm-properties-window.c:2819
 msgid "Permissions"
 msgstr "ব্যবহারের অনুমতি"
 
-#: src/file-manager/fm-properties-window.c:2826
+#: src/file-manager/fm-properties-window.c:2829
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "যেহেতু আপনি মালিক না তাই আপনি এই অনুমতিগুলো পরিবর্তন করতে পারবেন না।"
 
-#: src/file-manager/fm-properties-window.c:2839
+#: src/file-manager/fm-properties-window.c:2842
 msgid "File owner:"
 msgstr "ফাইলের মালিক:"
 
-#: src/file-manager/fm-properties-window.c:2856
+#: src/file-manager/fm-properties-window.c:2859
 msgid "_File group:"
 msgstr "ফাইলের গ্রুপ (_ফ):"
 
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2868
 msgid "File group:"
 msgstr "ফাইলের গ্রুপ:"
 
-#: src/file-manager/fm-properties-window.c:2877
+#: src/file-manager/fm-properties-window.c:2880
 msgid "Owner:"
 msgstr "মালিক:"
 
-#: src/file-manager/fm-properties-window.c:2878
+#: src/file-manager/fm-properties-window.c:2881
 msgid "Group:"
 msgstr "গ্রুপ:"
 
-#: src/file-manager/fm-properties-window.c:2879
+#: src/file-manager/fm-properties-window.c:2882
 msgid "Others:"
 msgstr "অন্যান্য:"
 
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2955
 msgid "Text view:"
 msgstr "টেক্সট চিত্র:"
 
 # "C"
-#: src/file-manager/fm-properties-window.c:2956
+#: src/file-manager/fm-properties-window.c:2959
 msgid "Number view:"
 msgstr "সংখ্যা চিত্র:"
 
 # "C"
-#: src/file-manager/fm-properties-window.c:2960
+#: src/file-manager/fm-properties-window.c:2963
 msgid "Last changed:"
 msgstr "সর্বশেষ পরিবর্তন:"
 
-#: src/file-manager/fm-properties-window.c:2966
+#: src/file-manager/fm-properties-window.c:2969
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" এর অনুমতি বোঝা যাচ্ছে না।"
 
-#: src/file-manager/fm-properties-window.c:2969
+#: src/file-manager/fm-properties-window.c:2972
 msgid "The permissions of the selected file could not be determined."
 msgstr "নির্বাচিত ফাইলটির অনুমতি বোঝা যাচ্ছে না।"
 
-#: src/file-manager/fm-properties-window.c:3285
+#: src/file-manager/fm-properties-window.c:3288
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:769
@@ -5314,19 +5314,19 @@ msgstr ""
 "সহায়িকা প্রদর্শনে সমস্যা হয়েছে: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3287
+#: src/file-manager/fm-properties-window.c:3290
 msgid "Couldn't show help"
 msgstr "সহায়িকা প্রদর্শন করা সম্ভব হয়নি"
 
-#: src/file-manager/fm-properties-window.c:3623
+#: src/file-manager/fm-properties-window.c:3626
 msgid "Cancel Showing Properties Window?"
 msgstr "বৈশিষ্ট্যাবলী প্রদর্শনকারী উইন্ডো চালু করার প্রচেষ্টা কি বাতিল করা হবে?"
 
-#: src/file-manager/fm-properties-window.c:3624
+#: src/file-manager/fm-properties-window.c:3627
 msgid "Creating Properties window"
 msgstr "বৈশিষ্ট্যাবলী প্রদর্শনকারী উইন্ডো তৈরী করা হচ্ছে"
 
-#: src/file-manager/fm-properties-window.c:3750
+#: src/file-manager/fm-properties-window.c:3753
 msgid "Select an icon"
 msgstr "একটি আইকন বেছে নিন:"
 
@@ -6000,11 +6000,11 @@ msgstr ""
 "পরবর্তিতে নটিলাস চালানোর পূর্বে দয়া করে ফোল্ডারগুলো তৈরি করে রাখুন অথবা ফোল্ডার "
 "ব্যবহারের অনুমতি পরিবর্তন করে এমন করুন যেন নটিলাস ফোল্ডারটি তৈরি করতে পারে।"
 
-#: src/nautilus-application.c:299
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "পুরোনো ডেক্সটপের অবস্থান"
 
-#: src/nautilus-application.c:315
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -6014,7 +6014,7 @@ msgstr ""
 "একটি লিঙ্ক বর্তমান ডেস্কটপের উপরে তৈরি করা হয়েছে। চাইলে আপনি আপনার দরকারি "
 "ফাইলগুলোকে ওখান থেকে সরিয়ে এনে লিঙ্কটিকে মুছে ফেলতে পারেন।"
 
-#: src/nautilus-application.c:318
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -6028,7 +6028,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:485
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6039,7 +6039,7 @@ msgstr ""
 "করে নটিলাস ইনস্টল করুন।"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:491
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6085,12 +6085,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:521 src/nautilus-application.c:539
-#: src/nautilus-application.c:546
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "একটি অপ্রত্যাশিত সমস্যার কারণে এখন নটিলাস চালানো যাচ্ছে না।"
 
-#: src/nautilus-application.c:522
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6098,7 +6098,7 @@ msgstr ""
 "বনোবো যখন ফাইল ম্যানেজার ভিউ সার্ভারকে নিবন্ধিত করার চেষ্টা করছিল তখন একটি "
 "অপ্রত্যাশিত সমস্যা হয়েছে এবং একারণে এখন ননটিলাসচালানো যাচ্ছে না।"
 
-#: src/nautilus-application.c:540
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6108,7 +6108,7 @@ msgstr ""
 "নটিলাস চালানো যাবে না। বনোবো-অ্যাক্টিভেশন-সার্ভারকে বন্ধ করে পুনরায় নটিলনটিলাসু "
 "করলে হয়তো সমস্যার সমাধান হতে পারে।"
 
-#: src/nautilus-application.c:547
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6601,59 +6601,59 @@ msgstr "তালিকায় যোগ করার জন্য একটি �
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "দুঃখিত, চিত্রের ফাইল হিসেবে '%s' ব্যবহারযোগ্য নয়!"
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2041
 msgid "Select a Category:"
 msgstr "কোন একটি শ্রেণী বেছে নিন:"
 
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2050
 msgid "C_ancel Remove"
 msgstr "সরিয়ে ফেলার প্রচেষ্টা বাতিল করা হোক (_ব)"
 
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2056
 msgid "_Add a New Pattern..."
 msgstr "একটি নতুন প্যাটার্ন  যোগ করা হোক... (_য)"
 
-#: src/nautilus-property-browser.c:2057
+#: src/nautilus-property-browser.c:2059
 msgid "_Add a New Color..."
 msgstr "একটি নতুন রং যোগ করা হোক... (_য)"
 
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2062
 msgid "_Add a New Emblem..."
 msgstr "একটি নতুন প্রতীক যোগ করা হোক... (_য)"
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Click on a pattern to remove it"
 msgstr "কোন প্যাটার্নকে সরিয়ে ফেলতে চাইলে তার ওপর ক্লিক করুন"
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2088
 msgid "Click on a color to remove it"
 msgstr "কোন রংকে সরিয়ে ফেলতে চাইলে তার ওপর ক্লিক করুন"
 
-#: src/nautilus-property-browser.c:2089
+#: src/nautilus-property-browser.c:2091
 msgid "Click on an emblem to remove it"
 msgstr "কোন প্রতীককে সরিয়ে ফেলতে চাইলে তার ওপর ক্লিক করুন"
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "Patterns:"
 msgstr "প্যাটার্ন:"
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2103
 msgid "Colors:"
 msgstr "রং:"
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2106
 msgid "Emblems:"
 msgstr "প্রতীক:"
 
-#: src/nautilus-property-browser.c:2124
+#: src/nautilus-property-browser.c:2126
 msgid "_Remove a Pattern..."
 msgstr "একটি প্যাটার্ন সরিয়ে ফেলা হোক... (_স)"
 
-#: src/nautilus-property-browser.c:2127
+#: src/nautilus-property-browser.c:2129
 msgid "_Remove a Color..."
 msgstr "একটি রং সরিয়ে ফেলা হোক... (_স)"
 
-#: src/nautilus-property-browser.c:2130
+#: src/nautilus-property-browser.c:2132
 msgid "_Remove an Emblem..."
 msgstr "একটি প্রতীক সরিয়ে ফেলা হোক... (_স)"
 
@@ -7392,11 +7392,11 @@ msgstr "নটিলাস \"%s\"'কে প্রদর্শন করতে �
 msgid "Can't Display Location"
 msgstr "অবস্থানটি দেখানো যাচ্ছে না"
 
-#: src/nautilus-window-manage-views.c:1686
+#: src/nautilus-window-manage-views.c:1687
 msgid "Side Pane"
 msgstr "সাইড পেন"
 
-#: src/nautilus-window-manage-views.c:1688
+#: src/nautilus-window-manage-views.c:1689
 msgid "Contains a side pane view"
 msgstr "সাইড পেনবিশিষ্ট চিত্র"
 
