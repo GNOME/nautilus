@@ -39,7 +39,7 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-#define DEBUG_PACKAGE_ALLOCS 
+#undef DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int package_allocs = 0;
@@ -83,7 +83,7 @@ categorydata_list_copy (const GList *list)
 	GList *result = NULL;
 	const GList *ptr;
 
-	for (ptr = list; ptr; ptr = g_list_next (list)) {
+	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
 		result = g_list_prepend (result, categorydata_copy ((CategoryData*)(ptr->data)));
 	}
 	result = g_list_reverse (result);
@@ -121,22 +121,35 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
+	if (g_list_length (cd->packages)) {
+		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	}
+	g_list_free (cd->packages);
+	cd->packages = NULL;
+	if (g_list_length (cd->depends)) {
+		g_list_foreach (cd->depends, (GFunc)g_free, NULL);
+	}
+	g_list_free (cd->depends);
+	cd->depends = NULL;
 	g_free (cd->name);
 	cd->name = NULL;
 	g_free (cd->description);
 	cd->description = NULL;
-	if (g_list_length (cd->packages)) {
-		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
-	}
-	if (g_list_length (cd->depends)) {
-		g_list_foreach (cd->depends, (GFunc)g_free, NULL);
-	}
 }
 
 void
 categorydata_destroy (CategoryData *cd)
 {
 	categorydata_destroy_foreach (cd, NULL);
+}
+
+void
+categorydata_list_destroy (GList *list)
+{
+	if (g_list_length (list)) {
+		g_list_foreach (list, (GFunc) categorydata_destroy_foreach, NULL);
+	}
+	g_list_free (list);
 }
 
 PackageData*
@@ -352,7 +365,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			} else {
 				fullname = g_strdup (names[index]);
 			}
-			/* trilobite_debug ("%s provides %s", pack->name, fullname); */
+			/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
 			pack->provides = g_list_prepend (pack->provides, fullname);
 		}
 	}

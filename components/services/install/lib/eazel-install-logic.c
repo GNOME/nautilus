@@ -69,10 +69,6 @@ static void eazel_uninstall_globber (EazelInstall *service,
 static int eazel_install_check_existing_packages (EazelInstall *service, 
 						  PackageData *pack);
 
-static void eazel_install_prune_packages(EazelInstall *service, 
-					  PackageData *pack, 
-					  ...);
-
 static gboolean eazel_install_download_packages (EazelInstall *service,
 						 gboolean toplevel,
 						 GList **packages,
@@ -82,6 +78,7 @@ static gboolean  eazel_install_check_for_file_conflicts (EazelInstall *service,
 							 PackageData *pack,
 							 GList **breaks,
 							 GList **requires);
+
 static void eazel_install_prune_packages (EazelInstall *service, 
 					  PackageData *pack, 
 					  ...);
@@ -826,6 +823,8 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 	for (iterator = *packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		GList *file_iterator;
+		int reported_yet = FALSE;
+		int other_conflicts = 0;
 
 		/* Check all files provided */
 		for (file_iterator = pack->provides; file_iterator; glist_step (file_iterator)) {
@@ -835,10 +834,15 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 								  fname);
 			if (npack) {
 				/* Dang, fname is owned by npack but pack also adds it */
-				trilobite_debug ("conflict, file %s from package %s is also in %s", 
-						 fname, 
-						 pack->name,
-						 npack->name);
+				if (! reported_yet) {
+					trilobite_debug ("conflict, file %s from package %s is also in %s", 
+							 fname, 
+							 pack->name,
+							 npack->name);
+					reported_yet = TRUE;
+				} else {
+					other_conflicts++;
+				}
 				if (!g_list_find_custom (conflicts, 
 							 pack,
 							 (GCompareFunc)eazel_install_requirement_dep_compare)) {
@@ -854,6 +858,9 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 						     pack);
 			}
 		}
+		if (other_conflicts) {
+			trilobite_debug ("(%d other conflicts from the same package... *sigh*)", other_conflicts);
+		}
 	}
 
 	for (iterator = conflicts; iterator; glist_step (iterator)) {
@@ -866,7 +873,7 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 		req->package->status = PACKAGE_FILE_CONFLICT;
 		req->required->status = PACKAGE_FILE_CONFLICT;
 		packagedata_add_pack_to_breaks (req->package, req->required);
-		eazel_install_prune_packages (service, req->package, packages);
+		eazel_install_prune_packages (service, req->package, packages, NULL);
 	}
 
 	return result;

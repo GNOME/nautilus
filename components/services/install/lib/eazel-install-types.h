@@ -144,6 +144,7 @@ CategoryData *categorydata_copy (const CategoryData *cat);
 GList *categorydata_list_copy (const GList *list);
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
+void categorydata_list_destroy (GList *list);
 
 struct _PackageData {
 	char* name;

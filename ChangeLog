@@ -1,3 +1,34 @@
+2000-10-17  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_do_transaction_all_files_check):
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_list_copy), (categorydata_copy),
+	(categorydata_destroy_foreach), (categorydata_list_destroy),
+	(packagedata_fill_from_rpm_header):
+	* components/services/install/lib/eazel-install-types.h:
+
+	Fix missing param in prune_packages.  Make categorydata_list_copy
+	stop iterating sometime in my life.  Add matching
+	categorydata_list_destroy. 
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (jump_to_error_page),
+	(start_over), (dont_start_over), (create_finish_page_good),
+	(get_required_name), (get_detailed_errors_foreach),
+	(get_detailed_errors), (install_failed), (eazel_install_dep_check),
+	(eazel_install_delete_files), (install_done), (toggle_button_lock),
+	(eazel_installer_add_category), (check_system),
+	(eazel_installer_do_install), (eazel_install_get_depends):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+
+	Further attempts at recovering from a common error case (where the
+	user ought to upgrade gnumeric too).  Fix up some of the text to
+	match biz requirements.  Make a copy of the category list before
+	doing the install-lib call, so that it doesn't munge our pristine
+	list for the cases where we want to try again later.
+
 2000-10-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:
