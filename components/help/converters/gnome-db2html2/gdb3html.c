@@ -182,7 +182,6 @@ start_document (Context *context)
 static void
 end_document (Context *context)
 {
-
 }
 
 static void

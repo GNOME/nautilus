@@ -6,6 +6,7 @@
 
 static void sect_preparse_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_preparse_title_characters (Context *context, const gchar *chars, gint len);
+static void sect_preparse_figure_start_element (Context *context, const char *name, const xmlChar **atrs);
 
 ElementInfo sect_preparse[] = {
 	{ ARTICLE, "article", NULL, NULL, NULL},
@@ -39,7 +40,7 @@ ElementInfo sect_preparse[] = {
 	{ ULINK, "ulink", NULL, NULL, NULL},
 	{ XREF, "xref", NULL, NULL, NULL},
 	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
-	{ FIGURE, "figure", NULL, NULL, NULL},
+	{ FIGURE, "figure", (startElementSAXFunc) sect_preparse_figure_start_element, NULL, NULL},
 	{ GRAPHIC, "graphic", NULL, NULL, NULL},
 	{ CITETITLE, "citetitle", NULL, NULL, NULL},
 	{ APPLICATION, "application", NULL, NULL, NULL},
@@ -142,4 +143,32 @@ sect_preparse_title_characters (Context *context,
 		}
 		atrs_ptr += 2;
 	}
+}
+
+static void
+sect_preparse_figure_start_element (Context *context,
+				    const char *name,
+				    const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+	static gint figure_num = 0;
+
+	
+	figure_num++;
+	atrs_ptr = (gchar **) atrs;
+        while (atrs_ptr && *atrs_ptr) {
+                if (g_strcasecmp (*atrs_ptr, "id") == 0) {
+                        atrs_ptr++;
+			if (context->figure_data == NULL) {
+				context->figure_data = g_hash_table_new (g_str_hash, g_str_equal);
+			}
+			if (g_hash_table_lookup (context->figure_data, *atrs_ptr) == NULL) {
+				/* The key is the 'figure id' - The data is the 'sect id' */
+                        	g_hash_table_insert (context->figure_data, g_strdup (*atrs_ptr), g_strdup_printf("%d",figure_num));
+			}
+                        break;
+                }
+                atrs_ptr += 2;
+        }
+
 }

@@ -822,12 +822,25 @@ sect_xref_start_element (Context *context,
 {
 	gchar **atrs_ptr;
 	gchar *title = NULL;
+	gchar *fignum_from_figure_id = NULL;
 
 	if (!IS_IN_SECT (context))
 		return;
+	
 
-	sect_print (context, "<A HREF=\"help:%s", context->base_file);
 	atrs_ptr = (gchar **) atrs;
+	if (*atrs_ptr) {
+		atrs_ptr++;
+		fignum_from_figure_id = g_hash_table_lookup (context->figure_data, *atrs_ptr);
+		atrs_ptr--;
+	}
+
+	if (fignum_from_figure_id != NULL) {
+		sect_print (context, "Figure %s", fignum_from_figure_id);
+		return;
+	}
+	
+	sect_print (context, "<A HREF=\"help:%s", context->base_file);
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "linkend")) {
 			atrs_ptr++;
@@ -840,10 +853,11 @@ sect_xref_start_element (Context *context,
 	if (*atrs_ptr)
 		title = g_hash_table_lookup (((SectContext *)context->data)->title_hash, *atrs_ptr);
 
-	if (title == NULL)
-		sect_print (context, "\">the section here</A>");
-	else
-		sect_print (context, "\">the section <EM>%s</EM></A>", title);
+	if (title == NULL) {
+			sect_print (context, "\">the section here</A>");
+	} else {
+			sect_print (context, "\">the section <EM>%s</EM></A>", title);
+	}
 }
 
 void

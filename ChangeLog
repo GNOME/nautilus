@@ -1,3 +1,21 @@
+2000-08-11  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/ASSUMPTIONS:
+        * components/help/converters/gnome-db2html2/TODO:
+        Added an ASSUMPTIONS (it might be temporary) and elborated on a TODO
+        item.
+
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        (sect_preparse_figure_start_element) Keep a hash of the figure_id's
+        encountered.
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Add a hash table to the Context struct
+
+        * components/help/converters/sect-elements.c:
+        (sect_xref_start_element):
+        Special case handling of xref's to images.
+
 2000-08-11  Darin Adler  <darin@eazel.com>
 
 	* docs/state-machines.txt: Some tweaks to Maciej's proposed

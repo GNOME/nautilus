@@ -123,6 +123,7 @@ struct _Context {
 	gchar *target_section;
 	GList *stack;
 	gpointer data;
+	GHashTable *figure_data;
 
 	/* determine the "depth" that the current section is on.
 	 * only applies to section */
