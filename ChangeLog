@@ -1,5 +1,11 @@
 2004-08-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(time_remaining_callback):
+	Fix time reporting. Patch by baris@teamforce.name.tr (Baris Cicek)
+
+2004-08-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-location-dialog.c (nautilus_location_dialog_new):
 	Close dialog if parent is destroyed.
 	Patch from Victor I. <lamer0@lamer0.com>

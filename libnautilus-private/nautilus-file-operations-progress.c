@@ -393,7 +393,8 @@ time_remaining_callback (gpointer callback_data)
 
 	if (time_remaining >= 3600) {
 		str = g_strdup_printf (_("(%d:%02d:%d Remaining)"), 
-				       time_remaining / 3600, time_remaining / 60, time_remaining % 60);
+				       time_remaining / 3600, (time_remaining % 3600) / 60, (time_remaining % 3600) % 60);
+
 	}
 	else {
 		str = g_strdup_printf (_("(%d:%02d Remaining)"), 
