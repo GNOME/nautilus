@@ -181,7 +181,6 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
       	strategy->details->client_site = bonobo_client_site_new (strategy->details->container);
 
 	bonobo_client_site_bind_embeddable (strategy->details->client_site, strategy->details->embeddable_wrapper);
-	bonobo_item_container_add (strategy->details->container, BONOBO_OBJECT (strategy->details->client_site));
 
 	strategy->details->view_frame = bonobo_client_site_new_view (strategy->details->client_site, ui_container);
 	strategy->details->client_widget = bonobo_view_frame_get_wrapper (strategy->details->view_frame);
