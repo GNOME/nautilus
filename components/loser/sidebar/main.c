@@ -73,31 +73,21 @@ int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_Environment ev;
-#if GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
-#endif
 
 	CORBA_exception_init (&ev);
 
 	nautilus_sidebar_loser_maybe_fail ("pre-init");
 
-#if GNOME2_CONVERSION_COMPLETE
-	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-#endif
-
         bonobo_ui_init ("nautilus-sidebar-loser", VERSION, &argc, argv); 
 	
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-#if GNOME2_CONVERSION_COMPLETE
         registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
-#endif
 	factory = bonobo_generic_factory_new ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", 
 					      loser_make_object,
 					      NULL);
-#if GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-#endif
 
 	nautilus_sidebar_loser_maybe_fail ("post-factory-init");
 

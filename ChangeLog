@@ -1,3 +1,44 @@
+2002-01-16  Darin Adler  <darin@bentspoon.com>
+
+	* components/hardware/main.c: (main):
+	* components/image-viewer/nautilus-image-view.c:
+	(init_server_factory):
+	* components/loser/content/main.c: (main):
+	* components/loser/sidebar/main.c: (main):
+	* components/throbber/main.c: (main):
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi),
+	(nautilus_view_create_from_get_type_function):
+	* src/nautilus-main.c: (main):
+	Remove unneeded code and restore display-specific registration.
+	This gets rid of a bunch of GNOME2_CONVERSION_COMPLETE ifdefs.
+
+	* libnautilus-private/nautilus-directory-metafile-monitor.h:
+	* libnautilus-private/nautilus-metafile-factory.c:
+	* libnautilus-private/nautilus-metafile-factory.h:
+	* libnautilus-private/nautilus-metafile.h:
+	These had emacs mode lines that said they were IDL files.
+
+	* libnautilus-private/nautilus-directory-metafile-monitor.c:
+	* libnautilus-private/nautilus-metafile-factory.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-undo-context.c:
+	* libnautilus-private/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-transaction.c:
+	* src/nautilus-application.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-view-frame-corba.c:
+	Use BONOBO_CLASS_BOILERPLATE_FULL instead of EEL_BONOBO_BOILERPLATE_FULL.
+
+	* src/nautilus-sidebar-title.c: (measure_width_callback),
+	(update_more_info): First cut at implementing date that fits into
+	sidebar. Not working yet.
+
+	* src/nautilus-theme-selector.c:
+	(install_theme_button_clicked_callback):
+	Remove eel_gtk_window_set_up_close_accelerator call, since this is a
+	GtkDialog that comes its own close accelerator.
+
 === nautilus 1.1.2 ===
 
 2002-01-16  Darin Adler  <darin@bentspoon.com>

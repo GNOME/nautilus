@@ -819,27 +819,13 @@ init_bonobo_image_generic_factory (void)
 static void
 init_server_factory (int argc, char **argv)
 {
-	CORBA_Environment ev;
-	CORBA_exception_init (&ev);
-	
 	/* Disable session manager connection */
 #ifdef GNOME2_CONVERSION_COMPLETE
 	gnome_client_disable_master_connection ();
-
-	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-	bonobo_activation_init (argc, argv);
-
-        gnome_init ("bonobo-image-generic", VERSION,
-		    argc, argv); 
-	gdk_rgb_init ();
-
-	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
-		g_error (_("I could not initialize Bonobo"));
 #endif
+
 	if (!bonobo_ui_init ("bonobo-image-generic", VERSION, &argc, argv))
 		g_error (_("I could not initialize Bonobo"));
-
-	CORBA_exception_free (&ev);
 }
 
 int

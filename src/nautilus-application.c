@@ -79,8 +79,6 @@ static NautilusDesktopWindow *nautilus_application_desktop_window;
 /* Keeps track of all the nautilus windows. */
 static GList *nautilus_application_window_list;
 
-static void     nautilus_application_init         (NautilusApplication      *application);
-static void     nautilus_application_class_init   (NautilusApplicationClass *klass);
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
@@ -94,9 +92,8 @@ static void     update_session                    (gpointer                  cal
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
 
-EEL_BONOBO_BOILERPLATE (NautilusApplication,
-			nautilus_application,
-			BONOBO_GENERIC_FACTORY_TYPE)
+BONOBO_CLASS_BOILERPLATE (NautilusApplication, nautilus_application,
+			  BonoboGenericFactory, BONOBO_GENERIC_FACTORY_TYPE)
 
 static CORBA_Object
 create_object (PortableServer_Servant servant,
@@ -140,7 +137,7 @@ nautilus_application_get_window_list (void)
 }
 
 static void
-nautilus_application_init (NautilusApplication *application)
+nautilus_application_instance_init (NautilusApplication *application)
 {
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();

@@ -329,8 +329,6 @@ install_theme_button_clicked_callback (GtkWidget *button,
 	theme_selector = NAUTILUS_THEME_SELECTOR (callback_data);
 	file_selection_dialog = gtk_file_selection_new (_("Select a theme folder to add as a new theme:"));
 
-	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (file_selection_dialog));
-
 	g_object_set_data (G_OBJECT (file_selection_dialog),
 			   THEME_SELECTOR_DATA_KEY,
 			   callback_data);

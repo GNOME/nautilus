@@ -34,18 +34,15 @@
 
 #define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
 
-static void nautilus_undo_transaction_class_init (NautilusUndoTransactionClass *class);
-static void nautilus_undo_transaction_init       (NautilusUndoTransaction      *item);
 static void nautilus_undo_transaction_undo       (NautilusUndoTransaction      *transaction);
 
 /* undo atoms */
 static void undo_atom_list_free                  (GList                        *list);
 static void undo_atom_list_undo_and_free         (GList                        *list);
 
-EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoTransaction,
-			     Nautilus_Undo_Transaction,
-			     nautilus_undo_transaction,
-			     BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoTransaction, nautilus_undo_transaction,
+			       Nautilus_Undo_Transaction,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static Nautilus_Undo_MenuItem *
 impl_Nautilus_Undo_Transaction__get_undo_menu_item (PortableServer_Servant servant,
@@ -120,10 +117,9 @@ nautilus_undo_transaction_new (const char *operation_name,
 }
 
 static void 
-nautilus_undo_transaction_init (NautilusUndoTransaction *transaction)
+nautilus_undo_transaction_instance_init (NautilusUndoTransaction *transaction)
 {
 }
-
 
 static void
 remove_transaction_from_object (gpointer list_data, gpointer callback_data)

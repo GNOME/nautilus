@@ -68,9 +68,7 @@ int
 main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
-#endif
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
@@ -79,30 +77,16 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 #ifdef GNOME2_CONVERSION_COMPLETE
 	gnome_client_disable_master_connection ();
-
-	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-	orb = bonobo_activation_init (argc, argv);
-
-	gnome_init ("nautilus-throbber", VERSION, argc, argv); 
-	g_thread_init (NULL);
-	gdk_rgb_init ();
-	gnome_vfs_init ();
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 #endif
 	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
 
 	nautilus_global_preferences_init ();   
 
-#ifdef GNOME2_CONVERSION_COMPLETE
 	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
-#endif
 	factory = bonobo_generic_factory_new ("OAFIID:nautilus_throbber_factory", 
 					      throbber_make_object,
 					      NULL);
-
-#ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-#endif
 
 	if (factory != NULL) {
 		bonobo_activate ();

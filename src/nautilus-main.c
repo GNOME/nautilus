@@ -277,6 +277,7 @@ main (int argc, char *argv[])
 
 	poptFreeContext (popt_context);
 	gnome_vfs_shutdown ();
+	bonobo_ui_debug_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when
 	 * the program is told to restart with CORBA, for example when
@@ -298,5 +299,5 @@ main (int argc, char *argv[])
 		execvp (argv[0], argv_copy);
 	}
 
-	return bonobo_ui_debug_shutdown ();
+	return EXIT_SUCCESS;
 }

@@ -57,8 +57,6 @@ struct NautilusShellDetails {
 	NautilusApplication *application;
 };
 
-static void     nautilus_shell_init       (NautilusShell          *shell);
-static void     nautilus_shell_class_init (NautilusShellClass     *klass);
 static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
@@ -77,10 +75,9 @@ static void     corba_restart                   (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static gboolean restore_window_states           (NautilusShell          *shell);
 
-EEL_BONOBO_BOILERPLATE_FULL (NautilusShell,
-			     Nautilus_Shell,
-			     nautilus_shell,
-			     BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusShell, nautilus_shell,
+			       Nautilus_Shell,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_shell_class_init (NautilusShellClass *klass)
@@ -96,7 +93,7 @@ nautilus_shell_class_init (NautilusShellClass *klass)
 }
 
 static void
-nautilus_shell_init (NautilusShell *shell)
+nautilus_shell_instance_init (NautilusShell *shell)
 {
 	shell->details = g_new0 (NautilusShellDetails, 1);
 }

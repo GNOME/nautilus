@@ -607,20 +607,15 @@ file_is_search_location (NautilusFile *file)
 }
 
 static int
-measure_width_callback (const char *string, void *context)
+measure_width_callback (const char *string, gpointer callback_data)
 {
-#if GNOME2_CONVERSION_COMPLETE
-	EelLabel *label;
-	EelScalableFont *smooth_font;
-	int smooth_font_size;
-	
-	label = (EelLabel*) context;
-	smooth_font = eel_label_get_smooth_font (label); 
-	smooth_font_size = eel_label_get_smooth_font_size (label);
-	return eel_scalable_font_text_width (smooth_font, smooth_font_size, string, strlen (string));
-#else
-	return 0;
-#endif
+	PangoLayout *layout;
+	int width;
+
+	layout = PANGO_LAYOUT (callback_data);
+	pango_layout_set_text (layout, string, -1);
+	pango_layout_get_pixel_size (layout, &width, NULL);
+	return width;
 }
 
 static void
@@ -632,6 +627,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	char *search_string, *search_uri;
 	char *date_modified_str;
 	int sidebar_width;
+	PangoLayout *layout;
 	
 	file = sidebar_title->details->file;
 
@@ -666,12 +662,12 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 			
 			sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
 			if (sidebar_width > MINIMUM_INFO_WIDTH) {
+				layout = pango_layout_copy (gtk_label_get_layout (GTK_LABEL (sidebar_title->details->more_info_label)));
+				pango_layout_set_width (layout, -1);
 				date_modified_str = nautilus_file_fit_modified_date_as_string
-					(file, sidebar_width,
-					 measure_width_callback, NULL,
-					 sidebar_title->details->more_info_label);
+					(file, sidebar_width, measure_width_callback, NULL, layout);
+				g_object_unref (layout);
 				append_and_eat (info_string, "\n", date_modified_str);
-				g_string_append_c (info_string, '\0');
 			}
 		}
 	}

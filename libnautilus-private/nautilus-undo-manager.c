@@ -61,14 +61,9 @@ typedef struct {
 	char *no_undo_menu_item_hint;
 } UndoMenuHandlerConnection;
 
-/* GtkObject */
-static void nautilus_undo_manager_class_init (NautilusUndoManagerClass  *class);
-static void nautilus_undo_manager_init       (NautilusUndoManager       *item);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoManager,
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoManager, nautilus_undo_manager,
 			       Nautilus_Undo_Manager,
-			       nautilus_undo_manager,
-			       BONOBO_OBJECT_TYPE)
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
 release_transaction (NautilusUndoManager *manager)
@@ -162,7 +157,7 @@ nautilus_undo_manager_new (void)
 }
 
 static void
-nautilus_undo_manager_init (NautilusUndoManager *manager)
+nautilus_undo_manager_instance_init (NautilusUndoManager *manager)
 {
 	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
 }

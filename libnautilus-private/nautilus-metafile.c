@@ -58,9 +58,6 @@
          | GNOME_VFS_PERM_GROUP_ALL \
 	 | GNOME_VFS_PERM_OTHER_ALL)
 
-static void nautilus_metafile_init       (NautilusMetafile      *metafile);
-static void nautilus_metafile_class_init (NautilusMetafileClass *klass);
-
 static char    *get_file_metadata      (NautilusMetafile *metafile,
 					const char       *file_name,
 					const char       *key,
@@ -104,10 +101,9 @@ static void async_read_cancel                (NautilusMetafile *metafile);
 static void nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
 					             xmlDocPtr metafile_contents);
 
-EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafile,
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafile, nautilus_metafile,
 			       Nautilus_Metafile,
-			       nautilus_metafile,
-			       BONOBO_OBJECT_TYPE)
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 typedef struct MetafileReadState {
 	gboolean use_public_metafile;
@@ -147,7 +143,7 @@ struct NautilusMetafileDetails {
 static GHashTable *metafiles;
 
 static void
-nautilus_metafile_init (NautilusMetafile *metafile)
+nautilus_metafile_instance_init (NautilusMetafile *metafile)
 {
 	metafile->details = g_new0 (NautilusMetafileDetails, 1);
 	

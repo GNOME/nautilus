@@ -163,9 +163,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 {
 	BonoboGenericFactory *factory;
 	CallbackData callback_data;
-#ifdef GNOME2_CONVERSION_COMPLETE
 	char *registration_id;
-#endif
 
 	g_return_val_if_fail (executable_name != NULL, EXIT_FAILURE);
 	g_return_val_if_fail (version != NULL, EXIT_FAILURE);
@@ -198,9 +196,6 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	gnome_client_disable_master_connection ();
 #endif
 
-#if GNOME2_CONVERSION_COMPLETE
-	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-#endif
 	/* Initialize libraries. */
 	g_thread_init (NULL);
 	gnome_vfs_init ();
@@ -219,30 +214,22 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-
-#ifdef GNOME2_CONVERSION_COMPLETE
-        registration_id = bonobo_activation_make_registration_id (factory_iid, 
-						    DisplayString (GDK_DISPLAY ()));
-#endif
-
-	factory = bonobo_generic_factory_new (factory_iid, 
+        registration_id = bonobo_activation_make_registration_id (factory_iid, DisplayString (gdk_display));
+	factory = bonobo_generic_factory_new (registration_id, 
 					      make_object,
 					      &callback_data);
-#ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
-#endif
 
 	if (factory != NULL) {
 		/* Loop until we have no more objects. */
 		do {
-			bonobo_main ();
+			gtk_main ();
 		} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
-		
-		/* Let the factory go. */
 		bonobo_object_unref (BONOBO_OBJECT (factory));
 	}
 
 	gnome_vfs_shutdown ();
+	bonobo_ui_debug_shutdown ();
 
 	return EXIT_SUCCESS;
 }
@@ -330,4 +317,3 @@ nautilus_view_create_from_get_type_function (const char *iid, void *user_data)
 {
 	return NAUTILUS_VIEW (g_object_new (((TypeFunc) (user_data)) (), NULL));
 }
-

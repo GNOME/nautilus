@@ -30,14 +30,9 @@
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
 
-/* GtkObject */
-static void                  nautilus_undo_context_class_init       (NautilusUndoContextClass *class);
-static void                  nautilus_undo_context_init             (NautilusUndoContext      *item);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoContext,
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoContext, nautilus_undo_context,
 			       Nautilus_Undo_Context,
-			       nautilus_undo_context,
-			       BONOBO_OBJECT_TYPE)
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static Nautilus_Undo_Manager
 impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
@@ -66,7 +61,7 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 }
 
 static void 
-nautilus_undo_context_init (NautilusUndoContext *context)
+nautilus_undo_context_instance_init (NautilusUndoContext *context)
 {
 }
 

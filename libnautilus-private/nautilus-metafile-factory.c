@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /* nautilus-metafile.c - server side of Nautilus::MetafileFactory
  *
@@ -31,16 +31,12 @@ struct NautilusMetafileFactoryDetails {
 	char dummy; /* ANSI C does not allow empty structs */
 };
 
-static void nautilus_metafile_factory_init       (NautilusMetafileFactory      *factory);
-static void nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafileFactory,
-			     Nautilus_MetafileFactory,
-			     nautilus_metafile_factory,
-			     BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafileFactory, nautilus_metafile_factory,
+			       Nautilus_MetafileFactory,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
-nautilus_metafile_factory_init (NautilusMetafileFactory *factory)
+nautilus_metafile_factory_instance_init (NautilusMetafileFactory *factory)
 {
 	factory->details = g_new0 (NautilusMetafileFactoryDetails, 1);
 }

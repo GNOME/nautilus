@@ -381,6 +381,15 @@ impl_Nautilus_ViewFrame_close_window (PortableServer_Servant servant,
 		(servant, close_window, NULL, NULL);
 }
 
+static GType nautilus_view_frame_corba_part_get_type (void);
+
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusViewFrameCorbaPart, nautilus_view_frame_corba_part,
+			       Nautilus_ViewFrame,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
+
+#define NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART nautilus_view_frame_corba_part_get_type ()
+#define NAUTILUS_VIEW_FRAME_CORBA_PART(object) G_TYPE_CHECK_INSTANCE_CAST ((object), NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NautilusViewFrameCorbaPart)
+
 static void
 nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
 {
@@ -401,19 +410,9 @@ nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *clas
 }
 
 static void
-nautilus_view_frame_corba_part_init (NautilusViewFrameCorbaPart *frame)
+nautilus_view_frame_corba_part_instance_init (NautilusViewFrameCorbaPart *frame)
 {
 }
-
-static GType nautilus_view_frame_corba_part_get_type (void);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusViewFrameCorbaPart,
-			       Nautilus_ViewFrame,
-			       nautilus_view_frame_corba_part,
-			       BONOBO_OBJECT_TYPE)
-
-#define NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART nautilus_view_frame_corba_part_get_type ()
-#define NAUTILUS_VIEW_FRAME_CORBA_PART(object) G_TYPE_CHECK_INSTANCE_CAST ((object), NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NautilusViewFrameCorbaPart)
 
 BonoboObject *
 nautilus_view_frame_create_corba_part (NautilusViewFrame *widget)

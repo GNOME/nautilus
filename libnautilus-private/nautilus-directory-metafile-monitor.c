@@ -34,16 +34,12 @@ struct NautilusMetafileMonitorDetails {
 	NautilusDirectory *directory;
 };
 
-static void nautilus_metafile_monitor_init       (NautilusMetafileMonitor      *monitor);
-static void nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafileMonitor,
-			     Nautilus_MetafileMonitor,
-			     nautilus_metafile_monitor,
-			     BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafileMonitor, nautilus_metafile_monitor,
+			       Nautilus_MetafileMonitor,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
-nautilus_metafile_monitor_init (NautilusMetafileMonitor *monitor)
+nautilus_metafile_monitor_instance_init (NautilusMetafileMonitor *monitor)
 {
 	monitor->details = g_new0 (NautilusMetafileMonitorDetails, 1);
 }
