@@ -525,7 +525,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
 	char *mime_type, *uri;
 	const char *icon_name;
-	gboolean is_text_file, is_http_uri;
+	gboolean is_text_file, use_web_icon;
 	
 	/* force plain text files to use the generic document icon so we can have the text-in-icons feature;
 		eventually, we want to force other types of text files as well */
@@ -535,23 +535,25 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	
 	if (mime_type != NULL && !is_text_file) {
 		icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
-		g_free (mime_type);
 		if (icon_name != NULL) {
+			g_free (mime_type);
 			return icon_name;
 		}
 	}
 
 	/* gnome_vfs_mime didn't give us an icon name, so we have to fall back on default icons. */
 	if (nautilus_file_is_executable (file) & !is_text_file) {
+		g_free (mime_type);		
 		return ICON_NAME_EXECUTABLE;
 	}
 
-	/* if it's an http uri, use a generic web icon instead of the generic icon  */
+	/* if it's an http uri and and html document, use a generic web icon instead of the generic icon  */
 	uri = nautilus_file_get_uri (file);
-        is_http_uri = nautilus_istr_has_prefix (uri, "http:");
+        use_web_icon = nautilus_istr_has_prefix (uri, "http:") && !nautilus_strcmp (mime_type, "text/html");
         g_free (uri);
-        	
-	return is_http_uri ? ICON_NAME_WEB : ICON_NAME_REGULAR;
+        g_free (mime_type);	
+	
+	return use_web_icon ? ICON_NAME_WEB : ICON_NAME_REGULAR;
 }
 
 /* Use the MIME type to get the icon name. */
