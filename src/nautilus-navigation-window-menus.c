@@ -623,7 +623,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					     * not translate the
 					     * company name, please.
 					     */
-					    _("\xA9 1999, 2000 Eazel, Inc."),
+					    _("Copyright \xA9 1999-2001 Eazel, Inc."),
 					    authors,
 					    _("Nautilus is a graphical shell\n"
 					      "for GNOME that makes it\n"
