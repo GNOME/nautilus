@@ -34,9 +34,9 @@
 void eazel_install_rpm_set_settings (EazelInstall *service);
 void eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 							     GList **args);
-gboolean eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
-						  GIOCondition condition,
-						  EazelInstall *service);
+gboolean eazel_install_monitor_rpm_process_pipe (GIOChannel *source,
+						 GIOCondition condition,
+						 EazelInstall *service);
 gboolean eazel_install_free_rpm_system (EazelInstall *service);
 gboolean eazel_install_prepare_rpm_system(EazelInstall *service);
 void eazel_install_do_rpm_dependency_check (EazelInstall *service,

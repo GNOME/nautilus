@@ -332,10 +332,17 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 		char *filename = (char*)iterator->data;		
 
 		/* many packages will supply some dirs, eg /usr/share/locale/../LC_MESSAGES
-		   dirs, so don't check those */
+		   dirs, so don't check those 
+
+		   eazel-install-types
+		   (packagedata_fill_from_rpm_header) now does not add
+		   these. This is more safe, as checking the file
+		   could still cause a conflict, if the file was not
+		   on the system but two dirs had the same dir 
+
 		if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
 			continue;
-		}
+		} */
 
 		owners = eazel_install_simple_query (service,
 						     filename,
@@ -357,7 +364,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 						(GCompareFunc)eazel_install_package_name_compare) ||
 			    g_list_find_custom (*requires, owner->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
-				trilobite_debug ("already breaking %s", owner->name);
+				/* trilobite_debug ("already breaking %s", owner->name); */
 				packagedata_destroy (owner, FALSE);
 				owner = NULL;
 				continue;
@@ -381,6 +388,12 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 				
 			} /* else it's the same package and it's okay */
 		} 
+
+#ifdef EAZEL_INSTALL_SLIM
+		/* In the slim, we need to enter the g_main_loop during file check */		
+		g_main_iteration (FALSE);
+#endif
+
 	}
 	return result;
 }
@@ -570,6 +583,7 @@ eazel_install_do_transaction_fill_hash (EazelInstall *service,
 
 		pack = (PackageData*)iterator->data;
 		tmp = g_strdup_printf ("%s", pack->name);
+		trilobite_debug ("adding %s to name_to_package_hash", tmp);
 		g_hash_table_insert (service->private->name_to_package_hash,
 				     tmp,
 				     iterator->data);
@@ -744,9 +758,9 @@ eazel_install_monitor_process_pipe (GIOChannel *source,
 		switch (eazel_install_get_package_system (service)) {
 		case EAZEL_INSTALL_USE_RPM:
 			service->private->subcommand_running = 
-				eazel_install_monitor_rpm_propcess_pipe (source, 
-									 condition, 
-									 service);
+				eazel_install_monitor_rpm_process_pipe (source, 
+									condition, 
+									service);
 			break;
 		}
 		/* if monitor returns false, it's done */
@@ -756,6 +770,38 @@ eazel_install_monitor_process_pipe (GIOChannel *source,
 	}
 	return service->private->subcommand_running;
 }
+
+#ifdef EAZEL_INSTALL_SLIM
+#ifdef DEBUG_RPM_OUTPUT
+static gboolean
+eazel_install_monitor_err_process_pipe (GIOChannel *source,
+					GIOCondition condition,
+					EazelInstall *service)
+{
+	static char *rpmoutname = NULL;
+	FILE *rpmoutput;
+	char tmp;
+	int bytes_read;
+
+	if (condition == (G_IO_ERR | G_IO_NVAL | G_IO_HUP)) {
+		service->private->subcommand_running = FALSE;
+	}
+	g_io_channel_read (source, &tmp, 1, &bytes_read);
+
+	if (bytes_read) {
+		if (rpmoutname == NULL) {
+			rpmoutname = tempnam ("/tmp", "rpmEr");
+		}
+		rpmoutput = fopen (rpmoutname, "at");
+		fprintf (rpmoutput, "%c", tmp); 
+		fflush (rpmoutput); 
+		fclose (rpmoutput);
+	}
+
+	return service->private->subcommand_running;
+}
+#endif /* DEBUG_RPM_OUTPUT */
+#endif
 
 static void
 eazel_install_display_arguments (GList *args) 
@@ -772,6 +818,7 @@ eazel_install_display_arguments (GList *args)
 static gint
 eazel_install_monitor_subcommand_pipe (EazelInstall *service,
 				       int fd, 
+				       int stderrfd,
 				       GIOFunc monitor_func)
 {
 	int result = 0;
@@ -781,10 +828,29 @@ eazel_install_monitor_subcommand_pipe (EazelInstall *service,
 	channel = g_io_channel_unix_new (fd);
 
 	trilobite_debug ("beginning monitor on %d", fd);
-
+#ifdef EAZEL_INSTALL_SLIM
+	/* In the statically linked installer, we can get
+	   the stderr and fill it into a file */
+	if (stderrfd > 0) {
+		trilobite_debug ("beginning monitor on stderr %d", stderrfd);
+	}
+#else
+	trilobite_debug ("not reading stderrfd %d", stderrfd);
+#endif
 	g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
 			monitor_func, 
 			service);
+#ifdef EAZEL_INSTALL_SLIM
+#ifdef DEBUG_RPM_OUTPUT
+	if (stderrfd > 0) {
+		GIOChannel *err_channel;
+		err_channel = g_io_channel_unix_new (stderrfd);
+		g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
+				(GIOFunc)eazel_install_monitor_err_process_pipe, 
+				service);
+	}
+#endif /* DEBUG_RPM_OUTPUT */
+#endif /* EAZEL_INSTALL_SLIM */
 	while (service->private->subcommand_running) {
 		g_main_iteration (TRUE);
 	}
@@ -830,15 +896,18 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 		for (file_iterator = pack->provides; file_iterator; glist_step (file_iterator)) {
 			char *fname = (char*)file_iterator->data;
 			/* Lookup and check what happens... */
-			PackageData *npack = g_hash_table_lookup (file_to_pack,
-								  fname);
-			if (npack) {
-				/* Dang, fname is owned by npack but pack also adds it */
+			PackageData *previous_pack = g_hash_table_lookup (file_to_pack,
+									  fname);
+			if (previous_pack) {
+				/* Dang, fname is owned by previous_pack but pack also adds it */
+				/* The use of reported_yet && other_conflicts is purely for
+				   debug nicety. It ensures that only one fileconflicts pr 
+				   package is printed, whereas the alternative is eg. 200 */
 				if (! reported_yet) {
 					trilobite_debug ("conflict, file %s from package %s is also in %s", 
 							 fname, 
 							 pack->name,
-							 npack->name);
+							 previous_pack->name);
 					reported_yet = TRUE;
 				} else {
 					other_conflicts++;
@@ -848,7 +917,7 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 							 (GCompareFunc)eazel_install_requirement_dep_compare)) {
 					PackageRequirement *req;
 					
-					req = packagerequirement_new (npack, pack);
+					req = packagerequirement_new (previous_pack, pack);
 					conflicts = g_list_prepend (conflicts, req);
 				}
 			} else {
@@ -922,6 +991,19 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 	return result;
 }
 
+
+/* A GHRFunc to clean
+   out the name_to_package hash table 
+*/
+static gboolean
+eazel_install_clean_name_to_package_hash (char *key,
+					  PackageData *pack,
+					  EazelInstall *service)
+{
+	g_free (key);
+	return TRUE;
+}
+
 /* This begins the package transaction.
    Return value is number of failed packages 
 */
@@ -939,6 +1021,7 @@ eazel_install_start_transaction (EazelInstall *service,
 #endif
 	GList *args;
 	int fd;
+	int stderr = -1;
 	int res;
 	int child_exitcode;
 
@@ -957,9 +1040,11 @@ eazel_install_start_transaction (EazelInstall *service,
 	if (service->private->downloaded_files) {
 		/* I need to get the lenght here, because all_files_check can alter the list */
 		int l  = g_list_length (packages);
-		if (!eazel_install_do_transaction_all_files_check (service, &packages) ||
-		    !eazel_install_do_transaction_md5_check (service, packages)) {
-			res = l;
+		/* Unless we're forc installing, check file conflicts */
+		if (eazel_install_get_force (service) == FALSE) {
+			if(!eazel_install_do_transaction_md5_check (service, packages)) {
+				res = l;
+			}
 		}
 	}
 
@@ -977,14 +1062,15 @@ eazel_install_start_transaction (EazelInstall *service,
 			trilobite_debug ("Operation aborted at user request");
 			res = g_list_length (packages);
 		} 
-		
+	}
+
+	if (res==0) {	     
 		eazel_install_display_arguments (args);
 	}
 #ifdef EAZEL_INSTALL_SLIM
 	if (res == 0) {
 		char **argv;
-		int i;
-		int useless_stderr;
+		int i;		
 		GList *iterator;
 		 
 		/* Create argv list */
@@ -1003,11 +1089,13 @@ eazel_install_start_transaction (EazelInstall *service,
 		} 
 		/* start /bin/rpm... */
 		if (res==0 &&
-		    (child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr))==0) {
+		    (child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &stderr))==0) {
 			g_warning ("Could not start rpm");
 			res = service->private->packsys.rpm.num_packages;
 		} else {
-			trilobite_debug (_("rpm running..."));
+			trilobite_debug ("rpm running...");
+			trilobite_debug ("fd = %d", fd);
+			trilobite_debug ("stderr = %d", stderr);
 		}
 
 		for (i = 0; argv[i]; i++) {
@@ -1040,6 +1128,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		int installed_packages;
 		installed_packages = eazel_install_monitor_subcommand_pipe (service,
 									    fd,
+									    stderr,
 									    (GIOFunc)eazel_install_monitor_process_pipe);
 		res = g_list_length (packages) - installed_packages;
 #ifdef EAZEL_INSTALL_SLIM
@@ -1077,6 +1166,13 @@ eazel_install_start_transaction (EazelInstall *service,
 
 	g_list_foreach (args, (GFunc)g_free, NULL);
 	g_list_free (args);
+
+	g_list_free (service->private->transaction);
+	service->private->transaction = NULL;
+
+	g_hash_table_foreach_remove (service->private->name_to_package_hash,
+				     (GHRFunc)eazel_install_clean_name_to_package_hash,
+				     service);
 
 	return res;
 } /* end start_transaction */
@@ -1312,7 +1408,6 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			g_assert (pack->version);
 			g_assert (existing_package->version);
 
-			/* The order of arguments to rpmvercmp is important... */
 			res = rpmvercmp (pack->version, existing_package->version);
 			
 			/* check against minor version */
@@ -1474,6 +1569,17 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		PackageData *pack = req->package;
 		PackageData *dep = req->required;
 
+		/* Check to see if the package system happened to file a requirement
+		   for a package that was also failed... */
+		if (g_list_find_custom (*failedpackages,
+					pack,
+					(GCompareFunc)eazel_install_package_compare)) {
+			trilobite_debug ("%s-%s-%s already failed, will not download it's requirements",
+					 pack->name, pack->version, pack->minor);
+			packagedata_destroy (dep, TRUE);
+			continue;
+		}
+
 		/* We use the unknown status later, to see if 
 		   we should set it or not */
 		dep->status = PACKAGE_UNKNOWN_STATUS;
@@ -1504,7 +1610,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				trilobite_debug ("Circular dependency  %s-%s-%s at 0x%x", dep->name, dep->version, dep->minor, dep);
 
 				if (pack_entry) {
-					PackageData *evil_package = packagedata_copy ((PackageData*)pack_entry->data);
+					PackageData *evil_package = packagedata_copy ((PackageData*)(pack_entry->data), FALSE);
 					packagedata_add_pack_to_breaks (dep, evil_package); 
 					trilobite_debug ("Circular dependency caused by %s-%s-%s at 0x%x", 
 							 evil_package->name,
@@ -1658,10 +1764,11 @@ dump_one_package (PackageData *pack, char *prefix)
 {
 	char *softprefix, *hardprefix, *modprefix, *breakprefix;
 
-	trilobite_debug ("%s%s-%s-%s (stat %d), 0x%08X", 
+	trilobite_debug ("%s%s-%s-%s (stat %s/%s), 0x%08X", 
 			 prefix, 
 			 pack->name, pack->version, pack->minor,
-			 pack->status,
+			 packagedata_status_enum_to_str (pack->status),
+			 packagedata_modstatus_enum_to_str (pack->modify_status),
 			 (unsigned int)pack);
 	softprefix = g_strdup_printf ("%s (s) ", prefix);
 	hardprefix = g_strdup_printf ("%s (h) ", prefix);
@@ -1761,7 +1868,8 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 		GList *required = NULL;
 
 		/* If we haven't tested conflicts yet */
-		if (pack->conflicts_checked == FALSE) {
+		if (pack->conflicts_checked == FALSE &&
+		    eazel_install_get_force (service) == FALSE) {
 			GList *breaks = NULL;
 			pack->conflicts_checked = TRUE;			
 			if (eazel_install_check_for_file_conflicts (service, pack, &breaks, &required)) {
@@ -1897,6 +2005,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 		   req->required will be in req->package's breaks/soft_depends.
 		*/
 		g_list_foreach (requirements, (GFunc)g_free, NULL);
+		g_list_free (requirements);
 		
 		/* Some debug printing */
 		dump_packages (*packages);
@@ -1911,7 +2020,17 @@ eazel_install_ensure_deps (EazelInstall *service,
 			pack = (PackageData*)iterator->data;
 			pack->status = PACKAGE_RESOLVED;
 		}
-		trilobite_debug (_("Dependencies are ok"));
+		trilobite_debug (_("Dependencies appear ok"));
+
+		if (!eazel_install_do_transaction_all_files_check (service, packages)) {
+			trilobite_debug (_("But there are file conflicts"));
+			/* Now recurse into eazel_install_ensure_deps with
+			   the new "packages" list */
+			eazel_install_ensure_deps (service, packages, failedpackages);
+		} else {
+			trilobite_debug (_("Dependencies appear ok"));
+		}
+
 	}
 
 	/* If there was failedpackages, prune them from the tree 
@@ -2006,7 +2125,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			
 			requiredby->status = PACKAGE_DEPENDENCY_FAIL;
 			pack->status = PACKAGE_BREAKS_DEPENDENCY;
-			trilobite_debug ("%s requires %s", requiredby->name, pack->name);
+			trilobite_debug ("logic.c: %s requires %s", requiredby->name, pack->name);
 
 			/* If we're already marked it as breaking, go on 
 			if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
@@ -2273,7 +2392,9 @@ eazel_uninstall_globber (EazelInstall *service,
 		eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
 	}
 		
-	if (*packages) {
+	/* If there are still packages and we're not forcing,
+	   do upwards traversel */
+	if (*packages && !eazel_install_get_force (service)) {
 		eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
 		print_package_list ("FAILED", *failed, TRUE);
 		for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {

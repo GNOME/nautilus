@@ -74,6 +74,10 @@ categorydata_new (void)
 	category_allocs ++;
 	trilobite_debug ("category_allocs inced to %d (0x%x)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
+	result->name = NULL;
+	result->description = NULL;
+	result->packages = NULL;
+	result->depends = NULL;
 	return result;
 }
 
@@ -86,7 +90,7 @@ categorydata_list_copy (const GList *list)
 	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
 		result = g_list_prepend (result, categorydata_copy ((CategoryData*)(ptr->data)));
 	}
-	result = g_list_reverse (result);
+	result = g_list_reverse (result); 
 
 	return result;
 }
@@ -101,13 +105,13 @@ categorydata_copy (const CategoryData *cat)
 
 	result->name = g_strdup (cat->name);
 	result->description = g_strdup (cat->description);
-	result->packages = packagedata_list_copy (cat->packages);
+	result->packages = packagedata_list_copy (cat->packages, TRUE);
 
 	for (ptr = cat->depends; ptr; ptr = g_list_next (ptr)) {
 		result->depends = g_list_prepend (result->depends, 
 						g_strdup ((char*)ptr->data));
 	}
-	result->depends = g_list_reverse (result->depends);
+	result->depends = g_list_reverse (result->depends); 
 
 	return result;
 }
@@ -229,14 +233,14 @@ packagedata_new_from_rpm_header (Header *hd)
 };
 
 GList *
-packagedata_list_copy (const GList *list)
+packagedata_list_copy (const GList *list, gboolean deep)
 {
 	const GList *ptr;
-	GList *result;
-	result = NULL;
+	GList *result = NULL;
+
 	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
 		result = g_list_prepend (result, 
-					 packagedata_copy ((PackageData*)(ptr->data)));
+					 packagedata_copy ((PackageData*)(ptr->data), deep));
 	}
 	result = g_list_reverse (result);
 
@@ -244,7 +248,7 @@ packagedata_list_copy (const GList *list)
 }
 
 PackageData* 
-packagedata_copy (const PackageData *pack)
+packagedata_copy (const PackageData *pack, gboolean deep)
 {
 	PackageData *result;
 	g_assert (pack);
@@ -270,10 +274,12 @@ packagedata_copy (const PackageData *pack)
 	result->distribution = pack->distribution;
 	result->bytesize = pack->bytesize;
 
-	result->soft_depends = packagedata_list_copy (pack->soft_depends);
-	result->hard_depends = packagedata_list_copy (pack->hard_depends);
-	result->modifies = packagedata_list_copy (pack->modifies);
-	result->breaks = packagedata_list_copy (pack->breaks);
+	if (deep) {
+		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
+		result->hard_depends = packagedata_list_copy (pack->hard_depends, TRUE);
+		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
+		result->breaks = packagedata_list_copy (pack->breaks, TRUE);
+	} /* No need to null if !deep, as packagedata_new does that */
 
 	return result;
 }
@@ -342,10 +348,12 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 
 	{
 		char **paths = NULL;
+		char **paths_copy = NULL;
 		char **names = NULL;
 		int *indexes = NULL;
 		int count;
 		int index;
+		int num_paths;
 
 /* RPM v.3.0.4 and above has RPMTAG_BASENAMES,
    Lets see if RPMTAG_PROVIDES works for the older ones */
@@ -355,7 +363,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 				(void**)&indexes, NULL);
 		headerGetEntry (*hd,			
 				RPMTAG_DIRNAMES, NULL,
-				(void**)&paths, NULL);
+				(void**)&paths, &num_paths);
 		headerGetEntry (*hd,			
 				RPMTAG_BASENAMES, NULL,
 				(void**)&names, &count);
@@ -366,16 +374,45 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 				(void**)&names, &count);
 #endif /* RPMTAG_BASENAMES */
 		
+		/* Copy all paths and shave off last /.
+		   This is needed to remove the dir entries from 
+		   the packagedata's provides list. */
+		paths_copy = g_new0 (char*, num_paths);
+		for (index=0; index<num_paths; index++) {
+			paths_copy[index] = g_strdup (paths[index]);
+			paths_copy[index][strlen (paths_copy[index]) - 1] = 0;
+		}
+
+		/* Now loop through all the basenames */
+		/* NOTE: This algorithm has sizeof (paths) * sizeof (names)
+		   complexity, aka O(n²) */
 		for (index=0; index<count; index++) {
 			char *fullname;
+			int index2;
 			if (paths) {
-				fullname = g_strdup_printf ("%s%s", paths[indexes[index]], names[index]);
+				fullname = g_strdup_printf ("%s/%s", paths_copy[indexes[index]], names[index]);
 			} else {
 				fullname = g_strdup (names[index]);
 			}
-			/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
-			pack->provides = g_list_prepend (pack->provides, fullname);
+			/* Check it's not a dirname, by looping through all
+			   paths_copy and check that fullname does not occur there */
+			for (index2 = 0; index2 < num_paths; index2++) {
+				if (strcmp (paths_copy[index2], fullname)==0) {
+					g_free (fullname);
+					fullname = NULL;
+					break;
+				}
+			}
+			if (fullname) {
+				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
+				pack->provides = g_list_prepend (pack->provides, fullname);
+			}
 		}
+		for (index=0; index<num_paths; index++) {
+			g_free (paths_copy[index]);
+		}
+		g_free (paths_copy);
+
 	}
 }
 
@@ -498,7 +535,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 		/* FIXME bugzilla.eazel.com 1532:
 		   RPM specific code */
 		/* even better, this just crashes 
-		   headerFree (*pack->packsys_struc); */
+		 */
+		headerFree (*(pack->packsys_struc)); 
 		g_free (pack->packsys_struc);
 	}
 

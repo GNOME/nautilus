@@ -47,6 +47,8 @@ struct _EazelInstallPrivate {
 				localhost. This is to make stuff work
 				with ssl tunneling */
 
+	gboolean revert; /* If true, the current operation is a reversion */
+
 	/* This holds the files that were downloaded */
 	GList *downloaded_files;
 
@@ -69,13 +71,16 @@ struct _EazelInstallPrivate {
 	/* This hash maps from package name-version-release to the 
 	   package. Packages are added in eazel-install-rpm-glue.c do_rpm_install
 	   It's used in the progress stuff to lookup the correct
-	   package */
+	   package. 
+	   It's cleaned up in the end of eazel_install_start_transaction,
+	   but not erased. */
 	GHashTable *name_to_package_hash;
 
 	/* This holds the toplevel packages requested for 
 	   install/upgrade/uninstall.
 	   Entries are added in eazel-install-rpm-glue.c, as
-	   stuff is done */
+	   stuff is done.
+	   It's cleaned up in the end of eazel_install_start_transaction */
 	GList *transaction;
 	
 	/* The logfile used for the object */

@@ -59,6 +59,10 @@ struct _EazelInstaller
 
 	GList *categories;
 
+	GList *install_categories;
+	GList *force_categories;
+	GList *force_remove_categories;
+
 	GList *must_have_categories;
 	GList *implicit_must_have;
 	GList *dont_show;
@@ -77,15 +81,41 @@ struct _EazelInstaller
 	 */
 	gboolean all_errors_are_recoverable;
 	GList *additional_packages;
-
 	gboolean successful;
+
+	GList *attempted_updates; /* This is a list of packages we tried to update,
+				   Before we add, check this list. */
 };
+
+typedef enum {
+	MUST_UPDATE,      /* package is in the way, update or remove */
+	FORCE_BOTH,       /* two packages are fighting it out, install both ? */	
+	REMOVE            /* Can't be helped, get rid of that wart */
+} RepairEnum;
+
+typedef struct {
+	RepairEnum t;
+	union {
+		struct {
+			PackageData *pack;
+		} in_the_way;
+		struct {
+			PackageData *pack_1;
+			PackageData *pack_2;
+		} force_both;
+		struct {
+			PackageData *pack;
+		} remove;
+	} u;
+} RepairCase;
 
 GtkType            eazel_installer_get_type(void);
 EazelInstaller    *eazel_installer_new   (void);
 void               eazel_installer_unref (GtkObject *object);
 gboolean           eazel_installer_do_install (EazelInstaller *installer,
-					       GList *categories);
+					       GList *categories,
+					       gboolean force,
+					       gboolean remove);
 
 #define DEBUG
 

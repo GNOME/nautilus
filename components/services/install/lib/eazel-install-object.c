@@ -232,8 +232,10 @@ eazel_install_finalize (GtkObject *object)
 
 	g_hash_table_destroy (service->private->name_to_package_hash);
 	g_free (service->private->logfilename);
+
 	g_list_foreach (service->private->downloaded_files, (GFunc)g_free, NULL);
 	g_list_free (service->private->downloaded_files);
+
 	g_list_foreach (service->private->root_dirs, (GFunc)g_free, NULL);
 	g_list_free (service->private->root_dirs);
 
@@ -438,18 +440,26 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
+#ifdef EAZEL_INSTALL_NO_CORBA
+	klass->install_progress = NULL;
+	klass->download_progress = NULL;
+	klass->download_failed = NULL;
+	klass->md5_check_failed = NULL;
+	klass->install_failed = NULL;
+	klass->uninstall_failed = NULL;
+	klass->dependency_check = NULL;
+	klass->delete_files = NULL;
+	klass->preflight_check = NULL;
+#else
 	klass->install_progress = eazel_install_emit_install_progress_default;
 	klass->download_progress = eazel_install_emit_download_progress_default;
-	klass->preflight_check = eazel_install_emit_preflight_check_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
 	klass->md5_check_failed = eazel_install_emit_md5_check_failed_default;
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
-#ifdef EAZEL_INSTALL_NO_CORBA
-	klass->delete_files = NULL;
-#else
 	klass->delete_files = eazel_install_emit_delete_files_default;
+	klass->preflight_check = eazel_install_emit_preflight_check_default;
 #endif
 	klass->done = eazel_install_emit_done_default;
 
@@ -564,13 +574,15 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->cur_root = NULL;
 	service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir() );
 	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
+	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
 								   (GCompareFunc)g_str_equal);
 	service->private->downloaded_files = NULL;
 	service->private->transaction = NULL;
-
+	service->private->revert = FALSE;
+	service->private->ssl_rename = FALSE;
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
 
 	/* Set default root dirs list */
@@ -889,8 +901,14 @@ eazel_install_install_packages (EazelInstall *service,
 	EazelInstallStatus result;
 	SANITY (service);
 
+	trilobite_debug ("eazel_install_install_packages (..., %d cats, %s)", 
+			 g_list_length (categories),
+			 root);
+
+#ifndef EAZEL_INSTALL_SLIM
 	/* we're about to call g_main_iteraton sometimes, so grab a ref on ourself to avoid vanishing. */
 	bonobo_object_ref (BONOBO_OBJECT (service));
+#endif /* EAZEL_INSTALL_SLIM */
 
 	if (create_temporary_directory (service)) {
 		if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
@@ -923,7 +941,9 @@ eazel_install_install_packages (EazelInstall *service,
 		result = EAZEL_INSTALL_NOTHING;
 	}
 
+#ifndef EAZEL_INSTALL_SLIM
 	bonobo_object_unref (BONOBO_OBJECT (service));
+#endif /* EAZEL_INSTALL_SLIM */
 
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
 }
@@ -933,6 +953,10 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 {
 	EazelInstallStatus result;
 	SANITY (service);
+
+	trilobite_debug ("eazel_install_uninstall_packages (..., %d cats, %s)", 
+			 g_list_length (categories),
+			 root);
 
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
@@ -966,6 +990,8 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 
 	packages = parse_memory_transaction_file (xml, size);
 
+	service->private->revert = TRUE;
+
 	if (create_temporary_directory (service)) {
 		eazel_install_prepare_package_system (service);
 		result = revert_transaction (service, packages);
@@ -975,6 +1001,7 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 	} else {
 		result = EAZEL_INSTALL_NOTHING;
 	} 
+	service->private->revert = FALSE;
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_REVERSION_OK);
 }
 
@@ -1350,6 +1377,7 @@ void
 eazel_install_emit_done (EazelInstall *service, gboolean result)
 {
 	SANITY(service);
+
 	trilobite_debug ("emit_done (result = %s)", result ? "TRUE" : "FALSE");
 	gtk_signal_emit (GTK_OBJECT (service), signals[DONE], result);
 }

@@ -44,6 +44,7 @@ extern char *installer_server;
 extern int installer_server_port;
 extern char* installer_local;
 extern char* installer_cgi_path;
+extern char* installer_tmpdir;
 
 static int installer_show_build = 0;
 
@@ -53,6 +54,7 @@ static const struct poptOption options[] = {
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
+	{"tmpdir", '\0', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Specify download dir"), NULL},
 #if 0
 	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},
 #endif
@@ -81,6 +83,8 @@ main (int argc, char *argv[])
 	installer = eazel_installer_new ();
 
 	gtk_main ();
+	printf ("Exiting\n");
+	g_mem_profile ();
 	return 0;
 }
 

@@ -204,8 +204,8 @@ struct _PackageData {
 
 PackageData* packagedata_new (void);
 PackageData* packagedata_new_from_file (const char *file);
-PackageData* packagedata_copy (const PackageData *pack);
-GList *packagedata_list_copy (const GList *list);
+PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
+GList *packagedata_list_copy (const GList *list, gboolean deep);
 
 PackageData* packagedata_new_from_rpm_header (Header*);
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);

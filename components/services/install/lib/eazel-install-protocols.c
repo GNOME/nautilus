@@ -163,6 +163,7 @@ http_fetch_remote_file (EazelInstall *service,
                 g_warning (_("Could not prepare http request !"));
                 get_failed = 1;
         }
+
         if (ghttp_set_sync (request, ghttp_async)) {
                 g_warning (_("Couldn't get async mode "));
                 get_failed = 1;
@@ -170,6 +171,7 @@ http_fetch_remote_file (EazelInstall *service,
 
         while ((status = ghttp_process (request)) == ghttp_not_done) {
                 ghttp_current_status curStat = ghttp_get_status (request);
+
 		total_bytes = curStat.bytes_total;
 		/* Ensure first emit is with amount==0 */
 		if (first_emit && total_bytes > 0) {
@@ -481,18 +483,7 @@ eazel_install_fetch_file (EazelInstall *service,
 									     file_to_report, 
 									     target_file);
 	}
-
-	/* By always adding the file to the downloaded_files list,
-	   we enforce md5 check on files that were present but should have
-	   been downloaded */
-	if (result) {
-		if (! g_list_find_custom (service->private->downloaded_files, (char *)target_file,
-					  (GCompareFunc)g_strcasecmp)) {
-			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
-									     g_strdup (target_file));
-		}
-	}
-	
+ 	
 	if (!result) {
 		g_warning (_("Failed to retrieve %s!"), 
 			   file_to_report ? file_to_report : g_basename (target_file));
@@ -598,7 +589,15 @@ eazel_install_fetch_package (EazelInstall *service,
 	}
 	
 	if (result) {
-		trilobite_debug ("%s resolved", package->name);
+		/* By always adding the file to the downloaded_files list,
+		   we enforce md5 check on files that were present but should have
+		   been downloaded */
+		if (! g_list_find_custom (service->private->downloaded_files, (char *)targetname,
+					  (GCompareFunc)g_strcasecmp)) {
+			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
+									     g_strdup (targetname));
+		}
+		trilobite_debug ("%s resolved v2", package->name);
 	} else {	
 		g_warning (_("File download failed"));
 		unlink (targetname);
@@ -803,13 +802,17 @@ char* get_search_url_for_package (EazelInstall *service,
 		arch = real_arch_name (pack->archtype);
 		add_to_url (&url, "?name=", pack->name);
 		add_to_url (&url, "&arch=", arch);
-		/* add_to_url (&url, "&version=", pack->version); */
+		add_to_url (&url, "&version=", pack->version); 
 		/* FIXME bugzilla.eazel.com 3482
 		   support other flags then 8 
-		if (pack->version) {
-			add_to_url (&url, "&flag=", "8");
-		}
 		*/
+		if (pack->version) {
+			if (service->private->revert) {
+				add_to_url (&url, "&flags=", "8");
+			} else {
+				add_to_url (&url, "&flags=", "12");
+			}
+		}
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
 		}

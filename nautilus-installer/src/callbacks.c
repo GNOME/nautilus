@@ -35,6 +35,7 @@ void
 druid_cancel (GnomeDruid      *gnomedruid,
 	      EazelInstaller  *installer)
 {
+	g_mem_profile ();
 	exit (1);
 }
 
@@ -42,6 +43,7 @@ druid_cancel (GnomeDruid      *gnomedruid,
 void
 druid_delete (GtkWidget *widget, GdkEvent *event, EazelInstaller *installer)
 {
+	g_mem_profile ();
 	exit (1);
 }
 
@@ -51,32 +53,58 @@ begin_install (EazelInstaller  *installer)
 {
 	GtkWidget *window = installer->window;
 	GnomeDruid *druid;
-	GList *iterator;
-	GList *install_categories = NULL;
 
+	g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
 
 	gnome_druid_set_buttons_sensitive(druid,FALSE,FALSE,TRUE);
 
-	for (iterator = installer->categories; iterator; iterator = iterator->next) {
-		CategoryData *category = (CategoryData*)iterator->data;
-		GtkWidget *widget = gtk_object_get_data (GTK_OBJECT (window), category->name);
-
-		/* widget will be NULL for made-up categories created by a 2nd attempt */
-		if ((widget == NULL) || GTK_TOGGLE_BUTTON (widget)->active) {
-			install_categories = g_list_append (install_categories, category);
+	/* First time ? If so, check which categories were marked */
+	if (installer->install_categories == NULL) {
+		GList *iterator;
+		GList *install_categories = NULL;
+		for (iterator = installer->categories; iterator; iterator = iterator->next) {
+			CategoryData *category = (CategoryData*)iterator->data;
+			GtkWidget *widget = gtk_object_get_data (GTK_OBJECT (window), category->name);
+			
+			/* widget will be NULL for made-up categories created by a 2nd attempt */
+			if ((widget == NULL) || GTK_TOGGLE_BUTTON (widget)->active) {
+				install_categories = g_list_append (install_categories, category);
+			}
 		}
-	}
+		installer->install_categories = install_categories;
+	} 
 
-	if (install_categories) {
-		if (eazel_installer_do_install (installer, install_categories)) {
+	if (installer->force_remove_categories) {
+		g_message ("using force_remove_categories");
+		eazel_installer_do_install (installer, installer->force_remove_categories, TRUE, TRUE);
+		/* still more to do... */
+		categorydata_list_destroy (installer->force_remove_categories);
+		installer->force_remove_categories = NULL;
+		g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
+		/* return TRUE; */
+	} 
+	if (installer->force_categories) {
+		g_message ("using force_categories");
+		eazel_installer_do_install (installer, installer->force_categories, TRUE, FALSE);
+		categorydata_list_destroy (installer->force_categories);
+		installer->force_categories = NULL;
+		g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
+		/* return TRUE; */
+	} 
+
+	if (installer->install_categories) { 
+		g_message ("using install_categories");
+		if (eazel_installer_do_install (installer, installer->install_categories, FALSE, FALSE)) {
 			/* still more to do... */
-			return FALSE;
+			/* return TRUE; */
 		}
 	}
 
-	gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE);
+	g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
+	gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE); 
 	
+	/* FALSE means remove this source */
 	return FALSE;
 }
 
@@ -86,6 +114,7 @@ druid_finish (GnomeDruidPage  *gnomedruidpage,
 	      gpointer         arg1,
 	      EazelInstaller  *installer)
 {
+	g_mem_profile ();
 	exit (0);
 }
 
@@ -94,6 +123,7 @@ prep_install (GnomeDruidPage  *gnomedruidpage,
 	      GtkWidget *druid,
 	      EazelInstaller  *installer)
 {
+	g_message ("Prepping install page");
 	g_timeout_add (0, (GSourceFunc)begin_install, installer);
 }
 

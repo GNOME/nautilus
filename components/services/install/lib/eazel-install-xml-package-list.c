@@ -541,6 +541,7 @@ eazel_install_packagelist_to_xml (GList *packages) {
 	xmlNodePtr node;
 	GList *iterator;
 
+	trilobite_debug ("eazel_install_packagelist_to_xml (%d packages)", g_list_length (packages));
 	node = xmlNewNode (NULL, "PACKAGES");
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		xmlAddChild (node, 

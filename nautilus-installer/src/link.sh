@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DEBUG="yes"
+DEBUG="no"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
@@ -17,7 +17,7 @@ WARN_FLAG="-Wall -Werror"
 
 pushd `pwd`
 cd ../../components/services/install/lib
-    make -f makefile.staticlib clean && \
+    make -f makefile.staticlib clean
     make CFLAGS="$OG_FLAG $WARN_FLAG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
     cd ../../trilobite/libtrilobite && \
     make -f makefile.staticlib clean && \
@@ -63,7 +63,7 @@ if test "$1" = "push" -a $? = 0; then
         cp eazel-installer.sh /h/public/bin/
     else
         echo "You are not Robey, therefore you are lame.  Enter your password."
-        scp ./eazel-installer.sh odin:/h/public/bin/
+        scp ./eazel-installer.sh odin.eazel.com:/h/public/bin/
     fi
 fi
 

@@ -49,6 +49,7 @@
 #endif
 
 #define PERCENTS_PER_RPM_HASH 2
+#undef DEBUG_RPM_OUTPUT
 
 void 
 eazel_install_rpm_set_settings (EazelInstall *service) {
@@ -74,6 +75,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	}
 
 	if (eazel_install_get_force (service)) {
+		trilobite_debug ("Force install is enabled");
 		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
 			RPMPROB_FILTER_REPLACEOLDFILES |
 			RPMPROB_FILTER_REPLACENEWFILES |
@@ -86,7 +88,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	service->private->packsys.rpm.problem_filters = problem_filters;
 
 	if (eazel_install_get_debug (service)) {
-		rpmSetVerbosity (RPMMESS_DEBUG);
+		/* rpmSetVerbosity (RPMMESS_DEBUG); */
 	}
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
@@ -102,7 +104,9 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 	} 
 	if (eazel_install_get_force (service)) {
 		g_warning ("Force install mode!");
-		(*args) = g_list_prepend (*args, g_strdup ("--force"));
+		if (!eazel_install_get_uninstall (service)) {
+			(*args) = g_list_prepend (*args, g_strdup ("--force"));
+		}
 		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
 	}
 	if (eazel_install_get_downgrade (service)) {
@@ -119,9 +123,9 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 
 
 gboolean
-eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
-					 GIOCondition condition,
-					 EazelInstall *service)
+eazel_install_monitor_rpm_process_pipe (GIOChannel *source,
+					GIOCondition condition,
+					EazelInstall *service)
 {
 	char         tmp;
 	static       int package_name_length = 256;
@@ -129,12 +133,24 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 	ssize_t      bytes_read;
 	static       PackageData *pack = NULL;
 	static       int pct;
+#ifdef DEBUG_RPM_OUTPUT
+	static char *rpmoutname = NULL;
+	FILE *rpmoutput;
+#endif
 	
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
 	
 /* 1.39 has the code to parse --percent output */
 	if (bytes_read) {
-		/* fprintf (stdout, "%c", tmp); fflush (stdout);  */
+#ifdef DEBUG_RPM_OUTPUT
+		if (rpmoutname == NULL) {
+			rpmoutname = tempnam ("/tmp", "rpmSt");
+		}
+		rpmoutput = fopen (rpmoutname, "at");
+		fprintf (rpmoutput, "%c", tmp); 
+		fflush (rpmoutput); 
+		fclose (rpmoutput);
+#endif
 		/* Percentage output, parse and emit... */
 		if (tmp=='#') {
 			int amount;
@@ -218,6 +234,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 			}
 		}
 	} 
+
 	if (bytes_read == 0) {
 		return FALSE;
 	} else {
@@ -244,6 +261,7 @@ gboolean
 eazel_install_free_rpm_system (EazelInstall *service)
 {
 	/* Close all the db's */
+	g_assert (service->private->packsys.rpm.dbs);
 	trilobite_debug ("service->private->packsys.rpm.dbs.size = %d", g_hash_table_size (service->private->packsys.rpm.dbs));
 	g_hash_table_foreach_remove (service->private->packsys.rpm.dbs, 
 				     (GHRFunc)eazel_install_free_rpm_system_close_db_foreach,
@@ -269,6 +287,8 @@ gboolean
 eazel_install_prepare_rpm_system(EazelInstall *service)
 {
 	GList *iterator;
+
+	g_assert (service->private->packsys.rpm.dbs);
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
@@ -387,7 +407,9 @@ eazel_install_package_modifies_provides_compare (PackageData *pack,
 				  (gpointer)name, 
 				  (GCompareFunc)eazel_install_package_provides_compare);
 	if (ptr) {
-		trilobite_debug ("package %s caused harm to %s", pack->name, name);
+		trilobite_debug ("package %s-%s-%s caused harm to %s", 
+				 pack->name, pack->version, pack->minor,
+				 name);
 		return 0;
 	} 
 /*
@@ -414,6 +436,8 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	rpmdb db;
 
 	trilobite_debug ("eazel_install_do_rpm_dependency_check");
+
+	g_assert (service->private->packsys.rpm.dbs);
 
 	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs,
 					 service->private->cur_root);
@@ -457,11 +481,12 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
-				/* If pack_entry is null, we're in the worse case, where
-				   install A causes file f to disappear, and package conflict.byName
-				   needs f (conflict.needsName). So conflict does not identify which
-				   package caused the conflict */
 				if (pack_entry==NULL) {
+					/* If pack_entry is null, we're in the worse case, where
+					   install A causes file f to disappear, and package conflict.byName
+					   needs f (conflict.needsName). So conflict does not identify which
+					   package caused the conflict */
+					trilobite_debug ("pack_entry==NULL, level 2");
 					/* 
 					   I need to find the package P in "packages" that provides
 					   conflict.needsName, then fail P marking it's status as 
@@ -475,12 +500,14 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 									 (gpointer)conflict.needsName,
 									 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
 					if (pack_entry == NULL) {
+						trilobite_debug ("pack_entry==NULL, level 3");
 						/* Kühl, we probably already moved it to 
 						   failed packages */
 						pack_entry = g_list_find_custom (*failedpackages, 
 										 (gpointer)conflict.needsName,
 										 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
 						if (pack_entry == NULL) {
+							trilobite_debug ("pack_entry==NULL, level 4");
 							/* Still kühl, we're looking for a name... */
 							pack_entry = g_list_find_custom (*failedpackages, 
 											 (gpointer)conflict.needsName,
@@ -531,6 +558,9 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 								   g_assert_not_reached ();
 							   }
 						} 
+						/* If we reach this point, the package
+						   was found in *failedpackages. Otherwise,
+						   we would have hit the g_assert */
 						trilobite_debug ("We don't want to redo failing it");
 						pack_entry = NULL;
 					}
@@ -636,6 +666,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	}
 
 	rpmdepFreeConflicts (conflicts, num_conflicts);
+	rpmtransFree (set);
 	trilobite_debug ("eazel_install_do_rpm_dependency_check ended with %d fails and %d requirements", 
 			 g_list_length (*failedpackages),
 			 g_list_length (*requirements));

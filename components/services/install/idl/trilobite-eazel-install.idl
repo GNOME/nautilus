@@ -177,8 +177,10 @@ module Trilobite {
 
 			attribute ProtocolEnum protocol; /* */
 			
-			attribute boolean ssl_rename;
-			
+			attribute boolean ssl_rename; /* Do the renaming trick, where all hostnames in 
+							 all urls are renamed to localhost. This makes
+							 ssl tunneling work */
+ 			
 			/* Install/uninstall using the packagelist from the server */
 			oneway void install (in string packagelist, in InstallCallback cb);
 			oneway void uninstall (in string packagelist, in InstallCallback cb);
@@ -190,6 +192,9 @@ module Trilobite {
 			oneway void uninstall_packages (in CategoryStructList categories, 
 							in string root,
 							in InstallCallback cb);
+
+			boolean query_server (in PackageDataStruct q, 
+					      out PackageDataStruct result);
 
 			/* Run a query to the package sys */
 			PackageDataStructList simple_query (in string query,

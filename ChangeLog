@@ -1,3 +1,111 @@
+2000-10-23  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added a comment to the ssl_rename variable.
+	Added a function stub for querying the server about packages. Not
+	impl yet.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_transaction_fill_hash),
+	(eazel_install_monitor_process_pipe),
+	(eazel_install_monitor_err_process_pipe),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_clean_name_to_package_hash),
+	(eazel_install_start_transaction),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies), (dump_one_package),
+	(eazel_install_do_file_conflict_check),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_globber):
+	Added comments and clarified some variable names.
+	No file dep checking on --force.
+	No whatrequires check on uninstall on --force
+	Moved the all_files_check call into ensure_deps, so if packages
+	are pruned we can rerun ensure_deps.
+	No longer check if a provides file is a directory before conflict
+	check (not needed because of fix in eazel-install-types).
+	Calling g_main_iteration during file conflict checking if
+	EAZEL_INSTALL_SLIM is set.
+	Clean up some lists and hashtables at the end of a transaction.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_emit_done):
+	All default funcs are NULL if EAZEL_INSTALL_NO_CORBA set.
+	Set private->revert to TRUE during revert.
+	Some more debug output.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (eazel_install_fetch_file),
+	(eazel_install_fetch_package), (get_search_url_for_package):
+	Don't add the package to downloaded_files list till after we've
+	checked the version and name.
+	If revert, use &flag=8 otherwise 12.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Assert that the dbs hashtable is !null.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings),
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	(eazel_install_monitor_rpm_process_pipe),
+	(eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_package_modifies_provides_compare),
+	(eazel_install_do_rpm_dependency_check):
+	Loads of debug code to grab stderr & stdout output from rpm.
+	More comments in the do_rpm_dependency_check func.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (categorydata_list_copy), (categorydata_copy),
+	(packagedata_list_copy), (packagedata_copy),
+	(packagedata_fill_from_rpm_header), (packagedata_destroy):
+	Added a boolean flag to packagedata_copy, toggles whether or not
+	to deep copy.
+	Fix rpm header load to not add directories to the ->provides list
+	(using a wonderfull O(n²) function, I'll leave it to the reader to
+	improve it).
+	Uncommented the rpmheaderFree call.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(eazel_install_packagelist_to_xml):
+	More debug output (we can never have enough!)
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+	
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(druid_delete), (begin_install), (druid_finish), (prep_install):
+	* nautilus-installer/src/installer.c: (create_what_to_do_page),
+	(strip_categories), (start_over_make_category_func), (start_over),
+	(jump_to_retry_page), (create_window), (eazel_install_progress),
+	(eazel_download_progress), (add_force_packages),
+	(add_force_remove), (add_update_package), (get_required_name),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(eazel_install_preflight), (eazel_install_delete_files),
+	(install_done), (check_system), (eazel_installer_do_install),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main):
+	Now takes a --tmpdir argument
+	Puts builddate in window title
+	Has a system for creating RepairCases when traversing a tree in
+	install_failed signal handler.
+	Now handles stuff like "need to updage eog" and then there is no
+	update for eog.
+	Hopefully also handles circular conflict cases.
+	Now has a completely obfuscated call stack...
+
 2000-10-23  Mathieu Lacage  <mathieu@eazel.com>
 
 	* user-guide/C/sgml/chapter-1.sgml:
