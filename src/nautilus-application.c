@@ -710,10 +710,10 @@ nautilus_application_create_window (NautilusApplication *application)
 				 G_CALLBACK (nautilus_application_destroyed_window), application, 0);
 
 	g_signal_connect (window, "configure_event",
-				G_CALLBACK (nautilus_window_configure_event_callback), NULL);
+			  G_CALLBACK (nautilus_window_configure_event_callback), NULL);
 
 	g_signal_connect (window, "unrealize",
-				G_CALLBACK (nautilus_window_unrealize_event_callback), NULL);
+			  G_CALLBACK (nautilus_window_unrealize_event_callback), NULL);
 
 	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 

@@ -1188,9 +1188,9 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                 
 			attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 			nautilus_file_call_when_ready (file,
-								attributes,
-								position_and_show_window_callback,
-								window);
+                                                       attributes,
+                                                       position_and_show_window_callback,
+                                                       window);
 			g_list_free (attributes);
 		}
 
