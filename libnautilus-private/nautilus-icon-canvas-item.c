@@ -39,6 +39,7 @@
 #include <libart_lgpl/art_svp_vpath.h>
 #include "nautilus-icon-private.h"
 #include "nautilus-string.h"
+#include "nautilus-art-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"

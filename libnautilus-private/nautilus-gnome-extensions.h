@@ -34,11 +34,6 @@
 #include <gtk/gtkwindow.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-typedef struct {
-	int x;
-	int y;
-} NautilusArtIPoint;
-
 /* Causes an update as needed. The GnomeCanvas code says it should, but it doesn't. */
 void       nautilus_gnome_canvas_set_scroll_region                      (GnomeCanvas     *canvas,
 									 double           x1,
@@ -107,16 +102,6 @@ void       nautilus_gnome_canvas_fill_rgb                               (GnomeCa
 									 art_u8           r,
 									 art_u8           g,
 									 art_u8           b);
-
-/* More functions for ArtIRect and ArtDRect. */
-gboolean   nautilus_art_irect_equal                                     (const ArtIRect  *rect_a,
-									 const ArtIRect  *rect_b);
-gboolean   nautilus_art_drect_equal                                     (const ArtDRect  *rect_a,
-									 const ArtDRect  *rect_b);
-gboolean   nautilus_art_irect_hits_irect                                (const ArtIRect  *rect_a,
-									 const ArtIRect  *rect_b);
-gboolean   nautilus_art_irect_contains_irect                            (const ArtIRect  *outer_rect,
-									 const ArtIRect  *inner_rect);
 
 /* More functions for GnomeDialog */
 GtkButton *nautilus_gnome_dialog_get_button_by_index                    (GnomeDialog     *dialog,
