@@ -6,7 +6,19 @@
 	fixed bug 6554, typing random text into the background selector
 	crashes, by adding a check for a valid path and displaying an
 	error dialog if the path isn't valid.
-	 
+
+2001-02-13  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Andy Hertzfeld  <andy@eazel.com>
+
+	Fixed bug 6582, Editing location bar crashes Nautilus, leaves
+	spurious text.
+	Fixed duplicate bug 6585, Nautilus crashed if type "~/asdfasdf" in
+	location bar.
+	
+	* src/nautilus-location-bar.c: (try_to_expand_path): Removed
+	spurious g_free that was causing massive breakage.
+	
 2001-02-13  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
