@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.bg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-26 05:02+0200\n"
-"PO-Revision-Date: 2004-07-26 09:46+0300\n"
+"POT-Creation-Date: 2004-07-29 04:11+0200\n"
+"PO-Revision-Date: 2004-07-29 12:24+0300\n"
 "Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
@@ -1578,6 +1578,8 @@ msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
+"Формата на датите на файловете. Възможните стойности са \"локално\", \"iso\" и "
+"\"неофициално\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "The side pane view to show in newly opened windows."
@@ -3106,6 +3108,8 @@ msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
+"Желаете ли да превключите към ръчен изглед и да оставите този обект, където го пуснахте? "
+"Това ще счупи запазения ръчен изглед."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3119,18 +3123,22 @@ msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
+"Желаете ли да превключите към ръчен изглед и да оставите тези обекти, където ги пуснахте?"
+"Това ще счупи запазения ръчен изглед."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
 msgstr ""
+"Желаете ли да превключите към ръчен изглед и да оставите този обект, където го пуснахте?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
 msgstr ""
+"Желаете ли да превключите към ръчен изглед и да оставите тези обекти, където ги пуснахте?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3545,17 +3553,20 @@ msgstr "Пускането на цел поддържа само локални 
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
+"За да отворите не-локални файлове, копирайте ги в локална папка и тогава пак ги пуснете."
 
 #: libnautilus-private/nautilus-program-choosing.c:921
 #: libnautilus-private/nautilus-program-choosing.c:933
 msgid "Drop Target Only Supports Local Files"
-msgstr ""
+msgstr "Целта за пускане поддържа само локални файлове"
 
 #: libnautilus-private/nautilus-program-choosing.c:931
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
+"За да отворите не-локални файлове, копирайте ги в локална папка и после ги пуснете "
+"отново. Локалните файлове, които сте пуснали в целта вече са отворени."
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -3653,10 +3664,11 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:851
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
+msgstr "Сигурен ли сте, че искате да изтриете за постоянно избраният обект %d?"
+"Сигурен ли сте, че искате да изтриете за постоянно избраните обекти %d?"
 
 #: src/file-manager/fm-directory-view.c:859
 msgid "If you delete an item, it is permanently lost."
@@ -3703,7 +3715,7 @@ msgstr "\"%s\" избрани (%s)"
 #: src/file-manager/fm-directory-view.c:1785
 #, c-format
 msgid "%d item selected (%s)"
-msgstr "%d обекта избрани (%s)"
+msgstr "%d обект избран (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1793
@@ -3786,8 +3798,8 @@ msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr ""
-"Сигурен ли сте, че искате да изтриете за постоянно %d избран обект от Кошчето?"
-"Сигурен ли сте, че искате да изтриете за постоянно %d избрани обекта от Кошчето?"
+"Сигурен ли сте, че искате да изтриете за постоянно избраният обект %d от Кошчето?"
+"Сигурен ли сте, че искате да изтриете за постоянно избраните обекти %d от Кошчето?"
 
 #: src/file-manager/fm-directory-view.c:3309
 msgid "If you delete an item, it will be permanently lost."
@@ -3953,15 +3965,17 @@ msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"%d обект ще бъде преместен ако изберете командата Поставяне на файлове"
-"%d обекта ще бъдат преместени ако изберете командата Поставяне на файлове"
+"Избраният обект %d ще бъде преместен ако изберете командата Поставяне на файлове"
+"Избраните обекти %d ще бъдат преместени ако изберете командата Поставяне на файлове"
 
 #: src/file-manager/fm-directory-view.c:5077
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "\"%s\" ще бъде копиран ако изберете командата Поставяне на файлове"
+msgstr ""
+"Избраният обект %d ще бъде копиран ако изберете командата Поставяне на файлове"
+"Избраните обекти %d ще бъдат копирани ако изберете командата Поставяне на файлове"
 
 #: src/file-manager/fm-directory-view.c:5159
 #: src/file-manager/fm-tree-view.c:868
@@ -4775,7 +4789,7 @@ msgstr "Формат на избран дял"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Make a permanent connection to this server"
-msgstr ""
+msgstr "Направа на постоянна връзка към този сървър"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Medi_a Properties"
@@ -6428,7 +6442,7 @@ msgstr "текущо избраното"
 
 #: src/nautilus-view-frame.c:632
 msgid "the type of window the view is embedded in"
-msgstr ""
+msgstr "вида на прозореца, в който ще бъде имплементиран изгледа"
 
 #: src/nautilus-view-frame.c:641
 msgid "whether to show hidden files in the view"
