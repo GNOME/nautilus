@@ -175,7 +175,7 @@ icon_set_position (NautilusIcon *icon,
 	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon->item)->canvas);
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
-		/* Clip the movement of the icon within our desktop bounds */
+		/* Clip the position of the icon within our desktop bounds */
 		left = GTK_WIDGET (container)->allocation.x;
 		top  = GTK_WIDGET (container)->allocation.y;
 		right  = left + GTK_WIDGET (container)->allocation.width;
@@ -667,6 +667,14 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 			lay_down_icons_horizontal (container, icons, start_y);
 			break;
 
+		case NAUTILUS_ICON_CONTAINER_DESKTOP_T_B_L_R:
+			lay_down_icons_horizontal (container, icons, start_y);
+			break;
+			
+		case NAUTILUS_ICON_CONTAINER_DESKTOP_T_B_R_L:
+			lay_down_icons_horizontal (container, icons, start_y);
+			break;
+			
 		default:
 			break;
 	}
@@ -3053,7 +3061,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	GList *p;
 	NautilusIcon *icon;
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 

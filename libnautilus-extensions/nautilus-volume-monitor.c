@@ -145,14 +145,13 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 		
 	/* Clean up other device info */
 	g_list_foreach (monitor->details->devices, (GFunc)free_device_info, monitor);
-
-	/* Remove timer function */
-	gtk_timeout_remove (monitor->details->mount_device_timer_id);
-	
+		
 	/* Clean up details */	 
 	g_hash_table_destroy (monitor->details->devices_by_fsname);
-	g_list_free (monitor->details->devices);
+	g_list_free (monitor->details->devices);	
 	g_free (monitor->details);
+
+	global_volume_monitor = NULL;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }

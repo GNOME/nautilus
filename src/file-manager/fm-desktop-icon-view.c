@@ -185,7 +185,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
-
+	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
 
 	/* Set allocation to be at 0, 0 */
@@ -199,6 +199,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	nautilus_gtk_adjustment_set_value (hadj, 0);
 	nautilus_gtk_adjustment_set_value (vadj, 0);
+
+	/* Set our default layout mode */
+	nautilus_icon_container_set_layout_mode (icon_container, NAUTILUS_ICON_CONTAINER_DESKTOP_T_B_L_R);
 
 	/* Check for and clean up any old mount links that may have been left behind */		
 	remove_old_mount_links ();

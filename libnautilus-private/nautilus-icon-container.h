@@ -52,7 +52,9 @@ typedef struct {
 } NautilusIconPosition;
 
 typedef enum {
-	NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL
+	NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL,
+	NAUTILUS_ICON_CONTAINER_DESKTOP_T_B_L_R,
+	NAUTILUS_ICON_CONTAINER_DESKTOP_T_B_R_L
 } NautilusIconContainerLayoutMode;
 
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
