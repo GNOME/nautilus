@@ -69,26 +69,32 @@ get_link_style_for_mime_type (const char *mime_type)
 }
 
 static LinkStyle
-get_link_style_for_local_file (const char *uri)
+get_link_style_for_local_file (const char *uri, GnomeVFSFileInfo *opt_info)
 {
 	LinkStyle type;
-	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
+	GnomeVFSFileInfo *info;
 
-	info = gnome_vfs_file_info_new ();
+	if (!(info = opt_info)) {
+		info = gnome_vfs_file_info_new ();
 
-	result = gnome_vfs_get_file_info (uri, info,
-					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-					  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+		result = gnome_vfs_get_file_info (uri, info,
+						  GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
+						  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+		if (result != GNOME_VFS_OK) {
+			gnome_vfs_file_info_unref (info);
+			info = NULL;
+		}
+	}
 
-	if (result == GNOME_VFS_OK
-	    && (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
+	if (info && info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) {
 		type = get_link_style_for_mime_type (info->mime_type);
 	} else {
 		type = not_link;
 	}
 
-	gnome_vfs_file_info_unref (info);
+	if (!opt_info && info)
+		gnome_vfs_file_info_unref (info);
 
 	return type;
 }
@@ -121,7 +127,7 @@ nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 	NautilusFile *file;
 	GList *attributes;
 
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
 		result = nautilus_link_desktop_file_local_set_icon (uri, icon_name);
 		break;
@@ -148,7 +154,7 @@ nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 	NautilusFile *file;
 	GList *attributes;
 
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
 		/* FIXME: May want to implement this for desktop files too */
 		result = FALSE;
@@ -174,7 +180,7 @@ gboolean
 nautilus_link_local_set_type (const char *uri,
 			      NautilusLinkType type)
 {
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
 		/* FIXME: May want to implement this for desktop files too */
 		return FALSE;
@@ -189,7 +195,7 @@ nautilus_link_local_set_type (const char *uri,
 char *
 nautilus_link_local_get_additional_text (const char *uri)
 {
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
 		return nautilus_link_desktop_file_local_get_additional_text (uri);
 	case historical:
@@ -203,7 +209,7 @@ nautilus_link_local_get_additional_text (const char *uri)
 char *
 nautilus_link_local_get_link_uri (const char *uri)
 {
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
 		return nautilus_link_desktop_file_local_get_link_uri (uri);
 	case historical:
@@ -215,9 +221,9 @@ nautilus_link_local_get_link_uri (const char *uri)
 
 /* Returns the link type of the link file. */
 NautilusLinkType
-nautilus_link_local_get_link_type (const char *uri)
+nautilus_link_local_get_link_type (const char *uri, GnomeVFSFileInfo *info)
 {
-	switch (get_link_style_for_local_file (uri)) {
+	switch (get_link_style_for_local_file (uri, info)) {
 	case desktop:
 		return nautilus_link_desktop_file_local_get_link_type (uri);
 	case historical:
@@ -273,27 +279,27 @@ nautilus_link_get_link_icon_given_file_contents (const char *uri,
 }
 
 gboolean
-nautilus_link_local_is_volume_link (const char *uri)
+nautilus_link_local_is_volume_link (const char *uri, GnomeVFSFileInfo *info)
 {
-	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_MOUNT);
+	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_MOUNT);
 }
 
 gboolean
-nautilus_link_local_is_home_link (const char *uri)
+nautilus_link_local_is_home_link (const char *uri, GnomeVFSFileInfo *info)
 {
-	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_HOME);
+	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_HOME);
 }
 
 gboolean
-nautilus_link_local_is_trash_link (const char *uri)
+nautilus_link_local_is_trash_link (const char *uri, GnomeVFSFileInfo *info)
 {
-	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_TRASH);
+	return (nautilus_link_local_get_link_type (uri, info) == NAUTILUS_LINK_TRASH);
 }
 
 gboolean
 nautilus_link_local_is_special_link (const char *uri)
 {
-	switch (nautilus_link_local_get_link_type (uri)) {
+	switch (nautilus_link_local_get_link_type (uri, NULL)) {
 	case NAUTILUS_LINK_HOME:
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
  			return FALSE;

@@ -605,6 +605,7 @@ nautilus_thumbnail_load_framed_image (const char *path)
 		(pixbuf, frame,
 		 left_offset, top_offset, right_offset, bottom_offset);
 	g_object_unref (pixbuf);	
+
 	return pixbuf_with_frame;
 }
 

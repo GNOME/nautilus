@@ -1,3 +1,30 @@
+2002-08-07  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_can_rename): pass in info if we
+	have it already.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_trash_link_and_delete_copies),
+	(update_home_link_and_delete_copies),
+	(delete_all_mount_links): kill in favour of
+	(update_desktop_directory): so we don't stat / mime
+	sniff everything 3+ times.
+	(update_link_and_delete_copies): push this method and
+	it's file / sniff loop upwards.
+
+	* src/file-manager/fm-directory-view.c
+	(special_link_in_selection): upd.
+	(fm_directory_link_type_in_selection): kill, unused.
+	
+	* libnautilus-private/nautilus-link.c
+	(get_link_style_for_local_file): operate on the passed
+	in GnomeVFSInfo if we have it.
+
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_selection_includes_special_link): upd
+	for efficiency.
+
 2002-08-06  Alex Graveley  <alex@ximian.com>
 
 	* libnautilus-private/nautilus-file.c (rename_guts): Use

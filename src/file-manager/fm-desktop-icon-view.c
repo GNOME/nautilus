@@ -98,6 +98,12 @@ typedef struct {
 	char *mount_path;
 } MountParameters;
 
+typedef enum {
+	DELETE_MOUNT_LINKS = 1<<0,
+	UPDATE_HOME_LINK   = 1<<1,
+	UPDATE_TRASH_LINK  = 1<<2
+} UpdateType;
+
 static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor   *trash,
@@ -111,9 +117,7 @@ static void     volume_mounted_callback                           (NautilusVolum
 static void     volume_unmounted_callback                         (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
-static void     delete_all_mount_links                            (void);
-static void     update_home_link_and_delete_copies                (void);
-static void     update_trash_link_and_delete_copies               (void);
+static void     update_desktop_directory                          (UpdateType              type);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
 static void     real_merge_menus                                  (FMDirectoryView        *view);
 static void     real_update_menus                                 (FMDirectoryView        *view);
@@ -263,7 +267,7 @@ fm_desktop_icon_view_finalize (GObject *object)
 	}
 
 	/* Delete all of the link files. */
-	delete_all_mount_links ();
+	update_desktop_directory (DELETE_MOUNT_LINKS);
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					 home_uri_changed,
@@ -525,7 +529,7 @@ default_zoom_level_changed (gpointer user_data)
 static void
 home_uri_changed (gpointer callback_data)
 {
-	update_home_link_and_delete_copies ();
+	update_desktop_directory (UPDATE_HOME_LINK);
 }
 
 static gboolean
@@ -673,9 +677,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	nautilus_icon_container_set_layout_mode (icon_container,
 						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 
-	delete_all_mount_links ();
-	update_home_link_and_delete_copies ();
-	update_trash_link_and_delete_copies ();
+	update_desktop_directory (DELETE_MOUNT_LINKS | UPDATE_HOME_LINK | UPDATE_TRASH_LINK);
 
 	/* Create initial mount links */
 	nautilus_volume_monitor_each_mounted_volume (nautilus_volume_monitor_get (),
@@ -949,7 +951,7 @@ trash_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the trash we care about is on the desktop.
 		 */
-		if (nautilus_link_local_is_trash_link (uri)) {
+		if (nautilus_link_local_is_trash_link (uri, NULL)) {
 			result = TRUE;
 		}
 		g_free (uri);
@@ -977,7 +979,7 @@ volume_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the volume we care about is on the desktop.
 		 */
-		if (nautilus_link_local_is_volume_link (uri)) {
+		if (nautilus_link_local_is_volume_link (uri, NULL)) {
 			result = TRUE;
 		}
 		g_free (uri);
@@ -1085,124 +1087,6 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 
 	g_free (volume_name);
 	g_free (link_path);
-}
-
-/* update_link_and_delete_copies
- * 
- * Look for a particular type of link on the desktop. If the right
- * link is there, update its target URI. Delete any extra links of
- * that type.
- * 
- * @is_link_function: predicate function to test whether a link is the right type.
- * @link_name: if non-NULL, only a link with this name is considered a match.
- * @link_target_uri: new URI to set as link target.
- */
-static gboolean
-update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
-			       const char *link_name,
-			       const char *link_target_uri)
-{
-	DIR *dir;
-	gboolean found_link;
-	struct dirent *dir_entry;
-	char *link_path;
-
-	dir = opendir (desktop_directory);
-	if (dir == NULL) {
-		return FALSE;
-	}
-
-	found_link = FALSE;
-
-	while ((dir_entry = readdir (dir)) != NULL) {
-		link_path = g_build_filename (desktop_directory, dir_entry->d_name, NULL);
-		if ((* is_link_function) (link_path)) {
-			if (!found_link &&
-			     (link_name == NULL || strcmp (dir_entry->d_name, link_name) == 0)) {
-				nautilus_link_local_set_link_uri (link_path, link_target_uri);
-				found_link = TRUE;
-			} else {
-				unlink_and_notify (link_path);
-			}
-		}
-		g_free (link_path);
-	}
-	
-	closedir (dir);
-
-	return found_link;
-}
-
-/* update_home_link_and_delete_copies
- * 
- * Add an icon representing the user's home directory on the desktop.
- * Create if necessary
- */
-static void
-update_home_link_and_delete_copies (void)
-{
-	char *home_link_name, *home_uri;
-
-	/* Note to translators: If it's hard to compose a good home
-	 * icon name from the user name, you can use a string without
-	 * an "%s" here, in which case the home icon name will not
-	 * include the user's name, which should be fine. To avoid a
-	 * warning, put "%.0s" somewhere in the string, which will
-	 * match the user name string passed by the C code, but not
-	 * put the user name in the final string.
-	 */
-	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
-	
-#ifdef WEB_NAVIGATION_ENABLED
-	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
-	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
-	
-	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
-					    NULL,
-					    home_uri)
- 	    && !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
-		nautilus_link_local_create (desktop_directory,
-					    home_link_name,
-					    "desktop-home", 
-					    home_uri,
-					    NULL,
-					    NAUTILUS_LINK_HOME);
-	}
-	
-	g_free (home_link_name);
-	g_free (home_uri);
-}
-
-static void
-update_trash_link_and_delete_copies (void)
-{
-
-	/* Check for trash link */
-	if (!update_link_and_delete_copies (nautilus_link_local_is_trash_link,
-					    TRASH_LINK_NAME,
-					    EEL_TRASH_URI)) {
-		nautilus_link_local_create (desktop_directory,
-					    TRASH_LINK_NAME,
-					    "trash-empty", 
-					    EEL_TRASH_URI,
-					    NULL,
-					    NAUTILUS_LINK_TRASH);
-	}
-
-	/* Make sure link represents current trash state */
-	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
-						   	   nautilus_trash_monitor_is_empty (),
-						   	   NULL);
-
-}
-
-static void
-delete_all_mount_links (void)
-{
-	update_link_and_delete_copies (nautilus_link_local_is_volume_link,
-				       "", "");
 }
 
 static MountParameters *
@@ -1564,3 +1448,125 @@ real_supports_zooming (FMDirectoryView *view)
 	 */
 	return FALSE;
 }
+
+/* update_desktop_directory
+ *
+ * Look for a particular type of link on the desktop. If the right
+ * link is there, update its target URI. Delete any extra links of
+ * that type.
+ */
+static void
+update_desktop_directory (UpdateType type)
+{
+	char *link_path;
+	GnomeVFSResult result;
+	GList *desktop_files, *l;
+	GnomeVFSFileInfo *info;
+
+	char *home_uri = NULL;
+	char *home_link_name = NULL;
+	gboolean found_home_link;
+	gboolean found_trash_link;
+
+	if (type & UPDATE_HOME_LINK) {
+		/* Note to translators: If it's hard to compose a good home
+		 * icon name from the user name, you can use a string without
+		 * an "%s" here, in which case the home icon name will not
+		 * include the user's name, which should be fine. To avoid a
+		 * warning, put "%.0s" somewhere in the string, which will
+		 * match the user name string passed by the C code, but not
+		 * put the user name in the final string.
+		 */
+		home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
+	
+#ifdef WEB_NAVIGATION_ENABLED
+		home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+		home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
+	}
+
+	result = gnome_vfs_directory_list_load
+		(&desktop_files, desktop_directory,
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
+		 GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+	found_home_link = found_trash_link = FALSE;
+
+	if (result != GNOME_VFS_OK) {
+		desktop_files = NULL;
+	}
+
+	for (l = desktop_files; l; l = l->next) {
+		info = l->data;
+
+		if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE &&
+		    info->type != GNOME_VFS_FILE_TYPE_REGULAR &&
+		    info->type != GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			continue;
+		}
+		
+		link_path = g_build_filename (desktop_directory, info->name, NULL);
+
+
+		if (type & DELETE_MOUNT_LINKS &&
+		    nautilus_link_local_is_volume_link (link_path, info)) {
+			unlink_and_notify (link_path);
+		}
+
+
+		if (type & UPDATE_HOME_LINK &&
+		    nautilus_link_local_is_home_link (link_path, info)) {
+			if (!found_home_link) {
+				nautilus_link_local_set_link_uri (link_path, home_uri);
+				found_home_link = TRUE;
+			} else {
+				unlink_and_notify (link_path); /* kill duplicates */
+			}
+		}
+
+		if (type & UPDATE_TRASH_LINK &&
+		    nautilus_link_local_is_trash_link (link_path, info)) {
+			if (!found_trash_link &&
+			    !strcmp (TRASH_LINK_NAME, info->name)) {
+				nautilus_link_local_set_link_uri (link_path, EEL_TRASH_URI);
+				found_trash_link = TRUE;
+			} else {
+				unlink_and_notify (link_path); /* kill duplicates */
+			}
+		}
+		g_free (link_path);
+	}
+
+	gnome_vfs_file_info_list_free (desktop_files);
+
+	if (type & UPDATE_HOME_LINK && !found_home_link &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		nautilus_link_local_create (desktop_directory,
+					    home_link_name,
+					    "desktop-home", 
+					    home_uri,
+					    NULL,
+					    NAUTILUS_LINK_HOME);
+	}
+	       
+	if (type & UPDATE_TRASH_LINK) {
+		if (!found_trash_link) {
+			nautilus_link_local_create (desktop_directory,
+						    TRASH_LINK_NAME,
+						    "trash-empty", 
+						    EEL_TRASH_URI,
+						    NULL,
+						    NAUTILUS_LINK_TRASH);
+		}
+
+		/* Make sure link represents current trash state */
+		fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
+								   nautilus_trash_monitor_is_empty (),
+								   NULL);
+	}
+
+	g_free (home_link_name);
+	g_free (home_uri);
+}
+

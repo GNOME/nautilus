@@ -770,7 +770,7 @@ nautilus_file_can_rename (NautilusFile *file)
 		/* FIXME: This reads the link file every time -- seems
 		 * bad to do that even though it's known to be local.
 		 */
-		switch (nautilus_link_local_get_link_type (path)) {
+		switch (nautilus_link_local_get_link_type (path, file->details->info)) {
 		case NAUTILUS_LINK_TRASH:
 		case NAUTILUS_LINK_MOUNT:
 			can_rename = FALSE;
