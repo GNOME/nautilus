@@ -50,8 +50,8 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
@@ -450,55 +450,28 @@ nautilus_sidebar_new (void)
 static void
 nautilus_sidebar_read_theme (NautilusSidebar *sidebar)
 {
-	char *theme_name, *theme_path, *temp_str;
-	xmlDocPtr document;
-	xmlNodePtr sidebar_node;
+	char *background_color, *background_image;
 	
-	/* fetch the current theme name */
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	background_color = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR);
+	background_image = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE);
 	
-	/* formulate the theme path name */
-	if (strcmp(theme_name, "default") == 0) {
-		theme_path = nautilus_pixmap_file ("default.xml");
-	} else {
-		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
-		theme_path = nautilus_pixmap_file (temp_str);
-		g_free(temp_str);
+	g_free(sidebar->details->default_background_color);
+	sidebar->details->default_background_color = NULL;
+	g_free(sidebar->details->default_background_image);
+	sidebar->details->default_background_image = NULL;
+			
+	if (background_color && strlen(background_color)) {
+		sidebar->details->default_background_color = g_strdup(background_color);
 	}
-	
-	/* load and parse the theme file */
-	document = xmlParseFile(theme_path);
-	g_free(theme_path);
-	
-	if (document != NULL) {
-		/* fetch the sidebar node */
-				
-		sidebar_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (document), "sidebar");
-		if (sidebar_node) {		
-			/* set up the default background color */		
-			g_free(sidebar->details->default_background_color);
-			sidebar->details->default_background_color = NULL;
-			g_free(sidebar->details->default_background_image);
-			sidebar->details->default_background_image = NULL;
 			
-			temp_str = xmlGetProp(sidebar_node, NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR);
-			if (temp_str && strlen(temp_str)) {
-					sidebar->details->default_background_color = g_strdup(temp_str);
-			}
-			
-		 /* set up the default background image */
+	/* set up the default background image */
 	
-			temp_str = xmlGetProp(sidebar_node, NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE);
-			if (temp_str && strlen(temp_str)) {
-					sidebar->details->default_background_image = g_strdup(temp_str);
-			}
+	if (background_image && strlen(background_image)) {
+		sidebar->details->default_background_image = g_strdup(background_image);
+	}
 
-		/* set up the sidebar tab info */
-		}
-		xmlFreeDoc(document);
-	}
-	
-	g_free(theme_name); 
+	g_free (background_color);
+	g_free (background_image);
 }
 
 /* handler for handling theme changes */

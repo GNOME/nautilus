@@ -89,6 +89,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-string-picker.c		\
 	nautilus-string.c			\
 	nautilus-text-caption.c			\
+	nautilus-theme.c			\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
@@ -165,6 +166,7 @@ noinst_HEADERS =				\
 	nautilus-string-picker.h		\
 	nautilus-string.h			\
 	nautilus-text-caption.h			\
+	nautilus-theme.h			\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\

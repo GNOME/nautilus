@@ -1,3 +1,19 @@
+2000-06-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	added nautilus-theme.c and nautilus-theme.h
+	* libnautilus-extensions/nautilus-theme.c,h:
+	(nautilus_theme_get_theme), (nautilus_theme_set_theme),
+	(load_theme_document), (nautilus_theme_get_theme_data):
+	added theme framework that allows clients to access theme information
+	without knowing the underlying implementation
+	* src/nautilus-sidebar.c: (nautilus_sidebar_read_theme):
+	made the sidebar use the new theme framework	
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/vector/vector.xml:
+	changed the icon container keyword for new framework
+
 2000-06-27  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/nautilus-view-frame.c:
