@@ -42,9 +42,9 @@ EXTRA_DIST=					\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
 	ChangeLog-20001018			\
-	xml-i18n-extract			\
-	xml-i18n-merge				\
-	xml-i18n-update				\
+	xml-i18n-extract.in			\
+	xml-i18n-merge.in			\
+	xml-i18n-update.in			\
 	Makefile.shared				\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\

@@ -1,3 +1,29 @@
+2001-02-06  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Laszlo Kovacs  <laszlo.kovacs@sun.com>
+
+	Fixed bug 795 (help component installs files in nautilus prefix,
+	but uses gnome-libs prefix to find them later) by expanding the
+	set of places Nautilus looks for help files.
+
+	* components/help/hyperbola-filefmt.c:
+	(fmt_man_populate_tree_for_subdir): Changed to look in more places
+	for help files: the help directory in the gnome prefix, the help
+	directory in the nautilus prefix, and directories in GNOME_PATH.
+	(fmt_help_populate_tree): New helper function.
+	(append_help_dir_if_exists): New helper function.
+
+	* components/help/Makefile.am: Define DATADIR in compile flags.
+
+	* components/help/hyperbola-main.c: Add copyright notice.
+
+	This part not reviewed:
+
+	* .cvsignore, libnautilus-extensions/.cvsignore: gnore more
+	things.
+
+	* Makefile.am: distribute .in versions of xml-i18n-tools.
+	
 2001-02-06  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: <delete if not using a buddy>

@@ -13,6 +13,7 @@ INCLUDES = \
 	$(GCONF_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
+	-DPREFIX=\""$(prefix)"\" \
 	-DHYPERBOLA_DATADIR=\""$(datadir)/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\"

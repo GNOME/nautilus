@@ -1,5 +1,8 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
 /*
- * Portions Copyright (C) 2000 Sun Microsystems, Inc. 
+ * Copyright (C) 2000 Sun Microsystems, Inc. 
+ * Copyright (C) 2001 Eazel, Inc. 
  *
  * This module is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public 
@@ -17,10 +20,14 @@
  */
 
 #include <config.h>
+
 #include <gnome.h>
-#include <zlib.h>
 
 #include "hyperbola-filefmt.h"
+
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+
+#include <zlib.h>
 #include <dirent.h>
 #include <regex.h>
 #include <limits.h>
@@ -377,8 +384,9 @@ man_name_without_suffix (const char *filename)
 }
 
 static void
-fmt_man_populate_tree_for_subdir (HyperbolaDocTree * tree,
-				  const char *basedir, char **defpath,
+fmt_man_populate_tree_for_subdir (HyperbolaDocTree *tree,
+				  const char *basedir, 
+				  char **defpath,
 				  char secnum)
 {
 	DIR *dirh;
@@ -803,20 +811,64 @@ fmt_help_populate_tree_from_subdir (HyperbolaDocTree * tree,
 #endif
 
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
+static GList *
+append_help_dir_if_exists (GList *list,
+			   char  *prefix)
+{
+	char *help_dir;
+
+	help_dir = g_concat_dir_and_file (prefix, "share/gnome/help");
+
+	if (g_file_test (help_dir, G_FILE_TEST_ISDIR)) {
+		list = g_list_append (list, help_dir);
+	} else {
+		g_free (help_dir);
+	}
+
+	return list;
+}
+
 static void
 fmt_help_populate_tree (HyperbolaDocTree * tree)
 {
 	char *app_path[] = { N_("Applications"), NULL };
 	char *dirname;
+	char *gnome_path; 
+	char **pathdirs;
+	int i;
+	GList *node;
+	GList *help_directories;
 
 	translate_array (app_path);
 	make_treesection (tree, app_path);
 
+	help_directories = NULL;
+
 	dirname = gnome_datadir_file ("gnome/help");
 
-	if (dirname)
-		fmt_help_populate_tree_from_subdir (tree, dirname, app_path);
-	g_free (dirname);
+	if (dirname != NULL) {
+		help_directories = g_list_append (help_directories, dirname);
+	}
+
+	help_directories = append_help_dir_if_exists (help_directories, PREFIX);
+
+	gnome_path = g_getenv ("GNOME_PATH");
+
+	if (gnome_path != NULL) {
+		pathdirs = g_strsplit (gnome_path, ":", INT_MAX);
+
+		for (i = 0; pathdirs[i] != NULL; i++) {
+			help_directories = append_help_dir_if_exists (help_directories, 
+								      pathdirs[i]);
+		}
+		g_strfreev (pathdirs);
+	}
+
+	for (node = help_directories; node != NULL; node = node->next) {
+		fmt_help_populate_tree_from_subdir (tree, node->data, app_path);
+	}
+
+	nautilus_g_list_free_deep (help_directories);
 }
 #endif
 
