@@ -1,3 +1,17 @@
+2000-11-06  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_get_services_address):
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(nautilus_password_dialog_new),
+	(nautilus_password_dialog_get_remember),
+	(nautilus_password_dialog_set_remember),
+	(nautilus_password_dialog_set_remember_label_text):
+
+	Backport PR2 changes (fix NULL string check in trilobite, and
+	finish Mathieu's patch to turn off the checkbox in the password
+	dialog).
+
 2000-11-06  Josh Barrow  <josh@eazel.com>
 
 	* icons/eazel/theme_preview.png:
