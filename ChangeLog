@@ -1,3 +1,11 @@
+2000-08-04  Robey Pointer  <robey@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_from_input):
+
+	Use new gnome-vfs call to correctly escape the uri (fix
+	quoted-colon bug in entering urls)
+
 2000-08-04  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):

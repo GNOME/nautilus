@@ -124,14 +124,18 @@ nautilus_make_uri_from_input (const char *location)
 			no_method = location;
 		} else {
 			no_method++;
+			if ((no_method[0] == '/') && (no_method[1] == '/')) {
+				no_method += 2;
+			}
 		}
 
 		method_length = (no_method - location);
-		escaped = gnome_vfs_escape_path_string (no_method);
+		escaped = gnome_vfs_escape_host_and_path_string (no_method);
 		toreturn = g_new (char, strlen (escaped) + method_length + 1);
 		toreturn[0] = '\0';
 		strncat (toreturn, location, method_length);
 		strcat (toreturn, escaped);
+		g_free (escaped);
 	}
 
 	return toreturn;
