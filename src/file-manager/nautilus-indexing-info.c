@@ -27,6 +27,9 @@
 
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-label.h>
+#include <libgnomeui/gnome-uidefs.h>
 
 /* FOR THE INCREDIBLE HACK */
 #include <sys/stat.h>
@@ -78,33 +81,117 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 }
 
 static void
-make_label_bold (GtkWidget *label)
+make_label_helvetica_bold (NautilusLabel *label)
 {
-	GdkFont *bold_font;
+        NautilusScalableFont *scalable_font;
 
-	bold_font = nautilus_gdk_font_get_bold (label->style->font);
-
-	if (bold_font != NULL) {
-		nautilus_gtk_widget_set_font (label, bold_font);
-	}
+        scalable_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+        g_return_if_fail (scalable_font != NULL);
+        nautilus_label_set_font (label,
+                                 scalable_font);
+        gtk_object_unref (GTK_OBJECT (scalable_font));
+       
 }
 
+static void
+make_label_helvetica_medium (NautilusLabel *label)
+{
+        NautilusScalableFont *scalable_font;
+
+        scalable_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
+        g_return_if_fail (scalable_font != NULL);
+        nautilus_label_set_font (NAUTILUS_LABEL (label),
+                                 scalable_font);
+}
 static char *
 get_file_index_time (void)
 {
+        struct tm *time_struct;
 	time_t the_time;
-	char *time_str, *p;
-	
+        char *time_string;
+
 	the_time = medusa_index_service_get_last_index_update_time ();
+        time_struct = localtime (&the_time);
 
-	time_str = g_strdup (ctime (&the_time));
+        
+        time_string = nautilus_strdup_strftime (_("%I:%M %p, %D"), time_struct);
 
-	p = strchr (time_str, '\n');
-	if (p) {
-		*p = '\0';
-	}
+        return time_string;
+}
 
-	return time_str;
+static void 
+show_reindex_request_information (GnomeDialog *gnome_dialog)
+{
+	char *time_str;
+	char *label_str;
+        GtkWidget *label;
+        GtkWidget *button;
+        GtkWidget *hbox;
+
+
+        time_str = get_file_index_time ();
+        label_str = g_strdup_printf (_("Your files were last indexed at %s"),
+                                     time_str);
+        g_free (time_str);
+
+        label = nautilus_label_new (label_str);
+        nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+        make_label_helvetica_bold (NAUTILUS_LABEL (label));
+        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+                            FALSE, FALSE, 0);
+        
+        hbox = gtk_hbox_new (FALSE, 0);
+        button = gtk_button_new_with_label (_("Update Now"));
+        gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                            GTK_SIGNAL_FUNC (update_file_index_callback),
+                            NULL);
+
+        gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), hbox,
+                            FALSE, FALSE, 0);
+}
+
+static void
+show_index_progress_bar (GnomeDialog *gnome_dialog)
+{
+        GtkWidget *indexing_notification_label, *progress_label;
+        GtkWidget *indexing_progress_bar;
+        GtkWidget *progress_bar_hbox, *embedded_vbox;
+        char *progress_string;
+        int percentage_complete;
+                
+        indexing_notification_label = nautilus_label_new (_("Your files are currently being indexed:"));
+        make_label_helvetica_bold (NAUTILUS_LABEL (indexing_notification_label));
+        nautilus_label_set_text_justification (NAUTILUS_LABEL (indexing_notification_label), GTK_JUSTIFY_LEFT);
+        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), indexing_notification_label,
+                            FALSE, FALSE, 0);
+        
+        percentage_complete = medusa_index_progress_get_percentage_complete ();
+        indexing_progress_bar = gtk_progress_bar_new ();
+
+        embedded_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
+
+        gtk_progress_set_show_text (GTK_PROGRESS (indexing_progress_bar), FALSE);
+        gtk_progress_configure (GTK_PROGRESS (indexing_progress_bar), percentage_complete, 0, 100);
+        /* Put the progress bar in an hbox to make it a more sane size */
+        gtk_box_pack_start (GTK_BOX (embedded_vbox), indexing_progress_bar, FALSE, FALSE, 0);
+        
+        progress_string = g_strdup_printf ("Indexing is %d%% complete.", medusa_index_progress_get_percentage_complete ());
+        progress_label = nautilus_label_new (progress_string);
+        g_free (progress_string);
+        make_label_helvetica_medium (NAUTILUS_LABEL (progress_label));
+        nautilus_label_set_text_justification (NAUTILUS_LABEL (progress_label), GTK_JUSTIFY_LEFT);
+        gtk_box_pack_start (GTK_BOX (embedded_vbox), progress_label, FALSE, FALSE, 0);
+
+        progress_bar_hbox = gtk_hbox_new (FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (progress_bar_hbox), embedded_vbox,
+                            FALSE, FALSE, GNOME_PAD_SMALL);
+
+        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), progress_bar_hbox,
+                                    FALSE, FALSE, 0);
+
+
+
 }
 
 /**
@@ -116,12 +203,9 @@ get_file_index_time (void)
 void
 nautilus_indexing_info_show_dialog (void)
 {
-	GtkWidget *label, *button;
-	GtkWidget *hbox;
 	static GtkWidget *dialog = NULL;
 	GnomeDialog *gnome_dialog;
-	char *time_str;
-	char *label_str;
+        GtkWidget *label;
 
         /* FIXME bugzilla.eazel.com 2534:  is it ok to show the index dialog if
            we can't use the index right now?
@@ -153,44 +237,21 @@ nautilus_indexing_info_show_dialog (void)
 			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
 			    &dialog);
 
-	label = gtk_label_new (_("Once a day your files and text content are "
-				 "indexed so your searches are fast.  If you "
-				 "need to update your index now, click on the "
-				 "\"Update Now\" button for the appropriate "
-				 "index."));
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	label = nautilus_label_new (_("Once a day your files and text content are indexed so\n"
+                                      "your searches are fast.  If you need to update your index\n"
+                                      "now, click on the \"Update Now\" button for the\n"
+                                      "appropriate index.\n"));
+        make_label_helvetica_medium (NAUTILUS_LABEL (label));
+
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label, TRUE, TRUE, 0);
 
-        if (medusa_index_is_currently_running ()) {
-                label = gtk_label_new (_("Your files are being indexed now."));
-                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
-                                    FALSE, FALSE, 0);
-                label_str = g_strdup_printf (_("It is %d percent done."),
-                                             medusa_index_progress_get_percentage_complete ());
-                label = gtk_label_new (label_str);
-                g_free (label_str);
-                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
-                                    FALSE, FALSE, 0);
+        if (medusa_index_is_currently_running ()) { 
+                show_index_progress_bar (gnome_dialog);
+
         } else {
-                time_str = get_file_index_time ();
-                label_str = g_strdup_printf (_("Your files were last indexed at  %s"),
-                                             time_str);
-                g_free (time_str);
-                label = gtk_label_new (label_str);
-                make_label_bold (label);
-                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
-                                    FALSE, FALSE, 0);
-                
-                hbox = gtk_hbox_new (FALSE, 0);
-                button = gtk_button_new_with_label (_("Update Now"));
-                gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                                    GTK_SIGNAL_FUNC (update_file_index_callback),
-                                    NULL);
-                gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), hbox,
-                                    FALSE, FALSE, 0);
+                show_reindex_request_information (gnome_dialog);
         }
-        
+
 	gtk_widget_show_all (dialog);
 }
