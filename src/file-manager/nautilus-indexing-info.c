@@ -35,6 +35,7 @@
 
 
 #include <libmedusa/medusa-index-service.h>
+#include <libmedusa/medusa-index-progress.h>
 #include <libmedusa/medusa-indexed-search.h>
 
 #include "nautilus-indexing-info.h"
@@ -161,23 +162,36 @@ nautilus_indexing_info_show_dialog (void)
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label, TRUE, TRUE, 0);
 
-	time_str = get_file_index_time ();
-	label_str = g_strdup_printf (_("Your files were last indexed at  %s"),
-				     time_str);
-	g_free (time_str);
-	label = gtk_label_new (label_str);
-	make_label_bold (label);
-	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+        if (medusa_index_is_currently_running ()) {
+                label = gtk_label_new (_("Your files are being indexed now."));
+                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+                                    FALSE, FALSE, 0);
+                label_str = g_strdup_printf (_("It is %d percent done."),
+                                             medusa_index_progress_get_percentage_complete ());
+                label = gtk_label_new (label_str);
+                g_free (label_str);
+                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+                                    FALSE, FALSE, 0);
+        }
+        else {
+                time_str = get_file_index_time ();
+                label_str = g_strdup_printf (_("Your files were last indexed at  %s"),
+                                             time_str);
+                g_free (time_str);
+                label = gtk_label_new (label_str);
+                make_label_bold (label);
+                gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+                                    FALSE, FALSE, 0);
+                
+                hbox = gtk_hbox_new (FALSE, 0);
+                button = gtk_button_new_with_label (_("Update Now"));
+                gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                                    GTK_SIGNAL_FUNC (update_file_index_callback),
+                                    NULL);
+                gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+        }
+        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), hbox,
 			    FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	button = gtk_button_new_with_label (_("Update Now"));
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (update_file_index_callback),
-			    NULL);
-	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), hbox,
-			    FALSE, FALSE, 0);
-
+        
 	gtk_widget_show_all (dialog);
 }
