@@ -1,3 +1,16 @@
+2000-10-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_type_as_string):
+	fixed bug 3711, sidebar says home directory is a "program", by
+	explicitly checking nautilus_file_is_directory if the mime-type
+	is NULL and returning "folder" in that case.
+	
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars):
+	added some padding around the throbber to better position it in
+	the toolbar.
+	
 2000-10-13  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-applicable-views.c:

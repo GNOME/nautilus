@@ -252,7 +252,7 @@ theme_changed_callback (gpointer callback_data)
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
-	GtkWidget *frame;
+	GtkWidget *frame, *box;
 	BonoboControl *throbber_wrapper;
 
 /* Hide the services button if necessary */
@@ -265,7 +265,13 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	window->throbber = allocate_throbber ();	
 	frame = set_up_throbber_frame_type (window);
 	
-	throbber_wrapper = bonobo_control_new (frame);
+	/* wrap it in another box to add some visual padding */
+	box = gtk_hbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
+	gtk_widget_show (box);
+	gtk_container_add (GTK_CONTAINER (box), frame);
+	
+	throbber_wrapper = bonobo_control_new (box);
 	
 	bonobo_ui_component_object_set (window->details->shell_ui,
 					"/Tool Bar/ThrobberWrapper",

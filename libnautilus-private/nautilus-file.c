@@ -3320,6 +3320,10 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No mime type, anything else interesting we can say about this? */
+		/* if it's a directory, call it that before looking at executable */
+		if (nautilus_file_is_directory (file)) {
+			return type_as_string_considering_link (file, _("folder"));
+		}
 		if (nautilus_file_is_executable (file)) {
 			return type_as_string_considering_link (file, _("program"));
 		}
