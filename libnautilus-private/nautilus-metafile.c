@@ -1486,7 +1486,7 @@ remove_file_metadata (NautilusMetafile *metafile,
 			if (found) {
 				g_hash_table_remove (hash, file_name);
 				g_free (key);
-				metadata_value_destroy (value);
+				destroy_metadata_changes_hash_table (value);
 			}
 		}
 	}
