@@ -260,9 +260,9 @@ nautilus_leak_print_symbol_address (const char *app_path, void *address)
 
 	if (nautilus_leak_find_symbol_address (address, &function_name, &source_file_name, &line)) {
 		if (line >= 0) {
-			printf("%p %s %s:%d\n", address, function_name, source_file_name, line);
+			printf("%10p %-30s %s:%d\n", address, function_name, source_file_name, line);
 		} else {
-			printf("%p %s in library %s\n", address, function_name, source_file_name);
+			printf("%10p %-30s in library %s\n", address, function_name, source_file_name);
 		}
 		g_free (function_name);
 		g_free (source_file_name);

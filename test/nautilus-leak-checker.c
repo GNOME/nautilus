@@ -55,8 +55,8 @@ void (* real_free) (void *ptr);
 const char *app_path;
 
 void
-nautilus_leak_allocation_record_init (NautilusLeakAllocationRecord *record, void *block, size_t initial_size,
-	void **stack_crawl, int max_depth)
+nautilus_leak_allocation_record_init (NautilusLeakAllocationRecord *record, 
+	void *block, size_t initial_size, void **stack_crawl, int max_depth)
 {
 	int stack_depth, index;
 	
@@ -235,6 +235,7 @@ static pthread_mutex_t nautilus_leak_hash_table_mutex = PTHREAD_RECURSIVE_MUTEX_
 static NautilusLeakHashTable *hash_table;
 
 static int nautilus_leak_malloc_count;
+static size_t nautilus_leak_malloc_outstanding_size;
 
 static void
 nautilus_leak_record_malloc (void *ptr, size_t size)
@@ -248,6 +249,7 @@ nautilus_leak_record_malloc (void *ptr, size_t size)
 		return;
 
 	++nautilus_leak_malloc_count;
+	nautilus_leak_malloc_outstanding_size += size;
 
 	get_stack_trace (trace_array, TRACE_ARRAY_MAX);
 
@@ -288,10 +290,12 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 	/* must have hash table by now */
 	g_assert (hash_table != NULL);
 	/* must have seen the block already */
-	if (nautilus_leak_hash_table_find (hash_table, (gulong)old_ptr) == NULL) {
+	element = nautilus_leak_hash_table_find (hash_table, (gulong)old_ptr);
+	if (element == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", old_ptr);
 	} else {
+		nautilus_leak_malloc_outstanding_size -= element->data.size;
 		nautilus_leak_hash_table_remove (hash_table, (gulong)old_ptr);
 	}
 
@@ -304,12 +308,14 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 
 	/* insert a new item into the hash table, using the block address as the key */
 	element = nautilus_leak_hash_table_add (hash_table, (gulong)new_ptr);
-	
+	nautilus_leak_malloc_outstanding_size += size;
+
 	/* Fill out the new allocated element.
 	 * This way the last call to relloc will be the stack crawl that shows up in the
 	 * final balance.
 	 */
-	nautilus_leak_allocation_record_init (&element->data, new_ptr, size, trace_array, TRACE_ARRAY_MAX);
+	nautilus_leak_allocation_record_init (&element->data, new_ptr, size, trace_array, 
+		TRACE_ARRAY_MAX);
 
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
 }
@@ -317,6 +323,7 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 static void
 nautilus_leak_record_free (void *ptr)
 {
+	NautilusHashEntry *element;
 	/* printf("freeing block %p\n", ptr); */
 	if (!nautilus_leak_check_leaks)
 		return;
@@ -328,10 +335,12 @@ nautilus_leak_record_free (void *ptr)
 	/* must have hash table by now */
 	g_assert (hash_table != NULL);
 	/* must have seen the block already */
-	if (nautilus_leak_hash_table_find (hash_table, (gulong)ptr) == NULL) {
+	element = nautilus_leak_hash_table_find (hash_table, (gulong)ptr);
+	if (element == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", ptr);
 	} else {
+		nautilus_leak_malloc_outstanding_size -= element->data.size;
 		nautilus_leak_hash_table_remove (hash_table, (gulong)ptr);
 	}
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
@@ -502,6 +511,7 @@ typedef struct {
 	int max_count;
 	int counter;
 	int stack_print_depth;
+	int stack_match_depth;
 } PrintOneLeakParams;
 
 /* we don't care if printf, etc. allocates (as long as it doesn't leak)
@@ -514,7 +524,7 @@ print_one_leak (NautilusLeakTableEntry *entry, void *context)
 	int index;
 	PrintOneLeakParams *params = (PrintOneLeakParams *)context;
 
-	printf("block %p total_size %ld count %d\n", entry->sample_allocation->block,
+	printf("----------------- total_size %ld count %d -------------------\n",
 		(long)entry->total_size, entry->count);
 
 	for (index = 0; index < params->stack_print_depth; index++) {
@@ -524,7 +534,7 @@ print_one_leak (NautilusLeakTableEntry *entry, void *context)
 		 */
 		if (entry->sample_allocation->stack_crawl[index] == NULL)
 			break;
-		printf("\t");
+		printf("  %c ", index >= params->stack_match_depth ? '?' : ' ');
 
 		nautilus_leak_print_symbol_address (app_path, 
 			entry->sample_allocation->stack_crawl[index]);
@@ -552,7 +562,8 @@ nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
 	temp_leak_table = nautilus_leak_table_new (hash_table, stack_grouping_depth);	
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
 
-	printf("%d outstanding allocations ============ \n", nautilus_leak_malloc_count);
+	printf("%d outstanding allocations %d bytes total ============ \n", 
+		nautilus_leak_malloc_count, nautilus_leak_malloc_outstanding_size);
 	printf("stack trace match depth %d\n", stack_grouping_depth);
 
 	/* sort the leak table */
@@ -566,6 +577,7 @@ nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
 	each_context.counter = 0;
 	each_context.max_count = max_count;
 	each_context.stack_print_depth = stack_print_depth;
+	each_context.stack_match_depth = stack_grouping_depth;
 	nautilus_leak_table_each_item (temp_leak_table, print_one_leak, &each_context);
 	
 	/* we are done with it, free the leak table */
@@ -628,11 +640,11 @@ allocate_lots (int count)
 
 	list = NULL;
 	for (; count > 0; count--) {
-//		list = g_list_prepend (list, g_malloc (rand() % 256));
+		list = g_list_prepend (list, g_malloc (rand() % 256));
 		list = g_list_prepend (list, NULL);
 	}
 	for (p = list; p != NULL; p = p->next) {
-//		g_free (p->data);
+		g_free (p->data);
 		p->data = NULL;
 	}
 	g_list_free (list);
@@ -644,9 +656,9 @@ leak_mem2 (void)
 {
 	int i;
 	for (i = 0; i < 40; i++) {
-//		g_strdup("bla");
+		g_strdup("bla");
 	}
-//	allocate_lots (1280);
+	allocate_lots (1280);
 }
 
 static void
@@ -654,10 +666,10 @@ leak_mem (void)
 {
 	int i;
 	for (i = 0; i < 1010; i++) {
-//		malloc(13);
+		malloc(13);
 	}
 	leak_mem2();
-//	allocate_lots (200);
+	allocate_lots (200);
 }
 
 
@@ -672,45 +684,45 @@ main (int argc, char **argv)
 
 	non_leak = g_malloc(100);
 	leak = g_malloc(200);
-//	g_assert(non_leak != NULL);
+	g_assert(non_leak != NULL);
 	non_leak = g_realloc(non_leak, 1000);
-//	g_assert(non_leak != NULL);
+	g_assert(non_leak != NULL);
 	non_leak = g_realloc(non_leak, 10000);
-//	leak = g_malloc(200);
-//	non_leak = g_realloc(non_leak, 100000);
-//	leak = g_malloc(200);
-//	g_assert(non_leak != NULL);
+	leak = g_malloc(200);
+	non_leak = g_realloc(non_leak, 100000);
+	leak = g_malloc(200);
+	g_assert(non_leak != NULL);
 	g_free(non_leak);
-//
-	non_leak = calloc(1, 100);
-//	g_assert(non_leak != NULL);
-//	g_free(non_leak);
-//	leak = g_malloc(200);
 
-//	non_leak = memalign(16, 100);
-//	g_assert(non_leak != NULL);
-//	g_free(non_leak);
-//	leak = g_malloc(200);
+	non_leak = calloc(1, 100);
+	g_assert(non_leak != NULL);
+	g_free(non_leak);
+	leak = g_malloc(200);
+
+	non_leak = memalign(16, 100);
+	g_assert(non_leak != NULL);
+	g_free(non_leak);
+	leak = g_malloc(200);
 	leak = memalign(16, 100);
-//	leak = memalign(16, 100);
-//	leak = memalign(16, 100);
-//	leak = memalign(16, 100);
-//	leak = memalign(16, 100);
-//	leak = memalign(16, 100);
+	leak = memalign(16, 100);
+	leak = memalign(16, 100);
+	leak = memalign(16, 100);
+	leak = memalign(16, 100);
+	leak = memalign(16, 100);
 
 	for (i = 0; i < 13; i++) {
-//		leak = malloc(13);
+		leak = malloc(13);
 	}
 
 	leak_mem();
 	leak_mem2();
 
 	allocate_lots (1);
-//	for (i = 0; i < 100; i++) {
-//		allocate_lots(rand() % 40);
-//	}
+	for (i = 0; i < 100; i++) {
+		allocate_lots(rand() % 40);
+	}
 	printf("done\n");
-	nautilus_leak_print_leaks (6, 12, 20, TRUE);
+	nautilus_leak_print_leaks (6, 12, 100, TRUE);
 
 	return 0;
 }

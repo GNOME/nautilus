@@ -533,7 +533,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 
 
 		result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, extra_requirements, &ev);
-		
+		g_free (extra_requirements);
 	}
 
 	gnome_vfs_mime_component_list_free (servers);

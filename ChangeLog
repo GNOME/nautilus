@@ -1,3 +1,32 @@
+2000-06-29  Pavel Cisler  <pavel@eazel.com>
+
+	Fixed some memory leaks.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_components_for_uri):
+	Fix a leaked string.
+
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_set_preferred_zoom_levels):
+	Fix a leaky setter call.
+
+	* test/Makefile.am:
+	Add a make target for a leak checker tester.
+	
+	* test/nautilus-leak-checker.c:
+	(nautilus_leak_allocation_record_init),
+	(nautilus_leak_record_malloc), (nautilus_leak_record_realloc),
+	(nautilus_leak_record_free), (print_one_leak),
+	(nautilus_leak_print_leaks), (allocate_lots), (leak_mem2),
+	(leak_mem), (main):
+	* test/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_print_symbol_address):
+	Tweak the leak checker output a bit to make it more nicer and
+	indicate the level of stack frame grouping.
+
+	* src/nautilus-main.c: (print_leaks):
+	Tweak the parameters a bit to print more leaks.
+
 2000-06-29  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/Makefile.am: Add VFS_CFLAGS

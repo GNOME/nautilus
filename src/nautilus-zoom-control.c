@@ -377,6 +377,7 @@ nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control, dou
 void
 nautilus_zoom_control_set_preferred_zoom_levels (NautilusZoomControl *zoom_control, GList* zoom_levels)
 {
+	nautilus_g_list_free_deep (zoom_control->preferred_zoom_levels);
 	zoom_control->preferred_zoom_levels = zoom_levels;
 }
 

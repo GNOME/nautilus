@@ -87,7 +87,7 @@ static void
 print_leaks (void)
 {
 	/* If leak checking, dump all the outstanding allocations just before exiting. */
-	nautilus_leak_print_leaks (8, 15, 40, TRUE);
+	nautilus_leak_print_leaks (8, 15, 100, TRUE);
 }
 
 int

@@ -82,4 +82,5 @@ EXTRA_DIST = nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-sy
 leakcheck_DATA = libleakcheck.so
 leakcheckdir= $(DESTDIR)$(libdir)
 
-
+leakchecktest: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
+	gcc nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c -Wall -o $@ -DLEAK_CHECK_TESTING $(GLIB_CFLAGS) $(GLIB_LIBS) -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
