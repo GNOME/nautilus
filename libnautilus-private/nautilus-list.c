@@ -1486,6 +1486,8 @@ nautilus_gdk_gc_copy (GdkGC *source, GdkWindow *window)
 
 	result = gdk_gc_new (window);
 	gdk_gc_copy (result, source);
+	gdk_gc_set_function (result, GDK_COPY);
+	gdk_gc_set_fill (result, GDK_SOLID);
 
 	return result;
 }
