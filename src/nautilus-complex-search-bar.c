@@ -37,6 +37,7 @@
 
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion-private.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -143,6 +144,8 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 
 	bar->details->table = GTK_TABLE (gtk_table_new (1, 3, TRUE));
 	gtk_table_set_col_spacings (bar->details->table,
+				    1);
+	gtk_table_set_row_spacings (bar->details->table,
 				    1);
 
 	gtk_container_set_resize_mode (GTK_CONTAINER (bar->details->table),
@@ -260,7 +263,12 @@ nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 	g_free (criteria_text);
 
 	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
-	search_uri = g_strconcat ("search:", escaped_fragment, NULL);
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD, FALSE)) {
+		search_uri = g_strconcat ("search:index-with-backup", escaped_fragment, NULL);
+	}
+	else {
+		search_uri = g_strconcat ("search:index-only", escaped_fragment, NULL);
+	}
 	g_free (escaped_fragment);
 	return search_uri;
 }
@@ -293,7 +301,8 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 				    GTK_WIDGET (criterion->details->relation_menu),
 				    1, 2, row - 1, row);
 	g_assert (criterion->details->use_value_entry + 
-		  criterion->details->use_value_menu == 1);
+		  criterion->details->use_value_menu == 1 ||
+		  criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
 	if (criterion->details->use_value_entry) {
 		/* If there is a suffix, we want to take the space from
 		   the entry, to keep things neat.  So make a box 
@@ -326,6 +335,11 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 	if (criterion->details->use_value_menu) {
 		gtk_table_attach_defaults (bar->details->table,
 					   GTK_WIDGET (criterion->details->value_menu),
+					   2, 3, row - 1, row);
+	}
+	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		gtk_table_attach_defaults (bar->details->table,
+					   GTK_WIDGET (criterion->details->date),
 					   2, 3, row - 1, row);
 	}
 	gtk_table_resize (bar->details->table, row, 3);

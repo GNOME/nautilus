@@ -1,3 +1,35 @@
+2000-08-25  Rebecca Schulman  <rebecka@eazel.com>
+
+        Fixed bug 2071 to improve the date modified search
+	criterion.  Also, an change to the indexing info dialog
+	because of a change in the medusa search service API
+	
+	* libnautilus-extensions/nautilus-dateedit-extensions.c:
+	(nautilus_gnome_date_edit_get_date_as_string):
+	* libnautilus-extensions/nautilus-dateedit-extensions.h:
+	* libnautilus-extensions/Makefile.am:
+	An extra addition to the gnome dateedit widget we need for
+	the modified search criterion
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location),
+	(attach_criterion_to_search_bar):
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_date_modified_location_for):
+	Changed date modified bar to take a date edit widget
+	instead of an entry or menu, and parse the operatory coorectly
+	
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_show_dialog):
+	Changed because medusa api was updated
+
+
 2000-08-25  J Shane Culpepper  <pepper@eazel.com>
 
 	 
@@ -22,6 +54,7 @@
 	through all the exit code, then does an exec() on itself instead
 	of exit().
 
+>>>>>>> 1.1527
 2000-08-25  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1782 (File->Open after opening a folder crashes)

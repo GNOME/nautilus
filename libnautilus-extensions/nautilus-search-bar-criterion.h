@@ -49,7 +49,7 @@ typedef enum {
 #define NAUTILUS_SEARCH_URI_TEXT_TYPE		"file_type"
 #define NAUTILUS_SEARCH_URI_TEXT_SIZE		"size"
 #define NAUTILUS_SEARCH_URI_TEXT_EMBLEMS	"emblem"
-#define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"mod_time"
+#define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"modified"
 #define NAUTILUS_SEARCH_URI_TEXT_OWNER		"owner"
 
 typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;

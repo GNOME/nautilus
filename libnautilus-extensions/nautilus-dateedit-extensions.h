@@ -1,8 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-search-bar-criterion-private.h - Code to bring up
-   the various kinds of criterion supported in the nautilus search
-   bar 
+/* nautilus-dateedit-extensions.h -- Extension functions to the gnome-dateedit
+   widget 
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -24,34 +23,9 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
-#ifndef NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
-#define NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
-
-#include "nautilus-search-bar-criterion.h"
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkoptionmenu.h>
+/* This is annoying, but someone forgot it in the gnome-dateedit header, so it has to be here.
+   A bug report about this has been submitted. */
 #include <time.h>
 #include <libgnomeui/gnome-dateedit.h>
 
-struct NautilusSearchBarCriterionDetails {
-	NautilusSearchBarCriterionType type;
-
-	/* various widgets hold by the criterion */
-	GtkOptionMenu *available_criteria;
-	GtkOptionMenu *relation_menu;
-	gboolean use_value_entry;
-	GtkEntry *value_entry;
-	gboolean use_value_menu;
-	GtkOptionMenu *value_menu;
-	gboolean use_value_suffix;
-	GtkLabel *value_suffix;
-	GnomeDateEdit *date;
-
-	/* callback to be called when the criterion type changes */
-	NautilusSearchBarCriterionCallback callback;
-	gpointer callback_data;
-
-};
-
-#endif /* NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H */
+char *      nautilus_gnome_date_edit_get_date_as_string        (GnomeDateEdit *dateedit);

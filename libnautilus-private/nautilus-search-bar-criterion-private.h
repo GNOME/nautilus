@@ -31,6 +31,8 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
+#include <time.h>
+#include <libgnomeui/gnome-dateedit.h>
 
 struct NautilusSearchBarCriterionDetails {
 	NautilusSearchBarCriterionType type;
@@ -44,6 +46,7 @@ struct NautilusSearchBarCriterionDetails {
 	GtkOptionMenu *value_menu;
 	gboolean use_value_suffix;
 	GtkLabel *value_suffix;
+	GnomeDateEdit *date;
 
 	/* callback to be called when the criterion type changes */
 	NautilusSearchBarCriterionCallback callback;

@@ -51,6 +51,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-buffered-widget.c		\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
+	nautilus-dateedit-extensions.c		\
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-directory-async.c		\
@@ -133,6 +134,7 @@ noinst_HEADERS =				\
 	nautilus-caption-table.h		\
 	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\
+	nautilus-dateedit-extensions.h 		\
 	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\

@@ -1,8 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-search-bar-criterion-private.h - Code to bring up
-   the various kinds of criterion supported in the nautilus search
-   bar 
+/* nautilus-dateedit-extensions.c -- Extension functions to the gnome-dateedit
+   widget 
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -24,34 +23,36 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
-#ifndef NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
-#define NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
-
-#include "nautilus-search-bar-criterion.h"
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkoptionmenu.h>
+#include <stdio.h>
 #include <time.h>
+
 #include <libgnomeui/gnome-dateedit.h>
 
-struct NautilusSearchBarCriterionDetails {
-	NautilusSearchBarCriterionType type;
+#include "nautilus-dateedit-extensions.h"
 
-	/* various widgets hold by the criterion */
-	GtkOptionMenu *available_criteria;
-	GtkOptionMenu *relation_menu;
-	gboolean use_value_entry;
-	GtkEntry *value_entry;
-	gboolean use_value_menu;
-	GtkOptionMenu *value_menu;
-	gboolean use_value_suffix;
-	GtkLabel *value_suffix;
-	GnomeDateEdit *date;
+char *
+nautilus_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit)
+{
+	struct tm *time_struct;
+	time_t selected_time;
+	int day, month, year;
+	char *date_string;
 
-	/* callback to be called when the criterion type changes */
-	NautilusSearchBarCriterionCallback callback;
-	gpointer callback_data;
+	selected_time = gnome_date_edit_get_date (dateedit);
+	if (selected_time < 0) {
+		printf ("That was no good\n");
+		return NULL;
+	}
+	time_struct = localtime (&selected_time);
+  
+	day = time_struct->tm_mday;
+	month = time_struct->tm_mon;
+	year = time_struct->tm_year;
 
-};
+	date_string = g_strdup_printf ("%d/%d/%d", month + 1, day, year + 1900);
+	printf ("returning date %s\n", date_string);
+	return date_string;
+  
+  
 
-#endif /* NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H */
+}

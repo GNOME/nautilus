@@ -33,8 +33,9 @@
 #include <unistd.h>
 #include <time.h>
 
-#include <libmedusa/medusa-search-service.h>
+
 #include <libmedusa/medusa-index-service.h>
+#include <libmedusa/medusa-indexed-search.h>
 
 #include "nautilus-indexing-info.h"
 
@@ -121,7 +122,10 @@ nautilus_indexing_info_show_dialog (void)
 	char *time_str;
 	char *label_str;
 
-	if (medusa_search_service_connection_is_available () != GNOME_VFS_OK) {
+        /* FIXME:  is it ok to show the index dialog if
+           we can't use the index right now?
+           This assumes not */
+	if (medusa_indexed_search_is_available () != GNOME_VFS_OK) {
 		GtkWidget *error =
 			gnome_error_dialog (_("Search service not available"));
 		gnome_dialog_run (GNOME_DIALOG (error));

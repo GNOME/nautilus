@@ -24,12 +24,14 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include "nautilus-dateedit-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-search-bar-criterion-private.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkentry.h>
@@ -41,6 +43,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <libgnomeui/gnome-dateedit.h>
 #include <libgnomeui/gnome-uidefs.h>
 
 static char * criteria_titles [] = {
@@ -118,17 +121,19 @@ static char *emblem_objects [] = {
 };
 	
 static char *modified_relations [] = {
-	N_("after"),
-	N_("before"),
+	N_("is"),
+	N_("is not"),
+	N_("is after"),
+	N_("is before"),
+	N_("--"),
+	N_("is today"),
+	N_("is yesterday"),
+	N_("--"),
+	N_("is within a week of"),
+	N_("is within a month of"),
 	NULL
 };
 
-static char *modified_objects [] = {
-	N_("today"),
-	N_("this week"),
-	N_("this month"),
-	NULL
-};
 
 static char *owner_relations [] = {
 	N_("is"),
@@ -159,7 +164,7 @@ static char *                              get_size_location_for                
 static char *                              get_emblem_location_for                (int relation_number,
 										   int value_number);
 static char *                              get_date_modified_location_for         (int relation_number,
-										   int value_number);
+										   char *date);
 static char *                              get_owner_location_for                 (int relation_number,
 										   char *owner_number);
 
@@ -292,6 +297,11 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		criterion->details->value_suffix = GTK_LABEL (gtk_label_new (value_suffix));
 		gtk_widget_show_all (GTK_WIDGET (criterion->details->value_suffix));
 	}
+	/* Special case widgets here */
+	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		criterion->details->date = GNOME_DATE_EDIT (gnome_date_edit_new (time (NULL), FALSE, FALSE));
+		gtk_widget_show_all (GTK_WIDGET (criterion->details->date));
+	}
 	return criterion;
 }
 
@@ -363,8 +373,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
 									       modified_relations,
 									       FALSE,
-									       TRUE,
-									       modified_objects,
+									       FALSE,
+									       NULL,
 									       FALSE,
 									       NULL);
 		break;
@@ -428,14 +438,17 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 		menu_item = gtk_menu_get_active (GTK_MENU (menu));
 		value_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
 	}
-	else {
+	else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
+	}
+	else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		value_text = nautilus_gnome_date_edit_get_date_as_string (criterion->details->date);
 	}
 
 	switch (name_number) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
 		return get_name_location_for (relation_number,
-					       value_text);
+					      value_text);
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
 		return get_content_location_for (relation_number,
 						 value_text);
@@ -450,7 +463,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 						value_number);
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
 		return get_date_modified_location_for (relation_number,
-						       value_number);
+						       value_text);
 	case NAUTILUS_OWNER_SEARCH_CRITERION:
 		return get_owner_location_for (relation_number,
 					       value_text);
@@ -458,7 +471,9 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 		g_assert_not_reached ();
 		return NULL;
 	}
-	return g_strdup ("file_name contains evolution ");
+
+	g_assert_not_reached ();
+	return NULL;
 }
 
 
@@ -630,19 +645,43 @@ get_emblem_location_for  (int relation_number,
 
 static char *                              
 get_date_modified_location_for (int relation_number,
-				int value_number)
+				char *date_string)
 {
-	const char *possible_relations[] = { "updated", "not_updated" };
-	const char *possible_values[] = { "today", "this_week", "this_month" };
+	const char *possible_relations[] = { "is", 
+					     "is_not", 
+					     "is_after", 
+					     "is_before", 
+					     "--", 
+					     "is today",
+					     "is yesterday",
+					     "--",
+					     "is_within_a_week_of", 
+					     "is_within_a_month_of" };
+	char *result;
 
-	g_assert (relation_number == 0 || relation_number == 1);
-	g_assert (value_number >= 0);
-	g_assert (value_number < 3);
-
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
-				possible_relations[relation_number],
-				possible_values[value_number]);
-
+	g_assert (relation_number >= 0);
+	g_assert (relation_number < 10);
+	g_return_val_if_fail (relation_number != 4 && relation_number != 7, g_strdup (""));
+	
+	/* Handle "is today" and "is yesterday" separately */
+	if (relation_number == 5) {
+		result = g_strdup_printf ("%s is today", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED);
+	}
+	if (relation_number == 6) {
+		result = g_strdup_printf ("%s is yesterday", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED);
+	}
+	if (relation_number != 5 && relation_number != 6) {
+		if (date_string == NULL) {
+			return g_strdup ("");
+		}
+		else {
+			result = g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
+						  possible_relations[relation_number],
+						  date_string);
+		}
+	}
+	return result;
+	
 }
 
 static char *                              

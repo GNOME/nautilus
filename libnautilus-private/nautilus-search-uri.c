@@ -32,7 +32,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-static const char *       strip_uri_begenning         (const char *location_uri);
+static const char *       strip_uri_beginning         (const char *location_uri);
 static GSList *           tokenize_uri                (const char *string);
 static char *             get_translated_criterion    (const GSList *criterion);
 static char *             get_first_criterion_prefix  (GSList *criterion);
@@ -43,14 +43,14 @@ static char *             parse_uri                   (const char *search_uri);
 static void               free_tokenized_uri          (GSList *list);
 
 /**
- * strip_uri_begenning:
+ * strip_uri_beginning:
  * @location_uri: search uri.
  *
  * strips the search:[file:///...] part of the input uri.
  *
  */
 static const char *
-strip_uri_begenning (const char *location_uri)
+strip_uri_beginning (const char *location_uri)
 {
         char **first_token;
         char *ptr;
@@ -62,7 +62,7 @@ strip_uri_begenning (const char *location_uri)
                 return NULL;
         }
 
-        /* parse the first token from the end to the begenning. 
+        /* parse the first token from the end to the beginning. 
            to extract the search:[] part.
         */
         for (ptr = first_token[0]+strlen(first_token[0]); 
@@ -127,7 +127,7 @@ tokenize_uri (const char *string)
 
         criterion_list = NULL;
 
-        string = strip_uri_begenning (string);
+        string = strip_uri_beginning (string);
         if (string == NULL) {
                 return NULL;
         }
@@ -200,22 +200,22 @@ struct _value_criterion_item {
 
 static operand_criterion_item file_name2_table [] = {
         {"contains", 
-         N_("name contains \"%s\""),
+         N_("that contain \"%s\""),
          NULL},
         {"starts_with",
-         N_("name starts with \"%s\""),
+         N_("that start with \"%s\""),
          NULL},
         {"ends_with",
-         "name ends with %s",
+         N_("that end with %s"),
          NULL},
         {"does_not_contain",
-         N_("name does not contain \"%s\""),
+         N_("that don't contain \"%s\""),
          NULL},
         {"regexp_matches",
-         N_("name matches regexp \"%s\""),
+         N_("that match the regular expression \"%s\""),
          NULL},
         {"matches",
-         N_("name matches glob \"%s\""),
+         N_("that match the file pattern \"%s\""),
          NULL},
         {NULL, NULL, NULL}
         
@@ -257,17 +257,17 @@ static operand_criterion_item file_type2_table [] = {
 */
 static operand_criterion_item owner2_table [] = {
         {"is_not",
-         N_("owner is not \"%s\""),
+         N_("are not owned by \"%s\""),
          NULL},
         {"is",
-         N_("owner is \"%s\""),
+         N_("are owned by \"%s\""),
          NULL},
         /* folowing ones are not supported by Nautilus UI */
         {"has_uid",
-         N_("owner has uid of \"%s\""),
+         N_("have owner UID \"%s\""),
          NULL},
         {"does_not_have_uid",
-         N_("does not have UID"),
+         N_("have owner UID other than \"%s\""),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -278,13 +278,13 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
-         N_("size is larger than %s bytes"),
+         N_("that are larger than %s kilobytes"),
          NULL},
         {"smaller_than",
-         N_("size is smaller than %s bytes"),
+         N_("that are smaller than %s kilobytes"),
          NULL},
         {"is",
-         N_("size is %s kilobytes"),
+         N_("that are %s kilobytes"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -295,10 +295,10 @@ static operand_criterion_item size2_table [] = {
 */
 static operand_criterion_item mod_time2_table [] = {
         {"updated", 
-         N_("after"), 
+         N_("modified after"), 
          NULL},
         {"not_updated", 
-         N_("before"), 
+         N_("modified before"), 
          NULL},
         {NULL, NULL, NULL}
 };
@@ -321,6 +321,12 @@ static operand_criterion_item emblem2_table [] = {
 
 /* FIXME: I cannot find any doc on this one */
 static operand_criterion_item contains2_table [] = {
+        {"includes",
+         N_("with the word"),
+         NULL},
+        {"does_not_include",
+         N_("without the word"),
+         NULL},
         {NULL, NULL, NULL},
 };
 
@@ -333,24 +339,24 @@ static operand_criterion_item contains2_table [] = {
 
 static field_criterion_item main_table[] = {
         {"file_name",
-         N_("whose"),
+         N_(""),
          file_name2_table},
         {"file_type",
-         N_("who"),
+         N_("that"),
          file_type2_table},
         {"owner",
-         N_("whose"),
+         N_(""),
          owner2_table},
         {"size",
-         N_("whose"),
+         N_(""),
          size2_table},
         /* FIXME: waiting for doc */
         {"contains",
-         N_("who"),
+         N_(""),
          contains2_table},
         /* FIXME: waiting for spec */
         {"mod_time",
-         N_("whose"),
+         N_(""),
          mod_time2_table},
         /* FIXME: waiting for implementation */
         {"emblem",
@@ -614,12 +620,10 @@ nautilus_search_uri_to_human (const char *search_uri)
         uri = gnome_vfs_unescape_string_for_display (search_uri);
         human = parse_uri (uri);
         if (human == NULL) {
-                /* g_print ("mathieu: %s\n", uri); */
                 return uri;
         }
 
         g_free (uri);
-        /* g_print ("mathieu: %s\n", human); */
 
         return human;
 }
