@@ -146,7 +146,7 @@ nautilus_window_initialize (NautilusWindow *window)
 
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 	
-	/* Keep track of sidebar panel changes */
+	/* Keep track of any sidebar panel changes */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					   sidebar_panels_changed_callback,
 					   window);

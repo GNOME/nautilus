@@ -1,5 +1,38 @@
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
+	Converted more preferences to not be coupled to user level,
+	following up on Ramiro's change to make this possible. Note
+	that some of your preferences might experience a one-time
+	change after this checkout (most noticeably the sidebar width).
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register): Removed default values for
+	sidebar width.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Renamed NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES to
+	NAUTILUS_PREFERENCES_ICON_CAPTIONS.
+	Moved NAUTILUS_PREFERENCES_ICON_CAPTIONS, 
+	NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS, and 
+	NAUTILUS_PREFERENCES_SIDEBAR_WIDTH to the non-user-level-coupled
+	section, and gave them full gconf paths.
+	Added clarifying comment to NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE.
+	
+	* src/file-manager/fm-directory-view.c:
+	Removed mysterious semicolon that was the first character in the file.
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	Update for name change of NAUTILUS_PREFERENCES_ICON_CAPTIONS.
+	* src/file-manager/fm-icon-text-window.c:
+	(changed_attributes_option_menu_callback),
+	(create_icon_text_window), (fm_icon_text_window_destroy_callback),
+	(fm_get_text_attribute_names_preference_or_default):
+	Update for name change of NAUTILUS_PREFERENCES_ICON_CAPTIONS.
+	
+	* src/nautilus-window.c: (nautilus_window_initialize): Teensy
+	comment clarification.
+
+2000-08-31  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 2327 (Alt-key shortcuts to navigate menus shouldn't
 	work on Desktop). Control-key shortcuts to invoke items directly
 	still work. I had to fix a Bonobo bug to make this work, so

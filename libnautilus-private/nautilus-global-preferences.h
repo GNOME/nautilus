@@ -36,8 +36,14 @@ BEGIN_GNOME_DECLS
  * Note that the configuration path is fully qualified 
  */
 
-/* Themes */
+/* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"/apps/nautilus/preferences/theme"
+/* Which text attributes appear beneath icon names */
+#define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"/apps/nautilus/icon_view/captions"
+/* Are built-in bookmarks showing or not? */
+#define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS		"/apps/nautilus/preferences/show_built_in_bookmarks"
+/* How wide the sidebar is (or how wide it will be when expanded) */
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
 
 
 /*
@@ -55,18 +61,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
-/* sidebar width */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
-
 /* Home URI  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
-
-/* FIXME bugzilla.eazel.com 1229: Preferences not (currently?) displayed in dialog */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"icon_view/text_attribute_names"
-#define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS		"preferences/show_built_in_bookmarks"
 
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
@@ -80,7 +79,10 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
 
-/* Sidebar panels */
+/* The sidebar panel preferences are computed from their oafids, which aren't known at
+ * compile time. We publish the namespace for all of them so interested parties can
+ * monitor changes to all of them collectively, without having to know any oafids. 
+ */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
 
 /* Directory view */

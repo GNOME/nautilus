@@ -1,4 +1,4 @@
-;/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* fm-directory-view.c
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
@@ -908,7 +908,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 					   directory_view);
 	
 	/* Keep track of changes in text attribute names */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
 					   text_attribute_names_changed_callback,
 					   directory_view);
 
@@ -959,7 +959,7 @@ fm_directory_view_destroy (GtkObject *object)
 					      show_hidden_files_changed_callback,
 					      view);
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
 					      text_attribute_names_changed_callback,
 					      view);
 

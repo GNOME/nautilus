@@ -761,13 +761,6 @@ global_preferences_register (void)
 							   FALSE,
 							   TRUE,
 							   TRUE);
-
- 	/* Default sidebar width */
-	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-							_("Sidebar Width"),
-							148,
-							148,
-							148);
 	
 
 	{
