@@ -4,6 +4,8 @@
 # Richard Hult <rhult@hem.passagen.se>, 2000.
 # Christian Rose <menthos@menthos.com>, 2000.
 #
+# $Id$
+#
 #: libnautilus-extensions/nautilus-search-uri.c:378
 #: libnautilus-extensions/nautilus-search-uri.c:384
 #: libnautilus-extensions/nautilus-search-uri.c:387
@@ -13,8 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-13 16:38+0100\n"
-"PO-Revision-Date: 2000-12-13 02:39+0100\n"
+"POT-Creation-Date: 2000-12-13 23:10+0100\n"
+"PO-Revision-Date: 2000-12-13 23:14+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -868,26 +870,26 @@ msgstr "Kanaler"
 msgid "Sample Rate"
 msgstr "Samplingsfrekvens"
 
-#: components/music/nautilus-music-view.c:330
+#: components/music/nautilus-music-view.c:336
 msgid "Set Cover Image"
 msgstr "Ställ in framsidesbild"
 
-#: components/music/nautilus-music-view.c:509
+#: components/music/nautilus-music-view.c:515
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
-#: components/music/nautilus-music-view.c:511
+#: components/music/nautilus-music-view.c:517
 #: src/file-manager/fm-properties-window.c:2051
 #: src/nautilus-property-browser.c:993 src/nautilus-property-browser.c:1129
 msgid "Not an Image"
 msgstr "Inte en bild"
 
-#: components/music/nautilus-music-view.c:559
+#: components/music/nautilus-music-view.c:565
 msgid "Select an image file for the album cover:"
 msgstr "Välj en bildfil för skivomslaget:"
 
-#: components/music/nautilus-music-view.c:1049
+#: components/music/nautilus-music-view.c:1055
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the soundcard or your soundcard is not "
@@ -896,35 +898,35 @@ msgstr ""
 "Tyvärr, men musikvyn kan inte spela ljud just nu. Ett annat program använder "
 "eller blockerar ljudkortet eller så är ditt ljudkort inte konfigurerat rätt."
 
-#: components/music/nautilus-music-view.c:1052
+#: components/music/nautilus-music-view.c:1058
 msgid "Unable to Play File"
 msgstr "Kan inte spela fil"
 
-#: components/music/nautilus-music-view.c:1070
+#: components/music/nautilus-music-view.c:1076
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Tyvärr, musikvyn kan inte spela icke-lokala filer än."
 
-#: components/music/nautilus-music-view.c:1071
+#: components/music/nautilus-music-view.c:1077
 msgid "Can't Play Remote Files"
 msgstr "Kan inte spela fjärrfiler"
 
-#: components/music/nautilus-music-view.c:1381
+#: components/music/nautilus-music-view.c:1387
 msgid "Drag to seek within track"
 msgstr "Dra för att spola inom spåret"
 
-#: components/music/nautilus-music-view.c:1403
+#: components/music/nautilus-music-view.c:1409
 msgid "Previous"
 msgstr "Föregående"
 
-#: components/music/nautilus-music-view.c:1418
+#: components/music/nautilus-music-view.c:1424
 msgid "Play"
 msgstr "Spela"
 
-#: components/music/nautilus-music-view.c:1433
+#: components/music/nautilus-music-view.c:1439
 msgid "Pause"
 msgstr "Paus"
 
-#: components/music/nautilus-music-view.c:1447
+#: components/music/nautilus-music-view.c:1453
 #: libnautilus-extensions/nautilus-file-operations.c:862
 #: libnautilus-extensions/nautilus-file-operations.c:877
 #: libnautilus-extensions/nautilus-file-operations.c:896
@@ -932,32 +934,32 @@ msgstr "Paus"
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1461
+#: components/music/nautilus-music-view.c:1467
 msgid "Next"
 msgstr "Nästa"
 
-#: components/music/nautilus-music-view.c:1474
+#: components/music/nautilus-music-view.c:1480
 msgid "Sound hardware missing or busy!"
 msgstr "Ljudhårdvara saknas eller är upptaget!"
 
-#: components/music/nautilus-music-view.c:1578
+#: components/music/nautilus-music-view.c:1584
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Tyvärr, det inträffade ett fel vid läsning av %s."
 
-#: components/music/nautilus-music-view.c:1579
+#: components/music/nautilus-music-view.c:1585
 msgid "Can't Read Folder"
 msgstr "Kan inte läsa mapp"
 
-#: components/music/nautilus-music-view.c:1652
+#: components/music/nautilus-music-view.c:1658
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1652
+#: components/music/nautilus-music-view.c:1658
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1694
+#: components/music/nautilus-music-view.c:1700
 #, c-format
 msgid "%s by %s"
 msgstr "%s av %s"
@@ -6179,8 +6181,11 @@ msgid "Display on-line help for Nautilus"
 msgstr "Visa online-hjälp för Nautilus"
 
 #: po/tmp/nautilus-shell-ui.xml.h:21
-msgid "Display the Property Browser, containing patterns, colors, and emblems"
-msgstr "Visa egenskapsbläddraren som innehåller mönster, färger och emblem"
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+"Visa mönster, färger och emblem som kan användas för att ändra utseendet"
 
 #: po/tmp/nautilus-shell-ui.xml.h:22
 msgid "Display the latest contents of the current location"
@@ -6911,3 +6916,7 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:579
 msgid "%.0f%%"
 msgstr "%.0f %%"
+
+#~ msgid ""
+#~ "Display the Property Browser, containing patterns, colors, and emblems"
+#~ msgstr "Visa egenskapsbläddraren som innehåller mönster, färger och emblem"
