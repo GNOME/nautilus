@@ -2199,10 +2199,9 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	pango_layout_set_text (layout, text, -1);
 	
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	/* FIXME: Need a version of eel_gdk_pixbuf_draw_layout that does clipping. */
-	eel_gdk_pixbuf_draw_layout (pixbuf_with_text,
-				    text_rect.x0, text_rect.y0, 
-				    EEL_RGB_COLOR_BLACK, layout);
+	eel_gdk_pixbuf_draw_layout_clipped (pixbuf_with_text,
+					    text_rect,
+					    EEL_RGB_COLOR_BLACK, layout);
 	g_object_unref (layout);
 
 	return pixbuf_with_text;
