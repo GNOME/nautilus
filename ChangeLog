@@ -1,5 +1,22 @@
 2002-03-04  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(real_get_selected_icon_locations): Put a default one in here, since
+	there are only really icon locations for FMIconView.
+	(fm_directory_view_class_init): Set up default get_selected_icon_locations.
+	
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_get_sort_column_id_from_attribute): Allow NULL.
+	(fm_list_model_get_sort_column_id_from_sort_type): Handle all types.
+
+	* src/file-manager/fm-list-view.c:
+	(set_sort_order_from_metadata_and_preferences): Fix to handle unknown
+	values in metadata.
+	(fm_list_view_reset_to_defaults): New.
+	(fm_list_view_class_init): Hoom up the new reset_to_defaults function.
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c: Formatting tweaks.
 
 	* src/file-manager/fm-list-model.c: (remove_link_saving_prev):

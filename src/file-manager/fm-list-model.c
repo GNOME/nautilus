@@ -691,6 +691,10 @@ fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
 {
 	guint i;
 
+	if (attribute == NULL) {
+		return -1;
+	}
+
 	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
 		if (strcmp (attributes[i].attribute_name, attribute) == 0) {
 			return i;
@@ -704,15 +708,22 @@ int
 fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 {
 	switch (sort_type) {
+	case NAUTILUS_FILE_SORT_NONE:
+		return -1;
+	case NAUTILUS_FILE_SORT_BY_SIZE:
+		return FM_LIST_MODEL_NAME_COLUMN;
+	case NAUTILUS_FILE_SORT_BY_TYPE:
+		return FM_LIST_MODEL_TYPE_COLUMN;
 	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		return FM_LIST_MODEL_NAME_COLUMN;
 	case NAUTILUS_FILE_SORT_BY_MTIME:
 		return FM_LIST_MODEL_DATE_MODIFIED_COLUMN;
-	default:
-		g_assert_not_reached ();
+	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
+	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
+		break;
 	}
 
-	return -1;
+	g_return_val_if_reached (-1);
 }
 
 static void
@@ -809,5 +820,4 @@ fm_list_model_get_type (void)
 	}
 	
 	return object_type;
-	
 }

@@ -180,25 +180,20 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 	NautilusFile *file;
 	gboolean sort_reversed;
 	
-	sort_attribute = NULL;
-	
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
-
-	nautilus_file_get_metadata (file,
-				    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
-				    sort_attribute);
-
-	if (sort_attribute == NULL) {
-		sort_column_id = fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value);
-	} else {
-		sort_column_id = fm_list_model_get_sort_column_id_from_attribute (sort_attribute);
-	}
-	
+	sort_attribute = nautilus_file_get_metadata (file,
+						     NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+						     NULL);
+	sort_column_id = fm_list_model_get_sort_column_id_from_attribute (sort_attribute);
 	g_free (sort_attribute);
 
+	if (sort_column_id == -1) {
+		sort_column_id = fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value);
+	}
+
 	sort_reversed = nautilus_file_get_boolean_metadata (file,
-						       NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-						       default_sort_reversed_auto_value);
+							    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+							    default_sort_reversed_auto_value);
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
@@ -308,7 +303,26 @@ fm_list_view_select_all (FMDirectoryView *view)
 	gtk_tree_selection_select_all (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view));
 }
 
-#if 0
+/* Reset sort criteria and zoom level to match defaults */
+static void
+fm_list_view_reset_to_defaults (FMDirectoryView *view)
+{
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
+
+	gtk_tree_sortable_set_sort_column_id
+		(GTK_TREE_SORTABLE (FM_LIST_VIEW (view)->details->model),
+		 fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value),
+		 default_sort_reversed_auto_value ? GTK_SORT_ASCENDING : GTK_SORT_DESCENDING);
+        fm_directory_view_restore_default_zoom_level (view);
+}
+
+#if GNOME2_CONVERSION_COMPLETE
+
+/* This is needed when writing out the sort to metadata. But we don't
+ * need this list here. We can probably do this using the table inside
+ * FMListModel.
+ */
 
 static char *
 get_attribute_from_sort_type (NautilusFileSortType sort_type)
@@ -382,13 +396,10 @@ fm_list_view_class_init (FMListViewClass *klass)
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
-#if GNOME2_CONVERSION_COMPLETE
-	fm_directory_view_class->get_selected_icon_locations = xxx;
-#endif
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
+	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;
 #if GNOME2_CONVERSION_COMPLETE
-	fm_directory_view_class->reset_to_defaults = xxx;
 	fm_directory_view_class->restore_default_zoom_level = xxx;
 #endif
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
