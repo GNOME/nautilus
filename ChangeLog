@@ -1,3 +1,15 @@
+2000-07-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/browser.xml:
+	Oops! Changing the capitalization of the names broke the customize
+	window, since there's no distinction between the directory name and
+	the display name. I'll fix it soon, but for now I changed them back
+	to lower-case.
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog):
+	removed the theme preference from the appearance panel, since it's
+	now in the customize window
+
 2000-07-10  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/eazel-helper.c:
