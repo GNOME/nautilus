@@ -79,6 +79,7 @@ static OAF_ServerInfo *
 OAF_ServerInfo__copy (OAF_ServerInfo *orig)
 {
 	OAF_ServerInfo *retval;
+	int i;
 
 	retval = OAF_ServerInfo__alloc ();
 	
@@ -88,10 +89,20 @@ OAF_ServerInfo__copy (OAF_ServerInfo *orig)
 	retval->username= CORBA_string_dup (orig->username);
 	retval->hostname= CORBA_string_dup (orig->hostname);
 	retval->domain= CORBA_string_dup (orig->domain);
-	retval->attrs = orig->attrs;
-	/* FIXME: this looks like a blatant kludge (but I cut & pasted
-           it from OAF) */
-	CORBA_sequence_set_release (&retval->attrs, CORBA_FALSE);
+
+	retval->attrs._maximum = orig->attrs._maximum;
+	retval->attrs._length = orig->attrs._length;
+	
+	retval->attrs._buffer = CORBA_sequence_OAF_Attribute_allocbuf (retval->attrs._length);
+	memcpy (retval->attrs._buffer, orig->attrs._buffer, (sizeof (OAF_Attribute)) * retval->attrs._length);
+	
+	for (i = 0; i < retval->attrs._length; i++) {
+		retval->attrs._buffer[i].name = CORBA_string_dup (retval->attrs._buffer[i].name);
+		if (retval->attrs._buffer[i].v._d == OAF_A_STRING) {
+			retval->attrs._buffer[i].v._u.value_string = CORBA_string_dup (retval->attrs._buffer[i].v._u.value_string);
+		
+		}
+	}
 
 	return retval;
 }
@@ -508,23 +519,26 @@ get_mime_type_from_uri (const char *text_uri)
 	   previously ensured that the info has been computed
 	   async. */
 
-	file_info = gnome_vfs_file_info_new ();
         vfs_uri = gnome_vfs_uri_new (text_uri);
 
-	result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
-					      GNOME_VFS_FILE_INFO_GETMIMETYPE
-					      | GNOME_VFS_FILE_INFO_FOLLOWLINKS, 
-					      NULL);
-	if (result == GNOME_VFS_OK) {
-		ctype = gnome_vfs_file_info_get_mime_type (file_info);
+	if (vfs_uri != NULL) {
+		file_info = gnome_vfs_file_info_new ();
 		
-		if (ctype != NULL) {
-			type = g_strdup (ctype);
-		}
-		
-		gnome_vfs_file_info_unref (file_info);
-		gnome_vfs_uri_unref (vfs_uri);
-	} 
+		result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
+						      GNOME_VFS_FILE_INFO_GETMIMETYPE
+						      | GNOME_VFS_FILE_INFO_FOLLOWLINKS, 
+						      NULL);
+		if (result == GNOME_VFS_OK) {
+			ctype = gnome_vfs_file_info_get_mime_type (file_info);
+			
+			if (ctype != NULL) {
+				type = g_strdup (ctype);
+			}
+			
+			gnome_vfs_file_info_unref (file_info);
+			gnome_vfs_uri_unref (vfs_uri);
+		} 
+	}
 
 	return type;
 }
