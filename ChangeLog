@@ -1,3 +1,18 @@
+2001-02-12  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bug 6333, that a warning about not finding
+	unindexed files should not be displayed if the
+	backup search is turned on.
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Leave a note that we should change the SEARCH_METHOD
+	name to be more clear about what the preference is for
+	(whether or not we  do a slow background search)
+	* src/file-manager/fm-search-list-view.c: (load_location_callback):
+	Check the SEARCH_METHOD preference 
+
+	
 2001-02-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

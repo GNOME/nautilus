@@ -90,6 +90,8 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
 
 /* File Indexing */
+/* This "SEARCH_METHOD" name isn't a good name, because it sounds like an
+   enum value rather than a boolean.  We should change it so it is more clear. */
 #define NAUTILUS_PREFERENCES_SEARCH_METHOD			"preferences/also_do_slow_search"
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
 

@@ -118,7 +118,8 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 	gboolean indexed_search_is_available;
 
 	indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
-	if (indexed_search_is_available) {
+	if (indexed_search_is_available &&
+	    !nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
 		last_indexing_time = nautilus_indexing_info_get_last_index_time ();
 		if (last_indexing_time) {
 			status_string = g_strdup_printf (_("Search results may not include items modified after %s, when your drive was last indexed."),
