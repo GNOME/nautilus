@@ -970,9 +970,9 @@ nautilus_window_update_state (gpointer data)
                                 window->content_view = NULL;
                                 made_changes = TRUE;
                                 window->cv_progress_error = TRUE;
+                        } else {
+	                        report_sidebar_panel_failure_to_user (window, error_view);
                         }
-
-                        report_sidebar_panel_failure_to_user (window, error_view);
 
                         if (g_list_find (window->new_sidebar_panels, error_view) != NULL) {
                                 window->new_sidebar_panels = g_list_remove (window->new_sidebar_panels, error_view);
@@ -1162,6 +1162,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case VIEW_ERROR:
                         new_view = va_arg (args, NautilusViewFrame*);
                         x_message (("VIEW_ERROR on %p", new_view));
+                        g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
                         window->view_bombed_out = TRUE;
                         gtk_object_ref (GTK_OBJECT (new_view));
                         window->error_views = g_list_prepend (window->error_views, new_view);
@@ -1274,19 +1275,21 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         window->location_change_end_reached = TRUE;
         
         if (result_code == NAUTILUS_NAVIGATION_RESULT_OK) {
-                /* Navigation successful. Show the window to handle the
-                 * new-window case. (Doesn't hurt if window is already showing.)
-                 * Maybe this should go sometime later so the blank window isn't
-                 * on screen so long.
-                 */
+                /* Navigation successful. */
                 window->cancel_tag = navi;
 
-                directory = nautilus_directory_get (navi->location);
-		nautilus_directory_call_when_ready (directory,
-						    NULL,
-						    TRUE,
-						    position_and_show_window_callback,
-						    window);
+		/* If the window is not yet showing (as is the case for nascent
+		 * windows), position and show it only after we've got the
+		 * metadata (since position info is stored there).
+		 */
+                if (!GTK_WIDGET_VISIBLE (window)) {
+	                directory = nautilus_directory_get (navi->location);
+			nautilus_directory_call_when_ready (directory,
+							    NULL,
+							    TRUE,
+							    position_and_show_window_callback,
+							    window);
+                }
 						
                 nautilus_window_set_state_info
                         (window, 

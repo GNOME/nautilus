@@ -1,3 +1,38 @@
+2000-09-25  John Sullivan  <sullivan@eazel.com>
+
+	Some work on the "sidebar panel has failed" situation.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_update_state): Don't report sidebar panel
+	failure when the view that failed was the content view.
+	Doh! It had been putting up two dialogs, one for the content
+	view and one for some mysterious unknown sidebar panel.
+	(nautilus_window_set_state_info): Added a g_warning when
+	the state is set to VIEW_ERROR. This will stop in the debugger
+	to make it easier to tell what's generating the error (but
+	without the debugger will just spew one line of spam).
+	
+	(nautilus_window_end_location_change_callback): Check if
+	window is visible before trying to set the initial
+	position. This prevents a return_if_fail complaint in some
+	cases in the window-position-saving code when using 
+	use-new-window mode.
+
+	Fixed bug 3262 (Zoom control context menu should use
+	radio buttons, not checkboxes)
+
+	* src/nautilus-zoom-control.c: 
+	Added marking_menu_items boolean to details struct.
+	(create_zoom_menu_item): Now takes a radio button item
+	as a parameter (from which to get the group) and returns
+	the new radio button item (to use for the next time) and
+	sets marking_menu_items to TRUE while creating menu items.
+	Oh yeah, also creates a radio item instead of a check item.
+	(zoom_menu_callback): Now bails out early if marking_menu_items.
+	(create_zoom_menu): Passes the result of each create_zoom_menu_item
+	into the next call, to get all the radio items in the same group.
+
+
 2000-09-25  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-theme.c: (load_theme_document),

@@ -77,6 +77,8 @@ struct NautilusZoomControlDetails {
 	GdkPixbuf *zoom_increment_image;
 	GdkPixbuf *number_strip;
 	PrelightMode prelight_mode;
+
+	gboolean marking_menu_items;
 };
 
 
@@ -526,8 +528,14 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 	double zoom_level;
 	NautilusZoomControl *zoom_control;
 		
-	zoom_level = * (double *) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
 	zoom_control = NAUTILUS_ZOOM_CONTROL (callback_data);
+
+	/* Don't do anything if we're just setting the toggle state of menu items. */
+	if (zoom_control->details->marking_menu_items) {
+		return;
+	}
+
+	zoom_level = * (double *) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
 	
 	/* Check to see if we can zoom out */
 	if ((zoom_control->details->min_zoom_level <= zoom_level && zoom_level <  zoom_control->details->zoom_level) ||
@@ -536,21 +544,30 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 	}
 }
 
-static void
-create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level)
+static GtkRadioMenuItem *
+create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level, GtkRadioMenuItem *previous_radio_item)
 {
 	GtkWidget *menu_item;
 	double	  *zoom_level_ptr;
 	char	  item_text[8];
 	NautilusZoomControl *zoom_control;
+	GSList	  *radio_item_group;
 
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+
+	/* Set flag so that callback isn't activated when set_active called
+	 * to set toggle state of other radio items.
+	 */
+	zoom_control->details->marking_menu_items = TRUE;
 	
 	/* This is marked for localization in case the % sign is not
 	 * appropriate in some locale. I guess that's unlikely.
 	 */
 	g_snprintf (item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
-	menu_item = gtk_check_menu_item_new_with_label (item_text);
+	radio_item_group = previous_radio_item == NULL
+		? NULL
+		: gtk_radio_menu_item_group (previous_radio_item);
+	menu_item = gtk_radio_menu_item_new_with_label (radio_item_group, item_text);
 
 	zoom_level_ptr = g_new (double, 1);
 	*zoom_level_ptr = zoom_level;
@@ -566,6 +583,10 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level)
 
   	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+
+	zoom_control->details->marking_menu_items = FALSE;
+
+	return GTK_RADIO_MENU_ITEM (menu_item);
 }
 
 static GtkMenu*
@@ -573,13 +594,15 @@ create_zoom_menu(GtkWidget *zoom_control)
 {
 	GList *p;
 	GtkMenu *menu;
+	GtkRadioMenuItem *menu_item;
 
 	menu = GTK_MENU (gtk_menu_new ());
 
 	p = NAUTILUS_ZOOM_CONTROL (zoom_control)->details->preferred_zoom_levels;
-	
+
+	menu_item = NULL;
 	while (p != NULL) {
-		create_zoom_menu_item (menu, zoom_control, * (double *) p->data);
+		menu_item = create_zoom_menu_item (menu, zoom_control, * (double *) p->data, menu_item);
 		p = g_list_next (p);
 	}
 	
