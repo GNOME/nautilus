@@ -1,3 +1,18 @@
+2000-01-07  Andy Hertzfeld <andy@eazel.com>
+
+	* src/ntl-index-panel.h, src/ntl-index-panel.c: new files for index panel class
+      Initial bare-bones implementation of index panel still using notebook object instead of custom tabs
+      
+    * src/ntl-window.h, src/ntl-window.c
+      just use box instead of pane for nautilus window content,
+      index_panel now responsible for the meta-views
+      allocate and install index_panel instead of meta_notebook
+      connect_signals calls index_panel so it can connect, too
+      added myself as an author
+    
+    * src/Makefile.am
+       added index_panel class
+        
 2000-01-06  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/Makefile.am,

@@ -57,7 +57,7 @@ struct _NautilusWindow {
   GSList *meta_views;
 
   /* UI stuff */
-  GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
+  GtkWidget *index_panel, *content_hbox, *btn_back, *btn_fwd;
   GtkWidget *option_cvtype, *menu_cvtype, *ent_uri;
 
   guint statusbar_ctx, statusbar_clear_id;

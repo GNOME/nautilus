@@ -35,6 +35,8 @@ nautilus_SOURCES=			\
 	ntl-app.c			\
 	ntl-app.h			\
 	ntl-content-view.c		\
+	ntl-index-panel.h		\
+	ntl-index-panel.c		\
 	ntl-content-view.h		\
 	ntl-main.c 			\
 	ntl-meta-view.c			\

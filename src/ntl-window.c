@@ -29,6 +29,7 @@
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
 #include "explorer-location-bar.h"
+#include "ntl-index-panel.h"
 #include "ntl-window-private.h"
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -122,7 +123,7 @@ static void nautilus_window_goto_uri_cb (GtkWidget *widget,
 static void nautilus_window_about_cb (GtkWidget *widget,
                                       NautilusWindow *window);
 
-#undef CONTENTS_AS_HBOX
+#define CONTENTS_AS_HBOX 1
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
@@ -387,7 +388,7 @@ nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
   nautilus_window_request_location_change(window, &navinfo, NULL);
-  
+  nautilus_index_panel_set_uri(window->index_panel, uri); 
 }
 
 static void
@@ -412,7 +413,8 @@ nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
-
+  GtkWidget *temp_frame;
+  
   g_message("XXX Constructed.\n");
   
   app = GNOME_APP(window);
@@ -476,21 +478,29 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);
 
 #ifdef CONTENTS_AS_HBOX
-  window->content_hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);
+  window->content_hbox = gtk_hbox_new(FALSE, 0);
 #else
   window->content_hbox = gtk_hpaned_new();
 #endif
   gnome_app_set_contents(app, window->content_hbox);
 
-  window->meta_notebook = gtk_notebook_new();
-  gtk_widget_show(window->meta_notebook);
-#ifdef CONTENTS_AS_HBOX
-  gtk_box_pack_start(GTK_BOX(window->content_hbox), window->meta_notebook, FALSE, FALSE, GNOME_PAD);
-#else
-  gtk_paned_pack1(GTK_PANED(window->content_hbox), window->meta_notebook, TRUE, TRUE);
-#endif
-  gtk_widget_show_all(window->content_hbox);
+  /* set up the index panel in a frame */
 
+  temp_frame = gtk_frame_new(NULL);
+  gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
+  gtk_widget_show(temp_frame);
+  
+  window->index_panel = nautilus_index_panel_new();
+  gtk_widget_show(window->index_panel);	
+  gtk_container_add(GTK_CONTAINER(temp_frame), window->index_panel);
+
+#ifdef CONTENTS_AS_HBOX
+  gtk_box_pack_start(GTK_BOX(window->content_hbox), temp_frame, FALSE, FALSE, 0);
+#else
+  gtk_paned_pack1(GTK_PANED(window->content_hbox), window->index_panel, TRUE, TRUE);
+#endif
+
+  gtk_widget_show_all(window->content_hbox);
 
   /* CORBA stuff */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
@@ -559,7 +569,7 @@ nautilus_window_set_arg (GtkObject      *object,
         if(new_cv)
           {
 #ifdef CONTENTS_AS_HBOX
-            gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
+            gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, 0);
 #else
             gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
@@ -571,7 +581,7 @@ nautilus_window_set_arg (GtkObject      *object,
     if (new_cv)
       {
 #ifdef CONTENTS_AS_HBOX
-        gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
+        gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, 0);
 #else
         gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
@@ -748,39 +758,18 @@ nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_v
 void
 nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
 {
-  GtkWidget *label;
-  const char *desc;
-  char cbuf[32];
 
   g_return_if_fail(!g_slist_find(window->meta_views, meta_view));
   g_return_if_fail(NAUTILUS_IS_META_VIEW(meta_view));
 
-  desc = nautilus_meta_view_get_label(NAUTILUS_META_VIEW(meta_view));
-  if(!desc)
-    {
-      desc = cbuf;
-      g_snprintf(cbuf, sizeof(cbuf), "%p", meta_view);
-    }
-  label = gtk_label_new(desc);
-  gtk_widget_show(label);
-  gtk_signal_connect(GTK_OBJECT(label), "button_press_event",
-		     GTK_SIGNAL_FUNC(nautilus_window_send_show_properties), meta_view);
-  gtk_notebook_prepend_page(GTK_NOTEBOOK(window->meta_notebook), GTK_WIDGET(meta_view), label);
-  gtk_widget_show(GTK_WIDGET(meta_view));
-
+  nautilus_index_panel_add_meta_view(window->index_panel, meta_view);
   window->meta_views = g_slist_prepend(window->meta_views, meta_view);
 }
 
 void
 nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view)
 {
-  gint pagenum;
-
-  pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(window->meta_notebook), GTK_WIDGET(meta_view));
-
-  g_return_if_fail(pagenum >= 0);
-
-  gtk_notebook_remove_page(GTK_NOTEBOOK(window->meta_notebook), pagenum);
+  nautilus_index_panel_remove_meta_view(window->index_panel, meta_view);
 }
 
 void
@@ -790,7 +779,6 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
     return;
 
   window->meta_views = g_slist_remove(window->meta_views, meta_view);
-
   nautilus_window_remove_meta_view_real(window, meta_view);
 }
 
@@ -880,6 +868,7 @@ nautilus_window_about_cb (GtkWidget *widget,
   GtkWidget *aboot;
   const char *authors[] = {
     "Darin Adler",
+    "Andy Hertzfeld",
     "Elliot Lee",
     "Ettore Perazzoli",
     "Maciej Stachowiak",
@@ -986,6 +975,9 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
                      "destroy",
                      nautilus_window_view_destroyed,
                      window);
+  
+  /* also, connect up the index view */
+  nautilus_index_panel_connect_view(window->index_panel, view); 
 }
 
 void
