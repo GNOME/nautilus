@@ -1854,6 +1854,10 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			} else if (eel_str_has_prefix (name, "rmdisk")) {
 				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
 				volume->is_removable = TRUE;
+				if( eel_str_has_suffix (volume->device_path, ":c")) {
+					volume->device_path = eel_str_strip_trailing_str
+								(volume->device_path, ":c");
+				}
 			} else if (eel_str_has_prefix (name, "jaz")) {
 				volume->device_type = NAUTILUS_DEVICE_JAZ_DRIVE;
 				volume->is_removable = TRUE;
