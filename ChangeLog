@@ -1,3 +1,35 @@
+2000-09-14  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/Makefile.am:
+	* components/services/inventory/nautilus-view/nautilus-inventory-vi
+	ew.c: (generate_inventory_form), (make_http_post_request),
+	(go_to_uri):
+	* components/services/startup/.cvsignore:
+	* components/services/startup/Makefile.am:
+	* components/services/startup/command-line/.cvsignore:
+	* components/services/startup/command-line/Makefile.am:
+	* components/services/startup/nautilus-view/.cvsignore:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/main.c:
+	* components/services/startup/nautilus-view/nautilus-service-startu
+	p-view.c:
+	* components/services/startup/nautilus-view/nautilus-service-startu
+	p-view.h:
+	* components/services/startup/nautilus-view/nautilus-service-startu
+	p-view.oafinfo:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (generate_startup_form_logo),
+	(generate_summary_form), (nautilus_summary_view_load_uri):
+	* components/services/summary/nautilus-view/nautilus-summary-view.o
+	afinfo:
+	* configure.in:
+
+	Merging startup and summary into a single view. Deleted the original
+	startup view.  Removed inventory view from daily builds since it is
+	going to be moved out of the nautilus module.
+	Removed some invalid FIXMEs from inventory since it will be completely
+	rewritten.
+
 2000-09-13  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

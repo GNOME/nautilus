@@ -1,2 +1,2 @@
-SUBDIRS = trilobite nautilus-dependent-shared startup install time login summary inventory vault
+SUBDIRS = trilobite nautilus-dependent-shared install time login summary vault
 

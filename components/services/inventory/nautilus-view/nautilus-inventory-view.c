@@ -100,7 +100,6 @@ generate_inventory_form (NautilusInventoryView	*view)
 	generate_form_title (view, "Eazel Services Inventory");
 
 	/* if we came from signup, add a congrats message */
-	/* FIXME bugzilla.eazel.com 727: get the text from a file or from the service */
 
 	if (nautilus_str_has_suffix (view->details->uri, "signup")) {
 		message = "Congratulations, you have successfully signed up with the Eazel service!";
@@ -111,7 +110,6 @@ generate_inventory_form (NautilusInventoryView	*view)
 	}
 
 	/* make label containing text about uploading the configuration data */
-	/* FIXME bugzilla.eazel.com 727: It should get this text from a file or from the service */
 
 	temp_box = gtk_hbox_new (FALSE, 4);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
@@ -167,8 +165,6 @@ generate_inventory_form (NautilusInventoryView	*view)
  * then feed it to the service over HTTP.  Display an error message, or move on to the summary
  * screen if successful
  */
-
-/* FIXME bugzilla.eazel.com 727: text strings should be gotten from a file */
 
 static void
 gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view)
@@ -311,7 +307,6 @@ make_http_post_request (char	*uri, char	*post_body, char	*auth_token)
 	ghttp_set_header (request, http_hdr_Accept, "text/xml");
 	ghttp_set_header (request, http_hdr_Content_Type, "text/xml");
 	ghttp_set_header (request, http_hdr_Host, SERVICE_DOMAIN_NAME);
-	/* FIXME bugzilla.eazel.com 726: user agent version and OS should be substituted on the fly */
 	ghttp_set_header (request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");
 
 	if (auth_token) {
@@ -346,10 +341,6 @@ go_to_uri (NautilusInventoryView	*view, char	*uri)
 	nautilus_view_open_location (view->details->nautilus_view, uri);
 
 }
-
-/* FIXME bugzilla.eazel.com 729: 
- * this routine should be somewhere else, and should take user preferences into account 
- */
 
 static char*
 get_home_uri ()
