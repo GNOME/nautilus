@@ -217,6 +217,7 @@ init_default_transfer_configuration (void)
 
 	rv->port_number = get_conf_int ("server/port", DEFAULT_PORT);
 	rv->hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
+	rv->username = NULL;
 	if ((p = strchr (rv->hostname, ':')) != NULL) {
 		/* make "server/port" optional -- could just be in "server/hostname" */
 		*p = 0;
@@ -237,6 +238,8 @@ transferoptions_destroy (TransferOptions *topts)
 
 	g_free (topts->hostname);
 	topts->hostname = NULL;
+	g_free (topts->username);
+	topts->username = NULL;
 	g_free (topts->pkg_list_storage_path);
 	topts->pkg_list_storage_path = NULL;
 	g_free (topts->tmp_dir);

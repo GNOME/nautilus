@@ -110,15 +110,18 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_CANNOT_OPEN:
 		if (previous_pack) {
 			if (previous_pack->status == PACKAGE_DEPENDENCY_FAIL) {
-				message = g_strdup_printf (_("%s requires %s, which could not be found on Eazel's servers"), 
+				message = g_strdup_printf (_("%s requires %s, which could not be found on the server"), 
 							   required_by,required);
 			}
+		} else {
+			message = g_strdup_printf (_("%s could not be found on the server"), 
+						   required);
 		}
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		message = g_strdup_printf (_("%s was already installed"), required);
+		message = g_strdup_printf (_("%s is already installed"), required);
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {

@@ -109,6 +109,7 @@ enum _PackageType {
 struct _TransferOptions {
 	char* hostname;                    /* Remote hostname */
 	guint port_number;                 /* Connection port */
+	char *username;                    /* The username to use in eazel-install: paths */
 	char* pkg_list_storage_path;       /* Remote path to package-list.xml */
 	char* tmp_dir;                     /* Local directory to store incoming RPMs */
 	char* rpmrc_file;                  /* Location of the rpm resource file */

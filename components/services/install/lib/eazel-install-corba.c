@@ -292,6 +292,22 @@ impl_Eazel_Install__get_server (impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static void
+impl_Eazel_Install__set_username (impl_POA_Trilobite_Eazel_Install *servant,
+				const CORBA_char *value,
+				CORBA_Environment *ev)
+{
+	eazel_install_set_username (servant->object, value);
+}
+
+
+static CORBA_char*
+impl_Eazel_Install__get_username (impl_POA_Trilobite_Eazel_Install *servant,
+				CORBA_Environment *ev)
+{
+	return eazel_install_get_username (servant->object);
+}
+
+static void
 impl_Eazel_Install__set_server_port (impl_POA_Trilobite_Eazel_Install *servant,
 				     const CORBA_long value,
 				     CORBA_Environment *ev)
@@ -441,6 +457,9 @@ eazel_install_get_epv ()
 
 	epv->_set_server = (gpointer)&impl_Eazel_Install__set_server;
 	epv->_get_server = (gpointer)&impl_Eazel_Install__get_server;
+
+	epv->_set_username = (gpointer)&impl_Eazel_Install__set_username;
+	epv->_get_username = (gpointer)&impl_Eazel_Install__get_username;
 
 	epv->_set_server_port = (gpointer)&impl_Eazel_Install__set_server_port;
 	epv->_get_server_port = (gpointer)&impl_Eazel_Install__get_server_port;

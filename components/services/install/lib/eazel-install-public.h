@@ -253,6 +253,7 @@ ei_mutator_decl (protocol, URLType);
 ei_mutator_decl (tmp_dir, char*);
 ei_mutator_decl (rpmrc_file, char*);
 ei_mutator_decl (server, char*);
+ei_mutator_decl (username, char*);
 ei_mutator_decl (package_list_storage_path, char*);
 ei_mutator_decl (package_list, char*);
 ei_mutator_decl (root_dirs, GList*);
@@ -260,9 +261,7 @@ ei_mutator_decl (transaction_dir, char*);
 ei_mutator_decl (server_port, guint);
 ei_mutator_decl (cgi_path, char*);
 ei_mutator_decl (eazel_auth, gboolean);
-
 ei_mutator_decl (package_system, int);
-
 ei_mutator_decl (ssl_rename, gboolean);
 
 ei_access_decl (verbose, gboolean);
@@ -278,6 +277,7 @@ ei_access_decl (protocol, URLType );
 ei_access_decl (tmp_dir, char*);
 ei_access_decl (rpmrc_file, char*);
 ei_access_decl (server, char*);
+ei_access_decl (username, char*);
 ei_access_decl (package_list_storage_path, char*);
 ei_access_decl (package_list, char*);
 ei_access_decl (root_dirs, GList*);
@@ -285,9 +285,7 @@ ei_access_decl (transaction_dir, char*);
 ei_access_decl (server_port, guint);
 ei_access_decl (cgi_path, char*);
 ei_access_decl (eazel_auth, gboolean);
-
 ei_access_decl (package_system, int);
-
 ei_access_decl (ssl_rename, gboolean);
 
 #ifdef __cplusplus

@@ -1,3 +1,36 @@
+2000-10-31  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package), (get_eazel_auth_path),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_transfer_configuration), (transferoptions_destroy):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_username),
+	(impl_Eazel_Install__get_username), (eazel_install_get_epv):
+	Stuff to get/set a username for eazel-service:/ uris. Needed for
+	4004 (The Bug Noone Knew What To Do With And Everyone Ignore)
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_download_packages),
+	If a package fails, don't silently remove it, but set CANNOT_OPEN
+	and prune it.
+	(eazel_install_do_transaction_save_report),
+	If no transaction dir is set, dont' try and store the report
+	(eazel_install_check_existing_packages):
+	Doh! All packages apparently ended at DOWNGRADES, yech.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach):
+	Sane message if file could not be found on server
+	
 2000-10-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-window-manage-views.c

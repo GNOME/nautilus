@@ -169,7 +169,8 @@ module Trilobite {
 			attribute string package_list; /* Local package list to use, rather then download 
 							  from server */
 
-			attribute string server;      /* server to use for both file and package list download */
+			attribute string server;  /* server to use for both file and package list download */
+			attribute string username; 
 			attribute long server_port;   /*  */
 
 			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout */

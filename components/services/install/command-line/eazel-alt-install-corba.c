@@ -74,6 +74,7 @@ char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
 	*arg_tmp_dir,
+	*arg_username,
 	*arg_root;
 
 /* Yeahyeah, but this was initially a test tool,
@@ -104,6 +105,7 @@ static const struct poptOption options[] = {
 	{"ssl_rename", 's', POPT_ARG_NONE, &arg_ssl_rename, 0, N_("Perform ssl renaming"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp)"), NULL},
+	{"username", '\0', POPT_ARG_STRING, &arg_username, 0, N_("Allow username"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Verbose output"), NULL},
 	{NULL, '\0', 0, NULL, 0}
@@ -159,6 +161,10 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	if (arg_server) {
 		Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
 		check_ev ("set_server");
+	}
+	if (arg_username) {
+		Trilobite_Eazel_Install__set_username (service, arg_username, &ev);
+		check_ev ("set_username");
 	}
 
 	if (arg_ssl_rename) {

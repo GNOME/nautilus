@@ -559,7 +559,13 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->iopts = g_new0 (InstallOptions, 1);
 	service->private->root_dirs = NULL;
 	service->private->cur_root = NULL;
-	service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir() );
+	if (g_get_home_dir ()) {
+		service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir () );
+		trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
+	} else {
+		service->private->transaction_dir = NULL;
+		g_message (_("Transactions are not stored, could not find home dir"));
+	}
 	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
 	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 	service->private->logfile = NULL;
@@ -579,15 +585,17 @@ eazel_install_initialize (EazelInstall *service) {
 #ifndef EAZEL_INSTALL_SLIM
 		/* FIXME bugzilla.eazel.com 2581:
 		   RPM specific code */
-		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
-		if (g_file_test (tmp, G_FILE_TEST_ISDIR)==0) {			
-			g_message ("Creating rpmdb in %s", tmp);
-			addMacro(NULL, "_dbpath", NULL, "/", 0);
-			mkdir (tmp, 0700);
-			rpmdbInit (tmp, 0644);
+		if (g_get_home_dir ()) {
+			tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
+			if (g_file_test (tmp, G_FILE_TEST_ISDIR)==0) {			
+				g_message ("Creating rpmdb in %s", tmp);
+				addMacro(NULL, "_dbpath", NULL, "/", 0);
+				mkdir (tmp, 0700);
+				rpmdbInit (tmp, 0644);
+			}
+			
+			list = g_list_prepend (list, tmp);
 		}
-
-		list = g_list_prepend (list, tmp);
 #endif
 		list = g_list_prepend (list, DEFAULT_RPM_DB_ROOT);
 		eazel_install_set_root_dirs (service, list);
@@ -1385,16 +1393,14 @@ ei_mutator_impl (protocol, URLType, iopts->protocol);
 ei_mutator_impl_copy (tmp_dir, char*, topts->tmp_dir, g_strdup);
 ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
 ei_mutator_impl_copy (server, char*, topts->hostname, g_strdup);
+ei_mutator_impl_copy (username, char*, topts->username, g_strdup);
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
-
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
 ei_mutator_impl (server_port, guint, topts->port_number);
 ei_mutator_impl_copy (cgi_path, char*, topts->cgi_path, g_strdup);
 ei_mutator_impl (eazel_auth, gboolean, topts->eazel_auth);
-
 ei_mutator_impl (package_system, int, package_system);
-
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
 
 ei_access_impl (verbose, gboolean, iopts->mode_verbose, FALSE);
@@ -1410,6 +1416,7 @@ ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);
 ei_access_impl (tmp_dir, char*, topts->tmp_dir, NULL);
 ei_access_impl (rpmrc_file, char*, topts->rpmrc_file, NULL);
 ei_access_impl (server, char*, topts->hostname, NULL);
+ei_access_impl (username, char*, topts->username, NULL);
 ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
 ei_access_impl (transaction_dir, char*, transaction_dir, NULL);

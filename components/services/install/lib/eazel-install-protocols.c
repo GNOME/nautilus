@@ -553,7 +553,9 @@ eazel_install_fetch_package (EazelInstall *service,
 	};
 
 	if (url == NULL) {
-		g_warning (_("Could not get an URL for %s"), rpmfilename_from_packagedata (package));
+		char *rname = packagedata_get_readable_name (package);
+		g_warning (_("Could not get an URL for %s"), rname);
+		g_free (rname);
 	} else {
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
@@ -769,6 +771,20 @@ real_arch_name (const char *arch)
 	return arch_copy;
 }
 
+static char*
+get_eazel_auth_path (EazelInstall *service)
+{
+	char *result = NULL;
+	if (eazel_install_get_username (service)) {
+		result = g_strdup_printf ("//%s%s",
+					  eazel_install_get_username (service),
+					  eazel_install_get_cgi_path (service));
+	} else {
+		result = g_strdup (eazel_install_get_username (service));
+	}
+	return result;
+}
+
 char* get_search_url_for_package (EazelInstall *service, 
 				  RpmSearchEntry entry,
 				  const gpointer data)
@@ -782,9 +798,12 @@ char* get_search_url_for_package (EazelInstall *service,
 	}
 
 	if (eazel_install_get_eazel_auth (service)) {
+		char *cgipath;
+		cgipath = get_eazel_auth_path (service);
+		g_assert (cgipath);
 		/* use eazel-auth: uri */
-		url = g_strdup_printf ("eazel-services:%s",
-				       eazel_install_get_cgi_path (service));
+		url = g_strdup_printf ("eazel-services:%s", cgipath);
+		g_free (cgipath);
 	} else {
 		url = g_strdup_printf ("http://%s:%d%s",
 				       eazel_install_get_server (service),

@@ -286,6 +286,7 @@ eazel_install_download_packages (EazelInstall *service,
 			result = eazel_install_fetch_package (service, package);
 
 			if (!result) {
+				package->status = PACKAGE_CANNOT_OPEN;
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
 				package->toplevel = toplevel;
@@ -302,7 +303,8 @@ eazel_install_download_packages (EazelInstall *service,
 	}
 
 	for (iterator = remove_list; iterator; iterator = g_list_next (iterator)) {
-		(*packages) = g_list_remove (*packages, iterator->data);
+		PackageData *package = (PackageData*)(iterator->data);
+		eazel_install_prune_packages (service, package, packages, NULL);
 	}
 
 	if (failed_packages) {
@@ -706,6 +708,10 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 	xmlDocPtr doc;
 	xmlNodePtr node, root;
 	char *name = NULL;
+
+	if (eazel_install_get_transaction_dir (service) == NULL) {
+		g_warning ("Transaction directory not set, not storing transaction report");
+	}
 
 	/* Ensure the transaction dir is present */
 	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
@@ -1371,14 +1377,6 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 	}
 }
 
-/* Returns 0 if the package is causes same state (ie package already installed
-   with same version.
-   -1 if it'll downgrade your system, (ie. you have a newer version installed)
-   1 if it'll upgrade your system (ie. if you have an older version installed)
-   2 if you don't have the package already 
-
-   In some weird cases, you should eg get -1 and 1 returned (or such). But this will always
-   return the "lowest possible" stage */
 static EazelInstallStatus
 eazel_install_check_existing_packages (EazelInstall *service, 
 				       PackageData *pack)
@@ -1448,9 +1446,9 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			}
 
 			/* Calc the result */
-			if (res == 0 && result > 0) {
+			if (res == 0) {
 				result = EAZEL_INSTALL_STATUS_QUO;
-			} else if (res > 0 && result > 1) {
+			} else if (res > 0) {
 				result = EAZEL_INSTALL_STATUS_UPGRADES;
 			} else {
 				result = EAZEL_INSTALL_STATUS_DOWNGRADES;
