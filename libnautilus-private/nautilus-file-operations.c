@@ -353,7 +353,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 		
 		gnome_vfs_uri_unref (uri);
 		g_assert (progress_verb);
-		progress_label_text = g_strdup_printf ("%s:", progress_verb);
+		progress_label_text = g_strdup_printf ("%s", progress_verb);
 		/* "From" dialog label, source path gets placed next to it in the dialog */
 		from_prefix = _("From:");
 	}

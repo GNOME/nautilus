@@ -50,9 +50,9 @@
  */
 #define PROGRESS_DIALOG_WIDTH 400
 
-#define OUTER_BORDER       5
-#define VERTICAL_SPACING   8
-#define HORIZONTAL_SPACING 3
+#define OUTER_BORDER       6
+#define VERTICAL_SPACING   6
+#define HORIZONTAL_SPACING 6
 
 #define MINIMUM_TIME_UP    1000
 
@@ -69,6 +69,7 @@ EEL_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
 		       GTK_TYPE_DIALOG)
 
 struct NautilusFileOperationsProgressDetails {
+	GtkWidget *primary_text_label;
 	GtkWidget *progress_title_label;
 	GtkWidget *progress_count_label;
 	GtkWidget *operation_name_label;
@@ -80,10 +81,13 @@ struct NautilusFileOperationsProgressDetails {
 
 	GtkWidget *progress_bar;
 
+	char *progress_title;
+
 	const char *from_prefix;
 	const char *to_prefix;
 
 	gulong files_total;
+	gulong file_index;
 	
 	GnomeVFSFileSize bytes_copied;
 	GnomeVFSFileSize bytes_total;
@@ -93,6 +97,9 @@ struct NautilusFileOperationsProgressDetails {
 
 	/* system time (microseconds) when dialog was mapped */
 	gint64 show_time;
+
+	/* string for remaining time */
+	char *remaining_time_string;
 	
 	/* time remaining in show timeout if it's paused and resumed */
 	guint remaining_time;
@@ -140,6 +147,8 @@ static void
 nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progress)
 {
 	double fraction;
+	char *progress_count;
+	char *remaining_time_string = NULL;
 
 	if (progress->details->bytes_total == 0) {
 		/* We haven't set up the file count yet, do not update
@@ -150,7 +159,22 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 
 	fraction = (double)progress->details->bytes_copied /
 		progress->details->bytes_total;
-	
+
+	if (progress->details->remaining_time_string == NULL) {
+		remaining_time_string = "";
+	} else {
+		remaining_time_string = progress->details->remaining_time_string;
+	}
+
+	progress_count = g_strdup_printf (_("%s %ld of %ld %s"),
+					  progress->details->progress_title,
+					  progress->details->file_index, 
+					  progress->details->files_total,
+					  remaining_time_string);
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), progress_count);
+
+	g_free (progress_count);
+
 	gtk_progress_bar_set_fraction
 		(GTK_PROGRESS_BAR (progress->details->progress_bar),
 		 fraction);
@@ -219,7 +243,17 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 		g_source_remove (progress->details->time_remaining_timeout_id);
 		progress->details->time_remaining_timeout_id = 0;
 	}
-	
+
+	if (progress->details->remaining_time_string != NULL) {
+		g_free (progress->details->remaining_time_string);
+		progress->details->remaining_time_string = NULL;
+	}
+
+	if (progress->details->progress_title != NULL) {
+		g_free (progress->details->progress_title);
+		progress->details->progress_title = NULL;
+	}
+
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -273,55 +307,61 @@ delete_event_callback (GtkWidget *widget,
 static void
 nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress)
 {
-	GtkWidget *hbox, *vbox;
+	GtkWidget *hbox, *vbox, *progress_vbox, *file_hbox;
 	GtkTable *titled_label_table;
 
 	progress->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
 	vbox = gtk_vbox_new (FALSE, VERTICAL_SPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), OUTER_BORDER);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (progress)->vbox), vbox, TRUE, TRUE, VERTICAL_SPACING);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (progress)->vbox), vbox, TRUE, TRUE, 0);
+
+	progress->details->primary_text_label = gtk_label_new("");
+	gtk_misc_set_alignment (GTK_MISC (progress->details->primary_text_label), 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (vbox), progress->details->primary_text_label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, HORIZONTAL_SPACING);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 
-	/* label- */
-	/* Files remaining to be copied: */
-	progress->details->progress_title_label = gtk_label_new ("");
-	gtk_label_set_justify (GTK_LABEL (progress->details->progress_title_label), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (hbox), progress->details->progress_title_label, FALSE, FALSE, 0);
-	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_title_label));
-
-
-	/* label -- */
-	/* 24 of 30 */
-	progress->details->progress_count_label = gtk_label_new ("");
-	gtk_label_set_justify (GTK_LABEL (progress->details->progress_count_label), GTK_JUSTIFY_RIGHT);
-	gtk_box_pack_end (GTK_BOX (hbox), progress->details->progress_count_label, FALSE, FALSE, 0);
-	eel_gtk_label_make_bold (GTK_LABEL (progress->details->progress_count_label));
-
-	/* progress bar */
-	progress->details->progress_bar = gtk_progress_bar_new ();
-	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (vbox), progress->details->progress_bar, FALSE, TRUE, 0);
-	/* prevent a resizing of the bar when a real text is inserted later */
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), " ");
-
-	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
+	titled_label_table = GTK_TABLE (gtk_table_new (2, 2, FALSE));
 	gtk_table_set_row_spacings (titled_label_table, 4);
 	gtk_table_set_col_spacings (titled_label_table, 4);
 
 	create_titled_label (titled_label_table, 0,
-			     &progress->details->operation_name_label, 
-			     &progress->details->item_name);
-	create_titled_label (titled_label_table, 1,
 			     &progress->details->from_label, 
 			     &progress->details->from_path_label);
-	create_titled_label (titled_label_table, 2,
+	create_titled_label (titled_label_table, 1,
 			     &progress->details->to_label, 
 			     &progress->details->to_path_label);
 
 	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
+
+	/* progress vbox */
+	progress_vbox = gtk_vbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), progress_vbox, FALSE, FALSE, 0);
+
+	/* progress bar */
+	progress->details->progress_bar = gtk_progress_bar_new ();
+	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (progress_vbox), progress->details->progress_bar, FALSE, TRUE, 0);
+	/* prevent a resizing of the bar when a real text is inserted later */
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), " ");
+
+	/* file hbox */
+	file_hbox = gtk_hbox_new (FALSE, HORIZONTAL_SPACING);
+	gtk_box_pack_start (GTK_BOX (progress_vbox), file_hbox, TRUE, TRUE, 2);
+
+	/* progress verb */
+	progress->details->operation_name_label = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (progress->details->operation_name_label), 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (file_hbox), progress->details->operation_name_label, FALSE, FALSE, 0);
+
+	/* file label */
+	progress->details->item_name = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (progress->details->item_name), 0.0, 0.0);
+	gtk_label_set_ellipsize (GTK_LABEL (progress->details->item_name), PANGO_ELLIPSIZE_END);
+	gtk_box_pack_start (GTK_BOX (file_hbox), progress->details->item_name, TRUE, TRUE, 0);
+
 
 	/* Set window icon */
 	gtk_window_set_icon (GTK_WINDOW (progress), empty_jar_pixbuf);
@@ -413,8 +453,12 @@ time_remaining_callback (gpointer callback_data)
 		str = g_strdup_printf (_("(%d:%02d Remaining)"), 
 				       time_remaining / 60, time_remaining % 60);
 	}
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), str);
-	
+
+	g_free (progress->details->remaining_time_string);
+	progress->details->remaining_time_string = g_strdup (str);
+
+	nautilus_file_operations_progress_update (progress);
+
 	g_free (str);
 
 	progress->details->time_remaining_timeout_id =
@@ -447,6 +491,7 @@ nautilus_file_operations_progress_new (const char *title,
 				       gboolean use_timeout)
 {
 	GtkWidget *widget;
+	gchar *primary_text;
 	NautilusFileOperationsProgress *progress;
 
 	widget = gtk_widget_new (nautilus_file_operations_progress_get_type (), NULL);
@@ -458,7 +503,16 @@ nautilus_file_operations_progress_new (const char *title,
 	gtk_window_set_title (GTK_WINDOW (widget), title);
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "file_progress", "Nautilus");
 
+	primary_text = g_strconcat ("<big><b>", title, "</b></big>", NULL);
+	gtk_label_set_markup(GTK_LABEL (progress->details->primary_text_label),
+			primary_text);
+
 	gtk_dialog_add_button (GTK_DIALOG (widget), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
+	gtk_container_set_border_width (GTK_CONTAINER (widget), OUTER_BORDER);
+
+	/* Disable separator */
+	gtk_dialog_set_has_separator (GTK_DIALOG (widget), FALSE);
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
@@ -491,8 +545,8 @@ nautilus_file_operations_progress_set_operation_string (NautilusFileOperationsPr
 {
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
 
-	gtk_label_set_text (GTK_LABEL (progress->details->progress_title_label),
-			    operation_string);
+	g_free (progress->details->progress_title);
+	progress->details->progress_title = g_strdup (operation_string);
 }
 
 void
@@ -506,7 +560,8 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 					    gulong file_index,
 					    GnomeVFSFileSize size)
 {
-	char *progress_count;
+	char *operation_markup;
+	char *item_markup;
 
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
 
@@ -517,17 +572,15 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 		/* we haven't set up the file count yet, do not update the progress
 		 * count until we do
 		 */
-		gtk_label_set_text (GTK_LABEL (progress->details->operation_name_label),
-				    progress_verb);
-		set_text_unescaped_trimmed 
-			(EEL_ELLIPSIZING_LABEL (progress->details->item_name),
-			 item_name);
+		operation_markup = g_strconcat ("<i>", progress_verb, "</i>", NULL);
+		gtk_label_set_markup (GTK_LABEL (progress->details->operation_name_label),
+				    operation_markup);
 
-		progress_count = g_strdup_printf (_("%ld of %ld"),
-						  file_index, 
-						  progress->details->files_total);
-		gtk_label_set_text (GTK_LABEL (progress->details->progress_count_label), progress_count);
-		g_free (progress_count);
+		item_markup = g_strconcat ("<i>\"", item_name, "\"</i>", NULL);
+
+		gtk_label_set_markup (GTK_LABEL (progress->details->item_name), item_markup);
+
+		progress->details->file_index = file_index;
 
 		gtk_label_set_text (GTK_LABEL (progress->details->from_label), from_prefix);
 		set_text_unescaped_trimmed 

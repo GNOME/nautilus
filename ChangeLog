@@ -1,3 +1,18 @@
+2005-03-30  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_destroy),
+	(nautilus_file_operations_progress_init),
+	(time_remaining_callback), (nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_set_operation_string),
+	(nautilus_file_operations_progress_new_file):
+	* libnautilus-private/nautilus-file-operations.c:
+	(progress_dialog_set_to_from_item_text):
+	Change layout of the progress dialog to be more HIG compliant.	
+
+	Patch from Michiel Sikkes <michiel@eyesopened.nl>
+
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
