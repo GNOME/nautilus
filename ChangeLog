@@ -1,3 +1,41 @@
+2000-07-27  Pavel Cisler  <pavel@eazel.com>
+
+	Bug 1561: Font preferences have no effect on the list view.
+
+	* src/file-manager/fm-directory-view.c:
+	(text_attribute_names_changed_callback),
+	(directory_view_font_family_changed_callback),
+	(click_policy_changed_callback),
+	(anti_aliased_mode_changed_callback),
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(fm_icon_view_text_attribute_names_changed),
+	(fm_icon_view_font_family_changed),
+	(fm_icon_view_click_policy_changed),
+	(fm_icon_view_anti_aliased_mode_changed),
+	(fm_icon_view_initialize_class), (fm_icon_view_initialize),
+	(fm_icon_view_update_icon_container_fonts):
+
+	Moved all the registering of preference change callbacks into 
+	FMDirectoryView.
+	Added default signal handlers that get called for each preference
+	item change.
+	Converted original preference change callbacks into default signal
+	handler overrides in FMDirectoryView.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_initialize), (fm_list_view_destroy),
+	(fm_list_view_setup_list), (fm_list_view_update_click_mode),
+	(fm_list_view_font_family_changed):
+	Removed extra preference change callback setup calls, they are now
+	all done in FMDirectoryView for both the icon view and list view.
+	Added a simple font family changed callback that sets the selected
+	font.
+	Called it during list view initialization to make sure the list view
+	comes up with the right saved font.
+	
+
 2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:

@@ -87,12 +87,6 @@ static void fm_icon_view_update_icon_container_fonts    (FMIconView        *icon
 static void fm_icon_view_update_click_mode              (FMIconView        *icon_view);
 static void fm_icon_view_update_anti_aliased_mode       (FMIconView        *icon_view);
 
-/* Preferences changed callbacks */
-static void text_attribute_names_changed_callback       (gpointer           user_data);
-static void directory_view_font_family_changed_callback (gpointer           user_data);
-static void anti_aliased_mode_changed_callback          (gpointer           user_data);
-static void click_policy_changed_callback               (gpointer           user_data);
-
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
 typedef struct {
@@ -171,22 +165,6 @@ fm_icon_view_destroy (GtkObject *object)
 	FMIconView *icon_view;
 
 	icon_view = FM_ICON_VIEW (object);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					      text_attribute_names_changed_callback,
-					      icon_view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      directory_view_font_family_changed_callback,
-					      icon_view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      icon_view);
-	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-					      anti_aliased_mode_changed_callback,
-					      icon_view);
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
@@ -1588,39 +1566,35 @@ get_icon_text_callback (NautilusIconContainer *container,
 
 /* Preferences changed callbacks */
 static void
-text_attribute_names_changed_callback (gpointer user_data)
+fm_icon_view_text_attribute_names_changed (FMDirectoryView *directory_view)
 {
-	g_assert (user_data != NULL);
-	g_assert (FM_IS_ICON_VIEW (user_data));
+	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
 }
 
 static void
-directory_view_font_family_changed_callback (gpointer user_data)
+fm_icon_view_font_family_changed (FMDirectoryView *directory_view)
 {
-	g_assert (user_data != NULL);
-	g_assert (FM_IS_ICON_VIEW (user_data));
+	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (user_data));
+	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (directory_view));
 }
 
 static void
-click_policy_changed_callback (gpointer user_data)
+fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 {
-	g_assert (user_data != NULL);
-	g_assert (FM_IS_ICON_VIEW (user_data));
+	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	fm_icon_view_update_click_mode (FM_ICON_VIEW (user_data));
+	fm_icon_view_update_click_mode (FM_ICON_VIEW (directory_view));
 }
 
 static void
-anti_aliased_mode_changed_callback (gpointer user_data)
+fm_icon_view_anti_aliased_mode_changed (FMDirectoryView *directory_view)
 {
-	g_assert (user_data != NULL);
-	g_assert (FM_IS_ICON_VIEW (user_data));
+	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	fm_icon_view_update_anti_aliased_mode (FM_ICON_VIEW (user_data));
+	fm_icon_view_update_anti_aliased_mode (FM_ICON_VIEW (directory_view));
 }
 
 /* GtkObject methods. */
@@ -1656,6 +1630,11 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
+        fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
+        fm_directory_view_class->font_family_changed = fm_icon_view_font_family_changed;
+        fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
+        fm_directory_view_class->anti_aliased_mode_changed = fm_icon_view_anti_aliased_mode_changed;
+
 
         klass->get_directory_sort_by       = fm_icon_view_real_get_directory_sort_by;
         klass->set_directory_sort_by       = fm_icon_view_real_set_directory_sort_by;
@@ -1675,26 +1654,6 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details->sort = &sort_criteria[0];
 
 	create_icon_container (icon_view);
-
-	/* Keep track of changes in text attribute names */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					   text_attribute_names_changed_callback,
-					   icon_view);
-
-	/* Keep track of changes in the font family */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					   directory_view_font_family_changed_callback, 
-					   icon_view);
-
-	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					   click_policy_changed_callback,
-					   icon_view);
-	
-	/* Keep track of changes in graphics trade offs */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-					   anti_aliased_mode_changed_callback, 
-					   icon_view);
 }
 
 static gboolean
@@ -1730,16 +1689,16 @@ static void
 fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 {
  	/* font size table - this isn't exactly proportional, but it looks better than computed */
-	static guint		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
+	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
 		8, 8, 10, 12, 14, 18, 18 };
-	NautilusIconContainer	*icon_container;
-	guint			i;
+	NautilusIconContainer *icon_container;
+	GdkFont *font;
+	guint i;
 
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
 	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		GdkFont *font;
 
 		font = nautilus_font_factory_get_font_from_preferences (font_size_table[i]);
 		g_assert (font != NULL);

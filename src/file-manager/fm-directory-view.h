@@ -198,13 +198,21 @@ struct FMDirectoryViewClass {
 	 * the directory view. If overridden, subclasses must all parent class's
 	 * function.
 	 */
-	void    (* get_required_metadata_keys)
-                                         	(FMDirectoryView *view,
+	void    (* get_required_metadata_keys)	(FMDirectoryView *view,
 					  	 GList           **directory_metadata_keys,
 					  	 GList           **file_metadata_keys);
 
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
+
+	/* Preference change callbacks, overriden by icon and list views. 
+	 * Icon and list views respond by synchronizing to the new preference
+	 * values and forcing an update if appropriate.
+	 */
+	void	(* text_attribute_names_changed)(FMDirectoryView *view);
+	void	(* font_family_changed)		(FMDirectoryView *view);
+	void	(* click_policy_changed)	(FMDirectoryView *view);
+	void	(* anti_aliased_mode_changed)	(FMDirectoryView *view);
 };
 
 /* GtkObject support */

@@ -34,8 +34,10 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-list.h>
@@ -151,6 +153,7 @@ static void              fm_list_view_destroy                     (GtkObject    
 static void              fm_list_view_done_adding_files           (FMDirectoryView    *view);
 static void              fm_list_view_select_all                  (FMDirectoryView    *view);
 
+static void		 fm_list_view_font_family_changed 	  (FMDirectoryView    *view);
 static void              fm_list_view_set_selection               (FMDirectoryView    *view, GList *selection);
 static void              fm_list_view_set_zoom_level              (FMListView         *list_view,
 								   NautilusZoomLevel   new_level,
@@ -159,7 +162,7 @@ static void              fm_list_view_sort_items                  (FMListView   
 								   int                 column,
 								   gboolean            reversed);
 
-static void              fm_list_view_update_click_mode           (FMListView        *icon_view);
+static void              fm_list_view_update_click_mode           (FMDirectoryView    *view);
 
 static void              fm_list_view_create_list                 (FMListView *list_view);
 
@@ -171,11 +174,11 @@ static NautilusList *   get_list                                  (FMListView   
 
 static int              sort_criterion_from_column                (int                 column);
 static void             update_icons                              (FMListView         *list_view);
-static void		click_policy_changed_callback             (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW);
 
 /* GtkObject methods.  */
+
 
 static void
 fm_list_view_initialize_class (gpointer klass)
@@ -205,6 +208,8 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+        fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
+        fm_directory_view_class->font_family_changed = fm_list_view_font_family_changed;
 
 	object_class->destroy = fm_list_view_destroy;
 
@@ -246,22 +251,13 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 					       update_icons,
 					       GTK_OBJECT (list_view));	
 
-	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					   click_policy_changed_callback,
-					   list_view);
-
+	fm_list_view_font_family_changed (FM_DIRECTORY_VIEW (list_view));
 }
 
 static void
 fm_list_view_destroy (GtkObject *object)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (object));
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      object);
-
 	g_free (FM_LIST_VIEW (object)->details);
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -858,7 +854,7 @@ fm_list_view_setup_list (FMListView *list_view)
 			    fm_list_view_reset_row_height,
 			    NULL);
 
-	fm_list_view_update_click_mode (list_view);
+	fm_list_view_update_click_mode (FM_DIRECTORY_VIEW (list_view));
 
 	gtk_widget_show (GTK_WIDGET (list));
 }
@@ -1515,25 +1511,29 @@ update_icons (FMListView *list_view)
 }
 
 static void
-fm_list_view_update_click_mode (FMListView *list_view)
+fm_list_view_update_click_mode (FMDirectoryView *view)
 {
-	NautilusList	*list;
-	int		click_mode;
+	int click_mode;
 
-	list = get_list (list_view);
-	g_assert (list != NULL);
+	g_assert (FM_IS_LIST_VIEW (view));
+	g_assert (get_list (FM_LIST_VIEW (view)) != NULL);
 
 	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						    NAUTILUS_CLICK_POLICY_SINGLE);
 
-	nautilus_list_set_single_click_mode (list, click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
+	nautilus_list_set_single_click_mode (get_list (FM_LIST_VIEW (view)), 
+		click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 static void
-click_policy_changed_callback (gpointer user_data)
+fm_list_view_font_family_changed (FMDirectoryView *view)
 {
-	g_assert (user_data != NULL);
-	g_assert (FM_IS_LIST_VIEW (user_data));
+	GdkFont *font;
 
-	fm_list_view_update_click_mode (FM_LIST_VIEW (user_data));
+	/* FIXME: need to use the right font size for a given zoom level here */
+	font = nautilus_font_factory_get_font_from_preferences (10);
+	g_assert (font != NULL);
+	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (FM_LIST_VIEW (view))), font);
+	gdk_font_unref (font);
 }
+

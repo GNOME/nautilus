@@ -695,6 +695,51 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
          */
 }
 
+/* Preferences changed callbacks */
+static void
+text_attribute_names_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->text_attribute_names_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->text_attribute_names_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+}
+
+static void
+directory_view_font_family_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->font_family_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->font_family_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+}
+
+static void
+click_policy_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->click_policy_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->click_policy_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+}
+
+static void
+anti_aliased_mode_changed_callback (gpointer user_data)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->anti_aliased_mode_changed) != NULL) {
+		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->anti_aliased_mode_changed) 
+			(FM_DIRECTORY_VIEW (user_data));
+	}
+}
+
 static double fm_directory_view_preferred_zoom_levels[] = {
 	(double) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
 	(double) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
@@ -771,6 +816,27 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					   show_hidden_files_changed_callback,
 					   directory_view);
+	
+	/* Keep track of changes in text attribute names */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   text_attribute_names_changed_callback,
+					   directory_view);
+
+	/* Keep track of changes in the font family */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					   directory_view_font_family_changed_callback, 
+					   directory_view);
+
+	/* Keep track of changes in clicking policy */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					   click_policy_changed_callback,
+					   directory_view);
+	
+	/* Keep track of changes in graphics trade offs */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+					   anti_aliased_mode_changed_callback, 
+					   directory_view);
+
 }
 
 static void
@@ -784,6 +850,22 @@ fm_directory_view_destroy (GtkObject *object)
 					      show_hidden_files_changed_callback,
 					      view);
 	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					      text_attribute_names_changed_callback,
+					      view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					      directory_view_font_family_changed_callback,
+					      view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					      click_policy_changed_callback,
+					      view);
+	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+					      anti_aliased_mode_changed_callback,
+					      view);
+
 	if (view->details->model != NULL) {
 		disconnect_model_handlers (view);
 		nautilus_directory_unref (view->details->model);
