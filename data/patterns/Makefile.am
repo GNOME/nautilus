@@ -8,7 +8,6 @@ back_DATA = \
 	beige_tile.jpg \
 	blue_gray_rough.png \
 	blue_sky.png \
-	bricks.jpg \
 	brown_bag.png \
 	bubbles.png \
 	buffedwood.jpg \
