@@ -1,3 +1,19 @@
+2000-11-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	buddy: Pavel Cisler <pavel@eazel.com>
+
+	We now use the "noauto" flag in the fstab entry for the device
+	to determine if the volume is removable. This is still imperfect,
+	but much better than the enumerated case that was being used before.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_volume_is_removable),
+	(nautilus_volume_monitor_get_removable_volumes),
+	(mnttab_add_mount_volume), (mntent_add_mount_volume):
+
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Added is_removable field to NautilusVolume struct.
+	
 2000-11-27  Darin Adler  <darin@eazel.com>
 
 	* components/services/install/lib/Makefile.am:

@@ -91,6 +91,7 @@ struct NautilusVolume {
 	
 	gboolean is_mounted;
 	gboolean did_mount;
+	gboolean is_removable;
 	
 	gboolean is_read_only;
 };

@@ -232,39 +232,7 @@ floppy_sort (NautilusVolume *volume1, NautilusVolume *volume2)
 gboolean		
 nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
 {
-	/* FIXME bugzilla.eazel.com 2450: 
-	   this does not detect removable volumes that are not
-           CDs or floppies (e.g. zip drives, DVD-ROMs, those weird 20M
-           super floppies, etc) */
-
-	switch (volume->type) {
-	case NAUTILUS_VOLUME_CDROM:
-	case NAUTILUS_VOLUME_UDF:
-	case NAUTILUS_VOLUME_FLOPPY:
-		return TRUE;
-		break;
-
-	case NAUTILUS_VOLUME_EXT2:	
-	case NAUTILUS_VOLUME_AFFS:
-	case NAUTILUS_VOLUME_FAT:
-	case NAUTILUS_VOLUME_HPFS:
-	case NAUTILUS_VOLUME_MINIX:
-	case NAUTILUS_VOLUME_MSDOS:
-	case NAUTILUS_VOLUME_NFS:
-	case NAUTILUS_VOLUME_PROC:
-	case NAUTILUS_VOLUME_SMB:
-	case NAUTILUS_VOLUME_UFS:
-	case NAUTILUS_VOLUME_UNSDOS:
-	case NAUTILUS_VOLUME_VFAT:
-	case NAUTILUS_VOLUME_XENIX:
-	case NAUTILUS_VOLUME_XIAFS:
-		return FALSE;
-		break;
-				
-	default:
-		return FALSE;
-		break;
-	}
+	return volume->is_removable;
 }
 
 
@@ -285,8 +253,6 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 
 	/* Move all floppy mounts to top of list */
 	return g_list_sort (g_list_reverse (list), (GCompareFunc) floppy_sort);
-
-	
 }
 
 /* nautilus_volume_monitor_get_volume_name
@@ -910,7 +876,8 @@ mnttab_add_mount_volume (NautilusVolumeMonitor *monitor, struct mnttab *tab)
 	volume = g_new0 (NautilusVolume, 1);
 	volume->fsname = g_strdup (tab->mnt_fstype);
 	volume->mount_path = g_strdup (tab->mnt_mountp);
-
+	volume->is_removable = FALSE;
+	
 	mounted = FALSE;
 
 	if (strcmp (tab->mnt_fstype, "iso9660") == 0) {
@@ -985,6 +952,9 @@ mntent_add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 		mounted = mount_volume_xiafs_add (volume);
 	}
 
+	/* Parse entry for mount option. noauto is being used to assume a removable volume */
+	volume->is_removable = strstr (ent->mnt_opts, MNTOPT_NOAUTO) != NULL;
+		
 	if (mounted) {
 		volume->is_read_only = strstr (ent->mnt_opts, MNTOPT_RO) != NULL;
 		monitor->details->volumes = g_list_append (monitor->details->volumes, volume);
