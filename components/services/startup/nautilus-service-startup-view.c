@@ -151,8 +151,15 @@ make_http_post_request(gchar *uri, gchar *post_body)
     return request;
 }
 
-/* utility routine to show an error message */
+/* utility to force updating to happen */
+static void
+update_now()
+{
+	while (gtk_events_pending())
+		gtk_main_iteration();
+}
 
+/* utility routine to show an error message */
 static void
 show_feedback(NautilusServicesContentView *view, gchar* error_message)
 {
@@ -171,12 +178,14 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
 	FILE* config_file;
 	gchar buffer[256];
-	gchar *config_file_name, *config_string;
+	gchar *config_file_name, *config_string, *uri, *response_str;
 	GString* config_data;
 	xmlDocPtr config_doc;
+	ghttp_request *request;	
 	
 	show_feedback(view, "gathering configuration data...");
-	
+	update_now();
+			
 	config_doc = create_configuration_metafile();
 	if (config_doc == NULL) {
 		show_feedback(view, "Sorry, there was an error during the gathering");
@@ -205,12 +214,30 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	/* move into transmission phase by changing the feedback message */
 	
 	show_feedback(view, "transmitting configuration data...");
+	update_now();
 	
 	/* send the config file to the server via HTTP */
+	/* FIXME: need to url-encode the arguments here */
+	uri = g_strdup_printf("http://%s/set.pl", SERVICE_DOMAIN_NAME);
+	
+	/* FIXME:  we need to pass in the token and make make_http_post_request pass it in the cookie */
+	request = make_http_post_request(uri, config_string);
+	response_str = ghttp_get_body(request);
+	g_free(uri);
+	ghttp_request_destroy(request);
+	
+	/* handle the error response */
+	if (strstr(response_str, "<ERROR field=") == response_str) {
+			show_feedback(view, "Sorry, but there was an error.  Please try again some other time.");
+	}
+	else {
 	
 	/* give error feedback or go to the summary form if successful */
+		go_to_uri(view, "eazel:overview?config");
+	}
+	
 	g_free(config_string);
-	show_feedback(view, "done transmitting configuration data.");
+
 }
 
 /* handle the registration command */
@@ -556,6 +583,46 @@ static void setup_config_form(NautilusServicesContentView *view)
 
 }
 
+/* create the overview form */
+
+static void setup_overview_form(NautilusServicesContentView *view)
+{
+	gchar *message;
+	GtkWidget *temp_widget;
+	
+	/* allocate a vbox as the container */	
+	view->details->form = gtk_vbox_new(FALSE,0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+
+	/* set up the title */	
+	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Overview");
+
+	/* if we came from signup, add a congrats message */
+	/* FIXME: get the text from a file or from the service */
+	
+	if (nautilus_str_has_suffix(view->details->uri, "config")) {
+		message = "Congratulations, you have successfully transmitted your configuration!";
+		temp_widget = gtk_label_new (message);
+ 	
+		gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+ 		gtk_widget_show (temp_widget);
+	}
+	
+	message = "This is a placeholder for the myeazel service summary page.";
+	temp_widget = gtk_label_new (message);
+ 	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	
+	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+ 	gtk_widget_show (temp_widget);
+
+	
+	/* add a label for feedback, but don't show it until there's an error */
+	view->details->feedback_text = gtk_label_new ("");	
+	gtk_box_pack_start(GTK_BOX(view->details->form), view->details->feedback_text, 0, 0, 8);			 	
+
+}
+
 static void
 nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass)
 {
@@ -632,14 +699,14 @@ nautilus_service_startup_view_load_uri (NautilusServicesContentView *view,
 	document_name = strchr(uri, ':');
 	
 	/* load the appropriate form, based on the uri and the registration state */
-	if (document_name && !strncmp(document_name + 1, "signup", 6)) {
+	if (document_name && !strncmp(document_name + 1, "signup", 6))
 		setup_signup_form(view);
-	}
-	else if (document_name && !strncmp(document_name + 1, "config", 5)) {
+	else if (document_name && !strncmp(document_name + 1, "config", 6))
 		setup_config_form(view);
-	}	
+	else if (document_name && !strncmp(document_name + 1, "overview", 8))
+		setup_overview_form(view);
 	else
-		setup_test_form(view);
+		setup_test_form(view); /* eventually, this should be setup_bad_location_form */
 }
 
 static void
