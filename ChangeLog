@@ -1,3 +1,64 @@
+2000-09-05  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: Removed some special-case file names
+	that aren't needed any more.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_link_name): Added comments to help localizers.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_date_as_string): Added comments to help
+	localizers. Deals with bug 2720 (Please add a comment to help
+	localizers do date translations)
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text): Added a comment to help localizers.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info): Unmarked one string
+	that doesn't make sense to translate and adding a comment to
+	another to explain why it is marked for translation.
+	(add_separator): Changed add_open_with_gtk_menu_item into this
+	function, which deals with bug 2735 (add_open_with_gtk_menu_item
+	only called to create separator?).
+	(create_open_with_gtk_menu): Call the new add_separator function.
+	* src/nautilus-zoom-control.c: (create_zoom_menu_item): Added a
+	comment to help localizers.
+	
+	* libnautilus-extensions/nautilus-link.c: (make_local_path): Fixed
+	logic here that was doing strange things with URIs.  This deals
+	with bugs 2492 (Incorrect unescaping when dealing with link
+	files), 2493 (Mysterious and probably incorrect "+7" when escaping
+	URI for link file), and 2737 (link code must make path into URI).
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* po/POTFILES.in:
+	Removed these duplicate files. Rebecca moved them to src, but she
+	didn't remove the old ones. I didn't have to remove them from the
+	makefile, since they were already removed, but I had to remove
+	them from the list of files to translate.
+	
+	* src/nautilus-search-bar-criterion.h:
+	* libnautilus-extensions/nautilus-search-uri.h:
+	Moved some of the stuff from nautilus-search-bar-criterion.h to
+	here, since it's really about search URIs, not specific to the
+	search bar. Over time we will move more.
+	
+	* src/nautilus-search-bar-criterion.c: Added include of the
+	nautilus-search-uri.h header now that stuff was moved there.
+	
+	* src/file-manager/fm-search-list-view.c:
+	Fixed includes to get the nautilus-search-bar-criterion.h from its
+	new location. This is not a real solution to the problem that was
+	exposed by moving the search bar code. The bug 2815 covers this.
+	* src/nautilus-complex-search-bar.c: Fix search bar so it gets
+	the real location of the header. It was including the old one.
+	* src/nautilus-simple-search-bar.c: Fix search bar so it gets
+	the real location of the header. It was including the old one.
+
+	* src/nautilus-main.c: (main): Some small cleanups including some
+	additional parameter checking and returning a failure code to
+	the invoking shell in the case where the parameters are not
+	consistent.
+	
 2000-09-05  Pavel Cisler  <pavel@eazel.com>
 
 	* configure.in:

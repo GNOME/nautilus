@@ -267,19 +267,9 @@ nautilus_link_get_additional_text (const char *link_file_uri)
 static char *
 make_local_path (const char *image_uri)
 {
-	char *escaped_uri, *unescaped_uri, *local_directory_path, *local_file_path;
+	char *escaped_uri, *local_directory_path, *local_directory_uri, *local_file_path;
 	
-	/* We can't call nautilus_get_local_path_from_uri here, since
-	 * it will return NULL since it's not a local uri, but we
-	 * still should unescape.
-	 */
-	unescaped_uri = gnome_vfs_unescape_string (image_uri, "/");
-	/* FIXME bugzilla.eazel.com 2492: Why should we unescape? The above can return NULL for
-	 * URIs with slashes in it and other cases like that.
-	 */
-	/* FIXME bugzilla.eazel.com 2493: Why the +7 below? This seems totally wrong. */
-	escaped_uri = gnome_vfs_escape_slashes (unescaped_uri + 7);		
-	g_free (unescaped_uri);
+	escaped_uri = gnome_vfs_escape_slashes (image_uri);		
 	
 	local_directory_path = g_strconcat
 		(g_get_home_dir (),
@@ -287,9 +277,10 @@ make_local_path (const char *image_uri)
 		 NULL);
 
 	/* We must create the directory if it doesn't exist. */
+	local_directory_uri = gnome_vfs_get_uri_from_local_path (local_directory_path);
 	/* FIXME bugzilla.eazel.com 2494: Is it OK to ignore the error here? */
-	/* FIXME bugzilla.eazel.com 2737: This needs to make the path into a URI if it's going to use gnome_vfs. */
-	gnome_vfs_make_directory (local_directory_path, REMOTE_ICON_DIR_PERMISSIONS);
+	gnome_vfs_make_directory (local_directory_uri, REMOTE_ICON_DIR_PERMISSIONS);
+	g_free (local_directory_uri);
 
 	local_file_path = nautilus_make_path (local_directory_path, escaped_uri);
 	g_free (escaped_uri);

@@ -44,12 +44,6 @@ if (!@ARGV)
        "./libtool" => 1,
        "./ltconfig" => 1,
        "./ltmain.sh" => 1,
-       "./macros/gnome-fileutils.m4" => 1,
-       "./macros/gnome-objc-checks.m4" => 1,
-       "./macros/gnome-vfs.m4" => 1,
-       "./src/file-manager/desktop-canvas.c" => 1,
-       "./src/file-manager/desktop-layout.c" => 1,
-       "./src/file-manager/desktop-window.c" => 1,
       );
   }
 

@@ -456,15 +456,30 @@ get_link_name (const char *name, int count)
 	 */
 	switch (count % 10) {
 	case 1:
+		/* Localizers: Feel free to leave out the "st" suffix
+		 * if there's no way to do that nicely for a
+		 * particular language.
+		 */
 		return g_strdup_printf (_("%dst link to %s"), count, name);
 	case 2:
+		/* Localizers: Feel free to leave out the "nd" suffix
+		 * if there's no way to do that nicely for a
+		 * particular language.
+		 */
 		return g_strdup_printf (_("%dnd link to %s"), count, name);
 	case 3:
+		/* Localizers: Feel free to leave out the "rd" suffix
+		 * if there's no way to do that nicely for a
+		 * particular language.
+		 */
 		return g_strdup_printf (_("%drd link to %s"), count, name);
+	default:
+		/* Localizers: Feel free to leave out the "th" suffix
+		 * if there's no way to do that nicely for a
+		 * particular language.
+		 */
+		return g_strdup_printf (_("%dth link to %s"), count, name);
 	}
-
-	/* The general case. */
-	return g_strdup_printf (_("%dth link to %s"), count, name);
 }
 
 static char *

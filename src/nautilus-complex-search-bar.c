@@ -25,22 +25,19 @@
 /* nautilus-complex-search-bar.c - Search bar containing many attributes
  */
 
-
-
+#include <config.h>
 #include "nautilus-complex-search-bar.h"
 
-
+#include "nautilus-search-bar-criterion-private.h"
+#include "nautilus-search-bar-criterion.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtkeventbox.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-search-bar-criterion.h>
-#include <libnautilus-extensions/nautilus-search-bar-criterion-private.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 struct NautilusComplexSearchBarDetails {

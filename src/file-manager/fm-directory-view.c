@@ -1120,10 +1120,17 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	} else if (folder_count == 0) {
 		status_string = g_strdup (non_folder_str);
 	} else if (non_folder_count == 0) {
-		status_string = g_strdup_printf (_("%s%s"), 
+		/* No use marking this for translation, since you
+		 * can't reorder the strings, which is the main thing
+		 * you'd want to do.
+		 */
+		status_string = g_strdup_printf ("%s%s",
 						 folder_count_str, 
 						 folder_item_count_str);
 	} else {
+		/* This is marked for translation in case a localizer
+		 * needs to change ", " to something else.
+		 */
 		status_string = g_strdup_printf (_("%s%s, %s"), 
 						 folder_count_str, 
 						 folder_item_count_str,
@@ -2577,18 +2584,11 @@ other_viewer_callback (GtkMenuItem *menu_item, GList *files)
 }
 
 static void
-add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
+add_separator (GtkMenu *menu)
 {
 	GtkWidget *menu_item;
 	
-	/* FIXME bugzilla.eazel.com 2735: This is only called to add a separator? */
-	if (label != NULL) {
-		menu_item = gtk_menu_item_new_with_label (label);
-	} else {
-		/* No label means this is a separator. */
-		menu_item = gtk_menu_item_new ();
-	}
-
+	menu_item = gtk_menu_item_new ();
 	finish_adding_menu_item (menu, menu_item, TRUE);
 }
 
@@ -2700,13 +2700,10 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 	if (nautilus_g_list_exactly_one_item (files)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-		applications = 
-			nautilus_mime_get_short_list_applications_for_uri (uri);
-
+		applications = nautilus_mime_get_short_list_applications_for_uri (uri);
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
-
 		gnome_vfs_mime_application_list_free (applications); 
 
 		append_gtk_menu_item_with_view (view,
@@ -2716,15 +2713,12 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 			 			other_application_callback,
 			 			files);
 
-		add_open_with_gtk_menu_item (open_with_menu, NULL);
+		add_separator (open_with_menu);
 
-		components = 
-			nautilus_mime_get_short_list_components_for_uri (uri);
-
+		components = nautilus_mime_get_short_list_components_for_uri (uri);
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
-
 		gnome_vfs_mime_component_list_free (components); 
 
 		g_free (uri);

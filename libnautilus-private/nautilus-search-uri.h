@@ -26,6 +26,15 @@
 
 #include <glib.h>
 
+/* These strings are used programatically; they must not be translated */
+#define NAUTILUS_SEARCH_URI_TEXT_NAME		"file_name"
+#define NAUTILUS_SEARCH_URI_TEXT_CONTENT	"content"
+#define NAUTILUS_SEARCH_URI_TEXT_TYPE		"file_type"
+#define NAUTILUS_SEARCH_URI_TEXT_SIZE		"size"
+#define NAUTILUS_SEARCH_URI_TEXT_EMBLEMS	"keywords"
+#define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"modified"
+#define NAUTILUS_SEARCH_URI_TEXT_OWNER		"owner"
+
 gboolean nautilus_is_search_uri       (const char *uri);
 char *   nautilus_search_uri_to_human (const char *search_uri);
 

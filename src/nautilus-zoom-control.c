@@ -463,7 +463,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 	double zoom_level;
 	NautilusZoomControl *zoom_control;
 		
-	zoom_level = *(double*) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
+	zoom_level = * (double *) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
 	zoom_control = NAUTILUS_ZOOM_CONTROL (callback_data);
 	
 	/* Check to see if we can zoom out */
@@ -483,7 +483,10 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level)
 
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	
-	g_snprintf(item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
+	/* This is marked for localization in case the % sign is not
+	 * appropriate in some locale. I guess that's unlikely.
+	 */
+	g_snprintf (item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
 	menu_item = gtk_check_menu_item_new_with_label (item_text);
 
 	zoom_level_ptr = g_new (double, 1);
@@ -512,7 +515,7 @@ create_zoom_menu(GtkWidget *zoom_control)
 	p = NAUTILUS_ZOOM_CONTROL (zoom_control)->details->preferred_zoom_levels;
 	
 	while (p != NULL) {
-		create_zoom_menu_item (menu, zoom_control,  *(double*)p->data);
+		create_zoom_menu_item (menu, zoom_control, * (double *) p->data);
 		p = g_list_next (p);
 	}
 	

@@ -703,8 +703,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 		
+		/* The list of characters that cause line breaks can be localized. */
 		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece, _(" -_,;.?/&"), max_text_width, TRUE);
+			(details->font, text_piece, _(" -_,;.?/&"),
+			max_text_width, TRUE);
 		
 		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && !details->is_renaming) {

@@ -29,17 +29,23 @@
 #include "fm-directory-view.h"
 #include "fm-list-view-private.h"
 #include "nautilus-indexing-info.h"
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
-#include <libgnomevfs/gnome-vfs-utils.h>
-
-#include <libgnome/gnome-i18n.h>
+/* FIXME bugzilla.eazel.com 2815: This code uses part of the
+ * NautilusSearchBarCriterion class, which is really for complex
+ * search bar user interface. We only need to do some non-UI
+ * manipulations of the search URI, so we can refactor the code, put
+ * more into nautilus-search-uri.[ch] and get rid of this terrible
+ * include statement.
+ */
+#include "../nautilus-search-bar-criterion.h"
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_INDEXING_INFO			"/File/Indexing Info..."
@@ -539,5 +545,4 @@ reveal_selected_items_callback (gpointer ignored, gpointer user_data)
 	
 
 	nautilus_file_list_free (selection);
-
 }

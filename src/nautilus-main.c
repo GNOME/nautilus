@@ -95,13 +95,12 @@ main (int argc, char *argv[])
 	gboolean stop_desktop;
 	gboolean start_desktop;
 	gboolean perform_self_check;
-	
 	poptContext popt_context;
 	const char **args;
-	
 	CORBA_ORB orb;
 	NautilusApplication *application;
-	
+	char **argv_copy;
+
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
@@ -128,18 +127,49 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
-	
-	/* Initialize the services that we use. */
-	kill_shell		= FALSE;
-	restart_shell		= FALSE;
-	stop_desktop		= FALSE;
-	start_desktop		= FALSE;
-	perform_self_check	= FALSE;
 
+	/* Get parameters. */
+	kill_shell = FALSE;
+	restart_shell = FALSE;
+	stop_desktop = FALSE;
+	start_desktop = FALSE;
+	perform_self_check = FALSE;
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
-				    
+	
+	/* Check for argument consistency. */
+	args = poptGetArgs (popt_context);
+	if (perform_self_check && args != NULL) {
+		fprintf (stderr, _("nautilus: --check cannot be used with URIs.\n"));
+		return EXIT_FAILURE;
+	}
+	if (perform_self_check && (kill_shell || restart_shell || stop_desktop || start_desktop)) {
+		fprintf (stderr, _("nautilus: --check cannot be used with other options.\n"));
+		return EXIT_FAILURE;
+	}
+	if (kill_shell && args != NULL) {
+		fprintf (stderr, _("nautilus: --quit cannot be used with URIs.\n"));
+		return EXIT_FAILURE;
+	}
+	if (restart_shell && args != NULL) {
+		fprintf (stderr, _("nautilus: --restart cannot be used with URIs.\n"));
+		return EXIT_FAILURE;
+	}
+	if (kill_shell && start_desktop) {
+		fprintf (stderr, _("nautilus: --quit and --start-desktop cannot be used together.\n"));
+		return EXIT_FAILURE;
+	}
+	if (restart_shell && start_desktop) {
+		fprintf (stderr, _("nautilus: --restart and --start-desktop cannot be used together.\n"));
+		return EXIT_FAILURE;
+	}
+	if (stop_desktop && start_desktop) {
+		fprintf (stderr, _("nautilus: --stop-desktop and --start-desktop cannot be used together.\n"));
+		return EXIT_FAILURE;
+	}
+
+	/* Initialize the services that we use. */
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
 	gnome_vfs_init ();
@@ -156,55 +186,38 @@ main (int argc, char *argv[])
 #endif
 	} else {
 		/* Run the nautilus application. */
-
-		args = poptGetArgs (popt_context);
-
-		if (kill_shell && args != NULL) {
-			fprintf(stderr, _("nautilus: --quit cannot be used with URIs.\n"));
-		} else if (restart_shell && args != NULL) {
-			fprintf(stderr, _("nautilus: --restart cannot be used with URIs.\n"));
-		} else if (kill_shell && start_desktop) {
-			fprintf(stderr, _("nautilus: --quit and --start-desktop cannot be used together.\n"));
-		} else if (restart_shell && start_desktop) {
-			fprintf(stderr, _("nautilus: --restart and --start-desktop cannot be used together.\n"));
-		} else if (stop_desktop && start_desktop) {
-			fprintf(stderr, _("nautiluls: --stop-desktop and --start-desktop cannot be used together.\n"));
-		} else {
-			application = nautilus_application_new ();
-			nautilus_application_startup (application,
-						      kill_shell,
-						      restart_shell,
-						      stop_desktop,
-						      start_desktop,
-						      args);
-			if (nautilus_main_is_event_loop_needed ()) {
-				bonobo_main ();
-			}
-			bonobo_object_unref (BONOBO_OBJECT (application));
+		application = nautilus_application_new ();
+		nautilus_application_startup
+			(application,
+			 kill_shell, restart_shell,
+			 stop_desktop, start_desktop,
+			 args);
+		if (nautilus_main_is_event_loop_needed ()) {
+			bonobo_main ();
 		}
+		bonobo_object_unref (BONOBO_OBJECT (application));
 		poptFreeContext(popt_context);
 	}
 
 	gnome_vfs_shutdown ();
 
-	/* if told to restart, exec() myself again */
-	if (getenv ("_NAUTILUS_RESTART")) {
-		char *my_path = argv[0];
-		char **argv_copy;
-		int i;
-
+	/* If told to restart, exec() myself again. This is used when
+	 * the program is told to restart with CORBA, for example when
+	 * an update takes place.
+	 */
+	if (getenv ("_NAUTILUS_RESTART") != NULL) {
 		unsetenv ("_NAUTILUS_RESTART");
 
-		/* might eventually want to copy all the parameters from argv into the new exec.
-		 * for now, though, that would just interfere with the re-creation of windows
-		 * (whose info is stored in gconf).
+		/* Might eventually want to copy all the parameters
+		 * from argv into the new exec. For now, though, that
+		 * would just interfere with the re-creation of
+		 * windows based on the window info stored in gconf,
+		 * including whether the desktop was started.
 		 */
 		argv_copy = g_new0 (char *, 2);
 		argv_copy[0] = argv[0];
-		argv_copy[1] = NULL;
-		i = i;
 
-		execvp(my_path, argv_copy);
+		execvp (argv[0], argv_copy);
 	}
 
 	return EXIT_SUCCESS;

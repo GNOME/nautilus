@@ -1731,15 +1731,27 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	 */
 
 	if (file_date_age == 0)	{
-		/* today, use special word */
+		/* Today, use special word.
+		 * Note to localizers: You can look at man strftime
+		 * for details on the format, but do no use format
+		 * strings that are specific to the GNU version of
+		 * the library, or you will make Nautilus less portable.
+		 */
 		format = _("today %-I:%M %p");
 	} else if (file_date_age == 1) {
-		/* yesterday, use special word */
+		/* Yesterday, use special word.
+		 * Note to localizers: Same issues as "today" string.
+		 */
 		format = _("yesterday %-I:%M %p");
 	} else if (file_date_age < 7) {
-		/* current week, include day of week */
+		/* Current week, include day of week.
+		 * Note to localizers: Same issues as "today" string.
+		 */
 		format = _("%A %-m/%-d/%y %-I:%M %p");
 	} else {
+		/* Other dates.
+		 * Note to localizers: Same issues as "today" string.
+		 */
 		format = _("%-m/%-d/%y %-I:%M %p");
 	}
 

@@ -24,31 +24,31 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include <config.h>
+#include "nautilus-search-bar-criterion.h"
+
+#include "nautilus-search-bar-criterion-private.h"
+#include "nautilus-signaller.h"
+#include <gtk/gtkentry.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dateedit.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-dateedit-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include "nautilus-search-bar-criterion.h"
-#include "nautilus-search-bar-criterion-private.h"
-#include "nautilus-signaller.h"
-
+#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#include <gtk/gtksignal.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-
-#include <libgnomeui/gnome-dateedit.h>
-#include <libgnomeui/gnome-uidefs.h>
 
 static char * criteria_titles [] = {
 	  N_("Name"),
@@ -570,15 +570,16 @@ static char *
 get_name_location_for (int relation_number, char *name_text)
 {
 	const char *possible_relations[] = { "contains",
-					    "begins_with",
-					    "ends_with",
-					    "matches",
-					    "matches_regexp" };
+					     "begins_with",
+					     "ends_with",
+					     "matches",
+					     "matches_regexp" };
 	
 	g_assert (relation_number >= 0);
 	g_assert (relation_number < 5);
 
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_NAME,
+	return g_strdup_printf ("%s %s %s",
+				NAUTILUS_SEARCH_URI_TEXT_NAME,
 				possible_relations[relation_number], 
 				name_text);
 	
@@ -595,7 +596,8 @@ get_content_location_for (int relation_number, char *name_text)
 	g_assert (relation_number>= 0);
 	g_assert (relation_number < 4);
 
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_CONTENT, 
+	return g_strdup_printf ("%s %s %s",
+				NAUTILUS_SEARCH_URI_TEXT_CONTENT, 
 				possible_relations[relation_number],
 				name_text);
 }
@@ -610,7 +612,9 @@ get_file_type_location_for (int relation_number,
 	g_assert (relation_number == 0 || relation_number == 1);
 	g_assert (value_number >= 0);
 	g_assert (value_number < 5);
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_TYPE, 
+
+	return g_strdup_printf ("%s %s %s",
+				NAUTILUS_SEARCH_URI_TEXT_TYPE, 
 				possible_relations[relation_number],
 				possible_values[value_number]);
 }
@@ -683,6 +687,16 @@ get_date_modified_location_for (int relation_number,
 	} else {
 		result = g_strdup ("");
 	}
+	if (relation_number != 5 && relation_number != 6) {
+		if (date_string == NULL) {
+			return g_strdup ("");
+		}
+		else {
+			result = g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
+						  possible_relations[relation_number],
+						  date_string);
+		}
+	}
 	return result;
 	
 }
@@ -693,8 +707,10 @@ get_owner_location_for (int relation_number,
 {
 	const char *possible_relations[] = { "is", "is not" };
 	g_assert (relation_number == 0 || relation_number == 1);
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_OWNER, possible_relations[relation_number], owner_text);
-	
+	return g_strdup_printf ("%s %s %s",
+				NAUTILUS_SEARCH_URI_TEXT_OWNER,
+				possible_relations[relation_number],
+				owner_text);
 }
 
 static void                                

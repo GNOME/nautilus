@@ -28,11 +28,12 @@
 #include <config.h>
 #include "nautilus-simple-search-bar.h"
 
+#include "nautilus-search-bar-criterion.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 
 struct NautilusSimpleSearchBarDetails {
 	GtkEntry *entry;
