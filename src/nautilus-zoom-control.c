@@ -811,6 +811,36 @@ nautilus_zoom_control_can_zoom_out (NautilusZoomControl *zoom_control)
 		 > zoom_control->details->min_zoom_level);
 }
 
+static gboolean
+nautilus_zoom_control_scroll_event (GtkWidget *widget, GdkEventScroll *event)
+{
+	NautilusZoomControl *zoom_control;
+	
+	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+	
+	if (event->type != GDK_SCROLL) {
+		return FALSE;
+	}
+	
+	if (event->direction == GDK_SCROLL_DOWN &&
+	    nautilus_zoom_control_can_zoom_out (zoom_control)) {
+		g_signal_emit (widget, signals[ZOOM_OUT], 0);			
+	} else if (event->direction == GDK_SCROLL_UP &&
+		   nautilus_zoom_control_can_zoom_in (zoom_control)) {
+		g_signal_emit (widget, signals[ZOOM_IN], 0);			
+	}
+
+	/* We don't change our state (to reflect the new zoom) here. The zoomable will
+	 * call back with the new level. Actually, the callback goes to the view-frame
+	 * containing the zoomable which, in turn, emits zoom_level_changed, which
+	 * someone (e.g. nautilus_window) picks up and handles by calling into us -
+	 * nautilus_zoom_control_set_zoom_level.
+	 */	  
+	return TRUE;
+}
+
+
+
 static void
 nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 {
@@ -827,6 +857,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
   	widget_class->leave_notify_event = nautilus_zoom_control_leave_notify;
 	widget_class->get_accessible = nautilus_zoom_control_get_accessible;
+	widget_class->scroll_event = nautilus_zoom_control_scroll_event;
 	
 	class->change_value = nautilus_zoom_control_change_value;
 
