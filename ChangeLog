@@ -1,5 +1,18 @@
 2001-10-02  Darin Adler  <darin@bentspoon.com>
 
+	Fix the longstanding problem where the Notes and History sidebar
+	panels failed to load.
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(die_on_failed_activation): Give better error messages.
+	(get_factory): Check the ev result from oaf_activate_from_id
+	rather than relying on getting NIL when it fails.
+	(open_metafile): New helper function.
+	(get_metafile): Don't complain if the open call fails the first
+	time, and re-get the factory and retry before doing a g_error.
+
+2001-10-02  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-window.c: (nautilus_window_destroy),
 	(nautilus_window_set_viewed_file): Fix bug where we would leave a
 	file monitored when we closed the window.
