@@ -13,7 +13,6 @@ INCLUDES =						\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)				\
-	-I/usr/include/rpm				\
 	$(GCONF_CFLAGS)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	$(GNOMEUI_CFLAGS)				\

@@ -32,7 +32,6 @@
 #include "libtrilobite/libtrilobite.h"
 #include "libtrilobite/libammonite-gtk.h"
 
-#include <rpm/rpmlib.h>
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>

@@ -1,5 +1,33 @@
 2001-02-20  Maciej Stachowiak  <mjs@eazel.com>
 
+	Assorted build twiddling.
+	
+	* components/services/install/command-line/Makefile.am: Remove
+	-I/usr/include/rpm
+
+	* components/services/install/nautilus-view/Makefile.am: Likewise.
+	
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	Remove gratuitous include of rpm header.
+
+	* components/services/inventory/Makefile.am: Formatting tweaks.
+	
+	* components/services/summary/*: flatten this whole directory:
+	summary/lib => summary
+	summary/nautilus-view => summary
+	summary/nautilus-view/test => summary
+	summary/nautilus-view/icons/gray_tab_pieces =>summary/nautilus-view/icons
+	
+	* configure.in: Adjust for flattening of
+	components/services/summary
+	
+	* libnautilus-extensions/nautilus-clickable-image.c
+	(adjust_coordinates_for_window): Formatting tweak.
+
+	* user-guide/gnugpl/.cvsignore: Silence cvs.
+
+2001-02-20  Maciej Stachowiak  <mjs@eazel.com>
+
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/server/Makefile.am: Remove

@@ -344,13 +344,9 @@ adjust_coordinates_for_window (GdkWindow *widget_window,
 	window = widget_window;
 
 	while (window != event_window && window != NULL) {
-		gdk_window_get_position	 (window,
-					  &wx,
-					  &wy);
-
+		gdk_window_get_position	 (window, &wx, &wy);
 		*x -= wx;
 		*y -= wy;
-
 		window = gdk_window_get_parent (window);
 	}
 }

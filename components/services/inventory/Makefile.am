@@ -93,7 +93,7 @@ trilobiteinclude_HEADERS =			\
 	$(NULL)
 
 libtrilobite_inventory_service_la_SOURCES =	\
-	$(CORBA_GENERATED)	\
+	$(CORBA_GENERATED)	                \
 	$(NULL)
 
 
