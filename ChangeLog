@@ -1,5 +1,26 @@
 2003-04-16  Alexander Larsson  <alexl@redhat.com>
 
+	* cut-n-paste-code/libegg/Makefile.am:
+	* cut-n-paste-code/libegg/egg-recent-vfs-util.c:
+	* cut-n-paste-code/libegg/egg-recent-vfs-util.h:
+	Remove old files
+	
+	* cut-n-paste-code/libegg/egg-recent-item.c:
+	(egg_recent_item_set_uri), (egg_recent_item_get_uri_for_display):
+	* cut-n-paste-code/libegg/egg-recent-model.c:
+	(egg_recent_model_update_item), (egg_recent_model_filter),
+	(egg_recent_model_read), (egg_recent_model_add_full),
+	(egg_recent_model_get_list), (egg_recent_model_changed):
+	* cut-n-paste-code/libegg/egg-screen-exec.c:
+	(egg_screen_exec_environment),
+	(egg_screen_execute_command_line_async):
+
+	Update libegg stuff.
+	Among other stuff this makes nautilus scripts execute in the
+	right directory.
+
+2003-04-16  Alexander Larsson  <alexl@redhat.com>
+
 	* components/emblem/Nautilus_View_emblem.server.in.in:
 	* components/history/Nautilus_View_history.server.in.in:
 	* components/image_properties/Nautilus_View_image_properties.server.in.in:

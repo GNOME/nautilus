@@ -36,7 +36,6 @@
 #include <gconf/gconf-client.h>
 #include "egg-recent-model.h"
 #include "egg-recent-item.h"
-#include "egg-recent-vfs-utils.h"
 
 #define EGG_RECENT_MODEL_FILE_PATH "/.recently-used"
 #define EGG_RECENT_MODEL_BUFFER_SIZE 8192
@@ -261,7 +260,7 @@ egg_recent_model_update_item (GList *items, EggRecentItem *upd_item)
 	while (tmp) {
 		EggRecentItem *item = tmp->data;
 
-		if (egg_recent_vfs_uris_match (egg_recent_item_peek_uri (item), uri)) {
+		if (gnome_vfs_uris_match (egg_recent_item_peek_uri (item), uri)) {
 			egg_recent_item_set_timestamp (item, (time_t) -1);
 
 			egg_recent_model_add_new_groups (item, upd_item);
@@ -559,7 +558,7 @@ egg_recent_model_filter (EggRecentModel *model,
 		    model->priv->scheme_filter_values != NULL) {
 			gchar *scheme;
 			
-			scheme = egg_recent_vfs_get_uri_scheme (uri);
+			scheme = gnome_vfs_get_uri_scheme (uri);
 
 			if (egg_recent_model_string_match
 				(model->priv->scheme_filter_values, scheme))
@@ -586,6 +585,7 @@ egg_recent_model_filter (EggRecentModel *model,
 
 
 
+#if 0
 static void
 egg_recent_model_monitor_list_cb (GnomeVFSMonitorHandle *handle,
 			       const gchar *monitor_uri,
@@ -637,7 +637,7 @@ egg_recent_model_monitor_list (EggRecentModel *model, GList *list)
 			g_free (uri);
 	}
 }
-
+#endif
 
 
 static gboolean
@@ -718,8 +718,10 @@ egg_recent_model_read (EggRecentModel *model, FILE *file)
 
 	content = egg_recent_model_read_raw (model, file);
 
-	if (strlen (content) <= 0)
+	if (strlen (content) <= 0) {
+		g_free (content);
 		return NULL;
+	}
 
 	parse_info_init (&info);
 	
@@ -1212,19 +1214,25 @@ egg_recent_model_add_full (EggRecentModel * model, EggRecentItem *item)
 	GList *list = NULL;
 	gboolean ret = FALSE;
 	gboolean updated = FALSE;
+	char *uri;
 	time_t t;
-	gchar *uri;
 	
 	g_return_val_if_fail (model != NULL, FALSE);
 	g_return_val_if_fail (EGG_IS_RECENT_MODEL (model), FALSE);
+
+	uri = egg_recent_item_get_uri (item);
+	if (strncmp (uri, "recent-files://", strlen ("recent-files://")) == 0) {
+		g_free (uri);
+		return FALSE;
+	} else {
+		g_free (uri);
+	}
 
 	file = egg_recent_model_open_file (model);
 	g_return_val_if_fail (file != NULL, FALSE);
 
 	time (&t);
 	egg_recent_item_set_timestamp (item, t);
-
-	uri = egg_recent_item_get_uri (item);
 
 	if (egg_recent_model_lock_file (file)) {
 
@@ -1384,14 +1392,15 @@ egg_recent_model_get_list (EggRecentModel *model)
 	GList *list=NULL;
 
 	file = egg_recent_model_open_file (model);
-	g_return_val_if_fail (file != NULL, FALSE);
+	g_return_val_if_fail (file != NULL, NULL);
 	
 	if (egg_recent_model_lock_file (file)) {
 		list = egg_recent_model_read (model, file);
 		
 	} else {
 		g_warning ("Failed to lock:  %s", strerror (errno));
-		return FALSE;
+		fclose (file);
+		return NULL;
 	}
 
 	if (!egg_recent_model_unlock_file (file))
@@ -1629,7 +1638,7 @@ egg_recent_model_changed (EggRecentModel *model)
 
 	if (model->priv->limit > 0) {
 		list = egg_recent_model_get_list (model);
-		egg_recent_model_monitor_list (model, list);
+		/* egg_recent_model_monitor_list (model, list); */
 	
 		g_signal_emit (G_OBJECT (model), model_signals[CHANGED], 0,
 			       list);
