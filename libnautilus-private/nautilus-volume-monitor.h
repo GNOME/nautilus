@@ -47,10 +47,14 @@ struct NautilusVolumeMonitorClass {
 	GtkObjectClass parent_class;
 
 	/* Signals */
-	void (* volume_mounted)	  (NautilusVolumeMonitor 	 *monitor,
-				   const NautilusVolume      	 *volume);
-	void (* volume_unmounted) (NautilusVolumeMonitor 	 *monitor,
-				   const NautilusVolume      	 *volume);
+	void (* volume_mounted)	  	(NautilusVolumeMonitor	*monitor,
+				   	 const NautilusVolume	*volume);
+	void (* volume_unmount_started) (NautilusVolumeMonitor	*monitor,
+				   	 const NautilusVolume	*volume);
+	void (* volume_unmount_failed)	(NautilusVolumeMonitor	*monitor,
+				   	 const NautilusVolume	*volume);
+	void (* volume_unmounted) 	(NautilusVolumeMonitor	*monitor,
+				   	 const NautilusVolume	*volume);
 };
 
 typedef enum {

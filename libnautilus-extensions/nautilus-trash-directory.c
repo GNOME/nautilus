@@ -227,7 +227,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 }
 
 static void
-volume_unmounted_callback (NautilusVolumeMonitor *monitor,
+volume_unmount_started_callback (NautilusVolumeMonitor *monitor,
 			   NautilusVolume *volume,
 			   NautilusTrashDirectory *trash)
 {
@@ -251,8 +251,8 @@ nautilus_trash_directory_initialize (gpointer object, gpointer klass)
 		(GTK_OBJECT (volume_monitor), "volume_mounted",
 		 volume_mounted_callback, trash);
 	gtk_signal_connect
-		(GTK_OBJECT (volume_monitor), "volume_unmounted",
-		 volume_unmounted_callback, trash);
+		(GTK_OBJECT (volume_monitor), "volume_unmount_started",
+		 volume_unmount_started_callback, trash);
 	nautilus_volume_monitor_each_mounted_volume
 		(volume_monitor, add_one_volume, trash);
 }

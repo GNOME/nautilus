@@ -137,6 +137,8 @@ static gboolean mnttab_exists;
 /* The NautilusVolumeMonitor signals.  */
 enum {
 	VOLUME_MOUNTED,
+	VOLUME_UNMOUNT_STARTED,
+	VOLUME_UNMOUNT_FAILED,
 	VOLUME_UNMOUNTED,
 	LAST_SIGNAL
 };
@@ -213,6 +215,24 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_mounted),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	signals[VOLUME_UNMOUNT_STARTED] 
+		= gtk_signal_new ("volume_unmount_started",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+						     volume_unmount_started),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	signals[VOLUME_UNMOUNT_FAILED] 
+		= gtk_signal_new ("volume_unmoun_failed",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+						     volume_unmount_failed),
 				  gtk_marshal_NONE__POINTER,
 				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
@@ -1449,18 +1469,40 @@ typedef struct {
 typedef struct {
 	char *message;
 	char *detailed_message;
-	const char *title;
+	char *mount_point;
+	gboolean mount;
 } MountStatusInfo;
 
 
 static gboolean
-display_mount_status (gpointer callback_data)
+display_mount_error (gpointer callback_data)
 {
-	MountStatusInfo *info = callback_data;
-		
-	eel_show_error_dialog_with_details 
-		(info->message, info->title, info->detailed_message, NULL);
+	MountStatusInfo *info;
+	const char *title;
+	NautilusVolumeMonitor *monitor;
+	NautilusVolume *volume;
+	GList *p;
+	
+	info = callback_data;
+	
+	title = info->mount ? _("Mount Error") :  _("Unmount Error");
 
+	eel_show_error_dialog_with_details 
+		(info->message, title, info->detailed_message, NULL);
+	
+	if (!info->mount) {
+		/* Locate volume in current list */
+		monitor = nautilus_volume_monitor_get ();
+		for (p = monitor->details->mounts; p != NULL; p = p->next) {
+			volume = (NautilusVolume *)p->data;
+			if (strcmp (volume->mount_path, info->mount_point) == 0) {
+				gtk_signal_emit (GTK_OBJECT (monitor), signals[VOLUME_UNMOUNT_FAILED], volume);
+				break;
+			}
+		}
+	}
+		
+	g_free (info->mount_point);
 	g_free (info->message);
 	g_free (info->detailed_message);
 	g_free (info);
@@ -1551,9 +1593,9 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	info = g_new0 (MountStatusInfo, 1);
 	info->message = message;	
 	info->detailed_message = g_strdup (detailed_msg);
-	info->title = mount ? _("Mount Error") :  _("Unmount Error");
-
-	gtk_idle_add (display_mount_status, info);
+	info->mount_point = g_strdup (mount_path);
+	info->mount = mount;
+	gtk_idle_add (display_mount_error, info);	
 }
 
 
@@ -1599,9 +1641,13 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	/* Check and see if volume exists in mounts already */
 	for (p = monitor->details->mounts; p != NULL; p = p->next) {
 		volume = (NautilusVolume *)p->data;
-		if (should_mount && strcmp (volume->mount_path, mount_point) == 0) {
-			return;
-		}		
+		if (strcmp (volume->mount_path, mount_point) == 0) {
+			if (should_mount) {
+				return;
+			} else  {
+				break;
+			}
+		}
 	}
 	
 #if USE_VOLRMMOUNT
@@ -1616,19 +1662,21 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 #endif /* USE_VOLRMMOUNT */
        
        if (should_mount) {
-
                command = find_command (MOUNT_COMMAND);
                command_string = g_strconcat (command, MOUNT_SEPARATOR, name, NULL);
        } else {
                command = find_command (UMOUNT_COMMAND);
                command_string = g_strconcat (command, UMOUNT_SEPARATOR, name, NULL);
+               if (volume != NULL) {
+			gtk_signal_emit (GTK_OBJECT (monitor), signals[VOLUME_UNMOUNT_STARTED], volume);
+		}
        }
 
 	mount_info = g_new0 (MountThreadInfo, 1);
 	mount_info->command = g_strdup (command_string);	
 	mount_info->mount_point = g_strdup (mount_point);
 	mount_info->should_mount = should_mount;
-
+	
 	pthread_create (&mount_thread, NULL, mount_unmount_callback, mount_info);
 	
 	g_free (command_string);

@@ -1,3 +1,31 @@
+2001-04-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 7767, umounting a volume should abort finding trash dir.
+	
+	Add two new signals to the volume monitor; volume_unmount_started and
+	volume_unmount_failed.  volume_unmount_started is emitted before
+	the volume is unmounted.  This allows interested parties to close
+	any open files that they might have open and perform any other
+	finalization tasks before the device is unmounted.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize_class):
+	Add two new signals, volume_unmount_started and volume_unmount_failed.
+	 (display_mount_error),
+	(close_error_pipe),
+	(nautilus_volume_monitor_mount_unmount_removable):
+	Prepare for and call volume_unmount_failed in the case that an
+	unmount is unable to be completed.
+
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize):
+	Connect to new volume monitor signal.
+		
+	(volume_unmount_started_callback):
+	Rename callback to be consistant with the new volume monitor signal
+	name.
+
 2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:
@@ -58,6 +86,7 @@
 
 2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
 
+>>>>>>> 1.4416
 	* src/nautilus-main.c:
 	(main): Dont include eel library self checks header since its now
 	private.  Also dont run the eel library self checks anymore.
