@@ -50,17 +50,17 @@ typedef struct
 	GtkVBoxClass parent_class;
 } NautilusSidebarTitleClass;
 
-GtkType    nautilus_sidebar_title_get_type      (void);
-GtkWidget *nautilus_sidebar_title_new           (void);
-void       nautilus_sidebar_title_set_uri       (NautilusSidebarTitle *sidebar_title,
-						 const char           *new_uri,
-						 const char           *initial_text);
-void       nautilus_sidebar_title_set_text      (NautilusSidebarTitle *sidebar_title,
-						 const char           *new_title);
-char *     nautilus_sidebar_title_get_text      (NautilusSidebarTitle *sidebar_title);
-gboolean   nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *sidebar_title,
-						 int                   x,
-						 int                   y);
-void	   nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title);
+GtkType    nautilus_sidebar_title_get_type          (void);
+GtkWidget *nautilus_sidebar_title_new               (void);
+void       nautilus_sidebar_title_set_uri           (NautilusSidebarTitle *sidebar_title,
+						     const char           *new_uri,
+						     const char           *initial_text);
+void       nautilus_sidebar_title_set_text          (NautilusSidebarTitle *sidebar_title,
+						     const char           *new_title);
+char *     nautilus_sidebar_title_get_text          (NautilusSidebarTitle *sidebar_title);
+gboolean   nautilus_sidebar_title_hit_test_icon     (NautilusSidebarTitle *sidebar_title,
+						     int                   x,
+						     int                   y);
+void       nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title);
 
 #endif /* NAUTILUS_SIDEBAR_TITLE_H */

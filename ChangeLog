@@ -1,3 +1,31 @@
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_realize):
+	Add a evil hack to keep track of background changes.  I have a
+	better fix for this that I will commit soon.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_destroy),
+	(nautilus_sidebar_title_select_text_color),
+	(nautilus_sidebar_title_theme_changed), (update_icon),
+	(update_font), (update_title), (update_more_info), (update_all),
+	(nautilus_sidebar_title_hit_test_icon),
+	(sidebar_create_smooth_components_if_needed),
+	(sidebar_create_normal_components_if_needed),
+	(anti_aliased_mode_changed_callback):
+	* src/nautilus-sidebar-title.h:
+	* src/nautilus-sidebar.c: (background_appearance_changed_callback):
+
+	Add support for smoother graphics.  Use new NautilusLabel and
+	NautilusImage widgets to render alpha composited pixbufs and anti
+	aliases text.
+
+	The old non-smooth widgets are still supported and should continue
+	to work as expected whenever the smooth graphics preference is
+	toggled.
+
 2000-08-21  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/Makefile.am:

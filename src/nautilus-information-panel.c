@@ -1012,7 +1012,7 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    sidebar->details->default_background_image);
 	
-	nautlius_sidebar_title_select_text_color (sidebar->details->title);
+	nautilus_sidebar_title_select_text_color (sidebar->details->title);
 	
 	is_default_color = !nautilus_strcmp(background_color, sidebar->details->default_background_color);
 	is_default_image = !nautilus_strcmp(background_image, sidebar->details->default_background_image);

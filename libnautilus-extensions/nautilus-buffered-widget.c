@@ -264,8 +264,6 @@ nautilus_buffered_widget_realize (GtkWidget *widget)
 				    GTK_OBJECT (buffered_widget));
 	}
 	else {
-		/* g_print ("%s: No background found.\n", __FUNCTION__); */
-
 		/* FIXME: In this case, we should set a flag that indicates
 		 * we need to check later for the precense of a background.
 		 * Otherwise, we wont get background changes notifications,
@@ -276,6 +274,20 @@ nautilus_buffered_widget_realize (GtkWidget *widget)
 		 * by attatching a background before the widget is realized,
 		 * which is usually the case.
 		 */
+
+
+		/* HACKERY ALERT: This is a hack to make the nautilus sidebar
+		 * work for now. It is evil and ill fix really soon.  I promise.
+		 */
+		NautilusBackground	*background;
+		
+		background = nautilus_get_widget_background (nautilus_gtk_widget_find_windowed_ancestor (widget));
+		g_assert (NAUTILUS_IS_BACKGROUND (background));
+		
+		gtk_signal_connect (GTK_OBJECT (background),
+				    "appearance_changed",
+				    background_appearance_changed_callback,
+				    GTK_OBJECT (buffered_widget));
 	}
 }
 

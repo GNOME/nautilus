@@ -49,24 +49,44 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-image.h>
 
-static void nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
-static void nautilus_sidebar_title_destroy          (GtkObject                 *object);
-static void nautilus_sidebar_title_initialize       (NautilusSidebarTitle      *pixmap);
-static void nautilus_sidebar_title_size_allocate    (GtkWidget                 *widget,
-						     GtkAllocation             *allocation);
-static void nautilus_sidebar_title_theme_changed    (gpointer                   user_data);
-static void update_icon                             (NautilusSidebarTitle      *sidebar_title);
+static void nautilus_sidebar_title_initialize_class    (NautilusSidebarTitleClass *klass);
+static void nautilus_sidebar_title_destroy             (GtkObject                 *object);
+static void nautilus_sidebar_title_initialize          (NautilusSidebarTitle      *pixmap);
+static void nautilus_sidebar_title_size_allocate       (GtkWidget                 *widget,
+							GtkAllocation             *allocation);
+static void nautilus_sidebar_title_theme_changed       (gpointer                   user_data);
+static void update_icon                                (NautilusSidebarTitle      *sidebar_title);
+static void sidebar_create_smooth_components_if_needed (NautilusSidebarTitle      *sidebar_title);
+static void sidebar_create_normal_components_if_needed (NautilusSidebarTitle      *sidebar_title);
+static void anti_aliased_mode_changed_callback         (gpointer                   callback_data);
+
 
 struct NautilusSidebarTitleDetails {
-	NautilusFile *file;
-	guint file_changed_connection;
-	char *title_text;
-	GtkWidget *icon;
-	GtkWidget *title;
-	GtkWidget *more_info;
-	GtkWidget *emblem_box;
-	GtkWidget *notes;
+	NautilusFile		*file;
+	guint			file_changed_connection;
+	char			*title_text;
+
+	GtkWidget		*normal_icon;
+	GtkWidget		*normal_title_label;
+	GtkWidget		*normal_more_info_label;
+
+	GtkWidget		*image_box;
+	GtkWidget		*label_box;
+	GtkWidget		*more_info_box;
+
+	GtkWidget		*smooth_title_label;
+	NautilusScalableFont	*smooth_title_label_font;
+	GtkWidget		*smooth_icon;
+	GtkWidget		*smooth_more_info_label;
+	NautilusScalableFont	*smooth_more_info_label_font;
+
+	GtkWidget		*emblem_box;
+	GtkWidget		*notes;
+
+	gboolean		smooth_graphics;
 };
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
@@ -97,20 +117,17 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 					       update_icon,
 					       GTK_OBJECT (sidebar_title));
 
-	sidebar_title->details->icon = GTK_WIDGET (nautilus_gtk_pixmap_new_empty ());
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
+	sidebar_title->details->image_box = gtk_vbox_new (FALSE, 0);
+	sidebar_title->details->label_box = gtk_vbox_new (FALSE, 0);
+	sidebar_title->details->more_info_box = gtk_vbox_new (FALSE, 0);
 
-	sidebar_title->details->title = GTK_WIDGET (gtk_label_new (NULL));
-	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->title), TRUE);
-	gtk_widget_show (sidebar_title->details->title);
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->title, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->image_box, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->label_box, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info_box, 0, 0, 0);
 
-	sidebar_title->details->more_info = GTK_WIDGET (gtk_label_new (NULL));
-        font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (sidebar_title->details->more_info, font);
-        gdk_font_unref (font);
-	gtk_widget_show (sidebar_title->details->more_info);
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 0, 0, 0);
+	gtk_widget_show (sidebar_title->details->image_box);
+	gtk_widget_show (sidebar_title->details->label_box);
+	gtk_widget_show (sidebar_title->details->more_info_box);
 
 	sidebar_title->details->emblem_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (sidebar_title->details->emblem_box);
@@ -124,9 +141,16 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	gtk_widget_show (sidebar_title->details->notes);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 
+	/* Keep track of changes in graphics trade offs */
+	anti_aliased_mode_changed_callback (sidebar_title);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+					   anti_aliased_mode_changed_callback, 
+					   sidebar_title);
+
 	/* set up the label colors according to the theme, and get notified of changes */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
+
 }
 
 /* destroy by throwing away private storage */
@@ -160,6 +184,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	g_free (sidebar_title->details);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, anti_aliased_mode_changed_callback, sidebar_title);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -198,7 +223,7 @@ set_widget_color (GtkWidget *widget, const char* color_spec)
 /* utility that returns true if the title is over a dark background.  We do this by finding the
    sidebar and asking its background */
 void
-nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
+nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 {
 	GtkWidget *widget, *sidebar;
 	NautilusBackground *background;
@@ -219,14 +244,22 @@ nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 			sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
 		}
 
-	set_widget_color (sidebar_title->details->title, sidebar_title_color);
-	set_widget_color (sidebar_title->details->more_info, sidebar_info_title_color);
+		if (sidebar_title->details->smooth_graphics) {
+			nautilus_label_set_text_color (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
+						       nautilus_parse_rgb_with_white_default (sidebar_title_color));
+			
+			nautilus_label_set_text_color (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),
+						       nautilus_parse_rgb_with_white_default (sidebar_info_title_color));
+		}
+		else {
+			set_widget_color (sidebar_title->details->normal_title_label, sidebar_title_color);
+			set_widget_color (sidebar_title->details->normal_more_info_label, sidebar_info_title_color);
+		}
 	
-	g_free (sidebar_title_color);	
-	g_free (sidebar_info_title_color);	
+		g_free (sidebar_title_color);	
+		g_free (sidebar_info_title_color);	
 	}
 }
-
 
 /* handle theme changes by setting up the color of the labels */
 static void
@@ -235,53 +268,92 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 	NautilusSidebarTitle *sidebar_title;	
 	
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);		
-	nautlius_sidebar_title_select_text_color (sidebar_title);
+	nautilus_sidebar_title_select_text_color (sidebar_title);
 }
 
 /* set up the icon image */
 static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	if (sidebar_title->details->smooth_graphics) {
+		GdkPixbuf *pixbuf;
 
-	if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
-		nautilus_icon_factory_get_pixmap_and_mask_for_file
-			(sidebar_title->details->file,
-			 "accept",
-			 NAUTILUS_ICON_SIZE_LARGE,
-			 &pixmap, &mask);
-	} else {
-		pixmap = NULL;
-		mask = NULL;
+		if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
+			pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
+									    "accept",
+									    NAUTILUS_ICON_SIZE_LARGE,
+									    TRUE);
+		} else {
+			pixbuf = NULL;
+		}
+
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (sidebar_title->details->smooth_icon), pixbuf);
+
+		if (pixbuf == NULL) {
+			gtk_widget_hide (sidebar_title->details->smooth_icon);
+		} else {
+			gdk_pixbuf_unref (pixbuf);
+			gtk_widget_show (sidebar_title->details->smooth_icon);
+		}
 	}
+	else {
+		GdkPixmap *pixmap;
+		GdkBitmap *mask;
 
-	gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->icon),
-			pixmap, mask);
-	if (pixmap == NULL) {
-		gtk_widget_hide (sidebar_title->details->icon);
-	} else {
-		gtk_widget_show (sidebar_title->details->icon);
+		if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
+			nautilus_icon_factory_get_pixmap_and_mask_for_file
+				(sidebar_title->details->file,
+				 "accept",
+				 NAUTILUS_ICON_SIZE_LARGE,
+				 &pixmap, &mask);
+			
+		} else {
+			pixmap = NULL;
+			mask = NULL;
+		}
+
+		gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->normal_icon), pixmap, mask);
+
+		if (pixmap == NULL) {
+			gtk_widget_hide (sidebar_title->details->normal_icon);
+		} else {
+			gtk_widget_show (sidebar_title->details->normal_icon);
+		}
 	}
 }
 
 static void
 update_font (NautilusSidebarTitle *sidebar_title)
 {
-	GdkFont *label_font;
-
-	/* FIXME bugzilla.eazel.com 1103: Make this use the font
-	 * factory and be failsafe if the given font is not found.
-	 */
-
-	/* FIXME: Where does the "4" come from? */
-	label_font = nautilus_get_largest_fitting_font
-		(sidebar_title->details->title_text,
-		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
-		 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
-	
-	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
-	/* FIXME: Is there a font leak here? */
+	if (sidebar_title->details->smooth_graphics) {
+		guint largest_size;
+		
+		const guint font_sizes[4] = { 20, 18, 14, 12 };
+		
+		largest_size = nautilus_scalable_font_largest_fitting_font_size (sidebar_title->details->smooth_title_label_font,
+										 sidebar_title->details->title_text,
+										 GTK_WIDGET (sidebar_title)->allocation.width - 4,
+										 font_sizes,
+										 NAUTILUS_N_ELEMENTS (font_sizes));
+		
+		nautilus_label_set_font_size (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label), largest_size);
+	}
+	else {
+		GdkFont *label_font;
+		
+		/* FIXME bugzilla.eazel.com 1103: Make this use the font
+		 * factory and be failsafe if the given font is not found.
+		 */
+		
+		/* FIXME: Where does the "4" come from? */
+		label_font = nautilus_get_largest_fitting_font
+			(sidebar_title->details->title_text,
+			 GTK_WIDGET (sidebar_title)->allocation.width - 4,
+			 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
+		
+		nautilus_gtk_widget_set_font (sidebar_title->details->normal_title_label, label_font);
+		/* FIXME: Is there a font leak here? */
+	}
 }
 
 /* set up the filename label */
@@ -289,8 +361,16 @@ static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
 	/* FIXME: We could defer showing the title until the icon is ready. */
-	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title),
-			    sidebar_title->details->title_text);
+
+	if (sidebar_title->details->smooth_graphics) {
+		nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
+					 sidebar_title->details->title_text);
+	}
+	else {
+		gtk_label_set_text (GTK_LABEL (sidebar_title->details->normal_title_label),
+				    sidebar_title->details->title_text);
+	}
+
 	update_font (sidebar_title);
 }
 
@@ -332,7 +412,14 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 			nautilus_file_get_string_attribute (file, "date_modified"));
 	g_string_append_c (info_string, '\0');
 
-	gtk_label_set_text (GTK_LABEL (sidebar_title->details->more_info), info_string->str);
+	if (sidebar_title->details->smooth_graphics) {
+		nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),
+					 info_string->str);
+	}
+	else {
+		gtk_label_set_text (GTK_LABEL (sidebar_title->details->normal_more_info_label), info_string->str);
+	}
+
 
 	g_string_free (info_string, TRUE);
 }
@@ -423,7 +510,7 @@ update_all (NautilusSidebarTitle *sidebar_title)
 	
 	update_title (sidebar_title);
 	update_more_info (sidebar_title);
-	nautlius_sidebar_title_select_text_color (sidebar_title);
+	nautilus_sidebar_title_select_text_color (sidebar_title);
 	
 	update_emblems (sidebar_title);
 	update_notes (sidebar_title);
@@ -487,9 +574,160 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 }
 
 gboolean
-nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *title, int x, int y)
+nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *sidebar_title, int x, int y)
 {
-	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (title), FALSE);
+	GtkWidget *hit_test_widget;
 
-	return nautilus_point_in_widget (title->details->icon, x, y);
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (sidebar_title), FALSE);
+
+	hit_test_widget = 
+		sidebar_title->details->smooth_graphics ? 
+		sidebar_title->details->smooth_icon : 
+		sidebar_title->details->normal_icon;
+	
+	return nautilus_point_in_widget (hit_test_widget, x, y);
+}
+
+static void
+sidebar_create_smooth_components_if_needed (NautilusSidebarTitle *sidebar_title)
+{ 
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (sidebar_title));
+	g_return_if_fail (sidebar_title->details->image_box != NULL);
+	g_return_if_fail (sidebar_title->details->label_box != NULL);
+	g_return_if_fail (sidebar_title->details->more_info_box != NULL);
+
+	/* Image */
+	if (sidebar_title->details->smooth_icon == NULL) {
+		sidebar_title->details->smooth_icon = nautilus_image_new ();
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->image_box), sidebar_title->details->smooth_icon, 0, 0, 0);
+	}
+
+	/* Label */
+	if (sidebar_title->details->smooth_title_label == NULL) {
+		sidebar_title->details->smooth_title_label = nautilus_label_new ();
+		
+		sidebar_title->details->smooth_title_label_font = 
+			NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
+		
+		nautilus_label_set_font (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
+					 sidebar_title->details->smooth_title_label_font);
+
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->label_box), sidebar_title->details->smooth_title_label, 0, 0, 0);
+	}
+
+	/* More info */
+	if (sidebar_title->details->smooth_more_info_label == NULL) {
+		sidebar_title->details->smooth_more_info_label = nautilus_label_new ();
+		
+		sidebar_title->details->smooth_more_info_label_font = 
+			NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
+		
+		nautilus_label_set_font (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),
+					 sidebar_title->details->smooth_more_info_label_font);
+		
+		nautilus_label_set_font_size (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label), 12);
+
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->more_info_box), sidebar_title->details->smooth_more_info_label, 0, 0, 0);
+	}
+}
+
+static void
+sidebar_create_normal_components_if_needed (NautilusSidebarTitle *sidebar_title)
+{ 
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (sidebar_title));
+	g_return_if_fail (sidebar_title->details->image_box != NULL);
+	g_return_if_fail (sidebar_title->details->label_box != NULL);
+	g_return_if_fail (sidebar_title->details->more_info_box != NULL);
+
+	/* Image */
+	if (sidebar_title->details->normal_icon == NULL) {
+		sidebar_title->details->normal_icon = GTK_WIDGET (nautilus_gtk_pixmap_new_empty ());	
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->image_box), sidebar_title->details->normal_icon, 0, 0, 0);
+	}
+
+	/* Label */
+	if (sidebar_title->details->normal_title_label == NULL) {
+		sidebar_title->details->normal_title_label = GTK_WIDGET (gtk_label_new (NULL));
+		gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->normal_title_label), TRUE);
+		
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->label_box), sidebar_title->details->normal_title_label, 0, 0, 0);
+	}
+
+	/* More info */
+	if (sidebar_title->details->normal_more_info_label == NULL) {
+		GdkFont *font;
+
+		sidebar_title->details->normal_more_info_label = GTK_WIDGET (gtk_label_new (NULL));
+		font = nautilus_font_factory_get_font_from_preferences (12);
+		nautilus_gtk_widget_set_font (sidebar_title->details->normal_more_info_label, font);
+		gdk_font_unref (font);
+		gtk_box_pack_start (GTK_BOX (sidebar_title->details->more_info_box), sidebar_title->details->normal_more_info_label, 0, 0, 0);
+	}
+}
+
+static void
+anti_aliased_mode_changed_callback (gpointer callback_data)
+{
+	NautilusSidebarTitle *sidebar_title;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
+
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
+
+	sidebar_title->details->smooth_graphics = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+										    TRUE);
+
+	if (sidebar_title->details->smooth_graphics) {
+		sidebar_create_smooth_components_if_needed (sidebar_title);
+	}
+	else {
+		sidebar_create_normal_components_if_needed (sidebar_title);
+	}
+
+	if (sidebar_title->details->smooth_graphics) {
+		if (sidebar_title->details->normal_icon != NULL) {
+			gtk_widget_hide (sidebar_title->details->normal_icon);
+		}
+
+		if (sidebar_title->details->normal_title_label != NULL) {
+			gtk_widget_hide (sidebar_title->details->normal_title_label);
+		}
+
+		if (sidebar_title->details->normal_more_info_label != NULL) {
+			gtk_widget_hide (sidebar_title->details->normal_more_info_label);
+		}
+
+		g_assert (GTK_IS_WIDGET (sidebar_title->details->smooth_icon));
+		gtk_widget_show (sidebar_title->details->smooth_icon);
+
+		g_assert (GTK_IS_WIDGET (sidebar_title->details->smooth_title_label));
+		gtk_widget_show (sidebar_title->details->smooth_title_label);
+
+		g_assert (GTK_IS_WIDGET (sidebar_title->details->smooth_more_info_label));
+		gtk_widget_show (sidebar_title->details->smooth_more_info_label);
+	}
+	else {
+		if (sidebar_title->details->smooth_icon != NULL) {
+			gtk_widget_hide (sidebar_title->details->smooth_icon);
+		}
+
+		if (sidebar_title->details->smooth_title_label != NULL) {
+			gtk_widget_hide (sidebar_title->details->smooth_title_label);
+		}
+
+		if (sidebar_title->details->smooth_more_info_label != NULL) {
+			gtk_widget_hide (sidebar_title->details->smooth_more_info_label);
+		}
+
+ 		g_assert (GTK_IS_WIDGET (sidebar_title->details->normal_icon));
+ 		/* Dont show the image here, cause it might not have a pixmap yet */
+
+		g_assert (GTK_IS_WIDGET (sidebar_title->details->normal_title_label));
+		gtk_widget_show (sidebar_title->details->normal_title_label);
+
+		g_assert (GTK_IS_WIDGET (sidebar_title->details->normal_more_info_label));
+		gtk_widget_show (sidebar_title->details->normal_more_info_label);
+	}
+
+	update_all (sidebar_title);
 }
