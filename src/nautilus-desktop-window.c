@@ -377,6 +377,8 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 
 	GTK_WIDGET_CLASS (class)->map = map;
 
+	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_DESKTOP;
+
 	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
 	NAUTILUS_WINDOW_CLASS (class)->merge_menus 

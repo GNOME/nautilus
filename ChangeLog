@@ -1,5 +1,20 @@
 2004-06-01  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus/nautilus-view-component.idl:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_class_init):
+	Make desktop of type DESKTOP
+
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	On shift-double-click on a non-folder, close the window after.
+
+	Above patch from Nickolay V. Shmyrev <nshmyrev@yandex.ru>
+	
+	* src/nautilus-spatial-window-ui.xml:
+	Use Ctrl-q to close all windows.
+	
+2004-06-01  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Post release version bump
 

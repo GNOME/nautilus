@@ -6087,6 +6087,12 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		} else {
 			nautilus_launch_show_file
 				(file, fm_directory_view_get_containing_window (view));
+
+                        if ((parameters->flags & Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND) != 0) {
+                                if (nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_SPATIAL) {
+                                   nautilus_view_close_window (view->details->nautilus_view);
+                                }
+                        }
 			
 			/* We should not add trash and directory uris.*/
 			if ((!nautilus_file_is_in_trash (file)) && 
