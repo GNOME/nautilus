@@ -73,6 +73,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-dnd.h \
 	nautilus-file-operations-progress.c \
 	nautilus-file-operations-progress.h \
+	nautilus-file-operations-progress-icons.h \
 	nautilus-file-operations.c \
 	nautilus-file-operations.h \
 	nautilus-file-private.h \

@@ -1895,30 +1895,22 @@ nautilus_window_toolbar_showing (NautilusWindow *window)
 void 
 nautilus_window_hide_sidebar (NautilusWindow *window)
 {
-	if (window->sidebar == NULL) {
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window) || window->sidebar == NULL) {
 		return;
 	}
 
 	nautilus_window_tear_down_sidebar (window);
-#if 0
-	nautilus_horizontal_splitter_hide
-		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
-#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
 nautilus_window_show_sidebar (NautilusWindow *window)
 {
-	if (window->sidebar != NULL) {
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window) || window->sidebar != NULL) {
 		return;
 	}
 
 	nautilus_window_set_up_sidebar (window);
-#if 0	
-	nautilus_horizontal_splitter_show
-		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
-#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 

@@ -1,5 +1,13 @@
 2002-03-11  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/Makefile.am:
+	Add nautilus-file-operations-progress-icons.h
+	* src/nautilus-window.c: (nautilus_window_hide_sidebar),
+	(nautilus_window_show_sidebar):
+	Don't try create or destroy the sidebar on desktop windows.
+	
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
 	* libnautilus-private/nautilus-file-operations-progress-icons.h:
 	* libnautilus-private/nautilus-file-operations-progress.c:
 	(nautilus_file_operations_progress_update_icon),
