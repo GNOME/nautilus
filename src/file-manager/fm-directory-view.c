@@ -4015,12 +4015,19 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	char *uris;
 	char *uri;
 	char *geometry_string;
+	char *directory_uri;
 
-	if (nautilus_directory_is_local (view->details->model)) {
+	/* We need to check that the directory uri starts with "file:" since
+	 * nautilus_directory_is_local returns FALSE for nfs.
+	 */
+	directory_uri = nautilus_directory_get_uri (view->details->model);
+	if (eel_str_has_prefix (directory_uri, "file:")) {
 		file_paths = get_file_paths_as_newline_delimited_string (selected_files);
 	} else {
 		file_paths = g_strdup ("");
 	}
+	g_free (directory_uri);
+	
 	eel_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
 	g_free (file_paths);
 
