@@ -15,7 +15,7 @@ libnautilus_history_view_la_SOURCES = \
 	nautilus-history-view.h	\
 	$(NULL)
 
-libnautilus_history_view_la_LDFLAGS = -module -avoid-version
+libnautilus_history_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 libnautilus_history_view_la_LIBADD =               \
 	$(top_builddir)/libnautilus/libnautilus.la	\

@@ -10,9 +10,10 @@ INCLUDES=\
 
 libnautilus_adapter_la_LDFLAGS= \
 	-version-info 2:0:0	\
+	-no-undefined		\
 	$(NULL)
 
-libnautilus_adapter_la_LIBADD= @ALL_LIBS@ ../libnautilus/libnautilus.la
+libnautilus_adapter_la_LIBADD= ../libnautilus/libnautilus.la @ALL_LIBS@
 
 nautilus_adapter_factory_idl_sources =	        \
 	nautilus-adapter-factory-stubs.c	\

@@ -21,7 +21,7 @@ bonobo_LTLIBRARIES = libnautilus-tree-view.la
 
 libnautilus_tree_view_la_SOURCES = $(TREE_VIEW_COMMON_SOURCES) libmain.c 
 
-libnautilus_tree_view_la_LDFLAGS = -module -avoid-version
+libnautilus_tree_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 libnautilus_tree_view_la_LIBADD =               \
 	$(top_builddir)/libnautilus/libnautilus.la	\

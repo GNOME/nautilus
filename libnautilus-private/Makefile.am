@@ -23,6 +23,7 @@ dependency_static_libs = \
 
 libnautilus_private_la_LDFLAGS =	\
 	-version-info 2:0:0		\
+	-no-undefined			\
 	$(dependency_static_libs)	\
 	$(CORE_LIBS)			\
 	$(NULL)

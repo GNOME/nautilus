@@ -55,6 +55,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 PKG_CHECK_MODULES(ALL, \
@@ -126,7 +127,7 @@ AC_SUBST(ORBIT_IDL)
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h)
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h fstab.h)
 			      
 dnl ==========================================================================
 

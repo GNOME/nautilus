@@ -1,3 +1,30 @@
+2003-05-03  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: Call AC_LIBTOOL_WIN32_DLL which is necessary for
+	building shared library on win32 platform. Check fstab.h. 
+
+	* components/emblem/Makefile.am (libnautilus_emblem_view_la_LDFLAGS):
+	* components/history/Makefile.am (libnautilus_history_view_la_LDFLAGS):
+	* components/image_properties/Makefile.am (libnautilus_image_properties_view_la_LDFLAGS):
+	* components/notes/Makefile.am (libnautilus_notes_view_la_LDFLAGS):
+	* components/tree/Makefile.am (libnautilus_tree_view_la_LDFLAGS):
+	* libnautilus/Makefile.am (libnautilus_la_LDFLAGS):
+	* libnautilus-adapter/Makefile.am (libnautilus_adapter_la_LDFLAGS):
+	* libnautilus-private/Makefile.am (libnautilus_private_la_LDFLAGS):
+	Add -no-undefined which is necessary for building shared library
+	on some platforms (e.g. Win32, BeOS, etc).
+
+	* libnautilus-adapter/Makefile.am (libnautilus_adapter_la_LIBADD):
+	Fix library order. libnautilus.la should be ahead of other libraries
+	that libnautilus.la depends on.
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	Include fstab.h conditionaly.
+	Define MOUNT_TABLE_PATH as MOUNTED on cygwin.
+	(get_removable_volumes, volume_is_removable, get_mount_list) Use
+	endmntent() to close a file opened by setmntent(). Because using
+	fclose() causes a crash on cygwin.
+
 2003-04-30  Alexander Larsson  <alexl@redhat.com>
 
 	* docs/style-guide.html:

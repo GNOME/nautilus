@@ -61,7 +61,7 @@
 
 #ifdef HAVE_SYS_VFSTAB_H
 #include <sys/vfstab.h>
-#else
+#elif HAVE_FSTAB_H
 #include <fstab.h>
 #endif
 
@@ -78,7 +78,11 @@
 
 #ifdef HAVE_MNTENT_H
 #include <mntent.h>
+#ifndef __CYGWIN__
 #define MOUNT_TABLE_PATH _PATH_MNTTAB
+#else
+#define MOUNT_TABLE_PATH MOUNTED
+#endif
 #elif defined (HAVE_SYS_MNTTAB_H)
 #define SOLARIS_MNT 1
 #include <sys/mnttab.h>
@@ -118,6 +122,9 @@
 
 #ifndef HAVE_SETMNTENT
 #define setmntent(f,m) fopen(f,m)
+#endif
+#ifndef HAVE_ENDMNTENT
+#define endmntent(f) fclose(f)
 #endif
 
 #ifdef HAVE_CDDA_INTERFACE_H
@@ -737,7 +744,7 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 	}
 #endif
 			
-	fclose (file);
+	endmntent (file);
 	
 #ifdef HAVE_CDDA
 	volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH);
@@ -811,7 +818,7 @@ volume_is_removable (const NautilusVolume *volume)
 	}
 #endif
 	
-	fclose (file);
+	endmntent (file);
 	return removable;
 }
 
@@ -1214,7 +1221,7 @@ get_mount_list (NautilusVolumeMonitor *monitor)
 			(monitor, volume, ent.mnt_fstype, volumes);
         }
 
-	fclose (fh);
+	endmntent (fh);
 
         return volumes;
 }

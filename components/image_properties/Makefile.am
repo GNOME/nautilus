@@ -25,7 +25,7 @@ libnautilus_image_properties_view_la_LIBADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(COMPONENT_LIBS)
 
-libnautilus_image_properties_view_la_LDFLAGS = -module -avoid-version
+libnautilus_image_properties_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 server_in_files = Nautilus_View_image_properties.server.in.in
 

@@ -19,7 +19,7 @@ libnautilus_notes_view_la_LIBADD =               \
 	$(COMPONENT_LIBS) \
 	$(NULL)
 
-libnautilus_notes_view_la_LDFLAGS = -module -avoid-version
+libnautilus_notes_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 server_in_files = Nautilus_View_notes.server.in.in
 
