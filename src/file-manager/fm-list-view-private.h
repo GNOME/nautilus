@@ -24,23 +24,19 @@
 
 */
 
-
-struct FMListViewDetails
-{
-	int number_of_columns;
-	char **column_titles;
-	int *column_width;
-	int *minimum_column_width;
-	int *maximum_column_width;
-
-	int default_sort_column;
-	
-	gboolean list_instantiated; 
-	int sort_column;
-	gboolean sort_reversed;
-
-	guint zoom_level;
-	NautilusZoomLevel default_zoom_level;
+struct FMListViewColumn {
+	const char *attribute;
+	const char *title;
+	NautilusFileSortType sort_criterion;
+	int minimum_width, default_width, maximum_width;
+	gboolean right_justified;
 };
 
-guint                    fm_list_view_get_icon_size               (FMListView         *list_view);
+void  fm_list_view_column_set    (FMListViewColumn     *column,
+				  const char           *attribute,
+				  const char           *title,
+				  NautilusFileSortType  sort_criterion,
+				  int                   minimum_width,
+				  int                   default_width,
+				  int                   maximum_width,
+				  gboolean              right_justified);

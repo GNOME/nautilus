@@ -462,13 +462,12 @@ nautilus_directory_is_search_directory (NautilusDirectory *directory)
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-	/* 3 hard-coded schemes for now. */
+	/* Two hard-coded schemes for now. */
 	/* FIXME: Later we gnome-vfs will tell us somehow that this is
 	 * a virtual directory.
 	 */
 	return nautilus_istr_has_prefix (directory->details->uri_text, "search:")
-		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-search:")
-		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-trash:");
+		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-search:");
 
 #if 0
 	GnomeVFSFileInfo *info;

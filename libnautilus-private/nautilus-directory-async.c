@@ -1580,7 +1580,6 @@ select_needy_file (NautilusDirectory *directory,
 	for (p = directory->details->files; p != NULL; p = p->next) {
 		file = p->data;
 		if ((* check_missing) (file)) {
-		    	/* Make sure that someone cares about this particular directory's count. */
 		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
 				callback = p2->data;
 				if ((* check_wanted) (&callback->request)
@@ -1603,6 +1602,34 @@ select_needy_file (NautilusDirectory *directory,
 			}
 		}
 	}
+
+	/* Finally, check the file for the directory itself. */
+	file = directory->details->as_file;
+	if (file != NULL) {
+		if ((* check_missing) (file)) {
+		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
+				callback = p2->data;
+				if ((* check_wanted) (&callback->request)
+				    && callback->file == file) {
+					break;
+				}
+		    	}
+			if (p2 != NULL) {
+				return file;
+			}
+			for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
+				monitor = p2->data;
+				if ((* check_wanted) (&monitor->request)
+				    && monitor->file == file) {
+					break;
+				}
+			}
+			if (p2 != NULL) {
+				return file;
+			}
+		}
+	}
+
 	return NULL;
 }
 

@@ -25,37 +25,36 @@
 #ifndef FM_LIST_VIEW_H
 #define FM_LIST_VIEW_H
 
-#include <gtk/gtkclist.h>
+/* This is not a general purpose class.
+ * It has just enough generality to be reused by the search list view.
+ * But for more use it would have to be refactored more.
+ */
+
 #include "fm-directory-view.h"
 
-
-typedef struct FMListView FMListView;
-typedef struct FMListViewClass FMListViewClass;
-
-#define FM_TYPE_LIST_VIEW			(fm_list_view_get_type ())
-#define FM_LIST_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_LIST_VIEW, FMListView))
-#define FM_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_VIEW, FMListViewClass))
-#define FM_IS_LIST_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_VIEW))
-#define FM_IS_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
+#define FM_TYPE_LIST_VIEW		(fm_list_view_get_type ())
+#define FM_LIST_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_LIST_VIEW, FMListView))
+#define FM_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_LIST_VIEW, FMListViewClass))
+#define FM_IS_LIST_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_VIEW))
+#define FM_IS_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
 
 typedef struct FMListViewDetails FMListViewDetails;
+typedef struct FMListViewColumn FMListViewColumn;
 
-struct FMListView {
-	FMDirectoryView parent;
+typedef struct {
+	FMDirectoryView parent_slot;
 	FMListViewDetails *details;
-};
+} FMListView;
 
-struct FMListViewClass {
-	FMDirectoryViewClass parent_class;
+typedef struct {
+	FMDirectoryViewClass parent_slot;
 
-	const char *     (* get_attribute_from_column)       (int column);
-	int              (* compare_rows)                    (GtkCList *clist,
-							      gconstpointer ptr1,
-							      gconstpointer ptr2);
-	gboolean         (* column_is_right_justified)       (int column);
-	
-
-};
+	int  (* get_number_of_columns)    (FMListView       *list_view);
+	int  (* get_link_column)          (FMListView       *list_view);
+	void (* get_column_specification) (FMListView       *list_view,
+					   int               column_number,
+					   FMListViewColumn *specification);
+} FMListViewClass;
 
 /* GtkObject support */
 GtkType fm_list_view_get_type (void);

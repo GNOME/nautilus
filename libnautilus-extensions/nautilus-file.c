@@ -120,8 +120,7 @@ nautilus_file_initialize (NautilusFile *file)
 
 static NautilusFile *
 nautilus_file_new_from_name (NautilusDirectory *directory,
-			     const char *name,
-			     gboolean self_owned)
+			     const char *name)
 {
 	NautilusFile *file;
 
@@ -138,7 +137,6 @@ nautilus_file_new_from_name (NautilusDirectory *directory,
 
 	file->details->directory = directory;
 	file->details->name = g_strdup (name);
-	file->details->self_owned = self_owned;
 
 	return file;
 }
@@ -223,14 +221,22 @@ nautilus_file_get (const char *uri)
 	if (file_name == NULL) {
 		return NULL;
 	}
-	file = nautilus_directory_find_file (directory, file_name);
+	if (self_owned) {
+		file = directory->details->as_file;
+	} else {
+		file = nautilus_directory_find_file (directory, file_name);
+	}
 	if (file != NULL) {
-		g_assert (file->details->self_owned == self_owned);
 		nautilus_file_ref (file);
 	} else {
-		file = nautilus_file_new_from_name (directory, file_name, self_owned);
-		directory->details->files =
-			g_list_prepend (directory->details->files, file);
+		file = nautilus_file_new_from_name (directory, file_name);
+		if (self_owned) {
+			g_assert (directory->details->as_file == NULL);
+			directory->details->as_file = file;
+		} else {
+			directory->details->files =
+				g_list_prepend (directory->details->files, file);
+		}
 	}
 	g_free (file_name);
 
@@ -242,6 +248,7 @@ nautilus_file_get (const char *uri)
 static void
 destroy (GtkObject *object)
 {
+	NautilusDirectory *directory;
 	NautilusFile *file;
 	GList **files;
 
@@ -251,12 +258,18 @@ destroy (GtkObject *object)
 
 	nautilus_async_destroying_file (file);
 	
-	files = &file->details->directory->details->files;
-	if (file->details->is_gone) {
-		g_assert (g_list_find (*files, file) == NULL);
+	directory = file->details->directory;
+	
+	if (directory->details->as_file == file) {
+		directory->details->as_file = NULL;
 	} else {
-		g_assert (g_list_find (*files, file) != NULL);
-		*files = g_list_remove (*files, file);
+		files = &directory->details->files;
+		if (file->details->is_gone) {
+			g_assert (g_list_find (*files, file) == NULL);
+		} else {
+			g_assert (g_list_find (*files, file) != NULL);
+			*files = g_list_remove (*files, file);
+		}
 	}
 
 	nautilus_directory_unref (file->details->directory);
@@ -298,6 +311,12 @@ nautilus_file_unref (NautilusFile *file)
 	gtk_object_unref (GTK_OBJECT (file));
 }
 
+static gboolean
+nautilus_file_is_self_owned (NautilusFile *file)
+{
+	return file->details->directory->details->as_file == file;
+}
+
 /**
  * nautilus_file_get_parent_uri_as_string:
  * 
@@ -313,7 +332,7 @@ nautilus_file_get_parent_uri_as_string (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (file->details->self_owned) {
+	if (nautilus_file_is_self_owned (file)) {
 		/* Callers expect an empty string, not a NULL. */
 		return g_strdup ("");
 	}
@@ -329,7 +348,7 @@ get_file_for_parent_directory (NautilusFile *file)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (file->details->self_owned) {
+	if (nautilus_file_is_self_owned (file)) {
 		return NULL;
 	}
 
@@ -682,7 +701,7 @@ nautilus_file_rename (NautilusFile *file,
 	 */
 
 	/* Self-owned files can't be renamed. */
-	if (file->details->self_owned) {
+	if (nautilus_file_is_self_owned (file)) {
 	       	/* Claim that something changed even if the rename
 		 * failed. This makes it easier for some clients who
 		 * see the "reverting" to the old name as "changing
@@ -768,7 +787,7 @@ nautilus_file_cancel (NautilusFile *file,
 static GnomeVFSURI *
 nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
 {
-	if (file->details->self_owned) {
+	if (nautilus_file_is_self_owned (file)) {
 		gnome_vfs_uri_ref (file->details->directory->details->uri);
 		return file->details->directory->details->uri;
 	}
@@ -1036,7 +1055,6 @@ nautilus_file_compare_by_real_directory (NautilusFile *file_1, NautilusFile *fil
 	return nautilus_file_compare_by_real_name (file_1, file_2);
 }
 
-
 static int
 nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 {
@@ -1142,14 +1160,17 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		 * but I can imagine discussing this further.
 		 * John Sullivan <sullivan@eazel.com>
 		 */
-		
-		return nautilus_file_compare_by_real_name (file_1, file_2);
-		
-		break;
-	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
+		compare = nautilus_file_compare_by_real_name (file_1, file_2);
+		if (compare != 0) {
+			return compare;
+		}
 		return nautilus_file_compare_by_real_directory (file_1, file_2);
-		
-		break;
+	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
+		compare = nautilus_file_compare_by_real_directory (file_1, file_2);
+		if (compare != 0) {
+			return compare;
+		}
+		return nautilus_file_compare_by_real_name (file_1, file_2);
 	case NAUTILUS_FILE_SORT_BY_SIZE:
 		/* Compare directory sizes ourselves, then if necessary
 		 * use GnomeVFS to compare file sizes.
@@ -1423,7 +1444,7 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (file->details->self_owned) {
+	if (nautilus_file_is_self_owned (file)) {
 		return g_strdup (file->details->directory->details->uri_text);
 	}
 
@@ -2763,7 +2784,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri",
- * "real_name", "real_directory".
+ * "directory".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -2777,7 +2798,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	 */
 
 	if (strcmp (attribute_name, "name") == 0) {
-		return nautilus_file_get_name (file);
+		return nautilus_file_get_real_name (file);
 	}
 
 	if (strcmp (attribute_name, "type") == 0) {
@@ -2852,11 +2873,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 		return nautilus_file_get_parent_uri_as_string (file);
 	}
 
-	if (strcmp (attribute_name, "real_name") == 0) {
-		return nautilus_file_get_real_name (file);
-	}
-
-	if (strcmp (attribute_name, "real_directory") == 0) {
+	if (strcmp (attribute_name, "directory") == 0) {
 		return nautilus_file_get_real_directory (file);
 	}
 
@@ -3410,11 +3427,13 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
-	files = &directory->details->files;
-	g_assert (g_list_find (*files, file) != NULL);
-	*files = g_list_remove (*files, file);
-	if (nautilus_directory_is_file_list_monitored (directory)) {
-		nautilus_file_unref (file);
+	if (directory->details->as_file != file) {
+		files = &directory->details->files;
+		g_assert (g_list_find (*files, file) != NULL);
+		*files = g_list_remove (*files, file);
+		if (nautilus_directory_is_file_list_monitored (directory)) {
+			nautilus_file_unref (file);
+		}
 	}
 }
 
@@ -3431,10 +3450,12 @@ nautilus_file_changed (NautilusFile *file)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	fake_list.data = file;
-	fake_list.next = NULL;
-	fake_list.prev = NULL;
-	nautilus_directory_emit_files_changed (file->details->directory, &fake_list);
+	if (!nautilus_file_is_self_owned (file)) {
+		fake_list.data = file;
+		fake_list.next = NULL;
+		fake_list.prev = NULL;
+		nautilus_directory_emit_files_changed (file->details->directory, &fake_list);
+	}
 }
 
 /**

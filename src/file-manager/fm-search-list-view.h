@@ -27,25 +27,19 @@
 
 #include "fm-list-view.h"
 
-typedef struct FMSearchListView FMSearchListView;
-typedef struct FMSearchListViewClass FMSearchListViewClass;
+#define FM_TYPE_SEARCH_LIST_VIEW		(fm_search_list_view_get_type ())
+#define FM_SEARCH_LIST_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_SEARCH_LIST_VIEW, FMSearchListView))
+#define FM_SEARCH_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_SEARCH_LIST_VIEW, FMSearch_ListViewClass))
+#define FM_IS_SEARCH_LIST_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_SEARCH_LIST_VIEW))
+#define FM_IS_SEARCH_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_SEARCH_LIST_VIEW))
 
-#define FM_TYPE_SEARCH_LIST_VIEW			(fm_search_list_view_get_type ())
-#define FM_SEARCH_LIST_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_SEARCH_LIST_VIEW, FMSearchListView))
-#define FM_SEARCH_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_SEARCH_LIST_VIEW, FMSearch_ListViewClass))
-#define FM_IS_SEARCH_LIST_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_SEARCH_LIST_VIEW))
-#define FM_IS_SEARCH_LIST_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_SEARCH_LIST_VIEW))
+typedef struct {
+	FMListView parent_slot;
+} FMSearchListView;
 
-typedef struct FMSearchListViewDetails FMSearchListViewDetails;
-
-struct FMSearchListView {
-	FMListView parent;
-	FMSearchListViewDetails *details;
-};
-
-struct FMSearchListViewClass {
-	FMListViewClass parent_class;
-};
+typedef struct {
+	FMListViewClass parent_slot;
+} FMSearchListViewClass;
 
 /* GtkObject support */
 GtkType fm_search_list_view_get_type (void);

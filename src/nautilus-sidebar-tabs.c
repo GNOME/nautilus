@@ -629,6 +629,7 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 	/* draw as many tabs per row as will fit */
 	
 	first_flag = TRUE;
+	prev_item = NULL;
 	while (next_tab != NULL) {
 		TabItem *this_item = next_tab->data;
 		

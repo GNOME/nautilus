@@ -46,6 +46,7 @@ struct NautilusDirectoryDetails
 	GnomeVFSURI *alternate_metafile_uri;
 
 	/* The file objects. */
+	NautilusFile *as_file;
 	GList *files;
 
 	/* The metadata. */
