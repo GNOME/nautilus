@@ -58,6 +58,7 @@ enum
 {
 	FILES_ADDED,
 	FILES_REMOVED,
+	FILES_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -70,7 +71,6 @@ static void               nautilus_directory_finalize                   (GtkObje
 static NautilusDirectory *nautilus_directory_new                        (const char            *uri);
 static void               nautilus_directory_read_metafile              (NautilusDirectory     *directory);
 static void               nautilus_directory_write_metafile             (NautilusDirectory     *directory);
-static void               nautilus_directory_request_write_metafile     (NautilusDirectory     *directory);
 static void               nautilus_directory_remove_write_metafile_idle (NautilusDirectory     *directory);
 static void               nautilus_directory_load_cb                    (GnomeVFSAsyncHandle   *handle,
 									 GnomeVFSResult         result,
@@ -103,6 +103,13 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_removed),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	nautilus_directory_signals[FILES_CHANGED] =
+		gtk_signal_new ("files_changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_changed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
@@ -174,8 +181,9 @@ nautilus_directory_get (const char *uri)
 	*/
 
 	/* Create the hash table first time through. */
-	if (directory_objects == NULL)
+	if (directory_objects == NULL) {
 		directory_objects = g_hash_table_new (g_str_hash, g_str_equal);
+	}
 
 	/* If the object is already in the hash table, look it up. */
 	directory = g_hash_table_lookup (directory_objects, uri);
@@ -185,8 +193,9 @@ nautilus_directory_get (const char *uri)
 	} else {
 		/* Create a new directory object instead. */
 		directory = nautilus_directory_new (uri);
-		if (directory == NULL)
+		if (directory == NULL) {
 			return NULL;
+		}
 
 		g_assert (strcmp (directory->details->uri_text, uri) == 0);
 
@@ -232,15 +241,17 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 
 	if (result == GNOME_VFS_OK) {
 		/* Check for the case where the info doesn't give the file size. */
-		if ((metafile_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0)
+		if ((metafile_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0) {
 			result = GNOME_VFS_ERROR_GENERIC;
+		}
 	}
 
 	if (result == GNOME_VFS_OK) {
 		/* Check for a size that won't fit into a size_t. */
 		size = metafile_info.size;
-		if (size != metafile_info.size)
+		if (size != metafile_info.size) {
 			result = GNOME_VFS_ERROR_TOOBIG;
+		}
 		
 		/* Avoid allocating a NULL buffer later and passing it
 		   around; we still want to try to parse an empty file
@@ -264,8 +275,9 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 		g_free (buffer);
 	}
 
-	if (metafile_handle != NULL)
+	if (metafile_handle != NULL) {
 		gnome_vfs_close (metafile_handle);
+	}
 
 	return result;
 }
@@ -281,10 +293,11 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 	   If we read from it, then write to it later.  */
 	directory->details->use_alternate_metafile = FALSE;
 	result = nautilus_directory_try_to_read_metafile (directory, directory->details->alternate_metafile_uri);
-	if (result == GNOME_VFS_OK)
+	if (result == GNOME_VFS_OK) {
 		directory->details->use_alternate_metafile = TRUE;
-	else
+	} else {
 		result = nautilus_directory_try_to_read_metafile (directory, directory->details->metafile_uri);
+	}
 }
 
 static void
@@ -321,12 +334,14 @@ nautilus_directory_try_to_write_metafile (NautilusDirectory *directory, GnomeVFS
 	if (result == GNOME_VFS_OK) {
 		xmlDocDumpMemory (directory->details->metafile_tree, &buffer, &buffer_size);
 		result = gnome_vfs_write (metafile_handle, buffer, buffer_size, &actual_size);
-		if (buffer_size != actual_size)
+		if (buffer_size != actual_size) {
 			result = GNOME_VFS_ERROR_GENERIC;
+		}
 	}
 
-	if (metafile_handle != NULL)
+	if (metafile_handle != NULL) {
 		gnome_vfs_close (metafile_handle);
+	}
 
 	xmlFree (buffer);
 
@@ -384,14 +399,15 @@ nautilus_directory_write_metafile_idle_cb (gpointer callback_data)
 	return FALSE;
 }
 
-static void
+void
 nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 {
 	/* Set up an idle task that will write the metafile. */
-	if (directory->details->write_metafile_idle_id == 0)
+	if (directory->details->write_metafile_idle_id == 0) {
 		directory->details->write_metafile_idle_id =
 			gtk_idle_add (nautilus_directory_write_metafile_idle_cb,
 				      directory);
+	}
 }
 
 /* To use a directory name as a file name, we need to escape any slashes.
@@ -538,8 +554,9 @@ nautilus_directory_new (const char* uri)
 	GnomeVFSURI *alternate_metafile_uri;
 
 	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL)
+	if (vfs_uri == NULL) {
 		return NULL;
+	}
 
 	metafile_uri = gnome_vfs_uri_append_path (vfs_uri, METAFILE_NAME);
 	alternate_metafile_uri = nautilus_directory_construct_alternate_metafile_uri (vfs_uri);
@@ -566,15 +583,18 @@ nautilus_directory_start_monitoring (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	if (directory->details->files != NULL)
+	if (directory->details->files != NULL) {
 		(* callback) (directory,
 			      directory->details->files,
 			      callback_data);
+	}
 
-	if (directory->details->directory_loaded)
+	if (directory->details->directory_loaded) {
 		return;
-	if (directory->details->directory_load_in_progress != NULL)
+	}
+	if (directory->details->directory_load_in_progress != NULL) {
 		return;
+	}
 	
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
@@ -621,8 +641,9 @@ dequeue_pending_idle_cb (gpointer callback_data)
 	}
 	g_list_free (pending_file_info);
 
-	if (pending_files == NULL)
+	if (pending_files == NULL) {
 		return FALSE;
+	}
 
 	/* Tell the people who are monitoring about these new files. */
 	gtk_signal_emit (GTK_OBJECT (directory),
@@ -761,8 +782,9 @@ nautilus_directory_create_metafile_tree_root (NautilusDirectory *directory)
 {
 	xmlNode *root;
 
-	if (directory->details->metafile_tree == NULL)
+	if (directory->details->metafile_tree == NULL) {
 		directory->details->metafile_tree = xmlNewDoc (METAFILE_XML_VERSION);
+	}
 	root = xmlDocGetRootElement (directory->details->metafile_tree);
 	if (root == NULL) {
 		root = xmlNewDocNode (directory->details->metafile_tree, NULL, "DIRECTORY", NULL);
@@ -778,8 +800,9 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 				 const char *default_metadata)
 {
 	/* It's legal to call this on a NULL directory. */
-	if (directory == NULL)
+	if (directory == NULL) {
 		return g_strdup (default_metadata);
+	}
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
@@ -809,24 +832,27 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	old_metadata = nautilus_directory_get_metadata (directory, tag, default_metadata);
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
-	if (old_metadata_matches)
+	if (old_metadata_matches) {
 		return;
+	}
 
 	/* Data that matches the default is represented in the tree by
 	   the lack of an attribute.
 	*/
-	if (nautilus_strcmp (default_metadata, metadata) == 0)
+	if (nautilus_strcmp (default_metadata, metadata) == 0) {
 		value = NULL;
-	else
+	} else {
 		value = metadata;
+	}
 
 	/* Get at the tree. */
 	root = nautilus_directory_create_metafile_tree_root (directory);
 
 	/* Add or remove an attribute node. */
 	property_node = xmlSetProp (root, tag, value);
-	if (value == NULL)
+	if (value == NULL) {
 		xmlRemoveProp (property_node);
+	}
 
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
@@ -846,19 +872,15 @@ nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
 				default_metadata ? "TRUE" : "FALSE");
 
 	/* Handle oddball case of non-existent directory */
-	if (result_as_string == NULL)
+	if (result_as_string == NULL) {
 		return default_metadata;
-
-	if (strcmp (result_as_string, "TRUE") == 0)
-	{
-		result = TRUE;
-	} 
-	else if (strcmp (result_as_string, "FALSE") == 0)
-	{
-		result = FALSE;
 	}
-	else
-	{
+
+	if (strcmp (result_as_string, "TRUE") == 0) {
+		result = TRUE;
+	} else if (strcmp (result_as_string, "FALSE") == 0) {
+		result = FALSE;
+	} else {
 		g_assert_not_reached ();
 		result = default_metadata;
 	}
@@ -896,12 +918,9 @@ nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
 				default_as_string);
 
 	/* Handle oddball case of non-existent directory */
-	if (result_as_string == NULL)
-	{
+	if (result_as_string == NULL) {
 		result = default_metadata;
-	}
-	else
-	{
+	} else {
 		result = atoi (result_as_string);
 		g_free (result_as_string);
 	}
@@ -934,7 +953,8 @@ nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
 
 xmlNode *
 nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
-					   const char *file_name)
+					   const char *file_name,
+					   gboolean create)
 {
 	xmlNode *root, *child;
 	xmlChar *property;
@@ -943,23 +963,31 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 
 	/* The root itself represents the directory. */
 	root = xmlDocGetRootElement (directory->details->metafile_tree);
-	if (root == NULL) {
-		return NULL;
-	}
-
-	/* The children represent the files.
-	   This linear search is temporary.
-	   Eventually, we'll have a pointer from the NautilusFile right to
-	   the corresponding XML node, or we won't have the XML tree
-	   in memory at all.
-	*/
-	for (child = root->childs; child != NULL; child = child->next) {
-		if (strcmp (child->name, "FILE") == 0) {
-			property = xmlGetProp (child, "NAME");
-			if (nautilus_eat_strcmp (property, file_name) == 0) {
-				return child;
+	if (root != NULL) {
+		/* The children represent the files.
+		   This linear search is temporary.
+		   Eventually, we'll have a pointer from the NautilusFile right to
+		   the corresponding XML node, or we won't have the XML tree
+		   in memory at all.
+		*/
+		for (child = root->childs; child != NULL; child = child->next) {
+			if (strcmp (child->name, "FILE") == 0) {
+				property = xmlGetProp (child, "NAME");
+				if (nautilus_eat_strcmp (property, file_name) == 0) {
+					return child;
+				}
 			}
 		}
+	}
+
+	/* Create if necessary. */
+	if (create) {
+		if (root == NULL) {
+			root = nautilus_directory_create_metafile_tree_root (directory);
+		}
+		child = xmlNewChild (root, NULL, "FILE", NULL);
+		xmlSetProp (child, "NAME", file_name);
+		return child;
 	}
 
 	return NULL;
@@ -972,7 +1000,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 				      const char *default_metadata)
 {
 	return nautilus_directory_get_metadata_from_node
-		(nautilus_directory_get_file_metadata_node (directory, file_name),
+		(nautilus_directory_get_file_metadata_node (directory, file_name, FALSE),
 		 tag, default_metadata);
 }
 
@@ -985,9 +1013,8 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 {
 	char *old_metadata;
 	gboolean old_metadata_matches;
-	xmlNode *root, *child;
+	xmlNode *child;
 	const char *value;
-	xmlChar *property;
 	xmlAttr *property_node;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
@@ -1012,33 +1039,16 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 		value = metadata;
 	}
 
-	/* The root itself represents the directory. */
-	root = nautilus_directory_create_metafile_tree_root (directory);
-	
-	/* The children represent the files.
-	   This linear search is temporary.
-	   Eventually, we'll have a pointer from the NautilusFile right to
-	   the corresponding XML node, or we won't have the XML tree
-	   in memory at all.
-	*/
-	for (child = root->childs; child != NULL; child = child->next) {
-		if (strcmp (child->name, "FILE") == 0) {
-			property = xmlGetProp (child, "NAME");
-			if (nautilus_eat_strcmp (property, file_name) == 0) {
-				break;
-			}
-		}
-	}
-	if (child == NULL) {
-		g_assert (value != NULL);
-		child = xmlNewChild (root, NULL, "FILE", NULL);
-		xmlSetProp (child, "NAME", file_name);
-	}
-
+	/* Get or create the node. */
+	child = nautilus_directory_get_file_metadata_node (directory,
+							   file_name,
+							   value != NULL);
 	/* Add or remove an attribute node. */
-	property_node = xmlSetProp (child, tag, value);
-	if (value == NULL) {
-		xmlRemoveProp (property_node);
+	if (child != NULL) {
+		property_node = xmlSetProp (child, tag, value);
+		if (value == NULL) {
+			xmlRemoveProp (property_node);
+		}
 	}
 	
 	/* Since we changed the tree, arrange for it to be written. */
@@ -1069,6 +1079,15 @@ nautilus_directory_files_removed (NautilusDirectory *directory,
 	gtk_signal_emit (GTK_OBJECT (directory),
 			 nautilus_directory_signals[FILES_REMOVED],
 			 removed_files);
+}
+
+void
+nautilus_directory_files_changed (NautilusDirectory *directory,
+				  GList *changed_files)
+{
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 nautilus_directory_signals[FILES_CHANGED],
+			 changed_files);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

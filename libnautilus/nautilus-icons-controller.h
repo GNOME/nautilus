@@ -68,8 +68,7 @@ char *                nautilus_icons_controller_get_icon_text     (NautilusIcons
 								   NautilusControllerIcon   *icon);
 char *                nautilus_icons_controller_get_icon_uri      (NautilusIconsController  *controller,
 								   NautilusControllerIcon   *icon);
-void		      nautilus_icons_controller_update_icon	  (NautilusIconsController  *controller,
-								   gchar		    *icon_uri);
+
 struct NautilusIconsController
 {
 	GtkObject object;
@@ -89,8 +88,6 @@ struct NautilusIconsControllerClass
 						      NautilusControllerIcon   *icon);
 	char *                 (* get_icon_uri)      (NautilusIconsController  *controller,
 						      NautilusControllerIcon   *icon);
-	void                   (* update_icon)       (NautilusIconsController  *controller,
-						      gchar 		       *icon_uri);
 };
 
 #endif /* NAUTILUS_ICONS_CONTROLLER_H */

@@ -83,6 +83,8 @@ void       gnome_icon_container_add_auto                (GnomeIconContainer     
 							 NautilusControllerIcon  *icon);
 gboolean   gnome_icon_container_remove                  (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon);
+void       gnome_icon_container_update                  (GnomeIconContainer      *view,
+							 NautilusControllerIcon  *icon);
 
 void       gnome_icon_container_relayout                (GnomeIconContainer      *view);
 void       gnome_icon_container_line_up                 (GnomeIconContainer      *view);
@@ -97,8 +99,8 @@ void       gnome_icon_container_set_zoom_level          (GnomeIconContainer     
 
 void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
 void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
-void	   gnome_icon_container_update_icon		(GnomeIconContainer *container,
-							 gchar *icon_uri);
+void	   gnome_icon_container_update_icon		(GnomeIconContainer      *container,
+							 char                    *icon_uri);
 
 /* The following all work on the selected icon. */
 gboolean   gnome_icon_container_has_stretch_handles     (GnomeIconContainer      *container);

@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2000 Eazel, Inc
  *
- * Author: Andy Hertzfeld <andy@eazel.com>
+ * Authors: Andy Hertzfeld <andy@eazel.com>, Darin Adler <darin@eazel.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -745,8 +745,8 @@ emblem_layout_next (EmblemLayout *layout,
 		}
 		
 		/* Check to see if emblem fits in current side. */
-		if (x >= layout->icon_rect.x0 || x <= layout->icon_rect.x1
-		    || y < layout->icon_rect.y0 || y > layout->icon_rect.y1) {
+		if (x >= layout->icon_rect.x0 && x <= layout->icon_rect.x1
+		    && y >= layout->icon_rect.y0 && y <= layout->icon_rect.y1) {
 
 			/* It fits. */
 

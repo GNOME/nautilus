@@ -40,7 +40,6 @@
 
 #include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
-#include "nautilus-icons-controller.h"
 #include "nautilus-metadata.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-glib-extensions.h"
@@ -151,7 +150,7 @@ static guint signals[LAST_SIGNAL];
 /* A scalable icon, which is basically the name and path of an icon,
  * before we load the actual pixels of the icons's image.
  */
-struct _NautilusScalableIcon {
+struct NautilusScalableIcon {
 	guint ref_count;
 
 	char *uri;
@@ -179,8 +178,7 @@ static GtkType               nautilus_icon_factory_get_type          (void);
 static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
 static void                  nautilus_icon_factory_initialize        (NautilusIconFactory      *factory);
 static NautilusIconFactory * nautilus_get_current_icon_factory       (void);
-static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file,
-								      NautilusIconsController  *controller);
+static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file);
 static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
 								      const char               *name);
@@ -596,7 +594,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 }
 
 NautilusScalableIcon *
-nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 {
 	char *uri;
         const char *name;
@@ -616,7 +614,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
 			uri = nautilus_file_get_uri (file);
 		else
-			uri = nautilus_icon_factory_get_thumbnail_uri (file, controller ? NAUTILUS_ICONS_CONTROLLER (controller) : NULL);	
+			uri = nautilus_icon_factory_get_thumbnail_uri (file);	
 	}
 	
 	/* Get the generic icon set for this file. */
@@ -701,12 +699,16 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only)
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
    If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
 /* FIXME: Most of this thumbnail machinery belongs in NautilusFile, not here.
- * FIXME: No way this should have any references to NautilusIconsController;
- * instead the file_changed signal from NautilusDirectory/File needs to be used.
  */
 
+/* structure used for making thumbnails, associating a uri with the requesting controller */
+
+typedef struct {
+	char *thumbnail_uri;
+} NautilusThumbnailInfo;
+
 static char *
-nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, NautilusIconsController *controller)
+nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 {
 	NautilusIconFactory *factory;
 	GnomeVFSResult result;
@@ -737,7 +739,6 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, NautilusIconsContro
 	} else {
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
-		info->controller = controller;
 		
 		factory = nautilus_get_current_icon_factory ();		
 		if (factory->thumbnails) {
@@ -1171,7 +1172,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 
 	g_return_val_if_fail (file != NULL, NULL);
 
-	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
+	icon = nautilus_icon_factory_get_icon_for_file (file);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
 							    size_in_pixels,
 							    size_in_pixels);
@@ -1214,7 +1215,8 @@ nautilus_scalable_icon_list_free (GList *icon_list)
 
 /* utility routine for saving a pixbuf to a png file.
  * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
- * should be in a utility library, possibly in gdk-pixbuf itself */
+ * should be in a utility library, possibly in gdk-pixbuf itself.
+ */
 static gboolean
 save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 {
@@ -1233,22 +1235,27 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 	g_return_val_if_fail (filename[0] != '\0', FALSE);
 
         handle = fopen (filename, "wb");
-        if (handle == NULL)
+        if (handle == NULL) {
         	return FALSE;
+	}
 
 	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (png_ptr == NULL)
-	    return FALSE;
+	if (png_ptr == NULL) {
+		fclose (handle);
+		return FALSE;
+	}
 
 	info_ptr = png_create_info_struct (png_ptr);
 	if (info_ptr == NULL) {
 		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
+		fclose (handle);
 	    	return FALSE;
 	}
 
 	if (setjmp (png_ptr->jmpbuf)) {
-	    png_destroy_write_struct (&png_ptr, &info_ptr);
-	    return FALSE;
+		png_destroy_write_struct (&png_ptr, &info_ptr);
+		fclose (handle);
+		return FALSE;
 	}
 
 	png_init_io (png_ptr, handle);
@@ -1279,39 +1286,39 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 	png_write_info (png_ptr, info_ptr);
 
 	/* if there is no alpha in the data, allocate buffer to expand into */
-	if (!has_alpha)
+	if (has_alpha) {
+		buffer = NULL;
+	} else {
 		buffer = g_malloc(4 * width);
+	}
 	
 	/* pump the raster data into libpng, one scan line at a time */	
-	for (i = 0; i < height; i++)
-	  {
-	    if (has_alpha) {
-	    	png_bytep row_pointer = pixels;
-	    	png_write_row (png_ptr, row_pointer);
-	    } else {
-	    	/* expand RGB to RGBA using an opaque alpha value */
-		int x;
-		char *buffer_ptr = buffer;
-		char *source_ptr = pixels;
-		for (x = 0; x < width; x++)
-		  {
-		    *buffer_ptr++ = *source_ptr++;
-		    *buffer_ptr++ = *source_ptr++;
-		    *buffer_ptr++ = *source_ptr++;
-		    *buffer_ptr++ = 255;
-		  }
-	    	png_write_row (png_ptr, (png_bytep) buffer);		
-	    }
-	    pixels += rowstride;
-	  }
-
+	for (i = 0; i < height; i++) {
+		if (has_alpha) {
+			png_bytep row_pointer = pixels;
+			png_write_row (png_ptr, row_pointer);
+		} else {
+			/* expand RGB to RGBA using an opaque alpha value */
+			int x;
+			char *buffer_ptr = buffer;
+			char *source_ptr = pixels;
+			for (x = 0; x < width; x++) {
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = 255;
+			}
+			png_write_row (png_ptr, (png_bytep) buffer);		
+		}
+		pixels += rowstride;
+	}
+	
 	png_write_end (png_ptr, info_ptr);
 	png_destroy_write_struct (&png_ptr, &info_ptr);
-
-	if (!has_alpha)
-		g_free(buffer);
+	
+	g_free (buffer);
 		
-	fclose(handle);
+	fclose (handle);
 	return TRUE;
 }
 
@@ -1320,22 +1327,27 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
    returns true, otherwise it returns false */
 
 static gboolean 
-check_for_thumbnails(NautilusIconFactory *factory)
+check_for_thumbnails (NautilusIconFactory *factory)
 {
 	char *current_thumbnail;
 	NautilusThumbnailInfo *info;
 	GList *stop_element;
-	GList *next_thumbnail = factory->thumbnails;		
-	
-	while (next_thumbnail != NULL) {
+	GList *next_thumbnail;
+	NautilusFile *file;
+
+	for (next_thumbnail = factory->thumbnails;
+	     next_thumbnail != NULL;
+	     next_thumbnail = next_thumbnail->next) {
 		info = (NautilusThumbnailInfo*) next_thumbnail->data;
 		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE);
 		if (vfs_file_exists (current_thumbnail)) {
 			/* we found one, so update the icon and remove all of the elements up to and including
 			   this one from the pending list. */
 			g_free (current_thumbnail);
-			if (info->controller != NULL) {
-				nautilus_icons_controller_update_icon (NAUTILUS_ICONS_CONTROLLER (info->controller), info->thumbnail_uri);
+			file = nautilus_file_get (info->thumbnail_uri);
+			if (file != NULL) {
+				nautilus_file_changed (file);
+				nautilus_file_unref (file);
 			}
 			
 			stop_element = next_thumbnail->next;
@@ -1349,7 +1361,6 @@ check_for_thumbnails(NautilusIconFactory *factory)
 		}
 	    
 		g_free (current_thumbnail);
-		next_thumbnail = next_thumbnail->next;
 	}
 	
 	return FALSE;
@@ -1358,7 +1369,7 @@ check_for_thumbnails(NautilusIconFactory *factory)
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
 static int
-nautilus_icon_factory_make_thumbnails(gpointer data)
+nautilus_icon_factory_make_thumbnails (gpointer data)
 {
 	pid_t thumbnail_pid;
 	NautilusThumbnailInfo *info;

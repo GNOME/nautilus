@@ -37,7 +37,6 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_ima
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_property)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_text)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_uri)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, update_icon)
 
 static void
 nautilus_icons_controller_initialize_class (NautilusIconsControllerClass *klass)
@@ -46,7 +45,6 @@ nautilus_icons_controller_initialize_class (NautilusIconsControllerClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_property);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_text);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_uri);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, update_icon);
 }
 
 static void
@@ -64,34 +62,26 @@ nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
 }
 
 char *
-nautilus_icons_controller_get_icon_property  (NautilusIconsController *controller,
-					  NautilusControllerIcon *icon,
-					  const gchar *property_name)
+nautilus_icons_controller_get_icon_property (NautilusIconsController *controller,
+					     NautilusControllerIcon *icon,
+					     const char *property_name)
 {
 	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_property)
 		(controller, icon, property_name);
 }
 
 char *
-nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
-					  NautilusControllerIcon *icon)
+nautilus_icons_controller_get_icon_text (NautilusIconsController *controller,
+					 NautilusControllerIcon *icon)
 {
 	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_text)
 		(controller, icon);
 }
 
 char *
-nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
-					  NautilusControllerIcon *icon)
+nautilus_icons_controller_get_icon_uri (NautilusIconsController *controller,
+					NautilusControllerIcon *icon)
 {
 	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_uri)
 		(controller, icon);
-}
-
-void
-nautilus_icons_controller_update_icon   (NautilusIconsController *controller,
-					  gchar *icon_uri)
-{
-	 (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->update_icon)
-		(controller, icon_uri);
 }

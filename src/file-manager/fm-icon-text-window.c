@@ -175,7 +175,7 @@ create_attributes_option_menu (int menu_number)
 }
 
 static GtkWidget*
-create_icon_text_window ()
+create_icon_text_window (void)
 {
   	GtkWidget *window;
   	GtkWidget *contents_vbox;

@@ -67,6 +67,10 @@ void          nautilus_directory_set_file_metadata      (NautilusDirectory *dire
 							 const char        *default_metadata,
 							 const char        *metadata);
 xmlNode *     nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
-							 const char        *file_name);
+							 const char        *file_name,
+							 gboolean           create);
+void          nautilus_directory_files_changed          (NautilusDirectory *directory,
+							 GList             *changed_files);
 void          nautilus_directory_files_removed          (NautilusDirectory *directory,
 							 GList             *removed_files);
+void          nautilus_directory_request_write_metafile (NautilusDirectory *directory);

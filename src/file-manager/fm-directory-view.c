@@ -19,7 +19,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Ettore Perazzoli
+ * Authors: Ettore Perazzoli,
+ *          John Sullivan <sullivan@eazel.com>,
+ *          Darin Adler <darin@eazel.com>
  */
 
 #include <config.h>
@@ -58,18 +60,19 @@
 
 enum
 {
-	ADD_ENTRY,
+	ADD_FILE,
 	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
 	APPEND_SELECTION_CONTEXT_MENU_ITEMS,
-	BEGIN_ADDING_ENTRIES,
+	BEGIN_ADDING_FILES,
 	BEGIN_LOADING,
 	CLEAR,
-	DONE_ADDING_ENTRIES,
-	REMOVE_ENTRY,
+	DONE_ADDING_FILES,
+	FILE_CHANGED,
+	REMOVE_FILE,
 	LAST_SIGNAL
 };
 
-static guint fm_directory_view_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
 struct _FMDirectoryViewDetails
 {
@@ -81,11 +84,13 @@ struct _FMDirectoryViewDetails
 	guint display_pending_timeout_id;
 	guint display_pending_idle_id;
 	
-	guint add_files_handler_id;
-	guint remove_files_handler_id;
+	guint files_added_handler_id;
+	guint files_removed_handler_id;
+	guint files_changed_handler_id;
 	
 	GList *pending_files_added;
 	GList *pending_files_removed;
+	GList *pending_files_changed;
 
 	gboolean loading;
 };
@@ -138,13 +143,14 @@ static void           unschedule_display_of_pending_files                       
 static void           disconnect_model_handlers                                   (FMDirectoryView         *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, remove_entry)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, remove_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 
 static void
@@ -156,56 +162,63 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	object_class->destroy = fm_directory_view_destroy;
 
-	fm_directory_view_signals[CLEAR] =
+	signals[CLEAR] =
 		gtk_signal_new ("clear",
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, clear),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	fm_directory_view_signals[BEGIN_ADDING_ENTRIES] =
-		gtk_signal_new ("begin_adding_entries",
+	signals[BEGIN_ADDING_FILES] =
+		gtk_signal_new ("begin_adding_files",
        				GTK_RUN_LAST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_adding_entries),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_adding_files),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	fm_directory_view_signals[ADD_ENTRY] =
-		gtk_signal_new ("add_entry",
+	signals[ADD_FILE] =
+		gtk_signal_new ("add_file",
        				GTK_RUN_LAST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_entry),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_file),
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-	fm_directory_view_signals[REMOVE_ENTRY] =
-		gtk_signal_new ("remove_entry",
+	signals[REMOVE_FILE] =
+		gtk_signal_new ("remove_file",
        				GTK_RUN_LAST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, remove_entry),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, remove_file),
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-	fm_directory_view_signals[DONE_ADDING_ENTRIES] =
-		gtk_signal_new ("done_adding_entries",
+	signals[FILE_CHANGED] =
+		gtk_signal_new ("file_changed",
        				GTK_RUN_LAST,
                     		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, done_adding_entries),
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, file_changed),
+		    		gtk_marshal_NONE__BOXED,
+		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+	signals[DONE_ADDING_FILES] =
+		gtk_signal_new ("done_adding_files",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, done_adding_files),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	fm_directory_view_signals[BEGIN_LOADING] =
+	signals[BEGIN_LOADING] =
 		gtk_signal_new ("begin_loading",
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
-	fm_directory_view_signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS] =
+	signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("append_selection_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_selection_context_menu_items),
 		    		gtk_marshal_NONE__BOXED_BOXED,
 		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
-	fm_directory_view_signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
+	signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("append_background_context_menu_items",
        				GTK_RUN_FIRST,
                     		object_class->type,
@@ -220,13 +233,14 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	/* Function pointers that subclasses must override */
 
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, remove_entry);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, remove_file);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 }
 
@@ -246,7 +260,7 @@ bonobo_menu_open_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char
          */
         g_assert (g_list_length(selection) == 1);
 
-	fm_directory_view_activate_entry (view, 
+	fm_directory_view_activate_file (view, 
 	                                  NAUTILUS_FILE (selection->data), 
 	                                  FALSE);        
 
@@ -613,7 +627,7 @@ zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	GList *files_added, *files_removed, *p;
+	GList *files_added, *files_removed, *files_changed, *p;
 	NautilusFile *file;
 
 	if (view->details->model != NULL
@@ -623,21 +637,22 @@ display_pending_files (FMDirectoryView *view)
 
 	files_added = view->details->pending_files_added;
 	files_removed = view->details->pending_files_removed;
-	if (files_added == NULL && files_removed == NULL) {
+	files_changed = view->details->pending_files_changed;
+	if (files_added == NULL && files_removed == NULL && files_changed == NULL) {
 		return FALSE;
 	}
 	view->details->pending_files_added = NULL;
 	view->details->pending_files_removed = NULL;
+	view->details->pending_files_changed = NULL;
 
-	gtk_signal_emit (GTK_OBJECT (view),
-			 fm_directory_view_signals[BEGIN_ADDING_ENTRIES]);
+	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
 
 	for (p = files_added; p != NULL; p = p->next) {
 		file = p->data;
 		
 		if (!nautilus_file_is_gone (file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
-					 fm_directory_view_signals[ADD_ENTRY],
+					 signals[ADD_FILE],
 					 file);
 		}
 	}
@@ -647,15 +662,25 @@ display_pending_files (FMDirectoryView *view)
 		
 		g_assert (nautilus_file_is_gone (file));
 		gtk_signal_emit (GTK_OBJECT (view),
-				 fm_directory_view_signals[REMOVE_ENTRY],
+				 signals[REMOVE_FILE],
 				 file);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (view),
-			 fm_directory_view_signals[DONE_ADDING_ENTRIES]);
+	for (p = files_changed; p != NULL; p = p->next) {
+		file = p->data;
+		
+		if (!nautilus_file_is_gone (file)) {
+			gtk_signal_emit (GTK_OBJECT (view),
+					 signals[FILE_CHANGED],
+					 file);
+		}
+	}
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
 	nautilus_file_list_free (files_added);
 	nautilus_file_list_free (files_removed);
+	nautilus_file_list_free (files_changed);
 
 	return TRUE;
 }
@@ -778,7 +803,7 @@ unschedule_display_of_pending_files (FMDirectoryView *view)
 }
 
 static void
-add_or_remove_files (FMDirectoryView *view,
+queue_pending_files (FMDirectoryView *view,
 		     GList *files,
 		     GList **pending_list)
 {
@@ -798,37 +823,36 @@ add_or_remove_files (FMDirectoryView *view,
 }
 
 static void
-add_files_cb (NautilusDirectory *directory,
-	      GList *files,
-	      gpointer callback_data)
+files_added_cb (NautilusDirectory *directory,
+		GList *files,
+		gpointer callback_data)
 {
 	FMDirectoryView *view;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (files != NULL);
-
 	view = FM_DIRECTORY_VIEW (callback_data);
-
-	g_assert (directory == view->details->model);
-
-	add_or_remove_files (view, files, &view->details->pending_files_added);
+	queue_pending_files (view, files, &view->details->pending_files_added);
 }
 
 static void
-remove_files_cb (NautilusDirectory *directory,
-		 GList *files,
-		 gpointer callback_data)
+files_removed_cb (NautilusDirectory *directory,
+		  GList *files,
+		  gpointer callback_data)
 {
 	FMDirectoryView *view;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (files != NULL);
+	view = FM_DIRECTORY_VIEW (callback_data);
+	queue_pending_files (view, files, &view->details->pending_files_removed);
+}
+
+static void
+files_changed_cb (NautilusDirectory *directory,
+		  GList *files,
+		  gpointer callback_data)
+{
+	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-
-	g_assert (directory == view->details->model);
-
-	add_or_remove_files (view, files, &view->details->pending_files_removed);
+	queue_pending_files (view, files, &view->details->pending_files_changed);
 }
 
 
@@ -847,7 +871,7 @@ fm_directory_view_clear (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[CLEAR]);
+	gtk_signal_emit (GTK_OBJECT (view), signals[CLEAR]);
 }
 
 /**
@@ -864,7 +888,7 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_LOADING]);
+	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_LOADING]);
 }
 
 /**
@@ -1106,7 +1130,7 @@ open_cb (GtkMenuItem *item, GList *files)
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	fm_directory_view_activate_entry (directory_view, files->data, FALSE);
+	fm_directory_view_activate_file (directory_view, files->data, FALSE);
 }
 
 static void
@@ -1115,7 +1139,7 @@ open_one_in_new_window (gpointer data, gpointer user_data)
 	g_assert (NAUTILUS_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
 }
 
 static void
@@ -1369,7 +1393,7 @@ create_selection_context_menu (FMDirectoryView *view)
 					  (GtkDestroyNotify) nautilus_file_list_free);
 
 		gtk_signal_emit (GTK_OBJECT (view),
-				 fm_directory_view_signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS], 
+				 signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS], 
 				 menu, selected_files);
 		
 		/* Add separator between selection-specific 
@@ -1405,7 +1429,7 @@ fm_directory_view_append_background_context_menu_items (FMDirectoryView *view,
 							GtkMenu *menu)
 {
 	gtk_signal_emit (GTK_OBJECT (view),
-			 fm_directory_view_signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS], 
+			 signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS], 
 			 menu);
 }
 
@@ -1484,20 +1508,20 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_activate_entry:
+ * fm_directory_view_activate_file:
  * 
- * Activate an entry in this view. This might involve switching the displayed
+ * Activate an file in this view. This might involve switching the displayed
  * location for the current window, or launching an application. This is normally
  * called only by subclasses.
  * @view: FMDirectoryView in question.
- * @file: A NautilusFile representing the entry in this view to activate.
+ * @file: A NautilusFile representing the file in this view to activate.
  * @request_new_window: Should this item be opened in a new window?
  * 
  **/
 void
-fm_directory_view_activate_entry (FMDirectoryView *view, 
-				  NautilusFile *file,
-				  gboolean request_new_window)
+fm_directory_view_activate_file (FMDirectoryView *view, 
+				 NautilusFile *file,
+				 gboolean request_new_window)
 {
 	Nautilus_NavigationRequestInfo request;
 
@@ -1554,27 +1578,32 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_LOADING]);
+	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_LOADING]);
 
 	schedule_timeout_display_of_pending_files (view);
 	view->details->loading = TRUE;
 	nautilus_directory_start_monitoring (view->details->model,
-					     add_files_cb, view);
+					     files_added_cb, view);
 
 	/* Attach a handler to get any further files that show up as we
 	 * load and sychronize. We won't miss any files because this
 	 * signal is emitted from an idle routine and so we will be
 	 * connected before the next time it is emitted.
 	 */
-	view->details->add_files_handler_id = gtk_signal_connect
+	view->details->files_added_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_added",
-		 GTK_SIGNAL_FUNC (add_files_cb),
+		 GTK_SIGNAL_FUNC (files_added_cb),
 		 view);
-	view->details->remove_files_handler_id = gtk_signal_connect
+	view->details->files_removed_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_removed",
-		 GTK_SIGNAL_FUNC (remove_files_cb),
+		 GTK_SIGNAL_FUNC (files_removed_cb),
+		 view);
+	view->details->files_changed_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model), 
+		 "files_changed",
+		 GTK_SIGNAL_FUNC (files_changed_cb),
 		 view);
 }
 
@@ -1593,23 +1622,24 @@ fm_directory_view_merge_menus (FMDirectoryView *view)
 }
 
 static void
+disconnect_handler (FMDirectoryView *view, int *id)
+{
+	if (*id != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (view->details->model), *id);
+		*id = 0;
+	}
+}
+
+static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
 	if (view->details->model != NULL) {
 		nautilus_directory_stop_monitoring (view->details->model);
 	}
 
-	if (view->details->add_files_handler_id != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
-				       view->details->add_files_handler_id);
-		view->details->add_files_handler_id = 0;
-	}
-
-	if (view->details->remove_files_handler_id != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
-				       view->details->remove_files_handler_id);
-		view->details->remove_files_handler_id = 0;
-	}
+	disconnect_handler (view, &view->details->files_added_handler_id);
+	disconnect_handler (view, &view->details->files_removed_handler_id);
+	disconnect_handler (view, &view->details->files_changed_handler_id);
 }
 
 /**

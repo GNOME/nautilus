@@ -70,9 +70,11 @@ static void                fm_directory_view_icons_icon_changed_cb              
 											 double                     scale_x,
 											 double                     scale_y,
 											 FMDirectoryViewIcons      *icon_view);
-static void                fm_directory_view_icons_add_entry                            (FMDirectoryView           *view,
+static void                fm_directory_view_icons_add_file                             (FMDirectoryView           *view,
 											 NautilusFile              *file);
-static void                fm_directory_view_icons_remove_entry                         (FMDirectoryView           *view,
+static void                fm_directory_view_icons_remove_file                          (FMDirectoryView           *view,
+											 NautilusFile              *file);
+static void                fm_directory_view_icons_file_changed                         (FMDirectoryView           *view,
 											 NautilusFile              *file);
 static void                fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView           *view,
 											 GtkMenu                   *menu);
@@ -88,13 +90,13 @@ static gboolean            fm_directory_view_icons_can_zoom_in                  
 static gboolean            fm_directory_view_icons_can_zoom_out                         (FMDirectoryView           *view);
 static void                fm_directory_view_icons_clear                                (FMDirectoryView           *view);
 static void                fm_directory_view_icons_destroy                              (GtkObject                 *view);
-static void                fm_directory_view_icons_done_adding_entries                  (FMDirectoryView           *view);
+static void                fm_directory_view_icons_done_adding_files                    (FMDirectoryView           *view);
 static GList *             fm_directory_view_icons_get_selection                        (FMDirectoryView           *view);
 static NautilusZoomLevel   fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons      *view);
 static void                fm_directory_view_icons_initialize                           (FMDirectoryViewIcons      *icon_view);
 static void                fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass *klass);
 static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view);
-static gboolean            fm_directory_view_icons_react_to_icon_change_idle_cb         (gpointer data);
+static gboolean            fm_directory_view_icons_react_to_icon_change_idle_cb         (gpointer                   data);
 static void                fm_directory_view_icons_select_all                           (FMDirectoryView           *view);
 static void                fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons      *view,
 											 NautilusZoomLevel          new_level);
@@ -139,34 +141,21 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 
 	object_class->destroy = fm_directory_view_icons_destroy;
 	
-	fm_directory_view_class->clear 
-		= fm_directory_view_icons_clear;
-	fm_directory_view_class->add_entry
-		= fm_directory_view_icons_add_entry;
-	fm_directory_view_class->remove_entry
-		= fm_directory_view_icons_remove_entry;
-	fm_directory_view_class->done_adding_entries 
-		= fm_directory_view_icons_done_adding_entries;	
-	fm_directory_view_class->begin_loading 
-		= fm_directory_view_icons_begin_loading;
-	fm_directory_view_class->get_selection 
-		= fm_directory_view_icons_get_selection;
-	fm_directory_view_class->bump_zoom_level 
-		= fm_directory_view_icons_bump_zoom_level;	
-	fm_directory_view_class->can_zoom_in 
-		= fm_directory_view_icons_can_zoom_in;
-	fm_directory_view_class->can_zoom_out 
-		= fm_directory_view_icons_can_zoom_out;
-	fm_directory_view_class->select_all
-                = fm_directory_view_icons_select_all;
-        fm_directory_view_class->append_selection_context_menu_items
-        	= fm_directory_view_icons_append_selection_context_menu_items;
-        fm_directory_view_class->append_background_context_menu_items
-        	= fm_directory_view_icons_append_background_context_menu_items;
-        fm_directory_view_class->merge_menus
-                = fm_directory_view_icons_merge_menus;
-        fm_directory_view_class->update_menus
-                = fm_directory_view_icons_update_menus;
+	fm_directory_view_class->add_file = fm_directory_view_icons_add_file;
+	fm_directory_view_class->begin_loading = fm_directory_view_icons_begin_loading;
+	fm_directory_view_class->bump_zoom_level = fm_directory_view_icons_bump_zoom_level;	
+	fm_directory_view_class->can_zoom_in = fm_directory_view_icons_can_zoom_in;
+	fm_directory_view_class->can_zoom_out = fm_directory_view_icons_can_zoom_out;
+	fm_directory_view_class->clear = fm_directory_view_icons_clear;
+	fm_directory_view_class->done_adding_files = fm_directory_view_icons_done_adding_files;	
+	fm_directory_view_class->file_changed = fm_directory_view_icons_file_changed;
+	fm_directory_view_class->get_selection = fm_directory_view_icons_get_selection;
+	fm_directory_view_class->remove_file = fm_directory_view_icons_remove_file;
+	fm_directory_view_class->select_all = fm_directory_view_icons_select_all;
+        fm_directory_view_class->append_background_context_menu_items = fm_directory_view_icons_append_background_context_menu_items;
+        fm_directory_view_class->append_selection_context_menu_items = fm_directory_view_icons_append_selection_context_menu_items;
+        fm_directory_view_class->merge_menus = fm_directory_view_icons_merge_menus;
+        fm_directory_view_class->update_menus = fm_directory_view_icons_update_menus;
 
 	/* FIXME: Read this from global preferences */
 	default_icon_text_attribute_names = g_strdup ("name|size|date_modified|type");
@@ -511,13 +500,13 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_icons_add_entry (FMDirectoryView *view, NautilusFile *file)
+fm_directory_view_icons_add_file (FMDirectoryView *view, NautilusFile *file)
 {
 	add_icon_if_already_positioned (FM_DIRECTORY_VIEW_ICONS (view), file);
 }
 
 static void
-fm_directory_view_icons_remove_entry (FMDirectoryView *view, NautilusFile *file)
+fm_directory_view_icons_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
 	if (gnome_icon_container_remove (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
 					 NAUTILUS_CONTROLLER_ICON (file))) {
@@ -526,7 +515,14 @@ fm_directory_view_icons_remove_entry (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
+fm_directory_view_icons_file_changed (FMDirectoryView *view, NautilusFile *file)
+{
+	gnome_icon_container_update (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
+				     NAUTILUS_CONTROLLER_ICON (file));
+}
+
+static void
+fm_directory_view_icons_done_adding_files (FMDirectoryView *view)
 {
 	display_icons_not_already_positioned (FM_DIRECTORY_VIEW_ICONS (view));
 }
@@ -878,7 +874,7 @@ icon_container_activate_cb (GnomeIconContainer *container,
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (file != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (icon_view), file, FALSE);
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (icon_view), file, FALSE);
 }
 
 static void

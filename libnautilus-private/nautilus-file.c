@@ -846,7 +846,9 @@ nautilus_file_get_keywords (NautilusFile *file)
 	keywords = NULL;
 
 	/* Put all the keywords into a list. */
-	file_node = nautilus_directory_get_file_metadata_node (file->directory, file->info->name);
+	file_node = nautilus_directory_get_file_metadata_node (file->directory,
+							       file->info->name,
+							       FALSE);
 	if (file_node != NULL) {
 		for (child = file_node->childs; child != NULL; child = child->next) {
 			if (strcmp (child->name, "KEYWORD") == 0) {
@@ -860,6 +862,62 @@ nautilus_file_get_keywords (NautilusFile *file)
 	}
 
 	return g_list_reverse (keywords);
+}
+
+/**
+ * nautilus_file_set_keywords
+ * 
+ * Change this file's keywords.
+ * @file: NautilusFile representing the file in question.
+ * @keywords: New set of keywords (a GList of strings).
+ *
+ **/
+void
+nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
+{
+	xmlNode *file_node, *child, *next;
+	GList *p;
+	gboolean need_write;
+	xmlChar *property;
+
+	g_return_if_fail (file != NULL);
+
+	/* Put all the keywords into a list. */
+	file_node = nautilus_directory_get_file_metadata_node (file->directory,
+							       file->info->name,
+							       keywords != NULL);
+	need_write = FALSE;
+	if (file_node != NULL) {
+		p = keywords;
+
+		/* Remove any nodes except the ones we expect. */
+		for (child = file_node->childs; child != NULL; child = next) {
+			next = child->next;
+			if (strcmp (child->name, "KEYWORD") == 0) {
+				property = xmlGetProp (child, "NAME");
+				if (property != NULL && p != NULL && strcmp (property, p->data) == 0) {
+					p = p->next;
+				} else {
+					xmlUnlinkNode (child);
+					xmlFreeNode (child);
+					need_write = TRUE;
+				}
+			}
+		}
+
+		/* Add any additional nodes needed. */
+		for (; p != NULL; p = p->next) {
+			child = xmlNewChild (file_node, NULL, "KEYWORD", NULL);
+			xmlSetProp (child, "NAME", p->data);
+			need_write = TRUE;
+		}
+	}
+
+	if (need_write) {
+		/* Since we changed the tree, arrange for it to be written. */
+		nautilus_directory_request_write_metafile (file->directory);
+		nautilus_file_changed (file);
+	}
 }
 
 /**
@@ -958,6 +1016,23 @@ nautilus_file_delete (NautilusFile *file)
 			g_list_free (removed_files);
 		}
 	}
+}
+
+/**
+ * nautilus_file_changed
+ * 
+ * Notify the user that this file has changed.
+ * @file: NautilusFile representing the file in question.
+ **/
+void
+nautilus_file_changed (NautilusFile *file)
+{
+	GList *changed_files;
+
+	/* Send out a signal. */
+	changed_files = g_list_prepend (NULL, file);
+	nautilus_directory_files_changed (file->directory, changed_files);
+	g_list_free (changed_files);
 }
 
 /**

@@ -56,6 +56,9 @@ void               nautilus_file_ref                       (NautilusFile        
 void               nautilus_file_unref                     (NautilusFile             *file);
 void               nautilus_file_delete                    (NautilusFile             *file);
 
+/* Change notification. */
+void               nautilus_file_changed                   (NautilusFile             *file);
+
 /* Basic attributes for file objects. */
 char *             nautilus_file_get_name                  (NautilusFile             *file);
 char *             nautilus_file_get_uri                   (NautilusFile             *file);

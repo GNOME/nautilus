@@ -1,3 +1,53 @@
+2000-03-08  Darin Adler  <darin@eazel.com>
+
+	You can now use Set Properties to attach keywords to a file,
+	which will cause it to have emblems attached to its icon.
+
+	* libnautilus/gnome-icon-container.h,
+	libnautilus/gnome-icon-container.c (gnome_icon_container_update,
+	gnome_icon_container_update_icon),
+	libnautilus/nautilus-directory-private.h,
+	libnautilus/nautilus-directory.c
+	(nautilus_directory_files_changed), libnautilus/nautilus-file.h,
+	libnautilus/nautilus-file.c (nautilus_file_changed),
+	src/file-manager/fm-directory-view.h,
+	src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view-icons.c,
+	src/file-manager/fm-directory-view-list.c,: Add files_changed
+	machinery in so views will notice changes to a NautilusFile.
+
+	* libnautilus/nautilus-icon-factory.h,
+	libnautilus/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_thumbnail_uri,
+	nautilus_icon_factor_get_icon_for_file, check_for_thumbnails),
+	libnautilus/nautilus-icons-controller.h,
+	libnautilus/nautilus-icons-controller.c,
+	(nautilus_icons_controller_update_icon),
+	src/file-manager/fm-icons-controller.c
+	(fm_icons_controller_update_icon): Use the files_changed machinery
+	instead of a special case in the icon controller to tell the view
+	about a new thumbnail.
+
+	* libnautilus/nautilus-icons-view-icon-item.c
+	(emblem_layout_next): Fixed typo that caused emblems to go down
+	one side of the icon instead of going around.
+
+	* libnautilus/nautilus-directory-private.h,
+	libnautilus/nautilus-directory.c
+	(nautilus_directory_get_file_metadata_node,
+	nautilus_directory_request_write_metafile),
+	libnautilus/nautilus-file.c (nautilus_file_set_keywords):
+	Implemented the set_keywords operation so we can change the
+	keywords for a file.
+
+	* src/file-manager/fm-icon-text-window.c
+	(create_icon_text_window): Fixed a prototype.
+
+	* src/file-manager/fm-properties-window.c (property_button_update,
+	property_button_toggled, create_properties_window,
+	fm_properties_window_get_or_create): Implement a first cut at a
+	properties window.
+
 2000-03-07  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus/nautilus-icons-view-icon-item.c:

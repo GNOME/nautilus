@@ -56,31 +56,37 @@ struct _FMDirectoryViewClass {
 	 */
 	void 	(* clear) 		 (FMDirectoryView *view);
 	
-	/* The 'begin_adding_entries' signal is emitted before a set of entries
+	/* The 'begin_adding_files' signal is emitted before a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
-	 * necessary preparation for a set of new entries. The default
+	 * necessary preparation for a set of new files. The default
 	 * implementation does nothing.
 	 */
-	void 	(* begin_adding_entries) (FMDirectoryView *view);
+	void 	(* begin_adding_files) (FMDirectoryView *view);
 	
-	/* The 'add_entry' signal is emitted to add one entry to the view.
+	/* The 'add_file' signal is emitted to add one file to the view.
 	 * It must be replaced by each subclass.
 	 */
-	void 	(* add_entry) 		 (FMDirectoryView *view, 
+	void 	(* add_file) 		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
-	/* The 'remove_entry' signal is emitted to remove one entry from the view.
+	/* The 'remove_file' signal is emitted to remove one file from the view.
 	 * It must be replaced by each subclass.
 	 */
-	void 	(* remove_entry) 	 (FMDirectoryView *view, 
+	void 	(* remove_file) 	 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
-	/* The 'done_adding_entries' signal is emitted after a set of entries
+	/* The 'file_changed' signal is emitted to signal a change in a file.
+	 * It must be replaced by each subclass.
+	 */
+	void 	(* file_changed)         (FMDirectoryView *view, 
+					  NautilusFile *file);
+
+	/* The 'done_adding_files' signal is emitted after a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
-	 * necessary cleanup (typically, cleanup for code in begin_adding_entries).
+	 * necessary cleanup (typically, cleanup for code in begin_adding_files).
 	 * The default implementation does nothing.
 	 */
-	void 	(* done_adding_entries)  (FMDirectoryView *view);
+	void 	(* done_adding_files)    (FMDirectoryView *view);
 	
 	/* The 'begin_loading' signal is emitted before any of the contents
 	 * of a directory are added to the view. It can be replaced by a 
@@ -181,7 +187,7 @@ void                      fm_directory_view_begin_loading                 (FMDir
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void                      fm_directory_view_activate_entry                (FMDirectoryView *view,
+void                      fm_directory_view_activate_file                 (FMDirectoryView *view,
 									   NautilusFile    *file,
 									   gboolean         request_new_window);
 void                      fm_directory_view_notify_selection_changed      (FMDirectoryView *view);

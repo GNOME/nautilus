@@ -2683,6 +2683,32 @@ gnome_icon_container_remove (GnomeIconContainer *container,
 	return FALSE;
 }
 
+/**
+ * gnome_icon_container_update:
+ * @container: A GnomeIconContainer.
+ * @data: Icon from the controller.
+ * 
+ * Update the icon with this data.
+ **/
+void
+gnome_icon_container_update (GnomeIconContainer *container,
+			     NautilusControllerIcon *data)
+{
+	GnomeIconContainerIcon *icon;
+	GList *p;
+
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
+	g_return_if_fail (data != NULL);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->data == data) {
+			update_icon (container, icon);
+			return;
+		}
+	}
+}
+
 /* zooming */
 
 int
@@ -3292,14 +3318,6 @@ compute_stretch (StretchState *start,
 	if (!bottom) {
 		current->icon_y += start->icon_size - current->icon_size;
 	}
-}
-
-void
-gnome_icon_container_update_icon(GnomeIconContainer *container, gchar *icon_uri)
-{
-	GnomeIconContainerIcon *icon = gnome_icon_container_get_icon_by_uri (container, icon_uri);
-	if (icon != NULL)
-		update_icon(container, icon);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -75,89 +75,91 @@ struct _FMDirectoryViewListDetails
 
 
 /* forward declarations */
-static void add_to_flist	 		    (FMDirectoryViewList *list_view,
-		   		 		     NautilusFile *file);
-static void column_clicked_cb 			    (GtkCList *clist,
-			       	 		     int column,
-			       	 		     gpointer user_data);
-static int compare_rows 			    (GtkCList *clist,
-	      					     gconstpointer  ptr1,
-	      					     gconstpointer  ptr2);
-static void context_click_selection_cb		    (GtkCList *clist,
-						     FMDirectoryViewList *list_view);
-static void context_click_background_cb		    (GtkCList *clist,
-						     FMDirectoryViewList *list_view);
-static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
-static void flist_activate_cb 			    (GtkFList *flist,
-			       	 		     gpointer entry_data,
-			       	 		     gpointer data);
-static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
-static void fm_directory_view_list_add_entry 	    (FMDirectoryView *view, 
-				 		     NautilusFile *file);
-static void fm_directory_view_list_remove_entry     (FMDirectoryView *view, 
-				 		     NautilusFile *file);
-static void fm_directory_view_list_background_changed_cb
-                                                    (NautilusBackground *background,
-						     FMDirectoryViewList *list_view);
-static void fm_directory_view_list_begin_adding_entries
-						    (FMDirectoryView *view);
-static void fm_directory_view_list_begin_loading    (FMDirectoryView *view);
-static void fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
-						     int zoom_increment);
-static gboolean fm_directory_view_list_can_zoom_in  (FMDirectoryView *view);
-static gboolean fm_directory_view_list_can_zoom_out (FMDirectoryView *view);
-static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
-static guint fm_directory_view_list_get_icon_size   (FMDirectoryViewList *list_view);
-static GList *fm_directory_view_list_get_selection  (FMDirectoryView *view);
-static NautilusZoomLevel fm_directory_view_list_get_zoom_level 
-						    (FMDirectoryViewList *list_view);
-static void fm_directory_view_list_initialize 	    (gpointer object, gpointer klass);
-static void fm_directory_view_list_initialize_class (gpointer klass);
-static void fm_directory_view_list_destroy 	    (GtkObject *object);
-static void fm_directory_view_list_done_adding_entries 
-						    (FMDirectoryView *view);
-static void fm_directory_view_list_select_all       (FMDirectoryView *view);
-
-static void fm_directory_view_list_set_zoom_level   (FMDirectoryViewList *list_view,
-				       		     NautilusZoomLevel new_level);
-static void fm_directory_view_list_sort_items 	    (FMDirectoryViewList *list_view, 
-				   		     int column, 
-				   		     gboolean reversed);
-const char *get_attribute_from_column 	    	    (int column);
-int get_column_from_attribute	 		    (const char *value);
-int get_sort_column_from_attribute 		    (const char *value);
-static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
-static GtkWidget *get_sort_indicator 		    (GtkFList *flist, 
-						     int column, 
-						     gboolean reverse);
-static void hide_sort_indicator 		    (GtkFList *flist, int column);
-static void install_icon 			    (FMDirectoryViewList *list_view, 
-						     guint row);
-static void show_sort_indicator 		    (GtkFList *flist, 
-						     int column, 
-						     gboolean sort_reversed);
-static int sort_criterion_from_column 		    (int column);
-static void update_icons			    (FMDirectoryViewList *list_view);
+static void              add_to_flist                                 (FMDirectoryViewList *list_view,
+								       NautilusFile        *file);
+static void              column_clicked_cb                            (GtkCList            *clist,
+								       int                  column,
+								       gpointer             user_data);
+static int               compare_rows                                 (GtkCList            *clist,
+								       gconstpointer        ptr1,
+								       gconstpointer        ptr2);
+static void              context_click_selection_cb                   (GtkCList            *clist,
+								       FMDirectoryViewList *list_view);
+static void              context_click_background_cb                  (GtkCList            *clist,
+								       FMDirectoryViewList *list_view);
+static GtkFList *        create_flist                                 (FMDirectoryViewList *list_view);
+static void              flist_activate_cb                            (GtkFList            *flist,
+								       gpointer             entry_data,
+								       gpointer             data);
+static void              flist_selection_changed_cb                   (GtkFList            *flist,
+								       gpointer             data);
+static void              fm_directory_view_list_add_file              (FMDirectoryView     *view,
+								       NautilusFile        *file);
+static void              fm_directory_view_list_remove_file           (FMDirectoryView     *view,
+								       NautilusFile        *file);
+static void              fm_directory_view_list_file_changed          (FMDirectoryView     *view,
+								       NautilusFile        *file);
+static void              fm_directory_view_list_background_changed_cb (NautilusBackground  *background,
+								       FMDirectoryViewList *list_view);
+static void              fm_directory_view_list_begin_adding_files    (FMDirectoryView     *view);
+static void              fm_directory_view_list_begin_loading         (FMDirectoryView     *view);
+static void              fm_directory_view_list_bump_zoom_level       (FMDirectoryView     *view,
+								       int                  zoom_increment);
+static gboolean          fm_directory_view_list_can_zoom_in           (FMDirectoryView     *view);
+static gboolean          fm_directory_view_list_can_zoom_out          (FMDirectoryView     *view);
+static void              fm_directory_view_list_clear                 (FMDirectoryView     *view);
+static guint             fm_directory_view_list_get_icon_size         (FMDirectoryViewList *list_view);
+static GList *           fm_directory_view_list_get_selection         (FMDirectoryView     *view);
+static NautilusZoomLevel fm_directory_view_list_get_zoom_level        (FMDirectoryViewList *list_view);
+static void              fm_directory_view_list_initialize            (gpointer             object,
+								       gpointer             klass);
+static void              fm_directory_view_list_initialize_class      (gpointer             klass);
+static void              fm_directory_view_list_destroy               (GtkObject           *object);
+static void              fm_directory_view_list_done_adding_files     (FMDirectoryView     *view);
+static void              fm_directory_view_list_select_all            (FMDirectoryView     *view);
+static void              fm_directory_view_list_set_zoom_level        (FMDirectoryViewList *list_view,
+								       NautilusZoomLevel    new_level);
+static void              fm_directory_view_list_sort_items            (FMDirectoryViewList *list_view,
+								       int                  column,
+								       gboolean             reversed);
+const char *             get_attribute_from_column                    (int                  column);
+int                      get_column_from_attribute                    (const char          *value);
+int                      get_sort_column_from_attribute               (const char          *value);
+static GtkFList *        get_flist                                    (FMDirectoryViewList *list_view);
+static GtkWidget *       get_sort_indicator                           (GtkFList            *flist,
+								       int                  column,
+								       gboolean             reverse);
+static void              hide_sort_indicator                          (GtkFList            *flist,
+								       int                  column);
+static void              install_icon                                 (FMDirectoryViewList *list_view,
+								       guint                row);
+static void              show_sort_indicator                          (GtkFList            *flist,
+								       int                  column,
+								       gboolean             sort_reversed);
+static int               sort_criterion_from_column                   (int                  column);
+static void              update_icons                                 (FMDirectoryViewList *list_view);
 
 static char * down_xpm[] = {
-"6 5 2 1",
-" 	c None",
-".	c #000000",
-"......",
-"      ",
-" .... ",
-"      ",
-"  ..  "};
+	"6 5 2 1",
+	" 	c None",
+	".	c #000000",
+	"......",
+	"      ",
+	" .... ",
+	"      ",
+	"  ..  "
+};
 
 static char * up_xpm[] = {
-"6 5 2 1",
-" 	c None",
-".	c #000000",
-"  ..  ",
-"      ",
-" .... ",
-"      ",
-"......"};
+	"6 5 2 1",
+	" 	c None",
+	".	c #000000",
+	"  ..  ",
+	"      ",
+	" .... ",
+	"      ",
+	"......"
+};
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
@@ -177,16 +179,17 @@ fm_directory_view_list_initialize_class (gpointer klass)
 
 	object_class->destroy = fm_directory_view_list_destroy;
 	
-	fm_directory_view_class->clear = fm_directory_view_list_clear;	
-	fm_directory_view_class->begin_adding_entries = fm_directory_view_list_begin_adding_entries;	
+	fm_directory_view_class->add_file = fm_directory_view_list_add_file;
+	fm_directory_view_class->begin_adding_files = fm_directory_view_list_begin_adding_files;
 	fm_directory_view_class->begin_loading = fm_directory_view_list_begin_loading;
-	fm_directory_view_class->add_entry = fm_directory_view_list_add_entry;	
-	fm_directory_view_class->remove_entry = fm_directory_view_list_remove_entry;	
-	fm_directory_view_class->done_adding_entries = fm_directory_view_list_done_adding_entries;	
-	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;	
-	fm_directory_view_class->bump_zoom_level = fm_directory_view_list_bump_zoom_level;	
+	fm_directory_view_class->bump_zoom_level = fm_directory_view_list_bump_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_directory_view_list_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_directory_view_list_can_zoom_out;
+	fm_directory_view_class->clear = fm_directory_view_list_clear;
+	fm_directory_view_class->done_adding_files = fm_directory_view_list_done_adding_files;
+	fm_directory_view_class->file_changed = fm_directory_view_list_file_changed;
+	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;
+	fm_directory_view_class->remove_file = fm_directory_view_list_remove_file;
 	fm_directory_view_class->select_all = fm_directory_view_list_select_all;
 }
 
@@ -436,7 +439,7 @@ flist_activate_cb (GtkFList *flist,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
 	g_return_if_fail (entry_data != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), entry_data, FALSE);
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (data), entry_data, FALSE);
 }
 
 static void
@@ -566,7 +569,7 @@ fm_directory_view_list_clear (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_list_begin_adding_entries (FMDirectoryView *view)
+fm_directory_view_list_begin_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
@@ -605,7 +608,7 @@ fm_directory_view_list_begin_loading (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
+fm_directory_view_list_add_file (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
@@ -613,7 +616,7 @@ fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_directory_view_list_remove_entry (FMDirectoryView *view, NautilusFile *file)
+fm_directory_view_list_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
 	GtkCList *clist;
 	int row;
@@ -629,7 +632,24 @@ fm_directory_view_list_remove_entry (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_directory_view_list_done_adding_entries (FMDirectoryView *view)
+fm_directory_view_list_file_changed (FMDirectoryView *view, NautilusFile *file)
+{
+	FMDirectoryViewList *list_view;
+	GtkCList *clist;
+	int row;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
+
+	list_view = FM_DIRECTORY_VIEW_LIST (view);
+	clist = GTK_CLIST (get_flist (list_view));
+	row = gtk_clist_find_row_from_data (clist, file);
+	if (row != -1) {
+		install_icon (list_view, row);	
+	}
+}
+
+static void
+fm_directory_view_list_done_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
@@ -719,7 +739,7 @@ fm_directory_view_list_select_all (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 	
         clist = GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST(view)));
-        gtk_clist_select_all(clist);
+        gtk_clist_select_all (clist);
 }
 
 static void
