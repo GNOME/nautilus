@@ -7,7 +7,7 @@ For those doc people who want to play with this, and don't want
 to configure nautilus, you can compile it with the following
 command line:
 
-gcc -o gnome-db2html2 `xml-config --cflags --libs` `gnome-config --cflags --libs glib` -Wall -g gdb3html.c toc-elements.c sect-elements.c sect-preparse.c
+gcc -o gnome-db2html2 `xml-config --cflags --libs` `gnome-config --cflags --libs gnome` -Wall -g gdb3html.c toc-elements.c sect-elements.c sect-preparse.c
 
 You can run it by doing:
 

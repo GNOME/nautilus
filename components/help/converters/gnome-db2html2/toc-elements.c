@@ -1,5 +1,8 @@
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <gnome.h>
 #include "sect-elements.h"
 #include "toc-elements.h"

@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "gdb3html.h"
 #include "toc-elements.h"
