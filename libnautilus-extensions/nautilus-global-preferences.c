@@ -515,7 +515,7 @@ global_preferences_register_for_ui (void)
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							   "Show hidden files",
 							   FALSE,
-							   TRUE,
+							   FALSE,
 							   TRUE);
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
