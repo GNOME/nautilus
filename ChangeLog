@@ -1,5 +1,12 @@
 2000-05-07  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-uri-map.c (get_lang_list),
+	(nautilus_view_identifier_new_from_oaf_server_info): fix
+	bugzilla.eazel.com task #694; pass the language to the oaf calls
+	that get a name so those attributes can be i18n'd.
+
+2000-05-07  Maciej Stachowiak  <mjs@eazel.com>
+
 	* nautilus-clean.sh: Added pdf component to list. Added -x option
 	to also kill oafd and gconfd.
 

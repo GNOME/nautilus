@@ -427,23 +427,47 @@ server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_ta
 }
 
 
+static GList *
+get_lang_list (void)
+{
+        GList *retval;
+        char *lang;
+
+        retval = NULL;
+
+        lang = getenv ("LANGUAGE");
+
+        if (!lang) {
+                lang = getenv ("LANG");
+        }
+
+        if (lang) {
+                retval = g_list_prepend (retval, lang);
+        }
+                
+        return retval;
+}
+
 static NautilusViewIdentifier *
 nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
 {
         const char *view_as_name;
+        GList *langs;
+
+        langs = get_lang_list ();
         
-        /* FIXME bugzilla.eazel.com 694: need to pass proper set of languages as 
-           the last arg for i18 purposes */
-        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
+        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", langs);
 
         if (view_as_name == NULL) {
-                view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
+                view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
         }
 
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
         }
        
+        g_free (langs);
+
         return nautilus_view_identifier_new (server->iid, view_as_name);
 }
 
