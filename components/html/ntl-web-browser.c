@@ -615,6 +615,7 @@ int main(int argc, char *argv[])
   orb = oaf_init (argc, argv);
 
   gnome_vfs_init();
+  gtkhtmllib_init(argc,argv);
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", VERSION);
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
