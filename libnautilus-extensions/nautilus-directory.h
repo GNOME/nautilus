@@ -93,9 +93,8 @@ gboolean           nautilus_directory_contains_file        (NautilusDirectory   
  * until all the files are seen.
  */
 void               nautilus_directory_call_when_ready      (NautilusDirectory         *directory,
-							    GList                     *directory_metadata_keys,
 							    GList                     *file_attributes,
-							    GList                     *file_metadata_keys,
+							    gboolean                   wait_for_metadata,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
@@ -106,16 +105,17 @@ void               nautilus_directory_cancel_callback      (NautilusDirectory   
 char *             nautilus_directory_get_metadata         (NautilusDirectory         *directory,
 							    const char                *key,
 							    const char                *default_metadata);
-
+GList             *nautilus_directory_get_metadata_list    (NautilusDirectory         *directory,
+							    const char                *list_key,
+							    const char                *list_subkey);
 void               nautilus_directory_set_metadata         (NautilusDirectory         *directory,
 							    const char                *key,
 							    const char                *default_metadata,
 							    const char                *metadata);
-
-GList             *nautilus_directory_get_metadata_list    (NautilusDirectory         *directory,
+void               nautilus_directory_set_metadata_list    (NautilusDirectory         *directory,
 							    const char                *list_key,
 							    const char                *list_subkey,
-							    GList                     *default_metadata_list);
+							    GList                     *list);
 
 /* Covers for common data types. */
 gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory         *directory,
@@ -136,8 +136,8 @@ void               nautilus_directory_set_integer_metadata (NautilusDirectory   
 /* Monitor the files in a directory. */
 void               nautilus_directory_file_monitor_add     (NautilusDirectory         *directory,
 							    gconstpointer              client,
-							    GList                     *attributes,
-							    GList                     *metadata_keys,
+							    GList                     *monitor_attributes,
+							    gboolean                   monitor_metadata,
 							    NautilusDirectoryCallback  initial_files_callback,
 							    gpointer                   callback_data);
 void               nautilus_directory_file_monitor_remove  (NautilusDirectory         *directory,

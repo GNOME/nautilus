@@ -1,19 +1,83 @@
+2000-05-15  Darin Adler  <darin@eazel.com>
+
+	First cut at metadata cleanup in preparation for fixing bug
+	with setting metadata before the metafile is read.
+
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(get_metadata_list_from_node),
+	(nautilus_directory_get_metadata_list),
+	(nautilus_directory_set_boolean_metadata),
+	(nautilus_directory_set_integer_metadata),
+	(nautilus_directory_get_file_metadata_node),
+	(nautilus_directory_get_file_metadata_list),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list),
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_metadata), (nautilus_file_get_metadata_list),
+	(nautilus_file_set_metadata), (nautilus_file_set_metadata_list),
+	(nautilus_file_get_keywords), (nautilus_file_set_keywords):
+	Unified code to deal with metadata lists and made both get and
+	set work the same way. Also got rid of the default value. For
+	lists, the default value is always NULL.
+
+	* components/notes/ntl-notes.c: (notes_load_metainfo):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal),
+	(nautilus_directory_call_when_ready_internal):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_call_when_ready),
+	(nautilus_directory_file_monitor_add),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_monitor_add), (nautilus_file_call_when_ready):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_load_uri), (finish_loading_uri):
+	* src/nautilus-index-title.c: (nautilus_index_title_set_uri):
+	* src/ntl-uri-map.c: (set_initial_content_iid),
+	(get_explicit_content_view_iids_from_metafile),
+	(nautilus_navigation_info_new):
+	Converted to use new API that specifies only that metadata is
+	needed, not which keys. Maciej and I agreed that it's no use
+	to specify which keys you are interested in when you can just
+	get it wrong and have everything work anyway. Also the old API
+	didn't work for metadata lists.
+	
+	* components/services/trilobite/sample/command-line/.cvsignore:
+	Added generated files.
+	
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	(nautilus_xml_get_property_for_children): Format tweak.
+	
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_delete_callback), (bonobo_menu_duplicate_callback),
+	(bonobo_menu_open_properties_window_callback),
+	(display_selection_info), (notify_selection_change_callback),
+	(queue_pending_files), (append_uri_one),
+	(fm_directory_view_duplicate_selection),
+	(fm_directory_view_trash_selection): Formatting tweaks.
+	
 2000-05-14  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:
 	(nautilus_property_browser_initialize),
 	(nautilus_property_browser_destroy), (strip_extension),
 	(nautilus_property_browser_preferences_changed):
-	made the property browser respond to preference changes by setting up a callback,
-	removing it when we're destroyed, and updating the contents when it's invoked
+	made the property browser respond to preference changes by setting
+	up a callback, removing it when we're destroyed, and updating the
+	contents when it's invoked
 	
 2000-05-14  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/lib/helixcode-utils.c:
 	(determine_distribution_type), (get_distribution_name):
-	Beginning part of fix for Bug #860.  Created the 2 functions listed
-	above to determine valid DistributionType and return a printable
-	string name of the DistributionType.
+	Beginning part of fix for Bug #860. Created the 2 functions
+	listed above to determine valid DistributionType and return a
+	printable string name of the DistributionType.
 	* components/services/trilobite/lib/helixcode-utils.h:
 	Minor fixes to DistributionType enum.  Added declarations for
 	determine_distribution_type and get_distribution_name.
@@ -29,37 +93,41 @@
 	used get_property_names instead of a hardwired list
 	
 	* src/nautilus-property-browser.c: (element_clicked_callback):
-	fixed bug where it wasn't exiting remove mode properly after removing an element
+	fixed bug where it wasn't exiting remove mode properly after
+	removing an element
 	
 2000-05-13  J Shane Culpepper  <pepper@eazel.com>
 
-	*configure.in
-	*components/services/startup/lib
-	*components/services/install/lib
-	Created a shared lib directory for the nautilus-view and command-line.
-	This allows an abstracion layer between each individual service and
-	libtrilobite.so so that we don't have to link libtrilobite against
-	libnautilus, etc.  Also allows abstraction of common functions in 
-	eazel-install that can now be statically linked into nautilus-installer.
+	* configure.in
+	* components/services/startup/lib
+	* components/services/install/lib
+	Created a shared lib directory for the nautilus-view and
+	command-line.  This allows an abstracion layer between each
+	individual service and libtrilobite.so so that we don't have to
+	link libtrilobite against libnautilus, etc.  Also allows
+	abstraction of common functions in eazel-install that can now be
+	statically linked into nautilus-installer.
 	
-	*components/services/trilobite/lib
+	* components/services/trilobite/lib
 	Removed some useless templates that were checked in by accident.
 
 2000-05-12  Andy Hertzfeld  <andy@eazel.com>
 
-	fixed bug 620, when multiple files are selected, they all should be opened when the
-	user single or double click.
+	fixed bug 620, when multiple files are selected, they all should
+	be opened when the user single or double click.
 
 	* libnautilus-extensions/nautilus-icon-private.h:
-	added last_selected_files field to icon_container details, so the selection can be
-	remembered through the double click process
+	added last_selected_files field to icon_container details, so the
+	selection can be remembered through the double click process
 	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
 	(forget_selected_files), (remember_selected_files),
 	(nautilus_icon_container_almost_drag), (handle_icon_button_press),
 	(activate_selected_items):
-	changed the activate signal to take a list of file objects instead of a single one;
-	added routines remember_selected_files and forget_selected_files to build and release the list;
-	called remember and forget when appropriate, and used the list to pass to the signal.
+	changed the activate signal to take a list of file objects instead
+	of a single one; added routines remember_selected_files and
+	forget_selected_files to build and release the list; called
+	remember and forget when appropriate, and used the list to pass to
+	the signal.
 	* src/file-manager/fm-icon-view.c (icon_container_activate_callback):
 	made the signal handler activate all the files in the list
 	

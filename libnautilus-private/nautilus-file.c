@@ -1006,29 +1006,34 @@ nautilus_file_get_metadata (NautilusFile *file,
 			    const char *key,
 			    const char *default_metadata)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), g_strdup (default_metadata));
+	g_return_val_if_fail (key != NULL, g_strdup (default_metadata));
+	g_return_val_if_fail (key[0] != '\0', g_strdup (default_metadata));
 
-	return nautilus_directory_get_file_metadata (file->details->directory,
-						     file->details->info->name,
-						     key,
-						     default_metadata);
+	return nautilus_directory_get_file_metadata
+		(file->details->directory,
+		 file->details->info->name,
+		 key,
+		 default_metadata);
 }
 
 GList *
 nautilus_file_get_metadata_list (NautilusFile *file,
 				 const char *list_key,
-				 const char *list_subkey,
-				 GList      *default_metadata_list)
+				 const char *list_subkey)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (list_key != NULL, NULL);
+	g_return_val_if_fail (list_key[0] != '\0', NULL);
+	g_return_val_if_fail (list_subkey != NULL, NULL);
+	g_return_val_if_fail (list_subkey[0] != '\0', NULL);
 
-	return nautilus_directory_get_file_metadata_list (file->details->directory,
-							  file->details->info->name,
-							  list_key,
-							  list_subkey,
-							  default_metadata_list);
+	return nautilus_directory_get_file_metadata_list
+		(file->details->directory,
+		 file->details->info->name,
+		 list_key,
+		 list_subkey);
 }
-
 
 void
 nautilus_file_set_metadata (NautilusFile *file,
@@ -1037,13 +1042,37 @@ nautilus_file_set_metadata (NautilusFile *file,
 			    const char *metadata)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (key[0] != '\0');
 
-	nautilus_directory_set_file_metadata (file->details->directory,
-					      file->details->info->name,
-					      key,
-					      default_metadata,
-					      metadata);
-	nautilus_file_changed (file);
+	if (nautilus_directory_set_file_metadata (file->details->directory,
+						  file->details->info->name,
+						  key,
+						  default_metadata,
+						  metadata)) {
+		nautilus_file_changed (file);
+	}
+}
+
+void
+nautilus_file_set_metadata_list (NautilusFile *file,
+				 const char *list_key,
+				 const char *list_subkey,
+				 GList *list)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (list_key != NULL);
+	g_return_if_fail (list_key[0] != '\0');
+	g_return_if_fail (list_subkey != NULL);
+	g_return_if_fail (list_subkey[0] != '\0');
+
+	if (nautilus_directory_set_file_metadata_list (file->details->directory,
+						       file->details->info->name,
+						       list_key,
+						       list_subkey,
+						       list)) {
+		nautilus_file_changed (file);
+	}
 }
 
 char *
@@ -1054,24 +1083,19 @@ nautilus_file_get_name (NautilusFile *file)
 }
    
 void             
-nautilus_file_monitor_add (NautilusFile         *file,
-			   gconstpointer         client,
-			   GList                *attributes,
-			   GList                *metadata_keys)
+nautilus_file_monitor_add (NautilusFile *file,
+			   gconstpointer client,
+			   GList *attributes,
+			   gboolean monitor_metadata)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
-	g_return_if_fail (attributes != NULL || metadata_keys != NULL);
 
 	nautilus_directory_monitor_add_internal
-		(file->details->directory,
-		 file,
+		(file->details->directory, file,
 		 client,
-		 NULL,
-		 attributes,
-		 metadata_keys,
-		 NULL,
-		 NULL);
+		 attributes, monitor_metadata,
+		 NULL, NULL);
 }   
 			   
 void
@@ -1801,10 +1825,8 @@ nautilus_file_get_keywords (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	/* Put all the keywords into a list. */
-	keywords = nautilus_file_get_metadata_list (file,
-						    "KEYWORD",
-						    "NAME",
-						    NULL);
+	keywords = nautilus_file_get_metadata_list
+		(file, "KEYWORD", "NAME");
 	
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }
@@ -1820,61 +1842,14 @@ nautilus_file_get_keywords (NautilusFile *file)
 void
 nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 {
-	xmlNode *file_node, *child, *next;
-	GList *canonical_keywords, *p;
-	gboolean need_write;
-	xmlChar *property;
+	GList *canonical_keywords;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	/* Put all the keywords into a list. */
-	file_node = nautilus_directory_get_file_metadata_node (file->details->directory,
-							       file->details->info->name,
-							       keywords != NULL);
-	need_write = FALSE;
-	if (file_node == NULL) {
-		g_assert (keywords == NULL);
-	} else {
-		canonical_keywords = sort_keyword_list_and_remove_duplicates
-			(g_list_copy (keywords));
-
-		p = canonical_keywords;
-
-		/* Remove any nodes except the ones we expect. */
-		for (child = nautilus_xml_get_children (file_node);
-		     child != NULL;
-		     child = next) {
-
-			next = child->next;
-			if (strcmp (child->name, "KEYWORD") == 0) {
-				property = xmlGetProp (child, "NAME");
-				if (property != NULL && p != NULL
-				    && strcmp (property, (char *) p->data) == 0) {
-					p = p->next;
-				} else {
-					xmlUnlinkNode (child);
-					xmlFreeNode (child);
-					need_write = TRUE;
-				}
-				xmlFree (property);
-			}
-		}
-		
-		/* Add any additional nodes needed. */
-		for (; p != NULL; p = p->next) {
-			child = xmlNewChild (file_node, NULL, "KEYWORD", NULL);
-			xmlSetProp (child, "NAME", p->data);
-			need_write = TRUE;
-		}
-
-		g_list_free (canonical_keywords);
-	}
-
-	if (need_write) {
-		/* Since we changed the tree, arrange for it to be written. */
-		nautilus_directory_request_write_metafile (file->details->directory);
-		nautilus_file_changed (file);
-	}
+	canonical_keywords = sort_keyword_list_and_remove_duplicates
+		(g_list_copy (keywords));
+	nautilus_file_set_metadata_list (file, "KEYWORD", "NAME", canonical_keywords);
+	g_list_free (canonical_keywords);
 }
 
 /**
@@ -2105,11 +2080,10 @@ nautilus_file_is_gone (NautilusFile *file)
 void
 nautilus_file_call_when_ready (NautilusFile *file,
 			       GList *file_attributes,
-			       GList *file_metadata_keys,
+			       gboolean wait_for_metadata,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
-	g_return_if_fail (file_metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
 
 	if (file == NULL) {
@@ -2120,14 +2094,9 @@ nautilus_file_call_when_ready (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	nautilus_directory_call_when_ready_internal
-		(file->details->directory,
-		 file,
-		 NULL,
-		 file_attributes,
-		 file_metadata_keys,
-		 NULL,
-		 callback,
-		 callback_data);
+		(file->details->directory, file,
+		 file_attributes, wait_for_metadata,
+		 NULL, callback, callback_data);
 }
 
 void

@@ -93,9 +93,8 @@ void          nautilus_directory_notify_files_removed      (GList               
 /* async. interface */
 void          nautilus_directory_call_when_ready_internal  (NautilusDirectory         *directory,
 							    NautilusFile              *file,
-							    GList                     *directory_metadata_keys,
 							    GList                     *file_attributes,
-							    GList                     *file_metadata_keys,
+							    gboolean                   monitor_metadata,
 							    NautilusDirectoryCallback  directory_callback,
 							    NautilusFileCallback       file_callback,
 							    gpointer                   callback_data);
@@ -107,9 +106,8 @@ void          nautilus_directory_cancel_callback_internal  (NautilusDirectory   
 void          nautilus_directory_monitor_add_internal      (NautilusDirectory         *directory,
 							    NautilusFile              *file,
 							    gconstpointer              client,
-							    GList                     *directory_metadata_keys,
 							    GList                     *attributes,
-							    GList                     *metadata_keys,
+							    gboolean                   monitor_metadata,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 void          nautilus_directory_monitor_remove_internal   (NautilusDirectory         *directory,
@@ -138,14 +136,17 @@ char *        nautilus_directory_get_file_metadata         (NautilusDirectory   
 GList *       nautilus_directory_get_file_metadata_list    (NautilusDirectory         *directory,
 							    const char                *file_name,
 							    const char                *list_key,
-							    const char                *list_subkey,
-							    GList                     *default_metadata_list);
-
+							    const char                *list_subkey);
 gboolean      nautilus_directory_set_file_metadata         (NautilusDirectory         *directory,
 							    const char                *file_name,
 							    const char                *key,
 							    const char                *default_metadata,
 							    const char                *metadata);
+gboolean      nautilus_directory_set_file_metadata_list    (NautilusDirectory         *directory,
+							    const char                *file_name,
+							    const char                *list_key,
+							    const char                *list_subkey,
+							    GList                     *list);
 xmlNode *     nautilus_directory_get_file_metadata_node    (NautilusDirectory         *directory,
 							    const char                *file_name,
 							    gboolean                   create);

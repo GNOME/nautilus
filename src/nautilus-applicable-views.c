@@ -158,10 +158,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 	 * setting that doesn't affect any other locations. Maybe we should change
 	 * this to work that way.
 	 */
-	
-        remembered_value = nautilus_directory_get_metadata (navinfo->directory,
-                                                            NAUTILUS_METADATA_KEY_INITIAL_VIEW,
-                                                            NULL);
+        remembered_value = nautilus_directory_get_metadata
+                (navinfo->directory, NAUTILUS_METADATA_KEY_INITIAL_VIEW, NULL);
         
         /* Use the remembered value if it's non-NULL and in the list of choices. */
         if (remembered_value != NULL) {
@@ -254,8 +252,7 @@ get_explicit_content_view_iids_from_metafile (NautilusNavigationInfo *navinfo)
 {
         if (navinfo->directory != NULL) {
                 navinfo->explicit_iids = nautilus_directory_get_metadata_list 
-                        (navinfo->directory,
-                         "EXPLICIT_CONTENT_VIEW", "IID", NULL);
+                        (navinfo->directory, "EXPLICIT_CONTENT_VIEW", "IID");
         } 
 }
 
@@ -766,7 +763,6 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
                               const char *referring_iid)
 {
         NautilusNavigationInfo *info;
-        GList *keys;
         GList *attributes;
 
         info = g_new0 (NautilusNavigationInfo, 1);
@@ -785,27 +781,16 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
 
         info->directory = nautilus_directory_get (nri->requested_uri);
 
-
-        /* Arrange for all the (directory) metadata we will need. */
-        keys = NULL;
-        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
-        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
-
-                
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
         
-        nautilus_directory_call_when_ready (info->directory,
-                                            keys,
-                                            attributes,
-                                            NULL,
-                                            got_metadata_callback,
-                                            info);
+        nautilus_directory_call_when_ready
+                (info->directory,
+                 attributes, TRUE,
+                 got_metadata_callback, info);
         
         g_list_free (attributes);
-
-        g_list_free (keys);
         
         return info;
 }

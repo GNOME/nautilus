@@ -83,8 +83,6 @@ done_with_file (Notes *notes)
 static void
 notes_load_metainfo (Notes *notes)
 {
-        GList *keys;
-        
         gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
         
         done_with_file (notes);
@@ -92,9 +90,7 @@ notes_load_metainfo (Notes *notes)
         if (notes->file == NULL) {
                 return;
         }
-	keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
-        nautilus_file_call_when_ready (notes->file, NULL, keys, finish_loading_note, notes);
-	g_list_free (keys);
+        nautilus_file_call_when_ready (notes->file, NULL, TRUE, finish_loading_note, notes);
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */

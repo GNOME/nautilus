@@ -346,7 +346,7 @@ bonobo_menu_delete_callback (BonoboUIHandler *ui_handler, gpointer user_data, co
         /* UI should have prevented this from being called unless at least
          * one item is selected.
          */
-        g_assert (g_list_length(selection) > 0);
+        g_assert (selection != NULL);
 
         fm_directory_view_delete_with_confirm (view, selection);
 
@@ -368,7 +368,7 @@ bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer user_data,
         /* UI should have prevented this from being called unless at least
          * one item is selected.
          */
-        g_assert (g_list_length(selection) > 0);
+        g_assert (selection != NULL);
 
         fm_directory_view_duplicate_selection (view, selection);
 
@@ -397,7 +397,7 @@ bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpoint
         /* UI should have prevented this from being called unless at least
          * one item is selected.
          */
-        g_assert (g_list_length(selection) > 0);
+        g_assert (selection != NULL);
 
 	g_list_foreach (selection, open_one_properties_window, view);
 
@@ -546,6 +546,7 @@ display_selection_info (FMDirectoryView *view)
 	char *folder_count_str;
 	char *folder_item_count_str;
 	Nautilus_StatusRequestInfo request;
+	NautilusFile *file;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -562,8 +563,6 @@ display_selection_info (FMDirectoryView *view)
 	folder_item_count_str = NULL;
 	
 	for (p = selection; p != NULL; p = p->next) {
-		NautilusFile *file;
-
 		file = p->data;
 		if (nautilus_file_is_directory (file)) {
 			folder_count++;
@@ -714,6 +713,7 @@ notify_selection_change_callback (NautilusViewFrame *view_frame,
 {
 	int i;
 	GList *selection;
+	NautilusFile *file;
 
 	selection = NULL;
 
@@ -726,7 +726,6 @@ notify_selection_change_callback (NautilusViewFrame *view_frame,
 		if (!directory_view->details->loading) {
 			/* If we aren't still loading, set the selection right now. */
 			for (i = 0; i < selection_context->selected_uris._length; i++) {
-				NautilusFile* file;
 				file = nautilus_file_get (selection_context->selected_uris._buffer[i]);
 				if (file != NULL) {
 					selection = g_list_prepend (selection, file);
@@ -1006,19 +1005,17 @@ queue_pending_files (FMDirectoryView *view,
 {
 	GList *filtered_files = NULL;
 	GList *files_iterator;
+	NautilusFile *file;
+	char * name;
 
 	/* Filter out hidden files if needed */
-	if (!view->details->show_hidden_files)
-	{
+	if (!view->details->show_hidden_files) {
 		/* FIXME bugzilla.eazel.com 653: 
 		 * Eventually this should become a generic filtering thingy. 
 		 */
 		for (files_iterator = files; 
 		     files_iterator != NULL; 
 		     files_iterator = files_iterator->next) {
-			NautilusFile *file;
-			char * name;
-			
 			file = NAUTILUS_FILE (files_iterator->data);
 			
 			g_assert (file != NULL);
@@ -1316,8 +1313,8 @@ append_uri_one (gpointer data, gpointer user_data)
 	
 	g_assert (NAUTILUS_IS_FILE (data));
 
-	result = (GList **)user_data;
-	file = (NautilusFile *)data;
+	result = (GList **) user_data;
+	file = (NautilusFile *) data;
 	*result = g_list_append (*result, nautilus_file_get_uri (file));
 }
 
@@ -1327,14 +1324,13 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 	GList *uris;
 
         g_assert (FM_IS_DIRECTORY_VIEW (view));
-        g_assert (g_list_length (files) > 0);
+        g_assert (files != NULL);
 
-	uris = NULL;
 	/* create a list of URIs */
+	uris = NULL;
 	g_list_foreach (files, append_uri_one, &uris);    
 
         g_assert (g_list_length (uris) == g_list_length (files));
-
         
 	fs_xfer (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view));
 	nautilus_g_list_free_deep (uris);
@@ -1346,14 +1342,13 @@ fm_directory_view_trash_selection (FMDirectoryView *view, GList *files)
 	GList *uris;
 
         g_assert (FM_IS_DIRECTORY_VIEW (view));
-        g_assert (g_list_length (files) > 0);
+        g_assert (files != NULL);
 
-	uris = NULL;
 	/* create a list of URIs */
+	uris = NULL;
 	g_list_foreach (files, append_uri_one, &uris);    
 
         g_assert (g_list_length (uris) == g_list_length (files));
-
         
 	fs_move_to_trash (uris, GTK_WIDGET (view));
 	nautilus_g_list_free_deep (uris);
@@ -2008,7 +2003,6 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
 	NautilusDirectory *old_model;
-	GList *directory_keys, *file_keys;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (uri != NULL);
@@ -2022,18 +2016,10 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	view->details->model = nautilus_directory_get (uri);
 	nautilus_directory_unref (old_model);
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_required_metadata_keys)
-		(view, &directory_keys, &file_keys);
-
-	nautilus_directory_call_when_ready (view->details->model,
-					    directory_keys,
-					    NULL,
-					    file_keys,
-					    metadata_ready_callback,
-					    view);
-
-	g_list_free (directory_keys);
-	g_list_free (file_keys);
+	nautilus_directory_call_when_ready
+		(view->details->model,
+		 NULL, TRUE,
+		 metadata_ready_callback, view);
 }
 
 static void
@@ -2061,7 +2047,7 @@ finish_loading_uri (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 	nautilus_directory_file_monitor_add (view->details->model, view,
-					     attributes, NULL,
+					     attributes, FALSE,
 					     files_added_callback, view);
 	g_list_free (attributes);
 

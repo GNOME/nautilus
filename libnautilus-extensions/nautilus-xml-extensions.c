@@ -98,7 +98,7 @@ nautilus_xml_get_root_child_by_name_and_property (xmlDocPtr document,
  * 
  **/
 GList *
-nautilus_xml_get_property_for_children (xmlNodePtr  parent,
+nautilus_xml_get_property_for_children (xmlNodePtr parent,
 					const char *child_name,
 					const char *property_name)
 {

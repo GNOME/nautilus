@@ -539,9 +539,8 @@ void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
 					 gconstpointer client,
-					 GList *directory_metadata_keys,
 					 GList *file_attributes,
-					 GList *file_metadata_keys,
+					 gboolean monitor_metadata,
 					 NautilusDirectoryCallback callback,
 					 gpointer callback_data)
 {
@@ -562,6 +561,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	monitor = g_new (Monitor, 1);
 	monitor->file = file;
 	monitor->client = client;
+	monitor->request.metafile = monitor_metadata;
 	monitor->request.file_list = file == NULL;
 	set_up_request_by_file_attributes (&monitor->request, file_attributes);
 	directory->details->monitor_list =
@@ -836,9 +836,8 @@ ready_callback_call (NautilusDirectory *directory,
 void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     NautilusFile *file,
-					     GList *directory_metadata_keys,
 					     GList *file_attributes,
-					     GList *file_metadata_keys,
+					     gboolean wait_for_metadata,
 					     NautilusDirectoryCallback directory_callback,
 					     NautilusFileCallback file_callback,
 					     gpointer callback_data)
@@ -846,10 +845,6 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	ReadyCallback callback;
 
 	g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (file == NULL || directory_metadata_keys == NULL);
-	g_assert (directory_metadata_keys != NULL
-		  || file_attributes != NULL
-		  || file_metadata_keys != NULL);
 	g_assert (file == NULL || NAUTILUS_IS_FILE (file));
 	g_assert (file != NULL || directory_callback != NULL);
 	g_assert (file == NULL || file_callback != NULL);
@@ -862,11 +857,8 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		callback.callback.file = file_callback;
 	}
 	callback.callback_data = callback_data;
-	callback.request.metafile = directory_metadata_keys != NULL
-		|| file_metadata_keys != NULL;
-	callback.request.file_list = file == NULL
-		&& (file_attributes != NULL
-		    || file_metadata_keys != NULL);
+	callback.request.metafile = wait_for_metadata;
+	callback.request.file_list = file == NULL && file_attributes != NULL;
 	set_up_request_by_file_attributes (&callback.request, file_attributes);
 	
 	/* Handle the NULL case. */

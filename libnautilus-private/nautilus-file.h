@@ -81,7 +81,7 @@ void                    nautilus_file_delete                    (NautilusFile   
 void                    nautilus_file_monitor_add               (NautilusFile                  *file,
 								 gconstpointer                  client,
 								 GList                         *attributes,
-								 GList                         *metadata_keys);
+								 gboolean                       monitor_metadata);
 void                    nautilus_file_monitor_remove            (NautilusFile                  *file,
 								 gconstpointer                  client);
 
@@ -91,7 +91,7 @@ void                    nautilus_file_monitor_remove            (NautilusFile   
  */
 void                    nautilus_file_call_when_ready           (NautilusFile                  *file,
 								 GList                         *attributes,
-								 GList                         *metadata_keys,
+								 gboolean                       wait_for_metadata,
 								 NautilusFileCallback           callback,
 								 gpointer                       callback_data);
 void                    nautilus_file_cancel_callback           (NautilusFile                  *file,
@@ -158,12 +158,15 @@ char *                  nautilus_file_get_metadata              (NautilusFile   
 								 const char                    *default_metadata);
 GList *                 nautilus_file_get_metadata_list         (NautilusFile                  *file,
 								 const char                    *list_key,
-								 const char                    *list_subkey,
-								 GList                         *default_metadata_list);
+								 const char                    *list_subkey);
 void                    nautilus_file_set_metadata              (NautilusFile                  *file,
 								 const char                    *key,
 								 const char                    *default_metadata,
 								 const char                    *metadata);
+void                    nautilus_file_set_metadata_list         (NautilusFile                  *file,
+								 const char                    *list_key,
+								 const char                    *list_subkey,
+								 GList                         *list);
 
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute      (NautilusFile                  *file,

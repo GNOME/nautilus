@@ -424,7 +424,7 @@ nautilus_index_title_set_uri (NautilusIndexTitle *index_title,
 			attributes = g_list_prepend (NULL,
 						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
 			nautilus_file_monitor_add (index_title->details->file, index_title,
-						   attributes, NULL);
+						   attributes, FALSE);
 			g_list_free (attributes);
 		}
 	}
