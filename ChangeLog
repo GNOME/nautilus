@@ -1,5 +1,12 @@
 2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 4679, Double clicking on an MP3 in music view should play it
+
+	* components/music/nautilus-music-view.c: (selection_callback):
+	Check for double click and play if one is detected.
+
+2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
+
 	Some clean up and another attempt to fix tinderbox.
 	
 	* components/music/Makefile.am:

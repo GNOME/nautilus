@@ -14,7 +14,7 @@
  *  General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this library; if not, write to the Free Software
+ *  along with this library; if not, write to the Free Software//
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Author: Andy Hertzfeld <andy@eazel.com>
@@ -436,8 +436,7 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
         music_view_set_selected_song_title (music_view, row);
 
         /* Play if playback was already happening or there was a double click */
-	//if ((is_playing) || (event->type == GDK_2BUTTON_PRESS)) {
-	if (is_playing) {
+	if ((is_playing) || (event != NULL && event->type == GDK_2BUTTON_PRESS)) {
 		play_current_file (music_view, FALSE);
         }
 } 
