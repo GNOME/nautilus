@@ -1,5 +1,25 @@
 2000-10-06  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3512 (Some separators not appearing in the
+	right place)
+
+	* src/nautilus-shell-ui.xml: Reworked the separators and
+	"delimit" properties of placeholders. All values other
+	than 'delimit="top"' have been deprecated in Bonobo to
+	try to gain some performance, so I only used that.
+	
+	* src/nautilus-window-private.h: Updated Zoom menu paths
+	that changed because I put in a new placeholder.
+	* src/nautilus-window.c:
+	(nautilus_window_zoom_level_changed_callback):
+	This code wasn't updating the sensitivity of "Zoom Normal"
+	at all. Now it's always sensitive for any zoom-supporting
+	view. (There's a separate bug about how it should only be
+	sensitive when not at the "Normal" setting, which I ignored
+	for now).
+
+2000-10-06  John Sullivan  <sullivan@eazel.com>
+
 	Oops, one more change from previous checkin (breaks build
 	without it)
 

@@ -5,14 +5,14 @@
 <menu>
 	<submenu name="File" _label="_File">
 
-		<placeholder name="New Items Placeholder" delimit="bottom">
+		<placeholder name="New Items Placeholder">
 			<menuitem name="New Window"
 				  _label="_New Window"
 				  _descr="Open another Nautilus window for the displayed location"
 				  pixtype="stock" pixname="Menu_New"
 				  verb=""/>
 		</placeholder>
-		<placeholder name="Open Placeholder"/>
+		<placeholder name="Open Placeholder" delimit="top"/>
 
 		<menuitem name="Close"
 			  _label="_Close Window"
@@ -26,8 +26,8 @@
 			  accel="*Control**Shift*w"
 			  verb=""/>
 
-		<placeholder name="General Status Placeholder"/>
-		<placeholder name="File Items Placeholder"/>
+		<placeholder name="General Status Placeholder" delimit="top"/>
+		<placeholder name="File Items Placeholder" delimit="top"/>
 
 		<menuitem/>
 
@@ -97,7 +97,7 @@
 			  _descr="Display the set of available appearance themes"
 			  verb=""/>
 
-		<placeholder name="Global Edit Items Placeholder" delimit="bottom"/>
+		<placeholder name="Global Edit Items Placeholder"/>
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
 
 	</submenu>
@@ -109,7 +109,7 @@
 			  accel="*Control*r"
 			  verb=""/>
 
-		<placeholder name="Show Hide Placeholder" delimit="both">
+		<placeholder name="Show Hide Placeholder" delimit="top">
 			<menuitem name="Show Hide Sidebar" 
 				  _label="Hide Sidebar"
 				  _descr="Change the visibility of this window's sidebar"
@@ -127,22 +127,24 @@
 				  _descr="Change the visibility of this window's status bar"
 				  verb=""/>
 		</placeholder>
-		<placeholder name="View Items Placeholder" delimit="bottom"/>
+		<placeholder name="View Items Placeholder" delimit="top"/>
 		
-		<menuitem name="Zoom In" 
-			  _label="Zoom _In" 
-			  _descr="Show the contents in more detail"
-			  accel="*Control*="
-			  verb=""/>
-		<menuitem name="Zoom Out" 
-			  _label="Zoom _Out" 
-			  _descr="Show the contents in less detail"
-			  accel="*Control*-"
-			  verb=""/>
-		<menuitem name="Zoom Normal" 
-			  _label="_Normal Size" 
-			  _descr="Show the contents at the normal size"
-			  verb=""/>
+		<placeholder name="Zoom Items Placeholder" delimit="top">
+			<menuitem name="Zoom In" 
+				  _label="Zoom _In" 
+				  _descr="Show the contents in more detail"
+				  accel="*Control*="
+				  verb=""/>
+			<menuitem name="Zoom Out" 
+				  _label="Zoom _Out" 
+				  _descr="Show the contents in less detail"
+				  accel="*Control*-"
+				  verb=""/>
+			<menuitem name="Zoom Normal" 
+				  _label="_Normal Size" 
+				  _descr="Show the contents at the normal size"
+				  verb=""/>
+		</placeholder>
 	</submenu>
 
 	<submenu name="Go" _label="_Go">
@@ -203,7 +205,7 @@
 	</submenu>
 
 	<submenu name="Preferences" _label="Ski">
-		<placeholder name="User Levels Placeholder" delimit="bottom">
+		<placeholder name="User Levels Placeholder">
 			<menuitem name="Switch to Beginner Level" 
 				  _label="Beginner" 
 				  _descr="Use Beginner settings"
@@ -217,6 +219,7 @@
 				  _descr="Use Advanced settings"
 				  type="radio" group="user levels group"/>
 		</placeholder>
+		<menuitem/>
 		<menuitem name="User Level Customization" 
 			  _label="Edit Settings..." 
 			  _descr="Edit settings for the current user level"

@@ -66,9 +66,9 @@ struct NautilusWindowDetails
 #define NAUTILUS_MENU_PATH_UP_ITEM			"/menu/Go/Up"
 
 #define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/menu/View/Reload"
-#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/menu/View/Zoom In"
-#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/menu/View/Zoom Out"
-#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/menu/View/Zoom Normal"
+#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/menu/View/Zoom Items Placeholder/Zoom In"
+#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Out"
+#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/menu/View/Zoom Items Placeholder/Zoom Normal"
 
 /* window geometry */
 #define NAUTILUS_WINDOW_MIN_WIDTH			450

@@ -1390,11 +1390,14 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	}
 
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/View/Zoom In",
+				       NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
 				       zoom_level < nautilus_view_frame_get_max_zoom_level (view));
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       "/menu/View/Zoom Out",
+				       NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
 				       zoom_level > nautilus_view_frame_get_min_zoom_level (view));
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
+				       TRUE);
 	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
 }
 
