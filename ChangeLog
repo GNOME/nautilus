@@ -1,6 +1,8 @@
 2000-06-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/Makefile.am:
+	Added the server directory.
+	
 	* components/services/install/command-line/Makefile.am:
 	*
 	components/services/install/command-line/eazel-alt-install-corba.c:
@@ -9,6 +11,9 @@
 	(download_failed), (install_failed), (dep_check), (create_package),
 	(done), (main):
 	* components/services/install/command-line/genpkg_list.example:
+	Vamping together yet another eazel-alt-install that uses the new
+	corba service installer.
+	
 	* components/services/install/idl/trilobite-eazel-install.idl:
 	* components/services/install/lib/Makefile.am:
 	* components/services/install/lib/eazel-install-corba-callback.c:
@@ -96,9 +101,18 @@
 	*
 	components/services/install/server/trilobite-eazel-install-service.
 	oafinfo:
+	Added a load of stuff to make the install service a corba
+	service. There are corba/c converters in
+	eazel-install-corba-types, moved a load of the corba magic into
+	eazel-install-corba.c and created a gtk+ object in
+	eazel-install-corba-callback that embodies the client interface to
+	the install service.
+	
 	* components/services/time/service/Makefile.am:
 	* components/services/time/service/trilobite-eazel-time-service.c:
 	(trilobite_eazel_time_service_initialize):
+	Changed the default url to the new testmachine. 
+	
 	*
 	components/services/trilobite/libtrilobite/trilobite-core-distribut
 	ion.c: (trilobite_get_distribution_name),
@@ -106,7 +120,12 @@
 	*
 	components/services/trilobite/libtrilobite/trilobite-core-distribut
 	ion.h:
+	Added call to get the distro enum from the generated string. Used
+	for the corbafication of libinstall.
+	
 	* configure.in:
+	Added the server dir makefile for services/install/server
+	
 	* nautilus-installer/src/HACKING:
 	* nautilus-installer/src/Makefile:
 	* nautilus-installer/src/Makefile.am:
@@ -114,7 +133,11 @@
 	* nautilus-installer/src/interface.c: (create_window):
 	* nautilus-installer/src/link.sh:
 	* nautilus-installer/src/prescript:
+	Updated to still work, as long as libinstall is compiled using
+	EAZEL_INSTALL_NO_CORBA (see the hacking file)
+	
 	* nautilus.spec.in:
+	Changed gnome-xml to libxml
 
 2000-06-21  Darin Adler  <darin@eazel.com>
 
