@@ -1373,17 +1373,18 @@ display_pending_files (FMDirectoryView *view)
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
+	nautilus_file_list_free (files_added);
+	nautilus_file_list_free (files_changed);
+
 	if (nautilus_directory_are_all_files_seen (view->details->model)
-	    && view->details->pending_uris_selected != NULL) {
-		selection = NULL;
+	    && uris_selected != NULL) {
 		view->details->pending_uris_selected = NULL;
 		
 		for (p = uris_selected; p != NULL; p = p->next) {
 			uri = p->data;
+
 			file = nautilus_file_get (uri);
-			if (file != NULL) {
-				selection = g_list_prepend (selection, file);
-			}
+			selection = g_list_prepend (selection, file);
 		}
 		nautilus_g_list_free_deep (uris_selected);
 
@@ -1391,9 +1392,6 @@ display_pending_files (FMDirectoryView *view)
 
 		nautilus_file_list_free (selection);
 	}
-
-	nautilus_file_list_free (files_added);
-	nautilus_file_list_free (files_changed);
 
 	return TRUE;
 }
