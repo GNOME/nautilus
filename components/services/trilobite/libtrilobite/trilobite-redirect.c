@@ -70,6 +70,8 @@ check_gconf_init (void)
 			gconf_error_destroy (error);
 		}
 
+	}
+	if (conf_engine == NULL) {
 		conf_engine = gconf_engine_get_default ();
 		g_atexit (trilobite_redirect_done);
 	}

@@ -261,7 +261,7 @@ parse_summary_xml_file (const char *url)
 
 	/* fetch remote config file into memory */
 	if (! trilobite_fetch_uri (url, &body, &length)) {
-		g_warning (_("Could not fetch summary configuration !"));
+		g_assert (_("Could not fetch summary configuration !"));
 		return NULL;
 	}
 

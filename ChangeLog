@@ -1,3 +1,19 @@
+2000-09-25  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(parse_summary_xml_file):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (generate_summary_form),
+	(nautilus_summary_view_initialize),
+	(summary_load_location_callback):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(check_gconf_init):
+
+	Fixing the background color errors that prevent testing.  I have not
+	figured out how to set the parent form default color without causing
+	major instability.  Also added the fetch of the url location tables
+	from services.
+
 2000-09-25  Andy Hertzfeld  <andy@eazel.com>
 
 	finished the work for user-added themes, teaching the icon

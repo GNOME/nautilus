@@ -27,6 +27,7 @@
 #include "eazel-summary-shared.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
+#include <libtrilobite/trilobite-redirect.h>
 
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -53,6 +54,8 @@
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
 #define	SUMMARY_XML_HOME			"http://services.eazel.com:8888/services"
 #define	SUMMARY_XML_HOME_2			"eazel-services:/services"
+#define	URL_REDIRECT_TABLE_HOME			"http://services.eazel.com:8888/services/urls"
+#define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
 #define	REGISTER_HOME				"eazel-services://anonymous/account/register/form"
 #define	PREFERENCES_HOME			"eazel-services:/account/preferences/form"
 
@@ -200,10 +203,16 @@ generate_startup_form (NautilusSummaryView       *view)
 	GtkWidget		*temp_box;
 	GtkWidget		*align;
 	int			counter;
+	gboolean		got_url_table;
 
 	view->details->logged_in = am_i_logged_in (view);
 
 	if (view->details->logged_in == TRUE) {
+		/* fetch urls */
+		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
+		if (got_url_table != TRUE) {
+			g_assert ("Could not get url table !\n");
+		}
 		/* fetch and parse the xml file */
 		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
 		/* dispose of startup form that was shown */
@@ -216,14 +225,26 @@ generate_startup_form (NautilusSummaryView       *view)
 	}
 	else {
 
+	/* fetch urls */
+	got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
+	if (got_url_table != TRUE) {
+		g_error (_("Could not get url table !\n"));
+		return;
+	}
+
 	/* fetch and parse the xml file */
 	view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
+	if (view->details->xml_data == NULL) {
+		g_error (_("Could not get summary configuration file !\n"));
+		return;
+	}
 
 	/* set to default not logged in for now */
 	view->details->logged_in = FALSE;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
+	nautilus_gtk_widget_set_background_color (view->details->form, DEFAULT_BACKGROUND_COLOR);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 	gtk_widget_show (view->details->form);
 
@@ -323,7 +344,7 @@ static void
 generate_summary_form (NautilusSummaryView	*view)
 {
 
-	NautilusBackground	*background;
+/*	NautilusBackground	*background; */
 	GtkWidget		*frame;
 	GtkTable		*parent;
 	GtkWidget		*title;
@@ -340,13 +361,15 @@ generate_summary_form (NautilusSummaryView	*view)
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
 
-	/* reset the default background color */
-	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
+	nautilus_gtk_widget_set_background_color (view->details->form, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 	gtk_widget_show (view->details->form);
+
+	/* reset the default background color */
+/*	background = nautilus_get_widget_background (GTK_WIDGET (view));
+	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR); */
 
 	/* setup the title */
 	if (view->details->logged_in == FALSE) {
@@ -1089,7 +1112,6 @@ static void
 nautilus_summary_view_initialize (NautilusSummaryView *view)
 {
 	CORBA_Environment ev;
-	NautilusBackground	*background;
 
 	CORBA_exception_init (&ev);
 	
@@ -1099,9 +1121,6 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    "load_location",
 			    GTK_SIGNAL_FUNC (summary_load_location_callback), 
 			    view);
-
-	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, DEFAULT_BACKGROUND_COLOR);
 
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 
@@ -1181,7 +1200,7 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	nautilus_view_report_load_underway (nautilus_view);
 	
 	nautilus_summary_view_load_uri (view, location);
-	
+
 	nautilus_view_report_load_complete (nautilus_view);
 
 }
