@@ -29,7 +29,7 @@
 #define __EAZEL_SERVICES_METADATA_H__
 
 #include "eazel-install-types.h"
-#include "helixcode-utils.h"
+#include <libtrilobite/helixcode-utils.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <gnome-xml/tree.h>

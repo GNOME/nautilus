@@ -33,7 +33,7 @@
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-xml-package-list.h"
 #include "eazel-install-metadata.h"
-#include "helixcode-utils.h"
+#include <libtrilobite/helixcode-utils.h>
 #include <config.h>
 #include <popt-gnome.h>
 

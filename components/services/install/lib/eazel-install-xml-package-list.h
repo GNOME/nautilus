@@ -31,7 +31,7 @@
 #define __EAZEL_SERVICES_XML_PACKAGE_LIST_H__
 
 #include "eazel-install-types.h"
-#include "helixcode-utils.h"
+#include <libtrilobite/helixcode-utils.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 

@@ -34,7 +34,7 @@
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
 
-#include "helixcode-utils.h"
+#include <libtrilobite/helixcode-utils.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/dbindex.h>
