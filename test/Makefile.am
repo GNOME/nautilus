@@ -60,6 +60,7 @@ noinst_PROGRAMS =\
 	test-nautilus-smooth-graphics \
 	test-nautilus-widgets \
 	test-nautilus-wrap-table \
+	test-nautilus-viewport-constraint \
 	$(NULL)
 
 test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c

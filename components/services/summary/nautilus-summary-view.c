@@ -397,6 +397,7 @@ summary_view_create_pane (NautilusSummaryView *view,
 			                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	
 	viewport = nautilus_viewport_new (NULL, NULL);
+	nautilus_viewport_set_constrain_width (NAUTILUS_VIEWPORT (viewport), TRUE);
 	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC);
 
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);

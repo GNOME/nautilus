@@ -1,3 +1,28 @@
+2001-02-22  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed 6131, new NautilusLabel does not support proper line wrap.
+	
+	* components/services/summary/nautilus-summary-view.c:
+	(summary_view_create_pane): Add setting of
+	nautilus_viewport_constrain_width to TRUE.
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_initialize_class),
+	(nautilus_viewport_size_allocate),
+	(nautilus_viewport_get_is_smooth),
+	(nautilus_viewport_set_constrain_width),
+	(nautilus_viewport_get_constrain_width),
+	(nautilus_viewport_set_constrain_height),
+	(nautilus_viewport_get_constrain_height): Overrode the
+	size_allocate method of GtkViewport to add the options of
+	constraining the height or width of the viewports child to the
+	same size as the viewport.
+	* libnautilus-extensions/nautilus-viewport.h: Added function
+	prototypes.
+	* test/Makefile.am: Add building of a test case for the viewport
+	constraining.
+
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* nautilus-installer/src/bootstrap-background.xpm:
@@ -338,7 +363,6 @@
 	src/nautilus-zoom-control.c, src/nautilus-first-time-druid.c:
 	added comments before localized fonts and font components
 
->>>>>>> 1.3902
 2001-02-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/text/services/google.xml:

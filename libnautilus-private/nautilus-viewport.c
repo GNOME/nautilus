@@ -35,6 +35,9 @@ struct NautilusViewportDetails
 {
 	gboolean is_smooth;
 	gboolean never_smooth;
+       
+	gboolean constrain_width;
+	gboolean constrain_height;
 };
 
 /* GtkObjectClass methods */
@@ -46,6 +49,8 @@ static void nautilus_viewport_destroy              (GtkObject             *objec
 static void nautilus_viewport_realize              (GtkWidget             *widget);
 static void nautilus_viewport_draw                 (GtkWidget             *widget,
 						    GdkRectangle          *area);
+static void nautilus_viewport_size_allocate        (GtkWidget             *widget,
+						    GtkAllocation         *allocation);
 static gint nautilus_viewport_expose_event         (GtkWidget             *widget,
 						    GdkEventExpose        *event);
 static void nautilus_viewport_paint                (GtkWidget             *widget,
@@ -81,6 +86,7 @@ nautilus_viewport_initialize_class (NautilusViewportClass *nautilus_viewport_cla
 	widget_class->realize = nautilus_viewport_realize;
 	widget_class->expose_event = nautilus_viewport_expose_event;
 	widget_class->draw = nautilus_viewport_draw;
+	widget_class->size_allocate = nautilus_viewport_size_allocate;
 	
 	/* NautilusViewportClass */
 	nautilus_viewport_class->set_is_smooth = nautilus_viewport_set_is_smooth_signal;
@@ -182,6 +188,127 @@ nautilus_viewport_draw (GtkWidget *widget,
 		if (gtk_widget_intersect (bin->child, &tmp_area, &child_area)) {
 			gtk_widget_draw (bin->child, &child_area);
 		}
+	}
+}
+
+static void
+nautilus_viewport_size_allocate (GtkWidget *widget,
+				 GtkAllocation *allocation)
+{
+	NautilusViewport *nautilus_viewport;
+	GtkViewport *viewport;
+	GtkBin *bin;
+	GtkAllocation child_allocation;
+	gint hval, vval;
+	gint border_width;
+	
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_VIEWPORT (widget));
+	g_return_if_fail (allocation != NULL);
+	
+	widget->allocation = *allocation;
+	nautilus_viewport = NAUTILUS_VIEWPORT (widget);
+	viewport = GTK_VIEWPORT (widget);
+	bin = GTK_BIN (widget);
+	  
+	border_width = GTK_CONTAINER (widget)->border_width;
+	
+	child_allocation.x = 0;
+	child_allocation.y = 0;
+	
+	if (viewport->shadow_type != GTK_SHADOW_NONE)
+	{
+		child_allocation.x = GTK_WIDGET (viewport)->style->klass->xthickness;
+		child_allocation.y = GTK_WIDGET (viewport)->style->klass->ythickness;
+	}
+	
+	child_allocation.width = MAX (1, allocation->width - child_allocation.x * 2 - border_width * 2);
+	child_allocation.height = MAX (1, allocation->height - child_allocation.y * 2 - border_width * 2);
+	  
+	if (GTK_WIDGET_REALIZED (widget))
+	{
+		gdk_window_move_resize (widget->window,
+					allocation->x + border_width,
+					allocation->y + border_width,
+					allocation->width - border_width * 2,
+					allocation->height - border_width * 2);
+		
+		gdk_window_move_resize (viewport->view_window,
+					child_allocation.x,
+					child_allocation.y,
+					child_allocation.width,
+					child_allocation.height);
+	}
+	
+	viewport->hadjustment->page_size = child_allocation.width;
+	viewport->hadjustment->page_increment = viewport->hadjustment->page_size / 2;
+	viewport->hadjustment->step_increment = 10;
+	
+	viewport->vadjustment->page_size = child_allocation.height;
+	viewport->vadjustment->page_increment = viewport->vadjustment->page_size / 2;
+	viewport->vadjustment->step_increment = 10;
+	
+	hval = viewport->hadjustment->value;
+	vval = viewport->vadjustment->value;
+	
+	if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
+	{
+		GtkRequisition child_requisition;
+		gtk_widget_get_child_requisition (bin->child, &child_requisition);
+		
+		viewport->hadjustment->lower = 0;
+		viewport->hadjustment->upper = MAX (child_requisition.width,
+						    child_allocation.width);
+		
+		hval = CLAMP (hval, 0,
+			      viewport->hadjustment->upper -
+			      viewport->hadjustment->page_size);
+		
+		viewport->vadjustment->lower = 0;
+		viewport->vadjustment->upper = MAX (child_requisition.height,
+						    child_allocation.height);
+		
+		vval = CLAMP (vval, 0,
+			      viewport->vadjustment->upper -
+			      viewport->vadjustment->page_size);
+	}
+	
+	if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
+	{
+		child_allocation.x = 0;
+		child_allocation.y = 0;
+		
+		child_allocation.width = viewport->hadjustment->upper;
+		child_allocation.height = viewport->vadjustment->upper;
+		
+		if (nautilus_viewport_get_constrain_width (nautilus_viewport)) {
+			child_allocation.width = widget->allocation.width;
+		}
+		if (nautilus_viewport_get_constrain_height (nautilus_viewport)) {
+			child_allocation.height = widget->allocation.height;
+		}
+		
+		if (GTK_WIDGET_REALIZED (widget))
+			gdk_window_resize (viewport->bin_window,
+					   child_allocation.width,
+					   child_allocation.height);
+		
+		child_allocation.x = 0;
+		child_allocation.y = 0;
+		gtk_widget_size_allocate (bin->child, &child_allocation);
+	}
+	
+	gtk_signal_emit_by_name (GTK_OBJECT (viewport->hadjustment), "changed");
+	gtk_signal_emit_by_name (GTK_OBJECT (viewport->vadjustment), "changed");
+	if (viewport->hadjustment->value != hval)
+	{
+		viewport->hadjustment->value = hval;
+		gtk_signal_emit_by_name (GTK_OBJECT (viewport->hadjustment), "value_changed");
+	}
+	if (viewport->vadjustment->value != vval)
+	{
+		viewport->vadjustment->value = vval;
+		gtk_signal_emit_by_name (GTK_OBJECT (viewport->vadjustment), "value_changed");
 	}
 }
 
@@ -315,6 +442,39 @@ nautilus_viewport_get_is_smooth (const NautilusViewport *nautilus_viewport)
 	g_return_val_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport), FALSE);
 	
 	return !nautilus_viewport->details->never_smooth && nautilus_viewport->details->is_smooth;
+}
+
+void
+nautilus_viewport_set_constrain_width (NautilusViewport *nautilus_viewport,
+				       gboolean constrain_width)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport));
+
+	nautilus_viewport->details->constrain_width = constrain_width;
+}
+
+gboolean
+nautilus_viewport_get_constrain_width (const NautilusViewport *nautilus_viewport)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport), FALSE);
+
+	return nautilus_viewport->details->constrain_width;
+}
+
+void nautilus_viewport_set_constrain_height (NautilusViewport *nautilus_viewport,
+					     gboolean constrain_height)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport));
+	
+	nautilus_viewport->details->constrain_height = constrain_height;
+}
+
+gboolean
+nautilus_viewport_get_constrain_height (const NautilusViewport *nautilus_viewport)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport), FALSE);
+
+	return nautilus_viewport->details->constrain_height;
 }
 
 void

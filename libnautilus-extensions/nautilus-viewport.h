@@ -56,15 +56,25 @@ struct NautilusViewportClass
 	NautilusSmoothWidgetSetIsSmooth set_is_smooth;
 };
 
-GtkType           nautilus_viewport_get_type          (void);
-GtkWidget *       nautilus_viewport_new               (GtkAdjustment          *hadjustment,
-						       GtkAdjustment          *vadjustment);
-void              nautilus_viewport_set_is_smooth     (NautilusViewport       *nautilus_viewport,
-						       gboolean                is_smooth);
-gboolean          nautilus_viewport_get_is_smooth     (const NautilusViewport *nautilus_viewport);
-void              nautilus_viewport_set_never_smooth  (NautilusViewport       *nautilus_viewport,
-						       gboolean                never_smooth);
-NautilusArtIPoint nautilus_viewport_get_scroll_offset (const NautilusViewport *nautilus_viewport);
+GtkType           nautilus_viewport_get_type              (void);
+GtkWidget *       nautilus_viewport_new                   (GtkAdjustment          *hadjustment,
+						          GtkAdjustment           *vadjustment);
+
+void              nautilus_viewport_set_is_smooth         (NautilusViewport       *nautilus_viewport,
+						          gboolean                is_smooth);
+gboolean          nautilus_viewport_get_is_smooth         (const NautilusViewport *nautilus_viewport);
+void              nautilus_viewport_set_never_smooth      (NautilusViewport       *nautilus_viewport,
+						          gboolean                never_smooth);
+
+NautilusArtIPoint nautilus_viewport_get_scroll_offset     (const NautilusViewport *nautilus_viewport);
+
+void              nautilus_viewport_set_constrain_width   (NautilusViewport       *nautilus_viewport,
+							  gboolean                constrain_width);
+gboolean          nautilus_viewport_get_constrain_width   (const NautilusViewport *nautilus_viewport);
+
+void              nautilus_viewport_set_constrain_height  (NautilusViewport       *nautilus_viewport,
+							   gboolean               constrain_height);
+gboolean          nautilus_viewport_get_constrain_height  (const NautilusViewport *nautilus_viewport);
 
 END_GNOME_DECLS
 
