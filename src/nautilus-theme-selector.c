@@ -61,7 +61,6 @@
 
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;
-	GtkWidget *content_frame;
 
 	GtkWidget *title_box;
 	GtkWidget *title_label;
@@ -80,6 +79,10 @@ struct NautilusThemeSelectorDetails {
 	
 	GtkWidget *dialog;
 	int selected_row;
+	
+	gboolean remove_mode;
+	gboolean has_local_themes; 
+	gboolean populating_theme_list;
 	gboolean handling_theme_change;
 };
 
@@ -99,7 +102,10 @@ static void  nautilus_theme_selector_theme_changed	(gpointer user_data);
 static void  populate_list_with_themes 			(NautilusThemeSelector *theme_selector);
 
 static void  theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton *event, NautilusThemeSelector *theme_selector); 
-
+static void  exit_remove_mode 				(NautilusThemeSelector *theme_selector);
+static void  set_help_label				(NautilusThemeSelector *theme_selector,
+							 gboolean remove_mode);
+							 
 #define THEME_SELECTOR_WIDTH  460
 #define THEME_SELECTOR_HEIGHT 264
 
@@ -182,9 +188,9 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_box_pack_start (GTK_BOX(temp_hbox), theme_selector->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	theme_selector->details->help_label = nautilus_label_new  (_("Click on a theme to change the\nappearance of Nautilus."));
+	theme_selector->details->help_label = nautilus_label_new ("");
 	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->help_label), 12);
-  
+	set_help_label (theme_selector, FALSE);
   	gtk_widget_show(theme_selector->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), theme_selector->details->help_label, FALSE, FALSE, 8);
  
@@ -207,8 +213,6 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_widget_show (theme_selector->details->theme_list);
 	gtk_widget_show (scrollwindow);
 
-	populate_list_with_themes (theme_selector);
-	
 	/* connect a signal to let us know when the column titles are clicked */
 	gtk_signal_connect(GTK_OBJECT(theme_selector->details->theme_list), "select_row",
 				GTK_SIGNAL_FUNC(theme_select_row_callback), theme_selector);
@@ -248,6 +252,8 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->remove_button = gtk_button_new();
 	
 	theme_selector->details->remove_button_label = nautilus_label_new (_("Remove theme"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->remove_button_label), 14);
+	
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (theme_selector->details->bottom_box),
@@ -261,11 +267,9 @@ nautilus_theme_selector_initialize (GtkObject *object)
 			    GTK_SIGNAL_FUNC (remove_button_callback),
 			    theme_selector);
 
-	/* now create the actual content, with the category pane and the content frame */	
-	
-	/* the actual contents are created when necessary */	
-  	theme_selector->details->content_frame = NULL;
-	
+	/* generate the actual content */
+	populate_list_with_themes (theme_selector);
+
 	/* add a callback for when the theme changes */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
 					   nautilus_theme_selector_theme_changed,
@@ -365,8 +369,6 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	NautilusThemeSelector *theme_selector;
 	GnomeVFSResult result;
 		
-	result = GNOME_VFS_OK;
-	
 	theme_selector = NAUTILUS_THEME_SELECTOR (data);
 	theme_path = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (theme_selector->details->dialog)));
 
@@ -382,7 +384,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	g_free (temp_path);
 	
 	if (!g_file_exists (xml_path)) {
-		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme folder."), theme_path);
+		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme directory."), theme_path);
 		nautilus_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
 		g_free (message);
 	} else {
@@ -403,7 +405,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		g_free(directory_path);
 			
 		/* copy the new theme into the themes directory */
-		if (result == GNOME_VFS_OK) {
+		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_FILE_EXISTS) {
 			result = nautilus_copy_uri_simple (theme_path, theme_destination_path);
 		}
 		
@@ -438,6 +440,11 @@ dialog_destroy (GtkWidget *widget, gpointer data)
 static void
 add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
 {
+	if (theme_selector->details->remove_mode) {
+		exit_remove_mode (theme_selector);
+		return;
+	}
+	
 	if (theme_selector->details->dialog) {
 		gtk_widget_show(theme_selector->details->dialog);
 		if (theme_selector->details->dialog->window)
@@ -447,7 +454,7 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 		GtkFileSelection *file_dialog;
 
 		theme_selector->details->dialog = gtk_file_selection_new
-			(_("Select a theme folder to add as a new theme:"));
+			(_("Select a theme directory to add as a new theme:"));
 		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (theme_selector->details->dialog),
@@ -473,6 +480,21 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 static void
 remove_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
 {
+	if (theme_selector->details->remove_mode) {
+		return;
+	}
+	
+	theme_selector->details->remove_mode = TRUE;
+	/* change the label to the remove message */
+	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
+	_("Click on a theme to remove it."));
+	
+	/* change the add button label */
+	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label),
+	_("Cancel Remove"));
+	
+	/* regenerate the list */
+	populate_list_with_themes (theme_selector);
 }
 
 /* utility routine to highlight the row that contains the passed in name */
@@ -510,22 +532,99 @@ nautilus_theme_selector_theme_changed (gpointer user_data)
 	g_free (current_theme);
 }
 
+static void
+set_help_label (NautilusThemeSelector *theme_selector, gboolean remove_mode)
+{
+	if (remove_mode) {
+		nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
+					_("Click on a theme to remove it."));	
+	} else {
+		nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
+					_("Click on a theme to change the\nappearance of Nautilus."));	
+
+	}
+}
+
+static void
+exit_remove_mode (NautilusThemeSelector *theme_selector)
+{
+	theme_selector->details->remove_mode = FALSE;
+	set_help_label (theme_selector, TRUE);
+	
+	/* change the add button label */
+	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label),
+	_("Add New Theme"));
+	
+	populate_list_with_themes (theme_selector);	
+}
+
 /* handle clicks on the theme selector by setting the theme */
 
 static void 
 theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton *event, NautilusThemeSelector *theme_selector)
 {
-	char *theme_name;
-
-	if (theme_selector->details->handling_theme_change)
+	GnomeVFSResult result;
+	GnomeVFSURI *theme_uri;
+	char *theme_name, *current_theme;
+	char *user_directory, *themes_directory, *this_theme_directory;	
+	
+	if (theme_selector->details->handling_theme_change || theme_selector->details->populating_theme_list)
 		return;
-		
-	theme_selector->details->handling_theme_change = TRUE;	
+
 	theme_name = gtk_clist_get_row_data (clist, row);	
-	if (theme_name) {
-		nautilus_theme_set_theme (theme_name);
+	theme_selector->details->handling_theme_change = TRUE;	
+
+	if (theme_selector->details->remove_mode) {
+		/* don't allow the current theme to be deleted */
+		current_theme = nautilus_theme_get_theme();	
+		
+		if (nautilus_strcmp (theme_name, current_theme) == 0) {
+			exit_remove_mode (theme_selector);
+			nautilus_error_dialog (_("Sorry, but you can't remove the current theme.  Please change to another theme before removing this one"),
+				       _("Can't delete current theme"),
+				       GTK_WINDOW (theme_selector));
+			g_free (current_theme);
+			theme_selector->details->handling_theme_change = FALSE;	
+			
+			return;
+		}
+
+		g_free (current_theme);	
+		
+		/* delete the selected theme.  First, build the uri */
+		user_directory = nautilus_get_user_directory ();
+		themes_directory = nautilus_make_path (user_directory, "themes");
+		this_theme_directory = nautilus_make_path (themes_directory, theme_name);
+		
+		theme_uri = gnome_vfs_uri_new (this_theme_directory);			
+		result = gnome_vfs_xfer_uri (theme_uri, theme_uri,
+	      		      			GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
+	      		      			GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      			GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+						NULL, NULL);
+		
+		gnome_vfs_uri_unref (theme_uri);
+		
+		if (result != GNOME_VFS_OK) {
+			nautilus_error_dialog (_("Sorry, but that theme could not be removed!"), 
+					       _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
+		
+		}
+				
+		g_free (user_directory);
+		g_free (themes_directory);
+		g_free (this_theme_directory);
+		g_free (theme_uri);
+		
+		/* exit remove mode */
+		exit_remove_mode (theme_selector);
+	} else {		
+		if (theme_name) {
+			nautilus_theme_set_theme (theme_name);
+		}
 	}
-	theme_selector->details->handling_theme_change = FALSE;	
+	theme_selector->details->handling_theme_change = FALSE;
+
 }
 
 static gboolean
@@ -722,12 +821,15 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 static void
 populate_list_with_themes (NautilusThemeSelector *theme_selector)
 {
-	int index, selected_index, alt_selected_index;
+	int index, save_index, selected_index, alt_selected_index;
 	char *pixmap_directory, *directory_uri, *user_directory;
 	char *current_theme;
 	
 	/* first, clear out the list */
 	gtk_clist_clear (GTK_CLIST (theme_selector->details->theme_list));
+	
+	theme_selector->details->has_local_themes = FALSE;
+	theme_selector->details->populating_theme_list = TRUE;
 	
 	/* allocate the colors for the rows */
 	
@@ -740,27 +842,31 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 				  &theme_selector->details->alt_row_color, FALSE, TRUE);
 	
 	/* iterate the pixmap directory to find other installed themes */	
-	pixmap_directory = nautilus_get_pixmap_directory ();
-	directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
-	
-	/* add a theme element for the default theme */
-	current_theme = nautilus_theme_get_theme();	
 	index = 0;
+	if (!theme_selector->details->remove_mode) {
 
-	add_theme (theme_selector, pixmap_directory, "default", current_theme, index++);
-	g_free (pixmap_directory);
-	g_free (current_theme);
-	
-	/* process the built-in themes */
-	selected_index = populate_list_with_themes_from_directory (theme_selector, directory_uri, &index);
-	g_free (directory_uri);
-	
+		pixmap_directory = nautilus_get_pixmap_directory ();
+		directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
+		
+		/* add a theme element for the default theme */
+		current_theme = nautilus_theme_get_theme();	
+
+		add_theme (theme_selector, pixmap_directory, "default", current_theme, index++);
+		g_free (pixmap_directory);
+		g_free (current_theme);
+		
+		/* process the built-in themes */
+		selected_index = populate_list_with_themes_from_directory (theme_selector, directory_uri, &index);
+		g_free (directory_uri);
+	}
+		
 	/* now process the user-added themes */
 	
 	user_directory = nautilus_get_user_directory ();
 	directory_uri = nautilus_make_path (user_directory, "themes");
 	g_free (user_directory);
 	
+	save_index = index;
 	alt_selected_index = populate_list_with_themes_from_directory (theme_selector, directory_uri, &index);
 	g_free (directory_uri);
 	
@@ -768,10 +874,17 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 		selected_index = alt_selected_index;
 	}
 	
+	theme_selector->details->has_local_themes = index > save_index;
+	if (theme_selector->details->has_local_themes && !theme_selector->details->remove_mode)
+		gtk_widget_show(theme_selector->details->remove_button);
+	else
+		gtk_widget_hide(theme_selector ->details->remove_button);
+
 	/* select the appropriate row, and make sure it's visible on the screen */	
 	if (selected_index >= 0) {
 		theme_selector->details->selected_row = selected_index;
 		gtk_clist_select_row (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0);
 		gtk_clist_moveto (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0, 0.0, 0.0);		
 	}
+	theme_selector->details->populating_theme_list = FALSE;
 }
