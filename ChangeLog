@@ -1,3 +1,13 @@
+2000-10-25  Darin Adler  <darin@eazel.com>
+
+	* components/adapter/bonobo-stream-vfs.c: (vfs_get_info),
+	(vfs_set_info), (vfs_write), (vfs_read), (vfs_seek), (vfs_copy_to),
+	(vfs_commit), (vfs_revert), (vfs_destroy),
+	(bonobo_stream_vfs_class_init), (bonobo_stream_vfs_open):
+	Update for changes to the BonoboStream class. Also did a thorough code
+	review, fixed some small bugs, and added a bunch of FIXMEs for things
+	that are broken.
+
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/nautilus-dependent-shared/eazel-services-constants.h:
@@ -93,7 +103,7 @@
 	fixed bug where local images were not showing up in the summary
 	view.
 	
-2000-10-24  Andy Hertzfeld  <`andy@eazel.com>
+2000-10-24  Andy Hertzfeld  <andy@eazel.com>
 
 	worked on bug 3898, selection in the aa icon view is too slow.
 	Fixed by using a fill to make the selection pixbuf with some tiny

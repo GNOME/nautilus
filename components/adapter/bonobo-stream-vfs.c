@@ -27,46 +27,99 @@
  * bonobo-stream-vfs.c: Gnome VFS-based Stream implementation
  */
 
+/* FIXME: There's another copy of this file, with a few subtle
+ * differences, in the Bonobo sources, although it's currently not being
+ * compiled.
+ */
+
 #include <config.h>
 #include "bonobo-stream-vfs.h"
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
+#define READ_CHUNK_SIZE 65536
 
 struct BonoboStreamVFSDetails {
 	GnomeVFSHandle *handle;
-	gboolean got_eof;
 };
-
-
 
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
 static POA_Bonobo_Stream__vepv vepv;
 
-static CORBA_long
+static Bonobo_StorageInfo *
+vfs_get_info (BonoboStream *stream,
+	      Bonobo_StorageInfoFields mask,
+	      CORBA_Environment *ev)
+{
+	/* FIXME: Is it OK to have this unimplemented? */
+	g_warning ("BonoboStreamVFS:get_info not implemented");
+        CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+                             ex_Bonobo_Stream_IOError, NULL);
+	
+	/* The following code could be useful for as a start for
+	 * writing get_info.
+	 */
+#if 0
+	BonoboStreamVFS *stream_vfs;
+	GnomeVFSFileInfo file_info;
+	CORBA_long size;
+
+	stream_vfs = BONOBO_STREAM_VFS (stream);
+	gnome_vfs_file_info_init (&file_info);
+
+	if (gnome_vfs_get_file_info_from_handle (stream_vfs->details->handle, 
+						 &file_info, 
+						 GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
+		return 0;
+	}
+
+	/* FIXME: Will munge >31-bit file sizes, which can
+	 * happen in gnome-vfs.
+	 */
+	size = file_info.size;
+	gnome_vfs_file_info_clear (&file_info);
+
+	return size;
+#endif
+
+	return NULL;
+}
+
+static void
+vfs_set_info (BonoboStream *stream,
+	      const Bonobo_StorageInfo *info,
+	      Bonobo_StorageInfoFields mask,
+	      CORBA_Environment *ev)
+{
+	/* FIXME: Is it OK to have this unimplemented? */
+	g_warning ("BonoboStreamVFS:set_info not implemented");
+        CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+                             ex_Bonobo_Stream_IOError, NULL);
+}
+	   
+static void
 vfs_write (BonoboStream *stream,
 	   const Bonobo_Stream_iobuf *buffer,
 	   CORBA_Environment *ev)
 {
 	BonoboStreamVFS *stream_vfs;
 	GnomeVFSResult res;
-	GnomeVFSFileSize written = 0;
+	GnomeVFSFileSize written;
 
 	stream_vfs = BONOBO_STREAM_VFS (stream);
 
 	res = gnome_vfs_write (stream_vfs->details->handle, buffer->_buffer, buffer->_length, &written);
-
 	if (res != GNOME_VFS_OK) {
+		/* FIXME: We might need to distinguish NoPermission
+		 * from IOError.
+		 */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_Bonobo_Storage_NameExists, NULL);
-		return 0;
+				     ex_Bonobo_Stream_IOError, NULL);
 	}
-
-	return written;
 }
 
 static void
@@ -99,11 +152,12 @@ vfs_read (BonoboStream *stream,
 		CORBA_free (data);
 		CORBA_free (*buffer);
 		*buffer = NULL;
+		/* FIXME: We might need to distinguish NoPermission
+		 * from IOError.
+		 */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Stream_IOError, NULL);
 	}
-
-	stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
 }
 
 static CORBA_long
@@ -141,7 +195,9 @@ vfs_seek (BonoboStream *stream,
 		}
 	}
 	
-	stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
+	/* FIXME: Will munge >31-bit file positions, which can
+	 * happen in gnome-vfs.
+	 */
 	return pos;
 }
 
@@ -171,8 +227,6 @@ vfs_copy_to  (BonoboStream *stream,
 	GnomeVFSResult res;
 	GnomeVFSFileSize rsize, wsize;
 
-#define READ_CHUNK_SIZE 65536
-
 	stream_vfs = BONOBO_STREAM_VFS (stream);
 
 	data = CORBA_sequence_CORBA_octet_allocbuf (READ_CHUNK_SIZE);
@@ -182,22 +236,22 @@ vfs_copy_to  (BonoboStream *stream,
 
 	res = gnome_vfs_create (&fd_out, dest, GNOME_VFS_OPEN_WRITE, FALSE, 0666);
 	if (res != GNOME_VFS_OK) {
+		/* FIXME: Need to set exception here. */
 		return;
 	}
 
 	more = bytes;
 	do {
 		res = gnome_vfs_read (stream_vfs->details->handle, data, MIN (READ_CHUNK_SIZE, more), &rsize);
-		
-		stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
-		
 		if (res != GNOME_VFS_OK) {
+			/* FIXME: Need to set exception here. */
 			break;
 		}
 		*read_bytes += rsize;
 
 		res = gnome_vfs_write (fd_out, data, rsize, &wsize);
 		if (res != GNOME_VFS_OK) {
+			/* FIXME: Need to set exception here. */
 			break;
 		}
 		*written_bytes += wsize;
@@ -212,77 +266,62 @@ static void
 vfs_commit (BonoboStream *stream,
 	    CORBA_Environment *ev)
 {
-	g_warning ("bonobo_stream_vfs_commit not implemented");
+        CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+                             ex_Bonobo_Stream_NotSupported, NULL);
 }
 
 static void
-vfs_close (BonoboStream *stream,
-	  CORBA_Environment *ev)
+vfs_revert (BonoboStream *stream,
+	    CORBA_Environment *ev)
 {
-	BonoboStreamVFS *stream_vfs;
-
-	stream_vfs = BONOBO_STREAM_VFS (stream);
-
-	gnome_vfs_close (stream_vfs->details->handle);
-	
-	stream_vfs->details->handle = NULL;
-	stream_vfs->details->got_eof = FALSE;
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_Bonobo_Stream_NotSupported, NULL);
 }
 
-static CORBA_boolean
-vfs_eos (BonoboStream *stream,
-	CORBA_Environment *ev)
+static void
+vfs_destroy (GtkObject *object)
 {
 	BonoboStreamVFS *stream_vfs;
 
-	stream_vfs = BONOBO_STREAM_VFS (stream);
-	return stream_vfs->details->got_eof;
-}
-	
-static CORBA_long
-vfs_length (BonoboStream *stream,
-	   CORBA_Environment *ev)
-{
-	BonoboStreamVFS *stream_vfs;
-	GnomeVFSFileInfo file_info;
-	CORBA_long size;
+	stream_vfs = BONOBO_STREAM_VFS (object);
 
-	stream_vfs = BONOBO_STREAM_VFS (stream);
-	gnome_vfs_file_info_init (&file_info);
-
-	if (gnome_vfs_get_file_info_from_handle (stream_vfs->details->handle, 
-						 &file_info, 
-						 GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
-		return 0;
+	if (stream_vfs->details->handle != NULL) {
+		gnome_vfs_close (stream_vfs->details->handle);
+		/* FIXME: Errors that happen only at flush time are
+		 * lost here. Many gnome-vfs modules return errors at
+		 * close time about the remaining flushed writes.
+		 */
+		stream_vfs->details->handle = NULL;
 	}
 
-	/* FIXME: Ignores super-long files. */
-	size = file_info.size;
-	gnome_vfs_file_info_clear (&file_info);
-
-	return size;
+	GTK_OBJECT_CLASS (bonobo_stream_vfs_parent_class)->destroy (object);
 }
-	   
 
 static void
 bonobo_stream_vfs_class_init (BonoboStreamVFSClass *klass)
 {
-	BonoboStreamClass *sclass = BONOBO_STREAM_CLASS (klass);
-
-	bonobo_stream_vfs_parent_class = gtk_type_class (bonobo_stream_get_type ());
+	BonoboStreamClass *stream_class;
+	GtkObjectClass *object_class;
 
 	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 	vepv.Bonobo_Stream_epv = nautilus_bonobo_stream_get_epv ();
 
-	sclass->write    = vfs_write;
-	sclass->read     = vfs_read;
-	sclass->seek     = vfs_seek;
-	sclass->truncate = vfs_truncate;
-	sclass->copy_to  = vfs_copy_to;
-	sclass->commit   = vfs_commit;
-	sclass->close    = vfs_close;
-	sclass->eos      = vfs_eos;
-	sclass->length   = vfs_length;
+	stream_class = BONOBO_STREAM_CLASS (klass);
+	object_class = GTK_OBJECT_CLASS (klass);
+
+	bonobo_stream_vfs_parent_class = gtk_type_class (bonobo_stream_get_type ());
+
+	stream_class->get_info = vfs_get_info;
+	stream_class->set_info = vfs_set_info;
+	stream_class->write    = vfs_write;
+	stream_class->read     = vfs_read;
+	stream_class->seek     = vfs_seek;
+	stream_class->truncate = vfs_truncate;
+	stream_class->copy_to  = vfs_copy_to;
+	stream_class->commit   = vfs_commit;
+	stream_class->revert   = vfs_revert;
+
+	object_class->destroy = vfs_destroy;
 }
 
 static void
@@ -390,7 +429,6 @@ bonobo_stream_vfs_new_internal (GnomeVFSHandle *handle)
 	return bonobo_stream_vfs_construct (stream_vfs, corba_stream);
 }
 
-
 /**
  * bonobo_stream_vfs_open:
  * @uri: The path to the file to be opened.
@@ -413,7 +451,10 @@ bonobo_stream_vfs_open (const char *uri, Bonobo_Storage_OpenMode mode)
 	} else if (mode == Bonobo_Storage_WRITE) {
 		result = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_WRITE);
 	} else {
-		result = GNOME_VFS_ERROR_NOT_SUPPORTED;
+		/* FIXME: Do we need to support CREATE, FAILIFEXIST,
+		 * COMPRESSED, TRANSACTED, or combinations?
+		 */
+	   	result = GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 	
 	if (result != GNOME_VFS_OK || handle == NULL) {
