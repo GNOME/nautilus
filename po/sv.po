@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-11-03 23:54+0100\n"
-"PO-Revision-Date: 2000-11-03 23:55+0100\n"
+"POT-Creation-Date: 2000-11-04 01:50+0100\n"
+"PO-Revision-Date: 2000-11-04 01:50+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -390,59 +390,59 @@ msgstr "%s av %s"
 msgid "Verifying %s..."
 msgstr "Kontrollerar %s..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:108
+#: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
 msgid "%s would not work anymore\n"
 msgstr "%s skulle inte fungera längre\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:111
+#: components/rpmview/nautilus-rpm-view-install.c:110
 #, c-format
 msgid "%s would break other installed packages\n"
 msgstr "%s skulle ha sönder andra installerade paket\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:116
+#: components/rpmview/nautilus-rpm-view-install.c:115
 #, c-format
 msgid "%s is needed, but could not be found\n"
 msgstr "%s krävs, men kunde inte hittas\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:121
+#: components/rpmview/nautilus-rpm-view-install.c:120
 #, c-format
 msgid "%s was already installed\n"
 msgstr "%s var redan installerat\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:124
+#: components/rpmview/nautilus-rpm-view-install.c:123
 #, c-format
 msgid "%s causes a circular dependency problem\n"
 msgstr "%s orsakar ett problem med cirkulära beroenden\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:143
+#: components/rpmview/nautilus-rpm-view-install.c:142
 #, c-format
 msgid "Installing %s failed because of the following issue(s):\n"
 msgstr "Installation av %s misslyckades på grund av följande fel:\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:145
+#: components/rpmview/nautilus-rpm-view-install.c:144
 #, c-format
 msgid "Uninstalling %s failed because of the following issue(s):\n"
 msgstr "Avinstallation av %s misslyckades på grund av följande fel:\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:240
+#: components/rpmview/nautilus-rpm-view-install.c:241
 msgid "Uninstall failed..."
 msgstr "Avinstallationen misslyckades..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:241
+#: components/rpmview/nautilus-rpm-view-install.c:242
 msgid "Uninstall Failed"
 msgstr "Avinstallationen misslyckades"
 
-#: components/rpmview/nautilus-rpm-view-install.c:243
+#: components/rpmview/nautilus-rpm-view-install.c:244
 msgid "Install failed..."
 msgstr "Installationen misslyckades..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:244
+#: components/rpmview/nautilus-rpm-view-install.c:245
 msgid "Install Failed"
 msgstr "Installationen misslyckades"
 
-#: components/rpmview/nautilus-rpm-view-install.c:288
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1084
+#: components/rpmview/nautilus-rpm-view-install.c:297
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1112
 msgid "Incorrect password."
 msgstr "Felaktigt lösenord."
 
@@ -753,31 +753,47 @@ msgstr "Tar bort paketet %s (0x%x) %s"
 msgid "Preparing package system"
 msgstr "Förbereder paketsystem"
 
-#: components/services/install/lib/eazel-install-logic.c:1475
+#: components/services/install/lib/eazel-install-logic.c:1478
+#, c-format
+msgid "%s-%s version %s-%s already installed"
+msgstr "%s-%s version %s-%s är redan installerat"
+
+#: components/services/install/lib/eazel-install-logic.c:1482
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s version %s är redan installerat"
 
-#: components/services/install/lib/eazel-install-logic.c:1481
+#: components/services/install/lib/eazel-install-logic.c:1491
+#: components/services/install/lib/eazel-install-logic.c:1496
 #, c-format
-msgid "%s upgrades from version %s to %s"
-msgstr "%s uppgraderar från version %s till %s"
+msgid "%s upgrades from version %s-%s to %s-%s"
+msgstr "%s uppgraderar från version %s-%s till %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1488
+#: components/services/install/lib/eazel-install-logic.c:1505
+#, c-format
+msgid "%s downgrades from version %s-%s to %s-%s"
+msgstr "%s nergraderar från version %s-%s till %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1510
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nergraderar från version %s till %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1508
+#: components/services/install/lib/eazel-install-logic.c:1532
+#, c-format
+msgid "%s installs version %s-%s"
+msgstr "%s installerar version %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1537
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerar version %s"
 
-#: components/services/install/lib/eazel-install-logic.c:2104
+#: components/services/install/lib/eazel-install-logic.c:2134
 msgid "Dependencies appear ok"
 msgstr "Beroendena verkar vara okej"
 
-#: components/services/install/lib/eazel-install-logic.c:2107
+#: components/services/install/lib/eazel-install-logic.c:2137
 msgid "But there are file conflicts"
 msgstr "Men det det finns filkonflikter"
 
@@ -902,13 +918,13 @@ msgstr "Paketet %s hade versionsnumret %s och inte %s"
 msgid "File download failed"
 msgstr "Filhämtning misslyckades"
 
-#: components/services/install/lib/eazel-install-protocols.c:736
-#: components/services/install/lib/eazel-install-protocols.c:741
+#: components/services/install/lib/eazel-install-protocols.c:748
+#: components/services/install/lib/eazel-install-protocols.c:753
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Kunde inte ta emot en URL för %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:746
+#: components/services/install/lib/eazel-install-protocols.c:758
 #, c-format
 msgid "Could not retrieve a URL for id %s"
 msgstr "Kunde inte ta emot en URL för id %s"
@@ -1159,34 +1175,46 @@ msgstr "Installerar \"%s\""
 msgid "Version: %s"
 msgstr "Version: %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:857
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:853
 #, c-format
 msgid " · %s is in the KDE menu.\n"
 msgstr " · %s är i KDE-menyn.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:864
 #, c-format
 msgid " · %s is in the Gnome menu under %s.\n"
 msgstr " · %s är i Gnome-menyn under %s.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:872
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
 #, c-format
 msgid " · %s is in the Gnome menu.\n"
 msgstr " · %s är i Gnome-menyn.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:918
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:904
+msgid "I ran into problems while installing."
+msgstr "Jag råkade ut för problem vid installationen."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:905
+msgid "I'd like to try the following :"
+msgstr "Jag vill prova följande:"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:914
+msgid "Is this ok ?"
+msgstr "Är det okej?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:955
 msgid "Installation complete!"
 msgstr "Installationen är färdig!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:920
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:957
 msgid "Installation aborted."
 msgstr "Installationen avbröts."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:922
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:959
 msgid "Installation failed!"
 msgstr "Installationen misslyckades!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:928
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:972
 #, c-format
 msgid ""
 "%s\n"
@@ -1197,7 +1225,7 @@ msgstr ""
 "%s\n"
 "Ska jag ta bort de RPM-filer som blev över?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:932
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:976
 #, c-format
 msgid ""
 "%s\n"
@@ -1206,7 +1234,7 @@ msgstr ""
 "%s\n"
 "Ska jag ta bort de RPM-filer som blev över?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:952
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:996
 msgid ""
 "\n"
 "A core package of Nautilus has been\n"
@@ -1218,42 +1246,41 @@ msgstr ""
 "Ett paket som tillhör kärnan i Nautilus\n"
 "har uppdaterats, du bör starta om Nautilus.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1009
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1072
 msgid "This package has already been installed."
 msgstr "Det här paketet har redan installerats."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1022
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1086
+#, c-format
 msgid ""
-"Installation Failed!\n"
+"Installation failed on %s\n"
 "\n"
-msgstr "Installationen misslyckades!\n"
+msgstr ""
+"Installationen misslyckades vid %s\n"
+"\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1047
-msgid "Should I delete the leftover RPM files?"
-msgstr "Ska jag ta bort de RPM-filer som blev över?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1203
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1231
 msgid "Downloading remote package"
 msgstr "Hämtar fjärrpaket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1205
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1233
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Hämtar \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1207
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1235
 msgid "Downloading some package"
 msgstr "Hämtar något paket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1249
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1277
 msgid "Contacting install server ..."
 msgstr "Kontaktar installationsserver ..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1301
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1329
 msgid "Package download aborted."
 msgstr "Pakethämtningen avbröts."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1303
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1331
 msgid "Aborted."
 msgstr "Avbruten."
 
@@ -2615,7 +2642,7 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1182
-#: src/file-manager/fm-list-view.c:1885
+#: src/file-manager/fm-list-view.c:1890
 #: src/file-manager/fm-search-list-view.c:272
 #: src/nautilus-bookmarks-window.c:161 src/nautilus-search-bar-criterion.c:66
 msgid "Name"
@@ -3561,19 +3588,19 @@ msgstr "_manuell"
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-list-view.c:1891
+#: src/file-manager/fm-list-view.c:1896
 #: src/file-manager/fm-search-list-view.c:284
 #: src/nautilus-search-bar-criterion.c:69
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:1897
+#: src/file-manager/fm-list-view.c:1902
 #: src/file-manager/fm-search-list-view.c:290
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:1903
+#: src/file-manager/fm-list-view.c:1908
 #: src/file-manager/fm-search-list-view.c:296
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -5450,6 +5477,9 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:565
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "Should I delete the leftover RPM files?"
+#~ msgstr "Ska jag ta bort de RPM-filer som blev över?"
 
 #~ msgid "Initial Preferences"
 #~ msgstr "Startinställningar"
