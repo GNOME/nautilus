@@ -1,3 +1,11 @@
+2004-04-28  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-thumbnails.c:
+	(thumbnail_thread_starter_cb): Check 
+	_POSIX_THREAD_ATTR_STACKSIZE before using 
+	pthread_attr_setstacksize.  Patch from Julio Merino
+	<jmmv@hispabsd.org>
+
 2004-04-28  Kaushal Kumar  <kaushal.kumar@wipro.com>
 
 	* src/nautilus-file-management-properties.c:
