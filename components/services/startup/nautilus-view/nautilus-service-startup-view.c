@@ -83,7 +83,6 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	GtkWidget	*temp_box;
 	char		*file_name;
 	GtkWidget	*align;
-	GtkAdjustment	*adjust;
 	int		counter;
 
 	/* allocate the parent box to hold everything */
@@ -119,8 +118,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	gtk_widget_show (align);
 
 	/* Add the progress meter */
-	adjust = (GtkAdjustment *) gtk_adjustment_new (0, 1, 150, 0, 0, 0);
-	view->details->progress_bar = gtk_progress_bar_new_with_adjustment (adjust);
+	view->details->progress_bar = gtk_progress_bar_new ();
 	gtk_container_add (GTK_CONTAINER (align), view->details->progress_bar);
 	gtk_widget_show (view->details->progress_bar);
 
@@ -142,13 +140,15 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 		if (counter == 15000) {
 			show_feedback (view, "Retreiving services list ...");
 		}
+		if (counter == 20000) {
+			go_to_uri (view, "eazel:summary");
+		}
 
 		gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
 		while (gtk_events_pending ()) {
 			gtk_main_iteration ();
 		}
 	}
-	go_to_uri (view, "eazel:summary");
 
 }
 
