@@ -54,6 +54,8 @@ int      nautilus_istr_compare           (gconstpointer  string_a,
 
 /* Other basic string operations. */
 gboolean nautilus_str_is_empty           (const char    *string_or_null);
+gboolean nautilus_str_is_equal           (const char    *string_a, 
+					  const char    *string_b);
 gboolean nautilus_str_has_prefix         (const char    *target,
 					  const char    *prefix);
 char *   nautilus_str_get_prefix         (const char    *source,

@@ -63,6 +63,12 @@ nautilus_str_is_empty (const char *string_or_null)
 	return nautilus_strcmp (string_or_null, NULL) == 0;
 }
 
+gboolean
+nautilus_str_is_equal (const char *string_a, const char *string_b)
+{
+	return (nautilus_strcmp (string_a, string_b) == 0);
+}
+
 int
 nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 {
@@ -718,6 +724,15 @@ nautilus_self_check_string (void)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("21474836470", FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("+21474836470", FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("-21474836480", FALSE, 9999)
+
+	/* nautilus_str_is_equal */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal (NULL, NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal (NULL, ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "foo"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "bar"), FALSE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
