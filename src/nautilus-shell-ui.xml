@@ -291,24 +291,26 @@
 
 <dockitem name="Toolbar" behavior="exclusive">
 
-	<control name="BackWrapper" 
-		 min_width="48"
-	         pixtype="stock" pixname="gtk-go-back"/>
-	<control name="ForwardWrapper"
-		 min_width="48"
-	         pixtype="stock" pixname="gtk-go-forward"/>
+	<toolitem name="Back"
+                  _label="Back"
+		  priority="1"
+	          pixtype="stock" pixname="gtk-go-back"
+	          verb="Back"/>
+	<control name="BackMenu"/>
+	<toolitem name="Forward"
+                  _label="Forward"
+	          pixtype="stock" pixname="gtk-go-forward"
+	          verb="Forward"/>
+	<control name="ForwardMenu"/>
 	<toolitem name="Up"
                   _label="Up"
-	          min_width="48"
 	          pixtype="stock" pixname="gtk-go-up"
 	          verb="Up"/>
 	<toolitem name="Stop" _label="Stop"
-	          min_width="48"
 	          pixtype="stock" pixname="gtk-stop"
 	          verb="Stop"/>	
 	<toolitem name="Reload"
 		  _label="Reload"
-	          min_width="48"
 	          pixtype="stock" pixname="gtk-refresh"
 		  verb="Reload"/>
 
@@ -316,11 +318,11 @@
 
 	<toolitem name="Home"
 		  _label="Home"
-	          min_width="48"
+		  priority="1"
 	          pixtype="stock" pixname="gtk-home"
 		  verb="Home"/>
 	<toolitem name="Toggle Find Mode"
-	          min_width="48"
+		  priority="1"
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
 		  verb="Toggle Find Mode"/>
