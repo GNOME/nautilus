@@ -98,6 +98,9 @@ static GtkCTreeNode *uri_to_view_node                    (NautilusTreeView *view
 static GtkCTreeNode *model_node_to_view_node             (NautilusTreeView *view,
 							  NautilusTreeNode *node);
 
+static const char   *view_node_to_uri                    (NautilusTreeView *view,
+							  GtkCTreeNode *node);
+
 
 static void reload_node_for_uri                 (NautilusTreeView *view,
 						 const char       *uri);
@@ -260,8 +263,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 #ifdef DEBUG_TREE
 	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
-		(char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-						      parent_view_node));
+		view_node_to_uri (view, node);
 #endif
 
 
@@ -309,8 +311,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	g_free (text[0]);
 
 	if (parent_view_node != NULL) {
-		remove_hack_node (view, (char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-									      parent_view_node));
+		remove_hack_node (view, view_node_to_uri (view, parent_view_node));
 	}
 }
 
@@ -719,6 +720,13 @@ model_node_to_view_node (NautilusTreeView *view,
 	return view_node;
 }
 
+static const char *
+view_node_to_uri (NautilusTreeView *view,
+		  GtkCTreeNode *node)
+{
+	return (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+							   node);
+}
 
 static GList *
 get_uri_sequence_to_root (char *uri_text)
@@ -942,8 +950,7 @@ tree_expand_callback (GtkCTree         *ctree,
 {
 	const char *uri;
 
-	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-							  node);
+	uri = view_node_to_uri (view, node);
 
 	expand_node_for_uri (view, uri);
 }
@@ -957,8 +964,7 @@ tree_collapse_callback (GtkCTree         *ctree,
 {
 	const char *uri;
 
-	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-							  node);
+	uri = view_node_to_uri (view, node);
 
 	nautilus_tree_expansion_state_collapse_node (view->details->expansion_state,
 						     uri);
@@ -980,8 +986,7 @@ tree_select_row_callback (GtkCTree              *tree,
 {
 	const char *uri;
 	
-	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
-								  node);
+	uri = view_node_to_uri (view, node);
 	
 	if (uri != NULL &&
 	    nautilus_strcmp (view->details->selected_uri, uri) != 0) {
