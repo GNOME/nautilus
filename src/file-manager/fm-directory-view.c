@@ -5174,6 +5174,11 @@ paste_clipboard_data (FMDirectoryView *view,
 						   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
 						   0, 0,
 						   view);
+
+		/* If items are cut then remove from clipboard */
+		if (cut) {
+			gtk_clipboard_clear (get_clipboard (view));
+		}
 	}
 }
 
