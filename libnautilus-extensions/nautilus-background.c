@@ -1224,6 +1224,8 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	nautilus_gdk_window_update_sizes (window, &width, &height);	
 
 	nautilus_background_draw_to_drawable (background, window, gc, 0, 0, width, height, widget->allocation.width, widget->allocation.height);
+	if (area)
+		gdk_gc_set_clip_rectangle (gc, NULL);
 }
 
 static GtkStyleClass *

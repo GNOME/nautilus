@@ -260,6 +260,8 @@ static void     draw_row                                (NautilusCList        *l
 							 int                   row_index,
 							 NautilusCListRow     *row);
 static void     draw_all                                (NautilusCList        *clist);
+static void     nautilus_list_style_set                 (GtkWidget            *widget,
+							 GtkStyle             *previous_style);
 static void     nautilus_list_realize                   (GtkWidget            *widget);
 static void     nautilus_list_unrealize                 (GtkWidget            *widget);
 static void     nautilus_list_set_cell_contents         (NautilusCList        *clist,
@@ -297,6 +299,7 @@ static void     nautilus_list_ensure_drag_data          (NautilusList         *l
 static void     nautilus_list_start_auto_scroll         (NautilusList         *list);
 static void     nautilus_list_stop_auto_scroll          (NautilusList         *list);
 
+static void	unref_gcs				(NautilusList *list);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, NAUTILUS_TYPE_CLIST)
@@ -495,6 +498,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->expose_event = nautilus_list_expose;
 	widget_class->draw_focus = nautilus_list_draw_focus;
 	widget_class->key_press_event = nautilus_list_key_press;
+	widget_class->style_set = nautilus_list_style_set;
 	widget_class->realize = nautilus_list_realize;
 	widget_class->unrealize = nautilus_list_unrealize;
 	widget_class->size_request = nautilus_list_size_request;
@@ -610,14 +614,7 @@ nautilus_list_destroy (GtkObject *object)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 
-	gdk_gc_unref (list->details->cell_lighter_background);
-	gdk_gc_unref (list->details->cell_darker_background);
-	gdk_gc_unref (list->details->cell_selected_lighter_background);
-	gdk_gc_unref (list->details->cell_selected_darker_background);
-	gdk_gc_unref (list->details->cell_divider_color);
-	gdk_gc_unref (list->details->selection_light_color);
-	gdk_gc_unref (list->details->selection_medium_color);
-	gdk_gc_unref (list->details->selection_main_color);
+	unref_gcs (list);
 
 	g_free (list->details->type_select_pattern);
 
@@ -1521,8 +1518,12 @@ nautilus_gdk_gc_copy (GdkGC *source, GdkWindow *window)
 
 	result = gdk_gc_new (window);
 	gdk_gc_copy (result, source);
+
+	/* reset some properties to be on the safe side */
 	gdk_gc_set_function (result, GDK_COPY);
 	gdk_gc_set_fill (result, GDK_SOLID);
+	gdk_gc_set_clip_origin (result, 0, 0);
+	gdk_gc_set_clip_mask (result, NULL);
 
 	return result;
 }
@@ -1566,6 +1567,80 @@ nautilus_list_setup_style_colors (NautilusList *list)
 }
 
 static void
+unref_a_gc (GdkGC **gc)
+{
+	if (*gc != NULL) {
+		gdk_gc_unref (*gc);
+		*gc = NULL;
+	}
+}
+
+static void
+unref_gcs (NautilusList *list)
+{
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+	unref_a_gc (&list->details->cell_lighter_background);
+	unref_a_gc (&list->details->cell_darker_background);
+	unref_a_gc (&list->details->cell_selected_lighter_background);
+	unref_a_gc (&list->details->cell_selected_darker_background);
+	unref_a_gc (&list->details->cell_divider_color);
+	unref_a_gc (&list->details->selection_light_color);
+	unref_a_gc (&list->details->selection_medium_color);
+	unref_a_gc (&list->details->selection_main_color);
+}
+
+static void
+make_gcs_and_colors (NautilusList *list)
+{
+	GtkWidget *widget;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+	g_return_if_fail (GTK_IS_WIDGET (list));
+
+	widget = GTK_WIDGET (list);
+
+	/* First unref old gcs */
+	unref_gcs (list);
+
+	/* now setup new ones */
+	list->details->cell_lighter_background = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_darker_background = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_selected_lighter_background = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_selected_darker_background = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_divider_color = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->selection_light_color = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+	list->details->selection_medium_color = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+	list->details->selection_main_color = nautilus_gdk_gc_copy (
+		widget->style->bg_gc[GTK_STATE_SELECTED], widget->window);
+
+	nautilus_list_setup_style_colors (list);
+}
+
+static void
+nautilus_list_style_set (GtkWidget *widget, GtkStyle *previous_style)
+{
+	NautilusList *list;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (widget));
+
+	list = NAUTILUS_LIST (widget);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
+
+	if (GTK_WIDGET_REALIZED (widget)) {
+		make_gcs_and_colors (list);
+	}
+}
+
+static void
 nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
@@ -1581,24 +1656,7 @@ nautilus_list_realize (GtkWidget *widget)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
-	list->details->cell_lighter_background = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_darker_background = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_selected_lighter_background = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_selected_darker_background = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->cell_divider_color = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
-	list->details->selection_light_color = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
-	list->details->selection_medium_color = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
-	list->details->selection_main_color = nautilus_gdk_gc_copy (
-		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_SELECTED], widget->window);
-
-	nautilus_list_setup_style_colors (list);
+	make_gcs_and_colors (list);
 
 	if (list->details->title) {
 		gtk_widget_set_parent_window (list->details->title, clist->title_window);
@@ -1620,6 +1678,9 @@ nautilus_list_unrealize (GtkWidget *widget)
 	GtkWindow *window;
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
+
+	/* unref all the gcs we've created */
+	unref_gcs (NAUTILUS_LIST (widget));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
 }

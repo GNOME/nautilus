@@ -108,10 +108,22 @@ static gboolean nautilus_theme_selector_delete_event_callback (GtkWidget *widget
 static void  nautilus_theme_selector_theme_changed	(gpointer user_data);
 static void  populate_list_with_themes 			(NautilusThemeSelector *theme_selector);
 
-static void  theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton *event, NautilusThemeSelector *theme_selector); 
+static void  theme_select_row_callback			(GtkCList              *clist,
+							 int                    row,
+							 int                    column,
+							 GdkEventButton        *event,
+							 NautilusThemeSelector *theme_selector); 
+static void  theme_style_set_callback			(GtkWidget             *widget, 
+							 GtkStyle              *previous_style,
+							 NautilusThemeSelector *theme_selector); 
+
 static void  exit_remove_mode 				(NautilusThemeSelector *theme_selector);
 static void  set_help_label				(NautilusThemeSelector *theme_selector,
 							 gboolean remove_mode);
+static void  setup_font_sizes_for_row			(NautilusThemeSelector *theme_selector,
+							 int theme_index);
+static void  setup_font_sizes_for_all_rows		(NautilusThemeSelector *theme_selector);
+static void  clear_style_for_all_rows			(NautilusThemeSelector *theme_selector);
 							 
 #define THEME_SELECTOR_WIDTH  460
 #define THEME_SELECTOR_HEIGHT 264
@@ -222,9 +234,18 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_widget_show (theme_selector->details->theme_list);
 	gtk_widget_show (scrollwindow);
 
-	/* connect a signal to let us know when the column titles are clicked */
-	gtk_signal_connect(GTK_OBJECT(theme_selector->details->theme_list), "select_row",
-				GTK_SIGNAL_FUNC(theme_select_row_callback), theme_selector);
+	/* connect a signal to let us know when a row is selected */
+	gtk_signal_connect (GTK_OBJECT (theme_selector->details->theme_list),
+			    "select_row",
+			    GTK_SIGNAL_FUNC (theme_select_row_callback),
+			    theme_selector);
+
+	/* we will have to reset some style stuff when a new style is set,
+	 * so that we follow gtk+ themes correctly */
+	gtk_signal_connect (GTK_OBJECT (theme_selector->details->theme_list),
+			    "style_set",
+			    GTK_SIGNAL_FUNC (theme_style_set_callback),
+			    theme_selector);
 
   	/* add the bottom box to hold the command buttons */
   	temp_box = gtk_event_box_new();
@@ -611,6 +632,16 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 
 }
 
+/* handle changing of gtk themes */
+static void
+theme_style_set_callback (GtkWidget             *widget, 
+			  GtkStyle              *previous_style,
+			  NautilusThemeSelector *theme_selector)
+{
+	clear_style_for_all_rows (theme_selector);
+	setup_font_sizes_for_all_rows (theme_selector);
+}
+
 static gboolean
 vfs_file_exists (const char *file_uri)
 {
@@ -702,6 +733,41 @@ set_preferred_font_for_cell (NautilusThemeSelector *theme_selector, int theme_in
 	gdk_font_unref (name_font);	
 }
 
+/* setup the font sizes for a row */
+static void
+setup_font_sizes_for_row (NautilusThemeSelector *theme_selector, int theme_index)
+{
+	set_preferred_font_for_cell (theme_selector, theme_index, 1, 18);
+	set_preferred_font_for_cell (theme_selector, theme_index, 2, 10);
+}
+
+/* setup the font sizes for all rows */
+static void
+setup_font_sizes_for_all_rows (NautilusThemeSelector *theme_selector)
+{
+	int i;
+
+	for (i = 0; i < GTK_CLIST (theme_selector->details->theme_list)->rows; i++) {
+		setup_font_sizes_for_row (theme_selector, i);
+	}
+}
+
+/* reset style for all rows */
+static void
+clear_style_for_all_rows (NautilusThemeSelector *theme_selector)
+{
+	int i;
+	GtkCList *clist;
+
+	clist = GTK_CLIST (theme_selector->details->theme_list);
+
+	for (i = 0; i < clist->rows; i++) {
+		gtk_clist_set_cell_style (clist, i, 0, NULL);
+		gtk_clist_set_cell_style (clist, i, 1, NULL);
+		gtk_clist_set_cell_style (clist, i, 2, NULL);
+	}
+}
+
 
 /* utility to add a theme folder to the list */
 
@@ -714,7 +780,7 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	
-	char      *clist_entry[3];
+	char       *clist_entry[3];
 	
 	/* generate a pixbuf to represent the theme */
 	theme_pixbuf = nautilus_theme_make_selector (theme_name);
@@ -730,22 +796,27 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	gtk_widget_show (pix_widget);
 
 	/* install it in the list view */	
+
 	
 	clist_entry[0] = NULL;
 	clist_entry[1] = g_strdup (theme_name);
 	clist_entry[2] = make_theme_description (theme_name, theme_path_uri);
 	
 	gtk_clist_append (GTK_CLIST(theme_selector->details->theme_list), clist_entry);
+
+	g_free (clist_entry[1]);
+	g_free (clist_entry[2]);
 	
 	/* set up the theme logo image */ 
 	gtk_clist_set_pixmap (GTK_CLIST(theme_selector->details->theme_list), theme_index, 0, pixmap , mask);
-	gtk_clist_set_row_data (GTK_CLIST(theme_selector->details->theme_list),
-					 theme_index, g_strdup (theme_name));
+	gtk_clist_set_row_data_full (GTK_CLIST (theme_selector->details->theme_list),
+				     theme_index,
+				     g_strdup (theme_name),
+				     g_free /*destroy notification*/);
 	
 	/* set up the fonts for the theme name and description */
 	
-	set_preferred_font_for_cell (theme_selector, theme_index, 1, 18);
-	set_preferred_font_for_cell (theme_selector, theme_index, 2, 10);
+	setup_font_sizes_for_row (theme_selector, theme_index);
 		
 	gdk_pixmap_unref (pixmap);
 	if (mask != NULL) {

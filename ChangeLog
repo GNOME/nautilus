@@ -1,3 +1,29 @@
+Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
+
+	Darin saw this patch and says it should not destroy the world
+	if I apply it.
+
+	Fixes: 3988
+
+	* libnautilus-extensions/nautilus-background.c
+	  (nautilus_background_draw_flat_box):  Unset the mask on the bg_gc
+	  from the style, not to leave the gc in a bad state
+
+	* libnautilus-extentions/nautilus-list.c (nautilus_list_style_set)
+	  (unref_gcs) (unref_a_gc) (nautilus_list_initialize_class) 
+	  (nautilus_list_destroy) (nautilus_gdk_gc_copy)
+	  (nautilus_list_realize) (make_gcs_and_colors)
+	  (nautilus_list_unrealize):  Follow the theme by recopying the gcs
+	  after a theme was changed.  Also do more sanity setting
+	  when copying the gcs, just to be on the very safe side.
+
+	* src/nautilus-theme-selector.c (theme_style_set_callback)
+	  (setup_font_sizes_for_row) (setup_font_sizes_for_all_rows)
+	  (clear_style_for_all_rows) (nautilus_theme_selector_initialize)
+	  (add_theme):  Follow the current theme by binding to the style_set
+	  signal and redoing the style stuff so that we don't get garbage
+	  and other fun on changing of gtk theme.
+
 2001-01-05  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/notes/Makefile.am:
