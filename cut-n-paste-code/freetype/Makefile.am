@@ -48,6 +48,7 @@ noinst_HEADERS = \
 	ftlist.h \
 	ftmemory.h \
 	ftmm.h \
+	ftmodule-list.h \
 	ftmodule.h \
 	ftobjs.h \
 	ftoption.h \
