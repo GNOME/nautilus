@@ -1,3 +1,111 @@
+2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (install_failed), (main):
+	Default to services.eazel.com instead of ham.eazel.com
+	Nicer print for install failed in the case the package is already
+	installed.
+	Free the category & package date structures.
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_failed), (impl_uninstall_failed):
+	Free some category & package date structures (leak fixing project)
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(categorydata_list_from_corba_categorystructlist):
+	Fixed a g_new(categorydata) to categorydata_new
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_simple_query):
+	Inserted some newlines (exiting eh ?)
+	
+	* components/services/install/lib/eazel-install-md5.h:
+	* components/services/install/lib/eazel-install-md5.c:
+	(md5_get_digest_from_md5_string):
+	Added a call that converts a md5 string into a 16 byte digest
+	string.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize):
+	Some newlines!!
+	
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (eazel_install_fetch_package),
+	(eazel_install_fetch_package_which_provides),
+	(get_url_for_package):
+	Added comments to what get_url_for_package and
+	get_search_url_for_package does.
+	Removed excess code from http_fetch_remote_file (creation of temp
+	dir).
+	Changed get_url_for_package to take a packagedata object as last
+	argument. This is used for setting the serverside md5. Also uses
+	trilobite_fetch_uri now.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Inserted newlines (okay, I do that a lot, it makes the code
+	readable...)
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_flatten_categories),
+	Changed to initally copy the category->packages. That way I don't
+	end up having a list in the category where the first element is
+	NULL (leak).
+	(eazel_install_download_packages),
+	(eazel_install_pre_install_packages),
+	Nuke the modifies list after called check_existing. No reason to
+	send those to the client, since the status flags is updated to
+	show that the package is already installed.
+	(eazel_install_do_transaction_md5_check),
+	Finished the md5 checking (thus my required milestone bugs are
+	done now, woohoo)
+	(eazel_install_prune_packages),
+	Commented out the block that destroys packagedata objects.
+	(eazel_install_check_existing_packages),
+	Set the stats to "already installed".
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_uninstall_check_for_install):
+	Removed silly g_messages in danish that I used for debugging.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	Removed some weird old structure defines.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (categorydata_destroy_foreach),
+	(packagedata_destroy):
+	Added some more messages in the category/packagedata alloc/dealloc
+	debugging.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list), (osd_parse_implementation),
+	(osd_parse_softpkg), (osd_parse_shared),
+	(parse_osd_xml_from_memory):
+	Added D: to some stdout stuff.
+	Decodes the MD5 tag
+	Had to add a hack to compensate for lack of useragent in gnome-vfs
+	http (bug 2862)
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri), (trilobite_fetch_uri_to_file),
+	(trilobite_fetch_uri), (trilobite_fetch_uri_to_file):
+	Wrote "slim" versions that use libghttp, for the bootstrap
+	installer.
+	
+	* nautilus-installer/src/.cvsignore:
+	Ignore the prezip binary
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/link.sh:
+	Makefile cosmetics
+	
+	* nautilus-installer/src/rpmsearch.cgi:
+	The makeshift rpmsearch cgi script.
+
+	* libnautilus-adapter/.cvsignore
+	stuff to ignore stuff.
+	
 2000-09-06  Raph Levien  <raph@acm.org>
 
 	* librsvg/test-ft-gtk.c: Added "-a" option for attaching AFM

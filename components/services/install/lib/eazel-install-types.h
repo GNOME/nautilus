@@ -79,11 +79,6 @@ typedef enum _PackageModification PackageModification;
 PackageSystemStatus packagedata_modstatus_str_to_enum (const char *st);
 const char* packagedata_modstatus_enum_to_str (PackageModification st);
 
-struct _HTTPError {
-	int code;
-	char *reason;
-};
-
 /* NOTE: if you add protocols here, modify the following places :
    idl/trilobite-eazel-install.idl
    lib/eazel-install-protocols.c (eazel_install_fill_file_fetch_table)
@@ -96,11 +91,6 @@ enum _URLType {
 	PROTOCOL_FTP   = 2
 };
 const char *protocol_as_string (URLType protocol);
-
-typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj, 
-						       char *url,
-						       const char *file_to_report,
-						       const char *target_file);
 
 enum _PackageType {
 	PACKAGE_TYPE_RPM,

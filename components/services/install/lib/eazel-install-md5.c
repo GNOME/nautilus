@@ -355,6 +355,29 @@ md5_get_digest_from_file (const char *filename, unsigned char digest[16])
 	md5_final (&ctx, digest);
 }
 
+void 
+md5_get_digest_from_md5_string (const char *md5string, 
+				guchar pmd5[16])
+{
+	char snippet[3];
+	const char *iterator;
+	int cnt = 0;
+
+	iterator = md5string;
+	while (cnt<16) {
+		unsigned long int tmp_val;
+
+		strncpy (snippet, iterator, 2);
+		snippet[2] = 0;
+
+		tmp_val = strtoul (snippet, NULL, 16);
+		g_assert (tmp_val < 256);
+		pmd5[cnt] = tmp_val;
+
+		iterator += 2;
+		cnt++;
+	}
+}
 
 #ifdef _MD5_STANDALONE
 int

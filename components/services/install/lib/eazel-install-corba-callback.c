@@ -144,7 +144,7 @@ impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 		     CORBA_Environment * ev)
 {
 	GList *categories;
-	PackageData *pack;
+
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
 	if (categories==NULL) {
 		g_warning ("install_failed called with error in xml.");
@@ -161,6 +161,7 @@ impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
 		}
 	}
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 }
 
 static void 
@@ -186,6 +187,7 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
 		}
 	}
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 }
 
 static CORBA_boolean

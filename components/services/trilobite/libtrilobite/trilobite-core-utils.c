@@ -37,6 +37,8 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#else /* TRILOBITE_SLIM */
+#include <ghttp.h>
 #endif /* TRILOBITE_SLIM */
 
 #include "trilobite-core-utils.h"
@@ -241,7 +243,6 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 		if ((bytes == 0) || (err != GNOME_VFS_OK)) {
 			break;
 		}
-
 		*length += bytes;
 		if (*length >= buffer_size - 64) {
 			/* expando time! */
@@ -301,6 +302,101 @@ trilobite_fetch_uri_to_file (const char *uri_text, const char *filename)
 	fclose (file);
 
 	return (err == GNOME_VFS_OK);
+}
+#endif /* TRILOBITE_SLIM */
+
+#ifdef TRILOBITE_SLIM
+gboolean trilobite_fetch_uri (const char *uri_text, 
+			      char **body, 
+			      int *length)
+{
+	char *uri = NULL;
+        ghttp_request* request;
+        ghttp_status status;
+	gboolean result = TRUE;
+
+	g_assert (body!=NULL);
+	g_assert (uri_text != NULL);
+	g_assert (length != NULL);
+
+	uri = g_strdup (uri_text);
+        request = NULL;
+        (*length) = -1;
+        (*body) = NULL;
+
+        if ((request = ghttp_request_new())==NULL) {
+                g_warning (_("Could not create an http request !"));
+                result = FALSE;
+        } 
+
+        if (result && (ghttp_set_uri (request, uri) != 0)) {
+                g_warning (_("Invalid uri !"));
+                result = FALSE;
+        }
+
+	if (result) {
+		ghttp_set_header (request, http_hdr_Connection, "close");
+		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
+	}
+
+        if (result && (ghttp_prepare (request) != 0)) {
+                g_warning (_("Could not prepare http request !"));
+                result = FALSE;
+        }
+
+        if (result && ghttp_set_sync (request, ghttp_async)) {
+                g_warning (_("Couldn't get async mode "));
+                result = FALSE;
+        }
+
+        while (result && (status = ghttp_process (request)) == ghttp_not_done) {
+                ghttp_current_status curStat = ghttp_get_status (request);
+		g_main_iteration (FALSE);
+        }
+
+        if (result && (ghttp_status_code (request) != 200)) {
+                g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
+			   ghttp_reason_phrase (request));
+                result = FALSE;
+        }
+	if (result && (ghttp_status_code (request) != 404)) {
+		(*length) = ghttp_get_body_len (request);
+		(*body) = ghttp_get_body (request);
+	} else {
+		result = FALSE;
+	}
+
+        if (request) {
+                ghttp_request_destroy (request);
+        }
+	
+	g_free (uri);
+
+	return result;
+}
+#endif /* TRILOBITE_SLIM */
+
+#ifdef TRILOBITE_SLIM
+gboolean trilobite_fetch_uri_to_file (const char *uri_text, 
+				      const char *filename)
+{
+	char *body = NULL;
+	int length;
+	gboolean result = FALSE;
+
+	result =  trilobite_fetch_uri (uri_text, &body, &length);
+	if (result) {
+		FILE* file;
+		file = fopen (filename, "wb");
+		if (file == NULL) {
+			g_warning (_("Could not open target file %s"),filename);
+			result = FALSE;
+		} else {
+			fwrite (body, length, 1, file);
+		}
+	} 
+
+	return result;	
 }
 #endif /* TRILOBITE_SLIM */
 

@@ -28,6 +28,12 @@
 
 #include <glib.h>
 
+/* FIXME: bugzilla.eazel.com 2851
+   darins styleguide says not to use
+   evil glib types. Check if guchar is 
+   "blacklisted"
+   http://cvs.gnome.org/lxr/source/nautilus/docs/style-guide.html
+*/
 typedef struct {
 	guint32 buf[4];
 	guint32 bits[2];
@@ -38,5 +44,7 @@ typedef struct {
 
 void md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
 void md5_get_digest_from_file (const char *filename, unsigned char digest[16]);
+void md5_get_digest_from_md5_string (const char *md5string, unsigned char pmd5[16]);
+
 
 #endif	/* MD5_UTILS_H */

@@ -166,8 +166,6 @@ eazel_install_finalize (GtkObject *object)
 {
 	EazelInstall *service;
 
-	g_message ("in eazel_install_finalize");
-
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL (object));
 
@@ -193,8 +191,6 @@ eazel_install_finalize (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize (object);
 	}
-
-	g_message ("out eazel_install_finalize");
 }
 
 void eazel_install_unref (GtkObject *object) 

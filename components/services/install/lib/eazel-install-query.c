@@ -122,7 +122,9 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		(*hd) = rpmdbGetRecord (db, offset);
 		pack = packagedata_new_from_rpm_header (hd);
 		pack->install_root = g_strdup (root);
-		if (g_list_find_custom (*result, pack->name, (GCompareFunc)eazel_install_package_name_compare)!=NULL) {
+		if (g_list_find_custom (*result, 
+					pack->name, 
+					(GCompareFunc)eazel_install_package_name_compare)!=NULL) {
 			packagedata_destroy (pack, TRUE);
 		} else {
 			(*result) = g_list_prepend (*result, pack);

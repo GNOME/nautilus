@@ -104,7 +104,11 @@ eazel_install_flatten_categories (EazelInstall *service,
 	
 	for (category_iterator = categories; category_iterator; category_iterator = g_list_next (category_iterator)) {
 		CategoryData *cat = (CategoryData*)category_iterator->data;
-		packages = g_list_concat (cat->packages, packages);
+		if (packages) {
+			packages = g_list_concat (packages, cat->packages);
+		} else {
+			packages = g_list_copy (cat->packages);
+		}
 	}
 
 
@@ -231,7 +235,15 @@ eazel_install_download_packages (EazelInstall *service,
 			*/
 			int inst_status = eazel_install_check_existing_packages (service, package);
 			if (inst_status <= 0) {
+				/* Nuke the modifies list again, since we don't want to see them */
+				g_list_foreach (package->modifies, 
+						(GFunc)packagedata_destroy, 
+						GINT_TO_POINTER (TRUE));
+				package->modifies = NULL;
+				/* don't fecth the package */
 				fetch_package = FALSE;
+				/* Add it to the list of packages to nuke at the end
+				   of this function */
 				remove_list = g_list_prepend (remove_list, package);
 				g_message (_("%s already installed"), package->name);
 			}
@@ -294,12 +306,19 @@ eazel_install_pre_install_packages (EazelInstall *service,
 			g_message (_("%s..."), pack->name);
 		} else {
 			g_message (_("Skipping %s..."), pack->name);
-			pack->status = PACKAGE_ALREADY_INSTALLED;
+			/* Nuke the modifies list again, since we don't want to see them */
+			g_list_foreach (pack->modifies, 
+					(GFunc)packagedata_destroy, 
+					GINT_TO_POINTER (TRUE));
+			pack->modifies = NULL;
+
+			/* Add it to the list of packages to nuke at the end
+			   of this function */
 			failed_packages = g_list_prepend (failed_packages, pack);
 		}
 	}
 	
-	for (iterator = failed_packages; iterator; iterator=iterator->next) {
+	for (iterator = failed_packages; iterator; iterator=g_list_next (iterator)) {
 		eazel_install_prune_packages (service, 
 					      (PackageData*)iterator->data,
 					      packages, NULL);
@@ -863,16 +882,19 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 		PackageData *pack = (PackageData*)iterator->data;
 		
 		if (pack->md5) {
+			char pmd5[16];
 			char md5[16];
+
 			md5_get_digest_from_file (pack->filename, md5);
+			md5_get_digest_from_md5_string (pack->md5, pmd5);
 /*
   FIXME bugzilla.eazel.com 2241: until we get the md5 set in the xml parse, don't md5 check it
 */
-			if (memcmp (pack->md5, md5, 16)!=0) {
+			if (memcmp (pmd5, md5, 16)!=0) {
 				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
 				result = FALSE;
 			} else {
-				g_message ("D: md5 match");
+				g_message ("D: md5 match on %s", pack->name);
 			}
 		} else {
 			g_warning ("D: No md5 for %s", pack->name);
@@ -1083,13 +1105,14 @@ eazel_install_prune_packages (EazelInstall *service,
 		};
 	} 
 	
+	/* Note, don't destroy, all packages are destroyed when the
+	   categories are destroyed 
 	for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
-		/* Note, don't destroy, all packages are destroyed when the
-		   categories are destroyed */
-		/* packagedata_destroy (pack); */
+		packagedata_destroy (pack, TRUE); 
 	};
+	*/
 
 	g_list_free (pruned);
 
@@ -1476,6 +1499,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 						   pack->version);
 				}
 			} else {
+				pack->status = PACKAGE_ALREADY_INSTALLED;
 				g_message (_("%s version %s already installed"), 
 					   pack->name, 
 					   existing_package->version);
@@ -1626,7 +1650,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		if (fetch_from_file_dependency) {
 			fetch_result = eazel_install_fetch_package_which_provides (service, 
 										   conflict.needsName, 
-										   &dep);
+										   dep);
 		} else {
 			fetch_result = eazel_install_fetch_package (service, dep);
 		}
@@ -2203,13 +2227,11 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 		if (matches) {
 			if (g_list_length (matches)==1) {
 				PackageData *matched = (PackageData*)matches->data;
-				g_message ("hest");
 				/* This is mucho important. If not marked 
 				   as toplevel, upwards traverse will not fail the package
 				   is it has dependents */
 				matched->toplevel = TRUE;
 
-				g_message ("bæver %s", matched->name); 				
 				result = g_list_prepend (result, matched);
  			} else {
 				g_assert_not_reached ();
@@ -2221,21 +2243,16 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 		}		
 	}
 
-	g_message ("fisk");
-	for (iterator = remove; iterator; iterator=iterator->next) {
+	for (iterator = remove; iterator; iterator=g_list_next (iterator)) {
 		(*packages) = g_list_remove (*packages, iterator->data);
 		(*failed) = g_list_prepend (*failed, iterator->data);
 	}
-	g_message ("torsk");
 	g_message ("g_list_length (*packages) = %d", g_list_length (*packages)); 
 	g_message ("g_list_length (result) = %d", g_list_length (result)); 
 	g_list_foreach (*packages, (GFunc)packagedata_destroy, FALSE);
 	g_list_free (remove);
-	g_message ("odder");
 	g_list_free (*packages);
-	g_message ("sild");
 	(*packages) = g_list_copy (result);
-	g_message ("hund");
 	g_list_free (result);
 
 	g_message ("D: out eazel_uninstall_check_for_install");

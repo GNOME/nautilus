@@ -89,7 +89,7 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 	eazel_install_install_packages (servant->object, 
 					categories, 
 					!root || strcmp (root, "")==0 ? NULL : root);
-	
+
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
 
@@ -372,6 +372,7 @@ impl_Eazel_Install_simple_query (impl_POA_Trilobite_Eazel_Install *servant,
 							 servant->object->private->cur_root);
 	result = Trilobite_Eazel_PackageDataStructList__alloc ();
 	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
+
 	g_list_foreach (tmp_result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	
 	return result;

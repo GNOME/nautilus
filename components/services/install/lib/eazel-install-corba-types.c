@@ -240,7 +240,7 @@ categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryS
 			
 			packages = g_list_prepend (packages, pack);
 		}
-		category = g_new0 (CategoryData, 1);
+		category = categorydata_new ();
 		category->name = strlen (corbacategory.name)>0 ? g_strdup (corbacategory.name) : NULL;
 		category->packages = packages;
 		categories = g_list_prepend (categories, category);

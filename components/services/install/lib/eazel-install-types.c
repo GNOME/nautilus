@@ -65,10 +65,14 @@ protocol_as_string (URLType protocol)
 CategoryData*
 categorydata_new ()
 {
+	CategoryData *result;
+
+	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
+	g_message ("category_allocs inced to %d (0x%x)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
-	return g_new0 (CategoryData, 1);
+	return result;
 }
 
 void
@@ -76,13 +80,15 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	g_message ("category_allocs = %d", category_allocs);
+	g_message ("category_allocs = %d (0x%x) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
 	g_free (cd->name);
 	cd->name = NULL;
-	g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	if (g_list_length (cd->packages)) {
+		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	}
 }
 
 void
@@ -243,11 +249,12 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs --;
-	g_message ("package_allocs = %d (0x%x)", package_allocs, pack);
+	g_message ("package_allocs = %d (0x%x) %s", package_allocs, pack, pack ? pack->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 
 	g_return_if_fail (pack != NULL);
+
 	g_free (pack->name);
 	pack->name = NULL;
 	g_free (pack->version);

@@ -322,7 +322,7 @@ generate_xml_package_list (const char* pkg_template_file,
 				if (package_array[i+1]) {
 					data = xmlNewChild (package, NULL, tags[i], package_array[i+1]);
 				} else {
-					g_warning ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+					g_warning ("D: line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
 				}
 			}
 			g_strfreev (package_array);
@@ -510,7 +510,7 @@ osd_parse_implementation (PackageData *pack,
 				g_free (stmp);
 			}
 		} else {
-			g_warning ("unparsed tag \"%s\" in IMPLEMENTATION", child->name);
+			/* g_warning ("D: unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
 		}
 		child = child->next;
 	}
@@ -529,6 +529,8 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result->name = xml_get_value (softpkg, "NAME");
 	result->version = xml_get_value (softpkg, "VERSION");
+	result->md5 = xml_get_value (softpkg, "MD5");
+	g_message ("MD5 is %s", result->md5);
 	
 	child = softpkg->childs;
 	while (child) {
@@ -537,7 +539,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
 		} else {
-			g_warning ("unparsed tag \"%s\" in SOFTPKG", child->name);
+			/* g_warning ("D: unparsed tag \"%s\" in SOFTPKG", child->name); */
 		}
 		child = child->next;
 	}
@@ -572,10 +574,10 @@ osd_parse_shared (xmlDocPtr doc)
 			if (pack) {
 				result = g_list_prepend (result, pack);
 			} else {
-				g_warning ("SOFTPKG parse failed");
+				g_warning ("D: SOFTPKG parse failed");
 			}
 		} else {
-			g_warning ("child is not a SOFTPKG, but a \"%s\"", child->name);
+			g_warning ("D: child is not a SOFTPKG, but a \"%s\"", child->name);
 		}
 		child = child->next;
 	}
@@ -606,25 +608,26 @@ parse_osd_xml_from_memory (const char *mem,
 		g_free (docptr);
 		return result;
 	}
-/* This compensates for the server code
+/* 
+   FIXME: bugzilla.eazel.com 2862
+   This compensates for the server code
    not returned the correct xml when
    useragent set to Trilobite 
+*/
 	end = strstr (ptr, "</PACKAGES");
 	if (end) {
 		end = strchr (end, '\n');
-		g_message ("CUTTING AT \"%s\"", end);
 		if (end) {
 			*end = 0;
 			size = strlen (ptr);
 		}
 	}
-*/
 
 	doc = xmlParseMemory (ptr, size);
 
 	if (doc == NULL) {
 		g_warning ("D: XML =\"%s\"", ptr);
-		g_warning (_("Could not parse the xml"));
+		g_warning (_("Could not parse the xml (lenght %d)"), size);
 		g_free (docptr);
 		return result;
 	}

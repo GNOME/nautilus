@@ -33,11 +33,11 @@
 #include <config.h>
 #include <sys/utsname.h>
 #include <errno.h>
+
+#include <libtrilobite/trilobite-core-utils.h>
+
 #ifndef EAZEL_INSTALL_SLIM
-#include <trilobite-core-utils.h>
 #include <libgnomevfs/gnome-vfs.h>
-#else /* EAZEL_INSTALL_SLIM */
-#define USER_AGENT_STRING "Trilobite"
 #endif /* EAZEL_INSTALL_SLIM */
 
 typedef struct {
@@ -45,6 +45,10 @@ typedef struct {
 	const char *file_to_report;
 } gnome_vfs_callback_struct;
 
+typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj, 
+						       char *url,
+						       const char *file_to_report,
+						       const char *target_file);
 
 /* This string defines the url for the rpmsearch cgi script.
    It should contain a %s for the server name, and later 
@@ -80,8 +84,27 @@ gboolean local_fetch_remote_file (EazelInstall *service,
 
 typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES } RpmSearchEntry;
 
-char* get_search_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
-char* get_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
+/* This method takes a RpmSearch, which describes the thing to search for
+   (ie. a package name or a package that provides file foo).
+   If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
+   if PROVIDES, it must be a string containing the file which is needed.
+   It creates a search url when can be used to get info about the package */
+char* get_search_url_for_package (EazelInstall *service, 
+				  RpmSearchEntry, 
+				  const gpointer data);
+
+/* This method takes a RpmSearch, which describes the thing to search for
+   (ie. a package name or a package that provides file foo).
+   If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
+   if PROVIDES, it must be a string containing the file which is needed.
+   The last argument is a PackageData structure to insert info into, 
+   eg. the url (->filename), the server md5 (->md5).
+   It uses get_search_url_for_package, downloads the contents of the url and
+   parses it and returns a url for the package itself */
+char* get_url_for_package (EazelInstall *service, 
+			   RpmSearchEntry, 
+			   const gpointer data, 
+			   PackageData *pack);
 
 #ifdef EAZEL_INSTALL_SLIM
 gboolean
@@ -100,19 +123,7 @@ http_fetch_remote_file (EazelInstall *service,
 	const char *report;
 
 	report = file_to_report ? file_to_report : g_basename (target_file);
-	g_message (_("Downloading %s..."), url);
-
-	if (! g_file_test (eazel_install_get_tmp_dir (service), G_FILE_TEST_ISDIR)) {
-		int retval;
-		retval = mkdir (eazel_install_get_tmp_dir (service), 0755);		       
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				g_error (_("*** Could not create tmp directory (%s)! ***\n"), 
-					 eazel_install_get_tmp_dir (service));
-			}
-		}
-	}
-	
+	g_message (_("Downloading %s..."), url);	
 
         file = fopen (target_file, "wb");
         get_failed = 0;
@@ -140,7 +151,7 @@ http_fetch_remote_file (EazelInstall *service,
         }
 
         ghttp_set_header (request, http_hdr_Connection, "close");
-        ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
+        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
         if (ghttp_prepare (request) != 0) {
                 g_warning (_("Could not prepare http request !"));
                 get_failed = 1;
@@ -495,6 +506,7 @@ eazel_install_fetch_package (EazelInstall *service,
 {
 	gboolean result;
 	char* url;
+	char *md5 = NULL;
 	char* targetname;
 
 	result = FALSE;
@@ -504,7 +516,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package);
+		url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package, package);
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -543,14 +555,13 @@ eazel_install_fetch_package (EazelInstall *service,
 
 gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 						     const char *file,
-						     PackageData **package)
+						     PackageData *package)
 {
 	gboolean result;
 	char *url;
 	char *targetname;
 
 	g_assert (package != NULL);
-	g_assert (*package != NULL);
 
 	result = FALSE;
 
@@ -558,7 +569,7 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, (const gpointer)file);
+		url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, (const gpointer)file, package);
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -578,9 +589,9 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 						      filename_from_url (url));
 			result = eazel_install_fetch_file (service, url, NULL, targetname);
 			if (result) {
-				packagedata_fill_from_file (*package, targetname);
+				packagedata_fill_from_file (package, targetname);
 			} else {
-				(*package)->status = PACKAGE_DEPENDENCY_FAIL;
+				package->status = PACKAGE_DEPENDENCY_FAIL;
 				g_warning (_("File download failed"));
 			}
 			g_free (targetname);
@@ -613,92 +624,61 @@ add_to_url (char **url,
 char*
 get_url_for_package  (EazelInstall *service, 
 		      RpmSearchEntry entry,
-		      gpointer data)
+		      gpointer data,
+		      PackageData *out_package)		      
 {
-	char *search_url;
-	char *url;
-        ghttp_status status;
-        ghttp_request* request;
+	char *search_url = NULL;
+	char *url = NULL;
+	char *body = NULL;
+	int length;
 
-	url = NULL;
 	search_url = get_search_url_for_package (service, entry, data);
 	g_message (_("Search URL: %s"), search_url);
 
-        request = ghttp_request_new();
-        if (request == NULL) {
-                g_warning (_("Could not create an http request !"));
-        } else {
-#ifdef EAZEL_INSTALL_SLIM
-		ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
-#else /* EAZEL_INSTALL_SLIM */
-		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
-#endif /* EAZEL_INSTALL_SLIM */
-		if (ghttp_set_uri (request, search_url) != 0) {
-			g_warning (_("Invalid uri"));
-		} else {
-			if (ghttp_prepare (request) != 0) {
-				g_warning (_("Could not prepare http request !"));
-			} else {
-		
-				status = ghttp_process (request);
-				
-				switch (status) {
-				case ghttp_error:					
-				case ghttp_not_done:
-					/* Eugh, no luck */
-					switch (entry) {
-					case RPMSEARCH_ENTRY_NAME:
-						g_warning (_("Could not retrieve a URL for %s"), 
-							   rpmfilename_from_packagedata ((PackageData*)data));
-						break;
-					case RPMSEARCH_ENTRY_PROVIDES:
-						g_warning (_("Could not retrieve a URL for %s"),
-							   (char*)data);
-						break;
-					}
-				case ghttp_done:
-					if (ghttp_status_code (request) != 404) {
+	if (trilobite_fetch_uri (search_url, &body, &length)) {
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-						/* Parse the returned xml */
-						GList *packages;
-						
-						packages = parse_osd_xml_from_memory (ghttp_get_body (request),
-										      ghttp_get_body_len (request));
-						if (g_list_length (packages) == 0) {
-							g_warning ("D: No url for file");
-						} else if (g_list_length (packages) > 1) {
-							g_warning ("D: Ugh, more then one match, using first");
-						}
-
-						if (g_list_length (packages) > 0) {
-							/* Get the first package returned */
-							PackageData *pack;
-							
-							g_assert (packages->data != NULL);
-							pack = (PackageData*)packages->data;
-							url = g_strdup (pack->filename);
-							
-							g_list_foreach (packages, 
-									(GFunc)packagedata_destroy, 
-									GINT_TO_POINTER (TRUE));
-						}						
-#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-						url = g_strdup (ghttp_get_body (request));
-						if (url) {
-							url [ ghttp_get_body_len (request)] = 0;
-						}
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-
-					} else {
-						url = NULL;
-					}
-					break;
-				}
-			}
+		/* Parse the returned xml */
+		GList *packages;
+		
+		packages = parse_osd_xml_from_memory (body, length);
+		if (g_list_length (packages) == 0) {
+			g_warning ("D: No url for file");
+		} else if (g_list_length (packages) > 1) {
+			g_warning ("D: Ugh, more then one match, using first");
 		}
 		
-                ghttp_request_destroy (request);
-        }
+		if (g_list_length (packages) > 0) {
+			/* Get the first package returned */
+			PackageData *pack;
+			
+			g_assert (packages->data != NULL);
+			pack = (PackageData*)packages->data;
+			out_package->filename = g_strdup (pack->filename);
+			url = g_strdup (pack->filename);
+			out_package->md5 = g_strdup (pack->md5);
+			
+			g_list_foreach (packages, 
+					(GFunc)packagedata_destroy, 
+					GINT_TO_POINTER (TRUE));
+		}						
+#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+		url = g_strdup (ghttp_get_body (request));
+		if (url) {
+			url [ ghttp_get_body_len (request)] = 0;
+		}
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+	} else {
+		switch (entry) {
+		case RPMSEARCH_ENTRY_NAME:
+			g_warning (_("Could not retrieve a URL for %s"), 
+				   rpmfilename_from_packagedata ((PackageData*)data));
+			break;
+		case RPMSEARCH_ENTRY_PROVIDES:
+			g_warning (_("Could not retrieve a URL for %s"),
+				   (char*)data);
+			break;
+		}
+	}
 	
 	g_free (search_url);
 	return url;

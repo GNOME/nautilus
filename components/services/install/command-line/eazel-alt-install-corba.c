@@ -38,7 +38,7 @@
 
 #define PACKAGE_FILE_NAME "package-list.xml"
 
-#define DEFAULT_HOSTNAME "ham.eazel.com"
+#define DEFAULT_HOSTNAME "services.eazel.com"
 #define DEFAULT_PORT_NUMBER 8888
 #define DEFAULT_PROTOCOL PROTOCOL_HTTP
 #define DEFAULT_TMP_DIR "/tmp/eazel-install"
@@ -288,7 +288,8 @@ install_failed (EazelInstallCallback *service,
 		fprintf (stdout, "%s%s, which breaks deps\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s%s\n", indent, pd->name);
+		fprintf (stdout, "%s%s %s\n", indent, pd->name, 
+			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed" : "");
 		break;
 	}
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
@@ -543,6 +544,8 @@ int main(int argc, char *argv[]) {
 	} else {
 		eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
 	}
+
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	
 	if (!arg_query) {
 		fprintf (stdout, "\nEntering main loop...\n");
