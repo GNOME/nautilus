@@ -161,6 +161,7 @@ icon_DATA =\
 	search.png \
 	tableft.png \
 	tabright.png \
+	temp-home.png \
 	themes.png \
 	trash-empty.png \
 	trash-full.png \

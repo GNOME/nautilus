@@ -1,3 +1,16 @@
+2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug #1775, add home directory to desktop.
+	
+	* icons/Makefile.am:
+	Added temp-home.png. This is a temp icon file.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (mount_device_mount),
+	(place_home_directory), (create_desktop_link):
+	Add users name and default icon to home directory link
+	on desktop.  Change create_mount_link to more generic
+	create_desktop_link.
+	
 2000-07-27  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c

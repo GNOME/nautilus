@@ -120,8 +120,6 @@ static void     fm_desktop_icon_view_set_directory_auto_layout   (FMIconView *ic
 
 static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view, 
 								  const char 		*fstab_path);
-static GnomeVFSResult	make_home_link 			 	 (const char 		*uri, 
-								  const char 		*target_uri);
 static void		remove_mount_link 			 (DeviceInfo 		*device);								  
 static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
 static void		get_ext2_volume_name 			 (DeviceInfo 		*device);
@@ -130,7 +128,7 @@ static void		remove_mount_symlinks 			 (DeviceInfo 		*device,
 static void		free_device_info 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
 static void		place_home_directory 			 (FMDesktopIconView 	*icon_view);
-static GnomeVFSResult	create_mount_link 			 (const char 		*directory_path, 
+static GnomeVFSResult	create_desktop_link 			 (const char 		*directory_path, 
 								  const char 		*name, 
 								  const char 		*image, 
 								  const char 		*uri);
@@ -430,7 +428,7 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 	/* Create link */
 	device->link_uri = g_strdup_printf ("%s/%s", desktop_uri, device->volume_name);
 
-	result = create_mount_link (desktop_uri, device->volume_name, icon_name, target_uri);
+	result = create_desktop_link (desktop_uri, device->volume_name, icon_name, target_uri);
 	if (result == GNOME_VFS_OK) {
 		new_files_list = g_list_prepend (new_files_list, device->link_uri);
 		nautilus_directory_notify_files_added (new_files_list);
@@ -870,24 +868,6 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 }
 
 
-static GnomeVFSResult
-make_home_link (const char *uri, const char *target_uri)
-{
-	GnomeVFSURI *real_uri, *real_uri_target;
-	GnomeVFSResult result;
-	
-	real_uri = gnome_vfs_uri_new (uri);
-	real_uri_target = gnome_vfs_uri_new (target_uri);
-
-	result = gnome_vfs_create_symbolic_link (real_uri, target_uri);
-	
-	gnome_vfs_uri_unref (real_uri);
-	gnome_vfs_uri_unref (real_uri_target);
-	
-	return result;
-}
-
-
 static void
 remove_mount_link (DeviceInfo *device)
 {
@@ -984,34 +964,39 @@ get_ext2_volume_name (DeviceInfo *device)
 static void
 place_home_directory (FMDesktopIconView *icon_view)
 {
-	char *user_path, *desktop_uri, *user_homelink_uri;
+	char *user_path, *desktop_uri, *user_homelink_uri, *user_icon_name;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo info;
+	GList *new_files_list;
 	
 	user_path = g_strdup_printf ("%s/", g_get_home_dir ());
 	desktop_uri = nautilus_get_desktop_directory ();
-	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, "Home");
+	user_icon_name = g_strdup_printf("%s's Home", g_get_user_name ());
+	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, user_icon_name);
 	
 	result = gnome_vfs_get_file_info (user_homelink_uri, &info, 0);
 	if (result != GNOME_VFS_OK) {
-		/* There was no link file.  Create it and add it to the desktop view */
-		g_message ("user_homelink_uri: %s", user_homelink_uri);
-		g_message ("user_path: %s", user_path);
-
-		result = make_home_link (user_homelink_uri, user_path);
-		if (result != GNOME_VFS_OK) {
-			g_message ("Unable to create user home link: %s", gnome_vfs_result_to_string (result));
-		}
+		/* There was no link file.  Create it and add it to the desktop view */		
+		result = create_desktop_link (desktop_uri, user_icon_name, "temp-home.png", user_path);
+		if (result == GNOME_VFS_OK) {
+			new_files_list = NULL;
+			new_files_list = g_list_prepend (new_files_list, user_homelink_uri);
+			nautilus_directory_notify_files_added (new_files_list);
+			g_list_free (new_files_list);
+		} else {
+			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
+		}		
 	}
 	
 	g_free (desktop_uri);
 	g_free (user_path);
 	g_free (user_homelink_uri);
+	g_free (user_icon_name);
 }
 
 
 static GnomeVFSResult
-create_mount_link (const char *directory_path, const char *name, const char *image, const char *uri)
+create_desktop_link (const char *directory_path, const char *name, const char *image, const char *uri)
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
