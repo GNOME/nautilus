@@ -149,6 +149,11 @@ typedef struct {
 } NautilusIconCanvasItemAccessiblePrivate;
 
 typedef struct {
+	NautilusIconCanvasItem *item;
+	gint action_number;
+} NautilusIconCanvasItemAccessibleActionContext;
+
+typedef struct {
 	NautilusIconCanvasItem *icon_item;
 	ArtIRect icon_rect;
 	RectangleSide side;
@@ -2054,14 +2059,59 @@ accessible_get_priv (AtkObject *accessible)
 /* AtkAction interface */
 
 static gboolean
-nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
+nautilus_icon_canvas_item_accessible_idle_do_action (gpointer data)
 {
 	NautilusIconCanvasItem *item;
+	NautilusIconCanvasItemAccessibleActionContext *ctx;
 	NautilusIcon *icon;
 	NautilusIconContainer *container;
 	GList* selection;
 	GList file_list;
         GdkEventButton button_event = { 0 };
+	gint action_number;
+
+	container = NAUTILUS_ICON_CONTAINER (data);
+	container->details->a11y_item_action_idle_handler = 0;
+	while (!g_queue_is_empty (container->details->a11y_item_action_queue)) {
+		ctx = g_queue_pop_head (container->details->a11y_item_action_queue);
+		action_number = ctx->action_number;	
+		item = ctx->item;
+		g_free (ctx);
+		icon = item->user_data;
+
+		switch (action_number) {
+		case ACTION_OPEN:
+			file_list.data = icon->data;
+			file_list.next = NULL;
+			file_list.prev = NULL;
+        		g_signal_emit_by_name (container, "activate", &file_list);
+			break;
+		case ACTION_MENU:
+			selection = nautilus_icon_container_get_selection (container);
+			if (selection == NULL ||
+			    g_list_length (selection) != 1 ||
+ 			    selection->data != icon->data)  {
+				g_list_free (selection);
+				return FALSE;
+			}
+			g_list_free (selection);
+        		g_signal_emit_by_name (container, "context_click_selection", &button_event);
+			break;
+		default :
+			g_assert_not_reached ();
+			break;
+		}
+	}
+	return FALSE;
+}
+
+static gboolean
+nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
+{
+	NautilusIconCanvasItem *item;
+	NautilusIconCanvasItemAccessibleActionContext *ctx;
+	NautilusIcon *icon;
+	NautilusIconContainer *container;
 
 	g_return_val_if_fail (i < LAST_ACTION, FALSE);
 
@@ -2073,21 +2123,17 @@ nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
 	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 	switch (i) {
 	case ACTION_OPEN:
-		file_list.data = icon->data;
-		file_list.next = NULL;
-		file_list.prev = NULL;
-        	g_signal_emit_by_name (container, "activate", &file_list);
-		break;
 	case ACTION_MENU:
-		selection = nautilus_icon_container_get_selection (container);
-		if (selection == NULL ||
-		    g_list_length (selection) != 1 ||
- 		    selection->data != icon->data)  {
-			g_list_free (selection);
-			return FALSE;
+		if (container->details->a11y_item_action_queue == NULL) {
+			container->details->a11y_item_action_queue = g_queue_new ();
 		}
-		g_list_free (selection);
-        	g_signal_emit_by_name (container, "context_click_selection", &button_event);
+		ctx = g_new (NautilusIconCanvasItemAccessibleActionContext, 1);
+		ctx->action_number = i;
+		ctx->item = item;
+		g_queue_push_head (container->details->a11y_item_action_queue, ctx);
+		if (container->details->a11y_item_action_idle_handler == 0) {
+			container->details->a11y_item_action_idle_handler = g_idle_add (nautilus_icon_canvas_item_accessible_idle_do_action, container);
+		}
 		break;
         default :
                 g_warning ("Invalid action passed to NautilusIconCanvasItemAccessible::do_action");
@@ -2720,7 +2766,7 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
 			"NautilusIconCanvasItemAccessibilityFactory",
 			nautilus_icon_canvas_item_accessible,
-			nautilus_icon_canvas_item_accessible_create);
+			nautilus_icon_canvas_item_accessible_create)
 
 
 static GailTextUtil *

@@ -1,3 +1,19 @@
+2004-01-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c: Implement
+	AtkAction in an idle handler to avoid causing the AT to hang if the
+	action does not return until completed, e.g. displays a dialog.
+	Use queue and idle handler defined in NautilusIconContainer.
+
+	* libnautilus-private/nautilus-icon-container.c (finalize): Free
+	accessibility action queue and remove idle handler.
+
+	* libnautilus-private/nautilus-icon-private.h: Add 
+	a11y_item_action_idle_handler and a11y_item_action_queue to
+	NautilusIconContainerDetails.
+	
+	Fixes bug #132153.
+
 2004-01-27  Jason Leach  <leach@wam.umd.edu>
 
 	* cut-n-paste-code/libegg/egg-recent-item.c:
@@ -45,6 +61,7 @@
 	(real_update_menus):
 	Desensitive template menu if we can't create files.
 
+>>>>>>> 1.6066
 2004-01-21  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-factory.c (nautilus_icon_factory_get_icon_for_file):

@@ -2999,6 +2999,16 @@ finalize (GObject *object)
 
 	g_free (details->font);
 
+	if (details->a11y_item_action_queue != NULL) {
+		while (!g_queue_is_empty (details->a11y_item_action_queue)) {
+			g_free (g_queue_pop_head (details->a11y_item_action_queue));
+		}
+		g_queue_free (details->a11y_item_action_queue);
+	}
+	if (details->a11y_item_action_idle_handler != NULL) {
+		g_source_remove (details->a11y_item_action_idle_handler);
+	}
+
 	g_free (details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
