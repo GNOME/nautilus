@@ -92,11 +92,14 @@ guint                 nautilus_get_icon_size_for_zoom_level              (Nautil
 
 /* Choose the appropriate icon, but don't render it yet. */
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
-									  const char		*modifier);
+									  const char		*modifier,
+									  gboolean		anti_aliased);
 gboolean	      nautilus_icon_factory_is_icon_ready_for_file	 (NautilusFile		*file);
 GList *		      nautilus_icon_factory_get_required_file_attributes (void);
-GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
-NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name);
+GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file,
+									  gboolean		 anti_aliased);
+NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name,
+									  gboolean		 anti_aliased);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -110,13 +113,14 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 									  guint                  nominal_size_in_pixels_y,
 									  guint                  maximum_size_in_pixels_x,
 									  guint                  maximum_size_in_pixels_y);
-
+									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile          *file,
 									  const char		*modifer,
-									  guint                  size_in_pixels);
+									  guint                  size_in_pixels,
+									  gboolean		 anti_aliased);
 
 /* Convenience functions for legacy interfaces that require a pixmap and
  * bitmap. Maybe we can get rid of these one day.
@@ -150,7 +154,8 @@ void                  nautilus_scalable_icon_get_text_pieces             (Nautil
 NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces	 (const char		*uri,
 									  const char		*name,
 									  const char		*modifier,
-									  const char		*embedded_text);
+									  const char		*embedded_text,
+									  gboolean		 anti_aliased);
 
 /* Convenience function for freeing a list of scalable icons.
  * Unrefs all the icons before freeing the list.

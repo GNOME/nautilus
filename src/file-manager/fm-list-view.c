@@ -1351,7 +1351,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	GdkPixbuf *emblem_pixbuf;
 	int emblem_size;
 
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, FALSE);
 	emblem_pixbufs = NULL;
 	emblem_size = MAX (LIST_VIEW_MINIMUM_EMBLEM_SIZE, 
 			   fm_list_view_get_icon_size (list_view));

@@ -3033,6 +3033,21 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 }
 
 /**
+ * nautilus_icon_container_get_anti_aliased_mode:
+ * get the state of the anti_aliased boolean
+ *
+ **/
+
+gboolean
+nautilus_icon_container_get_anti_aliased_mode (NautilusIconContainer *container)
+{
+	GnomeCanvas *canvas;
+	canvas = GNOME_CANVAS (container);
+	
+	return canvas->aa;
+}
+
+/**
  * nautilus_icon_container_set_anti_aliased_mode:
  * Change the anti-aliased mode and redraw everything
  *

@@ -1,3 +1,47 @@
+2000-07-13  Andy Hertzfeld  <andy@eazel.com>
+
+	At Darin's not-so-gentle urging, I removed all knowledge of the
+	anti-aliased preference from the icon factory, and passed it in
+	via parameters instead.
+	
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_update_icon),
+	(nautilus_bookmark_set_icon_to_default):
+	changed icon factory calls to pass in anti-aliased preference
+	* libnautilus-extensions/nautilus-icon-container.c,h:
+	(nautilus_icon_container_get_anti_aliased_mode):
+	added a get_anti_aliased_mode accessor
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	changed icon factory calls to pass in anti-aliased preference	
+	* libnautilus-extensions/nautilus-icon-factory.c,h:
+	(nautilus_icon_factory_initialize),
+	(nautilus_icon_factory_destroy), (get_themed_icon_file_path),
+	(get_icon_file_path),
+	(nautilus_scalable_icon_new_from_text_pieces),
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_get_emblem_icon_by_name),
+	(nautilus_icon_factory_get_emblem_icons_for_file),
+	(nautilus_icon_factory_get_thumbnail_uri), (load_specific_image),
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file),
+	(load_image_with_embedded_text):
+	added the anti-aliased parameter to the appropriate calls, and
+	revamped internal calls to pass it around as necessary
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback):
+	changed icon factory calls to pass in anti-aliased preference
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	changed icon factory calls to pass in anti-aliased preference
+	* src/file-manager/fm-properties-window.c:
+	(get_pixmap_and_mask_for_properties_window),
+	(create_image_widget_for_emblem):
+	changed icon factory calls to pass in anti-aliased preference
+	* src/nautilus-bookmark-list.c: (make_bookmark_from_node):
+	changed icon factory calls to pass in anti-aliased preference
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	changed icon factory calls to pass in anti-aliased preference
+
 2000-07-13  Darin Adler  <darin@eazel.com>
 
 	* components/services/startup/lib/dummy.c: Added an empty file to

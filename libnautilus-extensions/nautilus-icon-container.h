@@ -171,6 +171,7 @@ void       nautilus_icon_container_set_single_click_mode         (NautilusIconCo
 								  gboolean               single_click_mode);
 void       nautilus_icon_container_enable_linger_selection       (NautilusIconContainer *view,
 								  gboolean               enable);
+gboolean   nautilus_icon_container_get_anti_aliased_mode	 (NautilusIconContainer *view);
 void       nautilus_icon_container_set_anti_aliased_mode         (NautilusIconContainer *view,
 								  gboolean               anti_aliased_mode);
 void       nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *container,

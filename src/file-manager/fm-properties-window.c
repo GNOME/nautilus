@@ -172,7 +172,7 @@ get_pixmap_and_mask_for_properties_window (NautilusFile *file,
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, FALSE);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 128);
 	gdk_pixbuf_unref (pixbuf);
 }
@@ -1118,13 +1118,14 @@ create_image_widget_for_emblem (const char *emblem_name)
 	GdkBitmap *mask;
 	GtkWidget *image_widget;
 
-	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name);
+	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name, FALSE);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 NAUTILUS_ICON_SIZE_STANDARD,
 		 NAUTILUS_ICON_SIZE_STANDARD,
 		 NAUTILUS_ICON_SIZE_STANDARD,
 		 NAUTILUS_ICON_SIZE_STANDARD);
+
 	nautilus_scalable_icon_unref (icon);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	gdk_pixbuf_unref (pixbuf);

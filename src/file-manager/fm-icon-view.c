@@ -1417,14 +1417,17 @@ get_icon_images_callback (NautilusIconContainer *container,
 			  GList **emblem_icons,
 			  FMIconView *icon_view)
 {
+	gboolean anti_aliased;
+	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	anti_aliased = nautilus_icon_container_get_anti_aliased_mode (container);
 	if (emblem_icons != NULL) {
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased);
 	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier);
+	return nautilus_icon_factory_get_icon_for_file (file, modifier, anti_aliased);
 }
 
 static char *

@@ -412,7 +412,7 @@ make_bookmark_from_node (xmlNodePtr node)
 		icon = NULL;
 	} else {
 		icon = nautilus_scalable_icon_new_from_text_pieces
-			(xml_icon_uri, xml_icon_name, NULL, NULL);
+			(xml_icon_uri, xml_icon_name, NULL, NULL, FALSE);
 	}
 	new_bookmark = nautilus_bookmark_new_with_icon (xml_uri, xml_name, icon);
 

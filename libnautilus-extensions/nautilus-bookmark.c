@@ -299,7 +299,8 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 	}
 
 	if (nautilus_icon_factory_is_icon_ready_for_file (bookmark->details->file)) {
-		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file, NULL);
+		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file,
+								    NULL, FALSE);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
 			if (bookmark->details->icon != NULL) {
 				nautilus_scalable_icon_unref (bookmark->details->icon);
@@ -342,7 +343,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
 	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
-		(NULL, icon_name, NULL, NULL);
+		(NULL, icon_name, NULL, NULL, FALSE);
 }
 
 /**

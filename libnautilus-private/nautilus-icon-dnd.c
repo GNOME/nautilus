@@ -1146,7 +1146,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
-					   2);
+					   128);
 
 	gdk_pixbuf_unref (transparent_pixbuf);
 	
