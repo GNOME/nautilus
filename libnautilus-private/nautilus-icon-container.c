@@ -3,7 +3,7 @@
 /* nautilus-icon-container.c - Icon container widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
    
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -20,7 +20,8 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Ettore Perazzoli <ettore@gnu.org>, Darin Adler <darin@eazel.com>
+   Authors: Ettore Perazzoli <ettore@gnu.org>,
+   Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
@@ -2670,7 +2671,7 @@ undo_stretching (NautilusIconContainer *container)
 	icon_set_size (container,
 		       stretched_icon, 
 		       container->details->stretch_initial_size,
-		       FALSE);
+		       TRUE);
 	
 	container->details->stretch_icon = NULL;				
 	emit_stretch_ended (container, stretched_icon);

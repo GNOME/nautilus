@@ -1,3 +1,16 @@
+2001-02-20  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fixed bug 5482 (If you've esc'd out of an icon stretch, change
+	directories, then come back, the icon is the pre-esc'd stretched
+	size)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(undo_stretching): Pass TRUE instead of FALSE so the "undone" size
+	gets stored in metadata. Without this, we end up with the icon at
+	the stretched size.
+
 2001-02-20  Richard Boulton <richard@tartarus.org>
 
 	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>
