@@ -37,6 +37,9 @@
 /* forward declarations */
 static void toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window);
 static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
+#if defined(EAZEL_SERVICES)
+static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window);
+#endif
 
 /* toolbar definitions */
 
@@ -49,6 +52,7 @@ static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
 #define TOOLBAR_SEARCH_BUTTON_INDEX     6
 /* separator */
 #define TOOLBAR_STOP_BUTTON_INDEX	8
+#define TOOLBAR_SERVICES_INDEX		9
 
 static void
 toolbar_clear_search_mode(NautilusWindow *window)
@@ -123,6 +127,11 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
 	 toolbar_stop_callback, "nautilus/eazel/Stop.png"),
+#if defined(EAZEL_SERVICES)
+	GNOMEUIINFO_ITEM_STOCK
+	(N_("Services"), N_("Eazel Services"),
+	 toolbar_services_callback, "nautilus/eazel/Services.png"),
+#endif
 	GNOMEUIINFO_END
 };
 
@@ -344,4 +353,12 @@ toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window)
 {
 	nautilus_window_set_state_info (window, RESET_TO_IDLE, 0);
 }
+
+#if defined(EAZEL_SERVICES)
+static void
+toolbar_services_callback (GtkWidget *widget, NautilusWindow *window)
+{
+	nautilus_window_goto_uri (window, "eazel:");
+}
+#endif
 
