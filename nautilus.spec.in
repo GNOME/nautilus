@@ -3,8 +3,6 @@
 %define ver		@VERSION@
 %define RELEASE		0_cvs_0
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix		/usr
-%define sysconfdir	/etc
 
 Name:		%name
 Vendor:		GNOME
@@ -14,10 +12,9 @@ Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
 Group:		User Interface/Desktop
-Source: 	%{name}-%{ver}.tar.gz
+Source: 	ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}-%{ver}.tar.gz
 URL: 		http://nautilus.eazel.com/
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
-Docdir: 	%{prefix}/doc
 Requires:	glib >= @GLIB_REQUIRED@
 Requires:	gtk+ >= @GTK_REQUIRED@
 Requires:	imlib >= @IMLIB_REQUIRED@
@@ -40,6 +37,30 @@ Requires:	control-center >= @CONTROL_CENTER_REQUIRED@
 Requires:	librsvg >= @LIBRSVG_REQUIRED@
 Requires:	eel >= @EEL_REQUIRED@
 
+BuildRequires:	glib-devel >= @GLIB_REQUIRED@
+BuildRequires:	gtk+-devel >= @GTK_REQUIRED@
+BuildRequires:	imlib-devel >= @IMLIB_REQUIRED@
+BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
+BuildRequires:	gnome-libs-devel >= @GNOME_LIBS_REQUIRED@
+BuildRequires:	GConf-devel >= @GCONF_REQUIRED@
+BuildRequires:	ORBit-devel >= @ORBIT_REQUIRED@
+BuildRequires:	oaf-devel >= @OAF_REQUIRED@
+BuildRequires:	gnome-vfs-devel >= @GNOME_VFS_REQUIRED@
+BuildRequires:	gdk-pixbuf-devel >= @GDK_PIXBUF_REQUIRED@
+BuildRequires:	bonobo-devel >= @BONOBO_REQUIRED@
+BuildRequires:	popt >= @POPT_REQUIRED@
+BuildRequires:	freetype-devel >= @FREETYPE_REQUIRED@
+BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
+BuildRequires:	esound-devel >= @ESOUND_REQUIRED@
+BuildRequires:	libghttp-devel >= @LIBGHTTP_REQUIRED@
+BuildRequires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
+BuildRequires:	libpng-devel
+BuildRequires:	control-center-devel >= @CONTROL_CENTER_REQUIRED@
+BuildRequires:	librsvg >= @LIBRSVG_REQUIRED@
+BuildRequires:	eel >= @EEL_REQUIRED@
+BuildRequires:	mozilla-devel >= 0.8
+BuildRequires:	xpdf >= 0.90
+
 %description
 Nautilus integrates access to files, applications, media, Internet-based
 resources and the Web.  Nautilus delivers a dynamic and rich user
@@ -52,6 +73,10 @@ Summary:	Libraries and include files for developing Nautilus components
 Group:		Development/Libraries
 Requires:	%name = %{PACKAGE_VERSION}
 
+%description devel
+This package provides the necessary development libraries and include
+files to allow you to develop Nautilus components.
+
 %package mozilla
 Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
@@ -62,10 +87,16 @@ Requires:	mozilla-psm >= 0.8
 Conflicts:	mozilla = M18
 Conflicts:	mozilla = M17
 
+%description mozilla
+This enables the use of embedded Mozilla as a Nautilus component.
+
 %package extras
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
+
+%description extras
+This is a meta-package that requires useful add-ons for Nautilus.
 
 %package suggested
 Summary:	Nautilus and a suggested set of components
@@ -81,27 +112,9 @@ Requires:	%name-extras = %{PACKAGE_VERSION}
 Requires:	mozilla-mail >= 0.8
 Requires:	mozilla-psm >= 0.8
 
-%description devel
-This package provides the necessary development libraries and include
-files to allow you to develop Nautilus components.
-
-%description mozilla
-This enables the use of embedded Mozilla as a Nautilus component.
-
 %description suggested
 This is a meta-package that requires packages useful for running
 Nautilus, and getting multimedia to work, such as eog and mpg123.
-
-%description extras
-This is a meta-package that requires useful add-ons for Nautilus.
-
-%changelog
-* Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
-- removed obsoletes from sub packages and added mozilla and trilobite
-subpackages
-
-* Wed Apr 26 2000 Ramiro Estrugo <ramiro@eazel.com>
-- created this thing
 
 %prep
 %setup
@@ -118,26 +131,31 @@ export LC_ALL LINGUAS LANG
 
 ## Warning!  Make sure there are no spaces or tabs after the \ 
 ## continuation character, or else the rpm demons will eat you.
-CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
-	--enable-more-warnings \
-	--sysconfdir=%{sysconfdir}
+CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure \
+    $MYARCH_FLAGS --enable-more-warnings \
+    --prefix=%{_prefix} --datadir=%{_datadir} \
+    --sysconfdir=%{_sysconfdir} --includedir=%{_includedir} \
+    --libdir=%{_libdir} --bindir=%{_bindir}
 
 make -k
 make check
 
 %install
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-make -k prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
-for FILE in "$RPM_BUILD_ROOT/bin/*"; do
-	file "$FILE" | grep -q not\ stripped && strip $FILE
-done
+
+make -k prefix=$RPM_BUILD_ROOT/%{_prefix} \
+    sysconfdir=$RPM_BUILD_ROOT/%{_sysconfdir} \
+    datadir=$RPM_BUILD_ROOT/%{_datadir} \
+    includedir=$RPM_BUILD_ROOT/%{_includedir} \
+    libdir=$RPM_BUILD_ROOT/%{_libdir} \
+    bindir=$RPM_BUILD_ROOT/%{_bindir} install
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-	echo "%{prefix}/lib" >> /etc/ld.so.conf
+if ! grep %{_libdir} /etc/ld.so.conf > /dev/null ; then
+	echo "%{_libdir}" >> /etc/ld.so.conf
 fi
 /sbin/ldconfig
 scrollkeeper-update
@@ -149,137 +167,157 @@ scrollkeeper-update
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING-DOCS COPYING.LIB TRADEMARK_NOTICE ChangeLog NEWS README
-%{prefix}/bin/nautilus-clean.sh
-%{prefix}/bin/nautilus-verify-rpm.sh
-%{prefix}/bin/nautilus-restore-settings-to-default.sh
-%{prefix}/bin/gnome-db2html2
-%{prefix}/bin/gnome-info2html2
-%{prefix}/bin/gnome-man2html2
-%{prefix}/bin/hyperbola
-%{prefix}/bin/nautilus
-%{prefix}/bin/nautilus-adapter
-%{prefix}/bin/nautilus-content-loser
-%{prefix}/bin/nautilus-error-dialog
-%{prefix}/bin/nautilus-hardware-view
-%{prefix}/bin/nautilus-history-view
-%{prefix}/bin/nautilus-image-view
-# %{prefix}/bin/nautilus-mpg123
-%{prefix}/bin/nautilus-music-view
-%{prefix}/bin/nautilus-notes
-%{prefix}/bin/nautilus-sample-content-view
-%{prefix}/bin/nautilus-sidebar-loser
-%{prefix}/bin/nautilus-text-view
-%{prefix}/bin/nautilus-throbber
-%{prefix}/bin/run-nautilus
-%{prefix}/bin/nautilus-launcher-applet
-%{prefix}/bin/nautilus-xml-migrate
+%{_bindir}/nautilus-clean.sh
+%{_bindir}/nautilus-verify-rpm.sh
+%{_bindir}/nautilus-restore-settings-to-default.sh
+%{_bindir}/gnome-db2html2
+%{_bindir}/gnome-info2html2
+%{_bindir}/gnome-man2html2
+%{_bindir}/hyperbola
+%{_bindir}/nautilus
+%{_bindir}/nautilus-adapter
+%{_bindir}/nautilus-content-loser
+%{_bindir}/nautilus-error-dialog
+%{_bindir}/nautilus-hardware-view
+%{_bindir}/nautilus-history-view
+%{_bindir}/nautilus-image-view
+# %{_bindir}/nautilus-mpg123
+%{_bindir}/nautilus-music-view
+%{_bindir}/nautilus-notes
+%{_bindir}/nautilus-sample-content-view
+%{_bindir}/nautilus-sidebar-loser
+%{_bindir}/nautilus-text-view
+%{_bindir}/nautilus-throbber
+%{_bindir}/run-nautilus
+%{_bindir}/nautilus-launcher-applet
+%{_bindir}/nautilus-xml-migrate
 #%{prefix}/idl/*.idl
-%{prefix}/lib/libnautilus-adapter.so.0
-%{prefix}/lib/libnautilus-adapter.so.0.0.0
-%{prefix}/lib/libnautilus-extensions.so.0
-%{prefix}/lib/libnautilus-extensions.so.0.0.0
-%{prefix}/lib/libnautilus-tree-view.so.0
-%{prefix}/lib/libnautilus-tree-view.so.0.0.0
-%{prefix}/lib/libnautilus.so.0
-%{prefix}/lib/libnautilus.so.0.0.0
-%{prefix}/lib/libnautilus-adapter.so
-%{prefix}/lib/libnautilus-extensions.so
-%{prefix}/lib/libnautilus-tree-view.so
-%{prefix}/lib/libnautilus.so
+%{_libdir}/libnautilus-adapter.so.0
+%{_libdir}/libnautilus-adapter.so.0.0.0
+%{_libdir}/libnautilus-extensions.so.0
+%{_libdir}/libnautilus-extensions.so.0.0.0
+%{_libdir}/libnautilus-tree-view.so.0
+%{_libdir}/libnautilus-tree-view.so.0.0.0
+%{_libdir}/libnautilus.so.0
+%{_libdir}/libnautilus.so.0.0.0
+%{_libdir}/libnautilus-adapter.so
+%{_libdir}/libnautilus-extensions.so
+%{_libdir}/libnautilus-tree-view.so
+%{_libdir}/libnautilus.so
 
 
 
-%{prefix}/lib/vfs/modules/*.so
+%{_libdir}/vfs/modules/*.so
 
 
 %defattr (0444, bin, bin)
-%config %{sysconfdir}/vfs/modules/*.conf
-%config %{sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
-%{prefix}/share/gnome/apps/Applications/*.desktop
-%{prefix}/share/gnome/ui/*.xml
-%{prefix}/share/nautilus/components/hyperbola/maps/*.map
-%{prefix}/share/nautilus/components/hyperbola/*.xml
-%{prefix}/share/locale/*/LC_MESSAGES/*.mo
-%{prefix}/share/nautilus/*.xml
-%{prefix}/share/nautilus/emblems/*.png
-%{prefix}/share/nautilus/linksets/*.xml
-%{prefix}/share/nautilus/patterns/*.jpg
-%{prefix}/share/nautilus/patterns/*.png
-%{prefix}/share/nautilus/patterns/.*.png
-%{prefix}/share/nautilus/services/text/*.xml
-%{prefix}/share/pixmaps/*.png
-%{prefix}/share/pixmaps/nautilus/*.gif
-%{prefix}/share/pixmaps/nautilus/*.png
-%{prefix}/share/pixmaps/nautilus/*.svg
-%{prefix}/share/pixmaps/nautilus/*.xml
-%{prefix}/share/pixmaps/nautilus/ardmore/*.png
-%{prefix}/share/pixmaps/nautilus/ardmore/*.xml
-%{prefix}/share/pixmaps/nautilus/arlo/*.png
-%{prefix}/share/pixmaps/nautilus/arlo/*.xml
-%{prefix}/share/pixmaps/nautilus/arlo/throbber/*.png
-%{prefix}/share/pixmaps/nautilus/arlo/backgrounds/*.png
-%{prefix}/share/pixmaps/nautilus/arlo/sidebar_tab_pieces/*.png
-%{prefix}/share/pixmaps/nautilus/crux_eggplant/*.png
-%{prefix}/share/pixmaps/nautilus/crux_eggplant/*.xml
-%{prefix}/share/pixmaps/nautilus/crux_eggplant/throbber/*.png
-%{prefix}/share/pixmaps/nautilus/crux_eggplant/backgrounds/*.png
-%{prefix}/share/pixmaps/nautilus/crux_eggplant/sidebar_tab_pieces/*.png
+%config %{_sysconfdir}/vfs/modules/*.conf
+%config %{_sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
+%{_datadir}/gnome/apps/Applications/*.desktop
+%{_datadir}/gnome/ui/*.xml
+%{_datadir}/nautilus/components/hyperbola/maps/*.map
+%{_datadir}/nautilus/components/hyperbola/*.xml
+%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_datadir}/nautilus/*.xml
+%{_datadir}/nautilus/emblems/*.png
+%{_datadir}/nautilus/linksets/*.xml
+%{_datadir}/nautilus/patterns/*.jpg
+%{_datadir}/nautilus/patterns/*.png
+%{_datadir}/nautilus/patterns/.*.png
+%{_datadir}/nautilus/services/text/*.xml
+%{_datadir}/pixmaps/*.png
+%{_datadir}/pixmaps/nautilus/*.gif
+%{_datadir}/pixmaps/nautilus/*.png
+%{_datadir}/pixmaps/nautilus/*.svg
+%{_datadir}/pixmaps/nautilus/*.xml
+%{_datadir}/pixmaps/nautilus/ardmore/*.png
+%{_datadir}/pixmaps/nautilus/ardmore/*.xml
+%{_datadir}/pixmaps/nautilus/arlo/*.png
+%{_datadir}/pixmaps/nautilus/arlo/*.xml
+%{_datadir}/pixmaps/nautilus/arlo/throbber/*.png
+%{_datadir}/pixmaps/nautilus/arlo/backgrounds/*.png
+%{_datadir}/pixmaps/nautilus/arlo/sidebar_tab_pieces/*.png
+%{_datadir}/pixmaps/nautilus/crux_eggplant/*.png
+%{_datadir}/pixmaps/nautilus/crux_eggplant/*.xml
+%{_datadir}/pixmaps/nautilus/crux_eggplant/throbber/*.png
+%{_datadir}/pixmaps/nautilus/crux_eggplant/backgrounds/*.png
+%{_datadir}/pixmaps/nautilus/crux_eggplant/sidebar_tab_pieces/*.png
 @EAZEL_LOGOS_PNG@
 @EAZEL_LOGOS_XML@
 @EAZEL_LOGOS_THROB@
 @EAZEL_LOGOS_LICENSE@
-%{prefix}/share/pixmaps/nautilus/gnome/*.png
-%{prefix}/share/pixmaps/nautilus/gnome/*.xml
-%{prefix}/share/pixmaps/nautilus/gnome/throbber/*.png
-%{prefix}/share/pixmaps/nautilus/sidebar_tab_pieces/*.png
-%{prefix}/share/pixmaps/nautilus/throbber/*.png
-%{prefix}/share/pixmaps/nautilus/villanova/*.xml
-%{prefix}/share/pixmaps/nautilus/villanova/*.png
-%{prefix}/share/oaf/Nautilus_View_help.oaf
-%{prefix}/share/oaf/Nautilus_ComponentAdapterFactory_std.oaf
-%{prefix}/share/oaf/Nautilus_View_content-loser.oaf
-%{prefix}/share/oaf/Nautilus_View_hardware.oaf
-%{prefix}/share/oaf/Nautilus_View_history.oaf
-%{prefix}/share/oaf/Nautilus_View_image.oaf
-%{prefix}/share/oaf/Nautilus_View_music.oaf
-%{prefix}/share/oaf/Nautilus_View_notes.oaf
-%{prefix}/share/oaf/Nautilus_View_sample.oaf
-%{prefix}/share/oaf/Nautilus_View_sidebar-loser.oaf
-%{prefix}/share/oaf/Nautilus_View_text.oaf
-%{prefix}/share/oaf/Nautilus_View_tree.oaf
-%{prefix}/share/oaf/Nautilus_shell.oaf
-%{prefix}/share/oaf/Nautilus_Control_throbber.oaf
+%{_datadir}/pixmaps/nautilus/gnome/*.png
+%{_datadir}/pixmaps/nautilus/gnome/*.xml
+%{_datadir}/pixmaps/nautilus/gnome/throbber/*.png
+%{_datadir}/pixmaps/nautilus/sidebar_tab_pieces/*.png
+%{_datadir}/pixmaps/nautilus/throbber/*.png
+%{_datadir}/pixmaps/nautilus/villanova/*.xml
+%{_datadir}/pixmaps/nautilus/villanova/*.png
+%{_datadir}/oaf/Nautilus_View_help.oaf
+%{_datadir}/oaf/Nautilus_ComponentAdapterFactory_std.oaf
+%{_datadir}/oaf/Nautilus_View_content-loser.oaf
+%{_datadir}/oaf/Nautilus_View_hardware.oaf
+%{_datadir}/oaf/Nautilus_View_history.oaf
+%{_datadir}/oaf/Nautilus_View_image.oaf
+%{_datadir}/oaf/Nautilus_View_music.oaf
+%{_datadir}/oaf/Nautilus_View_notes.oaf
+%{_datadir}/oaf/Nautilus_View_sample.oaf
+%{_datadir}/oaf/Nautilus_View_sidebar-loser.oaf
+%{_datadir}/oaf/Nautilus_View_text.oaf
+%{_datadir}/oaf/Nautilus_View_tree.oaf
+%{_datadir}/oaf/Nautilus_shell.oaf
+%{_datadir}/oaf/Nautilus_Control_throbber.oaf
 
 %defattr (-, root, root)
-%{prefix}/share/gnome/help
-%{prefix}/share/omf/nautilus
+%{_datadir}/gnome/help
+%{_datadir}/omf/nautilus
 
 %files devel
 
 %defattr(0555, bin, bin)
-%{prefix}/lib/*.la
-%{prefix}/lib/vfs/modules/*.la
-%{prefix}/lib/*.sh
-%{prefix}/bin/nautilus-config
+%{_libdir}/*.la
+%{_libdir}/vfs/modules/*.la
+%{_libdir}/*.sh
+%{_bindir}/nautilus-config
 
 %defattr(0444, bin, bin)
-%{prefix}/include/libnautilus/*.h
+%{_includedir}/libnautilus/*.h
 
 %files mozilla
 
 %defattr(0555, bin, bin)
-%{prefix}/bin/nautilus-mozilla-content-view
+%{_bindir}/nautilus-mozilla-content-view
 
 %defattr(0444, bin, bin)
-%{prefix}/share/oaf/Nautilus_View_mozilla.oaf
+%{_datadir}/oaf/Nautilus_View_mozilla.oaf
 
 %files extras
 
 %defattr(0444, bin, bin)
-%{prefix}/share/nautilus/nautilus-extras.placeholder
+%{_datadir}/nautilus/nautilus-extras.placeholder
 
 %files suggested
 
 %defattr(0444, bin, bin)
-%{prefix}/share/nautilus/nautilus-suggested.placeholder
+%{_datadir}/nautilus/nautilus-suggested.placeholder
 
+%changelog
+* Tue Apr 17 2001 Gregory Leblanc <gleblanc@grego1.cu-portland.edu>
+- Added BuildRequires lines
+- Changed Source to point to ftp.gnome.org instead of just the tarball name
+- Moved %description sections closer to their %package sections
+- Moved %changelog to the end, where so that it's not in the way
+- Changed configure and make install options to allow moving of
+  libraries, includes, binaries more easily
+- Removed hard-coded paths (don't define %prefix or %docdir)
+- replace %{prefix}/bin with %{_bindir}
+- replace %{prefix}/share with %{_datadir}
+- replace %{prefix}/lib with %{_libdir}
+- replace %{prefix}/include with %{_includedir}
+
+* Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
+- removed obsoletes from sub packages and added mozilla and trilobite
+subpackages
+
+* Wed Apr 26 2000 Ramiro Estrugo <ramiro@eazel.com>
+- created this thing
