@@ -44,7 +44,9 @@ struct NautilusComplexSearchBarDetails {
 };
 
 static char *                     nautilus_complex_search_bar_get_location            (NautilusComplexSearchBar *bar);
-static char *                     nautilus_complex_search_bar_get_location            (NautilusComplexSearchBar *bar);
+
+static void                       nautilus_complex_search_bar_set_search_controls     (NautilusSearchBar *bar,
+										       const char *location);
 
 
 static void                       nautilus_complex_search_bar_initialize_class        (NautilusComplexSearchBarClass *class);
@@ -81,6 +83,7 @@ nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *kla
 	object_class->destroy = destroy;
 
 	search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
+	search_bar_class->set_search_controls = nautilus_complex_search_bar_set_search_controls;
 
 	klass->get_location = nautilus_complex_search_bar_get_location;
 }
@@ -323,3 +326,10 @@ nautilus_complex_search_bar_get_location (NautilusComplexSearchBar *bar)
 	return "file:///tmp";
 }
 
+static void                       
+nautilus_complex_search_bar_set_search_controls (NautilusSearchBar *bar,
+						 const char *location)
+{
+	/* FIXME */
+
+}
