@@ -77,11 +77,11 @@ if [ $? -eq 0 ]
 then
     bonobo_version=`rpm -qi bonobo | grep "Version" | awk '{ print $3; }'`
 
-    if [ "$bonobo_version" != "0.26" ]
+    if [ "$bonobo_version" != "0.33" ]
     then
 	title="Problem Running Nautilus"
 
-	message=`printf "This version of Nautilus requires Bonobo 0.26.  This computer has Bonobo version %s installed.  There might be a newer version of Nautilus available that will work with this version of Bonobo.
+	message=`printf "This version of Nautilus requires Bonobo 0.33.  This computer has Bonobo version %s installed.  There might be a newer version of Nautilus available that will work with this version of Bonobo.
 
 Please check our download site at http://www.eazel.com/download" $bonobo_version`
 

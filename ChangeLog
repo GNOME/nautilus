@@ -1,3 +1,14 @@
+2001-01-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>
+	
+	* helper-scripts/nautilus-verify-rpm.sh:
+	Fix bug 4984 - Nautilus doesn't provide debugging information if
+	library damaged or missing.  The problem was the helper script
+	that make sure installed nautilus and bonobo rpms are sane was
+	checking for the wrong version of bonobo.  0.26 (pr2) vs 0.33
+	(pr3).
+	
 2001-01-26  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Ramiro & Pavel
