@@ -274,7 +274,7 @@ stop_drag_check (FMListView *view)
 }
 
 static GdkPixbuf *
-get_drag_pixbuf (FMListView *view, int *offset_x, int *offset_y)
+get_drag_pixbuf (FMListView *view)
 {
 	GtkTreeModel *model;
 	GtkTreePath *path;
@@ -299,8 +299,6 @@ get_drag_pixbuf (FMListView *view, int *offset_x, int *offset_y)
 					     path, 
 					     view->details->file_name_column, 
 					     &cell_area);
-		*offset_x = view->details->drag_x - cell_area.x;
-		*offset_y = view->details->drag_y - cell_area.y;
 
 		gtk_tree_path_free (path);
 	}
@@ -317,7 +315,6 @@ motion_notify_callback (GtkWidget *widget,
 	GdkDragContext *context;
 	GList *ref_list;
 	GdkPixbuf *pixbuf;	
-	int offset_x, offset_y;
 	
 	view = FM_LIST_VIEW (callback_data);
 	
@@ -347,12 +344,11 @@ motion_notify_callback (GtkWidget *widget,
 						ref_list,
 						(GDestroyNotify)ref_list_free);
 
-			pixbuf = get_drag_pixbuf (view, &offset_x, &offset_y);
+			pixbuf = get_drag_pixbuf (view);
 			if (pixbuf) {
 				gtk_drag_set_icon_pixbuf (context,
 							  pixbuf,
-							  offset_x, 
-							  offset_y);
+							  0, 0);
 				g_object_unref (pixbuf);
 			} else {
 				gtk_drag_set_icon_default (context);

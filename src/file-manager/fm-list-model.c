@@ -564,7 +564,7 @@ each_path_get_data_binder (NautilusDragEachSelectedItemDataGet data_get,
 				uri = nautilus_file_get_uri (file);
 				
 				(*data_get) (uri, 
-					     cell_area.x - info->model->details->drag_begin_x,
+					     0,
 					     cell_area.y - info->model->details->drag_begin_y,
 					     cell_area.width, cell_area.height, 
 					     data);
