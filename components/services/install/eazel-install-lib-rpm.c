@@ -47,17 +47,18 @@ install_new_packages (InstallOptions* iopts) {
 		g_print ("Install Category - %s\n", c->name);
 		while (t) {
 			PackageData* pack = t->data;
-			const char* pkg; 
+			const char* pkg[2]; 
 			int retval;
 
 			retval = 0;
 			
-			pkg = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
-			g_print ("Installing Package = %s\n", pkg);
-			retval = rpmInstall ("/", &pkg, 0, INSTALL_UPGRADE | INSTALL_HASH,
+			pkg[0] = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+			pkg[1] = NULL;
+			g_print ("Installing Package = %s\n", pkg[0]);
+			retval = rpmInstall ("/", pkg, 0, INSTALL_UPGRADE | INSTALL_HASH,
 								RPMPROB_FILTER_REPLACEPKG | RPMPROB_FILTER_OLDPACKAGE |
 								RPMPROB_FILTER_REPLACEOLDFILES, NULL);
-			if (retval > 0) {
+			if (retval == 0) {
 				g_print ("Package install successful!\n");
 				rv = TRUE;
 			}
