@@ -221,7 +221,7 @@ nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 		/* target is a directory, accept anything */
 		return TRUE;
 	}
-	
+
 	/* Handle local NautilusLink files */
 	if (!nautilus_file_is_local (drop_target_item) 
 		|| !nautilus_file_is_nautilus_link (drop_target_item)) {
@@ -233,6 +233,11 @@ nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 		return FALSE;
 	}
 
+	if (nautilus_link_is_trash_link (file_uri)) {
+		/* Trash always accepts drops */
+		return TRUE;
+	}
+	
 	vfs_uri = gnome_vfs_uri_new (file_uri);
 	link_uri = nautilus_link_get_link_uri (file_uri);	
 

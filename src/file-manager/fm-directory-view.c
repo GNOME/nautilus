@@ -1232,10 +1232,10 @@ done_loading (FMDirectoryView *view)
 }
 
 static void
-select_all_callback (GtkMenuItem *item, gpointer callback_data)
+select_all_callback (GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	g_assert (GTK_IS_MENU_ITEM (item));
-	g_assert (callback_data == NULL);
+	g_assert (directory_view == NULL);
 
 	fm_directory_view_select_all (
 		FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")) );
@@ -2436,8 +2436,18 @@ fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const cha
 	       gboolean sensitive)
 {
 	GtkWidget *menu_item;
-
+	guint accel_key;
+	
 	menu_item = gtk_menu_item_new_with_label (label);
+
+	/* Add accelerator */
+	accel_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (menu_item)->child), label);
+	if (accel_key != GDK_VoidSymbol)
+	{
+		gtk_widget_add_accelerator (menu_item, "activate", gtk_accel_group_get_default (), 
+					    accel_key, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+	}
+	
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (activate_handler), view);
 	finish_adding_menu_item (menu, menu_item, sensitive);
@@ -2488,10 +2498,10 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 							     GtkMenu *menu)
 
 {
-	fm_directory_view_add_menu_item (view, menu, _("New Folder"), new_folder_menu_item_callback,
-		       TRUE);
-	append_gtk_menu_item_with_view (view, menu, NULL, 
-	               NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, select_all_callback, NULL);
+	fm_directory_view_add_menu_item (view, menu, _("_New Folder"), new_folder_menu_item_callback,
+		       			 TRUE);
+	fm_directory_view_add_menu_item (view, menu, _("Select _All Files"), select_all_callback,
+		       			 TRUE);
 
 	create_background_context_menu_zoom_items (view, menu);
 }

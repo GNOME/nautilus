@@ -1,3 +1,21 @@
+2000-08-29  Gene Z. Ragan  <gzr@eazel.com>
+
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Added an accelerator for the New Folder item.
+	
+	* src/file-manager/fm-directory-view.c: (select_all_callback),
+	(fm_directory_view_add_menu_item),
+	(fm_directory_view_real_create_background_context_menu_items):
+	Added support for accelerators in popup menu items.  You 
+	specify the accelerator key by placing an _ before the desired
+	letter.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_can_accept_item):
+	Fixed a bug dealing with dragging over trash.
+	
 2000-08-29  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
 
 	* components/rpmview/nautilus-rpm-view.c:
