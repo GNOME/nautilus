@@ -3535,6 +3535,7 @@ motion_notify_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	NautilusIconContainerDetails *details;
 	double world_x, world_y;
+	int canvas_x, canvas_y;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	details = container->details;
@@ -3561,6 +3562,12 @@ motion_notify_event (GtkWidget *widget,
 
 				end_renaming_mode (container, TRUE);
 			
+				eel_canvas_w2c (EEL_CANVAS (container),
+						  details->drag_x,
+						  details->drag_y,
+						  &canvas_x,
+						  &canvas_y);
+
 				nautilus_icon_dnd_begin_drag (container,
 							      details->drag_state == DRAG_STATE_MOVE_OR_COPY
 							      ? (GDK_ACTION_MOVE 
@@ -3570,8 +3577,8 @@ motion_notify_event (GtkWidget *widget,
 							      : GDK_ACTION_ASK,
 							      details->drag_button,
 							      event, 
-							      details->drag_x,
-							      details->drag_y);
+							      canvas_x,
+							      canvas_y);
 			}
 			break;
 		case DRAG_STATE_STRETCH:
