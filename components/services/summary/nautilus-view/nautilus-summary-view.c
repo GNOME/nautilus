@@ -340,7 +340,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	if (view->details->logged_in) {
 		char *text;
 		g_free (view->details->user_name);
-		view->details->user_name = ammonite_who_is_logged_in (view->details->user_control);
+		view->details->user_name = ammonite_get_default_user_username (view->details->user_control);
 		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
 		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (title), text);
 		g_free (text);
@@ -1453,6 +1453,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 			        const char		*uri)
 {
 	char		*url;
+	char		*user_name;
 	gboolean	got_url_table;
 
 	url = NULL;
@@ -1469,7 +1470,11 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 #ifdef DEBUG_pepper
 	g_print ("start load\n");
 #endif
-	view->details->logged_in = ammonite_am_i_logged_in (view->details->user_control);
+
+	user_name = ammonite_get_default_user_username (view->details->user_control);
+	view->details->logged_in = (NULL != user_name);
+	g_free (user_name);
+	user_name = NULL;
 
 #ifdef DEBUG_pepper
 	g_print ("start xml table fetch\n");
@@ -1638,6 +1643,9 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	view = NAUTILUS_SUMMARY_VIEW (user_data);
 
 	if (state) {
+		gboolean logged_in;
+		char * user_name;
+	
 		nautilus_view_set_up_ui (view->details->nautilus_view,
 				         DATADIR,
 					 "nautilus-summary-view-ui.xml",
@@ -1645,7 +1653,11 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 									
 		bonobo_ui_component_add_verb_list_with_data 
 			(bonobo_control_get_ui_component (control), verbs, view);
-		update_menu_items (view, ammonite_am_i_logged_in (view->details->user_control));
+
+		user_name = ammonite_get_default_user_username (view->details->user_control);
+		logged_in = (NULL != user_name);
+		update_menu_items (view, logged_in);
+		g_free (user_name);
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content

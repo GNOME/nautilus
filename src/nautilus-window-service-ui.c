@@ -32,6 +32,8 @@
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>
 
+static EazelProxy_UserControl gl_user_control = CORBA_OBJECT_NIL;
+
 static void
 goto_services_summary (BonoboUIComponent *component, 
 		       gpointer callback_data, 
@@ -48,30 +50,26 @@ goto_online_storage (BonoboUIComponent *component,
 {
 	char			*url;
 	char			*user_name;
-	gboolean		logged_in;
-	EazelProxy_UserControl	user_control;
 
-	url = g_strdup ("eazel:");
-	logged_in = FALSE;
-	user_name = NULL;
-	user_control = CORBA_OBJECT_NIL;
-
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		user_control = ammonite_get_user_control ();
-	}
-
-	logged_in = ammonite_am_i_logged_in (user_control);
-
-	if (!logged_in) {
-		url = g_strdup ("eazel:");
+	if ( gl_user_control != CORBA_OBJECT_NIL ) {
+		user_name = ammonite_get_default_user_username (gl_user_control);
 	} else {
-		user_name = ammonite_who_is_logged_in (user_control);
-		url = g_strdup_printf ("eazel-services:/~%s", user_name);
+		user_name = NULL;
 	}
 
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  url);
+	if (user_name == NULL) {
+		url = g_strdup ("eazel:");
+		/* FIXME: user feedback needs to be displayed in this case */
+		/* Something better than just going to the summary page */
 
+	} else {
+		url = g_strdup_printf ("eazel-services:///~%s", user_name);
+		g_free (user_name);
+		user_name = NULL;
+	}
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	g_free (url);
+	url = NULL;
 }
 
 static void
@@ -81,26 +79,30 @@ goto_software_catalog (BonoboUIComponent *component,
 {
 	char			*url;
 	gboolean		logged_in;
-	EazelProxy_UserControl	user_control;
+	char 			*user_name;
 
-	url = g_strdup ("eazel:");
-	logged_in = FALSE;
-	user_control = CORBA_OBJECT_NIL;
+	if (gl_user_control != CORBA_OBJECT_NIL) {
+		user_name = ammonite_get_default_user_username (gl_user_control);
 
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		user_control = ammonite_get_user_control ();
+		logged_in = (NULL != user_name);
+		g_free (user_name);
+		user_name = NULL;
+
+		ammonite_shutdown ();
+	} else {
+		logged_in = FALSE;
 	}
 
-	logged_in = ammonite_am_i_logged_in (user_control);
 
 	if (!logged_in) {
 		url = g_strdup ("eazel-services://anonymous/catalog");
 	} else {
-		url = g_strdup ("eazel-services:/catalog");
+		url = g_strdup ("eazel-services:///catalog");
 	}
 
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  url);
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	g_free (url);
+	url = NULL;
 
 }
 
@@ -127,6 +129,8 @@ detach_service_ui (GtkObject *object,
 	service_ui = BONOBO_UI_COMPONENT (callback_data);
 	bonobo_ui_component_unset_container (service_ui);
 	bonobo_object_unref (BONOBO_OBJECT (service_ui));
+
+	ammonite_shutdown();
 }
 
 void
@@ -141,6 +145,10 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 		BONOBO_UI_VERB ("Services Support", goto_services_support),
 		BONOBO_UI_VERB_END
 	};
+
+	if ( ammonite_init (bonobo_poa()) ) {
+		gl_user_control = ammonite_get_user_control();
+	}
 
 	/* Load UI from the XML file. */
 	service_ui = bonobo_ui_component_new ("Eazel Services");
