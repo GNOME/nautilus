@@ -263,8 +263,8 @@ icon_size_request    (DesktopItem      *item,
         icon = item->user_data;
 
         if (icon->pixbuf) {
-                *width = gdk_pixbuf_width(icon->pixbuf);
-                *height = gdk_pixbuf_height(icon->pixbuf);
+                *width = gdk_pixbuf_get_width(icon->pixbuf);
+                *height = gdk_pixbuf_get_height(icon->pixbuf);
         } else {
                 *width = 1;
                 *height = 1;
