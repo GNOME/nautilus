@@ -1,3 +1,15 @@
+2000-07-27  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(eazel_install_progress_signal):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages):
+
+	Fix dumb \n -> \r typo I introduced on the last checkin.  Finish
+	RPM delete-files implementation to actually traverse the package
+	tree and delete all the RPM files.
+
 2000-07-27  Arlo Rose  <arlo@eazel.com>
 
         * icons/eazel/*.png

@@ -660,18 +660,35 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 		g_warning (_("Install failed"));
 	}
 	if (eazel_install_emit_delete_files (service)) {
-		GList *item;
-		GList *cat;
+		GList *top_item, *sub_item;
 		CategoryData *cd;
-		PackageData *pack;
+		PackageData *top_pack, *sub_pack;
 
-		g_message ("*** deleting the RPM files");
-		for (cat = g_list_first (categories); cat; cat = g_list_next (cat)) {
-			cd = (CategoryData *)cat->data;
-			for (item = g_list_first (cd->packages); item; item = g_list_next (item)) {
-				pack = (PackageData *)item->data;
-				g_message ("*** package '%s'", (char *)pack->filename);
-				unlink ((char *)pack->filename);
+		g_message ("*** deleting the package files");
+		for (top_item = g_list_first (service->private->transaction); top_item;
+		     top_item = g_list_next (top_item)) {
+			top_pack = (PackageData *) top_item->data;
+			g_message ("*** package '%s'", (char *) top_pack->filename);
+			if (unlink ((char *) top_pack->filename) != 0) {
+				g_warning ("unable to delete file %s !", top_pack->filename);
+			}
+
+			for (sub_item = g_list_first (top_pack->soft_depends); sub_item;
+			     sub_item = g_list_next (sub_item)) {
+				sub_pack = (PackageData *) sub_item->data;
+				g_message ("*** package '%s'", (char *) sub_pack->filename);
+				if (unlink ((char *) sub_pack->filename) != 0) {
+					g_warning ("unable to delete file %s !", (char *) sub_pack->filename);
+				}
+			}
+
+			for (sub_item = g_list_first (top_pack->hard_depends); sub_item;
+			     sub_item = g_list_next (sub_item)) {
+				sub_pack = (PackageData *) sub_item->data;
+				g_message ("*** package '%s'", (char *) sub_pack->filename);
+				if (unlink ((char *) sub_pack->filename) != 0) {
+					g_warning ("unable to delete file %s !", (char *) sub_pack->filename);
+				}
 			}
 		}
 	}

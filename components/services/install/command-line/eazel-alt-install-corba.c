@@ -198,7 +198,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 	if (amount==0) {
 		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->summary);
 	} else if (amount != total ) {
-		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\n", 
+		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
 			 package_num, num_packages,
 			 total_size_completed, total_size,
 			 amount, total,
