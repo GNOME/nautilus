@@ -38,6 +38,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-label.h"
 #include "nautilus-string.h"
 
@@ -58,6 +59,7 @@ struct NautilusCustomizationData {
 
 	gboolean started_reading_current_file_list;
 	gboolean private_data_was_displayed;
+	gboolean data_is_for_a_menu;
 	int maximum_icon_height;
 	int maximum_icon_width;
 };
@@ -74,6 +76,7 @@ static char*             strip_extension                     (const char* string
 NautilusCustomizationData* 
 nautilus_customization_data_new (const char *customization_name,
 				 gboolean show_public_customizations,
+				 gboolean data_is_for_a_menu,
 				 int maximum_icon_height,
 				 int maximum_icon_width)
 {
@@ -128,6 +131,7 @@ nautilus_customization_data_new (const char *customization_name,
 	
 	data->started_reading_current_file_list = FALSE;
 	data->private_data_was_displayed = FALSE;
+	data->data_is_for_a_menu = data_is_for_a_menu;
 	data->customization_name = g_strdup (customization_name);
 
 	data->maximum_icon_height = maximum_icon_height;
@@ -145,7 +149,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 {
 	GnomeVFSFileInfo *current_file_info;
 
-	char *image_file_name, *filtered_name;
+	char *image_file_name, *filtered_name, *truncated_name;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
@@ -208,8 +212,19 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	
 	*pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	filtered_name = format_name_for_display (current_file_info->name);
-	*label = nautilus_label_new (filtered_name);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (*label), 12);
+	/* If the data is for a menu,
+	   we want to truncate it and not use the nautilus
+	   label because anti-aliased text doesn't look right
+	   in menus */
+	if (data->data_is_for_a_menu) {
+		truncated_name = nautilus_truncate_text_for_menu_item (filtered_name);
+		*label = gtk_label_new (truncated_name);
+		g_free (truncated_name);
+	}
+	else {
+		*label = nautilus_label_new (filtered_name);
+		nautilus_label_set_font_size (NAUTILUS_LABEL (*label), 12);
+	}
 	
 	g_free (filtered_name);
 

@@ -1,3 +1,25 @@
+2000-09-13  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 2977, to remove anti-aliased text from the
+	emblm menu
+
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display):
+	* libnautilus-extensions/nautilus-customization-data.h:
+	Added additional value to customization data to return the
+	correct label type depending on whether or not antialiased
+	text and truncation were appropriate
+	* src/nautilus-complex-search-bar.c:
+	(load_find_them_pixmap_widget):
+	indenting fix
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	add parameter to customization data call
+	
+	* src/nautilus-search-bar-criterion.c: (get_emblem_location_for),
+	(make_emblem_value_menu):
+	Removed a bug that double freed an emblem value menu name
+
 2000-09-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-theme.c:

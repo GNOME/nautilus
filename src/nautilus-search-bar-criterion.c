@@ -760,6 +760,7 @@ get_emblem_location_for  (int relation_number,
 		  relation_number == 1);
 	emblem_text = gtk_object_get_data (GTK_OBJECT (menu_item),
 					   "emblem name");
+	printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS, possible_relations[relation_number], emblem_text);
         return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS,
 				possible_relations[relation_number],
 				emblem_text);
@@ -836,10 +837,9 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	GtkWidget *value_menu; 
 	
 	/* Add the items to the emblems menu here */
-	/* FIXME bugzilla.eazel.com 2738: What are the variables for thumbnail icon height and width */
-
 	value_menu = gtk_menu_new ();
 	customization_data = nautilus_customization_data_new ("emblems",
+							      TRUE,
 							      TRUE,
 							      NAUTILUS_ICON_SIZE_FOR_MENUS, 
 							      NAUTILUS_ICON_SIZE_FOR_MENUS);
@@ -850,7 +850,8 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		
 		
 		
-		emblem_display_name = nautilus_label_get_text (NAUTILUS_LABEL (emblem_label));
+		gtk_label_get (GTK_LABEL (emblem_label),
+			       &emblem_display_name);
 		if (strcmp (emblem_display_name, "Erase") == 0) {
 			gtk_widget_destroy (emblem_pixmap_widget);
 			gtk_widget_destroy (emblem_label);
@@ -858,12 +859,12 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		}
 		menu_item = gtk_menu_item_new ();
 		
-		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name", emblem_display_name, g_free);
-		
+		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_display_name);
+		g_assert (strcmp (emblem_display_name, "Erase") != 0);
 		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
-		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
+		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
 	}
 	

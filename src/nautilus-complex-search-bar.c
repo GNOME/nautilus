@@ -455,7 +455,7 @@ load_find_them_pixmap_widget (void)
 	GdkBitmap *mask;
 	
 	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
-	if(pixmap != NULL) {
+	if (pixmap != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (pixbuf);
 		return gtk_pixmap_new (pixmap, mask);
