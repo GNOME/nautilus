@@ -25,6 +25,9 @@
 
 #include <libnautilus/nautilus-view.h>
 #include <gtk/gtk.h>
+#include <eazel-install-types.h>
+#include <eazel-install-corba-types.h>
+#include <eazel-install-corba-callback.h>
 
 typedef struct _NautilusServiceInstallView NautilusServiceInstallView;
 typedef struct _NautilusServiceInstallViewClass NautilusServiceInstallViewClass;
@@ -57,10 +60,19 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *package_summary;
 	GtkWidget       *package_version;
 	GtkWidget       *total_progress_bar;
-	GtkWidget       *current_progress_bar;
-	GtkWidget	*message_box;
-	GtkWidget       *current_feedback_text;
 	GtkWidget       *overall_feedback_text;
+	GtkWidget	*message_box;
+#if 0
+	GtkWidget	*current_progress_alignment;
+#else
+	GList		*message_left;
+	GList		*message_right;
+	GtkWidget       *current_feedback_text;
+	GtkWidget       *current_progress_bar;
+#endif
+	EazelInstallCallback *installer;
+	char		*current_rpm;
+	int		current_package;
 };
 
 

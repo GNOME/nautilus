@@ -1,3 +1,29 @@
+2000-08-23  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/Makefile.am:
+
+	Fix RPM install view's include path to find libtrilobite.
+	 
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form), (generate_current_progress),
+	(create_package), (nautilus_install_parse_uri), (make_new_status),
+	(spin_cylon), (current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_dependency_check),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_done), (get_password_dude),
+	(set_root_client), (nautilus_service_install_view_update_from_uri),
+	(service_install_load_location_callback):
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.h:
+
+	Make RPM install view actually work (using the trilobite install
+	service) instead of being smoke & mirrors.  Make bottom panel be a
+	fixed table that scrolls through (label, progress-bar) pairs for
+	status on downloading and installing various RPMs.
+	 
 2000-08-23  John Sullivan  <sullivan@eazel.com>
 
 	More work on bug 1653 (new menu layout). Now there's a
