@@ -363,7 +363,7 @@ toc_title_start_element (Context *context,
 		if (context->sect4 > 0) g_print (".%d", context->sect4);
 		if (context->sect5 > 0) g_print (".%d", context->sect5);
 		g_print (".&nbsp;&nbsp;");
-		g_print ("<A href=\"ghelp:%s", context->base_file);
+		g_print ("<A href=\"help:%s", context->base_file);
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {

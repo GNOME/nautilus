@@ -225,7 +225,7 @@ transform_file (const char *old_uri,
 
 	/* Try with an sgml extension. */
 	new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
-	if (convert_file_to_uri (help_uri, new_uri)) {
+	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
 		g_free (new_uri);
 		return help_uri;
 	}
@@ -233,7 +233,7 @@ transform_file (const char *old_uri,
 
 	/* Try with an html extension. */
 	new_uri_with_extension = g_strconcat (new_uri, ".html", NULL);
-	if (convert_file_to_uri (help_uri, new_uri)) {
+	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
 		g_free (new_uri);
 		return help_uri;
 	}

@@ -1,3 +1,19 @@
+2000-08-02  Ali Abdin  <aliabdin@aucegypt.edu>
+        * components/help/help-method.c:
+        (transform_file):
+        Bugfix to use 'new_uri_with_extension' instead of just 'new_uri' in
+        some places.
+
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Added a placeholder for the <MENUCHOICE> tag. Also added the
+        <GUISUBMENU> tag and made it act just like <GUIMENU> (these two still
+        need to be modified to handle the correct behavior).
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_title_start_element):
+	 Change 'ghelp' to 'help'
+
 2000-08-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/install/command-line/.cvsignore:

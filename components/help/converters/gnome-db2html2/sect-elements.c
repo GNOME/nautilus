@@ -82,6 +82,8 @@ ElementInfo sect_elements[] = {
 	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (endElementSAXFunc) sect_funcparams_end_element, (charactersSAXFunc) sect_write_characters},
 	{ PARAMDEF, "paramdef", (startElementSAXFunc) sect_paramdef_start_element, NULL, (charactersSAXFunc) sect_write_characters},
 	{ VOID, "void", (startElementSAXFunc) sect_void_start_element, NULL, NULL },
+	{ GUISUBMENU, "guisubmenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
