@@ -5,6 +5,7 @@ INCLUDES = -I. -I$(srcdir) 				\
 	-I$(includedir)					\
 	$(APPLETS_CFLAGS)				\
 	-DDATADIR=\""$(datadir)"\" 			\
+	-DBINDIR=\""$(bindir)"\" 			\
 	$(NULL)
 
 bin_PROGRAMS = nautilus-icon-applet

@@ -1,3 +1,12 @@
+2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* applets/launcher/Makefile.am:
+	* applets/launcher/nautilus-icon-applet.c: (get_root_window),
+	(root_window_set_busy), (root_window_set_not_busy),
+	(image_button_press_event), (main):
+	Add code to execute nautilus.  Add first try at adding busy
+	feedback while launching.
+
 2000-10-31  Mathieu Lacage  <mathieu@eazel.com>
 
 	fix bug 4015.

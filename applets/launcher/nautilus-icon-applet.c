@@ -20,10 +20,13 @@
 
 #include <config.h>
 #include <applet-widget.h>
-#include <gtk/gtkobject.h>
-#include <gtk/gtkeventbox.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-graphic-effects.h>
+#include <libgnome/gnome-exec.h>
+#include <gtk/gtkobject.h>
+#include <gtk/gtkeventbox.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkprivate.h>
 
 #define ICON_NAME "nautilus-launch-icon.png"
 
@@ -79,6 +82,63 @@ image_leave_event (GtkWidget *event_box,
 	return TRUE;
 }
 
+#if 0
+static GdkWindow *
+get_root_window (void)
+{
+	return GDK_ROOT_PARENT ();
+}
+
+static void
+root_window_set_busy (void)
+{
+	GdkWindow *root;
+	GdkCursor *cursor;
+
+	root = get_root_window ();
+
+	cursor = gdk_cursor_new (GDK_WATCH);
+
+ 	gdk_window_set_cursor (root, cursor);
+
+	gdk_cursor_destroy (cursor);
+}
+
+static void
+root_window_set_not_busy (void)
+{
+	GdkWindow *root;
+
+	root = get_root_window ();
+
+	gdk_window_set_cursor (root, NULL);
+}
+#endif
+
+static gint
+image_button_press_event (GtkWidget *event_box,
+			  GdkEventButton *event,
+			  gpointer client_data)
+{
+	char *path;
+	gint pid;
+
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (client_data), TRUE);
+
+	path = g_strdup_printf ("%s/%s", BINDIR, "run-nautilus");
+
+	pid = gnome_execute_async (NULL, 1, &path);
+
+	if (pid != 0) {
+		//root_window_set_busy ();
+	}
+
+	g_free (path);
+		
+	return TRUE;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -105,6 +165,7 @@ main (int argc, char **argv)
 
 	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (image_enter_event), icon);
 	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (image_leave_event), icon);
+	gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", GTK_SIGNAL_FUNC (image_button_press_event), icon);
 
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
 	//nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_prelight_pixbuf);
