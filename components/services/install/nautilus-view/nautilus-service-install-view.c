@@ -814,7 +814,14 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 static void
 nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
+	CORBA_Environment ev;
+	GtkWidget *toplevel;
+	GtkWidget *dialog;
 	char *message;
+	char *real_message;
+	gboolean answer;
+
+	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
@@ -835,9 +842,30 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	} else {
 		message = _("Installation failed!");
 	}
+
 	show_overall_feedback (view, message);
-	show_dialog_and_run_away (view, message);
+
+	real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+	toplevel = gtk_widget_get_toplevel (view->details->message_box);
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
+							 &answer, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	g_free (real_message);
+
+	if (answer) {
+		CORBA_exception_init (&ev);
+		eazel_install_callback_delete_files (cb, &ev);
+		CORBA_exception_free (&ev);
+	}
+
+	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 }
+
 
 /* recursive descent of a package and its dependencies, building up a GString of errors */
 static void
@@ -883,6 +911,7 @@ dig_up_errors (const PackageData *package, GString *messages)
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
+	CORBA_Environment ev;
 	GString *message;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
@@ -898,6 +927,12 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 		show_overall_feedback (view, message->str);
 		show_dialog_and_run_away (view, message->str);
 		g_string_free (message, TRUE);
+
+		/* always delete the RPM files in this case */
+		CORBA_exception_init (&ev);
+		eazel_install_callback_delete_files (cb, &ev);
+		CORBA_exception_free (&ev);
+
 		return;
 	}
 
@@ -907,9 +942,15 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	dig_up_errors (pack, message);
 	show_dialog_and_run_away (view, message->str);
 	g_string_free (message, TRUE);
+
+	/* always delete the RPM files in this case */
+	CORBA_exception_init (&ev);
+	eazel_install_callback_delete_files (cb, &ev);
+	CORBA_exception_free (&ev);
 }
 
 
+#if 0
 static gboolean
 nautilus_service_install_delete_files (EazelInstallCallback *cb, NautilusServiceInstallView *view)
 {
@@ -940,6 +981,7 @@ nautilus_service_install_delete_files (EazelInstallCallback *cb, NautilusService
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	return answer;
 }
+#endif
 
 
 /* signal callback -- ask the user for the root password (for installs) */
@@ -1073,11 +1115,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	} else {
 		out = g_strdup_printf (_("Downloading some package"));
 	}
-#if 0
-	gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
-#else
 	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
-#endif
 	g_free (out);
 
 	CORBA_exception_init (&ev);
@@ -1106,8 +1144,10 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 			    nautilus_service_install_failed, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "done",
 			    nautilus_service_install_done, view);
+#if 0
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "delete_files",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_delete_files), view);
+#endif
 	eazel_install_callback_install_packages (view->details->installer, categories, NULL, &ev);
 
 	CORBA_exception_free (&ev);

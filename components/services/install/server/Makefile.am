@@ -40,6 +40,7 @@ trilobite_eazel_install_service_SOURCES =	\
 	main.c					\
 	$(NULL)
 
+# RPM_LIBS needs to come very first, because it needs a special (older) version of libdb
 trilobite_eazel_install_service_LDADD =								\
 	$(RPM_LIBS)										\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la 			\
