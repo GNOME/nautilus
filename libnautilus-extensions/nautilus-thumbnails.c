@@ -456,9 +456,11 @@ make_thumbnails (gpointer data)
 		if (!(info->thumbnail_task = fork())) {
 			GdkPixbuf* full_size_image;
 			NautilusFile *file;
+			GnomeVFSFileSize file_size;
 			char *thumbnail_path;
 			
 			file = nautilus_file_get (info->thumbnail_uri);
+			file_size = nautilus_file_get_size (file);
 			full_size_image = NULL;
 
 			if (nautilus_file_is_mime_type (file, "image/svg")) {
@@ -483,22 +485,27 @@ make_thumbnails (gpointer data)
 				scaled_image = nautilus_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
 				gdk_pixbuf_unref (full_size_image);
 				
-				/* embed the content image in the frame */
-				frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
-				if (frame_offset_str != NULL) {
-					sscanf (frame_offset_str," %d , %d , %d , %d %*s", &left_offset, &top_offset, &right_offset, &bottom_offset);
-				} else {
-					/* use nominal values since the info in the theme couldn't be found */
-					left_offset = 3; top_offset = 3;
-					right_offset = 6; bottom_offset = 6;
-				}
+				/* embed the content image in the frame, if necessary  */
+				if (file_size > SELF_THUMBNAIL_SIZE_THRESHOLD) {
+
+					frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
+					if (frame_offset_str != NULL) {
+						sscanf (frame_offset_str," %d , %d , %d , %d %*s", &left_offset, &top_offset, &right_offset, &bottom_offset);
+					} else {
+						/* use nominal values since the info in the theme couldn't be found */
+						left_offset = 3; top_offset = 3;
+						right_offset = 6; bottom_offset = 6;
+					}
 				
-				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame,
+					framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame,
 									      left_offset, top_offset, right_offset, bottom_offset);
-				g_free (frame_offset_str);
+					g_free (frame_offset_str);
 				
-				gdk_pixbuf_unref (scaled_image);
-				gdk_pixbuf_unref (thumbnail_image_frame);
+					gdk_pixbuf_unref (scaled_image);
+					gdk_pixbuf_unref (thumbnail_image_frame);
+				} else {
+					framed_image = scaled_image;
+				}
 				
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (new_thumbnail_path);
 				if (!nautilus_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {

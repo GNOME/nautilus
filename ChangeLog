@@ -1,3 +1,19 @@
+2000-10-30  Andy Hertzfeld  <andy@eazel.com>
+
+	made thumbnailing work remotely for all images, by treating
+	small remote files like large ones and keeping a local thumbnail
+	for them.
+	
+	* libnautilus-extensions/nautilus-icon-factory-private.h:
+	moved SELF_THUMBNAIL_SIZE_THRESHOLD constant into private,
+	so it could be shared with nautilus-thumbnails.
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	if a file is remote, make a thumbnail even if it's smaller
+	than the size threshold.
+	* libnautilus-extensions/nautilus-thumbnails.c: (make_thumbnails):
+	don't use a frame for files smaller than the size threshold.
+	
 2000-10-30  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:
