@@ -3543,7 +3543,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 icon_size_y,
 		 max_image_size * icon->scale_x,
 		 max_image_size * icon->scale_y,
-		 &attach_points);
+		 &attach_points,
+		 TRUE);
 	
 	nautilus_scalable_icon_unref (scalable_icon);
 	
@@ -3566,7 +3567,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon_size_y,
 			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
 			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
-			 NULL);
+			 NULL,
+			 FALSE);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);

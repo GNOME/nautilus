@@ -1270,7 +1270,7 @@ create_image_widget_for_emblem (const char *emblem_name)
 		 NAUTILUS_ICON_SIZE_STANDARD,
 		 NAUTILUS_ICON_SIZE_STANDARD,
 		 NAUTILUS_ICON_SIZE_STANDARD,
-		 NULL);
+		 NULL, TRUE);
 
 	nautilus_scalable_icon_unref (icon);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);

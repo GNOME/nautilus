@@ -117,13 +117,16 @@ NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const 
  * This allows scaling in both dimensions. All other calls assume
  * that X and Y scaling are the same. Optionally, we also pass
  * back an array of emblem attach points, if the pointer is non-null
+ * If the wants_default boolean is set, return a default icon instead
+ * of NULL if we can't find anything
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon        *scalable_icon,
 									  guint                        nominal_size_in_pixels_x,
 									  guint                        nominal_size_in_pixels_y,
 									  guint                        maximum_size_in_pixels_x,
 									  guint                        maximum_size_in_pixels_y,
-									  NautilusEmblemAttachPoints  *attach_points);
+									  NautilusEmblemAttachPoints  *attach_points,
+									  gboolean		       wants_default);
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.

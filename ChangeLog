@@ -1,3 +1,36 @@
+2000-12-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (cache_icon_new),
+	(load_icon_for_scaling), (scale_icon), (get_icon_from_cache),
+	(nautilus_icon_factory_get_pixbuf_for_icon),
+	(nautilus_icon_factory_get_pixbuf_for_file):
+
+	fixed bug 4212, emblem doesn't show up when the image is a JPEG
+	file, by adding ".jpg" to extensions checked in the icon factory.
+	
+	Fixed bug 3208, generic icon shows up for deleted emblems, by adding
+	a "wants_default" parameter to the icon factory get_pixbuf_for_icon
+	call.  If "wants_default" is false, it returns NULL instead of the
+	generic icon.  Emblem callers pass FALSE so they don't get pixmaps
+	for deleted emblems.
+	
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf):
+	added boolean parameter to get_pixbuf_for_icon call
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	added boolean parameter to get_pixbuf_for_icon call
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	added "wants_default" boolean to get_pixbuf_for_icon definition
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	added boolean parameter to get_pixbuf_for_icon call
+	* src/file-manager/fm-properties-window.c:
+	(create_image_widget_for_emblem):
+	added boolean parameter to get_pixbuf_for_icon call
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	added boolean parameter to get_pixbuf_for_icon call
+	
 2000-12-12  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

@@ -70,6 +70,8 @@ static const char *icon_file_name_suffixes[] =
 	".PNG",
 	".gif",
 	".GIF",
+	".jpg",
+	".JPG",
 	".xpm",
 	".XPM"
 };
@@ -253,6 +255,7 @@ typedef struct {
 	/* Type of icon. */
 	gboolean custom;
 	gboolean scaled;
+	gboolean is_fallback;
 } CacheIcon;
 
 static CacheIcon *fallback_icon;
@@ -435,6 +438,8 @@ cache_icon_new (GdkPixbuf *pixbuf,
 	icon->internal_ref_count = 1;
 	icon->custom = custom;
 	icon->scaled = scaled;
+	icon->is_fallback = FALSE;
+	
 	if (details != NULL) {
 		icon->details = *details;
 	}
@@ -1760,6 +1765,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 			 NULL, /* don't destroy data */
 			 NULL);
 		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
+		fallback_icon->is_fallback = TRUE;
 		g_atexit (destroy_fallback_icon);
 	}
 
@@ -1824,6 +1830,7 @@ scale_icon (CacheIcon *icon,
 				      icon->custom,
 				      TRUE,
 				      &scaled_details);
+	scaled_icon->is_fallback = icon->is_fallback;
 	scaled_icon->cache_time = icon->cache_time;
 	gdk_pixbuf_unref (scaled_pixbuf);
 	return scaled_icon;
@@ -2058,6 +2065,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 				icon = scaled_icon;
 			}
 		} else {
+			
 			if (scalable_icon->embedded_text != NULL) {
 				icon = load_icon_with_embedded_text (scalable_icon, size);
 			} else {
@@ -2095,7 +2103,8 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 					   guint nominal_height,
 					   guint maximum_width,
 					   guint maximum_height,
-					   NautilusEmblemAttachPoints *attach_points)
+					   NautilusEmblemAttachPoints *attach_points,
+					   gboolean wants_default)
 {
 	IconSizeRequest size;
 	CacheIcon *icon;
@@ -2110,6 +2119,12 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 
 	if (attach_points != NULL) {
 		*attach_points = icon->details.attach_points;
+	}
+	
+	/* if we don't want a default icon and one is returned, return NULL instead */
+	if (!wants_default && icon->is_fallback) {
+		cache_icon_unref (icon);
+		return NULL;
 	}
 	
 	/* The first time we hand out an icon we just leave it with a
@@ -2205,7 +2220,8 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 size_in_pixels, size_in_pixels,
-		 size_in_pixels, size_in_pixels, NULL);
+		 size_in_pixels, size_in_pixels,
+		 NULL, TRUE);
 	nautilus_scalable_icon_unref (icon);
 
 	return pixbuf;

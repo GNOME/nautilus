@@ -1655,7 +1655,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 			(p->data, 
 			 emblem_size, emblem_size,
 			 emblem_size, emblem_size,
-			 NULL);
+			 NULL, FALSE);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);
