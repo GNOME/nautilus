@@ -1,5 +1,10 @@
 2002-05-30  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-desktop-icon-view.c (fm_desktop_icon_view_init): Setup the
+	root window to receive PropertyNotify events.
+
+2002-05-30  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-directory-view.c (process_new_files): Don't
 	add files to old_changed_files if they are not shown.
 

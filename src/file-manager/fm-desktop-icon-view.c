@@ -688,6 +688,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	panel_desktop_area_changed (desktop_icon_view);
 
 	/* Setup the property filter */
+	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), PropertyChangeMask);
+
 	gdk_window_add_filter (gdk_get_default_root_window (),
 			       desktop_icon_view_property_filter,
 			       desktop_icon_view);
