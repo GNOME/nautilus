@@ -422,13 +422,12 @@ void
 nautilus_icon_canvas_item_set_image (NautilusIconCanvasItem *item,
 				     GdkPixbuf *image)
 {
-	NautilusIconCanvasItemDetails *details;
-
+	NautilusIconCanvasItemDetails *details;	
+	
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
 	g_return_if_fail (image == NULL || pixbuf_is_acceptable (image));
 
-	details = item->details;
-
+	details = item->details;	
 	if (details->pixbuf == image) {
 		return;
 	}
@@ -817,6 +816,7 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 		      const ArtIRect *rect)
 {
 	int knob_width, knob_height;
+	ArtIRect icon_rect;
 	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
 	double affine[6];
@@ -825,17 +825,19 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 		return;
 	}
 
+	get_icon_canvas_rectangle (item, &icon_rect);
+
 	knob_filename = nautilus_pixmap_file ("knob.png");
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
-	knob_width = gdk_pixbuf_get_width (knob_pixbuf) - 6;
-	knob_height = gdk_pixbuf_get_height (knob_pixbuf) - 6;
+	knob_width = gdk_pixbuf_get_width (knob_pixbuf) - 6; /* offset to compensate for shadow */
+	knob_height = gdk_pixbuf_get_height (knob_pixbuf) - 6; /* offset to compensate for shadow */
 	
 	art_affine_identity(affine);
 	
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) rect->x0, (int) rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) rect->x0, (int) (rect->y1 - knob_height));
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) (rect->x1 - knob_width), (int) rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, (int) (rect->x1 - knob_width), (int) (rect->y1 - knob_height));
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0, icon_rect.y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0,  icon_rect.y1 - knob_height);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y1 - knob_height);
 	
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
