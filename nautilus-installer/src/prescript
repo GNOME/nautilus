@@ -10,24 +10,14 @@ else
 fi
 if test $UID -ne 0; then
     echo ""
-    echo "Nautilus-Installer v 0.3"
+    echo "Nautilus-Installer PR2"
     echo ""
-    echo "Fisk er dumme og heste er grimme"
-    echo "To mænd, gik ud i en skov, tog bukserne af, til de begge"
-    echo "blev flove. Gravballemanden blev min skæbne"
+    echo "The Nautilus-Installer requires superuser (root) access to prepare the system"
+    echo "and to install packages."
     echo ""
-    echo "The Nautilus-Installer requires superuser access to prepare the system"
-    echo "It needs to create a few administrative directories on in /var and"
-    echo "yadayada insecure yadayada trust us blablabla"
-    echo "we would never hurt a fly arglebargle."
-    echo ""
-    echo "Please enter root password at the prompt"
+    echo "Please enter root password at the prompt."
     xhost + localhost
     su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
     xhost - localhost
     exit
 fi
-#if ! test -d /var/eazel/services; then
-#    mkdir /var/eazel 
-#    mkdir /var/eazel/services
-#fi
