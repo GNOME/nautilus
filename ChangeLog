@@ -1,3 +1,12 @@
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-any-width-bin.c:
+	* libnautilus-extensions/nautilus-any-width-bin.h: Removed
+	these files. This class was used only for our old status
+	bar, and would just slowly bit-rot if we left it here.
+	* libnautilus-extensions/Makefile.am: Removed those files.
+	* src/nautilus-window.c: Removed #include for deleted file.
+
 2000-10-10  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
