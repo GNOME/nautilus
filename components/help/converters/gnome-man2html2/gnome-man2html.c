@@ -123,6 +123,9 @@
 #include <sys/time.h>
 #include <errno.h>
 
+
+static char *URLbasename = NULL;
+
 #define NULL_TERMINATED(n) ((n) + 1)
 
 #define HUGE_STR_MAX  10000
@@ -1838,7 +1841,8 @@ add_to_index(int level, char *item)
 	}
 	subs=level;
 	scan_troff(item, 1, &c);
-	sprintf(manidx+mip, "<DT><A HREF=\"#%s\">%s</A><DD>\n", label, c);
+	sprintf(manidx+mip, "<DT><A HREF=\"%s#%s\">%s</A><DD>\n", 
+		((URLbasename) ? URLbasename : ""), label, c);
 	if (c)
 		free(c);
 	while (manidx[mip])
@@ -3617,6 +3621,10 @@ main(int argc, char **argv)
 	char *h = '\0';
 	STRDEF *stdf;
 
+	/* see if they gave us a basename for the URL references */
+	if (argc > 1)
+		if (!strcmp(argv[1], "-n"))
+			URLbasename = strdup(argv[2]);
 
 	buf=read_man_page();
 	if (!buf) {
