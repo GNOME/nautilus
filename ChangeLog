@@ -1,5 +1,20 @@
 2000-06-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Bug 647.  Should report missing special directories to user.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_directory), (nautilus_get_desktop_directory),
+	(nautilus_get_user_main_directory):
+	Fixed uninitialized static pointers.  Remove FIXME blurbs are
+	error checking happens "above" in nautilus-application now.
+	
+	* src/nautilus-application.c:
+	(nautilus_app_check_user_directories), (nautilus_app_startup):
+	Add error checking for missing user directories with appropiate
+	FIXME for current bad names for these dirs.
+	
+2000-06-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-utilities.c:
 	Added FIXME note for bug 1117.
 	

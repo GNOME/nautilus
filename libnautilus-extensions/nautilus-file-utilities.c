@@ -87,7 +87,7 @@ nautilus_make_path(const char *path, const char* name)
 const char *
 nautilus_get_user_directory (void)
 {
-	static char *user_directory;
+	static char *user_directory = NULL;
 
 	if (user_directory == NULL) {
 		user_directory = nautilus_make_path (g_get_home_dir (),
@@ -97,13 +97,6 @@ nautilus_get_user_directory (void)
 			mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		}
 
-	}
-
-	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
-		/* Bad news, directory still isn't there.
-		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
-		 */
-		g_assert_not_reached();
 	}
 
 	return user_directory;
@@ -119,7 +112,7 @@ nautilus_get_user_directory (void)
 const char *
 nautilus_get_desktop_directory (void)
 {
-	static char *desktop_directory;
+	static char *desktop_directory = NULL;
 
 	if (desktop_directory == NULL) {
 		desktop_directory = nautilus_make_path (nautilus_get_user_directory (),
@@ -128,13 +121,6 @@ nautilus_get_desktop_directory (void)
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 		}
 
-	}
-
-	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
-		/* Bad news, directory still isn't there.
-		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
-		 */
-		g_assert_not_reached();
 	}
 
 	return desktop_directory;
@@ -151,7 +137,7 @@ nautilus_get_desktop_directory (void)
 const char *
 nautilus_get_user_main_directory (void)
 {
-	static char *user_main_directory;
+	static char *user_main_directory = NULL;
 	NautilusFile *file;
 	
 	if (user_main_directory == NULL)
@@ -215,15 +201,6 @@ nautilus_get_user_main_directory (void)
 			nautilus_link_set_install(user_main_directory, "search_engines");
 			*/
 		}
-	}
-
-	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR))
-	{
-		/* Bad news, directory still isn't there.
-		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
-		 */
-		g_assert_not_reached();
-
 	}
 
 	return user_main_directory;

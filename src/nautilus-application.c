@@ -34,6 +34,9 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-string-list.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include <liboaf/liboaf.h>
 #include "nautilus-desktop-window.h"
@@ -169,9 +172,10 @@ impl_Nautilus_Application__create(PortableServer_POA poa,
 	return bonobo_object_activate_servant(BONOBO_OBJECT(app), newservant);
 }
 
-static void nautilus_app_init		(NautilusApp		 *app);
-static void nautilus_app_class_init	(NautilusAppClass	 *klass);
-static void nautilus_app_destroy        (GtkObject *object);
+static void nautilus_app_init              (NautilusApp      *app);
+static void nautilus_app_class_init        (NautilusAppClass *klass);
+static void nautilus_app_destroy           (GtkObject        *object);
+static void nautilus_app_check_user_directories (NautilusApp      *app);
 
 static GtkObjectClass *app_parent_class = NULL;
 
@@ -323,6 +327,59 @@ display_caveat (GtkWindow *parent_window)
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
+static void
+nautilus_app_check_user_directories (NautilusApp *app)
+{
+	const char		*user_directory;
+	const char		*user_main_directory;
+	const char		*desktop_directory;
+	NautilusStringList	*dir_list;
+	
+	g_assert (app != NULL);
+	g_assert (NAUTILUS_IS_APP (app));
+
+	user_directory = nautilus_get_user_directory ();
+	user_main_directory = nautilus_get_user_main_directory ();
+	desktop_directory = nautilus_get_desktop_directory ();
+
+	dir_list = nautilus_string_list_new ();
+	
+	/* FIXME bugzilla.eazel.com 1115: Need better name for "User Directory"
+	 * and "User Data Directory".
+	 */
+
+	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
+		nautilus_string_list_insert (dir_list, "User Directory");
+	}
+	    
+	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
+		nautilus_string_list_insert (dir_list, "User Main Directory");
+	}
+	    
+	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
+		nautilus_string_list_insert (dir_list, "Desktop Directory");
+	}
+
+	if (nautilus_string_list_get_length (dir_list) > 0) {
+		char *dir_list_concatenated;
+		char *error_string;
+
+		dir_list_concatenated = nautilus_string_list_as_concatenated_string (dir_list, "\n");
+		
+		error_string = g_strdup_printf ("%s\n\n%s\n\n%s",
+						"The following directories are missing:",
+						dir_list_concatenated,
+						"Please restart Nautilus to fix this problem.");
+
+		nautilus_error_dialog (error_string);
+
+		g_free (dir_list_concatenated);
+		g_free (error_string);
+	}
+
+	nautilus_string_list_free (dir_list);
+}
+
 void
 nautilus_app_startup (NautilusApp *app,
 		      gboolean manage_desktop,
@@ -331,6 +388,11 @@ nautilus_app_startup (NautilusApp *app,
 	const char **p;
 	NautilusWindow *window;
 	NautilusWindow *first_window;
+
+	/* Check the user's ~/.nautilus directories and post warnings if there
+	 * are problems
+	 */
+	nautilus_app_check_user_directories (app);
 
 	/* Set up the desktop. */
 	if (manage_desktop) {
