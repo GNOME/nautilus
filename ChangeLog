@@ -1,3 +1,11 @@
+2001-02-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6465, Music view buttons stretch for songs with
+	very long titles.
+	
+	* components/music/nautilus-music-view.c: (add_play_controls):
+	Set the pack box flag so that the buttons don't expand.
+	
 2001-02-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
 	* components/help/hyperbola_top_doc_tree_populate.h:
           components/help/hyperbola-filefmt.c:

@@ -1495,7 +1495,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
 	gtk_widget_set_sensitive (button, TRUE);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* play button */
@@ -1509,7 +1509,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_widget_set_sensitive (button, TRUE);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* pause button */
@@ -1525,7 +1525,7 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC(pause_button_callback), music_view);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* stop button */
@@ -1539,7 +1539,7 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect(GTK_OBJECT (button), "clicked",
                            GTK_SIGNAL_FUNC (stop_button_callback), music_view);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
 	/* next button */
@@ -1553,10 +1553,9 @@ add_play_controls (NautilusMusicView *music_view)
 
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
-	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
-	
-	
+		
 	/* hbox to hold slider and song progress time */
 	hbox = gtk_hbox_new (0, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 7);
@@ -1579,7 +1578,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->playtime_bar);
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
-	gtk_widget_set_usize (music_view->details->playtime_bar, 200, -1);
+	gtk_widget_set_usize (music_view->details->playtime_bar, 150, -1);
 	gtk_widget_show (music_view->details->playtime_bar);
 
 	/* playtime label */
