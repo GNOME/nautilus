@@ -27,7 +27,7 @@ nautilus_metafile_server_idl_sources = \
 	$(NULL)
 
 marshal_sources = \
-	nautilus-marshal-guts.h \
+	nautilus-marshal.h \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
@@ -112,7 +112,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-link-historical.h \
 	nautilus-link.c \
 	nautilus-link.h \
-	nautilus-marshal-guts.h \
 	nautilus-marshal.c \
 	nautilus-marshal.h \
 	nautilus-medusa-support.c \
@@ -176,7 +175,7 @@ nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) -I$(top_srcdir) $(CORE_IDL_INCLUDES) $<
 	touch $@
 
-nautilus-marshal-guts.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
+nautilus-marshal.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
 nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@

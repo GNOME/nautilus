@@ -3298,7 +3298,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 preview),
 		                NULL, NULL,
-		                nautilus_marshal_INT__POINTER_INT,
+		                nautilus_marshal_INT__POINTER_BOOLEAN,
 		                G_TYPE_INT, 2,
 				G_TYPE_POINTER,
 				G_TYPE_BOOLEAN);

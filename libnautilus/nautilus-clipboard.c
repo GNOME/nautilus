@@ -105,8 +105,6 @@ select_all_idle_callback (gpointer callback_data)
 
 	select_all (editable);
 
-	g_object_unref (G_OBJECT (editable));
-
 	return FALSE;
 }
 
@@ -115,14 +113,20 @@ select_all_callback (BonoboUIComponent *ui,
 		     gpointer callback_data,
 		     const char *command_name)
 {
+	GSource *source;
 	GtkEditable *editable;
 
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Select All") == 0);
 
 	editable = GTK_EDITABLE (callback_data);
-	g_object_ref (G_OBJECT (editable));
-	gtk_idle_add (select_all_idle_callback, editable);
+
+	source = g_idle_source_new ();
+	g_source_set_callback (source, select_all_idle_callback, editable, NULL);
+	g_signal_connect_swapped (editable, "destroy",
+				  G_CALLBACK (g_source_destroy), source);
+	g_source_attach (source, NULL);
+	g_source_unref (source);
 }
 
 static void

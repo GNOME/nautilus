@@ -283,14 +283,21 @@ select_all_at_idle (gpointer callback_data)
 void
 nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 {
+	GSource *source;
+	
 	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
 
 	/* If the text cursor position changes in this routine
 	 * then gtk_entry_key_press will unselect (and we want
 	 * to move the text cursor position to the end).
 	 */
-	g_object_ref (G_OBJECT (entry));
-	gtk_idle_add (select_all_at_idle, entry);
+
+	source = g_idle_source_new ();
+	g_source_set_callback (source, select_all_at_idle, entry, NULL);
+	g_signal_connect_swapped (entry, "destroy",
+				  G_CALLBACK (g_source_destroy), source);
+	g_source_attach (source, NULL);
+	g_source_unref (source);
 }
 
 /**

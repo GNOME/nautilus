@@ -472,7 +472,9 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 					       window->details->pending_name, 
 					       result,
 					       GTK_WINDOW (window));
-		name_field_restore_original_name (window->details->name_field);
+		if (window->details->name_field != NULL) {
+			name_field_restore_original_name (window->details->name_field);
+		}
 	}
 
 	g_object_unref (G_OBJECT (window));
@@ -2458,18 +2460,30 @@ real_destroy (GtkObject *object)
 	window = FM_PROPERTIES_WINDOW (object);
 
 	g_hash_table_remove (windows, window->details->original_file);
+	
+	if (window->details->original_file != NULL) {
+		nautilus_file_monitor_remove (window->details->original_file, window);
+		nautilus_file_unref (window->details->original_file);
+		window->details->original_file = NULL;
+	}
 
-	nautilus_file_monitor_remove (window->details->original_file, window);
-	nautilus_file_unref (window->details->original_file);
+	if (window->details->target_file != NULL) {
+		nautilus_file_monitor_remove (window->details->target_file, window);
+		nautilus_file_unref (window->details->target_file);
+		window->details->target_file = NULL;
+	}
 
-	nautilus_file_monitor_remove (window->details->target_file, window);
-	nautilus_file_unref (window->details->target_file);	
+	window->details->name_field = NULL;
 	
 	g_list_free (window->details->directory_contents_widgets);
+	window->details->directory_contents_widgets = NULL;
+
 	g_list_free (window->details->special_flags_widgets);
+	window->details->special_flags_widgets = NULL;
 
 	if (window->details->update_directory_contents_timeout_id != 0) {
 		gtk_timeout_remove (window->details->update_directory_contents_timeout_id);
+		window->details->update_directory_contents_timeout_id = 0;
 	}
 
 	/* Note that file_changed_handler_id is disconnected in dispose,

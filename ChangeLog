@@ -1,3 +1,37 @@
+2001-11-22  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_class_init): fix marshaller.
+
+	* libnautilus-private/nautilus-marshal.list: add
+	INT_POINTER_BOOLEAN
+	
+	* src/file-manager/fm-properties-window.c
+	(real_destroy): protect against double destroys.
+
+Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Add [quoting] around AC_CHECK_HEADERS needed for 
+	some autoconf versions.
+	
+	* components/text/nautilus-text-view.c (file_read_callback): 
+	text_view->details->text_display is set to NULL in
+	nautilus_text_view_destroy(), so simply check for non-NULL
+	rather than calling GTK_OBJECT_DESTROYED().
+
+	* src/file-manager/fm-properties-window.c (real_destroy): NULL
+	out name_field here, since it will be destroyed, so we
+	can avoid accessing it in rename_callback.
+
+	* libnautilus-private/Makefile.am (nautilus-marshal-guts.c): Get rid
+	of nautilus-marshal-guts.h, since glib-genmarshal now generates correct
+	standalone headers.
+
+	* libnautilus/nautilus-clipboard.c (select_all_callback),
+	* libnautilus-private/nautilus-entry.c (nautilus_entry_select_all_at_idle):
+	Remove the idle on destrunction of the widget, rather than checking
+	GTK_OBJECT_DESTROYED().
+
 2001-11-21  Michael Meeks  <michael@ximian.com>
 
 	* test/test-nautilus-wrap-table.c (main): fix.
