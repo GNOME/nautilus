@@ -88,11 +88,6 @@
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 
-/* FIXME bug  4015 so this is the correct URL and it works behind the
- * firewall but nautilus does not go to it
- */
-#define DEFAULT_SEARCH_WEB_URI "http://services.eazel.com/websearch"
-
 /* FIXME: bugzilla.eazel.com 3590
  * This shouldn't need to exist. See bug report for details.
  */
@@ -1179,7 +1174,7 @@ nautilus_window_go_web_search (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI, DEFAULT_SEARCH_WEB_URI);
+	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI, "");
 	g_assert (search_web_uri != NULL);
 	
 	nautilus_window_goto_uri (window, search_web_uri);

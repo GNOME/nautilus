@@ -44,7 +44,7 @@
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
 
 /* default web search uri */
-#define DEFAULT_SEARCH_WEB_URI "http://www.eazel.com/websearch"
+#define DEFAULT_SEARCH_WEB_URI "http://services.eazel.com/websearch"
 
 static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
 static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";

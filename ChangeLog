@@ -1,3 +1,12 @@
+2000-10-31  Mathieu Lacage  <mathieu@eazel.com>
+
+	fix bug 4015.
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	add correct default here.
+	* src/nautilus-window.c: (nautilus_window_go_web_search):
+	remove bad default here. ramiro has a bug to do the correct
+	fix post-pr2.
+
 2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/run-nautilus:
