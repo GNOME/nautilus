@@ -58,9 +58,6 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
-/* FIXME: bugzilla.eazel.com 3497 set to 1 when the bug is fixed in bonobo */
-#define BONOBO_WORKAROUND 0
-
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /* Private menu paths that components don't know about */
@@ -763,12 +760,10 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 
 	/* set up the menu title image to reflect the new user level */
 	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
-#if BONOBO_WORKAROUND
 	/* the line below is disabled because of a bug in bonobo. */
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  new_user_level_icon_name);
-#endif
 	g_free (new_user_level_icon_name);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
@@ -1459,12 +1454,10 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 				  NAUTILUS_USER_LEVEL_HACKER);
 	new_user_level = nautilus_user_level_manager_get_user_level ();
 	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
-#if BONOBO_WORKAROUND
 	/* the line below is disabled because of a bug in bonobo */
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  new_user_level_icon_name);
-#endif
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	/* connect to the user level changed signal, so we can update the menu when the
@@ -1673,12 +1666,11 @@ update_user_level_menu_items (NautilusWindow *window)
  	/* Update the user radio group to reflect reality */
 	user_level = nautilus_user_level_manager_get_user_level ();
 	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
-#if BONOBO_WORKAROUND
+
 	/* the line below is disabled because of a bug in bonobo */
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  user_level_icon_name);
-#endif
 	g_free (user_level_icon_name);
 
 
