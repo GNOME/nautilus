@@ -446,7 +446,11 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
+#ifdef EAZEL_INSTALL_NO_CORBA
+	klass->delete_files = NULL;
+#else
 	klass->delete_files = eazel_install_emit_delete_files_default;
+#endif
 	klass->done = eazel_install_emit_done_default;
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
@@ -911,6 +915,7 @@ eazel_install_install_packages (EazelInstall *service,
 		eazel_install_delete_downloads (service);
 		
 		g_free (service->private->cur_root);
+		service->private->cur_root = NULL;
 	} else {
 		result = EAZEL_INSTALL_NOTHING;
 	}

@@ -225,7 +225,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 	}
 }
 
-void
+static gboolean
 eazel_install_free_rpm_system_close_db_foreach (char *key, rpmdb db, gpointer unused)
 {
 	if (db) {
@@ -237,7 +237,7 @@ eazel_install_free_rpm_system_close_db_foreach (char *key, rpmdb db, gpointer un
 		trilobite_debug (_("Closing db for %s (not open)"), key);
 	}
 
-		
+	return TRUE;
 }
 
 gboolean

@@ -1,5 +1,18 @@
 2000-10-13  Robey Pointer  <robey@eazel.com>
 
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (eazel_install_install_packages):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_free_rpm_system_close_db_foreach):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+
+	Don't set up a default delete_files signal handler when not using
+	corba (otherwise it overrides the real signal).  Clean up some
+	destroy code in preparation for making the bootstrap installer
+	able to retry.
+
+2000-10-13  Robey Pointer  <robey@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(cancel_mime_list), (nautilus_directory_cancel),
 	(set_up_request_by_file_attributes),
