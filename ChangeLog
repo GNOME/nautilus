@@ -1,3 +1,10 @@
+2001-01-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (hit_test):
+	fixed bug 4731, expanding folders cause oscillation, by hit-testing
+	to the bounding box instead of the pixmap when an icon is highlighted
+	for dropping.
+	
 2001-01-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Arik Devens  <arik@gnome.org>
