@@ -472,19 +472,24 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 }
 
 static void
-create_zoom_menu_item (GtkMenu *menu, GtkWidget *zoom_control, double zoom_level)
+create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level)
 {
 	GtkWidget *menu_item;
 	double	  *zoom_level_ptr;
 	char	  item_text[8];
+	NautilusZoomControl *zoom_control;
+
+	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	
 	g_snprintf(item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
-
-	menu_item = gtk_menu_item_new_with_label (item_text);
+	menu_item = gtk_check_menu_item_new_with_label (item_text);
 
 	zoom_level_ptr = g_new (double, 1);
 	*zoom_level_ptr = zoom_level;
 
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
+					zoom_level == zoom_control->details->zoom_level);
+	
 	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (zoom_menu_callback),
@@ -505,7 +510,7 @@ create_zoom_menu(GtkWidget *zoom_control)
 	p = NAUTILUS_ZOOM_CONTROL (zoom_control)->details->preferred_zoom_levels;
 	
 	while (p != NULL) {
-		create_zoom_menu_item(menu, zoom_control,  *(double*)p->data);
+		create_zoom_menu_item (menu, zoom_control,  *(double*)p->data);
 		p = g_list_next (p);
 	}
 	
