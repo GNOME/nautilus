@@ -41,7 +41,6 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(BONOBO_PRINT_LIBS) 		\
 	$(BONOBOX_LIBS) 		\
 	$(ESD_LIBS)			\
-	$(FAM_LIBS)			\
 	$(FREETYPE2_LIBS)		\
 	$(GCONF_LIBS)			\
 	$(GHTTP_LIBS) 			\

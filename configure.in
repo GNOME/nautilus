@@ -171,19 +171,16 @@ dnl ====================================
 
 AC_CHECK_FUNCS( setenv unsetenv putenv )
 
-dnl Check for fam (/imon) support
+dnl ====================================
+dnl Check for FAM header -- we find the library at runtime
+dnl ====================================
 AC_CHECK_HEADERS(fam.h)
-AC_CHECK_LIB(fam, FAMOpen, [FAM_LIBS="-lfam"])
-AC_SUBST(FAM_LIBS)
 
 dnl ====================================
 dnl = Use x86 optimized music routines?
 dnl ====================================
-
 _system_is_x86="no"
-
 AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
-
 AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
 
 dnl ====================================

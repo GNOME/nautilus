@@ -1,3 +1,23 @@
+2001-04-27  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Robin Slomkowski <rslomkow@eazel.com>
+
+	Update FAM support so it works fine on systems with and without
+	libfam installed. So if you build Nautilus with FAM, then you can
+	run it on a system with or without FAM.
+
+	* configure.in:
+	* libnautilus-extensions/Makefile.am:
+	Remove the FAM_LIBS part.
+	
+	* libnautilus-extensions/nautilus-monitor.c: (get_fam_connection):
+	Load the module before the FAMOpen2 call, and get all the function
+	pointers.
+	(get_event_uri), (process_fam_notifications),
+	(nautilus_monitor_file), (nautilus_monitor_directory),
+	(nautilus_monitor_cancel): Use the new CALL_FAM macro so we can
+	use the function pointers when we call FAM.
+
 2001-04-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (go_to_uri):
