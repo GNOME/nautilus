@@ -42,7 +42,9 @@ struct _NautilusViewClass
   GtkBinClass parent_spot;
 
   void (*notify_location_change)	(NautilusView *view,
-					 NautilusNavigationInfo *nav_context);
+					 Nautilus_NavigationInfo *nav_context);
+  void (*notify_selection_change)	(NautilusView *view,
+					 Nautilus_SelectionInfo *nav_context);
   void (*load_state) (NautilusView *view, const char *config_path);
   void (*save_state) (NautilusView *view, const char *config_path);
   void (*show_properties) (NautilusView *view);
@@ -50,7 +52,7 @@ struct _NautilusViewClass
   void (*view_constructed) (NautilusView *view); /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
 
   GtkBinClass *parent_class;
-  guint view_signals[3];
+  guint view_signals[6];
   guint num_construct_args;
 };
 
@@ -62,13 +64,18 @@ struct _NautilusView
 
   char *iid;
   GtkWidget *client;
+  CORBA_Object view_client;
+
+  GnomeObject *view_frame;
 
   guint construct_arg_count;
 };
 
 GtkType nautilus_view_get_type                (void);
 void    nautilus_view_request_location_change (NautilusView              *view,
-					       NautilusLocationReference  loc);
+					       Nautilus_NavigationRequestInfo *loc);
+void    nautilus_view_request_selection_change (NautilusView              *view,
+						Nautilus_SelectionRequestInfo *loc);
 void    nautilus_view_load_client             (NautilusView              *view,
 					       const char *               iid);
 

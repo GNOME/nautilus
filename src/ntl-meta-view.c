@@ -50,5 +50,36 @@ nautilus_meta_view_new(void)
 const char *
 nautilus_meta_view_get_description(NautilusMetaView *nview)
 {
-  return NULL;
+  NautilusView *view = NAUTILUS_VIEW(nview);
+  GnomePropertyBagClient *bc;
+  GNOME_Property prop;
+  CORBA_Environment ev;
+  char *retval = NULL;
+  CORBA_any *anyval;
+
+  g_return_val_if_fail(view->client, NULL);
+
+  bc = gnome_control_frame_get_control_property_bag(gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client)));
+  g_return_val_if_fail(bc, NULL);
+
+  prop = gnome_property_bag_client_get_property(bc, "description");
+  CORBA_exception_init(&ev);
+
+  if(CORBA_Object_is_nil(prop, &ev))
+    goto out;
+
+  anyval = GNOME_Property_get_value(prop, &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    goto out;
+
+  if(!CORBA_TypeCode_equal(anyval->_type, TC_string, &ev))
+    goto out;
+
+  retval = g_strdup(*(CORBA_char **)anyval->_value);
+
+  CORBA_free(anyval);
+
+ out:
+  CORBA_exception_free(&ev);
+  return retval;
 }

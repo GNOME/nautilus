@@ -19,9 +19,12 @@ typedef struct {
   GnomeAppClass *parent_class;
 
   void (* request_location_change)(NautilusWindow *window,
-				   NautilusLocationReference loc,
+				   Nautilus_NavigationRequestInfo *loc,
 				   GtkWidget *requesting_view);
-  guint window_signals[1];
+  void (* request_selection_change)(NautilusWindow *window,
+				    Nautilus_SelectionRequestInfo *loc,
+				    GtkWidget *requesting_view);
+  guint window_signals[2];
 } NautilusWindowClass;
 
 struct _NautilusWindow {
@@ -42,8 +45,11 @@ struct _NautilusWindow {
 GtkType nautilus_window_get_type(void);
 GtkWidget *nautilus_window_new(const char *app_id);
 void nautilus_window_request_location_change(NautilusWindow *window,
-					     NautilusLocationReference loc,
+					     Nautilus_NavigationRequestInfo *loc,
 					     GtkWidget *requesting_view);
+void nautilus_window_request_selection_change(NautilusWindow *window,
+					      Nautilus_SelectionRequestInfo *loc,
+					      GtkWidget *requesting_view);
 void nautilus_window_save_state(NautilusWindow *window, const char *config_path);
 void nautilus_window_load_state(NautilusWindow *window, const char *config_path);
 void nautilus_window_set_initial_state(NautilusWindow *window);

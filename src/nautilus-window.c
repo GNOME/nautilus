@@ -16,7 +16,7 @@ static void nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_close (GtkWidget *widget,
 				    GtkWidget *window);
 static void nautilus_window_real_request_location_change (NautilusWindow *window,
-							  NautilusLocationReference loc,
+							  Nautilus_NavigationRequestInfo *loc,
 							  GtkWidget *requesting_view);
 
 #define CONTENTS_AS_HBOX
@@ -44,20 +44,20 @@ nautilus_window_get_type(void)
   return window_type;
 }
 
-typedef void (*GtkSignal_NONE__STRING_OBJECT) (GtkObject * object,
-					       const char *arg1,
+typedef void (*GtkSignal_NONE__BOXED_OBJECT) (GtkObject * object,
+					       gpointer arg1,
 					       GtkObject *arg2,
 					       gpointer user_data);
 static void 
-gtk_marshal_NONE__STRING_OBJECT (GtkObject * object,
+gtk_marshal_NONE__BOXED_OBJECT (GtkObject * object,
 			       GtkSignalFunc func,
 			       gpointer func_data,
 			       GtkArg * args)
 {
-  GtkSignal_NONE__STRING_OBJECT rfunc;
-  rfunc = (GtkSignal_NONE__STRING_OBJECT) func;
+  GtkSignal_NONE__BOXED_OBJECT rfunc;
+  rfunc = (GtkSignal_NONE__BOXED_OBJECT) func;
   (*rfunc) (object,
-	    GTK_VALUE_STRING (args[0]),
+	    GTK_VALUE_BOXED (args[0]),
 	    GTK_VALUE_OBJECT (args[1]),
 	    func_data);
 }
@@ -90,8 +90,14 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 					      GTK_RUN_LAST,
 					      object_class->type,
 					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_location_change),
-					      gtk_marshal_NONE__STRING_OBJECT,
-					      GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_OBJECT);
+					      gtk_marshal_NONE__BOXED_OBJECT,
+					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
+  klass->window_signals[i++] = gtk_signal_new("request_selection_change",
+					      GTK_RUN_LAST,
+					      object_class->type,
+					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_selection_change),
+					      gtk_marshal_NONE__BOXED_OBJECT,
+					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
   gtk_object_class_add_signals (object_class, klass->window_signals, i);
 
   gtk_object_add_arg_type ("NautilusWindow::app_id",
@@ -415,8 +421,22 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
 }
 
 void
+nautilus_window_request_selection_change(NautilusWindow *window,
+					 Nautilus_SelectionRequestInfo *loc,
+					 GtkWidget *requesting_view)
+{
+  NautilusWindowClass *klass;
+  GtkObject *obj;
+
+  obj = GTK_OBJECT(window);
+
+  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
+  gtk_signal_emit(obj, klass->window_signals[1], loc, requesting_view);
+}
+
+void
 nautilus_window_request_location_change(NautilusWindow *window,
-					NautilusLocationReference loc,
+					Nautilus_NavigationRequestInfo *loc,
 					GtkWidget *requesting_view)
 {
   NautilusWindowClass *klass;
@@ -430,7 +450,7 @@ nautilus_window_request_location_change(NautilusWindow *window,
 
 static void
 nautilus_window_change_location(NautilusWindow *window,
-				NautilusLocationReference loc,
+				Nautilus_NavigationRequestInfo *loc,
 				GtkWidget *requesting_view,
 				gboolean is_back)
 {
@@ -440,12 +460,13 @@ nautilus_window_change_location(NautilusWindow *window,
 
   NautilusNavigationInfo loci_spot, *loci;
 
-  loci = nautilus_navinfo_new(&loci_spot, loc, window->current_uri, window->actual_current_uri, window->current_content_type);
+  loci = nautilus_navinfo_new(&loci_spot, loc, window->current_uri, window->actual_current_uri, window->current_content_type,
+			      requesting_view);
 
   if(!loci)
     {
       char cbuf[1024];
-      g_snprintf(cbuf, sizeof(cbuf), _("Cannot load %s"), loc);
+      g_snprintf(cbuf, sizeof(cbuf), _("Cannot load %s"), loc->requested_uri);
       nautilus_window_set_status(window, cbuf);
       return;
     }
@@ -459,14 +480,14 @@ nautilus_window_change_location(NautilusWindow *window,
   else
     {
       char *append_val;
-      if(window->uris_next && !strcmp(loc, window->uris_next->data))
+      if(window->uris_next && !strcmp(loc->requested_uri, window->uris_next->data))
 	{
 	  append_val = window->uris_next->data;
 	  window->uris_next = g_slist_remove(window->uris_next, window->uris_next->data);
 	}
       else
 	{
-	  append_val = g_strdup(loc);
+	  append_val = g_strdup(loc->requested_uri);
 	  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
 	  g_slist_free(window->uris_next); window->uris_next = NULL;
 	}
@@ -514,18 +535,18 @@ nautilus_window_change_location(NautilusWindow *window,
   g_slist_free(discard_views);
 
   g_free(window->current_content_type);
-  window->current_content_type = g_strdup(loci->content_type);
+  window->current_content_type = g_strdup(loci->navinfo.content_type);
   g_free(window->current_uri);
-  window->current_uri = g_strdup(loci->requested_uri);
+  window->current_uri = g_strdup(loci->navinfo.requested_uri);
   g_free(window->actual_current_uri);
-  window->actual_current_uri = g_strdup(loci->actual_uri);
+  window->actual_current_uri = g_strdup(loci->navinfo.actual_uri);
 
   nautilus_navinfo_free(loci);
 }
 
 static void
 nautilus_window_real_request_location_change (NautilusWindow *window,
-					      NautilusLocationReference loc,
+					      Nautilus_NavigationRequestInfo *loc,
 					      GtkWidget *requesting_view)
 {
   nautilus_window_change_location(window, loc, requesting_view, FALSE);
@@ -683,23 +704,26 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
 static void
 nautilus_window_back (NautilusWindow *window)
 {
-  char *uri;
+  Nautilus_NavigationRequestInfo nri;
 
   g_assert(window->uris_prev);
 
-  uri = window->uris_prev->data;
+  memset(&nri, 0, sizeof(nri));
+  nri.requested_uri = window->uris_prev->data;
+  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
-  nautilus_window_change_location(window, uri, NULL, TRUE);
+  nautilus_window_change_location(window, &nri, NULL, TRUE);
 }
 
 static void
 nautilus_window_fwd (NautilusWindow *window)
 {
-  char *uri;
+  Nautilus_NavigationRequestInfo nri;
 
   g_assert(window->uris_next);
 
-  uri = window->uris_next->data;
-
-  nautilus_window_change_location(window, uri, NULL, FALSE);
+  memset(&nri, 0, sizeof(nri));
+  nri.requested_uri = window->uris_next->data;
+  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
+  nautilus_window_change_location(window, &nri, NULL, FALSE);
 }

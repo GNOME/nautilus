@@ -23,14 +23,97 @@
 #include "ntl-window.h"
 
 enum {
-	NOTIFY_LOCATION_CHANGE,
-	LAST_SIGNAL
+  NOTIFY_LOCATION_CHANGE,
+  LAST_SIGNAL
 };
 
 enum {
-	ARG_0,
-	ARG_MAIN_WINDOW
+  ARG_0,
+  ARG_MAIN_WINDOW
 };
+
+typedef struct {
+  POA_Nautilus_ViewFrame servant;
+  gpointer gnome_object;
+
+  NautilusView *view;
+} impl_POA_Nautilus_ViewFrame;
+
+static void
+impl_Nautilus_ViewFrame_request_location_change(impl_POA_Nautilus_ViewFrame * servant,
+						Nautilus_NavigationRequestInfo * navinfo,
+						CORBA_Environment * ev);
+
+static void
+impl_Nautilus_ViewFrame_request_selection_change(impl_POA_Nautilus_ViewFrame * servant,
+						 Nautilus_SelectionRequestInfo * selinfo,
+						 CORBA_Environment * ev);
+
+static POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
+{
+   NULL,			/* _private */
+   (void(*))&impl_Nautilus_ViewFrame_request_location_change,
+   (void(*))&impl_Nautilus_ViewFrame_request_selection_change
+};
+
+static POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
+{
+   &gnome_object_base_epv,
+   &gnome_object_epv,
+   &impl_Nautilus_ViewFrame_epv
+};
+
+static void
+impl_Nautilus_ViewFrame__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewFrame *servant)
+{
+   PortableServer_ObjectId *objid;
+   CORBA_Environment ev;
+
+   CORBA_exception_init(&ev);
+
+   objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
+   PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
+   CORBA_free(objid);
+   obj->servant = NULL;
+
+   POA_Nautilus_ViewFrame__fini((PortableServer_Servant) servant, &ev);
+   g_free(servant);
+   CORBA_exception_free(&ev);
+}
+
+static GnomeObject *
+impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
+{
+   GnomeObject *retval;
+   impl_POA_Nautilus_ViewFrame *newservant;
+
+   newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
+   newservant->servant.vepv = &impl_Nautilus_ViewFrame_vepv;
+   newservant->view = view;
+   POA_Nautilus_ViewFrame__init((PortableServer_Servant) newservant, ev);
+
+   retval = gnome_object_new_from_servant(newservant);
+
+   gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewFrame__destroy), newservant);
+
+   return retval;
+}
+
+static void
+impl_Nautilus_ViewFrame_request_location_change(impl_POA_Nautilus_ViewFrame * servant,
+						Nautilus_NavigationRequestInfo * navinfo,
+						CORBA_Environment * ev)
+{
+  nautilus_view_request_location_change(servant->view, navinfo);
+}
+
+static void
+impl_Nautilus_ViewFrame_request_selection_change(impl_POA_Nautilus_ViewFrame * servant,
+						 Nautilus_SelectionRequestInfo * selinfo,
+						 CORBA_Environment * ev)
+{
+  nautilus_view_request_selection_change(servant->view, selinfo);
+}
 
 static void nautilus_view_init       (NautilusView      *view);
 static void nautilus_view_constructed(NautilusView      *view);
@@ -45,7 +128,13 @@ static void nautilus_view_size_request (GtkWidget        *widget,
 					GtkRequisition   *requisition);
 static void nautilus_view_size_allocate (GtkWidget        *widget,
 					  GtkAllocation    *allocation);
-
+static void nautilus_view_notify_location_change(NautilusView *view,
+						 Nautilus_NavigationInfo *nav_context);
+static void nautilus_view_notify_selection_change(NautilusView *view,
+						  Nautilus_SelectionInfo *nav_context);
+static void nautilus_view_load_state(NautilusView *view, const char *config_path);
+static void nautilus_view_save_state(NautilusView *view, const char *config_path);
+static void nautilus_view_show_properties(NautilusView *view);
 
 GtkType
 nautilus_view_get_type (void)
@@ -70,6 +159,7 @@ nautilus_view_get_type (void)
 	return view_type;
 }
 
+#if 0
 typedef void (*GtkSignal_NONE__BOXED_OBJECT_BOXED) (GtkObject * object,
 						    gpointer arg1,
 						    GtkObject *arg2,
@@ -89,6 +179,7 @@ gtk_marshal_NONE__BOXED_OBJECT_BOXED (GtkObject * object,
 		  GTK_VALUE_BOXED (args[2]),
 		  func_data);
 }
+#endif
 
 static void
 nautilus_view_class_init (NautilusViewClass *klass)
@@ -109,14 +200,19 @@ nautilus_view_class_init (NautilusViewClass *klass)
 
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
   klass->view_constructed = nautilus_view_constructed;
+  klass->notify_location_change = nautilus_view_notify_location_change;
+  klass->notify_selection_change = nautilus_view_notify_selection_change;
+  klass->load_state = nautilus_view_load_state;
+  klass->save_state = nautilus_view_save_state;
+  klass->show_properties = nautilus_view_show_properties;
 
   i = 0;
   klass->view_signals[i++] = gtk_signal_new("notify_location_change",
 					    GTK_RUN_LAST,
 					    object_class->type,
 					    GTK_SIGNAL_OFFSET (NautilusViewClass, notify_location_change),
-					    gtk_marshal_NONE__BOXED_OBJECT_BOXED,
-					    GTK_TYPE_NONE, 3, GTK_TYPE_BOXED, GTK_TYPE_OBJECT, GTK_TYPE_BOXED);
+					    gtk_marshal_NONE__BOXED,
+					    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
   klass->view_signals[i++] = gtk_signal_new("load_state",
 					    GTK_RUN_LAST,
 					    object_class->type,
@@ -135,6 +231,12 @@ nautilus_view_class_init (NautilusViewClass *klass)
 					    GTK_SIGNAL_OFFSET (NautilusViewClass, show_properties),
 					    gtk_marshal_NONE__NONE,
 					    GTK_TYPE_NONE, 0);
+  klass->view_signals[i++] = gtk_signal_new("notify_selection_change",
+					    GTK_RUN_LAST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (NautilusViewClass, notify_selection_change),
+					    gtk_marshal_NONE__BOXED,
+					    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
   gtk_object_class_add_signals (object_class, klass->view_signals, i);
 
   gtk_object_add_arg_type ("NautilusView::main_window",
@@ -175,7 +277,12 @@ nautilus_view_get_arg (GtkObject      *object,
 static void
 nautilus_view_init (NautilusView *view)
 {
+  CORBA_Environment ev;
   GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);
+
+  CORBA_exception_init(&ev);
+  view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+  CORBA_exception_free(&ev);
 }
 
 static void
@@ -202,13 +309,20 @@ nautilus_view_construct_arg_set(NautilusView *view)
 
 void
 nautilus_view_request_location_change(NautilusView *view,
-				       NautilusLocationReference loc)
+				      Nautilus_NavigationRequestInfo *loc)
 {
   g_return_if_fail (view != NULL);
   g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail (NAUTILUS_VIEW (view)->main_window != NULL);
 
   nautilus_window_request_location_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));
+}
+
+void
+nautilus_view_request_selection_change (NautilusView              *view,
+					Nautilus_SelectionRequestInfo *loc)
+{
+  nautilus_window_request_selection_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
 }
 
 static void
@@ -247,10 +361,24 @@ nautilus_view_size_allocate (GtkWidget     *widget,
     gtk_widget_size_allocate (bin->child, &child_allocation);
 }
 
+static void
+nautilus_view_activate_uri(GnomeControlFrame *frame, const char *uri, gboolean relative, NautilusView *view)
+{
+  Nautilus_NavigationRequestInfo nri;
+  g_assert(!relative);
+
+  memset(&nri, 0, sizeof(nri));
+  nri.requested_uri = (char *)uri;
+  nautilus_view_request_location_change(view, &nri);
+}
+
 void
 nautilus_view_load_client(NautilusView              *view,
 			  const char *               iid)
 {
+  GnomeControlFrame *frame;
+  CORBA_Environment ev;
+
   if(view->client)
     {
       g_free(view->iid); view->iid = NULL;
@@ -259,7 +387,82 @@ nautilus_view_load_client(NautilusView              *view,
 
   view->client = gnome_bonobo_widget_new_control((char *)iid);
   g_return_if_fail(view->client);
+  CORBA_exception_init(&ev);
+  CORBA_Object_release(view->view_client, &ev);
+  frame = gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client));
+  gnome_object_add_interface(GNOME_OBJECT(frame), view->view_frame);
+  view->view_client = GNOME_Unknown_query_interface(gnome_control_frame_get_control(GNOME_CONTROL_FRAME(frame)),
+						    "IDL:Nautilus/View:1.0", &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    view->view_client = CORBA_OBJECT_NIL;
   view->iid = g_strdup(iid);
+
+  gtk_signal_connect(GTK_OBJECT(frame), "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);
   gtk_widget_show(view->client);
   gtk_container_add(GTK_CONTAINER(view), view->client);
+  CORBA_exception_free(&ev);
 }
+
+static void
+nautilus_view_notify_location_change(NautilusView *view,
+				     Nautilus_NavigationInfo *nav_context)
+{
+  CORBA_Environment ev;
+
+  CORBA_exception_init(&ev);
+  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+
+  Nautilus_View_notify_location_change(view->view_client, nav_context, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+static void
+nautilus_view_notify_selection_change(NautilusView *view,
+				      Nautilus_SelectionInfo *nav_context)
+{
+  CORBA_Environment ev;
+  CORBA_exception_init(&ev);
+  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+
+  Nautilus_View_notify_selection_change(view->view_client, nav_context, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+static void
+nautilus_view_load_state(NautilusView *view, const char *config_path)
+{
+  CORBA_Environment ev;
+  CORBA_exception_init(&ev);
+  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+
+  Nautilus_View_load_state(view->view_client, (char *)config_path, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+static void
+nautilus_view_save_state(NautilusView *view, const char *config_path)
+{
+  CORBA_Environment ev;
+  CORBA_exception_init(&ev);
+  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+
+  Nautilus_View_save_state(view->view_client, (char *)config_path, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+static void
+nautilus_view_show_properties(NautilusView *view)
+{
+  CORBA_Environment ev;
+  CORBA_exception_init(&ev);
+  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+
+  Nautilus_View_show_properties(view->view_client, &ev);
+
+  CORBA_exception_free(&ev);
+}
+

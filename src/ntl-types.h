@@ -2,13 +2,13 @@
 #define NTL_TYPES_H 1
 
 #include <gtk/gtk.h>
+#include <libnautilus/libnautilus.h>
 
 typedef char *NautilusLocationReference;
 
 typedef struct {
-  NautilusLocationReference requested_uri, actual_uri;
-  NautilusLocationReference referring_uri, actual_referring_uri;
-  char *content_type, *referring_content_type;
+  Nautilus_NavigationInfo navinfo;
+
   GtkWidget *requesting_view;
 
   char *content_iid;

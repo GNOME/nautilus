@@ -1,0 +1,37 @@
+#include <gnome-unknown.idl>
+
+module Nautilus {
+  enum TruthValue { V_UNKNOWN, V_FALSE, V_TRUE };
+  struct NavigationRequestInfo {
+    string requested_uri;
+    TruthValue new_window_default, new_window_suggested, new_window_enforced;
+  };
+
+  struct NavigationInfo {
+    string requested_uri, actual_uri, content_type;
+    string referring_uri, actual_referring_uri, referring_content_type;
+  };
+
+  struct SelectionInfo {
+    string selected_uri;
+  };
+
+  struct SelectionRequestInfo {
+    string selected_uri;
+  };
+
+  interface View : ::GNOME::Unknown {
+    void save_state(in string config_path);
+    void load_state(in string config_path);
+    oneway void notify_location_change(in NavigationInfo navinfo);
+
+    oneway void show_properties(); // Requests that the client show its properties
+
+    oneway void notify_selection_change(in SelectionInfo selinfo);
+  };
+
+  interface ViewFrame : ::GNOME::Unknown {
+    oneway void request_location_change(in NavigationRequestInfo navinfo);
+    oneway void request_selection_change(in SelectionRequestInfo selinfo);
+  };
+};
