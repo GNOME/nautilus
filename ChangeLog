@@ -1,3 +1,20 @@
+2002-11-13  Diego Gonzalez  <diego@pemas.net>
+
+	* libnautilus-private/nautilus-theme.[c-h]:
+	(nautilus_theme_set_theme), (nautilus_theme_make_preview_pixbuf),
+	(nautilus_theme_for_each_theme), (nautilus_theme_remove_user_theme),
+	(nautilus_theme_install_user_theme)
+
+	* libnautilus-private/nautilus-theme.c:
+	(load_theme_document), (vfs_file_exists), (theme_get_property),
+	(theme_get_name_property), (theme_get_description_property),
+	(theme_list_prepend), (has_theme_xml), (theme_get_themes_for_location),
+	(theme_get_builtin_themes), (theme_get_user_themes),
+	(theme_list_invoke_callback), (attributes_free)
+
+	Theme cleanup, remove all these functions since they are no longer
+	used.
+
 2002-11-10  James Willcox  <jwillcox@gnome.org>
 
 	* docs/nautilus-context-menus.txt:

@@ -37,30 +37,8 @@ typedef void (*NautilusThemeCallback) (const char *name,
 				       gboolean builtin,
 				       gpointer callback_data);
 
-/* The result of a theme install operation. */
-typedef enum
-{
-	/* Theme installed OK */
-	NAUTILUS_THEME_INSTALL_OK,
-
-	/* The given path is not a vaild theme directory */
-	NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY,
-
-	/* Failed to create the user themes directory ~/.nautilus/themes */
-	NAUTILUS_THEME_INSTALL_FAILED_USER_THEMES_DIRECTORY_CREATION,
-
-	/* Failed to install the theme */
-	NAUTILUS_THEME_INSTALL_FAILED,
-	
-	/* Not a proper tar-ball */
-	NAUTILUS_THEME_INSTALL_NOT_A_THEME_FILE
-
-
-} NautilusThemeInstallResult;
-
-/* get and set the current theme */
+/* get the current theme */
 char                      *nautilus_theme_get_theme                 (void);
-void                       nautilus_theme_set_theme                 (const char            *new_theme);
 
 
 /* fetch data from the current theme */
@@ -78,21 +56,7 @@ char                      *nautilus_theme_get_image_path            (const char 
 /* like get_image_path, put use the passed in theme instead of the current one */
 char                      *nautilus_theme_get_image_path_from_theme (const char            *image_name,
 								     const char            *theme_name);
-
-/* create a pixbuf to represent the theme */
-GdkPixbuf                 *nautilus_theme_make_preview_pixbuf       (const char            *theme_name);
-
 /* Return the directory where user themes are stored */
 char                      *nautilus_theme_get_user_themes_directory (void);
-
-/* Invoke the given callback for each theme available to Nautilus */
-void                       nautilus_theme_for_each_theme            (NautilusThemeCallback  callback,
-								     gpointer               callback_data);
-
-/* Remove a user theme from Nautilus. */
-GnomeVFSResult             nautilus_theme_remove_user_theme         (const char            *theme_to_remove_name);
-
-/* Install the theme found at the given path (if valid). */
-NautilusThemeInstallResult nautilus_theme_install_user_theme        (const char            *theme_to_install_path);
 
 #endif /* NAUTILUS_THEME_H */
