@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 0.9.0
-  Last modified: Feb 18, 2001
+  Version: 1.0.0
+  Last modified: March 4, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
                Eazel Inc.
@@ -21,7 +21,7 @@
 
  <bookinfo>
   <title>Nautilus User Manual</title>
-  <edition>v0.9</edition>
+  <edition>v1.0</edition>
   <authorgroup>
    <author>
     <firstname>Vera</firstname>
@@ -58,6 +58,8 @@
     License</citetitle></ulink>, Version 1.1 or any later version
     published by the Free Software Foundation with no Invariant Sections,
     no Front-Cover Texts, and no Back-Cover Texts.
+    A copy of this license was provided with this software in
+    the file <filename>COPYING-DOCS</filename>.
    </para>
    <para>
     Many of the names used by companies to distinguish their products and
@@ -109,45 +111,48 @@
    </figure>
 
    <para>
+    <inlinegraphic fileref="figures/full-1"></inlinegraphic>
     <guimenu>Menu Bar</guimenu>
    </para> 
 
    <para>
-    The eight menus contain options for most file and folder
-    management tasks, and let you personalize your view of all the
+    The eight menus contain options for most file- and folder-
+    management tasks and let you personalize your view of all the
     applications, folders, and files on your hard disk. The
-    Preferences menu, represented by the symbol to the right of the
-    Help menu, lets you choose your level of Linux and GNOME
+    preferences menu, represented by the symbol to the right of the
+    Help menu, lets you specify your level of Linux and GNOME
     experience.
    </para>
 
    <para>
-    <guimenu>Tool Bar</guimenu>
+    <inlinegraphic fileref="figures/full-2"></inlinegraphic>
+    <guimenu>Toolbar</guimenu>
    </para>
 
    <para>
-    The tool bar gives you one-click browsing and searching of your
-    computer's directories, as well as locations on the Web. Click the
-    Services button for quick access to Easel Services, a suite of
-    services specially designed to address the needs of Linux
-    users.
+    The toolbar lets you use a single click for browsing and searching
+    your computer's directories as well as locations on the Web. Click
+    the Services button for quick access to Eazel Services, a suite of
+    services specially designed to address the needs of Linux users.
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-3"></inlinegraphic>
     <guimenu>Location Bar</guimenu>
    </para>
 
    <para>
-    Use the location bar to enter path names, web addresses (URLs), or
+    Use the location bar to enter path names, Web addresses (URLs), or
     other types of addresses. The pop-up menu on the right end of the
-    bar lets you choose different views - for instance, view as icons
-    or as a list.  Click the plus and minus signs to enlarge or reduce
-    icons in any view. Click the magnifying glass to return to normal
+    bar lets you choose various views - for instance, View as Icons
+    or View as List.  Click the + and - signs to enlarge or reduce
+    icon or list view. Click the magnifying glass to return to original
     size. (If you've changed your theme, the magnifying glass may be
-    replaced by a different symbol.)
+    replaced by another symbol.)
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-4"></inlinegraphic>
     <guimenu>Sidebar</guimenu>
    </para>
 
@@ -161,120 +166,134 @@
 
     <listitem>
      <para>
-      The Tree tab displays the Tree - a hierarchical view of your
-      computer's organization of folders and files
+      The Tree tab displays the tree, a hierarchical view of your
+      computer's organization of folders and files.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      The History tab lists the pathnames or addresses of locations
-      you have previously visited
+      The History tab lists the path names or addresses of locations
+      you've previously visited.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      The Help tab gives you quick access to all information resources
-      - manuals, GNOME info pages, Linux man pages, and
-      more
+      The Help tab gives you quick access to information resources -
+      manuals, GNOME info pages, Linux man pages, and more.
      </para>
     </listitem>
 
     <listitem>
      <para>
       The Notes tab provides a space where you can jot notes about the
-      current folder, create "to do" lists, record status, and so
-      forth
+      current folder.
      </para>
     </listitem>
 
    </itemizedlist>
 
    <para>
-    Note: If your user level is set to beginner, or if you've changed
+    Note: If your user level is set to Beginner or if you've changed
     your sidebar preferences, you may not see all four sidebar
     tabs.
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-5"></inlinegraphic>
+    <guimenu>Status Bar</guimenu>
+   </para>
+
+   <para>
+    The status bar contains information about menu items. To see an
+    explanation for a menu item, point to it and read the status bar
+    text.
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/full-6"></inlinegraphic>
     <guimenu>Main Panel</guimenu>
    </para>
 
    <para>
     The main panel in the Nautilus window is where you do most of your
     browsing. Files, folders, and applications are displayed
-    here. There are several options for modifying and customizing your
+    here. You have several options for modifying and customizing your
     views.
    </para>
-
   </sect1>
   <sect1 id="introdesktop">
    <title>The Nautilus Desktop</title>
 
    <para>
-    The desktop is the background area of your screen. By default, on
-    your GNOME system, Nautilus draws the desktop. The desktop on your
-    computer can look like your physical desktop - it can be full of
-    folders, icons, and works in progress, or it can be cleared
-    off. Nautilus lets you organize it the way you want.
+    The desktop is the background area of your screen. If Nautilus was
+    pre-installed on your GNOME system, Nautilus draws the
+    desktop. The desktop on your computer can look like your physical
+    desktop - it can be full of folders, icons, and works in progress,
+    or it can be clear. Nautilus lets you organize it the way
+    you want.
    </para>
 
    <para>
-    Initially, the desktop contains two items: a house icon that
-    represents your Home location, and a Trash icon.
+    If Nautilus doesn't already draw the desktop on your system, do
+    this:
+   </para>
+
+     <orderedlist>
+
+      <listitem>
+       <para>
+        Open the preferences menu (shown below) and choose
+        Preferences.
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>
+        In the Desktop section, select "Use Nautilus to draw the
+        desktop."
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>Click OK.
+       </para>
+      </listitem>
+
+     </orderedlist>
+
+   <figure id="prefmenu11">
+    <title>The Preferences Menu</title>
+    <screenshot>
+     <screeninfo>Screenshot of Preferences Menu</screeninfo>
+     <graphic format="png" fileref="figures/prefmenu">
+     </graphic>
+    </screenshot>
+   </figure>
+
+   <para>
+    Initially, the desktop contains three items: a house icon that
+    represents your home location, an Eazel Services icon that takes
+    you to Eazel's Web site, and a Trash icon.
    </para>
 
    <para>
-    You can create folders on the desktop, or drag additional files
+    You can create folders on the desktop or drag additional files
     and folders from the Nautilus window to the desktop. For instance,
-    you can create a folder that contains your current projects, and
+    you can create a folder that contains your current projects and
     keep it on the desktop for easy access. You also mount disks (such
-    as floppies or CD-ROM disks) on the desktop.
+    as floppies or CD-ROMs) on the desktop.
    </para>
 
    <para>
-    To see the options for using your desktop space, point and
-    right-click anywhere on the desktop (outside of a window).
+    To see the options for using your desktop space, right-click
+    anywhere on the desktop (outside a window).
    </para>
 
   </sect1>
 
 
-  <!-- Introducing Nautilus: Adding Nautilus to the Panel  -->
-  <sect1 id="default">
-   <title>Adding Nautilus to the GNOME Panel</title>
-
-   <note>
-    <title>Try this</title>
-    <para>
-     To keep Nautilus easily available, add its icon to the GNOME
-     Panel:
-    </para>
-
-    <orderedlist>
-
-     <listitem>
-      <para>
-       Open the <guimenu>GNOME Main Menu</guimenu> (click the footprint
-       icon).
-      </para>
-     </listitem>
-
-     <listitem>
-      <para>
-       Choose <menuchoice> <guimenu>Programs</guimenu>
-       <guisubmenu>Applications</guisubmenu>
-       <guimenuitem>Nautilus</guimenuitem> </menuchoice>.  Holding the
-       left mouse button down on the Nautilus menu option, drag it to
-       the GNOME Panel.
-      </para>
-     </listitem>
-
-    </orderedlist>
-   </note>
-
-  </sect1>
   <!-- Introducing Nautilus: About GNOME  -->
   <sect1 id="gnome">
    <title>About GNOME</title>
@@ -298,7 +317,7 @@
 
   <para>
    This section explains how to use Nautilus to keep track of the
-   folders and files on your machine, as well as browse web pages on
+   folders and files on your machine, as well as browse Web pages on
    the Internet.
   </para>
 
@@ -326,8 +345,7 @@
      <link linkend="music">Viewing and Playing MP3 Files</link>
     </member>
     <member>
-     <link linkend="mount">Mounting Floppy and CD-ROM
-     Drives</link>
+     <link linkend="mount">Mounting Floppy Disks and CD-ROMs</link>
     </member>
     <member>
      <link linkend="internet">Navigating the Internet</link>
@@ -353,30 +371,23 @@
     information about your folder:
    </para>
 
-   <itemizedlist>
+   <para>
+    <inlinegraphic fileref="figures/part-1"></inlinegraphic> 
+    The <guimenu>location bar</guimenu>, which contains your
+    folder's path name
+   </para>
 
-    <listitem>
-     <para>
-      The <guimenu>sidebar</guimenu>, which contains a folder icon
-      representing your folder
-     </para>
-    </listitem>
+   <para>
+    <inlinegraphic fileref="figures/part-2"></inlinegraphic>
+    The <guimenu>sidebar</guimenu>, which contains a folder icon
+    representing your folder
+   </para>
 
-    <listitem>
-     <para>
-      The <guimenu>main panel</guimenu>, where you see icons
-      representing the items in your folder
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      The <guimenu>Location bar</guimenu>, which contains your
-      folder's pathname
-     </para>
-    </listitem>
-
-   </itemizedlist>
+   <para>
+    <inlinegraphic fileref="figures/part-3"></inlinegraphic>
+    The <guimenu>main panel</guimenu>, where you see icons
+    representing the items in your folder
+   </para>
  
    <figure id="part">
     <title>Location Bar, Sidebar, and Main Panel</title>
@@ -388,17 +399,17 @@
    </figure>
 
    <para>
-    Your Home folder also appears on your desktop, represented by a
+    Your home folder also appears on your desktop, represented by a
     house icon. Double-clicking the house icon opens a new Nautilus
-    window, with your Home folder active.
+    window with your home folder displayed.
    </para>
 
    <para>
-    Note about the Home folder: Depending on your user level setting,
-    your Home folder may be the default Nautilus home folder, which
+    Note about the home folder: Depending on your user-level setting,
+    your home folder may be the default Nautilus home folder, which
     contains basic information about your computer and pointers to
     some useful applications, or the home folder defined for you in
-    your Linux settings (normally /home/your_name).
+    your Linux settings (normally /home/<emphasis>your_name</emphasis>).
    </para>
 
   </sect1>
@@ -413,7 +424,7 @@
     in the toolbar and the icons in the Nautilus window.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
      Using your home folder as a reference point, navigate your hard
@@ -424,23 +435,20 @@
 
      <listitem>
       <para>
-       To view your home folder, click the <guibutton>Home
-       button</guibutton>.
+       To view your home folder, click the Home button.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       To move to the folder that contains your home folder -
-       that is, to move one folder up in the hierarchy - click the <guibutton>Up
-       button</guibutton>.
+       To move to the folder that contains your home folder - that is,
+       to move one folder up in the hierarchy - click the Up button.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       To return to the Home folder, click the <guibutton>Back
-       button</guibutton>.
+       To return to the home folder, click the Back button.
       </para>
      </listitem>
 
@@ -454,21 +462,19 @@
      <listitem>
       <para>
        If you think that the contents of a folder have changed while
-       you've been viewing it, click the
-       <guibutton>Refresh</guibutton> button to update the
+       you've been viewing it, click the Refresh button to update the
        information.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       To stop an item from loading, click the
-       <guibutton>Stop</guibutton> button.
+       To stop an item from loading, click the Stop button.
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
@@ -478,19 +484,18 @@
 
    <para>
     You can get an overview of all of your computer's files and
-    folders by using the Tree. Many people find using the Tree to
+    folders by using the tree. Many people find using the tree to
     navigate faster than selecting and opening folders.
    </para>
 
    <para>
-    To see the Tree, click the Tree tab at the bottom of the
-    sidebar. Click the tab again to put the Tree away.
+    To see the tree, click the Tree tab at the bottom of the
+    sidebar. Click the tab again to put the tree away.
    </para>
 
    <para>
     If you don't see the Tree tab, right-click the sidebar and choose
-    Tree. If your user level is set to beginner, you may not be able
-    to view the Tree.
+    Tree.
    </para>
 
    <para>
@@ -500,21 +505,21 @@
     computer's folders and files. The items on your computer are
     arranged hierarchically. The root directory may list network
     locations in addition to locations on your computer. (Note: In
-    addition to the root directory identified by a "/", there is a
-    directory named "root.")
+    addition to the root directory identified by a /, there is a
+    directory named root.)
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
-     Open and close a folder in the Tree:
+     Open and close a folder in the tree:
     </para>
 
     <itemizedlist>
 
      <listitem>
       <para>
-       To open or close a folder in the Tree, click its
+       To open or close a folder in the tree, click its
        triangle.
       </para>
      </listitem>
@@ -522,12 +527,12 @@
      <listitem>
       <para>
        To display the contents of a folder in the main panel,
-       click the folder's name in the Tree.
+       click the folder's name in the tree.
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
@@ -539,23 +544,21 @@
 
    <para>
     The first time you launch Nautilus, you see folders and files
-    represented as icons. This is the icon view, which is the
-    default.
+    represented as icons. This is the icon view.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
-     Look at your files and folders in two different views:
+     Look at your files and folders in two views:
     </para>
 
     <itemizedlist>
 
      <listitem>
       <para>
-       To see the contents of a folder as a list, click the
-       <guimenu>View as</guimenu> pop-up menu and choose
-       <guimenuitem>View as List</guimenuitem>.
+       To see the contents of a folder as a list, click the View as
+       pop-up menu and choose View as List.
       </para>
      </listitem>
 
@@ -569,27 +572,25 @@
 
      <listitem>
       <para>
-       To return to icon view, open the <guimenu>View as</guimenu>
-       pop-up menu and choose <guimenuitem>View as
-       Icons</guimenuitem>.
+       To return to icon view, open the View as pop-up menu and choose
+       View as Icons.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       To sort the items in icon view, open the
-       <guimenu>View</guimenu> menu, choose <guimenuitem>Lay Out
-       Items</guimenuitem>, and then choose a layout option. (For more
-       about the layout options, see <link linkend="layout">Choosing
-       File Layouts</link>.)
+       To sort the items in icon view, open the View menu, choose Lay
+       Out Items, and then choose a layout option. (For more about the
+       layout options, see <link linkend="layout">Choosing File
+       Layouts</link>.)
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
    <figure id="viewmenu">
-    <title>The View As Pop-up Menu</title>
+    <title>The View as Pop-up Menu</title>
     <screenshot>
      <screeninfo>Screenshot of view menu</screeninfo>
      <graphic format="png" fileref="figures/viewmenu">
@@ -606,7 +607,7 @@
     icon view and stretch individual icons in icon view.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
      Enlarge and reduce icons in either icon view or list view:
@@ -617,7 +618,7 @@
      <listitem>
       <para>
        To enlarge or reduce all the icons simultaneously,
-       click the plus (+) and minus (-) symbols in the Location
+       click the plus (+) and minus (-) symbols in the location
        bar.
       </para>
      </listitem>
@@ -625,22 +626,15 @@
      <listitem>
       <para>
        To return them to their original size, click the
-       symbol between the plus and minus symbols (normally a magnifying
+       symbol between the - and + symbols (normally a magnifying
        glass).
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
-   <note>
-    <title>Try this</title> 
-    <para>
-     Stretch an icon in icon view:
-    </para>
-   </note>
-
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
      Stretch an icon in icon view:
@@ -665,7 +659,7 @@
      <listitem>
       <para>
        Click and drag the handles to resize the icon. To cancel the
-       stretch, press the Esc key.
+       stretch, press the Escape key.
       </para>
      </listitem>
 
@@ -676,7 +670,7 @@
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <para>
     To return an icon to its original size, select the icon; then
@@ -729,8 +723,7 @@
    <para>
     You can use the Nautilus window to look at a file's contents
     without opening it for editing in an application. Using a viewer
-    instead of opening an application can save time and system
-    resources.
+    instead of opening an application can save time and memory.
    </para>
 
    <para>
@@ -743,8 +736,8 @@
 
    <para>
     Note: You can control which viewer or application an individual
-    file automatically opens in. See <link linkend="chapter6">Setting
-    Up File Handlers</link>.
+    file automatically opens in. See <link linkend="chapter6">Choosing
+    Applications to Handle Files</link>.
    </para>
 
    <para>
@@ -761,12 +754,13 @@
        <entry>ASCII text, HTML</entry>
       </row>
       <row>
-       <entry><emphasis>Image</emphasis></entry>
-       <entry>JPEG, PNG, GIF (without animation), XPM, SVG (without interactive features)</entry>
+       <entry><emphasis>Image</emphasis></entry> <entry>GIF (without
+       animation), JPEG, PNG, SVG (without interactive features),
+       XPM</entry>
       </row>
       <row>
-       <entry><emphasis>Music</emphasis></entry>
-       <entry>MP3 (for MP3 files located on your hard disk), AIFF, WAV, RIFF</entry>
+       <entry><emphasis>Music</emphasis></entry> <entry>AIFF, MP3 (for
+       MP3 files located on your hard disk), RIFF, WAV</entry>
       </row>
       <row>
        <entry><emphasis>Package</emphasis></entry>
@@ -790,29 +784,27 @@
     <listitem>
      <para>
       Double-click the file's icon (unless you've changed
-      your preference so that a single-click activates items).
+      your preference so that a single click activates items).
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click the file's icon, open the <guimenu>File</guimenu> menu,
-      and choose <guimenuitem>Open</guimenuitem> or <guimenuitem>Open
-      With</guimenuitem>.
+      Click the file's icon, open the File menu, and choose Open or
+      Open With.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Right-click the file's icon and choose
-      <guimenuitem>Open</guimenuitem> or one of the <guimenuitem>Open
-      With</guimenuitem> options
+      Right-click the file's icon, and choose Open or one of the Open
+      With options.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click the file's icon and press the Enter key.
+      Click the file's icon, and press the Enter key.
      </para>
     </listitem>
 
@@ -821,8 +813,7 @@
    <para>
     Note: If the application you want to use is not listed when you
     choose Open With, you can add the application to the list. See
-    <link linkend="chapter6">Setting Up Helper
-    Applications</link>.
+    <link linkend="chapter6">Choosing Applications to Handle Files</link>.
    </para>
 
   </sect1>
@@ -835,12 +826,12 @@
    <para>
     Nautilus provides a special set of features to help you enjoy your
     MP3 files. Using the View as Music option, you can set up a folder
-    of MP3 files as an album, containing tracks of your choice and
-    represented by an album cover (custom icon) that you
+    of MP3 files as an album containing tracks of your choice and
+    represented by an album cover (custom image) that you
     specify.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
      Use your collection of MP3 files to create a custom music album:
@@ -856,19 +847,18 @@
 
      <listitem>
       <para>
-       Click the <guimenu>View as</guimenu> pop-up menu and
-       choose <guimenuitem>View as Music</guimenuitem>.
+       Click the View as pop-up menu and choose View as Music.
       </para>
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <figure id="view2">
-    <title>The View As Pop-up Menu</title>
+    <title>The View as Pop-up Menu</title>
     <screenshot>
      <screeninfo>Screenshot of View Menu</screeninfo>
-     <graphic format="png" fileref="figures/viewmusic">
+     <graphic format="png" fileref="figures/viewmenu">
      </graphic>
     </screenshot>
    </figure>
@@ -881,8 +871,8 @@
 
    <para>
     To begin playing the tracks in your album, click the music
-    player's Play button. The selected track begins to play; when it
-    is finished, the next track begins playing automatically. You can
+    player's play button. The selected track begins to play; when it
+    has finished, the next track begins playing automatically. You can
     also double-click a file to play it.
    </para>
 
@@ -894,6 +884,26 @@
      </graphic>
     </screenshot>
    </figure>
+
+   <para>
+    <inlinegraphic fileref="figures/player-1"></inlinegraphic>
+    Play button
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-2"></inlinegraphic>
+    Pause button
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-3"></inlinegraphic>
+    Stop button
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-4"></inlinegraphic>
+    To rewind or fast forward, drag the slider.
+   </para>
 
    <para>
     If you wish, you can choose a cover image to be displayed for your
@@ -911,16 +921,14 @@
 
     <listitem>
      <para>
-      Click the <guimenu>View as</guimenu> menu and choose
-      <guimenuitem>View as Music</guimenuitem>.
+      Click the View as pop-up menu and choose View as Music.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click the <guimenuitem>Set Cover Image</guimenuitem>
-      button in the bottom right corner of the Nautilus
-      window.
+      Click the Set Cover Image button in the bottom right corner of
+      the Nautilus window.
      </para>
     </listitem>
 
@@ -933,7 +941,7 @@
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK.
      </para>
     </listitem>
 
@@ -941,9 +949,10 @@
 
   </sect1>
 
-  <!-- NAVIGATING YOUR COMPUTER AND THE INTERNET:Mounting Floppy and CD-ROM Drives  -->
+  <!-- NAVIGATING YOUR COMPUTER AND THE INTERNET: Mounting Floppy Disks and
+  CD-ROMs -->
   <sect1 id="mount">
-   <title>Mounting Floppy and CD-ROM Drives</title>
+   <title>Mounting Floppy Disks and CD-ROMs</title>
 
    <para>
     If you have a disk in a CD-ROM or floppy drive, you can mount it
@@ -960,7 +969,7 @@
 
     <listitem>
      <para>
-      Right-click anywhere on the desktop (outside of a window) and
+      Right-click anywhere on the desktop (outside a window) and
       choose <menuchoice><guimenu>Disks</guimenu>
       <guisubmenu>Floppy</guisubmenu></menuchoice> or
       <menuchoice><guimenu>Disks</guimenu>
@@ -979,24 +988,22 @@
    <title>Navigating the Internet</title>
 
    <para>
-    You can use Nautilus as a browser for viewing web pages and FTP
+    You can use Nautilus as a browser for viewing Web pages and FTP
     sites.
    </para>
 
    <para>
-    To view a web page, type its web address (URL) in the Location
+    To view a Web page, type its Web address (URL) in the Location
     bar.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
-     Connect to Eazel's web site by typing
-     <userinput>eazel.com</userinput> in the Location bar, and
-     pressing Enter. It's not necessary to type "http://" or
-     "www."
+     Connect to Eazel's Web site by typing eazel.com in the location
+     bar, and pressing Enter. It's not necessary to type http: or www.
     </para>
-   </note>
+   </tip>
 
    <figure id="locbar">
     <title>The Location Bar</title>
@@ -1008,8 +1015,8 @@
    </figure>
 
    <para>
-    When you're viewing a web page, Nautilus gives you additional
-    browser choices in case you want to use a full-featured web
+    When you're viewing a Web page, Nautilus gives you additional
+    browser choices in case you want to use a full-featured Web
     browser. To select a different browser, click one of the buttons in
     the sidebar.
    </para>
@@ -1043,24 +1050,21 @@
 
     <listitem>
      <para>
-      Look at the bottom section of the <guimenu>Go</guimenu> menu to
-      see a list of the things you've viewed during the current
-      session.
+      Look at the bottom section of the Go menu to see a list of the
+      things you've viewed during the current session.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click the <guimenuitem>History</guimenuitem> tab at the bottom of
-      the sidebar. (To put the History tab away, click the tab
-      again.)
+      Click the History tab at the bottom of the sidebar. (To put the
+      History tab away, click the tab again.)
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Right-click the <guimenu>Back</guimenu> or
-      <guimenu>Forward</guimenu> button.
+      Right-click the Back or Forward button.
      </para>
     </listitem>
 
@@ -1068,7 +1072,7 @@
 
    <para>
     You can have Nautilus clear the list of locations you've
-    previously visted. This removes the previous locations listed in
+    previously visited. This removes the previous locations listed in
     the Go menu, the History tab, and under the Back and Forward
     buttons.
    </para>
@@ -1080,8 +1084,7 @@
    <itemizedlist>
     <listitem>
      <para>
-      Open the <guimenu>Go</guimenu> menu and choose
-      <guimenuitem>Forget History</guimenuitem>.
+      Open the Go menu and choose Forget History.
      </para>
     </listitem>
    </itemizedlist>
@@ -1095,7 +1098,7 @@
 
    <para>
     You will probably discover that you frequently visit certain
-    locations - web pages, folders on your computer, and favorite
+    locations - Web pages, folders on your computer, and favorite
     photos or text files. You can bookmark these items in Nautilus, so
     that you can return to them easily.
    </para>
@@ -1119,16 +1122,14 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Bookmarks</guimenu> menu and choose
-      <guimenuitem>Add Bookmark</guimenuitem>.
+      Open the Bookmarks menu and choose Add Bookmark.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      To use your bookmark, open the <guimenu>Bookmarks</guimenu> menu
-      and choose your bookmark from the bottom of the
-      menu.
+      To use your bookmark, open the Bookmarks menu and choose your
+      bookmark from the bottom of the menu.
      </para>
     </listitem>
 
@@ -1140,7 +1141,7 @@
 
    <para>
     Nautilus comes with some built-in bookmarks arranged in folders in
-    the middle part of the Bookmarks menu. They take you to the web
+    the middle part of the Bookmarks menu. They take you to the Web
     sites of organizations and companies of interest to Linux
     users.
    </para>
@@ -1154,28 +1155,27 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Preferences</guimenu> menu and choose
-      <guimenuitem>Preferences</guimenuitem>.
+      Open the preferences menu and choose Preferences.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the left-hand column of the Preferences dialog box,
-      click <guimenuitem>Navigation</guimenuitem>.
+      In the left-hand column of the Preferences dialog box, click
+      Navigation.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Select <guimenuitem>Don't include the built-in
-      bookmarks</guimenuitem>.
+      Select Don't include the built-in bookmarks in the Bookmarks
+      menu.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK.
      </para>
     </listitem>
 
@@ -1203,8 +1203,7 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Bookmarks</guimenu> menu and choose
-      <guimenuitem>Edit Bookmarks</guimenuitem>.
+      Open the Bookmarks menu and choose Edit Bookmarks.
      </para>
     </listitem>
 
@@ -1238,7 +1237,7 @@
 
   <para>
    Nautilus provides a Find feature for locating files and directories
-   on your computer and a Web Search feature for finding web pages.
+   on your computer and a Web Search feature for finding Web pages.
   </para>
 
   <sect1 id="toc3">
@@ -1247,54 +1246,119 @@
    <simplelist>
     <member><link linkend="find">Finding Items on Your Computer</link></member>
     <member><link linkend="simple">Simple Searches</link></member>
-    <member><link linkend="medusa">Fast Searches</link></member>
+    <member><link linkend="medusa">Complex Searches</link></member>
     <member><link linkend="search">Searching the Internet</link></member>
    </simplelist>
 
   </sect1>
 
-  <!--  Searching Your Computer and the Internet: Finding Items on Your Computer  -->
+  <!-- Searching Your Computer and the Internet: Finding Items on Your
+  Computer -->
   <sect1 id="find">
    <title>Finding Items on Your Computer</title>
 
    <para>
-    When you search for items on your own computer, you will use one
-    of these Natuilus search utilities:
+    When you search for items on your computer, you can use one
+    of these Nautilus search utilities:
    </para>
 
    <itemizedlist>
 
     <listitem>
      <para>
-      Simple searches: If your user level is set to beginner, or you
-      didn't turn Medusa on when you first installed, Nautilus will
-      perform a quick and easy search by file name.
+      Simple searches: If your user level is set to Beginner, Nautilus
+      performs a quick and easy search by file name.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Fast searches: If your user level is set to intermediate and if
-      you have Medusa turned on, Nautilus searches the files on your
-      hard disk by file name, creator, file type, and other
-      attributes, as well as by the actual content of
-      files.
+      Complex searches: If your user level is set to Intermediate or
+      Advanced, Nautilus searches the files on your hard disk by file
+      name, creator, file type, and other attributes, as well as by
+      the actual content of files.
      </para>
     </listitem>
 
    </itemizedlist>
 
    <para>
-    <guimenu>Medusa</guimenu>
+    <guimenu>Fast Versus Slow Searches</guimenu>
    </para>
 
    <para>
-    Medusa is an indexing daemon - a small utility that runs in the
-    background when your computer is idle. Medusa indexes all the
-    content in the files on your computer and on mounted volumes (such
-    as CD-ROM disks), so you can quickly find any string of text in
-    any of your files.
+    Nautilus uses Medusa, a daemon, which is a piece of software that
+    runs in the background. Medusa creates an index of all the items
+    on your hard disk and mounted volumes, including their names,
+    size, creation date, and other attributes. In addition, Medusa
+    indexes the actual <emphasis>content</emphasis> of each file - so
+    you can find any word or phrase in any file on your computer when
+    you search by content.
    </para>
+
+   <para>
+    Medusa runs when your computer is idle, so it doesn't disrupt your
+    activities.
+   </para>
+
+   <para>
+    If Medusa has not finished indexing your system or is not running
+    on your computer, when you do a search you may see a message
+    letting you know that Nautilus can't perform a fast search.
+   </para>
+
+   <para>
+    If you suspect that Medusa is not turned on, do this:
+   </para>
+
+    <orderedlist>
+
+     <listitem>
+      <para>
+       Open a terminal window.
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       Log into your system as root.
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       Enter this command at the command line: medusa-searchd
+      </para>
+     </listitem>
+
+    </orderedlist>
+
+    <para>
+     If Medusa is still not turned on, do this:
+    </para>
+
+     <orderedlist>
+
+      <listitem>
+       <para>
+        Open the preferences menu and choose Preferences.
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>
+        From the left column of the Preferences dialog box, choose
+        Search.
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>
+        In the Fast Search section, turn on "Enable fast search."
+       </para>
+      </listitem>
+
+     </orderedlist>
 
   </sect1>
 
@@ -1303,37 +1367,34 @@
    <title>Simple Searches</title>
 
    <para>
-    To find an item on your hard disk (beginner user level):
+    To find an item on your hard disk (Beginner user level):
    </para>
 
    <orderedlist>
 
     <listitem>
      <para>
-      Click the <guimenuitem>Find</guimenuitem> button in the
-      toolbar. The Location bar is replaced by the Find
-      bar.
+      Click the Find button in the toolbar. The location bar is
+      replaced by the find bar.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Enter the name of the item you want to find in the
-      <guimenuitem>Search For:</guimenuitem> field.
+      Enter the name of the item you want to find in the Find field.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Find Them</guimenuitem>.
+      Click Find Them.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      When you're done searching, click the
-      <guimenuitem>Find</guimenuitem> button again to put away the
-      Find bar.
+      When you're done searching, click the Find button again to put
+      away the Find bar.
      </para>
     </listitem>
 
@@ -1343,50 +1404,7 @@
 
   <!--  Searching Your Computer and the Internet: Fast Searches -->
   <sect1 id="medusa">
-   <title>Fast Searches</title>
-
-   <para>
-    Nautilus uses Medusa, a daemon, which is a piece of software that
-    runs in the background when your computer is idle. Medusa creates
-    an index of all the items on your hard disk and mounted volumes,
-    including their names, size, creation date, and other
-    attributes. In addition, Medusa indexes the actual
-    <emphasis>content</emphasis> of each file - so you can find any
-    word or phrase in any file on your computer when you search by
-    content.
-   </para>
-
-   <para>
-    If Medusa has not finished indexing your system or is not running
-    on your computer, then when you do a search you may see a message
-    letting you know that Nautilus can't perform a fast search.
-   </para>
-
-   <para>
-    If you suspect that Medusa is not turned on, do this:
-   </para>
-
-   <orderedlist>
-
-    <listitem>
-     <para>
-      Open a terminal window.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Log into your system as root.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Enter this command at the command line: medusa-searchd
-     </para>
-    </listitem>
-
-   </orderedlist>
+   <title>Complex Searches</title>
 
    <para>
     To find an item on your hard disk (Intermediate or Advanced user
@@ -1397,8 +1415,7 @@
 
     <listitem>
      <para>
-      Click the <guimenuitem>Find button</guimenuitem> in the
-      toolbar.
+      Click the Find button in the toolbar.
      </para>
     </listitem>
 
@@ -1411,30 +1428,28 @@
 
     <listitem>
      <para>
-      (Optional) To further narrow your search, click
-      <guimenuitem>More Options</guimenuitem> and choose additional
-      criteria.
+      (Optional) To further narrow your search, click More Options and
+      choose additional criteria.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Enter the item you want to find - a particular filename,
-      modification date, and so forth - in the search field.
+      Enter the item you want to find - a particular file name,
+      modification date, and so forth - in the Find field.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Find Them</guimenuitem>.
+      Click Find Them.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      When you're done searching, click the
-      <guimenuitem>Find</guimenuitem> button again to put away the
-      Find bar.
+      When you're done searching, click the Find button again to put
+      away the Find bar.
      </para>
     </listitem>
 
@@ -1452,7 +1467,7 @@
 
       <row>
        <entry>
-        Name: Nautilus will search the names of files on your hard
+        Name: Nautilus searches the names of files on your hard
         disk.
        </entry>
 
@@ -1464,7 +1479,7 @@
        </entry>
 
        <entry>
-        Enter part or all of the filename you want to find.
+        Enter part or all of the file name you want to find.
        </entry>
 
       </row>
@@ -1472,7 +1487,7 @@
       <row>
 
        <entry>
-        Content: Nautilus will search the content of files on your hard
+        Content: Nautilus searches the content of files on your hard
         disk.
        </entry>
 
@@ -1491,7 +1506,7 @@
       <row>
 
        <entry>
-        Type: Nautilus will search for the file types you specify.
+        Type: Nautilus searches for the file types you specify.
        </entry>
 
        <entry>
@@ -1553,11 +1568,11 @@
 
        <entry>
         Choose "is" or "is not" to include or exclude files owned by a
-        particular group.
+        particular user.
        </entry>
 
        <entry>
-        Enter the name of a user group that owns files on your
+        Enter the name of a user who owns files on your
         system.
        </entry>
 
@@ -1575,47 +1590,46 @@
 
    <para>
     To search for pages on the Web, click the Web Search button in the
-    toolbar. Eazel's search page appears. Type the word or phrase for
+    toolbar. Eazel's Search page appears. Type the word or phrase for
     which you want to search, and click Search.
    </para>
 
    <para>
     You can choose a search engine from the ones listed above the
-    search box. For instance, choose Google by clicking the Google
+    Search box. For instance, choose Google by clicking the Google
     link.
    </para>
 
    <para>
     If you like, you can set the Web Search button to take you to your
-    favorite web search service:
+    favorite Web search service:
    </para>
 
    <orderedlist>
 
     <listitem>
      <para>
-      Open the <guimenu>Preferences</guimenu> menu and choose
-      <guimenuitem>Preferences</guimenuitem>.
+      Open the preferences menu and choose Preferences.
      </para>
     </listitem>
 
     <listitem>
      <para>
       In the left-hand portion of the Preferences dialog box, click
-      <guimenuitem>Search</guimenuitem>.
+      Search.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Search Engines section, enter the web address (URL) for
+      In the Search Engines section, enter the Web address (URL) for
       your favorite search service.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK.
      </para>
     </listitem>
 
@@ -1674,9 +1688,8 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>New Window</guimenuitem>. You now have two Nautilus
-      windows.
+      Open the File menu and choose New Window. You now have two
+      Nautilus windows.
      </para>
     </listitem>
 
@@ -1712,9 +1725,8 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose <guimenuitem>New
-      Window</guimenuitem>. You now have two Nautilus
-      windows.
+      Open the File menu and choose New Window. You now have two
+      Nautilus windows.
      </para>
     </listitem>
 
@@ -1729,16 +1741,14 @@
     <listitem>
      <para>
       Click and hold the right mouse button on the item; then drag it
-      to the destination folder. A pop-up menu
-      appears.
+      to the destination folder. A pop-up menu appears.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Choose <guimenuitem>Copy Here</guimenuitem> to place a
-      copy of the item in the destination folder. Choose <guimenuitem>Link
-      Here</guimenuitem> to create a link to the item.
+      Choose Copy Here to place a copy of the item in the destination
+      folder. Choose Link Here to create a link to the item.
      </para>
     </listitem>
 
@@ -1769,8 +1779,7 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>New Folder</guimenuitem>.
+      Open the File menu and choose New Folder.
      </para>
     </listitem>
 
@@ -1778,8 +1787,8 @@
 
    <para>
     Nautilus creates a new folder inside the current folder. It has
-    the name &quot;untitled folder.&quot; You can <link
-    linkend="rename">rename the new folder</link>.
+    the name untitled folder. You can <link linkend="rename">rename
+    the new folder</link>.
    </para>
 
   </sect1>
@@ -1789,7 +1798,7 @@
    <title>Files and Folders on the Desktop</title>
 
    <para>
-    You can treat the desktop as an extension of the Nautilus window,
+    You can treat the desktop as an extension of the Nautilus window
     and move, copy, and create folders there.
    </para>
 
@@ -1800,7 +1809,7 @@
    </para>
 
    <para>
-    To put a copy of an item on the desktop, or create a link to it,
+    To put a copy of an item on the desktop or to create a link to it,
     do this:
    </para>
 
@@ -1822,10 +1831,8 @@
 
     <listitem>
      <para>
-      Choose <guimenuitem>Copy Here</guimenuitem> to place a copy of
-      the item on the desktop. Choose <guimenuitem>Link
-      Here</guimenuitem> to create a link to the
-      item.
+      Choose Copy Here to place a copy of the item on the
+      desktop. Choose Link Here to create a link to the item.
      </para>
     </listitem>
 
@@ -1833,7 +1840,7 @@
 
    <para>
     To create a new folder on the desktop, right-click anywhere on the
-    desktop (outside of a window), and choose New Folder from the
+    desktop (outside a window), and choose New Folder from the
     pop-up menu.
    </para>
 
@@ -1857,15 +1864,13 @@
 
     <listitem>
      <para>
-      Click the icon of the item you want to
-      duplicate.
+      Click the icon of the item you want to duplicate.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>Duplicate</guimenuitem>.
+      Open the File menu and choose Duplicate.
      </para>
     </listitem>
 
@@ -1878,7 +1883,7 @@
 
    <para>
     Shortcut: In either icon or list view, right-click the item you
-    want to duplicate, and choose Duplicate from the pop-up menu.
+    want to duplicate and choose Duplicate from the pop-up menu.
    </para>
 
   </sect1>
@@ -1901,9 +1906,8 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>Rename</guimenuitem>. The icon label now has a text
-      box around it.
+      Open the File menu and choose Rename. The icon label now has a
+      text box around it.
      </para>
     </listitem>
 
@@ -1929,15 +1933,14 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File menu</guimenu> and choose
-      <guimenuitem>Show Properties</guimenuitem>.
+      Open the File menu and choose Show Properties.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Type a new name for the item in the space provided in
-      the Basic tab.
+      Type a new name for the item in the space provided in the Basic
+      tab.
      </para>
     </listitem>
 
@@ -1975,17 +1978,15 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>Move to Trash</guimenuitem>.
+      Open the File menu and choose Move to Trash.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      To empty the trash, open the <guimenu>File</guimenu>
-      menu and choose <guimenuitem>Empty Trash</guimenuitem>. (Empty the
-      trash only if you're sure you want to permanently delete the items in
-      it!)
+      To empty the trash, open the File menu and choose Empty
+      Trash. (Empty the trash only if you're sure you want to
+      permanently delete the items in it!)
      </para>
     </listitem>
 
@@ -2020,10 +2021,8 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <guimenuitem>Show Properties</guimenuitem>. The Properties
-      dialog box opens for the file or folder you
-      selected.
+      Open the File menu and choose Show Properties. The Properties
+      dialog box opens for the file or folder you selected.
      </para>
     </listitem>
 
@@ -2035,8 +2034,8 @@
 
     <listitem>
      <para>
-      From the <guimenu>File Group</guimenu> menu, choose
-      the group that this file or folder belongs to.
+      From the File Group menu, choose the group that this file or
+      folder belongs to.
      </para>
     </listitem>
 
@@ -2045,22 +2044,21 @@
       In the table, click to put a checkmark under each type of
       permission you want to grant. For instance, you might give the
       owner and users in the group permission to read (view), write
-      (edit), and execute files in the group, and give others
-      permission to read files, but not write to them.
+      (edit), and execute the file, and give others permission to read
+      the file but not write to it.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      When you are done managing permissions, close the
-      dialog box.
+      When you are done managing permissions, close the dialog box.
      </para>
     </listitem>
 
    </orderedlist>
 
    <para>
-    Note: Execute is normally used only for programs, and for folders
+    Note: Execute is normally used only for programs and for folders
     with directory listings that you wish to make available.
    </para>
  
@@ -2130,7 +2128,7 @@
    </itemizedlist>
 
    <para>
-    To change your user level, open the Preferences menu and choose
+    To change your user level, open the preferences menu and choose
     the level you want.
    </para>
 
@@ -2164,15 +2162,14 @@
    </para>
 
    <para>
-    The preference settings adjust the Nautilus appearance, the
+    The preference settings adjust the appearance of Nautilus, the
     behavior of files and folders when you view and click them, the
-    languages used in displaying web pages, the type of searches
-    performed when you click the Find or Web Search buttons, and
-    more.
+    type of searches performed when you click the Find or Web Search
+    buttons, and more.
    </para>
 
    <para>
-    To open the Preferences dialog boxes use the Preferences menu,
+    To open the Preferences dialog box use the preferences menu,
     shown here.
    </para>
 
@@ -2193,15 +2190,14 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Preferences</guimenu> menu and choose
-      <guimenuitem>Preferences</guimenuitem>.
+      Open the preferences menu and choose Preferences.
      </para>
     </listitem>
 
     <listitem>
      <para>
       From the left column in the Preferences dialog box, choose the
-      type of settings you want to adjust (for instance, Folder Views).
+      type of settings you want to adjust (for instance, Icon & List Views).
      </para>
     </listitem>
 
@@ -2214,7 +2210,7 @@
     <listitem>
      <para>
       When you are finished setting preferences, click
-      <guimenuitem>OK</guimenuitem>.
+      OK to close the window.
      </para>
     </listitem>
 
@@ -2233,18 +2229,9 @@
    <itemizedlist>
     <listitem><para>sidebar</para></listitem>
     <listitem><para>toolbar</para></listitem>
-    <listitem><para>Location bar</para></listitem>
+    <listitem><para>location bar</para></listitem>
     <listitem><para>status bar (at the bottom of the window)</para></listitem>
    </itemizedlist>
-
-   <figure id="full3">
-    <title>The Nautilus Window</title>
-    <screenshot>
-     <screeninfo>Diagram of Nautilus</screeninfo>
-     <graphic format="png" fileref="figures/full">
-     </graphic>
-    </screenshot>
-   </figure>
 
    <para>
     You may want to hide one or more of these bars to save space on
@@ -2259,16 +2246,15 @@
 
     <listitem>
      <para>
-      Open the <guimenu>View</guimenu> menu and click one of the
-      options in the second section. For instance, to hide the sidebar,
-      click Hide Sidebar.
+      Open the View menu and click one of the options in the second
+      section. For instance, to hide the sidebar, click Hide Sidebar.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      To see the bar again, open the <guimenu>View</guimenu> menu and
-      choose one of the Show options.
+      To see the bar again, open the View menu and choose one of the
+      Show options.
      </para>
     </listitem>
 
@@ -2285,28 +2271,27 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Preferences</guimenu> menu (shown below) and
-      choose <guimenuitem>Preferences</guimenuitem>.
+      Open the preferences menu (shown below) and choose Preferences.
      </para>
     </listitem>
 
     <listitem>
      <para>
       In the left column of the Preferences dialog box, click
-      <guimenuitem>Appearance</guimenuitem>.
+      Appearance.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Views section, de-select any bars you want hidden in new
+      In the Views section, deselect any bars you want hidden in new
       windows.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK to close the window.
      </para>
     </listitem>
 
@@ -2359,7 +2344,7 @@
        <entry>By Type</entry>
        <entry>
         Files are arranged in groups, such as text, image, and
-        so on. All folders are grouped together.
+        so on. All folders are grouped.
        </entry>
       </row>
 
@@ -2426,21 +2411,20 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Themes</guimenuitem>.
+      Open the Edit menu and choose Nautilus Themes.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Choose a theme. The appearance changes immediately, so
-      you can see how the theme looks.
+      Choose a theme. The appearance changes immediately, so you can
+      see how the theme looks.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      When you're finished, click <guimenuitem>Done</guimenuitem>.
+      When you're finished, click Done.
      </para>
     </listitem>
 
@@ -2454,15 +2438,14 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Backgrounds and Emblems</guimenuitem>.
+      Open the Edit menu and choose Backgrounds and Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Backgrounds and Emblems dialog box, choose
-      <guimenuitem>Patterns or Colors</guimenuitem>.
+      In the Backgrounds and Emblems dialog box, choose Patterns or
+      Colors.
      </para>
     </listitem>
 
@@ -2470,14 +2453,13 @@
      <para>
       Drag a tile to a part of the Nautilus window. For instance,
       change the color of the sidebar by dragging the yellow tile. To
-      restore the orginal setting, drag the Reset
-      tile.
+      restore the orginal setting, drag the Reset tile.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      When you're finished, click <guimenuitem>Done</guimenuitem>.
+      When you're finished, click Done.
      </para>
     </listitem>
 
@@ -2495,7 +2477,7 @@
 
    <para>
     If your user level is set to Intermediate or Advanced, you can add
-    and remove backgrounds and colors to the customization
+    and remove backgrounds and colors in the list of customization
     choices.
    </para>
 
@@ -2508,22 +2490,19 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Backgrounds and Emblems</guimenuitem>.
+      Open the Edit menu and choose Backgrounds and Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Backgrounds and Emblems dialog box, choose
-      <guimenuitem>Patterns</guimenuitem>.
+      In the Backgrounds and Emblems dialog box, choose Patterns
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add a New
-      Pattern</guimenuitem>.
+      Click Add a New Pattern.
      </para>
     </listitem>
 
@@ -2536,8 +2515,7 @@
 
     <listitem>
      <para>
-      Select the image file and click
-      <guimenuitem>OK</guimenuitem>. The image is added as a new
+      Select the image file and click OK. The image is added as a new
       tile.
      </para>
     </listitem>
@@ -2552,36 +2530,33 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Backgrounds and Emblems</guimenuitem>.
+      Open the Edit menu and choose Backgrounds and Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Backgrounds and Emblems dialog box, choose
-      <guimenuitem>Colors</guimenuitem>.
+      In the Backgrounds and Emblems dialog box, choose Colors.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add a New Color</guimenuitem>.
+      Click Add a New Color.
      </para>
     </listitem>
 
     <listitem>
      <para>
       On the color wheel, click the color you want to use and click
-      <guimenuitem>OK</guimenuitem>.
+      OK.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Type a name for the color and click
-      <guimenuitem>OK</guimenuitem>. The color is added as a new
-      tile.
+      Type a name for the color and click OK. The color is added as a
+      new tile.
      </para>
     </listitem>
 
@@ -2596,23 +2571,20 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Backgrounds and
-      Emblems</guimenuitem>.
+      Open the Edit menu and choose Backgrounds and Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Backgrounds and Emblems dialog box, choose
-      <guimenuitem>Patterns or Colors</guimenuitem>.
+      In the Backgrounds and Emblems dialog box, choose Patterns or
+      Colors.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Remove a Pattern</guimenuitem> or
-      <guimenuitem>Remove a Color</guimenuitem>.
+      Click Remove a Pattern or Remove a Color.
      </para>
     </listitem>
 
@@ -2632,7 +2604,7 @@
 
     <listitem>
      <para>
-      Click <guimenuitem>Done</guimenuitem>.
+      Click Done.
      </para>
     </listitem>
 
@@ -2663,8 +2635,8 @@
 
    <para>
     You can customize the information below icons - the icon
-    captions. Although the filename must always appear first, you can
-    specify which other information to show, and change the order of
+    captions. Although the file name must always appear first, you can
+    specify which other information to show and change the order of
     the information.
    </para>
 
@@ -2672,8 +2644,7 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Icon Captions</guimenuitem>.
+      Open the Edit menu and choose Icon Captions.
      </para>
     </listitem>
 
@@ -2681,7 +2652,7 @@
      <para>
       Click the first button and choose from the list. The information
       you choose will be the first thing shown below an icon, after
-      the filename.
+      the file name.
      </para>
     </listitem>
 
@@ -2702,11 +2673,11 @@
 
    <para>
     Note: To see the entire icon caption, you may need to zoom in
-    (click the + symbol in the Location bar).
+    (click the + symbol in the location bar).
    </para>
 
    <para>
-    <guimenu>Customizing an Icon</guimenu>
+    <guimenu>Customizing Icons</guimenu>
    </para>
 
    <para>
@@ -2724,22 +2695,20 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File menu</guimenu> and choose
-      <guimenuitem>Show Properties</guimenuitem>.
+      Open the File menu and choose Show Properties.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Properties dialog box, click <guimenuitem>Select Custom
-      Icon</guimenuitem>.
+      In the Properties dialog box, click Select Custom Icon.
      </para>
     </listitem>
 
     <listitem>
      <para>
       Find and select the image you want to use as a custom icon; then
-      click <guimenuitem>OK</guimenuitem>.
+      click OK.
      </para>
     </listitem>
 
@@ -2760,7 +2729,7 @@
     <listitem>
      <para>
       If you have a tab (Tree, Notes, History, or Help) open in the
-      sidebar, put it away so that you can see the folder icon you want
+      sidebar, put it away so that you can see the icon you want
       to customize. (To put away a tab, click it.)
      </para>
     </listitem>
@@ -2791,8 +2760,8 @@
 
    <para>
     Tip: You may want to work with two Nautilus windows when you
-    customize a directory's icon. Open the File menu and choose New
-    Window. You can drag an image from one window to the folder icon
+    customize an icon. Open the File menu and choose New
+    Window. You can drag an image from one window to the icon
     you're customizing.
    </para>
 
@@ -2817,29 +2786,26 @@
 
     <listitem>
      <para>
-      Open the <guimenu>Edit</guimenu> menu and choose
-      <guimenuitem>Backgrounds and Emblems</guimenuitem>.
+      Open the Edit menu and choose Backgrounds and Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Backgrounds and Emblems dialog box, choose
-      <guimenuitem>Emblems</guimenuitem>.
+      In the Backgrounds and Emblems dialog box, choose Emblems.
      </para>
     </listitem>
 
     <listitem>
      <para>
       Select an emblem and drag it to the icon you want to
-      customize. To remove emblems, drag the Erase emblem to the
-      icon.
+      customize. To remove emblems, drag the Erase emblem to the icon.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Done</guimenuitem>.
+      Click Done.
      </para>
     </listitem>
 
@@ -2849,16 +2815,16 @@
     You can add as many emblems as you like.
    </para>
 
-   <note>
+   <tip>
     <title>Try this</title>
     <para>
      Use emblems to organize your files.
     </para>
-   </note>
+   </tip>
 
    <para>
     Attach Oh No! or Urgent emblems to the files that need immediate
-    attention; then open the View menu and choose Lay Out Items by
+    attention; then open the View menu and choose Lay Out Items By
     Emblems. The files with emblems are displayed at the top in icon view
     and first in list view.
    </para>
@@ -2875,7 +2841,7 @@
    <title>Choosing a Desktop Background</title>
 
    <para>
-    You can change the color of your desktop or give it a new
+    You can change the color of your desktop, or give it new
     "wallpaper." Do this:
    </para>
 
@@ -2883,64 +2849,54 @@
 
     <listitem>
      <para>
-      point and right-click anywhere on the desktop (outside of a
-      window), and choose <guimenuitem>Change Desktop
-      Background</guimenuitem> from the pop-up menu. The GNOME Control
-      Center opens.
+      Right-click anywhere on the desktop (outside a window), and
+      choose Change Desktop Background from the pop-up menu. The
+      GNOME Control Center opens with the Background Image section
+      displayed.
      </para>
     </listitem>
 
     <listitem>
      <para>
       To use an image as the background, choose an item from the
-      pop-up menu under Wallpaper, or click
-      <guimenuitem>Browse</guimenuitem> to find an image file on your
-      computer.
+      pop-up menu under Wallpaper or click Browse to find an image
+      file on your computer.
      </para>
     </listitem>
 
     <listitem>
      <para>
       If you're using an image as a background, choose the effect you
-      want: <guimenuitem>Tiled</guimenuitem>,
-      <guimenuitem>Centered</guimenuitem>,
-      <guimenuitem>Scaled</guimenuitem>, or
-      <guimenuitem>Embossed</guimenuitem>. Click
-      <guimenuitem>Try</guimenuitem> to see how the different styles
-      look.
+      want: Tiled, Centered, Scaled, or Embossed Logo. Click Try to
+      see how the styles look.
      </para>
     </listitem>
 
     <listitem>
      <para>
       To use a color as the background, click the color tiles next to
-      <guimenuitem>Primary Color</guimenuitem> and
-      <guimenuitem>Secondary Color</guimenuitem>, and choose colors
-      from the color wheel.
+      Primary Color and Secondary Color and choose colors from the
+      color wheel.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      From the pop-up menu under Color, choose
-      <guimenuitem>Solid</guimenuitem>, <guimenuitem>Horizontal
-      Gradient</guimenuitem>, or <guimenuitem>Vertical
-      Gradient</guimenuitem>. Click <guimenuitem>Try</guimenuitem> to
-      see how the gradients look.
+      From the pop-up menu under Color, choose Solid, Horizontal
+      Gradient, or Vertical Gradient. Click Try to see how the
+      gradients look.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Be sure that <guimenuitem>Use GNOME to set
-      Background</guimenuitem> is selected.
+      Be sure that Use GNOME to set Background is selected.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>; then close the
-      GNOME Control Center.
+      Click OK; then close the GNOME Control Center.
      </para>
     </listitem>
 
@@ -2951,14 +2907,13 @@
  </chapter>
 
 
- <!-- CHAPTER 6: FILE HANDLERS  -->
+ <!-- CHAPTER 6: Choosing Applications to Handle Files  -->
  <chapter id="chapter6">
-  <title>File Handlers</title>
+  <title>Choosing Applications to Handle Files</title>
 
   <para>
-   File handlers, also known as MIME types or file types, let you
-   customize the way files open for editing and viewing. This section
-   explains how to customize file handlers on your system.
+   This section explains how to customize the way files are opened for
+   editing and viewing.
   </para>
 
   <sect1 id="toc6">
@@ -2967,8 +2922,7 @@
    <simplelist>
 
     <member>
-     <link linkend="handlers">What Are File
-     Handlers?</link>
+     <link linkend="handlers">What Are MIME Types?</link>
     </member>
 
     <member>
@@ -2996,26 +2950,31 @@
   </sect1>
 
   <sect1 id="handlers">
-   <title>What Are File Handlers?</title>
+   <title>What Are MIME Types?</title>
 
    <para>
-    When you open a file, unless you specify a particular application
-    or viewer for the file it normally opens automatically in an
-    application that's appropriate for the file type. For instance, a
-    graphics file normally opens automatically in a graphics
-    application.
+    MIME types are a standard way to identify files so that they can
+    be easily transmitted over the Internet. MIME stands for
+    "Multipurpose Internet Mail Extention." Each type of file is
+    assigned a specific MIME type. For instance, the MIME type for
+    HTML files is "text/html," and the MIME type for JPEG files is
+    "image/jpeg." A file's MIME type tells Internet applications such
+    as browsers and email programs what type of file is being
+    exchanged, how to encode it for transmission, and how to decode it
+    when it arrives at its destination.
    </para>
 
    <para>
-    The application that's set to automatically open for a particular
-    type of file is known as the file handler for that file type. File
-    handlers are also referred to as MIME types or file types.
+    Unless you've specified that a particular application or viewer
+    should open a file, it normally opens automatically in an
+    application that's appropriate for the type. For instance, a JPEG
+    file normally opens automatically in a graphics application.
    </para>
 
    <para>
     You can choose which application or viewer opens automatically for
-    a particular file or file types. You can also set up new file
-    handlers.
+    a particular type of file. You can also set up new applications to
+    handle particular types of files.
    </para>
 
   </sect1>
@@ -3041,27 +3000,26 @@
 
    <listitem>
     <para>
-     Click the icon of the file for which you want to
-     change the Open With options.
+     Click the icon of the file for which you want to change the Open
+     With options.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     Open the <guimenu>File</guimenu> menu and choose
+     Open the File menu and choose
      <menuchoice><guimenu>Open With</guimenu> <guisubmenu>Other
      Application</guisubmenu></menuchoice>. A dialog box opens that
      lists all the applications currently able to open this particular
      type of file. Some applications in the list are tagged "in the
-     menu" for this file type, others are tagged "not in the
+     menu" for this file type; others are tagged "not in the
      menu."
     </para>
    </listitem>
 
    <listitem>
     <para>
-     Select an application in the list and click
-     <guimenuitem>Modify</guimenuitem>.
+     Select an application in the list and click Modify.
     </para>
    </listitem>
 
@@ -3075,14 +3033,13 @@
 
    <listitem>
     <para>
-     Click <guimenuitem>OK</guimenuitem>.
+     Click OK.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     Click <guimenuitem>Done</guimenuitem>. (If you want to
-     open the file now, click Choose.)
+     Click Done. (If you want to open the file now, click Choose.)
     </para>
    </listitem>
 
@@ -3092,8 +3049,7 @@
    To modify the list of viewers you see when you choose Open With,
    follow steps 1 through 6 above but choose Other Viewer instead of
    Other Application in step 2. (A viewer lets you view but not edit a
-   file. Opening a file in a viewer can save time and system
-   resources.)
+   file. Opening a file in a viewer can save time and memory.)
   </para>
 
   </sect1>
@@ -3119,7 +3075,7 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
+      Open the File menu and choose
       <menuchoice><guimenu>Open With</guimenu> <guisubmenu>Other
       Application</guisubmenu></menuchoice>
      </para>
@@ -3128,7 +3084,7 @@
     <listitem>
      <para>
       Select the application you want to use as the default and click
-      <guimenuitem>Modify</guimenuitem>.
+      Modify.
      </para>
     </listitem>
 
@@ -3142,14 +3098,13 @@
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Done</guimenuitem>. (If you want to open the
-      file now, click Choose.)
+      Click Done. (If you want to open the file now, click Choose.)
      </para>
     </listitem>
 
@@ -3171,7 +3126,7 @@
     applications that Nautilus can currently use to open a file. Your
     computer may have additional applications that can open the file
     but that aren't in the list. You can configure additional
-    applications so that they appear in the list.
+    applications so that they appear in the list:
    </para>
 
    <orderedlist>
@@ -3185,8 +3140,8 @@
 
     <listitem>
      <para>
-      Open the <guimenu>File</guimenu> menu and choose
-      <menuchoice><guimenu>Open With</guimenu> <guisubmenu>Other
+      Open the File menu and choose <menuchoice><guimenu>Open
+      With</guimenu> <guisubmenu>Other
       Application</guisubmenu></menuchoice>
      </para>
     </listitem>
@@ -3218,14 +3173,13 @@
 
     <listitem>
      <para>
-      In the Default Action section, click <guimenuitem>Edit
-      List</guimenuitem>.
+      In the Default Action section, click Edit List.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add Application</guimenuitem>.
+      Click Add Application.
      </para>
     </listitem>
 
@@ -3240,8 +3194,7 @@
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem> in each of the
-      next three dialog boxes to dismiss them.
+      Click OK in each of the next three dialog boxes to dismiss them.
      </para>
     </listitem>
 
@@ -3249,7 +3202,7 @@
 
    <para>
     To edit the name or command for an application, follow steps 1
-    through 11 but click Edit Application instead of Add Application
+    through 9 but click Edit Application instead of Add Application
     in step 7.
    </para>
 
@@ -3277,7 +3230,7 @@
 
     <listitem>
      <para>
-      Open the <guimenu>GNOME Main Menu</guimenu> and choose
+      Open the GNOME Main Menu and choose
       <menuchoice><guimenu>Programs</guimenu>
       <guisubmenu>Settings</guisubmenu> <guimenuitem>GNOME Control
       Center</guimenuitem></menuchoice>.
@@ -3286,15 +3239,14 @@
 
     <listitem>
      <para>
-      Choose <guimenuitem>File Types and Programs</guimenuitem> in the
-      GNOME Control Center's left-hand column.
+      Choose File Types and Programs in the GNOME Control Center's
+      left-hand column.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add New MIME
-      Type</guimenuitem>.
+      Click Add New MIME Type.
      </para>
     </listitem>
 
@@ -3302,15 +3254,14 @@
      <para>
       In the Add MIME Type dialog box, enter the MIME type and a
       description. For instance, if you have a new kind of image file
-      of type "alf" (for alfie files), you'd enter "image/x-alf" as
-      the MIME type and "Alfie image" as the description.
+      of type alf (for alfie files), you'd enter image/x-alf as the
+      MIME type and Alfie image as the description.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>. Your new MIME type is added
-      to the list.
+      Click OK. Your new MIME type is added to the list.
      </para>
     </listitem>
 
@@ -3324,27 +3275,27 @@
 
     <listitem>
      <para>
-      Select your new MIME type in the list and click
-      <guimenuitem>Change File Extensions</guimenuitem>.
+      Select your new MIME type in the list and click Change File
+      Extensions.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add</guimenuitem>.
+      Click Add.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Type a file extension (for instance, ".alf" for the "alfie" image
-      files in the example) and click <guimenuitem>OK</guimenuitem>.
+      Type a file extension (for instance, .alf for the alfie image
+      files in the example) and click OK.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem>.
+      Click OK.
      </para>
     </listitem>
 
@@ -3357,14 +3308,12 @@
    <orderedlist>
     <listitem>
      <para>
-      Select your new MIME type in the list and click
-      <guimenuitem>Change Icon</guimenuitem>.
+      Select your new MIME type in the list and click Change Icon.
      </para>
     </listitem>
     <listitem>
      <para>
-      Choose an icon and click
-      <guimenuitem>OK</guimenuitem>.
+      Choose an icon and click OK.
      </para>
     </listitem>
    </orderedlist>
@@ -3384,14 +3333,13 @@
 
     <listitem>
      <para>
-      In the Default Action section, click <guimenuitem>Edit
-      List</guimenuitem>.
+      In the Default Action section, click Edit List.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Click <guimenuitem>Add Application</guimenuitem>.
+      Click Add Application.
      </para>
     </listitem>
 
@@ -3406,8 +3354,7 @@
 
     <listitem>
      <para>
-      Click <guimenuitem>OK</guimenuitem> in each of the
-      next three dialog boxes to dismiss them.
+      Click OK in each of the next three dialog boxes to dismiss them.
      </para>
     </listitem>
 
@@ -3429,7 +3376,7 @@
   </para>
 
   <para>
-   Eazel Services include:
+   Eazel Services include
   </para>
 
   <itemizedlist>
@@ -3449,7 +3396,7 @@
    <listitem>
     <para>
      Eazel Software Catalog, for easy installation of
-     software titles.
+     software titles
     </para>
    </listitem>
 
@@ -3515,7 +3462,7 @@
      </row>
      <row>
       <entry>Ctrl-A</entry>
-      <entry>Select All (select all text, select all files, etc.)</entry>
+      <entry>Select All (select all files, etc.)</entry>
      </row>
      <row>
       <entry>Ctrl-N</entry>
@@ -3597,14 +3544,14 @@
 
   <para>
    Nautilus applies emblems automatically to icons for files that are
-   read or write only, and to icons that are links (aliases) to other
+   read or write only and to icons that are links (aliases) to other
    files or folders.
   </para>
 
   <para>
-   The Default emblems change depending on your theme. The ones shown
+   The default emblems change depending on your theme. The ones shown
    here are for two of the Nautilus themes, but if you have a custom
-   theme your emblems may be different.
+   theme, your emblems may be different.
   </para>
 
   <figure id="nowrite">
@@ -3644,10 +3591,10 @@
   </figure>
 
   <para>
-   A link icon denotes a file that contains no content of its own, but
+   A link icon denotes a file that contains no content of its own but
    links to a file or folder located elsewhere on the
    computer. Clicking this icon opens the linked file or folder. (A
-   link is the same as a shortcut in Windows and an alias in the Mac
+   link is similar to a shortcut in Windows or an alias in the Mac
    OS.)
   </para>
 
@@ -3671,7 +3618,7 @@
     any later version.
    </para>
 
-   <para>
+      <para>
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -3691,6 +3638,8 @@
     License</citetitle></ulink>, Version 1.1 or any later version
     published by the Free Software Foundation with no Invariant
     Sections, no Front-Cover Texts, and no Back-Cover Texts.
+    A copy of this license was provided with this software in
+    the file <filename>COPYING-DOCS</filename>.
    </para>
 
    <para>
@@ -3703,63 +3652,91 @@
 
   </sect1>
 
+  <sect1 id="logos">
+   <title>Eazel Trademarks</title>
+
+    <para>
+     Copyright 2001 Eazel, Inc., and others.  All Rights Reserved.
+     Eazel, the Eazel Logo, and Nautilus are trademarks of Eazel,
+     Inc. (the "Eazel Trademarks"). The Eazel Trademarks are distinct
+     from the Eazel GPL Software and are not subject to the provisions
+     of the GPL.
+    </para>
+
+    <para>
+     This software contains files that include the Eazel Logo (the
+     "Logo"). Eazel, Inc. has created and distributes certain
+     software under the GNU General Public License (GPL) (the "Eazel
+     GPL Software"). The Logo is distinct from the Eazel GPL Software
+     and is not governed by the terms of the GPL. You may only use
+     the Logo pursuant to the terms contained herein. The files that
+     include the Eazel Logo can be removed without impairing the way
+     the Eazel GPL Software functions.
+    </para>
+
+    <para>
+     Eazel, Inc. grants you the right to use, copy, and redistribute
+     the Logo, but only in conjunction with the use, copying, or
+     redistribution of an official release of Eazel GPL Software that
+     calls upon the Logo during the normal course of operation and
+     provided that,
+    </para>
+
+    <orderedlist>
+
+     <listitem>
+      <para>
+       The notice and this license are included with each copy
+       you make, and they are not altered, deleted, or modified in any
+       way;
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       You do not modify the Logo, or the appearance of the Logo in any
+       manner;
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       You do not use the Logo as, or as part of, a trademark, trade
+       name, or trade identifier; or in any other fashion except as
+       set forth in this license; and
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       The Logo is only used, copied, or distributed in conjunction
+       with Eazel GPL Software that has not been modified from the
+       form it was made available by Eazel, Inc.  You may modify Eazel
+       GPL software pursuant to the terms of the license that
+       accompanies it, but if you do so, you may not use, copy, or
+       redistribute the Logo with the modified software.
+      </para>
+     </listitem>
+
+    </orderedlist>
+
+    <para> 
+     NO WARRANTY. THIS SOFTWARE IS PROVIDED "AS IS" AND ANY
+     EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+     IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+     PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL EAZEL,
+     INC. BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+     EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+     TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     DATA OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+     ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS PACKAGE, EVEN IF ADVISED OF THE
+     POSSIBILITY OF SUCH DAMAGE.
+    </para>
+
+  </sect1>
+
  </chapter>
 
 </book>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

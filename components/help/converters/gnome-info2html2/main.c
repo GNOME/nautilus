@@ -36,8 +36,6 @@ static int
 file_exists(const char *fn)
 {
   struct stat sbuf;
-  
-  fprintf (stderr, "%s", fn);
 
   return (stat(fn, &sbuf) == 0);
 }
@@ -115,8 +113,8 @@ main(int argc, char **argv)
 	      }
 	    if(i >= ndirs) {
 		    printf ("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
-			    "</HEAD><BODY>The document \"%s/%s.info\" couldn't be found. It may have been removed from your system.\n"
-			    "</BODY></HTML>\n", dirs[0], args[0]);
+			    "</HEAD><BODY BGCOLOR=\"#FFFFFF\">The info document \"%s\" could not be found. It may have been removed from your system.\n"
+			    "</BODY></HTML>\n", args[0]);
 		    return 2;
 	    }
 

@@ -1,3 +1,51 @@
+2001-03-04  Dan Mueth  <dan@eazel.com>
+
+        reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+        Updated the Nautilus User Manual from v0.9 to v1.0.
+        Note that the file TRACKED_CHANGES details the changes
+        between the two versions, for use by translators.
+        There are some new screenshots.
+
+        Bug#:7271
+
+	* help/nautilus-user-manual/C/Makefile.am:
+	* help/nautilus-user-manual/C/TRACKED_CHANGES:
+	* help/nautilus-user-manual/C/figures/custicon.png:
+	* help/nautilus-user-manual/C/figures/full-1.png:
+	* help/nautilus-user-manual/C/figures/full-2.png:
+	* help/nautilus-user-manual/C/figures/full-3.png:
+	* help/nautilus-user-manual/C/figures/full-4.png:
+	* help/nautilus-user-manual/C/figures/full-5.png:
+	* help/nautilus-user-manual/C/figures/full-6.png:
+	* help/nautilus-user-manual/C/figures/full.png:
+	* help/nautilus-user-manual/C/figures/locbar.png:
+	* help/nautilus-user-manual/C/figures/part-1.png:
+	* help/nautilus-user-manual/C/figures/part-2.png:
+	* help/nautilus-user-manual/C/figures/part-3.png:
+	* help/nautilus-user-manual/C/figures/part.png:
+	* help/nautilus-user-manual/C/figures/player-1.png:
+	* help/nautilus-user-manual/C/figures/player-2.png:
+	* help/nautilus-user-manual/C/figures/player-3.png:
+	* help/nautilus-user-manual/C/figures/player-4.png:
+	* help/nautilus-user-manual/C/figures/player.png:
+	* help/nautilus-user-manual/C/figures/prefmenu.png:
+	* help/nautilus-user-manual/C/figures/sidebar.png:
+	* help/nautilus-user-manual/C/figures/viewmenu.png:
+	* help/nautilus-user-manual/C/nautilus-user-manual.sgml:
+
+	Suppressed terminal spew every time an info page is viewed
+	and pretty'd up the error page when the info page does not
+	exist.  Note - info page viewing is now broken completely.
+	This is not due to this patch.  I wrote this patch on a 
+	working build of Nautilus and somebody else has since
+	broken it in Nautilus CVS.
+
+	Bug#: 7299
+
+	* components/help/converters/gnome-info2html2/main.c:
+	(file_exists), (main):
+
 2001-03-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

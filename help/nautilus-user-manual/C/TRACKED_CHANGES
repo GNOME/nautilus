@@ -1,0 +1,979 @@
+             **********************************************
+             *                                            *
+             *  Tracked Changes For Nautilus User Manual  *
+             *                                            *
+             **********************************************
+
+
+************  From Version 0.9 (2/18/2001) to 1.0 (3/4/2001) **************
+
+
+Global
+
+
+-------------------------------------------
+You will immediately notice that I've removed most of these tags:
+
+<guimenu>
+<guimenuitem>
+
+I've done this because it is generally thought to be a poor practice
+to bold lots of items, and especially to bold every single mention of
+an item from the interface. I'll be explaining why this is so when I
+have a chance to participate in the GNOME documentation project's
+mailing list! Until then, I hope people will bear with me.
+
+It's not necessary to accept this change if you don't want to change
+your localized versions. You should check, however, for errors in
+applying the tags -- there were many in my previous version!
+
+
+-------------------------------------------
+Change everything that looks like this:
+
+<note>
+<title>Try this</title>
+<para>To keep Nautilus easily available, add its icon to the GNOME Panel:</para>
+</note>
+
+To this:
+
+<tip>
+<title>Try this</title>
+<para>To keep Nautilus easily available, add its icon to the GNOME Panel:</para>
+</tip>
+
+(Change all items tagged as "notes" to "tips")
+
+
+-------------------------------------------
+Spell out names of keyboard keys.
+
+There's only one instance of this in the user manual -- replace "Esc" with "Escape"
+
+
+-------------------------------------------
+These items are TWO WORDS instead of one (this may affect only English):
+
+file name
+path name
+user name
+
+
+-------------------------------------------
+This item is ONE WORD instead of two:
+
+toolbar
+
+
+-------------------------------------------
+These items are all lower case (no initial capital letters):
+
+location bar
+sidebar
+find bar
+preferences menu
+tree
+home (as in home folder, home location)
+play, pause, stop (as in the music player's buttons)
+
+(exceptions: figure captions, callouts, section headings. "Tree" is
+capitalized when referring to "the Tree tab.")
+
+
+-------------------------------------------
+The word "Web" is always capitalized (according to the Eazel style guide)
+
+Web pages
+Web site
+Web address
+etc.
+
+
+-------------------------------------------
+The words "plus" and "minus" should be replaced by the symbols + and -
+
+
+-------------------------------------------
+These words should be capitalized, when referring to user levels:
+
+Beginner
+Intermediate
+Advanced
+
+
+This word should be hyphenated (formerly was two words):
+
+user-level
+
+
+
+
+-------------------------------------------
+SPECIFIC CHANGES
+
+
+-------------------------------------------
+OLD:
+   Nautilus is a core component of the GNOME desktop
+   environment. Nautilus provides an easy way to view, manage, and
+   customize your own files and folders, as well as browse the Web.
+
+NEW:
+   Nautilus is a core component of the GNOME desktop
+   environment. Nautilus provides an easy way for you to view, manage, and
+   customize your files and folders, as well as browse the Web.
+
+(add "for you"; remove "own")
+
+
+-------------------------------------------
+In Chapter 1 under "Toolbar," please fix this mispelling:
+
+OLD: Easel
+NEW: Eazel
+
+(oops...)
+
+
+------------------------------------------- 
+Big change to the first section (The Nautilus Window): The figure has
+been changed to remove the callouts and replace them with
+numbers. This is to aid in localization. It's not necessary to make
+this change now if you've already localized this illustration; in the
+future I will assist.
+
+Small inline pictures have been added to each paragraph, referring
+back to the figure. If you don't re-do the illustration using my "new"
+approach, then don't include these numbers.
+
+
+-------------------------------------------
+OLD:
+The eight menus contain options for most file and folder
+management tasks, and let you personalize your view of all the
+applications, folders, and files on your hard disk. The Preferences
+menu, represented by the symbol to the right of the Help menu, lets
+you choose your level of Linux and GNOME experience.
+
+NEW:
+The eight menus contain options for most file and folder
+management tasks, and let you personalize your view of all the
+applications, folders, and files on your hard disk. The Preferences
+menu, represented by the symbol to the right of the Help menu, lets
+you specify your level of Linux and GNOME experience.
+
+("choose" changed to "specify")
+
+
+-------------------------------------------
+OLD:
+Use the location bar to enter path names, web addresses (URLs),
+or other types of addresses. The pop-up menu on the right end of the
+bar lets you choose different views - for instance, view as icons or
+as a list. Click the plus and minus signs to enlarge or reduce icons
+in any view. Click the magnifying glass to return to normal size. (If
+you've changed your theme, the magnifying glass may be replaced by a
+different symbol.)
+
+NEW: Use the location bar to enter path names, web addresses
+(URLs), or other types of addresses. The pop-up menu on the right end
+of the bar lets you choose different views - for instance, View as
+iIons or View as List. Click the + and - signs to enlarge or
+reduce icon or list view. Click the magnifying glass to return to
+original size. (If you've changed your theme, the magnifying glass may
+be replaced by another symbol.)
+
+("icons in any view" changed to "icon or list view"; "normal" changed
+to "original" "plus" and "minus" changed to their respective symbols;
+"a different symbol" changed to "another symbol")
+
+
+-------------------------------------------
+OLD:
+The Help tab gives you quick access to all information
+resources - manuals, GNOME info pages, Linux man pages, and
+more
+
+NEW:
+The Help tab gives you quick access to information
+resources - manuals, GNOME info pages, Linux man pages, and
+more
+
+(remove the word "all")
+
+
+-------------------------------------------
+OLD:
+The Notes tab provides a space where you can jot notes
+about the current folder, create "to do" lists, record status, and so
+forth
+
+NEW:
+The Notes tab provides a space where you can jot notes
+about the current folder
+
+(remove everything after "current folder")
+
+
+-------------------------------------------
+OLD:
+    The main panel in the Nautilus window is where you do most of your
+    browsing. Files, folders, and applications are displayed
+    here. There are several options for modifying and customizing your
+    views.
+
+NEW:
+    The main panel in the Nautilus window is where you do most of your
+    browsing. Files, folders, and applications are displayed
+    here. You have several options for modifying and customizing your
+    views.
+
+(change "there are" to "you have")
+
+
+-------------------------------------------
+OLD:
+The desktop is the background area of your screen. By default,
+on your GNOME system, Nautilus draws the desktop. The desktop on your
+computer can look like your physical desktop - it can be full of
+folders, icons, and works in progress, or it can be cleared
+off. Nautilus lets you organize it the way you want.
+
+NEW: The desktop is the background area of your screen. If
+Nautilus was pre-installed on your GNOME system, Nautilus draws the
+desktop. The desktop on your computer can look like your physical
+desktop - it can be full of folders, icons, and works in progress, or
+it can be cleared off. Nautilus lets you organize it the way you
+want.
+
+(change "By default, on your GNOME system," to "If Nautilus was
+pre-installed on your GNOME system")
+
+
+-------------------------------------------
+Add these lines after the above paragraph: 
+
+If Nautilus doesn't already draw the desktop on your system, do this:
+
+<orderedlist>
+
+<listitem><para>Open the preferences menu (shown below) and choose
+Preferences.</para></listitem>
+
+<listitem><para>In the Desktop section, select "Use Nautilus to draw
+the desktop."</para></listitem>
+
+<listitem><para>Click OK.</para></listitem>
+
+</orderedlist>
+
+   <figure id="prefmenu11">
+    <title>The Preferences Menu</title>
+    <screenshot>
+     <screeninfo>Screenshot of Preferences Menu</screeninfo>
+     <graphic format="png" fileref="figures/prefmenu">
+     </graphic>
+    </screenshot>
+   </figure>
+
+
+-------------------------------------------
+OLD:
+Initially, the desktop contains two items: a house icon that
+represents your Home location, and a Trash icon.
+
+NEW: Initially, the desktop contains three items: a house icon
+that represents your Home location, an Eazel Services icon that takes
+you to Eazel's web site, and a Trash icon.
+
+(there are now three icons...)
+
+
+------------------------------------------- 
+OLD: 
+To see the options for using your desktop space, point and
+right-click anywhere on the desktop (outside of a window).
+
+NEW:
+To see the options for using your desktop space, right-click
+anywhere on the desktop (outside of a window).
+
+(remove "point and")
+
+
+-------------------------------------------
+Remove this entire section:
+
+Adding Nautilus to the GNOME Panel
+
+(Also remove it from the table of contents)
+
+
+-------------------------------------------
+OLD:
+     Mounting Floppy and CD-ROM Drives
+
+NEW:
+     Mounting Floppy Disks and CD-ROMs
+
+
+------------------------------------------- 
+OLD: 
+Your Home folder also appears on your desktop, represented by a
+house icon. Double-clicking the house icon opens a new Nautilus
+window, with your Home folder active.
+
+NEW:
+Your Home folder also appears on your desktop, represented by a
+house icon. Double-clicking the house icon opens a new Nautilus
+window, with your Home folder displayed.
+
+(change "active" to "displayed")
+
+
+-------------------------------------------
+Change to this section: VIEWING YOUR HOME FOLDER
+
+Another big change: This section's illustration has been changed so
+that callouts are now numbers. Again, if you have already localized
+this picture it's not necessary to change. If you need help, let me
+know.
+
+
+-------------------------------------------
+OLD:
+If you don't see the Tree tab, right-click the sidebar and
+choose Tree. If your user level is set to beginner, you may not be
+able to view the Tree.
+
+NEW:
+If you don't see the Tree tab, right-click the sidebar and
+choose Tree.
+
+(remove second sentence)
+
+
+-------------------------------------------
+OLD:
+    (Note: In addition to the root directory identified by a "/",
+    there is a directory named "root.")
+
+NEW:
+    (Note: In addition to the root directory identified by a /, there is a
+    directory named root.)
+
+(remove quotation marks)
+
+
+-------------------------------------------
+OLD:
+The first time you launch Nautilus, you see folders and files
+represented as icons. This is the icon view, which is the
+default.
+
+NEW:
+The first time you launch Nautilus, you see folders and files
+represented as icons. This is the icon view.
+
+(remove "which is the default.")
+
+
+-------------------------------------------
+OLD:
+     Look at your files and folders in two different views:
+
+NEW:
+     Look at your files and folders in two views:
+
+(remove "different")
+
+
+-------------------------------------------
+OLD:
+    Nautilus provides a special set of features to help you enjoy your
+    MP3 files. Using the View as Music option, you can set up a folder
+    of MP3 files as an album, containing tracks of your choice and
+    represented by an album cover (custom icon) that you
+    specify.
+
+NEW:
+    Nautilus provides a special set of features to help you enjoy your
+    MP3 files. Using the View as Music option, you can set up a folder
+    of MP3 files as an album, containing tracks of your choice and
+    represented by an album cover (custom image) that you
+    specify.
+
+(change "custom icon" to "custom image")
+
+
+-------------------------------------------
+OLD:
+      Click the <guimenu>View as</guimenu> menu and choose
+      <guimenuitem>View as Music</guimenuitem>.
+
+NEW:
+      Click the View as pop-up menu and choose
+      View as Music.
+
+(change "View as menu" to "View as pop-up menu"; remove guimenu and
+guimenuitem tags)
+
+
+-------------------------------------------
+Change to the MUSIC PLAYER illustration:
+
+This illustration has been changed to make it easier to localize. If
+you have already localized it, it's not necessary to change it now. If
+you need help, let me know.
+
+
+-------------------------------------------
+OLD:
+You can use the Nautilus window to look at a file's contents
+without opening it for editing in an application. Using a viewer
+instead of opening an application can save time and system
+resources.
+
+NEW:
+You can use the Nautilus window to look at a file's contents
+without opening it for editing in an application. Using a viewer
+instead of opening an application can save time and memory.
+
+(change "system resources" to "memory")
+
+
+-------------------------------------------
+OLD:
+Select <guimenuitem>Don't include the built-in
+bookmarks</guimenuitem>.
+
+NEW:
+Select Don't include the built-in
+bookmarks in the Bookmarks menu.
+
+(add "in the Bookmarks menu"; remove guimenuitem tags)
+
+
+-------------------------------------------
+OLD:
+<member><link linkend="simple">Simple Searches</link></member>
+<member><link linkend="medusa">Fast Searches</link></member>
+
+NEW:
+<member><link linkend="simple">Simple Searches</link></member>
+<member><link linkend="medusa">Complex Searches</link></member>
+
+(change "Fast" to "Complex")
+
+
+-------------------------------------------
+OLD:
+Simple searches: If your user level is set to beginner, or
+you didn't turn Medusa on when you first installed, Nautilus will
+perform a quick and easy search by file name.
+
+NEW: Simple searches: If your user level is set to
+beginner, Nautilus performs a quick and easy search by file
+name.
+
+(remove ", or you didn't turn Medusa on when you first installed";
+change "will perform" to "performs")
+
+
+-------------------------------------------
+OLD:
+Fast searches: If your user level is set to intermediate
+and if you have Medusa turned on, Nautilus searches the files on your
+hard disk by file name, creator, file type, and other attributes, as
+well as by the actual content of files.
+
+NEW: Complex searches: If your user level is set to
+intermediate or advanced, Nautilus searches the files on your hard
+disk by file name, creator, file type, and other attributes, as well
+as by the actual content of files.
+
+(change "Fast" to "Complex"; add "or advanced"; remove "and if you
+have Medusa turned on")
+
+
+-------------------------------------------
+OLD:
+<para><guimenu>Medusa</guimenu></para>
+
+NEW:
+<para><guimenu>Fast Versus Slow Searches</guimenu></para>
+
+
+-------------------------------------------
+Remove this paragraph:
+
+Medusa is an indexing daemon - a small utility that runs in the
+background when your computer is idle. Medusa indexes all the content
+in the files on your computer and on mounted volumes (such as CD-ROM
+disks), so you can quickly find any string of text in any of your
+files.
+
+
+------------------------------------------- 
+Move this material from the section titled "Complex Searches"
+(formerly "Fast Searches) to the section titled "Fast Versus Slow
+Searches" (formerly "Medusa") NOTE: This material also contains some
+changes and additions. These are detailed at the end of this section
+of "Tracked Changes."
+
+Nautilus uses Medusa, a daemon, which is a piece of software
+that runs in the background. Medusa creates an index of all the items
+on your hard disk and mounted volumes, including their names, size,
+creation date, and other attributes. In addition, Medusa indexes the
+actual <emphasis>content</emphasis> of each file - so you can find any
+word or phrase in any file on your computer when you search by
+content.
+
+Medusa runs when your computer is idle, so it doesn't disrupt
+your activities.
+
+If Medusa has not finished indexing your system or is not
+running on your computer, then when you do a search you may see a
+message letting you know that Nautilus can't perform a fast
+search.
+
+If you suspect that Medusa is not turned on, do this:
+
+<orderedlist>
+
+<listitem><para>Open a terminal window.</para></listitem>
+
+<listitem><para>Log into your system as root.</para></listitem>
+
+<listitem><para>Enter this command at the command line:
+medusa-searchd</para></listitem>
+
+</orderedlist>
+
+<para>If Medusa is still not turned on, do this:</para>
+
+<orderedlist>
+
+<listitem><para>Open the preferences menu and choose
+Preferences.</para></listitem>
+
+<listitem><para>From the left column of the Preferences dialog box,
+choose Search</para></listitem>
+
+<listitem><para>In the Fast Search section, turn on "Enable fast
+search."</para></listitem>
+
+</orderedlist>
+
+
+Other changes (all shown above): 
+
+First paragraph, remove "when your computer is idle". 
+
+Add new second paragraph: "<para>Medusa runs when your computer is
+idle, so it doesn't disrupt your activities.</para>")
+
+Add new section of steps at the end, explaining how to turn on Medusa
+in Preferences dialog.
+
+
+-------------------------------------------
+OLD:
+Enter the name of the item you want to find in the
+<guimenuitem>Search For:</guimenuitem> field.
+
+NEW:
+Enter the name of the item you want to find in the
+Find field.
+
+(change "Search For" to "Find")
+
+
+-------------------------------------------
+OLD:
+<title>Fast Searches</title>
+
+NEW:
+<title>Complex Searches</title>
+
+(change "Fast" to "Complex")
+
+(also move paragraphs from this section to the section, "Fast Versus
+Slow Searches," as noted above)
+
+
+-------------------------------------------
+OLD:
+      Enter the item you want to find - a particular file name,
+      modification date, and so forth - in the search field.
+
+NEW:
+      Enter the item you want to find - a particular file name,
+      modification date, and so forth - in the Find field.
+
+(change "search field" to "Find field")
+
+-------------------------------------------
+OLD:
+       <entry>
+        Choose "is" or "is not" to include or exclude files owned by a
+        particular group.
+       </entry>
+
+NEW:
+       <entry>
+        Choose "is" or "is not" to include or exclude files owned by a
+        particular user.
+       </entry>
+
+(change "group" to "user")
+
+
+-------------------------------------------
+OLD:
+       <entry>
+        Enter the name of a user group that owns files on your
+        system.
+       </entry>
+
+NEW:
+       <entry>
+        Enter the name of a user who owns files on your
+        system.
+       </entry>
+
+(change "group that" to "who")
+
+
+-------------------------------------------
+OLD:
+      In the table, click to put a checkmark under each type of
+      permission you want to grant. For instance, you might give the
+      owner and users in the group permission to read (view), write
+      (edit), and execute files in the group, and give others
+      permission to read files, but not write to them.
+
+NEW:
+      In the table, click to put a checkmark under each type of
+      permission you want to grant. For instance, you might give the
+      owner and users in the group permission to read (view), write
+      (edit), and execute the file, and give others
+      permission to read the file but not write to it.
+
+(change 
+
+"and execute files in the group, and give others permission to read
+files, but not write to them"
+ 
+to 
+
+"and execute the file, and give others permission to read the file
+but not write to it")
+
+
+-------------------------------------------
+OLD:
+    The preference settings adjust the Nautilus appearance, the
+    behavior of files and folders when you view and click them, the
+    languages used in displaying web pages, the type of searches
+    performed when you click the Find or Web Search buttons, and
+    more.
+
+NEW:
+    The preference settings adjust the Nautilus appearance, the
+    behavior of files and folders when you view and click them, the type
+    of searches performed when you click the Find or Web Search buttons,
+    and more.
+
+(remove "the languages used in displaying web pages,")
+
+
+-------------------------------------------
+OLD:
+    To open the Preferences dialog boxes use the preferences menu,
+    shown here.
+
+NEW:
+    To open the Preferences dialog box use the preferences menu,
+    shown here.
+
+(change "boxes" to "box")
+
+
+-------------------------------------------
+OLD:
+      From the left column in the Preferences dialog box, choose the
+      type of settings you want to adjust (for instance, Folder Views).
+
+NEW:
+      From the left column in the Preferences dialog box, choose the
+      type of settings you want to adjust (for instance, Icon & List Views).
+
+(change "Folder Views" to "Icon & List Views")
+
+
+-------------------------------------------
+OLD:
+      When you are finished setting preferences, click
+      <guimenuitem>OK</guimenuitem>.
+
+NEW:
+      When you are finished setting preferences, click
+      OK to close the window.
+
+(add "to close the window"; remove guimenuitem tags)
+
+
+-------------------------------------------
+OLD:
+      Click <guimenuitem>OK</guimenuitem>.
+
+NEW:
+      Click OK to close the window.
+
+(add "to close the window"; remove guimenuitem tags)
+
+
+------------------------------------------- 
+Remove the reference to the figure "full.png" from the section,
+"Showing and Hiding Bars"
+
+
+-------------------------------------------
+OLD:
+      Open the <guimenu>Edit</guimenu> menu and choose
+      <guimenuitem>Themes</guimenuitem>.
+
+NEW:
+      Open the Edit menu and choose
+      Nautilus Themes.
+
+(remove guimenu and guimenuitem tags; change "Themes" to "Nautilus Themes")
+
+
+-------------------------------------------
+OLD:
+    <guimenu>Customizing an Icon</guimenu>
+
+NEW:
+    <guimenu>Customizing Icons</guimenu>
+
+(change "an Icon" to "Icons")
+
+
+-------------------------------------------
+OLD:
+      If you have a tab (Tree, Notes, History, or Help) open in the
+      sidebar, put it away so that you can see the folder icon you want
+      to customize. (To put away a tab, click it.)
+
+NEW:
+      If you have a tab (Tree, Notes, History, or Help) open in the
+      sidebar, put it away so that you can see the icon you want
+      to customize. (To put away a tab, click it.)
+
+(change "folder icon" to "icon")
+
+
+-------------------------------------------
+OLD:
+    Tip: You may want to work with two Nautilus windows when you
+    customize a directory's icon. Open the File menu and choose New
+    Window. You can drag an image from one window to the folder icon
+    you're customizing.
+
+NEW:
+    Tip: You may want to work with two Nautilus windows when you
+    customize an icon. Open the File menu and choose New
+    Window. You can drag an image from one window to the icon
+    you're customizing.
+
+(change "a directory's icon" to "an icon"; change "folder icon" to "icon")
+
+
+-------------------------------------------
+OLD:
+      point and right-click anywhere on the desktop (outside of a
+      window), and choose <guimenuitem>Change Desktop
+      Background</guimenuitem> from the pop-up menu. The GNOME Control
+      Center opens.
+
+NEW:
+      Right-click anywhere on the desktop (outside of a
+      window), and choose Change Desktop
+      Background from the pop-up menu. The GNOME Control
+      Center opens.
+
+(remove "point and" from beginning of paragraph; remove guimenuitem tags; add "with the Background Image section displayed"
+
+
+-------------------------------------------
+This section has been renamed:
+
+Old title: File Handlers
+New title: Choosing Applications to Handle Files
+
+(This section is referred to in other sections; be sure to change the
+name at each of those cross-references.)
+
+
+-------------------------------------------
+OLD:
+<para>File handlers, also known as MIME types or file types, let you
+customize the way files open for editing and viewing. This section
+explains how to customize file handlers on your system.</para>
+
+NEW: <para>This section explains how to customize the way files are
+opened for editing and viewing.</para>
+
+
+-------------------------------------------
+OLD:
+<member><link linkend="handlers">What Are File
+Handlers?</link></member>
+
+NEW:
+<member><link linkend="handlers">What Are MIME Types?</link></member>
+
+
+-------------------------------------------
+OLD:
+<sect1 id=handlers>
+<title>What Are File Handlers?</title>
+
+NEW:
+<sect1 id=handlers>
+<title>What Are MIME Types?</title>
+
+
+-------------------------------------------
+Add this paragraph at the beginning of the section, "What Are MIME Types?":
+
+<para>
+MIME types are a standard way to identify files so that they can
+be easily transmitted over the Internet. MIME stands for "Multipurpose
+Internet Mail Extention." Each type of file is assigned a specific
+MIME type. For instance, the MIME type for HTML files is "text/html,"
+and the MIME type for JPEG files is "image/jpeg." A file's MIME type
+tells Internet applications such as browsers and email programs what
+type of file is being exchanged, how to encode it for transmission,
+and how to decode it when it arrives at its destination.
+</para>
+
+
+-------------------------------------------
+OLD:
+When you open a file, unless you specify a particular application or
+viewer for the file it normally opens automatically in an application
+that's appropriate for the file type. For instance, a graphics file
+normally opens automatically in a graphics application.
+
+NEW:
+Unless you've specified that a particular application or viewer should
+open a file, it normally opens automatically in an application that's
+appropriate for the type. For instance, a JPEG file normally opens
+automatically in a graphics application.
+
+(first sentence re-writtern; "file type" changed to "type"; "a graphics file" changed to "a JPEG file")
+
+
+-------------------------------------------
+Remove this paragraph:
+
+<para>
+The application that's set to automatically open for a
+particular type of file is known as the file handler for that file
+type. File handlers are also referred to as MIME types or file
+types.
+</para>
+
+
+-------------------------------------------
+OLD:
+You can choose which application or viewer opens automatically
+for a particular file or file types. You can also set up new file
+handlers.
+
+NEW: 
+You can choose which application or viewer opens
+automatically for a particular file or type of file. You can also set
+up new applications to handle particular types of files.
+
+("file types" changed to "type of file"; "new file handlers" changed
+to "new applications to handle particular types of files.")
+
+
+-------------------------------------------
+OLD:
+   To modify the list of viewers you see when you choose Open With,
+   follow steps 1 through 6 above but choose Other Viewer instead of
+   Other Application in step 2. (A viewer lets you view but not edit a
+   file. Opening a file in a viewer can save time and system resources.)
+
+NEW:
+   To modify the list of viewers you see when you choose Open With,
+   follow steps 1 through 6 above but choose Other Viewer instead of
+   Other Application in step 2. (A viewer lets you view but not edit a
+   file. Opening a file in a viewer can save time and memory.)
+
+
+-------------------------------------------
+OLD:
+      <entry>Select All (select all text, select all files, etc.)</entry>
+
+NEW:
+      <entry>Select All (select all files, etc.)</entry>
+
+(remove "select all text,")
+
+
+-------------------------------------------
+OLD:
+   A link icon denotes a file that contains no content of its own, but
+   links to a file or folder located elsewhere on the
+   computer. Clicking this icon opens the linked file or folder. (A
+   link is the same as a shortcut in Windows and an alias in the Mac
+   OS.)
+
+NEW:
+   A link icon denotes a file that contains no content of its own, but
+   links to a file or folder located elsewhere on the
+   computer. Clicking this icon opens the linked file or folder. (A
+   link is similar to a shortcut in Windows or an alias in the Mac
+   OS.)
+
+(change "the same as" to "similar to"; change "and" to "or")
+
+-------------------------------------------
+OLD:
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <ulink type="help"
+    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    License</citetitle></ulink>, Version 1.1 or any later version
+    published by the Free Software Foundation with no Invariant Sections,
+    no Front-Cover Texts, and no Back-Cover Texts.
+
+NEW:
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <ulink type="help"
+    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    License</citetitle></ulink>, Version 1.1 or any later version
+    published by the Free Software Foundation with no Invariant Sections,
+    no Front-Cover Texts, and no Back-Cover Texts.
+    A copy of this license was provided with this software in
+    the file <filename>COPYING-DOCS</filename>.
+
+
+------------------------------------------- 
+There is another (third) copyright boilerplate section at the very end
+of the document.
+
+
+
+------------------------------------------- 
+NOT TRACKED:
+
+The editor had me remove commas from several places. Since these
+changes are unlikely to affect other languages, I didn't note them in
+this document.
