@@ -1,5 +1,12 @@
 2001-04-16  Darin Adler  <darin@eazel.com>
 
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Stop trying to translate the copyright statement. It should just
+	always use "(C)" so it doesn't depend on the character set. No need
+	for the fancy copyright symbol from Latin-1.
+
+2001-04-16  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-monitor.c: (get_fam_connection):
 	Don't give a warning if there's no FAM daemon to connect to, just
 	silently don't use FAM.

@@ -569,7 +569,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			           const char *verb)
 {
 	static GtkWidget *about = NULL;
-	char *time_stamp;
+	char *build_message;
 	const char *authors[] = {
 		"Ali Abdin",
 		"Andy Hertzfeld",
@@ -600,36 +600,21 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		"Susan Kare",
 		NULL
 	};
-	const char *copyright, *translator_credits;
+	const char *translator_credits;
 
 	if (about == NULL) {
-		/* timestamp overrides build message, because timestamp
-		 * should only be set on tinderbox for hourly builds
+		/* The time stamp overrides the build message, because
+		 * the time stamp should only be set on Tinderbox for
+		 * hourly builds.
 		 */
-		time_stamp = nautilus_get_build_time_stamp ();
-		if (time_stamp == NULL) {
-			time_stamp = nautilus_get_build_message ();
-			if (time_stamp == NULL) {
-				time_stamp = g_strdup ("");
+		build_message = nautilus_get_build_time_stamp ();
+		if (build_message == NULL) {
+			build_message = nautilus_get_build_message ();
+			if (build_message == NULL) {
+				build_message = g_strdup ("");
 			}
 		}
 		
-		/* Localize to deal with issues in the copyright
-		 * symbol characters -- do not translate the company
-		 * name, please.
-		 */
-		copyright = _("Copyright (C) 1999-2001 Eazel, Inc.");
-		/* This is a workaround for problems when the msgid
-		 * itself has a non-ASCII character in it.
-		 */
-		if (strcmp (copyright, "Copyright (C) 1999-2001 Eazel, Inc.") == 0) {
-			/* The copyright character here is correct for
-			 * Latin-1 encoding, but not for UTF-8, so we
-			 * have to change it when we move to GTK 2.0.
-			 */
-			copyright = "Copyright \xA9 1999-2001 Eazel, Inc.";
-		}
-
 		/* Translators should localize the following string
 		 * which will be displayed at the bottom of the about
 		 * box to give credit to the translator(s).
@@ -638,16 +623,16 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		
 		about = nautilus_about_new (_("Nautilus"),
 					    VERSION,
-					    copyright,
+					    "Copyright (C) 1999-2001 Eazel, Inc.",
 					    authors,
 					    _("Nautilus is a graphical shell\n"
 					      "for GNOME that makes it\n"
 					      "easy to manage your files\n"
 					      "and the rest of your system."),
 					    translator_credits,
-					    time_stamp);
+					    build_message);
 		
-		g_free (time_stamp);
+		g_free (build_message);
 	} else {
 		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}
