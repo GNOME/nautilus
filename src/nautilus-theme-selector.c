@@ -217,10 +217,20 @@ nautilus_theme_selector_initialize (GtkObject *object)
  
  	/* add the main part of the content, which is a list view, embedded in a scrollwindow */
 	
+	/* FIXME bugzilla.eazel.com 5951: 
+	 * We cant hard code the geometry of the clist columns here.
+	 * There is at least 2 things that will break this:
+	 *
+	 * 1) The user picking a larger (or even smaller) font that the default in 
+	 *    the control center.
+	 * 
+	 * 2) A theme having a long name that is obviously now known at compile time.
+	 *    For example, "Crux-Eggplant" is too long for the hard coded defaults herre..
+	 */
 	theme_selector->details->theme_list = gtk_clist_new (3);
 	gtk_clist_set_row_height   (GTK_CLIST (theme_selector->details->theme_list), 48);
 	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 0, 72);
-	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 1, 80);
+	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 1, 130);
 	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 2, 180);
 	
 	gtk_clist_set_shadow_type  (GTK_CLIST (theme_selector->details->theme_list), GTK_SHADOW_IN);
