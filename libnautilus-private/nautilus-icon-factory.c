@@ -1878,6 +1878,34 @@ load_named_icon (const char *name,
 	return pixbuf;
 }
 
+static GdkPixbuf *
+load_icon_given_two_names (const char *name_1,
+			   const char *name_2,
+			   const char *modifier,
+			   guint size_in_pixels,
+			   gboolean optimized_for_aa,
+			   IconDetails *details)
+{
+	GdkPixbuf *pixbuf;
+
+	pixbuf = load_named_icon (name_1, modifier,
+				  size_in_pixels, optimized_for_aa,
+				  details);
+	if (pixbuf != NULL || eel_strcmp (name_1, name_2) == 0) {
+		return pixbuf;
+	}
+	return load_named_icon (name_2, modifier,
+				size_in_pixels, optimized_for_aa,
+				details);
+}
+
+static gboolean
+is_generic_icon_name (const char *name)
+{
+	return eel_strcmp (name, ICON_NAME_EXECUTABLE) == 0
+		|| eel_strcmp (name, ICON_NAME_REGULAR) == 0;
+}
+
 /* This load function returns NULL if the icon is not available at
  * this size.
  */
@@ -1889,8 +1917,8 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 {
 	IconDetails details;
 	GdkPixbuf *pixbuf;
-	char *icon_name;
-	char *path;
+	char *mime_type_icon_name, *path;
+	const char *name_1, *name_2;
 	CacheIcon *icon;
 
 	memset (&details, 0, sizeof (details));
@@ -1903,25 +1931,22 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE);
 		g_free (path);
 	} else {
-		pixbuf = load_named_icon (scalable_icon->name,
-					  scalable_icon->modifier,
-					  size_in_pixels, optimized_for_aa,
-					  &details);
-		if (pixbuf == NULL) {
-			/* Use the type in the MIME database, or turn the MIME
-			 * type into an icon name.
-			 */
-			icon_name = get_mime_type_icon_without_suffix (scalable_icon->mime_type);
-			if (icon_name == NULL) {
-				icon_name = make_icon_name_from_mime_type (scalable_icon->mime_type);
-			}
-			if (icon_name != NULL && eel_strcmp (icon_name, scalable_icon->name) != 0) {
-				pixbuf = load_named_icon (icon_name, scalable_icon->modifier,
-							  size_in_pixels, optimized_for_aa,
-							  &details);
-			}
-			g_free (icon_name);
+		mime_type_icon_name = get_mime_type_icon_without_suffix (scalable_icon->mime_type);
+		if (mime_type_icon_name == NULL) {
+			mime_type_icon_name = make_icon_name_from_mime_type (scalable_icon->mime_type);
 		}
+		if (is_generic_icon_name (scalable_icon->name)) {
+			name_1 = mime_type_icon_name;
+			name_2 = scalable_icon->name;
+		} else {
+			name_1 = scalable_icon->name;
+			name_2 = mime_type_icon_name;
+		}
+		pixbuf = load_icon_given_two_names
+			(name_1, name_2,
+			 scalable_icon->modifier,
+			 size_in_pixels, optimized_for_aa, &details);
+		g_free (mime_type_icon_name);
 	}
 
 	if (pixbuf == NULL) {

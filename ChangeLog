@@ -1,5 +1,16 @@
 2001-05-02  Darin Adler  <darin@eazel.com>
 
+	Fix bug where most files weren't getting their MIME type icons.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_icon_given_two_names), (is_generic_icon_name),
+	(load_specific_icon): Made the two generic icons lose out if
+	there's a MIME type icon. We can't always prefer the MIME type
+	icon, since that would break things like the "thumbnail in
+	progress" icon.
+
+2001-05-02  Darin Adler  <darin@eazel.com>
+
 	Fix bug where icon for Nautilus links were not appearing if they
 	were icon names rather than complete URIs.
 
