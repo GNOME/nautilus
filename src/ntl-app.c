@@ -77,10 +77,31 @@ static POA_Nautilus_Application__vepv impl_Nautilus_Application_vepv = {
 };
 
 static Nautilus_ViewWindowList *
-impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application *
-					    servant, CORBA_Environment * ev)
+impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application *servant,
+                                            CORBA_Environment * ev)
 {
    Nautilus_ViewWindowList *retval;
+
+   retval = Nautilus_ViewWindowList__alloc();
+   retval->_length = g_slist_length(servant->app->windows);
+
+   if(retval->_length)
+     {
+       int i;
+       GSList *ltmp;
+
+       retval->_buffer = CORBA_sequence_Nautilus_ViewWindow_allocbuf(retval->_length);
+       for(i = 0, ltmp = servant->app->windows; ltmp; ltmp = ltmp->next, i++)
+         {
+           CORBA_Object obj;
+           obj = bonobo_object_corba_objref(NAUTILUS_WINDOW(ltmp->data)->ntl_viewwindow);
+           retval->_buffer[i] = CORBA_Object_duplicate(obj, ev);
+         }
+     }
+   else
+     retval->_buffer = NULL;
+
+   CORBA_sequence_set_release(retval, CORBA_TRUE);
 
    return retval;
 }
@@ -101,7 +122,8 @@ impl_Nautilus_Application_supports(impl_POA_Nautilus_Application * servant,
 				   CORBA_Environment * ev)
 {
    return (!strcmp(obj_goad_id, "ntl_file_manager_icon_view")
-           || !strcmp(obj_goad_id, "ntl_file_manager_list_view"));
+           || !strcmp(obj_goad_id, "ntl_file_manager_list_view")
+           || !strcmp(obj_goad_id, "ntl_window"));
 }
 
 static CORBA_Object
@@ -110,6 +132,7 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
 					GNOME_stringlist * params,
 					CORBA_Environment * ev)
 {
+  CORBA_Object retval = CORBA_OBJECT_NIL;
   FMDirectoryView *dir_view;
   NautilusContentViewFrame *view_frame;
 
@@ -120,14 +143,21 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
     dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type (), NULL));
   else if (strcmp (goad_id, "ntl_file_manager_list_view") == 0)
     dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type (), NULL));
+  else if (strcmp (goad_id, "ntl_window"))
+    retval = impl_Nautilus_Application_new_view_window(servant, ev);
   else
     dir_view = NULL;
         
   g_return_val_if_fail(dir_view, CORBA_OBJECT_NIL);
         
-  view_frame = fm_directory_view_get_view_frame (dir_view);
+  if(dir_view)
+    {
+      view_frame = fm_directory_view_get_view_frame (dir_view);
         
-  return CORBA_Object_duplicate(bonobo_object_corba_objref(BONOBO_OBJECT(view_frame)), ev);
+      retval = CORBA_Object_duplicate(bonobo_object_corba_objref(BONOBO_OBJECT(view_frame)), ev);
+    }
+
+  return retval;
 }
 
 
