@@ -1,5 +1,42 @@
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/history/nautilus-history-view.c: (main):
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_dialog),
+	(global_preferences_register_for_ui),
+	(global_preferences_initialize_if_needed),
+	(nautilus_global_preferences_shutdown):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* nautilus-widgets/nautilus-preferences-group.c:
+	(nautilus_preferences_group_add_item):
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct), (nautilus_preferences_item_new):
+	* nautilus-widgets/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_add_item_to_nth_group):
+	* nautilus-widgets/nautilus-preferences.c: (preferences_register),
+	(set_default_value_if_needed), (preferences_hash_node_lookup),
+	(preferences_hash_node_lookup_with_registration),
+	(preferences_gconf_callback), (preferences_initialize_if_needed),
+	(nautilus_preferences_find_preference),
+	(nautilus_preferences_set_info),
+	(nautilus_preferences_enum_add_entry),
+	(nautilus_preferences_add_boolean_callback),
+	(nautilus_preferences_add_enum_callback),
+	(nautilus_preferences_add_callback),
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean),
+	(nautilus_preferences_set_enum), (nautilus_preferences_get_enum),
+	(nautilus_preferences_set), (nautilus_preferences_get),
+	(nautilus_preferences_shutdown):
+	* nautilus-widgets/nautilus-preferences.h:
+	* nautilus-widgets/test-nautilus-preferences.c: (main),
+	(register_global_preferences):
+	* src/nautilus-main.c: (main):
+	Once again, back to implicit initialization of preferences stuff.
+	It makes things simpler.
+	
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/nautilus-user-level-manager.c:
 	(nautilus_user_level_manager_get_user_level),
 	(nautilus_user_level_manager_make_gconf_key),

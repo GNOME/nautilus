@@ -294,8 +294,6 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_
 	g_return_val_if_fail (prefs_pane != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane), NULL);
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), NULL);
-
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
 	if (!prefs_pane->details->groups) {

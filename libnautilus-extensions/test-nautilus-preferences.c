@@ -27,14 +27,7 @@ static const char FRUIT_PREFERENCE[] = "/a/very/fruity/path";
 int
 main (int argc, char * argv[])
 {
-	gboolean result;
-
 	gnome_init ("foo", "bar", argc, argv);
-
-	/* Initialize preferences */
-	result = nautilus_preferences_initialize (argc, argv);
-
-	g_assert (result);
 
 	register_global_preferences ();
 
@@ -101,8 +94,6 @@ create_enum_item (const char *preference_name)
 static void
 register_global_preferences (void)
 {
-	g_assert (nautilus_preferences_is_initialized ());
-
 	nautilus_preferences_set_info (FRUIT_PREFERENCE,
 				       "Fruits",
 				       NAUTILUS_PREFERENCE_ENUM,

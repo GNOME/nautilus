@@ -47,8 +47,9 @@ static char *     global_preferences_get_sidebar_panel_key              (const c
 static gboolean   global_preferences_is_sidebar_panel_enabled           (NautilusViewIdentifier *panel_identifier,
 									 gpointer                ignore);
 static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
-static gboolean   global_preferences_close_dialog_callback              (GtkWidget               *dialog,
+static gboolean   global_preferences_close_dialog_callback              (GtkWidget              *dialog,
 									 gpointer                user_data);
+static void       global_preferences_initialize_if_needed               (void);
 
 /*
  * Private stuff
@@ -264,7 +265,7 @@ global_preferences_get_dialog (void)
 {
 	static GtkWidget * global_prefs_dialog = NULL;
 
-	g_assert (nautilus_preferences_is_initialized ());
+	global_preferences_initialize_if_needed ();
 
 	if (!global_prefs_dialog)
 	{
@@ -336,8 +337,6 @@ static void
 global_preferences_register_for_ui (void)
 {
 	static gboolean preference_for_ui_registered = FALSE;
-
-	g_assert (nautilus_preferences_is_initialized ());
 
 	if (preference_for_ui_registered)
 		return;
@@ -484,6 +483,29 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 	g_free (home_uri_string);
 }
 
+static void
+global_preferences_initialize_if_needed (void)
+{
+	static gboolean initialized = FALSE;
+	
+	if (initialized) {
+		return;
+	}
+
+	global_preferences_register_for_ui ();
+	
+	/* Register to find out about user level changes */
+	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
+			    "user_level_changed",
+			    user_level_changed_callback,
+			    NULL);
+	
+	/* Invoke the callback once to make sure stuff is properly setup */
+	user_level_changed_callback (NULL, NULL);
+
+	initialized = TRUE;
+}
+
 /*
  * Public functions
  */
@@ -527,30 +549,5 @@ nautilus_global_preferences_shutdown (void)
 
 	/* Now free the preferences tables and stuff */
 	nautilus_preferences_shutdown ();
-}
-
-void
-nautilus_global_preferences_startup (int argc, char **argv)
-{
-	gboolean result;
-
-	/* Initialize preferences */
-	result = nautilus_preferences_initialize (argc, argv);
-
-	/* FIXME bugzilla.eazel.com 672: 
-	 * Need error reporting if this fails instead of a core dump.
-	 */
-	g_assert (result);
-	
-	global_preferences_register_for_ui ();
-	
-	/* Register to find out about user level changes */
-	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
-			    "user_level_changed",
-			    user_level_changed_callback,
-			    NULL);
-	
-	/* Invoke the callback once to make sure stuff is properly setup */
-	user_level_changed_callback (NULL, NULL);
 }
 

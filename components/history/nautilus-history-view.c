@@ -29,7 +29,6 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -264,13 +263,6 @@ int main(int argc, char *argv[])
                              argc, argv,
                              oaf_popt_options, 0, NULL); 
   orb = oaf_init (argc, argv);
-
-  /* Initialize global preferences. */
-  nautilus_global_preferences_startup (argc, argv);
-  
-  /* FIXME bugzilla.eazel.com 672: 
-   * Need better error reporting here if preferences initialization fails.
-   */
 
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();

@@ -206,8 +206,6 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 	g_return_val_if_fail (group != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), NULL);
-
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
 	preference = nautilus_preferences_find_preference (preference_name);

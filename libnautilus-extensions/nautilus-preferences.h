@@ -71,10 +71,7 @@ void                nautilus_preferences_set                  (const char       
 							       const char                   *value);
 char *              nautilus_preferences_get                  (const char                   *name,
 							       const gchar                  *default_value);
-gboolean            nautilus_preferences_initialize           (int                           argc,
-							       char                        **argv);
-gboolean            nautilus_preferences_is_initialized       (void);
-gboolean            nautilus_preferences_shutdown             (void);
+void                nautilus_preferences_shutdown             (void);
 
 
 BEGIN_GNOME_DECLS

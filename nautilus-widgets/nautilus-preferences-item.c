@@ -239,8 +239,6 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 
 	g_assert (item != NULL);
 
-	g_assert (nautilus_preferences_is_initialized ());
-
 	g_assert (preference_name != NULL);
 	g_assert (item_type != PREFERENCES_ITEM_UNDEFINED_ITEM);
 
@@ -409,7 +407,6 @@ nautilus_preferences_item_new (const gchar			*preference_name,
 {
 	NautilusPreferencesItem * item;
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), NULL);
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
 	item = gtk_type_new (nautilus_preferences_item_get_type ());

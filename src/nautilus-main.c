@@ -35,7 +35,6 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <popt.h>
 #include <libgnome/gnome-i18n.h>
@@ -86,7 +85,6 @@ main(int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	nautilus_global_preferences_startup (argc, argv);
 
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {

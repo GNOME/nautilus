@@ -89,7 +89,6 @@ static void                     preferences_hash_node_free_func                (
 
 
 
-
 /* PreferencesCallbackNode functions */
 static PreferencesCallbackNode *preferneces_callback_node_alloc                (NautilusPreferencesCallback  callback_proc,
 										gpointer                     callback_data,
@@ -107,11 +106,9 @@ static void                     preferences_hash_node_remove_callback          (
 										gpointer                     callback_data);
 
 
-
-
 /* Private stuff */
-PreferencesHashNode *           preferences_hash_node_lookup                   (const char                  *name);
-PreferencesHashNode *           preferences_hash_node_lookup_with_registration (const char                  *pref_name,
+static PreferencesHashNode *    preferences_hash_node_lookup                   (const char                  *name);
+static PreferencesHashNode *    preferences_hash_node_lookup_with_registration (const char                  *pref_name,
 										NautilusPreferenceType       pref_type,
 										gconstpointer                default_value);
 static void                     preferences_register                           (char                        *name,
@@ -123,8 +120,6 @@ static void                     set_default_value_if_needed                    (
 										NautilusPreferenceType       type,
 										gconstpointer                default_value);
 
-
-
 /* Gconf callbacks */
 static void                     preferences_gconf_callback                     (GConfClient                 *client,
 										guint                        cnxn_id,
@@ -132,6 +127,8 @@ static void                     preferences_gconf_callback                     (
 										GConfValue                  *value,
 										gboolean                     is_default,
 										gpointer                     user_data);
+static gboolean                 preferences_initialize_if_needed               (void);
+
 
 /**
  * preferences_hash_node_alloc
@@ -444,10 +441,10 @@ preferences_register (char			*name,
 {
 	PreferencesHashNode *node;
 
-	g_return_if_fail (nautilus_preferences_is_initialized ());
-
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (description != NULL);
+
+	preferences_initialize_if_needed ();
 	
 	node = preferences_hash_node_lookup (name);
 
@@ -461,56 +458,6 @@ preferences_register (char			*name,
 	g_hash_table_insert (GLOBAL.preference_table, (gpointer) name, (gpointer) node);
 
 	g_assert (node->preference != NULL);
-}
-
-/**
- * nautilus_preferences_find_preference
- *
- * Search for a named preference in the given preferences and return it.
- * @preferences: The preferences to search
- *
- * Return value: A referenced pointer to the preference object that corresponds
- * to the given preference name.  The caller should gtk_object_unref() the return
- * value of this function.
- **/
-NautilusPreference *
-nautilus_preferences_find_preference (const char *name)
-{
-	PreferencesHashNode *node;
-
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-
-	node = preferences_hash_node_lookup (name);
-	
-	g_assert (node != NULL);
-
-	gtk_object_ref (GTK_OBJECT (node->preference));
-
-	return node->preference;
-}
-
-void
-nautilus_preferences_set_info (const char		*name,
-			       const char		*description,
-			       NautilusPreferenceType	type,
-			       gconstpointer		default_value)
-{
-	PreferencesHashNode *node;
-
-	g_return_if_fail (nautilus_preferences_is_initialized ());
-	g_return_if_fail (name != NULL);
-
-	node = preferences_hash_node_lookup_with_registration (name, type, default_value);
-	
-	g_assert (node != NULL);
-	g_assert (node->preference != NULL);
-
-	if (description) {
-		nautilus_preference_set_description (node->preference, description);
-	}
-
-	set_default_value_if_needed (name, type, default_value);
 }
 
 /**
@@ -535,8 +482,9 @@ set_default_value_if_needed (const char			*name,
 {
 	GConfValue *value = NULL;
 
-	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	/* Find out if the preference exists at all */
 	value = gconf_client_get_without_default (GLOBAL.gconf_client,
@@ -574,52 +522,30 @@ set_default_value_if_needed (const char			*name,
 	}
 }
 
-void
-nautilus_preferences_enum_add_entry (const char	*name,
-				     const char	*entry_name,
-				     const char	*entry_description,
-				     int	entry_value)
-{
-	PreferencesHashNode *node;
-	
-	g_return_if_fail (nautilus_preferences_is_initialized ());
-	g_return_if_fail (name != NULL);
-	
-	node = preferences_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_ENUM, NULL);
-	
-	g_assert (node != NULL);
-	g_assert (node->preference != NULL);
-
-	g_assert (nautilus_preference_get_preference_type (node->preference) == NAUTILUS_PREFERENCE_ENUM);
-
-	nautilus_preference_enum_add_entry (node->preference,
-					    entry_name,
-					    entry_description,
-					    entry_value);
-}
-
-PreferencesHashNode *
+static PreferencesHashNode *
 preferences_hash_node_lookup (const char *name)
 {
 	gpointer hash_value;
 
-	g_assert (nautilus_preferences_is_initialized ());
 	g_assert (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	hash_value = g_hash_table_lookup (GLOBAL.preference_table, (gconstpointer) name);
 	
 	return (PreferencesHashNode *) hash_value;
 }
 
-PreferencesHashNode *
+static PreferencesHashNode *
 preferences_hash_node_lookup_with_registration (const char		*name,
 					      NautilusPreferenceType	type,
 					      gconstpointer             default_value)
 {
 	PreferencesHashNode * node;
 
-	g_assert (nautilus_preferences_is_initialized ());
 	g_assert (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	node = preferences_hash_node_lookup (name);
 
@@ -650,8 +576,9 @@ preferences_gconf_callback (GConfClient	*client,
 	NautilusPreference	*expected_preference;
 	char			*expected_key;
 
-	g_assert (nautilus_preferences_is_initialized ());
 	g_assert (key != NULL);
+
+	preferences_initialize_if_needed ();
 
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCE (user_data));
@@ -705,6 +632,133 @@ preferences_gconf_callback (GConfClient	*client,
 	g_free (expected_key);
 }
 
+static gboolean
+preferences_initialize_if_needed (void)
+{
+	if (GLOBAL.preference_table != NULL && GLOBAL.gconf_client != NULL) {
+		return TRUE;
+	}
+	
+	if (!gconf_is_initialized ()) {
+		GConfError	  *error = NULL;
+		char		  *argv[] = { "nautilus", NULL };
+		
+		if (!gconf_init (1, argv, &error)) {
+			g_assert (error != NULL);
+			
+			/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
+			g_warning ("GConf init failed:\n  %s", error->str);
+			
+			gconf_error_destroy (error);
+			
+			error = NULL;
+			
+			return FALSE;
+		}
+	}
+	
+	g_assert (GLOBAL.preference_table == NULL);
+	g_assert (GLOBAL.gconf_client == NULL);
+
+	GLOBAL.preference_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+	g_assert (GLOBAL.preference_table != NULL);
+
+ 	GLOBAL.gconf_client = gconf_client_new ();
+
+	/* Let gconf know about ~/.gconf/nautilus */
+	gconf_client_add_dir (GLOBAL.gconf_client,
+			      PREFERENCES_GCONF_PATH,
+			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      NULL);
+
+	g_assert (GLOBAL.gconf_client != NULL);
+
+	return TRUE;
+}
+
+/*
+ * Public functions
+ */
+
+
+/**
+ * nautilus_preferences_find_preference
+ *
+ * Search for a named preference in the given preferences and return it.
+ * @preferences: The preferences to search
+ *
+ * Return value: A referenced pointer to the preference object that corresponds
+ * to the given preference name.  The caller should gtk_object_unref() the return
+ * value of this function.
+ **/
+NautilusPreference *
+nautilus_preferences_find_preference (const char *name)
+{
+	PreferencesHashNode *node;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	preferences_initialize_if_needed ();
+
+	node = preferences_hash_node_lookup (name);
+	
+	g_assert (node != NULL);
+
+	gtk_object_ref (GTK_OBJECT (node->preference));
+
+	return node->preference;
+}
+
+void
+nautilus_preferences_set_info (const char		*name,
+			       const char		*description,
+			       NautilusPreferenceType	type,
+			       gconstpointer		default_value)
+{
+	PreferencesHashNode *node;
+
+	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
+
+	node = preferences_hash_node_lookup_with_registration (name, type, default_value);
+	
+	g_assert (node != NULL);
+	g_assert (node->preference != NULL);
+
+	if (description) {
+		nautilus_preference_set_description (node->preference, description);
+	}
+
+	set_default_value_if_needed (name, type, default_value);
+}
+
+void
+nautilus_preferences_enum_add_entry (const char	*name,
+				     const char	*entry_name,
+				     const char	*entry_description,
+				     int	entry_value)
+{
+	PreferencesHashNode *node;
+	
+	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
+	
+	node = preferences_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_ENUM, NULL);
+	
+	g_assert (node != NULL);
+	g_assert (node->preference != NULL);
+
+	g_assert (nautilus_preference_get_preference_type (node->preference) == NAUTILUS_PREFERENCE_ENUM);
+
+	nautilus_preference_enum_add_entry (node->preference,
+					    entry_name,
+					    entry_description,
+					    entry_value);
+}
+
 gboolean
 nautilus_preferences_add_boolean_callback (const char			*name,
 					   NautilusPreferencesCallback	callback_proc,
@@ -712,9 +766,10 @@ nautilus_preferences_add_boolean_callback (const char			*name,
 {
 	PreferencesHashNode	*node;
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	node = preferences_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_BOOLEAN, NULL);
 
@@ -735,9 +790,10 @@ nautilus_preferences_add_enum_callback (const char			*name,
 {
 	PreferencesHashNode *node;
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	node = preferences_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_ENUM, NULL);
 
@@ -758,9 +814,10 @@ nautilus_preferences_add_callback (const char			*name,
 {
 	PreferencesHashNode *node;
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	node = preferences_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_STRING, NULL);
 
@@ -801,8 +858,9 @@ nautilus_preferences_set_boolean (const char	*name,
 {
 	gboolean gconf_result;
 
-	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	/* Make sure the preference value is indeed different */
 	if (gconf_client_get_bool (GLOBAL.gconf_client, name, NULL) == boolean_value) {
@@ -820,8 +878,9 @@ gboolean
 nautilus_preferences_get_boolean (const char	*name,
 				  gboolean	default_value)
 {
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	return gconf_client_get_bool (GLOBAL.gconf_client, name, NULL);
 }
@@ -832,8 +891,9 @@ nautilus_preferences_set_enum (const char    *name,
 {
 	gboolean gconf_result;
 
-	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	/* Make sure the preference value is indeed different */
 	if (gconf_client_get_int (GLOBAL.gconf_client, name, NULL) == enum_value) {
@@ -851,8 +911,9 @@ int
 nautilus_preferences_get_enum (const char	*name,
 			       int		default_value)
 {
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	return gconf_client_get_int (GLOBAL.gconf_client, name, NULL);
 }
@@ -863,8 +924,9 @@ nautilus_preferences_set (const char *name,
 {
 	gboolean gconf_result;
 
-	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
 
 	/* Make sure the preference value is indeed different */
 	if (value) {
@@ -893,8 +955,9 @@ nautilus_preferences_get (const char	*name,
 {
 	gchar *value = NULL;
 
-	g_return_val_if_fail (nautilus_preferences_is_initialized (), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
 
 	value = gconf_client_get_string (GLOBAL.gconf_client, name, NULL);
 
@@ -905,55 +968,13 @@ nautilus_preferences_get (const char	*name,
 	return value;
 }
 
-gboolean
-nautilus_preferences_initialize (int argc, char **argv)
-{
-	GConfError *error = NULL;
-
-	if (!gconf_init (argc, argv, &error)) {
-		g_assert (error != NULL);
-
-		/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
-		g_warning ("GConf init failed:\n  %s", error->str);
-		
-		gconf_error_destroy (error);
-		
-		error = NULL;
-		
-		return FALSE;
-	}
-
-	g_assert (GLOBAL.preference_table == NULL);
-	g_assert (GLOBAL.gconf_client == NULL);
-
-	GLOBAL.preference_table = g_hash_table_new (g_str_hash, g_str_equal);
-
-	g_assert (GLOBAL.preference_table != NULL);
-
- 	GLOBAL.gconf_client = gconf_client_new ();
-
-	/* Let gconf know about ~/.gconf/nautilus */
-	gconf_client_add_dir (GLOBAL.gconf_client,
-			      PREFERENCES_GCONF_PATH,
-			      GCONF_CLIENT_PRELOAD_RECURSIVE,
-			      NULL);
-
-	g_assert (GLOBAL.gconf_client != NULL);
-
-	return TRUE;
-}
-
-gboolean
-nautilus_preferences_is_initialized (void)
-{
-	return ((GLOBAL.preference_table != NULL) && (GLOBAL.gconf_client != NULL));
-}
-
-gboolean
+void
 nautilus_preferences_shutdown (void)
 {
-	g_assert (nautilus_preferences_is_initialized ());
-
+	if (GLOBAL.preference_table == NULL && GLOBAL.gconf_client == NULL) {
+		return;
+	}
+	
 	if (GLOBAL.preference_table != NULL) {
 		g_hash_table_foreach (GLOBAL.preference_table,
 				      preferences_hash_node_free_func,
@@ -963,11 +984,11 @@ nautilus_preferences_shutdown (void)
 		
 		GLOBAL.preference_table = NULL;
 	}
-	
-	gtk_object_unref (GTK_OBJECT (GLOBAL.gconf_client));
 
-	GLOBAL.gconf_client = NULL;
+	if (GLOBAL.gconf_client != NULL) {
+		gtk_object_unref (GTK_OBJECT (GLOBAL.gconf_client));
 
-	return TRUE;
+		GLOBAL.gconf_client = NULL;
+	}
 }
 
