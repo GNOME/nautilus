@@ -1,3 +1,49 @@
+2000-08-31  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_done):
+	Debug output.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_flatten_categories), (install_new_packages),
+	(eazel_install_download_packages),
+	(eazel_install_pre_install_packages),
+	(eazel_install_do_install_packages),
+	(eazel_install_prune_packages),
+	(eazel_install_package_name_compare),
+	(eazel_install_fetch_rpm_dependencies):
+	Revamped a lot to prevent multiple downloads of the same file (bug
+	2643), as the installer revealed some easy ways to trigger
+	that. Basically, I no longer handle each category individually,
+	but flatten the list. Also handles package-list xml's with
+	dependency trees.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category), (osd_parse_implementation), (osd_parse_softpkg):
+	Removed xml_get_prop and use xml_get_value instead. 
+
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (create_pixmap),
+	(create_what_to_do_page), (create_install_page),
+	(create_finish_page_good), (create_finish_page_evil),
+	(create_window), (install_done), (toggle_button_lock),
+	(toggle_button_toggled), (eazel_installer_add_category),
+	(create_info_druid_page), (check_system),
+	(eazel_install_parse_dont_shows), (eazel_install_parse_must_haves),
+	(eazel_install_parse_depends), (eazel_installer_load_dependencies),
+	(eazel_install_get_depends), (eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (nautilus_pixmap_file):
+	* nautilus-installer/src/package-list-depends.xml:
+	* nautilus-installer/src/prescript:
+	Slam bam thank you mam. Now uses the nautilus-druid, and only grew
+	by 100k... phew.
+	Added some funky xml parsing so you can control category
+	dependency via a xml file.
+	
 2000-08-31  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/lib/eazel-summary-shared.c:

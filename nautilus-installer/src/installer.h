@@ -49,13 +49,22 @@ struct _EazelInstaller
 {
 	GtkObject parent;
 
+	GnomeDruid *druid;
+	GnomeDruidPage *back_page;
+	GnomeDruidPage *finish_good;
+	GnomeDruidPage *finish_evil;
 	GtkWidget *window;
+
 	EazelInstall *service;
+
 	GList *categories;
 
-	char *failure_info;
-
 	GHashTable *category_deps;
+	GList *must_have_categories;
+	GList *implicit_must_have;
+	GList *dont_show;
+
+	char *failure_info;
 
 	gboolean debug, output;
 	gboolean test;

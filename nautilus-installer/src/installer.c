@@ -37,6 +37,9 @@
 #include <dirent.h>
 #include <sys/utsname.h>
 
+#include <nautilus-druid.h>
+#include <nautilus-druid-page-eazel.h>
+
 #include "installer.h"
 #include "callbacks.h"
 #include "installer.h"
@@ -49,7 +52,7 @@
 #include "Step_Three_Top.xpm"
 #include "Step_One_Top.xpm"
 #include "Final_Top.xpm"
-
+#include "evil.xpm"
 
 #define EAZEL_SERVICES_DIR_HOME "/var/eazel"
 #define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
@@ -59,18 +62,52 @@
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
+#define CATEGORY_DEPENDS_LIST "package-list-depends.xml"
 
 int installer_debug = 0;
 int installer_output = 0;
 int installer_test = 0;
 int installer_force = 0;
 int installer_local = 0;
+int installer_no_helix = 0;
 char *installer_server =NULL;
 int installer_server_port = 0;
 
 
 static GtkObjectClass *eazel_installer_parent_class;
 
+static GdkPixbuf*
+create_pixmap (GtkWidget *widget,
+	       char **xpmdata,
+	       int x, int y)
+{
+	GtkWidget *pixmap;                                                            
+	GdkColormap *colormap;                                                        
+	GdkPixmap *gdkpixmap;                                                         
+	GdkBitmap *mask;	
+	GdkPixbuf *pixbuf;
+
+	colormap = gtk_widget_get_colormap (widget);
+	
+	gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, 
+							   colormap, 
+							   &mask,
+							   NULL, 
+							   (gchar**)xpmdata); 
+	
+	g_assert (gdkpixmap);
+
+	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
+					       gdkpixmap,
+					       colormap,
+					       0,0,0,0, 
+					       x, y);
+
+	gdk_pixmap_unref (gdkpixmap);   
+	gdk_bitmap_unref (mask);   
+
+	return pixbuf;     
+}
 
 static void 
 set_white_stuff (GtkWidget *w) 
@@ -98,9 +135,14 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	GtkWidget *label10;
 	GtkWidget *fixed3;
 
-	what_to_do_page = gnome_druid_page_standard_new_with_vals ("", NULL);
+	what_to_do_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER, 
+								   _("Step two..."),
+								   _("You have several choices for what you would like the installer to do.\n"
+								     "Please choose one and click on the \"Next\" button to begin install."),
+								   NULL,
+								   NULL,
+								   NULL);
 
-	set_white_stuff (GTK_WIDGET (what_to_do_page));
 
 	gtk_widget_set_name (what_to_do_page, "what_to_do_page");
 	gtk_widget_ref (what_to_do_page);
@@ -108,39 +150,13 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all (what_to_do_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (what_to_do_page));
-	gnome_druid_page_standard_set_bg_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), 
-						&what_to_do_page_bg_color);
-	gnome_druid_page_standard_set_logo_bg_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), 
-						     &what_to_do_page_logo_bg_color);
-	gnome_druid_page_standard_set_title_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), 
-						   &what_to_do_page_title_color);
-	gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), _("What to do ?"));
-
-	druid_vbox1 = GNOME_DRUID_PAGE_STANDARD (what_to_do_page)->vbox;
-	set_white_stuff (GTK_WIDGET (druid_vbox1));
-	gtk_widget_set_name (druid_vbox1, "druid_vbox1");
-	gtk_widget_ref (druid_vbox1);
-	gtk_object_set_data_full (GTK_OBJECT (window), "druid_vbox1", druid_vbox1,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (druid_vbox1);
 
 	vbox3 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_set_name (vbox3, "vbox3");
 	gtk_widget_ref (vbox3);
 	gtk_object_set_data_full (GTK_OBJECT (window), "vbox3", vbox3,
-				  (GtkDestroyNotify) gtk_widget_unref);
+				  (GtkDestroyNotify) gtk_widget_unref);					    
 	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (druid_vbox1), vbox3, TRUE, TRUE, 0);
-
-	label10 = gtk_label_new (_("You have several choices for what you would like the installer to do.\n"
-				   "Please choose one and click on the \"Next\" button to begin install."));
-	gtk_widget_set_name (label10, "label10");
-	gtk_widget_ref (label10);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label10", label10,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label10);
-	gtk_box_pack_start (GTK_BOX (vbox3), label10, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label10), GTK_JUSTIFY_LEFT);
 
 	fixed3 = gtk_fixed_new ();
 	set_white_stuff (GTK_WIDGET (fixed3));
@@ -150,6 +166,9 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (fixed3);
 	gtk_box_pack_start (GTK_BOX (vbox3), fixed3, TRUE, TRUE, 0);
+
+	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (what_to_do_page),
+					      vbox3);
 
 	return what_to_do_page;
 }
@@ -181,28 +200,18 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 					   "install Nautilus\n"));
 	download_description_length = strlen (download_description);
 
-	install_page = gnome_druid_page_standard_new_with_vals ("", NULL);
-	set_white_stuff (GTK_WIDGET (install_page));
+	install_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER, 
+								_("Step three..."),
+								NULL,
+								NULL,
+								NULL,
+								NULL);
 	gtk_widget_set_name (install_page, "install_page");
 	gtk_widget_ref (install_page);
 	gtk_object_set_data_full (GTK_OBJECT (window), "install_page", install_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all (install_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (install_page));
-	gnome_druid_page_standard_set_bg_color (GNOME_DRUID_PAGE_STANDARD (install_page), 
-						&install_page_bg_color);
-	gnome_druid_page_standard_set_logo_bg_color (GNOME_DRUID_PAGE_STANDARD (install_page), 
-						     &install_page_logo_bg_color);
-	gnome_druid_page_standard_set_title_color (GNOME_DRUID_PAGE_STANDARD (install_page), 
-						   &install_page_title_color);
-	gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (install_page), _("Progress..."));
-
-	druid_vbox2 = GNOME_DRUID_PAGE_STANDARD (install_page)->vbox;
-	gtk_widget_set_name (druid_vbox2, "druid_vbox2");
-	gtk_widget_ref (druid_vbox2);
-	gtk_object_set_data_full (GTK_OBJECT (window), "druid_vbox2", druid_vbox2,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (druid_vbox2);
 
 	vbox5 = gtk_vbox_new (FALSE, 0);
 	set_white_stuff (GTK_WIDGET (vbox5));
@@ -211,7 +220,8 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_object_set_data_full (GTK_OBJECT (window), "vbox5", vbox5,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox5);
-	gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, TRUE, TRUE, 0);
+	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (install_page),
+					      vbox5);
 
 	table2 = gtk_table_new (3, 2, FALSE);
 	set_white_stuff (GTK_WIDGET (table2));
@@ -283,35 +293,63 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 }
 
 GtkWidget*
-create_finish_page (GtkWidget *druid, GtkWidget *window)
+create_finish_page_good (GtkWidget *druid, 
+			 GtkWidget *window)
 {
 	GtkWidget *finish_page;
 	GdkColor finish_page_bg_color = { 0, 3341, 23130, 26214 };
 	GdkColor finish_page_textbox_color = { 0, 65535, 65535, 65535 };
 	GdkColor finish_page_logo_bg_color = { 0, 3341, 23130, 26214 };
 	GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
+	GdkPixbuf *top = create_pixmap (window, (char**)step_three_top, 51, 51);
+	GdkPixbuf *left = create_pixmap (window, (char**)banner_left, 101, 255);
+	GdkPixbuf *background = NULL;
 
-	finish_page = gnome_druid_page_finish_new ();
+	finish_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
+							       _("Finished..."),
+							       _("You can find the nautilus icon in the applications menu.\n\n"
+								 "Thanks for taking the time to try out Nautilus.\n\n"
+								 "May your life be a healthy and happy one."),
+							       top,
+							       left, 
+							       background);
+							       
 	gtk_widget_set_name (finish_page, "finish_page");
 	gtk_widget_ref (finish_page);
 	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page", finish_page,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (finish_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
-	gnome_druid_page_finish_set_bg_color (GNOME_DRUID_PAGE_FINISH (finish_page), 
-					      &finish_page_bg_color);
-	gnome_druid_page_finish_set_textbox_color (GNOME_DRUID_PAGE_FINISH (finish_page), 
-						   &finish_page_textbox_color);
-	gnome_druid_page_finish_set_logo_bg_color (GNOME_DRUID_PAGE_FINISH (finish_page), 
-						   &finish_page_logo_bg_color);
-	gnome_druid_page_finish_set_title_color (GNOME_DRUID_PAGE_FINISH (finish_page), 
-						 &finish_page_title_color);
-	gnome_druid_page_finish_set_title (GNOME_DRUID_PAGE_FINISH (finish_page), _("Finished"));
-	gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (finish_page), 
-					  _("If the installation was successfull, you can\n"
-					    "find the nautilus icon in the applications menu.\n\n"
-					    "Thanks for taking the time to try out Nautilus.\n\n"
-					    "May your life be a healthy and happy one."));
+
+	return finish_page;
+}
+
+GtkWidget*
+create_finish_page_evil (GtkWidget *druid, 
+			 GtkWidget *window)
+{
+	GtkWidget *finish_page;
+	GdkColor finish_page_bg_color = { 0, 3341, 23130, 26214 };
+	GdkColor finish_page_textbox_color = { 0, 65535, 65535, 65535 };
+	GdkColor finish_page_logo_bg_color = { 0, 3341, 23130, 26214 };
+	GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
+	GdkPixbuf *top = create_pixmap (window, (char**)evil_xpm, 48, 48);
+	GdkPixbuf *left = create_pixmap (window, (char**)banner_left, 101, 255);
+	GdkPixbuf *background = NULL;
+
+	finish_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
+							       _("Finished..."),
+							       _("Your machine is now possessed..."),
+							       top,
+							       left, 
+							       background);
+							       
+	gtk_widget_set_name (finish_page, "finish_page");
+	gtk_widget_ref (finish_page);
+	gtk_object_set_data_full (GTK_OBJECT (window), "finish_page", finish_page,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show (finish_page);
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
 
 	return finish_page;
 }
@@ -330,20 +368,47 @@ create_window (EazelInstaller *installer)
 	GtkWidget *install_page;
 	GtkWidget *finish_page;
 
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	GdkPixbuf 
+		*top = NULL,
+		*left = NULL,
+		*background = NULL;
+
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_widget_set_name (window, "window");
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus install tool"));
 
-	druid = gnome_druid_new ();
+	druid = nautilus_druid_new ();
 	gtk_widget_set_name (druid, "druid");
 	gtk_widget_ref (druid);
 	gtk_object_set_data_full (GTK_OBJECT (window), "druid", druid,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (druid);
 	gtk_container_add (GTK_CONTAINER (window), druid);
+	installer->druid = GNOME_DRUID (druid);
 
-	start_page = gnome_druid_page_start_new ();
+	top = create_pixmap (window, (char**)step_one_top, 51, 51);
+	left = create_pixmap (window, (char**)banner_left, 101, 255);
+	
+	start_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_START,
+							      _("Step one..."),
+							      _("This is the internal Nautilus installer.\n\n"
+								"Lots of text should go here letting you know what you need\n"
+								"to have installed before you should even begin to think about\n"
+								"using this. For example:\n"
+								"\n"
+								"  * Stuff\n"
+								"  * More stuff\n"
+								"  * Other stuff\n"
+								"\n"
+								"If you meet these requirements, hit the \"Next\" button to continue!\n\n"),
+							      top,
+							      left,
+							      background);
+
+							      
+	installer->back_page = GNOME_DRUID_PAGE (start_page);
+
 	gtk_widget_set_name (start_page, "start_page");
 	gtk_widget_ref (start_page);
 	gtk_object_set_data_full (GTK_OBJECT (window), "start_page", start_page,
@@ -351,30 +416,11 @@ create_window (EazelInstaller *installer)
 	gtk_widget_show (start_page);
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
 	gnome_druid_set_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
-	gnome_druid_page_start_set_bg_color (GNOME_DRUID_PAGE_START (start_page), 
-					     &start_page_bg_color);
-	gnome_druid_page_start_set_textbox_color (GNOME_DRUID_PAGE_START (start_page), 
-						  &start_page_textbox_color);
-	gnome_druid_page_start_set_logo_bg_color (GNOME_DRUID_PAGE_START (start_page), 
-						  &start_page_logo_bg_color);
-	gnome_druid_page_start_set_title_color (GNOME_DRUID_PAGE_START (start_page), 
-						&start_page_title_color);
-	gnome_druid_page_start_set_title (GNOME_DRUID_PAGE_START (start_page), _("Step one:"));
-	gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (start_page), 
-					 _("This is the internal Nautilus installer.\n\n"
-					   "Lots of text should go here letting you know what you need\n"
-					   "to have installed before you should even begin to think about\n"
-					   "using this. For example:\n"
-					   "\n"
-					   "  * Stuff\n"
-					   "  * More stuff\n"
-					   "  * Other stuff\n"
-					   "\n"
-					   "If you meet these requirements, hit the \"Next\" button to continue!\n\n"));
 
 	what_to_do_page = create_what_to_do_page (druid, window);
 	install_page = create_install_page (druid, window);
-	finish_page = create_finish_page (druid, window);
+	installer->finish_good = GNOME_DRUID_PAGE (create_finish_page_good (druid, window));
+	installer->finish_evil = GNOME_DRUID_PAGE (create_finish_page_evil (druid, window));
 
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),
@@ -385,38 +431,14 @@ create_window (EazelInstaller *installer)
 	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_install),
 			    installer);
-	gtk_signal_connect (GTK_OBJECT (finish_page), "finish",
+	gtk_signal_connect (GTK_OBJECT (installer->finish_good), "finish",
+			    GTK_SIGNAL_FUNC (druid_finish),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->finish_evil), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
 			    installer);
 
 	return window;
-}
-
-static void
-set_images  (GtkWidget *window)
-{
-	
-	GnomeDruidPage *page;
-
-	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "start_page"));
-	gnome_druid_page_start_set_logo (GNOME_DRUID_PAGE_START (page), 
-					 gdk_imlib_create_image_from_xpm_data (step_one_top));
-	gnome_druid_page_start_set_watermark (GNOME_DRUID_PAGE_START (page), 
-					      gdk_imlib_create_image_from_xpm_data (banner_left));
-
-	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "what_to_do_page"));
-	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), 
-					    gdk_imlib_create_image_from_xpm_data (step_two_top));
-
-	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "install_page"));
-	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), 
-					    gdk_imlib_create_image_from_xpm_data (step_three_top));
-
-	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "finish_page"));
-	gnome_druid_page_finish_set_logo (GNOME_DRUID_PAGE_FINISH (page), 
-					  gdk_imlib_create_image_from_xpm_data (final_top));
-	gnome_druid_page_finish_set_watermark (GNOME_DRUID_PAGE_FINISH (page), 
-					       gdk_imlib_create_image_from_xpm_data (banner_left));
 }
 
 static void 
@@ -692,14 +714,65 @@ eazel_install_delete_files (EazelInstall *service,
 	return TRUE ;
 }
 
+static void
+install_done (EazelInstall *service,
+	      gboolean result,
+	      EazelInstaller *installer)
+{
+	g_message ("Done, result is %s", result ? "good":"evil");
+	if (result) {
+		gnome_druid_set_page (installer->druid, installer->finish_good);
+	} else {
+		gnome_druid_set_page (installer->druid, installer->finish_evil);
+	}
+}
+
+static void
+toggle_button_lock (EazelInstaller *installer, char *name, gboolean lock) 
+{
+	GtkWidget *button;
+	
+	button = lookup_widget (installer->window, 
+				name);
+	if (button) {
+		if (lock) {
+			gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);		
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+		} else {
+			gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);		
+		}		
+	} else {
+		g_warning ("Wanted to lock unknown button %s", name);
+	}
+}
+
+static void
+toggle_button_toggled (GtkToggleButton *button,
+		       EazelInstaller *installer) 
+{
+	GList *deps;
+	GList *iterator;
+
+	g_message ("%s toggled to %s", 
+		   gtk_widget_get_name (GTK_WIDGET (button)),
+		   button->active ? "ACTIVE" : "deactivated");
+
+	deps = g_hash_table_lookup (installer->category_deps, gtk_widget_get_name (GTK_WIDGET (button)));
+	for (iterator = deps; iterator; iterator = iterator->next) {
+		toggle_button_lock (installer, 
+				    (char*)iterator->data,
+				    button->active);		
+	}
+}
+
 static void 
 eazel_installer_add_category (EazelInstaller *installer,
 			      CategoryData *category)
 {
 	static int magic = 24;
-	GtkWidget *button;
-	GtkWidget *fixed;
+	GtkWidget *button;	GtkWidget *fixed;
 	static GSList *fixed_group = NULL;
+	gboolean render = TRUE;
 
 	if (installer->debug) {
 		fprintf (stdout, "Read category \"%s\"\n", category->name);
@@ -712,12 +785,32 @@ eazel_installer_add_category (EazelInstaller *installer,
 	gtk_widget_ref (button);
 	gtk_object_set_data_full (GTK_OBJECT (installer->window), category->name, button,
 				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (button);
-	gtk_fixed_put (GTK_FIXED (fixed), button, 72, magic);
-	gtk_widget_set_uposition (button, 72, magic);
-	gtk_widget_set_usize (button, 0, 0);
 
-	magic += 32;
+	if (g_list_find_custom (installer->must_have_categories, category->name, (GCompareFunc)g_strcasecmp)) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+	} else if (g_list_find_custom (installer->implicit_must_have, category->name, 
+				       (GCompareFunc)g_strcasecmp)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);		
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+	} 
+	if (g_list_find_custom (installer->dont_show, category->name, (GCompareFunc)g_strcasecmp)) {
+		render = FALSE;
+	}
+	if (render) {
+		gtk_fixed_put (GTK_FIXED (fixed), button, 72, magic);
+		gtk_widget_set_uposition (button, 72, magic);
+		gtk_widget_set_usize (button, 0, 0);
+		gtk_widget_show (button);
+		magic += 32;
+	}
+
+	/* We need to add this signal last, to avoid 
+	   activating MUST_INSTALL dependencies,
+	   which should be handled by check_system */
+	gtk_signal_connect (GTK_OBJECT (button), 
+			    "toggled", 
+			    GTK_SIGNAL_FUNC (toggle_button_toggled),
+			    installer);
 }
 
 static void
@@ -745,6 +838,67 @@ make_dirs ()
 	}
 }
 
+static GtkWidget*
+create_info_druid_page (EazelInstaller *installer,
+			char *title,
+			char *text) 
+{
+	GtkWidget *page;
+	GtkWidget *druid;
+	GdkColor page_bg_color = { 0, 3341, 23130, 26214 };
+	GdkColor page_logo_bg_color = { 0, 3341, 23130, 26214 };
+	GdkColor page_title_color = { 0, 65535, 65535, 65535 };
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *canvas;
+	GnomeCanvasItem *text_canvas;
+
+	page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_OTHER);
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (page), title);
+	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL (page), text);
+
+	//set_white_stuff (GTK_WIDGET (page));
+
+	//gtk_widget_set_name (page, title);
+	gtk_widget_ref (page);
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), title, page,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show_all (page);
+/*
+	gnome_druid_page_standard_set_bg_color (GNOME_DRUID_PAGE_STANDARD (page), 
+						&page_bg_color);
+	gnome_druid_page_standard_set_logo_bg_color (GNOME_DRUID_PAGE_STANDARD (page), 
+						     &page_logo_bg_color);
+	gnome_druid_page_standard_set_title_color (GNOME_DRUID_PAGE_STANDARD (page), 
+						   &page_title_color);
+	gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (page), title);
+
+	vbox = GNOME_DRUID_PAGE_STANDARD (page)->vbox;
+	set_white_stuff (GTK_WIDGET (vbox));
+	gtk_widget_show (vbox);
+
+	canvas = gnome_canvas_new ();
+	gtk_box_pack_start (GTK_BOX (vbox), canvas, TRUE, TRUE, 0);
+	set_white_stuff (GTK_WIDGET (canvas));
+
+	text_canvas =
+                gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
+                                       gnome_canvas_text_get_type (),
+                                       "text", g_strdup (text),
+                                       "justification", GTK_JUSTIFY_LEFT,
+                                       "font", "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-iso8859-1",
+                                       "fontset", "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-iso8859-1,*-r-*",
+				       "anchor", GTK_ANCHOR_CENTER,
+                                       NULL);
+	gnome_canvas_item_show (text_canvas);
+	gtk_widget_show (GTK_WIDGET (canvas));
+*/
+	gnome_druid_insert_page (installer->druid, installer->back_page, GNOME_DRUID_PAGE (page));
+	installer->back_page = GNOME_DRUID_PAGE (page);
+
+	return page;
+}
+
 void
 check_system (EazelInstaller *installer)
 {
@@ -760,6 +914,7 @@ check_system (EazelInstaller *installer)
 	g_message ("host = %s", ub.nodename);
 	if (!installer_test && g_strncasecmp (ub.nodename, "toothgnasher", 12)==0) {
 		GnomeDialog *d;
+
 		d = GNOME_DIALOG (gnome_warning_dialog_parented ("Eskil, din nar. Du må aldrig nogensinde\n"
 								 "udføre denne installation på din egen\n"
 								 "maskine! Den smadrer jo alt!\n"
@@ -789,16 +944,16 @@ check_system (EazelInstaller *installer)
 		exit (1);
 	}
 
-	if (!g_file_test ("/etc/pam.d/helix-update", G_FILE_TEST_ISFILE)) {
+	if (installer_no_helix || !g_file_test ("/etc/pam.d/helix-update", G_FILE_TEST_ISFILE)) {
 		GnomeDialog *d;
-		d = GNOME_DIALOG (gnome_warning_dialog_parented (_("You do not have HelixCode gnome installed.\n"
-								   "This means I will install the required parts\n"
-								   "for you, but you might want to abort the\n"
-								   "installer and go to http://www.helixcode.com\n"
-								   "and download the full HelixCode Gnome\n"
-								   "installation"),
-								 GTK_WINDOW (installer->window)));
-		gnome_dialog_run_and_close (d);
+		create_info_druid_page (installer, 
+					"HelixCode GNOME missing...",
+					_("You do not have HelixCode gnome installed.\n\n"
+					  "This means I will install the required parts for you, but you might\n"
+					  "want to abort the installer and go to http://www.helixcode.com and\n"
+					  "download the full HelixCode Gnome installation"));
+		installer->implicit_must_have = g_list_prepend (installer->implicit_must_have,
+								g_strdup ("HelixCode basics"));
 	}
 }
 
@@ -843,7 +998,126 @@ eazel_installer_do_install (EazelInstaller *installer,
 	}
 }
 
+static void 
+eazel_install_parse_dont_shows (EazelInstaller *installer,
+				xmlNodePtr node)
+{
+	xmlNodePtr child;
 
+	child = node->childs;
+	g_assert (child);
+	while (child) {
+		if (g_strcasecmp (child->name, "NAME")==0) {
+			char *tmp = xmlNodeGetContent (child);
+			installer->dont_show = 
+				g_list_prepend (installer->dont_show,
+						g_strdup (tmp));
+			g_message ("Must not show %s", tmp);
+			free (tmp);
+		} else {
+			g_message ("unparsed tag %s", child->name);
+		}
+		child = child->next;
+	}
+}
+
+static void 
+eazel_install_parse_must_haves (EazelInstaller *installer,
+				xmlNodePtr node)
+{
+	xmlNodePtr child;
+
+	child = node->childs;
+	g_assert (child);
+	while (child) {
+		if (g_strcasecmp (child->name, "NAME")==0) {
+			char *tmp = xmlNodeGetContent (child);
+			installer->must_have_categories = 
+				g_list_prepend (installer->must_have_categories,
+						g_strdup (tmp));
+			g_message ("Must install %s", tmp);
+			free (tmp);
+		} else {
+			g_message ("unparsed tag %s", child->name);
+		}
+		child = child->next;
+	}
+}
+
+static void 
+eazel_install_parse_depends (EazelInstaller *installer,
+			     xmlNodePtr node)
+{
+	xmlNodePtr child;
+
+	child = node->childs;
+	g_assert (child);
+	while (child) {
+		if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
+			xmlNodePtr dep = child->childs;
+			char *key = g_strdup (xml_get_value (child, "for"));
+			
+			g_assert (dep);
+			while (dep) {
+				char *tmp = xmlNodeGetContent (dep);
+				GList *deps;
+				g_message ("%s deps on %s", key, tmp);
+				deps = g_hash_table_lookup (installer->category_deps, 
+							    key);
+				deps = g_list_prepend (deps, g_strdup (tmp));
+				g_hash_table_insert (installer->category_deps, 
+						     key,
+						     deps);
+				dep = dep->next;
+				free (tmp);
+			}
+		} else {
+			g_message ("unparsed tag %s", child->name);
+		}
+		child = child->next;
+	}
+}
+
+static void
+eazel_installer_load_dependencies (EazelInstaller *installer,
+				   char *depxml)
+{
+	xmlDocPtr doc;
+	xmlNodePtr base;
+
+	g_assert (depxml);
+
+	doc = xmlParseFile (depxml);
+	if (!doc) {
+		xmlFreeDoc (doc);
+		return;
+	}
+	base = doc->root;
+	g_assert (base);
+	if (g_strcasecmp (base->name, "INSTALLER_DEPENDS")==0) {
+		xmlNodePtr node;
+
+		node = base->childs;
+		g_assert (node);
+		while (node) {
+			if (g_strcasecmp (node->name, "MUST_INSTALL")==0) {
+				eazel_install_parse_must_haves (installer, node);
+			} else if (g_strcasecmp (node->name, "DEPENDS")==0) {
+				eazel_install_parse_depends (installer, node);
+			} else if (g_strcasecmp (node->name, "DONT_SHOW")==0) {
+				eazel_install_parse_dont_shows (installer, node);
+			} else {
+				g_message ("unparsed tag %s", node->name);
+			}
+			node = node->next;
+		}		
+	} else {
+		g_assert_not_reached ();
+	}
+
+	xmlFreeDoc (doc);
+	return;
+}
 
 /*****************************************
   GTK+ object stuff
@@ -890,6 +1164,34 @@ eazel_installer_class_initialize (EazelInstallerClass *klass)
 }
 
 static void
+eazel_install_get_depends (EazelInstaller *installer)
+{
+	char *url;
+	char *destination;
+	gboolean retval;
+
+	url = g_strdup_printf ("http://%s:%d/%s", 
+			       eazel_install_get_server (installer->service),
+			       eazel_install_get_server_port (installer->service),
+			       CATEGORY_DEPENDS_LIST);
+
+	destination = g_strdup (CATEGORY_DEPENDS_LIST);
+	
+	retval = eazel_install_fetch_file (installer->service, 
+					   url, 
+					   "package list", 
+					   destination);
+	eazel_installer_load_dependencies (installer, destination);
+	if (retval == FALSE) {
+		g_warning (_("Unable to retrieve dependency xml!\n"));
+	}
+
+	g_free (destination);
+	g_free (url);
+	
+}
+
+static void
 eazel_installer_initialize (EazelInstaller *object) {
 	EazelInstaller *installer;
 	GList *iterator;
@@ -914,9 +1216,12 @@ eazel_installer_initialize (EazelInstaller *object) {
 	installer->test = installer_test;
 	installer->debug = installer_debug;
 	installer->output = installer_output;
+
 	installer->category_deps = g_hash_table_new (g_str_hash, g_str_equal);
+	installer->must_have_categories = NULL;
+
 	installer->window = create_window (installer);
-	set_images (installer->window);
+
 	check_system (installer);
 	gtk_widget_show (installer->window);
 
@@ -973,6 +1278,10 @@ eazel_installer_initialize (EazelInstaller *object) {
 			    "install_failed", 
 			    GTK_SIGNAL_FUNC (install_failed), 
 			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "done", 
+			    GTK_SIGNAL_FUNC (install_done), 
+			    installer);
 
 	if (!installer->debug) {
 		char *log;
@@ -983,6 +1292,9 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	eazel_install_fetch_remote_package_list (installer->service);
 	installer->categories = parse_local_xml_package_list (package_destination);
+	
+	eazel_install_get_depends (installer);
+	
 	for (iterator = installer->categories; iterator; iterator=iterator->next) {
 		eazel_installer_add_category (installer, (CategoryData*)iterator->data);
 	}
@@ -1028,3 +1340,4 @@ eazel_installer_new()
 	
 	return installer;
 }
+

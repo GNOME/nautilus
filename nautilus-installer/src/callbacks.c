@@ -49,7 +49,6 @@ begin_install (EazelInstaller  *installer)
 	GList *install_categories = NULL;
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
-	nextpage = GNOME_DRUID_PAGE (gtk_object_get_data (GTK_OBJECT (window), "finish_page"));
 	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
 
 	for (iterator = installer->categories; iterator; iterator = iterator->next) {
@@ -65,7 +64,6 @@ begin_install (EazelInstaller  *installer)
 		eazel_installer_do_install (installer, install_categories);
 	}
 	gnome_druid_set_buttons_sensitive(druid,TRUE,TRUE,TRUE);
-	gnome_druid_set_page (druid, nextpage);
 	
 	return FALSE;
 }

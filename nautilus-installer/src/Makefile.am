@@ -3,6 +3,7 @@
 NULL = 
 
 INCLUDES = \
+	-I$(top_srcdir)/libnautilus-extensions		 	\
 	-I$(top_srcdir)/components/services/install/lib 	\
 	-I$(top_srcdir)/components/services/trilobite		\
 	-I/usr/include/rpm					\
@@ -35,7 +36,11 @@ nautilus_installer_LDADD = 	\
 	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
 	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o		\
+	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
+	$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o				\
 	-L/gnome/lib \
+	-lgdk_pixbuf	\
+	-lgnomecanvaspixbuf \
 	-lgnomeui \
 	-lgnome \
 	-lart_lgpl \

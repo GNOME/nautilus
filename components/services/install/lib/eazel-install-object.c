@@ -1057,6 +1057,7 @@ void
 eazel_install_emit_done (EazelInstall *service, gboolean result)
 {
 	SANITY(service);
+	g_message ("D: emit_done (%s)", result ? "TRUE" : "FALSE");
 	gtk_signal_emit (GTK_OBJECT (service), signals[DONE], result);
 }
 

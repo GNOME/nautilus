@@ -111,20 +111,6 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 } /* end parse package */
 
-/* Returns a g_strdupped xmlGetProp val */
-static char *
-xml_get_prop (xmlNode *node, char *tag) {
-	char *tmp = NULL;
-	char *result = NULL;
-	
-	tmp = xmlGetProp (node, tag);
-	if (tmp) {
-		result = g_strdup (tmp);
-		free (tmp);
-	}
-	return result;
-}
-
 static CategoryData*
 parse_category (xmlNode* cat) {
 
@@ -132,7 +118,7 @@ parse_category (xmlNode* cat) {
 	xmlNode* pkg;
 
 	category = categorydata_new ();
-	category->name = xml_get_prop (cat, "name");
+	category->name = xml_get_value (cat, "name");
 
 	pkg = cat->childs->childs;
 	if (pkg == NULL) {
@@ -504,7 +490,7 @@ osd_parse_implementation (PackageData *pack,
 	child = node->childs;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
-			pack->archtype = xml_get_prop (child, "VALUE");
+			pack->archtype = xml_get_value (child, "VALUE");
 		} else if (g_strcasecmp (child->name, "OS")==0) {
 			char *dtmp = xmlGetProp (child, "VALUE");
 			if (dtmp) {
@@ -513,9 +499,9 @@ osd_parse_implementation (PackageData *pack,
 			} 
 			g_free (dtmp);
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
-			pack->filename = xml_get_prop (child, "HREF");
+			pack->filename = xml_get_value (child, "HREF");
 			{
-				char *stmp = xml_get_prop (child, "SIZE");
+				char *stmp = xml_get_value (child, "SIZE");
 				if (stmp) {
 					pack->bytesize = atoi (stmp);
 				} else {
@@ -541,8 +527,8 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result = packagedata_new ();
 
-	result->name = xml_get_prop (softpkg, "NAME");
-	result->version = xml_get_prop (softpkg, "VERSION");
+	result->name = xml_get_value (softpkg, "NAME");
+	result->version = xml_get_value (softpkg, "VERSION");
 	
 	child = softpkg->childs;
 	while (child) {

@@ -59,6 +59,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
+AMMONITE_CFLAGS = -I/gnome/include
+AMMONITE_LIBS = -L/gnome/lib -lammonite -lammonite-gtk
 AS = @AS@
 BONOBOX_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
 BONOBOX_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm -lbonobox
@@ -66,7 +68,7 @@ BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/i
 BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 BONOBO_PRINT_CFLAGS = 
 BONOBO_PRINT_LIBS = 
-CATALOGS = 
+CATALOGS =  da.gmo de.gmo fr.gmo ga.gmo gl.gmo it.gmo ja.gmo ko.gmo no.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo uk.gmo zh_TW.Big5.gmo
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
@@ -156,7 +158,7 @@ l =
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
+INCLUDES =  	-I$(top_srcdir)/libnautilus-extensions		 		-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
 CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
@@ -170,7 +172,7 @@ nautilus_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callback
 
 nautilus_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -187,7 +189,9 @@ $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o \
-$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o
+$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o \
+$(top_builddir)/libnautilus-extensions/nautilus-druid.o \
+$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)

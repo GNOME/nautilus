@@ -1,5 +1,7 @@
 #! /bin/bash
 
+GNOME=/gnome
+
 pushd `pwd`
 cd ../../components/services/install/lib
 make -f makefile.staticlib clean
@@ -14,7 +16,11 @@ gcc -static -O -Werror -o nautilus-installer main.o support.o callbacks.o instal
 ../../components/services/trilobite/libtrilobite/helixcode-utils.o \
 ../../components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 ../../components/services/trilobite/libtrilobite/trilobite-core-utils.o \
--L/gnome/lib -lgnomeui -lgnome -lart_lgpl -lgdk_imlib -lgtk -lgdk -lgmodule -lglib \
+../..//libnautilus-extensions/nautilus-druid.o						\
+../../libnautilus-extensions/nautilus-druid-page-eazel.o				\
+-L$GNOME/lib -lgnomecanvaspixbuf -lgdk_pixbuf \
+-lgnomeui -lgnome -lart_lgpl \
+-lgtk -lgdk -lgmodule -lglib -lgdk_imlib \
 -L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE /usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp \
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml 
 
