@@ -34,7 +34,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-metafile-server.h"
-#include "nautilus-idle-queue.h"
+#include <libnautilus/nautilus-idle-queue.h>
 
 typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
