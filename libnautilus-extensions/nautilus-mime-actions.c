@@ -636,7 +636,7 @@ nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)
 			      NULL);
 
 	mime_type = nautilus_file_get_mime_type (file);
-	method = gnome_vfs_mime_get_value (mime_type, "vfs-method");
+	method = gnome_vfs_mime_get_value (mime_type, "vfs_method");
 	g_free (mime_type);
 	return g_strdup (method);
 }

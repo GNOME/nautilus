@@ -1,3 +1,20 @@
+2000-12-18  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Shulman <rebecka@eazel.com>
+
+	Fixed Nautilus half of bug 2109 (Images (and any other
+	files) with "execute" bit set will try to be executed
+	instead of viewed when activated). This change requires
+	a recent GNOME-VFS change to compile.
+
+	* src/file-manager/fm-directory-view.c: (file_is_launchable):
+	Test for launchability now includes asking GNOME_VFS whether
+	this mime type is conceivably executable.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_methods_for_file): Changed
+	"vfs-method" to "vfs_method" to match change in GNOME-VFS.
+
 2000-12-18  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

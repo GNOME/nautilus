@@ -3264,7 +3264,14 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 static gboolean
 file_is_launchable (NautilusFile *file)
 {
-	return !nautilus_file_is_directory (file) 
+	char *mime_type;
+	gboolean type_can_be_executable;
+
+	mime_type = nautilus_file_get_mime_type (file);
+	type_can_be_executable = gnome_vfs_mime_can_be_executable (mime_type);
+	g_free (mime_type);
+
+	return type_can_be_executable 
 		&& nautilus_file_can_get_permissions (file)
 		&& nautilus_file_can_execute (file)
 		&& nautilus_file_is_executable (file);
