@@ -662,7 +662,7 @@ create_owner_menu_item (NautilusFile *file, const char *user_name)
 
 	name_array = g_strsplit (user_name, "\n", 2);
 	if (name_array[1] != NULL) {
-		label_text = g_strdup_printf ("%s (%s)", name_array[0], name_array[1]);
+		label_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
 	} else {
 		label_text = g_strdup (name_array[0]);
 	}

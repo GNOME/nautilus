@@ -1729,7 +1729,7 @@ get_user_and_real_name_from_id (uid_t uid)
 	}
 
 	if (user_has_real_name (password_info)) {
-		return g_strdup_printf ("%s (%s)", password_info->pw_name, password_info->pw_gecos);
+		return g_strdup_printf ("%s - %s", password_info->pw_name, password_info->pw_gecos);
 	} else {
 		return g_strdup (password_info->pw_name);
 	}	
