@@ -1,3 +1,14 @@
+2001-02-26  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* help/docs.make: Small fix.  Won't take effect until
+	nautilus.spec.in stops explicitly setting $prefix to
+	hold RPM_BUILD_ROOT.  When that is fixed, this will
+	allow OMF files to hold the correct path to the docs.
+	* nautilus.spec.in: Removed a line referring to an image
+	which Arlo removed earlier.
+
 2001-02-26  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:
