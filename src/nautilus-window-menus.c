@@ -986,9 +986,9 @@ append_separator (NautilusWindow *window, const char *path)
 
 static void
 create_menu_item_from_node (NautilusWindow *window,
-			     xmlNodePtr node, 
-			     const char *menu_path,
-			     int index)
+			    xmlNodePtr node,
+			    const char *menu_path,
+			    int *index)
 {
 	NautilusBookmark *bookmark;
 	xmlChar *xml_folder_name;
@@ -997,11 +997,15 @@ create_menu_item_from_node (NautilusWindow *window,
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 		
+	if (node->type != XML_ELEMENT_NODE) {
+		return;
+	}
+
 	nautilus_window_ui_freeze (window);
 
 	if (strcmp (node->name, "bookmark") == 0) {
 		bookmark = nautilus_bookmark_new_from_node (node);
-		append_bookmark_to_menu (window, bookmark, menu_path, index, TRUE);		
+		append_bookmark_to_menu (window, bookmark, menu_path, *index, TRUE);		
 		g_object_unref (G_OBJECT (bookmark));
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
@@ -1016,14 +1020,16 @@ create_menu_item_from_node (NautilusWindow *window,
 				
 		for (node = eel_xml_get_children (node), sub_index = 0;
 		     node != NULL;
-		     node = node->next, ++sub_index) {
-			create_menu_item_from_node (window, node, sub_menu_path, sub_index);
+		     node = node->next) {
+			create_menu_item_from_node (window, node, sub_menu_path, &sub_index);
 		}
 		g_free (sub_menu_path);
 		xmlFree (xml_folder_name);
 	} else {
-		g_message ("found unknown node '%s', ignoring", node->name);
+		g_warning ("found unknown node '%s', ignoring", node->name);
 	}
+
+	(*index)++;
 
 	nautilus_window_ui_thaw (window);
 }
@@ -1049,8 +1055,8 @@ append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 	node = eel_xml_get_root_children (doc);
 	index = 0;
 
-	for (index = 0; node != NULL; node = node->next, ++index) {
-		create_menu_item_from_node (window, node, menu_path, index);
+	for (index = 0; node != NULL; node = node->next) {
+		create_menu_item_from_node (window, node, menu_path, &index);
 	}
 	
 	xmlFreeDoc(doc);

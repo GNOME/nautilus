@@ -1,5 +1,23 @@
 2001-11-06  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-find-icon-image.c: (read_details):
+	libxml2 complains about NULL path, which libxml1 just handled by
+	returning NULL, so check for NULL path.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_class_init): Change destroy to finalize.
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg): Use pointer instead of boxed
+	type for font.
+	
+	* src/nautilus-window-menus.c: (create_menu_item_from_node),
+	(append_static_bookmarks): In the old days, all nodes were elements,
+	but now we have nodes for text too. Change code to skip over non-
+	element nodes.
+
+2001-11-06  Darin Adler  <darin@bentspoon.com>
+
 	* Lots of files.
 	Another GtkObject -> GObject pass.
 

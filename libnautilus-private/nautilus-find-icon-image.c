@@ -128,6 +128,10 @@ read_details (const char *path,
 
 	memset (&details->text_rect, 0, sizeof (details->text_rect));
 	
+	if (path == NULL) {
+		return;
+	}
+
 	doc = xmlParseFile (path);
 	
 	size_as_string = g_strdup_printf ("%u", icon_size);
