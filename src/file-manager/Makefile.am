@@ -13,6 +13,8 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService-common.c
 
 libntl_file_manager_la_SOURCES=		\
+	fm-directory-list.h		\
+	fm-directory-list.c		\
 	fm-icon-cache.c			\
 	fm-icon-cache.h			\
 	desktop-canvas.c		\
@@ -44,6 +46,10 @@ gnome_desktop_SOURCES=			\
 	desktop-menu.c			\
 	desktop-window.c		\
 	desktop-window.h		\
+	fm-directory-list.h		\
+	fm-directory-list.c		\
+	fm-icon-cache.c			\
+	fm-icon-cache.h			\
 	gnome-desktop.c
 
 gnome_desktop_LDADD=\

@@ -26,6 +26,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>
 #include "desktop-layout.h"
+#include "fm-directory-list.h"
 
 BEGIN_GNOME_DECLS
 
@@ -91,6 +92,9 @@ struct _DesktopCanvas {
         GtkWidget *popup;
 
         DesktopLayout *layout;
+
+        FMDirectoryList *desktop_dir_list;
+        guint entries_loaded_id;
 };
 
 struct _DesktopCanvasClass {
@@ -98,11 +102,14 @@ struct _DesktopCanvasClass {
 };
 
 
-/* Standard Gtk function */
-GtkType desktop_canvas_get_type (void);
+/* Standard Gtk functions */
 
-GtkWidget *desktop_canvas_new (void);
+GtkType    desktop_canvas_get_type           (void);
+GtkWidget *desktop_canvas_new                (void);
 
+/* Desktop stuff */
+void       desktop_canvas_load_desktop_icons (DesktopCanvas *canvas,
+                                              const gchar   *uri);
 
 /* The get/set functions here are not tied to our IDL interface or to
    GConf; these get/set functions are purely to update this "view"

@@ -28,6 +28,7 @@
 #endif
 
 #include <gnome.h>
+#include <libgnorba/gnorba.h>
 #include "desktop-window.h"
 #include "desktop-canvas.h"
 
@@ -44,11 +45,16 @@ main (int argc, char *argv[])
 {
         GtkWidget *window;
         GtkWidget *canvas;
-
+        CORBA_Environment ev;
+        
         (void)bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
         (void)textdomain (PACKAGE);
+
+        CORBA_exception_init(&ev);
         
-        gnome_init ("gnome-desktop", VERSION, argc, argv);
+        gnome_CORBA_init ("gnome-desktop", VERSION, &argc, argv,
+                          GNORBA_INIT_SERVER_FUNC, &ev);
+        gnome_vfs_init();
         
         window = desktop_window_new();
         canvas = desktop_canvas_new();
@@ -56,6 +62,9 @@ main (int argc, char *argv[])
         gtk_container_add(GTK_CONTAINER(window), canvas);
 
         desktop_canvas_set_solid_background_color(DESKTOP_CANVAS(canvas), 0xFF0000);
+
+        desktop_canvas_load_desktop_icons(DESKTOP_CANVAS (canvas),
+                                          "file:/home/hp");
         
         gtk_signal_connect(GTK_OBJECT(window), "delete_event",
                            GTK_SIGNAL_FUNC(delete_event_cb), NULL);

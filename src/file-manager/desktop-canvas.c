@@ -95,6 +95,9 @@ desktop_canvas_init (DesktopCanvas *dcanvas)
         /* the attachment holds a refcount and eventually destroys
            the popup */
         gnome_popup_menu_attach(dcanvas->popup, GTK_WIDGET(dcanvas), NULL);
+
+        dcanvas->desktop_dir_list = NULL;
+        dcanvas->entries_loaded_id = 0;
 }
 
 static void
@@ -111,7 +114,15 @@ desktop_canvas_destroy (GtkObject *object)
                 gtk_idle_remove(canvas->background_update_idle);
                 canvas->background_update_idle = 0;
         }
-                
+
+        if (canvas->desktop_dir_list != NULL) {
+                gtk_object_unref(GTK_OBJECT(canvas->desktop_dir_list));
+                gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
+                                      canvas->entries_loaded_id);
+                canvas->desktop_dir_list = NULL;
+                canvas->entries_loaded_id = 0;
+        }
+        
         (*  GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
 
@@ -173,6 +184,49 @@ desktop_canvas_size_allocate(GtkWidget        *widget,
         if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget,
                                                                     allocation);
+}
+
+static void
+entries_loaded_cb(FMDirectoryList *dlist,
+                  GSList *entries,
+                  gpointer data)
+{
+        DesktopCanvas *canvas = data;
+
+        g_assert(canvas != NULL);
+
+        printf("loaded some entries\n");
+}
+
+void
+desktop_canvas_load_desktop_icons(DesktopCanvas *canvas, const gchar *uri)
+{
+        g_return_if_fail(canvas != NULL);
+        g_return_if_fail(DESKTOP_IS_CANVAS(canvas));
+        
+        if (canvas->desktop_dir_list != NULL) {
+                gtk_object_unref(GTK_OBJECT(canvas->desktop_dir_list));
+                gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
+                                      canvas->entries_loaded_id);
+                canvas->desktop_dir_list = NULL;
+                canvas->entries_loaded_id = 0;
+        }
+
+        if (uri != NULL) {
+                canvas->desktop_dir_list = fm_directory_list_new();
+                
+                gtk_object_ref(GTK_OBJECT(canvas->desktop_dir_list));
+                gtk_object_sink(GTK_OBJECT(canvas->desktop_dir_list));
+                
+                canvas->entries_loaded_id =
+                        gtk_signal_connect(GTK_OBJECT(canvas->desktop_dir_list),
+                                           "entries_loaded",
+                                           (GtkSignalFunc)entries_loaded_cb,
+                                           canvas);
+                
+                fm_directory_list_load_uri(canvas->desktop_dir_list,
+                                           uri);
+        }
 }
 
 /*

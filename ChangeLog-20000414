@@ -1,3 +1,20 @@
+1999-12-19  Havoc Pennington  <hp@pobox.com>
+
+	* src/file-manager/desktop-canvas.c
+	(desktop_canvas_load_desktop_icons): new function, loads icons 
+	from a given directory - don't get too excited, it doesn't yet
+	_display_ any icons!
+
+	* src/file-manager/desktop-canvas.h: Add directory list field.
+
+	* src/file-manager/Makefile.am (gnome_desktop_SOURCES): Add
+	fm-directory-list.[hc]
+	(libntl_file_manager_la_SOURCES): add fm_directory_list.[hc]
+
+	* src/file-manager/fm-directory-list.h, fm-directory-list.c:
+	New files, the non-GUI portion of a directory listing. Handles
+	loading the dir listing and the icons.
+
 1999-12-17  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window.c, src/ntl-window-msgs.c: Added up, reload, home,
