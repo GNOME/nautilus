@@ -400,7 +400,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
 static void
 handle_go_elsewhere (NautilusWindow *window, const char *location)
 {
-       /* Clobber the entire forward list, and move displayed location to back list */
+        /* Clobber the entire forward list, and move displayed location to back list */
         nautilus_window_clear_forward_list (window);
                                 
         if (window->details->location != NULL) {
@@ -1725,7 +1725,7 @@ report_location_change_callback (NautilusViewFrame *view,
                                         view);
         
         /* Setting the change type to reload here is a hack. */
-        window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
+        window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_STANDARD;
         window->details->pending_location = g_strdup (location);
         update_for_new_location (window);
 }

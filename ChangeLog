@@ -1,3 +1,11 @@
+2001-02-16  Darin Adler  <darin@eazel.com>
+
+	Fix bug 6435 (report_location_change does not record in history).
+	
+	* src/nautilus-window-manage-views.c:
+	(report_location_change_callback): Use change type of STANDARD
+	instead of RELOAD.
+	
 2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
