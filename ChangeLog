@@ -1,3 +1,29 @@
+2001-01-18  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	(only the first 2 changes, others unreviewed)
+
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_destroy): Fix problem that might be what's killing the
+	Tinderbox. We need to disconnect the signal handlers we add to the
+	trash monitor.
+	
+	* src/file-manager/fm-directory-view.c: (load_location_callback):
+	Always reload when navigating. This smooths over many anomalies,
+	and hopefully will fix the nasty problems described in bug 4873
+	(files created in home directory (outside Nautilus) don't show up
+	when I navigate there) and bug 4963 (starting the search service
+	while running nautilus doesn't let you run searches).
+
+	* configure.in: Fix gnome-http check that was previously just
+	checking whether gnome-config was there or not!
+	
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Replace incorrect references to nautilus.oafinfo to instead
+	mention Nautilus_Shell.oaf.
+	
+	* test/.cvsignore: Add a generated file.
+
 2001-01-18  Robey Pointer  <robey@eazel.com>
 
 	* icons/Makefile.am:
@@ -290,7 +316,6 @@
 	I forgot to check these two image in a few days ago...
 	* icons/eazel/sidebar_tab_pieces/left_bumper-prelight.png:
 	* icons/eazel/sidebar_tab_pieces/left_bumper.png:
-
 
 2001-01-18  Andy Hertzfeld  <andy@eazel.com>
 

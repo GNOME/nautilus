@@ -477,15 +477,12 @@ LIBS=$GNOMEUI_LIBS
 AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
 
-dnl
-dnl We need the right version of bonobo because
-dnl the IDLs have changed.
-dnl
-AC_MSG_CHECKING(for Bonobo >= 0.27)
+dnl Bonobo
+AC_MSG_CHECKING(for Bonobo >= 0.32)
 if gnome-config --libs bonobox > /dev/null 2>&1; then
 	vers=`gnome-config --modversion bonobo | sed -e "s/bonobo-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
-	if test "$vers" -ge 27; then
+	if test "$vers" -ge 32; then
 		bonobo_ok=true
 	else
 		bonobo_ok=false
@@ -496,13 +493,11 @@ fi
 if $bonobo_ok; then
 	AC_MSG_RESULT($vers found)
 else
-	AC_MSG_ERROR(Bonobo 0.27 or newer is required to compile Nautilus)
+	AC_MSG_ERROR(Bonobo 0.32 or newer is required to compile Nautilus)
 fi
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
-AC_SUBST(GNORBA_CFLAGS)
-AC_SUBST(GNORBA_LIBS)
 AC_SUBST(BONOBO_CFLAGS)
 AC_SUBST(BONOBO_LIBS)
 AC_SUBST(BONOBOX_CFLAGS)
@@ -546,18 +541,24 @@ AC_SUBST(XML_CFLAGS)
 dnl ====================================
 dnl = begin gnome-http checks
 dnl ====================================
-AC_PATH_PROG(GHTTP_CONFIG,gnome-config,no)
-if test x$GHTTP_CONFIG = xno; then
-  AC_MSG_ERROR(Could not find ghttp libraries.)
+AC_MSG_CHECKING(for gnome-http)
+if gnome-config --libs ghttp > /dev/null 2>&1; then
+	ghttp_ok=true
+else
+	ghttp_ok=false
 fi
-GHTTP_LIBS=`$GHTTP_CONFIG --libs ghttp`
-GHTTP_CFLAGS=`$GHTTP_CONFIG --cflags ghttp`
-AC_SUBST(GHTTP_LIBS)
-AC_SUBST(GHTTP_CFLAGS)
+if $ghttp_ok; then
+	GHTTP_LIBS=`gnome-config --libs ghttp`
+	GHTTP_CFLAGS=`gnome-config --cflags ghttp`
+	AC_SUBST(GHTTP_LIBS)
+	AC_SUBST(GHTTP_CFLAGS)
+	AC_MSG_RESULT(found)
+else
+	AC_MSG_ERROR(gnome-http is required to compile Nautilus)
+fi
 dnl ====================================
 dnl = End ghttp checks
 dnl ====================================
-
 
 dnl ====================================
 dnl = begin applet checks

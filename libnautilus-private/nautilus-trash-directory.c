@@ -281,6 +281,9 @@ trash_destroy (GtkObject *object)
 
 	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
+	gtk_signal_disconnect_by_data
+		(GTK_OBJECT (nautilus_volume_monitor_get ()), trash);
+
 	nautilus_g_hash_table_safe_for_each
 		(trash->details->volumes,
 		 remove_trash_volume_cover,

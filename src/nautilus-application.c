@@ -384,11 +384,11 @@ nautilus_application_startup (NautilusApplication *application,
 			break;
 		case OAF_REG_NOT_LISTED:
 			/* Can't register myself due to trouble locating the
-			 * nautilus.oafinfo file. This has happened when you
+			 * Nautilus_Shell.oaf file. This has happened when you
 			 * launch Nautilus with an LD_LIBRARY_PATH that
 			 * doesn't include the directory containg the oaf
 			 * library. It could also happen if the
-			 * nautilus.oafinfo file was not present for some
+			 * Nautilus_Shell.oaf file was not present for some
 			 * reason. Sometimes killing oafd and gconfd fixes
 			 * this problem but we don't exactly understand why,
 			 * since neither of the above causes explain it.
@@ -400,11 +400,11 @@ nautilus_application_startup (NautilusApplication *application,
 			detailed_message = _("Nautilus can't be used now. "
 					     "Rebooting the computer or installing "
 					     "Nautilus again may fix the problem.\n\n"
-					     "OAF couldn't locate the nautilus.oafinfo file. "
+					     "OAF couldn't locate the Nautilus_Shell.oaf file. "
 					     "One cause of this seems to be an LD_LIBRARY_PATH "
 					     "that does not include the oaf library's directory. "
 					     "Another possible cause would be bad install "
-					     "with a missing nautilus.oafinfo file.\n\n"
+					     "with a missing Nautilus_Shell.oaf file.\n\n"
 					     "Sometimes killing oafd and gconfd fixes "
 					     "the problem, but we don't know why.\n\n"
 					     "We need a much less confusing message here for Nautilus 1.0.");

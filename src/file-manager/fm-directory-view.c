@@ -1143,8 +1143,6 @@ fm_directory_view_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
-
 /**
  * fm_directory_view_display_selection_info:
  *
@@ -1316,22 +1314,15 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 	nautilus_g_list_free_deep (uris);
 }
 
-
-
 static void
 load_location_callback (NautilusView *nautilus_view,
 			const char *location,
 			FMDirectoryView *directory_view)
 {
 	NautilusDirectory *directory;
-	gboolean force_reload;
 
 	directory = nautilus_directory_get (location);
-	/* An additional load of the same directory is how the
-	 * framework tells us to reload.
-	 */
-	force_reload = directory == directory_view->details->model;
-	load_directory (directory_view, directory, force_reload);
+	load_directory (directory_view, directory, TRUE);
 	nautilus_directory_unref (directory);
 }
 
@@ -1887,8 +1878,6 @@ display_pending_timeout_callback (gpointer data)
 	return displayed_some;
 }
 
-
-
 static void
 schedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
@@ -2041,8 +2030,6 @@ fm_directory_view_queue_file_change (FMDirectoryView *view, NautilusFile *file)
 	queue_pending_files (view, singleton_list, &view->details->pending_files_changed);
 	g_list_free (singleton_list);
 }
-
-
 
 /**
  * fm_directory_view_clear:
