@@ -2,7 +2,7 @@ NULL =
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
-	 -DG_LOG_DOMAIN=\"trilobite-eazel-login\"		\
+	 -DG_LOG_DOMAIN=\"trilobite-eazel-change-password\"	\
 	$(NULL)
 
 INCLUDES =								\
@@ -20,19 +20,19 @@ INCLUDES =								\
 oafdir = $(datadir)/oaf
 
 oaf_DATA =								\
-	nautilus-login-view.oafinfo
+	nautilus-change-password-view.oafinfo
 
 
 bin_PROGRAMS =								\
-	nautilus-login-view
+	nautilus-change-password-view
 
-nautilus_login_view_SOURCES =						\
-	nautilus-login-view.h						\
-	nautilus-login-view.c		    				\
+nautilus_change_password_view_SOURCES =						\
+	nautilus-change-password-view.h						\
+	nautilus-change-password-view.c		    				\
 	main.c								\
 	$(NULL)
 
-nautilus_login_view_LDADD =						\
+nautilus_change_password_view_LDADD =						\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\

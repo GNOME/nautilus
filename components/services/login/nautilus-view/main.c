@@ -28,12 +28,12 @@
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
-#include "nautilus-login-view.h"
+#include "nautilus-change-password-view.h"
 
 static int object_count =0;
 
 static void
-login_object_destroyed (GtkObject *obj)
+change_password_object_destroyed (GtkObject *obj)
 {
 	object_count--;
 	if (object_count <= 0) {
@@ -42,25 +42,25 @@ login_object_destroyed (GtkObject *obj)
 }
 
 static BonoboObject*
-login_make_object (BonoboGenericFactory	*factory, 
-		   const char		*iid,
-		   void			*closure)
+change_password_make_object (BonoboGenericFactory	*factory, 
+		 	     const char			*iid,
+		   	     void			*closure)
 {
 
-	NautilusLoginView* view;
-	NautilusView* nautilus_view;
+	NautilusChangePasswordView	*view;
+	NautilusView			*nautilus_view;
 
-	if (strcmp (iid, "OAFIID:nautilus_login_view:3a6345f0-d78d-4edc-9c3e-0c1be7426c44")) {
+	if (strcmp (iid, "OAFIID:nautilus_change_password_view:3a6345f0-d78d-4edc-9c3e-0c1be7426c44")) {
 		return NULL;
 	}
 
-	view = NAUTILUS_LOGIN_VIEW (gtk_object_new (NAUTILUS_TYPE_LOGIN_VIEW, NULL));
+	view = NAUTILUS_CHANGE_PASSWORD_VIEW (gtk_object_new (NAUTILUS_TYPE_CHANGE_PASSWORD_VIEW, NULL));
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", login_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", change_password_object_destroyed, NULL);
 
-	nautilus_view = nautilus_login_view_get_nautilus_view (view);
+	nautilus_view = nautilus_change_password_view_get_nautilus_view (view);
 	
 	printf ("Returning new object %p\n", nautilus_view);
 
@@ -72,7 +72,7 @@ main (int argc, char *argv[])
 {
 	BonoboGenericFactory	*factory;
 	CORBA_ORB		orb;
-	char *registration_id;
+	char			*registration_id;
 
 
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -80,7 +80,7 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 
-        gnome_init_with_popt_table ("nautilus-login-view", VERSION, 
+        gnome_init_with_popt_table ("nautilus-change-password-view", VERSION, 
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
 
@@ -88,9 +88,9 @@ main (int argc, char *argv[])
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_login_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22", getenv ("DISPLAY"));
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_change_password_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    login_make_object,
+						    change_password_make_object,
 						    NULL);
 	g_free (registration_id);
 	
