@@ -915,10 +915,14 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((GnomeVFSMimeApplication *) p->data)->id);
 	}
 
+	gnome_vfs_mime_application_list_free (normal_short_list);
+
 	/* compute delta */
 
 	add_list = str_list_difference (applications, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, applications);
+
+	eel_g_list_free_deep (normal_short_list_ids);
 
 	nautilus_file_set_metadata_list 
 		(file,
@@ -931,9 +935,8 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 remove_list);
 
-	/* FIXME bugzilla.gnome.org 41269: 
-	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
-	 */
+	eel_g_list_free_deep (add_list);
+	eel_g_list_free_deep (remove_list);
 
 	return GNOME_VFS_OK;
 }
@@ -953,6 +956,7 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 			      GNOME_VFS_ERROR_GENERIC);
 
 	/* get per-mime short list */
+
 	mime_type = nautilus_file_get_mime_type (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
 	g_free (mime_type);
@@ -962,10 +966,14 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((Bonobo_ServerInfo *) p->data)->iid);
 	}
 
+	gnome_vfs_mime_component_list_free (normal_short_list);
+
 	/* compute delta */
 
 	add_list = str_list_difference (components, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, components);
+
+	eel_g_list_free_deep (normal_short_list_ids);
 
 	nautilus_file_set_metadata_list 
 		(file,
@@ -978,9 +986,8 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 remove_list);
 
-	/* FIXME bugzilla.gnome.org 41269: 
-	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
-	 */
+	eel_g_list_free_deep (add_list);
+	eel_g_list_free_deep (remove_list);
 
 	return GNOME_VFS_OK;
 }

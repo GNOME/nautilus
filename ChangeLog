@@ -1,3 +1,10 @@
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_set_short_list_applications_for_file),
+	(nautilus_mime_set_short_list_components_for_file):
+	Fix storage leaks.
+
 2002-03-06  Michael Meeks  <michael@ximian.com>
 
 	* src/file-manager/fm-icon-view.c
