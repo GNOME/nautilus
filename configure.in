@@ -484,11 +484,12 @@ fi
 AC_MSG_CHECKING(for more warnings, including -Werror)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	AC_MSG_RESULT(yes)
-	CFLAGS="$CFLAGS \
+	CFLAGS="\
 	-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
-	-Werror"
+	-Werror \
+	$CFLAGS"
 
 	for option in -Wsign-promo -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
