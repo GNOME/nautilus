@@ -156,44 +156,6 @@ nautilus_preferences_pane_add_group (NautilusPreferencesPane *preferences_pane,
 	return group;
 }
 
-GtkWidget *
-nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane *preferences_pane,
-						 guint n,
-						 const char *preference_name,
-						 NautilusPreferencesItemType item_type,
-						 int column)
-{
-	GtkWidget *item;
-	GtkWidget *group;
-
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane), NULL);
-	g_return_val_if_fail (preference_name != NULL, NULL);
-	g_return_val_if_fail (column >= 0, NULL);
-	g_return_val_if_fail (column <= 1, NULL);
-
-	if (!preferences_pane->details->groups) {
-		g_warning ("nautilus_preferences_pane_add_item_to_nth_group () There are no groups!");
-		return NULL;
-	}
-
-	if (n >= g_list_length (preferences_pane->details->groups)) {
-		g_warning ("nautilus_preferences_pane_add_item_to_nth_group (n = %d) n is out of bounds!", n);
-		return NULL;
-	}
-
-	g_return_val_if_fail (g_list_nth_data (preferences_pane->details->groups, n) != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_WIDGET (g_list_nth_data (preferences_pane->details->groups, n)), NULL);
-
-	group = GTK_WIDGET (g_list_nth_data (preferences_pane->details->groups, n));
-
-	item = nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
-						    preference_name,
-						    item_type,
-						    column);
-
-	return item;
-}
-
 static int
 preferences_pane_get_max_caption_width (const NautilusPreferencesPane *preferences_pane,
 					int column)

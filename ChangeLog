@@ -1,5 +1,61 @@
 2001-04-19  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	Retire this class.  It was a bad idea to use subclassing for the
+	specific use of the preferences dialog in nautilus.  Hooking
+	signals up to a regular GnomeDialog is good enough.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(nautilus_global_preferences_initialize):
+	Remove the implementation of the Nautilus preferences dialog from
+	here.  That is something that is specific to the Nautilus shell.
+	The code lives in the Nautilus shell itself now.
+	
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_initialize),
+	(preferences_box_select_pane),
+	(preferences_box_category_list_recreate),
+	(preferences_box_add_pane), (nautilus_preferences_box_update),
+	(preferences_box_find_pane), (preferences_box_populate_pane),
+	(nautilus_preferences_box_populate), (user_level_changed_callback),
+	(nautilus_preferences_dialog_new):
+	Add support for building preference boxes using structures to
+	describe them.  Also add a convenience function for creating a
+	GnomeDialog with a preference box as its sole child.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	(nautilus_preferences_pane_add_item_to_nth_group): Remove this
+	function as its no longer used.
+
+	* libnautilus-extensions/nautilus-sidebar-functions.h:
+	* libnautilus-extensions/nautilus-sidebar-functions.c:
+	(sidebar_panel_make_preference_key):
+	Make the known sidebar panel enabled preference keys public as
+	string constants.
+	
+	* src/Makefile.am:
+	* src/nautilus-preferences-dialog.h:
+	* src/nautilus-preferences-dialog.c:
+	(dialog_button_clicked_callback), (dialog_close_callback),
+	(preferences_dialog_create),
+	(global_preferences_populate_sidebar_panels_callback),
+	(preferences_dialog_populate_sidebar_tabs_group),
+	(preferences_dialog_destroy), (global_preferences_get_dialog),
+	(nautilus_preferences_dialog_show):
+	Move the implementation of the Nautilus preference dialog into the
+	Nautilus shell itself.
+	
+	* src/nautilus-window-menus.c: (user_level_customize_callback):
+	Update for new preference dialog show function.
+
+2001-04-19  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/hardware/main.c: (main):
 	* components/help/hyperbola-main.c: (main):
 	* components/history/nautilus-history-view.c: (main):

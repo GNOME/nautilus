@@ -28,10 +28,8 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-icon-factory.h"
-#include "nautilus-preferences-dialog.h"
-#include "nautilus-preferences-group.h"
-#include "nautilus-preferences-item.h"
 #include "nautilus-sidebar-functions.h"
+#include <eel/eel-enumeration.h>
 #include <eel/eel-font-manager.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -39,50 +37,23 @@
 #include <eel/eel-smooth-widget.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <gconf/gconf-client.h>
-#include <gconf/gconf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 /* Constants */
-static const char untranslated_global_preferences_dialog_title[] = N_("Nautilus Preferences");
-#define GLOBAL_PREFERENCES_DIALOG_TITLE _(untranslated_global_preferences_dialog_title)
 #define STRING_LIST_DEFAULT_TOKENS_DELIMETER ","
-
-/* Preference names for known sidebar panels.  These are used to install the default
- * enabled state for the panel.  Unknown panels will have a default enabled state of FALSE.
- */
-#define NOTES_PANEL_IID		"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
-#define HELP_PANEL_IID		"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
-#define HISTORY_PANEL_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
-#define TREE_PANEL_IID		"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d"
-#define NOTES_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NOTES_PANEL_IID
-#define HELP_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HELP_PANEL_IID
-#define HISTORY_PANEL_KEY	NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HISTORY_PANEL_IID
-#define TREE_PANEL_KEY		NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "/" TREE_PANEL_IID
 
 /* base path for NAUTILUS_PREFERENCES_HTTP_* */
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
-/* A structure that describes a single preferences dialog ui item. */
-typedef struct PreferenceDialogItem PreferenceDialogItem;
-
 /* Forward declarations */
-static gboolean   global_preferences_close_dialog_callback      (GtkWidget                  *dialog,
-								 gpointer                    user_data);
-static void       global_preferences_install_defaults           (void);
-static void       global_preferences_register_enumerations      (void);
-static GtkWidget *global_preferences_create_dialog              (void);
-static void       global_preferences_create_sidebar_panels_pane (NautilusPreferencesBox     *preference_box);
-static GtkWidget *global_preferences_populate_pane              (NautilusPreferencesBox     *preference_box,
-								 const char                 *pane_name,
-								 const PreferenceDialogItem *preference_dialog_item);
-static gpointer   default_font_callback                         (int                         user_level);
-static gpointer   default_smooth_font_callback                  (int                         user_level);
-static gpointer   default_home_location_callback                (int                         user_level);
+static void     global_preferences_install_defaults      (void);
+static void     global_preferences_register_enumerations (void);
+static gpointer default_font_callback                    (int  user_level);
+static gpointer default_smooth_font_callback             (int  user_level);
+static gpointer default_home_location_callback           (int  user_level);
 
-static GtkWidget *global_prefs_dialog = NULL;
 static const char *default_smooth_font_auto_value;
 static const char *icon_view_smooth_font_auto_value;
 
@@ -258,7 +229,7 @@ typedef struct
 /* The following table defines the default values and user level visibilities of
  * Nautilus preferences.  Each of these preferences does not necessarily need to
  * have a UI item in the preferences dialog.  To add an item to the preferences
- * dialog, see the PreferenceDialogItem tables later in this file.
+ * dialog, see the NautilusPreferencesItemDescription tables later in this file.
  * 
  * Field definitions:
  *
@@ -662,25 +633,25 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* Sidebar panel default */
-	{ NOTES_PANEL_KEY,
+	{ nautilus_sidebar_notes_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ HELP_PANEL_KEY,
+	{ nautilus_sidebar_help_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ HISTORY_PANEL_KEY,
+	{ nautilus_sidebar_history_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ TREE_PANEL_KEY,
+	{ nautilus_sidebar_tree_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
@@ -809,666 +780,6 @@ global_preferences_install_defaults (void)
 		nautilus_preferences_set_visible_user_level (preference_defaults[i].name,
 							     preference_defaults[i].visible_user_level);
 	}
-
-	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
-	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
-}
-
-/* A structure that describes a single preferences dialog ui item. */
-struct PreferenceDialogItem
-{
-	const char *group_name;
-	const char *preference_name;
-	const char *preference_description;
-	NautilusPreferencesItemType item_type;
-	const char *control_preference_name;
-	NautilusPreferencesItemControlAction control_action;
-	int column;
-	const char *enumeration_list_unique_exceptions;
-};
-
-/* The following tables define preference items for the preferences dialog.
- * Each item corresponds to one preference.
- * 
- * Field definitions:
- *
- * 1. group_name
- *
- *    The group under which the preference is placed.  Each unique group will
- *    be framed and titled with the group_name.
- *
- *    Many items can have the same group_name.  Groups will be created as needed
- *    while populating the items.
- *
- *    This field needs to be non NULL.
- *
- * 2. preference_name
- *
- *    The name of the preference
- *
- *    This field needs to be non NULL.
- *
- * 3. preference_description
- *
- *    A user visible description of the preference.  Not all items use the
- *    description.  In particular, enumeration items use the descriptions from
- *    an enumeration structure.  See field XX below.
- *
- *    This field needs to be non NULL for items other than:
- * 
- *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO or 
- *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
- * 
- * 4. item_type
- *
- *    The type of the item.  Needs to be one of the valid values of
- *    NautilusPreferencesItemType.  See nautilus-preference-item.h.
- *
- *    This field needs to be one of the valid item types.
- * 
- * 5. control_preference_name
- *
- *    A second preference that "controls" this preference.  Can only
- *    be a boolean preference.
- *
- *    This field can be NULL, in which case field 6 is ignored.
- *
- * 6. control_action
- *
- *    The action to take when the control preference in field 5 changes.
- *    There are only 2 possible actions:
- *
- *      NAUTILUS_PREFERENCE_ITEM_SHOW - If the control preference is TRUE
- *                                      the show this item.
- *
- *      NAUTILUS_PREFERENCE_ITEM_HIDE - If the control preference is FALSE
- *                                      the hide this item.
- *
- * 7. column
- *
- *    A preference pane is composed of groups.  Each group is bounded by
- *    a frame.  Each of these groups can have 0 or 1 columns of preference
- *    item widgets.  This field controls which column the preference item 
- *    widgets appear in.
- *
- * 8. enumeration_list_unique_exceptions
- *    If the item type is one of:
- *
- *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL
- *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
- *
- *    The this field can be a string of exceptions to the rule that enumeration
- *    list items must always not allow duplicate choices.  For example, if there
- *    are 3 string pickers in the item, then each one cannot select and item
- *    which is already selected in one of the other two.  The preferences item
- *    widget enforces this rule by making such items insensitive.  
- *
- *    The enumeration_list_unique_exceptions allows a way to bypass this rule
- *    for certain choices.
- */
-static PreferenceDialogItem appearance_items[] = {
-	{ N_("Smoother Graphics"),
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  N_("Use smoother (but slower) graphics"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
-	  N_("Font for elsewhere in Nautilus:"),
-	  NAUTILUS_PREFERENCE_ITEM_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_HIDE
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-	  N_("Font for elsewhere in Nautilus:"),
-	  NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem windows_and_desktop_items[] = {
-	{ N_("Desktop"),
-	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-	  N_("Use Nautilus to draw the desktop"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-        { N_("Desktop"),
-	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-	  N_("Use your home folder as the desktop"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-	  N_("Open each file or folder in a separate window"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
-	  N_("Display toolbar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-	  N_("Display location bar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-	  N_("Display status bar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  N_("Display sidebar in new windows"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Trash Behavior"),
-	  NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-	  N_("Ask before emptying the Trash or deleting files"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Trash Behavior"),
-	  NAUTILUS_PREFERENCES_ENABLE_DELETE,
-	  N_("Include a Delete command that bypasses Trash"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	/* FIXME: This group clearly doesn't belong in Windows &
-	 * Desktop, but there's no obviously-better place for it and
-	 * it probably doesn't deserve a pane of its own.
-	 */
-	{ N_("Keyboard Shortcuts"),
-	  NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-	  N_("Use Emacs-style keyboard shortcuts in text fields"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem directory_views_items[] = {
-	{ N_("Click Behavior"),
-	  NAUTILUS_PREFERENCES_CLICK_POLICY,
-	  N_("Click Behavior"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
-	},
-	{ N_("Executable Text Files"),
-	  NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-	  N_("Executable Text Files"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
-	},
-	{ N_("Show/Hide Options"),
-	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-	  N_("Show hidden files (file names start with \".\")"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Show/Hide Options"),
-	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-	  N_("Show backup files (file names end with \"~\")"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Show/Hide Options"),
-	  NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-	  N_("Show special flags in Properties window"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Sorting Order"),
-	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-	  N_("Always list folders before files"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem icon_captions_items[] = {
-	{ N_("Icon Captions"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-	  N_("Choose the order for information to appear beneath icon names.\n"
-	     "More information appears as you zoom in closer"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL,
-	  NULL,
-	  0,
-	  0,
-	  "none"
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem view_preferences_items[] = {
-	{ N_("Default View"),
-	  NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-	  N_("View new folders using:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
-	},
-
-	/* Icon View Defaults */
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Lay Out Items:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-	  N_("Font:"),
-	  NAUTILUS_PREFERENCE_ITEM_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_HIDE
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-	  N_("Font:"),
-	  NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
-	  NULL, 0, 1
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-	  N_("Use tighter layout"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL, 0, 1
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
-	  NULL, 0, 1
-	},
-
-	/* List View Defaults */
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Lay Out Items:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
-	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-	  N_("Font:"),
-	  NAUTILUS_PREFERENCE_ITEM_FONT
-	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
-	  NULL, 0, 1
-	},
-	{ N_("List View Defaults"),
-	  "dummy-string",
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_PADDING,
-	  NULL, 0, 1
-	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU,
-	  NULL, 0, 1
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem search_items[] = {
-	{ N_("Search Complexity Options"),
-	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-	  N_("search type to do by default"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
-	},
-	{ N_("Search Engines"),
-	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-	  N_("Search Engine Location"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem navigation_items[] = {
-	{ N_("Home"),
-	  NAUTILUS_PREFERENCES_HOME_URI,
-	  N_("Location:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  N_("Use HTTP Proxy"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_HOST,
-	  N_("Location:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
-	  N_("Port:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH,
-	  N_("Proxy requires a username and password:"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME,
-	  N_("Username:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("HTTP Proxy Settings"),
-	  NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD,
-	  N_("Password:"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
-	  NAUTILUS_PREFERENCE_ITEM_SHOW
-	},
-	{ N_("Built-in Bookmarks"),
-	  NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-	  N_("Don't include the built-in bookmarks in the Bookmarks menu"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ NULL }
-};
-
-static PreferenceDialogItem tradeoffs_items[] = {
-	{ N_("Show Text in Icons"),
-	  NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-	{ N_("Show Count of Items in Folders"),
-	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-	{ N_("Show Thumbnails for Image Files"),
-	  NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-	{ N_("Show Thumbnails for Image Files"),
-	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  N_("Don't make thumbnails for files larger than:"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
-	},
-	{ N_("Preview Sound Files"),
-	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-
-	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
-	{ N_("Make Folder Appearance Details Public"),
-	  NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-	  NULL,
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
-	{ NULL }
-};
-
-static GtkWidget *
-global_preferences_create_dialog (void)
-{
-	GtkWidget *prefs_dialog;
-	NautilusPreferencesBox *preference_box;
-
-	/*
-	 * In the soon to come star trek future, the following widgetry
-	 * might be either fetched from a glade file or generated from 
-	 * an xml file.
-	 */
-	prefs_dialog = nautilus_preferences_dialog_new (GLOBAL_PREFERENCES_DIALOG_TITLE);
-
-	gtk_window_set_wmclass (GTK_WINDOW (prefs_dialog), "global_preferences", "Nautilus");
-
-	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
-			    "close",
-			    GTK_SIGNAL_FUNC (global_preferences_close_dialog_callback),
-			    NULL);
-
-	/* Create a preference box */
-	preference_box = NAUTILUS_PREFERENCES_BOX (nautilus_preferences_dialog_get_prefs_box
-						   (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog)));
-
-	/* View Preferences */
-	global_preferences_populate_pane (preference_box,
-					  _("View Preferences"),
-					  view_preferences_items);
-	
-	/* Appearance */
-	global_preferences_populate_pane (preference_box,
-					  _("Appearance"),
-					  appearance_items);
-	
-	/* Windows & Desktop */
-	global_preferences_populate_pane (preference_box,
-					  _("Windows & Desktop"),
-					  windows_and_desktop_items);
-
-	/* Directory Views */
-	global_preferences_populate_pane (preference_box,
-					  _("Icon & List Views"),
-					  directory_views_items);
-
-	/* Icon Captions */
-	global_preferences_populate_pane (preference_box,
-					  _("Icon Captions"),
-					  icon_captions_items);
-
-	/* Sidebar Panels */
-	global_preferences_create_sidebar_panels_pane (preference_box);
-
-	/* Search */
-	global_preferences_populate_pane (preference_box,
-					  _("Search"),
-					  search_items);
-
-	/* Navigation */
-	global_preferences_populate_pane (preference_box,
-					  _("Navigation"),
-					  navigation_items);
-
-	/* Tradeoffs */
-	global_preferences_populate_pane (preference_box,
-					  _("Speed Tradeoffs"),
-					  tradeoffs_items);
-
-	/* Update the dialog so that the right items show up based on the current user level */
-	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog));
-
-	return prefs_dialog;
-}
-
-static PreferenceDialogItem sidebar_items[] = {
-	{ N_("Tree"),
-	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-	  N_("Show only folders (no files) in the tree"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ NULL }
-};
-
-static void
-global_preferences_populate_sidebar_panels_callback (const char *name,
-						     const char *iid,
-						     const char *preference_key,
-						     gpointer callback_data) 
-{
-	NautilusPreferencesPane *sidebar_pane;
-	char *description;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (iid != NULL);
-	g_return_if_fail (preference_key != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
-
-	sidebar_pane = NAUTILUS_PREFERENCES_PANE (callback_data);
-	
-	description = g_strdup_printf (_("Display %s tab in sidebar"), name);
-	
-	nautilus_preferences_set_description (preference_key, description);
-
-	nautilus_preferences_pane_add_item_to_nth_group (sidebar_pane,
-							 0,
-							 preference_key,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-							 0);
-	
-	g_free (description);
-}
-
-static void
-global_preferences_create_sidebar_panels_pane (NautilusPreferencesBox *preference_box)
-{
-	GtkWidget *sidebar_pane;
-
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box));
-
- 	/* Sidebar Panels - dynamic part */
- 	sidebar_pane = nautilus_preferences_box_add_pane (preference_box, _("Sidebar Panels"));
-	
- 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_pane), _("Tabs"));
-
-	nautilus_sidebar_for_each_panel (global_preferences_populate_sidebar_panels_callback, sidebar_pane);
-
-	/* Sidebar Panels - non dynamic parts */
-	global_preferences_populate_pane (preference_box,
-					  _("Sidebar Panels"),
-					  sidebar_items);
-}
-
-static void
-destroy_global_prefs_dialog (void)
-{
-	/* Free the dialog first, cause it has refs to preferences */
-	if (global_prefs_dialog != NULL) {
-		/* Since it's a top-level window, it's OK to destroy rather than unref'ing. */
-		gtk_widget_destroy (global_prefs_dialog);
-	}
-}
-
-static GtkWidget *
-global_preferences_get_dialog (void)
-{
-	static gboolean set_up_exit = FALSE;
-
-	nautilus_global_preferences_initialize ();
-
-	if (global_prefs_dialog == NULL) {
-		global_prefs_dialog = global_preferences_create_dialog ();
-	}
-
-	if (!set_up_exit) {
-		g_atexit (destroy_global_prefs_dialog);
-		set_up_exit = TRUE;
-	}
-
-	return global_prefs_dialog;
-}
-
-static gboolean
-global_preferences_close_dialog_callback (GtkWidget   *dialog,
-					  gpointer    user_data)
-{
-	nautilus_global_preferences_hide_dialog ();
-
-	return TRUE;
-}
-
-static GtkWidget *
-global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
-				  const char *pane_name,
-				  const PreferenceDialogItem *preference_dialog_item)
-{
-	GtkWidget *pane;
-	GtkWidget *item;
-	EelStringList *group_names;
-	guint i;
-	int group_index;
-	guint start_group_index;
-
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box), NULL);
-	g_return_val_if_fail (pane_name != NULL, NULL);
-	g_return_val_if_fail (preference_dialog_item != NULL, NULL);
-
-	/* Create the pane if needed */
-	pane = nautilus_preferences_box_find_pane (preference_box, pane_name);
-	if (pane == NULL) {
-		pane = nautilus_preferences_box_add_pane (preference_box, pane_name);
-	}
-
-	group_names = eel_string_list_new (TRUE);
-
-	start_group_index = nautilus_preferences_pane_get_num_groups (NAUTILUS_PREFERENCES_PANE (pane));
-
-	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
-		if (!eel_string_list_contains (group_names, preference_dialog_item[i].group_name)) {
-			eel_string_list_insert (group_names, preference_dialog_item[i].group_name);
-			nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (pane),
-							     _(preference_dialog_item[i].group_name));
-		}
-	}
-
-	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
-		group_index = start_group_index + 
-			eel_string_list_get_index_for_string (group_names, preference_dialog_item[i].group_name);
-
-		if (preference_dialog_item[i].preference_description != NULL) {
-			nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
-							      _(preference_dialog_item[i].preference_description));
-		}
-
-		item = nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (pane),
-									group_index,
-									preference_dialog_item[i].preference_name,
-									preference_dialog_item[i].item_type,
-									preference_dialog_item[i].column);
-
-		/* Install a control preference if needed */
-		if (preference_dialog_item[i].control_preference_name != NULL) {
-			nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (item),
-									  preference_dialog_item[i].control_preference_name);
-			nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (item),
-								      preference_dialog_item[i].control_action);
-
-			nautilus_preferences_pane_add_control_preference (NAUTILUS_PREFERENCES_PANE (pane),
-									  preference_dialog_item[i].control_preference_name);
-
-		}
-
-		/* Install exceptions to enum lists uniqueness rule */
-		if (preference_dialog_item[i].enumeration_list_unique_exceptions != NULL) {
-			g_assert (preference_dialog_item[i].item_type == 
-				  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
-				  || preference_dialog_item[i].item_type == 
-				  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL);
-			nautilus_preferences_item_enumeration_list_set_unique_exceptions (
-				NAUTILUS_PREFERENCES_ITEM (item),
-				preference_dialog_item[i].enumeration_list_unique_exceptions,
-				STRING_LIST_DEFAULT_TOKENS_DELIMETER);
-		}
-	}
-
-	eel_string_list_free (group_names);
-
-	return pane;
 }
 
 static gpointer
@@ -1515,33 +826,6 @@ default_home_location_callback (int user_level)
 /*
  * Public functions
  */
-void
-nautilus_global_preferences_show_dialog (void)
-{
-	GtkWidget *dialog = global_preferences_get_dialog ();
-
-	eel_gtk_window_present (GTK_WINDOW (dialog));
-}
-
-void
-nautilus_global_preferences_hide_dialog (void)
-{
-	GtkWidget *dialog = global_preferences_get_dialog ();
-
-	gtk_widget_hide (dialog);
-}
-
-void
-nautilus_global_preferences_set_dialog_title (const char *title)
-{
-	GtkWidget *dialog;
-	g_return_if_fail (title != NULL);
-	
-	dialog = global_preferences_get_dialog ();
-
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-}
-
 static EelScalableFont *
 global_preferences_get_smooth_font (const char *smooth_font_file_name)
 {
@@ -1642,6 +926,9 @@ nautilus_global_preferences_initialize (void)
 	global_preferences_install_defaults ();
 
 	global_preferences_register_enumerations ();
+
+	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
+	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
 	/* Set up storage for values accessed in this file */
 	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,

@@ -70,6 +70,7 @@ noinst_HEADERS = \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
+	nautilus-preferences-dialog.h \
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
 	nautilus-search-bar-criterion.h		\
@@ -112,6 +113,7 @@ nautilus_SOURCES = \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
+	nautilus-preferences-dialog.c		\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\

@@ -106,7 +106,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-mime-actions.c \
 	nautilus-monitor.c \
 	nautilus-preferences-box.c \
-	nautilus-preferences-dialog.c \
 	nautilus-preferences-group.c \
 	nautilus-preferences-item.c \
 	nautilus-preferences-pane.c \
@@ -182,7 +181,6 @@ noinst_HEADERS = \
 	nautilus-mime-actions.h \
 	nautilus-monitor.h \
 	nautilus-preferences-box.h \
-	nautilus-preferences-dialog.h \
 	nautilus-preferences-group.h \
 	nautilus-preferences-item.h \
 	nautilus-preferences-pane.h \

@@ -168,9 +168,6 @@ typedef enum
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
 
 void                    nautilus_global_preferences_initialize                   (void);
-void                    nautilus_global_preferences_show_dialog                  (void);
-void                    nautilus_global_preferences_hide_dialog                  (void);
-void                    nautilus_global_preferences_set_dialog_title             (const char *title);
 
 /* Sidebar */
 struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font    (void);

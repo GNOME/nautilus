@@ -27,7 +27,10 @@
 
 #include <glib.h>
 
-#define NAUTILUS_PREFERENCES_SIDEBAR_PANEL_PREFIX "sidebar-panels"
+extern const char nautilus_sidebar_notes_enabled_preference_name[];
+extern const char nautilus_sidebar_help_enabled_preference_name[];
+extern const char nautilus_sidebar_history_enabled_preference_name[];
+extern const char nautilus_sidebar_tree_enabled_preference_name[];
 
 /*
  * A callback which can be invoked for each sidebar panel available.

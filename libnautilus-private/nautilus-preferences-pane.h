@@ -59,11 +59,6 @@ GtkType    nautilus_preferences_pane_get_type               (void);
 GtkWidget* nautilus_preferences_pane_new                    (void);
 GtkWidget *nautilus_preferences_pane_add_group              (NautilusPreferencesPane       *preferences_pane,
 							     const char                    *group_title);
-GtkWidget *nautilus_preferences_pane_add_item_to_nth_group  (NautilusPreferencesPane       *preferences_pane,
-							     guint                          n,
-							     const char                    *preference_name,
-							     NautilusPreferencesItemType    item_type,
-							     int                            column);
 void       nautilus_preferences_pane_update                 (NautilusPreferencesPane       *preferences_pane);
 guint      nautilus_preferences_pane_get_num_groups         (const NautilusPreferencesPane *pane);
 guint      nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane *pane);

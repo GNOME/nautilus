@@ -32,6 +32,7 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-preferences-dialog.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-services.h"
 #include "nautilus-signaller.h"
@@ -58,10 +59,10 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
+
 
 #ifdef ENABLE_PROFILER
 #include "nautilus-profiler.h"
@@ -543,8 +544,7 @@ user_level_customize_callback (BonoboUIComponent *component,
 			       gpointer user_data, 
 			       const char *verb)
 {
-	nautilus_global_preferences_set_dialog_title (_("Preferences"));
-	nautilus_global_preferences_show_dialog ();
+	nautilus_preferences_dialog_show ();
 }
 
 static void
