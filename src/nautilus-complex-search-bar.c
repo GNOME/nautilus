@@ -125,6 +125,8 @@ search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
 	g_slist_foreach (bar->details->search_criteria,
 			 update_criteria_choices,
 			 bar);
+
+	update_dynamic_buttons_state (bar);
 }
 
 
