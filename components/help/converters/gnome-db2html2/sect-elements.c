@@ -563,6 +563,7 @@ sect_author_characters (Context *context, const gchar *chars, int len)
 	case ARTHEADER:
 		break;
 	default:
+		sect_write_characters (context, chars, len);
 		return;
 	};
 
