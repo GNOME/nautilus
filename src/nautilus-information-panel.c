@@ -91,6 +91,8 @@ struct NautilusSidebarDetails {
 
 static void     nautilus_sidebar_initialize_class   (GtkObjectClass   *object_klass);
 static void     nautilus_sidebar_initialize         (GtkObject        *object);
+static void	nautilus_sidebar_deactivate_panel   (NautilusSidebar *sidebar);
+
 static gboolean nautilus_sidebar_press_event        (GtkWidget        *widget,
 						     GdkEventButton   *event);
 static gboolean nautilus_sidebar_release_event      (GtkWidget        *widget,
@@ -345,12 +347,35 @@ reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
 	}
 }
 
+/* utility routine that checks if the active panel matches the passed-in object id */
+static gboolean
+nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *id)
+{
+	GtkWidget *current_view;
+	const char *current_iid;
+	
+	if (sidebar->details->selected_index < 0) {
+		return FALSE;
+	}
+	current_view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
+							sidebar->details->selected_index);
+	current_iid = nautilus_view_frame_get_iid (NAUTILUS_VIEW_FRAME (current_view));
+	return nautilus_strcmp (current_iid, id) == 0;	
+}
+
 /* callback for sidebar panel menu items to toggle their visibility */
 static void
 toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
 {
+ 	NautilusSidebar *sidebar;
         char *key;
+	
+	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
+	if (nautilus_sidebar_active_panel_matches_id (sidebar, sidebar_id)) {
+		nautilus_sidebar_deactivate_panel (sidebar);
+	}
+	
 	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
 	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key, FALSE));
 	g_free (key); 
@@ -392,6 +417,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 				gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), enabled);
 				gtk_widget_show (menu_item);
+				gtk_object_set_user_data (GTK_OBJECT (menu_item), sidebar);
 				gtk_menu_append (GTK_MENU(menu), menu_item);
 				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate",
 							 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
@@ -818,21 +844,17 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	int page_num;
 	char *description;
 	
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (panel));
+
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (sidebar->details->notebook),
 					  GTK_WIDGET (panel));
-
-
-	/* FIXME bugzilla.eazel.com 1840: 
-	 * This g_return_if_fail gets hit in cases where the sidebar panel
-	 * fails when loading, which causes the panel's tab to be left behind.
-	 */
-	g_return_if_fail (page_num >= 0);
-
-	gtk_notebook_remove_page (GTK_NOTEBOOK (sidebar->details->notebook),
-				  page_num);
-
 	description = nautilus_view_frame_get_label (panel);
 
+	if (page_num >= 0) {
+		gtk_notebook_remove_page (GTK_NOTEBOOK (sidebar->details->notebook),
+				  page_num);
+	}
+	
 	/* Remove the tab associated with this panel */
 	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
 
@@ -880,7 +902,7 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 
 /* utility to deactivate the active panel */
 static void
-nautilus_sidebar_deactivate_panel(NautilusSidebar *sidebar)
+nautilus_sidebar_deactivate_panel (NautilusSidebar *sidebar)
 {
 	if (sidebar->details->selected_index >= 0) {
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->notebook));

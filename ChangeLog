@@ -1,3 +1,19 @@
+2000-12-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c:
+	(nautilus_sidebar_active_panel_matches_id), (toggle_sidebar_panel),
+	(nautilus_sidebar_add_panel_items),
+	(nautilus_sidebar_remove_panel),
+	(nautilus_sidebar_deactivate_panel):
+
+	fixed bug 5198, removing the displayed sidebar panel messes up
+	others, by closing the active panel before removing if it's the
+	one to be removed.
+	
+	also fixed bug 1840 with this change, tab gets left behind when
+	sidebar panel dies, by handling the case when we can't find the
+	notebook page better.
+	
 2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
