@@ -9,10 +9,11 @@
 <p>To make code written for Nautilus look and act in a predictable way,
 we follow a set of guidelines that specify some details of how we write code.
 To start, we follow all the guidelines outlined in the
-<a href="http://developer.gnome.org/doc/guides/programming-guidelines/">GNOME Programming Guidelines</a>.
-This document covers things that are not mentioned in the GNOME
-Programming Guidelines, and things that are mentioned there, but need
-to be re-emphasized, because people don't follow them often enough.</p>
+<a href="http://developer.gnome.org/doc/guides/programming-guidelines/">GNOME Programming Guidelines</a>.</p>
+
+<p>This document covers both things that are not mentioned in the GNOME
+Programming Guidelines and things that are mentioned there but need
+to be re-emphasized because people don't follow them often enough.</p>
 
 <p>I'm just getting started on this document. Feedback is welcome.
 Eventually I'd like better organization and tons of examples.</p>
@@ -20,6 +21,8 @@ Eventually I'd like better organization and tons of examples.</p>
 <blockquote>
 <p>- <a href="mailto:darin@eazel.com">Darin</a></p>
 </blockquote>
+
+<hr>
 
 <p><b>We use the most-recommended coding style from the GNOME Programming
 Guidelines.</b> This means that we use the Linux kernel brace style with
@@ -56,9 +59,46 @@ handles errors or not.</p>
 Sometimes they become more important than clarity, but only once they are proven
 to be a problem.</p>
 
-<p><b>We use for loops when they make the code easier to read.</b> While loops
-can be used for other cases. It's true that
+<p><b>We use for loops when they make the code easier to read.</b> The alternative
+is usually to use a while loop. It's true that
 "easy to read" is a subjective thing.</p>
+
+<p><b>We declare local variables at the top of the function.</b> C allows you
+to declare variables at the top of any scope, like the scope in a control
+flow construct like an if statement. But putting the declarations there makes
+it harder to add and delete if statements, since the declarations have to move.
+So we just put them all at the top of the function, usually in the order that
+they are used in the function.</p>
+
+<p><b>We do not initialize local variables in their declarations.</b> C allows you
+to initialize a local variable when declaring it. But no other code can run before
+this, because the other statements in a function must be after all the declarations.
+If there are lines of code initializing the variables in the declarations, it can
+be harder to change the function around, since code must move down from the declaration
+if other code needs to run after it. To avoid this, we just don't use the ability
+to initialize the variable when it's declared.</p>
+
+<p><b>We always use braces, even for one-statement "blocks".</b> Our consensus is
+to do things like this:</p>
+
+<blockquote>
+<pre>
+if (list != NULL) {
+        g_warning ("the list isn't empty");
+}
+</pre>
+</blockquote>
+
+<p>Instead of this:</p>
+
+<blockquote>
+<pre>
+if (list != NULL)
+        g_warning ("the list isn't empty");
+</pre>
+</blockquote>
+
+<p>This applies to all control structures: if, while, for, do.</p>
 
 <p><b>We make each header "stand alone".</b> Our concept with C header files is
 that each one must be written so it can be included without including another file
@@ -90,6 +130,8 @@ is the include of &lt;config.h>, which goes first. Here's an example:</p>
 <i>Other declarations and code go here.</i>
 </pre>
 </blockquote>
+
+<hr>
 
 </body>
 
