@@ -58,6 +58,7 @@ typedef struct {
 	void (*stop_loading)      (NautilusView *view);
 	void (*selection_changed) (NautilusView *view,
 				   GList        *selection); /* list of URI char *s */
+	void (*title_changed) (NautilusView *view);
 } NautilusViewClass;
 
 GtkType           nautilus_view_get_type                    (void);
