@@ -217,10 +217,10 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 	
 		if (nautilus_rpm_view_get_installed (rpm_view)) {
 			terse = g_strdup (_("Uninstall failed..."));
-			dialog_title = g_strdup (_("Nautilus: Uninstall failed"));
+			dialog_title = g_strdup (_("Uninstall Failed"));
 		} else {
 			terse = g_strdup (_("Install failed..."));
-			dialog_title = g_strdup (_("Nautilus: Install failed"));
+			dialog_title = g_strdup (_("Install Failed"));
 		}
 
 		window = gtk_widget_get_toplevel (GTK_WIDGET (rpm_view));

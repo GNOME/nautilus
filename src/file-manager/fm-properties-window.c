@@ -453,7 +453,7 @@ update_properties_window_title (GtkWindow *window, NautilusFile *file)
 	g_assert (GTK_IS_WINDOW (window));
 
 	name = nautilus_file_get_name (file);
-	title = g_strdup_printf (_("Nautilus: %s Properties"), name);
+	title = g_strdup_printf (_("%s Properties"), name);
   	gtk_window_set_title (window, title);
 
 	g_free (name);	

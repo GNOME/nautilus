@@ -845,7 +845,7 @@ emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_b
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not a usable image file!"),
 			 gtk_entry_get_text(GTK_ENTRY(entry)));
-		nautilus_error_dialog (message, _("Nautilus: Not an image"), GTK_WINDOW (property_browser));
+		nautilus_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
 		g_free (message);
 		
 		gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
@@ -939,7 +939,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	
 	if (!is_image) {
 		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
-		nautilus_error_dialog (message, _("Nautilus: Not an image"), NULL);
+		nautilus_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		g_free (path_name);
 		g_free (path_uri);	

@@ -359,7 +359,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 	}
 					   
 	dialog = nautilus_yes_no_dialog (prompt,
-					 _("Nautilus: Forget history?"),
+					 _("Forget History?"),
 					 _("Forget"),
 					 GNOME_STOCK_BUTTON_CANCEL,
 					 GTK_WINDOW (window));
@@ -579,7 +579,7 @@ user_level_customize_callback (BonoboUIHandler *ui_handler,
 		/* Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 		 * The %s is the name of the middle user level ("Intermediate").
 		 */
-		dialog_title = g_strdup_printf (_("Nautilus: Switch to %s level?"), intermediate_level_name);
+		dialog_title = g_strdup_printf (_("Switch to %s Level?"), intermediate_level_name);
 		dialog = nautilus_yes_no_dialog (prompt,
 						 dialog_title,
 						 _("Switch"),
@@ -792,7 +792,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri_for_display);
 		dialog = nautilus_yes_no_dialog (prompt,
-						 _("Nautilus: Bookmark for nonexistent location"),
+						 _("Bookmark for Nonexistent Location"),
 						 _("Remove"),
 						 GNOME_STOCK_BUTTON_CANCEL,
 						 GTK_WINDOW (holder->window));
@@ -807,7 +807,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
-		dialog = nautilus_info_dialog (prompt, _("Nautilus: Go to nonexistent location"), GTK_WINDOW (holder->window));
+		dialog = nautilus_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
 	}
 
 	g_free (uri);

@@ -381,7 +381,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, text, 
-				 _("Nautilus: Error while copying file"),
+				 _("Error while Copying"),
 				 _("Skip"), _("Stop"), NULL);
 
 			g_free (text);
@@ -408,7 +408,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, text, 
-				 _("Nautilus: Error while copying file"),
+				 _("Error while Copying"),
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
 			g_free (text);
 
@@ -459,7 +459,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		 */
 		result = nautilus_simple_dialog
 			(xfer_info->parent_view, text, 
-			 _("Nautilus: Conflict while copying file"),
+			 _("Conflict while Copying"),
 			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
 		case 0:
@@ -473,7 +473,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	} else {
 		result = nautilus_simple_dialog
 			(xfer_info->parent_view, text, 
-			 _("Nautilus: Conflict while copying file"),
+			 _("Conflict while Copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
 		switch (result) {
@@ -1136,7 +1136,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			nautilus_simple_dialog
 				(view, 
 				 _("You cannot copy items into the Trash."), 
-				 _("Nautilus: Can't copy to Trash"),
+				 _("Can't Copy to Trash"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
@@ -1154,8 +1154,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ? _("The Trash must remain on the desktop.")
 					 : _("You cannot copy the Trash."), 
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
-					 ? _("Nautilus: Can't change Trash location")
-					 : _("Nautilus: Can't copy Trash"),
+					 ? _("Can't Change Trash Location")
+					 : _("Can't Copy Trash"),
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
@@ -1174,7 +1174,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("You cannot move a folder into itself.")
 					 : _("You cannot copy a folder into itself."), 
-					 _("Nautilus: Error moving into self"),
+					 _("Can't Move Into Self"),
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
@@ -1331,7 +1331,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 			nautilus_simple_dialog
 				(parent_view, 
 				 _("The Trash must remain on the desktop."), 
-				 _("Nautilus: Can't change Trash location"),
+				 _("Can't Change Trash Location"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
@@ -1342,7 +1342,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 				 item_name);
 			nautilus_simple_dialog
 				(parent_view, text, 
-				 _("Nautilus: Error moving to Trash"),
+				 _("Error Moving to Trash"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 			g_free (text);
@@ -1502,7 +1502,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	dialog = nautilus_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
 		  "all of the items in the trash?"),
-		_("Nautilus: Delete trash contents?"),
+		_("Delete Trash Contents?"),
 		_("Empty"),
 		GNOME_STOCK_BUTTON_CANCEL,
 		parent_window);

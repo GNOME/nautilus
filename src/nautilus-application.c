@@ -240,7 +240,7 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 						dir_list_concatenated,
 						"Please restart Nautilus to fix this problem.");
 
-		nautilus_error_dialog (error_string, _("Nautilus: Missing directories"), NULL);
+		nautilus_error_dialog (error_string, _("Missing Directories"), NULL);
 
 		g_free (dir_list_concatenated);
 		g_free (error_string);

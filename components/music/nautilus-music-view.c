@@ -843,7 +843,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	if (song_filename == NULL) {
 			nautilus_error_dialog (
 				_("Sorry, but the music view can't play non-local files yet! "),
-				_("Nautilus: Can't play non-local files"),
+				_("Can't Play Remote Files"),
 				NULL);
 
 		return;

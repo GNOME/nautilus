@@ -162,7 +162,7 @@ display_caveat (GtkWindow *parent_window)
 	GtkWidget *text;
 	char *file_name;
 
-	dialog = gnome_dialog_new (_("Nautilus: caveat"),
+	dialog = gnome_dialog_new (_("Caveat"),
 				   GNOME_STOCK_BUTTON_OK,
 				   NULL);
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -198,11 +198,10 @@ display_caveat (GtkWindow *parent_window)
 	}
 
   	text = nautilus_label_new
-		(_("The Nautilus shell is under development; it's not \n"
-  		   "ready for daily use. Many features, including some \n"
-  		   "of the best ones, are not yet done, partly done, or \n"
-  		   "unstable. The program doesn't look or act the way \n"
-  		   "it will in version 1.0."
+		(_("The Nautilus shell is under development; it's not\n"
+  		   "ready for daily use. Some features are not yet done,\n"
+  		   "partly done, or unstable. The program doesn't look\n"
+  		   "or act exactly the way it will in version 1.0."
 		   "\n\n"
 		   "If you do decide to test this version of Nautilus, \n"
 		   "beware. The program could do something \n"

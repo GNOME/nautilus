@@ -233,7 +233,6 @@ nautilus_window_update_title (NautilusWindow *window)
 {
         char *title;
         char *window_title;
-        char *truncated_title;
         GList *temp;
 
         title = nautilus_window_get_current_location_title (window);
@@ -241,12 +240,8 @@ nautilus_window_update_title (NautilusWindow *window)
         if (title[0] == '\0') {
                 gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
         } else {
-                truncated_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
-                window_title = g_strdup_printf (_("Nautilus: %s"), truncated_title);
-                g_free (truncated_title);
-
+                window_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
                 gtk_window_set_title (GTK_WINDOW (window), window_title);
-
                 g_free (window_title);
         }
         
@@ -696,7 +691,7 @@ handle_unreadable_location (NautilusWindow *window, const char *uri)
 		file_name = nautilus_file_get_name (file);
         	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
                 g_free (file_name);
-                nautilus_error_dialog (message, _("Nautilus: Inadequate permissions"), GTK_WINDOW (window));
+                nautilus_error_dialog (message, _("Inadequate Permissions"), GTK_WINDOW (window));
                 g_free (message);
 	}
 
@@ -891,7 +886,7 @@ report_content_view_failure_to_user (NautilusWindow *window)
 	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
 				   "You can choose another view or go to a different location.", 
 				   window->content_view_id->name);
-	nautilus_error_dialog (message, _("Nautilus: View failed"), GTK_WINDOW (window));
+	nautilus_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
 	g_free (message);
 }
 
@@ -915,7 +910,7 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
 
 	g_free (name);
 
-	nautilus_error_dialog (message, _("Nautilus: Sidebar panel failed"), GTK_WINDOW (window));
+	nautilus_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
 
 	g_free (message);
 }
@@ -1327,7 +1322,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 		if (nautilus_is_search_uri (requested_uri)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here. */
 			error_message = g_strdup_printf (_("Searching is unavailable right now, because you either have no index, or the search service isn't running.  Be sure that you have started the Medusa search service, and if you don't have an index, that the Medusa indexer is running."));
-			dialog_title = g_strdup (_("Nautilus: Searching unavailable"));
+			dialog_title = g_strdup (_("Searching Unavailable"));
 			break;
 		} /* else fall through */
         default:
@@ -1343,7 +1338,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         }
         
         if (dialog_title == NULL) {
-		dialog_title = g_strdup (_("Nautilus: Can't display location"));
+		dialog_title = g_strdup (_("Can't Display Location"));
         }
 
         if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (window))) {

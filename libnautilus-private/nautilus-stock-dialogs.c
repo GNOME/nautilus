@@ -362,7 +362,7 @@ nautilus_info_dialog (const char *info,
 		      GtkWindow *parent)
 {
 	return show_ok_box (info, 
-			    dialog_title == NULL ? _("Nautilus: Info") : dialog_title, 
+			    dialog_title == NULL ? _("Info") : dialog_title, 
 			    GNOME_MESSAGE_BOX_INFO, parent);
 }
 
@@ -372,7 +372,7 @@ nautilus_warning_dialog (const char *warning,
 			 GtkWindow *parent)
 {
 	return show_ok_box (warning, 
-			    dialog_title == NULL ? _("Nautilus: Warning") : dialog_title, 
+			    dialog_title == NULL ? _("Warning") : dialog_title, 
 			    GNOME_MESSAGE_BOX_WARNING, parent);
 }
 
@@ -382,7 +382,7 @@ nautilus_error_dialog (const char *error,
 		       GtkWindow *parent)
 {
 	return show_ok_box (error,
-			    dialog_title == NULL ? _("Nautilus: Error") : dialog_title, 
+			    dialog_title == NULL ? _("Error") : dialog_title, 
 			    GNOME_MESSAGE_BOX_ERROR, parent);
 }
 
@@ -422,7 +422,7 @@ nautilus_error_dialog_with_details (const char *error_message,
 	}
 
 	dialog = show_message_box (error_message, 
-				   dialog_title == NULL ? _("Nautilus: Error") : dialog_title,
+				   dialog_title == NULL ? _("Error") : dialog_title,
 				   GNOME_MESSAGE_BOX_ERROR,
 				   _("Details"), GNOME_STOCK_BUTTON_OK, parent);
 
@@ -454,7 +454,7 @@ nautilus_yes_no_dialog (const char *question,
 			GtkWindow *parent)
 {
 	return show_message_box (question,
-				 dialog_title == NULL ? _("Nautilus: Question") : dialog_title, 
+				 dialog_title == NULL ? _("Question") : dialog_title, 
 				 GNOME_MESSAGE_BOX_QUESTION,
 				 yes_label,
 				 no_label,

@@ -398,7 +398,7 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 
 	prompt = g_strdup_printf (_("This will open %d separate windows. "
 				    "Are you sure you want to do this?"), count);
-	title = g_strdup_printf (_("Nautilus: Open %d Windows?"), count);
+	title = g_strdup_printf (_("Open %d Windows?"), count);
 	dialog = nautilus_yes_no_dialog (prompt, title, 
 					 GNOME_STOCK_BUTTON_OK, 
 					 GNOME_STOCK_BUTTON_CANCEL, 
@@ -2236,7 +2236,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 
 	dialog = nautilus_yes_no_dialog (
 		prompt,
-		_("Nautilus: Delete immediately?"),
+		_("Delete Immediately?"),
 		_("Delete"),
 		GNOME_STOCK_BUTTON_CANCEL,
 		get_containing_window (view));
@@ -2277,7 +2277,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 
 	dialog = nautilus_yes_no_dialog (
 		prompt,
-		_("Nautilus: Delete from Trash?"),
+		_("Delete From Trash?"),
 		_("Delete"),
 		GNOME_STOCK_BUTTON_CANCEL,
 		get_containing_window (view));
@@ -3574,7 +3574,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	}
 
 	dialog = nautilus_yes_no_dialog (prompt,
-					 _("Nautilus: Broken link"),
+					 _("Broken Link"),
 					 _("Throw Away"),
 					 GNOME_STOCK_BUTTON_CANCEL,
 					 get_containing_window (view));

@@ -1248,12 +1248,12 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 
 	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
-		title = _("Nautilus: Open with Other");
+		title = _("Open with Other");
 		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"."), file_name);
 		break;
 	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
 	default:
-		title = _("Nautilus: View as Other");
+		title = _("View as Other");
 		prompt = g_strdup_printf (_("Choose a view for \"%s\"."), file_name);
 		break;
 	}
@@ -1470,11 +1470,11 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		unavailable_message = g_strdup_printf ("No viewers are available for %s.", file_name);		
-		dialog_title = g_strdup ("Nautilus: No available viewers");
+		dialog_title = g_strdup ("No Viewers Available");
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 		unavailable_message = g_strdup_printf ("No applications are available for %s.", file_name);		
-		dialog_title = g_strdup ("Nautilus: No available applications");
+		dialog_title = g_strdup ("No Applications Available");
 	}
 
 	/* Note: This might be misleading in the components case, since the
