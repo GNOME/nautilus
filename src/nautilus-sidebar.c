@@ -298,33 +298,6 @@ GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_
 	return candidate_font;
 }
 
-/* Workaround for gnome_vfs problem. */
-static char *
-nautilus_gnome_vfs_uri_extract_basename (GnomeVFSURI *uri)
-{
-	gchar *start;
-	gchar *end;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	g_assert (uri->text != NULL);
-
-	/* Skip any trailing directory separators. */
-	end = uri->text + strlen (uri->text);
-	while (end != uri->text && end[-1] == G_DIR_SEPARATOR)
-		--end;
-
-	/* Include all non-directory-separator characters. */
-	start = end;
-	while (start != uri->text && start[-1] != G_DIR_SEPARATOR)
-		--start;
-
-	if (start == end)
-		return g_strdup ("/");
-
-	return g_strndup (start, end - start);
-}
-
 /* set up the label */
 
 void
@@ -340,7 +313,7 @@ nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar 
 	if (vfs_uri == NULL)
 		return;
 	
-	file_name = nautilus_gnome_vfs_uri_extract_basename (vfs_uri);
+	file_name = gnome_vfs_uri_extract_short_name (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
 	if (file_name == NULL)

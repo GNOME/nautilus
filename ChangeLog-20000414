@@ -1,5 +1,11 @@
 2000-01-14  Darin Adler  <darin@eazel.com>
 
+	* src/ntl-index-panel.c: (nautilus_index_panel_set_up_label):
+	Changed code to use the new gnome_vfs_uri_extract_short_name
+	instead of its own private function.
+
+2000-01-14  Darin Adler  <darin@eazel.com>
+
 	First cut at some actual saving of metadata.
 	Neither the interface nor the implementation is great yet.
 	But it's a start.
