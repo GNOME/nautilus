@@ -55,10 +55,23 @@ struct _NautilusPreferencesItemClass
 	GtkVBoxClass	vbox_class;
 };
 
+/*
+ * NautilusPreferencesItemType:
+ *
+ * The types of supported preferences that also have a corresponding ui in the 
+ * preferences dialog.  Note that this is different than NautilusPreferencesType
+ * because it is possible to have a prefernce that is not exposed in the ui.
+ */
+typedef enum
+{
+	NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	NAUTILUS_PREFERENCE_ITEM_ENUM
+} NautilusPreferencesItemType;
+
 GtkType    nautilus_preferences_item_get_type (void);
-GtkWidget* nautilus_preferences_item_new      (GtkObject                *prefs,
-					       const gchar              *pref_name,
-					       NautilusPreferencesType  item_type);
+GtkWidget* nautilus_preferences_item_new      (GtkObject                   *prefs,
+					       const gchar                 *pref_name,
+					       NautilusPreferencesItemType  item_type);
 
 BEGIN_GNOME_DECLS
 

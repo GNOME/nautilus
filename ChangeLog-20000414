@@ -1,3 +1,28 @@
+2000-03-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Cleanup NautilusPreferences a bit in preparation for api revamp
+	to support implicitly registered preferences.
+
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h: Rename hash table node
+	structures from "PrefHashInfo" to "PrefHashNode".  Remove some
+	unused and crufty code.  Add a bunch of comments describing 
+	structures and functions.  Remove prefs_check_supported_type()
+	which was leftover from when I tried to use GtkType instead of 
+	defining an enum of supported types.  Also, rename
+	nautilus_preferences_get_pref_info to nautilus_preferences_get_info.
+
+	* nautilus-widgets/nautilus-preferences-item.c,
+	  nautilus-widgets/nautilus-preferences-item.h: Add enum
+	NautilusPreferencesItemType to enumerate the types of pereferences
+	that have a corresponding UI.  Since there can be preferences that
+	are not exposed in the UI, this is different than NautilusPreferencesType.
+	(preferences_item_construct): Use newly renamed function
+	nautilus_preferences_get_info.  Also remove the dummy
+	NAUTILUS_PREFENCES_STRING case statement, since
+	NautilusPrefernecesItem now has its own type enumeration
+	independant of NautilusPreferences.
+	
 2000-03-28  John Sullivan <sullivan@eazel.com>
 
 	Followup to last night's checkin; I forgot to add the

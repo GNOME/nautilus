@@ -50,7 +50,7 @@ static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
 struct _NautilusPreferencesItemDetails
 {
 	gchar				*pref_name;
-	NautilusPreferencesType	item_type;
+	NautilusPreferencesItemType	item_type;
 	GtkWidget			*child;
 	GtkObject			*prefs;
 };
@@ -74,7 +74,7 @@ static void preferences_item_get_arg                   (GtkObject               
 static void        preferences_item_construct          (NautilusPreferencesItem      *item,
 							GtkObject                    *prefs,
 							const gchar                  *pref_name,
-							NautilusPreferencesType   item_type);
+							NautilusPreferencesItemType   item_type);
 static void preferences_item_create_enum (NautilusPreferencesItem		*item,
 					  const NautilusPreferencesInfo	*pref_info);
 static void preferences_item_create_boolean (NautilusPreferencesItem		*item,
@@ -232,7 +232,7 @@ static void
 preferences_item_construct (NautilusPreferencesItem	*item,
 			    GtkObject			*prefs,
 			    const gchar			*pref_name,
-			    NautilusPreferencesType	item_type)
+			    NautilusPreferencesItemType	item_type)
 {
 	const NautilusPreferencesInfo	*pref_info;
 
@@ -246,27 +246,19 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	item->details->prefs = prefs;
 	item->details->pref_name = g_strdup (pref_name);
 
-	pref_info = nautilus_preferences_get_pref_info (NAUTILUS_PREFERENCES (item->details->prefs),
-							item->details->pref_name);
+	pref_info = nautilus_preferences_get_info (NAUTILUS_PREFERENCES (item->details->prefs),
+						   item->details->pref_name);
 	
 	g_assert (pref_info != NULL);
 
 	switch (item_type)
 	{
-	case NAUTILUS_PREFERENCE_BOOLEAN:
+	case NAUTILUS_PREFERENCE_ITEM_BOOLEAN:
 		preferences_item_create_boolean (item, pref_info);
 		break;
 
-	case NAUTILUS_PREFERENCE_ENUM:
+	case NAUTILUS_PREFERENCE_ITEM_ENUM:
 		preferences_item_create_enum (item, pref_info);
-		break;
-
-	case NAUTILUS_PREFERENCE_STRING:
-		/* This hasn't been implemented yet because our only
-		 * string preferences aren't displayed in the preferences
-		 * dialog.
-		 */
-		g_assert_not_reached ();
 		break;
 	}
 
@@ -356,7 +348,7 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 GtkWidget *
 nautilus_preferences_item_new (GtkObject		*prefs,
 			       const gchar		*pref_name,
-			       NautilusPreferencesType	item_type)
+			       NautilusPreferencesItemType	item_type)
 {
 	NautilusPreferencesItem * item;
 
