@@ -580,8 +580,6 @@ create_background_pixbuf_from_ancestor (const NautilusBufferedWidget *buffered_w
 						       widget->allocation.width,
 						       widget->allocation.height);
 		
-		g_assert (pixbuf != NULL);
-		
 		gdk_pixmap_unref (pixmap);
 	}
 
