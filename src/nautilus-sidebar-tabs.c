@@ -173,6 +173,8 @@ recalculate_size(NautilusIndexTabs *index_tabs)
 
 /* draw a single tab at the passed-in position */
 
+#if 0 /* temporarily commented out since compiler with -Werror stops on unused functions */
+
 static void
 draw_one_tab(NautilusIndexTabs *index_tabs, gchar tab_name, gint x, gint y)
 {  
@@ -183,6 +185,8 @@ draw_one_tab(NautilusIndexTabs *index_tabs, gchar tab_name, gint x, gint y)
   /* draw the left bottom line */
   /* draw the right bottom line */
 }
+
+#endif
 
 /* draw all of the currently visible tabs */
 

@@ -1,3 +1,10 @@
+2000-02-08  John Sullivan <sullivan@eazel.com>
+
+	* configure.in: turned -Werror back on. It had been turned off a
+	few days ago, presumably accidentally.
+	* src/nautilus-index-tabs.c: (draw_one_tab): #if-0'ed this
+	currently unused function out since -Werror doesn't like unused functions.
+
 2000-02-08  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window-msgs.c: Don't segfault if an error occurs while loading the start page.
