@@ -4,6 +4,6 @@ SUBDIRS =					\
 	nautilus-release-notes
 
 EXTRA_DIST=                                     \
-	docs.make				\
+	sgmldocs.make				\
 	htmldocs.make
 

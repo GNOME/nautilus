@@ -1,6 +1,7 @@
-figs = 
+figs =
 docname = nautilus-release-notes
 lang = C
-omffiles=nautilus-release-notes-C.omf
-include $(top_srcdir)/help/docs.make
+omffile = nautilus-release-notes-C.omf
+sgml_ents =
+include $(top_srcdir)/help/sgmldocs.make
 dist-hook: app-dist-hook

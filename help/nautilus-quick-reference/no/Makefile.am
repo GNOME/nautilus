@@ -1,4 +1,6 @@
 figs = \
+	figures/full_small.png			\
+	figures/navbar_small.png		\
 	figures/colors_small.png		\
 	figures/find_small.png			\
 	figures/music_small.png			\

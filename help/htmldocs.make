@@ -19,10 +19,9 @@ omf_timestamp: $(omffiles)
 
 app-dist-hook:
 	-$(mkinstalldirs) $(distdir)/figures
-	-cp $(srcdir)/$(docname)/*.html $(distdir)/$(docname)
-	-cp $(srcdir)/$(docname)/*.png $(distdir)/$(docname)
-	-cp $(srcdir)/$(docname)/*.css $(distdir)/$(docname)
-	-cp $(srcdir)/figures/*.png $(distdir)/figures
+	-if [ -e topic.dat ]; then \
+	  cp $(srcdir)/topic.dat $(distdir); \
+	fi
 
 install-data-am: omf
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/figures

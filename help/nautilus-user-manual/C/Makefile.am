@@ -24,8 +24,9 @@ figs = \
 	figures/sidebar.png		\
 	figures/viewmenu.png		\
 	figures/viewmusic.png
-docname = nautilus-user-manual
+docname=nautilus-user-manual
 lang = C
-omffiles=nautilus-user-manual-C.omf
-include $(top_srcdir)/help/docs.make
+omffile=nautilus-user-manual-C.omf
+sgml_ents =
+include $(top_srcdir)/help/sgmldocs.make
 dist-hook: app-dist-hook

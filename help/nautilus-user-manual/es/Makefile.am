@@ -13,6 +13,7 @@ figs = \
 	figures/viewmusic.png
 docname = nautilus-user-manual
 lang = es
-omffiles=nautilus-user-manual-es.omf
-include $(top_srcdir)/help/docs.make
+omffile=nautilus-user-manual-es.omf
+sgml_ents =
+include $(top_srcdir)/help/sgmldocs.make
 dist-hook: app-dist-hook
