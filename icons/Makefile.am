@@ -28,6 +28,7 @@ icon_DATA =\
 	emblem-nowrite.png \
 	emblem-personal.svg \
 	emblem-remote.gif \
+	emblem-trash.png \
 	emblem-symbolic-link.png \
 	emblems.png \
 	expert.png \
