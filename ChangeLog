@@ -1,3 +1,42 @@
+2000-11-15  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(set_text_unescaped_trimmed):
+	(nautilus_string_ellipsize_start):
+	Turn an existing truncation routine to a public one, giving it 
+	a better name.
+	Get rid of a questionable optimization (bugzilla 2555).
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_self_check_ellipsize_start),
+	(nautilus_self_check_gdk_extensions):
+	Added tests for the elipsize routine.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	* libnautilus-extensions/nautilus-file-operations.h:
+	(get_label_font), (nautilus_format_name_for_display),
+	(nautilus_convert_to_formatted_name_for_display),
+	(handle_xfer_vfs_error), (handle_xfer_overwrite),
+	(nautilus_file_operations_move_to_trash):
+	Fix 826: File operation alerts should truncate file names.
+	Add a convenience call to unescape and truncate a file name,
+	use it the places that format warning and error dialog strings.
+	Add some missing quotes in some of the error strings.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(parent_for_error_dialog):
+	Work on fixing 3093 - file operation error dialogs show up in the
+	wrong place.
+	Make the error dialogs use the progress dialog as their parent window,
+	if available, if not, revert to using the original view as a parent.
+
+	* libnautilus-extensions/nautilus-string.c:
+	Added a comment pointing people to the new ellipsize routines.
+
 2000-11-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1420, panel splitter drag outline edges are indistinct.

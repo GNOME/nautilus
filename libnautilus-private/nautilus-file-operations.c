@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <gnome.h>
+#include <gtk/gtklabel.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
@@ -35,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-link.h>
@@ -110,17 +112,75 @@ icon_position_iterator_free (IconPositionIterator *position_iterator)
 	g_free (position_iterator);
 }
 
-char *
-nautilus_convert_to_unescaped_string_for_display  (char *escaped)
+/* Hack to get the GdkFont used by a GtkLabel in an error dialog.
+ * We need to do this because the string truncation needs to be
+ * done before a dialog is instantiated.
+ * 
+ * This is probably not super fast but it is not a problem in the
+ * context we are using it, truncating a string while displaying an
+ * error dialog.
+ */
+static GdkFont *
+get_label_font (void)
+{
+	GtkWidget *label;
+	GtkStyle *style;
+
+	label = gtk_label_new ("");
+	style = gtk_widget_get_style (label);
+	
+	gdk_font_ref (style->font);
+	gtk_widget_unref (label);
+
+	return style->font;
+}
+
+static char *
+nautilus_format_name_for_display (const char *escaped_uri)
+{
+	char *unescaped;
+	char *result;
+	GdkFont *font;
+	int truncate_to_length;
+
+	unescaped = gnome_vfs_unescape_string_for_display (escaped_uri);
+
+	/* get the font the text will be displayed in */
+	font = get_label_font ();
+
+	/* get a nice length to truncate to, based on the current font */
+	truncate_to_length = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
+
+	/* truncate the result */
+	result = nautilus_string_ellipsize_start (unescaped, font, truncate_to_length);
+
+	g_free (unescaped);
+	gdk_font_unref (font);
+
+	return result;
+}
+
+static char *
+nautilus_convert_to_formatted_name_for_display (char *escaped_uri)
 {
 	char *result;
 
-	if (escaped == NULL) {
+	if (escaped_uri == NULL) {
 		return NULL;
 	}
-	result = gnome_vfs_unescape_string_for_display (escaped);
-	g_free (escaped);
+	result = nautilus_format_name_for_display (escaped_uri);
+	g_free (escaped_uri);
 	return result;
+}
+
+static GtkWidget *
+parent_for_error_dialog (XferInfo *xfer_info)
+{
+	if (xfer_info->progress_dialog != NULL) {
+		return xfer_info->progress_dialog;
+	}
+
+	return xfer_info->parent_view;
 }
 
 static void
@@ -370,7 +430,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			unescaped_name = g_strdup ("");
 		} else {
 			char *name;
-			name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
+			name = nautilus_format_name_for_display (progress_info->source_name);
 			unescaped_name = g_strdup_printf (" \"%s\"", name);
 			g_free (name);
 		}
@@ -393,7 +453,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			} else {
 				if (progress_info->target_name != NULL) {
 					g_free (unescaped_name);
-					unescaped_name = gnome_vfs_unescape_string_for_display (
+					unescaped_name = nautilus_format_name_for_display (
 						progress_info->target_name);
 				}
 				text = g_strdup_printf
@@ -405,7 +465,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			g_free (unescaped_name);
 			
 			result = nautilus_simple_dialog
-				(xfer_info->parent_view, TRUE, text, 
+				(parent_for_error_dialog (xfer_info), TRUE, text, 
 				_("Error while Copying"), _("Stop"), NULL);
 			g_free (text);
 
@@ -423,7 +483,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			g_free (unescaped_name);
 			
 			result = nautilus_simple_dialog
-				(xfer_info->parent_view, TRUE, text, 
+				(parent_for_error_dialog (xfer_info), TRUE, text, 
 				_("Error while Copying"), _("Stop"), NULL);
 			g_free (text);
 
@@ -440,7 +500,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		g_free (unescaped_name);
 
 		result = nautilus_simple_dialog
-			(xfer_info->parent_view, TRUE, text, 
+			(parent_for_error_dialog (xfer_info), TRUE, text, 
 			 _("Error while Copying"),
 			 _("Skip"), _("Retry"), _("Stop"), NULL);
 		g_free (text);
@@ -480,8 +540,8 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	char *text;
 	char *unescaped_name;
 
-	unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->target_name);
-	text = g_strdup_printf (_("File %s already exists.\n"
+	unescaped_name = nautilus_format_name_for_display (progress_info->target_name);
+	text = g_strdup_printf (_("File \"%s\" already exists.\n"
 				  "Would you like to replace it?"), 
 				unescaped_name);
 	g_free (unescaped_name);
@@ -491,7 +551,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		 * Replace All
 		 */
 		result = nautilus_simple_dialog
-			(xfer_info->parent_view, TRUE, text, 
+			(parent_for_error_dialog (xfer_info), TRUE, text, 
 			 _("Conflict while Copying"),
 			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
@@ -505,7 +565,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 	} else {
 		result = nautilus_simple_dialog
-			(xfer_info->parent_view, TRUE, text, 
+			(parent_for_error_dialog (xfer_info), TRUE, text, 
 			 _("Conflict while Copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
@@ -1438,7 +1498,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
-			item_name = nautilus_convert_to_unescaped_string_for_display 
+			item_name = nautilus_convert_to_formatted_name_for_display 
 				(gnome_vfs_uri_extract_short_name (source_uri));
 			text = g_strdup_printf
 				(_("You cannot throw \"%s\" into the Trash."),

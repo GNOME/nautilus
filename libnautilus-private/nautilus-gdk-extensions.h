@@ -149,5 +149,8 @@ void       nautilus_gdk_gc_unref_if_not_null           (GdkGC              *gc_o
 void	   nautilus_gdk_window_set_wm_hints_input      (GdkWindow 	   *w, 
 							gboolean 	    status);
 
-
+char *	   nautilus_string_ellipsize_start	       (const char 	   *original,
+							GdkFont		   *font,
+							int		   length);
+						
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

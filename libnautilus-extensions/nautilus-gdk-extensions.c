@@ -34,6 +34,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
+#include "nautilus-font-factory.h"
 
 #define GRADIENT_BAND_SIZE 4
 
@@ -774,6 +775,57 @@ nautilus_gdk_gc_unref_if_not_null (GdkGC *gc_or_null)
 }
 
 /**
+ * nautilus_string_ellipsize_start:
+ * 
+ * @string: A a string to be ellipsized.
+ * @font: A a font used to measure the resulting string width.
+ * @width: Desired maximum width in pixels.
+ * Returns: A truncated string at most @width pixels long.
+ * 
+ * Truncates a string, removing characters from the start and 
+ * replacing them with "..." 
+ * 
+ */
+char *
+nautilus_string_ellipsize_start (const char *string, GdkFont *font, int width)
+{
+	int truncate_offset;
+
+	if (gdk_string_width (font, string) <= (int) width) {
+		/* String is already short enough. */
+		return g_strdup (string);
+	}
+	
+	/* Account for the width of the ellipsis. */
+	width -= gdk_string_width (font, "...");
+	
+
+	if (width < 0) {
+		/* No room even for a an ellipsis. */
+		return g_strdup ("");
+	}
+
+	/* We could have the following optimization here:
+	 * check if the desired width and original width are considerably different,
+	 * if so, use a binary stride to figure out the resulting string truncation
+	 * offset.
+	 * For now we assume that we are only truncating by a small number of 
+	 * characters, in which a linear scan is faster
+	 */
+        for (truncate_offset = 0; ; truncate_offset++) {
+        	if (string[truncate_offset] == '\0') {
+			break;
+        	}
+        	
+        	if (gdk_string_width (font, string + truncate_offset) <= (int) width) {
+			break;
+        	}
+        }
+
+	return g_strdup_printf ("...%s", string + truncate_offset);
+}
+
+/**
  * nautilus_gdk_window_set_wm_hints_input:
  * 
  * Set the WM_HINTS.input flag to the passed in value
@@ -821,9 +873,43 @@ nautilus_self_check_parse (const char *color_spec)
 	return nautilus_gdk_color_as_hex_string (color);
 }
 
+/* Testing string truncation is tough because we do not know what font/
+ * font metrics to expect on a given system. To work around this we use
+ * a substring of the original, measure it's length using the given font, 
+ * add the length of the "..." string and use that for truncation.
+ * The result should then be the substring prepended with a "..."
+ */
+static char *
+nautilus_self_check_ellipsize_start (const char *string, const char *truncate_to_length_string)
+{
+	GdkFont *font;
+	int truncation_length;
+	char *result;
+
+	/* any old font will do */
+	font = nautilus_font_factory_get_fallback_font ();
+	g_assert (font);
+
+	/* measure the length we want to truncate to */
+	truncation_length = gdk_string_width (font, truncate_to_length_string);
+	truncation_length += gdk_string_width (font, "...");
+
+	result = nautilus_string_ellipsize_start (string, font, truncation_length);
+	
+	gdk_font_unref (font);
+
+	return result;
+}
+
 void
 nautilus_self_check_gdk_extensions (void)
 {
+	GdkFont *font;
+
+	/* used to test ellipsize routines */
+	font = nautilus_font_factory_get_fallback_font ();
+	g_assert (font);
+
 	/* nautilus_interpolate_color */
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (0.0, 0, 0), 0);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (0.0, 0, 0xFFFFFF), 0);
@@ -923,6 +1009,21 @@ nautilus_self_check_gdk_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("white"), "rgb:FFFF/FFFF/FFFF");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("black"), "rgb:0000/0000/0000");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_parse ("rgb:0123/4567/89AB"), "rgb:0123/4567/89AB");
+
+	/* nautilus_string_ellipsize_start */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "0012345678"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "012345678"), "012345678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "45678"), "...45678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "5678"), "...5678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "678"), "...678");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "78"), "...78");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_ellipsize_start ("012345678", "8"), "...8");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("", font, 100), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, 0), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, gdk_string_width (font, "...") - 1), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_ellipsize_start ("test", font, gdk_string_width (font, "...")), "...");
+
+	gdk_font_unref (font);
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

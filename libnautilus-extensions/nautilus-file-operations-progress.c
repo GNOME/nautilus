@@ -30,6 +30,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-operations-progress.h"
 #include "libnautilus-extensions/nautilus-gtk-extensions.h"
+#include "libnautilus-extensions/nautilus-gdk-extensions.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 
 
@@ -80,35 +81,6 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *dialog
 				0.0, dialog->details->bytes_total);
 }
 
-static char *
-truncate_string_from_start (const char *string, GdkFont *font, guint length)
-{
-	static guint dotdotdot = 0;
-	int truncate_offset;
-
-	if (gdk_string_width (font, string) <= (int) length) {
-		/* string is already short enough*/
-		return g_strdup (string);
-	}
-	
-	if (!dotdotdot) {
-		/* FIXME bugzilla.eazel.com 2555:
-		 * This value needs to get updated if a font changes while Nautilus is running
-		 */
-		dotdotdot = gdk_string_width (font, "...");
-	}
-	
-	/* Cut the font length of string to length. */
-	length -= dotdotdot;
-        for (truncate_offset = 0; ; truncate_offset++) {
-        	if (gdk_string_width (font, string + truncate_offset) <= (int) length) {
-			break;
-        	}
-        }
-
-	return g_strdup_printf ("...%s", string + truncate_offset);
-}
-
 static void
 set_text_unescaped_trimmed (GtkLabel *label, const char *text, guint max_width)
 {
@@ -121,7 +93,7 @@ set_text_unescaped_trimmed (GtkLabel *label, const char *text, guint max_width)
 	}
 	
 	unescaped_text = gnome_vfs_unescape_string_for_display (text);
-	trimmed_text = truncate_string_from_start (unescaped_text, 
+	trimmed_text = nautilus_string_ellipsize_start (unescaped_text, 
 		GTK_WIDGET (label)->style->font, max_width);
 	gtk_label_set_text (GTK_LABEL (label), trimmed_text);
 	

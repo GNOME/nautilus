@@ -49,10 +49,5 @@ void  nautilus_file_operations_new_folder              (GtkWidget               
 void  nautilus_file_operations_delete                  (const GList               *item_uris,
 							GtkWidget                 *parent_view);
 
-/* Prepare an escaped string for display. Unescapes a string in place.
- * Like gnome_vfs_unescape_string_for_display but frees the original
- * string.
- */
-char *nautilus_convert_to_unescaped_string_for_display (char                      *escaped);
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */
