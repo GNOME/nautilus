@@ -186,12 +186,14 @@ typedef struct {
 #define ITEM_POSITION 31
 #define RIGHT_ITEM_MARGIN 8
 #define EMPTY_MESSAGE_MARGIN 12
+#define MAX_CHARS_IN_ITEM 140
 #define ITEM_FONT_SIZE 11
 #define TIME_FONT_SIZE 9
 #define TIME_MARGIN_OFFSET 2
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
+#define ELLIPSIS "..."
 
 /* special prelight values for logo and triangle */
 #define PRELIGHT_LOGO 65536
@@ -1117,6 +1119,34 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	}
 }
 
+/* routine to ellipsize the passed in string at a word boundary based on the string length. */
+static  char*
+ellipsize_string (const char *raw_text)
+{
+	char *result, *last_char_ptr;
+	int truncated_length;
+	
+	if (raw_text == NULL) {
+		return NULL;
+	}
+	
+	if (strlen (raw_text) > MAX_CHARS_IN_ITEM) {
+		truncated_length = MAX_CHARS_IN_ITEM;
+		last_char_ptr = (char*) raw_text + MAX_CHARS_IN_ITEM;
+		while (*last_char_ptr != '\0' && *last_char_ptr != ' ' && *last_char_ptr != '.') {
+			last_char_ptr += 1;
+			truncated_length += 1;
+		}
+		result = g_malloc (truncated_length + strlen (ELLIPSIS) + 1);
+		memcpy (result, raw_text, truncated_length);
+		strcpy (result + truncated_length, ELLIPSIS);
+
+		return result;
+	} else {
+		return g_strdup (raw_text);
+	}
+}
+
 /* utility routine to extract items from a node, returning the count of items found */
 static int
 extract_items (RSSChannelData *channel_data, xmlNodePtr container_node)
@@ -1142,7 +1172,7 @@ extract_items (RSSChannelData *channel_data, xmlNodePtr container_node)
 				item_parameters = (RSSItemData*) g_new0 (RSSItemData, 1);
 
 				title = xmlNodeGetContent (title_node);
-				item_parameters->item_title = g_strdup (title);
+				item_parameters->item_title = ellipsize_string (title);
 				xmlFree (title);
 				
 				temp_node = eel_xml_get_child_by_name (current_node, "link");
