@@ -44,6 +44,7 @@ struct NautilusBonoboActivationHandle {
 	Bonobo_Unknown activated_object;
 	gboolean cancel;
 	guint idle_id;
+	guint timeout_id;
 };
 
 typedef enum {
@@ -745,8 +746,12 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 				       gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
-	
+
 	handle = (NautilusBonoboActivationHandle *) callback_data;
+
+	if (handle->timeout_id != 0) {
+		g_source_remove (handle->timeout_id);
+	}
 
 	if (activated_object == NULL) {
 		g_warning ("activation failed: %s", error_reason);
@@ -760,6 +765,20 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 		handle->idle_id = g_idle_add (activation_idle_callback,
 					      handle);
 	}
+}
+
+static gboolean
+activation_timed_out (gpointer callback_data)
+{
+	NautilusBonoboActivationHandle *handle = callback_data;
+
+	(* handle->callback) (handle,
+			      NULL,
+			      handle->callback_data);
+	
+	handle->timeout_id = 0;
+	nautilus_bonobo_activate_cancel (handle);
+	return FALSE;
 }
 
 /**
@@ -805,7 +824,8 @@ nautilus_bonobo_activate_from_id (const char *iid,
 		}
 	}
 
-
+	handle->timeout_id = g_timeout_add (4*1000, activation_timed_out, handle);
+	
 	bonobo_activation_activate_from_id_async ((char *) iid, 0,
 				    bonobo_activation_activation_callback, 
 				    handle, NULL);
@@ -813,7 +833,7 @@ nautilus_bonobo_activate_from_id (const char *iid,
 	if (handle != NULL) {
 		handle->early_completion_hook = NULL;
 	}
-
+	
 	return handle;
 }
 
@@ -833,6 +853,11 @@ nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 		return;
 	}
 
+	if (handle->timeout_id != 0) {
+		g_source_remove (handle->timeout_id);
+		handle->timeout_id = 0;
+	}
+	
 	activation_handle_done (handle);
 
 	if (handle->idle_id == 0) {

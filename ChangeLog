@@ -1,5 +1,21 @@
 2004-03-08  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(bonobo_activation_activation_callback), (activation_timed_out),
+	(nautilus_bonobo_activate_from_id),
+	(nautilus_bonobo_activate_cancel):
+	Timeout activation after 5 seconds.
+	
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_save_geometry):
+	Don't save geometry for windows that are not viewing a file.
+	
+	* libnautilus-private/nautilus-file.c: (update_info_internal):
+	Set new guessed_mime_type on rename, so that renames to match
+	mime type works.
+
+2004-03-08  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c (handle_icon_button_press):
 	Handle shift-clicking on initial icon selection for range-selection.
 	Patch from Tony Tsui, bug #136377

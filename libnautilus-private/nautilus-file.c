@@ -1454,9 +1454,19 @@ update_info_internal (NautilusFile *file,
 		} else {
 			node = nautilus_directory_begin_file_name_change
 				(file->details->directory, file);
+			
 			g_free (file->details->relative_uri);
 			file->details->relative_uri = new_relative_uri;
 			nautilus_file_clear_cached_display_name (file);
+
+			/* Since the name changes the old guessed mime type is now
+			 * incorrect. This might be the slow mime type instead, but
+			 * by now the user should have seen the warning dialog, so
+			 * thats not a horrible mistake
+			 */
+			g_free (file->details->guessed_mime_type);
+			file->details->guessed_mime_type = g_strdup (info->mime_type);
+			
 			nautilus_directory_end_file_name_change
 				(file->details->directory, file, node);
 		}

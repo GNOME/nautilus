@@ -229,6 +229,11 @@ nautilus_spatial_window_save_geometry (NautilusSpatialWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
+	if (NAUTILUS_WINDOW (window)->details->viewed_file == NULL) {
+		/* We never showed a file */
+		return;
+	}
+	
 	if (GTK_WIDGET(window)->window &&
 	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
 		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
