@@ -1,44 +1,23 @@
-====================
-0: Table of contents
-====================
+Hacking on Nautilus
+-------------------
 
-0: Table of contents
-1: Intro
-2: Using the leak checker
-
-========
-1: Intro
-========
-
-Nautilus source tree is available from CVS (the latest-cutting edge
-version) and in releases (tarballs).
+The Nautilus source tree is available from GNOME cvs (cvs.gnome.org) and 
+in releases on the GNOME FTP site
+(http://ftp.gnome.org/pub/GNOME/sources/nautilus/).
 
 If you plan to hack on Nautilus, please make sure you work from the
-CVS version. The CVS version is available on GNOME CVS. The page
-http://developer.gnome.org/tools/cvs.html details how to get started
-with GNOME CVS.
+CVS version. The CVS version can be checked from the GNOME cvs server.
+See http://developer.gnome.org/tools/cvs.html for details on how to get 
+started with GNOME CVS.
 
-If you want to contribute patches, please send mail to one of the nautilus
-maintainers (listed in MAINTAINERS) and/or the nautilus mailing
-list: <nautilus-list@lists.eazel.com> (subscriptions should be made to
-<nautilus-list-request@lists.eazel.com> with "subscribe" as a
-subject).
+If you want to contribute patches, please send mail to the nautilus
+mailing list: <nautilus-list@gnome.org>.  Archives and subscription
+information are available at
+http://mail.gnome.org/mailman/listinfo/nautilus-list
+
+You can also attach patches to individual bugs in bugzilla
+(http://bugzilla.gnome.org, product 'nautilus').
 
 Patches should be made with 'cvs diff -pu >patch' and should conform to
 Nautilus coding style as described in docs/style-guide.html Please
 read other relevant documents in the docs directory too.
-
-=========================
-2: Using the leak checker
-=========================
-
-The leak checker is built as part of the eazel-tools gnome module.
-Build that first before you continue.
-
-Nautilus is set up to use the libleakcheck.so leak checking
-library. To use it, run Nautilus with LD_PRELOAD set to the path to
-the installed libleakcheck.so library. For example, if you are using a
-Bourne-compatible shell, like bash, you can run Nautilus this way to
-run with leak checking:
-
-LD_PRELOAD=/gnome/lib/libleakcheck.so /gnome/bin/nautilus
