@@ -559,10 +559,10 @@ get_link_name (char *name, int count)
  * make some or all of them match.
  */
 
-#define COPY_DUPLICATE_TAG " (copy)"
-#define FRIST_COPY_DUPLICATE_FORMAT _("%s"COPY_DUPLICATE_TAG"%s")
-#define ANOTHER_COPY_DUPLICATE_TAG " (another copy)"
-#define SECOND_COPY_DUPLICATE_FORMAT _("%s"ANOTHER_COPY_DUPLICATE_TAG"%s")
+#define COPY_DUPLICATE_TAG _(" (copy)")
+#define FRIST_COPY_DUPLICATE_FORMAT _("%s (copy)%s")
+#define ANOTHER_COPY_DUPLICATE_TAG _(" (another copy)")
+#define SECOND_COPY_DUPLICATE_FORMAT _("%s (another copy)%s")
 
 #define ST_COPY_DUPLICATE_TAG _("st copy)")
 #define ST_COPY_DUPLICATE_FORMAT _("%s (%dst copy)%s")
@@ -644,6 +644,7 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 
 	/* If we got one of st, nd, rd, th, fish out the duplicate number. */
 	if (tag != NULL) {
+		/* localizers: opening parentheses to match the "th copy)" string */
 		tag = strstr (name, _(" ("));
 		if (tag != NULL) {
 			if (tag > *suffix) {
@@ -651,7 +652,12 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 				*suffix = "";
 			}
 			*name_base = extract_string_until (name, tag);
+			/* localizers: opening parentheses of the "th copy)" string */
 			if (sscanf (tag, _(" (%d"), count) == 1) {
+				if (*count < 1 || *count > 1000000) {
+					/* keep the count within a reasonable range */
+					*count = 0;
+				}
 				return;
 			}
 			*count = 0;
@@ -676,7 +682,9 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 
 
 	if (count < 1) {
-		g_warning ("bad count in get_duplicate_name");
+		char buffer [256];
+		sprintf(buffer, "bad count %d in get_duplicate_name", count);
+		g_warning (buffer);
 		count = 1;
 	}
 
