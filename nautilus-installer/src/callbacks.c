@@ -95,10 +95,7 @@ begin_install (EazelInstaller  *installer)
 
 	if (installer->failure_info==NULL && installer->install_categories) { 
 		g_message ("using install_categories");
-		if (eazel_installer_do_install (installer, installer->install_categories, FALSE, FALSE)) {
-			/* still more to do... */
-			/* return TRUE; */
-		}
+		eazel_installer_do_install (installer, installer->install_categories, FALSE, FALSE);
 	}
 
 	g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
@@ -114,6 +111,15 @@ druid_finish (GnomeDruidPage  *gnomedruidpage,
 	      gpointer         arg1,
 	      EazelInstaller  *installer)
 {
+	char *package_list;
+
+	/* for now, always delete the rpm files on exit */
+	g_message ("Farewell -- deleting RPM files.");
+	package_list = g_strdup_printf ("%s/package-list.xml", installer->tmpdir);
+	unlink (package_list);
+	g_free (package_list);
+	eazel_install_delete_downloads (installer->service);
+
 	g_mem_profile ();
 	exit (0);
 }

@@ -106,6 +106,7 @@ typedef struct {
 			  "are items involved that might be important to you, we thought we'd\n" \
 			  "check first.")
 #define RETRY_TITLE	_("Just so you know...")
+#define SPLASH_TITLE    _("Welcome to the Eazel Installer!")
 #define FINISHED_TITLE	_("Congratulations!")
 
 #define EAZEL_HACKING_TEXT _("You have the eazel-hacking environment installed.\n" \
@@ -1475,21 +1476,6 @@ eazel_install_dep_check (EazelInstall *service,
 	}
 }
 
-static gboolean
-eazel_install_delete_files (EazelInstall *service,
-			    EazelInstaller *installer) 
-{
-	LOG_DEBUG (("Deleting rpm's\n"));
-
-	/* FIXME
-	   dude, delete_files is called before done */
-	if (installer->successful) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
 static void
 install_done (EazelInstall *service,
 	      gboolean result,
@@ -1499,9 +1485,7 @@ install_done (EazelInstall *service,
 
 	installer->successful = result;
 	LOG_DEBUG (("Done, result is %s\n", result ? "good" : "evil"));
-	if (result) {
-		
-	} else {
+	if (result == FALSE) {
 		/* will call jump_to_error_page later */
 		if (installer->failure_info == NULL) {
 			temp = g_strdup (_("Couldn't download or install the packages, for some reason"));
@@ -1861,8 +1845,8 @@ revert_nautilus_install (EazelInstall *service)
 }
 #endif 
 
-/* returns TRUE if it's got more stuff to do */
-gboolean
+/* if there's more to do, it'll jump to a retry page */
+void
 eazel_installer_do_install (EazelInstaller *installer, 
 			    GList *install_categories,
 			    gboolean force,
@@ -1902,14 +1886,12 @@ eazel_installer_do_install (EazelInstaller *installer,
 		}
 		if (installer->all_errors_are_recoverable && (installer->additional_packages != NULL)) {
 			jump_to_retry_page (installer);
-			return TRUE;
 		} else {
 			jump_to_error_page (installer, installer->failure_info, ERROR_LABEL, ERROR_LABEL_2);
 		}
 	} else if (!remove) {
 		gnome_druid_set_page (installer->druid, installer->finish_good); 
 	}
-	return FALSE;
 }
 
 
@@ -2017,7 +1999,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
 						  RANDCHAR, RANDCHAR, (rand () % 1000));
 			if (mkdir (tmpdir, 0700) == 0) {
-			break;
+				break;
 			}
 			g_free (tmpdir);
 		}
@@ -2043,7 +2025,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	installer->window = create_window (installer);
 
-	package_destination = g_strdup_printf ("%s/package-list.xml", installer->tmpdir);
+	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
 
 	gtk_widget_show (installer->window);
 	if (! check_system (installer)) {
@@ -2066,7 +2048,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "depend", FALSE,
 					       "update", TRUE,
 					       "uninstall", FALSE,
-					       "downgrade", FALSE,
+					       "downgrade", TRUE,
 					       "protocol", installer_local ? PROTOCOL_LOCAL: PROTOCOL_HTTP,
 					       "tmp_dir", tmpdir,
 					       "rpmrc_file", RPMRC,
@@ -2096,10 +2078,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "dependency_check", 
 			    GTK_SIGNAL_FUNC (eazel_install_dep_check), 
-			    installer);
-	gtk_signal_connect (GTK_OBJECT (installer->service), 
-			    "delete_files", 
-			    GTK_SIGNAL_FUNC (eazel_install_delete_files), 
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "download_failed", 
@@ -2166,7 +2144,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			GtkWidget *vbox, *hbox1, *hbox2;
 
 			/* put it in an hbox so it won't be indirectly centered */
-			title = gtk_label_new_with_font (_("Welcome to the Eazel Installer!"), FONT_TITLE);
+			title = gtk_label_new_with_font (SPLASH_TITLE, FONT_TITLE);
 			gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 			gtk_widget_show (title);
 			hbox1 = gtk_hbox_new (FALSE, 0);

@@ -112,7 +112,7 @@ typedef struct {
 GtkType            eazel_installer_get_type(void);
 EazelInstaller    *eazel_installer_new   (void);
 void               eazel_installer_unref (GtkObject *object);
-gboolean           eazel_installer_do_install (EazelInstaller *installer,
+void               eazel_installer_do_install (EazelInstaller *installer,
 					       GList *categories,
 					       gboolean force,
 					       gboolean remove);
