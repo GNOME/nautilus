@@ -1,3 +1,17 @@
+2000-06-14  Pavel Cisler  <pavel@eazel.com>
+
+	* test/Makefile.am:
+	* test/nautilus-leak-checker.c: (detect_reentry),
+	(nautilus_leak_record_malloc), (nautilus_leak_record_realloc),
+	(nautilus_leak_record_free), (allocate_temporary_fallback_memory),
+	(__libc_malloc), (__libc_memalign), (__libc_realloc),
+	(__libc_free), (malloc), (realloc), (memalign), (calloc), (free),
+	(main):
+	Fix problems in the reentry detection code that caused malloc/frees
+	sometimes getting counted twice.
+	Add reentry detection for malloc getting reentered as a result of 
+	calling realloc.
+	
 2000-06-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.c:
