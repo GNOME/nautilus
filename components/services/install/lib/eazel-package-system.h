@@ -52,6 +52,7 @@ typedef enum {
 	EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
 	EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES,
 	EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+	EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES_FEATURE,
 	EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
 	EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR
 } EazelPackageSystemQueryEnum;
@@ -95,12 +96,28 @@ typedef enum {
 	EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE = 0xffff
 } EazelPackageSystemDebug;
 
-typedef struct _EazelPackageSystemPrivate EazelPackageSystemPrivate;
+/* I hate myself for this... please, give me exceptions! */
+typedef enum  {
+	EazelPackageSystemError_DB_ACCESS
+} EazelPackageSystemErrorEnum;
 
+typedef struct _EazelPackageSystemError EazelPackageSystemError;
+struct  _EazelPackageSystemError {	
+	EazelPackageSystemErrorEnum e;
+	union {
+		struct {
+			const char *path;
+			pid_t pid;
+		} db_access;
+	} u;
+};
+
+typedef struct _EazelPackageSystemPrivate EazelPackageSystemPrivate;
 struct _EazelPackageSystem
 {
 	GtkObject parent;
 	EazelPackageSystemPrivate *private;
+	EazelPackageSystemError *err;
 };
 
 EazelPackageSystemId eazel_package_system_suggest_id (void);
@@ -141,6 +158,5 @@ gboolean                 eazel_package_system_verify (EazelPackageSystem *packag
 int                  eazel_package_system_compare_version (EazelPackageSystem *package_system, 
 							   const char *a,
 							   const char *b);
-
 #endif /* EAZEL_PACKAGE_SYSTEM_PUBLIC_H */
 

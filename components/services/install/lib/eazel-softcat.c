@@ -589,6 +589,7 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 
 /* directories will end with '/' */
 /* TEMPORARY FIXME: to work around a very odd bug in softcat, throw away duplicate filenames */
+
 static void
 remove_directories_from_provides_list (PackageData *pack)
 {
@@ -725,17 +726,51 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	}
 
 	if (g_list_length (packages) > 1) {
-		g_warning ("softcat query returned %d results!", g_list_length (packages));
-		g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
-		g_list_free (packages);
-		err = EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES;
-		return err;
-	}
+		if (package->suite_id) {
+			/* More than one package returned and we queried on a suite Id.
+			   Make deps and put into "package", remember to strip dirs in 
+			   provides if needed */
+			GList *iterator;
 
-	full_package = PACKAGEDATA (packages->data);
-	packagedata_fill_in_missing (package, full_package, fill_flags);
-	if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
-		remove_directories_from_provides_list (package);
+			trilobite_debug ("softcat query returned suite with %d elements", 
+					 g_list_length (packages));
+			for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *pack = PACKAGEDATA (iterator->data);
+				PackageDependency *dep = g_new0 (PackageDependency, 1);
+
+				if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
+					remove_directories_from_provides_list (pack);
+				}
+				gtk_object_ref (GTK_OBJECT (pack));
+				pack->fillflag = fill_flags;
+
+				dep->package = pack;
+				dep->version = g_strdup (pack->version);
+
+				if (dep->version) {
+					/* FIXME: should a suite be EQ or GE ? If GE, any newer version
+					   that's already installed will be ok, if EQ, the suites depends
+					   on an exact version */
+					dep->sense = EAZEL_SOFTCAT_SENSE_GE;
+				} else {
+					dep->sense = EAZEL_SOFTCAT_SENSE_ANY;
+				}
+
+				packagedata_add_pack_to_depends (package, dep);
+			}
+		} else {
+			g_warning ("softcat query returned %d results!", g_list_length (packages));
+			err = EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES;
+			g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+			g_list_free (packages);
+			return err;
+		}
+	} else {
+		full_package = PACKAGEDATA (packages->data);
+		packagedata_fill_in_missing (package, full_package, fill_flags);
+		if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
+			remove_directories_from_provides_list (package);
+		}
 	}
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (packages);

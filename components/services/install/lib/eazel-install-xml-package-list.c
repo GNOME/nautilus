@@ -114,17 +114,18 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	}
 	
 	/* Dependency Lists */
-	rv->soft_depends = NULL;
 	rv->breaks = NULL;
 	rv->modifies = NULL;
 
 	dep = package->xmlChildrenNode;
 	while (dep) {
-		if (g_strcasecmp (dep->name, "SOFT_DEPEND") == 0) {
+		if (g_strcasecmp (dep->name, "DEPENDENCY") == 0) {
+			PackageDependency *dependency = g_new0 (PackageDependency, 1);
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
-			packagedata_add_pack_to_soft_depends (rv, depend);
+			dependency->package = depend;
+			packagedata_add_pack_to_depends (rv, dependency);
 		} else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
 			PackageData* depend;
 
@@ -596,7 +597,7 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 		if (g_list_find (*path, PACKAGEDEPENDENCY (iterator->data)->package) == NULL) {
 			(*path) = g_list_prepend (*path, PACKAGEDEPENDENCY (iterator->data)->package);
 			eazel_install_packagedata_to_xml_int (PACKAGEDEPENDENCY (iterator->data)->package, 
-							      "SOFT_DEPEND", 
+							      "DEPENDENCY", 
 							      root, 
 							      include_provides,
 							      path);

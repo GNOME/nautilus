@@ -320,10 +320,6 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->depends);
 	pack->depends = NULL;
 
-	g_list_foreach (pack->soft_depends, (GFunc)gtk_object_unref, NULL);
-	g_list_free (pack->soft_depends);
-	pack->soft_depends = NULL;
-
 	g_list_foreach (pack->breaks, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->breaks);
 	pack->breaks = NULL;
@@ -394,7 +390,6 @@ packagedata_initialize (PackageData *package) {
 	package->conflicts_checked = FALSE;
 	package->install_root = NULL;
 	package->provides = NULL;
-	package->soft_depends = NULL;
 	package->breaks = NULL;
 	package->modifies = NULL;
 	package->depends = NULL;
@@ -510,7 +505,6 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->md5 = g_strdup (pack->md5);
 
 	if (deep) {
-		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
 		result->depends = packagedata_deplist_copy (pack->depends, TRUE);
 		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
 
@@ -589,12 +583,9 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 		package->features = g_list_reverse (package->features);
 	}
 	if (! (fill_flags & PACKAGE_FILL_NO_DEPENDENCIES)) {
-		g_list_foreach (package->soft_depends, (GFunc)gtk_object_unref, NULL);
 		g_list_foreach (package->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
-		package->soft_depends = NULL;
 		package->depends = NULL;
 
-		package->soft_depends = packagedata_list_copy (full_package->soft_depends, TRUE);
 		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
 	}
 	package->fillflag = fill_flags;
@@ -608,7 +599,6 @@ packagedata_remove_soft_dep (PackageData *remove,
 	g_assert (from);
 
 	trilobite_debug ("removing %s from %s's deps", remove->name, from->name);
-	from->soft_depends = g_list_remove (from->soft_depends, remove);
 	gtk_object_unref (GTK_OBJECT (remove));
 }
 
@@ -872,12 +862,11 @@ packagedata_add_to_breaks (PackageData *pack, PackageBreaks *b)
 }
 
 void 
-packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b)
+packagedata_add_pack_to_depends (PackageData *pack, PackageDependency *b)
 {
 	g_assert (pack);
 	g_assert (b);
-	g_assert (pack != b);
-	packagedata_add_pack_to (&pack->soft_depends, GTK_OBJECT (b));
+	pack->depends = g_list_prepend (pack->depends, b);
 }
 
 void 
@@ -995,6 +984,9 @@ int
 eazel_install_package_name_compare (PackageData *pack,
 				    char *name)
 {
+	if (pack->name == NULL) {
+		return -1;
+	}
 	return strcmp (pack->name, name);
 }
 
@@ -1481,12 +1473,6 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, "\n");
 	}
 
-	if (package->soft_depends != NULL) {
-		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Soft (old) depends: ");
-		dump_package_list (out, package->soft_depends, deep, indent);
-		g_string_sprintfa (out, "\n");
-	}
 	if (package->depends != NULL) {
 		gstr_indent (out, indent);
 		g_string_sprintfa (out, "Depends: ");

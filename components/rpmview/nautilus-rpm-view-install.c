@@ -92,8 +92,20 @@ nautilus_rpm_view_download_failed (EazelInstallCallback *service,
 }
 
 static void
-get_detailed_errors_foreach (const PackageData *pack, GString *message)
+get_detailed_errors_foreach (const gpointer data, GString *message)
 {
+	PackageData *pack;
+
+	if (IS_PACKAGEDATA (data)) {
+		pack = PACKAGEDATA (data);
+	} else if (IS_PACKAGEBREAKS (data)) {
+		PackageBreaks *breakage = PACKAGEBREAKS (data);
+		pack = packagebreaks_get_package (breakage);
+	} else {
+		PackageDependency *dep = PACKAGEDEPENDENCY (data);
+		pack = dep->package;
+	}
+
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
 	case PACKAGE_CANCELLED:
@@ -122,7 +134,7 @@ get_detailed_errors_foreach (const PackageData *pack, GString *message)
 	case PACKAGE_RESOLVED:
 		break;
 	}
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 }
@@ -139,7 +151,7 @@ get_detailed_errors (const PackageData *pack, int installing)
 	} else {
 		g_string_sprintfa (message, _("Uninstalling %s failed because of the following issue(s):\n"), pack->name);
 	}
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 

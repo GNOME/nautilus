@@ -187,7 +187,6 @@ struct _PackageData {
 
 	char* summary;
 	char* description;	
-	GList* soft_depends;
 	GList* depends;		/* GList<PackageDependency *> */
 	GList* breaks; 	        /* GList<PackageBreaks*> */
 
@@ -303,6 +302,7 @@ PackageDependency *packagedependency_new (void);
 PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
 void packagedependency_destroy (PackageDependency *dep);
 
+/* WAAH! */
 #define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
 #define IS_PACKAGEDEPENDENCY(obj) (1)
 
@@ -383,7 +383,7 @@ GtkType packagefeaturemissing_get_type (void);
 
 void packagedata_add_to_breaks (PackageData *pack, PackageBreaks *b);
 void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_depends (PackageData *pack, PackageDependency *b);
 void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
 /*************************************************************************************************/

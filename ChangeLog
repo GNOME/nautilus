@@ -1,3 +1,113 @@
+2001-02-20  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed in part by: Robey Pointer  <robey@eazel.com>
+
+	This patch fixes bug 6458, 5722, 6602, 6788 and 5826.
+	Removed soft_depends from PacakgeData.
+
+	This has some major changes in the logic, and (taaadaa) is fairly
+	untestet because of the sorry state of the testservers these
+	days. This will most likely no longer work with
+	services.eazel.com, but only with the newest server code.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors_foreach), (get_detailed_errors):
+	Fixed to parse PackageBreaks objects.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (prune_failed_packages_helper),
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(is_satisfied), (is_satisfied_from_package_list),
+	(is_satisfied_features), (check_dependencies_foreach),
+	(check_dependencies), (check_tree_helper),
+	(check_no_two_packages_has_same_file),
+	(check_conflicts_against_already_installed_packages),
+	(check_feature_consistency), (do_file_conflict_check),
+	(do_dep_check_internal), (download_packages),
+	(get_packages_with_mod_flag), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber),
+	(install_packages), (uninstall_packages):
+	Ouput status in the tree dump.
+	Improved the way I fail ALREADY_INSTALLED packages.
+	Check the new package system error field in check_existing.
+	Get_info don't check for fillflag to decide if softcat success was
+	ok, since suites don't get the fillflag.
+	Don't try and dedupe suite objects.
+	Mark packages already installed with same version as CANCELLED.
+	If a ALREADYINSTALLED package is cancelled due to install options
+	(upgrade/downgrade), set a data field called "cancelled" to
+	represent.
+	Added a (currently not fully functional) check to see if a
+	dependency is solved by the current work set (bug 6809).
+	is_satisfied now uses is_satisfied_from_packages before checking
+	if dependency is installed.
+	Modified check_dependencies_foreach to pass around the package
+	list.
+	No longer do dependency check on cancelled packages (bug 6485).
+	Don't package depcheck packages with suite_id, treat it's contents
+	at comming toplevel packages.
+	Output crack sentence when trying to revice PackageFeatureMissing
+	breaks (file bug 6811)
+	Don't file uniqueness or file conflict check suites.
+	Fixed a bug in the feature_consistency, required a new query enum
+	in eazelpackagesystem query call.
+	Spewed out some comments.
+	Always add children of a suite to K.
+	Check download status (bug 5722)
+	Commented out expand_package_suites.
+	get_packages_with_mod_flag can now parse down into ->depends.
+	Nicyfied debug output.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file),
+	(eazel_install_fetch_package):
+	No longer use rpmvercmp.
+	Define flag to make all downloads fail (to test failed downloads).
+	Note when VFS is lying about bytes_copied.
+	Removed some ancient code.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml_int):
+	Removed soft_depends.
+	
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_db_locked),
+	(eazel_package_system_rpm3_dbs_locked),
+	(eazel_package_system_rpm3_open_dbs),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(eazel_package_system_rpm3_query_foreach),
+	(eazel_package_system_rpm3_query_requires_feature),
+	(eazel_package_system_rpm3_query),
+	(eazel_package_system_rpm3_verify):
+	Did the db lock check voodoo.
+	Added REQUIRES_FEATURE query enum.
+	Loads features from a given file (bug 5826)
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_finalize), (packagedata_initialize),
+	(packagedata_copy), (packagedata_fill_in_missing),
+	(packagedata_remove_soft_dep), (packagedata_add_pack_to_depends),
+	(eazel_install_package_name_compare), (packagedata_dump_int):
+	Good bye soft_depends.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_implementation),
+	(eazel_package_system_load_package), (eazel_package_system_query),
+	(eazel_package_system_fail_all_packages),
+	(eazel_package_system_install), (eazel_package_system_uninstall),
+	(eazel_package_system_verify), (eazel_package_system_initialize),
+	(eazel_package_system_new_with_id):
+	Fixed 6788.
+	Added REQUIRES_FEATURE query enum.
+
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_get_info):
+	Fixed some suite_id majick.
+
 2001-02-20  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6029, No option to mount zip drive in desktop menu.

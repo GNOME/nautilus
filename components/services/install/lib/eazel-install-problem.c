@@ -46,6 +46,7 @@ typedef struct {
 	GList *errors;
 	GList *path;
 	GList *packs;
+	GList *handled;
 } GetErrorsForEachData;
 
 #ifdef EIP_DEBUG
@@ -120,6 +121,10 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		pack = PACKAGEDEPENDENCY (foo)->package;
 	} else {
 		g_assert_not_reached ();
+	}
+
+	if (g_list_find (data->handled, pack)) {
+		return;
 	}
 
 	if (data->path) {
@@ -251,6 +256,9 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
+	data->handled = g_list_prepend (data->handled, pack);
+
+	g_message ("handled %p %s", pack, packagedata_get_readable_name (pack));
 
 	if (pack->status != PACKAGE_CANCELLED) {
 		g_list_foreach (pack->depends, (GFunc)get_detailed_messages_foreach, data);
@@ -1212,6 +1220,7 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 	data.problem = problem;
 	data.errors = (*output);
 	data.path = NULL;
+	data.handled = NULL;
 	pack_copy = packagedata_copy (pack, TRUE);
 	problem->in_step_problem_mode = FALSE;
 

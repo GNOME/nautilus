@@ -27,7 +27,7 @@
 #include "eazel-package-system-rpm3.h"
 #include <rpm/rpmlib.h>
 
-void eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system);
+gboolean eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system);
 gboolean eazel_package_system_rpm3_close_dbs (EazelPackageSystemRpm3 *system);
 gboolean eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system);
 void eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system, GList*);
@@ -72,6 +72,11 @@ void eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 					       const gpointer *key,
 					       int detail_level,
 					       GList **result);
+void eazel_package_system_rpm3_query_requires_feature (EazelPackageSystemRpm3 *system,
+						       const char *dbpath,
+						       const gpointer *key,
+						       int detail_level,
+						       GList **result);
 
 struct RpmQueryPiggyBag {
 	EazelPackageSystemRpm3 *system;
@@ -83,7 +88,7 @@ struct RpmQueryPiggyBag {
 
 struct _EazelPackageSystemRpm3Private 
 {
-	GList *dbpaths; /* GList*<EazelPackageSystemDbPath> */
+	GList *dbpaths; /* GList*< pair < char *dbpath, char *root> > */
 	GHashTable *db_to_root;
 	GHashTable *dbs;
 

@@ -46,6 +46,16 @@
 
 #ifdef HAVE_RPM
 
+#ifdef HAVE_RPM_30
+#define A_DB_FILE "packages.rpm"
+#elif HAVE_RPM_40
+#define A_DB_FILE "Packages"
+#endif
+
+#ifndef A_DB_FILE
+#error Unknown DB system
+#endif
+
 #include <gnome.h>
 #include <locale.h>
 #include "eazel-package-system-rpm3-private.h"
@@ -653,6 +663,82 @@ eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system,
 	rpmReadConfigFiles ("/usr/lib/rpm/rpmrc", NULL);	
 }
 
+/* This is not a safe way of lockchecking, 
+   since after the check, a process may still gain
+   a lock on a_file.
+   This is not a major problem, as the case we're looking
+   for is when a process is running from start */
+static gboolean
+eazel_package_system_rpm3_db_locked (EazelPackageSystemRpm3 *system,
+				     char *dbpath)
+{
+	char *a_file;
+	struct flock lock;
+	int fd;
+	gboolean result = FALSE;
+
+	lock.l_type = F_RDLCK;
+	lock.l_start = 0;
+	lock.l_whence = 0;
+	lock.l_len = 0;
+
+	a_file = g_strdup_printf ("%s/%s", dbpath, A_DB_FILE);
+	fd = open (a_file, O_RDONLY);
+
+	/* verbose (system, "lock checking %s", a_file); */
+
+	if (fd == -1) {
+		/* fail (system, "Could not get lock info for %s during open phase", a_file); */
+	} else {
+		if (fcntl (fd, F_SETLK, &lock)) {
+			fail (system, "Could not get lock for %s", a_file);
+			result = TRUE;
+			if (EAZEL_PACKAGE_SYSTEM (system)->err==NULL) {
+				EAZEL_PACKAGE_SYSTEM (system)->err = g_new0 (EazelPackageSystemError, 1);
+				EAZEL_PACKAGE_SYSTEM (system)->err->e = EazelPackageSystemError_DB_ACCESS;
+				EAZEL_PACKAGE_SYSTEM (system)->err->u.db_access.pid = lock.l_pid;
+				EAZEL_PACKAGE_SYSTEM (system)->err->u.db_access.path = dbpath;
+			}
+		} else {
+			result = FALSE;
+		}
+	}
+			
+	close (fd);
+	g_free (a_file);
+	
+	return result;
+}
+
+static gboolean
+eazel_package_system_rpm3_dbs_locked (EazelPackageSystemRpm3 *system)
+{
+	GList *iterator;
+	gboolean result = FALSE;
+	GList *remove = NULL;
+	
+	for (iterator = system->private->dbpaths; iterator; iterator = g_list_next (g_list_next (iterator))) {
+		char *path;
+		char *foo = g_list_next (iterator)->data;
+
+		path = (char*)iterator->data;
+		if (eazel_package_system_rpm3_db_locked (system, path)) {
+			result = TRUE;
+			fail (system, "Removed %s since it's locked", path);
+			remove = g_list_prepend (remove, path);
+			remove = g_list_prepend (remove, foo);
+		}
+	}
+	
+	for (iterator = remove; iterator; iterator = g_list_next (iterator)) {
+		system->private->dbpaths = g_list_remove (system->private->dbpaths, iterator->data);
+		g_hash_table_remove (system->private->db_to_root, iterator->data);
+	}
+	g_list_free (remove);
+	
+	return result;
+}
+
 static void
 rpm_open_db (char *dbpath,
 	     char *root,
@@ -675,16 +761,26 @@ rpm_open_db (char *dbpath,
 	}
 }
 
-void
+gboolean
 eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system)
 {
 	g_assert (system);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_RPM3 (system));
 	g_assert (system->private->dbs);
 
+	if (eazel_package_system_rpm3_dbs_locked (system)) {
+		g_warning ("Some db's are locked!");
+	}
+
+	if (g_hash_table_size (system->private->db_to_root) == 0) {
+		return FALSE;
+	}
+
 	g_hash_table_foreach (system->private->db_to_root, 
 			      (GHFunc)rpm_open_db,
 			      system);
+
+	return TRUE;
 }
 
 static gboolean
@@ -838,19 +934,22 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			} else {
 				fullname = g_strdup (names[index]);
 			}
+#if 0
+			fprintf (stderr, "file_modes[%s] = 0%o %s\n", 
+				 fullname, file_modes[index],
+				 (file_modes[index] & 040000) ? "DIR" : "file" );
+#endif
+			
 			if (detail_level & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
 				if (file_modes[index] & 040000) {
 					g_free (fullname);
 					fullname = NULL;
 				}
-#if 0
-				fprintf (stderr, "file_modes[%s] = 0%o %s\n", 
-					 fullname, file_modes[index],
-					 (file_modes[index] & 040000) ? "DIR" : "file" );
-#endif
 			}
 			if (fullname) {
-				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
+#if 0
+				fprintf (stderr, "%s provides %s\n", pack->name, fullname);
+#endif
 				pack->provides = g_list_prepend (pack->provides, fullname);
 			}
 		}
@@ -920,8 +1019,24 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		free ((void*)requires_version);
 
 	}
-	/* FIXME: bugzilla.eazel.com 5826
-	   Load in the features of the package */	
+
+	if (~detail_level & PACAKGE_FILL_NO_FEATURES) {		
+		const char **provides_name;
+		int count;
+		int index;
+
+		headerGetEntry (hd,
+				RPMTAG_PROVIDENAME, NULL,
+				(void**)&provides_name,
+				&count);
+
+		for (index = 0; index < count; index++) {
+			pack->features = g_list_prepend (pack->features, 
+							 g_strdup (provides_name[index]));
+		}
+
+		free ((void*)provides_name);
+	}
 }
 
 static gboolean 
@@ -1158,6 +1273,13 @@ eazel_package_system_rpm3_query_foreach (char *dbpath,
 							  pig->detail_level,
 							  pig->result);
 		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES_FEATURE:
+		eazel_package_system_rpm3_query_requires_feature (pig->system,
+								  dbpath,
+								  pig->key,
+								  pig->detail_level,
+								  pig->result);
+		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR:
 		eazel_package_system_rpm3_query_substr (pig->system,
 							dbpath,
@@ -1211,6 +1333,21 @@ eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 	}
 }
 
+void
+eazel_package_system_rpm3_query_requires_feature (EazelPackageSystemRpm3 *system,
+						  const char *dbpath,
+						  const gpointer *key,
+						  int detail_level,
+						  GList **result)
+{
+	(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_impl) (EAZEL_PACKAGE_SYSTEM (system),
+										    dbpath,
+										    (gpointer)key,
+										    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+										    detail_level,
+										    result);
+}
+
 GList*               
 eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				 const char *dbpath,
@@ -1230,7 +1367,10 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	pig.detail_level = detail_level;
 	pig.result = &result;
 	
-	eazel_package_system_rpm3_open_dbs (system);
+	if (!eazel_package_system_rpm3_open_dbs (system)) {
+		return NULL;
+	}
+
 	if (dbpath==NULL) {
 		g_hash_table_foreach (system->private->dbs, 
 				      (GHFunc)(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_foreach),
@@ -1639,7 +1779,9 @@ eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system,
 
 	info (system, "eazel_package_system_rpm3_verify");
 
-	eazel_package_system_rpm3_open_dbs (system);
+	if (!eazel_package_system_rpm3_open_dbs (system)) {
+		return FALSE;
+	}
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		info[0] ++;

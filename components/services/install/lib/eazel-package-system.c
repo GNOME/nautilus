@@ -29,7 +29,7 @@
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-md5-tools.h>
 
-#define EPS_DEBUG 1
+#undef EPS_DEBUG
 
 enum {
 	START,
@@ -113,7 +113,7 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 		break;
 #endif
 	default:
-		g_assert_not_reached ();
+		trilobite_debug ("EPS: Unsupported System");
 	};
 
 	if (module==NULL) {
@@ -237,13 +237,17 @@ eazel_package_system_load_package (EazelPackageSystem *system,
 {
 	PackageData *result = NULL;
 	char md5[16];
+
 	EPS_SANE_VAL (system, NULL);
-	g_assert (system->private->load_package);
-	result = (*system->private->load_package) (system, in_package, filename, detail_level);
-	if (result) {
-		trilobite_md5_get_digest_from_file (filename, md5);
-		result->md5 = g_strdup (trilobite_md5_get_string_from_md5_digest (md5));
+
+	if (system->private->load_package) {
+		result = (*system->private->load_package) (system, in_package, filename, detail_level);
+		if (result) {
+			trilobite_md5_get_digest_from_file (filename, md5);
+			result->md5 = g_strdup (trilobite_md5_get_string_from_md5_digest (md5));
+		}
 	}
+
 	return result;
 }
 
@@ -255,11 +259,30 @@ eazel_package_system_query (EazelPackageSystem *system,
 			    int detail_level)
 {
 	GList *result = NULL;
+
 	EPS_SANE_VAL (system, NULL);
-	g_assert (system->private->query);
-	g_assert (key);
-	result = (*system->private->query) (system, root, key, flag, detail_level);
+
+	if (system->private->query) {
+		g_assert (key);
+		result = (*system->private->query) (system, root, key, flag, detail_level);
+	}
+
 	return result;
+}
+
+static void
+eazel_package_system_fail_all_packages (EazelPackageSystem *system, 
+					EazelPackageSystemOperation op, 
+					GList *packages)
+{
+	GList *iterator;
+	
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *p = PACKAGEDATA (iterator->data);
+		eazel_package_system_emit_start (system, op, p);
+		eazel_package_system_emit_failed (system, op, p);			
+		eazel_package_system_emit_end (system, op, p);		
+	}
 }
 
 void                 
@@ -269,15 +292,20 @@ eazel_package_system_install (EazelPackageSystem *system,
 			      unsigned long flags)
 {
 	EPS_SANE (system);
-	g_assert (system->private->install);
-	
-	/* If we're in test mode, disable FORCE just to trigger
-	   any potiental errors */
-	if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_TEST) {
-		(*system->private->install) (system, root, packages, 
-					     flags & ~EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE);
+
+	if (system->private->install) {		
+		/* If we're in test mode, disable FORCE just to trigger
+		   any potiental errors */
+		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_TEST) {
+			(*system->private->install) (system, root, packages, 
+						     flags & ~EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE);
+		} else {
+			(*system->private->install) (system, root, packages, flags);
+		}
 	} else {
-		(*system->private->install) (system, root, packages, flags);
+		eazel_package_system_fail_all_packages (system, 
+							EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL, 
+							packages);
 	}
 }
 
@@ -288,8 +316,14 @@ eazel_package_system_uninstall (EazelPackageSystem *system,
 				unsigned long flags)
 {
 	EPS_SANE (system);
-	g_assert (system->private->uninstall);
-	(*system->private->uninstall) (system, root, packages, flags);
+
+	if (system->private->uninstall) {
+		(*system->private->uninstall) (system, root, packages, flags);
+	} else {
+		eazel_package_system_fail_all_packages (system, 
+							EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL, 
+							packages);
+	} 
 }
 
 gboolean
@@ -298,8 +332,14 @@ eazel_package_system_verify (EazelPackageSystem *system,
 			     GList* packages)
 {
 	EPS_SANE_VAL (system, FALSE);
-	g_assert (system->private->verify);
-	return (*system->private->verify) (system, dbpath, packages);
+	if (system->private->verify) {
+		return (*system->private->verify) (system, dbpath, packages);	
+	} else {
+		eazel_package_system_fail_all_packages (system, 
+							EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY, 
+							packages);
+		return FALSE;
+	}
 }
 
 int
@@ -487,6 +527,7 @@ eazel_package_system_initialize (EazelPackageSystem *system) {
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM (system));
 	
 	system->private = g_new0 (EazelPackageSystemPrivate, 1);
+	system->err = NULL;
 }
 
 GtkType
@@ -537,7 +578,17 @@ eazel_package_system_new_real ()
 EazelPackageSystem *
 eazel_package_system_new_with_id (EazelPackageSystemId id, GList *roots)
 {
-	return eazel_package_system_load_implementation (id, roots);
+	EazelPackageSystem *result;
+	
+	result = eazel_package_system_load_implementation (id, roots);
+
+	/* If we failed (eg. unsupported system id), return
+	   an empty object */
+	if (result == NULL) {
+		result = eazel_package_system_new_real ();
+	}
+
+	return result;
 }
 
 /*

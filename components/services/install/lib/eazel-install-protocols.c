@@ -40,9 +40,7 @@
 
 #include "eazel-package-system.h"
 
-/* We use rpmvercmp to compare versions... */
-#include <rpm/rpmlib.h>
-#include <rpm/misc.h>
+#undef EIP_FAIL_ALL_DOWNLOADS
 
 #include <libtrilobite/trilobite-core-utils.h>
 
@@ -295,6 +293,18 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COPYING:
+#ifdef EIP_FAIL_ALL_DOWNLOADS
+			if (info->bytes_copied > 1024*8) {
+				return FALSE;
+			}
+#endif /* EIP_FAIL_ALL_DOWNLOADS */
+
+			if (info->bytes_copied > info->file_size) {
+				g_warning ("VFS bug: lying about filesize, copying %ld > %ld", 
+					   (glong)info->bytes_copied,
+					   (glong)info->file_size);
+				return TRUE;
+			}
 			if (initial_emit && info->file_size>0) {
 				initial_emit = FALSE;
 				eazel_install_emit_download_progress (service,
@@ -315,18 +325,16 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 
 			}
 
-			/*
-			g_message ("Transferring `%s' to `%s' (file %ld/%ld, byte %ld/%ld in file, "
+/*
+			g_message ("Transferring  (file %ld/%ld, byte %ld/%ld in file, "
 				   "%" GNOME_VFS_SIZE_FORMAT_STR "/%" GNOME_VFS_SIZE_FORMAT_STR " total)",
-				   info->source_name,
-				   info->target_name,
 				   info->file_index,
 				   info->files_total,
 				   (glong) info->bytes_copied,
 				   (glong) info->file_size,
 				   info->total_bytes_copied,
 				   info->bytes_total);
-			*/
+*/		
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
 			return TRUE;
@@ -379,13 +387,14 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	/* this will always be a file: uri */
 	t_file = g_strdup_printf ("file://%s", target_file_premove);
 
-	trilobite_debug ("gnome_vfs_xfer_uri ( %s %s )", url, t_file);
+	trilobite_debug ("downloading %s", url);
 	
 	src_uri = gnome_vfs_uri_new (url);
 	g_assert (src_uri != NULL);
 	if (eazel_install_get_ssl_rename (service)) {
 		trilobite_debug ("ssl renaming %s to localhost", gnome_vfs_uri_get_host_name (src_uri));
 		gnome_vfs_uri_set_host_name (src_uri, "localhost");
+		gnome_vfs_uri_set_host_port (src_uri, eazel_install_get_server_port (service));
 	}
 	
 	dest_uri = gnome_vfs_uri_new (target_file_premove);
@@ -651,6 +660,7 @@ eazel_install_fetch_package (EazelInstall *service,
 					result = FALSE;
 				}
 			}
+/*
 			if (version) {
 				if (rpmvercmp (package->version, version)<0) {
 					g_warning (_("Downloaded package does not have the correct version"));
@@ -659,6 +669,7 @@ eazel_install_fetch_package (EazelInstall *service,
 					result = FALSE;
 				}
 			}
+*/
 		} 
 	}
 	
@@ -671,7 +682,6 @@ eazel_install_fetch_package (EazelInstall *service,
 			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
 									     g_strdup (targetname));
 		}
-		trilobite_debug ("%s resolved v2", package->name);
 	} else {	
 		g_warning (_("File download failed"));
 		unlink (targetname);
@@ -685,78 +695,3 @@ eazel_install_fetch_package (EazelInstall *service,
 }
 
 
-static void
-flatten_tree_func (PackageData *pack, GList **out)
-{
-	trilobite_debug ("    --- %s", pack->name);
-	*out = g_list_append (*out, pack);
-	g_list_foreach (pack->soft_depends, (GFunc)flatten_tree_func, out);
-	g_list_free (pack->soft_depends);
-	pack->soft_depends = NULL;
-}
-
-/* this was never used yet */
-#if 0
-/* given a list of packages with incomplete info (for example, the initial bootstrap install list),
- * go ask for real info and compile a new list of packages.
- */
-static GList *
-eazel_install_fetch_definitive_package_info (EazelInstall *service, PackageData *pack)
-{
-	char *search_url = NULL;
-	char *body = NULL;
-	int length;
-	GList *treelist;
-	GList *out;
-
-	search_url = get_search_url_for_package (service, RPMSEARCH_ENTRY_NAME, pack);
-	if (search_url == NULL) {
-		trilobite_debug ("No search URL");
-		return NULL;
-	}
-
-	trilobite_debug ("Search URL: %s", search_url);
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), TRUE);
-
-	if (! trilobite_fetch_uri (search_url, &body, &length)) {
-		g_free (search_url);
-		trilobite_debug ("Couldn't fetch search URL");
-		return NULL;
-	}
-
-	trilobite_debug ("parse osd");
-	treelist = parse_osd_xml_from_memory (body, length);
-	g_free (search_url);
-	g_free (body);
-
-	/* the install lib will spaz if we give it the dependencies in their tree form. :( */
-	trilobite_debug (">>> package '%s' => %d packages", pack->name, g_list_length (treelist));
-	out = NULL;
-	g_list_foreach (treelist, (GFunc)flatten_tree_func, &out);
-
-dump_packages (out);
-	return out;
-}
-
-void
-eazel_install_fetch_definitive_category_info (EazelInstall *service, CategoryData *category)
-{
-	GList *iter;
-	GList *real_packages = NULL;
-	GList *packlist;
-
-	for (iter = g_list_first (category->packages); iter != NULL; iter = g_list_next (iter)) {
-		packlist = eazel_install_fetch_definitive_package_info (service, (PackageData *)(iter->data));
-		if (packlist != NULL) {
-			real_packages = g_list_concat (real_packages, packlist);
-			packagedata_destroy ((PackageData *)(iter->data), TRUE);
-		} else {
-			/* fetch of real URL failed, so just add the original package info */
-			real_packages = g_list_append (real_packages, (PackageData *)(iter->data));
-		}
-	}
-
-	g_list_free (category->packages);
-	category->packages = real_packages;
-}
-#endif
