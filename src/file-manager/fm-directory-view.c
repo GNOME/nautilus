@@ -109,6 +109,8 @@
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE        		"/commands/OpenAlternate"
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH				"/commands/Open With"
 #define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER				"/commands/New Folder"
+#define FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER				"/commands/New Launcher"
+#define FM_DIRECTORY_VIEW_COMMAND_EDIT_LAUNCHER				"/commands/Edit Launcher"
 #define FM_DIRECTORY_VIEW_COMMAND_DELETE                    		"/commands/Delete"
 #define FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH                    	"/commands/Show Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_TRASH                    		"/commands/Trash"
@@ -747,6 +749,39 @@ other_viewer_callback (BonoboUIComponent *component, gpointer callback_data, con
 }
 
 static void
+edit_launcher (NautilusFile *file)
+{
+	char *uri;
+
+	uri = nautilus_file_get_uri (file);
+
+	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+						  "gnome-desktop-item-edit",
+						  uri, 
+						  FALSE);
+	g_free (uri);
+}
+
+static void
+edit_launcher_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	GList *selection;
+	FMDirectoryView *view;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+       	selection = fm_directory_view_get_selection (view);
+
+	if (selection_contains_one_item_in_menu_callback (view, selection)) {
+		edit_launcher (NAUTILUS_FILE (selection->data));
+	}
+
+	nautilus_file_list_free (selection);
+}
+
+static void
 trash_or_delete_selected_files (FMDirectoryView *view)
 {
         GList *selection;
@@ -936,6 +971,26 @@ new_folder_callback (BonoboUIComponent *component, gpointer callback_data, const
 }
 
 static void
+new_launcher_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	char *parent_uri;
+	FMDirectoryView *view;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	parent_uri = fm_directory_view_get_uri (view);
+
+	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+						  "gnome-desktop-item-edit --create-new",
+						  parent_uri, 
+						  FALSE);
+
+	g_free (parent_uri);
+}
+
+static void
 open_properties_window_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
@@ -986,6 +1041,32 @@ all_selected_items_in_trash (FMDirectoryView *view)
 	nautilus_file_list_free (selection);
 
 	return result;
+}
+
+static gboolean
+we_are_in_vfolder_desktop_dir (FMDirectoryView *view)
+{
+	NautilusFile *file;
+	char *mime_type;
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	if (view->details->model == NULL) {
+		return FALSE;
+	}
+
+	file = nautilus_directory_get_corresponding_file (view->details->model);
+	mime_type = nautilus_file_get_mime_type (file);
+	nautilus_file_unref (file);
+
+	if (mime_type != NULL
+	    && strcmp (mime_type, "x-directory/vfolder-desktop") == 0) {
+		g_free (mime_type);
+		return TRUE;
+	} else {
+		g_free (mime_type);
+		return FALSE;
+	}
 }
 
 static void
@@ -4158,11 +4239,13 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Duplicate", duplicate_callback),
 		BONOBO_UI_VERB ("Empty Trash", bonobo_menu_empty_trash_callback),
 		BONOBO_UI_VERB ("New Folder", new_folder_callback),
+		BONOBO_UI_VERB ("New Launcher", new_launcher_callback),
 		BONOBO_UI_VERB ("Open Scripts Folder", open_scripts_folder_callback),
 		BONOBO_UI_VERB ("Open", open_callback),
 		BONOBO_UI_VERB ("OpenAlternate", open_alternate_callback),
 		BONOBO_UI_VERB ("OtherApplication", other_application_callback),
 		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
+		BONOBO_UI_VERB ("Edit Launcher", edit_launcher_callback),
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
 		BONOBO_UI_VERB ("Remove Custom Icons", remove_custom_icons_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
@@ -4241,6 +4324,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean can_link_files;
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
+	gboolean vfolder_directory;
 	EelBackground *background;
 
 	if (view->details->ui == NULL) {
@@ -4262,6 +4346,7 @@ real_update_menus (FMDirectoryView *view)
 	can_duplicate_files = can_create_files && can_copy_files;
 	can_link_files = can_create_files && can_copy_files;
 	
+	vfolder_directory = we_are_in_vfolder_desktop_dir (view);
 
 	bonobo_ui_component_freeze (view->details->ui, NULL);
 
@@ -4440,6 +4525,22 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH,
 				       !NAUTILUS_IS_TRASH_DIRECTORY (fm_directory_view_get_model (view)));
+
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER,
+				    ! vfolder_directory);
+
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_COMMAND_EDIT_LAUNCHER,
+				    ! vfolder_directory);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER,
+				       can_create_files);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_EDIT_LAUNCHER,
+				       selection_count == 1);
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 

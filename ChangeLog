@@ -1,3 +1,14 @@
+Thu May 30 10:02:30 2002  George Lebl <jirka@5z.com>
+
+	* src/Nautilus_shell.server.in, src/file-manager/fm-directory-view.c,
+	  src/file-manager/nautilus-directory-view-ui.xml:  Add a New
+	  Launcher and Edit Launcher menu items for directories of type
+	  x-directory/vfolder-desktop, also have the icon and list view
+	  be able to view these just as the normal dirs.  This should fix
+	  #72715, although since the monitors aren't yet working you have
+	  to hit reload after making a change.  You also need an up to date
+	  panel (to get a well working gnome-desktop-item-edit proggie)
+
 2002-05-29  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-file.c

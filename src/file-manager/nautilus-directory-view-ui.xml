@@ -18,6 +18,12 @@
 	<cmd name="New Folder"
          _label="New Folder"
 	 _tip="Create a new empty folder inside this folder"/>
+        <cmd name="New Launcher"
+         _label="New Launcher"
+         _tip="Create a new launcher"/>
+        <cmd name="Edit Launcher"
+         _label="Edit Launcher"
+         _tip="Edit the launcher information"/>
 	<cmd name="Open"
          _label="Open"
 	 _tip="Open the selected item in this window"/>
@@ -81,6 +87,10 @@
 			  	  accel="*Shift**Control*n"
 				  pixtype="stock" pixname="gtk-new"
 				  verb="New Folder"/>
+			<menuitem name="New Launcher"
+				  _label="New La_uncher"
+				  pixtype="stock" pixname="gtk-new"
+				  verb="New Launcher"/>
 		</placeholder>
 		<placeholder name="Open Placeholder">
 			<menuitem name="Open"
@@ -105,6 +115,8 @@
 					  _label="Other _Viewer..."
 					  verb="OtherViewer"/>
 			</submenu>
+			<menuitem name="Edit Launcher"
+				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
 				 _label="Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts">
@@ -196,6 +208,9 @@
 				<menuitem name="New Folder" 
 				  pixtype="stock" pixname="gtk-new"
 				 verb="New Folder"/>
+				<menuitem name="New Launcher"
+				 pixtype="stock" pixname="gtk-new"
+				 verb="New Launcher"/>
 			</placeholder>
                         <submenu name="Scripts"
 				 _label="Scripts"
@@ -242,6 +257,8 @@
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer" verb="OtherViewer"/>
 			</submenu>
+			<menuitem name="Edit Launcher"
+				  verb="Edit Launcher"/>
 			<submenu name="Scripts"
 				 _label="Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
