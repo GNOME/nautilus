@@ -1,3 +1,10 @@
+2001-03-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+	fixed bug 7283, wrong pattern dragged when property browser is
+	scrolled, by revert yesterday's border box change that caused it.
+	
 2001-03-02  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

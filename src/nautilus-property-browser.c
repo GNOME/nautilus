@@ -1916,7 +1916,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	xmlNodePtr cur_node;
  	xmlDocPtr document;
  	NautilusBackground *background;
-	GtkWidget *viewport, *border_box;
+	GtkWidget *viewport;
 	gboolean show_buttons, got_categories;
 	char *name, *image, *type, *description, *display_name, *path, *mode;
 	const char *text;
@@ -1957,12 +1957,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			    GTK_SIGNAL_FUNC (element_clicked_callback),
 			    property_browser);
 
-	border_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (border_box);
-	gtk_container_set_border_width (GTK_CONTAINER (border_box), 8);
-	
-	gtk_container_add (GTK_CONTAINER (border_box), property_browser->details->content_table);
-	gtk_container_add(GTK_CONTAINER(viewport), border_box); 
+	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->content_table); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_frame), viewport);
 	gtk_widget_show (GTK_WIDGET (property_browser->details->content_table));
 	
