@@ -1,3 +1,13 @@
+1999-12-16  John Sullivan  <sullivan.com>
+
+	* src/file-manager/fm-directory-view.c (directory_load_cb): 
+	changed assert to warning
+
+	* src/ntl-main.c (main): removed G_LOG_LEVEL_WARNING from
+	the set of fatal levels when NAUTILUS_DEBUG is defined,
+	so we can continue to work on other parts of nautilus 
+	until the only-one-icon-in-a-window vfs problem is fixed.
+
 1999-12-16  Elliot Lee  <sopwith@redhat.com>
 
 	* components/help/hyperbola-nav-tree.c: Translate strings.

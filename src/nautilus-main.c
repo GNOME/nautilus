@@ -74,9 +74,12 @@ int main(int argc, char *argv[])
   };
   GtkWidget *mainwin;
   GnomeGenericFactory *gfact;
-  
+
+  // FIXME: This should also include G_LOG_LEVEL_WARNING, but I had to take it
+  // out temporarily so we could continue to work on other parts of the software
+  // until the only-one-icon-shows-up problem is fixed
   if (getenv("NAUTILUS_DEBUG"))
-    g_log_set_always_fatal(G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+    g_log_set_always_fatal(G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL);
 
   orb = gnome_CORBA_init_with_popt_table("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
