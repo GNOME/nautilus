@@ -97,6 +97,12 @@ nautilus_inventory_config_page_initialize (NautilusInventoryConfigPage *config_p
 	GtkWidget *button;
 	GtkWidget *hbox;
 	BonoboObjectClient *object;
+	char *initial_machine_name;
+	gboolean initial_warn;
+
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
 
 	config_page->details = g_new0 (NautilusInventoryConfigPageDetails, 1);
 
@@ -124,10 +130,31 @@ nautilus_inventory_config_page_initialize (NautilusInventoryConfigPage *config_p
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	config_page->details->machine_entry = gtk_entry_new ();
+	initial_machine_name = Trilobite_Eazel_Inventory__get_machine_name 
+					(config_page->details->inventory_service, &ev);
+
+	g_print ("initial machine name = `%s'\n", initial_machine_name);
+
+	if ( (initial_machine_name == NULL) || (initial_machine_name[0] == '\n') ) {
+		/* the user has never specified a name for this machine */
+		g_print ("no name selected yet\n");
+
+		/* TODO: perhaps guess an intial machine name based on host
+		 * name...
+		 */
+		
+	} else {
+		gtk_entry_set_text (GTK_ENTRY(config_page->details->machine_entry), 
+			initial_machine_name);
+	}
+
 	gtk_widget_show (config_page->details->machine_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), config_page->details->machine_entry, FALSE, FALSE, 0);
 
 	config_page->details->warn_check_button = gtk_check_button_new_with_label ("Warn me before upload");
+	initial_warn = Trilobite_Eazel_Inventory__get_warn_before_upload
+                                        (config_page->details->inventory_service, &ev);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config_page->details->warn_check_button), initial_warn);
 	gtk_widget_show (config_page->details->warn_check_button);
 	gtk_box_pack_start (GTK_BOX (config_page), config_page->details->warn_check_button, FALSE, FALSE, 0);
 	

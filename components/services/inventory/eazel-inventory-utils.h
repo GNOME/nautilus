@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Ian McKellar <ian@eazel.com>
  *
  * This is the header file for the service inventory stuff
  *
@@ -31,5 +32,6 @@
 
 gboolean eazel_gather_inventory				(void);
 gboolean update_gconf_inventory_digest			(unsigned char          value[16]);
+gchar *eazel_inventory_local_path			(void);
 
 #endif /* EAZEL_INVENTORY_UTILS_H */

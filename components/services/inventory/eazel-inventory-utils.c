@@ -502,7 +502,7 @@ eazel_gather_inventory (void)
 	}
 
 	/* save the configuration file */
-	inventory_file_name = g_strdup_printf ("%s/.nautilus/configuration.xml", g_get_home_dir ());
+	inventory_file_name = eazel_inventory_local_path();
 	xmlSaveFile (inventory_file_name, inventory_doc);
 	xmlFreeDoc (inventory_doc);
 
@@ -535,3 +535,7 @@ eazel_gather_inventory (void)
 
 }
 
+/* return the local path to store and retrieve the inventory XML from */
+gchar *eazel_inventory_local_path			(void) {
+	return g_strdup_printf ("%s/.nautilus/configuration.xml", g_get_home_dir ());
+}

@@ -52,13 +52,13 @@ main (int argc,
 {
 	BonoboObjectClient *service;
 	Trilobite_Eazel_Inventory inventory_service; 
-	gboolean enable;
-	gboolean disable;
-	gboolean enable_warn;
-	gboolean disable_warn;
-	char * machine_name;
-	gboolean info;
-	gboolean upload;
+	gboolean enable = FALSE;
+	gboolean disable = FALSE;
+	gboolean enable_warn = FALSE;
+	gboolean disable_warn = FALSE;
+	char * machine_name=NULL;
+	gboolean info = FALSE;
+	gboolean upload = FALSE;
 
 
 	struct poptOption options[] = {

@@ -29,6 +29,8 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
+#define DEBUG(X...) g_print("eazel-inventory-service: " X)
+
 
 #include <gconf/gconf-client.h>
 
@@ -128,7 +130,18 @@ impl_Trilobite_Eazel_Inventory__set_machine_name (impl_POA_Trilobite_Eazel_Inven
                                                   CORBA_char                         *machine_name,
 					          CORBA_Environment                  *ev) 
 {
-	gconf_client_set_string (service->object->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, machine_name, NULL);
+	GError *error = NULL;
+	DEBUG ("set machine name: %s\n", machine_name);
+	gconf_client_set_string (service->object->details->gconf_client, 
+			KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, machine_name, &error);
+	if (error != NULL) {
+		DEBUG ("GConf error setting machine name: %p\n", error);
+		DEBUG ("GConf error setting machine name: %p\n", error->message);
+		DEBUG ("GConf error setting machine name: code %d\n", error->code);
+		DEBUG ("GConf error setting machine name: domain %d\n", error->domain);
+		DEBUG ("GConf error setting machine name: %s\n", error->message);
+		g_error_free (error);
+	}
 	/* FIXME: handle gconf errors */
 	/* TODO: tell the server */
 }
@@ -171,6 +184,9 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	char *file_contents_good;
 	char *escaped;
 	char *body;
+	char *path;
+	
+	ghttp_status status;
 
 	g_print ("upload\n");
 
@@ -199,7 +215,11 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	/* FIXME: CRAAAAAACK */
 
 	if (error != ERR_Success) {
-		g_print ("argh!\n");
+		if (error == ERR_UserNotLoggedIn) {
+			g_print (_("User isn't logged into ammonite yet.\n"));
+		} else {
+			g_print (_("Ammonite returned an error translating the url.\n"));
+		}
 		return;
 	}
 
@@ -226,8 +246,11 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
         ghttp_set_header (request, http_hdr_Connection, "close");
         ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
         ghttp_set_header (request, http_hdr_Content_Type, "application/x-www-form-urlencoded");
-	
-	result = nautilus_read_entire_file ("file:///home/mjs/.nautilus/configuration.xml", &file_size, &file_contents);
+	g_print("about to read file\n");
+
+	path = eazel_inventory_local_path ();	
+	result = nautilus_read_entire_file (path, &file_size, &file_contents);
+	g_free (path);
 	if (result != GNOME_VFS_OK) {
 		g_warning(_("can't open tempory file hell\n"));
 		return;
@@ -238,6 +261,8 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	file_contents_good[file_size] = '\0';
 	g_free (file_contents);
 	file_contents = file_contents_good;
+
+	g_print("read file\n");
 
 	escaped = gnome_vfs_escape_string (file_contents);
 
@@ -257,14 +282,17 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
         }
 
 	
-	ghttp_process(request);
+	status = ghttp_process(request);
+
+	if (status != ghttp_done) {
+		g_print ("an error occured uploading the inventory: %s\n",
+			ghttp_get_error (request));
+	}
 
 	g_free (body);
 
-	/* 
-		upload with ghttp
-		check for success
-	*/
+	ghttp_close (request);
+
 }
 
 

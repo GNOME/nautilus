@@ -1,3 +1,25 @@
+2001-01-15  Ian McKellar  <ian@eazel.com>
+
+	* components/services/inventory-view/nautilus-inventory-config-page
+	.c: (nautilus_inventory_config_page_initialize):
+	Retreive the previously assigned machine name (if one exists).
+	Retreive the previously set "warn before upload" setting.
+`
+	* components/services/inventory/eazel-inventory-client.c: (main):
+	Added default values so that this actually works.
+
+	* components/services/inventory/eazel-inventory-service.c:
+	(impl_Trilobite_Eazel_Inventory__set_machine_name),
+	(impl_Trilobite_Eazel_Inventory_upload):
+	Added some temporary debugging code, and the beginnings of better
+	error checking/reporting.
+	Removed hardcoded filesystem paths.
+
+	* components/services/inventory/eazel-inventory-utils.h:
+	* components/services/inventory/eazel-inventory-utils.c:
+	(eazel_gather_inventory), (eazel_inventory_local_path):
+	Removed hardcoded filesystem paths.
+
 2001-01-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5533, Need good dialog text for failed
