@@ -710,7 +710,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	case APPENDIX:
 	case GLOSSDIV:
 	case GLOSSTERM:
-		g_print (temp);
+		g_print ("%s", temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
@@ -839,7 +839,7 @@ toc_tag_characters (Context *context, const gchar *chars, int len)
 	case TITLE:
 	case GLOSSTERM:
 		temp = g_strndup (chars, len);
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	default:

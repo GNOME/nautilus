@@ -212,7 +212,7 @@ sect_print (Context *context, gchar *format, ...)
 		} else if ((*string == '&') && (*(string +1) == '\000')) {
 			printf ("&amp;");
 		} else {
-			printf (string);
+			printf ("%s", string);
 		}
 		g_free (string);
 	}
@@ -241,7 +241,7 @@ sect_write_characters (Context *context,
 		
 
 	temp = g_strndup (chars, len);
-	sect_print (context, temp);
+	sect_print (context, "%s", temp);
 	g_free (temp);
 }
 
@@ -908,7 +908,7 @@ sect_title_characters (Context *context,
 	case SECTION:
 	case FORMALPARA:
 	case GLOSSENTRY:
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
@@ -921,7 +921,7 @@ sect_title_characters (Context *context,
 		((SectContext *) context->data)->figure->title = temp;
 		break;
 	case TABLE:
-		sect_print (context, temp);
+		sect_print (context, "%s", temp);
 		g_free (temp);
 		break;
 	default:
@@ -2215,7 +2215,7 @@ sect_address_characters (Context *context,
 	}
 	
 	temp = g_strndup (chars, len);
-	sect_print (context, temp);
+	sect_print (context, "%s", temp);
 	g_free (temp);
 }
 void

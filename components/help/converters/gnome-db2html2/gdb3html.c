@@ -705,7 +705,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">&#60;&#60;&#60; ", prev);
-		g_print (_("Previous"));
+		g_print ("%s", _("Previous"));
 		g_print ("</A>");
 	}
 
@@ -714,7 +714,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">", home);
-		g_print (_("Home"));
+		g_print ("%s", _("Home"));
 		g_print ("</A>");
 	}
 
@@ -723,7 +723,7 @@ print_footer (const char *prev, const char *home, const char *next)
 		g_print ("&nbsp;");
 	} else {
 		g_print ("<A HREF=\"%s\">", next);
-		g_print (_("Next"));
+		g_print ("%s", _("Next"));
 		g_print (" &#62;&#62;&#62;</A>");
 	}
 

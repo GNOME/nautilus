@@ -1,3 +1,13 @@
+2001-02-17  Richard Boulton <richard@tartarus.org>
+
+	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>
+
+	* components/help/converters/gnome-db2html2/gdb3html.c
+	* components/help/converters/gnome-db2html2/sect-elements.c
+	* components/help/converters/gnome-db2html2/toc-elements.c
+	Fix format string vulnerabilities, see bug 6702.  Fixes
+	segfault when % character occurs in input files.
+
 2001-02-17  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Eskil
@@ -217,6 +227,7 @@
 	* po/POTFILES.in:
 	added the selection-based services
 	
+>>>>>>> 1.3813
 2001-02-16  Robey Pointer  <robey@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
