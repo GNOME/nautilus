@@ -59,17 +59,20 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
 
+#define TRASH_SEARCH_TIMED_WAIT_DELAY 20000
+
 static int pending_find_directory_count = 0;
 
 static void
 find_directory_start (void)
 {
 	if (pending_find_directory_count == 0) {
-		nautilus_timed_wait_start (NULL,
-					   add_volume,
-					   _("Searching Disks"),
-					   _("Nautilus is searching for trash folders."),
-					   NULL);
+		nautilus_timed_wait_start_with_duration (TRASH_SEARCH_TIMED_WAIT_DELAY,
+							 NULL,
+							 add_volume,
+							 _("Searching Disks"),
+							 _("Nautilus is searching for trash folders."),
+							  NULL);
 	}
 
 	++pending_find_directory_count;

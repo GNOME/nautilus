@@ -37,7 +37,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
-#define TIMED_WAIT_DURATION 5000
+#define TIMED_WAIT_STANDARD_DURATION 5000
 #define TIMED_WAIT_MIN_TIME_UP 3000
 
 typedef struct {
@@ -212,11 +212,12 @@ timed_wait_callback (gpointer callback_data)
 }
 
 void
-nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
-			   gpointer callback_data,
-			   const char *window_title,
-			   const char *wait_message,
-			   GtkWindow *parent_window)
+nautilus_timed_wait_start_with_duration (int duration,
+					 NautilusCancelCallback cancel_callback,
+					 gpointer callback_data,
+					 const char *window_title,
+					 const char *wait_message,
+					 GtkWindow *parent_window)
 {
 	TimedWait *wait;
 	
@@ -238,9 +239,7 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	}
 
 	/* Start the timer. */
-	wait->timeout_handler_id = gtk_timeout_add
-		(TIMED_WAIT_DURATION,
-		 timed_wait_callback, wait);
+	wait->timeout_handler_id = gtk_timeout_add (duration, timed_wait_callback, wait);
 
 	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {
@@ -250,6 +249,19 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
 	g_hash_table_insert (timed_wait_hash_table, wait, wait);
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == wait);
+}
+
+void
+nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
+			   gpointer callback_data,
+			   const char *window_title,
+			   const char *wait_message,
+			   GtkWindow *parent_window)
+{
+	nautilus_timed_wait_start_with_duration
+		(TIMED_WAIT_STANDARD_DURATION,
+		 cancel_callback, callback_data,
+		 window_title, wait_message, parent_window);
 }
 
 void

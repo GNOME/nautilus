@@ -35,6 +35,13 @@ void         nautilus_timed_wait_start          (NautilusCancelCallback  cancel_
 						 const char             *window_title,
 						 const char             *wait_message,
 						 GtkWindow              *parent_window);
+void	     nautilus_timed_wait_start_with_duration (
+						 int			 duration,
+						 NautilusCancelCallback  cancel_callback,
+						 gpointer                callback_data,
+						 const char             *window_title,
+						 const char             *wait_message,
+						 GtkWindow              *parent_window);
 void         nautilus_timed_wait_stop           (NautilusCancelCallback  cancel_callback,
 						 gpointer                callback_data);
 
