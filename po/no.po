@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-02-27 20:33+0100\n"
-"PO-Revision-Date: 2001-02-27 20:40+01:00\n"
+"POT-Creation-Date: 2001-02-28 11:16+0100\n"
+"PO-Revision-Date: 2001-02-28 11:16+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -872,7 +872,7 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:845
+#: components/mozilla/nautilus-mozilla-content-view.c:809
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
@@ -885,7 +885,7 @@ msgstr ""
 "\n"
 "Prøv å vise siden i en annen nettleser, slik som Mozilla eller Netscape."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:846
+#: components/mozilla/nautilus-mozilla-content-view.c:810
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautilus Mozilla-visning advarsel"
 
@@ -1563,7 +1563,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil."
 
 #: components/music/nautilus-music-view.c:696
-#: src/nautilus-property-browser.c:1055 src/nautilus-property-browser.c:1307
+#: src/nautilus-property-browser.c:1057 src/nautilus-property-browser.c:1309
 msgid "Not an Image"
 msgstr "Ikke et bilde"
 
@@ -2138,67 +2138,66 @@ msgstr "Feilet installering for pakke %s.\n"
 
 #. I18N note: \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:625
-#: components/services/install/command-line/eazel-alt-install-corba.c:627
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr "\t· Problem: %s\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:636
+#: components/services/install/command-line/eazel-alt-install-corba.c:634
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr "\t· Handling: %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:679
+#: components/services/install/command-line/eazel-alt-install-corba.c:677
 msgid "Cancelling operation\n"
 msgstr "Avbryter operasjon\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:690
+#: components/services/install/command-line/eazel-alt-install-corba.c:688
 #, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "I ferd med å installere totalt %d pakker, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:694
+#: components/services/install/command-line/eazel-alt-install-corba.c:692
 #, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "I ferd med å avinstallere totalt %d pakker, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:698
+#: components/services/install/command-line/eazel-alt-install-corba.c:696
 #, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "I ferd med å forkaste totalt %d pakker, %dKB\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:713
+#: components/services/install/command-line/eazel-alt-install-corba.c:711
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr "\t· %s med avhengigheter\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:716
+#: components/services/install/command-line/eazel-alt-install-corba.c:714
 #, c-format
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:738
+#: components/services/install/command-line/eazel-alt-install-corba.c:736
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Avhengighet: %s trenger %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:754
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "Pakke %s feilet md5 sjekk!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:756
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· tjeners MD5-sjekksum er %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:760
+#: components/services/install/command-line/eazel-alt-install-corba.c:758
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· faktisk MD5-sjekksum er %s\n"
@@ -2208,15 +2207,15 @@ msgstr "\t· faktisk MD5-sjekksum er %s\n"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:826
+#: components/services/install/command-line/eazel-alt-install-corba.c:824
 msgid "Continue? (y/n) "
 msgstr "Fortsett? (j/n) "
 
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
 #. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:837
-#: components/services/install/command-line/eazel-alt-install-corba.c:879
+#: components/services/install/command-line/eazel-alt-install-corba.c:835
+#: components/services/install/command-line/eazel-alt-install-corba.c:877
 msgid "y"
 msgstr "j"
 
@@ -2225,83 +2224,83 @@ msgstr "j"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:867
+#: components/services/install/command-line/eazel-alt-install-corba.c:865
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "Skal jeg slette RPM-filene? (y/n) "
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:897
 msgid "Operation ok\n"
 msgstr "Operasjon ok\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:901
+#: components/services/install/command-line/eazel-alt-install-corba.c:899
 msgid "Operation failed\n"
 msgstr "Operasjonen feilet\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1018
+#: components/services/install/command-line/eazel-alt-install-corba.c:1016
 msgid "Installing"
 msgstr "Installerer"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1027
+#: components/services/install/command-line/eazel-alt-install-corba.c:1025
 msgid "Uninstalling"
 msgstr "Avinstallerer"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1042
+#: components/services/install/command-line/eazel-alt-install-corba.c:1040
 msgid "Only one operation at a time please."
 msgstr "Kun en operasjon om gangen er du snill."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1047
-#: components/services/install/command-line/eazel-alt-install-corba.c:1055
-#: components/services/install/command-line/eazel-alt-install-corba.c:1099
-#: components/services/install/command-line/eazel-alt-install-corba.c:1106
+#: components/services/install/command-line/eazel-alt-install-corba.c:1045
+#: components/services/install/command-line/eazel-alt-install-corba.c:1053
+#: components/services/install/command-line/eazel-alt-install-corba.c:1097
+#: components/services/install/command-line/eazel-alt-install-corba.c:1104
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr "%s: --help for bruksmelding\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:1069
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Navn         : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1072
+#: components/services/install/command-line/eazel-alt-install-corba.c:1070
 #, c-format
 msgid "Version      : %s\n"
 msgstr "Versjon      : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:1071
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Mindre       : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:1073
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Størrelse    : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:1074
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Ark          : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1077
+#: components/services/install/command-line/eazel-alt-install-corba.c:1075
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Distribusjon : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:1076
 #, c-format
 msgid "Description  : %s\n"
 msgstr "Beskrivelse  : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1080
+#: components/services/install/command-line/eazel-alt-install-corba.c:1078
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Installasjonsrot :  %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1083
+#: components/services/install/command-line/eazel-alt-install-corba.c:1081
 msgid "Provides     : \n"
 msgstr "Tilbyr       : \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1125
+#: components/services/install/command-line/eazel-alt-install-corba.c:1123
 #, c-format
 msgid "exit code %d\n"
 msgstr "avsluttende kode %d\n"
@@ -2360,78 +2359,78 @@ msgstr "bruk sjekkfunksjon (for feilsøking)"
 msgid "Show detailed sub-package info"
 msgstr "Vis detaljert underpakkeinformasjon"
 
-#: components/services/install/lib/eazel-install-logic2.c:140
+#: components/services/install/lib/eazel-install-logic2.c:143
 msgid "Failed to lock the downloaded file"
 msgstr "Kunne ikke låse nedlastingsfilen"
 
-#: components/services/install/lib/eazel-install-logic2.c:157
+#: components/services/install/lib/eazel-install-logic2.c:160
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-feil, pakke %s kan være tuklet med"
 
-#: components/services/install/lib/eazel-install-logic2.c:173
+#: components/services/install/lib/eazel-install-logic2.c:176
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "Ingen MD5-sum tilgjengelig for %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:357
+#: components/services/install/lib/eazel-install-logic2.c:360
 #, c-format
 msgid "%s is ok"
 msgstr "%s er ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:462
+#: components/services/install/lib/eazel-install-logic2.c:466
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s versjon %s-%s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:470
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versjon %s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:475
-#: components/services/install/lib/eazel-install-logic2.c:480
+#: components/services/install/lib/eazel-install-logic2.c:479
+#: components/services/install/lib/eazel-install-logic2.c:484
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s oppgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:489
+#: components/services/install/lib/eazel-install-logic2.c:493
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:494
+#: components/services/install/lib/eazel-install-logic2.c:498
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:547
+#: components/services/install/lib/eazel-install-logic2.c:551
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer versjon %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:552
+#: components/services/install/lib/eazel-install-logic2.c:556
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer versjon %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:624
+#: components/services/install/lib/eazel-install-logic2.c:628
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Leser pakkeinformasjon fra fil %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:996
 msgid "ok"
 msgstr "ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:996
 msgid "not ok"
 msgstr "ikke ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:1156
+#: components/services/install/lib/eazel-install-logic2.c:1160
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Sjekker avhengigheter for %s"
@@ -2439,102 +2438,104 @@ msgstr "Sjekker avhengigheter for %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1715
+#: components/services/install/lib/eazel-install-logic2.c:1719
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s er relatert til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1769
+#: components/services/install/lib/eazel-install-logic2.c:1773
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "oppdatering av %s til versjon %s-%s løser konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1786
+#: components/services/install/lib/eazel-install-logic2.c:1789
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "tilgjengelig oppdatering for %s (%s-%s) løser ikke konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1793
+#: components/services/install/lib/eazel-install-logic2.c:1796
 #, c-format
 msgid "could not revive %s"
 msgstr "kunne ikke gjenopplive %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1929
+#: components/services/install/lib/eazel-install-logic2.c:1932
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "Sjekker om filen er unik %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1950
+#: components/services/install/lib/eazel-install-logic2.c:1953
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Duplikatfil : %s finnes i %s og %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1968
+#: components/services/install/lib/eazel-install-logic2.c:1971
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(fant %d andre konflikter)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2063
+#: components/services/install/lib/eazel-install-logic2.c:2066
 #, c-format
 msgid "file conflict checking %s"
 msgstr "sjekk etter filkonflikt %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2111
+#: components/services/install/lib/eazel-install-logic2.c:2103
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr "filkonflikt : pakke %s inneholder allerede fil %s som også finnes i %s"
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2121
+#: components/services/install/lib/eazel-install-logic2.c:2113
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...men det er ok, vi oppgraderer %s og den forkastet den filen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2211
+#: components/services/install/lib/eazel-install-logic2.c:2203
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "sjekker etter konsistente funksjoner i %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2277
+#: components/services/install/lib/eazel-install-logic2.c:2271
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
-msgstr "manglende funksjon : %s blir ødelagt hvis %s installeres (funksjon %s ville gå tapt)"
+msgstr ""
+"manglende funksjon : %s blir ødelagt hvis %s installeres (funksjon %s ville "
+"gå tapt)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2355
+#: components/services/install/lib/eazel-install-logic2.c:2349
 #, c-format
 msgid "downloading %d packages"
 msgstr "laster ned %d pakker"
 
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2614
 #, c-format
 msgid "will upgrade %s"
 msgstr "vil oppgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2617
 #, c-format
 msgid "will downgrade %s"
 msgstr "vil nedgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2626
+#: components/services/install/lib/eazel-install-logic2.c:2620
 #, c-format
 msgid "will install %s"
 msgstr "vil installere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2629
+#: components/services/install/lib/eazel-install-logic2.c:2623
 #, c-format
 msgid "will uninstall %s"
 msgstr "vil avinstallere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2712
+#: components/services/install/lib/eazel-install-logic2.c:2706
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2876
+#: components/services/install/lib/eazel-install-logic2.c:2870
 #, c-format
 msgid "failed %s"
 msgstr "feilet %s"
@@ -2870,32 +2871,32 @@ msgstr "*** Osd xml inneholder ikke data! ***\n"
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "*** Hopper ut av osd tolking! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:976
+#: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke tolke xml (lengde %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:755
+#: components/services/install/lib/eazel-package-system-rpm3.c:763
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åpnet pakkedatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:760
+#: components/services/install/lib/eazel-package-system-rpm3.c:768
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åpning av pakkedatabasen i %s feilet"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:793
+#: components/services/install/lib/eazel-package-system-rpm3.c:801
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:798
+#: components/services/install/lib/eazel-package-system-rpm3.c:806
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:1099
+#: components/services/install/lib/eazel-package-system-rpm3.c:1137
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
@@ -3252,7 +3253,7 @@ msgid "Your user name or password were not correct.  Please try again."
 msgstr "Ditt brukernavn og passord var ikke korrekt. Vennligst forsøk igjen."
 
 #: components/services/summary/nautilus-summary-view.c:116
-#: libnautilus-extensions/nautilus-program-chooser.c:1337
+#: libnautilus-extensions/nautilus-program-chooser.c:1361
 msgid "Go There"
 msgstr "Gå dit"
 
@@ -3706,7 +3707,7 @@ msgstr "Dra et emblem til et objekt for å legge det til objektet"
 msgid "Eclipse"
 msgstr "Eklipse"
 
-#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
+#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1594
 msgid "Emblems"
 msgstr "Emblemer"
 
@@ -3856,66 +3857,58 @@ msgid "Sea Foam"
 msgstr "Sjøskum"
 
 #: data/browser.xml.h:68
-msgid "Secret"
-msgstr "Hemmelig"
-
-#: data/browser.xml.h:69
 msgid "Shale"
 msgstr "Grunne"
 
-#: data/browser.xml.h:70
-msgid "Shared"
-msgstr "Delt"
-
-#: data/browser.xml.h:71
+#: data/browser.xml.h:69
 msgid "Silver"
 msgstr "Sølv"
 
-#: data/browser.xml.h:72
+#: data/browser.xml.h:70
 msgid "Sky"
 msgstr "Himmel"
 
-#: data/browser.xml.h:73
+#: data/browser.xml.h:71
 msgid "Sky Ridge"
 msgstr "Himmelkant"
 
-#: data/browser.xml.h:74
+#: data/browser.xml.h:72
 msgid "Snow Ridge"
 msgstr "Snøkant"
 
-#: data/browser.xml.h:75
+#: data/browser.xml.h:73
 msgid "Special"
 msgstr "Spesial"
 
-#: data/browser.xml.h:76
+#: data/browser.xml.h:74
 msgid "Stucco"
 msgstr "Stucco"
 
-#: data/browser.xml.h:77
+#: data/browser.xml.h:75
 msgid "Tangerine"
 msgstr "Mandarin"
 
-#: data/browser.xml.h:78
+#: data/browser.xml.h:76
 msgid "Terracotta"
 msgstr "Terracotta"
 
-#: data/browser.xml.h:79
+#: data/browser.xml.h:77
 msgid "Urgent"
 msgstr "Haster"
 
-#: data/browser.xml.h:80
+#: data/browser.xml.h:78
 msgid "Violet"
 msgstr "Fiolett"
 
-#: data/browser.xml.h:81
+#: data/browser.xml.h:79
 msgid "Wavy White"
 msgstr "Bølgende hvit"
 
-#: data/browser.xml.h:82
+#: data/browser.xml.h:80
 msgid "White"
 msgstr "Hvit"
 
-#: data/browser.xml.h:83
+#: data/browser.xml.h:81
 msgid "White Ribs"
 msgstr "Hvite ribber"
 
@@ -4187,19 +4180,19 @@ msgstr "Sierra"
 msgid "Uses manila folders and gray-green backgrounds."
 msgstr "Bruker mapper i manila og grågrønne bakgrunner."
 
-#: libnautilus-extensions/nautilus-drag.c:483
+#: libnautilus-extensions/nautilus-drag.c:489
 msgid "_Move here"
 msgstr "_Flytt hit"
 
-#: libnautilus-extensions/nautilus-drag.c:484
+#: libnautilus-extensions/nautilus-drag.c:490
 msgid "_Copy here"
 msgstr "_Kopier hit"
 
-#: libnautilus-extensions/nautilus-drag.c:485
+#: libnautilus-extensions/nautilus-drag.c:491
 msgid "_Link here"
 msgstr "_Lag lenke hit"
 
-#: libnautilus-extensions/nautilus-drag.c:487
+#: libnautilus-extensions/nautilus-drag.c:493
 #: src/file-manager/fm-directory-view.c:3503
 msgid "Cancel"
 msgstr "Avbryt"
@@ -5455,7 +5448,7 @@ msgstr "Ikke inkludér innebygde bokmerker i bokmerkemenyen"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:213
 #: libnautilus-extensions/nautilus-global-preferences.c:218
-#: src/file-manager/fm-properties-window.c:1504 src/nautilus-location-bar.c:62
+#: src/file-manager/fm-properties-window.c:1506 src/nautilus-location-bar.c:62
 msgid "Location:"
 msgstr "Plassering:"
 
@@ -5680,147 +5673,147 @@ msgstr "Avansert"
 msgid "Prefs Box"
 msgstr "Brukervalg-boks"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:218
+#: libnautilus-extensions/nautilus-program-chooser.c:226
 msgid "not in menu"
 msgstr "ikke i menyen"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:221
+#: libnautilus-extensions/nautilus-program-chooser.c:229
 msgid "in menu for this file"
 msgstr "i menyen for denne filen"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:224
-#: libnautilus-extensions/nautilus-program-chooser.c:227
+#: libnautilus-extensions/nautilus-program-chooser.c:232
+#: libnautilus-extensions/nautilus-program-chooser.c:235
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "i menyen for \"%s\""
 
-#: libnautilus-extensions/nautilus-program-chooser.c:230
+#: libnautilus-extensions/nautilus-program-chooser.c:238
 msgid "default for this file"
 msgstr "forvalgt for denne filen"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:233
-#: libnautilus-extensions/nautilus-program-chooser.c:236
+#: libnautilus-extensions/nautilus-program-chooser.c:241
+#: libnautilus-extensions/nautilus-program-chooser.c:244
 #, c-format
 msgid "default for \"%s\""
 msgstr "forvalgt for \"%s\""
 
-#: libnautilus-extensions/nautilus-program-chooser.c:265
+#: libnautilus-extensions/nautilus-program-chooser.c:289
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Er ikke i menyen for \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:268
+#: libnautilus-extensions/nautilus-program-chooser.c:292
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "Er i menyen for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:271
+#: libnautilus-extensions/nautilus-program-chooser.c:295
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "Er i menyen for \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:274
+#: libnautilus-extensions/nautilus-program-chooser.c:298
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "Er i menyen for alle \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:277
+#: libnautilus-extensions/nautilus-program-chooser.c:301
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "Er forvalgt for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:280
+#: libnautilus-extensions/nautilus-program-chooser.c:304
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "Er forvalgt for \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:283
+#: libnautilus-extensions/nautilus-program-chooser.c:307
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "Er forvalgt for alle \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:969
+#: libnautilus-extensions/nautilus-program-chooser.c:993
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Endre \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:994
+#: libnautilus-extensions/nautilus-program-chooser.c:1018
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Inkluder i menyen for \"%s\" oppføringer."
 
 #. Radio button for setting default for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1001
+#: libnautilus-extensions/nautilus-program-chooser.c:1025
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Er i menyen for alle \"%s\" oppføringer."
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1008
+#: libnautilus-extensions/nautilus-program-chooser.c:1032
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Inkluder i menyen kun for \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1014
+#: libnautilus-extensions/nautilus-program-chooser.c:1038
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Bruk som forvalgt kun for \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1021
+#: libnautilus-extensions/nautilus-program-chooser.c:1045
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Ikke inlkluder i menyen for \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1185
+#: libnautilus-extensions/nautilus-program-chooser.c:1209
 #: src/file-manager/fm-list-view.c:2122
 #: src/file-manager/fm-search-list-view.c:545
 #: src/nautilus-bookmarks-window.c:164
 msgid "Name"
 msgstr "Navn"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1188
+#: libnautilus-extensions/nautilus-program-chooser.c:1212
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1236
+#: libnautilus-extensions/nautilus-program-chooser.c:1260
 msgid "Open with Other"
 msgstr "Åpne med annet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1237
+#: libnautilus-extensions/nautilus-program-chooser.c:1261
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr "Velg en applikasjon du vil åpne \"%s\" med."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1241
+#: libnautilus-extensions/nautilus-program-chooser.c:1265
 msgid "View as Other"
 msgstr "Vis som annet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1242
+#: libnautilus-extensions/nautilus-program-chooser.c:1266
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr "Velg en visning for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1249
+#: libnautilus-extensions/nautilus-program-chooser.c:1273
 msgid "Choose"
 msgstr "Velg"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1251
+#: libnautilus-extensions/nautilus-program-chooser.c:1275
 msgid "Done"
 msgstr "Ferdig"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1314
+#: libnautilus-extensions/nautilus-program-chooser.c:1338
 msgid "Modify..."
 msgstr "Endre..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-extensions/nautilus-program-chooser.c:1325
+#: libnautilus-extensions/nautilus-program-chooser.c:1349
 msgid "File Types and Programs"
 msgstr "Filtyper og programmer"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1346
+#: libnautilus-extensions/nautilus-program-chooser.c:1370
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -6864,46 +6857,46 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Dato endret"
 
-#: src/file-manager/fm-properties-window.c:519
+#: src/file-manager/fm-properties-window.c:521
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper for %s"
 
-#: src/file-manager/fm-properties-window.c:714
+#: src/file-manager/fm-properties-window.c:716
 msgid "Cancel Group Change?"
 msgstr "Avbryt endring av gruppe?"
 
-#: src/file-manager/fm-properties-window.c:715
+#: src/file-manager/fm-properties-window.c:717
 msgid "Changing group"
 msgstr "Endrer gruppe"
 
-#: src/file-manager/fm-properties-window.c:876
+#: src/file-manager/fm-properties-window.c:878
 msgid "Cancel Owner Change?"
 msgstr "Avbryt endring av eier?"
 
-#: src/file-manager/fm-properties-window.c:877
+#: src/file-manager/fm-properties-window.c:879
 msgid "Changing owner"
 msgstr "Endrer eier"
 
-#: src/file-manager/fm-properties-window.c:1052
+#: src/file-manager/fm-properties-window.c:1054
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/file-manager/fm-properties-window.c:1054
+#: src/file-manager/fm-properties-window.c:1056
 msgid "unreadable"
 msgstr "ulesbar"
 
-#: src/file-manager/fm-properties-window.c:1063
+#: src/file-manager/fm-properties-window.c:1065
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 oppføring, med størrelse %s"
 
-#: src/file-manager/fm-properties-window.c:1065
+#: src/file-manager/fm-properties-window.c:1067
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d oppføringer, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:1071
+#: src/file-manager/fm-properties-window.c:1073
 msgid "(some contents unreadable)"
 msgstr "(noe innhold ikke lesbart)"
 
@@ -6912,124 +6905,124 @@ msgstr "(noe innhold ikke lesbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1085
+#: src/file-manager/fm-properties-window.c:1087
 msgid "Contents:"
 msgstr "Innhold:"
 
-#: src/file-manager/fm-properties-window.c:1418
+#: src/file-manager/fm-properties-window.c:1420
 msgid "Basic"
 msgstr "Grunnleggende"
 
-#: src/file-manager/fm-properties-window.c:1497
+#: src/file-manager/fm-properties-window.c:1499
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:1502
+#: src/file-manager/fm-properties-window.c:1504
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:1506
+#: src/file-manager/fm-properties-window.c:1508
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:1512
+#: src/file-manager/fm-properties-window.c:1514
 msgid "Modified:"
 msgstr "Endret:"
 
-#: src/file-manager/fm-properties-window.c:1515
+#: src/file-manager/fm-properties-window.c:1517
 msgid "Accessed:"
 msgstr "Aksessert:"
 
-#: src/file-manager/fm-properties-window.c:1524
+#: src/file-manager/fm-properties-window.c:1526
 msgid "Select Custom Icon..."
 msgstr "Velg egendefinert ikon..."
 
-#: src/file-manager/fm-properties-window.c:1530
+#: src/file-manager/fm-properties-window.c:1532
 msgid "Remove Custom Icon"
 msgstr "Fjern egendefinert ikon"
 
-#: src/file-manager/fm-properties-window.c:1855
+#: src/file-manager/fm-properties-window.c:1860
 msgid "Set User ID"
 msgstr "Sett bruker-ID"
 
-#: src/file-manager/fm-properties-window.c:1860
+#: src/file-manager/fm-properties-window.c:1865
 msgid "Special Flags:"
 msgstr "Spesielle flagg:"
 
-#: src/file-manager/fm-properties-window.c:1863
+#: src/file-manager/fm-properties-window.c:1868
 msgid "Set Group ID"
 msgstr "Sett gruppe-ID"
 
-#: src/file-manager/fm-properties-window.c:1865
+#: src/file-manager/fm-properties-window.c:1870
 msgid "Sticky"
 msgstr "Klebrig"
 
-#: src/file-manager/fm-properties-window.c:1891
+#: src/file-manager/fm-properties-window.c:1896
 msgid "Permissions"
 msgstr "Rettigheter"
 
-#: src/file-manager/fm-properties-window.c:1897
+#: src/file-manager/fm-properties-window.c:1902
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke eieren, du kan derfor ikke ender disse rettighetene."
 
-#: src/file-manager/fm-properties-window.c:1910
+#: src/file-manager/fm-properties-window.c:1915
 msgid "File Owner:"
 msgstr "Fileier:"
 
-#: src/file-manager/fm-properties-window.c:1919
+#: src/file-manager/fm-properties-window.c:1924
 msgid "File Group:"
 msgstr "Filgruppe:"
 
-#: src/file-manager/fm-properties-window.c:1937
+#: src/file-manager/fm-properties-window.c:1942
 msgid "Owner:"
 msgstr "Eier:"
 
-#: src/file-manager/fm-properties-window.c:1938
+#: src/file-manager/fm-properties-window.c:1943
 msgid "Group:"
 msgstr "Gruppe:"
 
-#: src/file-manager/fm-properties-window.c:1939
+#: src/file-manager/fm-properties-window.c:1944
 msgid "Others:"
 msgstr "Andre:"
 
-#: src/file-manager/fm-properties-window.c:1958
+#: src/file-manager/fm-properties-window.c:1963
 msgid "Read"
 msgstr "Lese"
 
-#: src/file-manager/fm-properties-window.c:1962
+#: src/file-manager/fm-properties-window.c:1967
 msgid "Write"
 msgstr "Skrive"
 
-#: src/file-manager/fm-properties-window.c:1966
+#: src/file-manager/fm-properties-window.c:1971
 msgid "Execute"
 msgstr "Kjøre"
 
-#: src/file-manager/fm-properties-window.c:2017
+#: src/file-manager/fm-properties-window.c:2022
 msgid "Text View:"
 msgstr "Tekstvisning:"
 
-#: src/file-manager/fm-properties-window.c:2018
+#: src/file-manager/fm-properties-window.c:2023
 msgid "Number View:"
 msgstr "Tallvisning:"
 
-#: src/file-manager/fm-properties-window.c:2019
+#: src/file-manager/fm-properties-window.c:2024
 msgid "Last Changed:"
 msgstr "Sist endret:"
 
-#: src/file-manager/fm-properties-window.c:2023
+#: src/file-manager/fm-properties-window.c:2028
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rettighetene for \"%s\" kunne ikke bestemmes."
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2308
 msgid "Cancel Showing Properties Window?"
 msgstr "Avbryt visning av egenskaper-vinduet?"
 
-#: src/file-manager/fm-properties-window.c:2304
+#: src/file-manager/fm-properties-window.c:2309
 msgid "Creating Properties window"
 msgstr "Oppretter egenskaper-vindu"
 
-#: src/file-manager/fm-properties-window.c:2404
+#: src/file-manager/fm-properties-window.c:2409
 msgid "Select an icon:"
 msgstr "Velg et ikon:"
 
@@ -8219,126 +8212,126 @@ msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan ikke brukes med mer enn én URI.\n"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:263
+#: src/nautilus-property-browser.c:265
 msgid "Backgrounds and Emblems"
 msgstr "Bakgrunner og emblemer"
 
-#: src/nautilus-property-browser.c:359 src/nautilus-theme-selector.c:266
+#: src/nautilus-property-browser.c:361 src/nautilus-theme-selector.c:266
 msgid "  Done  "
 msgstr "  Ferdig  "
 
-#: src/nautilus-property-browser.c:369
+#: src/nautilus-property-browser.c:371
 msgid "  Add new...  "
 msgstr "  Legg til ny...  "
 
-#: src/nautilus-property-browser.c:383
+#: src/nautilus-property-browser.c:385
 msgid "  Remove...  "
 msgstr "  Fjern...  "
 
-#: src/nautilus-property-browser.c:874
+#: src/nautilus-property-browser.c:876
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Beklager, men mønster %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:875 src/nautilus-property-browser.c:904
+#: src/nautilus-property-browser.c:877 src/nautilus-property-browser.c:906
 msgid "Couldn't delete pattern"
 msgstr "Kunne ikke slette mønster"
 
-#: src/nautilus-property-browser.c:903
+#: src/nautilus-property-browser.c:905
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Beklager, men emblem %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:939
+#: src/nautilus-property-browser.c:941
 msgid "Create a New Emblem:"
 msgstr "Lag et nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:944
+#: src/nautilus-property-browser.c:946
 msgid "Keyword:"
 msgstr "Nøkkelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:957
+#: src/nautilus-property-browser.c:959
 msgid "Image:"
 msgstr "Bilde:"
 
-#: src/nautilus-property-browser.c:961
+#: src/nautilus-property-browser.c:963
 msgid "Select an image file for the new emblem:"
 msgstr "Velg en bildefil for det nye emblemet:"
 
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:990
 msgid "Create a New Color:"
 msgstr "Lag en ny farge:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:995
 msgid "Color name:"
 msgstr "Fargenavn:"
 
-#: src/nautilus-property-browser.c:1004
+#: src/nautilus-property-browser.c:1006
 msgid "Color value:"
 msgstr "Fargeverdi:"
 
-#: src/nautilus-property-browser.c:1040
+#: src/nautilus-property-browser.c:1042
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Beklager, men \"%s\" er ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1042
+#: src/nautilus-property-browser.c:1044
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Beklager, men du oppga ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1044 src/nautilus-property-browser.c:1087
+#: src/nautilus-property-browser.c:1046 src/nautilus-property-browser.c:1089
 msgid "Couldn't install pattern"
 msgstr "Kunne ikke installere mønster"
 
-#: src/nautilus-property-browser.c:1055
+#: src/nautilus-property-browser.c:1057
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Beklager, men du kan ikke erstatte nullstill-bildet."
 
-#: src/nautilus-property-browser.c:1086
+#: src/nautilus-property-browser.c:1088
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Beklager, men mønster %s kunne ikke installeres."
 
-#: src/nautilus-property-browser.c:1109
+#: src/nautilus-property-browser.c:1111
 msgid "Select an image file to add as a pattern:"
 msgstr "Velg en bildefil som skal legges til som mønster:"
 
-#: src/nautilus-property-browser.c:1168
+#: src/nautilus-property-browser.c:1170
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du må spesifisere et navn for den nye fargen."
 
-#: src/nautilus-property-browser.c:1169
+#: src/nautilus-property-browser.c:1171
 msgid "Couldn't install color"
 msgstr "Kunne ikke installere farge"
 
-#: src/nautilus-property-browser.c:1225
+#: src/nautilus-property-browser.c:1227
 msgid "Select a color to add:"
 msgstr "Velg en farge å legge til:"
 
-#: src/nautilus-property-browser.c:1306
+#: src/nautilus-property-browser.c:1308
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
 
-#: src/nautilus-property-browser.c:1324
+#: src/nautilus-property-browser.c:1326
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Beklager, men du må spesifisere et navn for det nye emblemet."
 
-#: src/nautilus-property-browser.c:1325 src/nautilus-property-browser.c:1328
-#: src/nautilus-property-browser.c:1332 src/nautilus-property-browser.c:1361
+#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1334 src/nautilus-property-browser.c:1363
 msgid "Couldn't install emblem"
 msgstr "Kunne ikke installere emblem"
 
-#: src/nautilus-property-browser.c:1327
+#: src/nautilus-property-browser.c:1329
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Beklager, men nøkkelord for emblemer kan kun inneholde bokstaver og tall."
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1332
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -8347,64 +8340,64 @@ msgstr ""
 "Beklager, men \"%s\" er et eksisterende nøkkelord. Vennligst velg et annet "
 "navn for det."
 
-#: src/nautilus-property-browser.c:1360
+#: src/nautilus-property-browser.c:1362
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Beklager, men bildet på %s kunne ikke installeres som et emblem."
 
-#: src/nautilus-property-browser.c:2014
+#: src/nautilus-property-browser.c:2021
 msgid "Select A Category:"
 msgstr "Velg en kategori:"
 
-#: src/nautilus-property-browser.c:2022 src/nautilus-theme-selector.c:494
+#: src/nautilus-property-browser.c:2029 src/nautilus-theme-selector.c:494
 msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
-#: src/nautilus-property-browser.c:2026
+#: src/nautilus-property-browser.c:2033
 msgid "  Add a New Pattern  "
 msgstr "  Legg til et nytt mønster  "
 
-#: src/nautilus-property-browser.c:2029
+#: src/nautilus-property-browser.c:2036
 msgid "  Add a New Color  "
 msgstr "  Legg til en ny farge  "
 
-#: src/nautilus-property-browser.c:2032
+#: src/nautilus-property-browser.c:2039
 msgid "  Add a New Emblem  "
 msgstr "  Legg til et nytt emblem  "
 
-#: src/nautilus-property-browser.c:2055
+#: src/nautilus-property-browser.c:2062
 msgid "Click on a pattern to remove it"
 msgstr "Klikk på et mønster for å fjerne det."
 
-#: src/nautilus-property-browser.c:2058
+#: src/nautilus-property-browser.c:2065
 msgid "Click on a color to remove it"
 msgstr "Klikk på en farge for å fjerne den"
 
-#: src/nautilus-property-browser.c:2061
+#: src/nautilus-property-browser.c:2068
 msgid "Click on an emblem to remove it"
 msgstr "Klikk på et emblem for å fjerne den"
 
-#: src/nautilus-property-browser.c:2070
+#: src/nautilus-property-browser.c:2077
 msgid "Patterns:"
 msgstr "Mønstre:"
 
-#: src/nautilus-property-browser.c:2073
+#: src/nautilus-property-browser.c:2080
 msgid "Colors:"
 msgstr "Farger:"
 
-#: src/nautilus-property-browser.c:2076
+#: src/nautilus-property-browser.c:2083
 msgid "Emblems:"
 msgstr "Emblemer:"
 
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2101
 msgid "  Remove a Pattern  "
 msgstr "  Fjern et mønster  "
 
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2104
 msgid "  Remove a Color  "
 msgstr "  Fjern en farge  "
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2107
 msgid "  Remove an Emblem  "
 msgstr "  Fjern et emblem  "
 
@@ -9226,12 +9219,16 @@ msgstr "Kunne ikke fjerne tema"
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivelse tilgjengelig for \"%s\"-temaet"
 
+#: src/nautilus-window.c:582
+msgid "View as ..."
+msgstr "Vis som ..."
+
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1243
+#: src/nautilus-window.c:1276
 msgid "View as Other..."
 msgstr "Vis som annet..."
 
-#: src/nautilus-window.c:1626
+#: src/nautilus-window.c:1677
 msgid "Close"
 msgstr "Lukk"
 
@@ -9245,11 +9242,11 @@ msgstr "Lukk"
 msgid "Preview Release %s: %s"
 msgstr "Preview versjon %s: %s"
 
-#: src/nautilus-window-manage-views.c:798
+#: src/nautilus-window-manage-views.c:812
 msgid "View Failed"
 msgstr "Visning feilet"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-window-manage-views.c:823
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -9258,12 +9255,12 @@ msgstr ""
 "%s-visningen ble utsatt for en feil og kan ikke fortsette. Du kan velge en "
 "annen visning eller gå til en annen lokasjon."
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:834
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-visningen ble utsatt for en feil under oppstart."
 
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:993
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -9271,7 +9268,7 @@ msgstr ""
 "Ett av sidepanelene ble utsatt for en feil og kan ikke fortsette. "
 "Beklageligvis kan jeg ikke si hvilket dette gjelder."
 
-#: src/nautilus-window-manage-views.c:983
+#: src/nautilus-window-manage-views.c:997
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -9280,23 +9277,23 @@ msgstr ""
 "Sidepanelet %s ble utsatt for en feil og kan ikke fortsette. Hvis dette "
 "fortsetter, kan du slå av dette panelet."
 
-#: src/nautilus-window-manage-views.c:988
+#: src/nautilus-window-manage-views.c:1002
 msgid "Sidebar Panel Failed"
 msgstr "Sidelinjepanel feilet"
 
-#: src/nautilus-window-manage-views.c:1203
+#: src/nautilus-window-manage-views.c:1217
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunne ikke finne \"%s\". Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1209
+#: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" er ikke en gyldig lokasjon. Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1223
+#: src/nautilus-window-manage-views.c:1237
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -9304,29 +9301,29 @@ msgid ""
 msgstr ""
 "Kunne ikke vise \"%s\" fordi Nautilus ikke fant ut hvilken filtype det er."
 
-#: src/nautilus-window-manage-views.c:1231
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerte visningsprogrammer som kan vise \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1243
+#: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere %s: lokasjoner."
 
-#: src/nautilus-window-manage-views.c:1249
+#: src/nautilus-window-manage-views.c:1263
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunne ikke vise \"%s\", fordi påloggingsforsøket feilet."
 
-#: src/nautilus-window-manage-views.c:1254
+#: src/nautilus-window-manage-views.c:1268
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunne ikke vise \"%s\", fordi tilgang ble nektet."
 
-#: src/nautilus-window-manage-views.c:1265
+#: src/nautilus-window-manage-views.c:1279
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -9335,7 +9332,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi verten, \"%s\", ikke ble funnet. Sjekk at "
 "stavingen er korrekt og at proxy-innstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1273
+#: src/nautilus-window-manage-views.c:1287
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -9344,7 +9341,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi vertsnavnet var tomt. Sjekk at "
 "proxy-innstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1299
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -9356,16 +9353,16 @@ msgstr ""
 "søketjenesten Medusa, og hvis du ikke har en indeks, at Medusa "
 "indekseringsmotoren kjører."
 
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1303
 msgid "Searching Unavailable"
 msgstr "Søk ikke tilgjengelig"
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1307
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1298
+#: src/nautilus-window-manage-views.c:1312
 msgid "Can't Display Location"
 msgstr "Kan ikke vise lokasjon"
 
@@ -9496,6 +9493,12 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:592
 msgid "%d%%"
 msgstr "%d%%"
+
+#~ msgid "Secret"
+#~ msgstr "Hemmelig"
+
+#~ msgid "Shared"
+#~ msgstr "Delt"
 
 #~ msgid "Size: "
 #~ msgstr "Størrelse: "
@@ -10584,9 +10587,6 @@ msgstr "%d%%"
 #~ msgid ""
 #~ "Display the Property Browser, containing patterns, colors, and emblems"
 #~ msgstr "Visning av egenskaper, inneholder mønstre, farger og emblemer"
-
-#~ msgid "View as %s..."
-#~ msgstr "Vis som %s..."
 
 #~ msgid "Message."
 #~ msgstr "Melding."
