@@ -1,487 +1,285 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Linux)">
-	<META NAME="AUTHOR" CONTENT=" ">
-	<META NAME="CREATED" CONTENT="20000901;18303000">
-	<META NAME="CHANGEDBY" CONTENT=" ">
-	<META NAME="CHANGED" CONTENT="20000905;14115200">
-</HEAD>
-<BODY>
-<P ALIGN=CENTER><FONT SIZE=6 STYLE="font-size: 22pt"><B>Nautilus
-Smoke Tests</B></FONT></P>
-<P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=4>The Nautilus
-Smoke Tests are a minimal set of tests, to determine whether a build
-is usable for testing, and to catch obvious regressions.</FONT></P>
-<P ALIGN=LEFT><BR><BR>
-</P>
-<OL>
-	<LI><P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=3>Views ---
-	</FONT>
-	</P>
-	<P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=3>* Before
-	beginning this section, open a folder which contains at least one
-	MP3, image (GIF, JPEG or PNG), plain text, HTML, PDF, and RPM file.<B>
-	(These are conveniently available in /h/public/QE/smoketests.)</B> Also be sure to be in the
-	default, single-click mode. (Preferences | Click Behavior | 'Active
-	items with single click')</FONT></P>
-	<P ALIGN=LEFT></P>
-</OL>
-<DL>
-	<DD>
-	<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
-		<COL WIDTH=25*>
-		<COL WIDTH=60*>
-		<COL WIDTH=83*>
-		<COL WIDTH=87*>
-		<THEAD>
-			<TR VALIGN=TOP>
-				<TH WIDTH=10%>
-					<P><SPAN STYLE="background: transparent">Test Number</SPAN></P>
-				</TH>
-				<TH WIDTH=24%>
-					<P><SPAN STYLE="background: transparent">Test</SPAN></P>
-				</TH>
-				<TH WIDTH=33%>
-					<P><SPAN STYLE="background: transparent">Test Steps</SPAN></P>
-				</TH>
-				<TH WIDTH=34%>
-					<P><SPAN STYLE="background: transparent">Expected Results</SPAN></P>
-				</TH>
-			</TR>
-		</THEAD>
-		<TBODY>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-1</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Icon</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Select &quot;View as Icons&quot; from pop-up menu.</P>
-					<P>2. Zoom in to 400% and out to 50%</P>
-					<P><BR>
-					</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-2</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as List</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Select &quot;View as List&quot; from pop-up menu</P>
-					<P>2. Zoom in to 400% and out to 50%</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-3</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Music</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Select &quot;View as Music&quot; from pop-up menu.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-4</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Web Page</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Click on a file of type &quot;HTML Document&quot;.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-5</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Text</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Click on a file of type &quot;plain text&quot;.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-6</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Image</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Click on an image of type &quot;JPEG image&quot;, &quot;GIF
-					image&quot;, or &quot;PNG image&quot;. (confirm)</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-7</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Hardware</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Type &quot;hardware:&quot; or &quot;hardware:overview&quot; into the Location bar.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-8</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as PDF Document</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Click on a PDF file.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>V-9</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>View as Package</P>
-				</TD>
-				<TD WIDTH=33%>
-					<P>1. Click on any Red Hat Package Manager file.</P>
-				</TD>
-				<TD WIDTH=34%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-		</TBODY>
-	</TABLE>
-</DL>
-<P ALIGN=LEFT STYLE="font-weight: medium"><BR><BR>
-</P>
-<OL START=2>
-	<LI><P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=4>File
-	Operations</FONT></P>
-	<P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=3>* Before
-	beginning this section, change your Click Behavior (in Preferences)
-	to 'Active items with a double click'.</FONT></P>
-</OL>
-<DL>
-	<DD>
-	<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
-		<COL WIDTH=25*>
-		<COL WIDTH=60*>
-		<COL WIDTH=106*>
-		<COL WIDTH=64*>
-		<THEAD>
-			<TR VALIGN=TOP>
-				<TH WIDTH=10%>
-					<P><SPAN STYLE="background: transparent">Test Number</SPAN></P>
-				</TH>
-				<TH WIDTH=24%>
-					<P><SPAN STYLE="background: transparent">Test</SPAN></P>
-				</TH>
-				<TH WIDTH=42%>
-					<P><SPAN STYLE="background: transparent">Test Steps</SPAN></P>
-				</TH>
-				<TH WIDTH=25%>
-					<P><SPAN STYLE="background: transparent">Expected Results</SPAN></P>
-				</TH>
-			</TR>
-		</THEAD>
-		<TBODY>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>F-1</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>Rename a file or folder</P>
-				</TD>
-				<TD WIDTH=42%>
-					<P>1. Click on a file, and choose &quot;Rename&quot; from the
-					File or context menu.</P>
-					<P>2. Type in a new name</P>
-				</TD>
-				<TD WIDTH=25%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>F-2</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>Duplicate a file or folder</P>
-				</TD>
-				<TD WIDTH=42%>
-					<P>1. Click on a file, and choose &quot;Duplicate&quot; from the
-					File or context menu.</P>
-				</TD>
-				<TD WIDTH=25%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>F-3</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>Create a link to a file or folder</P>
-				</TD>
-				<TD WIDTH=42%>
-					<P>1. Click on a file, and choose &quot;Create Link&quot; from
-					the File or context menu.</P>
-				</TD>
-				<TD WIDTH=25%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-			<TR VALIGN=TOP>
-				<TD WIDTH=10%>
-					<P>F-4</P>
-				</TD>
-				<TD WIDTH=24%>
-					<P>Stretch an icon</P>
-				</TD>
-				<TD WIDTH=42%>
-					<P>1. Click on a file, and choose &quot;Stretch Icon&quot; from
-					the File or context menu.</P>
-					<P>2. Drag the icon by a corner, and enlarge or shrink it.</P>
-				</TD>
-				<TD WIDTH=25%>
-					<P><BR>
-					</P>
-				</TD>
-			</TR>
-		</TBODY>
-	</TABLE>
-</DL>
-<P ALIGN=LEFT STYLE="font-weight: medium"><BR><BR>
-</P>
-<P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=4>3. Desktop
-Operations</FONT></P>
-<P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=3>Be sure to
-launch Nautilus with the --start-desktop option.</FONT></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
-	<COL WIDTH=26*>
-	<COL WIDTH=61*>
-	<COL WIDTH=106*>
-	<COL WIDTH=64*>
-	<THEAD>
-		<TR VALIGN=TOP>
-			<TH WIDTH=10%>
-				<P><SPAN STYLE="background: transparent">Test Number</SPAN></P>
-			</TH>
-			<TH WIDTH=24%>
-				<P><SPAN STYLE="background: transparent">Test</SPAN></P>
-			</TH>
-			<TH WIDTH=41%>
-				<P><SPAN STYLE="background: transparent">Test Steps</SPAN></P>
-			</TH>
-			<TH WIDTH=25%>
-				<P><SPAN STYLE="background: transparent">Expected Results</SPAN></P>
-			</TH>
-		</TR>
-	</THEAD>
-	<TBODY>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>D-1</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Empty Trash</P>
-			</TD>
-			<TD WIDTH=41%>
-				<P STYLE="font-style: normal">1. Drag files or folders onto the
-				Trash icon.</P>
-				<P STYLE="font-style: normal">2. Right-click on the Trash, and
-				select &quot;Empty Trash&quot; (alternatively, double-click on
-				the trash can, and select &quot;Empty Trash&quot; from the File
-				menu.)</P>
-				<P STYLE="font-style: normal"><BR>
-				</P>
-			</TD>
-			<TD WIDTH=25%>
-				<P><BR>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>D-2</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Drag file to Desktop</P>
-			</TD>
-			<TD WIDTH=41%>
-				<P>1. Drag a file from a Nautilus view window to the Desktop</P>
-			</TD>
-			<TD WIDTH=25%>
-				<P>File should be copied to desktop.</P>
-			</TD>
-		</TR>
-	</TBODY>
-</TABLE>
-<P ALIGN=LEFT STYLE="font-weight: medium"><BR><BR>
-</P>
-<OL START=4>
-	<LI><P ALIGN=LEFT STYLE="font-weight: medium"><FONT SIZE=4>Preferences/Customization</FONT></P>
-	<P ALIGN=LEFT STYLE="font-weight: medium"></P>
-</OL>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
-	<COL WIDTH=26*>
-	<COL WIDTH=61*>
-	<COL WIDTH=57*>
-	<COL WIDTH=112*>
-	<THEAD>
-		<TR VALIGN=TOP>
-			<TH WIDTH=10%>
-				<P><SPAN STYLE="background: transparent">Test Number</SPAN></P>
-			</TH>
-			<TH WIDTH=24%>
-				<P><SPAN STYLE="background: transparent">Test</SPAN></P>
-			</TH>
-			<TH WIDTH=22%>
-				<P><SPAN STYLE="background: transparent">Test Steps</SPAN></P>
-			</TH>
-			<TH WIDTH=44%>
-				<P><SPAN STYLE="background: transparent">Expected Results</SPAN></P>
-			</TH>
-		</TR>
-	</THEAD>
-	<TBODY>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>P-1</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Switch Themes</P>
-			</TD>
-			<TD WIDTH=22%>
-				<P>1. From a Nautilus window, choose &quot;Change Appearance...&quot;
-				from the Edit menu.</P>
-				<P>2. Try each of the four themes.</P>
-			</TD>
-			<TD WIDTH=44%>
-				<P><BR>
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>P-2</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Switch User Mode</P>
-			</TD>
-			<TD WIDTH=22%>
-				<P>1. From a Nautilus window, try each of the three user modes.</P>
-			</TD>
-			<TD WIDTH=44%>
-				<P>In Novice mode:</P>
-				<UL>
-					<LI><P>The menu's &quot;Edit {mode} Settings&quot; item should
-					be disabled. 
-					</P>
-					<LI><P>Dot files (e.g. .bashrc) should not be displayed. 
-					</P>
-					<LI><P>The &quot;Special Flags&quot; portion of the Show
-					Properties dialog's &quot;Permissions&quot; pane should be
-					omitted.</P>
-				</UL>
-				<P>In Intermediate mode:</P>
-				<UL>
-					<LI><P>Dot files (e.g. .bashrc) should not be displayed. 
-					</P>
-					<LI><P>The &quot;Special Flags&quot; portion of the Show
-					Properties dialog's &quot;Permissions&quot; pane should be
-					omitted.</P>
-				</UL>
-				<P>In Expert mode, none of the above user experience
-				simplification should occur.</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>P-3</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Switch Anti-aliasing mode</P>
-			</TD>
-			<TD WIDTH=22%>
-				<P>1. While in Intermediate or Expert mode, choose &quot;Edit{mode}
-				Settings...&quot; From the user mode menu.</P>
-				<P>2. In the &quot;Appearance&quot; category, deselect the &quot;Use
-				smoother (but slower) graphics&quot; checkbox.</P>
-			</TD>
-			<TD WIDTH=44%>
-				<P>Text and icons should no longer be anti-aliased.</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=10%>
-				<P>P-4</P>
-			</TD>
-			<TD WIDTH=24%>
-				<P>Change Background</P>
-			</TD>
-			<TD WIDTH=22%>
-				<P>1. Choose &quot;Customize...&quot; from the Edit menu.</P>
-				<P>2. Drag a few colors and backgrounds to the sidebar &amp; main
-				window pane.</P>
-			</TD>
-			<TD WIDTH=44%>
-				<P><BR>
-				</P>
-			</TD>
-		</TR>
-	</TBODY>
-</TABLE>
-<P ALIGN=LEFT><BR><BR>
-</P>
-<P ALIGN=LEFT><BR><BR>
-</P>
-</BODY>
-</HTML>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title></title>
+		<meta name="AUTHOR" content=" ">
+		<meta name="CREATED" content="20000901;18303000">
+		<meta name="CHANGEDBY" content=" ">
+		<meta name="CHANGED" content="20000905;14115200">
+	</head>
+
+	<body bgcolor="white" link="#009999">
+		<div align="left">
+			<font size="6" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" color="#004252"><b>Nautilus Smoke Tests</b></font></div>
+		<div align="left">
+			<p style="font-weight: medium"><font size="4" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">The Nautilus Smoke Tests are a minimal set of tests, to determine whether a build is usable for testing, and to catch obvious regressions.</font></p>
+			<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+			<br>
+			</font></p>
+			<p><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" color="#004252"><b>Views</b></font></p>
+			<p><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Before beginning this section, open a folder which contains at least one MP3, image (GIF, JPEG or PNG), plain text, HTML, PDF, and RPM file.<b> (For those inside the Eazel file wall, these are in /h/public/QE/smoketests.)</b><br>
+			<br>
+			Also be sure to be in the default, single-click mode. (Preferences | Click Behavior | 'Active items with single click')<br>
+			<br>
+			</font><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+			<table width="100%" border="1" cellpadding="4" cellspacing="3">
+				<col width="25*">
+					<col width="60*">
+						<col width="83*">
+							<col width="87*">
+								<thead>
+									<tr valign="top">
+										<th width="10%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test #</span></font></th>
+										<th width="24%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test</span></font></th>
+										<th width="33%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Steps</span></font></th>
+										<th width="34%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Expected Results</span></font></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr valign="top">
+										<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-1</font></td>
+										<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Icon</font></td>
+										<td width="33%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Select &quot;View as Icons&quot; from pop-up menu.</font>
+											<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Zoom in to 400% and out to 50%</font></p>
+											<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+										<td width="34%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-2</font></td>
+										<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as List</font></td>
+										<td width="33%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Select &quot;View as List&quot; from pop-up menu</font>
+											<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Zoom in to 400% and out to 50%</font></td>
+										<td width="34%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-3</font></td>
+										<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Music</font></td>
+										<td width="33%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Select &quot;View as Music&quot; from pop-up menu.</font></td>
+										<td width="34%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-4</font></td>
+										<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Web Page</font></td>
+										<td width="33%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file of type &quot;HTML Document&quot;.</font></td>
+										<td width="34%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-5</font></td>
+										<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Text</font></td>
+										<td width="33%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file of type &quot;plain text&quot;.</font></td>
+										<td width="34%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-6</font></td>
+										<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Image</font></td>
+										<td width="33%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on an image of type &quot;JPEG image&quot;, &quot;GIF image&quot;, or &quot;PNG image&quot;. (confirm)</font></td>
+										<td width="34%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-7</font></td>
+										<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Hardware</font></td>
+										<td width="33%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Type &quot;hardware:&quot; or &quot;hardware:overview&quot; into the Location bar.</font></td>
+										<td width="34%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-8</font></td>
+										<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as PDF Document</font></td>
+										<td width="33%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a PDF file.</font></td>
+										<td width="34%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+									<tr valign="top">
+										<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">V-9</font></td>
+										<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">View as Package</font></td>
+										<td width="33%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on any Red Hat Package Manager file.</font></td>
+										<td width="34%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											</font></td>
+									</tr>
+								</tbody>
+							</table>
+							</font></p>
+							<p style="font-weight: medium"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+							<br>
+							</font></p>
+							<p style="font-weight: medium"><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" color="#004252"><b>File Operations</b></font></p>
+							<p style="font-weight: medium"><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Before beginning this section, change your Click Behavior (in Preferences) to 'Active items with a double click'.<br>
+							<br>
+							</font><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+							<table width="100%" border="1" cellpadding="4" cellspacing="3">
+								<col width="25*">
+									<col width="60*">
+										<col width="106*">
+											<col width="64*">
+												<thead>
+													<tr valign="top">
+														<th width="10%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Number</span></font></th>
+														<th width="24%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test</span></font></th>
+														<th width="42%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Steps</span></font></th>
+														<th width="25%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Expected Results</span></font></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr valign="top">
+														<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">F-1</font></td>
+														<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Rename a file or folder</font></td>
+														<td width="42%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file, and choose &quot;Rename&quot; from the File or context menu.</font>
+															<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Type in a new name</font></td>
+														<td width="25%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+															</font></td>
+													</tr>
+													<tr valign="top">
+														<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">F-2</font></td>
+														<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Duplicate a file or folder</font></td>
+														<td width="42%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file, and choose &quot;Duplicate&quot; from the File or context menu.</font></td>
+														<td width="25%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+															</font></td>
+													</tr>
+													<tr valign="top">
+														<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">F-3</font></td>
+														<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Create a link to a file or folder</font></td>
+														<td width="42%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file, and choose &quot;Create Link&quot; from the File or context menu.</font></td>
+														<td width="25%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+															</font></td>
+													</tr>
+													<tr valign="top">
+														<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">F-4</font></td>
+														<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Stretch an icon</font></td>
+														<td width="42%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Click on a file, and choose &quot;Stretch Icon&quot; from the File or context menu.</font>
+															<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Drag the icon by a corner, and enlarge or shrink it.</font></td>
+														<td width="25%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+															</font></td>
+													</tr>
+												</tbody>
+											</table>
+											</font></p>
+											<p style="font-weight: medium"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+											<br>
+											</font></p>
+											<p style="font-weight: medium"><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" color="#004252"><b>Desktop Operations</b></font></p>
+											<p style="font-weight: medium"><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Be sure to launch Nautilus with the </font><font size="3" face="Courier New,Courier,Monaco">--start-desktop</font><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"> option.<br>
+											<br>
+											</font></p>
+										</div>
+										<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+										<table width="100%" border="1" cellpadding="4" cellspacing="3">
+											<col width="26*">
+												<col width="61*">
+													<col width="106*">
+														<col width="64*">
+															<thead>
+																<tr valign="top">
+																	<th width="10%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Number</span></font></th>
+																	<th width="24%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test</span></font></th>
+																	<th width="41%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Steps</span></font></th>
+																	<th width="25%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Expected Results</span></font></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr valign="top">
+																	<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">D-1</font></td>
+																	<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Empty Trash</font></td>
+																	<td width="41%">
+																		<p style="font-style: normal"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Drag files or folders onto the Trash icon.</font></p>
+																		<p style="font-style: normal"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Right-click on the Trash, and select &quot;Empty Trash&quot; (alternatively, double-click on the trash can, and select &quot;Empty Trash&quot; from the File menu.)</font></p>
+																		<p style="font-style: normal"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+																		</font></td>
+																	<td width="25%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+																		</font></td>
+																</tr>
+																<tr valign="top">
+																	<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">D-2</font></td>
+																	<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Drag file to Desktop</font></td>
+																	<td width="41%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Drag a file from a Nautilus view window to the Desktop</font></td>
+																	<td width="25%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">File should be copied to desktop.</font></td>
+																</tr>
+															</tbody>
+														</table>
+														</font></p>
+														<div align="left">
+															<p style="font-weight: medium"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+															<br>
+															</font><font size="3" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular" color="#004252"><b>Preferences/Customization<br>
+															<br>
+															</b></font></p>
+														</div>
+														<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+														<table width="100%" border="1" cellpadding="4" cellspacing="3">
+															<col width="26*">
+																<col width="61*">
+																	<col width="57*">
+																		<col width="112*">
+																			<thead>
+																				<tr valign="top">
+																					<th width="10%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Number</span></font></th>
+																					<th width="24%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test</span></font></th>
+																					<th width="22%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Test Steps</span></font></th>
+																					<th width="44%" bgcolor="#ffce39"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><span style="background: transparent">Expected Results</span></font></th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<tr valign="top">
+																					<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">P-1</font></td>
+																					<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Switch Themes</font></td>
+																					<td width="22%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. From a Nautilus window, choose &quot;Change Appearance...&quot; from the Edit menu.</font>
+																						<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Try each of the four themes.</font></td>
+																					<td width="44%"><br>
+																					</td>
+																				</tr>
+																				<tr valign="top">
+																					<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">P-2</font></td>
+																					<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Switch User Mode</font></td>
+																					<td width="22%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. From a Nautilus window, try each of the three user modes.</font></td>
+																					<td width="44%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">In Novice mode:</font>
+																						<ol>
+																							<li type="a"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">The menu's &quot;Edit {mode} Settings&quot; item should be disabled.</font>
+																							<li type="a"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Dot files (e.g. .bashrc) should not be displayed.</font>
+																							<li type="a"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">The &quot;Special Flags&quot; portion of the Show Properties dialog's &quot;Permissions&quot; pane should be omitted.</font>
+																						</ol>
+																						<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">In Intermediate mode:</font></p>
+																						<ol>
+																							<li type="a"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Dot files (e.g. .bashrc) should not be displayed.</font>
+																							<li type="a"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">The &quot;Special Flags&quot; portion of the Show Properties dialog's &quot;Permissions&quot; pane should be omitted.</font>
+																						</ol>
+																						<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">In Expert mode, none of the above user experience simplification should occur.</font></td>
+																				</tr>
+																				<tr valign="top">
+																					<td width="10%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">P-3</font></td>
+																					<td width="24%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Switch Anti-aliasing mode</font></td>
+																					<td width="22%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. While in Intermediate or Expert mode, choose &quot;Edit{mode} Settings...&quot; From the user mode menu.</font>
+																						<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. In the &quot;Appearance&quot; category, deselect the &quot;Use smoother (but slower) graphics&quot; checkbox.</font></td>
+																					<td width="44%"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Text and icons should no longer be anti-aliased.</font></td>
+																				</tr>
+																				<tr valign="top">
+																					<td width="10%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">P-4</font></td>
+																					<td width="24%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Change Background</font></td>
+																					<td width="22%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">1. Choose &quot;Customize...&quot; from the Edit menu.</font>
+																						<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">2. Drag a few colors and backgrounds to the sidebar &amp; main window pane.</font></td>
+																					<td width="44%" bgcolor="#ffffcc"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+																						</font></td>
+																				</tr>
+																			</tbody>
+																		</table>
+																		</font></p>
+																		<div align="left">
+																			<p><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular"><br>
+																			</font></p>
+																		</div>
+																		<div align="right">
+																			<p><font size="2" style="font-size: 9pt" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">Maintained by <a href="mailto:eli@eazel.com">Eli Goldberg</a> for Nautilus Quality Engineering; feedback welcome.<br>
+																			Adaptation and reuse for other open source projects is freely permitted.<br>
+																			Last Updated: 9/12/2000<br>
+																			</font></div>
+																	</body>
+
+																</html>
