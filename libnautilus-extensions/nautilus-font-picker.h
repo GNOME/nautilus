@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FONT_PICKER_H
 #define NAUTILUS_FONT_PICKER_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 
 BEGIN_GNOME_DECLS
@@ -42,7 +42,7 @@ typedef struct NautilusFontPickerDetails     NautilusFontPickerDetails;
 struct NautilusFontPicker
 {
 	/* Super Class */
-	GtkVBox vbox;
+	GtkHBox hbox;
 	
 	/* Private stuff */
 	NautilusFontPickerDetails *details;
@@ -50,7 +50,7 @@ struct NautilusFontPicker
 
 struct NautilusFontPickerClass
 {
-	GtkVBoxClass parent_class;
+	GtkHBoxClass parent_class;
 };
 
 GtkType    nautilus_font_picker_get_type                    (void);

@@ -62,6 +62,7 @@ ArtIRect           nautilus_gdk_window_clip_dirty_area_to_screen  (const GdkWind
 /* GtkWidget bounds and dimensions */
 ArtIRect           nautilus_gtk_widget_get_bounds                 (const GtkWidget    *gtk_widget);
 NautilusDimensions nautilus_gtk_widget_get_dimensions             (const GtkWidget    *gtk_widget);
+NautilusDimensions nautilus_gtk_widget_get_preferred_dimensions   (const GtkWidget    *gtk_widget);
 
 END_GNOME_DECLS
 

@@ -12,7 +12,11 @@ font_type_to_string (NautilusFontType font_type)
 		return "postscript";
 	}
 
-	return "truetype";
+	if (font_type == NAUTILUS_FONT_TRUE_TYPE) {
+		return "truetype";
+	}
+
+	return "unknown";
 }
 
 // microsoft Webdings
@@ -129,7 +133,8 @@ main (int argc, char* argv[])
 
 	font_table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	nautilus_font_manager_for_each_font (font_iterator_callback, font_table);
+	nautilus_font_manager_for_each_font (font_iterator_callback,
+					     font_table);
 
 	g_hash_table_foreach (font_table, font_table_for_each_callback, NULL);
 	

@@ -1,3 +1,68 @@
+2001-03-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix a bunch of font bugs that dropped of the 1.0 plate.
+	
+	7371 - Fonts in font pickers are in no particular order 
+	7387 - Font selection defaults to bold for some fonts 
+	7421 - Font option menu in "Appearances" too long for screen
+	7473 - Switching off "smooth graphics" leaves font family grouping
+	7486 - Font style menu disabled when it shouldn't be
+	7487 - Would be nice if font styles were submenus 
+	7718 - 'cursor' font doesn't display 
+	
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	(nautilus_screen_get_dimensions): Fix a really silly typo.
+	(nautilus_gtk_widget_get_dimensions): Make the documentation a
+	little better.
+	(nautilus_gtk_widget_get_preferred_dimensions): New function to
+	get a widget's preferred dimensions.
+
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(font_description_new): Use consistent variable names.  Set a
+	'is_ignored' flag if the font is ignored.
+	(font_description_free): Use consistent variable names.
+	(font_description_table_find): Ignore black listed fonts.
+	(font_description_table_for_each): Ignore black listed fonts.
+	(font_directory_is_ignored): Put constants on top of file.
+	(font_foundry_is_ignored), (font_family_is_ignored): New functions
+	to check for specific black listed font foundries and/or families.
+	(ensure_local_font_table): Rename to 'local' from 'global' - this
+	is something i need for a future change where the font manager
+	will be able to handle both 'local' and 'server' fonts.
+	Move the font ignoring code from nautilus-font-picker.c here so
+	that it is in one place.
+
+	* libnautilus-extensions/nautilus-font-picker.h:
+	Subclass it from GtkHBox instead of GtkVBox now that it is not as
+	wide.
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(option_menu_button_press_event), (menu_deactivate),
+	(nautilus_font_picker_initialize), (nautilus_font_picker_destroy),
+	(style_menu_item_activate_callback),
+	(style_menu_item_button_release_event), (font_picker_add_item),
+	(font_picker_populate), (font_make_name), (font_make_style_name),
+	(font_slant_string_to_enum), (font_set_width_string_to_enum),
+	(font_style_entry_new), (font_style_entry_free),
+	(compare_font_entry), (global_font_list_get), (compare_int),
+	(compare_style), (global_font_list_populate_callback),
+	(nautilus_gtk_menu_shell_get_num_items),
+	(font_picker_get_selected_style_entry),
+	(font_picker_find_entries_for_font),
+	(font_picker_get_index_for_entry), (nautilus_font_picker_new),
+	(nautilus_font_picker_get_selected_font),
+	(nautilus_font_picker_set_selected_font):
+	Move the black listed font code into the font manager.  Use option
+	menus directly instead of NautilusStringPickers.  Put the style
+	choices in cascading submenus.  Deal with the case when too many
+	choices dont fit on the screen.
+
+	* test/test-nautilus-font-manager.c:
+	* test/test-nautilus-font-picker.c:
+	Update for font picker changes.
+	
 2001-03-20  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/Makefile.am:

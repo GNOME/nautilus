@@ -106,6 +106,22 @@ use_defalt_bold_font_update_picker_callback (GtkWidget *button,
 	g_free (default_bold_font);
 }
 
+static void
+print_selected_font_callback (GtkWidget *button,
+			      gpointer callback_data)
+{
+	char *selected_font;
+
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (callback_data));
+
+	selected_font = nautilus_font_picker_get_selected_font (NAUTILUS_FONT_PICKER (callback_data));
+
+	g_print ("selected_font = '%s'\n", selected_font);
+
+	g_free (selected_font);
+}
+
 int
 main (int argc, char * argv[])
 {
@@ -121,6 +137,7 @@ main (int argc, char * argv[])
 	GtkWidget *use_defailt_bold_button;
 	GtkWidget *default_hbox;
 	GtkWidget *default_bold_hbox;
+	GtkWidget *print_selected_font_button;
 	char *current_font;
 	char *default_font;
 	char *default_bold_font;
@@ -206,10 +223,24 @@ main (int argc, char * argv[])
 	gtk_box_pack_start (GTK_BOX (vbox), default_hbox, TRUE, TRUE, 10);
 	gtk_box_pack_start (GTK_BOX (vbox), default_bold_hbox, TRUE, TRUE, 10);
 
+	print_selected_font_button = gtk_button_new_with_label ("Print selected font");
+	gtk_signal_connect (GTK_OBJECT (print_selected_font_button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (print_selected_font_callback),
+			    font_picker);
+	gtk_box_pack_start (GTK_BOX (vbox), print_selected_font_button, FALSE, FALSE, 10);
+
 	g_free (current_font);
 	g_free (default_font);
 
-	gtk_widget_show_all (window);
+	gtk_widget_show (font_picker);
+	gtk_widget_show (label);
+	gtk_widget_show (file_name_caption);
+	gtk_widget_show (print_selected_font_button);
+	gtk_widget_show_all (default_hbox);
+	gtk_widget_show_all (default_bold_hbox);
+	gtk_widget_show (vbox);
+	gtk_widget_show (window);
 
 	gtk_main ();
 	return test_quit (EXIT_SUCCESS);

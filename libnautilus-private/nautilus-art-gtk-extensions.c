@@ -64,7 +64,7 @@ nautilus_screen_get_dimensions (void)
 	NautilusDimensions screen_dimensions;
 
 	screen_dimensions.width = gdk_screen_width ();
-	screen_dimensions.height = gdk_screen_width ();
+	screen_dimensions.height = gdk_screen_height ();
 	
 	g_assert (screen_dimensions.width > 0);
 	g_assert (screen_dimensions.height > 0);
@@ -157,8 +157,8 @@ nautilus_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
  * nautilus_gtk_widget_get_dimensions:
  * @gtk_widget: The source GtkWidget.
  *
- * Return value: An ArtIRect representation of the given GtkWidget's dimensions.
- *
+ * Return value: The widget's dimensions.  The returned dimensions are only valid
+ *               after the widget's geometry has been "allocated" by its container.
  */
 NautilusDimensions
 nautilus_gtk_widget_get_dimensions (const GtkWidget *gtk_widget)
@@ -171,6 +171,30 @@ nautilus_gtk_widget_get_dimensions (const GtkWidget *gtk_widget)
 	dimensions.height = (int) gtk_widget->allocation.height;
 	
 	return dimensions;
+}
+
+/**
+ * nautilus_gtk_widget_get_preferred_dimensions:
+ * @gtk_widget: The source GtkWidget.
+ *
+ * Return value: The widget's preferred dimensions.  The preferred dimensions are
+ *               computed by calling the widget's 'size_request' method and thus
+ *               could potentially be expensive for complicated widgets.
+ */
+NautilusDimensions
+nautilus_gtk_widget_get_preferred_dimensions (const GtkWidget *gtk_widget)
+{
+	GtkRequisition requisition;
+	NautilusDimensions preferred_dimensions;
+
+	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), NAUTILUS_DIMENSIONS_EMPTY);
+
+	gtk_widget_size_request (GTK_WIDGET (gtk_widget), &requisition);
+
+	preferred_dimensions.width = (int) requisition.width;
+	preferred_dimensions.height = (int) requisition.height;
+
+	return preferred_dimensions;
 }
 
 /**

@@ -59,6 +59,53 @@
 #define POSTSCRIPT_FONT_MIME_TYPE	"application/x-font-type1"
 #define TRUE_TYPE_FONT_MIME_TYPE	"application/x-font-ttf"
 
+/* These font families are black listed, because they 
+ * arent useful at all to display "normal" text - at 
+ * least in the context of Nautilus.
+ */
+static const char *black_listed_font_families[] = {
+	"Bookman",
+	"Bookman L",
+	"Webdings",
+	"Wingdings",
+	"OCR",
+	"Zapf Dingbats",
+	"Dingbats",
+	"Symbol",
+	"Standard Symbols L"
+	"cursor",
+	"mincho",
+	"gothic",
+	"MS Reference 2",
+	"MS Reference 1",
+	"Marlett",
+	"cursor"
+};
+
+static const char *black_listed_font_foundries[] = {
+ 	"greek",
+ 	"grinet",
+	/* Abisource fonts are black listed because they
+	 * appear to simply be copies of the URW fonts,
+	 * and listing them would waste valuable font picker
+	 * space for no purpose.
+	 */
+	"Abisource"
+};
+
+static const char *ignored_font_dir_suffices[] = {
+	"unscaled",
+	"100dpi",
+	"75dpi",
+	"misc",
+	"abisource/fonts",
+	"AbiSuite/fonts",
+	"fonts/Speedo",
+	"fonts/cyrillic",
+	"ISO8859-2/Type1",
+	"ISO8859-7/Type1"
+};
+
 /*
  * FontDescription:
  *
@@ -75,6 +122,7 @@ typedef struct {
 	char *set_width;
 	char *char_set_registry;
 	char *char_set_encoding;
+	gboolean is_ignored;
 } FontDescription;
 
 /*
@@ -129,6 +177,9 @@ static void                    font_description_table_free              (FontDes
 static void                    font_description_table_clear             (FontDescriptionTable        *table);
 static const FontDescription * font_description_table_find              (const FontDescriptionTable  *description_table,
 									 const char                  *file_name);
+static gboolean                font_directory_is_ignored                (const char                  *font_directory);
+static gboolean                font_foundry_is_ignored                  (const char                  *foundry);
+static gboolean                font_family_is_ignored                   (const char                  *family);
 
 static gboolean
 string_is_valid (const char *string)
@@ -201,50 +252,52 @@ font_description_new (const char *font_file_name,
 		      NautilusFontType font_type,
 		      const char *xlfd_string)
 {
-	FontDescription *font_description = NULL;
+	FontDescription *description = NULL;
 	NautilusStringList *tokenized_xlfd;
 
 	g_return_val_if_fail (string_is_valid (font_file_name), NULL);
 	g_return_val_if_fail (string_is_valid (xlfd_string), NULL);
-	g_return_val_if_fail (font_type == NAUTILUS_FONT_POSTSCRIPT
-			      || font_type == NAUTILUS_FONT_TRUE_TYPE, NULL);
+	g_return_val_if_fail (font_type >= NAUTILUS_FONT_POSTSCRIPT, NULL);
+	g_return_val_if_fail (font_type <= NAUTILUS_FONT_TRUE_TYPE, NULL);
 
 	tokenized_xlfd = nautilus_string_list_new_from_tokens (xlfd_string, "-", FALSE);
 
 	if (nautilus_string_list_get_length (tokenized_xlfd) == (XLFD_INDEX_MAX + 1)) {
-		font_description = g_new0 (FontDescription, 1);
- 		font_description->file_name = g_strdup (font_file_name);
- 		font_description->font_type = font_type;
-		font_description->foundry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_FOUNDRY);
-		font_description->family = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_FAMILY);
-		font_description->weight = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_WEIGHT);
-		font_description->slant = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SLANT);
-		font_description->set_width = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SET_WIDTH);
-		font_description->char_set_registry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_REGISTRY);
-		font_description->char_set_encoding = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_ENCODING);
+		description = g_new0 (FontDescription, 1);
+ 		description->file_name = g_strdup (font_file_name);
+ 		description->font_type = font_type;
+		description->foundry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_FOUNDRY);
+		description->family = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_FAMILY);
+		description->weight = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_WEIGHT);
+		description->slant = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SLANT);
+		description->set_width = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SET_WIDTH);
+		description->char_set_registry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_REGISTRY);
+		description->char_set_encoding = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_ENCODING);
+		description->is_ignored = 
+			font_foundry_is_ignored (description->foundry) || font_family_is_ignored (description->family);
 	} else {
 		g_warning ("'%s' is not a valid XLFD string", xlfd_string);
 	}
-
+	
 	nautilus_string_list_free (tokenized_xlfd);
 
-	return font_description;
+	return description;
 }
 
 static void
-font_description_free (FontDescription *font_description)
+font_description_free (FontDescription *description)
 {
-	g_return_if_fail (font_description != NULL);
+	g_return_if_fail (description != NULL);
 
-	g_free (font_description->file_name);
-	g_free (font_description->foundry);
-	g_free (font_description->family);
-	g_free (font_description->weight);
-	g_free (font_description->slant);
-	g_free (font_description->set_width);
-	g_free (font_description->char_set_registry);
-	g_free (font_description->char_set_encoding);
-	g_free (font_description);
+	g_free (description->file_name);
+	g_free (description->foundry);
+	g_free (description->family);
+	g_free (description->weight);
+	g_free (description->slant);
+	g_free (description->set_width);
+	g_free (description->char_set_registry);
+	g_free (description->char_set_encoding);
+	g_free (description);
 }
 
 static char *
@@ -477,7 +530,7 @@ font_description_table_find (const FontDescriptionTable *table,
 		g_assert (node->data != NULL);
 		description = node->data;
 
-		if (nautilus_str_is_equal (file_name, description->file_name)) {
+		if (!description->is_ignored && nautilus_str_is_equal (file_name, description->file_name)) {
 			return description;
 		}
 	}
@@ -502,16 +555,20 @@ font_description_table_for_each (const FontDescriptionTable *table,
 		g_assert (node->data != NULL);
 		description = node->data;
 		
-		cont = (* callback) (description->file_name,
-				     description->font_type,
-				     description->foundry,
-				     description->family,
-				     description->weight,
-				     description->slant,
-				     description->set_width,
-				     description->char_set_registry,
-				     description->char_set_encoding,
-				     callback_data);
+		cont = TRUE;
+
+		if (!description->is_ignored) {
+			cont = (* callback) (description->file_name,
+					     description->font_type,
+					     description->foundry,
+					     description->family,
+					     description->weight,
+					     description->slant,
+					     description->set_width,
+					     description->char_set_registry,
+					     description->char_set_encoding,
+					     callback_data);
+		}
 		
 		node = cont ? node->next : NULL;
 	}
@@ -885,22 +942,9 @@ directory_contains_file (const char *directory,
  * directories that arent interesting, we make things much faster.
  */
 static gboolean
-font_ignore_directory (const char *font_directory)
+font_directory_is_ignored (const char *font_directory)
 {
 	guint i;
-
-	static const char *ignored_font_dir_suffices[] = {
-		"unscaled",
-		"100dpi",
-		"75dpi",
-		"misc",
-		"abisource/fonts",
-		"AbiSuite/fonts",
-		"fonts/Speedo",
-		"fonts/cyrillic",
-		"ISO8859-2/Type1",
-		"ISO8859-7/Type1"
-	};
 
 	g_return_val_if_fail (string_is_valid (font_directory), TRUE);
 
@@ -910,6 +954,38 @@ font_ignore_directory (const char *font_directory)
 		}
 	}
 
+	return FALSE;
+}
+
+static gboolean
+font_foundry_is_ignored (const char *foundry) 
+{
+	guint i;
+	
+	g_return_val_if_fail (foundry != NULL, TRUE);
+	
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (black_listed_font_foundries); i++) {
+		if (nautilus_istr_is_equal (foundry, black_listed_font_foundries[i])) {
+			return TRUE;
+		}
+	}
+	
+	return FALSE;
+}
+
+static gboolean
+font_family_is_ignored (const char *family) 
+{
+	guint i;
+	
+	g_return_val_if_fail (family != NULL, TRUE);
+	
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (black_listed_font_families); i++) {
+		if (nautilus_istr_is_equal (family, black_listed_font_families[i])) {
+			return TRUE;
+		}
+	}
+	
 	return FALSE;
 }
 
@@ -924,7 +1000,7 @@ font_manager_collect_font_tables (const char *font_directory,
 	g_return_if_fail (string_is_valid (font_directory));
 	g_return_if_fail (collected_font_tables != NULL);
 
-	if (font_ignore_directory (font_directory)) {
+	if (font_directory_is_ignored (font_directory)) {
 		return;
 	}
 	
@@ -1015,7 +1091,7 @@ free_font_tables (void)
 }
 
 static void
-ensure_global_font_table (void)
+ensure_local_font_table (void)
 {
 	char *user_directory;
 	char *user_font_dir;
@@ -1074,7 +1150,7 @@ nautilus_font_manager_for_each_font (NautilusFontManagerCallback callback,
 	gnome_vfs_init_if_needed ();
 	
 	/* Ensure that all the font tables exist */
-	ensure_global_font_table ();
+	ensure_local_font_table ();
 
 	for (node = global_font_table; node != NULL && cont; node = node->next) {
 		g_assert (node->data != NULL);
@@ -1216,7 +1292,7 @@ nautilus_font_manager_get_bold (const char *plain_font)
 	g_return_val_if_fail (nautilus_strlen (plain_font) > 0, NULL);
 	g_return_val_if_fail (nautilus_font_manager_file_is_scalable_font (plain_font), NULL);
 
-	ensure_global_font_table ();
+	ensure_local_font_table ();
 
  	data.description = font_table_list_find (global_font_table, plain_font);
 
