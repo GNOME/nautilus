@@ -49,10 +49,8 @@ goto_online_storage (BonoboUIComponent *component,
 	char			*url;
 	char			*user_name;
 
-	/* FIXME bugzilla.eazel.com 5035: ideally, the ammonite_init should happen once per process */
 	if ( ammonite_init (bonobo_poa())) {
 		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
-		ammonite_shutdown();
 	} else {
 		user_name = NULL;
 	}
@@ -81,14 +79,11 @@ goto_software_catalog (BonoboUIComponent *component,
 	gboolean		logged_in;
 	char 			*user_name;
 
-	/* FIXME bugzilla.eazel.com 5035: ideally, the ammonite_init should happen once per process */
 	if (ammonite_init (bonobo_poa())) {
 		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
 
 		logged_in = (NULL != user_name);
 		g_free (user_name);
-
-		ammonite_shutdown();
 	} else {
 		logged_in = FALSE;
 	}

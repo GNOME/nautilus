@@ -135,9 +135,5 @@ main (int argc, char *argv[])
 		bonobo_main ();
 	} while (object_count > 0);
 
-#ifdef EAZEL_SERVICES
-	ammonite_shutdown ();
-#endif /*EAZEL_SERVICES*/
-
 	return 0;
 }

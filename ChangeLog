@@ -1,3 +1,14 @@
+2000-12-11  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/main.c: (main):
+	* src/nautilus-window-service-ui.c: (goto_online_storage),
+	(goto_software_catalog):
+
+	bugzilla.eazel.com 5035
+
+	removed ammonite_shutdown call, ammonite_init is now resiliant
+	to multiple calls and registers an atexit function.	
+
 2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
