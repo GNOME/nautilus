@@ -44,6 +44,11 @@ nautilus_shell_interface_idl_sources =		\
 
 BUILT_SOURCES = $(nautilus_shell_interface_idl_sources)
 
+if ENABLE_PROFILER
+profiler_headers = nautilus-profiler.h
+profiler_sources = nautilus-profiler.c
+endif
+
 noinst_HEADERS = \
 	nautilus-about.h			\
 	nautilus-applicable-views.h		\
@@ -83,6 +88,7 @@ noinst_HEADERS = \
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
+	$(profiler_headers)			\
 	$(NULL)
 
 nautilus_SOURCES = \
@@ -125,6 +131,7 @@ nautilus_SOURCES = \
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
 	nautilus-zoomable-frame-corba.c		\
+	$(profiler_sources)			\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp

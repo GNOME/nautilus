@@ -29,13 +29,18 @@
 #include <config.h>
 #include <gtk/gtkdialog.h>
 
+#include <glib.h>
+
 #include "nautilus-profiler.h"
+
+#include <stdlib.h>
+#include <unistd.h>
 
 /* These are defined in eazel-tools/profiler/profiler.C */
 extern void profile_on (void);
 extern void profile_off (void);
 extern void profile_reset (void);
-extern void profile_dump (void);
+extern void profile_dump (const char *file_name);
 
 void
 nautilus_profiler_bonobo_ui_reset_callback (BonoboUIHandler *ui_handler, 
@@ -59,10 +64,92 @@ nautilus_profiler_bonobo_ui_stop_callback (BonoboUIHandler *ui_handler,
 {
 	profile_off ();
 }
+
+static GtkWidget *
+widget_find_ancestor_window (GtkWidget *widget)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+	
+	while (widget && !GTK_IS_WINDOW (widget)) {
+		widget = widget->parent;
+	}
+
+	return widget;
+}
+
+static GtkWidget *
+ui_handler_find_ancestor_window (BonoboUIHandler *ui_handler)
+{
+	GtkWidget *something;
+
+	g_return_val_if_fail (ui_handler != NULL, NULL);
+	
+	something = bonobo_ui_handler_get_statusbar (ui_handler);
+	
+	if (!something) {
+		something = bonobo_ui_handler_get_menubar (ui_handler);
+	}
+
+	if (!something) {
+		return NULL;
+	}
+	    
+	return widget_find_ancestor_window (something);
+}
+
+static void
+widget_set_busy_cursor (GtkWidget *widget)
+{
+	GdkCursor *cursor;
+
+        g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (GTK_WIDGET (widget)));
+	
+	cursor = gdk_cursor_new (GDK_WATCH);
+
+	gdk_window_set_cursor (GTK_WIDGET (widget)->window, cursor);
+
+	gdk_flush ();
+
+	gdk_cursor_destroy (cursor);
+}
+
+static void
+widget_clear_busy_cursor (GtkWidget *widget)
+{
+        g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (GTK_WIDGET (widget)));
+
+	gdk_window_set_cursor (GTK_WIDGET (widget)->window, NULL);
+
+	gdk_flush ();
+}
+
 void
 nautilus_profiler_bonobo_ui_report_callback (BonoboUIHandler *ui_handler, 
 					     gpointer user_data,
 					     const char *path)
 {
-	profile_dump ();
+	char *dump_file_name;
+
+	GtkWidget *window = NULL;
+
+	dump_file_name = g_strdup ("nautilus-profile-log-XXXXXX");
+
+	if (mktemp (dump_file_name) != dump_file_name) {
+		g_free (dump_file_name);
+		dump_file_name = g_strdup_printf ("/tmp/nautilus-profile-log.%d", getpid ());
+	}
+
+	window = ui_handler_find_ancestor_window (ui_handler);
+
+	widget_set_busy_cursor (window);
+
+	profile_dump (dump_file_name);
+
+	/* Do something interesting with the data */
+
+	widget_clear_busy_cursor (window);
+
+	g_free (dump_file_name);
 }

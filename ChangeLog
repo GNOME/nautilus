@@ -1,5 +1,16 @@
 2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/Makefile.am:
+	Build profiler hooks if ENABLE_PROFILER is enabled.
+	
+	* src/nautilus-profiler.c: (widget_find_ancestor_window),
+	(ui_handler_find_ancestor_window), (widget_set_busy_cursor),
+	(widget_clear_busy_cursor),
+	(nautilus_profiler_bonobo_ui_report_callback):
+	Add support for saving dump to a file.
+	
+2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/install/lib/eazel-install-types.c:
 	(packagedata_fill_from_rpm_header):
 	Fix uninitialized variable.
