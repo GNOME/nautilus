@@ -84,8 +84,8 @@ AC_DEFINE(ENABLE_PROFILER))
 
 if test "x$ENABLE_PROFILER" = "x1"
 then
-	CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES"
-	LDFLAGS="/gnome/GNOME2/lib/libprofiler.so -lpthread"
+	CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES $CFLAGS"
+	LDFLAGS="/gnome/GNOME2/lib/libprofiler.so -lpthread $LDFLAGS"
 fi
 
 AC_SUBST(ENABLE_PROFILER)

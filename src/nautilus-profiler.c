@@ -93,7 +93,7 @@ widget_set_busy_cursor (GtkWidget *widget)
 
 	gdk_flush ();
 
-	gdk_cursor_destroy (cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static void
@@ -200,7 +200,7 @@ dump_dialog_new (const char *title)
 	g_signal_connect (dump_dialog->window, "delete_event", 
 			  G_CALLBACK (window_delete_event), dump_dialog->window);
 
-	gtk_widget_set_usize (dump_dialog->window, 700, 700);
+	gtk_widget_set_size_request (dump_dialog->window, 700, 700);
 
 	main_box = gtk_vbox_new (FALSE, 0);
 	dump_dialog->scrolled_text = scrolled_text_new ();

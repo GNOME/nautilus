@@ -1,3 +1,24 @@
+2002-04-20  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in:
+	Fix profiler CFLAGS.
+	
+	* libnautilus-private/nautilus-file-utilities.c:
+	* libnautilus-private/nautilus-file-utilities.h:
+	Remove time stamp and build message functions.
+	* src/nautilus-profiler.c: (widget_set_busy_cursor),
+	(dump_dialog_new):
+	Remove deprecated functions.
+	
+	* src/nautilus-window-manage-views.c: (update_title):
+	Remove time stamp in title.
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Remove unused build_message variable.
+	
+	* src/nautilus-window.c: (nautilus_window_instance_init):
+	Set initial title to "Nautilus". Fixes #74627.
+
 2002-04-19	Diego González  <diego@pemas.net>
 
 	* src/nautilus-window-menus.c (forget_history_if_confirmed):

@@ -181,6 +181,9 @@ nautilus_window_instance_init (NautilusWindow *window)
 	g_object_ref (G_OBJECT (window->details->tooltips));
 	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
 
+	/* Set initial window title */
+	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
+
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,

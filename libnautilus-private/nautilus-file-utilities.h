@@ -59,17 +59,6 @@ char *   nautilus_pixmap_file                        (const char *partial_path);
 /* Locate a file in either the uers directory or the datadir. */
 char *   nautilus_get_data_file_path                 (const char *partial_path);
 
-/* Returns the build time stamp the Nautilus binary.
- * This is useful to be able to tell builds apart.
- * A return value of NULL means unknown time stamp.
- */
-char *   nautilus_get_build_time_stamp               (void);
-
-/* Returns the "build message", which provides some information on build
- * context.  May return NULL.
- */
-char *   nautilus_get_build_message                  (void);
-
 /* Return an allocated file name that is guranteed to be unique. */
 char *   nautilus_unique_temporary_file_name         (void);
 char *   nautilus_find_file_in_gnome_path            (char       *file);

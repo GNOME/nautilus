@@ -547,7 +547,6 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			           const char *verb)
 {
 	static GtkWidget *about = NULL;
-	char *build_message;
 	const char *authors[] = {
 		"Ali Abdin",
 		"Andy Hertzfeld",
@@ -583,18 +582,6 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	const char *locale;
 
 	if (about == NULL) {
-		/* The time stamp overrides the build message, because
-		 * the time stamp should only be set on Tinderbox for
-		 * hourly builds.
-		 */
-		build_message = nautilus_get_build_time_stamp ();
-		if (build_message == NULL) {
-			build_message = nautilus_get_build_message ();
-			if (build_message == NULL) {
-				build_message = g_strdup ("");
-			}
-		}
-		
 		/* We could probably just put a translation in en_US
 		 * instead of doing this mess, but I got this working
 		 * and I don't feel like fiddling with it any more.
@@ -633,8 +620,6 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					 NULL);
 		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
 		
-		g_free (build_message);
-
 		eel_add_weak_pointer (&about);
 	}
 	

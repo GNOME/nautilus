@@ -241,26 +241,6 @@ nautilus_unique_temporary_file_name (void)
 	return file_name;
 }
 
-char *
-nautilus_get_build_time_stamp (void)
-{
-#ifdef EAZEL_BUILD_TIMESTAMP
-	return g_strdup (EAZEL_BUILD_TIMESTAMP);
-#else
-	return NULL;
-#endif
-}
-
-char *
-nautilus_get_build_message (void)
-{
-#ifdef NAUTILUS_BUILD_MESSAGE
-	return g_strdup (NAUTILUS_BUILD_MESSAGE);
-#else
-	return NULL;
-#endif
-}
-
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
