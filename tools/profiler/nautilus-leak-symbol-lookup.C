@@ -234,8 +234,7 @@ nautilus_leak_find_symbol_address (void *address, char **function_name, char **s
 		/* temporarily force a dladdr-only lookup.
 		 * should make the bfd symbol lookup work.
 		 */
-		if (FALSE 
-			&& map != NULL
+		if (map != NULL
 			&& nautilus_leak_find_symbol_in_map (map, (long)address, 
 				function_name, source_file_name, (unsigned int *)line)) {
 			return TRUE;
