@@ -1,3 +1,9 @@
+2000-07-27  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c
+	(nautilus_link_is_link_file): Use nautilus_strcasecmp instead of
+	strcasecmp, since the result may be NULL.
+
 2000-07-27  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/nautilus-complex-search-bar.c:
@@ -6,8 +12,7 @@
 
 2000-07-26  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
 	(update_time_display), (trilobite_eazel_time_view_get_password),
 	(trilobite_eazel_time_view_initialize),
 	(trilobite_eazel_time_view_destroy):

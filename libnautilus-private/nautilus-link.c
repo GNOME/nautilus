@@ -55,7 +55,7 @@ nautilus_link_is_link_file (NautilusFile *file)
 	
 	mime_type = nautilus_file_get_mime_type (file);
 
-	if (strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
+	if (nautilus_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
 		return TRUE;
 	}
 
