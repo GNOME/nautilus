@@ -1,3 +1,15 @@
+2000-08-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (make_anti_aliased_label),
+	(nautilus_property_browser_initialize),
+	(make_properties_from_directory_path),
+	(make_properties_from_xml_node), (make_category),
+	(make_category_link), (nautilus_property_browser_update_contents):
+	used anti-aliased text via nautilus_label where appropriate
+	* src/nautilus-theme-selector.c: (make_anti_aliased_label),
+	(nautilus_theme_selector_initialize):
+	used anti-aliased text via nautilus_label where appropriate
+
 2000-08-28  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/lib/eazel-install-types.h:

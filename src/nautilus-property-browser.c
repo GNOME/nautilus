@@ -53,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -138,6 +139,8 @@ static char *strip_extension                            (const char             
 static char *get_xml_path                               (NautilusPropertyBrowser *property_browser);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
+#define BROWSER_TITLE_BAR_COLOR  "rgb:BBBB/BBBB/BBBB"
+
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
@@ -178,6 +181,17 @@ nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
 	widget_class->drag_end  = nautilus_property_browser_drag_end;
 }
 
+/* utility to allocate an anti-aliased label */
+static GtkWidget*
+make_anti_aliased_label (const char *description)
+{
+	GtkWidget *label;
+	
+	label = nautilus_label_new ();
+	nautilus_label_set_text (NAUTILUS_LABEL (label), description);
+	return label;
+}
+
 
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
@@ -188,7 +202,6 @@ nautilus_property_browser_initialize (GtkObject *object)
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
 	GtkWidget *viewport;
-	GdkFont *font;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 	widget = GTK_WIDGET (object);
@@ -222,9 +235,12 @@ nautilus_property_browser_initialize (GtkObject *object)
 	/* make the category container */
 	property_browser->details->category_container = gtk_scrolled_window_new (NULL, NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->category_container), 0 );				
- 	property_browser->details->category_position = -1;
+ 	property_browser->details->category_position = -1;	
  	
  	viewport = gtk_viewport_new(NULL, NULL);
+	background = nautilus_get_widget_background (GTK_WIDGET (viewport));
+	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
+	
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_OUT);
 	gtk_widget_set_usize (viewport, 70, -1);
@@ -249,6 +265,9 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->title_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
  
+  	background = nautilus_get_widget_background (GTK_WIDGET (property_browser->details->title_box));
+	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
+
   	gtk_widget_show(property_browser->details->title_box);
 	gtk_box_pack_start (GTK_BOX(property_browser->details->content_container), property_browser->details->title_box, FALSE, FALSE, 0);
   	
@@ -262,24 +281,26 @@ nautilus_property_browser_initialize (GtkObject *object)
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	property_browser->details->title_label = gtk_label_new  (_("Select A Category:"));
-
-        font = nautilus_font_factory_get_font_from_preferences (18);
-	nautilus_gtk_widget_set_font(property_browser->details->title_label, font);
-        gdk_font_unref (font);
+	property_browser->details->title_label = make_anti_aliased_label (_("Select A Category:"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->title_label), 18);
 
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	property_browser->details->help_label = gtk_label_new  ("");
-  	gtk_widget_show(property_browser->details->help_label);
+	property_browser->details->help_label = make_anti_aliased_label  ("");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->help_label), 12);
+  	
+	gtk_widget_show(property_browser->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
   	/* add the bottom box to hold the command buttons */
   	temp_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
   	gtk_widget_show(temp_box);
+
+  	background = nautilus_get_widget_background (temp_box);
+	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
 
   	temp_frame = gtk_frame_new(NULL);
   	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_IN);
@@ -295,7 +316,9 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	property_browser->details->add_button_label = gtk_label_new (_("Add new..."));
+	property_browser->details->add_button_label = make_anti_aliased_label (_("Add new..."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->add_button_label), 12);
+	
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button), property_browser->details->add_button_label);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), property_browser->details->add_button, FALSE, FALSE, 4);
@@ -306,7 +329,9 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->remove_button = gtk_button_new();
 	gtk_widget_show(property_browser->details->remove_button);
 	
-	property_browser->details->remove_button_label = gtk_label_new (_("Remove..."));
+	property_browser->details->remove_button_label = make_anti_aliased_label (_("Add new..."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->remove_button_label), 12);
+	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button), property_browser->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box),
@@ -1473,7 +1498,12 @@ make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
 				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
 				
 				filtered_name = format_name_for_display (current_file_info->name);
-				label = gtk_label_new(filtered_name);
+				/* this is temporarily disabled to due scrolling bug that Ramiro will fix soon
+				label = make_anti_aliased_label (filtered_name);
+				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+				*/
+				label = gtk_label_new (filtered_name);
+				
 				g_free(filtered_name);
 				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
 				gtk_widget_show(label);
@@ -1615,8 +1645,9 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 				gtk_box_pack_start (GTK_BOX (container), label_box, FALSE, FALSE, 0);	
 				
 				label_text = make_color_label (color_str);
-				label = gtk_label_new (label_text);
-				nautilus_gtk_widget_set_font_by_name (label, "-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*");				
+				label = make_anti_aliased_label (label_text);
+				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 10);
+
 				g_free (label_text);
 				
 				gtk_widget_show (label);
@@ -1656,7 +1687,7 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 {
 
 	/* set up the description in the help label */
-	gtk_label_set_text (GTK_LABEL (property_browser->details->help_label), description);
+	nautilus_label_set_text (NAUTILUS_LABEL (property_browser->details->help_label), description);
 	
 	/* case out on the mode */
 	if (strcmp(mode, "directory") == 0)
@@ -1696,7 +1727,9 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *
 	gtk_box_pack_start (GTK_BOX (temp_vbox), button, FALSE, FALSE, 1);	
 
 	/* use the name as a label */
-	label = gtk_label_new (display_name);
+	label = make_anti_aliased_label (display_name);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+			
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
@@ -1835,7 +1868,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	show_buttons = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, FALSE);
 
 	if (property_browser->details->category == NULL) {
-		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), _("Select A Category:"));
+		nautilus_label_set_text(NAUTILUS_LABEL(property_browser->details->title_label), _("Select A Category:"));
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
 	
@@ -1851,7 +1884,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		
 		/* enable the "add new" button and update it's name */		
 		
-		gtk_label_set(GTK_LABEL(property_browser->details->add_button_label), temp_str);
+		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->add_button_label), temp_str);
 		if (show_buttons)
 			gtk_widget_show(property_browser->details->add_button);
 		else
@@ -1867,7 +1900,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			label_text[0] = toupper (label_text[0]);
 		}
 		
-		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), label_text);
+		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->title_label), label_text);
 
 		/* enable the remove button (if necessary) and update its name */
 		
@@ -1883,7 +1916,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			gtk_widget_show(property_browser->details->remove_button);
 		
 		temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
-		gtk_label_set(GTK_LABEL(property_browser->details->remove_button_label), temp_str);
+		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->remove_button_label), temp_str);
 		
 		g_free(label_text);
 		g_free(temp_str);
