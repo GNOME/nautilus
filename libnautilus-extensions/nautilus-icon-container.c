@@ -37,6 +37,7 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-link.h"
 #include "nautilus-theme.h"
 #include <ctype.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
@@ -4403,6 +4404,32 @@ nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_fixed_size = is_fixed_size;
+}
+
+gboolean
+nautilus_icon_container_trash_link_is_in_selection (NautilusIconContainer *container)
+{
+	GList *selection, *node;
+	char *uri;
+
+	selection = nautilus_icon_container_get_selection (container);
+
+	/* Result is ambiguous if called on NULL, so disallow. */
+	g_return_val_if_fail (selection != NULL, FALSE);
+
+	for (node = selection; node != NULL; node = node->next) {
+		if (nautilus_file_is_nautilus_link (NAUTILUS_FILE (node->data))) {
+			uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+			if (nautilus_link_is_trash_link (uri)) {
+				g_free (uri);
+				return TRUE;
+			}
+			g_free (uri);
+		}
+	}
+	g_list_free (selection);
+	
+	return FALSE;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -845,6 +845,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	gboolean local_move_only;
 	double world_x, world_y;
 	gboolean icon_hit;
+	GdkDragAction action;
 
 	drop_target = NULL;
 
@@ -853,8 +854,14 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (context->action == GDK_ACTION_ASK) {
-		context->action = nautilus_drag_drop_action_ask 
-			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+		/* Check for special case items in selection list */
+		if (nautilus_icon_container_trash_link_is_in_selection (container)) {
+			/* We only want to move the trash */
+			action = GDK_ACTION_MOVE;
+		} else {
+			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
+		}		
+		context->action = nautilus_drag_drop_action_ask (action);
 	}
 
 	if (context->action > 0) {

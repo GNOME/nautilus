@@ -1,3 +1,24 @@
+2000-09-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2992, Should not be able to context drag
+	Trash to link or duplicate
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_trash_link_is_in_selection):
+	Renamed function and pass in NautilusIconContainer
+	that selection is retrieved from.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_receive_dropped_icons):
+	Check and see if any special cases are in the
+	selection.  For now, this is only the Trash link.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_trash_link_in_selection):
+	Changed function internal to call
+	nautilus_icon_container_trash_link_is_in_selection
+
 2000-09-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2668 (Switching to Search mode should move the

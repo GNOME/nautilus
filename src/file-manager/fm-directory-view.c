@@ -1993,41 +1993,18 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 	return result;
 }
 
-static gboolean
-trash_link_is_in_files (GList *files)
-{
-	GList *node;
-	char *uri;
-	
-	/* Result is ambiguous if called on NULL, so disallow. */
-	g_return_val_if_fail (files != NULL, FALSE);
-
-	for (node = files; node != NULL; node = node->next) {
-		if (nautilus_file_is_nautilus_link (NAUTILUS_FILE (node->data))) {
-			uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
-			if (nautilus_link_is_trash_link (uri)) {
-				g_free (uri);
-				return TRUE;
-			}
-			g_free (uri);
-		}
-	}
-
-	return FALSE;
-}
-
 gboolean
 fm_directory_trash_link_in_selection (FMDirectoryView *view)
 {
-	GList *selection;
 	gboolean result;
+	NautilusIconContainer *container;
 
-	selection = fm_directory_view_get_selection (view);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (view)->child), FALSE);
 
-	result = trash_link_is_in_files (selection);
+	container = NAUTILUS_ICON_CONTAINER (GTK_BIN (view)->child);
+
+	result = nautilus_icon_container_trash_link_is_in_selection (container);
 	
-	nautilus_file_list_free (selection);
-
 	return result;
 }
 
