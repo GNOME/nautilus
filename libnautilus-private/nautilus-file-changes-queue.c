@@ -266,9 +266,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 
 		if (change == NULL) {
 			/* we are done */
-			break;
+			return;
 		}
-
 		
 		kind = change->kind;
 
@@ -293,8 +292,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			g_assert_not_reached ();
 			break;
 		}
-
 		change->from_uri = NULL;
 		change->to_uri = NULL;
 	}	
+
 }

@@ -43,7 +43,10 @@ struct _DFOSXferProgressDialog {
 	GtkWidget *target_label;
 	GtkWidget *progress_bar;
 
-	gchar *operation_string;
+	char *operation_string;
+
+	const char *from_prefix;
+	const char *to_prefix;
 
 	guint freeze_count;
 
@@ -67,8 +70,10 @@ typedef struct _DFOSXferProgressDialogClass DFOSXferProgressDialogClass;
 guint		 dfos_xfer_progress_dialog_get_type
 						(void);
 
-GtkWidget	*dfos_xfer_progress_dialog_new	(const gchar *title,
-						 const gchar *operation_string,
+GtkWidget	*dfos_xfer_progress_dialog_new	(const char *title,
+						 const char *operation_string,
+						 const char *from_prefix,
+						 const char *to_prefix,
 						 gulong files_total,
 						 gulong bytes_total);
 
@@ -79,12 +84,14 @@ void		 dfos_xfer_progress_dialog_set_total
 
 void		 dfos_xfer_progress_dialog_set_operation_string
 						(DFOSXferProgressDialog *dialog,
-						 const gchar *operation_string);
+						 const char *operation_string);
 
 void		 dfos_xfer_progress_dialog_new_file
 						(DFOSXferProgressDialog *dialog,
-						 const gchar *source_uri,
-						 const gchar *target_uri,
+						 const char *source_uri,
+						 const char *target_uri,
+						 const char *from_prefix,
+						 const char *to_prefix,
 						 gulong file_index,
 						 gulong size);
 

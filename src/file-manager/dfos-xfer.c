@@ -33,6 +33,13 @@
 #include "libnautilus-extensions/nautilus-glib-extensions.h"
 #include "fm-directory-view.h"
 
+typedef enum {
+	XFER_MOVE,
+	XFER_COPY,
+	XFER_MOVE_TO_TRASH,
+	XFER_EMPTY_TRASH
+} XferKind;
+
 
 typedef struct XferInfo {
 	GnomeVFSAsyncHandle *handle;
@@ -42,9 +49,9 @@ typedef struct XferInfo {
 	GnomeVFSXferErrorMode error_mode;
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
+	XferKind kind;
 } XferInfo;
 
-
 static XferInfo *
 xfer_info_new (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSXferOptions options,
@@ -86,7 +93,8 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 
 	xfer_info->progress_dialog
 		= dfos_xfer_progress_dialog_new ("Transfer in progress",
-						 "",
+						 "", 
+						 "", "",
 						 1,
 						 1);
 
@@ -140,6 +148,12 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				 (xfer_info->progress_dialog),
 				 progress_info->source_name,
 				 progress_info->target_name,
+				 xfer_info->kind != XFER_MOVE_TO_TRASH &&
+				 xfer_info->kind != XFER_EMPTY_TRASH
+				 ? _("From:") : "",
+				 xfer_info->kind != XFER_MOVE_TO_TRASH &&
+				 xfer_info->kind != XFER_EMPTY_TRASH
+				 ? _("To:") : NULL,
 				 progress_info->file_index,
 				 progress_info->file_size);
 		} else {
@@ -486,9 +500,11 @@ fs_xfer (const GList *item_uris,
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		xfer_info->operation_name = _("Moving");
 		xfer_info->preparation_name =_("Preparing To Move...");
+		xfer_info->kind = XFER_MOVE;
 	} else {
 		xfer_info->operation_name = _("Copying");
 		xfer_info->preparation_name =_("Preparing To Copy...");
+		xfer_info->kind = XFER_COPY;
 	}
 
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
@@ -550,6 +566,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 		xfer_info->preparation_name =_("Preparing to Move to Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+		xfer_info->kind = XFER_MOVE_TO_TRASH;
 		
 		gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
 		      		      trash_dir_uri_text, NULL,
@@ -594,9 +611,10 @@ fs_empty_trash (GtkWidget *parent_view)
 		xfer_info->progress_dialog = NULL;
 
 		xfer_info->operation_name = _("Emptying the Trash");
-		xfer_info->preparation_name =_("Preparing to Empty to Trash...");
+		xfer_info->preparation_name =_("Preparing to Empty the Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+		xfer_info->kind = XFER_EMPTY_TRASH;
 
 		trash_dir_name = gnome_vfs_uri_to_string (trash_dir_uri, 
 							  GNOME_VFS_URI_HIDE_NONE);

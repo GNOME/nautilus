@@ -1,3 +1,23 @@
+2000-04-29  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_consume_changes):
+	Temporary workaround for an apparent codegen bug Carbamide
+	was running into. (I'll need to track this down some more,
+	this change makes the crash go away.)
+
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	* src/file-manager/dfos-xfer-progress-dialog.h:
+	* src/file-manager/dfos-xfer.c:
+	(dfos_xfer_progress_dialog_get_type), 
+	(dfos_xfer_progress_dialog_new),
+	(dfos_xfer_progress_dialog_new_file),
+	(create_xfer_dialog),
+	(fs_xfer), (handle_xfer_ok):
+	Fix up the progress dialog so that it displays meaningfull
+	information while emptying the trash and moving files to
+	trash.
+	
 2000-04-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-gconf.c,

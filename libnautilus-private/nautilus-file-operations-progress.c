@@ -45,14 +45,14 @@ update (DFOSXferProgressDialog *dialog)
 
 /* This code by Jonathan Blandford (jrb@redhat.com) was shamelessly ripped from
    `gnome/gdialog.c' in Midnight Commander with minor changes.  */
-static gchar *
-trim_string (const gchar *string,
+static char *
+trim_string (const char *string,
 	     GdkFont *font,
 	     guint length,
 	     guint cur_length)
 {
         static guint dotdotdot = 0;
-        gchar *string_copy = NULL;
+        char *string_copy = NULL;
         gint len;
 
         if (!dotdotdot)
@@ -80,13 +80,13 @@ trim_string (const gchar *string,
 
 static void
 set_text_trimmed (GtkLabel *label,
-		  const gchar *text,
-		  const gchar *trimmable_text,
+		  const char *text,
+		  const char *trimmable_text,
 		  guint max_width)
 {
 	GdkFont *font;
-	gchar *trimmed_text;
-	gchar *s;
+	char *trimmed_text;
+	char *s;
 	guint text_width;
 	guint trimmable_text_width;
 
@@ -242,8 +242,10 @@ dfos_xfer_progress_dialog_get_type (void)
 }
 
 GtkWidget *
-dfos_xfer_progress_dialog_new (const gchar *title,
-			       const gchar *operation_string,
+dfos_xfer_progress_dialog_new (const char *title,
+			       const char *operation_string,
+    			       const char *from_prefix,
+			       const char *to_prefix,
 			       gulong total_files,
 			       gulong total_bytes)
 {
@@ -261,6 +263,9 @@ dfos_xfer_progress_dialog_new (const gchar *title,
 	gnome_dialog_append_button (GNOME_DIALOG (widget),
 				    GNOME_STOCK_BUTTON_CANCEL);
 
+	DFOS_XFER_PROGRESS_DIALOG (widget)->from_prefix = from_prefix;
+	DFOS_XFER_PROGRESS_DIALOG (widget)->to_prefix = to_prefix;
+	
 	return widget;
 }
 
@@ -279,7 +284,7 @@ dfos_xfer_progress_dialog_set_total (DFOSXferProgressDialog *dialog,
 
 void
 dfos_xfer_progress_dialog_set_operation_string (DFOSXferProgressDialog *dialog,
-						const gchar *operation_string)
+						const char *operation_string)
 {
 	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
 
@@ -290,12 +295,14 @@ dfos_xfer_progress_dialog_set_operation_string (DFOSXferProgressDialog *dialog,
 
 void
 dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
-				    const gchar *source_uri,
-				    const gchar *target_uri,
+				    const char *source_uri,
+				    const char *target_uri,
+    				    const char *from_prefix,
+				    const char *to_prefix,
 				    gulong file_index,
 				    gulong size)
 {
-	gchar *s;
+	char *s;
 
 	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
 	g_return_if_fail (GTK_WIDGET_REALIZED (dialog));
@@ -304,6 +311,9 @@ dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 	dialog->bytes_copied = 0;
 	dialog->file_size = size;
 
+	dialog->from_prefix = from_prefix;
+	dialog->to_prefix = to_prefix;
+
 	s = g_strdup_printf ("%s file %ld/%ld",
 			     dialog->operation_string,
 			     dialog->file_index, dialog->files_total);
@@ -311,12 +321,14 @@ dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 	g_free (s);
 
 	set_text_trimmed (GTK_LABEL (dialog->source_label),
-			  _("From: "), source_uri,
+			  dialog->from_prefix, source_uri,
 			  DIALOG_WIDTH);
 
-	set_text_trimmed (GTK_LABEL (dialog->target_label),
-			  _("To: "), target_uri,
-			  DIALOG_WIDTH);
+	if (dialog->to_prefix != NULL && dialog->target_label != NULL)
+		set_text_trimmed (GTK_LABEL (dialog->target_label),
+				  dialog->to_prefix, target_uri,
+				  DIALOG_WIDTH);
+
 
 	update (dialog);
 }
