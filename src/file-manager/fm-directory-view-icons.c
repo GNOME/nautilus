@@ -72,6 +72,8 @@ static void                fm_directory_view_icons_icon_changed_cb              
 											 FMDirectoryViewIcons      *icon_view);
 static void                fm_directory_view_icons_add_entry                            (FMDirectoryView           *view,
 											 NautilusFile              *file);
+static void                fm_directory_view_icons_remove_entry                         (FMDirectoryView           *view,
+											 NautilusFile              *file);
 static void                fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView           *view,
 											 GtkMenu                   *menu);
 static void                fm_directory_view_icons_append_selection_context_menu_items  (FMDirectoryView           *view,
@@ -85,7 +87,6 @@ static void                fm_directory_view_icons_bump_zoom_level              
 static gboolean            fm_directory_view_icons_can_zoom_in                          (FMDirectoryView           *view);
 static gboolean            fm_directory_view_icons_can_zoom_out                         (FMDirectoryView           *view);
 static void                fm_directory_view_icons_clear                                (FMDirectoryView           *view);
-static void                fm_directory_view_icons_delete_selection                     (FMDirectoryView           *view);
 static void                fm_directory_view_icons_destroy                              (GtkObject                 *view);
 static void                fm_directory_view_icons_done_adding_entries                  (FMDirectoryView           *view);
 static GList *             fm_directory_view_icons_get_selection                        (FMDirectoryView           *view);
@@ -140,22 +141,22 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 	
 	fm_directory_view_class->clear 
 		= fm_directory_view_icons_clear;
-	fm_directory_view_class->add_entry 
+	fm_directory_view_class->add_entry
 		= fm_directory_view_icons_add_entry;
+	fm_directory_view_class->remove_entry
+		= fm_directory_view_icons_remove_entry;
 	fm_directory_view_class->done_adding_entries 
 		= fm_directory_view_icons_done_adding_entries;	
 	fm_directory_view_class->begin_loading 
 		= fm_directory_view_icons_begin_loading;
 	fm_directory_view_class->get_selection 
-		= fm_directory_view_icons_get_selection;	
+		= fm_directory_view_icons_get_selection;
 	fm_directory_view_class->bump_zoom_level 
 		= fm_directory_view_icons_bump_zoom_level;	
 	fm_directory_view_class->can_zoom_in 
 		= fm_directory_view_icons_can_zoom_in;
 	fm_directory_view_class->can_zoom_out 
 		= fm_directory_view_icons_can_zoom_out;
-        fm_directory_view_class->delete_selection
-		= fm_directory_view_icons_delete_selection;
 	fm_directory_view_class->select_all
                 = fm_directory_view_icons_select_all;
         fm_directory_view_class->append_selection_context_menu_items
@@ -485,8 +486,9 @@ display_icons_not_already_positioned (FMDirectoryViewIcons *view)
 	GList *p;
 
 	/* FIXME: This will block if there are many files.  */
-	for (p = view->details->icons_not_positioned; p != NULL; p = p->next)
+	for (p = view->details->icons_not_positioned; p != NULL; p = p->next) {
 		add_icon_at_free_position (view, p->data);
+	}
 
 	nautilus_file_list_free (view->details->icons_not_positioned);
 	view->details->icons_not_positioned = NULL;
@@ -521,6 +523,15 @@ fm_directory_view_icons_add_entry (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+fm_directory_view_icons_remove_entry (FMDirectoryView *view, NautilusFile *file)
+{
+	if (gnome_icon_container_remove (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
+					 NAUTILUS_CONTROLLER_ICON (file))) {
+		nautilus_file_unref (file);
+	}
+}
+
+static void
 fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
 {
 	display_icons_not_already_positioned (FM_DIRECTORY_VIEW_ICONS (view));
@@ -537,13 +548,11 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 	directory = fm_directory_view_get_model (view);
 	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
 
-	fm_directory_view_icons_set_zoom_level (
-		icon_view,
-		nautilus_directory_get_integer_metadata (
-			directory, 
-			ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-			icon_view->details->default_zoom_level));
-
+	fm_directory_view_icons_set_zoom_level
+		(icon_view,
+		 nautilus_directory_get_integer_metadata (directory, 
+							  ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+							  icon_view->details->default_zoom_level));
 }
 
 static NautilusZoomLevel
@@ -569,14 +578,15 @@ fm_directory_view_icons_set_zoom_level (FMDirectoryViewIcons *view,
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
 	icon_container = get_icon_container (view);
-	if (gnome_icon_container_get_zoom_level (icon_container) == new_level)
+	if (gnome_icon_container_get_zoom_level (icon_container) == new_level) {
 		return;
+	}
 
-	nautilus_directory_set_integer_metadata (
-		fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), 
-		ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-		view->details->default_zoom_level,
-		new_level);
+	nautilus_directory_set_integer_metadata
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), 
+		 ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+		 view->details->default_zoom_level,
+		 new_level);
 
 	gnome_icon_container_set_zoom_level (icon_container, new_level);
 
@@ -664,8 +674,9 @@ fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons
 
 	g_return_if_fail (new_names != NULL);
 
-	if (strcmp (new_names, default_icon_text_attribute_names) == 0)
+	if (strcmp (new_names, default_icon_text_attribute_names) == 0) {
 		return;
+	}
 
 	g_free (default_icon_text_attribute_names);
 	default_icon_text_attribute_names = g_strdup (new_names);
@@ -727,13 +738,6 @@ fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *vie
 	g_free (all_names);
 	
 	return result;
-}
-
-static void
-fm_directory_view_icons_delete_selection(FMDirectoryView *view)
-{
-   gnome_icon_container_clear_selected_items(
-   	get_icon_container(FM_DIRECTORY_VIEW_ICONS (view)));
 }
 
 static GList *
@@ -934,8 +938,9 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 		  (GTK_WIDGET (get_icon_container (icon_view))));
 
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
-	if (directory == NULL)
+	if (directory == NULL) {
 		return;
+	}
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,

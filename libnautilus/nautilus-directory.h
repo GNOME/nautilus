@@ -130,6 +130,7 @@ NautilusFile *     nautilus_file_get                       (const char          
 /* Basic operations on file objects. */
 void               nautilus_file_ref                       (NautilusFile             *file);
 void               nautilus_file_unref                     (NautilusFile             *file);
+void               nautilus_file_delete                    (NautilusFile             *file);
 
 /* Basic attributes for file objects. */
 char *             nautilus_file_get_name                  (NautilusFile             *file);
@@ -143,6 +144,8 @@ gboolean           nautilus_file_is_directory              (NautilusFile        
 guint              nautilus_file_get_directory_item_count  (NautilusFile             *file,
 							    gboolean                  ignore_invisible_items);
 GList *            nautilus_file_get_keywords              (NautilusFile             *file);
+void               nautilus_file_set_keywords              (NautilusFile             *file,
+							    GList                    *keywords);
 
 /* Simple getting and setting top-level metadata. */
 char *             nautilus_file_get_metadata              (NautilusFile             *file,

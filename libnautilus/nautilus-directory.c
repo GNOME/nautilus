@@ -76,6 +76,7 @@ typedef enum {
 enum 
 {
 	FILES_ADDED,
+	FILES_REMOVED,
 	LAST_SIGNAL
 };
 
@@ -96,7 +97,7 @@ static void nautilus_directory_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_request_write_metafile (NautilusDirectory *directory);
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
 
-static void nautilus_file_detach (NautilusFile *file);
+static void nautilus_file_free (NautilusFile *file);
 static int nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2);
 static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 	     NautilusFile *file_2,
@@ -149,6 +150,7 @@ struct NautilusFile
 
 	NautilusDirectory *directory;
 	GnomeVFSFileInfo *info;
+	gboolean is_gone;
 };
 
 static GHashTable* directory_objects;
@@ -167,6 +169,13 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	nautilus_directory_signals[FILES_REMOVED] =
+		gtk_signal_new ("files_removed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_removed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
@@ -190,26 +199,26 @@ nautilus_directory_finalize (GtkObject *object)
 
 	directory = NAUTILUS_DIRECTORY (object);
 
-	if (directory->details->write_metafile_idle_id != 0)
+	if (directory->details->write_metafile_idle_id != 0) {
 		nautilus_directory_write_metafile (directory);
+	}
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
 
 	/* Let go of all the files. */
-	while (directory->details->files != NULL) {
-		nautilus_file_detach (directory->details->files->data);
-
-		directory->details->files = g_list_remove_link
-			(directory->details->files, directory->details->files);
-	}
+	g_list_foreach (directory->details->files, (GFunc) nautilus_file_free, NULL);
+	g_list_free (directory->details->files);
 
 	g_free (directory->details->uri_text);
-	if (directory->details->uri != NULL)
+	if (directory->details->uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->uri);
-	if (directory->details->metafile_uri != NULL)
+	}
+	if (directory->details->metafile_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->metafile_uri);
-	if (directory->details->alternate_metafile_uri != NULL)
+	}
+	if (directory->details->alternate_metafile_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->alternate_metafile_uri);
+	}
 	xmlFreeDoc (directory->details->metafile_tree);
 
 	g_free (directory->details);
@@ -413,22 +422,26 @@ nautilus_directory_write_metafile (NautilusDirectory *directory)
 	   At some point, we might want to change this to actually delete
 	   the metafile in this case.
 	*/
-	if (directory->details->metafile_tree == NULL)
+	if (directory->details->metafile_tree == NULL) {
 		return;
+	}
 
 	/* Try the main URI, unless we have already been instructed to use the alternate URI. */
-	if (directory->details->use_alternate_metafile)
+	if (directory->details->use_alternate_metafile) {
 		result = GNOME_VFS_ERROR_ACCESSDENIED;
-	else
+	} else {
 		result = nautilus_directory_try_to_write_metafile (directory, directory->details->metafile_uri);
+	}
 
 	/* Try the alternate URI if the main one failed. */
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
 		result = nautilus_directory_try_to_write_metafile (directory, directory->details->alternate_metafile_uri);
+	}
 
-	/* Check for errors. Later this must be reported to the user, not spit out as a warning. */
-	if (result != GNOME_VFS_OK)
+	/* Check for errors. FIXME: Later this must be reported to the user, not spit out as a warning. */
+	if (result != GNOME_VFS_OK) {
 		g_warning ("nautilus_directory_write_metafile failed to write metafile - we should report this to the user");
+	}
 }
 
 static gboolean
@@ -516,21 +529,24 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 	   a possible problem with the parent.
 	*/
 	result = gnome_vfs_make_directory_for_uri (uri, permissions);
-	if (result != GNOME_VFS_ERROR_NOTFOUND)
+	if (result != GNOME_VFS_ERROR_NOTFOUND) {
 		return result;
+	}
 
 	/* If we can't get a parent, we are done. */
 	parent_uri = gnome_vfs_uri_get_parent (uri);
-	if (parent_uri == NULL)
+	if (parent_uri == NULL) {
 		return result;
+	}
 
 	/* If we can get a parent, use a recursive call to create
 	   the parent and its parents.
 	*/
 	result = nautilus_make_directory_and_parents (parent_uri, permissions);
 	gnome_vfs_uri_unref (parent_uri);
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
 		return result;
+	}
 
 	/* A second try at making the directory after the parents
 	   have all been created.
@@ -696,9 +712,10 @@ dequeue_pending_idle_cb (gpointer callback_data)
 static void
 schedule_dequeue_pending (NautilusDirectory *directory)
 {
-	if (directory->details->dequeue_pending_idle_id == 0)
+	if (directory->details->dequeue_pending_idle_id == 0) {
 		directory->details->dequeue_pending_idle_id
 			= gtk_idle_add (dequeue_pending_idle_cb, directory);
+	}
 }
 
 static void
@@ -727,10 +744,12 @@ static GnomeVFSDirectoryListPosition
 nautilus_gnome_vfs_directory_list_get_next_position (GnomeVFSDirectoryList *list,
 						     GnomeVFSDirectoryListPosition position)
 {
-	if (position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
+	if (position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
 		return gnome_vfs_directory_list_position_next (position);
-	if (list == NULL)
+	}
+	if (list == NULL) {
 		return GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+	}
 	return gnome_vfs_directory_list_get_first_position (list);
 }
 
@@ -764,8 +783,9 @@ nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
 	}
 	directory->details->directory_load_list_last_handled = last_handled;
 
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
 		nautilus_directory_load_done (directory, result);
+	}
 }
 
 void
@@ -1182,8 +1202,9 @@ nautilus_file_ref (NautilusFile *file)
 	g_assert (file->directory != NULL);
 
 	/* Increment the ref count. */
-	if (file->ref_count++ != 0)
+	if (file->ref_count++ != 0) {
 		return;
+	}
 
 	/* As soon as someone other than the directory holds a ref, 
 	 * we need to hold the directory too. */
@@ -1199,20 +1220,25 @@ nautilus_file_unref (NautilusFile *file)
 	g_assert (file->directory != NULL);
 
 	/* Decrement the ref count. */
-	if (--file->ref_count != 0)
+	if (--file->ref_count != 0) {
 		return;
+	}
 
 	/* No references left, so it's time to release our hold on the directory. */
 	gtk_object_unref (GTK_OBJECT (file->directory));
+	if (file->is_gone) {
+		nautilus_file_free (file);
+	}
 }
 
 static void
-nautilus_file_detach (NautilusFile *file)
+nautilus_file_free (NautilusFile *file)
 {
 	g_assert (file->ref_count == 0);
 
 	/* Destroy the file object. */
 	gnome_vfs_file_info_unref (file->info);
+	g_free (file);
 }
 
 static int
@@ -1643,7 +1669,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 
 	if (password_info == NULL)
 	{
-		return g_strdup ("unknown owner");
+		return g_strdup (_("unknown owner"));
 	}
 	
 	return g_strdup (password_info->pw_name);
@@ -1672,7 +1698,7 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 
 	if (group_info == NULL)
 	{
-		return g_strdup ("unknown group");
+		return g_strdup (_("unknown group"));
 	}
 	
 	return g_strdup (group_info->gr_name);
@@ -1689,37 +1715,40 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
 
 	char * uri;
 	char * path;
-    DIR* directory;
-    int count;
-    struct dirent * entry;
-
+	DIR* directory;
+	int count;
+	struct dirent * entry;
+	
 	g_assert (nautilus_file_is_directory (file));
-
+	
 	uri = nautilus_file_get_uri (file);
 	if (nautilus_has_prefix (uri, "file://"))
 		path = uri + 7;
 	else
 		path = uri;
-
+	
 	directory = opendir (path);
-
+	
 	g_free (uri);
-    
-    if (!directory)
-        return 0;
+	
+	if (!directory)
+		return 0;
         
-    count = 0;
-    
-    while ((entry = readdir(directory)) != NULL)
-        // Only count invisible items if requested.
-        if (!ignore_invisible_items || entry->d_name[0] != '.')
-            count += 1;
-            
-    closedir(directory);
+	count = 0;
+	
+	while ((entry = readdir(directory)) != NULL)
+		// Only count invisible items if requested.
+		if (!ignore_invisible_items || entry->d_name[0] != '.')
+			count += 1;
+	
+	closedir(directory);
+	
+	/* This way of getting the count includes . and .., so we subtract those out */
+	if (!ignore_invisible_items) {
+		count -= 2;
+	}
 
-    /* This way of getting the count includes . and .., so we subtract those out */
-    return count - 2;
-
+	return count;
 }
 
 /**
@@ -1748,12 +1777,13 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		int item_count;
 
 		item_count = get_directory_item_count_hack (file, FALSE);
-		if (item_count == 0)
-			return g_strdup ("0 items");
-		else if (item_count == 1)
-			return g_strdup ("1 item");
-		else
-			return g_strdup_printf ("%d items", item_count);
+		if (item_count == 0) {
+			return g_strdup (_("0 items"));
+		} else if (item_count == 1) {
+			return g_strdup (_("1 item"));
+		} else {
+			return g_strdup_printf (_("%d items"), item_count);
+		}
 	}
 
 	return gnome_vfs_file_size_to_string (file->info->size);
@@ -1777,35 +1807,46 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 char *
 nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
 {
-	if (strcmp (attribute_name, "name") == 0)
+	/* FIXME: Use hash table and switch statement or function pointers for speed? */
+
+	if (strcmp (attribute_name, "name") == 0) {
 		return nautilus_file_get_name (file);
+	}
 
-	if (strcmp (attribute_name, "type") == 0)
+	if (strcmp (attribute_name, "type") == 0) {
 		return nautilus_file_get_type_as_string (file);
+	}
 
-	if (strcmp (attribute_name, "size") == 0)
+	if (strcmp (attribute_name, "size") == 0) {
 		return nautilus_file_get_size_as_string (file);
+	}
 
-	if (strcmp (attribute_name, "date_modified") == 0)
+	if (strcmp (attribute_name, "date_modified") == 0) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED);
+	}
 
-	if (strcmp (attribute_name, "date_changed") == 0)
+	if (strcmp (attribute_name, "date_changed") == 0) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_CHANGED);
+	}
 
-	if (strcmp (attribute_name, "date_accessed") == 0)
-		return nautilus_file_get_date_as_string (file, 
+	if (strcmp (attribute_name, "date_accessed") == 0) {
+		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED);
+	}
 
-	if (strcmp (attribute_name, "permissions") == 0)
+	if (strcmp (attribute_name, "permissions") == 0) {
 		return nautilus_file_get_permissions_as_string (file);
+	}
 
-	if (strcmp (attribute_name, "owner") == 0)
+	if (strcmp (attribute_name, "owner") == 0) {
 		return nautilus_file_get_owner_as_string (file);
+	}
 
-	if (strcmp (attribute_name, "group") == 0)
+	if (strcmp (attribute_name, "group") == 0) {
 		return nautilus_file_get_group_as_string (file);
+	}
 
 	return NULL;
 }
@@ -1825,14 +1866,16 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	if (nautilus_file_is_directory (file))
+	if (nautilus_file_is_directory (file)) {
 		/* Special-case this so it isn't "special/directory".
-		 * Should this be "folder" instead?
+		 * FIXME: Should this be "folder" instead?
 		 */		
 		return g_strdup (_("directory"));
+	}
 
-	if (nautilus_strlen (file->info->mime_type) == 0)
+	if (nautilus_strlen (file->info->mime_type) == 0) {
 		return g_strdup (_("unknown type"));
+	}
 
 	return g_strdup (file->info->mime_type);
 }
@@ -1959,6 +2002,69 @@ nautilus_file_is_executable (NautilusFile *file)
 	return (file->info->flags & (GNOME_VFS_PERM_USER_EXEC
 				     | GNOME_VFS_PERM_GROUP_EXEC
 				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
+}
+
+/**
+ * nautilus_file_delete
+ * 
+ * Delete this file.
+ * @file: NautilusFile representing the file in question.
+ **/
+void
+nautilus_file_delete (NautilusFile *file)
+{
+	char *text_uri;
+	GnomeVFSResult result;
+	GList *removed_files;
+
+	g_return_if_fail (file != NULL);
+
+	/* Deleting a file that's already gone is easy. */
+	if (file->is_gone) {
+		return;
+	}
+
+	/* Do the actual deletion. */
+	text_uri = nautilus_file_get_uri (file);
+	if (nautilus_file_is_directory (file)) {
+		result = gnome_vfs_remove_directory (text_uri);
+	} else {
+		result = gnome_vfs_unlink (text_uri);
+	}
+	g_free (text_uri);
+
+	/* Mark the file gone. */
+	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOTFOUND) {
+		file->is_gone = TRUE;
+
+		/* Let the directory know it's gone. */
+		if (file->directory != NULL) {
+			g_list_remove (file->directory->details->files, file);
+
+			/* Send out a message. */
+			removed_files = g_list_prepend (NULL, file);
+			gtk_signal_emit (GTK_OBJECT (file->directory),
+					 nautilus_directory_signals[FILES_REMOVED],
+					 removed_files);
+			g_list_free (removed_files);
+		}
+	}
+}
+
+/**
+ * nautilus_file_is_gone
+ * 
+ * Check if a file has already been deleted.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if the file is already gone.
+ **/
+gboolean
+nautilus_file_is_gone (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return file->is_gone;
 }
 
 /**

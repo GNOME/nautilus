@@ -71,14 +71,16 @@
 /* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
 #define MAXIMUM_INITIAL_ICON_SIZE  80
 
-static void gnome_icon_container_activate_selected_items (GnomeIconContainer *container);
-static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
-static void gnome_icon_container_initialize (GnomeIconContainer *container);
-static void update_icon (GnomeIconContainer *container, 
-			 GnomeIconContainerIcon *icon);
-static void compute_stretch (StretchState *start,
-			     StretchState *current);
-static guint icon_get_actual_size (GnomeIconContainerIcon *icon);
+static void  gnome_icon_container_activate_selected_items (GnomeIconContainer      *container);
+static void  gnome_icon_container_initialize_class        (GnomeIconContainerClass *class);
+static void  gnome_icon_container_initialize              (GnomeIconContainer      *container);
+static void  update_icon                                  (GnomeIconContainer      *container,
+							   GnomeIconContainerIcon  *icon);
+static void  compute_stretch                              (StretchState            *start,
+							   StretchState            *current);
+static guint icon_get_actual_size                         (GnomeIconContainerIcon  *icon);
+static void  remove_icon_from_container                   (GnomeIconContainer      *container,
+							   GnomeIconContainerIcon  *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -2400,7 +2402,7 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	GnomeIconContainerDetails *details;
 	GList *p;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	details = container->details;
 
@@ -2419,8 +2421,8 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 /* utility routine to remove a single icon from the container */
 
 static void
-remove_icon_from_container(GnomeIconContainer *container,
-			 GnomeIconContainerIcon *icon)
+remove_icon_from_container (GnomeIconContainer *container,
+			    GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	gint icon_x, icon_y;
@@ -2458,45 +2460,19 @@ remove_icon_from_container(GnomeIconContainer *container,
 void
 gnome_icon_container_activate_selected_items (GnomeIconContainer *container)
 {
-	GnomeIconContainerIcon *current_icon;
-	GList *current_item;
+	GnomeIconContainerIcon *icon;
+	GList *p;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
-	for (current_item = container->details->icons; current_item != NULL; current_item = current_item->next)
-	  {  	
-	  	current_icon = (GnomeIconContainerIcon*) current_item->data;
-		if (current_icon->is_selected)
+	for (p = container->details->icons; p != NULL; p = p->next) {  	
+	  	icon = p->data;
+		if (icon->is_selected) {
 	  		gtk_signal_emit (GTK_OBJECT (container),
 					 signals[ACTIVATE],
-					 current_icon->data);
-	  }	
-}
-
-/* clear the selected items in the container */
-void
-gnome_icon_container_clear_selected_items (GnomeIconContainer *container)
-{
-	GnomeIconContainerIcon *current_icon;
-	GnomeIconContainerDetails *details;
-	GList *current_item, *next_item;
-
-	g_return_if_fail (container != NULL);
-
-	details = container->details;
-
-	set_kbd_current (container, NULL, FALSE);
-	details->stretch_icon = NULL;
-	
-	current_item = details->icons;
-	while (current_item != NULL)
-	  {  	
-	  	next_item = current_item->next;
-	  	current_icon = (GnomeIconContainerIcon*) current_item->data;
-		if (current_icon->is_selected)
-	  		remove_icon_from_container(container, current_icon);
-	  	current_item = next_item;
-	  }	
+					 icon->data);
+		}
+	}
 }
 
 static void
@@ -2650,6 +2626,33 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 	add_idle (container);
 }
 
+/**
+ * gnome_icon_container_remove:
+ * @container: A GnomeIconContainer.
+ * @data: Icon from the controller.
+ * 
+ * Remove the icon with this data.
+ **/
+gboolean
+gnome_icon_container_remove (GnomeIconContainer *container,
+			     NautilusControllerIcon *data)
+{
+	GnomeIconContainerIcon *icon;
+	GList *p;
+
+	g_return_val_if_fail (GNOME_IS_ICON_CONTAINER (container), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->data == data) {
+			remove_icon_from_container (container, icon);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 /* zooming */
 
 int
@@ -2726,7 +2729,7 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 	guint cols;
 	guint lines;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	details = container->details;
 	old_grid = details->grid;
@@ -2836,7 +2839,7 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 	guint i, j, k, m;
 	int x, y, dx;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	details = container->details;
 	grid = details->grid;
@@ -2984,20 +2987,18 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 GList *
 gnome_icon_container_get_selection (GnomeIconContainer *container)
 {
-	GnomeIconContainerDetails *details;
 	GList *list, *p;
 
-	g_return_val_if_fail (container != NULL, FALSE);
-
-	details = container->details;
+	g_return_val_if_fail (GNOME_IS_ICON_CONTAINER (container), FALSE);
 
 	list = NULL;
-	for (p = details->icons; p != NULL; p = p->next) {
+	for (p = container->details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
-		if (icon->is_selected)
+		if (icon->is_selected) {
 			list = g_list_prepend (list, icon->data);
+		}
 	}
 
 	return list;

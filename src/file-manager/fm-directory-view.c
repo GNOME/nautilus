@@ -56,12 +56,13 @@
 enum 
 {
 	ADD_ENTRY,
+	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
+	APPEND_SELECTION_CONTEXT_MENU_ITEMS,
 	BEGIN_ADDING_ENTRIES,
+	BEGIN_LOADING,
 	CLEAR,
 	DONE_ADDING_ENTRIES,
-	BEGIN_LOADING,
-	APPEND_SELECTION_CONTEXT_MENU_ITEMS,
-	APPEND_BACKGROUND_CONTEXT_MENU_ITEMS,
+	REMOVE_ENTRY,
 	LAST_SIGNAL
 };
 
@@ -78,8 +79,10 @@ struct _FMDirectoryViewDetails
 	guint display_pending_idle_id;
 	
 	guint add_files_handler_id;
+	guint remove_files_handler_id;
 	
-	GList *pending_list;
+	GList *pending_files_added;
+	GList *pending_files_removed;
 
 	gboolean loading;
 };
@@ -130,13 +133,13 @@ static void disconnect_model_handlers                   (FMDirectoryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, delete_selection)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, remove_entry)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -166,6 +169,13 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_entry),
+		    		gtk_marshal_NONE__BOXED,
+		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+	fm_directory_view_signals[REMOVE_ENTRY] =
+		gtk_signal_new ("remove_entry",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, remove_entry),
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 	fm_directory_view_signals[DONE_ADDING_ENTRIES] =
@@ -205,13 +215,13 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	/* Function pointers that subclasses must override */
 
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, delete_selection);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, remove_entry);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 }
 
 static void
@@ -353,8 +363,9 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (view->details->model));
 	}
 
-	if (view->details->display_selection_idle_id != 0)
+	if (view->details->display_selection_idle_id != 0) {
 		gtk_idle_remove (view->details->display_selection_idle_id);
+	}
 
 	unschedule_display_of_pending_files (view);
 
@@ -595,29 +606,49 @@ zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	GList *pending_list;
-	GList *p;
+	GList *files_added, *files_removed, *p;
+	NautilusFile *file;
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)) {
 		stop_load (view, FALSE);
 	}
 
-	pending_list = view->details->pending_list;
-	if (pending_list == NULL) {
+	files_added = view->details->pending_files_added;
+	files_removed = view->details->pending_files_removed;
+	if (files_added == NULL && files_removed == NULL) {
 		return FALSE;
 	}
-	view->details->pending_list = NULL;
+	view->details->pending_files_added = NULL;
+	view->details->pending_files_removed = NULL;
 
-	fm_directory_view_begin_adding_entries (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 fm_directory_view_signals[BEGIN_ADDING_ENTRIES]);
 
-	for (p = pending_list; p != NULL; p = p->next) {
-		fm_directory_view_add_entry (view, p->data);
+	for (p = files_added; p != NULL; p = p->next) {
+		file = p->data;
+		
+		if (!nautilus_file_is_gone (file)) {
+			gtk_signal_emit (GTK_OBJECT (view),
+					 fm_directory_view_signals[ADD_ENTRY],
+					 file);
+		}
 	}
 
-	fm_directory_view_done_adding_entries (view);
+	for (p = files_removed; p != NULL; p = p->next) {
+		file = p->data;
+		
+		g_assert (nautilus_file_is_gone (file));
+		gtk_signal_emit (GTK_OBJECT (view),
+				 fm_directory_view_signals[REMOVE_ENTRY],
+				 file);
+	}
 
-	nautilus_file_list_free (pending_list);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 fm_directory_view_signals[DONE_ADDING_ENTRIES]);
+
+	nautilus_file_list_free (files_added);
+	nautilus_file_list_free (files_removed);
 
 	return TRUE;
 }
@@ -740,6 +771,26 @@ unschedule_display_of_pending_files (FMDirectoryView *view)
 }
 
 static void
+add_or_remove_files (FMDirectoryView *view,
+		     GList *files,
+		     GList **pending_list)
+{
+	/* Put the files on the pending list. */
+	nautilus_file_list_ref (files);
+	*pending_list = g_list_concat (*pending_list, g_list_copy (files));
+	
+	/* If we haven't see all the files yet, then we'll wait for the
+	 * timeout to fire. If we have seen all the files, then we'll use
+	 * an idle instead.
+	 */
+	if (nautilus_directory_are_all_files_seen (view->details->model)) {
+		schedule_idle_display_of_pending_files (view);
+	} else {
+		schedule_timeout_display_of_pending_files (view);
+	}
+}
+
+static void
 add_files_cb (NautilusDirectory *directory,
 	      GList *files,
 	      gpointer callback_data)
@@ -753,23 +804,28 @@ add_files_cb (NautilusDirectory *directory,
 
 	g_assert (directory == view->details->model);
 
-	/* Put the files on the pending list. */
-	nautilus_file_list_ref (files);
-	view->details->pending_list = g_list_concat
-		(view->details->pending_list, g_list_copy (files));
-	
-	/* If we haven't see all the files yet, then we'll wait for the
-	   timeout to fire. If we have seen all the files, then we'll use
-	   an idle instead.
-	*/
-	if (nautilus_directory_are_all_files_seen (view->details->model)) {
-		schedule_idle_display_of_pending_files (view);
-	} else {
-		schedule_timeout_display_of_pending_files (view);
-	}
+	add_or_remove_files (view, files, &view->details->pending_files_added);
+}
+
+static void
+remove_files_cb (NautilusDirectory *directory,
+		 GList *files,
+		 gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (files != NULL);
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	g_assert (directory == view->details->model);
+
+	add_or_remove_files (view, files, &view->details->pending_files_removed);
 }
 
 
+
 /**
  * fm_directory_view_clear:
  *
@@ -785,59 +841,6 @@ fm_directory_view_clear (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[CLEAR]);
-}
-
-/**
- * fm_directory_view_begin_adding_entries:
- *
- * Emit the signal to prepare for adding a set of entries to the view. 
- * Subclasses might want to override the signal handler for this signal. 
- * This is normally called only by FMDirectoryView.
- * @view: FMDirectoryView that will soon have new entries added.
- * 
- **/
-void
-fm_directory_view_begin_adding_entries (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_ADDING_ENTRIES]);
-}
-
-/**
- * fm_directory_view_add_entry:
- *
- * Emit the signal to add one entry to the view. Subclasses must
- * override the signal handler for this signal. This is normally called
- * only by FMDirectoryView.
- * @view: FMDirectoryView to add entry to.
- * @file: NautilusFile describing entry to add.
- * 
- **/
-void
-fm_directory_view_add_entry (FMDirectoryView *view, NautilusFile *file)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[ADD_ENTRY], file);
-}
-
-/**
- * fm_directory_view_done_adding_entries:
- *
- * Emit the signal to clean up after adding a set of entries to the view. 
- * Subclasses might want to override the signal handler for this signal. 
- * This is normally called only by FMDirectoryView.
- * @view: FMDirectoryView that has just had new entries added.
- * 
- **/
-void
-fm_directory_view_done_adding_entries (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[DONE_ADDING_ENTRIES]);
 }
 
 /**
@@ -903,15 +906,6 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_out) (view);
-}
-
-/* fm_directory_view_delete_selection invokes the subclass to delete its selected items */
-void
-fm_directory_view_delete_selection (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->delete_selection) (view);
 }
 
 /**
@@ -990,47 +984,30 @@ fm_directory_view_get_model (FMDirectoryView *view)
 
 /* handle the delete command */
 /* FIXME: need to handle errors better, and provide feedback for long deletes */
-
 static void
 delete_one (gpointer data, gpointer user_data)
 {
-	GnomeVFSResult result;
 	NautilusFile *file;
-	gchar *text_uri;
+	GtkWidget *error_box;
+	char *text_uri, *message;
 	
 	g_assert (NAUTILUS_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 	
-	file = NAUTILUS_FILE(data);	
-	text_uri = nautilus_file_get_uri(file);
+	file = NAUTILUS_FILE (data);
 		
-	/* use vfs to actually delete the file or directory */
+	nautilus_file_delete (file);	
 	
-	if (nautilus_file_is_directory(file))
-		result = gnome_vfs_remove_directory(text_uri);
-	else
-		result = gnome_vfs_unlink(text_uri);
-	
-	/* remove the file from the model */
-	/* FIXME: need to do this soon - nautilus_directory doesn't have anything for this yet? */
-	
-	/* report errors if necessary, or remove the file from the views */
-	if (result == GNOME_VFS_OK)
-	{
-		/* invoke a method of the view to delete from the model and container */
-		/* FIXME: Deleting the entire selection is being called once per selected item! */
-		fm_directory_view_delete_selection(FM_DIRECTORY_VIEW(user_data));
-	} else
-	{
-		GtkWidget *error_box;
-		gchar *message = g_strdup_printf("Sorry, but %s could not be deleted", text_uri);
-		error_box = gnome_message_box_new(message, GNOME_MESSAGE_BOX_WARNING,
-						  GNOME_STOCK_BUTTON_OK, NULL);
-		g_free(message);
+	/* report errors if necessary */
+	if (!nautilus_file_is_gone (file)) {
+		text_uri = nautilus_file_get_uri (file);
+		message = g_strdup_printf (_("Sorry, but %s could not be deleted"),
+					   text_uri);
+		g_free (text_uri);
+		error_box = gnome_message_box_new (message, GNOME_MESSAGE_BOX_WARNING,
+						   GNOME_STOCK_BUTTON_OK, NULL);
+		g_free (message);
 	}
-	
-	g_free(text_uri);	
-
 }
 
 static gboolean
@@ -1105,9 +1082,9 @@ fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files)
 static void
 delete_cb (GtkMenuItem *item, GList *files)
 {
-        fm_directory_view_delete_with_confirm (FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), 
-	                                                                               "directory_view")), 
-	                                       files);
+        fm_directory_view_delete_with_confirm
+		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
+		 files);
 }
 
 /* handle the open command */
@@ -1257,7 +1234,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	                                        item_count,
 	                                        "directory_view",
 	                                        view,
-	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        (GtkDestroyNotify) gtk_object_unref,
 	                                        TRUE,
 	                                        open_cb,
 	                                        files->data);
@@ -1267,7 +1244,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	                                        item_count,
 	                                        "directory_view",
 	                                        view,
-	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        (GtkDestroyNotify) gtk_object_unref,
 	                                        TRUE,
 	                                        open_in_new_window_cb,
 	                                        files);
@@ -1277,7 +1254,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	                                        item_count,
 	                                        "directory_view",
 	                                        view,
-	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        (GtkDestroyNotify) gtk_object_unref,
 	                                        TRUE,
 	                                        delete_cb,
 	                                        files);
@@ -1597,6 +1574,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 "files_added",
 		 GTK_SIGNAL_FUNC (add_files_cb),
 		 view);
+	view->details->remove_files_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model), 
+		 "files_removed",
+		 GTK_SIGNAL_FUNC (remove_files_cb),
+		 view);
 }
 
 
@@ -1625,6 +1607,12 @@ disconnect_model_handlers (FMDirectoryView *view)
 		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
 				       view->details->add_files_handler_id);
 		view->details->add_files_handler_id = 0;
+	}
+
+	if (view->details->remove_files_handler_id != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
+				       view->details->remove_files_handler_id);
+		view->details->remove_files_handler_id = 0;
 	}
 }
 

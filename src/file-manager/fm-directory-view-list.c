@@ -94,6 +94,8 @@ static void flist_activate_cb 			    (GtkFList *flist,
 static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
 static void fm_directory_view_list_add_entry 	    (FMDirectoryView *view, 
 				 		     NautilusFile *file);
+static void fm_directory_view_list_remove_entry     (FMDirectoryView *view, 
+				 		     NautilusFile *file);
 static void fm_directory_view_list_background_changed_cb
                                                     (NautilusBackground *background,
 						     FMDirectoryViewList *list_view);
@@ -105,7 +107,6 @@ static void fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view,
 static gboolean fm_directory_view_list_can_zoom_in  (FMDirectoryView *view);
 static gboolean fm_directory_view_list_can_zoom_out (FMDirectoryView *view);
 static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
-static void fm_directory_view_list_delete_selection (FMDirectoryView *view);
 static guint fm_directory_view_list_get_icon_size   (FMDirectoryViewList *list_view);
 static GList *fm_directory_view_list_get_selection  (FMDirectoryView *view);
 static NautilusZoomLevel fm_directory_view_list_get_zoom_level 
@@ -180,7 +181,7 @@ fm_directory_view_list_initialize_class (gpointer klass)
 	fm_directory_view_class->begin_adding_entries = fm_directory_view_list_begin_adding_entries;	
 	fm_directory_view_class->begin_loading = fm_directory_view_list_begin_loading;
 	fm_directory_view_class->add_entry = fm_directory_view_list_add_entry;	
-	fm_directory_view_class->delete_selection = fm_directory_view_list_delete_selection;	
+	fm_directory_view_class->remove_entry = fm_directory_view_list_remove_entry;	
 	fm_directory_view_class->done_adding_entries = fm_directory_view_list_done_adding_entries;	
 	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;	
 	fm_directory_view_class->bump_zoom_level = fm_directory_view_list_bump_zoom_level;	
@@ -611,24 +612,19 @@ fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
 	add_to_flist (FM_DIRECTORY_VIEW_LIST (view), file);
 }
 
-/* remove selected items from the list */
-
 static void
-fm_directory_view_list_delete_selection (FMDirectoryView *view)
+fm_directory_view_list_remove_entry (FMDirectoryView *view, NautilusFile *file)
 {
-	gint index;
-	GtkCList *file_list;
-	GList *selected_list;
-	
+	GtkCList *clist;
+	int row;
+
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
-	file_list = GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
-	selected_list = file_list->selection;
-  	while (selected_list)
-    	{
-      		index = GPOINTER_TO_INT (selected_list->data);
-      		selected_list = selected_list->next;
-    		gtk_clist_remove(file_list, index);
+	clist = GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+	row = gtk_clist_find_row_from_data (clist, file);
+	if (row != -1) {
+		gtk_clist_remove (clist, row);
+		nautilus_file_unref (file);
 	}
 }
 

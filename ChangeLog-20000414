@@ -1,3 +1,42 @@
+2000-03-07  Darin Adler  <darin@eazel.com>
+
+	Reimplemented the delete command to use NautilusFile instead of
+	going directly to the file system.
+
+	* libnautilus/gnome-icon-container.h,
+	libnautilus/gnome-icon-container.c
+	(gnome_icon_container_clear_selected_items),
+	(gnome_icon_container_remove): Got rid of the call that removes
+	all the icons in the selection and replaced it with a call that
+	removes a specific icon.
+
+	* libnautilus/nautilus-directory.h,
+	libnautilus/nautilus-directory.c
+	(nautilus_directory_initialize_class), (nautilus_file_unref),
+	(nautilus_file_detach), (nautilus_file_free),
+	(nautilus_file_delete), (nautilus_file_is_gone): Implemented a
+	call to delete a file and emit the files_removed signal as needed.
+
+	* src/file-manager/fm-directory-view.h,
+	src/file-manager/fm-directory-view.c
+	(fm_directory_view_delete_selection),
+	(fm_directory_view_begin_adding_entries),
+	(fm_directory_view_add_entry),
+	(fm_directory_view_done_adding_entries), (display_pending_files),
+	(add_or_remove_files), (add_files_cb), (remove_files_cb),
+	(delete_one): Changed the delete implementation to call
+	nautilus_file_delete and got rid of the explicit call to
+	delete_selection. The views now will remove their entries in
+	response to the change in the model.
+
+	* src/file-manager/fm-directory-view-icons.c
+	(fm_directory_view_icons_remove_entry),
+	(fm_directory_view_icons_delete_selection),
+	src/file-manager/fm-directory-view-list.c
+	(fm_directory_view_list_remove_entry),
+	(fm_directory_view_list_delete_selection): Eliminated the
+	delete_selection function in favor of the remove_entry function.
+
 2000-03-07  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container-dnd.c:
@@ -6,7 +45,7 @@
 	The dragging is a bit too slow, so we might have to limit this to
 	small images, but for now it's there for all of them.
 	
-	*libnautilus/gnome-icon-container.c:
+	* libnautilus/gnome-icon-container.c:
 	make the text beneath icons use a sans-serif font (helvetica) at Susan's
 	request.
 	
@@ -17,55 +56,55 @@
 
 2000-03-07  John Sullivan  <sullivan@eazel.com>
 
-        * src/ntl-view-nautilus.c:
-        (nautilus_view_try_load_client): Removed recently-added
-        activate call since Maciej implemented a more general solution.
-        (destroy_nautilus_view): Removed recently-added
-        deactivate call since Maciej implemented a more general solution.
+	* src/ntl-view-nautilus.c:
+	(nautilus_view_try_load_client): Removed recently-added
+	activate call since Maciej implemented a more general solution.
+	(destroy_nautilus_view): Removed recently-added
+	deactivate call since Maciej implemented a more general solution.
 
 2000-03-07  John Sullivan  <sullivan@eazel.com>
 
-        Added Stretch/Restore menu items to Settings menu, and made some
-        other menu mechanism tweaks.
+	Added Stretch/Restore menu items to Settings menu, and made some
+	other menu mechanism tweaks.
 
-        * src/nautilus-window-menus.c: Gave General Settings an underline
-        accelerator character.
-        
-        * src/file-manager/fm-directory-view.h,
-        * src/file-manager/fm-directory-view.c:
-        (fm_directory_view_get_bonobo_ui_handler): New function, exposed
-        so subclasses can call.
-        (fm_directory_view_merge_menus), (fm_directory_view_real_merge_menus): 
-        Removed BonoboUIHandler parameter. Updated callers.
-        * src/file-manager/fm-directory-view-icons.c:
-        Store react_to_icon_change_idle_id in details.
-        (fm_directory_view_icons_initialize_class): fill in update_menus
-        function pointer.
-        (fm_directory_view_icons_merge_menus): Removed BonoboUIHandler
-        parameter.
-        (fm_directory_view-icons_destroy): remove react_to_icon_change_idle_id
-        if non-zero.
-        (show_stretch_handles_cb): update menus since stretch item might
-        have changed state.
-        (unstretch_icons_cb): update menus since restore item might have
-        changed state.
-        (fm_directory_view_icons_compute_menu_item_info): New helper
-        function used for both context and bonobo menus.
-        (append_one_context_menu_item): New helper function used for
-        context menus.
-        (fm_directory_view_icons_append_selection_context_menu_items),
-        (fm_directory_view_icons_append_background_context_menu_items):
-        Use the new helper functions.
-        (append_bonobo_menu_item), (update_bonobo_menu_item): New helper 
-        functions used for bonobo menus.
-        (fm_directory_view_icons_merge_menus): include stretch and restore
-        menu items in Settings menu.
-        (fm_directory_view_icons_update_menus): update wording and sensitivity
-        of stretch and restore menu items.
-        (fm_directory_view_icons_react_to_icon_change_idle_cb): update menus,
-        since at least Restore item may have changed.
-        (fm_directory_view_icons_icon_changed_cb): Schedule idle callback
-        to update menus, since doing it here affects stretching too much.
+	* src/nautilus-window-menus.c: Gave General Settings an underline
+	accelerator character.
+	
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_get_bonobo_ui_handler): New function, exposed
+	so subclasses can call.
+	(fm_directory_view_merge_menus), (fm_directory_view_real_merge_menus): 
+	Removed BonoboUIHandler parameter. Updated callers.
+	* src/file-manager/fm-directory-view-icons.c:
+	Store react_to_icon_change_idle_id in details.
+	(fm_directory_view_icons_initialize_class): fill in update_menus
+	function pointer.
+	(fm_directory_view_icons_merge_menus): Removed BonoboUIHandler
+	parameter.
+	(fm_directory_view-icons_destroy): remove react_to_icon_change_idle_id
+	if non-zero.
+	(show_stretch_handles_cb): update menus since stretch item might
+	have changed state.
+	(unstretch_icons_cb): update menus since restore item might have
+	changed state.
+	(fm_directory_view_icons_compute_menu_item_info): New helper
+	function used for both context and bonobo menus.
+	(append_one_context_menu_item): New helper function used for
+	context menus.
+	(fm_directory_view_icons_append_selection_context_menu_items),
+	(fm_directory_view_icons_append_background_context_menu_items):
+	Use the new helper functions.
+	(append_bonobo_menu_item), (update_bonobo_menu_item): New helper 
+	functions used for bonobo menus.
+	(fm_directory_view_icons_merge_menus): include stretch and restore
+	menu items in Settings menu.
+	(fm_directory_view_icons_update_menus): update wording and sensitivity
+	of stretch and restore menu items.
+	(fm_directory_view_icons_react_to_icon_change_idle_cb): update menus,
+	since at least Restore item may have changed.
+	(fm_directory_view_icons_icon_changed_cb): Schedule idle callback
+	to update menus, since doing it here affects stretching too much.
 
 2000-03-07  Maciej Stachowiak  <mjs@eazel.com>
 
@@ -75,7 +114,7 @@
 	bonobo-text-plain for instance.
 	
 	* src/ntl-content-view.c, src/ntl-content-view.h
-	(nautilus_content_view_set_active): Neew function; intended to be
+	(nautilus_content_view_set_active): New function; intended to be
 	called when a content view becomes active, which should activate
 	the controls and merge its menu and toolbar items.
 	* ntl-window.c (nautilus_window_real_set_content_view): Call
@@ -149,110 +188,110 @@
 	
 2000-03-06  John Sullivan  <sullivan@eazel.com>
 
-        The file manager now uses Bonobo menu-merging to install
-        and remove its menu items from the window's menu bar.
-        I didn't put Zoom In/Zoom Out in the menu bar because
-        that seems unnecessary once the control works (they're
-        still in the right-click menu). I haven't yet put
-        Stretch/Restore in the menu bar, will do so soon. And
-        now you get a whole bunch of Gtk-CRITICALs when closing
-        a window because of all the double-destroyed bonobo menu
-        items (just like the two you used to get). Hope to fix
-        this soon. Added new "Settings" menu, which needs to be
-        organized better someday, and will be.
+	The file manager now uses Bonobo menu-merging to install
+	and remove its menu items from the window's menu bar.
+	I didn't put Zoom In/Zoom Out in the menu bar because
+	that seems unnecessary once the control works (they're
+	still in the right-click menu). I haven't yet put
+	Stretch/Restore in the menu bar, will do so soon. And
+	now you get a whole bunch of Gtk-CRITICALs when closing
+	a window because of all the double-destroyed bonobo menu
+	items (just like the two you used to get). Hope to fix
+	this soon. Added new "Settings" menu, which needs to be
+	organized better someday, and will be.
 
-        * components/history/ntl-history-view.c:
-        (menu_setup): Removed function.
-        (make_obj): Removed code to set up merged menu. This was
-        sample code for menu merging; now that we have real menu
-        merging working elsewhere we don't need this sample.
-        
-        * libnautilus/nautilus-string.h,
-        * libnautilus/nautilus-string.c:
-        (nautilus_strstrip): New function, strips all occurrences
-        of a given char from a char *.
-        (nautilus_self_check_string): Added tests for nautilus_strstrip.
-        
-        * src/ntl-view-nautilus.c:
-        (nautilus_view_try_load_client): Activate the new bonobo control
-        when it's installed.
-        (destroy_nautilus_view): Deactivate the bonobo control.
+	* components/history/ntl-history-view.c:
+	(menu_setup): Removed function.
+	(make_obj): Removed code to set up merged menu. This was
+	sample code for menu merging; now that we have real menu
+	merging working elsewhere we don't need this sample.
+	
+	* libnautilus/nautilus-string.h,
+	* libnautilus/nautilus-string.c:
+	(nautilus_strstrip): New function, strips all occurrences
+	of a given char from a char *.
+	(nautilus_self_check_string): Added tests for nautilus_strstrip.
+	
+	* src/ntl-view-nautilus.c:
+	(nautilus_view_try_load_client): Activate the new bonobo control
+	when it's installed.
+	(destroy_nautilus_view): Deactivate the bonobo control.
 
-        * src/nautilus-window-menus.c:
-        edit_menu_info[]: Removed "Preferences..." and preceding separator.
-        settings_menu_info[]: New menu, added "General Settings..."
-        (formerly "Preferences...") and "Use Eazel Theme Icons".
-        main_menu[]: Include settings_menu_info.
-        (edit_menu_prefs_cb): Renamed to general_settings_cb
-        (use_eazel_theme_icons_cb): New function, swaps themes.
-        (update_eazel_theme_menu_item): New function, sets the toggle state
-        of this menu item based on current theme.
-        (nautilus_window_initialize_menus): Call update_eazel_theme_menu_item
-        explicitly, also wire it up to theme change signal.
+	* src/nautilus-window-menus.c:
+	edit_menu_info[]: Removed "Preferences..." and preceding separator.
+	settings_menu_info[]: New menu, added "General Settings..."
+	(formerly "Preferences...") and "Use Eazel Theme Icons".
+	main_menu[]: Include settings_menu_info.
+	(edit_menu_prefs_cb): Renamed to general_settings_cb
+	(use_eazel_theme_icons_cb): New function, swaps themes.
+	(update_eazel_theme_menu_item): New function, sets the toggle state
+	of this menu item based on current theme.
+	(nautilus_window_initialize_menus): Call update_eazel_theme_menu_item
+	explicitly, also wire it up to theme change signal.
 
-        * src/ntl-prefs.c: (nautilus_prefs_ui_show): Renamed dialog
-        from "Preferences" to "General Settings" to match menu item. This
-        name will probably go away entirely eventually, but may as well
-        keep it consistent for now.
-        
-        * src/file-manager/fm-directory-view.h: (merge_menus): New function
-        pointer.  (update_menus): New function pointer.
-        (fm_directory_view_update_menus): Prototype for new function.  *
-        src/file-manager/fm-directory-view.c:
-        (fm_directory_view_initialize_class): Set up merge_menus and
-        update_menus function pointers.  (bonobo_menu_open_cb),
-        (bonobo_menu_open_in_new_window_cb), (bonobo_menu_delete_cb): New
-        callback functions with parameters the way Bonobo likes 'em.
-        (get_bonobo_control): New utility function for getting the
-        BonoboControl out of an FMDirectoryView.
-        (bonobo_control_activate_cb): New function, called when the view's
-        BonoboControl is activated or deactivated. Merges menus on
-        activate, unsets bonobo container on deactivate.
-        (fm_directory_view_initialize): Wire up bonobo_control_activate_cb
-        to "activate" signal of view's bonobo control.
-        (use_eazel_theme_icons_cb): Removed this function (it's in the
-        standard Nautilus menus now, not component-dependent).
-        (delete_one): Added a FIXME comment noting that the view is being
-        told to delete the entire selection for every selected item.
-        (fm_directory_view_delete_with_confirm): Moved the guts of
-        delete_cb into here so it can be conveniently called from both
-        bonobo menu and right-click menu.  (delete_cb): Now just calls
-        fm_directory_view_delete_with_confirm.
-        (add_check_menu_item): Removed function, had only been used by
-        eazel theme icons menu item.
-        (fm_directory_view_real_append_background_context_menu_items):
-        Removed eazel theme icons menu item from right-click menu (now
-        accessible always in the Settings menu).
-        (compute_menu_item_info): New function, determines current label
-        and sensitivity for dynamic menu items, common to both bonobo menus
-        and context menus. Uses nautilus_strstrip to remove underlines used
-        for accelerators when item is used for context menu.
-        (append_one_selection_context_menu_item): New helper function,
-        wraps up common code for constructing a menu item for the 
-        selection-dependent part of the context menu.
-        (fm_directory_view_real_append_selection_context_menu_items):
-        Replaced a lot of duplicated code with calls to
-        append_one_selection_context_menu_item.
-        (fm_directory_view_real_merge_menus): New funciton. Here lieth the 
-        code to put directory view menu items into the window's menu bar.
-        (update_one_menu_item): New function, uses compute_menu_item_info
-        to update the label & sensitivity of one bonobo-style menu item.
-        (fm_directory_view_real_update_menus): New function, calls
-        update_one_menu_item on each menu item whose label or sensitivity
-        is dynamic.
-        (fm_directory_view_notify_selection_changed): 
-        Call fm_directory_view_update_menus to update menu labels &
-        sensitivity that depend on the selection.
-        (fm_directory_view_merge_menus): New function, calls the function pointer.
-        (fm_directory_view_update_menus): New function, calls the function pointer.
-        
-        * src/file-manager/fm-directory-view-icons.c:
-        (fm_directory_view_icons_initialize_class): Supply function pointer
-        for merge_menus.
-        (customize_icon_text_cb): Just added comments about its dual use.
-        (fm_directory_view_icons_merge_menus): Merge a "Customize Icon Text"
-        item into the Settings menu. Still need to do the Stretch/Restore items
-        here.
+	* src/ntl-prefs.c: (nautilus_prefs_ui_show): Renamed dialog
+	from "Preferences" to "General Settings" to match menu item. This
+	name will probably go away entirely eventually, but may as well
+	keep it consistent for now.
+	
+	* src/file-manager/fm-directory-view.h: (merge_menus): New function
+	pointer.  (update_menus): New function pointer.
+	(fm_directory_view_update_menus): Prototype for new function.  *
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): Set up merge_menus and
+	update_menus function pointers.  (bonobo_menu_open_cb),
+	(bonobo_menu_open_in_new_window_cb), (bonobo_menu_delete_cb): New
+	callback functions with parameters the way Bonobo likes 'em.
+	(get_bonobo_control): New utility function for getting the
+	BonoboControl out of an FMDirectoryView.
+	(bonobo_control_activate_cb): New function, called when the view's
+	BonoboControl is activated or deactivated. Merges menus on
+	activate, unsets bonobo container on deactivate.
+	(fm_directory_view_initialize): Wire up bonobo_control_activate_cb
+	to "activate" signal of view's bonobo control.
+	(use_eazel_theme_icons_cb): Removed this function (it's in the
+	standard Nautilus menus now, not component-dependent).
+	(delete_one): Added a FIXME comment noting that the view is being
+	told to delete the entire selection for every selected item.
+	(fm_directory_view_delete_with_confirm): Moved the guts of
+	delete_cb into here so it can be conveniently called from both
+	bonobo menu and right-click menu.  (delete_cb): Now just calls
+	fm_directory_view_delete_with_confirm.
+	(add_check_menu_item): Removed function, had only been used by
+	eazel theme icons menu item.
+	(fm_directory_view_real_append_background_context_menu_items):
+	Removed eazel theme icons menu item from right-click menu (now
+	accessible always in the Settings menu).
+	(compute_menu_item_info): New function, determines current label
+	and sensitivity for dynamic menu items, common to both bonobo menus
+	and context menus. Uses nautilus_strstrip to remove underlines used
+	for accelerators when item is used for context menu.
+	(append_one_selection_context_menu_item): New helper function,
+	wraps up common code for constructing a menu item for the 
+	selection-dependent part of the context menu.
+	(fm_directory_view_real_append_selection_context_menu_items):
+	Replaced a lot of duplicated code with calls to
+	append_one_selection_context_menu_item.
+	(fm_directory_view_real_merge_menus): New funciton. Here lieth the 
+	code to put directory view menu items into the window's menu bar.
+	(update_one_menu_item): New function, uses compute_menu_item_info
+	to update the label & sensitivity of one bonobo-style menu item.
+	(fm_directory_view_real_update_menus): New function, calls
+	update_one_menu_item on each menu item whose label or sensitivity
+	is dynamic.
+	(fm_directory_view_notify_selection_changed): 
+	Call fm_directory_view_update_menus to update menu labels &
+	sensitivity that depend on the selection.
+	(fm_directory_view_merge_menus): New function, calls the function pointer.
+	(fm_directory_view_update_menus): New function, calls the function pointer.
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize_class): Supply function pointer
+	for merge_menus.
+	(customize_icon_text_cb): Just added comments about its dual use.
+	(fm_directory_view_icons_merge_menus): Merge a "Customize Icon Text"
+	item into the Settings menu. Still need to do the Stretch/Restore items
+	here.
 
 2000-03-06  Darin Adler  <darin@eazel.com>
 

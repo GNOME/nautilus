@@ -68,6 +68,12 @@ struct _FMDirectoryViewClass {
 	void 	(* add_entry) 		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
+	/* The 'remove_entry' signal is emitted to remove one entry from the view.
+	 * It must be replaced by each subclass.
+	 */
+	void 	(* remove_entry) 	 (FMDirectoryView *view, 
+					  NautilusFile *file);
+
 	/* The 'done_adding_entries' signal is emitted after a set of entries
 	 * are added to the view. It can be replaced by a subclass to do any 
 	 * necessary cleanup (typically, cleanup for code in begin_adding_entries).
@@ -110,13 +116,8 @@ struct _FMDirectoryViewClass {
 	 * with a function that returns a newly-allocated GList of
 	 * NautilusFile pointers.
 	 */
-	GList *
-		(* get_selection) 	 (FMDirectoryView *view);
+	GList *	(* get_selection) 	 (FMDirectoryView *view);
 	
-	/* delete_selection tells the view to delete it's selected items.  It's not responsible
-	   for deleting the actual files, just the entry corresponding to them */
-	void	(* delete_selection)	 (FMDirectoryView *view);
- 
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
         void    (* bump_zoom_level)      (FMDirectoryView *view,
@@ -161,7 +162,6 @@ void                      fm_directory_view_load_uri                      (FMDir
 									   const char      *uri);
 
 /* Functions callable from the user interface and elsewhere. */
-void	                  fm_directory_view_delete_selection              (FMDirectoryView *view);
 GList *                   fm_directory_view_get_selection                 (FMDirectoryView *view);
 void                      fm_directory_view_stop                          (FMDirectoryView *view);
 gboolean                  fm_directory_view_can_zoom_in                   (FMDirectoryView *view);
@@ -175,10 +175,6 @@ void                      fm_directory_view_select_all                    (FMDir
  * that observers might want to connect with.
  */
 void                      fm_directory_view_clear                         (FMDirectoryView *view);
-void                      fm_directory_view_begin_adding_entries          (FMDirectoryView *view);
-void                      fm_directory_view_add_entry                     (FMDirectoryView *view,
-									   NautilusFile    *file);
-void                      fm_directory_view_done_adding_entries           (FMDirectoryView *view);
 void                      fm_directory_view_begin_loading                 (FMDirectoryView *view);
 
 /* Hooks for subclasses to call. These are normally called only by 
