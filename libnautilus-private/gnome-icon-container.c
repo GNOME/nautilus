@@ -940,6 +940,9 @@ set_kbd_current (GnomeIconContainer *container,
 
 	priv->kbd_current = icon;
 
+	if (priv->kbd_current == NULL)
+		return;
+	
 	icon_get_text_bounding_box (icon, &x1, &y1, &x2, &y2);
 
 	gnome_canvas_item_set (priv->kbd_navigation_rectangle,
