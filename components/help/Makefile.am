@@ -65,4 +65,4 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 @XML_I18N_MERGE_OAF_RULE@
 
 
-EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) help-methods.conf topleveldocs.xml
+EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) $(modulesconf_DATA) $(hyperbola_DATA) $(ui_DATA)

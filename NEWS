@@ -1,3 +1,19 @@
+=== Version 1.0.6
+
+Nautilus 1.0.6 contains a small number of fixes to bugs introduced in
+1.0.5 and a few small new features. Here's a list of changes since 1.0.5:
+
+* Add feature where "can't write" emblems don't appear in directories
+  that are complete "can't write" (Alex)
+* Add scrollkeeper indexing capabilities (Louise Miller)
+* Fix bug where notifications didn't take effect (Darin)
+* Fix hysteresis so it doesn't affect changes after the icon view has
+  loaded (Darin)
+* Add libiconv include paths so people who use platforms without iconv
+  in the libc can build (Alex)
+* Localize desktop link names properly (Benedikt Roth)
+* Some updated translations
+
 === Version 1.0.5
 
 Nautilus 1.0.5 contains more speedups, and some features and bug
