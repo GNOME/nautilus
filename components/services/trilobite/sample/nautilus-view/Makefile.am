@@ -4,7 +4,7 @@ SUBDIR = icons
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
-	 -DG_LOG_DOMAIN=\"trilobite-eazel-sample-service\"	\
+	 -DG_LOG_DOMAIN=\"trilobite-sample-service\"		\
 	$(NULL)
 
 INCLUDES =								\

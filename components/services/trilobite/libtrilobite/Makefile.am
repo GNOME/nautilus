@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libtrilobite.la libtrilobite-service.la
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" 			\
-	-DG_LOG_DOMAIN=\"libtrilobited\"	\
+	-DG_LOG_DOMAIN=\"libtrilobite\"	\
 	-DSTANDALONE				\
 	$(NULL)
 

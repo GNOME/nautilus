@@ -31,6 +31,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <gnome.h>
+#include <liboaf/liboaf.h>
+#include <bonobo.h>
 #include "trilobite-core-utils.h"
 
 #ifdef OPEN_MAX
@@ -97,4 +100,86 @@ close_and_give_up:
 	close (pipe_err[1]);
 
 	return -1;
+}
+
+
+/* handler for trapping g_log/g_warning/g_error/g_message stuff, and sending it to
+ * a standard logfile.
+ */
+static void
+trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message, FILE *logf)
+{
+	char *prefix;
+	g_assert (logf != NULL);
+
+	if (flags & G_LOG_LEVEL_MESSAGE) {
+		prefix = "---";
+	} else if (flags & G_LOG_LEVEL_WARNING) {
+		prefix = "*** warning:";
+	} else if (flags & G_LOG_LEVEL_ERROR) {
+		prefix = "!!! ERROR:";
+	} else {
+		prefix = "???";
+	}
+
+	fprintf (logf, "%s %s\n", prefix, message);
+	fflush (logf);
+}
+
+
+static FILE *saved_logf = NULL;
+
+static void
+trilobite_close_log (void)
+{
+	if (saved_logf != NULL) {
+		fclose (saved_logf);
+	}
+}
+
+
+/* trilobite_init -- does all the init stuff 
+ * for now, this requires init_gnome, and thus a running X server: FIXME robey (1656)
+ * initializes OAF and bonobo, too.
+ *
+ * service_name should be your G_LOG_DOMAIN, if you set one, because of the way logging works
+ * 
+ * options is a way to add extra parameters in the future (can be NULL for now).
+ *
+ * returns FALSE if init fails.
+ */
+gboolean
+trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
+		int argc, char **argv, GData *options)
+{
+	CORBA_ORB orb;
+	FILE *logf;
+
+	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
+	orb = oaf_init (argc, argv);
+
+	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
+		g_error (_("Could not initialize Bonobo"));
+		goto fail;
+	}
+
+	if (log_filename != NULL) {
+		logf = fopen (log_filename, "wt");
+		if (logf != NULL) {
+			g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR,
+					   (GLogFunc)trilobite_add_log, logf);
+			/* send libtrilobite messages there, too */
+			g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR,
+					   (GLogFunc)trilobite_add_log, logf);
+		} else {
+			g_warning (_("Can't write logfile %s -- using default log handler"), log_filename);
+		}
+	}
+
+	g_atexit (trilobite_close_log);
+
+	return TRUE;
+
+fail:
+	return FALSE;
 }

@@ -1,3 +1,22 @@
+2000-07-13  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_pexec), (trilobite_add_log), (trilobite_close_log),
+	(trilobite_init):
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/lib/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* components/services/trilobite/sample/service/main.c: (main):
+
+	Add trilobite_init() to cover up initialization madness.  Clean up
+	the G_LOG_DOMAINS and make them roughly uniform.  Use a
+	service-specified logfile for g_{message|warning|error} dumps.
+
 2000-07-13  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/rpmview/Makefile.am:

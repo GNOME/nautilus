@@ -110,11 +110,9 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	gnome_init_with_popt_table ("trilobite-sample-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
-		g_error ("Could not initialize Bonobo");
+	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, NULL) == FALSE) {
+		g_error ("Could not initialize trilobite. :(");
+		exit (1);
 	}
 
 	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 

@@ -18,6 +18,7 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ *	    Robey Pointer <robey@eazel.com>
  *
  */
 
@@ -31,6 +32,8 @@
 #define TRILOBITE_CORE_UTILS_H
 
 int trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdout_fd, int *stderr_fd);
+gboolean trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
+			 int argc, char **argv, GData *options);
 
 #endif /* TRILOBITE_CORE_UTILS_H */
 
