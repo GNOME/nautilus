@@ -3807,7 +3807,8 @@ static gboolean
 can_use_component_for_file (NautilusFile *file)
 {
 	return (nautilus_file_is_directory (file) ||
-		NAUTILUS_IS_DESKTOP_ICON_FILE (file));
+		NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
+		nautilus_file_is_nautilus_link (file));
 }
 
 static ActivationAction
@@ -3860,6 +3861,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	char *uri;
 	int num_applications;
 	int index;
+	gboolean other_applications_visible;
 	
 	/* Clear any previous inserted items in the applications and viewers placeholders */
 	nautilus_bonobo_remove_menu_items_and_commands
@@ -3876,6 +3878,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	/* This menu is only displayed when there's one selected item. */
 	if (!eel_g_list_exactly_one_item (selection)) {
 		submenu_visible = FALSE;
+		other_applications_visible = FALSE;
 	} else {		
 		GnomeVFSMimeApplication *default_app;
 		ActivationAction action;
@@ -3884,6 +3887,8 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		uri = nautilus_file_get_uri (file);
 
+		other_applications_visible = !can_use_component_for_file (file);
+		
 		action = get_activation_action (file);
 		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION) {
 			default_app = nautilus_mime_get_default_application_for_file (file);
@@ -3891,11 +3896,12 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 			default_app = NULL;
 		}
 
-		applications = nautilus_mime_get_open_with_applications_for_file (NAUTILUS_FILE (selection->data));
+		applications = NULL;
+		if (other_applications_visible) {
+			applications = nautilus_mime_get_open_with_applications_for_file (NAUTILUS_FILE (selection->data));
+		}
 
 		num_applications = g_list_length (applications);
-
-		
 		
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
 			GnomeVFSMimeApplication *application;
@@ -3929,6 +3935,10 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		submenu_visible = (num_applications > 3);
 	}
 
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
+				    !other_applications_visible);
+	
 	/* It's OK to set the visibility of the menu items (rather than the verbs)
 	 * here because these are submenu titles, not items with verbs.
 	 */

@@ -1,3 +1,10 @@
+2004-08-27  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(can_use_component_for_file), (reset_bonobo_open_with_menu):
+	Don't show the open with menus for folders, nautilus links or
+	when there are multiple items selected.
+
 2004-08-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-async.c (mime_db_changed_callback):
