@@ -35,4 +35,4 @@ server_in_files =				\
 
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)
+EXTRA_DIST = $(server_in_files) $(ui_DATA) $(nautilus_text_view_SOURCES) # $(server_DATA)
