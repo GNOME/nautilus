@@ -4,6 +4,14 @@ SUBDIRS = sidebar_tab_pieces backgrounds
 
 arlo_DATA =	\
 	arlo.xml		\
+	Back.png	\
+	Forward.png	\
+	Up.png	\
+	Refresh.png	\
+	Home.png	\
+	Search.png	\
+	SearchWeb.png	\
+	Stop.png	\
 	decrement.png		\
 	decrement-i.png		\
 	emblem-nowrite.png	\
