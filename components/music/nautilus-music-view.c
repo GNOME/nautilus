@@ -98,7 +98,7 @@ struct NautilusMusicViewDetails {
 	GtkWidget *play_control_box;
 
 	GtkWidget *song_label;
-	GtkWidget *total_track_time;
+	//GtkWidget *total_track_time;
 	
 	GtkWidget *playtime;
 	GtkWidget *playtime_bar;
@@ -439,9 +439,6 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	g_free (label_text);
         
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
-        if (temp_str != NULL && strlen (temp_str) > 0) {
-		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
-	}
 }
 
 
@@ -1464,52 +1461,106 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
 static void
 add_play_controls (NautilusMusicView *music_view)
 {
-	GtkWidget *table;
 	GtkWidget *box; 
-	GtkWidget *vbox, *hbox2;
+	GtkWidget *vbox, *hbox;
 	GtkWidget *button;
 	GtkTooltips *tooltips;
 	
 	tooltips = gtk_tooltips_new ();
 
-	table = gtk_table_new (3, 7, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 1);
-	
+	/* Create main vbox */
+	vbox = gtk_vbox_new (0, 0);
+	gtk_box_pack_start (GTK_BOX (music_view->details->control_box), vbox, FALSE, FALSE, 6);
+	gtk_widget_show (vbox);
+	music_view->details->play_control_box = vbox;
+
+	/* Song title label */
 	music_view->details->song_label = nautilus_label_new ("");
 	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
 	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
-	
+	gtk_box_pack_start (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
 	gtk_widget_show (music_view->details->song_label);
         
-	vbox = gtk_vbox_new (0, 0);
-	gtk_box_pack_start (GTK_BOX (music_view->details->control_box), vbox, FALSE, FALSE, 6);
-	
-	gtk_box_pack_start (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
-	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 4);
-	gtk_widget_show (vbox);
-	
-	music_view->details->play_control_box = vbox;
-	
-	/* playtime label */
-	hbox2 = gtk_hbox_new (0, 0);
-	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 6, 0, 1, 0, 0, 0, 0);
-	gtk_widget_show (hbox2);
-	music_view->details->playtime = nautilus_label_new ("--:--");
-	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+        /* Buttons */
+        hbox = gtk_hbox_new (0, 0);
+        gtk_box_pack_start_defaults (GTK_BOX (vbox), hbox);	
+	gtk_widget_show (hbox);
 
- 	/* FIXME
-	 * Fixing the widget size is bad, but it is done because the label resizes, as it
-	 * changes to reflect the current time, and can cause the widgets to its right
-	 * to move. This does keep the other widgets from moving, but if you watch closely, the
-	 * left edge of the playtime moves.
-	 */
-        gtk_widget_set_usize (music_view->details->playtime, 40, -1);
-        gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
-        
-	gtk_widget_show (music_view->details->playtime);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime, FALSE, FALSE, 0);
+	/* previous track button */	
+	box = xpm_label_box (music_view, prev_xpm);
+	gtk_widget_show (box);
+	button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Previous"), NULL);
+	gtk_container_add (GTK_CONTAINER (button), box);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
+	gtk_widget_set_sensitive (button, TRUE);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_widget_show (button);
+
+	/* play button */
+	box = xpm_dual_label_box (music_view, play_xpm, play_green_xpm,
+                                  &music_view->details->inactive_play_pixwidget,
+                                  &music_view->details->active_play_pixwidget);
+	gtk_widget_show (box);
+	button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Play"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (button), box);
+	gtk_widget_set_sensitive (button, TRUE);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
+	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_widget_show (button);
+
+	/* pause button */
+	box = xpm_dual_label_box (music_view, pause_xpm, pause_green_xpm,
+                                  &music_view->details->inactive_pause_pixwidget,
+                                  &music_view->details->active_pause_pixwidget);
+	gtk_widget_show (box);
+	button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Pause"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (button), box);
+	gtk_widget_set_sensitive (button, TRUE);
+
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                            GTK_SIGNAL_FUNC(pause_button_callback), music_view);
+	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_widget_show (button);
+
+	/* stop button */
+	box = xpm_label_box (music_view, stop_xpm);
+	gtk_widget_show (box);
+	button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Stop"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (button), box);
+	gtk_widget_set_sensitive (button, TRUE);
+
+	gtk_signal_connect(GTK_OBJECT (button), "clicked",
+                           GTK_SIGNAL_FUNC (stop_button_callback), music_view);
+	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_widget_show (button);
+
+	/* next button */
+	box = xpm_label_box (music_view, next_xpm);
+	gtk_widget_show (box);
+	button = gtk_button_new();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Next"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (button), box);
+	gtk_widget_set_sensitive (button, TRUE);
+
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                            GTK_SIGNAL_FUNC (next_button_callback), music_view);
+	gtk_box_pack_start_defaults (GTK_BOX (hbox), button);
+	gtk_widget_show (button);
+	
+	
+	/* hbox to hold slider and song progress time */
+	hbox = gtk_hbox_new (0, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 7);
+	gtk_widget_show (hbox);
 
 	/* progress bar */
 	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
@@ -1527,102 +1578,25 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_scale_set_draw_value (GTK_SCALE (music_view->details->playtime_bar), 0);
 	gtk_widget_show (music_view->details->playtime_bar);
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime_bar, FALSE, FALSE, 4);	
-	/* total label */
-	music_view->details->total_track_time = nautilus_label_new ("--:--");
-        nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->total_track_time), 2);
-	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
-	
-	gtk_widget_show (music_view->details->total_track_time);
-	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->total_track_time, FALSE, FALSE, 0);
-
-	gtk_table_set_row_spacing (GTK_TABLE (table), 0, 5);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
+	gtk_widget_set_usize (music_view->details->playtime_bar, 200, -1);
 	gtk_widget_show (music_view->details->playtime_bar);
 
-	/* buttons */
+	/* playtime label */
+	music_view->details->playtime = nautilus_label_new ("--:--");
+	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
+	gtk_widget_show (music_view->details->playtime);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime, FALSE, FALSE, 0);
 
-	/* previous track button */	
-	box = xpm_label_box (music_view, prev_xpm);
-	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Previous"), NULL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
-	gtk_widget_set_sensitive (button, TRUE);
-	
-	gtk_table_attach (GTK_TABLE (table), button, 0, 1, 1, 2, 0, 0, 0, 0);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_widget_show (button);
-
-	/* play button */
-	box = xpm_dual_label_box (music_view, play_xpm, play_green_xpm,
-                                  &music_view->details->inactive_play_pixwidget,
-                                  &music_view->details->active_play_pixwidget);
-	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Play"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 1, 2, 1, 2, 0, 0, 0, 0);
-	gtk_widget_show (button);
-
-	/* pause button */
-	box = xpm_dual_label_box (music_view, pause_xpm, pause_green_xpm,
-                                  &music_view->details->inactive_pause_pixwidget,
-                                  &music_view->details->active_pause_pixwidget);
-	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Pause"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                            GTK_SIGNAL_FUNC(pause_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 2, 3, 1, 2, 0, 0, 0, 0);
-	gtk_widget_show (button);
-
-	/* stop button */
-	box = xpm_label_box (music_view, stop_xpm);
-	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Stop"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
-
-	gtk_signal_connect(GTK_OBJECT (button), "clicked",
-                           GTK_SIGNAL_FUNC (stop_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 3, 4, 1, 2, 0, 0, 0, 0);
-	gtk_widget_show (button);
-
-	/* next button */
-	box = xpm_label_box (music_view, next_xpm);
-	gtk_widget_show (box);
-	button = gtk_button_new();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Next"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                            GTK_SIGNAL_FUNC (next_button_callback), music_view);
-	gtk_table_attach (GTK_TABLE (table), button, 4, 5, 1, 2, 0, 0, 0, 0);
-	gtk_widget_show (button);
-
-	/* display the "cant play message if necessary */
-#if 0	
-	if (!music_view->details->sound_enabled) {
-		label = nautilus_label_new (_("Sound hardware missing or busy!"));
-		nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
-		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE(table), label, 0, 5, 3, 4, 0, 0, 0, 0);
-	}
-#endif	
-	gtk_widget_show (table);
+ 	/* FIXME
+	 * Fixing the widget size is bad, but it is done because the label resizes, as it
+	 * changes to reflect the current time, and can cause the widgets to its right
+	 * to move. This does keep the other widgets from moving, but if you watch closely, the
+	 * left edge of the playtime moves.
+	 */
+	gtk_widget_set_usize (music_view->details->playtime, 40, -1);		
 }
 
 /* set the album image, or hide it if none */
@@ -1831,7 +1805,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		
 		artist_name = determine_attribute (song_list, TRUE);
 		if (artist_name != NULL) {
-			temp_str = g_strdup_printf (_("%s by %s"), album_name, artist_name);
+			temp_str = g_strdup_printf (_("%s - %s"), album_name, artist_name);
 			g_free (artist_name);
 		} else {
 			temp_str = g_strdup (album_name);
@@ -1901,10 +1875,6 @@ music_view_background_appearance_changed_callback (NautilusBackground *backgroun
 	}
 	if (music_view->details->playtime != NULL) {
 		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->playtime),
-                                               text_color);
-	}
-	if (music_view->details->total_track_time != NULL) {
-		nautilus_label_set_text_color (NAUTILUS_LABEL (music_view->details->total_track_time),
                                                text_color);
 	}
 }
