@@ -1,3 +1,21 @@
+2001-01-11  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fixed bug 5589 (crash when dragging from list view), that I'd
+	introduced when making list view icons anti-aliased
+
+	* libnautilus-extensions/nautilus-list.h,
+	libnautilus-extensions/nautilus-list.c
+	(nautilus_list_get_pixbuf): new function, returns the GdkPixbuf
+	stored in a cell, or a null pointer if there isn't one
+
+	* src/file-manager/fm-list-view.c (fm_list_get_drag_pixmap):
+	use nautilus_list_get_pixbuf to fetch the GdkPixbuf from the
+	row, then gdk_pixbuf_render_pixmap_and_mask to turn it into the
+	required format (instead of accessing the NautilusClist widget
+	directly, assuming that a Pixmap is stored in the cell)
+
 2001-01-12  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/nautilus-complex-search-bar.c:

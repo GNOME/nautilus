@@ -156,6 +156,9 @@ void	     nautilus_list_set_pixbuf		 (NautilusList		  *list,
 						  int			   row_index,
 						  int			   column_index,
 						  GdkPixbuf		  *pixbuf);
+GdkPixbuf   *nautilus_list_get_pixbuf		 (NautilusList		  *list,
+						  int			   row_index,
+						  int			   column_index);
 void         nautilus_list_mark_cell_as_link     (NautilusList            *list,
 						  gint                     row,
 						  gint                     column);

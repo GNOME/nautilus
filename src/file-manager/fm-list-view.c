@@ -38,6 +38,7 @@
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -833,21 +834,17 @@ static void
 fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap, 
 			 GdkBitmap **mask, FMListView *list_view)
 {
-	NautilusCList *clist;
-	NautilusCListRow *row;
+	GdkPixbuf *pixbuf;
 
 	g_assert (NAUTILUS_IS_LIST (widget));
 
-	clist = NAUTILUS_CLIST (widget);
-	row = ROW_ELEMENT (clist, row_index)->data;
+	pixbuf = nautilus_list_get_pixbuf (NAUTILUS_LIST (widget),
+					   row_index, LIST_VIEW_COLUMN_ICON);
 
-	g_assert (row != NULL);
+	g_assert (pixbuf != NULL);
 
-	*pixmap = gdk_pixmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->pixmap);
-	*mask = NULL;
-	if (GTK_CELL_PIXMAP(row->cell[LIST_VIEW_COLUMN_ICON])->mask != NULL) {
-		*mask = gdk_bitmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->mask);
-	}
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask,
+					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 }
 
 static int

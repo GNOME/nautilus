@@ -2857,6 +2857,35 @@ set_list_cell (NautilusList *list,
 	}
 }
 
+static gpointer
+get_list_cell (NautilusList *list,
+	       int row_index, int column_index,
+	       NautilusCellType type)
+{
+	NautilusCList    *clist;
+	NautilusCListRow *row;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), NULL);
+
+	clist = NAUTILUS_CLIST (list);
+
+	if (row_index < 0 || row_index >= clist->rows) {
+		return NULL;
+	}
+	
+	if (column_index < 0 || column_index >= clist->columns) {
+		return NULL;
+	}
+
+	row = ROW_ELEMENT (clist, row_index)->data;
+
+	if (row->cell[column_index].type == type) {
+		return NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap;
+	}
+
+	return NULL;
+}
+
 /**
  * nautilus_list_set_pixbuf_list:
  * 
@@ -2895,6 +2924,25 @@ nautilus_list_set_pixbuf (NautilusList *list,
 {
 	set_list_cell (list, row_index, column_index,
 		       NAUTILUS_CELL_PIXBUF, pixbuf);
+}
+
+/**
+ * nautilus_list_get_pixbuf:
+ * 
+ * Return the pixbuf stored in the specified position, or a null pointer
+ * if the cell isn't a pixbuf.
+ * 
+ * @list: The NautilusList in question.
+ * @row: The row of the target cell.
+ * @column_index: The column of the target cell.
+ */
+GdkPixbuf *
+nautilus_list_get_pixbuf (NautilusList *list,
+			  int row_index,
+			  int column_index)
+{
+	return get_list_cell (list, row_index, column_index,
+			      NAUTILUS_CELL_PIXBUF);
 }
 
 static void
