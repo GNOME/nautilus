@@ -33,6 +33,11 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Workaround for older versions of Libart that didn't define art_u16 */
+#ifndef ART_SIZEOF_SHORT
+typedef unsigned short art_u16;
+#endif
+
 /* Render object */
 
 #ifndef ART_MAX_DEPTH
