@@ -1,3 +1,18 @@
+2000-01-31  Andy Hertzfeld <andy@eazel.com>
+
+        implemented the "select all" command in the context menus
+        
+        * src/file-manager/directory_view.c,h:
+        added a directory_view_select_all slot for subclasses to override,
+        enabled "select all" item and attached a signal to the item, whose
+        callback calls fm_directory_view_select_all
+        * src/file-manager/directory_view_icons.c:
+        implemented directory_view_icons_select_all by invoking the "select all"
+        operation of GnomeIconContainer
+        * src/file-manager/directory_view_list.c:
+        implemented directory_view_list_select_all by invoking the "select all"
+        operation of the clist widget
+        
 2000-01-31  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window-msgs.c, src/ntl-window-private.h: Update debugging messages. Allow

@@ -101,6 +101,10 @@ struct _FMDirectoryViewClass {
         /* can_zoom_out is a function pointer that subclasses must override to
          * return whether the view is at minimum size (furthest-out zoom level) */
         gboolean (* can_zoom_out)	 (FMDirectoryView *view);
+        
+        /* select_sll is a function pointer that subclasses must override to
+         * select all of the items in the view */
+        void (* select_all)	        (FMDirectoryView *view);
 };
 
 
@@ -122,6 +126,7 @@ gboolean		  fm_directory_view_can_zoom_in		     (FMDirectoryView	      *view);
 gboolean		  fm_directory_view_can_zoom_out	     (FMDirectoryView	      *view);
 void	                  fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, 
 								      gint 		       zoom_increment);
+void	                  fm_directory_view_select_all              (FMDirectoryView         *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals

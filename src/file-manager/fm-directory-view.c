@@ -84,6 +84,7 @@ static void stop_location_change_cb 		(NautilusViewFrame *view_frame,
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
+static void select_all_cb                       (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
 
@@ -99,6 +100,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
@@ -153,6 +155,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
@@ -347,6 +350,14 @@ stop_load (FMDirectoryView *view, gboolean error)
 }
 
 
+
+/* handle the "select all" menu command */
+
+static void
+select_all_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+	fm_directory_view_select_all (directory_view);
+}
 
 /* handle the zoom in/out menu items */
 
@@ -744,8 +755,9 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
 	GtkWidget *menu_item;
 
 	menu_item = gtk_menu_item_new_with_label ("Select all");
-	gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (select_all_cb), view);
 	gtk_menu_append (menu, menu_item);
 
 
@@ -963,6 +975,20 @@ disconnect_model_handlers (FMDirectoryView *view)
 				       view->details->add_files_handler_id);
 		view->details->add_files_handler_id = 0;
 	}
+}
+
+/**
+ * fm_directory_view_select_all:
+ *
+ * select all the items in the view
+ * 
+ **/
+void
+fm_directory_view_select_all (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->select_all) (view);
 }
 
 /**
