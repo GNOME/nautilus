@@ -1,5 +1,16 @@
 2000-02-22  John Sullivan  <sullivan@eazel.com>
 
+	Made list view respond to icon theme changes too. Forgot
+	about it last time!
+
+	* src/file-manager/fm-directory-view-list.c:
+	(update_icons): New function, walks through list installing
+	the icon for each row.
+	(fm_directory_view_list_initialize): register to call update_icons
+	when nautilus_icon_factory emits "theme_changed" signal.
+
+2000-02-22  John Sullivan  <sullivan@eazel.com>
+
 	Made bookmarks menu, go menu, and bookmarks window respond
 	to icon theme changes. The history metaview is still an
 	outstanding issue, waiting on technical solution to

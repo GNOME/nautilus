@@ -135,6 +135,7 @@ static void show_sort_indicator 		    (GtkFList *flist,
 						     int column, 
 						     gboolean sort_reversed);
 static int sort_criterion_from_column 		    (int column);
+static void update_icons			    (FMDirectoryViewList *list_view);
 
 static char * down_xpm[] = {
 "6 5 2 1",
@@ -206,6 +207,12 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	list_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 
 	create_flist (list_view);
+
+	/* Register to find out about icon theme changes */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "theme_changed",
+					       update_icons,
+					       GTK_OBJECT (list_view));	
 }
 
 static void
@@ -957,5 +964,18 @@ sort_criterion_from_column (int column)
 		return NAUTILUS_FILE_SORT_BY_TYPE;
 	default: 
 		return NAUTILUS_FILE_SORT_NONE;
+	}
+}
+
+static void 
+update_icons (FMDirectoryViewList *list_view)
+{
+	GtkFList *flist;
+	int row;
+
+	flist = get_flist (list_view);
+
+	for (row = 0; row < GTK_CLIST (flist)->rows; ++row) {
+		install_icon (list_view, row);	
 	}
 }
