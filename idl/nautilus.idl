@@ -1,108 +1,110 @@
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
 #include <gnome-factory.idl>
 #include <Bonobo.idl>
 
 module Nautilus {
-  enum TruthValue { V_UNKNOWN, V_FALSE, V_TRUE };
-  struct NavigationRequestInfo {
-    string requested_uri;
-    TruthValue new_window_default, new_window_suggested, new_window_enforced;
-  };
-
-  struct NavigationInfo {
-    string requested_uri, actual_uri, content_type;
-    string referring_uri, actual_referring_uri, referring_content_type;
-
-    Object content_view;
-    boolean self_originated;
-  };
-
-  struct SelectionInfo {
-    sequence<string> selected_uris;
-
-    Object content_view;
-    boolean self_originated;
-  };
-
-  struct SelectionRequestInfo {
-    sequence<string> selected_uris;
-  };
-
-  struct StatusRequestInfo {
-    string status_string;
-  };
-
-  enum ProgressType { PROGRESS_DONE_OK, PROGRESS_DONE_ERROR, PROGRESS_UNDERWAY };
-
-  struct ProgressRequestInfo {
-    ProgressType type;
-    double amount;
-  };
-
-  interface View : ::Bonobo::Unknown {
-    void save_state (in string config_path);
-    void load_state (in string config_path);
-    oneway void notify_location_change (in NavigationInfo navinfo);
-
-    oneway void show_properties(); // Requests that the client show its properties
-
-    oneway void notify_selection_change (in SelectionInfo selinfo);
-
-    oneway void stop_location_change ();
-  };
-
-  interface MetaView : View {
-  };
-
-  interface ContentView : View {
-  };
-
-  interface ViewWindow;
-
-  interface ViewFrame : ::Bonobo::Unknown {
-    readonly attribute ViewWindow main_window;
-    oneway void request_status_change (in StatusRequestInfo statinfo);
-    oneway void request_location_change (in NavigationRequestInfo navinfo);
-    oneway void request_selection_change (in SelectionRequestInfo selinfo);
-    oneway void request_progress_change (in ProgressRequestInfo proginfo);
-  };
-
-  interface MetaViewFrame : ViewFrame {
-  };
-
-  interface ContentViewFrame : ViewFrame {
-  };
-
-  // typedef sequence<double> ZoomLevelList;
-
-  interface Zoomable : ::Bonobo::Unknown {
-    attribute double zoom_level;
-    readonly attribute double min_zoom_level;
-    readonly attribute double max_zoom_level;
-    readonly attribute boolean is_continuous;
-    // readonly attribute ZoomLevelList preferred_zoom_levels;
-    
-    oneway void zoom_in ();
-    oneway void zoom_out ();
-    oneway void zoom_to_fit ();
-  };
-
-  interface ZoomableFrame : ::Bonobo::Unknown {
-    oneway void notify_zoom_level (in double zoom_level);
-  };
-
-  interface Application;
-
-  interface ViewWindow : ::Bonobo::Unknown {
-        readonly attribute string current_uri;
-        readonly attribute Application application;
-        void open_uri (in string uri);
-        void close ();
-  };
-
-  typedef sequence<ViewWindow> ViewWindowList;
-
-  interface Application : ::GNOME::GenericFactory, ::Bonobo::Unknown {
-	readonly attribute ViewWindowList view_windows;
-	ViewWindow new_view_window ();
-  };
+	enum TruthValue { V_UNKNOWN, V_FALSE, V_TRUE };
+	struct NavigationRequestInfo {
+		string requested_uri;
+		TruthValue new_window_default, new_window_suggested, new_window_enforced;
+	};
+	
+	struct NavigationInfo {
+		string requested_uri, actual_uri, content_type;
+		string referring_uri, actual_referring_uri, referring_content_type;
+		
+		Object content_view;
+		boolean self_originated;
+	};
+	
+	struct SelectionInfo {
+		sequence<string> selected_uris;
+		
+		Object content_view;
+		boolean self_originated;
+	};
+	
+	struct SelectionRequestInfo {
+		sequence<string> selected_uris;
+	};
+	
+	struct StatusRequestInfo {
+		string status_string;
+	};
+	
+	enum ProgressType { PROGRESS_DONE_OK, PROGRESS_DONE_ERROR, PROGRESS_UNDERWAY };
+	
+	struct ProgressRequestInfo {
+		ProgressType type;
+		double amount;
+	};
+	
+	interface View : ::Bonobo::Unknown {
+		void save_state (in string config_path);
+		void load_state (in string config_path);
+		oneway void notify_location_change (in NavigationInfo navinfo);
+		
+		oneway void show_properties (); // Requests that the client show its properties
+		
+		oneway void notify_selection_change (in SelectionInfo selinfo);
+		
+		oneway void stop_location_change ();
+	};
+	
+	interface MetaView : View {
+	};
+	
+	interface ContentView : View {
+	};
+	
+	interface ViewWindow;
+	
+	interface ViewFrame : ::Bonobo::Unknown {
+		readonly attribute ViewWindow main_window;
+		oneway void request_status_change (in StatusRequestInfo statinfo);
+		oneway void request_location_change (in NavigationRequestInfo navinfo);
+		oneway void request_selection_change (in SelectionRequestInfo selinfo);
+		oneway void request_progress_change (in ProgressRequestInfo proginfo);
+	};
+	
+	interface MetaViewFrame : ViewFrame {
+	};
+	
+	interface ContentViewFrame : ViewFrame {
+	};
+	
+	// typedef sequence<double> ZoomLevelList;
+	
+	interface Zoomable : ::Bonobo::Unknown {
+		attribute double zoom_level;
+		readonly attribute double min_zoom_level;
+		readonly attribute double max_zoom_level;
+		readonly attribute boolean is_continuous;
+		// readonly attribute ZoomLevelList preferred_zoom_levels;
+		
+		oneway void zoom_in ();
+		oneway void zoom_out ();
+		oneway void zoom_to_fit ();
+	};
+	
+	interface ZoomableFrame : ::Bonobo::Unknown {
+		oneway void notify_zoom_level (in double zoom_level);
+	};
+	
+	interface Application;
+	
+	interface ViewWindow : ::Bonobo::Unknown {
+		readonly attribute string current_uri;
+		readonly attribute Application application;
+		void open_uri (in string uri);
+		void close ();
+	};
+	
+	typedef sequence<ViewWindow> ViewWindowList;
+	
+	interface Application : ::GNOME::GenericFactory, ::Bonobo::Unknown {
+		readonly attribute ViewWindowList view_windows;
+		ViewWindow new_view_window ();
+	};
 };
