@@ -72,8 +72,6 @@ nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *
 			(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
 		bonobo_object_unref (BONOBO_OBJECT (object_client)); 
 	}
-
-	/* FIXME: Since corba_factory could now be NULL, what do we do in that case? */
 }
 
 
@@ -98,7 +96,11 @@ static NautilusComponentAdapterFactory *global_component_adapter_factory = NULL;
 static void
 component_adapter_factory_at_exit_destructor (void)
 {
-	gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
+	if (global_component_adapter_factory != NULL) {
+		gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
+	}
+	
+	global_component_adapter_factory = NULL;
 }
 
 
@@ -112,6 +114,12 @@ nautilus_component_adapter_factory_get (void)
 		gtk_object_sink (GTK_OBJECT (global_component_adapter_factory));
 
 		g_atexit (component_adapter_factory_at_exit_destructor);
+	}
+
+
+	if (global_component_adapter_factory->details->corba_factory == CORBA_OBJECT_NIL) {
+		gtk_object_unref (GTK_OBJECT (global_component_adapter_factory));
+		global_component_adapter_factory = NULL;
 	}
 
 	return global_component_adapter_factory;

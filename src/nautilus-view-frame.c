@@ -559,15 +559,21 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	Nautilus_View adapted;
 	Bonobo_Control control;
 	BonoboControlFrame *control_frame;
-	
+	NautilusComponentAdapterFactory *adapter_factory;	
 
 	/* Either create an adapter or query for the Nautilus:View
 	 * interface. Either way, we don't need to keep the original
 	 * reference around once that happens.
 	 */
 
+	adapter_factory = nautilus_component_adapter_factory_get ();
+
+	if (adapter_factory == NULL) {
+		return FALSE;
+	}
+
 	adapted = nautilus_component_adapter_factory_create_adapter 
-		(nautilus_component_adapter_factory_get (),
+		(adapter_factory,
 		 component);
 	bonobo_object_unref (BONOBO_OBJECT (component));
 

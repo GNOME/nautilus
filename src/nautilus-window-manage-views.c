@@ -660,6 +660,19 @@ nautilus_window_open_location_in_new_window (NautilusWindow *window,
         open_location (window, location, TRUE, selection);
 }
 
+static void
+report_content_view_failure_to_user (NautilusWindow *window,
+                                     const char     *name)
+{
+	char *message;
+
+	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
+				   "You can choose another view or go to a different location.", 
+				   name);
+	nautilus_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
+	g_free (message);
+}
+
 static NautilusViewFrame *
 load_content_view (NautilusWindow *window,
                    NautilusViewIdentifier *id)
@@ -708,8 +721,16 @@ load_content_view (NautilusWindow *window,
                 new_view = nautilus_view_frame_new (window->details->ui_container,
                                                     window->application->undo_manager);
                 connect_view (window, new_view);
+
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
-                        gtk_widget_unref (GTK_WIDGET(new_view));
+                        /* FIXME: We need a way to report the specific
+                           error that happens in this case - adapter
+                           factory not found, component failed to
+                           load, etc. */
+                        report_content_view_failure_to_user (window, id->name);
+
+                        gtk_widget_unref (GTK_WIDGET (new_view));
+
                         new_view = NULL;
                 }
                 
@@ -733,17 +754,7 @@ load_content_view (NautilusWindow *window,
         return new_view;
 }
 
-static void
-report_content_view_failure_to_user (NautilusWindow *window)
-{
-	char *message;
 
-	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
-				   "You can choose another view or go to a different location.", 
-				   window->content_view_id->name);
-	nautilus_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
-	g_free (message);
-}
 
 static void
 report_sidebar_panel_failure_to_user (NautilusWindow *window)
@@ -778,7 +789,7 @@ handle_view_failure (NautilusWindow *window,
                         gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
                                               GTK_WIDGET (window->content_view));
                 }
-                report_content_view_failure_to_user (window);
+                report_content_view_failure_to_user (window, window->content_view_id->name);
                 window->content_view = NULL;
                 window->cv_progress_error = TRUE;
         } else {
@@ -1437,6 +1448,11 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		/* If the load failed, tell the user. */
 		if (!load_succeeded) {
 			/* FIXME: This needs to report the error to the user. */
+                        
+                        window->details->dead_view_name = identifier->name;
+                        report_sidebar_panel_failure_to_user (window);
+                        window->details->dead_view_name = NULL;
+
 			g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.", 
 				   identifier->iid);
 			gtk_object_sink (GTK_OBJECT (sidebar_panel));

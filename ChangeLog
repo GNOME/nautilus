@@ -1,5 +1,42 @@
 2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
 
+	* THANKS: Updated based on running check-THANKS.pl
+	* AUTHORS, ChangeLog-200001018: Fixed some typos in
+	people's email addresses.
+
+2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bugs 3641 (text preview gets garbled when switching files in
+	the middle of a load) and 3479 (Nautilus crashes if
+	nautilus-adapter* missing).
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c
+	(call_when_stopped, load_and_free_uri, declare_done_loading,
+	stop_loading,
+	nautilus_adapter_progressive_load_strategy_load_location): Make
+	sure previous load is completely stopped before ever starting a
+	new load.
+
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_destroy, nautilus_adapter_new): Avoid reporting
+	signals to the view frame while in the middle of destroying the
+	adapter.
+	* src/nautilus-component-adapter-factory.c
+	(nautilus_component_adapter_factory_get): Return NULL when loading
+	the adapter factory component fails.
+	(nautilus_component_adapter_factory_initialize,
+	component_adapter_factory_at_exit_destructor): Changes required by
+	the above.
+	* src/nautilus-view-frame.c
+	(nautilus_view_frame_set_to_component): report failure if we can't
+	load the adapter factory.
+	* src/nautilus-window-manage-views.c
+	(report_content_view_failure_to_user, load_content_view,
+	handle_view_failure, nautilus_window_set_sidebar_panels): Do a
+	somewhat better job of reporting view load failures.
+
+2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
+
 	* components/tree/nautilus-tree-view.c
 	(nautilus_tree_view_insert_model_node,
 	nautilus_tree_view_update_model_node): Set both open and closed

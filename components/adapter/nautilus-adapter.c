@@ -45,9 +45,13 @@
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
 struct NautilusAdapterDetails {
-	NautilusAdapterLoadStrategy  *load_strategy;
-	NautilusAdapterEmbedStrategy *embed_strategy;
 	NautilusView                 *nautilus_view;
+	NautilusAdapterEmbedStrategy *embed_strategy;
+	NautilusAdapterLoadStrategy  *load_strategy;
+	guint report_load_underway_id;
+	guint report_load_progress_id;
+	guint report_load_complete_id;
+        guint report_load_failed_id;
 };
 
 
@@ -111,20 +115,29 @@ nautilus_adapter_initialize (NautilusAdapter *adapter)
 static void
 nautilus_adapter_destroy (GtkObject *object)
 {
-	NautilusAdapter *server;
+	NautilusAdapter *adapter;
 	
-	server = NAUTILUS_ADAPTER (object);
+	adapter = NAUTILUS_ADAPTER (object);
 
-	if (server->details->load_strategy != NULL) {
-		nautilus_adapter_load_strategy_stop_loading (server->details->load_strategy);
-		gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
+	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+			       adapter->details->report_load_underway_id);
+	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+			       adapter->details->report_load_progress_id);
+	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+			       adapter->details->report_load_complete_id);
+	gtk_signal_disconnect (GTK_OBJECT (adapter->details->load_strategy),
+			       adapter->details->report_load_failed_id);
+
+	if (adapter->details->load_strategy != NULL) {
+		nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
+		gtk_object_unref (GTK_OBJECT (adapter->details->load_strategy));
 	}
 
-	if (server->details->embed_strategy != NULL) {
-		gtk_object_unref (GTK_OBJECT (server->details->embed_strategy));
+	if (adapter->details->embed_strategy != NULL) {
+		gtk_object_unref (GTK_OBJECT (adapter->details->embed_strategy));
 	}
 
-	g_free (server->details);
+	g_free (adapter->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -186,28 +199,26 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	}
 
 	/* hook up load strategy signals */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
-					       "report_load_underway",
-					       nautilus_adapter_load_underway_callback,
-					       GTK_OBJECT (adapter));
-
-	/* hook up load strategy signals */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
-					       "report_load_progress",
-					       nautilus_adapter_load_progress_callback,
-					       GTK_OBJECT (adapter));
-
-	/* hook up load strategy signals */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
-					       "report_load_complete",
-					       nautilus_adapter_load_complete_callback,
-					       GTK_OBJECT (adapter));
-
-	/* hook up load strategy signals */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
-					       "report_load_failed",
-					       nautilus_adapter_load_failed_callback,
-					       GTK_OBJECT (adapter));
+	adapter->details->report_load_underway_id =
+		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
+					   "report_load_underway",
+					   nautilus_adapter_load_underway_callback,
+					   GTK_OBJECT (adapter));
+	adapter->details->report_load_progress_id =
+		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
+					   "report_load_progress",
+					   nautilus_adapter_load_progress_callback,
+					   GTK_OBJECT (adapter));
+	adapter->details->report_load_complete_id =
+		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
+					   "report_load_complete",
+					   nautilus_adapter_load_complete_callback,
+					   GTK_OBJECT (adapter));
+	adapter->details->report_load_failed_id =
+		gtk_signal_connect_object (GTK_OBJECT (adapter->details->load_strategy),
+					   "report_load_failed",
+					   nautilus_adapter_load_failed_callback,
+					   GTK_OBJECT (adapter));
 
 	/* complete the embedding */
 

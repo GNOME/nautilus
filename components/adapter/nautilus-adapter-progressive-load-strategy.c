@@ -39,9 +39,18 @@
 
 #include <stdio.h>
 
+
+typedef void (*StopLoadingCallback) (NautilusAdapterProgressiveLoadStrategy *strategy,
+				     void *user_data);
+
+
 struct NautilusAdapterProgressiveLoadStrategyDetails {
 	Bonobo_ProgressiveDataSink  progressive_data_sink;
 	gboolean                    stop;
+	gboolean                    loading;
+	gboolean                    no_report_stop;
+	StopLoadingCallback         callback;
+	void                       *user_data;
 };
 
 
@@ -121,34 +130,86 @@ nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  prog
 }
 
 
+
+static void
+call_when_stopped (NautilusAdapterProgressiveLoadStrategy *strategy,
+		   StopLoadingCallback                     callback, 
+		   void                                   *user_data)
+{
+	strategy->details->callback = callback;
+	strategy->details->user_data = user_data;
+}
+
+
+static void
+load_and_free_uri (NautilusAdapterProgressiveLoadStrategy *strategy,
+		   gpointer                                data)
+{
+	char *uri;
+
+	uri = (char *) data;
+	nautilus_adapter_progressive_load_strategy_load_location 
+		(NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy), uri);
+	g_free (uri);
+
+}
+
+static void
+declare_done_loading (NautilusAdapterProgressiveLoadStrategy *strategy)
+{
+	StopLoadingCallback cb;
+	void *data;
+
+	strategy->details->loading = FALSE;
+
+	if (strategy->details->callback != NULL) {
+		cb = strategy->details->callback;
+		strategy->details->callback = NULL;
+		data = strategy->details->user_data;
+		strategy->details->user_data = NULL;
+		
+		(*cb) (strategy, data);
+	}
+}
+
+
 static void
 stop_loading (NautilusAdapterProgressiveLoadStrategy *strategy,
 	      GnomeVFSHandle *handle,
 	      Bonobo_ProgressiveDataSink_iobuf *iobuf,
+	      gboolean           failed,
 	      CORBA_Environment *ev) 
 {
 	Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, ev); 
-	nautilus_adapter_load_strategy_report_load_failed (NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy));
+	if (! strategy->details->no_report_stop) {
+		if (failed) {
+			nautilus_adapter_load_strategy_report_load_failed (NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy));
+		} else {
+			nautilus_adapter_load_strategy_report_load_complete (NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy));
+		}
+	}
 	gtk_object_unref (GTK_OBJECT (strategy));
 	gnome_vfs_close (handle);
 	CORBA_free (iobuf);
 	CORBA_exception_free (ev);
+	declare_done_loading (strategy);
 }
 
 
 
-#define STOP_LOADING                                           \
-        do {                                                   \
-	         stop_loading (strategy, handle, iobuf, &ev);  \
-		 return;                                       \
+#define STOP_LOADING                                                 \
+        do {                                                         \
+	         stop_loading (strategy, handle, iobuf, TRUE, &ev);  \
+		 return;                                             \
         } while (0)
 
-#define CHECK_IF_STOPPED                                       \
-        do {                                                   \
-	        if (strategy->details->stop) {                 \
-                        STOP_LOADING;                          \
-		}                                              \
-	} while (0)
+#define CHECK_IF_STOPPED                                              \
+        do {                                                          \
+	        if (strategy->details->stop) {                        \
+	         stop_loading (strategy, handle, iobuf, FALSE, &ev);  \
+		 return;                                              \
+                }                                                     \
+        } while (0)
 
 
 #define LOAD_CHUNK 16384
@@ -168,8 +229,22 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (abstract_strategy);
 
-	strategy->details->stop = FALSE;
+	if (strategy->details->loading == TRUE) {
+		strategy->details->no_report_stop = TRUE;
+		nautilus_adapter_progressive_load_strategy_stop_loading  (abstract_strategy);
+
+		call_when_stopped (strategy, load_and_free_uri, g_strdup (uri));
+
+		return;
+	}
+
+	strategy->details->no_report_stop = FALSE;
+
 	gtk_object_ref (GTK_OBJECT (strategy));
+
+	strategy->details->loading = TRUE;
+	strategy->details->stop = FALSE;
+
 
 	CORBA_exception_init (&ev);
 
@@ -182,6 +257,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 		gtk_object_unref (GTK_OBJECT (strategy));
 		CORBA_exception_free (&ev);
+		declare_done_loading (strategy);
 		return;
 	}
 
@@ -193,9 +269,10 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
 
 	if (strategy->details->stop) {
-		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
+		nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
 		gtk_object_unref (GTK_OBJECT (strategy));
 		CORBA_exception_free (&ev);
+		declare_done_loading (strategy);
 		return;
 	}
 
@@ -234,6 +311,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 				gnome_vfs_close (handle);
 				CORBA_free (iobuf);
 				CORBA_exception_free (&ev);
+				declare_done_loading (strategy);
 				return;
 			} else {
 				STOP_LOADING;
@@ -253,4 +331,5 @@ nautilus_adapter_progressive_load_strategy_stop_loading  (NautilusAdapterLoadStr
 
 	strategy->details->stop = TRUE;
 }
+
 
