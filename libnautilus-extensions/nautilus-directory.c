@@ -702,16 +702,19 @@ nautilus_directory_notify_files_added (GList *uris)
 
 		/* If no one is monitoring files in the directory, nothing to do. */
 		if (!nautilus_directory_is_file_list_monitored (directory)) {
+			nautilus_directory_unref (directory);
 			continue;
 		}
 
 		/* Collect the URIs to use. */
 		vfs_uri = gnome_vfs_uri_new (uri);
 		if (vfs_uri == NULL) {
+			nautilus_directory_unref (directory);
 			g_warning ("bad uri %s", uri);
 			continue;
 		}
 		hash_table_list_prepend (added_lists, directory, vfs_uri);
+		nautilus_directory_unref (directory);
 	}
 
 

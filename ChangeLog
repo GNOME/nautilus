@@ -1,3 +1,56 @@
+2000-08-16  Darin Adler  <darin@eazel.com>
+
+	* README: Don't use tabs any more. Spell check.
+	Add libglade.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_add),
+	(nautilus_tree_model_monitor_node):
+	Use file attribute constant instead of hard-coded string. I was
+	here to make some changes to the monitor API, but I didn't get
+	to that yet. Next check-in.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal):
+	Use "files_added" signal instead of callback. This is the first
+	step toward removing the callback. I'll remove it tomorrow.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added): Fix directory ref count
+	leak.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Fix case where we would not ref
+	the NautilusFile even though the directory is monitoring it.
+	This would lead to an early destroy later.
+	
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_search_uri_to_human): Comment out print statements.
+	Mathieu can delete them entirely later.
+	(nautilus_self_check_search_uri): Added a few more tests.
+	
+	* libnautilus-extensions/nautilus-trash-directory.h:
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize), (trash_destroy),
+	(trash_callback_hash), (trash_callback_equal),
+	(trash_contains_file), (trash_callback_destroy),
+	(trash_callback_check_done), (directory_ready_callback),
+	(trash_callback_connect_directory), (trash_call_when_ready),
+	(trash_cancel_callback), (trash_file_monitor_add),
+	(trash_file_monitor_remove), (trash_are_all_files_seen),
+	(trash_is_not_empty), (nautilus_trash_directory_initialize_class),
+	(nautilus_trash_directory_add_real_trash_directory),
+	(nautilus_trash_directory_remove_real_trash_directory),
+	(remove_all_real_directories): Getting closer on the trash
+	implementation. Still a ways to go.
+	
+	* src/file-manager/fm-icon-text-window.c:
+	(create_attributes_option_menu):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus): Use
+	_() instead of calling gettext. It turns out this is the
+	recommended way to do it, even when the parameter is not a literal
+	string.
+
 2000-08-16  Michael Engber  <engber@eazel.com>
 
 	Added bug numbers to some FIXME's and a new

@@ -25,11 +25,12 @@
 
 #include <config.h>
 #include "nautilus-tree-model.h"
+
 #include "nautilus-tree-node-private.h"
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
-
+#include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <stdio.h>
 
 enum {
@@ -238,7 +239,7 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 			 nautilus_tree_model_root_node_file_monitor,
 			 model);
 		
-		monitor_attributes = g_list_prepend (NULL, "is directory");
+		monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
 
 		nautilus_file_monitor_add (nautilus_tree_node_get_file (model->details->root_node),
 					   model,
@@ -321,7 +322,7 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 			 model);
 	}
 
-	monitor_attributes = g_list_prepend (NULL, "is directory");
+	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
 	
 	node->details->provisional_children = node->details->children;
 	node->details->children = NULL;

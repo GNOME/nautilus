@@ -308,7 +308,7 @@ static operand_criterion_item mod_time2_table [] = {
    -------------------------------------------------------
 */
 
-/* not implemented in nautilus yet */
+/* FIXME: not implemented in nautilus yet */
 static operand_criterion_item emblem2_table [] = {
         {NULL, NULL, NULL}
 };
@@ -319,7 +319,7 @@ static operand_criterion_item emblem2_table [] = {
    -------------------------------------------------------
 */
 
-/* I cannot find any doc on this one */
+/* FIXME: I cannot find any doc on this one */
 static operand_criterion_item contains2_table [] = {
         {NULL, NULL, NULL},
 };
@@ -344,15 +344,15 @@ static field_criterion_item main_table[] = {
         {"size",
          N_("whose"),
          size2_table},
-        /* waiting for doc */
+        /* FIXME: waiting for doc */
         {"contains",
          N_("who"),
          contains2_table},
-        /* waiting for spec */
+        /* FIXME: waiting for spec */
         {"mod_time",
          N_("whose"),
          mod_time2_table},
-        /* waiting for implementation */
+        /* FIXME: waiting for implementation */
         {"emblem",
          N_(""),
          emblem2_table},
@@ -437,13 +437,13 @@ get_translated_criterion (const GSList *criterion)
                    last part of the uri.
                 */
                 ret_val = g_strdup_printf (_(operand_table[item_number].translation), 
-					   (char *)criterion->data);
+					   (char *) criterion->data);
                 return ret_val;
         } else if (value_table != NULL) {
                 /* get through level 3 structure */
 
-                value_item_number = get_item_number ((field_criterion_item *)value_table, 
-                                                   (char *)criterion->data);
+                value_item_number = get_item_number ((field_criterion_item *) value_table, 
+                                                     (char *) criterion->data);
                 if (value_item_number == -1) {
                         return NULL;
                 }
@@ -480,8 +480,8 @@ get_first_criterion_prefix (GSList *criterion)
         char *criterion_type;
         int item_number;
         
-        criterion_list = (GSList *)criterion->data;
-        criterion_type = (char *)criterion_list->data;
+        criterion_list = (GSList *) criterion->data;
+        criterion_type = (char *) criterion_list->data;
         
 
         item_number = get_item_number (main_table, criterion_type);
@@ -574,7 +574,7 @@ parse_uri (const char *search_uri)
         g_free (translated_prefix);
         
         /* processes the other criteria and add the necessary "and" prefixes */
-        for (criterion = (GSList *)criteria->next; criterion != NULL; criterion = criterion->next) {
+        for (criterion = criteria->next; criterion != NULL; criterion = criterion->next) {
                 translated_criterion = get_translated_criterion ((const GSList *)criterion->data);
                 if (translated_criterion == NULL) {
                         g_free (ret_val);
@@ -614,12 +614,12 @@ nautilus_search_uri_to_human (const char *search_uri)
         uri = gnome_vfs_unescape_string_for_display (search_uri);
         human = parse_uri (uri);
         if (human == NULL) {
-                g_print ("mathieu: %s\n", uri);
+                /* g_print ("mathieu: %s\n", uri); */
                 return uri;
         }
 
         g_free (uri);
-        g_print ("mathieu: %s\n", human);
+        /* g_print ("mathieu: %s\n", human); */
 
         return human;
 }
@@ -639,11 +639,15 @@ void
 nautilus_self_check_search_uri (void)
 {
 	/* search_uri_to_human */
-        /* make sure that it does not accept non-supported uris.*/
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
+        /* make sure that it does not accept non-supported uris.*/
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), ""); 
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("s"), "s");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" "), " ");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("  "), "  ");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s"), " s");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (" s "), " s ");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]"), "search:[][]");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]fi"), "search:[][]fi");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name"), 
@@ -673,16 +677,14 @@ nautilus_self_check_search_uri (void)
 
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
-                                      "Search results for items whose name contains \"stuff\".");
+                                      _("Search results for items whose name contains \"stuff\"."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
-                                      "Search results for items whose name contains \"stuff\" and are regular files.");
+                                      _("Search results for items whose name contains \"stuff\" and are regular files."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
-                                      "Search results for items whose name contains \"stuff\", are regular files and size is "
-                                      "smaller than 2000 bytes.");
-
-        /* FIXME: Need a lot more tests. */
-
+                                      _("Search results for items whose name contains \"stuff\", are regular files and size is "
+                                        "smaller than 2000 bytes."));
+        
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:"), TRUE);

@@ -1106,8 +1106,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		bonobo_ui_handler_menu_new_radioitem
 			(ui_handler,
 			 sort_criteria[i].menu_path,
-			 gettext (sort_criteria[i].menu_label),
-			 gettext (sort_criteria[i].menu_hint),
+			 _(sort_criteria[i].menu_label),
+			 _(sort_criteria[i].menu_hint),
 			 -1, 0, 0,
 			 sort_callback, view);
 	}

@@ -27,32 +27,44 @@
 #include "nautilus-trash-directory.h"
 
 #include "nautilus-file.h"
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include <gtk/gtksignal.h>
 
 struct NautilusTrashDirectoryDetails {
 	GList *directories;
 	GHashTable *callbacks;
-	GHashTable *monitor_clients;
+	GHashTable *monitors;
 };
 
 typedef struct {
-	NautilusDirectory *directory;
-} RealTrashDirectory;
-
-typedef struct {
+	/* Basic configuration. */
 	NautilusTrashDirectory *trash;
 	NautilusDirectoryCallback callback;
 	gpointer callback_data;
+
+	GList *wait_for_attributes;
+	gboolean wait_for_metadata;
+
 	GList *non_ready_directories;
 	GList *merged_file_list;
-} CallWhenReadyState;
+} TrashCallback;
 
-static void     nautilus_trash_directory_initialize       (gpointer      object,
-							   gpointer      klass);
-static void     nautilus_trash_directory_initialize_class (gpointer      klass);
-static guint    callback_hash                             (gconstpointer call_when_ready_state);
-static gboolean callback_equal                            (gconstpointer call_when_ready_state,
-							   gconstpointer call_when_ready_state_2);
+typedef struct {
+	NautilusTrashDirectory *trash;
+
+	GList *monitor_attributes;
+	gboolean monitor_metadata;
+	gboolean force_reload;
+} TrashMonitor;
+
+static void     nautilus_trash_directory_initialize       (gpointer                object,
+							   gpointer                klass);
+static void     nautilus_trash_directory_initialize_class (gpointer                klass);
+static void     remove_all_real_directories               (NautilusTrashDirectory *trash);
+static guint    trash_callback_hash                       (gconstpointer           trash_callback);
+static gboolean trash_callback_equal                      (gconstpointer           trash_callback,
+							   gconstpointer           trash_callback_2);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
@@ -67,8 +79,8 @@ nautilus_trash_directory_initialize (gpointer object, gpointer klass)
 
 	trash->details = g_new0 (NautilusTrashDirectoryDetails, 1);
 	trash->details->callbacks = g_hash_table_new
-		(callback_hash, callback_equal);
-	trash->details->monitor_clients = g_hash_table_new
+		(trash_callback_hash, trash_callback_equal);
+	trash->details->monitors = g_hash_table_new
 		(g_direct_hash, g_direct_equal);
 }
 
@@ -79,41 +91,43 @@ trash_destroy (GtkObject *object)
 
 	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
+	remove_all_real_directories (trash);
+
 	if (g_hash_table_size (trash->details->callbacks) != 0) {
 		g_warning ("call_when_ready still pending when trash virtual directory is destroyed");
 	}
-	if (g_hash_table_size (trash->details->monitor_clients) != 0) {
+	if (g_hash_table_size (trash->details->monitors) != 0) {
 		g_warning ("file monitor still active when trash virtual directory is destroyed");
 	}
 
 	g_hash_table_destroy (trash->details->callbacks);
-	g_hash_table_destroy (trash->details->monitor_clients);
+	g_hash_table_destroy (trash->details->monitors);
 	g_free (trash->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static guint
-callback_hash (gconstpointer call_when_ready_state)
+trash_callback_hash (gconstpointer trash_callback_as_pointer)
 {
-	const CallWhenReadyState *state;
+	const TrashCallback *trash_callback;
 
-	state = call_when_ready_state;
-	return GPOINTER_TO_UINT (state->callback)
-		^ GPOINTER_TO_UINT (state->callback_data);
+	trash_callback = trash_callback_as_pointer;
+	return GPOINTER_TO_UINT (trash_callback->callback)
+		^ GPOINTER_TO_UINT (trash_callback->callback_data);
 }
 
 static gboolean
-callback_equal (gconstpointer call_when_ready_state,
-		gconstpointer call_when_ready_state_2)
+trash_callback_equal (gconstpointer trash_callback_as_pointer,
+		      gconstpointer trash_callback_as_pointer_2)
 {
-	const CallWhenReadyState *state, *state_2;
+	const TrashCallback *trash_callback, *trash_callback_2;
 
-	state = call_when_ready_state;
-	state_2 = call_when_ready_state_2;
+	trash_callback = trash_callback_as_pointer;
+	trash_callback_2 = trash_callback_as_pointer_2;
 
-	return state->callback == state_2->callback
-		&& state->callback_data == state_2->callback_data;
+	return trash_callback->callback == trash_callback_2->callback
+		&& trash_callback->callback_data == trash_callback_2->callback_data;
 }
 
 /* Return true if any directory in the list does. */
@@ -123,14 +137,11 @@ trash_contains_file (NautilusDirectory *directory,
 {
 	NautilusTrashDirectory *trash;
 	GList *p;
-	RealTrashDirectory *real_trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-
-		if (nautilus_directory_contains_file (real_trash->directory, file)) {
+		if (nautilus_directory_contains_file (p->data, file)) {
 			return TRUE;
 		}
 	}
@@ -138,32 +149,33 @@ trash_contains_file (NautilusDirectory *directory,
 }
 
 static void
-call_when_ready_state_destroy (CallWhenReadyState *state)
+trash_callback_destroy (TrashCallback *trash_callback)
 {
-	g_assert (state != NULL);
-	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (state->trash));
+	g_assert (trash_callback != NULL);
+	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_callback->trash));
 
-	g_hash_table_remove (state->trash->details->callbacks, state);
-	g_list_free (state->non_ready_directories);
-	nautilus_file_list_free (state->merged_file_list);
-	g_free (state);
+	g_hash_table_remove (trash_callback->trash->details->callbacks, trash_callback);
+	nautilus_g_list_free_deep (trash_callback->wait_for_attributes);
+	g_list_free (trash_callback->non_ready_directories);
+	nautilus_file_list_free (trash_callback->merged_file_list);
+	g_free (trash_callback);
 }
 
 static void
-call_when_ready_state_check_done (CallWhenReadyState *state)
+trash_callback_check_done (TrashCallback *trash_callback)
 {
 	/* Check if we are ready. */
-	if (state->non_ready_directories != NULL) {
+	if (trash_callback->non_ready_directories != NULL) {
 		return;
 	}
 
 	/* We are ready, so do the real callback. */
-	(* state->callback) (NAUTILUS_DIRECTORY (state->trash),
-			     state->merged_file_list,
-			     state->callback_data);
+	(* trash_callback->callback) (NAUTILUS_DIRECTORY (trash_callback->trash),
+				      trash_callback->merged_file_list,
+				      trash_callback->callback_data);
 
 	/* And we are done. */
-	call_when_ready_state_destroy (state);
+	trash_callback_destroy (trash_callback);
 }
 
 static void
@@ -171,24 +183,35 @@ directory_ready_callback (NautilusDirectory *directory,
 			  GList *files,
 			  gpointer callback_data)
 {
-	CallWhenReadyState *state;
+	TrashCallback *trash_callback;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (callback_data != NULL);
 
-	state = callback_data;
-	g_assert (g_list_find (state->non_ready_directories, directory) != NULL);
+	trash_callback = callback_data;
+	g_assert (g_list_find (trash_callback->non_ready_directories, directory) != NULL);
 
 	/* Update based on this call. */
-	state->merged_file_list = g_list_concat
-		(state->merged_file_list,
+	trash_callback->merged_file_list = g_list_concat
+		(trash_callback->merged_file_list,
 		 nautilus_file_list_copy (files));
-	state->non_ready_directories = g_list_remove
-		(state->non_ready_directories,
+	trash_callback->non_ready_directories = g_list_remove
+		(trash_callback->non_ready_directories,
 		 directory);
 
 	/* Check if we are ready. */
-	call_when_ready_state_check_done (state);
+	trash_callback_check_done (trash_callback);
+}
+
+static void
+trash_callback_connect_directory (TrashCallback *trash_callback,
+				  NautilusDirectory *real_trash)
+{
+	nautilus_directory_call_when_ready
+		(real_trash,
+		 trash_callback->wait_for_attributes,
+		 trash_callback->wait_for_metadata,
+		 directory_ready_callback, trash_callback);
 }
 
 static void
@@ -199,9 +222,8 @@ trash_call_when_ready (NautilusDirectory *directory,
 		       gpointer callback_data)
 {
 	NautilusTrashDirectory *trash;
-	CallWhenReadyState search_key, *state;
+	TrashCallback search_key, *trash_callback;
 	GList *p;
-	RealTrashDirectory *real_trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
@@ -214,33 +236,28 @@ trash_call_when_ready (NautilusDirectory *directory,
 		return;
 	}
 
-	/* Create a state record. */
-	state = g_new0 (CallWhenReadyState, 1);
-	state->trash = trash;
-	state->callback = callback;
-	state->callback_data = callback_data;
+	/* Create a trash_callback record. */
+	trash_callback = g_new0 (TrashCallback, 1);
+	trash_callback->trash = trash;
+	trash_callback->callback = callback;
+	trash_callback->callback_data = callback_data;
+	trash_callback->wait_for_attributes = nautilus_g_str_list_copy (file_attributes);
+	trash_callback->wait_for_metadata = wait_for_metadata;
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-		
-		state->non_ready_directories = g_list_prepend
-			(state->non_ready_directories, real_trash->directory);
+		trash_callback->non_ready_directories = g_list_prepend
+			(trash_callback->non_ready_directories, p->data);
 	}
 
 	/* Put it in the hash table. */
-	g_hash_table_insert (trash->details->callbacks, state, state);
+	g_hash_table_insert (trash->details->callbacks, trash_callback, trash_callback);
 
 	/* Now tell all the directories about it. */
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-		
-		nautilus_directory_call_when_ready
-			(real_trash->directory,
-			 file_attributes, wait_for_metadata,
-			 directory_ready_callback, state);
+		trash_callback_connect_directory (trash_callback, p->data);
 	}
 
 	/* Check just in case we are already done. */
-	call_when_ready_state_check_done (state);
+	trash_callback_check_done (trash_callback);
 }
 
 static void
@@ -249,30 +266,27 @@ trash_cancel_callback (NautilusDirectory *directory,
 		       gpointer callback_data)
 {
 	NautilusTrashDirectory *trash;
-	CallWhenReadyState search_key, *state;
+	TrashCallback search_key, *trash_callback;
 	GList *p;
-	NautilusDirectory *real_directory;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
 	/* Find the entry in the table. */
 	search_key.callback = callback;
 	search_key.callback_data = callback_data;
-	state = g_hash_table_lookup (trash->details->callbacks,
-				     &search_key);
-	if (state == NULL) {
+	trash_callback = g_hash_table_lookup
+		(trash->details->callbacks, &search_key);
+	if (trash_callback == NULL) {
 		return;
 	}
 
 	/* Tell all the directories to cancel the call. */
-	for (p = state->non_ready_directories; p != NULL; p = p->next) {
-		real_directory = NAUTILUS_DIRECTORY (p->data);
-		
+	for (p = trash_callback->non_ready_directories; p != NULL; p = p->next) {
 		nautilus_directory_cancel_callback
-			(real_directory,
-			 directory_ready_callback, state);
+			(p->data,
+			 directory_ready_callback, trash_callback);
 	}
-	call_when_ready_state_destroy (state);
+	trash_callback_destroy (trash_callback);
 }
 
 /* Add the files that are passed to make one large list. */
@@ -304,7 +318,6 @@ trash_file_monitor_add (NautilusDirectory *directory,
 	NautilusTrashDirectory *trash;
 	gpointer unique_client;
 	GList *p, *merged_file_list;
-	RealTrashDirectory *real_trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
@@ -312,20 +325,18 @@ trash_file_monitor_add (NautilusDirectory *directory,
 	 * with direct monitoring of the directory by the same client.
 	 */
 	unique_client = g_hash_table_lookup
-		(trash->details->monitor_clients, client);
+		(trash->details->monitors, client);
 	if (unique_client == NULL) {
 		unique_client = g_new (char, 1);
-		g_hash_table_insert (trash->details->monitor_clients,
+		g_hash_table_insert (trash->details->monitors,
 				     (gpointer) client, unique_client);
 	}
 	
 	/* Call through to the real directory add calls. */
 	merged_file_list = NULL;
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-		
 		nautilus_directory_file_monitor_add
-			(real_trash->directory, unique_client,
+			(p->data, unique_client,
 			 file_attributes, monitor_metadata, force_reload,
 			 callback == NULL ? NULL : trash_files_callback,
 			 &merged_file_list);
@@ -346,24 +357,21 @@ trash_file_monitor_remove (NautilusDirectory *directory,
 	NautilusTrashDirectory *trash;
 	gpointer unique_client;
 	GList *p;
-	RealTrashDirectory *real_trash;
 	
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 	
 	/* Map the client to the value used by the earlier add call. */
 	unique_client = g_hash_table_lookup
-		(trash->details->monitor_clients, client);
+		(trash->details->monitors, client);
 	if (unique_client == NULL) {
 		return;
 	}
-	g_hash_table_remove (trash->details->monitor_clients, client);
+	g_hash_table_remove (trash->details->monitors, client);
 
 	/* Call through to the real directory remove calls. */
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-		
 		nautilus_directory_file_monitor_remove
-			(real_trash->directory, unique_client);
+			(p->data, unique_client);
 	}
 
 	g_free (unique_client);
@@ -375,14 +383,11 @@ trash_are_all_files_seen (NautilusDirectory *directory)
 {
 	NautilusTrashDirectory *trash;
 	GList *p;
-	RealTrashDirectory *real_trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-
-		if (!nautilus_directory_are_all_files_seen (real_trash->directory)) {
+		if (!nautilus_directory_are_all_files_seen (p->data)) {
 			return FALSE;
 		}
 	}
@@ -395,14 +400,11 @@ trash_is_not_empty (NautilusDirectory *directory)
 {
 	NautilusTrashDirectory *trash;
 	GList *p;
-	RealTrashDirectory *real_trash;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
 	for (p = trash->details->directories; p != NULL; p = p->next) {
-		real_trash = p->data;
-
-		if (nautilus_directory_is_not_empty (real_trash->directory)) {
+		if (nautilus_directory_is_not_empty (p->data)) {
 			return TRUE;
 		}
 	}
@@ -425,6 +427,55 @@ nautilus_trash_directory_initialize_class (gpointer klass)
 	directory_class->cancel_callback = trash_cancel_callback;
 	directory_class->file_monitor_add = trash_file_monitor_add;
 	directory_class->file_monitor_remove = trash_file_monitor_remove;
-	directory_class->are_all_files_seen = trash_are_all_files_seen;
+ 	directory_class->are_all_files_seen = trash_are_all_files_seen;
 	directory_class->is_not_empty = trash_is_not_empty;
+}
+
+void
+nautilus_trash_directory_add_real_trash_directory (NautilusTrashDirectory *trash,
+						   NautilusDirectory *real_directory)
+{
+	g_return_if_fail (NAUTILUS_IS_TRASH_DIRECTORY (trash));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
+	g_return_if_fail (!NAUTILUS_IS_TRASH_DIRECTORY (real_directory));
+	g_return_if_fail (g_list_find (trash->details->directories, real_directory) != NULL);
+
+	/* Add to our list of directories. */
+	nautilus_directory_ref (real_directory);
+	trash->details->directories = g_list_prepend
+		(trash->details->directories, real_directory);
+
+	/* FIXME: Connect signals. */
+	/* FIXME: Add to pending I/O. */
+}
+
+void
+nautilus_trash_directory_remove_real_trash_directory (NautilusTrashDirectory *trash,
+						      NautilusDirectory *real_directory)
+{
+	g_return_if_fail (NAUTILUS_IS_TRASH_DIRECTORY (trash));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
+
+	if (g_list_find (trash->details->directories, real_directory) == NULL) {
+		return;
+	}
+
+	/* FIXME: Remove from pending I/O. */
+
+	/* Disconnect all the signals. */
+	gtk_signal_disconnect_by_data (GTK_OBJECT (real_directory), trash);
+
+	/* Remove from our list of directories. */
+	trash->details->directories = g_list_remove
+		(trash->details->directories, real_directory);
+	nautilus_directory_unref (real_directory);
+}
+
+static void
+remove_all_real_directories (NautilusTrashDirectory *trash)
+{
+	while (trash->details->directories != NULL) {
+		nautilus_trash_directory_remove_real_trash_directory
+			(trash, trash->details->directories->data);
+	}
 }

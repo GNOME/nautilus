@@ -219,7 +219,7 @@ create_attributes_option_menu (int menu_number)
 		menu_item = gtk_menu_item_new ();
 
 		/* Do some extra label-creating work so they're centered */
-		accel_label = gtk_accel_label_new (gettext (attribute_labels[index]));
+		accel_label = gtk_accel_label_new (_(attribute_labels[index]));
 		gtk_misc_set_alignment (GTK_MISC (accel_label), 0.5, 0.5);
 		gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
 		gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);

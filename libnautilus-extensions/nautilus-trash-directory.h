@@ -50,7 +50,10 @@ typedef struct {
 	NautilusDirectoryClass parent_slot;
 } NautilusTrashDirectoryClass;
 
-GtkType                 nautilus_trash_directory_get_type (void);
-NautilusTrashDirectory *nautilus_trash_directory_get      (void);
+GtkType nautilus_trash_directory_get_type                    (void);
+void    nautilus_trash_directory_add_real_trash_directory    (NautilusTrashDirectory *trash,
+							      NautilusDirectory      *real_directory);
+void    nautilus_trash_directory_remove_real_trash_directory (NautilusTrashDirectory *trash,
+							      NautilusDirectory      *real_directory);
 
 #endif /* NAUTILUS_TRASH_DIRECTORY_H */

@@ -789,14 +789,13 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
 
-	/* Tell the new monitor-er about the current set of
-	 * files, which may or may not be all of them.
+	/* Re-send the "files_added" signal for this set of files.
+	 * Old monitorers already know about them, but it's harmless
+	 * to hear about the same files again.
 	 */
-	if (directory->details->files != NULL && callback != NULL) {
-		g_assert (file == NULL);
-		(* callback) (directory,
-			      directory->details->files,
-			      callback_data);
+	if (file == NULL && directory->details->files != NULL) {
+		nautilus_directory_emit_files_added
+			(directory, directory->details->files);
 	}
 
 	/* Kick off I/O. */

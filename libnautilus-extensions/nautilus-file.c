@@ -323,6 +323,9 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 			g_assert (directory->details->as_file == NULL);
 			directory->details->as_file = file;
 		} else {
+			if (nautilus_directory_is_file_list_monitored (directory)) {
+				nautilus_file_ref (file);
+			}
 			directory->details->files =
 				g_list_prepend (directory->details->files, file);
 		}
