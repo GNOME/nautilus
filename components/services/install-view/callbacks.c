@@ -29,6 +29,7 @@
 #include "callbacks.h"
 #include "eazel-install-metadata.h"		/* eazel_install_configure_check_jump_after_install */
 #include "libtrilobite/libammonite-gtk.h"
+#include "eazel-inventory.h"
 #include <stdio.h>
 #include <errno.h>
 #include <libeazelinstall.h>
@@ -477,6 +478,20 @@ nautilus_service_install_solve_cases (NautilusServiceInstallView *view)
 	return answer;
 }
 
+static void
+inventory_service_callback (EazelInventory *inventory,
+	  		 gboolean succeeded,
+	  		 gpointer callback_data)
+{
+	NautilusServiceInstallView *view;
+
+	view = NAUTILUS_SERVICE_INSTALL_VIEW (callback_data);
+
+	gtk_object_unref (GTK_OBJECT (inventory));
+
+	nautilus_view_go_back (view->details->nautilus_view);
+}
+
 void
 nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
@@ -490,6 +505,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	gboolean question_dialog;
 	GList *packlist, *iter;
 	PackageData *pack;
+	EazelInventory *inventory_service;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
@@ -656,7 +672,12 @@ g_warning ("done: panic!");
 				nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
 			} else {
 				g_warning ("attemping to go back");
-				nautilus_view_go_back (view->details->nautilus_view);
+				inventory_service = eazel_inventory_get ();
+
+				if (inventory_service) {
+					eazel_inventory_upload (inventory_service, 
+							inventory_service_callback, view);
+				}
 			}
 		}
 		g_free (message);

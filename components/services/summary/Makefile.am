@@ -1,5 +1,11 @@
 include $(top_srcdir)/Makefile.shared
 
+if BUILD_RPM_COMPONENTS
+INVENTORY_LIBS=$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la
+else
+INVENTORY_LIBS=
+endif
+
 SUBDIRS = icons
 
 INCLUDES =								\
@@ -42,6 +48,7 @@ nautilus_summary_view_SOURCES =			\
 nautilus_summary_view_LDADD =									\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la		\
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a	\
+	$(INVENTORY_LIBS)									\
 	$(top_builddir)/libnautilus/libnautilus.la						\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la			\
 	$(BONOBO_LIBS)										\

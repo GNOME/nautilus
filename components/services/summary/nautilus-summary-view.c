@@ -38,6 +38,10 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 
+#ifdef HAVE_RPM
+#include "../inventory/eazel-inventory.h"
+#endif
+
 #include <libnautilus-extensions/nautilus-clickable-image.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
@@ -854,6 +858,45 @@ summary_fetch_callback (GnomeVFSResult result,
 	nautilus_view_report_load_complete (view->details->nautilus_view);
 }
 
+static void fetch_summary_data (NautilusSummaryView *view) {
+	char *uri;
+
+	/* Read and parse summary view XML */
+
+	uri = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+
+	if (uri == NULL) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Information is missing from the redirect data on Eazel servers. "
+				 "Please contact support@eazel.com."));
+		return;
+	}
+	view->details->summary_fetch_handle = eazel_summary_fetch_data_async 
+		(uri, summary_fetch_callback, view);
+
+	g_free (uri);
+}
+
+#ifdef HAVE_RPM
+static void
+inventory_load_callback (EazelInventory *inventory,
+	  		 gboolean succeeded,
+	  		 gpointer callback_data)
+{
+	NautilusSummaryView *view;
+
+	view = NAUTILUS_SUMMARY_VIEW (callback_data);
+
+	if (!succeeded) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Failed to upload system inventory."));
+	}
+
+	gtk_object_unref (GTK_OBJECT (inventory));
+
+	fetch_summary_data (view);
+}
+#endif
 
 static void
 redirect_fetch_callback (GnomeVFSResult result,
@@ -861,7 +904,9 @@ redirect_fetch_callback (GnomeVFSResult result,
 			 gpointer callback_data)
 {
 	NautilusSummaryView *view;
-	char *uri;
+#ifdef HAVE_RPM
+	EazelInventory *inventory_service;
+#endif
 
 	view = NAUTILUS_SUMMARY_VIEW (callback_data);
 
@@ -884,21 +929,27 @@ redirect_fetch_callback (GnomeVFSResult result,
 		return;
 	} 
 
-	/* Read and parse summary view XML */
 
-	uri = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+#ifdef HAVE_RPM
+	if (view->details->logged_in) {
+		inventory_service = eazel_inventory_get ();
 
-	if (uri == NULL) {
-		nautilus_summary_show_error_dialog 
-			(view, _("Information is missing from the redirect data on Eazel servers. "
-				 "Please contact support@eazel.com."));
-		return;
+		if (inventory_service) {
+			eazel_inventory_upload (inventory_service, 
+						inventory_load_callback,
+						view);
+
+		} else {
+			nautilus_summary_show_error_dialog 
+				(view, _("Failed to upload system inventory."));
+			fetch_summary_data (view);
+		}
+	} else {
+		fetch_summary_data (view);
 	}
-
-
-	view->details->summary_fetch_handle = eazel_summary_fetch_data_async 
-		(uri, summary_fetch_callback, view);
-	g_free (uri);
+#else
+	fetch_summary_data (view);
+#endif
 }
 
 

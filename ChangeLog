@@ -1,3 +1,18 @@
+2001-02-24  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/nautilus-view/callbacks.c:
+	(inventory_service_callback), (nautilus_service_install_done):
+	* components/services/summary/Makefile.am:
+	* components/services/summary/nautilus-summary-view.c:
+	(fetch_summary_data), (inventory_load_callback),
+	(redirect_fetch_callback):
+
+	Add rpm-dependant hooks into the inventory upload from the summary view
+	and the install view. This fixes bug 6186.
+
 2001-02-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	review wanker: Arik The Intern

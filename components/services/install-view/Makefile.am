@@ -12,6 +12,7 @@ INCLUDES =						\
 	-I$(top_builddir)/components/services/trilobite/libtrilobite \
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_builddir)/components/services/install/lib \
+	-I$(top_builddir)/components/services/inventory/	\
 	-I$(top_builddir)				\
 	$(GCONF_CFLAGS)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
@@ -43,6 +44,7 @@ nautilus_service_install_view_LDADD =			\
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
+	$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la \
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS)					\
 	$(GNOMEUI_LIBS)					\
