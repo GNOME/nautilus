@@ -27,6 +27,7 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkwindow.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
@@ -208,6 +209,15 @@ struct FMDirectoryViewClass {
 	 */
 	NautilusStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
 
+	/* file_limit_reached is a function pointer that subclasses may
+	 * override to control what happens when a directory is loaded
+	 * that has more files than Nautilus can handle. The default
+	 * implmentation puts up a dialog box that is appropriate to
+	 * display when the user explicitly tried to visit a location that
+	 * they would think of as a normal directory.
+	 */
+	void (* file_limit_reached)		(FMDirectoryView *view);
+
 	/* supports_properties is a function pointer that subclasses may
 	 * override to control whether the "Show Properties" menu item
 	 * should be enabled for selected items. The default implementation 
@@ -333,6 +343,7 @@ Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirect
 BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
 NautilusStringList *fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
+GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
 NautilusBackground *fm_directory_view_get_background                   (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,

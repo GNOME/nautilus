@@ -194,6 +194,7 @@ static void                load_directory                                       
 										   NautilusDirectory    *directory,
 										   gboolean              force_reload);
 static void                fm_directory_view_merge_menus                          (FMDirectoryView      *view);
+static void                real_file_limit_reached                                (FMDirectoryView      *view);
 static void                real_merge_menus                                       (FMDirectoryView      *view);
 static void                real_update_menus                                      (FMDirectoryView      *view);
 static gboolean            real_is_read_only                                      (FMDirectoryView      *view);
@@ -336,6 +337,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->accepts_dragged_files = real_accepts_dragged_files;
 	klass->supports_zooming = real_supports_zooming;
 	klass->supports_properties = real_supports_properties;
+	klass->file_limit_reached = real_file_limit_reached;
 	klass->reveal_selection = NULL;
 
 	/* Function pointers that subclasses must override */
@@ -420,8 +422,12 @@ viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 	g_free (parameters);
 }			      
 
-static GtkWindow *
-get_containing_window (FMDirectoryView *view)
+/* Returns the GtkWindow that this directory view occupies, or NULL
+ * if at the moment this directory view is not in a GtkWindow or the
+ * GtkWindow cannot be determined. Primarily used for parenting dialogs.
+ */
+GtkWindow *
+fm_directory_view_get_containing_window (FMDirectoryView *view)
 {
 	GtkWidget *window;
 
@@ -452,7 +458,7 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 	dialog = nautilus_yes_no_dialog (prompt, title, 
 					 GNOME_STOCK_BUTTON_OK, 
 					 GNOME_STOCK_BUTTON_CANCEL, 
-					 get_containing_window (view));
+					 fm_directory_view_get_containing_window (view));
 	g_free (prompt);
 	g_free (title);
 
@@ -546,7 +552,7 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	nautilus_launch_application
-		(application, uri, get_containing_window (directory_view));
+		(application, uri, fm_directory_view_get_containing_window (directory_view));
 	
 }				      
 
@@ -663,14 +669,14 @@ choose_program (FMDirectoryView *view,
 	if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		nautilus_choose_component_for_file 
 			(file,
-			 get_containing_window (view),
+			 fm_directory_view_get_containing_window (view),
 			 fm_directory_view_chose_component_callback,
 			 viewer_launch_parameters_new
 			 	(NULL, uri, view));
 	} else {
 		nautilus_choose_application_for_file 
 			(file,
-			 get_containing_window (view),
+			 fm_directory_view_get_containing_window (view),
 			 fm_directory_view_chose_application_callback,
 			 application_launch_parameters_new
 			 	(NULL, uri, view));
@@ -1377,32 +1383,50 @@ stop_loading_callback (NautilusView *nautilus_view,
 
 
 static void
-check_for_directory_hard_limit (FMDirectoryView *view)
+fm_directory_view_file_limit_reached (FMDirectoryView *view)
 {
-	NautilusDirectory *directory;
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view,
+		 	       file_limit_reached, (view));
+}
+
+static void
+real_file_limit_reached (FMDirectoryView *view)
+{
 	NautilusFile *file;
 	GnomeDialog *dialog;
 	char *directory_name;
 	char *message;
 
-	directory = view->details->model;
-	if (nautilus_directory_file_list_length_reached (directory)) {
-		file = nautilus_directory_get_corresponding_file (directory);
-		directory_name = nautilus_file_get_name (file);
-		nautilus_file_unref (file);
-		message = g_strdup_printf (_("The folder \"%s\" contains more files than "
-				             "Nautilus can handle. Only the first %d files "
-				             "will be displayed."), 
-				           directory_name, 
-				           NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT);
-		g_free (directory_name);
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-		dialog = nautilus_warning_dialog (message,
-						  _("Too Many Files"),
-						  get_containing_window (view));
-		g_free (message);
+	file = fm_directory_view_get_directory_as_file (view);
+	directory_name = nautilus_file_get_name (file);
+	nautilus_file_unref (file);
+
+	/* Note that the number of items actually displayed varies somewhat due
+	 * to the way files are collected in batches. So you can't assume that
+	 * no more than the constant limit are displayed.
+	 */
+	message = g_strdup_printf (_("The folder \"%s\" contains more files than "
+			             "Nautilus can handle. Some files will not be "
+			             "displayed."), 
+			           directory_name);
+	g_free (directory_name);
+
+	dialog = nautilus_warning_dialog (message,
+					  _("Too Many Files"),
+					  fm_directory_view_get_containing_window (view));
+	g_free (message);
+}
+
+static void
+check_for_directory_hard_limit (FMDirectoryView *view)
+{
+	if (nautilus_directory_file_list_length_reached (view->details->model)) {
+		fm_directory_view_file_limit_reached (view);
 	}
-
 }
 
 
@@ -2596,7 +2620,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 		_("Delete Immediately?"),
 		_("Delete"),
 		GNOME_STOCK_BUTTON_CANCEL,
-		get_containing_window (view));
+		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
 
@@ -2637,7 +2661,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 		_("Delete From Trash?"),
 		_("Delete"),
 		GNOME_STOCK_BUTTON_CANCEL,
-		get_containing_window (view));
+		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
 
@@ -3388,7 +3412,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 					 _("Broken Link"),
 					 _("Throw Away"),
 					 GNOME_STOCK_BUTTON_CANCEL,
-					 get_containing_window (view));
+					 fm_directory_view_get_containing_window (view));
 
 	gnome_dialog_set_default (dialog, GNOME_CANCEL);
 
@@ -3571,7 +3595,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 		 parameters,
 		 _("Cancel Open?"),
 		 timed_wait_prompt,
-		 get_containing_window (view));
+		 fm_directory_view_get_containing_window (view));
 	g_free (timed_wait_prompt);
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);

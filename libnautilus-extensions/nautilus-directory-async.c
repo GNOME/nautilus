@@ -1364,7 +1364,11 @@ directory_load_done (NautilusDirectory *directory,
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
 
-	if (result != GNOME_VFS_ERROR_EOF) {
+	/* Note that GNOME_VFS_OK can make it this far when the file-list
+	 * length limit has been reached. In that case, don't treat it as
+	 * an error.
+	 */
+	if (result != GNOME_VFS_ERROR_EOF && result != GNOME_VFS_OK) {
 		/* The load did not complete successfully. This means
 		 * we don't know the status of the files in this directory.
 		 * We clear the unconfirmed bit on each file here so that

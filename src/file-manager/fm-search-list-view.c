@@ -83,6 +83,7 @@ static void 	real_get_column_specification        	 (FMListView       *list_view
 						      	  int               column_number,
 						      	  FMListViewColumn *specification);
 static NautilusStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
+static void	real_file_limit_reached 		 (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
 static gboolean real_supports_creating_files		 (FMDirectoryView  *view);
 static gboolean real_accepts_dragged_files		 (FMDirectoryView  *view);
@@ -154,7 +155,7 @@ load_error_callback (FMDirectoryView *nautilus_view,
 							  "You can check the spelling on your selections "
 							  "or add more criteria to narrow your results."));
 		load_error_dialog = nautilus_error_dialog (generic_error_string,
-							   "Error during directory load",
+							   _("Error during search"),
 							   NULL);
 		break;
 
@@ -164,7 +165,7 @@ load_error_callback (FMDirectoryView *nautilus_view,
 							  "%s"),
 							gnome_vfs_result_to_string (result));
 		load_error_dialog = nautilus_error_dialog (generic_error_string,
-							   "Error during directory load",
+							   _("Error during search"),
 							   NULL);
 	}
 }
@@ -185,6 +186,7 @@ fm_search_list_view_initialize_class (gpointer klass)
   	fm_directory_view_class->add_file = real_add_file;
 	fm_directory_view_class->get_emblem_names_to_exclude = 
 		real_get_emblem_names_to_exclude;
+	fm_directory_view_class->file_limit_reached = real_file_limit_reached;
   	fm_directory_view_class->merge_menus = real_merge_menus;
 	fm_directory_view_class->supports_creating_files = 
 		real_supports_creating_files;
@@ -496,6 +498,21 @@ real_file_still_belongs (FMListView *view, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	return !nautilus_file_is_gone (file);
+}
+
+static void
+real_file_limit_reached (FMDirectoryView *view)
+{
+	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
+	
+	/* Note that the number of items actually displayed varies somewhat due
+	 * to the way files are collected in batches. So you can't assume that
+	 * no more than the constant limit are displayed.
+	 */
+	nautilus_warning_dialog (_("Nautilus found more search results than it can display. "
+				   "Some matching items will not be displayed. "), 
+				 _("Too Many Matches"),
+				 fm_directory_view_get_containing_window (view));
 }
 
 static void

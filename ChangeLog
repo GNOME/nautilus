@@ -1,3 +1,45 @@
+2001-01-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+
+	Fixed bug 2207 (Search needs to gracefully handle too
+	many items found)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_done): Don't treat GNOME_VFS_OK as an
+	error case here. This was happening when the file limit
+	was reached, and the resulting propogated error was making
+	it to the search list view code, which was putting up
+	an error dialog saying no error had occurred.
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	Added FIXME with bug number for new bug 5603, which complains
+	that the file list limit isn't as hard as it claims.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(fm_directory_view_file_limit_reached), (real_file_limit_reached),
+	(check_for_directory_hard_limit): Broke out the code that handles
+	the UI when the directory contains too many files such that
+	subclasses can override the behavior.
+
+	(fm_directory_view_get_containing_window): Renamed from
+	"get_containing_window" and made public so subclasses don't have
+	to reimplent.
+	(fm_directory_view_confirm_multiple_windows),
+	(fm_directory_view_launch_application), (choose_program),
+	(fm_directory_view_confirm_deletion), (confirm_delete_from_trash),
+	(report_broken_symbolic_link), (fm_directory_view_activate_file):
+	Updated for function name change.
+	
+	* src/file-manager/fm-search-list-view.c: 
+	(load_error_callback): Marked strings for localization; reworded to
+	avoid use of "directory".
+	(fm_search_list_view_initialize_class),	(real_file_limit_reached):
+	Put up dialog that's been worded specifically for search results
+	when too many items are found.
+
 2001-01-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/.cvsignore:
