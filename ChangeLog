@@ -1,3 +1,11 @@
+2000-05-09  Christopher Blizzard  <blizzard@redhat.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(nautilus_mozilla_content_view_load_uri): add GTK_MOZ_EMBED() cast
+	since the prototype for embed_load_url has changed on the Mozilla
+	tip.
+	(bonobo_mozilla_callback): Same.
+
 2000-05-08  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-uri-map.c: DEBUG_MJS was accidentally checked in

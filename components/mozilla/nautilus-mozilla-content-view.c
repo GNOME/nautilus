@@ -165,7 +165,7 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 
 	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->detail->uri);
 
-	gtk_moz_embed_load_url (view->detail->mozilla, view->detail->uri);
+	gtk_moz_embed_load_url (GTK_MOZ_EMBED(view->detail->mozilla), view->detail->uri);
 }
 
 static void
@@ -231,7 +231,7 @@ bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const 
 	g_free (label_text);
 
 
-	gtk_moz_embed_load_url (view->detail->mozilla, "http://www.gnome.org/");
+	gtk_moz_embed_load_url (GTK_MOZ_EMBED(view->detail->mozilla), "http://www.gnome.org/");
 }
 
 static void
