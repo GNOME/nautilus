@@ -36,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <math.h>
 #include <stdio.h>
@@ -181,11 +182,17 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 	/* load the tab_pieces image if necessary */
 	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_IMAGES");
 	tab_piece_theme = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_THEME");
+	
 	if (tab_pieces) {
-		if (tab_piece_theme) {
-			tab_piece_path = nautilus_theme_get_image_path_from_theme (tab_pieces, tab_piece_theme);		
-		} else {
-			tab_piece_path = nautilus_theme_get_image_path (tab_pieces);
+		/* check for "none" to force non-bitmap tabs, necessary since the default has bitmap ones now */
+		if (nautilus_strcmp (tab_pieces, "none") == 0) {
+			tab_piece_path = NULL;	
+		}  else {
+			if (tab_piece_theme) {
+				tab_piece_path = nautilus_theme_get_image_path_from_theme (tab_pieces, tab_piece_theme);		
+			} else {
+				tab_piece_path = nautilus_theme_get_image_path (tab_pieces);
+			}
 		}
 		g_free (tab_pieces);
 		g_free (tab_piece_theme);

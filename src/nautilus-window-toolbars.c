@@ -183,6 +183,12 @@ get_file_name_from_icon_name (const char *icon_name)
 	/* look in the theme to see if there's a redirection found */
 	icon_theme = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
 	if (icon_theme != NULL) {
+		/* special case the "standard" theme which indicates using the stock gnome icons */
+		if (nautilus_strcmp (icon_theme, "standard") == 0) {
+			g_free (icon_theme);
+			return NULL;
+		}
+		
 		theme_path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
 		full_path_name = nautilus_pixmap_file (theme_path_name);
 		g_free (theme_path_name);

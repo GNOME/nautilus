@@ -676,13 +676,16 @@ has_image_file (const char *path_uri, const char *dir_name, const char *image_fi
 
 /* derive the theme description from the theme name by reading its xml file */
 static char*
-make_theme_description (const char *theme_name, const char *theme_path_uri)
+get_theme_description_and_display_name (const char *theme_name, const char *theme_path_uri, char** theme_display_name)
 {
 	char *theme_file_name, *theme_path, *theme_local_path;
 	char *description_result, *temp_str;
 	xmlDocPtr theme_document;
 	
 	description_result = NULL;
+	if (theme_display_name) {
+		*theme_display_name = NULL;
+	}
 	
 	theme_file_name = g_strdup_printf ("%s.xml", theme_name);	
 	theme_local_path = gnome_vfs_get_local_path_from_uri (theme_path_uri);
@@ -699,6 +702,12 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 			description_result = g_strdup (temp_str);
 			xmlFree (temp_str);
 			
+			if (theme_display_name) {
+				temp_str = nautilus_xml_get_property_translated (xmlDocGetRootElement (theme_document), "name");
+				*theme_display_name = g_strdup (temp_str);
+				xmlFree (temp_str);
+			}
+			
 			xmlFreeDoc (theme_document);
 		}
 		
@@ -708,7 +717,7 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 	g_free (theme_file_name);
 	if (description_result)
 		return description_result;
-	return g_strdup_printf (_("No description available for the \"%s\" theme"), theme_name);
+	return g_strdup_printf (_("No description available for the \"%s\" theme"), *theme_display_name == NULL ? theme_name : *theme_display_name);
 }
 
 
@@ -795,12 +804,12 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	pix_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	gtk_widget_show (pix_widget);
 
-	/* install it in the list view */	
-
-	
+	/* install it in the list view */		
 	clist_entry[0] = NULL;
-	clist_entry[1] = g_strdup (theme_name);
-	clist_entry[2] = make_theme_description (theme_name, theme_path_uri);
+	clist_entry[2] = get_theme_description_and_display_name (theme_name, theme_path_uri, &clist_entry[1]);
+	if (clist_entry[1] == NULL) {
+		clist_entry[1] = g_strdup (theme_name);
+	}
 	
 	gtk_clist_append (GTK_CLIST(theme_selector->details->theme_list), clist_entry);
 

@@ -1,3 +1,35 @@
+2001-01-19  Andy Hertzfeld  <andy@eazel.com>
+
+	more clean-up and fixes for the default theme change
+	
+	* icons/ardmore/ardmore.xml:
+	* icons/arlo/arlo.xml:
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/gnome/gnome.xml:
+	* icons/vector/vector.xml:
+	* icons/villanova/villanova.xml:
+	at Arlo's request, capitalized the theme names and also made
+	them localizable, and tweaks to some of the theme files to fix
+	problems caused by the new default
+	
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data):
+	added a way to specify the non-pixmap tabs, since it uses
+	pixmap ones in the default now
+	
+	* src/nautilus-theme-selector.c:
+	(get_theme_description_and_display_name), (add_theme):
+	made it use a localizable name in the xml file instead of the
+	actual folder name.
+	
+	* src/nautilus-window-toolbars.c: (get_file_name_from_icon_name):
+	added a way to get the stock gnome toolbar icons, now that we have
+	our own in the default theme
+	
+	* nautilus.spec.in:
+	added the throbber component to our package
+
 2001-01-19  Pavel Cisler <pavel@eazel.com>
 
 	Fix 3558: Nautilus crashes with specific sequence of icon dragging
