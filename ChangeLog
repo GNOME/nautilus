@@ -1,3 +1,88 @@
+2001-10-18  Darin Adler  <darin@bentspoon.com>
+
+	Fixed a bunch of bugs that were causing directory display to be
+	even slower than it ought to be. The hysteresis wasn't working at
+	all because of the confusion about when files were ready for
+	display. Also changed hysteresis to 1 second and file chunk to 300
+	files instead of 100.
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(link_info_gmc_link_read_callback): Fix function so it uses the
+	actual URI, not the thing that starts with URL. The old way it
+	was always failing to read. There were some other backwards if
+	statements in here too.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Create "non-ready files" hash.
+	(fm_directory_view_destroy): Destroy it.
+	(real_file_still_belongs): Move this here from FMListView.
+	(still_should_show_file): New function, used to decide whether to
+	keep a file in the window or not.
+	(ready_to_load): New function, used to decide whether a file is
+	ready enough to show in the window.
+	(process_new_files): Move files from the "new files" lists to the
+	"old files" lists, filtering out ones that are not ready to load
+	and putting those into the "non-ready files" hash. Also sort the
+	added files so the ones that show up at the top are the first to
+	be added.
+	(split_off_first_n): Renamed to eliminate the "g" namespace.
+	(process_old_files): The guts of what used to be in
+	display_pending_files. Now we use a separate signal for remove
+	instead of just reusing the changed signal.
+	(display_pending_files): We're not done loading until all the
+	"non-ready files" are ready. Also reverse the sense of the return
+	value, so it returns TRUE if there is more work to do.
+	(display_pending_idle_callback): Don't zero out the idle ID if we
+	are going to return TRUE.
+	(display_pending_timeout_callback): If there are more files than
+	we can handle, do the remainder at idle time, not in another
+	timeout.
+	(schedule_idle_display_of_pending_files): Lower the priority so we
+	are more likely to get canvas updates between idles.
+	(done_loading_callback): We're not done until there are no
+	"non-ready files" left.
+	(fm_directory_view_queue_file_change): Tiny optimization.
+	(unref_key_and_remove): Helper function for clearing out the
+	"non-ready files" hash.
+	(fm_directory_view_stop): Clear out the 4 lists and the hash (it
+	used to just be 2 lists).
+	(real_sort_files): Default implementation, doesn't sort.
+	(fm_directory_view_initialize_class): Various new methods.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file): Do
+	less work, since the rules about which files should be shown and
+	which files are ready to be seen are now in FMDirectoryView.
+	(fm_icon_view_remove_file): New function.
+	(fm_icon_view_file_changed): Do way less work, since
+	FMDirectoryView does the heavy lifting now.
+	(play_file), (preview_audio): Some rudimentary fixes, still seems
+	to be broken.
+	(compare_files): New function.
+	(compare_files_cover): New function.
+	(fm_icon_view_sort_files): If automatic layout is on, sort the
+	files on their way in so the first ones displayed are the top left
+	ones.
+	(icon_container_compare_icons_callback): Share code by using the
+	new compare_files function.
+	(fm_icon_view_initialize_class): Various new methods.
+
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_initialize_class): Various new methods.
+	(fm_list_view_add_file): Do less work, since the rules about which
+	files should be shown and which files are ready to be seen are now
+	in FMDirectoryView.
+	(fm_list_view_file_changed): Do way less work, since
+	FMDirectoryView does the heavy lifting now.
+	(fm_list_view_remove_file): New function.
+	(fm_list_view_sort_files): This replaces the old override of
+	display_pending_files.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): The file_still_belongs
+	method moved to FMDirectoryView.
+
 2001-10-15  Darin Adler  <darin@bentspoon.com>
 
 	Switch to require Mozilla 0.9.5 -- sadly this means we are
@@ -211,7 +296,7 @@
 	(destroy, compare_by_name, nautilus_file_get_string_attribute,
 	nautilus_file_get_all_attributes, nautilus_self_check_file):
 	Adjust for custom_name->display_name change, use
-	nautilus_file_get_display_name instead of natilus_file_get_name
+	nautilus_file_get_display_name instead of nautilus_file_get_name
 	where appropriate.
 	
 	* libnautilus-private/nautilus-directory-async.c:

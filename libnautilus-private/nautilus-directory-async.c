@@ -800,11 +800,11 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		file_info = node->data;
 
 		/* Update the file count. */
-		/* FIXME bugzilla.gnome.org 45063: This could count a file twice if we get it
-		 * from both load_directory and from
-		 * new_files_callback. Not too hard to fix by moving
-		 * this into the actual callback instead of waiting
-		 * for the idle function.
+		/* FIXME bugzilla.gnome.org 45063: This could count a
+		 * file twice if we get it from both load_directory
+		 * and from new_files_callback. Not too hard to fix by
+		 * moving this into the actual callback instead of
+		 * waiting for the idle function.
 		 */
 		if (gnome_vfs_directory_filter_apply (directory->details->load_file_count_filter,
 						      file_info)) {
@@ -2798,29 +2798,33 @@ link_info_gmc_link_read_callback (GnomeVFSResult result,
 	} else {
 		/* Make sure we don't run off the end of the buffer. */
 		end_of_line = memchr (file_contents, '\n', bytes_read);
-		if (end_of_line != NULL) {
-			uri = g_strndup (file_contents, end_of_line - file_contents);
-		} else {
-			uri = g_strndup (file_contents, bytes_read);
+		if (end_of_line == NULL) {
+			end_of_line = file_contents + bytes_read;
 		}
+		uri = file_contents + strlen("URL: ");
+		uri = g_strndup (uri, end_of_line - uri);
 
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		
 		if (path != NULL) {
-		  /* FIXME: this gnome_metata_get call is synchronous, but better to
-		   * have it here where the results will at least be cached than in
-		   * nautilus_file_get_display_name. 
-		   */
-		  res = gnome_metadata_get (path, "icon-name", &size, &name);
+			/* FIXME: this gnome_metata_get call is synchronous, but better to
+			 * have it here where the results will at least be cached than in
+			 * nautilus_file_get_display_name. 
+			 */
+			res = gnome_metadata_get (path, "icon-name", &size, &name);
 		} else {
 		        res = -1;
 		}
 		
-		if (res == 0) {
+		if (res != 0) {
 		        name = NULL;
 		}
 
 		if (path != NULL) {
+			/* FIXME: this gnome_metata_get call is synchronous, but better to
+			 * have it here where the results will at least be cached than in
+			 * nautilus_file_get_display_name. 
+			 */
 			res = gnome_metadata_get (path, "icon-filename", &size, &icon_path);
 		} else {
 			res = -1;
@@ -2833,10 +2837,11 @@ link_info_gmc_link_read_callback (GnomeVFSResult result,
 			icon = NULL;
 		}
 
+		g_free (path);
 	}
 
 	g_free (file_contents);
-	link_info_read_done (directory, uri ? uri + 5 : NULL, name, icon);
+	link_info_read_done (directory, uri, name, icon);
 	g_free (uri);
 	g_free (name);
 	g_free (icon);
@@ -2923,8 +2928,8 @@ link_info_start (NautilusDirectory *directory,
 	}
 
 	/* Figure out if it is a link. */
-	gmc_style_link = nautilus_file_is_mime_type (file, "application/x-gmc-link") &&
-		nautilus_file_is_in_desktop (file);
+	gmc_style_link = nautilus_file_is_mime_type (file, "application/x-gmc-link")
+		&& nautilus_file_is_in_desktop (file);
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
         is_directory = nautilus_file_is_directory (file);
 

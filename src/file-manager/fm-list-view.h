@@ -53,8 +53,6 @@ typedef struct {
 						 NautilusFile	  *file);
 	void	 (* removing_file)		(FMListView	  *list_view,
 						 NautilusFile	  *file);
-	gboolean (* file_still_belongs)		(FMListView	  *list_view,
-						 NautilusFile	  *file);
 	int    	 (* get_number_of_columns)      (FMListView       *list_view);
 	int    	 (* get_emblems_column)         (FMListView       *list_view);
 	int    	 (* get_link_column)            (FMListView       *list_view);

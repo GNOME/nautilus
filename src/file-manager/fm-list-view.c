@@ -97,19 +97,18 @@ static void                 list_selection_changed_callback           (EelList  
 								       gpointer            data);
 static void                 fm_list_view_add_file                     (FMDirectoryView    *view,
 								       NautilusFile       *file);
-static void                 fm_list_view_reset_row_height             (FMListView         *list_view);
+static void                 fm_list_view_remove_file                  (FMDirectoryView    *view,
+								       NautilusFile       *file);
 static void                 fm_list_view_file_changed                 (FMDirectoryView    *view,
 								       NautilusFile       *file);
+static void                 fm_list_view_reset_row_height             (FMListView         *list_view);
 static void                 fm_list_view_adding_file                  (FMListView         *view,
 								       NautilusFile       *file);
 static void                 fm_list_view_removing_file                (FMListView         *view,
 								       NautilusFile       *file);
-static gboolean             fm_list_view_display_pending_files        (FMDirectoryView    *view,
-								       GList             **pending_files_added,
-								       GList             **pending_files_changed);
-static gboolean             fm_list_view_file_still_belongs           (FMListView         *view,
-								       NautilusFile       *file);
-static void                 fm_list_view_begin_adding_files           (FMDirectoryView    *view);
+static void                 fm_list_view_sort_files                   (FMDirectoryView    *view,
+								       GList             **files);
+static void                 fm_list_view_begin_file_changes           (FMDirectoryView    *view);
 static void                 fm_list_view_begin_loading                (FMDirectoryView    *view);
 static void                 fm_list_view_bump_zoom_level              (FMDirectoryView    *view,
 								       int                 zoom_increment);
@@ -126,7 +125,7 @@ static void                 fm_list_view_initialize                   (gpointer 
 								       gpointer            klass);
 static void                 fm_list_view_initialize_class             (gpointer            klass);
 static void                 fm_list_view_destroy                      (GtkObject          *object);
-static void                 fm_list_view_done_adding_files            (FMDirectoryView    *view);
+static void                 fm_list_view_end_file_changes             (FMDirectoryView    *view);
 static void                 fm_list_view_reset_to_defaults            (FMDirectoryView    *view);
 static void                 fm_list_view_select_all                   (FMDirectoryView    *view);
 static void                 fm_list_view_set_selection                (FMDirectoryView    *view,
@@ -150,7 +149,7 @@ static int                  get_column_from_attribute                 (FMListVie
 								       const char         *attribute);
 static int                  get_sort_column_from_attribute            (FMListView         *list_view,
 								       const char         *attribute);
-static EelList *       get_list                                  (FMListView         *list_view);
+static EelList *            get_list                                  (FMListView         *list_view);
 static void                 update_icons                              (FMListView         *list_view);
 static int                  get_number_of_columns                     (FMListView         *list_view);
 static int                  get_emblems_column                        (FMListView         *list_view);
@@ -167,8 +166,6 @@ static NautilusFileSortType get_column_sort_criterion                 (FMListVie
 static void                 real_adding_file                          (FMListView         *view,
 								       NautilusFile       *file);
 static void                 real_removing_file                        (FMListView         *view,
-								       NautilusFile       *file);
-static gboolean             real_file_still_belongs                   (FMListView         *view,
 								       NautilusFile       *file);
 static int                  real_get_number_of_columns                (FMListView         *list_view);
 static int                  real_get_emblems_column                   (FMListView         *list_view);
@@ -205,7 +202,7 @@ fm_list_view_initialize_class (gpointer klass)
 	object_class->destroy = fm_list_view_destroy;
 
 	fm_directory_view_class->add_file = fm_list_view_add_file;
-	fm_directory_view_class->begin_adding_files = fm_list_view_begin_adding_files;
+	fm_directory_view_class->begin_file_changes = fm_list_view_begin_file_changes;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
@@ -214,7 +211,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->clear = fm_list_view_clear;
-	fm_directory_view_class->done_adding_files = fm_list_view_done_adding_files;
+	fm_directory_view_class->end_file_changes = fm_list_view_end_file_changes;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->is_empty = real_is_empty;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
@@ -222,7 +219,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
-	fm_directory_view_class->display_pending_files = fm_list_view_display_pending_files;
+	fm_directory_view_class->sort_files = fm_list_view_sort_files;
 	fm_directory_view_class->start_renaming_item = real_start_renaming_item;
 	fm_directory_view_class->get_selected_icon_locations = fm_list_view_get_selected_icon_locations;
         fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
@@ -230,6 +227,7 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_list_view_update_smooth_graphics_mode;
         fm_directory_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
+	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -238,7 +236,6 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
-	fm_list_view_class->file_still_belongs = real_file_still_belongs;
 
 	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 					       (int *) &default_sort_order_auto_value);
@@ -346,9 +343,9 @@ list_view_compare_files_for_sort (gconstpointer a, gconstpointer b, gpointer cal
 	file2 = NAUTILUS_FILE (b);
 
 	result = nautilus_file_compare_for_sort (file1, file2,
-					       get_column_sort_criterion (list_view, list_view->details->sort_column),
-					       fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (list_view)),
-					       list_view->details->sort_reversed);
+						 get_column_sort_criterion (list_view, list_view->details->sort_column),
+						 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (list_view)),
+						 list_view->details->sort_reversed);
 
 	/* Flip the sign in the reversed case since list widget will flip it back.
 	 * See comment in fm_list_view_sort_items.
@@ -372,8 +369,10 @@ fm_list_view_compare_rows (EelCList *clist,
 	NautilusFile *file2;
 	FMListView *list_view;
   
-	g_return_val_if_fail (EEL_IS_LIST (clist), 0);
-	g_return_val_if_fail (clist->sort_column != LIST_VIEW_COLUMN_NONE, 0);
+	g_assert (EEL_IS_LIST (clist));
+	g_assert (clist->sort_column != LIST_VIEW_COLUMN_NONE);
+	g_assert (ptr1 != NULL);
+	g_assert (ptr2 != NULL);
 
 	row1 = (EelCListRow *) ptr1;
 	row2 = (EelCListRow *) ptr2;
@@ -388,13 +387,12 @@ fm_list_view_compare_rows (EelCList *clist,
 	file1 = (NautilusFile *) (row1->data);
 	file2 = (NautilusFile *) (row2->data);
 
-	g_assert (file1 != NULL || file2 != NULL);
 	if (file1 == NULL) {
 		file1 = gtk_object_get_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY);
-	} else if (file2 == NULL) {
+	}
+	if (file2 == NULL) {
 		file2 = gtk_object_get_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY);
 	}
-	g_assert (file1 != NULL && file2 != NULL);
 	
 	list_view = FM_LIST_VIEW (GTK_WIDGET (clist)->parent);
 
@@ -1453,7 +1451,7 @@ fm_list_view_clear (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_begin_adding_files (FMDirectoryView *view)
+fm_list_view_begin_file_changes (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
@@ -1529,12 +1527,6 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 static void
 fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
-	g_return_if_fail (FM_IS_LIST_VIEW (view));
-
-	if (!fm_directory_view_should_show_file (view, file)) {
-		return;
-	}
-
 	/* We are allowed to get the same icon twice, so don't re-add it. */
 	if (eel_clist_find_row_from_data (EEL_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
 		add_to_list (FM_LIST_VIEW (view), file);
@@ -1588,7 +1580,7 @@ static void
 fm_list_view_adding_file (FMListView *view, NautilusFile *file)
 {
 	EEL_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
-			       adding_file, (view, file));
+			 adding_file, (view, file));
 }
 
 static void
@@ -1601,22 +1593,7 @@ static void
 fm_list_view_removing_file (FMListView *view, NautilusFile *file)
 {
 	EEL_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
-			      removing_file, (view, file));
-}
-
-static gboolean
-fm_list_view_file_still_belongs (FMListView *view, NautilusFile *file)
-{
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(FM_LIST_VIEW_CLASS, view,
-		 file_still_belongs, (view, file));
-}
-
-static gboolean
-real_file_still_belongs (FMListView *view, NautilusFile *file)
-{
-	return nautilus_directory_contains_file 
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), file);
+			 removing_file, (view, file));
 }
 
 static void
@@ -1628,11 +1605,6 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	gboolean was_in_list;
 	gboolean was_selected;
 
-	g_return_if_fail (FM_IS_LIST_VIEW (view));
-
-	/* This handles both changes to an existing file and the
-	 * existing file going away.
-	 */
 	list_view = FM_LIST_VIEW (view);
 	clist = EEL_CLIST (get_list (list_view));
 
@@ -1640,29 +1612,30 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	 * but before we reinsert it.
 	 */
 	nautilus_file_ref (file);
-	
-	eel_clist_freeze (clist);
 
 	remove_from_list (list_view, file, &was_in_list, &was_selected);
-
-	if (was_in_list
-	    && fm_directory_view_should_show_file (view, file)
-	    && fm_list_view_file_still_belongs (list_view, file)) {
+	if (was_in_list) {
 		new_row = add_to_list (list_view, file);
-
 		if (was_selected) {
 			eel_clist_select_row (clist, new_row, -1);
 		}
 	}
-
-	eel_clist_thaw (clist);
 
 	/* Unref to match our keep-it-alive-for-this-function ref. */
 	nautilus_file_unref (file);
 }
 
 static void
-fm_list_view_done_adding_files (FMDirectoryView *view)
+fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
+{
+	gboolean was_in_list;
+	gboolean was_selected;
+
+	remove_from_list (FM_LIST_VIEW (view), file, &was_in_list, &was_selected);
+}
+
+static void
+fm_list_view_end_file_changes (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
@@ -1843,27 +1816,20 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         nautilus_file_list_free (selection);
 }
 
-static gboolean
-fm_list_view_display_pending_files (FMDirectoryView *view,
-				    GList **pending_files_added,
-				    GList **pending_files_changed)
+static void
+fm_list_view_sort_files (FMDirectoryView *view,
+			 GList **files)
 {
 	EelCList *clist;
 	NautilusFileSortType sort_criterion;
 
-	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
-	
 	clist = EEL_CLIST (get_list (FM_LIST_VIEW (view)));	
 	sort_criterion = get_column_sort_criterion (FM_LIST_VIEW (view), clist->sort_column);
 
-	/* Sort the added items before displaying them, so that they'll be added in order,
-	   and items won't move around.  */
-	*pending_files_added = eel_g_list_sort_custom (*pending_files_added, 
-						       (EelCompareFunction) list_view_compare_files_for_sort,
-						       FM_LIST_VIEW (view));
-
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE (FM_DIRECTORY_VIEW_CLASS, display_pending_files,
-						 (view, pending_files_added, pending_files_changed));
+	/* Sort the added items before displaying them, so that
+	 * they'll be added in order, and items won't move around.
+	 */
+	*files = eel_g_list_sort_custom (*files, list_view_compare_files_for_sort, view);
 }
 
 static GArray *

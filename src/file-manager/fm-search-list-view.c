@@ -80,7 +80,7 @@ static void	real_adding_file 			 (FMListView 	   *view,
 							  NautilusFile 	   *file);
 static void	real_removing_file 			 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
-static gboolean real_file_still_belongs 		 (FMListView 	   *view, 
+static gboolean real_file_still_belongs 		 (FMDirectoryView  *view, 
 							  NautilusFile 	   *file);
 static int  	real_get_number_of_columns           	 (FMListView       *list_view);
 static int  	real_get_emblems_column                	 (FMListView       *list_view);
@@ -346,6 +346,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 	object_class->destroy = real_destroy;
 
   	fm_directory_view_class->add_file = real_add_file;
+	fm_directory_view_class->file_still_belongs = real_file_still_belongs;
 	fm_directory_view_class->get_emblem_names_to_exclude = 
 		real_get_emblem_names_to_exclude;
 	fm_directory_view_class->file_limit_reached = real_file_limit_reached;
@@ -365,7 +366,6 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
-	fm_list_view_class->file_still_belongs = real_file_still_belongs;
 }
 
 static void
@@ -599,11 +599,10 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	 * since that's done on the fake file, so we do our own filtering here.
 	 */
 	if (fm_directory_view_should_show_file (view, real_file)) {
-		/* Tell the normal list-view code to add this file. It will add
+		/* Tell the normal list view code to add this file. It will add
 		 * and ref it only if it's not already in the list.
 		 */ 
-		EEL_CALL_PARENT 
-			(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
+		EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
 	}
 
 	g_free (fake_file_name);
@@ -661,11 +660,8 @@ real_removing_file (FMListView *view, NautilusFile *file)
 }
 
 static gboolean
-real_file_still_belongs (FMListView *view, NautilusFile *file)
+real_file_still_belongs (FMDirectoryView *view, NautilusFile *file)
 {
-	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
-
 	return !nautilus_file_is_gone (file);
 }
 
@@ -679,9 +675,9 @@ real_file_limit_reached (FMDirectoryView *view)
 	 * no more than the constant limit are displayed.
 	 */
 	eel_show_warning_dialog (_("Nautilus found more search results than it can display. "
-				        "Some matching items will not be displayed. "), 
-				      _("Too Many Matches"),
-				      fm_directory_view_get_containing_window (view));
+				   "Some matching items will not be displayed. "), 
+				 _("Too Many Matches"),
+				 fm_directory_view_get_containing_window (view));
 }
 
 static void
@@ -767,8 +763,6 @@ real_supports_properties (FMDirectoryView *view)
 static void
 real_update_menus (FMDirectoryView *view)
 {
-	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
-
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	update_reveal_item (FM_SEARCH_LIST_VIEW (view));

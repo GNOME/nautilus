@@ -68,17 +68,19 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* clear) 		 (FMDirectoryView *view);
 	
-	/* The 'begin_adding_files' signal is emitted before a set of files
+	/* The 'begin_file_changes' signal is emitted before a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
 	 * necessary preparation for a set of new files. The default
 	 * implementation does nothing.
 	 */
-	void 	(* begin_adding_files) (FMDirectoryView *view);
+	void 	(* begin_file_changes) (FMDirectoryView *view);
 	
 	/* The 'add_file' signal is emitted to add one file to the view.
 	 * It must be replaced by each subclass.
 	 */
 	void    (* add_file) 		 (FMDirectoryView *view, 
+					  NautilusFile *file);
+	void    (* remove_file)		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
 	/* The 'file_changed' signal is emitted to signal a change in a file,
@@ -88,12 +90,12 @@ struct FMDirectoryViewClass {
 	void 	(* file_changed)         (FMDirectoryView *view, 
 					  NautilusFile *file);
 
-	/* The 'done_adding_files' signal is emitted after a set of files
+	/* The 'end_file_changes' signal is emitted after a set of files
 	 * are added to the view. It can be replaced by a subclass to do any 
-	 * necessary cleanup (typically, cleanup for code in begin_adding_files).
+	 * necessary cleanup (typically, cleanup for code in begin_file_changes).
 	 * The default implementation does nothing.
 	 */
-	void 	(* done_adding_files)    (FMDirectoryView *view);
+	void 	(* end_file_changes)    (FMDirectoryView *view);
 	
 	/* The 'begin_loading' signal is emitted before any of the contents
 	 * of a directory are added to the view. It can be replaced by a 
@@ -195,14 +197,12 @@ struct FMDirectoryViewClass {
          */
         void    (* update_menus)         	(FMDirectoryView *view);
 
-	/* display_pending_files is a function pointer that subclasses can override
-	   to have files delivered in different sized "chunks" when they arrive from
-	   the directory model.  The default directory view method will deliver
-	   all available files at once.  The list of pending files added and changed
-	   may be modified by the subclass, to remove files that are no longer pending. */
-	gboolean (* display_pending_files)      (FMDirectoryView *view,
-						 GList           **pending_files_added,
-						 GList           **pending_files_changed);
+	/* sort_files is a function pointer that subclasses can override
+	 * to provide a sorting order to determine which files should be
+	 * presented when only a partial list is provided.
+	 */
+	void     (* sort_files)                 (FMDirectoryView *view,
+						 GList          **files);
 
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
@@ -240,12 +240,12 @@ struct FMDirectoryViewClass {
 	 * default implementation checks the permissions of the
 	 * directory.
 	 */
-	gboolean (* is_read_only)	(FMDirectoryView *view);
+	gboolean (* is_read_only)	        (FMDirectoryView *view);
 
 	/* is_empty is a function pointer that subclasses must
 	 * override to report whether the view contains any items.
 	 */
-	gboolean (* is_empty)	(FMDirectoryView *view);
+	gboolean (* is_empty)                   (FMDirectoryView *view);
 
 	/* supports_creating_files is a function pointer that subclasses may
 	 * override to control whether or not new items can be created.
@@ -261,8 +261,11 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
 
-	void	(* start_renaming_item)	 	(FMDirectoryView *view,
+	void	 (* start_renaming_item)        (FMDirectoryView *view,
 					  	 const char *uri);
+
+	gboolean (* file_still_belongs)		(FMDirectoryView *view,
+						 NautilusFile	 *file);
 
 	/* Preference change callbacks, overriden by icon and list views. 
 	 * Icon and list views respond by synchronizing to the new preference
