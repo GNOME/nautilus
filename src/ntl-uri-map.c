@@ -301,12 +301,13 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
 
   g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
 
- out:
   if(notify_when_ready)
     {
       navinfo->notify_tag = 0;
       notify_when_ready(navinfo, notify_data);
     }
+
+ out:
 
   return 0;
 }
