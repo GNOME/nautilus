@@ -1,5 +1,25 @@
 2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Fix for bug 4475.  Transplant Andy's fix from the HEAD to the pr2
+	branch. 
+
+	Original ChangeLog:
+	
+	fixed bug 4475, add license to help menu
+	
+	* src/nautilus-shell-ui.xml:
+	added menu item for "Nautilus License"
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_license_callback),
+	(nautilus_window_initialize_menus):
+	added a bonobo verb and a handler to invoke the license document
+	* user-guide/C/Makefile.am:
+	added license.html
+	* user-guide/C/html/license.html:
+	added license html file from Bud.
+	
+2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Fix for bug 4480.  Transporting Darin's fix from the HEAD to the
 	pr2 branch.  
 
