@@ -79,10 +79,6 @@ static int   nautilus_file_compare_by_emblems        (NautilusFile         *file
 						      NautilusFile         *file_2);
 static int   nautilus_file_compare_by_type           (NautilusFile         *file_1,
 						      NautilusFile         *file_2);
-static int   nautilus_file_compare_for_sort_internal (NautilusFile         *file_1,
-						      NautilusFile         *file_2,
-						      NautilusFileSortType  sort_type,
-						      gboolean              reversed);
 static char *nautilus_file_get_date_as_string        (NautilusFile         *file,
 						      NautilusDateType      date_type);
 static char *nautilus_file_get_owner_as_string       (NautilusFile         *file,
@@ -1154,11 +1150,22 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	return result;
 }
 
-static int
-nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
-					 NautilusFile *file_2,
-					 NautilusFileSortType sort_type,
-					 gboolean reversed)
+/**
+ * nautilus_file_compare_for_sort:
+ * @file_1: A file object
+ * @file_2: Another file object
+ * @sort_type: Sort criterion
+ * 
+ * Return value: int < 0 if @file_1 should come before file_2 in a smallest-to-largest
+ * sorted list; int > 0 if @file_2 should come before file_1 in a smallest-to-largest
+ * sorted list; 0 if @file_1 and @file_2 are equal for this sort criterion. Note
+ * that each named sort type may actually break ties several ways, with the name
+ * of the sort criterion being the primary but not only differentiator.
+ **/
+int
+nautilus_file_compare_for_sort (NautilusFile *file_1,
+				NautilusFile *file_2,
+				NautilusFileSortType sort_type)
 {
 	GnomeVFSDirectorySortRule rules[3];
 	int compare;
@@ -1250,31 +1257,7 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 			(file_1->details->info, file_2->details->info, rules);
 	}
 
-	if (reversed) {
-		compare = -compare;
-	}
-
 	return compare;
-}
-
-/**
- * nautilus_file_compare_for_sort:
- * @file_1: A file object
- * @file_2: Another file object
- * @sort_type: Sort criterion
- * 
- * Return value: int < 0 if @file_1 should come before file_2 in a smallest-to-largest
- * sorted list; int > 0 if @file_2 should come before file_1 in a smallest-to-largest
- * sorted list; 0 if @file_1 and @file_2 are equal for this sort criterion. Note
- * that each named sort type may actually break ties several ways, with the name
- * of the sort criterion being the primary but not only differentiator.
- **/
-int
-nautilus_file_compare_for_sort (NautilusFile *file_1,
-				NautilusFile *file_2,
-				NautilusFileSortType sort_type)
-{
-	return nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type, FALSE);
 }
 
 /**
@@ -1295,7 +1278,7 @@ nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
 					 NautilusFile *file_2,
 					 NautilusFileSortType sort_type)
 {
-	return nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type, TRUE);
+	return - nautilus_file_compare_for_sort (file_1, file_2, sort_type);
 }
 
 /**

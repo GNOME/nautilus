@@ -209,7 +209,7 @@ nautilus_str_get_prefix (const char *source,
 	prefix_start = strstr (source, delimiter);
 
 	if (prefix_start == NULL) {
-		return NULL;
+		return g_strdup ("");
 	}
 
 	return g_strndup (source, prefix_start - source);
@@ -547,6 +547,9 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, NULL), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, ""), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("", "a"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("a", "a"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix ("aaab", "aaab"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_suffix (NULL, "a"), FALSE);
@@ -563,29 +566,39 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix (NULL, NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix (NULL, "foo"), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo", NULL), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("", "foo"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo", ""), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo", "foo"), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo:", ":"), "foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("foo:bar", ":"), "foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_get_prefix ("footle:bar", "tle:"), "foo");	
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr (NULL, '_'), NULL);	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo", '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo", '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo_", '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo__", '_'), "foo");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_f_o__o_", '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr (NULL, '_'), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("", '_'), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo", '_'), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo", '_'), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("foo_", '_'), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_foo__", '_'), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_chr ("_f_o__o_", '_'), "foo");
         
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr (NULL, '_'), NULL);	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("", '_'), "");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo", '_'), "foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo", '_'), "_foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo_", '_'), "foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo__", '_'), "_foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_f_o__o_", '_'), "_f_o__o");	
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str (NULL, NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str (NULL, "bar"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("bar", NULL), "bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("", "bar"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("bar", ""), "bar");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("foo", "bar"), "foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("foo bar", "bar"), "foo ");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("bar", "bar"), "bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("bar", "bar"), "");
 	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (""), "");

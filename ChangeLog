@@ -1,3 +1,19 @@
+2000-08-07  Darin Adler  <darin@eazel.com>
+
+	Fixed "make check".
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Fixed a self check that no longer
+	matched the code.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_for_sort),
+	(nautilus_file_compare_for_sort_reversed): Fixed a bug that was
+	causing reverse sorts to work wrong (caught by self check).
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_get_prefix), (nautilus_self_check_string):
+	Fixed some incorrect self checks and a small error in get_prefix
+	that was exposed by a self check.
+
 2000-08-07  Seth Nickell  <seth@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

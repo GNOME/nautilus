@@ -1209,7 +1209,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%2F"), "%252F");
 
 	/* make_uri_canonical */
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "file:");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
 }
