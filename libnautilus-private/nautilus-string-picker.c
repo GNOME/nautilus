@@ -45,25 +45,24 @@ typedef enum
 
 struct _NautilusStringPickerDetail
 {
-	GtkWidget	*title_label;
-	GtkWidget	*combo_box;
+	GtkWidget		*title_label;
+	GtkWidget		*combo_box;
+	NautilusStringList	*string_list;
 };
 
 /* NautilusStringPickerClass methods */
-static void nautilus_string_picker_initialize_class (NautilusStringPickerClass *klass);
-static void nautilus_string_picker_initialize       (NautilusStringPicker      *string_picker);
-
+static void      nautilus_string_picker_initialize_class (NautilusStringPickerClass *klass);
+static void      nautilus_string_picker_initialize       (NautilusStringPicker      *string_picker);
 
 /* GtkObjectClass methods */
-static void nautilus_string_picker_destroy          (GtkObject                 *object);
-
+static void      nautilus_string_picker_destroy          (GtkObject                 *object);
 
 /* Private stuff */
-static GtkEntry * string_picker_get_entry_widget       (NautilusStringPicker      *string_picker);
+static GtkEntry *string_picker_get_entry_widget          (NautilusStringPicker      *string_picker);
 
 /* Editable (entry) callbacks */
-static void entry_changed_callback                  (GtkWidget                 *entry,
-						     gpointer                   user_data);
+static void      entry_changed_callback                  (GtkWidget                 *entry,
+							  gpointer                   user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusStringPicker, nautilus_string_picker, GTK_TYPE_HBOX)
 
@@ -107,6 +106,8 @@ nautilus_string_picker_initialize (NautilusStringPicker *string_picker)
 	gtk_box_set_homogeneous (GTK_BOX (string_picker), FALSE);
 	gtk_box_set_spacing (GTK_BOX (string_picker), STRING_PICKER_SPACING);
 
+	string_picker->detail->string_list = NULL;
+
 	string_picker->detail->title_label = gtk_label_new ("Title Label:");
 	string_picker->detail->combo_box = gtk_combo_new ();
 
@@ -145,6 +146,10 @@ nautilus_string_picker_destroy(GtkObject* object)
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (object));
 	
 	string_picker = NAUTILUS_STRING_PICKER (object);
+
+	if (string_picker->detail->string_list != NULL) {
+		nautilus_string_list_free (string_picker->detail->string_list);
+	}
 
 	g_free (string_picker->detail);
 
@@ -216,7 +221,9 @@ nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
  	g_return_if_fail (string_picker != NULL);
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
 
-	strings = nautilus_string_list_as_g_list (string_list);
+	string_picker->detail->string_list = nautilus_string_list_new_from_string_list (string_list);
+
+	strings = nautilus_string_list_as_g_list (string_picker->detail->string_list);
 
 	gtk_combo_set_popdown_strings (GTK_COMBO (string_picker->detail->combo_box), strings);
 
@@ -261,4 +268,17 @@ nautilus_string_picker_get_text (NautilusStringPicker *string_picker)
 	entry_text = (const char *) gtk_entry_get_text (string_picker_get_entry_widget (string_picker));
 
 	return g_strdup (entry_text);
+}
+
+void
+nautilus_string_picker_set_text (NautilusStringPicker	*string_picker,
+				 const char		*text)
+{
+ 	g_return_if_fail (string_picker != NULL);
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+
+	g_return_if_fail (string_picker->detail->string_list != NULL);
+	g_return_if_fail (nautilus_string_list_contains (string_picker->detail->string_list, text));
+
+	gtk_entry_set_text (string_picker_get_entry_widget (string_picker), text);
 }

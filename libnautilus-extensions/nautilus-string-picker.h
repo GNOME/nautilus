@@ -72,6 +72,8 @@ void       nautilus_string_picker_set_string_list (NautilusStringPicker     *str
 void       nautilus_string_picker_set_title_label (NautilusStringPicker     *string_picker,
 						   const char               *title_label);
 char *     nautilus_string_picker_get_text        (NautilusStringPicker     *string_picker);
+void       nautilus_string_picker_set_text        (NautilusStringPicker     *string_picker,
+						   const char		    *text);
 
 BEGIN_GNOME_DECLS
 

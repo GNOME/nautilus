@@ -28,7 +28,9 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 #include <gtk/gtkcheckbutton.h>
+
 #include <nautilus-widgets/nautilus-radio-button-group.h>
+#include <nautilus-widgets/nautilus-string-picker.h>
 
 /* Arguments */
 enum
@@ -78,10 +80,14 @@ static void preferences_item_create_enum               (NautilusPreferencesItem 
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
+static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
+							const NautilusPreference     *prefrence);
 static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
 							GtkWidget                    *button,
 							gpointer                      user_data);
 static void boolean_button_toggled_callback            (GtkWidget                    *button_group,
+							gpointer                      user_data);
+static void font_family_changed_callback               (GtkWidget                    *string_picker,
 							gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
@@ -258,6 +264,10 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	case NAUTILUS_PREFERENCE_ITEM_ENUM:
 		preferences_item_create_enum (item, preference);
 		break;
+
+	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
+		preferences_item_create_font_family (item, preference);
+		break;
 	}
 
 	gtk_object_unref (GTK_OBJECT (preference));
@@ -342,6 +352,56 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 			    (gpointer) item);
 }
 
+static void
+preferences_item_create_font_family (NautilusPreferencesItem	*item,
+				     const NautilusPreference	*preference)
+{
+	char			*description;
+	char			*current_value;
+	NautilusStringList	*font_list;
+
+	g_assert (item != NULL);
+	g_assert (preference != NULL);
+
+	g_assert (item->details->preference_name != NULL);
+	description = nautilus_preference_get_description (preference);
+
+	g_assert (description != NULL);
+
+	item->details->child = nautilus_string_picker_new ();
+
+	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	
+	g_free (description);
+
+	/* FIXME bugzilla.eazel.com XXX: Need to query system for available fonts */
+	font_list = nautilus_string_list_new ();
+
+	nautilus_string_list_insert (font_list, "helvetica");
+	nautilus_string_list_insert (font_list, "times");
+	nautilus_string_list_insert (font_list, "courier");
+	nautilus_string_list_insert (font_list, "lucida");
+	nautilus_string_list_insert (font_list, "fixed");
+
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), font_list);
+
+	current_value = nautilus_preferences_get (item->details->preference_name, "helvetica");
+
+	g_assert (current_value != NULL);
+	g_assert (nautilus_string_list_contains (font_list, current_value));
+
+	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+
+	g_free (current_value);
+
+	nautilus_string_list_free (font_list);
+	
+ 	gtk_signal_connect (GTK_OBJECT (item->details->child),
+ 			    "changed",
+ 			    GTK_SIGNAL_FUNC (font_family_changed_callback),
+ 			    (gpointer) item);
+}
+
 /* NautilusPreferencesItem public methods */
 GtkWidget *
 nautilus_preferences_item_new (const gchar			*preference_name,
@@ -364,11 +424,15 @@ nautilus_preferences_item_new (const gchar			*preference_name,
 static void
 enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpointer user_data)
 {
-	NautilusPreferencesItem		*item = (NautilusPreferencesItem *) user_data;
+	NautilusPreferencesItem	*item;
 	const NautilusPreference	*preference;
 	gint				i;
 
-	g_assert (item != NULL);
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
+	
+	item = NAUTILUS_PREFERENCES_ITEM (user_data);
+
 	g_assert (item->details->preference_name != NULL);
 
 	preference = nautilus_preferences_get_preference (item->details->preference_name);
@@ -382,12 +446,39 @@ enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpoin
 static void
 boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 {
-	NautilusPreferencesItem	*item = (NautilusPreferencesItem *) user_data;
+	NautilusPreferencesItem	*item;
 	gboolean		active_state;
 
-	g_assert (item != NULL);
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
+	
+	item = NAUTILUS_PREFERENCES_ITEM (user_data);
 
 	active_state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
 	nautilus_preferences_set_boolean (item->details->preference_name, active_state);
+}
+
+static void
+font_family_changed_callback (GtkWidget *button, gpointer user_data)
+{
+	NautilusPreferencesItem	*item;
+	char			*text;
+
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
+
+	item = NAUTILUS_PREFERENCES_ITEM (user_data);
+
+	g_assert (item->details->child != NULL);
+	g_assert (NAUTILUS_IS_STRING_PICKER (item->details->child));
+
+	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (item->details->child));
+
+	if (text != NULL)
+	{
+		nautilus_preferences_set (item->details->preference_name, text);
+		
+		g_free (text);
+	}
 }

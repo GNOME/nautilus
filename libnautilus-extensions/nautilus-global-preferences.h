@@ -58,6 +58,9 @@ BEGIN_GNOME_DECLS
 /* Sidebar panels */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"/nautilus/sidebar-panels"
 
+/* Directory view */
+#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"/nautilus/directory-view/font_family"
+
 /* themes */
 #define NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS		"/nautilus/preferences/eazel_toolbar_icons"
 #define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"

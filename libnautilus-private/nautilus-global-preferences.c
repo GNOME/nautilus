@@ -188,6 +188,12 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Fonts");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+
 	/* all done */
 	
 	return prefs_dialog;
@@ -422,6 +428,12 @@ global_preferences_register_for_ui (void)
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 
+	/* Directory View */
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+				       "Font familiy used to display file names",
+				       NAUTILUS_PREFERENCE_STRING,
+				       (gconstpointer) "helvetica");
+	
 	/* toolbar icons */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
 				       "Use Eazel's toolbar icons",

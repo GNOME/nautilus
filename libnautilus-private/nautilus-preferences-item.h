@@ -37,7 +37,7 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_PREFERENCES_ITEM(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_ITEM))
 #define NAUTILUS_IS_PREFERENCES_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_ITEM))
 
-typedef struct _NautilusPreferencesItem	     NautilusPreferencesItem;
+typedef struct _NautilusPreferencesItem		  NautilusPreferencesItem;
 typedef struct _NautilusPreferencesItemClass      NautilusPreferencesItemClass;
 typedef struct _NautilusPreferencesItemDetails    NautilusPreferencesItemDetails;
 
@@ -65,7 +65,8 @@ struct _NautilusPreferencesItemClass
 typedef enum
 {
 	NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	NAUTILUS_PREFERENCE_ITEM_ENUM
+	NAUTILUS_PREFERENCE_ITEM_ENUM,
+	NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY
 } NautilusPreferencesItemType;
 
 GtkType    nautilus_preferences_item_get_type (void);
