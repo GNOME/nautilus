@@ -453,8 +453,6 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	return action;
 }
 
-
-
 #define AUTO_SCROLL_MARGIN 20
 	/* drag this close to the view edge to start auto scroll*/
 
@@ -467,8 +465,6 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	/* the largest amount of auto scroll used when we are right over the view
 	 * edge
 	 */
-
-
 
 void
 nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
@@ -538,7 +534,6 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 	}
 
 }
-
 
 void
 nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)

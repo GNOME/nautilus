@@ -1,3 +1,21 @@
+2000-10-11  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c: (get_container_uri),
+	(receive_dropped_uri_list),
+	(handle_local_move), (handle_nonlocal_move),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_dnd_end_drag):
+	Fix 3406 - Dropped icon doesn't go where you dropped it.
+	There was a lot of confused code that calculated the drop location.
+
+	* libnautilus-extensions/nautilus-icon-dnd.c: (auto_scroll_timeout_callback):
+	Peformance improvement: only cause an auto-scroll update if the auto-scroll
+	delta is non-zero.
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_autoscroll_calculate_delta):
+	Fix some white space.
+	
 2000-10-11  Rebecca Schulman  <rebecka@eazel.com>
 	First part of the bug fix for 3514.
 	We still need to add a local clipboard interface,

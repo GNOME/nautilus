@@ -279,7 +279,7 @@ nautilus_icon_container_each_selected_icon (NautilusIconContainer *container,
 }
 
 /* Adaptor function used with nautilus_icon_container_each_selected_icon
- * to help iterate over all selected items, passing uris, x,y,w and h
+ * to help iterate over all selected items, passing uris, x, y, w and h
  * values to the iteratee
  */
 static void
@@ -524,9 +524,7 @@ get_container_uri (const NautilusIconContainer *container)
 
 	/* get the URI associated with the container */
 	uri = NULL;
-	gtk_signal_emit_by_name (GTK_OBJECT (container),
-			 "get_container_uri",
-			 &uri);
+	gtk_signal_emit_by_name (GTK_OBJECT (container), "get_container_uri", &uri);
 	return uri;
 }
 
@@ -599,6 +597,9 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 static void
 receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int x, int y)
 {
+	/* FIXME:
+	 * this needs a better name - it's link/desktop specific 
+	 */
 	GList *li, *files;
 	int argc;
 	char **argv;
@@ -645,6 +646,11 @@ auto_scroll_timeout_callback (gpointer data)
 	container->details->waiting_to_autoscroll = FALSE;
 
 	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
+	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
+		/* no work */
+		return TRUE;
+	}
+	
 	nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta);
 
 	/* update cached drag start offsets */
@@ -765,7 +771,9 @@ handle_local_move (NautilusIconContainer *container,
 		
 		icon = nautilus_icon_container_get_icon_by_uri
 			(container, item->uri);
+
 		if (item->got_icon_position) {
+
 			nautilus_icon_container_move_icon
 				(container, icon,
 				 world_x + item->icon_x, world_y + item->icon_y,
@@ -814,10 +822,8 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		source_item_locations = g_new (GdkPoint, g_list_length (source_uris));
 		for (i = 0, p = container->details->dnd_info->drag_info.selection_list;
 		     p != NULL; i++, p = p->next) {
-			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x 
-				- container->details->dnd_info->drag_info.start_x;
-			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y
-				- container->details->dnd_info->drag_info.start_y;
+			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x;
+			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y;
 		}
 	}
 		
@@ -962,7 +968,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		if (local_move_only) {
 			handle_local_move (container, world_x, world_y);
 		} else {
-			handle_nonlocal_move (container, context, x, y, drop_target, icon_hit);
+			handle_nonlocal_move (container, context, world_x, world_y, drop_target, icon_hit);
 		}
 	}
 
@@ -1305,8 +1311,4 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	 * Can that possibly be right?
 	 */
 }
-
-
-
-
 
