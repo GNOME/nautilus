@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"POT-Creation-Date: 2002-07-09 17:40+0200\n"
-"PO-Revision-Date: 2002-07-10 12:58GMT-03:00\n"
+"POT-Creation-Date: 2002-07-11 13:14+0200\n"
+"PO-Revision-Date: 2002-07-11 14:50GMT-03:00\n"
 "Last-Translator: Pablo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Español <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1507,7 +1507,7 @@ msgid "Nautilus Tree view"
 msgstr "Vista del árbol de Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.h:3
-#: src/nautilus-preferences-dialog.c:293
+#: src/nautilus-preferences-dialog.c:295
 msgid "Tree"
 msgstr "Árbol"
 
@@ -3715,8 +3715,8 @@ msgstr "_Siempre"
 
 # libnautilus-private/nautilus-global-preferences.c:587
 #: libnautilus-private/nautilus-global-preferences.c:101
-msgid "_Local Files Only"
-msgstr "Sólo en archivos _locales"
+msgid "_Local File Only"
+msgstr "Sólo archivos _locales"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #: libnautilus-private/nautilus-global-preferences.c:102
@@ -3956,47 +3956,47 @@ msgstr "Tipo MIME"
 msgid "none"
 msgstr "ninguno"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1806
+#: libnautilus-private/nautilus-icon-canvas-item.c:1807
 msgid "file icon"
 msgstr "icono de archivo"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1953
+#: libnautilus-private/nautilus-icon-canvas-item.c:1954
 msgid "editable text"
 msgstr "texto editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1954
+#: libnautilus-private/nautilus-icon-canvas-item.c:1955
 msgid "the editable label"
 msgstr "la etiqueta editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1961
+#: libnautilus-private/nautilus-icon-canvas-item.c:1962
 msgid "additional text"
 msgstr "texto adicional"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1962
+#: libnautilus-private/nautilus-icon-canvas-item.c:1963
 msgid "some more text"
 msgstr "un poco mas de texto"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1969
+#: libnautilus-private/nautilus-icon-canvas-item.c:1970
 msgid "highlighted for selection"
 msgstr "resaltado para la selección"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1970
+#: libnautilus-private/nautilus-icon-canvas-item.c:1971
 msgid "whether we are highlighted for a selection"
 msgstr "si destacamos para una selección"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1977
+#: libnautilus-private/nautilus-icon-canvas-item.c:1978
 msgid "highlighted as keyboard focus"
 msgstr "sobreiluminado a medida que toma el foco"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1978
+#: libnautilus-private/nautilus-icon-canvas-item.c:1979
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "como resaltaremos para dibujar el foco del teclado"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1986
+#: libnautilus-private/nautilus-icon-canvas-item.c:1987
 msgid "highlighted for drop"
 msgstr "resaltado para soltar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1987
+#: libnautilus-private/nautilus-icon-canvas-item.c:1988
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si resaltamos para soltar un A&S"
 
@@ -4318,8 +4318,8 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Puede configurar GNOME para asociar aplicaciones con tipos de archivos. ¿Desea "
-"asociar una aplicación con este tipo de archivo ahora?"
+"Puede configurar GNOME para asociar aplicaciones con tipos de archivos. "
+"¿Desea asociar una aplicación con este tipo de archivo ahora?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1548
 msgid "Associate Application"
@@ -4364,8 +4364,8 @@ msgstr ""
 msgid "Can't execute remote links"
 msgstr "No se puede ejecutar enlaces remotos"
 
-#: libnautilus-private/nautilus-program-choosing.c:673
-#: libnautilus-private/nautilus-program-choosing.c:731
+#: libnautilus-private/nautilus-program-choosing.c:672
+#: libnautilus-private/nautilus-program-choosing.c:730
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -4375,12 +4375,12 @@ msgstr ""
 "\n"
 "Detalles: "
 
-#: libnautilus-private/nautilus-program-choosing.c:677
-#: libnautilus-private/nautilus-program-choosing.c:735
+#: libnautilus-private/nautilus-program-choosing.c:676
+#: libnautilus-private/nautilus-program-choosing.c:734
 msgid "Error launching application"
 msgstr "Error al ejecutar la aplicación"
 
-#: libnautilus-private/nautilus-program-choosing.c:705
+#: libnautilus-private/nautilus-program-choosing.c:704
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4388,14 +4388,15 @@ msgid ""
 msgstr ""
 "Este destino para soltar sólo soporta archivos locales.\n"
 "\n"
-"Para abrir archivos no locales copiélos a una carpeta local y luego suéltelos nuevamente."
+"Para abrir archivos no locales copiélos a una carpeta local y luego "
+"suéltelos nuevamente."
 
-#: libnautilus-private/nautilus-program-choosing.c:708
-#: libnautilus-private/nautilus-program-choosing.c:720
+#: libnautilus-private/nautilus-program-choosing.c:707
+#: libnautilus-private/nautilus-program-choosing.c:719
 msgid "Drop target only supports local files"
 msgstr "El destino sólo soporta archivos locales"
 
-#: libnautilus-private/nautilus-program-choosing.c:717
+#: libnautilus-private/nautilus-program-choosing.c:716
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -5022,12 +5023,12 @@ msgid "%s's Home"
 msgstr "Carpeta de inicio de %s"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-desktop-icon-view.c:1349
+#: src/file-manager/fm-desktop-icon-view.c:1353
 msgid "Empty Trash..."
 msgstr "Vaciar Papelera..."
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-desktop-icon-view.c:1351
+#: src/file-manager/fm-desktop-icon-view.c:1355
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Vaciar Papelera"
@@ -5402,14 +5403,14 @@ msgid "Ma_ke Link"
 msgstr "Crear en_lace"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-directory-view.c:4449 src/nautilus-sidebar.c:1502
+#: src/file-manager/fm-directory-view.c:4449 src/nautilus-sidebar.c:1487
 msgid "_Empty Trash..."
 msgstr "_Vaciar la Papelera..."
 
 # src/file-manager/fm-directory-view.c:2154
 #: src/file-manager/fm-directory-view.c:4450
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:1503
+#: src/nautilus-sidebar.c:1488
 msgid "_Empty Trash"
 msgstr "_Vaciar la Papelera"
 
@@ -5769,7 +5770,7 @@ msgstr "Tipo"
 msgid "Date Modified"
 msgstr "Fecha de modificación"
 
-#: src/file-manager/fm-properties-window.c:315 src/nautilus-sidebar.c:749
+#: src/file-manager/fm-properties-window.c:315 src/nautilus-sidebar.c:734
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5777,11 +5778,11 @@ msgstr ""
 "¡No puede asignar más de un icono personalizado a la vez! Por favor arrastre "
 "sólo una imagen para usarla como icono personalizado."
 
-#: src/file-manager/fm-properties-window.c:317 src/nautilus-sidebar.c:751
+#: src/file-manager/fm-properties-window.c:317 src/nautilus-sidebar.c:736
 msgid "More Than One Image"
 msgstr "Más de una Imagen"
 
-#: src/file-manager/fm-properties-window.c:326 src/nautilus-sidebar.c:770
+#: src/file-manager/fm-properties-window.c:326 src/nautilus-sidebar.c:755
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5790,11 +5791,11 @@ msgstr ""
 "como iconos personalizados"
 
 # libnautilus-private/nautilus-global-preferences.c:587
-#: src/file-manager/fm-properties-window.c:328 src/nautilus-sidebar.c:772
+#: src/file-manager/fm-properties-window.c:328 src/nautilus-sidebar.c:757
 msgid "Local Images Only"
 msgstr "Sólo imágenes locales"
 
-#: src/file-manager/fm-properties-window.c:333 src/nautilus-sidebar.c:777
+#: src/file-manager/fm-properties-window.c:333 src/nautilus-sidebar.c:762
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5802,7 +5803,7 @@ msgstr ""
 "El archivo que a soltado no es una imagen. Sólo use imágenes locales como "
 "iconos personalizados."
 
-#: src/file-manager/fm-properties-window.c:335 src/nautilus-sidebar.c:779
+#: src/file-manager/fm-properties-window.c:335 src/nautilus-sidebar.c:764
 msgid "Images Only"
 msgstr "Sólo imágenes"
 
@@ -5888,7 +5889,7 @@ msgid "Size:"
 msgstr "Tamaño:"
 
 # src/nautilus-location-bar.c:401
-#: src/file-manager/fm-properties-window.c:1611 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:1611 src/nautilus-location-bar.c:61
 msgid "Location:"
 msgstr "Dirección:"
 
@@ -6344,7 +6345,7 @@ msgstr "Desmontar el volumen seleccionado"
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
-#: src/nautilus-sidebar.c:575
+#: src/nautilus-sidebar.c:560
 msgid "Use _Default Background"
 msgstr "Usar el fondo _predeterminado"
 
@@ -6820,7 +6821,7 @@ msgstr ""
 "cuando intentaba encontrar el objeto shell. Eliminar bonobo-activation-"
 "server y reiniciar Nautilus quizá ayude a arreglar el problema."
 
-#: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:367
+#: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:371
 #: src/nautilus-property-browser.c:1504 src/nautilus-window-menus.c:688
 #, c-format
 msgid ""
@@ -6846,7 +6847,7 @@ msgstr "_Marcadores"
 
 # src/nautilus-location-bar.c:401
 #: src/nautilus-bookmarks-window.glade.h:3
-#: src/nautilus-preferences-dialog.c:243
+#: src/nautilus-preferences-dialog.c:244
 msgid "_Location:"
 msgstr "_Dirección:"
 
@@ -6887,39 +6888,39 @@ msgstr ""
 "\n"
 "Puede borrar manualmente este archivo para mostrar el asistente nuevamente.\n"
 
-#: src/nautilus-location-bar.c:61
+#: src/nautilus-location-bar.c:62
 msgid "Go To:"
 msgstr "Ir a:"
 
 # src/nautilus-location-bar.c:127
-#: src/nautilus-location-bar.c:150
+#: src/nautilus-location-bar.c:151
 #, c-format
 msgid "Do you want to view these %d locations in separate windows?"
 msgstr "¿Quiere ver las %d direcciones en ventanas diferentes?"
 
 # src/nautilus-location-bar.c:133
-#: src/nautilus-location-bar.c:159
+#: src/nautilus-location-bar.c:160
 msgid "View in Multiple Windows?"
 msgstr "¿Ver en múltiples ventanas?"
 
 # src/nautilus-main.c:63
-#: src/nautilus-main.c:149
+#: src/nautilus-main.c:148
 msgid "Perform a quick set of self-check tests."
 msgstr "Realiza un conjunto rápido de auto-chequeos."
 
-#: src/nautilus-main.c:152
+#: src/nautilus-main.c:151
 msgid "Create the initial window with the given geometry."
 msgstr "Crea la ventana inicial con la geometría indicada"
 
-#: src/nautilus-main.c:152
+#: src/nautilus-main.c:151
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: src/nautilus-main.c:154
+#: src/nautilus-main.c:153
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sólo crear ventanas para las URI explícitamente especificadas."
 
-#: src/nautilus-main.c:156
+#: src/nautilus-main.c:155
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -6928,12 +6929,12 @@ msgstr ""
 "dialogo preferencias)."
 
 # src/nautilus-main.c:65
-#: src/nautilus-main.c:158
+#: src/nautilus-main.c:157
 msgid "Quit Nautilus."
 msgstr "Salir de Nautilus."
 
 # src/nautilus-main.c:65
-#: src/nautilus-main.c:160
+#: src/nautilus-main.c:159
 msgid "Restart Nautilus."
 msgstr "Reiniciar Nautilus."
 
@@ -6942,74 +6943,76 @@ msgstr "Reiniciar Nautilus."
 # src/nautilus-window-manage-views.c:217
 # src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
 #. Set initial window title
-#: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:651 src/nautilus-window.c:184
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:222
+#: src/nautilus-window-menus.c:651 src/nautilus-window.c:183
 msgid "Nautilus"
 msgstr "Nautilus"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:197
+#: src/nautilus-main.c:196
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check no puede ser usado con URIs.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:201
+#: src/nautilus-main.c:200
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check no se puede usar con otras opciones.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:205
+#: src/nautilus-main.c:204
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit no puede ser usado con URIs.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:209
+#: src/nautilus-main.c:208
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --reiniciar no se puede usar con URI.\n"
 
 # src/nautilus-main.c:117
-#: src/nautilus-main.c:213
+#: src/nautilus-main.c:212
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --reiniciar no se puede usar con más de una URI.\n"
 
-# src/nautilus-window-manage-views.c:184
-# src/nautilus-window-manage-views.c:217
-# src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
+# components/music/nautilus-music-view.c:198
 #: src/nautilus-preferences-dialog.c:58
-msgid "Nautilus Themes"
-msgstr "Temas de Nautilus"
+msgid "Themes"
+msgstr "Temas"
 
 # src/file-manager/fm-directory-view.c:2126
-#: src/nautilus-preferences-dialog.c:71 src/nautilus-preferences-dialog.c:76
-#: src/nautilus-preferences-dialog.c:81 src/nautilus-preferences-dialog.c:86
-#: src/nautilus-preferences-dialog.c:91
-msgid "Opening New Windows"
-msgstr "Al abrir nuevas ventanas"
+#: src/nautilus-preferences-dialog.c:71
+msgid "New Window Behavior"
+msgstr "Nuevo comportamiento de ventana"
 
 # libnautilus-private/nautilus-global-preferences.c:622
 #: src/nautilus-preferences-dialog.c:73
-msgid "_Open each file or folder in a separate window"
+msgid "_Open each file or folder in a new window"
 msgstr "_Abrir cada archivo o carpeta en una ventana nueva"
 
-# libnautilus-private/nautilus-global-preferences.c:622
+# src/file-manager/fm-directory-view.c:2126
+#: src/nautilus-preferences-dialog.c:76 src/nautilus-preferences-dialog.c:81
+#: src/nautilus-preferences-dialog.c:86 src/nautilus-preferences-dialog.c:91
+msgid "New Window Display"
+msgstr "Mostrar una nueva ventana"
+
+# libnautilus-private/nautilus-global-preferences.c:699
 #: src/nautilus-preferences-dialog.c:78
-msgid "Display _side pane in new windows"
-msgstr "Mostrar el panel lateral en las ventanas nuevas"
+msgid "Display _side pane"
+msgstr "Mo_strar el panel lateral"
 
 # libnautilus-private/nautilus-global-preferences.c:687
 #: src/nautilus-preferences-dialog.c:83
-msgid "Display _toolbar in new windows"
-msgstr "Mostrar barra de _herramientas en nuevas ventanas"
+msgid "Display _toolbar"
+msgstr "Mostrar la barra de herramien_tas"
 
 # libnautilus-private/nautilus-global-preferences.c:693
 #: src/nautilus-preferences-dialog.c:88
-msgid "Display location _bar in new windows"
-msgstr "Mostrar la _barra de dirección en nuevas ventanas"
+msgid "Display location _bar"
+msgstr "Mostrar la _barra de dirección"
 
 # libnautilus-private/nautilus-global-preferences.c:699
 #: src/nautilus-preferences-dialog.c:93
-msgid "Display st_atus bar in new windows"
-msgstr "Mostrar la barra de est_ado en nuevas ventanas"
+msgid "Display st_atusbar"
+msgstr "Mostr_ar la barra de estado"
 
 #: src/nautilus-preferences-dialog.c:100 src/nautilus-preferences-dialog.c:105
 msgid "Desktop"
@@ -7049,33 +7052,33 @@ msgstr "Archivos de texto ejecutables"
 # src/file-manager/fm-icon-view.c:324
 #: src/nautilus-preferences-dialog.c:134 src/nautilus-preferences-dialog.c:139
 #: src/nautilus-preferences-dialog.c:144
-msgid "Show/Hide Options"
-msgstr "Mostrar/Ocultar opciones"
+msgid "Show Options"
+msgstr "Opciones de mostrar"
 
 # libnautilus-private/nautilus-global-preferences.c:744
 #: src/nautilus-preferences-dialog.c:136
-msgid "Show _hidden files (file names start with \".\")"
-msgstr "Mostrar archivos _ocultos (comienzan con «.»)"
+msgid "_Hidden files (filenames starting with \".\")"
+msgstr "Archivos _ocultos (los nombres de archivos que comienzan con «.»)"
 
 #: src/nautilus-preferences-dialog.c:141
-msgid "Show _backup files (file names end with \"~\")"
-msgstr "Mostrar copias de _seguridad (terminan con «~»)"
+msgid "_Backup files (filenames ending with \"~\")"
+msgstr "Copias de _seguridad (los nombres de archivos terminan con «~»)"
 
 # libnautilus-private/nautilus-global-preferences.c:750
 #: src/nautilus-preferences-dialog.c:146
-msgid "Show special flags in _Properties window"
-msgstr "Mostrar atributos especiales en la ventana _Propiedades"
+msgid "Special flags in _Properties dialog"
+msgstr "Atributos especiales en la ventana _Propiedades"
 
 #: src/nautilus-preferences-dialog.c:149
-msgid "Sorting Order"
-msgstr "Ordenamiento"
+msgid "Sort"
+msgstr "Ordenar"
 
 #: src/nautilus-preferences-dialog.c:151
-msgid "Always _list folders before files"
-msgstr "Siempre _mostrar las carpetas antes que los archivos"
+msgid "Fo_lders before files"
+msgstr "Carpetas antes que _los archivos"
 
 # src/file-manager/fm-icon-view.c:324
-#: src/nautilus-preferences-dialog.c:158 src/nautilus-preferences-dialog.c:325
+#: src/nautilus-preferences-dialog.c:158 src/nautilus-preferences-dialog.c:327
 msgid "Icon Captions"
 msgstr "Títulos de los Iconos"
 
@@ -7107,20 +7110,20 @@ msgid "Icon View Defaults"
 msgstr "Valores predeterminados para vista de iconos"
 
 #: src/nautilus-preferences-dialog.c:182
-msgid "_Arrange Items:"
+msgid "_Arrange items:"
 msgstr "_Organizar elementos:"
 
 #: src/nautilus-preferences-dialog.c:187
-msgid "_Sort in reversed order"
-msgstr "_Ordenar en modo inverso"
+msgid "_Sort in reverse"
+msgstr "_Ordenar inversamente"
 
 #: src/nautilus-preferences-dialog.c:192
 msgid "_Default zoom level:"
 msgstr "Nivel de ampliación _predeterminado:"
 
 #: src/nautilus-preferences-dialog.c:198
-msgid "Use _tighter layout"
-msgstr "Usar disposición a_justada"
+msgid "Use co_mpact layout"
+msgstr "Usar una disposición a_justada"
 
 # src/file-manager/fm-directory-view.c:2403
 # src/file-manager/fm-directory-view.c:2646
@@ -7131,12 +7134,12 @@ msgid "List View Defaults"
 msgstr "Valores predeterminados para vista de lista"
 
 #: src/nautilus-preferences-dialog.c:206
-msgid "Arrange _Items:"
-msgstr "Organizar _elementos: "
+msgid "Arrange _items:"
+msgstr "Organizar _elementos:"
 
 #: src/nautilus-preferences-dialog.c:211
-msgid "Sort in _reversed order"
-msgstr "Ordenar en modo _inverso"
+msgid "Sort in _reverse"
+msgstr "Ordenar inve_rsamente"
 
 #: src/nautilus-preferences-dialog.c:216
 msgid "Default _zoom level:"
@@ -7152,94 +7155,94 @@ msgstr "Opciones de búsqueda compleja"
 msgid "search type to do by default"
 msgstr "buscar tipo para hacer predeterminado"
 
-#: src/nautilus-preferences-dialog.c:241 src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-preferences-dialog.c:242 src/nautilus-shell-ui.xml.h:28
 msgid "Home"
 msgstr "Inicio"
 
 # src/nautilus-bookmarks-window.c:136
-#: src/nautilus-preferences-dialog.c:246
+#: src/nautilus-preferences-dialog.c:247
 msgid "Built-in Bookmarks"
 msgstr "Marcadores incluídos"
 
 # src/nautilus-bookmarks-window.c:203
-#: src/nautilus-preferences-dialog.c:248
+#: src/nautilus-preferences-dialog.c:249
 msgid "_Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "_No mostrar los marcadores incluídos en el menú marcadores"
 
 # libnautilus-private/nautilus-global-preferences.c:249
-#: src/nautilus-preferences-dialog.c:255
+#: src/nautilus-preferences-dialog.c:257
 msgid "Show Text in Icons"
 msgstr "Mostrar texto en los iconos"
 
 # src/file-manager/dfos-xfer.c:763
-#: src/nautilus-preferences-dialog.c:260
-msgid "Show Count of Items in Folders"
-msgstr "Mostrar la cantidad de elementos en las carpetas"
+#: src/nautilus-preferences-dialog.c:262
+msgid "Show Number of Items in Folders"
+msgstr "Mostrar la cantidad de elementos que hay en las carpetas"
 
 # libnautilus-private/nautilus-global-preferences.c:256
-#: src/nautilus-preferences-dialog.c:265 src/nautilus-preferences-dialog.c:270
+#: src/nautilus-preferences-dialog.c:267 src/nautilus-preferences-dialog.c:272
 msgid "Show Thumbnails for Image Files"
 msgstr "Ver muestras para los archivos de imágenes"
 
-#: src/nautilus-preferences-dialog.c:272
-msgid "_Don't make thumbnails for files larger than:"
-msgstr "N_o crear muestras de imágenes para archivos más grandes que:"
+#: src/nautilus-preferences-dialog.c:274
+msgid "_Do not make thumbnails for files larger than:"
+msgstr "N_o crear miniaturas de imágenes para archivos más grandes que:"
 
-#: src/nautilus-preferences-dialog.c:275
+#: src/nautilus-preferences-dialog.c:277
 msgid "Preview Sound Files"
 msgstr "Escucha previa de archivos de sonido"
 
-#: src/nautilus-preferences-dialog.c:284
+#: src/nautilus-preferences-dialog.c:286
 msgid "Tabs"
 msgstr "Solapas"
 
-#: src/nautilus-preferences-dialog.c:295
-msgid "_Show only folders (no files) in the tree"
-msgstr "_Mostrar sólo carpetas (no archivos) en el árbol"
+#: src/nautilus-preferences-dialog.c:297
+msgid "_Show folders only"
+msgstr "_Sólo mostrar carpetas"
 
-#: src/nautilus-preferences-dialog.c:303
+#: src/nautilus-preferences-dialog.c:305
 msgid "Maximum items per site"
 msgstr "Elementos máximos por sitio"
 
-#: src/nautilus-preferences-dialog.c:305
+#: src/nautilus-preferences-dialog.c:307
 msgid "_Maximum number of items displayed per site"
 msgstr "_Máximo número de elementos mostrados por sitio"
 
-#: src/nautilus-preferences-dialog.c:308
+#: src/nautilus-preferences-dialog.c:310
 msgid "Update Minutes"
 msgstr "Minutos de actualización"
 
-#: src/nautilus-preferences-dialog.c:310
+#: src/nautilus-preferences-dialog.c:312
 msgid "_Update frequency in minutes"
 msgstr "_Frecuencia de actualización en minutos"
 
-# src/file-manager/fm-directory-view.c:2403
-# src/file-manager/fm-directory-view.c:2646
-#: src/nautilus-preferences-dialog.c:320
-msgid "View Defaults"
-msgstr "Valores predeterminados de la vista"
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# libnautilus-private/nautilus-global-preferences.c:222
+#: src/nautilus-preferences-dialog.c:322
+msgid "Views"
+msgstr "Vistas"
 
 # libnautilus-private/nautilus-global-preferences.c:206
-#: src/nautilus-preferences-dialog.c:321
+#: src/nautilus-preferences-dialog.c:323
 msgid "Appearance"
 msgstr "Apariencia"
 
 # src/file-manager/fm-directory-view.c:2126
-#: src/nautilus-preferences-dialog.c:322
+#: src/nautilus-preferences-dialog.c:324
 msgid "Windows"
 msgstr "Ventanas"
 
 # src/file-manager/fm-directory-view.c:2145
-#: src/nautilus-preferences-dialog.c:323
+#: src/nautilus-preferences-dialog.c:325
 msgid "Desktop & Trash"
 msgstr "Escritorio y Papelera"
 
-#: src/nautilus-preferences-dialog.c:324
+#: src/nautilus-preferences-dialog.c:326
 msgid "Icon & List Views"
 msgstr "Vistas icono y lista"
 
 # libnautilus-private/nautilus-global-preferences.c:165
-#: src/nautilus-preferences-dialog.c:326
+#: src/nautilus-preferences-dialog.c:328
 msgid "Side Panes"
 msgstr "Paneles laterales"
 
@@ -7247,36 +7250,31 @@ msgstr "Paneles laterales"
 # components/websearch/ntl-web-search.c:164
 # libnautilus-private/nautilus-global-preferences.c:276
 # src/nautilus-window-toolbars.c:144
-#: src/nautilus-preferences-dialog.c:328
+#: src/nautilus-preferences-dialog.c:330
 msgid "Search"
 msgstr "Buscar"
 
 # libnautilus-private/nautilus-global-preferences.c:303
-#: src/nautilus-preferences-dialog.c:330
+#: src/nautilus-preferences-dialog.c:333
 msgid "Navigation"
 msgstr "Navegación"
 
-# libnautilus-private/nautilus-global-preferences.c:246
-#: src/nautilus-preferences-dialog.c:331
-msgid "Speed Tradeoffs"
-msgstr "Compensar velocidad"
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/nautilus-first-time-druid.c:272
+#: src/nautilus-preferences-dialog.c:335
+msgid "Performance"
+msgstr "Rendimiento"
 
 # libnautilus-private/nautilus-global-preferences.c:592
-#: src/nautilus-preferences-dialog.c:333
+#: src/nautilus-preferences-dialog.c:337
 msgid "News Panel"
 msgstr "Panel de noticias"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
-#: src/nautilus-preferences-dialog.c:423
+#: src/nautilus-preferences-dialog.c:427
 msgid "Preferences"
 msgstr "Preferencias"
-
-# libnautilus-private/nautilus-global-preferences.c:699
-#: src/nautilus-preferences-dialog.c:452
-#, c-format
-msgid "Display %s tab in side pane"
-msgstr "Mostrar la solapa %s en el panel lateral"
 
 #: src/nautilus-profiler.c:209
 msgid "Print"
@@ -7864,8 +7862,8 @@ msgstr "Arriba"
 
 # src/nautilus-window.c:843
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:522
-#: src/nautilus-window.c:1350
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:521
+#: src/nautilus-window.c:1349
 msgid "View as..."
 msgstr "Ver como..."
 
@@ -8022,14 +8020,14 @@ msgid "_View as..."
 msgstr "_Ver como..."
 
 # src/nautilus-sidebar.c:1145
-#: src/nautilus-sidebar.c:1365
+#: src/nautilus-sidebar.c:1350
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 # src/nautilus-sidebar.c:1174
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1394
+#: src/nautilus-sidebar.c:1379
 msgid "Open with..."
 msgstr "Abrir con..."
 
@@ -8103,18 +8101,18 @@ msgid "Couldn't remove theme"
 msgstr "No se ha podido quitar el tema"
 
 #: src/nautilus-theme-selector.c:545
-msgid "Add New Theme..."
-msgstr "Agregar nuevo tema..."
+msgid "_Add Theme..."
+msgstr "_Agregar un tema..."
 
 # src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:588
 #: src/nautilus-theme-selector.c:552
-msgid "Remove Theme..."
-msgstr "Quitar tema..."
+msgid "_Remove Theme..."
+msgstr "_Quitar un tema..."
 
 # src/nautilus-property-browser.c:1985
 #: src/nautilus-theme-selector.c:558
-msgid "Cancel Remove"
-msgstr "Cancelar quitar"
+msgid "Cancel _Remove"
+msgstr "Cancelar _quitar"
 
 #: src/nautilus-view-frame.c:549
 msgid "a title"
@@ -8128,11 +8126,11 @@ msgstr "el historial de navegación"
 msgid "the current selection"
 msgstr "la selección actual"
 
-#: src/nautilus-window-manage-views.c:798
+#: src/nautilus-window-manage-views.c:799
 msgid "View Failed"
 msgstr "Ha fallado la vista"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-window-manage-views.c:810
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8141,20 +8139,29 @@ msgstr ""
 "La vista %s ha encontrado un error y no puede continuar. Puede elegir otra "
 "vista o ir a una dirección diferente."
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:821
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "La vista %s ha encontrado un error mientras se iniciaba."
 
-#: src/nautilus-window-manage-views.c:997
+# src/file-manager/fm-properties-window.c:878
+#: src/nautilus-window-manage-views.c:978
+msgid "Content View"
+msgstr "Vista del contenido"
+
+#: src/nautilus-window-manage-views.c:979
+msgid "View of the current file or directory"
+msgstr "Vista del archivo o directorio actual"
+
+#: src/nautilus-window-manage-views.c:1002
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
 "Una de las solapas de la barra lateral ha fallado y no puede continuar. "
-"Desafortunadamente no he podido determinar cual es."
+"Desafortunadamente no se ha podido determinar cual es."
 
-#: src/nautilus-window-manage-views.c:1001
+#: src/nautilus-window-manage-views.c:1006
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8164,12 +8171,12 @@ msgstr ""
 "Si ésto sigue sucediendo debería desactivar esta solapa."
 
 # libnautilus-private/nautilus-global-preferences.c:165
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1011
 msgid "Sidebar Panel Failed"
 msgstr "Ha fallado la solapa lateral"
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-manage-views.c:1219
+#: src/nautilus-window-manage-views.c:1224
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
@@ -8177,7 +8184,7 @@ msgstr ""
 "intente nuevamente."
 
 # src/nautilus-window-manage-views.c:1247
-#: src/nautilus-window-manage-views.c:1225
+#: src/nautilus-window-manage-views.c:1230
 #, c-format
 msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
@@ -8185,7 +8192,7 @@ msgstr ""
 "pruébelo de nuevo."
 
 # src/nautilus-window-manage-views.c:1269
-#: src/nautilus-window-manage-views.c:1239
+#: src/nautilus-window-manage-views.c:1244
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8195,14 +8202,14 @@ msgstr ""
 "de archivo es."
 
 # src/nautilus-window-manage-views.c:1299
-#: src/nautilus-window-manage-views.c:1247
+#: src/nautilus-window-manage-views.c:1252
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus no ha instalado un visor capaz de mostrar «%s»."
 
 # src/nautilus-window-manage-views.c:1281
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1259
+#: src/nautilus-window-manage-views.c:1264
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
@@ -8210,19 +8217,19 @@ msgstr ""
 "direcciones."
 
 # src/nautilus-window-manage-views.c:1287
-#: src/nautilus-window-manage-views.c:1265
+#: src/nautilus-window-manage-views.c:1270
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "No se ha podido mostrar «%s», porque ha fallado el intento de registración."
 
 # src/nautilus-window-manage-views.c:1287
-#: src/nautilus-window-manage-views.c:1270
+#: src/nautilus-window-manage-views.c:1275
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "No se ha podido mostrar «%s», porque fue denegado.el acceso."
 
 # src/nautilus-window-manage-views.c:1287
-#: src/nautilus-window-manage-views.c:1281
+#: src/nautilus-window-manage-views.c:1286
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8233,7 +8240,7 @@ msgstr ""
 "configuración del proxy sea la adecuada."
 
 # src/nautilus-window-manage-views.c:1287
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1294
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8242,7 +8249,7 @@ msgstr ""
 "No se ha podido mostrar «%s» porque el nombre de máquina estaba vacío. "
 "Verifique que la configuración de su servidor proxy sea la correcta."
 
-#: src/nautilus-window-manage-views.c:1301
+#: src/nautilus-window-manage-views.c:1306
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8254,12 +8261,12 @@ msgstr ""
 "servicio Medusa de búsqueda y, en caso de no tener un índice, vea si el "
 "indexador Medusa esté ejecutándose."
 
-#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1310
 msgid "Searching Unavailable"
 msgstr "Búsqueda no disponible"
 
 # src/nautilus-window-manage-views.c:1269
-#: src/nautilus-window-manage-views.c:1312
+#: src/nautilus-window-manage-views.c:1317
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -8272,15 +8279,25 @@ msgstr ""
 "ejecutándose."
 
 # src/nautilus-window-manage-views.c:1299
-#: src/nautilus-window-manage-views.c:1320
+#: src/nautilus-window-manage-views.c:1325
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus no puede mostrar «%s»."
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: src/nautilus-window-manage-views.c:1325
+#: src/nautilus-window-manage-views.c:1330
 msgid "Can't Display Location"
 msgstr "No se puede mostrar la dirección"
+
+# libnautilus-private/nautilus-global-preferences.c:165
+#: src/nautilus-window-manage-views.c:1569
+msgid "Side Pane"
+msgstr "Panel lateral"
+
+# libnautilus-private/nautilus-global-preferences.c:165
+#: src/nautilus-window-manage-views.c:1571
+msgid "Contains a side pane view"
+msgstr "Contiene una vista del panel lateral"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
@@ -8375,24 +8392,24 @@ msgid "Go forward a number of pages"
 msgstr "Adelantar algunas páginas"
 
 # libnautilus-private/nautilus-global-preferences.c:693
-#: src/nautilus-window.c:1056
+#: src/nautilus-window.c:1055
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Muestra esta dirección con el «%s»"
 
-#: src/nautilus-window.c:2080
+#: src/nautilus-window.c:2083
 msgid "Application ID"
 msgstr "ID de la aplicación"
 
-#: src/nautilus-window.c:2081
+#: src/nautilus-window.c:2084
 msgid "The application ID of the window."
 msgstr "La ID de la ventana de la aplicación"
 
-#: src/nautilus-window.c:2087
+#: src/nautilus-window.c:2090
 msgid "Application"
 msgstr "Aplicación"
 
-#: src/nautilus-window.c:2088
+#: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr "La aplicación Nautilus asociada con esta ventana."
 
@@ -8424,6 +8441,38 @@ msgstr "Ampliar"
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
 msgstr "Configura el nivel de acercamiento de la vista actual"
+
+# src/nautilus-window-manage-views.c:184
+# src/nautilus-window-manage-views.c:217
+# src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:437
+#~ msgid "Nautilus Themes"
+#~ msgstr "Temas de Nautilus"
+
+# src/file-manager/fm-directory-view.c:2126
+#~ msgid "Opening New Windows"
+#~ msgstr "Al abrir nuevas ventanas"
+
+# libnautilus-private/nautilus-global-preferences.c:622
+#~ msgid "Display _side pane in new windows"
+#~ msgstr "Mostrar el panel lateral en las ventanas nuevas"
+
+#~ msgid "Sorting Order"
+#~ msgstr "Ordenamiento"
+
+#~ msgid "Use _tighter layout"
+#~ msgstr "Usar disposición a_justada"
+
+#~ msgid "_Show only folders (no files) in the tree"
+#~ msgstr "_Mostrar sólo carpetas (no archivos) en el árbol"
+
+# src/file-manager/fm-directory-view.c:2403
+# src/file-manager/fm-directory-view.c:2646
+#~ msgid "View Defaults"
+#~ msgstr "Valores predeterminados de la vista"
+
+# libnautilus-private/nautilus-global-preferences.c:246
+#~ msgid "Speed Tradeoffs"
+#~ msgstr "Compensar velocidad"
 
 # libnautilus-private/nautilus-program-chooser.c:1019
 #~ msgid "Include in the menu just for \"%s\""
@@ -8605,10 +8654,6 @@ msgstr "Configura el nivel de acercamiento de la vista actual"
 #~ msgid "Hide _Toolbar"
 #~ msgstr "Ocultar la barra de _herramientas"
 
-# src/file-manager/fm-directory-view.c:2126
-#~ msgid "New Window"
-#~ msgstr "Nueva ventana"
-
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
 #~ msgid "P_references"
@@ -8693,9 +8738,6 @@ msgstr "Configura el nivel de acercamiento de la vista actual"
 
 #~ msgid "Use HTTP Proxy"
 #~ msgstr "Usar Proxy HTTP"
-
-#~ msgid "Port:"
-#~ msgstr "Puerto:"
 
 #~ msgid "Proxy requires a username and password:"
 #~ msgstr "El proxy requiere un nombre de usuario y una contraseña:"
