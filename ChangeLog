@@ -1,3 +1,18 @@
+2001-02-18  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	Fixed bug 6681 ; make eazel-install output more machine parseable
+	by adding option and always return !0 on any failure.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal),
+	(eazel_download_progress_signal), (eazel_install_progress_signal),
+	(download_failed), (something_failed),
+	(eazel_preflight_check_signal), (dep_check), (md5_check_failed),
+
 2001-02-19  Simos Xenitellis  <simos@hellug.gr>
 
 	* configure.in: Added el to ALL_LINGUAS.
