@@ -5,7 +5,7 @@ nautilus_window_set_initial_state(NautilusWindow *window)
 {
   GString* path_name = g_string_new("file://");
   g_string_append(path_name, g_get_home_dir());
-  nautilus_window_goto_url(window, path_name->str);
+  nautilus_window_goto_uri(window, path_name->str);
   g_string_free(path_name, TRUE);
 }
 

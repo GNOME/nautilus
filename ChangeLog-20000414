@@ -1,6 +1,12 @@
 1999-12-16  Maciej Stachowiak  <mjs@eazel.com>
 
-	* src/ntl-window.c (nautilus_window_set_arg): Put meta-views on the right.
+	* src/ntl-window.c: Put meta-views on the right.
+
+	* src/ntl-window.c, src/ntl-main.c, src/ntl-window.h,
+	src/ntl-window-msgs.c, src/ntl-window-state.c: Enabled multiple
+	main windows and new window menu entry. In the process replaced
+	url with uri where appropriate and added
+	nautilus_window_get_requested_uri accessor.
 
 1999-12-16  Darin Adler  <darin@eazel.com>
 

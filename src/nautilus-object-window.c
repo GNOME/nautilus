@@ -30,6 +30,8 @@
 #include "explorer-location-bar.h"
 #include "ntl-window-private.h"
 
+static int window_count = 0;
+
 /* Stuff for handling the CORBA interface */
 typedef struct {
   POA_Nautilus_ViewWindow servant;
@@ -52,6 +54,7 @@ static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
    &impl_Nautilus_ViewWindow_epv
 };
 
+
 static void
 impl_Nautilus_ViewWindow__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewWindow *servant)
 {
@@ -67,6 +70,7 @@ impl_Nautilus_ViewWindow__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewWindow
 
    POA_Nautilus_ViewWindow__fini((PortableServer_Servant) servant, &ev);
    g_free(servant);
+
    CORBA_exception_free(&ev);
 }
 
@@ -103,8 +107,8 @@ static void nautilus_window_set_arg (GtkObject      *object,
 static void nautilus_window_get_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
-static void nautilus_window_goto_url_cb (GtkWidget *widget,
-                                         const char *url,
+static void nautilus_window_goto_uri_cb (GtkWidget *widget,
+                                         const char *uri,
                                          GtkWidget *window);
 
 #undef CONTENTS_AS_HBOX
@@ -128,8 +132,17 @@ static void
 file_menu_new_window_cb (GtkWidget *widget,
 	       gpointer data)
 {
-	// FIXME: create & open a new window, with a URI either of
-	// Home or the current URI
+  GtkWidget *current_mainwin;
+  GtkWidget *new_mainwin;
+  
+  current_mainwin = (GtkWidget *)(data);
+
+  new_mainwin = gtk_widget_new(nautilus_window_get_type(), "app_id", "nautilus", NULL);
+
+  nautilus_window_goto_uri(NAUTILUS_WINDOW(new_mainwin), 
+                           nautilus_window_get_requested_uri(NAUTILUS_WINDOW(current_mainwin)));
+
+  gtk_widget_show(new_mainwin);
 }
 
 static void
@@ -330,12 +343,12 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
 }
 
 void
-nautilus_window_goto_url(NautilusWindow *window, const char *url)
+nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
 {
   Nautilus_NavigationRequestInfo navinfo;
 
   memset(&navinfo, 0, sizeof(navinfo));
-  navinfo.requested_uri = (char *)url;
+  navinfo.requested_uri = (char *)uri;
   navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
@@ -343,12 +356,19 @@ nautilus_window_goto_url(NautilusWindow *window, const char *url)
 }
 
 static void
-nautilus_window_goto_url_cb (GtkWidget *widget,
-                          const char *url,
+nautilus_window_goto_uri_cb (GtkWidget *widget,
+                          const char *uri,
                           GtkWidget *window)
 {
-  nautilus_window_goto_url(NAUTILUS_WINDOW(window), url);
+  nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
 }
+
+const char *
+nautilus_window_get_requested_uri (NautilusWindow *window)
+{
+  return window->ni->requested_uri;
+}
+
 
 static void
 gtk_option_menu_do_resize(GtkWidget *widget, GtkWidget *child, GtkWidget *optmenu)
@@ -365,6 +385,8 @@ nautilus_window_constructed(NautilusWindow *window)
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
 
+  g_message("XXX Constructed.\n");
+  
   app = GNOME_APP(window);
 
   // set up menu bar
@@ -374,7 +396,7 @@ nautilus_window_constructed(NautilusWindow *window)
   // FIXME: these all need to be implemented. I'm using hardwired numbers
   // rather than enum symbols here just 'cuz the enums aren't needed (I think)
   // once we've implemented things. If it turns out they are, we'll define 'em.
-  gtk_widget_set_sensitive(file_menu_info[0].widget, FALSE); // New Window
+  //  gtk_widget_set_sensitive(file_menu_info[0].widget, FALSE); // New Window
 
   gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); // Undo
   gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); // Cut
@@ -404,11 +426,11 @@ nautilus_window_constructed(NautilusWindow *window)
   location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
   gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
-  window->ent_url = explorer_location_bar_new();
-  gtk_signal_connect(GTK_OBJECT(window->ent_url), "location_changed",
-                     nautilus_window_goto_url_cb, window);
-  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_url, TRUE, TRUE, GNOME_PAD);
-  gnome_app_add_docked(app, location_bar_box, "url-entry",
+  window->ent_uri = explorer_location_bar_new();
+  gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
+                     nautilus_window_goto_uri_cb, window);
+  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD);
+  gnome_app_add_docked(app, location_bar_box, "uri-entry",
   					   GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 2, 0, 0);
 
@@ -536,6 +558,7 @@ nautilus_window_get_arg (GtkObject      *object,
 static void
 nautilus_window_init (NautilusWindow *window)
 {
+  window_count++;
 }
 
 static void nautilus_window_destroy (NautilusWindow *window)
@@ -550,6 +573,11 @@ static void nautilus_window_destroy (NautilusWindow *window)
 
   if(window->statusbar_clear_id)
     g_source_remove(window->statusbar_clear_id);
+
+  if(--window_count <= 0) 
+    {
+      gtk_main_quit();
+    }
 }
 
 GtkWidget *

@@ -128,7 +128,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigat
   CORBA_free(window->si);
   window->si = NULL;
 
-  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_url),
+  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
                                        loci->navinfo.requested_uri);
 }
 

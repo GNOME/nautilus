@@ -31,14 +31,6 @@
 #include <bonobo/gnome-bonobo.h>
 #include <file-manager/fm-public-api.h>
 
-static int window_count = 0;
-static void
-check_for_quit(void)
-{
-  if(--window_count <= 0)
-    gtk_main_quit();
-}
-
 static GnomeObject *
 nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer closure)
 {
@@ -92,9 +84,6 @@ int main(int argc, char *argv[])
   bonobo_activate();
   nautilus_window_set_initial_state(NAUTILUS_WINDOW(mainwin));
   gtk_widget_show(mainwin);
-  window_count++;
-
-  gtk_signal_connect(GTK_OBJECT(mainwin), "destroy", check_for_quit, NULL);
 
   bonobo_main();
   return 0;

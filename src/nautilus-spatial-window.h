@@ -66,7 +66,7 @@ struct _NautilusWindow {
 
   /* UI stuff */
   GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
-  GtkWidget *option_cvtype, *menu_cvtype, *ent_url;
+  GtkWidget *option_cvtype, *menu_cvtype, *ent_uri;
 
   guint statusbar_ctx, statusbar_clear_id;
 
@@ -87,6 +87,7 @@ GtkWidget *nautilus_window_new(const char *app_id);
 void nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view);
 void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
-void nautilus_window_goto_url(NautilusWindow *window, const char *url);
+void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
+const char *nautilus_window_get_requested_uri(NautilusWindow *window);
 
 #endif
