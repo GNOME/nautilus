@@ -753,33 +753,6 @@ sort_icons (NautilusIconContainer *container,
 	*icons = g_list_sort_with_data (*icons, compare_icons, container);
 }
 
-static int
-compare_icons_by_name (gconstpointer a, gconstpointer b, gpointer icon_container)
-{
-	NautilusIconContainerClass *klass;
-	const NautilusIcon *icon_a, *icon_b;
-
-	icon_a = a;
-	icon_b = b;
-
-	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (icon_container);
-
-	return klass->compare_icons_by_name
-		(icon_container, icon_a->data, icon_b->data);
-}
-
-static void
-sort_icons_by_name (NautilusIconContainer *container,
-		    GList                **icons)
-{
-	NautilusIconContainerClass *klass;
-
-	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
-	g_return_if_fail (klass->compare_icons_by_name != NULL);
-
-	*icons = g_list_sort_with_data (*icons, compare_icons_by_name, container);
-}
-
 static void
 resort (NautilusIconContainer *container)
 {
@@ -2276,28 +2249,12 @@ select_matching_name (NautilusIconContainer *container,
 	g_free (match_state.name);
 }
 
-static GList *
-build_icon_list_sorted_by_name (NautilusIconContainer *container)
-{
-	GList *result;
-	
-	if (container->details->icons == NULL) {
-		return NULL;
-	}
-
-	result = g_list_copy (container->details->icons);
-	sort_icons_by_name (container, &result);
-
-	return result;
-}
-
 static void
-select_previous_or_next_name (NautilusIconContainer *container, 
+select_previous_or_next_icon (NautilusIconContainer *container, 
 			      gboolean next, 
 			      GdkEventKey *event)
 {
 	NautilusIcon *icon;
-	GList *list;
 	const GList *item;
 
 	item = NULL;
@@ -2310,18 +2267,16 @@ select_previous_or_next_name (NautilusIconContainer *container,
 		icon = get_first_selected_icon (container);
 	}
 
-	list = build_icon_list_sorted_by_name (container);
-
 	if (icon != NULL) {
 		/* must have at least @icon in the list */
-		g_assert (list != NULL);
-		item = g_list_find (list, icon);
+		g_assert (container->details->icons != NULL);
+		item = g_list_find (container->details->icons, icon);
 		g_assert (item != NULL);
 		
 		item = next ? item->next : item->prev;
-	} else if (list != NULL) {
+	} else if (container->details->icons != NULL) {
 		/* no selection yet, pick the first or last item to select */
-		item = next ? g_list_first (list) : g_list_last (list);
+		item = next ? g_list_first (container->details->icons) : g_list_last (container->details->icons);
 	}
 
 	icon = (item != NULL) ? item->data : NULL;
@@ -2329,8 +2284,6 @@ select_previous_or_next_name (NautilusIconContainer *container,
 	if (icon != NULL) {
 		keyboard_move_to (container, icon, event);
 	}
-
-	g_list_free (list);
 }
 
 /* GtkObject methods.  */
@@ -3052,7 +3005,7 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Tab:
 		case GDK_ISO_Left_Tab:
-			select_previous_or_next_name (container, 
+			select_previous_or_next_icon (container, 
 						      (event->state & GDK_SHIFT_MASK) == 0, event);
 			handled = TRUE;
 			break;

@@ -1,3 +1,11 @@
+2002-07-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(select_previous_or_next_icon): Moved here from
+	select_previous_or_next_name(), select the next item in the sort
+	order instead of the next alphabetically.
+	(key_press_event): Use select_previous_or_next_icon().
+
 2002-07-08  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c
