@@ -615,7 +615,6 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
-  CORBA_Environment ev;
 
   if (getenv("NAUTILUS_DEBUG") != NULL)
     nautilus_make_warnings_and_criticals_stop_in_debugger

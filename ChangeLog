@@ -1,3 +1,37 @@
+2000-04-26  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(nautilus_directory_schedule_dequeue_pending_idle),
+	(new_files_callback), (nautilus_directory_get_info_for_new_files):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c (call_files_added),
+	(call_files_added_free_list) (call_files_changed),
+	(call_fiels_changed_free_list), (call_get_file_info_free_list),
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Implemented async. lookup of information about newly arrived
+	files. Changed moved files to work without a new call to get
+	file information. Fixed some storage leaks.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(empty_close_callback), (metafile_read_close),
+	(nautilus_metafile_read_cancel), (metafile_read_callback),
+	(metafile_read_some), (metafile_read_open_callback),
+	(metafile_write_callback): Fixed bug where we were not closing
+	files when cancelling.  This requires a bug fix in GNOME VFS to be
+	effective.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(dequeue_pending_idle_callback):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_destroy):
+	Use new functions in GNOME VFS instead of our own.
+	
+	* components/html/ntl-web-browser.c (main): Fixed a warning.
+	* docs/nautilus.faq: Tweak.
+
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
@@ -878,7 +912,6 @@
 
 	* libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_notify_files_moved):
-
 	Darin helped me finish implementing the missing parts of the call,
 	including updating the reference to the new directory object,
 	updating the file info structure to match the file's new location.

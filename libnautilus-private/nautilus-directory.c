@@ -154,6 +154,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_assert (directory->details->write_state == NULL);
 	nautilus_metafile_read_cancel (directory);
+	g_assert (directory->details->read_state == NULL);
 
 	if (nautilus_directory_is_file_list_monitored (directory)) {
 		nautilus_directory_stop_monitoring_file_list (directory);
@@ -185,7 +186,7 @@ nautilus_directory_destroy (GtkObject *object)
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
-	nautilus_gnome_vfs_file_info_list_unref (directory->details->pending_file_info);
+	gnome_vfs_file_info_list_unref (directory->details->pending_file_info);
 	g_assert (directory->details->write_metafile_idle_id == 0);
 
 	g_free (directory->details);
@@ -852,20 +853,63 @@ get_file_if_exists (const char *uri)
 	return file;
 }
 
+static void
+hash_table_list_prepend (GHashTable *table, gconstpointer key, gpointer data)
+{
+	GList *list;
+
+	list = g_hash_table_lookup (table, key);
+	list = g_list_prepend (list, data);
+	g_hash_table_insert (table, (gpointer) key, list);
+}
+
+static void
+call_files_added_free_list (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	gtk_signal_emit (GTK_OBJECT (key),
+			 signals[FILES_ADDED],
+			 value);
+	g_list_free (value);
+}
+
+static void
+call_files_changed_free_list (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	nautilus_directory_emit_files_changed (key, value);
+	g_list_free (value);
+}
+
+static void
+call_get_file_info_free_list (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	nautilus_directory_get_info_for_new_files (key, value);
+	gnome_vfs_uri_list_free (value);
+}
+
 void
 nautilus_directory_notify_files_added (GList *uris)
 {
+	GHashTable *added_lists;
 	GList *p;
 	NautilusDirectory *directory;
-	GnomeVFSFileInfo *info;
 	const char *uri;
-	GnomeVFSResult result;
+	GnomeVFSURI *vfs_uri;
 
-	/* FIXME bugzilla.eazel.com 465: 
-	   gnome_vfs_file_info calls need to be
-	   called asynchronously. We probably need a new gnome_vfs call that 
-	   takes a list of URIs and generates a list of file info structures.
-	 */
+	/* Make a list of added files in each directory. */
+	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
@@ -880,50 +924,19 @@ nautilus_directory_notify_files_added (GList *uris)
 			continue;
 		}
 
-		info = gnome_vfs_file_info_new ();
-		result = gnome_vfs_get_file_info (uri, info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
-		if (result == GNOME_VFS_OK) {
-			gnome_vfs_file_info_ref (info);
-        		directory->details->pending_file_info
-				= g_list_prepend (directory->details->pending_file_info, info);
-			
-			nautilus_directory_schedule_dequeue_pending (directory);
+		/* Collect the URIs to use. */
+		vfs_uri = gnome_vfs_uri_new (uri);
+		if (vfs_uri == NULL) {
+			g_warning ("bad uri %s", uri);
+			continue;
 		}
-		
-		gnome_vfs_file_info_unref (info);
+		hash_table_list_prepend (added_lists, directory, vfs_uri);
 	}
-}
 
-static void
-call_files_added (gpointer key, gpointer value, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (key));
-	g_assert (value != NULL);
-	g_assert (user_data == NULL);
 
-	gtk_signal_emit (GTK_OBJECT (key),
-			 signals[FILES_ADDED],
-			 value);
-}
-
-static void
-call_files_changed (gpointer key, gpointer value, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (key));
-	g_assert (value != NULL);
-	g_assert (user_data == NULL);
-
-	nautilus_directory_emit_files_changed (key, value);
-}
-
-static void
-hash_table_list_prepend (GHashTable *table, gconstpointer key, gpointer data)
-{
-	GList *list;
-
-	list = g_hash_table_lookup (table, key);
-	list = g_list_prepend (list, data);
-	g_hash_table_insert (table, (gpointer) key, list);
+	/* Now send out the changed signals. */
+	g_hash_table_foreach (added_lists, call_get_file_info_free_list, NULL);
+	g_hash_table_destroy (added_lists);
 }
 
 void
@@ -955,7 +968,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 	}
 
 	/* Now send out the changed signals. */
-	g_hash_table_foreach (changed_lists, call_files_changed, NULL);
+	g_hash_table_foreach (changed_lists, call_files_changed_free_list, NULL);
 	g_hash_table_destroy (changed_lists);
 }
 
@@ -970,7 +983,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GHashTable *added_lists, *changed_lists;
 	GList **files;
 	GnomeVFSFileInfo *info;
-	GnomeVFSResult result;
 
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
@@ -1016,28 +1028,23 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
 				
-				/* FIXME bugzilla.eazel.com 465: 
-				 * Need to call get info in async mode. 
-				 */
+				/* Make a copy and update the file name in the copy. */
 				info = gnome_vfs_file_info_new ();
-				result = gnome_vfs_get_file_info (pair->to_uri, info, 
-								  GNOME_VFS_FILE_INFO_DEFAULT, 
-								  NULL);
-				if (result == GNOME_VFS_OK) {
-					gnome_vfs_file_info_ref (info);
-					nautilus_file_update (file, info);
-
-					/* Add to new directory. */
-					files = &new_directory->details->files;
-					g_assert (g_list_find (*files, file) == NULL);
-					*files = g_list_prepend (*files, file);
-					
-					/* Handle notification in the new directory. */
-					hash_table_list_prepend (added_lists,
-								 new_directory,
-								 file);
-				}
+				gnome_vfs_file_info_copy (info, file->details->info);
+				g_free (info->name);
+				info->name = uri_get_basename (pair->to_uri);
+				nautilus_file_update (file, info);
 				gnome_vfs_file_info_unref (info);
+				
+				/* Add to new directory. */
+				files = &new_directory->details->files;
+				g_assert (g_list_find (*files, file) == NULL);
+				*files = g_list_prepend (*files, file);
+				
+				/* Handle notification in the new directory. */
+				hash_table_list_prepend (added_lists,
+							 new_directory,
+							 file);
 			}
 
 			/* If the old directory was monitoring files, then it
@@ -1053,9 +1060,9 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	}
 
 	/* Now send out the changed and added signals for existing file objects. */
-	g_hash_table_foreach (changed_lists, call_files_changed, NULL);
+	g_hash_table_foreach (changed_lists, call_files_changed_free_list, NULL);
 	g_hash_table_destroy (changed_lists);
-	g_hash_table_foreach (added_lists, call_files_added, NULL);
+	g_hash_table_foreach (added_lists, call_files_added_free_list, NULL);
 	g_hash_table_destroy (added_lists);
 
 	/* Let the file objects go. */

@@ -44,6 +44,7 @@
 
 struct MetafileReadState {
 	GnomeVFSAsyncHandle *handle;
+	gboolean is_open;
 	gpointer buffer;
 	size_t bytes_read;
 };
@@ -69,9 +70,6 @@ static void                          directory_load_done                        
 											  GnomeVFSResult                 result);
 static void                          directory_load_one                                  (NautilusDirectory             *directory,
 											  GnomeVFSFileInfo              *info);
-static void                          metafile_close_callback                             (GnomeVFSAsyncHandle           *handle,
-											  GnomeVFSResult                 result,
-											  gpointer                       callback_data);
 static void                          metafile_read_callback                              (GnomeVFSAsyncHandle           *handle,
 											  GnomeVFSResult                 result,
 											  gpointer                       buffer,
@@ -99,6 +97,27 @@ static void                          metafile_write_failed                      
 static GnomeVFSDirectoryListPosition nautilus_gnome_vfs_directory_list_get_next_position (GnomeVFSDirectoryList         *list,
 											  GnomeVFSDirectoryListPosition  position);
 static void                          process_pending_file_attribute_requests             (NautilusDirectory             *directory);
+
+static void
+empty_close_callback (GnomeVFSAsyncHandle *handle,
+		      GnomeVFSResult result,
+		      gpointer callback_data)
+{
+	/* Do nothing. */
+}
+
+static void
+metafile_read_close (NautilusDirectory *directory)
+{
+	g_assert (directory->details->read_state->handle != NULL);
+	if (directory->details->read_state->is_open) {
+		gnome_vfs_async_close (directory->details->read_state->handle,
+				       empty_close_callback,
+				       directory);
+		directory->details->read_state->is_open = TRUE;
+	}
+	directory->details->read_state->handle = NULL;
+}
 
 static void
 metafile_read_done (NautilusDirectory *directory)
@@ -132,7 +151,9 @@ nautilus_metafile_read_cancel (NautilusDirectory *directory)
 		return;
 	}
 
+	g_assert (directory->details->read_state->handle != NULL);
 	gnome_vfs_async_cancel (directory->details->read_state->handle);
+	metafile_read_close (directory);
 	g_free (directory->details->read_state);
 	directory->details->read_state = NULL;
 }
@@ -195,14 +216,6 @@ metafile_read_complete (NautilusDirectory *directory)
 }
 
 static void
-metafile_close_callback (GnomeVFSAsyncHandle *handle,
-			 GnomeVFSResult result,
-			 gpointer callback_data)
-{
-	/* Do nothing. */
-}
-
-static void
 metafile_read_callback (GnomeVFSAsyncHandle *handle,
 			GnomeVFSResult result,
 			gpointer buffer,
@@ -221,6 +234,7 @@ metafile_read_callback (GnomeVFSAsyncHandle *handle,
 
 	if (result != GNOME_VFS_OK
 	    && result != GNOME_VFS_ERROR_EOF) {
+		metafile_read_close (directory);
 		metafile_read_failed (directory, result);
 		return;
 	}
@@ -236,10 +250,7 @@ metafile_read_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
-	gnome_vfs_async_close (directory->details->read_state->handle,
-			       metafile_close_callback,
-			       directory);
-
+	metafile_read_close (directory);
 	metafile_read_complete (directory);
 }
 
@@ -273,6 +284,7 @@ metafile_read_open_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
+	directory->details->read_state->is_open = TRUE;
 	metafile_read_some (directory);
 }
 
@@ -356,14 +368,16 @@ metafile_write_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (directory->details->write_state->buffer == buffer);
 	g_assert (directory->details->write_state->size == bytes_requested);
 
+	g_assert (directory->details->write_state->handle != NULL);
+	gnome_vfs_async_close (directory->details->write_state->handle,
+			       empty_close_callback,
+			       directory);
+	directory->details->write_state->handle = NULL;
+
 	if (result != GNOME_VFS_OK) {
 		metafile_write_failed (directory, result);
 		return;
 	}
-
-	gnome_vfs_async_close (directory->details->write_state->handle,
-			       metafile_close_callback,
-			       directory);
 
 	metafile_write_complete (directory);
 }
@@ -751,7 +765,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	/* If we stopped monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
-		nautilus_gnome_vfs_file_info_list_free (pending_file_info);
+		gnome_vfs_file_info_list_free (pending_file_info);
 		return FALSE;
 	}
 
@@ -775,7 +789,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 			pending_files = g_list_prepend (pending_files, file);
 		}
 	}
-	nautilus_gnome_vfs_file_info_list_free (pending_file_info);
+	gnome_vfs_file_info_list_free (pending_file_info);
 
 	/* Tell the objects that are monitoring about these new files. */
 	nautilus_directory_emit_files_added (directory, pending_files);
@@ -801,8 +815,11 @@ nautilus_directory_schedule_dequeue_pending (NautilusDirectory *directory)
 
 static void
 directory_load_one (NautilusDirectory *directory,
-			     GnomeVFSFileInfo *info)
+		    GnomeVFSFileInfo *info)
 {
+	if (info == NULL) {
+		return;
+	}
 	gnome_vfs_file_info_ref (info);
         directory->details->pending_file_info
 		= g_list_prepend (directory->details->pending_file_info, info);
@@ -838,10 +855,10 @@ nautilus_gnome_vfs_directory_list_get_next_position (GnomeVFSDirectoryList *list
 
 static void
 directory_load_callback (GnomeVFSAsyncHandle *handle,
-				  GnomeVFSResult result,
-				  GnomeVFSDirectoryList *list,
-				  guint entries_read,
-				  gpointer callback_data)
+			 GnomeVFSResult result,
+			 GnomeVFSDirectoryList *list,
+			 guint entries_read,
+			 gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	GnomeVFSDirectoryListPosition last_handled, p;
@@ -1149,15 +1166,46 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 	g_free (uri);
 }
 
-void
-nautilus_gnome_vfs_file_info_list_unref (GList *list)
+static void
+new_files_callback (GnomeVFSAsyncHandle *handle,
+		    GList *results,
+		    gpointer callback_data)
 {
-	g_list_foreach (list, (GFunc) gnome_vfs_file_info_unref, NULL);
+	GList **handles, *p;
+	NautilusDirectory *directory;
+	GnomeVFSGetFileInfoResult *result;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	handles = &directory->details->get_file_infos_in_progress;
+	g_assert (handle == NULL || g_list_find (*handles, handle) != NULL);
+	
+	/* Note that this call is done. */
+	*handles = g_list_remove (*handles, handle);
+
+	/* Queue up the new files. */
+	for (p = results; p != NULL; p = p->next) {
+		result = p->data;
+		directory_load_one (directory, result->file_info);
+	}
 }
 
 void
-nautilus_gnome_vfs_file_info_list_free (GList *list)
+nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
+					   GList *vfs_uri_list)
 {
-	nautilus_gnome_vfs_file_info_list_unref (list);
-	g_list_free (list);
+	GnomeVFSAsyncHandle *handle;
+
+	gnome_vfs_async_get_file_info
+		(&handle,
+		 vfs_uri_list,
+		 (GNOME_VFS_FILE_INFO_GETMIMETYPE
+		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+		 NULL,
+		 new_files_callback,
+		 directory);
+
+	directory->details->get_file_infos_in_progress
+		= g_list_prepend (directory->details->get_file_infos_in_progress,
+				  handle);
 }

@@ -65,8 +65,11 @@ struct NautilusDirectoryDetails
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
-	GList *pending_file_info;
+
+	GList *pending_file_info; /* list of GnomeVFSFileInfo */
         guint dequeue_pending_idle_id;
+
+	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle* */
 
 	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
@@ -112,6 +115,8 @@ void          nautilus_directory_file_monitor_add_internal    (NautilusDirectory
 void          nautilus_directory_file_monitor_remove_internal (NautilusDirectory        *directory,
 							       NautilusFile             *file,
 							       gconstpointer             client);
+void          nautilus_directory_get_info_for_new_files       (NautilusDirectory        *directory,
+							       GList                    *vfs_uris);
 gboolean      nautilus_directory_is_file_list_monitored       (NautilusDirectory        *directory);
 void          nautilus_directory_remove_file_monitor_link     (NautilusDirectory        *directory,
 							       GList                    *link);
@@ -149,5 +154,3 @@ int           nautilus_directory_number_outstanding           (void);
 /* Shared functions not directly related to NautilusDirectory/File. */
 int           nautilus_compare_file_with_name                 (gconstpointer             a,
 							       gconstpointer             b);
-void          nautilus_gnome_vfs_file_info_list_free          (GList                    *list);
-void          nautilus_gnome_vfs_file_info_list_unref         (GList                    *list);
