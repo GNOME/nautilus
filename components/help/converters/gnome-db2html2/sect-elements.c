@@ -34,6 +34,7 @@ static void sect_programlisting_start_element (Context *context, const gchar *na
 static void sect_programlisting_end_element (Context *context, const gchar *name);
 static void sect_infobox_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_infobox_end_element (Context *context, const gchar *name);
+static void sect_cdata_characters (Context *context, const gchar *chars, int len);
 
 ElementInfo sect_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
@@ -78,7 +79,7 @@ ElementInfo sect_elements[] = {
 	{ WARNING, "warning", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ IMPORTANT, "important", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ NOTE, "note", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
-	{ CDATA, "cdata", NULL, NULL, (charactersSAXFunc) write_characters}, 
+	{ CDATA, "cdata", NULL, NULL, (charactersSAXFunc) sect_cdata_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -807,4 +808,21 @@ sect_infobox_end_element (Context *context,
 		return;
 
 	g_print ("</td></tr>\n</table>\n");
+}
+
+static void
+sect_cdata_characters (Context *context,
+		      const gchar *chars,
+		      int len)
+{
+	gint i;
+	if (!IS_IN_SECT (context))
+		return;
+
+	for (i = 0; i < len; i++) {
+		if (chars[i] == '<')
+			g_print ("&lt;");
+		else g_print ("%c", chars[i]);
+	}
+	
 }

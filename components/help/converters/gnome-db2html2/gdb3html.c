@@ -323,6 +323,23 @@ fatal_error (Context *context, const char *msg, ...)
 	va_end(args);
 }
 
+static void
+cdata_block (Context *context, const xmlChar *value, int len)
+{
+	ElementInfo *element;
+	StackElement *stack_el = g_new0 (StackElement, 1);
+
+	element = find_element_info (context->elements, "cdata");
+	stack_el->info = element;
+
+	context->stack = g_list_prepend (context->stack, stack_el);
+
+	if (element && element->characters_func)
+		(* element->characters_func) (context, value, len);
+
+	context->stack = g_list_remove_link (context->stack, context->stack);
+}
+
 
 static xmlSAXHandler parser = {
 	NULL,  /* internalSubset */
@@ -348,7 +365,9 @@ static xmlSAXHandler parser = {
 	(commentSAXFunc) comment, /* comment */
 	(warningSAXFunc) warning, /* warning */
 	(errorSAXFunc) error, /* error */
-	(fatalErrorSAXFunc) fatal_error /* fatalError */
+	(fatalErrorSAXFunc) fatal_error, /* fatalError */
+	NULL, /*parameterEntity */
+	(cdataBlockSAXFunc) cdata_block
 };
 
 static void
