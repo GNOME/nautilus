@@ -2,9 +2,7 @@ NULL=
 
 noinst_LTLIBRARIES = libgtkhwrapbox.la
 
-INCLUDES = \
-	$(GNOMEUI_CFLAGS) \
-	$(NULL)
+INCLUDES = $(GIMPHWRAPBOX_CFLAGS)
 
 libgtkhwrapbox_la_SOURCES = \
 	gtkhwrapbox.c \

@@ -2283,6 +2283,7 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 static void
 fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 {
+#if GNOME2_CONVERSION_COMPLETE
  	/* font size table - this isn't exactly proportional, but it looks better than computed */
 	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
 		8, 8, 10, 12, 14, 18, 18 };
@@ -2301,6 +2302,7 @@ fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 	}
 
 	nautilus_icon_container_request_update_all (icon_container);
+#endif
 }
 
 static int default_zoom_level_font_size = 12;

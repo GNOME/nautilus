@@ -46,7 +46,6 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
 /* turn this on to enable the caveat dialog */

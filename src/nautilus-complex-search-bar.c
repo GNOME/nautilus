@@ -28,9 +28,14 @@
 #include <config.h>
 #include "nautilus-complex-search-bar.h"
 
+#include "gtkhwrapbox.h"
 #include "nautilus-search-bar-criterion-private.h"
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-window-private.h"
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtkeventbox.h>
@@ -39,14 +44,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus/nautilus-clipboard.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include "gtkhwrapbox.h"
+#include <libnautilus/nautilus-clipboard.h>
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;

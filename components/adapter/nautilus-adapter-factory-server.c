@@ -38,7 +38,6 @@
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {
 	POA_Nautilus_ComponentAdapterFactory  servant;

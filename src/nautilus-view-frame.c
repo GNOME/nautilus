@@ -45,7 +45,6 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-idle-queue.h>
 #include <libnautilus/nautilus-view.h>
 #include <string.h>
@@ -119,12 +118,6 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
 			      nautilus_view_frame,
 			      EEL_TYPE_GENEROUS_BIN)
 
-static NautilusViewFrame *
-get_widget_from_servant (PortableServer_Servant servant)
-{
-	return NULL;
-}
-
 void
 nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
 					 NautilusViewFrameFunction call,
@@ -133,7 +126,7 @@ nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
 {
 	NautilusViewFrame *view;
 
-	view = get_widget_from_servant (servant);
+	view = nautilus_view_frame_from_servant (servant);
 	if (view == NULL) {
 		if (destroy_callback_data != NULL) {
 			(* destroy_callback_data) (callback_data);
@@ -360,8 +353,6 @@ destroy_view (NautilusViewFrame *view)
 	CORBA_exception_free (&ev);
 	view->details->view = CORBA_OBJECT_NIL;
 
-	nautilus_bonobo_object_call_when_remote_object_disappears
-		(view->details->view_frame, CORBA_OBJECT_NIL, NULL, NULL);
 	bonobo_object_unref (view->details->view_frame);
 	view->details->view_frame = NULL;
 	view->details->control_frame = NULL;
@@ -662,8 +653,7 @@ create_corba_objects (NautilusViewFrame *view)
 	CORBA_exception_init (&ev);
 
 	/* Create a view frame. */
-	view->details->view_frame = nautilus_view_frame_create_corba_part (view, &ev);
-	g_assert (ev._major == CORBA_NO_EXCEPTION);
+	view->details->view_frame = nautilus_view_frame_create_corba_part (view);
 
 	/* Create a control frame. */
 	control = Bonobo_Unknown_queryInterface
@@ -718,13 +708,6 @@ queue_view_frame_failed (NautilusViewFrame *view)
 	if (view->details->failed_idle_id == 0)
 		view->details->failed_idle_id =
 			gtk_idle_add (view_frame_failed_callback, view);
-}
-
-static void
-view_frame_failed_cover (BonoboObject *object,
-			 gpointer callback_data)
-{
-	view_frame_failed (NAUTILUS_VIEW_FRAME (callback_data));
 }
 
 static gboolean
@@ -852,12 +835,6 @@ attach_view (NautilusViewFrame *view,
 	gtk_container_add (GTK_CONTAINER (view), widget);
 	
 	view_frame_activated (view);
-
-	nautilus_bonobo_object_call_when_remote_object_disappears
-		(view->details->view_frame,
-		 view->details->view,
-		 view_frame_failed_cover,
-		 view);
 }
 
 static void

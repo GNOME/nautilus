@@ -2,9 +2,7 @@ NULL=
 
 noinst_LTLIBRARIES = libe-paned.la
 
-INCLUDES = \
-	$(GNOMEUI_CFLAGS) \
-	$(NULL)
+INCLUDES = $(E_PANED_CFLAGS)
 
 libe_paned_la_SOURCES = \
 	e-hpaned.c \

@@ -161,6 +161,8 @@ smooth_font_changed_callback (gpointer callback_data)
 	gtk_object_unref (GTK_OBJECT (new_bold_font));
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static GdkFont *
 get_non_smooth_font (int font_size)
 {
@@ -176,9 +178,7 @@ static void
 non_smooth_font_changed_callback (gpointer callback_data)
 {
 	NautilusSidebarTitle *sidebar_title;
-#if GNOME2_CONVERSION_COMPLETE
 	GdkFont *new_font;
-#endif
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
 
@@ -188,13 +188,13 @@ non_smooth_font_changed_callback (gpointer callback_data)
 	update_title_font (sidebar_title);
 
 	/* Update the fixed-size "more info" font */
-#if GNOME2_CONVERSION_COMPLETE
 	new_font = get_non_smooth_font (MORE_INFO_FONT_SIZE);
 	eel_gtk_widget_set_font (sidebar_title->details->more_info_label,
 				 new_font);	
 	gdk_font_unref (new_font);
-#endif
 }
+
+#endif
 
 static void
 nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
@@ -240,10 +240,12 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
+#if GNOME2_CONVERSION_COMPLETE
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
 						       non_smooth_font_changed_callback,
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));
+#endif
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 						       smooth_font_changed_callback,
 						       sidebar_title,
@@ -256,7 +258,9 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
 	smooth_font_changed_callback (sidebar_title);
+#if GNOME2_CONVERSION_COMPLETE
 	non_smooth_font_changed_callback (sidebar_title);
+#endif
 }
 
 /* destroy by throwing away private storage */
@@ -532,9 +536,11 @@ static void
 update_title_font (NautilusSidebarTitle *sidebar_title)
 {
 	int available_width;
+#if GNOME2_CONVERSION_COMPLETE
 	GdkFont *template_font;
 	GdkFont *bold_template_font;
 	GdkFont *largest_fitting_font;
+#endif
 	int largest_fitting_smooth_font_size;
 	EelScalableFont *smooth_font;
 
@@ -564,6 +570,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* Update the regular font */
 	template_font = get_non_smooth_font (MAX_TITLE_FONT_SIZE);
 	bold_template_font = eel_gdk_font_get_bold (template_font);
@@ -579,14 +586,13 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 		largest_fitting_font = eel_gdk_font_get_fixed ();
 	}
 	
-#if GNOME2_CONVERSION_COMPLETE
 	eel_gtk_widget_set_font (sidebar_title->details->title_label,
 				 largest_fitting_font);
-#endif
 	
 	gdk_font_unref (largest_fitting_font);
 	gdk_font_unref (bold_template_font);
 	gdk_font_unref (template_font);
+#endif
 }
 
 static void

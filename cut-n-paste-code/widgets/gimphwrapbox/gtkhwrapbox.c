@@ -505,7 +505,8 @@ layout_rows (GtkWrapBox    *wbox,
   gfloat shrink_height;
   guint children_per_line;
   Line *line_list = NULL;
-  guint total_height = 0, n_expand_lines = 0, n_lines = 0;
+  int total_height = 0;
+  guint n_expand_lines = 0, n_lines = 0;
   
   next_child = wbox->children;
   slist = GTK_WRAP_BOX_GET_CLASS (wbox)->rlist_line_children (wbox,

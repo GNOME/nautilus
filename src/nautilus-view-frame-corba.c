@@ -29,14 +29,24 @@
    representing a data view frame. */
 
 #include <config.h>
-
 #include "nautilus-view-frame-private.h"
+
 #include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
-#include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
-#include <libnautilus/nautilus-view.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-view.h>
+
+typedef struct {
+	BonoboObject parent;
+	NautilusViewFrame *widget;
+} NautilusViewFrameCorbaPart;
+
+typedef struct {
+	BonoboObjectClass parent;
+	POA_Nautilus_ViewFrame__epv epv;
+} NautilusViewFrameCorbaPartClass;
 
 typedef struct {
 	char *from_location;
@@ -356,20 +366,50 @@ impl_Nautilus_ViewFrame_go_back (PortableServer_Servant servant,
 		(servant, go_back, NULL, NULL);
 }
 
-void
-nautilus_view_frame_set_up_epv (POA_Nautilus_ViewFrame__epv *epv)
+static void
+nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
 {
-	epv->open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
-	epv->open_location_prefer_existing_window = impl_Nautilus_ViewFrame_open_location_prefer_existing_window;
-	epv->open_location_force_new_window = impl_Nautilus_ViewFrame_open_location_force_new_window;
-	epv->report_location_change = impl_Nautilus_ViewFrame_report_location_change;
-	epv->report_redirect = impl_Nautilus_ViewFrame_report_redirect;
-	epv->report_selection_change = impl_Nautilus_ViewFrame_report_selection_change;
-	epv->report_status = impl_Nautilus_ViewFrame_report_status;
-	epv->report_load_underway = impl_Nautilus_ViewFrame_report_load_underway;
-	epv->report_load_progress = impl_Nautilus_ViewFrame_report_load_progress;
-	epv->report_load_complete = impl_Nautilus_ViewFrame_report_load_complete;
-	epv->report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
-	epv->set_title = impl_Nautilus_ViewFrame_set_title;
-	epv->go_back = impl_Nautilus_ViewFrame_go_back;
+	class->epv.open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
+	class->epv.open_location_prefer_existing_window = impl_Nautilus_ViewFrame_open_location_prefer_existing_window;
+	class->epv.open_location_force_new_window = impl_Nautilus_ViewFrame_open_location_force_new_window;
+	class->epv.report_location_change = impl_Nautilus_ViewFrame_report_location_change;
+	class->epv.report_redirect = impl_Nautilus_ViewFrame_report_redirect;
+	class->epv.report_selection_change = impl_Nautilus_ViewFrame_report_selection_change;
+	class->epv.report_status = impl_Nautilus_ViewFrame_report_status;
+	class->epv.report_load_underway = impl_Nautilus_ViewFrame_report_load_underway;
+	class->epv.report_load_progress = impl_Nautilus_ViewFrame_report_load_progress;
+	class->epv.report_load_complete = impl_Nautilus_ViewFrame_report_load_complete;
+	class->epv.report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
+	class->epv.set_title = impl_Nautilus_ViewFrame_set_title;
+	class->epv.go_back = impl_Nautilus_ViewFrame_go_back;
+}
+
+static void
+nautilus_view_frame_corba_part_init (NautilusViewFrameCorbaPart *frame)
+{
+}
+
+static GType nautilus_view_frame_corba_part_get_type (void);
+
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusViewFrameCorbaPart,
+			       nautilus_view_frame_corba_part,
+			       BONOBO_OBJECT_TYPE)
+
+#define NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART nautilus_view_frame_corba_part_get_type ()
+#define NAUTILUS_VIEW_FRAME_CORBA_PART(object) G_TYPE_CHECK_INSTANCE_CAST ((object), NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NautilusViewFrameCorbaPart)
+
+BonoboObject *
+nautilus_view_frame_create_corba_part (NautilusViewFrame *widget)
+{
+	NautilusViewFrameCorbaPart *part;
+
+	part = NAUTILUS_VIEW_FRAME_CORBA_PART (gtk_object_new (NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NULL));
+	part->widget = widget;
+	return BONOBO_OBJECT (part);
+}
+
+NautilusViewFrame *
+nautilus_view_frame_from_servant (PortableServer_Servant servant)
+{
+	return NAUTILUS_VIEW_FRAME_CORBA_PART (bonobo_object_from_servant (servant))->widget;
 }

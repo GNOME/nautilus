@@ -49,6 +49,10 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 
+/* Turn this whole file off until we finish with EelList and EelCList or port. */
+
+#if GNOME2_CONVERSION_COMPLETE
+
 struct FMListViewDetails {
 	int sort_column;
 	gboolean sort_reversed;
@@ -2275,3 +2279,5 @@ real_get_column_specification (FMListView *view,
 		g_assert_not_reached ();
 	}
 }
+
+#endif

@@ -42,7 +42,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <math.h>
 
 #define THROBBER_DEFAULT_TIMEOUT 100	/* Milliseconds Per Frame */

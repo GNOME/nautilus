@@ -3368,6 +3368,7 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	/* FIXME bugzilla.gnome.org 45093: Font name is hard-coded here. */
 	/* FIXME bugzilla.gnome.org 45101: Font size is hard-coded here. */
 
+#if GNOME2_CONVERSION_COMPLETE
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
@@ -3375,6 +3376,7 @@ nautilus_icon_container_init (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family ("helvetica", 14);
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+#endif
 
         details->smooth_label_font = eel_scalable_font_get_default_font ();
 	
@@ -4847,7 +4849,9 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
+#if GNOME2_CONVERSION_COMPLETE
 	ArtDRect icon_rect;
+#endif
 	const char *editable_text;
 
 	/* Check if it already in renaming mode. */
@@ -4882,6 +4886,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	details->original_text = g_strdup (editable_text);
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* Create text renaming widget, if it hasn't been created already.
 	 * We deal with the broken icon text item widget by keeping it around
 	 * so its contents can still be cut and pasted as part of the clipboard
@@ -4913,6 +4918,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[RENAMING_ICON],
 			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
+#endif
 
 	nautilus_icon_container_update_icon (container, icon);
 	
@@ -4925,7 +4931,9 @@ static void
 end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
+#if GNOME2_CONVERSION_COMPLETE
 	const char *changed_text;
+#endif
 
 	set_pending_icon_to_rename (container, NULL);
 
@@ -4934,7 +4942,8 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 		return;
 	}
 		
-	if (commit) {						
+#if GNOME2_CONVERSION_COMPLETE
+	if (commit) {
 		/* Verify that text has been modified before signalling change. */			
 		changed_text = nautilus_icon_text_item_get_text (container->details->rename_widget);
 		if (strcmp (container->details->original_text, changed_text) != 0) {			
@@ -4946,6 +4955,7 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	}
 	
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
+#endif
 
 	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (container->details->rename_widget));
 

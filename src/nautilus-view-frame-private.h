@@ -40,9 +40,8 @@ void          nautilus_view_frame_queue_incoming_call                  (Portable
                                                                         gpointer                   callback_data,
                                                                         GDestroyNotify             destroy_callback_data);
 
-BonoboObject *nautilus_view_frame_create_corba_part                    (NautilusViewFrame           *widget,
-                                                                        CORBA_Environment           *ev);
-void          nautilus_view_frame_set_up_epv                           (POA_Nautilus_ViewFrame__epv *epv);
+BonoboObject *nautilus_view_frame_create_corba_part                    (NautilusViewFrame           *widget);
+NautilusViewFrame *nautilus_view_frame_from_servant                    (PortableServer_Servant     servant);
 
 /* ViewFrame */
 void          nautilus_view_frame_open_location_in_this_window         (NautilusViewFrame         *view,

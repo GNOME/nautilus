@@ -16,15 +16,9 @@ dependency_static_libs = \
         $(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
         $(NULL)
 
-if HAVE_CDDA
-CDDALIBADD = -lcdda_paranoia -lcdda_interface
-else
-CDDALIBADD =
-endif
-
 libnautilus_private_la_LDFLAGS =	\
+	$(dependency_static_libs)	\
 	$(LIBNAUTILUS_PRIVATE_LIBS)	\
-	$(CDDALIBADD)			\
 	$(NULL)
 
 nautilus_metafile_server_idl_sources = \
@@ -35,8 +29,8 @@ nautilus_metafile_server_idl_sources = \
 	$(NULL)
 
 marshal_sources = \
-	nautilus-marshal.h \
-	nautilus-marshal.c \
+	nautilus-marshal-guts.h \
+	nautilus-marshal-guts.c \
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
@@ -122,6 +116,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-link-set.h \
 	nautilus-link.c \
 	nautilus-link.h \
+	nautilus-marshal-guts.h \
+	nautilus-marshal.c \
 	nautilus-marshal.h \
 	nautilus-medusa-support.c \
 	nautilus-medusa-support.h \
@@ -184,9 +180,9 @@ nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) -I$(top_srcdir) $(LIBNAUTILUS_PRIVATE_IDL_INCLUDES) $<
 	touch $@
 
-nautilus-marshal.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
+nautilus-marshal-guts.h: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=nautilus_marshal > $@
-nautilus-marshal.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
+nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=nautilus_marshal > $@
 
 $(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp $(marshal_sources)

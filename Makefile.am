@@ -10,17 +10,17 @@ APPLETS_SUBDIRS = applets
 endif
 
 SUBDIRS =			\
-	data 			\
-	icons 			\
 	libnautilus 		\
-	libnautilus-adapter	\
 	libnautilus-private 	\
+	libnautilus-adapter	\
+	cut-n-paste-code 	\
 	src 			\
 	po 			\
+	data 			\
+	icons 			\
 	$(NULL)
 
 XXX = \
-	cut-n-paste-code 	\
 	components		\
 	helper-utilities 	\
 	helper-scripts		\

@@ -37,7 +37,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdio.h>
 #include <sys/stat.h>
 

@@ -1011,6 +1011,8 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	return dialog;
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 /* add the newly selected file to the browser images */
 static void
 add_pattern_to_browser (const char *path_name, gpointer *data)
@@ -1084,6 +1086,8 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	nautilus_property_browser_update_contents (property_browser);
 }
 
+#endif
+
 /* here's where we initiate adding a new pattern by putting up a file selector */
 
 static void
@@ -1095,6 +1099,7 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 			gdk_window_raise(property_browser->details->dialog->window);
 		}
 	} else {
+#if GNOME2_CONVERSION_COMPLETE
 		property_browser->details->dialog = 
 			eel_gnome_icon_selector_new (_("Select an image file to add as a pattern:"),
 				DATADIR "/pixmaps/tiles/",
@@ -1102,7 +1107,8 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 				(EelIconSelectionFunction) add_pattern_to_browser,
 				property_browser);						   
 
-		eel_nullify_when_destroyed (&property_browser->details->dialog);		
+		eel_nullify_when_destroyed (&property_browser->details->dialog);
+#endif
 	}
 }
 

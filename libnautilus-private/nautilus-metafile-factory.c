@@ -26,7 +26,6 @@
 
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-bonobo-extensions.h"
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileFactoryDetails {
 	char dummy; /* ANSI C does not allow empty structs */

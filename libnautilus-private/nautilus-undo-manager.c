@@ -29,7 +29,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-undo-private.h>
 #include "nautilus-undo-context.h"
 
@@ -72,30 +71,7 @@ static void nautilus_undo_manager_class_init (NautilusUndoManagerClass  *class);
 static void nautilus_undo_manager_init       (NautilusUndoManager       *item);
 static void destroy                                (GtkObject                 *object);
 
-/* CORBA/Bonobo */
-static void corba_append                           (PortableServer_Servant     servant,
-						    Nautilus_Undo_Transaction  transaction,
-						    CORBA_Environment         *ev);
-static void corba_forget                           (PortableServer_Servant     servant,
-						    Nautilus_Undo_Transaction  transaction,
-						    CORBA_Environment         *ev);
-static void corba_undo                             (PortableServer_Servant     servant,
-						    CORBA_Environment         *ev);
-
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
-
-static PortableServer_ServantBase__epv base_epv;
-static POA_Nautilus_Undo_Manager__epv epv = {
-	NULL,
-	&corba_append,
-	&corba_forget,
-	&corba_undo,
-};
-static POA_Nautilus_Undo_Manager__vepv vepv = {
-	&base_epv,
-	NULL,
-	&epv
-};
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
 
 static void
 release_transaction (NautilusUndoManager *manager)
@@ -196,28 +172,6 @@ static void
 nautilus_undo_manager_init (NautilusUndoManager *manager)
 {
 	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
-}
-
-static void
-nautilus_undo_manager_class_init (NautilusUndoManagerClass *klass)
-{
-	GtkObjectClass *object_class;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-
-	object_class = GTK_OBJECT_CLASS (klass);
-
-	object_class->destroy = destroy;
-
-	signals[CHANGED] = g_signal_new
-		("changed",
-		 G_TYPE_FROM_CLASS (object_class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET (NautilusUndoManagerClass,
-				    changed),
-		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
-		 G_TYPE_NONE, 0);
 }
 
 void
@@ -388,3 +342,27 @@ nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *m
 		 GTK_OBJECT (handler));
 }
 #endif /* UIH */
+
+static void
+nautilus_undo_manager_class_init (NautilusUndoManagerClass *klass)
+{
+	GtkObjectClass *object_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+
+	object_class->destroy = destroy;
+
+	signals[CHANGED] = g_signal_new
+		("changed",
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusUndoManagerClass,
+				    changed),
+		 NULL, NULL,
+		 gtk_marshal_NONE__NONE,
+		 G_TYPE_NONE, 0);
+
+	klass->epv.append = corba_append;
+	klass->epv.forget = corba_forget;
+	klass->epv.undo = corba_undo;
+}

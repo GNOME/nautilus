@@ -29,7 +29,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {
 	POA_Nautilus_Undo_Context servant;

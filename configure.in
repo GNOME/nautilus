@@ -53,7 +53,6 @@ AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
-AC_PROG_INTLTOOL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
@@ -79,82 +78,20 @@ PKG_CHECK_MODULES(ALL, \
 	librsvg-2.0 >= $RSVG_REQUIRED \
 	libxml-2.0 >= $XML_REQUIRED)
 
-dnl libnautilus
+dnl ==========================================================================
 
-LIBNAUTILUS_MODULES="\
-	bonobo-activation-2.0 \
-	eel-2.0 \
-	glib-2.0 \
-	gnome-vfs-2.0 \
-	gtk+-2.0 \
-	libgnomecanvas-2.0 \
-	libbonobo-2.0 \
-	libbonoboui-2.0"
-LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
-AC_SUBST(LIBNAUTILUS_CFLAGS)
-LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
-AC_SUBST(LIBNAUTILUS_LIBS)
-LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
-AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
+ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
 
-dnl libnautilus-adapter
-LIBNAUTILUS_ADAPTER_MODULES="\
-	bonobo-activation-2.0 \
-	eel-2.0 \
-	glib-2.0 \
-	gnome-vfs-2.0 \
-	gtk+-2.0 \
-	libgnomecanvas-2.0 \
-	libbonobo-2.0 \
-	libbonoboui-2.0"
-LIBNAUTILUS_ADAPTER_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_ADAPTER_MODULES`"
-AC_SUBST(LIBNAUTILUS_ADAPTER_CFLAGS)
-LIBNAUTILUS_ADAPTER_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_ADAPTER_MODULES`"
-AC_SUBST(LIBNAUTILUS_ADAPTER_LIBS)
-LIBNAUTILUS_ADAPTER_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_ADAPTER_MODULES | $srcdir/add-include-prefix`"
-AC_SUBST(LIBNAUTILUS_ADAPTER_IDL_INCLUDES)
+AM_GNOME2_GETTEXT
+# AM_GNOME2_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(gnomelocaledir)
 
-dnl libnautilus-private
-LIBNAUTILUS_PRIVATE_MODULES="\
-	bonobo-activation-2.0 \
-	eel-2.0 \
-	glib-2.0 \
-	gnome-vfs-2.0 \
-	gtk+-2.0 \
-	libgnomecanvas-2.0 \
-	libbonobo-2.0 \
-	libbonoboui-2.0 \
-	librsvg-2.0"
-LIBNAUTILUS_PRIVATE_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_PRIVATE_MODULES`"
-AC_SUBST(LIBNAUTILUS_PRIVATE_CFLAGS)
-LIBNAUTILUS_PRIVATE_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_PRIVATE_MODULES`"
-AC_SUBST(LIBNAUTILUS_PRIVATE_LIBS)
-LIBNAUTILUS_PRIVATE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_PRIVATE_MODULES | $srcdir/add-include-prefix`"
-AC_SUBST(LIBNAUTILUS_PRIVATE_IDL_INCLUDES)
+AC_PROG_INTLTOOL
 
-dnl nautilus-src
-NAUTILUS_SRC_MODULES="\
-	bonobo-activation-2.0 \
-	eel-2.0 \
-	glib-2.0 \
-	gnome-vfs-2.0 \
-	gtk+-2.0 \
-	libgnomecanvas-2.0 \
-	libbonobo-2.0 \
-	libbonoboui-2.0 \
-	librsvg-2.0"
-NAUTILUS_SRC_CFLAGS="`$PKG_CONFIG --cflags $NAUTILUS_SRC_MODULES`"
-AC_SUBST(NAUTILUS_SRC_CFLAGS)
-NAUTILUS_SRC_LIBS="`$PKG_CONFIG --libs $NAUTILUS_SRC_MODULES`"
-AC_SUBST(NAUTILUS_SRC_LIBS)
-NAUTILUS_SRC_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $NAUTILUS_SRC_MODULES | $srcdir/add-include-prefix`"
-AC_SUBST(NAUTILUS_SRC_IDL_INCLUDES)
+dnl ==========================================================================
 
-AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
-
-dnl ====================================
-dnl = Begin profiling support
-dnl ====================================
 ENABLE_PROFILER=
 AC_ARG_ENABLE(profiler,
 [  --enable-profiler		Enable profiler],
@@ -169,24 +106,24 @@ fi
 
 AC_SUBST(ENABLE_PROFILER)
 AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
-dnl ====================================
-dnl = End profiling support
-dnl ====================================
 
-dnl ====================================
-dnl = Check for different mount systems
-dnl ====================================
+dnl ==========================================================================
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
+dnl ==========================================================================
+
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt)
 AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
 
-dnl ====================================
-dnl = Method for changing environment
-dnl ====================================
+dnl ==========================================================================
+
 AC_CHECK_FUNCS(setenv unsetenv putenv)
 
-dnl =============
-dnl Check for FAM 
-dnl =============
+dnl ==========================================================================
+
+dnl FAM
+
 FAM_MISSING_WARNING="Nautilus depends on FAM to provide notification when files are altered (either through filesystem polling, or a kernel notification mechanism). If Nautilus is built without FAM support, directories viewed with Nautilus will not remain in synch with the actual filesystem when they are altered by external processes. Particularly if you are a distributor please compile Nautilus with FAM support. FAM is available from http://oss.sgi.com/projects/fam/. A patch to add Linux Kernel 2.4 directory notify support to FAM (highly desirable) is available from http://people.redhat.com/alexl/files/"
 FAM_LIBS=
 AC_CHECK_LIB(fam, FAMOpen,
@@ -197,12 +134,44 @@ AC_CHECK_LIB(fam, FAMOpen,
   AC_MSG_WARN(*** FAM support will not be built (FAM library not found) $FAM_MISSING_WARNING ***))
 AC_SUBST(FAM_LIBS)
 
-dnl ====================================
-dnl = Use x86 optimized music routines?
-dnl ====================================
+dnl ==========================================================================
+
+AC_ARG_WITH(libiconv, [ --with-libiconv     Use the libiconv library ],,with_libiconv=maybe)
+
+found_iconv=no
+
+if test "x$with_libiconv" != "xyes" ; then
+   # 
+   # Check in the C library 
+   #
+   AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
+fi
+
+if test "x$with_libiconv" != "xno" ; then
+   #
+   # Check for libiconv
+   #
+   AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=yes; found_iconv=yes)
+fi
+
+if test "x$found_iconv" = "xno" ; then
+   AC_MSG_ERROR([*** No iconv() implementation found in C library or libiconv])
+fi
+
+if test "x$with_libiconv" = "xyes" ; then
+  ICONV_LIBS="-liconv"
+fi
+AC_SUBST(ICONV_LIBS)
+
+dnl ==========================================================================
+
+dnl x86 checks (used by audio routines in music component)
+
 _system_is_x86="no"
 AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
 AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
+
+dnl ==========================================================================
 
 dnl ====================================
 dnl = mozilla embedded component support
@@ -216,6 +185,7 @@ dnl = --disable-mozilla-component can be used to disable building of the
 dnl = mozilla component even if the mozilla development libraries are 
 dnl = detected.
 dnl ====================================
+
 mozilla_component_enabled="yes"
 
 AC_ARG_ENABLE(mozilla-component,
@@ -339,9 +309,9 @@ fi
 
 fi
 
-AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
+AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "$found_mozilla" = "true")
 
-if test "x$found_mozilla" = "xtrue"
+if test "$found_mozilla" = "true"
 then
 	grep -w gtk_moz_embed_set_profile_path $_mozilla_include_place/gtkembedmoz/gtkmozembed.h > /dev/null 2>&1
 	if test $? -eq 0
@@ -385,13 +355,10 @@ dnl if the debug flag DEBUG is set a certain way.
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 fi
 
-dnl ====================================
-dnl = End mozilla hacks
-dnl ====================================
+dnl ==========================================================================
 
-dnl ====================================
-dnl = Bzip2, for the help converters
-dnl ====================================
+dnl bz2 (used only by the help converters)
+
 BZ_LIBS=
 AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2)
 			  BZ_LIBS="-lbz2"])
@@ -414,32 +381,29 @@ dnl <= Check for bzip2 > 1.0.0
     dnl =>
 AC_SUBST(BZ_LIBS)
 
-dnl ====================================
-dnl = cdda module support
-dnl ====================================
+dnl ==========================================================================
+
+dnl cdda
 
 AM_CONDITIONAL(HAVE_CDDA, false);
 AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
-	CDDA_LIBS="$CDDA_LIBS -lcdda_paranoia, -lcdda_interface";
-		AM_CONDITIONAL(HAVE_CDDA, true);
+	CDDA_LIBS="-lcdda_paranoia -lcdda_interface";
+	AM_CONDITIONAL(HAVE_CDDA, true);
 	])
 
-dnl ====================================
-dnl = Begin tests for scrollkeeper
-dnl ====================================
+dnl ==========================================================================
+
+dnl scrollkeeper
 
 AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
 if test x$SCROLLKEEPER_CONFIG = xno; then
   AC_MSG_ERROR(Couldn't find scrollkeeper-config, please install the scrollkeeper packaga)
 fi
 
-dnl =======================
-dnl = End tests for scrollkeeper
-dnl =======================
+dnl ==========================================================================
 
-dnl ====================================
-dnl = Test whether jw is installed for doc build
-dnl ====================================
+dnl jw (for doc build)
+
 AC_PATH_PROG(JW,jw,no)
 if test x$JW = xno; then
   HAVE_JW="no"
@@ -448,19 +412,16 @@ else
 fi
 AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
 AC_SUBST(HAVE_JW)
-dnl ====================================
-dnl = End tests for jw
-dnl ====================================
 
-dnl ====================================
-dnl = zlib for help converters
-dnl ====================================
+dnl ==========================================================================
+
+dnl zlib (used only by help converters)
+
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
-dnl ====================================
-dnl = Begin tests for medusa
-dnl ====================================
+dnl ==========================================================================
+
 AC_MSG_CHECKING(for Medusa)
 
 case "`medusa-config --libs 2>/dev/null | cut -d ' ' -f1`" in
@@ -480,13 +441,11 @@ esac
 
 AC_SUBST(MEDUSA_CFLAGS)
 AC_SUBST(MEDUSA_LIBS)
-dnl =======================
-dnl = End tests for medusa
-dnl =======================
 
-dnl ====================================
-dnl = Begin tests for libpng
-dnl ====================================
+dnl ==========================================================================
+
+dnl libpng
+
   if test -z "$LIBPNG"; then
     AC_CHECK_LIB(png, png_read_info,
       AC_CHECK_HEADER(png.h,
@@ -511,13 +470,11 @@ dnl ====================================
   fi
 
 AC_SUBST(LIBPNG)
-dnl =======================
-dnl = End tests for libpng
-dnl =======================
 
-dnl ====================================
-dnl = Begin tests for libjpeg
-dnl ====================================
+dnl ==========================================================================
+
+dnl libjpeg
+
   if test -z "$LIBJPEG"; then
     AC_CHECK_LIB(jpeg, jpeg_start_decompress,
       AC_CHECK_HEADER(jpeglib.h,
@@ -533,23 +490,10 @@ dnl ====================================
   fi
 
 AC_SUBST(LIBJPEG)
-dnl =======================
-dnl = End tests for libjpeg
-dnl =======================
 
-dnl Checks for i18n
-ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
-AM_GNOME2_GETTEXT
-# AM_GNOME2_GETTEXT above substs $DATADIRNAME
-# this is the directory where the *.{mo,gmo} files are installed
-gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
-AC_SUBST(gnomelocaledir)
+dnl ==========================================================================
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-
-dnl
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
-dnl
 
 AC_ARG_ENABLE(more-warnings,
 [  --enable-more-warnings  Maximum compiler warnings],
@@ -591,47 +535,65 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl ==========================================================================
+
+dnl libnautilus
+LIBNAUTILUS_MODULES="eel-2.0 libbonoboui-2.0"
+LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
+AC_SUBST(LIBNAUTILUS_CFLAGS)
+LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
+AC_SUBST(LIBNAUTILUS_LIBS)
+LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
+AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
+
+dnl e-paned
+E_PANED_MODULES="gtk+-2.0"
+E_PANED_CFLAGS="`$PKG_CONFIG --cflags $E_PANED_MODULES`"
+AC_SUBST(E_PANED_CFLAGS)
+
+dnl gimphwrapbox
+GIMPHWRAPBOX_MODULES="gtk+-2.0"
+GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
+AC_SUBST(GIMPHWRAPBOX_CFLAGS)
+
+dnl libnautilus-private
+LIBNAUTILUS_PRIVATE_MODULES="eel-2.0 libbonoboui-2.0"
+LIBNAUTILUS_PRIVATE_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_PRIVATE_MODULES`"
+AC_SUBST(LIBNAUTILUS_PRIVATE_CFLAGS)
+LIBNAUTILUS_PRIVATE_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_PRIVATE_MODULES` $CDDA_LIBS $ESD_LIBS $FAM_LIBS $ICONV_LIBS $LIBJPEG $MEDUSA_LIBS"
+AC_SUBST(LIBNAUTILUS_PRIVATE_LIBS)
+LIBNAUTILUS_PRIVATE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_PRIVATE_MODULES | $srcdir/add-include-prefix`"
+AC_SUBST(LIBNAUTILUS_PRIVATE_IDL_INCLUDES)
+
+dnl libnautilus-adapter
+LIBNAUTILUS_ADAPTER_MODULES="eel-2.0 libbonoboui-2.0"
+LIBNAUTILUS_ADAPTER_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_ADAPTER_MODULES`"
+AC_SUBST(LIBNAUTILUS_ADAPTER_CFLAGS)
+LIBNAUTILUS_ADAPTER_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_ADAPTER_MODULES`"
+AC_SUBST(LIBNAUTILUS_ADAPTER_LIBS)
+LIBNAUTILUS_ADAPTER_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_ADAPTER_MODULES | $srcdir/add-include-prefix`"
+AC_SUBST(LIBNAUTILUS_ADAPTER_IDL_INCLUDES)
+
+dnl nautilus-src
+NAUTILUS_SRC_MODULES="eel-2.0 libbonoboui-2.0"
+NAUTILUS_SRC_CFLAGS="`$PKG_CONFIG --cflags $NAUTILUS_SRC_MODULES`"
+AC_SUBST(NAUTILUS_SRC_CFLAGS)
+NAUTILUS_SRC_LIBS="`$PKG_CONFIG --libs $NAUTILUS_SRC_MODULES`"
+AC_SUBST(NAUTILUS_SRC_LIBS)
+NAUTILUS_SRC_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $NAUTILUS_SRC_MODULES | $srcdir/add-include-prefix`"
+AC_SUBST(NAUTILUS_SRC_IDL_INCLUDES)
+
+dnl ==========================================================================
+
 AC_OUTPUT([
-nautilus.spec
 Makefile
-helper-utilities/Makefile
-helper-utilities/error-dialog/Makefile
-helper-utilities/xml-migrate/Makefile
-helper-scripts/Makefile
-icons/Makefile
-icons/crux_eggplant/Makefile
-icons/crux_eggplant/backgrounds/Makefile
-icons/crux_eggplant/sidebar_tab_pieces/Makefile
-icons/crux_eggplant/throbber/Makefile
-icons/crux_teal/Makefile
-icons/crux_teal/backgrounds/Makefile
-icons/crux_teal/sidebar_tab_pieces/Makefile
-icons/crux_teal/throbber/Makefile
-icons/gnome/Makefile
-icons/gnome/throbber/Makefile
-icons/gnome/sidebar_tab_pieces/Makefile
-icons/sidebar_tab_pieces/Makefile
-icons/sierra/Makefile
-icons/tahoe/Makefile
-icons/throbber/Makefile
-data/Makefile
-data/patterns/Makefile
-data/emblems/Makefile
-data/linksets/Makefile
-cut-n-paste-code/Makefile
-cut-n-paste-code/widgets/Makefile
-cut-n-paste-code/widgets/e-paned/Makefile
-cut-n-paste-code/widgets/gimphwrapbox/Makefile
-libnautilus/Makefile
-libnautilus-adapter/Makefile
-libnautilus-private/Makefile
-src/Makefile
-src/file-manager/Makefile
+applets/Makefile
+applets/launcher/Makefile
+applets/preferences-applet/Makefile
 components/Makefile
 components/adapter/Makefile
 components/hardware/Makefile
 components/hardware/icons/Makefile
-components/history/Makefile
 components/help/Makefile
 components/help/converters/Makefile
 components/help/converters/gnome-db2html2/Makefile
@@ -643,44 +605,78 @@ components/help/converters/gnome-db2html3/docbook/lib/Makefile
 components/help/converters/gnome-db2html3/gnome-customization/Makefile
 components/help/converters/gnome-info2html2/Makefile
 components/help/converters/gnome-man2html2/Makefile
+components/history/Makefile
 components/image-viewer/Makefile
+components/loser/Makefile
+components/loser/content/Makefile
+components/loser/sidebar/Makefile
+components/mozilla/Makefile
 components/music/Makefile
 components/news/Makefile
 components/notes/Makefile
 components/sample/Makefile
-components/mozilla/Makefile
 components/text/Makefile
 components/text/services/Makefile
 components/throbber/Makefile
-components/loser/Makefile
-components/loser/content/Makefile
-components/loser/sidebar/Makefile
 components/tree/Makefile
+cut-n-paste-code/Makefile
+cut-n-paste-code/widgets/Makefile
+cut-n-paste-code/widgets/e-paned/Makefile
+cut-n-paste-code/widgets/gimphwrapbox/Makefile
+data/Makefile
+data/emblems/Makefile
+data/linksets/Makefile
+data/patterns/Makefile
+help/Makefile
+help/nautilus-quick-reference/C/Makefile
+help/nautilus-quick-reference/Makefile
+help/nautilus-quick-reference/es/Makefile
+help/nautilus-quick-reference/ko/Makefile
+help/nautilus-quick-reference/no/Makefile
+help/nautilus-quick-reference/sv/Makefile
+help/nautilus-release-notes/C/Makefile
+help/nautilus-release-notes/Makefile
+help/nautilus-screenshot-guidelines/C/Makefile
+help/nautilus-screenshot-guidelines/Makefile
+help/nautilus-user-manual/C/Makefile
+help/nautilus-user-manual/Makefile
+help/nautilus-user-manual/es/Makefile
+help/nautilus-user-manual/ko/Makefile
+helper-scripts/Makefile
+helper-utilities/Makefile
+helper-utilities/error-dialog/Makefile
+helper-utilities/xml-migrate/Makefile
+icons/Makefile
+icons/crux_eggplant/Makefile
+icons/crux_eggplant/backgrounds/Makefile
+icons/crux_eggplant/sidebar_tab_pieces/Makefile
+icons/crux_eggplant/throbber/Makefile
+icons/crux_teal/Makefile
+icons/crux_teal/backgrounds/Makefile
+icons/crux_teal/sidebar_tab_pieces/Makefile
+icons/crux_teal/throbber/Makefile
+icons/gnome/Makefile
+icons/gnome/sidebar_tab_pieces/Makefile
+icons/gnome/throbber/Makefile
+icons/sidebar_tab_pieces/Makefile
+icons/sierra/Makefile
+icons/tahoe/Makefile
+icons/throbber/Makefile
+libnautilus-adapter/Makefile
+libnautilus-private/Makefile
+libnautilus/Makefile
+nautilus.spec
+omf-install/Makefile
 po/Makefile.in
+src/Makefile
+src/file-manager/Makefile
 test/Makefile
 user-guide/Makefile
 user-guide/gnufdl/Makefile
 user-guide/gnugpl/Makefile
-help/Makefile
-help/nautilus-user-manual/Makefile
-help/nautilus-user-manual/C/Makefile
-help/nautilus-user-manual/es/Makefile
-help/nautilus-user-manual/ko/Makefile
-help/nautilus-quick-reference/Makefile
-help/nautilus-quick-reference/C/Makefile
-help/nautilus-quick-reference/no/Makefile
-help/nautilus-quick-reference/es/Makefile
-help/nautilus-quick-reference/sv/Makefile
-help/nautilus-quick-reference/ko/Makefile
-help/nautilus-release-notes/Makefile
-help/nautilus-release-notes/C/Makefile
-help/nautilus-screenshot-guidelines/Makefile
-help/nautilus-screenshot-guidelines/C/Makefile
-applets/Makefile
-applets/launcher/Makefile
-applets/preferences-applet/Makefile
-omf-install/Makefile
 ])
+
+dnl ==========================================================================
 
 dnl <= Configuration summary =>
 
@@ -688,11 +684,13 @@ echo "Nautilus configuration summary:"
 echo ""
 
 dnl <= CFLAGS and LDFLAGS =>
+
 echo "CFLAGS : $CFLAGS"
 echo "LDFLAGS : $LDFLAGS"
 echo ""
 
 dnl <= Mozilla component integrated? =>
+
 case $found_mozilla in
   t*)
 	echo "Mozilla component                 : YES"
@@ -708,6 +706,7 @@ case $found_mozilla in
 esac
 
 dnl <= Profile support? =>
+
 case "X$ENABLE_PROFILER" in
   X1)
 	echo "Enable profiler                   : YES"
@@ -718,14 +717,8 @@ case "X$ENABLE_PROFILER" in
 esac
 
 dnl <= Snapshot things =>
-echo "EAZEL_BUILD_TIMESTAMP             : $EAZEL_BUILD_TIMESTAMP"
-echo "NAUTILUS_BUILD_MESSAGE            : $NAUTILUS_BUILD_MESSAGE"
+
 echo "NAUTILUS_SOURCE_DIRECTORY         : $NAUTILUS_SOURCE_DIRECTORY"
 echo "HAVE_APPLETS                      : $HAVE_APPLETS"
-
-dnl <= Nautilus =>
-echo "NAUTILUS_LIBDIR     : $NAUTILUS_LIBDIR"
-echo "NAUTILUS_INCLUDEDIR : $NAUTILUS_INCLUDEDIR"
-echo "NAUTILUS_LIBS       : $NAUTILUS_LIBS"
 
 dnl <= End of configuration summary =>

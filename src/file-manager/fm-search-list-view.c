@@ -51,6 +51,8 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 
+#if GNOME2_CONVERSION_COMPLETE
+
 /* FIXME bugzilla.gnome.org 42815: This code uses part of the
  * NautilusSearchBarCriterion class, which is really for complex
  * search bar user interface. We only need to do some non-UI
@@ -804,3 +806,5 @@ reveal_selected_items_callback (BonoboUIComponent *component, gpointer user_data
 
 	nautilus_file_list_free (selection);
 }
+
+#endif
