@@ -689,7 +689,7 @@ nautilus_remove_icon_file_name_suffix (const char *icon_name)
 {
 	guint i;
 	const char *suffix;
-	static const char *icon_file_name_suffixes[] = { ".svg", ".png", ".jpg" };
+	static const char *icon_file_name_suffixes[] = { ".svg", ".svgz", ".png", ".jpg" };
 
 	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		suffix = icon_file_name_suffixes[i];
@@ -1067,7 +1067,7 @@ path_represents_svg_image (const char *path)
 	 * and if they're doing that, they can behave themselves
 	 * and use a .svg extension.
 	 */
-	return path != NULL && strstr (path, ".svg") != NULL;
+	return path != NULL && (strstr (path, ".svg") != NULL || strstr (path, ".svgz") != NULL);
 }
 
 static GdkPixbuf *
