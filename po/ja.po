@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
-"PO-Revision-Date: 2003-05-06 23:01+0900\n"
+"POT-Creation-Date: 2003-05-21 00:58+0900\n"
+"PO-Revision-Date: 2003-05-21 00:28+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1125,11 +1125,11 @@ msgstr "デスクトップのフォント"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Desktop home icon name"
-msgstr ""
+msgstr "デスクトップのホーム・アイコンの名前"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Desktop trash icon name"
-msgstr ""
+msgstr "デスクトップのゴミ箱アイコンの名前"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Enable 'special' flags in file preferences dialog"
@@ -1157,7 +1157,7 @@ msgstr "ブックマーク・メニューの中にデフォルトのブックマ
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "デスクトップにホーム・アイコンを表示する"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
@@ -1272,13 +1272,13 @@ msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
 msgstr ""
+"TRUE にすると、ホーム・フォルダを指すアイコンがデスクトップ上に表示されます。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "TRUE にすると、デスクトップ上にアイコンを表示します。"
+msgstr "TRUE にすると、ゴミ箱を指すアイコンがデスクトップ上に表示されます。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -1468,22 +1468,23 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "新規に開いたウィンドウにサイド・ペイン表示を行う"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "デスクトップ上のアイコンに使用するフォント"
+msgstr ""
+"デスクトップにあるホーム・アイコンをカスタマイズする場合にセットする名前で"
+"す。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "デスクトップ上のアイコンに使用するフォント"
+msgstr ""
+"デスクトップにあるゴミ箱アイコンをカスタマイズする場合にセットする名前です。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "デスクトップにゴミ箱アイコンを表示する"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Type of click used to launch/open files"
@@ -5834,9 +5835,8 @@ msgstr ""
 "ルダを作成できるように適切なパーミッションを設定して下さい。"
 
 #: src/nautilus-application.c:300
-#, fuzzy
 msgid "Link To Old Desktop"
-msgstr "デスクトップ上"
+msgstr "古いデスクトップへのリンク"
 
 #: src/nautilus-application.c:316
 msgid ""
@@ -5844,10 +5844,13 @@ msgid ""
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
+"GNOME 2.4 ではデスクトップのフォルダが変更されます。\"古いデスクトップへのリ"
+"ンク\" というリンクがデスクトップ上に作成されます。この中にあるファイルをお好"
+"きな場所に移動して、リンクを削除することができます。"
 
 #: src/nautilus-application.c:319
 msgid "Migrated old desktop"
-msgstr ""
+msgstr "古いデスクトップを移動します"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -7316,9 +7319,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "The Trash must remain on the desktop."
-#~ msgstr "ゴミ箱はデスクトップに残して下さい。"
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "ゴミ箱はコピーできません"
