@@ -4043,7 +4043,7 @@ real_update_menus (FMDirectoryView *view)
 	} else {
 		label = _("Move to _Trash");
 		accelerator = "*Control*t";
-		tip = _("Move all selected items to the Trash");
+		tip = _("Move each selected item to the Trash");
 		show_separate_delete_command = show_delete_command_auto_value;
 	}
 	
@@ -4056,7 +4056,7 @@ real_update_menus (FMDirectoryView *view)
 					 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
 					 accelerator);
 	nautilus_bonobo_set_tip (view->details->ui, 
-				 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+				 FM_DIRECTORY_VIEW_COMMAND_TRASH, 
 				 tip);
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_TRASH,
