@@ -220,11 +220,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 			*color = nautilus_gradient_new (start_color, end_color , is_horizontal);
 		}
 	} else {
-		if (no_start_color) {
-			*color = g_strdup (default_color);
-		} else {
-			*color = g_strdup (start_color);
-		}
+		*color = g_strdup (no_start_color ? default_color : start_color);
 	}
 
 	g_free(start_color);
@@ -352,6 +348,10 @@ nautilus_directory_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *eve
 	    	 * the new setting in gnome_config AFTER setting the root window's property -
 	    	 * i.e. after we get this event. How long afterwards is not knowable - we
 	    	 * guess half a second. Fixing this requires changing the capplet.
+	    	 */
+
+	    	/* FIXME bugzilla.eazel.com 3038:
+	    	 * We don't want to respond to an event we originated.
 	    	 */
 	    	gtk_timeout_add (500, (GtkFunction) (call_settings_changed), background);
 	}

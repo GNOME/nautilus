@@ -747,12 +747,12 @@ nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 	background->details->load_image_handle = NULL;
 	
 	g_free (background->details->image_uri);
-
 	
 	if (background->details->image != NULL) {
 		gdk_pixbuf_unref (background->details->image);
 		background->details->image = NULL;
 	}
+
 	background->details->image_uri = g_strdup (image_uri);
 	start_loading_image (background);
 
@@ -765,7 +765,6 @@ nautilus_background_set_image_uri (NautilusBackground *background,
 {
 	if (nautilus_background_set_image_uri_no_emit (background, image_uri)) {
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
-		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	}
 }
 
@@ -780,7 +779,6 @@ nautilus_background_receive_dropped_background_image (NautilusBackground *backgr
 		nautilus_background_set_image_uri_no_emit (background, image_uri);
 		nautilus_background_set_color_no_emit (background, NULL);
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
-		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	}
 }
 

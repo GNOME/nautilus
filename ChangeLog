@@ -1,3 +1,15 @@
+2000-09-13  Michael Engber  <engber@eazel.com>
+
+	Added a fixme + misc cleanup while investigating
+	bugs 3022 and 3038
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_image_uri_no_emit),
+	(nautilus_background_set_image_uri),
+	(nautilus_background_receive_dropped_background_image):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_event_filter):
+
 2000-09-13  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 2916 "Shouldn't be able to create new items in trash."
