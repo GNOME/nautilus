@@ -1,3 +1,25 @@
+2001-05-02  Darin Adler  <darin@eazel.com>
+
+	Fix bug where icon for Nautilus links were not appearing if they
+	were icon names rather than complete URIs.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(remove_icon_name_suffix): Separate out this function.
+	(get_mime_type_icon_without_suffix): Use the new
+	remove_icon_name_suffix function.
+	(nautilus_icon_factory_get_icon_for_file): When getting a custom
+	icon name from a file, call remove_icon_name_suffix.
+
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(fm_desktop_icon_view_trash_state_changed_callback),
+	(icon_view_handle_uri_list), (update_home_link_and_delete_copies),
+	(update_trash_link_and_delete_copies): Leave the ".png" suffixes
+	out of the icon names. They never did any good.
+
+	* components/help/help-method.c: (help_uri_to_string): Fix name of
+	info2html2 and disallow parameters that start with "-" (for a
+	slight bit less security vulnerability).
+
 2001-05-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

@@ -413,39 +413,39 @@ create_mount_link (FMDesktopIconView *icon_view,
 	switch (volume->device_type) {
 	case NAUTILUS_DEVICE_AUDIO_CD:
 	case NAUTILUS_DEVICE_CD_ROM_DRIVE:
-		icon_name = "i-cdrom.png";
+		icon_name = "i-cdrom";
 		break;
 
 	case NAUTILUS_DEVICE_CAMERA:
-		icon_name = "i-blockdev.png";
+		icon_name = "i-blockdev";
 		break;
 
 		
 	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
-		icon_name = "i-floppy.png";
+		icon_name = "i-floppy";
 		break;
 
 	case NAUTILUS_DEVICE_JAZ_DRIVE:
-		icon_name = "i-zipdisk2.png";
+		icon_name = "i-zipdisk2";
 		break;
 
 	case NAUTILUS_DEVICE_MEMORY_STICK:
-		icon_name = "gnome-ccperiph.png";
+		icon_name = "gnome-ccperiph";
 		break;
 	
 	case NAUTILUS_DEVICE_NFS:
-		icon_name = "i-nfs.png";
+		icon_name = "i-nfs";
 		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "i-zipdisk.png";
+		icon_name = "i-zipdisk";
 		break;
 
 	case NAUTILUS_DEVICE_UNKNOWN:
-		icon_name = "i-blockdev.png";
+		icon_name = "i-blockdev";
 		break;	
 	default:
-		icon_name = "i-blockdev.png";
+		icon_name = "i-blockdev";
 		break;	
 	}
 
@@ -797,7 +797,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 	path = nautilus_make_path (desktop_directory, TRASH_LINK_NAME);
 
 	/* Change the XML file to have a new icon. */
-	nautilus_link_local_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
+	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
 
 	g_free (path);
 }
@@ -915,7 +915,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 							
 			if (linkname != NULL) {
 				linkname++;
-				nautilus_link_local_create (desktop_directory, linkname, "gnome-http-url.png", uri,
+				nautilus_link_local_create (desktop_directory, linkname, "gnome-http-url", uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
 			g_free (stripped_uri);
@@ -998,7 +998,7 @@ update_home_link_and_delete_copies (void)
 					    home_uri)) {
 		nautilus_link_local_create (desktop_directory,
 					    home_link_name,
-					    "temp-home.png", 
+					    "temp-home", 
 					    home_uri,
 					    NULL,
 					    NAUTILUS_LINK_HOME);
@@ -1021,10 +1021,11 @@ update_trash_link_and_delete_copies (void)
 
 	nautilus_link_local_create (desktop_directory,
 				    TRASH_LINK_NAME,
-				    "trash-empty.png", 
+				    "trash-empty", 
 				    EEL_TRASH_URI,
 				    NULL,
-				    NAUTILUS_LINK_TRASH);				    				    
+				    NAUTILUS_LINK_TRASH);
+
 	/* Make sure link represents current trash state */
 	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
 						   	   nautilus_trash_monitor_is_empty (),

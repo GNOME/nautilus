@@ -739,24 +739,24 @@ set_theme (const char *theme_name)
 }
 
 static char *
-get_mime_type_icon_without_suffix (const char *mime_type)
+remove_icon_name_suffix (const char *icon_name)
 {
-	const char *with_suffix, *suffix;
 	guint i;
-
-	with_suffix = gnome_vfs_mime_get_icon (mime_type);
-	if (with_suffix == NULL) {
-		return NULL;
-	}
+	const char *suffix;
 
 	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		suffix = icon_file_name_suffixes[i];
-		if (eel_str_has_suffix (with_suffix, suffix)) {
-			return eel_str_strip_trailing_str (with_suffix, suffix);
+		if (eel_str_has_suffix (icon_name, suffix)) {
+			return eel_str_strip_trailing_str (icon_name, suffix);
 		}
 	}
+	return g_strdup (icon_name);
+}
 
-	return g_strdup (with_suffix);
+static char *
+get_mime_type_icon_without_suffix (const char *mime_type)
+{
+	return remove_icon_name_suffix (gnome_vfs_mime_get_icon (mime_type));
 }
 
 static char *
@@ -1517,13 +1517,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file: URIs? */
 				if (eel_istr_has_prefix (image_uri, "file://")) {
 					if (uri == NULL) {
-						uri = image_uri;
-					} else {
-						g_free (image_uri);
+						uri = g_strdup (image_uri);
 					}
 				} else {
-					icon_name = image_uri;
+					icon_name = remove_icon_name_suffix (image_uri);
 				}
+				g_free (image_uri);
 			}
 			g_free (file_path);
 		}

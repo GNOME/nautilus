@@ -129,10 +129,9 @@ help_uri_to_string (HelpURI *help_uri)
                 parameter = g_strdup (help_uri->file);
 		break;
 	case INFO_FILE:
-                command = "info2html2";
+                command = "gnome-info2html2";
                 parameter = g_strdup (help_uri->file);
 		break;
-
 	case HTML_FILE:
                 escaped = gnome_vfs_escape_path_string (help_uri->file);
 		if (help_uri->section == NULL) {
@@ -153,6 +152,11 @@ help_uri_to_string (HelpURI *help_uri)
 		g_assert_not_reached ();
                 return NULL;
 	}
+
+        if (parameter[0] == '-') {
+                g_free (parameter);
+                return NULL;
+        }
         
         /* Build a command line. */
         escaped = shell_quote (parameter);
