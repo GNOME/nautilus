@@ -5179,6 +5179,31 @@ nautilus_icon_container_get_note_text (NautilusIconContainer *container,
 	return note_text;
 }
 
+/* return the state of the show all annotations flag */
+gboolean
+nautilus_icon_container_is_showing_all_annotations (NautilusIconContainer *container)
+{
+	return container->details->show_all_annotations;
+}
+
+/* set the state of the show all annotations flag */
+void
+nautilus_icon_container_set_show_all_annotations (NautilusIconContainer *container,
+						  gboolean show_flag)
+{
+	GList *p;
+	NautilusIcon *icon;
+
+	if (container->details->show_all_annotations != show_flag) {
+		container->details->show_all_annotations = show_flag;	
+	
+		for (p = container->details->icons; p != NULL; p = p->next) {
+			icon = p->data;
+			nautilus_icon_canvas_item_set_show_annotation (icon->item, show_flag);		
+		}
+	}
+}
+
 /* Return if the icon container is a fixed size */
 gboolean
 nautilus_icon_container_get_is_fixed_size (NautilusIconContainer *container)

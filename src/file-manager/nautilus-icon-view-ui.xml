@@ -6,6 +6,12 @@
 	<cmd name="Annotate"
          _label="Add Annotation..."
 	 _tip="Add an annotation to this file"/>	
+	<cmd name="Show Annotations"
+         _label="Show All Annotations"
+	 _tip="Show all of the annotations in this directory"/>	
+	<cmd name="Hide Annotations"
+         _label="Hide All Annotations"
+	 _tip="Hide all of the annotations in this directory"/>	
 	<cmd name="Icon Text"
          _label="Icon Captions..."
 	 _tip="Choose which information appears beneath each icon's name"/>
@@ -150,6 +156,8 @@
 	                                          type="toggle"/>
 				</submenu>
 				<menuitem name="Clean Up" verb="Clean Up"/>
+				<menuitem name="Show All Annotations" verb="Show Annotations"/>
+				<menuitem name="Hide All Annotations" verb="Hide Annotations"/>
 			</placeholder>
 		</placeholder>
 	</popup>

@@ -91,6 +91,8 @@
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_RENAME 				"/commands/Rename"
 #define COMMAND_ANNOTATE			"/commands/Annotate"
+#define COMMAND_SHOW_ANNOTATIONS		"/commands/Show Annotations"
+#define COMMAND_HIDE_ANNOTATIONS		"/commands/Hide Annotations"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
@@ -420,6 +422,39 @@ annotate_callback (BonoboUIComponent *component, gpointer callback_data, const c
 		fm_annotation_window_present (first_file, FM_DIRECTORY_VIEW (callback_data));
 		g_list_free (selected_files);
 	}
+}
+
+static void
+update_annotation_menu_items (FMIconView *icon_view)
+{
+	gboolean is_showing;
+	
+	is_showing = nautilus_icon_container_is_showing_all_annotations (get_icon_container (icon_view));
+	
+	nautilus_bonobo_set_hidden 
+			(icon_view->details->ui, COMMAND_SHOW_ANNOTATIONS, is_showing);
+	nautilus_bonobo_set_hidden 
+			(icon_view->details->ui, COMMAND_HIDE_ANNOTATIONS, !is_showing);
+}
+
+static void
+show_annotations_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	NautilusIconContainer *icon_container;
+	
+	icon_container = get_icon_container (FM_ICON_VIEW (callback_data));
+	nautilus_icon_container_set_show_all_annotations (icon_container, TRUE);
+	update_annotation_menu_items ( FM_ICON_VIEW (callback_data));
+}
+
+static void
+hide_annotations_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	NautilusIconContainer *icon_container;
+	
+	icon_container = get_icon_container (FM_ICON_VIEW (callback_data));
+	nautilus_icon_container_set_show_all_annotations (icon_container, FALSE);
+	update_annotation_menu_items ( FM_ICON_VIEW (callback_data));
 }
 
 static void
@@ -1274,6 +1309,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", rename_icon_callback),
 		BONOBO_UI_VERB ("Annotate", annotate_callback),
+		BONOBO_UI_VERB ("Show Annotations", show_annotations_callback),
+		BONOBO_UI_VERB ("Hide Annotations", hide_annotations_callback),
 		BONOBO_UI_VERB ("Icon Text", customize_icon_text_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
@@ -1312,6 +1349,9 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		nautilus_bonobo_set_hidden 
 			(icon_view->details->ui, POPUP_PATH_LAY_OUT, TRUE);
 	}
+	
+	/* show or hide the global annotation items based on the current state */
+	update_annotation_menu_items (icon_view);
 
 	update_layout_menus (icon_view);
 
@@ -1367,7 +1407,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_ANNOTATE,
 				       selection_count == 1);
-				       
+
+					       	
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
 	nautilus_file_list_free (selection);
@@ -1490,8 +1531,8 @@ icon_container_activate_callback (NautilusIconContainer *container,
 	if (emblem_index > 0 && file_list != NULL && file_list->next == NULL) {
 		file = NAUTILUS_FILE (file_list->data); 
 		keyword = get_keyword_by_index (file, emblem_index);
-		if (eel_strcmp (keyword, "note") == 0) {
-			fm_annotation_window_present (file, FM_DIRECTORY_VIEW (icon_view));
+		if (eel_strcmp (keyword, "note") == 0) {	
+			fm_annotation_window_present (file, FM_DIRECTORY_VIEW (icon_view));				
 			g_free (keyword);
 			return;
 		}

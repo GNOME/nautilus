@@ -360,7 +360,6 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 	note_item->x2 = floor (note_item->x1 + (width / item->canvas->pixels_per_unit) + .5);
 	note_item->y2 = floor (note_item->y1 + 4.0 + (height / item->canvas->pixels_per_unit) + .5);
 	
-	
 	update_item_bounding_box (note_item);
 	
 	g_free (display_text);
@@ -674,10 +673,12 @@ nautilus_canvas_note_item_bounds (GnomeCanvasItem *item, double *x1, double *y1,
 	*y2 = note_item->y2 + hwidth;
 }
 
-/* utility routine to map raw annotation text into text to be displayed */
-/* for now this is pretty naive and only handles free-form text, just returning
- * the first suitable annotation it can find
- */
+/* fetch the height of the arrow scaled to the current coordinates */
+static int
+get_arrow_height (GnomeCanvasItem *item)
+{
+	return ARROW_HEIGHT / item->canvas->pixels_per_unit;
+}
 
 /* utility routine to draw a text string into the passed-in item */
 static void
@@ -710,7 +711,7 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 	eel_smooth_text_layout_set_line_wrap_width (smooth_text_layout, width - 4);
 	
 	dest_bounds.x0 = 0;
-	dest_bounds.y0 = ARROW_HEIGHT;
+	dest_bounds.y0 = get_arrow_height (item);
 	dest_bounds.x1 = width;
 	dest_bounds.y1 = height;
 	 
@@ -899,7 +900,7 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 	/* handle the arrow if we're in aa mode */
 	if (item->canvas->aa) {
 		old_top = y1;
-		y1 += ARROW_HEIGHT;
+		y1 += get_arrow_height (item);
 		
 		if (y >= old_top && y <= y1) {
 			arrow_half_width = get_arrow_half_width (x1, x2);
@@ -960,7 +961,7 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 
 	if (item->canvas->aa) {
 		x0 = note_item->x1;
-		y0 = note_item->y1 + ARROW_HEIGHT;
+		y0 = note_item->y1 + get_arrow_height (item);
 		x1 = note_item->x2;
 		y1 = note_item->y2;
 

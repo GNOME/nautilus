@@ -183,6 +183,9 @@ gboolean          nautilus_icon_container_is_empty                      (Nautilu
 gboolean          nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_auto_layout               (NautilusIconContainer  *container,
 									 gboolean                auto_layout);
+gboolean	  nautilus_icon_container_is_showing_all_annotations	(NautilusIconContainer	*container);
+void		  nautilus_icon_container_set_show_all_annotations	(NautilusIconContainer	*container,
+									 gboolean		show_flag);
 gboolean          nautilus_icon_container_is_tighter_layout             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_tighter_layout            (NautilusIconContainer  *container,
 									 gboolean                tighter_layout);

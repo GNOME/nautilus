@@ -50,6 +50,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
+#include "nautilus-annotation.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
@@ -193,6 +194,10 @@ static double   nautilus_icon_canvas_item_point            (GnomeCanvasItem     
 							    int                            cx,
 							    int                            cy,
 							    GnomeCanvasItem              **actual_item);
+static void	nautilus_icon_canvas_item_translate	   (GnomeCanvasItem 		  *item,
+							    double 			  dx,
+							    double 			  dy);
+
 static void     nautilus_icon_canvas_item_bounds           (GnomeCanvasItem               *item,
 							    double                        *x1,
 							    double                        *y1,
@@ -299,6 +304,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
+	item_class->translate = nautilus_icon_canvas_item_translate;
 
 	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					       &click_policy_auto_value);
@@ -366,6 +372,22 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
  
+/* handle translate calls by moving the annotation, too, if it's showing */
+static void
+nautilus_icon_canvas_item_translate (GnomeCanvasItem *item, double dx, double dy)
+{
+	NautilusIconCanvasItem *icon_item;
+	
+	g_message ("in translate, x %f y %f", dx, dy);
+	
+	EEL_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, translate, (item, dx, dy));
+
+	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
+	if (icon_item->details->annotation) {
+		gnome_canvas_item_move (icon_item->details->annotation, dx, dy);
+	}
+}
+
 /* Currently we require pixbufs in this format (for hit testing).
  * Perhaps gdk-pixbuf will be changed so it can do the hit testing
  * and we won't have this requirement any more.
@@ -1977,6 +1999,27 @@ nautilus_icon_canvas_item_set_note_state (NautilusIconCanvasItem *icon_item, int
 	}	
 }
 
+/* handle showing or hiding annotations associated with this emblem, if any */
+void
+nautilus_icon_canvas_item_set_show_annotation (NautilusIconCanvasItem *icon_item, gboolean show_flag)
+{
+	NautilusIcon *icon;
+	
+	if ((show_flag && icon_item->details->annotation != NULL) ||
+		(!show_flag && icon_item->details->annotation == NULL)) {
+		return;
+	}
+
+	if (show_flag) {
+		/* we need to calculate the emblem_index, but just use a fixed one for now */
+		icon = (NautilusIcon*) icon_item->user_data;
+		if (nautilus_annotation_get_count (NAUTILUS_FILE (icon->data)) > 0) {
+			create_annotation (icon_item, 1);
+		}
+	} else {
+		remove_annotation (icon_item);
+	}	
+}
 
 /* handle events */
 
@@ -2040,15 +2083,21 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
 			
-			/* if the item has an annotation and the mouse is in it
-			 * don't reset the note_state
+			/* if we're in "show all annotations" mode, don't respond to
+			 *  entering or leaving
 			 */
-			gdk_window_get_pointer (GTK_WIDGET (item->canvas)->window, &x, &y, NULL);
-			gnome_canvas_window_to_world (item->canvas, x, y, &world_x, &world_y);
-			mouse_over_item = gnome_canvas_get_item_at (item->canvas, world_x, world_y);
+			if (!nautilus_icon_container_is_showing_all_annotations (NAUTILUS_ICON_CONTAINER (item->canvas))) { 
 			
-			if (mouse_over_item == NULL || mouse_over_item != icon_item->details->annotation) {
-				nautilus_icon_canvas_item_set_note_state (icon_item, 0);		
+				/* if the item has an annotation and the mouse is in it
+			 	* don't reset the note_state
+			 	*/
+				gdk_window_get_pointer (GTK_WIDGET (item->canvas)->window, &x, &y, NULL);
+				gnome_canvas_window_to_world (item->canvas, x, y, &world_x, &world_y);
+				mouse_over_item = gnome_canvas_get_item_at (item->canvas, world_x, world_y);
+			
+				if (mouse_over_item == NULL || mouse_over_item != icon_item->details->annotation) {
+					nautilus_icon_canvas_item_set_note_state (icon_item, 0);		
+				}
 			}
 			
 			gnome_canvas_item_request_update (item);
@@ -2058,18 +2107,20 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 	case GDK_MOTION_NOTIFY:
 		motion_event = (GdkEventMotion*) event;
 
-		world_rect.x0 =  motion_event->x;
-		world_rect.y0 =  motion_event->y;
-		world_rect.x1 = world_rect.x0 + 1.0;
-		world_rect.y1 = world_rect.y0 + 1.0;
+		if (!nautilus_icon_container_is_showing_all_annotations (NAUTILUS_ICON_CONTAINER (item->canvas))) { 
+			world_rect.x0 =  motion_event->x;
+			world_rect.y0 =  motion_event->y;
+			world_rect.x1 = world_rect.x0 + 1.0;
+			world_rect.y1 = world_rect.y0 + 1.0;
 	
-		eel_gnome_canvas_world_to_canvas_rectangle
-			(GNOME_CANVAS_ITEM (item)->canvas, &world_rect, &hit_rect);
+			eel_gnome_canvas_world_to_canvas_rectangle
+				(GNOME_CANVAS_ITEM (item)->canvas, &world_rect, &hit_rect);
 		
-		/* hit-test so we can handle tooltips for emblems */
-		nautilus_icon_canvas_item_hit_test_full (icon_item, &hit_rect, &hit_type, &hit_index);
-		emblem_state = hit_type == EMBLEM_HIT ? hit_index : 0;
-		nautilus_icon_canvas_item_set_note_state (icon_item, emblem_state);		
+			/* hit-test so we can handle tooltips for emblems */
+			nautilus_icon_canvas_item_hit_test_full (icon_item, &hit_rect, &hit_type, &hit_index);
+			emblem_state = hit_type == EMBLEM_HIT ? hit_index : 0;
+			nautilus_icon_canvas_item_set_note_state (icon_item, emblem_state);		
+		}
 		return TRUE;
 			
 	default:

@@ -1,5 +1,38 @@
 2001-04-12  Andy Hertzfeld  <andy@eazel.com>
 
+	implemented "Show/Hide All Annotations", as well as some
+	miscellaneous fixes
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text), (get_arrow_height),
+	(draw_item_aa_text), (nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_update):
+	made the arrow height respect the scale factor
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_initialize_class),
+	(nautilus_icon_canvas_item_translate),
+	(nautilus_icon_canvas_item_set_show_annotation),
+	(nautilus_icon_canvas_item_event):
+	override the translate method to move the annotation, too
+	
+	* libnautilus-extensions/nautilus-icon-container.c,h:
+	(nautilus_icon_container_is_showing_all_annotations),
+	(nautilus_icon_container_set_show_all_annotations):
+	added a "show all" instance variable and access routines to
+	the icon container
+	
+	* src/file-manager/fm-icon-view.c: (update_annotation_menu_items),
+	(show_annotations_callback), (hide_annotations_callback),
+	(fm_icon_view_merge_menus), (fm_icon_view_update_menus),
+	(icon_container_activate_callback):
+	added menu items for show/hide annotations
+	
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	added menu items and commands
+	
+2001-04-12  Andy Hertzfeld  <andy@eazel.com>
+
 	keep showing an annotation as long as the mouse remains in
 	the emblem or in the annotation itself.
 	

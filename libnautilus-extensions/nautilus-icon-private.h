@@ -204,6 +204,9 @@ struct NautilusIconContainerDetails {
 	/* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
 	
+	/* flag to control showing all the annotations */
+	gboolean show_all_annotations;
+	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
 
