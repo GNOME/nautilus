@@ -54,6 +54,17 @@ static void nautilus_file_background_receive_root_window_changes (NautilusBackgr
 
 static void nautilus_file_update_desktop_pixmaps (NautilusBackground *background);
 
+static void nautilus_file_background_write_desktop_settings (char *color,
+							     char *image,
+							     NautilusBackgroundImagePlacement placement,
+							     gboolean combine);
+
+static gboolean nautilus_file_background_matches_default_settings (
+			const char* color, const char* default_color,
+			const char* image, const char* default_image,
+			NautilusBackgroundImagePlacement placement, NautilusBackgroundImagePlacement default_placement,
+			gboolean combine, gboolean default_combine);
+
 static void
 desktop_background_realized (NautilusIconContainer *icon_container, void *disconnect_signal)
 {
@@ -119,7 +130,7 @@ nautilus_background_get_desktop_background_window (NautilusBackground *backgroun
 
 /* utility routine to handle mapping local image files in themes to a uri */
 static char*
-theme_image_path_to_uri (char *image_file)
+theme_image_path_to_uri (char *image_file, const char *theme_name)
 {
 	char *image_path;
 	char *image_uri;
@@ -127,7 +138,7 @@ theme_image_path_to_uri (char *image_file)
 	if (image_file != NULL && !nautilus_istr_has_prefix (image_file, "file://")) {
 		
 		if (nautilus_str_has_prefix (image_file, "./")) {
-			image_path = nautilus_theme_get_image_path (image_file + 2);
+			image_path = nautilus_theme_get_image_path_from_theme (image_file + 2, theme_name);
 		} else {
 			image_path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_file);
 		}
@@ -151,11 +162,12 @@ theme_image_path_to_uri (char *image_file)
  */
  
 static void
-nautilus_file_background_get_default_settings (const char* theme_source,
-                                               char **color,
-                                               char **image,
-                                               NautilusBackgroundImagePlacement *placement,
-                                               gboolean *combine)
+nautilus_file_background_get_default_settings_for_theme (const char* theme_name,
+							  const char* theme_source,
+							  char **color,
+							  char **image,
+							  NautilusBackgroundImagePlacement *placement,
+							  gboolean *combine)
 {
 	char *combine_str;
 	char *image_local_path;
@@ -165,20 +177,34 @@ nautilus_file_background_get_default_settings (const char* theme_source,
 	}
 
 	if (color != NULL) {
-		*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR);
+		*color = nautilus_theme_get_theme_data_from_theme (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR, theme_name);
 	}
 
 	if (image != NULL) {
-		image_local_path = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE);
-		*image = theme_image_path_to_uri (image_local_path);
+		image_local_path = nautilus_theme_get_theme_data_from_theme (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE, theme_name);
+		*image = theme_image_path_to_uri (image_local_path, theme_name);
 		g_free (image_local_path);
 	}
 
 	if (combine != NULL) {
-		combine_str = nautilus_theme_get_theme_data (theme_source, "COMBINE");
+		combine_str = nautilus_theme_get_theme_data_from_theme (theme_source, "COMBINE", theme_name);
 		*combine = combine_str != NULL;
 		g_free (combine_str);
 	}
+}
+
+static void
+nautilus_file_background_get_default_settings (const char* theme_source,
+                                               char **color,
+                                               char **image,
+                                               NautilusBackgroundImagePlacement *placement,
+                                               gboolean *combine)
+{
+	char *theme_name;
+	theme_name = nautilus_theme_get_theme ();
+	nautilus_file_background_get_default_settings_for_theme
+		(theme_name, theme_source, color, image, placement, combine);
+	g_free (theme_name);
 }
 
 static gboolean
@@ -224,7 +250,20 @@ nautilus_file_background_read_desktop_settings (char **color,
 	gboolean no_gradient_set;
 	gboolean no_gradient_orientation_set;
 
-	nautilus_file_background_get_default_settings (desktop_theme_source, &default_color, &default_image_uri, &default_placement, combine);
+	char *theme_name;
+	char *cur_theme_name;
+	gboolean no_theme_name_set;
+	gboolean switch_to_cur_theme_default;
+
+	theme_name = gnome_config_get_string_with_default ("/Background/Default/nautilus_theme", &no_theme_name_set);
+
+	if (no_theme_name_set) {
+		nautilus_file_background_get_default_settings
+			(desktop_theme_source, &default_color, &default_image_uri, &default_placement, combine);
+	} else {
+		nautilus_file_background_get_default_settings_for_theme
+			(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement, combine);
+	}
 	/* note - value of combine comes from the theme, not currently setable in gnome_config */
 
 	image_local_path = gnome_config_get_string_with_default ("/Background/Default/wallpaper", &no_image_set);
@@ -238,7 +277,6 @@ nautilus_file_background_read_desktop_settings (char **color,
 	}
 	
 	g_free(image_local_path);
-	g_free(default_image_uri);
 
 	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment_set);
 
@@ -286,7 +324,47 @@ nautilus_file_background_read_desktop_settings (char **color,
 
 	g_free(start_color);
 	g_free(end_color);
+
+	/* Since we share our settings with the background-capplet, we can't
+	 * write the default values specially (e.g. by removing them entirely).
+	 * 
+	 * The best we can do is check to see if the settings match the default values
+	 * for the theme name that's stored with them. If so, we assume it means use
+	 * the default - i.e. the default from the current theme.
+	 * 
+	 *  - there must be a theme name stored with the settings
+	 *  - if the stored theme name matches the current theme, then
+	 *    we don't need to do anything since we're already using
+	 *    the current theme's default values. 
+	 * 
+	 */
+	cur_theme_name = nautilus_theme_get_theme ();
+
+	switch_to_cur_theme_default = !no_theme_name_set &&
+				      (nautilus_strcmp (theme_name, cur_theme_name) != 0) &&
+				      nautilus_file_background_matches_default_settings
+					(*color, default_color,
+					 *image, default_image_uri,
+					 *placement, default_placement,
+					 *combine, *combine);
+
+	if (switch_to_cur_theme_default) {
+		g_free (*color);
+		g_free (*image);
+		nautilus_file_background_get_default_settings (desktop_theme_source, color, image, placement, combine);
+	}
+
+	if (switch_to_cur_theme_default || no_theme_name_set) {
+		/* Writing out the actual settings for the current theme so that the
+		 * background capplet will show the right settings.
+		 */
+		nautilus_file_background_write_desktop_settings (*color, *image, *placement, *combine);
+	}
+
+	g_free (theme_name);	
+	g_free (cur_theme_name);	
 	g_free(default_color);
+	g_free(default_image_uri);
 }
 
 static void
@@ -295,6 +373,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 	char *end_color;
 	char *start_color;
 	char *image_local_path;
+	char *theme_name;
 
 	int wallpaper_align;
 
@@ -375,6 +454,10 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 	} else {
 		gnome_config_set_string ("/Background/Default/wallpaper", "none");
 	}
+
+	theme_name = nautilus_theme_get_theme ();
+	gnome_config_set_string ("/Background/Default/nautilus_theme", theme_name);
+	g_free (theme_name);
 
 	gnome_config_sync ();
 }
@@ -612,6 +695,27 @@ nautilus_file_update_desktop_pixmaps (NautilusBackground *background)
 	}
 }
 
+static gboolean
+nautilus_file_background_matches_default_settings (
+			const char* color, const char* default_color,
+			const char* image, const char* default_image,
+			NautilusBackgroundImagePlacement placement, NautilusBackgroundImagePlacement default_placement,
+			gboolean combine, gboolean default_combine)
+{
+	gboolean match_color;
+	gboolean match_image;
+
+	/* A NULL default color or image is not considered when determining a match.
+	 */
+	
+	match_color = (default_color == NULL) || nautilus_strcmp (color, default_color) == 0;
+	
+	match_image = (default_image == NULL) || ((nautilus_strcmp (image, default_image) == 0) &&
+						  (placement == default_placement) &&
+						  (combine == default_combine));
+	return match_color && match_image;
+}
+
 /* return true if the background is not in the default state */
 gboolean
 nautilus_file_background_is_set (NautilusBackground *background)
@@ -621,7 +725,7 @@ nautilus_file_background_is_set (NautilusBackground *background)
 	char *default_color;
 	char *default_image;
 	
-	gboolean is_set;
+	gboolean matches;
 	gboolean combine;
 	gboolean default_combine;
 	
@@ -636,18 +740,18 @@ nautilus_file_background_is_set (NautilusBackground *background)
 	nautilus_file_background_get_default_settings (
 		nautilus_file_background_peek_theme_source (background),
 		&default_color, &default_image, &default_placement, &default_combine);
-
-	is_set = (default_color != NULL && nautilus_strcmp (color, default_color) != 0) ||
-		 (default_image != NULL && nautilus_strcmp (image, default_image) != 0) ||
-		 (placement != default_placement) ||
-		 (combine != default_combine);
-
+		 			    
+	matches = !nautilus_file_background_matches_default_settings (color, default_color,
+								      image, default_image,
+								      placement, default_placement,
+								      combine, default_combine);
+	
 	g_free (color);
 	g_free (image);
 	g_free (default_color);
 	g_free (default_image);
 	
-	return is_set;
+	return !matches;
 }
 
 /* handle the background changed signal */

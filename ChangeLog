@@ -1,3 +1,23 @@
+2001-01-18  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Sullivan
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(theme_image_path_to_uri),
+	(nautilus_file_background_get_default_settings_for_theme),
+	(nautilus_file_background_get_default_settings),
+	(nautilus_file_background_read_desktop_settings),
+	(nautilus_file_background_write_desktop_settings),
+	(nautilus_file_background_is_set):
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_theme_data_from_theme),
+	(nautilus_theme_get_theme_data):
+	* libnautilus-extensions/nautilus-theme.h:
+	The desktop can now be reset to the "default" meaning when
+	you change themes it will use the default desktop setting
+	for the new theme - bug 5730.
+	
+
 2001-01-18  Arlo Rose  <arlo@eazel.com>
 
 	* icons/Makefile.am:
@@ -324,6 +344,7 @@
 	that were doing this independently (one of which is 
 	where the code for the gnome-vfs routine came from).
 
+>>>>>>> 1.3409
 2001-01-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 5260: (Should revise 'Music view is unable to play

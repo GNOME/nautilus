@@ -129,11 +129,12 @@ free_default_theme (void)
 	xmlFreeDoc (default_theme_document);
 }
 
-/* fetch data from the current theme.  Cache the last theme file as a parsed xml document */
+/* Fetch data from the specified theme.  Cache the last theme file as a parsed xml document
+ */
 char *
-nautilus_theme_get_theme_data (const char *resource_name, const char *property_name)
+nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char *property_name, const char* theme_name)
 {
-	char *theme_name, *temp_str;
+	char *temp_str;
 	char *theme_data;
 	xmlDocPtr theme_document;
 	xmlNodePtr resource_node;
@@ -142,7 +143,6 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	/* fetch the current theme name */
 	theme_data = NULL;
 	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
 	if (nautilus_strcmp (theme_name, last_theme_name) == 0) {
 		theme_document = last_theme_document;
 	} else {
@@ -187,9 +187,21 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 		}
 
 	}
-	g_free (theme_name);
 
 	return theme_data;
+}
+
+/* Fetch data from the current theme.
+ */
+char *
+nautilus_theme_get_theme_data (const char *resource_name, const char *property_name)
+{
+	char *result;
+	char *theme_name;
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	result = nautilus_theme_get_theme_data_from_theme (resource_name, property_name, theme_name);
+	g_free (theme_name);
+	return result;
 }
 
 /* utility routine to return the full path to a themed image that
