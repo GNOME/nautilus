@@ -1062,6 +1062,15 @@ position_and_show_window_callback (NautilusFile *file,
         nautilus_file_unref (file);
 }                       			     
 
+/* utility routine that returns true if there's one or fewer windows in the window list */
+static gboolean
+just_one_window (void)
+{
+	GSList *window_list;
+	window_list = nautilus_application_windows ();
+	return window_list == NULL || window_list->next == NULL;
+}
+
 static void
 nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
                                               NautilusNavigationInfo *navigation_info,
@@ -1233,17 +1242,28 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 
                 dialog = nautilus_error_dialog (error_message, dialog_title, NULL);
                 
-                /* If window is the sole window open, destroying it will
-                 * kill the main event loop and the dialog will go away
-                 * before the user has a chance to see it. Prevent this
-                 * by registering the dialog before calling destroy.
-                 */
-                if (nautilus_main_is_event_loop_mainstay (GTK_OBJECT (window))) {
-                	nautilus_main_event_loop_register (GTK_OBJECT (dialog));
-		}
-
+		/* if this is the only window, we don't want to quit, so we redirect it to home */
+		if (just_one_window ()) {
+			char *home_uri, *default_home_uri;
+			
+			/* the user could have typed in a home directory that doesn't exist,
+			   in which case going home would cause an infinite loop, so we
+			   better test for that */
+			
+			default_home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+			home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
+			if (!nautilus_uris_match (home_uri, location)) {	
+				nautilus_window_go_home (NAUTILUS_WINDOW (window));
+			} else {
+				/* the last fallback is to go to a known place that can't be deleted! */
+				nautilus_window_goto_uri (NAUTILUS_WINDOW (window), "file:///");
+			}
+			g_free (default_home_uri);
+			g_free (home_uri);
+		} else {
                 /* Since this is a window, destroying it will also unref it. */
                 gtk_object_destroy (GTK_OBJECT (window));
+       		}
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);

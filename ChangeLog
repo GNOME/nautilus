@@ -1,3 +1,19 @@
+2000-11-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (initiate_file_download):
+	fixed bug 1826 by pointing the update download uri to it's
+	real location at services.eazel.com.
+	
+	* src/nautilus-window-manage-views.c: (just_one_window),
+	(nautilus_window_end_location_change_callback):
+	fixed bug 4351, nautilus quits after running the first time
+	druid if services are inaccessible.  Fixed by making it
+	not quit if there's a single window that fails, going to
+	the home directory (if it's valid) instead.
+
+	* icons/loading.png:
+	a better version of the non-anti-aliased loading icon from Susan.
+		
 2000-11-01  Robey Pointer  <robey@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
