@@ -41,35 +41,32 @@ Nautilus currently requires the following modules from GNOME CVS
 	medusa:            HEAD
 	nautilus:          HEAD
 
-Below are some more requirements, for Red Hat and Debian
+Other libraries needed:
 
-Development Libraries Needed, Here is what has been tested.
-You will also need the library package that is associated with each development package, these
-versions are for RedHat 6.2 an Debian potato
+Here is what has been tested
+You will also need the library package that is associated with each development package,
+these versions are for RedHat 6.2 and Debian "potato":
 
-library         RedHat                  Debian                          Implied Version
---------------  ----------------------  ------------------------------  ------------------
-
-audiofile       audiofile-devel-0.1.9-3 libaudiofile-dev (0.1.9-0.1)    0.1.9
-libc            glibc-devel-2.1.3-15    libc6-dev (2.1.3-10)            2.1.3
-libc++          egcs-c++-1.1.2-30       libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
-libjpeg         libjpeg-devel-6b-10     libjpeg62-dev (6b-1.2)          6b 1.0-1.2
-libpng          libpng-devel-1.0.5-3    libpng2-dev (1.0.5-1)           1.0.5
-libtiff         libtiff-devel-3.5.4-5   libtiff3g-dev (3.5.4-5)         3.5.4
-libungif        libungif-devel-4.1.0-4  libungif3g-dev (3.0-3)          3.0 or 4.1.0
-w3c-libwww      w3c-libwww-devel-5.2.8-4 libw3c-libwww-dev (5.2.8-1)    5.2.8
-Xlib            XFree86-devel-3.3.6-20  xlib6g-dev (3.3.6-7)            3.3.6
-zlib            zlib-devel-1.1.3-6      zlib1g-dev (1.1.3-5)            1.1.3
-
+library         RedHat                   Debian                          Implied Version
+--------------  ----------------------   ------------------------------  ------------------
+audiofile       audiofile-devel-0.1.9-3  libaudiofile-dev (0.1.9-0.1)    0.1.9
+libc            glibc-devel-2.1.3-15     libc6-dev (2.1.3-10)            2.1.3
+libc++          egcs-c++-1.1.2-30        libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
+libjpeg         libjpeg-devel-6b-10      libjpeg62-dev (6b-1.2)          6b 1.0-1.2
+libpng          libpng-devel-1.0.5-3     libpng2-dev (1.0.5-1)           1.0.5
+libtiff         libtiff-devel-3.5.4-5    libtiff3g-dev (3.5.4-5)         3.5.4
+libungif        libungif-devel-4.1.0-4   libungif3g-dev (3.0-3)          3.0 or 4.1.0
+w3c-libwww      w3c-libwww-devel-5.2.8-4 libw3c-libwww-dev (5.2.8-1)     5.2.8
+Xlib            XFree86-devel-3.3.6-20   xlib6g-dev (3.3.6-7)            3.3.6
+zlib            zlib-devel-1.1.3-6       zlib1g-dev (1.1.3-5)            1.1.3
 
 Other modules for Red Hat users: either 6.1 or 6.2
 
-	- For other modules, the versions in Red Hat 6.1 or 6.2 will do.
+	- For most modules, the versions in Red Hat 6.1 or 6.2 will do (listed above).
 	- ORBit requires popt-1.5, which can be fetched from:
 
 	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
 	ftp://ftp.valinux.com/pub/mirrors/redhat/redhat/redhat-6.2/i386/RedHat/RPMS/popt-1.5-0.48.i386.rpm
-
 
 Other modules for Debian users: using potato, or possibly woody
 
@@ -79,10 +76,12 @@ Other modules for Debian users: using potato, or possibly woody
 	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww-dev_5.2.8-1_i386.deb
 
 If you need to get a copy of popt from source: 
+
 	CVSROOT=:pserver:anonymous@cvs.rpm.org:/cvs/devel
 	The default passwd is a carriage return.  You should do a cvs co popt
 
 m4 macro issues:
+
 	m4 macros have issues.  Trying to install multiple versions of them on you system can be very tricky.
 	While building these libraries you will place following m4 macros into "your prefix"/share/aclocal
 	directory.  Note you will generally get errors with -I
@@ -124,4 +123,5 @@ Also, you need to do a "killall oafd; killall gconfd" before
 running Nautilus if OAF, GConf, or any of the .oafinfo files
 in any module changed.
 
-All patches should go through nautilus-list@lists.eazel.com
+* All patches should go through nautilus-list@lists.eazel.com.
+
