@@ -91,11 +91,6 @@ gboolean nautilus_eat_str_to_int         (char          *string_gets_freed,
 
 
 
-/* Escape function for slashes */
-char *   nautilus_str_escape_slashes     (const char    *string);
-
-
-
 /* Escape function for '_' character. */
 char *   nautilus_str_double_underscores (const char    *string);
 

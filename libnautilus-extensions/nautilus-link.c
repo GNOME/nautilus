@@ -278,7 +278,7 @@ make_local_path (const char *image_uri)
 	 * URIs with slashes in it and other cases like that.
 	 */
 	/* FIXME bugzilla.eazel.com 2493: Why the +7 below? This seems totally wrong. */
-	escaped_uri = nautilus_str_escape_slashes (unescaped_uri + 7);		
+	escaped_uri = gnome_vfs_escape_slashes (unescaped_uri + 7);		
 	g_free (unescaped_uri);
 	
 	local_directory_path = g_strconcat
@@ -288,6 +288,7 @@ make_local_path (const char *image_uri)
 
 	/* We must create the directory if it doesn't exist. */
 	/* FIXME bugzilla.eazel.com 2494: Is it OK to ignore the error here? */
+	/* FIXME: This needs to make the path into a URI if it's going to use gnome_vfs. */
 	gnome_vfs_make_directory (local_directory_path, REMOTE_ICON_DIR_PERMISSIONS);
 
 	local_file_path = nautilus_make_path (local_directory_path, escaped_uri);

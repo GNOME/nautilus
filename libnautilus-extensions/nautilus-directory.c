@@ -362,7 +362,7 @@ construct_private_metafile_uri (const char *uri)
 	}
 
 	/* Construct a file name from the URI. */
-	escaped_uri = nautilus_str_escape_slashes (uri);
+	escaped_uri = gnome_vfs_escape_slashes (uri);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
 	g_free (escaped_uri);
 
@@ -1053,15 +1053,15 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 
-	/* escape_slashes */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a"), "a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("/"), "%2F");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%"), "%25");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a/a"), "a%2Fa");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a%a"), "a%25a");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%25"), "%2525");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%2F"), "%252F");
+	/* escape_slashes: code is now in gnome-vfs, but lets keep the tests here for now */
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("/"), "%2F");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%"), "%25");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a/a"), "a%2Fa");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a%a"), "a%25a");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%25"), "%2525");
+	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%2F"), "%252F");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

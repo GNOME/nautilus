@@ -327,7 +327,7 @@ nautilus_str_strip_chr (const char *source, char remove_this)
 		return NULL;
 	}
 	
-	result = g_malloc (strlen (source) + 1);
+	result = g_new (char, strlen (source) + 1);
 	in = source;
 	out = result;
 	do {
@@ -397,59 +397,6 @@ nautilus_eat_str_to_int (char *source, int *integer)
 	return result;
 }
 
-/* To use a directory name as a file name, we need to escape any slashes.
-   This means that "/" is replaced by "%2F" and "%" is replaced by "%25".
-   Later we might share the escaping code with some more generic escaping
-   function, but this should do for now.
-*/
-char *
-nautilus_str_escape_slashes (const char *string)
-{
-	char c;
-	const char *in;
-	guint length;
-	char *result;
-	char *out;
-
-	/* Figure out how long the result needs to be. */
-	in = string;
-	length = 0;
-	while ((c = *in++) != '\0')
-		switch (c) {
-		case '/':
-		case '%':
-			length += 3;
-			break;
-		default:
-			length += 1;
-		}
-
-	/* Create the result string. */
-	result = g_malloc (length + 1);
-	in = string;
-	out = result;	
-	while ((c = *in++) != '\0')
-		switch (c) {
-		case '/':
-			*out++ = '%';
-			*out++ = '2';
-			*out++ = 'F';
-			break;
-		case '%':
-			*out++ = '%';
-			*out++ = '2';
-			*out++ = '5';
-			break;
-		default:
-			*out++ = c;
-		}
-	g_assert (out == result + length);
-	*out = '\0';
-
-	return result;
-}
-
-
 char *
 nautilus_str_double_underscores (const char *string)
 {
@@ -471,7 +418,7 @@ nautilus_str_double_underscores (const char *string)
 		return g_strdup (string);
 	}
 
-	escaped = g_malloc (strlen (string) + underscores + 1);
+	escaped = g_new (char, strlen (string) + underscores + 1);
 	for (p = string, q = escaped; *p != '\0'; p++, q++) {
 		/* Add an extra underscore. */
 		if (*p == '_') {
@@ -538,7 +485,7 @@ nautilus_str_middle_truncate (const char *string,
 	num_left_chars = (truncate_length - delimter_length) / 2;
 	num_right_chars = truncate_length - num_left_chars - delimter_length + 1;
 
-	truncated = g_malloc (sizeof(char) * truncate_length + 1);
+	truncated = g_new (char, truncate_length + 1);
 
 	strncpy (truncated, string, num_left_chars);
 	strncpy (truncated + num_left_chars, delimter, delimter_length);

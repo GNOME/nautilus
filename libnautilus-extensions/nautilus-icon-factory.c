@@ -1232,7 +1232,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		GnomeVFSResult result;
 		GnomeVFSURI  *thumbnail_directory_uri;
 	        	
-	        char *escaped_uri = nautilus_str_escape_slashes (directory_name);		
+	        char *escaped_uri = gnome_vfs_escape_slashes (directory_name);		
 		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
 		thumbnail_uri = gnome_vfs_get_uri_from_local_path (thumbnail_path);
 		g_free (thumbnail_path);

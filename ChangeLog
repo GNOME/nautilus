@@ -1,3 +1,19 @@
+2000-08-30  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(construct_private_metafile_uri), (nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_thumbnail_path):
+	* libnautilus-extensions/nautilus-link.c: (make_local_path):
+	Use escape function in gnome-vfs instead of one in Nautilus.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_strip_chr), (nautilus_str_double_underscores),
+	(nautilus_str_middle_truncate): Use g_new instead of g_malloc.
+	Helps get rid of silly "sizeof (char)" business.
+	Remove nautilus_str_escape_slashes.
+
 2000-08-30  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/Makefile.am:
