@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-22 14:26+0100\n"
+"POT-Creation-Date: 2004-01-27 15:46+0100\n"
 "PO-Revision-Date: 2003-11-18 11:27+0100\n"
 "Last-Translator: Gnome PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -2398,8 +2398,8 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1543
-#: libnautilus-private/nautilus-file-operations.c:2125
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2133
+#: libnautilus-private/nautilus-file-operations.c:2295
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Nieznany GnomeVFSXferProgressStatus %d"
@@ -2484,152 +2484,156 @@ msgstr "Kopiowanie"
 msgid "Preparing To Copy..."
 msgstr "Przygotowywanie do kopiowania..."
 
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "You cannot copy items into the trash."
 msgstr "Nie można skopiować elementów do śmietnika."
 
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1931
+msgid "You cannot create links inside the trash."
+msgstr "Nie można tworzyć dowiązań w śmietniku."
+
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
 msgstr "Pliki i foldery mogą być przenoszone tylko do śmietnika."
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
 msgstr "Nie można przenieść folderu śmietnika."
 
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "You cannot copy this trash folder."
 msgstr "Nie można kopiować folderu śmietnika."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 "Folder śmietnika jest używany do przechowywania plików przeniesionych do "
 "śmietnika."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
 msgstr "Nie można zmieniać położenia śmietnika"
 
-#: libnautilus-private/nautilus-file-operations.c:1959
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Can't Copy Trash"
 msgstr "Nie można kopiować śmietnika"
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "You cannot move a folder into itself."
 msgstr "Nie można przenieść folderu do niego samego."
 
-#: libnautilus-private/nautilus-file-operations.c:1984
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "You cannot copy a folder into itself."
 msgstr "Nie można skopiować folderu do niego samego."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "The destination folder is inside the source folder."
 msgstr "Folder docelowy znajduje się wewnątrz folderu źródłowego."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
 msgstr "Nie można przenieść do siebie samego"
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "Can't Copy Into Self"
 msgstr "Nie można skopiować do siebie samego"
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "You cannot copy a file over itself."
 msgstr "Nie można skopiować pliku do niego samego."
 
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
 msgstr "Cel i źródło to ten sam plik."
 
-#: libnautilus-private/nautilus-file-operations.c:2003
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
 msgstr "Nie można skopiować do siebie samego"
 
-#: libnautilus-private/nautilus-file-operations.c:2055
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2197
 msgid "You do not have permissions to write to the destination."
 msgstr "Brak uprawnień do zapisu w miejscu docelowym."
 
-#: libnautilus-private/nautilus-file-operations.c:2057
-#: libnautilus-private/nautilus-file-operations.c:2191
+#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2199
 msgid "There is no space on the destination."
 msgstr "W miejscu docelowym brakuje miejsca."
 
-#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Podczas tworzenia nowego folderu wystąpił błąd \"%s\"."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error creating new folder."
 msgstr "Podczas tworzenia nowego folderu wystąpił błąd."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error Creating New Folder"
 msgstr "Podczas tworzenia nowego folderu wystąpił błąd."
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2153
+#: libnautilus-private/nautilus-file-operations.c:2161
 msgid "untitled folder"
 msgstr "folder bez nazwy"
 
-#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2201
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Podczas tworzenia nowego dokumentu wystąpił błąd \"%s\"."
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error creating new document."
 msgstr "Podczas tworzenia nowego dokumentu wystąpił błąd."
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error Creating New Document"
 msgstr "Podczas tworzenia nowego dokumentu wystąpił błąd"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "new file"
 msgstr "nowy plik"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2416
+#: libnautilus-private/nautilus-file-operations.c:2425
 msgid "Deleting files"
 msgstr "Usuwanie plików"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2418
-#: libnautilus-private/nautilus-file-operations.c:2453
+#: libnautilus-private/nautilus-file-operations.c:2427
+#: libnautilus-private/nautilus-file-operations.c:2462
 msgid "Files deleted:"
 msgstr "Usuniętych plików:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2420
-#: libnautilus-private/nautilus-file-operations.c:2455
+#: libnautilus-private/nautilus-file-operations.c:2429
+#: libnautilus-private/nautilus-file-operations.c:2464
 msgid "Deleting"
 msgstr "Usuwanie"
 
-#: libnautilus-private/nautilus-file-operations.c:2421
+#: libnautilus-private/nautilus-file-operations.c:2430
 msgid "Preparing to Delete files..."
 msgstr "Przygotowywanie do usunięcia plików..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2451
+#: libnautilus-private/nautilus-file-operations.c:2460
 msgid "Emptying the Trash"
 msgstr "Opróżnianie śmietnika"
 
-#: libnautilus-private/nautilus-file-operations.c:2456
+#: libnautilus-private/nautilus-file-operations.c:2465
 msgid "Preparing to Empty the Trash..."
 msgstr "Przygotowywanie do opróżnienia śmietnika..."
 
-#: libnautilus-private/nautilus-file-operations.c:2519
+#: libnautilus-private/nautilus-file-operations.c:2528
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Czy na pewno chcesz opróżnić śmietnik ze wszystkich elementów?"
 
-#: libnautilus-private/nautilus-file-operations.c:2533
+#: libnautilus-private/nautilus-file-operations.c:2542
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Po opróżnieniu śmietnika, element zostaną usunięte na trwałe."
 
-#: libnautilus-private/nautilus-file-operations.c:2545
+#: libnautilus-private/nautilus-file-operations.c:2554
 msgid "_Empty"
 msgstr "Op_różnij"
 
@@ -3085,43 +3089,43 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "Folder użytkownika %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2758
+#: libnautilus-private/nautilus-icon-canvas-item.c:2804
 msgid "editable text"
 msgstr "modyfikowalny tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2805
 msgid "the editable label"
 msgstr "modyfikowalna etykieta"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2766
+#: libnautilus-private/nautilus-icon-canvas-item.c:2812
 msgid "additional text"
 msgstr "Dodatkowy tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2767
+#: libnautilus-private/nautilus-icon-canvas-item.c:2813
 msgid "some more text"
 msgstr "Dodatkowy tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2774
+#: libnautilus-private/nautilus-icon-canvas-item.c:2820
 msgid "highlighted for selection"
 msgstr "Podświetlanie przy zaznaczeniu"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2775
+#: libnautilus-private/nautilus-icon-canvas-item.c:2821
 msgid "whether we are highlighted for a selection"
 msgstr "Określa, czy element powinien być wyróżniany przy zaznaczeniu"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2782
+#: libnautilus-private/nautilus-icon-canvas-item.c:2828
 msgid "highlighted as keyboard focus"
 msgstr "Podświetlanie przy skupieniu klawiatury"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2783
+#: libnautilus-private/nautilus-icon-canvas-item.c:2829
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "Określa, czy element powinien być wyróżniany przy skupieniu klawiatury"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2791
+#: libnautilus-private/nautilus-icon-canvas-item.c:2837
 msgid "highlighted for drop"
 msgstr "wyróżnianie przy upuszczaniu"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2792
+#: libnautilus-private/nautilus-icon-canvas-item.c:2838
 msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 "Określa, czy element powinien być wyróżniany jako cel upuszczenia obiektu"
@@ -3130,51 +3134,51 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr "Prostokąt zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4163
+#: libnautilus-private/nautilus-icon-container.c:4173
 msgid "Frame Text"
 msgstr "Tekst w ramce"
 
-#: libnautilus-private/nautilus-icon-container.c:4164
+#: libnautilus-private/nautilus-icon-container.c:4174
 msgid "Draw a frame around unselected text"
 msgstr "Określa, czy wokół niezaznaczonego tekstu będzie rysowana ramka"
 
-#: libnautilus-private/nautilus-icon-container.c:4170
+#: libnautilus-private/nautilus-icon-container.c:4180
 msgid "Selection Box Color"
 msgstr "Kolor prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4171
+#: libnautilus-private/nautilus-icon-container.c:4181
 msgid "Color of the selection box"
 msgstr "Kolor prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Selection Box Alpha"
 msgstr "Wartość alfa prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Opacity of the selection box"
 msgstr "Nieprzepuszczalność prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4194
 msgid "Highlight Alpha"
 msgstr "Wartość alfa wyróżnienia"
 
-#: libnautilus-private/nautilus-icon-container.c:4185
+#: libnautilus-private/nautilus-icon-container.c:4195
 msgid "Opacity of the highlight for selected icons"
 msgstr "Nieprzepuszczalność wyróżnienia zaznaczonych ikon"
 
-#: libnautilus-private/nautilus-icon-container.c:4191
+#: libnautilus-private/nautilus-icon-container.c:4201
 msgid "Light Info Color"
 msgstr "Jasny kolor informacji"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Color used for information text against a dark background"
 msgstr "Kolor używany przy tekstach informacyjnych na ciemnym tle"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Dark Info Color"
 msgstr "Ciemny kolor informacji"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Color used for information text against a light background"
 msgstr "Kolor używany przy tekstach informacyjnych na jasnym tle"
 
@@ -4412,7 +4416,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Schowek nie zawiera niczego do wklejenia."
 
 #: src/file-manager/fm-directory-view.c:4826
-#: src/file-manager/fm-directory-view.c:5795
+#: src/file-manager/fm-directory-view.c:5801
 msgid "Mount Error"
 msgstr "Błąd przy montowaniu"
 
@@ -4460,7 +4464,7 @@ msgid "Delete all selected items permanently"
 msgstr "Usuń trwale wszystkie zaznaczone elementy"
 
 #: src/file-manager/fm-directory-view.c:5231
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5585
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Wyrzuć do śmie_tnika"
@@ -4507,56 +4511,56 @@ msgstr "S_kopiuj plik"
 msgid "_Copy Files"
 msgstr "S_kopiuj pliki"
 
-#: src/file-manager/fm-directory-view.c:5570
-msgid "The link is borken, do you want to move it to the Trash?"
+#: src/file-manager/fm-directory-view.c:5576
+msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Dowiązanie jest uszkodzone, czy chcesz przenieść je do śmietnika?"
 
-#: src/file-manager/fm-directory-view.c:5572
+#: src/file-manager/fm-directory-view.c:5578
 msgid "This link can't be used, because it has no target."
 msgstr "Nie można użyć dowiązania, ponieważ nie ma ono przypisanego celu."
 
-#: src/file-manager/fm-directory-view.c:5574
+#: src/file-manager/fm-directory-view.c:5580
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Nie można użyć dowiązania, ponieważ przypisany mu cel \"%s\" nie istnieje."
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5585
 msgid "Broken Link"
 msgstr "Uszkodzone dowiązanie"
 
-#: src/file-manager/fm-directory-view.c:5637
+#: src/file-manager/fm-directory-view.c:5643
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Czy chcesz uruchomić \"%s\", czy wyświetlić jego zawartość?"
 
-#: src/file-manager/fm-directory-view.c:5639
+#: src/file-manager/fm-directory-view.c:5645
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" jest uruchamialnym plikiem tekstowym."
 
-#: src/file-manager/fm-directory-view.c:5645
+#: src/file-manager/fm-directory-view.c:5651
 msgid "Run or Display?"
 msgstr "Uruchomić czy wyświetlić?"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5652
 msgid "Run in _Terminal"
 msgstr "Uruchom w _terminalu"
 
-#: src/file-manager/fm-directory-view.c:5647
+#: src/file-manager/fm-directory-view.c:5653
 msgid "_Display"
 msgstr "_Wyświetl"
 
-#: src/file-manager/fm-directory-view.c:5650
+#: src/file-manager/fm-directory-view.c:5656
 msgid "_Run"
 msgstr "U_ruchom"
 
-#: src/file-manager/fm-directory-view.c:5928
+#: src/file-manager/fm-directory-view.c:5934
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otwieranie \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:5934
+#: src/file-manager/fm-directory-view.c:5940
 msgid "Cancel Open?"
 msgstr "Anulować otwarcie?"
 
