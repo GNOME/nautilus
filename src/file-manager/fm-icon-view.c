@@ -2252,7 +2252,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	container_uri = gnome_vfs_uri_new (container_uri_string);
 	g_return_if_fail (container_uri != NULL);
 
-	if (!gnome_vfs_uri_is_local (container_uri)) {
+	if (eel_vfs_test_capabilities (container_uri,
+				       EEL_VFS_TEST_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));

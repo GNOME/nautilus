@@ -1,5 +1,15 @@
 2002-06-06  Michael Meeks  <michael@ximian.com>
 
+	* src/file-manager/fm-icon-view.c
+	(icon_view_handle_uri_list): use new eel
+	capabilities test.
+
+	* configure.in: require various gnome 2.0 releases.
+	
+	* Version 2.0.0
+
+2002-06-06  Michael Meeks  <michael@ximian.com>
+
 	* configure.in: Only enable the hardware view on
 	Linux, if explicitely requested with --enable-hardware
 	add status printout at the end of configure.
