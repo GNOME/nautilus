@@ -49,6 +49,14 @@ ElementInfo toc_elements[] = {
 	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
 	{ FIGURE, "figure", NULL, NULL, NULL},
 	{ GRAPHIC, "graphic", NULL, NULL, NULL},
+	{ CITETITLE, "citetitle", (startElementSAXFunc) html_em_start_element, (endElementSAXFunc) html_em_end_element, (charactersSAXFunc) write_characters},
+	{ APPLICATION, "application", (startElementSAXFunc) html_tt_start_element, (endElementSAXFunc) html_tt_end_element, (charactersSAXFunc) write_characters},
+	{ FILENAME, "filename", NULL, NULL, NULL},
+	{ ITEMIZED_LIST, "itemized_list", NULL, NULL, NULL},
+	{ LISTITEM, "listitem", NULL, NULL, NULL},
+	{ PROGRAMLISTING, "programlisting", NULL, NULL, NULL},
+	{ SGMLTAG, "sgmltag", NULL, NULL, NULL},
+	{ EMPHASIS, "emphasis", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

@@ -75,6 +75,36 @@ ulink_end_element (Context *context, const gchar *name)
 }
 
 void
+html_em_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	g_print ("<EM>");
+}
+
+void
+html_em_end_element (Context *context,
+		     const gchar *name)
+{
+	g_print ("</EM>");
+}
+
+void
+html_tt_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	g_print ("<TT>");
+}
+
+void
+html_tt_end_element (Context *context,
+		     const gchar *name)
+{
+	g_print ("</TT>");
+}
+
+void
 artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	g_print ("<HEAD>\n");
@@ -89,12 +119,17 @@ write_characters (Context *context,
 	GSList *list;
 	ElementIndex index;
 
+	/* EVIL EVIL EVIL HACK UNTIL I FIGURE OUT ENTITIES */
+	if (*chars == '<') {
+		g_print ("&lt;");
+		return;
+	}
 	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
 	index = find_first_parent (context, list);
 
 	if (index == UNDEFINED) {
 		temp = g_strndup (chars, len);
-		g_print ("%s\n", temp);
+		g_print ("%s", temp);
 		g_free (temp);
 	} else {
 		GString *footnote;
@@ -160,6 +195,7 @@ get_entity (Context *context, const gchar *name)
 #ifdef ERROR_OUTPUT
 	g_print ("in getEntity:%s\n", name);
 #endif
+
 	return xmlGetPredefinedEntity (name);
 }
 

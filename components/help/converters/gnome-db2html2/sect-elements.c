@@ -20,6 +20,7 @@ struct _SectContext {
 	GList *footnotes;
 };
 
+
 static void sect_write_characters (Context *context, const gchar *chars, int len);
 static void sect_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_sect_end_element (Context *context, const gchar *name);
@@ -36,7 +37,14 @@ static void sect_title_end_element (Context *context, const gchar *name);
 static void sect_title_characters (Context *context, const gchar *chars, int len);
 static void sect_ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_ulink_end_element (Context *context, const gchar *name);
+static void sect_xref_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_em_end_element (Context *context, const gchar *name);
+static void sect_tt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_tt_end_element (Context *context, const gchar *name);
+static void sect_programlisting_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_programlisting_end_element (Context *context, const gchar *name);
 
 ElementInfo sect_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
@@ -65,10 +73,18 @@ ElementInfo sect_elements[] = {
 	{ TITLE, "title", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
 	{ ULINK, "ulink", (startElementSAXFunc) sect_ulink_start_element, (endElementSAXFunc) sect_ulink_end_element, (charactersSAXFunc) sect_write_characters},
-	{ XREF, "xref", NULL, NULL, NULL},
+	{ XREF, "xref", (startElementSAXFunc) sect_xref_start_element, NULL, NULL},
 	{ FOOTNOTE, "footnote", (startElementSAXFunc) sect_footnote_start_element, NULL, NULL},
 	{ FIGURE, "figure", NULL, NULL, NULL},
 	{ GRAPHIC, "graphic", NULL, NULL, NULL},
+	{ CITETITLE, "citetitle", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
+	{ APPLICATION, "application", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ FILENAME, "filename", NULL, NULL, NULL},
+	{ ITEMIZED_LIST, "itemized_list", NULL, NULL, NULL},
+	{ LISTITEM, "listitem", NULL, NULL, NULL},
+	{ PROGRAMLISTING, "programlisting", (startElementSAXFunc) sect_programlisting_start_element, (endElementSAXFunc) sect_programlisting_end_element, (charactersSAXFunc) sect_write_characters},
+	{ SGMLTAG, "sgmltag", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ EMPHASIS, "EMPHASIS", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -617,6 +633,29 @@ sect_ulink_end_element (Context *context, const gchar *name)
 }
 
 static void
+sect_xref_start_element (Context *context,
+			const gchar *name,
+			const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("<A HREF=\"%s?", context->base_file);
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!strcasecmp (*atrs_ptr, "linkend")) {
+			atrs_ptr++;
+			g_print ("%s", *atrs_ptr);
+			break;
+		}
+		atrs_ptr += 2;
+	}
+	g_print ("\">the section here</A>");
+}
+
+static void
 sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	GString *footnote;
@@ -629,5 +668,69 @@ sect_footnote_start_element (Context *context, const gchar *name, const xmlChar 
 	context->footnotes = g_slist_append (context->footnotes, footnote);
 	i = g_slist_length (context->footnotes);
 	g_print ("<A NAME=\"HEADNOTE%d\" HREF=\"#FOOTNOTE%d\">[%d]</A>", i, i, i);
+}
+
+static void
+sect_em_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("<EM>");
+}
+
+static void
+sect_em_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("</EM>");
+}
+
+static void
+sect_tt_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("<TT>");
+}
+
+static void
+sect_tt_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("</TT>");
+}
+
+static void
+sect_programlisting_start_element (Context *context,
+				   const gchar *name,
+				   const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	g_print ("<table border=\"0\" bgcolor=\"#E0E0E0\" width=\"100%%\">\n<tr><td>\n<pre>\n");
+
+}
+
+static void
+sect_programlisting_end_element (Context *context,
+				 const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	g_print ("</pre>\n</td></tr>\n</table>\n");
 }
 

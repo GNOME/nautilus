@@ -37,7 +37,15 @@ typedef enum ElementIndex {
 	FOOTNOTE,
 	FIGURE,
 	GRAPHIC,
-	UNDEFINED /* 30 */
+	CITETITLE, /* 30 */
+	APPLICATION,
+	FILENAME,
+	ITEMIZED_LIST,
+	LISTITEM,
+	PROGRAMLISTING, /* 35 */
+	SGMLTAG,
+	EMPHASIS,
+	UNDEFINED /* 33 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -96,6 +104,10 @@ typedef struct HeaderInfo {
 void article_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void article_end_element (Context *context, const gchar *name);
 void artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void html_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void html_em_end_element (Context *context, const gchar *name);
+void html_tt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void html_tt_end_element (Context *context, const gchar *name);
 void para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void para_end_element (Context *context, const gchar *name);
 void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
