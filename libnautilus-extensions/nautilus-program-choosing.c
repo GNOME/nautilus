@@ -548,7 +548,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	 */
 	if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ||
 	    ((application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES) &&
-	     nautilus_strcasecmp (uri_scheme, "file:") != 0)) {
+	     nautilus_strcasecmp (uri_scheme, "file") != 0)) {
 		/* Check to be sure that the application also supports this particular URI scheme */
 		if (g_list_find_custom (application->supported_uri_schemes,
 					uri_scheme,
