@@ -1,3 +1,22 @@
+2001-04-05  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_fit_date_as_string),
+	(nautilus_file_fit_modified_date_as_string),
+	(nautilus_file_get_date_as_string):
+	* libnautilus-extensions/nautilus-file.h:
+	Add a new function that returns a modified date string,
+	formatted to fit a given width. Make the old
+	nautilus_file_get_date_as_string call it.
+	
+	* src/file-manager/fm-list-view.c: (measure_width_callback),
+	(trucante_middle_callback), (get_cell_text), (set_up_list):
+	Hook up to the get_cell_text signal. For modified text return
+	a nicely formatted text string, for everything else just
+	ellipsize the result.
+
 2001-04-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 7986 ("Paste Files" disabled in trash:)

@@ -2218,25 +2218,103 @@ nautilus_file_get_where_string (NautilusFile *file)
 		 get_where_string, (file));
 }
 
-/**
- * nautilus_file_get_date_as_string:
- * 
- * Get a user-displayable string representing a file modification date. 
- * The caller is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- * 
- * Returns: Newly allocated string ready to display to the user.
- * 
- **/
+const char *TODAY_TIME_FORMATS [] = {
+	/* Today, use special word.
+	 * strftime patterns preceeded with the widest
+	 * possible resulting string for that pattern.
+	 *
+	 * Note to localizers: You can look at man strftime
+	 * for details on the format, but you should only use
+	 * the specifiers from the C standard, not extensions.
+	 * These include "%" followed by one of
+	 * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
+	 * in the Nautilus version of strftime that can be
+	 * used (and match GNU extensions). Putting a "-"
+	 * between the "%" and any numeric directive will turn
+	 * off zero padding, and putting a "_" there will use
+	 * space padding instead of zero padding.
+	 */
+	N_("today at 00:00:00 PM"),
+	N_("today at %-I:%M:%S %p"),
+	
+	N_("today at 00:00 PM"),
+	N_("today at %-I:%M %p"),
+	
+	N_("today, 00:00 PM"),
+	N_("today, %-I:%M %p"),
+	
+	N_("today"),
+	N_("today"),
+	NULL
+};
+
+const char *YESTERDAY_TIME_FORMATS [] = {
+	/* Yesterday, use special word.
+	 * Note to localizers: Same issues as "today" string.
+	 */
+	N_("yesterday at 00:00:00 PM"),
+	N_("yesterday at %-I:%M:%S %p"),
+	
+	N_("yesterday at 00:00 PM"),
+	N_("yesterday at %-I:%M %p"),
+	
+	N_("yesterday, 00:00 PM"),
+	N_("yesterday, %-I:%M %p"),
+	
+	N_("yesterday"),
+	N_("yesterday"),
+	NULL
+};
+
+const char *CURRENT_WEEK_TIME_FORMATS [] = {
+	/* Current week, include day of week.
+	 * Note to localizers: Same issues as "today" string.
+	 * The width measurement templates correspond to
+	 * the day/month name with the most letters.
+	 */
+	N_("Wednesday, September 00 0000 at %00:00:00 PM"),
+	N_("%A, %B %-d %Y at %-I:%M:%S %p"),
+
+	N_("Mon, Oct 00 0000 at 00:00:00 PM"),
+	N_("%a, %b %-d %Y at %-I:%M:%S %p"),
+
+	N_("Mon, Oct 00 0000 at 00:00 PM"),
+	N_("%a, %b %-d %Y at %-I:%M %p"),
+	
+	N_("Oct 00 0000 at 00:00 PM"),
+	N_("%b %-d %Y at %-I:%M %p"),
+	
+	N_("Oct 00 0000, 00:00 PM"),
+	N_("%b %-d %Y, %-I:%M %p"),
+	
+	N_("00/00/00, 00:00 PM"),
+	N_("%m/%-d/%y, %-I:%M %p"),
+
+	N_("00/00/00"),
+	N_("%m/%d/%y"),
+
+	NULL
+};
+
 static char *
-nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type)
+nautilus_file_fit_date_as_string (NautilusFile *file,
+				  NautilusDateType date_type,
+				  int width,
+				  NautilusWidthMeasureCallback measure_callback,
+				  NautilusTruncateCallback truncate_callback,
+				  void *measure_context)
 {
 	time_t file_time_raw;
 	struct tm *file_time;
+	const char **formats;
+	const char *width_template;
 	const char *format;
+	char *date_string;
+	char *result;
 	GDate *today;
 	GDate *file_date;
 	guint32 file_date_age;
+	int i;
 
 	if (!nautilus_file_get_date (file, date_type, &file_time_raw)) {
 		return NULL;
@@ -2254,6 +2332,7 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	g_date_free (file_date);
 	g_date_free (today);
 
+
 	/* Format varies depending on how old the date is. This minimizes
 	 * the length (and thus clutter & complication) of typical dates
 	 * while providing sufficient detail for recent dates to make
@@ -2263,37 +2342,100 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	 */
 
 	if (file_date_age == 0)	{
-		/* Today, use special word.
-		 * Note to localizers: You can look at man strftime
-		 * for details on the format, but you should only use
-		 * the specifiers from the C standard, not extensions.
-		 * These include "%" followed by one of
-		 * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
-		 * in the Nautilus version of strftime that can be
-		 * used (and match GNU extensions). Putting a "-"
-		 * between the "%" and any numeric directive will turn
-		 * off zero padding, and putting a "_" there will use
-		 * space padding instead of zero padding.
-		 */
-		format = _("today at %-I:%M %p");
+		formats = TODAY_TIME_FORMATS;
 	} else if (file_date_age == 1) {
-		/* Yesterday, use special word.
-		 * Note to localizers: Same issues as "today" string.
-		 */
-		format = _("yesterday at %-I:%M %p");
+		formats = YESTERDAY_TIME_FORMATS;
 	} else if (file_date_age < 7) {
-		/* Current week, include day of week.
-		 * Note to localizers: Same issues as "today" string.
-		 */
-		format = _("%A %-m/%-d/%y at %-I:%M %p");
+		formats = CURRENT_WEEK_TIME_FORMATS;
 	} else {
-		/* Other dates.
-		 * Note to localizers: Same issues as "today" string.
-		 */
-		format = _("%-m/%-d/%y at %-I:%M %p");
+		formats = CURRENT_WEEK_TIME_FORMATS;
 	}
 
+	/* Find the date format that just fits the required width. Instead of measuring
+	 * the resulting string width directly, measure the width of a template that represents
+	 * the widest possible version of a date in a given format. This is done by using M, m
+	 * and 0 for the variable letters/digits respectively.
+	 */
+	format = NULL;
+	
+	for (i = 0; ; i += 2) {
+		width_template = formats [i];
+		if (width_template == NULL) {
+			/* no more formats left */
+			g_assert (format != NULL);
+			
+			/* Can't fit even the shortest format -- return an ellipsized form in the
+			 * shortest format
+			 */
+			
+			date_string = eel_strdup_strftime (format, file_time);
+
+			if (truncate_callback == NULL) {
+				return date_string;
+			}
+			
+			result = (truncate_callback) (date_string, width, measure_context);
+			g_free (date_string);
+			return result;
+		}
+		
+		format = formats [i + 1];
+
+		if (measure_callback == NULL) {
+			/* don't care about fitting the width */
+			break;
+		}
+
+		if ((measure_callback) (width_template, measure_context) <= width) {
+			/* The template fits, this is the format we can fit. */
+			break;
+		}
+	}
+	
 	return eel_strdup_strftime (format, file_time);
+
+}
+
+/**
+ * nautilus_file_fit_modified_date_as_string:
+ * 
+ * Get a user-displayable string representing a file modification date,
+ * truncated to @width using the measuring and truncating callbacks.
+ * @file: NautilusFile representing the file in question.
+ * @width: The desired resulting string width.
+ * @measure_callback: The callback used to measure the string width.
+ * @truncate_callback: The callback used to truncate the string to a desired width.
+ * @measure_context: Data neede when measuring and truncating.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+char *
+nautilus_file_fit_modified_date_as_string (NautilusFile *file,
+					   int width,
+					   NautilusWidthMeasureCallback measure_callback,
+					   NautilusTruncateCallback truncate_callback,
+					   void *measure_context)
+{
+	return nautilus_file_fit_date_as_string (file, NAUTILUS_DATE_TYPE_MODIFIED,
+		width, measure_callback, truncate_callback, measure_context);
+}
+
+/**
+ * nautilus_file_get_date_as_string:
+ * 
+ * Get a user-displayable string representing a file modification date. 
+ * The caller is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type)
+{
+	return nautilus_file_fit_date_as_string (file, date_type,
+		0, NULL, NULL, NULL);
 }
 
 static NautilusSpeedTradeoffValue show_directory_item_count;

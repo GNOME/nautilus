@@ -30,6 +30,7 @@
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-art-gtk-extensions.h>
 #include <eel/eel-dnd.h>
+#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -1066,6 +1067,57 @@ font_or_font_size_changed_callback (gpointer callback_data)
 	fm_list_view_update_font (FM_LIST_VIEW (callback_data));
 }
 
+static int
+measure_width_callback (const char *string, void *context)
+{
+	return gdk_string_width ((GdkFont *)context, string);
+}
+
+static char *
+truncate_middle_callback (const char *string, int width, void *context)
+{
+	return eel_string_ellipsize_middle (string, (GdkFont *)context, width);
+}
+
+static char *
+get_cell_text (GtkWidget *widget, int column_index, int cell_width,
+	EelCListRow *row, GdkFont *font, FMListView *list_view)
+{
+	const char *cell_text;
+	EelCList *clist;
+	FMListViewColumn specification;
+	
+	clist = EEL_CLIST (widget);
+
+	get_column_specification (list_view, column_index, &specification);
+
+	if (strcmp (specification.attribute, "date_modified") == 0) {
+		/* special handling of dates */
+		return nautilus_file_fit_modified_date_as_string (
+			NAUTILUS_FILE (row->data),
+			cell_width,
+			measure_width_callback, truncate_middle_callback,
+			font);
+	}
+
+	switch ((EelCellType)row->cell[column_index].type) {
+	case EEL_CELL_PIXTEXT:
+		cell_text = EEL_CELL_PIXTEXT (row->cell[column_index])->text;
+		break;
+	case EEL_CELL_TEXT:
+	case EEL_CELL_LINK_TEXT:
+		cell_text = EEL_CELL_TEXT (row->cell[column_index])->text;
+		break;
+	default:
+		g_assert_not_reached ();
+		cell_text = NULL;
+		break;
+	}
+		
+	return eel_string_ellipsize_end (cell_text, font, cell_width);
+}
+
+
 void
 set_up_list (FMListView *list_view)
 {
@@ -1133,6 +1185,10 @@ set_up_list (FMListView *list_view)
 			    "get_sort_column_index",
 			    GTK_SIGNAL_FUNC (fm_list_get_sort_column_index),
 			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "get_cell_text",
+			    GTK_SIGNAL_FUNC (get_cell_text),
+			    list_view);	
 
 	/* Make height tall enough for icons to look good.
 	 * This must be done after the list widget is realized, due to

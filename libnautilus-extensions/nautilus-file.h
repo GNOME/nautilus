@@ -77,6 +77,11 @@ typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GnomeVFSResult result,
 					       gpointer       callback_data);
+typedef int (*NautilusWidthMeasureCallback)   (const char    *string,
+					       void	     *context);
+typedef char * (*NautilusTruncateCallback)    (const char    *string,
+					       int	      width,
+					       void	     *context);
 
 /* GtkObject requirements. */
 GtkType                 nautilus_file_get_type                          (void);
@@ -244,6 +249,11 @@ char *                  nautilus_file_get_string_attribute              (Nautilu
 									 const char                     *attribute_name);
 char *                  nautilus_file_get_string_attribute_with_default (NautilusFile                   *file,
 									 const char                     *attribute_name);
+char *			nautilus_file_fit_modified_date_as_string	(NautilusFile 			*file,
+									 int				 width,
+									 NautilusWidthMeasureCallback    measure_callback,
+									 NautilusTruncateCallback	 truncate_callback,
+									 void				*measure_truncate_context);
 
 /* Matching with another URI. */
 gboolean                nautilus_file_matches_uri                       (NautilusFile                   *file,
