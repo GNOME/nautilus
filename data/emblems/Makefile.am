@@ -3,6 +3,7 @@ NULL=
 emblemsdir = $(datadir)/nautilus/emblems
 
 emblems_DATA = \
+	certified.png \
 	cool.png \
 	distinguished.png \
 	draft.png \

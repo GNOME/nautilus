@@ -19,7 +19,7 @@ icon_DATA =\
 	druid_header.png \
 	druid_header_stretch.png \
 	eazel-logo.gif \
-	emblem-certified.gif \
+	emblem-certified.svg \
 	emblem-changed.gif \
 	emblem-cool.svg \
 	emblem-distinguished.svg \
