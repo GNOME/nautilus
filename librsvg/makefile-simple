@@ -7,7 +7,7 @@
 FREETYPE_CFLAGS=-I../cut-n-paste-code
 FREETYPE_LDLIBS=-L../cut-n-paste-code/freetype/.libs -lfreetype
 
-CFLAGS=-g -Wall -ansi $(FREETYPE_CFLAGS) `gnome-config --cflags glib libart gdk_pixbuf xml`
+CFLAGS=-g -Wall -ansi -Wno-uninitialized -Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wno-sign-compare -Wsign-promo -Werror $(FREETYPE_CFLAGS) `gnome-config --cflags glib libart gdk_pixbuf xml`
 LDLIBS=`gnome-config --libs glib libart gdk_pixbuf xml` -lpopt $(FREETYPE_LDLIBS)
 
 RSVG_OBJS=art_render_gradient.o \

@@ -1,3 +1,11 @@
+2000-08-12  Raph Levien  <raph@acm.org>
+
+	* librsvg/makefile-simple (CFLAGS): Added suitable warnings
+	so that broken code like the problem below doesn't slip through.
+
+	* librsvg/test-ft-gtk.c (test_expose): Actually expose the
+	entire window.
+
 2000-08-12  Maciej Stachowiak  <mjs@eazel.com>
 
 	* librsvg/test-ft-gtk.c (set_text): Made this local function

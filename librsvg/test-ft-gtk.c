@@ -131,8 +131,16 @@ static void draw_line (TestCtx *ctx, int line_num)
 static gint
 test_expose (GtkWidget *widget, GdkEventExpose *event, TestCtx *ctx)
 {
-	/* todo: figure out which lines to redraw based on expose area */
-	draw_line (ctx, 2);
+	int line0, line1;
+	int line;
+
+	line0 = (event->area.y + ctx->y_scroll) / ctx->y_sp;
+	line1 = (event->area.y + event->area.height + ctx->y_scroll +
+		 ctx->y_sp - 1) / ctx->y_sp;
+	for (line = line0; line < line1; line++) {
+		g_print ("drawing line %d of [%d..%d]\n", line, line0, line1 - 1);
+		draw_line (ctx, line);
+	}
 	return FALSE;
 }
 
