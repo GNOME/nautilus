@@ -363,46 +363,11 @@ nautilus_app_destroy_window (GtkObject *obj, NautilusApp *app)
 	}
 }
 
-/* FIXME: If we are really going to use this, it should probably be
- * moved to the gnome vfs public interface (which would change its
- * name to not include "debug").
- */
-extern int gnome_vfs_debug_get_thread_count (void);
-int quit_counter_hack;
-
-/* FIXME: This waiting for quit is needed by anyone who uses gnome-vfs,
- * especially users or NautilusDirectory. So we need to provide it for
- * others who are not using NautilusApp.
- */
-static gboolean
-nautilus_app_real_quit (void *unused)
-{
-	int count;
-
-	count = gnome_vfs_debug_get_thread_count ();
-	if (count == 0) {
-		/* g_message ("no more gnome vfs threads, ready to quit"); */
-		gtk_main_quit ();
-		return FALSE;
-	} 
-	if (--quit_counter_hack == 0) {
-		g_message ("gnome vfs threads not going away, trying to quit anyway");
-		gtk_main_quit ();
-		return FALSE;
-	}
-	/* g_message ("%d gnome vfs threads left, will try to quit later", count); */
-	usleep(200000); /* 1/5 second */
-	
-	return TRUE;
-}
-
 void 
 nautilus_app_quit (void)
 {
-	quit_counter_hack = 20; /* 20 * 1/5 second == 4 seconds */
-
-	/* wait for gnome vfs slave threads to go away before quitting */
-	gtk_idle_add ((GtkFunction)nautilus_app_real_quit, NULL);
+	gnome_vfs_shutdown ();
+	gtk_main_quit ();
 }
 
 NautilusWindow *

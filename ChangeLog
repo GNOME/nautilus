@@ -1,3 +1,27 @@
+2000-05-27  Pavel Cisler  <pavel@eazel.com>
+
+	* src/nautilus-application.c: (nautilus_app_quit):
+	Used the fixed-up gnome_vfs_shutdown to properly synchronize 
+	with GnomeVFS threads that are still finishing up. Got rid of
+	nautilus_app_real_quit and the other hacky code that I used
+	to do this before gnome_vfs_shutdown was working properly.
+	Got rid of a bunch of FIXMEs that are now take care of.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_directory_counts), (top_left_read_close),
+	(cancel_top_left_read), (nautilus_metafile_read_cancel),
+	(start_getting_directory_counts), (start_getting_top_lefts):
+	Added cancel calls to the different GnomeVFS async tasks that
+	can be running when opening a Nautilus window, called them
+	from the NautilusDirectory destroy call.
+	
+	Nautilus now shuts down GnomeVFS jobs cleanly during a quit. 
+	There is still a problem where in some cases it will take a 
+	while before the async jobs go away. This seems to be because
+	the corresponding NautilusDirectory doesn't get destroyed right
+	away when a window is closed. I need to get Darin to help me fix
+	this. 
+
 2000-05-27  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

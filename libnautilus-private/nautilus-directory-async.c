@@ -127,18 +127,53 @@ metafile_read_close (NautilusDirectory *directory)
 	directory->details->metafile_read_state->handle = NULL;
 }
 
+static void
+cancel_directory_counts (NautilusDirectory *directory)
+{
+	if (directory->details->count_in_progress != NULL) {
+		gnome_vfs_async_cancel (directory->details->count_in_progress);
+		directory->details->count_file = NULL;
+		directory->details->count_in_progress = NULL;
+	}
+}
+
+static void
+top_left_read_close (NautilusDirectory *directory)
+{
+	g_assert (directory->details->top_left_read_state->handle != NULL);
+	if (directory->details->top_left_read_state->is_open) {
+		gnome_vfs_async_close (directory->details->top_left_read_state->handle,
+				       empty_close_callback,
+				       directory);
+		directory->details->top_left_read_state->is_open = FALSE;
+	}
+	directory->details->top_left_read_state->handle = NULL;
+}
+
+static void
+cancel_top_left_read (NautilusDirectory *directory)
+{
+	if (directory->details->top_left_read_state != NULL) {
+		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
+		top_left_read_close (directory);
+		g_free (directory->details->top_left_read_state->buffer);
+		g_free (directory->details->top_left_read_state);
+		directory->details->top_left_read_state = NULL;
+	}
+}
+
 void
 nautilus_metafile_read_cancel (NautilusDirectory *directory)
 {
-	if (directory->details->metafile_read_state == NULL) {
-		return;
+	if (directory->details->metafile_read_state != NULL) {
+		g_assert (directory->details->metafile_read_state->handle != NULL);
+		gnome_vfs_async_cancel (directory->details->metafile_read_state->handle);
+		metafile_read_close (directory);
+		g_free (directory->details->metafile_read_state);
+		directory->details->metafile_read_state = NULL;
 	}
-
-	g_assert (directory->details->metafile_read_state->handle != NULL);
-	gnome_vfs_async_cancel (directory->details->metafile_read_state->handle);
-	metafile_read_close (directory);
-	g_free (directory->details->metafile_read_state);
-	directory->details->metafile_read_state = NULL;
+	cancel_directory_counts (directory);
+	cancel_top_left_read (directory);
 }
 
 static void
@@ -1436,9 +1471,7 @@ start_getting_directory_counts (NautilusDirectory *directory)
 		}
 
 		/* The count is not wanted, so stop it. */
-		gnome_vfs_async_cancel (directory->details->count_in_progress);
-		directory->details->count_file = NULL;
-		directory->details->count_in_progress = NULL;
+		cancel_directory_counts (directory);
 	}
 
 	/* Figure out which file to get a count for. */
@@ -1514,19 +1547,6 @@ top_left_read_complete (NautilusDirectory *directory)
 	nautilus_file_changed (directory->details->top_left_read_state->file);
 
 	top_left_read_done (directory);
-}
-
-static void
-top_left_read_close (NautilusDirectory *directory)
-{
-	g_assert (directory->details->top_left_read_state->handle != NULL);
-	if (directory->details->top_left_read_state->is_open) {
-		gnome_vfs_async_close (directory->details->top_left_read_state->handle,
-				       empty_close_callback,
-				       directory);
-		directory->details->top_left_read_state->is_open = FALSE;
-	}
-	directory->details->top_left_read_state->handle = NULL;
 }
 
 static void
@@ -1625,11 +1645,7 @@ start_getting_top_lefts (NautilusDirectory *directory)
 		}
 
 		/* The top left is not wanted, so stop it. */
-		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
-		top_left_read_close (directory);
-		g_free (directory->details->top_left_read_state->buffer);
-		g_free (directory->details->top_left_read_state);
-		directory->details->top_left_read_state = NULL;
+		cancel_top_left_read (directory);
 	}
 
 	/* Figure out which file to read the top left for. */
