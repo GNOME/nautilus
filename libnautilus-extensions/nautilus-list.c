@@ -69,6 +69,9 @@ struct NautilusListDetails
 	/* Single click mode ? */
 	gboolean single_click_mode;
 
+	/* Anti-aliased mode ? */
+	gboolean anti_aliased_mode;
+
 	/* The anchor row for range selections */
 	int anchor_row;
 
@@ -529,6 +532,15 @@ nautilus_list_set_single_click_mode (NautilusList *list,
 				     gboolean single_click_mode)
 {
 	list->details->single_click_mode = single_click_mode;
+	gtk_widget_queue_draw (GTK_WIDGET (list));
+}
+
+void
+nautilus_list_set_anti_aliased_mode (NautilusList *list,
+				     gboolean anti_aliased_mode)
+{
+	list->details->anti_aliased_mode = anti_aliased_mode;
+	gtk_widget_queue_draw (GTK_WIDGET (list));
 }
 
 
@@ -2096,12 +2108,13 @@ draw_cell_pixmap (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 }
 
 static int
-draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle,
+draw_cell_pixbuf (NautilusCList *clist, GdkWindow *window, GdkRectangle *clip_rectangle,
 		  GdkGC *fg_gc, guint32 bg_rgb, GdkPixbuf *pixbuf, int x, int y)
 {
 	GdkRectangle image_rectangle;
 	GdkRectangle intersect_rectangle;
 	GdkPixbuf *composited;
+	gboolean anti_aliased_mode;
 
 	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
 	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
@@ -2112,26 +2125,40 @@ draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle,
 		return x;
 	}
 
-	/* Composite a version of the pixbuf with the background color */
-	composited = gdk_pixbuf_composite_color_simple (pixbuf,
-							image_rectangle.width,
-							image_rectangle.height,
-							GDK_INTERP_BILINEAR,
-							255, 64,
-							bg_rgb, bg_rgb);
-	if (composited == NULL) {
-		return x;
+	if (NAUTILUS_IS_LIST (clist) && NAUTILUS_LIST (clist)->details->anti_aliased_mode) {
+		/* Composite a version of the pixbuf with the background color */
+		composited = gdk_pixbuf_composite_color_simple (pixbuf,
+								image_rectangle.width,
+								image_rectangle.height,
+								GDK_INTERP_BILINEAR,
+								255, 64,
+								bg_rgb, bg_rgb);
+		if (composited == NULL) {
+			return x;
+		}
+
+		gdk_pixbuf_render_to_drawable (composited, window, fg_gc,
+					       intersect_rectangle.x - x,
+					       intersect_rectangle.y - y, 
+					       image_rectangle.x, image_rectangle.y, 
+					       intersect_rectangle.width,
+					       intersect_rectangle.height,
+					       GDK_RGB_DITHER_MAX, 0, 0);
+
+		gdk_pixbuf_unref (composited);
+
+	} else {
+
+		gdk_pixbuf_render_to_drawable_alpha (pixbuf, window,
+						     intersect_rectangle.x - x,
+						     intersect_rectangle.y - y, 
+						     image_rectangle.x, image_rectangle.y, 
+						     intersect_rectangle.width,
+						     intersect_rectangle.height,
+						     GDK_PIXBUF_ALPHA_BILEVEL,
+						     NAUTILUS_STANDARD_ALPHA_THRESHHOLD,
+						     GDK_RGB_DITHER_MAX, 0, 0);
 	}
-
-	gdk_pixbuf_render_to_drawable (composited, window, fg_gc,
-				       intersect_rectangle.x - x,
-				       intersect_rectangle.y - y, 
-				       image_rectangle.x, image_rectangle.y, 
-				       intersect_rectangle.width,
-				       intersect_rectangle.height,
-				       GDK_RGB_DITHER_MAX, 0, 0);
-
-	gdk_pixbuf_unref (composited);
 
 	return x + intersect_rectangle.width;
 }
@@ -2409,9 +2436,9 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 			height = gdk_pixbuf_get_height (p->data);
 
-	  		offset = draw_cell_pixbuf (clist->clist_window,
-		  				   &cell_rectangle, fg_gc, bg_rgb,
-		  				   p->data,
+	  		offset = draw_cell_pixbuf (clist, clist->clist_window,
+						   &cell_rectangle,
+						   fg_gc, bg_rgb, p->data,
 				  		   offset,
 				 		   cell_rectangle.y + row->cell[column_index].vertical +
 				 		   (cell_rectangle.height - height) / 2);
@@ -2425,7 +2452,8 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		guint height;
 		pixbuf = NAUTILUS_CELL_PIXBUF (row->cell[column_index]);
 		height = gdk_pixbuf_get_height (pixbuf);
-		offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle,
+		offset = draw_cell_pixbuf (clist, clist->clist_window,
+					   &cell_rectangle,
 					   fg_gc, bg_rgb, pixbuf,
 					   offset, cell_rectangle.y
 					   + row->cell[column_index].vertical

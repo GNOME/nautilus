@@ -179,6 +179,9 @@ void	     nautilus_list_set_rejects_dropped_icons (NautilusList	  *list,
 void 	     nautilus_list_set_drag_prelight_row (NautilusList		  *list,
 						  int			  y);
 
+void	     nautilus_list_set_anti_aliased_mode (NautilusList		  *list,
+						  gboolean		   anti_aliased_mode);
+
 #endif /* NAUTILUS_LIST_H */
 
 

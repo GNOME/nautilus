@@ -131,6 +131,7 @@ static void                 fm_list_view_set_zoom_level               (FMListVie
 static void                 fm_list_view_sort_items                   (FMListView        *list_view,
 								       int                column,
 								       gboolean           reversed);
+static void		    fm_list_view_update_smooth_graphics_mode  (FMDirectoryView   *directory_view);
 static void                 fm_list_view_update_click_mode            (FMDirectoryView   *view);
 static void                 fm_list_view_embedded_text_policy_changed (FMDirectoryView   *view);
 static void                 fm_list_view_image_display_policy_changed (FMDirectoryView   *view);
@@ -212,6 +213,7 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->embedded_text_policy_changed = fm_list_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
         fm_directory_view_class->font_family_changed = fm_list_view_font_family_changed;
+        fm_directory_view_class->smooth_graphics_mode_changed = fm_list_view_update_smooth_graphics_mode;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -861,6 +863,22 @@ fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
 }
 
 static void
+fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
+{
+	NautilusList *list;
+	gboolean smooth_graphics_mode;
+
+	g_assert (FM_IS_LIST_VIEW (directory_view));
+
+	list = get_list (FM_LIST_VIEW (directory_view));
+	g_assert (list != NULL);
+
+	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	
+	nautilus_list_set_anti_aliased_mode (list, smooth_graphics_mode);
+}
+
+static void
 create_list (FMListView *list_view)
 {
 	int number_of_columns;
@@ -1000,6 +1018,7 @@ set_up_list (FMListView *list_view)
 
 	fm_list_view_update_click_mode (FM_DIRECTORY_VIEW (list_view));
 	fm_list_view_font_family_changed (FM_DIRECTORY_VIEW (list_view));
+	fm_list_view_update_smooth_graphics_mode (FM_DIRECTORY_VIEW (list_view));
 
 	/* Don't even try to accept dropped icons if the view says not to.
 	 * This is used only for views in which accepting file-drops is never

@@ -1,3 +1,27 @@
+2001-01-25  John Harper  <jsh@eazel.com>
+
+	Fix bug 5590 (List view uses anti-aliased graphics always)
+
+	* src/file-manager/fm-list-view.c
+	(fm_list_view_update_smooth_graphics_mode): new function, put
+	into the FMDirectoryView method table, and called by
+	set_up_list ()
+
+	* libnautilus-extensions/nautilus-list.c (NautilusListDetails):
+	added an `anti_aliased_mode' boolean field
+
+	(draw_cell_pixbuf): support both normal and anti-aliased
+	drawing styles
+
+	* libnautilus-extensions/nautilus-list.[ch]
+	(nautilus_list_set_anti_aliased_mode): new function
+
+	* libnautilus-extensions/nautilus-list.c
+	(nautilus_list_set_single_click_mode): call
+	gtk_widget_queue_draw () on the list widget. Fixes the
+	(unfiled?) bug where toggling the `Activate items with a foo
+	click' doesn't immediately change how the list view is drawn
+
 2001-01-25  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
