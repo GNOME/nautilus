@@ -1,5 +1,23 @@
 2000-10-02  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	fixed bug 1280, music view needs alert when it can't iterate
+	directory
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_remove_element), (add_new_color),
+	(add_new_button_callback),
+	(nautilus_property_browser_update_contents),
+	(nautilus_property_browser_set_category):
+	fixed bug 3217, better separation of text in property browser so
+	it can be translated (ie, "remove a emblem" isn't good); fixed by
+	making an enum for the current category and using it to case out
+	for separate messages where appropriate.
+	
+2000-10-02  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/file-manager/fm-directory-view.c: (activate_callback):
 	fixed the PR2 part of bug 2390, "command:" URI-activating security
 	hole, by disallowing commands from remote locations. Downgrading

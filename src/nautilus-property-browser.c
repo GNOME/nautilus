@@ -63,6 +63,15 @@
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 
+/* property types */
+
+typedef enum {
+	NAUTILUS_PROPERTY_NONE,
+	NAUTILUS_PROPERTY_BACKGROUND,
+	NAUTILUS_PROPERTY_COLOR,
+	NAUTILUS_PROPERTY_EMBLEM
+} NautilusPropertyType;
+
 struct NautilusPropertyBrowserDetails {
 	GtkHBox *container;
 	
@@ -96,6 +105,8 @@ struct NautilusPropertyBrowserDetails {
 	char *dragged_file;
 	char *drag_type;
 	char *image_path;
+	
+	NautilusPropertyType category_type;
 	
 	int category_position;
 	int content_table_width;
@@ -199,11 +210,9 @@ nautilus_property_browser_initialize (GtkObject *object)
 
 	property_browser->details = g_new0 (NautilusPropertyBrowserDetails, 1);
 
-	property_browser->details->path = NULL;
 	property_browser->details->category = g_strdup ("backgrounds");
-	property_browser->details->dragged_file = NULL;
-	property_browser->details->drag_type = NULL;
-
+	property_browser->details->category_type = NAUTILUS_PROPERTY_BACKGROUND;
+		
 	/* load the chit frame */
 	temp_str = nautilus_pixmap_file ("chit_frame.png");
 	property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str);
@@ -769,14 +778,19 @@ static void
 nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_browser, const char* element_name)
 {
 	/* lookup category and get mode, then case out and handle the modes */
-	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		remove_background(property_browser, element_name);
-	} else if (!strcmp(property_browser->details->category, "colors")) {
-		remove_color(property_browser, element_name);
-	} else if (!strcmp(property_browser->details->category, "emblems")) {
-		remove_emblem(property_browser, element_name);
-	}
-
+	switch (property_browser->details->category_type) {
+		case NAUTILUS_PROPERTY_BACKGROUND:
+			remove_background (property_browser, element_name);
+			break;
+		case NAUTILUS_PROPERTY_COLOR:
+			remove_color (property_browser, element_name);
+			break;
+		case NAUTILUS_PROPERTY_EMBLEM:
+			remove_emblem (property_browser, element_name);
+			break;
+		default:
+			break;
+	}	
 }
 
 /* Callback used when the color selection dialog is destroyed */
@@ -1096,7 +1110,7 @@ add_color_to_browser (GtkWidget *widget, gpointer *data)
 /* here's the routine to add a new color, by putting up a color selector */
 
 static void
-add_new_color(NautilusPropertyBrowser *property_browser)
+add_new_color (NautilusPropertyBrowser *property_browser)
 {
 	if (property_browser->details->dialog) {
 		gtk_widget_show(property_browser->details->dialog);
@@ -1224,15 +1238,20 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 		gtk_widget_show (property_browser->details->help_label);
 		return;
 	}
-	
-	/* case out on the category */
-	if (strcmp(property_browser->details->category, "backgrounds") == 0) {
-		add_new_background(property_browser);
-	} else if (!strcmp(property_browser->details->category, "colors")) {
-		add_new_color(property_browser);
-	} else if (!strcmp(property_browser->details->category, "emblems")) {
-		add_new_emblem(property_browser);
-	}
+
+	switch (property_browser->details->category_type) {
+		case NAUTILUS_PROPERTY_BACKGROUND:
+			add_new_background (property_browser);
+			break;
+		case NAUTILUS_PROPERTY_COLOR:
+			add_new_color (property_browser);
+			break;
+		case NAUTILUS_PROPERTY_EMBLEM:
+			add_new_emblem (property_browser);
+			break;
+		default:
+			break;
+	}	
 }
 
 /* handle the "remove" button */
@@ -1714,13 +1733,27 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 			temp_str = g_strdup(_("Cancel Remove"));		
 		} else {
-			temp_str = g_strdup_printf(_("Add a new %s"), property_browser->details->category);	
-			temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
+			switch (property_browser->details->category_type) {
+				case NAUTILUS_PROPERTY_BACKGROUND:
+					temp_str = g_strdup (_("Add a new background"));
+					break;
+				case NAUTILUS_PROPERTY_COLOR:
+					temp_str = g_strdup (_("Add a new color"));
+					break;
+				case NAUTILUS_PROPERTY_EMBLEM:
+					temp_str = g_strdup (_("Add a new emblem"));
+					break;
+				default:
+					temp_str = NULL;
+					break;
+			}		
 		}
 		
 		/* enable the "add new" button and update it's name */		
 		
-		gtk_label_set (GTK_LABEL(property_browser->details->add_button_label), temp_str);
+		if (temp_str) {
+			gtk_label_set (GTK_LABEL(property_browser->details->add_button_label), temp_str);
+		}
 		if (show_buttons)
 			gtk_widget_show(property_browser->details->add_button);
 		else
@@ -1729,33 +1762,59 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 			char *temp_category = g_strdup (property_browser->details->category);
 			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */
-			label_text = g_strdup_printf(_("Click on a %s to remove it"), temp_category);		
+
+			switch (property_browser->details->category_type) {
+				case NAUTILUS_PROPERTY_BACKGROUND:
+					label_text = g_strdup (_("Click on a background to remove it"));
+					break;
+				case NAUTILUS_PROPERTY_COLOR:
+					label_text = g_strdup (_("Click on a color to remove it"));
+					break;
+				case NAUTILUS_PROPERTY_EMBLEM:
+					label_text = g_strdup (_("Click on an emblem to remove it"));
+					break;
+				default:
+					label_text = NULL;
+					break;
+			}				
 			g_free(temp_category);
 		} else {	
 			label_text = g_strdup_printf ("%s:", property_browser->details->category);		
 			label_text[0] = toupper (label_text[0]);
 		}
 		
-		nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->title_label), label_text);
-
+		if (label_text) {
+			nautilus_label_set_text (NAUTILUS_LABEL(property_browser->details->title_label), label_text);
+		}
 		/* enable the remove button (if necessary) and update its name */
 		
 		g_free(temp_str);
-		temp_str = g_strdup_printf (_("Remove a %s"),
-					    property_browser->details->category);		
-				
+		
+		/* case out instead of substituting to provide flexibilty for other languages */
+		switch (property_browser->details->category_type) {
+			case NAUTILUS_PROPERTY_BACKGROUND:
+				temp_str = _("Remove a background");
+				break;
+			case NAUTILUS_PROPERTY_COLOR:
+				temp_str = _("Remove a color");
+				break;
+			case NAUTILUS_PROPERTY_EMBLEM:
+				temp_str = _("Remove an emblem");
+				break;
+			default:
+				temp_str = NULL;
+				break;
+		}
+		
 		if (!show_buttons
 		    || property_browser->details->remove_mode
 		    || !property_browser->details->has_local)
 			gtk_widget_hide(property_browser->details->remove_button);
 		else
 			gtk_widget_show(property_browser->details->remove_button);
-		
-		temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
 		gtk_label_set (GTK_LABEL(property_browser->details->remove_button_label), temp_str);
 		
 		g_free(label_text);
-		g_free(temp_str);
 	}
 }
 
@@ -1772,7 +1831,18 @@ nautilus_property_browser_set_category (NautilusPropertyBrowser *property_browse
 	
 	g_free (property_browser->details->category);
 	property_browser->details->category = g_strdup (new_category);
-		
+	
+	/* set up the property type enum */
+	if (nautilus_strcmp (new_category, "backgrounds") == 0) {
+		property_browser->details->category_type = NAUTILUS_PROPERTY_BACKGROUND;
+	} else if (nautilus_strcmp (new_category, "colors") == 0) {	
+		property_browser->details->category_type = NAUTILUS_PROPERTY_COLOR;
+	} else if (nautilus_strcmp (new_category, "emblems") == 0) {	
+		property_browser->details->category_type = NAUTILUS_PROPERTY_EMBLEM;
+	} else {
+		property_browser->details->category_type = NAUTILUS_PROPERTY_NONE;
+	}
+	
 	/* populate the per-uri box with the info */
 	nautilus_property_browser_update_contents (property_browser);  	
 }

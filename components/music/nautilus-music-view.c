@@ -1289,8 +1289,12 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
 						NULL);
 	if (result != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 1280: need to show an alert here */
-		g_warning("cant open %s in music_view_update", uri);		
+		char *path = gnome_vfs_get_local_path_from_uri (uri);
+		char *message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
+		nautilus_error_dialog (message, _("Couldn't read directory"), 
+				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
+		g_free (path);
+		g_free (message);
 		return;
 	}
 	
