@@ -57,7 +57,9 @@ typedef struct {
         GtkWidget        *scrolled_window;
 	GdkPixbuf        *scaled;
         gboolean          size_allocated;
-
+	gboolean	  initial_flag;
+	gboolean	  resize_flag;
+	
 	GdkPixbuf        *zoomed;
 	float             zoom_level;
 	BonoboZoomable   *zoomable;
@@ -357,8 +359,10 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 		   x_level, y_level, new_zoom_level);
 #endif
 
-	gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	if (new_zoom_level > 0) {
+		gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
+	}
 }
 
 static void
@@ -590,6 +594,54 @@ scrolled_control_size_allocate_callback (GtkWidget *drawing_area,
 	control_update (bod);
 }
 
+/* utility routine to determine if the image is bigger than the current viewer */
+static gboolean
+image_bigger_than_viewer (bonobo_object_data_t *bod)
+{
+	int width, height;
+	GtkAdjustment *hadj, *vadj;
+	
+	if (bod->pixbuf == NULL) {
+		return FALSE;
+	}
+	
+	width = gdk_pixbuf_get_width (bod->pixbuf);
+	height = gdk_pixbuf_get_height (bod->pixbuf);
+
+	hadj = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
+	vadj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
+
+	if (hadj == NULL || vadj == NULL) {
+		return FALSE;
+	}
+	
+	return width > hadj->page_size || height > vadj->page_size;
+}
+
+/*
+ * This callback will be invoked when the container assigns us a size.
+ */
+static void
+scrolled_window_size_allocate_callback (GtkWidget *drawing_area,
+					 GtkAllocation *allocation,
+					 bonobo_object_data_t *bod)
+{	
+	/* implement initial shrink-to-fit if necessary.  It's hard to tell when resizing
+	 * is complete, inspiring this hackish solution determining when; it should
+	 * be replaced with a cleaner approach when the framework is improve.
+	 */
+
+	if (bod->resize_flag && bod->initial_flag && allocation->width > 1 && allocation->height > 1) {
+		if (image_bigger_than_viewer (bod)) {
+			zoomable_zoom_to_fit_callback (bod->zoomable, bod);		
+			control_update (bod);
+		}
+		bod->initial_flag = FALSE;
+	} else if (!bod->resize_flag && allocation->width == 1 && allocation->height == 1) {
+		bod->resize_flag = TRUE;
+	}
+}
+
 static void
 control_activate_callback (BonoboControl *control, gboolean activate, gpointer data)
 {
@@ -614,6 +666,10 @@ control_factory_common (GtkWidget *scrolled_window)
 	bod->size_allocated = FALSE;
 	bod->scrolled_window = scrolled_window;
 
+	/* set flags that control initial shrink-to-fit */
+	bod->initial_flag = TRUE;
+	bod->resize_flag = FALSE;
+	
 	gtk_signal_connect (GTK_OBJECT (bod->drawing_area),
 			    "expose_event",
 			    GTK_SIGNAL_FUNC (drawing_area_exposed), bod);
@@ -704,6 +760,10 @@ scrollable_control_factory (void)
 
 	gtk_signal_connect (GTK_OBJECT (bod->drawing_area), "size_allocate",
 			    GTK_SIGNAL_FUNC (scrolled_control_size_allocate_callback),
+			    bod);
+	
+	gtk_signal_connect (GTK_OBJECT (bod->scrolled_window), "size_allocate",
+			    GTK_SIGNAL_FUNC (scrolled_window_size_allocate_callback),
 			    bod);
 
         return bod;

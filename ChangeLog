@@ -1,3 +1,12 @@
+2000-12-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/image-viewer/nautilus-image-view.c:
+	(zoomable_zoom_to_fit_callback), (image_bigger_than_viewer),
+	(scrolled_window_size_allocate_callback), (control_factory_common),
+	(scrollable_control_factory):
+	implemented initial "zoom-to-fit" if an image is bigger than the
+	displayable area, as requested by Mike Boich.
+	
 2000-12-18  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Rebecca Shulman <rebecka@eazel.com>
