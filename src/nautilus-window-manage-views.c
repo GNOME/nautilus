@@ -1270,13 +1270,13 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		window->show_state = NAUTILUS_WINDOW_NOT_SHOWN;
 		if (!GTK_WIDGET_VISIBLE (window)) {
 			file = nautilus_file_get (location);
+			window->details->pending_file_for_position = file;
                                 
 			attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
 			nautilus_file_call_when_ready (file,
                                                        attributes,
                                                        position_and_show_window_callback,
                                                        window);
-			window->details->pending_file_for_position = file;
 		}
 
 		load_content_view (window, initial_view);

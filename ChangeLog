@@ -1,3 +1,11 @@
+2004-03-07  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* src/nautilus-window-manage-views.c
+	(determined_initial_view_callback): Set pending_file_for_position
+	before setting up the position_and_show_window_callback callback
+	for the file, to handle the case when the file gets ready before
+	the callback setup returns (bug #136430).
+
 2004-03-05  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-application.c (volume_unmounted_callback):
