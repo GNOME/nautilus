@@ -1,0 +1,40 @@
+AC_INIT(src)
+
+if test -n "$GNOME2_PATH"; then
+	PATH="$GNOME2_PATH/bin:$PATH"
+	export PATH
+fi
+
+AM_INIT_AUTOMAKE(nautilus, 0.1)
+AM_CONFIG_HEADER(config.h)
+
+AM_MAINTAINER_MODE
+
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+AM_SANITY_CHECK
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_ISC_POSIX
+
+dnl Checks for libraries.
+AM_PATH_GLIB(1.2.0,,
+AC_MSG_ERROR([
+*** GLIB 1.2.0 or better is required. The latest version of GLIB
+*** is always available from ftp://ftp.gtk.org/.]))
+AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is
+required.]), gdk_pixbuf)
+AC_SUBST(GDK_PIXBUF_CFLAGS)
+AC_SUBST(GDK_PIXBUF_LIBS)
+AM_PATH_LIBGLADE(,AC_MSG_ERROR([*** Libglade 0.7 or better is needed.]), gnome)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+])
