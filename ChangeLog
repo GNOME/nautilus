@@ -1,5 +1,13 @@
 2001-01-04  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(should_display_image_file_as_itself):
+	fixed bug 5134, shouldn't display thumbnails for images that we
+	don't have read permission by explicitly test for read permission
+	in should_display_image_file_as_itself.
+	
+2001-01-04  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/file-manager/fm-icon-view.c: (should_preview_sound):
 	fixed bug 5108, remote sounds get preview image, but don't actually
 	preview.  Fixed by making can_preview_sound return FALSE for

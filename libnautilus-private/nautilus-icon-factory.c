@@ -1306,6 +1306,11 @@ should_display_image_file_as_itself (NautilusFile *file)
 		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS, 
 		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 
+	/* if we don't have read permissions for the file, don't show as itself for security reasons  */
+	if (!nautilus_file_can_read (file)) {
+		return FALSE;
+	}
+	
 	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
