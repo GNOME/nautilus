@@ -176,7 +176,7 @@ enum {
 	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
-	CREATE_NAUTILUS_LINKS,
+	HANDLE_URI_LIST,
 	PREVIEW,
 	SELECTION_CHANGED,	
 	LAST_SIGNAL
@@ -3210,12 +3210,12 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
-	signals[CREATE_NAUTILUS_LINKS] 
-		= gtk_signal_new ("create_nautilus_links",
+	signals[HANDLE_URI_LIST] 
+		= gtk_signal_new ("handle_uri_list",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
-						     create_nautilus_links),
+						     handle_uri_list),
 				  gtk_marshal_NONE__POINTER_INT_INT,
 				  GTK_TYPE_NONE, 3,
 				  GTK_TYPE_POINTER,

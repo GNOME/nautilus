@@ -1,3 +1,35 @@
+2001-03-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	I have been itching to check some code in for 1.2,
+	so now I am doing it!
+	
+	This will enable drag support from Netscape to Nautilus.
+	Only the desktop handles the drags for now. When I complete
+	the async calls in NautilusFile, it will be safe to have the signal
+	handled by other views such as FMDirectoryView.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_initialize_class):
+	Change name of signal create_nautilus_links
+	to handle_uri_list.
+		
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(drag_data_received_callback), (receive_dropped_uri_list),
+	(nautilus_icon_container_get_drop_action):
+	Add more general logic to handle a drop of a list of URIs.
+	Don't expect them to only contain only the paths to
+	gmc desktop entries.
+		
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Connect to changed signal name handle_uri_list.
+	
+	(icon_view_handle_uri_list):
+	Use more generalized logic to handle a drop of a URI list.
+	Determine what the list element contains and either convert from
+	a DesktopEntry or create a link that contains a URI.
+
 2001-03-13  Jason Leach  <jasonleach@usa.net>
 
 	reviewed by: Darin Adler <darin@eazel.com>

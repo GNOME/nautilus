@@ -88,7 +88,7 @@ typedef struct {
 						   int copy_action,
 						   int x,
 						   int y);
-	void	     (* create_nautilus_links)    (NautilusIconContainer *container,
+	void	     (* handle_uri_list)    	  (NautilusIconContainer *container,
 						   GList *item_uris,
 						   int x,
 						   int y);

@@ -47,7 +47,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -374,7 +373,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
     It is called upon drag_motion events to get the actual data 
     In that case, it just makes sure it gets the data.
     It is called upon drop_drop events to execute the actual 
-    actions on the received action. In that case, it actually fist makes sure
+    actions on the received action. In that case, it actually first makes sure
     that we have got the data then processes it.
 */
 
@@ -389,7 +388,7 @@ drag_data_received_callback (GtkWidget *widget,
 			     gpointer user_data)
 {
     	NautilusDragInfo *drag_info;
-
+	
 	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
 
 	drag_info->got_drop_data_type = TRUE;
@@ -401,13 +400,24 @@ drag_data_received_callback (GtkWidget *widget,
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
-	case NAUTILUS_ICON_DND_KEYWORD:	
+	case NAUTILUS_ICON_DND_KEYWORD:
 	case NAUTILUS_ICON_DND_URI_LIST:
+	case NAUTILUS_ICON_DND_URL:
 		/* Save the data so we can do the actual work on drop. */
 		g_assert (drag_info->selection_data == NULL);
 		drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
 		break;
+		
+	/* Netscape keeps sending us the data, even though we accept the first drag */
+	//case NAUTILUS_ICON_DND_URL:
+	//	if (drag_info->selection_data != NULL) {
+	//		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
+	//		drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
+	//	}
+	//	break;
+
 	default:
+		g_message ("drag_data_received_callback unknown");
 		break;
 	}
 
@@ -443,6 +453,7 @@ drag_data_received_callback (GtkWidget *widget,
 			gtk_drag_finish (context, FALSE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_URI_LIST:
+		case NAUTILUS_ICON_DND_URL:
 			receive_dropped_uri_list
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char*) data->data, x, y);
@@ -637,35 +648,14 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 /* handle dropped uri list */
 static void
 receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int x, int y)
-{
-	/* FIXME bugzilla.eazel.com 5080:
-	 * this needs a better name - it's link/desktop specific 
-	 */
-	GList *li, *files;
-	int argc;
-	char **argv;
-	int i;
-	
+{	
 	if (uri_list == NULL) {
 		return;
 	}
-
-	files = gnome_uri_list_extract_filenames (uri_list);
-	argc = g_list_length (files);
-	argv = g_new (char *, argc + 1);
-	argv[argc] = NULL;
-
-	for (i=0, li = files; li; i++, li = g_list_next (li)) {
-		argv[i] = li->data;
-	}
-
-	/* Extract .desktop info and create link/links */
-	gtk_signal_emit_by_name (GTK_OBJECT (container), "create_nautilus_links",
-				 files,
+	
+	gtk_signal_emit_by_name (GTK_OBJECT (container), "handle_uri_list",
+				 uri_list,
 				 x, y);
-
-	gnome_uri_list_free_strings (files);
-	g_free(argv);
 }
 
 static int
@@ -1089,6 +1079,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		break;
 	
 	case NAUTILUS_ICON_DND_URI_LIST:
+	case NAUTILUS_ICON_DND_URL:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
