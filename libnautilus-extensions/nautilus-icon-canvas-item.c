@@ -33,6 +33,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include <libgnomeui/gnome-icon-text.h>
+#include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
@@ -917,7 +918,7 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 	
-	art_affine_identity(affine);
+	art_affine_identity (affine);
 	
 	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0, icon_rect.y0);
 	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0,  icon_rect.y1 - knob_height);
@@ -1233,6 +1234,160 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 }
 
 static void
+draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
+{
+	GdkRectangle	area;
+	guint32		color, color_dash;
+	guchar		red, green, blue, alpha, dash_color;
+	guint		width, height;
+	gboolean	has_alpha;
+	guint		pixel_offset, rowstride;
+	int		x, y, x1, y1, x2, y2;
+	guchar		*pixels, *row_offset, *offset;
+	int 		index, dash_width;
+	
+	g_return_if_fail (pixbuf != NULL);
+
+	dash_width = 1;
+
+	color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
+	color_dash = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+
+	pixel_offset = has_alpha ? 4 : 3;
+
+	area.x = 0;
+	area.y = 0;
+	area.width = width;
+	area.height = height;
+
+	red = NAUTILUS_RGBA_COLOR_GET_R (color);
+	green = NAUTILUS_RGBA_COLOR_GET_G (color);
+	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
+	alpha = NAUTILUS_RGBA_COLOR_GET_A (color);
+	dash_color = NAUTILUS_RGBA_COLOR_GET_R (color_dash);
+	
+	x1 = area.x;
+	y1 = area.y;
+	x2 = area.x + area.width;
+	y2 = area.y + area.height;
+
+	/* Draw top line */
+	row_offset = pixels + y1 * rowstride;
+	offset = row_offset + (x1 * pixel_offset);
+	index = 0;
+	for (x = x1; x < x2; x++)
+	{
+		if (index < dash_width) {
+			*(offset++) = red;
+			*(offset++) = green;
+			*(offset++) = blue;
+		} else {
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+		}		
+		
+		if (has_alpha)
+		{
+			*(offset++) = alpha;
+		}
+
+		index++;
+		if (index > dash_width) {
+			index = 0;
+		}
+	}
+
+	/* Draw bottom line */
+	row_offset = pixels + (y2 -1) * rowstride;
+	offset = row_offset + (x1 * pixel_offset);
+	index = 0;
+	for (x = x1; x < x2; x++)
+	{
+		if (index < dash_width) {
+			*(offset++) = red;
+			*(offset++) = green;
+			*(offset++) = blue;
+		} else {
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+		}
+		
+		if (has_alpha) {
+			*(offset++) = alpha;
+		}
+
+		index++;
+		if (index > dash_width) {
+			index = 0;
+		}
+	}
+	
+	/* Draw left line */
+	row_offset = pixels + y1 * rowstride;
+	index = 0;
+	for (y = y1; y < y2; y++)
+	{
+		offset = row_offset + (x1 * pixel_offset);
+
+		if (index < dash_width) {
+			*(offset++) = red;
+			*(offset++) = green;
+			*(offset++) = blue;
+		} else {
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+		}		
+
+		if (has_alpha) {
+			*(offset++) = alpha;
+		}
+		row_offset += rowstride;
+
+		index++;
+		if (index > dash_width) {
+			index = 0;
+		}
+	}
+
+	/* Draw right line */
+	row_offset = pixels + y1 * rowstride;
+	index = 0;
+	for (y = y1; y < y2; y++)
+	{
+		offset = row_offset + ((x2 -1) * pixel_offset);
+
+		if (index < dash_width) {
+			*(offset++) = red;
+			*(offset++) = green;
+			*(offset++) = blue;
+		} else {
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+			*(offset++) = dash_color;
+		}
+						
+		if (has_alpha) {
+			*(offset++) = alpha;
+		}
+		row_offset += rowstride;
+
+		index++;
+		if (index > dash_width) {
+			index = 0;
+		}
+	}
+}
+
+static void
 draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			       GdkPixbuf *destination_pixbuf,
 			       int icon_left,
@@ -1393,19 +1548,10 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		/* FIXME bugzilla.eazel.com 2877: Need to implement the keyboard
 		 * selection framing for the smooth case.
 		 */
-#if 0		
 		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
-			gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
-			gdk_gc_set_fill (gc, GDK_STIPPLED);
-			gdk_draw_rectangle
-				(drawable, gc, FALSE,
- 				 box_left, icon_bottom - 2,
-				 width_so_far, 2 + height_so_far);
+			draw_focus_rect (destination_pixbuf, box_left, icon_bottom - 2, width_so_far, 2 + height_so_far);
 		}
-		
-		gdk_gc_unref (gc);
-#endif
 	} else {
 		/* If measuring, remember the width & height. */
 		details->text_width = width_so_far;
