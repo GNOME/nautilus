@@ -1,3 +1,82 @@
+2000-11-30  Robey Pointer  <robey@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/server/Makefile.am:
+
+	Everyone that uses libeazelinstall now needs to use
+	libeazelsoftcat too.  This doesn't make much sense for the rpm
+	view, but we've shelved that issue for later.
+	
+	* components/services/install/command-line/eazel-test-softcat.c:
+	(main):
+
+	New test program (eazel-softcat) to perform primitive softcat
+	queries and check the results.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+
+	Removed get_search_url_for_package and get_url_for_package: they
+	now belong to libesc.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(eazel_install_protocol_as_string), (packagedata_new),
+	(packagedata_copy), (packagedata_fill_in_missing),
+	(packagedata_destroy), (gstr_indent), (dump_package_list),
+	(packagedata_dump_int), (packagedata_dump):
+	* components/services/install/lib/eazel-install-types.h:
+
+	Add "features" field which is a GList<char *> of features this
+	package resolves for its parent.  Moved fill_in_missing here since
+	it's PackageData-centric.  Added debugging function for dumping a
+	PackageData into a human-readable string.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_list), (osd_parse_dependency),
+	(osd_parse_implementation), (osd_parse_softpkg),
+	(eazel_install_packagelist_parse):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Parse the "provides" list from softcat: this will change once
+	softcat finishes revising their XML format, but we need something
+	to work with for now.  Pull out other values like the Eazel id,
+	and tie "abstract" to summary instead of description.  Fix the OSD
+	parser so that we can distinguish an error return from an empty
+	package list.
+	
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize), (eazel_softcat_new),
+	(eazel_softcat_set_server), (eazel_softcat_get_server),
+	(eazel_softcat_set_cgi_path), (eazel_softcat_get_cgi_path),
+	(eazel_softcat_set_authn), (eazel_softcat_get_authn),
+	(eazel_softcat_set_retry), (eazel_softcat_error_string),
+	(sense_flags_to_softcat_flags), (gnome_vfs_escape_string),
+	(add_to_url), (verify_softcat_fields),
+	(get_search_url_for_package), (eazel_softcat_get_info):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Actually implement a good chunk of the softcat library.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (trilobite_get_distribution_enum),
+	(trilobite_get_distribution_arch):
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.h:
+
+	Move architecture detection here.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri), (trilobite_init),
+	(trilobite_set_debug_mode), (trilobite_set_log_handler):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+
+	Split out log handling so that test programs can trap trilobite
+	log entries.
+	
 2000-11-30  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bug 3750, to make cut/copy/paste work
 	in the complex search bar

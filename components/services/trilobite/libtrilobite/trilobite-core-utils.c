@@ -273,7 +273,7 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 		*length += bytes;
 		if (*length >= buffer_size - 64) {
 			/* expando time! */
-			buffer_size *= 2;
+			buffer_size *= 4;
 			*body = g_realloc (*body, buffer_size);
 		}
 	}
@@ -442,6 +442,7 @@ gboolean trilobite_fetch_uri_to_file (const char *uri_text,
 #endif /* TRILOBITE_SLIM */
 
 #ifndef TRILOBITE_SLIM
+
 /* trilobite_init -- does all the init stuff 
  * FIXME bugzilla.eazel.com 1656:
  * for now, this requires init_gnome, and thus a running X server.
@@ -487,13 +488,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 
 		logf = fopen (real_log_filename, "wt");
 		if (logf != NULL) {
-			g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
-					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
-					   (GLogFunc)trilobite_add_log, logf);
-			/* send libtrilobite messages there, too */
-			g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
-					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
-					   (GLogFunc)trilobite_add_log, logf);
+			trilobite_set_log_handler (logf, service_name);
 		} else {
 			g_warning (_("Can't write logfile %s -- using default log handler"), real_log_filename);
 		}
@@ -517,6 +512,20 @@ void
 trilobite_set_debug_mode (gboolean debug_mode)
 {
 	do_debug_log = (debug_mode ? 1 : 0);
+}
+
+void
+trilobite_set_log_handler (FILE *logf, const char *service_name)
+{
+	if (service_name != NULL) {
+		g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
+				   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
+				   (GLogFunc)trilobite_add_log, logf);
+	}
+	/* send libtrilobite messages there, too */
+	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
+			   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
+			   (GLogFunc)trilobite_add_log, logf);
 }
 #endif /* TRILOBITE_SLIM */
 

@@ -32,7 +32,11 @@
 #define TRILOBITE_CORE_UTILS_H
 
 #include <config.h>
+#include <stdio.h>
 #include <glib.h>
+#ifndef TRILOBITE_SLIM
+#include <bonobo.h>
+#endif
 
 void trilobite_debug (const char *format, ...);
 
@@ -61,6 +65,7 @@ gboolean trilobite_init (const char *service_name,
 			 GData *options);
 
 void trilobite_set_debug_mode (gboolean debug_mode);
+void trilobite_set_log_handler (FILE *logf, const char *service_name);
 #endif /* TRILOBITE_SLIM  */
 
 const char *trilobite_get_useragent_string (gboolean version, 
