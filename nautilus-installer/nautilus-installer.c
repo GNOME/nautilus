@@ -47,6 +47,17 @@
 #define DEFAULT_TMP_DIR "/tmp/eazel-install"
 	
 /* Forward Function Declarations */
+
+/* THe following 4 functions are a stupid copy of a few functions from
+ * components/services/trilobite/libtrilobite.  These should be statically
+ * in at some point.
+ */
+
+char* xml_get_value (xmlNode* node, const char* name);
+xmlDocPtr prune_xml (char* xmlbuf);
+gboolean check_for_root_user (void);
+gboolean check_for_redhat (void);
+
 static void show_usage (int exitcode, char* error);
 static void show_license (int exitcode, char* error);
 static TransferOptions* init_default_topts (void);
@@ -99,6 +110,88 @@ show_license (int exitcode, char* error) {
 	exit(exitcode);
 
 } /* end show_license */
+
+/* The following 4 functions are a stupid copy of a few functions from
+ * components/services/trilobite/libtrilobite.  These should be statically
+ * in at some point.
+ */
+
+char*
+xml_get_value (xmlNode* node, const char* name)
+{
+        char* ret;
+        xmlNode *child;
+
+        ret = xmlGetProp (node, name);
+        if (ret) {
+                return ret;
+        }
+        child = node->childs;
+        while (child) {
+                if (g_strcasecmp (child->name, name) == 0) {
+                        ret = xmlNodeGetContent (child);
+                        if (ret) {
+                                return ret;
+                        }
+                }
+                child = child->next;
+        }
+        return NULL;
+} /* end xml_get_value */
+
+xmlDocPtr
+prune_xml (char* xmlbuf)
+{
+        xmlDocPtr doc;
+        char* newbuf;
+        int length;
+        int i;
+
+        newbuf = strstr(xmlbuf, "<?xml");
+        if (!newbuf) {
+                return NULL;
+        }
+        length = strlen (newbuf);
+        for (i = 0; i < length; i++) {
+                if (newbuf[i] == '\0') {
+                        newbuf[i] = ' ';
+                }
+        }
+        newbuf[length] = '\0';
+        doc = xmlParseMemory (newbuf, length);
+
+        if (!doc) {
+                fprintf(stderr, "***Could not prune package file !***\n");
+                return NULL;
+        }
+
+        return doc;
+} /* end prune_xml */
+
+gboolean
+check_for_root_user (void)
+{
+        uid_t uid;
+
+        uid = getuid ();
+        if (uid == 0) {
+                return TRUE;
+        }
+        else {
+                return FALSE;
+        }
+} /* end check_for_root_user */
+
+gboolean
+check_for_redhat (void)
+{
+        if (g_file_exists ("/etc/redhat-release") != 0) {
+                return TRUE;
+        }
+        else {
+                return FALSE;
+        }
+} /* end check_for_redhat */
 
 /* Initialize the InstallOptions struct with default values */
 static InstallOptions*
@@ -188,7 +281,6 @@ main (int argc, char* argv[]) {
 	InstallOptions* iopts;
 	TransferOptions* topts;
 	poptContext pctx;
-	char* config_file;
 	char* popt_tmpdir;
 		
 	struct poptOption optionsTable[] = {
