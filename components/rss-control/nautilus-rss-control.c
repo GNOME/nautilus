@@ -182,7 +182,6 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 static void
 nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 {
-	GtkWidget *frame;
 	char *bullet_path;
 	BonoboPropertyBag *property_bag;
 		
@@ -199,15 +198,9 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 
 	/* receive mouse motion events */
 	gtk_widget_add_events (GTK_WIDGET (rss_control), GDK_POINTER_MOTION_MASK);
-
-	/* embed it into a frame */		
-	frame = gtk_frame_new (NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME (frame), GTK_SHADOW_OUT);
-  	gtk_widget_show (frame);
-	gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (rss_control));
 	
 	/* make the bonobo control */
-	rss_control->details->control = (BonoboObject*) bonobo_control_new (GTK_WIDGET (frame));
+	rss_control->details->control = (BonoboObject*) bonobo_control_new (GTK_WIDGET (rss_control));
 	
 	/* attach a property bag with the configure property */
 	property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, rss_control);

@@ -72,6 +72,7 @@
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
+#define MENU_PATH_ANNOTATE 			"/menu/File/File Items Placeholder/Annotate"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/menu/Edit/Global Edit Items Placeholder/Icon Text"
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
@@ -85,6 +86,7 @@
 
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_RENAME 				"/commands/Rename"
+#define COMMAND_ANNOTATE			"/commands/Annotate"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
@@ -386,6 +388,15 @@ rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, cons
 		(get_icon_container (FM_ICON_VIEW (callback_data)));
 
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
+}
+
+static void
+annotate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	g_assert (FM_IS_ICON_VIEW (callback_data));
+  		
+	/* show the annotation window */
+	g_message ("annotate invoked...");
 }
 
 static void
@@ -1151,6 +1162,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	FMIconView *icon_view;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", rename_icon_callback),
+		BONOBO_UI_VERB ("Annotate", annotate_callback),
 		BONOBO_UI_VERB ("Icon Text", customize_icon_text_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
@@ -1240,6 +1252,10 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				       COMMAND_RENAME,
 				       selection_count == 1
 				       && nautilus_file_can_rename (selection->data));
+	
+	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
+				       COMMAND_ANNOTATE,
+				       selection_count == 1);
 				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
