@@ -6,5 +6,6 @@
 extern ElementInfo toc_elements[];
 
 gpointer toc_init_data (void);
+void     toc_free_data (gpointer data);
 
 #endif

@@ -167,6 +167,15 @@ toc_init_data (void)
 	return (gpointer) retval;
 }
 
+void
+toc_free_data (gpointer data)
+{
+	TocContext *to_free;
+
+	to_free = (TocContext *) data;
+	g_free (to_free->header);
+	g_free (to_free);
+}
 
 static void
 toc_sect_start_element (Context *context,
@@ -332,9 +341,10 @@ toc_artheader_end_element (Context *context, const gchar *name)
 		g_print ("<BR>");
 	}
 	g_print ("<P>");
-	if ((header->copyright_holder) && (header->copyright_year))
+	if ((header->copyright_holder) && (header->copyright_year)) {
 		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">%s</A> &copy; %s %s %s",
 			 context->base_file, _("Copyright"), header->copyright_year, _("by"),header->copyright_holder);
+	}
 	g_print ("<HR>\n<H2>%s</H2>\n\n", _("Table of Contents"));
 	g_print ("<P>\n");
 }
@@ -425,6 +435,8 @@ toc_copyright_characters (Context *context,
 
 	temp = g_strndup (chars, len);
 
+	/* FIXME: Memory is leaked here, especially if we have multiple
+	 * copyright holders. Not a big priority though. */
 	switch (index) {
 	case COPYRIGHT:
 		if (((StackElement *) context->stack->data)->info->index == YEAR)

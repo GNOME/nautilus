@@ -1,3 +1,20 @@
+2001-01-02  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        A minor attempt at deallocating things correctly before we exit (so
+        memory profilers can be used properly).
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        (parse_file): Free stuff that has been allocated by libxml before
+        exiting this function. Now memprof stops showing one big large red
+        bar.
+
+        Call toc_free_data when done with the TOC.
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_copyright_characters): Add a comment about a memory leak I
+        discovered.
+        (toc_free_data): New function to free data allocated by toc_init_data
+
 2001-01-02  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

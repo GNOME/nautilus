@@ -838,9 +838,17 @@ parse_file (gchar *filename, gchar *section, char *arg)
 			print_footer (NULL, NULL, temp_uri);
 			g_free (temp_uri);
 		}
+		toc_free_data (context->data);
 	}
 
+	/* Set this to NULL so xmlFreeParserCtxt does not try to free this static memory */
+	context->ParserCtxt->sax = NULL;
+	if (context->ParserCtxt->myDoc) {
+		xmlFreeDoc (context->ParserCtxt->myDoc);
+	}
+	xmlFreeParserCtxt (context->ParserCtxt);
 	g_free (context->base_path);
+	g_free (context);
 }
 
 int
