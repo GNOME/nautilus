@@ -1,3 +1,26 @@
+2001-01-17  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bugs 5674, 5697 and 5699, Nautilus shows a broken image
+	icon instead of a mime-type icon for image types that it doesn't
+	support.  Fixed by generating a zero-length placeholder thumbnail
+	instead of the broken image icon; the icon factory tests for the
+	placeholder and uses the proper mime-type icon when it's present.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(should_display_image_file_as_itself),
+	(nautilus_icon_factory_get_icon_for_file):
+	made should_display_image_file_as_itself return FALSE when the
+	placeholder is present.
+	
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(make_invalid_thumbnail_uri),
+	(nautilus_thumbnail_has_invalid_thumbnail), (check_for_thumbnails):
+	added routine to test if a placeholder is present, and made it
+	generate the placeholder when thumbnailing fails.
+	
+	* libnautilus-extensions/nautilus-thumbnails.h:
+	added nautilus_thumbnail_has_invalid_thumbnail
+	
 2001-01-17  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-self-checks.h:

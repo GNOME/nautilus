@@ -1292,7 +1292,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 
 
 static gboolean
-should_display_image_file_as_itself (NautilusFile *file)
+should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 {
 	NautilusSpeedTradeoffValue preference_value;
 	
@@ -1300,6 +1300,13 @@ should_display_image_file_as_itself (NautilusFile *file)
 		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS, 
 		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 
+	/* see if there's a proxy thumbnail to indicate that thumbnailing
+	 * failed, in which case we shouldn't use the thumbnail.
+	 */
+	if (nautilus_thumbnail_has_invalid_thumbnail (file, anti_aliased)) {
+		return FALSE;
+	}
+	
 	/* if we don't have read permissions for the file, don't show as itself for security reasons  */
 	if (!nautilus_file_can_read (file)) {
 		return FALSE;
@@ -1345,7 +1352,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		mime_type = nautilus_file_get_mime_type (file);
 		file_size = nautilus_file_get_size (file);
 		
-		if (nautilus_istr_has_prefix (mime_type, "image/") && should_display_image_file_as_itself (file)) {
+		if (nautilus_istr_has_prefix (mime_type, "image/") &&
+				should_display_image_file_as_itself (file, anti_aliased)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
 				uri = nautilus_file_get_uri (file);				
 			} else if (strstr (file_uri, "/.thumbnails/") == NULL && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {

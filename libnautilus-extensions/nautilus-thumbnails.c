@@ -45,6 +45,11 @@
 				   | GNOME_VFS_PERM_GROUP_ALL \
 				   | GNOME_VFS_PERM_OTHER_ALL)
 
+#define THUMBNAIL_PLACEHOLDER_PERMISSIONS (GNOME_VFS_PERM_USER_READ | \
+					   GNOME_VFS_PERM_USER_WRITE | \
+					   GNOME_VFS_PERM_GROUP_READ | \
+					   GNOME_VFS_PERM_GROUP_WRITE | \
+					   GNOME_VFS_PERM_OTHER_READ)
 /* thumbnail task state */
 static GList *thumbnails;
 static char *new_thumbnail_path;
@@ -214,6 +219,44 @@ compare_thumbnail_info (gconstpointer a, gconstpointer b)
 	info_b = (NautilusThumbnailInfo *)b;
 
 	return strcmp (info_a->thumbnail_uri, info_b->thumbnail_uri) != 0;
+}
+
+/* utility to create a placeholder thumbnail uri (which indicates that a
+ * previous thumbnailing attempt has failed)
+ */
+static char *
+make_invalid_thumbnail_uri (const char *thumbnail_uri)
+{
+	return g_strconcat (thumbnail_uri, ".x", NULL);
+}
+
+/* return true if there's a placeholder thumbnail present for the passed in
+ * file, which indicates that a previous thumbnailing attempt failed and
+ * we should use the mime-type icon instead
+ */
+gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file,
+						   gboolean anti_aliased)
+{
+	char *file_uri, *thumbnail_uri, *invalid_thumbnail_uri;
+	GnomeVFSURI *temp_uri;
+	gboolean uri_is_local, is_invalid;
+	
+	file_uri = nautilus_file_get_uri (file);
+	
+	/* compose the uri for the thumbnail locally */
+	temp_uri = gnome_vfs_uri_new (file_uri);
+	uri_is_local = gnome_vfs_uri_is_local (temp_uri);
+	gnome_vfs_uri_unref (temp_uri);
+	
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, uri_is_local, anti_aliased, TRUE);
+	invalid_thumbnail_uri = make_invalid_thumbnail_uri (thumbnail_uri);
+	
+	is_invalid = vfs_file_exists (invalid_thumbnail_uri);
+	
+	g_free (file_uri);
+	g_free (thumbnail_uri);
+	g_free (invalid_thumbnail_uri);
+	return is_invalid;
 }
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
@@ -419,14 +462,14 @@ static gboolean
 check_for_thumbnails (void)
 {
 	NautilusThumbnailInfo *info;
-	GdkPixbuf *broken_image;
 	GList *head;
 	NautilusFile *file;
 	int status;
-	char *current_thumbnail;
-	char *image_path, *thumbnail_path;
+	char *current_thumbnail, *invalid_uri;
 	gboolean task_terminated;
 	gboolean need_update;
+	GnomeVFSResult result;
+	GnomeVFSHandle *handle;
 	
 	info = (NautilusThumbnailInfo*) thumbnails->data;
 	
@@ -438,22 +481,14 @@ check_for_thumbnails (void)
 		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local,
 			info->anti_aliased, TRUE);
 		
-		/* if a thumbnail wasn't successfully made, use the "broken image" icon */
+		/* if a thumbnail wasn't successfully made, create a placeholder to flag that we tried */
 		need_update = TRUE;
 		if (!vfs_file_exists (current_thumbnail)) {
-			image_path = nautilus_theme_get_image_path ("i-broken-image");
-			broken_image = gdk_pixbuf_new_from_file (image_path);
-			
-			if (broken_image != NULL) {
-				thumbnail_path = gnome_vfs_get_local_path_from_uri (current_thumbnail);
-				need_update = nautilus_gdk_pixbuf_save_to_file (broken_image, thumbnail_path);
-				gdk_pixbuf_unref (broken_image);
-				g_free (thumbnail_path);
-			} else {
-				need_update = FALSE;
-			}
-			
-			g_free (image_path);
+			invalid_uri = make_invalid_thumbnail_uri (current_thumbnail);
+			result = gnome_vfs_create (&handle, invalid_uri, GNOME_VFS_OPEN_WRITE,
+						   FALSE, THUMBNAIL_PLACEHOLDER_PERMISSIONS);
+			gnome_vfs_close (handle);
+			g_free (invalid_uri);
 		}
 		
 		/* update the file's icon */		

@@ -30,6 +30,8 @@
 /* Returns NULL if there's no thumbnail yet. */
 char *nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased);
 
+gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file, gboolean anti_aliased);
+
 void nautilus_update_thumbnail_file_renamed (const char *old_file_name,
 					     const char *new_file_name);
 
