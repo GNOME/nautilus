@@ -85,7 +85,8 @@
 #define setmntent(f,m) fopen(f,m)
 #endif
 
-#ifdef HAVE_CDDA
+#ifdef HAVE_CDDA_INTERFACE_H
+#ifdef HAVE_CDDA_PARANOIA_H
 
 #define size16 short
 #define size32 int
@@ -104,6 +105,7 @@
  */
 char **broken_header_fix = strerror_tr;
 
+#endif
 #endif
 
 #define CHECK_STATUS_INTERVAL 2000
@@ -168,9 +170,11 @@ static void		free_mount_list 				(GList 				*mount_list);
 static GList 		*get_removable_volumes 				(void);
 static GHashTable 	*create_readable_mount_point_name_table 	(void);
 									 
-#ifdef HAVE_CDDA
+#ifdef HAVE_CDDA_INTERFACE_H
+#ifdef HAVE_CDDA_PARANOIA_H
 static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
+#endif
 #endif
 
 #ifdef SOLARIS_MNT
@@ -389,9 +393,11 @@ get_removable_volumes (void)
 			
 	fclose (file);
 	
-#ifdef HAVE_CDDA
+#ifdef HAVE_CDDA_INTERFACE_H
+#ifdef HAVE_CDDA_PARANOIA_H
 	volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 	volumes = mount_volume_add_filesystem (volume, volumes);
+#endif
 #endif
 
 	/* Move all floppy mounts to top of list */
@@ -989,13 +995,15 @@ get_current_mount_list (void)
 		fclose (fh);
 	}
 	
-#ifdef HAVE_CDDA
+#ifdef HAVE_CDDA_INTERFACE_H
+#ifdef HAVE_CDDA_PARANOIA_H
 	/* CD Audio tricks */
 	if (locate_audio_cd ()) {
 		volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 		mount_volume_get_name (volume);
 		current_mounts = mount_volume_add_filesystem (volume, current_mounts);
 	}
+#endif
 #endif
 
 	return current_mounts;
@@ -1902,7 +1910,8 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 	}
 }
 
-#ifdef HAVE_CDDA
+#ifdef HAVE_CDDA_INTERFACE_H
+#ifdef HAVE_CDDA_PARANOIA_H
 
 static cdrom_drive *
 open_cdda_device (GnomeVFSURI *uri)
@@ -1968,4 +1977,5 @@ locate_audio_cd (void) {
 	return found_one;
 }
 
+#endif
 #endif
