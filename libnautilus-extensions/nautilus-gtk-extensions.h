@@ -54,9 +54,16 @@ void              nautilus_gtk_object_list_unref                                
 void              nautilus_gtk_object_list_free                                  (GList                  *list);
 
 /* GtkWidget */
-gboolean          nautilus_point_in_allocation                                   (const GtkAllocation    *allocation,
+gboolean          nautilus_point_in_allocation                                   (const GtkAllocation    *allocation,										  
 										  int                     x,
 										  int                     y);
+
+void		  nautilus_gtk_widget_set_font 					 (GtkWidget *widget, 
+										  GdkFont *font);
+
+void		  nautilus_gtk_widget_set_font_by_name 			 	 (GtkWidget *widget, 
+										  const char *font_name);
+
 gboolean          nautilus_point_in_widget                                       (GtkWidget              *widget,
 										  int                     x,
 										  int                     y);

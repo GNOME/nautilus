@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -105,8 +106,6 @@ static void nautilus_rpm_view_drag_data_received     (GtkWidget                *
 static void nautilus_rpm_view_initialize_class       (NautilusRPMViewClass   *klass);
 static void nautilus_rpm_view_initialize             (NautilusRPMView        *view);
 static void nautilus_rpm_view_destroy                (GtkObject                *object);
-static void nautilus_rpm_view_realize                (GtkWidget                *widget);
-static void setup_title_font                           (NautilusRPMView        *rpm_view);
 static void rpm_view_notify_location_change_callback (NautilusContentViewFrame *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusRPMView        *rpm_view);
@@ -125,7 +124,6 @@ nautilus_rpm_view_initialize_class (NautilusRPMViewClass *klass)
 	widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->destroy = nautilus_rpm_view_destroy;
-	widget_class->realize = nautilus_rpm_view_realize;	
 	widget_class->drag_data_received  = nautilus_rpm_view_drag_data_received;
 }
 
@@ -178,6 +176,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* allocate the name field */
 	
 	rpm_view->details->package_title = gtk_label_new ("Package Title");
+	nautilus_gtk_widget_set_font_by_name (rpm_view->details->package_title,
+					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_title, 0, 0, 0);	
 	gtk_widget_show (rpm_view->details->package_title);
 	
@@ -362,37 +362,6 @@ nautilus_rpm_view_get_view_frame (NautilusRPMView *rpm_view)
 	return rpm_view->details->view_frame;
 }
 
-/* utility routine to set up the font for the package title and summary, called after we're realized */
-static void
-setup_title_font(NautilusRPMView *rpm_view)
-{
-	GtkStyle *temp_style;
-
-        temp_style = gtk_style_new();
-
-	gtk_widget_realize (rpm_view->details->package_title);	
-	temp_style->font = gdk_font_load ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_widget_set_style (rpm_view->details->package_title,
-                              gtk_style_attach (temp_style, rpm_view->details->package_title->window));
-
-}
-
-/* set up fonts, colors, etc after we're realized */
-void
-nautilus_rpm_view_realize(GtkWidget *widget)
-{
-	NautilusRPMView *rpm_view;
-	NautilusBackground *background;
- 
- 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-	
-  	rpm_view = NAUTILUS_RPM_VIEW (widget);
-
-	setup_title_font (rpm_view);
-  
-	background = nautilus_get_widget_background (widget);
-	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
-}
 
 /* use the package database to see if the passed-in package is installed or not */
 /* return 0 if it's not installed, one if it is, -1 if same package, different version */

@@ -420,3 +420,37 @@ nautilus_gtk_object_list_free (GList *list)
 	nautilus_gtk_object_list_unref (list);
 	g_list_free (list);
 }
+
+/* utilities for setting the font associated with a widget */
+
+static void
+nautilus_gtk_style_set_font (GtkStyle *style, GdkFont *font)
+{
+	gdk_font_ref (font);
+	gdk_font_unref (style->font);
+	style->font = font;
+}
+
+void
+nautilus_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
+{
+	GtkStyle *new_style;
+	
+	new_style = gtk_style_copy (gtk_widget_get_style (widget));
+
+	nautilus_gtk_style_set_font (new_style, font);
+	
+	gtk_widget_set_style (widget, new_style);
+	gtk_style_unref (new_style);
+}
+
+
+void
+nautilus_gtk_widget_set_font_by_name (GtkWidget *widget, const char *font_name)
+{
+	GdkFont *font;
+	
+	font = gdk_font_load (font_name);
+	nautilus_gtk_widget_set_font (widget, font);
+	gdk_font_unref (font);
+}
