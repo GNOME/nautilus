@@ -29,6 +29,7 @@
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileFactoryDetails {
+	char dummy; /* ANSI C does not allow empty structs */
 };
 
 static void nautilus_metafile_factory_init       (NautilusMetafileFactory      *factory);

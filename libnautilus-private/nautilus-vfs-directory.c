@@ -31,6 +31,7 @@
 #include "nautilus-file-private.h"
 
 struct NautilusVFSDirectoryDetails {
+	char dummy; /* ANSI C does not allow empty structs */
 };
 
 static void nautilus_vfs_directory_initialize       (gpointer   object,

@@ -1,5 +1,15 @@
 2001-05-09  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-private/nautilus-metafile-factory.c:
+	* libnautilus-private/nautilus-vfs-directory.c:
+	* libnautilus-private/nautilus-vfs-file.c:
+	Added dummy members so we have no illegal empty structures.
+	
+	* src/nautilus-sidebar-title.c: (update_emblems): Get rid of some
+	dead code.
+
+2001-05-09  Darin Adler  <darin@eazel.com>
+
 	* README: Updated required versions of packages.
 
 2001-05-08  Darin Adler  <darin@eazel.com>

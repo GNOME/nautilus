@@ -31,6 +31,7 @@
 #include <eel/eel-gtk-macros.h>
 
 struct NautilusVFSFileDetails {
+	char dummy; /* ANSI C does not allow empty structs */
 };
 
 static void nautilus_vfs_file_initialize       (gpointer   object,

@@ -656,10 +656,6 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);
 
-	/* make sure we have the file */
-	if (sidebar_title->details->file) {
-	}
-	
 	/* fetch the emblem icons from metadata */
 	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, NULL);
 
