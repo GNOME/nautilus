@@ -40,19 +40,17 @@ create_default_metadata (const char* config_file) {
 	gboolean rv;
 	int retval;
 
-	g_print("Creating default configuration file ...\n");
+	g_print (_("Creating default configuration file ...\n"));
 
 	retval = mkdir ("/var/eazel/services", 0755);
 	if (retval < 0) {
 		if (errno != EEXIST) {
-			fprintf (stderr, "***Could not create services directory !***\n");
-			exit (1);
+			g_error (_("*** Could not create services directory! ***\n"));
 		}
 	}
-	rv = create_default_configuration_metafile(config_file);
+	rv = create_default_configuration_metafile (config_file);
 	if (rv == FALSE) {
-		fprintf(stderr, "***Could not create the default configuration file !***\n");
-		exit (1);
+		g_error (_("*** Could not create the default configuration file! ***\n"));
 	}
 } /* end create_default_metadata */
 
@@ -83,9 +81,8 @@ create_default_configuration_metafile (const char* target_file) {
 	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
 
 	if (doc == NULL) {
-		fprintf (stderr, "***Error generating default configuration file !***\n");
 		xmlFreeDoc (doc);
-		exit (1);
+		g_error (_("*** Error generating default configuration file! ***\n"));
 	}
 
 	xmlSaveFile (target_file, doc);
@@ -101,22 +98,20 @@ xml_doc_sanity_checks (xmlDocPtr doc) {
 	xmlNodePtr base;
 
 	if (doc == NULL) {
-		fprintf (stderr, "***Unable to open config file!***\n");
 		xmlFreeDoc (doc);
-		g_assert (doc != NULL);
+		g_error (_("*** Unable to open config file! ***\n"));
 	}
 
 	base = doc->root;
 	if (base == NULL) {
-		fprintf (stderr, "***The config file contains no data!***\n");
 		xmlFreeDoc (doc);
-		g_assert (base != NULL);
+		g_error (_("*** The config file contains no data! ***\n"));
 	}
 	
 	if (g_strcasecmp (base->name, "EAZEL_INSTALLER")) {
-		fprintf (stderr, "***Cannot find the EAZEL_INSTALLER xmlnode!***\n");
+		g_print (_("*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"));
 		xmlFreeDoc (doc);
-		g_error ("***Bailing from xmlparse!***\n");
+		g_error (_("*** Bailing from xmlparse! ***\n"));
 	}
 
 } /* end xml_doc_sanity_checks */
@@ -136,7 +131,7 @@ get_urltype_from_string (char* tmpbuf) {
 		rv = PROTOCOL_FTP;
 	}
 	else {
-		g_warning ("Could not set URLType from config file!");
+		g_warning (_("Could not set URLType from config file!"));
 	}
 	return rv;
 } /* end get_urltype_from_string */

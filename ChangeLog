@@ -1,3 +1,33 @@
+2000-05-25  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/command-line/eazel-install.c:
+	(generate_new_package_list), (create_temporary_directory),
+	(fetch_remote_package_list), (main):
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_metadata), (create_default_configuration_metafile),
+	(xml_doc_sanity_checks), (get_urltype_from_string):
+	* components/services/install/lib/eazel-install-protocols.c:
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_a_package),
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages), (uninstall_a_package), (do_rpm_install):
+	* components/services/install/lib/eazel-install-tests.c:
+	(dump_package_list):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category), (parse_local_xml_package_list),
+	(generate_xml_package_list), (parse_pkg_template):
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+
+	Big time clean up of the overall flow of installs.  Now, all packages
+	are downloaded before install.  Tried to setup as many of the print 
+	functions as possible to support internationalization.  Removed old
+	gnet http groks of the package list and now grab the package list with
+	the async ghttp fetch functionality.  Did alot of cleanups in the
+	rpm glue functions to make them more managable.  Removed the prune_xml
+	function i swipped from helixcode since it is no longer needed.
+
 2000-05-24  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

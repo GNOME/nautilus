@@ -57,35 +57,6 @@ xml_get_value (xmlNode* node, const char* name)
 	return NULL;
 } /* end xml_get_value */
 
-xmlDocPtr
-prune_xml (char* xmlbuf)
-{
-	xmlDocPtr doc;
-	char* newbuf;
-	int length;
-	int i;
-
-	newbuf = strstr(xmlbuf, "<?xml");
-	if (!newbuf) {
-		return NULL;
-	}
-	length = strlen (newbuf);
-	for (i = 0; i < length; i++) {
-		if (newbuf[i] == '\0') {
-			newbuf[i] = ' ';
-		}
-	}
-	newbuf[length] = '\0';
-	doc = xmlParseMemory (newbuf, length);
-
-	if (!doc) {
-		fprintf(stderr, "***Could not prune package file !***\n");
-		return NULL;
-	}
-
-	return doc;
-} /* end prune_xml */
-
 gboolean
 check_for_root_user (void)
 {

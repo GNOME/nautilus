@@ -33,13 +33,39 @@
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/dbindex.h>
-#include <rpm/rpmurl.h>
 #include <string.h>
 #include <time.h>
 
 #define UNKNOWN_SIZE 1024
 
 typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
+
+static void download_a_package (URLType protocol,
+                                TransferOptions* topts,
+                                PackageData* package);
+
+static gboolean download_all_packages (URLType protocol,
+                                       TransferOptions* topts,
+                                       GList* categories);
+
+static gboolean install_all_packages (const char* tmp_dir,
+                                      int install_flags,
+                                      int problem_filters,
+                                      int interface_flags,
+                                      GList* categories);
+
+
+static gboolean uninstall_a_package (PackageData* package,
+                                     int uninstall_flags,
+                                     int problem_filters,
+                                     int interface_flags);
+
+static void* rpm_show_progress (const Header h,
+                                const rpmCallbackType callback_type,
+                                const unsigned long amount,
+                                const unsigned long total,
+                                const void* pkgKey,
+                                void* data);
 
 static int rpm_install (char* root_dir,
                         char* file_name,
@@ -71,28 +97,21 @@ static int do_rpm_uninstall (char* root_dir,
                              int problem_filters,
                              int interface_flags);
 
-static void* rpm_show_progress (const Header h,
-                                const rpmCallbackType callback_type,
-                                const unsigned long amount,
-                                const unsigned long total,
-                                const void* pkgKey,
-                                void* data);
-
 
 gboolean
 install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 
 	GList* categories;
 	gboolean rv;
-	int install_flags, interface_flags, problem_filter;
+	int install_flags, interface_flags, problem_filters;
 	
 	categories = NULL;
 	install_flags = 0;
 	interface_flags = 0;
-	problem_filter = 0;
+	problem_filters = 0;
 	
 	if (iopts->mode_test == TRUE) {
-		g_print ("Dry Run Mode Activated.  Packages will not actually be installed ...\n");
+		g_print (_("Dry Run Mode Activated.  Packages will not actually be installed ...\n"));
 		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
@@ -108,83 +127,138 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 	}
 
 	if (iopts->mode_force == TRUE) {
-		problem_filter |= RPMPROB_FILTER_REPLACEPKG |
-                                  RPMPROB_FILTER_REPLACEOLDFILES |
-                                  RPMPROB_FILTER_REPLACENEWFILES |
-                                  RPMPROB_FILTER_OLDPACKAGE;
+		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
+                                   RPMPROB_FILTER_REPLACEOLDFILES |
+                                   RPMPROB_FILTER_REPLACENEWFILES |
+                                   RPMPROB_FILTER_OLDPACKAGE;
 	}
 	
 	rpmReadConfigFiles (topts->rpmrc_file, NULL);
 
-	g_print ("Reading the install package list ...\n");
+	g_print (_("Reading the install package list ...\n"));
 	categories = parse_local_xml_package_list (iopts->pkg_list);
 
-	while (categories) {
-		CategoryData* c = categories->data;
-		GList* t = c->packages;
+	rv = download_all_packages (iopts->protocol, topts, categories);
 
-		g_print ("Install Category - %s\n", c->name);
-		while (t) {
-			PackageData* pack = t->data;
+	rv = install_all_packages (topts->tmp_dir,
+                                   install_flags,
+                                   problem_filters,
+                                   interface_flags,
+                                   categories);
+
+	return rv;
+} /* end install_new_packages */
+
+static void
+download_a_package (URLType protocol, TransferOptions* topts, PackageData* package) {
+
+	if (protocol == PROTOCOL_HTTP) {
+		char* rpmname;
+		char* targetname;
+		char* url;
+		gboolean rv;
+
+                rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm",
+                                           package->name,
+                                           package->version,
+                                           package->minor,
+                                           package->archtype);
+
+		targetname = g_strdup_printf ("%s/%s",
+                                              topts->tmp_dir,
+                                              rpmname);
+		url = g_strdup_printf ("http://%s%s/%s",
+                                       topts->hostname,
+                                       topts->rpm_storage_path,
+                                       rpmname);
+
+		g_print ("Downloading %s...\n", rpmname);
+		rv = http_fetch_remote_file (url, targetname);
+		if (rv != TRUE) {
+			g_error ("*** Failed to retreive %s! ***\n", url);
+		}
+
+		g_free (rpmname);
+		g_free (targetname);
+		g_free (url);
+
+	}
+} /* end download_a_package */
+
+static gboolean
+download_all_packages (URLType protocol,
+                       TransferOptions* topts,
+                       GList* categories) {
+
+	while (categories) {
+		CategoryData* cat;
+		GList* pkgs;
+
+		cat = categories->data;
+		pkgs = cat->packages;
+
+		g_print ("Category = %s\n", cat->name);
+		while (pkgs) {
+			PackageData* package;
+
+			package = pkgs->data;
+
+			download_a_package (protocol, topts, package);
+
+			pkgs = pkgs->next;
+		}
+		categories = categories->next;
+	}
+
+	free_categories (categories);
+	
+	return TRUE;
+} /* end download_all_packages */
+
+static gboolean
+install_all_packages (const char* tmp_dir,
+                      int install_flags,
+                      int problem_filters,
+                      int interface_flags,
+                      GList* categories) {
+
+	gboolean rv;
+
+	while (categories) {
+		CategoryData* cat = categories->data;
+		GList* pkgs = cat->packages;
+
+		g_print ("Category = %s\n", cat->name);
+		while (pkgs) {
+			PackageData* pack;
 			char* pkg; 
 			int retval;
 
+			pack = pkgs->data;
 			retval = 0;
 			
 			pkg = g_strdup_printf ("%s/%s-%s-%s.%s.rpm",
-                                               topts->tmp_dir,
+                                               tmp_dir,
                                                pack->name,
                                                pack->version,
                                                pack->minor,
                                                pack->archtype);
 
-			if (iopts->protocol == PROTOCOL_HTTP) {
-				gboolean rv;
-				char* rpmname;
-				char* targetname;
-				char* url;
-
-                                rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm",
-                                                           pack->name,
-                                                           pack->version,
-                                                           pack->minor,
-                                                           pack->archtype);
-
-				targetname = g_strdup_printf ("%s/%s",
-                                                              topts->tmp_dir,
-                                                              rpmname);
-				url = g_strdup_printf ("http://%s%s/%s",
-                                                       topts->hostname,
-                                                       topts->rpm_storage_path,
-                                                       rpmname);
-				
-				g_print ("Downloading %s...\n", rpmname);
-				rv = http_fetch_remote_file (url, targetname);
-				if (rv != TRUE) {
-					g_error ("*** Failed to retreive %s! ***\n", url);
-				}
-
-				g_free (rpmname);
-				g_free (targetname);
-				g_free (url);
-
-			}
-			
 			g_print ("Installing %s\n", pkg);
 
                         retval = rpm_install ("/", pkg, NULL, install_flags,
-                                              problem_filter, interface_flags,
+                                              problem_filters, interface_flags,
                                               NULL, NULL); 
 
 			if (retval == 0) {
-				g_print ("Package install successful !\n");
+				g_print (_("Package install successful !\n"));
 				rv = TRUE;
 			}
 			else {
-				g_print ("Package install failed !\n");
+				g_print (_("Package install failed !\n"));
 				rv = FALSE;
 			}
-			t = t->next;
+			pkgs = pkgs->next;
 		}
 		categories = categories->next;
 	}
@@ -192,7 +266,8 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 	free_categories (categories);
 	
 	return rv;
-} /* end install_new_packages */
+} /* end install_all_packages */
+
 
 gboolean 
 uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
@@ -218,51 +293,22 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 
 	rpmReadConfigFiles (topts->rpmrc_file, NULL);
 
-	g_print ("Reading the uninstall package list ...\n");
+	g_print (_("Reading the uninstall package list ...\n"));
 	categories = parse_local_xml_package_list (iopts->pkg_list);
 
 	while (categories) {
-		CategoryData* c = categories->data;
-		GList* t = c->packages;
+		CategoryData* cat = categories->data;
+		GList* pkgs = cat->packages;
 
-		g_print ("Uninstall Category - %s\n", c->name);
-		while (t) {
-			PackageData* pack = t->data;
-			char* pkg; 
-			int retval;
+		g_print ("Category = %s\n", cat->name);
+		while (pkgs) {
+			PackageData* package = pkgs->data;
 
-			retval = 0;
-			if (g_strcasecmp (pack->archtype, "src") != 0) {
-
-				pkg = g_strdup_printf ("%s-%s-%s",
-                                                       pack->name,
-                                                       pack->version,
-                                                       pack->minor);
-				g_print ("Uninstalling %s\n", pkg);
-				retval = rpm_uninstall ("/",
-                                                        pkg,
-							uninstall_flags,
-                                                        problem_filters,
-                                                        interface_flags);
-				g_free (pkg);
-				if (retval == 0) {
-					g_print ("Package uninstall successful !\n");
-					rv = TRUE;
-				}
-				else {
-					g_print ("Package uninstall failed !\n");
-					rv = FALSE;
-				}
-			}
-			else {
-				pkg = g_strdup_printf ("%s-%s-%s",
-                                                       pack->name,
-                                                       pack->version,
-                                                       pack->minor);
-  				g_print ("%s seems to be a source package.  Skipping ...\n", pkg);
-			g_free (pkg);
-  			}
-			t = t->next;
+			rv = uninstall_a_package (package,
+                                                  uninstall_flags,
+                                                  problem_filters,
+                                                  interface_flags);
+			pkgs = pkgs->next;
 		}
 		categories = categories->next;
 	}
@@ -273,6 +319,48 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 
 } /* end install_new_packages */
 
+static gboolean
+uninstall_a_package (PackageData* package,
+                     int uninstall_flags,
+                     int problem_filters,
+                     int interface_flags) {
+	char* pkg; 
+	int retval;
+	gboolean rv;
+
+	retval = 0;
+
+	pkg = g_strdup_printf ("%s-%s-%s",
+                               package->name,
+                               package->version,
+                               package->minor);
+
+	if (g_strcasecmp (package->archtype, "src") != 0) {
+
+		g_print ("Uninstalling %s\n", pkg);
+		retval = rpm_uninstall ("/",
+                                        pkg,
+                                        uninstall_flags,
+                                        problem_filters,
+                                        interface_flags);
+		g_free (pkg);
+		if (retval == 0) {
+			g_print ("Package uninstall successful!\n");
+			rv = TRUE;
+		}
+		else {
+			g_print (_("Package uninstall failed !\n"));
+			rv = FALSE;
+		}
+	}
+	else {
+  		g_print ("%s seems to be a source package.  Skipping ...\n", pkg);
+		g_free (pkg);
+  	}
+
+	return rv;
+
+} /* end uninstall_a_package */
 
 static void*
 rpm_show_progress (const Header h,
@@ -390,8 +478,8 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
                                            NULL,
                                            NULL);
 		if (is_source) {
-			g_warning (_("Source Package installs not supported!\n"
-                                     "Package %s skipped."), pkg_file);	
+			g_warning ("Source Package installs not supported!\n"
+                                     "Package %s skipped.", pkg_file);	
 		}
 		fdClose (fd);
 		if (binary_headers[num_binary_packages]) {

@@ -56,7 +56,6 @@ enum _DistributionType {
 };
 
 char* xml_get_value (xmlNode* node, const char* name);
-xmlDocPtr prune_xml (char* xmlbuf);
 gboolean check_for_root_user (void);
 gboolean check_for_redhat (void);
 DistributionType determine_distribution_type (void);

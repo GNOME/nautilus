@@ -109,11 +109,10 @@ generate_new_package_list (const char* popt_genpkg_file,
 	retval = generate_xml_package_list (popt_genpkg_file, config_file);
 
 	if (retval == FALSE) {
-		fprintf (stderr, "***Could not generate xml package list !***\n");
-		exit (1);
+		g_error (_("*** Could not generate xml package list! ***\n"));
 	}
 
-	g_print ("XML package list successfully generated ...\n");
+	g_print (_("XML package list successfully generated ...\n"));
 	exit (1);
 } /* end generate_new_package_list */
 
@@ -122,13 +121,12 @@ create_temporary_directory (const char* tmpdir) {
 
 	int retval;
 
-	g_print("Creating temporary download directory ...\n");
+	g_print (_("Creating temporary download directory ...\n"));
 
 	retval = mkdir (tmpdir, 0755);
 	if (retval < 0) {
 		if (errno != EEXIST) {
-			fprintf (stderr, "***Could not create temporary directory !***\n");
-			exit (1);
+			g_error (_("*** Could not create temporary directory! ***\n"));
 		}
 	}
 } /* end create_temporary_directory */
@@ -137,17 +135,20 @@ static void
 fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
 
 	gboolean retval;
+	char* url;
 
-	g_print ("Getting package-list.xml from remote server ...\n");
+	g_print (_("Getting package-list.xml from remote server ...\n"));
 
-	retval = http_fetch_xml_package_list (topts->hostname,
-                                              topts->port_number,
-                                              topts->pkg_list_storage_path,
-                                              pkg_list);
+	url = g_strdup_printf ("http://%s%s", topts->hostname,
+                                topts->pkg_list_storage_path);
+
+	retval = http_fetch_remote_file (url, pkg_list);
+
 	if (retval == FALSE) {
-		fprintf (stderr, "***Unable to retrieve package-list.xml !***\n");
-		exit (1);
+		g_free (url);
+		g_error ("*** Unable to retrieve package-list.xml! ***\n");
 	}
+	g_free (url);
 } /* end fetch_remote_package_list */
 
 int
@@ -261,23 +262,20 @@ main (int argc, char* argv[]) {
 
 	retval = check_for_root_user ();
 	if (retval == FALSE) {
-		fprintf (stderr, "***You must run eazel-install as root!***\n");
-		exit (1);
+		g_error (_("*** You must run eazel-install as root! ***\n"));
 	}
 
 	retval = check_for_redhat ();
 	if (retval == FALSE) {
-		fprintf (stderr, "***eazel-install can only be used on RedHat!***\n");
-		exit (1);
+		g_error (_("*** eazel-install can only be used on RedHat! ***\n"));
 	}
 
 	if ( DOWNGRADE_MODE == TRUE ) {
-		fprintf (stderr, "***Downgrade Mode not supported yet !***\n");
-		exit (1);
+		g_error (_("*** Downgrade Mode not supported yet! ***\n"));
 	}
 
 	/* Initialize iopts and topts with defaults from the configuration file */
-	g_print ("Reading the eazel services configuration ...\n");
+	g_print (_("Reading the eazel services configuration ...\n"));
 	iopts = init_default_install_configuration (config_file);
 	topts = init_default_transfer_configuration (config_file);
 
@@ -286,12 +284,12 @@ main (int argc, char* argv[]) {
 	}
 
 	if ( LOGGING_MODE == TRUE ) {
-		fprintf (stderr, "***Logging not currently supported !***\n");
+		g_error (_("*** Logging not currently supported! ***\n"));
 		exit (1);
 	}
 
 	if ( USE_FTP == TRUE ) {
-		fprintf (stderr, "***FTP installs are not currently supported !***\n");
+		g_error (_("*** FTP installs are not currently supported! ***\n"));
 		exit (1);
 	}
 	else if (USE_HTTP == TRUE) {
@@ -334,19 +332,17 @@ main (int argc, char* argv[]) {
 
 		retval = uninstall_packages (iopts, topts);
 		if (retval == FALSE) {
-			fprintf (stderr, "***The uninstall failed !***\n");
-			exit (1);
+			g_error (_("*** The uninstall failed! ***\n"));
 		}
 	}
 	else {
 		retval = install_new_packages (iopts, topts);
 		if (retval == FALSE) {
-			fprintf (stderr, "***The install failed !***\n");
-			exit (1);
+			g_error (_("*** The install failed! ***\n"));
 		}
 	}
 
-	g_print ("Transaction completed normally...\n");
+	g_print (_("Transaction completed normally...\n"));
 	g_free (config_file);
 	g_free (iopts);
 	g_free (topts);

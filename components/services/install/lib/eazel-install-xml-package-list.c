@@ -88,9 +88,9 @@ parse_category (xmlNode* cat) {
 
 	pkg = cat->childs->childs;
 	if (pkg == NULL) {
-		fprintf (stderr, "***No package nodes!***\n");
+		g_print (_("*** No package nodes! ***\n"));
 		g_free (category);
-		g_error ("***Bailing from package parse!***\n");
+		g_error (_("*** Bailing from package parse! ***\n"));
 	}
 	while (pkg) {
 		PackageData* pakdat;
@@ -123,22 +123,21 @@ parse_local_xml_package_list (const char* pkg_list_file) {
 
 	base = doc->root;
 	if (base == NULL) {
-		fprintf (stderr, "***The pkg list file contains no data!***\n");
 		xmlFreeDoc (doc);
-		g_assert (base != NULL);
+		g_error (_("*** The pkg list file contains no data! ***\n"));
 	}
 	
 	if (g_strcasecmp (base->name, "CATEGORIES")) {
-		fprintf (stderr, "***Cannot find the CATEGORIES xmlnode!***\n");
+		g_print (_("*** Cannot find the CATEGORIES xmlnode! ***\n"));
 		xmlFreeDoc (doc);
-		g_error ("***Bailing from categories parse!***\n");
+		g_error (_("*** Bailing from categories parse! ***\n"));
 	}
 	
 	category = doc->root->childs;
 	if(category == NULL) {
-		fprintf (stderr, "***No Categories!***\n");
+		g_print (_("*** No Categories! ***\n"));
 		xmlFreeDoc (doc);
-		g_error ("***Bailing from category parse!***\n");
+		g_error (_("*** Bailing from category parse! ***\n"));
 	}
 	
 	while (category) {
@@ -256,7 +255,7 @@ generate_xml_package_list (const char* pkg_template_file,
 	}
 
 	if (doc == NULL) {
-		fprintf (stderr, "***Error generating xml package list !***\n");
+		g_warning (_("*** Error generating xml package list! ***\n"));
 		xmlFreeDoc (doc);
 		return FALSE;
 	}
@@ -290,7 +289,7 @@ parse_pkg_template (const char* pkg_template_file, char **result) {
 	input_file = fopen (pkg_template_file, "r");
 
 	if (input_file == NULL) {
-		fprintf (stderr, "***Error reading package list !***\n");
+		g_warning (_("*** Error reading package list! ***\n"));
 		return 0;
 	}
 
