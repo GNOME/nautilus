@@ -39,6 +39,15 @@ if test "$GCC" = "yes"; then
 fi
 AC_SUBST(WERROR)
 
+dnl 
+EAZEL_SERVICES=
+AC_ARG_ENABLE(eazel-services,
+[--enable-eazel-services	Eazel services],
+EAZEL_SERVICES=1
+AC_DEFINE(EAZEL_SERVICES))
+
+AC_SUBST(EAZEL_SERVICES)
+
 dnl Checks for libraries.
 AM_PATH_GLIB(1.2.0,,
 AC_MSG_ERROR([
