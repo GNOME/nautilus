@@ -1371,12 +1371,12 @@ void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     const QueuedCallback *callback)
 {
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (callback != NULL);
 	g_assert (callback->file == NULL || callback->file->details->directory == directory);
 
 	/* Call back right away if it's already ready. */
-	if (directory->details->metafile_read) {
+	if (directory == NULL || directory->details->metafile_read) {
 		if (callback->file != NULL) {
 			(* callback->callback.file) (callback->file,
 						     callback->callback_data);
@@ -1411,7 +1411,7 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 {
 	QueuedCallback new_callback;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (directory_metadata_keys != NULL || file_metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
 
