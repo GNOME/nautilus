@@ -1319,8 +1319,16 @@ remove_default_viewport_shadow (GtkViewport *viewport)
 	gtk_viewport_set_shadow_type (viewport, GTK_SHADOW_NONE);
 }
 
-/* utility routine to build the list of available property names */
-
+/* This is the callback for the focus_out signal, where we queue a redraw to erase
+ * the remains of the focus rect which is being left on the screen for reasons that
+ * I don't understand.
+ */
+static gint
+property_button_focused_out (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+	gtk_widget_queue_draw (GTK_WIDGET (widget->parent));
+	return TRUE;
+}
 
 static void
 create_emblems_page (FMPropertiesWindow *window)
@@ -1418,6 +1426,12 @@ create_emblems_page (FMPropertiesWindow *window)
 		gtk_signal_connect (GTK_OBJECT (button),
 				    "toggled",
 				    property_button_toggled,
+				    NULL);
+
+		/* attach to focus out signal to fix focus rect drawing anomaly */
+		gtk_signal_connect (GTK_OBJECT (button),
+				    "focus_out_event",
+				    GTK_SIGNAL_FUNC (property_button_focused_out),
 				    NULL);
 
 		/* Set initial state of button. */

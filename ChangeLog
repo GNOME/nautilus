@@ -1,3 +1,25 @@
+2001-01-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(property_button_focused_out), (create_emblems_page):
+	fixed bug 5572, black rectangle left behind after clicking
+	on an emblem in Properties window, by attaching to the
+	focus_out signal and redrawing
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy),
+	(nautilus_property_browser_theme_changed),
+	(nautilus_property_browser_smooth_graphics_changed):
+	fixed some of bug 5614, label text in property browser is
+	corrupted when smooth text option changed, by monitoring the
+	smooth_graphics preference and updating when it changes.  The
+	rest of this bug will be fixed when Ramiro fixes the nautilus_label
+	geometry problems as part of bug 5607
+	
+	* components/text/nautilus-text-view.c: (file_read_callback):
+	corrected the name of the "file too big to load" dialog
+	
 2001-01-16  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Gene Z. Ragan

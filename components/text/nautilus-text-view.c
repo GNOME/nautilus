@@ -314,8 +314,8 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		} else {
 			char *filename = nautilus_file_get_name(text_view->details->file);
 			char *message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."), filename);
-			nautilus_error_dialog (message, _("Couldn't delete pattern"),
-							  GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (text_view))));
+			nautilus_error_dialog (message, _("File too large"), NULL);
+		
 			g_free (filename);
 			g_free (message);
 		}

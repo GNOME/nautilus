@@ -174,6 +174,7 @@ static void     nautilus_property_browser_size_allocate		(GtkWidget		 *widget,
 						     		 GtkAllocation		 *allocation);
 
 static void     nautilus_property_browser_theme_changed         (gpointer                 user_data);
+static void     nautilus_property_browser_smooth_graphics_changed (gpointer               user_data);
 static void     emit_emblems_changed_signal                     (void);
 
 /* misc utilities */
@@ -308,7 +309,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	
   	property_browser->details->title_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
- 
+ 	
   	background = nautilus_get_widget_background (GTK_WIDGET (property_browser->details->title_box));
 	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
 
@@ -324,18 +325,18 @@ nautilus_property_browser_initialize (GtkObject *object)
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
+ 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), 2);				
+ 
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	property_browser->details->title_label = nautilus_label_new (_("Select A Category:"));
+	property_browser->details->title_label = nautilus_label_new ("");
 	nautilus_label_make_larger (NAUTILUS_LABEL (property_browser->details->title_label), 4);
-
-  	gtk_widget_show(property_browser->details->title_label);
+ 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
 	property_browser->details->help_label = nautilus_label_new  ("");
-  	
 	gtk_widget_show(property_browser->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
@@ -415,6 +416,11 @@ nautilus_property_browser_initialize (GtkObject *object)
 					   nautilus_property_browser_theme_changed,
 					   property_browser);	
 	
+	/* add a callback for when smooth graphics changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					   nautilus_property_browser_smooth_graphics_changed,
+					   property_browser);	
+	
 	gtk_signal_connect (GTK_OBJECT (property_browser), "delete_event",
                     	    GTK_SIGNAL_FUNC (nautilus_property_browser_delete_event_callback),
                     	    NULL);
@@ -455,6 +461,9 @@ nautilus_property_browser_destroy (GtkObject *object)
 						NULL);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_property_browser_theme_changed,
+					      property_browser);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+					      nautilus_property_browser_smooth_graphics_changed,
 					      property_browser);
 
 	if (object == GTK_OBJECT (main_browser))
@@ -1899,6 +1908,24 @@ nautilus_property_browser_theme_changed (gpointer user_data)
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER(user_data);
 	nautilus_property_browser_update_contents (property_browser);
+}
+
+/* handle anti-aliased mode changes by updating everything */
+static void
+nautilus_property_browser_smooth_graphics_changed (gpointer user_data)
+{
+	char *category;
+	NautilusPropertyBrowser *property_browser;
+	
+	property_browser = NAUTILUS_PROPERTY_BROWSER(user_data);
+	category = property_browser->details->category;
+	property_browser->details->category = NULL;
+	nautilus_property_browser_set_category (property_browser, category);	
+	
+	/* relayout the title box as well to better position the title text */
+	gtk_widget_queue_resize (property_browser->details->title_box);
+	
+	g_free (category);
 }
 
 /* make_category generates widgets corresponding all of the objects in the passed in directory */
