@@ -121,7 +121,7 @@ trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdo
 		close (pipe_err[0]);
 	}
 
-	return 0;
+	return (int)child;
 
 close_and_give_up:
 	close (pipe_in[0]);
@@ -131,7 +131,7 @@ close_and_give_up:
 	close (pipe_err[0]);
 	close (pipe_err[1]);
 
-	return -1;
+	return 0;
 }
 
 
@@ -193,6 +193,10 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	CORBA_ORB orb;
 	FILE *logf;
 
+	/* for future reference:
+	 * possible to avoid gtk_init (which requires X) by using gtk_type_init(), gtk_signal_init()
+	 * according to george.
+	 */
 	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
