@@ -1,3 +1,21 @@
+2001-01-24  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy),
+	(schedule_update_menus):
+	A simple tweak to reduce the number of menu item updates --
+	schedule fm_directory_view_update_menus using a gtk_timeout_add
+	instead of gtk_idle_add, use a 300 ms interval for coalescing
+	menu item updates.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu):
+	Call fm_directory_view_update_menus directly to make sure the
+	context menu comes up set up right instead of flickering.
+
 2001-01-24  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

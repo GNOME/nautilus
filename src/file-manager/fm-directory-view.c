@@ -129,7 +129,7 @@ struct FMDirectoryViewDetails
 	BonoboUIComponent *ui;
 
 	guint display_selection_idle_id;
-	guint update_menus_idle_id;
+	guint update_menus_timeout_id;
 	
 	guint display_pending_timeout_id;
 	guint display_pending_idle_id;
@@ -1116,8 +1116,8 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->display_selection_idle_id);
 	}
 
-	if (view->details->update_menus_idle_id != 0) {
-		gtk_idle_remove (view->details->update_menus_idle_id);
+	if (view->details->update_menus_timeout_id != 0) {
+		gtk_timeout_remove (view->details->update_menus_timeout_id);
 	}
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
@@ -1810,7 +1810,7 @@ display_selection_info_idle_callback (gpointer data)
 }
 
 static gboolean
-update_menus_idle_callback (gpointer data)
+update_menus_timeout_callback (gpointer data)
 {
 	FMDirectoryView *view;
 	BonoboObject *nautilus_view;
@@ -1823,7 +1823,7 @@ update_menus_idle_callback (gpointer data)
 	 */
 	bonobo_object_ref (nautilus_view);
 
-	view->details->update_menus_idle_id = 0;
+	view->details->update_menus_timeout_id = 0;
 	fm_directory_view_update_menus (view);
 
 	bonobo_object_unref (nautilus_view);
@@ -3285,6 +3285,11 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
+	/* Make the context menu items not flash as they update to proper disabled,
+	 * etc. states by forcing menus to update now.
+	 */
+	fm_directory_view_update_menus (view);
+
 	nautilus_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -3307,6 +3312,11 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view,
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
+	/* Make the context menu items not flash as they update to proper disabled,
+	 * etc. states by forcing menus to update now.
+	 */
+	fm_directory_view_update_menus (view);
+
 	nautilus_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
@@ -3325,9 +3335,9 @@ schedule_update_menus (FMDirectoryView *view)
 	view->details->menu_states_untrustworthy = TRUE;
 	
 	if (view->details->menus_merged
-	    && view->details->update_menus_idle_id == 0) {
-		view->details->update_menus_idle_id
-			= gtk_idle_add (update_menus_idle_callback, view);
+	    && view->details->update_menus_timeout_id == 0) {
+		view->details->update_menus_timeout_id
+			= gtk_timeout_add (300, update_menus_timeout_callback, view);
 	}
 }
 
