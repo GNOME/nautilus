@@ -430,15 +430,21 @@ receive_dropped_color (NautilusSidebar *sidebar,
 
 static void
 receive_dropped_keyword (NautilusSidebar *sidebar,
-		       int x, int y,
-		       GtkSelectionData *selection_data)
+			 int x, int y,
+			 GtkSelectionData *selection_data)
 {
 	NautilusFile *file;
 	GList *keywords, *word;
 	char *title;
+
+	/* FIXME: This is a cut and paste copy of code that's in the icon dnd code. */
 			
 	/* OK, now we've got the keyword, so add it to the metadata */
 
+	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
+	 * keywords list instantly here. We might need to read the
+	 * metafile first.
+	 */
 	file = nautilus_file_get (sidebar->details->uri);
 	if (file == NULL)
 		return;
@@ -446,16 +452,19 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	/* Check and see if it's already there. */
 	keywords = nautilus_file_get_keywords (file);
 	word = g_list_find_custom (keywords, selection_data->data, (GCompareFunc) strcmp);
-	if (word == NULL)
+	if (word == NULL) {
 		keywords = g_list_append (keywords, g_strdup (selection_data->data));
-	else
+	} else {
 		keywords = g_list_remove_link (keywords, word);
+		g_free (word->data);
+		g_list_free (word);
+	}
 
 	nautilus_file_set_keywords (file, keywords);
-	nautilus_file_unref(file);
+	nautilus_file_unref (file);
 	
 	/* regenerate the display */
-	title = nautilus_sidebar_title_get_text(sidebar->details->title);
+	title = nautilus_sidebar_title_get_text (sidebar->details->title);
 	nautilus_sidebar_update_info (sidebar, title);  	
 	g_free(title);
 }
@@ -770,7 +779,11 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 	NautilusFile *file;
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
-
+	
+	/* FIXME bugzilla.eazel.com 866: Can't expect to put this
+	 * window up instantly. We might need to read the metafile
+	 * first.
+	 */
 	file = nautilus_file_get (sidebar->details->uri);
 	g_return_if_fail (file != NULL);
 

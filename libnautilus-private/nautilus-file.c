@@ -148,37 +148,26 @@ nautilus_file_new (NautilusDirectory *directory, GnomeVFSFileInfo *info)
 NautilusFile *
 nautilus_file_get (const char *uri)
 {
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *file_info;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
 	NautilusDirectory *directory;
+	char *file_name_escaped, *file_name;
 	NautilusFile *file;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
 
 	g_return_val_if_fail (uri != NULL, NULL);
-
-	/* Get info on the file. */
-	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (uri, file_info,
-					  GNOME_VFS_FILE_INFO_GETMIMETYPE
-					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
-	if (result != GNOME_VFS_OK) {
-		return NULL;
-	}
 
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
 	if (vfs_uri == NULL) {
-		gnome_vfs_file_info_unref (file_info);
 		return NULL;
 	}
 
 	/* Make VFS version of directory URI. */
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
 	if (directory_vfs_uri == NULL) {
-		gnome_vfs_file_info_unref (file_info);
+		gnome_vfs_uri_unref (vfs_uri);
 		return NULL;
 	}
 
@@ -191,20 +180,40 @@ nautilus_file_get (const char *uri)
 	directory = nautilus_directory_get (directory_uri);
 	g_free (directory_uri);
 	if (directory == NULL) {
-		gnome_vfs_file_info_unref (file_info);
+		gnome_vfs_uri_unref (vfs_uri);
 		return NULL;
 	}
 
-	file = nautilus_directory_find_file (directory, file_info->name);
+	/* Check to see if it's a file that's already known. */
+	file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	file_name = gnome_vfs_unescape_string (file_name_escaped, NULL);
+	g_free (file_name_escaped);
+	if (file_name == NULL) {
+		return NULL;
+	}
+	file = nautilus_directory_find_file (directory, file_name);
+	g_free (file_name);
 	if (file != NULL) {
 		nautilus_file_ref (file);
 	} else {
+		/* Get info on the file. */
+		file_info = gnome_vfs_file_info_new ();
+		result = gnome_vfs_get_file_info (uri, file_info,
+						  GNOME_VFS_FILE_INFO_GETMIMETYPE
+						  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+						  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
+		if (result != GNOME_VFS_OK) {
+			return NULL;
+		}
+
 		file = nautilus_file_new (directory, file_info);
 		directory->details->files =
 			g_list_prepend (directory->details->files, file);
+
+		gnome_vfs_file_info_unref (file_info);
 	}
 
-	gnome_vfs_file_info_unref (file_info);
 	nautilus_directory_unref (directory);
 	
 	return file;

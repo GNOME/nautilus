@@ -613,6 +613,10 @@ handle_unreadable_location (NautilusWindow *window, const char *uri)
 	char *file_name;
         char *message;
 
+	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
+	 * permissions instantly here. We might need to wait for
+	 * a stat first.
+	 */
 	file = nautilus_file_get (uri);
 
 	/* Can't make file object; can't check permissions; can't determine
@@ -1135,22 +1139,38 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         switch (result_code) {
 
         case NAUTILUS_NAVIGATION_RESULT_NOT_FOUND:
-                error_message = g_strdup_printf (_("Couldn't find \"%s\". Please check the spelling and try again."), requested_uri);
+                error_message = g_strdup_printf
+                        (_("Couldn't find \"%s\". Please check the spelling and try again."),
+                         requested_uri);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_INVALID_URI:
-                error_message = g_strdup_printf (_("\"%s\" is not a valid location. Please check the spelling and try again."), requested_uri);
+                error_message = g_strdup_printf
+                        (_("\"%s\" is not a valid location. Please check the spelling and try again."),
+                         requested_uri);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
+                /* FIXME bugzilla.eazel.com 866: Can't expect to read the
+                 * permissions instantly here. We might need to wait for
+                 * a stat first.
+                 */
         	file = nautilus_file_get (requested_uri);
-        	if (file != NULL) {
+        	if (file == NULL) {
+                        type_string = NULL;
+                } else {
         		type_string = nautilus_file_get_string_attribute (file, "type");
-	                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."), requested_uri, type_string);
 			nautilus_file_unref (file);
-			g_free (type_string);
+                }
+                if (type_string == NULL) {
+	                error_message = g_strdup_printf
+                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of this type."),
+                                 requested_uri);
         	} else {
-	                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle items of this type."), requested_uri);
+	                error_message = g_strdup_printf
+                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."),
+                                 requested_uri, type_string);
+			g_free (type_string);
         	}
                 break;
 

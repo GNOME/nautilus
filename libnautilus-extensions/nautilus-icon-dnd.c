@@ -482,27 +482,37 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 	NautilusIcon *drop_target_icon;
 	NautilusFile *file;
 	
-	g_assert(keyword != NULL);
+	g_assert (keyword != NULL);
 
 	/* find the item we hit with our drop, if any */
   	gnome_canvas_window_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
-	if (drop_target_icon == NULL)
+	if (drop_target_icon == NULL) {
 		return;
-	
+	}
+
+	/* FIXME: This does not belong in the icon code.
+	 * It has to be in the file manager.
+	 * The icon code has no right to deal with the file directly.
+	 * But luckily there's no issue of not getting a file object,
+	 * so we don't have to worry about async. issues here.
+	 */
 	uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
 	file = nautilus_file_get (uri);
 	g_free (uri);
 	
 	keywords = nautilus_file_get_keywords (file);
 	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-	if (word == NULL)
+	if (word == NULL) {
 		keywords = g_list_append (keywords, g_strdup (keyword));
-	else
+	} else {
 		keywords = g_list_remove_link (keywords, word);
+		g_free (word->data);
+		g_list_free (word);
+	}
 
 	nautilus_file_set_keywords (file, keywords);
-	nautilus_file_unref(file);
+	nautilus_file_unref (file);
 	nautilus_icon_container_update_icon (container, drop_target_icon);
 
 }
@@ -647,6 +657,11 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
 
+	/* FIXME: These "can_accept_items" tests need to be done by
+	 * the icon view, not here. This file is not supposed to know
+	 * that the target is a file.
+	 */
+
 	/* Find the item we hit with our drop, if any */
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
 	if (drop_target_icon != NULL 
@@ -686,7 +701,9 @@ set_drop_target (NautilusIconContainer *container,
 {
 	NautilusIcon *old_icon;
 
-	/* Check if current drop target changed, update icon drop higlight if needed. */
+	/* Check if current drop target changed, update icon drop
+	 * higlight if needed.
+	 */
 	old_icon = container->details->drop_target;
 	if (icon == old_icon) {
 		return;
@@ -717,6 +734,11 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
+
+	/* FIXME: These "can_accept_items" tests need to be done by
+	 * the icon view, not here. This file is not supposed to know
+	 * that the target is a file.
+	 */
 
 	/* Find if target icon accepts our drop. */
 	if (icon != NULL 
@@ -1012,7 +1034,6 @@ drag_drop_callback (GtkWidget *widget,
 			 dnd_info->drag_info.selection_data->data);
 		gtk_drag_finish (context, FALSE, FALSE, time);
 		break;
-	
 	case NAUTILUS_ICON_DND_KEYWORD:
 		receive_dropped_keyword
 			(NAUTILUS_ICON_CONTAINER (widget),

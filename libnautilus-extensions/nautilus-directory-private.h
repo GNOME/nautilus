@@ -64,10 +64,6 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
-	/* This is so that we can display search directories
-	   too in the directory views */
-	gboolean is_search_directory;
-	   
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
@@ -84,8 +80,6 @@ struct NautilusDirectoryDetails
 	TopLeftTextReadState *top_left_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
-
-	gboolean is_local;
 };
 
 typedef struct {

@@ -1238,14 +1238,23 @@ load_specific_image_svg (const char *path, guint size_in_pixels)
 static gboolean
 path_represents_svg_image (const char *path) 
 {
-	NautilusFile *file;
-	gboolean result;
+	char *uri;
+	GnomeVFSFileInfo file_info;
+	gboolean is_svg;
 
-	file = nautilus_file_get (path);
-	result = file != NULL && nautilus_file_is_mime_type (file, "image/svg");
-	nautilus_file_unref (file);
+	/* Sync. file I/O is OK here because this is used only for installed
+	 * icons, not for the general case which could include icons on devices
+	 * other than the local hard disk.
+	 */
 
-	return result;
+	uri = nautilus_get_uri_from_local_path (path);
+	gnome_vfs_file_info_init (&file_info);
+	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL);
+	g_free (uri);
+	is_svg = nautilus_strcmp (file_info.mime_type, "image/svg") == 0;
+	gnome_vfs_file_info_clear (&file_info);
+
+	return is_svg;
 }
 
 /* This load function returns NULL if the icon is not available at this size. */
@@ -1263,18 +1272,19 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 
 		memset (text_rect, 0, sizeof (*text_rect));
 
-		/* FIXME bugzilla.eazel.com 643: This works only with file:// images, because there's
-		 * no convenience function for loading an image with gnome-vfs
-		 * and gdk-pixbuf. And there's the same problem with the rsvg_render_file library.
+		/* FIXME bugzilla.eazel.com 643: This works only with
+		 * file:// images, because there's no convenience
+		 * function for loading an image with gnome-vfs and
+		 * gdk-pixbuf. And there's the same problem with the
+		 * rsvg_render_file library.
 		 */
-
-		if (nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
-			image_path = gnome_vfs_unescape_string (scalable_icon->uri, "/");
+		image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);
+		if (image_path != NULL) {
 			if (path_represents_svg_image (image_path)) {
-				return load_specific_image_svg (image_path + 7, size_in_pixels);
+				return load_specific_image_svg (image_path, size_in_pixels);
 			}
 			if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD) {
-				return gdk_pixbuf_new_from_file (image_path + 7);
+				return gdk_pixbuf_new_from_file (image_path);
 			}
 			g_free(image_path);
 		}

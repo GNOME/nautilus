@@ -163,7 +163,6 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 	return TRUE;
 }
 
-
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      guint icon_size)
@@ -221,6 +220,10 @@ get_icon_for_uri (const char *uri)
 	NautilusFile *file;
 	NautilusScalableIcon *icon;
 
+	/* FIXME bugzilla.eazel.com 866: We can't expect to use the
+	 * file object right away, since the get_file_info call will
+	 * be async.
+	 */
 	file = nautilus_file_get (uri);
 
 	/* FIXME bugzilla.eazel.com 461: This might be a bookmark that points 

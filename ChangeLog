@@ -1,3 +1,85 @@
+2000-06-16  Darin Adler  <darin@eazel.com>
+
+	* components/services/trilobite/sample/lib/.cvsignore:
+	New generated files that needed to be ignored.
+	
+	* libnautilus-extensions/nautilus-bookmark.c: (get_icon_for_uri):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_keyword):
+	* src/nautilus-sidebar.c: (receive_dropped_keyword),
+	(open_with_callback):
+	* src/nautilus-window-manage-views.c: (handle_unreadable_location),
+	(nautilus_window_end_location_change_callback):
+	* src/nautilus-window.c: (view_menu_choose_view_callback):
+	Added FIXME comments for all cases I might have to revisit to
+	finish with bug 866.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_search_directory_new),
+	(nautilus_directory_new), (nautilus_directory_is_local),
+	(nautilus_directory_is_search_directory):
+	Removed the is_local and is_search_directory booleans since they
+	are very fast to compute.
+	(nautilus_directory_call_when_ready): Removed the special case for
+	search directories that was causing a problem with NULL
+	directories.  This is better handled inside
+	nautilus-directory-async.c.
+	(nautilus_uri_is_search_uri): Greatly simplified the
+	implementation of the function and moved it out of the
+	"self-check-specific" part of the file.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display), (nautilus_make_uri_from_input),
+	(nautilus_get_user_main_directory):
+	Renamed SCHEMA -> SCHEME. Converted code to use
+	nautilus_get_uri_from_local_path instead of just adding a file://
+	on the beginning of path names.
+	
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_get):
+	Did part of the work needed to make this function do its work
+	async. It now only does the I/O if the file is not already known,
+	but there's still the issue of doing the I/O only when requested.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_keyword): Fixed storage leaks.
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_dnd_update_drop_target): Added FIXMEs about
+	file-specific stuff that's in here but should be in FMIconView.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(path_represents_svg_image): Changed local svg check to use
+	gnome-vfs instead of NautilusFile.  This is better since we want
+	it to be sync.
+	(load_specific_image): Change to use
+	nautilus_get_local_path_from_uri instead of doing its own file://
+	checks and unescaping.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_uri_internal): Call the
+	new public OAF_ServerInfo_duplicate from liboaf instead of our
+	own copy. The one I checked in liboaf has a number of bugs fixed
+	from the one that was in here.
+	(mime_type_get_supertype): Put in a special case for NULL so we
+	don't return "/*" as a supertype for NULL.
+	(nautilus_do_component_query): Call OAF_ServerInfo_duplicate.
+	Also get rid of a NULL check before CORBA_free.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_timed_wait_start), (nautilus_timed_wait_free):
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	Added a window title to the still-not-implemented code in here.
+	
+	* src/file-manager/fm-icon-text-window.c:
+	(create_icon_text_window): Changed the window title to match the
+	menu item.
+	
+	* src/nautilus-main.c: Formatting tweaks.
+	
+	* src/nautilus-sidebar.c: (receive_dropped_keyword), Fixed a
+	storage leak. Put in a FIXME about the code that is a copy of
+	what's in the icon view.
+	
 2000-06-16  Maciej Stachowiak  <mjs@eazel.com>
 
 	Task 1351: implement controllers to allow location bar and the
@@ -50,11 +132,13 @@
 	Added function nautilus_location_bar_get_location
 	* src/nautilus-location-bar.c: (drag_data_received_callback),
 	(drag_data_get_callback), (editable_activated_callback),
-	Changed to call nautilus_location_bar_get_location. An incidental effect (well
-	actually intentional) is that nautilus-location-bar.c no longer uses gtk_entry_get_text.
-	Hopefully this function will keep people adding code "mid-stream" to the URL bar (eg
-	before activation, such as the auto-completion code) from being confused by the disparity
-	between URIs and what the user is allowed to type.
+	Changed to call nautilus_location_bar_get_location. An incidental
+	effect (well actually intentional) is that nautilus-location-bar.c
+	no longer uses gtk_entry_get_text. Hopefully this function will
+	keep people adding code "mid-stream" to the URL bar (eg before
+	activation, such as the auto-completion code) from being confused
+	by the disparity between URIs and what the user is allowed to
+	type.
 
 2000-06-16  J Shane Culpepper  <pepper@eazel.com>
 
@@ -76,14 +160,14 @@
 2000-06-16  Seth Nickell  <seth@eazel.com>
 
 	* src/nautilus-location-bar.c: (try_to_expand_path):
-	Don't be fooled by the meager function count!
-	This bug was/is a bitch. Added a gtk_widget_grab_focus call to the
-	end of the function because *somewhere* in the above procedure
-	the gtk focus is being fscked with. Will track the actual 
-	problem down later, but this will get it out of our hair so
-	we can test things like unescaping code.
-	Also changed from gtk_entry_get_text to gtk_editable_get_chars
-	as the former is deprecated and Truly Evil (tm).
+	Don't be fooled by the meager function count!  This bug was/is a
+	bitch. Added a gtk_widget_grab_focus call to the end of the
+	function because *somewhere* in the above procedure the gtk focus
+	is being fscked with. Will track the actual problem down later,
+	but this will get it out of our hair so we can test things like
+	unescaping code.  Also changed from gtk_entry_get_text to
+	gtk_editable_get_chars as the former is deprecated and Truly Evil
+	(tm).
 	
 2000-06-15  John Sullivan  <sullivan@eazel.com>
 

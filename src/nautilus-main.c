@@ -50,12 +50,12 @@
  */
 void nautilus_leak_checker_init (const char *path);
 void nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
-	int max_count, int sort_by_count);
+				int max_count, int sort_by_count);
 
 void
 nautilus_leak_checker_init (const char *path)
 {
-	void (*real_nautilus_leak_checker_init)(const char *path);
+	void (*real_nautilus_leak_checker_init) (const char *path);
 
 	/* Try to hook up with the leakchecker library.
 	 * This only succeeds if we run nautilus with a LD_PRELOAD=./libleakcheck.so
@@ -70,16 +70,16 @@ nautilus_leak_checker_init (const char *path)
 
 void 
 nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
-	int max_count, int sort_by_count)
+			   int max_count, int sort_by_count)
 {
-	void (*real_nautilus_leak_print_leaks)(int stack_grouping_depth, 
-		int stack_print_depth, int max_count, int sort_by_count);
+	void (*real_nautilus_leak_print_leaks) (int stack_grouping_depth, 
+						int stack_print_depth, int max_count, int sort_by_count);
 
 	/* Try to hook up with the leakchecker library. */
 	real_nautilus_leak_print_leaks = dlsym (RTLD_NEXT, "nautilus_leak_print_leaks");
 	if (real_nautilus_leak_print_leaks != NULL) {
 		real_nautilus_leak_print_leaks (stack_grouping_depth, stack_print_depth,
-			max_count, sort_by_count);
+						max_count, sort_by_count);
 	}
 }
 
@@ -149,7 +149,7 @@ main(int argc, char *argv[])
 
 	gnome_vfs_shutdown ();
 
-	/* If leak checking, before exiting dump all the outstaniding allocations. */
+	/* If leak checking, before exiting dump all the outstanding allocations. */
 	nautilus_leak_print_leaks (8, 15, 40, TRUE);
 
 	return EXIT_SUCCESS;

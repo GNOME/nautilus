@@ -247,7 +247,7 @@ create_icon_text_window (void)
 
   	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-  	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Icon Text"));
+  	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Icon Captions"));
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);
 
   	contents_vbox = gtk_vbox_new (FALSE, 0);

@@ -46,7 +46,7 @@
 
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
 
-#define DEFAULT_SCHEMA "file://"
+#define DEFAULT_SCHEME "file://"
 
 /**
  * nautilus_format_uri_for_display:
@@ -68,8 +68,8 @@ nautilus_format_uri_for_display (const char *uri)
 	unescaped = gnome_vfs_unescape_for_display (uri);
 	
 	/* Remove file:// from the beginning */
-	if (nautilus_str_has_prefix (uri, DEFAULT_SCHEMA)) {
-		toreturn = strdup (unescaped + sizeof(DEFAULT_SCHEMA) - 1);
+	if (nautilus_str_has_prefix (uri, DEFAULT_SCHEME)) {
+		toreturn = strdup (unescaped + sizeof (DEFAULT_SCHEME) - 1);
 	} else {
 		toreturn = strdup (unescaped);
 	}
@@ -91,13 +91,13 @@ nautilus_format_uri_for_display (const char *uri)
  *
  **/
 char *
-nautilus_make_uri_from_input(const char *location)
+nautilus_make_uri_from_input (const char *location)
 {
 	gchar *toreturn;
 
 	/* FIXME: add escaping logic to this function */
 	if (location[0] == '/') {
-		toreturn = g_strconcat(DEFAULT_SCHEMA, location, NULL);
+		toreturn = g_strconcat (DEFAULT_SCHEME, location, NULL);
 	} else {
 		toreturn = strdup (location);
 	}
@@ -228,10 +228,25 @@ nautilus_get_user_main_directory (void)
 			g_free (command);
 		
 			/* assign a custom image for the directory icon */
-			file_uri = g_strdup_printf("file://%s", user_main_directory);
+			file_uri = nautilus_get_uri_from_local_path (user_main_directory);
 			temp_str = nautilus_pixmap_file ("nautilus-logo.png");
-			image_uri = g_strdup_printf("file://%s", temp_str);
-			g_free(temp_str);
+			image_uri = nautilus_get_uri_from_local_path (temp_str);
+			g_free (temp_str);
+			
+			file = nautilus_file_get (file_uri);
+			g_free (file_uri);
+			if (file != NULL) {
+				nautilus_file_set_metadata (file,
+							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+							    NULL,
+							    image_uri);
+				nautilus_file_unref (file);
+			}
+
+			/* now do the same for the about file */
+			temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
+			file_uri = nautilus_get_uri_from_local_path (temp_str);
+			g_free (temp_str);
 			
 			file = nautilus_file_get (file_uri);
 			if (file != NULL) {
@@ -243,18 +258,6 @@ nautilus_get_user_main_directory (void)
 			}
 			g_free (file_uri);
 
-			/* now do the same for the about file */
-			file_uri = g_strdup_printf("file://%s/About.html", user_main_directory);
-			
-			file = nautilus_file_get (file_uri);
-			if (file != NULL) {
-				nautilus_file_set_metadata (file,
-							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-							    NULL,
-							    image_uri);
-				nautilus_file_unref (file);
-			}
-			g_free (file_uri);
 			g_free (image_uri);
 
 			/* install the default link set */

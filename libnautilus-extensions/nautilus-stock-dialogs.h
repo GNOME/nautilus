@@ -30,7 +30,8 @@
 typedef void (* NautilusCancelCallback) (gpointer callback_data);
 typedef struct NautilusTimedWait NautilusTimedWait;
 
-NautilusTimedWait *nautilus_timed_wait_start (const char             *wait_message,
+NautilusTimedWait *nautilus_timed_wait_start (const char             *window_title,
+					      const char             *wait_message,
 					      NautilusCancelCallback  cancel_callback,
 					      gpointer                callback_data,
 					      GDestroyNotify          destroy_notify,

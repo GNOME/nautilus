@@ -43,7 +43,6 @@ static gint gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo
 static gboolean gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids);
 static gboolean component_has_id_in_list (OAF_ServerInfo *server, GList *iids);
 static gboolean string_not_in_list (const char *str, GList *list);
-static OAF_ServerInfo *OAF_ServerInfo__copy (OAF_ServerInfo *orig);
 static char *extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix);
 static char *mime_type_get_supertype (const char *mime_type);
 static char *uri_string_get_scheme (const char *uri_string);
@@ -334,7 +333,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	
 
 	if (ev._major == CORBA_NO_EXCEPTION  && info_list != NULL) {
-		server = OAF_ServerInfo__copy (info_list->data);
+		server = OAF_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
 
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
@@ -999,40 +998,6 @@ string_not_in_list (const char *str, GList *list)
 	return g_list_find_custom (list, (gpointer) str, (GCompareFunc) strcmp) == NULL;
 }
 
-
-static OAF_ServerInfo *
-OAF_ServerInfo__copy (OAF_ServerInfo *orig)
-{
-	OAF_ServerInfo *retval;
-	int i;
-
-	retval = OAF_ServerInfo__alloc ();
-	
-	retval->iid = CORBA_string_dup (orig->iid);
-	retval->server_type = CORBA_string_dup (orig->server_type);
-	retval->location_info = CORBA_string_dup (orig->location_info);
-	retval->username= CORBA_string_dup (orig->username);
-	retval->hostname= CORBA_string_dup (orig->hostname);
-	retval->domain= CORBA_string_dup (orig->domain);
-
-	retval->attrs._maximum = orig->attrs._maximum;
-	retval->attrs._length = orig->attrs._length;
-	
-	retval->attrs._buffer = CORBA_sequence_OAF_Attribute_allocbuf (retval->attrs._length);
-	memcpy (retval->attrs._buffer, orig->attrs._buffer, (sizeof (OAF_Attribute)) * retval->attrs._length);
-	
-	for (i = 0; i < retval->attrs._length; i++) {
-		retval->attrs._buffer[i].name = CORBA_string_dup (retval->attrs._buffer[i].name);
-		if (retval->attrs._buffer[i].v._d == OAF_A_STRING) {
-			retval->attrs._buffer[i].v._u.value_string = CORBA_string_dup (retval->attrs._buffer[i].v._u.value_string);
-		
-		}
-	}
-	retval->attrs._release = FALSE;
-
-	return retval;
-}
-
 static char *
 extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
 {
@@ -1058,6 +1023,9 @@ extract_prefix_add_suffix (const char *string, const char *separator, const char
 static char *
 mime_type_get_supertype (const char *mime_type)
 {
+	if (mime_type == NULL || mime_type == '\0') {
+		return g_strdup (mime_type);
+	}
         return extract_prefix_add_suffix (mime_type, "/", "/*");
 }
 
@@ -1433,16 +1401,14 @@ nautilus_do_component_query (const char *mime_type,
                         if (server_matches_content_requirements (server, content_types, explicit_iids)) {
                                 retval = g_list_append
                                         (retval, 
-                                         OAF_ServerInfo__copy (server));
+                                         OAF_ServerInfo_duplicate (server));
                         }
                 }
 
                 mime_type_hash_table_destroy (content_types);
         } 
 
-	if (oaf_result != CORBA_OBJECT_NIL) {
-		CORBA_free (oaf_result);
-	}
+	CORBA_free (oaf_result);
 	
 	return retval;
 }

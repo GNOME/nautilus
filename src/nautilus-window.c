@@ -795,6 +795,10 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	 */
 	nautilus_window_synch_content_view_menu (window);
 
+	/* FIXME bugzilla.eazel.com 866: Can't expect to put this
+	 * window up instantly. We might need to read the metafile
+	 * first.
+	 */
         file = nautilus_file_get (window->location);
         g_return_if_fail (NAUTILUS_IS_FILE (file));
 
