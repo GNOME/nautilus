@@ -1,3 +1,22 @@
+2000-10-20  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 3803, pin image size for downloaded images in summary
+	view
+	
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.c: (create_image_widget_from_uri):
+	added optional image size pinning to create_image_widget_from_uri
+	
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.h:
+	changed parameters to create_image_widget_from_uri
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+	pinned downloaded images to a maximum size, fixing bug 3803.  Also,
+	tweaked button layout a bit.
+	
 2000-10-20  Darin Adler  <darin@eazel.com>
 
 	* Makefile.am:

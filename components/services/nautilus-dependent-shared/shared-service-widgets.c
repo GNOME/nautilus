@@ -111,12 +111,14 @@ create_image_widget (const char *icon_name, const char *tile_icon_name)
 	return image_widget;
 }
 
-/* create and return an image widget from a uri and a tiled background */
+/* create and return an image widget from a uri and a tiled background.
+   It also pins the image to the specified dimensions */
 GtkWidget*
-create_image_widget_from_uri (const char *uri, const char *tile_icon_name)
+create_image_widget_from_uri (const char *uri, const char *tile_icon_name,
+			      int max_width, int max_height)
 {
 	GtkWidget *image_widget;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *scaled_pixbuf;
 	
 	g_return_val_if_fail (uri || tile_icon_name, NULL);
 
@@ -129,6 +131,13 @@ create_image_widget_from_uri (const char *uri, const char *tile_icon_name)
 	/* load the image - synchronously, at least at first */
 	pixbuf = nautilus_gdk_pixbuf_load (uri);
 	
+	/* pin the image to the specified dimensions if necessary */
+	if (pixbuf && max_width > 0 && max_height > 0) {
+		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+		
 	/* create the image widget then release the pixbuf*/
 	image_widget = create_image_widget_from_pixbuf (pixbuf, tile_icon_name);
 	if (pixbuf != NULL) {
