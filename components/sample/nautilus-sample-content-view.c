@@ -101,6 +101,8 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (object);
 	
+	bonobo_object_unref (view->details->view_frame);
+	
 	g_free (view->details->uri);
 	g_free (view->details);
 	
@@ -259,7 +261,9 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
 	        				    0,						/* accelerator key modifiers */
 	        				    bonobo_sample_callback,			/* callback function */
 	        				    view);					/* callback function's data */
-         }
+	} else {
+		/* Do nothing. */
+	}
 
         /* 
          * Note that we do nothing if state is FALSE. Nautilus content views are activated

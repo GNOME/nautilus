@@ -33,6 +33,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
+#include <libnautilus/nautilus-gtk-macros.h>
+
 
 typedef struct {
   POA_Nautilus_View servant;
@@ -57,37 +59,15 @@ static POA_Nautilus_MetaView__vepv impl_Nautilus_MetaView_vepv =
   &impl_Nautilus_MetaView_epv
 };
 
-static void nautilus_meta_view_frame_init       (NautilusMetaViewFrame      *view);
-static void nautilus_meta_view_frame_destroy    (NautilusMetaViewFrame      *view);
-static void nautilus_meta_view_frame_class_init (NautilusMetaViewFrameClass *klass);
+static void nautilus_meta_view_frame_initialize       (NautilusMetaViewFrame      *view);
+static void nautilus_meta_view_frame_destroy          (NautilusMetaViewFrame      *view);
+static void nautilus_meta_view_frame_initialize_class (NautilusMetaViewFrameClass *klass);
 
-GtkType
-nautilus_meta_view_frame_get_type (void)
-{
-  static GtkType view_frame_type = 0;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetaViewFrame, nautilus_meta_view_frame, NAUTILUS_TYPE_VIEW_FRAME)
 
-  if (!view_frame_type)
-    {
-      const GtkTypeInfo view_frame_info =
-      {
-	"NautilusMetaViewFrame",
-	sizeof (NautilusMetaViewFrame),
-	sizeof (NautilusMetaViewFrameClass),
-	(GtkClassInitFunc) nautilus_meta_view_frame_class_init,
-	(GtkObjectInitFunc) nautilus_meta_view_frame_init,
-	/* reserved_1 */ NULL,
-	/* reserved_2 */ NULL,
-	(GtkClassInitFunc) NULL,
-      };
-
-      view_frame_type = gtk_type_unique (nautilus_view_frame_get_type(), &view_frame_info);
-    }
-	
-  return view_frame_type;
-}
 
 static void
-nautilus_meta_view_frame_init       (NautilusMetaViewFrame *view)
+nautilus_meta_view_frame_initialize       (NautilusMetaViewFrame *view)
 {
 }
 
@@ -116,14 +96,11 @@ nautilus_meta_view_frame_new_from_bonobo_control (BonoboObject *bonobo_control)
 static void
 nautilus_meta_view_frame_destroy    (NautilusMetaViewFrame *view)
 {  
-  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
-
-  if(((GtkObjectClass *)klass->parent_class)->destroy)
-    ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
+  NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 static void
-nautilus_meta_view_frame_class_init (NautilusMetaViewFrameClass *klass)
+nautilus_meta_view_frame_initialize_class (NautilusMetaViewFrameClass *klass)
 {
   NautilusViewFrameClass *view_class = ((NautilusViewFrameClass *)klass);
 

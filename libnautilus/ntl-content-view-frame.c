@@ -30,7 +30,9 @@
 #include <config.h>
 #include "ntl-content-view-frame.h"
 #include "nautilus-view-frame-private.h"
+#include <libnautilus/nautilus-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
+
 
 typedef struct {
   POA_Nautilus_View servant;
@@ -55,37 +57,14 @@ static POA_Nautilus_ContentView__vepv impl_Nautilus_ContentView_vepv =
   &impl_Nautilus_ContentView_epv
 };
 
-static void nautilus_content_view_frame_init       (NautilusContentViewFrame      *view);
-static void nautilus_content_view_frame_destroy    (NautilusContentViewFrame      *view);
-static void nautilus_content_view_frame_class_init (NautilusContentViewFrameClass *klass);
+static void nautilus_content_view_frame_initialize        (NautilusContentViewFrame      *view);
+static void nautilus_content_view_frame_destroy           (NautilusContentViewFrame      *view);
+static void nautilus_content_view_frame_initialize_class  (NautilusContentViewFrameClass *klass);
 
-GtkType
-nautilus_content_view_frame_get_type (void)
-{
-  static GtkType view_frame_type = 0;
-
-  if (!view_frame_type)
-    {
-      const GtkTypeInfo view_frame_info =
-      {
-	"NautilusContentViewFrame",
-	sizeof (NautilusContentViewFrame),
-	sizeof (NautilusContentViewFrameClass),
-	(GtkClassInitFunc) nautilus_content_view_frame_class_init,
-	(GtkObjectInitFunc) nautilus_content_view_frame_init,
-	/* reserved_1 */ NULL,
-	/* reserved_2 */ NULL,
-	(GtkClassInitFunc) NULL,
-      };
-
-      view_frame_type = gtk_type_unique (nautilus_view_frame_get_type(), &view_frame_info);
-    }
-	
-  return view_frame_type;
-}
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusContentViewFrame, nautilus_content_view_frame, NAUTILUS_TYPE_VIEW_FRAME)
 
 static void
-nautilus_content_view_frame_init       (NautilusContentViewFrame *view)
+nautilus_content_view_frame_initialize (NautilusContentViewFrame *view)
 {
 }
 
@@ -113,20 +92,20 @@ nautilus_content_view_frame_new_from_bonobo_control (BonoboObject *bonobo_contro
 
 static void
 nautilus_content_view_frame_destroy    (NautilusContentViewFrame *view)
-{  
-  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
-
-  if(((GtkObjectClass *)klass->parent_class)->destroy)
-    ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
+{
+  NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 static void
-nautilus_content_view_frame_class_init (NautilusContentViewFrameClass *klass)
+nautilus_content_view_frame_initialize_class (NautilusContentViewFrameClass *klass)
 {
-  NautilusViewFrameClass *view_class = ((NautilusViewFrameClass *)klass);
+  NautilusViewFrameClass *view_class;
+  GtkObjectClass *object_class;
 
-  GTK_OBJECT_CLASS(klass)->destroy = (void (*)(GtkObject *))nautilus_content_view_frame_destroy;
+  object_class = (GtkObjectClass*) klass;
+  object_class->destroy = (void (*)(GtkObject *))nautilus_content_view_frame_destroy;
 
+  view_class = (NautilusViewFrameClass *) klass;
   view_class->servant_init_func = POA_Nautilus_ContentView__init;
   view_class->servant_destroy_func = POA_Nautilus_ContentView__fini;
   view_class->vepv = &impl_Nautilus_ContentView_vepv;

@@ -36,7 +36,6 @@ static int object_count = 0;
 static void
 sample_object_destroyed(GtkObject *obj)
 {
-	puts ("destroying object.");
 	object_count--;
 	if (object_count <= 0) {
 		gtk_main_quit ();
@@ -51,22 +50,17 @@ sample_make_object (BonoboGenericFactory *factory,
 	NautilusSampleContentView *view;
 	NautilusViewFrame *view_frame;
 
-	puts ("Trying to create object.");
-
 	if (strcmp (goad_id, "nautilus_sample_content_view")) {
 		return NULL;
 	}
 	
-
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NULL));
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", sample_object_destroyed, NULL);
-
 	view_frame = NAUTILUS_VIEW_FRAME (nautilus_sample_content_view_get_view_frame (view));
-	
-	printf ("Returning new object %x\n", (unsigned) view_frame);
+
+	gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", sample_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (view_frame);
 }

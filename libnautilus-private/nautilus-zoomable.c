@@ -407,12 +407,9 @@ nautilus_zoomable_new_from_bonobo_control (BonoboObject *bonobo_control,
 static void
 nautilus_zoomable_destroy (NautilusZoomable *view)
 {
-  gtk_object_unref (GTK_OBJECT (view->private->control));
-
   g_free (view->private);
 
-  if(((GtkObjectClass *)parent_class)->destroy)
-    ((GtkObjectClass *)parent_class)->destroy((GtkObject *)view);
+  NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 static gboolean
@@ -484,8 +481,9 @@ nautilus_zoomable_real_set_bonobo_control (NautilusZoomable *view,
 
   /* FIXME: what if this fails? Create a new control, or bomb somehow? */
   view->private->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
-  gtk_object_ref (GTK_OBJECT (view->private->control));
-  gtk_object_sink (GTK_OBJECT (view->private->control));
+
+  /* We don't need the extra ref the above creates. */
+  bonobo_object_unref (view->private->control); 
 
   bonobo_object_add_interface (BONOBO_OBJECT (view), view->private->control);
 

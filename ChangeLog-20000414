@@ -1,3 +1,26 @@
+2000-03-30  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/sample/main.c (sample_make_object): Connect to the
+	"destroy" signal of the view_frame rather than the sample content
+	view object, to avoid a race condition where we might exit before
+	the view_frame is fully unreffed and has a chance to clean up.
+	components/sample/nautilus-sample-content-view.c
+	(nautilus_sample_content_view_destroy): Unref the
+	NautilusViewFrame when we are destroyed.
+
+	* libnautilus/nautilus-zoomable.c, libnautilus/ntl-view-frame.c,
+	libnautilus/ntl-content-view-frame.c,
+	libnautilus/ntl-meta-view-frame.c: Use boilerplate macros for
+	get_type method and to invoke parent destroy method.
+
+	* libnautilus/nautilus-zoomable.c, libnautilus/ntl-view-frame.c:
+	Unref the interface we query_local_interface for, to avoid holding
+	a superfluous ref to ourselves, since we eventually add_interface
+	that interface.
+
+	* src/ntl-view.c (nautilus_view_destroy_client): Use
+	bonobo_object_unref instead of bonobo_object_destroy.
+
 2000-03-29  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-tabs.c:

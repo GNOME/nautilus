@@ -233,9 +233,9 @@ nautilus_view_destroy_client(NautilusView *view)
 
   g_free(view->iid); view->iid = NULL;
 
-  bonobo_object_destroy(BONOBO_OBJECT(view->client_object)); view->client_object = NULL;
+  bonobo_object_unref (BONOBO_OBJECT (view->client_object)); view->client_object = NULL;
 
-  gtk_container_remove(GTK_CONTAINER(view), view->client_widget); view->client_widget = NULL;
+  gtk_container_remove (GTK_CONTAINER(view), view->client_widget); view->client_widget = NULL;
 
   if(view->component_class->destroy)
     {
@@ -245,7 +245,7 @@ nautilus_view_destroy_client(NautilusView *view)
       CORBA_exception_free(&ev);
     }
 
-  bonobo_object_destroy(view->view_frame); view->view_frame = NULL;
+  bonobo_object_unref (view->view_frame); view->view_frame = NULL;
 
   view->component_class = NULL;
   view->component_data = NULL;

@@ -34,6 +34,8 @@
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
+#include <libnautilus/nautilus-gtk-macros.h>
+
 
 enum {
   NOTIFY_LOCATION_CHANGE,
@@ -203,9 +205,9 @@ impl_Nautilus_View__create(NautilusViewFrame *view, CORBA_Environment * ev)
   return retval;
 }
 
-static void nautilus_view_frame_init       (NautilusViewFrame      *view);
-static void nautilus_view_frame_destroy       (NautilusViewFrame      *view);
-static void nautilus_view_frame_class_init (NautilusViewFrameClass *klass);
+static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
+static void nautilus_view_frame_destroy          (NautilusViewFrame      *view);
+static void nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass);
 static void nautilus_view_frame_set_arg (GtkObject      *object,
 					  GtkArg         *arg,
 					  guint	      arg_id);
@@ -213,33 +215,11 @@ static void nautilus_view_frame_get_arg (GtkObject      *object,
 					  GtkArg         *arg,
 					  guint	      arg_id);
 
-GtkType
-nautilus_view_frame_get_type (void)
-{
-  static GtkType view_frame_type = 0;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame, nautilus_view_frame, BONOBO_OBJECT_TYPE)
 
-  if (!view_frame_type)
-    {
-      const GtkTypeInfo view_frame_info =
-      {
-	"NautilusViewFrame",
-	sizeof (NautilusViewFrame),
-	sizeof (NautilusViewFrameClass),
-	(GtkClassInitFunc) nautilus_view_frame_class_init,
-	(GtkObjectInitFunc) nautilus_view_frame_init,
-	/* reserved_1 */ NULL,
-	/* reserved_2 */ NULL,
-	(GtkClassInitFunc) NULL,
-      };
-
-      view_frame_type = gtk_type_unique (bonobo_object_get_type(), &view_frame_info);
-    }
-	
-  return view_frame_type;
-}
 
 static void
-nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
+nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 {
   GtkObjectClass *object_class;
 
@@ -331,7 +311,7 @@ nautilus_view_frame_get_arg (GtkObject      *object,
 }
 
 static void
-nautilus_view_frame_init (NautilusViewFrame *view)
+nautilus_view_frame_initialize (NautilusViewFrame *view)
 {
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
@@ -368,14 +348,13 @@ nautilus_view_frame_new_from_bonobo_control (BonoboObject *bonobo_control)
 static void
 nautilus_view_frame_destroy (NautilusViewFrame *view)
 {
-  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
+  NautilusViewFrameClass *klass;
 
-  bonobo_object_destroy(view->private->control);
+  klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (view)->klass);
 
   g_free (view->private);
 
-  if(((GtkObjectClass *)klass->parent_class)->destroy)
-    ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
+  NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
 gboolean
@@ -518,6 +497,7 @@ nautilus_view_frame_real_set_bonobo_control (NautilusViewFrame *view,
 
   /* FIXME: what if this fails? Create a new control, or bomb somehow? */
   view->private->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
+  bonobo_object_unref (view->private->control); /* we don't want this spare ref */
   
   bonobo_object_add_interface (BONOBO_OBJECT (view), view->private->control);
 
