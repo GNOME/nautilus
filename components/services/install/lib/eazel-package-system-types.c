@@ -28,6 +28,7 @@
 
 #include <config.h>
 #include "eazel-package-system-types.h"
+#include "eazel-softcat.h"		/* for softcat sense flags */
 
 #include <rpm/rpmlib.h>
 
@@ -155,6 +156,40 @@ categorydata_list_destroy (GList *list)
 	g_list_free (list);
 }
 
+PackageDependency *
+packagedependency_new (void)
+{
+	PackageDependency *dep;
+
+	dep = g_new0 (PackageDependency, 1);
+	return dep;
+}
+
+PackageDependency *
+packagedependency_copy (const PackageDependency *dep, gboolean deep)
+{
+	PackageDependency *newdep;
+
+	newdep = g_new0 (PackageDependency, 1);
+	newdep->sense = dep->sense;
+	newdep->version = g_strdup (dep->version);
+	if (dep->package != NULL) {
+		newdep->package = packagedata_copy (dep->package, deep);
+	}
+	return newdep;
+}
+
+void
+packagedependency_destroy (PackageDependency *dep, gboolean deep)
+{
+	packagedata_destroy (dep->package, deep);
+	dep->package = NULL;
+	g_free (dep->version);
+	dep->version = NULL;
+	dep->sense = 0;
+	g_free (dep);
+}
+
 PackageData*
 packagedata_new ()
 {
@@ -184,6 +219,7 @@ packagedata_new ()
 	pack->provides = NULL;
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
+	pack->depends = NULL;
 	pack->breaks = NULL;
 	pack->modifies = NULL;
 	pack->status = PACKAGE_UNKNOWN_STATUS;
@@ -204,6 +240,20 @@ packagedata_list_copy (const GList *list, gboolean deep)
 	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
 		result = g_list_prepend (result, 
 					 packagedata_copy ((PackageData*)(ptr->data), deep));
+	}
+	result = g_list_reverse (result);
+
+	return result;
+}
+
+static GList *
+packagedata_deplist_copy (const GList *list, gboolean deep)
+{
+	const GList *ptr;
+	GList *result = NULL;
+
+	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
+		result = g_list_prepend (result, packagedependency_copy ((PackageDependency *)(ptr->data), deep));
 	}
 	result = g_list_reverse (result);
 
@@ -242,6 +292,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	if (deep) {
 		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
 		result->hard_depends = packagedata_list_copy (pack->hard_depends, TRUE);
+		result->depends = packagedata_deplist_copy (pack->depends, TRUE);
 		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
 		result->breaks = packagedata_list_copy (pack->breaks, TRUE);
 
@@ -319,8 +370,10 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 		 */
 		g_assert (package->soft_depends == NULL);
 		g_assert (package->hard_depends == NULL);
+		g_assert (package->depends == NULL);
 		package->soft_depends = packagedata_list_copy (full_package->soft_depends, TRUE);
 		package->hard_depends = packagedata_list_copy (full_package->hard_depends, TRUE);
+		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
 	}
 }
 
@@ -379,11 +432,13 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
+		g_list_foreach (pack->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 	}
 	g_list_free (pack->soft_depends);
 	g_list_free (pack->hard_depends);
+	g_list_free (pack->depends);
 	g_list_free (pack->breaks);
 	g_list_free (pack->modifies);
 	pack->soft_depends = NULL;
@@ -594,7 +649,7 @@ packagedata_status_str_to_enum (const char *st)
 	if (strcmp (st, "UNKNOWN_STATUS")==0) { result = PACKAGE_UNKNOWN_STATUS; } 
 	else if (strcmp (st, "SOURCE_NOT_SUPPORTED")==0) { result = PACKAGE_SOURCE_NOT_SUPPORTED; } 
 	else if (strcmp (st, "DEPENDENCY_FAIL")==0) { result = PACKAGE_DEPENDENCY_FAIL; } 
-	else if (strcmp (st, "FILE_CONFLICT")==0) { result = PACKAGE_FILE_CONFLICT; } 
+	else if (strcmp (st, "FILE_CONFLICT")==0) { result = PACKAGE_FILE_CONFLICT; }
 	else if (strcmp (st, "BREAKS_DEPENDENCY")==0) { result = PACKAGE_BREAKS_DEPENDENCY; } 
 	else if (strcmp (st, "INVALID")==0) { result = PACKAGE_INVALID; } 
 	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
@@ -938,13 +993,16 @@ dump_package_list (GString *out, const GList *list, gboolean deep, int indent)
 {
 	const GList *iter;
 	char *name;
+	char *tmp;
 
 	if (deep) {
 		g_string_sprintfa (out, "\n");
 	}
 	for (iter = g_list_first ((GList *)list); iter != NULL; iter = g_list_next (iter)) {
 		if (deep) {
-			g_string_sprintfa (out, "%s", packagedata_dump_int ((PackageData *)(iter->data), deep, indent+4));
+			tmp = packagedata_dump_int ((PackageData *)(iter->data), deep, indent+4);
+			g_string_sprintfa (out, "%s", tmp);
+			g_free (tmp);
 		} else {
 			name = packagedata_get_readable_name ((PackageData *)(iter->data));
 			if (iter == list) {
@@ -952,6 +1010,47 @@ dump_package_list (GString *out, const GList *list, gboolean deep, int indent)
 			} else {
 				g_string_sprintfa (out, ", %s", name);
 			}
+			g_free (name);
+		}
+	}
+}
+
+static void
+dump_package_deplist (GString *out, const GList *list, gboolean deep, int indent)
+{
+	const GList *iter;
+	PackageDependency *dep;
+	char *name;
+	char *tmp;
+	char *sense;
+
+	if (deep) {
+		g_string_sprintfa (out, "\n");
+	}
+	for (iter = g_list_first ((GList *)list); iter != NULL; iter = g_list_next (iter)) {
+		dep = (PackageDependency *)(iter->data);
+		if (!deep && (iter != list)) {
+			g_string_sprintfa (out, "; ");
+		}
+		if (deep) {
+			tmp = packagedata_dump_int (dep->package, deep, indent+4);
+			g_string_sprintfa (out, "%s", tmp);
+			g_free (tmp);
+			if (dep->version != NULL) {
+				gstr_indent (out, indent+8);
+				sense = eazel_softcat_sense_flags_to_string (dep->sense);
+				g_string_sprintfa (out, "Solves %s %s %s\n", dep->package->name, sense,
+						   dep->version);
+				g_free (sense);
+			}
+		} else {
+			if (dep->version != NULL) {
+				sense = eazel_softcat_sense_flags_to_string (dep->sense);
+				g_string_sprintfa (out, "[dep %s %s] ", sense, dep->version);
+				g_free (sense);
+			}
+			name = packagedata_get_readable_name (dep->package);
+			g_string_sprintfa (out, "%s", name);
 			g_free (name);
 		}
 	}
@@ -989,7 +1088,7 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, ", %d bytes", package->bytesize);
 	}
 	if (package->toplevel) {
-		g_string_sprintfa (out, ", toplevel");
+		g_string_sprintfa (out, ", TOPLEVEL");
 	}
 	if (package->source_package) {
 		g_string_sprintfa (out, ", source package");
@@ -1037,6 +1136,12 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		dump_package_list (out, package->hard_depends, deep, indent);
 		g_string_sprintfa (out, "\n");
 	}
+	if (package->depends != NULL) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Depends: ");
+		dump_package_deplist (out, package->depends, deep, indent);
+		g_string_sprintfa (out, "\n");
+	}
 	if (package->modifies != NULL) {
 		gstr_indent (out, indent);
 		g_string_sprintfa (out, "Modifies: ");
@@ -1057,7 +1162,7 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 			if (iter == package->features) {
 				g_string_sprintfa (out, "%s", (char *)(iter->data));
 			} else {
-				g_string_sprintfa (out, " & %s", (char *)(iter->data));
+				g_string_sprintfa (out, "; %s", (char *)(iter->data));
 			}
 		}
 		g_string_sprintfa (out, "\n");

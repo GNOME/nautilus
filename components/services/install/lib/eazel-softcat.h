@@ -30,8 +30,8 @@
 #define TYPE_EAZEL_SOFTCAT           (eazel_softcat_get_type ())
 #define EAZEL_SOFTCAT(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_SOFTCAT, EazelSoftCat))
 #define EAZEL_SOFTCAT_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_SOFTCAT, EazelSoftCatClass))
-#define IS_EAZEL_SOFTCAT(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_SOFTCAT))
-#define IS_EAZEL_SOFTCAT_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_SOFTCAT))
+#define EAZEL_IS_SOFTCAT(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_SOFTCAT))
+#define EAZEL_IS_SOFTCAT_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_SOFTCAT))
 
 typedef struct _EazelSoftCat EazelSoftCat;
 typedef struct _EazelSoftCatClass EazelSoftCatClass;
@@ -42,13 +42,6 @@ typedef enum {
 	EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE,
 	EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE
 } EazelSoftCatError;
-
-typedef enum {
-	EAZEL_SOFTCAT_SENSE_EQ = 0x1,
-	EAZEL_SOFTCAT_SENSE_GT = 0x2,
-	EAZEL_SOFTCAT_SENSE_LT = 0x4,
-	EAZEL_SOFTCAT_SENSE_GE = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ)
-} EazelSoftCatSense;
 
 struct _EazelSoftCatClass
 {
@@ -81,6 +74,9 @@ void eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn);
 void eazel_softcat_set_username (EazelSoftCat *softcat, const char *username);
 gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
 void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);
+
+EazelSoftCatSense eazel_softcat_convert_sense_flags (int flags);
+char *eazel_softcat_sense_flags_to_string (EazelSoftCatSense flags);
 
 const char *eazel_softcat_error_string (EazelSoftCatError err);
 

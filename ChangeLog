@@ -1,3 +1,74 @@
+2000-12-14  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_provides), (osd_parse_dependency),
+	(osd_parse_file_list), (osd_parse_implementation):
+
+	Parse package dependency info from softcat and put them in the new
+	'depends' list in the package.  (This will replace the old
+	soft_depends and hard_depends fields.)  Incorporate new fields
+	supplied by the internal triggerfish.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedependency_new), (packagedependency_copy),
+	(packagedependency_destroy), (packagedata_new),
+	(packagedata_deplist_copy), (packagedata_copy),
+	(packagedata_fill_in_missing), (packagedata_destroy),
+	(packagedata_status_str_to_enum), (dump_package_list),
+	(dump_package_deplist), (packagedata_dump_int):
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Add new 'depends' field and PackageDependency struct.
+
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize), (sense_flags_to_softcat_flags),
+	(eazel_softcat_convert_sense_flags),
+	(eazel_softcat_sense_flags_to_string):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Add functions to convert to/from softcat sense flags, and a
+	convenience function for converting them into a human-friendly
+	string like ">=".
+
+2000-12-14  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_create_corba_object),
+	(eazel_install_callback_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(eazel_install_create_corba_object):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), (eazel_install_unref),
+	(eazel_install_set_arg), (eazel_install_initialize):
+	* components/services/install/lib/eazel-install-problem.c:
+	* components/services/install/lib/eazel-install-problem.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_create_dbs),
+	(eazel_package_system_rpm3_open_dbs),
+	(eazel_package_system_rpm3_initialize):
+	* components/services/install/lib/eazel-package-system-rpm3.h:
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_initialize):
+	* components/services/install/lib/eazel-package-system-rpm4.h:
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_load_package),
+	(eazel_package_system_skeleton_query),
+	(eazel_package_system_skeleton_install),
+	(eazel_package_system_skeleton_uninstall),
+	(eazel_package_system_skeleton_verify),
+	(eazel_package_system_skeleton_initialize):
+	* components/services/install/lib/eazel-package-system-skeleton.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_initialize):
+	* components/services/install/lib/eazel-package-system.h:
+
+	Change all IS_EAZEL* macros to EAZEL_IS*, to match convention.
+
 2000-12-14  Darin Adler  <darin@eazel.com>
 
 	* components/image-viewer/nautilus-image-view.c:

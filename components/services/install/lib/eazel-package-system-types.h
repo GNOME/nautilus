@@ -150,6 +150,26 @@ void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 void categorydata_list_destroy (GList *list);
 
+typedef enum {
+	EAZEL_SOFTCAT_SENSE_EQ = 0x1,
+	EAZEL_SOFTCAT_SENSE_GT = 0x2,
+	EAZEL_SOFTCAT_SENSE_LT = 0x4,
+	EAZEL_SOFTCAT_SENSE_GE = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ)
+} EazelSoftCatSense;
+
+/* dependency list */
+typedef struct {
+	PackageData *package;
+	/* if this dependency fills a requirement, like "gconf >= 0.6",
+	 * the requirement is listed here: */
+	EazelSoftCatSense sense;
+	char *version;
+} PackageDependency;
+
+PackageDependency *packagedependency_new (void);
+PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
+void packagedependency_destroy (PackageDependency *dep, gboolean deep);
+
 struct _PackageData {
 	char* name;
 	char* version;
@@ -161,6 +181,7 @@ struct _PackageData {
 	char* description;	
 	GList* soft_depends;
 	GList* hard_depends;
+	GList* depends;		/* GList<PackageDependency *> */
 	GList* breaks; 	
 
 	char *filename;

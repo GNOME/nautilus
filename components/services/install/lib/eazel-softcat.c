@@ -107,7 +107,7 @@ eazel_softcat_class_initialize (EazelSoftCatClass *klass)
 static void
 eazel_softcat_initialize (EazelSoftCat *softcat) {
 	g_assert (softcat != NULL);
-	g_assert (IS_EAZEL_SOFTCAT (softcat));
+	g_assert (EAZEL_IS_SOFTCAT (softcat));
 
 	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
 	softcat->private->retries = 3;
@@ -297,26 +297,67 @@ eazel_softcat_error_string (EazelSoftCatError err)
   actual real implementation stuff
 *****************************************/
 
-#define SOFTCAT_FLAG_LESS	2
-#define SOFTCAT_FLAG_GREATER	4
-#define SOFTCAT_FLAG_EQUAL	8
+/* can be OR'd together for "greater than or equal" etc -- this happens often */
+/* --- private to me.  everyone else should use the real sense flags in eazel-softcat.h */
+typedef enum {
+	SOFTCAT_SENSE_FLAG_LESS = 2,
+	SOFTCAT_SENSE_FLAG_GREATER = 4,
+	SOFTCAT_SENSE_FLAG_EQUAL = 8
+} SoftcatSenseFlag;
 
 static char *
-sense_flags_to_softcat_flags (int sense)
+sense_flags_to_softcat_flags (EazelSoftCatSense sense)
 {
 	int flags = 0;
 
 	if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
-		flags |= SOFTCAT_FLAG_EQUAL;
+		flags |= SOFTCAT_SENSE_FLAG_EQUAL;
 	}
 	if (sense & EAZEL_SOFTCAT_SENSE_GT) {
-		flags |= SOFTCAT_FLAG_GREATER;
+		flags |= SOFTCAT_SENSE_FLAG_GREATER;
 	}
 	if (sense & EAZEL_SOFTCAT_SENSE_LT) {
-		flags |= SOFTCAT_FLAG_LESS;
+		flags |= SOFTCAT_SENSE_FLAG_LESS;
 	}
 
 	return g_strdup_printf ("%d", flags);
+}
+
+EazelSoftCatSense
+eazel_softcat_convert_sense_flags (int flags)
+{
+	EazelSoftCatSense out = 0;
+
+	if (flags & SOFTCAT_SENSE_FLAG_LESS) {
+		out |= EAZEL_SOFTCAT_SENSE_LT;
+	}
+	if (flags & SOFTCAT_SENSE_FLAG_GREATER) {
+		out |= EAZEL_SOFTCAT_SENSE_GT;
+	}
+	if (flags & SOFTCAT_SENSE_FLAG_EQUAL) {
+		out |= EAZEL_SOFTCAT_SENSE_EQ;
+	}
+	return out;
+}
+
+char *
+eazel_softcat_sense_flags_to_string (EazelSoftCatSense flags)
+{
+	char *out, *p;
+
+	out = g_malloc (5);
+	p = out;
+	if (flags & EAZEL_SOFTCAT_SENSE_LT) {
+		*p++ = '<';
+	}
+	if (flags & EAZEL_SOFTCAT_SENSE_GT) {
+		*p++ = '>';
+	}
+	if (flags & EAZEL_SOFTCAT_SENSE_EQ) {
+		*p++ = '=';
+	}
+	*p = '\0';
+	return out;
 }
 
 #ifdef EAZEL_INSTALL_SLIM

@@ -29,6 +29,7 @@
  */
 
 #include <config.h>
+#include "eazel-softcat.h"	/* for softcat sense flags */
 #include "eazel-install-xml-package-list.h"
 
 #include <libtrilobite/trilobite-core-utils.h>
@@ -646,35 +647,39 @@ eazel_install_categorydata_to_xml (const CategoryData *category)
 	return node;
 }
 
-static GList *
-osd_parse_list (const char *text)
+static PackageDependency *
+osd_parse_provides (PackageData *pack, xmlNodePtr node, GList **feature_list)
 {
+	xmlNodePtr child;
 	GList *list = NULL;
-	const char *start, *comma;
-	char *item;
+	PackageDependency *dep = NULL;
+	char *tmp;
+	gboolean got_package = FALSE;
 
-	/* remove leading whitespace */
-	for (start = text; (start != NULL) && (*start != '\0') && (*start <= ' '); start++)
-		;
-	while ((start != NULL) && (*start != '\0')) {
-		comma = strchr (start, ',');
-		if (comma == NULL) {
-			comma = start + strlen (start);
+	child = node->xmlChildrenNode;
+	while (child) {
+		if (g_strcasecmp (child->name, "FILE") == 0) {
+			tmp = xmlNodeGetContent (child);
+			list = g_list_prepend (list, g_strdup (tmp));
+			xmlFree (tmp);
+		} else if (g_strcasecmp (child->name, "PACKAGE") == 0) {
+			if (got_package) {
+				g_warning ("multiple packages in dep list for %s!", pack->name);
+			} else {
+				dep = packagedependency_new ();
+				dep->version = xml_get_value (child, "version");
+				tmp = xml_get_value (child, "sense");
+				dep->sense = eazel_softcat_convert_sense_flags (atoi (tmp));
+				g_free (tmp);
+				got_package = TRUE;
+			}
 		}
-		item = g_strndup (start, comma - start);
-		list = g_list_prepend (list, item);
-		if (*comma != '\0') {
-			start = comma + 1;
-		} else {
-			start = comma;
-		}
-		while ((*start != '\0') && (*start <= ' ')) {
-			start++;
-		}
+		child = child->next;
 	}
 
 	list = g_list_reverse (list);
-	return list;
+	*feature_list = list;
+	return dep;
 }
 
 static void
@@ -682,20 +687,19 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 {
 	xmlNodePtr child;
 	PackageData *softpack = NULL;
-	char *names;
+	PackageDependency *dep = NULL;
 	GList *features = NULL;
 
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROVIDES") == 0) {
-			names = xmlGetProp (child, "NAMES");
-			features = osd_parse_list (names);
-			free (names);
+			dep = osd_parse_provides (pack, child, &features);
 		} else if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			/* dependent softpkg */
 			softpack = osd_parse_softpkg (child);
 			if (softpack != NULL) {
-				packagedata_add_pack_to_soft_depends (pack, softpack);
+				/* FIXME this is going away when soft_depends goes away! */
+				packagedata_add_pack_to_soft_depends (pack, packagedata_copy (softpack, FALSE));
 			} else {
 				trilobite_debug ("SOFTPKG dependency parse failed");
 			}
@@ -705,15 +709,43 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 		child = child->next;
 	}
 
-	if ((features != NULL) && (softpack != NULL) && (softpack->features == NULL)) {
-		/* old-style (pre-Dec00) separate PROVIDES and SOFTPKG: connect them */
-		softpack->features = features;
+	if (softpack != NULL) {
+		if ((features != NULL) && (softpack->features == NULL)) {
+			/* softcat sends separate PROVIDES and SOFTPKG: connect them */
+			softpack->features = features;
+		}
+		if (dep == NULL) {
+			dep = packagedependency_new ();
+		}
+		/* attach this package to a depends struct */
+		pack->depends = g_list_prepend (pack->depends, dep);
+		dep->package = softpack;
 	} else if (features != NULL) {
 		g_warning ("stranded PROVIDES block in the dependency info!");
 		g_list_foreach (features, (GFunc)g_free, NULL);
 		g_list_free (features);
 		features = NULL;
 	}
+}
+
+static void
+osd_parse_file_list (PackageData *pack, xmlNodePtr node)
+{
+	xmlNodePtr child;
+	char *tmp;
+
+	child = node->xmlChildrenNode;
+	while (child) {
+		if (g_strcasecmp (child->name, "FILE") == 0) {
+			tmp = xmlNodeGetContent (child);
+			pack->provides = g_list_prepend (pack->provides, g_strdup (tmp));
+			xmlFree (tmp);
+		} else {
+			/* bad : thing in file list that isn't a file */
+		}
+		child = child->next;
+	}
+	pack->provides = g_list_reverse (pack->provides);
 }
 
 static void
@@ -743,8 +775,10 @@ osd_parse_implementation (PackageData *pack,
 			} else {
 				pack->bytesize = 0;
 			}
+		} else if (g_strcasecmp (child->name, "FILES") == 0) {
+			/* oh boy... exhaustive file list */
+			osd_parse_file_list (pack, child);
 		} else if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
-			/* presume this is a soft-depends */
 			osd_parse_dependency (pack, child);
 		} else {
 			/* trilobite_debug ("unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
