@@ -43,14 +43,12 @@ finish_button_activation (gpointer data)
 {
 	GtkButton *button;
 	
-	g_assert (GTK_IS_BUTTON (data));
-
 	button = GTK_BUTTON (data);
 
 	if (!button->in_button) {
-		gtk_button_clicked (GTK_BUTTON (data));
+		gtk_button_clicked (button);
 	}
-	gtk_button_released (GTK_BUTTON (data));
+	gtk_button_released (button);
 
 	return FALSE;	
 }
