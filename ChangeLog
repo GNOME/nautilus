@@ -1,3 +1,14 @@
+2001-02-05  Gene Z. Ragan  <gzr@eazel.com>
+
+	Add code to send the mime type of the file being examined to the
+	mime type capplet so that the capplet can scroll to the mime type
+	being examined.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list), (launch_mime_capplet),
+	(launch_mime_capplet_and_close_dialog),
+	(nautilus_program_chooser_show_no_choices_message):
+
 2001-02-05  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
