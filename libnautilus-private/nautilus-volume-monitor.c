@@ -101,7 +101,6 @@ static void     mount_volume_deactivate                               	(Nautilus
 									 NautilusVolume             	*volume);
 static void     mount_volume_activate_floppy                          	(NautilusVolumeMonitor      	*view,
 									 NautilusVolume             	*volume);
-static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
 static void	free_volume_info             				(NautilusVolume             	*volume,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
 static void	find_volumes 						(NautilusVolumeMonitor 		*monitor);
@@ -188,19 +187,13 @@ nautilus_volume_monitor_get (void)
 	return global_volume_monitor;
 }
 
-static gboolean
-is_floppy_mount_path (const char *mount_path)
-{
-	return nautilus_str_has_prefix (mount_path, FLOPPY_MOUNT_PATH_PREFIX);
-}
-
 static int
-floppy_sort (const char *mount_path_1, const char *mount_path_2) 
+floppy_sort (NautilusVolume *volume1, NautilusVolume *volume2) 
 {
 	gboolean is_floppy_1, is_floppy_2;
 
-	is_floppy_1 = is_floppy_mount_path (mount_path_1);
-	is_floppy_2 = is_floppy_mount_path (mount_path_2);
+	is_floppy_1 = volume1->type == NAUTILUS_VOLUME_FLOPPY;
+	is_floppy_2 = volume2->type == NAUTILUS_VOLUME_FLOPPY;
 
 	if (is_floppy_1 && !is_floppy_2) {
 		return -1;
@@ -211,31 +204,90 @@ floppy_sort (const char *mount_path_1, const char *mount_path_2)
 	return 0;
 }
 
-GList *
-nautilus_volume_monitor_get_removable_volume_names (void)
+
+gboolean		
+nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
 {
-	GList *list;
-	FILE *mef;
-	struct mntent *ent;
+	/* FIXME bugzilla.eazel.com 2450: 
+	   this does not detect removable volumes that are not
+           CDs or floppies (e.g. zip drives, DVD-ROMs, those weird 20M
+           super floppies, etc) */
+
+	switch (volume->type) {
+	case NAUTILUS_VOLUME_CDROM:
+		return TRUE;
+		break;
+		
+	case NAUTILUS_VOLUME_FLOPPY:
+		return TRUE;
+		break;
+		
+	case NAUTILUS_VOLUME_EXT2:
+		return FALSE;
+		break;
+
+	default:
+		return FALSE;
+		break;
+	}
+}
+
+
+GList *
+nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
+{
+	GList *list, *p;
+	NautilusVolume *volume;
 
 	list = NULL;
-
-	mef = setmntent (_PATH_FSTAB, "r");
-	g_return_val_if_fail (mef != NULL, NULL);
-
-	while ((ent = getmntent (mef)) != NULL) {
-		if (mntent_is_removable_fs (ent)) {
-			list = g_list_prepend (list, g_strdup (ent->mnt_dir));
-		}
+	
+	for (p = monitor->details->volumes; p != NULL; p = p->next) {
+		volume = p->data;
+		if (nautilus_volume_monitor_volume_is_removable (volume)) {
+			list = g_list_prepend (list, volume);
+		}		
 	}
-  	endmntent (mef);
 
 	/* Move all floppy mounts to top of list */
 	return g_list_sort (g_list_reverse (list), (GCompareFunc) floppy_sort);
+
+	
+}
+
+/* nautilus_volume_monitor_get_volume_name
+ *	
+ * Returns name of volume in human readable form
+ */
+ 
+char *
+nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
+{
+	int index;
+	char *name;
+
+	name = g_strdup (volume->volume_name);
+
+	/* Strip whitespace from the end of the name. */
+	g_strchomp (name);
+
+	/* The volume name may have '/' characters. We need to convert
+	 * them to something that's suitable for use in the name of a
+	 * link on the desktop.
+	 */
+	for (index = 0; ; index++) {
+		if (name [index] == '\0') {
+			break;
+		}
+		if (name [index] == '/') {
+			name [index] = '-';
+		}
+	}
+
+	return name;
 }
 
 gboolean
-nautilus_volume_monitor_volume_is_mounted (const char *mount_point)
+nautilus_volume_monitor_volume_is_mounted (const NautilusVolume *volume)
 {
 	FILE *fh;
 	char line[PATH_MAX * 3];
@@ -250,7 +302,7 @@ nautilus_volume_monitor_volume_is_mounted (const char *mount_point)
 		 * is as big as line is.
 		 */
 		if (sscanf (line, "%s %s", devname, mntpoint) == 2) {
-			if (strcmp (mntpoint, mount_point) == 0) {
+			if (strcmp (mntpoint, volume->mount_path) == 0) {
 				fclose (fh);	
 				return TRUE;
 			}
@@ -307,7 +359,7 @@ static void
 mount_volume_floppy_set_state (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	/* If the floppy is not in mtab, then we set it to empty */
-	if (nautilus_volume_monitor_volume_is_mounted (volume->mount_path)) {
+	if (nautilus_volume_monitor_volume_is_mounted (volume)) {
 		volume->state = NAUTILUS_VOLUME_ACTIVE;
 	} else {
 		volume->state = NAUTILUS_VOLUME_EMPTY;
@@ -350,28 +402,7 @@ volume_set_state_empty (NautilusVolume *volume, NautilusVolumeMonitor *monitor)
 static void
 mount_volume_mount (NautilusVolumeMonitor *view, NautilusVolume *volume)
 {
-	int index;
-
-	/* Make user readable volume name "nice" */
-
-	/* Strip whitespace from the end of the name. */
-	g_strchomp (volume->volume_name);
-
-	/* The volume name may have '/' characters. We need to convert
-	 * them to something that's suitable for use in the name of a
-	 * link on the desktop.
-	 */
-	/* FIXME bugzilla.eazel.com 2445: Move to desktop code? */
-	for (index = 0; ; index++) {
-		if (volume->volume_name [index] == '\0') {
-			break;
-		}
-		if (volume->volume_name [index] == '/') {
-			volume->volume_name [index] = '-';
-		}
-	}
-	
-	volume->did_mount = TRUE;
+	volume->did_mount = TRUE;	
 }
 
 static void
@@ -660,7 +691,7 @@ mount_volume_iso9660_add (NautilusVolumeMonitor *monitor, NautilusVolume *volume
 	return TRUE;
 }
 
-/* This is here because mtab lists volumes by their symlink-followed names rather than what is listed in fstab. *sigh* */
+/* This is here because mtab lists volumes by their symlink-followed names rather than what is listed in fstab. */
 static void
 mount_volume_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, NautilusVolume *volume)
 {
@@ -723,30 +754,6 @@ add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 	}
 }
 
-static gboolean
-mntent_is_removable_fs (struct mntent *ent)
-{
-	/* FIXME bugzilla.eazel.com 2450: 
-	   this does not detect removable volumes that are not
-           CDs or floppies (e.g. zip drives, DVD-ROMs, those weird 20M
-           super floppies, etc) */
-
-	/* FIXME bugzilla.eazel.com 2451: 
-	   it's incorrect to assume that all ISO9660 volumes
-           are removable; you could create one as a "filesystem in a
-           file" for testing purposes. */
-
-	if (strcmp (ent->mnt_type, "iso9660") == 0) {
-		return TRUE;
-	}
-	
-	if (nautilus_str_has_prefix (ent->mnt_fsname, FLOPPY_DEVICE_PATH_PREFIX)) {
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
 #if 0
 static gboolean
 mntent_has_option(const char *optlist, const char *option)
@@ -780,18 +787,6 @@ find_volumes (NautilusVolumeMonitor *monitor)
 	g_return_if_fail (mef != NULL);
 
 	while ((ent = getmntent (mef)) != NULL) {
-#if 0
-		/* FIXME bugzilla.eazel.com 2452: Think some more about these checks */
-		/* Check for removable volume */
-		if (!mntent_is_removable_fs (ent)) {
-			continue;
-		}
-
-		if (!mntent_has_option (ent->mnt_opts, MOUNT_OPTIONS_USER)
-		    && !mntent_has_option (ent->mnt_opts, MOUNT_OPTIONS_OWNER)) {
-			continue;
-		}
-#endif
 		/* Add it to our list of mount points */
 		add_mount_volume (monitor, ent);
 	}
@@ -869,7 +864,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 			
 	/* Get mount state and then decide to mount/unmount the volume */
 	if (found_volume) {
-		is_mounted = nautilus_volume_monitor_volume_is_mounted (mount_point);
+		is_mounted = nautilus_volume_monitor_volume_is_mounted (volume);
 
 		argv[0] = is_mounted ? "/bin/umount" : "/bin/mount";
 		argv[1] = (char *) mount_point;

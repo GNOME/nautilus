@@ -83,18 +83,21 @@ struct NautilusVolume {
 
 typedef gboolean (* NautilusEachVolumeFunction) (const NautilusVolume *, gpointer);
 
-GtkType                nautilus_volume_monitor_get_type                   (void);
-NautilusVolumeMonitor *nautilus_volume_monitor_get                        (void);
-gboolean               nautilus_volume_monitor_volume_is_mounted          (const char            	*mount_point);
-gboolean               nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor 	*monitor,
-									   const char            	*mount_point);
-gboolean               nautilus_volume_monitor_is_volume_link             (const char            	*path);
-void                   nautilus_volume_monitor_each_volume                (NautilusVolumeMonitor 	*monitor,
-									   NautilusEachVolumeFunction  	function,
-									   gpointer               	context);
-void                   nautilus_volume_monitor_each_mounted_volume        (NautilusVolumeMonitor 	*monitor,
-									   NautilusEachVolumeFunction   function,
-									   gpointer               	context);
-GList *                nautilus_volume_monitor_get_removable_volume_names (void);
+GtkType                	nautilus_volume_monitor_get_type                   	(void);
+NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        	(void);
+char 			*nautilus_volume_monitor_get_volume_name 		(const NautilusVolume 		*volume);
+
+gboolean               	nautilus_volume_monitor_volume_is_mounted          	(const NautilusVolume 		*volume);
+gboolean               	nautilus_volume_monitor_mount_unmount_removable    	(NautilusVolumeMonitor 		*monitor,
+									   	 const char            		*mount_point);
+gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolume 		*volume);
+gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
+void                   	nautilus_volume_monitor_each_volume                	(NautilusVolumeMonitor 		*monitor,
+									   	 NautilusEachVolumeFunction  	function,
+									   	 gpointer               	context);
+void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
+									  	 NautilusEachVolumeFunction   	function,
+									   	 gpointer               	context);
+GList			*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

@@ -182,7 +182,7 @@ static void
 create_mount_link (const NautilusVolume *volume)
 {
 	gboolean result;
-	char *desktop_path, *target_uri, *icon_name;
+	char *desktop_path, *target_uri, *icon_name, *volume_name;
 
 	/* FIXME bugzilla.eazel.com 2174: This hack was moved here
 	 * from the volume monitor code.
@@ -192,7 +192,7 @@ create_mount_link (const NautilusVolume *volume)
 	    && strcmp (volume->mount_path, "/") != 0) {
 		return;
 	}
-			
+	
 	/* Get icon type */
 	if (volume->type == NAUTILUS_VOLUME_CDROM) {
 		icon_name = g_strdup ("i-cdrom.png");
@@ -204,15 +204,17 @@ create_mount_link (const NautilusVolume *volume)
 	
 	desktop_path = nautilus_get_desktop_directory ();
 	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
-
+	volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	
 	/* Create link */
-	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
+	result = nautilus_link_create (desktop_path, volume_name, icon_name, 
 				       target_uri, NAUTILUS_LINK_MOUNT);
 	/* FIXME bugzilla.eazel.com 2526: Ignoring the result here OK? */
 
 	g_free (desktop_path);
 	g_free (target_uri);
 	g_free (icon_name);
+	g_free (volume_name);
 }
 
 static gboolean
@@ -442,9 +444,10 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		GtkWidget *check_menu_item;
 		gboolean active;
 		char *name;
+		NautilusVolume *volume;
 		
-		/* Get a list containing the mount point of all removable volumes in fstab */
-		disk_list = nautilus_volume_monitor_get_removable_volume_names ();
+		/* Get a list containing the all removable volumes in the volume monitor */
+		disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
 
 		/* Create submenu to place them in */
 		sub_menu = GTK_MENU (gtk_menu_new ());
@@ -452,22 +455,24 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 
 		/* Iterate list and populate menu with removable volumes */
 		for (element = disk_list; element != NULL; element = element->next) {
-			/* Create item with human readable name */
-			name = strrchr (element->data, '/');
+			volume = element->data;
+
+			 /* Create item with human readable name */
+			name = strrchr (volume->mount_path, '/');
 			if (name != NULL) {
 				check_menu_item = gtk_check_menu_item_new_with_label (name + 1);
 			} else {
-				check_menu_item = gtk_check_menu_item_new_with_label (element->data);
+				check_menu_item = gtk_check_menu_item_new_with_label (volume->mount_path);
 			}
-			
+
 			/* Add check mark if volume is mounted */
-			active = nautilus_volume_monitor_volume_is_mounted (element->data);
+			active = nautilus_volume_monitor_volume_is_mounted (volume);
 			gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (check_menu_item), TRUE);
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), active);
 			
 			/* Add some data to the menu item for later mount operations */
 			gtk_object_set_data_full (GTK_OBJECT (check_menu_item), "mount_point",
-						  g_strdup (element->data), g_free);
+						  g_strdup (volume->mount_path), g_free);
 			
 			gtk_signal_connect (GTK_OBJECT (check_menu_item),
 					    "activate",
@@ -476,7 +481,6 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			
 			gtk_menu_append (sub_menu, check_menu_item);
 			gtk_widget_show (check_menu_item);
-			g_free (element->data);
 		}
 		g_list_free (disk_list);
 	}
@@ -533,11 +537,12 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 			   FMDesktopIconView *icon_view)
 {
 	GnomeVFSResult result;
-	char *link_uri, *desktop_path;
+	char *link_uri, *desktop_path, *volume_name;
 	GList dummy_list;
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	link_uri = nautilus_make_path (desktop_path, volume->volume_name);
+	volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	link_uri = nautilus_make_path (desktop_path, volume_name);
 	
 	if (link_uri != NULL) {
 		/* Remove mounted device icon from desktop */
@@ -554,6 +559,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	}
 
 	g_free (desktop_path);
+	g_free (volume_name);
 }
 
 static void

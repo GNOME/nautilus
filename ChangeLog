@@ -1,3 +1,34 @@
+2000-09-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2445,  Some volume monitor code applies only to desktop case.
+	Fixed bug 2452,  find_volumes confused about which volumes to include.
+	Fixed bug 2451,  Incorrect test for removability of ISO9660 volumes.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c: 
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(floppy_sort):
+	Changed function to use NautilusVolumes as opposed to paths
+	
+	(nautilus_volume_monitor_volume_is_removable):
+	New function to check and see if volume is removable.
+	
+	(nautilus_volume_monitor_get_removable_volumes):
+	New function to return a list of removable NautilusVolumes
+	
+	(nautilus_volume_monitor_get_volume_name):
+	New function to return a human readable name of volume
+	
+	(nautilus_volume_monitor_volume_is_mounted),
+	(mount_volume_floppy_set_state), (mount_volume_mount),
+	(find_volumes), (nautilus_volume_monitor_mount_unmount_removable):
+	Clean up and bug fix work.
+	
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(fm_desktop_icon_view_create_background_context_menu_items),
+	(volume_unmounted_callback):
+	Use new functions in NautilusVolumeMonitor.
+
 2000-09-07  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-window-manage-views.c: (handle_go_elsewhere):
