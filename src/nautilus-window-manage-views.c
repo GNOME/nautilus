@@ -245,10 +245,12 @@ nautilus_window_update_title (NautilusWindow *window)
                 gtk_window_set_title (GTK_WINDOW (window), window_title);
                 g_free (window_title);
         }
-        
+
         nautilus_sidebar_set_title (window->sidebar, title);
         nautilus_bookmark_set_name (window->current_location_bookmark, title);
 
+        g_free (title);
+        
         /* Name of item in history list may have changed, tell listeners. */
         nautilus_send_history_list_changed ();
 
@@ -265,7 +267,6 @@ nautilus_window_update_title (NautilusWindow *window)
                         nautilus_view_frame_title_changed (NAUTILUS_VIEW_FRAME (temp->data));
                 }
         }
-
 }
 
 /* nautilus_window_set_displayed_location:
