@@ -51,6 +51,7 @@ eazel_DATA =					\
 	i-regular.png				\
 	i-regular-aa.png			\
 	i-regular.xml				\
+	number_strip.png			\
 	theme_preview.png			\
 	zoom_body.png				\
 	$(NULL)
