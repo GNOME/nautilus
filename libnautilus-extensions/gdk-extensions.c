@@ -28,7 +28,9 @@
 
 #include "gdk-extensions.h"
 
-#include "../src/nautilus-self-check-functions.h"
+#include "nautilus-lib-self-check-functions.h"
+
+#include <string.h>
 
 #define GRADIENT_BAND_SIZE 4
 
@@ -178,30 +180,329 @@ nautilus_interpolate_color (gdouble ratio,
 	interpolated_color->blue = start_color->blue * (1.0 - ratio) + end_color->blue * ratio;
 }
 
+/**
+ * nautilus_gradient_new
+ * @start_color: Color for the top or left.
+ * @end_color: Color for the bottom or right.
+ * @is_horizontal: Direction of the gradient.
+ *
+ * Create a string that combines the start and end colors along
+ * with the direction of the gradient in a standard format.
+ */
+char *
+nautilus_gradient_new (const char *start_color,
+		       const char *end_color,
+		       gboolean is_horizontal)
+{
+	g_return_val_if_fail (start_color != NULL, g_strdup (""));
+	g_return_val_if_fail (end_color != NULL, g_strdup (""));
+	g_return_val_if_fail (is_horizontal == FALSE || is_horizontal == TRUE, g_strdup (""));
+
+	/* Handle the special case where the start and end colors are identical.
+	   Handle the special case where the end color is an empty string.
+	*/
+	if (strcmp(start_color, end_color) == 0 || end_color[0] == '\0')
+		return g_strdup (start_color);
+
+	/* Handle the special case where the start color is an empty string. */
+	if (start_color[0] == '\0')
+		return g_strdup (end_color);
+	
+	/* Handle the general case. */
+	return g_strconcat (start_color, "-", end_color, is_horizontal ? ":h" : NULL, NULL);
+}
+
+/**
+ * nautilus_gradient_is_gradient
+ * @gradient_spec: A gradient spec. string.
+ *
+ * Return true if the spec. specifies a gradient instead of a solid color.
+ */
+gboolean
+nautilus_gradient_is_gradient (const char *gradient_spec)
+{
+	g_return_val_if_fail (gradient_spec != NULL, FALSE);
+
+	return strchr (gradient_spec, '-') != NULL;
+}
+
+static char *
+nautilus_gradient_strip_trailing_direction_if_any (const char *gradient_spec)
+{
+	size_t length;
+
+	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
+
+	length = strlen (gradient_spec);
+	if (length >= 2 && gradient_spec[length - 2] == ':'
+	    && (gradient_spec[length - 1] == 'v' || gradient_spec[length - 1] == 'h'))
+		length -= 2;
+
+	return g_strndup (gradient_spec, length);
+}
+
+/**
+ * nautilus_gradient_get_start_color_spec
+ * @gradient_spec: A gradient spec. string.
+ *
+ * Return the start color.
+ * This may be the entire gradient_spec if it's a solid color.
+ */
+char *
+nautilus_gradient_get_start_color_spec (const char *gradient_spec)
+{
+	const char *separator;
+	
+	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
+	
+	separator = strchr (gradient_spec, '-');
+	if (separator == NULL)
+		return nautilus_gradient_strip_trailing_direction_if_any (gradient_spec);
+
+	return g_strndup (gradient_spec, separator - gradient_spec);
+}
+
+/**
+ * nautilus_gradient_get_end_color_spec
+ * @gradient_spec: A gradient spec. string.
+ *
+ * Return the end color.
+ * This may be the entire gradient_spec if it's a solid color.
+ */
+char *
+nautilus_gradient_get_end_color_spec (const char *gradient_spec)
+{
+	const char *separator;
+
+	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
+
+	separator = strchr (gradient_spec, '-');
+	return nautilus_gradient_strip_trailing_direction_if_any
+		(separator != NULL ? separator + 1 : gradient_spec);
+}
+
+/* Do the work shared by all the set_color_spec functions below. */
+static char *
+nautilus_gradient_set_edge_color (const char *gradient_spec,
+				  const char *edge_color,
+				  gboolean is_horizontal,
+				  gboolean change_end)
+{
+	char *opposite_color;
+	char *result;
+
+	g_return_val_if_fail (gradient_spec != NULL, g_strdup (""));
+	g_return_val_if_fail (edge_color != NULL, g_strdup (gradient_spec));
+
+	/* Get the color from the existing gradient spec. for the opposite
+	   edge. This will parse away all the stuff we don't want from the
+	   old gradient spec.
+	*/
+	opposite_color = change_end
+		? nautilus_gradient_get_start_color_spec (gradient_spec)
+		: nautilus_gradient_get_end_color_spec (gradient_spec);
+
+	/* Create a new gradient spec. The nautilus_gradient_new function handles
+	   some special cases, so we don't have to bother with them here.
+	*/
+	result = nautilus_gradient_new (change_end ? opposite_color : edge_color,
+					change_end ? edge_color : opposite_color,
+					is_horizontal);
+
+	g_free (opposite_color);
+
+	return result;
+}
+
+/**
+ * nautilus_gradient_set_left_color_spec
+ * @gradient_spec: A gradient spec. string.
+ * @left_color: Color spec. to replace left color with.
+ *
+ * Changes the left color to what's passed in.
+ * This creates a horizontal gradient.
+ */
+char *
+nautilus_gradient_set_left_color_spec (const char *gradient_spec,
+				       const char *left_color)
+{
+	return nautilus_gradient_set_edge_color (gradient_spec, left_color, TRUE, FALSE);
+}
+
+/**
+ * nautilus_gradient_set_top_color_spec
+ * @gradient_spec: A gradient spec. string.
+ * @top_color: Color spec. to replace top color with.
+ *
+ * Changes the top color to what's passed in.
+ * This creates a vertical gradient.
+ */
+char *
+nautilus_gradient_set_top_color_spec (const char *gradient_spec,
+				      const char *top_color)
+{
+	return nautilus_gradient_set_edge_color (gradient_spec, top_color, FALSE, FALSE);
+}
+
+/**
+ * nautilus_gradient_set_right_color_spec
+ * @gradient_spec: A gradient spec. string.
+ * @right_color: Color spec. to replace right color with.
+ *
+ * Changes the right color to what's passed in.
+ * This creates a horizontal gradient.
+ */
+char *
+nautilus_gradient_set_right_color_spec (const char *gradient_spec,
+					const char *right_color)
+{
+	return nautilus_gradient_set_edge_color (gradient_spec, right_color, TRUE, TRUE);
+}
+
+/**
+ * nautilus_gradient_set_bottom_color_spec
+ * @gradient_spec: A gradient spec. string.
+ * @bottom_color: Color spec. to replace bottom color with.
+ *
+ * Changes the bottom color to what's passed in.
+ * This creates a vertical gradient.
+ */
+char *
+nautilus_gradient_set_bottom_color_spec (const char *gradient_spec,
+					 const char *bottom_color)
+{
+	return nautilus_gradient_set_edge_color (gradient_spec, bottom_color, FALSE, TRUE);
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
-static void
-self_check_interpolate(gdouble ratio,
-		       gushort r1, gushort g1, gushort b1,
-		       gushort r2, gushort g2, gushort b2,
-		       gushort r3, gushort g3, gushort b3)
+#include <stdio.h>
+
+static GdkColor
+nautilus_self_check_interpolate (gdouble ratio,
+				 gushort r1, gushort g1, gushort b1,
+				 gushort r2, gushort g2, gushort b2)
 {
-	GdkColor start_color = { 0, r1, g1, b1 };
-	GdkColor end_color = { 0, r2, g2, b2 };
+	GdkColor start_color;
+	GdkColor end_color;
 	GdkColor interpolated_color;
-	nautilus_interpolate_color(ratio, &start_color, &end_color, &interpolated_color);
-	g_assert(interpolated_color.red == r3);
-	g_assert(interpolated_color.red == g3);
-	g_assert(interpolated_color.red == b3);
+
+	start_color.red = r1;
+	start_color.green = g1;
+	start_color.blue = b1;
+
+	end_color.red = r2;
+	end_color.green = g2;
+	end_color.blue = b2;
+
+	nautilus_interpolate_color (ratio, &start_color, &end_color, &interpolated_color);
+
+	return interpolated_color;
 }
 
 void
-self_check_gdk_extensions (void)
+nautilus_self_check_gdk_extensions (void)
 {
-	self_check_interpolate(0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	self_check_interpolate(0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0, 0, 0);
-	self_check_interpolate(0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0x7FFF, 0x7FFF, 0x7FFF);
-	self_check_interpolate(1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF);
+	/* nautilus_interpolate_color */
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).red, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).green, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0).blue, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0x7FFF);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0x7FFF);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0x7FFF);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).red, 0xFFFF);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).green, 0xFFFF);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF).blue, 0xFFFF);
+
+	/* nautilus_fill_rectangle */
+	/* Make a GdkImage and fill it, maybe? */
+
+	/* nautilus_fill_rectangle_with_color */
+
+	/* nautilus_fill_rectangle_with_gradient */
+
+	/* nautilus_gradient_new */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_new ("", "", FALSE), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_new ("a", "b", FALSE), "a-b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_new ("a", "b", TRUE), "a-b:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_new ("a", "a", FALSE), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_new ("a", "a", TRUE), "a");
+
+	/* nautilus_gradient_is_gradient */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_gradient_is_gradient (""), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_gradient_is_gradient ("-"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_gradient_is_gradient ("a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_gradient_is_gradient ("a-b"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_gradient_is_gradient ("a-b:h"), TRUE);
+
+	/* nautilus_gradient_get_start_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("-"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a-b"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a-"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("-b"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a:h"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a:v"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a:c"), "a:c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a:-b"), "a:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_start_color_spec ("a:-b:v"), "a:");
+
+	/* nautilus_gradient_get_end_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("-"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a-b"), "b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a-"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("-b"), "b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a:h"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a:v"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a:c"), "a:c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a:-b"), "b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_get_end_color_spec ("a:-b:v"), "b");
+
+	/* nautilus_gradient_set_left_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a", ""), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a", "b"), "b-a:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a-c:v", "b"), "b-c:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a-c:v", "c"), "c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_left_color_spec ("a:-b:v", "d"), "d-b:h");
+
+	/* nautilus_gradient_set_top_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a", ""), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a", "b"), "b-a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a-c:v", "b"), "b-c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a-c:v", "c"), "c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_top_color_spec ("a:-b:h", "d"), "d-b");
+
+	/* nautilus_gradient_set_right_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a", ""), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a", "b"), "a-b:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a-c:v", "b"), "a-b:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a-c:v", "c"), "a-c:h");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_right_color_spec ("a:-b:v", "d"), "a:-d:h");
+
+	/* nautilus_gradient_set_bottom_color_spec */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a", ""), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a", "a"), "a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a", "b"), "a-b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a-c:v", "b"), "a-b");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a-c:v", "c"), "a-c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_gradient_set_bottom_color_spec ("a:-b:h", "d"), "a:-d");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

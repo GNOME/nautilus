@@ -20,46 +20,46 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(XML_LIBS)
 
 nautilus_SOURCES=			\
-	nautilus-bookmark.h		\
+	explorer-location-bar.c         \
+	explorer-location-bar.h		\
 	nautilus-bookmark.c		\
-	nautilus-bookmarklist.h		\
+	nautilus-bookmark.h		\
 	nautilus-bookmarklist.c		\
-	nautilus-bookmarks-menu.h	\
+	nautilus-bookmarklist.h		\
 	nautilus-bookmarks-menu.c	\
-	nautilus-bookmarks-window.h	\
+	nautilus-bookmarks-menu.h	\
 	nautilus-bookmarks-window.c	\
-	nautilus-self-checks.c		\
-	nautilus-self-checks.h		\
-	ntl-app.h			\
+	nautilus-bookmarks-window.h	\
+        nautilus-self-check-functions.c \
+        nautilus-self-check-functions.h \
 	ntl-app.c			\
-	ntl-content-view.h		\
+	ntl-app.h			\
 	ntl-content-view.c		\
+	ntl-content-view.h		\
 	ntl-main.c 			\
-	ntl-meta-view.h			\
 	ntl-meta-view.c			\
-	ntl-miniicon.h			\
+	ntl-meta-view.h			\
 	ntl-miniicon.c			\
-	ntl-prefs.h			\
+	ntl-miniicon.h			\
 	ntl-prefs.c			\
+	ntl-prefs.h			\
 	ntl-types.h			\
-	ntl-uri-map.h			\
 	ntl-uri-map.c			\
-	ntl-view.h			\
-	ntl-view.c			\
+	ntl-uri-map.h			\
 	ntl-view-bonobo-control.c	\
 	ntl-view-bonobo-subdoc.c	\
+	ntl-view.c			\
 	ntl-view-frame-svr.c		\
+	ntl-view.h			\
 	ntl-view-nautilus.c		\
 	ntl-view-private.h		\
-	ntl-window.h			\
 	ntl-window.c			\
+	ntl-window.h			\
 	ntl-window-msgs.c		\
 	ntl-window-msgs.h		\
 	ntl-window-private.h		\
-	ntl-window-state.h		\
 	ntl-window-state.c		\
-	explorer-location-bar.h		\
-	explorer-location-bar.c
+	ntl-window-state.h
 
 goaddir=$(sysconfdir)/CORBA/servers
 goad_DATA=nautilus.goad

@@ -1,8 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
    
-   nautilus-self-checks.h: The self-check framework.
+   nautilus-self-check-functions.c: Wrapper for all self check functions
+   in Nautilus proper.
  
-   Copyright (C) 1999 Eazel, Inc.
+   Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,9 +23,17 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifndef NAUTILUS_SELF_CHECKS_H
-#define NAUTILUS_SELF_CHECKS_H
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-void nautilus_run_all_self_checks(void);
+#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
-#endif /* NAUTILUS_SELF_CHECKS_H */
+#include "nautilus-self-check-functions.h"
+
+void nautilus_run_self_checks()
+{
+	nautilus_self_check_fm_directory();
+}
+
+#endif /* ! NAUTILUS_OMIT_SELF_CHECK */

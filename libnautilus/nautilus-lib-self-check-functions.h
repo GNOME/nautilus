@@ -1,9 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-self-check-functions.h: Wrapper and prototypes for all self
-   check functions in Nautilus proper.
+   nautilus-lib-self-check-functions.h: Wrapper and prototypes for all
+   self-check functions in libnautilus.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,7 +23,9 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-void nautilus_run_self_checks (void);
+#include "nautilus-self-checks.h"
+
+void nautilus_run_lib_self_checks (void);
 
 /* Putting the prototypes for these self-check functions in each
    header file for the files they are defined in would make compiling
@@ -33,4 +35,4 @@ void nautilus_run_self_checks (void);
    So we put the prototypes here instead.
 */
 
-void nautilus_self_check_fm_directory (void);
+void nautilus_self_check_gdk_extensions (void);

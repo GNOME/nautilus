@@ -4,6 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 1999, 2000 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -19,14 +20,19 @@
  *  along with this library; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>,
+ *           Darin Adler <darin@eazel.com>,
+ *           John Sullivan <sullivan@eazel.com>
  *
  */
+
 /* ntl-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
 
 #include "config.h"
 #include "nautilus.h"
-#include "nautilus-self-checks.h"
+#include "nautilus-self-check-functions.h"
+#include <libnautilus/nautilus-lib-self-check-functions.h>
+#include <libnautilus/nautilus-self-checks.h>
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +40,7 @@ int main(int argc, char *argv[])
   CORBA_Environment ev;
   CORBA_ORB orb;
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
-  int check = FALSE;
+  gboolean check = FALSE;
 #endif
   const char **args;
 
@@ -61,17 +67,22 @@ int main(int argc, char *argv[])
   args = poptGetArgs (ctx);
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
-  if (check)
-    nautilus_run_all_self_checks();
-  else
+  if (check) {
+    /* Run the checks for nautilus and libnautilus. */
+    nautilus_run_self_checks ();
+    nautilus_run_lib_self_checks ();
+    if (nautilus_self_checks_failed ())
+      return 1;
+  } else
 #endif
   {
     nautilus_app_init (args ? args[0] : NULL);
-    bonobo_main();
-  }
 
-  /* One last chance for cleanup before program finishes. */
-  nautilus_app_exiting();
+    bonobo_main();
+
+    /* One last chance for cleanup before program finishes. */
+    nautilus_app_exiting();
+  }
 
   return 0;
 }

@@ -2,7 +2,7 @@
 
    fm-directory.c: GNOME file manager directory model.
  
-   Copyright (C) 1999 Eazel, Inc.
+   Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -30,13 +30,21 @@
 
 #include "fm-directory-protected.h"
 #include "fm-vfs-directory.h"
+#include <gtk/gtksignal.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include "../nautilus-self-check-functions.h"
 
 static void fm_directory_destroy (GtkObject *object);
 static void fm_directory_finalize (GtkObject *object);
 
+enum {
+	GET_FILES,
+	LAST_SIGNAL
+};
+
 static GtkObjectClass *parent_class;
+static guint signals[LAST_SIGNAL];
+
 static GHashTable* directory_objects;
 
 static void
@@ -46,6 +54,17 @@ fm_directory_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	
+	signals[GET_FILES] =
+		gtk_signal_new ("get_files",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (FMDirectoryClass, get_files),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE,
+				2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = fm_directory_destroy;
 	object_class->finalize = fm_directory_finalize;
@@ -95,7 +114,8 @@ NAUTILUS_DEFINE_GET_TYPE_FUNCTION(FMDirectory, fm_directory, GTK_TYPE_OBJECT)
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-FMDirectory *fm_directory_get(const char *uri)
+FMDirectory *
+fm_directory_get(const char *uri)
 {
 	FMDirectory *directory;
 
@@ -128,15 +148,49 @@ FMDirectory *fm_directory_get(const char *uri)
 	return directory;
 }
 
+void
+fm_directory_get_files(FMDirectory *directory,
+		       FMFileListCallback callback,
+		       gpointer callback_data)
+{
+	g_return_if_fail(FM_IS_DIRECTORY(directory));
+	g_return_if_fail(callback);
+
+	gtk_signal_emit(GTK_OBJECT(directory), signals[GET_FILES], callback, callback_data);
+}
+
 /* self check code */
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
-void self_check_fm_directory(void)
+static int data_dummy;
+static guint file_count;
+
+static void
+get_files_cb(FMDirectory *directory, FMFileList *files, gpointer data)
+{
+	g_assert(FM_IS_DIRECTORY(directory));
+	g_assert(files);
+	g_assert(data == &data_dummy);
+
+	file_count += g_list_length(files);
+}
+
+void
+nautilus_self_check_fm_directory(void)
 {
 	FMDirectory *directory;
 
 	directory = fm_directory_get("file:///etc");
+
+	g_assert(g_hash_table_size(directory_objects) == 1);
+
+	file_count = 0;
+	fm_directory_get_files(directory, get_files_cb, &data_dummy);
+
+	gtk_object_unref(GTK_OBJECT(directory));
+
+	g_assert(g_hash_table_size(directory_objects) == 0);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

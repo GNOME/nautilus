@@ -1,3 +1,30 @@
+2000-01-06  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/Makefile.am,
+	libnautilus/nautilus-lib-self-check-functions.c,
+	libnautilus/nautilus-lib-self-check-functions.h,
+	libnautilus/nautilus-self-checks.c,
+	libnautilus/nautilus-self-checks.h, src/Makefile.am,
+	src/nautilus-self-check-functions.c,
+	src/nautilus-self-check-functions.h, src/nautilus-self-checks.c,
+	src/nautilus-self-checks.h, src/ntl-main.c (main),
+	src/file-manager/fm-directory.c,
+	src/file-manager/fm-vfs-directory.c: Moved self-check framework
+	into libnautilus. Added functions so each check will report if it
+	fails instead of just aborting.
+
+	* src/gdk-extensions.c, src/gdk-extensions.h
+	(nautilus_gradient_new, nautilus_gradient_is_gradient,
+	nautilus_gradient_get_start_color_spec,
+	nautilus_gradient_get_end_color_spec,
+	nautilus_gradient_is_horizontal,
+	nautilus_gradient_set_left_color_spec,
+	nautilus_gradient_set_top_color_spec,
+	nautilus_gradient_set_right_color_spec,
+	nautilus_gradient_set_bottom_color_spec): Added new functions to
+	manage a string that specifies a color or gradient, and added
+	tests for the new functions.
+
 2000-01-06  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-app.h: src/ntl-app.c: (nautilus_app_exiting):
