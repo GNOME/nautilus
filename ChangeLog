@@ -1,3 +1,16 @@
+2001-01-29  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5508, Nautilus crashes when pressing 'Esc' in
+	copy/duplicate progress dialog
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_close_callback), (create_transfer_dialog):
+	Set the cancel state to true if the user uses the Escape key
+	or close box to dismiss the dialog.  This will cancel the
+	transfer properly.
+	
 2001-01-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-preferences-item.c:

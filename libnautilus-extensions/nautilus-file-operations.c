@@ -305,6 +305,15 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 }
 
 
+static gboolean
+handle_close_callback (GnomeDialog *dialog, TransferInfo *tranfer_info)
+{
+	tranfer_info->cancelled = TRUE;
+	       	
+	return FALSE;
+}
+
+
 static void
 create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			TransferInfo *transfer_info)
@@ -322,6 +331,10 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			    "clicked",
 			    GTK_SIGNAL_FUNC (transfer_dialog_clicked_callback),
 			    transfer_info);
+
+	/* Capture clicking on the close box or use of the escape key */
+	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog), "close",
+                           (GtkSignalFunc) handle_close_callback, transfer_info);
 
 	gtk_widget_show (transfer_info->progress_dialog);
 

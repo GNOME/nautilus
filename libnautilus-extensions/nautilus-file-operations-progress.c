@@ -229,7 +229,6 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *di
 	dialog->details->total_bytes_copied = 0;
 
 	dialog->details->freeze_count = 0;
-
 }
 
 static void
