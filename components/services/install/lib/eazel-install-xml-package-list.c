@@ -116,22 +116,52 @@ static CategoryData*
 parse_category (xmlNode* cat) {
 
 	CategoryData* category;
+	PackageData* pakdat;
 	xmlNode* pkg;
+	xmlNode* pkg2;
+	char *text;
 
 	category = categorydata_new ();
 	category->name = xml_get_value (cat, "name");
 
-	pkg = cat->childs->childs;
+	pkg = cat->childs;
 	if (pkg == NULL) {
-		g_print (_("*** No package nodes! ***\n"));
+		g_print (_("*** No package nodes! ***"));
 		g_free (category);
-		g_error (_("*** Bailing from package parse! ***\n"));
+		g_error (_("*** Bailing from package parse! ***"));
 	}
 	while (pkg) {
-		PackageData* pakdat;
-
-		pakdat = parse_package (pkg, TRUE);
-		category->packages = g_list_append (category->packages, pakdat);
+		pkg2 = pkg->childs;
+		if (pkg2 == NULL) {
+			g_print (_("*** No package nodes! ***"));
+			g_free (category);
+			g_error (_("*** Bailing from package parse! ***"));
+		}
+		if (g_strcasecmp (pkg->name, "PACKAGES") == 0) {
+			while (pkg2) {
+				if (g_strcasecmp (pkg2->name, "PACKAGE") != 0) {
+					g_error (_("*** Malformed package node!"));
+				} else {
+					pakdat = parse_package (pkg2, TRUE);
+					category->packages = g_list_append (category->packages, pakdat);
+				}
+				pkg2 = pkg2->next;
+			}
+		} else if (g_strcasecmp (pkg->name, "DEPENDS") == 0) {
+			while (pkg2) {
+				if (g_strcasecmp (pkg2->name, "ON") != 0) {
+					g_error (_("*** Malformed depends node!"));
+				} else {
+					text = xmlNodeGetContent (pkg2);
+					trilobite_debug ("%s deps on %s", category->name, text);
+					category->depends = g_list_prepend (category->depends, g_strdup (text));
+					free (text);
+				}
+				pkg2 = pkg2->next;
+			}
+		} else {
+			g_error (_("*** Unknown node type '%s'"), pkg->name);
+		}
 		pkg = pkg->next;
 	}
 

@@ -816,7 +816,7 @@ eazel_install_delete_downloads (EazelInstall *service)
 			
 		}
 		if (rmdir (eazel_install_get_tmp_dir (service))!=0) {
-				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));			
+				g_warning ("unable to delete directory %s !", eazel_install_get_tmp_dir (service));
 		}
 	}
 }

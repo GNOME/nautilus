@@ -59,7 +59,6 @@ struct _EazelInstaller
 
 	GList *categories;
 
-	GHashTable *category_deps;
 	GList *must_have_categories;
 	GList *implicit_must_have;
 	GList *dont_show;

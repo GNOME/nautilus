@@ -83,12 +83,6 @@ int eazel_install_package_name_compare (PackageData *pack,
 int eazel_install_package_version_compare (PackageData *pack, 
 					   char *version);
 
-int eazel_install_package_provides_compare (PackageData *pack,
-					    char *name);
-
-int eazel_install_package_modifies_provides_compare (PackageData *pack,
-						     char *name);
-
 static int eazel_install_package_conflict_compare (PackageData *pack,
 						   struct rpmDependencyConflict *conflict);
 
@@ -299,6 +293,8 @@ eazel_install_download_packages (EazelInstall *service,
 
 	return result;
 }
+
+
 
 static gboolean 
 eazel_install_check_for_file_conflicts (EazelInstall *service,
@@ -1141,6 +1137,9 @@ eazel_install_start_transaction (EazelInstall *service,
 		 */
 		if (eazel_install_get_uninstall (service) && (child_exitcode == 0)) {
 			res = 0;
+		} else if (eazel_install_get_test (service) && (child_exitcode == 0)) {
+			/* in test mode, 0 = good */
+			res = 0;
 		} else if ((child_exitcode != 0) && (res == 0)) {
 			res = g_list_length (packages);
 		}
@@ -1585,8 +1584,9 @@ eazel_install_package_provides_basename_compare (char *a,
 	return strcmp (g_basename (a), b);
 }
 
-int eazel_install_package_provides_compare (PackageData *pack,
-					    char *name)
+static int
+eazel_install_package_provides_compare (PackageData *pack,
+					char *name)
 {
 	GList *ptr = NULL;
 	ptr = g_list_find_custom (pack->provides, 
@@ -1599,8 +1599,9 @@ int eazel_install_package_provides_compare (PackageData *pack,
 	return -1;
 }
 
-int eazel_install_package_modifies_provides_compare (PackageData *pack,
-						     char *name)
+static int
+eazel_install_package_modifies_provides_compare (PackageData *pack,
+						 char *name)
 {
 	GList *ptr = NULL;
 	ptr = g_list_find_custom (pack->modifies, 

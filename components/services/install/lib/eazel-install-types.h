@@ -134,6 +134,7 @@ void installoptions_destroy (InstallOptions *iopts);
 struct _CategoryData {
 	char* name;
 	GList* packages;
+	GList* depends;			/* used only for the GUI: GList<char *> */
 };
 CategoryData *categorydata_new ();
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);

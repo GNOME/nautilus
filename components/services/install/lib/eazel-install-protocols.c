@@ -40,6 +40,10 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
+/* evil evil hack because RPM doesn't understand that a package for i386 is still okay to run on i686! */
+#define ASSUME_ix86_IS_i386
+
+
 typedef struct {
 	EazelInstall *service;
 	const char *file_to_report;
@@ -466,8 +470,11 @@ eazel_install_fetch_file (EazelInstall *service,
 	   we enforce md5 check on files that were present but should have
 	   been downloaded */
 	if (result) {
-		service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
-								     g_strdup (target_file));
+		if (! g_list_find_custom (service->private->downloaded_files, (char *)target_file,
+					  (GCompareFunc)g_strcasecmp)) {
+			service->private->downloaded_files = g_list_prepend (service->private->downloaded_files,
+									     g_strdup (target_file));
+		}
 	}
 	
 	if (result==FALSE) {
@@ -751,12 +758,29 @@ get_url_for_package  (EazelInstall *service,
 }
 
 
+static char *
+real_arch_name (const char *arch)
+{
+	char *arch_copy;
+
+	arch_copy = g_strdup (arch);
+#ifdef ASSUME_ix86_IS_i386
+	if ((strlen (arch_copy) == 4) && (arch_copy[0] == 'i') &&
+	    ((arch_copy[1] >= '3') && (arch_copy[1] <= '9')) &&
+	    (arch_copy[2] == '8') && (arch_copy[3] == '6')) {
+		arch_copy[1] = '3';
+	}
+#endif
+	return arch_copy;
+}
+
 char* get_search_url_for_package (EazelInstall *service, 
 				  RpmSearchEntry entry,
 				  const gpointer data)
 {
 	char *url;
 	DistributionInfo dist;
+	char *arch;
 
 	if (! strlen (eazel_install_get_server (service))) {
 		return NULL;
@@ -774,26 +798,37 @@ char* get_search_url_for_package (EazelInstall *service,
 		PackageData *pack;
 
 		pack = (PackageData*)data;
+		arch = real_arch_name (pack->archtype);
 		add_to_url (&url, "?name=", pack->name);
-		add_to_url (&url, "&arch=", pack->archtype);
+		add_to_url (&url, "&arch=", arch);
 		add_to_url (&url, "&version=", pack->version);
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
-		} 
+		}
+		g_free (arch);
 	}
 	break;
 	case RPMSEARCH_ENTRY_PROVIDES: {
 		struct utsname buf;
+
 		uname (&buf);
+		arch = real_arch_name (buf.machine);
 		add_to_url (&url, "?provides=", (char*)data);
-		add_to_url (&url, "&arch=", buf.machine);
+		add_to_url (&url, "&arch=", arch);
+		/* hack, FIXME */
+		add_to_url (&url, "&flags=", "0");
+		add_to_url (&url, "&version=", "-");
+		g_free (arch);
 	}
 	break;
 	case RPMSEARCH_ENTRY_ID: {
 		struct utsname buf;
+
 		uname (&buf);
+		arch = real_arch_name (buf.machine);
 		add_to_url (&url, "?rpm_id=", (char *)data);
-		add_to_url (&url, "&arch=", buf.machine);
+		add_to_url (&url, "&arch=", arch);
+		g_free (arch);
 	}
 	break;
 	}

@@ -1,3 +1,37 @@
+2000-09-22  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_delete_downloads):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_file), (real_arch_name),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_start_transaction),
+	(eazel_install_package_provides_compare),
+	(eazel_install_package_modifies_provides_compare):
+
+	Hack the installer lib to munge "i?86" => "i386" so as not to
+	confuse the RPM queries.  (This can be removed later: the java
+	team says they will do this munging themselves.)  Don't add
+	duplicate entries to the downloaded_files GList.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_destroy_foreach):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category):
+	* nautilus-installer/src/installer.c: (category_compare_func),
+	(toggle_button_toggled), (eazel_install_get_depends),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	
+	Add "depends" GList to CategoryData, so that the info about
+	buttons in the bootstrap installer can be pulled out of the
+	package-list.xml and not require a bogus 2nd XML file.  Add that
+	extra parsing to the install lib XML parser and make it more
+	robust.  Convert bootstrap installer to use the info in its new
+	place and junk the redundant XML parser.
+
 2000-09-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-location-bar.c: (nautilus_location_bar_initialize),

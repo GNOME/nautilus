@@ -91,6 +91,9 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 	if (g_list_length (cd->packages)) {
 		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}
+	if (g_list_length (cd->depends)) {
+		g_list_foreach (cd->depends, (GFunc)g_free, NULL);
+	}
 }
 
 void

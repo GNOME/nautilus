@@ -65,7 +65,7 @@
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
-#define CATEGORY_DEPENDS_LIST "package-list-depends.xml"
+#define PACKAGE_LIST	"package-list.xml"
 
 #define DIALOG_NEED_TO_SET_PROXY _("I can't reach the Eazel servers.  This could be\n" \
 				   "because the Eazel servers are down, or more likely,\n" \
@@ -719,6 +719,12 @@ install_done (EazelInstall *service,
 	}
 }
 
+static int
+category_compare_func (const CategoryData *category, const char *name)
+{
+	return (g_strcasecmp (category->name, name));
+}
+
 static void
 toggle_button_lock (EazelInstaller *installer, char *name, gboolean lock) 
 {
@@ -744,16 +750,21 @@ toggle_button_toggled (GtkToggleButton *button,
 {
 	GList *deps;
 	GList *iterator;
+	GList *item;
 
 	g_message ("%s toggled to %s", 
 		   gtk_widget_get_name (GTK_WIDGET (button)),
 		   button->active ? "ACTIVE" : "deactivated");
 
-	deps = g_hash_table_lookup (installer->category_deps, gtk_widget_get_name (GTK_WIDGET (button)));
-	for (iterator = deps; iterator; iterator = iterator->next) {
-		toggle_button_lock (installer, 
-				    (char*)iterator->data,
-				    button->active);		
+	item = g_list_find_custom (installer->categories, gtk_widget_get_name (GTK_WIDGET (button)),
+				   (GCompareFunc)category_compare_func);
+	if (item) {
+		deps = ((CategoryData *)(item->data))->depends;
+		for (iterator = deps; iterator; iterator = iterator->next) {
+			toggle_button_lock (installer, 
+					    (char*)iterator->data,
+					    button->active);		
+		}
 	}
 }
 
@@ -1003,126 +1014,6 @@ eazel_installer_do_install (EazelInstaller *installer,
 	}
 }
 
-static void 
-eazel_install_parse_dont_shows (EazelInstaller *installer,
-				xmlNodePtr node)
-{
-	xmlNodePtr child;
-
-	child = node->childs;
-	g_assert (child);
-	while (child) {
-		if (g_strcasecmp (child->name, "NAME")==0) {
-			char *tmp = xmlNodeGetContent (child);
-			installer->dont_show = 
-				g_list_prepend (installer->dont_show,
-						g_strdup (tmp));
-			g_message ("Must not show %s", tmp);
-			free (tmp);
-		} else {
-			g_message ("unparsed tag %s", child->name);
-		}
-		child = child->next;
-	}
-}
-
-static void 
-eazel_install_parse_must_haves (EazelInstaller *installer,
-				xmlNodePtr node)
-{
-	xmlNodePtr child;
-
-	child = node->childs;
-	g_assert (child);
-	while (child) {
-		if (g_strcasecmp (child->name, "NAME")==0) {
-			char *tmp = xmlNodeGetContent (child);
-			installer->must_have_categories = 
-				g_list_prepend (installer->must_have_categories,
-						g_strdup (tmp));
-			g_message ("Must install %s", tmp);
-			free (tmp);
-		} else {
-			g_message ("unparsed tag %s", child->name);
-		}
-		child = child->next;
-	}
-}
-
-static void 
-eazel_install_parse_depends (EazelInstaller *installer,
-			     xmlNodePtr node)
-{
-	xmlNodePtr child;
-
-	child = node->childs;
-	g_assert (child);
-	while (child) {
-		if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
-			xmlNodePtr dep = child->childs;
-			char *key = g_strdup (xml_get_value (child, "for"));
-			
-			g_assert (dep);
-			while (dep) {
-				char *tmp = xmlNodeGetContent (dep);
-				GList *deps;
-				g_message ("%s deps on %s", key, tmp);
-				deps = g_hash_table_lookup (installer->category_deps, 
-							    key);
-				deps = g_list_prepend (deps, g_strdup (tmp));
-				g_hash_table_insert (installer->category_deps, 
-						     key,
-						     deps);
-				dep = dep->next;
-				free (tmp);
-			}
-		} else {
-			g_message ("unparsed tag %s", child->name);
-		}
-		child = child->next;
-	}
-}
-
-static void
-eazel_installer_load_dependencies (EazelInstaller *installer,
-				   char *depxml)
-{
-	xmlDocPtr doc;
-	xmlNodePtr base;
-
-	g_assert (depxml);
-
-	doc = xmlParseFile (depxml);
-	if (!doc) {
-		xmlFreeDoc (doc);
-		return;
-	}
-	base = doc->root;
-	g_assert (base);
-	if (g_strcasecmp (base->name, "INSTALLER_DEPENDS")==0) {
-		xmlNodePtr node;
-
-		node = base->childs;
-		g_assert (node);
-		while (node) {
-			if (g_strcasecmp (node->name, "MUST_INSTALL")==0) {
-				eazel_install_parse_must_haves (installer, node);
-			} else if (g_strcasecmp (node->name, "DEPENDS")==0) {
-				eazel_install_parse_depends (installer, node);
-			} else if (g_strcasecmp (node->name, "DONT_SHOW")==0) {
-				eazel_install_parse_dont_shows (installer, node);
-			} else {
-				g_message ("unparsed tag %s", node->name);
-			}
-			node = node->next;
-		}		
-	} else {
-		g_assert_not_reached ();
-	}
-
-	xmlFreeDoc (doc);
-	return;
-}
 
 /*****************************************
   GTK+ object stuff
@@ -1181,9 +1072,9 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	url = g_strdup_printf ("http://%s:%d/%s", 
 			       eazel_install_get_server (installer->service),
 			       eazel_install_get_server_port (installer->service),
-			       CATEGORY_DEPENDS_LIST);
+			       PACKAGE_LIST);
 
-	destination = g_strdup_printf ("%s/%s", dest_dir, CATEGORY_DEPENDS_LIST);
+	destination = g_strdup_printf ("%s/%s", dest_dir, PACKAGE_LIST);
 
 	if (! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 		/* try again with proxy config */
@@ -1197,11 +1088,6 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 			gnome_dialog_run_and_close (d);
 			exit (1);
 		}
-	}
-
-	eazel_installer_load_dependencies (installer, destination);
-	if (retval == FALSE) {
-		g_warning (_("Unable to retrieve dependency xml!\n"));
 	}
 
 	g_free (destination);
@@ -1243,8 +1129,9 @@ eazel_installer_initialize (EazelInstaller *object) {
 	installer->debug = installer_debug;
 	installer->output = installer_output;
 
-	installer->category_deps = g_hash_table_new (g_str_hash, g_str_equal);
 	installer->must_have_categories = NULL;
+	installer->implicit_must_have = NULL;
+	installer->dont_show = NULL;
 
 	installer->window = create_window (installer);
 
@@ -1317,10 +1204,8 @@ eazel_installer_initialize (EazelInstaller *object) {
 		g_free (log);
 	}
 
-	/* do this first, so we can check for proxies, etc */
+	/* now this also fetches the category deps too */
 	eazel_install_get_depends (installer, tmpdir);
-
-	eazel_install_fetch_remote_package_list (installer->service);
 	installer->categories = parse_local_xml_package_list (package_destination);
 	
 	if (!installer->categories) {
