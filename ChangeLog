@@ -1,3 +1,15 @@
+2001-01-30  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 5726 (In single-window mode, activating desktop icons
+	should use frontmost window).
+
+	* src/nautilus-window-manage-views.c:
+	(get_topmost_nautilus_window): New function.
+	(open_location): For desktop in one-window mode, reuse the topmost
+	window if there is one instead of making new window every time.
+
 2001-01-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

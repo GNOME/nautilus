@@ -654,6 +654,27 @@ handle_unreadable_location (NautilusWindow *window, const char *location)
 	return unreadable;
 }
 
+static NautilusWindow *
+get_topmost_nautilus_window (void)
+{
+        GList *window_list, *node;
+        NautilusWindow *result;
+
+        window_list = nautilus_get_window_list_ordered_front_to_back ();
+
+        result = NULL;
+        for (node = window_list; node != NULL; node = node->next) {
+                if (NAUTILUS_IS_WINDOW (node->data)) {
+                        result = NAUTILUS_WINDOW (node->data);
+                        break;
+                }
+        }
+
+        g_list_free (window_list);
+
+        return result;
+}
+
 static void
 open_location (NautilusWindow *window,
                const char *location,
@@ -667,21 +688,29 @@ open_location (NautilusWindow *window,
 		return;
         }
 
+        target_window = window;
         create_new_window = force_new_window;
 
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
-        if (NAUTILUS_IS_DESKTOP_WINDOW (window)
+        /* When loading a location on the desktop (in "open within
+         * same window mode"), always use another window. Either use
+         * the topmost window, or create a new window if the desktop
+         * is the topmost (and only).
+         */
+        if (!create_new_window
+            && NAUTILUS_IS_DESKTOP_WINDOW (window)
             && window->content_view != NULL) {
-                create_new_window = TRUE;
+                target_window = get_topmost_nautilus_window ();
+                if (target_window == window) {
+                        create_new_window = TRUE;
+                }
         }
 
         if (create_new_window) {
                 target_window = nautilus_application_create_window (window->application);
-        } else {
-                target_window = window;
         }
 
 	nautilus_g_list_free_deep (target_window->pending_selection);
