@@ -1,3 +1,11 @@
+2001-02-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 6321 (Apparently arbitrary item initially selected
+	in "Open with Other" dialog)
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list): Select first item in list after sorting.
+
 2001-02-04  Ian McKellar,,,  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>	

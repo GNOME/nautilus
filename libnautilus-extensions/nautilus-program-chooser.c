@@ -358,6 +358,9 @@ repopulate_program_list (GnomeDialog *program_chooser,
 	}
 
 	gtk_clist_sort (clist);
+
+	/* Start with first item selected, rather than some arbitrary item */
+	gtk_clist_select_row (clist, 0, 0);
 }
 
 static NautilusFile *
