@@ -358,27 +358,6 @@ AC_SUBST(LIBWWW_CFLAGS)
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
-dnl <= check for GtkHTML =>
-AC_MSG_CHECKING(for GtkHTML)
-if gnome-config --libs gtkhtml > /dev/null 2>&1; then
-    AC_MSG_RESULT(yes)
-	dnl <= check for GtkHTML >= 0.4 
-	AC_MSG_CHECKING(for GtkHTML >= 0.4)
-	if test `gnome-config --modversion gtkhtml|sed -e 's/.*-[[[:digit:]]][[[:digit:]]]*\.\([[[:digit:]]][[[:digit:]]]*\)\(\.[[[:digit:]]][[[:digit:]]]*\)*/\1/'` -ge 4 ; then
-		AC_MSG_RESULT([yes])
-			GTKHTML_LIBS=`gnome-config --libs gtkhtml`
-			GTKHTML_CFLAGS=`gnome-config --cflags gtkhtml`
-	else
-	 		AC_MSG_ERROR([*** GtkHTML 0.4 or better is required])
-	fi
-	dnl =>
-else
-    AC_MSG_ERROR([Not Found])
-    AC_MSG_ERROR([GtkHTML from the GNOME CVS is required])
-fi
-AC_SUBST(GTKHTML_LIBS)
-AC_SUBST(GTKHTML_CFLAGS)
-
 dnl =======================
 dnl begin tests for medusa
 dnl =======================
@@ -552,7 +531,6 @@ components/help/converters/Makefile
 components/help/converters/gnome-db2html2/Makefile
 components/help/converters/gnome-info2html2/Makefile
 components/help/converters/gnome-man2html2/Makefile
-components/html/Makefile
 components/websearch/Makefile
 components/music/Makefile
 components/notes/Makefile
