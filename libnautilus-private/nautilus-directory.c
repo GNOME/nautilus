@@ -1471,10 +1471,10 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");

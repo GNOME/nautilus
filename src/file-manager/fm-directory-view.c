@@ -76,8 +76,6 @@
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
-#define TRASH_URI	"trash:"
-
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
@@ -795,7 +793,7 @@ show_trash_callback (BonoboUIComponent *component,
 	view = FM_DIRECTORY_VIEW (callback_data);          
 
 	nautilus_view_open_location
-		(view->details->nautilus_view, TRASH_URI);
+		(view->details->nautilus_view, NAUTILUS_TRASH_URI);
 }
 
 static void

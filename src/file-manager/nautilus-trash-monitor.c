@@ -28,6 +28,7 @@
 
 #include "libnautilus-extensions/nautilus-directory.h"
 #include "libnautilus-extensions/nautilus-file-attributes.h"
+#include "libnautilus-extensions/nautilus-file-utilities.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 #include "libnautilus-extensions/nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
@@ -112,7 +113,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 
 	/* set up a NautilusDirectory for the Trash directory to monitor */
 
-	trash_directory = nautilus_directory_get ("trash:");
+	trash_directory = nautilus_directory_get (NAUTILUS_TRASH_URI);
 
 	trash_monitor->details = g_new0 (NautilusTrashMonitorDetails, 1);
 	trash_monitor->details->trash_directory = trash_directory;

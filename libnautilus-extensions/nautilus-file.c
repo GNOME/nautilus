@@ -4530,7 +4530,7 @@ nautilus_self_check_file (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");
 	nautilus_file_unref (file_1);
 
-	file_1 = nautilus_file_get ("trash:");
+	file_1 = nautilus_file_get (NAUTILUS_TRASH_URI);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
 	nautilus_file_unref (file_1);
 

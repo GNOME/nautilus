@@ -27,6 +27,8 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 
+#define	NAUTILUS_TRASH_URI	"trash:"
+
 typedef void     (* NautilusReadFileCallback) (GnomeVFSResult result,
 					       GnomeVFSFileSize file_size,
 					       char *file_contents,

@@ -296,7 +296,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		return;
 	}
 
-	/* Check for trash: URI.  We do a find_directory for any Trash directory. */
+	/* Check for trash URI.  We do a find_directory for any Trash directory. */
 	if (nautilus_uri_is_trash (target_uri_string)) {
 		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 						   &target_uri, FALSE, FALSE, 0777);

@@ -1,3 +1,24 @@
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	Added #define NAUTILUS_TRASH_URI "trash:"
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical),
+	(nautilus_self_check_file_utilities):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_self_check_file):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(find_and_rename_trash_link), (create_or_rename_trash):
+	* src/file-manager/fm-directory-view.c: (show_trash_callback):
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize):
+	Used NAUTILUS_TRASH_URI wherever "trash:" was used before.
+
 2000-11-16  Szabolcs BAN <shooby@gnome.hu>
 
 	* configure.in, po/hu.po: Hungarian language support.

@@ -987,8 +987,7 @@ find_and_rename_trash_link (void)
 				if (nautilus_link_local_is_trash_link (link_path)) {
 					/* Reset name */
 					rename (this_entry->d_name, TRASH_LINK_NAME);
-					/* Make sure LINK is set to "trash:" */
-					nautilus_link_local_set_link_uri (link_path, "trash:");
+					nautilus_link_local_set_link_uri (link_path, NAUTILUS_TRASH_URI);
 					return TRUE;
 				}
 				g_free (link_path);
@@ -1015,7 +1014,7 @@ create_or_rename_trash (void)
 	nautilus_link_local_create (desktop_directory_path,
 				    TRASH_LINK_NAME,
 				    "trash-empty.png", 
-				    "trash:",
+				    NAUTILUS_TRASH_URI,
 				    NAUTILUS_LINK_TRASH);
 	g_free (desktop_directory_path);
 }

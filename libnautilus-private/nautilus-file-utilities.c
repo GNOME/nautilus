@@ -291,7 +291,7 @@ nautilus_make_uri_canonical (const char *uri)
 	 * "trash:".
 	 */
 	if (nautilus_uri_is_trash (uri)) {
-		return g_strdup ("trash:");
+		return g_strdup (NAUTILUS_TRASH_URI);
 	}
 
 	/* FIXME bugzilla.eazel.com 648: 
@@ -1359,10 +1359,10 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:"), "file:");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file:///trash");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorp:"), "glorp:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
 
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
