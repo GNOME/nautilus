@@ -59,7 +59,6 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-utils.h			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
-	trilobite-root-client-private.h		\
 	trilobite-redirect.h			\
 	helixcode-utils.h			\
 	$(NULL)
@@ -80,13 +79,17 @@ libtrilobite_la_SOURCES =			\
 	helixcode-utils.c			\
 	$(NULL)
 
+noinst_HEADERS = \
+	trilobite-root-client-private.h		\
+	trilobite-service-private.h		\
+	trilobite-service-private.h		\
+	$(NULL)
+
 libtrilobite_serviceinclude_HEADERS =		\
 	libtrilobite-service.h			\
 	trilobite-service.h			\
 	trilobite-service-public.h		\
-	trilobite-service-private.h		\
 	trilobite-service-passwordquery-public.h	\
-	trilobite-service-passwordquery-private.h	\
 	$(NULL)
 
 libtrilobite_service_la_SOURCES =		\
