@@ -81,7 +81,7 @@ trilobite-eazel-time-view \
 
 if [ "$extreme" = "yes" ]
 then
-    AUX_PROGS="gconfd-1 $AUX_PROGS oafd"
+    AUX_PROGS="gconfd-2 $AUX_PROGS bonobo-activation-server"
 fi
 
 unset FOUND_ANY
@@ -111,7 +111,7 @@ for NAME in $AUX_PROGS; do
 	    else
 	        $killcmd "$NAME" > /dev/null 2>&1
 	    fi
-	    if [ "$NAME" = "gconfd-1" ]; then
+	    if [ "$NAME" = "gconfd-2" ]; then
 		rm -f "$HOME/.gconfd/saved_state"
 	    fi
 	fi

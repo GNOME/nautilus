@@ -45,6 +45,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-init.h>
+#include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -139,8 +140,9 @@ main (int argc, char *argv[])
 	const char **args;
 	NautilusApplication *application;
 	char **argv_copy;
+	GnomeProgram *program;
+	GValue context_as_value = { 0 };
 
-#if GNOME2_CONVERSION_COMPLETE
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0,
@@ -158,7 +160,6 @@ main (int argc, char *argv[])
 		  N_("Restart Nautilus."), NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
-#endif
 
 	/* Make criticals and warnings stop in the debugger if
 	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
@@ -166,7 +167,7 @@ main (int argc, char *argv[])
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib,
+			(G_LOG_DOMAIN, g_log_domain_glib, g_log_domain_gruntime,
 			 "Bonobo",
 			 "Gdk",
 			 "GnomeUI",
@@ -189,8 +190,6 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
-	/* Disable bug-buddy for now. */
-	eel_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
 
 	/* Get parameters. */
 	geometry = NULL;
@@ -200,17 +199,25 @@ main (int argc, char *argv[])
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
+	program = gnome_program_init ("nautilus", VERSION,
+				      LIBGNOMEUI_MODULE, argc, argv,
+				      GNOME_PROGRAM_STANDARD_PROPERTIES,
+				      GNOME_PARAM_POPT_TABLE, options,
+				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
+				      NULL);
+
+	g_object_get_property (G_OBJECT (program),
+			       GNOME_PARAM_POPT_CONTEXT,
+			       g_value_init (&context_as_value, G_TYPE_POINTER));
+
+	popt_context = g_value_get_pointer (&context_as_value);
+
 #if GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, 
 				      bonobo_activation_get_popt_table_name ());
-	gnome_init_with_popt_table ("nautilus", VERSION,
-				    argc, argv, options, 0,
-				    &popt_context);
-#else
-	popt_context = NULL;
 #endif
+
 	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
-        gdk_rgb_init ();
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
@@ -237,15 +244,12 @@ main (int argc, char *argv[])
 
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
-	g_atexit (xmlCleanupParser);
-	g_thread_init (NULL);
+	gnome_vfs_init ();
+	bonobo_init (&argc, argv);
 
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
 		bonobo_activation_set_test_components_enabled (TRUE);
 	}
-	gnome_vfs_init ();
-	bonobo_init (&argc, argv);
-	bonobo_activate (); /* do now since we need it before main loop */
 
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
@@ -258,7 +262,9 @@ main (int argc, char *argv[])
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
 	}
-		
+	
+	bonobo_activate (); /* do now since we need it before main loop */
+
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK

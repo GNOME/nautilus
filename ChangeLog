@@ -1,3 +1,36 @@
+2001-11-01  Darin Adler  <darin@bentspoon.com>
+
+	More changes to make Nautilus get closer to running.
+
+	* libnautilus-private/nautilus-bonobo-extensions.h: Remove
+	NAUTILUS_BONOBO_X_BOILERPLATE, superceded by EEL_DEFINE_
+	BONOBO_BOILERPLATE
+
+	* libnautilus-private/nautilus-directory-metafile-monitor.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-undo-context.c:
+	* libnautilus/nautilus-undo-transaction.c:
+	Same fixes Havoc did, formatted differently.
+
+	* libnautilus-private/nautilus-undo-manager.c: (corba_append),
+	(corba_forget), (corba_undo), (nautilus_undo_manager_new),
+	(finalize), (nautilus_undo_manager_class_init):
+	GtkObject -> GObject fixes. bonobo_object_from_servant fixes.
+
+	* nautilus-clean.sh: Not sure if we still need this, but
+	change gconfd-1 to gconfd-2 and oafd to bonobo-activation-server.
+
+	* nautilus.spec.in: Some updates, not sure if they are right.
+
+	* src/nautilus-application.c: (nautilus_application_new),
+	(nautilus_application_finalize), (nautilus_application_class_init):
+	GtkObject -> GObject fixes.
+
+	* src/nautilus-main.c: (main): Use gnome_program_init.
+
+	* src/Makefile.am: Define a bunch more stuff used by
+	GNOME_PROGRAM_STANDARD_PROPERTIES.
+
 2001-11-01  Havoc Pennington  <hp@pobox.com>
 
 	* src/nautilus-view-frame-corba.c: fix

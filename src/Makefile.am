@@ -9,11 +9,14 @@ INCLUDES =\
 	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
 	$(NAUTILUS_SRC_CFLAGS) \
-	-DVERSION="\"$(VERSION)\"" \
+	-DDATADIR=\""$(datadir)"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DLIBDIR=\""$(libdir)"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
-	-DDATADIR=\""$(datadir)"\" \
+	-DPREFIX=\""$(prefix)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DVERSION="\"$(VERSION)\"" \
 	$(NULL)
 
 LDADD =\

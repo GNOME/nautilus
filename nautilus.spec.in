@@ -160,13 +160,9 @@ scrollkeeper-update
 %{_bindir}/nautilus-clean.sh
 %{_bindir}/nautilus-verify-rpm.sh
 %{_bindir}/nautilus-restore-settings-to-default.sh
-%{_bindir}/gnome-db2html2
-%{_bindir}/gnome-info2html2
-%{_bindir}/gnome-man2html2
 %{_bindir}/hyperbola
 %{_bindir}/nautilus
 %{_bindir}/nautilus-adapter
-%{_bindir}/nautilus-content-loser
 %{_bindir}/nautilus-error-dialog
 %{_bindir}/nautilus-hardware-view
 %{_bindir}/nautilus-history-view
@@ -176,12 +172,8 @@ scrollkeeper-update
 %{_bindir}/nautilus-news
 %{_bindir}/nautilus-notes
 %{_bindir}/nautilus-sample-content-view
-%{_bindir}/nautilus-sidebar-loser
 %{_bindir}/nautilus-text-view
 %{_bindir}/nautilus-throbber
-%{_bindir}/run-nautilus
-%{_bindir}/nautilus-launcher-applet
-%{_bindir}/nautilus-xml-migrate
 %{_libdir}/libnautilus-adapter.so.0
 %{_libdir}/libnautilus-adapter.so.0.0.0
 %{_libdir}/libnautilus-private.so.0
@@ -239,21 +231,19 @@ scrollkeeper-update
 %{_datadir}/pixmaps/nautilus/throbber/*.png
 %{_datadir}/pixmaps/nautilus/sierra/*.xml
 %{_datadir}/pixmaps/nautilus/sierra/*.png
-%{_datadir}/oaf/Nautilus_View_help.oaf
-%{_datadir}/oaf/Nautilus_ComponentAdapterFactory_std.oaf
-%{_datadir}/oaf/Nautilus_View_content-loser.oaf
-%{_datadir}/oaf/Nautilus_View_hardware.oaf
-%{_datadir}/oaf/Nautilus_View_history.oaf
-%{_datadir}/oaf/Nautilus_View_image.oaf
-%{_datadir}/oaf/Nautilus_View_music.oaf
-%{_datadir}/oaf/Nautilus_View_news.oaf
-%{_datadir}/oaf/Nautilus_View_notes.oaf
-%{_datadir}/oaf/Nautilus_View_sample.oaf
-%{_datadir}/oaf/Nautilus_View_sidebar-loser.oaf
-%{_datadir}/oaf/Nautilus_View_text.oaf
-%{_datadir}/oaf/Nautilus_View_tree.oaf
-%{_datadir}/oaf/Nautilus_shell.oaf
-%{_datadir}/oaf/Nautilus_Control_throbber.oaf
+%{_datadir}/oaf/Nautilus_View_help.server
+%{_datadir}/oaf/Nautilus_ComponentAdapterFactory_std.server
+%{_datadir}/oaf/Nautilus_View_hardware.server
+%{_datadir}/oaf/Nautilus_View_history.server
+%{_datadir}/oaf/Nautilus_View_image.server
+%{_datadir}/oaf/Nautilus_View_music.server
+%{_datadir}/oaf/Nautilus_View_news.server
+%{_datadir}/oaf/Nautilus_View_notes.server
+%{_datadir}/oaf/Nautilus_View_sample.server
+%{_datadir}/oaf/Nautilus_View_text.server
+%{_datadir}/oaf/Nautilus_View_tree.server
+%{_datadir}/oaf/Nautilus_shell.server
+%{_datadir}/oaf/Nautilus_Control_throbber.server
 
 # We put the idl files in the main package, not the devel package
 # because the perl corba bindings can use the .idl files at run time.

@@ -81,7 +81,6 @@ static GList *nautilus_application_window_list;
 
 static void     nautilus_application_init         (NautilusApplication      *application);
 static void     nautilus_application_class_init   (NautilusApplicationClass *klass);
-static void     nautilus_application_destroy      (GtkObject                *object);
 static gboolean confirm_ok_to_run_as_root         (void);
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
@@ -142,14 +141,6 @@ nautilus_application_get_window_list (void)
 }
 
 static void
-nautilus_application_class_init (NautilusApplicationClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_application_destroy;
-	
-	BONOBO_GENERIC_FACTORY_CLASS (klass)->epv.createObject = create_object;
-}
-
-static void
 nautilus_application_init (NautilusApplication *application)
 {
 	/* Create an undo manager */
@@ -171,11 +162,11 @@ nautilus_application_init (NautilusApplication *application)
 NautilusApplication *
 nautilus_application_new (void)
 {
-	return NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
+	return NAUTILUS_APPLICATION (g_object_new (nautilus_application_get_type (), NULL));
 }
 
 static void
-nautilus_application_destroy (GtkObject *object)
+nautilus_application_finalize (GObject *object)
 {
 	NautilusApplication *application;
 
@@ -185,7 +176,7 @@ nautilus_application_destroy (GtkObject *object)
 	
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static gboolean
@@ -1084,4 +1075,12 @@ is_kdesktop_present (void)
 	 */
 
 	return look_for_kdesktop_recursive (GDK_ROOT_WINDOW ());
+}
+
+static void
+nautilus_application_class_init (NautilusApplicationClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = nautilus_application_finalize;
+	
+	BONOBO_GENERIC_FACTORY_CLASS (klass)->epv.createObject = create_object;
 }

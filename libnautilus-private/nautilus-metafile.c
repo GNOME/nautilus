@@ -156,7 +156,10 @@ static void async_read_cancel                (NautilusMetafile *metafile);
 static void nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
 					             xmlDocPtr metafile_contents);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafile, Nautilus_Metafile, nautilus_metafile, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafile,
+			       Nautilus_Metafile,
+			       nautilus_metafile,
+			       BONOBO_OBJECT_TYPE)
 
 typedef struct MetafileReadState {
 	gboolean use_public_metafile;

@@ -44,7 +44,10 @@ static void                  destroy                                      (GtkOb
 static Nautilus_Undo_Manager impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant    servant,
 									   CORBA_Environment        *ev);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoContext, Nautilus_Undo_Context, nautilus_undo_context, BONOBO_OBJECT_TYPE)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoContext,
+			       Nautilus_Undo_Context,
+			       nautilus_undo_context,
+			       BONOBO_OBJECT_TYPE)
 
 static Nautilus_Undo_Manager
 impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
