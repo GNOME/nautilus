@@ -1,3 +1,29 @@
+2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-graphic.c:
+	(nautilus_graphic_initialize), (nautilus_graphic_size_allocate),
+	(nautilus_graphic_size_request), (nautilus_graphic_set_label_text),
+	(nautilus_graphic_set_label_font),
+	(nautilus_graphic_set_left_offset),
+	(nautilus_graphic_set_right_offset),
+	(nautilus_graphic_set_top_offset),
+	(nautilus_graphic_set_bottom_offset),
+	(nautilus_graphic_set_extra_width),
+	(nautilus_graphic_set_extra_height):
+	* libnautilus-extensions/nautilus-graphic.h:
+	Add support for boundary offset and extra width and height.
+
+	* test/test-nautilus-graphic.c: (main):
+	Update for new boundary offset support.
+	
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form), (create_graphic_widget),
+	(create_title_widget):
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	(generate_login_form), (create_graphic_widget),
+	(create_title_widget):
+	Use new graphic widget to make things prettier.
+	
 2000-07-10  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
