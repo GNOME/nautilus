@@ -273,7 +273,7 @@
 
       <listitem>
        <para>
-        Choose Windows & Desktop and select "Use Nautilus to draw the
+        Choose Windows &amp; Desktop and select "Use Nautilus to draw the
         desktop."
        </para>
       </listitem>
@@ -336,97 +336,58 @@
 
     <listitem>
      <para>
-      Log out of GNOME (open the GNOME Main Menu and choose Log out).
+      Make sure that the other applications you would like to be
+      started each time you start GNOME are also running.  If there
+      are any applications running which you would not like run when
+      GNOME starts, quit them.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the Log out dialog box, click the "Save current setup" checkbox.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Proceed to log out. The next time you log into GNOME, Nautilus
-      will start automatically.
+      Open the GNOME Main Menu (footprint icon) and select
+      <menuchoice>
+       <guisubmenu>Programs</guisubmenu> 
+       <guisubmenu>Settings</guisubmenu>
+       <guisubmenu>Session</guisubmenu>
+       <guimenuitem>Save Current Session</guimenuitem>
+      </menuchoice>.
+      GNOME will remember any applications which you have open and
+      will start them each time you start GNOME in the future.
      </para>
     </listitem>
 
    </orderedlist>
+
+   <note>
+    <title>Saving Startup Programs On Logout</title>
+    <para>
+     Note that whenever you log out of GNOME, the logout dialog
+     allows you to select to have GNOME record the actively running
+     programs and restart them the next time you start GNOME.  If you
+     do this, GNOME will forget the old list of startup programs and
+     replace it with the programs which were running when you logged
+     out.
+    </para>
+   </note>
 
    <para>
-    To stop Nautilus from launching automatically:
+    To stop Nautilus from launching automatically, quit Nautilus and
+    then follow the instructions above to save your session.
    </para>
-
-   <orderedlist>
-
-    <listitem>
-     <para>
-      Open the GNOME Main Menu (footprint) and choose
-      <menuchoice><guimenu>Programs</guimenu>
-      <guisubmenu>Settings</guisubmenu>
-      <guimenuitem>Session</guimenuitem><guimenuitem>Startup
-      Programs</guimenuitem></menuchoice>. (The menu option may be
-      Session Properties and Startup Programs.)
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      The GNOME Control Center opens in the Session Properties and
-      Startup Programs section. If you see a Startup Programs tab,
-      click it.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Click the Browse Currently Running Programs button.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      In the list of programs, locate and select "nautilus."
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Click Remove.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Make sure the checkbox labeled "Automatically save changes to
-      session" is enabled. (If your GNOME Control Center window has
-      tabs, this checkbox is under the Session Options tab.)
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Click OK.
-     </para>
-    </listitem>
-
-   </orderedlist>
 
   </sect1>
 
-
   <!-- Introducing Nautilus: About GNOME  -->
   <sect1 id="gnome">
-   <title>About GNOME</title>
+   <title>About Nautilus and GNOME</title>
 
    <para>
     Nautilus is developed by Eazel, a founding member of the GNOME
     Foundation, with the help of the <ulink type="http"
-    url="http://www.gnome.org">GNOME community</ulink>. Nautilus is a
-    free software project developed under the GNU General Public
-    License (GPL).
+    url="http://www.gnome.org">GNOME</ulink> community and other
+    volunteers. Nautilus and GNOME are Free Software, licensed under
+    the GNU General Public License (GPL).
    </para>
 
   </sect1>
@@ -445,8 +406,9 @@
    the Internet.
   </para>
 
-  <sect1 id="toc2">
-   <title>Contents of this section:</title>
+  <!--
+  <para>
+   Contents of this section:
 
    <simplelist>
     <member>
@@ -482,8 +444,8 @@
      Favorite Locations</link>
     </member>
    </simplelist>
-
-  </sect1>
+  </para>
+  -->
 
   <!-- NAVIGATING YOUR COMPUTER AND THE INTERNET: Viewing Your Home Folder  -->
   <sect1 id="home">
@@ -529,11 +491,11 @@
    </para>
 
    <para>
-    Note about the home folder: Depending on your user-level setting,
-    your home folder may be the default Nautilus home folder, which
-    contains basic information about your computer and pointers to
-    some useful applications, or the home folder defined for you in
-    your Linux settings (normally /home/<emphasis>your_name</emphasis>).
+    Note that depending on your user-level setting, your home folder
+    may be the default Nautilus home folder, which contains basic
+    information about your computer and pointers to some useful
+    applications, or the home folder defined for you in your Linux
+    settings (normally /home/<emphasis>your_name</emphasis>).
    </para>
 
   </sect1>
@@ -609,7 +571,7 @@
    <para>
     You can get an overview of all of your computer's files and
     folders by using the tree. Many people find using the tree to
-    navigate faster than selecting and opening folders.
+    navigate is faster than selecting and opening folders.
    </para>
 
    <para>
@@ -664,7 +626,7 @@
   <sect1 id="viewopen">
    <title>Viewing and Opening Files</title>
 
-   <para><guimenu>Icon and List Views</guimenu></para>
+   <para><emphasis role="bold">In Icon and List Views</emphasis></para>
 
    <para>
     The first time you launch Nautilus, you see folders and files
@@ -723,7 +685,7 @@
    </figure>
 
    <para>
-    <guimenu>Zooming In or Out</guimenu>
+    <emphasis role="bold">Zooming In or Out</emphasis>
    </para>
 
    <para>
@@ -802,7 +764,7 @@
    </para>
 
    <para>
-    <guimenu>Previewing Files in Icon View</guimenu>
+    <emphasis role="bold">Previewing Files in Icon View</emphasis role="bold">
    </para>
 
    <para>
@@ -841,7 +803,7 @@
    </itemizedlist>
 
    <para>
-    <guimenu>Using Nautilus as a Viewer</guimenu>
+    <emphasis role="bold">Using Nautilus as a Viewer</emphasis>
    </para>
 
    <para>
@@ -892,7 +854,7 @@
 
 
    <para>
-    <guimenu>Opening Individual Files</guimenu>
+    <emphasis role="bold">Opening Individual Files</emphasis>
    </para>
 
    <para>
@@ -1091,9 +1053,9 @@
      <para>
       Right-click anywhere on the desktop (outside a window) and
       choose <menuchoice><guimenu>Disks</guimenu>
-      <guisubmenu>Floppy</guisubmenu></menuchoice> or
+      <guimenuitem>Floppy</guimenuitem></menuchoice> or
       <menuchoice><guimenu>Disks</guimenu>
-      <guisubmenu>CD-ROM</guisubmenu> </menuchoice> from the pop-up
+      <guimenuitem>CD-ROM</guimenuitem></menuchoice> from the pop-up
       menu.
      </para>
     </listitem>
@@ -1224,7 +1186,7 @@
    </para>
 
    <para>
-    <guimenu>Creating a Bookmark</guimenu>
+    <emphasis role="bold">Creating a Bookmark</emphasis>
    </para>
 
    <para>
@@ -1256,7 +1218,7 @@
    </orderedlist>
 
    <para>
-    <guimenu>Using the Built-In Bookmarks</guimenu>
+    <emphasis role="bold">Using the Built-In Bookmarks</emphasis>
    </para>
 
    <para>
@@ -1275,21 +1237,21 @@
 
     <listitem>
      <para>
-      Open the preferences menu and choose Preferences.
+      Open the Preferences menu and choose Edit Preferences.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      In the left-hand column of the Preferences dialog box, click
+      In the left-hand column of the Preferences dialog box, select
       Navigation.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Select Don't include the built-in bookmarks in the Bookmarks
-      menu.
+      Select <quote>Don't include the built-in bookmarks in the Bookmarks
+      menu.</quote>
      </para>
     </listitem>
 
@@ -1311,7 +1273,7 @@
    </figure>
 
    <para>
-    <guimenu>Editing Your Bookmarks</guimenu>
+    <emphasis role="bold">Editing Your Bookmarks</emphasis>
    </para>
 
    <para>
@@ -1423,6 +1385,7 @@
    and folders.
   </para>
 
+  <!--
   <sect1 id="toc4">
    <title>Contents of this section:</title>
 
@@ -1437,6 +1400,7 @@
    </simplelist>
 
   </sect1>
+  -->
 
   <!--  Managing Your Files and Folders: Moving and Copying Files and Folders  -->
   <sect1 id="move">
@@ -1842,6 +1806,7 @@
    behavior meet your needs and taste. This section explains how.
   </para>
 
+  <!--
   <sect1 id="toc5">
    <title>Contents of this section:</title>
 
@@ -1856,6 +1821,7 @@
    </simplelist>
 
   </sect1>
+  -->
 
   <!--  Customizing Nautilus: Setting Your User Level -->
   <sect1 id="settings">
@@ -1964,7 +1930,8 @@
     <listitem>
      <para>
       From the left column in the Preferences dialog box, choose the
-      type of settings you want to adjust (for instance, Icon & List Views).
+      type of settings you want to adjust (for instance, Icon &amp;
+      List Views).
      </para>
     </listitem>
 
@@ -2685,6 +2652,7 @@
    editing and viewing.
   </para>
 
+  <!--
   <sect1 id="toc6">
    <title>Contents of this section:</title>
 
@@ -2717,6 +2685,7 @@
    </simplelist>
 
   </sect1>
+  -->
 
   <sect1 id="handlers">
    <title>What Are MIME Types?</title>
