@@ -35,6 +35,7 @@
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include "fm-directory-view.h"
 
@@ -1424,6 +1425,11 @@ confirm_empty_trash (GtkWidget *parent_view)
 	GnomeDialog *dialog;
 	GtkWindow *parent_window;
 
+	/* Just Say Yes if the preference says not to confirm. */
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+		return TRUE;
+	}
+	
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
 	dialog = nautilus_yes_no_dialog (

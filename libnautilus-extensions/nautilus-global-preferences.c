@@ -109,8 +109,8 @@ global_preferences_create_dialog (void)
 	 * Directory Views pane
 	 */
 	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
-								 _("Directory Views"),
-								 _("Directory Views Settings"));
+								 _("Folder Views"),
+								 _("Folder Views Settings"));
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Window Behavior"));
 	
@@ -126,15 +126,27 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Display"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Trash Behavior"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
+							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Display"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 3,
 							 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 2,
+							 3,
+							 NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 3,
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
@@ -241,7 +253,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
 	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Directory Appearance Details Public"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Folder Appearance Details Public"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 2,
@@ -634,6 +646,13 @@ global_preferences_register (void)
 							   FALSE,
 							   FALSE);
 	
+	/* Trash confirm */
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+							   _("Ask before deleting items from the trash"),
+							   TRUE,
+							   TRUE,
+							   TRUE);
+	
 	/* Click activation type */
 	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_CLICK_POLICY,
 							_("Click policy"),
@@ -665,7 +684,7 @@ global_preferences_register (void)
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
 	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-							   	  _("Read and write metadata in each directory"),
+							   	  _("Read and write metadata in each folder"),
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
@@ -745,7 +764,13 @@ global_preferences_register (void)
 
 	
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-							   _("Show hidden files"),
+							   _("Show hidden files (starting with \".\")"),
+							   FALSE,
+							   FALSE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+							   _("Show backup files (ending with \"~\")"),
 							   FALSE,
 							   FALSE,
 							   TRUE);

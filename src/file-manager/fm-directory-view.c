@@ -116,6 +116,7 @@ struct FMDirectoryViewDetails
 	gboolean menus_merged;
 
 	gboolean show_hidden_files;
+	gboolean show_backup_files;
 };
 
 /* forward declarations */
@@ -175,13 +176,14 @@ static void           zoomable_zoom_out_callback                                
 static void           zoomable_zoom_to_fit_callback                               (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void	      schedule_update_menus 					  (FMDirectoryView 	    *view);
+static void	      schedule_update_menus_callback				  (gpointer		     callback_data);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
 static void           unschedule_idle_display_of_pending_files                    (FMDirectoryView          *view);
 static void           schedule_timeout_display_of_pending_files                   (FMDirectoryView          *view);
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView          *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
-static void           show_hidden_files_changed_callback                          (gpointer                  callback_data);
+static void           filtering_changed_callback                          	  (gpointer                  callback_data);
 static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
@@ -939,13 +941,26 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 
-	/* Obtain the user level for filtering */
+	/* Obtain the filtering preferences */
 	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
 
+	directory_view->details->show_backup_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
+
 	/* Keep track of changes in this pref to filter files accordingly. */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					   show_hidden_files_changed_callback,
+					   filtering_changed_callback,
+					   directory_view);
+	
+	/* Keep track of changes in this pref to filter files accordingly. */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					   filtering_changed_callback,
+					   directory_view);
+	
+	/* Keep track of changes in this pref to display menu names correctly. */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					   schedule_update_menus_callback,
 					   directory_view);
 	
 	/* Keep track of changes in text attribute names */
@@ -1015,7 +1030,13 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					      show_hidden_files_changed_callback,
+					      filtering_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					      filtering_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					      schedule_update_menus_callback,
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
 					      text_attribute_names_changed_callback,
@@ -1580,9 +1601,10 @@ queue_pending_files (FMDirectoryView *view,
 	GList *files_iterator;
 	NautilusFile *file;
 	char * name;
+	gboolean include_file;
 
 	/* Filter out hidden files if needed */
-	if (!view->details->show_hidden_files) {
+	if (!view->details->show_hidden_files || !view->details->show_backup_files) {
 		/* FIXME bugzilla.eazel.com 653: 
 		 * Eventually this should become a generic filtering thingy. 
 		 */
@@ -1596,8 +1618,16 @@ queue_pending_files (FMDirectoryView *view,
 			name = nautilus_file_get_name (file);
 			
 			g_assert (name != NULL);
-			
-			if (!nautilus_str_has_prefix (name, ".")) {
+
+			if (!view->details->show_hidden_files && nautilus_str_has_prefix (name, ".")) {
+				include_file = FALSE;
+			} else if (!view->details->show_backup_files && nautilus_str_has_suffix (name, "~")) {
+				include_file = FALSE;
+			} else {
+				include_file = TRUE;
+			}
+
+			if (include_file) {
 				filtered_files = g_list_append (filtered_files, file);
 			}
 			
@@ -2067,14 +2097,26 @@ fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *f
 	return result;
 }
 
+static char *
+file_name_from_uri (const char *uri)
+{
+	NautilusFile *file;
+	char *file_name;
+	
+	file = nautilus_file_get (uri);
+	file_name = nautilus_file_get_name (file);
+	nautilus_file_unref (file);
+
+	return file_name;	
+}
+
 static gboolean
 fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean all)
 {
+	GnomeDialog *dialog;
 	char *prompt;
 	int uri_count;
-	NautilusFile *file;
 	char *file_name;
-	gboolean result;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -2082,9 +2124,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	g_assert (uri_count > 0);
 	
 	if (uri_count == 1) {
-		file = nautilus_file_get ( (char *)uris->data);
-		file_name = nautilus_file_get_name (file);
-		nautilus_file_unref (file);
+		file_name = file_name_from_uri ((char *)uris->data);
 
 		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the trash. Do "
 					    "you want to delete it immediately?"), file_name);
@@ -2101,11 +2141,57 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 		}
 	}
 
-	result = nautilus_simple_dialog (GTK_WIDGET (view), prompt, _("Can't Move to Trash"),
-					 _("Delete"), _("Cancel"), NULL) == 0;
+	dialog = nautilus_yes_no_dialog (
+		prompt,
+		_("Nautilus: Delete immediately?"),
+		_("Delete"),
+		GNOME_STOCK_BUTTON_CANCEL,
+		get_containing_window (view));
 
 	g_free (prompt);
-	return result;
+
+	return gnome_dialog_run (dialog) == GNOME_OK;
+}
+
+static gboolean
+confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
+{
+	GnomeDialog *dialog;
+	char *prompt;
+	char *file_name;
+	int uri_count;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Just Say Yes if the preference says not to confirm. */
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+		return TRUE;
+	}
+
+	uri_count = g_list_length (uris);
+	g_assert (uri_count > 0);
+
+	if (uri_count == 1) {
+		file_name = file_name_from_uri ((char *)uris->data);
+
+		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\" "
+					    "from the trash?"), file_name);
+		g_free (file_name);
+	} else {
+		prompt = g_strdup_printf (_("Are you sure you want to permanently delete "
+		  			    "the %d selected items from the trash?"), uri_count);
+	}
+
+	dialog = nautilus_yes_no_dialog (
+		prompt,
+		_("Nautilus: Delete from Trash?"),
+		_("Delete"),
+		GNOME_STOCK_BUTTON_CANCEL,
+		get_containing_window (view));
+
+	g_free (prompt);
+
+	return gnome_dialog_run (dialog) == GNOME_OK;
 }
 
 static void
@@ -2151,8 +2237,10 @@ fm_directory_view_trash_or_delete_files (FMDirectoryView *view, GList *files)
 	}
 
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
-		/* FIXME bugzilla.eazel.com 2274: Confirm here if preference set */
-		nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
+		/* Don't confirm if the preference says not to. */
+		if (confirm_delete_from_trash (view, in_trash_uris)) {
+			nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
+		}		
 	}
 
 	if (unmoveable_uris != NULL) {
@@ -2372,7 +2460,11 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		name = g_strdup (_("New Folder"));
 		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
-		name = g_strdup (_("Delete from _Trash"));
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+			name = g_strdup (_("Delete from _Trash..."));
+		} else {
+			name = g_strdup (_("Delete from _Trash"));
+		}
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
 		name = g_strdup (_("Move to _Trash"));
@@ -2394,7 +2486,11 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		name = g_strdup (_("Show _Properties"));
 		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
-		name = g_strdup (_("_Empty Trash"));
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
+			name = g_strdup (_("_Empty Trash..."));
+		} else {
+			name = g_strdup (_("_Empty Trash"));
+		}
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
 		name = g_strdup (_("_Select All Files"));
@@ -3949,7 +4045,13 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 }
 
 static void
-show_hidden_files_changed_callback (gpointer callback_data)
+schedule_update_menus_callback (gpointer callback_data)
+{
+	schedule_update_menus (FM_DIRECTORY_VIEW (callback_data));
+}
+
+static void
+filtering_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
 	char *same_uri;
@@ -3958,6 +4060,9 @@ show_hidden_files_changed_callback (gpointer callback_data)
 
 	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
+
+	directory_view->details->show_backup_files = 
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
 
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {

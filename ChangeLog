@@ -1,6 +1,47 @@
+2000-09-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1563 (Optionally hide ~-suffix files created by emacs)
+	Fixed bug 2274 (Implement Empty Trash confirmation preference)
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	define NAUTILUS_PREFERENCES_CONFIRM_TRASH and 
+	NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES.
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog): Put these two new preferences
+	on the Directory Views page; rename it Folder Views.
+	(global_preferences_register): Register default values for new
+	preferences.
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	Increase initial height of window to account for new preferences.
+	There's an open bug about reorganizing the whole window for later.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(confirm_empty_trash): Don't confirm if preference says not to.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	Add & remove callbacks to monitor these two new preferences. 
+	(queue_pending_files): Take SHOW_BACKUP_FILES preference into
+	account.
+	(file_name_from_uri): New helper routine to save a little code
+	duplication.
+	(fm_directory_view_confirm_deletion): Use yes_no dialog instead
+	of simple dialog to match other usage; improve dialog title.
+	(confirm_delete_from_trash): New function, confirms deleting
+	items from trash unless preference says not to bother.
+	(fm_directory_view_trash_or_delete_files): Call 
+	confirm_delete_from_trash before deleting items from trash.
+	(compute_menu_item_info): Do or don't add ellipses to "Empty Trash"
+	and "Delete From Trash" depending on preference setting.
+	(schedule_update_menus_callback): New function, simple wrapper for
+	schedule_update_menus (called when CONFIRM_TRASH preference changes).
+	(filtering_changed_callback): Renamed and slightly generalized from
+	show_hidden_files_changed_callback, called when either the
+	SHOW_HIDDEN_FILES or SHOW_BACKUP_FILES preference changes.
+
 2000-09-15  Eli Goldberg  <eli@eazel.com>
 
 	* docs/smoketests.html: Added a few steps to include breakages last week.
+
 2000-09-15  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: removed dependencie on eog because

@@ -57,8 +57,12 @@ BEGIN_GNOME_DECLS
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
 
+/* Trash options */
+#define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
+
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
+#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
 /* Home URI  */
