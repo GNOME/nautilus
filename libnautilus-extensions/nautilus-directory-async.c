@@ -912,7 +912,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	added_files = g_list_concat (saw_again_files, pending_files);
 
 	/* Send the changed and added signals. */
-	nautilus_directory_emit_files_changed (directory, changed_files);
+	nautilus_directory_emit_change_signals_deep (directory, changed_files);
 	nautilus_file_list_free (changed_files);
 	nautilus_directory_emit_files_added (directory, added_files);
 	nautilus_file_list_free (added_files);

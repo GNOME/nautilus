@@ -201,11 +201,11 @@ make_uri_canonical (const char *uri)
 	char *canonical_uri, *old_uri, *with_slashes, *p;
 
 	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
-	 * "gnome-trash:<anything>".
+	 * "trash:".
 	 */
 	if (nautilus_istr_has_prefix (uri, "trash:")
 	    || nautilus_istr_has_prefix (uri, "gnome-trash:")) {
-		return g_strdup ("gnome-trash:");
+		return g_strdup ("trash:");
 	}
 
 	/* FIXME bugzilla.eazel.com 648: 
@@ -443,7 +443,7 @@ nautilus_directory_new (const char *uri)
 
 	g_assert (uri != NULL);
 
-	if (strcmp (uri, "gnome-trash:") == 0) {
+	if (strcmp (uri, "trash:") == 0) {
 		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_TRASH_DIRECTORY));
 	} else {
 		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_VFS_DIRECTORY));
@@ -512,16 +512,23 @@ void
 nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 				       GList *changed_files)
 {
-	GList *p;
-
-	for (p = changed_files; p != NULL; p = p->next) {
-		nautilus_file_emit_changed (p->data);
-	}
 	if (changed_files != NULL) {
 		gtk_signal_emit (GTK_OBJECT (directory),
 				 signals[FILES_CHANGED],
 				 changed_files);
 	}
+}
+
+void
+nautilus_directory_emit_change_signals_deep (NautilusDirectory *directory,
+					     GList *changed_files)
+{
+	GList *p;
+
+	for (p = changed_files; p != NULL; p = p->next) {
+		nautilus_file_emit_changed (p->data);
+	}
+	nautilus_directory_emit_files_changed (directory, changed_files);
 }
 
 void
@@ -535,8 +542,8 @@ nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
 	 * We could optimize this to only mention files that
 	 * have metadata, but this is a fine rough cut for now.
 	 */
-	nautilus_directory_emit_files_changed (directory,
-					       directory->details->files);
+	nautilus_directory_emit_change_signals_deep
+		(directory, directory->details->files);
 }
 
 void
@@ -653,7 +660,7 @@ call_files_changed_free_list (gpointer key, gpointer value, gpointer user_data)
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_emit_files_changed (key, value);
+	nautilus_directory_emit_change_signals_deep (key, value);
 	g_list_free (value);
 }
 
@@ -664,7 +671,7 @@ call_files_changed_unref_free_list (gpointer key, gpointer value, gpointer user_
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_emit_files_changed (key, value);
+	nautilus_directory_emit_change_signals_deep (key, value);
 	nautilus_file_list_free (value);
 }
 

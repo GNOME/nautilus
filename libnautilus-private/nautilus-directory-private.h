@@ -142,6 +142,8 @@ void               nautilus_directory_emit_files_added          (NautilusDirecto
 								 GList                     *added_files);
 void               nautilus_directory_emit_files_changed        (NautilusDirectory         *directory,
 								 GList                     *changed_files);
+void               nautilus_directory_emit_change_signals_deep  (NautilusDirectory         *directory,
+								 GList                     *changed_files);
 void               nautilus_directory_emit_done_loading         (NautilusDirectory         *directory);
 NautilusDirectory *nautilus_directory_get_internal              (const char                *uri,
 								 gboolean                   create);

@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-trash-directory.h"
 
+#include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -179,6 +180,18 @@ trash_callback_check_done (TrashCallback *trash_callback)
 }
 
 static void
+trash_callback_remove_directory (TrashCallback *trash_callback,
+				 NautilusDirectory *directory)
+{
+	trash_callback->non_ready_directories = g_list_remove
+		(trash_callback->non_ready_directories,
+		 directory);
+
+	/* Check if we are ready. */
+	trash_callback_check_done (trash_callback);
+}
+
+static void
 directory_ready_callback (NautilusDirectory *directory,
 			  GList *files,
 			  gpointer callback_data)
@@ -195,12 +208,10 @@ directory_ready_callback (NautilusDirectory *directory,
 	trash_callback->merged_file_list = g_list_concat
 		(trash_callback->merged_file_list,
 		 nautilus_file_list_copy (files));
-	trash_callback->non_ready_directories = g_list_remove
-		(trash_callback->non_ready_directories,
-		 directory);
 
 	/* Check if we are ready. */
-	trash_callback_check_done (trash_callback);
+	trash_callback_remove_directory (trash_callback,
+					 directory);
 }
 
 static void
@@ -404,9 +415,25 @@ nautilus_trash_directory_initialize_class (gpointer klass)
 	directory_class->is_not_empty = trash_is_not_empty;
 }
 
+static void
+forward_files_added_cover (NautilusDirectory *real_directory,
+			   GList *files,
+			   NautilusTrashDirectory *trash)
+{
+	nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (trash), files);
+}
+
+static void
+forward_files_changed_cover (NautilusDirectory *real_directory,
+			     GList *files,
+			     NautilusTrashDirectory *trash)
+{
+	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (trash), files);
+}
+
 void
-nautilus_trash_directory_add_real_trash_directory (NautilusTrashDirectory *trash,
-						   NautilusDirectory *real_directory)
+nautilus_trash_directory_add_real_directory (NautilusTrashDirectory *trash,
+					     NautilusDirectory *real_directory)
 {
 	g_return_if_fail (NAUTILUS_IS_TRASH_DIRECTORY (trash));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
@@ -418,22 +445,46 @@ nautilus_trash_directory_add_real_trash_directory (NautilusTrashDirectory *trash
 	trash->details->directories = g_list_prepend
 		(trash->details->directories, real_directory);
 
-	/* FIXME: Connect signals. */
-	/* FIXME: Add to pending I/O. */
+	/* Connect signals. */
+	gtk_signal_connect (GTK_OBJECT (real_directory),
+			    "files_added",
+			    forward_files_added_cover,
+			    trash);
+	gtk_signal_connect (GTK_OBJECT (real_directory),
+			    "files_changed",
+			    forward_files_changed_cover,
+			    trash);
+	/* FIXME: done_loading */
+
+	/* FIXME: Add to callbacks and monitors? */
+}
+
+static void
+trash_callback_remove_directory_cover (gpointer key,
+				       gpointer value,
+				       gpointer callback_data)
+{
+	trash_callback_remove_directory
+		(value, NAUTILUS_DIRECTORY (callback_data));
 }
 
 void
-nautilus_trash_directory_remove_real_trash_directory (NautilusTrashDirectory *trash,
-						      NautilusDirectory *real_directory)
+nautilus_trash_directory_remove_real_directory (NautilusTrashDirectory *trash,
+						NautilusDirectory *real_directory)
 {
 	g_return_if_fail (NAUTILUS_IS_TRASH_DIRECTORY (trash));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
 
+	/* Quietly do nothing if asked to remove something that's not there. */
 	if (g_list_find (trash->details->directories, real_directory) == NULL) {
 		return;
 	}
 
-	/* FIXME: Remove from pending I/O. */
+	/* Remove this directory from callbacks and monitors. */
+	g_hash_table_foreach (trash->details->callbacks,
+			      trash_callback_remove_directory_cover,
+			      real_directory);
+	/* FIXME: monitors. */
 
 	/* Disconnect all the signals. */
 	gtk_signal_disconnect_by_data (GTK_OBJECT (real_directory), trash);
@@ -448,7 +499,87 @@ static void
 remove_all_real_directories (NautilusTrashDirectory *trash)
 {
 	while (trash->details->directories != NULL) {
-		nautilus_trash_directory_remove_real_trash_directory
+		nautilus_trash_directory_remove_real_directory
 			(trash, trash->details->directories->data);
 	}
 }
+
+#if 0
+
+	/* Find/create Trash directories */
+static void
+fm_desktop_icon_view_discover_trash_callback (GnomeVFSAsyncHandle *handle,
+					      GList *results,
+					      gpointer callback_data)
+{
+#if 0
+	/* Debug code only for now.
+	 * Bugzilla task 571 will use the resulting list to 
+	 * create new NautilusDirectory objects for Trash.
+	 */
+	GnomeVFSFindDirectoryResult *result;
+	GList *p;
+
+	for (p = results; p != NULL; p = p->next) {
+		char *uri_text;
+
+		result = p->data;
+		uri_text = "";
+
+		if (result->uri) {
+			uri_text = gnome_vfs_uri_to_string (result->uri, 
+				GNOME_VFS_URI_HIDE_NONE);
+		}
+		
+		printf("trash dir %s, %s\n", uri_text, strerror (result->result));
+	}
+#endif
+}
+
+	nautilus_trash_monitor_async_get_trash_directories (fm_desktop_icon_view_discover_trash_callback,
+							    desktop_icon_view);
+
+static gboolean
+add_one_writable_device (const DeviceInfo *device, gpointer context)
+{
+	GList **uris = (GList **)context;
+	char *uri;
+
+	if (device->type == DEVICE_EXT2 && !device->is_read_only) {
+		uri = nautilus_get_uri_from_local_path (device->mount_path);
+		*uris = g_list_prepend (*uris, gnome_vfs_uri_new (uri));
+		g_free (uri);
+	}
+	return FALSE;
+}
+
+static GList *
+get_trashable_volume_uris (void)
+{
+	GList *uris;
+
+	uris = NULL;
+
+	nautilus_volume_monitor_each_mounted_device
+		(nautilus_volume_monitor_get (),
+		 add_one_writable_device, &uris);
+
+	return uris;
+}
+
+/* FIXME: No way to cancel this. */
+void
+nautilus_trash_monitor_async_get_trash_directories (GnomeVFSAsyncFindDirectoryCallback callback,
+						    gpointer context)
+{
+	GList *uris;
+	GnomeVFSAsyncHandle *async_handle;
+	
+	uris = get_trashable_volume_uris ();
+	gnome_vfs_async_find_directory
+		(&async_handle, uris, 
+		 GNOME_VFS_DIRECTORY_KIND_TRASH, TRUE, TRUE, 0777,
+		 callback, context);
+	gnome_vfs_uri_list_free (uris);
+}
+#endif

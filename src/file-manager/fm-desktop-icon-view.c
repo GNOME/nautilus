@@ -177,35 +177,6 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 }
 
 static void
-fm_desktop_icon_view_discover_trash_callback (GnomeVFSAsyncHandle *handle,
-					      GList *results,
-					      gpointer callback_data)
-{
-#if 0
-	/* Debug code only for now.
-	 * Bugzilla task 571 will use the resulting list to 
-	 * create new NautilusDirectory objects for Trash.
-	 */
-	GnomeVFSFindDirectoryResult *result;
-	GList *p;
-
-	for (p = results; p != NULL; p = p->next) {
-		char *uri_text;
-
-		result = p->data;
-		uri_text = "";
-
-		if (result->uri) {
-			uri_text = gnome_vfs_uri_to_string (result->uri, 
-				GNOME_VFS_URI_HIDE_NONE);
-		}
-		
-		printf("trash dir %s, %s\n", uri_text, strerror (result->result));
-	}
-#endif
-}
-
-static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -258,10 +229,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Check for mountable devices */
 	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
-
-	/* Find/create Trash directories */
-	nautilus_trash_monitor_async_get_trash_directories (fm_desktop_icon_view_discover_trash_callback,
-		desktop_icon_view);
 }
 
 static void
@@ -281,7 +248,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 	g_assert (GTK_IS_MENU (menu));
 
 	fm_directory_view_add_menu_item (view, menu, _("New Terminal"), new_terminal_menu_item_callback,
-		       TRUE);
+					 TRUE);
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
 		 create_background_context_menu_items, 
@@ -305,7 +272,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		char *name;
 		
 		/* Get a list containing the mount point of all removable volumes in fstab */
-		disk_list = fm_desktop_get_removable_volume_list ();
+		disk_list = nautilus_volume_monitor_get_removable_volume_names ();
 
 		/* Create submenu to place them in */
 		sub_menu = GTK_MENU (gtk_menu_new ());
@@ -331,10 +298,10 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 						  g_strdup (element->data), g_free);
 			
 			gtk_signal_connect (GTK_OBJECT (check_menu_item),
-			    "activate",
-			     GTK_SIGNAL_FUNC (mount_unmount_removable),
-			     FM_DESKTOP_ICON_VIEW (view));
-			     			
+					    "activate",
+					    GTK_SIGNAL_FUNC (mount_unmount_removable),
+					    FM_DESKTOP_ICON_VIEW (view));
+			
 			gtk_menu_append (sub_menu, check_menu_item);
 			gtk_widget_show (check_menu_item);
 			g_free (element->data);
@@ -497,7 +464,7 @@ remove_old_mount_links (void)
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);
-				if (nautilus_volume_monitor_is_volume_link (link_path)) {					
+				if (nautilus_volume_monitor_is_volume_link (link_path)) {
 					unlink (this_entry->d_name);					
 				}
 				g_free (link_path);

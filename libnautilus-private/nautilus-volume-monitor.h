@@ -25,9 +25,7 @@
 #ifndef NAUTILUS_VOLUME_MONITOR_H
 #define NAUTILUS_VOLUME_MONITOR_H
 
-#include <glib.h>
-#include <gtk/gtk.h>
-#include "nautilus-icon-container.h"
+#include <gtk/gtkobject.h>
 
 typedef struct NautilusVolumeMonitor NautilusVolumeMonitor;
 typedef struct NautilusVolumeMonitorClass NautilusVolumeMonitorClass;
@@ -43,21 +41,28 @@ struct NautilusVolumeMonitor {
 	NautilusVolumeMonitorDetails *details;
 };
 
+typedef struct DeviceInfo DeviceInfo;
+
 struct NautilusVolumeMonitorClass {
 	GtkObjectClass parent_class;
 
 	/* Signals */
-	char *	     (* volume_mounted)	  	(NautilusVolumeMonitor *monitor);
-	char *	     (* volume_unmounted)	(NautilusVolumeMonitor *monitor);
+	void (* volume_mounted)	  (NautilusVolumeMonitor *monitor,
+				   const DeviceInfo      *info);
+	void (* volume_unmounted) (NautilusVolumeMonitor *monitor,
+				   const DeviceInfo      *info);
 };
 
+/* FIXME: Needs Nautilus prefix. */
 #define MOUNT_TYPE_ISO9660 	"iso9660"
 #define MOUNT_TYPE_EXT2 	"ext2"
 #define MOUNT_OPTIONS_USER 	"user"
 #define MOUNT_OPTIONS_OWNER 	"owner"
 
+/* FIXME: Needs Nautilus prefix. */
 #define CHECK_INTERVAL 		2000
 
+/* FIXME: Needs Nautilus prefix. */
 typedef enum { 
 	STATE_ACTIVE = 0, 
 	STATE_INACTIVE, 
@@ -65,6 +70,7 @@ typedef enum {
 	STATE_LAST,
 } DeviceState;
 
+/* FIXME: Needs Nautilus prefix. */
 typedef enum { 
 	DEVICE_CDROM, 
 	DEVICE_FLOPPY,
@@ -72,7 +78,8 @@ typedef enum {
 	DEVICE_OTHER 
 } DeviceType;
 
-typedef struct {
+/* FIXME: Needs Nautilus prefix. */
+struct DeviceInfo {
 	DeviceType type;
 	DeviceState state;
 	int device_fd;
@@ -87,23 +94,24 @@ typedef struct {
 	gboolean did_mount;
 	
 	gboolean is_read_only;
-} DeviceInfo;
+};
 
+/* FIXME: Needs Nautilus prefix. */
 typedef gboolean (* EachDeviceFunction) (const DeviceInfo *, gpointer);
 
-GtkType               	nautilus_volume_monitor_get_type 		(void);
-NautilusVolumeMonitor 	*nautilus_volume_monitor_get 			(void);
-GList 			*fm_desktop_get_removable_volume_list 		(void);
-gboolean		nautilus_volume_monitor_volume_is_mounted 	(const char		*mount_point);
-void			nautilus_volume_monitor_find_mount_devices 	(NautilusVolumeMonitor 	*monitor);
-gboolean		nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor 	*monitor, 
-									 const char 		*mount_point);
-gboolean		nautilus_volume_monitor_is_volume_link 		(const char 		*path);
-void			nautilus_volume_monitor_each_device		(NautilusVolumeMonitor *monitor,
-									 EachDeviceFunction	function,
-									 gpointer		context);
-void			nautilus_volume_monitor_each_mounted_device	(NautilusVolumeMonitor *monitor,
-									 EachDeviceFunction	function,
-									 gpointer		context);
+GtkType                nautilus_volume_monitor_get_type                   (void);
+NautilusVolumeMonitor *nautilus_volume_monitor_get                        (void);
+gboolean               nautilus_volume_monitor_volume_is_mounted          (const char            *mount_point);
+void                   nautilus_volume_monitor_find_mount_devices         (NautilusVolumeMonitor *monitor);
+gboolean               nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor *monitor,
+									   const char            *mount_point);
+gboolean               nautilus_volume_monitor_is_volume_link             (const char            *path);
+void                   nautilus_volume_monitor_each_device                (NautilusVolumeMonitor *monitor,
+									   EachDeviceFunction     function,
+									   gpointer               context);
+void                   nautilus_volume_monitor_each_mounted_device        (NautilusVolumeMonitor *monitor,
+									   EachDeviceFunction     function,
+									   gpointer               context);
+GList *                nautilus_volume_monitor_get_removable_volume_names (void);
 
-#endif
+#endif /* NAUTILUS_VOLUME_MONITOR_H */

@@ -14,9 +14,9 @@ module Nautilus {
 	typedef sequence<URI> URIList;
 
 	/* The View interface is used by the Nautilus shell to control
-	 * the view. The view is always a Bonobo::Control, but can
-	 * choose to implement the View interface for additional finer
-	 * control by Nautilus.
+	 * the view. A view that is a Bonobo::Control can choose to
+	 * implement the View interface for additional finer control
+	 * by Nautilus.
 	 */
 	interface View : ::Bonobo::Unknown {
 		/* Called to tell the view about location changes.
@@ -31,10 +31,8 @@ module Nautilus {
 		oneway void stop_loading ();
 		
 		/* Called to tell the view about selection changes.
-		 * Like load, it's called on all views except the one
-		 * that calls report_selection_change. If you call
-		 * set_selection instead, it's called on all views,
-		 * even the requesting one.
+		 * It's called on all views except the one that calls
+		 * report_selection_change.
 		 */
 		oneway void selection_changed (in URIList selection);
 	};
@@ -46,10 +44,10 @@ module Nautilus {
 	interface ViewFrame : ::Bonobo::Unknown {
 		/* Called by the view component to change the location
 		 * shown in the window or to open a new window. The
-		 * report version is used when the view has already
+		 * "report" version is used when the view has already
 		 * changed its location and would confused by an
-		 * additional load call. It is deprecated, and you
-		 * should use it only if absolutely necessary.
+		 * additional load call, but it's deprecated and may
+		 * be removed from a future version of this interface.
 		 */
 		oneway void open_location (in URI location);
 		oneway void open_location_in_new_window (in URI location);
@@ -92,7 +90,7 @@ module Nautilus {
 	
 	/* The interface for something zoomable. Nautilus looks for
 	 * this interface on Bonobo controls that it uses as views. If
-	 * the interface is present, it shows a control in the toolbar
+	 * the interface is present, it shows a widget in the toolbar
 	 * for zooming. It's still the component's job to save the
 	 * zoom level.
 	 */

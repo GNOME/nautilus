@@ -63,20 +63,21 @@ nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
 
 	object_class->destroy = destroy;
 
-	signals[TRASH_STATE_CHANGED] = gtk_signal_new ("trash_state_changed",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
-		    		gtk_marshal_NONE__BOOL,
-		    		GTK_TYPE_NONE, 1,
-		    		GTK_TYPE_BOOL);
+	signals[TRASH_STATE_CHANGED] = gtk_signal_new
+		("trash_state_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
+		 gtk_marshal_NONE__BOOL,
+		 GTK_TYPE_NONE, 1,
+		 GTK_TYPE_BOOL);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
 nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *files, 
-	gpointer callback_data)
+				       gpointer callback_data)
 {
 	NautilusTrashMonitor *trash_monitor;
 	gboolean old_empty_state;
@@ -94,13 +95,14 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 	if (old_empty_state != trash_monitor->details->empty) {
 		/* trash got empty or full, notify everyone who cares */
 		gtk_signal_emit (GTK_OBJECT (trash_monitor), 
-			signals[TRASH_STATE_CHANGED], trash_monitor->details->empty);
+				 signals[TRASH_STATE_CHANGED],
+				 trash_monitor->details->empty);
 	}
 }
 
 static void
 nautilus_trash_metadata_ready_callback (NautilusDirectory *directory, GList *files,
-	gpointer callback_data)
+					gpointer callback_data)
 {
 	NautilusTrashMonitor *trash_monitor;
 
@@ -132,11 +134,10 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
 	/* set up a NautilusDirectory for the Trash directory to monitor */
-	/* FIXME:
-	 * Add trash directories from all known volumes here
+	/* FIXME: Use "trash:" here when it works.
 	 */
 	gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, TRUE, 0777);
+				  &trash_dir_uri, TRUE, TRUE, 0777);
 	g_assert (trash_dir_uri != NULL);
 	trash_dir_uri_string = gnome_vfs_uri_to_string (trash_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 
@@ -190,39 +191,3 @@ nautilus_trash_monitor_is_empty (void)
 {
 	return nautilus_trash_monitor_get ()->details->empty;
 }
-
-static gboolean
-add_one_writable_device (const DeviceInfo *device, gpointer context)
-{
-	GList **uris = (GList **)context;
-	char *uri;
-	if (device->type == DEVICE_EXT2 && !device->is_read_only) {
-		uri = g_strdup_printf ("file://%s", device->mount_path);
-		*uris = g_list_prepend (*uris, gnome_vfs_uri_new (uri));
-		g_free (uri);
-	}
-	return FALSE;
-}
-
-static GList *
-get_trashable_volume_uris (void)
-{
-	GList *uris;
-	uris = NULL;
-
-	nautilus_volume_monitor_each_mounted_device (nautilus_volume_monitor_get (),
-		add_one_writable_device, &uris);
-
-	return uris;
-}
-
-void
-nautilus_trash_monitor_async_get_trash_directories (GnomeVFSAsyncFindDirectoryCallback callback,
-	gpointer context)
-{
-	GnomeVFSAsyncHandle *async_handle;
-	
-	gnome_vfs_async_find_directory (&async_handle, get_trashable_volume_uris (), 
-		GNOME_VFS_DIRECTORY_KIND_TRASH, TRUE, TRUE, 0777, callback, context);
-}
-

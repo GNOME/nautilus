@@ -3559,7 +3559,8 @@ nautilus_file_changed (NautilusFile *file)
 		fake_list.data = file;
 		fake_list.next = NULL;
 		fake_list.prev = NULL;
-		nautilus_directory_emit_files_changed (file->details->directory, &fake_list);
+		nautilus_directory_emit_change_signals_deep
+			(file->details->directory, &fake_list);
 	}
 }
 

@@ -1351,7 +1351,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button, FALSE, FALSE, 0);
 
 	capption = gtk_label_new (_("You can configure which programs are offered "
-				    "for which file types in the Gnome Control Center."));
+				    "for which file types in the GNOME Control Center."));
 	gtk_widget_show (capption);
 	gtk_label_set_line_wrap (GTK_LABEL (capption), TRUE);
 	gtk_box_pack_start (GTK_BOX (capplet_hbox), capption, FALSE, FALSE, 0);				    
@@ -1477,7 +1477,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	prompt = g_strdup_printf ("%s\n\n"
 				  "You can configure which programs are offered "
 				  "for which file types with the \"File Types and "
-				  "Programs\" part of the Gnome Control Center. Do "
+				  "Programs\" part of the GNOME Control Center. Do "
 				  "you want to go there now?", unavailable_message);
 	dialog = nautilus_yes_no_dialog 
 		(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);

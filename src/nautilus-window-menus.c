@@ -439,7 +439,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 			NULL
 		};
 
-		about_string = g_strdup_printf (_("The Gnome Shell\n%s"),
+		about_string = g_strdup_printf (_("The GNOME Shell\n%s"),
 				       		NAUTILUS_TIMESTAMP);
 
 		aboot = gnome_about_new(_("Nautilus"),

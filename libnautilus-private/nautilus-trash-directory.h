@@ -28,6 +28,10 @@
 
 #include "nautilus-directory.h"
 
+/* Very little of this is trash-specific, so we could give it a new
+ * name some day.
+ */
+
 #define NAUTILUS_TYPE_TRASH_DIRECTORY \
 	(nautilus_trash_directory_get_type ())
 #define NAUTILUS_TRASH_DIRECTORY(obj) \
@@ -50,10 +54,10 @@ typedef struct {
 	NautilusDirectoryClass parent_slot;
 } NautilusTrashDirectoryClass;
 
-GtkType nautilus_trash_directory_get_type                    (void);
-void    nautilus_trash_directory_add_real_trash_directory    (NautilusTrashDirectory *trash,
-							      NautilusDirectory      *real_directory);
-void    nautilus_trash_directory_remove_real_trash_directory (NautilusTrashDirectory *trash,
-							      NautilusDirectory      *real_directory);
+GtkType nautilus_trash_directory_get_type              (void);
+void    nautilus_trash_directory_add_real_directory    (NautilusTrashDirectory *trash,
+							NautilusDirectory      *real_directory);
+void    nautilus_trash_directory_remove_real_directory (NautilusTrashDirectory *trash,
+							NautilusDirectory      *real_directory);
 
 #endif /* NAUTILUS_TRASH_DIRECTORY_H */

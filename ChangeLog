@@ -1,3 +1,56 @@
+2000-08-18  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new),
+	(nautilus_program_chooser_show_no_choices_message):
+	Fixed bug 2210 (GNOME is referred to as Gnome in the about
+	dialog).  It was in one other place too.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Fixed some comments.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_emit_files_changed),
+	(nautilus_directory_emit_change_signals_deep),
+	(nautilus_directory_emit_metadata_changed),
+	(call_files_changed_free_list),
+	(call_files_changed_unref_free_list):
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_changed):
+	Separated out the call so you can emit a files_changed without
+	also emitting a changed signal on each file.
+	
+	
+	* libnautilus-extensions/nautilus-trash-directory.h:
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_callback_remove_directory), (directory_ready_callback),
+	(forward_files_added_cover), (forward_files_changed_cover),
+	(nautilus_trash_directory_add_real_directory),
+	(trash_callback_remove_directory_cover),
+	(nautilus_trash_directory_remove_real_directory),
+	(remove_all_real_directories),
+	(fm_desktop_icon_view_discover_trash_callback),
+	(add_one_writable_device), (get_trashable_volume_uris),
+	(nautilus_trash_monitor_async_get_trash_directories):
+	More trash work. A bunch is commented out. I'm doing this *so*
+	slowly, but I need to check in at this point for Gene's sake.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(mount_device_activate), (mount_device_deactivate):
+	Changed the signals to be both more useful and easier to use.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	* src/file-manager/nautilus-trash-monitor.c:
+	Moved 1/2-written trash code out of here.
+
+	* HACKING: Spell checking.
+	
 2000-08-18  John Sullivan  <sullivan@eazel.com>
 
 	* configure.in: Added pt_BR to ALL_LINGUAS
