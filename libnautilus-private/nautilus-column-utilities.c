@@ -204,8 +204,8 @@ column_compare (NautilusColumn *a, NautilusColumn *b, GList *column_order)
 		g_object_get (G_OBJECT (a), "label", &label_a, NULL);
 		g_object_get (G_OBJECT (b), "label", &label_b, NULL);
 		ret = strcmp (label_a, label_b);
-		g_free (a);
-		g_free (b);
+		g_free (label_a);
+		g_free (label_b);
 		
 		return ret;
 	} else if (index_a == -1) {
