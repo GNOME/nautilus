@@ -79,10 +79,14 @@ typedef struct {
 
 #define LOGFILE		"eazel-install.log"
 
-#define FONT_NORM_BOLD	_("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
-#define FONT_NORM	_("-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
-#define FONT_TITLE	_("-adobe-helvetica-medium-r-normal-*-24-*-*-*-p-*-*-*,*-r-*")
-#define FONT_LITTLE	_("-adobe-helvetica-medium-r-normal-*-10-*-*-*-p-*-*-*,*-r-*")
+static const char untranslated_font_norm_bold[] = N_("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*");
+static const char untranslated_font_norm[] = N_("-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*,*-r-*");
+static const char untranslated_font_title[] = N_("-adobe-helvetica-medium-r-normal-*-24-*-*-*-p-*-*-*,*-r-*");
+static const char untranslated_font_little[] = N_("-adobe-helvetica-medium-r-normal-*-10-*-*-*-p-*-*-*,*-r-*");
+#define FONT_NORM_BOLD	_(untranslated_font_norm_bold)
+#define FONT_NORM	_(untranslated_font_norm)
+#define FONT_TITLE	_(untranslated_font_title)
+#define FONT_LITTLE	_(untranslated_font_little)
 
 #define CONTENT_X	64
 #define CONTENT_Y	63
@@ -94,48 +98,76 @@ typedef struct {
 			 	/* yes, virginia, people actually broke the 50MB limit! */
 				/* as of nov 2000, typical redhat 6.0 system seems to need about 75MB */
 
-#define ERROR_NEED_TO_SET_PROXY _("I can't reach the Eazel servers.  This could be because the\n" \
-				  "Eazel servers are down, or more likely, because you need to\n" \
-				  "use a web proxy to access external web servers, and I couldn't\n" \
-				  "figure out your proxy configuration.\n\n" \
-				  "If you know you have a web proxy, you can try again by setting\n" \
-				  "the environment variable \"http_proxy\" to the URL of your proxy\n" \
- 				  "server, and then restarting Eazel Installer.")
-#define D_WAIT_LABEL	_("Please wait while we download and install the files selected.")
-#define D_WAIT_LABEL_2	_("Now starting the install process.  This will take some time, so\n" \
-			  "please be patient.")
-#define D_ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
-			  "selected files.  Here's why:")
-#define D_ERROR_LABEL_2	_("Look for possible solutions to this problem at:\n" \
- 			  "        http://www.eazel.com/support/\n" \
-			  "Once you have resolved the problem, please restart the installer.")
+static const char untranslated_error_need_to_set_proxy[] =
+	N_("I can't reach the Eazel servers.  This could be because the\n"
+	   "Eazel servers are down, or more likely, because you need to\n"
+	   "use a web proxy to access external web servers, and I couldn't\n"
+	   "figure out your proxy configuration.\n\n"
+	   "If you know you have a web proxy, you can try again by setting\n"
+	   "the environment variable \"http_proxy\" to the URL of your proxy\n"
+	   "server, and then restarting Eazel Installer.");
+static const char untranslated_wait_label[] =
+	N_("Please wait while we download and install the files selected.");
+static const char untranslated_wait_label_2[] =
+	N_("Now starting the install process.  This will take some time, so\n"
+	   "please be patient.");
+static const char untranslated_error_label[] =
+	N_("The installer was not able to complete the installation of the\n"
+	   "selected files.  Here's why:");
+static const char untranslated_error_label_2[] =
+	N_("Look for possible solutions to this problem at:\n"
+	   "        http://www.eazel.com/support/\n"
+	   "Once you have resolved the problem, please restart the installer.");
 
-#define D_ERROR_TITLE	_("An error has occurred")
-#define D_SPLASH_TITLE  _("Welcome to the Eazel Installer!")
-#define D_FINISHED_TITLE	_("Congratulations!")
+static const char untranslated_error_title[] = N_("An error has occurred");
+static const char untranslated_splash_title[] = N_("Welcome to the Eazel Installer!");
+static const char untranslated_finished_title[] = N_("Congratulations!");
 
-#define D_INFO_EAZEL_HACKING_TITLE _("Eazel-Hacking")
-#define D_INFO_EAZEL_HACKING_TEXT _("You have the eazel-hacking environment installed.\n" \
-		  	            "That does not mix well with Nautilus PR2, so I'm\n" \
-			            "going to remove the eazel-hacking enviroment for you.\n" \
-			            "Do note, that there will be leftovers in\n" \
-			            " \xB7 /gnome\n" \
-			            " \xB7 /gnome-source\n" \
-			            "that you should manually remove.")
+static const char untranslated_eazel_hacking_title[] = N_("Eazel-Hacking");
+static const char untranslated_eazel_hacking_text[] =
+	N_("You have the eazel-hacking environment installed.\n"
+	   "That does not mix well with Nautilus PR2, so I'm\n"
+	   "going to remove the eazel-hacking enviroment for you.\n"
+	   "Do note, that there will be leftovers in\n"
+	   " \xB7 /gnome\n"
+	   " \xB7 /gnome-source\n"
+	   "that you should manually remove.");
 
-#define D_WHAT_TO_INSTALL_LABEL		_("What would you like to install?")
-#define D_WHAT_TO_INSTALL_LABEL_SINGLE	_("What we'll install...")
+static const char untranslated_what_to_install_label[] = N_("What would you like to install?");
+static const char untranslated_what_to_install_label_single[] = N_("What we'll install...");
 
-#define D_ERROR_RPM_4_NOT_SUPPORTED _("RPM version 4.x is not supported, sorry.")
-#define D_ERROR_NON_RPM_BASED_SYSTEM _("Sorry, but this preview installer only works for RPM-based\n" \
-				       "systems.  You will have to download the source yourself.\n" \
-				       "In the future, we will support other packaging formats.")
-#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _("You're running the installer on an untested and unsupported\n"\
-						 "RPM-based Linux distribution. I'll try anyways, but\n"\
-						 "it will most likely not work.")
-#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _("Unsupported distribution")
-#define D_ERROR_RED_HAT_7_NOT_SUPPORTED _("Sorry, but this preview installer won't work for Red Hat\n" \
-					  "Linux 7.x systems.")
+static const char untranslated_error_RPM_4_not_supported[] =
+	N_("RPM version 4.x is not supported, sorry.");
+static const char untranslated_error_non_RPM_based_system[] =
+	N_("Sorry, but this preview installer only works for RPM-based\n"
+	   "systems.  You will have to download the source yourself.\n"
+	   "In the future, we will support other packaging formats.");
+static const char untranslated_error_untested_RPM_based_system[] =
+	N_("You're running the installer on an untested and unsupported\n"
+	   "RPM-based Linux distribution. I'll try anyways, but\n"\
+	   "it will most likely not work.");
+static const char untranslated_error_untested_RPM_based_system_title[]= N_("Unsupported distribution");
+static const char untranslated_error_Red_Hat_7_not_supported[] =
+	N_("Sorry, but this preview installer won't work for Red Hat\n"
+	   "Linux 7.x systems.");
+
+#define ERROR_NEED_TO_SET_PROXY _(untranslated_error_need_to_set_proxy)
+#define D_WAIT_LABEL _(untranslated_wait_label)
+#define D_WAIT_LABEL_2 _(untranslated_wait_label_2)
+#define D_ERROR_LABEL _(untranslated_error_label)
+#define D_ERROR_LABEL_2 _(untranslated_error_label_2)
+#define D_ERROR_TITLE _(untranslated_error_title)
+#define D_SPLASH_TITLE _(untranslated_splash_title)
+#define D_FINISHED_TITLE _(untranslated_finished_title)
+#define D_INFO_EAZEL_HACKING_TITLE _(untranslated_eazel_hacking_title)
+#define D_INFO_EAZEL_HACKING_TEXT _(untranslated_eazel_hacking_text)
+#define D_WHAT_TO_INSTALL_LABEL _(untranslated_what_to_install_label)
+#define D_WHAT_TO_INSTALL_LABEL_SINGLE _(untranslated_what_to_install_label_single)
+#define D_ERROR_RPM_4_NOT_SUPPORTED _(untranslated_error_RPM_4_not_supported)
+#define D_ERROR_NON_RPM_BASED_SYSTEM _(untranslated_error_non_RPM_based_system)
+#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _(untranslated_error_untested_RPM_based_system)
+#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _(untranslated_error_untested_RPM_based_system_title)
+#define D_ERROR_RED_HAT_7_NOT_SUPPORTED _(untranslated_error_Red_Hat_7_not_supported)
 
 #define NAUTILUS_INSTALLER_RELEASE
 #undef THAT_DAMN_CHECKBOX

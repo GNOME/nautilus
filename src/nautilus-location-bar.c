@@ -57,8 +57,10 @@
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
 #define NAUTILUS_DND_URL_TYPE		  "_NETSCAPE_URL"
 
-#define LOCATION_LABEL _("Location:")
-#define GO_TO_LABEL    _("Go To:")
+static const char untranslated_location_label[] = N_("Location:");
+static const char untranslated_go_to_label[] = N_("Go To:");
+#define LOCATION_LABEL _(untranslated_location_label)
+#define GO_TO_LABEL _(untranslated_go_to_label)
 
 enum {
 	NAUTILUS_DND_MC_DESKTOP_ICON,

@@ -1065,31 +1065,44 @@ get_link_name (char *name, int count)
  */
 
 /* localizers: tag used to detect the first copy of a file */
-#define COPY_DUPLICATE_TAG _(" (copy)")
+static const char untranslated_copy_duplicate_tag[] = N_(" (copy)");
 /* localizers: tag used to detect the second copy of a file */
-#define ANOTHER_COPY_DUPLICATE_TAG _(" (another copy)")
+static const char untranslated_another_copy_duplicate_tag[] = N_(" (another copy)");
 /* localizers: tag used to detect the x1st copy of a file */
-#define ST_COPY_DUPLICATE_TAG _("st copy)")
+static const char untranslated_st_copy_duplicate_tag[] = N_("st copy)");
 /* localizers: tag used to detect the x2nd copy of a file */
-#define ND_COPY_DUPLICATE_TAG _("nd copy)")
+static const char untranslated_nd_copy_duplicate_tag[] = N_("nd copy)");
 /* localizers: tag used to detect the x3rd copy of a file */
-#define RD_COPY_DUPLICATE_TAG _("rd copy)")
+static const char untranslated_rd_copy_duplicate_tag[] = N_("rd copy)");
 /* localizers: tag used to detect the xxth copy of a file */
-#define TH_COPY_DUPLICATE_TAG _("th copy)")
+static const char untranslated_th_copy_duplicate_tag[] = N_("th copy)");
+
+#define COPY_DUPLICATE_TAG _(untranslated_copy_duplicate_tag)
+#define ANOTHER_COPY_DUPLICATE_TAG _(untranslated_another_copy_duplicate_tag)
+#define ST_COPY_DUPLICATE_TAG _(untranslated_st_copy_duplicate_tag)
+#define ND_COPY_DUPLICATE_TAG _(untranslated_nd_copy_duplicate_tag)
+#define RD_COPY_DUPLICATE_TAG _(untranslated_rd_copy_duplicate_tag)
+#define TH_COPY_DUPLICATE_TAG _(untranslated_th_copy_duplicate_tag)
 
 /* localizers: appended to first file copy */
-#define FIRST_COPY_DUPLICATE_FORMAT _("%s (copy)%s")
+static const char untranslated_first_copy_duplicate_format[] = N_("%s (copy)%s");
 /* localizers: appended to second file copy */
-#define SECOND_COPY_DUPLICATE_FORMAT _("%s (another copy)%s")
+static const char untranslated_second_copy_duplicate_format[] = N_("%s (another copy)%s");
 /* localizers: appended to x1st file copy */
-#define ST_COPY_DUPLICATE_FORMAT _("%s (%dst copy)%s")
+static const char untranslated_st_copy_duplicate_format[] = N_("%s (%dst copy)%s");
 /* localizers: appended to x2nd file copy */
-#define ND_COPY_DUPLICATE_FORMAT _("%s (%dnd copy)%s")
+static const char untranslated_nd_copy_duplicate_format[] = N_("%s (%dnd copy)%s");
 /* localizers: appended to x3rd file copy */
-#define RD_COPY_DUPLICATE_FORMAT _("%s (%drd copy)%s")
+static const char untranslated_rd_copy_duplicate_format[] = N_("%s (%drd copy)%s");
 /* localizers: appended to xxth file copy */
-#define TH_COPY_DUPLICATE_FORMAT _("%s (%dth copy)%s")
+static const char untranslated_th_copy_duplicate_format[] = N_("%s (%dth copy)%s");
 
+#define FIRST_COPY_DUPLICATE_FORMAT _(untranslated_first_copy_duplicate_format)
+#define SECOND_COPY_DUPLICATE_FORMAT _(untranslated_second_copy_duplicate_format)
+#define ST_COPY_DUPLICATE_FORMAT _(untranslated_st_copy_duplicate_format)
+#define ND_COPY_DUPLICATE_FORMAT _(untranslated_nd_copy_duplicate_format)
+#define RD_COPY_DUPLICATE_FORMAT _(untranslated_rd_copy_duplicate_format)
+#define TH_COPY_DUPLICATE_FORMAT _(untranslated_th_copy_duplicate_format)
 
 static char *
 extract_string_until (const char *original, const char *until_substring)

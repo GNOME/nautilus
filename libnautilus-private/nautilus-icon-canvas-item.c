@@ -62,7 +62,8 @@
 #define MAX_TEXT_WIDTH_TIGHTER 80
 
 /* The list of characters that cause line breaks can be localized. */
-#define LINE_BREAK_CHARACTERS _(" -_,;.?/&")
+static const char untranslated_line_break_characters[] = N_(" -_,;.?/&");
+#define LINE_BREAK_CHARACTERS _(untranslated_line_break_characters)
 
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {

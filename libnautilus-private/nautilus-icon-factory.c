@@ -111,17 +111,16 @@ static const char *icon_file_name_suffixes[] =
 /* Images are used themselves as thumbnails when they are below this
  * threshold size.
  */
-/* FIXME bugzilla.eazel.com 5081: Later we might have to have a more complex rule about when
- * to use an image for itself.
+/* FIXME bugzilla.eazel.com 5081: Later we might have to have a more
+ * complex rule about when to use an image for itself.
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
 
-/* Extremely large images can eat up hundreds of megabytes of memory, so we
- * shouldn't automatically thumbnail when larges are too large.
+/* Extremely large images can eat up hundreds of megabytes of memory,
+ * so we shouldn't automatically thumbnail when larges are too large.
  */
-/* FIXME bugzilla.eazel.com 5082: Eventually, we want this 
- * threshold to be user-settable, but
- * for now it's hard-wired.
+/* FIXME bugzilla.eazel.com 5082: Eventually, we want this threshold
+ * to be user-settable, but for now it's hard-wired.
  */
 #define INHIBIT_THUMBNAIL_SIZE_THRESHOLD (1024 * 1024)
  
@@ -131,16 +130,18 @@ static const char *icon_file_name_suffixes[] =
 /* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
  * to determine what font it uses instead of this set of constants.
  */
-#define EMBEDDED_TEXT_FONT_FAMILY       _("helvetica")
-#define EMBEDDED_TEXT_FONT_WEIGHT       _("medium")
+static const char untranslated_embedded_text_font_family[] = N_("helvetica");
+static const char untranslated_embedded_text_font_weight[] = N_("medium");
+#define EMBEDDED_TEXT_FONT_FAMILY       _(untranslated_embedded_text_font_family)
+#define EMBEDDED_TEXT_FONT_WEIGHT       _(untranslated_embedded_text_font_weight)
 #define EMBEDDED_TEXT_FONT_SLANT        NULL
 #define EMBEDDED_TEXT_FONT_SET_WIDTH    NULL
 #define EMBEDDED_TEXT_FONT_SIZE         9
 #define EMBEDDED_TEXT_LINE_OFFSET       1
 #define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
 
-#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20.0
-#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20.0
+#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20
+#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20
 
 /* This circular doubly-linked list structure is used to keep a list
  * of the most recently used items in the cache.

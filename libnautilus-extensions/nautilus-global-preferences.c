@@ -41,7 +41,8 @@
 #include <liboaf/liboaf.h>
 
 /* Constants */
-#define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
+static const char untranslated_global_preferences_dialog_title[] = N_("Nautilus Preferences");
+#define GLOBAL_PREFERENCES_DIALOG_TITLE _(untranslated_global_preferences_dialog_title)
 
 /* default web search uri */
 #define DEFAULT_SEARCH_WEB_URI "http://www.eazel.com/websearch"

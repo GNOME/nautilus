@@ -62,7 +62,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define TRASH_LINK_NAME _("Trash")
+static const char untranslated_trash_link_name[] = N_("Trash");
+#define TRASH_LINK_NAME _(untranslated_trash_link_name)
 
 #define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL	"/commands/Empty Trash Conditional"
 

@@ -43,7 +43,9 @@
 
 #define RGB_BLACK	0x000000
 #define RGB_RED		0xFF0000
-#define FONT_TITLE	_("-adobe-helvetica-bold-r-normal-*-14-*-*-*-p-*-*-*,*-r-*")
+
+static const char untranslated_font_title[] = N_("-adobe-helvetica-bold-r-normal-*-14-*-*-*-p-*-*-*,*-r-*");
+#define FONT_TITLE	_(untranslated_font_title)
 
 
 typedef enum {

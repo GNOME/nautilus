@@ -1866,14 +1866,13 @@ queue_pending_files (FMDirectoryView *view,
 	}
 	
 	/* Filter out hidden files if needed */
-
-	filtered_files = nautilus_file_list_filter_hidden_and_backup (files,
-								      view->details->show_hidden_files,
-								      view->details->show_backup_files);
+	filtered_files = nautilus_file_list_filter_hidden_and_backup
+		(files,
+		 view->details->show_hidden_files,
+		 view->details->show_backup_files);
 
 	/* Put the files on the pending list if there are any. */
-	if (files != NULL) {
-		nautilus_file_list_ref (files);
+	if (filtered_files != NULL) {
 		*pending_list = g_list_concat (*pending_list, filtered_files);
 		schedule_timeout_display_of_pending_files (view);
 	}
