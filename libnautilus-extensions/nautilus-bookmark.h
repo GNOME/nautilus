@@ -56,10 +56,15 @@ struct NautilusBookmarkClass {
 
 	/* Signals that clients can connect to. */
 
-	/* The changed signal is emitted when the bookmark's
+	/* The appearance_changed signal is emitted when the bookmark's
 	 * name or icon has changed.
 	 */
-	void	(* changed) (NautilusBookmark *bookmark);
+	void	(* appearance_changed) (NautilusBookmark *bookmark);
+
+	/* The contents_changed signal is emitted when the bookmark's
+	 * URI has changed.
+	 */
+	void	(* contents_changed) (NautilusBookmark *bookmark);
 };
 
 typedef struct NautilusBookmarkClass NautilusBookmarkClass;

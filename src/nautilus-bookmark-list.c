@@ -194,7 +194,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 					 index);
 
 	gtk_signal_connect (GTK_OBJECT (bookmark),
-			    "changed",
+			    "appearance_changed",
+			    bookmark_in_list_changed_callback,
+			    bookmarks);				 
+
+	gtk_signal_connect (GTK_OBJECT (bookmark),
+			    "contents_changed",
 			    bookmark_in_list_changed_callback,
 			    bookmarks);				 
 }

@@ -152,7 +152,7 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder->prompt_for_removal = is_bookmarks_menu;
 
 	new_bookmark_holder->changed_handler_id = 
-		gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
+		gtk_signal_connect_object (GTK_OBJECT (bookmark), "appearance_changed",
 				   	   is_bookmarks_menu
 				   	   ? schedule_refresh_bookmarks_menu
 				   	   : schedule_refresh_go_menu,

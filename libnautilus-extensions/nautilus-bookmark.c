@@ -41,7 +41,8 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 enum {
-	CHANGED,
+	APPEARANCE_CHANGED,
+	CONTENTS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -98,11 +99,19 @@ nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
 
 	object_class->destroy = nautilus_bookmark_destroy;
 
-	signals[CHANGED] =
-		gtk_signal_new ("changed",
+	signals[APPEARANCE_CHANGED] =
+		gtk_signal_new ("appearance_changed",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, changed),
+				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, appearance_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	signals[CONTENTS_CHANGED] =
+		gtk_signal_new ("contents_changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, contents_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
@@ -287,7 +296,7 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
 
-	gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
 }
 
 static gboolean
@@ -360,19 +369,21 @@ static void
 bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 {
 	char *file_uri;
-	gboolean should_emit_changed_signal;
+	gboolean should_emit_appearance_changed_signal;
+	gboolean should_emit_contents_changed_signal;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	g_assert (file == bookmark->details->file);
 
-	should_emit_changed_signal = FALSE;
+	should_emit_appearance_changed_signal = FALSE;
+	should_emit_contents_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
 	if (!nautilus_uris_match (bookmark->details->uri, file_uri)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
-		should_emit_changed_signal = TRUE;
+		should_emit_contents_changed_signal = TRUE;
 	} else {
 		g_free (file_uri);
 	}
@@ -386,16 +397,20 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 		 */
 		nautilus_bookmark_disconnect_file (bookmark);
 		nautilus_bookmark_connect_file (bookmark);
-		should_emit_changed_signal = TRUE;		
+		should_emit_appearance_changed_signal = TRUE;		
 	} else if (nautilus_bookmark_update_icon (bookmark)) {
 		/* File hasn't gone away, but it has changed
 		 * in a way that affected its icon.
 		 */
-		should_emit_changed_signal = TRUE;
+		should_emit_appearance_changed_signal = TRUE;
 	}
 
-	if (should_emit_changed_signal) {
-		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
+	if (should_emit_appearance_changed_signal) {
+		gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
+	}
+
+	if (should_emit_contents_changed_signal) {
+		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CONTENTS_CHANGED]);
 	}
 }
 

@@ -1,5 +1,31 @@
 2001-03-20  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 4355: Built-in bookmarks icons change after first view
+
+	Also reduced the number of times that refresh_bookmarks_menu
+	is called since it was showing up in some profiling.
+
+	* libnautilus-extensions/nautilus-bookmark.h:
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_initialize_class), (nautilus_bookmark_set_name),
+	(bookmark_file_changed_callback): Split the "changed" signal into
+	"appearance_changed" and "content_changed". "appearance_changed" is
+	emitted only if the name or icon change. "content_changed" is emitted
+	if the URI changes.
+
+	* src/nautilus-bookmark-list.c: (insert_bookmark_internal):
+	Connect to both appearance_changed and content_changed.
+	
+	* src/nautilus-window-menus.c: (bookmark_holder_new):
+	Refresh menu only on appearance_changed, not content_changed.
+
+	* data/static_bookmarks.xml: Added "i-web" as icon name for
+	all the built-in bookmarks, since this is the icon they will
+	end up with after being visited. (Now, visiting a built-in
+	bookmark will not cause a refresh of the bookmarks menu.)
+	
+2001-03-20  John Sullivan  <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.c: (run_script_callback):
 	shell-quote the script name. Fixes bug Robin found where scripts
 	with spaces in their names didn't work.
