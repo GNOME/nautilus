@@ -200,7 +200,7 @@ nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 {
 	GtkWidget *widget, *sidebar;
 	NautilusBackground *background;
-	char *sidebar_title_color;
+	char *sidebar_title_color, *sidebar_info_title_color;
 	
 	widget = GTK_WIDGET (sidebar_title);
 	sidebar = widget->parent;
@@ -210,14 +210,17 @@ nautlius_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		
 		if (nautilus_background_is_dark (background)) {
 			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+			sidebar_info_title_color = g_strdup("rgb:AAAA/AAAA/FFFF");
 		} else {
 			sidebar_title_color = g_strdup("rgb:0000/0000/0000");
+			sidebar_info_title_color = g_strdup("rgb:0000/0000/7FFF");
 		}
 
 	set_widget_color (sidebar_title->details->title, sidebar_title_color);
-	set_widget_color (sidebar_title->details->more_info, sidebar_title_color);
+	set_widget_color (sidebar_title->details->more_info, sidebar_info_title_color);
 	
 	g_free (sidebar_title_color);	
+	g_free (sidebar_info_title_color);	
 	}
 }
 
