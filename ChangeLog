@@ -1,3 +1,9 @@
+2001-04-29  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/help/converters/gnome-info2html2/main.c: (main):
+	Remove the cast, its not needed and it breaks the build.  You
+	probably need a newer popt if your build breaks without the cast.
+	
 2001-04-29  Fatih Demir <kabalak@gtranslator.org>
 
 	* components/help/converters/gnome-info2html2/main.c: Cast argv to
