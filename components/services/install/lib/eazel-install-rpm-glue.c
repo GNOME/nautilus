@@ -90,6 +90,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	if (eazel_install_get_debug (service)) {
 		rpmSetVerbosity (RPMMESS_DEBUG);
 	}
+	rpmSetVerbosity (RPMMESS_DEBUG);
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
