@@ -20,7 +20,7 @@ static void toc_title_characters (Context *context, const gchar *chars, int len)
 
 ElementInfo toc_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, NULL, NULL},
-	{ BOOK, "book", NULL, NULL, NULL},
+	{ BOOK, "book", (startElementSAXFunc) article_start_element, NULL, NULL},
 	{ SECTION, "section", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ SECT1, "sect1", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ SECT2, "sect2", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
@@ -29,6 +29,7 @@ ElementInfo toc_elements[] = {
 	{ SECT5, "sect5", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ PARA, "para", NULL, NULL, NULL},
 	{ FORMALPARA, "formalpara", NULL, NULL, NULL},
+	{ BOOKINFO, "bookinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ ARTHEADER, "artheader", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) toc_author_start_element, NULL, NULL},
@@ -235,11 +236,13 @@ toc_author_start_element (Context *context,
 	ElementIndex index;
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
 	switch (index) {
 	case ARTHEADER:
+	case BOOKINFO:
 		break;
 	default:
 		return;
@@ -257,11 +260,13 @@ toc_author_characters (Context *context, const gchar *chars, int len)
 	char *temp;
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
 	switch (index) {
 	case ARTHEADER:
+	case BOOKINFO:
 		break;
 	default:
 		return;
@@ -431,6 +436,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (NOTE));
@@ -454,6 +460,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 		g_free (temp);
 		break;
 	case ARTHEADER:
+	case BOOKINFO:
 		if (((StackElement *)context->stack->data)->info->index == TITLE)
 			((TocContext *) context->data)->header->title = temp;
 		else if (((StackElement *)context->stack->data)->info->index == SUBTITLE)

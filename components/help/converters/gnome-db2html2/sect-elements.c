@@ -14,6 +14,7 @@ ElementInfo sect_elements[] = {
 	{ SECT5, "sect5", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ PARA, "para", (startElementSAXFunc) sect_para_start_element, (endElementSAXFunc) sect_para_end_element, (charactersSAXFunc) sect_write_characters},
 	{ FORMALPARA, "formalpara", (startElementSAXFunc) sect_formalpara_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL },
+	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL}, //(startElementSAXFunc) artheader_start_element, (endElementSAXFunc) sect_artheader_end_element, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) sect_author_start_element, NULL, NULL},

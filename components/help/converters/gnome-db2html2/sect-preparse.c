@@ -17,6 +17,7 @@ ElementInfo sect_preparse[] = {
 	{ SECT5, "sect5", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ PARA, "para", NULL, NULL, NULL},
 	{ FORMALPARA, "formalpara", NULL, NULL, NULL},
+	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", NULL, NULL, NULL},

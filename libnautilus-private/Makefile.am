@@ -16,7 +16,8 @@ libnautilus_la_LDFLAGS=\
 	$(BONOBO_LIBS) \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
-	$(XML_LIBS)
+	$(XML_LIBS) \
+	$(LIBPNG)
 
 nautilus_idl_sources=nautilus-stubs.c nautilus-skels.c nautilus.h nautilus-common.c
 fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
