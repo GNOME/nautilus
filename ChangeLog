@@ -1,5 +1,20 @@
 2000-05-11  John Sullivan  <sullivan@eazel.com>
 
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c: (compute_menu_item_info),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(insert_bonobo_menu_item), (fm_directory_view_real_merge_menus),
+	(fm_directory_view_real_update_menus),
+	(fm_directory_view_get_context_menu_index): Some more menu code
+	cleanup. Renamed FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES
+	to _SHOW_PROPERTIES to match menu text; made new function
+	insert_bonobo_menu_item that calls compute_menu_item_info
+	to get name & sensitivity so that _real_merge_menus
+	doesn't have a separate and potentially diverging copy of
+	menu item names.
+
+2000-05-11  John Sullivan  <sullivan@eazel.com>
+
 	Some cleanup in directory view menu-handling code.
 
 	* src/file-manager/fm-directory-view.h,

@@ -47,7 +47,7 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    	"/File/Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                 	"/File/Duplicate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                	"/File/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES            	"/File/Set Properties"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES            	"/File/Show Properties"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_ICONS      "/Settings/Before Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS         "/Settings/Remove Custom Icons"
 

@@ -1589,12 +1589,15 @@ compute_menu_item_info (const char *path,
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
 		*return_sensitivity = selection != NULL;
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES) == 0) {
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
 		name = g_strdup (_("Show _Properties"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
 		/* FIXME bugzilla.eazel.com 656: Should only be sensitive if trash is not empty */
+		*return_sensitivity = TRUE;
+	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
+		name = g_strdup (_("_Select All"));
 		*return_sensitivity = TRUE;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
@@ -1667,7 +1670,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 				    FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
 				    duplicate_callback);
 	append_selection_menu_item (view, menu, files,
-				    FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES,
+				    FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 				    open_properties_window_callback);
         append_selection_menu_item (view, menu, files,
 				    FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
@@ -1675,134 +1678,123 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 }
 
 static void
+insert_bonobo_menu_item (BonoboUIHandler *ui_handler,
+                         GList *selection,
+                         const char *path,
+                         const char *hint,
+                         int position,
+			 guint accelerator_key, 
+			 GdkModifierType ac_mods,
+                         BonoboUIHandlerCallbackFunc callback,
+                         gpointer callback_data)
+{
+        char *label;
+        gboolean sensitive;
+
+        compute_menu_item_info (path, selection, TRUE, &label, &sensitive);
+        bonobo_ui_handler_menu_new_item
+		(ui_handler, path, label, hint, 
+		 position,                      /* Position, -1 means at end */
+		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
+		 NULL,                          /* Pixmap data */
+		 accelerator_key,               /* Accelerator key */
+		 ac_mods,                       /* Modifiers for accelerator */
+		 callback, callback_data);
+        g_free (label);
+        bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
+}
+
+static void
 fm_directory_view_real_merge_menus (FMDirectoryView *view)
 {
+        GList *selection;
         BonoboUIHandler *ui_handler;
 
+        selection = fm_directory_view_get_selection (view);
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
-		 _("_Open"),
 		 _("Open the selected item in this window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 'O',
-		 GDK_CONTROL_MASK,
-		 bonobo_menu_open_callback,
-		 view);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+		 'O', GDK_CONTROL_MASK,
+		 bonobo_menu_open_callback, view);
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
-		 _("Open in New Window"),
 		 _("Open each selected item in a new window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 2,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 bonobo_menu_open_in_new_window_callback,
-		 view);
+		 0, 0,
+		 bonobo_menu_open_in_new_window_callback, view);
+
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE,
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 1);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES,
-		 _("Show Properties"),
+
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
+		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 		 _("View or modify the properties of the selected items"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 2,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 bonobo_menu_open_properties_window_callback,
-		 view);
+		 0, 0,
+		 bonobo_menu_open_properties_window_callback, view);
 #if 0
 /* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
  */
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-		 _("Delete..."),
 		 _("Delete all selected items"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 bonobo_menu_delete_callback,
-		 view);
+		 0, 0,
+		 bonobo_menu_delete_callback, view);
 #endif
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-		 _("Move to Trash"),
-		 _("Move all selected items to Trash"),
+		 _("Move all selected items to the Trash"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 'T',
-		 GDK_CONTROL_MASK,
-		 bonobo_menu_move_to_trash_callback,
-		 view);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+		  'T', GDK_CONTROL_MASK,
+		 bonobo_menu_move_to_trash_callback, view);
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
-		 _("Duplicate"),
 		 _("Duplicate all selected items"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 4,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 'D',
-		 GDK_CONTROL_MASK,
-		 bonobo_menu_duplicate_callback,
-		 view);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+		  'D', GDK_CONTROL_MASK,
+		 bonobo_menu_duplicate_callback, view);
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
-		 _("_Empty Trash"),
 		 _("Delete all items in the trash"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 5,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 bonobo_menu_empty_trash_callback,
-		 view);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+		  0, 0,
+		 bonobo_menu_empty_trash_callback, view);
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
-		 _("_Select All"),
 		 _("Select all items in this window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM),
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 (BonoboUIHandlerCallbackFunc) select_all_callback,
-		 view);
+		  0, 0,	/* Accelerator will be inherited */
+		 (BonoboUIHandlerCallbackFunc) select_all_callback, view);
 
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_ICONS,
 		 -1);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
-		 _("Remove Custom Image"),
 		 _("Remove the custom image from each selected icon"),
 		 -1,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL,
-		 0,
-		 0,
-		 (BonoboUIHandlerCallbackFunc) remove_custom_icons_callback,
-		 view);
+		  0, 0,	/* Accelerator will be inherited */
+		 (BonoboUIHandlerCallbackFunc) remove_custom_icons_callback, view);
+
+        nautilus_file_list_free (selection);
 }
 
 static void
@@ -1844,7 +1836,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	update_one_menu_item (handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
 	update_one_menu_item (handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES);
+			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES);
 	update_one_menu_item (handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH);
         update_one_menu_item (handler, selection,
@@ -2433,7 +2425,7 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return 3;
 	} else if (g_strcasecmp(NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
 		return 4;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, menu_name) == 0) {
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
 		return 5;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH, menu_name) == 0) {
 		return 6;
