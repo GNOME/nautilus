@@ -22,7 +22,8 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-uri-map.c: Implementation of routines for mapping a location change request to a set of views and actual URL to be loaded. */
+/* ntl-uri-map.c: Implementation of routines for mapping a location
+   change request to a set of views and actual URL to be loaded. */
 
 #include "ntl-uri-map.h"
 #include <libgnorba/gnorba.h>
@@ -66,6 +67,19 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
          Find if the user has specified any default(s) globally, modify selection.
          Find if the user has specified any default(s) per-page, modify selection.
   */
+  if(!strcmp(navinfo->navinfo.content_type, "text/html"))
+    {
+      navinfo->content_iid = "embeddable:explorer-html-component";
+    }
+  else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
+    {
+      navinfo->content_iid = "embeddable:text-plain";
+    }
+  else if(!strcmp(navinfo->navinfo.content_type, "special/directory"))
+    {
+      navinfo->content_iid = "ntl_file_manager";
+    }
+
 
   return NULL;
 }
@@ -74,4 +88,5 @@ void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
   g_free(navinfo->navinfo.content_type);
+  g_free(navinfo->content_iid);
 }

@@ -72,6 +72,9 @@ struct _NautilusWindow {
   GSList *uris_prev, *uris_next;
 
   guint statusbar_ctx, statusbar_clear_id;
+
+  GnomeObject *ntl_viewwindow;
+  GnomeUIHandler *uih;
 };
 
 GtkType nautilus_window_get_type(void);

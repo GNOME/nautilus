@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+
 #ifndef NAUTILUS_H
 #define NAUTILUS_H 1
 

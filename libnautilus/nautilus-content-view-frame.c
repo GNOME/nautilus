@@ -55,24 +55,26 @@ static void nautilus_content_view_client_class_init (NautilusContentViewClientCl
 GtkType
 nautilus_content_view_client_get_type (void)
 {
-	static GtkType view_client_type = 0;
+  static GtkType view_client_type = 0;
 
-	if (!view_client_type)	{
-		const GtkTypeInfo view_client_info = {
-			"NautilusContentViewClient",
-			sizeof (NautilusContentViewClient),
-			sizeof (NautilusContentViewClientClass),
-			(GtkClassInitFunc) nautilus_content_view_client_class_init,
-			(GtkObjectInitFunc) nautilus_content_view_client_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
+  if (!view_client_type)
+    {
+      const GtkTypeInfo view_client_info =
+      {
+	"NautilusContentViewClient",
+	sizeof (NautilusContentViewClient),
+	sizeof (NautilusContentViewClientClass),
+	(GtkClassInitFunc) nautilus_content_view_client_class_init,
+	(GtkObjectInitFunc) nautilus_content_view_client_init,
+	/* reserved_1 */ NULL,
+	/* reserved_2 */ NULL,
+	(GtkClassInitFunc) NULL,
+      };
 
-		view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
-	}
+      view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
+    }
 	
-	return view_client_type;
+  return view_client_type;
 }
 
 static void

@@ -46,7 +46,10 @@ module Nautilus {
   interface ContentView : View {
   };
 
+  interface ViewWindow;
+
   interface ViewFrame : ::GNOME::Unknown {
+    readonly attribute ViewWindow main_window;
     oneway void request_status_change(in StatusRequestInfo statinfo);
     oneway void request_location_change(in NavigationRequestInfo navinfo);
     oneway void request_selection_change(in SelectionRequestInfo selinfo);
@@ -56,5 +59,8 @@ module Nautilus {
   };
 
   interface ContentViewFrame : ViewFrame {
+  };
+
+  interface ViewWindow : ::GNOME::Unknown {
   };
 };

@@ -28,6 +28,8 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkflist.c				\
 	gtkscrollframe.c
 
+libnautilus_la_LDFLAGS=$(GNOME_LIBS) $(GNORBA_LIBS) $(GDK_PIXBUF_LIBS)
+
 $(nautilus_idl_sources): nautilus_idl_stamp
 
 nautilus_idl_stamp: $(top_srcdir)/idl/nautilus.idl

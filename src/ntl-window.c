@@ -29,6 +29,67 @@
 #include "nautilus.h"
 #include "explorer-location-bar.h"
 
+typedef struct {
+  POA_Nautilus_ViewWindow servant;
+  gpointer gnome_object;
+
+  NautilusWindow *window;
+} impl_POA_Nautilus_ViewWindow;
+
+static POA_Nautilus_ViewWindow__epv impl_Nautilus_ViewWindow_epv =
+{
+  NULL
+};
+
+static PortableServer_ServantBase__epv base_epv = { NULL};
+
+static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
+{
+   &base_epv,
+   NULL,
+   &impl_Nautilus_ViewWindow_epv
+};
+
+static void
+impl_Nautilus_ViewWindow__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewWindow *servant)
+{
+   PortableServer_ObjectId *objid;
+   CORBA_Environment ev;
+
+   CORBA_exception_init(&ev);
+
+   objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
+   PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
+   CORBA_free(objid);
+   obj->servant = NULL;
+
+   POA_Nautilus_ViewWindow__fini((PortableServer_Servant) servant, &ev);
+   g_free(servant);
+   CORBA_exception_free(&ev);
+}
+
+static GnomeObject *
+impl_Nautilus_ViewWindow__create(NautilusWindow *window)
+{
+   GnomeObject *retval;
+   impl_POA_Nautilus_ViewWindow *newservant;
+   CORBA_Environment ev;
+
+   CORBA_exception_init(&ev);
+
+   newservant = g_new0(impl_POA_Nautilus_ViewWindow, 1);
+   newservant->servant.vepv = &impl_Nautilus_ViewWindow_vepv;
+   newservant->window = window;
+   POA_Nautilus_ViewWindow__init((PortableServer_Servant) newservant, &ev);
+
+   retval = gnome_object_new_from_servant(newservant);
+
+   gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewWindow__destroy), newservant);
+   CORBA_exception_free(&ev);
+
+   return retval;
+}
+
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
 static void nautilus_window_destroy (NautilusWindow *window);
@@ -40,8 +101,6 @@ static void nautilus_window_set_arg (GtkObject      *object,
 static void nautilus_window_get_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
-static void nautilus_window_close (GtkWidget *widget,
-                                   GtkWidget *window);
 static void nautilus_window_goto_url (GtkWidget *widget,
                                       const char *url,
                                       GtkWidget *window);
@@ -66,7 +125,8 @@ nautilus_window_get_type(void)
 
   if (!window_type)
     {
-      GtkTypeInfo window_info = {
+      GtkTypeInfo window_info =
+      {
 	"NautilusWindow",
 	sizeof(NautilusWindow),
 	sizeof(NautilusWindowClass),
@@ -152,6 +212,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 			   GTK_TYPE_OBJECT,
 			   GTK_ARG_READWRITE,
 			   ARG_CONTENT_VIEW);
+  impl_Nautilus_ViewWindow_vepv.GNOME_Unknown_epv = gnome_object_get_epv();
 }
 
 static gboolean
@@ -207,11 +268,7 @@ static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
-  GnomeUIInfo dummy_menu[] = {
-    GNOMEUIINFO_END
-  };
   GnomeUIInfo main_menu[] = {
-    GNOMEUIINFO_SUBTREE_STOCK(N_("_Actions"), dummy_menu, GNOME_STOCK_MENU_JUMP_TO),
     GNOMEUIINFO_END
   };
   GtkWidget *menu_hbox, *menubar, *wtmp, *statusbar;
@@ -246,7 +303,8 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
   gtk_widget_queue_resize(window->menu_cvtype);
 
-  /* A hacked-up version of gnome_app_set_menu() */
+  /* A hacked-up version of gnome_app_set_menu(). We need this to use our 'menubar' for the actual menubar stuff,
+     but our menu_hbox for the widget being docked. */
   {
     GtkWidget *dock_item;
     GnomeDockItemBehavior behavior;
@@ -345,6 +403,12 @@ nautilus_window_constructed(NautilusWindow *window)
                        GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 1, 0, 0);
   gtk_widget_show(window->ent_url);
+
+  /* CORBA stuff */
+  window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
+  window->uih = gnome_ui_handler_new();
+  gnome_ui_handler_set_app(window->uih, app);
+  gnome_object_add_interface(GNOME_OBJECT(window->uih), window->ntl_viewwindow);
 }
 
 static void

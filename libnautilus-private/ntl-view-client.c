@@ -60,21 +60,21 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 
 POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
-   NULL,			/* _private */
-   (gpointer) & impl_Nautilus_View_save_state,
-   (gpointer) & impl_Nautilus_View_load_state,
-   (gpointer) & impl_Nautilus_View_notify_location_change,
-   (gpointer) & impl_Nautilus_View_show_properties,
-   (gpointer) & impl_Nautilus_View_notify_selection_change
+  NULL,			/* _private */
+  (gpointer) & impl_Nautilus_View_save_state,
+  (gpointer) & impl_Nautilus_View_load_state,
+  (gpointer) & impl_Nautilus_View_notify_location_change,
+  (gpointer) & impl_Nautilus_View_show_properties,
+  (gpointer) & impl_Nautilus_View_notify_selection_change
 };
 
 static PortableServer_ServantBase__epv base_epv = { NULL};
 
 static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 {
-   &base_epv,
-   NULL,
-   &libnautilus_Nautilus_View_epv
+  &base_epv,
+  NULL,
+  &libnautilus_Nautilus_View_epv
 };
 
 static void
@@ -120,80 +120,83 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 static void
 impl_Nautilus_View__destroy(GnomeObject *obj, impl_POA_Nautilus_View *servant)
 {
-   PortableServer_ObjectId *objid;
-   CORBA_Environment ev;
-   void (*servant_destroy_func)(PortableServer_Servant servant, CORBA_Environment *ev);
+  PortableServer_ObjectId *objid;
+  CORBA_Environment ev;
+  void (*servant_destroy_func)(PortableServer_Servant servant, CORBA_Environment *ev);
 
-   CORBA_exception_init(&ev);
+  CORBA_exception_init(&ev);
 
-   servant_destroy_func = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(servant->view)->klass)->servant_destroy_func;
-   objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
-   PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
-   CORBA_free(objid);
-   obj->servant = NULL;
+  servant_destroy_func = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(servant->view)->klass)->servant_destroy_func;
+  objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
+  PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
+  CORBA_free(objid);
+  obj->servant = NULL;
 
-   servant_destroy_func((PortableServer_Servant) servant, &ev);
-   g_free(servant);
-   CORBA_exception_free(&ev);
+  servant_destroy_func((PortableServer_Servant) servant, &ev);
+  g_free(servant);
+  CORBA_exception_free(&ev);
 }
 
 static GnomeObject *
 impl_Nautilus_View__create(NautilusViewClient *view, CORBA_Environment * ev)
 {
-   GnomeObject *retval;
-   impl_POA_Nautilus_View *newservant;
-   void (*servant_init_func)(PortableServer_Servant servant, CORBA_Environment *ev);
-   NautilusViewClientClass *view_class = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
+  GnomeObject *retval;
+  impl_POA_Nautilus_View *newservant;
+  void (*servant_init_func)(PortableServer_Servant servant, CORBA_Environment *ev);
+  NautilusViewClientClass *view_class = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
 
-   servant_init_func = view_class->servant_init_func;
-   newservant = g_new0(impl_POA_Nautilus_View, 1);
-   newservant->servant.vepv = view_class->vepv;
-   newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv(FALSE);
-   newservant->view = view;
-   servant_init_func((PortableServer_Servant) newservant, ev);
+  servant_init_func = view_class->servant_init_func;
+  newservant = g_new0(impl_POA_Nautilus_View, 1);
+  newservant->servant.vepv = view_class->vepv;
+  if(!newservant->servant.vepv->GNOME_Unknown_epv)
+    newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
+  newservant->view = view;
+  servant_init_func((PortableServer_Servant) newservant, ev);
 
-   retval = gnome_object_new_from_servant(newservant);
+  retval = gnome_object_new_from_servant(newservant);
 
-   gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_View__destroy), newservant);
+  gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_View__destroy), newservant);
 
-   return retval;
+  return retval;
 }
 
 static void nautilus_view_client_init       (NautilusViewClient      *view);
 static void nautilus_view_client_destroy       (NautilusViewClient      *view);
 static void nautilus_view_client_class_init (NautilusViewClientClass *klass);
 static void nautilus_view_client_set_arg (GtkObject      *object,
-				    GtkArg         *arg,
-				    guint	      arg_id);
+					  GtkArg         *arg,
+					  guint	      arg_id);
 static void nautilus_view_client_get_arg (GtkObject      *object,
-				    GtkArg         *arg,
-				    guint	      arg_id);
+					  GtkArg         *arg,
+					  guint	      arg_id);
 static void nautilus_view_client_size_request (GtkWidget        *widget,
-					GtkRequisition   *requisition);
+					       GtkRequisition   *requisition);
 static void nautilus_view_client_size_allocate (GtkWidget        *widget,
-					  GtkAllocation    *allocation);
+						GtkAllocation    *allocation);
 
 GtkType
 nautilus_view_client_get_type (void)
 {
-	static GtkType view_client_type = 0;
+  static GtkType view_client_type = 0;
 
-	if (!view_client_type)	{
-		const GtkTypeInfo view_client_info = {
-			"NautilusViewClient",
-			sizeof (NautilusViewClient),
-			sizeof (NautilusViewClientClass),
-			(GtkClassInitFunc) nautilus_view_client_class_init,
-			(GtkObjectInitFunc) nautilus_view_client_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
+  if (!view_client_type)
+    {
+      const GtkTypeInfo view_client_info =
+      {
+	"NautilusViewClient",
+	sizeof (NautilusViewClient),
+	sizeof (NautilusViewClientClass),
+	(GtkClassInitFunc) nautilus_view_client_class_init,
+	(GtkObjectInitFunc) nautilus_view_client_init,
+	/* reserved_1 */ NULL,
+	/* reserved_2 */ NULL,
+	(GtkClassInitFunc) NULL,
+      };
 
-		view_client_type = gtk_type_unique (gtk_bin_get_type(), &view_client_info);
-	}
+      view_client_type = gtk_type_unique (gtk_bin_get_type(), &view_client_info);
+    }
 	
-	return view_client_type;
+  return view_client_type;
 }
 
 #if 0
@@ -208,13 +211,13 @@ gtk_marshal_NONE__BOXED_OBJECT_BOXED (GtkObject * object,
 				      gpointer func_data,
 				      GtkArg * args)
 {
-	GtkSignal_NONE__BOXED_OBJECT_BOXED rfunc;
-	rfunc = (GtkSignal_NONE__BOXED_OBJECT_BOXED) func;
-	(*rfunc) (object,
-		  GTK_VALUE_BOXED (args[0]),
-		  GTK_VALUE_OBJECT (args[1]),
-		  GTK_VALUE_BOXED (args[2]),
-		  func_data);
+  GtkSignal_NONE__BOXED_OBJECT_BOXED rfunc;
+  rfunc = (GtkSignal_NONE__BOXED_OBJECT_BOXED) func;
+  (*rfunc) (object,
+	    GTK_VALUE_BOXED (args[0]),
+	    GTK_VALUE_OBJECT (args[1]),
+	    GTK_VALUE_BOXED (args[2]),
+	    func_data);
 }
 #endif
 
@@ -249,29 +252,29 @@ nautilus_view_client_class_init (NautilusViewClientClass *klass)
 						   gtk_marshal_NONE__BOXED,
 						   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
   klass->view_client_signals[i++] = gtk_signal_new("load_state",
-					    GTK_RUN_LAST,
+						   GTK_RUN_LAST,
 						   object_class->type,
 						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, load_state),
 						   gtk_marshal_NONE__STRING,
 						   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
   klass->view_client_signals[i++] = gtk_signal_new("save_state",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClientClass, save_state),
-					    gtk_marshal_NONE__STRING,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+						   GTK_RUN_LAST,
+						   object_class->type,
+						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, save_state),
+						   gtk_marshal_NONE__STRING,
+						   GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
   klass->view_client_signals[i++] = gtk_signal_new("show_properties",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClientClass, show_properties),
-					    gtk_marshal_NONE__NONE,
-					    GTK_TYPE_NONE, 0);
+						   GTK_RUN_LAST,
+						   object_class->type,
+						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, show_properties),
+						   gtk_marshal_NONE__NONE,
+						   GTK_TYPE_NONE, 0);
   klass->view_client_signals[i++] = gtk_signal_new("notify_selection_change",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClientClass, notify_selection_change),
-					    gtk_marshal_NONE__BOXED,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+						   GTK_RUN_LAST,
+						   object_class->type,
+						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, notify_selection_change),
+						   gtk_marshal_NONE__BOXED,
+						   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
   gtk_object_class_add_signals (object_class, klass->view_client_signals, i);
 }
 
@@ -316,7 +319,7 @@ nautilus_view_client_destroy (NautilusViewClient *view)
 
 void
 nautilus_view_client_request_location_change(NautilusViewClient *view,
-				      Nautilus_NavigationRequestInfo *loc)
+					     Nautilus_NavigationRequestInfo *loc)
 {
   CORBA_Environment ev;
 
@@ -400,7 +403,7 @@ nautilus_view_client_request_status_change    (NautilusViewClient        *view,
 
 static void
 nautilus_view_client_size_request (GtkWidget      *widget,
-			     GtkRequisition *requisition)
+				   GtkRequisition *requisition)
 {
   GtkBin *bin;
 
@@ -422,7 +425,7 @@ nautilus_view_client_size_request (GtkWidget      *widget,
 
 static void
 nautilus_view_client_size_allocate (GtkWidget     *widget,
-			      GtkAllocation *allocation)
+				    GtkAllocation *allocation)
 {
   GtkBin *bin;
   GtkAllocation child_allocation;

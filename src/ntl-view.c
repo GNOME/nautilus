@@ -48,6 +48,9 @@ typedef struct {
   NautilusView *view;
 } impl_POA_Nautilus_ViewFrame;
 
+static Nautilus_ViewWindow
+impl_Nautilus_ViewFrame__get_main_window(impl_POA_Nautilus_ViewFrame *servant,
+                                         CORBA_Environment *ev);
 static void
 impl_Nautilus_ViewFrame_request_location_change(impl_POA_Nautilus_ViewFrame * servant,
 						Nautilus_NavigationRequestInfo * navinfo,
@@ -65,6 +68,7 @@ impl_Nautilus_ViewFrame_request_status_change(impl_POA_Nautilus_ViewFrame * serv
 POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
    NULL,			/* _private */
+   (void(*))&impl_Nautilus_ViewFrame__get_main_window,
    (void(*))&impl_Nautilus_ViewFrame_request_location_change,
    (void(*))&impl_Nautilus_ViewFrame_request_selection_change,
    (void(*))&impl_Nautilus_ViewFrame_request_status_change
@@ -113,7 +117,8 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
    klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(view)->klass);
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
    newservant->servant.vepv = klass->vepv;
-   newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv(FALSE);
+   if(!newservant->servant.vepv->GNOME_Unknown_epv)
+     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
    newservant->view = view;
    servant_init_func = klass->servant_init_func;
    servant_init_func((PortableServer_Servant) newservant, ev);
@@ -123,6 +128,13 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
    gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewFrame__destroy), newservant);
 
    return retval;
+}
+
+static Nautilus_ViewWindow
+impl_Nautilus_ViewFrame__get_main_window(impl_POA_Nautilus_ViewFrame *servant,
+                                         CORBA_Environment *ev)
+{
+  return CORBA_Object_duplicate(gnome_object_corba_objref(NAUTILUS_WINDOW(servant->view->main_window)->ntl_viewwindow), ev);
 }
 
 static void
@@ -429,7 +441,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
       gtk_container_remove(GTK_CONTAINER(view), view->client); view->client = NULL;
     }
 
-  view->client = gnome_bonobo_widget_new_control((char *)iid);
+  view->client = gnome_bonobo_widget_new_subdoc((char *)iid, NAUTILUS_WINDOW(view->main_window)->uih);
   g_return_if_fail(view->client);
   CORBA_exception_init(&ev);
   CORBA_Object_release(view->view_client, &ev);

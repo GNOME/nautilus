@@ -88,7 +88,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
 }
 
 
-static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
+static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *client, *clist, *wtmp;
   GnomeObject *ctl;
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new("ntl_history_view_factory", make_obj, NULL);
+  factory = gnome_generic_factory_new_multi("ntl_history_view_factory", make_obj, NULL);
 
   gtk_main();
 

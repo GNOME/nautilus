@@ -26,6 +26,8 @@
 #endif
 
 #include <gnome.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
 #include "gnome-icon-container-private.h"
 #include "gnome-icon-container-dnd.h"
@@ -165,8 +167,8 @@ icon_new (GnomeIconContainer *container,
 }
 
 static GnomeIconContainerIcon *
-icon_new_imlib (GnomeIconContainer *container,
-		GdkImlibImage *image,
+icon_new_pixbuf (GnomeIconContainer *container,
+		GdkPixbuf *image,
 		const gchar *text,
 		gpointer data)
 {
@@ -179,8 +181,8 @@ icon_new_imlib (GnomeIconContainer *container,
 
 	new->image_item
 		= gnome_canvas_item_new (new->item,
-					 gnome_canvas_image_get_type (),
-					 "image", image,
+					 gnome_canvas_pixbuf_get_type (),
+					 "pixbuf", image,
 					 "x", (gdouble) 0,
 					 "y", (gdouble) 0,
 					 NULL);
@@ -2362,8 +2364,8 @@ gnome_icon_container_new (void)
 {
 	GtkWidget *new;
 
-	gtk_widget_push_visual (gdk_imlib_get_visual ());
-	gtk_widget_push_colormap (gdk_imlib_get_colormap ());
+	gtk_widget_push_visual (gdk_rgb_get_visual ());
+	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 
 	new = gtk_type_new (gnome_icon_container_get_type ());
 
@@ -2460,8 +2462,8 @@ setup_icon_in_container (GnomeIconContainer *container,
 }
 
 void
-gnome_icon_container_add_imlib (GnomeIconContainer *container,
-				GdkImlibImage *image,
+gnome_icon_container_add_pixbuf (GnomeIconContainer *container,
+				GdkPixbuf *image,
 				const gchar *text,
 				gint x, gint y,
 				gpointer data)
@@ -2476,7 +2478,7 @@ gnome_icon_container_add_imlib (GnomeIconContainer *container,
 
 	priv = container->priv;
 
-	new_icon = icon_new_imlib (container, image, text, data);
+	new_icon = icon_new_pixbuf (container, image, text, data);
 	icon_position (new_icon, container, x, y);
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
@@ -2496,7 +2498,7 @@ gnome_icon_container_add_imlib (GnomeIconContainer *container,
 }
 
 /**
- * gnome_icon_container_add_imlib_auto:
+ * gnome_icon_container_add_pixbuf_auto:
  * @container: A GnomeIconContainer
  * @image: Image of the icon to add
  * @text: Caption
@@ -2506,8 +2508,8 @@ gnome_icon_container_add_imlib (GnomeIconContainer *container,
  * empty spot available.
  **/
 void
-gnome_icon_container_add_imlib_auto (GnomeIconContainer *container,
-				     GdkImlibImage *image,
+gnome_icon_container_add_pixbuf_auto (GnomeIconContainer *container,
+				     GdkPixbuf *image,
 				     const gchar *text,
 				     gpointer data)
 {
@@ -2519,7 +2521,7 @@ gnome_icon_container_add_imlib_auto (GnomeIconContainer *container,
 	g_return_if_fail (image != NULL);
 	g_return_if_fail (text != NULL);
 
-	new_icon = icon_new_imlib (container, image, text, data);
+	new_icon = icon_new_pixbuf (container, image, text, data);
 
 	icon_grid_add_auto (container->priv->grid, new_icon, &grid_x, &grid_y);
 
@@ -2532,7 +2534,7 @@ gnome_icon_container_add_imlib_auto (GnomeIconContainer *container,
 }
 
 /**
- * gnome_icon_container_add_imlib_with_layout:
+ * gnome_icon_container_add_pixbuf_with_layout:
  * @container: A GnomeIconContainer
  * @image: Image of the icon to add
  * @text: Caption
@@ -2546,8 +2548,8 @@ gnome_icon_container_add_imlib_auto (GnomeIconContainer *container,
  * has not been added); %TRUE otherwise.
  **/
 gboolean
-gnome_icon_container_add_imlib_with_layout (GnomeIconContainer *container,
-					    GdkImlibImage *image,
+gnome_icon_container_add_pixbuf_with_layout (GnomeIconContainer *container,
+					    GdkPixbuf *image,
 					    const gchar *text,
 					    gpointer data,
 					    const GnomeIconContainerLayout *layout)
@@ -2560,7 +2562,7 @@ gnome_icon_container_add_imlib_with_layout (GnomeIconContainer *container,
 	g_return_val_if_fail (layout != NULL, FALSE);
 
 	if (gnome_icon_container_layout_get_position (layout, text, &x, &y)) {
-		gnome_icon_container_add_imlib (container, image,
+		gnome_icon_container_add_pixbuf (container, image,
 						text, x, y, data);
 		return TRUE;
 	} else {

@@ -31,5 +31,6 @@
 #include <libnautilus/nautilus.h>
 #include <libnautilus/ntl-view-client.h>
 #include <libnautilus/ntl-meta-view-client.h>
+#include <libnautilus/ntl-content-view-client.h>
 
 #endif

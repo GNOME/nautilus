@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* explorer-directory-view.h
+/* fm-directory-view.h
  *
  * Copyright (C) 1999  Free Software Foundaton
  *
@@ -20,51 +20,46 @@
  *
  * Author: Ettore Perazzoli
  */
-#ifndef __EXPLORER_DIRECTORY_VIEW_H__
-#define __EXPLORER_DIRECTORY_VIEW_H__
+#ifndef __FM_DIRECTORY_VIEW_H__
+#define __FM_DIRECTORY_VIEW_H__
 
 #include <libgnomevfs/gnome-vfs.h>
 
-#include "gnome-icon-container.h"
-#include "gtkscrollframe.h"
+#include <libnautilus/libnautilus.h>
+#include <libnautilus/gnome-icon-container.h>
+#include <libnautilus/gtkscrollframe.h>
 
 
-enum _ExplorerDirectoryViewMode {
-	EXPLORER_DIRECTORY_VIEW_MODE_NONE, /* Internal */
-	EXPLORER_DIRECTORY_VIEW_MODE_ICONS,
-	EXPLORER_DIRECTORY_VIEW_MODE_SMALLICONS,
-	EXPLORER_DIRECTORY_VIEW_MODE_DETAILED,
-	EXPLORER_DIRECTORY_VIEW_MODE_CUSTOM
+enum _FMDirectoryViewMode {
+	FM_DIRECTORY_VIEW_MODE_NONE, /* Internal */
+	FM_DIRECTORY_VIEW_MODE_ICONS,
+	FM_DIRECTORY_VIEW_MODE_SMALLICONS,
+	FM_DIRECTORY_VIEW_MODE_DETAILED,
+	FM_DIRECTORY_VIEW_MODE_CUSTOM
 };
-typedef enum   _ExplorerDirectoryViewMode  ExplorerDirectoryViewMode;
+typedef enum   _FMDirectoryViewMode  FMDirectoryViewMode;
 
-enum _ExplorerDirectoryViewSortType {
-	EXPLORER_DIRECTORY_VIEW_SORT_BYNAME,
-	EXPLORER_DIRECTORY_VIEW_SORT_BYSIZE,
-	EXPLORER_DIRECTORY_VIEW_SORT_BYTYPE
+enum _FMDirectoryViewSortType {
+	FM_DIRECTORY_VIEW_SORT_BYNAME,
+	FM_DIRECTORY_VIEW_SORT_BYSIZE,
+	FM_DIRECTORY_VIEW_SORT_BYTYPE
 };
-typedef enum _ExplorerDirectoryViewSortType ExplorerDirectoryViewSortType;
+typedef enum _FMDirectoryViewSortType FMDirectoryViewSortType;
 
 
-typedef struct _ExplorerDirectoryView      ExplorerDirectoryView;
-typedef struct _ExplorerDirectoryViewClass ExplorerDirectoryViewClass;
+typedef struct _FMDirectoryView      FMDirectoryView;
+typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 
-#include "explorer-application.h"
+#define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
+#define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
+#define FM_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
+#define FM_IS_DIRECTORY_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
+#define FM_IS_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
 
-
-#define EXPLORER_TYPE_DIRECTORY_VIEW			(explorer_directory_view_get_type ())
-#define EXPLORER_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), EXPLORER_TYPE_DIRECTORY_VIEW, ExplorerDirectoryView))
-#define EXPLORER_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), EXPLORER_TYPE_DIRECTORY_VIEW, ExplorerDirectoryViewClass))
-#define EXPLORER_IS_DIRECTORY_VIEW(obj)			(GTK_CHECK_TYPE ((obj), EXPLORER_TYPE_DIRECTORY_VIEW))
-#define EXPLORER_IS_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), EXPLORER_TYPE_DIRECTORY_VIEW))
+struct _FMDirectoryView {
+	FMDirectoryViewMode mode;
 
-struct _ExplorerDirectoryView {
-	GtkScrollFrame scroll_frame;
-
-	ExplorerApplication *application;
-	GnomeAppBar *app_bar;
-
-	ExplorerDirectoryViewMode mode;
+	GtkWidget *scroll_frame;
 
 	GnomeVFSDirectoryList *directory_list;
 	GnomeVFSDirectoryListPosition current_position;
@@ -83,49 +78,36 @@ struct _ExplorerDirectoryView {
 	gint display_selection_idle_id;
 };
 
-struct _ExplorerDirectoryViewClass {
-	GtkScrollFrameClass parent_class;
-
-	/* Signals go here */
-	void (*open_failed)	(ExplorerDirectoryView *directory_view,
-				 GnomeVFSResult result);
-	void (*open_done)	(ExplorerDirectoryView *directory_view);
-	void (*load_failed)	(ExplorerDirectoryView *directory_view,
-				 GnomeVFSResult result);
-	void (*load_done)	(ExplorerDirectoryView *directory_view);
-	void (*activate_uri)	(ExplorerDirectoryView *directory_view,
-				 const GnomeVFSURI *uri,
-				 const gchar *mime_type);
+struct _FMDirectoryViewClass {
+	NautilusContentViewClientClass parent_class;
 };
 
 
-gboolean   explorer_directory_view_is_valid_mode
-					    (ExplorerDirectoryViewMode mode);
+gboolean   fm_directory_view_is_valid_mode
+					    (FMDirectoryViewMode mode);
 
-GtkType    explorer_directory_view_get_type (void);
-GtkWidget *explorer_directory_view_new      (ExplorerApplication *application,
-					     GnomeAppBar *app_bar,
-					     ExplorerDirectoryViewMode mode);
-void	   explorer_directory_view_set_mode (ExplorerDirectoryView *view,
-					     ExplorerDirectoryViewMode mode);
-ExplorerDirectoryViewMode
-	   explorer_directory_view_get_mode (ExplorerDirectoryView *view);
-void       explorer_directory_view_load_uri (ExplorerDirectoryView *view,
-					     const GnomeVFSURI *uri);
-void	   explorer_directory_view_stop	    (ExplorerDirectoryView *view);
+GtkType    fm_directory_view_get_type (void);
+GtkWidget *fm_directory_view_new      (void);
+void	   fm_directory_view_set_mode (FMDirectoryView *view,
+				       FMDirectoryViewMode mode);
+FMDirectoryViewMode
+	   fm_directory_view_get_mode (FMDirectoryView *view);
+void       fm_directory_view_load_uri (FMDirectoryView *view,
+				       const char *uri);
+void	   fm_directory_view_stop      (FMDirectoryView *view);
 
 GnomeIconContainerLayout *
-	   explorer_directory_view_get_icon_layout
-				            (ExplorerDirectoryView *view);
-void	   explorer_directory_view_set_icon_layout
-					    (ExplorerDirectoryView *view,
+	   fm_directory_view_get_icon_layout
+				            (FMDirectoryView *view);
+void	   fm_directory_view_set_icon_layout
+					    (FMDirectoryView *view,
 					     const GnomeIconContainerLayout
-					            *icon_layout);
+					     *icon_layout);
 
-void	   explorer_directory_view_line_up_icons
-					    (ExplorerDirectoryView *view);
+void	   fm_directory_view_line_up_icons
+					    (FMDirectoryView *view);
 
-void	   explorer_directory_view_sort     (ExplorerDirectoryView *view,
-					     ExplorerDirectoryViewSortType sort_type);
+void	   fm_directory_view_sort     (FMDirectoryView *view,
+				       FMDirectoryViewSortType sort_type);
 
-#endif /* __EXPLORER_DIRECTORY_VIEW_H__ */
+#endif /* __FM_DIRECTORY_VIEW_H__ */

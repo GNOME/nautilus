@@ -55,24 +55,26 @@ static void nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *k
 GtkType
 nautilus_meta_view_client_get_type (void)
 {
-	static GtkType view_client_type = 0;
+  static GtkType view_client_type = 0;
 
-	if (!view_client_type)	{
-		const GtkTypeInfo view_client_info = {
-			"NautilusMetaViewClient",
-			sizeof (NautilusMetaViewClient),
-			sizeof (NautilusMetaViewClientClass),
-			(GtkClassInitFunc) nautilus_meta_view_client_class_init,
-			(GtkObjectInitFunc) nautilus_meta_view_client_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
+  if (!view_client_type)
+    {
+      const GtkTypeInfo view_client_info =
+      {
+	"NautilusMetaViewClient",
+	sizeof (NautilusMetaViewClient),
+	sizeof (NautilusMetaViewClientClass),
+	(GtkClassInitFunc) nautilus_meta_view_client_class_init,
+	(GtkObjectInitFunc) nautilus_meta_view_client_init,
+	/* reserved_1 */ NULL,
+	/* reserved_2 */ NULL,
+	(GtkClassInitFunc) NULL,
+      };
 
-		view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
-	}
+      view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
+    }
 	
-	return view_client_type;
+  return view_client_type;
 }
 
 static void
@@ -105,8 +107,9 @@ void
 nautilus_meta_view_set_label(NautilusMetaViewClient *mvc, const char *label)
 {
   GnomeObject *ctl;
+  GnomePropertyBag *bag;
 
-  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(client));
+  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(mvc));
   /* set description */
   bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
   gnome_property_bag_add(bag, "label", "string", label, label, _("Label"),

@@ -42,7 +42,7 @@ typedef struct _ExplorerLocationBar ExplorerLocationBar;
 
 struct _ExplorerLocationBarClass {
 	GtkHBoxClass parent_class;
-	void         (*location_changed) (ExplorerLocationBar *,
+	void         (*location_changed) (ExplorerLocationBar *location_bar,
 					  const char *uri_string);
 };
 typedef struct _ExplorerLocationBarClass ExplorerLocationBarClass;

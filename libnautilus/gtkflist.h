@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* File list widget for the Midnight Commander
  *
  * Copyright (C) 1999 The Free Software Foundation

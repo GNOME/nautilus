@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* explorer-directory-view.c
+/* fm-directory-view.c
  *
  * Copyright (C) 1999  Free Software Foundaton
  *
@@ -27,12 +27,15 @@
 
 #include <gnome.h>
 
-#include "gnome-icon-container.h"
-#include "gtkflist.h"
+#define FM_DEBUG(x)
 
-#include "explorer-debug.h"
-#include "explorer-directory-view.h"
-#include "explorer-icon-manager.h"
+#include <libnautilus/libnautilus.h>
+#include <libnautilus/gnome-icon-container.h>
+#include <libnautilus/gtkflist.h>
+
+#include "fm-directory-view.h"
+#include "fm-icon-cache.h"
+#include "fm-public-api.h"
 
 
 enum {
@@ -46,19 +49,21 @@ enum {
 
 #define DISPLAY_TIMEOUT_INTERVAL 500
 
-
-static GtkScrollFrameClass *parent_class = NULL;
+
+static NautilusViewClientClass *parent_class = NULL;
 static guint signals[LAST_SIGNAL] = { 0 };
 
-
+static FMIconCache *icm = NULL;
+
 static void
-display_selection_info (ExplorerDirectoryView *view,
+display_selection_info (FMDirectoryView *view,
 			GList *selection)
 {
 	GnomeVFSFileSize size;
 	guint count;
-	gchar *count_string, *size_string, *msg;
+	gchar *size_string, msg[32];
 	GList *p;
+	Nautilus_StatusRequestInfo sri;
 
 	count = 0;
 	size = 0;
@@ -71,7 +76,6 @@ display_selection_info (ExplorerDirectoryView *view,
 	}
 
 	if (count == 0) {
-		gnome_appbar_set_status (view->app_bar, "");
 		return;
 	}
 
@@ -103,38 +107,33 @@ display_selection_info (ExplorerDirectoryView *view,
 		}
 	}
 
-	if (count == 1)
-		count_string = g_strdup (_("1 file."));
-	else
-		count_string = g_strdup_printf (_("%d files."), count);
+	g_snprintf (msg, sizeof(msg), _("%d %s selected in %s"),
+		    count, (count==1)?_("files"):_("file"), size_string);
+	memset(&sri, 0, sizeof(sri));
+	sri.status_string = msg;
+	nautilus_view_client_request_status_change(NAUTILUS_VIEW_CLIENT(view), &sri);
 
-	msg = g_strdup_printf (_("%s selected in %s"),
-			       size_string, count_string);
-	gnome_appbar_set_status (view->app_bar, msg);
-
-	g_free (count_string);
 	g_free (size_string);
-	g_free (msg);
 }
 
 
 /* GnomeIconContainer handling.  */
 
 static gboolean
-mode_uses_icon_container (ExplorerDirectoryViewMode mode)
+mode_uses_icon_container (FMDirectoryViewMode mode)
 {
-	return (mode == EXPLORER_DIRECTORY_VIEW_MODE_ICONS
-		|| mode == EXPLORER_DIRECTORY_VIEW_MODE_SMALLICONS);
+	return (mode == FM_DIRECTORY_VIEW_MODE_ICONS
+		|| mode == FM_DIRECTORY_VIEW_MODE_SMALLICONS);
 }
 
 static gboolean
-view_has_icon_container (ExplorerDirectoryView *view)
+view_has_icon_container (FMDirectoryView *view)
 {
 	return mode_uses_icon_container (view->mode);
 }
 
 static GnomeIconContainer *
-get_icon_container (ExplorerDirectoryView *view)
+get_icon_container (FMDirectoryView *view)
 {
 	GtkBin *bin;
 
@@ -151,13 +150,13 @@ get_icon_container (ExplorerDirectoryView *view)
 static gint
 display_icon_container_selection_info_idle_cb (gpointer data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 	GnomeIconContainer *icon_container;
 	GList *selection;
 
 	puts (__FUNCTION__);
 
-	view = EXPLORER_DIRECTORY_VIEW (data);
+	view = FM_DIRECTORY_VIEW (data);
 	icon_container = get_icon_container (view);
 
 	selection = gnome_icon_container_get_selection (icon_container);
@@ -173,9 +172,9 @@ static void
 icon_container_selection_changed_cb (GnomeIconContainer *container,
 				     gpointer data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 
-	view = EXPLORER_DIRECTORY_VIEW (data);
+	view = FM_DIRECTORY_VIEW (data);
 	if (view->display_selection_idle_id == 0)
 		view->display_selection_idle_id = gtk_idle_add
 			(display_icon_container_selection_info_idle_cb,
@@ -188,12 +187,12 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 			    gpointer icon_data,
 			    gpointer data)
 {
-	ExplorerDirectoryView *directory_view;
+	FMDirectoryView *directory_view;
 	GnomeVFSURI *new_uri;
 	GnomeVFSFileInfo *info;
 
 	info = (GnomeVFSFileInfo *) icon_data;
-	directory_view = EXPLORER_DIRECTORY_VIEW (data);
+	directory_view = FM_DIRECTORY_VIEW (data);
 
 	new_uri = gnome_vfs_uri_append_path (directory_view->uri, name);
 	gtk_signal_emit (GTK_OBJECT (directory_view),
@@ -202,25 +201,25 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 }
 
 static void
-add_to_icon_container (ExplorerDirectoryView *view,
-		       ExplorerIconManager *icon_manager,
+add_to_icon_container (FMDirectoryView *view,
+		       FMIconCache *icon_manager,
 		       GnomeIconContainer *icon_container,
 		       GnomeVFSFileInfo *info,
 		       gboolean with_layout)
 {
-	GdkImlibImage *image;
+	GdkPixbuf *image;
 
-	image = explorer_icon_manager_get_icon_for_info (icon_manager, info);
+	image = fm_icon_cache_get_icon (icon_manager, info);
 
 	if (! with_layout || view->icon_layout == NULL) {
-		gnome_icon_container_add_imlib_auto (icon_container,
+		gnome_icon_container_add_pixbuf_auto (icon_container,
 						     image,
 						     info->name,
 						     info);
 	} else {
 		gboolean result;
 
-		result = gnome_icon_container_add_imlib_with_layout
+		result = gnome_icon_container_add_pixbuf_with_layout
 			(icon_container, image, info->name, info,
 			 view->icon_layout);
 		if (! result)
@@ -230,17 +229,16 @@ add_to_icon_container (ExplorerDirectoryView *view,
 }
 
 static void
-load_icon_container (ExplorerDirectoryView *view,
+load_icon_container (FMDirectoryView *view,
 		     GnomeIconContainer *icon_container)
 {
 	gnome_icon_container_clear (icon_container);
 
 	if (view->directory_list != NULL) {
 		GnomeVFSDirectoryListPosition *position;
-		ExplorerIconManager *icon_manager;
 
-		icon_manager = explorer_application_get_icon_manager
-			(view->application);
+		if (!icm)
+			icm = fm_icon_cache_new(NULL);
 
 		position = gnome_vfs_directory_list_get_first_position
 			(view->directory_list);
@@ -250,7 +248,7 @@ load_icon_container (ExplorerDirectoryView *view,
 
 			info = gnome_vfs_directory_list_get
 				(view->directory_list, position);
-			add_to_icon_container (view, icon_manager,
+			add_to_icon_container (view, icm,
 					       icon_container, info, TRUE);
 
 			position = gnome_vfs_directory_list_position_next
@@ -261,7 +259,7 @@ load_icon_container (ExplorerDirectoryView *view,
 }
 
 static GnomeIconContainer *
-create_icon_container (ExplorerDirectoryView *view)
+create_icon_container (FMDirectoryView *view)
 {
 	GnomeIconContainer *icon_container;
 
@@ -285,8 +283,8 @@ create_icon_container (ExplorerDirectoryView *view)
 }
 
 static void
-setup_icon_container (ExplorerDirectoryView *view,
-		      ExplorerDirectoryViewMode mode)
+setup_icon_container (FMDirectoryView *view,
+		      FMDirectoryViewMode mode)
 {
 	GnomeIconContainer *icon_container;
 
@@ -303,7 +301,7 @@ setup_icon_container (ExplorerDirectoryView *view,
 		icon_container = get_icon_container (view);
 	}
 
-	if (mode == EXPLORER_DIRECTORY_VIEW_MODE_ICONS)
+	if (mode == FM_DIRECTORY_VIEW_MODE_ICONS)
 		gnome_icon_container_set_icon_mode
 			(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
 	else
@@ -315,20 +313,20 @@ setup_icon_container (ExplorerDirectoryView *view,
 /* GtkFList handling.  */
 
 static gboolean
-mode_uses_flist (ExplorerDirectoryViewMode mode)
+mode_uses_flist (FMDirectoryViewMode mode)
 {
-	return (mode == EXPLORER_DIRECTORY_VIEW_MODE_DETAILED
-		|| mode == EXPLORER_DIRECTORY_VIEW_MODE_CUSTOM);
+	return (mode == FM_DIRECTORY_VIEW_MODE_DETAILED
+		|| mode == FM_DIRECTORY_VIEW_MODE_CUSTOM);
 }
 
 static gboolean
-view_has_flist (ExplorerDirectoryView *view)
+view_has_flist (FMDirectoryView *view)
 {
 	return mode_uses_flist (view->mode);
 }
 
 static GtkFList *
-get_flist (ExplorerDirectoryView *view)
+get_flist (FMDirectoryView *view)
 {
 	GtkBin *bin;
 
@@ -345,11 +343,11 @@ get_flist (ExplorerDirectoryView *view)
 static gint
 display_flist_selection_info_idle_cb (gpointer data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 	GtkFList *flist;
 	GList *selection;
 
-	view = EXPLORER_DIRECTORY_VIEW (data);
+	view = FM_DIRECTORY_VIEW (data);
 	flist = get_flist (view);
 
 	selection = gtk_flist_get_selection (flist);
@@ -365,9 +363,9 @@ static void
 flist_selection_changed_cb (GtkFList *flist,
 			    gpointer data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 
-	view = EXPLORER_DIRECTORY_VIEW (data);
+	view = FM_DIRECTORY_VIEW (data);
 	if (view->display_selection_idle_id == 0)
 		view->display_selection_idle_id
 			= gtk_idle_add (display_flist_selection_info_idle_cb,
@@ -379,12 +377,12 @@ flist_activate_cb (GtkFList *flist,
 		   gpointer entry_data,
 		   gpointer data)
 {
-	ExplorerDirectoryView *directory_view;
+	FMDirectoryView *directory_view;
 	GnomeVFSURI *new_uri;
 	GnomeVFSFileInfo *info;
 
 	info = (GnomeVFSFileInfo *) entry_data;
-	directory_view = EXPLORER_DIRECTORY_VIEW (data);
+	directory_view = FM_DIRECTORY_VIEW (data);
 
 	new_uri = gnome_vfs_uri_append_path (directory_view->uri, info->name);
 	gtk_signal_emit (GTK_OBJECT (directory_view),
@@ -393,7 +391,7 @@ flist_activate_cb (GtkFList *flist,
 }
 
 static void
-add_to_flist (ExplorerIconManager *icon_manager,
+add_to_flist (FMIconCache *icon_manager,
 	      GtkFList *flist,
 	      GnomeVFSFileInfo *info)
 {
@@ -409,7 +407,7 @@ add_to_flist (ExplorerIconManager *icon_manager,
 }
 
 static GtkFList *
-create_flist (ExplorerDirectoryView *view)
+create_flist (FMDirectoryView *view)
 {
 	GtkFList *flist;
 	gchar *titles[] = {
@@ -436,10 +434,10 @@ create_flist (ExplorerDirectoryView *view)
 
 	if (view->directory_list != NULL) {
 		GnomeVFSDirectoryListPosition *position;
-		ExplorerIconManager *icon_manager;
+		FMIconCache *icon_manager;
 
-		icon_manager = explorer_application_get_icon_manager
-			(view->application);
+		if(!icm)
+			icm = icon_manager = fm_icon_cache_new(NULL);
 
 		position = gnome_vfs_directory_list_get_first_position
 			(view->directory_list);
@@ -464,8 +462,8 @@ create_flist (ExplorerDirectoryView *view)
 }
 
 static void
-setup_flist (ExplorerDirectoryView *view,
-		      ExplorerDirectoryViewMode mode)
+setup_flist (FMDirectoryView *view,
+		      FMDirectoryViewMode mode)
 {
 	GtkFList *flist;
 
@@ -485,56 +483,21 @@ setup_flist (ExplorerDirectoryView *view,
 /* Signals.  */
 
 static void
-real_open_failed (ExplorerDirectoryView *directory_view,
-		  GnomeVFSResult result)
+real_location_change(NautilusViewClient *directory_view, Nautilus_NavigationInfo *nav_context)
 {
-	g_return_if_fail (directory_view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (directory_view));
+	fm_directory_view_load_uri(FM_DIRECTORY_VIEW(directory_view), nav_context->requested_uri);
 }
 
-static void
-real_open_done (ExplorerDirectoryView *directory_view)
-{
-	g_return_if_fail (directory_view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (directory_view));
-}
-
-static void
-real_load_failed (ExplorerDirectoryView *directory_view,
-		  GnomeVFSResult result)
-{
-	g_return_if_fail (directory_view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (directory_view));
-}
-
-static void
-real_load_done (ExplorerDirectoryView *directory_view)
-{
-	g_return_if_fail (directory_view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (directory_view));
-}
-
-static void
-real_activate_uri (ExplorerDirectoryView *directory_view,
-		   const GnomeVFSURI *uri,
-		   const gchar *mime_type)
-{
-	g_return_if_fail (directory_view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (directory_view));
-	g_return_if_fail (uri != NULL);
-}
-
-
 /* GtkObject methods.  */
 
 static void
 destroy (GtkObject *object)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 
-	EXPLORER_DEBUG (("Entering function."));
+	FM_DEBUG (("Entering function."));
 
-	view = EXPLORER_DIRECTORY_VIEW (object);
+	view = FM_DIRECTORY_VIEW (object);
 
 	if (view->directory_list != NULL)
 		gnome_vfs_directory_list_destroy (view->directory_list);
@@ -543,7 +506,7 @@ destroy (GtkObject *object)
 		gnome_vfs_uri_unref (view->uri);
 
 	if (view->vfs_async_handle != NULL) {
-		EXPLORER_DEBUG (("Cancelling VFS operation."));
+		FM_DEBUG (("Cancelling VFS operation."));
 		gnome_vfs_async_cancel (view->vfs_async_handle);
 	}
 
@@ -559,79 +522,22 @@ destroy (GtkObject *object)
 
 
 static void
-class_init (ExplorerDirectoryViewClass *class)
+class_init (FMDirectoryViewClass *class)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
 
-	parent_class = gtk_type_class (gtk_scroll_frame_get_type ());
-
-	signals[OPEN_FAILED] = 
-		gtk_signal_new ("open_failed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ExplorerDirectoryViewClass,
-						   open_failed),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 0,
-				GTK_TYPE_INT);
-	signals[OPEN_DONE] = 
-		gtk_signal_new ("open_done",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ExplorerDirectoryViewClass,
-						   open_done),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-	signals[LOAD_FAILED] = 
-		gtk_signal_new ("load_failed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ExplorerDirectoryViewClass,
-						   load_failed),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 0,
-				GTK_TYPE_INT);
-	signals[LOAD_DONE] = 
-		gtk_signal_new ("load_done",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ExplorerDirectoryViewClass,
-						   load_done),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-	signals[ACTIVATE_URI] = 
-		gtk_signal_new ("activate_uri",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ExplorerDirectoryViewClass,
-						   load_done),
-				gtk_marshal_NONE__POINTER_POINTER,
-				GTK_TYPE_NONE, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
+	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = destroy;
 
-	class->open_failed = real_open_failed;
-	class->open_done = real_open_done;
-	class->load_failed = real_load_failed;
-	class->load_done = real_load_done;
-	class->activate_uri = real_activate_uri;
+	parent_class->notify_location_change = real_location_change;
 }
 
 static void
-init (ExplorerDirectoryView *directory_view)
+init (FMDirectoryView *directory_view)
 {
-	GtkScrollFrame *scroll_frame;
-
-	directory_view->application = NULL;
-	directory_view->app_bar = NULL;
-
-	directory_view->mode = EXPLORER_DIRECTORY_VIEW_MODE_NONE;
+	directory_view->mode = FM_DIRECTORY_VIEW_MODE_NONE;
 
 	directory_view->uri = NULL;
 	directory_view->vfs_async_handle = NULL;
@@ -647,21 +553,21 @@ init (ExplorerDirectoryView *directory_view)
 
 	directory_view->display_selection_idle_id = 0;
 
-	scroll_frame = GTK_SCROLL_FRAME (directory_view);
-
-	gtk_scroll_frame_set_hadjustment (scroll_frame, NULL);
-	gtk_scroll_frame_set_vadjustment (scroll_frame, NULL);
-	gtk_scroll_frame_set_policy (scroll_frame,
+	directory_view->scroll_frame = gtk_scroll_frame_new(NULL, NULL);
+	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME(directory_view->scroll_frame),
 				     GTK_POLICY_AUTOMATIC,
 				     GTK_POLICY_AUTOMATIC);
-	gtk_scroll_frame_set_shadow_type (scroll_frame, GTK_SHADOW_IN);
+	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view->scroll_frame), GTK_SHADOW_IN);
+	gtk_widget_show(directory_view->scroll_frame);
+	gtk_container_add(GTK_CONTAINER(directory_view), directory_view->scroll_frame);
+	fm_directory_view_set_mode (directory_view, FM_DIRECTORY_VIEW_MODE_ICONS);
 }
 
 
 /* Utility functions.  */
 
 static void
-stop_load (ExplorerDirectoryView *view)
+stop_load (FMDirectoryView *view)
 {
 	if (view->vfs_async_handle != NULL) {
 		gnome_vfs_async_cancel (view->vfs_async_handle);
@@ -679,16 +585,17 @@ stop_load (ExplorerDirectoryView *view)
 
 
 static void
-display_pending_entries (ExplorerDirectoryView *view)
+display_pending_entries (FMDirectoryView *view)
 {
-	ExplorerIconManager *icon_manager;
+	FMIconCache *icon_manager;
 	GnomeIconContainer *icon_container;
 	GtkFList *flist;
 	guint i;
 
-	EXPLORER_DEBUG (("Adding %d entries.", view->entries_to_display));
+	FM_DEBUG (("Adding %d entries.", view->entries_to_display));
 
-	icon_manager = explorer_application_get_icon_manager (view->application);
+	if(!icm)
+		icm = fm_icon_cache_new(NULL);
 
 	if (view_has_icon_container (view)) {
 		icon_container = get_icon_container (view);
@@ -720,22 +627,23 @@ display_pending_entries (ExplorerDirectoryView *view)
 
 	view->entries_to_display = 0;
 
-	EXPLORER_DEBUG (("Done."));
+	FM_DEBUG (("Done."));
 }
 
 static void
-display_icons_not_in_layout (ExplorerDirectoryView *view)
+display_icons_not_in_layout (FMDirectoryView *view)
 {
-	ExplorerIconManager *icon_manager;
+	FMIconCache *icon_manager;
 	GnomeIconContainer *icon_container;
 	GList *p;
 
 	if (view->icons_not_in_layout == NULL)
 		return;
 
-	EXPLORER_DEBUG (("Adding entries not in layout."));
+	FM_DEBUG (("Adding entries not in layout."));
 
-	icon_manager = explorer_application_get_icon_manager (view->application);
+	if (!icm)
+		icm = icon_manager = fm_icon_cache_new(NULL);
 
 	icon_container = get_icon_container (view);
 	g_return_if_fail (icon_container != NULL);
@@ -748,10 +656,10 @@ display_icons_not_in_layout (ExplorerDirectoryView *view)
 		info = p->data;
 		add_to_icon_container (view, icon_manager,
 				       icon_container, info, FALSE);
-		EXPLORER_DEBUG (("Adding `%s'", info->name));
+		FM_DEBUG (("Adding `%s'", info->name));
 	}
 
-	EXPLORER_DEBUG (("Done with entries not in layout."));
+	FM_DEBUG (("Done with entries not in layout."));
 
 	g_list_free (view->icons_not_in_layout);
 	view->icons_not_in_layout = NULL;
@@ -760,15 +668,15 @@ display_icons_not_in_layout (ExplorerDirectoryView *view)
 static gboolean
 display_timeout_cb (gpointer data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 
-	EXPLORER_DEBUG (("Entering function"));
+	FM_DEBUG (("Entering function"));
 
-	view = EXPLORER_DIRECTORY_VIEW (data);
+	view = FM_DIRECTORY_VIEW (data);
 
 	display_pending_entries (view);
 
-	EXPLORER_DEBUG (("Done"));
+	FM_DEBUG (("Done"));
 
 	return TRUE;
 }
@@ -776,7 +684,7 @@ display_timeout_cb (gpointer data)
 
 /* Set up the base URI for Drag & Drop operations.  */
 static void
-setup_base_uri (ExplorerDirectoryView *view)
+setup_base_uri (FMDirectoryView *view)
 {
 	GnomeIconContainer *icon_container;
 	gchar *txt_uri;
@@ -799,12 +707,12 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 		   guint entries_read,
 		   gpointer callback_data)
 {
-	ExplorerDirectoryView *view;
+	FMDirectoryView *view;
 
-	EXPLORER_DEBUG (("Entering function, %d entries read: %s",
+	FM_DEBUG (("Entering function, %d entries read: %s",
 			 entries_read, gnome_vfs_result_to_string (result)));
 
-	view = EXPLORER_DIRECTORY_VIEW (callback_data);
+	view = FM_DIRECTORY_VIEW (callback_data);
 
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
@@ -853,30 +761,30 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 
 gboolean
-explorer_directory_view_is_valid_mode (ExplorerDirectoryViewMode mode)
+fm_directory_view_is_valid_mode (FMDirectoryViewMode mode)
 {
 	switch (mode) {
-	case EXPLORER_DIRECTORY_VIEW_MODE_ICONS:
-	case EXPLORER_DIRECTORY_VIEW_MODE_SMALLICONS:
-	case EXPLORER_DIRECTORY_VIEW_MODE_DETAILED:
-	case EXPLORER_DIRECTORY_VIEW_MODE_CUSTOM:
+	case FM_DIRECTORY_VIEW_MODE_ICONS:
+	case FM_DIRECTORY_VIEW_MODE_SMALLICONS:
+	case FM_DIRECTORY_VIEW_MODE_DETAILED:
+	case FM_DIRECTORY_VIEW_MODE_CUSTOM:
 		return TRUE;
-	case EXPLORER_DIRECTORY_VIEW_MODE_NONE:
+	case FM_DIRECTORY_VIEW_MODE_NONE:
 	default:
 		return FALSE;
 	}
 }
 
 GtkType
-explorer_directory_view_get_type (void)
+fm_directory_view_get_type (void)
 {
 	static GtkType directory_view_type = 0;
 
 	if (directory_view_type == 0) {
 		static GtkTypeInfo directory_view_info = {
-			"ExplorerDirectoryView",
-			sizeof (ExplorerDirectoryView),
-			sizeof (ExplorerDirectoryViewClass),
+			"FMDirectoryView",
+			sizeof (FMDirectoryView),
+			sizeof (FMDirectoryViewClass),
 			(GtkClassInitFunc) class_init,
 			(GtkObjectInitFunc) init,
 			/* reserved_1 */ NULL,
@@ -885,7 +793,7 @@ explorer_directory_view_get_type (void)
 		};
 
 		directory_view_type
-			= gtk_type_unique (gtk_scroll_frame_get_type (),
+			= gtk_type_unique (nautilus_content_view_client_get_type (),
 					   &directory_view_info);
 	}
 
@@ -893,55 +801,41 @@ explorer_directory_view_get_type (void)
 }
 
 GtkWidget *
-explorer_directory_view_new (ExplorerApplication *application,
-			     GnomeAppBar *app_bar,
-			     ExplorerDirectoryViewMode mode)
+fm_directory_view_new (void)
 {
-	ExplorerDirectoryView *new;
-
-	g_return_val_if_fail (application != NULL, NULL);
-	g_return_val_if_fail (explorer_directory_view_is_valid_mode (mode), NULL);
-
-	new = gtk_type_new (explorer_directory_view_get_type ());
-
-	new->application = application;
-	new->app_bar = app_bar;
-
-	explorer_directory_view_set_mode (new, mode);
-
-	return GTK_WIDGET (new);
+	return gtk_widget_new(fm_directory_view_get_type (), NULL);
 }
 
-ExplorerDirectoryViewMode
-explorer_directory_view_get_mode (ExplorerDirectoryView *view)
+FMDirectoryViewMode
+fm_directory_view_get_mode (FMDirectoryView *view)
 {
-	g_return_val_if_fail (view != NULL, EXPLORER_DIRECTORY_VIEW_MODE_ICONS);
-	g_return_val_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view),
-			      EXPLORER_DIRECTORY_VIEW_MODE_ICONS);
+	g_return_val_if_fail (view != NULL, FM_DIRECTORY_VIEW_MODE_ICONS);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view),
+			      FM_DIRECTORY_VIEW_MODE_ICONS);
 
 	return view->mode;
 }
 
 void
-explorer_directory_view_set_mode (ExplorerDirectoryView *view,
-				  ExplorerDirectoryViewMode mode)
+fm_directory_view_set_mode (FMDirectoryView *view,
+			    FMDirectoryViewMode mode)
 {
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (view->mode == mode)
 		return;
 
 	switch (mode) {
-	case EXPLORER_DIRECTORY_VIEW_MODE_ICONS:
-	case EXPLORER_DIRECTORY_VIEW_MODE_SMALLICONS:
+	case FM_DIRECTORY_VIEW_MODE_ICONS:
+	case FM_DIRECTORY_VIEW_MODE_SMALLICONS:
 		setup_icon_container (view, mode);
 		break;
-	case EXPLORER_DIRECTORY_VIEW_MODE_DETAILED:
-	case EXPLORER_DIRECTORY_VIEW_MODE_CUSTOM:
+	case FM_DIRECTORY_VIEW_MODE_DETAILED:
+	case FM_DIRECTORY_VIEW_MODE_CUSTOM:
 		setup_flist (view, mode);
 		break;
-	case EXPLORER_DIRECTORY_VIEW_MODE_NONE:
+	case FM_DIRECTORY_VIEW_MODE_NONE:
 		break;
 	}
 
@@ -950,8 +844,8 @@ explorer_directory_view_set_mode (ExplorerDirectoryView *view,
 
 
 void
-explorer_directory_view_load_uri (ExplorerDirectoryView *view,
-				  const GnomeVFSURI *uri)
+fm_directory_view_load_uri (FMDirectoryView *view,
+			    const char *uri)
 {
 	static GnomeVFSDirectorySortRule sort_rules[] = {
 		GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST,
@@ -961,14 +855,14 @@ explorer_directory_view_load_uri (ExplorerDirectoryView *view,
 	GnomeVFSResult result;
 
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (uri != NULL);
 
-	explorer_directory_view_stop (view);
+	fm_directory_view_stop (view);
 
 	if (view->uri != NULL)
 		gnome_vfs_uri_unref (view->uri);
-	view->uri = gnome_vfs_uri_dup (uri);
+	view->uri = gnome_vfs_uri_new (uri);
 
 	result = gnome_vfs_async_load_directory_uri
 		(&view->vfs_async_handle, 		/* handle */
@@ -993,10 +887,10 @@ explorer_directory_view_load_uri (ExplorerDirectoryView *view,
 }
 
 void
-explorer_directory_view_stop (ExplorerDirectoryView *view)
+fm_directory_view_stop (FMDirectoryView *view)
 {
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (view->vfs_async_handle == NULL)
 		return;
@@ -1015,10 +909,10 @@ explorer_directory_view_stop (ExplorerDirectoryView *view)
    used when adding new files to the view.  */
 
 GnomeIconContainerLayout *
-explorer_directory_view_get_icon_layout (ExplorerDirectoryView *view)
+fm_directory_view_get_icon_layout (FMDirectoryView *view)
 {
 	g_return_val_if_fail (view != NULL, NULL);
-	g_return_val_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view), NULL);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
 	if (mode_uses_icon_container (view->mode)) {
 		GnomeIconContainer *icon_container;
@@ -1031,7 +925,7 @@ explorer_directory_view_get_icon_layout (ExplorerDirectoryView *view)
 }
 
 void
-explorer_directory_view_set_icon_layout (ExplorerDirectoryView *view,
+fm_directory_view_set_icon_layout (FMDirectoryView *view,
 					 const GnomeIconContainerLayout *layout)
 {
 	g_return_if_fail (view != NULL);
@@ -1040,7 +934,7 @@ explorer_directory_view_set_icon_layout (ExplorerDirectoryView *view,
 }
 
 void
-explorer_directory_view_line_up_icons (ExplorerDirectoryView *view)
+fm_directory_view_line_up_icons (FMDirectoryView *view)
 {
 	GnomeIconContainer *container;
 
@@ -1055,8 +949,8 @@ explorer_directory_view_line_up_icons (ExplorerDirectoryView *view)
 
 
 void
-explorer_directory_view_sort (ExplorerDirectoryView *view,
-			      ExplorerDirectoryViewSortType sort_type)
+fm_directory_view_sort (FMDirectoryView *view,
+			FMDirectoryViewSortType sort_type)
 {
 	GnomeVFSDirectorySortRule *rules;
 	GnomeIconContainer *icon_container;
@@ -1064,26 +958,26 @@ explorer_directory_view_sort (ExplorerDirectoryView *view,
 #define ALLOC_RULES(n) alloca ((n) * sizeof (GnomeVFSDirectorySortRule))
 
 	g_return_if_fail (view != NULL);
-	g_return_if_fail (EXPLORER_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (view->directory_list == NULL)
 		return;
 
 	switch (sort_type) {
-	case EXPLORER_DIRECTORY_VIEW_SORT_BYNAME:
+	case FM_DIRECTORY_VIEW_SORT_BYNAME:
 		rules = ALLOC_RULES (3);
 		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
 		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
 		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
-	case EXPLORER_DIRECTORY_VIEW_SORT_BYSIZE:
+	case FM_DIRECTORY_VIEW_SORT_BYSIZE:
 		rules = ALLOC_RULES (4);
 		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
 		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
 		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
 		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
-	case EXPLORER_DIRECTORY_VIEW_SORT_BYTYPE:
+	case FM_DIRECTORY_VIEW_SORT_BYTYPE:
 		rules = ALLOC_RULES (4);
 		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
 		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYMIMETYPE;
@@ -1091,12 +985,12 @@ explorer_directory_view_sort (ExplorerDirectoryView *view,
 		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	default:
-		g_warning ("explorer_directory_view_sort: Unknown sort mode %d\n",
+		g_warning ("fm_directory_view_sort: Unknown sort mode %d\n",
 			   sort_type);
 		return;
 	}
 
-	EXPLORER_DEBUG (("Sorting."));
+	FM_DEBUG (("Sorting."));
 	gnome_vfs_directory_list_sort (view->directory_list, FALSE, rules);
 
 	/* This will make sure icons are re-laid out according to the new

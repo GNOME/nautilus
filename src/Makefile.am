@@ -4,13 +4,15 @@ bin_PROGRAMS=nautilus
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
-	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\""
+	$(GNOMEUI_CFLAGS) $(GDK_PIXBUF_CFLAGS) \
+	-DVERSION="\"$(VERSION)\""
 
 LDADD=	file-manager/libntl-file-manager.la \
 	../libnautilus/libnautilus.la \
 	$(BONOBO_LIBS) \
 	$(GNORBA_LIBS) \
-	$(GNOMEUI_LIBS)
+	$(GNOMEUI_LIBS) \
+	$(GDK_PIXBUF_LIBS)
 
 nautilus_SOURCES=		\
 	ntl-content-view.h	\

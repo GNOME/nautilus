@@ -21,7 +21,7 @@
  */
 
 #include <config.h>
-#include "desktopwindow.h"
+#include "desktop-window.h"
 #include <libgnomeui/gnome-winhints.h>
 
 static void desktop_window_class_init (DesktopWindowClass *class);

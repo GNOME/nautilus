@@ -132,11 +132,13 @@ drag_data_get_cb (GtkWidget *widget,
 }
 
 static void
-location_changed (ExplorerLocationBar *location_bar)
+location_changed (ExplorerLocationBar *location_bar, const char *uri_string)
 {
 	g_return_if_fail (location_bar != NULL);
 	g_return_if_fail (EXPLORER_IS_LOCATION_BAR
 			  (location_bar));
+
+	gtk_entry_set_text(GTK_ENTRY(location_bar->entry), uri_string);
 }
 
 static void

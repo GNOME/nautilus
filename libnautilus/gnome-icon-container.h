@@ -25,6 +25,7 @@
 #define _GNOME_ICON_CONTAINER_H
 
 #include <libgnomeui/libgnomeui.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 enum _GnomeIconContainerIconMode {
 	GNOME_ICON_CONTAINER_NORMAL_ICONS,
@@ -100,25 +101,25 @@ void		 gnome_icon_container_set_editable
 gboolean	 gnome_icon_container_get_editable
 						(GnomeIconContainer *view);
  
-void		 gnome_icon_container_add_imlib	 (GnomeIconContainer *view,
-						  GdkImlibImage *image,
+void		 gnome_icon_container_add_pixbuf (GnomeIconContainer *view,
+						  GdkPixbuf *image,
 						  const gchar *text,
 						  gint x, gint y,
 						  gpointer data);
 
-void		 gnome_icon_container_add_imlib_auto
+void		 gnome_icon_container_add_pixbuf_auto
 						 (GnomeIconContainer *view,
-						  GdkImlibImage *image,
+						  GdkPixbuf *image,
 						  const gchar *text,
 						  gpointer data);
-gboolean	 gnome_icon_container_add_imlib_with_layout
+gboolean	 gnome_icon_container_add_pixbuf_with_layout
 						 (GnomeIconContainer
-						         *container,
-						  GdkImlibImage *image,
+						  *container,
+						  GdkPixbuf *image,
 						  const gchar *text,
 						  gpointer data,
 						  const GnomeIconContainerLayout
-						         *layout);
+						  *layout);
  
 gpointer	 gnome_icon_container_get_icon_data
 						 (GnomeIconContainer *view,
