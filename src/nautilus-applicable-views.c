@@ -27,6 +27,170 @@
 
 #include "ntl-uri-map.h"
 #include <libgnorba/gnorba.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <limits.h>
+#include <ctype.h>
+
+typedef struct {
+  enum { MAP_COMPONENT, MAP_TRANSFORM } type;
+  union {
+    char *component_iid;
+    char *transform_info;
+  } u;
+  char *output_mimetype;
+} SchemeMapping;
+
+static GHashTable *scheme_mappings = NULL;
+
+static void
+nautilus_navinfo_add_mapping(const char *scheme, int type, const char *data, const char *mimetype)
+{
+  SchemeMapping *ent;
+
+  ent = g_new0(SchemeMapping, 1);
+
+  ent->type = type;
+  ent->u.component_iid = g_strdup(data);
+  ent->output_mimetype = g_strdup(mimetype);
+
+  g_hash_table_insert(scheme_mappings, g_strdup(scheme), ent);
+}
+
+static void
+navinfo_read_map_file(const char *fn)
+{
+  FILE *fh;
+  char aline[LINE_MAX];
+
+  fh = fopen(fn, "r");
+  if(!fh)
+    return;
+
+  while(fgets(aline, sizeof(aline), fh))
+    {
+      char *sname, *type, *mimetype, *data;
+      int typeval;
+
+      if(isspace(aline[0]) || aline[0] == '#')
+        continue;
+
+      sname = strtok(aline, " \t");
+      type = strtok(NULL, " \t");
+      mimetype = strtok(NULL, " \t");
+      data = strtok(NULL, "\n");
+
+      if(!sname || !type || !mimetype || !data)
+        continue;
+
+      if(!strcasecmp(type, "component"))
+        typeval = MAP_COMPONENT;
+      else if(!strcasecmp(type, "transform"))
+        typeval = MAP_TRANSFORM;
+      else
+        {
+          g_warning("Unrecognized scheme mapping type %s", type);
+          continue;
+        }
+
+      if(!strcasecmp(mimetype, "NULL"))
+        mimetype = NULL;
+
+      g_message("Adding mapping of %s -> [%s, %s, %s]",
+                sname, type, mimetype, data);
+
+      nautilus_navinfo_add_mapping(sname, typeval, data, mimetype);
+    }
+  
+
+  fclose(fh);
+}
+
+static void
+navinfo_load_mappings(char *dir)
+{
+  DIR *dirh;
+  struct dirent *dent;
+
+  dirh = opendir(dir);
+  if(!dirh)
+    goto out;
+
+  readdir(dirh);
+  readdir(dirh);
+
+  while((dent = readdir(dirh))) {
+    char full_name[PATH_MAX];
+
+    g_snprintf(full_name, sizeof(full_name), "%s/%s", dir, dent->d_name);
+    navinfo_read_map_file(full_name);
+  }
+  closedir(dirh);
+  
+ out:
+  g_free(dir);
+}
+
+void
+nautilus_navinfo_init(void)
+{
+  GSList *dirs = NULL;
+
+  if(!scheme_mappings)
+    scheme_mappings = g_hash_table_new(g_str_hash, g_str_equal);
+
+#if 0
+  gnome_file_locate(gnome_file_domain_config, "nautilus/scheme-mappings", TRUE, &dirs);
+#else
+  {
+    char *ctmp;
+    ctmp = gnome_config_file("nautilus/scheme-mappings");
+    if(ctmp)
+      dirs = g_slist_append(NULL, ctmp);
+  }
+#endif
+
+  g_slist_foreach(dirs, (GFunc)navinfo_load_mappings, NULL);
+  g_slist_free(dirs); /* The contents are already freed by navinfo_load_mappings */
+}
+
+static void
+nautilus_navinfo_map(NautilusNavigationInfo *navinfo)
+{
+  SchemeMapping *mapping;
+  char scheme[128], *ctmp;
+
+  g_assert(scheme_mappings);
+
+  ctmp = strchr(navinfo->navinfo.requested_uri, ':');
+
+  if(!ctmp)
+    goto out;
+  g_snprintf(scheme, sizeof(scheme), "%.*s", (int)(ctmp - navinfo->navinfo.requested_uri), navinfo->navinfo.requested_uri);
+
+  mapping = g_hash_table_lookup(scheme_mappings, scheme);
+  if(!mapping)
+    goto out;
+
+  switch(mapping->type)
+    {
+    case MAP_COMPONENT:
+      navinfo->navinfo.actual_uri = g_strdup_printf("component:%s", mapping->u.component_iid);
+      break;
+    case MAP_TRANSFORM:
+      navinfo->navinfo.actual_uri = g_strdup_printf(mapping->u.transform_info,
+                                                    ctmp+1, ctmp+1, ctmp+1, /* hello, lame hack! :) */
+                                                    ctmp+1, ctmp+1, ctmp+1);
+      break;
+    }
+
+  navinfo->navinfo.content_type = g_strdup(mapping->output_mimetype);
+
+  return;
+
+ out:
+  navinfo->navinfo.actual_uri = g_strdup(navinfo->navinfo.requested_uri);
+}
 
 NautilusNavigationInfo *
 nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
@@ -35,9 +199,9 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 		     NautilusView *requesting_view)
 {
   const char *meta_keys[] = {"icon-filename", NULL};
+
   memset(navinfo, 0, sizeof(*navinfo));
 
-  navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
   if(old_navinfo)
     {
       navinfo->navinfo.referring_uri = old_navinfo->requested_uri;
@@ -47,13 +211,23 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 
   navinfo->requesting_view = requesting_view;
 
-  navinfo->vfs_fileinfo = gnome_vfs_file_info_new();
-  gnome_vfs_get_file_info(navinfo->navinfo.requested_uri,
-                          navinfo->vfs_fileinfo,
-                          GNOME_VFS_FILE_INFO_GETMIMETYPE
-                          |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
-                          meta_keys);
-  navinfo->navinfo.content_type = (char *)gnome_vfs_file_info_get_mime_type(navinfo->vfs_fileinfo);
+  navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
+
+  nautilus_navinfo_map(navinfo);
+
+  if(!navinfo->navinfo.content_type) /* May have already been filed in by nautilus_navinfo_map() */
+    {
+      GnomeVFSFileInfo *vfs_fileinfo;
+
+      vfs_fileinfo = gnome_vfs_file_info_new();
+      gnome_vfs_get_file_info(navinfo->navinfo.actual_uri,
+                              vfs_fileinfo,
+                              GNOME_VFS_FILE_INFO_GETMIMETYPE
+                              |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
+                              meta_keys);
+      navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
+      gnome_vfs_file_info_destroy(vfs_fileinfo);
+    }
 
   /* Given a content type and a URI, what do we do? Basically the "expert system" below
      tries to answer that question
@@ -76,10 +250,6 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
          Find if the user has specified any default(s) per-page, modify selection.
   */
 
-  g_message("Content type of %s is %s",
-            navinfo->navinfo.requested_uri,
-            navinfo->navinfo.content_type);
-
   /* This is just a hardcoded hack until OAF works with Bonobo.
      In the future we will use OAF queries to determine this information. */
   if(navinfo->navinfo.content_type)
@@ -92,7 +262,8 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
         {
           navinfo->content_iid = "embeddable:text-plain";
         }
-      else if(!strcmp(navinfo->navinfo.content_type, "special/directory"))
+      else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
+              || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
         {
           navinfo->content_iid = "ntl_file_manager";
         }
@@ -102,7 +273,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
         }
     }
 
-  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, "ntl_history_view");
+  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_history_view"));
 
   return navinfo;
 }
@@ -110,8 +281,9 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
-  gnome_vfs_file_info_destroy(navinfo->vfs_fileinfo);
-
+  g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
   g_free(navinfo->navinfo.requested_uri);
+  g_free(navinfo->navinfo.actual_uri);
+  g_free(navinfo->navinfo.content_type);
 }

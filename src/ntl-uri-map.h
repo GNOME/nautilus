@@ -30,6 +30,7 @@
 #include "ntl-types.h"
 #include "ntl-view.h"
 
+void nautilus_navinfo_init(void);
 NautilusNavigationInfo *nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 					     Nautilus_NavigationRequestInfo *nri,
                                              Nautilus_NavigationInfo *old_navinfo,

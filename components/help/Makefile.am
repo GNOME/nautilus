@@ -11,10 +11,13 @@ hyperbola_SOURCES=		\
 	hyperbola-filefmt.c	\
 	hyperbola-filefmt.h
 
-EXTRA_DIST=pages.map hyperbola.goad
+EXTRA_DIST=pages.map hyperbola.goad hyperbola.schemes
 
 goaddir=$(sysconfdir)/CORBA/servers
 goad_DATA=hyperbola.goad
 
 mapdatadir=$(datadir)/hyperbola/maps
 mapdata_DATA=pages.map
+
+smapdir=$(sysconfdir)/nautilus/scheme-mappings
+smap_DATA=hyperbola.schemes

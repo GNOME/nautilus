@@ -38,8 +38,6 @@ typedef struct {
 
   gpointer requesting_view;
 
-  GnomeVFSFileInfo *vfs_fileinfo;
-
   const char *content_iid;
   GSList *meta_iids;
 } NautilusNavigationInfo;

@@ -33,6 +33,8 @@ nautilus_app_init(const char *initial_url)
 {
   NautilusWindow *mainwin;
 
+  nautilus_navinfo_init();
+
   /* Create our CORBA objects */
   gnome_generic_factory_new_multi("nautilus_factory", nautilus_make_object, NULL);
 
