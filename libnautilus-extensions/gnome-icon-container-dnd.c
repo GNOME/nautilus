@@ -71,6 +71,10 @@ create_selection_shadow (GnomeIconContainer *container,
 	if (list == NULL)
 	    return NULL;
 
+	/* if we're only dragging a single item, don't worry about the shadow */
+	if (list->next == NULL)
+		return NULL;
+		
 	stipple = container->details->dnd_info->stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
 
