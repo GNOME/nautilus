@@ -46,8 +46,10 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 #ifdef ROBEY_LIKES_TIMESTAMPS
 	struct timeval now;
 #endif
-	
-	g_assert (logf != NULL);
+
+	if (logf == NULL) {
+		return;
+	}
 
 	if (flags & G_LOG_LEVEL_DEBUG) {
 		if (do_debug_log) {
@@ -113,6 +115,7 @@ trilobite_set_log_handler (FILE *logf, const char *service_name)
 			   (GLogFunc)trilobite_add_log, logf);
 
 	if (! set_atexit) {
+		saved_logf = logf;
 		g_atexit (trilobite_close_log);
 		set_atexit = 1;
 	}

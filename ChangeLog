@@ -1,3 +1,27 @@
+2001-01-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/main.c: (main):
+
+	Set log handler so debug messages don't spam everywhere.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_done):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Track and report the total kB (or MB) to be downloaded during an
+	install.  This is slightly off (the bytesize provided by softcat
+	is very rough) but will do for now.  Better in 1.0.  Also, don't
+	ask to delete RPMs when none were downloaded.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-messagi
+	ng.c: (trilobite_add_log), (trilobite_set_log_handler):
+
+	Allow null filehandle (no logging).
+
 2001-01-19  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic2.c:

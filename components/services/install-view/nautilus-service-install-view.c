@@ -179,7 +179,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
 
-	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 4,
+	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 2,
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						       NULL, -2, TRUE);
@@ -735,6 +735,14 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		g_free (view->details->current_rpm);
 		view->details->current_rpm = NULL;
 		view->details->current_im = NULL;
+		/* update downloaded bytes */
+		view->details->download_bytes_sofar += total;
+#if 0
+		/* not until we get an rpm size */
+		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
+					     (float) view->details->download_bytes_sofar /
+					     (float) view->details->download_bytes_total);
+#endif
 	} else {
 		/* could be a leftover event, after user hit STOP (in which case, current_im = NULL) */
 		if ((im != NULL) && (im->progress_bar != NULL)) {
@@ -746,8 +754,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 				g_free (out);
 				view->details->last_k = (amount/1024);
 			}
-			/* spin the cylon some more, whee! */
-			/* spin_cylon (view); */
 		}
 	}
 }
@@ -844,7 +850,9 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	gboolean answer;
 	PackageData *package;
 	GList *package_list;
+	GList *iter;
 	char *out;
+	unsigned long total_k;
 
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
@@ -861,19 +869,29 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	message = g_string_new ("");
 	message = g_string_append (message, _("I'm about to download and install the following packages:\n\n"));
 
-	while (package_list) {
-		package = (PackageData *) (package_list->data);
-		package_list = g_list_remove (package_list, package_list->data);
+	view->details->download_bytes_total = view->details->download_bytes_sofar = 0;
+	for (iter = g_list_first (package_list); iter != NULL; iter = g_list_next (iter)) {
+		package = (PackageData *)(iter->data);
 		out = packagedata_get_readable_name (package);
 	        g_string_sprintfa (message, " \xB7 %s\n", out);
 		g_free (out);
+		view->details->download_bytes_total += package->bytesize;
 
 		if (package->toplevel) {
 			nautilus_service_install_check_for_desktop_files (view,
 									  cb,
 									  package);
 		}
-	}	
+	}
+	total_k = (view->details->download_bytes_total+512)/1024;
+	/* arbitrary dividing line */
+	if (total_k > 4096) {
+		out = g_strdup_printf (_("for a total of %ld MB."), (total_k+512)/1024);
+	} else {
+		out = g_strdup_printf (_("for a total of %ld kB."), total_k);
+	}
+	g_string_sprintfa (message, "\n%s", out);
+	g_free (out);
 
 	message = g_string_append (message, _("\nIs this okay?"));
 	toplevel = gtk_widget_get_toplevel (view->details->message_box);
@@ -891,18 +909,25 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	g_string_free (message, TRUE);
 
 	if (!answer) {
+		g_list_free (package_list);
 		view->details->cancelled = TRUE;
+		view->details->cancelled_before_downloads = TRUE;
+		/* EVIL EVIL hack that causes the next dialog to show up instead of being hidden */
+		sleep (1);
+		while (gtk_events_pending ())
+			gtk_main_iteration ();
 		return answer;
 	}
 
-	if (total_packages == 1) {
-		out = g_strdup (_("Preparing to install 1 package"));
+	if (g_list_length (package_list) == 1) {
+		out = g_strdup (_("Preparing to download 1 package"));
 	} else {
-		out = g_strdup_printf (_("Preparing to install %d packages"), total_packages);
+		out = g_strdup_printf (_("Preparing to download %d packages"), g_list_length (package_list));
 	}
 	show_overall_feedback (view, out);
 	g_free (out);
 
+	g_list_free (package_list);
 	view->details->current_package = 0;
 	return answer;
 }
@@ -1216,6 +1241,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	char *message;
 	char *real_message;
 	gboolean answer = FALSE;
+	gboolean question_dialog;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
@@ -1253,12 +1279,17 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 						    NULL,
 						    NULL);
 	} else {
+		question_dialog = TRUE;
+
 		if (success && view->details->desktop_files &&
 				!view->details->cancelled &&
 				!view->details->already_installed) {
 			real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
 							message,
 							nautilus_install_service_locate_menu_entries (view));
+		} else if (view->details->cancelled_before_downloads) {
+			real_message = g_strdup (message);
+			question_dialog = FALSE;
 		} else {
 			if (view->details->cancelled || view->details->failure) {
 				real_message = g_strdup_printf (_("%s\nErase the RPM files?"), message);
@@ -1268,13 +1299,22 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		}
 		toplevel = gtk_widget_get_toplevel (view->details->message_box);
 		if (GTK_IS_WINDOW (toplevel)) {
-			dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
-								 &answer, GTK_WINDOW (toplevel));
+			if (question_dialog) {
+				dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
+									 &answer, GTK_WINDOW (toplevel));
+			} else {
+				dialog = gnome_ok_dialog_parented (real_message, GTK_WINDOW (toplevel));
+				answer = FALSE;
+			}
 		} else {
-			dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
+			if (question_dialog) {
+				dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
+			} else {
+				dialog = gnome_ok_dialog (real_message);
+				answer = FALSE;
+			}
 		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-		gtk_widget_grab_focus (dialog);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		g_free (real_message);
 
@@ -1289,10 +1329,12 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 				    "updated.  You should restart Nautilus.\n\n"
 				    "Do you wish to do that now?");
 			if (GTK_IS_WINDOW (toplevel)) {
-				dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+				dialog = gnome_question_dialog_parented (message,
+									 (GnomeReplyCallback)reply_callback,
 									 &answer, GTK_WINDOW (toplevel));
 			} else {
-				dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+				dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback,
+								&answer);
 			}
 			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));

@@ -82,6 +82,9 @@ main (int argc, char *argv[])
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	/* log to stderr, for now (but leave debug mode off) */
+	trilobite_set_log_handler (stderr, G_LOG_DOMAIN);
+
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_service_install_view_factory:e59e53d1-e3d1-46fe-ae28-3ec5c56b7d32", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    service_install_make_object,
