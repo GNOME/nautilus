@@ -1,5 +1,10 @@
 2004-06-08  Dave Camp  <dave@novell.com>
 
+	* src/file-manager/fm-list-view.c (fm_list_view_dispose): NULL
+	the ui component after unreffing it.
+
+2004-06-08  Dave Camp  <dave@novell.com>
+
 	* src/file-manager/fm-desktop-icon-view.c:
 	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_finalize),
 	(fm_desktop_icon_view_class_init):

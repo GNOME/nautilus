@@ -1942,6 +1942,7 @@ fm_list_view_dispose (GObject *object)
 	if (list_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (list_view->details->ui, NULL);
 		bonobo_object_unref (list_view->details->ui);
+		list_view->details->ui = NULL;
 	}
 	
 	G_OBJECT_CLASS (parent_class)->dispose (object);
