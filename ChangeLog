@@ -1,3 +1,19 @@
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.[ch]:
+	Make nautilus_directory_get_file_list virtual
+	* libnautilus-private/nautilus-desktop-directory.c:
+	* libnautilus-private/nautilus-merged-directory.c:
+	Override virtual to return all files. Fixes bug #149096.
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_init_show_hidden_files):
+	Don't set up hidden files prefs if ignoring them	
+
+	* src/file-manager/fm-icon-view.c (should_show_file_on_screen):
+	Check if file should be visible.
+	
 2004-10-11  Anders Carlsson  <andersca@gnome.org>
 
 	* libnautilus-private/nautilus-metadata.h:

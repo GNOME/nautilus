@@ -397,6 +397,30 @@ merged_is_not_empty (NautilusDirectory *directory)
 	return FALSE;
 }
 
+static GList *
+merged_get_file_list (NautilusDirectory *directory)
+{
+	GList *dirs_file_list, *merged_dir_file_list;
+	GList *dir_list;
+	GList *cur_node;
+
+	dirs_file_list = NULL;
+	dir_list = NAUTILUS_MERGED_DIRECTORY (directory)->details->directories;
+
+	for (cur_node = dir_list; cur_node != NULL; cur_node = cur_node->next) {
+		NautilusDirectory *cur_dir;
+
+		cur_dir = NAUTILUS_DIRECTORY (cur_node->data);
+		dirs_file_list = g_list_concat (dirs_file_list,
+						 nautilus_directory_get_file_list (cur_dir));
+	}
+
+	merged_dir_file_list = GNOME_CALL_PARENT_WITH_DEFAULT
+				(NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory), NULL);
+
+	return g_list_concat (dirs_file_list, merged_dir_file_list);
+}
+
 static void
 forward_files_added_cover (NautilusDirectory *real_directory,
 			   GList *files,
@@ -621,6 +645,10 @@ nautilus_merged_directory_class_init (NautilusMergedDirectoryClass *class)
 	directory_class->force_reload = merged_force_reload;
  	directory_class->are_all_files_seen = merged_are_all_files_seen;
 	directory_class->is_not_empty = merged_is_not_empty;
+	/* Override get_file_list so that we can return a list that includes
+	 * the files from each of the directories in NautilusMergedDirectory->details->directories.
+         */
+	directory_class->get_file_list = merged_get_file_list;
 
 	class->add_real_directory = merged_add_real_directory;
 	class->remove_real_directory = merged_remove_real_directory;

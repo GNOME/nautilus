@@ -507,6 +507,10 @@ should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 
 	icon_view = FM_ICON_VIEW (view);
 
+	if (!fm_directory_view_should_show_file (view, file)) {
+		return FALSE;
+	}
+	
 	/* Get the screen for this icon from the metadata. */
 	screen_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_SCREEN, "0");

@@ -5550,6 +5550,10 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 	gboolean show_hidden_changed;
 	gboolean show_hidden_default_setting;
 
+	if (view->details->ignore_hidden_file_preferences) {
+		return;
+	}
+	
 	show_hidden_changed = FALSE;
 	mode = nautilus_view_get_show_hidden_files_mode (view->details->nautilus_view);
 	

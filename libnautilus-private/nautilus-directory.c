@@ -70,6 +70,7 @@ static void               nautilus_directory_init             (gpointer         
 static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
 static NautilusDirectory *nautilus_directory_new              (const char             *uri);
 static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
+static GList *            real_get_file_list                  (NautilusDirectory      *directory);
 static void               set_directory_uri                   (NautilusDirectory      *directory,
 							       const char             *new_uri);
 
@@ -120,6 +121,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
+	klass->get_file_list = real_get_file_list;
 
 	g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
 }
@@ -1628,6 +1630,14 @@ is_tentative (gpointer data, gpointer callback_data)
 
 GList *
 nautilus_directory_get_file_list (NautilusDirectory *directory)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 get_file_list, (directory));
+}
+
+static GList *
+real_get_file_list (NautilusDirectory *directory)
 {
 	GList *tentative_files, *non_tentative_files;
 

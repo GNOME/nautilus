@@ -126,6 +126,14 @@ typedef struct
 	gboolean (* are_all_files_seen)  (NautilusDirectory         *directory);
 	gboolean (* is_not_empty)        (NautilusDirectory         *directory);
 	char *	 (* get_name_for_self_as_new_file) (NautilusDirectory *directory);
+
+	/* get_file_list is a function pointer that subclasses may override to
+	 * customize collecting the list of files in a directory.
+	 * For example, the NautilusDesktopDirectory overrides this so that it can
+	 * merge together the list of files in the $HOME/Desktop directory with
+	 * the list of standard icons (Computer, Home, Trash) on the desktop.
+	 */
+	GList *	 (* get_file_list)	 (NautilusDirectory *directory);
 } NautilusDirectoryClass;
 
 /* Basic GObject requirements. */

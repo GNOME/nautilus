@@ -393,6 +393,17 @@ desktop_is_not_empty (NautilusDirectory *directory)
 	return directory->details->file_list != NULL;
 }
 
+static GList *
+desktop_get_file_list (NautilusDirectory *directory)
+{
+	GList *real_dir_file_list, *desktop_dir_file_list;
+	real_dir_file_list = nautilus_directory_get_file_list
+				(NAUTILUS_DESKTOP_DIRECTORY (directory)->details->real_directory);
+	desktop_dir_file_list = GNOME_CALL_PARENT_WITH_DEFAULT
+				 (NAUTILUS_DIRECTORY_CLASS, get_file_list, (directory), NULL);
+	return g_list_concat (real_dir_file_list, desktop_dir_file_list);
+}
+
 NautilusDirectory *
 nautilus_desktop_directory_get_real_directory (NautilusDesktopDirectory *desktop)
 {
@@ -492,5 +503,10 @@ nautilus_desktop_directory_class_init (NautilusDesktopDirectoryClass *class)
 	directory_class->force_reload = desktop_force_reload;
  	directory_class->are_all_files_seen = desktop_are_all_files_seen;
 	directory_class->is_not_empty = desktop_is_not_empty;
+	/* Override get_file_list so that we can return the list of files
+	 * in NautilusDesktopDirectory->details->real_directory,
+	 * in addition to the list of standard desktop icons on the desktop.
+	 */
+	directory_class->get_file_list = desktop_get_file_list;
 }
      
