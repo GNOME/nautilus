@@ -406,7 +406,7 @@ rpm_open_db (char *dbpath,
 	     EazelPackageSystemRpm3 *system)
 {
 	rpmdb db;
-	
+
 	addMacro(NULL, "_dbpath", NULL, "/", 0);
 	if (rpmdbOpen (dbpath, &db, O_RDONLY, 0644)) {
 		fail (system, "Opening packages database in %s failed (a)", dbpath);

@@ -894,7 +894,7 @@ eazel_install_package_name_compare (PackageData *pack,
 	return strcmp (pack->name, name);
 }
 
-/* This does a slow and painfull comparison of all the major fields */
+/* This does a slow and painful comparison of all the major fields */
 int 
 eazel_install_package_compare (PackageData *pack, 
 			       PackageData *other)

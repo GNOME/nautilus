@@ -593,7 +593,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}		
 	} 
 
-	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {
+	if (/* downloaded_files && */ !arg_query && !arg_erase && !arg_file && ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
 		if (arg_batch) {			

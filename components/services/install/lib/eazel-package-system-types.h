@@ -243,7 +243,7 @@ struct _PackageData {
 
 PackageData* packagedata_new (void);
 GtkType packagedata_get_type (void);
-	void packagedata_finalize (GtkObject *obj);
+void packagedata_finalize (GtkObject *obj);
 
 PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);

@@ -1,3 +1,33 @@
+2001-01-04  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (delete_files):
+
+	Remove the restriction that files be physically downloaded before
+	asking if the user would like to delete files.  That way all the
+	packages could come from a previous cache and still be cleaned up
+	afterwards.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpm_open_db):
+	* components/services/install/lib/eazel-package-system-types.c:
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_get_info):
+	
+	Fix up some documentation.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(find_old_tmpdir), (create_temporary_directory),
+	(eazel_install_delete_downloads),
+	(eazel_install_install_packages):
+
+	Clean up the tmpdir creation code: Make sure any new directory is
+	created atomically.  If generating a new directory name,
+	incorporate the username for uniqueness, and reuse any generated
+	directory from a previous session.
+
 2001-01-04  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -53,6 +53,8 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <pwd.h>
+#include <dirent.h>
 
 enum {
 	DOWNLOAD_PROGRESS,
@@ -737,53 +739,127 @@ eazel_install_new_with_config (void)
 	return service;
 }
 
+/* if there's an older tmpdir left over from a previous attempt, use it */
+static char *
+find_old_tmpdir (const char *prefix)
+{
+	DIR *dirfd;
+	struct dirent *file;
+	char *parent_dir, *base_prefix;
+	char *old_tmpdir;
+	char *p;
+	struct stat statbuf;
+
+	/* find parent dir of prefix */
+	parent_dir = g_strdup (prefix);
+	p = strrchr (parent_dir, '/');
+	if (p == NULL) {
+		g_free (parent_dir);
+		parent_dir = g_strdup ("/");
+		base_prefix = g_strdup (prefix);
+	} else {
+		base_prefix = g_strdup (p+1);
+		*p = '\0';
+	}
+
+	old_tmpdir = NULL;
+	dirfd = opendir (parent_dir);
+	if (dirfd != NULL) {
+		while ((file = readdir (dirfd)) != NULL) {
+			if ((old_tmpdir == NULL) && (strlen (file->d_name) > strlen (base_prefix)) &&
+			    (strncmp (file->d_name, base_prefix, strlen (base_prefix)) == 0)) {
+				old_tmpdir = g_strdup_printf ("%s/%s", parent_dir, file->d_name);
+				if ((lstat (old_tmpdir, &statbuf) == 0) &&
+				    ((statbuf.st_mode & 0077) == 0) &&
+				    (statbuf.st_mode & S_IFDIR) &&
+				    ((statbuf.st_mode & S_IFLNK) != S_IFLNK) &&
+				    (statbuf.st_nlink == 2) &&
+				    (statbuf.st_uid == getuid ())) {
+					/* acceptable */
+					trilobite_debug ("found an old tmpdir: %s", old_tmpdir);
+				} else {
+					g_free (old_tmpdir);
+					old_tmpdir = NULL;
+				}
+			}
+		}
+	}
+	closedir (dirfd);
+
+	g_free (parent_dir);
+	g_free (base_prefix);
+
+	return old_tmpdir;
+}
+
 static int
 create_temporary_directory (EazelInstall *service) 
 {
 	int result = 0;
 	char *tmpdir = g_strdup (eazel_install_get_tmp_dir (service));
+	struct stat statbuf;
+	struct passwd *pwentry;
+	char *prefix;
+	int tries;
 
-#define RANDCHAR ('A' + (rand () % 23))
-	if (tmpdir == NULL) {		
-		int tries;
-		trilobite_debug ("No tmpdir set, creating...");
-		srand (time (NULL));
-		for (tries = 0; tries < 50; tries++) {
-			tmpdir = g_strdup_printf ("/tmp/nautilus-installer.%c%c%c%c%c%c%d",
-						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
-						  RANDCHAR, RANDCHAR, (rand () % 1000));
-			if (g_file_test (tmpdir, G_FILE_TEST_ISDIR)==0) {
-				break;
+	if (tmpdir != NULL) {
+		if (lstat (tmpdir, &statbuf) == 0) {
+			if ((statbuf.st_mode & S_IFDIR) &&
+			    ((statbuf.st_mode & S_IFLNK) != S_IFLNK) &&
+			    (statbuf.st_nlink == 2) &&
+			    (statbuf.st_uid == getuid ()) &&
+			    (chmod (tmpdir, 0700) == 0)) {
+				/* acceptable existing directory */
+			} else {
+				/* unacceptable: throw it away and start over */
+				g_warning ("Sinister-looking temporary directory %s (ignoring)", tmpdir);
+				g_free (tmpdir);
+				tmpdir = NULL;
 			}
-			g_free (tmpdir);
-			tmpdir = NULL;
-		}
-		if (tries<50) {
-			eazel_install_set_tmp_dir (service, tmpdir);
+		} else {
+			/* doesn't even exist: try to create */
+			if (mkdir (tmpdir, 0700) == 0) {
+				/* A-OK! */
+			} else {
+				g_warning ("Unable to create temporary directory %s (%s)", tmpdir, strerror (errno));
+				g_free (tmpdir);
+				tmpdir = NULL;
+			}
 		}
 	}
 
-	if (g_file_test (tmpdir, G_FILE_TEST_ISDIR)) {
-		struct stat sbuf;
-		stat (tmpdir, &sbuf);
-		if (sbuf.st_uid == getuid ()) {
-			if (chmod (tmpdir, 0700)==0) {
-				result = 1;
-			} else {
-				trilobite_debug ("Cannot chmod %s to 0700", tmpdir);
+#define RANDCHAR ('A' + (rand () % 23))
+	if (tmpdir == NULL) {
+		pwentry = getpwuid (getuid ());
+		prefix = g_strdup_printf ("/tmp/nautilus-installer-%s.",
+					  (pwentry == NULL) ? "unknown" : pwentry->pw_name);
+		tmpdir = find_old_tmpdir (prefix);
+		if (tmpdir == NULL) {
+			trilobite_debug ("No acceptable temporary directory set; creating one...");
+
+			srand (time (NULL));
+			for (tries = 0; tries < 50; tries++) {
+				tmpdir = g_strdup_printf ("%s%c%c%c%c%c%c%d", prefix,
+							  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
+							  RANDCHAR, RANDCHAR, (rand () % 1000));
+				/* it's important that the mkdir here be atomic */
+				if (mkdir (tmpdir, 0700) == 0) {
+					trilobite_debug ("Created temporary directory \"%s\"", tmpdir);
+					break;
+				}
+				g_free (tmpdir);
+				tmpdir = NULL;
 			}
-		} else {
-			trilobite_debug ("Temporary directory \"%s\" is owned by someone else", 
-					 tmpdir);
-		}    
-	} else if (tmpdir!=NULL) {
-		if (mkdir (tmpdir, 0700) == 0) {
-			trilobite_debug ("Created temporary directory \"%s\"", tmpdir);
-			result = 1;
-		} else {
-			trilobite_debug ("Could not create tmp dir \"%s\", error \"%s\"", 
-					 tmpdir, strerror (errno));
+			if (tries >= 50) {
+				g_warning ("Unable to create temporary directory (%s)", strerror (errno));
+			}
 		}
+		g_free (prefix);
+	}
+
+	if (tmpdir != NULL) {
+		eazel_install_set_tmp_dir (service, tmpdir);
+		result = 1;
 	}
 
 	g_free (tmpdir);
@@ -963,11 +1039,11 @@ eazel_install_delete_downloads (EazelInstall *service)
 	EAZEL_INSTALL_SANITY (service);
 
 	if (service->private->downloaded_files) {
-		trilobite_debug ("*** deleting the package files");
+		trilobite_debug ("deleting the package files:");
 		for (iterator = g_list_first (service->private->downloaded_files); iterator != NULL;
 		     iterator = g_list_next (iterator)) {
 			filename = (char*)iterator->data;
-			trilobite_debug ("*** file '%s'", filename);
+			trilobite_debug ("deleting file '%s'", filename);
 			if (unlink (filename) != 0) {
 				g_warning ("unable to delete file %s !", filename);
 			}
@@ -1006,6 +1082,7 @@ eazel_install_install_packages (EazelInstall *service,
 			char *tmp;
 			tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
 			eazel_install_set_package_list (service, tmp);
+			unlink (tmp);	/* in case one was sitting around from last time */
 			g_free (tmp);
 			
 			eazel_install_fetch_remote_package_list (service);

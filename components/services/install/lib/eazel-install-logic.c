@@ -708,6 +708,8 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
    package->provides (which have full pathname) and link to the
    owning package. Before adding a file to the hashtable, lookup the
    file first. If result is non-null, problem... 
+
+   Did I mention that this function leaks memory like a russian submarine?  -robey
  */
 static gboolean 
 eazel_install_do_transaction_all_files_check (EazelInstall *service,
