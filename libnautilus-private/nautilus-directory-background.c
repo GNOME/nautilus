@@ -76,7 +76,8 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 	}
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-
+        eel_background_set_is_constant_size (background, TRUE);
+                                          
 	g_object_set_data (G_OBJECT (background), "icon_container", (gpointer) icon_container);
 
 	nautilus_file_update_desktop_pixmaps (background);

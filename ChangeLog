@@ -1,3 +1,13 @@
+2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-directory-background.c
+	(desktop_background_realized):	Call
+	eel_background_set_is_constant_size() on the desktop
+	background to avoid flashing with gradients.
+
+	* configure.in:
+	Require eel 1.1.6
+
 2002-03-02  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/nautilus-shell-ui.xml: add stock icons to a couple of menu items
