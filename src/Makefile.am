@@ -72,7 +72,7 @@ nautilus_SOURCES =\
 	nautilus-view-frame-nautilus-view.c	\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.c			\
-	nautilus-view.h				\
+	nautilus-view-frame.h			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\

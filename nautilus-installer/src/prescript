@@ -1,0 +1,14 @@
+if test x$DISPLAY = x; then
+    echo "The Nautilus-Installer requires X"
+fi
+if test $UID -ne 0; then
+    echo ""
+    echo "The Nautilus-Installer requires superuser access to install packages."
+    echo "yadayada insecure yadayada trust us blablabla"
+    echo ""
+    echo "Please enter root password at the prompt"
+    xhost + localhost
+    su - -c "export DISPLAY=$DISPLAY && cd $PWD && sh $0"
+    xhost - localhost
+    exit
+fi

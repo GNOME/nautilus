@@ -55,6 +55,7 @@ bin_PROGRAMS = trilobite-eazel-sample-service
 
 trilobite_eazel_sample_service_SOURCES =	\
 	sample-service-impl.c	\
+	sample-service-public.h	\
 	sample-service-common.c	\
 	sample-service-skels.c	\
 	main.c			\

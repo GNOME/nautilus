@@ -203,6 +203,26 @@ eazel_install_set_arg (GtkObject *object,
 	}
 }
 
+typedef gint (*GtkSignal_NONE__POINTER_ENUM_POINTER) (GtkObject * object,
+						      gpointer arg1,
+						      gint arg2,
+						      gpointer arg3,
+						      gpointer user_data);
+static void 
+gtk_marshal_NONE__POINTER_ENUM_POINTER (GtkObject * object,
+				       GtkSignalFunc func,
+				       gpointer func_data,
+				       GtkArg * args)
+{
+	GtkSignal_NONE__POINTER_ENUM_POINTER rfunc;
+	rfunc = (GtkSignal_NONE__POINTER_ENUM_POINTER) func;
+	(*rfunc) (object,
+		  GTK_VALUE_POINTER (args[0]),
+		  GTK_VALUE_ENUM (args[1]),
+		  GTK_VALUE_POINTER (args[2]),
+		  func_data);
+}
+
 static void
 eazel_install_class_initialize (EazelInstallClass *klass) 
 {
@@ -228,35 +248,35 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE,3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE,3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_failed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[INSTALL_FAILED] = 
 		gtk_signal_new ("install_failed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_failed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
+				gtk_marshal_NONE__POINTER_ENUM_POINTER,
+				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER);
 	signals[UNINSTALL_FAILED] = 
 		gtk_signal_new ("uninstall_failed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, uninstall_failed),
 				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
@@ -528,26 +548,29 @@ eazel_install_emit_download_progress (EazelInstall *service,
 
 void 
 eazel_install_emit_download_failed (EazelInstall *service, 
-				    const char *name)
+				    const char *name,
+				    gpointer info)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name, info);
 }
 
 void 
 eazel_install_emit_install_failed (EazelInstall *service, 
-				    const char *name)
+				   const PackageData *pd,
+				   RPM_FAIL code,
+				   const gpointer info)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd, code, info);
 }
 
 void 
 eazel_install_emit_uninstall_failed (EazelInstall *service, 
-				    const char *name)
+				     const PackageData *pd)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
 }
 
 static void 

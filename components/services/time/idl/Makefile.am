@@ -1,7 +1,6 @@
 idldir = ${prefix}/idl
 idl_DATA = \
-	trilobite-service.idl \
-	sample-service.idl
+	trilobite-eazel-time-service.idl
 
 EXTRA_DIST=\
 	$(idl_DATA)

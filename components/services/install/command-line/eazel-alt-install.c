@@ -122,16 +122,6 @@ eazel_download_progress (EazelInstall *service,
 	if (amount == total) {
 		fprintf (stdout, "\n");
 	}
-
-/*
-                fprintf (stdout, "Progress - %% %f\r", ((float)
-                         curStat.bytes_total ? ((float) ((((float)
-                         curStat.bytes_read) / (float) curStat.bytes_total)
-                         * 100 )) : 100.0));
-                fflush (stdout);
-                if ((float) curStat.bytes_read == (float) curStat.bytes_total) {                        fprintf (stdout, "\n");
-                }
-*/
 }
 
 

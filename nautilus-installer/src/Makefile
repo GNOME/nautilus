@@ -147,10 +147,10 @@ l =
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GNET_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
+INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilbite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GNET_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
-CFLAGS = -O $(WERROR)
+CFLAGS = -g $(WERROR)
 
 bin_PROGRAMS = nautilus-installer
 

@@ -91,30 +91,28 @@ fi
 
 %files
 %defattr(0555, bin, bin)
-%dir %{prefix}/share/gnome/nautilus
+%dir %{prefix}/
 
 
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
 %{prefix}/bin/*
 %{prefix}/lib/lib*.so.*
 
-%defattr(0644, bin, bin)
-%{prefix}/share/gnome/nautilus/docs/*
-
 %defattr (0444, bin, bin)
 %{prefix}/share/locale/*/LC_MESSAGES/*
-%{prefix}/share/mime-info/nautilus.keys
-%{sysconfdir}/CORBA/servers/*
+%{prefix}/share/oaf/*
 
 %files devel
 
 %defattr(0555, bin, bin)
 %dir %{prefix}/include/libnautilus
-%{prefix}/lib/*.a
 %{prefix}/lib/*.so
 %{prefix}/lib/*.la
 
 %defattr(0444, bin, bin)
-%{prefix}/lib/*Conf.sh
-%{prefix}/include/nautilus/*
-%{prefix}/share/idl/*.idl
+%{prefix}/include/libnautilus/*
+%{prefix}/include/libnautilus-extensions/*
+%{prefix}/include/librsvg/*
+%{prefix}/include/libtrilobite/*
+%{prefix}/include/nautilus-widgets/*
+%{prefix}/idl/*.idl

@@ -23,6 +23,7 @@ noinst_LIBRARIES = libinstall.a libinstall_corba.a
 
 libinstall_a_SOURCES =		        	\
 	eazel-install-types.h	 		\
+	eazel-install-types.c	 		\
 	eazel-install-metadata.h		\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.h		\
@@ -35,6 +36,8 @@ libinstall_a_SOURCES =		        	\
 	eazel-install-xml-package-list.h	\
 	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\
+	eazel-install-public.h			\
+	eazel-install-private.h			\
 	$(NULL)
 
 ## CORBA magic
@@ -63,3 +66,6 @@ CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h
 libinstall_corba_a_SOURCES = 		\
 	$(CORBA_GENERATED)		\
 	$(NULL)
+
+EXTRA_DIST = \
+	$(oaf_DATA)

@@ -1,0 +1,44 @@
+rpm_install (GList filenames)
+   |
+   |- while ( (state = ensure_deps (&filenames, &out_files))  == rerun) { 
+   |              |                                                        merge filenames with outfiles
+   |              |                                                        free outfiles
+   |              |                                                     }
+   |              |
+   |              |- add files to TransactionSet
+   |              |- dep order
+   |              |- dep_check
+   |                   if ok
+   |                       |- free stuff, and return ok
+   |                   if fail 
+   |                       |- free stuff
+   |                       |- loop dep_conflicts {
+   |                       |     |- call state = fetch_packages (dep_conflicts[x])
+   |                       |     |                  |- http_fetch or such, dep on topts
+   |                       |     |- if (state == no_matching) 
+   |                       |     |       |- emit signal install_failed (package, DEP_FAIL)
+   |                       |     |       |- remove from filenames
+   |                       |     |- if (state == ok)
+   |                       |             |- add conflicts to out_files
+   |                       |- return rerun
+   |
+   |- do_rpm_install (filenames)
+         |- read headers
+         |      if (source)
+         |       |- emit signal install_failed (package, DEP_SRC_NO_SUPPORTED)
+         |
+         |- add to set
+         |- run transaction set
+
+
+bool ensure_deps (service, GList **filenames, GList **output_files) {
+}
+
+bool rpm_install (service, GList *filenames) {
+}
+
+bool fetch_deps (service, struct DepConflicts, int num_conflicts) {
+}
+
+bool do_rpm_install (service, GList filename) {
+}

@@ -58,6 +58,8 @@ bin_PROGRAMS = trilobite-eazel-time-service
 
 trilobite_eazel_time_service_SOURCES =		\
 	trilobite-eazel-time-service.c		\
+	trilobite-eazel-time-service-public.h	\
+	trilobite-eazel-time-service-private.h	\
 	main.c					\
 	trilobite-eazel-time-service-common.c	\
 	trilobite-eazel-time-service-skels.c	\

@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <rpm/rpmlib.h>
 
 typedef enum _URLType URLType;
 typedef enum _PackageType PackageType;
@@ -41,6 +42,18 @@ typedef struct _TransferOptions TransferOptions;
 typedef struct _InstallOptions InstallOptions;
 typedef struct _CategoryData CategoryData;
 typedef struct _PackageData PackageData;
+typedef enum _RPM_FAIL RPM_FAIL;
+
+enum _RPM_FAIL {
+	RPM_SRC_NOT_SUPPORTED,
+	RPM_DEP_FAIL,
+	RPM_NOT_AN_RPM
+};
+
+struct _HTTPError {
+	int code;
+	char *reason;
+};
 
 enum _URLType {
 	PROTOCOL_LOCAL,
@@ -81,6 +94,8 @@ struct _CategoryData {
 	char* name;
 	GList* packages;
 };
+void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
+void categorydata_destroy (CategoryData *pd);
 
 struct _PackageData {
 	char* name;
@@ -92,5 +107,8 @@ struct _PackageData {
 	GList* soft_depends;
 	GList* hard_depends;
 };
+PackageData* packagedata_new_from_rpm_header (Header);
+void packagedata_destroy_foreach (PackageData *pd, gpointer unused);
+void packagedata_destroy (PackageData *pd);
 
 #endif /* __EAZEL_SERVICES_TYPES_H__ */

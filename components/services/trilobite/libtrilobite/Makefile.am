@@ -35,6 +35,7 @@ libtrilobiteinclude_HEADERS =			\
 	libtrilobite.h				\
 	trilobite-service.h			\
 	trilobite-service-public.h		\
+	trilobite-service-private.h		\
 	trilobite-core-messaging.h		\
 	trilobite-core-metadata-manager.h	\
 	trilobite-core-network.h		\

@@ -19,7 +19,6 @@ void
 druid_cancel                           (GnomeDruid      *gnomedruid,
                                         gpointer         data)
 {
-	g_message ("Installation cancelled");
 	exit (1);
 }
 
@@ -29,7 +28,6 @@ begin_install                          (GtkButton       *button,
                                         gpointer         window)
 {
 	GnomeDruid *druid;
-	g_message ("Begin install");
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
 	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
@@ -67,7 +65,6 @@ druid_finish                           (GnomeDruidPage  *gnomedruidpage,
                                         gpointer         arg1,
                                         gpointer         user_data)
 {
-	g_message ("Installation completed");
 	exit (0);
 }
 
@@ -78,7 +75,6 @@ prep_install                           (GnomeDruidPage  *gnomedruidpage,
 {
 	GnomeDruid *druid;
 	GtkButton *button;
-	g_message ("in prep_install");
 
 	button = GTK_BUTTON (gtk_object_get_data (GTK_OBJECT (window), "begin_button"));
 	gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
@@ -91,8 +87,6 @@ set_images  (GtkWidget *window)
 {
 
 	GnomeDruidPage *page;
-
-	g_message ("in prep");
 
 	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "start_page"));
 	gnome_druid_page_start_set_logo (GNOME_DRUID_PAGE_START (page), gdk_imlib_create_image_from_xpm_data (step_one_top));

@@ -87,7 +87,7 @@ eazel_download_progress (EazelInstall *service,
 }
 
 static void
-append_name_to (GtkWidget *widget,
+append_string_to_window_list (GtkWidget *widget,
 		const char *listname,
 		const char *name)
 {
@@ -98,23 +98,61 @@ append_name_to (GtkWidget *widget,
 	gtk_object_set_data (GTK_OBJECT (widget), listname, list);
 }
 
-void
+static void
 download_failed (EazelInstall *service,
 		 const char *name,
 		 GtkWidget *window)
 {
-	append_name_to (window, "download_failed_list", name);
+	append_string_to_window_list (window, "download_failed_list", name);
+}
+
+static void
+install_failed_foreach (PackageData *dep,
+			GtkWidget *window)
+{	
+	char *string;
+	string = g_strdup_printf (" requires %s %s", dep->name,
+				  dep->version ? dep->version : "");
+	append_string_to_window_list (window, "install_failed_list", string);
+	g_free (string);
+}
+
+static void
+requeue (PackageData *dep,
+	 const PackageData *pd)
+{
+	g_message ("%s-%s failed, requeue and add %s for %s, version >= %s",
+		   pd->name, 
+		   pd->version,
+		   dep->name,
+		   dep->archtype,
+		   dep->version);
 }
 
 void
 install_failed (EazelInstall *service,
-		 const char *name,
-		 GtkWidget *window)
+		const PackageData *pd,
+		RPM_FAIL code,
+		GList *deps,
+		GtkWidget *window)
 {
-	append_name_to (window, "install_failed_list", name);
+	append_string_to_window_list (window, "install_failed_list", pd->name);
+
+	switch (code) {
+	case RPM_DEP_FAIL:
+		g_list_foreach (deps, (GFunc)install_failed_foreach, window);
+		g_list_foreach (deps, (GFunc)requeue, (gpointer)pd);
+		break;
+	case RPM_SRC_NOT_SUPPORTED: 
+		append_string_to_window_list (window, "install_failed_list", "source packaages not supported" );
+		break;
+	default:
+		break;
+	}
+
 }
 
-static char *
+static void
 gen_report (GtkWidget *widget,
 	    const char *listname,
 	    char **text,
@@ -136,7 +174,7 @@ gen_report (GtkWidget *widget,
 		ptr = list;
 		while (ptr) {
 			char *tmp;
-			tmp = g_strconcat ((*text), "* ", (char*)ptr->data, "\n", NULL);
+			tmp = g_strconcat ((*text), (char*)ptr->data, "\n", NULL);
 			g_free ((*text));
 			(*text) = tmp;
 			ptr = ptr->next;
@@ -190,7 +228,6 @@ void installer (GtkWidget *window,
 	service = eazel_install_new_with_config ("/var/eazel/services/eazel-services-config.xml");
 	g_assert (service != NULL);
 
-	eazel_install_open_log (service, TMP_DIR "/log");
 	eazel_install_set_hostname (service, HOSTNAME);
 	eazel_install_set_rpmrc_file (service, RPMRC);
 	eazel_install_set_package_list_storage_path (service, "/package-list.xml");

@@ -1,3 +1,74 @@
+2000-06-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/installer-dep-check:
+	Docs with my scetches on how to redo the rpm-glue to make
+	eazel-install-lib autofetch deps.
+	
+	* components/services/install/command-line/eazel-alt-install.c:
+	(eazel_download_progress):
+	Borked, but compiles again. Will update when libinstall stabilizes.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(gtk_marshal_NONE__POINTER_ENUM_POINTER),
+	(eazel_install_class_initialize),
+	(eazel_install_emit_download_failed),
+	(eazel_install_emit_install_failed),
+	(eazel_install_emit_uninstall_failed):
+	Revamped the install_failed signal to take a PackageData object
+	instead of char * name.
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_a_package),
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages), (uninstall_a_package),
+	(build_packagedata_list_from_deps), (do_rpm_install),
+	(do_rpm_uninstall), (ensure_deps_are_fetched):
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_destroy_foreach), (categorydata_destroy),
+	(packagedata_new_from_rpm_header), (packagedata_destroy_foreach),
+	(packagedata_destroy):
+	* components/services/install/lib/eazel-install-types.h:
+	Doing a lot of hacking to prepare for the autofetch stuff. 
+	
+	* nautilus-installer/src/prescript:
+	* nautilus-installer/src/HACKING:
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(begin_install), (druid_finish), (prep_install), (set_images):
+	* nautilus-installer/src/installer.c:
+	(append_string_to_window_list), (download_failed),
+	(install_failed_foreach), (requeue), (install_failed),
+	(gen_report), (installer):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c:
+	Hacking in the installer. This one is borked sine I'm trying to
+	figure out the right scheme of reported dep fails. Actually, I
+	want the lib to autofetch deps by option, instead of failing them
+	Also added stuff to link.sh, so it builds static from scratch,
+	strips gzips and adds prescript to the gzexe file. So if you build
+	using link.sh, you get a 644 binary which when executed using
+	sh ./nautilus-installer prompts for root password and does the
+	magic. Easier for newbies.
+	
+	* components/services/time/idl/Makefile.am:
+	* components/services/install/idl//Makefile.am:
+	* components/services/time/Makefile.am:
+	* components/services/install/Makefile.am:
+	* components/services/install/lib/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/idl/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* configure.in:
+	* nautilus.spec.in:
+	* po/POTFILES.in:
+	* src/Makefile.am:
+	Loads of makefile fixing to make make dist and rpm -ta work.
+	
 2000-06-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c: Moved static

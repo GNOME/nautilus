@@ -11,6 +11,8 @@
 
 #include "interface.h"
 #include "support.h"
+#include "callbacks.h"
+#include <libtrilobite/helixcode-utils.h>
 
 int
 main (int argc, char *argv[])

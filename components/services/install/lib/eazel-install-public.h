@@ -62,9 +62,17 @@ struct _EazelInstallClass
 	void (*download_progress) (char *file, int amount, int total);
 	void (*install_progress)  (char *name, int amount, int total);
 
-	void (*download_failed) (char *name);
-	void (*install_failed) (char *name);
-	void (*uninstall_failed) (char *name);
+	/* 
+	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
+	*/
+	void (*download_failed) (char *name, gpointer info);
+	/*
+	  if RPM_FAIL is RPM_SRC_NOT_SUPPORTED, info is NULL
+	                 RPM_DEP_FAIL, info is a GSList of required packages (PackageData objects)
+			 RPM_NOT_AN_RPM, info is NULL
+	*/
+	void (*install_failed) (PackageData *pd, RPM_FAIL code, gpointer info);
+	void (*uninstall_failed) (PackageData *pd);
 #ifndef STANDALONE
 	gpointer servant_vepv;
 #endif /* STANDALONE */
@@ -104,11 +112,14 @@ void eazel_install_emit_download_progress         (EazelInstall *service,
 						   int amount, 
 						   int total);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
-						   const char *name);
+						   const char *name,
+						   const gpointer info);
 void eazel_install_emit_install_failed            (EazelInstall *service, 
-						   const char *name);
+						   const PackageData *pd,
+						   RPM_FAIL code,
+						   const gpointer info);
 void eazel_install_emit_uninstall_failed          (EazelInstall *service, 
-						   const char *name);
+						   const PackageData *pd);
 
 /* This is in flux */
 void eazel_install_fetch_pockage_list (EazelInstall *service);
