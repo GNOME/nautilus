@@ -27,8 +27,9 @@
    representing a data view frame. */
 
 #include <config.h>
-#include "nautilus.h"
+
 #include "ntl-view-private.h"
+#include "ntl-window.h"
 
 static Nautilus_ViewWindow
 impl_Nautilus_ViewFrame__get_main_window(impl_POA_Nautilus_ViewFrame *servant,

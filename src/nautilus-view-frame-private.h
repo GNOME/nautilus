@@ -29,7 +29,7 @@
 #ifndef NTL_VIEW_PRIVATE_H
 #define NTL_VIEW_PRIVATE_H
 
-#include "nautilus.h"
+#include "ntl-view.h"
 
 typedef struct {
         POA_Nautilus_ViewFrame servant;

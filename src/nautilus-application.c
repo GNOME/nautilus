@@ -25,7 +25,9 @@
  */
 
 #include <config.h>
-#include "nautilus.h"
+#include "ntl-app.h"
+
+#include "ntl-window-state.h"
 #include <libnautilus/libnautilus.h>
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"
@@ -34,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-undo-manager.h>
+#include <liboaf/liboaf.h>
 
 typedef struct {
 	POA_Nautilus_Application servant;
@@ -234,14 +237,12 @@ nautilus_app_init (NautilusApp *app)
 	/* Init undo manager */
 	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
 	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app->undo_manager));
-	/* Fix this */
-	Bonobo_Unknown_ref (undo_manager, &ev);
 
 	/* Stash a global reference to the object */
 	nautilus_undo_manager_stash_global_undo (undo_manager);
 
-	/* Add it to the application object*/
-	nautilus_attach_undo_manager ( GTK_OBJECT (app), undo_manager);
+	/* Add it to the application object */
+	nautilus_attach_undo_manager (GTK_OBJECT (app), undo_manager);
 
 	CORBA_exception_free (&ev);
 }

@@ -28,8 +28,11 @@
    object. */
 
 #include <config.h>
+
 #include "ntl-view-private.h"
-#include "nautilus.h"
+#include "ntl-meta-view.h"
+#include "ntl-content-view.h"
+#include "ntl-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>

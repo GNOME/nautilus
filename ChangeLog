@@ -1,3 +1,61 @@
+2000-05-24  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Moved to make clear that popt must build first.
+	
+	* RENAMING: Added some new file renamings.
+	
+	* src/nautilus-zoomable-frame-svr.c:
+	* src/nautilus.h: [removed]
+	* src/ntl-app.c:
+	* src/ntl-main.c:
+	* src/ntl-meta-view.c:
+	* src/ntl-types.h: [removed]
+	* src/ntl-uri-map.c:
+	* src/ntl-view-bonobo-control.c:
+	* src/ntl-view-bonobo-subdoc.c:
+	* src/ntl-view-frame-svr.c:
+	* src/ntl-view-nautilus.c:
+	* src/ntl-view-private.h:
+	* src/ntl-view.c:
+	* src/ntl-window-msgs.c:
+	* src/ntl-window-state.c:
+	* src/ntl-window.c:
+	Got rid of "nautilus.h" and "ntl-types.h".
+
+	* libnautilus/nautilus-undo-context.c:
+	(impl_Nautilus_Undo_Context__destroy),
+	(impl_Nautilus_Undo_Context__create),
+	(impl_Nautilus_Undo_Context__get_undo_manager),
+	(nautilus_undo_context_new), (nautilus_undo_context_initialize),
+	(destroy):
+	* libnautilus/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__destroy),
+	(impl_Nautilus_Undo_Manager__create),
+	(impl_Nautilus_Undo_Manager__append),
+	(impl_Nautilus_Undo_Manager__forget),
+	(impl_Nautilus_Undo_Manager__undo), (nautilus_undo_manager_new),
+	(nautilus_undo_manager_initialize),
+	(nautilus_undo_manager_initialize_class),
+	(nautilus_undo_manager_undo), (nautilus_undo_manager_redo),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_unregister_object),
+	(nautilus_undo_manager_can_undo), (nautilus_undo_manager_can_redo),
+	(destroy), (nautilus_undo_manager_enable_redo),
+	(nautilus_undo_manager_set_queue_depth), (free_undo_manager_list):
+	Various code cleanups. Specifically, get rid of unused
+	bonobo_object and rename gtk_object to bonobo_object.
+	Get rid of some yucky function pointer casts.
+	
+	* src/ntl-app.c: (nautilus_app_init):
+	Got rid of bogus extra ref.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Reindent part just to annoy John.
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application): Newline at end of file (ugh).
+	
+	* src/ntl-index-panel.c: (add_command_buttons): Format tweaking.
+	
 2000-05-24  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* configure.in: 
@@ -25,9 +83,8 @@
 	
 2000-05-24  J Shane Culpepper  <pepper@eazel.com>
 
-	*nautilus-installer/nautilus-installer.c
-	*nautilus-installer/Makefile
-
+	* nautilus-installer/nautilus-installer.c:
+	* nautilus-installer/Makefile:
 	Removed the duplicate helixcode files from the installer.  Temporarily
 	added 4 duplicate functions to the installer until I get libtrilobite
 	statically linked in.
@@ -102,22 +159,22 @@
 
 	* libnautilus/nautilus-undo-context.c:
 	(impl_Nautilus_Undo_Context__get_undo_manager):
-	Added call to CORBA_Object_duplicate().  This
-	fixed an explosive bug.
+	Added call to CORBA_Object_duplicate(). This fixed an explosive
+	bug.
 	
 	* libnautilus/nautilus-undo-manager.c:
 	* libnautilus/nautilus-undo-manager.h:
 	(nautilus_undo_manager_stash_global_undo),
 	(nautilus_undo_manager_get_global_undo):
-	New functions to save application global instance of Nautilus_Undo_Manager
+	New functions to save application global instance of
+	Nautilus_Undo_Manager
 	
 	* src/ntl-app.c: (nautilus_app_init):
 	Add call to nautilus_undo_manager_stash_global_undo.
 	
 	* src/ntl-view.c:
 	(nautilus_view_frame_load_client):
-	Coonected Nautilus_Undo_Context interface to view frame.
-	
+	Connected Nautilus_Undo_Context interface to view frame.
 
 2000-05-23  Ramiro Estrugo  <ramiro@eazel.com>
 

@@ -43,54 +43,48 @@
 Nautilus_Undo_Manager global_undo_manager;
 
 enum {
-	UNDO_TRANSACTION_OCCURED,
+	UNDO_TRANSACTION_OCCURRED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
 
-
 typedef struct {
 	POA_Nautilus_Undo_Manager servant;
-	gpointer bonobo_object;
-
-	NautilusUndoManager *gtk_object;
+	NautilusUndoManager *bonobo_object;
 } impl_POA_Nautilus_Undo_Manager;
 
 /* GtkObject */
-static void     nautilus_undo_manager_initialize_class  (NautilusUndoManagerClass  *class);
-static void     nautilus_undo_manager_initialize        (NautilusUndoManager       *item);
-static void	destroy 			   	(GtkObject *object);
-
-static void     free_undo_manager_list 		        (GList *list);
-static GList	*prune_undo_manager_list 		(GList *list, int items);
+static void   nautilus_undo_manager_initialize_class (NautilusUndoManagerClass        *class);
+static void   nautilus_undo_manager_initialize       (NautilusUndoManager             *item);
+static void   destroy                                (GtkObject                       *object);
+static void   free_undo_manager_list                 (GList                           *list);
+static GList *prune_undo_manager_list                (GList                           *list,
+						      int                              items);
 
 /* CORBA/Bonobo */
-static void 	impl_Nautilus_Undo_Manager__append 	(impl_POA_Nautilus_Undo_Manager  *servant,
-							 const Nautilus_Undo_Transaction transaction,
-							 CORBA_Environment *ev);
-static void 	impl_Nautilus_Undo_Manager__forget 	(impl_POA_Nautilus_Undo_Manager  *servant,
-							 const Nautilus_Undo_Transaction transaction,
-							 CORBA_Environment *ev);
-static void 	impl_Nautilus_Undo_Manager__undo 	(impl_POA_Nautilus_Undo_Manager  *servant,
-							 CORBA_Environment *ev);
-
-
-static void 		nautilus_undo_manager_add_transaction 	(NautilusUndoManager *manager, 
-							 	 Nautilus_Undo_Transaction transaction);
-static void 		nautilus_undo_manager_undo		(NautilusUndoManager *manager);
+static void   impl_Nautilus_Undo_Manager__append     (PortableServer_Servant           servant,
+						      const Nautilus_Undo_Transaction  transaction,
+						      CORBA_Environment               *ev);
+static void   impl_Nautilus_Undo_Manager__forget     (PortableServer_Servant           servant,
+						      const Nautilus_Undo_Transaction  transaction,
+						      CORBA_Environment               *ev);
+static void   impl_Nautilus_Undo_Manager__undo       (PortableServer_Servant           servant,
+						      CORBA_Environment               *ev);
+static void   nautilus_undo_manager_add_transaction  (NautilusUndoManager             *manager,
+						      Nautilus_Undo_Transaction        transaction);
+static void   nautilus_undo_manager_undo             (NautilusUndoManager             *manager);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE(NautilusUndoManager, nautilus_undo_manager, BONOBO_OBJECT_TYPE)
 
 POA_Nautilus_Undo_Manager__epv libnautilus_Nautilus_Undo_Manager_epv =
 {
 	NULL,			/* _private */
-	(gpointer) &impl_Nautilus_Undo_Manager__append,
-	(gpointer) &impl_Nautilus_Undo_Manager__forget,
-	(gpointer) &impl_Nautilus_Undo_Manager__undo,
+	&impl_Nautilus_Undo_Manager__append,
+	&impl_Nautilus_Undo_Manager__forget,
+	&impl_Nautilus_Undo_Manager__undo,
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
-
+static PortableServer_ServantBase__epv base_epv;
 static POA_Nautilus_Undo_Manager__vepv impl_Nautilus_Undo_Manager_vepv =
 {
 	&base_epv,
@@ -98,17 +92,16 @@ static POA_Nautilus_Undo_Manager__vepv impl_Nautilus_Undo_Manager_vepv =
 	&libnautilus_Nautilus_Undo_Manager_epv
 };
 
-
 static void
-impl_Nautilus_Undo_Manager__destroy(BonoboObject *obj, impl_POA_Nautilus_Undo_Manager *servant)
+impl_Nautilus_Undo_Manager__destroy (BonoboObject *obj, impl_POA_Nautilus_Undo_Manager *servant)
 {
 	PortableServer_ObjectId *objid;
 	CORBA_Environment ev;
 	void (*servant_destroy_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 
-  	CORBA_exception_init(&ev);
+  	CORBA_exception_init (&ev);
 
-  	servant_destroy_func = NAUTILUS_UNDO_MANAGER_CLASS (GTK_OBJECT (servant->gtk_object)->klass)->servant_destroy_func;
+  	servant_destroy_func = NAUTILUS_UNDO_MANAGER_CLASS (GTK_OBJECT (servant->bonobo_object)->klass)->servant_destroy_func;
   	objid = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
   	PortableServer_POA_deactivate_object (bonobo_poa (), objid, &ev);
   	CORBA_free (objid);
@@ -116,7 +109,7 @@ impl_Nautilus_Undo_Manager__destroy(BonoboObject *obj, impl_POA_Nautilus_Undo_Ma
 
   	servant_destroy_func ((PortableServer_Servant) servant, &ev);
   	g_free (servant);
-  	CORBA_exception_free(&ev);
+  	CORBA_exception_free (&ev);
 }
 
 static Nautilus_Undo_Manager
@@ -135,7 +128,7 @@ impl_Nautilus_Undo_Manager__create (NautilusUndoManager *manager, CORBA_Environm
 		servant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
   	servant_init_func ((PortableServer_Servant) servant, ev);
 
-  	servant->gtk_object = manager;
+  	servant->bonobo_object = manager;
 
   	retval = bonobo_object_activate_servant (BONOBO_OBJECT (manager), servant);
 
@@ -144,62 +137,58 @@ impl_Nautilus_Undo_Manager__create (NautilusUndoManager *manager, CORBA_Environm
   	return retval;
 }
 
-
 static void
-impl_Nautilus_Undo_Manager__append (impl_POA_Nautilus_Undo_Manager *servant,
+impl_Nautilus_Undo_Manager__append (PortableServer_Servant servant,
 				    const Nautilus_Undo_Transaction undo_transaction,
 				    CORBA_Environment *ev)
 {
 	NautilusUndoManager *manager;
 
-	g_assert (NAUTILUS_IS_UNDO_MANAGER (servant->gtk_object));
-	manager = NAUTILUS_UNDO_MANAGER (servant->gtk_object);
+	manager = ((impl_POA_Nautilus_Undo_Manager *) servant)->bonobo_object;
+	g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
 
 	Nautilus_Undo_Transaction_ref (undo_transaction, ev);
 	nautilus_undo_manager_add_transaction (manager, undo_transaction);
 }
 
 static void
-impl_Nautilus_Undo_Manager__forget (impl_POA_Nautilus_Undo_Manager *servant,
+impl_Nautilus_Undo_Manager__forget (PortableServer_Servant servant,
 			            const Nautilus_Undo_Transaction transaction,
 				    CORBA_Environment *ev)
 {
 	NautilusUndoManager *manager;
 
-	g_assert (NAUTILUS_IS_UNDO_MANAGER (servant->gtk_object));
-	manager = NAUTILUS_UNDO_MANAGER (servant->gtk_object);
+	manager = ((impl_POA_Nautilus_Undo_Manager *) servant)->bonobo_object;
+	g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
+	
+	/* FIXME: Need to implement this. */
 }
 
 static void 	
-impl_Nautilus_Undo_Manager__undo (impl_POA_Nautilus_Undo_Manager  *servant, CORBA_Environment *ev)
+impl_Nautilus_Undo_Manager__undo (PortableServer_Servant servant,
+				  CORBA_Environment *ev)
 {
 	NautilusUndoManager *manager;
 
-	g_assert (NAUTILUS_IS_UNDO_MANAGER (servant->gtk_object));
-	manager = NAUTILUS_UNDO_MANAGER (servant->gtk_object);
-
+	manager = ((impl_POA_Nautilus_Undo_Manager *) servant)->bonobo_object;
+	g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
+	
 	nautilus_undo_manager_undo (manager);
 }
 
-
-/* nautilus_undo_manager_new */
 NautilusUndoManager *
 nautilus_undo_manager_new (void)
 {
-	NautilusUndoManager *manager;
-	
-	manager = gtk_type_new (nautilus_undo_manager_get_type ());
-
-	return manager;
+	return gtk_type_new (nautilus_undo_manager_get_type ());
 }
-
 
 /* Object initialization function for the NautilusUndoManager */
 static void 
 nautilus_undo_manager_initialize (NautilusUndoManager *manager)
 {
-	CORBA_Environment ev;	
-	CORBA_exception_init(&ev);
+	CORBA_Environment ev;
+	
+	CORBA_exception_init (&ev);
 
 	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
 
@@ -214,8 +203,8 @@ nautilus_undo_manager_initialize (NautilusUndoManager *manager)
 	manager->details->queue_depth = 1;
 	
 	bonobo_object_construct (BONOBO_OBJECT (manager), impl_Nautilus_Undo_Manager__create (manager, &ev));
-	
-  	CORBA_exception_free(&ev);
+
+  	CORBA_exception_free (&ev);
 }
 
 
@@ -234,7 +223,7 @@ nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
 	klass->vepv = &impl_Nautilus_Undo_Manager_vepv;
 
 	/* Setup signals */
-	signals[UNDO_TRANSACTION_OCCURED]
+	signals[UNDO_TRANSACTION_OCCURRED]
 		= gtk_signal_new ("undo_transaction_occurred",
 				  GTK_RUN_LAST,
 				  object_class->type,
@@ -246,8 +235,6 @@ nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);	
 }
 
-
-/* nautilus_undo_manager_undo_last_transaction */
 static void 
 nautilus_undo_manager_undo (NautilusUndoManager *manager)
 {
@@ -255,7 +242,7 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 	CORBA_Object undo_transaction;
 	CORBA_Environment ev;
 
-  	CORBA_exception_init(&ev);
+  	CORBA_exception_init (&ev);
 
 	/* Verify we have a transaction to be undone */
 	if (manager->details->undo_list == NULL) {
@@ -282,22 +269,22 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 	}
 
 	/* Fire off signal informing that an undo transaction has occurred */
-	gtk_signal_emit (GTK_OBJECT (manager), signals[UNDO_TRANSACTION_OCCURED]);
+	gtk_signal_emit (GTK_OBJECT (manager),
+			 signals[UNDO_TRANSACTION_OCCURRED]);
 
-	CORBA_exception_free(&ev);
+	CORBA_exception_free (&ev);
 }
 
 #if 0
-/* nautilus_undo_manager_redo_last_undone_transaction */
-static void 
+static void
 nautilus_undo_manager_redo (NautilusUndoManager *manager)
-{		
+{
 	GList *list;
 	CORBA_Object redo_transaction;
 	CORBA_Object undo_transaction;
 	CORBA_Environment ev;
 
-  	CORBA_exception_init(&ev);
+  	CORBA_exception_init (&ev);
 
 	/* Are we allowing redo operations? */
 	if (manager->details->enable_redo) {
@@ -323,21 +310,21 @@ nautilus_undo_manager_redo (NautilusUndoManager *manager)
 	Nautilus_Undo_Transaction_ref (undo_transaction, &ev);
 	nautilus_undo_manager_add_transaction (manager, undo_transaction);
 
-	CORBA_exception_free(&ev);
+	CORBA_exception_free (&ev);
 }
 #endif
 
-/* nautilus_undo_manager_add_undo_transaction */
 static void 
-nautilus_undo_manager_add_transaction (NautilusUndoManager *manager, Nautilus_Undo_Transaction transaction)
+nautilus_undo_manager_add_transaction (NautilusUndoManager *manager,
+				       Nautilus_Undo_Transaction transaction)
 {
 	int length;
 	
-	g_return_if_fail (transaction != NULL);
-
+	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
+	g_return_if_fail (transaction != CORBA_OBJECT_NIL);
+	
 	/* Check and see if we are over our queue limit */
 	length = g_list_length (manager->details->undo_list);
-			
 	if (length >= manager->details->queue_depth) {
 		manager->details->undo_list = prune_undo_manager_list
 			(manager->details->undo_list, 
@@ -348,7 +335,8 @@ nautilus_undo_manager_add_transaction (NautilusUndoManager *manager, Nautilus_Un
 	manager->details->undo_list = g_list_append (manager->details->undo_list, transaction);
 	
 	/* Fire off signal informing that an undo transaction has occurred */
-	gtk_signal_emit (GTK_OBJECT (manager), signals[UNDO_TRANSACTION_OCCURED]);
+	gtk_signal_emit (GTK_OBJECT (manager),
+			 signals[UNDO_TRANSACTION_OCCURRED]);
 }
 
 /* nautilus_undo_manager_unregister_object
@@ -356,7 +344,6 @@ nautilus_undo_manager_add_transaction (NautilusUndoManager *manager, Nautilus_Un
  * Remove any transaction with object as target from
  * the undo and redo queues
  */
-
 gboolean 
 nautilus_undo_manager_unregister_object (GtkObject *object)
 {
@@ -366,10 +353,10 @@ nautilus_undo_manager_unregister_object (GtkObject *object)
 	GList *list;
 	int index, length;
 	Nautilus_Undo_Transaction transaction;
-*/	
 	CORBA_Environment ev;
 
-  	CORBA_exception_init(&ev);
+  	CORBA_exception_init (&ev);
+*/	
 
 	/* FIXME: We can't get a pointer to the actual undo manager, so this
 	 * needs to work through the CORBA interface to the undo manager.
@@ -424,45 +411,32 @@ nautilus_undo_manager_unregister_object (GtkObject *object)
 	
 	if (success) {
 		/* Fire off signal informing that a transaction has occurred */
-		gtk_signal_emit (GTK_OBJECT (manager), signals[UNDO_TRANSACTION_OCCURED]);
+		gtk_signal_emit (GTK_OBJECT (manager),
+				 signals[UNDO_TRANSACTION_OCCURRED]);
 	}
 	
 	return success;
 }
 
-/* nautilus_undo_manager_can_undo */
-gboolean 
+gboolean
 nautilus_undo_manager_can_undo (NautilusUndoManager *manager)
 {	
-	if (manager != NULL) {
-		return (g_list_length (manager->details->undo_list) > 0);
-	} else {
-		return FALSE;
-	}
+	return manager != NULL
+		&& manager->details->undo_list != NULL;
 }
 
-/* nautilus_undo_manager_can_redo */
-gboolean 
+gboolean
 nautilus_undo_manager_can_redo (NautilusUndoManager *manager)
 {
-	if (manager->details->enable_redo) {
-		if (manager != NULL) {		
-			return (g_list_length (manager->details->redo_list) > 0);
-		} else {
-			return FALSE;
-		}
-	} else {
-		return FALSE;
-	}
+	return manager != NULL
+		&& manager->details->enable_redo
+		&& manager->details->redo_list != NULL;
 }
 
-/* destroy */
 static void
 destroy (GtkObject *object)
 {
 	NautilusUndoManager *manager;
-
-	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (object));
 
 	manager = NAUTILUS_UNDO_MANAGER (object);
 	
@@ -477,40 +451,34 @@ destroy (GtkObject *object)
  * 
  * Enable or disable redo functionality
  */ 
-
 void
 nautilus_undo_manager_enable_redo (NautilusUndoManager *manager, gboolean value)
 {
-	g_return_if_fail (manager != NULL);
+	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
+	g_return_if_fail (value == FALSE || value == TRUE);
 
 	manager->details->enable_redo = value;
 
 	/* Flush and free redo queue */
-	g_list_free (manager->details->redo_list);
+	free_undo_manager_list (manager->details->redo_list);
+	manager->details->redo_list = NULL;
 }
 
-/* nautilus_undo_manager_enable_redo
- * 
- * Enable or disable redo functionality
- */ 
 void		
 nautilus_undo_manager_set_queue_depth (NautilusUndoManager *manager, int depth)
 {
 	int length;
 	
-	/* Don't allow negative or zero queue depth */
-	if (depth <= 0) {
-		g_warning ("NautilusUndoManager doesn not allow negative or zero length queue.");
-		return;
-	}
+	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
+	g_return_if_fail (depth > 0);
 	
 	manager->details->queue_depth = depth;
-
+	
 	/* Prune lists */
 	length = g_list_length (manager->details->undo_list);
 	if (length > depth) {
 		manager->details->undo_list = prune_undo_manager_list (manager->details->undo_list, 
-										   length - depth);
+								       length - depth);
 	}
 	length = g_list_length (manager->details->redo_list);
 	if (length > depth) {
@@ -519,7 +487,8 @@ nautilus_undo_manager_set_queue_depth (NautilusUndoManager *manager, int depth)
 	}
 
 	/* Fire off signal informing that an undo transaction has occurred */
-	gtk_signal_emit (GTK_OBJECT (manager), signals[UNDO_TRANSACTION_OCCURED]);
+	gtk_signal_emit (GTK_OBJECT (manager),
+			 signals[UNDO_TRANSACTION_OCCURRED]);
 }
 
 /* free_undo_manager_list
@@ -533,13 +502,13 @@ free_undo_manager_list (GList *list)
 	Nautilus_Undo_Transaction transaction;
 	CORBA_Environment ev;
 
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 	for (p = list; p != NULL; p = p->next) {
 		transaction = p->data;
 		
 		Nautilus_Undo_Transaction_unref (transaction, &ev);
 	}
-	CORBA_exception_free(&ev);
+	CORBA_exception_free (&ev);
 
 	g_list_free (list);
 }
@@ -665,7 +634,7 @@ nautilus_share_undo_manager (GtkObject *destination_object,
 		 nautilus_get_undo_manager (source_object));
 }
 
-/* Locates an undo manger for this bonobo control.
+/* Locates an undo manager for this bonobo control.
  * The undo manager is supplied by an interface on
  * the control frame. The put that undo manager on
  * the Bonobo control's widget.

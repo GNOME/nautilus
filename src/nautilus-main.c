@@ -29,14 +29,20 @@
 /* ntl-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
 
 #include <config.h>
-#include "nautilus.h"
+
 #include "nautilus-self-check-functions.h"
+#include "ntl-app.h"
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <nautilus-widgets/nautilus-preferences.h>
+#include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
+#include <popt.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-init.h>
+
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <liboaf/liboaf.h>
 
 int
 main(int argc, char *argv[])

@@ -1,58 +1,67 @@
-We put plans for renaming in here so we can think about them for a while.
-Note that when we rename a class, it usually involves renaming some files too.
----
+We put plans for renaming in here so we can think about them for a
+while.  Note that when we rename a class, it usually involves renaming
+some functions and files too.
 
-src/ntl-app.c -> src/nautilus-application.c
-src/ntl-app.h -> src/nautilus-application.h
-src/ntl-content-view.c -> src/nautilus-content-view-frame.c
-src/ntl-content-view.h -> src/nautilus-content-view-frame.h
-src/ntl-main.c -> src/nautilus-main.c
-src/ntl-meta-view.c -> src/nautilus-meta-view-frame.c
-src/ntl-meta-view.h -> src/nautilus-meta-view-frame.h
-src/ntl-view-bonobo-control.c -> src/nautilus-view-frame-bonobo-control.c
-src/ntl-view-bonobo-subdoc.c -> src/nautilus-view-frame-bonobo-embeddable.c
-src/ntl-view-private.h -> src/nautilus-view-frame-private.h
-src/ntl-view.c -> src/nautilus-view-frame.c
-src/ntl-view.h -> src/nautilus-view-frame.h
-src/ntl-window-private.h -> src/nautilus-window-private.h
-src/ntl-window-state.c -> src/nautilus-window-state.c
-src/ntl-window-state.h -> src/nautilus-window-state.h
-src/ntl-window.c -> src/nautilus-window.c
-src/ntl-window.h -> src/nautilus-window.h
+----------
+file names
+----------
+components/history/ntl-history-view.c -> components/history/nautilus-history-view.c
+components/notes/ntl-notes.c -> components/notes/nautilus-notes.c
 libnautilus/nautilus-content-view-frame.c -> libnautilus/nautilus-content-view.c
 libnautilus/nautilus-content-view-frame.h -> libnautilus/nautilus-content-view.h
 libnautilus/nautilus-meta-view-frame.c -> libnautilus/nautilus-meta-view.c
 libnautilus/nautilus-meta-view-frame.h -> libnautilus/nautilus-meta-view.h
 libnautilus/nautilus-view-frame.c -> libnautilus/nautilus-view.c
 libnautilus/nautilus-view-frame.h -> libnautilus/nautilus-view.h
-src/ntl-view-nautilus.c -> src/nautilus-view-frame-nautilus-view.c
-src/ntl-index-panel.c -> nautilus-sidebar.c
-src/ntl-index-panel.h -> nautilus-sidebar.h
+src/nautilus-index-tabs.c -> src/nautilus-sidebar-tabs.c
+src/nautilus-index-tabs.h -> src/nautilus-sidebar-tabs.h
+src/nautilus-index-title.c -> src/nautilus-sidebar-title.c
+src/nautilus-index-title.h -> src/nautilus-sidebar-title.h
+src/nautilus-zoomable-frame-svr.c -> src/nautilus-zoomable-frame-corba.c
+src/ntl-app.c -> src/nautilus-application.c
+src/ntl-app.h -> src/nautilus-application.h
+src/ntl-content-view.c -> src/nautilus-content-view-frame.c
+src/ntl-content-view.h -> src/nautilus-content-view-frame.h
+src/ntl-index-panel.c -> src/nautilus-sidebar.c
+src/ntl-index-panel.h -> src/nautilus-sidebar.h
+src/ntl-main.c -> src/nautilus-main.c
+src/ntl-meta-view.c -> src/nautilus-meta-view-frame.c
+src/ntl-meta-view.h -> src/nautilus-meta-view-frame.h
 src/ntl-miniicon.c -> libnautilus-extensions/nautilus-mini-icon.c
 src/ntl-miniicon.h -> libnautilus-extensions/nautilus-mini-icon.h
+src/ntl-uri-map.c -> src/nautilus-applicable-views.c
+src/ntl-uri-map.h -> src/nautilus-applicable-views.h
+src/ntl-view-bonobo-control.c -> src/nautilus-view-frame-bonobo-control.c
+src/ntl-view-bonobo-subdoc.c -> src/nautilus-view-frame-bonobo-embeddable.c
+src/ntl-view-frame-svr.c -> src/nautilus-view-frame-corba.c
+src/ntl-view-nautilus.c -> src/nautilus-view-frame-nautilus-view.c
+src/ntl-view-private.h -> src/nautilus-view-frame-private.h
+src/ntl-view.c -> src/nautilus-view-frame.c
+src/ntl-view.h -> src/nautilus-view-frame.h
+src/ntl-window-msgs.c -> src/nautilus-window-manage-views.c
+src/ntl-window-msgs.h -> src/nautilus-window-manage-views.h
+src/ntl-window-private.h -> src/nautilus-window-private.h
+src/ntl-window-state.c -> src/nautilus-window-state.c
+src/ntl-window-state.h -> src/nautilus-window-state.h
+src/ntl-window.c -> src/nautilus-window.c
+src/ntl-window.h -> src/nautilus-window.h
 
-src/ntl-types.h -> (delete this file)
+components/html/ntl-web-browser.c -> ?
+components/websearch/ntl-web-search.c -> ?
 
-
-src/ntl-uri-map.c -> nautilus-applicable-views.c
-src/ntl-uri-map.h -> nautilus-applicable-views.h
-src/ntl-window-msgs.c -> nautilus-window-manage-views.c
-src/ntl-window-msgs.h -> nautilus-window-manage-views.h
-
-ntl* -> nautilus*
-
-GtkScrollFrame -> NautilusScrollFrame
-
-*_cb -> *_callback
-
+----------------------------
+classes and other data types
+----------------------------
 *IndexPanel* -> *Sidebar*
 *MetaView* -> *SidebarPanel*
-
-
+GtkScrollFrame -> NautilusScrollFrame
 NavigationRequestInfo -> NavigationRequest
 NavigationInfo -> Location
-	
 SelectionInfo -> Selection
 SelectionRequestInfo -> SelectionRequest
-
 StatusRequestInfo -> Status (or StatusRequest)
+
+--------------
+function names
+--------------
+*_cb -> *_callback

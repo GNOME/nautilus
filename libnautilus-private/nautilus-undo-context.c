@@ -36,30 +36,27 @@
 
 typedef struct {
 	POA_Nautilus_Undo_Context servant;
-	gpointer bonobo_object;
-
-	NautilusUndoContext *gtk_object;
+	NautilusUndoContext *bonobo_object;
 } impl_POA_Nautilus_Undo_Context;
 
 /* GtkObject */
-static void     nautilus_undo_context_initialize_class  (NautilusUndoContextClass  *class);
-static void     nautilus_undo_context_initialize        (NautilusUndoContext       *item);
-static void	destroy 			   	(GtkObject *object);
+static void                  nautilus_undo_context_initialize_class       (NautilusUndoContextClass *class);
+static void                  nautilus_undo_context_initialize             (NautilusUndoContext      *item);
+static void                  destroy                                      (GtkObject                *object);
 
 /* CORBA/Bonobo */
-static Nautilus_Undo_Manager impl_Nautilus_Undo_Context__get_undo_manager (impl_POA_Nautilus_Undo_Context *servant,
-							 	 	  CORBA_Environment *ev);
+static Nautilus_Undo_Manager impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant    servant,
+									   CORBA_Environment        *ev);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoContext, nautilus_undo_context, BONOBO_OBJECT_TYPE)
 
 POA_Nautilus_Undo_Context__epv libnautilus_Nautilus_Undo_Context_epv =
 {
-	NULL,			/* _private */
-	(gpointer) &impl_Nautilus_Undo_Context__get_undo_manager,
+	NULL, /* _private */
+	&impl_Nautilus_Undo_Context__get_undo_manager,
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
-
+static PortableServer_ServantBase__epv base_epv;
 static POA_Nautilus_Undo_Context__vepv impl_Nautilus_Undo_Context_vepv =
 {
 	&base_epv,
@@ -74,17 +71,20 @@ impl_Nautilus_Undo_Context__destroy (BonoboObject *obj, impl_POA_Nautilus_Undo_C
 	CORBA_Environment ev;
 	void (*servant_destroy_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 
-  	CORBA_exception_init(&ev);
+  	CORBA_exception_init (&ev);
 
-  	servant_destroy_func = NAUTILUS_UNDO_CONTEXT_CLASS (GTK_OBJECT (servant->gtk_object)->klass)->servant_destroy_func;
+  	servant_destroy_func = NAUTILUS_UNDO_CONTEXT_CLASS
+		(GTK_OBJECT (servant->bonobo_object)->klass)->servant_destroy_func;
+
   	objid = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
   	PortableServer_POA_deactivate_object (bonobo_poa (), objid, &ev);
   	CORBA_free (objid);
   	obj->servant = NULL;
 
-  	servant_destroy_func ((PortableServer_Servant) servant, &ev);
+  	(* servant_destroy_func) ((PortableServer_Servant) servant, &ev);
+
   	g_free (servant);
-  	CORBA_exception_free(&ev);
+  	CORBA_exception_free (&ev);
 }
 
 static Nautilus_Undo_Context
@@ -93,39 +93,39 @@ impl_Nautilus_Undo_Context__create (NautilusUndoContext *context, CORBA_Environm
 	Nautilus_Undo_Context retval;
 	impl_POA_Nautilus_Undo_Context *servant;
 	void (*servant_init_func) (PortableServer_Servant servant, CORBA_Environment *ev);
+	NautilusUndoContextClass *context_class;
 
-	NautilusUndoContextClass *context_class = NAUTILUS_UNDO_CONTEXT_CLASS (GTK_OBJECT (context)->klass);
+	context_class = NAUTILUS_UNDO_CONTEXT_CLASS (GTK_OBJECT (context)->klass);
 
 	servant_init_func = context_class->servant_init_func;
 	servant = g_new0 (impl_POA_Nautilus_Undo_Context, 1);
 	servant->servant.vepv = context_class->vepv;
-	if (!servant->servant.vepv->Bonobo_Unknown_epv) {
+	if (servant->servant.vepv->Bonobo_Unknown_epv == NULL) {
 		servant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
 	}
-  	servant_init_func ((PortableServer_Servant) servant, ev);
+  	(* servant_init_func) ((PortableServer_Servant) servant, ev);
 
-  	servant->gtk_object = context;
+  	servant->bonobo_object = context;
 
   	retval = bonobo_object_activate_servant (BONOBO_OBJECT (context), servant);
 
-  	gtk_signal_connect (GTK_OBJECT (context), "destroy", GTK_SIGNAL_FUNC (impl_Nautilus_Undo_Context__destroy), servant);
+  	gtk_signal_connect (GTK_OBJECT (context), "destroy",
+			    GTK_SIGNAL_FUNC (impl_Nautilus_Undo_Context__destroy),
+			    servant);
 
   	return retval;
 }
 
-
 static Nautilus_Undo_Manager
-impl_Nautilus_Undo_Context__get_undo_manager (impl_POA_Nautilus_Undo_Context *servant,
+impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
 	NautilusUndoContext *context;
 
-	g_assert (NAUTILUS_IS_UNDO_CONTEXT (servant->gtk_object));
-	context = NAUTILUS_UNDO_CONTEXT (servant->gtk_object);
+	context = ((impl_POA_Nautilus_Undo_Context *) servant)->bonobo_object;
 
-	CORBA_Object_duplicate (servant->gtk_object->undo_manager, ev);
-	
-	return servant->gtk_object->undo_manager;
+	g_assert (NAUTILUS_IS_UNDO_CONTEXT (context));
+	return CORBA_Object_duplicate (context->undo_manager, ev);
 }
 
 /* nautilus_undo_manager_new */
@@ -135,12 +135,9 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 	NautilusUndoContext *context;
 	
 	context = gtk_type_new (nautilus_undo_context_get_type ());
-
 	context->undo_manager = undo_manager;
-	
 	return context;
 }
-
 
 /* Object initialization function for the NautilusUndoContext */
 static void 
@@ -148,13 +145,13 @@ nautilus_undo_context_initialize (NautilusUndoContext *context)
 {
 	CORBA_Environment ev;	
 	
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 
-	bonobo_object_construct (BONOBO_OBJECT (context), impl_Nautilus_Undo_Context__create (context, &ev));
+	bonobo_object_construct (BONOBO_OBJECT (context),
+				 impl_Nautilus_Undo_Context__create (context, &ev));
 
-  	CORBA_exception_free(&ev);
+  	CORBA_exception_free (&ev);
 }
-
 
 /* Class initialization function for the NautilusUndoManager. */
 static void
@@ -176,8 +173,6 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusUndoContext *context;
-
-	g_return_if_fail (NAUTILUS_IS_UNDO_CONTEXT (object));
 
 	context = NAUTILUS_UNDO_CONTEXT (object);
 		

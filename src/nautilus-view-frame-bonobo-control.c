@@ -26,8 +26,8 @@
 
 #include <config.h>
 
-#include "nautilus.h"
 #include "ntl-view-private.h"
+#include "ntl-window.h"
 
 typedef struct {
   BonoboObject *control_frame;

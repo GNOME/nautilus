@@ -760,10 +760,8 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 		g_free(temp_str);
 
 		nautilus_gtk_signal_connect_free_data 
-			(GTK_OBJECT (temp_button), 
-			 "clicked",
-			 GTK_SIGNAL_FUNC (command_button_callback), 
-			 command_string);
+			(GTK_OBJECT (temp_button), "clicked",
+			 GTK_SIGNAL_FUNC (command_button_callback), command_string);
                 gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 		
 		gtk_widget_show (temp_button);
@@ -771,24 +769,18 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with ..."));
-	gtk_signal_connect 
-		(GTK_OBJECT (temp_button), 
-		 "clicked",
-		 open_with_callback, 
-		 NULL);
-        gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
+	gtk_signal_connect (GTK_OBJECT (temp_button),  "clicked",
+			    open_with_callback, NULL);
+	gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (index_panel->details->button_box),
-			    temp_button,
-			    FALSE, FALSE,
-			    0);
+			    temp_button, FALSE, FALSE, 0);
 }
 
 /* here's where we set up the command buttons, based on the mime-type of the associated URL */
 /* FIXME bugzilla.eazel.com 596:  eventually, we need a way to 
  * override/augment the type from info in the metadata.
  */
-
 void
 nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 {

@@ -24,14 +24,19 @@
  *  	     John Sullivan <sullivan@eazel.com>
  *
  */
+
 /* ntl-window.c: Implementation of the main window object */
 
 #include <config.h>
 #include "ntl-window-private.h"
 
+#include "ntl-window-msgs.h"
+#include "ntl-window-state.h"
+#include "ntl-app.h"
+#include "ntl-meta-view.h"
+
 #include <gnome.h>
 #include <math.h>
-#include "nautilus.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
 #include "nautilus-location-bar.h"

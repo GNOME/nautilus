@@ -50,7 +50,6 @@
 #include "ntl-window-private.h"
 #include "ntl-window-state.h"
 #include "nautilus-location-bar.h"
-#include "ntl-types.h"
 
 /*#define EXTREME_DEBUGGING*/
 

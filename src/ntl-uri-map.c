@@ -53,8 +53,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "ntl-types.h"
-
 /* forward declarations */
 static void add_sidebar_panel_identifiers       (NautilusNavigationInfo            *navinfo);
 static void async_get_file_info_text            (GnomeVFSAsyncHandle              **handle,

@@ -48,18 +48,18 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
 	file_name = nautilus_file_get_name (file);
 
 	switch (type) {
-		case NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS:
-			title = _("Nautilus: Choose an application");
-			prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"\n\n(Doesn't do anything yet)"), file_name);
-			break;
-		case NAUTILUS_PROGRAM_CHOOSER_COMPONENTS:
-		default:
-			title = _("Nautilus: Choose a viewer");
-			prompt = g_strdup_printf (_("Choose a viewer with which to display \"%s\"\n\n(Doesn't do anything yet)"), file_name);
-			break;
+	case NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS:
+		title = _("Nautilus: Choose an application");
+		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"\n\n(Doesn't do anything yet)"), file_name);
+		break;
+	case NAUTILUS_PROGRAM_CHOOSER_COMPONENTS:
+	default:
+		title = _("Nautilus: Choose a viewer");
+		prompt = g_strdup_printf (_("Choose a viewer with which to display \"%s\"\n\n(Doesn't do anything yet)"), file_name);
+		break;
 	}
 	g_free (file_name);
-
+	
 	window = gnome_dialog_new (title, 
 				   GNOME_STOCK_BUTTON_OK, 
 				   GNOME_STOCK_BUTTON_CANCEL, 
