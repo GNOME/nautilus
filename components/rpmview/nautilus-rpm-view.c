@@ -73,9 +73,12 @@ struct NautilusRPMViewDetails {
 	GtkWidget *package_uninstall_button;
 	
 	GtkVBox   *package_container;
+	GtkWidget *go_to_button;
 	
 	GtkWidget *package_file_list;
-        int background_connection;
+        gboolean  package_installed;
+	int background_connection;
+	int selected_file;
 };
 
 
@@ -111,6 +114,9 @@ static void rpm_view_notify_location_change_callback (NautilusView *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusRPMView        *rpm_view);
 static gint check_installed			     (gchar *package_name, gchar *package_version, gchar *package_release);
+static void file_selection_callback		     (GtkCList * clist, int row, int column,
+						      GdkEventButton * event, NautilusRPMView* rpm_view);
+static void go_to_button_callback 		     (GtkWidget * widget, NautilusRPMView *rpm_view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
@@ -150,7 +156,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 
 	rpm_view->details->current_uri = NULL;
 	rpm_view->details->background_connection = 0;
-
+	rpm_view->details->selected_file = -1;
+	
 	/* set up the default background color */
   	background = nautilus_get_widget_background (GTK_WIDGET (rpm_view));
   	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
@@ -308,6 +315,28 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_clist_column_titles_passive(GTK_CLIST(rpm_view->details->package_file_list));
   	gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_list);	
   	gtk_widget_show(rpm_view->details->package_file_list);
+
+ 	gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_file_list),
+                            "select_row", GTK_SIGNAL_FUNC (file_selection_callback), rpm_view);
+	
+	/* add an hbox for buttons that operate on the package list */
+
+	temp_box = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (rpm_view->details->package_container), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show(temp_box);
+		
+	/* add the file go-to button */
+
+	rpm_view->details->go_to_button = gtk_button_new();		    
+	temp_widget = gtk_label_new (_("Go to selected file"));
+	gtk_widget_show (temp_widget);
+	gtk_container_add (GTK_CONTAINER (rpm_view->details->go_to_button), temp_widget); 	
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->go_to_button,
+				 FALSE, FALSE, 2);		
+
+	gtk_signal_connect (GTK_OBJECT(rpm_view->details->go_to_button), "clicked", GTK_SIGNAL_FUNC(go_to_button_callback), rpm_view);	
+	gtk_widget_set_sensitive(rpm_view->details->go_to_button, FALSE);
+	gtk_widget_show(rpm_view->details->go_to_button);
 	
 	/* add the description */
 	rpm_view->details->package_description = gtk_label_new (_("Description"));
@@ -345,6 +374,27 @@ nautilus_rpm_view_get_nautilus_view (NautilusRPMView *rpm_view)
 	return rpm_view->details->nautilus_view;
 }
 
+/* callback to handle file selection in the file list view */
+static void 
+file_selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event, NautilusRPMView* rpm_view)
+{
+	gtk_widget_set_sensitive(rpm_view->details->go_to_button, rpm_view->details->package_installed);
+	rpm_view->details->selected_file = row;
+}
+
+/* callback to handle the go to file button */
+static void 
+go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
+{
+	char *path_name;
+	Nautilus_NavigationRequestInfo request;
+	
+	gtk_clist_get_text (GTK_CLIST(rpm_view->details->package_file_list), 
+			    rpm_view->details->selected_file, 0, &path_name);
+	request.requested_uri = path_name;
+	request.new_window_requested = FALSE;
+	nautilus_view_request_location_change(rpm_view->details->nautilus_view, &request);
+}
 
 /* use the package database to see if the passed-in package is installed or not */
 /* return 0 if it's not installed, one if it is, -1 if same package, different version */
@@ -502,6 +552,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	
 	/* determine if the package is installed */
 	is_installed = check_installed(package_name, temp_version, temp_release);
+	rpm_view->details->package_installed = is_installed != 0;
 			
 	/* set up the install message and buttons */
 	if (is_installed)
