@@ -70,8 +70,7 @@ static void 	service_load_location_callback			(NautilusView 				*view,
 								 NautilusServiceStartupView		*services);
 static gboolean	is_location					(char 					*document_str,
 								 const char				*place_str);
-static void	generate_form_title				(NautilusServiceStartupView		*view,
-								 const char				*title_text);
+static void	generate_form_logo				(NautilusServiceStartupView		*view);
 static void	go_to_uri					(NautilusServiceStartupView		*view,
 								 char					*uri);
 static void	show_feedback					(NautilusServiceStartupView			*view,
@@ -97,7 +96,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	generate_form_title (view, "Welcome, your services are loading! ");
+	generate_form_logo (view);
 
 	/* create a fill space box */
 	temp_box = gtk_hbox_new (TRUE, 30);
@@ -185,33 +184,28 @@ show_feedback (NautilusServiceStartupView        *view, char     *error_message)
 /* shared utility to allocate a title for a form */
 
 static void 
-generate_form_title (NautilusServiceStartupView	*view,
-		     const char			*title_text) {
+generate_form_logo (NautilusServiceStartupView	*view) {
 
-	GtkWidget	*temp_widget;
-	char		*file_name;	
-	GtkWidget	*temp_container;
-	GdkFont 	*font;
+	GtkWidget	*logo_container;
+	GtkWidget	*logo_widget;
+	char		*icon_path;
+	GdkPixbuf	*pixbuf;
+	GdkPixmap	*pixmap;
+	GdkBitmap	*mask;
 
-	temp_container = gtk_hbox_new (FALSE, 0);
+	logo_container = gtk_hbox_new (TRUE, 0);
 	
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);	
-	gtk_widget_show (temp_container);
+	gtk_box_pack_start (GTK_BOX (view->details->form), logo_container, 0, 0, 4);	
+	gtk_widget_show (logo_container);
+	icon_path = nautilus_pixmap_file ("startup-logo.png");
+	pixbuf = gdk_pixbuf_new_from_file (icon_path);
+	g_assert (pixbuf != NULL);
+	g_free (icon_path);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	logo_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
+	gtk_widget_show (logo_widget);
 
-	file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
-	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
-	gtk_widget_show (temp_widget);
-	g_free (file_name);
-
-	view->details->form_title = gtk_label_new (title_text);
-
-	font = nautilus_font_factory_get_font_from_preferences (20);
-	nautilus_gtk_widget_set_font (view->details->form_title, font);
-	gdk_font_unref (font);
-
-	gtk_box_pack_end (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
-	gtk_widget_show (view->details->form_title);
 }
 
 static void
@@ -316,7 +310,7 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 		go_to_uri (view, "eazel-vault:");
 	}
 	else if (is_location(document_name, "register")) {
-		go_to_uri (view, "www.eazel.com");
+		go_to_uri (view, "http://www.eazel.com");
 	}
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */
