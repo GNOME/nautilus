@@ -1,5 +1,13 @@
 2002-04-07  Alexander Larsson  <alla@lysator.liu.se>
 
+	* libnautilus-private/nautilus-icon-factory.c:
+	Keep track of file size in addition to mtime when
+	determining if the cache is uptodate.
+	I needed this for a script that changes the size
+	of the file, but keeps the mtime.
+
+2002-04-07  Alexander Larsson  <alla@lysator.liu.se>
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT is an integer
 	(global_preferences_register_enumerations): Allow integer enum

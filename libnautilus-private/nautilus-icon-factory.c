@@ -221,6 +221,7 @@ typedef struct {
 
 	/* Used to know when to make a new thumbnail. */
 	time_t cache_time;
+	GnomeVFSFileSize cache_size;
 
 	/* Type of icon. */
 	IconRequest request;
@@ -1513,7 +1514,9 @@ path_represents_svg_image (const char *path)
 
 /* Returns GNOME_VFS_ERROR_NOT_SUPPORTED for icons that are not files. */
 static GnomeVFSResult
-get_cache_time (const char *file_uri, time_t *cache_time)
+get_cache_time_and_size (const char *file_uri,
+			 time_t *cache_time,
+			 GnomeVFSFileSize *cache_size)
 {
 	GnomeVFSURI *vfs_uri;
 	GnomeVFSFileInfo *file_info;
@@ -1540,6 +1543,7 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 	result = gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result == GNOME_VFS_OK) {
 		*cache_time = file_info->mtime;
+		*cache_size = file_info->size;
 	}
 	gnome_vfs_file_info_unref (file_info);
 
@@ -1665,7 +1669,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 
 	/* Since we got something, we can create a cache icon. */
 	icon = cache_icon_new (pixbuf, type, FALSE, &details);
-	get_cache_time (scalable_icon->uri, &icon->cache_time);
+	get_cache_time_and_size (scalable_icon->uri, &icon->cache_time, &icon->cache_size);
 	g_object_unref (pixbuf);
 
 	return icon;
@@ -1813,6 +1817,7 @@ scale_icon (CacheIcon *icon,
 				      &scaled_details);
 	scaled_icon->is_fallback = icon->is_fallback;
 	scaled_icon->cache_time = icon->cache_time;
+	scaled_icon->cache_size = icon->cache_size;
 	g_object_unref (scaled_pixbuf);
 	return scaled_icon;
 }
@@ -1939,13 +1944,14 @@ mark_recently_used (CircularList *node)
  * from the cache if the icon has changed.
  */
 static gboolean
-remove_icons_if_file_changed (const char *file_uri, time_t cached_time)
+remove_icons_if_file_changed (const char *file_uri, time_t cached_time, GnomeVFSFileSize cached_size)
 {
 	GnomeVFSResult result;
 	time_t new_time;
-
+	GnomeVFSFileSize new_size;
+	
 	/* Get the time from the file. */
-	result = get_cache_time (file_uri, &new_time);
+	result = get_cache_time_and_size (file_uri, &new_time, &new_size);
 
 	/* Do nothing for cases where a time doesn't apply. */
 	if (result == GNOME_VFS_ERROR_NOT_SUPPORTED) {
@@ -1953,7 +1959,7 @@ remove_icons_if_file_changed (const char *file_uri, time_t cached_time)
 	}
 
 	/* Do nothing if the file is still the same as before. */
-	if (result == GNOME_VFS_OK && new_time == cached_time) {
+	if (result == GNOME_VFS_OK && new_time == cached_time && new_size == cached_size) {
 		return FALSE;
 	}
 
@@ -2008,7 +2014,8 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 
 		/* Check if the cached image is good before using it. */
 		if (remove_icons_if_file_changed (scalable_icon->uri,
-						  icon->cache_time)) {
+						  icon->cache_time,
+						  icon->cache_size)) {
 			icon = NULL;
 		}
 	}
@@ -2354,6 +2361,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 					 icon_without_text->scaled,
 					 &details);
 	icon_with_text->cache_time = icon_without_text->cache_time;
+	icon_with_text->cache_size = icon_without_text->cache_size;
 	cache_icon_unref (icon_without_text);
 	g_object_unref (pixbuf_with_text);
 
