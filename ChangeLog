@@ -1,5 +1,11 @@
 2000-05-05  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_embed_text): The old code assumed that white
+	was == 0xFFFFFF. But that's not always true. Fixed it now.
+
+2000-05-05  Darin Adler  <darin@eazel.com>
+
 	Moved the "embedded text" feature into the icon factory and
 	NautilusFile. Also fixed some FIXMEs that were in the modified
 	code along the way.

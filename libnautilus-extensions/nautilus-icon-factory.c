@@ -1690,6 +1690,7 @@ nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
 	const char *line, *end_of_line;
 	int line_length;
 	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha, *pixbuf_with_text;
+	guchar *pixels;
 
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
 	g_return_val_if_fail (embedded_text_rect != NULL, gdk_pixbuf_ref (pixbuf_without_text));
@@ -1765,9 +1766,14 @@ nautilus_icon_factory_embed_text (GdkPixbuf *pixbuf_without_text,
 						    0, 0, width, height);
 	gdk_colormap_unref (colormap);
 	gdk_pixmap_unref (pixmap);
-	text_pixbuf_with_alpha = gdk_pixbuf_add_alpha (text_pixbuf,
-						       TRUE, 0xFF, 0xFF, 0xFF);
+
+	/* White is not always FF FF FF. So we get the top left corner pixel. */
+	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
+	text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
+		(text_pixbuf,
+		 TRUE, pixels[0], pixels[1], pixels[2]);
 	gdk_pixbuf_unref (text_pixbuf);
+
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 	gdk_pixbuf_composite (text_pixbuf_with_alpha,
 			      pixbuf_with_text,
