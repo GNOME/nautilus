@@ -58,8 +58,6 @@ struct _SummaryData {
 	GList	*update_news_list;
 };
 
-gboolean http_fetch_remote_file (char *uri, const char *target_file);
-
 SummaryData * parse_summary_xml_file (const char *summary_xml_file);
 
 #endif /* EAZEL_SUMMARY_SHARED_H */

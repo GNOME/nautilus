@@ -25,18 +25,15 @@
 
 #include "eazel-summary-shared.h"
 
+#include <libtrilobite/helixcode-utils.h>
 #include <gnome.h>
 #include <glib.h>
-#include <ghttp.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-#define USER_AGENT_STRING	"Trilobite"
-
-/* gboolean remove_summary_xml_file (const char *summary_xml_file); */
 static GList * build_services_glist_from_xml (xmlNodePtr node);
 static GList * build_eazel_news_glist_from_xml (xmlNodePtr node);
 static GList * build_update_news_glist_from_xml (xmlNodePtr node);
@@ -48,87 +45,6 @@ static ServicesData * parse_a_service (xmlNodePtr node);
 static EazelNewsData * parse_a_eazel_news_item (xmlNodePtr node);
 static UpdateNewsData * parse_a_update_news_item (xmlNodePtr node);
 
-
-gboolean
-http_fetch_remote_file (char	*url, const char	*target_file)
-{
-
-	int		length;
-	int		get_failed;
-	ghttp_request	*request;
-	ghttp_status	status;
-	char		*body;
-	FILE		*file;
-
-	file = fopen (target_file, "wb");
-	get_failed = 0;
-	length = -1;
-	request = NULL;
-	body = NULL;
-
-	request = ghttp_request_new ();
-	if (!request) {
-		g_warning (_("Could not create an http request !\n"));
-		get_failed = 1;
-	}
-
-	if (ghttp_set_uri (request, url) != 0) {
-		g_warning (_("Invalid uri !\n"));
-		get_failed = 1;
-	}
-
-	ghttp_set_header (request, http_hdr_Connection, "close");
-	ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
-	if (ghttp_prepare (request) != 0) {
-		g_warning (_("Could not prepare http request !\n"));
-		get_failed = 1;
-	}
-
-	if (ghttp_set_sync (request, ghttp_async)) {
-		g_warning (_("Could not get async mode !\n"));
-		get_failed = 1;
-	}
-
-	while ((status = ghttp_process (request)) == ghttp_not_done) {
-		ghttp_current_status curStat = ghttp_get_status (request);
-		fprintf (stdout, "Progress = %% %f\r", ((float) curStat.bytes_total ?
-			 ((float) ((((float) curStat.bytes_read) / (float) curStat.bytes_total)
-			 * 100 )) : 100.0));
-		fflush (stdout);
-		if ((float) curStat.bytes_read == (float) curStat.bytes_total) {
-			fprintf (stdout, "\n");
-		}
-	}
-
-	if (ghttp_status_code (request) != 200) {
-		g_warning ("HTTP error: %d %s\n", ghttp_status_code (request), ghttp_reason_phrase (request));
-		get_failed = 1;
-	}
-
-	if (ghttp_status_code (request) != 404) {
-		length = ghttp_get_body_len (request);
-		body = ghttp_get_body (request);
-		if (body != NULL) {
-			fwrite (body, length, 1, file);
-		}
-		else {
-			g_warning (_("Could not get request body !\n"));
-			get_failed = 1;
-		}
-	}
-
-	if (request) {
-		ghttp_request_destroy (request);
-	}
-	fclose (file);
-
-	if (get_failed != 0) {
-		return FALSE;
-	}
-	else {
-		return TRUE;
-	}
-} /* end http_fetch_remote_file */
 
 static SummaryData *
 summary_data_new ()
@@ -194,6 +110,12 @@ parse_a_service (xmlNodePtr node)
 {
 	ServicesData *return_value;
 	return_value = services_data_new ();
+
+	return_value->name = g_strdup (xml_get_value (node, "NAME"));
+	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
+	return_value->button_label = (xml_get_value (node, "BUTTON_LABEL"));
+	return_value->description = (xml_get_value (node, "DESCRIPTION"));
+
 	return return_value;
 
 } /* end parse_a_service */
@@ -203,18 +125,30 @@ parse_a_eazel_news_item (xmlNodePtr node)
 {
 	EazelNewsData *return_value;
 	return_value = eazel_news_data_new ();
+
+	return_value->name = g_strdup (xml_get_value (node, "NAME"));
+	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
+	return_value->message = g_strdup (xml_get_value (node, "MESSAGE"));
+
 	return return_value;
 
-} /* end parse_a_service */
+} /* end parse_a_eazel_news_item */
 
 static UpdateNewsData *
 parse_a_update_news_item (xmlNodePtr node)
 {
 	UpdateNewsData *return_value;
 	return_value = update_news_data_new ();
+
+	return_value->name = g_strdup (xml_get_value (node, "NAME"));
+	return_value->priority = g_strdup (xml_get_value (node, "PRIORITY"));
+	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
+	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
+	return_value->install_uri = (xml_get_value (node, "INSTALL_URI"));
+
 	return return_value;
 
-} /* end parse_a_service */
+} /* end parse_a_update_news_item */
 
 static GList *
 build_services_glist_from_xml (xmlNodePtr node)
