@@ -1,3 +1,24 @@
+2000-02-23  John Sullivan  <sullivan@eazel.com>
+
+	Visible part of the fix to bug 14 (Open in New Window only
+	opens one window when multiple items selected). Still need
+	to clean up old, unnecessary code. Checking this in now for
+	convenience; will clean up other code tomorrow.
+
+	* src/ntl-app.c: (nautilus_app_create_window): Replaced the
+	gtk_widget_show of new window with comment explaining why not
+	to show it yet.
+	
+	* src/ntl-window-msgs.c: 
+	(nautilus_window_request_location_change): Spawn new window here
+	if the NavigationRequestInfo says so (formerly didn't spawn new
+	window until after we knew it was a displayable uri; that code
+	is still present but now never invoked; I will kill it tomorrow).
+	(nautilus_window_change_location_2): Call gtk_widget_show on
+	window when we know that location change will succeed; if the
+	location change failed, destroy the nascent window and put the
+	error message in an unparented dialog.
+
 2000-02-23  Darin Adler  <darin@eazel.com>
 
 	Some of the underlying work to prepare for emblems on the icons.

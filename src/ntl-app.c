@@ -105,7 +105,10 @@ nautilus_app_create_window(void)
 
   gtk_signal_connect(GTK_OBJECT(win), "destroy", nautilus_app_destroy_window, NULL);
 
-  gtk_widget_show(win);
+  /* Do not yet show the window. It will be shown later on if it can
+   * successfully display its initial uri. Otherwise it will be destroyed
+   * without ever having seen the light of day.
+   */
 
   return NAUTILUS_WINDOW(win);
 }

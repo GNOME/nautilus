@@ -456,7 +456,27 @@ nautilus_window_request_location_change(NautilusWindow *window,
 					Nautilus_NavigationRequestInfo *loc,
 					NautilusView *requesting_view)
 {  
-  nautilus_window_change_location(window, loc, requesting_view, FALSE, FALSE);
+  gboolean use_new_window;
+
+
+  /* FIXME: Either remove distinctions between default, suggested, & enforced, or
+   * deal with them somehow.
+   */
+  use_new_window = (loc->new_window_default == Nautilus_V_TRUE ||
+  			     loc->new_window_suggested == Nautilus_V_TRUE ||
+  			     loc->new_window_enforced == Nautilus_V_TRUE);
+
+  if (use_new_window) 
+    {
+      NautilusWindow *new_window;
+
+      new_window = nautilus_app_create_window ();
+      nautilus_window_set_initial_state (new_window, loc->requested_uri);
+    }
+  else
+    {
+      nautilus_window_change_location(window, loc, requesting_view, FALSE, FALSE);
+    }
 }
 
 static NautilusView *
@@ -879,12 +899,19 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 
   if(!navi)
     {
+     /* FIXME: Give uri explicitly in this message. Also reword to
+      * make it more understandable.
+      */
       errmsg = _("The chosen file could not be retrieved.");
       goto errout;
     }
 
   if(!navi->default_content_iid)
     {
+     /* FIXME: Give uri explicitly in this message. Also reword to
+      * make it more understandable. Is this any different to the user
+      * than the previous case?
+      */
       errmsg = _("There is no known method of displaying the chosen file.");
       goto errout;
     }
@@ -898,18 +925,37 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 				       (NautilusWindowStateItem)0);
 
   	window = nautilus_app_create_window ();
-  	gtk_widget_show (GTK_WIDGET (window));
   }
+
+  /* Show the window to handle the new-window case. 
+   * Doesn't hurt if window already showing. Maybe this should
+   * go sometime later so the gray window isn't on screen so long.
+   */
+  gtk_widget_show (GTK_WIDGET (window));
 
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)NAVINFO_RECEIVED, navi, (NautilusWindowStateItem)0);
   return;
 
  errout:
-  nautilus_window_allow_stop(window, FALSE);
+
   if (navi != NULL)
     nautilus_navinfo_free(navi);
-  window->is_back = FALSE;
-  nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, errmsg);
+
+  if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (window)))
+    {
+      /* Destroy never-had-a-chance-to-be-seen window. This case
+       * happens when a new window cannot display its initial URI. 
+       */
+      gtk_object_destroy (GTK_OBJECT (window));
+      gtk_widget_show (gnome_error_dialog (errmsg));
+    }
+  else
+    {
+      /* Clean up state of already-showing window */
+      nautilus_window_allow_stop(window, FALSE);
+      window->is_back = FALSE;
+      nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, errmsg);
+    }
 }
 
 void
