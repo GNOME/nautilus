@@ -35,8 +35,11 @@
 
 static void nautilus_zoom_control_class_initialize 	(NautilusZoomControlClass *klass);
 static void nautilus_zoom_control_initialize       	(NautilusZoomControl *pixmap);
-static void nautilus_zoom_control_draw 				(GtkWidget *widget, GdkRectangle *box);
-static gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *event);
+static void nautilus_zoom_control_draw 			(GtkWidget *widget, GdkRectangle *box);
+static gint nautilus_zoom_control_expose 		(GtkWidget *widget, GdkEventExpose *event);
+static gboolean nautilus_zoom_control_button_press_event(GtkWidget *widget, GdkEventButton *event);
+
+void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box);
 
 static GtkEventBoxClass *parent_class;
 
@@ -76,6 +79,7 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
   parent_class = gtk_type_class (gtk_event_box_get_type ());
 
   widget_class->draw = nautilus_zoom_control_draw;
+  widget_class->expose_event = nautilus_zoom_control_expose;
   widget_class->button_press_event = nautilus_zoom_control_button_press_event;
 }
 
@@ -107,26 +111,15 @@ nautilus_zoom_control_new ()
   return GTK_WIDGET (zoom_control);
 }
 
-static void
-nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
+/* draw the current zoom percentage */
+void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box)
 {
-  NautilusZoomControl *zoom_control;
   gchar buffer[8];
   GdkFont *label_font;
-  GdkGC* temp_gc;
-  
-  gint x, y, percent;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget));
-
-  zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
-
-  /* invoke our superclass to draw the image */
- 	
-   NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, draw, (widget, box));
-
-  /* draw the current zoom level percentage */
+  GdkGC* temp_gc; 
+  gint x, y, percent; 
+  NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+ 
   label_font = gdk_font_load("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*");
   temp_gc = gdk_gc_new(widget->window);
 
@@ -137,9 +130,52 @@ nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
   y = (box->height >> 1) + 3;
     
   gdk_draw_string (widget->window, label_font, temp_gc, x, y, &buffer[0]);
-  
   gdk_font_unref(label_font);
+  
+  /* clear the arrows if necessary */
+  
+  if (zoom_control->current_zoom == zoom_control->min_zoom)
+    gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, 0, 0, box->width / 4, box->height);
+  else if (zoom_control->current_zoom == zoom_control->max_zoom)
+    gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, box->width - (box->width / 4), 0, box->width / 4, box->height);
+    
   gdk_gc_unref(temp_gc);
+
+}
+
+static void
+nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
+{ 
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget));
+
+  /* invoke our superclass to draw the image */
+ 	
+  NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, draw, (widget, box));
+
+  draw_number_and_disable_arrows(widget, box);
+}
+
+/* handle expose events */
+
+static gint
+nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+  GdkRectangle box;
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget), FALSE);
+
+  /* invoke our superclass to draw the image */
+ 	
+  NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+
+  box.x = 0; box.y = 0;
+  box.width = widget->allocation.width;
+  box.height = widget->allocation.height;
+  
+  draw_number_and_disable_arrows(widget, &box);
+  
+  return FALSE;
 }
 
 /* hit-test the index tabs and activate if necessary */
