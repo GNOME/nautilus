@@ -62,14 +62,6 @@ xfer_info_new (GnomeVFSAsyncHandle *handle,
 	return new;
 }
 
-#if 0
-static void
-xfer_info_destroy (XferInfo *info)
-{
-	g_free (info);
-}
-#endif
-
 static void
 xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
 			      gint button_number,

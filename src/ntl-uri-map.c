@@ -266,13 +266,13 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                                     meta_keys);
       if(res != GNOME_VFS_OK)
         {
-          gnome_vfs_file_info_destroy(vfs_fileinfo);
+          gnome_vfs_file_info_unref(vfs_fileinfo);
           nautilus_navinfo_free(navinfo); navinfo = NULL;
           goto out;
         }
 
       navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
-      gnome_vfs_file_info_destroy(vfs_fileinfo);
+      gnome_vfs_file_info_unref(vfs_fileinfo);
     }
 
 

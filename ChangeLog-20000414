@@ -1,3 +1,12 @@
+2000-01-18  Ettore Perazzoli  <ettore@helixcode.com>
+
+	* src/file-manager/dfos-xfer.c (xfer_info_destroy): Removed `#if
+	0'ed out function.
+
+	* src/ntl-uri-map.c (nautilus_navinfo_new): Use
+	`gnome_vfs_file_info_unref()' instead of
+	`gnome_vfs_file_info_destroy()'.
+
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/gnome-icon-container-private.h:
