@@ -32,7 +32,7 @@
 
 	*  nautilus-widgets/nautilus-preferences.c:
 	(nautilus_preferences_get):  If the stored default value is null,
-	is the given on.  Do this only for strings, since integral types
+	use the given one.  Do this only for strings, since integral types
 	can legally have a value of zero.
 
 	* nautilus-widgets/nautilus-preferences-item.c:
