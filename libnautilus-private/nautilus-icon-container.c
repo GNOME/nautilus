@@ -2260,6 +2260,7 @@ select_matching_name (NautilusIconContainer *container,
 			       match_best_name,
 			       &match_state);
 	if (icon == NULL) {
+		g_free (match_state.name);
 		return;
 	}
 

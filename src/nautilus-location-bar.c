@@ -414,12 +414,14 @@ try_to_expand_path (gpointer callback_data)
 
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
+	gnome_vfs_uri_unref (uri);
+	uri = NULL;
+
 	/* get file info for the directory, if it hasn't changed since last time */
 	get_file_info_list (bar, dir_name);
 	if (bar->details->file_info_list == NULL) {
 		g_free (dir_name);
 		g_free (base_name);
-		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
 		return FALSE;
 	}
@@ -444,7 +446,7 @@ try_to_expand_path (gpointer callback_data)
 		}
 	}
 
-	if (have_broken_filenames()) {
+	if (have_broken_filenames ()) {
 		if (expand_text) {
 			expand_text_utf8 = g_locale_to_utf8 (expand_text, -1, NULL, NULL, NULL);
 			g_free (expand_text);

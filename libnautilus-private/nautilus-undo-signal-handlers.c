@@ -160,7 +160,7 @@ editable_register_edit_undo (GtkEditable *editable)
 	}
 	
 	undo_data = g_new0 (EditableUndoData, 1);
-	undo_data->undo_text = g_strdup (gtk_editable_get_chars (editable, 0, -1));
+	undo_data->undo_text = gtk_editable_get_chars (editable, 0, -1);
 	undo_data->position = gtk_editable_get_position (editable);
 	gtk_editable_get_selection_bounds (editable,
 					   &undo_data->selection_start,

@@ -5,6 +5,19 @@
 
 2002-05-16  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(select_matching_name): free match_state's name
+	if we have no icon.
+
+	* libnautilus-private/nautilus-undo-signal-handlers.c
+	(editable_register_edit_undo): don't leak undo_text.
+
+	* src/nautilus-location-bar.c (try_to_expand_path): 
+	unref the URI after use.
+
+2002-05-16  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-location-bar.c (try_to_expand_path): 
 	* icons/tahoe/tahoe.xml: 
 	* icons/gnome/gnome.xml:
 	* icons/sierra/sierra.xml: 
