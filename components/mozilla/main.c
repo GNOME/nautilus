@@ -69,28 +69,21 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (view_frame);
 }
 
-/* Do evil evil things */
-static void
-mozilla_hack_environment (void)
+/* Make sure the mozilla environment is setup properly */
+static gboolean
+mozilla_check_environment (void)
 {
+	gboolean rv = FALSE;
 	char *mozilla_five_home;
-
+	
 	mozilla_five_home = g_getenv ("MOZILLA_FIVE_HOME");
 
-	if (mozilla_five_home)
-	{
+	if (mozilla_five_home) {
+		rv = TRUE;
 		g_free (mozilla_five_home);
 	}
-	else
-	{
-#ifdef MOZILLA_FIVE_HOME
-		setenv ("MOZILLA_FIVE_HOME", MOZILLA_FIVE_HOME, TRUE);
-		g_print ("Hacking MOZILLA_FIVE_HOME to '%s' for your own good\n",
-			 MOZILLA_FIVE_HOME);
-#else
-		g_print ("There is no reasonable default for MOZILLA_FIVE_HOME.  You lose.\n");
-#endif
-	}
+
+	return rv;
 }
 
 int
@@ -99,7 +92,10 @@ main (int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 
-	mozilla_hack_environment ();
+	if (!mozilla_check_environment ()) {
+		g_print ("There is no reasonable default for MOZILLA_FIVE_HOME.  You lose.\n");
+		exit (1);
+	}
 
 	gnome_init_with_popt_table("nautilus-mozilla-content-view", VERSION, 
 				   argc, argv,

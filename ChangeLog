@@ -1,3 +1,31 @@
+2000-05-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* acconfig.h,
+	* configure.in: Remove the MOZILLA_FIVE_HOME hack.  I dont like
+	how this causes the whole of nautilus to rebuild.  Its also
+	something that should be set in the user's environment.
+	
+	* components/mozilla/main.c: (mozilla_check_environment), (main):
+	Remove the MOZILLA_FIVE_HOME hack from here too.  Replace it with
+	a environment check instead.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_destroy),
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_content_view_set_busy_cursor),
+	(mozilla_content_view_send_progress_request),
+	(mozilla_content_view_clear_busy_cursor),
+	(mozilla_notify_location_change_callback),
+	(bonobo_mozilla_callback), (mozilla_merge_bonobo_items_callback),
+	(mozilla_title_changed_callback),
+	(mozilla_location_changed_callback), (mozilla_net_status_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback):
+	Add support for mousing over link status, progress notification,
+	title changed, location changed, busy cursor.  Some of this still
+	needs work to get it right.
+	Factor the progress request sending code into its own function.
+	
 2000-05-09  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

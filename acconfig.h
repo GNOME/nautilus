@@ -1,4 +1,3 @@
-#undef MOZILLA_FIVE_HOME
 #undef EAZEL_SERVICES
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
