@@ -126,11 +126,69 @@ determine_mandrake_version (DistributionInfo *distinfo)
 static void
 determine_suse_version (DistributionInfo *distinfo)
 {
+	FILE *fd;
+	char buf[1024];
+	char *ptr;
+	int version_major, version_minor;
+	const char *version_marker = "VERSION = ";
+
+	/*
+	 * <scherfa> scherfa@Xerxes:/etc > cat SuSE-release 
+	 * <scherfa> SuSE Linux 7.0 (i386)
+	 * <scherfa> VERSION = 7.0
+	 * <scherfa> scherfa@Xerxes:/etc > 
+	 */
+
+	g_assert (distinfo != NULL);
+
+	distinfo->version_major = -1;
+	distinfo->version_minor = -1;
+
+	fd = fopen ("/etc/SuSE-release", "rt");
+	g_return_if_fail (fd != NULL);
+
+	fread ((char*)buf, 1023, 1, fd);
+	fclose (fd);
+
+	ptr = strstr (buf, version_marker);
+	g_return_if_fail (ptr != NULL);
+
+	ptr += strlen (version_marker);
+
+	if (sscanf (ptr, "%d.%d", &version_major, &version_minor) == 2) {
+		distinfo->version_major = version_major;
+		distinfo->version_minor = version_minor;
+	}
 }
 
 static void
 determine_debian_version (DistributionInfo *distinfo)
 {
+	FILE *fd;
+	char buf[1024];
+	int version_major, version_minor;
+
+	g_assert (distinfo != NULL);
+
+	fd = fopen ("/etc/debian_version", "rt");
+	g_return_if_fail (fd != NULL);
+
+	fread ((char*)buf, 1023, 1, fd);
+	fclose (fd);
+
+	/* /etc/debian_version is in the format major.minor if its a release
+	 * version, but the development versions have strings like 
+	 * "testing/unstable".
+	 */
+
+	if (sscanf (buf, "%d.%d", &version_major, &version_minor) == 2) {
+		distinfo->version_major = version_major;
+		distinfo->version_minor = version_minor;
+	} else {
+		/* couldn't determine the version */
+		distinfo->version_major = -1;
+		distinfo->version_minor = -1;
+	}
 }
 
 static void

@@ -1,3 +1,53 @@
+2001-02-04  Ian McKellar,,,  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>	
+
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-package-system-dpkg.c:
+	(debpackage_free), (debpackage_fill_packagedata),
+	(strip_trailing_whitespace), (parse_packages),
+	(load_package_callback), (eazel_package_system_dpkg_load_package),
+	(query_callback), (eazel_package_system_dpkg_query),
+	(eazel_package_system_dpkg_install),
+	(eazel_package_system_dpkg_uninstall),
+	(eazel_package_system_dpkg_verify),
+	(eazel_package_system_dpkg_compare_version),
+	(eazel_package_system_dpkg_finalize),
+	(eazel_package_system_dpkg_class_initialize),
+	(eazel_package_system_dpkg_initialize),
+	(eazel_package_system_dpkg_get_type),
+	(eazel_package_system_dpkg_new),
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-dpkg.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_suggest_id),
+	(eazel_package_system_load_implementation):
+	Created a minimal, sub-functional Debian package backend for 
+	libeazelinstall - essentially only enough to allow me to test my
+	software inventory work on my Debian machines.
+
+	* components/services/inventory/Makefile.am:
+	* components/services/inventory/eazel-inventory-collect-hardware.c:
+	(add_device_property), (eazel_inventory_collect_pci),
+	(ide_get_value), (eazel_inventory_collect_ide), (str_has_prefix),
+	(add_info), (read_proc_info), (eazel_inventory_collect_memory),
+	(eazel_inventory_collect_cpu), (eazel_inventory_collect_hardware):
+	* components/services/inventory/eazel-inventory-collect-hardware.h:
+	* components/services/inventory/eazel-inventory-collect-software.c:
+	(str_has_prefix), (get_package_list),
+	(eazel_inventory_collect_packages),
+	(eazel_inventory_collect_software):
+	* components/services/inventory/eazel-inventory-collect-software.h:
+	* components/services/inventory/eazel-inventory-utils.c:
+	(eazel_create_configuration_metafile):
+	Moved software inventory code into eazel-inventory-collect-software.c
+	and hardware inventory code into eazel-inventory-collect-hardware.c.
+	Added coded to collect PCI and IDE bus information.
+
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (determine_suse_version), (determine_debian_version):
+	Added version check code for SuSE and Debian.
+
 2001-02-04  Jason Leach  <jasonleach@usa.net>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>	

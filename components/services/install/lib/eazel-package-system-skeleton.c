@@ -39,7 +39,7 @@ eazel_package_system_skeleton_load_package (EazelPackageSystemSkeleton *system,
 					    int detail_level)
 {
 	PackageData *result = NULL;
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_load_package");
 	/* Code Here */
@@ -54,7 +54,7 @@ eazel_package_system_skeleton_query (EazelPackageSystemSkeleton *system,
 				     int detail_level)
 {
 	GList *result = NULL;
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_query");
 	/* Code Here */
@@ -67,7 +67,7 @@ eazel_package_system_skeleton_install (EazelPackageSystemSkeleton *system,
 				       GList* packages,
 				       unsigned long flags)
 {
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_install");
 	/* Code Here */
@@ -79,7 +79,7 @@ eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system,
 					 GList* packages,
 					 unsigned long flags)
 {
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_uninstall");
 	/* Code Here */
@@ -89,7 +89,7 @@ static void
 eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system, 
 				      GList* packages)
 {
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_verify");
 	/* Code Here */
@@ -100,7 +100,7 @@ eazel_package_system_skeleton_compare_version (EazelPackageSystem *system,
 					       const char *a,
 					       const char *b)
 {
-	g_assert (system);
+	g_assert (system != NULL);
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_compare_version");
 	/* Code Here */

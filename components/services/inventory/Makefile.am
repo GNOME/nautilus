@@ -2,6 +2,7 @@ NULL =
 
 bin_PROGRAMS = trilobite-inventory-service eazel-inventory-client
 
+
 lib_LTLIBRARIES = libtrilobite-inventory-service.la
 
 INCLUDES =								\
@@ -32,6 +33,10 @@ trilobite_inventory_service_SOURCES =		\
 	eazel-inventory-service.c		\
 	eazel-inventory-utils.h			\
 	eazel-inventory-utils.c			\
+	eazel-inventory-collect-hardware.h	\
+	eazel-inventory-collect-hardware.c	\
+	eazel-inventory-collect-software.h	\
+	eazel-inventory-collect-software.c	\
 	main.c					\
 	$(NULL)
 

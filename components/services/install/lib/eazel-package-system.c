@@ -66,13 +66,13 @@ eazel_package_system_suggest_id ()
 /* FIXME bugzilla.eazel.com 4853
    straighten out which distro uses which package system,
    and what version uses which rpm_x ? */
-	case DISTRO_CALDERA: 
-	case DISTRO_SUSE: 
-	case DISTRO_LINUXPPC: 
 	case DISTRO_COREL: 
 	case DISTRO_DEBIAN: 
 		result = EAZEL_PACKAGE_SYSTEM_DEB;
 		break;
+	case DISTRO_CALDERA: 
+	case DISTRO_SUSE: 
+	case DISTRO_LINUXPPC: 
 	case DISTRO_UNKNOWN:
 		result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
 		break;
@@ -96,6 +96,9 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 #endif
 
 	switch (id) {
+	case EAZEL_PACKAGE_SYSTEM_DEB:
+		module = g_module_open ("libeazelpackagesystem-dpkg.so", G_MODULE_BIND_LAZY);
+		break;
 	case EAZEL_PACKAGE_SYSTEM_RPM_3:
 		module = g_module_open ("libeazelpackagesystem-rpm3.so", G_MODULE_BIND_LAZY);
 		break;

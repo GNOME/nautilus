@@ -25,6 +25,7 @@ lib_LTLIBRARIES = \
 	libeazelpackagesystem-rpm3.la \
 	libeazelpackagesystem-rpm4.la \
 	libeazelpackagesystem-skeleton.la \
+	libeazelpackagesystem-dpkg.la \
 	$(NULL)
 
 
@@ -96,6 +97,14 @@ libeazelpackagesystem_la_SOURCES = 		\
 libeazelpackagesystem_skeleton_la_SOURCES = 	\
 	eazel-package-system-skeleton.h		\
 	eazel-package-system-skeleton.c		\
+	$(NULL)
+
+
+# libeazelpackagesystem-dpkg
+
+libeazelpackagesystem_dpkg_la_SOURCES = 	\
+	eazel-package-system-dpkg.h		\
+	eazel-package-system-dpkg.c		\
 	$(NULL)
 
 
