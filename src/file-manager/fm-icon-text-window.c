@@ -26,6 +26,7 @@
 #include <config.h>
 #include "fm-icon-text-window.h"
 
+#include <gtk/gtkaccellabel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
@@ -111,7 +112,6 @@ create_attributes_option_menu (void)
 {
 	GtkWidget *option_menu;
 	GtkWidget *menu;
-	GtkWidget *menu_item;
 	int index;
 
   	option_menu = gtk_option_menu_new ();
@@ -120,7 +120,19 @@ create_attributes_option_menu (void)
 	
 	for (index = 0; attribute_names[index] != NULL; ++index)
 	{
-		menu_item = gtk_menu_item_new_with_label (_(attribute_labels[index]));
+		GtkWidget *menu_item;
+		GtkWidget *accel_label;
+	
+		menu_item = gtk_menu_item_new ();
+
+		/* Do some extra label-creating work so they're centered */
+		accel_label = gtk_accel_label_new (attribute_labels[index]);
+		gtk_misc_set_alignment (GTK_MISC (accel_label), 0.5, 0.5);
+		gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
+		gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);
+		gtk_widget_show (accel_label);
+
+		
 		/* Store index in item as the way to get from item back to attribute name */
 		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
 		gtk_widget_show (menu_item);
@@ -176,7 +188,7 @@ create_icon_text_window ()
 
   	vbox2 = gtk_vbox_new (FALSE, 4);
   	gtk_widget_show (vbox2);
-  	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, TRUE, 0);
+  	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, FALSE, 0);
 
   	name_label = gtk_label_new (_("name"));
   	gtk_widget_show (name_label);

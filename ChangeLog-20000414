@@ -1,5 +1,15 @@
 2000-02-08  John Sullivan <sullivan@eazel.com>
 
+	Tweaked the appearance of the icon-text choosing window.
+	Still not quite laid out right, but it's closer.
+
+	* src/file-manager/fm-icon-text-window.c:
+	(create_attributes_option_menu): Center the text in the menu items.
+	(create_icon_text_window): Change expand parameter for vertical
+	box so option menus are only as wide as they need to be. 
+
+2000-02-08  John Sullivan <sullivan@eazel.com>
+
 	Completed first cut at icon-text-choosing UI.
 	Choose "Customize Icon Text..." from context menu in icon view to try.
 	Still doesn't save global setting across sessions; awaiting
