@@ -37,6 +37,17 @@ create_gtk_label ()
 	return label;
 }
 
+static void
+size_allocate_callback (GtkWidget *widget,
+			GtkAllocation *allocation)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+	g_return_if_fail (allocation != NULL);
+	
+	nautilus_label_set_smooth_line_wrap_width (NAUTILUS_LABEL (widget),
+						   allocation->width);
+}
+
 static GtkWidget *
 create_nautilus_label ()
 {
@@ -50,7 +61,12 @@ create_nautilus_label ()
 	nautilus_label_set_solid_background_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_BLUE);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
-	
+
+	gtk_signal_connect (GTK_OBJECT (label),
+			    "size_allocate",
+			    GTK_SIGNAL_FUNC (size_allocate_callback),
+			    NULL);
+
 	return label;
 }
 
