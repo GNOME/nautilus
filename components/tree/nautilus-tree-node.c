@@ -24,15 +24,12 @@
 /* nautilus-tree-model.c - model for the tree view */
 
 #include <config.h>
-
 #include "nautilus-tree-node.h"
+
 #include "nautilus-tree-node-private.h"
-
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 
 static void               nautilus_tree_node_destroy          (GtkObject   *object);
@@ -139,7 +136,7 @@ void
 nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 			       NautilusTreeNode   *parent)
 {
-	g_assert (node->details->parent == NULL);
+	g_return_if_fail (node->details->parent == NULL);
 
 	node->details->parent = parent;
 	parent->details->children = g_list_append (parent->details->children, node);

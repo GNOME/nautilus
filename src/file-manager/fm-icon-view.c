@@ -2008,7 +2008,7 @@ get_icon_images_callback (NautilusIconContainer *container,
 
 	smooth_graphics = nautilus_icon_container_get_anti_aliased_mode (container);
 	if (emblem_icons != NULL) {
-		emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
+		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
 		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, smooth_graphics, emblems_to_ignore);
 		nautilus_string_list_free (emblems_to_ignore);

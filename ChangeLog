@@ -1,5 +1,43 @@
 2000-09-20  Darin Adler  <darin@eazel.com>
 
+	First step fixing storage leaks: Fixed some ref. count leaks of
+	NautilusFile, NautilusDirectory, and NautilusScalableIcon.
+	
+	* components/tree/nautilus-tree-model.c: (remove_all_nodes):
+	Unref the root node when we are done with it.
+	(report_root_node_if_possible): Use report_node_changed for
+	new nodes as well.
+	(report_node_changed): Since a new node and a changed node are
+	really the same, just use this instead of using a different call
+	for added vs. changed.
+	(nautilus_tree_model_directory_files_changed_callback): Ref
+	the node when it's being added to the hash table. Get rid of
+	the misguided code that would ref "because remove will unref"
+	and instead use a more normal model.
+	(nautilus_tree_model_directory_files_added_callback): Fix a
+	storage leak in the case where we generate a warning. Changed it
+	from a printf to a g_warning. Use report_node_changed for new
+	nodes as well. Unref the node after adding it to use a more normal
+	ref model; handles cases where it's already in there properly, for
+	one thing.
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_set_parent): Changed an assert to a
+	return_if_fail.
+	
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_update_icon): Change the code to take the fact
+	that nautilus_icon_factory_get_icon_for_file yields a new ref into
+	account to plug a NautilusScalableIcon leak.
+	
+	* src/nautilus-bookmark-parsing.c:
+	(nautilus_bookmark_new_from_node): Unref the icon after creating a
+	new bookmark. If the bookmark needs to keep it, it will ref it.
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback):
+	Extra space in here.
+
+2000-09-20  Darin Adler  <darin@eazel.com>
+
 	* components/adapter/Makefile.am:
 	* cut-n-paste-code/freetype/Makefile.am: Make the tinderbox a bit
 	happier by mentioning some files that were missing from these
@@ -317,7 +355,7 @@
 2000-09-19  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 640 (icon cache never frees images (awaiting GdkPixbuf
-	fix)). Also took care of bug 3145 (zillions of 'main_loops !=
+	fix)). Also took care of bug 3146 (zillions of 'main_loops !=
 	NULL' assertion failures when quitting) and bug 3138 (Some code in
 	the icon factory is cut and pasted from elsewhere). And a few
 	unrelated things that came up while I was busy working on these.

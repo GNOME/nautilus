@@ -55,6 +55,9 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 			(xml_icon_uri, xml_icon_name, NULL, NULL, FALSE);
 	}
 	new_bookmark = nautilus_bookmark_new_with_icon (xml_uri, xml_name, icon);
+	if (icon != NULL) {
+		nautilus_scalable_icon_unref (icon);
+	}
 
 	xmlFree (xml_name);
 	xmlFree (xml_uri);
