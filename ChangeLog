@@ -1,12 +1,20 @@
 2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Add a top level "Profiler" menu bar to control the profiler.  This
+	is just a first try.  Some things, like the Start/Stop state of
+	the profiler can be better represented by a toggle button.
+
+	Also, protect the eazel services hacks with EAZEL_SERVICES #ifdefs.
+	
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus/nautilus-bonobo-ui.h:
 	Add a path declaration for the Profiler menu.
 	* src/nautilus-profiler.c: (dump_dialog_new):
 	Make the buttons insensitive for now.
 	
 	* src/nautilus-shell-ui.xml:
-	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
 	Add a top level "Profiler" menu bar to control the profiler.  This
 	is just a first try.  Some things, like the Start/Stop state of
 	the profiler can be better represented by a toggle button.

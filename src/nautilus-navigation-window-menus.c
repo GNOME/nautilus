@@ -58,6 +58,10 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
+#ifdef ENABLE_PROFILER
+#include "nautilus-profiler.h"
+#endif
+
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /* Private menu paths that components don't know about */
@@ -254,6 +258,7 @@ stop_button_callback (BonoboUIComponent *component,
 	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
 }
 
+#ifdef EAZEL_SERVICES
 static void
 services_button_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
@@ -261,6 +266,7 @@ services_button_callback (BonoboUIComponent *component,
 {
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "eazel:");
 }
+#endif
 
 static void
 edit_menu_undo_callback (BonoboUIComponent *component, 
@@ -1423,9 +1429,16 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
 		BONOBO_UI_VERB ("Add Bookmark", bookmarks_menu_add_bookmark_callback),
 		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
+
+#ifdef ENABLE_PROFILER
+		BONOBO_UI_VERB ("Start Profiling", nautilus_profiler_bonobo_ui_start_callback),
+		BONOBO_UI_VERB ("Stop Profiling", nautilus_profiler_bonobo_ui_stop_callback),
+		BONOBO_UI_VERB ("Reset Profiling", nautilus_profiler_bonobo_ui_reset_callback),
+		BONOBO_UI_VERB ("Report Profiling", nautilus_profiler_bonobo_ui_report_callback),
+#endif
+
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
-
 
 		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),
 		BONOBO_UI_VERB ("Switch to Intermediate Level", user_level_menu_item_callback),
@@ -1433,7 +1446,10 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
 
 		BONOBO_UI_VERB ("Stop", stop_button_callback),
+
+#ifdef EAZEL_SERVICES
 		BONOBO_UI_VERB ("Services", services_button_callback),
+#endif
 
 		BONOBO_UI_VERB_END
 	};
@@ -1470,6 +1486,10 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
+
+#ifndef ENABLE_PROFILER
+	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
+#endif
 }
 
 void
