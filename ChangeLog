@@ -1,3 +1,19 @@
+2000-10-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4114 (typing single word into location bar crashes)
+
+	Grumble grumble canonical grumble ui grumble.
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical): Return of the workaround to
+	convert file://foo to file:///foo, marked with appropriate
+	FIXME.
+	(nautilus_uri_is_canonical_uri): Changed implementation to just
+	call make_uri_canonical and compare. It had been doing a subset
+	of the things that make_uri_canonical does, but it had gotten out
+	of synch.
+	(nautilus_self_check_file_utilities): Updated tests and added more.
+
 2000-10-27  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/gdb3html.[ch]:
