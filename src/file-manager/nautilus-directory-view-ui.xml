@@ -1,73 +1,73 @@
 <Root>
 <commands>
 	<cmd name="Rename"
-         _label="Rename"
+         _label="_Rename"
 	 _tip="Rename selected item"/>
 	<cmd name="Create Link"
-         _label="Make Link"
+         _label="_Make Link"
 	 _tip="Create a symbolic link for each selected item"/>
 	<cmd name="Delete"
-         _label="Delete"
+         _label="De_lete"
 	 _tip="Delete each selected item, without moving to the Trash"/>
 	<cmd name="Duplicate"
-         _label="Duplicate"
+         _label="_Duplicate"
 	 _tip="Duplicate each selected item"/>
 	<cmd name="Empty Trash"
-         _label="Empty Trash"
+         _label="_Empty Trash"
 	 _tip="Delete all items in the Trash"/>
 	<cmd name="New Folder"
-         _label="New Folder"
+         _label="_New Folder"
 	 _tip="Create a new empty folder inside this folder"/>
         <cmd name="New Launcher"
-         _label="New Launcher"
+         _label="New L_auncher"
          _tip="Create a new launcher"/>
         <cmd name="Edit Launcher"
          _label="Edit Launcher"
          _tip="Edit the launcher information"/>
 	<cmd name="Open"
-         _label="Open"
+         _label="_Open"
 	 _tip="Open the selected item in this window"/>
 	<cmd name="OpenAlternate"
-         _label="Open in New Window"
+         _label="Open _in New Window"
 	 _tip="Open each selected item in a new window"/>
 	<cmd name="Open Scripts Folder"
-         _label="Open Scripts Folder"
+         _label="_Open Scripts Folder"
 	 _tip="Show the folder containing the scripts that appear in this menu"/>
 	<cmd name="OtherApplication"
-         _label="Other Application..."
+         _label="Other _Application..."
 	 _tip="Choose another application with which to open the selected item"/>
 	<cmd name="OtherViewer"
-         _label="Other Viewer..."
+         _label="Other _Viewer..."
 	 _tip="Choose another viewer with which to view the selected item"/>
 	<cmd name="Remove Custom Icons"
-         _label="Remove Custom Icons"
+         _label="R_emove Custom Icons"
 	 _tip="Remove any custom images from selected icons"/>
 	<cmd name="Reset to Defaults"
-         _label="Reset View to Default"
+         _label="Reset View to _Defaults"
 	 _tip="Reset sorting order and zoom level to match preferences for this view"/>
 	<cmd name="Reset Background"
-         _label="Use Default Background"
+         _label="Use _Default Background"
 	 _tip="Use the default background for this location"/>
 	<cmd name="Cut Files"
-         _label="Cut Files"
+         _label="Cu_t Files"
 	 _tip="Prepare the selected files to be moved with a Paste Files command"/>
 	<cmd name="Copy Files"
-         _label="Copy Files"
+         _label="_Copy Files"
 	 _tip="Prepare the selected files to be copied with a Paste Files command"/>
 	<cmd name="Paste Files"
-         _label="Paste Files"
+         _label="_Paste Files"
 	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command"/>
 	<cmd name="Select All"
-         _label="Select All Files"
+         _label="Select _All Files"
 	 _tip="Select all items in this window"/>
 	<cmd name="Properties"
-         _label="Properties"
+         _label="_Properties"
 	 _tip="View or modify the properties of each selected item"/>
 	<cmd name="Show Trash"
-         _label="Show Trash"
+         _label="_Show Trash"
 	 _tip="Show the contents of the Trash"/>
 	<cmd name="Trash"
-         _label="Move to Trash"
+         _label="Move to _Trash"
 	 _tip="Move each selected item to the Trash"/>
 </commands>
 <keybindings>
@@ -83,23 +83,19 @@
 
 		<placeholder name="New Items Placeholder">
 			<menuitem name="New Folder"
-				  _label="_New Folder"
 			  	  accel="*Shift**Control*n"
 				  pixtype="stock" pixname="gtk-new"
 				  verb="New Folder"/>
 			<menuitem name="New Launcher"
-				  _label="New La_uncher"
 				  pixtype="stock" pixname="gtk-new"
 				  verb="New Launcher"/>
 		</placeholder>
 		<placeholder name="Open Placeholder">
 			<menuitem name="Open"
-				  _label="_Open"
                                   accel="*Control*o"
 				  pixtype="stock" pixname="gtk-open"
 				  verb="Open"/>
 			<menuitem name="OpenAlternate"
-				  _label="Open _in New Window"
 				  accel="*Control**Shift*o"
 				  verb="OpenAlternate"/>
 			<submenu name="Open With" 
@@ -107,12 +103,10 @@
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication"
-					  _label="Other _Application..."
 					  verb="OtherApplication"/>
 				<separator/>
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer"
-					  _label="Other _Viewer..."
 					  verb="OtherViewer"/>
 			</submenu>
 			<menuitem name="Edit Launcher"
@@ -123,67 +117,54 @@
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
 				 <separator name="After Scripts"/>
 				 <menuitem name="Open Scripts Folder" 
-				 	   _label="_Open Scripts Folder"
 				 	   verb="Open Scripts Folder"/>
 			</submenu>
 		</placeholder>
 
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Properties"
-				  _label="_Properties"
 				  accel="*Control*i"
 				  verb="Properties"/>
 			<menuitem name="Duplicate"
-				  _label="_Duplicate"
 				  verb="Duplicate"/>
 			<menuitem name="Create Link"
-				  _label="_Make Link"
 				  accel="*Control*m"
 				  verb="Create Link"/>
 			<menuitem name="Rename"
 				  accel="F2"
-				  _label="_Rename"
 				  verb="Rename"/>
 		</placeholder>
 		<placeholder name="Dangerous File Items Placeholder">
 			<menuitem name="Trash"
-				  _label="Move to _Trash"
 				  accel="*Control*t"
 				  pixtype="stock" pixname="gtk-delete"
 				  verb="Trash"/>
 			<menuitem name="Delete"
-				  _label="De_lete"
 				  verb="Delete"/>
 		</placeholder>
 
 		<placeholder name="Global File Items Placeholder">
 			<menuitem name="Show Trash"
-				  _label="_Show Trash"
 				  verb="Show Trash"/>
 			<menuitem name="Empty Trash"
-				  _label="_Empty Trash"
 				  verb="Empty Trash"/>
 		</placeholder>
 	</submenu>
 
 	<submenu name="Edit">
 		<menuitem name="Cut"
-			  _label="Cu_t Files"
 			  accel="*Control*x"
 			  pixtype="stock" pixname="gtk-cut"
 			  verb="Cut Files"/>
 		<menuitem name="Copy"
-			  _label="_Copy Files"
 			  accel="*Control*c"
 			  pixtype="stock" pixname="gtk-copy"
 			  verb="Copy Files"/>
 		<menuitem name="Paste"
-			  _label="_Paste Files"
 			  accel="*Control*v"
 			  pixtype="stock" pixname="gtk-paste"
 			  verb="Paste Files"/>
 		<menuitem name="Select All"
-			  _label="Select _All Files"
 			  accel="*Control*a"
 			  verb="Select All"/>
 		
@@ -196,7 +177,6 @@
 	<submenu name="View">
 		<placeholder name="View Preferences Placeholder">
 			<menuitem name="Reset to Defaults"
-				  _label="Reset View to _Defaults"
 				  verb="Reset to Defaults"/>
 		</placeholder>
 	</submenu>
@@ -248,7 +228,7 @@
 			<menuitem name="OpenAlternate" 
 			 verb="OpenAlternate"/>
 			<submenu name="Open With" 
-				 _label="Open With" 
+				 _label="Open Wit_h" 
 				 tearoff="0"
 				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>

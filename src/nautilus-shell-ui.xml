@@ -20,7 +20,7 @@
 	 _label="Find"
 	 _tip="Search this computer for files"/>
 	<cmd name="New Window"
-	 _label="New Window"
+	 _label="New _Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Home"
 	 _tip="Go to the home location"/>
@@ -33,11 +33,11 @@
         <cmd name="Clear" sensitive="0"/>
 	<cmd name="Reload"
 	 _tip="Display the latest contents of the current location"/>
-	<cmd name="Zoom In" _label="Zoom In"
+	<cmd name="Zoom In" _label="Zoom _In"
 	 _tip="Show the contents in more detail"/>
-	<cmd name="Zoom Out" _label="Zoom Out"
+	<cmd name="Zoom Out" _label="Zoom _Out"
 	 _tip="Show the contents in less detail"/>
-	<cmd name="Zoom Normal" _label="Normal Size"
+	<cmd name="Zoom Normal" _label="Normal Si_ze"
 	 _tip="Show the contents at the normal size"/>
 	<cmd name="View as" _label="View as..."
 	 _tip="Choose a view for the current location, or modify the set of views"/>
@@ -54,7 +54,6 @@
 		<placeholder name="New Items Placeholder" delimit="none">
 			<menuitem name="New Window"
 			  	  accel="*Control*n"
-				  _label="New _Window"
 				  verb="New Window"/>
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
@@ -173,15 +172,14 @@
 		
 		<placeholder name="Zoom Items Placeholder" delimit="top">
 			<menuitem name="Zoom In"
-				  _label="Zoom _In" accel="*Control*plus"
+				  accel="*Control*plus"
 				  pixtype="stock" pixname="zoom-in"
 				  verb="Zoom In"/>
 			<menuitem name="Zoom Out"
-				  _label="Zoom _Out" accel="*Control*minus"
+				  accel="*Control*minus"
 				  pixtype="stock" pixname="zoom-out"
 				  verb="Zoom Out"/>
 			<menuitem name="Zoom Normal"
-				  _label="_Normal Size"
 				  pixtype="stock" pixname="zoom-100"
 				  verb="Zoom Normal"/>
 		</placeholder>

@@ -1376,13 +1376,12 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				       && icon_container != NULL
 			    	       && !nautilus_icon_container_has_stretch_handles (icon_container));
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(icon_view->details->ui,
-		 MENU_PATH_UNSTRETCH_ICONS,
 		 COMMAND_UNSTRETCH_ICONS,
 		 eel_g_list_more_than_one_item (selection)
-		 	? _("Restore Icons' _Original Sizes")
-		 	: _("Restore Icon's _Original Size"));
+		 	? _("Restore Icons' Original Si_zes")
+		 	: _("Restore Icon's Original Si_ze"));
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_UNSTRETCH_ICONS,
 				       icon_container != NULL

@@ -457,16 +457,16 @@ nautilus_bonobo_remove_menu_items_and_commands (BonoboUIComponent *ui,
 	g_free (remove_wildcard);
 }
 
-/* Call to set the user-visible label of a menu item to a string
+/* Call to set the user-visible label of a command to a string
  * containing an underscore accelerator. The underscore is stripped
- * off before setting the label of the command, because pop-up menu
- * and toolbar button labels shouldn't have the underscore.
+ * off before setting the label of the toolitem, because toolbar
+ * button labels shouldn't have the underscore.
  */
 void	 
-nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
-						     const char	*menu_item_path,
-						     const char	*command_path,
-						     const char	*label_with_underscore)
+nautilus_bonobo_set_label_for_toolitem_and_command (BonoboUIComponent *ui,
+						    const char	*toolitem_path,
+						    const char	*command_path,
+						    const char	*label_with_underscore)
 {
 	char *label_no_underscore;
 
@@ -477,10 +477,10 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 
 	label_no_underscore = eel_str_strip_chr (label_with_underscore, '_');
 	nautilus_bonobo_set_label (ui,
-				   menu_item_path,
+				   command_path,
 				   label_with_underscore);
 	nautilus_bonobo_set_label (ui,
-				   command_path,
+				   toolitem_path,
 				   label_no_underscore);
 	
 	g_free (label_no_underscore);

@@ -1,7 +1,7 @@
 <Root>
 <commands>
         <cmd name="Change Background"
-         _label="Change Desktop Background"
+         _label="Change Desktop _Background"
          _tip="Show a window that lets you set your desktop background's pattern or color"/>
         <cmd name="Close" sensitive="0"/>
         <cmd name="Add Bookmark" sensitive="0"/>
@@ -9,26 +9,26 @@
          _label="Empty Trash"
          _tip="Delete all items in the Trash"/>
 	<cmd name="Unmount Volume Conditional"
-         _label="Unmount Volume"
-         _tip="Unmount Volume Conditionally"/>
+         _label="_Unmount Volume"
+         _tip="Unmount the selected volume"/>
         <cmd name="Format Conditional"
-         _label="Format"
-         _tip="Format Conditionally"/>
+         _label="_Format"
+         _tip="Format the selected volume"/>
         <cmd name="Protect Conditional"
-         _label="Protect"
-         _tip="Protect Conditionally"/>
+         _label="Prot_ect"
+         _tip="Protect the selected volume"/>
         <cmd name="Media Properties Conditional"
-         _label="Media Properties"
-         _tip="Media Properties Conditionally"/>
+         _label="Medi_a Properties"
+         _tip="Show media properties for the selected volume"/>
         <cmd name="New Terminal"
-         _label="New Terminal"
+         _label="New T_erminal"
          _tip="Open a new GNOME terminal window"/>
         <cmd name="New Launcher Desktop"
-         _label="New Launcher"
+         _label="New L_auncher"
          _tip="Create a new launcher"/>
         <cmd name="OpenAlternate" hidden="1"/>
         <cmd name="Reset Background"
-         _label="Use Default Background"
+         _label="Use _Default Background"
          _tip="Use the default desktop background"/>
 </commands>
 <menu>
@@ -55,7 +55,7 @@
                         </placeholder>
                         <placeholder name="Volume Items" delimit="top">
                                 <submenu name="Disks" tearoff="0"
-                                         _label="Disks"
+                                         _label="Dis_ks"
                                          _tip="Mount or unmount disks"/>
                         </placeholder>
                 </placeholder>
@@ -72,10 +72,10 @@
                         <menuitem name="Empty Trash" verb="Empty Trash Conditional"/>
                 </placeholder>
                 <placeholder name="Removabel Media Holder" delimit="top">
-                        <menuitem name="Unmount Volume" _label="Unmount Volume" verb="Unmount Volume Conditional"/>
-                        <menuitem name="Protect Media" _label="Protect" verb="Protect Conditional"/>
-                        <menuitem name="Format Media" _label="Format" verb="Format Conditional"/>
-                        <menuitem name="Media Properties" _label="Media Properties" verb="Media Properties Conditional"/>
+                        <menuitem name="Unmount Volume" verb="Unmount Volume Conditional"/>
+                        <menuitem name="Protect Media" verb="Protect Conditional"/>
+                        <menuitem name="Format Media" verb="Format Conditional"/>
+                        <menuitem name="Media Properties" verb="Media Properties Conditional"/>
                 </placeholder>
         </popup>
 </popups>

@@ -1,5 +1,27 @@
 2002-07-02  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu), (real_update_menus): Use
+	nautilus_bonobo_set_label instead of
+	nautilus_bonobo_set_label_for_menu_item_and_command, since popups
+	should now have mnemonics.
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/nautilus-shell-ui.xml: Added mnemonics to items on the popup
+	menus, changed some mnemonics to prevent duplicates (including a
+	patch from David Bordoley <bordoley@msu.edu>
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_label_for_toolitem_and_command): Moved here
+	from nautilus_bonobo_set_label_for_menu_item_and_command, since
+	popups should display mnemonics.  This function isn't used
+	anymore, but I'm leaving it in because it is still useful if we
+	ever want to change the label of a verb with a toolbar button
+	associated with it.
+
+2002-07-02  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-application.c (set_session_restart): Set the
 	restart style to RESTART_IF_RUNNING instead of RESTART_NEVER when
 	restart is FALSE.

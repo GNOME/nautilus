@@ -3538,15 +3538,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		}
 		gnome_vfs_mime_component_list_free (components); 
 
-		nautilus_bonobo_set_label_for_menu_item_and_command 
+		nautilus_bonobo_set_label 
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
 			 FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
 			 any_applications ? _("Other _Application...") : _("An _Application..."));
 
-		nautilus_bonobo_set_label_for_menu_item_and_command 
+		nautilus_bonobo_set_label 
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
 			 FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
 			 any_applications ? _("Other _Viewer...") : _("A _Viewer..."));
 
@@ -4369,9 +4367,9 @@ real_update_menus (FMDirectoryView *view)
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
 					       selection_count == 1);
-		nautilus_bonobo_set_label_for_menu_item_and_command 
+
+		nautilus_bonobo_set_label
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE,
 			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
 			 _("Open _in This Window"));
 	} else {
@@ -4380,9 +4378,8 @@ real_update_menus (FMDirectoryView *view)
 		} else {
 			label_with_underscore = g_strdup_printf (_("Open _in %d New Windows"), selection_count);
 		}
-		nautilus_bonobo_set_label_for_menu_item_and_command 
+		nautilus_bonobo_set_label
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE,
 			 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
 			 label_with_underscore);
 		g_free (label_with_underscore);
@@ -4407,9 +4404,8 @@ real_update_menus (FMDirectoryView *view)
 		show_separate_delete_command = show_delete_command_auto_value;
 	}
 	
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
 		 FM_DIRECTORY_VIEW_COMMAND_TRASH,
 		 label);
 	nautilus_bonobo_set_accelerator (view->details->ui, 
@@ -4426,9 +4422,8 @@ real_update_menus (FMDirectoryView *view)
 				    FM_DIRECTORY_VIEW_COMMAND_DELETE,
 				    !show_separate_delete_command);
 	if (show_separate_delete_command) {
-		nautilus_bonobo_set_label_for_menu_item_and_command 
+		nautilus_bonobo_set_label
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
 			 FM_DIRECTORY_VIEW_COMMAND_DELETE,
 			 confirm_trash_auto_value ? _("De_lete...") : _("De_lete"));
 		nautilus_bonobo_set_sensitive (view->details->ui, 
@@ -4446,13 +4441,12 @@ real_update_menus (FMDirectoryView *view)
 				       background != NULL
 				       && nautilus_file_background_is_set (background));
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
 		 FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 		 selection_count > 1
-			? _("Make _Links")
-			: _("Make _Link"));
+			? _("_Make Links")
+			: _("_Make Link"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 				       can_link_files);
@@ -4462,9 +4456,8 @@ real_update_menus (FMDirectoryView *view)
 				       selection_count != 0
 			      		&& fm_directory_view_supports_properties (view));
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
 		 FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
 		 confirm_trash_auto_value
 			? _("_Empty Trash...")
@@ -4474,9 +4467,8 @@ real_update_menus (FMDirectoryView *view)
 				       !nautilus_trash_monitor_is_empty ());
 
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
 		 FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 		 selection_count > 1
 			? _("R_emove Custom Icons")
@@ -4489,9 +4481,8 @@ real_update_menus (FMDirectoryView *view)
 				       NAUTILUS_COMMAND_SELECT_ALL,
 				       !fm_directory_view_is_empty (view));
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_CUT_FILES,
 		 FM_DIRECTORY_VIEW_COMMAND_CUT_FILES,
 		 selection_count == 1
 		 ? _("Cu_t File")
@@ -4500,9 +4491,8 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_CUT_FILES,
 				       can_delete_files);
 
-	nautilus_bonobo_set_label_for_menu_item_and_command 
+	nautilus_bonobo_set_label
 		(view->details->ui,
-		 FM_DIRECTORY_VIEW_MENU_PATH_COPY_FILES,
 		 FM_DIRECTORY_VIEW_COMMAND_COPY_FILES,
 		 selection_count == 1
 		 ? _("_Copy File")

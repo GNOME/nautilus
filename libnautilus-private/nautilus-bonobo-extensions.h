@@ -91,8 +91,8 @@ void                            nautilus_bonobo_add_menu_separator              
 										     const char                       *path);
 void                            nautilus_bonobo_remove_menu_items_and_commands      (BonoboUIComponent                *ui,
 										     const char                       *container_path);
-void                            nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent                *ui,
-										     const char                       *menu_item_path,
+void                            nautilus_bonobo_set_label_for_toolitem_and_command  (BonoboUIComponent                *ui,
+										     const char                       *toolitem_path,
 										     const char                       *command_path,
 										     const char                       *label_with_underscore);
 void                            nautilus_bonobo_set_icon                            (BonoboUIComponent                *ui,
