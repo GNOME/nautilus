@@ -260,7 +260,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget		*notebook_vbox;
 	GtkWidget		*temp_label;
 	GtkWidget		*separator;
-
+	gboolean		has_news;
+	
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
@@ -294,61 +295,70 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
-
-	/* Create the Service News Frame */
-	frame = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (frame);
-	gtk_box_pack_start (GTK_BOX (view->details->form), frame, FALSE, FALSE, 0);
-
-	/* create the service news scroll widget */
-	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (temp_scrolled_window);
-	viewport = gtk_viewport_new (NULL, NULL);
-	widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
-	gtk_widget_show (viewport);
-	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
-			                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-	/* create the parent service news box and a table to hold the data */
-	temp_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (temp_box);
-
-	/* build the eazel news table from the xml file */
-	for (iterator = view->details->xml_data->eazel_news_list; iterator; iterator = g_list_next (iterator)) {
-
-		view->details->service_news_row = gtk_hbox_new (FALSE, 0);
-		gtk_widget_show (view->details->service_news_row);
-
-		view->details->current_news_row++;
-		eazel_news_node = iterator->data;
-		view->details->news_icon_name = eazel_news_node->icon;
-		view->details->news_date = eazel_news_node->date;
-		view->details->news_description_body = g_strdup_printf ("- %s", eazel_news_node->message);
-		if (view->details->current_news_row > 1) {
-			separator = gtk_hseparator_new ();
-			gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 4);
-			gtk_widget_show (separator);
-		}
-		generate_eazel_news_entry_row (view, view->details->current_news_row);
-
-		g_free (eazel_news_node);
-
-		gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_row), TRUE, TRUE, 0);
-
+	
+	/* create the news section only if there's some news */
+	has_news = FALSE;
+	if (view->details->xml_data->eazel_news_list) {
+		eazel_news_node = (EazelNewsData*) view->details->xml_data->eazel_news_list->data;
+		has_news = eazel_news_node->message != NULL;
 	}
+	
+	if (has_news) {
+		/* Create the Service News Frame */
+		frame = gtk_vbox_new (FALSE, 0);
+		gtk_widget_show (frame);
+		gtk_box_pack_start (GTK_BOX (view->details->form), frame, FALSE, FALSE, 0);
 
-	g_list_free (view->details->xml_data->eazel_news_list);
+		/* create the service news scroll widget */
+		temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+		gtk_widget_show (temp_scrolled_window);
+		viewport = gtk_viewport_new (NULL, NULL);
+		widget_set_nautilus_background_color (viewport, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+		gtk_widget_show (viewport);
+		gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
+			                	GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	/* draw parent vbox and connect it to the service news frame */
-	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
-	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
-	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
+		/* create the parent service news box and a table to hold the data */
+		temp_box = gtk_vbox_new (FALSE, 0);
+		gtk_widget_show (temp_box);
 
+		/* build the eazel news table from the xml file */
+		for (iterator = view->details->xml_data->eazel_news_list; iterator; iterator = g_list_next (iterator)) {
+
+			view->details->service_news_row = gtk_hbox_new (FALSE, 0);
+			gtk_widget_show (view->details->service_news_row);
+
+			view->details->current_news_row++;
+			eazel_news_node = iterator->data;
+			view->details->news_icon_name = eazel_news_node->icon;
+			view->details->news_date = eazel_news_node->date;
+			view->details->news_description_body = g_strdup_printf ("- %s", eazel_news_node->message);
+			if (view->details->current_news_row > 1) {
+				separator = gtk_hseparator_new ();
+				gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 4);
+				gtk_widget_show (separator);
+			}
+			generate_eazel_news_entry_row (view, view->details->current_news_row);
+
+			g_free (eazel_news_node);
+
+			gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_row), TRUE, TRUE, 0);
+
+		}
+
+		g_list_free (view->details->xml_data->eazel_news_list);
+
+		/* draw parent vbox and connect it to the service news frame */
+		gtk_container_add (GTK_CONTAINER (viewport), temp_box);
+		gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
+		gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
+	}
+	
 	/* add a set of tabs to control the notebook page switching */
 	notebook_tabs = nautilus_tabs_new ();
 	gtk_widget_show (notebook_tabs);
-	gtk_box_pack_start (GTK_BOX (frame), notebook_tabs, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
 
 	/* Create the notebook container for services */
 	notebook = gtk_notebook_new ();
