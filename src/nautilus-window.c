@@ -165,6 +165,12 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
 }
 
 static void
+gtk_option_menu_do_resize(GtkWidget *widget, GtkAllocation *size_alloc, GtkWidget *optmenu)
+{
+  gtk_widget_set_usize(optmenu, size_alloc->width, -1);
+}
+
+static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
@@ -172,16 +178,9 @@ nautilus_window_constructed(NautilusWindow *window)
     GNOMEUIINFO_END
   };
   GnomeUIInfo main_menu[] = {
-    GNOMEUIINFO_MENU_CLOSE_ITEM(nautilus_window_close, NULL),
     GNOMEUIINFO_SUBTREE_STOCK(N_("_Actions"), dummy_menu, GNOME_STOCK_MENU_JUMP_TO),
     GNOMEUIINFO_END
   };
-#if 0
-  GnomeUIInfo main_menu[] = {
-    GNOMEUIINFO_SUBTREE("Main", ops_menu),
-    GNOMEUIINFO_END
-  };
-#endif
   GtkWidget *menu_hbox, *menubar, *wtmp, *statusbar;
   GtkAccelGroup *ag;
 
@@ -192,9 +191,24 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_window_add_accel_group(GTK_WINDOW(app), ag);
 
   menu_hbox = gtk_hbox_new(FALSE, GNOME_PAD);
+
   menubar = gtk_menu_bar_new();
   gtk_box_pack_end(GTK_BOX(menu_hbox), menubar, TRUE, TRUE, GNOME_PAD_BIG);
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
+
+  window->option_cvtype = gtk_option_menu_new();
+  gtk_box_pack_end(GTK_BOX(menu_hbox), window->option_cvtype, TRUE, TRUE, GNOME_PAD_BIG);
+  gtk_widget_show(window->option_cvtype);
+  window->menu_cvtype = gtk_menu_new();
+  gtk_option_menu_set_menu(GTK_OPTION_MENU(window->option_cvtype), window->menu_cvtype);
+  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "size_allocate",
+                                 GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
+                                 GTK_OBJECT(window->option_cvtype));
+  wtmp = gtk_menu_item_new_with_label(_("View as blank space"));
+  gtk_container_add(GTK_CONTAINER(window->menu_cvtype), wtmp);
+  gtk_widget_show(wtmp);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
+  gtk_widget_queue_resize(window->menu_cvtype);
 
   /* A hacked-up version of gnome_app_set_menu() */
   {
@@ -383,7 +397,7 @@ nautilus_window_new(const char *app_id)
 
 static void
 nautilus_window_close (GtkWidget *widget,
-			GtkWidget *window)
+                       GtkWidget *window)
 {
   gtk_widget_destroy(window);
 }
@@ -687,15 +701,13 @@ nautilus_window_set_initial_state(NautilusWindow *window)
   for(cur = window->meta_views; cur; cur = cur->next)
     nautilus_window_remove_meta_view(window, NAUTILUS_VIEW(cur->data));
 
-  nautilus_window_set_content_view(window,
-				    view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(),
-										"main_window", window, NULL))
-				    );
+  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
   nautilus_view_load_client(view, "control:clock");
-  nautilus_window_add_meta_view(window, view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(),
-									    "main_window", window, NULL))
-				       );
+  nautilus_window_set_content_view(window, view);
+
+  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
   nautilus_view_load_client(view, "control:clock");
+  nautilus_window_add_meta_view(window, view);
 
   gtk_widget_size_request(GTK_WIDGET(window), &sreq);
   gtk_widget_size_request(GTK_WIDGET(window->content_hbox), &sreq);

@@ -57,9 +57,11 @@ struct _NautilusWindow {
   GnomeApp parent_object;
 
   GtkWidget *content_view;
-
   GSList *meta_views;
+
   GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
+  GtkWidget *option_cvtype, *menu_cvtype;
+
   NautilusLocationReference current_uri, actual_current_uri;
   char *current_content_type;
 
