@@ -27,6 +27,7 @@
 #include "nautilus-program-chooser.h"
 
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-view-identifier.h"
 
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkclist.h>
@@ -61,31 +62,55 @@ populate_program_list (NautilusProgramChooserType type,
 		       NautilusFile *file,
 		       GtkCList *clist)
 {
-	int i;
 	char **text;
+	char *uri;
+	GList *programs, *program;
+	NautilusViewIdentifier *view_identifier;
+	GnomeVFSMimeApplication *application;
+	int new_row;
 
+	g_assert (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS
+		  || type == NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS);
 
-	if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
-		for (i = 0; i < 10; ++i) {
-			/* One extra slot so it's NULL-terminated */
-			text = g_new0 (char *, PROGRAM_LIST_COLUMN_COUNT+1);
-			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup_printf ("View as Viewer %d", i+1); 
-			gtk_clist_append (clist, text);
-			
-			g_strfreev (text);
+	uri = nautilus_file_get_uri (file);
+	programs = type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS
+		? gnome_vfs_mime_get_all_components_for_uri (uri)
+		: gnome_vfs_mime_get_all_applications_for_uri (uri);
+	g_free (uri);
+		
+
+	for (program = programs; program != NULL; program = program->next) {
+		/* One extra slot so it's NULL-terminated */
+		text = g_new0 (char *, PROGRAM_LIST_COLUMN_COUNT+1);
+
+		if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+			view_identifier = nautilus_view_identifier_new_from_content_view 
+				((OAF_ServerInfo *)program->data);
+			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup_printf 
+				("View as %s", view_identifier->name);
+			/* Free the OAF_ServerInfo now, we're done with it. */
+			CORBA_free (program->data);
+		} else {
+			application = (GnomeVFSMimeApplication *)program->data;
+			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup (application->name);			
+			gnome_vfs_mime_application_free (application);
+		}		
+
+		new_row = gtk_clist_append (clist, text);
+
+		if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+			gtk_clist_set_row_data_full 
+				(clist, new_row, view_identifier, (GtkDestroyNotify)nautilus_view_identifier_free);
+		} else {
+			gtk_clist_set_row_data_full 
+				(clist, new_row, application, (GtkDestroyNotify)gnome_vfs_mime_application_free);
 		}
-	} else {
-		g_assert (type == NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS);
-		for (i = 0; i < 10; ++i) {
-			/* One extra slot so it's NULL-terminated */
-			text = g_new0 (char *, PROGRAM_LIST_COLUMN_COUNT+1);
-			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup_printf ("Application %d", i+1); 
-			gtk_clist_append (clist, text);
-			
-			g_strfreev (text);
-		}
+		
+		g_strfreev (text);
 	}
 
+	/* Don't free the data here, just the list shell. The data is freed elsewhere. */
+	g_list_free (programs);
 }
 
 static NautilusFile *
@@ -395,6 +420,8 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
 				     NO_DEFAULT_MAGIC_NUMBER,
 				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 
+	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (type));
+
 	dialog_vbox = GNOME_DIALOG (window)->vbox;
 
 	/* Prompt at top of dialog. */
@@ -418,6 +445,8 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
 	gtk_widget_show (clist);
 	gtk_container_add (GTK_CONTAINER (list_scroller), clist);
 	gtk_clist_column_titles_hide (GTK_CLIST (clist));
+
+	gtk_object_set_data (GTK_OBJECT (window), "list", clist);
 
 	/* Framed area with selection-specific details */
 	frame = gtk_frame_new (NULL);
@@ -470,4 +499,70 @@ nautilus_program_chooser_new (NautilusProgramChooserType type,
   			    window);
 
   	return GNOME_DIALOG (window);
+}
+
+/**
+ * nautilus_program_chooser_get_application:
+ * 
+ * Get the currently-chosen application in the program-choosing dialog.
+ * Usually used after the dialog has been closed (but not yet destroyed)
+ * to get the user's final choice. The returned value is the actual one
+ * stored in the dialog, and thus cannot be accessed after the dialog
+ * has been destroyed.
+ * 
+ * @program_chooser: The result of calling nautilus_program_chooser_new
+ * with type NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS.
+ * 
+ * Return value: a GnomeVFSMimeApplication specifying a component. The caller
+ * should make a copy if they want to use it after the dialog has been
+ * destroyed.
+ */
+GnomeVFSMimeApplication *
+nautilus_program_chooser_get_application (GnomeDialog *program_chooser)
+{
+	GtkCList *clist;
+
+	g_return_val_if_fail (GNOME_IS_DIALOG (program_chooser), NULL);
+
+	g_return_val_if_fail 
+		(GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type")) 
+			== NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS,
+		 NULL);
+
+	clist = GTK_CLIST (gtk_object_get_data (GTK_OBJECT (program_chooser), "list"));
+	return (GnomeVFSMimeApplication *)gtk_clist_get_row_data 
+		(clist, nautilus_gtk_clist_get_first_selected_row (clist));
+}
+
+/**
+ * nautilus_program_chooser_get_component:
+ * 
+ * Get the currently-chosen component in the program-choosing dialog.
+ * Usually used after the dialog has been closed (but not yet destroyed)
+ * to get the user's final choice. The returned value is the actual one
+ * stored in the dialog, and thus cannot be accessed after the dialog
+ * has been destroyed.
+ * 
+ * @program_chooser: The result of calling nautilus_program_chooser_new
+ * with type NAUTILUS_PROGRAM_CHOOSER_COMPONENTS.
+ * 
+ * Return value: a NautilusViewIdentifier specifying a component. The caller
+ * should make a copy if they want to use it after the dialog has been
+ * destroyed.
+ */
+NautilusViewIdentifier *
+nautilus_program_chooser_get_component (GnomeDialog *program_chooser)
+{
+	GtkCList *clist;
+
+	g_return_val_if_fail (GNOME_IS_DIALOG (program_chooser), NULL);
+
+	g_return_val_if_fail 
+		(GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type")) 
+			== NAUTILUS_PROGRAM_CHOOSER_COMPONENTS,
+		 NULL);
+
+	clist = GTK_CLIST (gtk_object_get_data (GTK_OBJECT (program_chooser), "list"));
+	return (NautilusViewIdentifier *)gtk_clist_get_row_data 
+		(clist, nautilus_gtk_clist_get_first_selected_row (clist));
 }

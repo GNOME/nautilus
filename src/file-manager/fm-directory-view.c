@@ -38,6 +38,7 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-result.h>
@@ -156,12 +157,6 @@ static void           open_one_in_new_window                                    
 										   gpointer                  user_data);
 static void           open_one_properties_window                                  (gpointer                  data,
 										   gpointer                  user_data);
-static void           select_all_callback                                         (GtkMenuItem              *item,
-										   FMDirectoryView          *directory_view);
-static void           zoom_in_callback                                            (GtkMenuItem              *item,
-										   FMDirectoryView          *directory_view);
-static void           zoom_out_callback                                           (GtkMenuItem              *item,
-										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_in_callback                                   (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
@@ -318,7 +313,7 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer u
 }
 
 static void
-fm_directory_view_chose_application_callback (const char *command_string, 
+fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *application, 
 					      gpointer callback_data)
 {
 	NautilusFile *file;
@@ -328,9 +323,9 @@ fm_directory_view_chose_application_callback (const char *command_string,
 
 	file = NAUTILUS_FILE (callback_data);
 
-	if (command_string != NULL) {
+	if (application != NULL) {
 		uri = nautilus_file_get_uri (file);
-		nautilus_launch_application (command_string, uri);
+		nautilus_launch_application (application->command, uri);
 		g_free (uri);
 	}
 
@@ -470,6 +465,14 @@ bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer user_data,
         fm_directory_view_duplicate_selection (view, selection);
 
         nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_select_all_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	fm_directory_view_select_all (user_data);
 }
 
 static void
@@ -879,12 +882,14 @@ done_loading (FMDirectoryView *view)
 
 
 
-/* handle the "select all" menu command */
-
 static void
-select_all_callback (GtkMenuItem *item, FMDirectoryView *directory_view)
+select_all_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	fm_directory_view_select_all (directory_view);
+	g_assert (GTK_IS_MENU_ITEM (item));
+	g_assert (callback_data == NULL);
+
+	fm_directory_view_select_all (
+		FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")) );
 }
 
 /* handle the zoom in/out menu items */
@@ -1864,42 +1869,167 @@ add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 		menu_item = gtk_menu_item_new ();
 	}
 
-	finish_adding_menu_item (menu, menu_item, FALSE);
+	finish_adding_menu_item (menu, menu_item, TRUE);
+}
+
+static void
+launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
+{
+	char *uri, *command;
+
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (user_data == NULL);
+
+	command = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "command");
+	g_assert (command != NULL);
+
+	uri = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "uri");
+	g_assert (uri != NULL);
+
+	nautilus_launch_application (command, uri);
+}
+
+static void
+view_uri_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
+{
+	NautilusViewIdentifier *identifier;
+	char *uri;
+
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (user_data == NULL);
+
+	identifier = (NautilusViewIdentifier *)gtk_object_get_data 
+		(GTK_OBJECT (menu_item), "identifier");
+	g_assert (identifier != NULL);
+
+	uri = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "uri");
+	g_assert (uri != NULL);
+
+	/* FIXME: Need to switch to new viewer, opening new window if user's
+	 * preference is set that way, with the given uri.
+	 */
+	g_message ("POOF! (switch to \"%s\" with viewer \"%s\" here)", uri, identifier->iid);
+}
+
+static void
+add_application_to_gtk_menu (GtkMenu *menu, 
+			     GnomeVFSMimeApplication *application, 
+			     const char *uri)
+{
+	GtkWidget *menu_item;
+	char *label_string;
+
+	g_assert (GTK_IS_MENU (menu));
+
+	label_string = g_strdup (application->name);
+	menu_item = gtk_menu_item_new_with_label (label_string);
+	g_free (label_string);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "command",
+				  g_strdup (application->command),
+				  g_free);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "uri",
+				  g_strdup (uri),
+				  g_free);
+
+	gtk_signal_connect
+		(GTK_OBJECT (menu_item),
+		 "activate",
+		 launch_application_from_menu_item,
+		 NULL);
+
+	finish_adding_menu_item (menu, menu_item, TRUE);
+}
+
+static void
+add_component_to_gtk_menu (GtkMenu *menu, 
+			   OAF_ServerInfo *component, 
+			   const char *uri)
+{
+	GtkWidget *menu_item;
+	NautilusViewIdentifier *identifier;
+
+	g_assert (GTK_IS_MENU (menu));
+
+	identifier = nautilus_view_identifier_new_from_content_view (component);
+
+	menu_item = gtk_menu_item_new_with_label (identifier->name);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "identifier",
+				  identifier,
+				  (GtkDestroyNotify) nautilus_view_identifier_free);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "uri",
+				  g_strdup (uri),
+				  g_free);
+
+	gtk_signal_connect
+		(GTK_OBJECT (menu_item),
+		 "activate",
+		 view_uri_from_menu_item,
+		 NULL);
+
+	finish_adding_menu_item (menu, menu_item, TRUE);
 }
 
 static GtkMenu *
 create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 {
  	GtkMenu *open_with_menu;
-	char *label;
-	int i;
+ 	GList *applications, *components;
+ 	GList *node;
+ 	char *uri;
 
 	open_with_menu = GTK_MENU (gtk_menu_new ());
 	gtk_widget_show (GTK_WIDGET (open_with_menu));
 
-	for (i = 0; i < 3; ++i) {
-		label = g_strdup_printf (_("Application %d"), i+1);
-		add_open_with_gtk_menu_item (open_with_menu, label);
-	        g_free (label);
-	}
-	append_gtk_menu_item_with_view (view,
-					open_with_menu,
-		 			files,
-		 			FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
-		 			other_application_callback);
+	/* This menu is only displayed when there's one selected item. */
+	if (nautilus_g_list_exactly_one_item (files)) {
+		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-	add_open_with_gtk_menu_item (open_with_menu, NULL);
+		applications = 
+			gnome_vfs_mime_get_short_list_applications_for_uri (uri);
 
-	for (i = 0; i < 3; ++i) {
-		label = g_strdup_printf (_("Viewer %d"), i+1);
-		add_open_with_gtk_menu_item (open_with_menu, label);
-		g_free (label);
+		for (node = applications; node != NULL; node = node->next) {
+			add_application_to_gtk_menu (open_with_menu, node->data, uri);
+		}
+
+		/* FIXME: Need to free list, but API not yet existent:
+		 * gnome_vfs_mime_application_list_free (applications); 
+		 */
+
+		append_gtk_menu_item_with_view (view,
+						open_with_menu,
+			 			files,
+			 			FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
+			 			other_application_callback);
+
+		add_open_with_gtk_menu_item (open_with_menu, NULL);
+
+		components = 
+			gnome_vfs_mime_get_short_list_components_for_uri (uri);
+
+		for (node = components; node != NULL; node = node->next) {
+			add_component_to_gtk_menu (open_with_menu, node->data, uri);
+		}
+
+		/* FIXME: Need to free list, but API not yet existent:
+		 * gnome_vfs_mime_component_list_free (components); 
+		 */
+
+		g_free (uri);
+
+		append_gtk_menu_item_with_view (view,
+						open_with_menu,
+						files,
+			 			FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
+			 			other_viewer_callback);
 	}
-	append_gtk_menu_item_with_view (view,
-					open_with_menu,
-					files,
-		 			FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
-		 			other_viewer_callback);
 
 	return open_with_menu;
 }
@@ -2141,7 +2271,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 _("Select all items in this window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM),
 		  0, 0,	/* Accelerator will be inherited */
-		 (BonoboUIHandlerCallbackFunc) select_all_callback, view);
+		 bonobo_menu_select_all_callback, view);
 
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,

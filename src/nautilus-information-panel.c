@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -87,7 +88,7 @@ static void     nautilus_index_panel_update_info        (NautilusIndexPanel *ind
 							 const char         *title);
 static void     nautilus_index_panel_update_buttons     (NautilusIndexPanel *index_panel);
 static void     add_command_buttons                     (NautilusIndexPanel *index_panel,
-							 GList              *command_list);
+							 GList              *application_list);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
@@ -723,14 +724,14 @@ command_button_callback (GtkWidget *button, char *command_str)
 }
 
 static void
-nautilus_index_panel_chose_application_callback (const char *command_string,
+nautilus_index_panel_chose_application_callback (GnomeVFSMimeApplication *application,
 						 gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_INDEX_PANEL (callback_data));
 
-	if (command_string != NULL) {
+	if (application != NULL) {
 		nautilus_launch_application 
-			(command_string, 
+			(application->command, 
 			 NAUTILUS_INDEX_PANEL (callback_data)->details->uri);
 	}
 }						 
@@ -758,19 +759,20 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 /* utility routine that allocates the command buttons from the command list */
 
 static void
-add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
+add_command_buttons (NautilusIndexPanel *index_panel, GList *application_list)
 {
 	char *command_string, *temp_str;
 	GList *p;
 	GtkWidget *temp_button;
-	NautilusCommandInfo *info;
-	
-	for (p = command_list; p != NULL; p = p->next) {
-	        info = p->data;
-	        
-		index_panel->details->has_buttons = TRUE;
+	GnomeVFSMimeApplication *application;
 
-		temp_str = g_strdup_printf (_("Open with %s"), info->display_name);
+	/* There's always at least the "Open with..." button */
+	index_panel->details->has_buttons = TRUE;
+
+	for (p = application_list; p != NULL; p = p->next) {
+	        application = p->data;	        
+
+		temp_str = g_strdup_printf (_("Open with %s"), application->name);
 	        temp_button = gtk_button_new_with_label (temp_str);		    
 		gtk_box_pack_start (GTK_BOX (index_panel->details->button_box), 
 				    temp_button, 
@@ -781,7 +783,7 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 		             nautilus_str_has_prefix (index_panel->details->uri, "file://") ?
 			     index_panel->details->uri + 7 : index_panel->details->uri);
 
-		command_string = g_strdup_printf (info->command_string, temp_str); 		
+		command_string = g_strdup_printf (application->command, temp_str); 		
 		g_free(temp_str);
 
 		nautilus_gtk_signal_connect_free_data 
@@ -793,7 +795,7 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 	}
 
 	/* Catch-all button after all the others. */
-	temp_button = gtk_button_new_with_label (_("Open with ..."));
+	temp_button = gtk_button_new_with_label (_("Open with..."));
 	gtk_signal_connect (GTK_OBJECT (temp_button),  "clicked",
 			    open_with_callback, NULL);
 	gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
@@ -802,47 +804,35 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 			    temp_button, FALSE, FALSE, 0);
 }
 
-/* here's where we set up the command buttons, based on the mime-type of the associated URL */
-/* FIXME bugzilla.eazel.com 596:  eventually, we need a way to 
- * override/augment the type from info in the metadata.
+/* FIXME: This is a placeholder awaiting the real call. */
+static void
+gnome_vfs_mime_application_list_free (GList *list)
+{}
+
+/**
+ * nautilus_index_panel_update_buttons:
+ * 
+ * Update the list of program-launching buttons based on the current uri.
  */
 void
 nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 {
-	NautilusFile *file;
-	GList *command_list;
-	char *mime_type;
+	GList *application_list;
 	
-	/* dispose any existing buttons */
+	/* dispose of any existing buttons */
 	if (index_panel->details->has_buttons) {
 		gtk_container_remove (GTK_CONTAINER (index_panel->details->container),
 				      GTK_WIDGET (index_panel->details->button_box_centerer)); 
 		make_button_box (index_panel);
 	}
 	
-	/* allocate a file object and fetch the associated mime-type */
-	
-	file = nautilus_file_get (index_panel->details->uri);
-	if (file != NULL) {
-		mime_type = nautilus_file_get_mime_type (file);
-	
-		/* generate a command list from the mime-type */
-		if (mime_type != NULL) {
-			command_list = nautilus_mime_type_get_commands (mime_type);
-			g_free (mime_type);
+	application_list = gnome_vfs_mime_get_short_list_applications_for_uri (index_panel->details->uri);
+	add_command_buttons (index_panel, application_list);
+	gnome_vfs_mime_application_list_free (application_list);
 
-			/* install a button for each command in the list */
-			if (command_list != NULL) {
-				add_command_buttons (index_panel, command_list);
-			        nautilus_mime_type_dispose_list (command_list);
-			
-				if (index_panel->details->selected_index != -1)
-					gtk_widget_hide (GTK_WIDGET (index_panel->details->button_box));
-			}
-		}
-
-		nautilus_file_unref (file);	
-	}
+	/* Hide button box if a sidebar panel is showing. */
+	if (index_panel->details->selected_index != -1)
+		gtk_widget_hide (GTK_WIDGET (index_panel->details->button_box));
 }
 
 /* this routine populates the index panel with the per-uri information */

@@ -96,19 +96,21 @@ nautilus_choose_component_for_file (NautilusFile *file,
 		(file, NAUTILUS_PROGRAM_CHOOSER_COMPONENTS, parent_window);
 
 	if (gnome_dialog_run (dialog) == GNOME_OK) {
-		/* FIXME: Need to extract result from dialog! */
-		identifier = NULL;
+		identifier = nautilus_program_chooser_get_component (dialog);;
 	} else {
 		identifier = NULL;
 	}
-
-	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
 	 * UI if desired.
 	 */
 	(* callback) (identifier, callback_data);
+
+	/* Destroy only after callback, since view identifier will
+	 * be destroyed too.
+	 */
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }				    
 
 /**
@@ -128,8 +130,8 @@ nautilus_choose_application_for_file (NautilusFile *file,
 				      NautilusApplicationChoiceCallback callback,
 				      gpointer callback_data)
 {
-	char *command_string;
 	GnomeDialog *dialog;
+	GnomeVFSMimeApplication *application;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (callback != NULL);
@@ -141,25 +143,21 @@ nautilus_choose_application_for_file (NautilusFile *file,
 		(file, NAUTILUS_PROGRAM_CHOOSER_APPLICATIONS, parent_window);
 
 	if (gnome_dialog_run (dialog) == GNOME_OK) {
-		/* FIXME: Need to extract result from dialog! */
-#ifdef TESTING_LAUNCH
-		/* FIXME: investigate why passing wrong text here ("gnotepad")
-		 * causes an X error.
-		 */
-		command_string = "gnp";
-#else		
-		command_string = NULL;
-#endif		
+		application = nautilus_program_chooser_get_application (dialog);
 	} else {
-		command_string = NULL;
+		application = NULL;
 	}
 
-	gtk_widget_destroy (GTK_WIDGET (dialog));
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
 	 * UI if desired.
 	 */
-	(* callback) (command_string, callback_data);
+	(* callback) (application, callback_data);
+
+	/* Destroy only after callback, since application struct will
+	 * be destroyed too.
+	 */
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }				    
 
 /**

@@ -1,3 +1,57 @@
+2000-05-30  John Sullivan  <sullivan@eazel.com>
+
+	Adapted much of the open-with and view-as code to use
+	the new API, whose implementation awaits. This causes 
+	us to temporarily lose the command-buttons-in-sidebar 
+	feature until the new API's implementation happens.
+
+	Some of these changes are only partially done; I've
+	got a list of things to finish still. But feel free 
+	to bug me about anything in particular that seems bad.
+
+	* libnautilus-extensions/nautilus-program-chooser.h:
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(populate_program_list): Use real API to add programs
+	to list in dialog.
+	(nautilus_program_chooser_new): Remember whether this
+	is an application-choosing or component-choosing dialog.
+	(nautilus_program_chooser_get_application),
+	(nautilus_program_chooser_get_component): New functions,
+	get the item in the list that the user selected.
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	Change parameter in NautilusApplicationChoiceCallback
+	from char * to GnomeVFSMimeApplication.
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_choose_application_for_file),
+	(nautilus_choose_component_for_file): Get the chosen
+	item from the dialog instead of returning a hardwired
+	value.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_chose_application_callback): Take
+	GnomeVFSMimeApplication instead of char *.
+	(add_open_with_gtk_menu_item): Enable menu items now
+	that they work.
+	(launch_application_from_menu_item): New function, callback
+	used when user picks an app from context menu.
+	(view_uri_from_menu_item): New function, callback used
+	when user picks a viewer from context menu. 
+	(add_application_to_gtk_menu),
+	(add_component_to_gtk_menu): New functions, set up menu items.
+	(create_open_with_gtk_menu): Use real API to populate
+	open_with context menu items.
+	(bonobo_menu_select_all_callback), (select_all_callback),
+	(fm_directory_view_real_merge_menus):
+	Fixed bug where context menu "Select All" didn't work by
+	separating bonobo and gtk callbacks.
+	* src/nautilus-sidebar.c:
+	(nautilus_index_panel_chose_application_callback),
+	(add_command_buttons), (gnome_vfs_mime_application_list_free),
+	(nautilus_index_panel_update_buttons): Use real API instead
+	of hardwired set of buttons for different MIME types. This
+	currently means you always get only the "Open with ..." button,
+	but the real buttons will reappear once we have our new
+	application-choosing scheme in place.
+
 2000-05-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-icon-view.c: (play_file),
