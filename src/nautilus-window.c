@@ -971,6 +971,8 @@ nautilus_window_finalize (GObject *object)
 	g_free (window->details->title);
 	
 	g_free (window->details);
+	
+	g_free (window->last_geometry);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

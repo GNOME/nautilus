@@ -1240,7 +1240,7 @@ create_normal_cache_icon (const char *icon,
 				 base_size,
 				 nominal_size,
 				 icon_data);
-	
+	g_free (filename);
 	if (pixbuf == NULL) {
 		return NULL;
 	}
