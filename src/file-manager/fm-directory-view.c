@@ -931,11 +931,8 @@ queue_pending_files (FMDirectoryView *view,
 		break;
 		
 	case NAUTILUS_USER_LEVEL_HACKER:
-	case NAUTILUS_USER_LEVEL_ETTORE:
-		break;
-
 	default:
-		g_assert_not_reached ();
+		break;
 	}
 	
 	/* Put the files on the pending list if there are any. */

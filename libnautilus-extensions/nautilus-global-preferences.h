@@ -54,8 +54,7 @@ enum
 {
 	NAUTILUS_USER_LEVEL_NOVICE,
 	NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	NAUTILUS_USER_LEVEL_HACKER,
-	NAUTILUS_USER_LEVEL_ETTORE
+	NAUTILUS_USER_LEVEL_HACKER
 };
 
 void                      nautilus_global_preferences_shutdown           (void);

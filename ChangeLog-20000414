@@ -1,3 +1,19 @@
+2000-03-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Removed the ETTORE user level easter egg and bullet proofed the 
+	stuff that uses user levels a bit.
+
+	* libnautilus/nautilus-global-preferences.c,
+	  libnautilus/nautilus-global-preferences.h: Remove references to 
+	  NAUTILUS_USER_LEVEL_ETTORE.
+
+	* src/ntl-window-state.c: Removed switch handling of ETTORE user 
+	  level and added a default case for the unlikely (but poissible) 
+	  event when the ~/.gnome/nautilus preferences file contains bogus
+	  values for the user_level enumeration.
+
+	* src/file-manager/fm-directory-view.c: Same as above.
+	
 2000-03-25  Andy Hertzfeld <andy@eazel.com>
 
 	Improved selection highlighting.

@@ -58,7 +58,7 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 
 		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		case NAUTILUS_USER_LEVEL_HACKER:
-		case NAUTILUS_USER_LEVEL_ETTORE:
+		default:
 			g_string_append (path_name, g_get_home_dir ());
 			break;
 		}

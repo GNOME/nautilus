@@ -68,24 +68,21 @@ static const char * const global_preferences_user_level_names[] =
 {
 	"novice",
 	"intermediate",
-	"hacker",
-	"ettore"
+	"hacker"
 };
 
 static const char * const global_preferences_user_level_descriptions[] =
 {
 	"Novice",
 	"Intermediate",
-	"Hacker",
-	"Ettore"
+	"Hacker"
 };
 
 static const gint global_preferences_user_level_values[] =
 {
 	NAUTILUS_USER_LEVEL_NOVICE,
 	NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	NAUTILUS_USER_LEVEL_HACKER,
-	NAUTILUS_USER_LEVEL_ETTORE
+	NAUTILUS_USER_LEVEL_HACKER
 };
 
 static const NautilusPreferencesEnumData global_preferences_user_level_data =
