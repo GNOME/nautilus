@@ -363,8 +363,26 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 			
 			nautilus_glyph_draw_to_pixbuf (glyph, pixbuf, text_x, text_y, NULL, color, opacity);
 
-			/* FIXME: Underline the text if needed */
+			/* Underline the text if needed */
 			if (underlined) {
+				ArtIRect underline_rect;
+
+				/* FIXME bugzilla.eazel.com 2865: This underlining code should
+				 * take into account the baseline for the rendered string rather
+				 * than hardcoding it to 0.
+				 */
+				const int baseline = 0;
+				const int underline_height = 1;
+
+				underline_rect = nautilus_glyph_intersect (glyph, text_x, text_y, NULL);
+				underline_rect = nautilus_art_irect_inset (underline_rect, 1, 1);
+				
+				underline_rect.y1 -= ABS (baseline);
+				underline_rect.y0 = underline_rect.y1 - underline_height;
+
+				nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf,
+									       &underline_rect,
+									       color);
 			}
 			
 			y += max_line_height + line_spacing;
