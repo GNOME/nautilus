@@ -23,5 +23,10 @@ void nautilus_window_change_location(NautilusWindow *window,
 				     Nautilus_NavigationRequestInfo *loc,
 				     NautilusView *requesting_view,
 				     gboolean is_back);
+void nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view);
+void nautilus_window_end_location_change(NautilusWindow *window);
+void nautilus_window_connect_view (NautilusWindow *window, 
+				   NautilusView *view);
+void nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window);
 
 #endif

@@ -192,15 +192,20 @@ nautilus_navinfo_map(NautilusNavigationInfo *navinfo)
   navinfo->navinfo.actual_uri = g_strdup(navinfo->navinfo.requested_uri);
 }
 
-NautilusNavigationInfo *
-nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
-		     Nautilus_NavigationRequestInfo *nri,
+guint
+nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                      Nautilus_NavigationInfo *old_navinfo,
-		     NautilusView *requesting_view)
+		     NautilusView *requesting_view,
+                     NautilusNavigationInfoFunc notify_when_ready,
+                     gpointer notify_data)
 {
   const char *meta_keys[] = {"icon-filename", NULL};
+  NautilusNavigationInfo *navinfo;
+                          
+  navinfo = g_new0(NautilusNavigationInfo, 1);
 
-  memset(navinfo, 0, sizeof(*navinfo));
+  navinfo->notify_ready = notify_when_ready;
+  navinfo->data = notify_data;
 
   if(old_navinfo)
     {
@@ -229,8 +234,8 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
       if(res != GNOME_VFS_OK)
         {
           gnome_vfs_file_info_destroy(vfs_fileinfo);
-          nautilus_navinfo_free(navinfo);
-          return NULL;
+          nautilus_navinfo_free(navinfo); navinfo = NULL;
+          goto out;
         }
 
       navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
@@ -278,22 +283,35 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
         }
       else
         {
-          g_warning("Unhandled content type %s", navinfo->navinfo.content_type);
+          /* Error - couldn't handle */
+          nautilus_navinfo_free(navinfo); navinfo = NULL;
+          goto out;
         }
     }
 
   navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_history_view"));
   navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_websearch_view"));
 
-  return navinfo;
+ out:
+  if(notify_when_ready)
+    {
+      navinfo->notify_tag = 0;
+      notify_when_ready(navinfo, notify_data);
+    }
+
+  return 0;
 }
 
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
+  if(navinfo->notify_tag)
+    /* XXX remove_notification */ ;
+
   g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
   g_free(navinfo->navinfo.requested_uri);
   g_free(navinfo->navinfo.actual_uri);
   g_free(navinfo->navinfo.content_type);
+  g_free(navinfo);
 }

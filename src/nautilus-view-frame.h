@@ -91,6 +91,8 @@ struct _NautilusView
 
   NautilusViewComponentType *component_class;
   gpointer component_data;
+
+  guint timer_id;
 };
 
 GtkType nautilus_view_get_type                  (void);
@@ -113,8 +115,7 @@ void nautilus_view_save_state                   (NautilusView *view,
                                                  const char *config_path);
 void nautilus_view_show_properties              (NautilusView *view);
 void nautilus_view_stop_location_change         (NautilusView *view);
-
-
+void nautilus_view_set_active_errors            (NautilusView *view, gboolean enabled);
 
 /* This is a "protected" operation */
 void    nautilus_view_construct_arg_set(NautilusView *view);

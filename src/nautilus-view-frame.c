@@ -240,8 +240,12 @@ static void
 nautilus_view_destroy(GtkObject      *view)
 {
   NautilusViewClass *klass = NAUTILUS_VIEW_CLASS(view->klass);
+  NautilusView *nview = NAUTILUS_VIEW(view);
 
-  nautilus_view_destroy_client(NAUTILUS_VIEW(view));
+  if(nview->timer_id)
+    g_source_remove(nview->timer_id);
+
+  nautilus_view_destroy_client(nview);
 
   if(GTK_OBJECT_CLASS(klass->parent_class)->destroy)
     GTK_OBJECT_CLASS(klass->parent_class)->destroy(view);
@@ -309,6 +313,19 @@ extern NautilusViewComponentType nautilus_view_component_type; /* ntl-view-nauti
 extern NautilusViewComponentType bonobo_subdoc_component_type; /* ntl-view-bonobo-subdoc.c */
 extern NautilusViewComponentType bonobo_control_component_type; /* ntl-view-bonobo-control.c */
 
+static gboolean
+nautilus_view_handle_client_destroy(GtkWidget *widget, NautilusView *view)
+{
+  gtk_object_destroy(GTK_OBJECT(view));
+  return TRUE;
+}
+
+static void
+nautilus_view_handle_client_destroy_2(GtkObject *object, CORBA_Object cobject, CORBA_Environment *ev, NautilusView *view)
+{
+  gtk_object_destroy(GTK_OBJECT(view));
+}
+
 gboolean /* returns TRUE if successful */
 nautilus_view_load_client(NautilusView *view, const char *iid)
 {
@@ -363,8 +380,17 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
       
   view->iid = g_strdup(iid);
 
-  gtk_widget_show(view->client_widget);
+  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "destroy",
+                                 GTK_SIGNAL_FUNC(nautilus_view_handle_client_destroy), view,
+                                 GTK_OBJECT(view));
+  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "object_gone",
+                                 GTK_SIGNAL_FUNC(nautilus_view_handle_client_destroy_2), view,
+                                 GTK_OBJECT(view));
+  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "system_exception",
+                                 GTK_SIGNAL_FUNC(nautilus_view_handle_client_destroy_2), view,
+                                 GTK_OBJECT(view));
   gtk_container_add(GTK_CONTAINER(view), view->client_widget);
+  gtk_widget_show(view->client_widget);
   CORBA_exception_free(&ev);
 
   return TRUE;
@@ -525,3 +551,38 @@ nautilus_view_request_progress_change(NautilusView              *view,
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_PROGRESS_CHANGE], loc);
 }
 
+static gboolean
+check_object(NautilusView *view)
+{
+  CORBA_Environment ev;
+  gboolean retval = TRUE;
+  CORBA_exception_init(&ev);
+
+  if(CORBA_Object_non_existent(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)), &ev))
+    {
+      view->timer_id = 0;
+      gtk_object_destroy(GTK_OBJECT(view));
+      retval = FALSE;
+    }
+
+  CORBA_exception_free(&ev);
+  return retval;
+}
+
+void
+nautilus_view_set_active_errors(NautilusView *view, gboolean enabled)
+{
+  if(enabled)
+    {
+      if(!view->timer_id)
+        view->timer_id = g_timeout_add(1000, (GSourceFunc)check_object, view);
+    }
+  else
+    {
+      if(view->timer_id)
+        {
+          g_source_remove(view->timer_id);
+          view->timer_id = 0;
+        }
+    }
+}

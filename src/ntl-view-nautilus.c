@@ -61,6 +61,8 @@ nv_show_properties(NautilusView *view, CORBA_Environment *ev)
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_show_properties(nvi->view_client, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
 
 static void
@@ -69,6 +71,8 @@ nv_save_state(NautilusView *view, const char *config_path, CORBA_Environment *ev
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_save_state(nvi->view_client, config_path, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
 
 static void
@@ -77,6 +81,8 @@ nv_load_state(NautilusView *view, const char *config_path, CORBA_Environment *ev
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_load_state(nvi->view_client, config_path, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
 
 static void
@@ -85,6 +91,8 @@ nv_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, 
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_notify_location_change(nvi->view_client, nav_ctx, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
 
 static void
@@ -93,6 +101,8 @@ nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, 
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_notify_selection_change(nvi->view_client, nav_ctx, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
 
 static void
@@ -101,8 +111,9 @@ nv_stop_location_change(NautilusView *view, CORBA_Environment *ev)
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_stop_location_change(nvi->view_client, ev);
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    gtk_object_destroy(GTK_OBJECT(view));
 }
-
 
 static char *
 nv_get_label(NautilusView *view, CORBA_Environment *ev)

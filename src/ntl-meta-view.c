@@ -46,6 +46,7 @@ static POA_Nautilus_MetaViewFrame__vepv impl_Nautilus_MetaViewFrame_vepv =
 
 static void nautilus_meta_view_class_init (NautilusMetaViewClass *klass);
 static void nautilus_meta_view_init (NautilusMetaView *view);
+static void nautilus_meta_view_destroy (GtkObject *object);
 
 GtkType
 nautilus_meta_view_get_type(void)
@@ -79,6 +80,7 @@ nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
   NautilusViewClass *view_class;
 
   object_class = (GtkObjectClass*) klass;
+  object_class->destroy = nautilus_meta_view_destroy;
   widget_class = (GtkWidgetClass*) klass;
   view_class = (NautilusViewClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
@@ -90,6 +92,15 @@ nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
 static void
 nautilus_meta_view_init (NautilusMetaView *view)
 {
+}
+
+static void
+nautilus_meta_view_destroy (GtkObject *object)
+{
+  GtkObjectClass *klass = object->klass;
+
+  if(klass->destroy)
+    klass->destroy(object);
 }
 
 const char *

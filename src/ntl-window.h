@@ -47,6 +47,8 @@ typedef struct {
   guint window_signals[0];
 } NautilusWindowClass;
 
+typedef struct _NautilusWindowLoadInfo NautilusWindowLoadInfo;
+
 struct _NautilusWindow {
   GnomeApp parent_object;
 
@@ -70,6 +72,8 @@ struct _NautilusWindow {
   /* Information about current location/selection */
   Nautilus_NavigationInfo *ni;
   Nautilus_SelectionInfo *si;
+
+  NautilusWindowLoadInfo *load_info;
 };
 
 GtkType nautilus_window_get_type(void);
@@ -78,6 +82,8 @@ void nautilus_window_set_content_view(NautilusWindow *window, NautilusView *cont
 void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
+void nautilus_window_display_error(NautilusWindow *window, const char *error_msg);
+
 const char *nautilus_window_get_requested_uri(NautilusWindow *window);
 GnomeUIHandler *nautilus_window_get_uih(NautilusWindow *window);
 

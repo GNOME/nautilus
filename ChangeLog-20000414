@@ -1,3 +1,14 @@
+2000-01-05  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-types.h, src/ntl-uri-map.[ch], src/ntl-window-msgs.c, src/ntl-window.[ch]:
+	  Add support for the location change state machine and related notifications,
+          to allow much better error handling.
+	* src/ntl-view.[ch]: Catch client failures, also allow for active sensing of client death.
+	* src/file-manager/fm-directory-view.c: Send progress notifications.
+	* components/html/ntl-web-browser.c: Send progress
+	notifications. Try to fix crashes caused by ending an error stream
+	twice.
+
 2000-01-05  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):

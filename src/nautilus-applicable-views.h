@@ -31,10 +31,11 @@
 #include "ntl-view.h"
 
 void nautilus_navinfo_init(void);
-NautilusNavigationInfo *nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
-					     Nautilus_NavigationRequestInfo *nri,
-                                             Nautilus_NavigationInfo *old_navinfo,
-					     NautilusView *requesting_view);
+guint nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
+                           Nautilus_NavigationInfo *old_navinfo,
+                           NautilusView *requesting_view,
+                           NautilusNavigationInfoFunc notify_when_ready,
+                           gpointer notify_data);
 void nautilus_navinfo_free(NautilusNavigationInfo *navinfo);
 
 #endif

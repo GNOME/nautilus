@@ -620,6 +620,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 	view->entries_to_display = 0;
 	view->directory_list = NULL;
 
+	memset(&pri, 0, sizeof(pri));
 	pri.amount = 100.0;
 	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	
@@ -903,6 +904,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		GNOME_VFS_DIRECTORY_SORT_NONE
 	};			/* FIXME */
 	GnomeVFSResult result;
+	Nautilus_ProgressRequestInfo pri;
 
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -918,6 +920,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	if (view->uri != NULL)
 		gnome_vfs_uri_unref (view->uri);
 	view->uri = gnome_vfs_uri_new (uri);
+
+	memset(&pri, 0, sizeof(pri));
+	pri.type = Nautilus_PROGRESS_UNDERWAY;
+	pri.amount = 0;
+	nautilus_view_client_request_progress_change(NAUTILUS_VIEW_CLIENT(view), &pri);
 
 	result = gnome_vfs_async_load_directory_uri
 		(&view->vfs_async_handle, 		/* handle */
@@ -937,11 +944,6 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 view);		 			/* callback_data */
 
 	g_return_if_fail(result == GNOME_VFS_OK);
-	/*
-	if (result != GNOME_VFS_OK)
-		gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_FAILED],
-				 result);
-	*/
 }
 
 void

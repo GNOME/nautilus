@@ -121,15 +121,6 @@ static void nautilus_window_goto_uri_cb (GtkWidget *widget,
                                          GtkWidget *window);
 static void nautilus_window_about_cb (GtkWidget *widget,
                                       NautilusWindow *window);
-static void nautilus_window_connect_view              (NautilusWindow *window, 
-                                                       NautilusView *view);
-static void nautilus_window_disconnect_view           (NautilusWindow *window, 
-                                                       NautilusView *view);
-static void nautilus_window_disconnect_view_exchanged (NautilusView *view, 
-                                                       NautilusWindow *window);
-
-
-
 
 #undef CONTENTS_AS_HBOX
 
@@ -574,15 +565,11 @@ nautilus_window_set_arg (GtkObject      *object,
 #endif
           }
 
-        nautilus_window_disconnect_view(window, window->content_view);
-
 	gtk_widget_unref(GTK_WIDGET(window->content_view));
       }
     
     if (new_cv)
       {
-        nautilus_window_connect_view(window, NAUTILUS_VIEW(new_cv));
-
 #ifdef CONTENTS_AS_HBOX
         gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
 #else
@@ -616,12 +603,6 @@ nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_destroy (NautilusWindow *window)
 {
   NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
-
-  if (window->content_view != NULL) {
-    nautilus_window_disconnect_view(window, window->content_view);
-  }
-  
-  g_slist_foreach(window->meta_views, (GFunc)nautilus_window_disconnect_view_exchanged, window);
 
   g_slist_free(window->meta_views);
   CORBA_free(window->ni);
@@ -774,8 +755,6 @@ nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
   g_return_if_fail(!g_slist_find(window->meta_views, meta_view));
   g_return_if_fail(NAUTILUS_IS_META_VIEW(meta_view));
 
-  nautilus_window_connect_view(window, meta_view);
-
   desc = nautilus_meta_view_get_label(NAUTILUS_META_VIEW(meta_view));
   if(!desc)
     {
@@ -793,21 +772,25 @@ nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
 }
 
 void
-nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view)
 {
   gint pagenum;
-
-  g_return_if_fail(g_slist_find(window->meta_views, meta_view));
-
-  window->meta_views = g_slist_remove(window->meta_views, meta_view);
 
   pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(window->meta_notebook), GTK_WIDGET(meta_view));
 
   g_return_if_fail(pagenum >= 0);
 
   gtk_notebook_remove_page(GTK_NOTEBOOK(window->meta_notebook), pagenum);
+}
 
-  nautilus_window_disconnect_view(window, meta_view);
+void
+nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view)
+{
+  g_return_if_fail(g_slist_find(window->meta_views, meta_view));
+
+  window->meta_views = g_slist_remove(window->meta_views, meta_view);
+
+  nautilus_window_remove_meta_view_real(window, meta_view);
 }
 
 /* FIXME: Factor toolbar stuff out into ntl-window-toolbar.c */
@@ -884,20 +867,9 @@ nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
 }
 
 static void
-nv_stop_location_change_adapter(NautilusView *view, gpointer dummy)
-{
-    nautilus_view_stop_location_change (view);
-}
-
-static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
-  if (window->content_view != NULL) {
-    nautilus_view_stop_location_change (window->content_view);
-  }
-
-  g_slist_foreach(window->meta_views, (GFunc) nv_stop_location_change_adapter, NULL);
-
+  nautilus_window_end_location_change(window);
 }
 
 static void
@@ -987,52 +959,43 @@ nautilus_window_request_progress_change_cb (NautilusView *view,
   nautilus_window_request_progress_change(window, info, view);  
 }
 
-
-
-
-static void
+void
 nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
 {
-  gtk_signal_connect(GTK_OBJECT(view), 
+  GtkObject *viewo;
+
+  viewo = GTK_OBJECT(view);
+  gtk_signal_connect(viewo,
                      "request_location_change", 
                      nautilus_window_request_location_change_cb, 
                      window);
-  gtk_signal_connect(GTK_OBJECT(view), 
+  gtk_signal_connect(viewo, 
                      "request_selection_change", 
                      nautilus_window_request_selection_change_cb, 
                      window);
-  gtk_signal_connect(GTK_OBJECT(view), 
+  gtk_signal_connect(viewo, 
                      "request_status_change", 
                      nautilus_window_request_status_change_cb, 
                      window);
-  gtk_signal_connect(GTK_OBJECT(view), 
+  gtk_signal_connect(viewo, 
                      "request_progress_change", 
                      nautilus_window_request_progress_change_cb, 
                      window);
+  gtk_signal_connect(viewo,
+                     "destroy",
+                     nautilus_window_view_destroyed,
+                     window);
 }
 
-
-static void
-nautilus_window_disconnect_view(NautilusWindow *window, NautilusView *view)
+void
+nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
 {
-  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
-                                nautilus_window_request_location_change_cb, 
-                                window);
-  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
-                                nautilus_window_request_selection_change_cb, 
-                                window);
-  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
-                                nautilus_window_request_status_change_cb, 
-                                window);
-  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
-                                nautilus_window_request_progress_change_cb, 
-                                window);
+  GtkWidget *dialog;
+
+  dialog = gnome_message_box_new(error_msg, GNOME_MESSAGE_BOX_ERROR, _("Close"), NULL);
+  gnome_dialog_set_close(GNOME_DIALOG(dialog), TRUE);
+
+  gnome_dialog_set_default(GNOME_DIALOG(dialog), 0);
+
+  gtk_widget_show(dialog);
 }
-
-static void
-nautilus_window_disconnect_view_exchanged(NautilusView *view, NautilusWindow *window)
-{
-  nautilus_window_disconnect_view(window, view);
-}
-
-

@@ -152,13 +152,15 @@ canonicalize_url (const char *in_url, const char *base_url)
 static void
 browser_url_load_done(GtkWidget *htmlw, BrowserInfo *bi)
 {
-  Nautilus_StatusRequestInfo sri;
+  Nautilus_ProgressRequestInfo pri;
 
   gtk_html_calc_scrollbars(GTK_HTML(bi->htmlw));
 
-  memset(&sri, 0, sizeof(sri));
-  sri.status_string = _("Load done.");
-  nautilus_view_client_request_status_change(bi->vc, &sri);
+  memset(&pri, 0, sizeof(pri));
+
+  pri.type = Nautilus_PROGRESS_DONE_OK;
+  pri.amount = 100.0;
+  nautilus_view_client_request_progress_change(bi->vc, &pri);
 }
 
 struct _HTStream {
@@ -307,7 +309,8 @@ browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle han
   if(HTLoad(request, NO) == NO)
     {
       HTRequest_delete(request);
-      gtk_html_end(GTK_HTML(bi->htmlw), handle, GTK_HTML_STREAM_ERROR);
+      /* I think deleting the request will end the stream, too */
+      /* gtk_html_end(GTK_HTML(bi->htmlw), handle, GTK_HTML_STREAM_ERROR); */
     }
 
   g_free(real_url);
@@ -332,6 +335,11 @@ browser_set_base_target(GtkWidget *htmlw, const char *base_target_url, BrowserIn
 static void
 browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
+  Nautilus_ProgressRequestInfo pri;
+
+  pri.type = Nautilus_PROGRESS_UNDERWAY;
+  pri.amount = 0.0;
+
   HTNet_killAll();
   g_free(bi->base_url);
   g_free(bi->base_target_url);
@@ -349,6 +357,7 @@ browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 
   gtk_html_begin(GTK_HTML(bi->htmlw), url);
   gtk_html_parse(GTK_HTML(bi->htmlw));
+  nautilus_view_client_request_progress_change(bi->vc, &pri);
 }
 
 static void

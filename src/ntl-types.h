@@ -33,13 +33,21 @@
 
 typedef char *NautilusLocationReference;
 
-typedef struct {
+typedef struct _NautilusNavigationInfo NautilusNavigationInfo;
+
+typedef void (*NautilusNavigationInfoFunc)(NautilusNavigationInfo *navinfo, gpointer data);
+
+struct _NautilusNavigationInfo {
   Nautilus_NavigationInfo navinfo;
 
   gpointer requesting_view;
 
   const char *content_iid;
   GSList *meta_iids;
-} NautilusNavigationInfo;
+
+  guint notify_tag;
+  NautilusNavigationInfoFunc notify_ready;
+  gpointer data;
+};
 
 #endif
