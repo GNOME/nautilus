@@ -1,3 +1,30 @@
+2000-06-29  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_init),
+	(nautilus_icon_dnd_begin_drag), (drag_motion_callback),
+	(drag_drop_callback):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(motion_notify_event), (key_press_event):
+	Got rid of the crufty old way drag&drop motion used to handle
+	updating the drop action.
+
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_modifier_based_action):
+	Moved to the common drag&drop file so I can share it
+	between the list and icon view.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize), (nautilus_list_motion),
+	(nautilus_list_drag_motion):
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout):
+	Reformatted a bit.
+
 2000-06-29  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/nautilus-complex-search-bar.c:

@@ -310,3 +310,18 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	return TRUE;
 }
 
+int
+nautilus_drag_modifier_based_action ()
+{
+	GdkModifierType modifiers;
+	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
+	
+	if ((modifiers & GDK_CONTROL_MASK) != 0) {
+		return GDK_ACTION_COPY;
+	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
+		return GDK_ACTION_LINK;
+	}
+
+	return GDK_ACTION_MOVE;
+}
+

@@ -110,5 +110,6 @@ gboolean 		nautilus_drag_drag_data_get 		(GtkWidget *widget,
 								 guint32 time,
 								 gpointer container_context,
 								 NautilusDragEachSelectedItemIterator each_selected_item_iterator);
+int 			nautilus_drag_modifier_based_action 	(void);
 
 #endif

@@ -1986,7 +1986,9 @@ motion_notify_event (GtkWidget *widget,
 				motion->y = details->drag_y;
 			
 				nautilus_icon_dnd_begin_drag (container,
-							      GDK_ACTION_MOVE,
+							      GDK_ACTION_MOVE 
+							      | GDK_ACTION_COPY 
+							      | GDK_ACTION_LINK,
 							      details->drag_button,
 							      motion);
 			}
@@ -2089,9 +2091,6 @@ key_press_event (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	handled = FALSE;
 	flush_typeahead = TRUE;
-
-	/* allow the drag state update the drag action if modifiers changed */
-	nautilus_icon_dnd_update_drop_action (widget);
 
 	if (nautilus_icon_container_is_renaming (container)) {
 		switch (event->keyval) {

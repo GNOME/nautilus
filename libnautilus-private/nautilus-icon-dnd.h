@@ -52,6 +52,4 @@ void nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				   GdkEventMotion        *event);
 void nautilus_icon_dnd_end_drag   (NautilusIconContainer *container);
 
-void nautilus_icon_dnd_update_drop_action (GtkWidget 	  *widget);
-
 #endif /* NAUTILUS_ICON_DND_H */
