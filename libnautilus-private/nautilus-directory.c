@@ -133,6 +133,7 @@ nautilus_directory_init (gpointer object, gpointer klass)
 	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	directory->details->high_priority_queue = nautilus_file_queue_new ();
 	directory->details->low_priority_queue = nautilus_file_queue_new ();
+	directory->details->extension_queue = nautilus_file_queue_new ();
 	directory->details->idle_queue = nautilus_idle_queue_new ();
 
 	directory->details->hidden_file_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -207,6 +208,7 @@ nautilus_directory_finalize (GObject *object)
 	
 	nautilus_file_queue_destroy (directory->details->high_priority_queue);
 	nautilus_file_queue_destroy (directory->details->low_priority_queue);
+	nautilus_file_queue_destroy (directory->details->extension_queue);
 	nautilus_idle_queue_destroy (directory->details->idle_queue);
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
@@ -1023,6 +1025,7 @@ nautilus_directory_notify_files_changed (GList *uris)
 			file->details->file_info_is_up_to_date = FALSE;
 			file->details->top_left_text_is_up_to_date = FALSE;
 			file->details->link_info_is_up_to_date = FALSE;
+			nautilus_file_invalidate_extension_info_internal (file);
 
 			hash_table_list_prepend (changed_lists,
 						 file->details->directory,

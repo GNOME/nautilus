@@ -2,7 +2,9 @@ include $(top_srcdir)/Makefile.shared
 
 lib_LTLIBRARIES=libnautilus-private.la
 
-libnautilus_private_la_LIBADD = ../libnautilus/libnautilus.la
+libnautilus_private_la_LIBADD = \
+	../libnautilus/libnautilus.la \
+	../libnautilus-extension/libnautilus-extension.la
 
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
@@ -13,6 +15,7 @@ INCLUDES = 						\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
+	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-1.0"\" \
 	$(NULL)
 
 dependency_static_libs = \
@@ -138,6 +141,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-metafile.h \
 	nautilus-mime-actions.c \
 	nautilus-mime-actions.h \
+	nautilus-module.c \
+	nautilus-module.h \
 	nautilus-monitor.c \
 	nautilus-monitor.h \
 	nautilus-program-chooser.c \

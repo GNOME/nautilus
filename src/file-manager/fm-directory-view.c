@@ -5908,7 +5908,8 @@ finish_loading (FMDirectoryView *view)
 	attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
-		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
+		NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
 	nautilus_directory_file_monitor_add (view->details->model,
 					     &view->details->model,

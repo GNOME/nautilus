@@ -1,3 +1,61 @@
+2003-11-20  Dave Camp  <dave@ximian.com>
+
+	* Makefile.am:
+	* configure.in:
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/libnautilus-extension.pc.in:
+	* libnautilus-extension/nautilus-extension-types.c:
+	* libnautilus-extension/nautilus-extension-types.h:
+	* libnautilus-extension/nautilus-file-info.c:
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-extension/nautilus-info-provider.c:
+	* libnautilus-extension/nautilus-info-provider.h:
+	New library for nautilus extensions.
+
+	* libnautilus-private/nautilus-marshal.list:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_set_up_request), (lacks_extension_info),
+	(wants_extension_info), (extension_info_cancel),
+	(extension_info_stop), (finish_info_provider),
+	(info_provider_idle_callback), (info_provider_callback),
+	(extension_info_start), (start_or_stop_io),
+	(nautilus_directory_cancel), (cancel_loading_attributes),
+	(file_needs_extension_work_done), (file_needs_work_done),
+	(nautilus_directory_remove_file_from_work_queue),
+	(move_file_to_low_priority_queue), (move_file_to_extension_queue):
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_init), (nautilus_directory_finalize),
+	(nautilus_directory_notify_files_changed):
+	Add a third queue for extension info, that runs after the high
+	and low priority queues.
+	
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_invalidate_extension_info_internal),
+	(nautilus_file_invalidate_attributes_internal): 
+
+	* libnautilus-private/nautilus-file.c:  
+	(nautilus_file_get_type), (nautilus_file_instance_init), 
+	(nautilus_file_get_keywords), (nautilus_file_get_type),
+	(nautilus_file_class_init), (nautilus_file_get_vfs_file_info),
+	(nautilus_file_add_emblem), (nautilus_file_info_providers_done),
+	(nautilus_file_info_iface_init):  Implement the NautilusFileInfo
+	interface for extensions to use.
+	
+	* libnautilus-private/nautilus-module.c: (nautilus_module_load),
+	* libnautilus-private/nautilus-module.h:
+	Module loading code.
+	
+	* src/file-manager/fm-directory-view.c: (finish_loading): 
+	Request extension info.
+	
+	* src/nautilus-application.c: (finish_startup): Initialize the
+	module interface.
+
 2003-11-19  James Willcox  <jwillcox@gnome.org>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:

@@ -39,6 +39,7 @@
 #include "nautilus-link.h"
 #include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-module.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
@@ -59,6 +60,7 @@
 #include <libgnomevfs/gnome-vfs-volume.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libgnomevfs/gnome-vfs-drive.h>
+#include <libnautilus-extension/nautilus-file-info.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -110,24 +112,62 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static GObjectClass *parent_class = NULL;
+
 static GHashTable *symbolic_links;
 
-static char *   nautilus_file_get_owner_as_string            (NautilusFile     *file,
-							      gboolean          include_real_name);
-static char *   nautilus_file_get_type_as_string             (NautilusFile     *file);
-static gboolean update_info_and_name                         (NautilusFile     *file,
-							      GnomeVFSFileInfo *info);
-static char *   nautilus_file_get_display_name_nocopy        (NautilusFile     *file);
-static char *   nautilus_file_get_display_name_collation_key (NautilusFile     *file);
+static void     nautilus_file_instance_init                  (NautilusFile          *file);
+static void     nautilus_file_class_init                     (NautilusFileClass     *class);
+static void     nautilus_file_info_iface_init                (NautilusFileInfoIface *iface);
+static char *   nautilus_file_get_owner_as_string            (NautilusFile          *file,
+							      gboolean               include_real_name);
+static char *   nautilus_file_get_type_as_string             (NautilusFile          *file);
+static gboolean update_info_and_name                         (NautilusFile          *file,
+							      GnomeVFSFileInfo      *info);
+static char *   nautilus_file_get_display_name_nocopy        (NautilusFile          *file);
+static char *   nautilus_file_get_display_name_collation_key (NautilusFile          *file);
 
-
-GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
-			 GObject, G_TYPE_OBJECT)
+GType
+nautilus_file_get_type (void)
+{
+	static GType type = 0;
+	
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (NautilusFileClass),
+			NULL, 
+			NULL,
+			(GClassInitFunc) nautilus_file_class_init,
+			NULL,
+			NULL,
+			sizeof (NautilusFile),
+			0,
+			(GInstanceInitFunc) nautilus_file_instance_init,
+		};
+		
+		static const GInterfaceInfo file_info_iface_info = {
+			(GInterfaceInitFunc) nautilus_file_info_iface_init,
+			NULL,
+			NULL
+		};
+		
+		type = g_type_register_static (G_TYPE_OBJECT,
+					       "NautilusFile",
+					       &info, 0);
+		g_type_add_interface_static (type, 
+					     NAUTILUS_TYPE_FILE_INFO,
+					     &file_info_iface_info);
+	}
+	
+	return type;
+}
 
 static void
 nautilus_file_instance_init (NautilusFile *file)
 {
 	file->details = g_new0 (NautilusFileDetails, 1);
+
+	nautilus_file_invalidate_extension_info_internal (file);
 }
 
 static NautilusFile *
@@ -4695,7 +4735,10 @@ nautilus_file_get_keywords (NautilusFile *file)
 	/* Put all the keywords into a list. */
 	keywords = nautilus_file_get_metadata_list
 		(file, "keyword", "name");
-	
+
+	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->extension_emblems));
+	keywords = g_list_concat (keywords, eel_g_str_list_copy (file->details->pending_extension_emblems));
+
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }
 
@@ -5279,7 +5322,6 @@ invalidate_directory_count (NautilusFile *file)
 	file->details->directory_count_is_up_to_date = FALSE;
 }
 
-
 static void
 invalidate_deep_counts (NautilusFile *file)
 {
@@ -5308,6 +5350,13 @@ static void
 invalidate_link_info (NautilusFile *file)
 {
 	file->details->link_info_is_up_to_date = FALSE;
+}
+
+void
+nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
+{
+	file->details->pending_info_providers =
+		nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
 }
 
 void
@@ -5347,6 +5396,9 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 	if (request.link_info) {
 		invalidate_link_info (file);
+	}
+	if (request.extension_info) {
+		nautilus_file_invalidate_extension_info_internal (file);
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
@@ -5619,6 +5671,8 @@ nautilus_extract_top_left_text (const char *text,
 static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+
 	G_OBJECT_CLASS (class)->finalize = finalize;
 
 	signals[CHANGED] =
@@ -5638,6 +5692,50 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+}
+
+static GnomeVFSFileInfo *
+nautilus_file_get_vfs_file_info (NautilusFile *file)
+{
+	return gnome_vfs_file_info_dup (file->details->info);
+}
+
+static void
+nautilus_file_add_emblem (NautilusFile *file,
+			  const char *emblem_name)
+{
+	if (file->details->pending_info_providers) {
+		file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
+									   g_strdup (emblem_name));
+	} else {
+		file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
+								   g_strdup (emblem_name));
+	}
+
+	nautilus_file_changed (file);
+}
+
+void
+nautilus_file_info_providers_done (NautilusFile *file)
+{
+	eel_g_list_free_deep (file->details->extension_emblems);
+	file->details->extension_emblems = file->details->pending_extension_emblems;
+	file->details->pending_extension_emblems = NULL;
+	nautilus_file_changed (file);
+}
+
+static void     
+nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
+{
+	iface->is_gone = nautilus_file_is_gone;
+	iface->get_name = nautilus_file_get_name;
+	iface->get_uri = nautilus_file_get_uri;
+	iface->get_parent_uri = nautilus_file_get_parent_uri;
+	iface->get_mime_type = nautilus_file_get_mime_type;
+	iface->is_mime_type = nautilus_file_is_mime_type;
+	iface->is_directory = nautilus_file_is_directory;
+	iface->get_vfs_file_info = nautilus_file_get_vfs_file_info;
+	iface->add_emblem = nautilus_file_add_emblem;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

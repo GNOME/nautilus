@@ -33,6 +33,7 @@
 #include <libnautilus-private/nautilus-metafile-server.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus/nautilus-idle-queue.h>
+#include <libnautilus-extension/nautilus-info-provider.h>
 #include <libxml/tree.h>
 
 typedef struct LinkInfoReadState LinkInfoReadState;
@@ -53,6 +54,7 @@ struct NautilusDirectoryDetails
 	/* Queues of files needing some I/O done. */
 	NautilusFileQueue *high_priority_queue;
 	NautilusFileQueue *low_priority_queue;
+	NautilusFileQueue *extension_queue;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
@@ -100,6 +102,10 @@ struct NautilusDirectoryDetails
 	NautilusFile *get_info_file;
 	GnomeVFSAsyncHandle *get_info_in_progress;
 
+	NautilusFile *extension_info_file;
+	NautilusInfoProvider *extension_info_provider;
+	NautilusOperationHandle *extension_info_in_progress;
+
 	TopLeftTextReadState *top_left_read_state;
 
 	LinkInfoReadState *link_info_read_state;
@@ -119,6 +125,7 @@ typedef struct {
 	gboolean metafile;
 	gboolean mime_list;
 	gboolean top_left_text;
+	gboolean extension_info;
 } Request;
 
 NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
