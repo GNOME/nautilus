@@ -429,7 +429,7 @@ then
 			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
 			AC_SUBST(PACKAGESYSTEM)
 		;;
-		4.0)
+		4.*)
 			AC_DEFINE(HAVE_RPM_40)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_40, true)
