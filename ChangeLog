@@ -1,3 +1,23 @@
+2001-03-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7400 - Assertions in NON smooth font picker, and font
+	doesn't change.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_font_family),
+	(font_family_item_changed_callback):
+	Replace text_item_changed_callback with
+	font_family_item_changed_callback and have the new callback deal
+	with the string picker properly.  Im not sure where
+	text_item_changed_callback came from, but it was assuming that the
+	target was a NautilusCaption and not a NautilusStringPicker.
+
 2001-03-06  John Sullivan  <sullivan@eazel.com>
 
 	Merge from HEAD:
