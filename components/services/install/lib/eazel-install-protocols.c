@@ -205,6 +205,7 @@ ftp_fetch_remote_file (EazelInstall *service,
 	g_warning (_("FTP not supported yet"));
 	return FALSE;
 }
+
 #else /* EAZEL_INSTALL_SLIM */
 
 static int
@@ -625,7 +626,9 @@ get_url_for_package  (EazelInstall *service,
 							g_warning ("No url for file");
 						} else if (g_list_length (packages) > 1) {
 							g_warning ("Ugh, more then one match, using first");
-						} else {						
+						}
+
+						if (g_list_length (packages) > 0) {
 							/* Get the first package returned */
 							PackageData *pack;
 							
