@@ -1,3 +1,16 @@
+2000-10-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	at Arlo's urging, I removed the emblem scale pinning that was added
+	last week, which isn't right if you think of the emblems as part
+	of the icons like Arlo does.  I also added an emblem scale factor to
+	make the emblems a more reasonable size.
+	
+	* src/file-manager/fm-list-view.c:
+	fixed bug 3900, emblems too large in the list view, by correct
+	the LIST_VIEW_MINIMAL_EMBLEM_SIZE constant, which was set too large.
+	
 2000-10-20  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3548 (modal error dialog is flakey in summary view)

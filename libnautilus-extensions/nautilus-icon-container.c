@@ -97,6 +97,8 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
+#define EMBLEM_SCALE_FACTOR .75
+
 #define STANDARD_ICON_GRID_WIDTH 145
 
 /* Desktop layout mode defines */
@@ -3436,8 +3438,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	GdkFont *font;
-	int pinned_zoom_level;
-	double pinned_scale_x, pinned_scale_y;
 	
 	guint smooth_font_size;
 	NautilusScalableFont *smooth_font;
@@ -3474,27 +3474,21 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_scalable_icon_unref (scalable_icon);
 	
 	emblem_pixbufs = NULL;
-
-	/* pin emblem size at 100% */
-	if (container->details->zoom_level > NAUTILUS_ZOOM_LEVEL_STANDARD) {
-		pinned_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-	} else {
-		pinned_zoom_level = container->details->zoom_level;
-	}
-	pinned_scale_x = icon->scale_x > 1.0 ? 1.0 : icon->scale_x;
-	pinned_scale_y = icon->scale_y > 1.0 ? 1.0 : icon->scale_y;
-	icon_size_x = MAX (nautilus_get_icon_size_for_zoom_level (pinned_zoom_level)
-			       * pinned_scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
-	icon_size_y = MAX (nautilus_get_icon_size_for_zoom_level (pinned_zoom_level)
-			       * pinned_scale_y, NAUTILUS_ICON_SIZE_SMALLEST);
+	
+	/* since the natural emblem sizes are too large, scale them down some.  Perhaps
+	   the scale amount should be user settable */	
+	icon_size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+			       * icon->scale_x * EMBLEM_SCALE_FACTOR, NAUTILUS_ICON_SIZE_SMALLEST);
+	icon_size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+			       * icon->scale_y * EMBLEM_SCALE_FACTOR, NAUTILUS_ICON_SIZE_SMALLEST);
 	
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
 			 icon_size_x,
 			 icon_size_y,
-			 max_emblem_size * pinned_scale_x,
-			 max_emblem_size * pinned_scale_y,
+			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
+			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
 			 NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
