@@ -361,8 +361,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 */
 	if (password_info != NULL
 	    && password_info->pw_gid == file->details->info->gid) {
-		(file->details->info->permissions & group_permission)
-		return FALSE;
+		return (file->details->info->permissions & group_permission) != 0;
 	}
 
 	/* Other users' access is governed by the other bits. */

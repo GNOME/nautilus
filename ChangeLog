@@ -1,6 +1,12 @@
 2000-05-25  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_denies_access_permission): Checked it in
+	without finishing it. Bad Darin.
+
+2000-05-25  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
 	(nautilus_file_denies_access_permission),
 	(nautilus_file_can_set_permissions): Made the permission check
 	match the Unix access model. Maciej points out that this is
