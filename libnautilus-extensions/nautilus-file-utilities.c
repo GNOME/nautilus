@@ -924,23 +924,15 @@ nautilus_get_user_main_directory (void)
 {
 	char *user_main_directory = NULL;
 	GnomeVFSResult result;
-	NautilusFile *file;
-	char *file_uri, *image_uri, *temp_str;
-	char *source_directory_uri_text, *destination_directory_uri_text;
-	GnomeVFSURI *source_directory_uri, *destination_directory_uri;
-	GnomeVFSURI *source_uri, *destination_uri;
+	char *destination_directory_uri_text;
+	GnomeVFSURI *destination_directory_uri;
+	GnomeVFSURI *destination_uri;
 	
 	user_main_directory = g_strdup_printf ("%s/%s",
 					       g_get_home_dir(),
 					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
 	if (!g_file_exists (user_main_directory)) {			
-		source_directory_uri_text = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR);
-		source_directory_uri = gnome_vfs_uri_new (source_directory_uri_text);
-		g_free (source_directory_uri_text);
-		source_uri = gnome_vfs_uri_append_file_name (source_directory_uri, "top");
-		gnome_vfs_uri_unref (source_directory_uri);
-
 		destination_directory_uri_text = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
 		destination_directory_uri = gnome_vfs_uri_new (destination_directory_uri_text);
 		g_free (destination_directory_uri_text);
@@ -948,11 +940,11 @@ nautilus_get_user_main_directory (void)
 								  NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 		gnome_vfs_uri_unref (destination_directory_uri);
 		
-		result = gnome_vfs_xfer_uri (source_uri, destination_uri,
-					 GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
-					 GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-					 NULL, NULL);
-		
+		result = gnome_vfs_make_directory_for_uri (destination_uri,
+						 GNOME_VFS_PERM_USER_ALL
+						 | GNOME_VFS_PERM_GROUP_ALL
+						 | GNOME_VFS_PERM_OTHER_READ);
+
 		/* FIXME bugzilla.eazel.com 1286: 
 		 * How should we handle error codes returned from gnome_vfs_xfer_uri? 
 		 * Note that nautilus_application_startup will refuse to launch if this 
@@ -960,52 +952,15 @@ nautilus_get_user_main_directory (void)
 		 * could be deleted after Nautilus was launched, and perhaps
 		 * there is some bad side-effect of not handling that case.
 		 */
-
-		gnome_vfs_uri_unref (source_uri);
 		gnome_vfs_uri_unref (destination_uri);
 
 		/* If this fails to create the directory, nautilus_application_startup will
 		 * notice and refuse to launch.
 		 */
-					
-		/* assign a custom image for the directory icon */
-		file_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
-		temp_str = nautilus_pixmap_file ("nautilus-logo.png");
-		image_uri = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-		
-		file = nautilus_file_get (file_uri);
-		g_free (file_uri);
-		if (file != NULL) {
-			nautilus_file_set_metadata (file,
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL,
-						    image_uri);
-			nautilus_file_unref (file);
-		}
-		
-		/* now do the same for the about file */
-		temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
-		file_uri = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-		
-		file = nautilus_file_get (file_uri);
-		if (file != NULL) {
-			nautilus_file_set_metadata (file,
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL,
-						    image_uri);
-			nautilus_file_unref (file);
-		}
-		g_free (file_uri);
-		
-		g_free (image_uri);
-		
-		/* install the default link set */
+							
+		/* install the default link sets */
 		nautilus_link_set_install (user_main_directory, "apps");
-		/*
-		  nautilus_link_set_install (user_main_directory, "search_engines");
-		*/
+		nautilus_link_set_install (user_main_directory, "home");
 	}
 
 	return user_main_directory;

@@ -16,5 +16,4 @@ SUBDIRS = \
 	fonts \
 	linksets \
 	patterns \
-	top \
 	$(NULL)

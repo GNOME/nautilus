@@ -1,3 +1,33 @@
+2001-02-15  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 5599, make objects in $USER/Nautilus localizable.  Fixed
+	by creating a linkset to instead the Computer and Services icons,
+	and removing the top directory and associated code, since it's no
+	longer needed.
+	
+	* configure.in:
+	removed data/top
+	* data/Makefile.am:
+	removed top directory
+	* data/linksets/Makefile.am:
+	* data/linksets/home.xml:
+	added new home linkset
+	
+	* data/top/.cvsignore:
+	* data/top/.nautilus-metafile.xml:
+	* data/top/Computer:
+	* data/top/Makefile.am:
+	* data/top/Services:
+	removed files from top
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	changed it to no longer copy the top directory; instead,
+	install the new linkset
+	
+	* po/POTFILES.in:
+	added home.xml to the files to be localized
+	
 2001-02-15  Eric Fischer  <eric@eazel.com>
 
 	* nautilus.spec.in:
