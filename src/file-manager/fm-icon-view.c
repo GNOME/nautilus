@@ -93,8 +93,6 @@
 #define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Arrange Items"
 
 #define POPUP_PATH_ICON_APPEARANCE		"/popups/selection/Icon Appearance Items"
-#define POPUP_PATH_STRETCH_ICON		        "/popups/selection/Icon Appearance Items/Stretch"
-#define POPUP_PATH_UNSTRETCH_ICON	        "/popups/selection/Icon Appearance Items/Unstretch"
 
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
@@ -1576,6 +1574,17 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
 		nautilus_bonobo_set_hidden 
 			(icon_view->details->ui, POPUP_PATH_LAY_OUT, TRUE);
+	}
+
+	if (FM_IS_DESKTOP_ICON_VIEW (icon_view)) {
+		bonobo_ui_component_set (icon_view->details->ui,
+					 POPUP_PATH_ICON_APPEARANCE,
+					 "<menuitem name=\"Stretch\" verb=\"Stretch\"/>",
+					 NULL);
+		bonobo_ui_component_set (icon_view->details->ui,
+					 POPUP_PATH_ICON_APPEARANCE,
+					 "<menuitem name=\"Unstretch\" verb=\"Unstretch\"/>",
+					 NULL);
 	}
 
 	nautilus_bonobo_set_hidden
