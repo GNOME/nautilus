@@ -39,13 +39,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
-typedef struct {
-	POA_Nautilus_ComponentAdapterFactory  servant;
-	NautilusAdapterFactoryServer         *bonobo_object;
-} impl_POA_Nautilus_ComponentAdapterFactory;
-
-
-
 static Nautilus_View
 impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant           servant,
 						      const Bonobo_Unknown             component,
@@ -60,34 +53,14 @@ impl_Nautilus_ComponentAdapterFactory__create        (NautilusAdapterFactoryServ
 						      CORBA_Environment               *ev);
 
 
-POA_Nautilus_ComponentAdapterFactory__epv impl_Nautilus_ComponentAdapterFactory_epv =
-{
-	NULL,
-	&impl_Nautilus_ComponentAdapterFactory_create_adapter
-};
-
-
-static PortableServer_ServantBase__epv base_epv;
-
-static POA_Nautilus_ComponentAdapterFactory__vepv impl_Nautilus_ComponentAdapterFactory_vepv =
-{
-	&base_epv,
-	NULL,
-	&impl_Nautilus_ComponentAdapterFactory_epv
-};
-
-
-
 static void nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass);
 static void nautilus_adapter_factory_server_init       (NautilusAdapterFactoryServer      *server);
 static void nautilus_adapter_factory_server_destroy          (GtkObject                      *object);
 
 
 EEL_CLASS_BOILERPLATE (NautilusAdapterFactoryServer,
-				   nautilus_adapter_factory_server,
-				   BONOBO_OBJECT_TYPE)
-
-
+		       nautilus_adapter_factory_server,
+		       BONOBO_OBJECT_TYPE)
      
 static void
 nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass)
@@ -150,7 +123,7 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 
 		adapter_view = nautilus_adapter_get_nautilus_view (adapter);
 		
-		gtk_signal_connect (GTK_OBJECT (adapter_view), "destroy",
+		g_signal_connect (G_OBJECT (adapter_view), "destroy",
 				    adapter_object_destroyed, factory_servant->bonobo_object);
 
 		return CORBA_Object_duplicate
@@ -191,7 +164,7 @@ impl_Nautilus_ComponentAdapterFactory__create (NautilusAdapterFactoryServer *bon
 	servant->servant.vepv = &impl_Nautilus_ComponentAdapterFactory_vepv;
 	POA_Nautilus_ComponentAdapterFactory__init ((PortableServer_Servant) servant, ev);
 
-	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
+	g_signal_connect (G_OBJECT (bonobo_object), "destroy",
 			    GTK_SIGNAL_FUNC (impl_Nautilus_ComponentAdapterFactory__destroy), servant);
 	
 	servant->bonobo_object = bonobo_object;

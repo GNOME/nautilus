@@ -153,12 +153,10 @@ scrollkeeper-update
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING-DOCS COPYING.LIB TRADEMARK_NOTICE ChangeLog NEWS README
-%{_bindir}/nautilus-clean.sh
-%{_bindir}/nautilus-verify-rpm.sh
-%{_bindir}/nautilus-restore-settings-to-default.sh
 %{_bindir}/hyperbola
 %{_bindir}/nautilus
 %{_bindir}/nautilus-adapter
+%{_bindir}/nautilus-clean.sh
 %{_bindir}/nautilus-error-dialog
 %{_bindir}/nautilus-hardware-view
 %{_bindir}/nautilus-history-view
@@ -167,36 +165,34 @@ scrollkeeper-update
 %{_bindir}/nautilus-music-view
 %{_bindir}/nautilus-news
 %{_bindir}/nautilus-notes
+%{_bindir}/nautilus-restore-settings-to-default.sh
 %{_bindir}/nautilus-sample-content-view
 %{_bindir}/nautilus-text-view
 %{_bindir}/nautilus-throbber
+%{_bindir}/nautilus-verify-rpm.sh
+%{_libdir}/libnautilus-adapter.so
 %{_libdir}/libnautilus-adapter.so.0
 %{_libdir}/libnautilus-adapter.so.0.0.0
+%{_libdir}/libnautilus-private.so
 %{_libdir}/libnautilus-private.so.0
 %{_libdir}/libnautilus-private.so.0.0.0
+%{_libdir}/libnautilus-tree-view.so
 %{_libdir}/libnautilus-tree-view.so.0
 %{_libdir}/libnautilus-tree-view.so.0.0.0
+%{_libdir}/libnautilus.so
 %{_libdir}/libnautilus.so.0
 %{_libdir}/libnautilus.so.0.0.0
-%{_libdir}/libnautilus-adapter.so
-%{_libdir}/libnautilus-private.so
-%{_libdir}/libnautilus-tree-view.so
-%{_libdir}/libnautilus.so
-
-
-
 %{_libdir}/vfs/modules/*.so
 
 
 %defattr (0444, bin, bin)
 %config %{_sysconfdir}/vfs/modules/*.conf
-%config %{_sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
+%{_datadir}/gnome-2.0/ui/*.xml
 %{_datadir}/gnome/apps/Applications/*.desktop
-%{_datadir}/gnome/ui/*.xml
-%{_datadir}/nautilus/components/hyperbola/maps/*.map
-%{_datadir}/nautilus/components/hyperbola/*.xml
 %{_datadir}/locale/*/LC_MESSAGES/*.mo
 %{_datadir}/nautilus/*.xml
+%{_datadir}/nautilus/components/hyperbola/*.xml
+%{_datadir}/nautilus/components/hyperbola/maps/*.map
 %{_datadir}/nautilus/emblems/*.png
 %{_datadir}/nautilus/linksets/*.xml
 %{_datadir}/nautilus/patterns/*.jpg
@@ -208,28 +204,29 @@ scrollkeeper-update
 %{_datadir}/pixmaps/nautilus/*.png
 %{_datadir}/pixmaps/nautilus/*.svg
 %{_datadir}/pixmaps/nautilus/*.xml
-%{_datadir}/pixmaps/nautilus/tahoe/*.png
-%{_datadir}/pixmaps/nautilus/tahoe/*.xml
-%{_datadir}/pixmaps/nautilus/crux_teal/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/*.xml
-%{_datadir}/pixmaps/nautilus/crux_teal/throbber/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/backgrounds/*.png
-%{_datadir}/pixmaps/nautilus/crux_teal/sidebar_tab_pieces/*.png
 %{_datadir}/pixmaps/nautilus/crux_eggplant/*.png
 %{_datadir}/pixmaps/nautilus/crux_eggplant/*.xml
-%{_datadir}/pixmaps/nautilus/crux_eggplant/throbber/*.png
 %{_datadir}/pixmaps/nautilus/crux_eggplant/backgrounds/*.png
 %{_datadir}/pixmaps/nautilus/crux_eggplant/sidebar_tab_pieces/*.png
+%{_datadir}/pixmaps/nautilus/crux_eggplant/throbber/*.png
+%{_datadir}/pixmaps/nautilus/crux_teal/*.png
+%{_datadir}/pixmaps/nautilus/crux_teal/*.xml
+%{_datadir}/pixmaps/nautilus/crux_teal/backgrounds/*.png
+%{_datadir}/pixmaps/nautilus/crux_teal/sidebar_tab_pieces/*.png
+%{_datadir}/pixmaps/nautilus/crux_teal/throbber/*.png
 %{_datadir}/pixmaps/nautilus/gnome/*.png
 %{_datadir}/pixmaps/nautilus/gnome/*.xml
 %{_datadir}/pixmaps/nautilus/gnome/throbber/*.png
 %{_datadir}/pixmaps/nautilus/sidebar_tab_pieces/*.png
-%{_datadir}/pixmaps/nautilus/throbber/*.png
-%{_datadir}/pixmaps/nautilus/sierra/*.xml
 %{_datadir}/pixmaps/nautilus/sierra/*.png
-%{_libdir}/bonobo/servers/Nautilus_View_help.server
+%{_datadir}/pixmaps/nautilus/sierra/*.xml
+%{_datadir}/pixmaps/nautilus/tahoe/*.png
+%{_datadir}/pixmaps/nautilus/tahoe/*.xml
+%{_datadir}/pixmaps/nautilus/throbber/*.png
 %{_libdir}/bonobo/servers/Nautilus_ComponentAdapterFactory_std.server
+%{_libdir}/bonobo/servers/Nautilus_Control_throbber.server
 %{_libdir}/bonobo/servers/Nautilus_View_hardware.server
+%{_libdir}/bonobo/servers/Nautilus_View_help.server
 %{_libdir}/bonobo/servers/Nautilus_View_history.server
 %{_libdir}/bonobo/servers/Nautilus_View_image.server
 %{_libdir}/bonobo/servers/Nautilus_View_music.server
@@ -239,7 +236,6 @@ scrollkeeper-update
 %{_libdir}/bonobo/servers/Nautilus_View_text.server
 %{_libdir}/bonobo/servers/Nautilus_View_tree.server
 %{_libdir}/bonobo/servers/Nautilus_shell.server
-%{_libdir}/bonobo/servers/Nautilus_Control_throbber.server
 
 # We put the idl files in the main package, not the devel package
 # because the perl corba bindings can use the .idl files at run time.
@@ -254,9 +250,8 @@ scrollkeeper-update
 
 %defattr(0555, bin, bin)
 %{_libdir}/*.la
-%{_libdir}/vfs/modules/*.la
 %{_libdir}/*.sh
-%{_bindir}/nautilus-config
+%{_libdir}/vfs/modules/*.la
 
 %defattr(0444, bin, bin)
 %{_includedir}/libnautilus/*.h

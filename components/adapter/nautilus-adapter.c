@@ -144,7 +144,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	 * construct args 
 	 */
 
-	adapter = NAUTILUS_ADAPTER (gtk_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
+	adapter = NAUTILUS_ADAPTER (g_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
 
 	/* Set up a few wrapper framework details */
 	bin = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
@@ -169,11 +169,11 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	if (zoomable != NULL)
 		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
-	gtk_signal_connect (GTK_OBJECT (control), "activate",
+	g_signal_connect (G_OBJECT (control), "activate",
 			    GTK_SIGNAL_FUNC (nautilus_adapter_activate_callback),
 			    adapter);
 
-	gtk_signal_connect (GTK_OBJECT (adapter->details->embed_strategy), "open_location", 
+	g_signal_connect (G_OBJECT (adapter->details->embed_strategy), "open_location", 
 			    nautilus_adapter_open_location_callback, adapter);
 
 
@@ -211,11 +211,11 @@ nautilus_adapter_new (Bonobo_Unknown component)
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
 			   
 	/* hook up view signals. */
-	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
+	g_signal_connect (G_OBJECT (adapter->details->nautilus_view),
 			    "load_location",
 			    nautilus_adapter_load_location_callback,
 			    adapter);
-	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
+	g_signal_connect (G_OBJECT (adapter->details->nautilus_view),
 			    "stop_loading",
 			    nautilus_adapter_stop_loading_callback,
 			    adapter);

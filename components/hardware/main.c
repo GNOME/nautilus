@@ -54,11 +54,11 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 	
-	view = nautilus_hardware_view_get_nautilus_view (NAUTILUS_HARDWARE_VIEW (gtk_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL)));
+	view = nautilus_hardware_view_get_nautilus_view (NAUTILUS_HARDWARE_VIEW (g_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL)));
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", hardware_view_object_destroyed, NULL);
+	g_signal_connect (G_OBJECT (view), "destroy", hardware_view_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (view);
 }

@@ -77,7 +77,7 @@ nautilus_content_loser_init (NautilusContentLoser *view)
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 			    "load_location",
 			    GTK_SIGNAL_FUNC (loser_load_location_callback), 
 			    view);
@@ -85,7 +85,7 @@ nautilus_content_loser_init (NautilusContentLoser *view)
 	/* Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
+        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control
 					(view->details->nautilus_view)),
                             "activate",
                             loser_merge_bonobo_items_callback,

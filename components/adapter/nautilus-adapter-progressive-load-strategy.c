@@ -118,7 +118,7 @@ nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  prog
 
 	CORBA_exception_init (&ev);
 
-	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY, NULL));
+	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY, NULL));
 	gtk_object_ref (GTK_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 

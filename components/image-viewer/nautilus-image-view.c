@@ -319,7 +319,7 @@ zoomable_zoom_in_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 		new_zoom_level = zoom_level_from_index (index);
 	}
 	
-	gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
 }
 
@@ -338,7 +338,7 @@ zoomable_zoom_out_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 	index--;
 	new_zoom_level = zoom_level_from_index (index);
 
-	gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
 }
 
@@ -361,7 +361,7 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 
 	new_zoom_level = (x_level < y_level) ? x_level : y_level;
 	if (new_zoom_level > 0) {
-		gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+		g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
 	}
 }
@@ -369,7 +369,7 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 static void
 zoomable_zoom_to_default_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 {
-	gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 1.0);
 }
 
@@ -665,7 +665,7 @@ control_factory_common (GtkWidget *scrolled_window)
 	bod->drawing_area = gtk_drawing_area_new ();
 	bod->scrolled_window = scrolled_window;
 
-	gtk_signal_connect (GTK_OBJECT (bod->drawing_area),
+	g_signal_connect (G_OBJECT (bod->drawing_area),
 			    "expose_event",
 			    GTK_SIGNAL_FUNC (drawing_area_exposed), bod);
 
@@ -689,20 +689,20 @@ control_factory_common (GtkWidget *scrolled_window)
 	 */
 	gtk_widget_ref (bod->drawing_area);
 
-	gtk_signal_connect (GTK_OBJECT (bod->control), "destroy",
+	g_signal_connect (G_OBJECT (bod->control), "destroy",
 			    GTK_SIGNAL_FUNC (control_destroy_callback), bod);
 
 	bod->zoomable = bonobo_zoomable_new ();
 
-	gtk_signal_connect (GTK_OBJECT (bod->zoomable), "set_zoom_level",
+	g_signal_connect (G_OBJECT (bod->zoomable), "set_zoom_level",
 			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback), bod);
-	gtk_signal_connect (GTK_OBJECT (bod->zoomable), "zoom_in",
+	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_in",
 			    GTK_SIGNAL_FUNC (zoomable_zoom_in_callback), bod);
-	gtk_signal_connect (GTK_OBJECT (bod->zoomable), "zoom_out",
+	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_out",
 			    GTK_SIGNAL_FUNC (zoomable_zoom_out_callback), bod);
-	gtk_signal_connect (GTK_OBJECT (bod->zoomable), "zoom_to_fit",
+	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_fit",
 			    GTK_SIGNAL_FUNC (zoomable_zoom_to_fit_callback), bod);
-	gtk_signal_connect (GTK_OBJECT (bod->zoomable), "zoom_to_default",
+	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_default",
 			    GTK_SIGNAL_FUNC (zoomable_zoom_to_default_callback), bod);
 
 	bod->zoom_level = 1.0;
@@ -719,7 +719,7 @@ control_factory_common (GtkWidget *scrolled_window)
 	bonobo_object_add_interface (BONOBO_OBJECT (bod->control),
 				     BONOBO_OBJECT (bod->zoomable));
 
-	gtk_signal_connect (GTK_OBJECT (bod->control), "activate",
+	g_signal_connect (G_OBJECT (bod->control), "activate",
 			    GTK_SIGNAL_FUNC (control_activate_callback), bod);
 
 	/*
@@ -743,7 +743,7 @@ scaled_control_factory (void)
 
 	bod = control_factory_common (NULL);
 
-	gtk_signal_connect (GTK_OBJECT (bod->drawing_area), "size_allocate",
+	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
 			    GTK_SIGNAL_FUNC (control_size_allocate_callback), bod);
 
         return bod;
@@ -763,11 +763,11 @@ scrollable_control_factory (void)
 
 	bod = control_factory_common (scroll);
 
-	gtk_signal_connect (GTK_OBJECT (bod->drawing_area), "size_allocate",
+	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
 			    GTK_SIGNAL_FUNC (scrolled_control_size_allocate_callback),
 			    bod);
 	
-	gtk_signal_connect (GTK_OBJECT (bod->scrolled_window), "size_allocate",
+	g_signal_connect (G_OBJECT (bod->scrolled_window), "size_allocate",
 			    GTK_SIGNAL_FUNC (scrolled_window_size_allocate_callback),
 			    bod);
 

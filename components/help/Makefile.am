@@ -53,7 +53,7 @@ modulesconf_DATA = help-methods.conf
 hyperboladir=$(datadir)/nautilus/components/hyperbola
 hyperbola_DATA=topleveldocs.xml
 
-uidir=$(datadir)/gnome/ui
+uidir=$(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-hyperbola-ui.xml
 
 serverdir = $(datadir)/server

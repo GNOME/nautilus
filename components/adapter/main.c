@@ -72,13 +72,13 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 
-	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (gtk_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
+	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (g_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
 
 	/* Connect a handler that will get us out of the main loop
          * when there are no more objects outstanding.
 	 */
 	object_count++;
-	gtk_signal_connect (GTK_OBJECT (adapter), "destroy",
+	g_signal_connect (G_OBJECT (adapter), "destroy",
 			    adapter_factory_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (adapter);

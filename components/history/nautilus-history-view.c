@@ -300,16 +300,16 @@ nautilus_history_view_init (NautilusHistoryView *view)
 	gtk_object_ref (GTK_OBJECT (list));
 	view->list = list;
 
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "button-press-event",
 			    button_press_callback,
 			    view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "button-release-event",
 			    button_release_callback,
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (view),
+	g_signal_connect (G_OBJECT (view),
 			    "history_changed", 
 			    history_changed_callback,
 			    view);

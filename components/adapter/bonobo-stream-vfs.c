@@ -450,7 +450,7 @@ bonobo_stream_vfs_new_internal (GnomeVFSHandle *handle)
 	Bonobo_Stream corba_stream;
 	CORBA_Environment ev;
 
-	stream_vfs = BONOBO_STREAM_VFS (gtk_object_new (bonobo_stream_vfs_get_type (), NULL));
+	stream_vfs = BONOBO_STREAM_VFS (g_object_new (bonobo_stream_vfs_get_type (), NULL));
 	
 	stream_vfs->details->handle = handle;
 	

@@ -8,7 +8,7 @@ INCLUDES =					\
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-sidebar-loser-ui.xml
 
 bin_PROGRAMS =					\

@@ -56,13 +56,13 @@ loser_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 
-	view = NAUTILUS_SIDEBAR_LOSER (gtk_object_new (NAUTILUS_TYPE_SIDEBAR_LOSER, NULL));
+	view = NAUTILUS_SIDEBAR_LOSER (g_object_new (NAUTILUS_TYPE_SIDEBAR_LOSER, NULL));
 
 	object_count++;
 
 	nautilus_view = nautilus_sidebar_loser_get_nautilus_view (view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", loser_object_destroyed, NULL);
+	g_signal_connect (G_OBJECT (nautilus_view), "destroy", loser_object_destroyed, NULL);
 
 	nautilus_sidebar_loser_maybe_fail ("post-make-object");
 

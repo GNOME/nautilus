@@ -71,7 +71,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              GTK_TYPE_POINTER, 0);
 	signals[DEACTIVATE] =
 		g_signal_new ("deactivate",
@@ -79,7 +79,7 @@ nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *k
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[OPEN_LOCATION] =
 		g_signal_new ("open_location",
@@ -155,23 +155,23 @@ void
 nautilus_adapter_embed_strategy_activate (NautilusAdapterEmbedStrategy *strategy,
 					  Bonobo_UIContainer            ui_container)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[ACTIVATE],
+	g_signal_emit (G_OBJECT (strategy),
+			 signals[ACTIVATE], 0,
 			 ui_container);
 }
 
 void 
 nautilus_adapter_embed_strategy_deactivate (NautilusAdapterEmbedStrategy *strategy)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[DEACTIVATE]);
+	g_signal_emit (G_OBJECT (strategy),
+			 signals[DEACTIVATE], 0);
 }
 
 void 
 nautilus_adapter_embed_strategy_emit_open_location (NautilusAdapterEmbedStrategy *strategy,
 						    const char                   *uri)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[OPEN_LOCATION],
+	g_signal_emit (G_OBJECT (strategy),
+			 signals[OPEN_LOCATION], 0,
 			 uri);
 }

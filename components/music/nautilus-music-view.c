@@ -292,7 +292,7 @@ nautilus_music_view_init (NautilusMusicView *music_view)
         music_view->details->event_box = gtk_event_box_new ();
         gtk_widget_show (music_view->details->event_box);
         
-        gtk_signal_connect (GTK_OBJECT (music_view->details->event_box),
+        g_signal_connect (G_OBJECT (music_view->details->event_box),
                              "drag_data_received",
                              nautilus_music_view_drag_data_received,
                              music_view);
@@ -301,12 +301,12 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 				 music_view->details->event_box);
 	
     	
-	gtk_signal_connect (GTK_OBJECT (music_view), 
+	g_signal_connect (G_OBJECT (music_view), 
 			    "load_location",
 			    music_view_load_location_callback, 
 			    music_view);
 			    
-	gtk_signal_connect (GTK_OBJECT (eel_get_widget_background (GTK_WIDGET (music_view->details->event_box))), 
+	g_signal_connect (G_OBJECT (eel_get_widget_background (GTK_WIDGET (music_view->details->event_box))), 
 			    "appearance_changed",
 			    music_view_background_appearance_changed_callback, 
 			    music_view);
@@ -339,7 +339,7 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 
         gtk_widget_show (music_view->details->song_list);
 
-	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
+	g_signal_connect (G_OBJECT (music_view->details->song_list),
 			    "get_cell_text",
 			    GTK_SIGNAL_FUNC (get_cell_text),
 			    NULL);	
@@ -361,7 +361,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
  	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), BITRATE, GTK_JUSTIFY_RIGHT);
 	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), TIME, GTK_JUSTIFY_RIGHT);
  	
- 	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
+ 	g_signal_connect (G_OBJECT (music_view->details->song_list),
                             "select-row", selection_callback, music_view);
 
 	music_view->details->scroll_window = gtk_scrolled_window_new (NULL, eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list)));
@@ -373,11 +373,11 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->scroll_window, TRUE, TRUE, 0);	
 
 	/* We have to know when we the adjustment is changed to cause a redraw due to a lame CList bug */
-	gtk_signal_connect (GTK_OBJECT (eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list))),
+	g_signal_connect (G_OBJECT (eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list))),
 			    "value-changed", value_changed_callback, music_view->details->song_list);
 	
 	/* connect a signal to let us know when the column titles are clicked */
-	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list), "click_column",
+	g_signal_connect (G_OBJECT (music_view->details->song_list), "click_column",
                             click_column_callback, music_view);
 
         gtk_widget_show (music_view->details->song_list);
@@ -398,7 +398,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
         gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  
- 	gtk_signal_connect (GTK_OBJECT (button), "clicked", image_button_callback, music_view);
+ 	g_signal_connect (G_OBJECT (button), "clicked", image_button_callback, music_view);
  	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view->details->event_box),
@@ -822,11 +822,11 @@ image_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 			(_("Select an image file for the album cover:"));
 		file_dialog = GTK_FILE_SELECTION (music_view->details->dialog);
 		
-		gtk_signal_connect (GTK_OBJECT (music_view->details->dialog),
+		g_signal_connect (G_OBJECT (music_view->details->dialog),
 				    "destroy",
 				    (GtkSignalFunc) dialog_destroy,
 				    music_view);
-		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
+		g_signal_connect (G_OBJECT (file_dialog->ok_button),
 				    "clicked",
 				    (GtkSignalFunc) set_album_cover,
 				    music_view);
@@ -1580,11 +1580,11 @@ add_play_controls (NautilusMusicView *music_view)
 	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
 	music_view->details->playtime_bar = gtk_hscale_new (GTK_ADJUSTMENT (music_view->details->playtime_adjustment));
 	
-	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_press_event",
+	g_signal_connect (G_OBJECT (music_view->details->playtime_bar), "button_press_event",
                             GTK_SIGNAL_FUNC (slider_press_callback), music_view);
-	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "button_release_event",
+	g_signal_connect (G_OBJECT (music_view->details->playtime_bar), "button_release_event",
                             GTK_SIGNAL_FUNC (slider_release_callback), music_view);
- 	gtk_signal_connect (GTK_OBJECT (music_view->details->playtime_bar), "motion_notify_event",
+ 	g_signal_connect (G_OBJECT (music_view->details->playtime_bar), "motion_notify_event",
                             GTK_SIGNAL_FUNC (slider_moved_callback), music_view);
    
    	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->playtime_bar,
@@ -1616,7 +1616,7 @@ add_play_controls (NautilusMusicView *music_view)
 	music_view->details->previous_track_button = gtk_button_new ();
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->previous_track_button, _("Previous"), NULL);
 	gtk_container_add (GTK_CONTAINER (music_view->details->previous_track_button), box);
-	gtk_signal_connect (GTK_OBJECT (music_view->details->previous_track_button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
+	g_signal_connect (G_OBJECT (music_view->details->previous_track_button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
 	gtk_widget_set_sensitive (music_view->details->previous_track_button, TRUE);
 	gtk_button_set_relief (GTK_BUTTON (music_view->details->previous_track_button), GTK_RELIEF_NORMAL);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->previous_track_button, FALSE, FALSE, 0);
@@ -1632,7 +1632,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_widget_set_sensitive (button, TRUE);
-	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
+	g_signal_connect (G_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (play_button_callback), music_view);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
@@ -1647,7 +1647,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (music_view->details->pause_button), box);
 	gtk_widget_set_sensitive (music_view->details->pause_button, TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (music_view->details->pause_button), "clicked",
+	g_signal_connect (G_OBJECT (music_view->details->pause_button), "clicked",
                             GTK_SIGNAL_FUNC(pause_button_callback), music_view);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->pause_button, FALSE, FALSE, 0);
 	gtk_widget_show (music_view->details->pause_button);
@@ -1661,7 +1661,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (music_view->details->stop_button), box);
 	gtk_widget_set_sensitive (music_view->details->stop_button, TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (music_view->details->stop_button), "clicked",
+	g_signal_connect (G_OBJECT (music_view->details->stop_button), "clicked",
                            GTK_SIGNAL_FUNC (stop_button_callback), music_view);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->stop_button, FALSE, FALSE, 0);
 	gtk_widget_show (music_view->details->stop_button);
@@ -1675,7 +1675,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (music_view->details->next_track_button), box);
 	gtk_widget_set_sensitive (music_view->details->next_track_button, TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (music_view->details->next_track_button), "clicked",
+	g_signal_connect (G_OBJECT (music_view->details->next_track_button), "clicked",
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->next_track_button, FALSE, FALSE, 0);
 	gtk_widget_show (music_view->details->next_track_button);

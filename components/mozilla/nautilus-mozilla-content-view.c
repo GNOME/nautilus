@@ -322,57 +322,57 @@ nautilus_mozilla_content_view_init (NautilusMozillaContentView *view)
 	post_widget_init ();
 
 	/* Add callbacks to the beast */
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"realize",
 				GTK_SIGNAL_FUNC (mozilla_realize_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"title",
 				GTK_SIGNAL_FUNC (mozilla_title_changed_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"location",
 				GTK_SIGNAL_FUNC (mozilla_location_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"net_state",
 				GTK_SIGNAL_FUNC (mozilla_net_state_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"net_start",
 				GTK_SIGNAL_FUNC (mozilla_net_start_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"net_stop",
 				GTK_SIGNAL_FUNC (mozilla_net_stop_callback),
 				view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"link_message",
 				GTK_SIGNAL_FUNC (mozilla_link_message_callback),
 				view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"progress",
 				GTK_SIGNAL_FUNC (mozilla_progress_callback),
 				view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"dom_key_press",
 				GTK_SIGNAL_FUNC (mozilla_dom_key_press_callback),
 				view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"dom_mouse_click",
 				GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
 				view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+	g_signal_connect (G_OBJECT (view->details->mozilla), 
 				"new_window",
 				GTK_SIGNAL_FUNC (mozilla_new_window_callback),
 				view);
@@ -384,13 +384,13 @@ nautilus_mozilla_content_view_init (NautilusMozillaContentView *view)
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 				"load_location",
 				GTK_SIGNAL_FUNC (view_load_location_callback), 
 				view);
 
 	/* Connect to the active signal of the view to merge our menus */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
+        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
                             "activate",
                             bonobo_control_activate_callback,
                             view);
@@ -469,7 +469,7 @@ BonoboObject *
 nautilus_mozilla_content_view_new (void)
 {
 	NautilusMozillaContentView *view;
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NULL));
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (g_object_new (NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NULL));
 
 	return BONOBO_OBJECT (view->details->nautilus_view);
 }
@@ -873,16 +873,16 @@ mozilla_new_window_callback (GtkMozEmbed *mozilla, GtkMozEmbed **new_mozilla, gu
 		gtk_container_add (GTK_CONTAINER (chrome->toplevel_window), GTK_WIDGET (chrome->mozilla));
 
 		/* set up all the signals that we care about for chrome windows. */
-		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "visibility",
+		g_signal_connect (G_OBJECT (chrome->mozilla), "visibility",
 				    GTK_SIGNAL_FUNC (mozilla_chrome_visibility_callback),
 				    chrome);
-		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "destroy_browser",
+		g_signal_connect (G_OBJECT (chrome->mozilla), "destroy_browser",
 				    GTK_SIGNAL_FUNC (mozilla_chrome_destroy_brsr_callback),
 				    chrome);
-		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "size_to",
+		g_signal_connect (G_OBJECT (chrome->mozilla), "size_to",
 				    GTK_SIGNAL_FUNC (mozilla_chrome_size_to_callback),
 				    chrome);
-		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "title",
+		g_signal_connect (G_OBJECT (chrome->mozilla), "title",
 				    GTK_SIGNAL_FUNC (mozilla_chrome_title_callback),
 				    chrome);
 
