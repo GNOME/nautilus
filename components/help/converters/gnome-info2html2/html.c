@@ -23,6 +23,16 @@ int inTable=0;
 char *BaseFilename=NULL;
 char *OverrideBaseFilename=NULL;
 
+/* prototypes */
+char *form_info_tag_href( char *nodefile, char *nodename );
+int make_Top_link( char *destdir, char *destfile );
+int make_info_dir( char *destdir );
+void write_node_link_html( FILE *f, char *nodefile, char *refname, char *ref );
+void start_html_content( FILE *f );
+void make_nav_links( FILE *f, NODE *node );
+void html_error( char *s, char *p, char *q );
+
+
 /* print out the url for a info file */
 char *form_info_tag_href( char *nodefile, char *nodename )
 {
@@ -32,10 +42,12 @@ char *form_info_tag_href( char *nodefile, char *nodename )
 
   escaped_nodename = escape_html_chars( nodename );
   if (!strcmp(BaseFilename, nodefile))
+    {
 	  if (OverrideBaseFilename)
 		  filename = OverrideBaseFilename;
 	  else 
 		  filename = BaseFilename;
+    }
   else
 	  filename = nodefile;
 
