@@ -298,13 +298,22 @@ void nautilus_index_panel_set_up_label(GtkWidget* widget, const gchar *uri)
   	temp_uri[slash_pos] = '\0';
 
   vfs_uri = gnome_vfs_uri_new(temp_uri);
+  g_free(temp_uri);
+
   file_name = gnome_vfs_uri_get_basename(vfs_uri);	
   gnome_vfs_uri_destroy(vfs_uri);
+
+  if (file_name == NULL)
+    {
+      return;
+    }
   
   label_widget = gtk_label_new(file_name);	
   gtk_box_pack_start(GTK_BOX(index_panel->per_uri_container), label_widget, 0, 0, 0);
  
   label_font = select_font(file_name, widget->allocation.width - 4, "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
+  g_free((gchar*) file_name);
+
   if (label_font != NULL)
     {
       GtkStyle *temp_style;
@@ -315,8 +324,6 @@ void nautilus_index_panel_set_up_label(GtkWidget* widget, const gchar *uri)
     }
  
   gtk_widget_show(label_widget);
-  g_free((gchar*) file_name);
-  g_free(temp_uri);
 }
 
 /* this routine populates the index panel with the per-uri information */
