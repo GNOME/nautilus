@@ -61,7 +61,7 @@ static CORBA_boolean manufactures                                (PortableServer
 								  CORBA_Environment        *ev);
 static CORBA_Object  create_object                               (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
-								  const Bonobo_stringlist  *params,
+								  const GNOME_stringlist  *params,
 								  CORBA_Environment        *ev);
 static void          nautilus_application_initialize             (NautilusApplication      *application);
 static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
@@ -72,13 +72,13 @@ static gboolean	     need_to_show_first_time_druid		 (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
-static POA_Bonobo_GenericFactory__epv factory_epv = {
+static POA_GNOME_ObjectFactory__epv factory_epv = {
 	NULL,
 	&manufactures,
 	&create_object
 };
 static PortableServer_ServantBase__epv base_epv;
-static POA_Bonobo_GenericFactory__vepv vepv = {
+static POA_GNOME_ObjectFactory__vepv vepv = {
 	&base_epv,
 	&factory_epv
 };
@@ -98,7 +98,7 @@ manufactures (PortableServer_Servant servant,
 static CORBA_Object
 create_object (PortableServer_Servant servant,
 	       const CORBA_char *iid,
-	       const Bonobo_stringlist *params,
+	       const GNOME_stringlist *params,
 	       CORBA_Environment *ev)
 {
 	BonoboObject *object;
@@ -135,8 +135,8 @@ create_factory (PortableServer_POA poa,
 	BonoboObjectServant *servant;
 
 	servant = g_new0 (BonoboObjectServant, 1);
-	((POA_Bonobo_GenericFactory *) servant)->vepv = &vepv;
-	POA_Bonobo_GenericFactory__init ((PortableServer_Servant) servant, ev);
+	((POA_GNOME_ObjectFactory *) servant)->vepv = &vepv;
+	POA_GNOME_ObjectFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
 
