@@ -1,3 +1,14 @@
+2001-02-06  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback), (mime_list_one):
+	Handle the case where mime types don't get returned.
+
+	* libnautilus-extensions/nautilus-file.c:
+	Fix a comment.
+
 2001-02-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:

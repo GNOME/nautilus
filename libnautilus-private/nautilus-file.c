@@ -3685,7 +3685,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 }
 
 /**
- * nautilus_file_get_type_as_string:
+ * get_description:
  * 
  * Get a user-displayable string representing a file type. The caller
  * is responsible for g_free-ing this string.

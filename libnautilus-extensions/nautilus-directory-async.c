@@ -1246,7 +1246,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		}
 
 		/* Add the MIME type to the set. */
-		if (directory->details->load_mime_list_hash != NULL) {
+		if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+			&& directory->details->load_mime_list_hash != NULL) {
 			istr_set_insert (directory->details->load_mime_list_hash,
 					 file_info->mime_type);
 		}
@@ -2612,7 +2613,9 @@ static void
 mime_list_one (NautilusDirectory *directory,
 	       GnomeVFSFileInfo *info)
 {
-	istr_set_insert (directory->details->mime_list_hash, info->mime_type);
+	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
+		istr_set_insert (directory->details->mime_list_hash, info->mime_type);
+	}
 }
 
 static void
