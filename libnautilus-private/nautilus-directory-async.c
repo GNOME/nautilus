@@ -1687,7 +1687,8 @@ static gboolean
 lacks_slow_mime_type (NautilusFile *file)
 {
 	return !file->details->got_slow_mime_type
-		&& !file->details->is_gone;
+		&& !file->details->is_gone &&
+		!file->details->get_info_failed;
 }
 
 static gboolean
