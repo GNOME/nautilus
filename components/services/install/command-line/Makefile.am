@@ -11,6 +11,7 @@ INCLUDES =								\
         -I$(top_builddir)/components/services/trilobite			\
         -I$(top_srcdir)/components/services/install/lib			\
         -I$(top_builddir)/components/services/install/lib		\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			\
 	$(GNOME_CFLAGS)							\
 	$(GCONF_CFLAGS)							\
 	$(VFS_CFLAGS)							\

@@ -31,6 +31,8 @@
 #include "eazel-inventory.h"
 #endif
 
+#include <eazel-install-problem.h>
+
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 static void 
@@ -94,62 +96,15 @@ nautilus_rpm_view_download_failed (EazelInstallCallback *service,
 	trilobite_debug ("Download of %s FAILED", pack->name);
 }
 
-static void
-get_detailed_errors_foreach (const gpointer data, GString *message)
-{
-	PackageData *pack;
-
-	if (IS_PACKAGEDATA (data)) {
-		pack = PACKAGEDATA (data);
-	} else if (IS_PACKAGEBREAKS (data)) {
-		PackageBreaks *breakage = PACKAGEBREAKS (data);
-		pack = packagebreaks_get_package (breakage);
-	} else {
-		PackageDependency *dep = PACKAGEDEPENDENCY (data);
-		pack = dep->package;
-	}
-
-	switch (pack->status) {
-	case PACKAGE_UNKNOWN_STATUS:
-	case PACKAGE_CANCELLED:
-	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		break;
-	case PACKAGE_FILE_CONFLICT:
-	case PACKAGE_DEPENDENCY_FAIL:
-		g_string_sprintfa (message, _("%s would not work anymore\n"), pack->name);
-		break;
-	case PACKAGE_BREAKS_DEPENDENCY:
-		g_string_sprintfa (message, _("%s would break other installed packages\n"), pack->name);
-		break;
-	case PACKAGE_INVALID:
-		break;
-	case PACKAGE_CANNOT_OPEN:
-		g_string_sprintfa (message, _("%s is needed, but could not be found\n"), pack->name);
-		break;
-	case PACKAGE_PARTLY_RESOLVED:
-		break;
-	case PACKAGE_ALREADY_INSTALLED:
-		g_string_sprintfa (message, _("%s was already installed\n"), pack->name);
-		break;
-	case PACKAGE_CIRCULAR_DEPENDENCY:
-		g_string_sprintfa (message, _("%s causes a circular dependency problem\n"), pack->name);
-		break;
-	case PACKAGE_RESOLVED:
-		break;
-	case PACKAGE_PACKSYS_FAILURE:
-		g_string_sprintfa (message, _("Cannot access the local package system\n"));
-		break;
-	}
-	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
-}
-
 static char*
-get_detailed_errors (const PackageData *pack, int installing)
+get_detailed_errors (EazelInstallCallback *service,
+		     PackageData *pack, 
+		     gboolean installing)
 {
 	char *result;
+	GList *stuff;
 	GString *message;
+	EazelInstallProblem *problem;
 
 	message = g_string_new ("");
 	if (installing) {
@@ -157,9 +112,15 @@ get_detailed_errors (const PackageData *pack, int installing)
 	} else {
 		g_string_sprintfa (message, _("Uninstalling %s failed because of the following issue(s):\n"), pack->name);
 	}
-	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
+	
+	problem = EAZEL_INSTALL_PROBLEM (gtk_object_get_data (GTK_OBJECT (service), "problem-handler"));
+	stuff = eazel_install_problem_tree_to_string (problem, pack, installing);
+	if (stuff) {
+		GList *iterator;
+		for (iterator = stuff; iterator; iterator = g_list_next (iterator)) {
+			g_string_sprintfa (message, "\n\t\xB7 %s", (char*)iterator->data);
+		}
+	}
 
 	result = message->str;
 	g_string_free (message, FALSE);
@@ -168,23 +129,23 @@ get_detailed_errors (const PackageData *pack, int installing)
 
 static void
 nautilus_rpm_view_install_failed (EazelInstallCallback *service,
-				  const PackageData *pd,
+				  PackageData *pd,
 				  NautilusRPMView *rpm_view)
 {
 	char *detailed;
 
-	detailed = get_detailed_errors (pd, 1);
+	detailed = get_detailed_errors (service, pd, TRUE);
 	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
 static void
 nautilus_rpm_view_uninstall_failed (EazelInstallCallback *service,
-				    const PackageData *pd,
+				    PackageData *pd,
 				    NautilusRPMView *rpm_view)
 {
 	char *detailed;
 
-	detailed = get_detailed_errors (pd, 0);
+	detailed = get_detailed_errors (service, pd, FALSE);
 	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
@@ -289,12 +250,15 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 							     dialog_title,
 							     detailed,
 							     GTK_WINDOW (window));
-							
-		gnome_dialog_run_and_close (d);
+			
+		/* should this be gnome_dialog_run_close ?
+		   Changed it when fixing 7251 */
+		gnome_dialog_run (d);
 		g_free (terse);
 		g_free (dialog_title);
 		g_free (detailed);
-		nautilus_view_report_load_failed (nautilus_rpm_view_get_view (rpm_view));
+		/* nautilus_view_report_load_failed (nautilus_rpm_view_get_view (rpm_view)); */
+		nautilus_view_report_load_complete (nautilus_rpm_view_get_view (rpm_view));
 	} else {
 		nautilus_view_report_load_complete (nautilus_rpm_view_get_view (rpm_view));
 	}
@@ -480,7 +444,8 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	CategoryData *category;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;
-
+	EazelInstallProblem *problem = NULL;
+ 
 	CORBA_exception_init (&ev);
 
 	categories = NULL;
@@ -495,7 +460,9 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	categories = g_list_prepend (NULL, category);
 
 	cb = eazel_install_callback_new ();
-
+	problem = eazel_install_problem_new (); 
+	gtk_object_set_data (GTK_OBJECT (cb), "problem-handler", problem);
+	
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
@@ -527,6 +494,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	GList *categories;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;		
+	EazelInstallProblem *problem = NULL;
 
 	CORBA_exception_init (&ev);
 
@@ -542,6 +510,8 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	categories = g_list_prepend (NULL, category);
 
 	cb = eazel_install_callback_new ();
+	problem = eazel_install_problem_new (); 
+	gtk_object_set_data (GTK_OBJECT (cb), "problem-handler", problem);
 
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);

@@ -122,7 +122,8 @@ static const struct poptOption options[] = {
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
-	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
+	/* Disabled for 1.0 */
+	/* {"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL}, */
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"silent", '\0', POPT_ARG_NONE, &arg_silent, 0, N_("Dont print too much, just problems and download"), NULL},
@@ -345,7 +346,7 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 		old_pct = pct = 0;
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
-			pct = amount / (total / 100);
+			pct = total != 0 ? (amount * 100) / total : 100;
 			if (pct > 5) {
 				if (old_pct != pct && pct%5==0) {
 					end = time (NULL);
@@ -410,7 +411,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
 						 amount, total,
-						 amount / (total / 100));
+						 total != 0 ? (amount * 100) / total : 100);
 				} else {
 					fprintf (stdout, "\r");
 					fprintf (stdout, _("Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
@@ -418,7 +419,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
 						 amount, total,
-						 amount / (total / 100));
+						 total != 0 ? (amount * 100) / total : 100);
 
 				}
 			}
@@ -624,6 +625,9 @@ eazel_save_transaction_signal (EazelInstallCallback *service,
 	char answer[128];
 	gboolean result = FALSE;
 	
+	/* Disabled for 1.0 */
+	return result;
+
 	if (arg_machine) { return TRUE; }
 
 	/* I18N note: the (y/n) is translateable. There is later a 1 character
@@ -884,6 +888,12 @@ int main(int argc, char *argv[]) {
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
 	   X call, yech */
+
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 #if 0
 	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);

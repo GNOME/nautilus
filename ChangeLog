@@ -1,3 +1,29 @@
+2001-03-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com> who sez "that's
+	nice..."
+
+	Fixed 7245.
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors), (nautilus_rpm_view_install_failed),
+	(nautilus_rpm_view_uninstall_failed),
+	(nautilus_rpm_view_install_done),
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	Fixed 7245, install view uses EazelInstallProblem to generate
+	error strings.
+	No longer call load_failed when done.
+	Do gnome_dialog_run instead of gnome_dialog_run_and_close and lets
+	hope it's not fatal...
+	
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal),
+	(eazel_install_progress_signal), (main):
+	Fixed some math stuff that could cause arithmetic coredumps.
+	Added i18n initialization code.
+
 2001-03-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: <delete if not using a buddy>
