@@ -27,9 +27,9 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnome/gnome-i18n.h>
 
-struct _GnomeDruidPrivate
+struct _NautilusDruidPrivate
 {
-	GnomeDruidPage *current;
+	NautilusDruidPage *current;
 	GList *children;
 
 	gboolean show_finish : 1; /* if TRUE, then we are showing the finish button instead of the next button */
@@ -39,40 +39,40 @@ enum {
 	CANCEL,
 	LAST_SIGNAL
 };
-static void gnome_druid_init		(GnomeDruid		 *druid);
-static void gnome_druid_class_init	(GnomeDruidClass	 *klass);
-static void gnome_druid_destroy         (GtkObject               *object);
-static void gnome_druid_size_request    (GtkWidget               *widget,
+static void nautilus_druid_init		(NautilusDruid		 *druid);
+static void nautilus_druid_class_init	(NautilusDruidClass	 *klass);
+static void nautilus_druid_destroy         (GtkObject               *object);
+static void nautilus_druid_size_request    (GtkWidget               *widget,
 					 GtkRequisition          *requisition);
-static void gnome_druid_size_allocate   (GtkWidget               *widget,
+static void nautilus_druid_size_allocate   (GtkWidget               *widget,
 					 GtkAllocation           *allocation);
-static void gnome_druid_draw            (GtkWidget               *widget,
+static void nautilus_druid_draw            (GtkWidget               *widget,
 					 GdkRectangle            *area);
-static gint gnome_druid_expose          (GtkWidget               *widget,
+static gint nautilus_druid_expose          (GtkWidget               *widget,
 					 GdkEventExpose          *event);
-static void gnome_druid_map             (GtkWidget               *widget);
-static void gnome_druid_unmap           (GtkWidget               *widget);
-static GtkType gnome_druid_child_type   (GtkContainer            *container);
-static void gnome_druid_add             (GtkContainer            *widget,
+static void nautilus_druid_map             (GtkWidget               *widget);
+static void nautilus_druid_unmap           (GtkWidget               *widget);
+static GtkType nautilus_druid_child_type   (GtkContainer            *container);
+static void nautilus_druid_add             (GtkContainer            *widget,
 					 GtkWidget               *page);
-static void gnome_druid_remove          (GtkContainer            *widget,
+static void nautilus_druid_remove          (GtkContainer            *widget,
 					 GtkWidget               *child);
-static void gnome_druid_forall          (GtkContainer            *container,
+static void nautilus_druid_forall          (GtkContainer            *container,
 					 gboolean                include_internals,
 					 GtkCallback             callback,
 					 gpointer                callback_data);
-static void gnome_druid_back_callback   (GtkWidget               *button,
-					 GnomeDruid              *druid);
-static void gnome_druid_next_callback   (GtkWidget               *button,
-					 GnomeDruid              *druid);
-static void gnome_druid_cancel_callback (GtkWidget               *button,
+static void nautilus_druid_back_callback   (GtkWidget               *button,
+					 NautilusDruid              *druid);
+static void nautilus_druid_next_callback   (GtkWidget               *button,
+					 NautilusDruid              *druid);
+static void nautilus_druid_cancel_callback (GtkWidget               *button,
 					 GtkWidget               *druid);
 static GtkContainerClass *parent_class = NULL;
 static guint druid_signals[LAST_SIGNAL] = { 0 };
 
 
 GtkType
-gnome_druid_get_type (void)
+nautilus_druid_get_type (void)
 {
   static GtkType druid_type = 0;
 
@@ -80,11 +80,11 @@ gnome_druid_get_type (void)
     {
       static const GtkTypeInfo druid_info =
       {
-        "GnomeDruid",
-        sizeof (GnomeDruid),
-        sizeof (GnomeDruidClass),
-        (GtkClassInitFunc) gnome_druid_class_init,
-        (GtkObjectInitFunc) gnome_druid_init,
+        "NautilusDruid",
+        sizeof (NautilusDruid),
+        sizeof (NautilusDruidClass),
+        (GtkClassInitFunc) nautilus_druid_class_init,
+        (GtkObjectInitFunc) nautilus_druid_init,
         /* reserved_1 */ NULL,
         /* reserved_2 */ NULL,
         (GtkClassInitFunc) NULL,
@@ -97,7 +97,7 @@ gnome_druid_get_type (void)
 }
 
 static void
-gnome_druid_class_init (GnomeDruidClass *klass)
+nautilus_druid_class_init (NautilusDruidClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -112,32 +112,32 @@ gnome_druid_class_init (GnomeDruidClass *klass)
 		gtk_signal_new ("cancel",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (GnomeDruidClass, cancel),
+				GTK_SIGNAL_OFFSET (NautilusDruidClass, cancel),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	
 	gtk_object_class_add_signals (object_class, druid_signals, LAST_SIGNAL);
 	
-	object_class->destroy = gnome_druid_destroy;
-	widget_class->size_request = gnome_druid_size_request;
-	widget_class->size_allocate = gnome_druid_size_allocate;
-	widget_class->map = gnome_druid_map;
-	widget_class->unmap = gnome_druid_unmap;
-	widget_class->draw = gnome_druid_draw;
-	widget_class->expose_event = gnome_druid_expose;
+	object_class->destroy = nautilus_druid_destroy;
+	widget_class->size_request = nautilus_druid_size_request;
+	widget_class->size_allocate = nautilus_druid_size_allocate;
+	widget_class->map = nautilus_druid_map;
+	widget_class->unmap = nautilus_druid_unmap;
+	widget_class->draw = nautilus_druid_draw;
+	widget_class->expose_event = nautilus_druid_expose;
 
-	container_class->forall = gnome_druid_forall;
-	container_class->add = gnome_druid_add;
-	container_class->remove = gnome_druid_remove;
-	container_class->child_type = gnome_druid_child_type;
+	container_class->forall = nautilus_druid_forall;
+	container_class->add = nautilus_druid_add;
+	container_class->remove = nautilus_druid_remove;
+	container_class->child_type = nautilus_druid_child_type;
 }
 
 static void
-gnome_druid_init (GnomeDruid *druid)
+nautilus_druid_init (NautilusDruid *druid)
 {
 	GtkWidget *pixmap;
 
-	druid->_priv = g_new0(GnomeDruidPrivate, 1);
+	druid->_priv = g_new0(NautilusDruidPrivate, 1);
 
 	/* set up the buttons */
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (druid), GTK_NO_WINDOW);
@@ -167,33 +167,33 @@ gnome_druid_init (GnomeDruid *druid)
 	druid->_priv->show_finish = FALSE;
 	gtk_signal_connect (GTK_OBJECT (druid->back),
 			    "clicked",
-			    gnome_druid_back_callback,
+			    nautilus_druid_back_callback,
 			    druid);
 	gtk_signal_connect (GTK_OBJECT (druid->next),
 			    "clicked",
-			    gnome_druid_next_callback,
+			    nautilus_druid_next_callback,
 			    druid);
 	gtk_signal_connect (GTK_OBJECT (druid->cancel),
 			    "clicked",
-			    gnome_druid_cancel_callback,
+			    nautilus_druid_cancel_callback,
 			    druid);
 	gtk_signal_connect (GTK_OBJECT (druid->finish),
 			    "clicked",
-			    gnome_druid_next_callback,
+			    nautilus_druid_next_callback,
 			    druid);
 }
 
 
 
 static void
-gnome_druid_destroy (GtkObject *object)
+nautilus_druid_destroy (GtkObject *object)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (object));
+	g_return_if_fail (NAUTILUS_IS_DRUID (object));
 
-	druid = GNOME_DRUID (object);
+	druid = NAUTILUS_DRUID (object);
 
         if(GTK_OBJECT_CLASS(parent_class)->destroy)
         	GTK_OBJECT_CLASS(parent_class)->destroy(object);
@@ -214,24 +214,24 @@ gnome_druid_destroy (GtkObject *object)
 }
 
 static void
-gnome_druid_size_request (GtkWidget *widget,
+nautilus_druid_size_request (GtkWidget *widget,
 			  GtkRequisition *requisition)
 {
 	guint16 temp_width, temp_height;
 	GList *list;
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 	GtkRequisition child_requisition;
-	GnomeDruidPage *child;
+	NautilusDruidPage *child;
 	
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 
-	druid = GNOME_DRUID (widget);
+	druid = NAUTILUS_DRUID (widget);
 	temp_height = temp_width = 0;
 
 	/* We find the maximum size of all children widgets */
 	for (list = druid->_priv->children; list; list = list->next) {
-		child = GNOME_DRUID_PAGE (list->data);
+		child = NAUTILUS_DRUID_PAGE (list->data);
 		if (GTK_WIDGET_VISIBLE (child)) {
 			gtk_widget_size_request (GTK_WIDGET (child), &child_requisition);
 			temp_width = MAX (temp_width, child_requisition.width);
@@ -278,25 +278,25 @@ gnome_druid_size_request (GtkWidget *widget,
 	/* FIXME. do we need to do something with the buttons requisition? */
 	temp_width = temp_width * 17/4  + GNOME_PAD_SMALL * 3;
 
-	/* pick which is bigger, the buttons, or the GnomeDruidPages */
+	/* pick which is bigger, the buttons, or the NautilusDruidPages */
 	requisition->width = MAX (temp_width, requisition->width);
 	requisition->height += temp_height + GNOME_PAD_SMALL * 2;
 	/* And finally, put the side padding in */
 	requisition->width += GNOME_PAD_SMALL *2;
 }
 static void
-gnome_druid_size_allocate (GtkWidget *widget,
+nautilus_druid_size_allocate (GtkWidget *widget,
 			   GtkAllocation *allocation)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 	GtkAllocation child_allocation;
 	gint button_height;
 	GList *list;
 	
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 
-	druid = GNOME_DRUID (widget);
+	druid = NAUTILUS_DRUID (widget);
 	widget->allocation = *allocation;
 
 		
@@ -327,7 +327,7 @@ gnome_druid_size_allocate (GtkWidget *widget,
 	child_allocation.x -= (GNOME_PAD_SMALL + child_allocation.width);
 	gtk_widget_size_allocate (druid->back, &child_allocation);
 
-	/* Put up the GnomeDruidPage */
+	/* Put up the NautilusDruidPage */
 	child_allocation.x = allocation->x + GNOME_PAD_SMALL;
 	child_allocation.y = allocation->y + GNOME_PAD_SMALL;
 	child_allocation.width =
@@ -344,20 +344,20 @@ gnome_druid_size_allocate (GtkWidget *widget,
 }
 
 static GtkType
-gnome_druid_child_type (GtkContainer *container)
+nautilus_druid_child_type (GtkContainer *container)
 {
-	return gnome_druid_page_get_type ();
+	return nautilus_druid_page_get_type ();
 }
 
 static void
-gnome_druid_map (GtkWidget *widget)
+nautilus_druid_map (GtkWidget *widget)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 
-	druid = GNOME_DRUID (widget);
+	druid = NAUTILUS_DRUID (widget);
 	GTK_WIDGET_SET_FLAGS (druid, GTK_MAPPED);
 
 	gtk_widget_map (druid->back);
@@ -374,14 +374,14 @@ gnome_druid_map (GtkWidget *widget)
 }
 
 static void
-gnome_druid_unmap (GtkWidget *widget)
+nautilus_druid_unmap (GtkWidget *widget)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 
-	druid = GNOME_DRUID (widget);
+	druid = NAUTILUS_DRUID (widget);
 	GTK_WIDGET_UNSET_FLAGS (druid, GTK_MAPPED);
 
 	gtk_widget_unmap (druid->back);
@@ -396,28 +396,28 @@ gnome_druid_unmap (GtkWidget *widget)
 		gtk_widget_unmap (GTK_WIDGET (druid->_priv->current));
 }
 static void
-gnome_druid_add (GtkContainer *widget,
+nautilus_druid_add (GtkContainer *widget,
 		 GtkWidget *page)
 {
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 	g_return_if_fail (page != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE (page));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE (page));
 
-	gnome_druid_append_page (GNOME_DRUID (widget), GNOME_DRUID_PAGE (page));
+	nautilus_druid_append_page (NAUTILUS_DRUID (widget), NAUTILUS_DRUID_PAGE (page));
 }
 static void
-gnome_druid_remove (GtkContainer *widget,
+nautilus_druid_remove (GtkContainer *widget,
 		    GtkWidget *child)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 	GList *list;
 	
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 	g_return_if_fail (child != NULL);
 
-	druid = GNOME_DRUID (widget);
+	druid = NAUTILUS_DRUID (widget);
 
 	list = g_list_find (druid->_priv->children, child);
 	/* Is it a page? */ 
@@ -426,7 +426,7 @@ gnome_druid_remove (GtkContainer *widget,
 		if ((GTK_WIDGET_MAPPED (GTK_WIDGET (widget))) &&
 		    (list->data == (gpointer) druid->_priv->current) &&
 		    (list->next != NULL)) {
-			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->next->data));
+			nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (list->next->data));
 		}
 	}
 	druid->_priv->children = g_list_remove (druid->_priv->children, child);
@@ -434,20 +434,20 @@ gnome_druid_remove (GtkContainer *widget,
 }
 
 static void
-gnome_druid_forall (GtkContainer *container,
+nautilus_druid_forall (GtkContainer *container,
 		    gboolean      include_internals,
 		    GtkCallback   callback,
 		    gpointer      callback_data)
 {
-	GnomeDruid *druid;
-	GnomeDruidPage *child;
+	NautilusDruid *druid;
+	NautilusDruidPage *child;
 	GList *children;
 
 	g_return_if_fail (container != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (container));
+	g_return_if_fail (NAUTILUS_IS_DRUID (container));
 	g_return_if_fail (callback != NULL);
 
-	druid = GNOME_DRUID (container);
+	druid = NAUTILUS_DRUID (container);
 
 	children = druid->_priv->children;
 	while (children) {
@@ -464,19 +464,19 @@ gnome_druid_forall (GtkContainer *container,
 	}
 }
 static void
-gnome_druid_draw (GtkWidget    *widget,
+nautilus_druid_draw (GtkWidget    *widget,
 		  GdkRectangle *area)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 	GdkRectangle child_area;
 	GtkWidget *child;
 	GList *children;
   
 	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (widget));
+	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-		druid = GNOME_DRUID (widget);
+		druid = NAUTILUS_DRUID (widget);
 		children = druid->_priv->children;
 
 		while (children) {
@@ -503,20 +503,20 @@ gnome_druid_draw (GtkWidget    *widget,
 }
 
 static gint
-gnome_druid_expose (GtkWidget      *widget,
+nautilus_druid_expose (GtkWidget      *widget,
 		    GdkEventExpose *event)
 {
-	GnomeDruid *druid;
+	NautilusDruid *druid;
 	GtkWidget *child;
 	GdkEventExpose child_event;
 	GList *children;
 
 	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_DRUID (widget), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_DRUID (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-		druid = GNOME_DRUID (widget);
+		druid = NAUTILUS_DRUID (widget);
 		child_event = *event;
 		children = druid->_priv->children;
 
@@ -555,43 +555,43 @@ gnome_druid_expose (GtkWidget      *widget,
 }
 
 static void
-gnome_druid_back_callback (GtkWidget *button, GnomeDruid *druid)
+nautilus_druid_back_callback (GtkWidget *button, NautilusDruid *druid)
 {
 	GList *list;
 	g_return_if_fail (druid->_priv->current != NULL);
 
-	if (gnome_druid_page_back (druid->_priv->current))
+	if (nautilus_druid_page_back (druid->_priv->current))
 		return;
 
 	/* Make sure that we have a next list item */
 	list = g_list_find (druid->_priv->children, druid->_priv->current);
 	g_return_if_fail (list->prev != NULL);
-	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->prev->data));
+	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (list->prev->data));
 }
 static void
-gnome_druid_next_callback (GtkWidget *button, GnomeDruid *druid)
+nautilus_druid_next_callback (GtkWidget *button, NautilusDruid *druid)
 {
 	GList *list;
 	g_return_if_fail (druid->_priv->current != NULL);
 
 	if (druid->_priv->show_finish == FALSE) {
-		if (gnome_druid_page_next (druid->_priv->current))
+		if (nautilus_druid_page_next (druid->_priv->current))
 			return;
 
 		/* Make sure that we have a next list item */
 		/* FIXME: we want to find the next VISIBLE one... */
 		list = g_list_find (druid->_priv->children, druid->_priv->current);
 		g_return_if_fail (list->next != NULL);
-		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->next->data));
+		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (list->next->data));
 	} else {
-		gnome_druid_page_finish (druid->_priv->current);
+		nautilus_druid_page_finish (druid->_priv->current);
 	}
 }
 static void
-gnome_druid_cancel_callback (GtkWidget *button, GtkWidget *druid)
+nautilus_druid_cancel_callback (GtkWidget *button, GtkWidget *druid)
 {
-     if (GNOME_DRUID (druid)->_priv->current) {
-	     if (gnome_druid_page_cancel (GNOME_DRUID (druid)->_priv->current))
+     if (NAUTILUS_DRUID (druid)->_priv->current) {
+	     if (nautilus_druid_page_cancel (NAUTILUS_DRUID (druid)->_priv->current))
 		     return;
 
 	     gtk_signal_emit (GTK_OBJECT (druid), druid_signals [CANCEL]);
@@ -600,14 +600,13 @@ gnome_druid_cancel_callback (GtkWidget *button, GtkWidget *druid)
 
 /* Public Functions */
 GtkWidget *
-gnome_druid_new (void)
+nautilus_druid_new (void)
 {
-	g_print ("you lose\n");
-	return GTK_WIDGET (gtk_type_new (gnome_druid_get_type ()));
+	return GTK_WIDGET (gtk_type_new (nautilus_druid_get_type ()));
 }
 
 /**
- * gnome_druid_set_buttons_sensitive
+ * nautilus_druid_set_buttons_sensitive
  * @druid: A Druid.
  * @back_sensitive: The sensitivity of the back button.
  * @next_sensitive: The sensitivity of the next button.
@@ -615,24 +614,24 @@ gnome_druid_new (void)
  *
  * Description: Sets the sensitivity of the @druid's control-buttons.  If the
  * variables are TRUE, then they will be clickable.  This function is used
- * primarily by the actual GnomeDruidPage widgets.
+ * primarily by the actual NautilusDruidPage widgets.
  **/
 
 void
-gnome_druid_set_buttons_sensitive (GnomeDruid *druid,
+nautilus_druid_set_buttons_sensitive (NautilusDruid *druid,
 				   gboolean back_sensitive,
 				   gboolean next_sensitive,
 				   gboolean cancel_sensitive)
 {
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 
 	gtk_widget_set_sensitive (druid->back, back_sensitive);
 	gtk_widget_set_sensitive (druid->next, next_sensitive);
 	gtk_widget_set_sensitive (druid->cancel, cancel_sensitive);
 }
 /**
- * gnome_druid_set_show_finish
+ * nautilus_druid_set_show_finish
  * @druid: A Druid widget.
  # @show_finish: If TRUE, then the "Cancel" button is changed to be "Finish"
  *
@@ -641,11 +640,11 @@ gnome_druid_set_buttons_sensitive (GnomeDruid *druid,
  * text becomes "Cancel".
  **/
 void
-gnome_druid_set_show_finish (GnomeDruid *druid,
+nautilus_druid_set_show_finish (NautilusDruid *druid,
 			     gboolean show_finish)
 {
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 
 	if (show_finish) {
 		if (GTK_WIDGET_MAPPED (druid->next)) {
@@ -661,26 +660,26 @@ gnome_druid_set_show_finish (GnomeDruid *druid,
 	druid->_priv->show_finish = show_finish;
 }
 /**
- * gnome_druid_prepend_page:
+ * nautilus_druid_prepend_page:
  * @druid: A Druid widget.
  * @page: The page to be inserted.
  * 
- * Description: This will prepend a GnomeDruidPage into the internal list of
+ * Description: This will prepend a NautilusDruidPage into the internal list of
  * pages that the @druid has.
  **/
 void
-gnome_druid_prepend_page (GnomeDruid *druid,
-			  GnomeDruidPage *page)
+nautilus_druid_prepend_page (NautilusDruid *druid,
+			  NautilusDruidPage *page)
 {
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 	g_return_if_fail (page != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE (page));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE (page));
 
-	gnome_druid_insert_page (druid, NULL, page);
+	nautilus_druid_insert_page (druid, NULL, page);
 }
 /**
- * gnome_druid_insert_page:
+ * nautilus_druid_insert_page:
  * @druid: A Druid widget.
  * @back_page: The page prior to the page to be inserted.
  * @page: The page to insert.
@@ -690,16 +689,16 @@ gnome_druid_prepend_page (GnomeDruid *druid,
  * or NULL, @page will be prepended to the list.
  **/
 void
-gnome_druid_insert_page (GnomeDruid *druid,
-			 GnomeDruidPage *back_page,
-			 GnomeDruidPage *page)
+nautilus_druid_insert_page (NautilusDruid *druid,
+			 NautilusDruidPage *back_page,
+			 NautilusDruidPage *page)
 {
 	GList *list;
 
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 	g_return_if_fail (page != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE (page));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE (page));
 
 	list = g_list_find (druid->_priv->children, back_page);
 	if (list == NULL)
@@ -726,34 +725,34 @@ gnome_druid_insert_page (GnomeDruid *druid,
 
 	/* if it's the first and only page, we want to bring it to the foreground. */
 	if (druid->_priv->children->next == NULL)
-		gnome_druid_set_page (druid, page);
+		nautilus_druid_set_page (druid, page);
 }
 
 /**
- * gnome_druid_append_page: 
+ * nautilus_druid_append_page: 
  * @druid: A Druid widget.
  * @page: The page to be appended.
  * 
  * Description: This will append @page onto the end of the internal list.  
  **/
-void gnome_druid_append_page (GnomeDruid *druid,
-			      GnomeDruidPage *page)
+void nautilus_druid_append_page (NautilusDruid *druid,
+			      NautilusDruidPage *page)
 {
 	GList *list;
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 	g_return_if_fail (page != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE (page));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE (page));
 
 	list = g_list_last (druid->_priv->children);
 	if (list) {
-		gnome_druid_insert_page (druid, GNOME_DRUID_PAGE (list->data), page);
+		nautilus_druid_insert_page (druid, NAUTILUS_DRUID_PAGE (list->data), page);
 	} else {
-		gnome_druid_insert_page (druid, NULL, page);
+		nautilus_druid_insert_page (druid, NULL, page);
 	}	
 }
 /**
- * gnome_druid_set_page:
+ * nautilus_druid_set_page:
  * @druid: A Druid widget.
  * @page: The page to be brought to the foreground.
  * 
@@ -761,15 +760,15 @@ void gnome_druid_append_page (GnomeDruid *druid,
  * @page must already be in the druid.
  **/
 void
-gnome_druid_set_page (GnomeDruid *druid,
-		      GnomeDruidPage *page)
+nautilus_druid_set_page (NautilusDruid *druid,
+		      NautilusDruidPage *page)
 {
 	GList *list;
 	GtkWidget *old = NULL;
 	g_return_if_fail (druid != NULL);
-	g_return_if_fail (GNOME_IS_DRUID (druid));
+	g_return_if_fail (NAUTILUS_IS_DRUID (druid));
 	g_return_if_fail (page != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE (page));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE (page));
 
 	if (druid->_priv->current == page)
 	     return;
@@ -779,8 +778,8 @@ gnome_druid_set_page (GnomeDruid *druid,
 	if ((druid->_priv->current) && (GTK_WIDGET_VISIBLE (druid->_priv->current)) && (GTK_WIDGET_MAPPED (druid))) {
 		old = GTK_WIDGET (druid->_priv->current);
 	}
-	druid->_priv->current = GNOME_DRUID_PAGE (list->data);
-	gnome_druid_page_prepare (druid->_priv->current);
+	druid->_priv->current = NAUTILUS_DRUID_PAGE (list->data);
+	nautilus_druid_page_prepare (druid->_priv->current);
 	if (GTK_WIDGET_VISIBLE (druid->_priv->current) && (GTK_WIDGET_MAPPED (druid))) {
 		gtk_widget_map (GTK_WIDGET (druid->_priv->current));
 	}

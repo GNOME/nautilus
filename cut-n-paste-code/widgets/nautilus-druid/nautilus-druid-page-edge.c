@@ -33,7 +33,7 @@
 #include <libgnome/gnome-i18n.h>
 
 
-struct _GnomeDruidPageEdgePrivate
+struct _NautilusDruidPageEdgePrivate
 {
 	GtkWidget *canvas;
 	GnomeCanvasItem *background_item;
@@ -45,19 +45,19 @@ struct _GnomeDruidPageEdgePrivate
 	GnomeCanvasItem *title_item;
 };
 
-static void gnome_druid_page_edge_init   	(GnomeDruidPageEdge		*druid_page_edge);
-static void gnome_druid_page_edge_class_init	(GnomeDruidPageEdgeClass	*klass);
-static void gnome_druid_page_edge_destroy 	(GtkObject                      *object);
-static void gnome_druid_page_edge_construct     (GnomeDruidPageEdge             *druid_page_edge);
-static void gnome_druid_page_edge_configure_size(GnomeDruidPageEdge             *druid_page_edge,
+static void nautilus_druid_page_edge_init   	(NautilusDruidPageEdge		*druid_page_edge);
+static void nautilus_druid_page_edge_class_init	(NautilusDruidPageEdgeClass	*klass);
+static void nautilus_druid_page_edge_destroy 	(GtkObject                      *object);
+static void nautilus_druid_page_edge_construct     (NautilusDruidPageEdge             *druid_page_edge);
+static void nautilus_druid_page_edge_configure_size(NautilusDruidPageEdge             *druid_page_edge,
 						 gint                            width,
 						 gint                            height);
-static void gnome_druid_page_edge_size_allocate (GtkWidget                      *widget,
+static void nautilus_druid_page_edge_size_allocate (GtkWidget                      *widget,
 						 GtkAllocation                  *allocation);
-static void gnome_druid_page_edge_prepare	(GnomeDruidPage		        *page,
+static void nautilus_druid_page_edge_prepare	(NautilusDruidPage		        *page,
 						 GtkWidget                      *druid,
 						 gpointer 			*data);
-static GnomeDruidPageClass *parent_class = NULL;
+static NautilusDruidPageClass *parent_class = NULL;
 
 #define LOGO_WIDTH 50.0
 #define DRUID_PAGE_HEIGHT 318
@@ -67,7 +67,7 @@ static GnomeDruidPageClass *parent_class = NULL;
 
 
 GtkType
-gnome_druid_page_edge_get_type (void)
+nautilus_druid_page_edge_get_type (void)
 {
 	static GtkType druid_page_edge_type = 0;
 
@@ -75,39 +75,39 @@ gnome_druid_page_edge_get_type (void)
 	{
 		static const GtkTypeInfo druid_page_edge_info =
 		{
-			"GnomeDruidPageEdge",
-			sizeof (GnomeDruidPageEdge),
-			sizeof (GnomeDruidPageEdgeClass),
-			(GtkClassInitFunc) gnome_druid_page_edge_class_init,
-			(GtkObjectInitFunc) gnome_druid_page_edge_init,
+			"NautilusDruidPageEdge",
+			sizeof (NautilusDruidPageEdge),
+			sizeof (NautilusDruidPageEdgeClass),
+			(GtkClassInitFunc) nautilus_druid_page_edge_class_init,
+			(GtkObjectInitFunc) nautilus_druid_page_edge_init,
 			/* reserved_1 */ NULL,
 			/* reserved_2 */ NULL,
 			(GtkClassInitFunc) NULL,
 		};
 
-		druid_page_edge_type = gtk_type_unique (gnome_druid_page_get_type (), &druid_page_edge_info);
+		druid_page_edge_type = gtk_type_unique (nautilus_druid_page_get_type (), &druid_page_edge_info);
 	}
 
 	return druid_page_edge_type;
 }
 
 static void
-gnome_druid_page_edge_class_init (GnomeDruidPageEdgeClass *klass)
+nautilus_druid_page_edge_class_init (NautilusDruidPageEdgeClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
 	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = gnome_druid_page_edge_destroy;
+	object_class->destroy = nautilus_druid_page_edge_destroy;
 	widget_class = (GtkWidgetClass*) klass;
-	widget_class->size_allocate = gnome_druid_page_edge_size_allocate;
-	parent_class = gtk_type_class (gnome_druid_page_get_type ());
+	widget_class->size_allocate = nautilus_druid_page_edge_size_allocate;
+	parent_class = gtk_type_class (nautilus_druid_page_get_type ());
 }
 
 static void
-gnome_druid_page_edge_init (GnomeDruidPageEdge *druid_page_edge)
+nautilus_druid_page_edge_init (NautilusDruidPageEdge *druid_page_edge)
 {
-	druid_page_edge->_priv = g_new0(GnomeDruidPageEdgePrivate, 1);
+	druid_page_edge->_priv = g_new0(NautilusDruidPageEdgePrivate, 1);
 
 	/* initialize the color values */
 	druid_page_edge->background_color.red = 6400; /* midnight blue */
@@ -137,9 +137,9 @@ gnome_druid_page_edge_init (GnomeDruidPageEdge *druid_page_edge)
 }
 
 static void
-gnome_druid_page_edge_destroy(GtkObject *object)
+nautilus_druid_page_edge_destroy(GtkObject *object)
 {
-	GnomeDruidPageEdge *druid_page_edge = GNOME_DRUID_PAGE_EDGE(object);
+	NautilusDruidPageEdge *druid_page_edge = NAUTILUS_DRUID_PAGE_EDGE(object);
 
 	g_free(druid_page_edge->_priv);
 	druid_page_edge->_priv = NULL;
@@ -150,7 +150,7 @@ gnome_druid_page_edge_destroy(GtkObject *object)
 
 
 static void
-gnome_druid_page_edge_configure_size (GnomeDruidPageEdge *druid_page_edge, gint width, gint height)
+nautilus_druid_page_edge_configure_size (NautilusDruidPageEdge *druid_page_edge, gint width, gint height)
 {
 	gfloat watermark_width = DRUID_PAGE_LEFT_WIDTH;
 	gfloat watermark_height = (gfloat) height - LOGO_WIDTH + GNOME_PAD * 2.0;
@@ -208,7 +208,7 @@ gnome_druid_page_edge_configure_size (GnomeDruidPageEdge *druid_page_edge, gint 
 }
 
 static void
-gnome_druid_page_edge_construct (GnomeDruidPageEdge *druid_page_edge)
+nautilus_druid_page_edge_construct (NautilusDruidPageEdge *druid_page_edge)
 {
 	guint32 fill_color, outline_color;
 
@@ -275,27 +275,27 @@ gnome_druid_page_edge_construct (GnomeDruidPageEdge *druid_page_edge)
 				       "fill_color_rgba", fill_color,
 				       NULL);
 
-	gnome_druid_page_edge_configure_size (druid_page_edge, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
+	nautilus_druid_page_edge_configure_size (druid_page_edge, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
 	gtk_signal_connect (GTK_OBJECT (druid_page_edge),
 			    "prepare",
-			    gnome_druid_page_edge_prepare,
+			    nautilus_druid_page_edge_prepare,
 			    NULL);
 }
 static void
-gnome_druid_page_edge_prepare (GnomeDruidPage *page,
+nautilus_druid_page_edge_prepare (NautilusDruidPage *page,
 			       GtkWidget *druid,
 			       gpointer *data)
 {
-	switch (GNOME_DRUID_PAGE_EDGE (page)->position) {
+	switch (NAUTILUS_DRUID_PAGE_EDGE (page)->position) {
 	case GNOME_EDGE_START:
-		gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, TRUE, TRUE);
-		gnome_druid_set_show_finish (GNOME_DRUID (druid), FALSE);
-		gtk_widget_grab_default (GNOME_DRUID (druid)->next);
+		nautilus_druid_set_buttons_sensitive (NAUTILUS_DRUID (druid), FALSE, TRUE, TRUE);
+		nautilus_druid_set_show_finish (NAUTILUS_DRUID (druid), FALSE);
+		gtk_widget_grab_default (NAUTILUS_DRUID (druid)->next);
 		break;
 	case GNOME_EDGE_FINISH:
-		gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), TRUE, FALSE, TRUE);
-		gnome_druid_set_show_finish (GNOME_DRUID (druid), TRUE);
-		gtk_widget_grab_default (GNOME_DRUID (druid)->finish);
+		nautilus_druid_set_buttons_sensitive (NAUTILUS_DRUID (druid), TRUE, FALSE, TRUE);
+		nautilus_druid_set_show_finish (NAUTILUS_DRUID (druid), TRUE);
+		gtk_widget_grab_default (NAUTILUS_DRUID (druid)->finish);
 		break;
 	case GNOME_EDGE_OTHER:
 	default:
@@ -305,15 +305,15 @@ gnome_druid_page_edge_prepare (GnomeDruidPage *page,
 
 
 static void
-gnome_druid_page_edge_size_allocate   (GtkWidget               *widget,
+nautilus_druid_page_edge_size_allocate   (GtkWidget               *widget,
 				       GtkAllocation           *allocation)
 {
 	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (GNOME_DRUID_PAGE_EDGE (widget)->_priv->canvas),
+	gnome_canvas_set_scroll_region (GNOME_CANVAS (NAUTILUS_DRUID_PAGE_EDGE (widget)->_priv->canvas),
 					0.0, 0.0,
 					allocation->width,
 					allocation->height);
-	gnome_druid_page_edge_configure_size (GNOME_DRUID_PAGE_EDGE (widget),
+	nautilus_druid_page_edge_configure_size (NAUTILUS_DRUID_PAGE_EDGE (widget),
 					      allocation->width,
 					      allocation->height);
 }
@@ -342,28 +342,28 @@ GTK_WIDGET_CLASS (parent_class)->realize (widget);
 #endif
 
 /**
- * gnome_druid_page_edge_new:
+ * nautilus_druid_page_edge_new:
  *
- * Creates a new GnomeDruidPageEdge widget.
+ * Creates a new NautilusDruidPageEdge widget.
  *
- * Return value: Pointer to new GnomeDruidPageEdge
+ * Return value: Pointer to new NautilusDruidPageEdge
  **/
 /* Public functions */
 GtkWidget *
-gnome_druid_page_edge_new (GnomeEdgePosition position)
+nautilus_druid_page_edge_new (GnomeEdgePosition position)
 {
-	GtkWidget *retval =  GTK_WIDGET (gtk_type_new (gnome_druid_page_edge_get_type ()));
+	GtkWidget *retval =  GTK_WIDGET (gtk_type_new (nautilus_druid_page_edge_get_type ()));
 
-	GNOME_DRUID_PAGE_EDGE (retval)->position = position;
-	GNOME_DRUID_PAGE_EDGE (retval)->title = g_strdup ("");
-	GNOME_DRUID_PAGE_EDGE (retval)->text = g_strdup ("");
-	GNOME_DRUID_PAGE_EDGE (retval)->logo_image = NULL;
-	GNOME_DRUID_PAGE_EDGE (retval)->watermark_image = NULL;
-	gnome_druid_page_edge_construct (GNOME_DRUID_PAGE_EDGE (retval));
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->position = position;
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->title = g_strdup ("");
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->text = g_strdup ("");
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->logo_image = NULL;
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->watermark_image = NULL;
+	nautilus_druid_page_edge_construct (NAUTILUS_DRUID_PAGE_EDGE (retval));
 	return retval;
 }
 /**
- * gnome_druid_page_edge_new_with_vals:
+ * nautilus_druid_page_edge_new_with_vals:
  * @title: The title.
  * @text: The introduction text.
  * @logo: The logo in the upper right corner.
@@ -372,34 +372,34 @@ gnome_druid_page_edge_new (GnomeEdgePosition position)
  * This will create a new GNOME Druid Edge page, with the values
  * given.  It is acceptable for any of them to be %NULL.
  *
- * Return value: GtkWidget pointer to new GnomeDruidPageEdge.
+ * Return value: GtkWidget pointer to new NautilusDruidPageEdge.
  **/
 GtkWidget *
-gnome_druid_page_edge_new_with_vals (GnomeEdgePosition position,
+nautilus_druid_page_edge_new_with_vals (GnomeEdgePosition position,
 				     const gchar *title,
 				     const gchar* text,
 				     GdkPixbuf *logo,
 				     GdkPixbuf *watermark)
 {
-	GtkWidget *retval =  GTK_WIDGET (gtk_type_new (gnome_druid_page_edge_get_type ()));
+	GtkWidget *retval =  GTK_WIDGET (gtk_type_new (nautilus_druid_page_edge_get_type ()));
 
-	GNOME_DRUID_PAGE_EDGE (retval)->position = position;
-	GNOME_DRUID_PAGE_EDGE (retval)->title = g_strdup (title);
-	GNOME_DRUID_PAGE_EDGE (retval)->text = g_strdup (text);
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->position = position;
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->title = g_strdup (title);
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->text = g_strdup (text);
 
 	if (logo)
 		gdk_pixbuf_ref (logo);
-	GNOME_DRUID_PAGE_EDGE (retval)->logo_image = logo;
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->logo_image = logo;
 
 	if (watermark)
 		gdk_pixbuf_ref (watermark);
-	GNOME_DRUID_PAGE_EDGE (retval)->watermark_image = watermark;
-	gnome_druid_page_edge_construct (GNOME_DRUID_PAGE_EDGE (retval));
+	NAUTILUS_DRUID_PAGE_EDGE (retval)->watermark_image = watermark;
+	nautilus_druid_page_edge_construct (NAUTILUS_DRUID_PAGE_EDGE (retval));
 	return retval;
 }
 
 /**
- * gnome_druid_page_edge_set_bg_color:
+ * nautilus_druid_page_edge_set_bg_color:
  * @druid_page_edge: A DruidPageEdge.
  * @color: The new background color.
  *
@@ -408,13 +408,13 @@ gnome_druid_page_edge_new_with_vals (GnomeEdgePosition position,
  * you.
  **/
 void
-gnome_druid_page_edge_set_bg_color      (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_bg_color      (NautilusDruidPageEdge *druid_page_edge,
 					 GdkColor *color)
 {
 	guint fill_color;
 
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	druid_page_edge->background_color.red = color->red;
 	druid_page_edge->background_color.green = color->green;
@@ -431,13 +431,13 @@ gnome_druid_page_edge_set_bg_color      (GnomeDruidPageEdge *druid_page_edge,
 }
 
 void
-gnome_druid_page_edge_set_textbox_color (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_textbox_color (NautilusDruidPageEdge *druid_page_edge,
 					 GdkColor *color)
 {
 	guint fill_color;
 
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	druid_page_edge->textbox_color.red = color->red;
 	druid_page_edge->textbox_color.green = color->green;
@@ -450,13 +450,13 @@ gnome_druid_page_edge_set_textbox_color (GnomeDruidPageEdge *druid_page_edge,
 }
 
 void
-gnome_druid_page_edge_set_logo_bg_color (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_logo_bg_color (NautilusDruidPageEdge *druid_page_edge,
 					 GdkColor *color)
 {
 	guint fill_color;
 
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	druid_page_edge->logo_background_color.red = color->red;
 	druid_page_edge->logo_background_color.green = color->green;
@@ -468,13 +468,13 @@ gnome_druid_page_edge_set_logo_bg_color (GnomeDruidPageEdge *druid_page_edge,
 			       NULL);
 }
 void
-gnome_druid_page_edge_set_title_color   (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_title_color   (NautilusDruidPageEdge *druid_page_edge,
 					 GdkColor *color)
 {
 	guint32 fill_color;
 
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	druid_page_edge->title_color.red = color->red;
 	druid_page_edge->title_color.green = color->green;
@@ -486,13 +486,13 @@ gnome_druid_page_edge_set_title_color   (GnomeDruidPageEdge *druid_page_edge,
 			       NULL);
 }
 void
-gnome_druid_page_edge_set_text_color    (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_text_color    (NautilusDruidPageEdge *druid_page_edge,
 					 GdkColor *color)
 {
 	guint32 fill_color;
 
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	druid_page_edge->text_color.red = color->red;
 	druid_page_edge->text_color.green = color->green;
@@ -504,11 +504,11 @@ gnome_druid_page_edge_set_text_color    (GnomeDruidPageEdge *druid_page_edge,
 			       NULL);
 }
 void
-gnome_druid_page_edge_set_text          (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_text          (NautilusDruidPageEdge *druid_page_edge,
 					 const gchar *text)
 {
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	g_free (druid_page_edge->text);
 	druid_page_edge->text = g_strdup (text);
@@ -517,11 +517,11 @@ gnome_druid_page_edge_set_text          (GnomeDruidPageEdge *druid_page_edge,
 			       NULL);
 }
 void
-gnome_druid_page_edge_set_title         (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_title         (NautilusDruidPageEdge *druid_page_edge,
 					 const gchar *title)
 {
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	g_free (druid_page_edge->title);
 	druid_page_edge->title = g_strdup (title);
@@ -530,11 +530,11 @@ gnome_druid_page_edge_set_title         (GnomeDruidPageEdge *druid_page_edge,
 			       NULL);
 }
 void
-gnome_druid_page_edge_set_logo          (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_logo          (NautilusDruidPageEdge *druid_page_edge,
 					 GdkPixbuf *logo_image)
 {
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	if (druid_page_edge->logo_image)
 		gdk_pixbuf_unref (druid_page_edge->logo_image);
@@ -545,11 +545,11 @@ gnome_druid_page_edge_set_logo          (GnomeDruidPageEdge *druid_page_edge,
 			       "pixbuf", druid_page_edge->logo_image, NULL);
 }
 void
-gnome_druid_page_edge_set_watermark     (GnomeDruidPageEdge *druid_page_edge,
+nautilus_druid_page_edge_set_watermark     (NautilusDruidPageEdge *druid_page_edge,
 					 GdkPixbuf *watermark)
 {
 	g_return_if_fail (druid_page_edge != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_EDGE (druid_page_edge));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EDGE (druid_page_edge));
 
 	if (druid_page_edge->watermark_image)
 		gdk_pixbuf_unref (druid_page_edge->watermark_image);

@@ -1,4 +1,4 @@
-/* gnome-druid-page-finish.h
+/* nautilus-druid-page-finish.h
  * Copyright (C) 1999  Red Hat, Inc.
  * All rights reserved.
  *
@@ -20,8 +20,8 @@
 /*
   @NOTATION@
 */
-#ifndef __GNOME_DRUID_PAGE_FINISH_H__
-#define __GNOME_DRUID_PAGE_FINISH_H__
+#ifndef __NAUTILUS_DRUID_PAGE_FINISH_H__
+#define __NAUTILUS_DRUID_PAGE_FINISH_H__
 
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
@@ -30,20 +30,20 @@
 
 BEGIN_GNOME_DECLS
 
-#define GNOME_TYPE_DRUID_PAGE_FINISH            (gnome_druid_page_finish_get_type ())
-#define GNOME_DRUID_PAGE_FINISH(obj)            (GTK_CHECK_CAST ((obj), GNOME_TYPE_DRUID_PAGE_FINISH, GnomeDruidPageFinish))
-#define GNOME_DRUID_PAGE_FINISH_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_DRUID_PAGE_FINISH, GnomeDruidPageFinishClass))
-#define GNOME_IS_DRUID_PAGE_FINISH(obj)         (GTK_CHECK_TYPE ((obj), GNOME_TYPE_DRUID_PAGE_FINISH))
-#define GNOME_IS_DRUID_PAGE_FINISH_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GNOME_TYPE_DRUID_PAGE_FINISH))
+#define NAUTILUS_TYPE_DRUID_PAGE_FINISH            (nautilus_druid_page_finish_get_type ())
+#define NAUTILUS_DRUID_PAGE_FINISH(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DRUID_PAGE_FINISH, NautilusDruidPageFinish))
+#define NAUTILUS_DRUID_PAGE_FINISH_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DRUID_PAGE_FINISH, NautilusDruidPageFinishClass))
+#define NAUTILUS_IS_DRUID_PAGE_FINISH(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DRUID_PAGE_FINISH))
+#define NAUTILUS_IS_DRUID_PAGE_FINISH_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DRUID_PAGE_FINISH))
 
 
-typedef struct _GnomeDruidPageFinish        GnomeDruidPageFinish;
-typedef struct _GnomeDruidPageFinishPrivate GnomeDruidPageFinishPrivate;
-typedef struct _GnomeDruidPageFinishClass   GnomeDruidPageFinishClass;
+typedef struct _NautilusDruidPageFinish        NautilusDruidPageFinish;
+typedef struct _NautilusDruidPageFinishPrivate NautilusDruidPageFinishPrivate;
+typedef struct _NautilusDruidPageFinishClass   NautilusDruidPageFinishClass;
 
-struct _GnomeDruidPageFinish
+struct _NautilusDruidPageFinish
 {
-	GnomeDruidPage parent;
+	NautilusDruidPage parent;
 
 	GdkColor background_color;
 	GdkColor textbox_color;
@@ -57,39 +57,39 @@ struct _GnomeDruidPageFinish
 	GdkPixbuf *watermark_image;
 
 	/*< private >*/
-	GnomeDruidPageFinishPrivate *_priv;
+	NautilusDruidPageFinishPrivate *_priv;
 };
-struct _GnomeDruidPageFinishClass
+struct _NautilusDruidPageFinishClass
 {
-  GnomeDruidPageClass parent_class;
+  NautilusDruidPageClass parent_class;
 };
 
 
-GtkType    gnome_druid_page_finish_get_type    (void);
-GtkWidget *gnome_druid_page_finish_new         (void);
-GtkWidget *gnome_druid_page_finish_new_with_vals(const gchar *title,
+GtkType    nautilus_druid_page_finish_get_type    (void);
+GtkWidget *nautilus_druid_page_finish_new         (void);
+GtkWidget *nautilus_druid_page_finish_new_with_vals(const gchar *title,
 					       const gchar* text,
 					       GdkPixbuf *logo,
 					       GdkPixbuf *watermark);
-void gnome_druid_page_finish_set_bg_color      (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_bg_color      (NautilusDruidPageFinish *druid_page_finish,
 					       GdkColor *color);
-void gnome_druid_page_finish_set_textbox_color (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_textbox_color (NautilusDruidPageFinish *druid_page_finish,
 					       GdkColor *color);
-void gnome_druid_page_finish_set_logo_bg_color (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_logo_bg_color (NautilusDruidPageFinish *druid_page_finish,
 					       GdkColor *color);
-void gnome_druid_page_finish_set_title_color   (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_title_color   (NautilusDruidPageFinish *druid_page_finish,
 					       GdkColor *color);
-void gnome_druid_page_finish_set_text_color    (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_text_color    (NautilusDruidPageFinish *druid_page_finish,
 					       GdkColor *color);
-void gnome_druid_page_finish_set_text          (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_text          (NautilusDruidPageFinish *druid_page_finish,
 					       const gchar *text);
-void gnome_druid_page_finish_set_title         (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_title         (NautilusDruidPageFinish *druid_page_finish,
 					       const gchar *title);
-void gnome_druid_page_finish_set_logo          (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_logo          (NautilusDruidPageFinish *druid_page_finish,
 					       GdkPixbuf *logo_image);
-void gnome_druid_page_finish_set_watermark     (GnomeDruidPageFinish *druid_page_finish,
+void nautilus_druid_page_finish_set_watermark     (NautilusDruidPageFinish *druid_page_finish,
 					       GdkPixbuf *watermark);
 
 END_GNOME_DECLS
 
-#endif /* __GNOME_DRUID_PAGE_FINISH_H__ */
+#endif /* __NAUTILUS_DRUID_PAGE_FINISH_H__ */

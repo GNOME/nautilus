@@ -1,4 +1,4 @@
-/* gnome-druid-page.h
+/* nautilus-druid-page.h
  * Copyright (C) 1999  Red Hat, Inc.
  * All rights reserved.
  *
@@ -20,52 +20,52 @@
 /*
   @NOTATION@
 */
-#ifndef __GNOME_DRUID_PAGE_H__
-#define __GNOME_DRUID_PAGE_H__
+#ifndef __NAUTILUS_DRUID_PAGE_H__
+#define __NAUTILUS_DRUID_PAGE_H__
 
 #include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 
-#define GNOME_TYPE_DRUID_PAGE            (gnome_druid_page_get_type ())
-#define GNOME_DRUID_PAGE(obj)            (GTK_CHECK_CAST ((obj), GNOME_TYPE_DRUID_PAGE, GnomeDruidPage))
-#define GNOME_DRUID_PAGE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_DRUID_PAGE, GnomeDruidPageClass))
-#define GNOME_IS_DRUID_PAGE(obj)         (GTK_CHECK_TYPE ((obj), GNOME_TYPE_DRUID_PAGE))
-#define GNOME_IS_DRUID_PAGE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GNOME_TYPE_DRUID_PAGE))
+#define NAUTILUS_TYPE_DRUID_PAGE            (nautilus_druid_page_get_type ())
+#define NAUTILUS_DRUID_PAGE(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DRUID_PAGE, NautilusDruidPage))
+#define NAUTILUS_DRUID_PAGE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DRUID_PAGE, NautilusDruidPageClass))
+#define NAUTILUS_IS_DRUID_PAGE(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DRUID_PAGE))
+#define NAUTILUS_IS_DRUID_PAGE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DRUID_PAGE))
 
 
-typedef struct _GnomeDruidPage        GnomeDruidPage;
-typedef struct _GnomeDruidPagePrivate GnomeDruidPagePrivate;
-typedef struct _GnomeDruidPageClass   GnomeDruidPageClass;
+typedef struct _NautilusDruidPage        NautilusDruidPage;
+typedef struct _NautilusDruidPagePrivate NautilusDruidPagePrivate;
+typedef struct _NautilusDruidPageClass   NautilusDruidPageClass;
 
-struct _GnomeDruidPage
+struct _NautilusDruidPage
 {
 	GtkBin parent;
-	GnomeDruidPagePrivate *_priv;
+	NautilusDruidPagePrivate *_priv;
 };
-struct _GnomeDruidPageClass
+struct _NautilusDruidPageClass
 {
 	GtkBinClass parent_class;
 
-	gboolean (*next)	(GnomeDruidPage *druid_page, GtkWidget *druid);
-	void     (*prepare)	(GnomeDruidPage *druid_page, GtkWidget *druid);
-	gboolean (*back)	(GnomeDruidPage *druid_page, GtkWidget *druid);
-	void     (*finish)	(GnomeDruidPage *druid_page, GtkWidget *druid);
-	gboolean (*cancel)	(GnomeDruidPage *druid_page, GtkWidget *druid);
+	gboolean (*next)	(NautilusDruidPage *druid_page, GtkWidget *druid);
+	void     (*prepare)	(NautilusDruidPage *druid_page, GtkWidget *druid);
+	gboolean (*back)	(NautilusDruidPage *druid_page, GtkWidget *druid);
+	void     (*finish)	(NautilusDruidPage *druid_page, GtkWidget *druid);
+	gboolean (*cancel)	(NautilusDruidPage *druid_page, GtkWidget *druid);
 };
 
 
-GtkType  gnome_druid_page_get_type (void);
-gboolean gnome_druid_page_next     (GnomeDruidPage *druid_page);
-void     gnome_druid_page_prepare  (GnomeDruidPage *druid_page);
-gboolean gnome_druid_page_back     (GnomeDruidPage *druid_page);
-gboolean gnome_druid_page_cancel   (GnomeDruidPage *druid_page);
-void     gnome_druid_page_finish   (GnomeDruidPage *druid_page);
+GtkType  nautilus_druid_page_get_type (void);
+gboolean nautilus_druid_page_next     (NautilusDruidPage *druid_page);
+void     nautilus_druid_page_prepare  (NautilusDruidPage *druid_page);
+gboolean nautilus_druid_page_back     (NautilusDruidPage *druid_page);
+gboolean nautilus_druid_page_cancel   (NautilusDruidPage *druid_page);
+void     nautilus_druid_page_finish   (NautilusDruidPage *druid_page);
 
 END_GNOME_DECLS
 
-#endif /* __GNOME_DRUID_PAGE_H__ */
+#endif /* __NAUTILUS_DRUID_PAGE_H__ */
 
 
 

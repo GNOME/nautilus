@@ -1,4 +1,4 @@
-/* gnome-druid-page-standard.h
+/* nautilus-druid-page-standard.h
  * Copyright (C) 1999  Red Hat, Inc.
  * All rights reserved.
  *
@@ -20,8 +20,8 @@
 /*
   @NOTATION@
 */
-#ifndef __GNOME_DRUID_PAGE_STANDARD_H__
-#define __GNOME_DRUID_PAGE_STANDARD_H__
+#ifndef __NAUTILUS_DRUID_PAGE_STANDARD_H__
+#define __NAUTILUS_DRUID_PAGE_STANDARD_H__
 
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
@@ -29,20 +29,20 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 BEGIN_GNOME_DECLS
 
-#define GNOME_TYPE_DRUID_PAGE_STANDARD            (gnome_druid_page_standard_get_type ())
-#define GNOME_DRUID_PAGE_STANDARD(obj)            (GTK_CHECK_CAST ((obj), GNOME_TYPE_DRUID_PAGE_STANDARD, GnomeDruidPageStandard))
-#define GNOME_DRUID_PAGE_STANDARD_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_DRUID_PAGE_STANDARD, GnomeDruidPageStandardClass))
-#define GNOME_IS_DRUID_PAGE_STANDARD(obj)         (GTK_CHECK_TYPE ((obj), GNOME_TYPE_DRUID_PAGE_STANDARD))
-#define GNOME_IS_DRUID_PAGE_STANDARD_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GNOME_TYPE_DRUID_PAGE_STANDARD))
+#define NAUTILUS_TYPE_DRUID_PAGE_STANDARD            (nautilus_druid_page_standard_get_type ())
+#define NAUTILUS_DRUID_PAGE_STANDARD(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DRUID_PAGE_STANDARD, NautilusDruidPageStandard))
+#define NAUTILUS_DRUID_PAGE_STANDARD_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_DRUID_PAGE_STANDARD, NautilusDruidPageStandardClass))
+#define NAUTILUS_IS_DRUID_PAGE_STANDARD(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DRUID_PAGE_STANDARD))
+#define NAUTILUS_IS_DRUID_PAGE_STANDARD_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DRUID_PAGE_STANDARD))
 
 
-typedef struct _GnomeDruidPageStandard        GnomeDruidPageStandard;
-typedef struct _GnomeDruidPageStandardPrivate GnomeDruidPageStandardPrivate;
-typedef struct _GnomeDruidPageStandardClass   GnomeDruidPageStandardClass;
+typedef struct _NautilusDruidPageStandard        NautilusDruidPageStandard;
+typedef struct _NautilusDruidPageStandardPrivate NautilusDruidPageStandardPrivate;
+typedef struct _NautilusDruidPageStandardClass   NautilusDruidPageStandardClass;
 
-struct _GnomeDruidPageStandard
+struct _NautilusDruidPageStandard
 {
-	GnomeDruidPage parent;
+	NautilusDruidPage parent;
 
 	GtkWidget *vbox;
 	GdkPixbuf *logo_image;
@@ -54,29 +54,29 @@ struct _GnomeDruidPageStandard
 	GdkColor title_color;
 	
 	/*< private >*/
-	GnomeDruidPageStandardPrivate *_priv;
+	NautilusDruidPageStandardPrivate *_priv;
 };
-struct _GnomeDruidPageStandardClass
+struct _NautilusDruidPageStandardClass
 {
-	GnomeDruidPageClass parent_class;
+	NautilusDruidPageClass parent_class;
 };
 
 
-GtkType    gnome_druid_page_standard_get_type      (void);
-GtkWidget *gnome_druid_page_standard_new           (void);
-GtkWidget *gnome_druid_page_standard_new_with_vals (const gchar *title, GdkPixbuf *logo);
-void gnome_druid_page_standard_set_bg_color        (GnomeDruidPageStandard *druid_page_standard,
+GtkType    nautilus_druid_page_standard_get_type      (void);
+GtkWidget *nautilus_druid_page_standard_new           (void);
+GtkWidget *nautilus_druid_page_standard_new_with_vals (const gchar *title, GdkPixbuf *logo);
+void nautilus_druid_page_standard_set_bg_color        (NautilusDruidPageStandard *druid_page_standard,
 						    GdkColor *color);
-void gnome_druid_page_standard_set_logo_bg_color   (GnomeDruidPageStandard *druid_page_standard,
+void nautilus_druid_page_standard_set_logo_bg_color   (NautilusDruidPageStandard *druid_page_standard,
 						    GdkColor *color);
-void gnome_druid_page_standard_set_title_color     (GnomeDruidPageStandard *druid_page_standard,
+void nautilus_druid_page_standard_set_title_color     (NautilusDruidPageStandard *druid_page_standard,
 						    GdkColor *color);
-void gnome_druid_page_standard_set_title           (GnomeDruidPageStandard *druid_page_standard,
+void nautilus_druid_page_standard_set_title           (NautilusDruidPageStandard *druid_page_standard,
 						    const gchar *title);
-void gnome_druid_page_standard_set_logo            (GnomeDruidPageStandard *druid_page_standard,
+void nautilus_druid_page_standard_set_logo            (NautilusDruidPageStandard *druid_page_standard,
 						    GdkPixbuf *logo_image);
 
 END_GNOME_DECLS
 
-#endif /* __GNOME_DRUID_PAGE_STANDARD_H__ */
+#endif /* __NAUTILUS_DRUID_PAGE_STANDARD_H__ */
 

@@ -31,7 +31,7 @@
 #include "nautilus-druid.h"
 #include <libgnome/gnome-i18n.h>
 
-struct _GnomeDruidPageStandardPrivate
+struct _NautilusDruidPageStandardPrivate
 {
 	GtkWidget *canvas;
 	GtkWidget *side_bar;
@@ -44,28 +44,28 @@ struct _GnomeDruidPageStandardPrivate
 };
 
 
-static void gnome_druid_page_standard_init	    (GnomeDruidPageStandard          *druid_page_standard);
-static void gnome_druid_page_standard_class_init    (GnomeDruidPageStandardClass     *klass);
-static void gnome_druid_page_standard_destroy 	    (GtkObject                       *object);
-static void gnome_druid_page_standard_construct     (GnomeDruidPageStandard          *druid_page_standard);
-static void gnome_druid_page_standard_configure_size(GnomeDruidPageStandard          *druid_page_standard,
+static void nautilus_druid_page_standard_init	    (NautilusDruidPageStandard          *druid_page_standard);
+static void nautilus_druid_page_standard_class_init    (NautilusDruidPageStandardClass     *klass);
+static void nautilus_druid_page_standard_destroy 	    (GtkObject                       *object);
+static void nautilus_druid_page_standard_construct     (NautilusDruidPageStandard          *druid_page_standard);
+static void nautilus_druid_page_standard_configure_size(NautilusDruidPageStandard          *druid_page_standard,
 						     gint                             width,
 						     gint                             height);
-static void gnome_druid_page_standard_size_allocate (GtkWidget                       *widget,
+static void nautilus_druid_page_standard_size_allocate (GtkWidget                       *widget,
 						     GtkAllocation                   *allocation);
-static void gnome_druid_page_standard_prepare       (GnomeDruidPage                  *page,
+static void nautilus_druid_page_standard_prepare       (NautilusDruidPage                  *page,
 						     GtkWidget                       *druid,
 						     gpointer                        *data);
 
 
-static GnomeDruidPageClass *parent_class = NULL;
+static NautilusDruidPageClass *parent_class = NULL;
 
 #define LOGO_WIDTH 50.0
 #define DRUID_PAGE_WIDTH 516
 #define GDK_COLOR_TO_RGBA(color) GNOME_CANVAS_COLOR (color.red/256, color.green/256, color.blue/256)
 
 GtkType
-gnome_druid_page_standard_get_type (void)
+nautilus_druid_page_standard_get_type (void)
 {
   static GtkType druid_page_standard_type = 0;
 
@@ -73,44 +73,44 @@ gnome_druid_page_standard_get_type (void)
     {
       static const GtkTypeInfo druid_page_standard_info =
       {
-        "GnomeDruidPageStandard",
-        sizeof (GnomeDruidPageStandard),
-        sizeof (GnomeDruidPageStandardClass),
-        (GtkClassInitFunc) gnome_druid_page_standard_class_init,
-        (GtkObjectInitFunc) gnome_druid_page_standard_init,
+        "NautilusDruidPageStandard",
+        sizeof (NautilusDruidPageStandard),
+        sizeof (NautilusDruidPageStandardClass),
+        (GtkClassInitFunc) nautilus_druid_page_standard_class_init,
+        (GtkObjectInitFunc) nautilus_druid_page_standard_init,
         /* reserved_1 */ NULL,
         /* reserved_2 */ NULL,
         (GtkClassInitFunc) NULL,
       };
 
-      druid_page_standard_type = gtk_type_unique (gnome_druid_page_get_type (), &druid_page_standard_info);
+      druid_page_standard_type = gtk_type_unique (nautilus_druid_page_get_type (), &druid_page_standard_info);
     }
 
   return druid_page_standard_type;
 }
 
 static void
-gnome_druid_page_standard_class_init (GnomeDruidPageStandardClass *klass)
+nautilus_druid_page_standard_class_init (NautilusDruidPageStandardClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
 	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = gnome_druid_page_standard_destroy;
+	object_class->destroy = nautilus_druid_page_standard_destroy;
 	widget_class = (GtkWidgetClass*) klass;
-	widget_class->size_allocate = gnome_druid_page_standard_size_allocate;
+	widget_class->size_allocate = nautilus_druid_page_standard_size_allocate;
 
-	parent_class = gtk_type_class (gnome_druid_page_get_type ());
+	parent_class = gtk_type_class (nautilus_druid_page_get_type ());
 
 }
 static void
-gnome_druid_page_standard_init (GnomeDruidPageStandard *druid_page_standard)
+nautilus_druid_page_standard_init (NautilusDruidPageStandard *druid_page_standard)
 {
 	GtkRcStyle *rc_style;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 
-	druid_page_standard->_priv = g_new0(GnomeDruidPageStandardPrivate, 1);
+	druid_page_standard->_priv = g_new0(NautilusDruidPageStandardPrivate, 1);
 
 	/* initialize the color values */
 	druid_page_standard->background_color.red = 6400; /* midnight blue */
@@ -169,9 +169,9 @@ gnome_druid_page_standard_init (GnomeDruidPageStandard *druid_page_standard)
 }
 
 static void
-gnome_druid_page_standard_destroy(GtkObject *object)
+nautilus_druid_page_standard_destroy(GtkObject *object)
 {
-	GnomeDruidPageStandard *druid_page_standard = GNOME_DRUID_PAGE_STANDARD(object);
+	NautilusDruidPageStandard *druid_page_standard = NAUTILUS_DRUID_PAGE_STANDARD(object);
 
 	g_free(druid_page_standard->_priv);
 	druid_page_standard->_priv = NULL;
@@ -181,7 +181,7 @@ gnome_druid_page_standard_destroy(GtkObject *object)
 }
 
 static void
-gnome_druid_page_standard_configure_size (GnomeDruidPageStandard *druid_page_standard, gint width, gint height)
+nautilus_druid_page_standard_configure_size (NautilusDruidPageStandard *druid_page_standard, gint width, gint height)
 {
 	gnome_canvas_item_set (druid_page_standard->_priv->background_item,
 			       "x1", 0.0,
@@ -203,7 +203,7 @@ gnome_druid_page_standard_configure_size (GnomeDruidPageStandard *druid_page_sta
 }
 
 static void
-gnome_druid_page_standard_construct (GnomeDruidPageStandard *druid_page_standard)
+nautilus_druid_page_standard_construct (NautilusDruidPageStandard *druid_page_standard)
 {
 	static guint32 fill_color = 0;
 
@@ -248,63 +248,63 @@ gnome_druid_page_standard_construct (GnomeDruidPageStandard *druid_page_standard
 			       "anchor", GTK_ANCHOR_WEST,
 			       NULL);
 
-	gnome_druid_page_standard_configure_size (druid_page_standard, DRUID_PAGE_WIDTH, GNOME_PAD * 2 + LOGO_WIDTH);
+	nautilus_druid_page_standard_configure_size (druid_page_standard, DRUID_PAGE_WIDTH, GNOME_PAD * 2 + LOGO_WIDTH);
 	gtk_signal_connect (GTK_OBJECT (druid_page_standard),
 			    "prepare",
-			    gnome_druid_page_standard_prepare,
+			    nautilus_druid_page_standard_prepare,
 			    NULL);
 
 }
 static void
-gnome_druid_page_standard_prepare (GnomeDruidPage *page,
+nautilus_druid_page_standard_prepare (NautilusDruidPage *page,
 				   GtkWidget *druid,
 				   gpointer *data)
 {
-	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), TRUE, TRUE, TRUE);
-	gnome_druid_set_show_finish (GNOME_DRUID (druid), FALSE);
-	gtk_widget_grab_default (GNOME_DRUID (druid)->next);
+	nautilus_druid_set_buttons_sensitive (NAUTILUS_DRUID (druid), TRUE, TRUE, TRUE);
+	nautilus_druid_set_show_finish (NAUTILUS_DRUID (druid), FALSE);
+	gtk_widget_grab_default (NAUTILUS_DRUID (druid)->next);
 }
 
 static void
-gnome_druid_page_standard_size_allocate (GtkWidget *widget,
+nautilus_druid_page_standard_size_allocate (GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
 	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (GNOME_DRUID_PAGE_STANDARD (widget)->_priv->canvas),
+	gnome_canvas_set_scroll_region (GNOME_CANVAS (NAUTILUS_DRUID_PAGE_STANDARD (widget)->_priv->canvas),
 					0.0, 0.0,
 					allocation->width,
 					allocation->height);
-	gnome_druid_page_standard_configure_size (GNOME_DRUID_PAGE_STANDARD (widget),
+	nautilus_druid_page_standard_configure_size (NAUTILUS_DRUID_PAGE_STANDARD (widget),
 						  allocation->width,
 						  allocation->height);
 }
 
 GtkWidget *
-gnome_druid_page_standard_new (void)
+nautilus_druid_page_standard_new (void)
 {
-	GtkWidget *retval = GTK_WIDGET (gtk_type_new (gnome_druid_page_standard_get_type ()));
-	GNOME_DRUID_PAGE_STANDARD (retval)->title = g_strdup ("");
-	GNOME_DRUID_PAGE_STANDARD (retval)->logo_image = NULL;
-	gnome_druid_page_standard_construct (GNOME_DRUID_PAGE_STANDARD (retval));
+	GtkWidget *retval = GTK_WIDGET (gtk_type_new (nautilus_druid_page_standard_get_type ()));
+	NAUTILUS_DRUID_PAGE_STANDARD (retval)->title = g_strdup ("");
+	NAUTILUS_DRUID_PAGE_STANDARD (retval)->logo_image = NULL;
+	nautilus_druid_page_standard_construct (NAUTILUS_DRUID_PAGE_STANDARD (retval));
 	return retval;
 }
 GtkWidget *
-gnome_druid_page_standard_new_with_vals (const gchar *title, GdkPixbuf *logo)
+nautilus_druid_page_standard_new_with_vals (const gchar *title, GdkPixbuf *logo)
 {
-	GtkWidget *retval = GTK_WIDGET (gtk_type_new (gnome_druid_page_standard_get_type ()));
-	GNOME_DRUID_PAGE_STANDARD (retval)->title = g_strdup (title);
-	GNOME_DRUID_PAGE_STANDARD (retval)->logo_image = logo;
-	gnome_druid_page_standard_construct (GNOME_DRUID_PAGE_STANDARD (retval));
+	GtkWidget *retval = GTK_WIDGET (gtk_type_new (nautilus_druid_page_standard_get_type ()));
+	NAUTILUS_DRUID_PAGE_STANDARD (retval)->title = g_strdup (title);
+	NAUTILUS_DRUID_PAGE_STANDARD (retval)->logo_image = logo;
+	nautilus_druid_page_standard_construct (NAUTILUS_DRUID_PAGE_STANDARD (retval));
 	return retval;
 }
 void
-gnome_druid_page_standard_set_bg_color      (GnomeDruidPageStandard *druid_page_standard,
+nautilus_druid_page_standard_set_bg_color      (NautilusDruidPageStandard *druid_page_standard,
 					     GdkColor *color)
 {
 	guint32 fill_color;
 
 	g_return_if_fail (druid_page_standard != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_STANDARD (druid_page_standard));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
 	druid_page_standard->background_color.red = color->red;
 	druid_page_standard->background_color.green = color->green;
@@ -345,13 +345,13 @@ gnome_druid_page_standard_set_bg_color      (GnomeDruidPageStandard *druid_page_
 }
 
 void
-gnome_druid_page_standard_set_logo_bg_color (GnomeDruidPageStandard *druid_page_standard,
+nautilus_druid_page_standard_set_logo_bg_color (NautilusDruidPageStandard *druid_page_standard,
 					  GdkColor *color)
 {
 	guint32 fill_color;
 
 	g_return_if_fail (druid_page_standard != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_STANDARD (druid_page_standard));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
 	druid_page_standard->logo_background_color.red = color->red;
 	druid_page_standard->logo_background_color.green = color->green;
@@ -363,13 +363,13 @@ gnome_druid_page_standard_set_logo_bg_color (GnomeDruidPageStandard *druid_page_
 			       NULL);
 }
 void
-gnome_druid_page_standard_set_title_color   (GnomeDruidPageStandard *druid_page_standard,
+nautilus_druid_page_standard_set_title_color   (NautilusDruidPageStandard *druid_page_standard,
 					  GdkColor *color)
 {
 	guint32 fill_color;
 
 	g_return_if_fail (druid_page_standard != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_STANDARD (druid_page_standard));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
 	druid_page_standard->title_color.red = color->red;
 	druid_page_standard->title_color.green = color->green;
@@ -382,11 +382,11 @@ gnome_druid_page_standard_set_title_color   (GnomeDruidPageStandard *druid_page_
 }
 
 void
-gnome_druid_page_standard_set_title         (GnomeDruidPageStandard *druid_page_standard,
+nautilus_druid_page_standard_set_title         (NautilusDruidPageStandard *druid_page_standard,
 					  const gchar *title)
 {
 	g_return_if_fail (druid_page_standard != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_STANDARD (druid_page_standard));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
 	g_free (druid_page_standard->title);
 	druid_page_standard->title = g_strdup (title);
@@ -395,11 +395,11 @@ gnome_druid_page_standard_set_title         (GnomeDruidPageStandard *druid_page_
 			       NULL);
 }
 void
-gnome_druid_page_standard_set_logo          (GnomeDruidPageStandard *druid_page_standard,
+nautilus_druid_page_standard_set_logo          (NautilusDruidPageStandard *druid_page_standard,
 					     GdkPixbuf*logo_image)
 {
 	g_return_if_fail (druid_page_standard != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_STANDARD (druid_page_standard));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
 	if (druid_page_standard->logo_image)
 		gdk_pixbuf_unref (druid_page_standard->logo_image);

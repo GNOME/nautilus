@@ -31,7 +31,7 @@
 #include "nautilus-druid.h"
 #include <libgnome/gnome-i18n.h>
 
-struct _GnomeDruidPageFinishPrivate
+struct _NautilusDruidPageFinishPrivate
 {
 	GtkWidget *canvas;
 	GnomeCanvasItem *background_item;
@@ -43,20 +43,20 @@ struct _GnomeDruidPageFinishPrivate
 	GnomeCanvasItem *title_item;
 };
 
-static void gnome_druid_page_finish_init 	  (GnomeDruidPageFinish		 *druid_page_finish);
-static void gnome_druid_page_finish_class_init	  (GnomeDruidPageFinishClass	 *klass);
-static void gnome_druid_page_finish_destroy 	  (GtkObject                     *object);
-static void gnome_druid_page_finish_construct     (GnomeDruidPageFinish          *druid_page_finish);
-static void gnome_druid_page_finish_configure_size(GnomeDruidPageFinish          *druid_page_finish,
+static void nautilus_druid_page_finish_init 	  (NautilusDruidPageFinish		 *druid_page_finish);
+static void nautilus_druid_page_finish_class_init	  (NautilusDruidPageFinishClass	 *klass);
+static void nautilus_druid_page_finish_destroy 	  (GtkObject                     *object);
+static void nautilus_druid_page_finish_construct     (NautilusDruidPageFinish          *druid_page_finish);
+static void nautilus_druid_page_finish_configure_size(NautilusDruidPageFinish          *druid_page_finish,
 						   gint                           width,
 						   gint                           height);
-static void gnome_druid_page_finish_size_allocate (GtkWidget                     *widget,
+static void nautilus_druid_page_finish_size_allocate (GtkWidget                     *widget,
 						   GtkAllocation                 *allocation);
-static void gnome_druid_page_finish_realize       (GtkWidget                     *widget);
-static void gnome_druid_page_finish_prepare	  (GnomeDruidPage		 *page,
+static void nautilus_druid_page_finish_realize       (GtkWidget                     *widget);
+static void nautilus_druid_page_finish_prepare	  (NautilusDruidPage		 *page,
 						   GtkWidget                     *druid,
 						   gpointer 			 *data);
-static GnomeDruidPageClass *parent_class = NULL;
+static NautilusDruidPageClass *parent_class = NULL;
 
 #define LOGO_WIDTH 50.0
 #define DRUID_PAGE_HEIGHT 318
@@ -64,7 +64,7 @@ static GnomeDruidPageClass *parent_class = NULL;
 #define DRUID_PAGE_LEFT_WIDTH 100.0
 
 GtkType
-gnome_druid_page_finish_get_type (void)
+nautilus_druid_page_finish_get_type (void)
 {
   static GtkType druid_page_finish_type = 0;
 
@@ -72,40 +72,40 @@ gnome_druid_page_finish_get_type (void)
     {
       static const GtkTypeInfo druid_page_finish_info =
       {
-        "GnomeDruidPageFinish",
-        sizeof (GnomeDruidPageFinish),
-        sizeof (GnomeDruidPageFinishClass),
-        (GtkClassInitFunc) gnome_druid_page_finish_class_init,
-        (GtkObjectInitFunc) gnome_druid_page_finish_init,
+        "NautilusDruidPageFinish",
+        sizeof (NautilusDruidPageFinish),
+        sizeof (NautilusDruidPageFinishClass),
+        (GtkClassInitFunc) nautilus_druid_page_finish_class_init,
+        (GtkObjectInitFunc) nautilus_druid_page_finish_init,
         /* reserved_1 */ NULL,
         /* reserved_2 */ NULL,
         (GtkClassInitFunc) NULL,
       };
 
-      druid_page_finish_type = gtk_type_unique (gnome_druid_page_get_type (), &druid_page_finish_info);
+      druid_page_finish_type = gtk_type_unique (nautilus_druid_page_get_type (), &druid_page_finish_info);
     }
 
   return druid_page_finish_type;
 }
 
 static void
-gnome_druid_page_finish_class_init (GnomeDruidPageFinishClass *klass)
+nautilus_druid_page_finish_class_init (NautilusDruidPageFinishClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
 	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = gnome_druid_page_finish_destroy;
+	object_class->destroy = nautilus_druid_page_finish_destroy;
 	widget_class = (GtkWidgetClass*) klass;
-	widget_class->size_allocate = gnome_druid_page_finish_size_allocate;
-	widget_class->realize = gnome_druid_page_finish_realize;
-	parent_class = gtk_type_class (gnome_druid_page_get_type ());
+	widget_class->size_allocate = nautilus_druid_page_finish_size_allocate;
+	widget_class->realize = nautilus_druid_page_finish_realize;
+	parent_class = gtk_type_class (nautilus_druid_page_get_type ());
 }
 
 static void
-gnome_druid_page_finish_init (GnomeDruidPageFinish *druid_page_finish)
+nautilus_druid_page_finish_init (NautilusDruidPageFinish *druid_page_finish)
 {
-	druid_page_finish->_priv = g_new0(GnomeDruidPageFinishPrivate, 1);
+	druid_page_finish->_priv = g_new0(NautilusDruidPageFinishPrivate, 1);
 
 	/* initialize the color values */
 	druid_page_finish->background_color.red = 6400; /* midnight blue */
@@ -134,9 +134,9 @@ gnome_druid_page_finish_init (GnomeDruidPageFinish *druid_page_finish)
 }
 
 static void
-gnome_druid_page_finish_destroy(GtkObject *object)
+nautilus_druid_page_finish_destroy(GtkObject *object)
 {
-	GnomeDruidPageFinish *druid_page_finish = GNOME_DRUID_PAGE_FINISH(object);
+	NautilusDruidPageFinish *druid_page_finish = NAUTILUS_DRUID_PAGE_FINISH(object);
 
 	g_free(druid_page_finish->_priv);
 	druid_page_finish->_priv = NULL;
@@ -147,7 +147,7 @@ gnome_druid_page_finish_destroy(GtkObject *object)
 
 
 static void
-gnome_druid_page_finish_configure_size (GnomeDruidPageFinish *druid_page_finish, gint width, gint height)
+nautilus_druid_page_finish_configure_size (NautilusDruidPageFinish *druid_page_finish, gint width, gint height)
 {
 	gfloat watermark_width = DRUID_PAGE_LEFT_WIDTH;
 	gfloat watermark_height = (gfloat) height - LOGO_WIDTH + GNOME_PAD * 2.0;
@@ -207,7 +207,7 @@ gnome_druid_page_finish_configure_size (GnomeDruidPageFinish *druid_page_finish,
 }
 
 static void
-gnome_druid_page_finish_construct (GnomeDruidPageFinish *druid_page_finish)
+nautilus_druid_page_finish_construct (NautilusDruidPageFinish *druid_page_finish)
 {
 	/* set up the rest of the page */
 	druid_page_finish->_priv->background_item =
@@ -243,43 +243,43 @@ gnome_druid_page_finish_construct (GnomeDruidPageFinish *druid_page_finish)
 				       "font", _("-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"),
 				       NULL);
 
-	gnome_druid_page_finish_configure_size (druid_page_finish, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
+	nautilus_druid_page_finish_configure_size (druid_page_finish, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
 	gtk_signal_connect (GTK_OBJECT (druid_page_finish),
 			    "prepare",
-			    gnome_druid_page_finish_prepare,
+			    nautilus_druid_page_finish_prepare,
 			    NULL);
 }
 static void
-gnome_druid_page_finish_prepare (GnomeDruidPage *page,
+nautilus_druid_page_finish_prepare (NautilusDruidPage *page,
 				GtkWidget *druid,
 				gpointer *data)
 {
-	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), TRUE, FALSE, TRUE);
-	gnome_druid_set_show_finish (GNOME_DRUID (druid), TRUE);
-	gtk_widget_grab_default (GNOME_DRUID (druid)->finish);
+	nautilus_druid_set_buttons_sensitive (NAUTILUS_DRUID (druid), TRUE, FALSE, TRUE);
+	nautilus_druid_set_show_finish (NAUTILUS_DRUID (druid), TRUE);
+	gtk_widget_grab_default (NAUTILUS_DRUID (druid)->finish);
 }
 
 
 static void
-gnome_druid_page_finish_size_allocate   (GtkWidget               *widget,
+nautilus_druid_page_finish_size_allocate   (GtkWidget               *widget,
 					GtkAllocation           *allocation)
 {
 	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (GNOME_DRUID_PAGE_FINISH (widget)->_priv->canvas),
+	gnome_canvas_set_scroll_region (GNOME_CANVAS (NAUTILUS_DRUID_PAGE_FINISH (widget)->_priv->canvas),
 					0.0, 0.0,
 					allocation->width,
 					allocation->height);
-	gnome_druid_page_finish_configure_size (GNOME_DRUID_PAGE_FINISH (widget),
+	nautilus_druid_page_finish_configure_size (NAUTILUS_DRUID_PAGE_FINISH (widget),
 					       allocation->width,
 					       allocation->height);
 }
 static void
-gnome_druid_page_finish_realize (GtkWidget *widget)
+nautilus_druid_page_finish_realize (GtkWidget *widget)
 {
-	GnomeDruidPageFinish *druid_page_finish;
+	NautilusDruidPageFinish *druid_page_finish;
 	GdkColormap *cmap = gdk_imlib_get_colormap ();
 
-	druid_page_finish = GNOME_DRUID_PAGE_FINISH (widget);
+	druid_page_finish = NAUTILUS_DRUID_PAGE_FINISH (widget);
 	gdk_colormap_alloc_color (cmap, &druid_page_finish->background_color, FALSE, TRUE);
 	gdk_colormap_alloc_color (cmap, &druid_page_finish->textbox_color, FALSE, TRUE);
 	gdk_colormap_alloc_color (cmap, &druid_page_finish->logo_background_color, FALSE, TRUE);
@@ -307,33 +307,33 @@ gnome_druid_page_finish_realize (GtkWidget *widget)
 
 /* Public functions */
 GtkWidget *
-gnome_druid_page_finish_new (void)
+nautilus_druid_page_finish_new (void)
 {
-	GtkWidget *retval = GTK_WIDGET (gtk_type_new (gnome_druid_page_finish_get_type ()));
-	GNOME_DRUID_PAGE_FINISH (retval)->title = g_strdup ("");
-	GNOME_DRUID_PAGE_FINISH (retval)->text = g_strdup ("");
-	GNOME_DRUID_PAGE_FINISH (retval)->logo_image = NULL;
-	GNOME_DRUID_PAGE_FINISH (retval)->watermark_image = NULL;
-	gnome_druid_page_finish_construct (GNOME_DRUID_PAGE_FINISH (retval));
+	GtkWidget *retval = GTK_WIDGET (gtk_type_new (nautilus_druid_page_finish_get_type ()));
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->title = g_strdup ("");
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->text = g_strdup ("");
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->logo_image = NULL;
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->watermark_image = NULL;
+	nautilus_druid_page_finish_construct (NAUTILUS_DRUID_PAGE_FINISH (retval));
 	return retval;
 }
 GtkWidget *
-gnome_druid_page_finish_new_with_vals (const gchar *title, const gchar* text, GdkPixbuf *logo, GdkPixbuf *watermark)
+nautilus_druid_page_finish_new_with_vals (const gchar *title, const gchar* text, GdkPixbuf *logo, GdkPixbuf *watermark)
 {
-	GtkWidget *retval = GTK_WIDGET (gtk_type_new (gnome_druid_page_finish_get_type ()));
-	GNOME_DRUID_PAGE_FINISH (retval)->title = g_strdup (title);
-	GNOME_DRUID_PAGE_FINISH (retval)->text = g_strdup (text);
-	GNOME_DRUID_PAGE_FINISH (retval)->logo_image = logo;
-	GNOME_DRUID_PAGE_FINISH (retval)->watermark_image = watermark;
-	gnome_druid_page_finish_construct (GNOME_DRUID_PAGE_FINISH (retval));
+	GtkWidget *retval = GTK_WIDGET (gtk_type_new (nautilus_druid_page_finish_get_type ()));
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->title = g_strdup (title);
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->text = g_strdup (text);
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->logo_image = logo;
+	NAUTILUS_DRUID_PAGE_FINISH (retval)->watermark_image = watermark;
+	nautilus_druid_page_finish_construct (NAUTILUS_DRUID_PAGE_FINISH (retval));
 	return retval;
 }
 void
-gnome_druid_page_finish_set_bg_color      (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_bg_color      (NautilusDruidPageFinish *druid_page_finish,
 					  GdkColor *color)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	if (GTK_WIDGET_REALIZED (druid_page_finish)) {
 		GdkColormap *cmap = gdk_imlib_get_colormap ();
@@ -356,11 +356,11 @@ gnome_druid_page_finish_set_bg_color      (GnomeDruidPageFinish *druid_page_fini
 	}
 }
 void
-gnome_druid_page_finish_set_textbox_color (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_textbox_color (NautilusDruidPageFinish *druid_page_finish,
 					  GdkColor *color)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	if (GTK_WIDGET_REALIZED (druid_page_finish)) {
 		GdkColormap *cmap = gdk_imlib_get_colormap ();
@@ -380,11 +380,11 @@ gnome_druid_page_finish_set_textbox_color (GnomeDruidPageFinish *druid_page_fini
 	}
 }
 void
-gnome_druid_page_finish_set_logo_bg_color (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_logo_bg_color (NautilusDruidPageFinish *druid_page_finish,
 					  GdkColor *color)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	if (GTK_WIDGET_REALIZED (druid_page_finish)) {
 		GdkColormap *cmap = gdk_imlib_get_colormap ();
@@ -404,11 +404,11 @@ gnome_druid_page_finish_set_logo_bg_color (GnomeDruidPageFinish *druid_page_fini
 	}
 }
 void
-gnome_druid_page_finish_set_title_color   (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_title_color   (NautilusDruidPageFinish *druid_page_finish,
 					  GdkColor *color)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	if (GTK_WIDGET_REALIZED (druid_page_finish)) {
 		GdkColormap *cmap = gdk_imlib_get_colormap ();
@@ -429,11 +429,11 @@ gnome_druid_page_finish_set_title_color   (GnomeDruidPageFinish *druid_page_fini
 
 }
 void
-gnome_druid_page_finish_set_text_color    (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_text_color    (NautilusDruidPageFinish *druid_page_finish,
 					  GdkColor *color)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	if (GTK_WIDGET_REALIZED (druid_page_finish)) {
 		GdkColormap *cmap = gdk_imlib_get_colormap ();
@@ -454,11 +454,11 @@ gnome_druid_page_finish_set_text_color    (GnomeDruidPageFinish *druid_page_fini
 
 }
 void
-gnome_druid_page_finish_set_text          (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_text          (NautilusDruidPageFinish *druid_page_finish,
 					  const gchar *text)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	g_free (druid_page_finish->text);
 	druid_page_finish->text = g_strdup (text);
@@ -467,11 +467,11 @@ gnome_druid_page_finish_set_text          (GnomeDruidPageFinish *druid_page_fini
 			       NULL);
 }
 void
-gnome_druid_page_finish_set_title         (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_title         (NautilusDruidPageFinish *druid_page_finish,
 					  const gchar *title)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	g_free (druid_page_finish->title);
 	druid_page_finish->title = g_strdup (title);
@@ -480,22 +480,22 @@ gnome_druid_page_finish_set_title         (GnomeDruidPageFinish *druid_page_fini
 			       NULL);
 }
 void
-gnome_druid_page_finish_set_logo          (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_logo          (NautilusDruidPageFinish *druid_page_finish,
 					  GdkPixbuf *logo_image)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	druid_page_finish->logo_image = logo_image;
 	gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
 			       "image", druid_page_finish->logo_image, NULL);
 }
 void
-gnome_druid_page_finish_set_watermark     (GnomeDruidPageFinish *druid_page_finish,
+nautilus_druid_page_finish_set_watermark     (NautilusDruidPageFinish *druid_page_finish,
 					  GdkPixbuf *watermark)
 {
 	g_return_if_fail (druid_page_finish != NULL);
-	g_return_if_fail (GNOME_IS_DRUID_PAGE_FINISH (druid_page_finish));
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_FINISH (druid_page_finish));
 
 	druid_page_finish->watermark_image = watermark;
 	gnome_canvas_item_set (druid_page_finish->_priv->watermark_item,
