@@ -1,5 +1,12 @@
 2000-10-16  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	* nautilus.spec.in:
+	Changed the dep of nautilus-maozilla to mozilla = M18 instead of
+	mozilla-M18. I can't put in >= M18, because rpm's fucks up on
+	alphachar versions.
+
+2000-10-16  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	* components/services/install/lib/eazel-install-logic.c:
 	(eazel_install_fetch_dependencies), (dump_one_package),
 	(dump_packages_foreach), (dump_packages),
