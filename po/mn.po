@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
-"PO-Revision-Date: 2004-02-20 20:44+0100\n"
+"POT-Creation-Date: 2004-03-09 04:22+0100\n"
+"PO-Revision-Date: 2004-03-09 11:41+0100\n"
 "Last-Translator: Sanlig Badral <badral@openmn.org>\n"
 "Language-Team: Mongolian <openmn-core@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -248,13 +248,11 @@ msgstr "Програм хангамж"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[0] ""
+msgstr ""
 "<b>Зургийн төрөл:</b> %s (%s)\n"
 "<b>Нарийвчилал:</b> %dx%d пиксэл\n"
-msgstr[1] ""
 "<b>Зургийн төрөл:</b> %s (%s)\n"
 "<b>Нарийвчилал:</b> %dx%d пиксэл\n"
 
@@ -1684,26 +1682,23 @@ msgstr "Хажуугийн самбарын өргөн"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "Д_ээш шилжүүлэх"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "Д_оош шилжүүлэх"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "%s үзүүлэх"
+msgstr "Ү_зүүлэх"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Тусламж"
+msgstr "_Далдлах"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Ст_андарт дэвсгэрийг хэрэглэх"
+msgstr "Ст_андарыг хэрэглэх"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2162,6 +2157,10 @@ msgid "Replace _All"
 msgstr "_Бүгдийг орлуулах."
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4724
 #, c-format
@@ -2216,6 +2215,9 @@ msgid " (another copy)"
 msgstr " (өөр нэгэн Хуулбар)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2251,6 +2253,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (бас нэгэн Хуулбар)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -4023,10 +4028,9 @@ msgstr "Та »%s« -ийг бүрмөсөн устгахдаа итгэл тө�
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Та сонгосон »%d« объектыг бүрэн устгахдаа итгэл төгс байна уу?"
-msgstr[1] "Та сонгосон »%d« объектыг бүрэн устгахдаа итгэл төгс байна уу?"
+msgstr "Та сонгосон »%d« объектыг бүрэн устгахдаа итгэл төгс байна уу?"
+"Та сонгосон »%d« объектыг бүрэн устгахдаа итгэл төгс байна уу?"
 
 #: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
@@ -4069,7 +4073,7 @@ msgstr[1] " (%d объект агуулагдаж байна)"
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (Нийт %d объект агуулагдаж байна)"
-msgstr[1] ""
+msgstr[1] " (Нийт %d объект агуулагдаж байна)"
 
 #: src/file-manager/fm-directory-view.c:1789
 #, c-format
@@ -4157,12 +4161,10 @@ msgstr "Та »%s« -ийг хогийн савнаас бүрмөсөн уст�
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Та хогийн савнаас %d объект бүрмөсөн устгаж зайлуулахыг хүсч байна уу?"
-msgstr[1] ""
 "Та хогийн савнаас %d объект бүрмөсөн устгаж зайлуулахыг хүсч байна уу?"
 
 #: src/file-manager/fm-directory-view.c:3307
@@ -4188,9 +4190,9 @@ msgid "An _Application..."
 msgstr "Х._Програм..."
 
 #: src/file-manager/fm-directory-view.c:3919
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "Хогийн савыг хуулж чадахгүй байна."
+msgstr "%s-г нээж чадахгүй байна"
 
 #: src/file-manager/fm-directory-view.c:3922
 #, c-format
@@ -4204,6 +4206,9 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"\"%s\" файлын нэр энэ файлын төрөл \"%s\" болохыг заана. Файлын агуулга нь \"%s\" төрлийн файлыг заана. Хэрэв та энэ файлыг нээх бол, таны системд хамхамгаалалтын риск үүсч болох юм.\n"
+"\n"
+"Хэрэв та энэ файлыг өөрөө үүсгээгүй эсвэл найдвартай эх сурвалжаас аваагүй бол бүү нээ. Файлыг нээхээр болбол, файлыг зөв өргөтгөл болох \"%s\"-р сольж нэрлээд, энгийнээр нээнэ үү. Эсвэл баруун товшуурын цэснээс Хамт нээх гэсэнг сонгоод тухайн програмаар нь нээнэ үү. "
 
 #: src/file-manager/fm-directory-view.c:4293
 #, c-format
@@ -4289,19 +4294,17 @@ msgstr "»Буулгах«-командыг сонгоход »%s« хуулаг
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] "»Буулгах«-командыг сонгоход »%d« сонгогдсон объект зөөгдөнө"
-msgstr[1] "»»Буулгах«-командыг сонгоход »%d« сонгогдсон объект зөөгдөнө"
+msgstr "»Буулгах«-командыг сонгоход »%d« сонгогдсон объект зөөгдөнө"
+"»Буулгах«-командыг сонгоход »%d« сонгогдсон объект зөөгдөнө"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] "»Буулгах«-командыг сонгоход »%d« сонгогдсон объект хуулагдана"
-msgstr[1] "»Буулгах«-командыг сонгоход »%d« сонгогдсон объект хуулагдана"
+msgstr "»Буулгах«-командыг сонгоход »%d« сонгогдсон объект хуулагдана"
+"»Буулгах«-командыг сонгоход »%d« сонгогдсон объект хуулагдана"
 
 #: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
@@ -5800,6 +5803,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:572 src/nautilus-application.c:590
 #: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6283,25 +6287,30 @@ msgid "Nautilus"
 msgstr "Наутилус"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "Наутилус: --ШАЛГАХ нь URIs-ийн хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 "Наутилус: --ШАЛГАХ нь бусад сонголтуудын хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "Наутилус: --Гаралт нь URI-ийн хамт хэрэглэгдэж болохгүй байна.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr ""
 "Наутилус: --Дахин Эхлүүлэх үйлдэл нь URI-ийн хамт хэрэглэгдэж болохгүй "
 "байна.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "Наутилус: --Хэлбэр хэмжээ нь нэгээс олон тооны URI-ийн хамт хэрэглэгдэж "
