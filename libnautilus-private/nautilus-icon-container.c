@@ -190,8 +190,8 @@ icon_set_position (NautilusIcon *icon,
 		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 		width = x2 - x1;
 		height = y2 - y1;
-		
-		if ((x - width) < left) {
+
+		if (x < left) {
 			x = left;
 		}
 		if (x > right - width) {
@@ -846,6 +846,9 @@ get_best_empty_grid_location (NautilusIcon *icon, int **icon_grid, int num_rows,
 			if (found_space) {				
 				*x = row * CELL_SIZE;
 				*y = column * CELL_SIZE;
+				if (*x < 30) {
+					*x = 30;
+				}
 				return;
 			}
 		}		
