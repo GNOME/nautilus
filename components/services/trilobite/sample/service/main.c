@@ -113,6 +113,9 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
 	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", NULL, argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);

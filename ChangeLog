@@ -1,3 +1,15 @@
+2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: George Lebl  <jirka@5z.com>
+	
+	Fix bug 4448 (install-server needs session management juju)
+	
+	* components/services/install/server/main.c: (main): Add call to
+	`gnome_client_disable_master_connection'
+
+	* components/services/trilobite/sample/service/main.c: (main): Add
+	call to `gnome_client_disable_master_connection'
+
 2001-01-30  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>

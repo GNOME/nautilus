@@ -133,6 +133,9 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
 	signal (SIGSEGV, &sig_segv_handler);
 
 	if (!trilobite_init ("trilobite-eazel-install-service", "0.1", "~/.nautilus/trilobite-install.log",
