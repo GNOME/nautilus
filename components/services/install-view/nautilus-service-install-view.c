@@ -538,6 +538,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 		p = strchr (host_spec, '@');
 		if (p) {
 			*p = 0;
+			g_free (*username);
 			*username = host_spec;
 			if (*(p+1)) {
 				g_free (*host);
@@ -1495,7 +1496,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	} else {
 		port = 80;
 	}
-	view->details->username = NULL;
+	view->details->username = g_strdup ("anonymous");
 	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username));
 
 	if (! view->details->categories) {

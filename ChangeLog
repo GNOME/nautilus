@@ -3,6 +3,17 @@
 	reviewed by: Mike Fleming <mfleming@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_view_update_from_uri):
+	Default username to "anonymous". this isn't ideal, but it's
+	it's better than spewing out "Couldn't find yadayada"
+	Check bug 5955 comment on 2001-01-26 20:17 for more info.
+
+2001-01-26  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by :Mike Fleming <mfleming@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
 	l-view.c: (nautilus_service_install_done):
 	check username !- NULL before passing to strcasecmp
 
