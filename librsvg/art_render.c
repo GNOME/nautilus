@@ -1091,10 +1091,9 @@ art_render_image_solid_negotiate (ArtImageSource *self, ArtRender *render,
       if (render->clear)
 	{
 	  render_cbk = art_render_image_solid_rgb8_opaq;
-	  flags |= ART_IMAGE_SOURCE_CAN_CLEAR;
+	  flags |= ART_IMAGE_SOURCE_CAN_CLEAR | ART_IMAGE_SOURCE_CAN_COMPOSITE;
 	  art_render_image_solid_rgb8_opaq_init (z, render);
 	}
-      flags |= ART_IMAGE_SOURCE_CAN_COMPOSITE;
     }
   if (render_cbk == NULL)
     {

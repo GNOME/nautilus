@@ -319,7 +319,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 
 	drawingarea = gtk_drawing_area_new ();
 	gtk_drawing_area_size (GTK_DRAWING_AREA (drawingarea), width, height);
-	gtk_container_add (GTK_CONTAINER (vbox), drawingarea);
+	gtk_box_pack_start (GTK_BOX (vbox), drawingarea, TRUE, TRUE, 0);
 
 	ctx->ctx = rsvg_ft_ctx_new ();
 	ctx->fh = rsvg_ft_intern (ctx->ctx, fn);
@@ -337,7 +337,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 			    (GtkSignalFunc) test_expose, ctx);
 
 	buttonbar = gtk_hbox_new (FALSE, 5);
-	gtk_container_add (GTK_CONTAINER (vbox), buttonbar);
+	gtk_box_pack_start (GTK_BOX (vbox), buttonbar, FALSE, FALSE, 0);
 
 	button = check_button ("Do drawing", &ctx->do_drawing);
 	gtk_container_add (GTK_CONTAINER (buttonbar), button);
@@ -354,7 +354,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 			    (GtkSignalFunc) start_scrolling, ctx);
 
 	ctx->status = gtk_label_new ("");
-	gtk_container_add (GTK_CONTAINER (vbox), ctx->status);
+	gtk_box_pack_start (GTK_BOX (vbox), ctx->status, FALSE, FALSE, 2);
 
 	gtk_widget_show_all (topwin);
 

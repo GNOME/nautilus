@@ -1,3 +1,10 @@
+2000-08-15  Raph Levien  <raph@acm.org>
+
+	* librsvg/art_render.c (art_render_image_solid_negotiate): Only
+	sets ART_IMAGE_SOURCE_CAN_COMPOSITE when a compositing callback is
+	selected. Previously was causing segfaults on non-alpha
+	images. Thanks to Leonard Rosenthol for spotting the bug.
+
 2000-08-15  Mathieu Lacage  <mathieu@eazel.com>
 
 	Implements core of task 1761 
