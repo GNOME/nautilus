@@ -1,3 +1,24 @@
+2000-07-30  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 1408, thumbnails do not have the right shadow.  Fixed by maintaining
+	different thumbnails for the anti-aliased and non-anti-aliased cases.
+	
+	* libnautilus-extensions/nautilus-graphic-effects.c,h:
+	(stretch_frame_image), (nautilus_embed_image_in_frame):
+	got rid of old draw_frame routine, and added nautilus_embed_image_in_frame
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file), (make_thumbnail_path),
+	(nautilus_icon_factory_get_thumbnail_uri), (check_for_thumbnails),
+	(load_thumbnail_frame), (nautilus_icon_factory_make_thumbnails):
+	called nautilus_embed_image_in_frame to make the thumbnail frame;
+	also, added the aa flag to various routines and respected it, using
+	a different name and frame for the anti-aliased versions.
+	
+	* icons/Makefile.am:
+	* icons/thumbnail_frame.png:
+	* icons/thumbnail_frame.aa.png:
+	added frame images to use for both cases (anti-aliased and non-aa)
+
 2000-07-30  Mathieu Lacage  <mathieu@eazel.com>
 	
 	Make nautilus build with the latest oaf changes.

@@ -41,8 +41,8 @@ GdkPixbuf* nautilus_create_colorized_pixbuf (GdkPixbuf *source_pixbuf,
 					     int        green_value,
 					     int        blue_value);
 
-/* draw a frame with a drop shadow into the passed-in pixbuf */
-void nautilus_draw_frame 	    	    (GdkPixbuf *frame_pixbuf);
+/* embed in image in a frame */
+GdkPixbuf *nautilus_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset);
 
 /* return a semi-transparent pixbuf from the source pixbuf using a checkboard
    stipple in the alpha channel (so it can be converted to an alpha-less pixmap) */

@@ -211,7 +211,8 @@ static GtkType               nautilus_icon_factory_get_type          (void);
 static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
 static void                  nautilus_icon_factory_initialize        (NautilusIconFactory      *factory);
 static NautilusIconFactory * nautilus_get_current_icon_factory       (void);
-static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file);
+static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFile             *file,
+								      gboolean			anti_aliased);
 static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
 static void                  nautilus_icon_factory_set_theme         (const char               *theme_name);
 static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
@@ -951,7 +952,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_file_get_uri (file);				
 			} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
-				uri = nautilus_icon_factory_get_thumbnail_uri (file);
+				uri = nautilus_icon_factory_get_thumbnail_uri (file, anti_aliased);
 			}
 		}
 		g_free (mime_type);		
@@ -1124,11 +1125,13 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
-make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory)
+make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory, gboolean anti_aliased)
 {
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
+	char *dot_pos;
+	
 	*last_slash = '\0';
 	
 	/* either use the local directory or one in the user's home directory, as selected by the passed in flag */
@@ -1156,13 +1159,26 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		char* old_uri = thumbnail_uri;
 		thumbnail_uri = g_strdup_printf ("%s/%s", thumbnail_uri, last_slash + 1);
 		g_free(old_uri);			
-	}
 	
-	/* append an image suffix if the correct one isn't already present */
-	if (!nautilus_istr_has_suffix (image_uri, ".png") && !directory_only) {		
-		char* old_uri = thumbnail_uri;
-		thumbnail_uri = g_strdup_printf ("%s.png", thumbnail_uri);
-		g_free(old_uri);			
+		/* append the anti-aliased suffix if necessary */
+		if (anti_aliased) {
+			char *old_uri = thumbnail_uri;
+			dot_pos = strrchr (thumbnail_uri, '.');
+			if (dot_pos) {
+				*dot_pos = '\0';
+				thumbnail_uri = g_strdup_printf ("%s.aa.%s", old_uri, dot_pos + 1);
+			} else {
+				thumbnail_uri = g_strconcat (old_uri, ".aa", NULL);				
+			}
+			g_free (old_uri);
+		}
+		
+		/* append an image suffix if the correct one isn't already present */
+		if (!nautilus_istr_has_suffix (image_uri, ".png")) {		
+			char* old_uri = thumbnail_uri;
+			thumbnail_uri = g_strdup_printf ("%s.png", thumbnail_uri);
+			g_free(old_uri);			
+		}
 	}
 			
 	g_free (directory_name);
@@ -1210,6 +1226,7 @@ first_file_more_recent(const char* file_uri, const char* other_file_uri)
 typedef struct {
 	char *thumbnail_uri;
 	gboolean is_local;
+	gboolean anti_aliased;
 } NautilusThumbnailInfo;
 
 /* GCompareFunc-style function for comparing NautilusThumbnailInfos.
@@ -1234,7 +1251,7 @@ compare_thumbnail_info (gconstpointer a, gconstpointer b)
  */
 
 static char *
-nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
+nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 {
 	NautilusIconFactory *factory;
 	GnomeVFSResult result;
@@ -1246,7 +1263,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	file_uri = nautilus_file_get_uri (file);
 	
 	/* compose the uri for the thumbnail locally */
-	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, TRUE);
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, TRUE, anti_aliased);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	if (vfs_file_exists (thumbnail_uri)) {
@@ -1267,7 +1284,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	/* now try it globally */
 	if (!remake_thumbnail) {
 		g_free (thumbnail_uri);
-		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE);
+		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE, anti_aliased);
 		
 		/* if the thumbnail file already exists in the common area,  return that uri */
 		if (vfs_file_exists (thumbnail_uri)) {
@@ -1289,14 +1306,14 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
         /* make the thumbnail directory if necessary, at first try it locally */
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
-	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag);
+	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
 
 	/* if we can't make if locally, try it in the global place */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {	
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
-		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag);
+		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
 	
@@ -1309,6 +1326,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
 		info->is_local = local_flag;
+		info->anti_aliased = anti_aliased;
 		
 		factory = nautilus_get_current_icon_factory ();		
 		if (factory->thumbnails) {
@@ -2276,7 +2294,7 @@ check_for_thumbnails (NautilusIconFactory *factory)
 	     next_thumbnail != NULL;
 	     next_thumbnail = next_thumbnail->next) {
 		info = (NautilusThumbnailInfo*) next_thumbnail->data;
-		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local);
+		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
 		if (vfs_file_exists (current_thumbnail)) {
 			/* we found one, so update the icon and remove all of the elements up to and including
 			   this one from the pending list. */
@@ -2306,6 +2324,19 @@ check_for_thumbnails (NautilusIconFactory *factory)
 
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
+static GdkPixbuf*
+load_thumbnail_frame (gboolean anti_aliased)
+{
+	char *image_path;
+	GdkPixbuf *frame_image;
+				
+	/* load the thumbnail frame */
+	image_path = nautilus_pixmap_file (anti_aliased ? "thumbnail_frame.aa.png" : "thumbnail_frame.png");
+	frame_image = gdk_pixbuf_new_from_file (image_path);
+	g_free (image_path);
+	return frame_image;
+}
+
 static int
 nautilus_icon_factory_make_thumbnails (gpointer data)
 {
@@ -2313,6 +2344,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 	NautilusThumbnailInfo *info;
 	NautilusIconFactory *factory = nautilus_get_current_icon_factory();
 	GList *next_thumbnail = factory->thumbnails;
+	GdkPixbuf *scaled_image, *framed_image, *thumbnail_image_frame;
 	
 	/* if the queue is empty, there's nothing more to do */
 	if (next_thumbnail == NULL) {
@@ -2335,7 +2367,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			
 		/* First, compute the path name of the target thumbnail */
 		g_free (factory->new_thumbnail_path);
-		factory->new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local);
+		factory->new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
 
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(thumbnail_pid = fork())) {
@@ -2361,24 +2393,18 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			}
 			nautilus_file_unref (file);
 			
-			if (full_size_image != NULL) {
-				GdkPixbuf *scaled_image, *framed_image;
-				int scaled_width, scaled_height;
-				
+			if (full_size_image != NULL) {				
+				thumbnail_image_frame = load_thumbnail_frame(info->anti_aliased);
+									
+				/* scale the content image as necessary */	
 				scaled_image = nautilus_gdk_pixbuf_scale_to_fit(full_size_image, 96, 96);	
-				scaled_width = gdk_pixbuf_get_width (scaled_image);
-				scaled_height = gdk_pixbuf_get_height (scaled_image);
 				
-				/* make the frame to mount it in - use an alpha channel, so part of the drop shadow can be transparent */
-				framed_image = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-							       TRUE, 8,
-							       scaled_width + 16, scaled_height + 16);
-				nautilus_draw_frame(framed_image);
+				/* embed the content image in the frame */
+				/* FIXME: the offset numbers are dependent on the frame image - we need to make them adjustable */
+				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame, 4, 4, 9, 7);
 				
-				/* copy the scaled image into it, then release it */
-				gdk_pixbuf_copy_area (scaled_image, 0, 0,
-						      scaled_width, scaled_height, framed_image, 6, 6);
 				gdk_pixbuf_unref (scaled_image);
+				gdk_pixbuf_unref (thumbnail_image_frame);
 				
 				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);			
 				if (!save_pixbuf_to_file (framed_image, thumbnail_path)) {
@@ -2396,10 +2422,10 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				
 				thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
 				
-				/* scale the image, then draw a border and frame */
+				/* scale the image */
 				execlp ("convert", "convert", "-geometry",  "96x96", thumbnail_path, temp_str, NULL);
-				g_free (thumbnail_path);
-				g_free (temp_str);
+				
+				/* we don't come back from this call, so no point in freeing anything up */
 			}
 			
 			_exit(0);

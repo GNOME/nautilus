@@ -164,6 +164,8 @@ icon_DATA =\
 	tabright.png \
 	temp-home.png \
 	themes.png \
+	thumbnail_frame.aa.png \
+	thumbnail_frame.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \

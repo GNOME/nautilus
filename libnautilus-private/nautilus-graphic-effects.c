@@ -26,6 +26,11 @@
    and selection hilighting */
 
 #include <config.h>
+
+#include <libart_lgpl/art_config.h>
+#include <libart_lgpl/art_rect.h>
+#include <libart_lgpl/art_rgb.h>
+
 #include "nautilus-graphic-effects.h"
 
 /* shared utility to create a new pixbuf from the passed-in one */
@@ -221,92 +226,39 @@ nautilus_create_colorized_pixbuf (GdkPixbuf *src,
 	return dest;
 }
 
-/* draw a frame with a drop shadow into the passed in pixbuf */
+/* utility to stretch a frame to the desired size */
+/* FIXME: right now it justs does a simple scale - it should do it by replicating the "stretchable" area instead of
+   scaling everything uniformly */
 
-void
-nautilus_draw_frame (GdkPixbuf *frame_pixbuf)
+static GdkPixbuf *
+stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset, int dest_width, int dest_height)
 {
-	int index, h_index, last_index, pin_width;
-	int width, height, depth, rowstride, fill_value;
-  	guchar *pixels, *temp_pixels;
+	return gdk_pixbuf_scale_simple (frame_image, dest_width, dest_height, GDK_INTERP_BILINEAR);
+}
+
+
+/* utility to draw the middle section of the frame in a loop */
+
+/* draw an arbitrary frame around an image, with the result passed back in a newly allocated pixbuf */
+GdkPixbuf *
+nautilus_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset)
+{
+	GdkPixbuf *result_pixbuf;
+	int source_width, source_height;
+	int dest_width, dest_height;
 	
-	width = gdk_pixbuf_get_width (frame_pixbuf);
-	height = gdk_pixbuf_get_height (frame_pixbuf);
-	depth = gdk_pixbuf_get_bits_per_sample (frame_pixbuf);
-	pixels = gdk_pixbuf_get_pixels (frame_pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (frame_pixbuf);
+	source_width  = gdk_pixbuf_get_width  (source_image);
+	source_height = gdk_pixbuf_get_height (source_image);
 
-	/* loop through the pixbuf a scaleline at a time, drawing the frame */
-	for (index = 0; index < height; index++) {
-		/* special case the first and last few lines to make them dark */
-		fill_value = 239;
-		pin_width = width;
-		last_index = height - index;
-		if (index == 0)
-			fill_value = 0;
-		else if (index > (height - 6)) {
-			fill_value = 107 + (index - (height - 5)) * 37;
-			pin_width = width - (height - index);
-		}	
-		/* memset(pixels, fill_value, rowstride); */
-		temp_pixels = pixels;
-		for (h_index = 0; h_index < pin_width; h_index++) {
-			*temp_pixels++ = fill_value;
-			*temp_pixels++ = fill_value;
-			*temp_pixels++ = fill_value;
-			*temp_pixels++ = ((last_index < 6) && ((4 - last_index) > h_index)) ? 0 : 255;
-		}
+	dest_width  = source_width  + left_offset + right_offset;
+	dest_height = source_height + top_offset  + bottom_offset;
+	
+	result_pixbuf = stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset, dest_width, dest_height);
 		
-		/* draw the frame at the edge for each scanline */
-		if (last_index > 5) {
-			temp_pixels = pixels;
-			*temp_pixels++ = 0;
-			*temp_pixels++ = 0;
-			*temp_pixels++ = 0;
-			*temp_pixels++ = 255;
-		}
-		
-		pixels += rowstride;
-		
-		/* handle the last 5 pixels specially for the drop shadow */
-		
-		temp_pixels = pixels - 5*4;
+	/* Finally, copy the source image into the framed area */
+	gdk_pixbuf_copy_area (source_image, 0, 0, source_width, source_height, result_pixbuf, left_offset,  top_offset);
 
-		if (last_index > 4) {
-			*temp_pixels++ = 107;
-			*temp_pixels++ = 107;
-			*temp_pixels++ = 107;		
-			*temp_pixels++ = 255;
-		} else temp_pixels += 4;
-		
-		if (last_index > 3) {			
-			*temp_pixels++ = 144;
-			*temp_pixels++ = 144;
-			*temp_pixels++ = 144;		
-			*temp_pixels++ = index < 1 ? 0 : 255;
-		}  else temp_pixels += 4;
-		
-		if (last_index > 2) {
-			*temp_pixels++ = 181;
-			*temp_pixels++ = 181;
-			*temp_pixels++ = 181;		
-			*temp_pixels++ = index < 2 ? 0 : 255;
-		}  else temp_pixels += 4;
-		
-		if (last_index > 1) {
-			*temp_pixels++ = 218;
-			*temp_pixels++ = 218;
-			*temp_pixels++ = 218;		
-			*temp_pixels++ = index < 3 ? 0 : 255;
-		}  else temp_pixels += 4;
-		
-		if (last_index > 0) {
-			*temp_pixels++ = 244;
-			*temp_pixels++ = 244;
-			*temp_pixels++ = 244;		
-			*temp_pixels++ = index < 4 ? 0 : 255;
-		}
-	}
+	return result_pixbuf;
 }
 
 
@@ -371,3 +323,4 @@ nautilus_make_semi_transparent (GdkPixbuf *src)
 	
 	return dest_pixbuf;
 }
+
