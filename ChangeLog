@@ -1,5 +1,12 @@
 2000-07-04  Pavel Cisler <pavel@eazel.com>
 
+	* src/file-manager/dfos-xfer.c: (new_folder_xfer_callback):
+	Fix 1042 - "untitled folder" will not work on file systems with
+	8.3 names. Added code that handles GNOME_VFS_ERROR_NAME_TOO_LONG
+	and supplies a name in the 8.3 scheme instead.
+	
+2000-07-04  Pavel Cisler <pavel@eazel.com>
+
 	* src/file-manager/dfos-xfer-progress-dialog.c:
 	* src/file-manager/dfos-xfer-progress-dialog.h:
 	(handle_xfer_ok),

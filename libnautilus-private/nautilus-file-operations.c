@@ -635,7 +635,7 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 	GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
 	NewFolderXferState *state;
-	char *old_name;
+	char *temp_string;
 	
 	state = (NewFolderXferState *) data;
 
@@ -647,12 +647,24 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 		return 0;
 
 	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
-		old_name = progress_info->duplicate_name;
-		progress_info->duplicate_name = g_strdup_printf ("%s %d", 
-			progress_info->duplicate_name,
-			progress_info->duplicate_count);
-	
-		g_free (old_name);
+
+		temp_string = progress_info->duplicate_name;
+
+		if (progress_info->vfs_status == GNOME_VFS_ERROR_NAME_TOO_LONG) {
+			/* special case an 8.3 file system */
+			progress_info->duplicate_name = g_strndup (temp_string, 8);
+			progress_info->duplicate_name[8] = '\0';
+			g_free (temp_string);
+			temp_string = progress_info->duplicate_name;
+			progress_info->duplicate_name = g_strdup_printf ("%s.%d", 
+				progress_info->duplicate_name,
+				progress_info->duplicate_count);
+		} else {
+			progress_info->duplicate_name = g_strdup_printf ("%s %d", 
+				progress_info->duplicate_name,
+				progress_info->duplicate_count);
+		}
+		g_free (temp_string);
 		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 
 	default:
