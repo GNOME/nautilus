@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-06-28 12:23+0200\n"
-"PO-Revision-Date: 2003-06-28 12:24+0200\n"
+"POT-Creation-Date: 2003-07-06 23:32+0200\n"
+"PO-Revision-Date: 2003-07-06 23:33+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,15 +395,15 @@ msgstr "(Tomt)"
 msgid "Loading..."
 msgstr "Läser in..."
 
-#: components/tree/nautilus-tree-view.c:503 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Hemmapp"
 
-#: components/tree/nautilus-tree-view.c:505
+#: components/tree/nautilus-tree-view.c:507
 msgid "Filesystem"
 msgstr "Filsystem"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:509
 msgid "Network Neighbourhood"
 msgstr "Nätverket"
 
@@ -1047,37 +1047,38 @@ msgstr "Förhandsgranskning"
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Possible values "
-"are: size, type, date_modified, date_changed, date_accessed, owner, group, "
-"permissions, octal_permissions and mime_type"
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
 msgstr ""
 "En lista med rubriker under en ikon i ikonvyn och på skrivbordet. Det "
-"verkliga antalet rubriker beror på zoomnivån. Möjliga värden är: size, type, "
-"date_modified, date_changed, date_accessed, owner, group, permissions, "
-"octal_permissions och mime_type"
+"verkliga antalet rubriker beror på zoomnivån. Möjliga värden är: \"size\", "
+"\"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", "
+"\"group\", \"permissions\", \"octal_permissions\" och \"mime_type\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add nautilus to session"
-msgstr "Lägg till nautilus till session"
+msgid "Add Nautilus to session"
+msgstr "Lägg till Nautilus till session"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
 msgstr "Visa ett nytt fönster för varje öppnad fil"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-msgid "Criteria for search bar searching."
-msgstr "Kriterium för sökradssökning."
+msgid "Criteria for search bar searching"
+msgstr "Kriterium för sökradssökning"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
-"search_by_text, then nautilus will Search for files by file name only. If "
-"set to search_by_text_and_properties\", then nautilus will search for files "
-"by file name and file properties."
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
 msgstr ""
 "Kriterium för när filer som söks efter i sökraden matchas. Om detta är satt "
-"till search_by_text kommer nautilus att söka efter filer endast efter "
-"namnet. Om detta är satt till search_by_text_and_properties\" kommer "
-"nautilus att söka efter filer både efter namn och filegenskaper."
+"till \"search_by_text\" kommer Nautilus att söka efter filer endast efter "
+"namnet. Om detta är satt till \"search_by_text_and_properties\" kommer "
+"Nautilus att söka efter filer både efter namn och filegenskaper."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -1112,20 +1113,20 @@ msgid "Default folder viewer"
 msgstr "Standardmappvisare"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+msgid "Default icon zoom level"
+msgstr "Standardikonzoomnivå"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+msgid "Default list zoom level"
+msgstr "Standardlistzoomnivå"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default sort order"
 msgstr "Standardsorteringsordning"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-msgid "Default zoom level used by the icon view"
-msgstr "Standardzoomnivå som används av ikonvyn"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default zoom level used by the icon view."
 msgstr "Standardzoomnivå som används av ikonvyn."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-msgid "Default zoom level used by the list view"
-msgstr "Standardzoomnivå som används av listvyn"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default zoom level used by the list view."
@@ -1144,10 +1145,23 @@ msgid "Desktop trash icon name"
 msgstr "Namn på papperskorgsskrivbordsikonen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+msgid ""
+"Directories over this size will be truncated to around this size. The "
+"purpose of this is to avoid unintentionally blowing the heap and killing "
+"Nautilus on massive directories. A negative value denotes no limit. The "
+"limit is approximate due to the reading of directories chunk-wise."
+msgstr ""
+"Kataloger över denna storlek kommer att trunkeras till ungefärligen denna "
+"storlek. Avsikten med detta är att undvika att oavsiktligen spåra ur och "
+"använda för mycket minne och döda Nautilus med mycket stora kataloger. Ett "
+"negativt värde innebär att ingen gräns finns. Gränsen är ungefärlig på grund "
+"av den styckvisa inläsningen av kataloger."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Aktivera \"specialflaggor\" i filegenskapsfönstret"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
@@ -1155,7 +1169,7 @@ msgstr ""
 "Filnamn för standardskrivbordsbakgrunden. Används endast om background_set "
 "är sant."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -1163,41 +1177,56 @@ msgstr ""
 "Filnamn för standardsidopanelsbakgrunden. Används endast om "
 "side_pane_background_set är sant."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-msgid "Hide default bookmarks in the bookmark menu."
-msgstr "Dölj standardbokmärken i bokmärkesmenyn."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+msgid "Hide default bookmarks in the bookmark menu"
+msgstr "Dölj standardbokmärken i bokmärkesmenyn"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
 msgstr "Hemikon synlig på skrivbordet"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
-"If set to true, Nautilus will show only show directories in the tree "
-"sidebar. Otherwise it will show both directories and files."
+"If set to true, Nautilus will show only show directories in the tree side "
+"pane. Otherwise it will show both directories and files."
 msgstr ""
 "Om detta är sant kommer Nautilus endast att visa kataloger i "
 "trädsidopanelen. Annars kommer Nautilus att visa både kataloger och filer."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Om detta är sant kommer nyöppnade fönster att ha adressraden synlig."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid "If set to true, newly opened windows will have the side bar visible."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "Om detta är sant kommer nyöppnade fönster att ha sidopanelen synlig."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "Om detta är sant kommer nyöppnade fönster att ha statusraden synlig."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 "Om detta är sant kommer nyöppnade fönster att ha verktygsrader synliga."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+msgid ""
+"If set to true, then Nautilus lets you edit some of the more esoteric "
+"options of a file in the file preferences dialog."
+msgstr ""
+"Om detta är sant kommer Nautilus att låta dig redigera några av de mer "
+"exotiska filalternativen i dialogrutan filinställningar."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+msgid ""
+"If set to true, then Nautilus shows directories prior to showing files in "
+"the icon and list views."
+msgstr ""
+"Om detta är sant visar Nautilus kataloger innan filer i ikon- och listvyerna."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
@@ -1205,7 +1234,19 @@ msgstr ""
 "Om detta är sant kommer Nautilus att fråga efter bekräftelse när du försöker "
 "placera filer i papperskorgen."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+msgid ""
+"If set to true, then Nautilus will bring up a new Nautilus window by default "
+"whenever an item is opened."
+msgstr ""
+"Om detta är sant visar Nautilus ett nytt Nautilusfönster som standard när "
+"ett objekt öppnas."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+msgid "If set to true, then Nautilus will draw the icons on the desktop."
+msgstr "Om detta är sant kommer Nautilus att rita ikonerna på skrivbordet."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
@@ -1215,7 +1256,23 @@ msgstr ""
 "fil permanent och på stället, utan att flytta den till papperskorgen. Denna "
 "funktion kan vara farlig, så var försiktig."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+msgid ""
+"If set to true, then Nautilus will just show the user's bookmarks in the "
+"bookmark menu."
+msgstr ""
+"Om detta är sant kommer Nautilus enbart att visa användarens bokmärken i "
+"bokmärkesmenyn."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+msgid ""
+"If set to true, then Nautilus will use the user's home directory as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Om detta är sant kommer Nautilus att använda användarens hemkatalog som "
+"skrivbord. Om det är falskt kommer det att använda ~/Desktop som skrivbord."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
@@ -1225,56 +1282,15 @@ msgstr ""
 "Emacs att visas. För tillfället betraktas endast de filer som slutar med ett "
 "tildetecken (~) som säkerhetskopior."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid ""
-"If set to true, then hidden files (dotfiles) are shown in the file manager."
-msgstr ""
-"Om detta är sant kommer dolda filer (punktfiler) att visas i filhanteraren."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
-msgid ""
-"If set to true, then nautilus lets you edit some of the more esoteric "
-"options of a file in the file preferences dialog."
-msgstr ""
-"Om detta är sant kommer nautilus att låta dig redigera några av de mer "
-"exotiska filalternativen i dialogrutan filinställningar."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
-msgid ""
-"If set to true, then nautilus shows directories prior to showing files in "
-"the icon and list views."
-msgstr ""
-"Om detta är sant visar nautilus kataloger innan filer i ikon- och listvyerna."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
-msgid ""
-"If set to true, then nautilus will bring up a new nautilus window by default "
-"whenever an item is opened."
-msgstr ""
-"Om detta är sant visar nautilus ett nytt nautilusfönster som standard när "
-"ett objekt öppnas."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr "Om detta är sant kommer nautilus att rita ikonerna på skrivbordet."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid ""
-"If set to true, then nautilus will just show the user's bookmarks in the "
-"bookmark menu."
-msgstr ""
-"Om detta är sant kommer nautilus enbart att visa användarens bokmärken i "
-"bokmärkesmenyn."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid ""
-"If set to true, then nautilus will use the user's home directory as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Om detta är sant kommer nautilus att använda användarens hemkatalog som "
-"skrivbord. Om det är falskt kommer det att använda ~/Desktop som skrivbord."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the directory's .hidden file."
+msgstr ""
+"Om detta är sant kommer dolda filer att visas i filhanteraren. Dolda filer "
+"är antingen punktfiler eller är listade i katalogens .hidden-fil."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
@@ -1283,7 +1299,7 @@ msgstr ""
 "den startar. Detta betyder att Nautilus kommer att startas nästa gång du "
 "loggar in."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
@@ -1291,7 +1307,7 @@ msgstr ""
 "Om detta är sant kommer en ikon som länkar till hemkatalogen att placeras på "
 "skrivbordet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -1299,7 +1315,7 @@ msgstr ""
 "Om detta är sant kommer en ikon som länkar till papperskorgen att placeras "
 "på skrivbordet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1309,7 +1325,7 @@ msgstr ""
 "dvs om de sorteras efter namn kommer de att istället för att sorteras från "
 "\"a\" till \"ö\" att sorteras från \"ö\" till \"a\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1322,26 +1338,25 @@ msgstr ""
 "sorteras efter storlek kommer de att sorteras efter ökande storlek istället "
 "för efter minskande storlek."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
 "Om detta är sant kommer ikoner att placeras tätare som standard i nya "
 "fönster."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
-"If true, labels will be placed beside icons icons rather than underneath "
-"them."
+"If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Om detta är sant kommer etiketter att placeras bredvid ikoner istället för "
 "under dem."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Om detta är sant kommer nya fönster att använda manuell layout som standard."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1351,19 +1366,19 @@ msgstr ""
 "för. Ändamålet med denna inställning är att undvika att skapa miniatyrbilder "
 "för stora bilder som tar lång tid att läsa in eller använder mycket minne."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "List of possible captions on icons"
 msgstr "Lista med möjliga rubriker på ikoner"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum handled files in a directory"
 msgstr "Maximalt antal hanterade filer i katalog"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximal bildstorlek för skapande av miniatyrbilder"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1371,19 +1386,19 @@ msgstr ""
 "Namnet på Nautilus-temat att använda. Denna inställningar har föråldrats "
 "sedan Nautilus 2.2. Använd ikontemat istället."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus hanterar ritandet av skrivbordet"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Nautilus uses the users home directory as the desktop"
 msgstr "Nautilus använder användarens hemkatalog som skrivbord"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Only show directories in the tree sidebar"
 msgstr "Visa endast kataloger i trädsidopanelen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1391,39 +1406,39 @@ msgstr ""
 "Möjliga värden är \"single\" för att aktivera filer med enkelklick eller "
 "\"double\" för att aktivera dem med dubbelklicka."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
 msgstr "Placera etiketter bredvid ikoner"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Reverse sort order in new windows"
 msgstr "Omvänd sorteringsordning i nya fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Show directories first in windows"
 msgstr "Visa kataloger först i fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Show location bar in new windows"
 msgstr "Visa adressrad i nya fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid "Show side bar in new windows"
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+msgid "Show side pane in new windows"
 msgstr "Visa sidopanel i nya fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show status bar in new windows"
 msgstr "Visa statusrad i nya fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Show toolbar in new windows"
 msgstr "Visa verktygsrad i nya fönster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Side pane view"
 msgstr "Sidopanelsvy"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1436,21 +1451,6 @@ msgstr ""
 "\"local_only\" kommer endast förhandsvisningar att spelas på lokala "
 "filsystem. Om detta är satt till \"never\" kommer förhandsvisningar aldrig "
 "att spelas."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid ""
-"Speed tradeoff for when to show a image files as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
-msgstr ""
-"Hastighetskompromiss för när en bildfil ska visas som en miniatyrbild. Om "
-"detta är satt till \"always\" kommer en miniatyrbild alltid att skapas, även "
-"om filen är på en fjärrserver. Om detta är satt till \"local_only\" kommer "
-"endast miniatyrbilder att visas för lokala filsystem. Om detta är satt till "
-"\"never\" kommer miniatyrbilder aldrig att skapas utan endast en allmän ikon "
-"att användas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1469,6 +1469,21 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the directory is on a remote "
+"server. If set to \"local_only\" then only show thumbnails for local "
+"filesystems. If set to \"never\" then never bother to thumbnail images, just "
+"use a generic icon."
+msgstr ""
+"Hastighetskompromiss för när en bildfil ska visas som en miniatyrbild. Om "
+"detta är satt till \"always\" kommer en miniatyrbild alltid att skapas, även "
+"om filen är på en fjärrserver. Om detta är satt till \"local_only\" kommer "
+"endast miniatyrbilder att visas för lokala filsystem. Om detta är satt till "
+"\"never\" kommer miniatyrbilder aldrig att skapas utan endast en allmän ikon "
+"att användas."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+msgid ""
 "Speed tradeoff for when to show the number of items in a directory. If set "
 "to \"always\" then always show item counts, even if the directory is on a "
 "remote server. If set to \"local_only\" then only show counts for local "
@@ -1480,43 +1495,43 @@ msgstr ""
 "endast antal att visas för lokala filsystem. Om detta är satt till \"never\" "
 "kommer objektantal aldrig att beräknas."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
-msgid ""
-"The default sort-order for the item in the icon view. Possible values are "
-"name, size, type, modification_date, emblems."
-msgstr ""
-"Standardsorteringsordningen för objektet i ikonvyn. Möjliga värden är name, "
-"size, type, modification_date och emblems."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+msgstr ""
+"Standardsorteringsordningen för objekt i ikonvyn. Möjliga värden är \"name"
+"\", \"size\", \"type\", \"modification_date\" och \"emblems\"."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
 msgstr ""
-"Standardsorteringsordningen för objektet i listvyn. Möjliga värden är name, "
-"size, type och modification_date."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-msgid "The default width of the sidebar in new windows."
-msgstr "Standardbredden på sidopanelen i nya fönster."
+"Standardsorteringsordningen för objektet i listvyn. Möjliga värden är \"name"
+"\", \"size\", \"type\" och \"modification_date\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+msgid "The default width of the side pane in new windows."
+msgstr "Standardbredden på sidopanelen i nya fönster."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The font description used for the icons on the desktop."
 msgstr "Typsnittsbeskrivningen som används för ikonerna på skrivbordet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The side pane view to show in newly opened windows."
 msgstr "Sidopanelsvyn att visa nyöppnade fönster."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
-"This name can be set if you want a custom name for the home link icon on the "
+"This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"Detta namn kan ställas in om du vill ha ett anpassat namn på hemlänkikonen "
-"på skrivbordet."
+"Detta namn kan ställas in om du vill ha ett anpassat namn på hemikonen på "
+"skrivbordet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1524,34 +1539,21 @@ msgstr ""
 "Detta namn kan ställas in om du vill ha ett anpassat namn på "
 "papperskorgsikonen på skrivbordet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
 msgstr "Papperskorgsikon synlig på skrivbordet"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
 msgstr "Typ av klick som används för att aktivera/öppna filer"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-msgid "Use manual layout new windows"
-msgstr "Använd manuell layout nya fönster"
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-msgid "Use tighter Layout in new windows"
-msgstr "Använd kompaktare layout i nya fönster"
+msgid "Use manual layout in new windows"
+msgstr "Använd manuell layout i nya fönster"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-msgid ""
-"Vast directories, over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
-"Stora kataloger över denna storlek kommer att trunkeras till ungefärligen "
-"denna storlek. Avsikten med detta är att undvika att oavsiktligen spåra ur "
-"och använda för mycket minne och döda nautilus med mycket stora kataloger. "
-"Ett negativt värde innebär att ingen gräns finns. Gränsen är ungefärlig på "
-"grund av den styckvisa inläsningen av kataloger."
+msgid "Use tighter Layout in new windows"
+msgstr "Använd kompaktare layout i nya fönster"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "What to do with executable text files when activated"
@@ -1572,11 +1574,11 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are list_view and "
-"icon_view."
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
 msgstr ""
 "När en mapp besöks används denna visare såvida du inte har valt en annan vy "
-"för denna mapp. Möjliga värden är list_view och icon_view."
+"för denna mapp. Möjliga värden är \"list_view\" och \"icon_view\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "When to show number of items in a directory"
@@ -1617,12 +1619,12 @@ msgid "Whether to show backup files"
 msgstr "Huruvida säkerhetskopior ska visas"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-msgid "Whether to show dotfiles"
-msgstr "Huruvida punktfiler ska visas"
+msgid "Whether to show hidden files"
+msgstr "Huruvida dolda filer ska visas"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-msgid "width of the sidebar"
-msgstr "bredd på sidopanelen"
+msgid "Width of the side pane"
+msgstr "Bredd på sidopanelen"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -3308,99 +3310,99 @@ msgstr "inget"
 msgid "%s's Home"
 msgstr "%.0sHem"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2108
+#: libnautilus-private/nautilus-icon-canvas-item.c:2123
 msgid "file icon"
 msgstr "filikon"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2496
 msgid "editable text"
 msgstr "redigerbar text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "the editable label"
 msgstr "den redigerbara etiketten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2504
 msgid "additional text"
 msgstr "ytterligare text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "some more text"
 msgstr "mer text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2497
+#: libnautilus-private/nautilus-icon-canvas-item.c:2512
 msgid "highlighted for selection"
 msgstr "färgmarkerad för markering"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2513
 msgid "whether we are highlighted for a selection"
 msgstr "huruvida vi är färgmarkerade för en markering"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2505
+#: libnautilus-private/nautilus-icon-canvas-item.c:2520
 msgid "highlighted as keyboard focus"
 msgstr "färgmarkerad som tangentbordsfokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2506
+#: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "huruvida vi är färgmarkerade för att rendera fokus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2514
+#: libnautilus-private/nautilus-icon-canvas-item.c:2529
 msgid "highlighted for drop"
 msgstr "färgmarkerad för släpp"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2515
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "whether we are highlighted for a D&D drop"
 msgstr "huruvida vi är färgmarkerade för ett drag-och-släpp"
 
-#: libnautilus-private/nautilus-icon-container.c:2003
+#: libnautilus-private/nautilus-icon-container.c:2009
 msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
-#: libnautilus-private/nautilus-icon-container.c:3937
+#: libnautilus-private/nautilus-icon-container.c:3943
 msgid "Frame Text"
 msgstr "Rama in text"
 
-#: libnautilus-private/nautilus-icon-container.c:3938
+#: libnautilus-private/nautilus-icon-container.c:3944
 msgid "Draw a frame around unselected text"
 msgstr "Rita en ram runt omarkerad text"
 
-#: libnautilus-private/nautilus-icon-container.c:3944
+#: libnautilus-private/nautilus-icon-container.c:3950
 msgid "Selection Box Color"
 msgstr "Färg på markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:3945
+#: libnautilus-private/nautilus-icon-container.c:3951
 msgid "Color of the selection box"
 msgstr "Färg på markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:3950
+#: libnautilus-private/nautilus-icon-container.c:3956
 msgid "Selection Box Alpha"
 msgstr "Alfa för markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:3951
+#: libnautilus-private/nautilus-icon-container.c:3957
 msgid "Opacity of the selection box"
 msgstr "Opacitet för markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:3958
+#: libnautilus-private/nautilus-icon-container.c:3964
 msgid "Highlight Alpha"
 msgstr "Färgmarkeringsalfa"
 
-#: libnautilus-private/nautilus-icon-container.c:3959
+#: libnautilus-private/nautilus-icon-container.c:3965
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitet för färgmarkeringen för markerade ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:3965
+#: libnautilus-private/nautilus-icon-container.c:3971
 msgid "Light Info Color"
 msgstr "Ljus informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:3966
+#: libnautilus-private/nautilus-icon-container.c:3972
 msgid "Color used for information text against a dark background"
 msgstr "Färg som används för informationstext mot en mörk bakgrund"
 
-#: libnautilus-private/nautilus-icon-container.c:3971
+#: libnautilus-private/nautilus-icon-container.c:3977
 msgid "Dark Info Color"
 msgstr "Mörk informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:3972
+#: libnautilus-private/nautilus-icon-container.c:3978
 msgid "Color used for information text against a light background"
 msgstr "Färg som används för informationstext mot en ljus bakgrund"
 
@@ -5888,11 +5890,11 @@ msgstr "Visa _indexeringsstatus"
 msgid "Show status of indexing used when searching"
 msgstr "Visa statusen för indexeringen som används av sökning"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:220
 msgid "Couldn't Create Required Folder"
 msgstr "Kan inte skapa mapp som krävs"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:221
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5903,11 +5905,11 @@ msgstr ""
 "Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga "
 "rättigheterna för att Nautilus ska kunna skapa den."
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:226
 msgid "Couldn't Create Required Folders"
 msgstr "Kan inte skapa mappar som krävs"
 
-#: src/nautilus-application.c:230
+#: src/nautilus-application.c:227
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5924,21 +5926,21 @@ msgstr ""
 "Innan du kör Nautilus bör du skapa dessa mappar, eller ställa in de "
 "nödvändiga rättigheterna för att Nautilus ska kunna skapa dem."
 
-#: src/nautilus-application.c:301
+#: src/nautilus-application.c:298
 msgid "Link To Old Desktop"
 msgstr "Länk till gammalt skrivbord"
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:314
 msgid ""
-"The location of the desktop directory has changed in Gnome 2.4. A link "
+"The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
-"Platsen för skrivbordskatalogen har ändrats i Gnome 2.4. En länk med namnet "
+"Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. En länk med namnet "
 "\"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan öppna "
 "denna för att flytta över de filer du vill ha och sedan ta bort länken."
 
-#: src/nautilus-application.c:320
+#: src/nautilus-application.c:317
 msgid "Migrated old desktop"
 msgstr "Migrerat gammalt skrivbord"
 
@@ -5952,7 +5954,7 @@ msgstr "Migrerat gammalt skrivbord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:438
+#: src/nautilus-application.c:435
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5963,7 +5965,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:444
+#: src/nautilus-application.c:441
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6009,12 +6011,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:474 src/nautilus-application.c:492
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:471 src/nautilus-application.c:489
+#: src/nautilus-application.c:496
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:475
+#: src/nautilus-application.c:472
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6022,7 +6024,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:493
+#: src/nautilus-application.c:490
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6032,7 +6034,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:500
+#: src/nautilus-application.c:497
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7420,11 +7422,11 @@ msgstr "Zooma så att det passar"
 msgid "Try to fit in window"
 msgstr "Försök att passa i fönster"
 
-#: src/nautilus-zoom-control.c:794
+#: src/nautilus-zoom-control.c:796
 msgid "Zoom"
 msgstr "Zooma"
 
-#: src/nautilus-zoom-control.c:800
+#: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
@@ -7435,6 +7437,87 @@ msgstr "Nätverksservrar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
+
+#~ msgid ""
+#~ "If set to true, Nautilus will only show directories in the tree side "
+#~ "pane. Otherwise it will show both directories and files."
+#~ msgstr ""
+#~ "Om detta är sant kommer Nautilus endast att visa kataloger i "
+#~ "trädsidopanelen. Annars kommer Nautilus att visa både kataloger och filer."
+
+#~ msgid ""
+#~ "The default sort-order for items in the icon view. Possible values are "
+#~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
+#~ msgstr ""
+#~ "Standardsorteringsordningen för objekt i ikonvyn. Möjliga värden är \"name"
+#~ "\", \"size\", \"type\", \"modification_date\" och \"emblems\"."
+
+#~ msgid ""
+#~ "The default sort-order for items in the list view. Possible values are "
+#~ "\"name\", \"size\", \"type\", and \"modification_date\"."
+#~ msgstr ""
+#~ "Standardsorteringsordningen för objekt i listvyn. Möjliga värden är \"name"
+#~ "\", \"size\", \"type\" och \"modification_date\"."
+
+#~ msgid "Criteria for search bar searching."
+#~ msgstr "Kriterium för sökradssökning."
+
+#~ msgid "Default zoom level used by the icon view"
+#~ msgstr "Standardzoomnivå som används av ikonvyn"
+
+#~ msgid "Default zoom level used by the list view"
+#~ msgstr "Standardzoomnivå som används av listvyn"
+
+#~ msgid "Hide default bookmarks in the bookmark menu."
+#~ msgstr "Dölj standardbokmärken i bokmärkesmenyn."
+
+#~ msgid ""
+#~ "If set to true, then hidden files (dotfiles) are shown in the file "
+#~ "manager."
+#~ msgstr ""
+#~ "Om detta är sant kommer dolda filer (punktfiler) att visas i "
+#~ "filhanteraren."
+
+#~ msgid ""
+#~ "Speed tradeoff for when to show a image files as a thumbnail. If set to "
+#~ "\"always\" then always thumbnail, even if the directory is on a remote "
+#~ "server. If set to \"local_only\" then only show thumbnails for local "
+#~ "filesystems. If set to \"never\" then never bother to thumbnail images, "
+#~ "just use a generic icon."
+#~ msgstr ""
+#~ "Hastighetskompromiss för när en bildfil ska visas som en miniatyrbild. Om "
+#~ "detta är satt till \"always\" kommer en miniatyrbild alltid att skapas, "
+#~ "även om filen är på en fjärrserver. Om detta är satt till \"local_only\" "
+#~ "kommer endast miniatyrbilder att visas för lokala filsystem. Om detta är "
+#~ "satt till \"never\" kommer miniatyrbilder aldrig att skapas utan endast "
+#~ "en allmän ikon att användas."
+
+#~ msgid ""
+#~ "The default sort-order for the item in the icon view. Possible values are "
+#~ "name, size, type, modification_date, emblems."
+#~ msgstr ""
+#~ "Standardsorteringsordningen för objektet i ikonvyn. Möjliga värden är "
+#~ "name, size, type, modification_date och emblems."
+
+#~ msgid ""
+#~ "This name can be set if you want a custom name for the home link icon on "
+#~ "the desktop."
+#~ msgstr ""
+#~ "Detta namn kan ställas in om du vill ha ett anpassat namn på "
+#~ "hemlänkikonen på skrivbordet."
+
+#~ msgid "width of the sidebar"
+#~ msgstr "bredd på sidopanelen"
+
+#~ msgid ""
+#~ "The location of the desktop directory has changed in Gnome 2.4. A link "
+#~ "called \"Link To Old Desktop\" has been created on the desktop. You can "
+#~ "open this to move over the files you want, then delete the link."
+#~ msgstr ""
+#~ "Platsen för skrivbordskatalogen har ändrats i Gnome 2.4. En länk med "
+#~ "namnet \"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan "
+#~ "öppna denna för att flytta över de filer du vill ha och sedan ta bort "
+#~ "länken."
 
 #~ msgid "New L_auncher"
 #~ msgstr "Ny st_artare"
@@ -7462,35 +7545,8 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgid "New _Window"
 #~ msgstr "Nytt _fönster"
 
-#~ msgid "Criteria for search bar searching"
-#~ msgstr "Kriterium för sökradssökning"
-
-#~ msgid "Hide default bookmarks in the bookmark menu"
-#~ msgstr "Dölj standardbokmärken i bokmärkesmenyn"
-
 #~ msgid "Show folders first in windows"
 #~ msgstr "Visa mappar först i fönster"
-
-#~ msgid ""
-#~ "Speed tradeoff for when to show an image file as a thumbnail. If set to "
-#~ "\"always\" then always thumbnail, even if the directory is on a remote "
-#~ "server. If set to \"local_only\" then only show thumbnails for local "
-#~ "filesystems. If set to \"never\" then never bother to thumbnail images, "
-#~ "just use a generic icon."
-#~ msgstr ""
-#~ "Hastighetskompromiss för när en bildfil ska visas som en miniatyrbild. Om "
-#~ "detta är satt till \"always\" kommer en miniatyrbild alltid att skapas, "
-#~ "även om filen är på en fjärrserver. Om detta är satt till \"local_only\" "
-#~ "kommer endast miniatyrbilder att visas för lokala filsystem. Om detta är "
-#~ "satt till \"never\" kommer miniatyrbilder aldrig att skapas utan endast "
-#~ "en allmän ikon att användas."
-
-#~ msgid ""
-#~ "The default sort-order for the items in the icon view. Possible values "
-#~ "are name, size, type, modification_date, emblems."
-#~ msgstr ""
-#~ "Standardsorteringsordningen för objektet i ikonvyn. Möjliga värden är "
-#~ "name, size, type, modification_date och emblems."
 
 #~ msgid ""
 #~ "The default sort-order for the items in the list view. Possible values "
@@ -7498,16 +7554,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgstr ""
 #~ "Standardsorteringsordningen för objektet i listvyn. Möjliga värden är "
 #~ "name, size, type och modification_date."
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the home icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Detta namn kan ställas in om du vill ha ett anpassat namn på hemikonen på "
-#~ "skrivbordet."
-
-#~ msgid "Width of the sidebar"
-#~ msgstr "Bredd på sidopanelen"
 
 #~ msgid "_Names"
 #~ msgstr "_Namn"
@@ -7517,16 +7563,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
 #~ msgid "Link to old desktop"
 #~ msgstr "Länk till gammalt skrivbord"
-
-#~ msgid ""
-#~ "The location of the desktop directory has changed in GNOME 2.4. A link "
-#~ "called \"Link To Old Desktop\" has been created on the desktop. You can "
-#~ "open this to move over the files you want, then delete the link."
-#~ msgstr ""
-#~ "Platsen för skrivbordskatalogen har ändrats i GNOME 2.4. En länk med "
-#~ "namnet \"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan "
-#~ "öppna denna för att flytta över de filer du vill ha och sedan ta bort "
-#~ "länken."
 
 #~ msgid "_Location"
 #~ msgstr "_Plats"
