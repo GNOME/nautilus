@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-11 16:08+0200\n"
+"POT-Creation-Date: 2004-10-13 22:21+0200\n"
 "PO-Revision-Date: 2003-11-18 11:27+0100\n"
 "Last-Translator: Gnome PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -2057,7 +2057,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4315
-#: src/file-manager/fm-directory-view.c:1815
+#: src/file-manager/fm-directory-view.c:1818
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3429,7 +3429,7 @@ msgstr "Zmiana sposobu zarządzania plikami"
 msgid "File Management"
 msgstr "Zarządzanie plikami"
 
-#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1086
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1119
 msgid "Home Folder"
 msgstr "Folder domowy"
 
@@ -3455,7 +3455,7 @@ msgstr "Tło"
 msgid "Empty Trash"
 msgstr "Opróżnij śmietnik"
 
-#: src/file-manager/fm-directory-view.c:526
+#: src/file-manager/fm-directory-view.c:529
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
@@ -3463,11 +3463,11 @@ msgstr[0] "Otworzyć %d okno?"
 msgstr[1] "Otworzyć %d okina?"
 msgstr[2] "Otworzyć %d okien?"
 
-#: src/file-manager/fm-directory-view.c:527
+#: src/file-manager/fm-directory-view.c:530
 msgid "Are you sure you want to open all files?"
 msgstr "Czy na pewno chcesz otowrzyć wszystkie pliki?"
 
-#: src/file-manager/fm-directory-view.c:528 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:531 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3475,12 +3475,12 @@ msgstr[0] "Spowoduje to otwarcie %d niezależnego okna."
 msgstr[1] "Spowoduje to otwarcie %d niezależnych okien."
 msgstr[2] "Spowoduje to otwarcie %d niezależnych okien."
 
-#: src/file-manager/fm-directory-view.c:852
+#: src/file-manager/fm-directory-view.c:855
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Czy na pewno chcesz trwale usunąć \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:856
+#: src/file-manager/fm-directory-view.c:859
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -3489,29 +3489,29 @@ msgstr[0] "Czy na pewno chcesz trwale usunąć %d zaznaczony element?"
 msgstr[1] "Czy na pewno chcesz trwale usunąć %d zaznaczone elementy?"
 msgstr[2] "Czy na pewno chcesz trwale usunąć %d zaznaczonych elementów?"
 
-#: src/file-manager/fm-directory-view.c:864
+#: src/file-manager/fm-directory-view.c:867
 msgid "If you delete an item, it is permanently lost."
 msgstr "Jeżeli usuniesz element, zostanie on bezpowrotnie utracony."
 
-#: src/file-manager/fm-directory-view.c:865
+#: src/file-manager/fm-directory-view.c:868
 msgid "Delete?"
 msgstr "Usunąć?"
 
 # FIXME - ustalić czy chodzi o wyrażenie (pattern) czy o deseń
-#: src/file-manager/fm-directory-view.c:1004
+#: src/file-manager/fm-directory-view.c:1007
 msgid "Select Pattern"
 msgstr "Wybierz wyrażenie"
 
-#: src/file-manager/fm-directory-view.c:1020
+#: src/file-manager/fm-directory-view.c:1023
 msgid "_Pattern:"
 msgstr "Wyraż_enie:"
 
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1750
 #, c-format
 msgid "\"%s\" selected"
 msgstr "Zaznaczone \"%s\""
 
-#: src/file-manager/fm-directory-view.c:1749
+#: src/file-manager/fm-directory-view.c:1752
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -3519,7 +3519,7 @@ msgstr[0] "Zaznaczone %d folder"
 msgstr[1] "Zaznaczone %d foldery"
 msgstr[2] "Zaznaczone %d folderów"
 
-#: src/file-manager/fm-directory-view.c:1759
+#: src/file-manager/fm-directory-view.c:1762
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -3528,7 +3528,7 @@ msgstr[1] " (zawiera %d elementy)"
 msgstr[2] " (zawiera %d elementów)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1770
+#: src/file-manager/fm-directory-view.c:1773
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -3536,12 +3536,12 @@ msgstr[0] " (zawierających razem %d element)"
 msgstr[1] " (zawierających razem %d elementy)"
 msgstr[2] " (zawierających razem %d elementów)"
 
-#: src/file-manager/fm-directory-view.c:1786
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "Zaznaczone \"%s\" (%s)"
 
-#: src/file-manager/fm-directory-view.c:1790
+#: src/file-manager/fm-directory-view.c:1793
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -3550,7 +3550,7 @@ msgstr[1] "Zaznaczone %d elementy (%s)"
 msgstr[2] "Zaznaczone %d elementów (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1798
+#: src/file-manager/fm-directory-view.c:1801
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -3558,7 +3558,7 @@ msgstr[0] "Zaznaczony %d inny element (%s)"
 msgstr[1] "Zaznaczone %d inne elementy (%s)"
 msgstr[2] "Zaznaczonych %d innych elementów (%s)"
 
-#: src/file-manager/fm-directory-view.c:1819
+#: src/file-manager/fm-directory-view.c:1822
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, wolna przestrzeń: %s"
@@ -3570,7 +3570,7 @@ msgstr "%s, wolna przestrzeń: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1844
+#: src/file-manager/fm-directory-view.c:1847
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3579,51 +3579,51 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1969
+#: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Folder \"%s\" zawiera więcej plików, niż może obsłużyć program Nautilus."
 
-#: src/file-manager/fm-directory-view.c:1975
+#: src/file-manager/fm-directory-view.c:1978
 msgid "Some files will not be displayed."
 msgstr "Część plików nie będzie wyświetlona."
 
-#: src/file-manager/fm-directory-view.c:1976
+#: src/file-manager/fm-directory-view.c:1979
 msgid "Too Many Files"
 msgstr "Zbyt wiele plików"
 
-#: src/file-manager/fm-directory-view.c:3235
+#: src/file-manager/fm-directory-view.c:3238
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Nie można przenieść pliku do śmietnika, czy chcesz go trwale usunąć?"
 
-#: src/file-manager/fm-directory-view.c:3236
+#: src/file-manager/fm-directory-view.c:3239
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Nie można przenieść pliku \"%s\" do śmietnika."
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3243
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Nie można przenieść elementów do śmietnika, czy chcesz je trwale usunąć?"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3246
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Nie można przenieść części elementów do śmietnika, czy chcesz je trwale "
 "usunąć?"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3253
 msgid "Delete Immediately?"
 msgstr "Usunąć natychmiast?"
 
-#: src/file-manager/fm-directory-view.c:3282
+#: src/file-manager/fm-directory-view.c:3285
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Czy na pewno chcesz trwale usunąć \"%s\" ze śmietnika?"
 
-#: src/file-manager/fm-directory-view.c:3286
+#: src/file-manager/fm-directory-view.c:3289
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -3638,56 +3638,56 @@ msgstr[1] ""
 msgstr[2] ""
 "Czy na pewno chcesz trwale usunąć %d zaznaczonych elementów ze śmietnika?"
 
-#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/fm-directory-view.c:3298
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Jeżeli usuniesz element, zostanie on bezpowrotnie utracony."
 
-#: src/file-manager/fm-directory-view.c:3296
+#: src/file-manager/fm-directory-view.c:3299
 msgid "Delete From Trash?"
 msgstr "Usunąć ze śmietnika?"
 
-#: src/file-manager/fm-directory-view.c:3671
+#: src/file-manager/fm-directory-view.c:3674
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Otwórz za pomocą \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3672
+#: src/file-manager/fm-directory-view.c:3675
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Otwiera zaznaczony element za pomocą \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3750
+#: src/file-manager/fm-directory-view.c:3753
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Czy chcesz uruchomić \"%s\", czy wyświetlić jego zawartość?"
 
-#: src/file-manager/fm-directory-view.c:3752
+#: src/file-manager/fm-directory-view.c:3755
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" jest uruchamialnym plikiem tekstowym."
 
-#: src/file-manager/fm-directory-view.c:3758
+#: src/file-manager/fm-directory-view.c:3761
 msgid "Run or Display?"
 msgstr "Uruchomić czy wyświetlić?"
 
-#: src/file-manager/fm-directory-view.c:3759
+#: src/file-manager/fm-directory-view.c:3762
 msgid "Run in _Terminal"
 msgstr "Uruchom w _terminalu"
 
-#: src/file-manager/fm-directory-view.c:3760
+#: src/file-manager/fm-directory-view.c:3763
 msgid "_Display"
 msgstr "_Wyświetl"
 
-#: src/file-manager/fm-directory-view.c:3763
+#: src/file-manager/fm-directory-view.c:3766
 msgid "_Run"
 msgstr "U_ruchom"
 
-#: src/file-manager/fm-directory-view.c:4107
+#: src/file-manager/fm-directory-view.c:4114
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nie można otworzyć %s"
 
-#: src/file-manager/fm-directory-view.c:4110
+#: src/file-manager/fm-directory-view.c:4117
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3709,23 +3709,23 @@ msgstr ""
 "wybrać z menu \"Otwórz za pomocą\" aby wybrać odpowiednią aplikację dla "
 "pliku."
 
-#: src/file-manager/fm-directory-view.c:4496
+#: src/file-manager/fm-directory-view.c:4508
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Uruchamia skrypt \"%s\" na zaznaczonych elementach"
 
-#: src/file-manager/fm-directory-view.c:4730
+#: src/file-manager/fm-directory-view.c:4742
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Utworzenie dokumentu z szablonu \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4914
+#: src/file-manager/fm-directory-view.c:4926
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Wszystkie pliki wykonywalne umieszczone w tym folderze pojawią się w menu "
 "Skrypty."
 
-#: src/file-manager/fm-directory-view.c:4916
+#: src/file-manager/fm-directory-view.c:4928
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3733,11 +3733,11 @@ msgstr ""
 "Wybranie skryptu z menu spowoduje uruchomienie go, wraz z przekazaniem na "
 "wejściezaznaczonych elementów."
 
-#: src/file-manager/fm-directory-view.c:4918
+#: src/file-manager/fm-directory-view.c:4930
 msgid "About Scripts"
 msgstr "Informacje o skryptach"
 
-#: src/file-manager/fm-directory-view.c:4919
+#: src/file-manager/fm-directory-view.c:4931
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3779,19 +3779,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: położenie i rozmiar bieżącego okna"
 
-#: src/file-manager/fm-directory-view.c:5097
-#: src/file-manager/fm-tree-view.c:788
+#: src/file-manager/fm-directory-view.c:5109
+#: src/file-manager/fm-tree-view.c:821
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "Po wybraniu polecenia Wklej pliki zostanie przeniesiony \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5101
-#: src/file-manager/fm-tree-view.c:792
+#: src/file-manager/fm-directory-view.c:5113
+#: src/file-manager/fm-tree-view.c:825
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "Po wybraniu polecenia Wklej pliki zostanie skopiowany \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5108
+#: src/file-manager/fm-directory-view.c:5120
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3807,7 +3807,7 @@ msgstr[2] ""
 "Przeniesienie %d zaznaczonych elementów nastąpi po wybraniu polecenia Wklej "
 "pliki"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5127
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3823,59 +3823,59 @@ msgstr[2] ""
 "Skopiowanie %d zaznaczanych elementów nastąpi po wybraniu polecenia Wklej "
 "pliki"
 
-#: src/file-manager/fm-directory-view.c:5198
-#: src/file-manager/fm-tree-view.c:868
+#: src/file-manager/fm-directory-view.c:5210
+#: src/file-manager/fm-tree-view.c:901
 msgid "There is nothing on the clipboard to paste."
 msgstr "Schowek nie zawiera niczego do wklejenia."
 
-#: src/file-manager/fm-directory-view.c:5306
-#: src/file-manager/fm-directory-view.c:6551
+#: src/file-manager/fm-directory-view.c:5318
+#: src/file-manager/fm-directory-view.c:6567
 msgid "Mount Error"
 msgstr "Błąd przy montowaniu"
 
-#: src/file-manager/fm-directory-view.c:5368
+#: src/file-manager/fm-directory-view.c:5380
 msgid "Eject Error"
 msgstr "Błąd przy wysuwaniu"
 
-#: src/file-manager/fm-directory-view.c:5371
+#: src/file-manager/fm-directory-view.c:5383
 msgid "Unmount Error"
 msgstr "Błąd przy odmontowywaniu"
 
-#: src/file-manager/fm-directory-view.c:5495
+#: src/file-manager/fm-directory-view.c:5507
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Połączenie z serwerem %s"
 
-#: src/file-manager/fm-directory-view.c:5500
+#: src/file-manager/fm-directory-view.c:5512
 msgid "_Connect"
 msgstr "_Połącz"
 
-#: src/file-manager/fm-directory-view.c:5514
+#: src/file-manager/fm-directory-view.c:5526
 msgid "Link _name:"
 msgstr "_Nazwa dowiązania:"
 
-#: src/file-manager/fm-directory-view.c:5831
+#: src/file-manager/fm-directory-view.c:5843
 msgid "E_ject"
 msgstr "Wy_suń"
 
-#: src/file-manager/fm-directory-view.c:5831
+#: src/file-manager/fm-directory-view.c:5843
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "O_dmontuj wolumin"
 
-#: src/file-manager/fm-directory-view.c:5975
+#: src/file-manager/fm-directory-view.c:5991
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Otwórz za pomocą \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5987
+#: src/file-manager/fm-directory-view.c:6003
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Otwórz"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5996
-#: src/file-manager/fm-tree-view.c:960
+#: src/file-manager/fm-directory-view.c:6012
+#: src/file-manager/fm-tree-view.c:993
 #, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
@@ -3883,94 +3883,94 @@ msgstr[0] "Otwórz w nowym oknie"
 msgstr[1] "Otwórz w %d nowych oknach"
 msgstr[2] "Otwórz w %d nowych oknach"
 
-#: src/file-manager/fm-directory-view.c:6003
+#: src/file-manager/fm-directory-view.c:6019
 msgid "Browse Folder"
 msgstr "Przeglądaj folder"
 
-#: src/file-manager/fm-directory-view.c:6005
+#: src/file-manager/fm-directory-view.c:6021
 msgid "Browse Folders"
 msgstr "Przeglądaj foldery"
 
-#: src/file-manager/fm-directory-view.c:6028
+#: src/file-manager/fm-directory-view.c:6044
 msgid "_Delete from Trash"
 msgstr "_Usuń ze ś_mietnika"
 
-#: src/file-manager/fm-directory-view.c:6030
+#: src/file-manager/fm-directory-view.c:6046
 msgid "Delete all selected items permanently"
 msgstr "Usuń trwale wszystkie zaznaczone elementy"
 
-#: src/file-manager/fm-directory-view.c:6033
-#: src/file-manager/fm-directory-view.c:6383
+#: src/file-manager/fm-directory-view.c:6049
+#: src/file-manager/fm-directory-view.c:6399
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "Wyrzuć do śmie_tnika"
 
-#: src/file-manager/fm-directory-view.c:6035
+#: src/file-manager/fm-directory-view.c:6051
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Przenosi każdy z zaznaczonych elementów do śmietnika"
 
-#: src/file-manager/fm-directory-view.c:6059
+#: src/file-manager/fm-directory-view.c:6075
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "_Usuń"
 
-#: src/file-manager/fm-directory-view.c:6079
+#: src/file-manager/fm-directory-view.c:6095
 msgid "Ma_ke Links"
 msgstr "Utwórz _dowiązania"
 
-#: src/file-manager/fm-directory-view.c:6080
+#: src/file-manager/fm-directory-view.c:6096
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Utwórz _dowiązanie"
 
-#: src/file-manager/fm-directory-view.c:6093
+#: src/file-manager/fm-directory-view.c:6109
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "_Opróżnij śmietnik"
 
-#: src/file-manager/fm-directory-view.c:6109
+#: src/file-manager/fm-directory-view.c:6125
 msgid "Cu_t File"
 msgstr "_Wytnij plik"
 
-#: src/file-manager/fm-directory-view.c:6110
+#: src/file-manager/fm-directory-view.c:6126
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "_Wytnij pliki"
 
-#: src/file-manager/fm-directory-view.c:6119
+#: src/file-manager/fm-directory-view.c:6135
 msgid "_Copy File"
 msgstr "S_kopiuj plik"
 
-#: src/file-manager/fm-directory-view.c:6120
+#: src/file-manager/fm-directory-view.c:6136
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "S_kopiuj pliki"
 
-#: src/file-manager/fm-directory-view.c:6374
+#: src/file-manager/fm-directory-view.c:6390
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Dowiązanie jest uszkodzone, czy chcesz przenieść je do śmietnika?"
 
-#: src/file-manager/fm-directory-view.c:6376
+#: src/file-manager/fm-directory-view.c:6392
 msgid "This link can't be used, because it has no target."
 msgstr "Nie można użyć dowiązania, ponieważ nie ma ono przypisanego celu."
 
-#: src/file-manager/fm-directory-view.c:6378
+#: src/file-manager/fm-directory-view.c:6394
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Nie można użyć dowiązania, ponieważ przypisany mu cel \"%s\" nie istnieje."
 
-#: src/file-manager/fm-directory-view.c:6383
+#: src/file-manager/fm-directory-view.c:6399
 msgid "Broken Link"
 msgstr "Uszkodzone dowiązanie"
 
-#: src/file-manager/fm-directory-view.c:6687
+#: src/file-manager/fm-directory-view.c:6703
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otwieranie \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6694
+#: src/file-manager/fm-directory-view.c:6710
 msgid "Cancel Open?"
 msgstr "Anulować otwarcie?"
 
@@ -4204,21 +4204,21 @@ msgstr "Przywróć p_ierwotny rozmiar ikony"
 msgid "pointing at \"%s\""
 msgstr "Wskazanie \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2619 src/file-manager/fm-icon-view.c:2643
+#: src/file-manager/fm-icon-view.c:2620 src/file-manager/fm-icon-view.c:2644
 msgid "Drag and drop is not supported."
 msgstr "Przeciąganie i upuszczanie obiektów nie jest obsługiwane."
 
-#: src/file-manager/fm-icon-view.c:2620
+#: src/file-manager/fm-icon-view.c:2621
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Przeciąganie i upuszczanie obiektów jest obsługiwane tylko w lokalnym "
 "systemie plików."
 
-#: src/file-manager/fm-icon-view.c:2621 src/file-manager/fm-icon-view.c:2645
+#: src/file-manager/fm-icon-view.c:2622 src/file-manager/fm-icon-view.c:2646
 msgid "Drag and Drop Error"
 msgstr "Błąd przy obsłudze przeciągania i upuszczania."
 
-#: src/file-manager/fm-icon-view.c:2644
+#: src/file-manager/fm-icon-view.c:2645
 msgid "An invalid drag type was used."
 msgstr "Użyto niepoprawnego typu przeciąganych danych."
 
@@ -4273,7 +4273,7 @@ msgid "Images Only"
 msgstr "Tylko obrazy"
 
 #: src/file-manager/fm-properties-window.c:919
-#: src/file-manager/fm-tree-view.c:1053
+#: src/file-manager/fm-tree-view.c:1086
 msgid "Properties"
 msgstr "Właściwości"
 
@@ -4514,36 +4514,36 @@ msgstr "(Pusty)"
 msgid "Loading..."
 msgstr "Wczytywanie..."
 
-#: src/file-manager/fm-tree-view.c:949
+#: src/file-manager/fm-tree-view.c:982
 msgid "Open"
 msgstr "Otwórz"
 
 #. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:973
+#: src/file-manager/fm-tree-view.c:1006
 msgid "Create Folder"
 msgstr "Utwórz folder"
 
-#: src/file-manager/fm-tree-view.c:989
+#: src/file-manager/fm-tree-view.c:1022
 msgid "Cut Folder"
 msgstr "Wytnij folder"
 
-#: src/file-manager/fm-tree-view.c:1003
+#: src/file-manager/fm-tree-view.c:1036
 msgid "Copy Folder"
 msgstr "Skopiuj folder"
 
-#: src/file-manager/fm-tree-view.c:1017
+#: src/file-manager/fm-tree-view.c:1050
 msgid "Paste Files into Folder"
 msgstr "Wklej pliki do folderu"
 
-#: src/file-manager/fm-tree-view.c:1035
+#: src/file-manager/fm-tree-view.c:1068
 msgid "Move to Trash"
 msgstr "Wyrzuć do śmietnika"
 
-#: src/file-manager/fm-tree-view.c:1088
+#: src/file-manager/fm-tree-view.c:1121
 msgid "Filesystem"
 msgstr "System plików"
 
-#: src/file-manager/fm-tree-view.c:1090
+#: src/file-manager/fm-tree-view.c:1123
 msgid "Network Neighbourhood"
 msgstr "Otoczenie sieciowe"
 
@@ -5591,41 +5591,41 @@ msgstr "nautilus: --check nie może być użyte z innymi opcjami.\n"
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nie może być użyte z więcej niż jednym URI.\n"
 
-#: src/nautilus-navigation-window.c:337
+#: src/nautilus-navigation-window.c:352
 msgid "Information"
 msgstr "Informacja"
 
-#: src/nautilus-navigation-window.c:686
+#: src/nautilus-navigation-window.c:701
 #, c-format
 msgid "File Browser: %s"
 msgstr "Przeglądarka pliku: %s"
 
-#: src/nautilus-navigation-window.c:1070
+#: src/nautilus-navigation-window.c:1092
 msgid "One of the side panels encountered an error and can't continue."
 msgstr "Jeden z bocznych paneli został zakończony z powodu błędu."
 
-#: src/nautilus-navigation-window.c:1071
+#: src/nautilus-navigation-window.c:1093
 msgid "Unfortunately I couldn't tell which one."
 msgstr "Niestety nie można stwierdzić o który panel chodzi."
 
-#: src/nautilus-navigation-window.c:1074
+#: src/nautilus-navigation-window.c:1096
 #, c-format
 msgid "The %s side panel encountered an error and can't continue."
 msgstr "Boczny panel %s został zakończony z powodu błędu."
 
-#: src/nautilus-navigation-window.c:1075
+#: src/nautilus-navigation-window.c:1097
 msgid "If this keeps happening, you might want to turn this panel off."
 msgstr "Jeśli będzie się to zdarzać częściej, wyłącz ten panel."
 
-#: src/nautilus-navigation-window.c:1078
+#: src/nautilus-navigation-window.c:1100
 msgid "Side Panel Failed"
 msgstr "Błąd bocznego panelu"
 
-#: src/nautilus-navigation-window.c:1209
+#: src/nautilus-navigation-window.c:1231
 msgid "Side Pane"
 msgstr "Panel boczny"
 
-#: src/nautilus-navigation-window.c:1211
+#: src/nautilus-navigation-window.c:1233
 msgid "Contains a side pane view"
 msgstr "Zawiera widok paska bocznego"
 
@@ -5760,86 +5760,94 @@ msgid "Location _Bar"
 msgstr "Pasek p_ołożenia"
 
 #: src/nautilus-navigation-window-ui.xml.h:22
+msgid "Open New _Window"
+msgstr "Otwórz nowe o_kno"
+
+#: src/nautilus-navigation-window-ui.xml.h:23
+msgid "Open another Nautilus window for the displayed location"
+msgstr "Otwiera nowe okno Nautilusa dla wyświetlanego położenia"
+
+#: src/nautilus-navigation-window-ui.xml.h:24
 msgid "Reload"
 msgstr "Odśwież"
 
-#: src/nautilus-navigation-window-ui.xml.h:23 src/nautilus-shell-ui.xml.h:17
+#: src/nautilus-navigation-window-ui.xml.h:25 src/nautilus-shell-ui.xml.h:17
 msgid "Search this computer for files"
 msgstr "Przeszukuje komputer w poszukiwaniu plików"
 
-#: src/nautilus-navigation-window-ui.xml.h:24
+#: src/nautilus-navigation-window-ui.xml.h:26
 msgid "St_atusbar"
 msgstr "Pasek _stanu"
 
-#: src/nautilus-navigation-window-ui.xml.h:25
+#: src/nautilus-navigation-window-ui.xml.h:27
 msgid "Stop"
 msgstr "Zatrzymaj"
 
-#: src/nautilus-navigation-window-ui.xml.h:26
+#: src/nautilus-navigation-window-ui.xml.h:28
 msgid "Up"
 msgstr "Góra"
 
-#: src/nautilus-navigation-window-ui.xml.h:27
+#: src/nautilus-navigation-window-ui.xml.h:29
 msgid "_Add Bookmark"
 msgstr "_Dodaj do Ulubionych"
 
-#: src/nautilus-navigation-window-ui.xml.h:28
+#: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Back"
 msgstr "_Wstecz"
 
-#: src/nautilus-navigation-window-ui.xml.h:29
+#: src/nautilus-navigation-window-ui.xml.h:31
 msgid "_Bookmarks"
 msgstr "Ulu_bione"
 
-#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Clear History"
 msgstr "Wyc_zyść historię"
 
-#: src/nautilus-navigation-window-ui.xml.h:31
+#: src/nautilus-navigation-window-ui.xml.h:33
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Computer"
 msgstr "_Komputer"
 
-#: src/nautilus-navigation-window-ui.xml.h:32
+#: src/nautilus-navigation-window-ui.xml.h:34
 msgid "_Edit Bookmarks"
 msgstr "Z_modyfikuj Ulubione"
 
-#: src/nautilus-navigation-window-ui.xml.h:33
+#: src/nautilus-navigation-window-ui.xml.h:35
 msgid "_Forward"
 msgstr "_Naprzód"
 
-#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Go"
 msgstr "Przej_dź"
 
-#: src/nautilus-navigation-window-ui.xml.h:35
+#: src/nautilus-navigation-window-ui.xml.h:37
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "Do_m"
 
-#: src/nautilus-navigation-window-ui.xml.h:36
+#: src/nautilus-navigation-window-ui.xml.h:38
 msgid "_Location..."
 msgstr "P_ołożenie..."
 
-#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-navigation-window-ui.xml.h:39
 msgid "_Side Pane"
 msgstr "Panel paska _bocznego"
 
-#: src/nautilus-navigation-window-ui.xml.h:38
+#: src/nautilus-navigation-window-ui.xml.h:40
 #: src/nautilus-spatial-window-ui.xml.h:17
 msgid "_Templates"
 msgstr "Sza_blony"
 
-#: src/nautilus-navigation-window-ui.xml.h:39
+#: src/nautilus-navigation-window-ui.xml.h:41
 #: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "Ś_mietnik"
 
-#: src/nautilus-navigation-window-ui.xml.h:40
+#: src/nautilus-navigation-window-ui.xml.h:42
 msgid "_Up"
 msgstr "_Góra"
 
-#: src/nautilus-navigation-window-ui.xml.h:41 src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-navigation-window-ui.xml.h:43 src/nautilus-shell-ui.xml.h:46
 msgid "_View"
 msgstr "_Widok"
 
