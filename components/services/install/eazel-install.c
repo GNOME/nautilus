@@ -86,6 +86,8 @@ main (int argc, char* argv[]) {
 	InstallOptions *iopts;
 	poptContext pctx;
 	char* config_file;
+	char* hostname;
+	char* remote_path;
 		
 	struct poptOption optionsTable[] = {
 		{ "help", 'h', 0, NULL, 'h' }, 
@@ -106,6 +108,9 @@ main (int argc, char* argv[]) {
 	UNINSTALL_MODE = FALSE;
 
 	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
+	hostname = g_strdup ("10.1.1.5");
+	remote_path = g_strdup ("/package-list.xml");
+	
 /*
 	if (argc < 2) {
 		show_usage (1, "\n***You must specify the protocol!***\n");
@@ -151,11 +156,6 @@ main (int argc, char* argv[]) {
 
 	poptFreeContext (pctx);
 
-	if ( USE_FTP || USE_HTTP == TRUE ) {
-		fprintf (stderr, "***Only local installs are currently supported right now!***\n");
-		exit (1);
-	}
-
 	retval = check_for_root_user ();
 	if (retval == FALSE) {
 		fprintf (stderr, "***You must run eazel-install as root!***\n");
@@ -177,11 +177,21 @@ main (int argc, char* argv[]) {
 		dump_install_options (iopts);
 	}
 */
-	/* Do the install */
+
+	if ( USE_FTP == TRUE ) {
+		fprintf (stderr, "***FTP installs are not currently supported !***\n");
+		exit (1);
+	}
+	else if (USE_HTTP == TRUE) {
+		iopts->protocol = PROTOCOL_HTTP;
+	}
+	else {
+		iopts->protocol = PROTOCOL_LOCAL;
+	}
 
 	if (iopts->mode_silent && iopts->mode_verbose == TRUE) {
 		fprintf (stderr, "***You cannot specify verbose and silent modes\n"
-						 "   at the same time !\n");
+						 "   at the same time !***\n");
 		exit (1);
 	}
 
@@ -189,6 +199,19 @@ main (int argc, char* argv[]) {
 		iopts->mode_test = TRUE;
 	}
 	
+	if (iopts->protocol == PROTOCOL_HTTP) {
+
+		g_print ("Getting package-list.xml from remote server ...\n");
+		
+		retval = http_fetch_xml_package_list (hostname,
+											  iopts->port_number,
+											  remote_path,
+											  iopts->pkg_list_file);
+		if (retval == FALSE) {
+			fprintf (stderr, "***Unable to retrieve package-list.xml !***\n");
+			exit (1);
+		}
+	}
 	if (UNINSTALL_MODE == TRUE) {
 		iopts->mode_uninstall = TRUE;
 
@@ -201,12 +224,12 @@ main (int argc, char* argv[]) {
 	else {
 		retval = install_new_packages (iopts);
 		if (retval == FALSE) {
-			fprintf (stderr, "***The install failed!***\n");
+			fprintf (stderr, "***The install failed !***\n");
 			exit (1);
 		}
 	}
 
-	g_print ("***Install completed normally.***\n");
+	g_print ("Install completed normally...\n");
 	g_free (config_file);
 	g_free (iopts);
 	exit (0);

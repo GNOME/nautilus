@@ -64,7 +64,7 @@ install_new_packages (InstallOptions* iopts) {
 	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
 
 	g_print ("Reading the install package list ...\n");
-	categories = fetch_xml_package_list_local (iopts->pkg_list_file);
+	categories = parse_local_xml_package_list (iopts->pkg_list_file);
 
 	while (categories) {
 		CategoryData* c = categories->data;
@@ -133,7 +133,7 @@ uninstall_packages (InstallOptions* iopts) {
 	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
 
 	g_print ("Reading the uninstall package list ...\n");
-	categories = fetch_xml_package_list_local (iopts->pkg_list_file);
+	categories = parse_local_xml_package_list (iopts->pkg_list_file);
 
 	while (categories) {
 		CategoryData* c = categories->data;

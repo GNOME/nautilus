@@ -32,5 +32,6 @@ eazel_install_LDFLAGS =			\
 	-lrpm						\
 	-lpopt						\
 	-lxml						\
+	-lgnet						\
 	$(NULL)
 

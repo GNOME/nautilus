@@ -30,6 +30,8 @@
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
+static xmlDoc* prune_xml (char* xmlbuf);
+static gboolean create_default_configuration_metafile (void);
 
 char*
 xml_get_value (xmlNode* node, const char* name) {
@@ -253,7 +255,7 @@ parse_category (xmlNode* cat) {
 } /* end parse_category */
 
 GList*
-fetch_xml_package_list_local (const char* pkg_list_file) {
+parse_local_xml_package_list (const char* pkg_list_file) {
 	GList* rv;
 	xmlDocPtr doc;
 	xmlNodePtr base;
@@ -302,6 +304,118 @@ fetch_xml_package_list_local (const char* pkg_list_file) {
 	
 } /*end fetch_xml_packages_local */
 
+static xmlDoc*
+prune_xml (char* xmlbuf) {
+	xmlDocPtr doc;
+	char* newbuf;
+	int length;
+	int i;
+
+	newbuf = strstr(xmlbuf, "<?xml");
+	if (!newbuf) {
+		return NULL;
+	}
+	length = strlen (newbuf);
+	for (i = 0; i < length; i++) {
+		if (newbuf[i] == '\0') {
+			newbuf[i] = ' ';
+		}
+	}
+	newbuf[length] = '\0';
+	doc = xmlParseMemory (newbuf, length);
+
+	if (!doc) {
+		fprintf(stderr, "***Could not prune package file !***\n");
+		return NULL;
+	}
+
+	return doc;
+} /* end prune_xml */
+
+gboolean
+http_fetch_xml_package_list (const char* hostname,
+							 int port,
+							 const char* path,
+							 const char* pkg_list_file) {
+
+	GInetAddr* addr;
+	GTcpSocket* socket;
+	GIOChannel* iochannel;
+	char* request;
+	char* xmlbuf;
+	GIOError error;
+	guint bytes;
+	xmlDocPtr doc;
+
+	xmlbuf = "";
+
+	/* Create the socket address */
+
+	addr = gnet_inetaddr_new (hostname, port);
+	g_assert (addr != NULL);
+
+	/* Create the socket */
+	socket = gnet_tcp_socket_new (addr);
+	g_assert (socket != NULL);
+
+	/* Get an IOChannel */
+	iochannel = gnet_tcp_socket_get_iochannel (socket);
+	g_assert (iochannel != NULL);
+
+	/* Make the request */
+	request = g_strdup_printf ("GET %s HTTP/1.0\r\n\r\n", path);
+	error = gnet_io_channel_writen (iochannel, request, strlen(request), &bytes);
+	g_free(request);
+
+	if (error != G_IO_ERROR_NONE) {
+		g_warning("Unable to connect to host: %d\n", error);
+	}
+
+	/* Read the returned info */
+	while (1) {
+		char* buffer;
+
+		buffer = g_new0(char, 1024);
+		
+		error = g_io_channel_read(iochannel, buffer, sizeof(buffer), &bytes);
+		if (error != G_IO_ERROR_NONE) {
+			g_warning ("Read Error: %d\n", error);
+			break;
+		}
+		if (bytes == 0) {
+			break;
+		}
+		xmlbuf = g_strconcat (xmlbuf, buffer, NULL);
+		g_free (buffer);
+	}
+	g_io_channel_unref (iochannel);
+	gnet_tcp_socket_delete (socket);
+
+	if (strstr (xmlbuf, "HTTP1.0 404") || strstr (xmlbuf, "HTTP/1.1 404")) {
+		fprintf (stderr, "***File %s not found !***\n", path);
+		return FALSE;
+	}
+	if (strstr (xmlbuf, "HTTP1.0 403") || strstr (xmlbuf, "HTTP/1.1 403")) {
+		fprintf (stderr, "***Server denied access !***\n");
+		return FALSE;
+	}
+	if (strstr (xmlbuf, "HTTP1.0 400") || strstr (xmlbuf, "HTTP/1.1 400")) {
+		fprintf (stderr, "***Server could not understand the request !***\n");
+		return FALSE;
+	}
+
+	doc = prune_xml (xmlbuf);
+	if (!doc) {
+		fprintf (stderr, "***Unable to read package file !***\n");
+		return FALSE;
+	}
+
+	xmlSaveFile (pkg_list_file, doc);
+	xmlFreeDoc (doc);
+	return TRUE;
+
+} /* end http_fetch_xml_package_list */
+
 void
 free_categories (GList* categories) {
 
@@ -341,7 +455,7 @@ free_categories (GList* categories) {
 
 } /* end free_categories */
 
-gboolean
+static gboolean
 create_default_configuration_metafile () {
 
 	xmlDocPtr doc;

@@ -30,6 +30,7 @@
 
 #include <errno.h>
 #include <sys/stat.h>
+#include <gnet/gnet.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
@@ -37,8 +38,11 @@
 
 char* xml_get_value (xmlNode* node, const char* name);
 InstallOptions* init_default_install_configuration (const char* config_file);
-GList* fetch_xml_package_list_local (const char* pkg_list_file);
+GList* parse_local_xml_package_list (const char* pkg_list_file);
+gboolean http_fetch_xml_package_list (const char* hostname,
+									  int port,
+									  const char* path,
+									  const char* pkg_list_file);
 void free_categories (GList* categories);
-gboolean create_default_configuration_metafile (void);
 
 #endif /* __EAZEL_INSTALL_LIB_XML_H__ */
