@@ -168,7 +168,8 @@ global_preferences_install_descriptions (void)
 								  
 	/* search tradeoffs */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_METHOD,
-					      _("Always do slow, complete search"));
+					      _("Do slower but more complete search whenever possible\n"
+						"Slower search is not available when searching by content"));
 
 	/* search bar type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
