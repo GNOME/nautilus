@@ -1,41 +1,43 @@
-# yes, i know its hardcoded
+NULL = 
 
-CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
+CPPFLAGS = \
+	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\"
 
-INCLUDES =					\
-	-I/home/ramiro/b/sekhmet/s/mozilla/dist/include \
-	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(GNOMEUI_CFLAGS)                       \
-	$(WERROR)
+INCLUDES = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(GNOMEUI_CFLAGS) \
+	$(WERROR) \
+	$(MOZILLA_COMPONENT_CFLAGS) \
+	$(NULL)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 
-gnorba_DATA =					\
-	nautilus-mozilla-content-view.goad
+gnorba_DATA = \
+	nautilus-mozilla-content-view.goad \
+	$(NULL)
 
+bin_PROGRAMS =\
+	nautilus-mozilla-content-view \
+	$(NULL)
 
-bin_PROGRAMS =					\
-	nautilus-mozilla-content-view
+nautilus_mozilla_content_view_SOURCES = \
+	nautilus-mozilla-content-view.c \
+	main.c \
+	$(NULL)
 
-nautilus_mozilla_content_view_SOURCES =		\
-	nautilus-mozilla-content-view.c          \
-	main.c
-
-nautilus_mozilla_content_view_LDFLAGS =			\
-	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(BONOBO_LIBS)					\
-	$(GNOMEUI_LIBS)					\
-	$(VFS_LIBS)					\
+nautilus_mozilla_content_view_LDFLAGS = \
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(VFS_LIBS) \
 	$(GNORBA_LIBS) \
-	-L/home/ramiro/b/sekhmet/s/mozilla/dist/bin \
-	-lgtkembedmoz \
-	-lgtksuperwin \
-	-lxpcom \
-	-lnspr4 \
-	-lplc4 \
-	-lplds4 
+	$(MOZILLA_COMPONENT_LDFLAGS) \
+	$(MOZILLA_COMPONENT_LIBS) \
+	$(NULL)
 
-EXTRA_DIST = nautilus-mozilla-content-view.goad
+EXTRA_DIST = \
+	nautilus-mozilla-content-view.goad \
+	$(NULL)
+

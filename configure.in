@@ -50,6 +50,73 @@ AC_SUBST(EAZEL_SERVICES)
 
 AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES" = "x1")
 
+dnl ====================================
+dnl =
+dnl = mozilla embedded component support
+dnl =
+dnl ====================================
+BUILD_MOZILLA_COMPONENT=
+
+try_mozilla="false"
+mozilla_place=
+
+AC_MSG_CHECKING(for Mozilla)
+
+AC_ARG_WITH(mozilla,
+	[--{with,without}-mozilla Compile with Mozilla embedded component support or without it],
+	if test "$withval" = "no"; then
+		try_mozilla="false"
+	else
+		try_mozilla="true"
+		mozilla_place=$withval
+	fi
+)
+
+dnl FIXME: there obviously needs to be a better test that checking for libxpcom.so
+if test "$try_mozilla" = "true"
+then
+	found_mozilla="false"
+
+	if test -d $mozilla_place/dist/bin
+	then
+		if test -x $mozilla_place/dist/bin/libxpcom.so
+		then
+			found_mozilla="true"
+		fi
+	fi
+
+	if test "$found_mozilla" = "true"
+	then
+		AC_MSG_RESULT(yes)
+
+		echo "   Using Mozilla installation in $mozilla_place"
+
+		MOZILLA_COMPONENT_CFLAGS=-I${mozilla_place}/dist/include
+		MOZILLA_COMPONENT_LDFLAGS=-L${mozilla_place}/dist/bin
+		MOZILLA_COMPONENT_LIBS="-lgtkembedmoz -lgtksuperwin -lxpcom -lnspr4 -lplc4 -lplds4"
+
+		AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
+		AC_SUBST(MOZILLA_COMPONENT_LDFLAGS)
+		AC_SUBST(MOZILLA_COMPONENT_LIBS)
+	else
+		AC_MSG_RESULT(no)
+AC_MSG_ERROR(
+***
+*** There doesnt seem to be a valid mozilla installation in $mozilla_place.
+*** Please fetch the latest mozilla milestone from 
+*** ftp://ftp.mozilla.org/pub/mozilla/releases/.
+***)
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
+
+dnl ====================================
+dnl = end mozilla hacks
+dnl ====================================
+
 dnl Checks for libraries.
 AM_PATH_GLIB(1.2.0,,
 AC_MSG_ERROR([

@@ -1,5 +1,14 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* configure.in: Add voodoo to support --with-mozilla.
+
+	* components/Makefile.am: Add conditional build of mozilla subdir.
+
+	* components/mozilla/Makefile.am: Un-hardcode cflags and libs.
+	Use the values set in configure instead.
+	
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-clean.sh: Grep out "emacs" so that this nice script
 	doesnt kill my editor when i happen to be editting the source to
 	component in question.
