@@ -128,35 +128,23 @@ nautilus_user_top_directory (void)
 
 		if (!g_file_exists (user_top_directory))
 		{
-			/* FIXME: Hack the prefix for now */
-			const char *gnome_prefix = "/gnome";
-
-			GString	   *src;
-			GString	   *dst;
-			GString	   *command;
+			char	   *src;
+			char	   *command;
 
 
-			src = g_string_new (gnome_prefix);
-			g_string_append (src, "/share/nautilus/top");
+			src = gnome_datadir_file("nautilus/top");
 
-			dst = g_string_new (user_top_directory);
+			command = g_strdup_printf ("cp -R %s %s", src, user_top_directory);
 
-			command = g_string_new ("cp -R ");
-			g_string_append (command, src->str);
-			g_string_append (command, " ");
-			g_string_append (command, dst->str);
-
-			if (system (command->str) != 0)
+			if (system (command) != 0)
 			{
 				g_warning ("could not execute '%s'.  Make sure you typed 'make install'", 
-					   command->str);
+					   command);
 			}
 			
-			g_string_free (src, TRUE);
-			g_string_free (dst, TRUE);
-			g_string_free (command, TRUE);
+			g_free (src);
+			g_free (command);
 		}
-
 	}
 
 	if (!g_file_test (user_top_directory, G_FILE_TEST_ISDIR))

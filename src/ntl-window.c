@@ -429,7 +429,7 @@ nautilus_window_constructed(NautilusWindow *window)
 #ifdef CONTENTS_AS_HBOX
   gtk_box_pack_start(GTK_BOX(window->content_hbox), temp_frame, FALSE, FALSE, 0);
 #else
-  gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, TRUE, TRUE);
+  gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
 #endif
 
   gtk_widget_show_all(window->content_hbox);

@@ -1,3 +1,13 @@
+2000-04-14  Christopher James Lahey  <clahey@helixcode.com>
+
+	* src/ntl-window.c (nautilus_window_constructed): Change the
+	packing of the first pane so that it doesn't autoresize.
+
+	* libnautilus-extensions/nautilus-file-utilities.c
+	(nautilus_user_top_directory): Change this routine to use
+	gnome_datadir_file to get the share directory.  Also, change to
+	using g_strdup_printf.
+
 2000-04-14  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/.cvsignore: Fixed to match new directory
