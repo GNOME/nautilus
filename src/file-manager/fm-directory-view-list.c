@@ -88,6 +88,9 @@ static void fm_directory_view_list_initialize_class (gpointer klass);
 static void fm_directory_view_list_destroy 	    (GtkObject *object);
 static void fm_directory_view_list_done_adding_entries 
 						    (FMDirectoryView *view);
+static void fm_directory_view_list_sort_items 	    (FMDirectoryViewList *list_view, 
+				   		     int column, 
+				   		     gboolean reversed);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
 static GtkWidget *get_sort_indicator 		    (GtkFList *flist, 
 						     gint column, 
@@ -157,6 +160,8 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	list_view = FM_DIRECTORY_VIEW_LIST (object);
 
 	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
+
+	/* FIXME: These should be read from metadata */
 	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
 	list_view->details->sort_reversed = FALSE;
 	list_view->details->icon_size = NAUTILUS_ICON_SIZE_SMALLER;
@@ -176,55 +181,24 @@ static void
 column_clicked_cb (GtkCList *clist, gint column, gpointer user_data)
 {
 	FMDirectoryViewList *list_view;
-	FMDirectoryViewSortType sort_type;
-	GtkFList *flist;
+	gboolean reversed;
 
 	g_return_if_fail (GTK_IS_FLIST (clist));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (user_data));
 	g_return_if_fail (get_flist (FM_DIRECTORY_VIEW_LIST (user_data)) == GTK_FLIST (clist));
 
 	list_view = FM_DIRECTORY_VIEW_LIST (user_data);
-	sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
-	flist = GTK_FLIST (clist);
-	
-	switch (column)
-	{
-		case LIST_VIEW_COLUMN_ICON:	
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
-			break;
-		case LIST_VIEW_COLUMN_NAME:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYNAME;
-			break;
-		case LIST_VIEW_COLUMN_SIZE:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYSIZE;
-			break;
-		case LIST_VIEW_COLUMN_DATE_MODIFIED:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYMTIME;
-			break;
-		case LIST_VIEW_COLUMN_MIME_TYPE:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
-			break;
-		default: g_assert_not_reached();
-	}
-
-	hide_sort_indicator (flist, list_view->details->sort_column);
 
 	if (column == list_view->details->sort_column)
 	{
-		list_view->details->sort_reversed = !list_view->details->sort_reversed;
+		reversed = !list_view->details->sort_reversed;
 	}
 	else
 	{
-		list_view->details->sort_reversed = FALSE;
-		list_view->details->sort_column = column;
+		reversed = FALSE;
 	}
 
-	show_sort_indicator (flist, column, list_view->details->sort_reversed);
-
-	
-	fm_directory_view_sort (FM_DIRECTORY_VIEW (list_view), 
-				sort_type,
-				list_view->details->sort_reversed);
+	fm_directory_view_list_sort_items (list_view, column, reversed);
 }
 
 
@@ -354,18 +328,10 @@ create_flist (FMDirectoryViewList *list_view)
 
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
-
 	gtk_widget_show (GTK_WIDGET (flist));
-
-	fm_directory_view_populate (FM_DIRECTORY_VIEW (list_view));
 
 	return flist;
 }
-
-/* FIXME - this code was cut and pasted from fm-directory-view-list.c */
-
-
-
 
 static void
 flist_activate_cb (GtkFList *flist,
@@ -492,6 +458,52 @@ fm_directory_view_list_get_selection (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), NULL);
 
 	return gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+}
+
+static void
+fm_directory_view_list_sort_items (FMDirectoryViewList *list_view, 
+				   int column, 
+				   gboolean reversed)
+{
+	FMDirectoryViewSortType sort_type;
+	GtkFList *flist;
+	
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+
+	flist = get_flist (list_view);
+	
+	switch (column)
+	{
+		case LIST_VIEW_COLUMN_ICON:	
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
+			break;
+		case LIST_VIEW_COLUMN_NAME:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYNAME;
+			break;
+		case LIST_VIEW_COLUMN_SIZE:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYSIZE;
+			break;
+		case LIST_VIEW_COLUMN_DATE_MODIFIED:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYMTIME;
+			break;
+		case LIST_VIEW_COLUMN_MIME_TYPE:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
+			break;
+		default: 
+			g_assert_not_reached();
+			sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
+			break;
+	}
+
+	hide_sort_indicator (flist, list_view->details->sort_column);
+	list_view->details->sort_column = column;
+	list_view->details->sort_reversed = reversed;
+	show_sort_indicator (flist, column, reversed);
+
+	
+	fm_directory_view_sort (FM_DIRECTORY_VIEW (list_view), 
+				sort_type,
+				reversed);
 }
 
 static void

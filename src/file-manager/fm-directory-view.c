@@ -92,6 +92,7 @@ static void stop_location_change_cb 		(NautilusViewFrame *view_frame,
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
+static void fm_directory_view_repopulate        (FMDirectoryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
@@ -359,15 +360,15 @@ stop_load (FMDirectoryView *view, gboolean error)
 
 
 /**
- * fm_directory_view_populate:
+ * fm_directory_view_repopulate:
  *
- * Fill view with entries for current location, after emptying any old contents.
- * This is normally called only by FMDirectoryView and subclasses.
+ * Fill view with already-discovered entries for current location, after emptying 
+ * any old contents. This is normally called only by FMDirectoryView.
  * @view: FMDirectoryView to fill.
  * 
  **/
-void
-fm_directory_view_populate (FMDirectoryView *view)
+static void
+fm_directory_view_repopulate (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -967,7 +968,7 @@ fm_directory_view_sort (FMDirectoryView *view,
 
 	gnome_vfs_directory_list_sort (view->details->directory_list, reverse_sort, rules);
 
-	fm_directory_view_populate (view);
+	fm_directory_view_repopulate (view);
 
 #undef ALLOC_RULES
 }

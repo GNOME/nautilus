@@ -1,3 +1,29 @@
+2000-01-26  John Sullivan  <sullivan@eazel.com>
+
+	A few changes in the direction of improving the directory
+	view sorting architecture. No visible effects yet.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(create_icon_container): Took out useless call to
+	fm_directory_view_populate().
+
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_sort_items): New function, extracted
+	from column_clicked_cb, that does the actual sorting.
+	(column_clicked_cb): Replaced actual sorting code with
+	call to new fm_directory_view_list_sort_items; retained
+	setup code.
+	(create_flist): Took out useless call to
+	fm_directory_view_populate().
+
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_populate): Removed this call from public API.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_populate): Made static and renamed to 
+	..._repopulate now that I better understand its use. Soon it will
+	go away entirely.
+
 2000-01-26  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/gnome-icon-container-dnd.c:

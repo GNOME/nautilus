@@ -192,8 +192,6 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
-	
-	fm_directory_view_populate (FM_DIRECTORY_VIEW (icon_view));
 
 	return icon_container;
 }
