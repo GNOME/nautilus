@@ -1,3 +1,20 @@
+2005-03-31  Martin Wehner  <martin.wehner@gmail.com>
+
+	* icons/audio.svg:
+	New svg icon from Corey Woodworth <CoreyWoodworth@gmail.com>
+
+	* icons/audio.png:
+	Remove old file.	
+
+	* icons/Makefile.am:
+	Install new icon.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(real_map_pixbuf):
+	Use svg instead of bitmap audio preview emblem.
+
+	Patch from Jaap Haitsma <jaap@haitsma.org>
+	
 2005-03-30  Martin Wehner  <martin.wehner@gmail.com>
 
 	* src/nautilus-spatial-window.c: (get_dnd_icon_size),

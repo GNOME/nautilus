@@ -13,7 +13,7 @@ icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
 	Search.png \
-	audio.png \
+	audio.svg \
 	backgrounds.png \
 	chit_frame.png \
 	colors.png \

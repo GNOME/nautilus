@@ -49,6 +49,7 @@
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
+#include <librsvg/rsvg.h>
 #include <libgnome/gnome-i18n.h>
 #include <eel/eel-canvas-util.h>
 #include <atk/atkimage.h>
@@ -1345,6 +1346,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 	EelCanvas *canvas;
 	char *audio_filename;
 	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
+	double zoom;
 	
 	temp_pixbuf = icon_item->details->pixbuf;
 	canvas = EEL_CANVAS_ITEM(icon_item)->canvas;
@@ -1365,10 +1367,14 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 		/* if the icon is currently being previewed, superimpose an image to indicate that */
 		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
 		if (icon_item->details->is_active) {
+			zoom = (double) gdk_pixbuf_get_width (temp_pixbuf) / NAUTILUS_ICON_SIZE_STANDARD;
 			/* Load the audio symbol. */
-			audio_filename = nautilus_pixmap_file ("audio.png");
+			audio_filename = nautilus_pixmap_file ("audio.svg");
 			if (audio_filename != NULL) {
-				audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename, NULL);
+				audio_pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (audio_filename, zoom, zoom,
+																	   NAUTILUS_ICON_MAXIMUM_SIZE,
+																	   NAUTILUS_ICON_MAXIMUM_SIZE,
+																	   NULL);
 			} else {
 				audio_pixbuf = NULL;
 			}
@@ -1382,8 +1388,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 					 gdk_pixbuf_get_width (temp_pixbuf),
 					 gdk_pixbuf_get_height(temp_pixbuf),
 					 0, 0,
-					 canvas->pixels_per_unit,
-					 canvas->pixels_per_unit,
+					 1.0, 1.0,
 					 GDK_INTERP_BILINEAR, 0xFF);
 				
 				g_object_unref (audio_pixbuf);
