@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-15 15:19+0100\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-03-14 10:22+0200\n"
 "Last-Translator: Maxim Dzumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -40,7 +40,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "Помилка у функції bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2400
+#: src/file-manager/fm-properties-window.c:2451
 msgid "Emblems"
 msgstr "Емблеми"
 
@@ -963,7 +963,7 @@ msgstr "Ця тема використовує фото-реалістичні �
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1054
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "Назва"
 
@@ -1761,7 +1761,7 @@ msgid "The group of the file."
 msgstr "Група файлу."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2922
 msgid "Permissions"
 msgstr "Права"
 
@@ -2160,7 +2160,7 @@ msgstr "Замінити _все"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4724
+#: libnautilus-private/nautilus-file.c:4735
 #, c-format
 msgid "link to %s"
 msgstr "посилання на %s"
@@ -2735,7 +2735,7 @@ msgstr "невідомий тип MIME"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1147
+#: src/file-manager/fm-properties-window.c:1198
 msgid "unknown"
 msgstr "невідомо"
 
@@ -2753,7 +2753,7 @@ msgstr ""
 "означає, що файл gnome-vfs.keys знаходиться у неправильному місці, або його "
 "не можна знайти з інших причин."
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4712
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2762,15 +2762,15 @@ msgstr ""
 "Не знайдено опису для типу MIME \"%s\" (файл \"%s\"), повідомте про це на "
 "поштовий список gnome-vfs"
 
-#: libnautilus-private/nautilus-file.c:4718
+#: libnautilus-private/nautilus-file.c:4729
 msgid "link"
 msgstr "посилання"
 
-#: libnautilus-private/nautilus-file.c:4738
+#: libnautilus-private/nautilus-file.c:4749
 msgid "link (broken)"
 msgstr "посилання (зламане)"
 
-#: libnautilus-private/nautilus-file.c:6165
+#: libnautilus-private/nautilus-file.c:6176
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2899,7 +2899,7 @@ msgid "Icon View"
 msgstr "Значки"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Список"
@@ -3026,51 +3026,51 @@ msgstr "чи виділяти файли при їх перетягуванні"
 msgid "The selection rectangle"
 msgstr "Прямокутник вибору"
 
-#: libnautilus-private/nautilus-icon-container.c:4175
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Frame Text"
 msgstr "Рамка для тексту"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4180
 msgid "Draw a frame around unselected text"
 msgstr "Малювати рамку навколо не вибраного тексту"
 
-#: libnautilus-private/nautilus-icon-container.c:4182
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Selection Box Color"
 msgstr "Колір області виділення"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Color of the selection box"
 msgstr "Колір області виділення"
 
-#: libnautilus-private/nautilus-icon-container.c:4188
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Selection Box Alpha"
 msgstr "Прозорість області виділення"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Opacity of the selection box"
 msgstr "Прозорість області виділення"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Highlight Alpha"
 msgstr "Прозорість підсвічування"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4201
 msgid "Opacity of the highlight for selected icons"
 msgstr "Прозорість підсвічування виділених значків"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Light Info Color"
 msgstr "Світлий інформаційний колір"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Color used for information text against a dark background"
 msgstr "Колір інформаційного тексту на темному тлі"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4213
 msgid "Dark Info Color"
 msgstr "Темний інформаційний колір"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4214
 msgid "Color used for information text against a light background"
 msgstr "Колір інформаційного тексту на світлому тлі"
 
@@ -3351,11 +3351,11 @@ msgstr ""
 msgid "_Associate Action"
 msgstr "Пов'_язати дію"
 
-#: libnautilus-private/nautilus-program-choosing.c:568
+#: libnautilus-private/nautilus-program-choosing.c:576
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Помилка при відкриванні, бажаєте вибрати іншу програму?"
 
-#: libnautilus-private/nautilus-program-choosing.c:569
+#: libnautilus-private/nautilus-program-choosing.c:577
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3364,11 +3364,11 @@ msgstr ""
 "\"%s\" не може відкрити \"%s\" тому, що \"%s\" не має доступу до файлів на "
 "\"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:574
+#: libnautilus-private/nautilus-program-choosing.c:582
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Помилка при відкриванні, бажаєте вибрати іншу дію?"
 
-#: libnautilus-private/nautilus-program-choosing.c:575
+#: libnautilus-private/nautilus-program-choosing.c:583
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3377,12 +3377,12 @@ msgstr ""
 "Типова дія не може відкрити \"%s\" тому, що не має доступу до файлів на \"%s"
 "\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:582
-#: libnautilus-private/nautilus-program-choosing.c:615
+#: libnautilus-private/nautilus-program-choosing.c:590
+#: libnautilus-private/nautilus-program-choosing.c:623
 msgid "Can't Open Location"
 msgstr "Не вдається відкрити"
 
-#: libnautilus-private/nautilus-program-choosing.c:601
+#: libnautilus-private/nautilus-program-choosing.c:609
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
@@ -3391,7 +3391,7 @@ msgstr ""
 "\"%s\" не може відкрити \"%s\" тому, що \"%s\" не має доступу до файлів на "
 "\"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:604
+#: libnautilus-private/nautilus-program-choosing.c:612
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3399,7 +3399,7 @@ msgstr ""
 "Немає інших доступних програм для показу цього файлу.  Якщо ви скопіюєте цей "
 "файл на ваш комп'ютер, ви напевно зможете його відкрити."
 
-#: libnautilus-private/nautilus-program-choosing.c:608
+#: libnautilus-private/nautilus-program-choosing.c:616
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
@@ -3408,7 +3408,7 @@ msgstr ""
 "Типова дія не може відкрити \"%s\" тому, що не має доступу до файлів на \"%s"
 "\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:610
+#: libnautilus-private/nautilus-program-choosing.c:618
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3416,57 +3416,125 @@ msgstr ""
 "Немає інших доступних програм для показу цього файлу.  Якщо ви скопіюєте цей "
 "файл на ваш комп'ютер, ви напевно зможете його відкрити."
 
-#: libnautilus-private/nautilus-program-choosing.c:869
-#: libnautilus-private/nautilus-program-choosing.c:1086
+#: libnautilus-private/nautilus-program-choosing.c:881
+#: libnautilus-private/nautilus-program-choosing.c:1166
 #, c-format
 msgid "Opening %s"
 msgstr "Відкривається %s"
 
-#: libnautilus-private/nautilus-program-choosing.c:1230
-msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "Не можна виконувати команди з віддаленого сайту з міркувань безпеки."
+#. TODO: These strings suck pretty badly, but we're in string-freeze,
+#. * and I found these in other places to reuse. We should make them
+#. * better later.
+#: libnautilus-private/nautilus-program-choosing.c:969
+#: libnautilus-private/nautilus-program-choosing.c:977
+#: libnautilus-private/nautilus-program-choosing.c:982
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
+#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
+#, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "Не вдається відобразити \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:1232
-msgid "This is disabled due to security considerations."
-msgstr "Це заборонено з міркувань безпеки."
-
-#: libnautilus-private/nautilus-program-choosing.c:1233
-msgid "Can't Execute Remote Links"
-msgstr "Не можна виконувати віддалені посилання"
-
-#: libnautilus-private/nautilus-program-choosing.c:1243
-#: libnautilus-private/nautilus-program-choosing.c:1309
-msgid "Details: "
-msgstr "Подробиці: "
-
-#: libnautilus-private/nautilus-program-choosing.c:1245
-#: libnautilus-private/nautilus-program-choosing.c:1311
+#: libnautilus-private/nautilus-program-choosing.c:971
+#: libnautilus-private/nautilus-program-choosing.c:1325
+#: libnautilus-private/nautilus-program-choosing.c:1391
 msgid "There was an error launching the application."
 msgstr "Помилка при виконанні програми."
 
-#: libnautilus-private/nautilus-program-choosing.c:1247
+#: libnautilus-private/nautilus-program-choosing.c:979
+#: src/nautilus-window-manage-views.c:1370
+msgid "The attempt to log in failed."
+msgstr "Не вдалась спроба реєстрації."
+
+#: libnautilus-private/nautilus-program-choosing.c:984
+#: src/nautilus-window-manage-views.c:1376
+msgid "Access was denied."
+msgstr "Доступ заборонено."
+
+#: libnautilus-private/nautilus-program-choosing.c:989
+#: src/nautilus-window-manage-views.c:1386
+#, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
+msgstr "Не вдається відобразити \"%s\", тому що вузол \"%s\" не знайдено."
+
+#: libnautilus-private/nautilus-program-choosing.c:992
+#: src/nautilus-window-manage-views.c:1389
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr ""
+"Переконайтесь, що ви не помилились при написанні та у вас правильно "
+"налаштовано проксі."
+
+#: libnautilus-private/nautilus-program-choosing.c:997
+#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-window-manage-views.c:1320
+#, c-format
+msgid "\"%s\" is not a valid location."
+msgstr "\"%s\" не є правильною назвою файлу."
+
+#: libnautilus-private/nautilus-program-choosing.c:1000
+#: libnautilus-private/nautilus-program-choosing.c:1007
+#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-property-browser.c:1106
+#: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
+msgid "Please check the spelling and try again."
+msgstr "Перевірте написання, та спробуйте знову."
+
+#: libnautilus-private/nautilus-program-choosing.c:1004
+#: src/nautilus-window-manage-views.c:1312
+#, c-format
+msgid "Couldn't find \"%s\"."
+msgstr "Не вдається знайти \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:1019
+#: src/nautilus-window-manage-views.c:1430
+msgid "Can't Display Location"
+msgstr "Не вдається відобразити положення."
+
+#: libnautilus-private/nautilus-program-choosing.c:1310
+msgid "Sorry, but you can't execute commands from a remote site."
+msgstr "Не можна виконувати команди з віддаленого сайту з міркувань безпеки."
+
+#: libnautilus-private/nautilus-program-choosing.c:1312
+msgid "This is disabled due to security considerations."
+msgstr "Це заборонено з міркувань безпеки."
+
 #: libnautilus-private/nautilus-program-choosing.c:1313
+msgid "Can't Execute Remote Links"
+msgstr "Не можна виконувати віддалені посилання"
+
+#: libnautilus-private/nautilus-program-choosing.c:1323
+#: libnautilus-private/nautilus-program-choosing.c:1389
+msgid "Details: "
+msgstr "Подробиці: "
+
+#: libnautilus-private/nautilus-program-choosing.c:1327
+#: libnautilus-private/nautilus-program-choosing.c:1393
 msgid "Error Launching Application"
 msgstr "Помилка виконання програми"
 
-#: libnautilus-private/nautilus-program-choosing.c:1275
-#: libnautilus-private/nautilus-program-choosing.c:1287
+#: libnautilus-private/nautilus-program-choosing.c:1355
+#: libnautilus-private/nautilus-program-choosing.c:1367
 msgid "This drop target only supports local files."
 msgstr "Ціль призначення підтримує перетягування лише локальних файлів."
 
-#: libnautilus-private/nautilus-program-choosing.c:1276
+#: libnautilus-private/nautilus-program-choosing.c:1356
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Щоб відкрити віддалені файли, скопіюйте їх у локальну теку та перетягніть їх "
 "знову."
 
-#: libnautilus-private/nautilus-program-choosing.c:1278
-#: libnautilus-private/nautilus-program-choosing.c:1290
+#: libnautilus-private/nautilus-program-choosing.c:1358
+#: libnautilus-private/nautilus-program-choosing.c:1370
 msgid "Drop Target Only Supports Local Files"
 msgstr "Ціль призначення підтримує лише локальні файли"
 
-#: libnautilus-private/nautilus-program-choosing.c:1288
+#: libnautilus-private/nautilus-program-choosing.c:1368
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -4049,17 +4117,17 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "В кишені немає нічого для вставляння."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6102
+#: src/file-manager/fm-directory-view.c:6123
 msgid "Mount Error"
 msgstr "Помилка підключення"
 
 #: src/file-manager/fm-directory-view.c:5112
-msgid "Unmount Error"
-msgstr "Помилка відключення"
-
-#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "Помилка витягування"
+
+#: src/file-manager/fm-directory-view.c:5115
+msgid "Unmount Error"
+msgstr "Помилка відключення"
 
 #: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
@@ -4187,12 +4255,12 @@ msgstr "_Показати"
 msgid "_Run"
 msgstr "_Запустити"
 
-#: src/file-manager/fm-directory-view.c:6236
+#: src/file-manager/fm-directory-view.c:6259
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Відкривається \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6243
+#: src/file-manager/fm-directory-view.c:6266
 msgid "Cancel Open?"
 msgstr "Скасувати відкривання?"
 
@@ -4390,121 +4458,121 @@ msgstr "за _емблемами"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Лишити значки сортованими за емблемами в рядках"
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "Відновити початкові _розміри значків"
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr "Відновити початкові _розміри значка"
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "вказування на \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr "Перетягування не підтримується."
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Перетягування та вставка підтримується лише на локальних файлових системах."
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr "Помилка перетягування"
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr "Було використано неправильний тип перетягування."
 
-#: src/file-manager/fm-list-view.c:1514
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s видимих стовпчиків"
 
-#: src/file-manager/fm-list-view.c:1533
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr "Виберіть порядок, в якому відображатиметься інформація у цій теці."
 
-#: src/file-manager/fm-properties-window.c:477
+#: src/file-manager/fm-properties-window.c:481
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Не можна зв'язати більш ніж з одним нетиповим значком одночасно!"
 
-#: src/file-manager/fm-properties-window.c:478
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:507
 msgid "Please drag just one image to set a custom icon."
 msgstr "Перетягніть лише одне зображення, щоб встановити інший значок."
 
-#: src/file-manager/fm-properties-window.c:479
+#: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Більше одного зображення"
 
-#: src/file-manager/fm-properties-window.c:488
+#: src/file-manager/fm-properties-window.c:492
 #: src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not local."
 msgstr "Вказаний файл не є локальним."
 
-#: src/file-manager/fm-properties-window.c:489
-#: src/file-manager/fm-properties-window.c:496
+#: src/file-manager/fm-properties-window.c:493
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:528
 msgid "You can only use local images as custom icons."
 msgstr "Для значків можна використовувати лише локальні зображення."
 
-#: src/file-manager/fm-properties-window.c:490
+#: src/file-manager/fm-properties-window.c:494
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Лише локальні зображення"
 
-#: src/file-manager/fm-properties-window.c:495
+#: src/file-manager/fm-properties-window.c:499
 #: src/nautilus-information-panel.c:534
 msgid "The file that you dropped is not an image."
 msgstr "Вказаний файл не є зображенням."
 
-#: src/file-manager/fm-properties-window.c:497
+#: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Лише зображення"
 
-#: src/file-manager/fm-properties-window.c:914
+#: src/file-manager/fm-properties-window.c:918
 #: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Властивості"
 
-#: src/file-manager/fm-properties-window.c:917
+#: src/file-manager/fm-properties-window.c:921
 #, c-format
 msgid "%s Properties"
 msgstr "Властивості %s"
 
-#: src/file-manager/fm-properties-window.c:1378
+#: src/file-manager/fm-properties-window.c:1429
 msgid "Cancel Group Change?"
 msgstr "Скасувати зміну групи?"
 
-#: src/file-manager/fm-properties-window.c:1379
+#: src/file-manager/fm-properties-window.c:1430
 msgid "Changing group."
 msgstr "Зміна групи."
 
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1591
 msgid "Cancel Owner Change?"
 msgstr "Скасувати зміну власника?"
 
-#: src/file-manager/fm-properties-window.c:1541
+#: src/file-manager/fm-properties-window.c:1592
 msgid "Changing owner."
 msgstr "Зміна власника."
 
-#: src/file-manager/fm-properties-window.c:1747
+#: src/file-manager/fm-properties-window.c:1798
 msgid "nothing"
 msgstr "нічого"
 
-#: src/file-manager/fm-properties-window.c:1749
+#: src/file-manager/fm-properties-window.c:1800
 msgid "unreadable"
 msgstr "неможливо зчитати"
 
-#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-properties-window.c:1810
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -4512,7 +4580,7 @@ msgstr[0] "%d елемент, обсяг %s"
 msgstr[1] "%d елементи, обсяг %s"
 msgstr[2] "%d елементів, обсяг %s"
 
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1819
 msgid "(some contents unreadable)"
 msgstr "(деякий вміст не зчитується)"
 
@@ -4522,181 +4590,181 @@ msgstr "(деякий вміст не зчитується)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1785
+#: src/file-manager/fm-properties-window.c:1836
 msgid "Contents:"
 msgstr "Вміст:"
 
-#: src/file-manager/fm-properties-window.c:2176
+#: src/file-manager/fm-properties-window.c:2227
 msgid "Basic"
 msgstr "Основні"
 
-#: src/file-manager/fm-properties-window.c:2204
+#: src/file-manager/fm-properties-window.c:2255
 msgid "_Names:"
 msgstr "_Назви:"
 
-#: src/file-manager/fm-properties-window.c:2206
+#: src/file-manager/fm-properties-window.c:2257
 msgid "_Name:"
 msgstr "_Назва:"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2306
 msgid "Type:"
 msgstr "Тип:"
 
-#: src/file-manager/fm-properties-window.c:2257
-#: src/file-manager/fm-properties-window.c:2267
-#: src/file-manager/fm-properties-window.c:2273
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2284
-#: src/file-manager/fm-properties-window.c:2292
-#: src/file-manager/fm-properties-window.c:2298
-#: src/file-manager/fm-properties-window.c:2307
-#: src/file-manager/fm-properties-window.c:2313
-#: src/file-manager/fm-properties-window.c:2900
-#: src/file-manager/fm-properties-window.c:2921
-#: src/file-manager/fm-properties-window.c:3012
-#: src/file-manager/fm-properties-window.c:3016
-#: src/file-manager/fm-properties-window.c:3020
+#: src/file-manager/fm-properties-window.c:2308
+#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2324
+#: src/file-manager/fm-properties-window.c:2331
+#: src/file-manager/fm-properties-window.c:2335
+#: src/file-manager/fm-properties-window.c:2343
+#: src/file-manager/fm-properties-window.c:2349
+#: src/file-manager/fm-properties-window.c:2358
+#: src/file-manager/fm-properties-window.c:2364
+#: src/file-manager/fm-properties-window.c:2957
+#: src/file-manager/fm-properties-window.c:2978
+#: src/file-manager/fm-properties-window.c:3069
+#: src/file-manager/fm-properties-window.c:3073
+#: src/file-manager/fm-properties-window.c:3077
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2316
 msgid "Size:"
 msgstr "Розмір:"
 
-#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Адреса:"
 
-#: src/file-manager/fm-properties-window.c:2278
+#: src/file-manager/fm-properties-window.c:2329
 msgid "Volume:"
 msgstr "Том:"
 
-#: src/file-manager/fm-properties-window.c:2282
+#: src/file-manager/fm-properties-window.c:2333
 msgid "Free space:"
 msgstr "Вільний простір:"
 
-#: src/file-manager/fm-properties-window.c:2290
+#: src/file-manager/fm-properties-window.c:2341
 msgid "Link target:"
 msgstr "Ціль посилання:"
 
-#: src/file-manager/fm-properties-window.c:2296
+#: src/file-manager/fm-properties-window.c:2347
 msgid "MIME type:"
 msgstr "Тип MIME:"
 
-#: src/file-manager/fm-properties-window.c:2305
+#: src/file-manager/fm-properties-window.c:2356
 msgid "Modified:"
 msgstr "Змінено:"
 
-#: src/file-manager/fm-properties-window.c:2311
+#: src/file-manager/fm-properties-window.c:2362
 msgid "Accessed:"
 msgstr "Доступ:"
 
-#: src/file-manager/fm-properties-window.c:2327
+#: src/file-manager/fm-properties-window.c:2378
 msgid "_Select Custom Icon..."
 msgstr "_Вибрати нетиповий значок..."
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2384
 msgid "_Remove Custom Icon"
 msgstr "В_идалити нетиповий значок"
 
-#: src/file-manager/fm-properties-window.c:2679
+#: src/file-manager/fm-properties-window.c:2736
 msgid "_Read"
 msgstr "З_читування"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2738
 msgid "_Write"
 msgstr "За_пис"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2740
 msgid "E_xecute"
 msgstr "Ви_конання"
 
-#: src/file-manager/fm-properties-window.c:2766
+#: src/file-manager/fm-properties-window.c:2823
 msgid "Set _user ID"
 msgstr "Встановити ідентифікатор _користувача (SUID)"
 
-#: src/file-manager/fm-properties-window.c:2771
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Special flags:"
 msgstr "Особливі ознаки:"
 
-#: src/file-manager/fm-properties-window.c:2774
+#: src/file-manager/fm-properties-window.c:2831
 msgid "Set gro_up ID"
 msgstr "Встановити ідентифікатор _групи (SGID)"
 
-#: src/file-manager/fm-properties-window.c:2776
+#: src/file-manager/fm-properties-window.c:2833
 msgid "_Sticky"
 msgstr "_Липкість"
 
-#: src/file-manager/fm-properties-window.c:2875
+#: src/file-manager/fm-properties-window.c:2932
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Ви не власник, то ж не можете змінювати ці права."
 
-#: src/file-manager/fm-properties-window.c:2889
+#: src/file-manager/fm-properties-window.c:2946
 msgid "File _owner:"
 msgstr "_Власник файлу:"
 
-#: src/file-manager/fm-properties-window.c:2895
+#: src/file-manager/fm-properties-window.c:2952
 msgid "File owner:"
 msgstr "Власник файлу:"
 
-#: src/file-manager/fm-properties-window.c:2906
+#: src/file-manager/fm-properties-window.c:2963
 msgid "_File group:"
 msgstr "Група _файлу:"
 
-#: src/file-manager/fm-properties-window.c:2915
+#: src/file-manager/fm-properties-window.c:2972
 msgid "File group:"
 msgstr "Група файлу:"
 
-#: src/file-manager/fm-properties-window.c:2927
+#: src/file-manager/fm-properties-window.c:2984
 msgid "Owner:"
 msgstr "Власник:"
 
-#: src/file-manager/fm-properties-window.c:2928
+#: src/file-manager/fm-properties-window.c:2985
 msgid "Group:"
 msgstr "Група:"
 
-#: src/file-manager/fm-properties-window.c:2929
+#: src/file-manager/fm-properties-window.c:2986
 msgid "Others:"
 msgstr "Інші:"
 
-#: src/file-manager/fm-properties-window.c:3011
+#: src/file-manager/fm-properties-window.c:3068
 msgid "Text view:"
 msgstr "Текстовий вигляд:"
 
-#: src/file-manager/fm-properties-window.c:3015
+#: src/file-manager/fm-properties-window.c:3072
 msgid "Number view:"
 msgstr "Числовий вигляд:"
 
-#: src/file-manager/fm-properties-window.c:3019
+#: src/file-manager/fm-properties-window.c:3076
 msgid "Last changed:"
 msgstr "Остання зміна:"
 
-#: src/file-manager/fm-properties-window.c:3025
+#: src/file-manager/fm-properties-window.c:3082
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Не вдається визначити права доступу \"%s\"."
 
-#: src/file-manager/fm-properties-window.c:3028
+#: src/file-manager/fm-properties-window.c:3085
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не вдається визначити визначити права доступу цього файлу."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "There was an error displaying help."
 msgstr "Помилка відображення довідки."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "Couldn't Show Help"
 msgstr "Не вдається показати довідку"
 
-#: src/file-manager/fm-properties-window.c:3523
+#: src/file-manager/fm-properties-window.c:3593
 msgid "Cancel Showing Properties Window?"
 msgstr "Скасувати показ вікна властивостей?"
 
-#: src/file-manager/fm-properties-window.c:3524
+#: src/file-manager/fm-properties-window.c:3594
 msgid "Creating Properties window."
 msgstr "Створення вікна властивостей."
 
-#: src/file-manager/fm-properties-window.c:3650
+#: src/file-manager/fm-properties-window.c:3729
 msgid "Select an icon"
 msgstr "Вибір значка"
 
@@ -5080,16 +5148,16 @@ msgstr "Виберіть стовпчики, що відображаються �
 msgid "Visible _Columns..."
 msgstr "Видимі с_товпчики..."
 
-#: src/nautilus-application.c:266
+#: src/nautilus-application.c:267
 msgid "Couldn't Create Required Folder"
 msgstr "Не вдається створити необхідну теку"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus не може створити необхідну теку \"%s\"."
 
-#: src/nautilus-application.c:269
+#: src/nautilus-application.c:270
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5097,16 +5165,16 @@ msgstr ""
 "Створіть цю теку перед запуском Наутілуса, або встановіть такі права, щоб "
 "Наутілус міг її створити."
 
-#: src/nautilus-application.c:272
+#: src/nautilus-application.c:273
 msgid "Couldn't Create Required Folders"
 msgstr "Не вдається створити необхідні теки"
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Наутілус не можу створити необхідні теки: %s."
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5114,16 +5182,16 @@ msgstr ""
 "Створіть ці теки перед запуском Наутілуса, або встановіть такі права, щоб "
 "Наутілус міг їх створити."
 
-#: src/nautilus-application.c:343
+#: src/nautilus-application.c:344
 msgid "Link To Old Desktop"
 msgstr "Посилання на стару стільницю"
 
-#: src/nautilus-application.c:359
+#: src/nautilus-application.c:360
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 "На стільниці створено посилання з назвою \"Посилання на стару стільницю\"."
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5132,7 +5200,7 @@ msgstr ""
 "Ви можете відкрити посилання, перемістити всі необхідні файли на нову робочу "
 "стільницю, після чого це посилання можна видалити."
 
-#: src/nautilus-application.c:362
+#: src/nautilus-application.c:363
 msgid "Migrated Old Desktop"
 msgstr "Стара робоча стільниця після міграції"
 
@@ -5146,7 +5214,7 @@ msgstr "Стара робоча стільниця після міграції"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:536
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5157,7 +5225,7 @@ msgstr ""
 "спробувати перезавантажити комп'ютер чи перевстановити Наутілус."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:542
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5202,12 +5270,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:572 src/nautilus-application.c:590
-#: src/nautilus-application.c:597
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Наутілус не можна використовувати зараз через неочікувану помилку."
 
-#: src/nautilus-application.c:573
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5215,7 +5283,7 @@ msgstr ""
 "Наутілус не можна використовувати зараз через неочікувану помилку в Bonobo "
 "на спробі зареєструвати сервер перегляду файлового менеджера."
 
-#: src/nautilus-application.c:591
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5225,7 +5293,7 @@ msgstr ""
 "під час спроби знайти фабрику. Можливо знищення bonobo-activation-server та "
 "перезапуск Наутілуса зможе вирішити цю проблему."
 
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5235,7 +5303,7 @@ msgstr ""
 "під час спроби знайти об'єкт оболонки. Можливо знищення bonobo-activation-"
 "server та перезапуск Наутілуса зможе вирішити цю проблему"
 
-#: src/nautilus-bookmarks-window.c:146
+#: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
@@ -5246,7 +5314,7 @@ msgstr ""
 "Помилка відображення довідки: \n"
 "%s"
 
-#: src/nautilus-bookmarks-window.c:180
+#: src/nautilus-bookmarks-window.c:184
 msgid "No bookmarks defined"
 msgstr "Закладки не визначено"
 
@@ -5278,19 +5346,6 @@ msgstr "Введіть назву та спробуйте знову."
 #: src/nautilus-connect-server-dialog.c:104
 msgid "Can't Connect to Server"
 msgstr "Не вдається з'єднатись з сервером"
-
-#: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1310
-#, c-format
-msgid "\"%s\" is not a valid location."
-msgstr "\"%s\" не є правильною назвою файлу."
-
-#: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1305
-#: src/nautilus-window-manage-views.c:1313
-msgid "Please check the spelling and try again."
-msgstr "Перевірте написання, та спробуйте знову."
 
 #: src/nautilus-connect-server-dialog.c:177
 msgid "Connect to Server"
@@ -5671,7 +5726,7 @@ msgid "File Manager"
 msgstr "Керування файлами"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Наутілус"
@@ -6371,90 +6426,54 @@ msgstr "поточний вибір"
 msgid "the type of window the view is embedded in"
 msgstr "тип вікна, у який вбудовується засіб перегляду"
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr "Збій відображення"
 
-#: src/nautilus-window-manage-views.c:847
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "%s викликав помилку та не може продовжувати роботу."
 
-#: src/nautilus-window-manage-views.c:848
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr "Ви можете вибрати інше відображення чи перейти до іншого місця."
 
-#: src/nautilus-window-manage-views.c:858
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Виявлено помилку перегляду %s під час запуску."
 
-#: src/nautilus-window-manage-views.c:859
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr "Місце не може бути відображене цим засобом перегляду."
 
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr "Відображення вмісту"
 
-#: src/nautilus-window-manage-views.c:1007
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr "Перегляд поточного файлу чи каталогу"
 
-#: src/nautilus-window-manage-views.c:1302
-#, c-format
-msgid "Couldn't find \"%s\"."
-msgstr "Не вдається знайти \"%s\"."
-
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1326
-#: src/nautilus-window-manage-views.c:1336
-#: src/nautilus-window-manage-views.c:1350
-#: src/nautilus-window-manage-views.c:1358
-#: src/nautilus-window-manage-views.c:1364
-#: src/nautilus-window-manage-views.c:1384
-#, c-format
-msgid "Couldn't display \"%s\"."
-msgstr "Не вдається відобразити \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "Наутілус не може визначити тип файлу."
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "Наутілус не має встановленої програми перегляду цього файлу."
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Наутілус не може обробляти %s: адреси."
 
-#: src/nautilus-window-manage-views.c:1360
-msgid "The attempt to log in failed."
-msgstr "Не вдалась спроба реєстрації."
-
-#: src/nautilus-window-manage-views.c:1366
-msgid "Access was denied."
-msgstr "Доступ заборонено."
-
-#: src/nautilus-window-manage-views.c:1376
-#, c-format
-msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Не вдається відобразити \"%s\", тому що вузол \"%s\" не знайдено."
-
-#: src/nautilus-window-manage-views.c:1379
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Переконайтесь, що ви не помилились при написанні та у вас правильно "
-"налаштовано проксі."
-
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr "Перевірте правильність настройок проксі-сервера."
 
-#: src/nautilus-window-manage-views.c:1391
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6463,11 +6482,11 @@ msgstr ""
 "Не вдається показати \"%s\" тому, що Наутілус не може зв'язатись з головним "
 "оглядачем SMB."
 
-#: src/nautilus-window-manage-views.c:1394
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr "Перевірте, чи запущений SMB сервер у локальній мережі."
 
-#: src/nautilus-window-manage-views.c:1404
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -6475,7 +6494,7 @@ msgstr ""
 "Пошук не доступний тому, що або відсутній індекс, або службу пошуку не "
 "запущено."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6483,22 +6502,18 @@ msgstr ""
 "Переконайтесь, що запущено службу пошуку Medusa, і якщо індекс ще не "
 "створено перевірте чи запущений індексатор Medusa."
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr "Пошук не доступний"
 
-#: src/nautilus-window-manage-views.c:1414
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Не вдається відобразити \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr "Виберіть інший засіб перегляду та спробуйте знову."
-
-#: src/nautilus-window-manage-views.c:1420
-msgid "Can't Display Location"
-msgstr "Не вдається відобразити положення."
 
 #: src/nautilus-window-menus.c:220
 msgid "Go to the location specified by this bookmark"
@@ -6538,24 +6553,24 @@ msgstr "Перейти назад на декілька сторінок"
 msgid "Go forward a number of pages"
 msgstr "Перейти вперед на декілька сторінок"
 
-#: src/nautilus-window.c:874
+#: src/nautilus-window.c:882
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Показати цю адресу використовуючи \"%s\""
 
-#: src/nautilus-window.c:1578
+#: src/nautilus-window.c:1581
 msgid "Application ID"
 msgstr "Ідентифікатор програми"
 
-#: src/nautilus-window.c:1579
+#: src/nautilus-window.c:1582
 msgid "The application ID of the window."
 msgstr "Ідентифікатор програми у вікні."
 
-#: src/nautilus-window.c:1585
+#: src/nautilus-window.c:1588
 msgid "Application"
 msgstr "Програма"
 
-#: src/nautilus-window.c:1586
+#: src/nautilus-window.c:1589
 msgid "The NautilusApplication associated with this window."
 msgstr "Додаток Наутілуса, що пов'язаний з цим вікном."
 

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-15 15:19+0100\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-03-22 09:03+0800\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -42,7 +42,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() فشل."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2400
+#: src/file-manager/fm-properties-window.c:2451
 msgid "Emblems"
 msgstr "شعارات"
 
@@ -966,7 +966,7 @@ msgstr "تستخدم هذه التيمة مجلدات بصور واقعية."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1054
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "الإسم"
 
@@ -1731,7 +1731,7 @@ msgid "The group of the file."
 msgstr "مجموعة الملف."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2922
 msgid "Permissions"
 msgstr "التصاريح"
 
@@ -2120,7 +2120,7 @@ msgstr "إستبدال الجميع"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4724
+#: libnautilus-private/nautilus-file.c:4735
 #, c-format
 msgid "link to %s"
 msgstr "وصلة إلى %s "
@@ -2691,7 +2691,7 @@ msgstr "نوع MIME مجهول"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1147
+#: src/file-manager/fm-properties-window.c:1198
 msgid "unknown"
 msgstr "مجهول"
 
@@ -2708,7 +2708,7 @@ msgstr ""
 "لا يمكن العثور على وصف حتى لـ \"x-directory/normal\". ربما يعني هذا أن ملف "
 "gnome-vfs.keys في الموقع الخطأ أو أنه لا يمكن العثور عليه لسبب آخر."
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4712
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2717,15 +2717,15 @@ msgstr ""
 "لا وجود لوصف لنوع mime \"%s\" (الملف هو \"%s\"), الرجاء إخبار قائمة مراسلات "
 "gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4718
+#: libnautilus-private/nautilus-file.c:4729
 msgid "link"
 msgstr "وصلة"
 
-#: libnautilus-private/nautilus-file.c:4738
+#: libnautilus-private/nautilus-file.c:4749
 msgid "link (broken)"
 msgstr "وصلة (مكسورة)"
 
-#: libnautilus-private/nautilus-file.c:6165
+#: libnautilus-private/nautilus-file.c:6176
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2854,7 +2854,7 @@ msgid "Icon View"
 msgstr "مشهد الأيقونات"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "مشهد القائمة"
@@ -2981,51 +2981,51 @@ msgstr "فيما إذا كنا بارزين عند إسقاط عملية الس�
 msgid "The selection rectangle"
 msgstr "مستطيل الانتقاء"
 
-#: libnautilus-private/nautilus-icon-container.c:4175
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Frame Text"
 msgstr "نص الإطار"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4180
 msgid "Draw a frame around unselected text"
 msgstr "رسم إطار حول النص الغير منتقى"
 
-#: libnautilus-private/nautilus-icon-container.c:4182
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Selection Box Color"
 msgstr "لون صندوق الإنتقاء"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Color of the selection box"
 msgstr "لون صندوق الإنتقاء"
 
-#: libnautilus-private/nautilus-icon-container.c:4188
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Selection Box Alpha"
 msgstr "شفافية صندوق الإنتقاء"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Opacity of the selection box"
 msgstr "عتمة صندوق الإنتقاء"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Highlight Alpha"
 msgstr "شفافية الإبراز"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4201
 msgid "Opacity of the highlight for selected icons"
 msgstr "عتمة الإبراز للأيقونات المنتقات"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Light Info Color"
 msgstr "لون المعلومات الفاتحة"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Color used for information text against a dark background"
 msgstr "اللون المستخدم لنص المعلومات فوق خلفية قاتمة"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4213
 msgid "Dark Info Color"
 msgstr "لون المعلومات المعتمة"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4214
 msgid "Color used for information text against a light background"
 msgstr "اللون المستخدم لنص المعلومات فوق خلفية فاتحة"
 
@@ -3300,11 +3300,11 @@ msgstr ""
 msgid "_Associate Action"
 msgstr "_ربط عمل"
 
-#: libnautilus-private/nautilus-program-choosing.c:568
+#: libnautilus-private/nautilus-program-choosing.c:576
 msgid "Open Failed, would you like to choose another application?"
 msgstr "فشل الفتح، هل تريد اختيار تطبيق آخر؟"
 
-#: libnautilus-private/nautilus-program-choosing.c:569
+#: libnautilus-private/nautilus-program-choosing.c:577
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3313,11 +3313,11 @@ msgstr ""
 "لا يمكن لـ \"%s\" فتح \"%s\" لأن \"%s\" لا يستطيع النفاذ إلى الملفات عند \"%s"
 "\" مواقع."
 
-#: libnautilus-private/nautilus-program-choosing.c:574
+#: libnautilus-private/nautilus-program-choosing.c:582
 msgid "Open Failed, would you like to choose another action?"
 msgstr "فشل القتح، هل تريد اختيار عمل آخر؟"
 
-#: libnautilus-private/nautilus-program-choosing.c:575
+#: libnautilus-private/nautilus-program-choosing.c:583
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3326,12 +3326,12 @@ msgstr ""
 "لا يمكن للعمل الافتراضي فتح \"%s\" لأنه لا يستطيع النفاذ إلى الملفات عند \"%s"
 "\" مواقع."
 
-#: libnautilus-private/nautilus-program-choosing.c:582
-#: libnautilus-private/nautilus-program-choosing.c:615
+#: libnautilus-private/nautilus-program-choosing.c:590
+#: libnautilus-private/nautilus-program-choosing.c:623
 msgid "Can't Open Location"
 msgstr "لا يمكن فتح الموقع"
 
-#: libnautilus-private/nautilus-program-choosing.c:601
+#: libnautilus-private/nautilus-program-choosing.c:609
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
@@ -3340,7 +3340,7 @@ msgstr ""
 "لا يمكن لـ \"%s\" فتح \"%s\" لأن \"%s\" لا يستطيع النفاذ إلى الملفات عند \"%s"
 "\" مواقع."
 
-#: libnautilus-private/nautilus-program-choosing.c:604
+#: libnautilus-private/nautilus-program-choosing.c:612
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3348,7 +3348,7 @@ msgstr ""
 "لا وجود لتطبيقات أخرى متوفرة لعرض هذا الملف. ربما ستتمكن من فتح هذا الملف "
 "إذا نسخته في حاسوبك."
 
-#: libnautilus-private/nautilus-program-choosing.c:608
+#: libnautilus-private/nautilus-program-choosing.c:616
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
@@ -3357,62 +3357,128 @@ msgstr ""
 "لا يستطيع العمل الإفتراضي فتح \"%s\" لأنه لا يمكنه النفاذ إلى الملفات عند \"%"
 "s\" مواقع."
 
-#: libnautilus-private/nautilus-program-choosing.c:610
+#: libnautilus-private/nautilus-program-choosing.c:618
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
 "لا عمليات أخرى متوفرة لعرض هذا الملف. يمكنك فتح هذاالملف إذا نسخته في حاسوبك."
 
-#: libnautilus-private/nautilus-program-choosing.c:869
-#: libnautilus-private/nautilus-program-choosing.c:1086
+#: libnautilus-private/nautilus-program-choosing.c:881
+#: libnautilus-private/nautilus-program-choosing.c:1166
 #, c-format
 msgid "Opening %s"
 msgstr "جاري فتح %s"
 
-#: libnautilus-private/nautilus-program-choosing.c:1230
-msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "عفوا، لكنه لا يمكنك تنفيذ أوامر من موقع عن بعد."
+#. TODO: These strings suck pretty badly, but we're in string-freeze,
+#. * and I found these in other places to reuse. We should make them
+#. * better later.
+#: libnautilus-private/nautilus-program-choosing.c:969
+#: libnautilus-private/nautilus-program-choosing.c:977
+#: libnautilus-private/nautilus-program-choosing.c:982
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
+#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
+#, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "لم بتمكن من عرض \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:1232
-msgid "This is disabled due to security considerations."
-msgstr "هذا معطل بسبب أسباب أمنية."
-
-#: libnautilus-private/nautilus-program-choosing.c:1233
-msgid "Can't Execute Remote Links"
-msgstr "لا يمكن تنفيذ الوصلات عن بعد"
-
-#: libnautilus-private/nautilus-program-choosing.c:1243
-#: libnautilus-private/nautilus-program-choosing.c:1309
-msgid "Details: "
-msgstr "التفاصيل: "
-
-#: libnautilus-private/nautilus-program-choosing.c:1245
-#: libnautilus-private/nautilus-program-choosing.c:1311
+#: libnautilus-private/nautilus-program-choosing.c:971
+#: libnautilus-private/nautilus-program-choosing.c:1325
+#: libnautilus-private/nautilus-program-choosing.c:1391
 msgid "There was an error launching the application."
 msgstr "حدث خطأ عند تشغيل التطبيق."
 
-#: libnautilus-private/nautilus-program-choosing.c:1247
+#: libnautilus-private/nautilus-program-choosing.c:979
+#: src/nautilus-window-manage-views.c:1370
+msgid "The attempt to log in failed."
+msgstr "فشلت محاولة تسجيل الدخول."
+
+#: libnautilus-private/nautilus-program-choosing.c:984
+#: src/nautilus-window-manage-views.c:1376
+msgid "Access was denied."
+msgstr "منع النفاذ."
+
+#: libnautilus-private/nautilus-program-choosing.c:989
+#: src/nautilus-window-manage-views.c:1386
+#, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
+msgstr "لم يمكن عرض \"%s\"، لأنه لم يمكن ايجاد المضيف \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:992
+#: src/nautilus-window-manage-views.c:1389
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr "تثبت من صحة التهجئة و صحة تعيينات البروكسي."
+
+#: libnautilus-private/nautilus-program-choosing.c:997
+#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-window-manage-views.c:1320
+#, c-format
+msgid "\"%s\" is not a valid location."
+msgstr " \"%s\" ليس موقعا سليما."
+
+#: libnautilus-private/nautilus-program-choosing.c:1000
+#: libnautilus-private/nautilus-program-choosing.c:1007
+#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-property-browser.c:1106
+#: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
+msgid "Please check the spelling and try again."
+msgstr "الرجاء التأكد من التهجأة ثم الإعادة مرة أخرى."
+
+#: libnautilus-private/nautilus-program-choosing.c:1004
+#: src/nautilus-window-manage-views.c:1312
+#, c-format
+msgid "Couldn't find \"%s\"."
+msgstr "لم يتمكن من ايجاد \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:1019
+#: src/nautilus-window-manage-views.c:1430
+msgid "Can't Display Location"
+msgstr "لا يمكن عرض الموقع"
+
+#: libnautilus-private/nautilus-program-choosing.c:1310
+msgid "Sorry, but you can't execute commands from a remote site."
+msgstr "عفوا، لكنه لا يمكنك تنفيذ أوامر من موقع عن بعد."
+
+#: libnautilus-private/nautilus-program-choosing.c:1312
+msgid "This is disabled due to security considerations."
+msgstr "هذا معطل بسبب أسباب أمنية."
+
 #: libnautilus-private/nautilus-program-choosing.c:1313
+msgid "Can't Execute Remote Links"
+msgstr "لا يمكن تنفيذ الوصلات عن بعد"
+
+#: libnautilus-private/nautilus-program-choosing.c:1323
+#: libnautilus-private/nautilus-program-choosing.c:1389
+msgid "Details: "
+msgstr "التفاصيل: "
+
+#: libnautilus-private/nautilus-program-choosing.c:1327
+#: libnautilus-private/nautilus-program-choosing.c:1393
 msgid "Error Launching Application"
 msgstr "خطأ عند تشغيل التطبيق"
 
-#: libnautilus-private/nautilus-program-choosing.c:1275
-#: libnautilus-private/nautilus-program-choosing.c:1287
+#: libnautilus-private/nautilus-program-choosing.c:1355
+#: libnautilus-private/nautilus-program-choosing.c:1367
 msgid "This drop target only supports local files."
 msgstr "هدف اﻹسقاط هذا لا يدعم إلا الملفات المحلية."
 
-#: libnautilus-private/nautilus-program-choosing.c:1276
+#: libnautilus-private/nautilus-program-choosing.c:1356
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr "لفتح ملفات غير محلية انسخها لمجلد محلي ثم اسقطها مرة أخرها."
 
-#: libnautilus-private/nautilus-program-choosing.c:1278
-#: libnautilus-private/nautilus-program-choosing.c:1290
+#: libnautilus-private/nautilus-program-choosing.c:1358
+#: libnautilus-private/nautilus-program-choosing.c:1370
 msgid "Drop Target Only Supports Local Files"
 msgstr "هدف الإسقاط لا يدعم إلا الملفات المحلية"
 
-#: libnautilus-private/nautilus-program-choosing.c:1288
+#: libnautilus-private/nautilus-program-choosing.c:1368
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -3953,17 +4019,17 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "لا شيء في الحافظة الوسيطة للصقه."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6102
+#: src/file-manager/fm-directory-view.c:6123
 msgid "Mount Error"
 msgstr "خطأ تجهيز"
 
 #: src/file-manager/fm-directory-view.c:5112
-msgid "Unmount Error"
-msgstr "خطأ إزالة التجهيز"
-
-#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "خطأ طرد"
+
+#: src/file-manager/fm-directory-view.c:5115
+msgid "Unmount Error"
+msgstr "خطأ إزالة التجهيز"
 
 #: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
@@ -4090,12 +4156,12 @@ msgstr "_عرض"
 msgid "_Run"
 msgstr "_تشغيل"
 
-#: src/file-manager/fm-directory-view.c:6236
+#: src/file-manager/fm-directory-view.c:6259
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "جاري فتح \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6243
+#: src/file-manager/fm-directory-view.c:6266
 msgid "Cancel Open?"
 msgstr "إلغاء الفتح؟"
 
@@ -4285,127 +4351,127 @@ msgstr "باعتبار ال_شعارات"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "الحفاظ على اﻷيقونات مرتبة في صفوف بحسب الشعارات"
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "استرجاع الأ_حجام اﻷصليّة للأيقونات"
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr "استرجاع ال_حجم اﻷصلي للأيقونة"
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "يشير إلى \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr "السحب واﻹلقاء غير مدعوم."
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr "السحب واﻹلقاء مدعوم في أنظمة الملفات المحلية فقط."
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr "خطأ في السحب واﻹلقاء"
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr "تم استخدام نوع سحب غير صحيح."
 
-#: src/file-manager/fm-list-view.c:1514
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s أعمدة مرئية"
 
-#: src/file-manager/fm-list-view.c:1533
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr "اختر ترتيب ظهور المعلومات في هذا المجلد."
 
-#: src/file-manager/fm-properties-window.c:477
+#: src/file-manager/fm-properties-window.c:481
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "لا يمكنك ربط أكثر من أيقونة خاصة واحدة في آن واحد!"
 
-#: src/file-manager/fm-properties-window.c:478
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:507
 msgid "Please drag just one image to set a custom icon."
 msgstr "الرجاء سحب صورة واحدة فقط لضبط أيقونة خاصة."
 
-#: src/file-manager/fm-properties-window.c:479
+#: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "أكثر من صورة واحدة"
 
-#: src/file-manager/fm-properties-window.c:488
+#: src/file-manager/fm-properties-window.c:492
 #: src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not local."
 msgstr "الملف الذي ألقيته ليس محليا."
 
-#: src/file-manager/fm-properties-window.c:489
-#: src/file-manager/fm-properties-window.c:496
+#: src/file-manager/fm-properties-window.c:493
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:528
 msgid "You can only use local images as custom icons."
 msgstr "يمكنك فقط استعمال الصور المحلية كأيقونات خاصة."
 
-#: src/file-manager/fm-properties-window.c:490
+#: src/file-manager/fm-properties-window.c:494
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "صور محلية فقط"
 
-#: src/file-manager/fm-properties-window.c:495
+#: src/file-manager/fm-properties-window.c:499
 #: src/nautilus-information-panel.c:534
 msgid "The file that you dropped is not an image."
 msgstr "الملف الذي القيته ليس صورة."
 
-#: src/file-manager/fm-properties-window.c:497
+#: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "الصور فقط"
 
-#: src/file-manager/fm-properties-window.c:914
+#: src/file-manager/fm-properties-window.c:918
 #: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "خصائص"
 
-#: src/file-manager/fm-properties-window.c:917
+#: src/file-manager/fm-properties-window.c:921
 #, c-format
 msgid "%s Properties"
 msgstr "خصائص %s"
 
-#: src/file-manager/fm-properties-window.c:1378
+#: src/file-manager/fm-properties-window.c:1429
 msgid "Cancel Group Change?"
 msgstr "إلغاء تغيير المجموعة؟"
 
-#: src/file-manager/fm-properties-window.c:1379
+#: src/file-manager/fm-properties-window.c:1430
 msgid "Changing group."
 msgstr "جاري تغيير المجموعة."
 
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1591
 msgid "Cancel Owner Change?"
 msgstr "إلغاء تغيير المالك؟"
 
-#: src/file-manager/fm-properties-window.c:1541
+#: src/file-manager/fm-properties-window.c:1592
 msgid "Changing owner."
 msgstr "جاري تغيير المالك."
 
-#: src/file-manager/fm-properties-window.c:1747
+#: src/file-manager/fm-properties-window.c:1798
 msgid "nothing"
 msgstr "ﻻ شئ"
 
-#: src/file-manager/fm-properties-window.c:1749
+#: src/file-manager/fm-properties-window.c:1800
 msgid "unreadable"
 msgstr "غير قابل للقراءة"
 
-#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-properties-window.c:1810
 #, fuzzy, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "عنصر %d، بالحجم %s"
 msgstr[1] "عنصر %d، بالحجم %s"
 
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1819
 msgid "(some contents unreadable)"
 msgstr "(بعض المحتويات غير قابلة للقراءة)"
 
@@ -4415,181 +4481,181 @@ msgstr "(بعض المحتويات غير قابلة للقراءة)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1785
+#: src/file-manager/fm-properties-window.c:1836
 msgid "Contents:"
 msgstr "المحتويات:"
 
-#: src/file-manager/fm-properties-window.c:2176
+#: src/file-manager/fm-properties-window.c:2227
 msgid "Basic"
 msgstr "أساسي"
 
-#: src/file-manager/fm-properties-window.c:2204
+#: src/file-manager/fm-properties-window.c:2255
 msgid "_Names:"
 msgstr "الأ_سماء:"
 
-#: src/file-manager/fm-properties-window.c:2206
+#: src/file-manager/fm-properties-window.c:2257
 msgid "_Name:"
 msgstr "الإ_سم:"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2306
 msgid "Type:"
 msgstr "النوع:"
 
-#: src/file-manager/fm-properties-window.c:2257
-#: src/file-manager/fm-properties-window.c:2267
-#: src/file-manager/fm-properties-window.c:2273
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2284
-#: src/file-manager/fm-properties-window.c:2292
-#: src/file-manager/fm-properties-window.c:2298
-#: src/file-manager/fm-properties-window.c:2307
-#: src/file-manager/fm-properties-window.c:2313
-#: src/file-manager/fm-properties-window.c:2900
-#: src/file-manager/fm-properties-window.c:2921
-#: src/file-manager/fm-properties-window.c:3012
-#: src/file-manager/fm-properties-window.c:3016
-#: src/file-manager/fm-properties-window.c:3020
+#: src/file-manager/fm-properties-window.c:2308
+#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2324
+#: src/file-manager/fm-properties-window.c:2331
+#: src/file-manager/fm-properties-window.c:2335
+#: src/file-manager/fm-properties-window.c:2343
+#: src/file-manager/fm-properties-window.c:2349
+#: src/file-manager/fm-properties-window.c:2358
+#: src/file-manager/fm-properties-window.c:2364
+#: src/file-manager/fm-properties-window.c:2957
+#: src/file-manager/fm-properties-window.c:2978
+#: src/file-manager/fm-properties-window.c:3069
+#: src/file-manager/fm-properties-window.c:3073
+#: src/file-manager/fm-properties-window.c:3077
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2316
 msgid "Size:"
 msgstr "الحجم:"
 
-#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "الموقع:"
 
-#: src/file-manager/fm-properties-window.c:2278
+#: src/file-manager/fm-properties-window.c:2329
 msgid "Volume:"
 msgstr "شدة الصوت:"
 
-#: src/file-manager/fm-properties-window.c:2282
+#: src/file-manager/fm-properties-window.c:2333
 msgid "Free space:"
 msgstr "الفضاء المطلق:"
 
-#: src/file-manager/fm-properties-window.c:2290
+#: src/file-manager/fm-properties-window.c:2341
 msgid "Link target:"
 msgstr "مقصد الوصلة:"
 
-#: src/file-manager/fm-properties-window.c:2296
+#: src/file-manager/fm-properties-window.c:2347
 msgid "MIME type:"
 msgstr "نوع MIME:"
 
-#: src/file-manager/fm-properties-window.c:2305
+#: src/file-manager/fm-properties-window.c:2356
 msgid "Modified:"
 msgstr "عدل:"
 
-#: src/file-manager/fm-properties-window.c:2311
+#: src/file-manager/fm-properties-window.c:2362
 msgid "Accessed:"
 msgstr "نفذ إليه:"
 
-#: src/file-manager/fm-properties-window.c:2327
+#: src/file-manager/fm-properties-window.c:2378
 msgid "_Select Custom Icon..."
 msgstr "ا_نتقاء أيقونة خاصة..."
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2384
 msgid "_Remove Custom Icon"
 msgstr "_حذف أيقونة خاصة"
 
-#: src/file-manager/fm-properties-window.c:2679
+#: src/file-manager/fm-properties-window.c:2736
 msgid "_Read"
 msgstr "_قراءة"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2738
 msgid "_Write"
 msgstr "_كتابة"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2740
 msgid "E_xecute"
 msgstr "_تنفيذ"
 
-#: src/file-manager/fm-properties-window.c:2766
+#: src/file-manager/fm-properties-window.c:2823
 msgid "Set _user ID"
 msgstr "ضبط هوية ال_مستخدم"
 
-#: src/file-manager/fm-properties-window.c:2771
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Special flags:"
 msgstr "شارات خاصة:"
 
-#: src/file-manager/fm-properties-window.c:2774
+#: src/file-manager/fm-properties-window.c:2831
 msgid "Set gro_up ID"
 msgstr "ضبط هوية ال_مجموعة"
 
-#: src/file-manager/fm-properties-window.c:2776
+#: src/file-manager/fm-properties-window.c:2833
 msgid "_Sticky"
 msgstr "_لاصق"
 
-#: src/file-manager/fm-properties-window.c:2875
+#: src/file-manager/fm-properties-window.c:2932
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "إنك لست المالك، لذلك لا يمكنك تغيير هذه التصاريح."
 
-#: src/file-manager/fm-properties-window.c:2889
+#: src/file-manager/fm-properties-window.c:2946
 msgid "File _owner:"
 msgstr "_مالك الملف:"
 
-#: src/file-manager/fm-properties-window.c:2895
+#: src/file-manager/fm-properties-window.c:2952
 msgid "File owner:"
 msgstr "مالك الملف:"
 
-#: src/file-manager/fm-properties-window.c:2906
+#: src/file-manager/fm-properties-window.c:2963
 msgid "_File group:"
 msgstr "مجموعة الم_لف:"
 
-#: src/file-manager/fm-properties-window.c:2915
+#: src/file-manager/fm-properties-window.c:2972
 msgid "File group:"
 msgstr "مجموعة الملف:"
 
-#: src/file-manager/fm-properties-window.c:2927
+#: src/file-manager/fm-properties-window.c:2984
 msgid "Owner:"
 msgstr "المالك:"
 
-#: src/file-manager/fm-properties-window.c:2928
+#: src/file-manager/fm-properties-window.c:2985
 msgid "Group:"
 msgstr "المجموعة:"
 
-#: src/file-manager/fm-properties-window.c:2929
+#: src/file-manager/fm-properties-window.c:2986
 msgid "Others:"
 msgstr "آخرين:"
 
-#: src/file-manager/fm-properties-window.c:3011
+#: src/file-manager/fm-properties-window.c:3068
 msgid "Text view:"
 msgstr "عرض النص:"
 
-#: src/file-manager/fm-properties-window.c:3015
+#: src/file-manager/fm-properties-window.c:3072
 msgid "Number view:"
 msgstr "عرض الأرقام:"
 
-#: src/file-manager/fm-properties-window.c:3019
+#: src/file-manager/fm-properties-window.c:3076
 msgid "Last changed:"
 msgstr "آخر تعديل:"
 
-#: src/file-manager/fm-properties-window.c:3025
+#: src/file-manager/fm-properties-window.c:3082
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "لم يمكن تحديد تصاريح \"%s\"."
 
-#: src/file-manager/fm-properties-window.c:3028
+#: src/file-manager/fm-properties-window.c:3085
 msgid "The permissions of the selected file could not be determined."
 msgstr "لم يمكن تحديد تصاريح الملف المنتقى."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "There was an error displaying help."
 msgstr "حدث خطأ عند عرض المساعدة."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "Couldn't Show Help"
 msgstr "لم يمكن عرض المساعدة"
 
-#: src/file-manager/fm-properties-window.c:3523
+#: src/file-manager/fm-properties-window.c:3593
 msgid "Cancel Showing Properties Window?"
 msgstr "إلغاء عرض نافذة الخصائص؟"
 
-#: src/file-manager/fm-properties-window.c:3524
+#: src/file-manager/fm-properties-window.c:3594
 msgid "Creating Properties window."
 msgstr "جاري انشاء نافذة الخصائص."
 
-#: src/file-manager/fm-properties-window.c:3650
+#: src/file-manager/fm-properties-window.c:3729
 msgid "Select an icon"
 msgstr "اختر أيقونة"
 
@@ -4962,16 +5028,16 @@ msgstr "اختر أي الأعمدة ستكون مرئية في هذا المج�
 msgid "Visible _Columns..."
 msgstr "الأ_عمدة المرئية..."
 
-#: src/nautilus-application.c:266
+#: src/nautilus-application.c:267
 msgid "Couldn't Create Required Folder"
 msgstr "لم يمكن إنشاء المجلد المطلوب"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "لم يتمكن نوتلس من إنشاء المجلد المطلوب \"%s\"."
 
-#: src/nautilus-application.c:269
+#: src/nautilus-application.c:270
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -4979,16 +5045,16 @@ msgstr ""
 "الرجاء إنشاء المجلد التالي قبل تشغيل نوتلس أو قم بضبط التصاريح حتى يتمكن "
 "نوتلس من إنشائه."
 
-#: src/nautilus-application.c:272
+#: src/nautilus-application.c:273
 msgid "Couldn't Create Required Folders"
 msgstr "لم يمكن إنشاء المجلدات المطلوبة"
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "لم يتمكن نوتلس من إنشاء المجلدات التالية المطلوبة: %s."
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -4996,15 +5062,15 @@ msgstr ""
 "الرجاء القيام بإنشاء هذه المجلدات قبل تشغيل نوتلس، أو بضبطالتصاريح حتى يتمكن "
 "نوتلس من انشائها."
 
-#: src/nautilus-application.c:343
+#: src/nautilus-application.c:344
 msgid "Link To Old Desktop"
 msgstr "وصلة للمكتب القديم"
 
-#: src/nautilus-application.c:359
+#: src/nautilus-application.c:360
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "انشأت وصلة بإسم \"وصلة للمكتب القديم\" على سطح مكتبك."
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5012,7 +5078,7 @@ msgstr ""
 "موقع دليل سطح المكتب تغير في جنوم 2.4. يمكنك فتح الوصلة و نقل الملفات التي "
 "تريد إليها ثم حذفها."
 
-#: src/nautilus-application.c:362
+#: src/nautilus-application.c:363
 msgid "Migrated Old Desktop"
 msgstr "رحّل المكتب القديم"
 
@@ -5026,7 +5092,7 @@ msgstr "رحّل المكتب القديم"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:536
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5037,7 +5103,7 @@ msgstr ""
 "مرة أخرى."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:542
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5081,12 +5147,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:572 src/nautilus-application.c:590
-#: src/nautilus-application.c:597
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "لا يمكن استخدام نوتلس اﻵن لحدوث خطأ غير متوقع."
 
-#: src/nautilus-application.c:573
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5094,7 +5160,7 @@ msgstr ""
 "لا يمكن استخدام نوتلس اﻵن لحدوث خطأ غير مترقب من بونوبو أثناء محاولة تسجيل "
 "نادل مشهد مدير الملفات."
 
-#: src/nautilus-application.c:591
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5103,7 +5169,7 @@ msgstr ""
 "لا·يمكن·استخدام·نوتلس·اﻵن·لحدوث·خطأ·غير·مترقب·من·قبل·بونوبو·أثناء·محاولة·موقعة·المصنع."
 "·قتل·bonobo-activation-server·ثم·إعادة·تشغيل·نوتلس·قد·يساعد·في·حل·المشكلة."
 
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5113,7 +5179,7 @@ msgstr ""
 "موقعة جسم الهيكل. قتل bonobo-activation-server ثم إعادة تشغيل نوتلس قد يساعد "
 "في حل المشكلة."
 
-#: src/nautilus-bookmarks-window.c:146
+#: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
@@ -5124,7 +5190,7 @@ msgstr ""
 "حدث خطأ عند عرض المساعدة: \n"
 "%s"
 
-#: src/nautilus-bookmarks-window.c:180
+#: src/nautilus-bookmarks-window.c:184
 msgid "No bookmarks defined"
 msgstr "لا علامات موقع معرفة"
 
@@ -5156,19 +5222,6 @@ msgstr "الرجاء ادخال اسم و المحاولة مرة اخرى."
 #: src/nautilus-connect-server-dialog.c:104
 msgid "Can't Connect to Server"
 msgstr "لا يمكن الاتصال بالنادل"
-
-#: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1310
-#, c-format
-msgid "\"%s\" is not a valid location."
-msgstr " \"%s\" ليس موقعا سليما."
-
-#: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1305
-#: src/nautilus-window-manage-views.c:1313
-msgid "Please check the spelling and try again."
-msgstr "الرجاء التأكد من التهجأة ثم الإعادة مرة أخرى."
 
 #: src/nautilus-connect-server-dialog.c:177
 msgid "Connect to Server"
@@ -5543,7 +5596,7 @@ msgid "File Manager"
 msgstr "مدير الملفات"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "نوتلس"
@@ -6239,105 +6292,71 @@ msgstr "المنتقى الحالي"
 msgid "the type of window the view is embedded in"
 msgstr "نوع النافذة الذي فيه ضمن المشهد"
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr "فشل النشهد"
 
-#: src/nautilus-window-manage-views.c:847
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "واجه المشهد %s خطأ و لا يمكنه الاستمرار."
 
-#: src/nautilus-window-manage-views.c:848
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr "يمكنك اختيار مشهد آخر أو الذهاب إلى موقع آخر."
 
-#: src/nautilus-window-manage-views.c:858
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "واجه المشهد %s خطأ أثناء بدء التشغيل."
 
-#: src/nautilus-window-manage-views.c:859
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr "لا يمكن عرض الموقع بهذا العارض."
 
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr "مشهد المحتوى"
 
-#: src/nautilus-window-manage-views.c:1007
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr "مشهد للملف ﻷو المجلد الحاليين"
 
-#: src/nautilus-window-manage-views.c:1302
-#, c-format
-msgid "Couldn't find \"%s\"."
-msgstr "لم يتمكن من ايجاد \"%s\"."
-
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1326
-#: src/nautilus-window-manage-views.c:1336
-#: src/nautilus-window-manage-views.c:1350
-#: src/nautilus-window-manage-views.c:1358
-#: src/nautilus-window-manage-views.c:1364
-#: src/nautilus-window-manage-views.c:1384
-#, c-format
-msgid "Couldn't display \"%s\"."
-msgstr "لم بتمكن من عرض \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "لا يستطيع نوتيلس تحديد نوع الملف."
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "ليس لنوتلس عارض مثبت قادر على عرض الملف"
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "لا يستطيع نوتلس معالجة المواقع %s."
 
-#: src/nautilus-window-manage-views.c:1360
-msgid "The attempt to log in failed."
-msgstr "فشلت محاولة تسجيل الدخول."
-
-#: src/nautilus-window-manage-views.c:1366
-msgid "Access was denied."
-msgstr "منع النفاذ."
-
-#: src/nautilus-window-manage-views.c:1376
-#, c-format
-msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "لم يمكن عرض \"%s\"، لأنه لم يمكن ايجاد المضيف \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1379
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
-msgstr "تثبت من صحة التهجئة و صحة تعيينات البروكسي."
-
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr "تثبت من صحة تعيينات البروكسي."
 
-#: src/nautilus-window-manage-views.c:1391
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "لم يمكن عرض \"%s\" لان نوتلس لا يستطيع الاتصال بمتصفح SMB الرئيسي."
 
-#: src/nautilus-window-manage-views.c:1394
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr "تثبت من أن نادل SMB يعمل في شبكتك المحلية."
 
-#: src/nautilus-window-manage-views.c:1404
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr "البحث غير متوفر اﻵن بسبب عدم وجود فهرس لديك أو أن خدمة البحث لا تعمل."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6345,22 +6364,18 @@ msgstr ""
 "تأكد من أنك شغلت خدمة البحث ميدوزا، وفي حال عدم وجود فهرس لديك تأكد من أن "
 "مفهرس ميدوزا يعمل."
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr "البحث غير متوفر"
 
-#: src/nautilus-window-manage-views.c:1414
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "لا يمكن لنوتلس عرض \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr "الرجاء اختيار عارض آخر ثم إعادة المحاولة."
-
-#: src/nautilus-window-manage-views.c:1420
-msgid "Can't Display Location"
-msgstr "لا يمكن عرض الموقع"
 
 #: src/nautilus-window-menus.c:220
 msgid "Go to the location specified by this bookmark"
@@ -6396,24 +6411,24 @@ msgstr "ارجع للوراء بعض الصفحات"
 msgid "Go forward a number of pages"
 msgstr "اذهب للأمام بعض الصفحات"
 
-#: src/nautilus-window.c:874
+#: src/nautilus-window.c:882
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "عرض هذا الموقع بـ \"%s\""
 
-#: src/nautilus-window.c:1578
+#: src/nautilus-window.c:1581
 msgid "Application ID"
 msgstr "هوية التطبيق"
 
-#: src/nautilus-window.c:1579
+#: src/nautilus-window.c:1582
 msgid "The application ID of the window."
 msgstr "هوية التطبيق لهذه النافذة."
 
-#: src/nautilus-window.c:1585
+#: src/nautilus-window.c:1588
 msgid "Application"
 msgstr "التطبيق"
 
-#: src/nautilus-window.c:1586
+#: src/nautilus-window.c:1589
 msgid "The NautilusApplication associated with this window."
 msgstr "تطبيق نوتيلس المرتبط بهذه النافذة."
 

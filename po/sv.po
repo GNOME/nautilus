@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2004-04-02 19:21+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-04-02 19:22+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
@@ -978,7 +978,7 @@ msgstr "Detta tema använder fotorealistiska mappar."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1059
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "Namn"
 
@@ -2908,7 +2908,7 @@ msgid "Icon View"
 msgstr "Ikonvy"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1112
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Listvy"
@@ -3358,11 +3358,11 @@ msgstr ""
 msgid "_Associate Action"
 msgstr "_Associera åtgärd"
 
-#: libnautilus-private/nautilus-program-choosing.c:568
+#: libnautilus-private/nautilus-program-choosing.c:576
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Öppnande misslyckades, vill du välja ett annat program?"
 
-#: libnautilus-private/nautilus-program-choosing.c:569
+#: libnautilus-private/nautilus-program-choosing.c:577
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3371,11 +3371,11 @@ msgstr ""
 "\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
 "\"-platser."
 
-#: libnautilus-private/nautilus-program-choosing.c:574
+#: libnautilus-private/nautilus-program-choosing.c:582
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Öppnande misslyckades, vill du välja en annan åtgärd?"
 
-#: libnautilus-private/nautilus-program-choosing.c:575
+#: libnautilus-private/nautilus-program-choosing.c:583
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3384,12 +3384,12 @@ msgstr ""
 "Standardåtgärden kan inte öppna \"%s\" eftersom den inte kan komma åt filer "
 "på \"%s\"-platser."
 
-#: libnautilus-private/nautilus-program-choosing.c:582
-#: libnautilus-private/nautilus-program-choosing.c:615
+#: libnautilus-private/nautilus-program-choosing.c:590
+#: libnautilus-private/nautilus-program-choosing.c:623
 msgid "Can't Open Location"
 msgstr "Kan inte öppna plats"
 
-#: libnautilus-private/nautilus-program-choosing.c:601
+#: libnautilus-private/nautilus-program-choosing.c:609
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
@@ -3398,7 +3398,7 @@ msgstr ""
 "\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
 "\"-platser."
 
-#: libnautilus-private/nautilus-program-choosing.c:604
+#: libnautilus-private/nautilus-program-choosing.c:612
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3406,7 +3406,7 @@ msgstr ""
 "Det finns inga andra tillgängliga program som kan visa denna fil. Om du "
 "kopierar denna fil till din dator kan du kanske öppna den."
 
-#: libnautilus-private/nautilus-program-choosing.c:608
+#: libnautilus-private/nautilus-program-choosing.c:616
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
@@ -3415,7 +3415,7 @@ msgstr ""
 "Standardåtgärden kan inte öppna \"%s\" eftersom den inte kan komma åt filer "
 "på \"%s\"-platser."
 
-#: libnautilus-private/nautilus-program-choosing.c:610
+#: libnautilus-private/nautilus-program-choosing.c:618
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3423,57 +3423,125 @@ msgstr ""
 "Det finns inga andra tillgängliga program som kan visa denna fil. Om du "
 "kopierar denna fil till din dator kan du kanske öppna den."
 
-#: libnautilus-private/nautilus-program-choosing.c:869
-#: libnautilus-private/nautilus-program-choosing.c:1086
+#: libnautilus-private/nautilus-program-choosing.c:881
+#: libnautilus-private/nautilus-program-choosing.c:1166
 #, c-format
 msgid "Opening %s"
 msgstr "Öppnar %s"
 
-#: libnautilus-private/nautilus-program-choosing.c:1230
-msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "Tyvärr, men du kan inte köra kommandon från en fjärrplats."
+#. TODO: These strings suck pretty badly, but we're in string-freeze,
+#. * and I found these in other places to reuse. We should make them
+#. * better later.
+#: libnautilus-private/nautilus-program-choosing.c:969
+#: libnautilus-private/nautilus-program-choosing.c:977
+#: libnautilus-private/nautilus-program-choosing.c:982
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
+#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
+#, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "Kunde inte visa \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:1232
-msgid "This is disabled due to security considerations."
-msgstr "Detta är inaktiverat på grund av säkerhetsskäl."
-
-#: libnautilus-private/nautilus-program-choosing.c:1233
-msgid "Can't Execute Remote Links"
-msgstr "Kunde inte köra fjärrlänkar"
-
-#: libnautilus-private/nautilus-program-choosing.c:1243
-#: libnautilus-private/nautilus-program-choosing.c:1309
-msgid "Details: "
-msgstr "Detaljer: "
-
-#: libnautilus-private/nautilus-program-choosing.c:1245
-#: libnautilus-private/nautilus-program-choosing.c:1311
+#: libnautilus-private/nautilus-program-choosing.c:971
+#: libnautilus-private/nautilus-program-choosing.c:1325
+#: libnautilus-private/nautilus-program-choosing.c:1391
 msgid "There was an error launching the application."
 msgstr "Det inträffade ett fel vid start av programmet."
 
-#: libnautilus-private/nautilus-program-choosing.c:1247
+#: libnautilus-private/nautilus-program-choosing.c:979
+#: src/nautilus-window-manage-views.c:1370
+msgid "The attempt to log in failed."
+msgstr "Inloggningsförsöket misslyckades."
+
+#: libnautilus-private/nautilus-program-choosing.c:984
+#: src/nautilus-window-manage-views.c:1376
+msgid "Access was denied."
+msgstr "Åtkomst nekades."
+
+#: libnautilus-private/nautilus-program-choosing.c:989
+#: src/nautilus-window-manage-views.c:1386
+#, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
+msgstr "Kunde inte visa \"%s\", eftersom värden \"%s\" inte kunde hittas."
+
+#: libnautilus-private/nautilus-program-choosing.c:992
+#: src/nautilus-window-manage-views.c:1389
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr ""
+"Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
+"stämmer."
+
+#: libnautilus-private/nautilus-program-choosing.c:997
+#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-window-manage-views.c:1320
+#, c-format
+msgid "\"%s\" is not a valid location."
+msgstr "\"%s\" är inte en giltig plats."
+
+#: libnautilus-private/nautilus-program-choosing.c:1000
+#: libnautilus-private/nautilus-program-choosing.c:1007
+#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-property-browser.c:1106
+#: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
+msgid "Please check the spelling and try again."
+msgstr "Kontrollera stavningen och försök igen."
+
+#: libnautilus-private/nautilus-program-choosing.c:1004
+#: src/nautilus-window-manage-views.c:1312
+#, c-format
+msgid "Couldn't find \"%s\"."
+msgstr "Kunde inte hitta \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:1019
+#: src/nautilus-window-manage-views.c:1430
+msgid "Can't Display Location"
+msgstr "Kan inte visa plats"
+
+#: libnautilus-private/nautilus-program-choosing.c:1310
+msgid "Sorry, but you can't execute commands from a remote site."
+msgstr "Tyvärr, men du kan inte köra kommandon från en fjärrplats."
+
+#: libnautilus-private/nautilus-program-choosing.c:1312
+msgid "This is disabled due to security considerations."
+msgstr "Detta är inaktiverat på grund av säkerhetsskäl."
+
 #: libnautilus-private/nautilus-program-choosing.c:1313
+msgid "Can't Execute Remote Links"
+msgstr "Kunde inte köra fjärrlänkar"
+
+#: libnautilus-private/nautilus-program-choosing.c:1323
+#: libnautilus-private/nautilus-program-choosing.c:1389
+msgid "Details: "
+msgstr "Detaljer: "
+
+#: libnautilus-private/nautilus-program-choosing.c:1327
+#: libnautilus-private/nautilus-program-choosing.c:1393
 msgid "Error Launching Application"
 msgstr "Fel vid start av program"
 
-#: libnautilus-private/nautilus-program-choosing.c:1275
-#: libnautilus-private/nautilus-program-choosing.c:1287
+#: libnautilus-private/nautilus-program-choosing.c:1355
+#: libnautilus-private/nautilus-program-choosing.c:1367
 msgid "This drop target only supports local files."
 msgstr "Detta släppmål stöder endast lokala filer."
 
-#: libnautilus-private/nautilus-program-choosing.c:1276
+#: libnautilus-private/nautilus-program-choosing.c:1356
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "För att öppna icke-lokala filer kopierar du dem till en lokal mapp och "
 "släpper dem sedan igen."
 
-#: libnautilus-private/nautilus-program-choosing.c:1278
-#: libnautilus-private/nautilus-program-choosing.c:1290
+#: libnautilus-private/nautilus-program-choosing.c:1358
+#: libnautilus-private/nautilus-program-choosing.c:1370
 msgid "Drop Target Only Supports Local Files"
 msgstr "Släppmål stöder endast lokala filer"
 
-#: libnautilus-private/nautilus-program-choosing.c:1288
+#: libnautilus-private/nautilus-program-choosing.c:1368
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -4040,12 +4108,12 @@ msgid "Mount Error"
 msgstr "Monteringsfel"
 
 #: src/file-manager/fm-directory-view.c:5112
-msgid "Unmount Error"
-msgstr "Avmonteringsfel"
-
-#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "Utmatningsfel"
+
+#: src/file-manager/fm-directory-view.c:5115
+msgid "Unmount Error"
+msgstr "Avmonteringsfel"
 
 #: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
@@ -4376,42 +4444,42 @@ msgstr "efter _emblem"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Återställ ikonernas originalstorlekar"
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Återställ ikonens originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr "Dra och släpp stöds inte."
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:1519
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synliga kolumner"
 
-#: src/file-manager/fm-list-view.c:1538
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr "Välj i vilken ordning informationen ska visas i denna mapp."
 
@@ -5130,7 +5198,7 @@ msgstr "Migrerat gammalt skrivbord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:537
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5141,7 +5209,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:543
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5187,12 +5255,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:573 src/nautilus-application.c:591
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:574
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5200,7 +5268,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:592
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5210,7 +5278,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:599
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5220,7 +5288,7 @@ msgstr ""
 "när den skulle hitta skalobjektet. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-bookmarks-window.c:146
+#: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
@@ -5231,7 +5299,7 @@ msgstr ""
 "Det inträffade ett fel vid visande av hjälp: \n"
 "%s"
 
-#: src/nautilus-bookmarks-window.c:180
+#: src/nautilus-bookmarks-window.c:184
 msgid "No bookmarks defined"
 msgstr "Inga bokmärken angivna"
 
@@ -5263,19 +5331,6 @@ msgstr "Ange ett namn och försök igen."
 #: src/nautilus-connect-server-dialog.c:104
 msgid "Can't Connect to Server"
 msgstr "Kan inte ansluta till servern"
-
-#: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1312
-#, c-format
-msgid "\"%s\" is not a valid location."
-msgstr "\"%s\" är inte en giltig plats."
-
-#: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1307
-#: src/nautilus-window-manage-views.c:1315
-msgid "Please check the spelling and try again."
-msgstr "Kontrollera stavningen och försök igen."
 
 #: src/nautilus-connect-server-dialog.c:177
 msgid "Connect to Server"
@@ -6365,91 +6420,55 @@ msgstr "den aktuella markeringen"
 msgid "the type of window the view is embedded in"
 msgstr "typen av fönster som vyn är inbäddad i"
 
-#: src/nautilus-window-manage-views.c:838
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "%s-vyn råkade ut för ett fel och kan inte fortsätta."
 
-#: src/nautilus-window-manage-views.c:850
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr "Du kan välja en annan vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:861
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr "Platsen kan inte visas med denna visare."
 
-#: src/nautilus-window-manage-views.c:1008
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr "Innehållsvy"
 
-#: src/nautilus-window-manage-views.c:1009
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr "Vy med aktuell fil eller mapp"
 
-#: src/nautilus-window-manage-views.c:1304
-#, c-format
-msgid "Couldn't find \"%s\"."
-msgstr "Kunde inte hitta \"%s\"."
-
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1328
-#: src/nautilus-window-manage-views.c:1338
-#: src/nautilus-window-manage-views.c:1352
-#: src/nautilus-window-manage-views.c:1360
-#: src/nautilus-window-manage-views.c:1366
-#: src/nautilus-window-manage-views.c:1386
-#, c-format
-msgid "Couldn't display \"%s\"."
-msgstr "Kunde inte visa \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1331
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "Nautilus kan inte fastställa vilken typ av fil det är."
 
-#: src/nautilus-window-manage-views.c:1341
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "Nautilus har ingen installerad visare som kan visa filen."
 
-#: src/nautilus-window-manage-views.c:1354
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus kan inte hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1362
-msgid "The attempt to log in failed."
-msgstr "Inloggningsförsöket misslyckades."
-
-#: src/nautilus-window-manage-views.c:1368
-msgid "Access was denied."
-msgstr "Åtkomst nekades."
-
-#: src/nautilus-window-manage-views.c:1378
-#, c-format
-msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Kunde inte visa \"%s\", eftersom värden \"%s\" inte kunde hittas."
-
-#: src/nautilus-window-manage-views.c:1381
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
-"stämmer."
-
-#: src/nautilus-window-manage-views.c:1388
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr "Kontrollera att dina proxyserverinställningar stämmer."
 
 # Osäker.
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6458,11 +6477,11 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan kontakta SMB-"
 "huvudbläddraren."
 
-#: src/nautilus-window-manage-views.c:1396
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr "Kontrollera att en SMB-server körs på det lokala nätverket."
 
-#: src/nautilus-window-manage-views.c:1406
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -6470,7 +6489,7 @@ msgstr ""
 "Sökning är inte tillgänglig just nu, antingen beroende på att du inte har "
 "något index, eller att söktjänsten inte kör."
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6478,22 +6497,18 @@ msgstr ""
 "Försäkra dig om att du har startat Medusa-söktjänsten och att Medusa-"
 "indexeraren kör om du inte har ett index."
 
-#: src/nautilus-window-manage-views.c:1411
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1418
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr "Välj en annan visare och försök igen."
-
-#: src/nautilus-window-manage-views.c:1422
-msgid "Can't Display Location"
-msgstr "Kan inte visa plats"
 
 #: src/nautilus-window-menus.c:220
 msgid "Go to the location specified by this bookmark"
@@ -6535,24 +6550,24 @@ msgstr "Gå bakåt några sidor"
 msgid "Go forward a number of pages"
 msgstr "Gå framåt ett antal sidor"
 
-#: src/nautilus-window.c:874
+#: src/nautilus-window.c:882
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Visa denna plats med \"%s\""
 
-#: src/nautilus-window.c:1578
+#: src/nautilus-window.c:1581
 msgid "Application ID"
 msgstr "Program-id"
 
-#: src/nautilus-window.c:1579
+#: src/nautilus-window.c:1582
 msgid "The application ID of the window."
 msgstr "Program-id för fönstret."
 
-#: src/nautilus-window.c:1585
+#: src/nautilus-window.c:1588
 msgid "Application"
 msgstr "Program"
 
-#: src/nautilus-window.c:1586
+#: src/nautilus-window.c:1589
 msgid "The NautilusApplication associated with this window."
 msgstr "Den NautilusApplication som är associerad med detta fönster."
 

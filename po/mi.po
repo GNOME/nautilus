@@ -7,13 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-10 00:02+1200\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-04-11 14:33+1200\n"
 "Last-Translator: John C Barstow <jbowtie@amathaine.com>\n"
 "Language-Team: GNOME Māori Team <maori@nzlinux.org.nz>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -235,9 +235,11 @@ msgstr "Pūmanawa"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
+msgstr[1] ""
 
 #: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
@@ -959,7 +961,7 @@ msgstr ""
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1059
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "Ingoa"
 
@@ -2025,10 +2027,6 @@ msgid "Replace _All"
 msgstr "Whakakapia"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2083,9 +2081,6 @@ msgid " (another copy)"
 msgstr ""
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2121,9 +2116,6 @@ msgid "%s (another copy)%s"
 msgstr ""
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2566,17 +2558,23 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:1818
 #, c-format
 msgid "%u item"
-msgstr ""
+msgid_plural "%u items"
+msgstr[0] ""
+msgstr[1] ""
 
 #: libnautilus-private/nautilus-file.c:4300
-#, c-format
+#, fuzzy, c-format
 msgid "%u folder"
-msgstr "kōpaki %u"
+msgid_plural "%u folders"
+msgstr[0] "kōpaki %u"
+msgstr[1] "kōpaki %u"
 
 #: libnautilus-private/nautilus-file.c:4301
-#, c-format
+#, fuzzy, c-format
 msgid "%u file"
-msgstr "kōnae %u"
+msgid_plural "%u files"
+msgstr[0] "kōnae %u"
+msgstr[1] "kōnae %u"
 
 #. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4626
@@ -2760,7 +2758,7 @@ msgid "Icon View"
 msgstr "Tiro Whakaahua iti"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1112
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Tiro Rārangi"
@@ -3262,16 +3260,15 @@ msgstr ""
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
-#: src/nautilus-window-manage-views.c:1328
-#: src/nautilus-window-manage-views.c:1338
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
 #: src/nautilus-window-manage-views.c:1360
-#: src/nautilus-window-manage-views.c:1366
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr ""
@@ -3283,30 +3280,30 @@ msgid "There was an error launching the application."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:979
-#: src/nautilus-window-manage-views.c:1362
+#: src/nautilus-window-manage-views.c:1370
 msgid "The attempt to log in failed."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:984
-#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1376
 msgid "Access was denied."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:989
-#: src/nautilus-window-manage-views.c:1378
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:992
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1389
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:997
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1312
+#: src/nautilus-window-manage-views.c:1320
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr ""
@@ -3315,19 +3312,19 @@ msgstr ""
 #: libnautilus-private/nautilus-program-choosing.c:1007
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1307
 #: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
 msgid "Please check the spelling and try again."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:1004
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1312
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:1019
-#: src/nautilus-window-manage-views.c:1422
+#: src/nautilus-window-manage-views.c:1430
 msgid "Can't Display Location"
 msgstr ""
 
@@ -3600,7 +3597,9 @@ msgstr "Whakangita te para"
 #: src/file-manager/fm-directory-view.c:544
 #, c-format
 msgid "Open %d Window?"
-msgstr ""
+msgid_plural "Open %d Windows?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:545
 msgid "Are you sure you want to open all files?"
@@ -3609,7 +3608,9 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:546 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
-msgstr ""
+msgid_plural "This will open %d separate windows."
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:893
 #, c-format
@@ -3619,8 +3620,10 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
@@ -3647,18 +3650,24 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:1752
 #, c-format
 msgid "%d folder selected"
-msgstr ""
+msgid_plural "%d folders selected"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:1762
 #, c-format
 msgid " (containing %d item)"
-msgstr ""
+msgid_plural " (containing %d items)"
+msgstr[0] ""
+msgstr[1] ""
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1773
 #, c-format
 msgid " (containing a total of %d item)"
-msgstr ""
+msgid_plural " (containing a total of %d items)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:1789
 #, c-format
@@ -3668,13 +3677,17 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:1793
 #, c-format
 msgid "%d item selected (%s)"
-msgstr ""
+msgid_plural "%d items selected (%s)"
+msgstr[0] ""
+msgstr[1] ""
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1801
 #, c-format
 msgid "%d other item selected (%s)"
-msgstr ""
+msgid_plural "%d other items selected (%s)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:1822
 #, c-format
@@ -3742,9 +3755,11 @@ msgstr ""
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -3848,15 +3863,19 @@ msgstr ""
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
@@ -3892,7 +3911,9 @@ msgstr ""
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
-msgstr ""
+msgid_plural "Open in %d New Windows"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:5515
 msgid "Browse Folder"
@@ -4197,42 +4218,42 @@ msgstr ""
 msgid "Keep icons sorted by emblems in rows"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:1519
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:1538
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 
@@ -4313,7 +4334,9 @@ msgstr ""
 #: src/file-manager/fm-properties-window.c:1810
 #, c-format
 msgid "%d item, with size %s"
-msgstr ""
+msgid_plural "%d items, totalling %s"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-properties-window.c:1819
 msgid "(some contents unreadable)"
@@ -4935,7 +4958,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:537
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4943,7 +4966,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:543
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -4972,26 +4995,25 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:573 src/nautilus-application.c:591
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:574
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:592
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:599
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5354,7 +5376,9 @@ msgstr ""
 #: src/nautilus-location-bar.c:154
 #, c-format
 msgid "Do you want to view %d location?"
-msgstr ""
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -5413,27 +5437,22 @@ msgid "Nautilus"
 msgstr "Paua"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr ""
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr ""
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr ""
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 
@@ -6118,86 +6137,86 @@ msgstr "Kotia te whiringa"
 msgid "the type of window the view is embedded in"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:838
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:850
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:861
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1008
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1009
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1331
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1341
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1354
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1388
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1396
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1406
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1411
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1418
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr ""
 

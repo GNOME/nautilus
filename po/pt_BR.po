@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-15 15:19+0100\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-03-11 16:19-0500\n"
 "Last-Translator: Raphael Higino <raphaelh@uai.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -42,7 +42,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() falhou."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2400
+#: src/file-manager/fm-properties-window.c:2451
 msgid "Emblems"
 msgstr "Emblemas"
 
@@ -966,7 +966,7 @@ msgstr "Este tema usa pastas foto-realísticas."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1054
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "Nome"
 
@@ -1762,7 +1762,7 @@ msgid "The group of the file."
 msgstr "O grupo do arquivo."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2922
 msgid "Permissions"
 msgstr "Permissões"
 
@@ -2166,7 +2166,7 @@ msgstr "Substituir _Todos"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4724
+#: libnautilus-private/nautilus-file.c:4735
 #, c-format
 msgid "link to %s"
 msgstr "criar ligação para %s"
@@ -2740,7 +2740,7 @@ msgstr "tipo MIME desconhecido"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1147
+#: src/file-manager/fm-properties-window.c:1198
 msgid "unknown"
 msgstr "desconhecido"
 
@@ -2758,7 +2758,7 @@ msgstr ""
 "provavelmente significa que o seu arquivo gnome-vfs.keys está no lugar "
 "errado ou não está sendo encontrado por uma outra razão."
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4712
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2767,15 +2767,15 @@ msgstr ""
 "Não foi encontrada descrição para o tipo MIME \"%s\" (arquivo é \"%s\"), por "
 "favor notifique a lista de discussão do gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4718
+#: libnautilus-private/nautilus-file.c:4729
 msgid "link"
 msgstr "ligação"
 
-#: libnautilus-private/nautilus-file.c:4738
+#: libnautilus-private/nautilus-file.c:4749
 msgid "link (broken)"
 msgstr "ligação (com problema)"
 
-#: libnautilus-private/nautilus-file.c:6165
+#: libnautilus-private/nautilus-file.c:6176
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2904,7 +2904,7 @@ msgid "Icon View"
 msgstr "Visualizar Ícones"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Visualizar Lista"
@@ -3031,51 +3031,51 @@ msgstr "se está ou não realçado para Arrastar&Soltar"
 msgid "The selection rectangle"
 msgstr "O retângulo da seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:4175
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Frame Text"
 msgstr "Texto do Frame"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4180
 msgid "Draw a frame around unselected text"
 msgstr "Desenhar um frame ao redor do texto selecionado"
 
-#: libnautilus-private/nautilus-icon-container.c:4182
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Selection Box Color"
 msgstr "Cor da Caixa de Seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Color of the selection box"
 msgstr "Cor da caixa de seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:4188
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Selection Box Alpha"
 msgstr "Caixa de Seleção Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Opacity of the selection box"
 msgstr "Opacidade da caixa de seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Highlight Alpha"
 msgstr "Realçar Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4201
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacidade do realce para os ícones selecionados"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Light Info Color"
 msgstr "Informação da cor clara"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Color used for information text against a dark background"
 msgstr "Cor usada para texto informativo em fundo escuro"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4213
 msgid "Dark Info Color"
 msgstr "Informação da cor escura"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4214
 msgid "Color used for information text against a light background"
 msgstr "Cor usada para texto informativo em fundo claro"
 
@@ -3353,11 +3353,11 @@ msgstr ""
 msgid "_Associate Action"
 msgstr "_Associar Ação"
 
-#: libnautilus-private/nautilus-program-choosing.c:568
+#: libnautilus-private/nautilus-program-choosing.c:576
 msgid "Open Failed, would you like to choose another application?"
 msgstr "Falha ao abrir, você quer escolher outra aplicação?"
 
-#: libnautilus-private/nautilus-program-choosing.c:569
+#: libnautilus-private/nautilus-program-choosing.c:577
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3366,11 +3366,11 @@ msgstr ""
 "\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:574
+#: libnautilus-private/nautilus-program-choosing.c:582
 msgid "Open Failed, would you like to choose another action?"
 msgstr "Falha ao abrir, você gostaria de escolher outra ação?"
 
-#: libnautilus-private/nautilus-program-choosing.c:575
+#: libnautilus-private/nautilus-program-choosing.c:583
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3379,12 +3379,12 @@ msgstr ""
 "A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:582
-#: libnautilus-private/nautilus-program-choosing.c:615
+#: libnautilus-private/nautilus-program-choosing.c:590
+#: libnautilus-private/nautilus-program-choosing.c:623
 msgid "Can't Open Location"
 msgstr "Não foi possível abrir localização"
 
-#: libnautilus-private/nautilus-program-choosing.c:601
+#: libnautilus-private/nautilus-program-choosing.c:609
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
@@ -3393,7 +3393,7 @@ msgstr ""
 "\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:604
+#: libnautilus-private/nautilus-program-choosing.c:612
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
@@ -3401,7 +3401,7 @@ msgstr ""
 "Nenhuma outra aplicação está disponível para ver esse arquivo. Se você "
 "copiar este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
-#: libnautilus-private/nautilus-program-choosing.c:608
+#: libnautilus-private/nautilus-program-choosing.c:616
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
@@ -3410,7 +3410,7 @@ msgstr ""
 "A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em "
 "locais \"%s\"."
 
-#: libnautilus-private/nautilus-program-choosing.c:610
+#: libnautilus-private/nautilus-program-choosing.c:618
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
@@ -3418,59 +3418,130 @@ msgstr ""
 "Nenhuma outra ação está disponível para ver este arquivo. Se você copiar "
 "este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
-#: libnautilus-private/nautilus-program-choosing.c:869
-#: libnautilus-private/nautilus-program-choosing.c:1086
+#: libnautilus-private/nautilus-program-choosing.c:881
+#: libnautilus-private/nautilus-program-choosing.c:1166
 #, c-format
 msgid "Opening %s"
 msgstr "Abrindo %s"
 
-#: libnautilus-private/nautilus-program-choosing.c:1230
+#. TODO: These strings suck pretty badly, but we're in string-freeze,
+#. * and I found these in other places to reuse. We should make them
+#. * better later.
+#: libnautilus-private/nautilus-program-choosing.c:969
+#: libnautilus-private/nautilus-program-choosing.c:977
+#: libnautilus-private/nautilus-program-choosing.c:982
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
+#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
+#, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "Não foi possível exibir \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:971
+#: libnautilus-private/nautilus-program-choosing.c:1325
+#: libnautilus-private/nautilus-program-choosing.c:1391
+msgid "There was an error launching the application."
+msgstr "Houve um erro ao iniciar a aplicação."
+
+# Eh, vou colocar um comentário.
+# Log in aqui parece ser ao tentar acessar uma URI, estou supondo que
+# é um problema de conexão à uma máquina remota.
+#: libnautilus-private/nautilus-program-choosing.c:979
+#: src/nautilus-window-manage-views.c:1370
+msgid "The attempt to log in failed."
+msgstr "A tentativa de log in falhou."
+
+#: libnautilus-private/nautilus-program-choosing.c:984
+#: src/nautilus-window-manage-views.c:1376
+msgid "Access was denied."
+msgstr "Acesso negado."
+
+#: libnautilus-private/nautilus-program-choosing.c:989
+#: src/nautilus-window-manage-views.c:1386
+#, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
+msgstr "Não foi possível exibir \"%s\" pois não foi encontrado um host \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:992
+#: src/nautilus-window-manage-views.c:1389
+msgid ""
+"Check that the spelling is correct and that your proxy settings are correct."
+msgstr ""
+"Verifique que a grafia está correta e que suas configurações de proxy estão "
+"corretas."
+
+#: libnautilus-private/nautilus-program-choosing.c:997
+#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-window-manage-views.c:1320
+#, c-format
+msgid "\"%s\" is not a valid location."
+msgstr "\"%s\" não é uma localização válida."
+
+#: libnautilus-private/nautilus-program-choosing.c:1000
+#: libnautilus-private/nautilus-program-choosing.c:1007
+#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-property-browser.c:1106
+#: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
+msgid "Please check the spelling and try again."
+msgstr "Por favor, verifique a grafia e tente novamente."
+
+#: libnautilus-private/nautilus-program-choosing.c:1004
+#: src/nautilus-window-manage-views.c:1312
+#, c-format
+msgid "Couldn't find \"%s\"."
+msgstr "Não foi possível encontrar \"%s\"."
+
+#: libnautilus-private/nautilus-program-choosing.c:1019
+#: src/nautilus-window-manage-views.c:1430
+msgid "Can't Display Location"
+msgstr "Não é possível exibir localização"
+
+#: libnautilus-private/nautilus-program-choosing.c:1310
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr ""
 "Desculpe, mas não é possível executar comandos a partir de uma localização "
 "remota."
 
-#: libnautilus-private/nautilus-program-choosing.c:1232
+#: libnautilus-private/nautilus-program-choosing.c:1312
 msgid "This is disabled due to security considerations."
 msgstr "Isso está desabilitado por questões de segurança."
 
-#: libnautilus-private/nautilus-program-choosing.c:1233
+#: libnautilus-private/nautilus-program-choosing.c:1313
 msgid "Can't Execute Remote Links"
 msgstr "Não é possível executar ligações remotas"
 
-#: libnautilus-private/nautilus-program-choosing.c:1243
-#: libnautilus-private/nautilus-program-choosing.c:1309
+#: libnautilus-private/nautilus-program-choosing.c:1323
+#: libnautilus-private/nautilus-program-choosing.c:1389
 msgid "Details: "
 msgstr "Detalhes: "
 
-#: libnautilus-private/nautilus-program-choosing.c:1245
-#: libnautilus-private/nautilus-program-choosing.c:1311
-msgid "There was an error launching the application."
-msgstr "Houve um erro ao iniciar a aplicação."
-
-#: libnautilus-private/nautilus-program-choosing.c:1247
-#: libnautilus-private/nautilus-program-choosing.c:1313
+#: libnautilus-private/nautilus-program-choosing.c:1327
+#: libnautilus-private/nautilus-program-choosing.c:1393
 msgid "Error Launching Application"
 msgstr "Erro ao iniciar aplicação"
 
-#: libnautilus-private/nautilus-program-choosing.c:1275
-#: libnautilus-private/nautilus-program-choosing.c:1287
+#: libnautilus-private/nautilus-program-choosing.c:1355
+#: libnautilus-private/nautilus-program-choosing.c:1367
 msgid "This drop target only supports local files."
 msgstr "Esse alvo só suporta arquivos locais."
 
-#: libnautilus-private/nautilus-program-choosing.c:1276
+#: libnautilus-private/nautilus-program-choosing.c:1356
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "Para abrir arquivos externos copie-os para uma pasta local e arraste-os "
 "novamente."
 
-#: libnautilus-private/nautilus-program-choosing.c:1278
-#: libnautilus-private/nautilus-program-choosing.c:1290
+#: libnautilus-private/nautilus-program-choosing.c:1358
+#: libnautilus-private/nautilus-program-choosing.c:1370
 msgid "Drop Target Only Supports Local Files"
 msgstr "O alvo só suporta arquivos locais"
 
-#: libnautilus-private/nautilus-program-choosing.c:1288
+#: libnautilus-private/nautilus-program-choosing.c:1368
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
@@ -4044,17 +4115,17 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Não há nada na área de transferência para ser colado."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6102
+#: src/file-manager/fm-directory-view.c:6123
 msgid "Mount Error"
 msgstr "Erro ao montar"
 
 #: src/file-manager/fm-directory-view.c:5112
-msgid "Unmount Error"
-msgstr "Erro ao desmontar"
-
-#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "Erro ao ejetar"
+
+#: src/file-manager/fm-directory-view.c:5115
+msgid "Unmount Error"
+msgstr "Erro ao desmontar"
 
 #: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
@@ -4181,12 +4252,12 @@ msgstr "_Exibir"
 msgid "_Run"
 msgstr "Executa_r"
 
-#: src/file-manager/fm-directory-view.c:6236
+#: src/file-manager/fm-directory-view.c:6259
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Abrindo \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6243
+#: src/file-manager/fm-directory-view.c:6266
 msgid "Cancel Open?"
 msgstr "Cancelar Abertura?"
 
@@ -4390,128 +4461,128 @@ msgstr "por _emblemas"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mantém ícones ordenados por emblemas nas linhas"
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaurar _Tamanho Original dos Ícones"
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr "Rest_aurar Tamanho Original do Ícone"
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "apontando para \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr "Arrastar e soltar não é suportado."
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Arrastar e soltar só é suportado em sistemas de arquivos locais."
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr "Erro ao arrastar e soltar"
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr "Um tipo de arraste inválido foi usado."
 
-#: src/file-manager/fm-list-view.c:1514
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Colunas Visíveis"
 
-#: src/file-manager/fm-list-view.c:1533
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr "Escolha a ordem em que a informação aparecerá nesta pasta."
 
-#: src/file-manager/fm-properties-window.c:477
+#: src/file-manager/fm-properties-window.c:481
 msgid "You can't assign more than one custom icon at a time!"
 msgstr "Você não pode atribuir mais de um ícone personalizado de uma vez!"
 
-#: src/file-manager/fm-properties-window.c:478
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:507
 msgid "Please drag just one image to set a custom icon."
 msgstr ""
 "Por favor arraste apenas uma imagem para definir um ícone personalizado."
 
-#: src/file-manager/fm-properties-window.c:479
+#: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Mais de uma imagem"
 
-#: src/file-manager/fm-properties-window.c:488
+#: src/file-manager/fm-properties-window.c:492
 #: src/nautilus-information-panel.c:527
 msgid "The file that you dropped is not local."
 msgstr "O arquivo que você arrastou não é local."
 
-#: src/file-manager/fm-properties-window.c:489
-#: src/file-manager/fm-properties-window.c:496
+#: src/file-manager/fm-properties-window.c:493
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:528
 msgid "You can only use local images as custom icons."
 msgstr "Você só pode usar imagens locais como ícones personalizados."
 
-#: src/file-manager/fm-properties-window.c:490
+#: src/file-manager/fm-properties-window.c:494
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Apenas imagens locais"
 
-#: src/file-manager/fm-properties-window.c:495
+#: src/file-manager/fm-properties-window.c:499
 #: src/nautilus-information-panel.c:534
 msgid "The file that you dropped is not an image."
 msgstr "O arquivo que você arrastou não é uma imagem."
 
-#: src/file-manager/fm-properties-window.c:497
+#: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Imagens apenas"
 
-#: src/file-manager/fm-properties-window.c:914
+#: src/file-manager/fm-properties-window.c:918
 #: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Propriedades"
 
-#: src/file-manager/fm-properties-window.c:917
+#: src/file-manager/fm-properties-window.c:921
 #, c-format
 msgid "%s Properties"
 msgstr "Propriedades de %s"
 
-#: src/file-manager/fm-properties-window.c:1378
+#: src/file-manager/fm-properties-window.c:1429
 msgid "Cancel Group Change?"
 msgstr "Cancelar mudança de grupo?"
 
-#: src/file-manager/fm-properties-window.c:1379
+#: src/file-manager/fm-properties-window.c:1430
 msgid "Changing group."
 msgstr "Mudando grupo."
 
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1591
 msgid "Cancel Owner Change?"
 msgstr "Cancelar mudança de dono?"
 
-#: src/file-manager/fm-properties-window.c:1541
+#: src/file-manager/fm-properties-window.c:1592
 msgid "Changing owner."
 msgstr "Mudando dono."
 
-#: src/file-manager/fm-properties-window.c:1747
+#: src/file-manager/fm-properties-window.c:1798
 msgid "nothing"
 msgstr "nada"
 
-#: src/file-manager/fm-properties-window.c:1749
+#: src/file-manager/fm-properties-window.c:1800
 msgid "unreadable"
 msgstr "ilegível"
 
-#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-properties-window.c:1810
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d item, com tamanho %s"
 msgstr[1] "%d itens, totalizando %s"
 
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1819
 msgid "(some contents unreadable)"
 msgstr "(alguns conteúdos ilegíveis)"
 
@@ -4521,181 +4592,181 @@ msgstr "(alguns conteúdos ilegíveis)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1785
+#: src/file-manager/fm-properties-window.c:1836
 msgid "Contents:"
 msgstr "Conteúdo:"
 
-#: src/file-manager/fm-properties-window.c:2176
+#: src/file-manager/fm-properties-window.c:2227
 msgid "Basic"
 msgstr "Básico"
 
-#: src/file-manager/fm-properties-window.c:2204
+#: src/file-manager/fm-properties-window.c:2255
 msgid "_Names:"
 msgstr "_Nomes:"
 
-#: src/file-manager/fm-properties-window.c:2206
+#: src/file-manager/fm-properties-window.c:2257
 msgid "_Name:"
 msgstr "_Nome:"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2306
 msgid "Type:"
 msgstr "Tipo:"
 
-#: src/file-manager/fm-properties-window.c:2257
-#: src/file-manager/fm-properties-window.c:2267
-#: src/file-manager/fm-properties-window.c:2273
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2284
-#: src/file-manager/fm-properties-window.c:2292
-#: src/file-manager/fm-properties-window.c:2298
-#: src/file-manager/fm-properties-window.c:2307
-#: src/file-manager/fm-properties-window.c:2313
-#: src/file-manager/fm-properties-window.c:2900
-#: src/file-manager/fm-properties-window.c:2921
-#: src/file-manager/fm-properties-window.c:3012
-#: src/file-manager/fm-properties-window.c:3016
-#: src/file-manager/fm-properties-window.c:3020
+#: src/file-manager/fm-properties-window.c:2308
+#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2324
+#: src/file-manager/fm-properties-window.c:2331
+#: src/file-manager/fm-properties-window.c:2335
+#: src/file-manager/fm-properties-window.c:2343
+#: src/file-manager/fm-properties-window.c:2349
+#: src/file-manager/fm-properties-window.c:2358
+#: src/file-manager/fm-properties-window.c:2364
+#: src/file-manager/fm-properties-window.c:2957
+#: src/file-manager/fm-properties-window.c:2978
+#: src/file-manager/fm-properties-window.c:3069
+#: src/file-manager/fm-properties-window.c:3073
+#: src/file-manager/fm-properties-window.c:3077
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2316
 msgid "Size:"
 msgstr "Tamanho:"
 
-#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Localização:"
 
-#: src/file-manager/fm-properties-window.c:2278
+#: src/file-manager/fm-properties-window.c:2329
 msgid "Volume:"
 msgstr "Volume:"
 
-#: src/file-manager/fm-properties-window.c:2282
+#: src/file-manager/fm-properties-window.c:2333
 msgid "Free space:"
 msgstr "Espaço livre:"
 
-#: src/file-manager/fm-properties-window.c:2290
+#: src/file-manager/fm-properties-window.c:2341
 msgid "Link target:"
 msgstr "Destino da ligação:"
 
-#: src/file-manager/fm-properties-window.c:2296
+#: src/file-manager/fm-properties-window.c:2347
 msgid "MIME type:"
 msgstr "Tipo MIME:"
 
-#: src/file-manager/fm-properties-window.c:2305
+#: src/file-manager/fm-properties-window.c:2356
 msgid "Modified:"
 msgstr "Modificado:"
 
-#: src/file-manager/fm-properties-window.c:2311
+#: src/file-manager/fm-properties-window.c:2362
 msgid "Accessed:"
 msgstr "Acessado:"
 
-#: src/file-manager/fm-properties-window.c:2327
+#: src/file-manager/fm-properties-window.c:2378
 msgid "_Select Custom Icon..."
 msgstr "_Selecionar Ícone Personalizado..."
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2384
 msgid "_Remove Custom Icon"
 msgstr "_Remover Ícone Personalizado"
 
-#: src/file-manager/fm-properties-window.c:2679
+#: src/file-manager/fm-properties-window.c:2736
 msgid "_Read"
 msgstr "_Leitura"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2738
 msgid "_Write"
 msgstr "_Escrita"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2740
 msgid "E_xecute"
 msgstr "E_xecução"
 
-#: src/file-manager/fm-properties-window.c:2766
+#: src/file-manager/fm-properties-window.c:2823
 msgid "Set _user ID"
 msgstr "Definir ID do _usuário"
 
-#: src/file-manager/fm-properties-window.c:2771
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Special flags:"
 msgstr "Indicadores especiais:"
 
-#: src/file-manager/fm-properties-window.c:2774
+#: src/file-manager/fm-properties-window.c:2831
 msgid "Set gro_up ID"
 msgstr "Definir ID do gr_upo"
 
-#: src/file-manager/fm-properties-window.c:2776
+#: src/file-manager/fm-properties-window.c:2833
 msgid "_Sticky"
 msgstr "_Pegajoso"
 
-#: src/file-manager/fm-properties-window.c:2875
+#: src/file-manager/fm-properties-window.c:2932
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Você não é o dono, logo você não pode alterar as permissões."
 
-#: src/file-manager/fm-properties-window.c:2889
+#: src/file-manager/fm-properties-window.c:2946
 msgid "File _owner:"
 msgstr "D_ono do arquivo:"
 
-#: src/file-manager/fm-properties-window.c:2895
+#: src/file-manager/fm-properties-window.c:2952
 msgid "File owner:"
 msgstr "Dono do arquivo:"
 
-#: src/file-manager/fm-properties-window.c:2906
+#: src/file-manager/fm-properties-window.c:2963
 msgid "_File group:"
 msgstr "_Grupo do arquivo:"
 
-#: src/file-manager/fm-properties-window.c:2915
+#: src/file-manager/fm-properties-window.c:2972
 msgid "File group:"
 msgstr "Grupo do arquivo:"
 
-#: src/file-manager/fm-properties-window.c:2927
+#: src/file-manager/fm-properties-window.c:2984
 msgid "Owner:"
 msgstr "Dono:"
 
-#: src/file-manager/fm-properties-window.c:2928
+#: src/file-manager/fm-properties-window.c:2985
 msgid "Group:"
 msgstr "Grupo:"
 
-#: src/file-manager/fm-properties-window.c:2929
+#: src/file-manager/fm-properties-window.c:2986
 msgid "Others:"
 msgstr "Outros:"
 
-#: src/file-manager/fm-properties-window.c:3011
+#: src/file-manager/fm-properties-window.c:3068
 msgid "Text view:"
 msgstr "Como texto:"
 
-#: src/file-manager/fm-properties-window.c:3015
+#: src/file-manager/fm-properties-window.c:3072
 msgid "Number view:"
 msgstr "Como números:"
 
-#: src/file-manager/fm-properties-window.c:3019
+#: src/file-manager/fm-properties-window.c:3076
 msgid "Last changed:"
 msgstr "Última alteração:"
 
-#: src/file-manager/fm-properties-window.c:3025
+#: src/file-manager/fm-properties-window.c:3082
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "As permissões de \"%s\" não puderam ser determinadas."
 
-#: src/file-manager/fm-properties-window.c:3028
+#: src/file-manager/fm-properties-window.c:3085
 msgid "The permissions of the selected file could not be determined."
 msgstr "As permissões do arquivo selecionado não puderam ser determinadas."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "There was an error displaying help."
 msgstr "Houve um erro ao exibir a ajuda."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 msgid "Couldn't Show Help"
 msgstr "Não foi possível exibir ajuda"
 
-#: src/file-manager/fm-properties-window.c:3523
+#: src/file-manager/fm-properties-window.c:3593
 msgid "Cancel Showing Properties Window?"
 msgstr "Cancelar exibição da janela Propriedades?"
 
-#: src/file-manager/fm-properties-window.c:3524
+#: src/file-manager/fm-properties-window.c:3594
 msgid "Creating Properties window."
 msgstr "Criando janela de Propriedades"
 
-#: src/file-manager/fm-properties-window.c:3650
+#: src/file-manager/fm-properties-window.c:3729
 msgid "Select an icon"
 msgstr "Selecione um ícone"
 
@@ -5079,17 +5150,17 @@ msgstr "Selecione a coluna visíve nesta pasta"
 msgid "Visible _Columns..."
 msgstr "_Colunas Visíveis..."
 
-#: src/nautilus-application.c:266
+#: src/nautilus-application.c:267
 msgid "Couldn't Create Required Folder"
 msgstr "Não foi possível criar pasta necessária"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr ""
 "O Nautilus não pôde criar a pasta \"%s\", necessária ao seu funcionamento."
 
-#: src/nautilus-application.c:269
+#: src/nautilus-application.c:270
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5097,16 +5168,16 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie a pasta a seguir ou configure "
 "as permissões de forma que o Nautilus possa criá-la."
 
-#: src/nautilus-application.c:272
+#: src/nautilus-application.c:273
 msgid "Couldn't Create Required Folders"
 msgstr "Não foi possível criar pastas necessárias"
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "O Nautilus não pôde criar as pastas requeridas a seguir: %s."
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5114,17 +5185,17 @@ msgstr ""
 "Antes de executar o Nautilus, por favor crie essas pastas ou configure as "
 "permissões de forma que o Nautilus possa criá-las."
 
-#: src/nautilus-application.c:343
+#: src/nautilus-application.c:344
 msgid "Link To Old Desktop"
 msgstr "Ligação para a Área de Trabalho antiga"
 
-#: src/nautilus-application.c:359
+#: src/nautilus-application.c:360
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 "Uma ligação chamada \"Ligação para a Área de Trabalho Antiga\" foi criado na "
 "área de trabalho."
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5132,7 +5203,7 @@ msgstr ""
 "A localização da pasta da área de trabalho mudou no GNOME 2.4. Você pode "
 "abrir a ligação e mover os arquivos que quiser, e então excluir a ligação."
 
-#: src/nautilus-application.c:362
+#: src/nautilus-application.c:363
 msgid "Migrated Old Desktop"
 msgstr "Área de Trabalho Antiga Migrada"
 
@@ -5146,7 +5217,7 @@ msgstr "Área de Trabalho Antiga Migrada"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:536
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5157,7 +5228,7 @@ msgstr ""
 "reiniciar o computador ou reinstalar o Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:542
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5203,12 +5274,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:572 src/nautilus-application.c:590
-#: src/nautilus-application.c:597
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Não é possível usar o Nautilus agora devido a um erro inesperado."
 
-#: src/nautilus-application.c:573
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5216,7 +5287,7 @@ msgstr ""
 "Não é possível usar o Nautilus agora devido a um erro inesperado do Bonobo "
 "ao tentar registrar o servidor de visão do gerenciador de arquivos."
 
-#: src/nautilus-application.c:591
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5226,7 +5297,7 @@ msgstr ""
 "ao tentar localizar a fábrica. Terminar o bonobo-activation-server e "
 "reiniciar o Nautilus pode ajudar a resolver o problema."
 
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5236,7 +5307,7 @@ msgstr ""
 "ao tentar localizar um objeto shell. Terminar o bonobo-activation-server e "
 "reiniciar o Nautilus pode ajudar a resolver o problema."
 
-#: src/nautilus-bookmarks-window.c:146
+#: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
@@ -5247,7 +5318,7 @@ msgstr ""
 "Ocorreu um erro ao exibir ajuda: \n"
 "%s"
 
-#: src/nautilus-bookmarks-window.c:180
+#: src/nautilus-bookmarks-window.c:184
 msgid "No bookmarks defined"
 msgstr "Nenhum marcador definido"
 
@@ -5279,19 +5350,6 @@ msgstr "Por favor digite um nome e tente de novo."
 #: src/nautilus-connect-server-dialog.c:104
 msgid "Can't Connect to Server"
 msgstr "Não foi Possível Conectar ao Servidor"
-
-#: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1310
-#, c-format
-msgid "\"%s\" is not a valid location."
-msgstr "\"%s\" não é uma localização válida."
-
-#: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1305
-#: src/nautilus-window-manage-views.c:1313
-msgid "Please check the spelling and try again."
-msgstr "Por favor, verifique a grafia e tente novamente."
 
 #: src/nautilus-connect-server-dialog.c:177
 msgid "Connect to Server"
@@ -5670,7 +5728,7 @@ msgid "File Manager"
 msgstr "Gerenciador de Arquivos"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6374,94 +6432,55 @@ msgstr "a seleção atual"
 msgid "the type of window the view is embedded in"
 msgstr "o tipo de janela em que a visualização está embutida"
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr "Falhou a visão"
 
-#: src/nautilus-window-manage-views.c:847
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "A visão %s encontrou um erro e não pode continuar."
 
-#: src/nautilus-window-manage-views.c:848
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr "Você pode escolher outra visão ou ir para uma localização diferente."
 
-#: src/nautilus-window-manage-views.c:858
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "A visão %s encontrou um erro ao iniciar."
 
-#: src/nautilus-window-manage-views.c:859
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr "A localização não pode ser exibida com esse visualizador."
 
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr "Visualização do Conteúdo"
 
-#: src/nautilus-window-manage-views.c:1007
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr "Visualização da pasta ou arquivo atual"
 
-#: src/nautilus-window-manage-views.c:1302
-#, c-format
-msgid "Couldn't find \"%s\"."
-msgstr "Não foi possível encontrar \"%s\"."
-
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1326
-#: src/nautilus-window-manage-views.c:1336
-#: src/nautilus-window-manage-views.c:1350
-#: src/nautilus-window-manage-views.c:1358
-#: src/nautilus-window-manage-views.c:1364
-#: src/nautilus-window-manage-views.c:1384
-#, c-format
-msgid "Couldn't display \"%s\"."
-msgstr "Não foi possível exibir \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "O Nautilus não pôde determinar que tipo de arquivo é esse."
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
 "O Nautilus não possui um visualizador capaz de exibir o arquivo instalado."
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "O Nautilus não consegue lidar com localizações %s:."
 
-# Eh, vou colocar um comentário.
-# Log in aqui parece ser ao tentar acessar uma URI, estou supondo que
-# é um problema de conexão à uma máquina remota.
-#: src/nautilus-window-manage-views.c:1360
-msgid "The attempt to log in failed."
-msgstr "A tentativa de log in falhou."
-
-#: src/nautilus-window-manage-views.c:1366
-msgid "Access was denied."
-msgstr "Acesso negado."
-
-#: src/nautilus-window-manage-views.c:1376
-#, c-format
-msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Não foi possível exibir \"%s\" pois não foi encontrado um host \"%s\"."
-
-#: src/nautilus-window-manage-views.c:1379
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Verifique que a grafia está correta e que suas configurações de proxy estão "
-"corretas."
-
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr "Verifique que suas configurações de proxy estão corretas."
 
-#: src/nautilus-window-manage-views.c:1391
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6470,11 +6489,11 @@ msgstr ""
 "Não foi possível exibir \"%s\" porque o Nautilus não pôde contactar o "
 "navegador mestre SMB."
 
-#: src/nautilus-window-manage-views.c:1394
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr "Verifique se há um servidor SMB rodando na rede local."
 
-#: src/nautilus-window-manage-views.c:1404
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -6482,7 +6501,7 @@ msgstr ""
 "A busca não está disponível no momento ou porque você não possui um índice "
 "ou porque o serviço de busca não está sendo executado."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6490,22 +6509,18 @@ msgstr ""
 "Verifique se você iniciou o serviço de busca Medusa e, caso não possua um "
 "índice, que o indexador do Medusa esteja sendo executado."
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr "Busca não está disponível"
 
-#: src/nautilus-window-manage-views.c:1414
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus não pode exibir \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr "Por favor selecione outro visualizador e tente novamente."
-
-#: src/nautilus-window-manage-views.c:1420
-msgid "Can't Display Location"
-msgstr "Não é possível exibir localização"
 
 #: src/nautilus-window-menus.c:220
 msgid "Go to the location specified by this bookmark"
@@ -6547,24 +6562,24 @@ msgstr "Voltar algumas páginas"
 msgid "Go forward a number of pages"
 msgstr "Avançar um certo número de páginas"
 
-#: src/nautilus-window.c:874
+#: src/nautilus-window.c:882
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Exibir esta localização com \"%s\""
 
-#: src/nautilus-window.c:1578
+#: src/nautilus-window.c:1581
 msgid "Application ID"
 msgstr "ID do Aplicativo"
 
-#: src/nautilus-window.c:1579
+#: src/nautilus-window.c:1582
 msgid "The application ID of the window."
 msgstr "O ID da aplicação da janela"
 
-#: src/nautilus-window.c:1585
+#: src/nautilus-window.c:1588
 msgid "Application"
 msgstr "Aplicação"
 
-#: src/nautilus-window.c:1586
+#: src/nautilus-window.c:1589
 msgid "The NautilusApplication associated with this window."
 msgstr "A NautilusApplication associada a esta janela."
 

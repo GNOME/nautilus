@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 21:31+0530\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-02-29 20:47+0530\n"
 "Last-Translator: Nirav, Ankit, Ankur, Atit, Bhavin, Kartik, Khushbu, Sweta. "
 "<magnet@magnet-i.com>\n"
@@ -961,7 +961,7 @@ msgstr "આ થીમ વાસ્તવિક ચિત્ર ફોલ્ડ�
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1059
+#: src/file-manager/fm-list-view.c:1067
 msgid "Name"
 msgstr "નામ"
 
@@ -2131,10 +2131,6 @@ msgid "Replace _All"
 msgstr "બધુ બદલો (_A)"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2189,9 +2185,6 @@ msgid " (another copy)"
 msgstr " (બીજી એક નકલ)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2227,9 +2220,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (બીજી એક નકલ)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2876,7 +2866,7 @@ msgid "Icon View"
 msgstr "ચિહ્ન દ્રશ્ય"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1112
+#: src/file-manager/fm-list-view.c:1120
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "યાદી દ્રશ્ય"
@@ -3269,6 +3259,10 @@ msgstr "\"%s\" સાથે કોઇ કાર્ય જોડાયેલ ન�
 msgid "No Action Associated"
 msgstr "કોઇ કાર્યક્રમ સંકળાયેલ નથી"
 
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -3395,16 +3389,15 @@ msgstr "\"%s\" ખોલી રહ્યા છે"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
-#: src/nautilus-window-manage-views.c:1328
-#: src/nautilus-window-manage-views.c:1338
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1346
 #: src/nautilus-window-manage-views.c:1360
-#: src/nautilus-window-manage-views.c:1366
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1394
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "\"%s\" ને પ્રદર્શિત કરી શકાયુ નથી."
@@ -3416,30 +3409,30 @@ msgid "There was an error launching the application."
 msgstr "કાર્યક્રમને શરૂ કરતી વખતે ભૂલ હતી."
 
 #: libnautilus-private/nautilus-program-choosing.c:979
-#: src/nautilus-window-manage-views.c:1362
+#: src/nautilus-window-manage-views.c:1370
 msgid "The attempt to log in failed."
 msgstr "પ્રવેશવાની પ્રક્રિયા નિષ્ફળ છે."
 
 #: libnautilus-private/nautilus-program-choosing.c:984
-#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1376
 msgid "Access was denied."
 msgstr "પરવાનગી નથી."
 
 #: libnautilus-private/nautilus-program-choosing.c:989
-#: src/nautilus-window-manage-views.c:1378
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" પ્રદર્શિત કરી શકાતુ નથી, કારણકે તેને કોઈ યજમાનુ \"%s\" મળી શક્યો નથી."
 
 #: libnautilus-private/nautilus-program-choosing.c:992
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1389
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "તેની જોડણી અને પ્રોક્સી સુયોજના બરાબર છે કે નહી તે ચકાસો."
 
 #: libnautilus-private/nautilus-program-choosing.c:997
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1312
+#: src/nautilus-window-manage-views.c:1320
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" એ યોગ્ય જગ્યા નામ નથી."
@@ -3448,19 +3441,19 @@ msgstr "\"%s\" એ યોગ્ય જગ્યા નામ નથી."
 #: libnautilus-private/nautilus-program-choosing.c:1007
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1307
 #: src/nautilus-window-manage-views.c:1315
+#: src/nautilus-window-manage-views.c:1323
 msgid "Please check the spelling and try again."
 msgstr "મહેરબાની કરીને તેની જોડણી તપાસો અને ફરીથી પ્રયત્ન કરો."
 
 #: libnautilus-private/nautilus-program-choosing.c:1004
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1312
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "\"%s\" શોધી શકાયુ નહિ."
 
 #: libnautilus-private/nautilus-program-choosing.c:1019
-#: src/nautilus-window-manage-views.c:1422
+#: src/nautilus-window-manage-views.c:1430
 msgid "Can't Display Location"
 msgstr "સ્થાન પ્રદર્શિત કરી શકાતુ નથી"
 
@@ -3842,6 +3835,10 @@ msgstr "%s, ખાલી જગ્યા: %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
+#. Note that the number of items actually displayed varies somewhat due
+#. * to the way files are collected in batches. So you can't assume that
+#. * no more than the constant limit are displayed.
+#.
 #: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -4368,42 +4365,42 @@ msgstr "સાંકેતિક-ચિહ્ન દ્વારા (_E)"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "આડી હરોળમાં ચિહ્નોને સાંકેતિક-ચિહ્ન દ્વારા ક્રમમાં રાખો"
 
-#: src/file-manager/fm-icon-view.c:1641
+#: src/file-manager/fm-icon-view.c:1652
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "ચિહ્નોના મૂળ માપ પાછા લાવો (_z)"
 
-#: src/file-manager/fm-icon-view.c:1642
+#: src/file-manager/fm-icon-view.c:1653
 msgid "Restore Icon's Original Si_ze"
 msgstr "ચિહ્નોના મૂળ માપ પાછા લાવો (_z)"
 
-#: src/file-manager/fm-icon-view.c:2005
+#: src/file-manager/fm-icon-view.c:2016
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" પર નિર્દેશીત કરી રહ્યુ છે"
 
-#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
+#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
 msgid "Drag and drop is not supported."
 msgstr "ખેંચીને મૂકવુ એ આધાર આપતુ નથી."
 
-#: src/file-manager/fm-icon-view.c:2589
+#: src/file-manager/fm-icon-view.c:2600
 msgid "Drag and drop is only supported on local file systems."
 msgstr "ખેંચીને મૂકવુ એ ફક્ત સ્થાનિક ફાઇલ સિસ્ટમને આધાર આપે છે."
 
-#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
+#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
 msgid "Drag and Drop Error"
 msgstr "ખેંચીને મૂકવામાં ભૂલ"
 
-#: src/file-manager/fm-icon-view.c:2613
+#: src/file-manager/fm-icon-view.c:2624
 msgid "An invalid drag type was used."
 msgstr "અયોગ્ય ખેંચવાનો પ્રકાર વાપર્યો હતો."
 
-#: src/file-manager/fm-list-view.c:1519
+#: src/file-manager/fm-list-view.c:1524
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s દ્રશ્ય સ્તંભો"
 
-#: src/file-manager/fm-list-view.c:1538
+#: src/file-manager/fm-list-view.c:1543
 msgid "Choose the order of information to appear in this folder."
 msgstr "આ ફોલ્ડરમાં દેખાવા માટે જાણકારીનો ક્રમ પસંદ કરો."
 
@@ -5106,7 +5103,17 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "જૂના ડૅસ્કટોપનું સ્થળાંતર કરી દીધુ છે"
 
-#: src/nautilus-application.c:537
+#. Can't register myself due to trouble locating the
+#. * Nautilus_Shell.server file. This has happened when you
+#. * launch Nautilus with an LD_LIBRARY_PATH that
+#. * doesn't include the directory containing the oaf
+#. * library. It could also happen if the
+#. * Nautilus_Shell.server file was not present for some
+#. * reason. Sometimes killing oafd and gconfd fixes
+#. * this problem but we don't exactly understand why,
+#. * since neither of the above causes explain it.
+#.
+#: src/nautilus-application.c:545
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5116,7 +5123,8 @@ msgstr ""
 "નક્કી કરે. જો ના કરે તો, તમારુ કોમ્પ્યુટર ફરીથી ચાલુ કરો અથવા નોટિલસ ફરીથી સ્થાપિત "
 "કરો."
 
-#: src/nautilus-application.c:543
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5159,13 +5167,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:573 src/nautilus-application.c:591
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:581 src/nautilus-application.c:599
+#: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "અણધારી ભૂલના લીઘે નોટિલસ અત્યારે વાપરી શકાતુ નથી."
 
-#: src/nautilus-application.c:574
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5173,7 +5180,7 @@ msgstr ""
 "ફાઇલ વ્યવસ્થાપક દર્શક સર્વરની નોંધણી કરવાનો પ્રયત્ન કરતી વખતે બોનોબોમાંથી અણધારી ભૂલ "
 "આવી તેથી અત્યારે નોટિલસ ચાલુ કરી શકાતુ નથી."
 
-#: src/nautilus-application.c:592
+#: src/nautilus-application.c:600
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5183,7 +5190,7 @@ msgstr ""
 "શકાતુ નથી. બોનોબો એક્ટીવેશન સર્વરને મારી નાખો અને નોટિલસને ફરીથી શરૂ કરતા તે કદાચ "
 "સમસ્યા નક્કી કરવામાં મદદ કરશે."
 
-#: src/nautilus-application.c:599
+#: src/nautilus-application.c:607
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5616,27 +5623,22 @@ msgid "Nautilus"
 msgstr "નોટિલસ"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "નોટિલસ: URL સાથે --check વાપરી શકાતુ નથી.\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "નોટિલસ: અન્ય વિકલ્પો સાથે --check વાપરી શકાતુ નથી.\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "નોટિલસ: --quit URL સાથે વાપરી શકાતુ નથી.\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "નોટિલસ: URL સાથે --restart વાપરી શકાતુ નથી.\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "નોટિલસ: એક કરતાં વધારે URL સાથે --geometry વાપરી શકાતુ નથી.\n"
 
@@ -6311,54 +6313,54 @@ msgstr "વર્તમાન પસંદગી"
 msgid "the type of window the view is embedded in"
 msgstr "વિન્ડોનો પ્રકાર કે જેમાં દ્રશ્ય સમાયેલુ છે"
 
-#: src/nautilus-window-manage-views.c:838
+#: src/nautilus-window-manage-views.c:846
 msgid "View Failed"
 msgstr "જોવાનુ નિષ્ફળ"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:857
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "શરૂ થતી વખતે %s દ્રશ્ય ભૂલ આપે છે અને ચાલુ રહી શકતુ નથી."
 
-#: src/nautilus-window-manage-views.c:850
+#: src/nautilus-window-manage-views.c:858
 msgid "You can choose another view or go to a different location."
 msgstr "તમે અન્ય દ્રશ્ય પસંદ કરો અથવા અલગ સ્થાન પસંદ કરો."
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:868
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "શરૂ થતી વખતે %s દ્રશ્ય ભૂલ આપે છે."
 
-#: src/nautilus-window-manage-views.c:861
+#: src/nautilus-window-manage-views.c:869
 msgid "The location cannot be displayed with this viewer."
 msgstr "આ દર્શક સાથે સ્થાન જોઈ શકાતુ નથી."
 
-#: src/nautilus-window-manage-views.c:1008
+#: src/nautilus-window-manage-views.c:1016
 msgid "Content View"
 msgstr "વિષયસૂચી દ્રશ્ય"
 
-#: src/nautilus-window-manage-views.c:1009
+#: src/nautilus-window-manage-views.c:1017
 msgid "View of the current file or folder"
 msgstr "વર્તમાન ફાઇલ અથવા ફોલ્ડરનું દ્રશ્ય"
 
-#: src/nautilus-window-manage-views.c:1331
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "નોટિલસ તે ક્યા પ્રકારની ફાઇલ છે તે નક્કી કરી શક્તુ નથી."
 
-#: src/nautilus-window-manage-views.c:1341
+#: src/nautilus-window-manage-views.c:1349
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "નોટિલસમાં પ્રદર્શિત કરવા માટે તેમાં કોઇ દર્શક સ્થપિત નથી."
 
-#: src/nautilus-window-manage-views.c:1354
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "નોટિલસ %s સ્થાનો સાચવી શકતુ નથી."
 
-#: src/nautilus-window-manage-views.c:1388
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that your proxy settings are correct."
 msgstr "ચકાસો કે તમારા પ્રોક્સી સુયોજનાે બરાબર છે."
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1401
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6366,11 +6368,11 @@ msgid ""
 msgstr ""
 "\"%s\" પ્રદર્શિત કરી શકતા નથી, કારણ કે નોટિલસ SMB મુખ્ય બ્રાઉઝરનો સંપર્ક કરી શકતુ નથી."
 
-#: src/nautilus-window-manage-views.c:1396
+#: src/nautilus-window-manage-views.c:1404
 msgid "Check that an SMB server is running in the local network."
 msgstr "ચકાસો કે SMB સર્વર તમારા સ્થાનીય નેટવર્કમાં ચાલી રહ્યુ છે."
 
-#: src/nautilus-window-manage-views.c:1406
+#: src/nautilus-window-manage-views.c:1414
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -6378,7 +6380,7 @@ msgstr ""
 "શોધવાનુ અત્યારે પ્રાપ્ત નથી, કારણ કે તમારે અત્યારે કદાચ અનુક્રમાંક નથી અથવા શોધવાની સેવા "
 "ચાલુ નથી."
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1417
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -6386,16 +6388,16 @@ msgstr ""
 "ખાતરી કરો કે તમે મેડ્યુસા શોધવાની સેવા ચાલુ કરી છે કે નહિ તે જુઓ, અને જો અનુક્રમણિકા ન હોય "
 "તો, મેડ્યુસા અનુક્રમણિકા ચાલે છે."
 
-#: src/nautilus-window-manage-views.c:1411
+#: src/nautilus-window-manage-views.c:1419
 msgid "Searching Unavailable"
 msgstr "શોધવાનું પ્રાપ્ત નથી"
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1424
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "\"%s\" ને નોટિલસ પ્રદર્શિત કરી શકતુ નથી."
 
-#: src/nautilus-window-manage-views.c:1418
+#: src/nautilus-window-manage-views.c:1426
 msgid "Please select another viewer and try again."
 msgstr "મહેરબાની કરીને બીજુ દર્શક પસંદ કરો અને ફરીથી પ્રયત્ન કરો."
 

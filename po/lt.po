@@ -10,14 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 14:44+0300\n"
+"POT-Creation-Date: 2004-04-19 16:41+0200\n"
 "PO-Revision-Date: 2004-04-19 14:50+0300\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -2110,10 +2111,6 @@ msgid "Replace _All"
 msgstr "Pakeisti _visus"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2175,9 +2172,6 @@ msgid " (another copy)"
 msgstr " (kita kopija)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2213,9 +2207,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (kita kopija)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -3450,7 +3441,6 @@ msgstr "Atidaroma %s"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -5290,7 +5280,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:581 src/nautilus-application.c:599
 #: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5757,27 +5746,22 @@ msgid "Nautilus"
 msgstr "Nautilus "
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check negali būti naudojamas su URI.\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check negali būti naudojamas su kitais parametrais.\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit negali būti naudojamas su URI.\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart negali būti naudojamas su URI.\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: --geometry negali būti naudojamas daugiau nei su viena URI.\n"
