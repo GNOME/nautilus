@@ -45,6 +45,7 @@ main(int argc, char *argv[])
 	poptContext ctx;
 	CORBA_Environment ev;
 	CORBA_ORB orb;
+	gboolean preferences_result;
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 	gboolean check = FALSE;
 #endif
@@ -76,11 +77,12 @@ main(int argc, char *argv[])
 				   options, 0, &ctx); 
 	orb = oaf_init (argc, argv);
 
+	preferences_result = nautilus_preferences_initialize (argc, argv);
+
 	/* FIXME bugzilla.eazel.com 672: 
 	 * Need better error reporting if this fails.  BUT, is it too
-	 * early to post a dialog here ? Also, shouldn't put non-debug
-	 * code inside an assert! */
-	g_assert (nautilus_preferences_initialize (argc, argv));
+	 * early to post a dialog here ? */
+	g_assert (preferences_result);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	g_thread_init (NULL);
