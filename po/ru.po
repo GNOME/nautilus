@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-05-04 02:09-0700\n"
-"PO-Revision-Date: 2001-04-27 15:13+04:00\n"
+"POT-Creation-Date: 2001-05-08 12:56+0400\n"
+"PO-Revision-Date: 2001-05-08 13:39+04:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgid "Smooth Graphics"
 msgstr "Гладкая графика"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:243
-#: src/nautilus-application.c:734
+#: src/nautilus-application.c:810
 msgid "Quit"
 msgstr "Выход"
 
@@ -1704,33 +1704,31 @@ msgid "View as Music"
 msgstr "Просмотреть как музыкальные файлы"
 
 #: components/news/nautilus-news.c:1284
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't load %s"
-msgstr "Невозможно добавить тему"
+msgstr "Невозможно загрузить %s"
 
 #. put up a title that's displayed while we wait
 #: components/news/nautilus-news.c:1524
 #, c-format
 msgid "Loading %s"
-msgstr ""
+msgstr "Загрузка %s"
 
 #: components/news/nautilus-news.c:1861
-#, fuzzy
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr "Извините, но вы должны указать не пустое название для нового цвета."
+msgstr "Извините, но вы не указали название для сайта!"
 
 #: components/news/nautilus-news.c:1861
 msgid "Missing Site Name Error"
-msgstr ""
+msgstr "Ошибка \"Пропущенное название сайта\""
 
 #: components/news/nautilus-news.c:1865
-#, fuzzy
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr "Извините, но вы должны указать не пустое название для нового цвета."
+msgstr "Извините, но вы не указали URL для сайта!"
 
 #: components/news/nautilus-news.c:1865
 msgid "Missing URL Error"
-msgstr ""
+msgstr "Ошибка \"Пропущенный URL\""
 
 #: components/news/nautilus-news.c:1882
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
@@ -1746,34 +1744,30 @@ msgid "Edit"
 msgstr "Правка"
 
 #: components/news/nautilus-news.c:2223
-#, fuzzy
 msgid "Remove Site"
-msgstr "Удалить"
+msgstr "Удалить сайт"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2243
 msgid "Site Name:"
-msgstr ""
+msgstr "Название сайта:"
 
 #: components/news/nautilus-news.c:2254
 msgid "Site RSS URL:"
 msgstr ""
 
 #: components/news/nautilus-news.c:2269
-#, fuzzy
 msgid "Add New Site"
-msgstr "Добавить новую тему..."
+msgstr "Добавить новый сайт"
 
 #. make the add new site label
 #: components/news/nautilus-news.c:2292
-#, fuzzy
 msgid "Add a New Site:"
-msgstr "Добавить новый шаблон..."
+msgstr "Добавить новый сайт:"
 
 #: components/news/nautilus-news.c:2301
-#, fuzzy
 msgid "Remove a Site:"
-msgstr "Удалить шаблон..."
+msgstr "Удалить сайт:"
 
 #. add the button box at the bottom with a cancel button
 #: components/news/nautilus-news.c:2309
@@ -1783,9 +1777,8 @@ msgstr "Отмена"
 
 #. add a descriptive label
 #: components/news/nautilus-news.c:2326
-#, fuzzy
 msgid "Select Sites:"
-msgstr "Выделить все файлы"
+msgstr "Выбрать сайты:"
 
 #. allocate the button box for the done button
 #: components/news/nautilus-news.c:2341
@@ -1799,32 +1792,28 @@ msgstr "Сделано"
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
-msgstr ""
+msgstr "Панель \"Новости\" показывает текущие заголовки с ваших любимых веб-сайтов.  Щелкните по кнопке \"Выбрать сайты\", чтобы выбрать отображаемые сайты."
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2397
-#, fuzzy
 msgid "Select Sites"
-msgstr "Выделить все файлы"
+msgstr "Выбрать сайты"
 
 #: components/news/Nautilus_View_news.oaf.in.h:1
-#, fuzzy
 msgid "Factory for news view"
-msgstr "Фабрика для просмотра текста"
+msgstr "Фабрика для просмотра новостей"
 
 #: components/news/Nautilus_View_news.oaf.in.h:2
-#, fuzzy
 msgid "News"
-msgstr "Новый"
+msgstr "Новости"
 
 #: components/news/Nautilus_View_news.oaf.in.h:3
-#, fuzzy
 msgid "News sidebar panel"
-msgstr "Ярлыки боковой панели"
+msgstr "Боковая панель новостей"
 
 #: components/news/Nautilus_View_news.oaf.in.h:4
 msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr ""
+msgstr "Боковая панель новостей запрашивает и показывает новости"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -5531,7 +5520,7 @@ msgstr "Восстановить исходные размеры пиктограмм"
 msgid "_Restore Icon's Original Size"
 msgstr "Восстановить исходный размер пиктограммы"
 
-#: src/file-manager/fm-icon-view.c:1700
+#: src/file-manager/fm-icon-view.c:1705
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "указание на \"%s\""
@@ -6087,18 +6076,16 @@ msgid "Reset Background"
 msgstr "Сбросить фон"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "Reset View to Match Preferences"
-msgstr "Сбросить наcтройки просмотра"
+msgstr "Обновить просмотр для совпадения с настройками"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
-#, fuzzy
 msgid "Reset View to Match _Preferences"
-msgstr "Сбросить наcтройки просмотра"
+msgstr "Обновить просмотр для совпадения с настройками"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr ""
+msgstr "Обновить порядок сортировки и масштаб для совпадения с настройками для этого просмотра"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Run or manage scripts from ~/Nautilus/scripts"
@@ -6138,7 +6125,7 @@ msgstr "Показать содержимое мусорной корзины"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "Show the folder containing the scripts that appear in this menu"
-msgstr ""
+msgstr "Показать папку содержащую сценарии, которые показаны в этом меню"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "View or modify the properties of each selected item"
@@ -6309,7 +6296,7 @@ msgid ""
 "When Fast Search is enabled, Find creates an index to speed up searches.  "
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
-msgstr ""
+msgstr "Когда быстрый поиск включён, \"Поиск\" создаёт индекс для ускорения поиска.  Быстрый поиск не доступен на вашем компьютере, так как у вас сейчас нет индексного файла."
 
 #: src/file-manager/nautilus-indexing-info.c:263
 msgid "There is no index of your files right now."
@@ -6363,7 +6350,7 @@ msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
-msgstr ""
+msgstr "Nautilus не удалось создать необходимую папку \"%s\". Создайте эту папку до запуска Nautilus или установите права так, чтобы Nautilus мог создать её."
 
 #: src/nautilus-application.c:285
 msgid "Couldn't Create Required Folders"
@@ -6379,6 +6366,11 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
+"Nautilus не удалось создать следующие необходимые папки:\n"
+"\n"
+"%s\n"
+"\n"
+"Создайте эти папки до запуска Nautilus или установите права так, чтобы Nautilus мог создать их."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -6390,7 +6382,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:495
+#: src/nautilus-application.c:571
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6398,7 +6390,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:501
+#: src/nautilus-application.c:577
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6426,12 +6418,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:532 src/nautilus-application.c:550
-#: src/nautilus-application.c:557
+#: src/nautilus-application.c:608 src/nautilus-application.c:626
+#: src/nautilus-application.c:633
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Наутилус не может быть использован сейчас из-за неожиданной ошибки."
 
-#: src/nautilus-application.c:533
+#: src/nautilus-application.c:609
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -6439,7 +6431,7 @@ msgstr ""
 "Наутилус не может быть использован сейчас из-за неожиданной ошибки в OAF при "
 "попытке зарегистрировать сервер просмотра диспетчера файлов."
 
-#: src/nautilus-application.c:551
+#: src/nautilus-application.c:627
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -6449,7 +6441,7 @@ msgstr ""
 "попытке обнаружить фабрику. Уничтожение процесса oafd и перезапуск Nautilus "
 "может помочь решить проблему."
 
-#: src/nautilus-application.c:558
+#: src/nautilus-application.c:634
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -6459,7 +6451,7 @@ msgstr ""
 "попытке обнаружить объект оболочки. Уничтожение процесса oafd и перезапуск "
 "Nautilus может помочь решить проблему."
 
-#: src/nautilus-application.c:730
+#: src/nautilus-application.c:806
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -6605,7 +6597,7 @@ msgstr "Порт:"
 
 #: src/nautilus-first-time-druid.c:760
 msgid "Verifying your Internet connection and checking for updates..."
-msgstr ""
+msgstr "Проверка вашего подключения к Интернет и наличия обновлений..."
 
 #: src/nautilus-first-time-druid.c:768
 msgid "Downloading Nautilus updates..."
@@ -6617,6 +6609,9 @@ msgid ""
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
 msgstr ""
+"Если вы использовали GNOME Midnight Commander эти установки\n"
+"перенесут ваши пиктограммы рабочего стола в Nautilus\n"
+"и сделают Nautilus вашим рабочим столом.\n"
 
 #: src/nautilus-first-time-druid.c:919
 msgid "Use Nautilus to draw the desktop."
@@ -6642,6 +6637,12 @@ msgid ""
 "\n"
 "We hope you enjoy Nautilus!"
 msgstr ""
+"Нажмите \"Завершить\" для запуска Nautilus. Вы получите два\n"
+"окна: одно показывает ваш домашний каталог, а другое\n"
+"сообщит вам о сервисах Eazel, которые могут сделать жизнь\n"
+"пользователя %s легче.\n"
+"\n"
+"Мы надеемся, что Nautilus вам понравится!"
 
 #: src/nautilus-first-time-druid.c:1026
 msgid ""
@@ -6650,6 +6651,10 @@ msgid ""
 "\n"
 "We hope you enjoy Nautilus!"
 msgstr ""
+"Нажмите \\\"Завершить\\\" для запуска Nautilus. Вы получите\\n\"\n"
+"\"окно, которое показывает ваш домашний каталог.\n"
+"\n"
+"Мы надеемся, что Nautilus вам понравится!"
 
 #: src/nautilus-first-time-druid.c:1052
 msgid "Nautilus First Time Setup"
@@ -6669,6 +6674,13 @@ msgid ""
 "\n"
 "Click Next to begin customizing your Nautilus environment."
 msgstr ""
+"Nautilus\n"
+"     Отличный диспетчер файлов для GNOME.\n"
+"     Предлагает простой способ доступа к сервисам Интернет.\n"
+"     Является расширяемой основой для разработчиков GNOME.\n"
+"     Предлагает мощную систему доставки для провайдеров услуг.\n"
+"\n"
+"Нажмите \"Дальше\" для начала настройки вашей среды Nautilus."
 
 #. set up the final page
 #: src/nautilus-first-time-druid.c:1095
@@ -7094,9 +7106,8 @@ msgid "Speed Tradeoffs"
 msgstr "Недостаток скорости"
 
 #: src/nautilus-preferences-dialog.c:420
-#, fuzzy
 msgid "News Panel"
-msgstr "Новости и каналы"
+msgstr "Панель новостей"
 
 #: src/nautilus-preferences-dialog.c:447
 msgid "Preferences"
@@ -7769,9 +7780,8 @@ msgid "_Close Window"
 msgstr "Закрыть окно"
 
 #: src/nautilus-shell-ui.xml.h:76
-#, fuzzy
 msgid "_Community Support"
-msgstr "Поддержка пользователей"
+msgstr "Поддержка пользователями"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Edit"
@@ -8006,23 +8016,23 @@ msgstr "Невозможно удалить тему"
 msgid "Preview Release %s: %s"
 msgstr "Предварительный выпуск %s: %s"
 
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:808
 msgid "View Failed"
 msgstr "Сбой просмотра"
 
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:819
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
 "view or go to a different location."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:855
+#: src/nautilus-window-manage-views.c:830
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1016
+#: src/nautilus-window-manage-views.c:991
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8030,30 +8040,30 @@ msgstr ""
 "Одна из боковых панелей вызвала ошибку и не может использоваться дальше.\n"
 "К сожалению невозможно сказать какая именно."
 
-#: src/nautilus-window-manage-views.c:1020
+#: src/nautilus-window-manage-views.c:995
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1025
+#: src/nautilus-window-manage-views.c:1000
 msgid "Sidebar Panel Failed"
 msgstr "Сбой боковой панели"
 
-#: src/nautilus-window-manage-views.c:1240
+#: src/nautilus-window-manage-views.c:1215
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Не удалось найти \"%s\". Пожалуйста проверьте ввод и попробуйте снова."
 
-#: src/nautilus-window-manage-views.c:1246
+#: src/nautilus-window-manage-views.c:1221
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" не правильное место. Пожалуйста проверьте ввод и попробуйте снова."
 
-#: src/nautilus-window-manage-views.c:1260
+#: src/nautilus-window-manage-views.c:1235
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8062,7 +8072,7 @@ msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не может обрабатывать файлы "
 "такого типа."
 
-#: src/nautilus-window-manage-views.c:1268
+#: src/nautilus-window-manage-views.c:1243
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
@@ -8070,26 +8080,26 @@ msgstr ""
 "\"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не может обрабатывать %s: "
 "положения."
 
-#: src/nautilus-window-manage-views.c:1286
+#: src/nautilus-window-manage-views.c:1261
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не удалась попытка "
 "регистрации."
 
-#: src/nautilus-window-manage-views.c:1291
+#: src/nautilus-window-manage-views.c:1266
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Невозможно показать \"%s\", из-за отказа в доступе."
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1277
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8099,7 +8109,7 @@ msgstr ""
 "Убедитесь, что у вас правильно настроен прокси и что вы ввели адрес "
 "правильно."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8108,7 +8118,7 @@ msgstr ""
 "Невозможно показать \"%s\", потому что имя хоста было пустым. Убедитесь, что "
 "у вас правильно настроен прокси."
 
-#: src/nautilus-window-manage-views.c:1322
+#: src/nautilus-window-manage-views.c:1297
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8116,16 +8126,16 @@ msgid ""
 "running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1301
 msgid "Searching Unavailable"
 msgstr "Поиск недоступен"
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1305
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Наутилус не может показать \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1335
+#: src/nautilus-window-manage-views.c:1310
 msgid "Can't Display Location"
 msgstr "Невозможно показать положение"
 
