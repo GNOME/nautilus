@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-26 22:28-0500\n"
-"PO-Revision-Date: 2005-01-26 20:03-0400\n"
+"POT-Creation-Date: 2005-02-01 02:40-0500\n"
+"PO-Revision-Date: 2005-02-01 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -534,7 +534,7 @@ msgstr "Red Hat Network"
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
 
-#: data/static_bookmarks.xml.h:36 src/nautilus-image-properties-page.c:223
+#: data/static_bookmarks.xml.h:36 src/nautilus-image-properties-page.c:230
 msgid "Software"
 msgstr "Software"
 
@@ -1878,8 +1878,8 @@ msgstr "Replace _All"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1195
-#: libnautilus-private/nautilus-file.c:4746
-#: src/file-manager/fm-directory-view.c:7881
+#: libnautilus-private/nautilus-file.c:4749
+#: src/file-manager/fm-directory-view.c:7897
 #, c-format
 msgid "link to %s"
 msgstr "link to %s"
@@ -2024,8 +2024,8 @@ msgstr "Moving files to the Trash"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1933
-msgid "Files thrown out:"
-msgstr "Files thrown out:"
+msgid "Throwing out file:"
+msgstr "Throwing out file:"
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-private/nautilus-file-operations.c:1935
@@ -2044,8 +2044,8 @@ msgstr "Moving files"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1944
-msgid "Files moved:"
-msgstr "Files moved:"
+msgid "Moving file:"
+msgstr "Moving file:"
 
 #: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Preparing To Move..."
@@ -2062,8 +2062,8 @@ msgstr "Creating links to files"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1958
-msgid "Files linked:"
-msgstr "Files linked:"
+msgid "Linking file:"
+msgstr "Linking file:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1960
@@ -2085,8 +2085,8 @@ msgstr "Copying files"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1970
-msgid "Files copied:"
-msgstr "Files copied:"
+msgid "Copying file:"
+msgstr "Copying file:"
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-private/nautilus-file-operations.c:1972
@@ -2249,7 +2249,7 @@ msgstr ""
 "Please note that you can also delete them separately."
 
 #. name, stock id
-#: libnautilus-private/nautilus-file-operations.c:2585
+#: libnautilus-private/nautilus-file-operations.c:2587
 #: src/file-manager/fm-directory-view.c:5765
 #: src/file-manager/fm-directory-view.c:6306
 msgid "_Empty Trash"
@@ -2300,65 +2300,65 @@ msgstr "Services in"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2962
+#: libnautilus-private/nautilus-file.c:2965
 msgid "today at 00:00:00 PM"
 msgstr "today at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2963
+#: libnautilus-private/nautilus-file.c:2966
 #: src/nautilus-file-management-properties.c:493
 msgid "today at %-I:%M:%S %p"
 msgstr "today at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2968
 msgid "today at 00:00 PM"
 msgstr "today at 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2966
+#: libnautilus-private/nautilus-file.c:2969
 msgid "today at %-I:%M %p"
 msgstr "today at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2971
 msgid "today, 00:00 PM"
 msgstr "today, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2969
+#: libnautilus-private/nautilus-file.c:2972
 msgid "today, %-I:%M %p"
 msgstr "today, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2971
-#: libnautilus-private/nautilus-file.c:2972
+#: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2975
 msgid "today"
 msgstr "today"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2981
+#: libnautilus-private/nautilus-file.c:2984
 msgid "yesterday at 00:00:00 PM"
 msgstr "yesterday at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2982
+#: libnautilus-private/nautilus-file.c:2985
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "yesterday at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2984
+#: libnautilus-private/nautilus-file.c:2987
 msgid "yesterday at 00:00 PM"
 msgstr "yesterday at 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2985
+#: libnautilus-private/nautilus-file.c:2988
 msgid "yesterday at %-I:%M %p"
 msgstr "yesterday at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2987
+#: libnautilus-private/nautilus-file.c:2990
 msgid "yesterday, 00:00 PM"
 msgstr "yesterday, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2988
+#: libnautilus-private/nautilus-file.c:2991
 msgid "yesterday, %-I:%M %p"
 msgstr "yesterday, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2990
-#: libnautilus-private/nautilus-file.c:2991
+#: libnautilus-private/nautilus-file.c:2993
+#: libnautilus-private/nautilus-file.c:2994
 msgid "yesterday"
 msgstr "yesterday"
 
@@ -2367,63 +2367,63 @@ msgstr "yesterday"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:3002
+#: libnautilus-private/nautilus-file.c:3005
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Wednesday, September 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3003
+#: libnautilus-private/nautilus-file.c:3006
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:3005
+#: libnautilus-private/nautilus-file.c:3008
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Mon, Oct 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3006
+#: libnautilus-private/nautilus-file.c:3009
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:3008
+#: libnautilus-private/nautilus-file.c:3011
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Mon, Oct 00 0000 at 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3009
+#: libnautilus-private/nautilus-file.c:3012
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:3011
+#: libnautilus-private/nautilus-file.c:3014
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Oct 00 0000 at 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3012
+#: libnautilus-private/nautilus-file.c:3015
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:3014
+#: libnautilus-private/nautilus-file.c:3017
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Oct 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3015
+#: libnautilus-private/nautilus-file.c:3018
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:3017
+#: libnautilus-private/nautilus-file.c:3020
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:3018
+#: libnautilus-private/nautilus-file.c:3021
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:3020
+#: libnautilus-private/nautilus-file.c:3023
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:3021
+#: libnautilus-private/nautilus-file.c:3024
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:4312
+#: libnautilus-private/nautilus-file.c:4315
 #: src/file-manager/fm-directory-view.c:1859
 #, c-format
 msgid "%u item"
@@ -2431,14 +2431,14 @@ msgid_plural "%u items"
 msgstr[0] "%u item"
 msgstr[1] "%u items"
 
-#: libnautilus-private/nautilus-file.c:4313
+#: libnautilus-private/nautilus-file.c:4316
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u folder"
 msgstr[1] "%u folders"
 
-#: libnautilus-private/nautilus-file.c:4314
+#: libnautilus-private/nautilus-file.c:4317
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2446,37 +2446,37 @@ msgstr[0] "%u file"
 msgstr[1] "%u files"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4639
-#: libnautilus-private/nautilus-file.c:4655
+#: libnautilus-private/nautilus-file.c:4642
+#: libnautilus-private/nautilus-file.c:4658
 msgid "? items"
 msgstr "? items"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4645
+#: libnautilus-private/nautilus-file.c:4648
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4660
+#: libnautilus-private/nautilus-file.c:4663
 msgid "unknown type"
 msgstr "unknown type"
 
-#: libnautilus-private/nautilus-file.c:4663
+#: libnautilus-private/nautilus-file.c:4666
 msgid "unknown MIME type"
 msgstr "unknown MIME type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4669
+#: libnautilus-private/nautilus-file.c:4672
 #: src/file-manager/fm-properties-window.c:1208
 msgid "unknown"
 msgstr "unknown"
 
-#: libnautilus-private/nautilus-file.c:4702
+#: libnautilus-private/nautilus-file.c:4705
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4720
+#: libnautilus-private/nautilus-file.c:4723
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2486,7 +2486,7 @@ msgstr ""
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 
-#: libnautilus-private/nautilus-file.c:4724
+#: libnautilus-private/nautilus-file.c:4727
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2495,15 +2495,15 @@ msgstr ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 
-#: libnautilus-private/nautilus-file.c:4740
+#: libnautilus-private/nautilus-file.c:4743
 msgid "link"
 msgstr "link"
 
-#: libnautilus-private/nautilus-file.c:4760
+#: libnautilus-private/nautilus-file.c:4763
 msgid "link (broken)"
 msgstr "link (broken)"
 
-#: libnautilus-private/nautilus-file.c:6188
+#: libnautilus-private/nautilus-file.c:6191
 #: libnautilus-private/nautilus-global-preferences.c:540
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3258,7 +3258,7 @@ msgid "Delete all items in the Trash"
 msgstr "Delete all items in the Trash"
 
 #: src/file-manager/fm-desktop-icon-view.c:760
-#: src/nautilus-desktop-window.c:357
+#: src/nautilus-desktop-window.c:365
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -4001,41 +4001,40 @@ msgstr "Opening \"%s\"."
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
 
-#: src/file-manager/fm-directory-view.c:7774
+#: src/file-manager/fm-directory-view.c:7776
 msgid "Download location?"
 msgstr "Download location?"
 
-#: src/file-manager/fm-directory-view.c:7775
+#: src/file-manager/fm-directory-view.c:7779
 msgid "You can download it or make a link to it."
 msgstr "You can download it or make a link to it."
 
-#. as per HIG
-#: src/file-manager/fm-directory-view.c:7777
+#: src/file-manager/fm-directory-view.c:7782
 msgid "Make a _Link"
 msgstr "Make a _Link"
 
-#: src/file-manager/fm-directory-view.c:7779
+#: src/file-manager/fm-directory-view.c:7786
 msgid "_Download"
 msgstr "_Download"
 
-#: src/file-manager/fm-directory-view.c:7827
-#: src/file-manager/fm-directory-view.c:7849
-#: src/file-manager/fm-directory-view.c:7963
+#: src/file-manager/fm-directory-view.c:7843
+#: src/file-manager/fm-directory-view.c:7865
+#: src/file-manager/fm-directory-view.c:7979
 msgid "Drag and drop is not supported."
 msgstr "Drag and drop is not supported."
 
-#: src/file-manager/fm-directory-view.c:7828
+#: src/file-manager/fm-directory-view.c:7844
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Drag and drop is only supported on local file systems."
 
-#: src/file-manager/fm-directory-view.c:7829
-#: src/file-manager/fm-directory-view.c:7851
-#: src/file-manager/fm-directory-view.c:7965
+#: src/file-manager/fm-directory-view.c:7845
+#: src/file-manager/fm-directory-view.c:7867
+#: src/file-manager/fm-directory-view.c:7981
 msgid "Drag and Drop Error"
 msgstr "Drag and Drop Error"
 
-#: src/file-manager/fm-directory-view.c:7850
-#: src/file-manager/fm-directory-view.c:7964
+#: src/file-manager/fm-directory-view.c:7866
+#: src/file-manager/fm-directory-view.c:7980
 msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
@@ -5369,51 +5368,51 @@ msgstr ""
 msgid "History"
 msgstr "History"
 
-#: src/nautilus-image-properties-page.c:212
+#: src/nautilus-image-properties-page.c:219
 msgid "Camera Brand"
 msgstr "Camera Brand"
 
-#: src/nautilus-image-properties-page.c:213
+#: src/nautilus-image-properties-page.c:220
 msgid "Camera Model"
 msgstr "Camera Model"
 
-#: src/nautilus-image-properties-page.c:214
+#: src/nautilus-image-properties-page.c:221
 msgid "Date Taken"
 msgstr "Date Taken"
 
-#: src/nautilus-image-properties-page.c:215
+#: src/nautilus-image-properties-page.c:222
 msgid "Exposure Time"
 msgstr "Exposure Time"
 
-#: src/nautilus-image-properties-page.c:216
+#: src/nautilus-image-properties-page.c:223
 msgid "Exposure Program"
 msgstr "Exposure Program"
 
-#: src/nautilus-image-properties-page.c:217
+#: src/nautilus-image-properties-page.c:224
 msgid "Aperture Value"
 msgstr "Aperture Value"
 
-#: src/nautilus-image-properties-page.c:218
+#: src/nautilus-image-properties-page.c:225
 msgid "Metering Mode"
 msgstr "Metering Mode"
 
-#: src/nautilus-image-properties-page.c:219
+#: src/nautilus-image-properties-page.c:226
 msgid "Flash Fired"
 msgstr "Flash Fired"
 
-#: src/nautilus-image-properties-page.c:220
+#: src/nautilus-image-properties-page.c:227
 msgid "Focal Length"
 msgstr "Focal Length"
 
-#: src/nautilus-image-properties-page.c:221
+#: src/nautilus-image-properties-page.c:228
 msgid "Shutter Speed"
 msgstr "Shutter Speed"
 
-#: src/nautilus-image-properties-page.c:222
+#: src/nautilus-image-properties-page.c:229
 msgid "ISO Speed Rating"
 msgstr "ISO Speed Rating"
 
-#: src/nautilus-image-properties-page.c:242
+#: src/nautilus-image-properties-page.c:249
 #, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
@@ -5428,15 +5427,15 @@ msgstr[1] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 
-#: src/nautilus-image-properties-page.c:257
+#: src/nautilus-image-properties-page.c:264
 msgid "Failed to load image information"
 msgstr "Failed to load image information"
 
-#: src/nautilus-image-properties-page.c:407
+#: src/nautilus-image-properties-page.c:414
 msgid "loading..."
 msgstr "loading..."
 
-#: src/nautilus-image-properties-page.c:473
+#: src/nautilus-image-properties-page.c:480
 msgid "Image"
 msgstr "Image"
 
@@ -5503,23 +5502,23 @@ msgstr "Open Location"
 msgid "_Location:"
 msgstr "_Location:"
 
-#: src/nautilus-main.c:210
+#: src/nautilus-main.c:212
 msgid "Perform a quick set of self-check tests."
 msgstr "Perform a quick set of self-check tests."
 
-#: src/nautilus-main.c:213
+#: src/nautilus-main.c:215
 msgid "Create the initial window with the given geometry."
 msgstr "Create the initial window with the given geometry."
 
-#: src/nautilus-main.c:213
+#: src/nautilus-main.c:215
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: src/nautilus-main.c:215
+#: src/nautilus-main.c:217
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Only create windows for explicitly specified URIs."
 
-#: src/nautilus-main.c:217
+#: src/nautilus-main.c:219
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
@@ -5527,40 +5526,40 @@ msgstr ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialogue)."
 
-#: src/nautilus-main.c:219
+#: src/nautilus-main.c:221
 msgid "open a browser window."
 msgstr "open a browser window."
 
-#: src/nautilus-main.c:221
+#: src/nautilus-main.c:223
 msgid "Quit Nautilus."
 msgstr "Quit Nautilus."
 
-#: src/nautilus-main.c:223
+#: src/nautilus-main.c:225
 msgid "Restart Nautilus."
 msgstr "Restart Nautilus."
 
-#: src/nautilus-main.c:256
+#: src/nautilus-main.c:258
 msgid "File Manager"
 msgstr "File Manager"
 
 #. Set initial window title
-#: src/nautilus-main.c:262 src/nautilus-spatial-window.c:330
+#: src/nautilus-main.c:264 src/nautilus-spatial-window.c:330
 #: src/nautilus-window-menus.c:442 src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:285 src/nautilus-main.c:294 src/nautilus-main.c:299
+#: src/nautilus-main.c:287 src/nautilus-main.c:296 src/nautilus-main.c:301
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s cannot be used with URIs.\n"
 
-#: src/nautilus-main.c:290
+#: src/nautilus-main.c:292
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check cannot be used with other options.\n"
 
-#: src/nautilus-main.c:304
+#: src/nautilus-main.c:306
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry cannot be used with more than one URI.\n"
@@ -5643,7 +5642,7 @@ msgstr "_Location..."
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:548
-#: src/nautilus-spatial-window.c:578
+#: src/nautilus-spatial-window.c:582
 msgid "Specify a location to open"
 msgstr "Specify a location to open"
 
@@ -5935,30 +5934,30 @@ msgstr "Close the side pane"
 msgid "Show %s"
 msgstr "Show %s"
 
-#: src/nautilus-spatial-window.c:576
+#: src/nautilus-spatial-window.c:580
 msgid "_Places"
 msgstr "_Places"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:577
+#: src/nautilus-spatial-window.c:581
 msgid "Open _Location..."
 msgstr "Open _Location..."
 
-#: src/nautilus-spatial-window.c:580
+#: src/nautilus-spatial-window.c:584
 msgid "Close P_arent Folders"
 msgstr "Close P_arent Folders"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:581
+#: src/nautilus-spatial-window.c:585
 msgid "Close this folder's parents"
 msgstr "Close this folder's parents"
 
-#: src/nautilus-spatial-window.c:583
+#: src/nautilus-spatial-window.c:587
 msgid "Clos_e All Folders"
 msgstr "Clos_e All Folders"
 
 #. name, stock id, label
-#: src/nautilus-spatial-window.c:584
+#: src/nautilus-spatial-window.c:588
 msgid "Close all folder windows"
 msgstr "Close all folder windows"
 
