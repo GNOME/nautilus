@@ -23,3 +23,37 @@ e-paned from it's original source:
  
  gboolean
 
+
+Other previous changes to the files in this directory are:
+
+--- e-hpaned.c	1997/01/02 07:38:15	1.1
++++ e-hpaned.c	2000/09/26 00:52:16	1.2
+@@ -111,11 +111,7 @@ e_hpaned_init (EHPaned *hpaned)
+ GtkWidget *
+ e_hpaned_new (void)
+ {
+-  EHPaned *hpaned;
+-
+-  hpaned = gtk_type_new (E_TYPE_HPANED);
+-
+-  return GTK_WIDGET (hpaned);
++  return gtk_widget_new (E_TYPE_HPANED, NULL);
+ }
+ 
+ static void
+
+--- e-vpaned.c	1997/01/02 07:38:15	1.1
++++ e-vpaned.c	2000/09/26 00:52:16	1.2
+@@ -111,11 +111,7 @@ e_vpaned_init (EVPaned *vpaned)
+ GtkWidget *
+ e_vpaned_new (void)
+ {
+-  EVPaned *vpaned;
+-
+-  vpaned = gtk_type_new (E_TYPE_VPANED);
+-
+-  return GTK_WIDGET (vpaned);
++  return gtk_widget_new (E_TYPE_VPANED, NULL);
+ }
+ 
+ static void
