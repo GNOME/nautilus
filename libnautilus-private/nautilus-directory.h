@@ -69,6 +69,12 @@ GtkType            nautilus_directory_get_type             (void);
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *nautilus_directory_get                  (const char               *uri);
+
+/* Convenience functions, since we do a lot of ref'ing and unref'ing. */
+void               nautilus_directory_ref                  (NautilusDirectory        *directory);
+void               nautilus_directory_unref                (NautilusDirectory        *directory);
+
+/* Access to a URI. */
 char *             nautilus_directory_get_uri              (NautilusDirectory        *directory);
 
 /* Simple preliminary interface for getting and setting metadata. */

@@ -80,7 +80,7 @@ static guint signals[LAST_SIGNAL];
 struct _FMDirectoryViewDetails
 {
 	NautilusContentViewFrame *view_frame;
-	NautilusZoomable         *zoomable;
+	NautilusZoomable *zoomable;
 
 	NautilusDirectory *model;
 	

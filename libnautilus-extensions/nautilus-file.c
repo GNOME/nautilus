@@ -118,14 +118,15 @@ nautilus_file_get (const char *uri)
 	}
 
 	file = nautilus_directory_find_file (directory, file_info->name);
-	if (file == NULL) {
+	if (file != NULL) {
+		nautilus_file_ref (file);
+	} else {
 		file = nautilus_directory_new_file (directory, file_info);
 		directory->details->files =
 			g_list_append (directory->details->files, file);
 	}
 
 	gnome_vfs_file_info_unref (file_info);
-	nautilus_file_ref (file);
 	gtk_object_unref (GTK_OBJECT (directory));
 	
 	return file;
@@ -135,54 +136,32 @@ void
 nautilus_file_ref (NautilusFile *file)
 {
 	g_return_if_fail (file != NULL);
+	g_return_if_fail (file->ref_count > 0);
+	g_return_if_fail (file->ref_count < G_MAXINT);
 
-	g_assert (file->ref_count < G_MAXINT);
-	g_assert (file->directory != NULL);
-
-	/* Increment the ref count. */
-	if (file->ref_count++ != 0) {
-		return;
-	}
-
-	/* As soon as someone other than the directory holds a ref, 
-	 * we need to hold the directory too. */
-	gtk_object_ref (GTK_OBJECT (file->directory));
+	file->ref_count += 1;
 }
 
 void
 nautilus_file_unref (NautilusFile *file)
 {
-        gboolean goner;
-
 	g_return_if_fail (file != NULL);
-
-	g_assert (file->ref_count != 0);
-	g_assert (file->directory != NULL);
+	g_return_if_fail (file->ref_count > 0);
 
 	/* Decrement the ref count. */
 	if (--file->ref_count != 0) {
 		return;
 	}
 
-        goner = file->is_gone;
-        
-	/* No references left, so it's time to release our hold on the directory. */
-	gtk_object_unref (GTK_OBJECT (file->directory));
-
-	/* Files that were deleted aren't referenced by the directory,
-	 * and need to be freed explicitly.
-	 */
-	if (goner) {
-		nautilus_file_free (file);
+        if (file->is_gone) {
+		g_assert (g_list_find (file->directory->details->files, file) == NULL);
+	} else {
+		g_assert (g_list_find (file->directory->details->files, file) != NULL);
+		file->directory->details->files
+			= g_list_remove (file->directory->details->files, file);
 	}
-}
 
-void
-nautilus_file_free (NautilusFile *file)
-{
-	g_assert (file->ref_count == 0);
-
-	/* Destroy the file object. */
+	nautilus_directory_unref (file->directory);
 	gnome_vfs_file_info_unref (file->info);
 	g_free (file);
 }
@@ -417,7 +396,7 @@ nautilus_file_get_name (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	g_assert (file->directory == NULL || NAUTILUS_IS_DIRECTORY (file->directory));
+	g_assert (NAUTILUS_IS_DIRECTORY (file->directory));
 	g_assert (file->info->name != NULL);
 	g_assert (file->info->name[0] != '\0');
 
@@ -1040,15 +1019,14 @@ nautilus_file_delete (NautilusFile *file)
 		file->is_gone = TRUE;
 
 		/* Let the directory know it's gone. */
-		if (file->directory != NULL) {
-		        file->directory->details->files
-			     = g_list_remove (file->directory->details->files, file);
-
-			/* Send out a signal. */
-			removed_files = g_list_prepend (NULL, file);
-			nautilus_directory_files_removed (file->directory, removed_files);
-			g_list_free (removed_files);
-		}
+		g_assert (g_list_find (file->directory->details->files, file) != NULL);
+		file->directory->details->files
+			= g_list_remove (file->directory->details->files, file);
+		
+		/* Send out a signal. */
+		removed_files = g_list_prepend (NULL, file);
+		nautilus_directory_files_removed (file->directory, removed_files);
+		g_list_free (removed_files);
 	}
 }
 

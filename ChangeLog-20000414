@@ -1,3 +1,31 @@
+2000-03-30  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	(nautilus_directory_ref), (nautilus_directory_unref):
+	Added convenience functions so people don't have to be constantly
+	reminded that a NautilusDirectory is a a GtkObject.
+
+	* libnautilus/nautilus-directory.c: (nautilus_directory_destroy):
+	Fixed a problem where the pending files callback might fire after
+	the NautilusDirectory is gone.
+	
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_destroy),
+	(nautilus_directory_monitor_files_ref),
+	(nautilus_directory_monitor_files_unref),
+	(dequeue_pending_idle_callback), (nautilus_directory_new_file):
+	* libnautilus/nautilus-file-private.h:
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_get), (nautilus_file_ref), (nautilus_file_unref),
+	(nautilus_file_free), (nautilus_file_delete):
+	To prepare for changing NautilusFile to a GtkObject, made it use
+	ref counts in a way that is standard. Now the directory keeps a
+	list of the files, but only keeps a ref to the files if it is
+	monitoring them.
+
+	* src/file-manager/fm-directory-view.c: Tiny formatting tweak.
+
 2000-03-30  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-container.c:
@@ -33,7 +61,6 @@
 	(xfer_callback):
 	Don't loop forever during a conflict.
 
-	
 2000-03-30  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/sample/main.c (sample_make_object): Connect to the
@@ -60,7 +87,8 @@
 2000-03-29  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-tabs.c:
-	fixed bug #312, index tabs don't resize properly, by overriding size_allocate, to fix up the
+	fixed bug #312, index tabs don't resize properly,
+	by overriding size_allocate, to fix up the
 	height appropriately when the size changes
 	
 2000-03-28  Pavel Cisler  <pavel@eazel.com>

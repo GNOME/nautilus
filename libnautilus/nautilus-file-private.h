@@ -33,5 +33,3 @@ struct NautilusFile
 	GnomeVFSFileInfo *info;
 	gboolean is_gone;
 };
-
-void nautilus_file_free (NautilusFile *);
