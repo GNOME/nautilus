@@ -644,7 +644,7 @@ is_satisfied (EazelInstall *service,
 		trilobite_debug ("\t -> already filled, must be ok");
 #endif
 		
-		return TRUE;
+		return FALSE;
 	}
 
 	if (dep->version != NULL) {
