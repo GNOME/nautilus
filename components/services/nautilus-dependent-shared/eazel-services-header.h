@@ -56,9 +56,9 @@ struct _EazelServicesHeaderClass
 };
 
 GtkType    eazel_services_header_get_type       (void);
-GtkWidget* eazel_services_header_new            (const char          *left_text,
-						 const char          *right_text,
-						 gboolean	     show_logo);
+GtkWidget* eazel_services_header_title_new      (const char          *left_text);
+GtkWidget* eazel_services_header_middle_new     (const char          *left_text,
+						 const char          *right_text);
 void       eazel_services_header_set_left_text  (EazelServicesHeader *header,
 						 const char          *text);
 void       eazel_services_header_set_right_text (EazelServicesHeader *header,

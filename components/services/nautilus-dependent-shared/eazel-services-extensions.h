@@ -36,8 +36,8 @@
 #define EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA		NAUTILUS_RGB_COLOR_BLACK
 #define EAZEL_SERVICES_TEXT_COLOR_RGBA			NAUTILUS_RGB_COLOR_WHITE
 
-#define EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON	"eazel-logo-left-side-repeat.png"
-#define EAZEL_SERVICES_LOGO_RIGHT_SIDE_ICON		"eazel-logo-right-side-logo.png"
+#define EAZEL_SERVICES_HEADER_TITLE_FILL_ICON		"eazel-logo-left-side-repeat.png"
+#define EAZEL_SERVICES_HEADER_TITLE_LOGO_ICON		"eazel-logo-right-side-logo.png"
 
 #define EAZEL_SERVICES_NORMAL_FILL			"summary-service-normal-fill.png"
 #define EAZEL_SERVICES_NORMAL_LEFT_BUMPER		"summary-service-normal-left-bumper.png"
@@ -51,7 +51,18 @@
 #define EAZEL_SERVICES_REMAINDER_FILL			"summary-service-remainder-fill.png"
 #define EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER		"summary-service-remainder-right-bumper.png"
 
+#define EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON		"eazel-services-header-middle-fill.png"
+
 #define EAZEL_SERVICES_FONT_FAMILY			"helvetica"
+
+#define EAZEL_SERVICES_FOOTER_FONT_SIZE			11
+#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"bold"
+
+#define EAZEL_SERVICES_HEADER_TITLE_FONT_SIZE		18
+#define EAZEL_SERVICES_HEADER_TITLE_FONT_WEIGHT		"bold"
+
+#define EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE		12
+#define EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT	"bold"
 
 /*
  * X_PADDING: Amount of extra horizontal pad to give each item.  The x padding
@@ -64,9 +75,6 @@
  *
  * HORIZONTAL_OFFSET: Positive or negative amount to offset the item horizontally.
  */
-#define EAZEL_SERVICES_FOOTER_FONT_SIZE			11
-#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"bold"
-
 #define EAZEL_SERVICES_FOOTER_X_PADDING			2
 #define EAZEL_SERVICES_FOOTER_Y_PADDING			0
 #define EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET		2
@@ -77,12 +85,20 @@
 #define EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET	2
 #define EAZEL_SERVICES_FOOTER_DATE_HORIZONTAL_OFFSET	-5
 
-#define EAZEL_SERVICES_HEADER_FONT_SIZE			18
-#define EAZEL_SERVICES_HEADER_FONT_WEIGHT		"bold"
 #define EAZEL_SERVICES_HEADER_X_PADDING			10
 #define EAZEL_SERVICES_HEADER_Y_PADDING			0
 #define EAZEL_SERVICES_HEADER_VERTICAL_OFFSET		4
 #define EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET		0
+
+#define EAZEL_SERVICES_HEADER_TITLE_X_PADDING		10
+#define EAZEL_SERVICES_HEADER_TITLE_Y_PADDING		0
+#define EAZEL_SERVICES_HEADER_TITLE_VERTICAL_OFFSET	4
+#define EAZEL_SERVICES_HEADER_TITLE_HORIZONTAL_OFFSET	0
+
+#define EAZEL_SERVICES_HEADER_MIDDLE_X_PADDING		10
+#define EAZEL_SERVICES_HEADER_MIDDLE_Y_PADDING		0
+#define EAZEL_SERVICES_HEADER_MIDDLE_VERTICAL_OFFSET	8
+#define EAZEL_SERVICES_HEADER_MIDDLE_HORIZONTAL_OFFSET	0
 
 BEGIN_GNOME_DECLS
 
@@ -91,8 +107,8 @@ GtkWidget *eazel_services_image_new               (const char *icon_name,
 						   const char *tile_name,
 						   guint32     background_color);
 GtkWidget *eazel_services_label_new               (const char *text,
-						   const char *weight,
 						   guint       font_size,
+						   const char *weight,
 						   gint        xpadding,
 						   gint        ypadding,
 						   guint       vertical_offset,

@@ -7,6 +7,7 @@ icon_DATA =\
 	eazel-cloud-logo.png \
 	eazel-logo-left-side-repeat.png \
 	eazel-logo-right-side-logo.png \
+	eazel-services-header-middle-fill.png \
 	eazel-services-logo-tile.png \
 	eazel-services-logo.png \
 	inventory-service-icon.png \

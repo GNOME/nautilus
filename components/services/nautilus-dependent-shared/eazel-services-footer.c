@@ -355,8 +355,8 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_widget_show (left);
 
 	label = eazel_services_label_new (text,
-					  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 					  EAZEL_SERVICES_FOOTER_FONT_SIZE,
+					  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 					  EAZEL_SERVICES_FOOTER_X_PADDING,
 					  EAZEL_SERVICES_FOOTER_Y_PADDING,
 					  EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET,
@@ -457,8 +457,8 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	date_string = eazel_services_get_current_date_string ();
 
 	footer->details->date = eazel_services_label_new (date_string,
-							  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 							  EAZEL_SERVICES_FOOTER_FONT_SIZE,
+							  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 							  EAZEL_SERVICES_FOOTER_DATE_X_PADDING,
 							  EAZEL_SERVICES_FOOTER_DATE_Y_PADDING,
 							  EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET,

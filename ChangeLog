@@ -1,3 +1,39 @@
+2000-10-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Final bits of arlification for the install view.  Make the fonts
+	smaller and use a better fill icon.
+
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form):
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	(generate_change_password_form):
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
+	(eazel_services_label_new):
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(footer_item_new), (eazel_services_footer_update):
+	Reverse the order of font_size and weight as its usually specified.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-header.c:
+	(eazel_services_header_title_new),
+	(eazel_services_header_middle_new),
+	(eazel_services_header_set_left_text),
+	(eazel_services_header_set_right_text):
+	* components/services/nautilus-dependent-shared/eazel-services-header.h:
+	Split the constructors into 2 for the 2 common header cases.
+	
+	* components/services/nautilus-dependent-shared/icons/Makefile.am:
+	Add a new icon for the middle header fill.
+	
+	* components/services/nautilus-dependent-shared/test-footer-header.c:
+	(main):
+	Update for header constructor changes.
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (nautilus_summary_view_load_uri):
+	Quiet down the debug spew.
+
+
 2000-10-27  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: (nautilus_gdk_gc_copy):

@@ -62,6 +62,7 @@
 #include <bonobo/bonobo-main.h>
 
 #define notDEBUG_TEST	1
+#define notDEBUG_PEPPER	1
 
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
@@ -323,15 +324,19 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->form = NULL;
 	}
 
+#ifdef DEBUG_pepper
 	g_print ("Start summary view load.\n");
 
+#endif
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* setup the title */
+#ifdef DEBUG_pepper
 	g_print ("Start title load.\n");
-	title = eazel_services_header_new ("", NULL, TRUE);
+#endif
+	title = eazel_services_header_title_new ("");
 
 	if (view->details->logged_in) {
 		char *text;
@@ -347,10 +352,14 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
+#ifdef DEBUG_pepper
 	g_print ("end title load.\n");
+#endif
 	
 	/* create the news section only if there's some news */
+#ifdef DEBUG_pepper
 	g_print ("start news load.\n");
+#endif
 	has_news = FALSE;
 	if (view->details->xml_data->eazel_news_list) {
 		eazel_news_node = (EazelNewsData*) view->details->xml_data->eazel_news_list->data;
@@ -408,10 +417,14 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 		gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, FALSE, FALSE, 0);		
 	}
+#ifdef DEBUG_pepper
 	g_print ("end news load.\n");
+#endif
 	
 	/* add a set of tabs to control the notebook page switching */
+#ifdef DEBUG_pepper
 	g_print ("start tab load.\n");
+#endif
 	notebook_tabs = nautilus_tabs_new ();
 	gtk_widget_show (notebook_tabs);
 	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
@@ -427,10 +440,14 @@ generate_summary_form (NautilusSummaryView	*view)
 	
 	/* add the tab */
 	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Your Services"), 0);
+#ifdef DEBUG_pepper
 	g_print ("end tab load.\n");
+#endif
 	
 	/* Create the Services Listing Box */
+#ifdef DEBUG_pepper
 	g_print ("start services load.\n");
+#endif
 	frame = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (frame);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, NULL);
@@ -527,10 +544,14 @@ generate_summary_form (NautilusSummaryView	*view)
 	notebook_tabs = nautilus_tabs_new ();
 	gtk_widget_show (notebook_tabs);
 	gtk_box_pack_start (GTK_BOX (notebook_vbox), notebook_tabs, FALSE, FALSE, 0);
+#ifdef DEBUG_pepper
 	g_print ("end services load.\n");
+#endif
 
 	/* Create the notebook container for updates */
+#ifdef DEBUG_pepper
 	g_print ("start updates load.\n");
+#endif
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
 	gtk_container_add (GTK_CONTAINER (notebook_vbox), notebook);
@@ -600,9 +621,11 @@ generate_summary_form (NautilusSummaryView	*view)
 	g_free (view->details->xml_data);
 	view->details->xml_data = NULL;
 
+#ifdef DEBUG_pepper
 	g_print ("start updates load.\n");
 
 	g_print ("start footer load.\n");
+#endif
 	footer = eazel_services_footer_new ();
 	gtk_signal_connect (GTK_OBJECT (footer), "item_clicked", GTK_SIGNAL_FUNC (footer_item_clicked_callback), view);
 
@@ -619,7 +642,9 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	gtk_box_pack_start (GTK_BOX (view->details->form), footer, FALSE, FALSE, 0);
 	gtk_widget_show (footer);
+#ifdef DEBUG_pepper
 	g_print ("end footer load.\n");
+#endif
 
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
@@ -628,7 +653,9 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* Finally, show the form that hold everything */
 	gtk_widget_show (view->details->form);
+#ifdef DEBUG_pepper
 	g_print ("Load summary view end.\n");
+#endif
 }
 
 static void
@@ -1446,10 +1473,14 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	view->details->uri = g_strdup (uri);
 
 	/* get xml data and verify network connections */
+#ifdef DEBUG_pepper
 	g_print ("start load\n");
+#endif
 	view->details->logged_in = ammonite_am_i_logged_in (view->details->user_control);
 
+#ifdef DEBUG_pepper
 	g_print ("start xml table fetch\n");
+#endif
 	got_url_table = trilobite_redirect_fetch_table 
 		(view->details->logged_in
 		 ? URL_REDIRECT_TABLE_HOME_2
@@ -1467,9 +1498,11 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 				 "or your computer might be configured incorrectly."
 				 "You could try again later."));
 	} else {
+#ifdef DEBUG_pepper
 		g_print ("end xml table fetch\n");
 		/* fetch and parse the xml file */
 		g_print ("start xml config fetch\n");
+#endif
 		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
 		if (!url) {
 			g_assert ("Failed to get summary xml home !\n");
@@ -1481,10 +1514,14 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 				(view, _("Found problem with data on Eazel servers. "
 					 "Please contact support@eazel.com."));
 		} else {
+#ifdef DEBUG_pepper
 			g_print ("end xml config fetch\n");
 			g_print ("start summary draw\n");
+#endif
 			generate_summary_form (view);		
+#ifdef DEBUG_pepper
 			g_print ("end summary draw\n");
+#endif
 			if (!view->details->logged_in) {
 				generate_login_dialog (view);
 			}

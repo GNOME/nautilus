@@ -82,13 +82,13 @@ eazel_services_image_new (const char *icon_name, const char *tile_name, guint32 
 
 GtkWidget *
 eazel_services_label_new (const char *text,
+			  guint font_size,
 			  const char *weight,
-			  guint       font_size,
-			  gint        xpadding,
-			  gint        ypadding,
-			  guint       vertical_offset,
-			  guint       horizontal_offset,
-			  guint32     background_color,
+			  gint xpadding,
+			  gint ypadding,
+			  guint vertical_offset,
+			  guint horizontal_offset,
+			  guint32 background_color,
 			  const char *tile_name)
 {
  	GtkWidget *label;
