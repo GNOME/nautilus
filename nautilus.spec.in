@@ -229,20 +229,20 @@ fi
 %{prefix}/share/pixmaps/nautilus/vector/*.xml
 %{prefix}/share/pixmaps/nautilus/villanova/*.xml
 %{prefix}/share/pixmaps/nautilus/villanova/*.png
-%{prefix}/share/oaf/help-contents.oafinfo
-%{prefix}/share/oaf/help-factory.oafinfo
-%{prefix}/share/oaf/nautilus-adapter.oafinfo
-%{prefix}/share/oaf/nautilus-content-loser.oafinfo
-%{prefix}/share/oaf/nautilus-hardware-view.oafinfo
-%{prefix}/share/oaf/nautilus-history-view.oafinfo
-%{prefix}/share/oaf/nautilus-image-view.oafinfo
-%{prefix}/share/oaf/nautilus-music-view.oafinfo
-%{prefix}/share/oaf/nautilus-notes.oafinfo
-%{prefix}/share/oaf/nautilus-sample-content-view.oafinfo
-%{prefix}/share/oaf/nautilus-sidebar-loser.oafinfo
-%{prefix}/share/oaf/nautilus-text-view.oafinfo
-%{prefix}/share/oaf/nautilus-tree-view.oafinfo
-%{prefix}/share/oaf/nautilus.oafinfo
+%{prefix}/share/oaf/help-contents.oaf
+%{prefix}/share/oaf/help-factory.oaf
+%{prefix}/share/oaf/nautilus-adapter.oaf
+%{prefix}/share/oaf/nautilus-content-loser.oaf
+%{prefix}/share/oaf/nautilus-hardware-view.oaf
+%{prefix}/share/oaf/nautilus-history-view.oaf
+%{prefix}/share/oaf/nautilus-image-view.oaf
+%{prefix}/share/oaf/nautilus-music-view.oaf
+%{prefix}/share/oaf/nautilus-notes.oaf
+%{prefix}/share/oaf/nautilus-sample-content-view.oaf
+%{prefix}/share/oaf/nautilus-sidebar-loser.oaf
+%{prefix}/share/oaf/nautilus-text-view.oaf
+%{prefix}/share/oaf/nautilus-tree-view.oaf
+%{prefix}/share/oaf/nautilus.oaf
 %{prefix}/share/gnome/help/nautilus/C/*
 
 %files devel
@@ -262,7 +262,7 @@ fi
 %{prefix}/bin/nautilus-mozilla-content-view
 
 %defattr(0444, bin, bin)
-%{prefix}/share/oaf/nautilus-mozilla-content-view.oafinfo
+%{prefix}/share/oaf/nautilus-mozilla-content-view.oaf
 
 %files trilobite
 
@@ -297,13 +297,13 @@ fi
 %defattr(0444, bin, bin)
 %config %{sysconfdir}/pam.d/eazel-helper
 %config %{sysconfdir}/security/console.apps/eazel-helper
-%{prefix}/share/oaf/nautilus-service-install-view.oafinfo
-%{prefix}/share/oaf/trilobite-eazel-install-service.oafinfo
-%{prefix}/share/oaf/trilobite-eazel-time-service.oafinfo
-%{prefix}/share/oaf/trilobite-eazel-time-view.oafinfo
-%{prefix}/share/oaf/nautilus-change-password-view.oafinfo
-%{prefix}/share/oaf/nautilus-summary-view.oafinfo
-%{prefix}/share/oaf/nautilus-rpm-view.oafinfo
+%{prefix}/share/oaf/nautilus-service-install-view.oaf
+%{prefix}/share/oaf/trilobite-eazel-install-service.oaf
+%{prefix}/share/oaf/trilobite-eazel-time-service.oaf
+%{prefix}/share/oaf/trilobite-eazel-time-view.oaf
+%{prefix}/share/oaf/nautilus-change-password-view.oaf
+%{prefix}/share/oaf/nautilus-summary-view.oaf
+%{prefix}/share/oaf/nautilus-rpm-view.oaf
 
 %files extras
 
