@@ -414,7 +414,7 @@ install_failed (EazelInstallCallback *service,
 		if (stuff) {
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
-				fprintf (stdout, "PRoblem : %s\n", (char*)(it->data));
+				fprintf (stdout, "Problem : %s\n", (char*)(it->data));
 			}
 		}
 		
@@ -544,12 +544,13 @@ create_package (char *name)
 	return pack;
 }
 
-static void
+static gboolean
 delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 {
 	char answer[128];
 	gboolean ask_delete = TRUE;
-
+	gboolean result = TRUE;
+	
 	if (cases) {
 		printf ("continue? (y/n) ");
 		fflush (stdout);
@@ -563,6 +564,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 			fflush (stdout);
 			eazel_install_problem_handle_cases (problem, service, &cases, arg_root);
 			ask_delete = FALSE;
+			result = FALSE;
 		} else {
 			eazel_install_problem_case_list_destroy (cases);
 			cases = NULL;
@@ -584,6 +586,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 			eazel_install_callback_delete_files (service, &ev);			
 		} 
 	}
+	return result;
 }
 
 static void
@@ -593,8 +596,8 @@ done (EazelInstallCallback *service,
 {
 	fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
 	cli_result = result ? 0 : 1;
-	delete_files (service, problem);
-	if (cases == NULL) {
+
+	if (delete_files (service, problem)) {
 		gtk_main_quit ();
 	}
 }

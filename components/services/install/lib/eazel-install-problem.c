@@ -151,10 +151,6 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	} else {
 		switch (pack->modify_status) {
 		case PACKAGE_MOD_UNTOUCHED:
-			if (pack->modifies) { 
-			} else {
-				message = g_strdup_printf (_("%s is already installed"), required);
-			}
 			break;
 		case PACKAGE_MOD_UPGRADED:
 			break;
@@ -450,14 +446,14 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 	switch (pcase->problem) {
 	case EI_PROBLEM_UPDATE: {
 		char *required = packagedata_get_readable_name (pcase->u.update.pack);
-		message = g_strdup_printf ("%s needs update", required);
+		message = g_strdup_printf ("Update %s", required);
 		g_free (required);
 	}
 	break;
 	case EI_PROBLEM_FORCE_INSTALL_BOTH: {
 		char *required_1 = packagedata_get_readable_name (pcase->u.force_install_both.pack_1);
 		char *required_2 = packagedata_get_readable_name (pcase->u.force_install_both.pack_2);
-		message = g_strdup_printf ("%s and %s are both needed", 
+		message = g_strdup_printf ("Install both %s and %s", 
 					   required_1, 
 					   required_2);
 		g_free (required_1);
@@ -466,13 +462,13 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 	break;
 	case EI_PROBLEM_REMOVE: {
 		char *required = packagedata_get_readable_name (pcase->u.remove.pack);
-		message = g_strdup_printf ("%s needs to be removed", required);
+		message = g_strdup_printf ("Remove %s", required);
 		g_free (required);
 	}
 	break;
 	case EI_PROBLEM_FORCE_REMOVE: {
 		char *required = packagedata_get_readable_name (pcase->u.force_remove.pack);
-		message = g_strdup_printf ("%s needs to be forcefully removed", required);
+		message = g_strdup_printf ("Force remove %s", required);
 		g_free (required);
 	}
 	break;
@@ -633,17 +629,21 @@ void
 eazel_install_problem_step (EazelInstallProblem *problem)
 {
 	P_SANITY (problem);
+#ifdef EIP_DEBUG
 	g_message ("g_hash_table_size (problem->pre_step_attempts) = %d", 
 		   g_hash_table_size (problem->pre_step_attempts));
 	g_message ("g_hash_table_size (problem->attempts) = %d", 
 		   g_hash_table_size (problem->attempts));
+#endif
 	g_hash_table_foreach_remove (problem->pre_step_attempts,
 				     (GHRFunc)problem_step_foreach_remove,
 				     problem->attempts);
+#ifdef EIP_DEBUG
 	g_message ("g_hash_table_size (problem->pre_step_attempts) = %d", 
 		   g_hash_table_size (problem->pre_step_attempts));
 	g_message ("g_hash_table_size (problem->attempts) = %d", 
 		   g_hash_table_size (problem->attempts));
+#endif
 }
 
 /* This returns a GList<EazelInstallProblemCase> list containing the 
@@ -719,12 +719,14 @@ find_dominant_problem_type (EazelInstallProblem *problem,
 		EazelInstallProblemCase *pcase = (EazelInstallProblemCase*)(iterator->data);
 		if (pcase->problem > dominant) {
 			dominant = pcase->problem;
+#ifdef EIP_DEBUG
 			{
 				char *message = eazel_install_problem_case_to_string (pcase);
 				g_message ("dominant problem is now %d", dominant);
 				g_message ("aka %s", message);
 				g_free (message);
 			}
+#endif
 		}
 	}
 	return dominant;

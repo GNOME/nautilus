@@ -87,6 +87,7 @@ struct _NautilusServiceInstallViewDetails {
 	*/
 	gboolean core_package;
 
+	GList *problem_cases;
 	GList *desktop_files;
 };
 

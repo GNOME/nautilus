@@ -1441,8 +1441,10 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			
 			/* check against minor version */
 			if (res==0) {
-				trilobite_debug ("versions are equal, comparing minor");
+				trilobite_debug ("versions are equal, comparing minosr");
 				if (pack->minor && existing_package->minor) {
+					trilobite_debug ("minors are %s and %s (installed)", 
+							 pack->minor, existing_package->minor);
 					res = rpmvercmp (pack->minor, existing_package->minor);
 				} else if (!pack->minor && existing_package->minor) {
 					/* If the given packages does not have a minor,
@@ -1472,23 +1474,44 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			/* Debug output */ 
 			switch (result) {
 			case EAZEL_INSTALL_STATUS_QUO: {
-				trilobite_debug (_("%s version %s already installed"), 
-						 pack->name, 
-						 existing_package->version);
+				if (pack->minor && existing_package->minor) {
+					trilobite_debug (_("%s-%s version %s-%s already installed"), 
+							 pack->name, pack->minor, 
+							 existing_package->version, existing_package->minor);
+				} else {
+					trilobite_debug (_("%s version %s already installed"), 
+							 pack->name, 
+							 existing_package->version);
+				}
 			} 
 			break;
 			case EAZEL_INSTALL_STATUS_UPGRADES: {
-				trilobite_debug (_("%s upgrades from version %s to %s"),
-						 pack->name, 
-						 existing_package->version, 
-						 pack->version);
+				/* This is certainly ugly as helll */
+				if (pack->minor && existing_package->minor) {
+					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
+							 pack->name, 
+							 existing_package->version, existing_package->minor, 
+							 pack->version, pack->minor);
+				} else {
+					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
+							 pack->name, 
+							 existing_package->version, existing_package->minor, 
+							 pack->version, pack->minor);
+				}
 			}
 			break;
 			case EAZEL_INSTALL_STATUS_DOWNGRADES: {
-				trilobite_debug (_("%s downgrades from version %s to %s"),
-						 pack->name, 
-						 existing_package->version, 
-						 pack->version);
+				if (pack->minor && existing_package->minor) {
+					trilobite_debug (_("%s downgrades from version %s-%s to %s-%s"),
+							 pack->name, 
+							 existing_package->version, existing_package->minor, 
+							 pack->version, pack->minor);
+				} else {
+					trilobite_debug (_("%s downgrades from version %s to %s"),
+							 pack->name, 
+							 existing_package->version, 
+							 pack->version);
+				}
 			}
 			break;
 			default:
@@ -1505,9 +1528,16 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			}
 		}
 	} else {
-		trilobite_debug (_("%s installs version %s"), 
-				 pack->name, 
-				 pack->version);
+		if (pack->minor) {
+			trilobite_debug (_("%s installs version %s-%s"), 
+					 pack->name, 
+					 pack->version,
+					 pack->minor);
+		} else {
+			trilobite_debug (_("%s installs version %s"), 
+					 pack->name, 
+					 pack->version);
+		}
 	}
 
 	return result;
