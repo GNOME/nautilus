@@ -1,3 +1,16 @@
+2001-03-01  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>
+
+	Fixed bug 7032, File Types & Programs capplet not installed on
+	GNOME 1.2.
+	Fixed bug 7240, require the new version of gtk-pixbuf in both
+	configure.in and spec.in.
+	
+	* configure.in: Added requirements for both the new control center
+	and the new gdk-pixbuf, both using eric's new macros.
+	* nautilus.spec.in: Moved everything over to the new macros.
+
 2001-03-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com> who sighed heavily
