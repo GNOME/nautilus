@@ -264,7 +264,7 @@ sub GeneratePot{
 
     system($GETTEXT);
     system($GTEST);
-    print "Wrote $PACKAGE.pot - new test 1\n";
+    print "Wrote $PACKAGE.pot\n";
     system("mv POTFILES.in.old POTFILES.in");
 
     # If .headerlock file is found, it means that the potfiles
