@@ -2266,6 +2266,7 @@ void
 nautilus_window_reload (NautilusWindow *window)
 {
 	char *location;
+        char *current_pos;
 	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -2273,8 +2274,10 @@ nautilus_window_reload (NautilusWindow *window)
 	 * of begin_location_change, so make a copy
 	 */
 	location = g_strdup (window->details->location);
+        current_pos = nautilus_view_frame_get_first_visible_file (window->content_view);
 	begin_location_change
 		(window, location,
-		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, NULL);
+		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
+        g_free (current_pos);
 	g_free (location);
 }
