@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -457,8 +458,14 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 		g_free (user_directory);	
 	}
 	
-	pixbuf = nautilus_gdk_pixbuf_scale_to_fit (gdk_pixbuf_new_from_file (image_file_name),
-						   MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
+	pixbuf = gdk_pixbuf_new_from_file (image_file_name);
+	
+	/* background properties are always a fixed size, while others are pinned to the max size */
+	if (!strcmp(property_browser->details->category, "backgrounds")) {
+		pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
+	} else {
+		pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+	}
 
 	g_free (image_file_name);
 
@@ -1292,7 +1299,9 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 	return index;
 }
 
-/* make_properties_from_directory generates widgets corresponding all of the objects in both the home and shared directories */
+/* make_properties_from_directory generates widgets corresponding all of the objects in both 
+	gboolean remove_mode;
+	gboolean keep_around;the home and shared directories */
 
 static void
 make_properties_from_directory (NautilusPropertyBrowser *property_browser, const char* path)
@@ -1329,6 +1338,17 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 	property_browser->details->has_local = new_index != index;
 }
 
+/* utility to build a color label */
+
+static char *
+make_color_label (const char *color_str)
+{
+	GdkColor color;
+	
+	nautilus_gdk_color_parse_with_white_default (color_str, &color);	
+	return g_strdup_printf ("%02X%02X%02X", color.red >> 8, color.green >> 8, color.blue >> 8);
+}
+
 /* generate properties from the children of the passed in node */
 /* for now, we just handle color nodes */
 
@@ -1336,8 +1356,13 @@ static void
 make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNodePtr node)
 {
 	xmlNode *current_node;
+	GtkWidget *container;
+	GtkWidget *label_box, *label;
+	char *label_text;
+	
 	int index = 0;
 	gboolean local_only = property_browser->details->remove_mode;
+	gboolean is_color = !strcmp (property_browser->details->category, "colors");
 	
 	property_browser->details->has_local = FALSE;
 	
@@ -1345,6 +1370,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	     current_node != NULL; current_node = current_node->next) {
 		NautilusBackground *background;
 		GtkWidget *frame;
+	
 		char* color_str = xmlNodeGetContent(current_node);
 		char* local = xmlGetProp(current_node, "local");
 		char* deleted = xmlGetProp(current_node, "deleted");
@@ -1355,16 +1381,39 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 			
 		if (!deleted && (!local_only || (local != NULL))) {
 			GtkWidget *event_box = gtk_event_box_new();
-			gtk_widget_set_usize(event_box, 48, 48);
+			gtk_widget_set_usize(event_box, 48, 32);
 			gtk_widget_show(event_box);
 
 			frame = gtk_frame_new(NULL);
   			gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
 			gtk_widget_show(frame);
-			gtk_container_add(GTK_CONTAINER(frame), event_box);
+			
+			container = gtk_vbox_new (0, FALSE);
+			gtk_widget_show (container);
+			gtk_container_add(GTK_CONTAINER(frame), container);
+			
+			gtk_box_pack_start(GTK_BOX(container), event_box, FALSE, FALSE, 0);
 		
 			background = nautilus_get_widget_background (GTK_WIDGET (event_box));
 			nautilus_background_set_color (background, color_str);	
+			
+			/* if it's a color, add a label */
+			if (is_color) {
+				label_box = gtk_event_box_new();
+				background = nautilus_get_widget_background (label_box);
+				nautilus_background_set_color (background, "rgb:ff/ff/ff");	
+				gtk_widget_show (label_box);
+				gtk_widget_set_usize (label_box, 48, 16);
+				gtk_box_pack_start (GTK_BOX (container), label_box, FALSE, FALSE, 0);	
+				
+				label_text = make_color_label (color_str);
+				label = gtk_label_new (label_text);
+				nautilus_gtk_widget_set_font_by_name (label, "-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*");				
+				g_free (label_text);
+				
+				gtk_widget_show (label);
+				gtk_container_add (GTK_CONTAINER (label_box), label);
+			}
 			
                 	gtk_object_set_user_data (GTK_OBJECT (event_box), property_browser);
 			gtk_signal_connect_full
