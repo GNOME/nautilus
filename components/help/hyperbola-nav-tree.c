@@ -13,7 +13,13 @@ typedef struct {
 
 	GtkWidget *ctree;
 	HyperbolaDocTree *doc_tree;
-
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	GtkWidget *top_ctree;
+	HyperbolaDocTree *top_doc_tree;
+	GtkWidget *selected_ctree;
+	GtkCTreeNode *selected_node;
+	int select;
+#endif
 	char *pending_location;
 
 	gint notify_count;
@@ -34,7 +40,7 @@ static void hyperbola_navigation_tree_load_location (NautilusView *
 						     hview);
 
 typedef struct {
-	HyperbolaNavigationTree *view;
+	GtkWidget *ctree;
 	GtkCTreeNode *sibling, *parent;
 } PopulateInfo;
 
@@ -65,7 +71,7 @@ ctree_populate_subnode (gpointer key, gpointer value, gpointer user_data)
 
 	term = (node->type == HYP_TREE_NODE_PAGE) || !node->children;
 	pi->sibling =
-		gtk_ctree_insert_node (GTK_CTREE (pi->view->ctree),
+		gtk_ctree_insert_node (GTK_CTREE (pi->ctree),
 				       pi->parent, NULL, &title, 5, NULL,
 				       NULL, NULL, NULL, term, FALSE);
 	node->user_data = pi->sibling;
@@ -75,11 +81,11 @@ ctree_populate_subnode (gpointer key, gpointer value, gpointer user_data)
 		g_free (title);	/* We used the copy from the split */
 #endif
 
-	gtk_ctree_node_set_row_data (GTK_CTREE (pi->view->ctree), pi->sibling,
+	gtk_ctree_node_set_row_data (GTK_CTREE (pi->ctree), pi->sibling,
 				     node);
 
 	if (node->children) {
-		subpi.view = pi->view;
+		subpi.ctree = pi->ctree;
 		subpi.sibling = NULL;
 		subpi.parent = pi->sibling;
 		g_tree_traverse (node->children, ctree_populate_subnode,
@@ -92,9 +98,20 @@ ctree_populate_subnode (gpointer key, gpointer value, gpointer user_data)
 static void
 ctree_populate (HyperbolaNavigationTree * view)
 {
-	PopulateInfo subpi = { NULL, NULL, NULL };
+	PopulateInfo subpi;
 
-	subpi.view = view;
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	subpi.ctree = view->top_ctree;
+	subpi.sibling = NULL;
+	subpi.parent = NULL;
+
+	g_tree_traverse (view->top_doc_tree->children, ctree_populate_subnode,
+			 G_IN_ORDER, &subpi);
+#endif
+	
+	subpi.ctree = view->ctree;
+	subpi.sibling = NULL;
+	subpi.parent = NULL;
 
 	g_tree_traverse (view->doc_tree->children, ctree_populate_subnode,
 			 G_IN_ORDER, &subpi);
@@ -105,11 +122,31 @@ hyperbola_navigation_tree_new (void)
 {
 	GtkWidget *wtmp;
 	HyperbolaNavigationTree *view;
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	GtkWidget *box, *label;
+	int top_tree_empty;
+#endif
 
 	view = g_new0 (HyperbolaNavigationTree, 1);
 
-	view->ctree = gtk_ctree_new (1, 0);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	view->top_ctree = gtk_ctree_new(1, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (view->top_ctree), 0);
+	gtk_ctree_set_line_style (GTK_CTREE (view->top_ctree),
+				  GTK_CTREE_LINES_NONE);
+	gtk_ctree_set_expander_style (GTK_CTREE (view->top_ctree),
+				      GTK_CTREE_EXPANDER_TRIANGLE);
+				      
+	gtk_clist_freeze (GTK_CLIST (view->top_ctree));
+	gtk_clist_set_selection_mode (GTK_CLIST (view->top_ctree),
+				      GTK_SELECTION_BROWSE);
+	gtk_signal_connect (GTK_OBJECT (view->top_ctree), "tree_select_row",
+			    hyperbola_navigation_tree_select_row, view);
+	gtk_signal_connect (GTK_OBJECT (view->top_ctree), "destroy",
+			    hyperbola_navigation_tree_destroy, view);
+#endif
 
+	view->ctree = gtk_ctree_new (1, 0);
 	gtk_ctree_set_line_style (GTK_CTREE (view->ctree),
 				  GTK_CTREE_LINES_NONE);
 	gtk_ctree_set_expander_style (GTK_CTREE (view->ctree),
@@ -122,10 +159,21 @@ hyperbola_navigation_tree_new (void)
 			    hyperbola_navigation_tree_select_row, view);
 	gtk_signal_connect (GTK_OBJECT (view->ctree), "destroy",
 			    hyperbola_navigation_tree_destroy, view);
+			    
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	view->selected_ctree = NULL;
+	view->selected_node = NULL;
+	view->select = 0;
+#endif
+			    
 	view->doc_tree = hyperbola_doc_tree_new ();
 	hyperbola_doc_tree_populate (view->doc_tree);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	view->top_doc_tree = hyperbola_doc_tree_new ();
+	top_tree_empty = !hyperbola_top_doc_tree_populate(view->top_doc_tree);
+#endif
 
-	ctree_populate (view);
+	ctree_populate (view);	
 
 	wtmp =
 		gtk_scrolled_window_new (gtk_clist_get_hadjustment
@@ -136,15 +184,50 @@ hyperbola_navigation_tree_new (void)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (wtmp),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
+	gtk_widget_show (wtmp);
+		
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (box);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (wtmp), box);
+	
+	if (!top_tree_empty) {
+        	label = gtk_label_new (_("Introductory Documents:"));
+		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        	gtk_widget_show (label);
+        	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+			
+		gtk_widget_show (view->top_ctree);
+		
+	}
+	else {
+		gtk_widget_hide (view->top_ctree);
+	}
+	
+	gtk_box_pack_start ( GTK_BOX(box), view->top_ctree, FALSE, FALSE, 0);
+	
+	label = gtk_label_new (_("Documents by Subject:"));
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        gtk_widget_show (label);
+	gtk_box_pack_start ( GTK_BOX(box), label, FALSE, FALSE, 0);
+#endif 
 
-
+	gtk_widget_show (view->ctree);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	gtk_box_pack_start ( GTK_BOX(box), view->ctree, TRUE, TRUE, 0);
+#else
 	gtk_container_add (GTK_CONTAINER (wtmp), view->ctree);
+#endif
+
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	gtk_clist_columns_autosize (GTK_CLIST (view->top_ctree));
+	gtk_clist_thaw (GTK_CLIST (view->top_ctree));
+#endif
 	gtk_clist_columns_autosize (GTK_CLIST (view->ctree));
 	gtk_clist_thaw (GTK_CLIST (view->ctree));
-	gtk_widget_show (view->ctree);
-	gtk_widget_show (wtmp);
-
+		
 	view->view_frame = nautilus_view_new (wtmp);
+	
 	gtk_signal_connect (GTK_OBJECT (view->view_frame), "load_location",
 			    hyperbola_navigation_tree_load_location, view);
 
@@ -158,12 +241,25 @@ set_pending_location (HyperbolaNavigationTree * view, const char *location)
 	view->pending_location = g_strdup (location);
 }
 
+
 static void
 hyperbola_navigation_tree_load_location (NautilusView * view_frame,
 					 const char *location_uri,
 					 HyperbolaNavigationTree * hview)
 {
 	HyperbolaTreeNode *tnode;
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	HyperbolaDocTree *doc_tree1, *doc_tree2;
+	GtkWidget *ctree1, *ctree2;
+#endif
+	
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	if (hview->select) /* if we come here because of a mouse select then get out */
+	{
+		hview->select = 0;
+		return;
+	}
+#endif
 
 	set_pending_location (hview, NULL);
 
@@ -171,13 +267,65 @@ hyperbola_navigation_tree_load_location (NautilusView * view_frame,
 		return;
 
 	hview->notify_count++;
+	
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+
+	if (hview->selected_ctree == NULL) {
+		ctree1 = hview->top_ctree;
+		ctree2 = hview->ctree;
+		doc_tree1 = hview->top_doc_tree;
+		doc_tree2 = hview->doc_tree;
+	}
+	else {
+		ctree1 = hview->selected_ctree;
+		
+		if (ctree1 == hview->top_ctree) {
+			ctree2 = hview->ctree;
+			doc_tree1 = hview->top_doc_tree;
+			doc_tree2 = hview->doc_tree;
+		}
+		else {
+			ctree2 = hview->top_ctree;
+			doc_tree2 = hview->top_doc_tree;
+			doc_tree1 = hview->doc_tree;
+		}
+	}
+
+	if (hview->selected_ctree != NULL &&
+	    hview->selected_node != NULL)
+		gtk_ctree_unselect(GTK_CTREE (hview->selected_ctree), hview->selected_node);
 
 	tnode =
+		g_hash_table_lookup (doc_tree1->global_by_uri,
+				  	location_uri);
+	if (tnode != NULL) {
+		gtk_ctree_select (GTK_CTREE (ctree1), tnode->user_data);
+		hview->selected_ctree = ctree1;
+		hview->selected_node = tnode->user_data;
+	}
+	else {
+		tnode =
+			g_hash_table_lookup (doc_tree2->global_by_uri,
+				     		location_uri);
+		if (tnode != NULL) {
+			gtk_ctree_select (GTK_CTREE (ctree2), tnode->user_data);	
+			hview->selected_ctree = ctree2;
+			hview->selected_node = tnode->user_data;
+		}
+		else {
+			hview->selected_ctree = NULL;
+			hview->selected_node = NULL;
+		}
+	}
+#else
+	tnode =
 		g_hash_table_lookup (hview->doc_tree->global_by_uri,
-				     location_uri);
+				     		location_uri);
+						
+	if (tnode != NULL)
+		gtk_ctree_select (GTK_CTREE (hview->ctree), tnode->user_data);	
 
-	if (tnode)
-		gtk_ctree_select (GTK_CTREE (hview->ctree), tnode->user_data);
+#endif
 
 	hview->notify_count--;
 }
@@ -208,6 +356,14 @@ hyperbola_navigation_tree_select_row (GtkCTree * ctree, GtkCTreeNode * node,
 	view->notify_count++;
 
 	set_pending_location (view, tnode->uri);
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	if (view->selected_ctree != NULL &&
+	    view->selected_node != NULL)
+		gtk_ctree_unselect(GTK_CTREE (view->selected_ctree), view->selected_node);
+	view->selected_ctree = GTK_WIDGET (ctree);
+	view->selected_node = node;
+	view->select = 1;
+#endif
 	nautilus_view_open_location_in_this_window (view->view_frame,
 						    tnode->uri);
 

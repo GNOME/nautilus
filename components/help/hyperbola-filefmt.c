@@ -52,7 +52,7 @@ static void fmt_help_populate_tree (HyperbolaDocTree * tree);
 #endif
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
-static void fmt_toplevel_populate_tree (HyperbolaDocTree * tree);
+static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree);
 static void fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree);
 #endif
 
@@ -66,7 +66,6 @@ static FormatHandler format_handlers[] = {
 	{"info", fmt_info_populate_tree},
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 	{"xml", fmt_scrollkeeper_populate_tree},
-	{"toplevel", fmt_toplevel_populate_tree},
 #endif
 	{NULL, NULL}
 };
@@ -197,7 +196,6 @@ hyperbola_doc_tree_populate (HyperbolaDocTree * tree)
 			format_handlers[i].populate_tree (tree);
 	}
 }
-
 
 typedef struct {
 	GSList *mappings[128];
@@ -1503,10 +1501,11 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
     	}
 }
 
-static void fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
+static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
 {
     	xmlDocPtr toplevel_doc;
     	char *toplevel_file;
+	int retval;
   	
 	toplevel_file = HYPERBOLA_DATADIR "/topleveldocs.xml";
 
@@ -1514,12 +1513,27 @@ static void fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
    
     	if (toplevel_doc) {
         	fmt_toplevel_parse_xml_tree(tree, toplevel_doc);
+		if (toplevel_doc->root != NULL &&
+		    toplevel_doc->root->childs != NULL &&
+		    toplevel_doc->root->childs->childs != NULL)
+		    	retval = 1;
+		else
+			retval = 0;
     	}
     	else {
+		retval = 0;
         	g_warning ("Unable to locate toplevel XML file:\n\t%s", toplevel_file);
     	}
 
     	xmlFreeDoc (toplevel_doc);
+	
+	return retval;
+}
+
+int
+hyperbola_top_doc_tree_populate (HyperbolaDocTree * tree)
+{
+	return fmt_toplevel_populate_tree(tree);
 }
 
 #endif /* ENABLE_SCROLLKEEPER_SUPPORT */
