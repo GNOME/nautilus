@@ -251,6 +251,11 @@ struct FMDirectoryViewDetails
 
 	GList *pending_uris_selected;
 
+	/* loading indicates whether this view has begun loading a directory.
+	 * This flag should need not be set inside subclasses. FMDirectoryView automatically
+	 * sets 'loading' to TRUE before it begins loading a directory's contents and to FALSE
+	 * after it finishes loading the directory and its view.
+	 */
 	gboolean loading;
 	gboolean menus_merged;
 	gboolean menu_states_untrustworthy;
@@ -6803,6 +6808,8 @@ load_directory (FMDirectoryView *view,
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
+	view->details->loading = TRUE;
+
 	/* Update menus when directory is empty, before going to new
 	 * location, so they won't have any false lingering knowledge
 	 * of old selection.
@@ -6868,8 +6875,6 @@ finish_loading (FMDirectoryView *view)
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);		
 	}
-	
-	view->details->loading = TRUE;
 	
 	/* Start loading. */
 

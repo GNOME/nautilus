@@ -1,3 +1,17 @@
+2004-10-14  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c: (load_directory),
+	(finish_loading):
+	We need to set "loading" as soon as we get the load_directory
+	call, otherwise we don't correctly handle the selection being
+	set.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading),
+	(fm_icon_view_end_loading):
+	No need for this to touch loading.
+
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
 2004-10-13  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-navigation-window-ui.xml:

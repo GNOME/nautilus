@@ -1097,8 +1097,6 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
-	icon_view->details->loading = TRUE;
-
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 
@@ -1167,8 +1165,6 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	FMIconView *icon_view;
 
 	icon_view = FM_ICON_VIEW (view);
-
-	icon_view->details->loading = FALSE;
 }
 
 static void
