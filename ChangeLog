@@ -1,3 +1,30 @@
+2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize), (nautilus_label_destroy),
+	(render_buffer_pixbuf), (label_recompute_line_geometries),
+	(nautilus_label_set_line_offset),
+	(nautilus_label_get_drop_shadow_color),
+	(nautilus_label_set_line_wrap), (nautilus_label_get_line_wrap),
+	(nautilus_label_set_line_wrap_width),
+	(nautilus_label_get_line_wrap_width),
+	(nautilus_label_set_line_wrap_separators),
+	(nautilus_label_get_line_wrap_separators):
+	* libnautilus-extensions/nautilus-label.h:
+	Add support for line wrappping.
+
+	* src/nautilus-shell.c: (display_caveat):
+	Change the caveat text to not use hard coded new lines and use the
+	new NautilusLabel text wrapping feature instead.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-label.c: (main):
+	* test/test-nautilus-wrapped-label.c: (delete_event),
+	(create_gtk_label), (create_nautilus_label),
+	(create_gtk_label_window), (create_nautilus_label_window), (main):
+	Add a test for the NautilusLabel line wrapping feature.
+	
 2000-10-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed an error where I was escaping the wrong item

@@ -200,19 +200,21 @@ display_caveat (GtkWindow *parent_window)
 	}
 
   	text = nautilus_label_new
-		(_("The Nautilus shell is under development; it's not\n"
-  		   "ready for daily use. Some features are not yet done,\n"
-  		   "partly done, or unstable. The program doesn't look\n"
-  		   "or act exactly the way it will in version 1.0."
-		   "\n\n"
-		   "If you do decide to test this version of Nautilus, \n"
-		   "beware. The program could do something \n"
-		   "unpredictable and may even delete or overwrite \n"
-		   "files on your computer."
-		   "\n\n"
+		(_("The Nautilus shell is under development; it's not "
+  		   "ready for daily use. Some features are not yet done, "
+  		   "partly done, or unstable. The program doesn't look "
+  		   "or act exactly the way it will in version 1.0.\n"
+		   "\n"
+		   "If you do decide to test this version of Nautilus, "
+		   "beware. The program could do something "
+		   "unpredictable and may even delete or overwrite "
+		   "files on your computer.\n"
+		   "\n"
 		   "For more information, visit http://nautilus.eazel.com."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_line_wrap (NAUTILUS_LABEL (text), TRUE);
+	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (text), 300);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
 

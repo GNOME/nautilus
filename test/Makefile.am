@@ -32,6 +32,7 @@ noinst_PROGRAMS =\
 	test-nautilus-font-picker 	\
 	test-nautilus-image 		\
 	test-nautilus-label 		\
+	test-nautilus-wrapped-label	\
 	test-nautilus-mime-actions 	\
 	test-nautilus-mime-actions-set 	\
 	test-nautilus-password-dialog 	\
@@ -44,6 +45,7 @@ test_nautilus_font_SOURCES = test-nautilus-font.c
 test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c
 test_nautilus_image_SOURCES = test-nautilus-image.c
 test_nautilus_label_SOURCES = test-nautilus-label.c
+test_nautilus_wrapped_label_SOURCES = test-nautilus-wrapped-label.c
 test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-label.h"
 
+#include <libgnome/gnome-i18n.h>
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
@@ -66,6 +67,12 @@ struct _NautilusLabelDetail
 	guint			num_text_lines;
 	guint			max_text_line_width;
 	guint			total_text_line_height;
+
+	/* Line wrapping */
+	gboolean		line_wrap;
+	guint			line_wrap_width;
+	char 			*line_wrap_separators;
+	NautilusTextLayout	**text_layouts;
 };
 
 /* GtkObjectClass methods */
@@ -164,6 +171,11 @@ nautilus_label_initialize (NautilusLabel *label)
 
 	label->detail->line_offset = 2;
 	label->detail->drop_shadow_offset = 0;
+
+	label->detail->line_wrap = FALSE;
+	label->detail->line_wrap_width = 400;
+	label->detail->line_wrap_separators = g_strdup (_(" -_,;.?/&"));
+	label->detail->text_layouts = NULL;
 }
 
 /* GtkObjectClass methods */
@@ -181,6 +193,17 @@ nautilus_label_destroy (GtkObject *object)
 
 	g_free (label->detail->text_line_widths);
 	g_free (label->detail->text_line_heights);
+
+	if (label->detail->text_layouts != NULL) {
+		guint i;
+
+		for (i = 0; i < label->detail->num_text_lines; i++) {
+			g_assert (label->detail->text_layouts[i] != NULL);
+			nautilus_text_layout_free (label->detail->text_layouts[i]);
+		}
+
+		g_free (label->detail->text_layouts);
+	}
 
 	g_free (label->detail);
 
@@ -344,7 +367,44 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	text_x = 0;
 	text_y = 0;
 
-	if (label->detail->num_text_lines > 0) {
+	if (label->detail->num_text_lines == 0) {
+		return;
+	}
+
+	/* Line wrapping */
+	if (label->detail->line_wrap) {
+		guint i;
+		guint x = 0;
+		guint y = 0;
+		
+		for (i = 0; i < label->detail->num_text_lines; i++) {
+			const NautilusTextLayout *text_layout = label->detail->text_layouts[i];
+
+			if (label->detail->drop_shadow_offset > 0) {
+				nautilus_text_layout_paint (text_layout, 
+							    buffer, 
+							    x + label->detail->drop_shadow_offset, 
+							    y + label->detail->drop_shadow_offset,
+							    label->detail->text_justification,
+							    label->detail->drop_shadow_color,
+							    FALSE,
+							    FALSE);
+			}
+
+			nautilus_text_layout_paint (text_layout, 
+						    buffer, 
+						    x, 
+						    y,
+						    label->detail->text_justification,
+						    label->detail->text_color,
+						    FALSE,
+						    FALSE);
+
+			y += text_layout->height;
+		}
+	}
+	/* No line wrapping */
+	else {
 		if (label->detail->drop_shadow_offset > 0) {
 			text_x += label->detail->drop_shadow_offset;
 			text_y += label->detail->drop_shadow_offset;
@@ -427,17 +487,69 @@ label_recompute_line_geometries (NautilusLabel *label)
 	label->detail->text_line_widths = NULL;
 	label->detail->text_line_heights = NULL;
 
+	if (label->detail->text_layouts != NULL) {
+		guint i;
+
+		for (i = 0; i < label->detail->num_text_lines; i++) {
+			g_assert (label->detail->text_layouts[i] != NULL);
+			nautilus_text_layout_free (label->detail->text_layouts[i]);
+		}
+
+		g_free (label->detail->text_layouts);
+		label->detail->text_layouts = NULL;
+	}
+	
 	label->detail->num_text_lines = 0;
 
 	label->detail->max_text_line_width = 0;
 	label->detail->total_text_line_height = 0;
 
-	if (nautilus_strlen (label->detail->text) > 0) {
-		label->detail->num_text_lines = nautilus_str_count_characters (label->detail->text, '\n') + 1;
+	if (nautilus_strlen (label->detail->text) == 0) {
+		return;
+	}
+	
+	label->detail->num_text_lines = nautilus_str_count_characters (label->detail->text, '\n') + 1;
 
+	/* Line wrapping */
+	if (label->detail->line_wrap) {
+		char **pieces;
+		guint i;
+
+		label->detail->text_layouts = g_new (NautilusTextLayout *, label->detail->num_text_lines);
+
+		pieces = g_strsplit (label->detail->text, "\n", 0);
+
+		for (i = 0; pieces[i] != NULL; i++) {
+			char *text_piece = pieces[i];
+
+			g_assert (i < label->detail->num_text_lines);
+
+			/* Make empty lines appear.  A single '\n' for example. */
+			if (text_piece[0] == '\0') {
+				text_piece = " ";
+			}
+
+			label->detail->text_layouts[i] = nautilus_text_layout_new (label->detail->font,
+										   label->detail->font_size,
+										   text_piece,
+										   label->detail->line_wrap_separators,
+										   label->detail->line_wrap_width, 
+										   TRUE);
+
+			label->detail->total_text_line_height += label->detail->text_layouts[i]->height;
+			
+			if (label->detail->text_layouts[i]->width > label->detail->max_text_line_width) {
+				label->detail->max_text_line_width = label->detail->text_layouts[i]->width;
+			}
+		}
+
+		g_strfreev (pieces);
+	}
+	/* No line wrapping */
+	else {
 		label->detail->text_line_widths = g_new (guint, label->detail->num_text_lines);
 		label->detail->text_line_heights = g_new (guint, label->detail->num_text_lines);
-
+		
 		nautilus_scalable_font_measure_text_lines (label->detail->font,
 							   label->detail->font_size,
 							   label->detail->font_size,
@@ -668,7 +780,7 @@ nautilus_label_get_text_justification (const NautilusLabel *label)
  */
 void
 nautilus_label_set_line_offset (NautilusLabel	*label,
-			       guint		line_offset)
+				guint		line_offset)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 
@@ -775,7 +887,138 @@ nautilus_label_get_drop_shadow_color (const NautilusLabel *label)
 {
 	g_return_val_if_fail (label != NULL, 0);
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
-
+	
 	return label->detail->drop_shadow_color;
 }
 
+/**
+ * nautilus_label_set_line_wrap:
+ *
+ * @label: A NautilusLabel
+ * @line_wrap: A boolean value indicating whether the label should
+ * line wrap words if they dont fit in the horizontally allocated
+ * space.
+ *
+ */
+void
+nautilus_label_set_line_wrap (NautilusLabel	*label,
+			      gboolean		line_wrap)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->line_wrap == line_wrap) {
+		return;
+	}
+	
+	label->detail->line_wrap = line_wrap;
+
+	label_recompute_line_geometries (label);
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_line_wrap:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: A boolean value indicating whether the label
+ * is currently line wrapping text.
+ */
+gboolean
+nautilus_label_get_line_wrap (const NautilusLabel *label)
+{
+	g_return_val_if_fail (label != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
+
+	return label->detail->line_wrap;
+}
+
+/**
+ * nautilus_label_set_line_wrap_width:
+ *
+ * @label: A NautilusLabel
+ * @line_wrap_width: The new line wrap width.
+ *
+ * The line wrap width is something.
+ * 
+ */
+void
+nautilus_label_set_line_wrap_width (NautilusLabel	*label,
+				    guint		line_wrap_width)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->line_wrap_width == line_wrap_width) {
+		return;
+	}
+	
+	label->detail->line_wrap_width = line_wrap_width;
+
+	label_recompute_line_geometries (label);
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_line_wrap_width:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: A boolean value indicating whether the label
+ * is currently line wrapping text.
+ */
+guint
+nautilus_label_get_line_wrap_width (const NautilusLabel *label)
+{
+	g_return_val_if_fail (label != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
+
+	return label->detail->line_wrap_width;
+}
+
+/**
+ * nautilus_label_set_line_wrap_separators:
+ *
+ * @label: A NautilusLabel
+ * @line_wrap_separators: The new line wrap separators.
+ *
+ * The line wrap separators is something.
+ * 
+ */
+void
+nautilus_label_set_line_wrap_separators (NautilusLabel	*label,
+					 const char *line_wrap_separators)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (line_wrap_separators != NULL);
+	g_return_if_fail (line_wrap_separators[0] != '\0');
+	g_return_if_fail (strlen (line_wrap_separators) > 0);
+
+	if (nautilus_str_is_equal (label->detail->line_wrap_separators, line_wrap_separators)) {
+		return;
+	}
+	
+	label->detail->line_wrap_separators = g_strdup (line_wrap_separators);
+
+	label_recompute_line_geometries (label);
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_line_wrap_separators:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: A boolean value indicating whether the label
+ * is currently line wrapping text.
+ */
+char *
+nautilus_label_get_line_wrap_separators (const NautilusLabel *label)
+{
+	g_return_val_if_fail (label != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
+
+	return g_strdup (label->detail->line_wrap_separators);
+}

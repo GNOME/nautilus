@@ -103,6 +103,15 @@ guint                 nautilus_label_get_drop_shadow_offset   (const NautilusLab
 void                  nautilus_label_set_drop_shadow_color    (NautilusLabel        *label,
 							       guint32               color);
 guint32               nautilus_label_get_drop_shadow_color    (const NautilusLabel  *label);
+void                  nautilus_label_set_line_wrap            (NautilusLabel        *label,
+							       gboolean              line_wrap);
+gboolean              nautilus_label_get_line_wrap            (const NautilusLabel  *label);
+void                  nautilus_label_set_line_wrap_width      (NautilusLabel        *label,
+							       guint                 line_wrap_width);
+guint                 nautilus_label_get_line_wrap_width      (const NautilusLabel  *label);
+void                  nautilus_label_set_line_wrap_separators (NautilusLabel        *label,
+							       const char           *separators);
+char *                nautilus_label_get_line_wrap_separators (const NautilusLabel  *label);
 
 END_GNOME_DECLS
 
