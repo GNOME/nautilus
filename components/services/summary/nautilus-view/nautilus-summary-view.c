@@ -1058,6 +1058,8 @@ who_is_logged_in (NautilusSummaryView	*view)
 	char			*rv;
 	int			i;
 
+	rv = NULL;
+
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
@@ -1068,9 +1070,7 @@ who_is_logged_in (NautilusSummaryView	*view)
 
 		if (CORBA_NO_EXCEPTION != ev._major) {
 			g_message ("No default user!");
-			rv =  NULL;
-		}
-		else {
+		} else {
 			g_message ("Default user found!");
 			for (i = 0; i < user->_length; i++) {
 				EazelProxy_User *current;
