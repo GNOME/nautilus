@@ -79,6 +79,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
 #define ICON_NAME_EXECUTABLE            "i-executable"
 #define ICON_NAME_REGULAR               "i-regular"
+#define ICON_NAME_SEARCH_RESULTS        "i-search"
 #define ICON_NAME_WEB			"i-web"
 #define ICON_NAME_SOCKET                "i-sock"
 #define ICON_NAME_FIFO                  "i-fifo"
@@ -517,6 +518,7 @@ nautilus_icon_factory_set_theme (const char *theme_name)
 			 signals[ICONS_CHANGED]);
 }
 
+
 /* Use the MIME type to get the icon name. */
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
@@ -552,6 +554,25 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	return is_http_uri ? ICON_NAME_WEB : ICON_NAME_REGULAR;
 }
 
+/* Use the MIME type to get the icon name. */
+static const char *
+nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
+{
+	char *mime_type;
+	
+	mime_type = nautilus_file_get_mime_type (file);
+	
+	if (mime_type != NULL && !nautilus_strcasecmp (mime_type, "x-directory/search")) {
+		g_free (mime_type);
+		return ICON_NAME_SEARCH_RESULTS;
+	}
+	else {
+		g_free (mime_type);
+		return ICON_NAME_DIRECTORY;
+	}
+}
+
+
 /* Get the icon name for a file. */
 static const char *
 nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
@@ -559,7 +580,7 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 	/* Get an icon name based on the file's type. */
         switch (nautilus_file_get_file_type (file)) {
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
-		return ICON_NAME_DIRECTORY;
+		return nautilus_icon_factory_get_icon_name_for_directory (file);
         case GNOME_VFS_FILE_TYPE_FIFO:
                 return ICON_NAME_FIFO;
         case GNOME_VFS_FILE_TYPE_SOCKET:

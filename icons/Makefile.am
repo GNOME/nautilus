@@ -149,6 +149,7 @@ icon_DATA =\
 	i-regular-72.png \
 	i-regular-96.png \
 	i-regular.png \
+	i-search-72.png \
 	i-sock.png \
 	i-stalled.png \
 	i-symlink.png \
