@@ -332,6 +332,10 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
   	music_view->details->image_box = gtk_vbox_new (0, FALSE);
    	button = gtk_button_new ();
 	gtk_box_pack_end (GTK_BOX (music_view->details->image_box), button, FALSE, FALSE, 2);
+
+	/* FIXME
+	 * Using gtk_widget_set_usize should be avoided.
+	 */
 	gtk_widget_set_usize (button, -1, 20);
 	
 	label = gtk_label_new (_("Set Cover Image"));
@@ -1474,8 +1478,6 @@ add_play_controls (NautilusMusicView *music_view)
 	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->song_label), 2);
 	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
 	
-	/* we must make this a fixed size to avoid flashing when we change it */
-	gtk_widget_set_usize (music_view->details->song_label, 224, 40);
 	gtk_widget_show (music_view->details->song_label);
         
 	vbox = gtk_vbox_new (0, 0);
@@ -1494,6 +1496,13 @@ add_play_controls (NautilusMusicView *music_view)
 	music_view->details->playtime = nautilus_label_new ("--:--");
 	nautilus_label_make_larger (NAUTILUS_LABEL (music_view->details->playtime), 2);
 	nautilus_label_set_justify (NAUTILUS_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+
+ 	/* FIXME
+	 * Fixing the widget size is bad, but it is done because the label resizes, as it
+	 * changes to reflect the current time, and can cause the widgets to its right
+	 * to move. This does keep the other widgets from moving, but if you watch closely, the
+	 * left edge of the playtime moves.
+	 */
         gtk_widget_set_usize (music_view->details->playtime, 40, -1);
         
 	gtk_widget_show (music_view->details->playtime);

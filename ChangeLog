@@ -1,3 +1,14 @@
+2001-01-24  Michael Engber  <engber@eazel.com>
+
+	[checkin for engber -ramiro ]
+	
+	reviewed by: Ramiro Estrugo
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (add_play_controls):
+	Removed a call to problematic call to gtk_widget_set_usize
+	and added FIXMEs for the remaining calls to it - bug 5967.
+
 2001-01-24  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
