@@ -79,9 +79,9 @@ static void  update_icon                                  (GnomeIconContainer   
 static void  compute_stretch                              (StretchState            *start,
 							   StretchState            *current);
 static GnomeIconContainerIcon *get_first_selected_icon    (GnomeIconContainer      *container);
-static guint icon_get_actual_size                         (GnomeIconContainerIcon  *icon);
-static void  remove_icon_from_container                   (GnomeIconContainer      *container,
+static void  icon_destroy                                 (GnomeIconContainer      *container,
 							   GnomeIconContainerIcon  *icon);
+static guint icon_get_actual_size                         (GnomeIconContainerIcon  *icon);
 static void  set_kbd_current 				  (GnomeIconContainer      *container,
 		 					   GnomeIconContainerIcon  *icon,
 		 					   gboolean 		    schedule_visibility);
@@ -110,9 +110,10 @@ static char stipple_bits[] = { 0x02, 0x01 };
 /* Functions dealing with GnomeIconContainerIcons.  */
 
 static void
-icon_destroy (GnomeIconContainerIcon *icon)
+icon_free (GnomeIconContainerIcon *icon)
 {
 	gtk_object_destroy (GTK_OBJECT (icon->item));
+	g_free (icon);
 }
 
 static GnomeIconContainerIcon *
@@ -1702,6 +1703,7 @@ destroy (GtkObject *object)
 	container = GNOME_ICON_CONTAINER (object);
 
 	gnome_icon_container_dnd_fini (container);
+        gnome_icon_container_clear (container);
 
 	icon_grid_destroy (container->details->grid);
 	g_hash_table_destroy (container->details->canvas_item_to_icon);
@@ -2440,7 +2442,7 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	details->stretch_icon = NULL;
 
 	for (p = details->icons; p != NULL; p = p->next)
-		icon_destroy (p->data);
+		icon_free (p->data);
 	g_list_free (details->icons);
 	details->icons = NULL;
 	details->num_icons = 0;
@@ -2451,7 +2453,7 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 /* utility routine to remove a single icon from the container */
 
 static void
-remove_icon_from_container (GnomeIconContainer *container,
+icon_destroy (GnomeIconContainer *container,
 			    GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
@@ -2459,9 +2461,13 @@ remove_icon_from_container (GnomeIconContainer *container,
 	gint grid_x, grid_y;
 	gint x_offset, y_offset;
 	details = container->details;
-	
+
 	details->icons = g_list_remove(details->icons, icon);
 	details->num_icons--;
+
+	if (details->kbd_current == icon) {
+        	set_kbd_current (container, NULL, FALSE);
+	}
 
 	icon_x = icon->x;
 	icon_y = icon->y;
@@ -2483,7 +2489,7 @@ remove_icon_from_container (GnomeIconContainer *container,
 	
  	g_hash_table_remove (details->canvas_item_to_icon, icon->item);
 	
-	icon_destroy (icon);
+	icon_free (icon);
 }
 
 /* activate any selected items in the container */
@@ -2676,7 +2682,7 @@ gnome_icon_container_remove (GnomeIconContainer *container,
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->data == data) {
-			remove_icon_from_container (container, icon);
+			icon_destroy (container, icon);
 			return TRUE;
 		}
 	}

@@ -636,6 +636,7 @@ dequeue_pending_idle_cb (gpointer callback_data)
 	directory->details->pending_file_info = NULL;
 	for (p = pending_file_info; p != NULL; p = p->next) {
 		file = nautilus_directory_new_file (directory, p->data);
+		g_assert (file != NULL);
 		pending_files = g_list_prepend (pending_files, file);
 		gnome_vfs_file_info_unref (p->data);
 	}

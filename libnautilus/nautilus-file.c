@@ -1008,7 +1008,8 @@ nautilus_file_delete (NautilusFile *file)
 
 		/* Let the directory know it's gone. */
 		if (file->directory != NULL) {
-			g_list_remove (file->directory->details->files, file);
+		        file->directory->details->files
+			     = g_list_remove (file->directory->details->files, file);
 
 			/* Send out a signal. */
 			removed_files = g_list_prepend (NULL, file);

@@ -1,3 +1,22 @@
+2000-03-09  John Sullivan <sullivan@eazel.com>
+
+        Bug fixes and memory leak fixes.
+
+        * libnautilus/gnome-icon-container.c:
+        (icon_destroy): Renamed to icon_free and fixed storage leak by
+        freeing icon struct.
+        (remove_icon_from_container): Renamed to icon_destroy and fixed
+        bug by setting details->kbd_current to NULL if it had been the
+        icon being destroyed.
+        (destroy): Fixed storage leak by calling gnome_icon_container_clear.
+        
+        * libnautilus/nautilus-directory.c: (dequeue_pending_idle_cb):
+        Added file != NULL assert.
+        
+        * libnautilus/nautilus-file.c: (nautilus_file_delete):
+        Fix bug where NULLs were sneaking into file list, and
+        causing havoc later, by setting list to result of g_list_remove.
+
 2000-03-09 Elliot Lee <sopwith@redhat.com>
 	* libnautilus/Makefile.am: Install libnautilus.h
 	* src/ntl-uri-map.c: Handle mapping of special schemes
