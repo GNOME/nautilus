@@ -236,12 +236,12 @@ dnl ====================================
 dnl = begin gnome-http checks
 dnl ====================================
 
-AC_PATH_PROG(GHTTP_CONFIG,ghttp-config,no)
+AC_PATH_PROG(GHTTP_CONFIG,gnome-config,no)
 if test x$GHTTP_CONFIG = xno; then
   AC_MSG_ERROR(Could not find ghttp libraries.)
 fi
-GHTTP_LIBS=`$GHTTP_CONFIG --libs`
-GHTTP_CFLAGS=`$GHTTP_CONFIG --cflags`
+GHTTP_LIBS=`$GHTTP_CONFIG --libs ghttp`
+GHTTP_CFLAGS=`$GHTTP_CONFIG --cflags ghttp`
 AC_SUBST(GHTTP_LIBS)
 AC_SUBST(GHTTP_CFLAGS)
 
