@@ -1004,6 +1004,9 @@ set_scroll_region (GnomeIconContainer *container)
 	scroll_width = MAX (priv->width, allocation->width);
 	scroll_height = MAX (priv->height, allocation->height);
 
+	scroll_width--;
+	scroll_height--;
+
 	gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
 					0.0, 0.0,
 					(gdouble) scroll_width,
