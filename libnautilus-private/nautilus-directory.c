@@ -1426,7 +1426,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	g_return_val_if_fail (file != NULL, NULL);
 
 	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-		return g_strdup (_("--"));
+		return g_strdup ("");
 
 	return gnome_vfs_file_size_to_string (file->info->size);
 }

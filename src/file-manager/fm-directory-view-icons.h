@@ -49,12 +49,15 @@ struct _FMDirectoryViewIconsClass {
 };
 
 /* GtkObject support */
-GtkType                   fm_directory_view_icons_get_type        (void);
+GtkType fm_directory_view_icons_get_type                      (void);
 
-/* User interface related calls.
- * FIXME: None of these are currently used. Remove them eventually if
+/* Functions for FMIconsController support. */
+char *  fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *view);
+
+/*
+ * FIXME: None of the following are currently used. Remove them eventually if
  * we're not going to use them.
  */
-void                      fm_directory_view_icons_line_up_icons   (FMDirectoryViewIcons           *view);
+void    fm_directory_view_icons_line_up_icons 		      (FMDirectoryViewIcons *view);
 
 #endif /* FM_DIRECTORY_VIEW_ICONS_H */

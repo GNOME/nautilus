@@ -70,6 +70,8 @@
 
 static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
 static void gnome_icon_container_initialize (GnomeIconContainer *container);
+static void synch_icon_with_controller (GnomeIconContainer *container, 
+					GnomeIconContainerIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -104,33 +106,24 @@ static GnomeIconContainerIcon *
 icon_new (GnomeIconContainer *container,
 	  NautilusControllerIcon *data)
 {
-	GnomeIconContainerDetails *details;
-	char *label;
 	GnomeIconContainerIcon *new;
-	GdkPixbuf *image;
-        GnomeCanvas* canvas;
-
+        GnomeCanvas *canvas;
+        
 	canvas = GNOME_CANVAS(container);
-	details = container->details;
-
+	
 	new = g_new0 (GnomeIconContainerIcon, 1);
 	
 	new->layout_done = TRUE;
 	
 	new->data = data;
-	
-	image = nautilus_icons_controller_get_icon_image (details->controller, data);
-	label = nautilus_icons_controller_get_icon_text (details->controller, data);
-        
+
         new->item = gnome_canvas_item_new
 		(GNOME_CANVAS_GROUP (canvas->root),
 		 nautilus_icons_view_icon_item_get_type (),
-		 "pixbuf", image,    
-		 "label", label,
 		 NULL);
+
+	synch_icon_with_controller (container, new);
 	
-	g_free (label);
-        
 	return new;
 }
 
@@ -2280,6 +2273,26 @@ setup_icon_in_container (GnomeIconContainer *container,
 			    GTK_SIGNAL_FUNC (item_event_cb), container);
 }
 
+static void 
+synch_icon_with_controller (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
+{
+	GnomeIconContainerDetails *details;
+	GdkPixbuf *image;
+	char *label;
+
+	details = container->details;
+
+	image = nautilus_icons_controller_get_icon_image (details->controller, icon->data);
+	label = nautilus_icons_controller_get_icon_text (details->controller, icon->data);
+        
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
+			       "pixbuf", image,    
+			       "label", label,
+			       NULL);
+	
+	g_free (label);
+}
+
 void
 gnome_icon_container_add (GnomeIconContainer *container,
 			  NautilusControllerIcon *data,
@@ -2357,6 +2370,10 @@ gnome_icon_container_set_zoom_level(GnomeIconContainer *container, int new_level
 {
         int pinned_level;
 	double pixels_per_unit;
+	GList *p;
+	GnomeIconContainerDetails *details;
+
+	details = container->details;
 
 	pinned_level = new_level;
         if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST)
@@ -2364,14 +2381,23 @@ gnome_icon_container_set_zoom_level(GnomeIconContainer *container, int new_level
         else if (pinned_level > NAUTILUS_ZOOM_LEVEL_LARGEST)
         	pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
  
-        if (pinned_level == container->details->zoom_level)
+        if (pinned_level == details->zoom_level)
 		return;
 
-	container->details->zoom_level = pinned_level;
+	details->zoom_level = pinned_level;
 	
 	pixels_per_unit = (double) nautilus_icon_size_for_zoom_level (pinned_level)
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	gnome_canvas_set_pixels_per_unit(GNOME_CANVAS(container), pixels_per_unit);
+
+
+	for (p = details->icons; p != NULL; p = p->next)
+	{
+		GnomeIconContainerIcon *icon;
+		icon = p->data;
+
+		synch_icon_with_controller (container, icon);
+	}
 }
 
 

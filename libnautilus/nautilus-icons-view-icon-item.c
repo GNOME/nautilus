@@ -631,6 +631,12 @@ draw_or_measure_text_box (GnomeCanvasItem* item,
 	width_so_far = 0;
 	height_so_far = 0;
 	while (label_piece != NULL) {
+		/* Replace empty string with space for measurement and drawing.
+		 * This make empty lines appear, instead of being collapsed out.
+		 */
+		if (strlen (label_piece) == 0)
+			label_piece = " ";
+			
 		if (do_draw) {
 			item_width = floor (item->x2 - item->x1);
 			gc = gdk_gc_new (item->canvas->layout.bin_window);
@@ -730,7 +736,6 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	ArtIRect p_rect, a_rect, d_rect;
 	int w, h, icon_height;
         int center_offset = 0;
-        GnomeIconContainer *container = GNOME_ICON_CONTAINER(item->canvas);
  	GdkFont *title_font = get_font_for_item(item); 	
        
 	icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
@@ -788,10 +793,11 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	}
 	
 	/* now compute the position of the label and draw it */
-	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_SMALLEST) {
+	if (nautilus_strlen (details->label) > 0)
+	{
 		icon_height = details->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
 		nautilus_icons_view_draw_text_box(item, drawable, title_font, details->label, item->x1 - x, 
-						  item->y1 - y + icon_height);       	
+						  item->y1 - y + icon_height);
 	}
 }
 

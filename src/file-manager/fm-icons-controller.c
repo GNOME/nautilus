@@ -95,7 +95,44 @@ static char *
 fm_icons_controller_get_icon_text (NautilusIconsController *controller,
 				   NautilusControllerIcon *icon)
 {
-	return nautilus_file_get_name (NAUTILUS_FILE (icon));
+	char *attribute_names;
+	char **text_array;
+	char *result;
+	int index;
+
+	attribute_names = fm_directory_view_icons_get_icon_text_attribute_names (
+		FM_ICONS_CONTROLLER (controller)->icons);
+	text_array = g_strsplit (attribute_names, "|", 0);
+	g_free (attribute_names);
+
+	index = 0;
+	while (text_array[index] != NULL)
+	{
+		char * attribute_string;
+
+		attribute_string = 
+			nautilus_file_get_string_attribute (NAUTILUS_FILE (icon), 
+							    text_array[index]);
+
+		/* unknown attributes get turned into blank lines (also note that
+		 * leaving a NULL in text_array would cause it to be incompletely
+		 * freed).
+		 */
+		if (attribute_string == NULL)
+			attribute_string = g_strdup ("");
+
+		/* Replace each attribute name in the array with its string value */
+		g_free (text_array[index]);
+		text_array[index] = attribute_string;
+
+		++index;
+	}
+
+	result = g_strjoinv ("\n", text_array);
+
+	g_strfreev (text_array);
+
+	return result;
 }
 
 static char *

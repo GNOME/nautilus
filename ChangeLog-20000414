@@ -1,3 +1,42 @@
+2000-02-04  John Sullivan <sullivan@eazel.com>
+
+	Zooming now shows different information at different
+	zoom levels. Currently uses hardwired pattern. Next
+	I'll make the pattern configurable.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-icons.h:
+	(fm_directory_view_icons_get_icon_text_attribute_names):
+	New function, returns set of attribute names representing
+	text to appear in icon label. The set varies depending on
+	zoom level, but is otherwise currently hardwired.
+	
+	* src/file-manager/fm-icons-controller.c:
+	(fm_icons_controller_get_text): Now gets attribute names
+	from icon view, then creates & returns a newline-delimited
+	string using nautilus_file_get_string_attribute.
+
+	* libnautilus/gnome-icon-container.c:
+	(synch_icon_with_controller): New function, reinstalls item's
+	label and image.
+	(icon_new): Reworked to call synch_icon_with_controller.
+	(gnome_icon_container_set_zoom_level): Now iterates through the
+	icons, calling synch_icon_with_controller so text (and, later, image)
+	is updated when zoom level changes.
+	
+	* libnautilus/nautilus-directory.c:
+	(nautilus_file_get_size_as_string): Changed to return empty
+	string instead of "--" for directories, because this looked
+	better in icon view. Might change list view back to use "--"
+	later.
+	
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	(draw_or_measure_text_box): Made it display blank lines
+	instead of collapsing them out.
+	(nautilus_icons_view_icon_item_draw): Took out special case
+	for not showing text at tiniest zoom level. This is now handled
+	the same way as the other levels.
+	
 2000-02-04  Darin Adler  <darin@eazel.com>
 
 	Make optimized builds succeed.

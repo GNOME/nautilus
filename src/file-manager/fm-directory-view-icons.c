@@ -386,6 +386,49 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
 		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
+/**
+ * fm_directory_view_icons_get_icon_text_attribute_names:
+ *
+ * Get a string representing which text attributes should be displayed
+ * beneath an icon. The result is dependent on zoom level and possibly
+ * user configuration. Use g_free to free the result.
+ * @view: FMDirectoryViewIcons to query.
+ * 
+ * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
+ * 
+ **/
+char *
+fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *view)
+{
+	char * names;
+
+	/* FIXME: This is currently hardwired, but should be configurable */
+	switch (fm_directory_view_icons_get_zoom_level (view))
+	{
+		case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+			names = "";
+			break;
+		case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		case NAUTILUS_ZOOM_LEVEL_SMALL:
+			names = "name";
+			break;
+		case NAUTILUS_ZOOM_LEVEL_STANDARD:
+			names = "name|size";
+			break;
+		case NAUTILUS_ZOOM_LEVEL_LARGE:
+		case NAUTILUS_ZOOM_LEVEL_LARGER:
+			names = "name|size|date_modified";
+			break;
+		case NAUTILUS_ZOOM_LEVEL_LARGEST:
+			names = "name|size|date_modified|type";
+			break;
+
+		default:
+			g_assert_not_reached(); 
+	}
+
+	return g_strdup (names);
+}
 
 static GList *
 fm_directory_view_icons_get_selection (FMDirectoryView *view)
