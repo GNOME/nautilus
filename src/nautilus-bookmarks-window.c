@@ -136,7 +136,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	bookmarks = list;
 
 	window = gtk_dialog_new_with_buttons (_("Bookmarks"), NULL, 0,
-					      _("Done"), GTK_RESPONSE_OK,
+					      GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					      NULL);
 	
 	set_up_close_accelerator (window);

@@ -693,7 +693,7 @@ desktop_changed_callback (gpointer user_data)
  * presented is: ~/.nautilus/first-time-flag.
  *
  * Another alternative could be to use preferences to store this flag
- * However, there because of bug 1229 this is not yet possible.
+ * However, there because of bug 41229 this is not yet possible.
  *
  * Also, for debugging purposes, it is convenient to have just one file
  * to kill in order to test the startup druid:

@@ -307,29 +307,29 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 
 	if (!exactly_one) {
-		eel_show_error_dialog (
-				       _("You can't assign more than one custom icon at a time! "
-					 "Please drag just one image to set a custom icon."), 
-				       _("More Than One Image"),
-				       window);
+		eel_show_error_dialog
+			(_("You can't assign more than one custom icon at a time! "
+			   "Please drag just one image to set a custom icon."), 
+			 _("More Than One Image"),
+			 window);
 	} else {		
 		if (uri_is_local_image (uris[0])) {			
 			set_icon_callback (gnome_vfs_get_local_path_from_uri (uris[0]), 
 					   FM_PROPERTIES_WINDOW (window));
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
-				eel_show_error_dialog (
-						       _("The file that you dropped is not local.  "
-							 "You can only use local images as custom icons."), 
-						       _("Local Images Only"),
-						       window);
+				eel_show_error_dialog
+					(_("The file that you dropped is not local.  "
+					   "You can only use local images as custom icons."), 
+					 _("Local Images Only"),
+					 window);
 				
 			} else {
-				eel_show_error_dialog (
-						       _("The file that you dropped is not an image.  "
-							 "You can only use local images as custom icons."),
-						       _("Images Only"),
-						       window);
+				eel_show_error_dialog
+					(_("The file that you dropped is not an image.  "
+					   "You can only use local images as custom icons."),
+					 _("Images Only"),
+					 window);
 			}
 		}		
 	}
@@ -352,8 +352,8 @@ create_image_widget_for_file (NautilusFile *file)
 			   target_table, G_N_ELEMENTS (target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
-	g_signal_connect(image, "drag_data_received",
-			 G_CALLBACK (fm_properties_window_drag_data_received), NULL);
+	g_signal_connect (image, "drag_data_received",
+			  G_CALLBACK (fm_properties_window_drag_data_received), NULL);
 
 
 	gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
@@ -373,8 +373,7 @@ create_image_widget_for_file (NautilusFile *file)
 				 image, G_CONNECT_SWAPPED);
 
 	/* Name changes can also change icon (since name is determined by MIME type) */
-	g_signal_connect_object (file,
-				 "changed",
+	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (update_properties_window_icon),
 				 image, G_CONNECT_SWAPPED);
 	return image;
@@ -734,10 +733,8 @@ attach_value_field_internal (GtkTable *table,
 	}
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
-	g_object_set_data_full (G_OBJECT (value_field),
-				"file_attribute",
-				g_strdup (file_attribute_name),
-				g_free);
+	g_object_set_data_full (G_OBJECT (value_field), "file_attribute",
+				g_strdup (file_attribute_name), g_free);
 
 	/* Fill in the value. */
 	if (ellipsize_text) {
@@ -747,8 +744,7 @@ attach_value_field_internal (GtkTable *table,
 	}
 
 	/* Connect to signal to update value when file changes. */
-	g_signal_connect_object (file,
-				 "changed",
+	g_signal_connect_object (file, "changed",
 				 ellipsize_text
 				 ? G_CALLBACK (ellipsizing_value_field_update)
 				 : G_CALLBACK (value_field_update),
@@ -928,8 +924,7 @@ attach_group_menu (GtkTable *table,
 	synch_groups_menu (option_menu, file);
 
 	/* Connect to signal to update menu when file changes. */
-	g_signal_connect_object (file,
-				 "changed",
+	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_groups_menu),
 				 option_menu, G_CONNECT_SWAPPED);	
 }	
@@ -1075,8 +1070,7 @@ attach_owner_menu (GtkTable *table,
 	synch_user_menu (option_menu, file);
 
 	/* Connect to signal to update menu when file changes. */
-	g_signal_connect_object (file,
-				 "changed",
+	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_user_menu),
 				 option_menu, G_CONNECT_SWAPPED);	
 }
@@ -1703,10 +1697,8 @@ create_emblems_page (FMPropertiesWindow *window)
 	 * This must be done after the widget is realized, due to
 	 * an apparent bug in gtk_viewport_set_shadow_type.
 	 */
-	g_signal_connect (GTK_BIN (scroller)->child, 
-			  "realize", 
-			  G_CALLBACK (remove_default_viewport_shadow),
-			  NULL);
+	g_signal_connect (GTK_BIN (scroller)->child, "realize", 
+			  G_CALLBACK (remove_default_viewport_shadow), NULL);
 
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));
@@ -1742,30 +1734,23 @@ create_emblems_page (FMPropertiesWindow *window)
 		g_object_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
-		g_object_set_data_full (G_OBJECT (button),
-					"nautilus_property_name",
-					emblem_name,
-					g_free);
+		g_object_set_data_full (G_OBJECT (button), "nautilus_property_name",
+					emblem_name, g_free);
 				     
 		nautilus_file_ref (file);
-		g_object_set_data_full (G_OBJECT (button),
-					"nautilus_file",
-					file,
-					(GtkDestroyNotify) nautilus_file_unref);
+		g_object_set_data_full (G_OBJECT (button), "nautilus_file",
+					file, (GtkDestroyNotify) nautilus_file_unref);
 		
-		g_signal_connect (button,
-				    "toggled",
-				    G_CALLBACK (property_button_toggled),
-				    NULL);
+		g_signal_connect (button, "toggled",
+				  G_CALLBACK (property_button_toggled), NULL);
 
 		/* Set initial state of button. */
 		property_button_update (GTK_TOGGLE_BUTTON (button));
 
 		/* Update button when file changes in future. */
-		g_signal_connect_object (file,
-					 "changed",
-					 G_CALLBACK (property_button_update),
-					 button, G_CONNECT_SWAPPED);
+		g_signal_connect_object (file, "changed",
+					 G_CALLBACK (property_button_update), button,
+					 G_CONNECT_SWAPPED);
 
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
 	}
@@ -1810,9 +1795,9 @@ update_permissions_check_button_state (GtkWidget *check_button, NautilusFile *fi
 	g_assert (nautilus_file_can_get_permissions (file));
 
 	toggled_signal_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (check_button),
-						 		  "toggled_signal_id"));
+								"toggled_signal_id"));
 	permission = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (check_button),
-							   "permission"));
+							 "permission"));
 	g_assert (toggled_signal_id > 0);
 	g_assert (permission != 0);
 
@@ -2539,5 +2524,3 @@ remove_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_
 	
 	gtk_widget_set_sensitive (widget, FALSE);
 }
-
-

@@ -165,12 +165,10 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 
 	/* Register to find out about icon theme changes */
-	g_signal_connect_swapped (nautilus_icon_factory_get (),
-				  "icons_changed",
-				  G_CALLBACK (update_icon),
-				  sidebar_title);
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (update_icon), G_OBJECT (sidebar_title), G_CONNECT_SWAPPED);
 	g_signal_connect (sidebar_title, "realize",
-			    G_CALLBACK (realize_callback), NULL);
+			  G_CALLBACK (realize_callback), NULL);
 
 	/* Create the icon */
 	sidebar_title->details->icon = gtk_image_new ();
@@ -448,7 +446,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	icon_name = get_property_from_component (sidebar_title, "icon_name");
 
 	pixbuf = NULL;
-	if (icon_name != NULL && strlen (icon_name) > 0) {
+	if (icon_name != NULL && icon_name[0] != '\0') {
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,

@@ -350,7 +350,7 @@ nautilus_property_browser_init (GtkObject *object)
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
   	
   	/* create the "done" button */
- 	temp_button = gtk_button_new_with_mnemonic (_("_Done"));
+ 	temp_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 
 	gtk_widget_show(temp_button);

@@ -1,5 +1,23 @@
 2002-03-06  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Say "Close" instead of "Done".
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init): Say "Close" instead of "Done".
+	
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init): Use
+	g_signal_connect_object instead of g_signal_connect_swapped.  This
+	will probably fix the theme-switching problem people have been
+	complaining about.
+
+	* src/nautilus-preferences-dialog.c: Tweak formatting.
+	* src/file-manager/fm-properties-window.c: Tweak formatting.
+
+	* src/nautilus-application.c: Fix bug # in a comment.
+	
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
 	* components/tree/nautilus-tree-model.c: (update_monitoring): New
 	name for destroy_unneeded_children, which now starts monitoring
 	for nodes that need it as well as stopping monitoring and
