@@ -472,6 +472,7 @@ nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
 	} else if (g_ascii_strcasecmp (uri->method_string, "file") == 0) {
 		text_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
 		local_file = gnome_vfs_get_local_path_from_uri (text_uri);
+		g_free (name);
 		name = g_filename_display_basename (local_file);
 		g_free (local_file);
 		g_free (text_uri);
