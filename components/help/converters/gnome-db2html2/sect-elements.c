@@ -232,7 +232,6 @@ sect_sect_start_element (Context *context,
 	SectContext *sect_context = (SectContext *)context->data;
 
 	g_return_if_fail (strlen (name) >= 5);
-
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (!strcasecmp (*atrs_ptr, "id")) {
@@ -254,16 +253,26 @@ sect_sect_start_element (Context *context,
 			g_free (sect_context->previd);
 		}
 		context->sect1++;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '2':
 		context->sect2++;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '3':
 		context->sect3++;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '4':
 		context->sect4++;
 		break;
+		context->sect5 = 0;
 	case '5':
 		context->sect4++;
 		break;

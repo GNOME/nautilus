@@ -76,15 +76,25 @@ toc_sect_start_element (Context *context,
 	switch (name[4]) {
 	case '1':
 		context->sect1++;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '2':
 		context->sect2++;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '3':
 		context->sect3++;
+		context->sect4 = 0;
+		context->sect5 = 0;
 		break;
 	case '4':
 		context->sect4++;
+		context->sect5 = 0;
 		break;
 	case '5':
 		context->sect4++;

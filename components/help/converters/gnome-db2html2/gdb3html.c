@@ -189,6 +189,9 @@ start_element(Context *context,
 
 	if (element && element->start_element_func)
 		(* element->start_element_func) (context, name, attrs);
+	if (!strcasecmp (name, "xref")) {
+		context->stack = g_list_remove_link (context->stack, context->stack);
+	}
 }
 
 static void
