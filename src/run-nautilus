@@ -30,34 +30,8 @@ then
   then
     exit 1
   fi
-
-  ##
-  ## Start with a fresh environment
-  ##
-  nautilus-clean.sh -q -x
-
-  ##
-  ## Run Nautilus with optional command line arguments.
-  ## This should open the first Nautilus window.
-  ##
-  nautilus ${1+"$@"}
-  RETURN=$?
-
-  ##
-  ## End with a fresh environment
-  ##
-  nautilus-clean.sh -q -x
-else
-  ## If no arguments given, open a new new home window
-  if [ $# -eq 0 ]
-  then
-    nautilus ~
-    RETURN=$?
-  ## Run Nautilus with optional command line arguments
-  else
-    nautilus ${1+"$@"}
-    RETURN=$?
-  fi
 fi
 
-exit $RETURN
+nautilus ${1+"$@"}
+
+exit $?
