@@ -672,6 +672,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 
 static void
 eazel_install_initialize (EazelInstall *service) {
+	GList *list;
 #ifndef EAZEL_INSTALL_NO_CORBA
 	GNOME_Trilobite_Eazel_Install corba_service;
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -727,38 +728,36 @@ eazel_install_initialize (EazelInstall *service) {
 
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
 
-	{
-		GList *list = NULL;
+	list = NULL;
+#ifndef EAZEL_INSTALL_SLIM
+	if (eazel_install_configure_use_local_db ()) {
 		char *tmp = NULL;
 
-#ifndef EAZEL_INSTALL_SLIM
 		tmp = g_strdup_printf ("%s/.nautilus/packagedb/", g_get_home_dir ());
 		list = g_list_prepend (list, g_strdup (g_get_home_dir ()));
 		list = g_list_prepend (list, tmp);
-#else
-		tmp = tmp;
+	}
 #endif
 
-		service->private->package_system = eazel_package_system_new (list);
-		eazel_package_system_set_debug (service->private->package_system, 
-						EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
-		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
-				    "start",
-				    (GtkSignalFunc)eazel_install_start_signal,
-				    service);
-		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
-				    "progress",
-				    (GtkSignalFunc)eazel_install_progress_signal,
-				    service);
-		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
-				    "failed",
-				    (GtkSignalFunc)eazel_install_failed_signal,
-				    service);
-		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
-				    "end",
-				    (GtkSignalFunc)eazel_install_end_signal,
-				    service);
-	}
+	service->private->package_system = eazel_package_system_new (list);
+	eazel_package_system_set_debug (service->private->package_system, 
+					EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
+	gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+			    "start",
+			    (GtkSignalFunc)eazel_install_start_signal,
+			    service);
+	gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+			    "progress",
+			    (GtkSignalFunc)eazel_install_progress_signal,
+			    service);
+	gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+			    "failed",
+			    (GtkSignalFunc)eazel_install_failed_signal,
+			    service);
+	gtk_signal_connect (GTK_OBJECT (service->private->package_system),
+			    "end",
+			    (GtkSignalFunc)eazel_install_end_signal,
+			    service);
 }
 
 GtkType

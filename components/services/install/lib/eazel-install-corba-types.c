@@ -125,15 +125,6 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 		break;
 	}
 
-/*      None of the callback signals wants this.... 
-	if (pack->provides) {		
-		g_list_to_corba_string_sequence (&(corbapack->provides), pack->provides);
-	} else {
-		corbapack->provides._length = 0;
-		corbapack->provides._buffer = NULL;
-	}
-*/
-
 	/* depends will be filled in further up, if they're required --
 	 * many times, this function is called to create a single corba package with no other package pointers */
 	corbapack->depends._length = 0;
@@ -367,12 +358,6 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 	pack->distribution.version_major = corbapack->distribution.major;
 	pack->distribution.version_minor = corbapack->distribution.minor;
 
-	if (corbapack->provides._length > 0) {
-		pack->provides = corba_string_sequence_to_glist (&(corbapack->provides));
-	} else {
-		pack->provides = NULL;
-	}
-	
 	switch (corbapack->status) {
 	case GNOME_Trilobite_Eazel_UNKNOWN_STATUS:
 		pack->status = PACKAGE_UNKNOWN_STATUS;

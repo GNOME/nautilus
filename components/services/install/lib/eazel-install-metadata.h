@@ -37,5 +37,6 @@ void transferoptions_destroy (TransferOptions *topts);
 void installoptions_destroy (InstallOptions *iopts);
 void eazel_install_configure_softcat (EazelSoftCat *softcat);
 gboolean eazel_install_configure_check_jump_after_install (char **url);
+gboolean eazel_install_configure_use_local_db (void);
 
 #endif /* EAZEL_INSTALL_METADATA_H */

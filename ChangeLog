@@ -1,3 +1,51 @@
+2001-02-09  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_get_epv):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+
+	Remove some cruft from the IDL that's not implemented anymore or
+	isn't being used by any of the clients.
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(eazel_install_configure_use_local_db):
+	* components/services/install/lib/eazel-install-metadata.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+	* components/services/trilobite/doc/gconf.txt:
+
+	Make an opt-out for people who don't want the "can't get shared
+	lock" spam message scrolling endlessly on every install just
+	because RPM can't deal with NFS directories well.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+
+	Remove dead files from the bootstrap installer's makefile, and
+	make the package-system object be a var to be filled in later.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_conflict_check),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_view_update_from_uri_finish),
+	(user_login_callback),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_load_uri):
+
+	General cleanup, and the addition of the conflict_check signal
+	handler.
+
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(conflict_check), (eazel_install_preflight),
+	(eazel_installer_initialize):
+
+	Add conflict check handler; fix 50% bug prior to downloading.
+
 2001-02-09  John Sullivan  <sullivan@eazel.com>
 
 	Fixed problems I ran into while trying to fix bug 5903,

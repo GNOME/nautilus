@@ -133,7 +133,7 @@ module Trilobite {
 			sequence <PackageBreaksStruct> breaks;
 			sequence <string> modifies;	/* MD5 identifiers */
 
-			sequence <string> provides;
+			/* sequence <string> provides;  -- nothing uses this */
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 
@@ -169,7 +169,6 @@ module Trilobite {
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
 
 			/* Called when a package is being file/feature/unique checked */
-			/* FIXME: bugzilla.eazel.com 3459 */
 			oneway void file_conflict_check (in PackageDataStruct package);
 			oneway void file_uniqueness_check (in PackageDataStruct package);
 			oneway void feature_consistency_check (in PackageDataStruct package);
@@ -206,9 +205,6 @@ module Trilobite {
 			   The package structure contains the md5 it should have,
 			   and actual_md5 contains the md5 checksum of the rpmfile */
 			void md5_check_failed (in PackageDataStruct package, in string actual_md5);
-
-			/* Called to find out whether to delete the rpms or not, after finishing */
-			boolean delete_files ();
 
 			/* Called when the operation is finished */
 			void done (in boolean result);

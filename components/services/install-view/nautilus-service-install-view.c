@@ -28,7 +28,7 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 #include <libeazelinstall.h>
-#include "../lib/eazel-install-metadata.h"
+#include "eazel-install-metadata.h"		/* eazel_install_configure_check_jump_after_install */
 #include "libtrilobite/libtrilobite.h"
 #include "libtrilobite/libammonite-gtk.h"
 
@@ -81,14 +81,7 @@ static void       service_install_load_location_callback         (NautilusView		
 								  NautilusServiceInstallView		*view);
 static void	  service_install_stop_loading_callback		 (NautilusView				*nautilus_view,
 								  NautilusServiceInstallView		*view);
-static void       generate_install_form                          (NautilusServiceInstallView		*view);
-static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView		*view,
-								  const char				*uri);
-static void       nautilus_service_install_view_update_from_uri_finish  (NautilusServiceInstallView		*view,
-								  const char				*uri);
-static void       show_overall_feedback                          (NautilusServiceInstallView		*view,
-								  char					*progress_message);
-
+    
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
 
@@ -671,6 +664,23 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 	}
 }
 
+/* keep the user up-to-date on the install service's long-ass contemplations */
+static void
+nautilus_service_install_conflict_check (EazelInstallCallback *cb, const PackageData *pack,
+					 NautilusServiceInstallView *view)
+{
+	char *out;
+
+	if (view->details->installer == NULL) {
+		g_warning ("Got conflict check after unref!");
+		return;
+	}
+
+	g_assert (pack->name != NULL);
+	out = g_strdup_printf (_("Checking \"%s\" for conflicts..."), pack->name);
+	show_overall_feedback (view, out);
+	g_free (out);
+}
 
 static void
 nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageData *pack, int amount, int total,
@@ -680,6 +690,11 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 	const char *needed_by;
 	InstallMessage *im = view->details->current_im;
 	float fake_amount;
+
+	if (amount > total) {
+		/* work around temporary EI bug where amount is sometimes total+1k */
+		return;
+	}
 
 	if (view->details->installer == NULL) {
 		g_warning ("Got download notice after unref!");
@@ -1494,74 +1509,6 @@ set_root_client (BonoboObjectClient *service, NautilusServiceInstallView *view)
 }
 
 
-static void /* AmmonitePromptLoginCb */
-user_login_callback (
-	gpointer user_data, 
-	const EazelProxy_User *user, 
-	const EazelProxy_AuthnFailInfo *fail_info,
-	AmmoniteDialogButton button_pressed)
-{
-	NautilusServiceInstallView *view;
-
-	view = NAUTILUS_SERVICE_INSTALL_VIEW (user_data);
-
-	/* if the view has been destroyed while the callback was gone, just drop everything */
-	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT(view))) {
-		if (fail_info == NULL) {
-			/* login succeeded */
-			nautilus_service_install_view_update_from_uri_finish (view, view->details->uri);
-		} else {
-			if (button_pressed == AMMONITE_BUTTON_REGISTER) {
-				nautilus_view_open_location_in_this_window (
-					view->details->nautilus_view, 
-					EAZEL_ACCOUNT_REGISTER_URI);
-			} else if (button_pressed == AMMONITE_BUTTON_FORGOT) {
-				nautilus_view_open_location_in_this_window (
-					view->details->nautilus_view, 
-					EAZEL_ACCOUNT_FORGOTPW_URI);
-			} else {
-				nautilus_view_open_location_in_this_window (
-					view->details->nautilus_view, 
-					NEXT_URL_ANONYMOUS);
-			}
-		}
-	}
-
-	gtk_object_unref (GTK_OBJECT(view));
-
-}
-
-
-static void
-nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view, const char *uri)
-{
-	char *host;
-	int port;
-
-	host = NULL;
-
-	nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username);
-
-	if (host == NULL) {
-		/* Ensure that the user is logged in.  Note that the "anonymous" user
-		 * will not be prompted
-		 */
-
-		gtk_object_ref (GTK_OBJECT(view));
-
-		show_overall_feedback (view, _("Checking for authorization..."));
-
-		/* Cancel a pending login request, if there was one...*/
-		ammonite_prompt_login_async_cancel (user_login_callback);
-		ammonite_do_prompt_login_async (view->details->username, NULL, NULL, view->details->username == NULL ? TRUE: FALSE, view, user_login_callback);
-	} else {
-		nautilus_service_install_view_update_from_uri_finish (view, uri);
-	}
-
-	g_free (host);
-	host = NULL;
-}
-
 static void
 nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView *view, const char *uri)
 {
@@ -1650,6 +1597,8 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 	}
 	GNOME_Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "file_conflict_check",
+			    GTK_SIGNAL_FUNC (nautilus_service_install_conflict_check), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_downloading), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_failed",
@@ -1675,11 +1624,76 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 	/* might take a while (leave the throbber on) */
 }
 
+static void /* AmmonitePromptLoginCb */
+user_login_callback (
+	gpointer user_data, 
+	const EazelProxy_User *user, 
+	const EazelProxy_AuthnFailInfo *fail_info,
+	AmmoniteDialogButton button_pressed)
+{
+	NautilusServiceInstallView *view;
+
+	view = NAUTILUS_SERVICE_INSTALL_VIEW (user_data);
+
+	/* if the view has been destroyed while the callback was gone, just drop everything */
+	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT(view))) {
+		if (fail_info == NULL) {
+			/* login succeeded */
+			nautilus_service_install_view_update_from_uri_finish (view, view->details->uri);
+		} else {
+			if (button_pressed == AMMONITE_BUTTON_REGISTER) {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					EAZEL_ACCOUNT_REGISTER_URI);
+			} else if (button_pressed == AMMONITE_BUTTON_FORGOT) {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					EAZEL_ACCOUNT_FORGOTPW_URI);
+			} else {
+				nautilus_view_open_location_in_this_window (
+					view->details->nautilus_view, 
+					NEXT_URL_ANONYMOUS);
+			}
+		}
+	}
+
+	gtk_object_unref (GTK_OBJECT(view));
+}
+
+static void
+nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view, const char *uri)
+{
+	char *host;
+	int port;
+
+	host = NULL;
+
+	nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username);
+
+	if (host == NULL) {
+		/* Ensure that the user is logged in.  Note that the "anonymous" user
+		 * will not be prompted
+		 */
+
+		gtk_object_ref (GTK_OBJECT(view));
+
+		show_overall_feedback (view, _("Checking for authorization..."));
+
+		/* Cancel a pending login request, if there was one...*/
+		ammonite_prompt_login_async_cancel (user_login_callback);
+		ammonite_do_prompt_login_async (view->details->username, NULL, NULL, view->details->username == NULL ? TRUE: FALSE, view, user_login_callback);
+	} else {
+		nautilus_service_install_view_update_from_uri_finish (view, uri);
+	}
+
+	g_free (host);
+	host = NULL;
+}
+
 void
 nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 			     	        const char			*uri)
 {
-
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
@@ -1704,6 +1718,7 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	view->details->already_installed = FALSE;
 	view->details->cancelled = FALSE;
 	view->details->failure = FALSE;
+	view->details->downloaded_anything = FALSE;
 
 	generate_install_form (view);
 

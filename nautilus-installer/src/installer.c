@@ -811,7 +811,6 @@ eazel_install_progress (EazelInstall *service,
 		gtk_label_set_text (GTK_LABEL (label_single_2), "");
 
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0.0, 0.0, 100.0);
-		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 
 		g_message ("Installing: %s", package->name);
 	}
@@ -834,6 +833,18 @@ eazel_install_progress (EazelInstall *service,
 #endif
 }
 
+
+static void
+conflict_check (EazelInstall *service, const PackageData *package, EazelInstaller *installer)
+{
+	GtkWidget *label_single;
+	char *out;
+
+	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
+	out = g_strdup_printf (_("Checking \"%s\" for conflicts"), package->name);
+	gtk_label_set_text (GTK_LABEL (label_single), out);
+	g_free (out);
+}
 
 static void 
 eazel_download_progress (EazelInstall *service, 
@@ -1133,8 +1144,7 @@ eazel_install_preflight (EazelInstall *service,
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
 		} else {
 			temp = g_strdup_printf (_("Downloading 1 package (%d MB)"), total_mb);
-			/* surprise!  we're 50% done now! */
-			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
+			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		}
 	} else {
 		if (installer->uninstalling) {
@@ -1142,8 +1152,7 @@ eazel_install_preflight (EazelInstall *service,
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		} else {
 			temp = g_strdup_printf (_("Downloading %d packages (%d MB)"), num_packages, total_mb);
-			/* surprise!  we're 50% done now! */
-			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
+			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		}
 	}
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
@@ -2132,6 +2141,10 @@ eazel_installer_initialize (EazelInstaller *object)
 
 	installer->problem = eazel_install_problem_new ();
 	
+	gtk_signal_connect (GTK_OBJECT (installer->service),
+			    "file_conflict_check",
+			    GTK_SIGNAL_FUNC (conflict_check),
+			    installer);
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "download_progress", 
 			    GTK_SIGNAL_FUNC (eazel_download_progress),

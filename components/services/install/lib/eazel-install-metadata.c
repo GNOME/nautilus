@@ -263,6 +263,13 @@ eazel_install_configure_check_jump_after_install (char **url)
 	return TRUE;
 }
 
+gboolean
+eazel_install_configure_use_local_db (void)
+{
+	check_gconf_init ();
+	return get_conf_boolean ("use-local-db", TRUE);
+}
+
 void 
 transferoptions_destroy (TransferOptions *topts)
 {

@@ -253,16 +253,6 @@ impl_uninstall_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 }
 
-static CORBA_boolean
-impl_delete_files (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		   CORBA_Environment *ev)
-{
-	gboolean result;
-
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DELETE_FILES], &result);
-	return result ? CORBA_TRUE : CORBA_FALSE;
-}
-
 static void 
 impl_done (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant, 
 	   CORBA_boolean result,
@@ -291,7 +281,6 @@ eazel_install_callback_get_epv ()
 	epv->install_failed        = (gpointer)&impl_install_failed;
 	epv->download_failed       = (gpointer)&impl_download_failed;
 	epv->uninstall_failed      = (gpointer)&impl_uninstall_failed;
-	epv->delete_files	   = (gpointer)&impl_delete_files;
 	epv->done                  = (gpointer)&impl_done;
 
 	return epv;

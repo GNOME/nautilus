@@ -1,16 +1,14 @@
 OBJS=\
 	eazel-install-metadata.o		\
 	eazel-install-protocols.o		\
-	eazel-install-logic.o			\
 	eazel-install-logic2.o			\
-	eazel-install-rpm-glue.o		\
 	eazel-install-xml-package-list.o	\
 	eazel-install-object.o			\
 	eazel-install-problem.o			\
 	eazel-softcat.o				\
 	eazel-package-system.o			\
 	eazel-package-system-types.o		\
-	eazel-package-system-rpm3.o		\
+	$(PACKAGE_SYSTEM_OBJECT)		\
 	$(NULL)
 
 INCLUDES=\
