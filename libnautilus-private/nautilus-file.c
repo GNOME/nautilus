@@ -3390,8 +3390,10 @@ nautilus_file_delete (NautilusFile *file)
 	/* Do the actual deletion. */
 	text_uri = nautilus_file_get_uri (file);
 	if (nautilus_file_is_directory (file)) {
+		/* FIXME bugzilla.eazel.com 1887: This does sync. I/O! */
 		result = gnome_vfs_remove_directory (text_uri);
 	} else {
+		/* FIXME bugzilla.eazel.com 1887: This does sync. I/O! */
 		result = gnome_vfs_unlink (text_uri);
 	}
 	g_free (text_uri);

@@ -34,6 +34,7 @@
 #include "nautilus-file-utilities.h"
 
 typedef struct ActivationURIReadState ActivationURIReadState;
+typedef struct MetafileReadState MetafileReadState;
 typedef struct MetafileWriteState MetafileWriteState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 
@@ -42,8 +43,8 @@ struct NautilusDirectoryDetails
 	/* The location. */
 	char *uri_text;
 	GnomeVFSURI *uri;
-	GnomeVFSURI *metafile_uri;
-	GnomeVFSURI *alternate_metafile_uri;
+	GnomeVFSURI *private_metafile_uri;
+	GnomeVFSURI *public_metafile_uri;
 
 	/* The file objects. */
 	NautilusFile *as_file;
@@ -55,8 +56,7 @@ struct NautilusDirectoryDetails
 	GHashTable *metadata_changes;
 
 	/* State for reading and writing metadata. */
-	gboolean use_alternate_metafile;
-	NautilusReadFileHandle *metafile_read_handle;
+	MetafileReadState *metafile_read_state;
 	guint write_metafile_idle_id;
 	MetafileWriteState *metafile_write_state;
 

@@ -57,7 +57,7 @@ static guint signals[LAST_SIGNAL];
          | GNOME_VFS_PERM_GROUP_ALL \
 	 | GNOME_VFS_PERM_OTHER_ALL)
 
-static GnomeVFSURI *      construct_alternate_metafile_uri    (GnomeVFSURI *uri);
+static GnomeVFSURI *      construct_private_metafile_uri      (GnomeVFSURI *uri);
 static void               nautilus_directory_destroy          (GtkObject   *object);
 static void               nautilus_directory_initialize       (gpointer     object,
 							       gpointer     klass);
@@ -154,7 +154,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_assert (directory->details->metafile_write_state == NULL);
 	nautilus_directory_cancel (directory);
-	g_assert (directory->details->metafile_read_handle == NULL);
+	g_assert (directory->details->metafile_read_state == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->top_left_read_state == NULL);
 
@@ -172,15 +172,9 @@ nautilus_directory_destroy (GtkObject *object)
 	}
  
 	g_free (directory->details->uri_text);
-	if (directory->details->uri != NULL) {
-		gnome_vfs_uri_unref (directory->details->uri);
-	}
-	if (directory->details->metafile_uri != NULL) {
-		gnome_vfs_uri_unref (directory->details->metafile_uri);
-	}
-	if (directory->details->alternate_metafile_uri != NULL) {
-		gnome_vfs_uri_unref (directory->details->alternate_metafile_uri);
-	}
+	gnome_vfs_uri_unref (directory->details->uri);
+	gnome_vfs_uri_unref (directory->details->private_metafile_uri);
+	gnome_vfs_uri_unref (directory->details->public_metafile_uri);
 	g_assert (directory->details->files == NULL);
 	nautilus_directory_metafile_destroy (directory);
 	g_assert (directory->details->directory_load_in_progress == NULL);
@@ -381,7 +375,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 }
 
 static GnomeVFSURI *
-construct_alternate_metafile_uri (GnomeVFSURI *uri)
+construct_private_metafile_uri (GnomeVFSURI *uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSURI *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
@@ -423,23 +417,23 @@ nautilus_directory_new (const char* uri)
 {
 	NautilusDirectory *directory;
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSURI *metafile_uri;
-	GnomeVFSURI *alternate_metafile_uri;
+	GnomeVFSURI *private_metafile_uri;
+	GnomeVFSURI *public_metafile_uri;
 
 	vfs_uri = gnome_vfs_uri_new (uri);
 	if (vfs_uri == NULL) {
 		return NULL;
 	}
 
-	metafile_uri = gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
-	alternate_metafile_uri = construct_alternate_metafile_uri (vfs_uri);
+	private_metafile_uri = construct_private_metafile_uri (vfs_uri);
+	public_metafile_uri = gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
 
 	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
 
 	directory->details->uri_text = g_strdup (uri);
 	directory->details->uri = vfs_uri;
-	directory->details->metafile_uri = metafile_uri;
-	directory->details->alternate_metafile_uri = alternate_metafile_uri;
+	directory->details->private_metafile_uri = private_metafile_uri;
+	directory->details->public_metafile_uri = public_metafile_uri;
 
 	return directory;
 }
@@ -1029,37 +1023,37 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 }
 
 static int
-any_non_metafile_item (gconstpointer item, gconstpointer data)
+any_non_metafile_item (gconstpointer item, gconstpointer callback_data)
 {
 	/* A metafile is exactly what we are not looking for, anything else is a match. */
-	return nautilus_file_matches_uri (NAUTILUS_FILE (item), (const char *)data) ? 1 : 0;
+	return nautilus_file_matches_uri
+		(NAUTILUS_FILE (item), (const char *) callback_data)
+		? 1 : 0;
 }
 
 gboolean
 nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
-	char *metafile_uri_string;
-	gboolean result;
+	char *public_metafile_uri_string;
+	gboolean not_empty;
 	
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-	/* directory must be monitored for this call to be correct */
-	g_assert (nautilus_directory_is_file_list_monitored (directory));
+	/* Directory must be monitored for this call to be correct. */
+	g_return_val_if_fail (nautilus_directory_is_file_list_monitored (directory), FALSE);
 
-	if (directory->details->metafile_uri == NULL) {
-		/* we don't have a metafile - we're not empty if we have at least one file */
-		return directory->details->files != NULL;
-	}
-
-	metafile_uri_string = gnome_vfs_uri_to_string (directory->details->metafile_uri,
-		GNOME_VFS_URI_HIDE_NONE);
+	public_metafile_uri_string = gnome_vfs_uri_to_string
+		(directory->details->public_metafile_uri,
+		 GNOME_VFS_URI_HIDE_NONE);
 
 	/* Return TRUE if the directory contains anything besides a metafile. */
-	result = g_list_find_custom (directory->details->files,
-		metafile_uri_string, any_non_metafile_item) != NULL;
+	not_empty = g_list_find_custom (directory->details->files,
+					public_metafile_uri_string,
+					any_non_metafile_item) != NULL;
 
-	g_free (metafile_uri_string);
-	return result;
+	g_free (public_metafile_uri_string);
+
+	return not_empty;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

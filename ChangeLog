@@ -1,3 +1,30 @@
+2000-08-02  Darin Adler  <darin@eazel.com>
+
+	Finished task 222 "Don't look for metafile for some URIs for
+	performance reasons."
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_metafile_read), (can_use_public_metafile),
+	(metafile_read_done), (metafile_read_failed),
+	(metafile_read_start), (nautilus_directory_request_read_metafile),
+	(metafile_write_failed), (metafile_write_callback),
+	(nautilus_metafile_write_start), (metafile_write):
+	Added logic to check if it should use a public metafile for a
+	particular directory, respecting the new preference setting.
+	Also delete the private metafile after a successful write of
+	the public metafile. Finally, do metafile writes completely
+	based on the preference, not which metafile was read.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy), (construct_private_metafile_uri),
+	(nautilus_directory_new), (any_non_metafile_item),
+	(nautilus_directory_is_not_empty): Changes to go along with the
+	metafile reading/writing changes above.
+	
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_delete):
+	Added FIXMEs about async. operations.
+
 2000-08-02  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/nautilus-window-manage-views.c: (compute_default_title):
