@@ -344,7 +344,7 @@ nautilus_zoomable_proxy_get (Bonobo_Zoomable remote_zoomable)
 	NautilusZoomableProxy *proxy;
 	Bonobo_Zoomable corba_zoomable;
 
-	g_return_val_if_fail (corba_zoomable != NULL, NULL);
+	g_return_val_if_fail (remote_zoomable != CORBA_OBJECT_NIL, NULL);
 
 	proxy = gtk_type_new (nautilus_zoomable_proxy_get_type ());
 

@@ -1,3 +1,10 @@
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
+	* components/adapter/nautilus-zoomable-proxy.c:
+	(nautilus_zoomable_proxy_get):
+	Fixed uninitialized variable warning that was
+	breaking the build (Darin told me the fix).
+
 2000-10-22  Martin Baulig  <baulig@suse.de>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
