@@ -1,5 +1,11 @@
 2004-05-22  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/file-manager/fm-directory-view.c (activate_callback):
+	Set working directory of launched processes to current view
+	directory. Fixes #110407.
+
+2004-05-22  Martin Wehner  <martin.wehner@epost.de>
+
 	* libnautilus-private/nautilus-icon-container.c (motion_notify_event):
 	Convert initial drag position to canvas coordinates. Fixes #142491.
 

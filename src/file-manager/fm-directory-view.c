@@ -6006,6 +6006,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	FMDirectoryView *view;
 	char *orig_uri, *uri, *file_uri;
 	char *executable_path, *quoted_path, *name;
+	char *old_working_dir;
 	GnomeVFSMimeActionType action_type;
 	ActivationAction action;
 	GdkScreen *screen;
@@ -6044,6 +6045,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
+		old_working_dir = change_to_view_directory (view);
+
 		/* Launch executables to activate them. */
 		action = ACTIVATION_ACTION_LAUNCH;
 		
@@ -6070,6 +6073,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			g_free (quoted_path);
 		}
 
+		chdir (old_working_dir);
+		g_free (old_working_dir);
 		g_free (executable_path);
 	}
 
