@@ -3,6 +3,7 @@ NULL =
 INCLUDES =						\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DG_LOG_DOMAIN=\"Nautilus-Emblem-Sidebar\"	\
+	-DDATADIR=\""$(datadir)"\" \
 	-I$(top_srcdir)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(EMBLEM_COMPONENT_CFLAGS)			\

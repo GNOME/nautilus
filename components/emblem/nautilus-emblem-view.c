@@ -57,6 +57,7 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 
 struct NautilusEmblemViewDetails {
 	GConfClient *client;
@@ -141,25 +142,16 @@ nautilus_emblem_view_leave_notify_cb (GtkWidget *widget,
 }
 
 static GtkWidget *
-create_emblem_widget (NautilusEmblemView *emblem_view,
-		      const char *name)
+create_emblem_widget_with_pixbuf (NautilusEmblemView *emblem_view,
+				  const char *keyword,
+				  const char *display_name,
+				  GdkPixbuf *pixbuf)
 {
 	GtkWidget *image, *event_box;
-	GdkPixbuf *pixbuf;
 	GdkPixbuf *prelight_pixbuf;
-	char *display_name, *keyword;
-	
-	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (name, NULL,
-							     NAUTILUS_ICON_SIZE_STANDARD,
-							     &display_name);
 
-	keyword = nautilus_emblem_get_keyword_from_icon_name (name);
-	if (display_name == NULL) {
-		display_name = g_strdup (keyword);
-	}
 
 	image = eel_labeled_image_new (display_name, pixbuf);
-	g_free (display_name);
 
 	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (image),
 						  STANDARD_EMBLEM_HEIGHT);
@@ -189,7 +181,7 @@ create_emblem_widget (NautilusEmblemView *emblem_view,
 	
 	g_object_set_data_full (G_OBJECT (event_box),
 				"emblem-keyword",
-				keyword, g_free);
+				g_strdup (keyword), g_free);
 	g_object_set_data_full (G_OBJECT (event_box),
 				"original-pixbuf",
 				pixbuf, g_object_unref);
@@ -200,6 +192,32 @@ create_emblem_widget (NautilusEmblemView *emblem_view,
 			   "labeled-image", image);
 
 	return event_box;
+
+}
+
+static GtkWidget *
+create_emblem_widget (NautilusEmblemView *emblem_view,
+		      const char *name)
+{
+	GtkWidget *ret;
+	char *display_name, *keyword;
+	GdkPixbuf *pixbuf;
+	
+	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (name, NULL,
+					     NAUTILUS_ICON_SIZE_STANDARD,
+					     &display_name);
+
+	keyword = nautilus_emblem_get_keyword_from_icon_name (name);
+	if (display_name == NULL) {
+		display_name = g_strdup (keyword);
+	}
+
+	ret = create_emblem_widget_with_pixbuf (emblem_view, keyword,
+						display_name, pixbuf);
+	g_free (keyword);
+	g_free (display_name);
+
+	return ret;
 }
 
 static void
@@ -527,12 +545,24 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 	GList *icons, *l;
 	GtkWidget *emblem_widget;
 	char *name;
+	char *path;
+	GdkPixbuf *erase_pixbuf;
 
 	
-	/* FIXME:  need to get the erase emblem somehow
-	emblem_widget = create_emblem_widget (emblem_view, "erase", FALSE);
-	gtk_container_add (GTK_CONTAINER (emblems_table), emblem_widget);
-	*/
+	path = nautilus_pixmap_file ("erase.png");
+	erase_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	g_free (path);
+
+	if (erase_pixbuf != NULL) {
+		emblem_widget = create_emblem_widget_with_pixbuf (emblem_view,
+							ERASE_EMBLEM_KEYWORD,
+							_("Erase"),
+							erase_pixbuf);
+		gtk_container_add (GTK_CONTAINER
+				(emblem_view->details->emblems_table),
+				emblem_widget);
+	}
+
 
 	icons = nautilus_emblem_list_availible ();
 

@@ -1,3 +1,13 @@
+2002-10-07  James Willcox  <jwillcox@gnome.org>
+
+	* components/emblem/Makefile.am:  define DATADIR
+	* components/emblem/nautilus-emblem-view.c:
+	(create_emblem_widget_with_pixbuf), (create_emblem_widget),
+	(nautilus_emblem_view_populate):  Add erase emblem
+	* configure.in:  Remove data/emblems
+	* data/Makefile.am:  ditto
+	* icons/Makefile.am:  install erase.png
+
 2002-10-05  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:

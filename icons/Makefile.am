@@ -30,6 +30,7 @@ icon_DATA =\
 	text-selection-frame.png \
 	thumbnail_frame.png \
 	zoom_body.png \
+	erase.png \
 	$(NULL)
 
 EXTRA_DIST = $(icon_DATA)

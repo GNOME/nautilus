@@ -47,7 +47,6 @@ EXTRA_DIST = $(nautilusdata_DATA) \
 	$(NULL)
 
 SUBDIRS = \
-	emblems \
 	patterns \
 	$(NULL)
 
