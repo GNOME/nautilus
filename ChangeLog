@@ -1,3 +1,9 @@
+2000-07-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (relayout):
+	Fixed bug where icons would not re-layout if the state got
+	set as if we were in the middle of an icon stretch.
+
 2000-07-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1702, Icon renaming doeas not respect user colors
@@ -7,7 +13,6 @@
 	Text color and highlight will use user defined colors.
 	The background of the renaming rect is drawn using solid
 	white instead of being transparent.
-	
 
 2000-07-18  Robey Pointer  <robey@eazel.com>
 
@@ -21,8 +26,7 @@
 
 2000-07-18  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
 	(trilobite_pexec):
 	* components/services/trilobite/sample/command-line/Makefile.am:
 	* components/services/trilobite/sample/command-line/main.c: (main):
@@ -39,32 +43,24 @@
 
 	* components/services/Makefile.am:
 	* components/services/install/nautilus-view/Makefile.am:
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form),
 	(nautilus_service_install_view_update_from_uri):
 	* components/services/nautilus-dependant-shared/.cvsignore:
 	* components/services/nautilus-dependant-shared/Makefile.am:
 	* components/services/nautilus-dependant-shared/icons/.cvsignore:
 	* components/services/nautilus-dependant-shared/icons/Makefile.am:
-	*
-	components/services/nautilus-dependant-shared/shared-service-utilit
-	ies.c: (go_to_uri):
-	*
-	components/services/nautilus-dependant-shared/shared-service-utilit
-	ies.h:
-	*
-	components/services/nautilus-dependant-shared/shared-service-widget
-	s.c: (create_image_widget), (create_services_title_widget),
+	* components/services/nautilus-dependant-shared/shared-service-utilities.c:
+	(go_to_uri):
+	* components/services/nautilus-dependant-shared/shared-service-utilities.h:
+	* components/services/nautilus-dependant-shared/shared-service-widgets.c:
+	(create_image_widget), (create_services_title_widget),
 	(create_services_header_widget):
-	*
-	components/services/nautilus-dependant-shared/shared-service-widget
-	s.h:
+	* components/services/nautilus-dependant-shared/shared-service-widgets.h:
 	* components/services/startup/nautilus-view/Makefile.am:
 	* components/services/startup/nautilus-view/icons/Makefile.am:
-	*
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_startup_form), (generate_form_logo),
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_startup_form), (generate_form_logo),
 	(nautilus_service_startup_view_initialize),
 	(nautilus_service_startup_view_load_uri):
 	* configure.in:

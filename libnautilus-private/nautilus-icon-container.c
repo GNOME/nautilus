@@ -612,18 +612,12 @@ relayout (NautilusIconContainer *container)
 		return;
 	}
 
-	/* An icon currently being stretched must be left in place.
-	 * That's "drag_icon". This doesn't come up for cases where
-	 * we are doing other kinds of drags, but if it did, the
-	 * same logic would probably apply.
-	 */
-
 	/* Don't do any re-laying-out during stretching. Later we
 	 * might add smart logic that does this and leaves room for
 	 * the stretched icon, but if we do it we want it to be fast
 	 * and only re-lay-out when it's really needed.
 	 */
-	if (container->details->drag_icon != NULL) {
+	if (container->details->drag_state == DRAG_STATE_STRETCH) {
 		return;
 	}
 
