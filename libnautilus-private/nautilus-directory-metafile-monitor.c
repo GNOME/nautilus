@@ -47,7 +47,7 @@ static void corba_metafile_changed (PortableServer_Servant       servant,
 static void corba_metafile_ready   (PortableServer_Servant       servant,
 				    CORBA_Environment           *ev);
 
-NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafileMonitor, Nautilus_MetafileMonitor, BONOBO_X_OBJECT_TYPE, nautilus_metafile_monitor)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafileMonitor, nautilus_metafile_monitor, BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass)

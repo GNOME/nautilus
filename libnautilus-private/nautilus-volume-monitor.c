@@ -46,7 +46,6 @@
 #include <libxml/tree.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -194,8 +193,8 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 
-static void            nautilus_volume_monitor_initialize       (NautilusVolumeMonitor      *desktop_mounter);
-static void            nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass);
+static void            nautilus_volume_monitor_init       (NautilusVolumeMonitor      *desktop_mounter);
+static void            nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass);
 static void            nautilus_volume_monitor_destroy          (GtkObject                  *object);
 static char *          get_iso9660_volume_name                  (NautilusVolume             *volume,
 								 int                         volume_fd);
@@ -251,7 +250,7 @@ load_file_system_table (void)
 		return table;
 	}
 
-	for (node = doc->xmlRootNode->xmlChildrenNode; node != NULL; node = node->next) {
+	for (node = doc->children->children; node != NULL; node = node->next) {
 		name = xmlGetProp (node, "name");
 
 		if (name != NULL) {
@@ -280,7 +279,7 @@ load_file_system_table (void)
 }
 
 static void
-nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
+nautilus_volume_monitor_init (NautilusVolumeMonitor *monitor)
 {
 	/* Set up details */
 	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
@@ -291,7 +290,7 @@ nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
 }
 
 static void
-nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
+nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 {
 	GtkObjectClass		*object_class;
 
@@ -300,42 +299,44 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 	object_class->destroy = nautilus_volume_monitor_destroy;
 
 	signals[VOLUME_MOUNTED] 
-		= gtk_signal_new ("volume_mounted",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+		= g_signal_new ("volume_mounted",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_mounted),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_STARTED] 
-		= gtk_signal_new ("volume_unmount_started",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+		= g_signal_new ("volume_unmount_started",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_started),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_FAILED] 
-		= gtk_signal_new ("volume_unmount_failed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+		= g_signal_new ("volume_unmount_failed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_failed),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNTED] 
-		= gtk_signal_new ("volume_unmounted",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
+		= g_signal_new ("volume_unmounted",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmounted),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	/* Check environment a bit. */
 	if (g_file_exists ("/vol/dev")) {

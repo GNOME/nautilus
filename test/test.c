@@ -117,7 +117,7 @@ test_pixbuf_new_named (const char *name, float scale)
 		path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, name);
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (path);
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 
 	g_free (path);
 

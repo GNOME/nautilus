@@ -46,7 +46,7 @@ static gboolean    string_not_in_list                            (const char    
 								  GList                    *list);
 static char       *mime_type_get_supertype                       (const char               *mime_type);
 static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
-static gboolean    server_has_content_requirements               (OAF_ServerInfo           *server);
+static gboolean    server_has_content_requirements               (Bonobo_ServerInfo           *server);
 static gboolean   application_supports_uri_scheme                (gpointer                 data,
 								  gpointer                 uri_scheme);
 static GList      *nautilus_do_component_query                   (const char               *mime_type,
@@ -297,10 +297,10 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 			prev = sort_conditions[1];
 			
 			if (p->next != NULL) {
-				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+				sort_conditions[1] = g_strconcat (prev, ((Bonobo_ServerInfo *) (p->data))->iid, 
 								  "','", NULL);
 			} else {
-				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
+				sort_conditions[1] = g_strconcat (prev, ((Bonobo_ServerInfo *) (p->data))->iid, 
 								  "'])", NULL);
 			}
 			g_free (prev);
@@ -334,18 +334,18 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 	return sort_conditions;
 }	
 
-static OAF_ServerInfo *
+static Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 						       gboolean     *user_chosen)
 {
 	GList *info_list;
-	OAF_ServerInfo *mime_default; 
+	Bonobo_ServerInfo *mime_default; 
 	char *default_component_string;
 	char *mime_type;
 	char *uri_scheme;
 	GList *item_mime_types;
 	GList *explicit_iids;
-	OAF_ServerInfo *server;
+	Bonobo_ServerInfo *server;
 	char **sort_conditions;
 	char *extra_requirements;
 	gboolean used_user_chosen_info;
@@ -408,7 +408,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	}
 
 	if (info_list != NULL) {
-		server = OAF_ServerInfo_duplicate (info_list->data);
+		server = Bonobo_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
 
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
@@ -433,7 +433,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 }
 
 
-OAF_ServerInfo *
+Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file (NautilusFile      *file)
 {
 	return nautilus_mime_get_default_component_for_file_internal (file, NULL);
@@ -442,7 +442,7 @@ nautilus_mime_get_default_component_for_file (NautilusFile      *file)
 gboolean
 nautilus_mime_is_default_component_for_file_user_chosen (NautilusFile      *file)
 {
-	OAF_ServerInfo *component;
+	Bonobo_ServerInfo *component;
 	gboolean user_chosen;
 
 	component = nautilus_mime_get_default_component_for_file_internal (file, &user_chosen);
@@ -557,7 +557,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	GList *metadata_component_add_ids;
 	GList *metadata_component_remove_ids;
 	GList *p;
-	OAF_ServerInfo *component;
+	Bonobo_ServerInfo *component;
 	GList *explicit_iids;
 	char *extra_sort_conditions[2];
 	char *extra_requirements;
@@ -589,7 +589,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	iids = NULL;
 
 	for (p = servers; p != NULL; p = p->next) {
-		component = (OAF_ServerInfo *) p->data;
+		component = (Bonobo_ServerInfo *) p->data;
 
 		iids = g_list_prepend (iids, component->iid);
 	}
@@ -751,7 +751,7 @@ nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
 	needs_full_attributes = FALSE;
 
 	for (p = info_list; p != NULL; p = p->next) {
-		needs_full_attributes |= server_has_content_requirements ((OAF_ServerInfo *) (p->data));
+		needs_full_attributes |= server_has_content_requirements ((Bonobo_ServerInfo *) (p->data));
 	}
 	
 	gnome_vfs_mime_component_list_free (info_list);
@@ -968,7 +968,7 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 	
 	normal_short_list_ids = NULL;
 	for (p = normal_short_list; p != NULL; p = p->next) {
-		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((OAF_ServerInfo *) p->data)->iid);
+		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((Bonobo_ServerInfo *) p->data)->iid);
 	}
 
 	/* compute delta */
@@ -1241,7 +1241,7 @@ get_explicit_content_view_iids_from_metafile (NautilusFile *file)
 }
 
 static char *
-make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
+make_bonobo_activation_query_for_explicit_content_view_iids (GList *view_iids)
 {
         GList *p;
         char  *iid;
@@ -1278,7 +1278,7 @@ make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
 }
 
 static char *
-make_oaf_query_with_known_mime_type (const char *mime_type, 
+make_bonobo_activation_query_with_known_mime_type (const char *mime_type, 
 				     const char *uri_scheme, 
 				     GList      *explicit_iids, 
 				     const char *extra_requirements)
@@ -1289,7 +1289,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type,
 
         mime_supertype = mime_type_get_supertype (mime_type);
 
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -1380,14 +1380,14 @@ make_oaf_query_with_known_mime_type (const char *mime_type,
 }
 
 static char *
-make_oaf_query_with_uri_scheme_only (const char *uri_scheme, 
+make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme, 
 				     GList      *explicit_iids, 
 				     const char *extra_requirements)
 {
         char *result;
         char *explicit_iid_query;
         
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -1495,11 +1495,11 @@ mime_type_hash_table_destroy (GHashTable *table)
 
 
 static gboolean
-server_has_content_requirements (OAF_ServerInfo *server)
+server_has_content_requirements (Bonobo_ServerInfo *server)
 {
         OAF_Property *prop;
 	
-        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        prop = bonobo_activation_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
         if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
                 return FALSE;
@@ -1509,7 +1509,7 @@ server_has_content_requirements (OAF_ServerInfo *server)
 }
 
 static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, 
+server_matches_content_requirements (Bonobo_ServerInfo *server, 
 				     GHashTable     *type_table, 
 				     GList          *explicit_iids)
 {
@@ -1525,7 +1525,7 @@ server_matches_content_requirements (OAF_ServerInfo *server,
         if (!server_has_content_requirements (server)) {
                 return TRUE;
         } else {
-        	prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        	prop = bonobo_activation_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
                 types = prop->v._u.value_stringv;
 
@@ -1560,42 +1560,42 @@ nautilus_do_component_query (const char        *mime_type,
 			     char             **extra_sort_criteria,
 			     char              *extra_requirements)
 { 
-	OAF_ServerInfoList *oaf_result;
+	Bonobo_ServerInfoList *bonobo_activation_result;
 	char *query;
 	GList *retval;
 	char **all_sort_criteria;
 	CORBA_Environment ev;
 
-        oaf_result = NULL;
+        bonobo_activation_result = NULL;
         query = NULL;
 
         if (is_known_mime_type (mime_type)) {
-                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
         } else {
-                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
+                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
         }
 
 	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
 
 	CORBA_exception_init (&ev);
 
-	oaf_result = oaf_query (query, all_sort_criteria, &ev);
+	bonobo_activation_result = bonobo_activation_query (query, all_sort_criteria, &ev);
 	
 	g_free (all_sort_criteria);
 	g_free (query);
 
 	retval = NULL;
 
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+        if (ev._major == CORBA_NO_EXCEPTION && bonobo_activation_result != NULL && bonobo_activation_result->_length > 0) {
                 GHashTable *content_types;
                 guint i;
            
                 content_types = mime_type_list_to_hash_table (item_mime_types);
                 
-                for (i = 0; i < oaf_result->_length; i++) {
-                        OAF_ServerInfo *server;
+                for (i = 0; i < bonobo_activation_result->_length; i++) {
+                        Bonobo_ServerInfo *server;
 
-                        server = &oaf_result->_buffer[i];
+                        server = &bonobo_activation_result->_buffer[i];
 
                         if (ignore_content_mime_types || 
 			    server_matches_content_requirements (server, content_types, explicit_iids)) {
@@ -1605,7 +1605,7 @@ nautilus_do_component_query (const char        *mime_type,
                                 if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
                                 	retval = g_list_prepend
                                         	(retval, 
-						 OAF_ServerInfo_duplicate (server));
+						 Bonobo_ServerInfo_duplicate (server));
                         	}
                         }
                 }
@@ -1613,7 +1613,7 @@ nautilus_do_component_query (const char        *mime_type,
                 mime_type_hash_table_destroy (content_types);
         }
 
-	CORBA_free (oaf_result);
+	CORBA_free (bonobo_activation_result);
 
 	CORBA_exception_free (&ev);
 	

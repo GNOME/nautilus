@@ -102,8 +102,7 @@ transfer_info_destroy (TransferInfo *transfer_info)
 	}
 	
 	if (transfer_info->debuting_uris != NULL) {
-		eel_g_hash_table_destroy_deep_custom
-			(transfer_info->debuting_uris, (GFunc) g_free, NULL, NULL, NULL);
+		g_hash_table_destroy (transfer_info->debuting_uris);
 	}
 	
 	g_free (transfer_info);
@@ -196,14 +195,8 @@ icon_position_iterator_get_next (IconPositionIterator *position_iterator,
 	return TRUE;
 }
 
-/* Hack to get the GdkFont used by a GtkLabel in an error dialog.
- * We need to do this because the string truncation needs to be
- * done before a dialog is instantiated.
- * 
- * This is probably not super fast but it is not a problem in the
- * context we are using it, truncating a string while displaying an
- * error dialog.
- */
+#if GNOME2_CONVERSION_COMPLETE
+
 static GdkFont *
 get_label_font (void)
 {
@@ -225,12 +218,15 @@ get_label_font (void)
 	return font;
 }
 
+#endif
+
 static char *
 ellipsize_string_for_dialog (const char *str)
 {
+	char *result;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	GdkFont *font;
 	int maximum_width;
-	char *result;
 
 	/* get a nice length to ellipsize to, based on the font */
 	font = get_label_font ();
@@ -238,6 +234,9 @@ ellipsize_string_for_dialog (const char *str)
 
 	result = eel_string_ellipsize (str, font, maximum_width, EEL_ELLIPSIZE_MIDDLE);
 	gdk_font_unref (font);
+#else
+	result = g_strdup (str);
+#endif
 
 	return result;
 }
@@ -1619,9 +1618,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 							    progress_info->target_name);
 				}
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris,
-							     g_strdup (progress_info->target_name),
-							     GINT_TO_POINTER (TRUE));
+					g_hash_table_replace (debuting_uris,
+							      g_strdup (progress_info->target_name),
+							      GINT_TO_POINTER (TRUE));
 				}
 			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
@@ -1652,9 +1651,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				}
 				
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris,
-							     g_strdup (progress_info->target_name),
-							     GINT_TO_POINTER (really_moved));
+					g_hash_table_replace (debuting_uris,
+							      g_strdup (progress_info->target_name),
+							      GINT_TO_POINTER (really_moved));
 				}
 			}
 			if (really_moved) {
@@ -2036,7 +2035,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	transfer_info->done_callback = done_callback;
 	transfer_info->done_callback_data = done_callback_data;
-	transfer_info->debuting_uris = g_hash_table_new (g_str_hash, g_str_equal);
+	transfer_info->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	sync_transfer_info = g_new (SyncTransferInfo, 1);
 	sync_transfer_info->iterator = icon_position_iterator;
@@ -2046,6 +2045,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+				      GNOME_VFS_PRIORITY_DEFAULT,
 		      		      update_transfer_callback, transfer_info,
 		      		      sync_transfer_callback, sync_transfer_info);
 	}
@@ -2178,6 +2178,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+			      GNOME_VFS_PRIORITY_DEFAULT,
 	      		      new_folder_transfer_callback, state,
 	      		      sync_transfer_callback, NULL);
 
@@ -2220,6 +2221,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+			      GNOME_VFS_PRIORITY_DEFAULT,
 	      		      update_transfer_callback, transfer_info,
 	      		      sync_transfer_callback, NULL);
 
@@ -2254,6 +2256,7 @@ do_empty_trash (GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+				      GNOME_VFS_PRIORITY_DEFAULT,
 		      		      update_transfer_callback, transfer_info,
 		      		      sync_transfer_callback, NULL);
 	}
@@ -2264,7 +2267,7 @@ do_empty_trash (GtkWidget *parent_view)
 static gboolean
 confirm_empty_trash (GtkWidget *parent_view)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	GtkWindow *parent_window;
 
 	/* Just Say Yes if the preference says not to confirm. */
@@ -2282,9 +2285,9 @@ confirm_empty_trash (GtkWidget *parent_view)
 		GNOME_STOCK_BUTTON_CANCEL,
 		parent_window);
 
-	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 void 

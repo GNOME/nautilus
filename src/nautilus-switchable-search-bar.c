@@ -34,7 +34,6 @@
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -46,8 +45,8 @@ static void		     real_activate				     (NautilusNavigationBar	       *bar);
 static void                  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
 									      const char                       *location);
 static char *                nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
-static void                  nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *class);
-static void                  nautilus_switchable_search_bar_initialize       (NautilusSwitchableSearchBar      *bar);
+static void                  nautilus_switchable_search_bar_class_init (NautilusSwitchableSearchBarClass *class);
+static void                  nautilus_switchable_search_bar_init       (NautilusSwitchableSearchBar      *bar);
 static void  		     nautilus_switchable_search_bar_destroy          (GtkObject                	       *object);
 
 static NautilusSearchBarMode other_search_mode                               (NautilusSearchBarMode            mode);
@@ -60,7 +59,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
-nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *klass)
+nautilus_switchable_search_bar_class_init (NautilusSwitchableSearchBarClass *klass)
 {
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_switchable_search_bar_get_location;
@@ -90,7 +89,7 @@ search_bar_preference_changed_callback (gpointer user_data)
 }
 
 static void
-nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
+nautilus_switchable_search_bar_init (NautilusSwitchableSearchBar *bar)
 {
 
 }	

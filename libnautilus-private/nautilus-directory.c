@@ -64,9 +64,9 @@ static guint signals[LAST_SIGNAL];
 static GHashTable *directories;
 
 static void               nautilus_directory_destroy          (GtkObject              *object);
-static void               nautilus_directory_initialize       (gpointer                object,
+static void               nautilus_directory_init       (gpointer                object,
 							       gpointer                klass);
-static void               nautilus_directory_initialize_class (NautilusDirectoryClass *klass);
+static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
 static NautilusDirectory *nautilus_directory_new              (const char             *uri);
 static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
 static void               set_directory_uri                   (NautilusDirectory      *directory,
@@ -77,7 +77,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
 				   GTK_TYPE_OBJECT)
 
 static void
-nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
+nautilus_directory_class_init (NautilusDirectoryClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -86,41 +86,43 @@ nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
 	object_class->destroy = nautilus_directory_destroy;
 
 	signals[FILES_ADDED] =
-		gtk_signal_new ("files_added",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("files_added",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_added),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[FILES_CHANGED] =
-		gtk_signal_new ("files_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_changed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("files_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[DONE_LOADING] =
-		gtk_signal_new ("done_loading",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, done_loading),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("done_loading",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, done_loading),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[LOAD_ERROR] =
-		gtk_signal_new ("load_error",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, load_error),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("load_error",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
+		              NULL, NULL,
+		              gtk_marshal_NONE__INT,
+		              G_TYPE_NONE, 1, GTK_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 }
 
 static void
-nautilus_directory_initialize (gpointer object, gpointer klass)
+nautilus_directory_init (gpointer object, gpointer klass)
 {
 	NautilusDirectory *directory;
 
@@ -1562,7 +1564,7 @@ nautilus_directory_list_ref (GList *list)
 void
 nautilus_directory_list_unref (GList *list)
 {
-	eel_g_list_safe_for_each (list, (GFunc) nautilus_directory_unref, NULL);
+	g_list_foreach (list, (GFunc) nautilus_directory_unref, NULL);
 }
 
 /**

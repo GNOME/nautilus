@@ -43,8 +43,8 @@ struct NautilusAdapterFileLoadStrategyDetails {
 };
 
 
-static void nautilus_adapter_file_load_strategy_initialize_class (NautilusAdapterFileLoadStrategyClass *klass);
-static void nautilus_adapter_file_load_strategy_initialize       (NautilusAdapterFileLoadStrategy      *strategy);
+static void nautilus_adapter_file_load_strategy_class_init (NautilusAdapterFileLoadStrategyClass *klass);
+static void nautilus_adapter_file_load_strategy_init       (NautilusAdapterFileLoadStrategy      *strategy);
 static void nautilus_adapter_file_load_strategy_destroy          (GtkObject                              *object);
 
 static void nautilus_adapter_file_load_strategy_load_location (NautilusAdapterLoadStrategy *strategy,
@@ -57,7 +57,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFileLoadStrategy, nautilus_adapter_
 
 
 static void
-nautilus_adapter_file_load_strategy_initialize_class (NautilusAdapterFileLoadStrategyClass *klass)
+nautilus_adapter_file_load_strategy_class_init (NautilusAdapterFileLoadStrategyClass *klass)
 {
 	GtkObjectClass                   *object_class;
 	NautilusAdapterLoadStrategyClass *adapter_load_strategy_class;
@@ -73,7 +73,7 @@ nautilus_adapter_file_load_strategy_initialize_class (NautilusAdapterFileLoadStr
 }
 
 static void
-nautilus_adapter_file_load_strategy_initialize (NautilusAdapterFileLoadStrategy *strategy)
+nautilus_adapter_file_load_strategy_init (NautilusAdapterFileLoadStrategy *strategy)
 {
 	strategy->details = g_new0 (NautilusAdapterFileLoadStrategyDetails, 1);
 }

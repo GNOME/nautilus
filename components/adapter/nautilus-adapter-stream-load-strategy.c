@@ -42,8 +42,8 @@ struct NautilusAdapterStreamLoadStrategyDetails {
 };
 
 
-static void nautilus_adapter_stream_load_strategy_initialize_class (NautilusAdapterStreamLoadStrategyClass *klass);
-static void nautilus_adapter_stream_load_strategy_initialize       (NautilusAdapterStreamLoadStrategy      *strategy);
+static void nautilus_adapter_stream_load_strategy_class_init (NautilusAdapterStreamLoadStrategyClass *klass);
+static void nautilus_adapter_stream_load_strategy_init       (NautilusAdapterStreamLoadStrategy      *strategy);
 static void nautilus_adapter_stream_load_strategy_destroy          (GtkObject                              *object);
 
 static void nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy *strategy,
@@ -56,7 +56,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterStreamLoadStrategy, nautilus_adapte
 
 
 static void
-nautilus_adapter_stream_load_strategy_initialize_class (NautilusAdapterStreamLoadStrategyClass *klass)
+nautilus_adapter_stream_load_strategy_class_init (NautilusAdapterStreamLoadStrategyClass *klass)
 {
 	GtkObjectClass                   *object_class;
 	NautilusAdapterLoadStrategyClass *adapter_load_strategy_class;
@@ -72,7 +72,7 @@ nautilus_adapter_stream_load_strategy_initialize_class (NautilusAdapterStreamLoa
 }
 
 static void
-nautilus_adapter_stream_load_strategy_initialize (NautilusAdapterStreamLoadStrategy *strategy)
+nautilus_adapter_stream_load_strategy_init (NautilusAdapterStreamLoadStrategy *strategy)
 {
 	strategy->details = g_new0 (NautilusAdapterStreamLoadStrategyDetails, 1);
 }

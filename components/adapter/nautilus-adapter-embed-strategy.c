@@ -48,8 +48,8 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass);
-static void nautilus_adapter_embed_strategy_initialize       (NautilusAdapterEmbedStrategy      *strategy);
+static void nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *klass);
+static void nautilus_adapter_embed_strategy_init       (NautilusAdapterEmbedStrategy      *strategy);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
 				   nautilus_adapter_embed_strategy,
@@ -59,42 +59,43 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
 
 static void
-nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass)
+nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *klass)
 {
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass *) klass;
 
 	signals[ACTIVATE] =
-		gtk_signal_new ("activate",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_POINTER, 0);
+		g_signal_new ("activate",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              GTK_TYPE_POINTER, 0);
 	signals[DEACTIVATE] =
-		gtk_signal_new ("deactivate",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("deactivate",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[OPEN_LOCATION] =
-		gtk_signal_new ("open_location",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, open_location),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_STRING, 0);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("open_location",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, open_location),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_STRING, 0);
 	
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
 }
 
 static void
-nautilus_adapter_embed_strategy_initialize (NautilusAdapterEmbedStrategy *strategy)
+nautilus_adapter_embed_strategy_init (NautilusAdapterEmbedStrategy *strategy)
 {
 }
 

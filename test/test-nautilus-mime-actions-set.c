@@ -110,8 +110,8 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	GList *attributes;
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	bonobo_activation_init (argc, argv);
 
 	g_thread_init (NULL);
 	gnome_vfs_init ();

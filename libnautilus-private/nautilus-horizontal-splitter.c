@@ -44,8 +44,8 @@ struct NautilusHorizontalSplitterDetails {
 #define SPLITTER_CLICK_TIMEOUT	400
 
 /* NautilusHorizontalSplitterClass methods */
-static void     nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
-static void     nautilus_horizontal_splitter_initialize       (NautilusHorizontalSplitter      *horizontal_splitter);
+static void     nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *horizontal_splitter_class);
+static void     nautilus_horizontal_splitter_init       (NautilusHorizontalSplitter      *horizontal_splitter);
 static gboolean nautilus_horizontal_splitter_button_press     (GtkWidget                       *widget,
 							       GdkEventButton                  *event);
 static gboolean nautilus_horizontal_splitter_button_release   (GtkWidget                       *widget,
@@ -66,7 +66,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
 
 /* GtkObjectClass methods */
 static void
-nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class)
+nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *horizontal_splitter_class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -86,7 +86,7 @@ nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *
 }
 
 static void
-nautilus_horizontal_splitter_initialize (NautilusHorizontalSplitter *horizontal_splitter)
+nautilus_horizontal_splitter_init (NautilusHorizontalSplitter *horizontal_splitter)
 {
 	horizontal_splitter->details = g_new0 (NautilusHorizontalSplitterDetails, 1);
 	e_paned_set_handle_size (E_PANED (horizontal_splitter), BAR_WIDTH);

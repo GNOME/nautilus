@@ -28,7 +28,7 @@
 #include "nautilus-content-loser.h"
 
 #include <gnome.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
 
 	nautilus_content_loser_maybe_fail ("pre-init");
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
         gnome_init ("nautilus-content-loser", VERSION, 
 		    argc, argv); 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
 	nautilus_content_loser_maybe_fail ("post-init");
 
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69", getenv ("DISPLAY"));
+        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    loser_make_object,
 						    NULL);

@@ -49,8 +49,8 @@ struct NautilusAdapterEmbeddableEmbedStrategyDetails {
 };
 
 
-static void nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbeddableEmbedStrategyClass *klass);
-static void nautilus_adapter_embeddable_embed_strategy_initialize       (NautilusAdapterEmbeddableEmbedStrategy      *strategy);
+static void nautilus_adapter_embeddable_embed_strategy_class_init (NautilusAdapterEmbeddableEmbedStrategyClass *klass);
+static void nautilus_adapter_embeddable_embed_strategy_init       (NautilusAdapterEmbeddableEmbedStrategy      *strategy);
 static void nautilus_adapter_embeddable_embed_strategy_destroy          (GtkObject                              *object);
 static void nautilus_adapter_embeddable_embed_strategy_activate         (NautilusAdapterEmbedStrategy                *object,
 									 gpointer                                     ui_container);
@@ -65,7 +65,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_a
 
 
 static void
-nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbeddableEmbedStrategyClass *klass)
+nautilus_adapter_embeddable_embed_strategy_class_init (NautilusAdapterEmbeddableEmbedStrategyClass *klass)
 {
 	GtkObjectClass                    *object_class;
 	NautilusAdapterEmbedStrategyClass *adapter_embed_strategy_class;
@@ -83,7 +83,7 @@ nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbe
 }
 
 static void
-nautilus_adapter_embeddable_embed_strategy_initialize (NautilusAdapterEmbeddableEmbedStrategy *strategy)
+nautilus_adapter_embeddable_embed_strategy_init (NautilusAdapterEmbeddableEmbedStrategy *strategy)
 {
 	strategy->details = g_new0 (NautilusAdapterEmbeddableEmbedStrategyDetails, 1);
 }

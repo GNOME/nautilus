@@ -44,10 +44,8 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-mime.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-entry.h>
@@ -99,8 +97,8 @@ static GtkTargetEntry drop_types [] = {
 static char *nautilus_location_bar_get_location     (NautilusNavigationBar    *navigation_bar); 
 static void  nautilus_location_bar_set_location     (NautilusNavigationBar    *navigation_bar,
 						     const char               *location);
-static void  nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
-static void  nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
+static void  nautilus_location_bar_class_init (NautilusLocationBarClass *class);
+static void  nautilus_location_bar_init       (NautilusLocationBar      *bar);
 static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
@@ -599,7 +597,7 @@ destroy (GtkObject *object)
 }
 
 static void
-nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
+nautilus_location_bar_class_init (NautilusLocationBarClass *class)
 {
 	GtkObjectClass *object_class;
 	NautilusNavigationBarClass *navigation_bar_class;
@@ -615,7 +613,7 @@ nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
 }
 
 static void
-nautilus_location_bar_initialize (NautilusLocationBar *bar)
+nautilus_location_bar_init (NautilusLocationBar *bar)
 {
 	GtkWidget *label;
 	GtkWidget *entry;
@@ -662,7 +660,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
-			     drag_types, EEL_N_ELEMENTS (drag_types),
+			     drag_types, G_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
 	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
 			     GTK_SIGNAL_FUNC (drag_data_get_callback),
@@ -671,7 +669,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	/* Drag dest. */
 	gtk_drag_dest_set  (GTK_WIDGET (bar),
 			    GTK_DEST_DEFAULT_ALL,
-			    drop_types, EEL_N_ELEMENTS (drop_types),
+			    drop_types, G_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	gtk_signal_connect (GTK_OBJECT (bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_callback),

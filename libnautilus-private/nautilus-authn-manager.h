@@ -25,6 +25,6 @@
 #ifndef NAUTILUS_AUTHN_MANAGER_H
 #define NAUTILUS_AUTHN_MANAGER_H
 
-void 	nautilus_authentication_manager_initialize (void);
+void 	nautilus_authentication_manager_init (void);
 
 #endif /* NAUTILUS_AUTHN_MANAGER_H */

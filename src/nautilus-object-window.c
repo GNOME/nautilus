@@ -116,8 +116,8 @@ static GList *history_list = NULL;
 static GdkPixmap *mini_icon_pixmap;
 static GdkBitmap *mini_icon_mask;
 
-static void nautilus_window_initialize_class          (NautilusWindowClass *klass);
-static void nautilus_window_initialize                (NautilusWindow      *window);
+static void nautilus_window_class_init          (NautilusWindowClass *klass);
+static void nautilus_window_init                (NautilusWindow      *window);
 static void nautilus_window_destroy                   (GtkObject           *object);
 static void nautilus_window_set_arg                   (GtkObject           *object,
 						       GtkArg              *arg,
@@ -149,7 +149,7 @@ unref_mini_icon (void)
 }
 
 static void
-nautilus_window_initialize_class (NautilusWindowClass *klass)
+nautilus_window_class_init (NautilusWindowClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -183,7 +183,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 
         filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
         if (filename != NULL) {
-                pixbuf = gdk_pixbuf_new_from_file (filename);
+                pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
                 if (pixbuf != NULL) {
                         gdk_pixbuf_render_pixmap_and_mask
 				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
@@ -213,7 +213,7 @@ add_sidebar_panel_callback (const char *name,
 }
 
 static void
-nautilus_window_initialize (NautilusWindow *window)
+nautilus_window_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 

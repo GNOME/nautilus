@@ -56,6 +56,7 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_slot;
+	POA_Nautilus_Undo_Transaction__epv epv;
 } NautilusUndoTransactionClass;
 
 GtkType                  nautilus_undo_transaction_get_type            (void);

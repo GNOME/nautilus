@@ -35,7 +35,6 @@
 #include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
 struct NautilusTrashDirectoryDetails {
@@ -50,9 +49,9 @@ typedef struct {
 	NautilusDirectory *real_directory;
 } TrashVolume;
 
-static void     nautilus_trash_directory_initialize       (gpointer                object,
+static void     nautilus_trash_directory_init       (gpointer                object,
 							   gpointer                klass);
-static void     nautilus_trash_directory_initialize_class (gpointer                klass);
+static void     nautilus_trash_directory_class_init (gpointer                klass);
 static void	add_volume				  (NautilusTrashDirectory *trash,
 							   NautilusVolume	  *volume);
 
@@ -305,7 +304,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 }
 
 static void
-nautilus_trash_directory_initialize (gpointer object, gpointer klass)
+nautilus_trash_directory_init (gpointer object, gpointer klass)
 {
 	NautilusTrashDirectory *trash;
 	NautilusVolumeMonitor *volume_monitor;
@@ -326,7 +325,7 @@ nautilus_trash_directory_initialize (gpointer object, gpointer klass)
 }
 
 /* Finish initializing a new NautilusTrashDirectory. We have to do the
- * remaining initialization here rather than in nautilus_trash_directory_initialize
+ * remaining initialization here rather than in nautilus_trash_directory_init
  * because of a cyclic dependency between the NautilusTrashDirectory and
  * NautilusTrashMonitor instances.
  */
@@ -389,7 +388,7 @@ trash_get_name_for_self_as_new_file (NautilusDirectory *directory)
 }
 
 static void
-nautilus_trash_directory_initialize_class (gpointer klass)
+nautilus_trash_directory_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;

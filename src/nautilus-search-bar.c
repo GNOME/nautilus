@@ -36,17 +36,17 @@
  * Perhaps we can remove it.
  */
 
-static void nautilus_search_bar_initialize_class (NautilusSearchBarClass *class);
-static void nautilus_search_bar_initialize       (NautilusSearchBar      *bar);
+static void nautilus_search_bar_class_init (NautilusSearchBarClass *class);
+static void nautilus_search_bar_init       (NautilusSearchBar      *bar);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static void
-nautilus_search_bar_initialize_class (NautilusSearchBarClass *klass)
+nautilus_search_bar_class_init (NautilusSearchBarClass *klass)
 {
 }
 
 static void
-nautilus_search_bar_initialize (NautilusSearchBar *bar)
+nautilus_search_bar_init (NautilusSearchBar *bar)
 {
 }

@@ -1,8 +1,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnome/gnome-init.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
@@ -38,7 +37,7 @@ main (int argc, char * argv[])
 	
 	gnome_init ("foo", "bar", argc, argv);
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);

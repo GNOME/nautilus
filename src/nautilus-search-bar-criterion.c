@@ -40,7 +40,6 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dateedit.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -174,8 +173,8 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 
 
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
-static void                         nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass);
-static void                         nautilus_search_bar_criterion_initialize       (NautilusSearchBarCriterion *criterion);
+static void                         nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass);
+static void                         nautilus_search_bar_criterion_init       (NautilusSearchBarCriterion *criterion);
 static gboolean                     modified_relation_should_show_value            (int relation_index);
 static void                         hide_date_widget                               (GtkObject *object,
 										    gpointer data);
@@ -210,22 +209,21 @@ static void                                nautilus_search_bar_criterion_destroy
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
 
      static void
-nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass)
+nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	object_class->destroy = nautilus_search_bar_criterion_destroy;
 	
-	signals[CRITERION_TYPE_CHANGED] = gtk_signal_new
+	signals[CRITERION_TYPE_CHANGED] = g_signal_new
 		("criterion_type_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
 		 0,
+		 NULL, NULL,
 		 gtk_marshal_NONE__NONE,
-		 GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		 G_TYPE_NONE, 0);
 				
 }
 
@@ -257,7 +255,7 @@ nautilus_search_bar_criterion_new (void)
 
 
 static void
-nautilus_search_bar_criterion_initialize (NautilusSearchBarCriterion *criterion)
+nautilus_search_bar_criterion_init (NautilusSearchBarCriterion *criterion)
 {
 	criterion->details = g_new0 (NautilusSearchBarCriterionDetails, 1);
 }

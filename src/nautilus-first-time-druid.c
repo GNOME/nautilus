@@ -365,7 +365,7 @@ create_named_pixbuf (const char *name)
 		return NULL;
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (path);
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 	g_free (path);
 
 	return pixbuf;

@@ -31,8 +31,8 @@
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-canvas-util.h>
-#include <libgnomeui/gnome-icon-text.h>
+#include <libgnomecanvas/gnome-canvas-util.h>
+#include <libgnomecanvas/gnome-icon-text.h>
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
@@ -156,8 +156,8 @@ static  guint32 highlight_text_info_color  = EEL_RGBA_COLOR_PACK (0xCC, 0xCC, 0x
 static int click_policy_auto_value;
 
 /* GtkObject */
-static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass   *class);
-static void     nautilus_icon_canvas_item_initialize       (NautilusIconCanvasItem        *item);
+static void     nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass   *class);
+static void     nautilus_icon_canvas_item_init       (NautilusIconCanvasItem        *item);
 static void     nautilus_icon_canvas_item_destroy          (GtkObject                     *object);
 static int      nautilus_icon_canvas_item_event            (GnomeCanvasItem               *item,
 							    GdkEvent                      *event);
@@ -235,7 +235,7 @@ free_layout_cache (void)
 
 /* Class initialization function for the icon canvas item. */
 static void
-nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
+nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 {
 	GtkObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
@@ -249,9 +249,9 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
 
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::editable_text",
-				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_EDITABLE_TEXT);
+				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_EDITABLE_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::additional_text",
-				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_ADDITIONAL_TEXT);
+				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_ADDITIONAL_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
 				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
@@ -270,15 +270,14 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	object_class->get_arg = nautilus_icon_canvas_item_get_arg;
 
 	signals[BOUNDS_CHANGED]
-		= gtk_signal_new ("bounds_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconCanvasItemClass,
+		= g_signal_new ("bounds_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconCanvasItemClass,
 						     bounds_changed),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 
 	item_class->update = nautilus_icon_canvas_item_update;
 	item_class->draw = nautilus_icon_canvas_item_draw;
@@ -293,7 +292,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 
 /* Object initialization function for the icon item. */
 static void
-nautilus_icon_canvas_item_initialize (NautilusIconCanvasItem *icon_item)
+nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 {
 	NautilusIconCanvasItemDetails *details;
 
@@ -981,7 +980,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	gc = gdk_gc_new (drawable);
 
 	knob_filename = nautilus_theme_get_image_path ("knob.png");
-	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 	
@@ -1084,7 +1083,7 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	canvas_item = GNOME_CANVAS_ITEM (item);
 	
 	knob_filename = nautilus_theme_get_image_path ("knob.png");
-	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 		
@@ -1292,7 +1291,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 			/* Load the audio symbol. */
 			audio_filename = nautilus_pixmap_file ("audio.png");
 			if (audio_filename != NULL) {
-				audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename);
+				audio_pixbuf = gdk_pixbuf_new_from_file (audio_filename, NULL);
 			} else {
 				audio_pixbuf = NULL;
 			}
@@ -2104,7 +2103,7 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 	}
 
 	knob_filename = nautilus_theme_get_image_path ("knob.png");
-	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 

@@ -45,7 +45,7 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <bonobo/bonobo-control.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
@@ -58,8 +58,8 @@ struct NautilusSampleContentViewDetails {
 	GtkWidget *label;
 };
 
-static void nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass);
-static void nautilus_sample_content_view_initialize       (NautilusSampleContentView      *view);
+static void nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *klass);
+static void nautilus_sample_content_view_init       (NautilusSampleContentView      *view);
 static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
 static void sample_load_location_callback                 (NautilusView                   *nautilus_view,
 							   const char                     *location,
@@ -95,8 +95,8 @@ nautilus_sample_content_view_get_type (void)
 		        "NautilusSampleContentView",
 			sizeof (NautilusSampleContentView),
 			sizeof (NautilusSampleContentViewClass),
-			(GtkClassInitFunc)nautilus_sample_content_view_initialize_class,
-			(GtkObjectInitFunc)nautilus_sample_content_view_initialize,
+			(GtkClassInitFunc)nautilus_sample_content_view_class_init,
+			(GtkObjectInitFunc)nautilus_sample_content_view_init,
 			NULL,
 			NULL,
 			NULL
@@ -115,7 +115,7 @@ nautilus_sample_content_view_get_type (void)
 
      
 static void
-nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass)
+nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -127,7 +127,7 @@ nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *k
 }
 
 static void
-nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
+nautilus_sample_content_view_init (NautilusSampleContentView *view)
 {
 	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
 

@@ -67,7 +67,7 @@ static void        stop_monitoring_bookmark             (NautilusBookmarkList *b
 /* Initialization.  */
 
 static void
-nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
+nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -76,13 +76,14 @@ nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 	object_class->destroy = destroy;
 
 	signals[CONTENTS_CHANGED] =
-		gtk_signal_new ("contents_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkListClass, 
+		g_signal_new ("contents_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class,
 				      signals,
@@ -90,7 +91,7 @@ nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 }
 
 static void
-nautilus_bookmark_list_initialize (NautilusBookmarkList *bookmarks)
+nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
 	nautilus_bookmark_list_load_file (bookmarks);
 }

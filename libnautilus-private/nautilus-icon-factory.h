@@ -26,10 +26,11 @@
 #ifndef NAUTILUS_ICON_FACTORY_H
 #define NAUTILUS_ICON_FACTORY_H
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string-list.h>
+#include <gdk/gdktypes.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkobject.h>
+#include <libnautilus-private/nautilus-file.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed

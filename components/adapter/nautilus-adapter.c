@@ -33,14 +33,13 @@
 #include "nautilus-adapter-load-strategy.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-item-container.h>
-#include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-view-frame.h>
 #include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
@@ -71,8 +70,8 @@ static void nautilus_adapter_load_progress_callback (NautilusAdapter            
 						     double                        fraction_complete);
 static void nautilus_adapter_load_complete_callback (NautilusAdapter              *adapter);
 static void nautilus_adapter_load_failed_callback   (NautilusAdapter              *adapter);
-static void nautilus_adapter_initialize_class       (NautilusAdapterClass         *klass);
-static void nautilus_adapter_initialize             (NautilusAdapter              *server);
+static void nautilus_adapter_class_init       (NautilusAdapterClass         *klass);
+static void nautilus_adapter_init             (NautilusAdapter              *server);
 static void nautilus_adapter_destroy                (GtkObject                    *object);
 
 
@@ -82,7 +81,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
 
      
 static void
-nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
+nautilus_adapter_class_init (NautilusAdapterClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -92,7 +91,7 @@ nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
 }
 
 static void
-nautilus_adapter_initialize (NautilusAdapter *adapter)
+nautilus_adapter_init (NautilusAdapter *adapter)
 {
 	adapter->details = g_new0 (NautilusAdapterDetails, 1);
 	gtk_object_ref (GTK_OBJECT (adapter));

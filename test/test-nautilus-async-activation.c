@@ -61,7 +61,7 @@ main (int argc, char *argv[])
 	NautilusBonoboActivationHandle *handle;
 
 	gtk_init (&argc, &argv);
-	oaf_init (argc, argv);
+	bonobo_activation_init (argc, argv);
 	bonobo_init (bonobo_orb (), 
 		     bonobo_poa (), 
 		     bonobo_poa_manager ());

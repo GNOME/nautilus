@@ -30,7 +30,6 @@
 
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkwindow.h>
-#include <libgnome/gnome-defs.h>
 
 G_BEGIN_DECLS
 

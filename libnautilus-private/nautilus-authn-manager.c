@@ -251,7 +251,7 @@ vfs_authentication_callback (gconstpointer in, size_t in_size,
 }
 
 void
-nautilus_authentication_manager_initialize (void)
+nautilus_authentication_manager_init (void)
 {
 	callback_cond = g_cond_new ();
 	callback_mutex = g_mutex_new ();

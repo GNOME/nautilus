@@ -28,8 +28,6 @@
 
 #include "nautilus-file.h"
 #include <gdk/gdk.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-dentry.h>
 
 /* Link types */
 typedef enum {
@@ -112,8 +110,11 @@ char *           nautilus_link_get_link_name_given_file_contents (const char    
 								  int              link_file_size);
 char *           nautilus_link_get_link_icon_given_file_contents (const char      *file_contents,
 								  int              link_file_size);
+
+#ifdef GNOME2_CONVERSION_COMPLETE
 void		 nautilus_link_local_create_from_gnome_entry 	 (GnomeDesktopEntry *entry,
 								  const char 	   *dest_path,
 								  const GdkPoint    *position);
+#endif
 								 								 
 #endif /* NAUTILUS_LINK_H */

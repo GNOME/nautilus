@@ -29,14 +29,14 @@
 #include "nautilus-tree-view-iids.h"
 #include "nautilus-tree-view.h"
 #include <bonobo.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 
-/* FIXME bugzilla.gnome.org 42736: oaf_plugin_unuse can't possibly work! this sucks */
+/* FIXME bugzilla.gnome.org 42736: bonobo_activation_plugin_unuse can't possibly work! this sucks */
 #if 0
 static void
 tree_shlib_object_destroyed (GtkObject *object)
 {
-	oaf_plugin_unuse (gtk_object_get_user_data (object));
+	bonobo_activation_plugin_unuse (gtk_object_get_user_data (object));
 }
 #endif
 
@@ -58,7 +58,7 @@ tree_shlib_make_object (PortableServer_POA poa,
 	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
 #endif
 
-	oaf_plugin_use (poa, impl_ptr);
+	bonobo_activation_plugin_use (poa, impl_ptr);
 
 	return CORBA_Object_duplicate (bonobo_object_corba_objref 
 				       (BONOBO_OBJECT (view)), ev);

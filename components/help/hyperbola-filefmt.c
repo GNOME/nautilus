@@ -25,7 +25,6 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <limits.h>
@@ -973,7 +972,7 @@ fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree * tree, char **ancestors,
 	char separator[2] = { '\0' };
 
 
-	next_child = node->xmlChildrenNode;
+	next_child = node->children;
 
 	/* Set up the positioning information for the HyperbolaDocTree */
 	section = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
@@ -1079,7 +1078,7 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
 	}
 
 	/* Process the top-level tocsect nodes in the file */
-	for (pos = 1, next_child = toc_doc->xmlRootNode->xmlChildrenNode; next_child != NULL;
+	for (pos = 1, next_child = toc_doc->children->children; next_child != NULL;
 	     next_child = next_child->next) {
 		if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
 			fmt_scrollkeeper_parse_toc_section (tree, ancestors,
@@ -1131,17 +1130,17 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 
 	toc_location = g_new0 (char, 1024);
 
-	next_child = node->xmlChildrenNode;
+	next_child = node->children;
 
 	/* Obtain info about the document from the XML node describing it */
 	for (; next_child != NULL; next_child = next_child->next) {
 
 		if (!g_strcasecmp (next_child->name, "doctitle")) {
-			doc_data[0] = xmlNodeGetContent (next_child->xmlChildrenNode);
+			doc_data[0] = xmlNodeGetContent (next_child->children);
 		} else if (!g_strcasecmp (next_child->name, "docsource")) {
-			doc_data[1] = xmlNodeGetContent (next_child->xmlChildrenNode);
+			doc_data[1] = xmlNodeGetContent (next_child->children);
 		} else if (!g_strcasecmp (next_child->name, "docformat")) {
-			doc_data[2] = xmlNodeGetContent (next_child->xmlChildrenNode);
+			doc_data[2] = xmlNodeGetContent (next_child->children);
 		}
 	}
 
@@ -1228,11 +1227,11 @@ fmt_scrollkeeper_parse_section (HyperbolaDocTree * tree, char **ancestors,
 	char **section;
 	int i;
 
-	next_child = node->xmlChildrenNode;
+	next_child = node->children;
 
 	/* Make space for this level and add the title of this node to the path */
 	section = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
-	section[i] = xmlNodeGetContent (next_child->xmlChildrenNode);
+	section[i] = xmlNodeGetContent (next_child->children);
 	section[i + 1] = NULL;
 
 	/* There is no URI so use this function instead */
@@ -1272,14 +1271,14 @@ fmt_scrollkeeper_parse_xml (HyperbolaDocTree * tree, char **defpath,
 	xmlNodePtr node;
 
 	/* Ensure the document is valid and a real ScrollKeeper document */
-	if (!doc->xmlRootNode || !doc->xmlRootNode->name ||
-	    g_strcasecmp (doc->xmlRootNode->name, "ScrollKeeperContentsList")) {
+	if (!doc->children || !doc->children->name ||
+	    g_strcasecmp (doc->children->name, "ScrollKeeperContentsList")) {
 		g_warning ("Invalid ScrollKeeper XML Contents List!");
 		return;
 	}
 
 	/* Start parsing the list and add to the tree */
-	for (node = doc->xmlRootNode->xmlChildrenNode; node != NULL; node = node->next) {
+	for (node = doc->children->children; node != NULL; node = node->next) {
 		if (!g_strcasecmp (node->name, "sect"))
 			fmt_scrollkeeper_parse_section (tree, defpath, node);
 	}
@@ -1304,12 +1303,12 @@ fmt_scrollkeeper_trim_empty_branches (xmlNodePtr cl_node)
 		next = node->next;
 
 		if (!strcmp (node->name, "sect") &&
-		    node->xmlChildrenNode->next !=
+		    node->children->next !=
 		    NULL) fmt_scrollkeeper_trim_empty_branches (node->
-								xmlChildrenNode->next);
+								children->next);
 
 		if (!strcmp (node->name, "sect") &&
-		    node->xmlChildrenNode->next == NULL) {
+		    node->children->next == NULL) {
 			xmlUnlinkNode (node);
 			xmlFreeNode (node);
 		}
@@ -1330,8 +1329,8 @@ fmt_scrollkeeper_tree_empty (xmlNodePtr cl_node)
 		next = node->next;
 
 		if (!strcmp (node->name, "sect") &&
-		    node->xmlChildrenNode->next != NULL) {
-			ret_val = fmt_scrollkeeper_tree_empty (node->xmlChildrenNode->next);
+		    node->children->next != NULL) {
+			ret_val = fmt_scrollkeeper_tree_empty (node->children->next);
 			if (!ret_val)
 				return ret_val;
 		}
@@ -1418,7 +1417,7 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	     node = node->next) {
 		doc = fmt_scrollkeeper_get_xml_tree_of_locale (node->data);
 		if (doc != NULL) {
-			if (doc->xmlRootNode != NULL && !fmt_scrollkeeper_tree_empty(doc->xmlRootNode->xmlChildrenNode)) {
+			if (doc->children != NULL && !fmt_scrollkeeper_tree_empty(doc->children->children)) {
 				break;
 			} else {
 				xmlFreeDoc (doc);
@@ -1428,7 +1427,7 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	}
 		
 	if (doc) {
-		fmt_scrollkeeper_trim_empty_branches (doc->xmlRootNode->xmlChildrenNode);
+		fmt_scrollkeeper_trim_empty_branches (doc->children->children);
 		fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
 		xmlFreeDoc (doc);
 	}
@@ -1475,13 +1474,13 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     	if (doc == NULL)
         	return;
 	
-    	if (doc->xmlRootNode == NULL || doc->xmlRootNode->xmlChildrenNode == NULL ||
-            doc->xmlRootNode->xmlChildrenNode->xmlChildrenNode == NULL) {
+    	if (doc->children == NULL || doc->children->children == NULL ||
+            doc->children->children->children == NULL) {
         	xmlFreeDoc(doc);
 		return;
     	}
         
-    	for(node = doc->xmlRootNode->xmlChildrenNode->xmlChildrenNode; node != NULL;
+    	for(node = doc->children->children->children; node != NULL;
             node = node->next) {
         	if (!strcmp(node->name, "identifier")) {
 	    		doc_path = xmlGetProp(node, "url");
@@ -1491,7 +1490,7 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
 		if (!strcmp(node->name, "title")) {
 	    		char *ptr;
 	    
-	    		ptr = xmlNodeGetContent (node->xmlChildrenNode);
+	    		ptr = xmlNodeGetContent (node->children);
 			if (ptr != NULL) {
 				str = remove_leading_and_trailing_white_spaces (ptr);
 				title = g_strconcat (prefix, str, NULL);
@@ -1613,7 +1612,7 @@ get_path_from_node (const char *omf_dir, xmlNode *docpath_node)
 {
 	char *str, *omf_path, *omf_name;
 
-	str = xmlNodeGetContent (docpath_node->xmlChildrenNode);
+	str = xmlNodeGetContent (docpath_node->children);
 	omf_name = remove_leading_and_trailing_white_spaces (str);
 	omf_path = g_strdup_printf ("%s/%s", omf_dir, omf_name);
 
@@ -1645,7 +1644,7 @@ fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree,
 	int bytes_read;
 	gboolean node_added;
 
-    	if (doc == NULL || doc->xmlRootNode == NULL)
+    	if (doc == NULL || doc->children == NULL)
         	return FALSE;
 
 	if (locales == NULL)
@@ -1669,7 +1668,7 @@ fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree,
 
 	node_added = FALSE;
 	
-    	for(doc_node = doc->xmlRootNode->xmlChildrenNode; doc_node != NULL; 
+    	for(doc_node = doc->children->children; doc_node != NULL; 
             doc_node = doc_node->next) {
 
 		/* nothing found yet */
@@ -1677,11 +1676,11 @@ fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree,
 
 		/* check out the doc for the current locale */
 
-        	for(docpath_node = doc_node->xmlChildrenNode; 
+        	for(docpath_node = doc_node->children; 
 	    	    docpath_node != NULL;
 	    	    docpath_node = docpath_node->next) {	
 			/* check validity of the node first */
-			if (has_content (docpath_node->xmlChildrenNode)
+			if (has_content (docpath_node->children)
 			    && is_new_locale_better (locales,
 						     best_path_node,
 						     docpath_node)) {

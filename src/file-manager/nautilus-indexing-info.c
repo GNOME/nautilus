@@ -30,7 +30,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <eel/eel-gdk-extensions.h>

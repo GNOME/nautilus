@@ -49,7 +49,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -232,8 +231,8 @@ static int cached_thumbnail_limit;
 /* forward declarations */
 
 static guint      nautilus_icon_factory_get_type         (void);
-static void       nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class);
-static void       nautilus_icon_factory_initialize       (NautilusIconFactory      *factory);
+static void       nautilus_icon_factory_class_init (NautilusIconFactoryClass *class);
+static void       nautilus_icon_factory_init       (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_destroy          (GtkObject                *object);
 static void       icon_theme_changed_callback            (gpointer                  user_data);
 static void       thumbnail_limit_changed_callback       (gpointer                  user_data);
@@ -346,19 +345,19 @@ load_thumbnail_frames (NautilusIconFactory *factory)
 	if (factory->thumbnail_frame != NULL) {
 		gdk_pixbuf_unref (factory->thumbnail_frame);
 	}
-	factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path);
+	factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
 	
 	image_path = nautilus_theme_get_image_path ("thumbnail_frame.aa.png");
 	if (factory->thumbnail_frame_aa != NULL) {
 		gdk_pixbuf_unref (factory->thumbnail_frame_aa);
 	}
-	factory->thumbnail_frame_aa = gdk_pixbuf_new_from_file (image_path);
+	factory->thumbnail_frame_aa = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
 }
 
 static void
-nautilus_icon_factory_initialize (NautilusIconFactory *factory)
+nautilus_icon_factory_init (NautilusIconFactory *factory)
 {
 	factory->scalable_icons = g_hash_table_new (nautilus_scalable_icon_hash,
 						    nautilus_scalable_icon_equal);
@@ -374,21 +373,20 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 }
 
 static void
-nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class)
+nautilus_icon_factory_class_init (NautilusIconFactoryClass *class)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
 
 	signals[ICONS_CHANGED]
-		= gtk_signal_new ("icons_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  0,
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		= g_signal_new ("icons_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                0,
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 
 	object_class->destroy = nautilus_icon_factory_destroy;
 }
@@ -1537,7 +1535,7 @@ load_icon_from_path (const char *path,
 		return nautilus_thumbnail_load_framed_image (path, optimized_for_aa);
 	}
 	
-	return gdk_pixbuf_new_from_file (path);
+	return gdk_pixbuf_new_from_file (path, NULL);
 }
 
 static GdkPixbuf *
@@ -1664,7 +1662,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 	size_request.maximum_height = size_request.maximum_width;
 	size_request.optimized_for_aa = optimized_for_aa;
 
-	for (i = 0; i < EEL_N_ELEMENTS (requests); i++) {
+	for (i = 0; i < G_N_ELEMENTS (requests); i++) {
 		actual_size = 0;
 		while (get_next_icon_size_to_try (requested_size, &actual_size)) {
 			size_request.nominal_width = actual_size;

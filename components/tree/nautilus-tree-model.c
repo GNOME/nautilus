@@ -65,9 +65,9 @@ struct NautilusTreeModelDetails {
 
 
 static void nautilus_tree_model_destroy                          (GtkObject         *object);
-static void nautilus_tree_model_initialize                       (gpointer           object,
+static void nautilus_tree_model_init                       (gpointer           object,
 								  gpointer           klass);
-static void nautilus_tree_model_initialize_class                 (gpointer           klass);
+static void nautilus_tree_model_class_init                 (gpointer           klass);
 static void remove_all_nodes                                     (NautilusTreeModel *model);
 static void nautilus_tree_model_set_root_uri                     (NautilusTreeModel *model,
 								  const char        *root_uri);
@@ -98,7 +98,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_O
 /* infrastructure stuff */
 
 static void
-nautilus_tree_model_initialize_class (gpointer klass)
+nautilus_tree_model_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 
@@ -107,43 +107,44 @@ nautilus_tree_model_initialize_class (gpointer klass)
 	object_class->destroy = nautilus_tree_model_destroy;
 
 	signals[NODE_CHANGED] =
-		gtk_signal_new ("node_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, node_changed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("node_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[NODE_REMOVED] =
-		gtk_signal_new ("node_removed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, node_removed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("node_removed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[NODE_BEING_RENAMED] =
-		gtk_signal_new ("node_being_renamed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, node_removed),
-				gtk_marshal_NONE__POINTER_POINTER,
-				GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_STRING);
+		g_signal_new ("node_being_renamed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER_POINTER,
+		              G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	signals[DONE_LOADING_CHILDREN] =
-		gtk_signal_new ("done_loading_children",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, done_loading_children),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("done_loading_children",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusTreeModelClass, done_loading_children),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 }
 
 static void
-nautilus_tree_model_initialize (gpointer object, gpointer klass)
+nautilus_tree_model_init (gpointer object, gpointer klass)
 {
 	NautilusTreeModel *model;
 

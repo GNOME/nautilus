@@ -25,7 +25,6 @@
 #ifndef NAUTILUS_HORIZONTAL_SPLITTER_H
 #define NAUTILUS_HORIZONTAL_SPLITTER_H
 
-#include <libgnome/gnome-defs.h>
 #include "e-hpaned.h"
 
 G_BEGIN_DECLS

@@ -184,8 +184,8 @@ static void nautilus_music_view_drag_data_received            (GtkWidget        
                                                                guint                   info,
                                                                guint                   time,
                                                                gpointer                user_data);
-static void nautilus_music_view_initialize_class              (NautilusMusicViewClass *klass);
-static void nautilus_music_view_initialize                    (NautilusMusicView      *view);
+static void nautilus_music_view_class_init              (NautilusMusicViewClass *klass);
+static void nautilus_music_view_init                    (NautilusMusicView      *view);
 static void nautilus_music_view_destroy                       (GtkObject              *object);
 static void nautilus_music_view_update                        (NautilusMusicView      *music_view);
 static void music_view_background_appearance_changed_callback (EelBackground     *background,
@@ -231,7 +231,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
                                    NAUTILUS_TYPE_VIEW)
 
 static void
-nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
+nautilus_music_view_class_init (NautilusMusicViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -270,7 +270,7 @@ get_cell_text (GtkWidget *widget, int column_index, int cell_width,
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
 
 static void
-nautilus_music_view_initialize (NautilusMusicView *music_view)
+nautilus_music_view_init (NautilusMusicView *music_view)
 {
 	GtkWidget *label;
 	GtkWidget *button;
@@ -328,12 +328,12 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
 	
         /* Localize the titles */
-        for (i = 0; i < EEL_N_ELEMENTS (titles); i++) {
+        for (i = 0; i < G_N_ELEMENTS (titles); i++) {
 		titles[i] = _(titles[i]);
 	}
 
 	/* allocate a list widget to hold the song list */
-	music_view->details->song_list = eel_list_new_with_titles (EEL_N_ELEMENTS (titles), (const char * const *) titles);
+	music_view->details->song_list = eel_list_new_with_titles (G_N_ELEMENTS (titles), (const char * const *) titles);
         
 	EEL_CLIST_SET_FLAG (EEL_CLIST (music_view->details->song_list), CLIST_SHOW_TITLES);
 
@@ -403,7 +403,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view->details->event_box),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   music_dnd_target_table, EEL_N_ELEMENTS (music_dnd_target_table), GDK_ACTION_COPY);
+			   music_dnd_target_table, G_N_ELEMENTS (music_dnd_target_table), GDK_ACTION_COPY);
 
 
 	music_view->details->player_state = PLAYER_STOPPED;
@@ -1700,7 +1700,7 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 
 	if (image_path_uri != NULL) {
   		image_path = gnome_vfs_get_local_path_from_uri (image_path_uri);  		
-  		pixbuf = gdk_pixbuf_new_from_file (image_path);
+  		pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 		
 		if (pixbuf != NULL) {
 			scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, SCALED_IMAGE_WIDTH, SCALED_IMAGE_HEIGHT);

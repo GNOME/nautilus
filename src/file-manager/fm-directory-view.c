@@ -34,7 +34,7 @@
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
 #include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-window.h>
 #include <bonobo/bonobo-zoomable.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
@@ -256,8 +256,8 @@ typedef struct {
 static void     cancel_activate_callback                       (gpointer              callback_data);
 static gboolean display_selection_info_idle_callback           (gpointer              data);
 static gboolean file_is_launchable                             (NautilusFile         *file);
-static void     fm_directory_view_initialize_class             (FMDirectoryViewClass *klass);
-static void     fm_directory_view_initialize                   (FMDirectoryView      *view);
+static void     fm_directory_view_class_init             (FMDirectoryViewClass *klass);
+static void     fm_directory_view_init                   (FMDirectoryView      *view);
 static void     fm_directory_view_duplicate_selection          (FMDirectoryView      *view,
 								GList                *files,
 								GArray               *item_locations);
@@ -1155,7 +1155,7 @@ add_scripts_directory (FMDirectoryView *view,
 }
 
 static void
-fm_directory_view_initialize (FMDirectoryView *view)
+fm_directory_view_init (FMDirectoryView *view)
 {
 	NautilusDirectory *scripts_directory;
 
@@ -1189,7 +1189,7 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	bonobo_zoomable_set_parameters_full (view->details->zoomable,
 					     0.0, .25, 4.0, TRUE, TRUE, FALSE,
 					     fm_directory_view_preferred_zoom_levels, NULL,
-					     EEL_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));
+					     G_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));
 	bonobo_object_add_interface (BONOBO_OBJECT (view->details->nautilus_view),
 				     BONOBO_OBJECT (view->details->zoomable));
 
@@ -1831,7 +1831,7 @@ pre_copy_move (FMDirectoryView *directory_view)
 	eel_nullify_when_destroyed (&copy_move_done_data->directory_view);
 
 	/* We need to run after the default handler adds the folder we want to
-	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 	 * must use connect_after.
 	 */
 	gtk_signal_connect (GTK_OBJECT (directory_view),
@@ -1931,7 +1931,7 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 			debuting_uri_data_free (debuting_uri_data);
 		} else {
 			/* We need to run after the default handler adds the folder we want to
-			 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+			 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 			 * must use connect_after.
 			 */
 			gtk_signal_connect_full (GTK_OBJECT (directory_view),
@@ -3119,7 +3119,7 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	/* We need to run after the default handler adds the folder we want to
-	 * operate on. The ADD_FILE signal is registered as GTK_RUN_LAST, so we
+	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 	 * must use connect_after.
 	 */
 	gtk_signal_connect_full (GTK_OBJECT (directory_view),
@@ -3333,7 +3333,7 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 
 static void
 add_component_to_bonobo_menu (FMDirectoryView *directory_view,
-			      OAF_ServerInfo *content_view, 
+			      Bonobo_ServerInfo *content_view, 
 			      const char *uri,
 			      int index)
 {
@@ -5626,7 +5626,7 @@ real_sort_files (FMDirectoryView *view, GList **files)
 }
 
 static void
-fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
+fm_directory_view_class_init (FMDirectoryViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -5650,68 +5650,77 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	scrolled_window_class->scrollbar_spacing = 0;
 
 	signals[ADD_FILE] =
-		gtk_signal_new ("add_file",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_file),
-		    		gtk_marshal_NONE__OBJECT,
-		    		GTK_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		g_signal_new ("add_file",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
+		              NULL, NULL,
+		              gtk_marshal_NONE__OBJECT,
+		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[BEGIN_FILE_CHANGES] =
-		gtk_signal_new ("begin_file_changes",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_file_changes),
-		    		gtk_marshal_NONE__NONE,
-		    		GTK_TYPE_NONE, 0);
+		g_signal_new ("begin_file_changes",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_file_changes),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[BEGIN_LOADING] =
-		gtk_signal_new ("begin_loading",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
-		    		gtk_marshal_NONE__NONE,
-		    		GTK_TYPE_NONE, 0);
+		g_signal_new ("begin_loading",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_loading),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[CLEAR] =
-		gtk_signal_new ("clear",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, clear),
-		    		gtk_marshal_NONE__NONE,
-		    		GTK_TYPE_NONE, 0);
+		g_signal_new ("clear",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, clear),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[END_FILE_CHANGES] =
-		gtk_signal_new ("end_file_changes",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, end_file_changes),
-		    		gtk_marshal_NONE__NONE,
-		    		GTK_TYPE_NONE, 0);
+		g_signal_new ("end_file_changes",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[END_LOADING] =
-		gtk_signal_new ("end_loading",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, end_loading),
-		    		gtk_marshal_NONE__NONE,
-		    		GTK_TYPE_NONE, 0);
+		g_signal_new ("end_loading",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_loading),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[FILE_CHANGED] =
-		gtk_signal_new ("file_changed",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, file_changed),
-		    		gtk_marshal_NONE__OBJECT,
-		    		GTK_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		g_signal_new ("file_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__OBJECT,
+		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[LOAD_ERROR] =
-		gtk_signal_new ("load_error",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (FMDirectoryViewClass, load_error),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+		g_signal_new ("load_error",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
+		              NULL, NULL,
+		              gtk_marshal_NONE__INT,
+		              G_TYPE_NONE, 1, GTK_TYPE_INT);
 	signals[REMOVE_FILE] =
-		gtk_signal_new ("remove_file",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, remove_file),
-		    		gtk_marshal_NONE__OBJECT,
-		    		GTK_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
+		g_signal_new ("remove_file",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
+		              NULL, NULL,
+		              gtk_marshal_NONE__OBJECT,
+		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;
 	klass->file_limit_reached = real_file_limit_reached;
@@ -5743,8 +5752,6 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);

@@ -27,7 +27,7 @@
 #include <errno.h>
 
 #include <gnome.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 #include <bonobo.h>
 
@@ -775,7 +775,7 @@ scrollable_control_factory (void)
 }
 
 static BonoboObject *
-bonobo_object_factory (BonoboGenericFactory *this, const char *oaf_iid,
+bonobo_object_factory (BonoboGenericFactory *this, const char *bonobo_activation_iid,
 		       void *data)
 {
 	bonobo_object_data_t *bod;
@@ -786,9 +786,9 @@ bonobo_object_factory (BonoboGenericFactory *this, const char *oaf_iid,
 	 * Creates the BonoboObject server
 	 */
 
-	if (strcmp (oaf_iid, "OAFIID:nautilus-image-generic:6ed7ef0d-9274-4132-9a27-9f048142782f") == 0) {
+	if (strcmp (bonobo_activation_iid, "OAFIID:nautilus-image-generic:6ed7ef0d-9274-4132-9a27-9f048142782f") == 0) {
 		bod = scaled_control_factory ();
-	} else if (strcmp (oaf_iid, "OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd") == 0) {
+	} else if (strcmp (bonobo_activation_iid, "OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd") == 0) {
 		bod = scrollable_control_factory ();
 	} else {
 		return NULL;
@@ -806,7 +806,7 @@ init_bonobo_image_generic_factory (void)
 {
         char *registration_id;
 
-	registration_id = oaf_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6",
+	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6",
 						    g_getenv ("DISPLAY"));
 
 	image_factory = bonobo_generic_factory_new_multi 
@@ -825,8 +825,8 @@ init_server_factory (int argc, char **argv)
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	bonobo_activation_init (argc, argv);
 
         gnome_init ("bonobo-image-generic", VERSION,
 		    argc, argv); 

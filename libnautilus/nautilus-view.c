@@ -32,7 +32,6 @@
 #include <config.h>
 #include "nautilus-view.h"
 
-#include "nautilus-bonobo-workarounds.h"
 #include "nautilus-idle-queue.h"
 #include "nautilus-undo.h"
 #include <bonobo/bonobo-control.h>
@@ -76,7 +75,7 @@ typedef struct {
 } LocationPlus;
 
 static void impl_Nautilus_View_load_location     (PortableServer_Servant  servant,
-						  CORBA_char             *location,
+						  const CORBA_char       *location,
 						  CORBA_Environment      *ev);
 static void impl_Nautilus_View_stop_loading      (PortableServer_Servant  servant,
 						  CORBA_Environment      *ev);
@@ -89,29 +88,11 @@ static void impl_Nautilus_View_title_changed     (PortableServer_Servant  servan
 static void impl_Nautilus_View_history_changed   (PortableServer_Servant  servant,
 						  const Nautilus_History *history,
 						  CORBA_Environment      *ev);
-static void nautilus_view_initialize             (NautilusView           *view);
+static void nautilus_view_init             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
-static void nautilus_view_initialize_class       (NautilusViewClass      *klass);
+static void nautilus_view_class_init       (NautilusViewClass      *klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
-
-static POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
-{
-	NULL,
-	impl_Nautilus_View_load_location,
-	impl_Nautilus_View_stop_loading,
-	impl_Nautilus_View_selection_changed,
-	impl_Nautilus_View_title_changed,
-	impl_Nautilus_View_history_changed
-};
-
-static PortableServer_ServantBase__epv base_epv;
-static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
-{
-	&base_epv,
-	NULL,
-	&libnautilus_Nautilus_View_epv
-};
 
 static void
 queue_incoming_call (PortableServer_Servant servant,
@@ -257,7 +238,7 @@ history_dup (const Nautilus_History *history)
 
 static void
 impl_Nautilus_View_load_location (PortableServer_Servant servant,
-				  CORBA_char *location,
+				  const CORBA_char *location,
 				  CORBA_Environment *ev)
 {
 	queue_incoming_call (servant,
@@ -310,108 +291,70 @@ impl_Nautilus_View_history_changed (PortableServer_Servant servant,
 }
 
 static void
-impl_Nautilus_View__destroy (BonoboObject *object,
-			     PortableServer_Servant servant)
-{
-	PortableServer_ObjectId *object_id;
-	CORBA_Environment ev;
-	
-	CORBA_exception_init (&ev);
-	
-	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-	CORBA_free (object_id);
-
-	object->servant = NULL;
-	
-	POA_Nautilus_View__fini (servant, &ev);
-	g_free (servant);
-
-	CORBA_exception_free (&ev);
-}
-
-static Nautilus_ViewFrame
-impl_Nautilus_View__create (NautilusView *bonobo_object,
-			    CORBA_Environment * ev)
-{
-	impl_POA_Nautilus_View *servant;
-	
-	impl_Nautilus_View_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-
-	servant = g_new0 (impl_POA_Nautilus_View, 1);
-	servant->servant.vepv = &impl_Nautilus_View_vepv;
-	POA_Nautilus_View__init ((PortableServer_Servant) servant, ev);
-
-	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
-			    GTK_SIGNAL_FUNC (impl_Nautilus_View__destroy), servant);
-	
-	servant->bonobo_object = bonobo_object;
-	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
-}
-
-static void
-nautilus_view_initialize_class (NautilusViewClass *klass)
+nautilus_view_class_init (NautilusViewClass *klass)
 {
 	GtkObjectClass *object_class;
+	POA_Nautilus_View__epv *epv = &klass->epv;
 	
-	object_class = (GtkObjectClass*) klass;
+	object_class = (GtkObjectClass *) klass;
 
 	object_class->destroy = nautilus_view_destroy;
 	
 	signals[LOAD_LOCATION] =
-		gtk_signal_new ("load_location",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusViewClass, load_location),
-			       gtk_marshal_NONE__STRING,
-			       GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+		g_signal_new ("load_location",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, load_location),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
 	signals[STOP_LOADING] =
-		gtk_signal_new ("stop_loading",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusViewClass, stop_loading),
-			       gtk_marshal_NONE__NONE,
-			       GTK_TYPE_NONE, 0);
+		g_signal_new ("stop_loading",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, stop_loading),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[SELECTION_CHANGED] =
-		gtk_signal_new ("selection_changed",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusViewClass, selection_changed),
-			       gtk_marshal_NONE__POINTER,
-			       GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("selection_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, selection_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[TITLE_CHANGED] =
-		gtk_signal_new ("title_changed",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusViewClass, title_changed),
-			       gtk_marshal_NONE__STRING,
-			       GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+		g_signal_new ("title_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, title_changed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
 	signals[HISTORY_CHANGED] =
-		gtk_signal_new ("history_changed",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusViewClass, history_changed),
-			       gtk_marshal_NONE__POINTER,
-			       GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("history_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, history_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	epv->load_location = impl_Nautilus_View_load_location;
+	epv->stop_loading = impl_Nautilus_View_stop_loading;
+	epv->selection_changed = impl_Nautilus_View_selection_changed;
+	epv->title_changed = impl_Nautilus_View_title_changed;
+	epv->history_changed = impl_Nautilus_View_history_changed;
 }
 
 static void
-nautilus_view_initialize (NautilusView *view)
+nautilus_view_init (NautilusView *view)
 {
-	CORBA_Environment ev;
-
 	view->details = g_new0 (NautilusViewDetails, 1);
 	
 	view->details->incoming_queue = nautilus_idle_queue_new ();
 	view->details->outgoing_queue = nautilus_idle_queue_new ();
-
-	CORBA_exception_init (&ev);
-	bonobo_object_construct
-		(BONOBO_OBJECT (view),
-		 impl_Nautilus_View__create (view, &ev));
-	CORBA_exception_free (&ev);
 }
 
 NautilusView *
@@ -437,45 +380,16 @@ nautilus_view_construct (NautilusView   *view,
 		(view, bonobo_control_new (widget));
 }
 
-static void
-set_frame_callback (BonoboControl *control,
-		    gpointer callback_data)
-{
-	nautilus_bonobo_object_force_destroy_when_owner_disappears
-		(BONOBO_OBJECT (control),
-		 bonobo_control_get_control_frame (control));
-}
-
-static void
-widget_destroyed_callback (GtkWidget *widget,
-			   gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_VIEW (callback_data));
-
-	nautilus_bonobo_object_force_destroy_later
-		(BONOBO_OBJECT (callback_data));
-}
-
 NautilusView *
 nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 					     BonoboControl  *control)
 {
-	GtkWidget *widget;
-
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
 
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
-
-	gtk_signal_connect (GTK_OBJECT (control), "set_frame",
-			    set_frame_callback, NULL);
-
-	widget = bonobo_control_get_widget (control);
-	gtk_signal_connect_while_alive (GTK_OBJECT (widget), "destroy",
-					widget_destroyed_callback, view,
-					GTK_OBJECT (view));
 
 	return view;
 }
@@ -498,18 +412,21 @@ nautilus_view_destroy (GtkObject *object)
 static Nautilus_ViewFrame
 view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 {
+	Bonobo_ControlFrame control_frame;
 	Nautilus_ViewFrame view_frame;
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
 	
 	CORBA_exception_init (ev);
 
-	view_frame = Bonobo_Unknown_queryInterface 
-		(bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view)),
-		 "IDL:Nautilus/ViewFrame:1.0", ev);
-
+	control_frame = bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view), ev);
 	if (ev->_major != CORBA_NO_EXCEPTION) {
-		view_frame = CORBA_OBJECT_NIL;
+		return CORBA_OBJECT_NIL;
+	}
+
+	view_frame = Bonobo_Unknown_queryInterface (control_frame, "IDL:Nautilus/ViewFrame:1.0", ev);
+	if (ev->_major != CORBA_NO_EXCEPTION) {
+		return CORBA_OBJECT_NIL;
 	}
 
 	return view_frame;
@@ -949,8 +866,8 @@ nautilus_view_set_up_ui (NautilusView *view,
 	ui_component = bonobo_control_get_ui_component (view->details->control);
 
 	/* Connect the UI component to the control frame's UI container. */
-	ui_container = bonobo_control_get_remote_ui_container (view->details->control);
-	bonobo_ui_component_set_container (ui_component, ui_container);
+	ui_container = bonobo_control_get_remote_ui_container (view->details->control, NULL);
+	bonobo_ui_component_set_container (ui_component, ui_container, NULL);
 	bonobo_object_release_unref (ui_container, NULL);
 
 	/* Set up the UI from an XML file. */

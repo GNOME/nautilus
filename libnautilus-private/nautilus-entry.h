@@ -27,7 +27,6 @@
 #ifndef NAUTILUS_ENTRY_H
 #define NAUTILUS_ENTRY_H
 
-#include <libgnome/gnome-defs.h>
 #include <gtk/gtkentry.h>
 
 G_BEGIN_DECLS

@@ -88,8 +88,8 @@ typedef struct {
 	char *source_mode;
 } ServiceMenuItemParameters;
 
-static void nautilus_text_view_initialize_class (NautilusTextViewClass *klass);
-static void nautilus_text_view_initialize       (NautilusTextView      *view);
+static void nautilus_text_view_class_init (NautilusTextViewClass *klass);
+static void nautilus_text_view_init       (NautilusTextView      *view);
 static void nautilus_text_view_destroy          (GtkObject             *object);
 static void nautilus_text_view_update           (NautilusTextView      *text_view);
 static void text_view_load_location_callback    (NautilusView          *view,
@@ -125,7 +125,7 @@ static const int max_preferred_zoom_levels = (sizeof (text_view_preferred_zoom_l
                                               sizeof (float)) - 1;
 
 static void
-nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
+nautilus_text_view_class_init (NautilusTextViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -145,7 +145,7 @@ nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
 
 static void
-nautilus_text_view_initialize (NautilusTextView *text_view)
+nautilus_text_view_init (NautilusTextView *text_view)
 {
 	GtkWidget *scrolled_window;
 	
@@ -171,7 +171,7 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	bonobo_zoomable_set_parameters_full (text_view->details->zoomable,
 					     1.0, .25, 4.0, TRUE, TRUE, FALSE,
 					     text_view_preferred_zoom_levels, NULL,
-					     EEL_N_ELEMENTS (text_view_preferred_zoom_levels));
+					     G_N_ELEMENTS (text_view_preferred_zoom_levels));
 	
 	bonobo_object_add_interface (BONOBO_OBJECT (text_view),
 				     BONOBO_OBJECT (text_view->details->zoomable));

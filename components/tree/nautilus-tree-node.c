@@ -33,9 +33,9 @@
 
 
 static void               nautilus_tree_node_destroy          (GtkObject   *object);
-static void               nautilus_tree_node_initialize       (gpointer     object,
+static void               nautilus_tree_node_init       (gpointer     object,
 								gpointer     klass);
-static void               nautilus_tree_node_initialize_class (gpointer     klass);
+static void               nautilus_tree_node_class_init (gpointer     klass);
 
 
 
@@ -43,7 +43,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJ
 
 
 static void
-nautilus_tree_node_initialize_class (gpointer klass)
+nautilus_tree_node_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 
@@ -53,7 +53,7 @@ nautilus_tree_node_initialize_class (gpointer klass)
 }
 
 static void
-nautilus_tree_node_initialize (gpointer object, gpointer klass)
+nautilus_tree_node_init (gpointer object, gpointer klass)
 {
 	NautilusTreeNode *node;
 

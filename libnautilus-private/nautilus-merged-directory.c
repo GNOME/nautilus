@@ -68,9 +68,9 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void     nautilus_merged_directory_initialize       (gpointer                 object,
+static void     nautilus_merged_directory_init       (gpointer                 object,
 							    gpointer                 klass);
-static void     nautilus_merged_directory_initialize_class (gpointer                 klass);
+static void     nautilus_merged_directory_class_init (gpointer                 klass);
 static void     remove_all_real_directories                (NautilusMergedDirectory *merged);
 static guint    merged_callback_hash                       (gconstpointer            merged_callback);
 static gboolean merged_callback_equal                      (gconstpointer            merged_callback,
@@ -81,7 +81,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusMergedDirectory,
 				   NAUTILUS_TYPE_DIRECTORY)
 
 static void
-nautilus_merged_directory_initialize (gpointer object, gpointer klass)
+nautilus_merged_directory_init (gpointer object, gpointer klass)
 {
 	NautilusMergedDirectory *merged;
 
@@ -622,7 +622,7 @@ remove_all_real_directories (NautilusMergedDirectory *merged)
 }
 
 static void
-nautilus_merged_directory_initialize_class (gpointer klass)
+nautilus_merged_directory_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;
@@ -647,21 +647,21 @@ nautilus_merged_directory_initialize_class (gpointer klass)
 	merged_directory_class->remove_real_directory = merged_remove_real_directory;
 
 	signals[ADD_REAL_DIRECTORY] 
-		= gtk_signal_new ("add_real_directory",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusMergedDirectoryClass, 
+		= g_signal_new ("add_real_directory",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
 						     add_real_directory),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[REMOVE_REAL_DIRECTORY] 
-		= gtk_signal_new ("remove_real_directory",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusMergedDirectoryClass, 
+		= g_signal_new ("remove_real_directory",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
 						     remove_real_directory),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);				  
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 }

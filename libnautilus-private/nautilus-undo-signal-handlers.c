@@ -26,7 +26,6 @@
 #include <config.h>
 #include <gtk/gtk.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-undo.h>
 

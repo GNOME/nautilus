@@ -48,11 +48,10 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -64,7 +63,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-authn-manager.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 /* Needed for the is_kdesktop_present check */
 #include <gdk/gdkx.h>
@@ -87,8 +86,8 @@ static CORBA_Object  create_object                         (PortableServer_Serva
 							    const CORBA_char         *iid,
 							    const GNOME_stringlist   *params,
 							    CORBA_Environment        *ev);
-static void          nautilus_application_initialize       (NautilusApplication      *application);
-static void          nautilus_application_initialize_class (NautilusApplicationClass *klass);
+static void          nautilus_application_init       (NautilusApplication      *application);
+static void          nautilus_application_class_init (NautilusApplicationClass *klass);
 static void          nautilus_application_destroy          (GtkObject                *object);
 static gboolean      confirm_ok_to_run_as_root             (void);
 static gboolean      need_to_show_first_time_druid         (void);
@@ -184,13 +183,13 @@ nautilus_application_get_window_list (void)
 }
 
 static void
-nautilus_application_initialize_class (NautilusApplicationClass *klass)
+nautilus_application_class_init (NautilusApplicationClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = nautilus_application_destroy;
 }
 
 static void
-nautilus_application_initialize (NautilusApplication *application)
+nautilus_application_init (NautilusApplication *application)
 {
 	CORBA_Environment ev;
 	CORBA_Object corba_object;
@@ -447,10 +446,10 @@ static void
 finish_startup (NautilusApplication *application)
 {
 	/* initialize the sound machinery */
-	nautilus_sound_initialize ();
+	nautilus_sound_init ();
 
 	/* initialize URI authentication manager */
-	nautilus_authentication_manager_initialize ();
+	nautilus_authentication_manager_init ();
 
 	/* Make the desktop work with gmc and old Nautilus. */
 	migrate_gmc_trash ();
@@ -507,7 +506,7 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Start up the factory. */
 	while (TRUE) {
 		/* Try to register the file manager view factory with OAF. */
-		result = oaf_active_server_register
+		result = bonobo_activation_active_server_register
 			(FACTORY_IID,
 			 bonobo_object_corba_objref (BONOBO_OBJECT (application)));
 		switch (result) {
@@ -556,7 +555,7 @@ nautilus_application_startup (NautilusApplication *application,
 			break;
 		default:
 			/* This should never happen. */
-			g_warning ("bad error code from oaf_active_server_register");
+			g_warning ("bad error code from bonobo_activation_active_server_register");
 		case OAF_REG_ERROR:
 			/* Some misc. error (can never happen with current
 			 * version of OAF). Show dialog and terminate the
@@ -575,7 +574,7 @@ nautilus_application_startup (NautilusApplication *application,
 
 		/* Get the shell object. */
 		if (message == NULL) {
-			shell = oaf_activate_from_id (SHELL_IID, 0, NULL, NULL);
+			shell = bonobo_activation_activate_from_id (SHELL_IID, 0, NULL, NULL);
 			if (!CORBA_Object_is_nil (shell, &ev)) {
 				break;
 			}

@@ -163,7 +163,7 @@ get_mozilla_path (void)
 		"/usr/lib/mozilla-0.8.1" /* lame, but helpful for finding Ximian package */
 	};
 
-	for (i = 0; i < EEL_N_ELEMENTS (paths); i++) {
+	for (i = 0; i < G_N_ELEMENTS (paths); i++) {
 		if (is_good_mozilla_path (paths[i])) {
 			return g_strdup (paths[i]);
 		}
@@ -215,8 +215,8 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
 	gnome_init ("nautilus-mozilla-content-view", VERSION, 
 		    argc, argv); 
@@ -238,7 +238,7 @@ main (int argc, char *argv[])
 		g_warning ("Couldn't init gconf");
 	}
 	
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", getenv ("DISPLAY"));
+        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    mozilla_make_object,
 						    NULL);

@@ -26,8 +26,7 @@
 
 #include <config.h>
 
-#include <libgnome/gnome-defs.h> /* must come before gnome-init.h */
-#include <libgnomeui/gnome-init.h> /* must come before liboaf.h */
+#include <libgnome/gnome-init.h> /* must come before liboaf.h */
 
 #include "nautilus-adapter-factory-server.h"
 #include <bonobo/bonobo-generic-factory.h>
@@ -36,7 +35,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <eel/eel-debug.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <stdlib.h>
 
 #define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
@@ -100,8 +99,8 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
 	/* Initialize libraries. */
         gnome_init ("nautilus-adapter", VERSION, 
@@ -112,7 +111,7 @@ main (int argc, char *argv[])
 
 	/* Create the factory. */
 
-	registration_id = oaf_make_registration_id (META_FACTORY_IID, g_getenv ("DISPLAY"));
+	registration_id = bonobo_activation_make_registration_id (META_FACTORY_IID, g_getenv ("DISPLAY"));
 
 	factory = bonobo_generic_factory_new_multi (registration_id, adapter_factory_make_object, NULL);
 

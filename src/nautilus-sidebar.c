@@ -94,8 +94,8 @@ struct NautilusSidebarDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static void     nautilus_sidebar_initialize_class      (GtkObjectClass   *object_klass);
-static void     nautilus_sidebar_initialize            (GtkObject        *object);
+static void     nautilus_sidebar_class_init      (GtkObjectClass   *object_klass);
+static void     nautilus_sidebar_init            (GtkObject        *object);
 static void     nautilus_sidebar_deactivate_panel      (NautilusSidebar  *sidebar);
 static gboolean nautilus_sidebar_press_event           (GtkWidget        *widget,
 							GdkEventButton   *event);
@@ -173,7 +173,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_
 
 /* initializing the class object by installing the operations we override */
 static void
-nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
+nautilus_sidebar_class_init (GtkObjectClass *object_klass)
 {
 	GtkWidgetClass *widget_class;
 	
@@ -193,16 +193,15 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 	widget_class->realize = nautilus_sidebar_realize;
 
 	/* add the "location changed" signal */
-	signals[LOCATION_CHANGED] = gtk_signal_new
+	signals[LOCATION_CHANGED] = g_signal_new
 		("location_changed",
-		 GTK_RUN_LAST,
-		 object_klass->type,
-		 GTK_SIGNAL_OFFSET (NautilusSidebarClass,
+		 G_TYPE_FROM_CLASS (object_klass),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusSidebarClass,
 				    location_changed),
-		 gtk_marshal_NONE__STRING,
-		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__STRING,
+		 G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					       &confirm_trash_auto_value);
@@ -228,7 +227,7 @@ make_button_box (NautilusSidebar *sidebar)
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
-nautilus_sidebar_initialize (GtkObject *object)
+nautilus_sidebar_init (GtkObject *object)
 {
 	NautilusSidebar *sidebar;
 	GtkWidget* widget;
@@ -295,7 +294,7 @@ nautilus_sidebar_initialize (GtkObject *object)
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (sidebar),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   target_table, EEL_N_ELEMENTS (target_table),
+			   target_table, G_N_ELEMENTS (target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 }
 
@@ -676,7 +675,7 @@ uri_is_local_image (const char *uri)
 		return FALSE;
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (image_path);
+	pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
 	
 	if (pixbuf == NULL) {

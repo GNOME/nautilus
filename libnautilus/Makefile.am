@@ -30,7 +30,6 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	libnautilus.h				\
 	nautilus-bonobo-ui.h			\
-	nautilus-bonobo-workarounds.h		\
 	nautilus-clipboard.h			\
 	nautilus-distributed-undo.h		\
 	nautilus-idle-queue.h			\
@@ -44,7 +43,6 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=					\
 	$(nautilus_view_component_idl_sources)		\
 	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus-bonobo-workarounds.c			\
 	nautilus-clipboard.c				\
 	nautilus-idle-queue.c				\
 	nautilus-undo-transaction.c			\

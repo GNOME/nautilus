@@ -33,7 +33,6 @@
 #include <bonobo/bonobo-exception.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -127,8 +126,8 @@ struct NautilusSidebarTabsDetails {
 
 /* headers */
 
-static void     nautilus_sidebar_tabs_initialize_class  (NautilusSidebarTabsClass *klass);
-static void     nautilus_sidebar_tabs_initialize        (NautilusSidebarTabs      *pixmap);
+static void     nautilus_sidebar_tabs_class_init  (NautilusSidebarTabsClass *klass);
+static void     nautilus_sidebar_tabs_init        (NautilusSidebarTabs      *pixmap);
 static int      nautilus_sidebar_tabs_expose            (GtkWidget                *widget,
 							 GdkEventExpose           *event);
 static void     nautilus_sidebar_tabs_destroy           (GtkObject                *object);
@@ -146,7 +145,7 @@ static void     smooth_font_changed_callback            (gpointer               
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
 static void
-nautilus_sidebar_tabs_initialize_class (NautilusSidebarTabsClass *class)
+nautilus_sidebar_tabs_class_init (NautilusSidebarTabsClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -274,7 +273,7 @@ smooth_font_changed_callback (gpointer callback_data)
 
 /* initialize a newly allocated sidebar tabs object */
 static void
-nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
+nautilus_sidebar_tabs_init (NautilusSidebarTabs *sidebar_tabs)
 {
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(sidebar_tabs), GTK_NO_WINDOW);
 	
@@ -426,7 +425,7 @@ load_tab_piece (const char *piece_directory, const char *piece_name)
 	GdkPixbuf *pixbuf;
 	gchar *image_path;
 	image_path = g_strdup_printf ("%s/%s.png", piece_directory, piece_name);	
-	pixbuf = gdk_pixbuf_new_from_file (image_path);
+	pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 	if (pixbuf == NULL) {
 		g_warning ("cant load tab piece: %s", image_path);
 	}
@@ -1356,7 +1355,7 @@ nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabIte
 		if (tab_image_name != NULL) {
 			image_path = nautilus_theme_get_image_path (tab_image_name);
 			if (image_path != NULL) {
-				tab_item->indicator_pixbuf = gdk_pixbuf_new_from_file (image_path);	
+				tab_item->indicator_pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);	
 				g_free (image_path);
 			}
 		}

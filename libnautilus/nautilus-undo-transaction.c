@@ -31,7 +31,6 @@
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 #define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
 
@@ -40,8 +39,8 @@ typedef struct {
 	NautilusUndoTransaction *bonobo_object;
 } impl_POA_Nautilus_Undo_Transaction;
 
-static void                    nautilus_undo_transaction_initialize_class         (NautilusUndoTransactionClass *class);
-static void                    nautilus_undo_transaction_initialize               (NautilusUndoTransaction      *item);
+static void                    nautilus_undo_transaction_class_init         (NautilusUndoTransactionClass *class);
+static void                    nautilus_undo_transaction_init               (NautilusUndoTransaction      *item);
 static void                    nautilus_undo_transaction_destroy                  (GtkObject                    *object);
 static void                    nautilus_undo_transaction_undo                     (NautilusUndoTransaction      *transaction);
 
@@ -59,64 +58,7 @@ static void                    impl_Nautilus_Undo_Transaction__undo             
 static void                    undo_atom_list_free                                (GList                        *list);
 static void                    undo_atom_list_undo_and_free                       (GList                        *list);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
-
-static POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
-{
-	NULL,
-	&impl_Nautilus_Undo_Transaction__get_undo_menu_item,
-	&impl_Nautilus_Undo_Transaction__get_redo_menu_item,
-	&impl_Nautilus_Undo_Transaction__get_operation_name,
-	&impl_Nautilus_Undo_Transaction__undo
-};
-
-static PortableServer_ServantBase__epv base_epv;
-static POA_Nautilus_Undo_Transaction__vepv vepv =
-{
-	&base_epv,
-	NULL,
-	&libnautilus_Nautilus_Undo_Transaction_epv
-};
-
-static void
-impl_Nautilus_Undo_Transaction__destroy (BonoboObject *object,
-					 PortableServer_Servant servant)
-{
-	PortableServer_ObjectId *object_id;
-	CORBA_Environment ev;
-
-  	CORBA_exception_init (&ev);
-
-  	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-  	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-  	CORBA_free (object_id);
-  	object->servant = NULL;
-
-  	POA_Nautilus_Undo_Transaction__fini (servant, &ev);
-  	g_free (servant);
-
-  	CORBA_exception_free (&ev);
-}
-
-static Nautilus_Undo_Transaction
-impl_Nautilus_Undo_Transaction__create (NautilusUndoTransaction *bonobo_object,
-					CORBA_Environment *ev)
-{
-	impl_POA_Nautilus_Undo_Transaction *servant;
-
-	servant = g_new0 (impl_POA_Nautilus_Undo_Transaction, 1);
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	servant->servant.vepv = &vepv;
-  	POA_Nautilus_Undo_Transaction__init ((PortableServer_Servant) servant, ev);
-
-  	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
-			    GTK_SIGNAL_FUNC (impl_Nautilus_Undo_Transaction__destroy),
-			    servant);
-
-  	servant->bonobo_object = bonobo_object;
-  	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
-}
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
 
 static Nautilus_Undo_MenuItem *
 impl_Nautilus_Undo_Transaction__get_undo_menu_item (PortableServer_Servant servant,
@@ -193,14 +135,8 @@ nautilus_undo_transaction_new (const char *operation_name,
 }
 
 static void 
-nautilus_undo_transaction_initialize (NautilusUndoTransaction *transaction)
+nautilus_undo_transaction_init (NautilusUndoTransaction *transaction)
 {
-	CORBA_Environment ev;	
-
-	CORBA_exception_init (&ev);
-	bonobo_object_construct (BONOBO_OBJECT (transaction), 
-				 impl_Nautilus_Undo_Transaction__create (transaction, &ev));
-  	CORBA_exception_free (&ev);
 }
 
 
@@ -258,9 +194,16 @@ nautilus_undo_transaction_destroy (GtkObject *object)
 }
 
 static void
-nautilus_undo_transaction_initialize_class (NautilusUndoTransactionClass *klass)
+nautilus_undo_transaction_class_init (NautilusUndoTransactionClass *klass)
 {
+	POA_Nautilus_Undo_Transaction__epv *epv = &klass->epv;
+
 	GTK_OBJECT_CLASS (klass)->destroy = nautilus_undo_transaction_destroy;
+	
+	epv->_get_undo_menu_item = &impl_Nautilus_Undo_Transaction__get_undo_menu_item;
+	epv->_get_redo_menu_item = &impl_Nautilus_Undo_Transaction__get_redo_menu_item;
+	epv->_get_operation_name = &impl_Nautilus_Undo_Transaction__get_operation_name;
+	epv->undo = &impl_Nautilus_Undo_Transaction__undo;
 }
 
 void

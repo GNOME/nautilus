@@ -37,8 +37,8 @@ typedef struct {
 } impl_POA_Nautilus_Undo_Context;
 
 /* GtkObject */
-static void                  nautilus_undo_context_initialize_class       (NautilusUndoContextClass *class);
-static void                  nautilus_undo_context_initialize             (NautilusUndoContext      *item);
+static void                  nautilus_undo_context_class_init       (NautilusUndoContextClass *class);
+static void                  nautilus_undo_context_init             (NautilusUndoContext      *item);
 static void                  destroy                                      (GtkObject                *object);
 
 /* CORBA/Bonobo */
@@ -128,7 +128,7 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 }
 
 static void 
-nautilus_undo_context_initialize (NautilusUndoContext *context)
+nautilus_undo_context_init (NautilusUndoContext *context)
 {
 	CORBA_Environment ev;	
 	
@@ -157,7 +157,7 @@ destroy (GtkObject *object)
 }
 
 static void
-nautilus_undo_context_initialize_class (NautilusUndoContextClass *klass)
+nautilus_undo_context_class_init (NautilusUndoContextClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 }

@@ -45,8 +45,8 @@ struct NautilusDesktopWindowDetails {
 	GList *unref_list;
 };
 
-static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass);
-static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
+static void nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass);
+static void nautilus_desktop_window_init       (NautilusDesktopWindow      *window);
 static void destroy                                  (GtkObject                  *object);
 static void realize                                  (GtkWidget                  *widget);
 static void map                                      (GtkWidget                  *widget);
@@ -58,7 +58,7 @@ static void set_wmspec_desktop_hint                   (GdkWindow *window);
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
 static void
-nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
+nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 	GTK_WIDGET_CLASS (klass)->realize = realize;
@@ -68,7 +68,7 @@ nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
 }
 
 static void
-nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
+nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
@@ -151,7 +151,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (nautilus_desktop_window_delete_event), NULL);
 
 	/* Point window at the desktop folder.
-	 * Note that nautilus_desktop_window_initialize is too early to do this.
+	 * Note that nautilus_desktop_window_init is too early to do this.
 	 */
 	nautilus_desktop_window_update_directory (window);
 

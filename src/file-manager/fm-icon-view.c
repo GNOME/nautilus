@@ -47,7 +47,6 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -120,8 +119,8 @@ typedef enum {
 
 /* forward declarations */
 static void                 create_icon_container                              (FMIconView            *icon_view);
-static void                 fm_icon_view_initialize                            (FMIconView            *icon_view);
-static void                 fm_icon_view_initialize_class                      (FMIconViewClass       *klass);
+static void                 fm_icon_view_init                            (FMIconView            *icon_view);
+static void                 fm_icon_view_class_init                      (FMIconViewClass       *klass);
 static void                 fm_icon_view_set_directory_sort_by                 (FMIconView            *icon_view,
 										NautilusFile          *file,
 										const char            *sort_by);
@@ -867,7 +866,7 @@ get_sort_criterion_by_metadata_text (const char *metadata_text)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].metadata_text, metadata_text) == 0) {
 			return &sort_criteria[i];
 		}
@@ -881,7 +880,7 @@ get_sort_criterion_by_id (const char *id)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (strcmp (sort_criteria[i].id, id) == 0) {
 			return &sort_criteria[i];
 		}
@@ -895,7 +894,7 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
-	for (i = 0; i < EEL_N_ELEMENTS (sort_criteria); i++) {
+	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
 		if (sort_type == sort_criteria[i].sort_type) {
 			return &sort_criteria[i];
 		}
@@ -2687,7 +2686,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 }
 
 static void
-fm_icon_view_initialize_class (FMIconViewClass *klass)
+fm_icon_view_class_init (FMIconViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -2743,7 +2742,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 }
 
 static void
-fm_icon_view_initialize (FMIconView *icon_view)
+fm_icon_view_init (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
 

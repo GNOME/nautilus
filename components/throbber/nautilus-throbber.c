@@ -32,7 +32,6 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -68,8 +67,8 @@ struct NautilusThrobberDetails {
 };
 
 
-static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
-static void     nautilus_throbber_initialize		 (NautilusThrobber *throbber);
+static void     nautilus_throbber_class_init	 (NautilusThrobberClass *klass);
+static void     nautilus_throbber_init		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_destroy		 (GtkObject *object);
 static void     nautilus_throbber_draw			 (GtkWidget *widget, 
 							  GdkRectangle *box);
@@ -96,7 +95,7 @@ static void     nautilus_throbber_remove_update_callback (NautilusThrobber *thro
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
 
 static void
-nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
+nautilus_throbber_class_init (NautilusThrobberClass *throbber_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (throbber_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (throbber_class);
@@ -269,7 +268,7 @@ null_pointer_callback (GtkObject *object,
 
 /* initialize the throbber */
 static void
-nautilus_throbber_initialize (NautilusThrobber *throbber)
+nautilus_throbber_init (NautilusThrobber *throbber)
 {
 	char *delay_str;
 	GtkWidget *widget = GTK_WIDGET (throbber);
@@ -566,7 +565,7 @@ load_themed_image (const char *file_name, const char *image_theme, gboolean smal
 	}
 	
 	if (image_path) {
-		pixbuf = gdk_pixbuf_new_from_file (image_path);
+		pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 		
 		if (small_mode && pixbuf) {
 			temp_pixbuf = gdk_pixbuf_scale_simple (pixbuf,

@@ -63,8 +63,8 @@ typedef struct {
 #define HISTORY_VIEW_COLUMN_COUNT	2
 
 static GtkType nautilus_history_view_get_type         (void);
-static void    nautilus_history_view_initialize_class (NautilusHistoryViewClass *klass);
-static void    nautilus_history_view_initialize       (NautilusHistoryView      *view);
+static void    nautilus_history_view_class_init (NautilusHistoryViewClass *klass);
+static void    nautilus_history_view_init       (NautilusHistoryView      *view);
 static void    nautilus_history_view_destroy          (GtkObject                *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
@@ -265,7 +265,7 @@ history_changed_callback (NautilusHistoryView *view,
 }
 
 static void
-nautilus_history_view_initialize_class (NautilusHistoryViewClass *klass)
+nautilus_history_view_class_init (NautilusHistoryViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -275,7 +275,7 @@ nautilus_history_view_initialize_class (NautilusHistoryViewClass *klass)
 }
 
 static void
-nautilus_history_view_initialize (NautilusHistoryView *view)
+nautilus_history_view_init (NautilusHistoryView *view)
 {
 	GtkCList *list;
 	GtkWidget *window;
@@ -350,6 +350,6 @@ main (int argc, char *argv[])
 					    FACTORY_IID,
 					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    nautilus_global_preferences_initialize,
+					    nautilus_global_preferences_init,
 					    nautilus_history_view_get_type);
 }

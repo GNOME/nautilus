@@ -243,7 +243,7 @@ main (int argc, char *argv[])
 
 	test_init (&argc, &argv);
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	window = test_window_new (NULL, 4);
 	test_window_set_title_with_pid (GTK_WINDOW (window), "Preferences Display");

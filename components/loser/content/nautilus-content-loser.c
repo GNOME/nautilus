@@ -32,7 +32,7 @@
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <eel/eel-gtk-macros.h>
 #include <stdio.h>
@@ -43,8 +43,8 @@ struct NautilusContentLoserDetails {
 	NautilusView *nautilus_view;
 };
 
-static void nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass);
-static void nautilus_content_loser_initialize       (NautilusContentLoser      *view);
+static void nautilus_content_loser_class_init (NautilusContentLoserClass *klass);
+static void nautilus_content_loser_init       (NautilusContentLoser      *view);
 static void nautilus_content_loser_destroy          (GtkObject                 *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
@@ -59,7 +59,7 @@ static void nautilus_content_loser_fail       (void);
 static void ensure_fail_env                   (void);
 
 static void
-nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass)
+nautilus_content_loser_class_init (NautilusContentLoserClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -69,7 +69,7 @@ nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass)
 }
 
 static void
-nautilus_content_loser_initialize (NautilusContentLoser *view)
+nautilus_content_loser_init (NautilusContentLoser *view)
 {
 	view->details = g_new0 (NautilusContentLoserDetails, 1);
 	

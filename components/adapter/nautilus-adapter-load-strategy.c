@@ -53,8 +53,8 @@ static guint signals[LAST_SIGNAL];
 
 
 
-static void nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClass *klass);
-static void nautilus_adapter_load_strategy_initialize       (NautilusAdapterLoadStrategy      *strategy);
+static void nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *klass);
+static void nautilus_adapter_load_strategy_init       (NautilusAdapterLoadStrategy      *strategy);
 static void nautilus_adapter_load_strategy_destroy          (GtkObject                        *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterLoadStrategy, nautilus_adapter_load_strategy, GTK_TYPE_OBJECT)
@@ -63,7 +63,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, load_locatio
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, stop_loading)
 
 static void
-nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClass *klass)
+nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -76,39 +76,41 @@ nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClas
 
 
 	signals[REPORT_LOAD_UNDERWAY] =
-		gtk_signal_new ("report_load_underway",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_underway),
-			       gtk_marshal_NONE__NONE,
-			       GTK_TYPE_NONE, 0);
+		g_signal_new ("report_load_underway",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_underway),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[REPORT_LOAD_PROGRESS] =
-		gtk_signal_new ("report_load_progress",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
-			       eel_gtk_marshal_NONE__DOUBLE,
-			       GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
+		g_signal_new ("report_load_progress",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
+		              NULL, NULL,
+		              eel_gtk_marshal_NONE__DOUBLE,
+		              G_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
 	signals[REPORT_LOAD_COMPLETE] =
-		gtk_signal_new ("report_load_complete",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_complete),
-			       gtk_marshal_NONE__NONE,
-			       GTK_TYPE_NONE, 0);
+		g_signal_new ("report_load_complete",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_complete),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 	signals[REPORT_LOAD_FAILED] =
-		gtk_signal_new ("report_load_failed",
-			       GTK_RUN_LAST,
-			       object_class->type,
-			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_failed),
-			       gtk_marshal_NONE__NONE,
-			       GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("report_load_failed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_failed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 }
 
 static void
-nautilus_adapter_load_strategy_initialize (NautilusAdapterLoadStrategy *strategy)
+nautilus_adapter_load_strategy_init (NautilusAdapterLoadStrategy *strategy)
 {
 
 }

@@ -152,7 +152,7 @@ main (int argc, char *argv[])
 
 	test_init (&argc, &argv);
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	user_level_entries = eel_string_list_new_from_tokens ("Beginner,Intermediate,Advanced", ",", TRUE);
 	color_entries = eel_string_list_new_from_tokens ("0,1,2,3,4,5,6,7,8,9,10", ",", TRUE);

@@ -35,7 +35,6 @@
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-trash-directory.h"
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <string.h>
 
@@ -77,9 +76,9 @@ static const char * const delegated_attributes[] = {
 	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES
 };
 
-static void nautilus_trash_file_initialize       (gpointer   object,
+static void nautilus_trash_file_init       (gpointer   object,
 						  gpointer   klass);
-static void nautilus_trash_file_initialize_class (gpointer   klass);
+static void nautilus_trash_file_class_init (gpointer   klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
 				   nautilus_trash_file,
@@ -92,7 +91,7 @@ is_delegated_attribute (const char *attribute)
 
 	g_return_val_if_fail (attribute != NULL, FALSE);
 
-	for (i = 0; i < EEL_N_ELEMENTS (delegated_attributes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (delegated_attributes); i++) {
 		if (strcmp (attribute, delegated_attributes[i]) == 0) {
 			return TRUE;
 		}
@@ -735,7 +734,7 @@ remove_all_real_files (NautilusTrashFile *trash)
 }
 
 static void
-nautilus_trash_file_initialize (gpointer object, gpointer klass)
+nautilus_trash_file_init (gpointer object, gpointer klass)
 {
 	NautilusTrashFile *trash_file;
 	NautilusTrashDirectory *trash_directory;
@@ -805,7 +804,7 @@ trash_destroy (GtkObject *object)
 }
 
 static void
-nautilus_trash_file_initialize_class (gpointer klass)
+nautilus_trash_file_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusFileClass *file_class;

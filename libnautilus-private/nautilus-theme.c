@@ -37,7 +37,6 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-util.h>
@@ -338,7 +337,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	
 	pixbuf_file = nautilus_pixmap_file (theme_preview_name);
 	if (pixbuf_file != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 		g_free (pixbuf_file);
 		return pixbuf;
 	} else {
@@ -348,7 +347,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 		g_free (user_themes_directory);
 		
 		if (g_file_exists (pixbuf_file)) {
-			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 			g_free (pixbuf_file);
 			return pixbuf;
 		}  else {
@@ -406,7 +405,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 		}
 	
 	} else {
-		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 	}
 	
 	g_free (pixbuf_file);

@@ -6,10 +6,7 @@ INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
 	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned	\
-	$(NAUTILUS_PRIVATE_CFLAGS)			\
-	$(ESD_CFLAGS)					\
-	$(MEDUSA_CFLAGS) 				\
-	$(LIBRSVG_CFLAGS)				\
+	$(LIBNAUTILUS_PRIVATE_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
@@ -27,10 +24,7 @@ endif
 
 libnautilus_private_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
-	$(ESD_LIBS)			\
-	$(LIBJPEG) 			\
-	$(MEDUSA_LIBS) 			\
-	$(FAM_LIBS) 			\
+	$(LIBNAUTILUS_PRIVATE_LIBS)	\
 	$(CDDALIBADD)			\
 	$(NULL)
 
@@ -55,8 +49,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory-metafile.c \
 	nautilus-directory.c \
 	nautilus-drag-window.c \
-	nautilus-druid-page-eazel.c \
-	nautilus-druid.c \
 	nautilus-entry.c \
 	nautilus-file-changes-queue.c \
 	nautilus-file-dnd.c \
@@ -184,8 +176,8 @@ $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
 nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
-	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-metafile-server.idl
-	touch nautilus_metafile_server_idl_stamp
+	$(ORBIT_IDL) -I$(top_srcdir) $(LIBNAUTILUS_PRIVATE_IDL_INCLUDES) $<
+	touch $@
 
 $(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp
 

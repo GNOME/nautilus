@@ -81,7 +81,6 @@ struct NautilusDirectoryDetails
 
 	NautilusFile *load_directory_file;
 	int load_file_count;
-	GnomeVFSDirectoryFilter *load_file_count_filter;
 	GHashTable *load_mime_list_hash;
 
 	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */

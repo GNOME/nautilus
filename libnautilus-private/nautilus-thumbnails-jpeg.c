@@ -83,7 +83,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	src = (Source *) cinfo->src;
 	result = gnome_vfs_read (src->handle,
 				 src->buffer,
-				 EEL_N_ELEMENTS (src->buffer),
+				 G_N_ELEMENTS (src->buffer),
 				 &nbytes);
 	
 	if (result != GNOME_VFS_OK || nbytes == 0) {

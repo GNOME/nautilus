@@ -33,7 +33,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <gtk/gtksignal.h>
-#include <libgnorba/gnorba.h>
 #include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -86,8 +85,8 @@ static void nautilus_hardware_view_drag_data_received (GtkWidget                
                                                        GtkSelectionData          *selection_data,
                                                        guint                      info,
                                                        guint                      time);
-static void nautilus_hardware_view_initialize_class   (NautilusHardwareViewClass *klass);
-static void nautilus_hardware_view_initialize         (NautilusHardwareView      *view);
+static void nautilus_hardware_view_class_init   (NautilusHardwareViewClass *klass);
+static void nautilus_hardware_view_init         (NautilusHardwareView      *view);
 static void nautilus_hardware_view_destroy            (GtkObject                 *object);
 static void hardware_view_load_location_callback      (NautilusView              *view,
                                                        const char                *location,
@@ -100,7 +99,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_
 #define HARDWARE_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
 static void
-nautilus_hardware_view_initialize_class (NautilusHardwareViewClass *klass)
+nautilus_hardware_view_class_init (NautilusHardwareViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -152,7 +151,7 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 
 /* initialize ourselves by connecting to the load_location signal and allocating our subviews */
 static void
-nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
+nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 {
   	EelBackground *background;
 	hardware_view->details = g_new0 (NautilusHardwareViewDetails, 1);
@@ -172,7 +171,7 @@ nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (hardware_view),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   hardware_dnd_target_table, EEL_N_ELEMENTS (hardware_dnd_target_table), GDK_ACTION_COPY);
+			   hardware_dnd_target_table, G_N_ELEMENTS (hardware_dnd_target_table), GDK_ACTION_COPY);
  
  	/* allocate a property bag to specify the name of the icon for this component */
 	hardware_view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, hardware_view);

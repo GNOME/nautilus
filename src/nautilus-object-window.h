@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_WINDOW_H
 #define NAUTILUS_WINDOW_H
 
-#include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-window.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-view-identifier.h>

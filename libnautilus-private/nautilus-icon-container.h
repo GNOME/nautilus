@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_ICON_CONTAINER_H
 #define NAUTILUS_ICON_CONTAINER_H
 
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 #include "nautilus-icon-factory.h"
 #include <eel/eel-scalable-font.h>
 

@@ -49,6 +49,7 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_spot;
+	POA_Nautilus_View__epv epv;
 	
 	void (* load_location)     (NautilusView          *view,
 		                    const char            *location_uri);

@@ -30,15 +30,16 @@
 #include <config.h>
 #include "nautilus-view-standard-main.h"
 
+#include <X11/Xlib.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define N_IDLE_SECONDS_BEFORE_QUIT  5
 
@@ -109,7 +110,7 @@ make_object (BonoboGenericFactory *factory,
 		callback_data->delayed_quit_timeout_id = 0;
 	}
 	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    object_destroyed, callback_data);
+			    G_CALLBACK (object_destroyed), callback_data);
 
 	return BONOBO_OBJECT (view);
 }
@@ -184,18 +185,25 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	}
 #endif
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
+#endif
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+#if GNOME2_CONVERSION_COMPLETE
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+#endif
+	orb = bonobo_activation_init (argc, argv);
 
 	/* Initialize libraries. */
+#if GNOME2_CONVERSION_COMPLETE
         gnome_init (executable_name, version, argc, argv); 
-	gdk_rgb_init ();
+#endif
 	g_thread_init (NULL);
 	gnome_vfs_init ();
+#if GNOME2_CONVERSION_COMPLETE
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+#endif
 
 	if (post_initialize_callback != NULL) {
 		(* post_initialize_callback) ();
@@ -209,11 +217,11 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-        registration_id = oaf_make_registration_id (factory_iid, 
+        registration_id = bonobo_activation_make_registration_id (factory_iid, 
 						    DisplayString (GDK_DISPLAY ()));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    make_object,
-						    &callback_data);
+	factory = bonobo_generic_factory_new (registration_id, 
+					      make_object,
+					      &callback_data);
 	g_free (registration_id);
 
 	/* Loop until we have no more objects. */

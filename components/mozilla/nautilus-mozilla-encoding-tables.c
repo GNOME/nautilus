@@ -29,7 +29,6 @@
 #include <config.h>
 
 #include "nautilus-mozilla-encoding-tables.h"
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <string.h>
 

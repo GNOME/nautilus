@@ -34,7 +34,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -79,8 +79,8 @@ static POA_Nautilus_ComponentAdapterFactory__vepv impl_Nautilus_ComponentAdapter
 
 
 
-static void nautilus_adapter_factory_server_initialize_class (NautilusAdapterFactoryServerClass *klass);
-static void nautilus_adapter_factory_server_initialize       (NautilusAdapterFactoryServer      *server);
+static void nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass);
+static void nautilus_adapter_factory_server_init       (NautilusAdapterFactoryServer      *server);
 static void nautilus_adapter_factory_server_destroy          (GtkObject                      *object);
 
 
@@ -91,7 +91,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFactoryServer,
 
      
 static void
-nautilus_adapter_factory_server_initialize_class (NautilusAdapterFactoryServerClass *klass)
+nautilus_adapter_factory_server_class_init (NautilusAdapterFactoryServerClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -103,7 +103,7 @@ nautilus_adapter_factory_server_initialize_class (NautilusAdapterFactoryServerCl
 }
 
 static void
-nautilus_adapter_factory_server_initialize (NautilusAdapterFactoryServer *server)
+nautilus_adapter_factory_server_init (NautilusAdapterFactoryServer *server)
 {
 	CORBA_Environment ev;
 

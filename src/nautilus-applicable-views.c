@@ -96,7 +96,7 @@ got_file_info_callback (NautilusFile *file,
         GnomeVFSResult vfs_result_code;
         NautilusDetermineViewResult result_code;
         NautilusViewIdentifier *default_id;
-        OAF_ServerInfo *default_component;
+        Bonobo_ServerInfo *default_component;
         
         handle = (NautilusDetermineViewHandle *) callback_data;
         

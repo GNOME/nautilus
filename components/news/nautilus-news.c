@@ -37,7 +37,6 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkvbox.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 
@@ -1178,7 +1177,7 @@ extract_items (RSSChannelData *channel_data, xmlNodePtr container_node)
 	char *title, *temp_str;
 	gboolean scripting_news_format;
 	
-	current_node = container_node->childs;
+	current_node = container_node->children;
 	item_count = 0;
 	while (current_node != NULL) {
 		if (eel_strcmp (current_node->name, "item") == 0) {
@@ -1495,7 +1494,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	/* flag the update time */
 	time (&channel_data->last_update);
 
-	/* Parse the rss file with gnome-xml. The gnome-xml parser requires a zero-terminated array. */
+	/* Parse the rss file with libxml. The libxml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, file_size + 1);
 	buffer[file_size] = '\0';
 	rss_document = xmlParseMemory (buffer, file_size);
@@ -1618,7 +1617,7 @@ nautilus_news_add_channels (News *news_data, xmlDocPtr channels)
 	/* walk through the children of the root object, generating new channel
 	 * objects and adding them to the channel list 
 	 */
-	current_channel = xmlDocGetRootElement (channels)->childs;
+	current_channel = xmlDocGetRootElement (channels)->children;
 	while (current_channel != NULL) {
 		if (eel_strcmp (current_channel->name, "rss_channel") == 0) { 				
 			name = xmlGetProp (current_channel, "name");
@@ -1762,7 +1761,7 @@ nautilus_news_load_images (News *news_data)
 	
 	news_bullet_path = nautilus_theme_get_image_path ("news_bullet.png");	
 	if (news_bullet_path != NULL) {
-		news_data->bullet = gdk_pixbuf_new_from_file (news_bullet_path);
+		news_data->bullet = gdk_pixbuf_new_from_file (news_bullet_path, NULL);
 		g_free (news_bullet_path);
 	}
 
@@ -1772,7 +1771,7 @@ nautilus_news_load_images (News *news_data)
 	
 	news_bullet_path = nautilus_theme_get_image_path ("changed_bullet.png");	
 	if (news_bullet_path != NULL) {
-		news_data->changed_bullet = gdk_pixbuf_new_from_file (news_bullet_path);
+		news_data->changed_bullet = gdk_pixbuf_new_from_file (news_bullet_path, NULL);
 		g_free (news_bullet_path);
 	}
 
@@ -2162,7 +2161,7 @@ add_channels_to_lists (News* news_data)
 	/* loop through the channel entries, adding an entry to the configure
 	 * list for each entry in the file
 	 */
-	current_channel = xmlDocGetRootElement (channel_doc)->childs;
+	current_channel = xmlDocGetRootElement (channel_doc)->children;
 	channel_index = 0;
 	while (current_channel != NULL) {
 		if (eel_strcmp (current_channel->name, "rss_channel") == 0) { 				
@@ -2544,6 +2543,6 @@ main(int argc, char *argv[])
                                             "OAFIID:nautilus_news_view_factory:041601",
                                             "OAFIID:nautilus_news_view:041601",
                                             make_news_view,
-                                            nautilus_global_preferences_initialize,
+                                            nautilus_global_preferences_init,
                                             NULL);
 }

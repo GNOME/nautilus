@@ -54,7 +54,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -150,8 +149,8 @@ static GtkTargetEntry target_table[] = {
 static void real_destroy                          (GtkObject               *object);
 static void real_finalize                         (GtkObject               *object);
 static void real_shutdown                         (GtkObject               *object);
-static void fm_properties_window_initialize_class (FMPropertiesWindowClass *class);
-static void fm_properties_window_initialize       (FMPropertiesWindow      *window);
+static void fm_properties_window_class_init (FMPropertiesWindowClass *class);
+static void fm_properties_window_init       (FMPropertiesWindow      *window);
 static void create_properties_window_callback     (NautilusFile		   *file,
 						   gpointer                 data);
 static void cancel_group_change_callback          (gpointer                 callback_data);
@@ -172,7 +171,7 @@ static void remove_pending_file                   (StartupData             *data
 EEL_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
 
 static void
-fm_properties_window_initialize_class (FMPropertiesWindowClass *class)
+fm_properties_window_class_init (FMPropertiesWindowClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -184,7 +183,7 @@ fm_properties_window_initialize_class (FMPropertiesWindowClass *class)
 }
 
 static void
-fm_properties_window_initialize (FMPropertiesWindow *window)
+fm_properties_window_init (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
 
@@ -287,7 +286,7 @@ uri_is_local_image (const char *uri)
 		return FALSE;
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (image_path);
+	pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 	g_free (image_path);
 	
 	if (pixbuf == NULL) {
@@ -358,7 +357,7 @@ create_image_widget_for_file (NautilusFile *file)
 	/* prepare the image to receive dropped objects to assign custom images */
 	gtk_drag_dest_set (GTK_WIDGET (image),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
-			   target_table, EEL_N_ELEMENTS (target_table),
+			   target_table, G_N_ELEMENTS (target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	gtk_signal_connect( GTK_OBJECT (image), "drag_data_received",

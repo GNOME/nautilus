@@ -34,7 +34,6 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libnautilus-private/nautilus-directory.h>
@@ -60,8 +59,8 @@ static guint signals[LAST_SIGNAL];
 static char *nautilus_switchable_navigation_bar_get_location     (NautilusNavigationBar                *bar);
 static void  nautilus_switchable_navigation_bar_set_location     (NautilusNavigationBar                *bar,
 								  const char                           *location);
-static void  nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *class);
-static void  nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
+static void  nautilus_switchable_navigation_bar_class_init (NautilusSwitchableNavigationBarClass *class);
+static void  nautilus_switchable_navigation_bar_init       (NautilusSwitchableNavigationBar      *bar);
 static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
@@ -69,7 +68,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static void
-nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *klass)
+nautilus_switchable_navigation_bar_class_init (NautilusSwitchableNavigationBarClass *klass)
 {
 	
 	GtkObjectClass *object_class;
@@ -78,16 +77,15 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 	object_class = GTK_OBJECT_CLASS (klass);
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
 
-	signals[MODE_CHANGED] = gtk_signal_new
+	signals[MODE_CHANGED] = g_signal_new
 		("mode_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusSwitchableNavigationBarClass,
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusSwitchableNavigationBarClass,
 				    mode_changed),
-		 gtk_marshal_NONE__STRING,
-		 GTK_TYPE_NONE, 1, GTK_TYPE_INT);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__STRING,
+		 G_TYPE_NONE, 1, GTK_TYPE_INT);
 	
 	object_class->destroy = nautilus_switchable_navigation_bar_destroy;
 
@@ -96,7 +94,7 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 }
 
 static void
-nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *bar)
+nautilus_switchable_navigation_bar_init (NautilusSwitchableNavigationBar *bar)
 {
 
 

@@ -196,14 +196,14 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 	view->details->dnd->drag_info = g_new0 (EelDragInfo, 1);
 	eel_drag_init (view->details->dnd->drag_info,
 			    nautilus_tree_view_dnd_target_table,
-			    EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			    G_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
 			    NULL);
 
 
 	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
 			   0,
 			   nautilus_tree_view_dnd_target_table,
-			   EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			   G_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
 			   GDK_ACTION_COPY 
 			   | GDK_ACTION_MOVE 
 			   | GDK_ACTION_LINK 
@@ -395,7 +395,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	if (nautilus_tree_view_dnd_target_list == NULL)
 		nautilus_tree_view_dnd_target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table,
-									  EEL_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
+									  G_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;

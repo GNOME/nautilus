@@ -66,8 +66,8 @@ typedef struct {
 static NautilusFontFactory *global_font_factory = NULL;
 
 static GtkType nautilus_font_factory_get_type         (void);
-static void    nautilus_font_factory_initialize_class (NautilusFontFactoryClass *class);
-static void    nautilus_font_factory_initialize       (NautilusFontFactory      *factory);
+static void    nautilus_font_factory_class_init (NautilusFontFactoryClass *class);
+static void    nautilus_font_factory_init       (NautilusFontFactory      *factory);
 static void    destroy                                (GtkObject                *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory,
@@ -101,19 +101,21 @@ nautilus_font_factory_get (void)
 }
 
 static void
-nautilus_font_factory_initialize (NautilusFontFactory *factory)
+nautilus_font_factory_init (NautilusFontFactory *factory)
 {
         factory->fonts = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 static void
-nautilus_font_factory_initialize_class (NautilusFontFactoryClass *class)
+nautilus_font_factory_class_init (NautilusFontFactoryClass *class)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
 	object_class->destroy = destroy;
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static FontHashNode *
 font_hash_node_alloc (const char *name)
@@ -127,6 +129,8 @@ font_hash_node_alloc (const char *name)
 
 	return node;
 }
+
+#endif
 
 static void
 font_hash_node_free (FontHashNode *node)
@@ -167,6 +171,8 @@ destroy (GtkObject *object)
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static FontHashNode *
 font_hash_node_lookup (const char *name)
@@ -276,7 +282,7 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	static gboolean icon_view_font_auto_value_registered;
 	static const char *icon_view_font_auto_value;
 
-	/* Can't initialize this in initialize_class, because no font factory
+	/* Can't initialize this in class_init, because no font factory
 	 * instance may yet exist when this is called.
 	 */
 	if (!icon_view_font_auto_value_registered) {
@@ -290,3 +296,5 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	 */
 	return nautilus_font_factory_get_font_by_family (icon_view_font_auto_value, size_in_pixels);
 }
+
+#endif

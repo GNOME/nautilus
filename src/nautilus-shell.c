@@ -43,7 +43,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -65,8 +65,8 @@ struct NautilusShellDetails {
 	NautilusApplication *application;
 };
 
-static void     nautilus_shell_initialize       (NautilusShell          *shell);
-static void     nautilus_shell_initialize_class (NautilusShellClass     *klass);
+static void     nautilus_shell_init       (NautilusShell          *shell);
+static void     nautilus_shell_class_init (NautilusShellClass     *klass);
 static void     destroy                         (GtkObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
@@ -90,7 +90,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusShell,
 				   BONOBO_OBJECT_TYPE)
 
 static void
-nautilus_shell_initialize_class (NautilusShellClass *klass)
+nautilus_shell_class_init (NautilusShellClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 }
@@ -140,7 +140,7 @@ nautilus_shell_create_servant (void)
 }
 
 static void
-nautilus_shell_initialize (NautilusShell *shell)
+nautilus_shell_init (NautilusShell *shell)
 {
 	Nautilus_Shell corba_shell;
 

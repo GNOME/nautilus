@@ -253,7 +253,7 @@ set_up_bonobo_control (BonoboControl *control)
 	CORBA_exception_init (&ev);
 
 	/* Find the undo manager. */
-	control_frame = bonobo_control_get_control_frame (control);
+	control_frame = bonobo_control_get_control_frame (control, &ev);
 	if (!CORBA_Object_is_nil (control_frame, &ev)) {
 		undo_context = Bonobo_Control_queryInterface
 			(control_frame, "IDL:Nautilus/Undo/Context:1.0", &ev);

@@ -83,8 +83,8 @@ static void     nautilus_tree_view_update_all_icons  (NautilusTreeView      *vie
 static void     cancel_possible_activation           (NautilusTreeView      *view);
 static void     nautilus_tree_view_update_model_node (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
-static void     nautilus_tree_view_initialize_class  (NautilusTreeViewClass *klass);
-static void     nautilus_tree_view_initialize        (NautilusTreeView      *view);
+static void     nautilus_tree_view_class_init  (NautilusTreeViewClass *klass);
+static void     nautilus_tree_view_init        (NautilusTreeView      *view);
 static void     register_unparented_node             (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
 static void     forget_unparented_node               (NautilusTreeView      *view,
@@ -1031,7 +1031,7 @@ tree_unmap_callback (GtkWidget *widget,
 }
 
 static void
-nautilus_tree_view_initialize (NautilusTreeView *view)
+nautilus_tree_view_init (NautilusTreeView *view)
 {
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
 
@@ -1619,7 +1619,7 @@ nautilus_tree_view_update_all_icons (NautilusTreeView *view)
 }
 
 static void
-nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass)
+nautilus_tree_view_class_init (NautilusTreeViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	

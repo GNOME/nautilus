@@ -34,16 +34,16 @@ struct NautilusVFSDirectoryDetails {
 	char dummy; /* ANSI C does not allow empty structs */
 };
 
-static void nautilus_vfs_directory_initialize       (gpointer   object,
+static void nautilus_vfs_directory_init       (gpointer   object,
 						     gpointer   klass);
-static void nautilus_vfs_directory_initialize_class (gpointer   klass);
+static void nautilus_vfs_directory_class_init (gpointer   klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
 				   nautilus_vfs_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
 
 static void
-nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
+nautilus_vfs_directory_init (gpointer object, gpointer klass)
 {
 	NautilusVFSDirectory *directory;
 
@@ -179,7 +179,7 @@ vfs_is_not_empty (NautilusDirectory *directory)
 }
 
 static void
-nautilus_vfs_directory_initialize_class (gpointer klass)
+nautilus_vfs_directory_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;

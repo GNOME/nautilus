@@ -64,7 +64,7 @@ kill_sound_if_necessary (void)
 /* initialize_sound is called at application start up time.  It puts the sound system
    into a quiescent state */
 void
-nautilus_sound_initialize (void)
+nautilus_sound_init (void)
 { 	
 	eel_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
 	eel_gconf_suggest_sync ();
@@ -96,7 +96,7 @@ nautilus_sound_register_sound (pid_t sound_process)
 
 /* This function does two things. First it checks to see a sound is currently playing.  If it is,
  * it returns the process id of the external application playing the sound. If no sound is playing,
- * it return the value set in nautilus_sound_initialize() when system audio output capabilites
+ * it return the value set in nautilus_sound_init() when system audio output capabilites
  * were queried.
  */
 gboolean

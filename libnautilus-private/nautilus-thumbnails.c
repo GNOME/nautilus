@@ -687,7 +687,7 @@ nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_fr
 	int left_offset, top_offset, right_offset, bottom_offset;
 	char c;
 	
-	pixbuf = gdk_pixbuf_new_from_file (path);
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 	if (pixbuf == NULL || pixbuf_is_framed (pixbuf)) {
 		return pixbuf;
 	}

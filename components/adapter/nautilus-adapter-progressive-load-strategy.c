@@ -54,8 +54,8 @@ struct NautilusAdapterProgressiveLoadStrategyDetails {
 };
 
 
-static void nautilus_adapter_progressive_load_strategy_initialize_class (NautilusAdapterProgressiveLoadStrategyClass *klass);
-static void nautilus_adapter_progressive_load_strategy_initialize       (NautilusAdapterProgressiveLoadStrategy      *strategy);
+static void nautilus_adapter_progressive_load_strategy_class_init (NautilusAdapterProgressiveLoadStrategyClass *klass);
+static void nautilus_adapter_progressive_load_strategy_init       (NautilusAdapterProgressiveLoadStrategy      *strategy);
 static void nautilus_adapter_progressive_load_strategy_destroy          (GtkObject                              *object);
 
 static void nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStrategy *strategy,
@@ -68,7 +68,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterProgressiveLoadStrategy, nautilus_a
 
 
 static void
-nautilus_adapter_progressive_load_strategy_initialize_class (NautilusAdapterProgressiveLoadStrategyClass *klass)
+nautilus_adapter_progressive_load_strategy_class_init (NautilusAdapterProgressiveLoadStrategyClass *klass)
 {
 	GtkObjectClass                   *object_class;
 	NautilusAdapterLoadStrategyClass *adapter_load_strategy_class;
@@ -84,7 +84,7 @@ nautilus_adapter_progressive_load_strategy_initialize_class (NautilusAdapterProg
 }
 
 static void
-nautilus_adapter_progressive_load_strategy_initialize (NautilusAdapterProgressiveLoadStrategy *strategy)
+nautilus_adapter_progressive_load_strategy_init (NautilusAdapterProgressiveLoadStrategy *strategy)
 {
 	strategy->details = g_new0 (NautilusAdapterProgressiveLoadStrategyDetails, 1);
 }

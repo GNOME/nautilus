@@ -46,11 +46,7 @@
 #include <libxml/parser.h>
 #include <grp.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-metadata.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
@@ -59,6 +55,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <time.h>
 
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5*60)
@@ -104,8 +101,8 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *symbolic_links;
 
-static void     nautilus_file_initialize_class    (NautilusFileClass *klass);
-static void     nautilus_file_initialize          (NautilusFile      *file);
+static void     nautilus_file_class_init    (NautilusFileClass *klass);
+static void     nautilus_file_init          (NautilusFile      *file);
 static void     destroy                           (GtkObject         *object);
 static char *   nautilus_file_get_owner_as_string (NautilusFile      *file,
 						   gboolean           include_real_name);
@@ -116,7 +113,7 @@ static gboolean update_info_and_name              (NautilusFile      *file,
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
 
 static void
-nautilus_file_initialize_class (NautilusFileClass *klass)
+nautilus_file_class_init (NautilusFileClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -125,26 +122,26 @@ nautilus_file_initialize_class (NautilusFileClass *klass)
 	object_class->destroy = destroy;
 
 	signals[CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusFileClass, changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusFileClass, changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 
 	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
-		gtk_signal_new ("updated_deep_count_in_progress",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("updated_deep_count_in_progress",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 }
 
 static void
-nautilus_file_initialize (NautilusFile *file)
+nautilus_file_init (NautilusFile *file)
 {
 	file->details = g_new0 (NautilusFileDetails, 1);
 }
@@ -1013,7 +1010,9 @@ nautilus_file_rename (NautilusFile *file,
 		g_free (uri);
 
 		if (path != NULL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 			gnome_metadata_set (path, "icon-caption", strlen (new_name) + 1, new_name);
+#endif
 			g_free (path);
 		
 			(* callback) (file, GNOME_VFS_OK, callback_data);
@@ -1078,6 +1077,7 @@ nautilus_file_rename (NautilusFile *file,
 				       GNOME_VFS_SET_FILE_INFO_NAME,
 				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       GNOME_VFS_PRIORITY_DEFAULT,
 				       rename_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (vfs_uri);
@@ -2144,7 +2144,9 @@ nautilus_file_set_metadata (NautilusFile *file,
 			icon_path = gnome_vfs_get_local_path_from_uri (metadata);
 
 			if (local_path != NULL && icon_path != NULL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 				gnome_metadata_set (local_path, "icon-filename", strlen (icon_path)+1, icon_path);
+#endif
 			}
 
 			g_free (icon_path);
@@ -3027,6 +3029,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
 				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       GNOME_VFS_PRIORITY_DEFAULT,
 				       set_permissions_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (vfs_uri);
@@ -3285,6 +3288,7 @@ set_owner_and_group (NautilusFile *file,
 				       GNOME_VFS_SET_FILE_INFO_OWNER,
 				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       GNOME_VFS_PRIORITY_DEFAULT,
 				       set_owner_and_group_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (uri);
@@ -5036,7 +5040,7 @@ nautilus_file_list_ref (GList *list)
 void
 nautilus_file_list_unref (GList *list)
 {
-	eel_g_list_safe_for_each (list, (GFunc) nautilus_file_unref, NULL);
+	g_list_foreach (list, (GFunc) nautilus_file_unref, NULL);
 }
 
 /**
@@ -5161,8 +5165,8 @@ nautilus_self_check_file (void)
 
 	file_1 = nautilus_file_get ("file:///home/");
 
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1->details->directory)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1->details->directory)->ref_count, 1);
         EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
 
 	nautilus_file_unref (file_1);
@@ -5178,13 +5182,13 @@ nautilus_self_check_file (void)
 
         nautilus_file_list_ref (list);
         
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 2);
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 2);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 2);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 2);
 
 	nautilus_file_list_unref (list);
         
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 1);
 
 	nautilus_file_list_free (list);
 
@@ -5224,8 +5228,8 @@ nautilus_self_check_file (void)
 	file_1 = nautilus_file_get ("file:///etc");
 	file_2 = nautilus_file_get ("file:///usr");
 
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
-	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
+	EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 1);
 
 	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE) < 0, TRUE);
 	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, TRUE) > 0, TRUE);

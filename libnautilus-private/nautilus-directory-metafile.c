@@ -31,7 +31,7 @@
 #include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-metafile-server.h"
 #include <eel/eel-string.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <stdio.h>
 
 static Nautilus_MetafileFactory factory = CORBA_OBJECT_NIL;
@@ -61,7 +61,7 @@ die_on_failed_activation (const char *server_name,
 	 */
 
 	const char *details;
-	OAF_GeneralError *general_error;
+	Bonobo_GeneralError *general_error;
 
 	switch (ev->_major) {
 	case CORBA_NO_EXCEPTION:
@@ -71,7 +71,7 @@ die_on_failed_activation (const char *server_name,
 	case CORBA_SYSTEM_EXCEPTION:
 	case CORBA_USER_EXCEPTION:
 		details = CORBA_exception_id (ev);
-		if (strcmp (details, "IDL:OAF/GeneralError:1.0") == 0) {
+		if (strcmp (details, "IDL:Bonobo/GeneralError:1.0") == 0) {
 			general_error = CORBA_exception_value (ev);
 			details = general_error->description;
 		}
@@ -83,7 +83,7 @@ die_on_failed_activation (const char *server_name,
 	}
 
 	g_error ("Failed to activate the server %s; this may indicate a broken\n"
-		 "Nautilus or OAF installation, or may reflect a bug in something,\n"
+		 "Nautilus or Bonobo installation, or may reflect a bug in something,\n"
 		 "or may mean that your PATH or LD_LIBRARY_PATH or the like is\n"
 		 "incorrect. Nautilus will dump core and exit.\n"
 		 "Details: '%s'", server_name, details);
@@ -99,7 +99,7 @@ get_factory (void)
 		if (get_factory_from_oaf) {
 			CORBA_exception_init (&ev);
 
-			factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0,
+			factory = bonobo_activation_activate_from_id (METAFILE_FACTORY_IID, 0,
 							NULL, &ev);
 			if (ev._major != CORBA_NO_EXCEPTION || factory == CORBA_OBJECT_NIL) {
 				die_on_failed_activation ("Nautilus_MetafileFactory", &ev);

@@ -33,7 +33,6 @@
 #ifndef NAUTILUS_VIEW_FRAME_H
 #define NAUTILUS_VIEW_FRAME_H
 
-#include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <eel/eel-generous-bin.h>

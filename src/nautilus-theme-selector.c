@@ -42,7 +42,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -76,8 +75,8 @@ typedef enum
 static guint theme_selector_signals[LAST_SIGNAL];
 
 /* GtkObjectClass methods */
-static void     nautilus_theme_selector_initialize_class              (NautilusThemeSelectorClass  *theme_selector_class);
-static void     nautilus_theme_selector_initialize                    (NautilusThemeSelector       *theme_selector);
+static void     nautilus_theme_selector_class_init              (NautilusThemeSelectorClass  *theme_selector_class);
+static void     nautilus_theme_selector_init                    (NautilusThemeSelector       *theme_selector);
 static void     theme_selector_destroy                                (GtkObject                   *object);
 
 /* Private stuff */
@@ -104,7 +103,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GT
 
 /* NautilusThemeSelectorClass methods */
 static void
-nautilus_theme_selector_initialize_class (NautilusThemeSelectorClass *theme_selector_class)
+nautilus_theme_selector_class_init (NautilusThemeSelectorClass *theme_selector_class)
 {
 	GtkObjectClass *object_class;
 
@@ -114,15 +113,14 @@ nautilus_theme_selector_initialize_class (NautilusThemeSelectorClass *theme_sele
 	object_class->destroy = theme_selector_destroy;
 
 	/* Signals */
-	theme_selector_signals[THEME_CHANGED] = gtk_signal_new ("theme_changed",
-							       GTK_RUN_LAST,
-							       object_class->type,
-							       0,
-							       gtk_marshal_NONE__STRING,
-							       GTK_TYPE_NONE, 
-							       0);
-	
-	gtk_object_class_add_signals (object_class, theme_selector_signals, LAST_SIGNAL);
+	theme_selector_signals[THEME_CHANGED] = g_signal_new
+		("theme_changed",
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 0,
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__STRING,
+		 G_TYPE_NONE, 0);
 }
 
 static void
@@ -147,7 +145,7 @@ make_widgets_same_size (GtkWidget *one, GtkWidget *two)
 }
 
 static void
-nautilus_theme_selector_initialize (NautilusThemeSelector *theme_selector)
+nautilus_theme_selector_init (NautilusThemeSelector *theme_selector)
 {
 	GtkWidget *button_box;
 	GtkWidget *alignment_box;

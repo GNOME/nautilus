@@ -33,9 +33,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gtkpixmapmenuitem.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -61,8 +59,8 @@ struct NautilusBookmarkDetails
 
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
-static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass *class);
-static void       nautilus_bookmark_initialize            (NautilusBookmark      *bookmark);
+static void       nautilus_bookmark_class_init      (NautilusBookmarkClass *class);
+static void       nautilus_bookmark_init            (NautilusBookmark      *bookmark);
 static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
@@ -91,7 +89,7 @@ nautilus_bookmark_destroy (GtkObject *object)
 /* Initialization.  */
 
 static void
-nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
+nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -100,27 +98,27 @@ nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
 	object_class->destroy = nautilus_bookmark_destroy;
 
 	signals[APPEARANCE_CHANGED] =
-		gtk_signal_new ("appearance_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, appearance_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("appearance_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkClass, appearance_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 
 	signals[CONTENTS_CHANGED] =
-		gtk_signal_new ("contents_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, contents_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("contents_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 				
 }
 
 static void
-nautilus_bookmark_initialize (NautilusBookmark *bookmark)
+nautilus_bookmark_init (NautilusBookmark *bookmark)
 {
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }
@@ -472,7 +470,7 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	
 	if (bookmark->details->file != NULL) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark->details->file),
-					       bookmark_file_changed_callback,
+					       G_CALLBACK (bookmark_file_changed_callback),
 					       bookmark);
 		nautilus_file_unref (bookmark->details->file);
 		bookmark->details->file = NULL;
@@ -499,7 +497,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 
 		gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
 				    "changed",
-				    bookmark_file_changed_callback,
+				    G_CALLBACK (bookmark_file_changed_callback),
 				    bookmark);
 	}	
 
@@ -572,12 +570,18 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 	 * user data. For now let's not let them be turn-offable and see if
 	 * anyone objects strenuously.
 	 */
+#if GNOME2_CONVERSION_COMPLETE
 	menu_item = gtk_pixmap_menu_item_new ();
+#else
+	menu_item = NULL;
+#endif
 
 	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
 	if (pixmap_widget != NULL) {
 		gtk_widget_show (pixmap_widget);
+#if GNOME2_CONVERSION_COMPLETE
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
+#endif
 	}
 	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
 	label = gtk_label_new (display_name);

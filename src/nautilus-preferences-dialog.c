@@ -584,7 +584,7 @@ preferences_dialog_destroy (void)
 static GtkWidget *
 global_preferences_get_dialog (void)
 {
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 	
 	if (preferences_dialog == NULL) {
 		preferences_dialog = preferences_dialog_create ();

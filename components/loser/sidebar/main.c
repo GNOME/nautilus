@@ -28,7 +28,7 @@
 #include "nautilus-sidebar-loser.h"
 
 #include <gnome.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
 
 	nautilus_sidebar_loser_maybe_fail ("pre-init");
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
         gnome_init ("nautilus-sidebar-loser", VERSION, 
 		    argc, argv); 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
 
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
+        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    loser_make_object,
 						    NULL);

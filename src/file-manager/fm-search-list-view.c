@@ -70,9 +70,9 @@ struct FMSearchListViewDetails {
 	BonoboUIComponent *ui;
 };
 
-static void 	fm_search_list_view_initialize       	 (gpointer          object,
+static void 	fm_search_list_view_init       	 (gpointer          object,
 						      	  gpointer          klass);
-static void 	fm_search_list_view_initialize_class 	 (gpointer          klass);
+static void 	fm_search_list_view_class_init 	 (gpointer          klass);
 static void     real_destroy                             (GtkObject        *object);
 static void 	real_add_file				 (FMDirectoryView  *view,
 							  NautilusFile 	   *file);
@@ -333,7 +333,7 @@ display_system_services_are_disabled_dialog (gboolean unindexed_search_is_availa
 #endif	
 
 static void
-fm_search_list_view_initialize_class (gpointer klass)
+fm_search_list_view_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -369,7 +369,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 }
 
 static void
-fm_search_list_view_initialize (gpointer object,
+fm_search_list_view_init (gpointer object,
 				gpointer klass)
 {
 	FMSearchListView *search_view;

@@ -3,7 +3,6 @@
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
 #include <gtk/gtkctree.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-theme.h>
@@ -80,7 +79,7 @@ ensure_pixmap_and_mask (GdkPixmap **pixmap, GdkBitmap **mask, const char *name)
 		return;
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (fullname);
+	pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
 	if (pixbuf == NULL) {
 		return;
 	}

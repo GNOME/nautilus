@@ -26,7 +26,6 @@
 
 #include <config.h>
 #include "nautilus-medusa-support.h"
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <eel/eel-glib-extensions.h>

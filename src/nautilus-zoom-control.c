@@ -28,7 +28,6 @@
 #include <config.h>
 #include "nautilus-zoom-control.h"
 
-#include <libgnome/gnome-defs.h>
 
 #include <math.h>
 #include <gnome.h>
@@ -88,8 +87,8 @@ struct NautilusZoomControlDetails {
 
 static guint signals[LAST_SIGNAL];
 
-static void     nautilus_zoom_control_initialize_class 	 (NautilusZoomControlClass *klass);
-static void     nautilus_zoom_control_initialize       	 (NautilusZoomControl *zoom_control);
+static void     nautilus_zoom_control_class_init 	 (NautilusZoomControlClass *klass);
+static void     nautilus_zoom_control_init       	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_destroy		 (GtkObject *object);
 static void     nautilus_zoom_control_draw 	       	 (GtkWidget *widget, 
 							  GdkRectangle *box);
@@ -118,7 +117,7 @@ void            draw_number		                 (GtkWidget *widget,
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_EVENT_BOX)
 
 static void
-nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_class)
+nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (zoom_control_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (zoom_control_class);
@@ -134,44 +133,46 @@ nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_c
 	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
 	
 	signals[ZOOM_IN] =
-		gtk_signal_new ("zoom_in",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
+		g_signal_new ("zoom_in",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_in),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_OUT] =
-		gtk_signal_new ("zoom_out",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
+		g_signal_new ("zoom_out",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_out),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_TO_LEVEL] =
-		gtk_signal_new ("zoom_to_level",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
+		g_signal_new ("zoom_to_level",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_level),
-				eel_gtk_marshal_NONE__DOUBLE,
-				GTK_TYPE_NONE,
+		              NULL, NULL,
+		              eel_gtk_marshal_NONE__DOUBLE,
+		              G_TYPE_NONE,
 				1,
 				GTK_TYPE_DOUBLE);
 
 	signals[ZOOM_TO_FIT] =
-		gtk_signal_new ("zoom_to_fit",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
+		g_signal_new ("zoom_to_fit",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_fit),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
 }
 
 static void 
@@ -205,7 +206,7 @@ get_zoom_width (NautilusZoomControl *zoom_control)
 }
 
 static void
-nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
+nautilus_zoom_control_init (NautilusZoomControl *zoom_control)
 {
 	GtkWidget *widget = GTK_WIDGET (zoom_control);
 	int	  zoom_width;
@@ -501,7 +502,7 @@ load_themed_image (const char *file_name)
 	
 	image_path = nautilus_theme_get_image_path (file_name);
 	if (image_path) {
-		pixbuf = gdk_pixbuf_new_from_file (image_path);
+		pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
 		g_free (image_path);
 		return pixbuf;
 	}

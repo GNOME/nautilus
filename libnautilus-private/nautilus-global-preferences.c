@@ -882,18 +882,18 @@ get_default_folder_viewer_preference_from_iid (const char *iid)
 static gpointer
 default_default_folder_viewer_callback (int user_level)
 {
-	OAF_ServerInfo *oaf_info;
+	Bonobo_ServerInfo *bonobo_activation_info;
 	int result;
 
-	oaf_info = gnome_vfs_mime_get_default_component ("x-directory/normal");
-	if (oaf_info == NULL) {
+	bonobo_activation_info = gnome_vfs_mime_get_default_component ("x-directory/normal");
+	if (bonobo_activation_info == NULL) {
 		result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
 	} else {
-		result = get_default_folder_viewer_preference_from_iid (oaf_info->iid);
+		result = get_default_folder_viewer_preference_from_iid (bonobo_activation_info->iid);
 		if (result == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
 			result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
 		}
-		CORBA_free (oaf_info);
+		CORBA_free (bonobo_activation_info);
 	}
 
 	return GINT_TO_POINTER (result);
@@ -1072,7 +1072,7 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 }
 
 void
-nautilus_global_preferences_initialize (void)
+nautilus_global_preferences_init (void)
 {
 	static gboolean initialized = FALSE;
 
@@ -1082,7 +1082,7 @@ nautilus_global_preferences_initialize (void)
 
 	initialized = TRUE;
 
-	eel_preferences_initialize ("/apps/nautilus");
+	eel_preferences_init ("/apps/nautilus");
 
 	/* Install defaults */
 	global_preferences_install_defaults ();

@@ -48,8 +48,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -496,7 +496,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	if (drop_types_list == NULL)
 		drop_types_list = gtk_target_list_new (drop_types,
-						       EEL_N_ELEMENTS (drop_types));
+						       G_N_ELEMENTS (drop_types));
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;
@@ -1211,7 +1211,7 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 
 	container->details->dnd_info = g_new0 (NautilusIconDndInfo, 1);
 	eel_drag_init (&container->details->dnd_info->drag_info,
-		drag_types, EEL_N_ELEMENTS (drag_types), stipple);
+		drag_types, G_N_ELEMENTS (drag_types), stipple);
 
 	/* Set up the widget as a drag destination.
 	 * (But not a source, as drags starting from this widget will be
@@ -1219,7 +1219,7 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	 */
 	gtk_drag_dest_set  (GTK_WIDGET (container),
 			    0,
-			    drop_types, EEL_N_ELEMENTS (drop_types),
+			    drop_types, G_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
 			    | GDK_ACTION_ASK);
 

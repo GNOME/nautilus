@@ -1,11 +1,11 @@
 #include <errno.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <gnome.h>
 #include <bonobo.h>
 #include <zvt/zvtterm.h>
 
 #include <popt.h>
-extern struct poptOption oaf_popt_options[];
+extern struct poptOption bonobo_activation_popt_options[];
 
 static BonoboObject *
 shell_factory (BonoboGenericFactory *Factory, void *closure)
@@ -39,7 +39,7 @@ shell_factory_init (void)
     if (xterm_factory != NULL)
 	return;
 
-    registration_id = oaf_make_registration_id (, g_getenv ("DISPLAY"));
+    registration_id = bonobo_activation_make_registration_id (, g_getenv ("DISPLAY"));
     factory = bonobo_generic_factory_new_multi "OAFIID:shell_factory:10a7d344-c4cd-402f-9e05-bd591bbc5618", shell_factory, NULL);
     g_free (registration_id);
 
@@ -57,8 +57,8 @@ init_bonobo (int argc, char **argv)
     /* Disable session manager connection */
     gnome_client_disable_master_connection ();
 
-    gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-    orb = oaf_init (argc, argv);
+    gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+    orb = bonobo_activation_init (argc, argv);
 
     gnome_init_with_popt_table ("xterm-control-factory", "0.0",
 				argc, argv);

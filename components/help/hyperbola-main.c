@@ -26,7 +26,7 @@
 #include <eel/eel-debug.h>
 #include <gnome.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 #include "hyperbola-nav.h"
 
@@ -94,9 +94,9 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnomelib_register_popt_table (oaf_popt_options,
-				      oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options,
+				      bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
 	gnome_init ("hyperbola", VERSION, argc, argv);
 
@@ -104,10 +104,10 @@ main (int argc, char *argv[])
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	registration_id =
-		oaf_make_registration_id
+		bonobo_activation_make_registration_id
 		("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb",
 		 g_getenv ("DISPLAY"));
 	factory =

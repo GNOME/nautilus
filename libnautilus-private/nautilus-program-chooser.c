@@ -42,9 +42,8 @@
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 
 enum {
@@ -146,7 +145,7 @@ program_file_pair_set_file (ProgramFilePair *pair, NautilusFile *file)
 }
 
 static ProgramFilePair *
-program_file_pair_new_from_content_view (OAF_ServerInfo *content_view, NautilusFile *file)
+program_file_pair_new_from_content_view (Bonobo_ServerInfo *content_view, NautilusFile *file)
 {
 	ProgramFilePair *new_pair;
 
@@ -358,7 +357,7 @@ repopulate_program_list (GnomeDialog *program_chooser,
 
 		if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 			pair = program_file_pair_new_from_content_view
-				((OAF_ServerInfo *)program->data, file);
+				((Bonobo_ServerInfo *)program->data, file);
 		} else {
 			pair = program_file_pair_new_from_application
 				((GnomeVFSMimeApplication *)program->data, file);
@@ -468,7 +467,7 @@ compare_mime_applications (GnomeVFSMimeApplication *app_1, GnomeVFSMimeApplicati
 }
 
 static gint
-compare_component_with_view (OAF_ServerInfo *info, NautilusViewIdentifier *identifier)
+compare_component_with_view (Bonobo_ServerInfo *info, NautilusViewIdentifier *identifier)
 {
 	return strcmp (info->iid, identifier->iid);
 }
@@ -492,7 +491,7 @@ is_application_default_for_type (GnomeVFSMimeApplication *application, const cha
 static gboolean
 is_component_default_for_type (NautilusViewIdentifier *identifier, const char *mime_type)
 {
-	OAF_ServerInfo *default_component;
+	Bonobo_ServerInfo *default_component;
 	gboolean result;
 
 	g_assert (identifier != NULL);
@@ -525,7 +524,7 @@ is_application_default_for_file (GnomeVFSMimeApplication *application,
 static gboolean
 is_component_default_for_file (NautilusViewIdentifier *identifier, NautilusFile *file)
 {
-	OAF_ServerInfo *default_component;
+	Bonobo_ServerInfo *default_component;
 	gboolean result;
 
 	g_assert (identifier != NULL);

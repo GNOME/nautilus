@@ -30,7 +30,7 @@
 #include <eel/eel-debug.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 static int object_count = 0;
 
@@ -45,12 +45,12 @@ hardware_view_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 hardware_view_make_object (BonoboGenericFactory *factory, 
-			   const char *oaf_iid, 
+			   const char *bonobo_activation_iid, 
 			   void *closure)
 {
 	NautilusView *view;
 
-	if (strcmp (oaf_iid, "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
+	if (strcmp (bonobo_activation_iid, "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
 		return NULL;
 	}
 	
@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
 	
 	CORBA_exception_init(&ev);
 	
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
         gnome_init ("nautilus-hardware-view", VERSION, 
 		    argc, argv); 
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce", 
+        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce", 
 						    getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    hardware_view_make_object,

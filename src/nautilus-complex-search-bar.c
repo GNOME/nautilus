@@ -67,8 +67,8 @@ static void  real_activate				  (NautilusNavigationBar	       *bar);
 static char *nautilus_complex_search_bar_get_location     (NautilusNavigationBar         *bar);
 static void  nautilus_complex_search_bar_set_location     (NautilusNavigationBar         *bar,
 							   const char                    *location);
-static void  nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *class);
-static void  nautilus_complex_search_bar_initialize       (NautilusComplexSearchBar      *bar);
+static void  nautilus_complex_search_bar_class_init (NautilusComplexSearchBarClass *class);
+static void  nautilus_complex_search_bar_init       (NautilusComplexSearchBar      *bar);
 static void  nautilus_complex_search_bar_destroy 	  (GtkObject 			 *object);
 static void  attach_criterion_to_search_bar               (NautilusComplexSearchBar      *bar,
 							   NautilusSearchBarCriterion    *criterion,
@@ -169,7 +169,7 @@ queue_search_bar_resize_callback (GtkObject *search_bar,
 }
      
 static void
-nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *klass)
+nautilus_complex_search_bar_class_init (NautilusComplexSearchBarClass *klass)
 {
 	GtkObjectClass *object_class;
 	NautilusNavigationBarClass *navigation_bar_class;
@@ -185,7 +185,7 @@ nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *kla
 }
 
 static void
-nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
+nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 {
 	NautilusSearchBarCriterion *file_name_criterion;
 	GtkWidget *hbox;
@@ -455,7 +455,7 @@ load_find_them_pixmap_widget (void)
 	GdkBitmap *mask;
 	GtkWidget *widget;
 	
-	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
+	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png", NULL);
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (pixbuf);

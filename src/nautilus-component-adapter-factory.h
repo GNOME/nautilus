@@ -30,7 +30,6 @@
 #define NAUTILUS_COMPONENT_ADAPTER_FACTORY_H
 
 #include <gtk/gtkobject.h>
-#include <bonobo/bonobo-object-client.h>
 #include <libnautilus/nautilus-view-component.h>
 
 typedef struct NautilusComponentAdapterFactory NautilusComponentAdapterFactory;

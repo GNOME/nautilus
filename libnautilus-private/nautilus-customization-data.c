@@ -28,7 +28,6 @@
 #include <config.h>
 #include <ctype.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 
@@ -40,7 +39,6 @@
 #include <gtk/gtk.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <string.h>
-#include <libgnome/gnome-defs.h>
 #include <stdlib.h>
 
 #include "nautilus-customization-data.h"
@@ -110,7 +108,7 @@ nautilus_customization_data_new (const char *customization_name,
 		public_result = gnome_vfs_directory_list_load (&data->public_file_list,
 							       public_directory_uri,
 							       GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
+							       | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 		g_free (public_directory_uri);
 	}
 
@@ -118,7 +116,7 @@ nautilus_customization_data_new (const char *customization_name,
 	private_result = gnome_vfs_directory_list_load (&data->private_file_list,
 							private_directory_uri,
 							GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
+							| GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	g_free (private_directory_uri);
 	if (public_result != GNOME_VFS_OK && 
 	    private_result != GNOME_VFS_OK) {
@@ -138,7 +136,7 @@ nautilus_customization_data_new (const char *customization_name,
 	/* load the frame if necessary */
 	if (!strcmp(customization_name, "patterns")) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str);
+		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);
 		g_free (temp_str);
 	} else {
 		data->pattern_frame = NULL;
@@ -208,7 +206,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	image_file_name = get_file_path_for_mode (data,
 						  current_file_info->name);
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);	
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);	
 	g_free (image_file_name);
 
 	is_reset_image = eel_strcmp(current_file_info->name, RESET_IMAGE_NAME) == 0;
@@ -266,7 +264,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 	gnome_vfs_file_info_list_free (data->private_file_list);
 
 	if (data->name_map_hash != NULL) {
-		eel_g_hash_table_destroy_deep (data->name_map_hash);	
+		g_hash_table_destroy (data->name_map_hash);	
 	}
 	
 	g_free (data->customization_name);
@@ -454,7 +452,7 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 	xmlNodePtr category_node, current_node;
 	
 	/* allocate the hash table */
-	data->name_map_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	data->name_map_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	
 	/* build the path name to the browser.xml file and load it */
 	xml_path = nautilus_make_path (NAUTILUS_DATADIR, "browser.xml");
@@ -465,14 +463,14 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 		if (browser_data) {
 			/* get the category node */
 			category_node = eel_xml_get_root_child_by_name_and_property (browser_data, "category", "name", data->customization_name);
-			current_node = category_node->childs;	
+			current_node = category_node->children;	
 			
 			/* loop through the entries, adding a mapping to the hash table */
 			while (current_node != NULL) {
 				display_name = eel_xml_get_property_translated (current_node, "display_name");
 				filename = xmlGetProp (current_node, "filename");
 				if (display_name && filename) {
-					g_hash_table_insert (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
+					g_hash_table_replace (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
 				}
 				xmlFree (filename);		
 				xmlFree (display_name);

@@ -71,9 +71,9 @@
 #define MAX_TITLE_FONT_SIZE 	 20
 #define TITLE_PADDING		  4
 
-static void                nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
+static void                nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *klass);
 static void                nautilus_sidebar_title_destroy          (GtkObject                 *object);
-static void                nautilus_sidebar_title_initialize       (NautilusSidebarTitle      *pixmap);
+static void                nautilus_sidebar_title_init       (NautilusSidebarTitle      *pixmap);
 static void                nautilus_sidebar_title_size_allocate    (GtkWidget                 *widget,
 								    GtkAllocation             *allocation);
 static void                nautilus_sidebar_title_theme_changed    (gpointer                   user_data);
@@ -103,7 +103,7 @@ struct NautilusSidebarTitleDetails {
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
 
 static void
-nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
+nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -193,7 +193,7 @@ non_smooth_font_changed_callback (gpointer callback_data)
 }
 
 static void
-nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
+nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 { 
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 

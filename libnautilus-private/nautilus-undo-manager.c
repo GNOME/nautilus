@@ -68,8 +68,8 @@ typedef struct {
 } UndoMenuHandlerConnection;
 
 /* GtkObject */
-static void nautilus_undo_manager_initialize_class (NautilusUndoManagerClass  *class);
-static void nautilus_undo_manager_initialize       (NautilusUndoManager       *item);
+static void nautilus_undo_manager_class_init (NautilusUndoManagerClass  *class);
+static void nautilus_undo_manager_init       (NautilusUndoManager       *item);
 static void destroy                                (GtkObject                 *object);
 
 /* CORBA/Bonobo */
@@ -237,7 +237,7 @@ nautilus_undo_manager_new (void)
 }
 
 static void
-nautilus_undo_manager_initialize (NautilusUndoManager *manager)
+nautilus_undo_manager_init (NautilusUndoManager *manager)
 {
 	CORBA_Environment ev;
 	
@@ -252,7 +252,7 @@ nautilus_undo_manager_initialize (NautilusUndoManager *manager)
 }
 
 static void
-nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
+nautilus_undo_manager_class_init (NautilusUndoManagerClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -262,16 +262,15 @@ nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
 
 	object_class->destroy = destroy;
 
-	signals[CHANGED] = gtk_signal_new
+	signals[CHANGED] = g_signal_new
 		("changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusUndoManagerClass,
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusUndoManagerClass,
 				    changed),
+		 NULL, NULL,
 		 gtk_marshal_NONE__NONE,
-		 GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);	
+		 G_TYPE_NONE, 0);
 }
 
 void

@@ -1852,7 +1852,7 @@ metafile_read_done_callback (GnomeVFSResult result,
 		return;
 	}
 	
-	/* The gnome-xml parser requires a zero-terminated array. */
+	/* The libxml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, size + 1);
 	buffer[size] = '\0';
 	nautilus_metafile_set_metafile_contents (metafile,

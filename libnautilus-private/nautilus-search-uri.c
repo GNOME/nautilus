@@ -25,7 +25,6 @@
 #include "nautilus-search-uri.h"
 
 /* Must be included before other libgnome headers. */
-#include <libgnome/gnome-defs.h>
 
 #include "nautilus-lib-self-check-functions.h"
 #include <eel/eel-glib-extensions.h>

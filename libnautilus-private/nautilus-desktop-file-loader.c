@@ -1172,7 +1172,7 @@ nautilus_desktop_file_launch (NautilusDesktopFile *df)
 		nautilus_desktop_file_get_string (df, NULL, "URL", &url);
 
 		if (url != NULL) {
-			gnome_url_show (url);
+			gnome_url_show (url, NULL);
 		}
 
 		g_free (url);

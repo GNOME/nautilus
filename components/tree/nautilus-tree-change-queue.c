@@ -37,9 +37,9 @@ struct NautilusTreeChangeQueueDetails {
 
 
 static void nautilus_tree_change_queue_destroy          (GtkObject   *object);
-static void nautilus_tree_change_queue_initialize       (gpointer     object,
+static void nautilus_tree_change_queue_init       (gpointer     object,
 							 gpointer     klass);
-static void nautilus_tree_change_queue_initialize_class (gpointer     klass);
+static void nautilus_tree_change_queue_class_init (gpointer     klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeChangeQueue, nautilus_tree_change_queue, GTK_TYPE_OBJECT)
 
@@ -51,7 +51,7 @@ static NautilusTreeChange *nautilus_tree_change_new     (NautilusTreeChangeType 
 /* type system infrastructure code */
 
 static void
-nautilus_tree_change_queue_initialize_class (gpointer klass)
+nautilus_tree_change_queue_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 
@@ -62,7 +62,7 @@ nautilus_tree_change_queue_initialize_class (gpointer klass)
 }
 
 static void
-nautilus_tree_change_queue_initialize (gpointer object, 
+nautilus_tree_change_queue_init (gpointer object, 
 				       gpointer klass)
 {
 	NautilusTreeChangeQueue *change_queue;

@@ -42,7 +42,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <libgnomecanvas/gnome-canvas-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtklayout.h>
 #include <gtk/gtkmain.h>
@@ -120,8 +120,8 @@ enum {
 };
 
 static void          activate_selected_items                  (NautilusIconContainer      *container);
-static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
-static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
+static void          nautilus_icon_container_class_init (NautilusIconContainerClass *class);
+static void          nautilus_icon_container_init       (NautilusIconContainer      *container);
 static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
 
 static void          compute_stretch                          (StretchState               *start,
@@ -2314,7 +2314,7 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->stretch_idle_id);
 	}
        
-        for (i = 0; i < EEL_N_ELEMENTS (container->details->label_font); i++) {
+        for (i = 0; i < G_N_ELEMENTS (container->details->label_font); i++) {
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
 	}
@@ -3031,7 +3031,7 @@ key_press_event (GtkWidget *widget,
 /* Initialization.  */
 
 static void
-nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
+nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -3048,173 +3048,191 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 	/* Signals.  */
 
 	signals[SELECTION_CHANGED]
-		= gtk_signal_new ("selection_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("selection_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     selection_changed),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 	signals[BUTTON_PRESS]
-		= gtk_signal_new ("button_press",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("button_press",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     button_press),
-				  gtk_marshal_BOOL__POINTER,
-				  GTK_TYPE_BOOL, 1,
-				  GTK_TYPE_GDK_EVENT);
+		                NULL, NULL,
+		                gtk_marshal_BOOL__POINTER,
+		                GTK_TYPE_BOOL, 1,
+				  GDK_TYPE_EVENT);
 	signals[ACTIVATE]
-		= gtk_signal_new ("activate",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("activate",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     activate),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
-		= gtk_signal_new ("context_click_selection",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("context_click_selection",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     context_click_selection),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
-		= gtk_signal_new ("context_click_background",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("context_click_background",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     context_click_background),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[MIDDLE_CLICK]
-		= gtk_signal_new ("middle_click",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("middle_click",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     middle_click),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[ICON_POSITION_CHANGED]
-		= gtk_signal_new ("icon_position_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("icon_position_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_position_changed),
-				  gtk_marshal_NONE__POINTER_POINTER,
-				  GTK_TYPE_NONE, 2,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER_POINTER,
+		                G_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
 	signals[ICON_TEXT_CHANGED]
-		= gtk_signal_new ("icon_text_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("icon_text_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_text_changed),
-				  gtk_marshal_NONE__POINTER_POINTER,
-				  GTK_TYPE_NONE, 2,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER_POINTER,
+		                G_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING);
+				  G_TYPE_STRING);
 	signals[ICON_STRETCH_STARTED]
-		= gtk_signal_new ("icon_stretch_started",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("icon_stretch_started",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_stretch_started),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[ICON_STRETCH_ENDED]
-		= gtk_signal_new ("icon_stretch_ended",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("icon_stretch_ended",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_stretch_ended),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[RENAMING_ICON]
-		= gtk_signal_new ("renaming_icon",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("renaming_icon",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     renaming_icon),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
+		                NULL, NULL,
+		                gtk_marshal_NONE__POINTER,
+		                G_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
 	signals[GET_ICON_IMAGES]
-		= gtk_signal_new ("get_icon_images",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("get_icon_images",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     get_icon_images),
-				  eel_gtk_marshal_POINTER__POINTER_STRING_POINTER,
-				  GTK_TYPE_POINTER, 3,
+		                NULL, NULL,
+		                eel_gtk_marshal_POINTER__POINTER_STRING_POINTER,
+		                GTK_TYPE_POINTER, 3,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING,
+				  G_TYPE_STRING,
 				  GTK_TYPE_POINTER);
 	signals[GET_ICON_TEXT]
-		= gtk_signal_new ("get_icon_text",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("get_icon_text",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     get_icon_text),
-				  eel_gtk_marshal_NONE__POINTER_STRING_STRING,
-				  GTK_TYPE_NONE, 3,
+		                NULL, NULL,
+		                eel_gtk_marshal_NONE__POINTER_STRING_STRING,
+		                G_TYPE_NONE, 3,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING,
-				  GTK_TYPE_STRING);
+				  G_TYPE_STRING,
+				  G_TYPE_STRING);
 	signals[GET_ICON_URI]
-		= gtk_signal_new ("get_icon_uri",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("get_icon_uri",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     get_icon_uri),
-				  eel_gtk_marshal_STRING__POINTER,
-				  GTK_TYPE_STRING, 1,
+		                NULL, NULL,
+		                eel_gtk_marshal_STRING__POINTER,
+		                G_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
 	signals[GET_ICON_DROP_TARGET_URI]
-		= gtk_signal_new ("get_icon_drop_target_uri",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("get_icon_drop_target_uri",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     get_icon_drop_target_uri),
-				  eel_gtk_marshal_STRING__POINTER,
-				  GTK_TYPE_STRING, 1,
+		                NULL, NULL,
+		                eel_gtk_marshal_STRING__POINTER,
+		                G_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
 	signals[COMPARE_ICONS]
-		= gtk_signal_new ("compare_icons",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("compare_icons",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     compare_icons),
-				  eel_gtk_marshal_INT__POINTER_POINTER,
-				  GTK_TYPE_INT, 2,
+		                NULL, NULL,
+		                eel_gtk_marshal_INT__POINTER_POINTER,
+		                GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
 	signals[COMPARE_ICONS_BY_NAME]
-		= gtk_signal_new ("compare_icons_by_name",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("compare_icons_by_name",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     compare_icons_by_name),
-				  eel_gtk_marshal_INT__POINTER_POINTER,
-				  GTK_TYPE_INT, 2,
+		                NULL, NULL,
+		                eel_gtk_marshal_INT__POINTER_POINTER,
+		                GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
-		= gtk_signal_new ("move_copy_items",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+		= g_signal_new ("move_copy_items",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     move_copy_items),
-				  eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
-				  GTK_TYPE_NONE, 6,
+		                NULL, NULL,
+		                eel_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
+		                G_TYPE_NONE, 6,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER,
@@ -3222,82 +3240,88 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
 	signals[HANDLE_URI_LIST] 
-		= gtk_signal_new ("handle_uri_list",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+		= g_signal_new ("handle_uri_list",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
-				  eel_gtk_marshal_NONE__POINTER_INT_INT_INT,
-				  GTK_TYPE_NONE, 4,
+		                NULL, NULL,
+		                eel_gtk_marshal_NONE__POINTER_INT_INT_INT,
+		                G_TYPE_NONE, 4,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
 
 	signals[GET_CONTAINER_URI] 
-		= gtk_signal_new ("get_container_uri",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+		= g_signal_new ("get_container_uri",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     get_container_uri),
-				  eel_gtk_marshal_STRING__NONE,
-				  GTK_TYPE_STRING, 0);
+		                NULL, NULL,
+		                eel_gtk_marshal_STRING__NONE,
+		                G_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
-		= gtk_signal_new ("can_accept_item",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+		= g_signal_new ("can_accept_item",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     can_accept_item),
-				  eel_gtk_marshal_INT__POINTER_STRING,
-				  GTK_TYPE_INT, 2,
+		                NULL, NULL,
+		                eel_gtk_marshal_INT__POINTER_STRING,
+		                GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING);
+				  G_TYPE_STRING);
 	signals[GET_STORED_ICON_POSITION]
-		= gtk_signal_new ("get_stored_icon_position",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("get_stored_icon_position",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     get_stored_icon_position),
-				  eel_gtk_marshal_BOOL__POINTER_POINTER,
-				  GTK_TYPE_BOOL, 2,
+		                NULL, NULL,
+		                eel_gtk_marshal_BOOL__POINTER_POINTER,
+		                GTK_TYPE_BOOL, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
 	signals[LAYOUT_CHANGED]
-		= gtk_signal_new ("layout_changed",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("layout_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     layout_changed),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 	signals[PREVIEW]
-		= gtk_signal_new ("preview",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("preview",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     preview),
-				  eel_gtk_marshal_INT__POINTER_INT,
-				  GTK_TYPE_INT, 2,
+		                NULL, NULL,
+		                eel_gtk_marshal_INT__POINTER_INT,
+		                GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_BOOL);
 	signals[BAND_SELECT_STARTED]
-		= gtk_signal_new ("band_select_started",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("band_select_started",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     band_select_started),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 	signals[BAND_SELECT_ENDED]
-		= gtk_signal_new ("band_select_ended",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+		= g_signal_new ("band_select_ended",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     band_select_ended),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		                NULL, NULL,
+		                gtk_marshal_NONE__NONE,
+		                G_TYPE_NONE, 0);
 
 	/* GtkWidget class.  */
 
@@ -3327,7 +3351,7 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 }
 
 static void
-nautilus_icon_container_initialize (NautilusIconContainer *container)
+nautilus_icon_container_init (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	EelBackground *background;
@@ -5128,7 +5152,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 		gdk_pixbuf_unref (container->details->highlight_frame);
 	}
 	
-	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path);
+	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path, NULL);
 	g_free (text_frame_path);
 
 	/* load the highlight color */	

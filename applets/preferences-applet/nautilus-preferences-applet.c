@@ -212,7 +212,7 @@ main (int argc, char **argv)
 		exit (1);
 	}
 
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 
 	main_hbox = gtk_hbox_new (FALSE, 1);
 

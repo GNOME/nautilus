@@ -44,13 +44,12 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-metadata.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnome/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <popt.h>
 #include <stdlib.h>
 #include <X11/Xlib.h>
@@ -199,13 +198,13 @@ main (int argc, char *argv[])
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
-	gnomelib_register_popt_table (oaf_popt_options, 
-				      oaf_get_popt_table_name ());
+	gnomelib_register_popt_table (bonobo_activation_popt_options, 
+				      bonobo_activation_get_popt_table_name ());
 	gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
 	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
-	orb = oaf_init (argc, argv);
+	orb = bonobo_activation_init (argc, argv);
         gdk_rgb_init ();
 
 	/* Workaround for gnome-libs bug.
@@ -243,7 +242,7 @@ main (int argc, char *argv[])
 	g_thread_init (NULL);
 
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
-		oaf_set_test_components_enabled (TRUE);
+		bonobo_activation_set_test_components_enabled (TRUE);
 	}
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
@@ -253,7 +252,7 @@ main (int argc, char *argv[])
 	 * defaults are available before any preference peeking 
 	 * happens.
 	 */
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init ();
 	if (no_desktop) {
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);

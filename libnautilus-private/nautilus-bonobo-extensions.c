@@ -32,7 +32,6 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <liboaf/oaf-async.h>
 
 struct NautilusBonoboActivationHandle {
 	NautilusBonoboActivationHandle **early_completion_hook;
@@ -548,7 +547,7 @@ activation_cancel (NautilusBonoboActivationHandle *handle)
 }
 
 static void
-oaf_activation_callback (Bonobo_Unknown activated_object, 
+bonobo_activation_activation_callback (Bonobo_Unknown activated_object, 
 			 const char *error_reason, 
 			 gpointer callback_data)
 {
@@ -591,8 +590,8 @@ nautilus_bonobo_activate_from_id (const char *iid,
 	handle->callback = callback;
 	handle->callback_data = callback_data;
 
-	oaf_activate_from_id_async ((char *) iid, 0,
-				    oaf_activation_callback, 
+	bonobo_activation_activate_from_id_async ((char *) iid, 0,
+				    bonobo_activation_activation_callback, 
 				    handle, NULL);
 
 	if (handle != NULL) {

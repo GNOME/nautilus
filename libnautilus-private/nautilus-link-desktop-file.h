@@ -27,8 +27,6 @@
 
 #include "nautilus-file.h"
 #include <gdk/gdk.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-dentry.h>
 
 
 gboolean         nautilus_link_desktop_file_local_create                     (const char        *directory_path,

@@ -42,9 +42,7 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkcheckmenuitem.h>
-#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
@@ -97,8 +95,8 @@ typedef struct {
 	char *mount_path;
 } MountParameters;
 
-static void     fm_desktop_icon_view_initialize                   (FMDesktopIconView      *desktop_icon_view);
-static void     fm_desktop_icon_view_initialize_class             (FMDesktopIconViewClass *klass);
+static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
+static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor   *trash,
 								   gboolean                state,
 								   gpointer                callback_data);
@@ -271,7 +269,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 }
 
 static void
-fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
+fm_desktop_icon_view_class_init (FMDesktopIconViewClass *klass)
 {
 	GtkObjectClass		*object_class;
 	FMDirectoryViewClass	*fm_directory_view_class;
@@ -550,7 +548,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
+fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 {
 	GList *list;
 	NautilusIconContainer *icon_container;

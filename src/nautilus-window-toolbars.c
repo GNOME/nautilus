@@ -42,7 +42,6 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-preferences.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -272,7 +271,7 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	if (icon_file_name == NULL) {
 		pixbuf = get_pixbuf_for_xml_node (window, control_path);
 	} else {
-		pixbuf = gdk_pixbuf_new_from_file (icon_file_name);
+		pixbuf = gdk_pixbuf_new_from_file (icon_file_name, NULL);
 		g_free (icon_file_name);
 	}
 	

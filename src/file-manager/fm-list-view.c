@@ -121,9 +121,9 @@ static GtkWidget *          fm_list_view_get_background_widget        (FMDirecto
 static void                 fm_list_view_clear                        (FMDirectoryView    *view);
 static GList *              fm_list_view_get_selection                (FMDirectoryView    *view);
 static NautilusZoomLevel    fm_list_view_get_zoom_level               (FMListView         *list_view);
-static void                 fm_list_view_initialize                   (gpointer            object,
+static void                 fm_list_view_init                   (gpointer            object,
 								       gpointer            klass);
-static void                 fm_list_view_initialize_class             (gpointer            klass);
+static void                 fm_list_view_class_init             (gpointer            klass);
 static void                 fm_list_view_destroy                      (GtkObject          *object);
 static void                 fm_list_view_end_file_changes             (FMDirectoryView    *view);
 static void                 fm_list_view_reset_to_defaults            (FMDirectoryView    *view);
@@ -189,7 +189,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (FMListView,
 /* GtkObject methods.  */
 
 static void
-fm_list_view_initialize_class (gpointer klass)
+fm_list_view_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -244,7 +244,7 @@ fm_list_view_initialize_class (gpointer klass)
 }
 
 static void
-fm_list_view_initialize (gpointer object, gpointer klass)
+fm_list_view_init (gpointer object, gpointer klass)
 {
 	FMListView *list_view;
 	

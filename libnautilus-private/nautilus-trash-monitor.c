@@ -51,15 +51,15 @@ enum {
 static guint signals[LAST_SIGNAL];
 static NautilusTrashMonitor *nautilus_trash_monitor;
 
-static void nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass);
-static void nautilus_trash_monitor_initialize       (gpointer                   object,
+static void nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass);
+static void nautilus_trash_monitor_init       (gpointer                   object,
 						     gpointer                   klass);
 static void destroy                                 (GtkObject                 *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
 
 static void
-nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
+nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -67,25 +67,25 @@ nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
 
 	object_class->destroy = destroy;
 
-	signals[TRASH_STATE_CHANGED] = gtk_signal_new
+	signals[TRASH_STATE_CHANGED] = g_signal_new
 		("trash_state_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
+		 NULL, NULL,
 		 gtk_marshal_NONE__BOOL,
-		 GTK_TYPE_NONE, 1,
+		 G_TYPE_NONE, 1,
 		 GTK_TYPE_BOOL);
 
-	signals[CHECK_TRASH_DIRECTORY_ADDED] = gtk_signal_new
+	signals[CHECK_TRASH_DIRECTORY_ADDED] = g_signal_new
 		("check_trash_directory_added",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
+		 NULL, NULL,
 		 gtk_marshal_NONE__POINTER,
-		 GTK_TYPE_NONE, 1,
+		 G_TYPE_NONE, 1,
 		 GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -119,7 +119,7 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 }
 
 static void
-nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
+nautilus_trash_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDirectory *trash_directory;
 	NautilusTrashMonitor *trash_monitor;

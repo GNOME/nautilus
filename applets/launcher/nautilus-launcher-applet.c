@@ -63,7 +63,7 @@ create_pixbufs ()
 		
 		path = g_strdup_printf ("%s/pixmaps/%s", DATADIR, ICON_NAME);
 		
-		icon_pixbuf = gdk_pixbuf_new_from_file (path);
+		icon_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 		g_free (path);
 		
 		g_assert (icon_pixbuf != NULL);

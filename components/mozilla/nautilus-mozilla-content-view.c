@@ -49,7 +49,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
 
@@ -118,8 +118,8 @@ typedef struct NautilusMozillaContentViewChrome {
 } NautilusMozillaContentViewChrome;
 
 /* GTK Type System */
-static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
-static void     nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
+static void     nautilus_mozilla_content_view_class_init (NautilusMozillaContentViewClass *klass);
+static void     nautilus_mozilla_content_view_init       (NautilusMozillaContentView      *view);
 static void     nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
 
 
@@ -234,8 +234,8 @@ static gint	string_list_get_index_of_string 		(const char			*string_list[],
 								 guint				num_strings,
 								 const char 			*string);
 
-static void	pre_widget_initialize				(void);
-static void	post_widget_initialize				(void);
+static void	pre_widget_init				(void);
+static void	post_widget_init				(void);
 
 /* BonoboControl callbacks */
 static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
@@ -248,7 +248,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusMozillaContentView,
 			      GTK_TYPE_VBOX);
 
 static void
-nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass)
+nautilus_mozilla_content_view_class_init (NautilusMozillaContentViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
@@ -256,7 +256,7 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 
-	pre_widget_initialize ();
+	pre_widget_init ();
 }
 
 
@@ -305,7 +305,7 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 }
 
 static void
-nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
+nautilus_mozilla_content_view_init (NautilusMozillaContentView *view)
 {
 	view->details = g_new0 (NautilusMozillaContentViewDetails, 1);
 
@@ -319,7 +319,7 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	 * created, otherwise the mozilla runtime environment is not properly
 	 * setup.
 	 */
-	post_widget_initialize ();
+	post_widget_init ();
 
 	/* Add callbacks to the beast */
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
@@ -1858,7 +1858,7 @@ should_uri_navigate_bypass_nautilus (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	return string_list_get_index_of_string (handled_by_nautilus, EEL_N_ELEMENTS (handled_by_nautilus),
+	return string_list_get_index_of_string (handled_by_nautilus, G_N_ELEMENTS (handled_by_nautilus),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
@@ -1875,7 +1875,7 @@ should_mozilla_load_uri_directly (const char *uri)
 		"eazel-services"
 	};
 
-	return string_list_get_index_of_string (handled_by_mozilla, EEL_N_ELEMENTS (handled_by_mozilla),
+	return string_list_get_index_of_string (handled_by_mozilla, G_N_ELEMENTS (handled_by_mozilla),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
@@ -1913,7 +1913,7 @@ string_list_get_index_of_string (const char *string_list[], guint num_strings, c
  */
 
 static void
-pre_widget_initialize (void)
+pre_widget_init (void)
 {
 	const char *profile_directory_name = "MozillaProfile";
 	char *profile_base_path;
@@ -1945,7 +1945,7 @@ pre_widget_initialize (void)
  * is created
  */ 
 static void
-post_widget_initialize (void)
+post_widget_init (void)
 {
 	static gboolean once = FALSE;
 	char *cache_dir;

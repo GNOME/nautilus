@@ -11,9 +11,8 @@
 #define NAUTILUS_ICON_TEXT_ITEM_H
 
 #include <gtk/gtkeditable.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-icon-text.h>
+#include <libgnomecanvas/gnome-canvas.h>
+#include <libgnomecanvas/gnome-icon-text.h>
 
 #define NAUTILUS_ICON_TEXT_ITEM(obj)     (GTK_CHECK_CAST((obj), \
         nautilus_icon_text_item_get_type (), NautilusIconTextItem))

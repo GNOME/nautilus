@@ -80,8 +80,8 @@ main (int argc, char *argv[])
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
+	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
+	orb = bonobo_activation_init (argc, argv);
 
 	gnome_init ("nautilus-throbber", VERSION, argc, argv); 
 	g_thread_init (NULL);
@@ -89,9 +89,9 @@ main (int argc, char *argv[])
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-	nautilus_global_preferences_initialize ();   
+	nautilus_global_preferences_init ();   
 	
-	registration_id = oaf_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
+	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    throbber_make_object,
 						    NULL);

@@ -42,6 +42,9 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+/* FIXME: Is there a better way to do this? */
+extern char *_gdk_display_name;
+
 static void background_changed_callback     (EelBackground *background, 
                                              NautilusFile       *file);
 static void background_reset_callback       (EelBackground *background, 
@@ -493,7 +496,7 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 
 	xevent = (XEvent *) gdk_xevent;
 
-	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_atom_intern("ESETROOT_PMAP_ID", TRUE)) {
+	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID")) {
 
 		/* If we caused it, ignore it.
 		 */
@@ -545,7 +548,7 @@ nautilus_file_background_receive_root_window_changes (EelBackground *background)
 			    NULL);
 }
 
-/* Create a persistant pixmap. We create a separate display
+/* Create a persistent pixmap. We create a separate display
  * and set the closedown mode on it to RetainPermanent
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
  */
@@ -557,7 +560,7 @@ make_root_pixmap (gint width, gint height)
 
 	gdk_flush ();
 
-	display = XOpenDisplay (gdk_display_name);
+	display = XOpenDisplay (_gdk_display_name);
 
 	XSetCloseDownMode (display, RetainPermanent);
 
@@ -569,24 +572,6 @@ make_root_pixmap (gint width, gint height)
 	XCloseDisplay (display);
 
 	return gdk_pixmap_foreign_new (result);
-}
-
-/* (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
- */
-static void
-dispose_root_pixmap (GdkPixmap *pixmap)
-{
-	/* Unrefing a foreign pixmap causes it to be destroyed - so we include
-	 * this bad hack, that will work for GTK+-1.2 until the problem
-	 * is fixed in the next release
-	 */
-
-	GdkWindowPrivate *private = (GdkWindowPrivate *)pixmap;
-	
-	gdk_xid_table_remove (private->xwindow);
-	g_dataset_destroy (private);
-	g_free (private);
-
 }
 
 /* Set the root pixmap, and properties pointing to it. We
@@ -605,14 +590,14 @@ set_root_pixmap (GdkPixmap *pixmap)
 	gulong  bytes_after;
 	guchar *data_esetroot;
 	Pixmap  pixmap_id;
-	GdkAtom type;
+	Atom type;
 
 	data_esetroot = NULL;
 
 	XGrabServer (GDK_DISPLAY());
 
 	result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
-				     gdk_atom_intern("ESETROOT_PMAP_ID", FALSE),
+				     gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"),
 				     0L, 1L, False, XA_PIXMAP,
 				     &type, &format, &nitems, &bytes_after,
 				     &data_esetroot);
@@ -632,15 +617,15 @@ set_root_pixmap (GdkPixmap *pixmap)
 	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
 
 	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
-			 gdk_atom_intern("ESETROOT_PMAP_ID", FALSE), XA_PIXMAP,
+			 gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
 	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
-			 gdk_atom_intern("_XROOTPMAP_ID", FALSE), XA_PIXMAP,
+			 gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
 
-	XSetWindowBackgroundPixmap (GDK_DISPLAY(), GDK_ROOT_WINDOW(), pixmap_id);
+	XSetWindowBackgroundPixmap (GDK_DISPLAY (), GDK_ROOT_WINDOW (), pixmap_id);
 	XClearWindow (GDK_DISPLAY (), GDK_ROOT_WINDOW ());
 
 	XUngrabServer (GDK_DISPLAY());
@@ -678,14 +663,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
 	}
 
-	/* We'd like to simply unref pixmap here, but due to a bug in gdk's handling of
-	 * foreign pixmaps, we can't - it would free the X resource.
-	 *
-	 * gdk_window_set_back_pixmap does not need the gdk pixmap object to stick around.
-	 * It simply uses X resource inside it. dispose_root_pixmap free's the gdk object
-	 * and not the X resource.
-	 */
-	dispose_root_pixmap (pixmap);
+        gdk_pixmap_unref (pixmap);
 }
 
 static void
@@ -777,7 +755,7 @@ background_changed_callback (EelBackground *background,
 	         * try to change the background.
 	         */
 	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
-	                                          saved_settings_changed_callback,
+	                                          G_CALLBACK (saved_settings_changed_callback),
 	                                          background);
 
 		nautilus_file_set_metadata (file,
@@ -792,7 +770,7 @@ background_changed_callback (EelBackground *background,
 						 
 	        /* Unblock the handler. */
 	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
-	                                            saved_settings_changed_callback,
+	                                            G_CALLBACK (saved_settings_changed_callback),
 	                                            background);
 	}
 
@@ -840,7 +818,7 @@ initialize_background_from_settings (NautilusFile *file,
          * in the metadata so it doesn't try to change the metadata.
          */
         gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-                                          background_changed_callback,
+                                          G_CALLBACK (background_changed_callback),
                                           file);
 
 	eel_background_set_color (background, color);     
@@ -849,7 +827,7 @@ initialize_background_from_settings (NautilusFile *file,
 	
 	/* Unblock the handler. */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-                                            background_changed_callback,
+                                            G_CALLBACK (background_changed_callback),
                                             file);
 	
 	g_free (color);
@@ -894,7 +872,7 @@ background_reset_callback (EelBackground *background,
 	         * try to change the background.
 	         */
 	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
-	                                          saved_settings_changed_callback,
+	                                          G_CALLBACK (saved_settings_changed_callback),
 	                                          background);
 
 		/* reset the metadata */
@@ -909,7 +887,7 @@ background_reset_callback (EelBackground *background,
                                             NULL);
 	        /* Unblock the handler. */
 	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
-	                                            saved_settings_changed_callback,
+	                                            G_CALLBACK (saved_settings_changed_callback),
 	                                            background);
 	}
 

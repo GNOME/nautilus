@@ -32,7 +32,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
@@ -197,7 +196,7 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 	
 	/* Try each suffix. */
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		if (include_size && g_strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
@@ -314,7 +313,7 @@ get_user_emblem_path (const char *name, guint icon_size)
 
 	user_directory = nautilus_get_user_directory ();
 	path = NULL;
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		path = g_strdup_printf ("%s/emblems/%s%s", 
 					user_directory,
 					name + strlen (NAUTILUS_EMBLEM_NAME_PREFIX), 
@@ -387,7 +386,7 @@ nautilus_remove_icon_file_name_suffix (const char *icon_name)
 	guint i;
 	const char *suffix;
 
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		suffix = icon_file_name_suffixes[i];
 		if (eel_str_has_suffix (icon_name, suffix)) {
 			return eel_str_strip_trailing_str (icon_name, suffix);

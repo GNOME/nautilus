@@ -54,8 +54,8 @@ static void   nautilus_simple_search_bar_set_location            (NautilusNaviga
 static char * nautilus_search_uri_to_simple_search_criteria      (const char                   *location);
 static char * nautilus_simple_search_criteria_to_search_uri      (const char                   *search_criteria);
 
-static void  nautilus_simple_search_bar_initialize_class         (NautilusSimpleSearchBarClass *class);
-static void  nautilus_simple_search_bar_initialize               (NautilusSimpleSearchBar      *bar);
+static void  nautilus_simple_search_bar_class_init         (NautilusSimpleSearchBarClass *class);
+static void  nautilus_simple_search_bar_init               (NautilusSimpleSearchBar      *bar);
 static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
@@ -63,7 +63,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
-nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass)
+nautilus_simple_search_bar_class_init (NautilusSimpleSearchBarClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = nautilus_simple_search_bar_destroy;
 
@@ -93,7 +93,7 @@ update_simple_find_button_state (NautilusSimpleSearchBar *bar)
 }
 
 static void
-nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
+nautilus_simple_search_bar_init (NautilusSimpleSearchBar *bar)
 {
 	bar->details = g_new0 (NautilusSimpleSearchBarDetails, 1);
 }

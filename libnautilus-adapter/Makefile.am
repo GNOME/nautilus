@@ -5,7 +5,7 @@ lib_LTLIBRARIES=libnautilus-adapter.la
 
 INCLUDES=\
 	-I$(top_srcdir) \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(LIBNAUTILUS_ADAPTER_CFLAGS) \
 	$(NULL)
 
 libnautilus_adapter_la_LDFLAGS= \
@@ -30,8 +30,8 @@ libnautilus_adapter_la_SOURCES = 		\
 
 $(nautilus_adapter_factory_idl_sources): nautilus_adapter_factory_idl_stamp
 nautilus_adapter_factory_idl_stamp: nautilus-adapter-factory.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-adapter-factory.idl
-	touch nautilus_adapter_factory_idl_stamp
+	$(ORBIT_IDL) -I$(top_srcdir) $(LIBNAUTILUS_ADAPTER_IDL_INCLUDES) $<
+	touch $@
 
 
 CLEANFILES = \
@@ -43,3 +43,4 @@ EXTRA_DIST = \
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
+

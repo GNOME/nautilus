@@ -65,12 +65,11 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <libgnomeui/gnome-icon-entry.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-customization-data.h>
@@ -143,8 +142,8 @@ struct NautilusPropertyBrowserDetails {
 	gboolean toggle_button_flag;
 };
 
-static void     nautilus_property_browser_initialize_class      (GtkObjectClass                *object_klass);
-static void     nautilus_property_browser_initialize            (GtkObject                     *object);
+static void     nautilus_property_browser_class_init      (GtkObjectClass                *object_klass);
+static void     nautilus_property_browser_init            (GtkObject                     *object);
 static void     nautilus_property_browser_destroy               (GtkObject                     *object);
 static void     nautilus_property_browser_preferences_changed   (NautilusPropertyBrowser       *property_browser);
 static void     nautilus_property_browser_update_contents       (NautilusPropertyBrowser       *property_browser);
@@ -221,7 +220,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusPropertyBrowser,
 
 /* initializing the class object by installing the operations we override */
 static void
-nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
+nautilus_property_browser_class_init (GtkObjectClass *object_klass)
 {
 	NautilusPropertyBrowserClass *klass;
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (object_klass);
@@ -236,7 +235,7 @@ nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
-nautilus_property_browser_initialize (GtkObject *object)
+nautilus_property_browser_init (GtkObject *object)
 {
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
@@ -254,7 +253,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 		
 	/* load the chit frame */
 	temp_str = nautilus_pixmap_file ("chit_frame.png");
-	property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str);
+	property_browser->details->property_chit = gdk_pixbuf_new_from_file (temp_str, NULL);
 	g_free (temp_str);
 	
 	/* set the initial size of the property browser */
@@ -663,7 +662,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		g_free (user_directory);	
 	}
 	
-	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
 	
 	is_reset = eel_strcmp (file_name, RESET_IMAGE_NAME) == 0;
 	
@@ -1479,7 +1478,7 @@ element_clicked_callback (GtkWidget *image_table,
 		drag_types[0].target = "x-special/gnome-reset-background";	
 	}
 	
-	target_list = gtk_target_list_new (drag_types, EEL_N_ELEMENTS (drag_types));	
+	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));	
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
@@ -1718,7 +1717,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	GdkPixbuf *reset_pixbuf, *reset_chit;
 
 	reset_image_file_name = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
-	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name);
+	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name, NULL);
 	reset_chit = nautilus_customization_make_pattern_chit (reset_pixbuf, property_browser->details->property_chit, FALSE, TRUE);
 	
 	g_free (reset_image_file_name);

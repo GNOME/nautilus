@@ -39,7 +39,7 @@
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtktable.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 /* The width of the progress bar determines the minimum width of the
@@ -53,8 +53,8 @@
 
 #define MINIMUM_TIME_UP    1000
 
-static void nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass);
-static void nautilus_file_operations_progress_initialize       (NautilusFileOperationsProgress      *dialog);
+static void nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass);
+static void nautilus_file_operations_progress_init       (NautilusFileOperationsProgress      *dialog);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
 				   nautilus_file_operations_progress,
@@ -193,7 +193,7 @@ delete_event_callback (GtkWidget *widget,
 }
 
 static void
-nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *progress)
+nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress)
 {
 	GtkBox *vbox;
 	GtkWidget *hbox;
@@ -256,7 +256,7 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *pr
 }
 
 static void
-nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass)
+nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;

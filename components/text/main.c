@@ -54,6 +54,6 @@ main (int argc, char *argv[])
 					    FACTORY_IID,
 					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    nautilus_global_preferences_initialize,
+					    nautilus_global_preferences_init,
 					    nautilus_text_view_get_type);
 }

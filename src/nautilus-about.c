@@ -28,7 +28,6 @@
 #include <config.h>
 #include "nautilus-about.h"
 
-#include <libgnome/gnome-defs.h>
 
 #include <math.h>
 #include <gnome.h>
@@ -62,8 +61,8 @@ struct NautilusAboutDetails {
 
 static gboolean nautilus_about_close            (NautilusAbout       *about,
 						 gpointer            *unused);
-static void     nautilus_about_initialize_class (NautilusAboutClass  *klass);
-static void     nautilus_about_initialize       (NautilusAbout       *about);
+static void     nautilus_about_class_init (NautilusAboutClass  *klass);
+static void     nautilus_about_init       (NautilusAbout       *about);
 static void     nautilus_about_destroy          (GtkObject           *object);
 static void     nautilus_about_repaint          (GtkWidget           *drawing_area,
 						 GdkEventExpose      *event,
@@ -92,7 +91,7 @@ static int      update_authors_if_necessary     (gpointer             callback_d
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
 
 static void
-nautilus_about_initialize_class (NautilusAboutClass *about_class)
+nautilus_about_class_init (NautilusAboutClass *about_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (about_class);
 		
@@ -125,7 +124,7 @@ nautilus_about_destroy (GtkObject *object)
 
 /* initialize the about */
 static void
-nautilus_about_initialize (NautilusAbout *about)
+nautilus_about_init (NautilusAbout *about)
 {
 	char *background_path;
 	GtkWidget *frame;
@@ -134,7 +133,7 @@ nautilus_about_initialize (NautilusAbout *about)
 	about->details = g_new0 (NautilusAboutDetails, 1);
 
 	background_path = nautilus_theme_get_image_path ("about_background.png");
-	about->details->background_pixbuf = gdk_pixbuf_new_from_file (background_path);
+	about->details->background_pixbuf = gdk_pixbuf_new_from_file (background_path, NULL);
 	g_free (background_path);	
 
 	/* set the window title and standard close key accelerator */

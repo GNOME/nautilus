@@ -37,9 +37,9 @@ struct NautilusTreeExpansionStateDetails {
 };
 
 static void               nautilus_tree_expansion_state_destroy          (GtkObject   *object);
-static void               nautilus_tree_expansion_state_initialize       (gpointer     object,
+static void               nautilus_tree_expansion_state_init       (gpointer     object,
 									  gpointer     klass);
-static void               nautilus_tree_expansion_state_initialize_class (gpointer     klass);
+static void               nautilus_tree_expansion_state_class_init (gpointer     klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
 
@@ -56,7 +56,7 @@ static void           nautilus_tree_expansion_state_expand_node_internal (Nautil
 /* infrastructure stuff */
 
 static void
-nautilus_tree_expansion_state_initialize_class (gpointer klass)
+nautilus_tree_expansion_state_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 
@@ -130,7 +130,7 @@ nautilus_tree_expansion_state_save_to_preferences (NautilusTreeExpansionState *e
 }
 
 static void
-nautilus_tree_expansion_state_initialize (gpointer object, gpointer klass)
+nautilus_tree_expansion_state_init (gpointer object, gpointer klass)
 {
 	NautilusTreeExpansionState *expansion_state;
 	

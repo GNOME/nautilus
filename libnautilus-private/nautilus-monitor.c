@@ -35,7 +35,6 @@
 #include <fam.h>
 #include <gdk/gdk.h>
 #include <gmodule.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 

@@ -177,16 +177,15 @@ gtk_wrap_box_class_init (GtkWrapBoxClass *class)
   gtk_container_add_child_arg_type ("GtkWrapBox::forcebreak",
 				    GTK_TYPE_BOOL, GTK_ARG_READWRITE, CHILD_ARG_FORCED_BREAK);
 
-  signals[NEED_REALLOCATION] = gtk_signal_new
+  signals[NEED_REALLOCATION] = g_signal_new
     ("need_reallocation",
-     GTK_RUN_LAST,
-     object_class->type,
-     GTK_SIGNAL_OFFSET (GtkWrapBoxClass,
+     G_TYPE_FROM_CLASS (object_class),
+     G_SIGNAL_RUN_LAST,
+     G_STRUCT_OFFSET (GtkWrapBoxClass,
 			need_reallocation),
+     NULL, NULL,
      gtk_marshal_NONE__NONE,
-     GTK_TYPE_NONE, 0);
-  
-  gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+     G_TYPE_NONE, 0);
 }
 
 static void

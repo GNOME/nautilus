@@ -41,8 +41,8 @@ struct NautilusComponentAdapterFactoryDetails {
 
 static NautilusComponentAdapterFactory *global_component_adapter_factory = NULL;
 
-static void nautilus_component_adapter_factory_initialize_class (NautilusComponentAdapterFactoryClass *klass);
-static void nautilus_component_adapter_factory_initialize       (NautilusComponentAdapterFactory      *factory);
+static void nautilus_component_adapter_factory_class_init (NautilusComponentAdapterFactoryClass *klass);
+static void nautilus_component_adapter_factory_init       (NautilusComponentAdapterFactory      *factory);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
 			      nautilus_component_adapter_factory,
@@ -113,7 +113,7 @@ get_corba_factory (NautilusComponentAdapterFactory *factory)
 }
 
 static void
-nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *factory)
+nautilus_component_adapter_factory_init (NautilusComponentAdapterFactory *factory)
 {
 	factory->details = g_new0 (NautilusComponentAdapterFactoryDetails, 1);
 }
@@ -132,7 +132,7 @@ nautilus_component_adapter_factory_destroy (GtkObject *object)
 }
 
 static void
-nautilus_component_adapter_factory_initialize_class  (NautilusComponentAdapterFactoryClass *klass)
+nautilus_component_adapter_factory_class_init  (NautilusComponentAdapterFactoryClass *klass)
 {
 	GtkObjectClass *object_class;
 	
