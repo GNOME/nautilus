@@ -1,5 +1,7 @@
 arlodir = $(datadir)/pixmaps/nautilus/arlo
 
+SUBDIRS = sidebar_tab_pieces
+
 arlo_DATA =					\
 	arlo.xml				\
 	decrement.png				\
@@ -7,7 +9,6 @@ arlo_DATA =					\
 	i-regular.png				\
 	increment.png				\
 	number_strip.png			\
-	sidebar_tab_pieces.png			\
 	theme_preview.png			\
 	zoom_body.png
 		

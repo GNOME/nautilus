@@ -1,3 +1,25 @@
+2000-07-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (setup_dark_text),
+	(nautilus_sidebar_tabs_load_theme_data),
+	(nautilus_sidebar_tabs_destroy),
+	(nautilus_sidebar_tabs_unload_tab_pieces), (load_tab_piece),
+	(nautilus_sidebar_tabs_load_tab_pieces), (draw_tab_piece),
+	(draw_one_tab_themed), (get_text_offset),
+	(draw_or_hit_test_all_tabs), (nautilus_sidebar_tabs_expose),
+	(nautilus_sidebar_tabs_set_color):
+	rework of the arlo sidebar tabs to use individual images for the pieces
+	instead of a single one. There are still some glitches that I'll fix soon.
+	* configure.in:
+	added icons/arlo/sidebar_tab_pieces/Makefile
+	* icons/arlo/Makefile.am:
+	* icons/arlo/arlo.xml:
+	added offsets for tabs
+	* icons/arlo/sidebar_tab_pieces/.cvsignore:
+	* icons/arlo/sidebar_tab_pieces/Makefile.am:
+	* icons/arlo/sidebar_tab_pieces/*:
+	new images for the arlo sidebar tab theme
+	
 2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
 
 	OK.  I made a booboo.  Went back to using NautilusFile.
