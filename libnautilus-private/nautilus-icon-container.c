@@ -31,7 +31,6 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
-#include "nautilus-theme.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
@@ -109,6 +108,11 @@
 
 /* Value used to protect against icons being dragged outside of the desktop bounds */
 #define DESKTOP_ICON_SAFETY_PAD 10
+
+#define DEFAULT_SELECTION_BOX_ALPHA 0x40
+#define DEFAULT_HIGHLIGHT_ALPHA 0xff
+#define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
+#define DEFAULT_DARK_INFO_COLOR  0x33337F
 
 enum {
 	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
@@ -1654,7 +1658,8 @@ start_rubberbanding (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
 	uint fill_color, outline_color;
-	char *fill_color_str;
+	GdkColor *fill_color_gdk;
+	guchar fill_color_alpha;
 	GList *p;
 	NautilusIcon *icon;
 
@@ -1673,17 +1678,18 @@ start_rubberbanding (NautilusIconContainer *container,
 		(EEL_CANVAS (container), event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
-	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
-	 * The NautilusIconContainer class should simply provide calls to set the colors.
-	 */
-	fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
-	if (fill_color_str == NULL) {
-		fill_color = eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]) << 8 | 0x40;
-	} else {
-		fill_color = strtoul (fill_color_str, NULL, 0);
-		/* FIXME: Need error handling here. */
-		g_free (fill_color_str);
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "selection_box_color", &fill_color_gdk,
+			      "selection_box_alpha", &fill_color_alpha,
+			      NULL);
+
+	if (!fill_color_gdk) {
+		fill_color_gdk = gdk_color_copy (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]);
 	}
+	
+	fill_color = eel_gdk_color_to_rgb (fill_color_gdk) << 8 | fill_color_alpha;
+
+	gdk_color_free (fill_color_gdk);
 	
 	outline_color = fill_color | 255;
 	
@@ -2417,10 +2423,6 @@ finalize (GObject *object)
 
 	details = NAUTILUS_ICON_CONTAINER (object)->details;
 
-	/* FIXME: The code to extract colors from the theme should be
-	 * in FMDirectoryView, not here. The NautilusIconContainer
-	 * class should simply provide calls to set the colors.
-	 */
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					 nautilus_icon_container_theme_changed,
 					 object);
@@ -3482,6 +3484,46 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 								       _("Draw a frame around unselected text"),
 								       FALSE,
 								       G_PARAM_READABLE));
+
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("selection_box_color",
+								     _("Selection Box Color"),
+								     _("Color of the selection box"),
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uchar ("selection_box_alpha",
+								     _("Selection Box Alpha"),
+								     _("Opacity of the selection box"),
+								     0, 0xff,
+								     DEFAULT_SELECTION_BOX_ALPHA,
+								     G_PARAM_READABLE));
+
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("highlight_color",
+								     _("Highlight Color"),
+								     _("Color of the highlight for selected icons"),
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_uchar ("highlight_alpha",
+								     _("Highlight Alpha"),
+								     _("Opacity of the highlight for selected icons"),
+								     0, 0xff,
+								     DEFAULT_HIGHLIGHT_ALPHA,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("light_info_color",
+								     _("Light Info Color"),
+								     _("Color used for information text against a dark background"),
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
+	gtk_widget_class_install_style_property (widget_class,
+						 g_param_spec_boxed ("dark_info_color",
+								     _("Dark Info Color"),
+								     _("Color used for information text against a light background"),
+								     GDK_TYPE_COLOR,
+								     G_PARAM_READABLE));
 }
 
 static gboolean
@@ -3536,10 +3578,6 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 
 	eel_background_set_use_base (background, TRUE);
 
-	/* FIXME: The code to extract colors from the theme should be
-	 * in FMDirectoryView, not here. The NautilusIconContainer
-	 * class should simply provide calls to set the colors.
-	 */
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
@@ -5190,7 +5228,7 @@ setup_label_gcs (NautilusIconContainer *container)
 {
 	EelBackground *background;
 	GtkWidget *widget;
-	char *light_info_color, *dark_info_color;
+	GdkColor *light_info_color, *dark_info_color;
 	guint light_info_value, dark_info_value;
 	gboolean frame_text;
 	
@@ -5203,30 +5241,30 @@ setup_label_gcs (NautilusIconContainer *container)
 
 	background = eel_get_widget_background (GTK_WIDGET (container));
 
-	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
-	 * The NautilusIconContainer class should simply provide calls to set the colors.
-	 */
 	/* read the info colors from the current theme; use a reasonable default if undefined */
-	light_info_color = nautilus_theme_get_theme_data ("directory", "light_info_color");
-	if (light_info_color == NULL) {
-		light_info_value = 0xAAAAFD;
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "light_info_color", &light_info_color,
+			      "dark_info_color", &dark_info_color,
+			      NULL);
+
+	if (light_info_color) {
+		light_info_value = eel_gdk_color_to_rgb (light_info_color);
+		gdk_color_free (light_info_color);
 	} else {
-		light_info_value = strtoul (light_info_color, NULL, 0);
-		g_free (light_info_color);
+		light_info_value = DEFAULT_LIGHT_INFO_COLOR;
 	}
-	
-	dark_info_color = nautilus_theme_get_theme_data ("directory", "dark_info_color");
-	if (dark_info_color == NULL) {
-		dark_info_value = 0x33337F;
+
+	if (dark_info_color) {
+		dark_info_value = eel_gdk_color_to_rgb (dark_info_color);
+		gdk_color_free (dark_info_color);
 	} else {
-		dark_info_value = strtoul (dark_info_color, NULL, 0);
-		g_free (dark_info_color);
+		dark_info_value = DEFAULT_DARK_INFO_COLOR;
 	}
 
 	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_SELECTED]));
 	setup_gc_with_fg (container, 
 			  LABEL_INFO_COLOR_HIGHLIGHT, 
-			  eel_gdk_color_is_dark (&widget->style->base[GTK_STATE_SELECTED]) ? light_info_value : dark_info_value);
+			  eel_gdk_color_is_dark (&container->details->highlight_color) ? light_info_value : dark_info_value);
 		
 	/* If NautilusIconContainer::frame_text is set, we can safely
 	 * use the foreground color from the theme, because it will
@@ -5238,9 +5276,9 @@ setup_label_gcs (NautilusIconContainer *container)
 	if (frame_text) {
 		setup_gc_with_fg (container, LABEL_COLOR, 
 				  eel_gdk_color_to_rgb (&widget->style->text[GTK_STATE_NORMAL]));
-			setup_gc_with_fg (container, 
-					  LABEL_INFO_COLOR, 
-					  eel_gdk_color_is_dark (&widget->style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
+		setup_gc_with_fg (container, 
+				  LABEL_INFO_COLOR, 
+				  eel_gdk_color_is_dark (&widget->style->base[GTK_STATE_NORMAL]) ? light_info_value : dark_info_value);
 	} else {
 		if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
 			setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
@@ -5324,45 +5362,39 @@ nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
 
 /* handle theme changes */
 
-/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
- * The NautilusIconContainer class should simply provide calls to set the colors.
- */
 static void
 nautilus_icon_container_theme_changed (gpointer user_data)
 {
 	NautilusIconContainer *container;
-	char *text_frame_path, *highlight_color_str;
-	GtkStyle *style;
-	guchar r, g, b;
+	GdkColor *highlight_color;
+	guchar highlight_alpha;
 
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
 	/* load the highlight frame */		
-	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
 	if (container->details->highlight_frame != NULL) {
 		g_object_unref (container->details->highlight_frame);
 	}
 	
-	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path, NULL);
-	g_free (text_frame_path);
+	container->details->highlight_frame = gdk_pixbuf_new_from_file (DATADIR "/pixmaps/nautilus/text-selection-frame.png", NULL);
 
-	/* load the highlight color */	
-	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
-	
-	if (highlight_color_str == NULL) {
-		style = gtk_widget_get_style (GTK_WIDGET (container));
-
-		r = style->base[GTK_STATE_SELECTED].red >> 8;
-		g = style->base[GTK_STATE_SELECTED].green >> 8;
-		b = style->base[GTK_STATE_SELECTED].blue >> 8;
-
-		container->details->highlight_color_rgba = EEL_RGBA_COLOR_PACK (r, g, b, 0xff);
-	} else {
-		container->details->highlight_color_rgba = strtoul (highlight_color_str, NULL, 0);
-		g_free (highlight_color_str);
+	/* load the highlight color */
+	gtk_widget_style_get (GTK_WIDGET (container),
+			      "highlight_color", &highlight_color,
+			      "highlight_alpha", &highlight_alpha,
+			      NULL);
+	if (!highlight_color) {
+		highlight_color = gdk_color_copy (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]);
 	}
-	container->details->highlight_color = eel_gdk_rgb_to_color (
-		container->details->highlight_color_rgba);
+	
+	container->details->highlight_color_rgba = 
+		EEL_RGBA_COLOR_PACK (highlight_color->red >> 8, 
+				     highlight_color->green >> 8, 
+				     highlight_color->blue >> 8,
+				     highlight_alpha);
+
+	container->details->highlight_color = *highlight_color;
+	gdk_color_free (highlight_color);
 
 	setup_label_gcs (container);
 }
