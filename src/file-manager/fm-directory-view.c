@@ -35,10 +35,10 @@
 #include "fm-icon-cache.h"
 #include "fm-public-api.h"
 
-#define FM_DEBUG(x)
+#define FM_DEBUG(x) g_message x
 
 #define DISPLAY_TIMEOUT_INTERVAL 500
-
+#define ENTRIES_PER_CB 1
 
 static NautilusViewClientClass *parent_class = NULL;
 
@@ -592,6 +592,7 @@ stop_load (FMDirectoryView *view)
 
 	view->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	view->entries_to_display = 0;
+	view->directory_list = NULL;
 }
 
 
@@ -634,6 +635,8 @@ display_pending_entries (FMDirectoryView *view)
 		view->current_position = gnome_vfs_directory_list_position_next
 						       (view->current_position);
 	}
+
+	g_assert(i == view->entries_to_display);
 
 	if (flist != NULL)
 		gtk_clist_thaw (GTK_CLIST (flist));
@@ -723,14 +726,17 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 {
 	FMDirectoryView *view;
 
+	g_assert(entries_read <= ENTRIES_PER_CB);
+
 	FM_DEBUG (("Entering function, %d entries read: %s",
 			 entries_read, gnome_vfs_result_to_string (result)));
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
+	g_assert(!view->directory_list || view->directory_list == list);
+
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
-			/* gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_DONE]); */
 
 			setup_base_uri (view);
 
@@ -757,11 +763,17 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	}
 
 	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE
-	    && list)
+	    && list) {
 		view->current_position
-			= gnome_vfs_directory_list_get_position (list);
+			= gnome_vfs_directory_list_get_first_position (list);
+		g_message("Reset current position, length now %d",
+			  g_list_length(view->current_position));
+	}
 
 	view->entries_to_display += entries_read;
+	g_message("%d new entries makes %d total (%d real total)\n",
+		  entries_read, view->entries_to_display,
+		  g_list_length(view->current_position));
 
 	if (result == GNOME_VFS_ERROR_EOF) {
 		display_pending_entries (view);
@@ -899,7 +911,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR  /* filter_options */
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
 		 NULL, 					/* filter_pattern */
-		 1,			 		/* items_per_notification */
+		 ENTRIES_PER_CB,			 /* items_per_notification */
 		 directory_load_cb,	 		/* callback */
 		 view);		 			/* callback_data */
 

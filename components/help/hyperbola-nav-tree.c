@@ -76,7 +76,7 @@ hyperbola_navigation_tree_new(void)
   gtk_signal_connect(GTK_OBJECT(view->vc), "notify_location_change", hyperbola_navigation_tree_notify_location_change,
 		     view);
 
-  nautilus_meta_view_set_label(NAUTILUS_META_VIEW_CLIENT(view->vc), "Help Contents");
+  nautilus_meta_view_client_set_label(NAUTILUS_META_VIEW_CLIENT(view->vc), _("Help Contents"));
 
   view->ctree = gtk_ctree_new_with_titles(1, 0, (gchar **)titles);
   gtk_clist_freeze(GTK_CLIST(view->ctree));

@@ -1,3 +1,23 @@
+1999-12-16  Elliot Lee  <sopwith@redhat.com>
+
+	* components/help/hyperbola-nav-tree.c: Translate strings.
+
+	* components/history/ntl-history-view.c: Bug fixes, use API
+ 	function for setting meta-view label.
+
+	* libnautilus/ntl-meta-view-client.[ch]:
+ 	s/meta_view_set_label/meta_view_client_set_label/
+
+	* src/ntl-uri-map.c: Use history view instead of help view as the
+ 	default meta view for now.
+
+	* src/ntl-window.c: As per the comment that was removed from
+ 	ntl-window.c, gnome_app_install_menu_hints() needs to be called
+ 	_after_ statusbar creation
+
+	* src/file-manager/fm-directory-view.c: Add more debugging assertions
+	and messages.
+
 1999-12-15  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-window.c: (nautilus_window_constructed): Added beginnings

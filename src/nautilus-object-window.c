@@ -328,7 +328,6 @@ nautilus_window_constructed(NautilusWindow *window)
   menubar = GTK_MENU_BAR(gtk_menu_bar_new());
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
   gnome_app_set_menus(GNOME_APP(window), menubar);
-  gnome_app_install_menu_hints(app, main_menu);
 
   // set up toolbar
 
@@ -380,10 +379,14 @@ nautilus_window_constructed(NautilusWindow *window)
 
   gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
   window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
+  gnome_app_install_menu_hints(app, main_menu); /* This has to go here
+                                                   after the statusbar
+                                                   creation */
 
   // set up window contents and policy
 
   gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
+  gtk_window_set_default_size(GTK_WINDOW(window), 650, 400);
 
 #ifdef CONTENTS_AS_HBOX
   window->content_hbox = gtk_hbox_new(FALSE, GNOME_PAD_SMALL);

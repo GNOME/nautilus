@@ -96,7 +96,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
     }
 
 
-  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, "hyperbola_navigation_tree");
+  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, "ntl_history_view");
 
   return navinfo;
 }

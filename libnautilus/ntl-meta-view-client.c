@@ -104,7 +104,7 @@ nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *klass)
 }
 
 void
-nautilus_meta_view_set_label(NautilusMetaViewClient *mvc, const char *label)
+nautilus_meta_view_client_set_label(NautilusMetaViewClient *mvc, const char *label)
 {
   GnomeObject *ctl;
   GnomePropertyBag *bag;
