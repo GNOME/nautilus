@@ -1,3 +1,19 @@
+2000-08-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_initialize),
+	(nautilus_sidebar_tabs_destroy), (get_tab_width),
+	(draw_or_hit_test_all_tabs):
+	fixed lots of problems with the arlo-themed sidebar tabs, as well as
+	fixing the tab wrapping for the non-arlo ones as well.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding):
+	implemented Carbamide's suggestion of specifying the select box
+	color in the theme.
+	* icons/arlo/arlo.xml:
+	changed the arlo theme to use a custom select box color, although
+	Arlo will probably pick a better one soon.
+	
 2000-08-08  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/gdb3html.c:

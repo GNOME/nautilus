@@ -1031,6 +1031,8 @@ start_rubberbanding (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
+	uint fill_color, outline_color;
+	char *fill_color_str;
 	GList *p;
 
 	details = container->details;
@@ -1049,6 +1051,16 @@ start_rubberbanding (NautilusIconContainer *container,
 		 &band_info->start_x, &band_info->start_y);
 
 	if (GNOME_CANVAS(container)->aa) {
+		fill_color_str = nautilus_theme_get_theme_data ("directory", "SELECTION_BOX_COLOR_RGBA");
+		if (fill_color_str == NULL) {
+			fill_color = 0x77bbdd40;
+		} else {
+			fill_color = strtoul (fill_color_str, NULL, 0);
+			g_free (fill_color_str);
+		}
+		
+		outline_color = fill_color | 255;
+
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
 		 	(GNOME_CANVAS (container)),
@@ -1057,12 +1069,17 @@ start_rubberbanding (NautilusIconContainer *container,
 		 	"y1", band_info->start_y,
 		 	"x2", band_info->start_x,
 		 	"y2", band_info->start_y,
-		 	"fill_color_rgba", 0x77bbdd40,
-		 	"outline_color_rgba", 0x77bbddFF,
+		 	"fill_color_rgba", fill_color,
+		 	"outline_color_rgba", outline_color,
 		 	"width_pixels", 1,
 		 	NULL);
 	
 	} else {
+		fill_color_str = nautilus_theme_get_theme_data ("directory", "SELECTION_BOX_COLOR");
+		if (fill_color_str == NULL) {
+			fill_color_str = g_strdup ("rgb:7777/BBBB/DDDD");
+		}
+
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
 		 	(GNOME_CANVAS (container)),
@@ -1071,11 +1088,12 @@ start_rubberbanding (NautilusIconContainer *container,
 		 	"y1", band_info->start_y,
 		 	"x2", band_info->start_x,
 		 	"y2", band_info->start_y,
-		 	"fill_color", "lightblue",
+		 	"fill_color", fill_color_str,
 		 	"fill_stipple", stipple,
-		 	"outline_color", "lightblue",
+		 	"outline_color", fill_color_str,
 		 	"width_pixels", 1,
 		 	NULL);
+		g_free (fill_color_str);
 	}
 	
 	band_info->prev_x = event->x;
