@@ -2323,8 +2323,12 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	if (clip_area.y < 0) {
 		clip_area.y = 0;
 	}
-	clip_area.height = area->height - (clip_area.y - area->y); 
-
+	if (clip_area.y - area->y < area->height) {
+		clip_area.height = area->height - (clip_area.y - area->y); 
+	} else {
+		clip_area.height = 0;
+	}
+	
 	if (clip_area.height <= 0) {
 		/* nothing visible to erase */
 		return;
@@ -2341,7 +2345,11 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 
 	/* calculate the first rectangle */
 	tmp = clip_area;
-	tmp.width = selected_column_rectangle.x - tmp.x;
+	if (selected_column_rectangle.x > tmp.x) {
+		tmp.width = selected_column_rectangle.x - tmp.x;
+	} else {
+		tmp.width = selected_column_rectangle.x - tmp.x;
+	}
 	rectangle_intersect (&clip_area, &tmp, &first_column_plain_rectangle);
 
 

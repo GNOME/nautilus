@@ -1,3 +1,10 @@
+2000-10-05  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_clear_from_row):
+	Fix one more rectangle arithmetic overflow bug that was causing
+	a list view update glitch. Hope this is the last of bug 2036.
+
 2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-profiler.c: (scrolled_text_new),
