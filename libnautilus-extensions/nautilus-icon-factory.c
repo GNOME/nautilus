@@ -77,6 +77,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
 #define ICON_NAME_EXECUTABLE            "i-executable"
 #define ICON_NAME_REGULAR               "i-regular"
+#define ICON_NAME_WEB			"i-web"
 #define ICON_NAME_SOCKET                "i-sock"
 #define ICON_NAME_FIFO                  "i-fifo"
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
@@ -518,30 +519,35 @@ nautilus_icon_factory_set_theme (const char *theme_name)
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
-        char *mime_type;
-        const char *icon_name;
-	gboolean is_text_file;
+	char *mime_type, *uri;
+	const char *icon_name;
+	gboolean is_text_file, is_http_uri;
 	
 	/* force plain text files to use the generic document icon so we can have the text-in-icons feature;
-	  eventually, we want to force other types of text files as well */
-        mime_type = nautilus_file_get_mime_type (file);
-        is_text_file = mime_type != NULL && !nautilus_strcasecmp (mime_type, "text/plain");
+		eventually, we want to force other types of text files as well */
+        
+	mime_type = nautilus_file_get_mime_type (file);
+	is_text_file = mime_type != NULL && !nautilus_strcasecmp (mime_type, "text/plain");
 	
 	if (mime_type != NULL && !is_text_file) {
-                icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
+		icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
 		g_free (mime_type);
 		if (icon_name != NULL) {
 			return icon_name;
 		}
 	}
 
-	/* gnome_vfs_mime didn't give us an icon name, so we have to
-         * fall back on default icons.
-	 */
+	/* gnome_vfs_mime didn't give us an icon name, so we have to fall back on default icons. */
 	if (nautilus_file_is_executable (file) & !is_text_file) {
 		return ICON_NAME_EXECUTABLE;
 	}
-	return ICON_NAME_REGULAR;
+
+	/* if it's an http uri, use a generic web icon instead of the generic icon  */
+	uri = nautilus_file_get_uri (file);
+        is_http_uri = nautilus_istr_has_prefix (uri, "http:");
+        g_free (uri);
+        	
+	return is_http_uri ? ICON_NAME_WEB : ICON_NAME_REGULAR;
 }
 
 /* Get the icon name for a file. */

@@ -1,3 +1,15 @@
+2000-09-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/Makefile.am:
+	* icons/i-web-72.png:
+	added a new icon for generic http documents, which is just a
+	placeholder.
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	made it use a distinct icon for generic documents if the protocol
+	associated with the file is "http", so the sidebar can have a decent
+	icon when displaying websites.  The current icon is just a placeholder.
+	
 2000-09-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Work on task 1733.
