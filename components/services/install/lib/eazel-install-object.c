@@ -603,7 +603,7 @@ create_temporary_directory (const char* tmpdir)
 	}
 } /* end create_temporary_directory */
 
-static gboolean
+gboolean
 eazel_install_fetch_remote_package_list (EazelInstall *service) 
 {
 	gboolean retval;
@@ -614,8 +614,10 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 
 	g_print (_("Getting package list from remote server ...\n"));
 
-	url = g_strdup_printf ("http://%s%s", 
+	url = g_strdup_printf ("http://%s:%d%s%s", 
 			       eazel_install_get_server (service),
+			       eazel_install_get_server_port (service),
+			       eazel_install_get_package_list_storage_path (service)[0]=='/'?"":"/",
 			       eazel_install_get_package_list_storage_path (service));
 #ifdef EAZEL_INSTALL_SLIM
 	destination = g_strdup (eazel_install_get_package_list (service));

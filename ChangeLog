@@ -1,3 +1,38 @@
+2000-08-29  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_fetch_remote_package_list):
+	Smarter package-list url generation.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	Expose fetch_remote_package_list call, used for the installer.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_uninstall_downward_traverse):
+	Removed FIXME that was in error.
+	
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(begin_install), (druid_finish), (prep_install):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (check_system),
+	(eazel_installer_do_install):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/interface.c: (set_white_stuff),
+	(create_what_to_do_page), (create_window), (set_images),
+	(eazel_install_progress), (eazel_download_progress),
+	(install_failed_helper), (install_failed), (download_failed),
+	(eazel_install_preflight), (eazel_install_dep_check),
+	(eazel_install_delete_files), (eazel_installer_add_category),
+	(eazel_installer_finalize), (eazel_installer_unref),
+	(eazel_installer_class_initialize), (eazel_installer_initialize),
+	(eazel_installer_get_type), (eazel_installer_new):
+	* nautilus-installer/src/interface.h:
+	* nautilus-installer/src/main.c: (main):
+	Slaughtering and revamping the installer. It now loads the
+	packagelist as one of the first things (needs changing to support
+	proxies), then inserts a radiobutton pr. category (needs to be
+	togglebuttons instead). 
+	
 2000-08-28  Mathieu Lacage  <mathieu@eazel.com>
 
 	* NEWS: add news from latest PR1 release.

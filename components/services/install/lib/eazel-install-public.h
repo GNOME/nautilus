@@ -145,7 +145,7 @@ void eazel_install_emit_done                      (EazelInstall *service,
 
 /* This is in flux */
 
-void eazel_install_fetch_package_list (EazelInstall *service);
+gboolean eazel_install_fetch_remote_package_list (EazelInstall *service);
 
 void eazel_install_install_packages (EazelInstall *service, 
 				     GList *categories, 

@@ -2010,9 +2010,6 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 					}
 					g_list_free (second_matches);
 				} else {
-					/* FIXME bugzilla.eazel.com 1542:
-					   Need the ability to lookup a pacakge that provides a file
-					   and process that */
 					g_message ("D: must lookup %s", require_name[j]);
 					/* FIXME bugzilla.eazel.com 1539:
 					   lookup package "p" that provides requires[j],

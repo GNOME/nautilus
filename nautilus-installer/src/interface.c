@@ -32,8 +32,48 @@
 #include <gnome.h>
 
 #include "callbacks.h"
-#include "interface.h"
+#include "installer.h"
 #include "support.h"
+
+#include <eazel-install-xml-package-list.h>
+
+/* Include the pixmaps */
+#include "Banner_Left.xpm"
+#include "Step_Two_Top.xpm"
+#include "Step_Three_Top.xpm"
+#include "Step_One_Top.xpm"
+#include "Final_Top.xpm"
+
+#define HOSTNAME "testmachine.eazel.com"
+#define PORT_NUMBER 80
+#define TMP_DIR "/tmp/eazel-install"
+#define RPMRC "/usr/lib/rpm/rpmrc"
+#define REMOTE_RPM_DIR "/RPMS"
+
+int installer_debug = 0;
+int installer_test = 0;
+int installer_force = 0;
+int installer_local = 0;
+char *installer_server =NULL;
+int installer_server_port = 0;
+
+
+static GtkObjectClass *eazel_installer_parent_class;
+
+
+static void 
+set_white_stuff (GtkWidget *w) 
+{
+	GtkStyle *style;
+	GdkColor *color;
+
+	style = gtk_style_copy (w->style);
+	style->bg[GTK_STATE_NORMAL].red = 65000;
+	style->bg[GTK_STATE_NORMAL].blue = 65000;
+	style->bg[GTK_STATE_NORMAL].green = 65000;
+	gtk_widget_set_style (w, style);
+        gtk_style_unref (style);
+}
 
 GtkWidget*
 create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
@@ -46,12 +86,6 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	GtkWidget *vbox3;
 	GtkWidget *label10;
 	GtkWidget *fixed3;
-	GSList *fixed3_group = NULL;
-	GtkWidget *fullbutton;
-	GtkWidget *nautilus_only_button;
-	GtkWidget *services_only_button;
-	GtkWidget *upgrade_button;
-	GtkWidget *uninstall_button;
 
 	what_to_do_page = gnome_druid_page_standard_new_with_vals ("", NULL);
 
@@ -105,62 +139,6 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (fixed3);
 	gtk_box_pack_start (GTK_BOX (vbox3), fixed3, TRUE, TRUE, 0);
-
-	fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Most Recent Build"));
-	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (fullbutton));
-	gtk_widget_set_name (fullbutton, "fullbutton");
-	gtk_widget_ref (fullbutton);
-	gtk_object_set_data_full (GTK_OBJECT (window), "fullbutton", fullbutton,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (fullbutton);
-	gtk_fixed_put (GTK_FIXED (fixed3), fullbutton, 72, 24);
-	gtk_widget_set_uposition (fullbutton, 72, 24);
-	gtk_widget_set_usize (fullbutton, 0, 0);
-
-	nautilus_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Stable Nautilus"));
-	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (nautilus_only_button));
-	gtk_widget_set_name (nautilus_only_button, "nautilus_only_button");
-	gtk_widget_ref (nautilus_only_button);
-	gtk_object_set_data_full (GTK_OBJECT (window), "nautilus_only_button", nautilus_only_button,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (nautilus_only_button);
-	gtk_fixed_put (GTK_FIXED (fixed3), nautilus_only_button, 72, 56);
-	gtk_widget_set_uposition (nautilus_only_button, 72, 56);
-	gtk_widget_set_usize (nautilus_only_button, 0, 0);
-
-	services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
-	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
-	gtk_widget_set_name (services_only_button, "services_only_button");
-	gtk_widget_ref (services_only_button);
-	gtk_object_set_data_full (GTK_OBJECT (window), "services_only_button", services_only_button,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	/* gtk_widget_show (services_only_button); */
-	gtk_fixed_put (GTK_FIXED (fixed3), services_only_button, 72, 88);
-	gtk_widget_set_uposition (services_only_button, 72, 88);
-	gtk_widget_set_usize (services_only_button, 0, 0);
-	gtk_widget_set_sensitive (GTK_WIDGET (services_only_button), FALSE);
-
-	upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("Latest RPM Build"));
-	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
-	gtk_widget_set_name (upgrade_button, "upgrade_button");
-	gtk_widget_ref (upgrade_button);
-	gtk_object_set_data_full (GTK_OBJECT (window), "upgrade_button", upgrade_button,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (upgrade_button);
-	gtk_fixed_put (GTK_FIXED (fixed3), upgrade_button, 72, 120);
-	gtk_widget_set_uposition (upgrade_button, 72, 120);
-	gtk_widget_set_usize (upgrade_button, 0, 0);
-
-	uninstall_button = gtk_radio_button_new_with_label (fixed3_group, _("Uninstall Nautilus"));
-	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (uninstall_button));
-	gtk_widget_set_name (uninstall_button, "uninstall_button");
-	gtk_widget_ref (uninstall_button);
-	gtk_object_set_data_full (GTK_OBJECT (window), "uninstall_button", uninstall_button,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (uninstall_button);
-	gtk_fixed_put (GTK_FIXED (fixed3), uninstall_button, 72, 152);
-	gtk_widget_set_uposition (uninstall_button, 72, 152);
-	gtk_widget_set_usize (uninstall_button, 0, 0);
 
 	return what_to_do_page;
 }
@@ -353,7 +331,7 @@ create_finish_page (GtkWidget *druid, GtkWidget *window)
 }
 
 GtkWidget*
-create_window (void)
+create_window (EazelInstaller *installer)
 {
 	GtkWidget *window;
 	GtkWidget *druid;
@@ -414,20 +392,550 @@ create_window (void)
 
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),
-			    NULL);
+			    installer);
 	gtk_signal_connect (GTK_OBJECT (install_page), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "prepare",
-			    GTK_SIGNAL_FUNC (setup_what_to_do),
-			    window);
+			    installer);
 	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_install),
-			    window);
+			    installer);
 	gtk_signal_connect (GTK_OBJECT (finish_page), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
-			    NULL);
+			    installer);
 
 	return window;
 }
 
+static void
+set_images  (GtkWidget *window)
+{
+	
+	GnomeDruidPage *page;
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "start_page"));
+	gnome_druid_page_start_set_logo (GNOME_DRUID_PAGE_START (page), 
+					 gdk_imlib_create_image_from_xpm_data (step_one_top));
+	gnome_druid_page_start_set_watermark (GNOME_DRUID_PAGE_START (page), 
+					      gdk_imlib_create_image_from_xpm_data (banner_left));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "what_to_do_page"));
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), 
+					    gdk_imlib_create_image_from_xpm_data (step_two_top));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "install_page"));
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), 
+					    gdk_imlib_create_image_from_xpm_data (step_three_top));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "finish_page"));
+	gnome_druid_page_finish_set_logo (GNOME_DRUID_PAGE_FINISH (page), 
+					  gdk_imlib_create_image_from_xpm_data (final_top));
+	gnome_druid_page_finish_set_watermark (GNOME_DRUID_PAGE_FINISH (page), 
+					       gdk_imlib_create_image_from_xpm_data (banner_left));
+}
+
+static void 
+eazel_install_progress (EazelInstall *service, 
+			const PackageData *package,
+			int package_num, int num_packages, 
+			int amount, int total,
+			int total_size_completed, int total_size, 
+			EazelInstaller *installer) 
+{
+	GtkProgressBar *progressbar, *progress_overall;
+	GtkWidget *summary;
+	GtkLabel *package_label;
+
+	package_label = gtk_object_get_data (GTK_OBJECT (installer->window), "package_label");
+	summary = gtk_object_get_data (GTK_OBJECT (installer->window), "summary");
+	progressbar = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
+	progress_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_overall");
+
+	if (amount == 0) {
+		char *tmp;
+		tmp = g_strdup_printf ("Installing %s", package->name);
+		gtk_label_set_text (package_label, tmp);
+		g_free (tmp);
+
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
+		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
+#ifdef NO_TEXT_BOX
+		gtk_label_set_text (GTK_LABEL (summary), package->description);
+#else
+		gtk_text_backward_delete (GTK_TEXT (summary), 
+					  gtk_text_get_length (GTK_TEXT (summary)));
+		gtk_text_insert (GTK_TEXT (summary), 
+				 NULL, NULL, NULL,
+				 package->description, strlen (package->description));
+#endif
+		fprintf (stdout, "\n");
+	}
+
+	if (installer_debug) {
+		float pct;
+		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
+		fprintf (stdout, "Install Progress - %s - %d %d (%d %d) %% %f\r", 
+			 package->name?package->name:"(null)", 
+			 amount, total, 
+			 total_size_completed, total_size, 
+			 pct);
+	}
+
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
+				(float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
+	gtk_progress_set_value (GTK_PROGRESS (progress_overall), 
+				(float)total_size_completed>total_size ? total_size : total_size_completed);
+
+	fflush (stdout);
+	if (amount == total && installer_debug) {
+		fprintf (stdout, "\n");
+	}
+}
+
+
+static void 
+eazel_download_progress (EazelInstall *service, 
+			 const char *name,
+			 int amount, 
+			 int total,
+			 EazelInstaller *installer) 
+{
+	GtkProgressBar *progressbar;
+	GtkLabel *package_label;
+
+	package_label = gtk_object_get_data (GTK_OBJECT (installer->window), "package_label");
+	progressbar = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
+
+	if (amount == 0) {
+		char *tmp;
+		tmp = g_strdup_printf ("Retrieving %s", name);
+		gtk_label_set_text (package_label, tmp);
+		g_free (tmp);
+
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
+		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));
+	}
+
+	if (installer_debug) {
+		float pct;
+		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
+		fprintf (stdout, "DOWNLOAD Progress - %s - %d %d %% %f\r", 
+			 name?name:"(null)", amount, total, pct); 
+		fflush (stdout);
+	}
+	
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), amount/1024);
+
+	if (amount != total) {		
+		/* g_main_iteration (FALSE); */
+		/* gtk_main_iteration (); */
+	} else if (amount == total) {		
+		/*
+		gtk_progress_set_format_string (GTK_OBJECT (progressbar), "done..."); 
+		g_main_iteration (FALSE);
+		*/
+	}
+}
+
+static void
+install_failed_helper (EazelInstall *service,
+		       const PackageData *pd,
+		       char *indent,
+		       char **str)
+{
+	GList *iterator;
+
+	if (pd->toplevel) {
+		char *tmp;
+		tmp = g_strdup_printf ("%s\n***The package %s failed. Here's the dep tree\n", 
+				       (*str)?*str:"", pd->name);
+		g_free (*str);
+		(*str) = tmp;
+	}
+	switch (pd->status) {
+	case PACKAGE_DEPENDENCY_FAIL: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s failed\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	case PACKAGE_CANNOT_OPEN: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s NOT FOUND\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;		
+	}
+	case PACKAGE_SOURCE_NOT_SUPPORTED: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s is a source\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	case PACKAGE_BREAKS_DEPENDENCY: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s breaks\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	default: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	}
+	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
+		PackageData *pack;
+		char *indent2;
+		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		pack = (PackageData*)iterator->data;
+		install_failed_helper (service, pack, indent2, str);
+		g_free (indent2);
+	}
+	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
+		PackageData *pack;
+		char *indent2;
+		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		pack = (PackageData*)iterator->data;
+		install_failed_helper (service, pack, indent2, str);
+		g_free (indent2);
+	}
+}
+
+
+static void
+install_failed (EazelInstall *service,
+		const PackageData *pd,
+		EazelInstaller *installer)
+{
+	if (pd->toplevel == TRUE) {
+		install_failed_helper (service, pd, g_strdup (""), &installer->failure_info);
+	}
+}
+
+static void
+download_failed (EazelInstall *service,
+		 const char *name,
+		 EazelInstaller *installer)
+{
+	char *output;
+
+	if (output) {		
+		output = g_strdup_printf ("%s\nDownload of %s failed", installer->failure_info, name);
+	} else {
+		output = g_strdup_printf ("Download of %s failed", name);
+	}
+	g_free (installer->failure_info);
+	installer->failure_info = output;
+}
+
+static void
+eazel_install_preflight (EazelInstall *service,
+			 int total_size,
+			 int num_packages,
+			 EazelInstaller *installer)
+{
+	GtkProgressBar *progress_overall;
+	GtkLabel *package_label;
+	GtkWidget *summary;
+	char *summary_string;
+	char *tmp;
+
+	summary = gtk_object_get_data (GTK_OBJECT (installer->window), "summary");
+	package_label = gtk_object_get_data (GTK_OBJECT (installer->window), "package_label");
+	progress_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_overall");
+
+	gtk_progress_set_format_string (GTK_PROGRESS (progress_overall), "Total completion %p%%");
+	gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)total_size);
+	gtk_widget_show (GTK_WIDGET (progress_overall));
+
+	summary_string = g_strdup_printf (_("Now starting the install process.\n"
+					    "Starting the process takes some time, please be patient.\n"
+					    "In total, %d mb of software will be installed"), 
+					  total_size/(1024*1024));
+	tmp = g_strdup_printf ("Preparing RPM, %d packages (%d mb)", num_packages, total_size/(1024*1024));
+
+	if (installer_debug) {
+		fprintf (stdout, "PREFLIGHT: %s\n", tmp);
+	}
+
+	gtk_label_set_text (package_label, tmp);
+#ifdef NO_TEXT_BOX
+	gtk_label_set_text (GTK_LABEL (summary), summary_string);
+#else
+	gtk_text_backward_delete (GTK_TEXT (summary), 
+				  gtk_text_get_length (GTK_TEXT (summary)));
+	gtk_text_insert (GTK_TEXT (summary), 
+			 NULL, NULL, NULL,
+			 summary_string, strlen (summary_string));
+#endif
+	g_main_iteration (FALSE);
+}
+
+static void
+eazel_install_dep_check (EazelInstall *service,
+			 const PackageData *pack,
+			 const PackageData *needs,
+			 EazelInstaller *installer)
+{
+	GtkLabel *package_label;
+	GtkWidget *summary;
+	char *tmp;
+
+	package_label = gtk_object_get_data (GTK_OBJECT (installer->window), "package_label");
+	summary = gtk_object_get_data (GTK_OBJECT (installer->window), "summary");
+
+	tmp = g_strdup_printf ("%s needs %s", pack->name, needs->name);
+
+	if (installer_debug) {
+		fprintf (stdout, "DEP CHECK : %s\n", tmp);
+	}
+
+	gtk_label_set_text (package_label, tmp);
+	g_free (tmp);
+	tmp = g_strdup_printf ("Fetching dependencies for %s", pack->name);
+		
+#ifdef NO_TEXT_BOX
+	gtk_label_set_text (GTK_LABEL (summary), tmp);
+#else
+	gtk_text_backward_delete (GTK_TEXT (summary), 
+				  gtk_text_get_length (GTK_TEXT (summary)));
+	gtk_text_insert (GTK_TEXT (summary), 
+			 NULL, NULL, NULL,
+			 tmp, strlen (tmp));
+#endif
+	g_free (tmp);
+
+	g_main_iteration (FALSE);
+}
+
+static gboolean
+eazel_install_delete_files (EazelInstall *service,
+			    EazelInstaller *installer) 
+{
+	if (installer_debug) {
+		fprintf (stdout, "Deleting rpm's\n");
+	}
+	return TRUE ;
+}
+
+static void 
+eazel_installer_add_category (EazelInstaller *installer,
+			      CategoryData *category)
+{
+	static int magic = 24;
+	GtkWidget *button;
+	GtkWidget *fixed;
+	static GSList *fixed_group = NULL;
+
+	if (installer->debug) {
+		fprintf (stdout, "Read category \"%s\"\n", category->name);
+	}
+
+	fixed = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (installer->window), "fixed3"));
+
+	button = gtk_radio_button_new_with_label (fixed_group, category->name);
+	fixed_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+	gtk_widget_set_name (button, category->name);
+	gtk_widget_ref (button);
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), category->name, button,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show (button);
+	gtk_fixed_put (GTK_FIXED (fixed), button, 72, magic);
+	gtk_widget_set_uposition (button, 72, magic);
+	gtk_widget_set_usize (button, 0, 0);
+
+	magic += 32;
+}
+
+/*****************************************
+  GTK+ object stuff
+*****************************************/
+
+static void
+eazel_installer_finalize (GtkObject *object)
+{
+	EazelInstaller *installer;
+
+	g_message ("eazel_installer_finalize");
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EAZEL_INSTALLER (object));
+
+	installer = EAZEL_INSTALLER (object);
+
+	/* Free the objects own crap */
+	g_list_foreach (installer->categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_free (installer->categories);
+	eazel_install_unref (GTK_OBJECT (installer->service));
+
+	/* Call parents destroy */
+	if (GTK_OBJECT_CLASS (eazel_installer_parent_class)->finalize) {
+		GTK_OBJECT_CLASS (eazel_installer_parent_class)->finalize (object);
+	}
+}
+
+ void
+eazel_installer_unref (GtkObject *object)
+{
+	gtk_object_unref (object);
+}
+
+static void
+eazel_installer_class_initialize (EazelInstallerClass *klass) 
+{
+	GtkObjectClass *object_class;
+
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = (void(*)(GtkObject*))eazel_installer_finalize;
+
+	eazel_installer_parent_class = gtk_type_class (gtk_object_get_type ());
+}
+
+static void
+eazel_installer_initialize (EazelInstaller *object) {
+	EazelInstaller *installer;
+	GList *iterator;
+	char *tmpdir;
+	char *package_destination;
+
+	g_assert (object != NULL);
+	g_assert (IS_EAZEL_INSTALLER (object));
+
+	installer = EAZEL_INSTALLER (object);
+
+	/* The manpage says not to use this, but I can't be arsed */
+	tmpdir = g_strdup ("/tmp/eazel-installer.XXXXXX");
+	mktemp (tmpdir);
+
+	if (!tmpdir || mkdir (tmpdir, 0700) != 0) {
+		g_error (_("Cannot create %s"), tmpdir);
+	}
+
+	package_destination = g_strdup_printf ("%s/package-list.xml", tmpdir);
+
+	installer->test = installer_test;
+	installer->debug = installer_debug;
+
+	installer->window = create_window (installer);
+	set_images (installer->window);
+	check_system (installer->window);
+	gtk_widget_show (installer->window);
+
+	installer->failure_info = NULL;
+	
+	installer->service =  
+		EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
+					       "verbose", TRUE,
+					       "silent", FALSE,
+					       "debug", TRUE,
+					       "test", installer_test ? TRUE : FALSE, 
+					       "force", installer_force ? TRUE : FALSE,
+					       "depend", FALSE,
+					       "update", TRUE,
+					       "uninstall", TRUE,
+					       "downgrade", TRUE,
+					       "protocol", installer_local ? PROTOCOL_LOCAL: PROTOCOL_HTTP,
+					       "tmp_dir", tmpdir,
+					       "rpmrc_file", RPMRC,
+					       "server", installer_server ? installer_server : HOSTNAME,
+					       "server_port", 
+					       installer_server_port ? installer_server_port : PORT_NUMBER,
+					       "package_list", package_destination, 
+					       "package_list_storage_path", "package-list.xml",
+					       "transaction_dir", "/tmp",
+					       NULL));
+
+	
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "download_progress", 
+			    GTK_SIGNAL_FUNC (eazel_download_progress),
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "install_progress", 
+			    GTK_SIGNAL_FUNC (eazel_install_progress), 
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "preflight_check", 
+			    GTK_SIGNAL_FUNC (eazel_install_preflight), 
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "dependency_check", 
+			    GTK_SIGNAL_FUNC (eazel_install_dep_check), 
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "delete_files", 
+			    GTK_SIGNAL_FUNC (eazel_install_delete_files), 
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "download_failed", 
+			    download_failed, 
+			    installer);
+	gtk_signal_connect (GTK_OBJECT (installer->service), 
+			    "install_failed", 
+			    GTK_SIGNAL_FUNC (install_failed), 
+			    installer);
+
+	if (!installer->debug) {
+		char *log;
+		log = g_strdup_printf ("%s/installer.log", tmpdir);
+		eazel_install_open_log (installer->service, log);
+		g_free (log);
+	}
+
+	eazel_install_fetch_remote_package_list (installer->service);
+	installer->categories = parse_local_xml_package_list (package_destination);
+	for (iterator = installer->categories; iterator; iterator=iterator->next) {
+		eazel_installer_add_category (installer, (CategoryData*)iterator->data);
+	}
+	g_free (package_destination);
+	g_free (tmpdir);
+}
+
+GtkType
+eazel_installer_get_type() {
+	static GtkType installer_type = 0;
+
+	if (!installer_type)
+	{
+		static const GtkTypeInfo installer_info =
+		{
+			"EazelInstaller",
+			sizeof (EazelInstaller),
+			sizeof (EazelInstallerClass),
+			(GtkClassInitFunc) eazel_installer_class_initialize,
+			(GtkObjectInitFunc) eazel_installer_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		/* Get a unique GtkType */
+		installer_type = gtk_type_unique (gtk_object_get_type (), &installer_info);
+	}
+
+	return installer_type;
+}
+
+/*
+  The _new method simply builds the service
+  using gtk_object_new
+*/
+EazelInstaller*
+eazel_installer_new()
+{
+	EazelInstaller *installer;
+
+	installer = EAZEL_INSTALLER (gtk_object_new (TYPE_EAZEL_INSTALLER, NULL));
+	
+	return installer;
+}

@@ -34,8 +34,8 @@
 extern int installer_debug;
 extern int installer_test;
 extern int installer_force;
-extern char *server;
-extern int port;
+extern char *installer_server;
+extern int installer_server_port;
 extern char* installer_local;
 
 static const struct poptOption options[] = {
@@ -43,8 +43,8 @@ static const struct poptOption options[] = {
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify xml file to yse"), NULL},
-	{"server", '\0', POPT_ARG_STRING, &server, 0, N_("Specify server"), NULL},
-	{"port", '\0', POPT_ARG_INT, &port, 0 , N_("Set port numer (80)"), NULL},
+	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify server"), NULL},
+	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port numer (80)"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -52,23 +52,15 @@ int
 main (int argc, char *argv[])
 {
   GtkWidget *window;
+  EazelInstaller *installer;
 
 #ifdef ENABLE_NLS
   bindtextdomain ("nautilus-installer", GNOMELOCALEDIR);
   textdomain ("nautilus-installer");
 #endif
-  gnome_init_with_popt_table ("nautilus-installer", VERSION, argc, argv, options, 0, NULL);
+  gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
-  /*
-   * The following code was added by Glade to create one of each component
-   * (except popup menus), just so that you see something after building
-   * the project. Delete any components that you don't want shown initially.
-   */
-  window = create_window ();
-  set_images (window);
-  check_system (window);
-
-  gtk_widget_show (window);
+  installer = eazel_installer_new ();
 
   gtk_main ();
   return 0;
