@@ -84,6 +84,13 @@
  */
 #define MAX_TITLE_LENGTH 180
 
+/* This number controls a maximum character count for a URL that is displayed
+ * as part of a dialog. It's fairly arbitrary -- big enough to allow most
+ * "normal" URIs to display in full, but small enough to prevent the dialog
+ * from getting insanely wide.
+ */
+#define MAX_URI_IN_DIALOG_LENGTH 60
+
 void
 nautilus_window_report_selection_change (NautilusWindow *window,
                                          GList *selection,
@@ -1296,7 +1303,8 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 {
         NautilusWindow *window;
         NautilusFile *file;
-        char *requested_uri;
+        const char *requested_uri;
+        char *full_uri_for_display;
         char *uri_for_display;
         char *error_message;
         char *scheme_string;
@@ -1326,7 +1334,13 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         
         /* Some sort of failure occurred. How 'bout we tell the user? */
         requested_uri = navi->location;
-	uri_for_display = nautilus_format_uri_for_display (requested_uri);
+        full_uri_for_display = nautilus_format_uri_for_display (requested_uri);
+	/* Truncate the URI so it doesn't get insanely wide. Note that even
+	 * though the dialog uses wrapped text, if the URI doesn't contain
+	 * white space then the text-wrapping code is too stupid to wrap it.
+	 */
+        uri_for_display = nautilus_str_middle_truncate (requested_uri, MAX_URI_IN_DIALOG_LENGTH);
+	g_free (full_uri_for_display);
 
 	dialog_title = NULL;
         

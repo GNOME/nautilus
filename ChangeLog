@@ -1,3 +1,14 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2020 (really long URIs make "can't go there"
+	dialogs insanely wide)
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback): Use
+	magic Ramiro truncating technology to display 
+	middle-truncated URI if it's more than a certain number
+	of characters wide.
+
 2000-09-13  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	Fixed a few typos. Add in preliminary support for QUESTION/ANWSER tags
