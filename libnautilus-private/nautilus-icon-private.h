@@ -25,6 +25,7 @@
 #ifndef NAUTILUS_ICON_CONTAINER_PRIVATE_H
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
+#include "nautilus-entry.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-icon-container.h"
 #include "nautilus-icon-dnd.h"
@@ -147,6 +148,7 @@ struct NautilusIconContainerDetails {
 	/* Renaming Details */
 	gboolean renaming;
 	NautilusIconTextItem *rename_widget;	/* Editable text item */
+        GtkWidget *rename_editable;             /* Copy of the rename editable for clipboard pastes */
 	gchar *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */

@@ -58,6 +58,8 @@ struct NautilusEntryClass {
 
 	void (*user_changed) (NautilusEntry *entry);
 
+	void (*selection_changed) (NautilusEntry *entry);
+
 };
 
 GtkType    nautilus_entry_get_type           (void);

@@ -2117,6 +2117,28 @@ fm_directory_view_get_bonobo_ui_container (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_get_bonobo_control:
+ *
+ * Get the BonoboControl for this FMDirectoryView.
+ * This is normally called only by subclasses in order to
+ * help editables interact with the clipboard ui component
+ * @view: FMDirectoryView of interest.
+ * 
+ * Return value: BonoboUIContainer for this view.
+ * 
+ **/
+BonoboControl *
+fm_directory_view_get_bonobo_control (FMDirectoryView *view)
+{
+	NautilusView *nautilus_view;
+
+	nautilus_view = fm_directory_view_get_nautilus_view (view);
+
+	return nautilus_view_get_bonobo_control (nautilus_view);
+}
+
+
+/**
  * fm_directory_view_get_nautilus_view:
  *
  * Get the NautilusView for this FMDirectoryView.

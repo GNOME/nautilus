@@ -736,16 +736,24 @@ get_size_location_for (int relation_number,
 {
 	const char *possible_relations[] = { "larger_than", "smaller_than" };
 	int entered_size;
+	gboolean int_conversion_success;
 	
 	g_assert (relation_number == 0 || relation_number == 1);
 	/* We put a 'K' after the size, so multiply what the user
 	   entered by 1000 */
-	entered_size = strtol (size_text, NULL, 10);
-	/* FIXME bugzilla.eazel.com 2438:  Need error handling here */
-	g_return_val_if_fail (entered_size >= 0, NULL);
-	return g_strdup_printf ("%s %s %d", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
-				possible_relations[relation_number], 
-				entered_size * 1000);
+	int_conversion_success = nautilus_str_to_int (size_text, 
+						      &entered_size);
+	
+	if (int_conversion_success) {
+		return g_strdup_printf ("%s %s %d", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
+					possible_relations[relation_number], 
+					entered_size * 1024);
+	}
+	else {
+		return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
+					possible_relations[relation_number], 
+					size_text);
+	}
 
 }
 

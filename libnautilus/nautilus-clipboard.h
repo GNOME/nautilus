@@ -32,16 +32,23 @@
 /* This makes this editable put clipboard commands into the passed UI
  * container when the editable is in focus. Callers in Nautilus
  * normally get the UI container from
- * nautilus_window_get_bonobo_ui_container.
- */
+ * nautilus_window_get_bonobo_ui_container. */
+/* The shares selection changes argument should be set to true if the
+ * editable is a widget that uses the signal "selection_changed" to
+ * tell others about text selection changes.  The NautilusEntry widget
+ * is currently the only widget in nautilus that shares selection
+ * changes.  */
 void nautilus_clipboard_set_up_editable            (GtkEditable        *target,
-						    Bonobo_UIContainer  container);
+						    Bonobo_UIContainer  container,
+						    gboolean            shares_selection_changes);
 
 /* Components should use this convenient cover instead of the call
  * above. This cover waits until the UI container shows up, so it can be
- * called even before the control has a UI container.
+ * called even before the control has a UI container. Set the 
  */
+/* Set the shares_selection changes as for the nautilus_clipboard_set_up_editable */
 void nautilus_clipboard_set_up_editable_in_control (GtkEditable        *target,
-						    BonoboControl      *control);
+						    BonoboControl      *control,
+						    gboolean            shares_selection_changes);
 
 #endif /* NAUTILUS_CLIPBOARD_H */

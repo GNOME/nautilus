@@ -60,6 +60,7 @@
 #include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -1416,6 +1417,25 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	return result;
 }
 
+static void
+renaming_icon_callback (NautilusIconContainer *container,
+			gpointer editable_data,
+			gpointer callback_data)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (callback_data);
+	nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (editable_data),
+						       fm_directory_view_get_bonobo_control (directory_view),
+						       TRUE);
+	/* Focus the editable in so the clipboard items will get turned on
+	   while we're renaming;  the hack that the nautilus entry is a 
+	   virtual widget prevents this from happening normally */
+	gtk_signal_emit_by_name (GTK_OBJECT (editable_data), "grab_focus");
+
+	
+}
+
 static int
 icon_container_compare_icons_callback (NautilusIconContainer *container,
 				       NautilusFile *file_a,
@@ -2005,6 +2025,10 @@ create_icon_container (FMIconView *icon_view)
 			    "preview",
 			    GTK_SIGNAL_FUNC (icon_container_preview_callback),
 			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "renaming_icon",
+			    renaming_icon_callback,
+			    directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));

@@ -133,7 +133,8 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (bar->details->entry),
-		 nautilus_window_get_ui_container (window));
+		 nautilus_window_get_ui_container (window),
+		 TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
 				   nautilus_gtk_button_auto_click, 

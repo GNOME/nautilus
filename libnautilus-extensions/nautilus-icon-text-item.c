@@ -52,7 +52,6 @@ typedef NautilusIconTextItem Iti;
 static void register_rename_undo (NautilusIconTextItem *item);
 static void restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data);
 
-
 /* Private part of the NautilusIconTextItem structure */
 typedef struct {
 	/* Font */
@@ -115,10 +114,6 @@ iti_stop_editing (Iti *iti)
 
 	iti->editing = FALSE;
 
-	gtk_widget_destroy (priv->entry_top);
-	priv->entry = NULL;
-	priv->entry_top = NULL;
-
 	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
@@ -173,7 +168,6 @@ layout_text (Iti *iti)
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals [TEXT_EDITED]);		
 }
 
-
 /* Accepts the text in the off-screen entry of an icon text item */
 static void
 iti_edition_accept (Iti *iti)
@@ -202,6 +196,27 @@ iti_edition_accept (Iti *iti)
 	priv->need_text_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
+
+
+static void
+iti_entry_text_changed_by_clipboard (GtkObject *widget,
+				     gpointer data)
+{
+	Iti *iti;
+	GnomeCanvasItem *item;
+	ItiPrivate *priv;
+
+	/* Update text item to reflect changes */
+	iti = NAUTILUS_ICON_TEXT_ITEM (data);
+	layout_text (iti);
+	priv = iti->priv;
+	priv->need_text_update = TRUE;
+
+	item = GNOME_CANVAS_ITEM (iti);
+	gnome_canvas_item_request_update (item);
+
+}
+
 
 /* Callback used when the off-screen entry of an icon text item is activated.
  * When this happens, we have to accept edition.
@@ -232,6 +247,11 @@ iti_start_editing (Iti *iti)
 	gtk_entry_set_text (GTK_ENTRY(priv->entry), iti->text);
 	gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
 			    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
+	/* Make clipboard functions cause an update the appearance of 
+	   the icon text item iteself, since the clipboard functions 
+	   will change the offscreen entry */
+	gtk_signal_connect_after (GTK_OBJECT (priv->entry), "changed",
+				  GTK_SIGNAL_FUNC (iti_entry_text_changed_by_clipboard), iti);
 
 	priv->entry_top = gtk_window_new (GTK_WINDOW_POPUP);
 	gtk_container_add (GTK_CONTAINER (priv->entry_top), GTK_WIDGET (priv->entry));
@@ -278,9 +298,6 @@ iti_destroy (GtkObject *object)
 
 	if (priv->font)
 		gdk_font_unref (priv->font);
-
-	if (priv->entry_top)
-		gtk_widget_destroy (priv->entry_top);
 
 	g_free (priv);
 
@@ -844,6 +861,8 @@ iti_stop_selecting (Iti *iti, guint32 event_time)
 	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[SELECTION_STOPPED]);
+	/* Hack, since the real nautilus entry can't get this information */
+	gtk_signal_emit_by_name (GTK_OBJECT (priv->entry), "selection_changed");
 }
 
 /* Handles selection range changes on the icon text item */
@@ -984,13 +1003,13 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		case GDK_Down:
 			iti_handle_arrow_key_event(iti, event);
 			break;
-					
+			
 		default:			
 			/* Check for control key operations */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				return FALSE;
 			}
-
+			
 			/* Register undo transaction if neccessary */	
 			if (!priv->undo_registered) {
 				priv->undo_registered = TRUE;
@@ -1018,7 +1037,6 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			x = cx - (item->x1 + MARGIN_X);
 			y = cy - (item->y1 + MARGIN_Y);
 			idx = iti_idx_from_x_y (iti, x, y);
-
 			iti_start_selecting (iti, idx, event->button.time);
 		}
 		return TRUE;
@@ -1027,6 +1045,7 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!iti->selecting)
 			break;
 
+		gtk_widget_event (GTK_WIDGET (priv->entry), event);
 		gnome_canvas_w2c(item->canvas, event->button.x, event->button.y, &cx, &cy);			
 		x = cx - (item->x1 + MARGIN_X);
 		y = cy - (item->y1 + MARGIN_Y);
@@ -1041,13 +1060,17 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			break;
 
 		return TRUE;
-#if 0
+
 	case GDK_FOCUS_CHANGE:
 		if (iti->editing && !event->focus_change.in) {
 			iti_edition_accept (iti);
+
+		}
+		if (iti->editing) {
+			gtk_widget_event (GTK_WIDGET (priv->entry), event);
 		}
 		return TRUE;
-#endif
+
 	default:
 		break;
 	}
@@ -1487,6 +1510,22 @@ nautilus_icon_text_item_get_margins (int *x, int *y)
 	*x = MARGIN_X;
 	*y = MARGIN_Y;
 }
+
+/**
+ * nautilus_icon_text_item_get_renaming_editable
+ * @GtkEditable *
+ * Return the editable widget doing the renaming
+ **/
+GtkWidget *
+nautilus_icon_text_item_get_renaming_editable (NautilusIconTextItem *item)
+{
+	ItiPrivate *priv;
+	
+	priv = item->priv;
+
+	return GTK_WIDGET (priv->entry);
+}
+					      
 
 
 /* register_undo

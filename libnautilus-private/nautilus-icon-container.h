@@ -135,6 +135,8 @@ typedef struct {
 	void         (* icon_text_changed)        (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   const char *text);
+	void         (* renaming_icon)            (NautilusIconContainer *container,
+						   GtkWidget *renaming_widget);
 	int	     (* preview)		  (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gboolean start_flag);

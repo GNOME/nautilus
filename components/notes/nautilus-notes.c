@@ -202,7 +202,8 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         /* handle selections */
         nautilus_clipboard_set_up_editable_in_control
                 (GTK_EDITABLE (notes->note_text_field),
-                 nautilus_view_get_bonobo_control (notes->view));
+                 nautilus_view_get_bonobo_control (notes->view),
+                 FALSE);
 
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.

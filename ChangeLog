@@ -1,3 +1,94 @@
+2000-11-21  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixes for bugs 690 and 733, to make the clipboard
+	work for file editing in place, and make sensitivity
+	work. Paste doesn't work correctly still, and a bug
+	is filed for this issue.  
+
+	* libnautilus-extensions/nautilus-entry.h:
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize_class), (nautilus_entry_key_press),
+	(nautilus_entry_motion_notify), (nautilus_entry_set_text),
+	(nautilus_entry_set_selection), (nautilus_entry_insert_text),
+	(nautilus_entry_delete_text):
+	Added a new signal to nautilus entry, called "selection_changed"
+	that is fired whenever the region selected in an editiable widget
+	is changed.  This is used to determine how to set clipboard sensitivity
+	correctly.
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_start_renaming_selected_item),
+	(hide_rename_widget):
+	Add a new signal "renaming_icon", which tells the icon view
+	to set up clipboard capabilities for the new editable widget
+	
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-text-item.h:
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_stop_editing), (iti_entry_text_changed_by_clipboard),
+	(iti_start_editing), (iti_destroy), (iti_start_selecting),
+	(iti_stop_selecting), (iti_event),
+	(nautilus_icon_text_item_get_renaming_editable):
+
+	Sad hacks that I had to add on top of this already scary file so
+	that the editable, which is in its own offscreen window somewhere,
+	communicates to the clipboard what is actually going on when text
+	is entered and selections are changed.  This includes adding a
+	new signal when text is changed, to make sure the entry knows about
+	it, firing an initial grab focus for the widget so that the widget
+	turns on, passing on more of the events of the canvas
+	widget, including motion notifies and focus events, and 
+	keeping a persistent copy of the last renaming entry in the icon
+	container so that pastes for that widget will still work.
+
+	* libnautilus/nautilus-clipboard.h:
+	* libnautilus/nautilus-clipboard.c: (set_menu_item_sensitive),
+	(set_paste_sensitive_if_clipboard_contains_data),
+	(set_clipboard_menu_items_sensitive),
+	(set_clipboard_menu_items_insensitive),
+	(clipboard_items_are_merged_in),
+	(set_clipboard_items_are_merged_in),
+	(merge_in_clipboard_menu_items), (merge_out_clipboard_menu_items),
+	(focus_changed_callback), (grab_focus_callback),
+	(selection_changed_callback),
+	(initialize_clipboard_component_with_callback_data),
+	(nautilus_clipboard_set_up_editable),
+	(widget_was_set_up_with_selection_sensitivity),
+	(first_focus_callback),
+	(nautilus_clipboard_set_up_editable_in_control):
+	Reorganized some of the code, and also added new callbacks
+	to deal with sensitivity changes.  
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_get_bonobo_control):
+	Add a new function that the icon view uses to
+	pass the bonobo control for clipboard set up
+	
+	* src/file-manager/fm-icon-view.c: (renaming_icon_callback),
+	(create_icon_container):
+	Set up clipboard capabilities when the renaming widget is 
+	created.
+	
+	* src/nautilus-location-bar.c: (nautilus_location_bar_new):
+	* components/notes/nautilus-notes.c: (make_notes_view):	
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_new):
+	Changed calls to clipboard set up routines to include
+	the new shares_selection_changes parameter. Widgets that
+	use the "selection_changed" signal (NautilusEntries) 
+	say "TRUE" here, otherwise selection doesn't work quite 
+	right, and FALSE is used instead.
+
+	* src/nautilus-search-bar-criterion.c: (get_size_location_for):
+	Deal with the case when a user has entered a non-numeric size
+	in a smart way, by using nautilus_str_to_int.  This is related
+	to bug 2438, but is not a complete fix.
+
 2000-11-21  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
@@ -10,6 +101,7 @@
 	Made the error text for copying into non-writeable dialogs more 
 	accurate.
 	
+>>>>>>> 1.2927
 2000-11-21  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/*.xpm:

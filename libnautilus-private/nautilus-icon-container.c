@@ -46,6 +46,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtklayout.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -136,7 +137,6 @@ static gboolean	     is_renaming	      		      (NautilusIconContainer	  *contain
 static gboolean	     is_renaming_pending		      (NautilusIconContainer	  *container);
 static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *container);
 
-
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
 				   GNOME_TYPE_CANVAS)
@@ -160,6 +160,7 @@ enum {
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
+	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
 	CREATE_NAUTILUS_LINKS,
@@ -2897,6 +2898,15 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING);
+	signals[RENAMING_ICON]
+		= gtk_signal_new ("renaming_icon",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     renaming_icon),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
 	signals[GET_ICON_IMAGES]
 		= gtk_signal_new ("get_icon_images",
 				  GTK_RUN_LAST,
@@ -4499,6 +4509,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	g_assert (!has_multiple_selection (container));
 
+
 	if (!icon_is_positioned (icon)) {
 		set_pending_icon_to_rename (container, icon);
 		return;
@@ -4516,14 +4527,15 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	details->original_text = g_strdup (editable_text);
 
-	/* Create text renaming widget */	
+	/* Create text renaming widget, if it hasn't been created already.
+	   We deal with the broken icon text item widget by keeping it around
+	   so its contents can still be cut and pasted as part of the clipboard */	
+	g_assert (details->rename_widget == NULL);
 	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
 		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
 					nautilus_icon_text_item_get_type (),
 					NULL));
-	/* Connect the text item to the clipboard */
-
-
+	
 	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (icon->item));
@@ -4542,7 +4554,9 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		 font,		        /* font */
 		 editable_text,	        /* text */
 		 TRUE);		        /* allocate local copy */
-	
+
+	/* FIXME:  These callbacks don't have any side effects.
+	   They should be removed */
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
 			    GTK_SIGNAL_FUNC (editing_started), container);
@@ -4551,6 +4565,12 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	nautilus_icon_container_update_icon (container, icon);
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[RENAMING_ICON],
+			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
+
+
+
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;
@@ -4585,15 +4605,24 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	hide_rename_widget (container, icon);
 }
 
+/* FIXME: We're not exactly hiding this widget, we're destroying it!
+   Perhaps hide_rename_widget isn't the right name */
 static void
 hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 {
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
+
+	/* Destroy the old persistent rename editable */
+	if (container->details->rename_editable) {
+		gtk_object_destroy (GTK_OBJECT (container->details->rename_editable));
+	}
+	container->details->rename_editable = 
+		nautilus_icon_text_item_get_renaming_editable (container->details->rename_widget);
 	/* Destroy renaming widget */
-	/* FIXME bugzilla.eazel.com 2480: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	container->details->rename_widget = NULL;
+
 
 	g_free (container->details->original_text);
 	

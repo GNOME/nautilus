@@ -512,7 +512,8 @@ nautilus_location_bar_new (NautilusWindow *window)
 	/* Clipboard */
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (location_bar->entry),
-		 nautilus_window_get_ui_container (window));
+		 nautilus_window_get_ui_container (window),
+		 TRUE);
 
 	return bar;
 }

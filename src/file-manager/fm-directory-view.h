@@ -318,6 +318,7 @@ void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
 Bonobo_UIContainer fm_directory_view_get_bonobo_ui_container        (FMDirectoryView       *view);
+BonoboControl *    fm_directory_view_get_bonobo_control             (FMDirectoryView       *view);
 NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectoryView	   *view);
 NautilusDirectory  *fm_directory_view_get_model                     (FMDirectoryView       *view);
 NautilusFile       *fm_directory_view_get_directory_as_file         (FMDirectoryView       *view);
