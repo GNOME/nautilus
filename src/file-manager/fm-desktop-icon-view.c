@@ -1015,18 +1015,16 @@ update_trash_link_and_delete_copies (void)
 {
 
 	/* Check for trash link */
-	if (update_link_and_delete_copies (nautilus_link_local_is_trash_link,
-					   TRASH_LINK_NAME,
-					   EEL_TRASH_URI)) {
-		return;
+	if (!update_link_and_delete_copies (nautilus_link_local_is_trash_link,
+					    TRASH_LINK_NAME,
+					    EEL_TRASH_URI)) {
+		nautilus_link_local_create (desktop_directory,
+					    TRASH_LINK_NAME,
+					    "trash-empty", 
+					    EEL_TRASH_URI,
+					    NULL,
+					    NAUTILUS_LINK_TRASH);
 	}
-
-	nautilus_link_local_create (desktop_directory,
-				    TRASH_LINK_NAME,
-				    "trash-empty", 
-				    EEL_TRASH_URI,
-				    NULL,
-				    NAUTILUS_LINK_TRASH);
 
 	/* Make sure link represents current trash state */
 	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),

@@ -1,5 +1,13 @@
 2001-07-22  Maciej Stachowiak  <mjs@noisehavoc.org>
 
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_trash_link_and_delete_copies): Update the icon even when
+	newly creating it, in case the trash state changed while the
+	desktop was off. This fixes bug 7956 (improper Trash icon state
+	after desktop toggle )
+
+2001-07-22  Maciej Stachowiak  <mjs@noisehavoc.org>
+
 	* libnautilus-private/nautilus-directory-async.c
 	(nautilus_file_invalidate_count_and_mime_list): Avoid a ref
 	underflow. This was causing a crash noticed by Anders
