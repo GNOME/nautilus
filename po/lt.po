@@ -2,16 +2,16 @@
 # Copyright (C) 2001-2005 Free Software Foundation, Inc.
 # Mantas Kriaučiūnas <mantas@akl.lt>, 2001-2004
 # Eglė Girinaitė <egle@akl.lt>, 2001-2003
-# Žygimantas Beručka <uid0@akl.lt>, 2004-2005
 # Gediminas Paulauskas <menesis@chatsubo.lt>, 2001, 2004
+# Žygimantas Beručka <uid0@akl.lt>, 2004-2005
 # 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-30 13:01+0200\n"
-"PO-Revision-Date: 2005-01-30 13:38+0200\n"
+"POT-Creation-Date: 2005-01-31 09:11+0200\n"
+"PO-Revision-Date: 2005-01-31 09:13+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -1649,7 +1649,8 @@ msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Nepavyko perkelti „%s“, nes jis arba jo tėvinis aplankas yra paskirties vietoje."
+"Nepavyko perkelti „%s“, nes jis arba jo tėvinis aplankas yra paskirties "
+"vietoje."
 
 #: libnautilus-private/nautilus-file-operations.c:623
 #, c-format
@@ -2022,8 +2023,8 @@ msgstr "Bylos perkeliamos į šiukšlinę"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1933
-msgid "Files thrown out:"
-msgstr "Išmestos bylos:"
+msgid "Throwing out file:"
+msgstr "Išmetama byla:."
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-private/nautilus-file-operations.c:1935
@@ -2042,8 +2043,8 @@ msgstr "Perkeliamos bylos"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1944
-msgid "Files moved:"
-msgstr "Bylų perkelta:"
+msgid "Moving file:"
+msgstr "Perkeliama byla:"
 
 #: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Preparing To Move..."
@@ -2058,11 +2059,10 @@ msgstr "Baigiamas perkėlimas..."
 msgid "Creating links to files"
 msgstr "Kuriamos nuorodos į bylas"
 
-#  localizers: label prepended to the progress count
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1958
-msgid "Files linked:"
-msgstr "Sukurta nuorodų:"
+msgid "Linking file:"
+msgstr "Siejama byla:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1960
@@ -2083,10 +2083,11 @@ msgstr "Baigiama kurti nuorodas..."
 msgid "Copying files"
 msgstr "Kopijuojamos bylos"
 
+#  localizers: progress dialog title
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1970
-msgid "Files copied:"
-msgstr "Nukopijuota bylų:"
+msgid "Copying file:"
+msgstr "Kopijuojama byla:"
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-private/nautilus-file-operations.c:1972
@@ -4197,7 +4198,8 @@ msgstr "Jūs neturite teisių, reikalingų „%s“ grupei pakeisti."
 #: src/file-manager/fm-error-reporting.c:169
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr "Nepavyko pakeisti „%s“ grupės, nes jis yra tik skaitymui skirtame diske"
+msgstr ""
+"Nepavyko pakeisti „%s“ grupės, nes jis yra tik skaitymui skirtame diske"
 
 #: src/file-manager/fm-error-reporting.c:177
 #, c-format
@@ -4215,7 +4217,8 @@ msgstr "Klaida nustatant grupę."
 #: src/file-manager/fm-error-reporting.c:203
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-msgstr "Nepavyko pakeisti „%s“ savininko, nes jis yra tik skaitymu skirtame diske"
+msgstr ""
+"Nepavyko pakeisti „%s“ savininko, nes jis yra tik skaitymu skirtame diske"
 
 #: src/file-manager/fm-error-reporting.c:210
 #, c-format
@@ -4234,7 +4237,8 @@ msgstr "Klaida nustatant savininką"
 #, c-format
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr "Nepavyko pakeisti „%s“ teisių, nes jis yra tik skaitymu skirtame diske."
+msgstr ""
+"Nepavyko pakeisti „%s“ teisių, nes jis yra tik skaitymu skirtame diske."
 
 #: src/file-manager/fm-error-reporting.c:242
 #, c-format
@@ -6403,6 +6407,19 @@ msgstr "Tinklo serveriai"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Rodyti tinkle esančius serverius su Nautilus bylų tvarkykle"
+
+#~ msgid "Files thrown out:"
+#~ msgstr "Išmestos bylos:"
+
+#~ msgid "Files moved:"
+#~ msgstr "Bylų perkelta:"
+
+#  localizers: label prepended to the progress count
+#~ msgid "Files linked:"
+#~ msgstr "Sukurta nuorodų:"
+
+#~ msgid "Files copied:"
+#~ msgstr "Nukopijuota bylų:"
 
 #~ msgid "_Empty"
 #~ msgstr "_Išvalyti"
