@@ -49,8 +49,8 @@
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>
 
-#define DEFAULT_BACKGROUND_COLOR		"rgb:0000/6666/6666"
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
+
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
 #define	SUMMARY_XML_HOME			"eazel-services://anonymous/services"
 #define	SUMMARY_XML_HOME_2			"eazel-services:/services"
@@ -78,18 +78,14 @@ struct _NautilusSummaryViewDetails {
 	NautilusView	*nautilus_view;
 
 	SummaryData	*xml_data;
+	GtkWidget	*feedback_text;
 
 	/* Parent form and title */
 	GtkWidget	*form;
 	GtkWidget	*form_title;
 
-	/* Startup view controls */
-	char		*redirect_location;
-	GtkWidget	*progress_bar;
-	GtkWidget	*feedback_text;
-
 	/* Login State */
-	char		*user_name;
+	char			*user_name;
 	volatile gboolean	logged_in;
 
 	/* Services control panel */
@@ -168,8 +164,6 @@ static void	nautilus_summary_view_destroy		(GtkObject			*object);
 static void	summary_load_location_callback		(NautilusView			*nautilus_view,
 							 const char			*location,
 	 						 NautilusSummaryView		*view);
-static void	generate_startup_form			(NautilusSummaryView		*view);
-static void	generate_startup_form_logo		(NautilusSummaryView		*view);
 static void	generate_summary_form			(NautilusSummaryView		*view);
 static void	generate_service_entry_row		(NautilusSummaryView		*view,
 							 int				row);
@@ -199,153 +193,9 @@ static gint	logged_out_callback			(gpointer			raw);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
 static void
-generate_startup_form (NautilusSummaryView       *view)
-{
-	GtkWidget		*temp_widget;
-	GtkWidget		*temp_box;
-	GtkWidget		*align;
-	int			counter;
-	gboolean		got_url_table;
-
-	view->details->logged_in = am_i_logged_in (view);
-
-	if (view->details->logged_in) {
-		/* fetch urls */
-		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
-		if (!got_url_table) {
-			g_assert ("Could not get url table !\n");
-		}
-		/* fetch and parse the xml file */
-		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
-		/* dispose of startup form that was shown */
-		if (view->details->form != NULL) {
-			gtk_widget_destroy (view->details->form);
-			view->details->form = NULL;
-		}
-
-		generate_summary_form (view);
-	}
-	else {
-
-	/* fetch urls */
-	got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
-	if (!got_url_table) {
-		g_error (_("Could not get url table !\n"));
-		return;
-	}
-
-	/* fetch and parse the xml file */
-	view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
-	if (view->details->xml_data == NULL) {
-		g_error (_("Could not get summary configuration file !\n"));
-		return;
-	}
-
-	/* set to default not logged in for now */
-	view->details->logged_in = FALSE;
-
-	/* allocate the parent box to hold everything */
-	view->details->form = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (view), view->details->form);
-	gtk_widget_show (view->details->form);
-
-	/* setup the title */
-	generate_startup_form_logo (view);
-
-	/* create a fill space box */
-	temp_box = gtk_hbox_new (TRUE, 30);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
-	gtk_widget_show (temp_box);
-
-	/* Add the watch icon */
-	temp_box = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 40);
-	gtk_widget_show (temp_box);
-
-	temp_widget = create_image_widget ("service-watch.png",
-					   DEFAULT_BACKGROUND_COLOR);
-	g_assert (temp_widget != NULL);
-
-	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
-	gtk_widget_show (temp_widget);
-
-	/* Add a label for error status messages */
-	view->details->feedback_text = nautilus_label_new ("");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->feedback_text), 12);
-	nautilus_label_set_text_color (NAUTILUS_LABEL (view->details->feedback_text), NAUTILUS_RGB_COLOR_WHITE);
-	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 15);
-
-	/* Create a center alignment object */
-	align = gtk_alignment_new (0.5, 0.5, 0, 0);
-	gtk_box_pack_end (GTK_BOX (view->details->form), align, FALSE, FALSE, 5);
-	gtk_widget_show (align);
-
-	/* Add the progress meter */
-	view->details->progress_bar = gtk_progress_bar_new ();
-	gtk_container_add (GTK_CONTAINER (align), view->details->progress_bar);
-	gtk_widget_show (view->details->progress_bar);
-
-	/* bogus progress loop */
-	for (counter = 1; counter <= 10000; counter++) {
-		float value;
-
-		value = (float) counter / 10000;
-
-		if (counter == 1) {
-			show_feedback (view->details->feedback_text, "Testing eazel-proxy configuration ...");
-		}
-		if (counter == 5000) {
-			show_feedback (view->details->feedback_text, "Authenticating user anonymous ...");
-		}
-		if (counter == 8000) {
-			show_feedback (view->details->feedback_text, "Retrieving services list ...");
-		}
-		if (counter == 10000) {
-			/* dispose of startup form that was shown */
-			if (view->details->form != NULL) {
-				gtk_widget_destroy (view->details->form);
-				view->details->form = NULL;
-			}
-
-			generate_summary_form (view);
-		}
-		else {
-			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
-			while (gtk_events_pending ()) {
-				gtk_main_iteration ();
-			}
-		}
-	}
-	}
-
-}
-
-static void
-generate_startup_form_logo (NautilusSummaryView  *view)
-{
-
-	GtkWidget       *logo_container;
-	GtkWidget       *logo_widget;
-
-	logo_container = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), logo_container, 0, 0, 4);
-
-	logo_widget = create_image_widget ("startup-logo.png",
-					   DEFAULT_BACKGROUND_COLOR);
-
-	g_assert (logo_widget != NULL);
-
-	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
-	gtk_widget_show_all (logo_container);
-
-}
-
-
-static void
 generate_summary_form (NautilusSummaryView	*view)
 {
 
-/*	NautilusBackground	*background; */
 	GtkWidget		*frame;
 	GtkTable		*parent;
 	GtkWidget		*title;
@@ -360,6 +210,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget		*temp_scrolled_window;
 	gint			length;
 	gint			padding;
+	gboolean		got_url_table;
 
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
@@ -368,14 +219,49 @@ generate_summary_form (NautilusSummaryView	*view)
 	length = 0;
 	padding = 0;
 
+	view->details->logged_in = am_i_logged_in (view);
+
+	if (view->details->logged_in) {
+		/* fetch urls */
+		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
+		if (!got_url_table) {
+			g_assert ("Could not get url table !\n");
+		}
+		/* fetch and parse the xml file */
+		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
+		if (view->details->xml_data == NULL) {
+			g_error (_("Could not get summary configuration file !\n"));
+			return;
+		}
+
+	}
+	else {
+
+		/* fetch urls */
+		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
+		if (!got_url_table) {
+			g_error (_("Could not get url table !\n"));
+			return;
+		}
+
+		/* fetch and parse the xml file */
+		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
+		if (view->details->xml_data == NULL) {
+			g_error (_("Could not get summary configuration file !\n"));
+			return;
+		}
+	}
+
+	if (view->details->form != NULL) {
+		gtk_container_remove (GTK_CONTAINER (view), view->details->form);
+		gtk_widget_destroy (view->details->form);
+		view->details->form = NULL;
+	}
+
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 	gtk_widget_show (view->details->form);
-
-	/* reset the default background color */
-/*	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR); */
 
 	/* setup the title */
 	if (!view->details->logged_in) {
@@ -1108,11 +994,8 @@ logged_in_callback (gpointer	raw)
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = TRUE;
-	/* dispose of startup form that was shown */
-	gtk_widget_destroy (view->details->form);
-	view->details->form = NULL;
 
-	generate_startup_form (view);
+	generate_summary_form (view);
 
 	return (FALSE);
 }
@@ -1125,11 +1008,8 @@ logged_out_callback (gpointer	raw)
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = FALSE;
-	/* dispose of startup form that was shown */
-	gtk_widget_destroy (view->details->form);
-	view->details->form = NULL;
 
-	generate_startup_form (view);
+	generate_summary_form (view);
 
 	return (FALSE);
 }
@@ -1188,6 +1068,7 @@ static void
 nautilus_summary_view_initialize (NautilusSummaryView *view)
 {
 	CORBA_Environment ev;
+	NautilusBackground *background;
 
 	CORBA_exception_init (&ev);
 	
@@ -1197,6 +1078,9 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    "load_location",
 			    GTK_SIGNAL_FUNC (summary_load_location_callback), 
 			    view);
+
+	background = nautilus_get_widget_background (GTK_WIDGET (view));
+	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 
@@ -1255,13 +1139,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
 
-	/* dispose of any old form that was installed */
-	if (view->details->form != NULL) {
-		gtk_widget_destroy (view->details->form);
-		view->details->form = NULL;
-	}
-
-	generate_startup_form (view);
+	generate_summary_form (view);
 
 }
 

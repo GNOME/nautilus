@@ -1,3 +1,16 @@
+2000-10-04  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (logged_in_callback),
+	(logged_out_callback), (nautilus_summary_view_initialize),
+	(nautilus_summary_view_load_uri):
+
+	Fixed the redraw failure when logging in.  Fixed the background
+	color problem but scrolled window containers still don't pickup
+	the NautilusBackground color.  I have no idea why this doesn't
+	work.  Removed the "Loading Services" form since it was not
+	very useful and caused lots of problems.
+
 2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
