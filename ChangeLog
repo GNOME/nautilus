@@ -1,3 +1,24 @@
+2000-06-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	Task 1057: Terminal-based programs should open into a new terminal window
+
+	* libnautilus-extensions/nautilus-program-choosing.h,
+	libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application): Take a GnomeVFSMimeApplication *
+	instead of a command string; add gnome-terminal -x
+	(nautilus_launch_application_from_command): Old version that takes
+	a command string renamed. Also, uses `system' instead of `execlp',
+	so command-line arguments in the command string work.
+	* libnautilus-extensions/nautilus-program-chooser.c
+	(launch_mime_capplet): Adjusted to conform.
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_launch_application): Likewise.
+	* src/nautilus-sidebar.c: (command_button_callback,
+	nautilus_sidebar_chose_application_callback, add_command_buttons):
+	Likewise.
+	* test/test-nautilus-mime-actions.c (print_application): Show the
+	requires_terminal field for applications.
+
 2000-06-14  Pavel Cisler  <pavel@eazel.com>
 
 	* test/Makefile.am:
