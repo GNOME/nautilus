@@ -407,8 +407,10 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusFile *parent_file;
 	char *uri;
 	char *text[2];
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	GdkPixmap *closed_pixmap;
+	GdkBitmap *closed_mask;
+	GdkPixmap *open_pixmap;
+	GdkBitmap *open_mask;
 	
 	file = nautilus_tree_node_get_file (node);
 
@@ -434,25 +436,34 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	text[1] = NULL;
 
 	if (model_node_to_view_node (view, node) == NULL) {
-		
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
 								    NAUTILUS_ICON_SIZE_FOR_MENUS,
-								    &pixmap,
-								    &mask);
+								    &closed_pixmap,
+								    &closed_mask);
+
+		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+								    "accept",
+								    NAUTILUS_ICON_SIZE_FOR_MENUS,
+								    &open_pixmap,
+								    &open_mask);
+
 
 		view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
 							parent_view_node, 
 							NULL,
 							text,
 							TREE_SPACING,
-							pixmap, mask, pixmap, mask,
+							closed_pixmap, closed_mask, open_pixmap, open_mask,
 							FALSE,
 							FALSE);
-
-		gdk_pixmap_unref (pixmap);
-		if (mask != NULL) {
-			gdk_bitmap_unref (mask);
+		gdk_pixmap_unref (closed_pixmap);
+		gdk_pixmap_unref (open_pixmap);
+		if (closed_mask != NULL) {
+			gdk_bitmap_unref (closed_mask);
+		}
+		if (open_mask != NULL) {
+			gdk_bitmap_unref (open_mask);
 		}
 
 		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
@@ -580,8 +591,10 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusFile *file;
 	char *uri;
 	char *name;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
+	GdkPixmap *closed_pixmap;
+	GdkBitmap *closed_mask;
+	GdkPixmap *open_pixmap;
+	GdkBitmap *open_mask;
 	
 	file = nautilus_tree_node_get_file (node);
 
@@ -593,44 +606,40 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	view_node = model_node_to_view_node (view, node);
 
 	if (view_node != NULL) {
-
 		name = nautilus_file_get_name (file);
 	
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
 								    NAUTILUS_ICON_SIZE_FOR_MENUS,
-								    &pixmap,
-								    &mask);
-		
-		nautilus_ctree_node_set_pixtext (NAUTILUS_CTREE (view->details->tree),
-						 view_node,
-						 0,
-						 name,
-						 TREE_SPACING,
-						 pixmap,
-						 mask);
+								    &closed_pixmap,
+								    &closed_mask);
 
-		gdk_pixmap_unref (pixmap);
-		if (mask != NULL) {
-			gdk_bitmap_unref (mask);
+		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+								    "accept",
+								    NAUTILUS_ICON_SIZE_FOR_MENUS,
+								    &open_pixmap,
+								    &open_mask);
+
+		nautilus_ctree_set_node_info (NAUTILUS_CTREE (view->details->tree),
+					      view_node,
+					      name,
+					      TREE_SPACING,
+					      closed_pixmap, closed_mask,
+					      open_pixmap, open_mask,
+					      FALSE,
+					      ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+								      view_node));
+
+		gdk_pixmap_unref (closed_pixmap);
+		gdk_pixmap_unref (open_pixmap);
+		if (closed_mask != NULL) {
+			gdk_bitmap_unref (closed_mask);
+		}
+		if (open_mask != NULL) {
+			gdk_bitmap_unref (open_mask);
 		}
 
-		g_free (name);
-		
-#if 0
-		/* FIXME bugzilla.eazel.com 2421: 
-		 * should switch to this call so we can set open/closed pixamps */
-		void nautilus_ctree_set_node_info  (NautilusCTree     *ctree,
-					       NautilusCTreeNode *node,
-					       const gchar  *text,
-					       guint8        spacing,
-					       GdkPixmap    *pixmap_closed,
-					       GdkBitmap    *mask_closed,
-					       GdkPixmap    *pixmap_opened,
-					       GdkBitmap    *mask_opened,
-					       gboolean      is_leaf,
-					       gboolean      expanded);
-#endif	
+
 
 		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 			uri = nautilus_file_get_uri (file);
