@@ -1212,6 +1212,11 @@ fm_directory_view_init (FMDirectoryView *view)
 			    "load_location",
 			    G_CALLBACK (load_location_callback), 
 			    view);
+
+	nautilus_view_set_listener_mask (
+		NAUTILUS_VIEW (view->details->nautilus_view),
+		NAUTILUS_VIEW_LISTEN_SELECTION);
+
 	g_signal_connect (view->details->nautilus_view, 
 			    "selection_changed",
 			    G_CALLBACK (selection_changed_callback), 

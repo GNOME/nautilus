@@ -54,12 +54,14 @@ typedef struct {
 	void (* load_location)     (NautilusView          *view,
 		                    const char            *location_uri);
 	void (* stop_loading)      (NautilusView          *view);
-	void (* selection_changed) (NautilusView          *view,
-				    GList                 *selection); /* list of URI char *s */
-	void (* title_changed)     (NautilusView          *view,
-				    const char            *title);
-	void (* history_changed)   (NautilusView          *view,
+
+	/* These signals need to be enabled with nautilus_view_set_listener_mask */
+	void (* title_changed)     (NautilusView           *view,
+				    const char             *title);
+	void (* history_changed)   (NautilusView           *view,
 				    const Nautilus_History *history);
+	void (* selection_changed) (NautilusView           *view,
+				    GList                  *selection);
 } NautilusViewClass;
 
 GtkType            nautilus_view_get_type                             (void);
@@ -109,6 +111,18 @@ BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusV
 								       const char             *datadir,
 								       const char             *ui_xml_file_name,
 								       const char             *application_name);
+
+
+typedef enum {
+	NAUTILUS_VIEW_LISTEN_TITLE     = 1<<0,
+	NAUTILUS_VIEW_LISTEN_HISTORY   = 1<<1,
+	NAUTILUS_VIEW_LISTEN_SELECTION = 1<<2
+} NautilusViewListenerMask;
+
+Bonobo_PropertyBag nautilus_view_get_ambient_properties               (NautilusView            *view,
+								       CORBA_Environment       *opt_ev);
+void               nautilus_view_set_listener_mask                    (NautilusView            *view,
+								       NautilusViewListenerMask mask);
 
 /* `protected' functions for use by subclasses only. */
 NautilusView *     nautilus_view_construct                            (NautilusView           *view,

@@ -134,7 +134,7 @@ nautilus_customization_data_new (const char *customization_name,
 	}
 
 	/* load the frame if necessary */
-	if (!strcmp(customization_name, "patterns")) {
+	if (strcmp (customization_name, "patterns") == 0) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
 		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str, NULL);
 		g_free (temp_str);
@@ -213,7 +213,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	*emblem_name = g_strdup (current_file_info->name);
 	
-	if (!strcmp(data->customization_name, "patterns")) {
+	if (strcmp (data->customization_name, "patterns") == 0) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE, is_reset_image);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 

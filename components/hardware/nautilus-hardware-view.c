@@ -581,13 +581,13 @@ setup_overview_form (NautilusHardwareView *view)
                                 g_free(proc_file);
                                 
                                 /* Set the icon depending on the type of device */
-                                if(!strcmp(ide_media, "disk\n")) {
-                                        file_name = nautilus_pixmap_file("i-harddisk.png");
-                                } else if(!strcmp(ide_media, "cdrom\n")) {
-                                        file_name = nautilus_pixmap_file("CD_drive.png");
+                                if (strcmp (ide_media, "disk\n") == 0) {
+                                        file_name = nautilus_pixmap_file ("i-harddisk.png");
+                                } else if (strcmp (ide_media, "cdrom\n") == 0) {
+                                        file_name = nautilus_pixmap_file ("CD_drive.png");
                                 } else {
                                         /* some other device ... still set an icon */
-                                        file_name = nautilus_pixmap_file("i-harddisk.png");
+                                        file_name = nautilus_pixmap_file ("i-harddisk.png");
                                 }
                                 
 				pixmap_widget = eel_image_new (file_name);

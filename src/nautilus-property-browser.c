@@ -550,13 +550,15 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		   but for now we hardwire it to the drag_type */
 		
 		is_reset = FALSE;
-		if (!strcmp(property_browser->details->drag_type, "property/keyword")) {
+		if (strcmp (property_browser->details->drag_type,
+			    "property/keyword") == 0) {
 			char* keyword_str = strip_extension(property_browser->details->dragged_file);
 		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
 			g_free(keyword_str);
 			return;	
 		}
-		else if (!strcmp(property_browser->details->drag_type, "application/x-color")) {
+		else if (strcmp (property_browser->details->drag_type,
+				 "application/x-color") == 0) {
 		        GdkColor color;
 			guint16 colorArray[4];
 			
@@ -668,7 +670,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	
 	is_reset = eel_strcmp (file_name, RESET_IMAGE_NAME) == 0;
 	
-	if (!strcmp(property_browser->details->category, "patterns")) {
+	if (strcmp (property_browser->details->category, "patterns") == 0) {
 		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE, is_reset);
 	} else {
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
@@ -1519,7 +1521,7 @@ element_clicked_callback (GtkWidget *image_table,
 	/* compute the offsets for dragging */
 	scroll_offset = eel_viewport_get_scroll_offset (EEL_VIEWPORT (image_table->parent));
 
-	if (strcmp(drag_types[0].target, "application/x-color")) {
+	if (strcmp (drag_types[0].target, "application/x-color")) {
 		/*it's not a color, so, for now, it must be an image */
 		/* fiddle with the category to handle the "reset" case properly */
 		char * save_category = property_browser->details->category;
@@ -1838,9 +1840,9 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 	eel_label_set_text (EEL_LABEL (property_browser->details->help_label), description);
 	
 	/* case out on the mode */
-	if (strcmp(mode, "directory") == 0)
+	if (strcmp (mode, "directory") == 0)
 		make_properties_from_directories (property_browser);
-	else if (strcmp(mode, "inline") == 0)
+	else if (strcmp (mode, "inline") == 0)
 		make_properties_from_xml_node (property_browser, node);
 
 }
@@ -1891,7 +1893,8 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 	gtk_widget_show (button);
 	
 	/* if the button represents the current category, highlight it */	
-	if (property_browser->details->category && !strcmp(property_browser->details->category, name)) {
+	if (property_browser->details->category &&
+	    strcmp (property_browser->details->category, name) == 0) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 		property_browser->details->selected_button = button;		
 	}

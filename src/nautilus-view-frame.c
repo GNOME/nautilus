@@ -35,6 +35,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
+#include <bonobo/bonobo-event-source.h>
 #include <bonobo/bonobo-control-frame.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
@@ -89,6 +90,7 @@ struct NautilusViewFrameDetails {
 
         /* The view frame Bonobo objects. */
         BonoboObject *view_frame;
+	BonoboEventSource *event_source;
 	BonoboControlFrame *control_frame;
         BonoboZoomableFrame *zoomable_frame;
         
@@ -483,6 +485,96 @@ zoom_level_changed_callback (BonoboZoomableFrame *zframe,
 				 g_free);
 }
 
+enum {
+	BONOBO_PROPERTY_TITLE,
+	BONOBO_PROPERTY_HISTORY,
+	BONOBO_PROPERTY_SELECTION
+};
+
+static Nautilus_History *
+get_history_list (NautilusViewFrame *view)
+{
+	Nautilus_History *history_list;
+	
+	history_list = NULL;
+	g_signal_emit (view, 
+  			 signals[GET_HISTORY_LIST], 0,
+			 &history_list);
+  	return history_list;
+}
+
+static void
+nautilus_view_frame_get_prop (BonoboPropertyBag *bag,
+			      BonoboArg         *arg,
+			      guint              arg_id,
+			      CORBA_Environment *ev,
+			      gpointer           user_data)
+{
+	NautilusViewFrame *view = user_data;
+
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (user_data));
+
+	switch (arg_id) {
+	case BONOBO_PROPERTY_TITLE:
+		BONOBO_ARG_SET_STRING (arg, view->details->title);
+		break;
+
+	case BONOBO_PROPERTY_HISTORY:
+		CORBA_free (arg->_value);
+		arg->_value = get_history_list (view);
+		break;
+
+	case BONOBO_PROPERTY_SELECTION:
+		g_warning ("NautilusViewFrame: selection fetch not yet implemented");
+		break;
+
+	default:
+		g_warning ("NautilusViewFrame: Unknown property idx %d", arg_id);
+		break;
+	}
+}
+
+static BonoboPropertyBag *
+create_ambient_properties (NautilusViewFrame *view)
+{
+	BonoboPropertyBag *pbag;
+
+	pbag = bonobo_property_bag_new (
+		nautilus_view_frame_get_prop,
+		NULL, view);
+	
+	bonobo_property_bag_add (
+		pbag,
+		"title",
+		BONOBO_PROPERTY_TITLE,
+		TC_CORBA_string,
+		NULL,
+		_("a title"),
+		BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add (
+		pbag,
+		"history",
+		BONOBO_PROPERTY_HISTORY,
+		TC_Nautilus_History,
+		NULL,
+		_("the browse history"),
+		BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add (
+		pbag,
+		"selection",
+		BONOBO_PROPERTY_SELECTION,
+		TC_Nautilus_URIList,
+		NULL,
+		_("the current selection"),
+		BONOBO_PROPERTY_READABLE);
+
+	view->details->event_source = pbag->es;
+
+	return pbag;
+}
+
 static void
 create_corba_objects (NautilusViewFrame *view)
 {
@@ -501,6 +593,11 @@ create_corba_objects (NautilusViewFrame *view)
 	g_assert (ev._major == CORBA_NO_EXCEPTION);
 	view->details->control_frame = bonobo_control_frame_new
 		(bonobo_object_corba_objref (BONOBO_OBJECT (view->details->ui_container)));
+
+	bonobo_control_frame_set_propbag (
+		view->details->control_frame,
+		create_ambient_properties (view));
+
 	bonobo_control_frame_bind_to_control (view->details->control_frame, control, NULL);
 	bonobo_object_release_unref (control, NULL);
 
@@ -773,8 +870,9 @@ void
 nautilus_view_frame_selection_changed (NautilusViewFrame *view,
                                        GList *selection)
 {
-	Nautilus_URIList *uri_list;
+	BonoboArg *arg;
 	CORBA_Environment ev;
+	Nautilus_URIList *uri_list;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
@@ -785,19 +883,26 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	uri_list = nautilus_uri_list_from_g_list (selection);
 	
 	CORBA_exception_init (&ev);
-	Nautilus_View_selection_changed (view->details->view, uri_list, &ev);
+
+	arg = bonobo_arg_new_from (TC_Nautilus_URIList, uri_list);
+
+	bonobo_event_source_notify_listeners (
+		view->details->event_source,
+		"Bonobo/Property:change:selection", arg, &ev);
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
 	CORBA_exception_free (&ev);
 	
-	CORBA_free (uri_list);
+	CORBA_free (arg);
 }
 
 void
 nautilus_view_frame_title_changed (NautilusViewFrame *view,
 				   const char *title)
 {
+	BonoboArg arg;
 	CORBA_Environment ev;
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
@@ -807,10 +912,18 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 	}
 
 	CORBA_exception_init (&ev);
-	Nautilus_View_title_changed (view->details->view, title, &ev);
+
+	arg._type = TC_CORBA_string;
+	arg._value = &title;
+
+	bonobo_event_source_notify_listeners (
+		view->details->event_source,
+		"Bonobo/Property:change:title", &arg, &ev);
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
+
 	CORBA_exception_free (&ev);
 }
 
@@ -1211,26 +1324,15 @@ nautilus_view_frame_map (GtkWidget *view_as_widget)
 	}
 }
 
-static Nautilus_History *
-get_history_list (NautilusViewFrame *view)
-{
-	Nautilus_History *history_list;
-	
-	history_list = NULL;
-	g_signal_emit (view, 
-  			 signals[GET_HISTORY_LIST], 0,
-			 &history_list);
-  	return history_list;
-}
-
 static void
 send_history (NautilusViewFrame *view)
 {
 	Nautilus_History *history;
 	CORBA_Environment ev;
+	BonoboArg *arg;
 
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	
+
 	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
@@ -1239,15 +1341,21 @@ send_history (NautilusViewFrame *view)
 	if (history == NULL) {
 		return;
 	}
-	
+
 	CORBA_exception_init (&ev);
-	Nautilus_View_history_changed (view->details->view, history, &ev);
+
+	arg = bonobo_arg_new_from (TC_Nautilus_History, history);
+
+	bonobo_event_source_notify_listeners (
+		view->details->event_source,
+		"Bonobo/Property:change:history", arg, &ev);
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		view_frame_failed (view);
 	}
 	CORBA_exception_free (&ev);
 	
-	CORBA_free (history);
+	CORBA_free (arg);
 }
 
 gboolean

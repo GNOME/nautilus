@@ -64,7 +64,7 @@ static gint find_genre_id(gchar * text)
 
 	for (i = 0; i < GENRE_MAX; i++)
 	{
-		if (!strcmp(mpg123_id3_genres[i], text))
+		if (strcmp (mpg123_id3_genres[i], text) == 0)
 			return i;
 	}
 	if (text[0] == '\0')
@@ -179,7 +179,7 @@ static gchar* channel_mode_name(int mode)
 static void file_info_http(char *filename)
 {
 	gtk_widget_set_sensitive(id3_frame, FALSE);
-	if (mpg123_filename && !strcmp(filename, mpg123_filename) &&
+	if (mpg123_filename && strcmp(filename, mpg123_filename) == 0 &&
 	    mpg123_bitrate != 0)
 	{
 		set_mpeg_level_label(mpg123_mpeg25, mpg123_lsf, mpg123_layer);

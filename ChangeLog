@@ -1,3 +1,57 @@
+2001-12-18  Michael Meeks  <michael@ximian.com>
+
+	* components/hardware/nautilus-hardware-view.c
+	(setup_overview_form): fix strcmp style for Darin.
+
+	* components/music/fileinfo.c (find_genre_id),
+	(file_info_http): ditto.
+
+	* libnautilus-private/nautilus-customization-data.c
+	(nautilus_customization_data_get_next_element_for_display),
+	(nautilus_customization_data_new): ditto.
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_drag_data_get),
+	(make_category_link, make_drag_image): ditto.
+
+	* libnautilus-private/nautilus-volume-monitor.c
+	(option_list_has_option): ditto.
+
+2001-12-17  Michael Meeks  <michael@ximian.com>
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_init): set mask.
+
+	* src/nautilus-view-frame.c
+	(create_corba_objects): set ambient property bag.
+	(create_ambient_properties),
+	(nautilus_view_frame_get_prop): impl.
+	(nautilus_view_frame_title_changed),
+	(nautilus_view_frame_selection_changed),
+	(send_history): re-implement to fire event instead.
+
+	* components/history/nautilus-history-view.c
+	(nautilus_history_view_instance_init): set mask.
+	(history_changed_callback, update_history): constify.
+
+	* libnautilus/nautilus-view.c
+	(impl_Nautilus_View_title_changed),
+	(impl_Nautilus_View_history_changed): kill.
+	(impl_Nautilus_View_selection_changed): kill.
+	(nautilus_view_construct_from_bonobo_control):
+	connect to set_frame.
+	(nautilus_view_set_frame_callback): impl.
+	(nautilus_view_dispose): impl. to unset the frame
+	(nautilus_view_class_init): upd signals, epv & hook
+	dispose.
+	(nautilus_view_frame_property_changed_callback): impl.
+	(nautilus_view_get_ambient_properties): impl.
+	(nautilus_view_set_listener_mask): impl.
+
+	* libnautilus/nautilus-view-component.idl: remove
+	title_changed and history_changed - use a propert
+	and the more flexible listener interface.
+
 2001-12-17  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.h:

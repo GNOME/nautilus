@@ -66,20 +66,16 @@ module Nautilus {
 		 */
 		oneway void load_location (in URI location);
 		oneway void stop_loading ();
-		
-		/* Called to tell the view about selection changes. */
-		oneway void selection_changed (in URIList selection);
-
-		/* Called to tell the view about title changes. */
-		oneway void title_changed (in string title);
-
-		/* Called to tell the view about history changes. */
-		oneway void history_changed (in History history);
 	};
 	
 	/* The ViewFrame interface is used by the view to communicate
 	 * with the Nautilus shell. It's implemented as an interface
 	 * on the Bonobo::ControlFrame for the view.
+	 *
+	 * The Ambient properties on the ControlFrame are:
+	 *      'title'     - ro - string            - the title
+	 *      'history'   - ro - Nautilus::History - the history list
+	 *      'selection' - ro - URIList           - the selection
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
 		/* Called by the view component to change the location

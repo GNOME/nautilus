@@ -1005,7 +1005,7 @@ option_list_has_option (const char *optlist,
         options = g_strsplit (optlist, ",", -1);
 	
         for (i = 0; options[i]; i++) {
-                if (!strcmp (options[i], option)) {
+                if (strcmp (options[i], option) == 0) {
                         retval = TRUE;
                         break;
                 }

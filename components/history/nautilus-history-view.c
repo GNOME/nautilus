@@ -106,8 +106,8 @@ install_icon (GtkCList *list, int row, GdkPixbuf *pixbuf)
 }
 
 static void
-update_history (NautilusHistoryView *view,
-		Nautilus_History *history)
+update_history (NautilusHistoryView    *view,
+		const Nautilus_History *history)
 {
 	char *cols[HISTORY_VIEW_COLUMN_COUNT];
 	int new_row;
@@ -247,13 +247,13 @@ button_release_callback (GtkCList *list,
 }
 
 static void
-history_changed_callback (NautilusHistoryView *view,
-			  Nautilus_History *list,
-			  gpointer callback_data)
+history_changed_callback (NautilusHistoryView    *view,
+			  const Nautilus_History *history,
+			  gpointer                callback_data)
 {
 	g_assert (view == callback_data);
 
-	update_history (view, list);
+	update_history (view, history);
 }
 
 static void
@@ -283,18 +283,21 @@ nautilus_history_view_instance_init (NautilusHistoryView *view)
 	view->list = list;
 
 	g_signal_connect (list,
-			    "button-press-event",
-			    G_CALLBACK (button_press_callback),
-			    view);
+			  "button-press-event",
+			  G_CALLBACK (button_press_callback),
+			  view);
 	g_signal_connect (list,
-			    "button-release-event",
-			    G_CALLBACK (button_release_callback),
-			    view);
+			  "button-release-event",
+			  G_CALLBACK (button_release_callback),
+			  view);
+
+	nautilus_view_set_listener_mask (NAUTILUS_VIEW (view),
+					 NAUTILUS_VIEW_LISTEN_HISTORY);
 
 	g_signal_connect (view,
-			    "history_changed", 
-			    G_CALLBACK (history_changed_callback),
-			    view);
+			  "history_changed",
+			  G_CALLBACK (history_changed_callback),
+			  view);
 }
 
 static void
