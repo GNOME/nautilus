@@ -210,7 +210,7 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 			NULL,					/* parent_menu_shell */
 			NULL,					/* parent_menu_item */
 			nautilus_popup_menu_position_func,	/* func */
-			(gpointer) &offset,			/* data */
+			&offset,			        /* data */
 			3,					/* button */
 			GDK_CURRENT_TIME);			/* activate_time */
 

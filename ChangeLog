@@ -1,5 +1,21 @@
 2000-04-24  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-grid.c:
+	Refactored the grid to use a variable-size grid that sizes itself
+	to the items in the grid.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c
+	(nautilus_user_top_directory): Formatting tweak.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c
+	(nautilus_pop_up_context_menu): Got rid of gpointer cast, since
+	George's "find bad casts" grep found it and it's not needed.
+	
+	* nautilus-widgets/test-preferences.c: Got rid of gpointer cast,
+	since George's "find bad casts" grep found it and it's not needed.
+
+2000-04-24  Darin Adler  <darin@eazel.com>
+
 	* components/rpmview/Makefile.am:
 	* components/services/install/Makefile.am:
 	Fixed a few things in these make files. There's still a lot to be fixed.

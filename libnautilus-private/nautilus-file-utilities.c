@@ -132,7 +132,7 @@ nautilus_user_top_directory (void)
 			char	   *command;
 
 
-			src = gnome_datadir_file("nautilus/top");
+			src = gnome_datadir_file ("nautilus/top");
 
 			command = g_strdup_printf ("cp -R %s %s", src, user_top_directory);
 

@@ -184,7 +184,7 @@ static NautilusPrefInfo prefs_global_static_pref_info[] =
 		"User Level",
 		GTK_TYPE_ENUM,
 		FALSE,
-		(gpointer) &prefs_global_user_level_data
+		&prefs_global_user_level_data
 	},
 	{
 		"foo",

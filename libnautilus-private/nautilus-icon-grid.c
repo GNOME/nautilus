@@ -20,7 +20,8 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Ettore Perazzoli <ettore@gnu.org>, Darin Adler <darin@eazel.com>
+   Authors: Ettore Perazzoli <ettore@gnu.org>,
+            Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
@@ -33,61 +34,69 @@
 #define INITIAL_GRID_WIDTH 64
 #define INITIAL_GRID_HEIGHT 64
 
-#define GRID_CELL_WIDTH 80
-#define GRID_CELL_HEIGHT 80
+#define BASE_CELL_WIDTH 12
+#define BASE_CELL_HEIGHT 12
+
+#define START_GRID_POWER 2 /* typical icon size */
 
 #define FIRST_FREE_NONE G_MININT
 
-struct NautilusIconGrid {
-	/* The grid. This is automatically sized to fit all the
-	 * icons, so it doesn't need to be explicitly allocated.
-	 */
-	ArtIRect bounds;
-	GList **elements;
+/* This is a single grid at one grid resolution.
+ * The icon grid as a whole is a set of these for each size.
+ */
+typedef struct {
+	/* Grid resolution 2^<power>. */
+	int power;
 
 	/* This is the number or grid positions that we actually use
 	 * for finding positions for new icons.
 	 */
 	int visible_width;
 
+	/* The grid. This is automatically sized to fit all the
+	 * icons, so it doesn't need to be explicitly allocated.
+	 */
+	ArtIRect bounds;
+	GList **elements;
+
 	/* Position of the first free cell (used to speed up get_position).
 	 * Set first_free_x to FIRST_FREE_NONE to indicate no free cell.
 	 */
 	int first_free_x, first_free_y;
+} Subgrid;
+
+struct NautilusIconGrid {
+	GPtrArray *subgrids;
+
+	double world_visible_width;
 };
 
-NautilusIconGrid *
-nautilus_icon_grid_new (void)
+static Subgrid *
+subgrid_new (int power)
 {
-	return g_new0 (NautilusIconGrid, 1);
+	Subgrid *subgrid;
+
+	subgrid = g_new0 (Subgrid, 1);
+	subgrid->power = power;
+	return subgrid;
 }
 
-void
-nautilus_icon_grid_clear (NautilusIconGrid *grid)
+static void
+subgrid_free (Subgrid *subgrid)
 {
 	int i, num_elements;
 
-	num_elements = (grid->bounds.x1 - grid->bounds.x0)
-		* (grid->bounds.y1 - grid->bounds.y0);
-	for (i = 0; i < num_elements; i++) {
-		g_list_free (grid->elements[i]);
+	if (subgrid == NULL) {
+		return;
 	}
-	g_free (grid->elements);
-	grid->elements = 0;
 
-	grid->bounds.x0 = 0;
-	grid->bounds.y0 = 0;
-	grid->bounds.x1 = 0;
-	grid->bounds.y1 = 0;
-	grid->first_free_x = 0;
-	grid->first_free_y = 0;
-}
-
-void
-nautilus_icon_grid_destroy (NautilusIconGrid *grid)
-{
-	nautilus_icon_grid_clear (grid);
-	g_free (grid);
+	num_elements = (subgrid->bounds.x1 - subgrid->bounds.x0)
+		* (subgrid->bounds.y1 - subgrid->bounds.y0);
+	for (i = 0; i < num_elements; i++) {
+		g_list_free (subgrid->elements[i]);
+	}
+	g_free (subgrid->elements);
+	g_free (subgrid);
 }
 
 static GList **
@@ -106,130 +115,136 @@ get_element_ptr (GList **elements,
 }
 
 static GList **
-grid_get_element_ptr (NautilusIconGrid *grid,
+subgrid_get_element_ptr (Subgrid *subgrid,
 		      int x, int y)
 {
-	return get_element_ptr (grid->elements, &grid->bounds, x, y);
+	return get_element_ptr (subgrid->elements, &subgrid->bounds, x, y);
 }
 
 static void
-resize (NautilusIconGrid *grid,
+resize (Subgrid *subgrid,
 	const ArtIRect *new_bounds)
 {
 	int new_size;
 	GList **new_elements;
 	int x, y;
 
-	g_assert (nautilus_art_irect_contains_irect (new_bounds, &grid->bounds));
-	g_assert (new_bounds->x1 >= grid->visible_width);
+	g_assert (nautilus_art_irect_contains_irect (new_bounds, &subgrid->bounds));
+	g_assert (new_bounds->x1 >= subgrid->visible_width);
 
 	new_size = (new_bounds->x1 - new_bounds->x0) * (new_bounds->y1 - new_bounds->y0);
 	new_elements = g_new0 (GList *, new_size);
 
-	for (x = grid->bounds.x0; x < grid->bounds.x1; x++) {
-		for (y = grid->bounds.y0; y < grid->bounds.y1; y++) {
+	for (x = subgrid->bounds.x0; x < subgrid->bounds.x1; x++) {
+		for (y = subgrid->bounds.y0; y < subgrid->bounds.y1; y++) {
 			*get_element_ptr (new_elements, new_bounds, x, y) =
-				*grid_get_element_ptr (grid, x, y);
+				*subgrid_get_element_ptr (subgrid, x, y);
 		}
 	}
 
-	g_free (grid->elements);
-	grid->elements = new_elements;
+	g_free (subgrid->elements);
+	subgrid->elements = new_elements;
 
 	/* We might have a newly-free position if we are making the grid taller. */
-	if (new_bounds->y1 > grid->bounds.y1
-	    && grid->first_free_x == FIRST_FREE_NONE) {
-		grid->first_free_x = 0;
-		grid->first_free_y = grid->bounds.y1;
+	if (new_bounds->y1 > subgrid->bounds.y1
+	    && subgrid->first_free_x == FIRST_FREE_NONE) {
+		subgrid->first_free_x = 0;
+		subgrid->first_free_y = subgrid->bounds.y1;
 	}
 
-	grid->bounds = *new_bounds;
+	subgrid->bounds = *new_bounds;
 }
 
 static void
-update_first_free_forward (NautilusIconGrid *grid)
+update_first_free_forward (Subgrid *subgrid)
 {
 	int x, y;
 
-	if (grid->first_free_x == FIRST_FREE_NONE) {
+	if (subgrid->first_free_x == FIRST_FREE_NONE) {
 		x = 0;
 		y = 0;
 	} else {
-		x = grid->first_free_x;
-		y = grid->first_free_y;
+		x = subgrid->first_free_x;
+		y = subgrid->first_free_y;
 	}
 
-	while (y < grid->bounds.y1) {
-		if (*grid_get_element_ptr (grid, x, y) == NULL) {
-			grid->first_free_x = x;
-			grid->first_free_y = y;
+	while (y < subgrid->bounds.y1) {
+		if (*subgrid_get_element_ptr (subgrid, x, y) == NULL) {
+			subgrid->first_free_x = x;
+			subgrid->first_free_y = y;
 			return;
 		}
 
 		x++;
-		if (x >= grid->visible_width) {
+		if (x >= subgrid->visible_width) {
 			x = 0;
 			y++;
 		}
 	}
 
 	/* No free cell found. */
-	grid->first_free_x = FIRST_FREE_NONE;
+	subgrid->first_free_x = FIRST_FREE_NONE;
 }
 
-void
-nautilus_icon_grid_set_visible_width (NautilusIconGrid *grid,
-				      double world_visible_width)
+static void
+subgrid_set_visible_width (Subgrid *subgrid,
+			   double world_visible_width)
 {
 	int visible_width;
 	ArtIRect bounds;
 
-	visible_width = MAX(1, floor (world_visible_width / GRID_CELL_WIDTH));
+	if (subgrid == NULL) {
+		return;
+	}
 
-	if (visible_width > grid->bounds.x1) {
-		bounds = grid->bounds;
+	visible_width = MAX (floor (world_visible_width
+				    / (BASE_CELL_WIDTH * (1 << subgrid->power))),
+			     1);
+
+	if (visible_width > subgrid->bounds.x1) {
+		bounds = subgrid->bounds;
 		bounds.x1 = visible_width;
-		resize (grid, &bounds);
+		resize (subgrid, &bounds);
 	}
 
 	/* Check and see if there are newly-free positions because
 	 * the layout part of the grid is getting wider.
 	 */
-	if (visible_width > grid->visible_width
-	    && grid->bounds.y1 > 0
-	    && grid->first_free_x == FIRST_FREE_NONE) {
-		grid->first_free_x = visible_width;
-		grid->first_free_y = 0;
+	if (visible_width > subgrid->visible_width
+	    && subgrid->bounds.y1 > 0
+	    && subgrid->first_free_x == FIRST_FREE_NONE) {
+		subgrid->first_free_x = visible_width;
+		subgrid->first_free_y = 0;
 	}
 
-	grid->visible_width = visible_width;
+	subgrid->visible_width = visible_width;
 
 	/* Check and see if the old first-free position is illegal
 	 * because the layout part of the grid is getting narrower.
 	 */
-	if (grid->first_free_x >= visible_width) {
-		g_assert (grid->first_free_x != FIRST_FREE_NONE);
-		if (grid->first_free_y == grid->bounds.y1 - 1) {
-			grid->first_free_x = FIRST_FREE_NONE;
+	if (subgrid->first_free_x >= visible_width) {
+		g_assert (subgrid->first_free_x != FIRST_FREE_NONE);
+		if (subgrid->first_free_y == subgrid->bounds.y1 - 1) {
+			subgrid->first_free_x = FIRST_FREE_NONE;
 		} else {
-			grid->first_free_x = 0;
-			grid->first_free_y++;
-			update_first_free_forward (grid);
+			subgrid->first_free_x = 0;
+			subgrid->first_free_y++;
+			update_first_free_forward (subgrid);
 		}
 	}
 }
 
 static void
-maybe_resize (NautilusIconGrid *grid,
+maybe_resize (Subgrid *subgrid,
 	      int x, int y)
 {
 	ArtIRect new_bounds;
 
-	new_bounds = grid->bounds;
+	new_bounds = subgrid->bounds;
 
 	if (new_bounds.x0 == new_bounds.x1) {
-		if (grid->visible_width != 0) {
-			new_bounds.x1 = grid->visible_width;
+		if (subgrid->visible_width != 0) {
+			new_bounds.x1 = subgrid->visible_width;
 		} else {
 			new_bounds.x1 = INITIAL_GRID_WIDTH;
 		}
@@ -252,115 +267,94 @@ maybe_resize (NautilusIconGrid *grid,
 		new_bounds.y1 += new_bounds.y1 - new_bounds.y0;
 	}
 
-	if (!nautilus_art_irect_equal (&new_bounds, &grid->bounds)) {
-		resize (grid, &new_bounds);
+	if (!nautilus_art_irect_equal (&new_bounds, &subgrid->bounds)) {
+		resize (subgrid, &new_bounds);
 	}
 }
 
 static void
-grid_add_one (NautilusIconGrid *grid,
-	      NautilusIcon *icon,
-	      int x, int y)
-{
-	GList **elem_ptr;
-
-	maybe_resize (grid, x, y);
-
-	elem_ptr = grid_get_element_ptr (grid, x, y);
-	g_assert (g_list_find (*elem_ptr, icon) == NULL);
-	*elem_ptr = g_list_prepend (*elem_ptr, icon);
-
-	if (x == grid->first_free_x && y == grid->first_free_y) {
-		update_first_free_forward (grid);
-	}
-}
-
-static void
-grid_remove_one (NautilusIconGrid *grid,
+subgrid_add_one (Subgrid *subgrid,
 		 NautilusIcon *icon,
 		 int x, int y)
 {
 	GList **elem_ptr;
+
+	maybe_resize (subgrid, x, y);
+
+	elem_ptr = subgrid_get_element_ptr (subgrid, x, y);
+	g_assert (g_list_find (*elem_ptr, icon) == NULL);
+	*elem_ptr = g_list_prepend (*elem_ptr, icon);
+
+	if (x == subgrid->first_free_x && y == subgrid->first_free_y) {
+		update_first_free_forward (subgrid);
+	}
+}
+
+static void
+subgrid_remove_one (Subgrid *subgrid,
+		    NautilusIcon *icon,
+		    int x, int y)
+{
+	GList **elem_ptr;
 	
-	elem_ptr = grid_get_element_ptr (grid, x, y);
+	elem_ptr = subgrid_get_element_ptr (subgrid, x, y);
 	g_assert (g_list_find (*elem_ptr, icon) != NULL);
 	*elem_ptr = g_list_remove (*elem_ptr, icon);
 
 	if (*elem_ptr == NULL) {
-		if (grid->first_free_x == FIRST_FREE_NONE
-		    || grid->first_free_y > y
-		    || (grid->first_free_y == y && grid->first_free_x > x)) {
-			grid->first_free_x = x;
-			grid->first_free_y = y;
+		if (subgrid->first_free_x == FIRST_FREE_NONE
+		    || subgrid->first_free_y > y
+		    || (subgrid->first_free_y == y && subgrid->first_free_x > x)) {
+			subgrid->first_free_x = x;
+			subgrid->first_free_y = y;
 		}
 	}
 }
 
 static void
-add_or_remove (NautilusIconGrid *grid,
-	       NautilusIcon *icon,
-	       gboolean add)
+subgrid_add_or_remove (Subgrid *subgrid,
+		       NautilusIcon *icon,
+		       gboolean add)
 {
 	int x, y;
 
+	if (subgrid == NULL) {
+		return;
+	}
+
 	/* Add/remove to all the overlapped grid squares. */
-	for (x = icon->grid_rectangle.x0; x < icon->grid_rectangle.x1; x++) {
-		for (y = icon->grid_rectangle.y0; y < icon->grid_rectangle.y1; y++) {
+	for (x = (icon->grid_rectangle.x0 >> subgrid->power);
+	     x < ((icon->grid_rectangle.x1 + ((1 << subgrid->power) - 1)) >> subgrid->power);
+	     x++) {
+		for (y = (icon->grid_rectangle.y0 >> subgrid->power);
+		     y < ((icon->grid_rectangle.y1 + ((1 << subgrid->power) - 1)) >> subgrid->power);
+		     y++) {
 			if (add) {
-				grid_add_one (grid, icon, x, y);
+				subgrid_add_one (subgrid, icon, x, y);
 			} else {
-				grid_remove_one (grid, icon, x, y);
+				subgrid_remove_one (subgrid, icon, x, y);
 			}
 		}
 	}
 }
 
-void
-nautilus_icon_grid_add (NautilusIconGrid *grid,
-			NautilusIcon *icon)
+static void
+subgrid_get_position (Subgrid *subgrid,
+		      NautilusIcon *icon,
+		      ArtPoint *position)
 {
-	ArtDRect world_bounds;
+	int subgrid_x, subgrid_y;
 
-	/* Figure out how big the icon is. */
-	nautilus_gnome_canvas_item_get_world_bounds
-		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
-	
-	/* Compute grid bounds for the icon. */
-	icon->grid_rectangle.x0 = floor (world_bounds.x0 / GRID_CELL_WIDTH);
-	icon->grid_rectangle.y0 = floor (world_bounds.y0 / GRID_CELL_HEIGHT);
-	icon->grid_rectangle.x1 = ceil (world_bounds.x1 / GRID_CELL_WIDTH);
-	icon->grid_rectangle.y1 = ceil (world_bounds.y1 / GRID_CELL_HEIGHT);
-
-	add_or_remove (grid, icon, TRUE);
-}
-
-void
-nautilus_icon_grid_remove (NautilusIconGrid *grid,
-			   NautilusIcon *icon)
-{
-	add_or_remove (grid, icon, FALSE);
-}
-
-void
-nautilus_icon_grid_get_position (NautilusIconGrid *grid,
-				 NautilusIcon *icon,
-				 ArtPoint *position)
-{
-	int grid_x, grid_y;
-
-	g_return_if_fail (grid != NULL);
-	g_return_if_fail (position != NULL);
-
-	if (grid->first_free_x == FIRST_FREE_NONE) {
-		grid_x = 0;
-		grid_y = grid->bounds.y1;
+	if (subgrid->first_free_x == FIRST_FREE_NONE) {
+		subgrid_x = 0;
+		subgrid_y = subgrid->bounds.y1;
 	} else {
-		grid_x = grid->first_free_x;
-		grid_y = grid->first_free_y;
+		subgrid_x = subgrid->first_free_x;
+		subgrid_y = subgrid->first_free_y;
 	}
 
-	position->x = (double) grid_x * GRID_CELL_WIDTH;
-	position->y = (double) grid_y * GRID_CELL_HEIGHT;
+	position->x = (double) subgrid_x * (BASE_CELL_WIDTH << subgrid->power);
+	position->y = (double) subgrid_y * (BASE_CELL_HEIGHT << subgrid->power);
 }
 
 static int
@@ -402,28 +396,242 @@ nautilus_g_list_remove_duplicates (GList *list)
 	return list;
 }
 
-GList *
-nautilus_icon_grid_get_intersecting_icons (NautilusIconGrid *grid,
-					   const ArtDRect *world_rect)
+static GList *
+subgrid_get_intersecting_icons (Subgrid *subgrid,
+				const ArtDRect *world_rect)
 {
 	ArtIRect test_rect;
 	int x, y;
 	GList *list;
 	GList *cell_list;
 
-	test_rect.x0 = floor (world_rect->x0 / GRID_CELL_WIDTH);
-	test_rect.y0 = floor (world_rect->y0 / GRID_CELL_HEIGHT);
-	test_rect.x1 = ceil (world_rect->x1 / GRID_CELL_WIDTH);
-	test_rect.y1 = ceil (world_rect->y1 / GRID_CELL_HEIGHT);
+	if (subgrid == NULL) {
+		return NULL;
+	}
 
-	art_irect_intersect (&test_rect, &test_rect, &grid->bounds);
+	if (world_rect == NULL) {
+		test_rect = subgrid->bounds;
+	} else {
+		test_rect.x0 = floor (world_rect->x0 / (BASE_CELL_WIDTH << subgrid->power));
+		test_rect.y0 = floor (world_rect->y0 / (BASE_CELL_HEIGHT << subgrid->power));
+		test_rect.x1 = ceil (world_rect->x1 / (BASE_CELL_WIDTH << subgrid->power));
+		test_rect.y1 = ceil (world_rect->y1 / (BASE_CELL_HEIGHT << subgrid->power));
+		
+		art_irect_intersect (&test_rect, &test_rect, &subgrid->bounds);
+	}
 
 	list = NULL;
 	for (x = test_rect.x0; x < test_rect.x1; x++) {
 		for (y = test_rect.y0; y < test_rect.y1; y++) {
-			cell_list = *grid_get_element_ptr (grid, x, y);
+			cell_list = *subgrid_get_element_ptr (subgrid, x, y);
 			list = g_list_concat (list, g_list_copy (cell_list));
 		}
 	}
 	return nautilus_g_list_remove_duplicates (list);
+}
+
+/* Get the smallest subgrid. */
+static Subgrid *
+get_smallest_subgrid (NautilusIconGrid *grid)
+{
+	int i;
+	Subgrid *subgrid;
+
+	for (i = 0; i < grid->subgrids->len; i++) {
+		subgrid = g_ptr_array_index (grid->subgrids, i);
+		if (subgrid != NULL) {
+			return subgrid;
+		}
+	}
+
+	return NULL;
+}
+
+/* Get the smallest subgrid. */
+static Subgrid *
+get_largest_subgrid (NautilusIconGrid *grid)
+{
+	int i;
+	Subgrid *subgrid;
+
+	for (i = grid->subgrids->len; i != 0; i--) {
+		subgrid = g_ptr_array_index (grid->subgrids, i-1);
+		if (subgrid != NULL) {
+			return subgrid;
+		}
+	}
+
+	return NULL;
+}
+
+/* Create a subgrid if we have to. */
+static Subgrid *
+create_subgrid (NautilusIconGrid *grid, int power)
+{
+	Subgrid *subgrid;
+	GList *icons, *p;
+
+	/* Make space for the new subgrid in the array. */
+	if (grid->subgrids->len <= power) {
+		g_ptr_array_set_size (grid->subgrids, power + 1);
+	}
+	
+	/* If it was already there, return it. */
+	subgrid = g_ptr_array_index (grid->subgrids, power);
+	if (subgrid != NULL) {
+		return subgrid;
+	}
+
+	/* Create the new subgrid. */
+	subgrid = subgrid_new (power);
+	subgrid_set_visible_width (subgrid, grid->world_visible_width);
+
+	/* Add the icons to it. */
+	icons = subgrid_get_intersecting_icons
+		(get_largest_subgrid (grid), NULL);
+	for (p = icons; p != NULL; p = p->next) {
+		subgrid_add_or_remove (subgrid, p->data, TRUE);
+	}
+	g_list_free (icons);
+
+	/* Put it in the array and return. */
+	g_ptr_array_index (grid->subgrids, power) = subgrid;
+	return subgrid;
+}
+
+NautilusIconGrid *
+nautilus_icon_grid_new (void)
+{
+	NautilusIconGrid *grid;
+
+	grid = g_new0 (NautilusIconGrid, 1);
+	grid->subgrids = g_ptr_array_new ();
+	return grid;
+}
+
+void
+nautilus_icon_grid_clear (NautilusIconGrid *grid)
+{
+	int i;
+
+	for (i = 0; i < grid->subgrids->len; i++) {
+		subgrid_free (g_ptr_array_index (grid->subgrids, i));
+	}
+
+	/* Would just set size to 0 here, but that leaves around
+	 * non-NULL entries in the array.
+	 */
+	g_ptr_array_free (grid->subgrids, TRUE);
+	grid->subgrids = g_ptr_array_new ();
+}
+
+void
+nautilus_icon_grid_destroy (NautilusIconGrid *grid)
+{
+	nautilus_icon_grid_clear (grid);
+	g_ptr_array_free (grid->subgrids, TRUE);
+	g_free (grid);
+}
+
+void
+nautilus_icon_grid_set_visible_width (NautilusIconGrid *grid,
+				      double world_visible_width)
+{
+	int i;
+
+	if (grid->world_visible_width == world_visible_width) {
+		return;
+	}
+
+	grid->world_visible_width = world_visible_width;
+
+	for (i = 0; i < grid->subgrids->len; i++) {
+		subgrid_set_visible_width
+			(g_ptr_array_index (grid->subgrids, i),
+			 world_visible_width);
+	}
+}
+
+/* Get the size of the icon as a power of two.
+ * Size 0 means it fits in 1x1 grid cells.
+ * Size 1 means it fits in 2x2 grid cells.
+ */
+static int
+get_icon_size_power (NautilusIcon *icon)
+{
+	ArtDRect world_bounds;
+	int cell_count, power;
+
+	nautilus_gnome_canvas_item_get_world_bounds
+		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
+
+	cell_count = MAX (ceil ((world_bounds.x1 - world_bounds.x0) / BASE_CELL_WIDTH),
+			  ceil ((world_bounds.y1 - world_bounds.y0) / BASE_CELL_HEIGHT));
+
+	for (power = 0; cell_count > 1; power++) {
+		cell_count /= 2;
+	}
+	return power;
+}
+
+void
+nautilus_icon_grid_add (NautilusIconGrid *grid,
+			NautilusIcon *icon)
+{
+	ArtDRect world_bounds;
+	int i;
+
+	/* Figure out how big the icon is. */
+	nautilus_gnome_canvas_item_get_world_bounds
+		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
+	
+	/* Compute grid bounds for the icon. */
+	icon->grid_rectangle.x0 = floor (world_bounds.x0 / BASE_CELL_WIDTH);
+	icon->grid_rectangle.y0 = floor (world_bounds.y0 / BASE_CELL_HEIGHT);
+	icon->grid_rectangle.x1 = ceil (world_bounds.x1 / BASE_CELL_WIDTH);
+	icon->grid_rectangle.y1 = ceil (world_bounds.y1 / BASE_CELL_HEIGHT);
+
+	if (grid->subgrids->len == 0) {
+		create_subgrid (grid, get_icon_size_power (icon));
+	}
+
+	for (i = 0; i < grid->subgrids->len; i++) {
+		subgrid_add_or_remove
+			(g_ptr_array_index (grid->subgrids, i),
+			 icon, TRUE);
+	}
+}
+
+void
+nautilus_icon_grid_remove (NautilusIconGrid *grid,
+			   NautilusIcon *icon)
+{
+	int i;
+
+	for (i = 0; i < grid->subgrids->len; i++) {
+		subgrid_add_or_remove
+			(g_ptr_array_index (grid->subgrids, i),
+			 icon, FALSE);
+	}
+}
+
+void
+nautilus_icon_grid_get_position (NautilusIconGrid *grid,
+				 NautilusIcon *icon,
+				 ArtPoint *position)
+{
+	g_return_if_fail (grid != NULL);
+	g_return_if_fail (position != NULL);
+
+	subgrid_get_position
+		(create_subgrid (grid, get_icon_size_power (icon)),
+		 icon, position);
+}
+
+GList *
+nautilus_icon_grid_get_intersecting_icons (NautilusIconGrid *grid,
+					   const ArtDRect *world_rect)
+{
+	return subgrid_get_intersecting_icons
+		(get_smallest_subgrid (grid), world_rect);
 }
