@@ -162,6 +162,7 @@ void                  nautilus_scalable_icon_unref                       (Nautil
  */
 void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon        *scalable_icon,
 									  char                       **uri_return,
+									  char                       **mime_type_return,
 									  char                       **name_return,
 									  char                       **modifier_return,
 									  char                       **embedded_text_return);
@@ -169,6 +170,7 @@ void                  nautilus_scalable_icon_get_text_pieces             (Nautil
  * nautilus_scalable_icon_get_text_pieces.
  */
 NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const char                  *uri,
+									  const char                  *mime_type,
 									  const char                  *name,
 									  const char                  *modifier,
 									  const char                  *embedded_text);

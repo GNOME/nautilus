@@ -70,7 +70,6 @@ static const char *icon_file_name_suffixes[] =
 {
 	".svg",
 	".SVG",
-	"",
 	".png",
 	".PNG",
 	".gif",
@@ -198,6 +197,7 @@ struct NautilusScalableIcon {
 	guint ref_count;
 
 	char *uri;
+	char *mime_type;
 	char *name;
 	char *modifier;
 	char *embedded_text;
@@ -738,23 +738,51 @@ set_theme (const char *theme_name)
 			 signals[ICONS_CHANGED]);
 }
 
+static char *
+get_mime_type_icon_without_suffix (const char *mime_type)
+{
+	const char *with_suffix, *suffix;
+	guint i;
+
+	with_suffix = gnome_vfs_mime_get_icon (mime_type);
+	if (with_suffix == NULL) {
+		return NULL;
+	}
+
+	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+		suffix = icon_file_name_suffixes[i];
+		if (eel_str_has_suffix (with_suffix, suffix)) {
+			return eel_str_strip_trailing_str (with_suffix, suffix);
+		}
+	}
+
+	return g_strdup (with_suffix);
+}
+
+static char *
+make_icon_name_from_mime_type (const char *mime_type)
+{
+	char *mime_type_without_slashes, *icon_name;
+
+	if (mime_type == NULL) {
+		return NULL;
+	}
+
+	mime_type_without_slashes = eel_str_replace_substring
+		(mime_type, "/", "-");
+	icon_name = g_strconcat ("gnome-", mime_type_without_slashes, NULL);
+	g_free (mime_type_without_slashes);
+	return icon_name;
+}
 
 /* Use the MIME type to get the icon name. */
-static const char *
-nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
+static char *
+get_icon_name_for_regular_file (NautilusFile *file)
 {
 	const char *icon_name;
 	char *mime_type, *uri;
 	
 	mime_type = nautilus_file_get_mime_type (file);
-	if (mime_type != NULL) {
-		icon_name = gnome_vfs_mime_get_icon (mime_type);
-		if (icon_name != NULL) {
-			g_free (mime_type);
-			return icon_name;
-		}
-	}
-
 	uri = nautilus_file_get_uri (file);
 
 	/* Special-case icons based on the uri scheme. Eventually we
@@ -778,12 +806,12 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
         g_free (uri);
         g_free (mime_type);	
 	
-	return icon_name;
+	return g_strdup (icon_name);
 }
 
 /* Use the MIME type to get the icon name. */
-static const char *
-nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
+static char *
+get_icon_name_for_directory (NautilusFile *file)
 {
 	const char *icon_name;
 	char *mime_type;
@@ -798,43 +826,43 @@ nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
 	
 	g_free (mime_type);
 
-	return icon_name;
+	return g_strdup (icon_name);
 }
 
 
 /* Get the icon name for a file. */
-static const char *
-nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
-{	
+static char *
+get_icon_name_for_file (NautilusFile *file)
+{
 	char *uri;
 	
 	uri = nautilus_file_get_uri (file);
 	if (strcmp (uri, EEL_TRASH_URI) == 0) {
 		g_free (uri);
-		return nautilus_trash_monitor_is_empty ()
-			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
+		return g_strdup (nautilus_trash_monitor_is_empty ()
+				 ? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY);
 	}
 	g_free (uri);
 
 	/* Get an icon name based on the file's type. */
         switch (nautilus_file_get_file_type (file)) {
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
-		return nautilus_icon_factory_get_icon_name_for_directory (file);
+		return get_icon_name_for_directory (file);
         case GNOME_VFS_FILE_TYPE_FIFO:
-                return ICON_NAME_FIFO;
+                return g_strdup (ICON_NAME_FIFO);
         case GNOME_VFS_FILE_TYPE_SOCKET:
-		return ICON_NAME_SOCKET;
+		return g_strdup (ICON_NAME_SOCKET);
         case GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE:
-		return ICON_NAME_CHARACTER_DEVICE;
+		return g_strdup (ICON_NAME_CHARACTER_DEVICE);
         case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
-		return ICON_NAME_BLOCK_DEVICE;
+		return g_strdup (ICON_NAME_BLOCK_DEVICE);
         case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
         	/* Non-broken symbolic links return the target's type. */
-                return ICON_NAME_BROKEN_SYMBOLIC_LINK;
+                return g_strdup (ICON_NAME_BROKEN_SYMBOLIC_LINK);
         case GNOME_VFS_FILE_TYPE_REGULAR:
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
         default:
-                return nautilus_icon_factory_get_icon_name_for_regular_file (file);
+                return get_icon_name_for_regular_file (file);
         }
 }
 
@@ -846,22 +874,31 @@ make_full_icon_path (const char *path,
 	char *partial_path, *full_path;
 	char *user_directory, *themes_directory;
 	
+	partial_path = g_strconcat (path, suffix, NULL);
+
 	if (path[0] == '/') {
-		return g_strconcat (path, suffix, NULL);
+		return partial_path;
 	}
 
 	/* Build a path for this icon, depending on the theme_is_in_user_directory boolean. */
-	partial_path = g_strconcat (path, suffix, NULL);
 	if (theme_is_in_user_directory) {
 		user_directory = nautilus_get_user_directory ();
 		themes_directory = nautilus_make_path (user_directory, "themes");
 		full_path = nautilus_make_path (themes_directory, partial_path);
 		g_free (user_directory);
 		g_free (themes_directory);
+		if (!g_file_exists (full_path)) {
+			g_free (full_path);
+			full_path = NULL;
+		}
 	} else {
 		full_path = nautilus_pixmap_file (partial_path);
 	}
 	
+	if (full_path == NULL) {
+		full_path = gnome_vfs_icon_path_from_filename (partial_path);
+	}
+
 	g_free (partial_path);
 	return full_path;
 }
@@ -930,7 +967,7 @@ get_themed_icon_file_path (const char *theme_name,
 	
 	/* Try each suffix. */
 	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
-		if (include_size && strcasecmp(icon_file_name_suffixes[i], ".svg")) {
+		if (include_size && strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
 							themed_icon_name,
@@ -948,7 +985,7 @@ get_themed_icon_file_path (const char *theme_name,
 			g_free (aa_path);
 		
 			/* Return the path if the file exists. */
-			if (path != NULL && g_file_exists (path)) {
+			if (path != NULL) {
 				break;
 			}
 			
@@ -962,9 +999,10 @@ get_themed_icon_file_path (const char *theme_name,
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
-		if (path != NULL && g_file_exists (path)) {
+		if (path != NULL) {
 			break;
 		}
+
 		g_free (path);
 		path = NULL;
 	}
@@ -987,14 +1025,13 @@ get_themed_icon_file_path (const char *theme_name,
 		
 		property = NULL;
 		if (optimized_for_aa) {
-			property = xmlGetProp (node, "embedded_text_rectangle_aa");		
+			property = xmlGetProp (node, "embedded_text_rectangle_aa");
 		}
 		if (property == NULL) {
-			property = xmlGetProp (node, "embedded_text_rectangle");				
+			property = xmlGetProp (node, "embedded_text_rectangle");
 		}
 		
 		if (property != NULL) {
-			
 			if (sscanf (property,
 				    " %d , %d , %d , %d %*s",
 				    &parsed_rect.x0,
@@ -1041,13 +1078,9 @@ get_themed_icon_file_path (const char *theme_name,
 			
 			g_free (path);
 			path = NULL;
-		}		
+		}
 	}
 	g_free (themed_icon_name);
-
-	if (path == NULL) {
-		path = gnome_vfs_icon_path_from_filename (icon_name);
-	}
 
 	return path;
 }
@@ -1180,6 +1213,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 void
 nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 				 	char **uri_return,
+				 	char **mime_type_return,
 				 	char **name_return,
 				 	char **modifier_return,
 				 	char **embedded_text_return)
@@ -1188,6 +1222,9 @@ nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 
 	if (uri_return != NULL) {
 		*uri_return = g_strdup (icon->uri);
+	}
+	if (mime_type_return != NULL) {
+		*mime_type_return = g_strdup (icon->mime_type);
 	}
 	if (name_return != NULL) {
 		*name_return = g_strdup (icon->name);
@@ -1198,11 +1235,12 @@ nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 	if (embedded_text_return != NULL) {
 		*embedded_text_return = g_strdup (icon->embedded_text);
 	}
-}				 
+}
 
 /* Get or create a scalable icon from text pieces. */
 NautilusScalableIcon *
 nautilus_scalable_icon_new_from_text_pieces (const char *uri,
+			    	      	     const char *mime_type,
 			    	      	     const char *name,
 			    	      	     const char *modifier,
 			    	      	     const char *embedded_text)
@@ -1215,6 +1253,9 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 	/* Make empty strings canonical. */
 	if (uri != NULL && uri[0] == '\0') {
 		uri = NULL;
+	}
+	if (mime_type != NULL && mime_type[0] == '\0') {
+		mime_type = NULL;
 	}
 	if (name != NULL && name[0] == '\0') {
 		name = NULL;
@@ -1231,6 +1272,7 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 
 	/* Check to see if it's already in the table. */
 	cache_key.uri = (char *) uri;
+	cache_key.mime_type = (char *) mime_type;
 	cache_key.name = (char *) name;
 	cache_key.modifier = (char *) modifier;
 	cache_key.embedded_text = (char *) embedded_text;
@@ -1240,6 +1282,7 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 		/* Not in the table, so create it and put it in. */
 		icon = g_new0 (NautilusScalableIcon, 1);
 		icon->uri = g_strdup (uri);
+		icon->mime_type = g_strdup (mime_type);
 		icon->name = g_strdup (name);
 		icon->modifier = g_strdup (modifier);
 		icon->embedded_text = g_strdup (embedded_text);
@@ -1275,6 +1318,7 @@ nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 	g_hash_table_remove (hash_table, icon);
 	
 	g_free (icon->uri);
+	g_free (icon->mime_type);
 	g_free (icon->name);
 	g_free (icon->modifier);
 	g_free (icon->embedded_text);
@@ -1292,6 +1336,11 @@ nautilus_scalable_icon_hash (gconstpointer p)
 
 	if (icon->uri != NULL) {
 		hash = g_str_hash (icon->uri);
+	}
+
+	hash <<= 4;
+	if (icon->mime_type != NULL) {
+		hash ^= g_str_hash (icon->mime_type);
 	}
 
 	hash <<= 4;
@@ -1322,6 +1371,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 	icon_b = b;
 
 	return eel_strcmp (icon_a->uri, icon_b->uri) == 0
+		&& eel_strcmp (icon_a->mime_type, icon_b->mime_type) == 0 
 		&& eel_strcmp (icon_a->name, icon_b->name) == 0 
 		&& eel_strcmp (icon_a->modifier, icon_b->modifier) == 0
 		&& eel_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0;
@@ -1398,6 +1448,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 	file_uri = nautilus_file_get_uri (file);
 	is_local = nautilus_file_is_local (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If it's too large, don't try to thumbnail it at all. 
@@ -1436,7 +1487,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
-		mime_type = nautilus_file_get_mime_type (file);
 		file_size = nautilus_file_get_size (file);
 		
 		/* FIXME: This has to be done later, when we know
@@ -1446,7 +1496,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file, TRUE)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
-				uri = nautilus_file_get_uri (file);				
+				uri = nautilus_file_get_uri (file);
 			} else if (strstr (file_uri, "/.thumbnails/") == NULL
 				   && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file, TRUE);
@@ -1455,7 +1505,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				}
 			}
 		}
-		g_free (mime_type);		
 	}
 	
 	/* Handle nautilus link xml files, which may specify their own image */	
@@ -1465,22 +1514,25 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		if (file_path != NULL) {
 			image_uri = nautilus_link_local_get_image_uri (file_path);
 			if (image_uri != NULL) {
-				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
-	if (eel_istr_has_prefix (image_uri, "file://")) {
-		if (uri == NULL) {
-			uri = image_uri;
-		} else {
-			g_free (image_uri);
-		}
-	} else {
-		icon_name = image_uri;
-	}
+				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file: URIs? */
+				if (eel_istr_has_prefix (image_uri, "file://")) {
+					if (uri == NULL) {
+						uri = image_uri;
+					} else {
+						g_free (image_uri);
+					}
+				} else {
+					icon_name = image_uri;
+				}
 			}
 			g_free (file_path);
 		}
 	}
 
-	if (uri == NULL && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+	/* Handle .desktop files. */
+	if (uri == NULL
+	    && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 		if (file_path != NULL) {
 			entry = gnome_desktop_entry_load (file_path);
@@ -1495,23 +1547,25 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	}
 	
 	/* handle SVG files */
-	if (uri == NULL && icon_name == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
+	if (uri == NULL && icon_name == NULL
+	    && nautilus_file_is_mime_type (file, "image/svg")) {
 		uri = g_strdup (file_uri);
 	}
 	
 	/* Get the generic icon set for this file. */
         g_free (file_uri);
         if (icon_name == NULL) {
-		icon_name = g_strdup (nautilus_icon_factory_get_icon_name_for_file (file));
+		icon_name = get_icon_name_for_file (file);
 	}
 
 	top_left_text = nautilus_file_get_top_left_text (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
-		(uri, icon_name, modifier, top_left_text);
+		(uri, mime_type, icon_name, modifier, top_left_text);
 
 	g_free (uri);
+	g_free (mime_type);
 	g_free (icon_name);
 	g_free (top_left_text);
 	
@@ -1567,7 +1621,7 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
-		(NULL, name_with_prefix, NULL, NULL);
+		(NULL, NULL, name_with_prefix, NULL, NULL);
 	g_free (name_with_prefix);	
 
 	return scalable_icon;
@@ -1696,7 +1750,7 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 
 /* This loads an SVG image, scaling it to the appropriate size. */
 static GdkPixbuf *
-load_pixbuf_svg (const char *path, const char *name, guint size_in_pixels)
+load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 {
 	FILE *f;
 	GdkPixbuf *pixbuf;
@@ -1708,10 +1762,10 @@ load_pixbuf_svg (const char *path, const char *name, guint size_in_pixels)
 	}
 	
 	/* FIXME: the nominal size of .svg emblems is too large, so we scale it
-	 * down here if the file is an emblem.  This code should be removed
-	 * eventually when we scale all the emblems properly.
+	 * down here if the file is an emblem. This code should be removed
+	 * when we scale all the emblems properly.
 	 */
-	if (eel_str_has_prefix (name, EMBLEM_NAME_PREFIX)) {
+	if (is_emblem) {
 		actual_size_in_pixels = size_in_pixels * EMBLEM_SCALE_FACTOR;
 	} else {
 		actual_size_in_pixels = size_in_pixels;
@@ -1780,6 +1834,51 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 	return result;
 }
 
+static GdkPixbuf *
+load_icon_from_path (const char *path,
+		     guint size_in_pixels,
+		     gboolean custom,
+		     gboolean is_emblem) /* for emblem scaling hack only */
+{
+	/* Get the icon. */
+	if (path == NULL) {
+		return NULL;
+	}
+	if (path_represents_svg_image (path)) {
+		return load_pixbuf_svg (path, size_in_pixels, is_emblem);
+	}
+	/* Custom non-svg icons exist at one size.
+	 * Non-custom icons have their size encoded in their path.
+	 */
+	if (custom && size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
+		return NULL;
+	}
+	return gdk_pixbuf_new_from_file (path);
+}
+
+static GdkPixbuf *
+load_named_icon (const char *name,
+		 const char *modifier,
+		 guint size_in_pixels,
+		 gboolean optimized_for_aa,
+		 IconDetails *details)
+{
+	char *path;
+	GdkPixbuf *pixbuf;
+
+	path = get_icon_file_path (name, modifier,
+				   size_in_pixels, optimized_for_aa,
+				   details);
+	pixbuf = load_icon_from_path (path, size_in_pixels, FALSE,
+				      eel_str_has_prefix (name, EMBLEM_NAME_PREFIX));
+	g_free (path);
+
+	if (pixbuf == NULL) {
+		memset (&details, 0, sizeof (details));
+	}
+	return pixbuf;
+}
+
 /* This load function returns NULL if the icon is not available at
  * this size.
  */
@@ -1791,6 +1890,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 {
 	IconDetails details;
 	GdkPixbuf *pixbuf;
+	char *icon_name;
 	char *path;
 	CacheIcon *icon;
 
@@ -1801,39 +1901,37 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	if (custom) {
 		/* We don't support custom icons that are not local here. */
 		path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);
-	} else {
-		path = get_icon_file_path (scalable_icon->name,
-					   scalable_icon->modifier,
-					   size_in_pixels,
-					   optimized_for_aa,
-					   &details);					   		
-	}
-
-	/* Get the icon. */
-	if (path != NULL) {
-		if (path_represents_svg_image (path)) {
-			pixbuf = load_pixbuf_svg (path, scalable_icon->name, size_in_pixels);
-		} else {
-			/* Custom non-svg icons exist at one size.
-			 * Non-custom icons have their size encoded in their path.
-			 */
-			if (!(custom && size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD)) {
-				pixbuf = gdk_pixbuf_new_from_file (path);
-			}
-		}
-		
+		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE);
 		g_free (path);
+	} else {
+		pixbuf = load_named_icon (scalable_icon->name,
+					  scalable_icon->modifier,
+					  size_in_pixels, optimized_for_aa,
+					  &details);
+		if (pixbuf == NULL) {
+			/* Use the type in the MIME database, or turn the MIME
+			 * type into an icon name.
+			 */
+			icon_name = get_mime_type_icon_without_suffix (scalable_icon->mime_type);
+			if (icon_name == NULL) {
+				icon_name = make_icon_name_from_mime_type (scalable_icon->mime_type);
+			}
+			if (icon_name != NULL && eel_strcmp (icon_name, scalable_icon->name) != 0) {
+				pixbuf = load_named_icon (icon_name, scalable_icon->modifier,
+							  size_in_pixels, optimized_for_aa,
+							  &details);
+			}
+			g_free (icon_name);
+		}
 	}
 
-	/* If we got nothing, we can free the icon. */
 	if (pixbuf == NULL) {
 		return NULL;
 	}
 
 	/* Since we got something, we can create a cache icon. */
 	icon = cache_icon_new (pixbuf, custom, FALSE, &details);
-	get_cache_time (scalable_icon->uri,
-			&icon->cache_time);
+	get_cache_time (scalable_icon->uri, &icon->cache_time);
 	gdk_pixbuf_unref (pixbuf);
 
 	return icon;
@@ -2099,7 +2197,7 @@ mark_recently_used (CircularList *node)
 	check_recently_used_list ();
 }
 
-/* Utility routine that checks if a cached thubmnail-type icon has
+/* Utility routine that checks if a cached thumbnail-type icon has
  * changed since it was cached. Returns TRUE after removing the icon
  * from the cache if the icon has changed.
  */
@@ -2404,17 +2502,17 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	gdk_pixbuf_unref (pixbuf);
 }
 
-/* Convenience routine for getting a pixbuf from an icon name
- */
-GdkPixbuf * nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
-							const char *modifier,
-							guint size_in_pixels,
-							gboolean optimized_for_aa)
+/* Convenience routine for getting a pixbuf from an icon name. */
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
+					    const char *modifier,
+					    guint size_in_pixels,
+					    gboolean optimized_for_aa)
 {
 	GdkPixbuf *pixbuf;
 	NautilusScalableIcon *icon;
 	
-	icon = nautilus_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL);
+	icon = nautilus_scalable_icon_new_from_text_pieces (NULL, NULL, icon_name, modifier, NULL);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
 							    size_in_pixels, size_in_pixels,
 							    size_in_pixels, size_in_pixels,
@@ -2539,6 +2637,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	/* Get the icon without text. */
 	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
 		(scalable_icon->uri,
+		 scalable_icon->mime_type,
 		 scalable_icon->name,
 		 scalable_icon->modifier,
 		 NULL);

@@ -307,32 +307,36 @@ static gboolean
 nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 		   		     NautilusScalableIcon *new_icon)
 {
-	char *new_uri, *new_name;
-	char *old_uri, *old_name;
+	char *new_uri, *new_mime_type, *new_name;
+	char *old_uri, *old_mime_type, *old_name;
 	gboolean result;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	g_assert (new_icon != NULL);
 
-	/* Bookmarks only care about the uri and name. */
+	/* Bookmarks don't store the modifier or embedded text. */
 	nautilus_scalable_icon_get_text_pieces 
-		(new_icon, &new_uri, &new_name, NULL, NULL);
+		(new_icon, &new_uri, &new_mime_type, &new_name, NULL, NULL);
 
 	if (bookmark->details->icon == NULL) {
 		result = !eel_str_is_empty (new_uri)
+			|| !eel_str_is_empty (new_mime_type)
 			|| !eel_str_is_empty (new_name);
 	} else {
 		nautilus_scalable_icon_get_text_pieces 
-			(bookmark->details->icon, &old_uri, &old_name, NULL, NULL);
+			(bookmark->details->icon, &old_uri, &old_mime_type, &old_name, NULL, NULL);
 
 		result = eel_strcmp (old_uri, new_uri) != 0
+			|| eel_strcmp (old_mime_type, new_mime_type) != 0
 			|| eel_strcmp (old_name, new_name) != 0;
 
 		g_free (old_uri);
+		g_free (old_mime_type);
 		g_free (old_name);
 	}
 
 	g_free (new_uri);
+	g_free (new_mime_type);
 	g_free (new_name);
 
 	return result;
@@ -438,7 +442,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
 	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
-		(NULL, icon_name, NULL, NULL);
+		(NULL, NULL, icon_name, NULL, NULL);
 }
 
 /**

@@ -135,7 +135,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	NautilusBookmark *bookmark;
 	NautilusScalableIcon *icon;
 	char *bookmark_uri, *bookmark_name;
-	char *icon_uri, *icon_name;
+	char *icon_uri, *icon_mime_type, *icon_name;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (data));
 
@@ -155,8 +155,10 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	icon = nautilus_bookmark_get_icon (bookmark);
 	if (icon != NULL) {
 		/* Don't bother storing modifier or embedded text for bookmarks. */
-		nautilus_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
+		nautilus_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_mime_type, &icon_name,
+							NULL, NULL);
 		xmlSetProp (bookmark_node, "icon_uri", icon_uri);
+		xmlSetProp (bookmark_node, "icon_mime_type", icon_mime_type);
 		xmlSetProp (bookmark_node, "icon_name", icon_name);
 		nautilus_scalable_icon_unref (icon);
 		g_free (icon_uri);

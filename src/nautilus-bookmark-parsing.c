@@ -26,20 +26,18 @@
  */
 
 #include <config.h>
-#include <stdlib.h>
 #include "nautilus-bookmark-parsing.h"
 
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/xmlmemory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <eel/eel-xml-extensions.h>
+#include <stdlib.h>
 
 NautilusBookmark *
 nautilus_bookmark_new_from_node (xmlNodePtr node)
 {
-	xmlChar *name;
-	xmlChar *uri;
-	xmlChar *icon_uri;
-	xmlChar *icon_name;
+	xmlChar *name, *uri;
+	xmlChar *icon_uri, *icon_mime_type, *icon_name;
 	NautilusScalableIcon *icon;
 	NautilusBookmark *new_bookmark;
 
@@ -47,13 +45,14 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	name = eel_xml_get_property_translated (node, "name");
 	uri = xmlGetProp (node, "uri");
 	icon_uri = xmlGetProp (node, "icon_uri");
+	icon_mime_type = xmlGetProp (node, "icon_mime_type");
 	icon_name = xmlGetProp (node, "icon_name");
 
 	if (icon_uri == NULL && icon_name == NULL) {
 		icon = NULL;
 	} else {
 		icon = nautilus_scalable_icon_new_from_text_pieces
-			(icon_uri, icon_name, NULL, NULL);
+			(icon_uri, icon_mime_type, icon_name, NULL, NULL);
 	}
 	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon);
 	if (icon != NULL) {

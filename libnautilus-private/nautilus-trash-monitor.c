@@ -3,7 +3,7 @@
 /* 
    nautilus-trash-monitor.c: Nautilus trash state watcher.
  
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -197,6 +197,8 @@ nautilus_trash_monitor_get (void)
 		/* make sure we get signalled when trash directories get added */
 		nautilus_trash_directory_finish_initializing
 			(NAUTILUS_TRASH_DIRECTORY (trash_directory));
+
+		nautilus_directory_unref (trash_directory);
 	}
 
 	return nautilus_trash_monitor;

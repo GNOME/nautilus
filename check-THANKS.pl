@@ -4,7 +4,7 @@
 #
 #  Nautilus
 #
-#  Copyright (C) 2000 Eazel, Inc.
+#  Copyright (C) 2000, 2001 Eazel, Inc.
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License as
@@ -20,7 +20,7 @@
 #  along with this library; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-#  Author: Maciej Stachowiak
+#  Author: Maciej Stachowiak <mjs@eazel.com>
 #
 
 # check-THANKS.pl: Checks for users mentioned in one of the ChangeLogs
@@ -53,6 +53,7 @@ my %name_map =
 
 my %email_map =
   (
+   'almer1@dds.nl' => 'almer@gnome.org',
    'arik@gnome.org' => 'arik@eazel.com',
    'at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
    'baulig@suse.de' => 'martin@home-of-linux.org',
@@ -64,6 +65,7 @@ my %email_map =
    'kabalak@gtranslator.org' => 'kabalak@kabalak.net',
    'kmaraas@gnu.org' => 'kmaraas@gnome.org',
    'kmaraas@online.no' => 'kmaraas@gnome.org',
+   'linux@chrisime.de' => 'chrisime@gnome.org',
    'linuxfan@ionet..net' => 'josh@whitecape.org',
    'linuxfan@ionet.net' => 'josh@whitecape.org',
    'mathieu@gnome.org' => 'mathieu@eazel.com',
@@ -79,12 +81,13 @@ my %email_map =
 
 
 # Some ChangeLog lines that carry no credit (incorrect changes that
-# had to be reverted, etc)
+# had to be reverted, changes done for someone else, etc.)
 
 my %no_credit =
   (
    '2000-09-08  Daniel Egger  <egger@suse.de>' => 1,
-   '2000-09-06  Daniel Egger  <egger@suse.de>' => 1
+   '2000-09-06  Daniel Egger  <egger@suse.de>' => 1,
+   '2001-04-25  Changwoo Ryu  <cwryu@debian.org>' => 1,
   );
 
 
@@ -272,19 +275,19 @@ if (@double_credited)
           {
             print "${person}\n";
           }
-  
+        
         $printed = 1;
       }
 
     if (@only_in_about)
       {
         print "\nThe following people are in the about screen but not AUTHORS:\n\n";
-    
+        
         foreach my $person (@only_in_about)
           {
             print "${person}\n";
           }
-    
+        
         $printed = 1;
       }
   }

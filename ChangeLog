@@ -1,3 +1,78 @@
+2001-05-01  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Some enhancements to icon lookup.
+
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_mime_type_icon_without_suffix): Function used to strip suffixes
+	out so we can have file suffixes in the gnome-vfs icon database, but
+	can ignore them and look at all suffixes for the named icon.
+	(make_icon_name_from_mime_type): Construct an icon name for types
+	that don't specify a particular icon. This allows theme designers
+	to make icons for any MIME type.
+	(get_icon_name_for_regular_file): Use the new "without suffix" call.
+	This requires changing this function to return a strdup'd name.
+	(get_icon_name_for_directory), (get_icon_name_for_file): Change to
+	return a strdup'd name.
+	(make_full_icon_path): Do the file exists check in here (was
+	already doing it in some cases) and also call
+	gnome_vfs_icon_path_from_filename.
+	(get_themed_icon_file_path): Get rid of redundant g_file_exists
+	checks and gnome_vfs_icon_path_from_filename call, since both are
+	now handled inside make_full_icon_path.
+	(nautilus_scalable_icon_get_text_pieces),
+	(nautilus_scalable_icon_new_from_text_pieces),
+	(nautilus_scalable_icon_unref), (nautilus_scalable_icon_hash),
+	(nautilus_scalable_icon_equal): Add MIME type to the scalable
+	icons.
+	(nautilus_icon_factory_get_icon_for_file): Pass in the MIME type.
+	(nautilus_icon_factory_get_emblem_icon_by_name): Pass NULL for
+	MIME type.
+	(load_pixbuf_svg): Change to pass in boolean for emblem hack since
+	we don't always have an icon name.
+	(load_icon_from_path): New function, share common code.
+	(load_named_icon): New function, share common code.
+	(load_specific_icon): Try icon based on MIME type first, then fall
+	back on the name specified.
+	(nautilus_icon_factory_get_pixbuf_from_name): Pass NULL for MIME
+	type.
+	(load_icon_with_embedded_text): Pass in the MIME type.
+
+	* src/nautilus-bookmark-list.c: (append_bookmark_node):
+	* src/nautilus-bookmark-parsing.c:
+	(nautilus_bookmark_new_from_node):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_icon_is_different),
+	(nautilus_bookmark_set_icon_to_default):
+	Update to deal with MIME types in scalable icons.
+	
+	* components/help/hyperbola-filefmt.c:
+	(fmt_scrollkeeper_parse_toc_section),
+	(fmt_scrollkeeper_parse_doc_toc),
+	(fmt_scrollkeeper_parse_document),
+	(fmt_scrollkeeper_parse_section), (fmt_scrollkeeper_parse_xml),
+	(fmt_scrollkeeper_trim_empty_branches),
+	(fmt_scrollkeeper_tree_empty), (fmt_scrollkeeper_populate_tree),
+	(remove_leading_and_trailing_white_spaces), (fmt_toplevel_add_doc),
+	(get_path_from_node), (has_content), (fmt_toplevel_parse_xml_tree):
+	Made more compatible with libxml by not using the content field
+	directly and using xmlChildrenNode and xmlRootNode.
+	
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_get): Fixed NautilusDirectory leak.
+	
+	* THANKS: Added some more translator credits.
+	* check-THANKS.pl: Fixed some email addresses and such.
+
+	* icons/ardmore/.cvsignore:
+	* icons/arlo/.cvsignore,
+	* icons/arlo/backgrounds/.cvsignore:
+	* icons/arlo/sidebar_tab_pieces/.cvsignore:
+	* icons/villanova/.cvsignore:
+	Removed these again.
+
 2001-05-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (mark_new_items),
@@ -444,7 +519,7 @@
 	Made bookmarks window a GnomeDialog, giving it the single
 	button "Done".
 
-2001-04-27  Andy Hertzfeld  andy@eazel.com>
+2001-04-27  Andy Hertzfeld  <andy@eazel.com>
 
 	added preferences for the maximum numder of items per site and
 	the update interval.  It's not quite finished, as the news
