@@ -1,3 +1,17 @@
+2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_set_link_uri):
+	New function to allow the setting of the LINK property
+	tp be the URI passed in.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(find_and_rename_trash_link):
+	Change Trash link to use trash: uri insated of path to
+	trash directory. This code checks and verifies that
+	the trash link has this set properly on desktop launch.
+
 Mon Aug 21 23:35:18 2000  George Lebl <jirka@5z.com>
 
 	* components/html/ntl-web-browser.c (main): properly handle

@@ -153,6 +153,38 @@ nautilus_link_set_icon (const char *path, const char *icon_name)
 	return TRUE;
 }
 
+/* Set the link uri for a link file. This can only be called on local
+ * paths, and only on files known to be link files.
+ */
+gboolean
+nautilus_link_set_link_uri (const char *path, const char *link_uri)
+{
+	xmlDocPtr document;
+	char *uri;
+	NautilusFile *file;
+
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
+	}
+
+	xmlSetProp (xmlDocGetRootElement (document),
+		    "LINK",
+		    link_uri);
+	xmlSaveFile (path, document);
+	xmlFreeDoc (document);
+
+	uri = nautilus_get_uri_from_local_path (path);
+	file = nautilus_file_get (uri);
+	if (file != NULL) {
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);		
+	}
+	g_free (uri);
+		
+	return TRUE;
+}
+
 
 gboolean
 nautilus_link_set_type (const char *path, const char *type)

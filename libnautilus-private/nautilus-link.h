@@ -67,6 +67,14 @@ gboolean nautilus_link_set_icon 			(const char  *path,
 gboolean nautilus_link_set_type 			(const char  *path, 
 							 const char  *type);
 
+/* Specify the link uri of link that is represented
+ * Takes a path, works locally, and uses sync. I/O. 
+ * Returns TRUE if it succeeds, FALSE if
+ * it fails. Does not check and see if it is a link file.
+ */
+gboolean nautilus_link_set_link_uri 			(const char  *path, 
+							 const char  *uri);
+
 /* Returns additional text to display under the name, NULL if
  * none. Despite the fact that it takes a URI parameter, works only if
  * the file is local and does sync. I/O.

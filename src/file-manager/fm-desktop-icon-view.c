@@ -617,6 +617,8 @@ find_and_rename_trash_link (void)
 				if (nautilus_link_is_trash_link (link_path)) {
 					/* Reset name */
 					rename (this_entry->d_name, TRASH_LINK_NAME);
+					/* Make sure LINK is set to "trash:" */
+					nautilus_link_set_link_uri (link_path, "trash:");
 					return TRUE;
 				}
 				g_free (link_path);
