@@ -18,6 +18,8 @@
 
 #define USE_FILE_URLS
 
+char *BaseFilename=NULL;
+
 /* print out the url for a info file */
 char *form_info_tag_href( char *nodefile, char *nodename )
 {
@@ -25,21 +27,8 @@ char *form_info_tag_href( char *nodefile, char *nodename )
   char *escaped_nodename;
 
   escaped_nodename = escape_html_chars( nodename );
-
-#if 0
-#ifdef USE_FILE_URLS
-  snprintf(tmp,sizeof(tmp),
-	   "HREF=\"../%s/%s.html\"", nodefile, escaped_nodename );
-#else
-  snprintf(tmp,sizeof(tmp),
-	   "HREF=\"/cgi-bin/grab-info-file?doctype=info&amp;"
-	   "docname=%s&amp;doctag=%s\"", nodefile, escaped_nodename );
-#endif
-#endif
-/*  snprintf(tmp,sizeof(tmp),"HREF=\"info:%s#%s\"", nodefile, escaped_nodename ); */
-
-  snprintf(tmp,sizeof(tmp),"HREF=\"info:%s#%s\"", nodefile, escaped_nodename );
-
+  snprintf(tmp,sizeof(tmp),"HREF=\"info:%s#%s\"", 
+	   ((BaseFilename) ? BaseFilename : nodefile), escaped_nodename );
   if (escaped_nodename)
     g_free(escaped_nodename);
   return g_strdup(tmp);
@@ -796,7 +785,7 @@ void write_menu_entry_html( FILE *f, char *p, char *nodefile, char **menu_end )
 	    }
 
 	  for (i=1; i<4; i++)
-	    if (!isblank(*(realend+i)) && *(realend+i) != '\n')
+	    if (!isspace(*(realend+i)) && *(realend+i) != '\n')
 	      {
 		done = 1;
 		break;

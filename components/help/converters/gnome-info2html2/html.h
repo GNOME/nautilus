@@ -6,6 +6,8 @@
 #define HEADER_SIZE_1 "H1"
 #define HEADER_SIZE_2 "H2"
 
+extern char *BaseFilename;
+
 void dump_html_for_node( NODE *node );
 
 void open_body_text_html( FILE *f );
