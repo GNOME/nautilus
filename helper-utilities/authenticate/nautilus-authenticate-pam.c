@@ -37,7 +37,7 @@ typedef struct _PamConvData
 } PamConvData;
 
 static int pam_conversion_func (int				num_msg, 
-				struct pam_message	**msg, 
+				const struct pam_message	**msg, 
 				struct pam_response		**response, 
 				void				*appdata_ptr)
 {
@@ -111,8 +111,12 @@ nautilus_authenticate_authenticate(const char *username,
 	client_data.username = username_copy;
 	client_data.password = password_copy;
 	
-	/* Setup the pam conversion structure */
-	pam_conv_data.conv = pam_conversion_func;
+	/* Setup the pam conversion structure.
+	 * Need to cast here because Solaris and Linux use a function prototype
+	 * that differs by const of struct pam_message **
+	 */
+	pam_conv_data.conv = (int (*)(int, const struct pam_message **,
+	    struct pam_response **, void *)) pam_conversion_func;
 	pam_conv_data.appdata_ptr = (void *) &client_data;
 	
 	/* Start pam */

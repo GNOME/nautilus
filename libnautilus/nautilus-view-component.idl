@@ -90,15 +90,17 @@ module Nautilus {
 		 * indicates that.
 		 */
 		oneway void report_load_underway ();
-		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken  */
+
+		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		oneway void report_load_progress (in float fraction_done);
 		oneway void report_load_complete ();
 		oneway void report_load_failed ();
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
-	};
-	/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+	};		
+
+	/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 	typedef float ZoomLevel;
 	typedef sequence<ZoomLevel> ZoomLevelList;
 	
@@ -110,11 +112,11 @@ module Nautilus {
 	 */
 	interface Zoomable : ::Bonobo::Unknown {
 		/* Set this attribute to make the thing zoom. */
-		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		attribute float zoom_level;
 
 		/* Information about the type of zooming that's supported. */
-		/* FIXME: bug 2974 these were doubles, but ORBit/Solaris is broken */
+		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		readonly attribute float min_zoom_level;
 		readonly attribute float max_zoom_level;
 		readonly attribute boolean is_continuous;
@@ -136,7 +138,7 @@ module Nautilus {
 	 * its own or due to calls from the zoomable interface).
 	 */
 	interface ZoomableFrame : ::Bonobo::Unknown {
-		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		oneway void report_zoom_level_changed (in float zoom_level);
 	};
 
