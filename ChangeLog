@@ -1,3 +1,9 @@
+2003-05-18  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_get_internal): Use eel_uris_match() instead of
+	strcmp().
+
 2003-05-16  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-view.c (popup_menu_callback): Return

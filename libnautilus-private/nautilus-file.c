@@ -319,7 +319,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Make VFS version of directory URI. */
 	if (vfs_uri == NULL) {
 		if (eel_uri_is_desktop (uri) &&
-		    strcmp (uri, EEL_DESKTOP_URI) != 0) {
+		    !eel_uris_match (uri, EEL_DESKTOP_URI)) {
 			directory_uri = g_strdup (EEL_DESKTOP_URI);
 		}
 	} else {
