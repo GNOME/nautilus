@@ -32,6 +32,8 @@ nautilus_SOURCES=			\
 	nautilus-bookmarks-window.h	\
         nautilus-index-tabs.c		\
         nautilus-index-tabs.h		\
+        nautilus-index-title.c		\
+        nautilus-index-title.h		\
         nautilus-self-check-functions.c \
         nautilus-self-check-functions.h \
 	nautilus-zoom-control.c		\

@@ -1,3 +1,16 @@
+2000-02-13  Andy Hertzfeld <andy@eazel.com>
+
+	made nautilus-index-title widget to hold the title information for the index panel
+	
+	* src/ntl-index-panel.c:
+	allocated index-title to display info, removed old code that did it
+	* src/Makefile.am:
+	added nautilus-index-title.c and nautilus-index-title.h
+	* src/nautilus-index-title.c,h:
+	moved code from index-panel here to show icon and title
+	used nautilus_file and icon_factory to get the icon the real way
+	added more info besides the name (size, type and date)
+	
 2000-02-12  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-tabs.c:
@@ -5,7 +18,7 @@
 	tabs as fit in a row instead of a maximum of two.  Tightened
 	up the layout and improved the drawing, too.
 	* src/ntl-index-panel.c:
-    right clicking on the tabs adds extra ones for testing purposes
+    	right clicking on the tabs adds extra ones for testing purposes
     
 2000-02-11  Andy Hertzfeld <andy@eazel.com>
 
