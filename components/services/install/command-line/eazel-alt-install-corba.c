@@ -589,7 +589,7 @@ done (EazelInstallCallback *service,
 	cli_result = result ? 0 : 1;
 
 	if (delete_files (service, problem)) {
-		gtk_main_quit ();
+		trilobite_main_quit ();
 	}
 }
 
@@ -642,14 +642,15 @@ int main(int argc, char *argv[]) {
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
 	   X call, yech */
-#if 1
+#if 0
 	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
+	orb = oaf_init (argc, argv);
+	if (!bonobo_init (NULL, NULL, NULL)) {
+		g_error ("Could not init bonobo");
+	}
 #else
-	gtk_type_init ();
-	gtk_signal_init ();
-	gnomelib_init ("Eazel Install", "1.0");
-	gnomelib_register_popt_table (options, "Eazel Install");
-	ctxt = gnomelib_parse_args (argc, argv, 0);
+	trilobite_init ("Eazel Install", "1.0", NULL, argc, argv);
+	ctxt = trilobite_get_popt_context ();
 #endif
 
 	packages = NULL;
@@ -667,11 +668,6 @@ int main(int argc, char *argv[]) {
 		categories = g_list_prepend (NULL, category);		
 	} 
 
-	orb = oaf_init (argc, argv);
-	
-	if (!bonobo_init (NULL, NULL, NULL)) {
-		g_error ("Could not init bonobo");
-	}
 	bonobo_activate ();
 	
 	cb = eazel_install_callback_new ();
@@ -790,7 +786,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (!cli_result && !arg_query) {
-		gtk_main ();
+		trilobite_main ();
 	}
 
 	categorydata_list_destroy (categories);

@@ -1,3 +1,43 @@
+2000-12-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_get_popt_context), (trilobite_init), (trilobite_main),
+	(trilobite_main_quit):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+
+	Clean up trilobite_init to not use or require X anymore (yay!).
+	Add a trilobite_main and trilobite_main_quit to mirror the GTK
+	versions (but without polling for X events).  Add a way for
+	services to retreive their popt context for command-line argument
+	processing. 
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (done), (main):
+	* components/services/install/server/main.c:
+	(trilobite_service_factory_destroy), (main):
+	* components/services/time/service/main.c:
+	(trilobite_service_factory_destroy), (main):
+	* components/services/trilobite/sample/service/main.c:
+	(trilobite_service_factory_destroy), (main):
+
+	Make the command-line utilities use trilobite_main() and
+	trilobite_main_quit() instead of the GTK variants.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list), (osd_parse_dependency):
+
+	Stop filling in the soft_depends field from XML.  (The old code
+	that uses soft_depends doesn't expect it to be filled in and will
+	get confused, and this field is going away shortly anyway.)
+	
+	* components/services/install/nautilus-view/main.c: (main):
+	* components/services/time/nautilus-view/main.c: (main):
+
+	Don't make the nautilus-views use trilobite_* functions (that
+	would be bad), but clean them up to look similar to each other so
+	it's easy to see how to copy them and make new trilobites.
+	
 2000-12-18  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: updated version of bonobo

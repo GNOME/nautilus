@@ -396,10 +396,7 @@ generate_xml_package_list (const char* pkg_template_file,
  * category name : package name : version : minor : archtype : bytesize : summary
  * 
  * Example:
- * 
- *
  * Essential Packages:anaconda:7.0:1:i386:2722261:The redhat installer
- * 
  */
 
 	xmlDocPtr doc;
@@ -699,12 +696,6 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 		} else if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			/* dependent softpkg */
 			softpack = osd_parse_softpkg (child);
-			if (softpack != NULL) {
-				/* FIXME this is going away when soft_depends goes away! */
-				packagedata_add_pack_to_soft_depends (pack, packagedata_copy (softpack, FALSE));
-			} else {
-				trilobite_debug ("SOFTPKG dependency parse failed");
-			}
 		} else {
 			/* unparsed part of dependency */
 		}

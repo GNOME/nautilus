@@ -70,20 +70,17 @@ service_install_make_object (BonoboGenericFactory	*factory,
 int
 main (int argc, char *argv[])
 {
-
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	char *registration_id;
 
-	
-        gnome_init_with_popt_table ("nautilus-service-install-view", VERSION, 
+	gnome_init_with_popt_table ("nautilus-service-install-view", VERSION, 
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
 
 	orb = oaf_init (argc, argv);
-	
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_service_install_view_factory:e59e53d1-e3d1-46fe-ae28-3ec5c56b7d32", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
@@ -91,7 +88,6 @@ main (int argc, char *argv[])
 						    NULL);
 	g_free (registration_id);
 
-	
 	do {
 		bonobo_main ();
 	} while (object_count > 0);

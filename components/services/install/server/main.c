@@ -69,7 +69,7 @@ trilobite_service_factory_destroy (GtkObject *object)
 	trilobite_debug ("Destroying factory object");
 
 	bonobo_object_unref (BONOBO_OBJECT (factory)); 
-	gtk_main_quit ();
+	trilobite_main_quit ();
 }
 
 static BonoboObject*
@@ -142,10 +142,9 @@ int main(int argc, char *argv[]) {
 		g_error ("Could not register factory");
 	}
 
-	bonobo_activate();
-
 	do {
-		bonobo_main ();
+		bonobo_activate ();
+		trilobite_main ();
 	} while (trilobites_active > 0);
 
 	g_message ("EazelInstall service terminating");

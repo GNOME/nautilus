@@ -89,19 +89,18 @@ int main(int argc, char *argv[])
 
 
         g_message ("In component.");        
-	
-        gnome_init_with_popt_table("trilobite-eazel-time-view", VERSION, 
+
+	gnome_init_with_popt_table("trilobite-eazel-time-view", VERSION, 
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
 
 	orb = oaf_init (argc, argv);
-	
+
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 #if 0
     	glade_gnome_init();
 #endif /* 0 */
-
 
         registration_id = oaf_make_registration_id (OAFIID_TRILOBITE_EAZEL_TIME_VIEW_FACTORY, getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
@@ -109,7 +108,6 @@ int main(int argc, char *argv[])
 						    NULL);
 	g_free (registration_id);
 
-		
 	g_message ("About to do main loop.");        
 
 	do {

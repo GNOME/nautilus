@@ -146,16 +146,27 @@ close_and_give_up:
 
 #ifndef TRILOBITE_SLIM
 
-/* trilobite_init -- does all the init stuff 
- * FIXME bugzilla.eazel.com 1656:
- * for now, this requires init_gnome, and thus a running X server.
- * initializes OAF and bonobo, too.
+#undef TRILOBITE_USE_X
+static poptContext trilobite_popt;
+
+poptContext
+trilobite_get_popt_context (void)
+{
+	return trilobite_popt;
+}
+
+/* trilobite_init
  *
- * service_name should be your G_LOG_DOMAIN, if you set one, because of the way logging works
+ * This does all of the initialization needed for command-line utilities or
+ * background CORBA services:  The GTK type & signal system is initialized,
+ * along with OAF and bonobo and all their friends.  If you specify a logfile,
+ * logging begins (service_name should be your G_LOG_DOMAIN).
+ *
+ * This initialization does not start any X services!  It's meant to be used
+ * by processes that won't talk to an X server -- use normal GNOME init
+ * functions if you will be using X or doing any GUI stuff.
  * 
- * options is a way to add extra parameters in the future (can be NULL for now).
- *
- * returns FALSE if init fails.
+ * Returns FALSE if init fails, TRUE on success.
  */
 gboolean
 trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
@@ -167,12 +178,13 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 
 #ifdef TRILOBITE_USE_X
 	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
+	trilobite_popt = NULL;
 #else
 	gtk_type_init ();
 	gtk_signal_init ();
 	gnomelib_init (service_name, version_name);
 	gnomelib_register_popt_table (oaf_popt_options, service_name);
-	gnomelib_parse_args (argc, argv, 0);
+	trilobite_popt = gnomelib_parse_args (argc, argv, 0);
 #endif
 	orb = oaf_init (argc, argv);
 
@@ -201,6 +213,40 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 
 fail:
 	return FALSE;
+}
+
+static GList *loop_list = NULL;
+
+/* if you want to be able to run without X, you should use trilobite_main and
+ * trilobite_main_quit instead of the gtk_* varieties.
+ *
+ * if you use bonobo_main, you can substitute the sequence of calls
+ *     { bonobo_activate; trilobite_main; }
+ * and get the same effect.  this is an attempt to remove the X requirements
+ * from trilobite services and command-line utilities.
+ */
+void
+trilobite_main (void)
+{
+	GMainLoop *loop;
+
+	loop = g_main_new (TRUE);
+	loop_list = g_list_prepend (loop_list, loop);
+	if (g_main_is_running (loop)) {
+		g_main_run (loop);
+	}
+	loop_list = g_list_remove (loop_list, loop);
+
+	g_main_destroy (loop);
+}
+
+void
+trilobite_main_quit (void)
+{
+	if (loop_list != NULL) {
+		g_main_quit ((GMainLoop *)(loop_list->data));
+		loop_list = g_list_remove (loop_list, loop_list->data);
+	}
 }
 #endif /* TRILOBITE_SLIM */
 

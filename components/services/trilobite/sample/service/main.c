@@ -59,7 +59,7 @@ trilobite_service_factory_destroy (GtkObject *object)
 	bonobo_object_unref (BONOBO_OBJECT (factory));
 	trilobite_passwordquery_destroy (GTK_OBJECT (trilobite_password));
 
-	gtk_main_quit ();
+	trilobite_main_quit ();
 	g_message ("out factory_destroy");
 }
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 	g_message ("%s ready", argv[0]);
 
 	do {
-		bonobo_main ();
+		trilobite_main ();
 	} while (trilobites_active > 0);
 
 	g_message ("%s quitting", argv[0]);

@@ -25,7 +25,7 @@
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
-
+#include <libtrilobite/libtrilobite.h>
 #include <libtrilobite/libtrilobite-service.h>
 
 #include "trilobite-eazel-time-service.h"
@@ -36,7 +36,6 @@
 /*
   These are some generally needed objects to get CORBA connectivity
 */
-CORBA_ORB                 orb;
 CORBA_Environment         ev;
 
 static BonoboGenericFactory *factory;
@@ -54,7 +53,7 @@ trilobite_service_factory_destroy (GtkObject *object)
 	}
 	
 	bonobo_object_unref (BONOBO_OBJECT (factory));
-	gtk_main_quit ();
+	trilobite_main_quit ();
 }
 
 static BonoboObject*
@@ -108,12 +107,7 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	gnome_init_with_popt_table ("trilobite-eazel-time-service-factory", "0.1", argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-
-	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
-		g_error ("Could not initialize Bonobo");
-	}
+	trilobite_init ("trilobite-eazel-time-service-factory", "0.1", NULL, argc, argv);
 
 	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
 						    trilobite_eazel_time_service_factory,
@@ -124,9 +118,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	bonobo_activate();
-
 	do {
-		bonobo_main ();
+		trilobite_main ();
 	} while (trilobites_active > 0);
 
 	CORBA_exception_free (&ev);

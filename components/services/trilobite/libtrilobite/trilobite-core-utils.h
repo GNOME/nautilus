@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <glib.h>
 #ifndef TRILOBITE_SLIM
+#include <popt.h>
 #include <bonobo.h>
 #endif
 
@@ -54,6 +55,9 @@ gboolean trilobite_init (const char *service_name,
 			 const char *log_filename,
 			 int argc, 
 			 char **argv);
+poptContext trilobite_get_popt_context (void);
+void trilobite_main (void);
+void trilobite_main_quit (void);
 #endif /* TRILOBITE_SLIM  */
 
 const char *trilobite_get_useragent_string (gboolean version, 
