@@ -193,7 +193,7 @@ typedef struct {
 	IconSizeRequest size;
 
 	NautilusCircularList recently_used_node;
-
+	time_t	 cache_time;
 	gboolean custom;
 	gboolean scaled;
 	ArtIRect text_rect;
@@ -398,7 +398,9 @@ nautilus_icon_factory_remove_image_uri (gpointer key,
 {
         char *image_uri;
         IconCacheKey *icon_key;
-
+	NautilusCircularList *node;
+	NautilusIconFactory *factory;
+	
 	icon_key = key;
         image_uri = user_data;
 
@@ -408,11 +410,15 @@ nautilus_icon_factory_remove_image_uri (gpointer key,
 	}
 	
 	/* if it's in the recently used list, free it from there */      
-        if (icon_key->recently_used_node.next != NULL) {
-		icon_key->recently_used_node.next->prev = icon_key->recently_used_node.prev;
-		icon_key->recently_used_node.prev->next = icon_key->recently_used_node.next;
+	node = &icon_key->recently_used_node;
+	if (node->next != NULL) {
+		node->next->prev = node->prev;
+		node->prev->next = node->next;
+		
+		factory = nautilus_get_current_icon_factory ();		
+		factory->recently_used_count -= 1;
 	}
-	
+
 	/* Free the item. */
         return nautilus_icon_factory_destroy_cached_image (key, value, NULL);
 }
@@ -467,7 +473,6 @@ nautilus_icon_factory_clear_image(const char *image_uri)
 				     nautilus_icon_factory_remove_image_uri,
 				     (gpointer) image_uri);
 }
-
 
 /* Change the theme. */
 void
@@ -875,6 +880,8 @@ nautilus_scalable_icon_equal (gconstpointer a,
 		&& nautilus_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0;
 }
 
+
+/* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
@@ -898,7 +905,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		mime_type = nautilus_file_get_mime_type (file);
 		if (nautilus_str_has_prefix (mime_type, "image/")) {
 			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
-				uri = nautilus_file_get_uri (file);
+				uri = nautilus_file_get_uri (file);				
 			} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
 				uri = nautilus_icon_factory_get_thumbnail_uri (file);
 			}
@@ -1678,7 +1685,7 @@ mark_recently_used (NautilusCircularList *node)
 
 				g_assert (last_node != head);
 				g_assert (last_node != node);
-
+				
 				head->prev = last_node->prev;
 				last_node->prev->next = head;
 
@@ -1695,6 +1702,43 @@ mark_recently_used (NautilusCircularList *node)
 	}
 }
 
+/* utility routine that checks if a cached image has changed since it was cached.
+ * It returns TRUE if the image is still valid, and removes it from the cache if it's not */
+ 
+ static gboolean
+ cached_image_still_valid (const char *file_uri, time_t cached_time)
+ {
+	GnomeVFSURI *vfs_uri;
+	GnomeVFSFileInfo file_info;
+	gboolean is_local, is_valid;
+
+	/* if there's no specific file, simply return TRUE */
+	if (file_uri == NULL)
+		return TRUE;
+		
+	/* FIXME: if the URI is remote, assume it's valid to avoid delay of testing.  Eventually we'll make this async to fix this */
+	vfs_uri = gnome_vfs_uri_new(file_uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri);
+	gnome_vfs_uri_unref(vfs_uri);	
+	if (!is_local) {
+		return TRUE;
+	}
+	
+	/* gather the info and then compare modification times */
+	gnome_vfs_file_info_init (&file_info);
+	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	
+	is_valid = file_info.mtime <= cached_time;
+	gnome_vfs_file_info_clear (&file_info);
+
+	/* if it's not valid, remove it from the cache */
+	if (!is_valid) {
+		nautilus_icon_factory_clear_image (file_uri);	
+	}
+	
+	return is_valid;
+ }
+ 
 /* Get the image for icon, handling the caching.
  * If @picky is true, then only an unscaled icon is acceptable.
  * Also, if @picky is true, the icon must be a custom icon if
@@ -1712,7 +1756,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	IconCacheKey lookup_key, *key;
         GdkPixbuf *image;
 	gpointer key_in_table, value;
-
+	gboolean found_image;
+	
 	g_return_val_if_fail (scalable_icon != NULL, NULL);
 
 	factory = nautilus_get_current_icon_factory ();
@@ -1721,6 +1766,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	/* Check to see if it's already in the table. */
 	lookup_key.scalable_icon = scalable_icon;
 	lookup_key.size = *size;
+	found_image = FALSE;
+	
 	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
 					  &key_in_table, &value)) {
 		/* Found it in the table. */
@@ -1734,8 +1781,12 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		}
 
 		image = value;
+		found_image = cached_image_still_valid (scalable_icon->uri, key->cache_time);
 		g_assert (image != NULL);
-	} else {
+	}
+	
+	if (!found_image)
+		{
 		gboolean got_scaled_image;
 		gboolean got_custom_image;
 		ArtIRect key_text_rect;
@@ -1802,6 +1853,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		key->scaled = got_scaled_image;
 		key->custom = got_custom_image;
 		key->text_rect = key_text_rect;
+		key->cache_time = time(NULL);
 		
 		/* Add the item to the hash table. */
 		g_hash_table_insert (hash_table, key, image);

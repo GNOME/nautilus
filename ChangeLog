@@ -1,3 +1,14 @@
+2000-06-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_remove_image_uri),
+	(nautilus_icon_factory_get_icon_for_file), (mark_recently_used),
+	(cached_image_still_valid), (get_image_from_cache):
+	made image files that use themselves as their icon update properly
+	when the image file changes.  To do this, I added a "cached_time"
+	field to the image cache key, and used it in get_image_from_cache
+	to remove the stale image from the cache if necessary
+
 2000-06-20  Darin Adler  <darin@eazel.com>
 
 	Made NautilusFile async. like NautilusDirectory already was.
