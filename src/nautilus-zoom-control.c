@@ -37,7 +37,6 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-pixmap.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>

@@ -454,8 +454,8 @@ setup_form_title (NautilusHardwareView *view,
 		}
 	}
 	
- 	temp_widget = eel_label_new (title_text);
-	eel_label_make_larger (EEL_LABEL (temp_widget), 10);
+ 	temp_widget = gtk_label_new (title_text);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_X_LARGE);
 
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	
 	gtk_widget_show (temp_widget);
@@ -536,8 +536,8 @@ setup_overview_form (NautilusHardwareView *view)
 		gtk_widget_show (temp_widget);
 		g_free (file_name);
 		
-		temp_widget = eel_label_new (temp_text);
-		eel_label_make_larger (EEL_LABEL (temp_widget), 2);
+		temp_widget = gtk_label_new (temp_text);
+		eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
 		g_free(temp_text);
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
 		gtk_widget_show (temp_widget);
@@ -557,8 +557,8 @@ setup_overview_form (NautilusHardwareView *view)
   	g_free (file_name);
 	
 	temp_text = get_RAM_description ();
-	temp_widget = eel_label_new (temp_text);
-	eel_label_make_larger (EEL_LABEL (temp_widget), 2);
+	temp_widget = gtk_label_new (temp_text);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
 	g_free (temp_text);
 	gtk_box_pack_start (GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
  	gtk_widget_show (temp_widget);
@@ -596,9 +596,9 @@ setup_overview_form (NautilusHardwareView *view)
 				g_free(ide_media);
                                 
 				temp_text = get_IDE_description (device);
-				temp_widget = eel_label_new (temp_text);
-				eel_label_make_larger (EEL_LABEL (temp_widget), 2);
-				eel_label_set_justify (EEL_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
+				temp_widget = gtk_label_new (temp_text);
+				eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
+				gtk_label_set_justify (GTK_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
 
 				g_free(temp_text);
                                 gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
@@ -612,10 +612,7 @@ setup_overview_form (NautilusHardwareView *view)
 
 	/* allocate the uptime label */
 	view->details->uptime_label = GTK_LABEL (gtk_label_new (""));
-#if GNOME2_CONVERSION_COMPLETE
-	eel_label_make_larger (view->details->uptime_label, 2);
-	eel_label_set_justify (view->details->uptime_label, GTK_JUSTIFY_LEFT);
-#endif
+	eel_gtk_label_set_scale (view->details->uptime_label, PANGO_SCALE_LARGE);
 
 	gtk_box_pack_end (GTK_BOX (view->details->form), GTK_WIDGET (view->details->uptime_label), 0, 0, GNOME_PAD);
 	update_uptime_text (view);
@@ -642,9 +639,9 @@ setup_CPU_form (NautilusHardwareView *view)
 	setup_form_title (view, NULL, "CPU");
 	
 	message = _("This is a placeholder for the CPU page.");
-	temp_widget = eel_label_new (message);
-	eel_label_make_larger (EEL_LABEL (temp_widget), 2);
- 	eel_label_set_wrap(EEL_LABEL(temp_widget), TRUE);
+	temp_widget = gtk_label_new (message);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
+ 	gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -667,9 +664,9 @@ setup_RAM_form (NautilusHardwareView *view)
 	setup_form_title (view, NULL, "RAM");
 	
 	message = _("This is a placeholder for the RAM page.");
-	temp_widget = eel_label_new (message);
-	eel_label_make_larger (EEL_LABEL (temp_widget), 2);
- 	eel_label_set_wrap(EEL_LABEL(temp_widget), TRUE);
+	temp_widget = gtk_label_new (message);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
+ 	gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -692,9 +689,9 @@ setup_IDE_form (NautilusHardwareView *view)
         setup_form_title (view, NULL, "IDE");
         
         message = _("This is a placeholder for the IDE page.");
-        temp_widget = eel_label_new (message);
-	eel_label_make_larger (EEL_LABEL (temp_widget), 2);
-        eel_label_set_wrap(EEL_LABEL(temp_widget), TRUE);
+        temp_widget = gtk_label_new (message);
+	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
+        gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
         
         gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);            
         gtk_widget_show (temp_widget);

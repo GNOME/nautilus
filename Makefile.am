@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.shared
 
 @INTLTOOL_DESKTOP_RULE@
 
-DESKTOP_IN_FILES=nautilus.desktop.in nautilus-help.desktop.in
+DESKTOP_IN_FILES=nautilus.desktop.in
 DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS =			\
@@ -30,8 +30,6 @@ EXTRA_DIST=					\
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
-	nautilus-help.desktop			\
-	nautilus-help.desktop.in		\
 	nautilus-launch-icon.png		\
 	gnome-starthere-96.png			\
 	gnome-starthere.png			\

@@ -38,7 +38,6 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -276,7 +275,6 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
 				 "associated URL", 0);
 	
-	/* allocate the pixmap that holds the image */
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (widget);
 	

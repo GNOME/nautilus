@@ -305,7 +305,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_mounted),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_STARTED] 
@@ -315,7 +315,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_started),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_FAILED] 
@@ -325,7 +325,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_failed),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNTED] 
@@ -335,7 +335,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmounted),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* Check environment a bit. */

@@ -39,6 +39,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-viewport.h>
 #include <eel/eel-wrap-table.h>
+#include <gtk/gtkalignment.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>
@@ -49,7 +50,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkpixmap.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>

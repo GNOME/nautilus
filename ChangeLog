@@ -1,3 +1,68 @@
+2002-01-08  Darin Adler  <darin@bentspoon.com>
+
+	* .cvsignore:
+	* Makefile.am:
+	* nautilus-help.desktop.in: Remove.
+	Remove nautilus-help.desktop since Nautilus isn't the help browser
+	any more.
+	
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	(nautilus_adapter_load_strategy_class_init):
+	* components/news/nautilus-news.c: (set_up_main_widgets):
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_class_init):
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_class_init):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy),
+	(fm_desktop_icon_view_handle_middle_click), (delayed_init),
+	(fm_desktop_icon_view_init), (desktop_icons_compare_callback):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_finalize),
+	(nautilus_sidebar_update_buttons), (nautilus_sidebar_set_uri):
+	Use more g_signal, less gtk_signal stuff.
+	
+	* components/hardware/nautilus-hardware-view.c: (setup_form_title),
+	(setup_overview_form), (setup_CPU_form), (setup_RAM_form),
+	(setup_IDE_form):
+	* components/news/nautilus-news.c: (set_up_main_widgets):
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_progress_display), (last_index_time_dialog_new),
+	(index_progress_dialog_new):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init), (element_clicked_callback),
+	(labeled_image_new), (make_properties_from_directories),
+	(add_reset_property), (make_properties_from_xml_node):
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init),
+	(nautilus_sidebar_title_select_text_color), (update_title_font),
+	(update_title), (update_more_info),
+	(sidebar_title_create_title_label),
+	(sidebar_title_create_more_info_label):
+	Port more code from EelLabel to GtkLabel. Also change all code that
+	was using things like "make_larger" to use "set_scale" now.
+	
+	* components/music/nautilus-music-view.c: (xpm_label_box),
+	(xpm_dual_label_box), (nautilus_music_view_set_album_image):
+	* libnautilus-private/nautilus-bookmark.c:
+	(create_image_widget_for_bookmark),
+	(nautilus_bookmark_menu_item_new):
+	* src/nautilus-complex-search-bar.c:
+	(load_find_them_pixmap_widget):
+	Port more code from GtkPixmap to GtkImage.
+	
+	* components/notes/nautilus-notes.c:
+	* components/throbber/nautilus-throbber.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-zoom-control.c:
+	Remove extra includes.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-icon-factory.h:
+	Remove nautilus_icon_factory_get_pixmap_and_mask_for_file.
+	
+	* src/nautilus-about.c: (draw_aa_string), (draw_author_list),
+	(nautilus_about_draw_info): Port to use Pango to draw the text. It
+	looks really bad right now, but should be straightforward to fix.
+	
 2002-01-08  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/nautilus-bonobo-extensions.c (activation_handle_free): 

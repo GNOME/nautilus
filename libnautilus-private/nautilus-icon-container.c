@@ -3747,7 +3747,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GdkPixbuf *pixbuf, *emblem_pixbuf, *saved_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
-	GdkFont *font;
 
 	if (icon == NULL) {
 		return;
@@ -3840,12 +3839,12 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		end_renaming_mode (container, FALSE);
 	}
 	
-	font = details->label_font[details->zoom_level];
-
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
-			       "font", font,
+#if GNOME2_CONVERSION_COMPLETE
+			       "font", details->label_font[details->zoom_level],
+#endif
 			       "highlighted_for_drop", icon == details->drop_target,
 			       NULL);
 	
@@ -5002,12 +5001,12 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 	g_return_if_fail (zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
 	g_return_if_fail (zoom_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
+	gdk_font_ref (font);
+	
 	if (container->details->label_font[zoom_level] != NULL) {
 		gdk_font_unref (container->details->label_font[zoom_level]);
 	}
 
-	gdk_font_ref (font);
-	
 	container->details->label_font[zoom_level] = font;
 }
 

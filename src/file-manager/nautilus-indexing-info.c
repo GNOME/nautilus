@@ -96,9 +96,9 @@ update_progress_display (gpointer callback_data)
 
         progress_change_data = (ProgressChangeData *) callback_data;
 
-        progress_label = EEL_LABEL (progress_change_data->progress_label);
+        progress_label = GTK_LABEL (progress_change_data->progress_label);
         progress_string = get_text_for_progress_label ();
-        eel_label_set_text (progress_label, progress_string);
+        gtk_label_set_text (progress_label, progress_string);
         g_free (progress_string);
         gtk_progress_set_value (progress_change_data->progress_bar, get_index_percentage_complete ());
 
@@ -164,10 +164,9 @@ last_index_time_dialog_new (void)
                                      time_str);
         g_free (time_str);
         
-        label = eel_label_new (label_str);
-        eel_label_set_never_smooth (EEL_LABEL (label), TRUE);
-        eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-        eel_label_make_bold (EEL_LABEL (label));
+        label = gtk_label_new (label_str);
+        gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+        eel_gtk_label_make_bold (GTK_LABEL (label));
         gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
                             FALSE, FALSE, 0);
 
@@ -207,10 +206,8 @@ index_progress_dialog_new (void)
         gtk_box_pack_start (GTK_BOX (embedded_vbox), indexing_progress_bar, FALSE, FALSE, 0);
 
         progress_string = get_text_for_progress_label ();
-        progress_label = eel_label_new (progress_string);
-        eel_label_set_never_smooth (EEL_LABEL (progress_label), TRUE);
+        progress_label = gtk_label_new (progress_string);
         g_free (progress_string);
-        eel_label_set_justify (EEL_LABEL (progress_label), GTK_JUSTIFY_LEFT);
         gtk_box_pack_start (GTK_BOX (embedded_vbox), progress_label, FALSE, FALSE, 0);
 
         progress_bar_hbox = gtk_hbox_new (FALSE, 0);
@@ -222,7 +219,7 @@ index_progress_dialog_new (void)
 
         /* Keep the dialog current with actual indexing progress */
         progress_data = g_new (ProgressChangeData, 1);
-        progress_data->progress_label = EEL_LABEL (progress_label);
+        progress_data->progress_label = GTK_LABEL (progress_label);
         progress_data->progress_bar = GTK_PROGRESS (indexing_progress_bar);
         timeout_id = gtk_timeout_add_full (PROGRESS_UPDATE_INTERVAL,
                                            update_progress_display,

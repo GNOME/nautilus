@@ -1395,8 +1395,6 @@ static GtkWidget *
 xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
 {
         GdkPixbuf *pixbuf;
-        GdkPixmap *pixmap;
-        GdkBitmap *mask;
         GtkWidget *pix_widget;
         GtkWidget *box;
         GtkStyle *style;
@@ -1406,11 +1404,12 @@ xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
         style = gtk_widget_get_style (GTK_WIDGET (music_view->details->event_box));
 
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
 
-        pix_widget = gtk_pixmap_new (pixmap, mask);
+        pix_widget = gtk_image_new_from_pixbuf (pixbuf);
         gtk_box_pack_start (GTK_BOX (box), pix_widget, TRUE, FALSE, 3);
         gtk_widget_show (pix_widget);
+
+        g_object_unref (pixbuf);
 
         return box;
 }
@@ -1424,8 +1423,6 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
 {
         GtkWidget *box;
         GtkStyle *style;
-        GdkPixmap *pixmap;
-        GdkBitmap *mask;
         GdkPixbuf *pixbuf;
 
 
@@ -1436,18 +1433,16 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
 
         /* create the main pixwidget */
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
-
-        *main_pixwidget = gtk_pixmap_new (pixmap, mask);
+        *main_pixwidget = gtk_image_new_from_pixbuf (pixbuf);
+        g_object_unref (pixbuf);
 
         gtk_box_pack_start (GTK_BOX (box), *main_pixwidget, TRUE, FALSE, 3);
         gtk_widget_show (*main_pixwidget);
 
         /* create the alternative pixwidget */
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)alt_xpm_data);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
-
-        *alt_pixwidget = gtk_pixmap_new (pixmap, mask);
+        *alt_pixwidget = gtk_image_new_from_pixbuf (pixbuf);
+        g_object_unref (pixbuf);
 
         gtk_box_pack_start (GTK_BOX (box), *alt_pixwidget, TRUE, FALSE, 3);
         gtk_widget_hide (*alt_pixwidget);
@@ -1602,8 +1597,6 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 	char* image_path;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *scaled_pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;	
 
 	if (image_path_uri != NULL) {
   		image_path = gnome_vfs_get_local_path_from_uri (image_path_uri);  		
@@ -1613,16 +1606,15 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 			scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, SCALED_IMAGE_WIDTH, SCALED_IMAGE_HEIGHT);
 			g_object_unref (pixbuf);
 
-       			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-			g_object_unref (scaled_pixbuf);
-			
 			if (music_view->details->album_image == NULL) {
-				music_view->details->album_image = gtk_pixmap_new (pixmap, mask);
+				music_view->details->album_image = gtk_image_new_from_pixbuf (scaled_pixbuf);
 				gtk_box_pack_start (GTK_BOX (music_view->details->image_box), 
                                                     music_view->details->album_image, FALSE, FALSE, 2);	
 			} else {
-				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
+				gtk_image_set_from_pixbuf (GTK_IMAGE (music_view->details->album_image), scaled_pixbuf);
 			}
+
+                        g_object_unref (scaled_pixbuf);
 		
 			gtk_widget_show (music_view->details->album_image);
 

@@ -31,6 +31,7 @@
 #include <time.h>
 
 #include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkclist.h>
 #include <gtk/gtkdrawingarea.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbbox.h>
@@ -2414,27 +2415,24 @@ set_up_main_widgets (News *news, GtkWidget *container)
 	
 	/* add the empty message */
 	news->empty_message = gtk_label_new (_("The News panel displays current headlines from your favorite websites.  Click the \'Select Sites\' button to select the sites to display."));
-#if GNOME2_CONVERSION_COMPLETE
-	eel_label_set_smooth_font_size (EEL_LABEL (news->empty_message), 14);
-	eel_label_set_justify (EEL_LABEL (news->empty_message), GTK_JUSTIFY_LEFT);
-	eel_label_set_wrap (EEL_LABEL (news->empty_message), TRUE);	
-#endif
+	eel_gtk_label_set_scale (GTK_LABEL (news->empty_message), PANGO_SCALE_LARGE);
+	gtk_label_set_line_wrap (GTK_LABEL (news->empty_message), TRUE);	
 
 	gtk_box_pack_start (GTK_BOX (news->main_box), news->empty_message, TRUE,
-		TRUE, 0);
+                            TRUE, 0);
 	
  	/* connect the appropriate signals for drawing and event handling */
  	g_signal_connect (news->news_display, "expose_event",
-		      (GtkSignalFunc) nautilus_news_expose_event, news);
-  	gtk_signal_connect (GTK_OBJECT(news->news_display),"configure_event",
-		      (GtkSignalFunc) nautilus_news_configure_event, news);
-
+                          G_CALLBACK (nautilus_news_expose_event), news);
+  	g_signal_connect (news->news_display,"configure_event",
+                          G_CALLBACK (nautilus_news_configure_event), news);
+        
   	g_signal_connect (news->news_display, "motion_notify_event",
-		      (GtkSignalFunc) nautilus_news_motion_notify_event, news);
+                          G_CALLBACK (nautilus_news_motion_notify_event), news);
   	g_signal_connect (news->news_display, "leave_notify_event",
-		      (GtkSignalFunc) nautilus_news_leave_notify_event, news);
+                          G_CALLBACK (nautilus_news_leave_notify_event), news);
   	g_signal_connect (news->news_display, "button_release_event",
-		      (GtkSignalFunc) nautilus_news_button_release_event, news);
+                          G_CALLBACK (nautilus_news_button_release_event), news);
 
   	gtk_widget_set_events (news->news_display, GDK_EXPOSURE_MASK
 			 | GDK_LEAVE_NOTIFY_MASK

@@ -33,6 +33,7 @@
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -83,8 +84,8 @@ struct FMDesktopIconViewDetails
 
 	/* For the desktop rescanning
 	 */
-	guint delayed_init_signal;
-	guint done_loading_signal;
+	gulong delayed_init_signal;
+	gulong done_loading_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
 };
@@ -236,14 +237,13 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	}
 
 	if (icon_view->details->done_loading_signal != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (fm_directory_view_get_model
-						   (FM_DIRECTORY_VIEW (icon_view))),
-				       icon_view->details->done_loading_signal);
+		g_signal_handler_disconnect (fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+					     icon_view->details->done_loading_signal);
 	}
 
 	if (icon_view->details->delayed_init_signal != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (icon_view),
-				       icon_view->details->delayed_init_signal);
+		g_signal_handler_disconnect (icon_view,
+					     icon_view->details->delayed_init_signal);
 	}
 	
 	/* Delete all of the link files. */
@@ -303,7 +303,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 
 	/* Stop the event because we don't want anyone else dealing with it. */	
 	gdk_flush ();
-	gtk_signal_emit_stop_by_name (GTK_OBJECT(icon_container), "middle_click");
+	g_signal_stop_emission_by_name (icon_container, "middle_click");
 
 	/* build an X event to represent the middle click. */
 	x_event.type = ButtonPress;
@@ -539,8 +539,8 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->reload_desktop_timeout =
 		gtk_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
 
-	gtk_signal_disconnect (GTK_OBJECT (desktop_icon_view),
-			       desktop_icon_view->details->delayed_init_signal);
+	g_signal_handler_disconnect (desktop_icon_view,
+				     desktop_icon_view->details->delayed_init_signal);
 
 	desktop_icon_view->details->delayed_init_signal = 0;
 }
@@ -569,8 +569,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	 * way to keep track of the items on the desktop.
 	 */
 	if (!nautilus_monitor_active ()) {
-		desktop_icon_view->details->delayed_init_signal = gtk_signal_connect
-			(GTK_OBJECT (desktop_icon_view), "begin_loading",
+		desktop_icon_view->details->delayed_init_signal = g_signal_connect
+			(desktop_icon_view, "begin_loading",
 			 G_CALLBACK (delayed_init), desktop_icon_view);
 	}
 	
@@ -624,23 +624,23 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 			    G_CALLBACK (event_callback),
 			    desktop_icon_view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
+	eel_signal_connect_while_alive (G_OBJECT (nautilus_trash_monitor_get ()),
 					"trash_state_changed",
 					G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback),
 					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
+					G_OBJECT (desktop_icon_view));
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+	eel_signal_connect_while_alive (G_OBJECT (nautilus_volume_monitor_get ()),
 					"volume_mounted",
 					G_CALLBACK (volume_mounted_callback),
 					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
+					G_OBJECT (desktop_icon_view));
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+	eel_signal_connect_while_alive (G_OBJECT (nautilus_volume_monitor_get ()),
 					"volume_unmounted",
 					G_CALLBACK (volume_unmounted_callback),
 					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
+					G_OBJECT (desktop_icon_view));
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 				      home_uri_changed,
@@ -1042,8 +1042,7 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 	/* We know the answer, so prevent the other handlers
 	 * from overwriting our result.
 	 */
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (container),
-				      "compare_icons");
+	g_signal_stop_emission_by_name (container, "compare_icons");
 	if (category_a < category_b) {
 		return -1;
 	} else {

@@ -83,7 +83,7 @@ nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *kla
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_underway),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[REPORT_LOAD_PROGRESS] =
 		g_signal_new ("report_load_progress",
@@ -99,7 +99,7 @@ nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *kla
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_complete),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[REPORT_LOAD_FAILED] =
 		g_signal_new ("report_load_failed",
@@ -107,7 +107,7 @@ nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrategyClass *kla
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusAdapterLoadStrategyClass, report_load_failed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }
 

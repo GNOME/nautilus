@@ -425,24 +425,7 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 static GtkWidget *
 load_find_them_pixmap_widget (void)
 {
-	GdkPixbuf *pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	GtkWidget *widget;
-	
-	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png", NULL);
-	if (pixbuf != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-		g_object_unref (pixbuf);
-		widget = gtk_pixmap_new (pixmap, mask);
-
-		gdk_pixmap_unref (pixmap);
-		gdk_pixmap_unref (mask);
- 
-		return widget;
-	} else {
-		return NULL;
-	}
+	return gtk_image_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
 }
 				  
 

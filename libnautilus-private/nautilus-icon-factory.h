@@ -140,14 +140,6 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (Nautil
 									  guint                        size_in_pixels,
 									  gboolean                     optimized_for_anti_aliasing);
 
-/* Convenience functions for legacy interfaces that require a pixmap and
- * bitmap. Maybe we can get rid of these one day.
- */
-void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile                *file,
-									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  GdkPixmap                  **pixmap,
-									  GdkBitmap                  **mask);
 /* Convenience routine for getting a pixbuf from an icon name
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,

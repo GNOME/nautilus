@@ -59,6 +59,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkselection.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtktogglebutton.h>
@@ -323,10 +324,8 @@ nautilus_property_browser_init (GtkObject *object)
  	
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new ("");
-#if GNOME2_CONVERSION_COMPLETE
-	eel_label_make_larger (EEL_LABEL (property_browser->details->title_label), 4);
-	eel_label_make_bold   (EEL_LABEL (property_browser->details->title_label));
-#endif
+	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->title_label), PANGO_SCALE_X_LARGE);
+	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label));
  	
 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
@@ -334,10 +333,8 @@ nautilus_property_browser_init (GtkObject *object)
  	/* add the help label */
 	property_browser->details->help_label = gtk_label_new  ("");
 	gtk_widget_show(property_browser->details->help_label);
-#if GNOME2_CONVERSION_COMPLETE
-	eel_label_make_smaller (EEL_LABEL (property_browser->details->help_label), 2);
-#endif
-	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
+	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->help_label), PANGO_SCALE_SMALL);
+	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
   	/* add the bottom box to hold the command buttons */
   	temp_box = gtk_event_box_new();
@@ -362,7 +359,7 @@ nautilus_property_browser_init (GtkObject *object)
 
 	gtk_widget_show(temp_button);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
- 	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", G_CALLBACK (done_button_callback), property_browser);
+ 	g_signal_connect(temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser);
   	
   	/* create the "add new" button */
   	property_browser->details->add_button = gtk_button_new ();
@@ -1479,8 +1476,6 @@ element_clicked_callback (GtkWidget *image_table,
 	GtkTargetList *target_list;	
 	GdkDragContext *context;
 	GdkPixbuf *pixbuf;
-	GdkPixmap *pixmap_for_dragged_file;
-	GdkBitmap *mask_for_dragged_file;
 	int x_delta, y_delta;
 	const char *element_name;
 	EelArtIPoint scroll_offset;
@@ -1542,25 +1537,18 @@ element_clicked_callback (GtkWidget *image_table,
 
         /* set the pixmap and mask for dragging */       
 	if (pixbuf != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask
-			(pixbuf,
-			 &pixmap_for_dragged_file,
-			 &mask_for_dragged_file,
-			 EEL_STANDARD_ALPHA_THRESHHOLD);
-
-		g_object_unref (pixbuf);	
-		gtk_drag_set_icon_pixmap
+		gtk_drag_set_icon_pixbuf
 			(context,
-			 gtk_widget_get_colormap (GTK_WIDGET (property_browser)),
-			 pixmap_for_dragged_file,
-			 mask_for_dragged_file,
+			 pixbuf,
 			 x_delta, y_delta);
+		g_object_unref (pixbuf);
 	}
 	
 	/* optionally (if the shift key is down) hide the property browser - it will later be destroyed when the drag ends */	
 	property_browser->details->keep_around = (event->state & GDK_SHIFT_MASK) == 0;
-	if (!property_browser->details->keep_around)
-		gtk_widget_hide(GTK_WIDGET(property_browser));
+	if (! property_browser->details->keep_around) {
+		gtk_widget_hide (GTK_WIDGET (property_browser));
+	}
 }
 
 
@@ -1606,7 +1594,7 @@ static GtkWidget *
 labeled_image_new (const char *text,
 		   GdkPixbuf *pixbuf,
 		   const char *property_name,
-		   guint num_smaller)
+		   double scale_factor)
 {
 	GtkWidget *labeled_image;
 	
@@ -1666,7 +1654,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									 &object_label) == GNOME_VFS_OK) {
 		GtkWidget *property_image;
 
-		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2);
+		property_image = labeled_image_new (object_label, object_pixbuf, object_name, PANGO_SCALE_LARGE);
 		
 		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
 			char *keyword;
@@ -1759,7 +1747,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	
 	g_free (reset_image_file_name);
 
-	reset_image = labeled_image_new (NULL, reset_chit, RESET_IMAGE_NAME, 0);
+	reset_image = labeled_image_new (NULL, reset_chit, RESET_IMAGE_NAME, PANGO_SCALE_MEDIUM);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
 	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,
@@ -1811,7 +1799,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			pixbuf = make_color_drag_image (property_browser, color, FALSE);			
 
 			/* make the tile from the pixmap and name */
-			new_property = labeled_image_new (name, pixbuf, color, 2);
+			new_property = labeled_image_new (name, pixbuf, color, PANGO_SCALE_LARGE);
 
 			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), new_property);
 			gtk_widget_show (new_property);

@@ -209,9 +209,10 @@ nautilus_about_repaint (GtkWidget *widget,
 
 /* utility routine to draw a string at a position */
 static void
-draw_aa_string (GdkPixbuf *pixbuf,
-		gboolean bold,
-		int font_size,
+draw_aa_string (GtkWidget *widget,
+		GdkPixbuf *pixbuf,
+		PangoWeight weight,
+		double scale_factor,
 		int x_pos,
 		int y_pos,
 		guint32 color,
@@ -219,23 +220,19 @@ draw_aa_string (GdkPixbuf *pixbuf,
 		const char *text,
 		int shadow_offset)
 {
+	PangoLayout *layout;
+
+	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (widget));
+	pango_layout_set_text (layout, text, -1);
+
 	if (shadow_offset != 0) {
-#if GNOME2_CONVERSION_COMPLETE
-		eel_scalable_font_draw_text (font, pixbuf,
-					     x_pos + shadow_offset, y_pos + shadow_offset,
-					     eel_gdk_pixbuf_whole_pixbuf,
-					     font_size,
-					     text, strlen (text),
-					     shadow_color, EEL_OPACITY_FULLY_OPAQUE);	
-#endif
+		eel_gdk_pixbuf_draw_layout (pixbuf, x_pos + shadow_offset, y_pos + shadow_offset,
+					    shadow_color, layout);
 	}
 	
-#if GNOME2_CONVERSION_COMPLETE
-	eel_scalable_font_draw_text (font, pixbuf, x_pos, y_pos,
-				     eel_gdk_pixbuf_whole_pixbuf,
-				     font_size,
-				     text, strlen (text), color, EEL_OPACITY_FULLY_OPAQUE);
-#endif
+	eel_gdk_pixbuf_draw_layout (pixbuf, x_pos, y_pos, color, layout);
+
+	g_object_unref (layout);
 }
 
 /* randomize_authors randomizes the order array so different names get displayed in different positions each time */
@@ -283,7 +280,8 @@ draw_author_list (NautilusAbout *about,
 	
 	xpos = AUTHOR_LEFT_POS; ypos = AUTHOR_TOP_POS;
 	while (about->details->authors[about->details->order_array[index]] != NULL) {
-		draw_aa_string (pixbuf, FALSE, 12, xpos, ypos,
+		draw_aa_string (GTK_WIDGET (about), pixbuf,
+				PANGO_WEIGHT_NORMAL, PANGO_SCALE_MEDIUM, xpos, ypos,
 				EEL_RGB_COLOR_BLACK, EEL_RGB_COLOR_BLACK,
 				about->details->authors[about->details->order_array[index]],
 				0);
@@ -329,17 +327,17 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the name and version */
 	display_str = g_strdup_printf ("%s %s", title, version);
-	draw_aa_string (pixbuf, TRUE, 24, 12, 5, white, black, display_str, 1);
+	draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_BOLD, PANGO_SCALE_X_LARGE, 12, 5, white, black, display_str, 1);
 	g_free (display_str);
 	
 	/* draw the copyright notice */
-	draw_aa_string (pixbuf, TRUE, 11, 12, 40, black, black, copyright, 0);
+	draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_BOLD, PANGO_SCALE_MEDIUM, 12, 40, black, black, copyright, 0);
 
 	/* draw the authors title */
-	draw_aa_string (pixbuf, TRUE, 20, 184, 64, black, black, _("Authors"), 0);
+	draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_BOLD, PANGO_SCALE_LARGE, 184, 64, black, black, _("Authors"), 0);
 	
 	/* draw the time stamp */
-	draw_aa_string (pixbuf, FALSE, 11, 284, total_height - 14, grey, black, time_stamp, 0);
+	draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_NORMAL, PANGO_SCALE_MEDIUM, 284, total_height - 14, grey, black, time_stamp, 0);
 
 	/* draw the translator's credit, if necessary */
 	if (eel_strcmp (translators, "Translator Credits") != 0) {
@@ -354,7 +352,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 		
 		index = 0;
 		while (comment_array[index] != NULL) {
-			draw_aa_string (pixbuf, FALSE, 11, xpos, ypos, black, black, comment_array[index], 0);
+			draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_NORMAL, PANGO_SCALE_MEDIUM, xpos, ypos, black, black, comment_array[index], 0);
 			ypos += 14;
 			index++;	
 		}
@@ -377,7 +375,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	index = 0;
 	xpos = 6; ypos = 118;
 	while (comment_array[index] != NULL) {
-		draw_aa_string (pixbuf, FALSE, 14, xpos, ypos, black, black, comment_array[index], 0);
+		draw_aa_string (GTK_WIDGET (about), pixbuf, PANGO_WEIGHT_NORMAL, PANGO_SCALE_LARGE, xpos, ypos, black, black, comment_array[index], 0);
 		ypos += 18;
 		index++;	
 	}

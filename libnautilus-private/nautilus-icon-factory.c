@@ -2152,33 +2152,6 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	return pixbuf;
 }
 
-/* Convenience cover for nautilus_icon_factory_get_icon_for_file,
- * nautilus_icon_factory_get_pixbuf_for_icon,
- * and gdk_pixbuf_render_pixmap_and_mask.
- */
-void
-nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
-						    const char *modifer,
-						    guint size_in_pixels,
-						    GdkPixmap **pixmap,
-						    GdkBitmap **mask)
-{
-	GdkPixbuf *pixbuf;
-
-	g_return_if_fail (pixmap != NULL);
-	g_return_if_fail (mask != NULL);
-
-	*pixmap = NULL;
-	*mask = NULL;
-
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, modifer, size_in_pixels, FALSE);
-	if (pixbuf == NULL) {
-		return;
-	}
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-	g_object_unref (pixbuf);
-}
-
 /* Convenience routine for getting a pixbuf from an icon name. */
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,

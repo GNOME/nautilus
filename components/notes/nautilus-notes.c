@@ -32,6 +32,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtktextbuffer.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkvbox.h>

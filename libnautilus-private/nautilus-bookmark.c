@@ -32,7 +32,9 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkaccellabel.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtkimagemenuitem.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -61,7 +63,6 @@ static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
 static void       nautilus_bookmark_class_init      (NautilusBookmarkClass *class);
 static void       nautilus_bookmark_init            (NautilusBookmark      *bookmark);
-static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
 EEL_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
@@ -103,7 +104,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, appearance_changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[CONTENTS_CHANGED] =
@@ -112,7 +113,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 				
 }
@@ -535,23 +536,24 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 }				 
 
 static GtkWidget *
-create_pixmap_widget_for_bookmark (NautilusBookmark *bookmark)
+create_image_widget_for_bookmark (NautilusBookmark *bookmark)
 {
-	GdkPixmap *gdk_pixmap;
-	GdkBitmap *mask;
+	GdkPixbuf *pixbuf;
+	GtkWidget *widget;
 
-	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
-						    NAUTILUS_ICON_SIZE_FOR_MENUS,
-					  	    &gdk_pixmap, 
-					  	    &mask)) {
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	if (pixbuf == NULL) {
 		return NULL;
 	}
 
-	return gtk_pixmap_new (gdk_pixmap, mask);
+        widget = gtk_image_new_from_pixbuf (pixbuf);
+
+	g_object_unref (pixbuf);
+	return widget;
 }
 
 /**
- * nautilus_bookmarnuk_menu_item_new:
+ * nautilus_bookmark_menu_item_new:
  * 
  * Return a menu item representing a bookmark.
  * @bookmark: The bookmark the menu item represents.
@@ -561,18 +563,17 @@ GtkWidget *
 nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 {
 	GtkWidget *menu_item;
-	GtkWidget *pixmap_widget;
+	GtkWidget *image_widget;
 	GtkWidget *label;
 	char *display_name;
 	
 	menu_item = gtk_image_menu_item_new ();
 
-	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
-	if (pixmap_widget != NULL) {
-		gtk_widget_show (pixmap_widget);
-
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), \
-					       pixmap_widget);
+	image_widget = create_image_widget_for_bookmark (bookmark);
+	if (image_widget != NULL) {
+		gtk_widget_show (image_widget);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
+					       image_widget);
 	}
 	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
 	label = gtk_label_new (display_name);

@@ -39,6 +39,7 @@
 
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -50,6 +51,7 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
@@ -82,7 +84,7 @@ struct NautilusSidebarDetails {
 	gboolean has_buttons;
 	char *uri;
 	NautilusFile *file;
-	guint file_changed_connection;
+	gulong file_changed_connection;
 	char *default_background_color;
 	char *default_background_image;
 	int selected_index;
@@ -332,8 +334,8 @@ nautilus_sidebar_finalize (GObject *object)
 	sidebar = NAUTILUS_SIDEBAR (object);
 
 	if (sidebar->details->file != NULL) {
-		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
-				       sidebar->details->file_changed_connection);
+		g_signal_handler_disconnect (sidebar->details->file, 
+					     sidebar->details->file_changed_connection);
 		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
 		nautilus_file_unref (sidebar->details->file);
 	}
@@ -1516,11 +1518,11 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		g_signal_connect (temp_button, "clicked",
 			G_CALLBACK (empty_trash_callback), NULL);
 		
-		gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
-				        "trash_state_changed",
-				        G_CALLBACK (nautilus_sidebar_trash_state_changed_callback),
-				        temp_button,
-				        GTK_OBJECT (temp_button));
+		eel_signal_connect_while_alive (G_OBJECT (nautilus_trash_monitor_get ()),
+						"trash_state_changed",
+						G_CALLBACK (nautilus_sidebar_trash_state_changed_callback),
+						temp_button,
+						G_OBJECT (temp_button));
 
 	}
 	
@@ -1652,8 +1654,8 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	sidebar->details->uri = g_strdup (new_uri);
 		
 	if (sidebar->details->file != NULL) {
-		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
-				       sidebar->details->file_changed_connection);
+		g_signal_handler_disconnect (sidebar->details->file, 
+					     sidebar->details->file_changed_connection);
 
 		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
 	}
