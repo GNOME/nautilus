@@ -73,7 +73,7 @@ typedef struct {
 	GtkWidget *parent_view;
 	TransferKind kind;
 	gboolean show_progress_dialog;
-	void (*done_callback) (GHashTable *debuting_uris, gpointer data);
+	void (* done_callback) (GHashTable *debuting_uris, gpointer data);
 	gpointer done_callback_data;
 	GHashTable *debuting_uris;
 	gboolean cancelled;	
@@ -1577,7 +1577,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 							    progress_info->target_name);
 				}
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
+					g_hash_table_insert (debuting_uris,
+							     g_strdup (progress_info->target_name),
+							     GINT_TO_POINTER (TRUE));
 				}
 			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
@@ -1608,7 +1610,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				}
 				
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
+					g_hash_table_insert (debuting_uris,
+							     g_strdup (progress_info->target_name),
+							     GINT_TO_POINTER (really_moved));
 				}
 			}
 			if (really_moved) {

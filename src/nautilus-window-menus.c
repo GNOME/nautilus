@@ -600,7 +600,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		"Susan Kare",
 		NULL
 	};
-
+	const char *copyright, *translator_credits;
 
 	if (about == NULL) {
 		/* timestamp overrides build message, because timestamp
@@ -614,30 +614,37 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			}
 		}
 		
-		/* The copyright character in here is correct for
-		 * Latin-1 encoding, but not for UTF-8, so we have
-		 * to change it when we upgrade to GTK 2.0.
+		/* Localize to deal with issues in the copyright
+		 * symbol characters -- do not translate the company
+		 * name, please.
 		 */
+		copyright = _("Copyright (C) 1999-2001 Eazel, Inc.");
+		/* This is a workaround for problems when the msgid
+		 * itself has a non-ASCII character in it.
+		 */
+		if (strcmp (copyright, "Copyright (C) 1999-2001 Eazel, Inc.") == 0) {
+			/* The copyright character here is correct for
+			 * Latin-1 encoding, but not for UTF-8, so we
+			 * have to change it when we move to GTK 2.0.
+			 */
+			copyright = "Copyright \xA9 1999-2001 Eazel, Inc.";
+		}
+
+		/* Translators should localize the following string
+		 * which will be displayed at the bottom of the about
+		 * box to give credit to the translator(s).
+		 */
+		translator_credits = _("Translator Credits");
+		
 		about = nautilus_about_new (_("Nautilus"),
 					    VERSION,
-					    /* Localize to deal with
-					     * issues in the copyright
-					     * symbol characters -- do
-					     * not translate the
-					     * company name, please.
-					     */
-					    _("Copyright \xA9 1999-2001 Eazel, Inc."),
+					    copyright,
 					    authors,
 					    _("Nautilus is a graphical shell\n"
 					      "for GNOME that makes it\n"
 					      "easy to manage your files\n"
 					      "and the rest of your system."),
-					    /* translators should localize the following
-					     * string which will be displayed at the
-					     * bottom of the about box to give credit
-					     * to the translator(s)
-					     */
-					     _("Translator Credits"),
+					    translator_credits,
 					    time_stamp);
 		
 		g_free (time_stamp);

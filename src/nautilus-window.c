@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -40,13 +40,20 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-service-ui.h"
 #include "nautilus-zoom-control.h"
-#include <bonobo/bonobo-ui-util.h>
+#include <X11/Xatom.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkmenubar.h>
+#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
@@ -61,26 +68,19 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-drag-window.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-horizontal-splitter.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-sidebar-functions.h>
-#include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
 #include <math.h>
 #include <sys/time.h>
-#include <X11/Xatom.h>
-#include <gdk/gdkx.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -1228,7 +1228,8 @@ add_view_as_bonobo_menu_item (NautilusWindow *window,
 		 identifier->view_as_label,
 		 "viewers group");
 
-	tip = g_strdup_printf (_("Display this location with the %s"), identifier->viewer_label);
+	tip = g_strdup_printf (_("Display this location with \"%s\""),
+			       identifier->viewer_label);
 	item_path = nautilus_bonobo_get_numbered_menu_item_path
 		(window->details->shell_ui, 
 		 placeholder_path, 

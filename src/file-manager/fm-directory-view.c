@@ -1665,11 +1665,9 @@ typedef struct {
 static void
 debuting_uri_data_free (DebutingUriData *data)
 {
-	if (data != NULL) {
-		eel_g_hash_table_destroy_deep (data->debuting_uris);
-		eel_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
-		g_free (data);
-	}
+	eel_g_hash_table_destroy_deep (data->debuting_uris);
+	nautilus_file_list_free (data->added_files);
+	g_free (data);
 }
  
 /* This signal handler watch for the arrival of the icons created
@@ -1677,7 +1675,9 @@ debuting_uri_data_free (DebutingUriData *data)
  * it selects and reveals them all.
  */
 static void
-debuting_uri_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, DebutingUriData *data)
+debuting_uri_add_file_callback (FMDirectoryView *view,
+				NautilusFile *new_file,
+				DebutingUriData *data)
 {
 	char *uri;
 
@@ -1690,7 +1690,9 @@ debuting_uri_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, D
 		if (g_hash_table_size (data->debuting_uris) == 0) {
 			fm_directory_view_set_selection (view, data->added_files);
 			fm_directory_view_reveal_selection (view);
-			gtk_signal_disconnect_by_func (GTK_OBJECT (view), &debuting_uri_add_file_callback, data);
+			gtk_signal_disconnect_by_func (GTK_OBJECT (view),
+						       debuting_uri_add_file_callback,
+						       data);
 		}
 	}
 	
@@ -1708,7 +1710,7 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 	g_assert (data != NULL);
 	
 	eel_nullify_cancel (&data->directory_view);
-	eel_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
+	nautilus_file_list_free (data->added_files);
 	g_free (data);
 }
 
@@ -1756,13 +1758,29 @@ copy_move_done_partition_func (gpointer data, gpointer callback_data)
  	gboolean result;
  	
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (data));
-
 	result = eel_g_hash_table_remove_deep ((GHashTable *) callback_data, uri);
-	
 	g_free (uri);
 
 	return result;
 }
+
+static gboolean
+remove_not_really_moved_files (gpointer key,
+			       gpointer value,
+			       gpointer callback_data)
+{
+	GList **added_files;
+
+	if (GPOINTER_TO_INT (value)) {
+		return FALSE;
+	}
+	
+	added_files = callback_data;
+	*added_files = g_list_prepend (*added_files,
+				       nautilus_file_get (key));
+	return TRUE;
+}
+
 
 /* When this function is invoked, the file operation is over, but all
  * the icons may not have been added to the directory view yet, so
@@ -1786,20 +1804,31 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 	
 		debuting_uri_data = g_new (DebutingUriData, 1);
 		debuting_uri_data->debuting_uris = debuting_uris;
-		debuting_uri_data->added_files	 = eel_g_list_partition (copy_move_done_data->added_files,
-									      copy_move_done_partition_func,
-									      debuting_uris,
-									      &copy_move_done_data->added_files);
-									      
+		debuting_uri_data->added_files	 = eel_g_list_partition
+			(copy_move_done_data->added_files,
+			 copy_move_done_partition_func,
+			 debuting_uris,
+			 &copy_move_done_data->added_files);
+
 		/* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
 		 * it will free data. We've already siphoned off the added_files we need, and stashed the
 		 * directory_view pointer.
 		 */
-		gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view), &pre_copy_move_add_file_callback, data);
+		gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view),
+					       pre_copy_move_add_file_callback,
+					       data);
 	
+		/* Any items in the debuting_uris hash table that have
+		 * "FALSE" as their value aren't really being copied
+		 * or moved, so we can't wait for an add_file signal
+		 * to come in for those.
+		 */
+		g_hash_table_foreach_remove (debuting_uris,
+					     remove_not_really_moved_files,
+					     &debuting_uri_data->added_files);
+		
 		if (g_hash_table_size (debuting_uris) == 0) {
-			/* on the off-chance that all the icons have already been added ...
-			 */
+			/* on the off-chance that all the icons have already been added */
 			if (debuting_uri_data->added_files != NULL) {
 				fm_directory_view_set_selection (directory_view,
 								 debuting_uri_data->added_files);

@@ -113,8 +113,8 @@ static void send_history                         (NautilusViewFrame      *view);
 static guint signals[LAST_SIGNAL];
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
-				   nautilus_view_frame,
-				   NAUTILUS_TYPE_GENEROUS_BIN)
+			      nautilus_view_frame,
+			      NAUTILUS_TYPE_GENEROUS_BIN)
 
 void
 nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
@@ -329,7 +329,6 @@ destroy_view (NautilusViewFrame *view)
 	g_free (view->details->view_iid);
 	view->details->view_iid = NULL;
 	
-	bonobo_object_release_unref (view->details->view, NULL);
 	view->details->view = CORBA_OBJECT_NIL;
 
 	nautilus_bonobo_object_call_when_remote_object_disappears
@@ -772,6 +771,7 @@ attach_view (NautilusViewFrame *view,
     	}
 
 	create_corba_objects (view);
+	bonobo_object_release_unref (view->details->view, NULL);
 
 	widget = bonobo_control_frame_get_widget (view->details->control_frame);
 

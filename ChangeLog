@@ -1,3 +1,42 @@
+2001-04-11  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(sync_transfer_callback): Put flags in the debuting_uris hash
+	table so we can tell files that are actually moved from files that
+	are not because they are already in the right place.
+	
+	* src/file-manager/fm-directory-view.c:
+	(copy_move_done_data_free): Use nautilus_file_list_free to save
+	code.
+	(remove_not_really_moved_files): Function to pick out files that
+	are not actually moved (recognized by the flag in the
+	debuting_uris hash table) and treat them as if they had already
+	been moved.
+	(copy_move_done_callback): Use g_hash_table_foreach_remove with
+	the function above.
+	
+	* src/Nautilus_shell.oaf.in: Fix the the typo.
+	
+	* src/nautilus-sidebar-tabs.c: (get_property_bag): New function
+	so we can share more code.
+	(tab_item_destroy): Use new function for clarity and to fix lack
+	of CORBA_exception_free.
+	(get_tab_image_name): New function factored out.
+	(nautilus_sidebar_tabs_update_tab_item): Use new function, also
+	reduced some redundant code.
+	(nautilus_sidebar_tabs_connect_view): Use new function for clarity
+	and to save some code.
+	
+	* src/nautilus-view-frame.c: (destroy_view), (attach_view): Don't
+	bother holding a reference to the NautilusView since it's part of
+	the same object as the BonoboControl.
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Get rid of non-ASCII character in a msgid string.
+	
+	* src/nautilus-window.c: (add_view_as_bonobo_menu_item): Fix tip
+	string to be easier to translate.
+
 2001-04-11  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
