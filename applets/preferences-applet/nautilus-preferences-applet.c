@@ -148,6 +148,15 @@ start_button_clicked_callback (GtkWidget *button,
 	nautilus_gnome_shell_execute ("nautilus");
 }
 
+static void
+restart_button_clicked_callback (GtkWidget *button,
+			      gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	
+	nautilus_gnome_shell_execute ("nautilus --restart");
+}
+
 int
 main (int argc, char **argv)
 {
@@ -159,6 +168,7 @@ main (int argc, char **argv)
 	GtkWidget *smooth_graphics_button;
 	GtkWidget *quit_button;
 	GtkWidget *start_button;
+	GtkWidget *restart_button;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -215,6 +225,14 @@ main (int argc, char **argv)
 	gtk_signal_connect (GTK_OBJECT (start_button),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (start_button_clicked_callback),
+			    NULL);
+
+	restart_button = gtk_button_new_with_label ("Restart");
+	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (restart_button)->child), 4);
+	gtk_box_pack_start (GTK_BOX (command_hbox), restart_button, TRUE, TRUE, 1);
+	gtk_signal_connect (GTK_OBJECT (restart_button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (restart_button_clicked_callback),
 			    NULL);
 
 	gtk_container_add (GTK_CONTAINER (applet), main_hbox);
