@@ -5,9 +5,13 @@ SUBDIRS=file-manager
 bin_PROGRAMS=nautilus
 
 INCLUDES =\
-	-I$(top_srcdir) -I$(top_builddir) \
-	$(BONOBO_CFLAGS) $(OAF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) $(GNOMECANVASPIXBUF_INCLUDEDIR) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(BONOBO_CFLAGS) \
+	$(OAF_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
+	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
@@ -22,6 +26,7 @@ LDADD =\
 	../librsvg/librsvg.la \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
+	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \

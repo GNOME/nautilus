@@ -1,5 +1,45 @@
 2000-04-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Switched us to use gconf instead of gnome_config.  There is still
+	lots of crufty preferences code that can be simplified a lot,
+	since gconf does a lot of work for us.
+
+	* components/help/Makefile.am
+	* components/history/Makefile.am
+	* components/html/Makefile.am
+	* components/music/Makefile.am
+	* components/notes/Makefile.am
+	* components/rpmview/Makefile.am
+	* components/sample/Makefile.am
+	* components/services/install/Makefile.am
+	* components/services/startup/Makefile.am
+	* components/websearch/Makefile.am
+	* nautilus-widgets/Makefile.am
+	Add GCONF_CFLAGS and GCONF_LIBS where needed.
+
+	* nautilus-widgets/nautilus-preference.c:
+	Removed a rogue unused include.
+
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h:
+	Straight forward switch from gnome_config api to gconf api.
+	(gnome_config_make_string):  Retired, cause thankfully we dont
+	need to make up dumb strings with a default value appened to the
+	end. All praise gconf.
+	(nautilus_preferences_init): Add a init function to make sure
+	gconf is properly initialized.  This needs some cleanup wrt the
+	global preferences crap.  Im planning to clean that up in my next
+	checkin.
+
+	* nautilus-widgets/test-nautilus-widgets.c:
+	Fixed for gconf changes.
+
+	* src/ntl-main.c:
+	Call nautilus_preferences_init to make sure gconf is in business
+	before we call it.
+	
+2000-04-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/ntl-window-state.h,
 	  src/ntl-window-state.c: (nautilus_window_save_state)
 	(nautilus_window_load_state): Retired these two old and unused

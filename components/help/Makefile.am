@@ -6,6 +6,7 @@ lib_LTLIBRARIES=libvfs-help.la
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOMEUI_CFLAGS) \
 	$(BONOBO_CFLAGS) \
+	$(GCONF_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DINFODIR=\"$(infodir)\"
 
@@ -15,6 +16,7 @@ LDADD =\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/librsvg/librsvg.la \
 	$(BONOBO_LIBS) \
+	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS)
 

@@ -8,6 +8,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-I/usr/include/rpm 			\
+	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)				\
 	$(NULL)
@@ -27,6 +28,7 @@ eazel_install_SOURCES =		\
 
 eazel_install_LDFLAGS =			\
 	$(GNOMEUI_LIBS)					\
+	$(GCONF_LIBS) \
 	-lrpm						\
 	-lpopt						\
 	-lxml						\

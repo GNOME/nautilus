@@ -9,6 +9,7 @@ INCLUDES =					\
 	-I$(top_builddir)			\
 	-I/usr/include/rpm 			\
 	$(GNOMEUI_CFLAGS)                       \
+	$(GCONF_CFLAGS) \
 	$(WERROR)
 
 oafdir = $(datadir)/oaf
@@ -32,6 +33,7 @@ nautilus_service_startup_view_LDFLAGS =			\
 	$(top_builddir)/librsvg/librsvg.la		\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
+	$(GCONF_LIBS) \
 	$(VFS_LIBS)					\
 	-lrpm						\
 	-lghttp						\

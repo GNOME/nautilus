@@ -32,6 +32,8 @@ main (int argc, char * argv[])
 {
 	gtk_init (&argc, &argv);
 
+	g_assert (nautilus_preferences_init (argc, argv));
+
 	global_preferences = create_global_preferences ();
 	
 	test_radio_group ();

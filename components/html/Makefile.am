@@ -8,6 +8,7 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)			\
 	$(GTKHTML_CFLAGS)			\
 	$(LIBWWW_CFLAGS)
@@ -36,6 +37,7 @@ ntl_web_browser_LDFLAGS =				\
 	$(GTKHTML_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
+	$(GCONF_LIBS) \
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)					\
 	$(LIBWWW_LIBS)

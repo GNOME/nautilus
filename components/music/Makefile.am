@@ -5,6 +5,7 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)
 
@@ -29,6 +30,7 @@ nautilus_music_view_LDFLAGS =			\
 	$(top_builddir)/librsvg/librsvg.la		\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
+	$(GCONF_LIBS) \
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS)
 

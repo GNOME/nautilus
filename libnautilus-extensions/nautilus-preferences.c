@@ -25,10 +25,13 @@
 #include <config.h>
 #include "nautilus-preferences.h"
 
-#include <libgnome/gnome-config.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
 static const char PREFERENCES_GLOBAL_DOMAIN[] = "Nautilus::Global";
+static const char PREFERENCES_GCONF_PATH[] = "/apps/nautilus";
 
 /*
  * PrefHashNode:
@@ -64,6 +67,7 @@ typedef struct {
 struct NautilusPreferencesDetails {
 	char		*domain;
 	GHashTable	*preference_hash_table;
+	GConfClient	*gconf_client;
 };
 
 /* NautilusPreferencesClass methods */
@@ -115,9 +119,6 @@ PrefHashNode *           prefs_hash_lookup_with_implicit_registration (NautilusP
 								       const char                  *pref_name,
 								       NautilusPreferenceType      pref_type,
 								       gconstpointer                default_value);
-static char *            gnome_config_make_string                     (char                        *name,
-								       NautilusPreferenceType      type,
-								       gconstpointer                default_value);
 static void              preferences_register                         (NautilusPreferences         *preferences,
 								       char                        *name,
 								       char                        *description,
@@ -163,6 +164,8 @@ nautilus_preferences_initialize (NautilusPreferences *preferences)
 
 	preferences->details->preference_hash_table = g_hash_table_new (g_str_hash, 
 									g_str_equal);
+
+	preferences->details->gconf_client = gconf_client_new ();
 }
 
 /**
@@ -190,6 +193,9 @@ nautilus_preferences_destroy (GtkObject *object)
 		
 		preferences->details->preference_hash_table = NULL;
 	}
+
+	gtk_object_unref (GTK_OBJECT (preferences->details->gconf_client));
+	preferences->details->gconf_client = NULL;
 	
 	g_free (preferences->details);
 	
@@ -475,24 +481,37 @@ preference_set (NautilusPreferences	*preferences,
 	switch (nautilus_preference_get_preference_type (pref_hash_node->preference)) {
 	case NAUTILUS_PREFERENCE_BOOLEAN:
 		pref_hash_node->value = (gpointer) value;
-		gnome_config_set_bool (name, GPOINTER_TO_INT (value));
+		g_assert (gconf_client_set_bool (preferences->details->gconf_client,
+						 name,
+						 GPOINTER_TO_INT (value),
+						 NULL));
+
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
 		pref_hash_node->value = (gpointer) value;
-		gnome_config_set_int (name, GPOINTER_TO_INT (value));
+
+		g_assert (gconf_client_set_int (preferences->details->gconf_client,
+						name,
+						GPOINTER_TO_INT (value),
+						NULL));
+
 		break;
 
 	case NAUTILUS_PREFERENCE_STRING:
 		if (pref_hash_node->value)
 			g_free (pref_hash_node->value);
 		pref_hash_node->value = g_strdup (value);
-		gnome_config_set_string (name, pref_hash_node->value);
+
+		g_assert (gconf_client_set_string (preferences->details->gconf_client,
+						   name,
+						   pref_hash_node->value,
+						   NULL));
 		break;
 	}
 
-	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
-	gnome_config_sync ();
+	/* Sync all the damn time */
+	gconf_client_suggest_sync (preferences->details->gconf_client, NULL);
 
 	/* Invoke callbacks for this node */
 	if (pref_hash_node->callback_list) {
@@ -549,7 +568,6 @@ preferences_register (NautilusPreferences	*preferences,
 		      gconstpointer		default_value,
 		      gpointer			data)
 {
-	char		*gnome_config_string;
 	PrefHashNode	*pref_hash_node;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES (preferences));
@@ -570,91 +588,34 @@ preferences_register (NautilusPreferences	*preferences,
 			     (gpointer) name,
 			     (gpointer) pref_hash_node);
 
-	gnome_config_string = gnome_config_make_string (name, type, default_value);
-
-	g_assert (gnome_config_string != NULL);
 	g_assert (pref_hash_node->preference != NULL);
 
 	/* gnome-config for now; in the future gconf */
 	switch (nautilus_preference_get_preference_type (pref_hash_node->preference)) {
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		pref_hash_node->value = GINT_TO_POINTER (gnome_config_get_bool (gnome_config_string));
+		pref_hash_node->value = GINT_TO_POINTER (gconf_client_get_bool (preferences->details->gconf_client, 
+										name, 
+										NULL));
+
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		pref_hash_node->value = GINT_TO_POINTER (gnome_config_get_int (gnome_config_string));
+		pref_hash_node->value = GINT_TO_POINTER (gconf_client_get_int (preferences->details->gconf_client, 
+									       name, 
+									       NULL));
+
 		break;
 
 	case NAUTILUS_PREFERENCE_STRING:
-		pref_hash_node->value = gnome_config_get_string (gnome_config_string);
+		pref_hash_node->value = (gpointer) gconf_client_get_string (preferences->details->gconf_client, 
+									    name, 
+									    NULL);
+
 		break;
 	}
 
-	g_free (gnome_config_string);
-
-	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
-	gnome_config_sync ();
-}
-
-/**
- * gnome_config_make_string
- *
- * Make a gnome_config conformant string out of NautilusPreferencesInfo.  The 'path'
- * for the config string is the same for both gnome_config and nautilus preferences.
- * The only difference is that gnome_config strings can optionally have a "=default" 
- * appended to them to specify a default value for a preference.  In nautilus we 
- * separate the default value into a info structure member and thus the need to
- * for this function. 
- * @info: Pointer to info structure to use for the node memebers.
- *
- * Return value: A newly allocated string with the gnome_config conformant string.
- **/
-static char *
-gnome_config_make_string (char				*name,
-			  NautilusPreferenceType	type,
-			  gconstpointer			default_value)
-{
-	char * rv = NULL;
-	GString * tmp = NULL;
-
-	g_assert (name != NULL);
-
-	tmp = g_string_new (name);
-	
-	switch (type) {
-	case NAUTILUS_PREFERENCE_BOOLEAN:
-		g_string_append (tmp, "=");
-
-		if (GPOINTER_TO_INT (default_value)) {
-			g_string_append (tmp, "true");
-		} else {
-			g_string_append (tmp, "false");
-		}
-		break;
-
-	case NAUTILUS_PREFERENCE_ENUM:
-		g_string_append (tmp, "=");
-
-		g_string_sprintfa  (tmp, "%d", GPOINTER_TO_INT (default_value));
-		break;
-	
-	case NAUTILUS_PREFERENCE_STRING:
-		if (default_value != NULL)
-		{
-			g_string_append (tmp, "=");
-			g_string_append  (tmp, (char *) default_value);
-		}
-		break;
-	}
-	
-	g_assert (tmp != NULL);
-	g_assert (tmp->str != NULL);
-
-	rv = g_strdup (tmp->str);
-
-	g_string_free (tmp, TRUE);
-
-	return rv;
+	/* Sync all the damn time */
+	gconf_client_suggest_sync (preferences->details->gconf_client, NULL);
 }
 
 /**
@@ -1002,3 +963,24 @@ nautilus_preferences_get_global_preferences (void)
 
 	return NAUTILUS_PREFERENCES (global_preferences);
 }
+
+gboolean
+nautilus_preferences_init (int argc, char **argv)
+{
+	GConfError* error = NULL;
+	
+	if (!gconf_init(argc, argv, &error))
+	{
+		g_assert(error != NULL);
+		g_warning("GConf init failed:\n  %s", error->str);
+		gconf_error_destroy(error);
+		error = NULL;
+
+		return FALSE;
+	}
+
+	g_assert (error == NULL);
+
+	return TRUE;
+}
+

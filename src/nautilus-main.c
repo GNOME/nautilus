@@ -35,6 +35,7 @@
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
 #include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
+#include <nautilus-widgets/nautilus-preferences.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 
 int
@@ -73,6 +74,10 @@ main(int argc, char *argv[])
 				   argc, argv,
 				   options, 0, &ctx); 
 	orb = oaf_init (argc, argv);
+
+	/* FIXME: Need better error reporting if this fails.  BUT, is it too
+	 * early to post a dialog here ? */
+	g_assert (nautilus_preferences_init (argc, argv));
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	g_thread_init (NULL);
