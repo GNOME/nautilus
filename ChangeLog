@@ -1,3 +1,13 @@
+2001-04-27  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (nautilus_news_load_channel),
+	(update_remove_button), (add_site_from_fields),
+	(remove_selected_site), (make_news_view):
+	fixed bug 8192, remove button left enabled when all sites are
+	removed, by making the button insensitive when necessary.  Also,
+	display the site name instead of the url when loading, since it's
+	much more understandable.
+	
 2001-04-27  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Robin Slomkowski <rslomkow@eazel.com>

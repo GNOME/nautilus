@@ -1348,7 +1348,7 @@ nautilus_news_load_channel (News *news_data, RSSChannelData *channel_data)
 	channel_data->load_file_handle = eel_read_entire_file_async (channel_data->uri, rss_read_done_callback, channel_data);
 	
 	/* put up a title that's displayed while we wait */
-	title = g_strdup_printf ("Loading %s", channel_data->uri);
+	title = g_strdup_printf ("Loading %s", channel_data->name);
 	nautilus_news_set_title (channel_data, title);
 	g_free (title);
 }
@@ -1662,6 +1662,12 @@ add_channel_to_remove_list (News *news_data, const char *channel_name)
 	gtk_clist_append ( GTK_CLIST (news_data->remove_site_list), entry);
 }
 
+static void
+update_remove_button (News *news)
+{
+	gtk_widget_set_sensitive (news->remove_button, news->channel_list != NULL);
+}
+
 /* handle adding a new site from the data in the "add site" fields */
 static void
 add_site_from_fields (GtkWidget *widget, News *news)
@@ -1715,7 +1721,9 @@ add_site_from_fields (GtkWidget *widget, News *news)
 	/* clear fields for next time */
 	gtk_editable_delete_text (GTK_EDITABLE (news->item_name_field), 0, -1);
 	gtk_editable_delete_text (GTK_EDITABLE (news->item_location_field), 0, -1);
-		
+
+	update_remove_button (news);
+			
 	/* back to configure mode */
 	configure_button_clicked (widget, news);
 }
@@ -1748,6 +1756,7 @@ remove_selected_site (GtkWidget *widget, News *news)
 	
 	/* remove the channel from the remove list */
 	gtk_clist_remove (GTK_CLIST (news->remove_site_list), news->remove_selection_index);
+	update_remove_button (news);
 	
 	/* back to configure mode */
 	configure_button_clicked (widget, news);
@@ -2257,6 +2266,7 @@ make_news_view (const char *iid, gpointer callback_data)
  
  	/* populate the configuration list */
 	add_channels_to_lists (news);
+	update_remove_button (news);
 
         /* default to the main mode */
 	gtk_widget_show (main_container);
