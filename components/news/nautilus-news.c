@@ -1130,13 +1130,15 @@ has_matching_uri (GList *items, const char *target_uri)
 /* take a look at the newly generated items in the passed-in channel,
  * comparing them with the old items and marking them as new if necessary.
  */
-static void
+static int
 mark_new_items (RSSChannelData *channel_data, GList *old_items)
 {
 	GList *current_item;
 	RSSItemData *item_data;
+	int changed_count;
 	
 	current_item = channel_data->items;
+	changed_count = 0;
 	while (current_item != NULL) {
 	
 		item_data = (RSSItemData*) current_item->data;
@@ -1144,11 +1146,13 @@ mark_new_items (RSSChannelData *channel_data, GList *old_items)
 			item_data->new_item = TRUE;	
 			channel_data->channel_changed = TRUE;
 			nautilus_news_set_news_changed (channel_data->owner, TRUE);
+			changed_count += 1;
 		} else {
 			item_data->new_item = FALSE;	
 		}
 		current_item = current_item->next;
 	}	
+	return changed_count;
 }
 
 /* completion routine invoked when we've loaded the rss file uri.  Parse the xml document, and
@@ -1165,7 +1169,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	GList *old_items;
 	char *image_uri, *title, *temp_str;
 	char *error_message;
-	int item_count;
+	int item_count, changed_count;
 	RSSChannelData *channel_data;
 	
 	char *buffer;
@@ -1257,7 +1261,7 @@ rss_read_done_callback (GnomeVFSResult result,
 		item_count = extract_items (channel_data, channel_node);
 	}
 	
-	mark_new_items (channel_data, old_items);
+	changed_count = mark_new_items (channel_data, old_items);
 		
 	/* we're done, so free everything up */
 	eel_g_list_free_deep_custom (old_items, (GFunc) free_rss_data_item, NULL);
@@ -1267,7 +1271,9 @@ rss_read_done_callback (GnomeVFSResult result,
 	/* update the size of the display aread to reflect the new content and
 	 * schedule a redraw.
 	 */
-	update_size_and_redraw (channel_data->owner); 
+	if (changed_count > 0) {
+		update_size_and_redraw (channel_data->owner); 
+	}
 }
 
 /* initiate the loading of a channel, by fetching the rss file through gnome-vfs */
