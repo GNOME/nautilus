@@ -308,9 +308,7 @@ static void
 corba_quit (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
-	if (gtk_main_level () > 0) {
-		nautilus_main_event_loop_quit ();
-	}
+	nautilus_main_event_loop_quit ();
 }
 
 /*
@@ -407,9 +405,7 @@ static void
 corba_restart (PortableServer_Servant servant,
 	       CORBA_Environment *ev)
 {
-	if (gtk_main_level () > 0) {
-		nautilus_main_event_loop_quit ();
-	}
 	save_window_states ();
+	nautilus_main_event_loop_quit ();
 	setenv ("_NAUTILUS_RESTART", "yes", 1);
 }

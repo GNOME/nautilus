@@ -61,8 +61,12 @@ nautilus_main_event_loop_unregister (GtkObject* object)
 {
 	g_assert (g_slist_find (nautilus_main_event_loop_registrants, object) != NULL);
 	nautilus_main_event_loop_registrants = g_slist_remove (nautilus_main_event_loop_registrants, object);
-	if (!nautilus_main_is_event_loop_needed () && gtk_main_level () > 0) {
-		gtk_main_quit ();
+	if (!nautilus_main_is_event_loop_needed ()) {
+		/* Calling gtk_main_quit directly only kills the current/top event loop.
+		 * This idler will be run by the current event loop, killing it, and then
+		 * by the next event loop, ...
+		 */
+		gtk_idle_add ((GtkFunction) gtk_main_quit, NULL);
 	}
 }
 

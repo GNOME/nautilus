@@ -1,3 +1,10 @@
+2000-09-11  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-main.c: (nautilus_main_event_loop_unregister):
+	* src/nautilus-shell.c: (corba_quit), (corba_restart):
+	bug 2942 the quit code now kills all the event loops, not
+	just the top one.
+
 2000-09-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
