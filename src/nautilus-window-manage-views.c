@@ -514,10 +514,7 @@ nautilus_window_update_view (NautilusWindow *window,
                 nautilus_view_frame_load_location (view, new_location);
         }
         
-        /* FIXME bugzilla.eazel.com 2462: Is NULL a way to indicate no selection, or no change? */
-        if (new_selection != NULL) {
-        	nautilus_view_frame_selection_changed (view, new_selection);
-        }
+        nautilus_view_frame_selection_changed (view, new_selection);
 }
 
 void
