@@ -34,6 +34,8 @@
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rect.h>
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-stock-dialogs.h"
+#include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <libgnomeui/gnome-icon-list.h>
@@ -51,6 +53,7 @@
 struct IconSelectionData {
         GtkWidget *icon_selection;
 	GtkWidget *file_entry;
+	GtkWindow *owning_window;
 	NautilusIconSelectionFunction selection_function;
 	gpointer callback_data;
 };
@@ -618,15 +621,27 @@ icon_selected_callback (GtkWidget *button, IconSelectionData *selection_data)
 {
 	const gchar *icon_path;
 	GtkWidget *entry;
+	struct stat buf;
 	
 	gnome_icon_selection_stop_loading ( GNOME_ICON_SELECTION (selection_data->icon_selection));
 
 	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (selection_data->file_entry));
 	icon_path = gtk_entry_get_text (GTK_ENTRY (entry));
 
-	/* invoke the callback to inform it of the file path */
-	selection_data->selection_function (icon_path, selection_data->callback_data);
-	
+	/* if a specific file wasn't selected, put up a dialog to tell the
+	 * user to pick something, and leave the picker up
+	 */
+	stat (icon_path, &buf);
+	if (S_ISDIR (buf.st_mode)) {
+		nautilus_show_error_dialog (_("No image was selected.  You must click on an image to select it."),
+					    _("No selection made"),
+					    selection_data->owning_window);
+
+	} else {	 
+		/* invoke the callback to inform it of the file path */
+		selection_data->selection_function (icon_path, selection_data->callback_data);
+	}
+		
 	/* we have to get rid of the icon selection dialog, but we can't do it now, since the
 	 * file entry might still need it.  Do it when the next idle rolls around
 	 */
@@ -718,7 +733,8 @@ nautilus_gnome_icon_selector_new (const char *title,
 	selection_data = g_new0 (IconSelectionData, 1);
  	selection_data->icon_selection = icon_selection;
  	selection_data->file_entry = file_entry;
- 	selection_data->selection_function = selected;
+ 	selection_data->owning_window = owner;
+	selection_data->selection_function = selected;
  	selection_data->callback_data = callback_data;
  	
 	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox),

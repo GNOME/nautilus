@@ -1,3 +1,12 @@
+2001-02-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(icon_selected_callback), (nautilus_gnome_icon_selector_new):
+	fixed bugs 6437 and 6438 by testing for a directory selected
+	instead of a file in the icon selector, and putting up an error
+	dialog in that case instead of invoking the callback with the
+	directory path.
+	
 2001-02-08  Pavel Cisler  <pavel@eazel.com>
 	
 	Fix 6401 (Create Link yields "You cannot link a file to itself"
